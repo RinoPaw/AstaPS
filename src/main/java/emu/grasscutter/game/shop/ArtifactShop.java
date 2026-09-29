@@ -16,17 +16,14 @@ import java.util.*;
 import lombok.Getter;
 
 /**
- * Lists every official 5-star artifact piece as shop goods. Buying one hands out a freshly rolled
- * artifact rather than a fixed one: the main stat comes from the slot's real pool and the substats
- * from the excel affix table, so every number on the piece is one the game itself would print. The
- * odds are what is bent - towards crit, damage, and the higher end of each roll.
+ * Lists official artifact pieces as shop goods. Buying one hands out a freshly rolled artifact
+ * rather than a fixed one: the main stat comes from the slot's real pool and the substats from the
+ * excel affix table, so every number on the piece is one the game itself would print. The odds can
+ * still be bent towards crit, damage, and the higher end of each roll.
  */
 public class ArtifactShop {
     /** Well clear of the ~101,070,304 the excel goods ids reach. */
     private static final int GOODS_ID_BASE = 200_000_000;
-
-    /** The substat pool every 5-star piece draws from. */
-    private static final int FIVE_STAR_AFFIX_DEPOT = 501;
 
     /** Flower, plume, sands, goblet, circlet - the order the bag shows them in. */
     private static final List<EquipType> SLOT_ORDER =
@@ -38,7 +35,7 @@ public class ArtifactShop {
                     EquipType.EQUIP_DRESS);
 
     /**
-     * The main stat each slot can actually roll at 5 stars, with the game's own odds.
+     * The main stat each slot can actually roll, with the game's own odds.
      *
      * <p>The pool has to be spelled out because the shipped ReliquaryMainPropExcelConfigData is
      * flattened - every entry in every depot carries the same weight, and the depots hold stats the
@@ -83,7 +80,11 @@ public class ArtifactShop {
     @Getter private final Int2ObjectMap<ItemData> goods = new Int2ObjectOpenHashMap<>();
 
     /**
-     * Appends the artifact goods to the configured shop, replacing any listed by an earlier call.
+     * Appends the legacy all-5-star catalog to the configured shop, replacing any listed by an
+     * earlier call.
+     *
+     * <p>Keeping this behavior here lets the current shop continue to work while the domain-aware
+     * layer starts asking {@link #catalog(Set, Set)} for smaller per-player catalogs.
      *
      * <p>Safe to call more than once, and it has to be: the shop system is built before the
      * resources are loaded, so the first attempt finds no artifacts to list.
@@ -94,7 +95,7 @@ public class ArtifactShop {
         shopData.values().forEach(list -> list.removeIf(sold -> sold.getGoodsId() >= GOODS_ID_BASE));
         if (!options.enabled) return;
 
-        var pieces = catalog();
+        var pieces = catalog(Set.of(), Set.of(5));
         if (pieces.isEmpty()) return;
 
         var items = shopData.computeIfAbsent(options.shopId, k -> new ArrayList<ShopInfo>());
@@ -125,8 +126,7 @@ public class ArtifactShop {
             item.setMainPropId(mainPropId);
         }
 
-        // A piece starts with its own substat count and gains one at every level in addPropLevels,
-        // which is what turns four substats into nine by +20.
+        // A piece starts with its own substat count and gains one at every level in addPropLevels.
         int level = Math.min(Math.max(options.artifactLevel, 0) + 1, piece.getMaxLevel());
         int substats = piece.getAppendPropNum();
         int totalExp = 0;
@@ -142,17 +142,26 @@ public class ArtifactShop {
         return item;
     }
 
-    /** Every official 5-star piece: the four-substat variant of each slot of each real set. */
-    private static List<ItemData> catalog() {
+    /**
+     * Returns one normal domain-style item definition for every requested set/rank/slot.
+     *
+     * <p>An empty set filter means every released set. An empty rank filter means ranks 3 through
+     * 5. The normal affix depot follows the game's 301/401/501 convention and the best starting
+     * substat variant has rank - 1 initial substats (2/3/4 for 3/4/5-star pieces).
+     */
+    public static List<ItemData> catalog(Set<Integer> setIds, Set<Integer> ranks) {
+        boolean allSets = setIds == null || setIds.isEmpty();
+        boolean allRanks = ranks == null || ranks.isEmpty();
         var pieces = new ArrayList<ItemData>();
+
         for (ItemData data : GameData.getItemDataMap().values()) {
-            if (data.getItemType() != ItemType.ITEM_RELIQUARY || data.getRankLevel() != 5) continue;
-            // Each piece exists five times over, once per starting substat count. A 5-star out of a
-            // domain starts with three or four; four is the one worth selling.
-            if (data.getAppendPropNum() != 4) continue;
-            if (data.getAppendPropDepotId() != FIVE_STAR_AFFIX_DEPOT) continue;
-            // Skips the constrained depots the special drops use, leaving one entry per slot.
-            if (data.getMainPropDepotId() != mainPropDepot(data.getEquipType())) continue;
+            if (data.getItemType() != ItemType.ITEM_RELIQUARY) continue;
+            int rank = data.getRankLevel();
+            if (rank < 3 || rank > 5) continue;
+            if (!allRanks && !ranks.contains(rank)) continue;
+            if (!allSets && !setIds.contains(data.getSetId())) continue;
+            if (!isCanonicalDomainPiece(data)) continue;
+
             // Beta and test sets carry no set bonus; every released set does.
             var set = GameData.getReliquarySetDataMap().get(data.getSetId());
             if (set == null || set.getEquipAffixId() <= 0) continue;
@@ -161,8 +170,17 @@ public class ArtifactShop {
 
         pieces.sort(
                 Comparator.comparingInt(ItemData::getSetId)
+                        .thenComparingInt(ItemData::getRankLevel)
                         .thenComparingInt(data -> SLOT_ORDER.indexOf(data.getEquipType())));
         return pieces;
+    }
+
+    /** Selects the regular domain-roll variant among the duplicate reliquary item definitions. */
+    private static boolean isCanonicalDomainPiece(ItemData data) {
+        int rank = data.getRankLevel();
+        if (data.getAppendPropNum() != rank - 1) return false;
+        if (data.getAppendPropDepotId() != rank * 100 + 1) return false;
+        return data.getMainPropDepotId() == mainPropDepot(data.getEquipType());
     }
 
     private static ShopInfo makeGoods(int goodsId, ItemData piece, ArtifactShopOptions options) {

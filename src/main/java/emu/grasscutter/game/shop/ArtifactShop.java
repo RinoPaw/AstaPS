@@ -8,7 +8,9 @@ import emu.grasscutter.data.*;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.data.excels.reliquary.ReliquaryMainPropData;
+import emu.grasscutter.game.dungeons.DungeonDropLoader;
 import emu.grasscutter.game.inventory.*;
+import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
 import emu.grasscutter.utils.objects.WeightedList;
 import it.unimi.dsi.fastutil.ints.*;
@@ -80,11 +82,8 @@ public class ArtifactShop {
     @Getter private final Int2ObjectMap<ItemData> goods = new Int2ObjectOpenHashMap<>();
 
     /**
-     * Appends the legacy all-5-star catalog to the configured shop, replacing any listed by an
-     * earlier call.
-     *
-     * <p>Keeping this behavior here lets the current shop continue to work while the domain-aware
-     * layer starts asking {@link #catalog(Set, Set)} for smaller per-player catalogs.
+     * Installs every 3-5 star domain-style artifact definition into the backing shop. The list sent
+     * to a player is filtered later by completed domains and Adventure Rank.
      *
      * <p>Safe to call more than once, and it has to be: the shop system is built before the
      * resources are loaded, so the first attempt finds no artifacts to list.
@@ -95,7 +94,7 @@ public class ArtifactShop {
         shopData.values().forEach(list -> list.removeIf(sold -> sold.getGoodsId() >= GOODS_ID_BASE));
         if (!options.enabled) return;
 
-        var pieces = catalog(Set.of(), Set.of(5));
+        var pieces = catalog(Set.of(), Set.of(3, 4, 5));
         if (pieces.isEmpty()) return;
 
         var items = shopData.computeIfAbsent(options.shopId, k -> new ArrayList<ShopInfo>());
@@ -107,12 +106,89 @@ public class ArtifactShop {
         }
 
         Grasscutter.getLogger()
-                .info("Listed {} 5-star artifacts in shop {}.", pieces.size(), options.shopId);
+                .info("Listed {} 3-5 star artifact definitions in shop {}.", pieces.size(), options.shopId);
     }
 
     /** The piece this goods id sells, or null when the id is not one of ours. */
     public ItemData getPiece(int goodsId) {
         return this.goods.get(goodsId);
+    }
+
+    /** Goods IDs this player is currently allowed to see and buy. */
+    public Set<Integer> getAvailableGoodsIds(Player player) {
+        var unlockedSets = unlockedSetIds(player);
+        var allowedRanks = allowedRanks(player);
+        var available = new HashSet<Integer>();
+
+        for (var entry : this.goods.int2ObjectEntrySet()) {
+            if (isAvailable(entry.getValue(), unlockedSets, allowedRanks)) {
+                available.add(entry.getIntKey());
+            }
+        }
+        return available;
+    }
+
+    /** Server-side purchase check; the client-side shop filter is never treated as authorization. */
+    public boolean isAvailable(Player player, ItemData piece) {
+        return isAvailable(piece, unlockedSetIds(player), allowedRanks(player));
+    }
+
+    private static boolean isAvailable(
+            ItemData piece, Set<Integer> unlockedSets, Set<Integer> allowedRanks) {
+        return piece != null
+                && unlockedSets.contains(piece.getSetId())
+                && allowedRanks.contains(piece.getRankLevel());
+    }
+
+    /**
+     * A completed domain unlocks every artifact set that appears in that dungeon's real drop table.
+     * This deliberately keys progression off the set, not the difficulty: Adventure Rank decides
+     * which rarity of an already-proven domain the shop may sell later.
+     */
+    private static Set<Integer> unlockedSetIds(Player player) {
+        if (player == null
+                || player.getPlayerProgress() == null
+                || player.getPlayerProgress().getCompletedDungeons() == null) {
+            return Set.of();
+        }
+
+        try {
+            DungeonDropLoader.ensureLoaded();
+        } catch (Exception e) {
+            Grasscutter.getLogger().warn("Unable to load dungeon drops for artifact shop unlocks.", e);
+            return Set.of();
+        }
+
+        var unlocked = new HashSet<Integer>();
+        for (int dungeonId : player.getPlayerProgress().getCompletedDungeons()) {
+            var drops = GameData.getDungeonDropDataMap().get(dungeonId);
+            if (drops == null) continue;
+
+            for (var drop : drops) {
+                if (drop == null || drop.getItems() == null) continue;
+                for (int itemId : drop.getItems()) {
+                    var data = GameData.getItemDataMap().get(itemId);
+                    if (data != null
+                            && data.getItemType() == ItemType.ITEM_RELIQUARY
+                            && data.getSetId() > 0) {
+                        unlocked.add(data.getSetId());
+                    }
+                }
+            }
+        }
+        return unlocked;
+    }
+
+    /**
+     * First-pass progression curve. AR 1-29 can buy 3-star pieces, AR 30-39 adds 4-star pieces,
+     * and AR 40+ adds 5-star pieces. Keeping the lower rarities available avoids deleting the
+     * earlier shop progression when the player ranks up.
+     */
+    private static Set<Integer> allowedRanks(Player player) {
+        int level = player != null ? player.getLevel() : 0;
+        if (level >= 40) return Set.of(3, 4, 5);
+        if (level >= 30) return Set.of(3, 4);
+        return Set.of(3);
     }
 
     /** Rolls a piece the way a domain drop would, then levels it and applies the configured bias. */

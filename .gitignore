@@ -54,6 +54,7 @@ tmp/
 # Grasscutter
 /cache
 /resources
+/resources-custom/
 /logs
 /plugins
 /keys

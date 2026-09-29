@@ -27,6 +27,15 @@ public class ArtifactShop {
     /** Well clear of the ~101,070,304 the excel goods ids reach. */
     private static final int GOODS_ID_BASE = 200_000_000;
 
+    /** Virtual item id used by the game for Original Resin. */
+    private static final int ORIGINAL_RESIN_ID = 106;
+
+    /** One ordinary artifact-domain claim. */
+    private static final int DEFAULT_RESIN_COST = 20;
+
+    /** Old ArtifactShop default, used to recognize untouched legacy configuration. */
+    private static final int LEGACY_DEFAULT_MORA_COST = 20_000;
+
     /** Flower, plume, sands, goblet, circlet - the order the bag shows them in. */
     private static final List<EquipType> SLOT_ORDER =
             List.of(
@@ -263,14 +272,26 @@ public class ArtifactShop {
         var goods = new ShopInfo();
         goods.setGoodsId(goodsId);
         goods.setGoodsItem(new ItemParamData(piece.getId(), 1));
-        goods.setScoin(options.costMora);
+
+        // Existing configs generated before the domain-shop redesign contain the old untouched
+        // 20,000-Mora price. Treat exactly that default as a migration marker and turn it into the
+        // cost of one normal domain claim. Any explicitly customized price keeps its old behavior.
+        boolean legacyDefaultPrice =
+                options.costMora == LEGACY_DEFAULT_MORA_COST
+                        && options.costPrimogems == 0
+                        && options.costItemId <= 0
+                        && options.costItemCount <= 0;
+        goods.setScoin(legacyDefaultPrice ? 0 : options.costMora);
         goods.setHcoin(options.costPrimogems);
         goods.setBuyLimit(options.buyLimit);
         goods.setMinLevel(1);
         goods.setMaxLevel(99);
+
         // Mutable on purpose: removeVirtualCosts walks this with removeIf.
         var costs = new ArrayList<ItemParamData>(1);
-        if (options.costItemId > 0 && options.costItemCount > 0) {
+        if (legacyDefaultPrice) {
+            costs.add(new ItemParamData(ORIGINAL_RESIN_ID, DEFAULT_RESIN_COST));
+        } else if (options.costItemId > 0 && options.costItemCount > 0) {
             costs.add(new ItemParamData(options.costItemId, options.costItemCount));
         }
         goods.setCostItemList(costs);

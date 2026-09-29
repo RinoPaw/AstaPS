@@ -42,11 +42,24 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             return;
         }
 
+        // Validate the reply side of the handshake before changing persistent player data. A
+        // negative value in the 7.1 opcode tables is an unresolved placeholder, not a signed
+        // on-wire CmdId.
+        int rspCmdId = GAME_OPTIONS.newAccountIntro.setPlayerBornDataRsp;
+        if (rspCmdId <= 0) {
+            Grasscutter.getLogger()
+                    .error(
+                            "[intro] SetPlayerBornDataRsp CmdId is unknown ({}); character creation aborted before changing account data.",
+                            rspCmdId);
+            session.close();
+            return;
+        }
+
         // Get player object
         Player player = session.getPlayer();
         player.setNickname(req.getNickName());
 
-        // Create avatar
+        // Create avatar only from the client's explicit selection.
         if (player.getAvatars().getAvatarCount() == 0) {
             Avatar mainCharacter = new Avatar(avatarId);
 
@@ -67,23 +80,27 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
                     .add(mainCharacter.getAvatarId());
             player.save(); // TODO save player team in different object
         } else {
+            Grasscutter.getLogger()
+                    .error(
+                            "[intro] received SetPlayerBornDataReq for uid {} after an avatar already existed; refusing to overwrite it.",
+                            player.getUid());
+            session.close();
             return;
         }
 
         // The character was just created: start the quests a new account begins with.
-        session.getPlayer().getQuestManager().onPlayerBorn();
+        player.getQuestManager().onPlayerBorn();
 
         // Login done
         session.getPlayer().onLogin();
 
-        // Born resp packet. Empty is a valid success - retcode defaults to 0 - so the CmdId is the
-        // only thing this needs, and PacketOpcodes has no 7.0 entry for it.
-        int rspCmdId = GAME_OPTIONS.newAccountIntro.setPlayerBornDataRsp;
         Grasscutter.getLogger()
-                .info("[intro] character creation finished: {} picked avatar {} (rsp cmdId={}).",
-                        req.getNickName(), avatarId, rspCmdId > 0 ? rspCmdId : "unsent");
-        if (rspCmdId > 0) session.send(new BasePacket(rspCmdId));
-        else session.send(new BasePacket(PacketOpcodes.SetPlayerBornDataRsp));
+                .info(
+                        "[intro] character creation finished: {} picked avatar {} (rsp cmdId={}).",
+                        req.getNickName(),
+                        avatarId,
+                        rspCmdId);
+        session.send(new BasePacket(rspCmdId));
 
         // Default mail
         var welcomeMail = GAME_INFO.joinOptions.welcomeMail;

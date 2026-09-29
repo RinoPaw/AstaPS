@@ -1,16 +1,14 @@
 package emu.grasscutter.server.packet.recv;
 
+import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.data.GameData;
-import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.born.BornDataHelper;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.game.GameSession.SessionState;
-import emu.grasscutter.server.packet.send.*;
-
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.server.packet.send.PacketPlayerLoginRsp;
 
 @Opcodes(PacketOpcodes.PlayerLoginReq)
 public class HandlerPlayerLoginReq extends PacketHandler {
@@ -25,85 +23,47 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         Player player = session.getPlayer();
         var intro = GAME_OPTIONS.newAccountIntro;
 
-        if (player.getAvatars().getAvatarCount() == 0 && intro.enabled) {
-            // Leaving the account empty is the whole point: the client only runs creation while it
-            // has nothing to load. onLogin is deliberately not called, so the session stays in
-            // PICKING_CHARACTER, the state the router demands before it accepts SetPlayerBornDataReq.
-            session.setState(SessionState.PICKING_CHARACTER);
-
-            if (intro.doSetPlayerBornDataNotify > 0) {
-                session.send(new BasePacket(intro.doSetPlayerBornDataNotify));
+        if (player.getAvatars().getAvatarCount() == 0) {
+            // A brand-new account must complete the client-driven Traveler creation handshake.
+            // Do not invent a Traveler when the protocol/configuration is incomplete: that hides
+            // the actual compatibility problem and permanently changes the account state.
+            if (!intro.enabled) {
+                Grasscutter.getLogger()
+                        .error(
+                                "[intro] account {} has no character, but newAccountIntro is disabled; refusing automatic Traveler creation.",
+                                session.getAccount().getUsername());
+                session.close();
+                return;
             }
+
+            int notifyCmdId = intro.doSetPlayerBornDataNotify;
+            if (notifyCmdId <= 0) {
+                Grasscutter.getLogger()
+                        .error(
+                                "[intro] DoSetPlayerBornDataNotify CmdId is unknown ({}); refusing character creation until the real 7.1 opcode is known.",
+                                notifyCmdId);
+                session.close();
+                return;
+            }
+
+            // Negative entries in some 7.1 opcode tables are unresolved placeholders, not signed
+            // wire CmdIds. Only an explicitly known positive opcode is safe to send.
+            session.setState(SessionState.PICKING_CHARACTER);
+            session.send(new BasePacket(notifyCmdId));
             Grasscutter.getLogger()
-                    .info("[intro] new account, waiting for character creation (notify cmdId={}).",
-                            intro.doSetPlayerBornDataNotify > 0 ? intro.doSetPlayerBornDataNotify : "unsent");
+                    .info(
+                            "[intro] new account, waiting for client character creation (notify cmdId={}).",
+                            notifyCmdId);
 
             session.send(new PacketPlayerLoginRsp(session));
-            this.scheduleFallback(session, player);
             return;
         }
 
-        boolean newPlayer = player.getAvatars().getAvatarCount() == 0;
-
-        if (!(player.getAvatars().getAvatarCount() == 0 && intro.enabled)) {
-            // Also repair legacy accounts that have avatars but lost their main-character marker.
-            BornDataHelper.ensureMainCharacter(player);
-        }
-
-        if (player.getAvatars().getAvatarCount() == 0) {
-            // Keep the configured intro flow above intact. For accounts that skip it, use the
-            // patched repair/auto-create path so a missing main character cannot block login.
-            createDefaultTraveler(player);
-        }
-
-        // Either path above may just have created the Traveler; that is this account's birth.
-        if (newPlayer && player.getAvatars().getAvatarCount() > 0) {
-            player.getQuestManager().onPlayerBorn();
-        }
+        // Existing accounts may predate the explicit main-character marker. This only repairs the
+        // marker for an avatar that already exists; it never creates a Traveler.
+        BornDataHelper.ensureMainCharacter(player);
 
         player.onLogin();
         session.send(new PacketPlayerLoginRsp(session));
-    }
-
-    /**
-     * Rescues an account the client never ran creation for.
-     *
-     * <p>The trigger for that screen is DoSetPlayerBornDataNotify, whose 7.0 CmdId is not known, so
-     * a client that is never told simply sits on a white screen forever. One tick is one second.
-     */
-    private void scheduleFallback(GameSession session, Player player) {
-        int seconds = GAME_OPTIONS.newAccountIntro.fallbackSeconds;
-        if (seconds <= 0) return;
-
-        Grasscutter.getGameServer()
-                .getScheduler()
-                .scheduleDelayedTask(
-                        () -> {
-                            if (session.getState() != SessionState.PICKING_CHARACTER) return;
-                            if (player.getAvatars().getAvatarCount() > 0) return;
-
-                            Grasscutter.getLogger()
-                                    .warn("[intro] no character creation after {}s, falling back to the default Traveler.",
-                                            seconds);
-                            createDefaultTraveler(player);
-                            player.getQuestManager().onPlayerBorn();
-                            player.onLogin();
-                        },
-                        seconds);
-    }
-
-    private static void createDefaultTraveler(Player player) {
-        int avatarId = 10000007;
-        Avatar mainCharacter = new Avatar(avatarId);
-
-        if (!GAME_OPTIONS.questing.enabled) {
-            mainCharacter.setSkillDepotData(GameData.getAvatarSkillDepotDataMap().get(704));
-        }
-
-        player.addAvatar(mainCharacter, false);
-        player.setMainCharacterId(avatarId);
-        player.setHeadImage(avatarId);
-        player.getTeamManager().getCurrentSinglePlayerTeamInfo().getAvatars().add(avatarId);
-        player.save();
     }
 }

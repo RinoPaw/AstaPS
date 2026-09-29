@@ -4,93 +4,68 @@
 package emu.grasscutter.server.born;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.data.GameData;
-import emu.grasscutter.data.excels.avatar.AvatarSkillDepotData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.server.born.BornDataConfig;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public final class BornDataHelper {
     private BornDataHelper() {
     }
 
+    /**
+     * Repairs only metadata for an account that already owns avatars.
+     *
+     * <p>A player with no avatars is a new/incomplete account and must go through the real
+     * SetPlayerBornData handshake. Creating a Traveler here would hide a protocol failure and make
+     * the account look initialized when the client never selected a character.
+     */
     public static void ensureMainCharacter(Player player) {
         if (player.getMainCharacterId() != 0 && player.getAvatars().getAvatarCount() > 0) {
             if (player.getNickname() == null || player.getNickname().isBlank()) {
-                String string = BornDataConfig.getNickname(player.getAccount() != null ? player.getAccount().getUsername() : "Traveler");
-                player.setNickname(string);
+                String nickname =
+                        BornDataConfig.getNickname(
+                                player.getAccount() != null
+                                        ? player.getAccount().getUsername()
+                                        : "Traveler");
+                player.setNickname(nickname);
                 player.save();
             }
             return;
         }
-        if (player.getAvatars().getAvatarCount() == 0) {
-            BornDataHelper.autoCreateMainCharacter(player);
-            return;
-        }
-        BornDataHelper.repairMainCharacterFromExistingAvatars(player);
-    }
 
-    public static void autoCreateMainCharacter(Player player) {
-        int n;
-        int n2;
-        if (player.getAvatars().getAvatarCount() != 0) {
+        if (player.getAvatars().getAvatarCount() == 0) {
+            Grasscutter.getLogger()
+                    .error(
+                            "Player uid={} has no avatars; refusing automatic Traveler creation. The account must complete SetPlayerBornData.",
+                            player.getUid());
             return;
         }
-        if (BornDataConfig.isRandomGender()) {
-            n2 = ThreadLocalRandom.current().nextBoolean() ? 10000005 : 10000007;
-        } else {
-            n2 = BornDataConfig.getAvatarId();
-            if (n2 != 10000005 && n2 != 10000007) {
-                n2 = 10000007;
-            }
-        }
-        int n3 = n = n2 == 10000005 ? 504 : 704;
-        if (!GameData.getAvatarDataMap().containsKey(n2)) {
-            throw new IllegalStateException("No avatar data for id " + n2 + ". Check ExcelBinOutput.");
-        }
-        String string = BornDataConfig.getNickname(player.getAccount() != null ? player.getAccount().getUsername() : "Traveler");
-        player.setNickname(string);
-        Avatar avatar = new Avatar(n2);
-        AvatarSkillDepotData avatarSkillDepotData = (AvatarSkillDepotData)GameData.getAvatarSkillDepotDataMap().get(n);
-        if (avatarSkillDepotData != null) {
-            avatar.setSkillDepotData(avatarSkillDepotData);
-        }
-        avatar.recalcStats(true);
-        player.addAvatar(avatar, false);
-        player.setMainCharacterId(n2);
-        player.setHeadImage(n2);
-        List<Integer> list = player.getTeamManager().getCurrentSinglePlayerTeamInfo().getAvatars();
-        if (!list.contains(n2)) {
-            list.add(n2);
-        }
-        player.save();
-        Grasscutter.getLogger().info("Auto-born created traveler uid={} avatarId={} nickname={}", player.getUid(), n2, player.getNickname());
+
+        repairMainCharacterFromExistingAvatars(player);
     }
 
     private static void repairMainCharacterFromExistingAvatars(Player player) {
-        int n = BornDataHelper.resolveMainAvatarId(player);
-        if (n == 0) {
-            Grasscutter.getLogger().warn("Broken player uid={} has avatars but no main character; recreating traveler", (Object)player.getUid());
-            for (Avatar avatar : player.getAvatars()) {
-                if (avatar == null) continue;
-                n = avatar.getAvatarId();
-                break;
-            }
-            if (n == 0) {
-                BornDataHelper.autoCreateMainCharacter(player);
-                return;
-            }
+        int avatarId = resolveMainAvatarId(player);
+        if (avatarId == 0) {
+            Grasscutter.getLogger()
+                    .error(
+                            "Broken player uid={} reports avatars but none can be resolved; refusing to invent a Traveler.",
+                            player.getUid());
+            return;
         }
+
         if (player.getNickname() == null || player.getNickname().isBlank()) {
-            player.setNickname(BornDataConfig.getNickname(player.getAccount() != null ? player.getAccount().getUsername() : "Traveler"));
+            player.setNickname(
+                    BornDataConfig.getNickname(
+                            player.getAccount() != null
+                                    ? player.getAccount().getUsername()
+                                    : "Traveler"));
         }
-        player.setMainCharacterId(n);
-        player.setHeadImage(n);
+        player.setMainCharacterId(avatarId);
+        player.setHeadImage(avatarId);
         List<Integer> list = player.getTeamManager().getCurrentSinglePlayerTeamInfo().getAvatars();
-        if (!list.contains(n)) {
-            list.add(n);
+        if (!list.contains(avatarId)) {
+            list.add(avatarId);
         }
         player.save();
     }

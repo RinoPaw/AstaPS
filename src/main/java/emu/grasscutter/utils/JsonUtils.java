@@ -40,10 +40,20 @@ public final class JsonUtils {
                     .registerTypeAdapter(Double.class, LenientNumberAdapter.DOUBLE)
                     .create();
 
-    /** Like {@link #loadToList(Path, Class)}, but tolerant of non-numeric values in number fields. */
+    /**
+     * Like {@link #loadToList(Path, Class)}, but tolerant of non-numeric values in number fields and
+     * duplicate object keys found in some dumped ability configs.
+     *
+     * <p>Parsing through a {@link JsonElement} first normalizes duplicate object members using
+     * Gson's {@link JsonObject} semantics (the later value replaces the earlier one) before typed
+     * map adapters are invoked. Direct typed deserialization rejects such dumps with a
+     * {@link JsonSyntaxException}.
+     */
     public static <T> List<T> loadToListLenient(Path filename, Class<T> classType) throws IOException {
         try (var fileReader = Files.newBufferedReader(filename, StandardCharsets.UTF_8)) {
-            return lenientGson.fromJson(fileReader, TypeToken.getParameterized(List.class, classType).getType());
+            var listType = TypeToken.getParameterized(List.class, classType).getType();
+            var json = JsonParser.parseReader(fileReader);
+            return lenientGson.fromJson(json, listType);
         }
     }
 

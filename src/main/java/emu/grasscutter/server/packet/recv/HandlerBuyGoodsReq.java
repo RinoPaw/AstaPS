@@ -96,8 +96,15 @@ public class HandlerBuyGoodsReq extends PacketHandler {
             var artifactShop = session.getServer().getShopSystem().getArtifactShop();
             var piece = artifactShop.getPiece(sg.getGoodsId());
             if (piece != null) {
+                // Hidden shop entries are not authorization. A crafted BuyGoodsReq must pass the
+                // same domain-clear and Adventure Rank checks as the shop response.
+                if (!artifactShop.isAvailable(player, piece)) {
+                    session.send(new PacketBuyGoodsRsp(Retcode.RET_SHOP_CONTENT_NOT_MATCH));
+                    continue;
+                }
+
                 // Artifacts do not stack, so a batch buy needs that many free slots. Asking before
-                // the payment keeps a full bag from swallowing the mora and handing back nothing.
+                // the payment keeps a full bag from swallowing the cost and handing back nothing.
                 var relics = player.getInventory().getInventoryTab(ItemType.ITEM_RELIQUARY);
                 if (buyCount > relics.getMaxCapacity() - relics.getSize()) {
                     session.send(new PacketBuyGoodsRsp(Retcode.RET_PACK_EXCEED_MAX_WEIGHT));

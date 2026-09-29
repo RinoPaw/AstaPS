@@ -1,18 +1,12 @@
 package emu.grasscutter.game.player;
 
 import emu.grasscutter.BuildConfig;
-import emu.grasscutter.server.packet.send.PacketAntiAddictNotify;
-import java.util.Objects;
 
 /**
- * The message box shown once the player is in the world: a welcome the first time, and afterwards
- * a notice when the server has been rebuilt since the player was last in. The live announcements
- * are sent at the same moment.
+ * Per-login entry hook for optional server announcements.
  *
- * <p>The client only renders an AntiAddictNotify once it is fully in the world; sent during the
- * login handshake it is swallowed. It used to hang off TowerAllDataReq, whose 7.1 CmdId is not
- * known, so it never went out; PostEnterSceneReq arrives after every scene entry, and this sends
- * at most once per login whichever request gets here first.
+ * <p>The play/rino branch intentionally suppresses AstaPS's built-in welcome/update dialogs while
+ * keeping the entry hook itself available for user-configured announcements.
  */
 public final class EntryNotice {
     private EntryNotice() {}
@@ -21,18 +15,11 @@ public final class EntryNotice {
         if (player == null || player.isEntryNoticeChecked()) return;
         player.setEntryNoticeChecked(true);
 
-        if (player.isPendingWelcomeNotice()) {
-            player.sendPacket(new PacketAntiAddictNotify(1, "Welcome to AstaPS"));
-            player.setPendingWelcomeNotice(false);
-        } else if (!Objects.equals(player.getLastSeenBuildHash(), BuildConfig.GIT_HASH)) {
-            player.sendPacket(
-                    new PacketAntiAddictNotify(
-                            1, "The server has been updated and restarted since you were last online."));
-        }
-
+        // Keep the persisted bookkeeping current without showing AstaPS's default popup dialogs.
+        player.setPendingWelcomeNotice(false);
         player.setLastSeenBuildHash(BuildConfig.GIT_HASH);
 
-        // The announcement banner is otherwise only broadcast every few minutes.
+        // Custom announcements remain supported; an empty Announcement.json simply sends nothing.
         var server = player.getServer();
         if (server != null && server.getAnnouncementSystem() != null) {
             server.getAnnouncementSystem().sendActive(player);

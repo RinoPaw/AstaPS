@@ -104,7 +104,7 @@ public final class AccountCommand implements CommandHandler {
                     CommandHandler.sendMessage(sender, translate(sender, "commands.account.no_account"));
                     return;
                 }
-                DatabaseHelper.deleteAccount(toDelete);
+                AccountDeletionService.delete(toDelete);
                 CommandHandler.sendMessage(sender, translate(sender, "commands.account.delete"));
             }
             case "resetpass" -> {

@@ -1,111 +1,109 @@
-/*
- * Decompiled with CFR 0.152.
- */
 package emu.grasscutter.game.ability.actions;
 
 import com.google.protobuf.ByteString;
-import emu.grasscutter.data.binout.AbilityModifier;
+import emu.grasscutter.data.binout.AbilityModifier.AbilityModifierAction;
 import emu.grasscutter.data.common.DynamicFloat;
 import emu.grasscutter.game.ability.Ability;
 import emu.grasscutter.game.ability.NyxHelper;
 import emu.grasscutter.game.ability.SkirkCunningBridge;
 import emu.grasscutter.game.ability.SkirkCunningHelper;
 import emu.grasscutter.game.ability.SpecialEnergyBarHelper;
-import emu.grasscutter.game.ability.actions.AbilityAction;
-import emu.grasscutter.game.ability.actions.AbilityActionHandler;
 import emu.grasscutter.game.entity.EntityAvatar;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
 import emu.grasscutter.server.packet.send.PacketServerGlobalValueChangeNotify;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import java.util.List;
-import java.util.Map;
 
-@AbilityAction(value=AbilityModifier.AbilityModifierAction.Type.AddSpecialEnergy)
-public final class ActionAddSpecialEnergy
-extends AbilityActionHandler {
+@AbilityAction(AbilityModifierAction.Type.AddSpecialEnergy)
+public final class ActionAddSpecialEnergy extends AbilityActionHandler {
     private static final String BURST_ENERGY_KEY = "_ABILITY_Mavuika_BurstEnergy";
+    private static final String C2_EXTRA_ENERGY_KEY = "SkirkNew_Constellation_2_ExtraEnergy";
 
     @Override
-    public boolean execute(Ability ability, AbilityModifier.AbilityModifierAction abilityModifierAction, ByteString byteString, GameEntity gameEntity) {
-        GameEntity gameEntity2;
-        GameEntity gameEntity3 = gameEntity2 = gameEntity != null ? gameEntity : ability.getOwner();
-        if (gameEntity2 == null) {
+    public boolean execute(
+            Ability ability, AbilityModifierAction action, ByteString abilityData, GameEntity target) {
+        GameEntity entity = target != null ? target : ability.getOwner();
+        if (entity == null) {
             return false;
         }
-        SkirkCunningHelper.ensureC2ExtraEnergySpecial(ability, gameEntity2);
-        SkirkCunningHelper.ensurePickableEnergyReviveSpecial(ability, gameEntity2);
-        Object2FloatOpenHashMap<String> object2FloatOpenHashMap = new Object2FloatOpenHashMap<String>();
-        FightProperty[] fightPropertyArray = FightProperty.values();
-        int n = fightPropertyArray.length;
-        for (int i = 0; i < n; ++i) {
-            FightProperty fightProperty = fightPropertyArray[i];
-            object2FloatOpenHashMap.put(fightProperty.name(), gameEntity2.getFightProperty(fightProperty));
+
+        SkirkCunningHelper.ensureC2ExtraEnergySpecial(ability, entity);
+        SkirkCunningHelper.ensurePickableEnergyReviveSpecial(ability, entity);
+
+        var properties = propertiesFor(ability, entity);
+        float amount = action.ratio != null ? action.ratio.get(properties, 0.0f) : 0.0f;
+        if (amount == 0.0f && action.amount != null) {
+            amount = action.amount.get(properties, 0.0f);
         }
-        object2FloatOpenHashMap.putAll((Map<String, Float>)ability.getAbilitySpecials());
-        float f2 = 0.0f;
-        if (abilityModifierAction.ratio != null) {
-            f2 = abilityModifierAction.ratio.get(object2FloatOpenHashMap, 0.0f);
-        }
-        if (f2 == 0.0f && abilityModifierAction.amount != null) {
-            f2 = abilityModifierAction.amount.get(object2FloatOpenHashMap, 0.0f);
-        }
+
         var abilitySpecials = ability.getAbilitySpecials();
-        String c2ExtraEnergyKey = "SkirkNew_Constellation_2_ExtraEnergy";
-        if (Math.abs(f2) < 0.01f
-                && SkirkCunningHelper.isSkirk(gameEntity2)
-                && ActionAddSpecialEnergy.isExtraEnergyRatio(abilityModifierAction.ratio)
-                && abilitySpecials.containsKey(c2ExtraEnergyKey)) {
-            float extraEnergy = abilitySpecials.getFloat(c2ExtraEnergyKey);
+        if (Math.abs(amount) < 0.01f
+                && SkirkCunningHelper.isSkirk(entity)
+                && isExtraEnergyRatio(action.ratio)
+                && abilitySpecials.containsKey(C2_EXTRA_ENERGY_KEY)) {
+            float extraEnergy = abilitySpecials.getFloat(C2_EXTRA_ENERGY_KEY);
             if (extraEnergy >= 9.5f) {
-                f2 = extraEnergy;
+                amount = extraEnergy;
             }
         }
-        // Rift energy: the config has ratio=0 with value=SkirkNew_Pickable_Energy_Revive, and Gson keeps
-        // only ratio, so the value is resolved explicitly here.
-        if (Math.abs(f2) < 0.01f && SkirkCunningHelper.isSkirk(gameEntity2)) {
+
+        // Rift energy: the config has ratio=0 with value=SkirkNew_Pickable_Energy_Revive, and Gson
+        // keeps only ratio, so the value is resolved explicitly here.
+        if (Math.abs(amount) < 0.01f && SkirkCunningHelper.isSkirk(entity)) {
             float revive = SkirkCunningHelper.resolvePickableEnergyRevive(ability);
             if (revive >= 0.5f) {
-                f2 = revive;
-            } else if (SkirkCunningHelper.isPickableEnergyReviveRatio(abilityModifierAction.ratio)
+                amount = revive;
+            } else if (SkirkCunningHelper.isPickableEnergyReviveRatio(action.ratio)
                     && abilitySpecials.containsKey(SkirkCunningHelper.PICKABLE_ENERGY_REVIVE_KEY)) {
                 float patched =
                         abilitySpecials.getFloat(SkirkCunningHelper.PICKABLE_ENERGY_REVIVE_KEY);
                 if (patched >= 0.5f) {
-                    f2 = patched;
+                    amount = patched;
                 }
             }
         }
-        int n2 = n = abilityModifierAction.ratio != null && abilityModifierAction.ratio.isDynamic() || abilityModifierAction.amount != null && abilityModifierAction.amount.isDynamic() || abilityModifierAction.ratio != null && abilityModifierAction.ratio.getConstant() != 0.0f || abilityModifierAction.amount != null && abilityModifierAction.amount.getConstant() != 0.0f ? 1 : 0;
-        // The Mavuika-style default of +1.5 must not be applied to Skirk's rift absorb, whose ratio is
-        // deliberately 0.
-        if (f2 == 0.0f && n == 0 && !SkirkCunningHelper.isPickableEnergyAbility(ability)) {
-            f2 = 1.5f;
+
+        boolean hasConfiguredAmount =
+                (action.ratio != null && action.ratio.isDynamic())
+                        || (action.amount != null && action.amount.isDynamic())
+                        || (action.ratio != null && action.ratio.getConstant() != 0.0f)
+                        || (action.amount != null && action.amount.getConstant() != 0.0f);
+
+        // The Mavuika-style default of +1.5 must not be applied to Skirk's rift absorb, whose ratio
+        // is deliberately 0.
+        if (amount == 0.0f
+                && !hasConfiguredAmount
+                && !SkirkCunningHelper.isPickableEnergyAbility(ability)) {
+            amount = 1.5f;
         }
-        if (NyxHelper.isSkirkEntity(gameEntity2) && gameEntity2 instanceof EntityAvatar) {
+
+        if (NyxHelper.isSkirkEntity(entity) && entity instanceof EntityAvatar skirk) {
             Player player = ability.getPlayerOwner();
-            if (player == null && gameEntity2.getScene() != null) {
-                player = gameEntity2.getScene().getHost();
+            if (player == null && entity.getScene() != null) {
+                player = entity.getScene().getHost();
             }
+
             // Rift energy can also arrive via a GV; dedupe per absorb so only one +8 is granted.
-            if (f2 > 0.5f
-                    && f2 < 35.0f
+            if (amount > 0.5f
+                    && amount < 35.0f
                     && SkirkCunningHelper.isPickableEnergyAbility(ability)
-                    && !SkirkCunningHelper.tryMarkPickableGrant(gameEntity2.getId())) {
+                    && !SkirkCunningHelper.tryMarkPickableGrant(entity.getId())) {
                 return true;
             }
-            SkirkCunningBridge.applyDelta(player, (EntityAvatar)gameEntity2, f2);
+            SkirkCunningBridge.applyDelta(player, skirk, amount);
             return true;
         }
-        if (SkirkCunningHelper.tryDebouncedSkillGain(gameEntity2, f2)) {
-            ActionAddSpecialEnergy.syncMavuikaBurst(gameEntity2);
+
+        if (SkirkCunningHelper.tryDebouncedSkillGain(entity, amount)) {
+            syncMavuikaBurst(entity);
             return true;
         }
-        SpecialEnergyBarHelper.ensureAndSync(gameEntity2);
-        gameEntity2.addSpecialEnergy(f2);
-        SpecialEnergyBarHelper.ensureAndSync(gameEntity2);
-        ActionAddSpecialEnergy.syncMavuikaBurst(gameEntity2);
+
+        SpecialEnergyBarHelper.ensureAndSync(entity);
+        entity.addSpecialEnergy(amount);
+        SpecialEnergyBarHelper.ensureAndSync(entity);
+        syncMavuikaBurst(entity);
         return true;
     }
 
@@ -114,28 +112,30 @@ extends AbilityActionHandler {
             return false;
         }
         try {
-            List<DynamicFloat.StackOp> list = dynamicFloat.getOps();
-            if (list == null) {
+            List<DynamicFloat.StackOp> ops = dynamicFloat.getOps();
+            if (ops == null) {
                 return false;
             }
-            for (DynamicFloat.StackOp stackOp : list) {
-                if (stackOp == null || stackOp.sValue == null || !"SkirkNew_Constellation_2_ExtraEnergy".equals(stackOp.sValue)) continue;
-                return true;
+            for (var op : ops) {
+                if (op != null && C2_EXTRA_ENERGY_KEY.equals(op.sValue)) {
+                    return true;
+                }
             }
-        }
-        catch (Throwable throwable) {
-            // empty catch block
+        } catch (Throwable ignored) {
         }
         return false;
     }
 
-    private static void syncMavuikaBurst(GameEntity gameEntity) {
-        float f = gameEntity.getFightProperty(FightProperty.FIGHT_PROP_CUR_SPECIAL_ENERGY);
-        Map<String, Float> map = gameEntity.getGlobalAbilityValues();
-        map.put(BURST_ENERGY_KEY, Float.valueOf(f));
-        gameEntity.onAbilityValueUpdate();
-        if (gameEntity.getScene() != null && gameEntity.getScene().getHost() != null) {
-            gameEntity.getScene().getHost().sendPacket(new PacketServerGlobalValueChangeNotify(gameEntity, BURST_ENERGY_KEY, f));
+    private static void syncMavuikaBurst(GameEntity entity) {
+        float energy = entity.getFightProperty(FightProperty.FIGHT_PROP_CUR_SPECIAL_ENERGY);
+        entity.getGlobalAbilityValues().put(BURST_ENERGY_KEY, energy);
+        entity.onAbilityValueUpdate();
+        if (entity.getScene() != null && entity.getScene().getHost() != null) {
+            entity.getScene()
+                    .getHost()
+                    .sendPacket(
+                            new PacketServerGlobalValueChangeNotify(
+                                    entity, BURST_ENERGY_KEY, energy));
         }
     }
 }

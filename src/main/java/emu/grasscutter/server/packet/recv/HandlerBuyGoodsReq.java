@@ -95,14 +95,21 @@ public class HandlerBuyGoodsReq extends PacketHandler {
 
             var artifactShop = session.getServer().getShopSystem().getArtifactShop();
             var piece = artifactShop.getPiece(sg.getGoodsId());
+            List<ItemParamData> artifactCostOverride = null;
             if (piece != null) {
                 // Hidden shop entries are not authorization. A crafted BuyGoodsReq must belong to
-                // this city and pass the same domain-clear and Adventure Rank checks as the UI.
+                // this city and pass the same domain-clear difficulty check as the UI.
                 if (!artifactShop.isAvailable(
                         player, buyGoodsReq.getShopType(), sg.getGoodsId())) {
                     session.send(new PacketBuyGoodsRsp(Retcode.RET_SHOP_CONTENT_NOT_MATCH));
                     continue;
                 }
+
+                int resinCost = artifactShop.getResinCost(player, sg.getGoodsId());
+                artifactCostOverride =
+                        List.of(
+                                new ItemParamData(
+                                        ArtifactShop.ORIGINAL_RESIN_ID, resinCost));
 
                 // Artifacts do not stack, so a batch buy needs that many free slots. Asking before
                 // the payment keeps a full bag from swallowing the cost and handing back nothing.
@@ -115,9 +122,11 @@ public class HandlerBuyGoodsReq extends PacketHandler {
 
             List<ItemParamData> costs =
                     new ArrayList<>(
-                            sg.getCostItemList() != null
-                                    ? sg.getCostItemList()
-                                    : Collections.emptyList());
+                            artifactCostOverride != null
+                                    ? artifactCostOverride
+                                    : sg.getCostItemList() != null
+                                            ? sg.getCostItemList()
+                                            : Collections.emptyList());
             costs.add(new ItemParamData(202, sg.getScoin()));
             costs.add(new ItemParamData(201, sg.getHcoin()));
             costs.add(new ItemParamData(203, sg.getMcoin()));
@@ -164,7 +173,8 @@ public class HandlerBuyGoodsReq extends PacketHandler {
                             buyGoodsReq.getShopType(),
                             limit.getHasBoughtInPeriod(),
                             sg,
-                            refreshes ? limit.getNextRefreshTime() : 0));
+                            refreshes ? limit.getNextRefreshTime() : 0,
+                            artifactCostOverride));
         }
 
         player.save();

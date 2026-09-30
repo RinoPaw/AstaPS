@@ -29,11 +29,12 @@ public class PacketGetShopRsp extends BasePacket {
             int shopNextRefreshTime = 0;
             int currentTs = Utils.getCurrentSeconds();
             var artifactShop = manager.getArtifactShop();
-            Set<Integer> availableArtifactGoods = artifactShop.getAvailableGoodsIds(player);
+            Set<Integer> availableArtifactGoods =
+                    artifactShop.getAvailableGoodsIds(player, shopType);
 
             for (ShopInfo info : list) {
-                // Artifact goods live in the shared backing shop, but each player only receives the
-                // sets from domains they have cleared and the rarities their Adventure Rank allows.
+                // Artifact goods are already routed to the right city shop; each player only sees
+                // sets from artifact domains cleared in that city and rarities their AR allows.
                 var artifactPiece = artifactShop.getPiece(info.getGoodsId());
                 if (artifactPiece != null && !availableArtifactGoods.contains(info.getGoodsId())) {
                     continue;

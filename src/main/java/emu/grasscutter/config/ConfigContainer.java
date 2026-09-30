@@ -3,7 +3,6 @@ package emu.grasscutter.config;
 import ch.qos.logback.classic.Level;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-import emu.grasscutter.Grasscutter;
 import emu.grasscutter.utils.*;
 import lombok.NoArgsConstructor;
 
@@ -43,64 +42,6 @@ public class ConfigContainer {
      */
     private static int version() {
         return 17;
-    }
-
-    /**
-     * Folds any pools the running config already names into the current default set.
-     *
-     * <p>A plain field copy would carry the old map over wholesale, so a pool added in a later
-     * version would never appear in config.json and could not be tuned. Taking the defaults first
-     * and overlaying the existing entries adds the new names while keeping every value the server
-     * owner has set.
-     */
-    private static ThreadPoolOptions mergeThreadPoolDefaults(ThreadPoolOptions existing) {
-        var merged = new ThreadPoolOptions();
-        Map<String, ThreadPoolDefinition> pools = new LinkedHashMap<>(merged.pools);
-        if (existing != null && existing.pools != null) pools.putAll(existing.pools);
-        merged.enabled = existing == null || existing.enabled;
-        merged.pools = pools;
-        return merged;
-    }
-
-    /**
-     * Attempts to update the server's existing configuration.
-     */
-    public static void updateConfig() {
-        try { // Check if the server is using a legacy config.
-            var configObject = JsonUtils.loadToClass(Grasscutter.configFile.toPath(), JsonObject.class);
-            if (!configObject.has("version")) {
-                Grasscutter.getLogger().info("Updating legacy config...");
-                Grasscutter.saveConfig(null);
-            }
-        } catch (Exception ignored) { }
-
-        var existing = config.version;
-        var latest = version();
-
-        if (existing == latest)
-            return;
-
-        // Create a new configuration instance.
-        var updated = new ConfigContainer();
-        // Update all configuration fields.
-        var fields = ConfigContainer.class.getDeclaredFields();
-        Arrays.stream(fields).forEach(field -> {
-            try {
-                field.set(updated, field.get(config));
-            } catch (Exception exception) {
-                Grasscutter.getLogger().error("Failed to update a configuration field.", exception);
-            }
-        });
-
-        updated.server.threadPools = mergeThreadPoolDefaults(updated.server.threadPools);
-        updated.version = version();
-
-        try { // Save configuration and reload.
-            Grasscutter.saveConfig(updated);
-            Grasscutter.loadConfig();
-        } catch (Exception exception) {
-            Grasscutter.getLogger().warn("Failed to save the updated configuration.", exception);
-        }
     }
 
     public Structure folderStructure = new Structure();

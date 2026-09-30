@@ -2,9 +2,7 @@ package emu.grasscutter.database;
 
 import static com.mongodb.client.model.Filters.eq;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.mongodb.MongoWriteException;
-
 import dev.morphia.query.*;
 import dev.morphia.query.experimental.filters.Filters;
 import emu.grasscutter.*;
@@ -23,15 +21,15 @@ import emu.grasscutter.game.mail.Mail;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.quest.GameMainQuest;
 import emu.grasscutter.game.world.SceneGroupInstance;
-import emu.grasscutter.utils.objects.Returnable;
 import emu.grasscutter.server.threading.ManagedThreadPoolExecutor;
 import emu.grasscutter.server.threading.ThreadPoolConfig;
 import emu.grasscutter.server.threading.ThreadPoolConfigResolver;
 import emu.grasscutter.server.threading.ThreadPoolType;
+import emu.grasscutter.utils.objects.Returnable;
 import io.netty.util.concurrent.FastThreadLocalThread;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.ConcurrentModificationException;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
@@ -50,9 +48,9 @@ public final class DatabaseHelper {
      * Queue bounds, sized per pool against how much traffic each one actually carries.
      *
      * <p>They are bounds rather than the unbounded queue this used to use. An unbounded queue never
-     * rejects, so a database that cannot keep up simply grows the queue until the heap is gone,
-     * with nothing in the logs until it is too late. A bound turns that into backpressure the
-     * server can see and report.
+     * rejects, so a database that cannot keep up simply grows the queue until the heap is gone, with
+     * nothing in the logs until it is too late. A bound turns that into backpressure the server can
+     * see and report.
      */
     public static final int DEFAULT_QUEUE_CAPACITY =
             Math.min(Math.max(AVAILABLE_PROCESSORS * 512, 1024), 8192);
@@ -84,8 +82,8 @@ public final class DatabaseHelper {
      * Objects with a save already queued on the default pool.
      *
      * <p>A save writes the object as it is when the write runs, so a second one queued behind the
-     * first has nothing left to write. Without this, work that touches an object repeatedly queues
-     * a write every time: {@code /give all} alone put over a thousand avatar saves on a queue that
+     * first has nothing left to write. Without this, work that touches an object repeatedly queues a
+     * write every time: {@code /give all} alone put over a thousand avatar saves on a queue that
      * holds 1024, and the server then turned players away as overloaded for minutes afterwards.
      */
     private static final Set<Object> pendingDefaultSaves =
@@ -99,7 +97,9 @@ public final class DatabaseHelper {
         return Math.max(coreThreads(divisor), AVAILABLE_PROCESSORS / divisor + 1);
     }
 
-    /** Netty thread-locals only work on its own thread type, which is why these are not plain threads. */
+    /**
+     * Netty thread-locals only work on its own thread type, which is why these are not plain threads.
+     */
     private static ThreadFactory databaseThreadFactory(String name) {
         var counter = new AtomicInteger();
         return runnable -> {
@@ -190,8 +190,8 @@ public final class DatabaseHelper {
      * Whether a pool is backed up far enough that the server should stop letting players in.
      *
      * <p>The threshold is below the queue bound on purpose: by the time a queue is actually full
-     * every submitting thread is running writes inline, and a login admitted at that point makes
-     * the stall worse.
+     * every submitting thread is running writes inline, and a login admitted at that point makes the
+     * stall worse.
      */
     public static boolean isThreadPoolOverloaded(ThreadPoolExecutor executor, int maxCount) {
         return executor.getQueue().size() > maxCount * 0.7f;
@@ -199,14 +199,6 @@ public final class DatabaseHelper {
 
     /** The reason text written on an account auto-banned by an IP ban. */
     public static final String IP_BAN_REASON_PREFIX = "Banned IP: ";
-
-    /**
-     * The prefix used before the ban reason was in English.
-     *
-     * <p>Accounts banned back then carry it and have no bannedByIp field, so unbanning an IP still
-     * matches on it to find them. Nothing writes it any more.
-     */
-    private static final String LEGACY_IP_BAN_REASON_PREFIX = "IP\u5df2\u5c01\u7981: ";
 
     public static void saveBannedIp(BannedIp bannedIp) {
         DatabaseHelper.eventExecutorAccount.submit(
@@ -232,24 +224,12 @@ public final class DatabaseHelper {
         return true;
     }
 
-    /**
-     * Every account that was banned because of this IP.
-     *
-     * <p>Matched on the bannedByIp field, with the old reason-text pattern as a fallback so
-     * accounts banned before that field existed are still found.
-     */
+    /** Every account that was banned because of this IP. */
     public static List<Account> getAccountsBannedByIp(String ip) {
         if (ip == null) return List.of();
         return DatabaseManager.getAccountDatastore()
                 .find(Account.class)
-                .filter(
-                        Filters.or(
-                                Filters.eq("bannedByIp", ip),
-                                Filters.regex("banReason")
-                                        .pattern(
-                                                "^"
-                                                        + java.util.regex.Pattern.quote(
-                                                                LEGACY_IP_BAN_REASON_PREFIX + ip))))
+                .filter(Filters.eq("bannedByIp", ip))
                 .iterator()
                 .toList();
     }
@@ -452,43 +432,21 @@ public final class DatabaseHelper {
         return account;
     }
 
-    /**
-     * Creates an account with a hashed password and an email address.
-     *
-     * <p>Separate from the two-argument version, which stores whatever it is handed verbatim.
-     * Account.verifyPassword accepts both a BCrypt hash and a legacy plaintext value, so a password
-     * stored raw does work - it just stays raw forever, since the authenticator only upgrades an
-     * account whose stored password is empty.
-     *
-     * @return the new account, or null if the username is taken.
-     */
-    public static Account createAccountWithHashedPassword(
-            String username, String password, String email) {
+    /** Creates an account with a password and optional email address. */
+    public static Account createAccountWithPassword(String username, String password, String email) {
         if (DatabaseHelper.getAccountByName(username) != null) return null;
 
         var account = new Account();
         account.setId(Integer.toString(DatabaseManager.getNextId(account)));
         account.setUsername(username);
-        account.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
+        account.setPassword(password);
         if (email != null && !email.isBlank()) account.setEmail(email);
         DatabaseHelper.saveAccount(account);
         return account;
     }
 
     public static Account createAccountWithPassword(String username, String password) {
-        // Unique names only
-        Account exists = DatabaseHelper.getAccountByName(username);
-        if (exists != null) {
-            return null;
-        }
-
-        // Account
-        Account account = new Account();
-        account.setId(Integer.toString(DatabaseManager.getNextId(account)));
-        account.setUsername(username);
-        account.setPassword(password);
-        DatabaseHelper.saveAccount(account);
-        return account;
+        return createAccountWithPassword(username, password, null);
     }
 
     public static void saveAccount(Account account) {
@@ -824,7 +782,8 @@ public final class DatabaseHelper {
         DatabaseHelper.saveGameAsync(gameHome);
     }
 
-    public static emu.grasscutter.game.dailytask.DailyTaskManager loadDailyTaskManager(Player player) {
+    public static emu.grasscutter.game.dailytask.DailyTaskManager loadDailyTaskManager(
+            Player player) {
         var manager =
                 DatabaseManager.getGameDatastore()
                         .find(emu.grasscutter.game.dailytask.DailyTaskManager.class)

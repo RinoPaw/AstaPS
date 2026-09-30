@@ -1110,11 +1110,6 @@ public class TowerManager extends BasePlayerManager {
         return Math.max(1, seconds);
     }
 
-    /** @deprecated Prefer {@link #secondsToSchedulerDelay(int)} for server-scheduler delays. */
-    private static int secondsToTicks(int seconds) {
-        return secondsToSchedulerDelay(seconds);
-    }
-
     public void mirrorTeamSetUp(int teamId) {
         getTowerData().abyssTempTeamIndex = teamId;
         getTowerData().resumeAbyssOnLogin = true;
@@ -1355,7 +1350,7 @@ public class TowerManager extends BasePlayerManager {
                                                         isUpper,
                                                         player));
                             },
-                            secondsToTicks(at));
+                            secondsToSchedulerDelay(at));
         }
         Grasscutter.getLogger()
                 .info(

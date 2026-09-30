@@ -290,7 +290,7 @@ public class GameItem {
             }
         }
 
-        // Choose which existing line receives the upgrade using the original upgrade weights only.
+        // Choose which existing line receives the upgrade using the same global type bias as new lines.
         var typeBaseWeights = new HashMap<FightProperty, Double>();
         for (ReliquaryAffixData affix : affixList) {
             if (affix.getUpgradeWeight() > 0 && whitelist.contains(affix.getFightProp())) {
@@ -301,14 +301,15 @@ public class GameItem {
 
         var typeList = new WeightedList<FightProperty>();
         for (var entry : typeBaseWeights.entrySet()) {
-            typeList.add(entry.getValue(), entry.getKey());
+            typeList.add(
+                    entry.getValue() * ArtifactRollBias.typeWeight(entry.getKey()), entry.getKey());
         }
         if (typeList.size() == 0) {
             return;
         }
         FightProperty selectedType = typeList.next();
 
-        // Once the target line is fixed, bias only the value tier of this enhancement roll.
+        // Once the target line is fixed, bias the value tier independently.
         var tierList = new WeightedList<ReliquaryAffixData>();
         for (ReliquaryAffixData affix : affixList) {
             if (affix.getFightProp() == selectedType && affix.getUpgradeWeight() > 0) {

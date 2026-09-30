@@ -49,9 +49,23 @@
     <includeCallerData>true</includeCallerData>
   </appender>
 
+  <!--
+    ServerLogEventAppender invokes plugin events, which can touch Grasscutter while the class is
+    still initializing. Keep that work off the logging caller so AppenderBase's monitor cannot form
+    a lock cycle with the JVM class-initialization monitor. A single AsyncAppender worker also keeps
+    ServerLogEvent delivery serialized for the plugin event system.
+  -->
+  <appender name="ASYNC_SERVEREVENT" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="SERVEREVENT"/>
+    <queueSize>1024</queueSize>
+    <discardingThreshold>0</discardingThreshold>
+    <neverBlock>true</neverBlock>
+    <includeCallerData>true</includeCallerData>
+  </appender>
+
   <root level="INFO">
     <appender-ref ref="ASYNC_STDOUT"/>
     <appender-ref ref="ASYNC_FILE"/>
-    <appender-ref ref="SERVEREVENT"/>
+    <appender-ref ref="ASYNC_SERVEREVENT"/>
   </root>
 </Configuration>

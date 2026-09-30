@@ -9,38 +9,26 @@ import emu.grasscutter.config.Configuration;
 import emu.grasscutter.database.*;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.game.player.Player;
-import java.util.List;
 import java.util.stream.Collectors;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
+import picocli.CommandLine.Unmatched;
 
-@Command(
-        label = "account",
-        usage = {
-            "create <username> [<UID>]", // Only with EXPERIMENTAL_RealPassword == false
-            "delete <username>",
-            "create <username> <password> [<UID>]", // Only with EXPERIMENTAL_RealPassword == true
-            "resetpass <username> <password>"
-        }, // Only with EXPERIMENTAL_RealPassword == true
-        targetRequirement = Command.TargetRequirement.NONE)
+@Command(label = "account", targetRequirement = Command.TargetRequirement.NONE)
 public final class AccountCommand implements PicocliCommandHandler {
     private record UidArg(int value) {}
 
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        // Keep the old console-only behavior ahead of picocli parsing, including malformed input.
-        if (sender != null) {
-            CommandHandler.sendTranslatedMessage(sender, "commands.generic.console_execute_error");
-            return;
-        }
-        PicocliCommandHandler.super.execute(sender, targetPlayer, args);
-    }
-
-    @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        if (sender != null) {
+            var rejected = new CommandLine(new ConsoleOnly(sender));
+            rejected.setUnmatchedArgumentsAllowed(true);
+            rejected.setExpandAtFiles(false);
+            return rejected;
+        }
+
         var commandLine = new CommandLine(new AccountRoot(sender));
         commandLine.setExpandAtFiles(false);
-        commandLine.setUnmatchedOptionsArePositionalParams(true);
         commandLine.registerConverter(
                 UidArg.class,
                 value -> {
@@ -71,6 +59,22 @@ public final class AccountCommand implements PicocliCommandHandler {
                     return 2;
                 });
         return commandLine;
+    }
+
+    @picocli.CommandLine.Command(name = "account")
+    private static final class ConsoleOnly implements Runnable {
+        private final Player sender;
+
+        @Unmatched private String[] ignored;
+
+        private ConsoleOnly(Player sender) {
+            this.sender = sender;
+        }
+
+        @Override
+        public void run() {
+            CommandHandler.sendTranslatedMessage(sender, "commands.generic.console_execute_error");
+        }
     }
 
     @picocli.CommandLine.Command(name = "account")
@@ -161,8 +165,6 @@ public final class AccountCommand implements PicocliCommandHandler {
         @Parameters(index = "0", paramLabel = "<username>")
         private String username;
 
-        // Optional here on purpose: when real passwords are disabled, the historical command reports
-        // that feature state before it complains about a missing password.
         @Parameters(index = "1", arity = "0..1", paramLabel = "<password>")
         private String password;
 
@@ -240,7 +242,6 @@ public final class AccountCommand implements PicocliCommandHandler {
                 sender, translate(sender, "commands.account.create", account.getReservedPlayerUid()));
     }
 
-    /** Returns the UID of the player associated with the given account, or "no UID". */
     private String getPlayerUid(Account account) {
         var player = DatabaseHelper.getPlayerByAccount(account, Player.class);
         return player == null ? "no UID" : String.valueOf(player.getUid());

@@ -1,81 +1,95 @@
 package emu.grasscutter.command.commands;
 
-import emu.grasscutter.command.*;
+import emu.grasscutter.command.Command;
+import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.entity.EntityAvatar;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.world.*;
+import emu.grasscutter.game.world.Position;
+import emu.grasscutter.game.world.Scene;
+import emu.grasscutter.game.world.World;
 import emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify;
-import java.util.List;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
 @Command(
         label = "setConst",
         aliases = {"setconstellation"},
-        usage = {"<constellation level> [all]"},
         permission = "player.setconstellation",
         permissionTargeted = "player.setconstellation.others")
-public final class SetConstCommand implements CommandHandler {
+public final class SetConstCommand implements PicocliCommandHandler {
+
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        if (args.size() < 1) {
-            sendUsageMessage(sender);
-            return;
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        return new CommandLine(new Args(sender, targetPlayer));
+    }
+
+    @CommandLine.Command(name = "setConst")
+    private final class Args implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        @Parameters(index = "0", paramLabel = "<constellationLevel>")
+        private int level;
+
+        @Parameters(index = "1", arity = "0..1", paramLabel = "[all]")
+        private String scope;
+
+        private Args(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
         }
-        try {
-            int constLevel = Integer.parseInt(args.get(0));
-            // Check if level is out of range
-            if (constLevel < -1 || constLevel > 6) {
+
+        @Override
+        public void run() {
+            if (level < -1 || level > 6) {
                 CommandHandler.sendTranslatedMessage(sender, "commands.setConst.range_error");
                 return;
             }
-            // If it's either empty or anything else other than "all" just do normal setConstellation
-            if (args.size() == 1) {
+
+            if (scope == null) {
                 EntityAvatar entity = targetPlayer.getTeamManager().getCurrentAvatarEntity();
-                if (entity == null) return;
+                if (entity == null) {
+                    return;
+                }
                 Avatar avatar = entity.getAvatar();
-                this.setConstellation(targetPlayer, avatar, constLevel);
+                setConstellation(targetPlayer, avatar, level);
                 CommandHandler.sendTranslatedMessage(
-                        sender, "commands.setConst.success", avatar.getAvatarData().getName(), constLevel);
+                        sender, "commands.setConst.success", avatar.getAvatarData().getName(), level);
                 return;
             }
-            // Check if there's an additional argument which is "all", if it does then go
-            // setAllConstellation
-            if (args.size() > 1 && args.get(1).equalsIgnoreCase("all")) {
-                this.setAllConstellation(targetPlayer, constLevel);
-                CommandHandler.sendTranslatedMessage(sender, "commands.setConst.successall", constLevel);
-            } else sendUsageMessage(sender);
-        } catch (NumberFormatException ignored) {
-            CommandHandler.sendTranslatedMessage(sender, "commands.setConst.level_error");
+
+            if (!scope.equalsIgnoreCase("all")) {
+                SetConstCommand.this.sendUsageMessage(sender);
+                return;
+            }
+
+            setAllConstellation(targetPlayer, level);
+            CommandHandler.sendTranslatedMessage(sender, "commands.setConst.successall", level);
         }
     }
 
     private void setConstellation(Player player, Avatar avatar, int constLevel) {
         int currentConstLevel = avatar.getCoreProudSkillLevel();
         avatar.forceConstellationLevel(constLevel);
-
-        // force player to reload scene when necessary
         if (constLevel < currentConstLevel) {
-            this.reloadScene(player);
+            reloadScene(player);
         }
-
-        // ensure that all changes are visible to the player
         avatar.recalcConstellations();
         avatar.recalcStats(true);
         avatar.save();
     }
 
     private void setAllConstellation(Player player, int constLevel) {
-        player
-                .getAvatars()
-                .forEach(
-                        avatar -> {
-                            avatar.forceConstellationLevel(constLevel);
-                            avatar.recalcConstellations();
-                            avatar.recalcStats(true);
-                            avatar.save();
-                        });
-        // Just reload scene once, shorter than having to check for each constLevel < currentConstLevel
-        this.reloadScene(player);
+        player.getAvatars().forEach(
+                avatar -> {
+                    avatar.forceConstellationLevel(constLevel);
+                    avatar.recalcConstellations();
+                    avatar.recalcStats(true);
+                    avatar.save();
+                });
+        reloadScene(player);
     }
 
     private void reloadScene(Player player) {

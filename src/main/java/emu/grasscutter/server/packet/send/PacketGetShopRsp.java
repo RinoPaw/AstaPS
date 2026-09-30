@@ -2,6 +2,7 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.avatar.AvatarCostumeData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.shop.*;
@@ -34,14 +35,13 @@ public class PacketGetShopRsp extends BasePacket {
 
             for (ShopInfo info : list) {
                 // Artifact goods are already routed to the right city shop; each player only sees
-                // sets from artifact domains cleared in that city and rarities their AR allows.
+                // pieces unlocked by the highest cleared difficulty of that artifact domain.
                 var artifactPiece = artifactShop.getPiece(info.getGoodsId());
                 if (artifactPiece != null && !availableArtifactGoods.contains(info.getGoodsId())) {
                     continue;
                 }
 
-                boolean refreshes =
-                        info.getShopRefreshType() != ShopInfo.ShopRefreshType.NONE;
+                boolean refreshes = info.getShopRefreshType() != ShopInfo.ShopRefreshType.NONE;
                 int nextRefreshTime = ShopSystem.getShopNextRefreshTime(info);
                 // Only invent a countdown for goods that actually refresh.
                 // One-time skins (SHOP_REFRESH_NONE) must stay at 0 or the costume UI hangs.
@@ -86,8 +86,19 @@ public class PacketGetShopRsp extends BasePacket {
                     syncSoldOutLimit(player, info.getGoodsId(), boughtNum, nextRefreshTime);
                 }
 
+                List<ItemParamData> costOverride = null;
+                if (artifactPiece != null) {
+                    int resinCost = artifactShop.getResinCost(player, info.getGoodsId());
+                    costOverride =
+                            List.of(
+                                    new ItemParamData(
+                                            ArtifactShop.ORIGINAL_RESIN_ID, resinCost));
+                }
+
                 ShopGoods goods =
-                        ShopGoodsBuilder.fromShopInfo(info, boughtNum, nextRefreshTime).build();
+                        ShopGoodsBuilder.fromShopInfo(
+                                        info, boughtNum, nextRefreshTime, costOverride)
+                                .build();
                 goodsList.add(goods);
 
                 if (refreshes

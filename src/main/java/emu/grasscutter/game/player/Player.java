@@ -1096,7 +1096,7 @@ public class Player implements PlayerHook, FieldFetch {
     }
 
     public OnlinePlayerInfo getOnlinePlayerInfo() {
-        OnlinePlayerInfo.Builder onlineInfo = OnlinePlayerInfo.newBuilder()
+        OnlinePlayerInfo.Builder onlineInfo = PlayerLocationInfo.newBuilder().getDefaultInstanceForType() == null ? null : OnlinePlayerInfo.newBuilder()
             .setUid(this.getUid())
             .setNickname(this.getNickname())
             .setPlayerLevel(this.getLevel())
@@ -1305,15 +1305,11 @@ public class Player implements PlayerHook, FieldFetch {
 
         this.getBuffManager().onTick();
 
-        // Settles an Arlecchino burst whose damage frame never arrived - a cast that hit
-        // nothing sends no AttackResult, so nothing else would ever clear the debt.
         ArlecchinoBurstBoL.onTick(this);
 
-        // Drop SkillSucc burst energy pending if ability never confirmed (e.g. dash-recovery false Q).
         try {
             this.getEnergyManager().onTick();
         } catch (Throwable ignored) {
-            // Energy pending expiry must not break the player tick.
         }
 
         if (this.getWorld() != null) {
@@ -1346,20 +1342,15 @@ public class Player implements PlayerHook, FieldFetch {
         }
 
         this.getForgingManager().sendPlayerForgingUpdate();
-
         this.getResinManager().rechargeResin();
-
         this.getSatiationManager().reduceSatiation();
-
         this.getHome().updateHourlyResources(this);
-
         this.getQuestManager().onTick();
     }
 
     private synchronized void doDailyReset() {
 
         int currentTime = Utils.getCurrentSeconds();
-
         var currentDate = LocalDate.ofInstant(Instant.ofEpochSecond(currentTime), ZoneId.systemDefault());
         var lastResetDate = LocalDate.ofInstant(Instant.ofEpochSecond(this.getLastDailyReset()), ZoneId.systemDefault());
 
@@ -1368,9 +1359,7 @@ public class Player implements PlayerHook, FieldFetch {
         }
 
         this.setForgePoints(300_000);
-
         this.getBattlePassManager().resetDailyMissions();
-
         this.getBattlePassManager().triggerMission(WatcherTriggerType.TRIGGER_LOGIN);
 
         if (currentDate.getDayOfWeek() == DayOfWeek.MONDAY) {
@@ -1382,7 +1371,6 @@ public class Player implements PlayerHook, FieldFetch {
         }
 
         this.setResinBuyCount(0);
-
         this.setLastDailyReset(currentTime);
     }
 
@@ -1415,14 +1403,11 @@ public class Player implements PlayerHook, FieldFetch {
 
         var runner = Grasscutter.getThreadPool();
         runner.submit(() -> this.achievements = Achievements.getByPlayer(this));
-
         runner.submit(this.getAvatars()::loadFromDatabase);
         runner.submit(this.getInventory()::loadFromDatabase);
-
         runner.submit(this.getFriendsList()::loadFromDatabase);
         runner.submit(this.getMailHandler()::loadFromDatabase);
         runner.submit(this.getQuestManager()::loadFromDatabase);
-
         runner.submit(this::loadBattlePassManager);
         runner.submit(this::loadDailyTaskManager);
 
@@ -1435,7 +1420,7 @@ public class Player implements PlayerHook, FieldFetch {
 
     public void onLogin() {
 
-        if (this.getSceneTags().isEmpty() || this.getSceneTags() == null) {
+        if (this.getSceneTags() == null || this.getSceneTags().isEmpty()) {
             this.applyStartingSceneTags();
         }
 
@@ -1448,14 +1433,15 @@ public class Player implements PlayerHook, FieldFetch {
             this.position.set(pos);
         }
 
-        World world = new World(this);
-        world.addPlayer(this);
+        if (this.getWorld() == null) {
+            World world = new World(this);
+            world.addPlayer(this);
+        }
 
         this.setProperty(PlayerProperty.PROP_PLAYER_MP_SETTING_TYPE, this.getMpSetting().getNumber(), false);
         this.setProperty(PlayerProperty.PROP_IS_MP_MODE_AVAILABLE, 1, false);
 
         this.doDailyReset();
-
         getQuestManager().onLogin();
 
         session.send(new PacketPlayerDataNotify(this));
@@ -1479,7 +1465,6 @@ public class Player implements PlayerHook, FieldFetch {
         this.achievements.onLogin(this);
 
         session.send(new PacketWidgetGadgetAllDataNotify());
-        // Re-attach follower pet ability group after widget slot is restored
         WidgetPetHelper.syncEquippedWidget(this);
         this.getServer().getCombineSystem().onPlayerLogin(this);
         session.send(new PacketCombineDataNotify(this.unlockedCombines));
@@ -1490,21 +1475,15 @@ public class Player implements PlayerHook, FieldFetch {
         this.cookingCompoundManager.onPlayerLogin();
         this.teamManager.onPlayerLogin();
 
-        // Idempotent, and not merely a null check: the load is submitted to the pool and nothing
-        // waits on it, so skipping here would silently cost the player a day of commissions.
         this.loadDailyTaskManager();
         this.dailyTaskManager.onPlayerLogin();
 
-        // The client is told nothing about these on its own - they exist only as a forged notify,
-        // so a relog has to re-assert them or the quests come back unfinished.
         if (this.forcedFinishedQuests != null && !this.forcedFinishedQuests.isEmpty()) {
             ForcedQuests.notify(this, this.forcedFinishedQuests);
         }
 
         getTodayMoonCard();
-
         this.getBattlePassManager().triggerMission(WatcherTriggerType.TRIGGER_LOGIN);
-
         this.furnitureManager.onLogin();
 
         var homeWorld = this.getServer().getHomeWorldOrCreate(this);
@@ -1519,7 +1498,6 @@ public class Player implements PlayerHook, FieldFetch {
         session.send(new PacketPlayerLevelRewardUpdateNotify(rewardedLevels));
 
         this.hasSentLoginPackets = true;
-
         session.setState(SessionState.ACTIVE);
 
         PlayerJoinEvent event = new PlayerJoinEvent(this);
@@ -1534,15 +1512,9 @@ public class Player implements PlayerHook, FieldFetch {
 
     public void onLogout() {
         try {
-
             this.getServer().getChatSystem().clearHistoryOnLogout(this);
-
             getStaminaManager().stopSustainedStaminaHandler();
-
-            // Static per-player combat state (and the repeating tasks some of it drives) would
-            // otherwise keep this player and their world reachable after they leave.
             PlayerRuntimeStateCleanup.clear(this);
-
             this.getServer().getDungeonSystem().exitDungeon(this);
 
             if (this.getWorld() != null) {
@@ -1550,11 +1522,9 @@ public class Player implements PlayerHook, FieldFetch {
             }
 
             this.getProfile().syncWithCharacter(this);
-
             this.getCoopRequests().clear();
             this.getEnterHomeRequests().values().forEach(req -> this.expireEnterHomeRequest(req, true));
             this.getEnterHomeRequests().clear();
-
             this.save();
             this.getTeamManager().saveAvatars();
             this.getFriendsList().save();
@@ -1570,20 +1540,15 @@ public class Player implements PlayerHook, FieldFetch {
     }
 
     public void removeFromServer() {
-
         getServer().getPlayers().values().removeIf(player1 -> player1 == this);
     }
 
     public void unfreezeUnlockedScenePoints(int sceneId) {
-
         GameData.getScenePointEntryMap().values().stream()
                 .filter(scenePointEntry ->
-
                         "DungeonEntry".equals(scenePointEntry.getPointData().getType())
-
                         && scenePointEntry.getPointData().isGroupLimit())
                 .forEach(scenePointEntry -> {
-
                         val pointId = scenePointEntry.getPointData().getId();
                         if (unlockedScenePoints.get(sceneId).contains(pointId)) {
                             this.sendPacket(new PacketUnfreezeGroupLimitNotify(pointId, sceneId));
@@ -1649,7 +1614,6 @@ public class Player implements PlayerHook, FieldFetch {
                         PropChangeReason.PropChangeReason_PROP_CHANGE_LEVELUP));
                     case PROP_MAX_STAMINA -> this.sendPacket(new PacketPlayerPropChangeReasonNotify(this, prop, currentValue, value,
                         PropChangeReason.PropChangeReason_PROP_CHANGE_CITY_LEVELUP));
-
                 }
 
                 this.sendPacket(new PacketPlayerPropNotify(this, prop));

@@ -2,39 +2,52 @@ package emu.grasscutter.command.commands;
 
 import static emu.grasscutter.config.Configuration.HTTP_ENCRYPTION;
 
-import emu.grasscutter.command.*;
+import emu.grasscutter.command.Command;
+import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.game.BannedIp;
 import emu.grasscutter.game.player.Player;
-import java.util.List;
 import java.util.Objects;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
 @Command(
         label = "banip",
-        usage = {"<password> <ip> [<reason>]"},
         permission = "server.banip",
         targetRequirement = Command.TargetRequirement.NONE)
-public final class BanIpCommand implements CommandHandler {
-
+public final class BanIpCommand implements PicocliCommandHandler {
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        if (args.size() < 2) {
-            this.sendUsageMessage(sender);
-            return;
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        return new CommandLine(new Args(sender));
+    }
+
+    @CommandLine.Command(name = "banip")
+    private static final class Args implements Runnable {
+        private final Player sender;
+
+        @Parameters(index = "0", paramLabel = "<key>")
+        private String key;
+
+        @Parameters(index = "1", paramLabel = "<ip>")
+        private String ip;
+
+        @Parameters(index = "2..*", arity = "0..*", paramLabel = "[reason]")
+        private String[] reasonWords = new String[0];
+
+        private Args(Player sender) {
+            this.sender = sender;
         }
 
-        // A second secret on top of the permission: this command is reachable from in-game chat,
-        // and an account that gets it wrong can lock the whole server's address range out.
-        var password = args.remove(0);
-        if (!Objects.equals(password, HTTP_ENCRYPTION.keystorePassword)) {
-            CommandHandler.sendMessage(sender, "Wrong key.");
-            return;
+        @Override
+        public void run() {
+            if (!Objects.equals(key, HTTP_ENCRYPTION.keystorePassword)) {
+                CommandHandler.sendMessage(sender, "Wrong key.");
+                return;
+            }
+
+            String reason = reasonWords.length == 0 ? "No reason given" : String.join(" ", reasonWords);
+            new BannedIp(ip, reason).save();
+            CommandHandler.sendMessage(sender, "Banned IP " + ip + ". Reason: " + reason);
         }
-
-        var ip = args.remove(0);
-        var reason = args.isEmpty() ? "No reason given" : String.join(" ", args);
-
-        new BannedIp(ip, reason).save();
-
-        CommandHandler.sendMessage(sender, "Banned IP " + ip + ". Reason: " + reason);
     }
 }

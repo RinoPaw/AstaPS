@@ -21,7 +21,7 @@ buildscript {
 plugins {
     id 'java' // Apply the java plugin to add support for Java
     id 'java-library' // Apply the java-library plugin for API and implementation separation.
-    id 'application' // Apply the application plugin to add support for building a CLI application
+    id 'application' // Apply the application plugin for building a CLI application
     id 'com.google.protobuf' version '0.8.18' // Apply the protobuf auto generator
     id 'com.diffplug.spotless' version '6.11.0' // Apply the Spotless linter plugin.
 
@@ -88,9 +88,11 @@ dependencies {
     implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.4.7'
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.7'
 
-    // Line reading libraries.
+    // Line reading and command parsing libraries.
     implementation group: 'org.jline', name: 'jline', version: '3.21.0'
     implementation group: 'org.jline', name: 'jline-terminal-jna', version: '3.21.0'
+    implementation group: 'info.picocli', name: 'picocli', version: '4.7.7'
+    implementation group: 'info.picocli', name: 'picocli-shell-jline3', version: '4.7.7'
     implementation group: 'net.java.dev.jna', name: 'jna', version: '5.10.0'
 
     // Java Netty for networking.
@@ -238,7 +240,7 @@ publishing {
                 }
                 scm {
                     connection = 'scm:git:git@github.com:Grasscutters/Grasscutter.git'
-                    developerConnection = 'scm:git:ssh://github.com:Grasscutters/Grasscutter.git'
+                    developerConnection = 'scm:git:ssh://github.com/Grasscutters/Grasscutter.git'
                     url = 'https://github.com/Grasscutters/Grasscutter'
                 }
             }

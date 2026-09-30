@@ -1,6 +1,7 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.game.player.TransPointUnlockHelper;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.RetcodeOuterClass;
 import emu.grasscutter.net.proto.UnlockTransPointReqOuterClass.UnlockTransPointReq;
@@ -17,10 +18,8 @@ public class HandlerUnlockTransPointReq extends PacketHandler {
                 emu.grasscutter.game.managers.StatueTalkQuests.isStatuePoint(
                         entry != null ? entry.getPointData() : null);
         boolean unlocked =
-                session
-                        .getPlayer()
-                        .getProgressManager()
-                        .unlockTransPoint(req.getSceneId(), req.getPointId(), isStatue);
+                TransPointUnlockHelper.unlock(
+                        session.getPlayer(), req.getSceneId(), req.getPointId(), isStatue);
         emu.grasscutter.Grasscutter.getLogger()
                 .info(
                         "UnlockTransPointReq uid={} scene={} point={} statue={} unlocked={}",

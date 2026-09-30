@@ -107,7 +107,7 @@ public class PacketGetShopRsp extends BasePacket {
         this.setData(GetShopRspOuterClass.GetShopRsp.newBuilder().setShop(shop).build());
     }
 
-    /** Preserve the old city-1 fallback for unrelated shops while reporting regional shops exactly. */
+    /** Preserve the old city-1 fallback for unrelated shops while reporting verified regional shops exactly. */
     private static int cityIdForShop(int shopType) {
         return switch (shopType) {
             case 1004 -> 1; // Mondstadt
@@ -115,8 +115,6 @@ public class PacketGetShopRsp extends BasePacket {
             case 1056 -> 3; // Inazuma
             case 1074 -> 4; // Sumeru
             case 1093 -> 5; // Fontaine
-            case 1117 -> 6; // Natlan
-            case 1134 -> 7; // Nod-Krai
             default -> 1;
         };
     }

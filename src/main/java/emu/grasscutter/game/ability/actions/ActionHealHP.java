@@ -50,9 +50,11 @@ public final class ActionHealHP extends AbilityActionHandler {
 
         // Globals first: HealHP formulas often MUL ability specials with keys written by
         // GetFightProperty / SetGlobalValue (e.g. Lauma C1 _ABILITY_Lauma_Constellation_1_Mastery).
-        owner.getGlobalAbilityValues().forEach(properties::put);
+        owner.getGlobalAbilityValues()
+                .forEach((key, value) -> properties.put(key, value.floatValue()));
         if (target != null && target != owner) {
-            target.getGlobalAbilityValues().forEach(properties::put);
+            target.getGlobalAbilityValues()
+                    .forEach((key, value) -> properties.put(key, value.floatValue()));
         }
 
         for (var property : FightProperty.values()) {

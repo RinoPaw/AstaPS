@@ -36,9 +36,9 @@ extends AbilityActionHandler {
         }
         object2FloatOpenHashMap.putAll((Map<String, Float>)ability.getAbilitySpecials());
         Map<String, Float> map = gameEntity2.getGlobalAbilityValues();
-        for (Map.Entry entry : map.entrySet()) {
+        for (Map.Entry<String, Float> entry : map.entrySet()) {
             if (entry.getKey() == null || entry.getValue() == null) continue;
-            object2FloatOpenHashMap.put((String)entry.getKey(), (Float)entry.getValue());
+            object2FloatOpenHashMap.put(entry.getKey(), entry.getValue().floatValue());
         }
         float f2 = f = abilityModifierAction.ratio != null ? abilityModifierAction.ratio.get(object2FloatOpenHashMap, 0.0f) : 0.0f;
         if (f > 0.5f && SkirkCunningHelper.isSkirk(gameEntity2)) {

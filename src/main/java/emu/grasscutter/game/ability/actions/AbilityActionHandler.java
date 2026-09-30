@@ -48,7 +48,8 @@ public abstract class AbilityActionHandler {
                 properties.put(property.name(), owner.getFightProperty(property));
             }
 
-            owner.getGlobalAbilityValues().forEach(properties::put);
+            owner.getGlobalAbilityValues()
+                    .forEach((key, value) -> properties.put(key, value.floatValue()));
         }
 
         properties.putAll(ability.getAbilitySpecials());

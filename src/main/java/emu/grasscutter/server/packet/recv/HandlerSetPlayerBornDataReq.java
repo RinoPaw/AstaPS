@@ -30,7 +30,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             startingSkillDepot = 704;
         } else {
             Grasscutter.getLogger()
-                    .warn("[born-nickname-3064] invalid Traveler id {}.", avatarId);
+                    .warn("[born-login-nickname-3064] invalid Traveler id {}.", avatarId);
             return;
         }
 
@@ -44,7 +44,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         if (player.getAvatars().getAvatarCount() != 0) {
             Grasscutter.getLogger()
                     .warn(
-                            "[born-nickname-3064] ignoring duplicate SetPlayerBornDataReq for uid {}; Traveler {} is already persisted.",
+                            "[born-login-nickname-3064] ignoring duplicate SetPlayerBornDataReq for uid {}; Traveler {} is already persisted.",
                             player.getUid(),
                             player.getMainCharacterId());
             return;
@@ -52,7 +52,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
         Grasscutter.getLogger()
                 .info(
-                        "[born-nickname-3064] RECV SetPlayerBornDataReq cmdId={} avatarId={} nickname={}",
+                        "[born-login-nickname-3064] RECV SetPlayerBornDataReq cmdId={} avatarId={} nickname={}",
                         PacketOpcodes.SetPlayerBornDataReq,
                         avatarId,
                         req.getNickName());
@@ -72,21 +72,26 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         team.add(avatarId);
         player.save();
 
+        Grasscutter.getLogger()
+                .info(
+                        "[born-login-nickname-3064] persisted Traveler; invoking onLogin so the client receives normal player/scene state before nickname sync.");
+        player.onLogin();
+
         byte[] nicknamePayload = buildNicknameNotify(req.getNickName());
         BasePacket nicknameNotify = new BasePacket(TEST_PLAYER_NICKNAME_NOTIFY);
         nicknameNotify.setData(nicknamePayload);
 
         Grasscutter.getLogger()
                 .info(
-                        "[born-nickname-3064] SEND PlayerNicknameNotify cmdId={} field={} nickname={} payload={}",
+                        "[born-login-nickname-3064] SEND PlayerNicknameNotify cmdId={} field={} nickname={} payload={}",
                         TEST_PLAYER_NICKNAME_NOTIFY,
                         NICKNAME_FIELD_NUMBER,
                         req.getNickName(),
                         HexFormat.of().formatHex(nicknamePayload));
         session.send(nicknameNotify);
 
-        // Deliberately stop here. No guessed SetPlayerBornDataRsp and no onLogin/scene packets are
-        // sent in this probe, so any change to the naming page is attributable to cmd 3064 alone.
+        // Probe order: persist -> onLogin (including PlayerEnterSceneNotify) -> nickname notify.
+        // No guessed SetPlayerBornDataRsp is sent.
     }
 
     private static byte[] buildNicknameNotify(String nickname) {

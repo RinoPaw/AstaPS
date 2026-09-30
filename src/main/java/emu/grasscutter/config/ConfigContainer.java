@@ -37,9 +37,11 @@ public class ConfigContainer {
      *              encryption key used for packets is a constant or randomly generated.
      * Version 14 - 'server.threadPools' was added for managed thread-pool sizing.
      * Version 15 - 'server.watchdog' was added for the database monitor and timed restart.
+     * Version 16 - 'gameOptions.rates.leyLines' was split into separate Mora and EXP
+     *              Ley Line source rates.
      */
     private static int version() {
-        return 15;
+        return 16;
     }
 
     /**
@@ -373,7 +375,7 @@ public class ConfigContainer {
 
         public static class CORS {
             public boolean enabled = true;
-            public String[] allowedOrigins = new String[]{"*"};
+            public String[] allowedOrigins = {"*"};
         }
     }
 
@@ -438,7 +440,6 @@ public class ConfigContainer {
              * Paimon's Bargains, reachable from the shop menu without walking anywhere.
              */
             public int shopId = 1004;
-
             public int costMora = 20000;
             public int costPrimogems = 0;
             /** An item to charge on top of the currencies above, e.g. 220007 for Sanctifying Unction. */
@@ -505,9 +506,64 @@ public class ConfigContainer {
         }
 
         public static class Rates {
+            /** Global resource multipliers. Source-specific multipliers have already run. */
             public float adventureExp = 1.5f;
             public float mora = 2.0f;
-            public float leyLines = 2.0f;
+
+            @com.google.gson.annotations.JsonAdapter(LeyLineRatesAdapter.class)
+            public LeyLineRates leyLines = new LeyLineRates();
+        }
+
+        /** Source-specific multipliers selected by the Ley Line kind in the gameplay layer. */
+        public static class LeyLineRates {
+            /** Blossom of Wealth. */
+            public float mora = 2.0f;
+
+            /** Blossom of Revelation. */
+            public float exp = 2.0f;
+        }
+
+        /**
+         * Reads the old scalar "leyLines": 2.0 form and expands it to both source rates. Version
+         * 16 then writes the structured form back to config.json.
+         */
+        public static class LeyLineRatesAdapter
+                implements com.google.gson.JsonDeserializer<LeyLineRates>,
+                        com.google.gson.JsonSerializer<LeyLineRates> {
+            @Override
+            public LeyLineRates deserialize(
+                    com.google.gson.JsonElement json,
+                    java.lang.reflect.Type typeOfT,
+                    com.google.gson.JsonDeserializationContext context) {
+                if (json == null || json.isJsonNull()) return new LeyLineRates();
+
+                if (json.isJsonPrimitive()) {
+                    var rate = json.getAsFloat();
+                    var rates = new LeyLineRates();
+                    rates.mora = rate;
+                    rates.exp = rate;
+                    return rates;
+                }
+
+                var object = json.getAsJsonObject();
+                var rates = new LeyLineRates();
+                if (object.has("mora")) rates.mora = object.get("mora").getAsFloat();
+                if (object.has("exp")) rates.exp = object.get("exp").getAsFloat();
+                return rates;
+            }
+
+            @Override
+            public com.google.gson.JsonElement serialize(
+                    LeyLineRates src,
+                    java.lang.reflect.Type typeOfSrc,
+                    com.google.gson.JsonSerializationContext context) {
+                if (src == null) return com.google.gson.JsonNull.INSTANCE;
+
+                var object = new JsonObject();
+                object.addProperty("mora", src.mora);
+                object.addProperty("exp", src.exp);
+                return object;
+            }
         }
 
         /** Spiral Abyss. */

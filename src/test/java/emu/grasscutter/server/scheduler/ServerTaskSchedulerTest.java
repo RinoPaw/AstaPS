@@ -8,39 +8,34 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.AbstractExecutorService;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.BooleanSupplier;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /** Pins the scheduler semantics that used to depend on its 2022 one-second game loop. */
+@Timeout(value = 10, unit = TimeUnit.SECONDS)
 public final class ServerTaskSchedulerTest {
-    private ExecutorService executor;
+    private ManualExecutor executor;
     private ServerTaskScheduler scheduler;
 
     private void createScheduler() {
-        this.executor = Executors.newSingleThreadExecutor();
+        this.executor = new ManualExecutor();
         this.scheduler = new ServerTaskScheduler(this.executor);
     }
 
     private AtomicLong createSchedulerWithClock() {
-        this.executor = Executors.newSingleThreadExecutor();
+        this.executor = new ManualExecutor();
         var now = new AtomicLong();
         this.scheduler = new ServerTaskScheduler(this.executor, now::get);
         return now;
-    }
-
-    @AfterEach
-    public void shutdownExecutor() {
-        if (this.executor != null) this.executor.shutdownNow();
     }
 
     @Test
@@ -112,73 +107,71 @@ public final class ServerTaskSchedulerTest {
 
     @Test
     @DisplayName("an async-only queue is serviced without a synchronous task keeping it alive")
-    public void asyncOnlyTaskRuns() throws Exception {
+    public void asyncOnlyTaskRuns() {
         createScheduler();
-        var ran = new CountDownLatch(1);
-        int taskId = this.scheduler.scheduleAsyncTask(ran::countDown);
+        var runs = new AtomicInteger();
+        int taskId = this.scheduler.scheduleAsyncTask(runs::incrementAndGet);
         AsyncServerTask task = this.scheduler.getAsyncTask(taskId);
         assertNotNull(task);
 
         this.scheduler.runTasks();
+        assertEquals(1, this.executor.queuedTasks());
+        assertEquals(0, runs.get());
 
-        assertTrue(ran.await(1, TimeUnit.SECONDS));
-        waitFor(task::isFinished);
+        this.executor.runNext();
+        assertEquals(1, runs.get());
+        assertTrue(task.isFinished());
+
         this.scheduler.runTasks();
         assertNull(this.scheduler.getAsyncTask(taskId));
     }
 
     @Test
     @DisplayName("repeated scheduler ticks cannot submit the same async task twice")
-    public void asyncTaskStartsOnce() throws Exception {
+    public void asyncTaskStartsOnce() {
         createScheduler();
-        var workerStarted = new CountDownLatch(1);
-        var releaseWorker = new CountDownLatch(1);
-        this.executor.submit(
-                () -> {
-                    workerStarted.countDown();
-                    try {
-                        releaseWorker.await();
-                    } catch (InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                    }
-                });
-        assertTrue(workerStarted.await(1, TimeUnit.SECONDS));
-
         var runs = new AtomicInteger();
         int taskId = this.scheduler.scheduleAsyncTask(runs::incrementAndGet);
         AsyncServerTask task = this.scheduler.getAsyncTask(taskId);
         assertNotNull(task);
 
         for (int i = 0; i < 20; i++) this.scheduler.runTasks();
-        releaseWorker.countDown();
+        assertEquals(1, this.executor.queuedTasks());
+        assertEquals(0, runs.get());
 
-        waitFor(() -> runs.get() == 1);
-        waitFor(task::isFinished);
+        this.executor.runNext();
+        assertEquals(1, runs.get());
+        assertTrue(task.isFinished());
+
         for (int i = 0; i < 5; i++) this.scheduler.runTasks();
         assertEquals(1, runs.get());
+        assertEquals(0, this.executor.queuedTasks());
         assertNull(this.scheduler.getAsyncTask(taskId));
     }
 
     @Test
     @DisplayName("a failing async task still finishes, is removed, and runs its callback")
-    public void failedAsyncTaskIsCleanedUp() throws Exception {
+    public void failedAsyncTaskIsCleanedUp() {
         createScheduler();
-        var callback = new CountDownLatch(1);
+        var callbacks = new AtomicInteger();
         int taskId =
                 this.scheduler.scheduleAsyncTask(
                         () -> {
                             throw new IllegalStateException("boom");
                         },
-                        callback::countDown);
+                        callbacks::incrementAndGet);
         AsyncServerTask task = this.scheduler.getAsyncTask(taskId);
         assertNotNull(task);
 
         this.scheduler.runTasks();
-        waitFor(task::isFinished);
+        assertEquals(1, this.executor.queuedTasks());
+        this.executor.runNext();
+
+        assertTrue(task.isFinished());
         assertInstanceOf(IllegalStateException.class, task.getFailure());
 
         this.scheduler.runTasks();
-        assertEquals(0L, callback.getCount());
+        assertEquals(1, callbacks.get());
         assertNull(this.scheduler.getAsyncTask(taskId));
     }
 
@@ -210,11 +203,59 @@ public final class ServerTaskSchedulerTest {
                 () -> this.scheduler.scheduleDelayedTaskTicks(() -> {}, -1));
     }
 
-    private static void waitFor(BooleanSupplier condition) throws InterruptedException {
-        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2);
-        while (!condition.getAsBoolean() && System.nanoTime() < deadline) {
-            Thread.sleep(1L);
+    /**
+     * Deterministic executor for scheduler state-machine tests.
+     *
+     * <p>Keeping the submitted FutureTask queued lets a test call runTasks repeatedly before the
+     * worker is allowed to run. That checks duplicate submission without relying on thread timing,
+     * sleeps, latches, or a test worker that can deadlock Gradle itself.
+     */
+    private static final class ManualExecutor extends AbstractExecutorService {
+        private final ArrayDeque<Runnable> queue = new ArrayDeque<>();
+        private boolean shutdown;
+
+        @Override
+        public void shutdown() {
+            this.shutdown = true;
         }
-        assertTrue(condition.getAsBoolean());
+
+        @Override
+        public List<Runnable> shutdownNow() {
+            this.shutdown = true;
+            var remaining = new ArrayList<Runnable>(this.queue);
+            this.queue.clear();
+            return remaining;
+        }
+
+        @Override
+        public boolean isShutdown() {
+            return this.shutdown;
+        }
+
+        @Override
+        public boolean isTerminated() {
+            return this.shutdown && this.queue.isEmpty();
+        }
+
+        @Override
+        public boolean awaitTermination(long timeout, TimeUnit unit) {
+            return this.isTerminated();
+        }
+
+        @Override
+        public void execute(Runnable command) {
+            if (this.shutdown) throw new RejectedExecutionException("executor is shut down");
+            this.queue.addLast(command);
+        }
+
+        int queuedTasks() {
+            return this.queue.size();
+        }
+
+        void runNext() {
+            Runnable command = this.queue.pollFirst();
+            if (command == null) throw new AssertionError("no queued task to run");
+            command.run();
+        }
     }
 }

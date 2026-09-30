@@ -192,28 +192,6 @@ public class DailyTaskManager {
 			return this.dailyTasks.size();
 		}
 
-		/*
-		 * Migration for databases created before lastGenerationDate existed.
-		 *
-		 * If four commissions are already stored, preserve them rather than
-		 * rerolling them once just because this new field defaults to zero.
-		 */
-		if (this.lastGenerationDate == 0
-				&& this.dailyTasks.size() == DAILY_TASK_COUNT) {
-			this.lastGenerationDate = today;
-
-			Grasscutter.getLogger()
-					.info(
-							"[DailyTask] Migrated existing commission set for UID {} "
-									+ "to daily date {} without rerolling.",
-							this.ownerUid,
-							today);
-
-			this.save();
-
-			return this.dailyTasks.size();
-		}
-
 		return this.generateDailyTasks(
 				syncClient,
 				today);

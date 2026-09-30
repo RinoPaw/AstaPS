@@ -99,8 +99,6 @@ public final class Grasscutter {
 
         // Load server configuration.
         Grasscutter.loadConfig();
-        // Attempt to update configuration.
-        ConfigContainer.updateConfig();
 
         Grasscutter.getLogger().info("Loading Grasscutter...");
 
@@ -317,7 +315,6 @@ public final class Grasscutter {
     /*
      * Getters for the various server components.
      */
-
     public static Language getLanguage(String langCode) {
         return Language.getLanguage(langCode);
     }

@@ -19,35 +19,15 @@ import it.unimi.dsi.fastutil.ints.*;
 import java.util.*;
 import lombok.Getter;
 
-/**
- * Lists official artifact pieces as shop goods. Buying one hands out a freshly rolled artifact
- * rather than a fixed one: the main stat comes from the slot's real pool and substats use the
- * server-wide artifact roll rules.
- */
 public class ArtifactShop {
-    /** Well clear of the ~101,070,304 the excel goods ids reach. */
     private static final int GOODS_ID_BASE = 200_000_000;
+    public static final int ORIGINAL_RESIN_ID = 106;
+    private static final int FALLBACK_RESIN_COST = 20;
 
-    /** Virtual item id used by the game for Original Resin. */
-    private static final int ORIGINAL_RESIN_ID = 106;
-
-    /** One ordinary artifact-domain claim. */
-    private static final int DEFAULT_RESIN_COST = 20;
-
-    /**
-     * CityData.cityId -> verified general-goods shop type in the current Shop.json.
-     *
-     * <p>1 Mondstadt, 2 Liyue, 3 Inazuma, 4 Sumeru, 5 Fontaine. Newer regions stay unrouted until
-     * their real city shop is identified from current resources.
-     */
     private static final Map<Integer, Integer> REGIONAL_SHOPS =
             Map.of(1, 1004, 2, 1008, 3, 1056, 4, 1074, 5, 1093);
-
-    /** Shop type -> CityData.cityId, for validating shop requests. */
     private static final Map<Integer, Integer> SHOP_CITIES =
             Map.of(1004, 1, 1008, 2, 1056, 3, 1074, 4, 1093, 5);
-
-    /** Flower, plume, sands, goblet, circlet - the order the bag shows them in. */
     private static final List<EquipType> SLOT_ORDER =
             List.of(
                     EquipType.EQUIP_BRACER,
@@ -56,13 +36,6 @@ public class ArtifactShop {
                     EquipType.EQUIP_RING,
                     EquipType.EQUIP_DRESS);
 
-    /**
-     * The main stat each slot can actually roll, with the game's own odds.
-     *
-     * <p>The pool has to be spelled out because the shipped ReliquaryMainPropExcelConfigData is
-     * flattened - every entry in every depot carries the same weight, and the depots hold stats the
-     * slot never rolls - so drawing from one straight gives you a Sands of Eon with flat HP on it.
-     */
     private static final Map<EquipType, Map<FightProperty, Double>> MAIN_STATS =
             Map.of(
                     EquipType.EQUIP_BRACER, Map.of(FightProperty.FIGHT_PROP_HP, 100d),
@@ -98,31 +71,15 @@ public class ArtifactShop {
                                     FightProperty.FIGHT_PROP_HEAL_ADD, 10d,
                                     FightProperty.FIGHT_PROP_ELEMENT_MASTERY, 4d));
 
-    /** The piece behind each of our goods ids. Empty while the shop is switched off. */
     @Getter private final Int2ObjectMap<ItemData> goods = new Int2ObjectOpenHashMap<>();
-
-    /** City owning each generated goods id. 0 means the id is not one of ours. */
     private final Int2IntMap goodsCity = new Int2IntOpenHashMap();
-
-    /**
-     * Every difficulty at one world-map domain entrance points to the union of artifact sets that
-     * entrance can award. This is what lets clearing an early difficulty prove the domain once,
-     * while Adventure Rank can unlock higher-rarity versions later.
-     */
     private final Int2ObjectMap<Set<Integer>> domainSetsByDungeon = new Int2ObjectOpenHashMap<>();
 
-    /**
-     * Installs domain artifacts into the general-goods shop belonging to the domain's city.
-     *
-     * <p>The domain-to-city relationship comes from DungeonExcelConfigData.cityId and the set list
-     * comes from DungeonDrop.json. A set that legitimately drops from artifact domains in more than
-     * one city is listed in each of those cities with a separate goods id.
-     */
     public void install(Int2ObjectMap<List<ShopInfo>> shopData) {
         var options = GAME_OPTIONS.artifactShop;
-        this.goods.clear();
-        this.goodsCity.clear();
-        this.domainSetsByDungeon.clear();
+        goods.clear();
+        goodsCity.clear();
+        domainSetsByDungeon.clear();
         shopData.values().forEach(list -> list.removeIf(sold -> sold.getGoodsId() >= GOODS_ID_BASE));
         if (!options.enabled) return;
 
@@ -144,34 +101,31 @@ public class ArtifactShop {
             }
         }
 
-        this.domainSetsByDungeon.putAll(buildDomainSetIndex());
+        domainSetsByDungeon.putAll(buildDomainSetIndex());
         var citiesBySet = citiesBySet();
-        var pieces = catalog(Set.of(), Set.of(3, 4, 5));
-        if (pieces.isEmpty() || citiesBySet.isEmpty() || this.domainSetsByDungeon.isEmpty()) {
+        var pieces = catalog(Set.of(), Set.of(2, 3, 4, 5));
+        if (pieces.isEmpty() || citiesBySet.isEmpty() || domainSetsByDungeon.isEmpty()) {
             Grasscutter.getLogger()
                     .error(
-                            "Artifact shop current-version data is incomplete: pieces={}, regional sets={}, domain groups={}.",
+                            "Artifact shop data incomplete: pieces={}, regional sets={}, domain groups={}.",
                             pieces.size(),
                             citiesBySet.size(),
-                            this.domainSetsByDungeon.size());
+                            domainSetsByDungeon.size());
             return;
         }
 
         int goodsId = GOODS_ID_BASE;
         int listed = 0;
         var touchedShops = new HashSet<Integer>();
-        for (ItemData piece : pieces) {
+        for (var piece : pieces) {
             var cities = citiesBySet.get(piece.getSetId());
-            if (cities == null || cities.isEmpty()) continue;
-
+            if (cities == null) continue;
             for (int cityId : cities) {
                 Integer shopId = REGIONAL_SHOPS.get(cityId);
                 if (shopId == null) continue;
-
-                var items = shopData.get(shopId);
-                items.add(makeGoods(goodsId, piece, options));
-                this.goods.put(goodsId, piece);
-                this.goodsCity.put(goodsId, cityId);
+                shopData.get(shopId).add(makeGoods(goodsId, piece, options));
+                goods.put(goodsId, piece);
+                goodsCity.put(goodsId, cityId);
                 touchedShops.add(shopId);
                 goodsId++;
                 listed++;
@@ -180,91 +134,138 @@ public class ArtifactShop {
 
         Grasscutter.getLogger()
                 .info(
-                        "Listed {} regional artifact goods across {} city shop(s), with {} dungeon "
-                                + "difficulty id(s) indexed for domain unlocks.",
+                        "Listed {} regional artifact goods across {} city shop(s), with {} dungeon difficulty id(s) indexed.",
                         listed,
                         touchedShops.size(),
-                        this.domainSetsByDungeon.size());
+                        domainSetsByDungeon.size());
     }
 
-    /** The piece this goods id sells, or null when the id is not one of ours. */
     public ItemData getPiece(int goodsId) {
-        return this.goods.get(goodsId);
+        return goods.get(goodsId);
     }
 
-    /** Goods IDs this player is currently allowed to see in this exact city shop. */
     public Set<Integer> getAvailableGoodsIds(Player player, int shopType) {
         int cityId = cityIdForShop(shopType);
         if (cityId <= 0) return Set.of();
-
-        var unlockedSets = unlockedSetIds(player, cityId);
-        var allowedRanks = allowedRanks(player);
         var available = new HashSet<Integer>();
-
-        for (var entry : this.goods.int2ObjectEntrySet()) {
+        for (var entry : goods.int2ObjectEntrySet()) {
             int goodsId = entry.getIntKey();
-            if (this.goodsCity.get(goodsId) != cityId) continue;
-            if (isAvailable(entry.getValue(), unlockedSets, allowedRanks)) {
+            if (goodsCity.get(goodsId) == cityId && getResinCost(player, goodsId) > 0) {
                 available.add(goodsId);
             }
         }
         return available;
     }
 
-    /** Server-side purchase check; the client-side shop filter is never treated as authorization. */
     public boolean isAvailable(Player player, int shopType, int goodsId) {
-        var piece = this.goods.get(goodsId);
         int cityId = cityIdForShop(shopType);
-        if (piece == null || cityId <= 0 || this.goodsCity.get(goodsId) != cityId) return false;
-        return isAvailable(piece, unlockedSetIds(player, cityId), allowedRanks(player));
+        return goods.get(goodsId) != null
+                && cityId > 0
+                && goodsCity.get(goodsId) == cityId
+                && getResinCost(player, goodsId) > 0;
     }
 
-    private static boolean isAvailable(
-            ItemData piece, Set<Integer> unlockedSets, Set<Integer> allowedRanks) {
-        return piece != null
-                && unlockedSets.contains(piece.getSetId())
-                && allowedRanks.contains(piece.getRankLevel());
+    public int getResinCost(Player player, int goodsId) {
+        var piece = goods.get(goodsId);
+        if (piece == null) return 0;
+        int clearAr = highestClearedAr(player, piece, goodsCity.get(goodsId));
+        return resinCost(clearAr, piece.getRankLevel());
     }
 
-    /**
-     * Builds the regional catalog from the real artifact-domain data. Only Domains of Blessing are
-     * considered, so boss/story dungeons that happen to award artifacts cannot populate a shop.
-     */
-    private static Map<Integer, Set<Integer>> citiesBySet() {
-        var citiesBySet = new HashMap<Integer, Set<Integer>>();
-        for (var dungeonEntry : GameData.getDungeonDropDataMap().int2ObjectEntrySet()) {
-            var dungeon = GameData.getDungeonDataMap().get(dungeonEntry.getIntKey());
-            if (dungeon == null || dungeon.getSubType() != DungeonSubType.DUNGEON_SUB_RELIQUARY) {
+    private int highestClearedAr(Player player, ItemData piece, int cityId) {
+        if (player == null
+                || piece == null
+                || cityId <= 0
+                || player.getPlayerProgress() == null
+                || player.getPlayerProgress().getCompletedDungeons() == null) {
+            return 0;
+        }
+
+        int highest = 0;
+        for (int dungeonId : player.getPlayerProgress().getCompletedDungeons()) {
+            var dungeon = GameData.getDungeonDataMap().get(dungeonId);
+            if (dungeon == null
+                    || dungeon.getSubType() != DungeonSubType.DUNGEON_SUB_RELIQUARY
+                    || dungeon.getCityId() != cityId) {
                 continue;
             }
-
-            int cityId = dungeon.getCityId();
-            if (!REGIONAL_SHOPS.containsKey(cityId)) continue;
-
-            for (int setId : artifactSetIds(dungeonEntry.getValue())) {
-                citiesBySet.computeIfAbsent(setId, k -> new TreeSet<>()).add(cityId);
+            var sets = domainSetsByDungeon.get(dungeonId);
+            if (sets != null && sets.contains(piece.getSetId())) {
+                highest = Math.max(highest, dungeon.getLimitLevel());
             }
         }
-        return citiesBySet;
+        return highest;
     }
 
-    /**
-     * Builds dungeonId -> whole-domain set ids from current PointData.dungeonIds only.
-     *
-     * <p>Every artifact difficulty at the entrance must also have a DungeonDrop row. Missing point
-     * or drop relationships are treated as invalid current-version data and are never substituted.
-     */
-    private static Int2ObjectMap<Set<Integer>> buildDomainSetIndex() {
-        var exactSets = new Int2ObjectOpenHashMap<Set<Integer>>();
-        for (var dungeonEntry : GameData.getDungeonDropDataMap().int2ObjectEntrySet()) {
-            var dungeon = GameData.getDungeonDataMap().get(dungeonEntry.getIntKey());
-            if (dungeon == null || dungeon.getSubType() != DungeonSubType.DUNGEON_SUB_RELIQUARY) {
+    private static int resinCost(int clearAr, int rank) {
+        if (clearAr >= 45)
+            return switch (rank) {
+                case 2 -> 1;
+                case 3 -> 2;
+                case 4 -> 8;
+                case 5 -> 20;
+                default -> 0;
+            };
+        if (clearAr >= 40)
+            return switch (rank) {
+                case 2 -> 1;
+                case 3 -> 2;
+                case 4 -> 10;
+                case 5 -> 50;
+                default -> 0;
+            };
+        if (clearAr >= 35)
+            return switch (rank) {
+                case 2 -> 1;
+                case 3 -> 3;
+                case 4 -> 15;
+                default -> 0;
+            };
+        if (clearAr >= 30)
+            return switch (rank) {
+                case 2 -> 2;
+                case 3 -> 3;
+                case 4 -> 20;
+                default -> 0;
+            };
+        if (clearAr >= 25)
+            return switch (rank) {
+                case 2 -> 2;
+                case 3 -> 5;
+                default -> 0;
+            };
+        if (clearAr >= 22)
+            return switch (rank) {
+                case 2 -> 3;
+                case 3 -> 6;
+                default -> 0;
+            };
+        return 0;
+    }
+
+    private static Map<Integer, Set<Integer>> citiesBySet() {
+        var out = new HashMap<Integer, Set<Integer>>();
+        for (var entry : GameData.getDungeonDropDataMap().int2ObjectEntrySet()) {
+            var dungeon = GameData.getDungeonDataMap().get(entry.getIntKey());
+            if (dungeon == null
+                    || dungeon.getSubType() != DungeonSubType.DUNGEON_SUB_RELIQUARY
+                    || !REGIONAL_SHOPS.containsKey(dungeon.getCityId())) {
                 continue;
             }
+            for (int setId : artifactSetIds(entry.getValue())) {
+                out.computeIfAbsent(setId, k -> new TreeSet<>()).add(dungeon.getCityId());
+            }
+        }
+        return out;
+    }
 
-            var sets = artifactSetIds(dungeonEntry.getValue());
-            if (!sets.isEmpty()) {
-                exactSets.put(dungeonEntry.getIntKey(), sets);
+    private static Int2ObjectMap<Set<Integer>> buildDomainSetIndex() {
+        var exactSets = new Int2ObjectOpenHashMap<Set<Integer>>();
+        for (var entry : GameData.getDungeonDropDataMap().int2ObjectEntrySet()) {
+            var dungeon = GameData.getDungeonDataMap().get(entry.getIntKey());
+            if (dungeon != null && dungeon.getSubType() == DungeonSubType.DUNGEON_SUB_RELIQUARY) {
+                var sets = artifactSetIds(entry.getValue());
+                if (!sets.isEmpty()) exactSets.put(entry.getIntKey(), sets);
             }
         }
 
@@ -275,8 +276,8 @@ public class ArtifactShop {
                 continue;
             }
 
-            var domainDungeonIds = new IntArrayList();
-            var domainSets = new HashSet<Integer>();
+            var ids = new IntArrayList();
+            var union = new HashSet<Integer>();
             boolean complete = true;
             for (int dungeonId : point.getDungeonIds()) {
                 var dungeon = GameData.getDungeonDataMap().get(dungeonId);
@@ -284,33 +285,23 @@ public class ArtifactShop {
                         || dungeon.getSubType() != DungeonSubType.DUNGEON_SUB_RELIQUARY) {
                     continue;
                 }
-
-                domainDungeonIds.add(dungeonId);
+                ids.add(dungeonId);
                 var sets = exactSets.get(dungeonId);
                 if (sets == null || sets.isEmpty()) {
-                    Grasscutter.getLogger()
-                            .error(
-                                    "Artifact domain dungeon {} has no current DungeonDrop artifact sets.",
-                                    dungeonId);
                     complete = false;
                     break;
                 }
-                domainSets.addAll(sets);
+                union.addAll(sets);
             }
-
-            if (!complete || domainDungeonIds.isEmpty() || domainSets.isEmpty()) continue;
-            Set<Integer> sharedSets = Set.copyOf(domainSets);
-            for (int i = 0; i < domainDungeonIds.size(); i++) {
-                index.put(domainDungeonIds.getInt(i), sharedSets);
-            }
+            if (!complete || ids.isEmpty() || union.isEmpty()) continue;
+            Set<Integer> shared = Set.copyOf(union);
+            for (int i = 0; i < ids.size(); i++) index.put(ids.getInt(i), shared);
         }
-
         return index;
     }
 
     private static Set<Integer> artifactSetIds(List<DungeonDropEntry> drops) {
         if (drops == null) return Set.of();
-
         var sets = new HashSet<Integer>();
         for (var drop : drops) {
             if (drop == null || drop.getItems() == null) continue;
@@ -326,60 +317,14 @@ public class ArtifactShop {
         return sets;
     }
 
-    /**
-     * Completing any difficulty at an artifact-domain entrance unlocks every set belonging to that
-     * entrance, but only in its own city's shop. Adventure Rank separately gates 3/4/5-star goods.
-     */
-    private Set<Integer> unlockedSetIds(Player player, int cityId) {
-        if (cityId <= 0
-                || player == null
-                || player.getPlayerProgress() == null
-                || player.getPlayerProgress().getCompletedDungeons() == null) {
-            return Set.of();
-        }
-
-        var unlocked = new HashSet<Integer>();
-        for (int dungeonId : player.getPlayerProgress().getCompletedDungeons()) {
-            var dungeon = GameData.getDungeonDataMap().get(dungeonId);
-            if (dungeon == null
-                    || dungeon.getSubType() != DungeonSubType.DUNGEON_SUB_RELIQUARY
-                    || dungeon.getCityId() != cityId) {
-                continue;
-            }
-
-            var domainSets = this.domainSetsByDungeon.get(dungeonId);
-            if (domainSets != null) unlocked.addAll(domainSets);
-        }
-        return unlocked;
-    }
-
     private static int cityIdForShop(int shopType) {
         return SHOP_CITIES.getOrDefault(shopType, 0);
     }
 
-    /**
-     * First-pass progression curve. AR 1-29 can buy 3-star pieces, AR 30-39 adds 4-star pieces,
-     * and AR 40+ adds 5-star pieces. Keeping the lower rarities available avoids deleting the
-     * earlier shop progression when the player ranks up.
-     */
-    private static Set<Integer> allowedRanks(Player player) {
-        int level = player != null ? player.getLevel() : 0;
-        if (level >= 40) return Set.of(3, 4, 5);
-        if (level >= 30) return Set.of(3, 4);
-        return Set.of(3);
-    }
-
-    /** Creates the artifact delivered by this shop good. V1 artifact goods are sold at +0. */
     public GameItem roll(ItemData piece) {
         var item = new GameItem(piece);
-
-        // The main stat has to be settled first: a substat never repeats it.
         int mainPropId = rollMainProp(piece);
-        if (mainPropId > 0) {
-            item.setMainPropId(mainPropId);
-        }
-
-        // Item level 1 is the protocol/storage representation of an unenhanced (+0) artifact.
+        if (mainPropId > 0) item.setMainPropId(mainPropId);
         item.setLevel(1);
         item.setTotalExp(0);
         item.getAppendPropIdList().clear();
@@ -387,27 +332,18 @@ public class ArtifactShop {
         return item;
     }
 
-    /**
-     * Returns one normal domain-style item definition for every requested set/rank/slot.
-     *
-     * <p>An empty set filter means every released set. An empty rank filter means ranks 3 through
-     * 5. The normal affix depot follows the game's 301/401/501 convention and the best starting
-     * substat variant has rank - 1 initial substats (2/3/4 for 3/4/5-star pieces).
-     */
     public static List<ItemData> catalog(Set<Integer> setIds, Set<Integer> ranks) {
         boolean allSets = setIds == null || setIds.isEmpty();
         boolean allRanks = ranks == null || ranks.isEmpty();
         var pieces = new ArrayList<ItemData>();
 
-        for (ItemData data : GameData.getItemDataMap().values()) {
+        for (var data : GameData.getItemDataMap().values()) {
             if (data.getItemType() != ItemType.ITEM_RELIQUARY) continue;
             int rank = data.getRankLevel();
-            if (rank < 3 || rank > 5) continue;
+            if (rank < 2 || rank > 5) continue;
             if (!allRanks && !ranks.contains(rank)) continue;
             if (!allSets && !setIds.contains(data.getSetId())) continue;
             if (!isCanonicalDomainPiece(data)) continue;
-
-            // Beta and test sets carry no set bonus; every released set does.
             var set = GameData.getReliquarySetDataMap().get(data.getSetId());
             if (set == null || set.getEquipAffixId() <= 0) continue;
             pieces.add(data);
@@ -420,12 +356,11 @@ public class ArtifactShop {
         return pieces;
     }
 
-    /** Selects the regular domain-roll variant among the duplicate reliquary item definitions. */
     private static boolean isCanonicalDomainPiece(ItemData data) {
         int rank = data.getRankLevel();
-        if (data.getAppendPropNum() != rank - 1) return false;
-        if (data.getAppendPropDepotId() != rank * 100 + 1) return false;
-        return data.getMainPropDepotId() == mainPropDepot(data.getEquipType());
+        return data.getAppendPropNum() == rank - 1
+                && data.getAppendPropDepotId() == rank * 100 + 1
+                && data.getMainPropDepotId() == mainPropDepot(data.getEquipType());
     }
 
     private static ShopInfo makeGoods(int goodsId, ItemData piece, ArtifactShopOptions options) {
@@ -437,11 +372,8 @@ public class ArtifactShop {
         goods.setBuyLimit(options.buyLimit);
         goods.setMinLevel(1);
         goods.setMaxLevel(99);
-
-        // V1 has one explicit price: the same 20 Original Resin as one ordinary domain claim.
-        var costs = new ArrayList<ItemParamData>(1);
-        costs.add(new ItemParamData(ORIGINAL_RESIN_ID, DEFAULT_RESIN_COST));
-        goods.setCostItemList(costs);
+        goods.setCostItemList(
+                new ArrayList<>(List.of(new ItemParamData(ORIGINAL_RESIN_ID, FALLBACK_RESIN_COST))));
         return goods;
     }
 
@@ -449,15 +381,12 @@ public class ArtifactShop {
         var pool = MAIN_STATS.get(piece.getEquipType());
         var candidates = GameDepot.getRelicMainPropList(piece.getMainPropDepotId());
         if (pool == null || candidates == null) return 0;
-
-        var randomList = new WeightedList<ReliquaryMainPropData>();
-        for (ReliquaryMainPropData prop : candidates) {
+        var random = new WeightedList<ReliquaryMainPropData>();
+        for (var prop : candidates) {
             double weight = pool.getOrDefault(prop.getFightProp(), 0d);
-            if (weight > 0) {
-                randomList.add(weight, prop);
-            }
+            if (weight > 0) random.add(weight, prop);
         }
-        return randomList.size() == 0 ? 0 : randomList.next().getId();
+        return random.size() == 0 ? 0 : random.next().getId();
     }
 
     private static int mainPropDepot(EquipType slot) {

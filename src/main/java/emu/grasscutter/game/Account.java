@@ -9,7 +9,6 @@ import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.utils.*;
 import java.util.*;
 import java.util.stream.Stream;
-import org.bson.Document;
 
 @Entity(value = "accounts", useDiscriminator = false)
 public class Account {
@@ -273,19 +272,6 @@ public class Account {
 
     public void save() {
         DatabaseHelper.saveAccount(this);
-    }
-
-    @PreLoad
-    public void onLoad(Document document) {
-        // Grant the superuser permissions to accounts created before the permissions update
-        if (!document.containsKey("permissions")) {
-            this.addPermission("*");
-        }
-
-        // Set account default language as server default language
-        if (!document.containsKey("locale")) {
-            this.locale = LANGUAGE;
-        }
     }
 
     @Override

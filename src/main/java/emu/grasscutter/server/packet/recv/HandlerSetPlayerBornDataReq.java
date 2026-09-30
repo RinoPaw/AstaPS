@@ -30,7 +30,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         } else if (avatarId == GameConstants.MAIN_CHARACTER_FEMALE) {
             startingSkillDepot = 704;
         } else {
-            Grasscutter.getLogger().warn("[BORN-STARLIGHT] invalid Traveler id {}.", avatarId);
+            Grasscutter.getLogger().warn("[BORN-STARLIGHT-351] invalid Traveler id {}.", avatarId);
             return;
         }
 
@@ -44,7 +44,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         if (player.getAvatars().getAvatarCount() != 0) {
             Grasscutter.getLogger()
                     .warn(
-                            "[BORN-STARLIGHT] ignoring duplicate SetPlayerBornDataReq for uid {}; Traveler {} is already persisted.",
+                            "[BORN-STARLIGHT-351] ignoring duplicate SetPlayerBornDataReq for uid {}; Traveler {} is already persisted.",
                             player.getUid(),
                             player.getMainCharacterId());
             return;
@@ -52,7 +52,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-STARLIGHT] 1 RECV SetPlayerBornDataReq cmdId={} uid={} avatarId={} nickname={}",
+                        "[BORN-STARLIGHT-351] 1 RECV SetPlayerBornDataReq cmdId={} uid={} avatarId={} nickname={}",
                         PacketOpcodes.SetPlayerBornDataReq,
                         player.getUid(),
                         avatarId,
@@ -73,13 +73,13 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         team.add(avatarId);
         player.save();
 
-        // Starlight's born flow first acknowledges the born request, then synchronizes the nickname,
-        // then enters the PlayerBorn lifecycle. For this probe, AstaPS player.onLogin() temporarily
-        // stands in for that lifecycle because it already performs the world/scene bootstrap and sends
-        // PlayerEnterSceneNotify.
+        Grasscutter.getLogger().info("[BORN-STARLIGHT-351] 2 questManager.onPlayerBorn BEGIN");
+        player.getQuestManager().onPlayerBorn();
+        Grasscutter.getLogger().info("[BORN-STARLIGHT-351] 3 questManager.onPlayerBorn END");
+
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-STARLIGHT] 2 SEND SetPlayerBornDataRsp cmdId={} payload=<empty>",
+                        "[BORN-STARLIGHT-351] 4 SEND SetPlayerBornDataRsp cmdId={} payload=<empty>",
                         TEST_BORN_RSP_CMD_ID);
         session.send(new BasePacket(TEST_BORN_RSP_CMD_ID));
 
@@ -88,7 +88,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         nicknameNotify.setData(nicknamePayload);
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-STARLIGHT] 3 SEND PlayerNicknameNotify cmdId={} field={} payload={}",
+                        "[BORN-STARLIGHT-351] 5 SEND PlayerNicknameNotify cmdId={} field={} payload={}",
                         PLAYER_NICKNAME_NOTIFY_CMD_ID,
                         NICKNAME_FIELD_NUMBER,
                         HexFormat.of().formatHex(nicknamePayload));
@@ -96,13 +96,13 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-STARLIGHT] 4 player.onLogin BEGIN sceneLoadState={} enterSceneToken={}",
+                        "[BORN-STARLIGHT-351] 6 player.onLogin BEGIN sceneLoadState={} enterSceneToken={}",
                         player.getSceneLoadState(),
                         player.getEnterSceneToken());
         player.onLogin();
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-STARLIGHT] 5 player.onLogin END sceneLoadState={} enterSceneToken={}",
+                        "[BORN-STARLIGHT-351] 7 player.onLogin END sceneLoadState={} enterSceneToken={}",
                         player.getSceneLoadState(),
                         player.getEnterSceneToken());
     }

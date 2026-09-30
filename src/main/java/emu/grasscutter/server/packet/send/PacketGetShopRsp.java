@@ -19,7 +19,7 @@ public class PacketGetShopRsp extends BasePacket {
         Shop.Builder shop =
                 Shop.newBuilder()
                         .setShopType(shopType)
-                        .setCityId(1) // mock
+                        .setCityId(cityIdForShop(shopType))
                         .setCityReputationLevel(10); // mock
 
         ShopSystem manager = Grasscutter.getGameServer().getShopSystem();
@@ -105,6 +105,20 @@ public class PacketGetShopRsp extends BasePacket {
 
         player.save();
         this.setData(GetShopRspOuterClass.GetShopRsp.newBuilder().setShop(shop).build());
+    }
+
+    /** Preserve the old city-1 fallback for unrelated shops while reporting regional shops exactly. */
+    private static int cityIdForShop(int shopType) {
+        return switch (shopType) {
+            case 1004 -> 1; // Mondstadt
+            case 1008 -> 2; // Liyue
+            case 1056 -> 3; // Inazuma
+            case 1074 -> 4; // Sumeru
+            case 1093 -> 5; // Fontaine
+            case 1117 -> 6; // Natlan
+            case 1134 -> 7; // Nod-Krai
+            default -> 1;
+        };
     }
 
     /** Returns buyLimit when the player already owns this costume item; otherwise 0. */

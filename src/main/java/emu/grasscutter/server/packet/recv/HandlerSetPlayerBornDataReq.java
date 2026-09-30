@@ -9,10 +9,15 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.SetPlayerBornDataReqOuterClass.SetPlayerBornDataReq;
 import emu.grasscutter.server.game.GameSession;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HexFormat;
 
 @Opcodes(PacketOpcodes.SetPlayerBornDataReq)
 public class HandlerSetPlayerBornDataReq extends PacketHandler {
     private static final int TEST_BORN_RSP_CMD_ID = 4385;
+    private static final int PLAYER_NICKNAME_NOTIFY_CMD_ID = 3064;
+    private static final int NICKNAME_FIELD_NUMBER = 12;
 
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
@@ -25,7 +30,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         } else if (avatarId == GameConstants.MAIN_CHARACTER_FEMALE) {
             startingSkillDepot = 704;
         } else {
-            Grasscutter.getLogger().warn("[BORN-4385] invalid Traveler id {}.", avatarId);
+            Grasscutter.getLogger().warn("[BORN-STARLIGHT] invalid Traveler id {}.", avatarId);
             return;
         }
 
@@ -39,7 +44,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         if (player.getAvatars().getAvatarCount() != 0) {
             Grasscutter.getLogger()
                     .warn(
-                            "[BORN-4385] ignoring duplicate SetPlayerBornDataReq for uid {}; Traveler {} is already persisted.",
+                            "[BORN-STARLIGHT] ignoring duplicate SetPlayerBornDataReq for uid {}; Traveler {} is already persisted.",
                             player.getUid(),
                             player.getMainCharacterId());
             return;
@@ -47,7 +52,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-4385] RECV SetPlayerBornDataReq cmdId={} uid={} avatarId={} nickname={}",
+                        "[BORN-STARLIGHT] 1 RECV SetPlayerBornDataReq cmdId={} uid={} avatarId={} nickname={}",
                         PacketOpcodes.SetPlayerBornDataReq,
                         player.getUid(),
                         avatarId,
@@ -68,17 +73,54 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         team.add(avatarId);
         player.save();
 
-        // 7.1 client static trace:
-        //   CmdId 4385 GetCmdId() == 0x1121
-        //   its sole protobuf field is int32 field #7, stored at +0x18
-        //   handler treats +0x18 as retcode and, on zero, enters the born/UI completion manager.
-        // Empty payload therefore represents retcode == 0 and keeps this probe isolated from all
-        // login, scene and nickname synchronization.
+        // Starlight's born flow first acknowledges the born request, then synchronizes the nickname,
+        // then enters the PlayerBorn lifecycle. For this probe, AstaPS player.onLogin() temporarily
+        // stands in for that lifecycle because it already performs the world/scene bootstrap and sends
+        // PlayerEnterSceneNotify.
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-4385] SEND candidate SetPlayerBornDataRsp cmdId={} payload=<empty>; no onLogin/9582/3064",
+                        "[BORN-STARLIGHT] 2 SEND SetPlayerBornDataRsp cmdId={} payload=<empty>",
                         TEST_BORN_RSP_CMD_ID);
         session.send(new BasePacket(TEST_BORN_RSP_CMD_ID));
-        Grasscutter.getLogger().info("[BORN-4385] send() returned");
+
+        byte[] nicknamePayload = buildNicknameNotify(req.getNickName());
+        BasePacket nicknameNotify = new BasePacket(PLAYER_NICKNAME_NOTIFY_CMD_ID);
+        nicknameNotify.setData(nicknamePayload);
+        Grasscutter.getLogger()
+                .info(
+                        "[BORN-STARLIGHT] 3 SEND PlayerNicknameNotify cmdId={} field={} payload={}",
+                        PLAYER_NICKNAME_NOTIFY_CMD_ID,
+                        NICKNAME_FIELD_NUMBER,
+                        HexFormat.of().formatHex(nicknamePayload));
+        session.send(nicknameNotify);
+
+        Grasscutter.getLogger()
+                .info(
+                        "[BORN-STARLIGHT] 4 player.onLogin BEGIN sceneLoadState={} enterSceneToken={}",
+                        player.getSceneLoadState(),
+                        player.getEnterSceneToken());
+        player.onLogin();
+        Grasscutter.getLogger()
+                .info(
+                        "[BORN-STARLIGHT] 5 player.onLogin END sceneLoadState={} enterSceneToken={}",
+                        player.getSceneLoadState(),
+                        player.getEnterSceneToken());
+    }
+
+    private static byte[] buildNicknameNotify(String nickname) {
+        byte[] utf8 = nickname.getBytes(StandardCharsets.UTF_8);
+        ByteArrayOutputStream out = new ByteArrayOutputStream(2 + utf8.length);
+        out.write((NICKNAME_FIELD_NUMBER << 3) | 2);
+        writeVarint(out, utf8.length);
+        out.writeBytes(utf8);
+        return out.toByteArray();
+    }
+
+    private static void writeVarint(ByteArrayOutputStream out, int value) {
+        while ((value & ~0x7F) != 0) {
+            out.write((value & 0x7F) | 0x80);
+            value >>>= 7;
+        }
+        out.write(value);
     }
 }

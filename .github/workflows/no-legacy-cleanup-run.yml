@@ -145,7 +145,6 @@ jobs:
           start = config.index('    /**\n     * Folds any pools the running config already names into the current default set.')
           end = config.index('    public Structure folderStructure = new Structure();', start)
           config = config[:start] + config[end:]
-          config = replace_once(config, 'import com.google.gson.JsonObject;\n', '', 'ConfigContainer JsonObject import')
           config = replace_once(config, 'import emu.grasscutter.Grasscutter;\n', '', 'ConfigContainer Grasscutter import')
           if 'updateConfig()' in config or 'mergeThreadPoolDefaults' in config:
               raise SystemExit('ConfigContainer still contains config migration code')

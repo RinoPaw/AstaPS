@@ -370,7 +370,7 @@ public class ArtifactShop {
         return Set.of(3);
     }
 
-    /** Rolls a piece the way a domain drop would, then levels it and applies the configured bias. */
+    /** Creates the artifact delivered by this shop good. V1 artifact goods are sold at +0. */
     public GameItem roll(ItemData piece) {
         var options = GAME_OPTIONS.artifactShop;
         var item = new GameItem(piece);
@@ -381,19 +381,11 @@ public class ArtifactShop {
             item.setMainPropId(mainPropId);
         }
 
-        // A piece starts with its own substat count and gains one at every level in addPropLevels.
-        int level = Math.min(Math.max(options.artifactLevel, 0) + 1, piece.getMaxLevel());
-        int substats = piece.getAppendPropNum();
-        int totalExp = 0;
-        for (int lv = 2; lv <= level; lv++) {
-            totalExp += GameData.getRelicExpRequired(piece.getRankLevel(), lv - 1);
-            if (piece.canAddRelicProp(lv)) substats++;
-        }
-
-        item.setLevel(level);
-        item.setTotalExp(totalExp);
+        // Item level 1 is the protocol/storage representation of an unenhanced (+0) artifact.
+        item.setLevel(1);
+        item.setTotalExp(0);
         item.getAppendPropIdList().clear();
-        item.addAppendProps(substats, bias(options));
+        item.addAppendProps(piece.getAppendPropNum(), bias(options));
         return item;
     }
 

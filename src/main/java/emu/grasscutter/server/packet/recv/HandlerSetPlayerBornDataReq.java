@@ -6,7 +6,6 @@ import emu.grasscutter.*;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.world.World;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.SetPlayerBornDataReqOuterClass.SetPlayerBornDataReq;
 import emu.grasscutter.server.game.GameServerPacketHandler;
@@ -32,7 +31,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         } else if (avatarId == GameConstants.MAIN_CHARACTER_FEMALE) {
             startingSkillDepot = 704;
         } else {
-            Grasscutter.getLogger().warn("[BORN-ACK-351] invalid Traveler id {}.", avatarId);
+            Grasscutter.getLogger().warn("[BORN-SINGLE-WORLD] invalid Traveler id {}.", avatarId);
             return;
         }
 
@@ -46,7 +45,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         if (player.getAvatars().getAvatarCount() != 0) {
             Grasscutter.getLogger()
                     .warn(
-                            "[BORN-ACK-351] ignoring duplicate SetPlayerBornDataReq for uid {}; Traveler {} is already persisted.",
+                            "[BORN-SINGLE-WORLD] ignoring duplicate SetPlayerBornDataReq for uid {}; Traveler {} is already persisted.",
                             player.getUid(),
                             player.getMainCharacterId());
             return;
@@ -54,7 +53,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-ACK-351] 1 RECV SetPlayerBornDataReq cmdId={} uid={} avatarId={} nickname={}",
+                        "[BORN-SINGLE-WORLD] 1 RECV SetPlayerBornDataReq cmdId={} uid={} avatarId={} nickname={}",
                         PacketOpcodes.SetPlayerBornDataReq,
                         player.getUid(),
                         avatarId,
@@ -77,12 +76,11 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
         GameServerPacketHandler.beginBornIntroTrace(session);
 
-        // Starlight's born lifecycle acknowledges the client's selection first, then emits its
-        // PlayerBorn lifecycle. Test that ordering here while keeping our existing quest bootstrap
-        // otherwise unchanged.
+        // Acknowledge the client's selection before starting the born lifecycle, following the
+        // ordering used by Starlight and already validated for the 7.1 born response itself.
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-ACK-351] 2 SEND SetPlayerBornDataRsp cmdId={} payload=<empty>",
+                        "[BORN-SINGLE-WORLD] 2 SEND SetPlayerBornDataRsp cmdId={} payload=<empty>",
                         TEST_BORN_RSP_CMD_ID);
         session.send(new BasePacket(TEST_BORN_RSP_CMD_ID));
 
@@ -91,38 +89,30 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         nicknameNotify.setData(nicknamePayload);
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-ACK-351] 3 SEND PlayerNicknameNotify cmdId={} field={} payload={}",
+                        "[BORN-SINGLE-WORLD] 3 SEND PlayerNicknameNotify cmdId={} field={} payload={}",
                         PLAYER_NICKNAME_NOTIFY_CMD_ID,
                         NICKNAME_FIELD_NUMBER,
                         HexFormat.of().formatHex(nicknamePayload));
         session.send(nicknameNotify);
 
-        // Quest startup reads world time immediately. Establish only the minimum world/scene
-        // context it needs, matching the previous experiment so packet ordering is the sole change.
-        Grasscutter.getLogger().info("[BORN-ACK-351] 4 world bootstrap BEGIN");
-        if (player.getWorld() == null) {
-            World world = new World(player);
-            world.addPlayer(player);
-        }
-        Grasscutter.getLogger()
-                .info(
-                        "[BORN-ACK-351] 5 world bootstrap END world={} scene={}",
-                        player.getWorld() != null,
-                        player.getScene() != null);
-
-        Grasscutter.getLogger().info("[BORN-ACK-351] 6 questManager.onPlayerBorn BEGIN");
+        // QuestManager explicitly defines this as a one-time pre-login lifecycle. Do not create a
+        // World here: Player.onLogin() owns first-world construction. The previous probe created a
+        // second World inside onLogin(), contaminating both timing and scene state.
+        Grasscutter.getLogger().info("[BORN-SINGLE-WORLD] 4 questManager.onPlayerBorn BEGIN world={}", player.getWorld() != null);
         player.getQuestManager().onPlayerBorn();
-        Grasscutter.getLogger().info("[BORN-ACK-351] 7 questManager.onPlayerBorn END");
+        Grasscutter.getLogger().info("[BORN-SINGLE-WORLD] 5 questManager.onPlayerBorn END world={}", player.getWorld() != null);
 
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-ACK-351] 8 player.onLogin BEGIN sceneLoadState={} enterSceneToken={}",
+                        "[BORN-SINGLE-WORLD] 6 player.onLogin BEGIN world={} sceneLoadState={} enterSceneToken={}",
+                        player.getWorld() != null,
                         player.getSceneLoadState(),
                         player.getEnterSceneToken());
         player.onLogin();
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-ACK-351] 9 player.onLogin END sceneLoadState={} enterSceneToken={}",
+                        "[BORN-SINGLE-WORLD] 7 player.onLogin END world={} sceneLoadState={} enterSceneToken={}",
+                        player.getWorld() != null,
                         player.getSceneLoadState(),
                         player.getEnterSceneToken());
     }

@@ -3,7 +3,10 @@ package emu.grasscutter.server.packet.recv;
 import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import emu.grasscutter.Grasscutter;
+import emu.grasscutter.data.GameData;
+import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.world.World;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.born.BornDataHelper;
 import emu.grasscutter.server.game.GameSession;
@@ -12,6 +15,7 @@ import emu.grasscutter.server.packet.send.PacketPlayerLoginRsp;
 
 @Opcodes(PacketOpcodes.PlayerLoginReq)
 public class HandlerPlayerLoginReq extends PacketHandler {
+    private static final int DO_SET_PLAYER_BORN_DATA_NOTIFY = 22899;
 
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
@@ -21,49 +25,57 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         }
 
         Player player = session.getPlayer();
-        var intro = GAME_OPTIONS.newAccountIntro;
+        boolean freshAccount = player.getAvatars().getAvatarCount() == 0;
 
-        if (player.getAvatars().getAvatarCount() == 0) {
-            // A brand-new account must complete the client-driven Traveler creation handshake.
-            // Do not invent a Traveler when the protocol/configuration is incomplete: that hides
-            // the actual compatibility problem and permanently changes the account state.
-            if (!intro.enabled) {
-                Grasscutter.getLogger()
-                        .error(
-                                "[intro] account {} has no character, but newAccountIntro is disabled; refusing automatic Traveler creation.",
-                                session.getAccount().getUsername());
-                session.close();
-                return;
-            }
-
-            int notifyCmdId = intro.doSetPlayerBornDataNotify;
-            if (notifyCmdId <= 0) {
-                Grasscutter.getLogger()
-                        .error(
-                                "[intro] DoSetPlayerBornDataNotify CmdId is unknown ({}); refusing character creation until the real 7.1 opcode is known.",
-                                notifyCmdId);
-                session.close();
-                return;
-            }
-
-            // Negative entries in some 7.1 opcode tables are unresolved placeholders, not signed
-            // wire CmdIds. Only an explicitly known positive opcode is safe to send.
+        if (freshAccount && GAME_OPTIONS.newAccountIntro.enabled) {
+            // Keep the fresh account outside the world until the 7.1 client finishes its native
+            // Traveler-selection flow. SetPlayerBornDataReq is only accepted in this session state.
             session.setState(SessionState.PICKING_CHARACTER);
-            session.send(new BasePacket(notifyCmdId));
+            session.send(new BasePacket(DO_SET_PLAYER_BORN_DATA_NOTIFY));
             Grasscutter.getLogger()
                     .info(
-                            "[intro] new account, waiting for client character creation (notify cmdId={}).",
-                            notifyCmdId);
-
+                            "[intro] new account, waiting for character creation (notify cmdId={}).",
+                            DO_SET_PLAYER_BORN_DATA_NOTIFY);
             session.send(new PacketPlayerLoginRsp(session));
             return;
         }
 
-        // Existing accounts may predate the explicit main-character marker. This only repairs the
-        // marker for an avatar that already exists; it never creates a Traveler.
-        BornDataHelper.ensureMainCharacter(player);
+        if (freshAccount) {
+            // Intro disabled: preserve the existing automatic-Traveler path.
+            createDefaultTraveler(player);
+
+            // Quest 351 reads world time when it starts, so questing-enabled fresh accounts need
+            // their own world before the one-time born quest lifecycle runs.
+            if (GAME_OPTIONS.questing.enabled) {
+                if (player.getWorld() == null) {
+                    World world = new World(player);
+                    world.addPlayer(player);
+                }
+                player.getQuestManager().onPlayerBorn();
+            }
+        } else {
+            // Repair existing accounts that have avatars but lost their main-character marker.
+            BornDataHelper.ensureMainCharacter(player);
+        }
 
         player.onLogin();
         session.send(new PacketPlayerLoginRsp(session));
+    }
+
+    private static void createDefaultTraveler(Player player) {
+        int avatarId = 10000007;
+        Avatar mainCharacter = new Avatar(avatarId);
+
+        if (!GAME_OPTIONS.questing.enabled) {
+            mainCharacter.setSkillDepotData(GameData.getAvatarSkillDepotDataMap().get(704));
+        }
+
+        player.addAvatar(mainCharacter, false);
+        player.setMainCharacterId(avatarId);
+        player.setHeadImage(avatarId);
+        var team = player.getTeamManager().getCurrentSinglePlayerTeamInfo().getAvatars();
+        team.clear();
+        team.add(avatarId);
+        player.save();
     }
 }

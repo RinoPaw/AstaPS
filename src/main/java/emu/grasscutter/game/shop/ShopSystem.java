@@ -114,11 +114,17 @@ public class ShopSystem extends BaseGameSystem {
     }
 
     /**
-     * Lists the 5-star artifacts. Called on its own after the resources finish loading, because the
-     * shop system is built before them and has no item data to work from yet.
+     * Installs the regional artifact catalog. Called again after resources finish loading because
+     * the shop system is built before the item, dungeon, and drop data it needs.
      */
     public synchronized void loadArtifactShop() {
         this.artifactShop.install(getShopData());
+        if (GAME_OPTIONS.artifactShop.enabled && this.artifactShop.getGoods().isEmpty()) {
+            Grasscutter.getLogger()
+                    .warn(
+                            "Artifact shop is enabled but no regional goods were routed. Check "
+                                    + "DungeonExcelConfigData.cityId and DungeonDrop.json.");
+        }
     }
 
     public GameServer getServer() {

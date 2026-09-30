@@ -199,7 +199,7 @@ public final class LohenExtraArtSkillLevelHelper {
         if (skills == null || skills.size() < 2) {
             return 0;
         }
-        AvatarSkillData skillData = GameData.getAvatarSkillDataMap().get(skills.get(1));
+        AvatarSkillData skillData = GameData.getAvatarSkillDataMap().get(skills.get(1).intValue());
         return skillData == null ? 0 : skillData.getProudSkillGroupId();
     }
 

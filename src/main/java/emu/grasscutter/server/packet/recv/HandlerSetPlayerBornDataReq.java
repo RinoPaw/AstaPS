@@ -43,7 +43,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
         Grasscutter.getLogger()
                 .info(
-                        "[born-rsp-4761] received SetPlayerBornDataReq cmdId={} avatarId={} nickname={}; testing rsp cmdId={}.",
+                        "[born-rsp-4761-before-login] received SetPlayerBornDataReq cmdId={} avatarId={} nickname={}; testing rsp cmdId={}.",
                         PacketOpcodes.SetPlayerBornDataReq,
                         avatarId,
                         req.getNickName(),
@@ -72,23 +72,24 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         } else {
             Grasscutter.getLogger()
                     .error(
-                            "[born-rsp-4761] received SetPlayerBornDataReq for uid {} after an avatar already existed; refusing to overwrite it.",
+                            "[born-rsp-4761-before-login] received SetPlayerBornDataReq for uid {} after an avatar already existed; refusing to overwrite it.",
                             player.getUid());
             session.close();
             return;
         }
 
-        // Keep the tested born-order-b sequence: normal login/world creation first, then birth quests.
-        // Packet logging is already ALL, so PlayerEnterSceneNotify will appear in the same trace.
-        player.onLogin();
-        player.getQuestManager().onPlayerBorn();
-
+        // This probe deliberately puts the response before normal login/world creation. The first
+        // 4761 run sent PlayerEnterSceneNotify before the candidate response, which leaves open the
+        // possibility that the client ignored the scene transition while still in character creation.
         Grasscutter.getLogger()
                 .info(
-                        "[born-rsp-4761] sending empty SetPlayerBornDataRsp candidate cmdId={} for uid={}.",
+                        "[born-rsp-4761-before-login] sending empty SetPlayerBornDataRsp candidate cmdId={} before onLogin for uid={}.",
                         TEST_SET_PLAYER_BORN_DATA_RSP,
                         player.getUid());
         session.send(new BasePacket(TEST_SET_PLAYER_BORN_DATA_RSP));
+
+        player.onLogin();
+        player.getQuestManager().onPlayerBorn();
 
         var welcomeMail = GAME_INFO.joinOptions.welcomeMail;
         MailBuilder mailBuilder = new MailBuilder(player.getUid(), new Mail());

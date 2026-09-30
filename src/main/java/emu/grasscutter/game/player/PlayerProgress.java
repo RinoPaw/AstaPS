@@ -17,8 +17,8 @@ public class PlayerProgress {
     private Map<Integer, ItemEntry> itemHistory;
 
     /*
-     * A list of dungeon IDs which have been completed.
-     * This only applies to one-time dungeons.
+     * Dungeon IDs which have completed successfully. DungeonManager records every successful
+     * settle here, including repeatable domains, so this also acts as durable clear history.
      */
     private IntArrayList completedDungeons;
 

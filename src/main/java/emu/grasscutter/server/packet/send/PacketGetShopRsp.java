@@ -2,6 +2,7 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.avatar.AvatarCostumeData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.shop.*;
@@ -19,7 +20,7 @@ public class PacketGetShopRsp extends BasePacket {
         Shop.Builder shop =
                 Shop.newBuilder()
                         .setShopType(shopType)
-                        .setCityId(1) // mock
+                        .setCityId(cityIdForShop(shopType))
                         .setCityReputationLevel(10); // mock
 
         ShopSystem manager = Grasscutter.getGameServer().getShopSystem();
@@ -28,10 +29,19 @@ public class PacketGetShopRsp extends BasePacket {
             List<ShopGoods> goodsList = new ArrayList<>();
             int shopNextRefreshTime = 0;
             int currentTs = Utils.getCurrentSeconds();
+            var artifactShop = manager.getArtifactShop();
+            Set<Integer> availableArtifactGoods =
+                    artifactShop.getAvailableGoodsIds(player, shopType);
 
             for (ShopInfo info : list) {
-                boolean refreshes =
-                        info.getShopRefreshType() != ShopInfo.ShopRefreshType.NONE;
+                // Artifact goods are already routed to the right city shop; each player only sees
+                // pieces unlocked by the highest cleared difficulty of that artifact domain.
+                var artifactPiece = artifactShop.getPiece(info.getGoodsId());
+                if (artifactPiece != null && !availableArtifactGoods.contains(info.getGoodsId())) {
+                    continue;
+                }
+
+                boolean refreshes = info.getShopRefreshType() != ShopInfo.ShopRefreshType.NONE;
                 int nextRefreshTime = ShopSystem.getShopNextRefreshTime(info);
                 // Only invent a countdown for goods that actually refresh.
                 // One-time skins (SHOP_REFRESH_NONE) must stay at 0 or the costume UI hangs.
@@ -76,8 +86,19 @@ public class PacketGetShopRsp extends BasePacket {
                     syncSoldOutLimit(player, info.getGoodsId(), boughtNum, nextRefreshTime);
                 }
 
+                List<ItemParamData> costOverride = null;
+                if (artifactPiece != null) {
+                    int resinCost = artifactShop.getResinCost(player, info.getGoodsId());
+                    costOverride =
+                            List.of(
+                                    new ItemParamData(
+                                            ArtifactShop.ORIGINAL_RESIN_ID, resinCost));
+                }
+
                 ShopGoods goods =
-                        ShopGoodsBuilder.fromShopInfo(info, boughtNum, nextRefreshTime).build();
+                        ShopGoodsBuilder.fromShopInfo(
+                                        info, boughtNum, nextRefreshTime, costOverride)
+                                .build();
                 goodsList.add(goods);
 
                 if (refreshes
@@ -95,6 +116,18 @@ public class PacketGetShopRsp extends BasePacket {
 
         player.save();
         this.setData(GetShopRspOuterClass.GetShopRsp.newBuilder().setShop(shop).build());
+    }
+
+    /** Preserve the old city-1 fallback for unrelated shops while reporting verified regional shops exactly. */
+    private static int cityIdForShop(int shopType) {
+        return switch (shopType) {
+            case 1004 -> 1; // Mondstadt
+            case 1008 -> 2; // Liyue
+            case 1056 -> 3; // Inazuma
+            case 1074 -> 4; // Sumeru
+            case 1093 -> 5; // Fontaine
+            default -> 1;
+        };
     }
 
     /** Returns buyLimit when the player already owns this costume item; otherwise 0. */

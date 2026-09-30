@@ -32,6 +32,7 @@ public class DungeonData extends GameResource {
     @Getter private int statueCostID;
     @Getter private int statueCostCount;
     @Getter private int statueDrop;
+    @Getter private int cityId;
 
     // not part of DungeonExcelConfigData
     @Getter private RewardPreviewData rewardPreviewData;

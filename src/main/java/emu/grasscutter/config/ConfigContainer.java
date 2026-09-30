@@ -39,9 +39,10 @@ public class ConfigContainer {
      * Version 15 - 'server.watchdog' was added for the database monitor and timed restart.
      * Version 16 - 'gameOptions.rates.leyLines' was split into a global rate and
      *              source-specific Mora / EXP-book rates.
+     * Version 17 - fixed exploration rewards were moved into gameOptions.explorationRewards.
      */
     private static int version() {
-        return 16;
+        return 17;
     }
 
     /**
@@ -398,6 +399,7 @@ public class ConfigContainer {
         public boolean watchGachaConfig = false;
         public boolean enableShopItems = false;
         public ArtifactShopOptions artifactShop = new ArtifactShopOptions();
+        public ExplorationRewardOptions explorationRewards = new ExplorationRewardOptions();
         public boolean staminaUsage = true;
         public boolean energyUsage = true;
         public boolean fishhookTeleport = true;
@@ -458,6 +460,75 @@ public class ConfigContainer {
              * them evenly, the way the game does.
              */
             public double highRollBias = 3;
+        }
+
+        /** User-facing fixed rewards for exploration actions. */
+        public static class ExplorationRewardOptions {
+            public UnlockReward waypoint = new UnlockReward(5, 10, 0, 0, 0);
+            public UnlockReward statue = new UnlockReward(5, 50, 0, 0, 0);
+            public ChestRewards chests = new ChestRewards();
+
+            public static class UnlockReward {
+                public int primogems;
+                public int adventureExp;
+                public int fragileResin;
+                public int heroWit;
+                public int mysticEnhancementOre;
+
+                public UnlockReward() {}
+
+                public UnlockReward(
+                        int primogems,
+                        int adventureExp,
+                        int fragileResin,
+                        int heroWit,
+                        int mysticEnhancementOre) {
+                    this.primogems = primogems;
+                    this.adventureExp = adventureExp;
+                    this.fragileResin = fragileResin;
+                    this.heroWit = heroWit;
+                    this.mysticEnhancementOre = mysticEnhancementOre;
+                }
+            }
+
+            public static class ChestRewards {
+                public ChestReward common = new ChestReward(0, 10, 1, 500, 1, 1, 0, 0);
+                public ChestReward exquisite = new ChestReward(2, 20, 2, 1000, 2, 2, 1, 0);
+                public ChestReward precious = new ChestReward(5, 30, 3, 1500, 3, 2, 2, 1);
+                public ChestReward luxurious = new ChestReward(10, 30, 4, 2000, 4, 2, 3, 1);
+            }
+
+            public static class ChestReward {
+                public int primogems;
+                public int adventureExp;
+                public int sigil;
+                public int mora;
+                public int fineEnhancementOre;
+                public int wanderersAdvice;
+                public int adventurersExperience;
+                public int herosWit;
+
+                public ChestReward() {}
+
+                public ChestReward(
+                        int primogems,
+                        int adventureExp,
+                        int sigil,
+                        int mora,
+                        int fineEnhancementOre,
+                        int wanderersAdvice,
+                        int adventurersExperience,
+                        int herosWit) {
+                    this.primogems = primogems;
+                    this.adventureExp = adventureExp;
+                    this.sigil = sigil;
+                    this.mora = mora;
+                    this.fineEnhancementOre = fineEnhancementOre;
+                    this.wanderersAdvice = wanderersAdvice;
+                    this.adventurersExperience = adventurersExperience;
+                    this.herosWit = herosWit;
+                }
+            }
         }
 
         public NewAccountIntro newAccountIntro = new NewAccountIntro();

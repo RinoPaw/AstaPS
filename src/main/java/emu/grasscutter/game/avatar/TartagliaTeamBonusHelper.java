@@ -324,7 +324,7 @@ public final class TartagliaTeamBonusHelper {
         if (skills == null || skills.isEmpty()) {
             return 0;
         }
-        AvatarSkillData skillData = GameData.getAvatarSkillDataMap().get(skills.get(0));
+        AvatarSkillData skillData = GameData.getAvatarSkillDataMap().get(skills.get(0).intValue());
         if (skillData == null) {
             return 0;
         }

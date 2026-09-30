@@ -180,30 +180,32 @@ public class GameItem {
     }
 
     public void addAppendProp() {
-        this.addAppendProp(ArtifactRollBias.NONE);
-    }
-
-    public void addAppendProp(ArtifactRollBias bias) {
         if (this.appendPropIdList == null) {
             this.appendPropIdList = new ArrayList<>();
         }
 
         if (this.appendPropIdList.size() < 4) {
-            this.addNewAppendProp(bias);
+            this.addNewAppendProp();
         } else {
-            this.upgradeRandomAppendProp(bias);
+            this.upgradeRandomAppendProp();
         }
+    }
+
+    /** Kept for source compatibility; artifact roll weighting is global. */
+    public void addAppendProp(ArtifactRollBias ignored) {
+        this.addAppendProp();
     }
 
     public void addAppendProps(int quantity) {
-        this.addAppendProps(quantity, ArtifactRollBias.NONE);
-    }
-
-    public void addAppendProps(int quantity, ArtifactRollBias bias) {
         int num = Math.max(quantity, 0);
         for (int i = 0; i < num; i++) {
-            this.addAppendProp(bias);
+            this.addAppendProp();
         }
+    }
+
+    /** Kept for source compatibility; artifact roll weighting is global. */
+    public void addAppendProps(int quantity, ArtifactRollBias ignored) {
+        this.addAppendProps(quantity);
     }
 
     private Set<FightProperty> getAppendFightProperties() {
@@ -219,7 +221,7 @@ public class GameItem {
         return props;
     }
 
-    private void addNewAppendProp(ArtifactRollBias bias) {
+    private void addNewAppendProp() {
         List<ReliquaryAffixData> affixList =
                 GameDepot.getRelicAffixList(this.itemData.getAppendPropDepotId());
 
@@ -235,24 +237,38 @@ public class GameItem {
             blacklist.add(mainPropData.getFightProp());
         }
 
-        // Build random list
-        WeightedList<ReliquaryAffixData> randomList = new WeightedList<>();
+        // First choose the stat type. Type bias applies only when a new line is created.
+        var typeBaseWeights = new HashMap<FightProperty, Double>();
         for (ReliquaryAffixData affix : affixList) {
-            if (!blacklist.contains(affix.getFightProp())) {
-                randomList.add(affix.getWeight() * bias.weigh(affix), affix);
+            if (affix.getWeight() > 0 && !blacklist.contains(affix.getFightProp())) {
+                typeBaseWeights.merge(affix.getFightProp(), (double) affix.getWeight(), Double::sum);
             }
         }
 
-        if (randomList.size() == 0) {
+        var typeList = new WeightedList<FightProperty>();
+        for (var entry : typeBaseWeights.entrySet()) {
+            typeList.add(entry.getValue() * ArtifactRollBias.typeWeight(entry.getKey()), entry.getKey());
+        }
+        if (typeList.size() == 0) {
+            return;
+        }
+        FightProperty selectedType = typeList.next();
+
+        // Then choose the numeric tier inside that type. Tier bias is independent of type bias.
+        var tierList = new WeightedList<ReliquaryAffixData>();
+        for (ReliquaryAffixData affix : affixList) {
+            if (affix.getFightProp() == selectedType && affix.getWeight() > 0) {
+                tierList.add(affix.getWeight() * ArtifactRollBias.GLOBAL.weigh(affix), affix);
+            }
+        }
+        if (tierList.size() == 0) {
             return;
         }
 
-        // Add random stat
-        ReliquaryAffixData affixData = randomList.next();
-        this.appendPropIdList.add(affixData.getId());
+        this.appendPropIdList.add(tierList.next().getId());
     }
 
-    private void upgradeRandomAppendProp(ArtifactRollBias bias) {
+    private void upgradeRandomAppendProp() {
         List<ReliquaryAffixData> affixList =
                 GameDepot.getRelicAffixList(this.itemData.getAppendPropDepotId());
 
@@ -274,21 +290,37 @@ public class GameItem {
             }
         }
 
-        // Build random list
-        WeightedList<ReliquaryAffixData> randomList = new WeightedList<>();
+        // Choose which existing line receives the upgrade using the original upgrade weights only.
+        var typeBaseWeights = new HashMap<FightProperty, Double>();
         for (ReliquaryAffixData affix : affixList) {
-            if (whitelist.contains(affix.getFightProp())) {
-                randomList.add(affix.getUpgradeWeight() * bias.weigh(affix), affix);
+            if (affix.getUpgradeWeight() > 0 && whitelist.contains(affix.getFightProp())) {
+                typeBaseWeights.merge(
+                        affix.getFightProp(), (double) affix.getUpgradeWeight(), Double::sum);
             }
         }
 
-        if (randomList.size() == 0) {
+        var typeList = new WeightedList<FightProperty>();
+        for (var entry : typeBaseWeights.entrySet()) {
+            typeList.add(entry.getValue(), entry.getKey());
+        }
+        if (typeList.size() == 0) {
+            return;
+        }
+        FightProperty selectedType = typeList.next();
+
+        // Once the target line is fixed, bias only the value tier of this enhancement roll.
+        var tierList = new WeightedList<ReliquaryAffixData>();
+        for (ReliquaryAffixData affix : affixList) {
+            if (affix.getFightProp() == selectedType && affix.getUpgradeWeight() > 0) {
+                tierList.add(
+                        affix.getUpgradeWeight() * ArtifactRollBias.GLOBAL.weigh(affix), affix);
+            }
+        }
+        if (tierList.size() == 0) {
             return;
         }
 
-        // Add random stat
-        ReliquaryAffixData affixData = randomList.next();
-        this.appendPropIdList.add(affixData.getId());
+        this.appendPropIdList.add(tierList.next().getId());
     }
 
     /** Fight props from definite append ids that still need guaranteed upgrade hits. */

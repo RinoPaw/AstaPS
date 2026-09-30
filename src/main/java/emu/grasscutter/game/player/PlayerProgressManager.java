@@ -973,84 +973,9 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                         entityIds.size());
     }
 
+    /** Compatibility entry point; TransPointUnlockHelper owns unlock behavior and rewards. */
     public boolean unlockTransPoint(int sceneId, int pointId, boolean isStatue) {
-        // Check whether the unlocked point exists and whether it is still locked.
-        ScenePointEntry scenePointEntry = GameData.getScenePointEntryById(sceneId, pointId);
-
-        // Clear test lock first so a force-locked statue can be unlocked via UnlockTransPointReq.
-        this.player.getForceLockedScenePoints(sceneId).remove(pointId);
-
-        if (scenePointEntry == null || this.player.getUnlockedScenePoints(sceneId).contains(pointId)) {
-            return false;
-        }
-
-        var pointData = scenePointEntry.getPointData();
-        if (!isStatue
-                && emu.grasscutter.game.managers.StatueTalkQuests.isStatuePoint(pointData)) {
-            isStatue = true;
-        }
-
-        // Add the point to the list of unlocked points for its scene.
-        this.player.getUnlockedScenePoints(sceneId).add(pointId);
-
-        // Map fog is statue-only (official: one SotS gives one WorldArea). Waypoints and dungeon
-        // entries must not open areas - unlocking a Guili Plains TP was clearing Qiongji Yetan fog.
-        if (isStatue && pointData != null && pointData.getAreaId() > 0) {
-            this.unlockSceneAreaHierarchy(sceneId, pointData.getAreaId());
-        }
-
-        // Unlock rewards: statues vs waypoints/dungeon entries.
-        if (isStatue) {
-            this.player.getInventory().addItem(201, 2888, ActionReason.UnlockPointReward); // primogems
-            this.player.getInventory().addItem(102, 800, ActionReason.UnlockPointReward); // adventure EXP
-            this.player.getInventory().addItem(107009, 3, ActionReason.UnlockPointReward); // fragile resin
-            this.player.getInventory().addItem(104003, 50, ActionReason.UnlockPointReward); // hero's wit
-            this.player.getInventory().addItem(104013, 20, ActionReason.UnlockPointReward); // mystic enhancement ore
-        } else {
-            // Ordinary waypoint or domain entrance
-            this.player.getInventory().addItem(201, 2888, ActionReason.UnlockPointReward); // primogems
-            this.player.getInventory().addItem(102, 300, ActionReason.UnlockPointReward); // adventure EXP
-            this.player.getInventory().addItem(104003, 5, ActionReason.UnlockPointReward); // hero's wit
-            this.player.getInventory().addItem(104013, 5, ActionReason.UnlockPointReward); // mystic enhancement ore
-        }
-
-        // Fire quest trigger for trans point unlock.
-        this.player
-                .getQuestManager()
-                .queueEvent(QuestContent.QUEST_CONTENT_UNLOCK_TRANS_POINT, sceneId, pointId);
-        try {
-            if (this.player.getScene() != null) {
-                this.player
-                        .getScene()
-                        .getScriptManager()
-                        .callEvent(new ScriptArgs(0, EVENT_UNLOCK_TRANS_POINT, sceneId, pointId));
-            }
-        } catch (Throwable ignored) {
-        }
-
-        // After unlock, forge Talk gate finished so goddess F works without playing 303xx.
-        if (isStatue) {
-            this.refreshStatueTalkGate(sceneId, pointId);
-        }
-
-        // Send packet.
-        this.player.sendPacket(new PacketScenePointUnlockNotify(sceneId, pointId));
-        try {
-            int total = 0;
-            if (this.player.getUnlockedScenePoints() != null) {
-                for (var pts : this.player.getUnlockedScenePoints().values()) {
-                    if (pts != null) total += pts.size();
-                }
-            }
-            InvestigationHandbookHelper.trigger(
-                    this.player,
-                    emu.grasscutter.game.props.WatcherTriggerType.TRIGGER_UNLOCK_TRANS_POINT,
-                    0,
-                    total);
-        } catch (Throwable ignored) {
-        }
-        this.player.save();
-        return true;
+        return TransPointUnlockHelper.unlock(this.player, sceneId, pointId, isStatue);
     }
 
     public void unlockSceneArea(int sceneId, int areaId) {

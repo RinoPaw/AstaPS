@@ -17,7 +17,7 @@ jobs:
           ref: experiment/no-legacy-fallback
           fetch-depth: 0
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
@@ -27,6 +27,12 @@ jobs:
         run: |
           from pathlib import Path
           import re
+
+          def sub_once(text, pattern, replacement, label, flags=0):
+              result, count = re.subn(pattern, replacement, text, count=1, flags=flags)
+              if count != 1:
+                  raise SystemExit(f"{label}: expected 1 match, found {count}")
+              return result
 
           def replace_once(text, old, new, label):
               count = text.count(old)
@@ -38,40 +44,14 @@ jobs:
           db = db_path.read_text()
           db = replace_once(db, 'import at.favre.lib.crypto.bcrypt.BCrypt;\n', '', 'DatabaseHelper BCrypt import')
 
-          legacy_ip = '''    /**
-           * The prefix used before the ban reason was in English.
-           *
-           * <p>Accounts banned back then carry it and have no bannedByIp field, so unbanning an IP still
-           * matches on it to find them. Nothing writes it any more.
-           */
-          private static final String LEGACY_IP_BAN_REASON_PREFIX = "IP\\u5df2\\u5c01\\u7981: ";
+          db = sub_once(
+              db,
+              r'\n    /\*\*\n     \* The prefix used before the ban reason was in English\..*?\n    private static final String LEGACY_IP_BAN_REASON_PREFIX = .*?;\n',
+              '\n',
+              'legacy IP-ban prefix',
+              re.S)
 
-          '''
-          db = replace_once(db, legacy_ip, '', 'legacy IP-ban prefix')
-
-          old_ip_lookup = '''    /**
-           * Every account that was banned because of this IP.
-           *
-           * <p>Matched on the bannedByIp field, with the old reason-text pattern as a fallback so
-           * accounts banned before that field existed are still found.
-           */
-          public static List<Account> getAccountsBannedByIp(String ip) {
-              if (ip == null) return List.of();
-              return DatabaseManager.getAccountDatastore()
-                      .find(Account.class)
-                      .filter(
-                              Filters.or(
-                                      Filters.eq("bannedByIp", ip),
-                                      Filters.regex("banReason")
-                                              .pattern(
-                                                      "^"
-                                                              + java.util.regex.Pattern.quote(
-                                                                      LEGACY_IP_BAN_REASON_PREFIX + ip))))
-                      .iterator()
-                      .toList();
-          }
-          '''
-          new_ip_lookup = '''    /** Every account that was banned because of this IP. */
+          current_ip_lookup = '''    /** Every account that was banned because of this IP. */
           public static List<Account> getAccountsBannedByIp(String ip) {
               if (ip == null) return List.of();
               return DatabaseManager.getAccountDatastore()
@@ -80,49 +60,16 @@ jobs:
                       .iterator()
                       .toList();
           }
+
           '''
-          db = replace_once(db, old_ip_lookup, new_ip_lookup, 'legacy IP-ban lookup')
+          db = sub_once(
+              db,
+              r'    /\*\*\n     \* Every account that was banned because of this IP\..*?(?=    /\*\* Lifts the ban)',
+              current_ip_lookup,
+              'legacy IP-ban lookup',
+              re.S)
 
-          old_account_api = '''    /**
-           * Creates an account with a hashed password and an email address.
-           *
-           * <p>Separate from the two-argument version, which stores whatever it is handed verbatim.
-           * Account.verifyPassword accepts both a BCrypt hash and a legacy plaintext value, so a password
-           * stored raw does work - it just stays raw forever, since the authenticator only upgrades an
-           * account whose stored password is empty.
-           *
-           * @return the new account, or null if the username is taken.
-           */
-          public static Account createAccountWithHashedPassword(
-                  String username, String password, String email) {
-              if (DatabaseHelper.getAccountByName(username) != null) return null;
-
-              var account = new Account();
-              account.setId(Integer.toString(DatabaseManager.getNextId(account)));
-              account.setUsername(username);
-              account.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
-              if (email != null && !email.isBlank()) account.setEmail(email);
-              DatabaseHelper.saveAccount(account);
-              return account;
-          }
-
-          public static Account createAccountWithPassword(String username, String password) {
-              // Unique names only
-              Account exists = DatabaseHelper.getAccountByName(username);
-              if (exists != null) {
-                  return null;
-              }
-
-              // Account
-              Account account = new Account();
-              account.setId(Integer.toString(DatabaseManager.getNextId(account)));
-              account.setUsername(username);
-              account.setPassword(password);
-              DatabaseHelper.saveAccount(account);
-              return account;
-          }
-          '''
-          new_account_api = '''    /** Creates an account with a password and optional email address. */
+          current_account_api = '''    /** Creates an account with a password and optional email address. */
           public static Account createAccountWithPassword(
                   String username, String password, String email) {
               if (DatabaseHelper.getAccountByName(username) != null) return null;
@@ -139,55 +86,54 @@ jobs:
           public static Account createAccountWithPassword(String username, String password) {
               return createAccountWithPassword(username, password, null);
           }
+
           '''
-          db = replace_once(db, old_account_api, new_account_api, 'account password API')
+          db = sub_once(
+              db,
+              r'    /\*\*\n     \* Creates an account with a hashed password and an email address\..*?(?=    public static void saveAccount\(Account account\))',
+              current_account_api,
+              'account password API',
+              re.S)
+
           if 'LEGACY_IP_BAN_REASON_PREFIX' in db or 'createAccountWithHashedPassword' in db or 'BCrypt.' in db:
               raise SystemExit('DatabaseHelper still contains retired compatibility/password paths')
           db_path.write_text(db)
 
           auth_path = Path('src/main/java/emu/grasscutter/auth/DefaultAuthenticators.java')
           auth = auth_path.read_text()
-          auth = auth.replace('DatabaseHelper.createAccountWithHashedPassword(', 'DatabaseHelper.createAccountWithPassword(')
+          auth = replace_once(
+              auth,
+              'DatabaseHelper.createAccountWithHashedPassword(',
+              'DatabaseHelper.createAccountWithPassword(',
+              'standard account creation call')
 
-          old_first_login = '''                        try {
-                              account.setPassword(
-                                      BCrypt.withDefaults().hashToString(10, rawPassword.toCharArray()));
-                              account.save();
-                          } catch (IllegalArgumentException tooLong) {
-          '''
-          new_first_login = '''                        try {
-                              account.setPassword(rawPassword);
-                              account.save();
-                          } catch (IllegalArgumentException tooLong) {
-          '''
-          auth = replace_once(auth, old_first_login, new_first_login, 'standard first-login password')
+          auth = sub_once(
+              auth,
+              r'account\.setPassword\(\s*BCrypt\.withDefaults\(\)\.hashToString\(10, rawPassword\.toCharArray\(\)\)\);',
+              'account.setPassword(rawPassword);',
+              'standard first-login password',
+              re.S)
 
-          old_experimental_create = '''                    account = DatabaseHelper.createAccountWithUid(requestData.account, 0);
-                          account.setPassword(
-                                  BCrypt.withDefaults().hashToString(12, decryptedPassword.toCharArray()));
-                          account.save();
-          '''
-          new_experimental_create = '''                    account =
-                                  DatabaseHelper.createAccountWithPassword(
-                                          requestData.account, decryptedPassword);
-          '''
-          auth = replace_once(auth, old_experimental_create, new_experimental_create, 'experimental account creation')
+          auth = sub_once(
+              auth,
+              r'account = DatabaseHelper\.createAccountWithUid\(requestData\.account, 0\);\s*account\.setPassword\(\s*BCrypt\.withDefaults\(\)\.hashToString\(12, decryptedPassword\.toCharArray\(\)\)\);\s*account\.save\(\);',
+              'account =\n                            DatabaseHelper.createAccountWithPassword(\n                                    requestData.account, decryptedPassword);',
+              'experimental account creation',
+              re.S)
 
-          old_experimental_verify = '''                    if (BCrypt.verifyer()
-                                  .verify(decryptedPassword.toCharArray(), account.getPassword())
-                                  .verified) {
-          '''
-          new_experimental_verify = '''                    if (verifyPassword(account, decryptedPassword)) {
-          '''
-          auth = replace_once(auth, old_experimental_verify, new_experimental_verify, 'experimental password verification')
+          auth = sub_once(
+              auth,
+              r'BCrypt\.verifyer\(\)\s*\.verify\(decryptedPassword\.toCharArray\(\), account\.getPassword\(\)\)\s*\.verified',
+              'verifyPassword(account, decryptedPassword)',
+              'experimental password verification',
+              re.S)
 
-          old_experimental_lock = '''                        account.setPassword(
-                                  BCrypt.withDefaults()
-                                          .hashToString(12, decryptedPassword.toCharArray()));
-          '''
-          new_experimental_lock = '''                        account.setPassword(decryptedPassword);
-          '''
-          auth = replace_once(auth, old_experimental_lock, new_experimental_lock, 'experimental first-login password')
+          auth = sub_once(
+              auth,
+              r'account\.setPassword\(\s*BCrypt\.withDefaults\(\)\s*\.hashToString\(12, decryptedPassword\.toCharArray\(\)\)\);',
+              'account.setPassword(decryptedPassword);',
+              'experimental first-login password',
+              re.S)
 
           if 'BCrypt.' in auth:
               raise SystemExit('DefaultAuthenticators still hashes/verifies BCrypt directly')

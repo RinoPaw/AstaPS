@@ -96,9 +96,10 @@ public class HandlerBuyGoodsReq extends PacketHandler {
             var artifactShop = session.getServer().getShopSystem().getArtifactShop();
             var piece = artifactShop.getPiece(sg.getGoodsId());
             if (piece != null) {
-                // Hidden shop entries are not authorization. A crafted BuyGoodsReq must pass the
-                // same domain-clear and Adventure Rank checks as the shop response.
-                if (!artifactShop.isAvailable(player, piece)) {
+                // Hidden shop entries are not authorization. A crafted BuyGoodsReq must belong to
+                // this city and pass the same domain-clear and Adventure Rank checks as the UI.
+                if (!artifactShop.isAvailable(
+                        player, buyGoodsReq.getShopType(), sg.getGoodsId())) {
                     session.send(new PacketBuyGoodsRsp(Retcode.RET_SHOP_CONTENT_NOT_MATCH));
                     continue;
                 }

@@ -1,7 +1,9 @@
 package emu.grasscutter.game.shop;
 
+import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.net.proto.ItemParamOuterClass.ItemParam;
 import emu.grasscutter.net.proto.ShopGoodsOuterClass.ShopGoods;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /** Builds client ShopGoods payloads from server ShopInfo. */
@@ -12,6 +14,14 @@ public final class ShopGoodsBuilder {
     private ShopGoodsBuilder() {}
 
     public static ShopGoods.Builder fromShopInfo(ShopInfo info, int boughtNum, int nextRefreshTime) {
+        return fromShopInfo(info, boughtNum, nextRefreshTime, null);
+    }
+
+    public static ShopGoods.Builder fromShopInfo(
+            ShopInfo info,
+            int boughtNum,
+            int nextRefreshTime,
+            List<ItemParamData> costItemOverride) {
         int buyLimit = info.getBuyLimit();
         int bought = boughtNum;
         if (buyLimit > 0) {
@@ -50,9 +60,11 @@ public final class ShopGoodsBuilder {
                         .setBoughtNum(bought)
                         .setNextRefreshTime(nextRefreshTime);
 
-        if (info.getCostItemList() != null) {
+        List<ItemParamData> costItems =
+                costItemOverride != null ? costItemOverride : info.getCostItemList();
+        if (costItems != null) {
             goods.addAllCostItemList(
-                    info.getCostItemList().stream()
+                    costItems.stream()
                             .map(
                                     x ->
                                             ItemParam.newBuilder()

@@ -41,11 +41,14 @@ public final class HelpCommand implements PicocliCommandHandler {
             List<String> denied = new ArrayList<>();
 
             if (commandName == null) {
-                commandMap.getHandlers().forEach(
-                        (label, handler) -> addVisibleCommand(player, account, handler, commands, denied));
+                commandMap
+                        .getHandlers()
+                        .forEach(
+                                (label, handler) ->
+                                        addVisibleCommand(player, account, handler, commands, denied));
                 CommandHandler.sendTranslatedMessage(player, "commands.help.available_commands");
             } else {
-                CommandHandler handler = commandMap.getHandler(commandName.toLowerCase());
+                PicocliCommandHandler handler = commandMap.getHandler(commandName);
                 if (handler == null) {
                     CommandHandler.sendTranslatedMessage(player, "commands.generic.command_exist_error");
                     CommandHandler.sendMessage(player, "Command: " + commandName.toLowerCase());
@@ -63,7 +66,7 @@ public final class HelpCommand implements PicocliCommandHandler {
     private static void addVisibleCommand(
             Player player,
             Account account,
-            CommandHandler handler,
+            PicocliCommandHandler handler,
             List<String> commands,
             List<String> denied) {
         Command metadata = handler.getClass().getAnnotation(Command.class);
@@ -75,7 +78,7 @@ public final class HelpCommand implements PicocliCommandHandler {
         }
     }
 
-    private static String describe(Player player, CommandHandler handler) {
+    private static String describe(Player player, PicocliCommandHandler handler) {
         Command metadata = handler.getClass().getAnnotation(Command.class);
         StringBuilder builder =
                 new StringBuilder(handler.getLabel())

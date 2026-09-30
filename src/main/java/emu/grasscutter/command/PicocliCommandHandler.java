@@ -4,22 +4,12 @@ import emu.grasscutter.game.player.Player;
 import java.util.List;
 import picocli.CommandLine;
 
-/**
- * A command whose argument grammar is described by picocli.
- *
- * <p>{@link CommandMap} still owns AstaPS-wide concerns such as sender/target resolution,
- * permissions, {@code @UID}, the persistent {@code target} command, command events, and threading.
- * Implementations own only the grammar beneath their existing top-level command name.
- *
- * <p>A fresh {@link CommandLine} is created for every invocation because picocli command objects
- * contain mutable parse state. A context-free instance is also used to expose the same grammar to
- * JLine completion.
- */
+/** A command whose complete argument grammar is described by picocli. */
 public interface PicocliCommandHandler extends CommandHandler {
     /** Build this command's picocli tree for one invocation or for completion when both players are null. */
     CommandLine createCommandLine(Player sender, Player targetPlayer);
 
-    /** Build a context-free command tree used only as parser/completion metadata. */
+    /** Build a context-free command tree used as parser/completion/help metadata. */
     default CommandLine createCompletionCommandLine() {
         return createCommandLine(null, null);
     }
@@ -27,5 +17,15 @@ public interface PicocliCommandHandler extends CommandHandler {
     @Override
     default void execute(Player sender, Player targetPlayer, List<String> args) {
         createCommandLine(sender, targetPlayer).execute(args.toArray(String[]::new));
+    }
+
+    @Override
+    default String getUsageString(Player player, String... ignored) {
+        return createCommandLine(player, null).getUsageMessage().stripTrailing();
+    }
+
+    @Override
+    default void sendUsageMessage(Player player, String... ignored) {
+        CommandHandler.sendMessage(player, getUsageString(player));
     }
 }

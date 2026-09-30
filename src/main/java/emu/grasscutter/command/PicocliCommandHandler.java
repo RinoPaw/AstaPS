@@ -1,11 +1,12 @@
 package emu.grasscutter.command;
 
+import static emu.grasscutter.utils.lang.Language.translate;
+
 import emu.grasscutter.game.player.Player;
-import java.util.List;
 import picocli.CommandLine;
 
 /** A command whose complete argument grammar is described by picocli. */
-public interface PicocliCommandHandler extends CommandHandler {
+public interface PicocliCommandHandler {
     /** Build this command's picocli tree for one invocation or for completion when both players are null. */
     CommandLine createCommandLine(Player sender, Player targetPlayer);
 
@@ -14,18 +15,23 @@ public interface PicocliCommandHandler extends CommandHandler {
         return createCommandLine(null, null);
     }
 
-    @Override
-    default void execute(Player sender, Player targetPlayer, List<String> args) {
-        createCommandLine(sender, targetPlayer).execute(args.toArray(String[]::new));
-    }
-
-    @Override
-    default String getUsageString(Player player, String... ignored) {
+    default String getUsageString(Player player) {
         return createCommandLine(player, null).getUsageMessage().stripTrailing();
     }
 
-    @Override
-    default void sendUsageMessage(Player player, String... ignored) {
+    default void sendUsageMessage(Player player) {
         CommandHandler.sendMessage(player, getUsageString(player));
+    }
+
+    default String getLabel() {
+        return getClass().getAnnotation(Command.class).label();
+    }
+
+    default String getDescriptionKey() {
+        return "commands.%s.description".formatted(getLabel());
+    }
+
+    default String getDescriptionString(Player player) {
+        return translate(player, getDescriptionKey());
     }
 }

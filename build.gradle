@@ -261,11 +261,14 @@ publishing {
     }
 }
 
+def buildConfigOutputDir = layout.buildDirectory.dir('generated/sources/buildConfig/java/main')
+
 sourceSets {
     main {
         // The 7.1 protocol dump is checked in as generated Java; there are no source .proto files.
         java {
             srcDir 'src/generated/main/java'
+            srcDir buildConfigOutputDir
         }
     }
 }
@@ -295,6 +298,57 @@ javadoc {
     exclude '**/*.md'
     exclude 'src/handbook/**/*.*'
     exclude 'src/generated/**/*.*'
+}
+
+def legacyBuildConfig = file('src/main/java/emu/grasscutter/BuildConfig.java')
+def generatedBuildConfig = buildConfigOutputDir.map { it.file('emu/grasscutter/BuildConfig.java') }
+
+tasks.register('generateBuildConfig') {
+    group = 'build setup'
+    description = 'Generate build version and Git hash metadata for the server.'
+    outputs.file(generatedBuildConfig)
+
+    doLast {
+        // Older builds generated this file inside src/main/java and .gitignore hid it. Remove the
+        // stale local artifact during migration so it cannot collide with the generated source.
+        if (legacyBuildConfig.exists()) {
+            delete legacyBuildConfig
+        }
+
+        def gitHash = 'GIT_NOT_FOUND'
+        try {
+            def process = new ProcessBuilder('git', 'rev-parse', '--verify', '--short', 'HEAD')
+                    .directory(rootDir)
+                    .redirectErrorStream(true)
+                    .start()
+            def output = process.inputStream.text.trim()
+            if (process.waitFor() == 0 && !output.isEmpty()) {
+                gitHash = output
+            }
+        } catch (IOException ignored) {
+            // Source archives can build without a .git directory or git executable.
+        }
+
+        def outputFile = generatedBuildConfig.get().asFile
+        outputFile.parentFile.mkdirs()
+        outputFile.text = """package emu.grasscutter;
+
+public final class BuildConfig {
+    public static final String VERSION = \"${version}\";
+    public static final String GIT_HASH = \"${gitHash}\";
+
+    private BuildConfig() {}
+}
+"""
+    }
+}
+
+tasks.named('compileJava') {
+    dependsOn 'generateBuildConfig'
+}
+
+tasks.named('sourcesJar') {
+    dependsOn 'generateBuildConfig'
 }
 
 def handbookDataFiles = [

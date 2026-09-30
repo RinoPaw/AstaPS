@@ -46,14 +46,13 @@ public final class EnterDungeonCommand implements PicocliCommandHandler {
                             .getServer()
                             .getDungeonSystem()
                             .enterDungeon(targetPlayer.getSession().getPlayer(), 0, dungeonId, true);
-            CommandHandler.sendMessage(
-                    sender,
-                    translate(
-                            sender,
-                            entered
-                                    ? "commands.enter_dungeon.changed"
-                                    : "commands.enter_dungeon.not_found_error",
-                            entered ? dungeonId : new Object[0]));
+            if (entered) {
+                CommandHandler.sendMessage(
+                        sender, translate(sender, "commands.enter_dungeon.changed", dungeonId));
+            } else {
+                CommandHandler.sendMessage(
+                        sender, translate(sender, "commands.enter_dungeon.not_found_error"));
+            }
         }
     }
 }

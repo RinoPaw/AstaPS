@@ -28,16 +28,7 @@ public class GachaEpitomizedPrefabHelper {
             return 0;
         }
         int wish = player.getGachaInfo().getChronicleWeaponBanner().getWishItemId();
-        if (wish >= 10000) {
-            return wish;
-        }
-        int legacy = player.getGachaInfo().getChronicleBanner().getWishItemId();
-        if (legacy >= 10000) {
-            player.getGachaInfo().getChronicleWeaponBanner().setWishItemId(legacy);
-            player.getGachaInfo().getChronicleBanner().setWishItemId(0);
-            return legacy;
-        }
-        return 0;
+        return wish >= 10000 ? wish : 0;
     }
 
     public static synchronized void load() {

@@ -13,7 +13,6 @@ import picocli.CommandLine.Parameters;
 
 @Command(
         label = "team",
-        usage = {"add <avatarId,...>", "(remove|set) [index|first|last|index-index,...]"},
         permission = "player.team",
         permissionTargeted = "player.team.others")
 public final class TeamCommand implements PicocliCommandHandler {
@@ -75,9 +74,6 @@ public final class TeamCommand implements PicocliCommandHandler {
 
     @picocli.CommandLine.Command(name = "add")
     private final class Add extends TeamMutation {
-        // This remains a token list deliberately. Existing syntax accepts multi-word character names
-        // such as `team add hu tao 2`; NameIndex decides how many words belong to the avatar name,
-        // then the remaining token is interpreted as the optional slot.
         @Parameters(index = "0..*", arity = "1..*", paramLabel = "<avatarId,...>")
         private List<String> tokens;
 

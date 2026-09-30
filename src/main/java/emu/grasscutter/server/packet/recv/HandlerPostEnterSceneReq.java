@@ -46,7 +46,7 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
         // The client only asks for friends and chat again after a teleport, so push both here or the
         // console and DPS bots are missing until then.
         session.send(new PacketGetPlayerFriendListRsp(player));
-        session.getServer().getChatManager().ensureServerConversation(player);
+        session.getServer().getChatSystem().ensureServerConversation(player);
 
         this.playOpeningCutscene(player);
     }

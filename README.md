@@ -19,7 +19,7 @@ If you can fix a bug, please help me.
 
 | | |
 |---|---|
-| Java | 21 to build. The sources target 17, but virtual threads and other 21 APIs compile against the JDK's own classes. |
+| Java | JDK 21 to build and run. The build enforces a Java 21 toolchain and `--release 21`. |
 | MongoDB | Community Server. Must be running before the server starts. |
 | Game client | Genshin Impact 7.1.0 |
 | Resources | A 7.1.0 resource pack, extracted to `resources/` in the server directory. If you don't have Resources, you can download it [here](https://github.com/MeChen618/AstaPS-Resource). |

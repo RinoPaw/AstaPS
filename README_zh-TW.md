@@ -19,7 +19,7 @@
 
 | | |
 |---|---|
-| Java | 編譯需要 21。原始碼目標是 17，但虛擬執行緒等 21 的 API 是對著 JDK 自身的類別編譯的。 |
+| Java | 編譯與執行皆需要 JDK 21。建置強制使用 Java 21 toolchain 與 `--release 21`。 |
 | MongoDB | Community Server，啟動伺服器前必須先跑起來。 |
 | 遊戲客戶端 | 原神 7.1.0 |
 | 資源檔 | 7.1.0 的資源包，解壓到伺服器目錄下的 `resources/`。如果你沒有資源檔，可以透過[該連結](https://github.com/MeChen618/AstaPS-Resource)下載。 |

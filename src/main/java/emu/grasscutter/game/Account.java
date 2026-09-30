@@ -44,7 +44,6 @@ public class Account {
      */
     private String bannedByIp;
 
-    @Deprecated
     public Account() {
         this.permissions = new ArrayList<>();
         this.locale = LANGUAGE;

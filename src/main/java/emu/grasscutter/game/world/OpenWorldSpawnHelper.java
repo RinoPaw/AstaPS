@@ -460,6 +460,7 @@ public final class OpenWorldSpawnHelper {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static Set<SpawnDataEntry.GridBlockId> getLoadedGridBlocks(Scene scene) {
         try {
             Object object;
@@ -469,10 +470,8 @@ public final class OpenWorldSpawnHelper {
                 field.setAccessible(true);
                 loadedGridBlocksField = field;
             }
-            if ((object = field.get(scene)) instanceof Set) {
-                Set set;
-                Set set2 = set = (Set)object;
-                return set2;
+            if ((object = field.get(scene)) instanceof Set<?> set) {
+                return (Set<SpawnDataEntry.GridBlockId>) set;
             }
         }
         catch (Throwable throwable) {

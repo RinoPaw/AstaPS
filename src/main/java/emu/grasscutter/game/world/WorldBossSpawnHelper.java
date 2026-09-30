@@ -252,7 +252,7 @@ public final class WorldBossSpawnHelper {
                     var5.id = var4.blockId;
                     var5.min = new Position((float)var4.minX, 0.0f, (float)var4.minZ);
                     var5.max = new Position((float)var4.maxX, 0.0f, (float)var4.maxZ);
-                    var5.groups = new HashMap();
+                    var5.groups = new HashMap<>();
                     var0.blocks.put(var4.blockId, var5);
                     var2 = true;
                     Grasscutter.getLogger().info("WorldBossSpawnHelper added missing scene block {} [{},{}]-[{},{}]", new Object[]{var4.blockId, var4.minX, var4.minZ, var4.maxX, var4.maxZ});
@@ -275,7 +275,7 @@ public final class WorldBossSpawnHelper {
     public static void injectBossGroups(SceneBlock var0, int var1) {
         if (var0 != null && var1 == 3) {
             if (var0.groups == null) {
-                var0.groups = new HashMap();
+                var0.groups = new HashMap<>();
             }
             WorldBossSpawnHelper.ensureIndexBuilt();
             for (BossSpawnEntry var3 : bossByGroupId.values()) {
@@ -1178,7 +1178,7 @@ public final class WorldBossSpawnHelper {
         }
         if (var0 != null) {
             if (var0.gadgets == null) {
-                var0.gadgets = new HashMap();
+                var0.gadgets = new HashMap<>();
             }
             var0.gadgets.putIfAbsent(var4.config_id, var4);
             var4.group = var0;
@@ -1481,7 +1481,7 @@ public final class WorldBossSpawnHelper {
         }
         if (!var0.getLoadedBlocks().contains(var4) && !var4.isLoaded()) {
             if (var4.groups == null) {
-                var4.groups = new HashMap();
+                var4.groups = new HashMap<>();
             }
             var0.loadBlock(var4);
         }
@@ -1600,7 +1600,8 @@ public final class WorldBossSpawnHelper {
             try {
                 Field var2 = SceneScriptManager.class.getDeclaredField("sceneGroups");
                 var2.setAccessible(true);
-                Map var3 = (Map)var2.get(var0);
+                @SuppressWarnings("unchecked")
+                Map<Integer, SceneGroup> var3 = (Map<Integer, SceneGroup>) var2.get(var0);
                 var3.put(var1.id, var1);
             }
             catch (Throwable var4) {
@@ -1631,7 +1632,9 @@ public final class WorldBossSpawnHelper {
                 try {
                     Field var5 = SceneScriptManager.class.getDeclaredField("sceneGroupsInstances");
                     var5.setAccessible(true);
-                    Map var6 = (Map)var5.get(var0);
+                    @SuppressWarnings("unchecked")
+                    Map<Integer, SceneGroupInstance> var6 =
+                            (Map<Integer, SceneGroupInstance>) var5.get(var0);
                     var6.put(var1.id, var3);
                     var0.getCachedGroupInstances().put(var1.id, var3);
                 }
@@ -1755,7 +1758,7 @@ public final class WorldBossSpawnHelper {
         var3.pos = var4.clone();
         var3.rot = new Position(0.0f, 0.0f, 0.0f);
         if (var1.monsters == null) {
-            var1.monsters = new HashMap();
+            var1.monsters = new HashMap<>();
         }
         var1.monsters.putIfAbsent(var3.config_id, var3);
         return var0.createMonster(var1.id, var1.block_id, var3);
@@ -1792,7 +1795,7 @@ public final class WorldBossSpawnHelper {
         Class<WorldBossSpawnHelper> clazz = WorldBossSpawnHelper.class;
         synchronized (WorldBossSpawnHelper.class) {
             if (bossByGroupId != null) return;
-            bossByGroupId = new Int2ObjectOpenHashMap();
+            bossByGroupId = new Int2ObjectOpenHashMap<>();
             bossMonsterConfigIds = ConcurrentHashMap.newKeySet();
             blockPatchById = new HashMap<Integer, BlockPatchInfo>();
             Map<Integer, float[]> var1 = WorldBossSpawnHelper.loadInvestigationPositions();
@@ -1838,7 +1841,7 @@ public final class WorldBossSpawnHelper {
     }
 
     private static void ensureRuntimeBossBlocks(Scene var0, SceneScriptManager var1) {
-        Map var2;
+        Map<Integer, SceneBlock> var2;
         if (var0 != null && var1 != null && var0.getId() == 3 && (var2 = var1.getBlocks()) != null) {
             WorldBossSpawnHelper.ensureIndexBuilt();
             if (!blockPatchById.isEmpty()) {
@@ -1853,7 +1856,7 @@ public final class WorldBossSpawnHelper {
                     var6.id = var5.blockId;
                     var6.min = new Position((float)var5.minX, 0.0f, (float)var5.minZ);
                     var6.max = new Position((float)var5.maxX, 0.0f, (float)var5.maxZ);
-                    var6.groups = new HashMap();
+                    var6.groups = new HashMap<>();
                     var2.put(var5.blockId, var6);
                     var3 = true;
                     Grasscutter.getLogger().info("WorldBossSpawnHelper runtime-added scene block {} [{},{}]-[{},{}]", new Object[]{var5.blockId, var5.minX, var5.minZ, var5.maxX, var5.maxZ});
@@ -2117,13 +2120,13 @@ public final class WorldBossSpawnHelper {
     }
 
     static {
-        lastBossSpawnAttemptMs = new ConcurrentHashMap();
-        lastNearbyCheckMs = new ConcurrentHashMap();
+        lastBossSpawnAttemptMs = new ConcurrentHashMap<>();
+        lastNearbyCheckMs = new ConcurrentHashMap<>();
         awaitingFlowerKeys = ConcurrentHashMap.newKeySet();
         pendingRespawnKeys = ConcurrentHashMap.newKeySet();
-        loginGraceUntilMs = new ConcurrentHashMap();
-        teleportGraceUntilMs = new ConcurrentHashMap();
-        kickstartAfterMs = new ConcurrentHashMap();
+        loginGraceUntilMs = new ConcurrentHashMap<>();
+        teleportGraceUntilMs = new ConcurrentHashMap<>();
+        kickstartAfterMs = new ConcurrentHashMap<>();
         javaExclusiveBossGroupsReady = ConcurrentHashMap.newKeySet();
     }
 

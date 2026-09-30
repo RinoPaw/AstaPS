@@ -558,7 +558,7 @@ public class TowerManager extends BasePlayerManager {
         // floor 10/11 — only seed floor 9 when nothing schedule-side exists yet.
         boolean hasScheduleRecord =
                 recordMap.keySet().stream().anyMatch(id -> {
-                    var floor = GameData.getTowerFloorDataMap().get(id);
+                    var floor = GameData.getTowerFloorDataMap().get(id.intValue());
                     return floor != null && floor.getFloorIndex() >= 9;
                 });
         if (!hasScheduleRecord) {

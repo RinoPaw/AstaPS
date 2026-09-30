@@ -92,7 +92,7 @@ public class ArtifactShop {
         }
 
         for (var route : REGIONAL_SHOPS.entrySet()) {
-            if (!shopData.containsKey(route.getValue())) {
+            if (!shopData.containsKey(route.getValue().intValue())) {
                 Grasscutter.getLogger()
                         .error(
                                 "Artifact shop requires city {} shop {}, but it is missing from current shop data.",
@@ -124,7 +124,7 @@ public class ArtifactShop {
             for (int cityId : cities) {
                 Integer shopId = REGIONAL_SHOPS.get(cityId);
                 if (shopId == null) continue;
-                shopData.get(shopId).add(makeGoods(goodsId, piece, options));
+                shopData.get(shopId.intValue()).add(makeGoods(goodsId, piece, options));
                 goods.put(goodsId, piece);
                 goodsCity.put(goodsId, cityId);
                 touchedShops.add(shopId);

@@ -48,7 +48,7 @@ import javax.script.Bindings;
 public final class DomainContinueSpawnHelper {
     private static final long CONTINUE_WINDOW_MS = 8000L;
     private static final float KEY_STANDOFF = 2.2f;
-    private static final ConcurrentHashMap<Integer, Long> CONTINUE_UNTIL_MS = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<Integer, Long> CONTINUE_UNTIL_MS = new ConcurrentHashMap<>();
 
     private DomainContinueSpawnHelper() {
     }

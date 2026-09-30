@@ -78,7 +78,7 @@ public class HandlerCombatInvocationsNotify extends PacketHandler {
                                     // do not keep reading config defaults of 0.
                                     for (var ab : gadget.getInstancedAbilities()) {
                                         if (ab == null) continue;
-                                        vars.forEach(ab.getAbilitySpecials()::put);
+                                        vars.forEach((key, value) -> ab.getAbilitySpecials().put(key, value.floatValue()));
                                     }
                                     if (hexRatio == 0f) hexRatio = vars.getOrDefault("Hexenzirkel_NormalAttack_Ratio", 0f);
                                     if (normalPct == 0f) {

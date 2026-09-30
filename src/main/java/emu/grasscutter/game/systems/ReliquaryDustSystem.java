@@ -688,7 +688,7 @@ public final class ReliquaryDustSystem {
         List<Integer> out = new ArrayList<>();
         Map<FightProperty, Integer> firstSlot = new LinkedHashMap<>();
         for (int i = 0; i < append.size(); i++) {
-            ReliquaryAffixData aff = GameData.getReliquaryAffixDataMap().get(append.get(i));
+            ReliquaryAffixData aff = GameData.getReliquaryAffixDataMap().get(append.get(i).intValue());
             if (aff == null) {
                 continue;
             }
@@ -806,7 +806,7 @@ public final class ReliquaryDustSystem {
         }
 
         // Depot from first affix
-        ReliquaryAffixData sample = GameData.getReliquaryAffixDataMap().get(oldAppend.get(0));
+        ReliquaryAffixData sample = GameData.getReliquaryAffixDataMap().get(oldAppend.get(0).intValue());
         int depotId = sample != null ? sample.getDepotId() : 501;
         List<ReliquaryAffixData> pool = GameDepot.getRelicAffixList(depotId);
         if (pool == null || pool.isEmpty()) {

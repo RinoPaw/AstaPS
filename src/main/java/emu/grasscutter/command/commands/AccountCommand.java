@@ -11,6 +11,8 @@ import emu.grasscutter.game.Account;
 import emu.grasscutter.game.player.Player;
 import java.util.List;
 import java.util.stream.Collectors;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
 @Command(
         label = "account",
@@ -21,148 +23,224 @@ import java.util.stream.Collectors;
             "resetpass <username> <password>"
         }, // Only with EXPERIMENTAL_RealPassword == true
         targetRequirement = Command.TargetRequirement.NONE)
-public final class AccountCommand implements CommandHandler {
+public final class AccountCommand implements PicocliCommandHandler {
+    private record UidArg(int value) {}
+
     @Override
     public void execute(Player sender, Player targetPlayer, List<String> args) {
+        // Keep the old console-only behavior ahead of picocli parsing, including malformed input.
         if (sender != null) {
             CommandHandler.sendTranslatedMessage(sender, "commands.generic.console_execute_error");
             return;
         }
+        PicocliCommandHandler.super.execute(sender, targetPlayer, args);
+    }
 
-        String action = args.get(0);
-
-        switch (action) {
-            default -> this.sendUsageMessage(sender);
-            case "create" -> {
-                if (args.size() < 2) {
-                    this.sendUsageMessage(sender);
-                    return;
-                }
-                var username = args.get(1);
-
-                int uid = 0;
-                String password = "";
-                if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
-                    if (args.size() < 3) {
-                        CommandHandler.sendMessage(
-                                sender, "EXPERIMENTAL_RealPassword requires a password argument");
-                        CommandHandler.sendMessage(sender, "Usage: account create <username> <password> [uid]");
-                        return;
+    @Override
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        var commandLine = new CommandLine(new AccountRoot(sender));
+        commandLine.setExpandAtFiles(false);
+        commandLine.setUnmatchedOptionsArePositionalParams(true);
+        commandLine.registerConverter(
+                UidArg.class,
+                value -> {
+                    try {
+                        return new UidArg(Integer.parseInt(value));
+                    } catch (NumberFormatException ignored) {
+                        throw new CommandLine.TypeConversionException(
+                                translate(sender, "commands.account.invalid"));
                     }
-                    password = args.get(2);
+                });
 
-                    if (args.size() == 4) {
-                        try {
-                            uid = Integer.parseInt(args.get(3));
-                        } catch (NumberFormatException ignored) {
-                            CommandHandler.sendMessage(sender, translate(sender, "commands.account.invalid"));
-                            if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
-                                CommandHandler.sendMessage(
-                                        sender,
-                                        "EXPERIMENTAL_RealPassword requires argument 2 to be a password, not a uid");
-                                CommandHandler.sendMessage(
-                                        sender, "Usage: account create <username> <password> [uid]");
-                            }
-                            return;
-                        }
+        if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
+            commandLine.addSubcommand("create", new CreateWithPassword(sender));
+        } else {
+            commandLine.addSubcommand("create", new CreateWithoutPassword(sender));
+        }
+        commandLine.addSubcommand("delete", new Delete(sender));
+        commandLine.addSubcommand("resetpass", new ResetPass(sender));
+        commandLine.addSubcommand("list", new ListAccounts(sender));
+
+        commandLine.setParameterExceptionHandler(
+                (exception, argv) -> {
+                    if (exception.getCause() instanceof CommandLine.TypeConversionException cause) {
+                        CommandHandler.sendMessage(sender, cause.getMessage());
+                    } else {
+                        this.sendUsageMessage(sender);
                     }
-                } else {
-                    if (args.size() > 2) {
-                        try {
-                            uid = Integer.parseInt(args.get(2));
-                        } catch (NumberFormatException ignored) {
-                            CommandHandler.sendMessage(sender, translate(sender, "commands.account.invalid"));
-                            return;
-                        }
-                    }
-                }
-                Account account = DatabaseHelper.createAccountWithUid(username, uid);
-                if (account == null) {
-                    CommandHandler.sendMessage(sender, translate(sender, "commands.account.exists"));
-                    return;
-                } else {
-                    if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
-                        account.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
-                    }
-                    account.addPermission("*");
-                    account.save(); // Save account to database.
+                    return 2;
+                });
+        return commandLine;
+    }
 
-                    CommandHandler.sendMessage(
-                            sender, translate(sender, "commands.account.create", account.getReservedPlayerUid()));
-                }
-            }
-            case "delete" -> {
-                if (args.size() < 2) {
-                    this.sendUsageMessage(sender);
-                    return;
-                }
-                var username = args.get(1);
+    @picocli.CommandLine.Command(name = "account")
+    private final class AccountRoot implements Runnable {
+        private final Player sender;
 
-                // Get the account we want to delete.
-                Account toDelete = DatabaseHelper.getAccountByName(username);
-                if (toDelete == null) {
-                    CommandHandler.sendMessage(sender, translate(sender, "commands.account.no_account"));
-                    return;
-                }
-                AccountDeletionService.delete(toDelete);
-                CommandHandler.sendMessage(sender, translate(sender, "commands.account.delete"));
-            }
-            case "resetpass" -> {
-                if (args.size() < 2) {
-                    this.sendUsageMessage(sender);
-                    return;
-                }
-                var username = args.get(1);
+        private AccountRoot(Player sender) {
+            this.sender = sender;
+        }
 
-                if (!Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
-                    CommandHandler.sendMessage(
-                            sender, "resetpass requires EXPERIMENTAL_RealPassword to be true.");
-                    return;
-                }
-                if (args.size() != 3) {
-                    CommandHandler.sendMessage(sender, "Invalid Args");
-                    CommandHandler.sendMessage(sender, "Usage: account resetpass <username> <password>");
-                    return;
-                }
-                Account toUpdate = DatabaseHelper.getAccountByName(username);
-                if (toUpdate == null) {
-                    CommandHandler.sendMessage(sender, translate(sender, "commands.account.no_account"));
-                    return;
-                }
-
-                // Make sure player can't stay logged in with old password.
-                kickAccount(toUpdate);
-                toUpdate.setPassword(BCrypt.withDefaults().hashToString(12, args.get(2).toCharArray()));
-                toUpdate.save();
-                CommandHandler.sendMessage(sender, "Password Updated.");
-            }
-            case "list" -> {
-                CommandHandler.sendMessage(sender, "Note: This command might take a while to complete.");
-                CommandHandler.sendMessage(
-                        sender,
-                        "Accounts: \n"
-                                + DatabaseManager.getAccountDatastore().find(Account.class).stream()
-                                        .map(
-                                                acc ->
-                                                        "%s: %s (%s)"
-                                                                .formatted(
-                                                                        acc.getId(),
-                                                                        acc.getUsername(),
-                                                                        acc.getReservedPlayerUid() == 0
-                                                                                ? this.getPlayerUid(acc)
-                                                                                : acc.getReservedPlayerUid()))
-                                        .collect(Collectors.joining("\n")));
-            }
+        @Override
+        public void run() {
+            AccountCommand.this.sendUsageMessage(sender);
         }
     }
 
-    /**
-     * Returns the UID of the player associated with the given account. If the player is not found,
-     * returns "no UID".
-     *
-     * @param account The account to get the UID of.
-     * @return The UID of the player associated with the given account.
-     */
+    @picocli.CommandLine.Command(name = "create")
+    private final class CreateWithoutPassword implements Runnable {
+        private final Player sender;
+
+        @Parameters(index = "0", paramLabel = "<username>")
+        private String username;
+
+        @Parameters(index = "1", arity = "0..1", paramLabel = "<UID>")
+        private UidArg uid;
+
+        private CreateWithoutPassword(Player sender) {
+            this.sender = sender;
+        }
+
+        @Override
+        public void run() {
+            createAccount(sender, username, "", uid == null ? 0 : uid.value());
+        }
+    }
+
+    @picocli.CommandLine.Command(name = "create")
+    private final class CreateWithPassword implements Runnable {
+        private final Player sender;
+
+        @Parameters(index = "0", paramLabel = "<username>")
+        private String username;
+
+        @Parameters(index = "1", paramLabel = "<password>")
+        private String password;
+
+        @Parameters(index = "2", arity = "0..1", paramLabel = "<UID>")
+        private UidArg uid;
+
+        private CreateWithPassword(Player sender) {
+            this.sender = sender;
+        }
+
+        @Override
+        public void run() {
+            createAccount(sender, username, password, uid == null ? 0 : uid.value());
+        }
+    }
+
+    @picocli.CommandLine.Command(name = "delete")
+    private final class Delete implements Runnable {
+        private final Player sender;
+
+        @Parameters(index = "0", paramLabel = "<username>")
+        private String username;
+
+        private Delete(Player sender) {
+            this.sender = sender;
+        }
+
+        @Override
+        public void run() {
+            Account toDelete = DatabaseHelper.getAccountByName(username);
+            if (toDelete == null) {
+                CommandHandler.sendMessage(sender, translate(sender, "commands.account.no_account"));
+                return;
+            }
+
+            AccountDeletionService.delete(toDelete);
+            CommandHandler.sendMessage(sender, translate(sender, "commands.account.delete"));
+        }
+    }
+
+    @picocli.CommandLine.Command(name = "resetpass")
+    private final class ResetPass implements Runnable {
+        private final Player sender;
+
+        @Parameters(index = "0", paramLabel = "<username>")
+        private String username;
+
+        // Optional here on purpose: when real passwords are disabled, the historical command reports
+        // that feature state before it complains about a missing password.
+        @Parameters(index = "1", arity = "0..1", paramLabel = "<password>")
+        private String password;
+
+        private ResetPass(Player sender) {
+            this.sender = sender;
+        }
+
+        @Override
+        public void run() {
+            if (!Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
+                CommandHandler.sendMessage(
+                        sender, "resetpass requires EXPERIMENTAL_RealPassword to be true.");
+                return;
+            }
+            if (password == null) {
+                CommandHandler.sendMessage(sender, "Invalid Args");
+                CommandHandler.sendMessage(sender, "Usage: account resetpass <username> <password>");
+                return;
+            }
+
+            Account toUpdate = DatabaseHelper.getAccountByName(username);
+            if (toUpdate == null) {
+                CommandHandler.sendMessage(sender, translate(sender, "commands.account.no_account"));
+                return;
+            }
+
+            kickAccount(toUpdate);
+            toUpdate.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
+            toUpdate.save();
+            CommandHandler.sendMessage(sender, "Password Updated.");
+        }
+    }
+
+    @picocli.CommandLine.Command(name = "list")
+    private final class ListAccounts implements Runnable {
+        private final Player sender;
+
+        private ListAccounts(Player sender) {
+            this.sender = sender;
+        }
+
+        @Override
+        public void run() {
+            CommandHandler.sendMessage(sender, "Note: This command might take a while to complete.");
+            CommandHandler.sendMessage(
+                    sender,
+                    "Accounts: \n"
+                            + DatabaseManager.getAccountDatastore().find(Account.class).stream()
+                                    .map(
+                                            acc ->
+                                                    "%s: %s (%s)"
+                                                            .formatted(
+                                                                    acc.getId(),
+                                                                    acc.getUsername(),
+                                                                    acc.getReservedPlayerUid() == 0
+                                                                            ? getPlayerUid(acc)
+                                                                            : acc.getReservedPlayerUid()))
+                                    .collect(Collectors.joining("\n")));
+        }
+    }
+
+    private void createAccount(Player sender, String username, String password, int uid) {
+        Account account = DatabaseHelper.createAccountWithUid(username, uid);
+        if (account == null) {
+            CommandHandler.sendMessage(sender, translate(sender, "commands.account.exists"));
+            return;
+        }
+
+        if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
+            account.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
+        }
+        account.addPermission("*");
+        account.save();
+        CommandHandler.sendMessage(
+                sender, translate(sender, "commands.account.create", account.getReservedPlayerUid()));
+    }
+
+    /** Returns the UID of the player associated with the given account, or "no UID". */
     private String getPlayerUid(Account account) {
         var player = DatabaseHelper.getPlayerByAccount(account, Player.class);
         return player == null ? "no UID" : String.valueOf(player.getUid());
@@ -170,8 +248,6 @@ public final class AccountCommand implements CommandHandler {
 
     private void kickAccount(Account account) {
         Player player = Grasscutter.getGameServer().getPlayerByAccountId(account.getId());
-        if (player != null) {
-            player.getSession().close();
-        }
+        if (player != null) player.getSession().close();
     }
 }

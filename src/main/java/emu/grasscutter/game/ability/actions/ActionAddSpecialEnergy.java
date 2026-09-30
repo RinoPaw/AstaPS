@@ -29,7 +29,6 @@ extends AbilityActionHandler {
 
     @Override
     public boolean execute(Ability ability, AbilityModifier.AbilityModifierAction abilityModifierAction, ByteString byteString, GameEntity gameEntity) {
-        Float f;
         GameEntity gameEntity2;
         GameEntity gameEntity3 = gameEntity2 = gameEntity != null ? gameEntity : ability.getOwner();
         if (gameEntity2 == null) {
@@ -52,8 +51,16 @@ extends AbilityActionHandler {
         if (f2 == 0.0f && abilityModifierAction.amount != null) {
             f2 = abilityModifierAction.amount.get(object2FloatOpenHashMap, 0.0f);
         }
-        if (Math.abs(f2) < 0.01f && SkirkCunningHelper.isSkirk(gameEntity2) && ActionAddSpecialEnergy.isExtraEnergyRatio(abilityModifierAction.ratio) && (f = ability.getAbilitySpecials().get("SkirkNew_Constellation_2_ExtraEnergy")) != null && f.floatValue() >= 9.5f) {
-            f2 = f.floatValue();
+        var abilitySpecials = ability.getAbilitySpecials();
+        String c2ExtraEnergyKey = "SkirkNew_Constellation_2_ExtraEnergy";
+        if (Math.abs(f2) < 0.01f
+                && SkirkCunningHelper.isSkirk(gameEntity2)
+                && ActionAddSpecialEnergy.isExtraEnergyRatio(abilityModifierAction.ratio)
+                && abilitySpecials.containsKey(c2ExtraEnergyKey)) {
+            float extraEnergy = abilitySpecials.getFloat(c2ExtraEnergyKey);
+            if (extraEnergy >= 9.5f) {
+                f2 = extraEnergy;
+            }
         }
         // Rift energy: the config has ratio=0 with value=SkirkNew_Pickable_Energy_Revive, and Gson keeps
         // only ratio, so the value is resolved explicitly here.
@@ -61,10 +68,12 @@ extends AbilityActionHandler {
             float revive = SkirkCunningHelper.resolvePickableEnergyRevive(ability);
             if (revive >= 0.5f) {
                 f2 = revive;
-            } else if (SkirkCunningHelper.isPickableEnergyReviveRatio(abilityModifierAction.ratio)) {
-                Float patched = ability.getAbilitySpecials().get(SkirkCunningHelper.PICKABLE_ENERGY_REVIVE_KEY);
-                if (patched != null && patched.floatValue() >= 0.5f) {
-                    f2 = patched.floatValue();
+            } else if (SkirkCunningHelper.isPickableEnergyReviveRatio(abilityModifierAction.ratio)
+                    && abilitySpecials.containsKey(SkirkCunningHelper.PICKABLE_ENERGY_REVIVE_KEY)) {
+                float patched =
+                        abilitySpecials.getFloat(SkirkCunningHelper.PICKABLE_ENERGY_REVIVE_KEY);
+                if (patched >= 0.5f) {
+                    f2 = patched;
                 }
             }
         }

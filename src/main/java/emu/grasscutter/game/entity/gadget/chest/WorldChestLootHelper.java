@@ -1,12 +1,8 @@
-/*
- * Decompiled with CFR 0.152.
- */
 package emu.grasscutter.game.entity.gadget.chest;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
-
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.config.ConfigContainer.GameOptions.ExplorationRewardOptions.ChestReward;
+import emu.grasscutter.config.RewardOverrides;
+import emu.grasscutter.config.RewardOverrides.ChestReward;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
@@ -14,60 +10,53 @@ import emu.grasscutter.game.world.Position;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.scripts.data.SceneGadget;
 
+/** Applies explicit user chest replacements. Original drop tables remain the default authority. */
 public final class WorldChestLootHelper {
-    private WorldChestLootHelper() {
-    }
+    private WorldChestLootHelper() {}
 
-    public static void grant(Player player, EntityGadget entityGadget) {
+    /**
+     * Applies a configured full replacement for this chest tier.
+     *
+     * @return true when a replacement existed and was applied; false means callers must use the
+     *     original chest drop path.
+     */
+    public static boolean grantReplacement(Player player, EntityGadget entityGadget) {
         if (player == null || entityGadget == null || entityGadget.getScene() == null) {
-            return;
+            return false;
         }
-        Tier tier = WorldChestLootHelper.resolveTier(entityGadget);
-        ChestReward reward = WorldChestLootHelper.resolveReward(tier);
+
+        Tier tier = resolveTier(entityGadget);
+        ChestReward reward = RewardOverrides.chestReplacement(tier.name());
         if (reward == null) {
-            return;
+            return false;
         }
-        int sigilId = WorldChestLootHelper.resolveSigilId(entityGadget);
+
+        int sigilId = resolveSigilId(entityGadget);
         Scene scene = entityGadget.getScene();
         EntityGadget source = entityGadget;
         player.addExpDirectly(Math.max(0, reward.adventureExp));
-        WorldChestLootHelper.drop(scene, source, 201, reward.primogems);
-        WorldChestLootHelper.drop(scene, source, 202, reward.mora);
-        WorldChestLootHelper.drop(scene, source, sigilId, reward.sigil);
+        drop(scene, source, 201, reward.primogems);
+        drop(scene, source, 202, reward.mora);
+        drop(scene, source, sigilId, reward.sigil);
         if (tier == Tier.COMMON) {
-            WorldChestLootHelper.drop(scene, source, 104011, reward.fineEnhancementOre);
+            drop(scene, source, 104011, reward.fineEnhancementOre);
         } else {
-            WorldChestLootHelper.drop(scene, source, 104012, reward.fineEnhancementOre);
+            drop(scene, source, 104012, reward.fineEnhancementOre);
             if (reward.fineEnhancementOre >= 3) {
-                WorldChestLootHelper.drop(
-                        scene, source, 104013, Math.max(1, reward.fineEnhancementOre / 3));
+                drop(scene, source, 104013, Math.max(1, reward.fineEnhancementOre / 3));
             }
         }
-        WorldChestLootHelper.drop(scene, source, 104001, reward.wanderersAdvice);
-        WorldChestLootHelper.drop(scene, source, 104002, reward.adventurersExperience);
-        WorldChestLootHelper.drop(scene, source, 104003, reward.herosWit);
+        drop(scene, source, 104001, reward.wanderersAdvice);
+        drop(scene, source, 104002, reward.adventurersExperience);
+        drop(scene, source, 104003, reward.herosWit);
         Grasscutter.getLogger()
                 .info(
-                        "WorldChestLoot drop uid={} gadgetId={} tier={} primogems={}",
+                        "World chest override uid={} gadgetId={} tier={} primogems={}",
                         player.getUid(),
                         entityGadget.getGadgetId(),
                         tier.name(),
                         reward.primogems);
-    }
-
-    private static ChestReward resolveReward(Tier tier) {
-        if (tier == null
-                || GAME_OPTIONS.explorationRewards == null
-                || GAME_OPTIONS.explorationRewards.chests == null) {
-            return null;
-        }
-        var chests = GAME_OPTIONS.explorationRewards.chests;
-        return switch (tier) {
-            case COMMON -> chests.common;
-            case EXQUISITE -> chests.exquisite;
-            case PRECIOUS -> chests.precious;
-            case LUXURIOUS -> chests.luxurious;
-        };
+        return true;
     }
 
     private static void drop(Scene scene, GameEntity gameEntity, int itemId, int count) {
@@ -79,7 +68,7 @@ public final class WorldChestLootHelper {
         } catch (Throwable throwable) {
             Grasscutter.getLogger()
                     .warn(
-                            "WorldChestLoot drop failed item={} x{}: {}",
+                            "World chest override drop failed item={} x{}: {}",
                             itemId,
                             count,
                             throwable.toString());
@@ -87,8 +76,8 @@ public final class WorldChestLootHelper {
     }
 
     public static Tier resolveTier(EntityGadget entityGadget) {
-        int n = entityGadget.getGadgetId();
-        switch (n) {
+        int gadgetId = entityGadget.getGadgetId();
+        switch (gadgetId) {
             case 70210001: {
                 return Tier.COMMON;
             }
@@ -104,155 +93,111 @@ public final class WorldChestLootHelper {
                 return Tier.LUXURIOUS;
             }
         }
-        String string = "";
+
+        String name = "";
         if (entityGadget.getGadgetData() != null
                 && entityGadget.getGadgetData().getJsonName() != null) {
-            string = entityGadget.getGadgetData().getJsonName();
+            name = entityGadget.getGadgetData().getJsonName();
         }
-        if (WorldChestLootHelper.containsLv(string, 5) || string.contains("Drop_Chest_Lv3")) {
+        if (containsLv(name, 5) || name.contains("Drop_Chest_Lv3")) {
             return Tier.LUXURIOUS;
         }
-        if (WorldChestLootHelper.containsLv(string, 4)
-                || WorldChestLootHelper.containsLv(string, 3)
-                || string.contains("Drop_Chest_Lv2")) {
+        if (containsLv(name, 4) || containsLv(name, 3) || name.contains("Drop_Chest_Lv2")) {
             return Tier.PRECIOUS;
         }
-        if (WorldChestLootHelper.containsLv(string, 2) || string.contains("Drop_Chest_Lv1")) {
+        if (containsLv(name, 2) || name.contains("Drop_Chest_Lv1")) {
             return Tier.EXQUISITE;
         }
-        if (WorldChestLootHelper.containsLv(string, 1)
-                || string.contains("NormalChest")
-                || string.contains("Rock_Lv1")) {
+        if (containsLv(name, 1) || name.contains("NormalChest") || name.contains("Rock_Lv1")) {
             return Tier.COMMON;
         }
+
         SceneGadget sceneGadget = entityGadget.getMetaGadget();
         if (sceneGadget != null && sceneGadget.drop_tag != null) {
-            String string2 = sceneGadget.drop_tag;
-            if (string2.contains("\u8d85\u7ea7") || string2.contains("\u8c6a\u534e")) {
+            String tag = sceneGadget.drop_tag;
+            if (tag.contains("超级") || tag.contains("豪华")) {
                 return Tier.LUXURIOUS;
             }
-            if (string2.contains("\u9ad8\u7ea7")) {
+            if (tag.contains("高级")) {
                 return Tier.PRECIOUS;
             }
-            if (string2.contains("\u4e2d\u7ea7")) {
+            if (tag.contains("中级")) {
                 return Tier.EXQUISITE;
             }
-            if (string2.contains("\u4f4e\u7ea7") || string2.contains("\u521d\u7ea7")) {
+            if (tag.contains("低级") || tag.contains("初级")) {
                 return Tier.COMMON;
             }
         }
         return Tier.COMMON;
     }
 
-    private static boolean containsLv(String string, int n) {
-        return string.contains("_Lv" + n)
-                || string.contains("Lv" + n + "_")
-                || string.endsWith("Lv" + n);
+    private static boolean containsLv(String value, int level) {
+        return value.contains("_Lv" + level)
+                || value.contains("Lv" + level + "_")
+                || value.endsWith("Lv" + level);
     }
 
     private static int resolveSigilId(EntityGadget entityGadget) {
-        // Explore-spawned chests: region from synthetic group / config id
         try {
             int gid = entityGadget.getGroupId();
-            // NodKraiExploreSpawnHelper SYNTH_GROUP_BASE = 910700000
             if (gid >= 910700000 && gid < 910800000) {
                 int id = gid - 910700000;
-                if (id >= 40000 && id < 50000) return 303; // Sumeru, dendro sigil
-                if (id >= 30000 && id < 40000) return 301; // Natlan, pyro sigil
-                if (id >= 20000 && id < 30000) return 302; // Fontaine, hydro sigil
-                if (id >= 10000 && id < 20000) return 306; // Snezhnaya, cryo sigil
-                if (id > 0 && id < 10000) return 308; // Nod-Krai, lunar sigil
+                if (id >= 40000 && id < 50000) return 303;
+                if (id >= 30000 && id < 40000) return 301;
+                if (id >= 20000 && id < 30000) return 302;
+                if (id >= 10000 && id < 20000) return 306;
+                if (id > 0 && id < 10000) return 308;
             }
-            // SnezhnayaExploreSpawnHelper SYNTH_GROUP_BASE = 910800000
             if (gid >= 910800000 && gid < 910900000) {
-                return 306; // Snezhnaya, cryo sigil
+                return 306;
             }
         } catch (Throwable ignored) {
         }
+
         SceneGadget sceneGadget = entityGadget.getMetaGadget();
         if (sceneGadget != null && sceneGadget.drop_tag != null) {
-            String string = sceneGadget.drop_tag;
-            if (string.contains("\u7483\u6708")) {
-                return 307;
+            String tag = sceneGadget.drop_tag;
+            if (tag.contains("璃月")) return 307;
+            if (tag.contains("稻妻")) return 304;
+            if (tag.contains("须弥") || tag.contains("须弥")) return 303;
+            if (tag.contains("枫丹")) return 302;
+            if (tag.contains("纳塔")) return 301;
+            if (tag.contains("至冬") || tag.contains("雪山")) return 306;
+            if (tag.contains("挪德卡莱") || tag.contains("诺德克莱") || tag.contains("霜月")) {
+                return 308;
             }
-            if (string.contains("\u7a3b\u59bb")) {
-                return 304;
-            }
-            if (string.contains("\u987b\u5f26") || string.contains("\u987b\u5f25")) {
-                return 303;
-            }
-            if (string.contains("\u67ab\u4e39")) {
-                return 302;
-            }
-            if (string.contains("\u7eb3\u5854")) {
-                return 301;
-            }
-            if (string.contains("\u81f3\u51ac") || string.contains("\u96ea\u5c71")) {
-                return 306;
-            }
-            if (string.contains("\u632a\u5fb7\u5361\u83b1")
-                    || string.contains("\u8bfa\u5fb7\u514b\u83b1")
-                    || string.contains("\u971c\u6708")) {
-                return 308; // Nod-Krai, lunar sigil
-            }
-            if (string.contains("\u8499\u5fb7")) {
-                return 305;
-            }
+            if (tag.contains("蒙德")) return 305;
         }
-        // Open-world scene 3: infer from coordinates when tag missing / wrong
+
         try {
             if (entityGadget.getScene() != null
                     && entityGadget.getScene().getId() == 3
                     && entityGadget.getPosition() != null) {
-                int byPos = WorldChestLootHelper.sigilByPosition(entityGadget.getPosition());
-                if (byPos > 0) {
-                    return byPos;
-                }
+                int byPos = sigilByPosition(entityGadget.getPosition());
+                if (byPos > 0) return byPos;
             }
         } catch (Throwable ignored) {
         }
-        int n = entityGadget.getScene() != null ? entityGadget.getScene().getId() : 3;
-        return WorldChestLootHelper.sigilByScene(n);
+        int sceneId = entityGadget.getScene() != null ? entityGadget.getScene().getId() : 3;
+        return sigilByScene(sceneId);
     }
 
-    /** 301 pyro, 302 hydro, 303 dendro, 304 electro, 305 anemo, 306 cryo, 307 geo, 308 lunar; 0 unknown. */
     private static int sigilByPosition(Position pos) {
         if (pos == null) return 0;
         float x = pos.getX();
         float z = pos.getZ();
-        // Snezhnaya
-        if (x >= 7000.0f && x <= 11000.0f && z >= 5200.0f && z <= 8800.0f) {
-            return 306;
-        }
-        // Nod-Krai and the far north (high Z): lunar sigil
-        if (z >= 8800.0f) {
-            return 308;
-        }
-        // Fontaine
-        if (z >= 2700.0f && z <= 5600.0f && x >= 1000.0f && x <= 5200.0f) {
-            return 302;
-        }
-        // Natlan
-        if (z >= 6000.0f && z <= 11000.0f && x >= -4000.0f && x <= 2000.0f) {
-            return 301;
-        }
-        // Sumeru 3.6 desert
-        if (z >= 5200.0f && z <= 7200.0f && x >= -500.0f && x <= 1500.0f) {
-            return 303;
-        }
+        if (x >= 7000.0f && x <= 11000.0f && z >= 5200.0f && z <= 8800.0f) return 306;
+        if (z >= 8800.0f) return 308;
+        if (z >= 2700.0f && z <= 5600.0f && x >= 1000.0f && x <= 5200.0f) return 302;
+        if (z >= 6000.0f && z <= 11000.0f && x >= -4000.0f && x <= 2000.0f) return 301;
+        if (z >= 5200.0f && z <= 7200.0f && x >= -500.0f && x <= 1500.0f) return 303;
         return 0;
     }
 
-    private static int sigilByScene(int n) {
-        if (n == 3) {
-            return 305;
-        }
-        if (n == 5 || n == 6) {
-            return 307;
-        }
-        if (n == 7) {
-            return 304;
-        }
+    private static int sigilByScene(int sceneId) {
+        if (sceneId == 3) return 305;
+        if (sceneId == 5 || sceneId == 6) return 307;
+        if (sceneId == 7) return 304;
         return 305;
     }
 

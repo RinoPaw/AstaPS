@@ -7,8 +7,6 @@ import emu.grasscutter.game.tower.TowerAbyssFix;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.TowerEnterLevelReqOuterClass.TowerEnterLevelReq;
 import emu.grasscutter.server.game.GameSession;
-import java.lang.reflect.Field;
-import java.util.List;
 
 @Opcodes(PacketOpcodes.TowerEnterLevelReq)
 public class HandlerTowerEnterLevelReq extends PacketHandler {
@@ -22,7 +20,7 @@ public class HandlerTowerEnterLevelReq extends PacketHandler {
 
         // Team selection and start are separate client packets. Wait briefly for the selected
         // temporary team so the abyss never silently falls back to the overworld party.
-        for (int attempt = 0; attempt < 40 && !hasTemporaryTeam(teamManager); attempt++) {
+        for (int attempt = 0; attempt < 40 && !teamManager.hasTemporaryTeam(); attempt++) {
             try {
                 Thread.sleep(25L);
             } catch (InterruptedException interrupted) {
@@ -30,21 +28,19 @@ public class HandlerTowerEnterLevelReq extends PacketHandler {
                 break;
             }
         }
-        if (!hasTemporaryTeam(teamManager)) {
+        if (!teamManager.hasTemporaryTeam()) {
             Grasscutter.getLogger().warn(
                     "TowerEnterLevel aborted uid={}: temporaryTeam not ready", player.getUid());
             return;
         }
 
         TowerAbyssFix.rememberEnterPoint(player, enterPointId);
-        // Live 7.0 TowerEnterLevelReq only has enter_point_id — getIsRestartFloor may be absent.
-        // Never call it directly: NoSuchMethodError kills the Netty defaultEventLoop → whitescreen.
-        boolean restartFloor = isRestartFloor(req);
+        // 4.7+ clients mark entering after a floor restart / party reconfiguration explicitly.
+        boolean restartFloor = req.getIsRestartFloor();
         if (restartFloor) {
-            // Client restart-after-reconfigure: always chamber 1 of the current floor.
             player.getTowerManager().restartFloorFromChamberOne();
         }
-        boolean firstChamber = TowerAbyssFix.isFirstChamber(player) || restartFloor;
+        boolean firstChamber = TowerAbyssFix.isFirstChamber(player);
         player.getTowerManager().enterLevel(enterPointId);
         try {
             teamManager.useTemporaryTeam(0);
@@ -58,25 +54,5 @@ public class HandlerTowerEnterLevelReq extends PacketHandler {
                     throwable.toString());
         }
         // Lua already installs option 175/176. Do not reinject option 177 after a delay.
-    }
-
-    private static boolean hasTemporaryTeam(TeamManager teamManager) {
-        try {
-            Field field = TeamManager.class.getDeclaredField("temporaryTeam");
-            field.setAccessible(true);
-            Object value = field.get(teamManager);
-            return value instanceof List<?> list && !list.isEmpty();
-        } catch (ReflectiveOperationException ignored) {
-            return false;
-        }
-    }
-
-    private static boolean isRestartFloor(TowerEnterLevelReq req) {
-        try {
-            Object value = req.getClass().getMethod("getIsRestartFloor").invoke(req);
-            return value instanceof Boolean b && b;
-        } catch (ReflectiveOperationException ignored) {
-            return false;
-        }
     }
 }

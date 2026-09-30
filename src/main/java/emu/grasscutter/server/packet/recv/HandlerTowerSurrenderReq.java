@@ -36,12 +36,10 @@ public class HandlerTowerSurrenderReq extends PacketHandler {
         boolean inTower = TowerAbyssFix.isInTowerDungeon(player);
 
         if (inTower && reconfigure) {
-            // Video 13.38.57: confirm succeeds (Rsp logged) but team UI never opens — client stays
-            // at the start key. Official empty MidLevel notify (7.0 CmdId 21707) is what opens the
-            // challenge team-config page; CurLevelRecord alone is not enough.
+            // Reconfiguration abandons this floor attempt and opens the party picker. The following
+            // TowerEnterLevelReq carries is_restart_floor and performs the actual chamber-1 reset.
             var tower = player.getTowerManager();
             tower.beginAwaitingTeamReconfigure();
-            tower.restartCurrentChamber();
             session.send(new PacketTowerSurrenderRsp(0, clientSeq));
             TowerAbyssFix.endChallengeUi(player, true);
             // Clear "run in progress" banner first, then push floor+teams for the picker prefill.
@@ -54,7 +52,7 @@ public class HandlerTowerSurrenderReq extends PacketHandler {
             }
             Grasscutter.getLogger()
                     .info(
-                            "Tower surrender uid={} reconfigure=true seq={} chamber={} (restart current chamber)",
+                            "Tower surrender uid={} reconfigure=true seq={} chamber={} (awaiting floor restart)",
                             player.getUid(),
                             clientSeq,
                             tower.getCurrentLevel());

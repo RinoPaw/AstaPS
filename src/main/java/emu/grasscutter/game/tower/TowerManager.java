@@ -242,33 +242,35 @@ public class TowerManager extends BasePlayerManager {
     public void beginAwaitingTeamReconfigure() {
         awaitingTeamReconfigure = true;
         inProgress = false;
+        cancelPendingMidHalfSwap();
+        abyssCarryRemainingSeconds = 0;
     }
 
     public void clearAwaitingTeamReconfigure() {
         awaitingTeamReconfigure = false;
     }
 
-    /**
-     * Restart the <b>current chamber</b> (not chamber 1). Used by "retry"/"reconfigure team"so a
-     * retry on chamber 3 stays on chamber 3. Resets to the upper half with full chamber-start HP/energy.
-     */
-    public void restartCurrentChamber() {
-        int floorId = getTowerData().currentFloorId;
-        if (floorId <= 0) return;
-
+    private void cancelPendingMidHalfSwap() {
         midHalfCutscenePending = false;
         pendingMidHalfTeamId = -1;
         pendingMidHalfPos = null;
         pendingMidHalfRot = null;
         midHalfEarliestSwapMs = 0;
         pendingMidHalfTeamGuids = null;
+    }
+
+    /** Reset runtime state shared by current-chamber retry and full-floor restart. */
+    private int resetForRestart() {
+        int floorId = getTowerData().currentFloorId;
+        if (floorId <= 0) return 0;
+
+        cancelPendingMidHalfSwap();
         abyssCarryRemainingSeconds = 0;
         inProgress = false;
         currentTimeLimit = 0;
         currentPossibleStars = 3;
         forceChamberOneOnEnter = false;
 
-        // Stay on this chamber; always retry from the upper half.
         getTowerData().abyssTempTeamIndex = 0;
         resetTowerScriptStage();
 
@@ -277,8 +279,15 @@ public class TowerManager extends BasePlayerManager {
             TowerAbyssFix.prepareFirstChamber(player);
         } catch (Throwable t) {
             Grasscutter.getLogger()
-                    .warn("Tower restartCurrentChamber team reset uid={}: {}", player.getUid(), t.toString());
+                    .warn("Tower restart team reset uid={}: {}", player.getUid(), t.toString());
         }
+        return floorId;
+    }
+
+    /** Restart the current chamber from its upper half while keeping the chamber index. */
+    public void restartCurrentChamber() {
+        int floorId = resetForRestart();
+        if (floorId <= 0) return;
 
         player.save();
         Grasscutter.getLogger()
@@ -311,10 +320,20 @@ public class TowerManager extends BasePlayerManager {
     }
 
     /**
-     * @deprecated Prefer {@link #restartCurrentChamber()}. Kept for any old callers.
+     * Restart the active floor from chamber 1 while preserving best stars and claimed star rewards.
      */
     public void restartFloorFromChamberOne() {
-        restartCurrentChamber();
+        int floorId = resetForRestart();
+        if (floorId <= 0) return;
+
+        applyFloorStart(floorId);
+        player.save();
+        Grasscutter.getLogger()
+                .info(
+                        "Tower restart floor uid={} floor={} chamber={}",
+                        player.getUid(),
+                        floorId,
+                        getCurrentLevel());
     }
 
     private static final int LEVELS_PER_FLOOR = 3;

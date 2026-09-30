@@ -6,6 +6,7 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.*;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.ShopGoodsData;
+import emu.grasscutter.game.dungeons.enums.DungeonSubType;
 import emu.grasscutter.server.game.*;
 import emu.grasscutter.utils.Utils;
 import it.unimi.dsi.fastutil.ints.*;
@@ -15,6 +16,8 @@ import lombok.Getter;
 public class ShopSystem extends BaseGameSystem {
     private static final int REFRESH_HOUR = 4; // In GMT+8 server
     private static final String TIME_ZONE = "Asia/Shanghai"; // GMT+8 Timezone
+    private static final Set<Integer> VERIFIED_ARTIFACT_CITY_IDS = Set.of(1, 2, 3, 4, 5);
+
     private final Int2ObjectMap<List<ShopInfo>> shopData;
     private final Int2ObjectMap<List<ItemParamData>> shopChestData;
 
@@ -121,13 +124,29 @@ public class ShopSystem extends BaseGameSystem {
         this.artifactShop.install(getShopData());
         boolean resourcesLoaded =
                 !GameData.getItemDataMap().isEmpty() && !GameData.getDungeonDataMap().isEmpty();
-        if (resourcesLoaded
-                && GAME_OPTIONS.artifactShop.enabled
-                && this.artifactShop.getGoods().isEmpty()) {
+        if (!resourcesLoaded || !GAME_OPTIONS.artifactShop.enabled) return;
+
+        if (this.artifactShop.getGoods().isEmpty()) {
             Grasscutter.getLogger()
                     .warn(
                             "Artifact shop is enabled but no regional goods were routed. Check "
                                     + "DungeonExcelConfigData.cityId and DungeonDrop.json.");
+        }
+
+        var unroutedCities = new TreeSet<Integer>();
+        for (var dungeon : GameData.getDungeonDataMap().values()) {
+            if (dungeon.getSubType() != DungeonSubType.DUNGEON_SUB_RELIQUARY) continue;
+            int cityId = dungeon.getCityId();
+            if (cityId > 0 && !VERIFIED_ARTIFACT_CITY_IDS.contains(cityId)) {
+                unroutedCities.add(cityId);
+            }
+        }
+        if (!unroutedCities.isEmpty()) {
+            Grasscutter.getLogger()
+                    .warn(
+                            "Artifact domains exist for city id(s) {}, but no verified city shop "
+                                    + "route is configured yet; those regions are intentionally omitted.",
+                            unroutedCities);
         }
     }
 

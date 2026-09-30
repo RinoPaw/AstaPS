@@ -61,14 +61,14 @@ public final class SkirkCunningBridge {
     private static final int TS_BURST_CAST = 8;
     private static final int TS_LAST_TAP_E = 9;
     private static final int TS_DRAIN_FIRST_ACTIVE = 10;
-    private static final ConcurrentHashMap<Integer, long[]> TIMESTAMPS = new ConcurrentHashMap();
-    private static final ConcurrentHashMap<Integer, Integer> E_CAST_SKILLS = new ConcurrentHashMap();
-    private static final ConcurrentHashMap<Integer, Integer> E_MODES = new ConcurrentHashMap();
-    private static final ConcurrentHashMap<Integer, Float> TAP_PEAK_CUNNING = new ConcurrentHashMap();
-    private static final ConcurrentHashMap<Integer, ScheduledFuture<?>> DRAIN_TASKS = new ConcurrentHashMap();
-    private static final ConcurrentHashMap<Integer, Integer> DRAIN_PLAYER_UID = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<Integer, long[]> TIMESTAMPS = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, Integer> E_CAST_SKILLS = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, Integer> E_MODES = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, Float> TAP_PEAK_CUNNING = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, ScheduledFuture<?>> DRAIN_TASKS = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, Integer> DRAIN_PLAYER_UID = new ConcurrentHashMap<>();
     /** Serializes bar writes; ability actions run on a thread pool and concurrent +8 absorbs otherwise race. */
-    private static final ConcurrentHashMap<Integer, Object> BAR_LOCKS = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<Integer, Object> BAR_LOCKS = new ConcurrentHashMap<>();
     private static final ScheduledExecutorService DRAIN_SCHEDULER = Executors.newSingleThreadScheduledExecutor(runnable -> {
         Thread thread = new Thread(runnable, "SkirkSevenFlashDrain");
         thread.setDaemon(true);

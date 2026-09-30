@@ -266,7 +266,7 @@ public class ConfigContainer {
 
         /* This is the address used in the default region. */
         public String accessAddress = "127.0.0.1";
-        /* This is the port used in URLs. */
+        /* This is the port used in the default region. */
         public int accessPort = 0;
 
         /* Enabling this will generate a unique packet encryption key for each player. */
@@ -344,7 +344,7 @@ public class ConfigContainer {
         public Level serverLoggerLevel = Level.DEBUG;
 
         /* Log level of the third-party services (works only with -debug arg):
-           javalin, quartz, reflections, jetty,mongodb.driver */
+           javalin, quartz, reflections, jetty, mongodb.driver */
         public Level servicesLoggersLevel = Level.INFO;
 
         /* Controls whether packets should be logged in console or not */

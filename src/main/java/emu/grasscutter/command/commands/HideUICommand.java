@@ -1,20 +1,37 @@
 package emu.grasscutter.command.commands;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.server.packet.send.PacketWindy;
-import java.util.List;
-import emu.grasscutter.game.player.Player;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.game.player.Player;
+import emu.grasscutter.server.packet.send.PacketWindy;
+import picocli.CommandLine;
 
-@Command(label = "HideUI", usage = "HideUI", aliases = { "hui" }, permission = "player.windy", permissionTargeted = "player.windy.others")
-public class HideUICommand implements CommandHandler
-{
+@Command(
+        label = "HideUI",
+        aliases = {"hui"},
+        permission = "player.windy",
+        permissionTargeted = "player.windy.others")
+public final class HideUICommand implements PicocliCommandHandler {
     @Override
-    public void execute(final Player sender, final Player targetPlayer, final List<String> args) {
-		
-		String path = "HideUI";
-		targetPlayer.sendPacket(new PacketWindy(path));
-        CommandHandler.sendMessage(sender, "UI hidden successfully.");
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        return new CommandLine(new Args(sender, targetPlayer));
+    }
+
+    @CommandLine.Command(name = "HideUI")
+    private static final class Args implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        private Args(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
+        }
+
+        @Override
+        public void run() {
+            targetPlayer.sendPacket(new PacketWindy("HideUI"));
+            CommandHandler.sendMessage(sender, "UI hidden successfully.");
+        }
     }
 }

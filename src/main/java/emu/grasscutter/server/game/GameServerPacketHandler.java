@@ -113,33 +113,6 @@ public final class GameServerPacketHandler {
         }
     }
 
-    private boolean tryHandleCombineReqFallback(
-            GameSession session, int opcode, byte[] header, byte[] payload) {
-        if (payload == null || payload.length < 2) {
-            return false;
-        }
-        PacketHandler combineHandler = this.handlers.get(PacketOpcodes.CombineReq);
-        if (combineHandler == null) {
-            return false;
-        }
-        try {
-            var req =
-                    emu.grasscutter.net.proto.CombineReqOuterClass.CombineReq.parseFrom(payload);
-            if (req.getCombineId() <= 0) {
-                return false;
-            }
-            Grasscutter.getLogger()
-                    .info(
-                            "Routing opcode {} as CombineReq (combineId={})",
-                            opcode,
-                            req.getCombineId());
-            combineHandler.handle(session, header, payload);
-            return true;
-        } catch (Exception ignored) {
-            return false;
-        }
-    }
-
     private boolean tryHandleBuyResinReqFallback(
             GameSession session, int opcode, byte[] header, byte[] payload) {
         // Kept as a no-op safety net; BuyResinReq is registered at PacketOpcodes.BuyResinReq.
@@ -195,9 +168,6 @@ public final class GameServerPacketHandler {
         if (!PacketOpcodesUtils.LOOP_PACKETS.contains(opcode)
                 && opcode != PacketOpcodes.PingReq
                 && opcode != PacketOpcodes.PingRsp) {
-            if (tryHandleCombineReqFallback(session, opcode, header, payload)) {
-                return;
-            }
             if (tryHandleBuyResinReqFallback(session, opcode, header, payload)) {
                 return;
             }
@@ -214,18 +184,20 @@ public final class GameServerPacketHandler {
                 }
                 hex = " hex=" + sb;
             }
-            // Unhandled requests go to debug: a 7.1 client sends dozens this server has no
-            // handler for, and listing them at every login was noise.
+            // Keep ordinary 7.1 unknown-packet noise at debug, but surface opcode 9369 while
+            // identifying the waypoint unlock request seen during live gameplay.
             var logger = Grasscutter.getLogger();
-            if (logger.isDebugEnabled()) {
-                var line = "Unhandled packet opcode {} ({}) len={} from {}{}";
-                Object[] args = {
-                    opcode,
-                    PacketOpcodesUtils.getOpcodeName(opcode),
-                    payload == null ? 0 : payload.length,
-                    session.getAddress(),
-                    hex
-                };
+            var line = "Unhandled packet opcode {} ({}) len={} from {}{}";
+            Object[] args = {
+                opcode,
+                PacketOpcodesUtils.getOpcodeName(opcode),
+                payload == null ? 0 : payload.length,
+                session.getAddress(),
+                hex
+            };
+            if (opcode == 9369) {
+                logger.info(line, args);
+            } else if (logger.isDebugEnabled()) {
                 logger.debug(line, args);
             }
             if (session.getPlayer() != null) {

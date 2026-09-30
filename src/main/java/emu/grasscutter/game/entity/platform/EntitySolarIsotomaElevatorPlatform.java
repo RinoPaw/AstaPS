@@ -8,7 +8,6 @@ import emu.grasscutter.game.entity.gadget.platform.AbilityRoute;
 import emu.grasscutter.game.world.*;
 
 public class EntitySolarIsotomaElevatorPlatform extends EntityGadget {
-    @SuppressWarnings("removal")
     public EntitySolarIsotomaElevatorPlatform(
             EntitySolarIsotomaClientGadget isotoma,
             Scene scene,
@@ -18,7 +17,7 @@ public class EntitySolarIsotomaElevatorPlatform extends EntityGadget {
         super(scene, gadgetId, pos, rot);
         setOwner(isotoma);
         this.setRouteConfig(new AbilityRoute(rot, false, false, pos));
-        this.setContent(new GadgetAbility(this, isotoma));
+        this.replaceContent(new GadgetAbility(this, isotoma));
     }
 
     @Override

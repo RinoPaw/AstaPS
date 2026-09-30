@@ -37,7 +37,6 @@ import emu.grasscutter.game.dungeons.enums.DungeonPassConditionType;
 import emu.grasscutter.game.entity.EntityBaseGadget;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
-import emu.grasscutter.game.entity.gadget.GadgetContent;
 import emu.grasscutter.game.entity.gadget.GadgetRewardStatue;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.PlayerProperty;
@@ -51,7 +50,6 @@ import emu.grasscutter.server.packet.send.PacketGadgetInteractResinNotEnoughRsp;
 import emu.grasscutter.server.packet.send.PacketGadgetInteractRsp;
 import emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify;
 import emu.grasscutter.server.packet.send.PacketSceneEntityDisappearNotify;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public final class DomainRewardStatueHelper {
@@ -141,14 +139,7 @@ public final class DomainRewardStatueHelper {
         if (entityGadget.getContent() instanceof GadgetRewardStatue) {
             return;
         }
-        try {
-            Field field = EntityGadget.class.getDeclaredField("content");
-            field.setAccessible(true);
-            field.set(entityGadget, new GadgetRewardStatue(entityGadget));
-        }
-        catch (Exception exception) {
-            entityGadget.setContent((GadgetContent)new GadgetRewardStatue(entityGadget));
-        }
+        entityGadget.replaceContent(new GadgetRewardStatue(entityGadget));
     }
 
     public static int getClaimResinCost(DungeonManager dungeonManager) {
@@ -294,4 +285,3 @@ public final class DomainRewardStatueHelper {
         return bl3;
     }
 }
-

@@ -6,6 +6,7 @@ import emu.grasscutter.*;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.world.World;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.SetPlayerBornDataReqOuterClass.SetPlayerBornDataReq;
 import emu.grasscutter.server.game.GameSession;
@@ -73,13 +74,26 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         team.add(avatarId);
         player.save();
 
-        Grasscutter.getLogger().info("[BORN-STARLIGHT-351] 2 questManager.onPlayerBorn BEGIN");
+        // Quest startup reads world time immediately. A fresh born session has not run onLogin yet,
+        // so establish only the minimum world/scene context required by Quest 351 first.
+        Grasscutter.getLogger().info("[BORN-STARLIGHT-351] 2 world bootstrap BEGIN");
+        if (player.getWorld() == null) {
+            World world = new World(player);
+            world.addPlayer(player);
+        }
+        Grasscutter.getLogger()
+                .info(
+                        "[BORN-STARLIGHT-351] 3 world bootstrap END world={} scene={}",
+                        player.getWorld() != null,
+                        player.getScene() != null);
+
+        Grasscutter.getLogger().info("[BORN-STARLIGHT-351] 4 questManager.onPlayerBorn BEGIN");
         player.getQuestManager().onPlayerBorn();
-        Grasscutter.getLogger().info("[BORN-STARLIGHT-351] 3 questManager.onPlayerBorn END");
+        Grasscutter.getLogger().info("[BORN-STARLIGHT-351] 5 questManager.onPlayerBorn END");
 
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-STARLIGHT-351] 4 SEND SetPlayerBornDataRsp cmdId={} payload=<empty>",
+                        "[BORN-STARLIGHT-351] 6 SEND SetPlayerBornDataRsp cmdId={} payload=<empty>",
                         TEST_BORN_RSP_CMD_ID);
         session.send(new BasePacket(TEST_BORN_RSP_CMD_ID));
 
@@ -88,7 +102,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         nicknameNotify.setData(nicknamePayload);
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-STARLIGHT-351] 5 SEND PlayerNicknameNotify cmdId={} field={} payload={}",
+                        "[BORN-STARLIGHT-351] 7 SEND PlayerNicknameNotify cmdId={} field={} payload={}",
                         PLAYER_NICKNAME_NOTIFY_CMD_ID,
                         NICKNAME_FIELD_NUMBER,
                         HexFormat.of().formatHex(nicknamePayload));
@@ -96,13 +110,13 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-STARLIGHT-351] 6 player.onLogin BEGIN sceneLoadState={} enterSceneToken={}",
+                        "[BORN-STARLIGHT-351] 8 player.onLogin BEGIN sceneLoadState={} enterSceneToken={}",
                         player.getSceneLoadState(),
                         player.getEnterSceneToken());
         player.onLogin();
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-STARLIGHT-351] 7 player.onLogin END sceneLoadState={} enterSceneToken={}",
+                        "[BORN-STARLIGHT-351] 9 player.onLogin END sceneLoadState={} enterSceneToken={}",
                         player.getSceneLoadState(),
                         player.getEnterSceneToken());
     }

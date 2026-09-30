@@ -61,7 +61,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -78,10 +77,10 @@ public final class BattlePassCompatHelper {
     public static final boolean AUTO_CLAIM_ON_LOGIN = false;
     private static final int[] BEYOND_ALL_DATA_PROBES = new int[]{28050, 28051, 28052, 28053, 28054, 28055, 28056, 28057, 28059, 28060, 28061, 28062, 28063, 28064, 28065, 28066, 28067, 28068, 28069, 28070, 28071, 28072, 28073, 28074, 28075, 28076, 28077, 28078, 28079, 28080, 28510, 28511, 28512, 28513, 28514, 28515, 28516, 28517, 28518, 28519, 28520, 28522, 28523, 28524, 28525, 28526, 28527, 28528, 28529, 28530, 28531, 28532, 28600, 28601, 28602, 28603, 28604, 28605, 28610, 28611, 28612, 28613, 28614, 28615, 27980, 27981, 27982, 27983, 27984, 27985, 27986, 27987, 27988, 27989, 27990, 6260, 6270, 6280, 6288, 6289, 6290, 6292, 6294, 6295, 6296, 6297, 6298, 6299, 6300, 7090, 7100, 7105, 7108, 7109, 7111, 7112, 7113, 7114, 7115, 7116, 7117, 7118, 7119, 7120, 25690, 25691, 25692, 25693, 25694, 25695, 25696, 25697, 25699, 25700, 25701, 25702};
     private static final int[] BEYOND_CUR_UPDATE_PROBES = new int[]{28081, 28082, 28083, 28084, 28085, 28533, 28534, 28535, 28536, 28537, 6301, 7121, 7122, 7123, 25703, 25704};
-    private static final ConcurrentHashMap<Integer, Integer> SELECTED_PLAN = new ConcurrentHashMap();
-    private static final ConcurrentHashMap<Integer, Boolean> CLAIMED_THIS_SESSION = new ConcurrentHashMap();
-    private static final ConcurrentHashMap<Integer, Boolean> PROBED_THIS_SESSION = new ConcurrentHashMap();
-    private static final ConcurrentHashMap<Integer, Boolean> CLEARED_TAKEN_ONCE = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<Integer, Integer> SELECTED_PLAN = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, Boolean> CLAIMED_THIS_SESSION = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, Boolean> PROBED_THIS_SESSION = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, Boolean> CLEARED_TAKEN_ONCE = new ConcurrentHashMap<>();
     private static final int[] BP_STACK_TRIPLE_ITEMS = new int[]{202, 104001, 104002, 104003, 104013};
 
     private BattlePassCompatHelper() {
@@ -152,9 +151,9 @@ public final class BattlePassCompatHelper {
             if (arrayList.isEmpty()) {
                 Grasscutter.getLogger().info("BattlePass claim empty uid={} requested={}", (Object)battlePassManager.getPlayer().getUid(), (Object)list.size());
             }
-            Object object = null;
+            List<GameItem> items = null;
             if (!arrayList.isEmpty()) {
-                object = new ArrayList();
+                items = new ArrayList<>();
                 for (BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption battlePassRewardTakeOption : arrayList) {
                     BattlePassRewardTagOuterClass.BattlePassRewardTag battlePassRewardTag = battlePassRewardTakeOption.getTag();
                     int n = battlePassRewardTakeOption.getOptionIdx();
@@ -164,21 +163,21 @@ public final class BattlePassCompatHelper {
                         ItemData itemData;
                         if (itemParamData == null || itemParamData.getItemId() <= 0 || (itemData = (ItemData)GameData.getItemDataMap().get(itemParamData.getItemId())) == null) continue;
                         if (itemData.getMaterialType() == MaterialType.MATERIAL_SELECTABLE_CHEST) {
-                            BattlePassCompatHelper.takeRewardsFromSelectChest(itemData, n, itemParamData, (List<GameItem>)object);
+                            BattlePassCompatHelper.takeRewardsFromSelectChest(itemData, n, itemParamData, items);
                             continue;
                         }
                         int n2 = BattlePassCompatHelper.scaledCount(itemParamData.getItemId(), itemParamData.getItemCount());
-                        ((ArrayList)object).add(new GameItem(itemData, n2));
+                        items.add(new GameItem(itemData, n2));
                     }
                     BattlePassReward battlePassReward = new BattlePassReward(battlePassRewardTag.getLevel(), battlePassRewardTag.getRewardId(), battlePassRewardTag.getUnlockStatus() == BattlePassUnlockStatusOuterClass.BattlePassUnlockStatus.BattlePassUnlockStatus_BATTLE_PASS_UNLOCK_PAID);
                     battlePassManager.getTakenRewards().put(battlePassReward.getRewardId(), battlePassReward);
                 }
                 battlePassManager.save();
-                battlePassManager.getPlayer().getInventory().addItems((Collection)object);
+                battlePassManager.getPlayer().getInventory().addItems(items);
                 battlePassManager.getPlayer().sendPacket((BasePacket)new PacketBattlePassCurScheduleUpdateNotify(battlePassManager.getPlayer()));
-                Grasscutter.getLogger().info("BattlePass claim ok uid={} granted={} items={}", new Object[]{battlePassManager.getPlayer().getUid(), arrayList.size(), ((ArrayList)object).size()});
+                Grasscutter.getLogger().info("BattlePass claim ok uid={} granted={} items={}", new Object[]{battlePassManager.getPlayer().getUid(), arrayList.size(), items.size()});
             }
-            battlePassManager.getPlayer().sendPacket((BasePacket)new PacketTakeBattlePassRewardRsp(list, (List)object));
+            battlePassManager.getPlayer().sendPacket((BasePacket)new PacketTakeBattlePassRewardRsp(list, items));
         }
         Object var14_16 = null;
         try {
@@ -350,4 +349,3 @@ public final class BattlePassCompatHelper {
         Grasscutter.getLogger().info("BattlePass missions seeded uid={} count={}", (Object)(player != null ? player.getUid() : 0), (Object)n);
     }
 }
-

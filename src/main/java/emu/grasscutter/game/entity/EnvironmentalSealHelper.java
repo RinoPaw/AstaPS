@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class EnvironmentalSealHelper {
     private static final float BRAMBLE_BURN_HP = 600.0f;
     private static final float BRAMBLE_MIN_TICK = 35.0f;
-    private static final ConcurrentHashMap<Integer, Float> burnLeftByEntityId = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<Integer, Float> burnLeftByEntityId = new ConcurrentHashMap<>();
     private static final Set<Integer> finishedBrambleChests = ConcurrentHashMap.newKeySet();
 
     private EnvironmentalSealHelper() {

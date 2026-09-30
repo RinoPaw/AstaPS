@@ -23,8 +23,8 @@ public final class SymphonistWeaponHelper {
     public static final int WEAPON_ID = 13514;
     public static final int AFFIX_BASE_ID = 1135140;
     public static final String OPEN_CONFIG = "Weapon_Pole_Trident";
-    private static final ConcurrentHashMap<Long, Float> APPLIED_ATK_PERCENT = new ConcurrentHashMap();
-    private static final ConcurrentHashMap<Long, Integer> EXPIRE_TASK_IDS = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<Long, Float> APPLIED_ATK_PERCENT = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, Integer> EXPIRE_TASK_IDS = new ConcurrentHashMap<>();
 
     private SymphonistWeaponHelper() {
     }

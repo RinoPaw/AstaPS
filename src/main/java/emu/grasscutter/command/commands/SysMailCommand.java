@@ -27,7 +27,7 @@ import java.util.Objects;
 @Command(label="sysmail", usage={"all", "update <title-keyword> <new-body>", "retitle <title-keyword> <new-title>", "delete <title-keyword>", "deleteall", "help"}, permission="server.sendmail", aliases={"systemmail", "smail"}, targetRequirement=Command.TargetRequirement.NONE)
 public final class SysMailCommand
 implements CommandHandler {
-    private static final HashMap<Integer, Draft> drafts = new HashMap();
+    private static final HashMap<Integer, Draft> drafts = new HashMap<>();
 
     private static int senderKey(Player player) {
         return player != null ? player.getUid() : -1;

@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class SkirkInvokeLog {
     private static final long BURST_DEBOUNCE_MS = 1500L;
-    private static final ConcurrentHashMap<Integer, Long> lastBurstMs = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<Integer, Long> lastBurstMs = new ConcurrentHashMap<>();
 
     private SkirkInvokeLog() {
     }

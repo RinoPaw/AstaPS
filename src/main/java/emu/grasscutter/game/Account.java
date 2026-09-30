@@ -4,7 +4,6 @@ import static emu.grasscutter.config.Configuration.*;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import dev.morphia.annotations.*;
-import emu.grasscutter.Grasscutter;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.utils.*;
 import java.util.*;
@@ -18,7 +17,7 @@ public class Account {
     @Collation(locale = "simple", caseLevel = true)
     private String username;
 
-    private String password; // Unused for now
+    private String password;
 
     private int reservedPlayerId;
     private String email;
@@ -96,7 +95,11 @@ public class Account {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        if (password == null || password.isEmpty() || password.startsWith("$2")) {
+            this.password = password;
+            return;
+        }
+        this.password = BCrypt.withDefaults().hashToString(12, password.toCharArray());
     }
 
     public String getToken() {
@@ -147,22 +150,17 @@ public class Account {
         this.save();
         return this.sessionKey;
     }
-    
+
     public boolean verifyPassword(String password) {
         if (this.password == null || this.password.isEmpty()) {
             return true;
         }
-        if (password == null) {
+        if (password == null || !this.password.startsWith("$2")) {
             return false;
         }
-        // BCrypt-hashed password (new-style accounts).
-        if (this.password.startsWith("$2")) {
-            return BCrypt.verifyer()
-                    .verify(password.toCharArray(), this.password.toCharArray())
-                    .verified;
-        }
-        // Legacy plaintext password.
-        return this.password.equals(password);
+        return BCrypt.verifyer()
+                .verify(password.toCharArray(), this.password.toCharArray())
+                .verified;
     }
 
     public Locale getLocale() {

@@ -56,7 +56,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 public final class AvatarExtraLevelHelper {
@@ -81,7 +80,8 @@ public final class AvatarExtraLevelHelper {
             return;
         }
         try {
-            List list = JsonUtils.loadToList((Path)path, AvatarExtraLevelConfig.class);
+            List<AvatarExtraLevelConfig> list =
+                    JsonUtils.loadToList((Path)path, AvatarExtraLevelConfig.class);
             configs = list == null ? Collections.emptyList() : list;
             Grasscutter.getLogger().info("Loaded {} avatar extra level upgrade rows", (Object)configs.size());
         }
@@ -289,7 +289,7 @@ public final class AvatarExtraLevelHelper {
         avatar.recalcStats(true);
         avatar.save();
         player.sendPacket((BasePacket)new PacketAvatarPropNotify(avatar));
-        player.sendPacket((BasePacket)new PacketAvatarUpgradeRsp(avatar, n2, (Map)int2FloatArrayMap));
+        player.sendPacket((BasePacket)new PacketAvatarUpgradeRsp(avatar, n2, int2FloatArrayMap));
         player.sendPacket((BasePacket)new PacketAvatarDataNotify(player));
         if (n == PacketOpcodes.AvatarPromoteReq) {
             player.sendPacket((BasePacket)new PacketAvatarPromoteRsp(avatar));
@@ -364,4 +364,3 @@ public final class AvatarExtraLevelHelper {
         IGNORED_SNIFF_OPCODES = new HashSet<Integer>(Arrays.asList(2151, 5080, 8274, 20808, 21080, 21498, 26395, 26986, 28659, 29324));
     }
 }
-

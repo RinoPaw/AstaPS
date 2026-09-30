@@ -23,7 +23,7 @@ public final class AccountDeletionService {
         disconnectAndWait(account.getId());
 
         // Resolve the player after logout so the final onLogout saves have already been submitted.
-        Player player = DatabaseHelper.getPlayerByAccount(account);
+        Player player = DatabaseHelper.getPlayerByAccount(account, Player.class);
 
         // Hold every database writer at a common fence. This drains writes that were queued before
         // deletion and prevents those writes from recreating documents while the hard delete runs.

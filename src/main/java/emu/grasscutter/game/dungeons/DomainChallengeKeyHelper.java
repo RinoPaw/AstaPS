@@ -38,7 +38,7 @@ public final class DomainChallengeKeyHelper {
     private static final int START_OPTION_ID = 7;
     private static final int HIDE_DELAY_SECONDS = 2;
     private static final int WORKTOP_HIDE_DELAY_SECONDS = 1;
-    private static final ConcurrentHashMap<Long, Integer> PENDING_HIDE = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<Long, Integer> PENDING_HIDE = new ConcurrentHashMap<>();
 
     private DomainChallengeKeyHelper() {
     }

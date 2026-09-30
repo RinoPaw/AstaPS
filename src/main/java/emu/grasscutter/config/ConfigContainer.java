@@ -37,9 +37,11 @@ public class ConfigContainer {
      *              encryption key used for packets is a constant or randomly generated.
      * Version 14 - 'server.threadPools' was added for managed thread-pool sizing.
      * Version 15 - 'server.watchdog' was added for the database monitor and timed restart.
+     * Version 16 - 'gameOptions.rates.leyLines' was split into a global rate and
+     *              source-specific Mora / EXP-book rates.
      */
     private static int version() {
-        return 15;
+        return 16;
     }
 
     /**
@@ -504,7 +506,81 @@ public class ConfigContainer {
         public static class Rates {
             public float adventureExp = 1.5f;
             public float mora = 2.0f;
-            public float leyLines = 2.0f;
+
+            @com.google.gson.annotations.JsonAdapter(LeyLineRatesAdapter.class)
+            public LeyLineRates leyLines = new LeyLineRates();
+        }
+
+        /** Layered Ley Line multipliers: effective rate = global × source-specific rate. */
+        public static class LeyLineRates {
+            /** Applies to both Blossoms of Wealth and Revelation. */
+            public float global = 2.0f;
+
+            /** Blossom of Wealth. */
+            public float mora = 1.0f;
+
+            /** Blossom of Revelation. */
+            public float experienceBooks = 1.0f;
+        }
+
+        /**
+         * Migrates the old scalar form without changing its effective reward rate. It also accepts
+         * the short-lived experimental {mora, exp} object so configs produced by that branch remain
+         * usable.
+         */
+        public static class LeyLineRatesAdapter
+                implements com.google.gson.JsonDeserializer<LeyLineRates>,
+                        com.google.gson.JsonSerializer<LeyLineRates> {
+            @Override
+            public LeyLineRates deserialize(
+                    com.google.gson.JsonElement json,
+                    java.lang.reflect.Type typeOfT,
+                    com.google.gson.JsonDeserializationContext context) {
+                var rates = new LeyLineRates();
+                if (json == null || json.isJsonNull()) return rates;
+
+                if (json.isJsonPrimitive()) {
+                    rates.global = json.getAsFloat();
+                    return rates;
+                }
+
+                var object = json.getAsJsonObject();
+                if (object.has("global")) {
+                    rates.global = object.get("global").getAsFloat();
+                    if (object.has("mora")) rates.mora = object.get("mora").getAsFloat();
+                    if (object.has("experienceBooks")) {
+                        rates.experienceBooks = object.get("experienceBooks").getAsFloat();
+                    } else if (object.has("exp")) {
+                        rates.experienceBooks = object.get("exp").getAsFloat();
+                    }
+                    return rates;
+                }
+
+                // The first experiment wrote source rates only. Preserve those effective values by
+                // making its implicit global layer explicit as 1.0.
+                rates.global = 1.0f;
+                if (object.has("mora")) rates.mora = object.get("mora").getAsFloat();
+                if (object.has("experienceBooks")) {
+                    rates.experienceBooks = object.get("experienceBooks").getAsFloat();
+                } else if (object.has("exp")) {
+                    rates.experienceBooks = object.get("exp").getAsFloat();
+                }
+                return rates;
+            }
+
+            @Override
+            public com.google.gson.JsonElement serialize(
+                    LeyLineRates src,
+                    java.lang.reflect.Type typeOfSrc,
+                    com.google.gson.JsonSerializationContext context) {
+                if (src == null) return com.google.gson.JsonNull.INSTANCE;
+
+                var object = new JsonObject();
+                object.addProperty("global", src.global);
+                object.addProperty("mora", src.mora);
+                object.addProperty("experienceBooks", src.experienceBooks);
+                return object;
+            }
         }
 
         /** Spiral Abyss. */

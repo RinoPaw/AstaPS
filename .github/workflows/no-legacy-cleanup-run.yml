@@ -20,7 +20,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: '17'
 
       - name: Apply no-legacy cleanup
         shell: python
@@ -165,6 +165,11 @@ jobs:
 
       - name: Format
         run: ./gradlew spotlessApply -PskipHandbook=1
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
 
       - name: Verify diff
         run: |

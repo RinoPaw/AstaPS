@@ -8,16 +8,32 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.event.game.ExecuteCommandEvent;
 import it.unimi.dsi.fastutil.objects.*;
 import java.util.*;
+import org.jline.reader.impl.LineReaderImpl;
 import org.reflections.Reflections;
+import picocli.CommandLine;
+import picocli.CommandLine.Model.CommandSpec;
+import picocli.CommandLine.Model.PositionalParamSpec;
+import picocli.shell.jline3.PicocliJLineCompleter;
 
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public final class CommandMap {
     private static final int INVALID_UID = Integer.MIN_VALUE;
     private static final String consoleId = "console";
+
     private final Map<String, CommandHandler> commands = new TreeMap<>();
     private final Map<String, CommandHandler> aliases = new TreeMap<>();
     private final Map<String, Command> annotations = new TreeMap<>();
     private final Object2IntMap<String> targetPlayerIds = new Object2IntOpenHashMap<>();
+    private final Object picocliLock = new Object();
+
+    /**
+     * Picocli owns command-name/alias parsing and the command model used by JLine completion.
+     *
+     * <p>The built-in handlers still receive their historical {@code List<String>} argument payload
+     * during the compatibility migration. This keeps every existing command spelling and compact DSL
+     * intact while individual handlers are moved to typed picocli parameters.
+     */
+    private volatile CommandLine commandLine = createRootCommandLine();
 
     public CommandMap() {
         this(false);
@@ -25,10 +41,22 @@ public final class CommandMap {
 
     public CommandMap(boolean scan) {
         if (scan) this.scan();
+        this.installConsoleCompleter();
     }
 
     public static CommandMap getInstance() {
         return Grasscutter.getCommandMap();
+    }
+
+    public CommandLine getCommandLine() {
+        return this.commandLine;
+    }
+
+    private static CommandLine createRootCommandLine() {
+        var root = new CommandLine(CommandSpec.create().name("astaps"));
+        // AstaPS owns @UID targeting. Picocli must never reinterpret @foo as an argument file.
+        root.setExpandAtFiles(false);
+        return root;
     }
 
     private static int getUidFromString(String input) {
@@ -42,6 +70,89 @@ public final class CommandMap {
             // We will be immediately fetching the player again after this,
             // but offline vs online Player safety is more important than saving a lookup
             return player.getUid();
+        }
+    }
+
+    /**
+     * Rebuilds the picocli command tree from the public Grasscutter command registry.
+     *
+     * <p>This also keeps legacy plugin registration working: plugins can continue using
+     * {@link #registerCommand(String, CommandHandler)} and the new parser/completer sees the change
+     * immediately.
+     */
+    private void rebuildPicocliTree() {
+        synchronized (this.picocliLock) {
+            var root = createRootCommandLine();
+
+            for (var entry : this.commands.entrySet()) {
+                String label = entry.getKey();
+                CommandHandler handler = entry.getValue();
+
+                var childSpec = CommandSpec.create().name(label);
+                childSpec.addPositional(
+                        PositionalParamSpec.builder()
+                                .index("0..*")
+                                .arity("0..*")
+                                .type(String[].class)
+                                .paramLabel("ARG")
+                                .build());
+                var child = new CommandLine(childSpec);
+
+                // Existing commands use compact tokens and negative numbers that can look like
+                // options. Until each handler has a typed schema, every historical token is a
+                // positional argument.
+                child.setUnmatchedOptionsArePositionalParams(true);
+                child.setExpandAtFiles(false);
+
+                String[] effectiveAliases =
+                        this.aliases.entrySet().stream()
+                                .filter(alias -> alias.getValue() == handler)
+                                // Invocation lower-cases the command token today, so a mixed-case
+                                // alias is historically unreachable. Do not accidentally add syntax.
+                                .filter(alias -> alias.getKey().equals(alias.getKey().toLowerCase()))
+                                // A real command label has always won over an alias in getHandler().
+                                .filter(alias -> !this.commands.containsKey(alias.getKey()))
+                                .map(Map.Entry::getKey)
+                                .toArray(String[]::new);
+
+                root.addSubcommand(label, child, effectiveAliases);
+            }
+
+            // Apply these parser settings after adding children so picocli propagates them through
+            // the complete hierarchy.
+            root.setUnmatchedOptionsArePositionalParams(true);
+            root.setExpandAtFiles(false);
+            this.commandLine = root;
+        }
+    }
+
+    private void installConsoleCompleter() {
+        var reader = Grasscutter.getConsole();
+        if (reader instanceof LineReaderImpl lineReader) {
+            lineReader.setCompleter(
+                    (currentReader, parsedLine, candidates) -> {
+                        CommandLine cli = this.commandLine;
+                        new PicocliJLineCompleter(cli.getCommandSpec())
+                                .complete(currentReader, parsedLine, candidates);
+                    });
+        }
+    }
+
+    /**
+     * Resolve the first token through picocli and return the canonical registered command label.
+     *
+     * <p>Only command/alias selection is authoritative in this compatibility phase. Handler payload
+     * tokens remain untouched and are forwarded exactly as the old command system produced them.
+     */
+    private String resolveCommandLabel(String label) {
+        synchronized (this.picocliLock) {
+            try {
+                var result = this.commandLine.parseArgs(label);
+                var subcommand = result.subcommand();
+                return subcommand == null ? null : subcommand.commandSpec().name();
+            } catch (CommandLine.ParameterException ignored) {
+                return null;
+            }
         }
     }
 
@@ -66,6 +177,8 @@ public final class CommandMap {
             this.aliases.put(alias, command);
             this.annotations.put(alias, annotation);
         }
+
+        this.rebuildPicocliTree();
         return this;
     }
 
@@ -91,6 +204,7 @@ public final class CommandMap {
             this.annotations.remove(alias);
         }
 
+        this.rebuildPicocliTree();
         return this;
     }
 
@@ -248,7 +362,8 @@ public final class CommandMap {
             return;
         }
 
-        // Parse message.
+        // Keep historical tokenization for the compatibility migration. JLine/picocli now own the
+        // command model and top-level routing; quoting semantics can be changed separately later.
         String[] split = rawMessage.split(" ");
         String label = split[0].toLowerCase();
         List<String> args = new ArrayList<>(Arrays.asList(split).subList(1, split.length));
@@ -271,17 +386,19 @@ public final class CommandMap {
             return;
         }
 
-        // Get command handler.
-        CommandHandler handler = this.getHandler(label);
-
-        // Check if the handler is null.
-        if (handler == null) {
+        // Picocli is authoritative for command/alias selection.
+        String resolvedLabel = this.resolveCommandLabel(label);
+        if (resolvedLabel == null) {
             CommandHandler.sendTranslatedMessage(player, "commands.generic.unknown_command", label);
             return;
         }
 
-        // Get the command's annotation.
-        Command annotation = this.annotations.get(label);
+        CommandHandler handler = this.commands.get(resolvedLabel);
+        Command annotation = this.annotations.get(resolvedLabel);
+        if (handler == null || annotation == null) {
+            CommandHandler.sendTranslatedMessage(player, "commands.generic.unknown_command", label);
+            return;
+        }
 
         // Resolve 'targetPlayer'.
         try {
@@ -296,7 +413,7 @@ public final class CommandMap {
                         player,
                         targetPlayer,
                         annotation.permission(),
-                        this.annotations.get(label).permissionTargeted())) {
+                        annotation.permissionTargeted())) {
             return;
         }
 

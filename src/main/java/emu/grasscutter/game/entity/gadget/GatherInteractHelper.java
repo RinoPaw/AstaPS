@@ -39,13 +39,13 @@ public final class GatherInteractHelper {
 
    private static void ensureGadgetIndex() {
       if (byGadgetId == null) {
-         Int2ObjectOpenHashMap var0 = new Int2ObjectOpenHashMap();
-         Int2ObjectOpenHashMap var1 = new Int2ObjectOpenHashMap();
+         Int2ObjectOpenHashMap<GatherData> var0 = new Int2ObjectOpenHashMap<>();
+         Int2ObjectOpenHashMap<GatherData> var1 = new Int2ObjectOpenHashMap<>();
          IntOpenHashSet var2 = new IntOpenHashSet();
-         ObjectIterator var3 = GameData.getGatherDataMap().values().iterator();
+         ObjectIterator<GatherData> var3 = GameData.getGatherDataMap().values().iterator();
 
          while (var3.hasNext()) {
-            GatherData var4 = (GatherData)var3.next();
+            GatherData var4 = var3.next();
             int var5 = var4.getGadgetId();
             if (var5 > 0) {
                var0.putIfAbsent(var5, var4);
@@ -67,11 +67,11 @@ public final class GatherInteractHelper {
 
    private static void ensureControllerIndex() {
       if (serverControllerByGadgetId == null) {
-         Int2ObjectOpenHashMap var0 = new Int2ObjectOpenHashMap();
-         ObjectIterator var1 = GameData.getGadgetMappingMap().values().iterator();
+         Int2ObjectOpenHashMap<String> var0 = new Int2ObjectOpenHashMap<>();
+         ObjectIterator<GadgetMapping> var1 = GameData.getGadgetMappingMap().values().iterator();
 
          while (var1.hasNext()) {
-            GadgetMapping var2 = (GadgetMapping)var1.next();
+            GadgetMapping var2 = var1.next();
             if (var2.getGadgetId() > 0 && var2.getServerController() != null) {
                var0.putIfAbsent(var2.getGadgetId(), var2.getServerController());
             }
@@ -86,7 +86,7 @@ public final class GatherInteractHelper {
          return null;
       } else {
          ensureControllerIndex();
-         return (String)serverControllerByGadgetId.get(var0);
+         return serverControllerByGadgetId.get(var0);
       }
    }
 
@@ -497,7 +497,6 @@ public final class GatherInteractHelper {
             if (var2 == null && var0.getGadgetData() != null) {
                var2 = GameData.getGadgetConfigData().get(var0.getGadgetData().getJsonName());
             }
-
             if (var2 != null && var2.getCombat() != null && var2.getCombat().getProperty() != null) {
                float var3 = var2.getCombat().getProperty().getHP();
                if (!(var3 <= 0.0F) && !(var3 > 10000.0F)) {

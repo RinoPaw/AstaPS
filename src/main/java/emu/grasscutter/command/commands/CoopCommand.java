@@ -1,56 +1,63 @@
 package emu.grasscutter.command.commands;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.command.*;
+import emu.grasscutter.command.Command;
+import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.game.player.Player;
-import java.util.List;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
 @Command(
         label = "coop",
-        usage = {"[<host UID>]"},
         permission = "server.coop",
         permissionTargeted = "server.coop.others")
-public final class CoopCommand implements CommandHandler {
-
+public final class CoopCommand implements PicocliCommandHandler {
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        Player host = sender;
-        switch (args.size()) {
-            case 0: // Summon target to self
-                if (sender == null) { // Console doesn't have a self to summon to
-                    sendUsageMessage(sender);
-                    return;
-                }
-                break;
-            case 1: // Summon target to argument
-                try {
-                    int hostId = Integer.parseInt(args.get(0));
-                    host = Grasscutter.getGameServer().getPlayerByUid(hostId);
-                    if (host == null) {
-                        CommandHandler.sendTranslatedMessage(sender, "commands.execution.player_offline_error");
-                        return;
-                    }
-                    break;
-                } catch (NumberFormatException ignored) {
-                    CommandHandler.sendTranslatedMessage(sender, "commands.generic.invalid.uid");
-                    return;
-                }
-            default:
-                sendUsageMessage(sender);
-                return;
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        return new CommandLine(new Args(sender, targetPlayer));
+    }
+
+    @CommandLine.Command(name = "coop")
+    private static final class Args implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        @Parameters(index = "0", arity = "0..1", paramLabel = "[hostUid]")
+        private Integer hostUid;
+
+        private Args(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
         }
 
-        // There's no target==host check but this just places them in multiplayer in their own world
-        // which seems fine.
-        if (targetPlayer.isInMultiplayer()) {
-            targetPlayer.getServer().getMultiplayerSystem().leaveCoop(targetPlayer);
+        @Override
+        public void run() {
+            Player host;
+            if (hostUid == null) {
+                if (sender == null) {
+                    CommandHandler.sendMessage(null, "A host UID is required from the console.");
+                    return;
+                }
+                host = sender;
+            } else {
+                host = Grasscutter.getGameServer().getPlayerByUid(hostUid);
+                if (host == null) {
+                    CommandHandler.sendTranslatedMessage(sender, "commands.execution.player_offline_error");
+                    return;
+                }
+            }
+
+            if (targetPlayer.isInMultiplayer()) {
+                targetPlayer.getServer().getMultiplayerSystem().leaveCoop(targetPlayer);
+            }
+            host.getServer().getMultiplayerSystem().applyEnterMp(targetPlayer, host.getUid());
+            targetPlayer
+                    .getServer()
+                    .getMultiplayerSystem()
+                    .applyEnterMpReply(host, targetPlayer.getUid(), true);
+            CommandHandler.sendTranslatedMessage(
+                    sender, "commands.coop.success", targetPlayer.getNickname(), host.getNickname());
         }
-        host.getServer().getMultiplayerSystem().applyEnterMp(targetPlayer, host.getUid());
-        targetPlayer
-                .getServer()
-                .getMultiplayerSystem()
-                .applyEnterMpReply(host, targetPlayer.getUid(), true);
-        CommandHandler.sendTranslatedMessage(
-                sender, "commands.coop.success", targetPlayer.getNickname(), host.getNickname());
     }
 }

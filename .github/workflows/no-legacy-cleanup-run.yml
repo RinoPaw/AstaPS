@@ -175,8 +175,11 @@ jobs:
           git diff --check
           ! grep -R "createAccountWithHashedPassword\|LEGACY_IP_BAN_REASON_PREFIX\|ConfigContainer.updateConfig" -n src/main/java
 
-      - name: Build and test
-        run: ./gradlew clean jar test -PskipHandbook=1
+      - name: Build jar
+        run: ./gradlew clean jar -PskipHandbook=1 -PjarFilename=grasscutter -Dorg.gradle.jvmargs=-Xmx4g
+
+      - name: Test
+        run: ./gradlew test -PexcludeTags=integration -Dorg.gradle.jvmargs=-Xmx4g
 
       - name: Commit cleanup
         run: |

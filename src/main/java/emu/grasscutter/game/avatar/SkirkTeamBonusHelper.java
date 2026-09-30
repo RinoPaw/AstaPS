@@ -292,16 +292,17 @@ public final class SkirkTeamBonusHelper {
         if (list == null || list.size() < 2) {
             return 0;
         }
-        AvatarSkillData avatarSkillData = GameData.getAvatarSkillDataMap().get(list.get(1));
+        AvatarSkillData avatarSkillData = GameData.getAvatarSkillDataMap().get(list.get(1).intValue());
         if (avatarSkillData == null) {
             return 0;
         }
         return avatarSkillData.getProudSkillGroupId();
     }
 
+    @SuppressWarnings("unchecked")
     private static Map<Integer, Integer> bonusMap(Avatar avatar) {
         try {
-            return (Map)PROUD_SKILL_BONUS_MAP.get(avatar);
+            return (Map<Integer, Integer>) PROUD_SKILL_BONUS_MAP.get(avatar);
         }
         catch (IllegalAccessException illegalAccessException) {
             throw new IllegalStateException("Unable to access proudSkillBonusMap", illegalAccessException);
@@ -380,9 +381,9 @@ public final class SkirkTeamBonusHelper {
     }
 
     static {
-        APPLIED_BY_PLAYER = new ConcurrentHashMap();
-        LAST_STATE_BY_PLAYER = new ConcurrentHashMap();
-        LAST_REFRESH_MS = new ConcurrentHashMap();
+        APPLIED_BY_PLAYER = new ConcurrentHashMap<>();
+        LAST_STATE_BY_PLAYER = new ConcurrentHashMap<>();
+        LAST_REFRESH_MS = new ConcurrentHashMap<>();
         REFRESH_IN_PROGRESS = ThreadLocal.withInitial(() -> Boolean.FALSE);
         try {
             PROUD_SKILL_BONUS_MAP = Avatar.class.getDeclaredField("proudSkillBonusMap");

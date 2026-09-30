@@ -86,8 +86,8 @@ public final class SkirkCunningHelper {
     private static final String CUR_SPECIAL_GV = "_SKIRKNEW_CUR_SPECIAL_ENERGY";
     private static final String OVERFLOW_GV = "_SKIRKNEW_CUR_SPECIAL_ENERGY_OVERFLOW";
     private static final long DEBOUNCE_MS = 900L;
-    private static final ConcurrentHashMap<Integer, Long> lastSkillGrantMs = new ConcurrentHashMap();
-    private static final ConcurrentHashMap<Integer, Long> lastC2GrantMs = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<Integer, Long> lastSkillGrantMs = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, Long> lastC2GrantMs = new ConcurrentHashMap<>();
 
     private SkirkCunningHelper() {
     }
@@ -134,9 +134,9 @@ public final class SkirkCunningHelper {
         if (!SkirkCunningHelper.isSkirk(gameEntity)) {
             return;
         }
-        Map map = gameEntity.getGlobalAbilityValues();
-        map.put(NYX_MIN, Float.valueOf(0.0f));
-        map.put(NYX_MAX, Float.valueOf(100.0f));
+        Map<String, Float> map = gameEntity.getGlobalAbilityValues();
+        map.put(NYX_MIN, 0.0f);
+        map.put(NYX_MAX, 100.0f);
         SpecialEnergyBarHelper.ensureAndSync(gameEntity);
         SkirkCunningHelper.syncNyxFromSpecial(gameEntity);
     }
@@ -219,7 +219,7 @@ public final class SkirkCunningHelper {
             return false;
         }
         try {
-            Float f = (Float)gameEntity.getGlobalAbilityValues().get(TRANSFORM_FLAG);
+            Float f = gameEntity.getGlobalAbilityValues().get(TRANSFORM_FLAG);
             return f != null && f.floatValue() > 0.5f;
         }
         catch (Throwable throwable) {
@@ -297,9 +297,9 @@ public final class SkirkCunningHelper {
             return;
         }
         lastSkillGrantMs.put(n, l);
-        Map map = gameEntity.getGlobalAbilityValues();
-        map.put(NYX_MIN, Float.valueOf(0.0f));
-        map.put(NYX_MAX, Float.valueOf(100.0f));
+        Map<String, Float> map = gameEntity.getGlobalAbilityValues();
+        map.put(NYX_MIN, 0.0f);
+        map.put(NYX_MAX, 100.0f);
         SpecialEnergyBarHelper.ensureAndSync(gameEntity);
         gameEntity.addSpecialEnergy(f);
         SpecialEnergyBarHelper.ensureAndSync(gameEntity);
@@ -351,9 +351,12 @@ public final class SkirkCunningHelper {
             return;
         }
         try {
-            Float current = ability.getAbilitySpecials().get(PICKABLE_ENERGY_REVIVE_KEY);
-            if (current == null || current.floatValue() < 0.5f) {
-                ability.getAbilitySpecials().put(PICKABLE_ENERGY_REVIVE_KEY, PICKABLE_ENERGY_REVIVE);
+            var specials = ability.getAbilitySpecials();
+            float current = specials.containsKey(PICKABLE_ENERGY_REVIVE_KEY)
+                    ? specials.getFloat(PICKABLE_ENERGY_REVIVE_KEY)
+                    : 0.0f;
+            if (current < 0.5f) {
+                specials.put(PICKABLE_ENERGY_REVIVE_KEY, PICKABLE_ENERGY_REVIVE);
             }
         } catch (Throwable ignored) {
         }
@@ -387,9 +390,12 @@ public final class SkirkCunningHelper {
             return 0.0f;
         }
         try {
-            Float revive = ability.getAbilitySpecials().get(PICKABLE_ENERGY_REVIVE_KEY);
-            if (revive != null && revive.floatValue() >= 0.5f) {
-                return revive.floatValue();
+            var specials = ability.getAbilitySpecials();
+            if (specials.containsKey(PICKABLE_ENERGY_REVIVE_KEY)) {
+                float revive = specials.getFloat(PICKABLE_ENERGY_REVIVE_KEY);
+                if (revive >= 0.5f) {
+                    return revive;
+                }
             }
         } catch (Throwable ignored) {
         }
@@ -592,9 +598,9 @@ public final class SkirkCunningHelper {
     }
 
     private static void doGrant(GameEntity gameEntity, float f) {
-        Map map = gameEntity.getGlobalAbilityValues();
-        map.put(NYX_MIN, Float.valueOf(0.0f));
-        map.put(NYX_MAX, Float.valueOf(100.0f));
+        Map<String, Float> map = gameEntity.getGlobalAbilityValues();
+        map.put(NYX_MIN, 0.0f);
+        map.put(NYX_MAX, 100.0f);
         SpecialEnergyBarHelper.ensureAndSync(gameEntity);
         gameEntity.addSpecialEnergy(f);
         SpecialEnergyBarHelper.ensureAndSync(gameEntity);
@@ -605,19 +611,19 @@ public final class SkirkCunningHelper {
         if (gameEntity == null) {
             return;
         }
-        Map map = gameEntity.getGlobalAbilityValues();
-        map.put(NYX_MIN, Float.valueOf(0.0f));
-        map.put(NYX_MAX, Float.valueOf(100.0f));
+        Map<String, Float> map = gameEntity.getGlobalAbilityValues();
+        map.put(NYX_MIN, 0.0f);
+        map.put(NYX_MAX, 100.0f);
         float f = gameEntity.getFightProperty(FightProperty.FIGHT_PROP_CUR_SPECIAL_ENERGY);
         float f2 = Math.max(0.0f, Math.min(100.0f, f));
-        Float f3 = (Float)map.get(NYX_KEY);
-        Float f4 = (Float)map.get(CUR_SPECIAL_GV);
+        Float f3 = map.get(NYX_KEY);
+        Float f4 = map.get(CUR_SPECIAL_GV);
         boolean bl = f3 == null || Math.abs(f3.floatValue() - f2) >= 0.05f;
         boolean bl2 = f4 == null || Math.abs(f4.floatValue() - f2) >= 0.05f;
-        map.put(NYX_KEY, Float.valueOf(f2));
-        map.put(CUR_SPECIAL_GV, Float.valueOf(f2));
-        map.put(OVERFLOW_GV, Float.valueOf(f2));
-        map.put("_ABILITY_Mavuika_BurstEnergy", Float.valueOf(f2));
+        map.put(NYX_KEY, f2);
+        map.put(CUR_SPECIAL_GV, f2);
+        map.put(OVERFLOW_GV, f2);
+        map.put("_ABILITY_Mavuika_BurstEnergy", f2);
         if (bl || bl2) {
             gameEntity.onAbilityValueUpdate();
         }
@@ -757,4 +763,3 @@ public final class SkirkCunningHelper {
         lastC2GrantMs.remove(entityId);
     }
 }
-

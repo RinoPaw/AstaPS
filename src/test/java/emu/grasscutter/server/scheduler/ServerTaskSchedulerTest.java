@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -14,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BooleanSupplier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,14 +31,21 @@ public final class ServerTaskSchedulerTest {
         this.scheduler = new ServerTaskScheduler(this.executor);
     }
 
+    private AtomicLong createSchedulerWithClock() {
+        this.executor = Executors.newSingleThreadExecutor();
+        var now = new AtomicLong();
+        this.scheduler = new ServerTaskScheduler(this.executor, now::get);
+        return now;
+    }
+
     @AfterEach
     public void shutdownExecutor() {
         if (this.executor != null) this.executor.shutdownNow();
     }
 
     @Test
-    @DisplayName("a delayed repeating task waits a full period after its first run")
-    public void delayedRepeatingCadence() {
+    @DisplayName("an explicit tick task waits a full period after its first run")
+    public void delayedRepeatingTickCadence() {
         var task = new ServerTask(() -> {}, 1, 3, 5);
         var runs = new ArrayList<Integer>();
 
@@ -45,6 +54,60 @@ public final class ServerTaskSchedulerTest {
         }
 
         assertEquals(List.of(5, 8, 11), runs);
+    }
+
+    @Test
+    @DisplayName("legacy integer delays keep their historical real-second meaning")
+    public void integerDelayUsesWallClockSeconds() {
+        AtomicLong now = createSchedulerWithClock();
+        var runs = new AtomicInteger();
+        this.scheduler.scheduleDelayedTask(runs::incrementAndGet, 1);
+
+        this.scheduler.runTasks();
+        assertEquals(0, runs.get());
+
+        now.set(TimeUnit.MILLISECONDS.toNanos(999));
+        this.scheduler.runTasks();
+        assertEquals(0, runs.get());
+
+        now.set(TimeUnit.SECONDS.toNanos(1));
+        this.scheduler.runTasks();
+        assertEquals(1, runs.get());
+    }
+
+    @Test
+    @DisplayName("duration repeating tasks use wall time and fixed-delay cadence")
+    public void durationRepeatingCadence() {
+        AtomicLong now = createSchedulerWithClock();
+        var runs = new AtomicInteger();
+        this.scheduler.scheduleDelayedRepeatingTask(
+                runs::incrementAndGet, Duration.ofMillis(300), Duration.ofMillis(100));
+
+        now.set(TimeUnit.MILLISECONDS.toNanos(100));
+        this.scheduler.runTasks();
+        assertEquals(1, runs.get());
+
+        now.set(TimeUnit.MILLISECONDS.toNanos(399));
+        this.scheduler.runTasks();
+        assertEquals(1, runs.get());
+
+        now.set(TimeUnit.MILLISECONDS.toNanos(400));
+        this.scheduler.runTasks();
+        assertEquals(2, runs.get());
+    }
+
+    @Test
+    @DisplayName("explicit tick APIs stay coupled to the game loop")
+    public void explicitTickDelayUsesSchedulerTicks() {
+        createScheduler();
+        var runs = new AtomicInteger();
+        this.scheduler.scheduleDelayedTaskTicks(runs::incrementAndGet, 5);
+
+        for (int i = 0; i < 4; i++) this.scheduler.runTasks();
+        assertEquals(0, runs.get());
+
+        this.scheduler.runTasks();
+        assertEquals(1, runs.get());
     }
 
     @Test
@@ -120,7 +183,7 @@ public final class ServerTaskSchedulerTest {
     }
 
     @Test
-    @DisplayName("invalid tick periods are rejected when the task is scheduled")
+    @DisplayName("invalid wall-clock and tick periods are rejected when scheduled")
     public void invalidPeriodsAreRejected() {
         createScheduler();
 
@@ -133,6 +196,18 @@ public final class ServerTaskSchedulerTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> this.scheduler.scheduleDelayedTask(() -> {}, -1));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> this.scheduler.scheduleRepeatingTask(() -> {}, Duration.ZERO));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> this.scheduler.scheduleDelayedTask(() -> {}, Duration.ofMillis(-1)));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> this.scheduler.scheduleRepeatingTaskTicks(() -> {}, 0));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> this.scheduler.scheduleDelayedTaskTicks(() -> {}, -1));
     }
 
     private static void waitFor(BooleanSupplier condition) throws InterruptedException {

@@ -4,6 +4,7 @@ import emu.grasscutter.server.threading.ManagedThreadPoolExecutor;
 import emu.grasscutter.server.threading.ThreadPoolConfig;
 import emu.grasscutter.server.threading.ThreadPoolConfigResolver;
 import emu.grasscutter.server.threading.ThreadPoolType;
+import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -11,6 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.LongSupplier;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +20,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Runs short synchronous tasks on the game tick and dispatches asynchronous work to a managed pool.
  *
- * <p>All integer delay and period parameters are measured in game ticks. Their wall-clock duration
- * therefore follows the configured game tick rate; they are not seconds.
+ * <p>The legacy integer delay/period API keeps the observable timing of the original 2022
+ * scheduler, where one scheduler tick was exactly one real-time second. Use the explicit
+ * {@code *Ticks} methods when a task is intentionally coupled to the game-loop tick rate, and use
+ * {@link Duration} overloads for wall-clock intent.
  */
 public final class ServerTaskScheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerTaskScheduler.class);
@@ -30,13 +34,19 @@ public final class ServerTaskScheduler {
     private final ConcurrentHashMap<Integer, AsyncServerTask> asyncTasks = new ConcurrentHashMap<>();
     private final AtomicInteger nextTaskId = new AtomicInteger();
     private final ExecutorService asyncExecutor;
+    private final LongSupplier nanoTime;
 
     public ServerTaskScheduler() {
-        this(createAsyncExecutor());
+        this(createAsyncExecutor(), System::nanoTime);
     }
 
     ServerTaskScheduler(ExecutorService asyncExecutor) {
+        this(asyncExecutor, System::nanoTime);
+    }
+
+    ServerTaskScheduler(ExecutorService asyncExecutor, LongSupplier nanoTime) {
         this.asyncExecutor = Objects.requireNonNull(asyncExecutor, "asyncExecutor");
+        this.nanoTime = Objects.requireNonNull(nanoTime, "nanoTime");
     }
 
     private static ExecutorService createAsyncExecutor() {
@@ -151,34 +161,98 @@ public final class ServerTaskScheduler {
 
     /** Schedules a synchronous task for the next game tick. */
     public int scheduleTask(Runnable runnable) {
-        return this.scheduleServerTask(runnable, -1, -1);
-    }
-
-    /** Schedules a synchronous task after {@code delay} game ticks. */
-    public int scheduleDelayedTask(Runnable runnable, int delay) {
-        if (delay < 0) throw new IllegalArgumentException("delay must be >= 0");
-        return this.scheduleServerTask(runnable, -1, delay);
-    }
-
-    /** Schedules a synchronous task every {@code period} game ticks, starting on the next tick. */
-    public int scheduleRepeatingTask(Runnable runnable, int period) {
-        if (period <= 0) throw new IllegalArgumentException("period must be > 0");
-        return this.scheduleServerTask(runnable, period, 0);
+        return this.scheduleServerTaskTicks(runnable, -1, -1);
     }
 
     /**
-     * Schedules a synchronous task after {@code delay} game ticks, then every {@code period} ticks.
+     * Schedules a one-shot task after {@code delaySeconds} real-time seconds.
+     *
+     * <p>This preserves the old scheduler's effective timing across changes to the game tick rate.
      */
-    public int scheduleDelayedRepeatingTask(Runnable runnable, int period, int delay) {
-        if (period <= 0) throw new IllegalArgumentException("period must be > 0");
-        if (delay < 0) throw new IllegalArgumentException("delay must be >= 0");
-        return this.scheduleServerTask(runnable, period, delay);
+    public int scheduleDelayedTask(Runnable runnable, int delaySeconds) {
+        if (delaySeconds < 0) throw new IllegalArgumentException("delaySeconds must be >= 0");
+        return this.scheduleDelayedTask(runnable, Duration.ofSeconds(delaySeconds));
     }
 
-    private int scheduleServerTask(Runnable runnable, int period, int delay) {
+    /** Schedules a repeating task every {@code periodSeconds} real-time seconds. */
+    public int scheduleRepeatingTask(Runnable runnable, int periodSeconds) {
+        if (periodSeconds <= 0) throw new IllegalArgumentException("periodSeconds must be > 0");
+        Duration period = Duration.ofSeconds(periodSeconds);
+        return this.scheduleDelayedRepeatingTask(runnable, period, period);
+    }
+
+    /**
+     * Schedules a task after {@code delaySeconds}, then every {@code periodSeconds}, using monotonic
+     * real time.
+     */
+    public int scheduleDelayedRepeatingTask(Runnable runnable, int periodSeconds, int delaySeconds) {
+        if (periodSeconds <= 0) throw new IllegalArgumentException("periodSeconds must be > 0");
+        if (delaySeconds < 0) throw new IllegalArgumentException("delaySeconds must be >= 0");
+        return this.scheduleDelayedRepeatingTask(
+                runnable, Duration.ofSeconds(periodSeconds), Duration.ofSeconds(delaySeconds));
+    }
+
+    /** Schedules a one-shot task using monotonic wall-clock time. */
+    public int scheduleDelayedTask(Runnable runnable, Duration delay) {
+        Objects.requireNonNull(delay, "delay");
+        if (delay.isNegative()) throw new IllegalArgumentException("delay must be >= 0");
+        return this.scheduleServerTaskTime(runnable, null, delay);
+    }
+
+    /** Schedules a repeating task using monotonic wall-clock time. */
+    public int scheduleRepeatingTask(Runnable runnable, Duration period) {
+        Objects.requireNonNull(period, "period");
+        if (period.isNegative() || period.isZero()) {
+            throw new IllegalArgumentException("period must be > 0");
+        }
+        return this.scheduleDelayedRepeatingTask(runnable, period, period);
+    }
+
+    /** Schedules a wall-clock task after {@code delay}, then with fixed-delay {@code period}. */
+    public int scheduleDelayedRepeatingTask(Runnable runnable, Duration period, Duration delay) {
+        Objects.requireNonNull(period, "period");
+        Objects.requireNonNull(delay, "delay");
+        if (period.isNegative() || period.isZero()) {
+            throw new IllegalArgumentException("period must be > 0");
+        }
+        if (delay.isNegative()) throw new IllegalArgumentException("delay must be >= 0");
+        return this.scheduleServerTaskTime(runnable, period, delay);
+    }
+
+    /** Schedules a one-shot task after exactly {@code delayTicks} game-loop ticks. */
+    public int scheduleDelayedTaskTicks(Runnable runnable, int delayTicks) {
+        if (delayTicks < 0) throw new IllegalArgumentException("delayTicks must be >= 0");
+        return this.scheduleServerTaskTicks(runnable, -1, delayTicks);
+    }
+
+    /** Schedules a task every {@code periodTicks} game-loop ticks. */
+    public int scheduleRepeatingTaskTicks(Runnable runnable, int periodTicks) {
+        if (periodTicks <= 0) throw new IllegalArgumentException("periodTicks must be > 0");
+        return this.scheduleServerTaskTicks(runnable, periodTicks, 0);
+    }
+
+    /**
+     * Schedules a task after {@code delayTicks} game-loop ticks, then every {@code periodTicks}.
+     */
+    public int scheduleDelayedRepeatingTaskTicks(Runnable runnable, int periodTicks, int delayTicks) {
+        if (periodTicks <= 0) throw new IllegalArgumentException("periodTicks must be > 0");
+        if (delayTicks < 0) throw new IllegalArgumentException("delayTicks must be >= 0");
+        return this.scheduleServerTaskTicks(runnable, periodTicks, delayTicks);
+    }
+
+    private int scheduleServerTaskTicks(Runnable runnable, int period, int delay) {
         Objects.requireNonNull(runnable, "runnable");
         int taskId = this.nextTaskId();
         this.tasks.put(taskId, new ServerTask(runnable, taskId, period, delay));
+        return taskId;
+    }
+
+    private int scheduleServerTaskTime(
+            Runnable runnable, @Nullable Duration period, Duration delay) {
+        Objects.requireNonNull(runnable, "runnable");
+        int taskId = this.nextTaskId();
+        this.tasks.put(
+                taskId, new ServerTask(runnable, taskId, period, delay, this.nanoTime));
         return taskId;
     }
 

@@ -17,6 +17,7 @@ import emu.grasscutter.game.props.FightProperty;
 import emu.grasscutter.utils.objects.WeightedList;
 import it.unimi.dsi.fastutil.ints.*;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 
 public class ArtifactShop {
@@ -321,15 +322,70 @@ public class ArtifactShop {
         return SHOP_CITIES.getOrDefault(shopType, 0);
     }
 
+    public GameItem roll(Player player, ItemData piece) {
+        var item = roll(piece);
+        int worldLevel = player != null ? player.getWorldLevel() : 0;
+        applyInitialEnhancement(item, piece, rollInitialEnhancementLevel(worldLevel));
+        return item;
+    }
+
     public GameItem roll(ItemData piece) {
         var item = new GameItem(piece);
         int mainPropId = rollMainProp(piece);
         if (mainPropId > 0) item.setMainPropId(mainPropId);
         item.setLevel(1);
+        item.setExp(0);
         item.setTotalExp(0);
         item.getAppendPropIdList().clear();
         item.addAppendProps(piece.getAppendPropNum());
         return item;
+    }
+
+    static int[] initialEnhancementRange(int worldLevel) {
+        int wl = Math.max(0, Math.min(worldLevel, 9));
+        return switch (wl) {
+            case 0 -> new int[] {0, 0};
+            case 1 -> new int[] {1, 4};
+            case 2 -> new int[] {3, 6};
+            case 3 -> new int[] {5, 8};
+            case 4 -> new int[] {7, 10};
+            case 5 -> new int[] {9, 12};
+            case 6 -> new int[] {11, 14};
+            case 7 -> new int[] {13, 16};
+            case 8 -> new int[] {14, 17};
+            default -> new int[] {15, 18};
+        };
+    }
+
+    private static int rollInitialEnhancementLevel(int worldLevel) {
+        int[] range = initialEnhancementRange(worldLevel);
+        if (range[0] == range[1]) return range[0];
+        return ThreadLocalRandom.current().nextInt(range[0], range[1] + 1);
+    }
+
+    private static void applyInitialEnhancement(
+            GameItem item, ItemData piece, int enhancementLevel) {
+        int maxInternalLevel = Math.max(1, piece.getMaxLevel());
+        int targetInternalLevel =
+                Math.min(maxInternalLevel, Math.max(1, enhancementLevel + 1));
+        int level = 1;
+        int totalExp = 0;
+        int upgrades = 0;
+
+        while (level < targetInternalLevel) {
+            int reqExp = GameData.getRelicExpRequired(piece.getRankLevel(), level);
+            if (reqExp <= 0) break;
+            totalExp += reqExp;
+            level++;
+            if (piece.canAddRelicProp(level)) {
+                upgrades++;
+            }
+        }
+
+        item.addAppendProps(upgrades);
+        item.setLevel(level);
+        item.setExp(0);
+        item.setTotalExp(totalExp);
     }
 
     public static List<ItemData> catalog(Set<Integer> setIds, Set<Integer> ranks) {

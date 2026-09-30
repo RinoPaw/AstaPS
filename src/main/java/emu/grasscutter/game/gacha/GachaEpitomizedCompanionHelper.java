@@ -40,7 +40,7 @@ public class GachaEpitomizedCompanionHelper {
     private static final int[] EMPTY = new int[0];
     private static int[] allFourStarChars = EMPTY;
     private static int[] allFourStarWeapons = EMPTY;
-    private static final Int2ObjectMap<int[]> characterCompanions = new Int2ObjectOpenHashMap();
+    private static final Int2ObjectMap<int[]> characterCompanions = new Int2ObjectOpenHashMap<>();
 
     public static synchronized void load() {
         GachaEpitomizedCompanionHelper.rebuildGlobalPools();
@@ -195,4 +195,3 @@ public class GachaEpitomizedCompanionHelper {
         }
     }
 }
-

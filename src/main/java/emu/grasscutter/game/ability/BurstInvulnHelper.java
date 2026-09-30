@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class BurstInvulnHelper {
     private static final long DURATION_MS = 4500L;
-    private static final ConcurrentHashMap<Integer, Long> UNTIL_MS = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<Integer, Long> UNTIL_MS = new ConcurrentHashMap<>();
     private static final Field INVULN_FIELD;
     private static final Method GET_PLAYER;
     private static final Field PLAYER_FIELD;

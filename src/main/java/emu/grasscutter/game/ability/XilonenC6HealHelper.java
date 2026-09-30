@@ -48,8 +48,8 @@ public final class XilonenC6HealHelper {
         thread.setDaemon(true);
         return thread;
     });
-    private static final Map<Integer, ScheduledFuture<?>> running = new ConcurrentHashMap();
-    private static final Map<Integer, Long> lastShowtimeStartMs = new ConcurrentHashMap<Integer, Long>();
+    private static final Map<Integer, ScheduledFuture<?>> running = new ConcurrentHashMap<>();
+    private static final Map<Integer, Long> lastShowtimeStartMs = new ConcurrentHashMap<>();
 
     private XilonenC6HealHelper() {
     }
@@ -94,7 +94,7 @@ public final class XilonenC6HealHelper {
         if (l != null && l2 - l < 15000L) {
             return;
         }
-        Map map = entityAvatar2.getGlobalAbilityValues();
+        Map<String, Float> map = entityAvatar2.getGlobalAbilityValues();
         if (map != null) {
             map.put(SHOW_TIME_KEY, Float.valueOf(1.0f));
             entityAvatar2.onAbilityValueUpdate();
@@ -141,15 +141,15 @@ public final class XilonenC6HealHelper {
     }
 
     private static boolean inNightsoul(EntityAvatar entityAvatar) {
-        Map map = entityAvatar.getGlobalAbilityValues();
+        Map<String, Float> map = entityAvatar.getGlobalAbilityValues();
         if (map == null) {
             return false;
         }
-        Float f = (Float)map.get(NYX_STATE_KEY);
+        Float f = map.get(NYX_STATE_KEY);
         if (f != null && f.floatValue() >= 0.5f) {
             return true;
         }
-        Float f2 = (Float)map.get(NYX_VALUE_KEY);
+        Float f2 = map.get(NYX_VALUE_KEY);
         return f2 != null && f2.floatValue() > 0.5f;
     }
 
@@ -167,7 +167,7 @@ public final class XilonenC6HealHelper {
         ScheduledFuture<?> scheduledFuture = SCHEDULER.scheduleAtFixedRate(() -> {
             try {
                 if (System.currentTimeMillis() - l > 5200L) {
-                    Map map = entityAvatar.getGlobalAbilityValues();
+                    Map<String, Float> map = entityAvatar.getGlobalAbilityValues();
                     if (map != null) {
                         map.put(SHOW_TIME_KEY, Float.valueOf(0.0f));
                     }
@@ -253,4 +253,3 @@ public final class XilonenC6HealHelper {
         lastShowtimeStartMs.remove(uid);
     }
 }
-

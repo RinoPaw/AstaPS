@@ -127,7 +127,7 @@ public final class NyxHelper {
         if (!NyxHelper.isSkirkEntity(gameEntity)) {
             return;
         }
-        Map map = gameEntity.getGlobalAbilityValues();
+        Map<String, Float> map = gameEntity.getGlobalAbilityValues();
         map.put(NYX_MAX_KEY, Float.valueOf(100.0f));
         map.put(NYX_MIN_KEY, Float.valueOf(0.0f));
         gameEntity.setFightProperty(FightProperty.FIGHT_PROP_MAX_SPECIAL_ENERGY, 100.0f);
@@ -166,18 +166,18 @@ public final class NyxHelper {
     }
 
     public static Object2FloatOpenHashMap<String> buildContext(Ability ability, GameEntity gameEntity) {
-        Object2FloatOpenHashMap object2FloatOpenHashMap = new Object2FloatOpenHashMap();
+        Object2FloatOpenHashMap<String> object2FloatOpenHashMap = new Object2FloatOpenHashMap<>();
         if (gameEntity != null) {
             for (FightProperty fightProperty : FightProperty.values()) {
-                object2FloatOpenHashMap.put((Object)fightProperty.name(), gameEntity.getFightProperty(fightProperty));
+                object2FloatOpenHashMap.put(fightProperty.name(), gameEntity.getFightProperty(fightProperty));
             }
-            for (Map.Entry entry : gameEntity.getGlobalAbilityValues().entrySet()) {
+            for (Map.Entry<String, Float> entry : gameEntity.getGlobalAbilityValues().entrySet()) {
                 if (entry.getKey() == null || entry.getValue() == null) continue;
-                object2FloatOpenHashMap.put((Object)((String)entry.getKey()), ((Float)entry.getValue()).floatValue());
+                object2FloatOpenHashMap.put(entry.getKey(), entry.getValue().floatValue());
             }
         }
         if (ability != null && ability.getAbilitySpecials() != null) {
-            object2FloatOpenHashMap.putAll((Map)ability.getAbilitySpecials());
+            object2FloatOpenHashMap.putAll(ability.getAbilitySpecials());
         }
         return object2FloatOpenHashMap;
     }
@@ -343,4 +343,3 @@ public final class NyxHelper {
         return new float[]{f, f2};
     }
 }
-

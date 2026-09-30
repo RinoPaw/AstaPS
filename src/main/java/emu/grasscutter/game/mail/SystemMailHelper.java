@@ -79,7 +79,7 @@ public final class SystemMailHelper {
     }
 
     public static Mail newSystemMail() {
-        Mail mail = new Mail(new Mail.MailContent(), new ArrayList(), Instant.now().getEpochSecond() + 315360000L, 1, 1);
+        Mail mail = new Mail(new Mail.MailContent(), new ArrayList<Mail.MailItem>(), Instant.now().getEpochSecond() + 315360000L, 1, 1);
         mail.expireTime = Instant.now().getEpochSecond() + 315360000L;
         return mail;
     }
@@ -185,4 +185,3 @@ public final class SystemMailHelper {
         }
     }
 }
-

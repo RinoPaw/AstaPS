@@ -12,7 +12,7 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: experiment/no-legacy-fallback
           fetch-depth: 0
@@ -159,6 +159,9 @@ jobs:
               '',
               'Grasscutter config migration call')
           grass_path.write_text(grass)
+
+      - name: Enable Gradle wrapper
+        run: chmod +x gradlew
 
       - name: Format
         run: ./gradlew spotlessApply -PskipHandbook=1

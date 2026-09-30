@@ -112,6 +112,7 @@ public class LuaTableJacksonSerializer extends JsonSerializer<LuaTable> implemen
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> List<T> toList(Class<T> type, Object obj) {
         List<T> list = new ArrayList<>();
         if (!(obj instanceof LuaTable luaTable) || luaTable.isnil()) {
@@ -169,6 +170,7 @@ public class LuaTableJacksonSerializer extends JsonSerializer<LuaTable> implemen
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> Map<String, T> toMap(Class<T> type, Object obj) {
         HashMap<String, T> map = new HashMap<>();
         if (!(obj instanceof LuaTable luaTable) || luaTable.isnil()) {

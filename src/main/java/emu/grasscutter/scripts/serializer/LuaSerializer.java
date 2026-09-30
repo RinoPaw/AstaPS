@@ -34,6 +34,7 @@ public class LuaSerializer implements Serializer {
         return serializeMap(type, (LuaTable) obj);
     }
 
+    @SuppressWarnings("unchecked")
     private <T> Map<String, T> serializeMap(Class<T> type, LuaTable table) {
         Map<String, T> map = new HashMap<>();
 
@@ -77,6 +78,7 @@ public class LuaSerializer implements Serializer {
         return map;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> List<T> serializeList(Class<T> type, LuaTable table) {
         List<T> list = new ArrayList<>();
 
@@ -132,6 +134,7 @@ public class LuaSerializer implements Serializer {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T serialize(Class<T> type, @Nullable Field field, LuaTable table) {
         T object = null;
 

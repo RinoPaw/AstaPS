@@ -8,9 +8,12 @@ import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.mail.Mail;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.world.World;
 import emu.grasscutter.net.packet.*;
+import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
 import emu.grasscutter.net.proto.SetPlayerBornDataReqOuterClass.SetPlayerBornDataReq;
 import emu.grasscutter.server.game.GameSession;
+import emu.grasscutter.server.packet.send.PacketPlayerNicknameNotify;
 import emu.grasscutter.server.packet.send.PacketSetPlayerBornDataRsp;
 import java.util.Arrays;
 
@@ -20,87 +23,81 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         SetPlayerBornDataReq req = SetPlayerBornDataReq.parseFrom(payload);
-
-        // Sanity checks
-        int avatarId = req.getAvatarId();
-        int startingSkillDepot;
-        if (avatarId == GameConstants.MAIN_CHARACTER_MALE) {
-            startingSkillDepot = 504;
-        } else if (avatarId == GameConstants.MAIN_CHARACTER_FEMALE) {
-            startingSkillDepot = 704;
-        } else {
-            session.send(new PacketSetPlayerBornDataRsp(-1));
-            return;
-        }
-
-        // Make sure resources folder is set
-        if (!GameData.getAvatarDataMap().containsKey(avatarId)) {
-            Grasscutter.getLogger()
-                    .error("No avatar data found! Please check your ExcelBinOutput folder.");
-            session.send(new PacketSetPlayerBornDataRsp(-1));
-            session.close();
-            return;
-        }
-
-        // Validate the reply side of the handshake before changing persistent player data. A
-        // negative value in the 7.1 opcode tables is an unresolved placeholder, not a signed
-        // on-wire CmdId.
-        int rspCmdId = GAME_OPTIONS.newAccountIntro.setPlayerBornDataRsp;
-        if (rspCmdId <= 0) {
-            Grasscutter.getLogger()
-                    .error(
-                            "[intro] SetPlayerBornDataRsp CmdId is unknown ({}); character creation aborted before changing account data.",
-                            rspCmdId);
-            session.close();
-            return;
-        }
-
-        // Get player object
         Player player = session.getPlayer();
-        player.setNickname(req.getNickName());
 
-        // Create avatar only from the client's explicit selection.
-        if (player.getAvatars().getAvatarCount() == 0) {
+        synchronized (player) {
+            if (player.getAvatars().getAvatarCount() != 0) {
+                session.send(
+                        new PacketSetPlayerBornDataRsp(
+                                Retcode.RET_REPEAT_SET_PLAYER_BORN_DATA.getNumber()));
+                return;
+            }
+
+            if (req.getNickName() == null || req.getNickName().isBlank()) {
+                session.send(
+                        new PacketSetPlayerBornDataRsp(Retcode.RET_NICKNAME_IS_EMPTY.getNumber()));
+                return;
+            }
+
+            int avatarId = req.getAvatarId();
+            int startingSkillDepot;
+            if (avatarId == GameConstants.MAIN_CHARACTER_MALE) {
+                startingSkillDepot = 504;
+            } else if (avatarId == GameConstants.MAIN_CHARACTER_FEMALE) {
+                startingSkillDepot = 704;
+            } else {
+                session.send(
+                        new PacketSetPlayerBornDataRsp(Retcode.RET_AVATAR_ID_ERROR.getNumber()));
+                return;
+            }
+
+            if (!GameData.getAvatarDataMap().containsKey(avatarId)) {
+                Grasscutter.getLogger()
+                        .error("No avatar data found! Please check your ExcelBinOutput folder.");
+                session.send(
+                        new PacketSetPlayerBornDataRsp(Retcode.RET_NOT_FOUND_CONFIG.getNumber()));
+                return;
+            }
+
+            player.setNickname(req.getNickName());
+
             Avatar mainCharacter = new Avatar(avatarId);
-
-            // Check if the default Anemo skill should be given.
             if (!GAME_OPTIONS.questing.enabled) {
                 mainCharacter.setSkillDepotData(
                         GameData.getAvatarSkillDepotDataMap().get(startingSkillDepot));
             }
 
-            // Manually handle adding to team
             player.addAvatar(mainCharacter, false);
             player.setMainCharacterId(avatarId);
             player.setHeadImage(avatarId);
-            player
-                    .getTeamManager()
-                    .getCurrentSinglePlayerTeamInfo()
-                    .getAvatars()
-                    .add(mainCharacter.getAvatarId());
-            player.save(); // TODO save player team in different object
-        } else {
+            var team = player.getTeamManager().getCurrentSinglePlayerTeamInfo().getAvatars();
+            team.clear();
+            team.add(avatarId);
+            player.save();
+
+            // Quest 351 reads world time immediately. Only the questing-enabled path needs this
+            // pre-login World/Scene bootstrap; with questing disabled, onLogin creates the world.
+            if (GAME_OPTIONS.questing.enabled) {
+                if (player.getWorld() == null) {
+                    World world = new World(player);
+                    world.addPlayer(player);
+                }
+                player.getQuestManager().onPlayerBorn();
+            }
+
+            // The 7.1 client expects the born response before the ordinary login/scene packet
+            // stream. PlayerNicknameNotify completes nickname synchronization for the same flow.
+            session.send(new PacketSetPlayerBornDataRsp());
+            session.send(new PacketPlayerNicknameNotify(req.getNickName()));
+
+            player.onLogin();
+
             Grasscutter.getLogger()
-                    .error(
-                            "[intro] received SetPlayerBornDataReq for uid {} after an avatar already existed; refusing to overwrite it.",
-                            player.getUid());
-            session.close();
-            return;
+                    .info(
+                            "[intro] character creation finished: {} picked avatar {}.",
+                            req.getNickName(),
+                            avatarId);
         }
-
-        // The character was just created: start the quests a new account begins with.
-        player.getQuestManager().onPlayerBorn();
-
-        // Login done
-        session.getPlayer().onLogin();
-
-        Grasscutter.getLogger()
-                .info(
-                        "[intro] character creation finished: {} picked avatar {} (rsp cmdId={}).",
-                        req.getNickName(),
-                        avatarId,
-                        rspCmdId);
-        session.send(new BasePacket(rspCmdId));
 
         // Default mail
         var welcomeMail = GAME_INFO.joinOptions.welcomeMail;

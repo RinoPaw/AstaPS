@@ -75,74 +75,74 @@ dependencies {
     // Additional JAR libraries.
     implementation fileTree(dir: 'lib', include: ['*.jar'])
 
-    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.8'
+    implementation 'it.unimi.dsi:fastutil:8.5.8'
 
     // Logging libraries.
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
-    implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.4.7'
-    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.7'
+    implementation 'org.slf4j:slf4j-api:2.0.7'
+    implementation 'ch.qos.logback:logback-core:1.4.7'
+    implementation 'ch.qos.logback:logback-classic:1.4.7'
 
     // Line reading libraries.
-    implementation group: 'org.jline', name: 'jline', version: '3.21.0'
-    implementation group: 'org.jline', name: 'jline-terminal-jna', version: '3.21.0'
-    implementation group: 'net.java.dev.jna', name: 'jna', version: '5.10.0'
+    implementation 'org.jline:jline:3.21.0'
+    implementation 'org.jline:jline-terminal-jna:3.21.0'
+    implementation 'net.java.dev.jna:jna:5.10.0'
 
     // Java Netty for networking.
-    implementation group: 'io.netty', name: 'netty-common', version: '4.1.86.Final'
-    implementation group: 'io.netty', name: 'netty-handler', version: '4.1.86.Final'
-    implementation group: 'io.netty', name: 'netty-transport-native-epoll', version: '4.1.86.Final'
-    implementation group: 'io.netty', name: 'netty-transport-native-kqueue', version: '4.1.86.Final'
+    implementation 'io.netty:netty-common:4.1.86.Final'
+    implementation 'io.netty:netty-handler:4.1.86.Final'
+    implementation 'io.netty:netty-transport-native-epoll:4.1.86.Final'
+    implementation 'io.netty:netty-transport-native-kqueue:4.1.86.Final'
 
     // Serialization.
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
-    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.19.6'
-    implementation group: 'com.github.os72', name: 'protobuf-dynamic', version: '1.0.1'
+    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.protobuf:protobuf-java:3.19.6'
+    implementation 'com.github.os72:protobuf-dynamic:1.0.1'
 
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
     implementation platform('com.fasterxml.jackson:jackson-bom:2.14.0')
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
 
     // Reflections libraries.
-    implementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
-    implementation group: 'com.esotericsoftware', name: 'reflectasm', version: '1.11.9'
-    implementation group: 'com.github.davidmoten', name: 'rtree-multi', version: '0.1'
+    implementation 'org.reflections:reflections:0.10.2'
+    implementation 'com.esotericsoftware:reflectasm:1.11.9'
+    implementation 'com.github.davidmoten:rtree-multi:0.1'
 
     // MongoDB object mapper.
-    implementation group: 'dev.morphia.morphia', name: 'morphia-core', version: '2.2.7'
+    implementation 'dev.morphia.morphia:morphia-core:2.2.7'
 
     // Utility libraries.
-    implementation group: 'org.greenrobot', name: 'eventbus-java', version: '3.3.1'
-    // implementation group: 'org.danilopianini', name: 'java-quadtree', version: '0.1.9'
+    implementation 'org.greenrobot:eventbus-java:3.3.1'
+    // implementation 'org.danilopianini:java-quadtree:0.1.9'
 
     // Long-term scheduler.
-    implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2'
-    implementation group: 'org.quartz-scheduler', name: 'quartz-jobs', version: '2.3.2'
+    implementation 'org.quartz-scheduler:quartz:2.3.2'
+    implementation 'org.quartz-scheduler:quartz-jobs:2.3.2'
 
     // Lua script engine library.
-    implementation group: 'org.luaj', name: 'luaj-jse', version: '3.0.1'
+    implementation 'org.luaj:luaj-jse:3.0.1'
 
     // Java HTTP server library.
-    implementation group: 'io.javalin', name: 'javalin', version: '5.5.0'
+    implementation 'io.javalin:javalin:5.5.0'
     // Java WebSocket server & client library.
-    implementation group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.2'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.2'
     
     // Xxhash
-    implementation group: 'net.openhft', name: 'zero-allocation-hashing', version: '0.26ea0'
+    implementation 'net.openhft:zero-allocation-hashing:0.26ea0'
 
     // Testing libraries.
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.2'
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.8.2'
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.8.2'
-    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.8.2'
 
     // HTTP client library for testing.
-    testImplementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.10.0'
+    testImplementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
     // Lombok.
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-    testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
 configurations.configureEach {

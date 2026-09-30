@@ -13,7 +13,7 @@ plugins {
     id 'java' // Apply the java plugin to add support for Java
     id 'java-library' // Apply the java-library plugin for API and implementation separation.
     id 'application' // Apply the application plugin to add support for building a CLI application
-    id 'com.diffplug.spotless' version '6.11.0' // Apply the Spotless linter plugin.
+    id 'com.diffplug.spotless' version '8.10.3' // Apply the Spotless linter plugin.
 
     id 'eclipse' // Eclipse Support
     id 'idea' // IntelliJ Support
@@ -21,7 +21,7 @@ plugins {
     id 'maven-publish' // Support for publishing to Maven repositories.
     id 'signing' // Support for signing build artifacts.
 
-    id 'io.freefair.lombok' version '6.6.1' // Lombok for delombok'ification
+    id 'io.freefair.lombok' version '9.7.0' // Lombok for delombok'ification
 }
 
 spotless {

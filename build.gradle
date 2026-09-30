@@ -56,10 +56,15 @@ group = 'io.grasscutter'
 version = '7.1.0'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
     withJavadocJar()
     withSourcesJar()
+}
+
+tasks.withType(org.gradle.api.tasks.compile.JavaCompile).configureEach {
+    options.release.set(21)
 }
 
 repositories {

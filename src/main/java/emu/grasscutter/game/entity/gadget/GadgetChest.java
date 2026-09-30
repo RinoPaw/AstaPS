@@ -39,8 +39,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * World chests + world-boss trounce blossoms. When DropTable misses ChestDrop ids,
- * falls back to InvestigationMonster reward preview.
+ * World chests + world-boss trounce blossoms. Normal chests use the original ChestDrop/DropTable
+ * path by default; explicit reward-overrides.json entries can replace a chest tier.
  */
 public class GadgetChest extends GadgetContent {
     private static final int CHEST_OPENED_STATE = 102;
@@ -121,6 +121,7 @@ public class GadgetChest extends GadgetContent {
                                 spent);
                 return false;
             }
+
             if (player != player.getWorld().getHost()) {
                 return false;
             }
@@ -135,9 +136,30 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            WorldChestLootHelper.grant(player, getGadget());
-            finishOpen(player, meta);
-            return false;
+
+            boolean status = WorldChestLootHelper.grantReplacement(player, getGadget());
+            if (!status && meta != null) {
+                if (meta.drop_tag != null) {
+                    status = dropSystem.handleChestDrop(meta.drop_tag, meta.level, getGadget());
+                } else if (meta.chest_drop_id != 0) {
+                    status =
+                            dropSystem.handleChestDrop(
+                                    meta.chest_drop_id,
+                                    Math.max(1, meta.drop_count),
+                                    getGadget());
+                }
+            }
+            if (status) {
+                finishOpen(player, meta);
+                return false;
+            }
+
+            Grasscutter.getLogger()
+                    .debug(
+                            "Original chest drop unresolved group={} config={} tag={}; trying legacy handler",
+                            getGadget().getGroupId(),
+                            getGadget().getConfigId(),
+                            meta != null ? meta.drop_tag : null);
         }
 
         ChestInteractHandler handler =
@@ -163,8 +185,14 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            WorldChestLootHelper.grant(player, getGadget());
-            finishOpen(player, null);
+            if (WorldChestLootHelper.grantReplacement(player, getGadget())) {
+                finishOpen(player, null);
+            } else {
+                Grasscutter.getLogger()
+                        .warn(
+                                "No original drop metadata or legacy handler for chest {}",
+                                getGadget().getGadgetData().getJsonName());
+            }
             return false;
         }
 
@@ -186,9 +214,10 @@ public class GadgetChest extends GadgetContent {
                             player,
                             req.getResinCostType()
                                     == ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE);
-        } else {
-            WorldChestLootHelper.grant(player, getGadget());
+        } else if (WorldChestLootHelper.grantReplacement(player, getGadget())) {
             success = true;
+        } else {
+            success = handler.onInteract(this, player);
         }
         if (!success) {
             return false;
@@ -248,12 +277,9 @@ public class GadgetChest extends GadgetContent {
             if (entityGadget == null || entityGadget.getScene() == null) {
                 return;
             }
-            // Boss trounce flowers: remove immediately with VISION_REMOVE so they do not linger
-            // as opened/smoke visuals while the world boss already respawned.
             boolean bossFlower =
                     entityGadget.getMetaGadget() != null
                             && entityGadget.getMetaGadget().boss_chest != null;
-            // Scene scheduler ticks once per scene tick (~1s); 2 ≈ brief open animation then vanish.
             int delayTicks = bossFlower ? 0 : 2;
             int entityId = entityGadget.getId();
             Runnable despawn =

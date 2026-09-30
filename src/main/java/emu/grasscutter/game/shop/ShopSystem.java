@@ -119,7 +119,11 @@ public class ShopSystem extends BaseGameSystem {
      */
     public synchronized void loadArtifactShop() {
         this.artifactShop.install(getShopData());
-        if (GAME_OPTIONS.artifactShop.enabled && this.artifactShop.getGoods().isEmpty()) {
+        boolean resourcesLoaded =
+                !GameData.getItemDataMap().isEmpty() && !GameData.getDungeonDataMap().isEmpty();
+        if (resourcesLoaded
+                && GAME_OPTIONS.artifactShop.enabled
+                && this.artifactShop.getGoods().isEmpty()) {
             Grasscutter.getLogger()
                     .warn(
                             "Artifact shop is enabled but no regional goods were routed. Check "

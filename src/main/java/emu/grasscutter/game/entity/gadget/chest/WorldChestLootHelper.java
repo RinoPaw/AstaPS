@@ -30,7 +30,7 @@ public final class WorldChestLootHelper {
         int sigilId = WorldChestLootHelper.resolveSigilId(entityGadget);
         Scene scene = entityGadget.getScene();
         EntityGadget source = entityGadget;
-        player.earnExp(Math.max(0, reward.adventureExp));
+        player.addExpDirectly(Math.max(0, reward.adventureExp));
         WorldChestLootHelper.drop(scene, source, 201, reward.primogems);
         WorldChestLootHelper.drop(scene, source, 202, reward.mora);
         WorldChestLootHelper.drop(scene, source, sigilId, reward.sigil);

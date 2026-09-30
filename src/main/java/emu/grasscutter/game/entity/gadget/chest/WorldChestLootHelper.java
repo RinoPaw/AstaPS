@@ -6,6 +6,7 @@ import emu.grasscutter.config.RewardOverrides.ChestReward;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.reward.RewardScaler;
 import emu.grasscutter.game.world.Position;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.scripts.data.SceneGadget;
@@ -26,6 +27,9 @@ public final class WorldChestLootHelper {
         }
 
         Tier tier = resolveTier(entityGadget);
+        if (tier == null) {
+            return false;
+        }
         ChestReward reward = RewardOverrides.chestReplacement(tier.name());
         if (reward == null) {
             return false;
@@ -34,18 +38,15 @@ public final class WorldChestLootHelper {
         int sigilId = resolveSigilId(entityGadget);
         Scene scene = entityGadget.getScene();
         EntityGadget source = entityGadget;
-        player.addExpDirectly(Math.max(0, reward.adventureExp));
+        player.addExpDirectly(
+                RewardScaler.scaleCount(
+                        RewardScaler.ADVENTURE_EXP_ITEM_ID, reward.adventureExp, 1.0));
         drop(scene, source, 201, reward.primogems);
         drop(scene, source, 202, reward.mora);
         drop(scene, source, sigilId, reward.sigil);
-        if (tier == Tier.COMMON) {
-            drop(scene, source, 104011, reward.fineEnhancementOre);
-        } else {
-            drop(scene, source, 104012, reward.fineEnhancementOre);
-            if (reward.fineEnhancementOre >= 3) {
-                drop(scene, source, 104013, Math.max(1, reward.fineEnhancementOre / 3));
-            }
-        }
+        drop(scene, source, 104011, reward.enhancementOre);
+        drop(scene, source, 104012, reward.fineEnhancementOre);
+        drop(scene, source, 104013, reward.mysticEnhancementOre);
         drop(scene, source, 104001, reward.wanderersAdvice);
         drop(scene, source, 104002, reward.adventurersExperience);
         drop(scene, source, 104003, reward.herosWit);
@@ -59,7 +60,8 @@ public final class WorldChestLootHelper {
         return true;
     }
 
-    private static void drop(Scene scene, GameEntity gameEntity, int itemId, int count) {
+    private static void drop(Scene scene, GameEntity gameEntity, int itemId, int baseCount) {
+        int count = RewardScaler.scaleCount(itemId, baseCount, 1.0);
         if (scene == null || gameEntity == null || itemId <= 0 || count <= 0) {
             return;
         }
@@ -128,7 +130,7 @@ public final class WorldChestLootHelper {
                 return Tier.COMMON;
             }
         }
-        return Tier.COMMON;
+        return null;
     }
 
     private static boolean containsLv(String value, int level) {
@@ -159,7 +161,7 @@ public final class WorldChestLootHelper {
             String tag = sceneGadget.drop_tag;
             if (tag.contains("璃月")) return 307;
             if (tag.contains("稻妻")) return 304;
-            if (tag.contains("须弥") || tag.contains("须弥")) return 303;
+            if (tag.contains("须弥")) return 303;
             if (tag.contains("枫丹")) return 302;
             if (tag.contains("纳塔")) return 301;
             if (tag.contains("至冬") || tag.contains("雪山")) return 306;

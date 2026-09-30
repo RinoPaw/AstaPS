@@ -123,7 +123,9 @@ public final class RewardOverrides {
         public int adventureExp;
         public int sigil;
         public int mora;
+        public int enhancementOre;
         public int fineEnhancementOre;
+        public int mysticEnhancementOre;
         public int wanderersAdvice;
         public int adventurersExperience;
         public int herosWit;
@@ -155,7 +157,7 @@ public final class RewardOverrides {
                 "mysticEnhancementOre": null
               },
               "chests": {
-                "_comment": "A null tier uses the original ChestDrop/DropTable data. An object fully replaces that tier.",
+                "_comment": "A null tier uses the original ChestDrop/DropTable data. An object fully replaces that tier; ore fields map one-to-one to Enhancement/Fine/Mystic Enhancement Ore.",
                 "common": null,
                 "exquisite": null,
                 "precious": null,

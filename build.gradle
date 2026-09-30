@@ -9,20 +9,10 @@ import org.gradle.plugins.ide.eclipse.model.SourceFolder
  * User Manual available at https://docs.gradle.org/5.6.3/userguide/tutorial_java_projects.html
  */
 
-buildscript {
-    repositories {
-        maven { url 'https://plugins.gradle.org/m2/' }
-    }
-    dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.18'
-    }
-}
-
 plugins {
     id 'java' // Apply the java plugin to add support for Java
     id 'java-library' // Apply the java-library plugin for API and implementation separation.
     id 'application' // Apply the application plugin to add support for building a CLI application
-    id 'com.google.protobuf' version '0.8.18' // Apply the protobuf auto generator
     id 'com.diffplug.spotless' version '6.11.0' // Apply the Spotless linter plugin.
 
     id 'eclipse' // Eclipse Support
@@ -62,13 +52,12 @@ compileJava {
 
 compileTestJava.options.encoding = 'UTF-8'
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-
 group = 'io.grasscutter'
 version = '7.1.0'
 
 java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
     withJavadocJar()
     withSourcesJar()
 }
@@ -134,10 +123,6 @@ dependencies {
     
     // Xxhash
     implementation group: 'net.openhft', name: 'zero-allocation-hashing', version: '0.26ea0'
-
-    // Google Protocol Buffer definitions.
-    // These are the raw '.proto' files.
-    protobuf files('proto/')
 
     // Testing libraries.
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.2'
@@ -276,46 +261,12 @@ publishing {
     }
 }
 
-clean {
-    // The 7.1 protocol dump ships as generated Java sources without the
-    // original .proto inputs. Preserve those sources on clean unless this
-    // checkout actually has protocol definitions that can regenerate them.
-    def hasProtoSources =
-        !fileTree('proto').matching { include '**/*.proto' }.isEmpty() ||
-        !fileTree('src/main/proto').matching { include '**/*.proto' }.isEmpty()
-
-    if (hasProtoSources) {
-        delete protobuf.generatedFilesBaseDir
-    }
-}
-
-protobuf {
-    protoc {
-        // The artifact spec for the Protobuf Compiler
-        artifact = 'com.google.protobuf:protoc:3.18.1'
-    }
-
-    generatedFilesBaseDir = "$projectDir/src/generated/"
-}
-
 sourceSets {
     main {
-        proto {
-            // In addition to the default 'src/main/proto'
-            srcDir 'src/generated'
-        }
+        // The 7.1 protocol dump is checked in as generated Java; there are no source .proto files.
         java {
             srcDir 'src/generated/main/java'
         }
-    }
-}
-
-idea {
-    module {
-        // proto files and generated Java files are automatically added as
-        // source dirs.
-        // If you have additional sources, add them here:
-        sourceDirs += file('/proto/')
     }
 }
 
@@ -436,18 +387,6 @@ tasks.register('generateHandbook') {
         //    rename 'index.html', 'handbook.html'
         //}
     }
-}
-
-processResources {
-    dependsOn 'generateProto'
-}
-
-sourcesJar {
-    dependsOn 'generateProto'
-}
-
-delombok {
-    dependsOn 'generateProto'
 }
 
 // For terminal interacting in IDEA running

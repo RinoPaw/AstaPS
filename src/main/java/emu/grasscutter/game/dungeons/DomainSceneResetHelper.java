@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class DomainSceneResetHelper {
-    private static final ConcurrentHashMap<Integer, Long> LAST_RESET_MS = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<Integer, Long> LAST_RESET_MS = new ConcurrentHashMap<>();
     private static final long RESET_DEBOUNCE_MS = 1500L;
     private static final int REWARD_TREE_GADGET_ID = 70350008;
 
@@ -291,4 +291,3 @@ public final class DomainSceneResetHelper {
         }
     }
 }
-

@@ -1,5 +1,7 @@
 package emu.grasscutter.game.managers.blossom;
 
+import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.*;
 import emu.grasscutter.data.common.ItemParamData;
@@ -211,6 +213,30 @@ public class BlossomManager {
         return GameData.getRewardPreviewDataMap().get((int) previewReward);
     }
 
+    static float getRewardRate(BlossomType type) {
+        if (type == null || GAME_OPTIONS.rates == null || GAME_OPTIONS.rates.leyLines == null) {
+            return 1.0f;
+        }
+
+        var rates = GAME_OPTIONS.rates.leyLines;
+        float sourceRate =
+                switch (type) {
+                    case GOLD -> rates.mora;
+                    case BLUE -> rates.experienceBooks;
+                };
+        return Math.max(0.0f, rates.global) * Math.max(0.0f, sourceRate);
+    }
+
+    static int scaleRewardCount(int baseCount, float rewardRate, boolean useCondensedResin) {
+        double resinMultiplier = useCondensedResin ? 2.0 : 1.0;
+        long scaled =
+                Math.round(
+                        Math.max(0, baseCount)
+                                * (double) Math.max(0.0f, rewardRate)
+                                * resinMultiplier);
+        return (int) Math.min(Integer.MAX_VALUE, scaled);
+    }
+
     public List<GameItem> onReward(Player player, EntityGadget chest, boolean useCondensedResin) {
         var resinManager = player.getResinManager();
         synchronized (activeChests) {
@@ -231,13 +257,15 @@ public class BlossomManager {
                                     .error("Blossom could not support world level : " + worldLevel);
                             return null;
                         }
+                        float rewardRate = getRewardRate(type);
                         var rewards = blossomRewards.getPreviewItems();
                         for (ItemParamData blossomReward : rewards) {
-                            int rewardCount = blossomReward.getCount();
-                            if (useCondensedResin) {
-                                rewardCount += blossomReward.getCount(); // Double!
+                            int rewardCount =
+                                    scaleRewardCount(
+                                            blossomReward.getCount(), rewardRate, useCondensedResin);
+                            if (rewardCount > 0) {
+                                items.add(new GameItem(blossomReward.getItemId(), rewardCount));
                             }
-                            items.add(new GameItem(blossomReward.getItemId(), rewardCount));
                         }
                         it.remove();
                         recycleGadgetEntity(List.of(gadget));

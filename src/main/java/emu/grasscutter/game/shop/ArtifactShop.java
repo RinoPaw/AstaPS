@@ -21,9 +21,8 @@ import lombok.Getter;
 
 /**
  * Lists official artifact pieces as shop goods. Buying one hands out a freshly rolled artifact
- * rather than a fixed one: the main stat comes from the slot's real pool and the substats from the
- * excel affix table, so every number on the piece is one the game itself would print. The odds can
- * still be bent towards crit, damage, and the higher end of each roll.
+ * rather than a fixed one: the main stat comes from the slot's real pool and substats use the
+ * server-wide artifact roll rules.
  */
 public class ArtifactShop {
     /** Well clear of the ~101,070,304 the excel goods ids reach. */
@@ -372,11 +371,10 @@ public class ArtifactShop {
 
     /** Creates the artifact delivered by this shop good. V1 artifact goods are sold at +0. */
     public GameItem roll(ItemData piece) {
-        var options = GAME_OPTIONS.artifactShop;
         var item = new GameItem(piece);
 
         // The main stat has to be settled first: a substat never repeats it.
-        int mainPropId = rollMainProp(piece, options);
+        int mainPropId = rollMainProp(piece);
         if (mainPropId > 0) {
             item.setMainPropId(mainPropId);
         }
@@ -385,7 +383,7 @@ public class ArtifactShop {
         item.setLevel(1);
         item.setTotalExp(0);
         item.getAppendPropIdList().clear();
-        item.addAppendProps(piece.getAppendPropNum(), bias(options));
+        item.addAppendProps(piece.getAppendPropNum());
         return item;
     }
 
@@ -447,7 +445,7 @@ public class ArtifactShop {
         return goods;
     }
 
-    private static int rollMainProp(ItemData piece, ArtifactShopOptions options) {
+    private static int rollMainProp(ItemData piece) {
         var pool = MAIN_STATS.get(piece.getEquipType());
         var candidates = GameDepot.getRelicMainPropList(piece.getMainPropDepotId());
         if (pool == null || candidates == null) return 0;
@@ -456,39 +454,10 @@ public class ArtifactShop {
         for (ReliquaryMainPropData prop : candidates) {
             double weight = pool.getOrDefault(prop.getFightProp(), 0d);
             if (weight > 0) {
-                randomList.add(weight * statWeight(prop.getFightProp(), options), prop);
+                randomList.add(weight, prop);
             }
         }
         return randomList.size() == 0 ? 0 : randomList.next().getId();
-    }
-
-    private static ArtifactRollBias bias(ArtifactShopOptions options) {
-        return affix -> {
-            double weight = statWeight(affix.getFightProp(), options);
-            int tiers = GameDepot.getRelicAffixValueTierCount(affix);
-            if (tiers > 1 && options.highRollBias > 0) {
-                double height = GameDepot.getRelicAffixValueTier(affix) / (double) (tiers - 1);
-                weight *= 1 + options.highRollBias * height;
-            }
-            return weight;
-        };
-    }
-
-    private static double statWeight(FightProperty prop, ArtifactShopOptions options) {
-        return switch (prop) {
-            case FIGHT_PROP_CRITICAL, FIGHT_PROP_CRITICAL_HURT -> options.critWeight;
-            case FIGHT_PROP_ATTACK_PERCENT,
-                    FIGHT_PROP_ELEMENT_MASTERY,
-                    FIGHT_PROP_FIRE_ADD_HURT,
-                    FIGHT_PROP_ELEC_ADD_HURT,
-                    FIGHT_PROP_WATER_ADD_HURT,
-                    FIGHT_PROP_GRASS_ADD_HURT,
-                    FIGHT_PROP_WIND_ADD_HURT,
-                    FIGHT_PROP_ROCK_ADD_HURT,
-                    FIGHT_PROP_ICE_ADD_HURT,
-                    FIGHT_PROP_PHYSICAL_ADD_HURT -> options.damageWeight;
-            default -> 1;
-        };
     }
 
     private static int mainPropDepot(EquipType slot) {

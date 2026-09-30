@@ -1,5 +1,6 @@
 package emu.grasscutter.data.excels.dungeon;
 
+import com.google.gson.annotations.SerializedName;
 import emu.grasscutter.data.*;
 import emu.grasscutter.data.excels.RewardPreviewData;
 import emu.grasscutter.game.dungeons.enums.*;
@@ -32,7 +33,11 @@ public class DungeonData extends GameResource {
     @Getter private int statueCostID;
     @Getter private int statueCostCount;
     @Getter private int statueDrop;
-    @Getter private int cityId;
+
+    /** CityData.cityId owning this dungeon; resource dumps have used several ID spellings. */
+    @Getter
+    @SerializedName(value = "cityId", alternate = {"cityID", "CityId", "CityID"})
+    private int cityId;
 
     // not part of DungeonExcelConfigData
     @Getter private RewardPreviewData rewardPreviewData;

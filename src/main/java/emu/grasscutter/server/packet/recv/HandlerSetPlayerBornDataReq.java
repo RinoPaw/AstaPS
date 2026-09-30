@@ -9,14 +9,10 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.SetPlayerBornDataReqOuterClass.SetPlayerBornDataReq;
 import emu.grasscutter.server.game.GameSession;
-import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.HexFormat;
 
 @Opcodes(PacketOpcodes.SetPlayerBornDataReq)
 public class HandlerSetPlayerBornDataReq extends PacketHandler {
-    private static final int TEST_PLAYER_NICKNAME_NOTIFY = 3064;
-    private static final int NICKNAME_FIELD_NUMBER = 12;
+    private static final int TEST_BORN_RSP_CMD_ID = 4385;
 
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
@@ -29,8 +25,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         } else if (avatarId == GameConstants.MAIN_CHARACTER_FEMALE) {
             startingSkillDepot = 704;
         } else {
-            Grasscutter.getLogger()
-                    .warn("[born-login-nickname-3064] invalid Traveler id {}.", avatarId);
+            Grasscutter.getLogger().warn("[BORN-4385] invalid Traveler id {}.", avatarId);
             return;
         }
 
@@ -44,7 +39,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         if (player.getAvatars().getAvatarCount() != 0) {
             Grasscutter.getLogger()
                     .warn(
-                            "[born-login-nickname-3064] ignoring duplicate SetPlayerBornDataReq for uid {}; Traveler {} is already persisted.",
+                            "[BORN-4385] ignoring duplicate SetPlayerBornDataReq for uid {}; Traveler {} is already persisted.",
                             player.getUid(),
                             player.getMainCharacterId());
             return;
@@ -52,7 +47,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-TRACE] 1 RECV SetPlayerBornDataReq cmdId={} uid={} avatarId={} nickname={}",
+                        "[BORN-4385] RECV SetPlayerBornDataReq cmdId={} uid={} avatarId={} nickname={}",
                         PacketOpcodes.SetPlayerBornDataReq,
                         player.getUid(),
                         avatarId,
@@ -73,49 +68,17 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         team.add(avatarId);
         player.save();
 
+        // 7.1 client static trace:
+        //   CmdId 4385 GetCmdId() == 0x1121
+        //   its sole protobuf field is int32 field #7, stored at +0x18
+        //   handler treats +0x18 as retcode and, on zero, enters the born/UI completion manager.
+        // Empty payload therefore represents retcode == 0 and keeps this probe isolated from all
+        // login, scene and nickname synchronization.
         Grasscutter.getLogger()
                 .info(
-                        "[BORN-TRACE] 2 onLogin BEGIN sceneLoadState={} enterSceneToken={}",
-                        player.getSceneLoadState(),
-                        player.getEnterSceneToken());
-        player.onLogin();
-        Grasscutter.getLogger()
-                .info(
-                        "[BORN-TRACE] 3 onLogin END sceneLoadState={} enterSceneToken={}",
-                        player.getSceneLoadState(),
-                        player.getEnterSceneToken());
-
-        byte[] nicknamePayload = buildNicknameNotify(req.getNickName());
-        BasePacket nicknameNotify = new BasePacket(TEST_PLAYER_NICKNAME_NOTIFY);
-        nicknameNotify.setData(nicknamePayload);
-
-        Grasscutter.getLogger()
-                .info(
-                        "[BORN-TRACE] 4 SEND PlayerNicknameNotify cmdId={} field={} nickname={} payload={}",
-                        TEST_PLAYER_NICKNAME_NOTIFY,
-                        NICKNAME_FIELD_NUMBER,
-                        req.getNickName(),
-                        HexFormat.of().formatHex(nicknamePayload));
-        session.send(nicknameNotify);
-        Grasscutter.getLogger().info("[BORN-TRACE] 5 PlayerNicknameNotify send() returned");
-    }
-
-    private static byte[] buildNicknameNotify(String nickname) {
-        byte[] utf8 = nickname.getBytes(StandardCharsets.UTF_8);
-        ByteArrayOutputStream out = new ByteArrayOutputStream(2 + utf8.length);
-
-        // string field #12: (12 << 3) | wire-type 2 = 0x62.
-        out.write((NICKNAME_FIELD_NUMBER << 3) | 2);
-        writeVarint(out, utf8.length);
-        out.writeBytes(utf8);
-        return out.toByteArray();
-    }
-
-    private static void writeVarint(ByteArrayOutputStream out, int value) {
-        while ((value & ~0x7F) != 0) {
-            out.write((value & 0x7F) | 0x80);
-            value >>>= 7;
-        }
-        out.write(value);
+                        "[BORN-4385] SEND candidate SetPlayerBornDataRsp cmdId={} payload=<empty>; no onLogin/9582/3064",
+                        TEST_BORN_RSP_CMD_ID);
+        session.send(new BasePacket(TEST_BORN_RSP_CMD_ID));
+        Grasscutter.getLogger().info("[BORN-4385] send() returned");
     }
 }

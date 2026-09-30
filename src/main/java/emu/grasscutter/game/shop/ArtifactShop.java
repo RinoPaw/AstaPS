@@ -35,14 +35,11 @@ public class ArtifactShop {
     /** One ordinary artifact-domain claim. */
     private static final int DEFAULT_RESIN_COST = 20;
 
-    /** Old ArtifactShop default, used to recognize untouched legacy configuration. */
-    private static final int LEGACY_DEFAULT_MORA_COST = 20_000;
-
     /**
      * CityData.cityId -> verified general-goods shop type in the current Shop.json.
      *
      * <p>1 Mondstadt, 2 Liyue, 3 Inazuma, 4 Sumeru, 5 Fontaine. Newer regions stay unrouted until
-     * their real city shop exists in the server's shop data; never invent a hidden shop id.
+     * their real city shop is identified from current resources.
      */
     private static final Map<Integer, Integer> REGIONAL_SHOPS =
             Map.of(1, 1004, 2, 1008, 3, 1056, 4, 1074, 5, 1093);
@@ -133,14 +130,33 @@ public class ArtifactShop {
         try {
             DungeonDropLoader.ensureLoaded();
         } catch (Exception e) {
-            Grasscutter.getLogger().warn("Unable to load dungeon drops for artifact shop.", e);
+            Grasscutter.getLogger().error("Unable to load dungeon drops for artifact shop.", e);
             return;
+        }
+
+        for (var route : REGIONAL_SHOPS.entrySet()) {
+            if (!shopData.containsKey(route.getValue())) {
+                Grasscutter.getLogger()
+                        .error(
+                                "Artifact shop requires city {} shop {}, but it is missing from current shop data.",
+                                route.getKey(),
+                                route.getValue());
+                return;
+            }
         }
 
         this.domainSetsByDungeon.putAll(buildDomainSetIndex());
         var citiesBySet = citiesBySet();
         var pieces = catalog(Set.of(), Set.of(3, 4, 5));
-        if (pieces.isEmpty() || citiesBySet.isEmpty()) return;
+        if (pieces.isEmpty() || citiesBySet.isEmpty() || this.domainSetsByDungeon.isEmpty()) {
+            Grasscutter.getLogger()
+                    .error(
+                            "Artifact shop current-version data is incomplete: pieces={}, regional sets={}, domain groups={}.",
+                            pieces.size(),
+                            citiesBySet.size(),
+                            this.domainSetsByDungeon.size());
+            return;
+        }
 
         int goodsId = GOODS_ID_BASE;
         int listed = 0;
@@ -153,18 +169,7 @@ public class ArtifactShop {
                 Integer shopId = REGIONAL_SHOPS.get(cityId);
                 if (shopId == null) continue;
 
-                // A region mapping is only valid when the actual shop is present in Shop.json (or
-                // was loaded from excel). Do not create synthetic shop ids that no NPC can open.
                 var items = shopData.get(shopId);
-                if (items == null) {
-                    Grasscutter.getLogger()
-                            .warn(
-                                    "Artifact shop route for city {} points to missing shop {}.",
-                                    cityId,
-                                    shopId);
-                    continue;
-                }
-
                 items.add(makeGoods(goodsId, piece, options));
                 this.goods.put(goodsId, piece);
                 this.goodsCity.put(goodsId, cityId);
@@ -245,9 +250,10 @@ public class ArtifactShop {
     }
 
     /**
-     * Builds dungeonId -> whole-domain set ids. PointData.dungeonIds is the authoritative grouping
-     * for the several difficulty ids exposed by one domain entrance. If an old resource pack lacks
-     * that point relationship, the dungeon falls back to the sets in its own drop table.
+     * Builds dungeonId -> whole-domain set ids from current PointData.dungeonIds only.
+     *
+     * <p>Every artifact difficulty at the entrance must also have a DungeonDrop row. Missing point
+     * or drop relationships are treated as invalid current-version data and are never substituted.
      */
     private static Int2ObjectMap<Set<Integer>> buildDomainSetIndex() {
         var exactSets = new Int2ObjectOpenHashMap<Set<Integer>>();
@@ -264,10 +270,6 @@ public class ArtifactShop {
         }
 
         var index = new Int2ObjectOpenHashMap<Set<Integer>>();
-        for (var entry : exactSets.int2ObjectEntrySet()) {
-            index.put(entry.getIntKey(), Set.copyOf(entry.getValue()));
-        }
-
         for (var pointEntry : GameData.getScenePointEntryMap().values()) {
             var point = pointEntry.getPointData();
             if (point == null || point.getDungeonIds() == null || point.getDungeonIds().length == 0) {
@@ -276,6 +278,7 @@ public class ArtifactShop {
 
             var domainDungeonIds = new IntArrayList();
             var domainSets = new HashSet<Integer>();
+            boolean complete = true;
             for (int dungeonId : point.getDungeonIds()) {
                 var dungeon = GameData.getDungeonDataMap().get(dungeonId);
                 if (dungeon == null
@@ -285,10 +288,18 @@ public class ArtifactShop {
 
                 domainDungeonIds.add(dungeonId);
                 var sets = exactSets.get(dungeonId);
-                if (sets != null) domainSets.addAll(sets);
+                if (sets == null || sets.isEmpty()) {
+                    Grasscutter.getLogger()
+                            .error(
+                                    "Artifact domain dungeon {} has no current DungeonDrop artifact sets.",
+                                    dungeonId);
+                    complete = false;
+                    break;
+                }
+                domainSets.addAll(sets);
             }
 
-            if (domainDungeonIds.isEmpty() || domainSets.isEmpty()) continue;
+            if (!complete || domainDungeonIds.isEmpty() || domainSets.isEmpty()) continue;
             Set<Integer> sharedSets = Set.copyOf(domainSets);
             for (int i = 0; i < domainDungeonIds.size(); i++) {
                 index.put(domainDungeonIds.getInt(i), sharedSets);
@@ -431,28 +442,15 @@ public class ArtifactShop {
         var goods = new ShopInfo();
         goods.setGoodsId(goodsId);
         goods.setGoodsItem(new ItemParamData(piece.getId(), 1));
-
-        // Existing configs generated before the domain-shop redesign contain the old untouched
-        // 20,000-Mora price. Treat exactly that default as a migration marker and turn it into the
-        // cost of one normal domain claim. Any explicitly customized price keeps its old behavior.
-        boolean legacyDefaultPrice =
-                options.costMora == LEGACY_DEFAULT_MORA_COST
-                        && options.costPrimogems == 0
-                        && options.costItemId <= 0
-                        && options.costItemCount <= 0;
-        goods.setScoin(legacyDefaultPrice ? 0 : options.costMora);
-        goods.setHcoin(options.costPrimogems);
+        goods.setScoin(0);
+        goods.setHcoin(0);
         goods.setBuyLimit(options.buyLimit);
         goods.setMinLevel(1);
         goods.setMaxLevel(99);
 
-        // Mutable on purpose: removeVirtualCosts walks this with removeIf.
+        // V1 has one explicit price: the same 20 Original Resin as one ordinary domain claim.
         var costs = new ArrayList<ItemParamData>(1);
-        if (legacyDefaultPrice) {
-            costs.add(new ItemParamData(ORIGINAL_RESIN_ID, DEFAULT_RESIN_COST));
-        } else if (options.costItemId > 0 && options.costItemCount > 0) {
-            costs.add(new ItemParamData(options.costItemId, options.costItemCount));
-        }
+        costs.add(new ItemParamData(ORIGINAL_RESIN_ID, DEFAULT_RESIN_COST));
         goods.setCostItemList(costs);
         return goods;
     }

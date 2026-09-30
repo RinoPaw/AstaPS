@@ -3,7 +3,10 @@
  */
 package emu.grasscutter.game.entity.gadget.chest;
 
+import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+
 import emu.grasscutter.Grasscutter;
+import emu.grasscutter.config.ConfigContainer.GameOptions.ExplorationRewardOptions.ChestReward;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
@@ -20,42 +23,66 @@ public final class WorldChestLootHelper {
             return;
         }
         Tier tier = WorldChestLootHelper.resolveTier(entityGadget);
-        int n = WorldChestLootHelper.resolveSigilId(entityGadget);
+        ChestReward reward = WorldChestLootHelper.resolveReward(tier);
+        if (reward == null) {
+            return;
+        }
+        int sigilId = WorldChestLootHelper.resolveSigilId(entityGadget);
         Scene scene = entityGadget.getScene();
-        EntityGadget entityGadget2 = entityGadget;
-        player.earnExp(tier.adventureExp);
-        WorldChestLootHelper.drop(scene, entityGadget2, 201, tier.primogems);
-        WorldChestLootHelper.drop(scene, entityGadget2, 202, tier.mora);
-        WorldChestLootHelper.drop(scene, entityGadget2, n, tier.sigil);
+        EntityGadget source = entityGadget;
+        player.earnExp(Math.max(0, reward.adventureExp));
+        WorldChestLootHelper.drop(scene, source, 201, reward.primogems);
+        WorldChestLootHelper.drop(scene, source, 202, reward.mora);
+        WorldChestLootHelper.drop(scene, source, sigilId, reward.sigil);
         if (tier == Tier.COMMON) {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104011, Math.max(tier.oreFine, 2));
+            WorldChestLootHelper.drop(scene, source, 104011, reward.fineEnhancementOre);
         } else {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104012, tier.oreFine);
-            if (tier.oreFine >= 3) {
-                WorldChestLootHelper.drop(scene, entityGadget2, 104013, Math.max(1, tier.oreFine / 3));
+            WorldChestLootHelper.drop(scene, source, 104012, reward.fineEnhancementOre);
+            if (reward.fineEnhancementOre >= 3) {
+                WorldChestLootHelper.drop(
+                        scene, source, 104013, Math.max(1, reward.fineEnhancementOre / 3));
             }
         }
-        if (tier.expWanderer > 0) {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104001, tier.expWanderer);
-        }
-        if (tier.expAdventurer > 0) {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104002, tier.expAdventurer);
-        }
-        if (tier.expHero > 0) {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104003, tier.expHero);
-        }
-        Grasscutter.getLogger().info("WorldChestLoot drop uid={} gadgetId={} tier={} primogems={}", player.getUid(), entityGadget.getGadgetId(), tier.name(), tier.primogems);
+        WorldChestLootHelper.drop(scene, source, 104001, reward.wanderersAdvice);
+        WorldChestLootHelper.drop(scene, source, 104002, reward.adventurersExperience);
+        WorldChestLootHelper.drop(scene, source, 104003, reward.herosWit);
+        Grasscutter.getLogger()
+                .info(
+                        "WorldChestLoot drop uid={} gadgetId={} tier={} primogems={}",
+                        player.getUid(),
+                        entityGadget.getGadgetId(),
+                        tier.name(),
+                        reward.primogems);
     }
 
-    private static void drop(Scene scene, GameEntity gameEntity, int n, int n2) {
-        if (scene == null || gameEntity == null || n <= 0 || n2 <= 0) {
+    private static ChestReward resolveReward(Tier tier) {
+        if (tier == null
+                || GAME_OPTIONS.explorationRewards == null
+                || GAME_OPTIONS.explorationRewards.chests == null) {
+            return null;
+        }
+        var chests = GAME_OPTIONS.explorationRewards.chests;
+        return switch (tier) {
+            case COMMON -> chests.common;
+            case EXQUISITE -> chests.exquisite;
+            case PRECIOUS -> chests.precious;
+            case LUXURIOUS -> chests.luxurious;
+        };
+    }
+
+    private static void drop(Scene scene, GameEntity gameEntity, int itemId, int count) {
+        if (scene == null || gameEntity == null || itemId <= 0 || count <= 0) {
             return;
         }
         try {
-            scene.addItemEntity(n, n2, gameEntity);
-        }
-        catch (Throwable throwable) {
-            Grasscutter.getLogger().warn("WorldChestLoot drop failed item={} x{}: {}", n, n2, throwable.toString());
+            scene.addItemEntity(itemId, count, gameEntity);
+        } catch (Throwable throwable) {
+            Grasscutter.getLogger()
+                    .warn(
+                            "WorldChestLoot drop failed item={} x{}: {}",
+                            itemId,
+                            count,
+                            throwable.toString());
         }
     }
 
@@ -71,26 +98,31 @@ public final class WorldChestLootHelper {
             case 70210003: {
                 return Tier.PRECIOUS;
             }
-            case 70210004: 
-            case 70210005: 
+            case 70210004:
+            case 70210005:
             case 70210006: {
                 return Tier.LUXURIOUS;
             }
         }
         String string = "";
-        if (entityGadget.getGadgetData() != null && entityGadget.getGadgetData().getJsonName() != null) {
+        if (entityGadget.getGadgetData() != null
+                && entityGadget.getGadgetData().getJsonName() != null) {
             string = entityGadget.getGadgetData().getJsonName();
         }
         if (WorldChestLootHelper.containsLv(string, 5) || string.contains("Drop_Chest_Lv3")) {
             return Tier.LUXURIOUS;
         }
-        if (WorldChestLootHelper.containsLv(string, 4) || WorldChestLootHelper.containsLv(string, 3) || string.contains("Drop_Chest_Lv2")) {
+        if (WorldChestLootHelper.containsLv(string, 4)
+                || WorldChestLootHelper.containsLv(string, 3)
+                || string.contains("Drop_Chest_Lv2")) {
             return Tier.PRECIOUS;
         }
         if (WorldChestLootHelper.containsLv(string, 2) || string.contains("Drop_Chest_Lv1")) {
             return Tier.EXQUISITE;
         }
-        if (WorldChestLootHelper.containsLv(string, 1) || string.contains("NormalChest") || string.contains("Rock_Lv1")) {
+        if (WorldChestLootHelper.containsLv(string, 1)
+                || string.contains("NormalChest")
+                || string.contains("Rock_Lv1")) {
             return Tier.COMMON;
         }
         SceneGadget sceneGadget = entityGadget.getMetaGadget();
@@ -113,7 +145,9 @@ public final class WorldChestLootHelper {
     }
 
     private static boolean containsLv(String string, int n) {
-        return string.contains("_Lv" + n) || string.contains("Lv" + n + "_") || string.endsWith("Lv" + n);
+        return string.contains("_Lv" + n)
+                || string.contains("Lv" + n + "_")
+                || string.endsWith("Lv" + n);
     }
 
     private static int resolveSigilId(EntityGadget entityGadget) {
@@ -222,30 +256,10 @@ public final class WorldChestLootHelper {
         return 305;
     }
 
-    public static enum Tier {
-        COMMON(66, 20, 3, 1000, 2, 2, 1, 0),
-        EXQUISITE(166, 25, 5, 1500, 2, 3, 2, 1),
-        PRECIOUS(366, 30, 8, 2000, 3, 3, 3, 2),
-        LUXURIOUS(566, 30, 10, 2500, 4, 2, 4, 3);
-
-        final int primogems;
-        final int adventureExp;
-        final int sigil;
-        final int mora;
-        final int oreFine;
-        final int expWanderer;
-        final int expAdventurer;
-        final int expHero;
-
-        private Tier(int n2, int n3, int n4, int n5, int n6, int n7, int n8, int n9) {
-            this.primogems = n2;
-            this.adventureExp = n3;
-            this.sigil = n4;
-            this.mora = n5;
-            this.oreFine = n6;
-            this.expWanderer = n7;
-            this.expAdventurer = n8;
-            this.expHero = n9;
-        }
+    public enum Tier {
+        COMMON,
+        EXQUISITE,
+        PRECIOUS,
+        LUXURIOUS
     }
 }

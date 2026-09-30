@@ -184,7 +184,7 @@ public final class OfferingHelper {
             ensureLevelsFile();
             if (java.nio.file.Files.exists(LEVELS_FILE)) {
                 String json = java.nio.file.Files.readString(LEVELS_FILE);
-                var root = new com.google.gson.JsonParser().parse(json).getAsJsonObject();
+                var root = com.google.gson.JsonParser.parseString(json).getAsJsonObject();
                 String uidKey = String.valueOf(player.getUid());
                 if (root.has(uidKey) && root.get(uidKey).isJsonObject()) {
                     var o = root.getAsJsonObject(uidKey);
@@ -218,7 +218,7 @@ public final class OfferingHelper {
                 return map;
             }
             String json = java.nio.file.Files.readString(LEVELS_FILE);
-            var root = new com.google.gson.JsonParser().parse(json).getAsJsonObject();
+            var root = com.google.gson.JsonParser.parseString(json).getAsJsonObject();
             String uidKey = String.valueOf(player.getUid());
             if (!root.has(uidKey) || !root.get(uidKey).isJsonObject()) {
                 return map;
@@ -250,7 +250,7 @@ public final class OfferingHelper {
             if (java.nio.file.Files.exists(LEVELS_FILE)) {
                 String json = java.nio.file.Files.readString(LEVELS_FILE);
                 if (!json.isBlank()) {
-                    root = new com.google.gson.JsonParser().parse(json).getAsJsonObject();
+                    root = com.google.gson.JsonParser.parseString(json).getAsJsonObject();
                 }
             }
             com.google.gson.JsonObject o = new com.google.gson.JsonObject();
@@ -760,7 +760,7 @@ public final class OfferingHelper {
                                 "OfferingLevelUpExcelConfigData.json");
                 String json = java.nio.file.Files.readString(p);
                 // Lightweight parse that does not depend on Gson field-name differences.
-                var arr = new com.google.gson.JsonParser().parse(json).getAsJsonArray();
+                var arr = com.google.gson.JsonParser.parseString(json).getAsJsonArray();
                 for (var el : arr) {
                     var o = el.getAsJsonObject();
                     int oid = o.has("offeringId") ? o.get("offeringId").getAsInt() : 0;

@@ -55,6 +55,19 @@ public final class GameServerPacketHandler {
         if (combineHandler != null) {
             this.handlers.put(PacketOpcodes.CombineReqUnionCmd, combineHandler);
         }
+        // OSREL 7.1 live capture: 9369 payload 08 06 60 03 is UnlockTransPointReq
+        // (point_id field 1, scene_id field 12). PacketOpcodes still carries 0 until the full
+        // 7.1 mapping is reconstructed, so register the verified wire opcode explicitly.
+        if (!this.handlers.containsKey(
+                emu.grasscutter.server.packet.recv.HandlerUnlockTransPointReq.OPCODE_7_1)) {
+            this.handlers.put(
+                    emu.grasscutter.server.packet.recv.HandlerUnlockTransPointReq.OPCODE_7_1,
+                    new emu.grasscutter.server.packet.recv.HandlerUnlockTransPointReq());
+            Grasscutter.getLogger()
+                    .info(
+                            "Registered UnlockTransPointReq 7.1 handler at opcode {}",
+                            emu.grasscutter.server.packet.recv.HandlerUnlockTransPointReq.OPCODE_7_1);
+        }
         // Ensure handbook domain refresh is handled even if Reflections misses a hot-patched class.
         if (!this.handlers.containsKey(PacketOpcodes.InteractDailyDungeonInfoNotify)) {
             this.registerPacketHandler(
@@ -184,20 +197,17 @@ public final class GameServerPacketHandler {
                 }
                 hex = " hex=" + sb;
             }
-            // Keep ordinary 7.1 unknown-packet noise at debug, but surface opcode 9369 while
-            // identifying the waypoint unlock request seen during live gameplay.
+            // Unhandled 7.1 packets remain at debug to avoid flooding normal gameplay logs.
             var logger = Grasscutter.getLogger();
-            var line = "Unhandled packet opcode {} ({}) len={} from {}{}";
-            Object[] args = {
-                opcode,
-                PacketOpcodesUtils.getOpcodeName(opcode),
-                payload == null ? 0 : payload.length,
-                session.getAddress(),
-                hex
-            };
-            if (opcode == 9369) {
-                logger.info(line, args);
-            } else if (logger.isDebugEnabled()) {
+            if (logger.isDebugEnabled()) {
+                var line = "Unhandled packet opcode {} ({}) len={} from {}{}";
+                Object[] args = {
+                    opcode,
+                    PacketOpcodesUtils.getOpcodeName(opcode),
+                    payload == null ? 0 : payload.length,
+                    session.getAddress(),
+                    hex
+                };
                 logger.debug(line, args);
             }
             if (session.getPlayer() != null) {

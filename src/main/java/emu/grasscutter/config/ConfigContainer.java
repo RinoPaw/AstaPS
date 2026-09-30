@@ -505,9 +505,9 @@ public class ConfigContainer {
         }
 
         public static class Rates {
-            public float adventureExp = 1.0f;
-            public float mora = 1.0f;
-            public float leyLines = 1.0f;
+            public float adventureExp = 1.5f;
+            public float mora = 2.0f;
+            public float leyLines = 2.0f;
         }
 
         /** Spiral Abyss. */
@@ -537,11 +537,11 @@ public class ConfigContainer {
         }
 
         public static class ResinOptions {
-            public boolean resinUsage = false;
+            public boolean resinUsage = true;
             /* Natural recharge stops at this value (was 200 official). */
-            public int cap = 1600;
-            /* Seconds per +1 resin (180 = 3 minutes). */
-            public int rechargeTime = 180;
+            public int cap = 300;
+            /* Seconds per +1 resin (360 = 6 minutes). */
+            public int rechargeTime = 360;
         }
 
         public static class Questing {

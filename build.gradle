@@ -297,95 +297,50 @@ javadoc {
     exclude 'src/generated/**/*.*'
 }
 
-tasks.register('injectGitHash') {
-    def gitCommitHash = {
+def handbookDataFiles = [
+    'src/handbook/data/commands.json',
+    'src/handbook/data/avatars.csv',
+    'src/handbook/data/entities.csv',
+    'src/handbook/data/items.csv',
+    'src/handbook/data/mainquests.csv',
+    'src/handbook/data/quests.csv',
+    'src/handbook/data/scenes.csv'
+]
+def handbookNpm = Os.isFamily(Os.FAMILY_WINDOWS) ? 'npm.cmd' : 'npm'
+
+tasks.register('generateHandbook', Exec) {
+    group = 'documentation'
+    description = 'Install handbook dependencies when handbook source data is available.'
+    workingDir 'src/handbook'
+    commandLine handbookNpm, 'install'
+
+    onlyIf {
+        if (project.hasProperty('skipHandbook')) {
+            logger.lifecycle('Skipping handbook generation.')
+            return false
+        }
+
+        def missingData = handbookDataFiles.find { !file(it).exists() }
+        if (missingData != null) {
+            logger.lifecycle("${missingData} was not found. Skipping handbook generation.")
+            return false
+        }
+
         try {
-            return 'git rev-parse --verify --short HEAD'.execute().text.trim()
-        } catch (ignored) {
-            return 'GIT_NOT_FOUND'
-        }
-    }
-
-    new File(projectDir, 'src/main/java/emu/grasscutter/BuildConfig.java').text = """package emu.grasscutter;
-
-public final class BuildConfig {
-    public static final String VERSION = \"${version}\";
-    public static final String GIT_HASH = \"${gitCommitHash()}\";
-}"""
-}
-
-tasks.register('generateHandbook') {
-    if (project.hasProperty('skipHandbook')) {
-        println('Skipping handbook generation.')
-        return
-    }
-
-    // Resolve the NPM command.
-    var npm = 'npm'
-    if (Os.isFamily(Os.FAMILY_WINDOWS))
-        npm = 'npm.cmd'
-
-    def npmVersion = {
-        try {
-            return "${npm} --version".execute()
-        } catch (ignored) {
-            ignored.printStackTrace()
-            return 'NPM_NOT_FOUND'
-        }
-    }
-
-    // Check if Node is installed.
-    if (npmVersion() == 'NPM_NOT_FOUND') {
-        println('NPM is not installed. Skipping handbook generation.')
-    } else {
-        // Check if the handbook resources are present.
-        if (!file('src/handbook/data/commands.json').exists()) {
-            println('Command data was not found. Skipping handbook generation.')
-            return
-        }
-        if (!file('src/handbook/data/avatars.csv').exists()) {
-            println('Avatar data was not found. Skipping handbook generation.')
-            return
-        }
-        if (!file('src/handbook/data/entities.csv').exists()) {
-            println('Entity data was not found. Skipping handbook generation.')
-            return
-        }
-        if (!file('src/handbook/data/items.csv').exists()) {
-            println('Item data was not found. Skipping handbook generation.')
-            return
-        }
-        if (!file('src/handbook/data/mainquests.csv').exists()) {
-            println('Main quest data was not found. Skipping handbook generation.')
-            return
-        }
-        if (!file('src/handbook/data/quests.csv').exists()) {
-            println('Quest data was not found. Skipping handbook generation.')
-            return
-        }
-        if (!file('src/handbook/data/scenes.csv').exists()) {
-            println('Scene data was not found. Skipping handbook generation.')
-            return
+            def process = new ProcessBuilder(handbookNpm, '--version')
+                    .redirectErrorStream(true)
+                    .start()
+            process.inputStream.text
+            if (process.waitFor() != 0) {
+                logger.lifecycle('NPM is not available. Skipping handbook generation.')
+                return false
+            }
+        } catch (IOException ignored) {
+            logger.lifecycle('NPM is not installed. Skipping handbook generation.')
+            return false
         }
 
-        // Install dependencies before building.
-        exec {
-            workingDir 'src/handbook'
-            commandLine npm, 'install'
-        }
-
-        // Build the handbook.
-        //exec {
-        //    workingDir 'src/handbook'
-        //    commandLine npm, 'run', 'build'
-        //}
-
-        // Copy the handbook from /dist to /src/main/resources.
-        //copy {
-        //    from 'src/handbook/dist/index.html'
-        //    into 'src/main/resources/html'
-        //    rename 'index.html', 'handbook.html'
-        //}
+        return true
     }
 }
 

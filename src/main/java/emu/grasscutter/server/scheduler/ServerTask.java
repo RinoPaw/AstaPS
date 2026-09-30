@@ -1,66 +1,66 @@
 package emu.grasscutter.server.scheduler;
 
 import emu.grasscutter.Grasscutter;
-import lombok.Getter;
 
-/** This class works the same as a runnable, except with more information. */
+/** A synchronous scheduler task measured in game ticks. */
 public final class ServerTask implements Runnable {
-    /* The runnable to run. */
     private final Runnable runnable;
-    /* This ID is assigned by the scheduler. */
-    @Getter private final int taskId;
-    /* The period at which the task should be run. */
-    /* The delay between the first execute. */
-    private final int period, delay;
-    /* The amount of times the task has been run. */
-    @Getter private int ticks = 0;
-    /* Should the check consider delay? */
-    private boolean considerDelay = true;
+    private final int taskId;
+    private final int period;
+    private int ticks;
+    private int remainingTicks;
+    private volatile boolean completed;
+    private volatile boolean cancelled;
 
     public ServerTask(Runnable runnable, int taskId, int period, int delay) {
+        if (period == 0 || period < -1) {
+            throw new IllegalArgumentException("period must be -1 or > 0");
+        }
+        if (delay < -1) throw new IllegalArgumentException("delay must be >= -1");
+
         this.runnable = runnable;
         this.taskId = taskId;
         this.period = period;
-        this.delay = delay;
+        this.remainingTicks = delay > 0 ? delay : 1;
     }
 
-    /** Cancels the task from running the next time. */
+    public int getTaskId() {
+        return this.taskId;
+    }
+
+    public int getTicks() {
+        return this.ticks;
+    }
+
+    /** Cancels the task before its next execution. */
     public void cancel() {
         Grasscutter.getGameServer().getScheduler().cancelTask(this.taskId);
     }
 
-    /**
-     * Checks if the task should run at the current tick.
-     *
-     * @return True if the task should run, false otherwise.
-     */
+    void markCancelled() {
+        this.cancelled = true;
+    }
+
     public boolean shouldRun() {
-        // Increase tick count.
+        if (this.cancelled || this.completed) return false;
+
         ++this.ticks;
-        if (this.delay != -1 && this.considerDelay) {
-            // Check if the task should run.
-            var shouldRun = ticks >= this.delay;
-            // Check if the task should be canceled.
-            if (shouldRun) this.considerDelay = false;
+        if (--this.remainingTicks > 0) return false;
 
-            return shouldRun; // Return the result.
-        } else if (this.period != -1) return ticks % this.period == 0;
-        else return true;
+        if (this.period > 0) {
+            this.remainingTicks = this.period;
+        } else {
+            this.completed = true;
+        }
+        return true;
     }
 
-    /**
-     * Checks if the task should be canceled.
-     *
-     * @return True if the task should be canceled, false otherwise.
-     */
     public boolean shouldCancel() {
-        return this.period == -1 && ticks >= delay;
+        return this.cancelled || this.completed;
     }
 
-    /** Runs the task. */
     @Override
     public void run() {
-        // Run the runnable.
         try {
             this.runnable.run();
         } catch (Exception ex) {

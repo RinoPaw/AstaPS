@@ -3,20 +3,20 @@ package emu.grasscutter.server.packet.recv;
 import static emu.grasscutter.config.Configuration.*;
 
 import emu.grasscutter.*;
-import emu.grasscutter.command.commands.SendMailCommand.MailBuilder;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
-import emu.grasscutter.game.mail.Mail;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.SetPlayerBornDataReqOuterClass.SetPlayerBornDataReq;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.packet.send.PacketSetPlayerBornDataRsp;
-import java.util.Arrays;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HexFormat;
 
 @Opcodes(PacketOpcodes.SetPlayerBornDataReq)
 public class HandlerSetPlayerBornDataReq extends PacketHandler {
-    private static final int TEST_SET_PLAYER_BORN_DATA_RSP = 4761;
+    private static final int TEST_PLAYER_NICKNAME_NOTIFY = 3064;
+    private static final int NICKNAME_FIELD_NUMBER = 12;
 
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
@@ -29,77 +29,82 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         } else if (avatarId == GameConstants.MAIN_CHARACTER_FEMALE) {
             startingSkillDepot = 704;
         } else {
-            session.send(new PacketSetPlayerBornDataRsp(-1));
+            Grasscutter.getLogger()
+                    .warn("[born-nickname-3064] invalid Traveler id {}.", avatarId);
             return;
         }
 
         if (!GameData.getAvatarDataMap().containsKey(avatarId)) {
             Grasscutter.getLogger()
                     .error("No avatar data found! Please check your ExcelBinOutput folder.");
-            session.send(new PacketSetPlayerBornDataRsp(-1));
-            session.close();
             return;
         }
-
-        Grasscutter.getLogger()
-                .info(
-                        "[born-rsp-4761-before-login] received SetPlayerBornDataReq cmdId={} avatarId={} nickname={}; testing rsp cmdId={}.",
-                        PacketOpcodes.SetPlayerBornDataReq,
-                        avatarId,
-                        req.getNickName(),
-                        TEST_SET_PLAYER_BORN_DATA_RSP);
 
         Player player = session.getPlayer();
-        player.setNickname(req.getNickName());
-
-        if (player.getAvatars().getAvatarCount() == 0) {
-            Avatar mainCharacter = new Avatar(avatarId);
-
-            if (!GAME_OPTIONS.questing.enabled) {
-                mainCharacter.setSkillDepotData(
-                        GameData.getAvatarSkillDepotDataMap().get(startingSkillDepot));
-            }
-
-            player.addAvatar(mainCharacter, false);
-            player.setMainCharacterId(avatarId);
-            player.setHeadImage(avatarId);
-            player
-                    .getTeamManager()
-                    .getCurrentSinglePlayerTeamInfo()
-                    .getAvatars()
-                    .add(mainCharacter.getAvatarId());
-            player.save();
-        } else {
+        if (player.getAvatars().getAvatarCount() != 0) {
             Grasscutter.getLogger()
-                    .error(
-                            "[born-rsp-4761-before-login] received SetPlayerBornDataReq for uid {} after an avatar already existed; refusing to overwrite it.",
-                            player.getUid());
-            session.close();
+                    .warn(
+                            "[born-nickname-3064] ignoring duplicate SetPlayerBornDataReq for uid {}; Traveler {} is already persisted.",
+                            player.getUid(),
+                            player.getMainCharacterId());
             return;
         }
 
-        // This probe deliberately puts the response before normal login/world creation. The first
-        // 4761 run sent PlayerEnterSceneNotify before the candidate response, which leaves open the
-        // possibility that the client ignored the scene transition while still in character creation.
         Grasscutter.getLogger()
                 .info(
-                        "[born-rsp-4761-before-login] sending empty SetPlayerBornDataRsp candidate cmdId={} before onLogin for uid={}.",
-                        TEST_SET_PLAYER_BORN_DATA_RSP,
-                        player.getUid());
-        session.send(new BasePacket(TEST_SET_PLAYER_BORN_DATA_RSP));
+                        "[born-nickname-3064] RECV SetPlayerBornDataReq cmdId={} avatarId={} nickname={}",
+                        PacketOpcodes.SetPlayerBornDataReq,
+                        avatarId,
+                        req.getNickName());
 
-        player.onLogin();
-        player.getQuestManager().onPlayerBorn();
+        player.setNickname(req.getNickName());
+        Avatar mainCharacter = new Avatar(avatarId);
+        if (!GAME_OPTIONS.questing.enabled) {
+            mainCharacter.setSkillDepotData(
+                    GameData.getAvatarSkillDepotDataMap().get(startingSkillDepot));
+        }
 
-        var welcomeMail = GAME_INFO.joinOptions.welcomeMail;
-        MailBuilder mailBuilder = new MailBuilder(player.getUid(), new Mail());
-        mailBuilder.mail.mailContent.title = welcomeMail.title;
-        mailBuilder.mail.mailContent.sender = welcomeMail.sender;
-        mailBuilder.mail.mailContent.content =
-                welcomeMail.content
-                        + "\n<type=\"browser\" text=\"GitHub\" href=\"https://github.com/Grasscutters/Grasscutter\"/>";
-        mailBuilder.mail.itemList.addAll(Arrays.asList(welcomeMail.items));
-        mailBuilder.mail.importance = 1;
-        player.sendMail(mailBuilder.mail);
+        player.addAvatar(mainCharacter, false);
+        player.setMainCharacterId(avatarId);
+        player.setHeadImage(avatarId);
+        var team = player.getTeamManager().getCurrentSinglePlayerTeamInfo().getAvatars();
+        team.clear();
+        team.add(avatarId);
+        player.save();
+
+        byte[] nicknamePayload = buildNicknameNotify(req.getNickName());
+        BasePacket nicknameNotify = new BasePacket(TEST_PLAYER_NICKNAME_NOTIFY);
+        nicknameNotify.setData(nicknamePayload);
+
+        Grasscutter.getLogger()
+                .info(
+                        "[born-nickname-3064] SEND PlayerNicknameNotify cmdId={} field={} nickname={} payload={}",
+                        TEST_PLAYER_NICKNAME_NOTIFY,
+                        NICKNAME_FIELD_NUMBER,
+                        req.getNickName(),
+                        HexFormat.of().formatHex(nicknamePayload));
+        session.send(nicknameNotify);
+
+        // Deliberately stop here. No guessed SetPlayerBornDataRsp and no onLogin/scene packets are
+        // sent in this probe, so any change to the naming page is attributable to cmd 3064 alone.
+    }
+
+    private static byte[] buildNicknameNotify(String nickname) {
+        byte[] utf8 = nickname.getBytes(StandardCharsets.UTF_8);
+        ByteArrayOutputStream out = new ByteArrayOutputStream(2 + utf8.length);
+
+        // string field #12: (12 << 3) | wire-type 2 = 0x62.
+        out.write((NICKNAME_FIELD_NUMBER << 3) | 2);
+        writeVarint(out, utf8.length);
+        out.writeBytes(utf8);
+        return out.toByteArray();
+    }
+
+    private static void writeVarint(ByteArrayOutputStream out, int value) {
+        while ((value & ~0x7F) != 0) {
+            out.write((value & 0x7F) | 0x80);
+            value >>>= 7;
+        }
+        out.write(value);
     }
 }

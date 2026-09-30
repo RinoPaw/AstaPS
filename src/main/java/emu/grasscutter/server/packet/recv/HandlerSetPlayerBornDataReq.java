@@ -3,7 +3,6 @@ package emu.grasscutter.server.packet.recv;
 import static emu.grasscutter.config.Configuration.*;
 
 import emu.grasscutter.*;
-import emu.grasscutter.command.commands.SendMailCommand.MailBuilder;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.mail.Mail;
@@ -21,7 +20,6 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         SetPlayerBornDataReq req = SetPlayerBornDataReq.parseFrom(payload);
 
-        // Sanity checks
         int avatarId = req.getAvatarId();
         int startingSkillDepot;
         if (avatarId == GameConstants.MAIN_CHARACTER_MALE) {
@@ -33,7 +31,6 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             return;
         }
 
-        // Make sure resources folder is set
         if (!GameData.getAvatarDataMap().containsKey(avatarId)) {
             Grasscutter.getLogger()
                     .error("No avatar data found! Please check your ExcelBinOutput folder.");
@@ -42,9 +39,6 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             return;
         }
 
-        // Validate the reply side of the handshake before changing persistent player data. A
-        // negative value in the 7.1 opcode tables is an unresolved placeholder, not a signed
-        // on-wire CmdId.
         int rspCmdId = GAME_OPTIONS.newAccountIntro.setPlayerBornDataRsp;
         if (rspCmdId <= 0) {
             Grasscutter.getLogger()
@@ -55,21 +49,17 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             return;
         }
 
-        // Get player object
         Player player = session.getPlayer();
         player.setNickname(req.getNickName());
 
-        // Create avatar only from the client's explicit selection.
         if (player.getAvatars().getAvatarCount() == 0) {
             Avatar mainCharacter = new Avatar(avatarId);
 
-            // Check if the default Anemo skill should be given.
             if (!GAME_OPTIONS.questing.enabled) {
                 mainCharacter.setSkillDepotData(
                         GameData.getAvatarSkillDepotDataMap().get(startingSkillDepot));
             }
 
-            // Manually handle adding to team
             player.addAvatar(mainCharacter, false);
             player.setMainCharacterId(avatarId);
             player.setHeadImage(avatarId);
@@ -78,7 +68,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
                     .getCurrentSinglePlayerTeamInfo()
                     .getAvatars()
                     .add(mainCharacter.getAvatarId());
-            player.save(); // TODO save player team in different object
+            player.save();
         } else {
             Grasscutter.getLogger()
                     .error(
@@ -88,11 +78,8 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             return;
         }
 
-        // The character was just created: start the quests a new account begins with.
         player.getQuestManager().onPlayerBorn();
-
-        // Login done
-        session.getPlayer().onLogin();
+        player.onLogin();
 
         Grasscutter.getLogger()
                 .info(
@@ -102,18 +89,15 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
                         rspCmdId);
         session.send(new BasePacket(rspCmdId));
 
-        // Default mail
         var welcomeMail = GAME_INFO.joinOptions.welcomeMail;
-        MailBuilder mailBuilder = new MailBuilder(player.getUid(), new Mail());
-        mailBuilder.mail.mailContent.title = welcomeMail.title;
-        mailBuilder.mail.mailContent.sender = welcomeMail.sender;
-        // Please credit Grasscutter if changing something here. We don't condone commercial use of the
-        // project.
-        mailBuilder.mail.mailContent.content =
+        Mail mail = new Mail();
+        mail.mailContent.title = welcomeMail.title;
+        mail.mailContent.sender = welcomeMail.sender;
+        mail.mailContent.content =
                 welcomeMail.content
                         + "\n<type=\"browser\" text=\"GitHub\" href=\"https://github.com/Grasscutters/Grasscutter\"/>";
-        mailBuilder.mail.itemList.addAll(Arrays.asList(welcomeMail.items));
-        mailBuilder.mail.importance = 1;
-        player.sendMail(mailBuilder.mail);
+        mail.itemList.addAll(Arrays.asList(welcomeMail.items));
+        mail.importance = 1;
+        player.sendMail(mail);
     }
 }

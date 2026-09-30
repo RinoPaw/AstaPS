@@ -10,16 +10,69 @@ import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.event.game.ReceivePacketEvent;
 import emu.grasscutter.server.game.GameSession.SessionState;
 import it.unimi.dsi.fastutil.ints.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 public final class GameServerPacketHandler {
 
     private final Int2ObjectMap<PacketHandler> handlers;
 
     /** Opcodes already reported as unhandled, so each one is named once rather than per packet. */
 
+    /**
+     * Test-only probe window for the fresh-account intro. Weak keys keep a disconnected test session
+     * from being retained by the tracer while still letting us see packets that have no registered
+     * handler.
+     */
+    private static final Map<GameSession, Long> bornIntroTraceStartedAt =
+            Collections.synchronizedMap(new WeakHashMap<>());
+
     public GameServerPacketHandler(Class<? extends PacketHandler> handlerClass) {
         this.handlers = new Int2ObjectOpenHashMap<>();
 
         this.registerHandlers(handlerClass);
+    }
+
+    public static void beginBornIntroTrace(GameSession session) {
+        bornIntroTraceStartedAt.put(session, System.currentTimeMillis());
+        Grasscutter.getLogger()
+                .info("[BORN-INTRO-TRACE] BEGIN; Quest 351 startup is intentionally suspended for this probe.");
+    }
+
+    private static void traceBornIntroPacket(
+            GameSession session, int opcode, byte[] payload) {
+        Long startedAt = bornIntroTraceStartedAt.get(session);
+        if (startedAt == null
+                || PacketOpcodesUtils.LOOP_PACKETS.contains(opcode)
+                || opcode == PacketOpcodes.PingReq
+                || opcode == PacketOpcodes.PingRsp) {
+            return;
+        }
+
+        int length = payload == null ? 0 : payload.length;
+        int dumpLength = Math.min(length, 48);
+        String payloadHex = "";
+        if (dumpLength > 0) {
+            StringBuilder sb = new StringBuilder(dumpLength * 2);
+            for (int i = 0; i < dumpLength; i++) {
+                sb.append(String.format("%02x", payload[i]));
+            }
+            payloadHex = sb.toString();
+            if (length > dumpLength) payloadHex += "...";
+        }
+
+        long elapsedMs = System.currentTimeMillis() - startedAt;
+        boolean cutsceneEndCandidate = opcode == 21200 || opcode == 472;
+        Grasscutter.getLogger()
+                .info(
+                        "[BORN-INTRO-TRACE] +{}ms RECV cmdId={} name={} len={} cutsceneEndCandidate={} payload={}",
+                        elapsedMs,
+                        opcode,
+                        PacketOpcodesUtils.getOpcodeName(opcode),
+                        length,
+                        cutsceneEndCandidate,
+                        payloadHex.isEmpty() ? "<empty>" : payloadHex);
     }
 
     public void registerPacketHandler(Class<? extends PacketHandler> handlerClass) {
@@ -133,6 +186,8 @@ public final class GameServerPacketHandler {
     }
 
     public void handle(GameSession session, int opcode, byte[] header, byte[] payload) {
+        traceBornIntroPacket(session, opcode, payload);
+
         PacketHandler handler = this.handlers.get(opcode);
 
         if (handler != null) {
@@ -170,7 +225,7 @@ public final class GameServerPacketHandler {
                 ReceivePacketEvent event = new ReceivePacketEvent(session, opcode, payload);
                 event.call();
                 if (!event.isCanceled())
-                handler.handle(session, header, event.getPacketData());
+                    handler.handle(session, header, event.getPacketData());
             } catch (Exception ex) {
 
                 ex.printStackTrace();

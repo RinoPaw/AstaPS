@@ -8,6 +8,7 @@ import emu.grasscutter.data.*;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.data.excels.reliquary.ReliquaryMainPropData;
+import emu.grasscutter.game.dungeons.DungeonDropEntry;
 import emu.grasscutter.game.dungeons.DungeonDropLoader;
 import emu.grasscutter.game.dungeons.enums.DungeonSubType;
 import emu.grasscutter.game.inventory.*;
@@ -121,6 +122,13 @@ public class ArtifactShop {
     private final Int2IntMap goodsCity = new Int2IntOpenHashMap();
 
     /**
+     * Every difficulty at one world-map domain entrance points to the union of artifact sets that
+     * entrance can award. This is what lets clearing an early difficulty prove the domain once,
+     * while Adventure Rank can unlock higher-rarity versions later.
+     */
+    private final Int2ObjectMap<Set<Integer>> domainSetsByDungeon = new Int2ObjectOpenHashMap<>();
+
+    /**
      * Installs domain artifacts into the general-goods shop belonging to the domain's city.
      *
      * <p>The domain-to-city relationship comes from DungeonExcelConfigData.cityId and the set list
@@ -131,9 +139,18 @@ public class ArtifactShop {
         var options = GAME_OPTIONS.artifactShop;
         this.goods.clear();
         this.goodsCity.clear();
+        this.domainSetsByDungeon.clear();
         shopData.values().forEach(list -> list.removeIf(sold -> sold.getGoodsId() >= GOODS_ID_BASE));
         if (!options.enabled) return;
 
+        try {
+            DungeonDropLoader.ensureLoaded();
+        } catch (Exception e) {
+            Grasscutter.getLogger().warn("Unable to load dungeon drops for artifact shop.", e);
+            return;
+        }
+
+        this.domainSetsByDungeon.putAll(buildDomainSetIndex());
         var citiesBySet = citiesBySet();
         var pieces = catalog(Set.of(), Set.of(3, 4, 5));
         if (pieces.isEmpty() || citiesBySet.isEmpty()) return;
@@ -161,9 +178,11 @@ public class ArtifactShop {
 
         Grasscutter.getLogger()
                 .info(
-                        "Listed {} regional artifact goods across {} city shop(s).",
+                        "Listed {} regional artifact goods across {} city shop(s), with {} dungeon "
+                                + "difficulty id(s) indexed for domain unlocks.",
                         listed,
-                        touchedShops.size());
+                        touchedShops.size(),
+                        this.domainSetsByDungeon.size());
     }
 
     /** The piece this goods id sells, or null when the id is not one of ours. */
@@ -210,13 +229,6 @@ public class ArtifactShop {
      * considered, so boss/story dungeons that happen to award artifacts cannot populate a shop.
      */
     private static Map<Integer, Set<Integer>> citiesBySet() {
-        try {
-            DungeonDropLoader.ensureLoaded();
-        } catch (Exception e) {
-            Grasscutter.getLogger().warn("Unable to load dungeon drops for artifact shop routing.", e);
-            return Map.of();
-        }
-
         var citiesBySet = new HashMap<Integer, Set<Integer>>();
         for (var dungeonEntry : GameData.getDungeonDropDataMap().int2ObjectEntrySet()) {
             var dungeon = GameData.getDungeonDataMap().get(dungeonEntry.getIntKey());
@@ -227,40 +239,94 @@ public class ArtifactShop {
             int cityId = dungeon.getCityId();
             if (!REGIONAL_SHOPS.containsKey(cityId)) continue;
 
-            var drops = dungeonEntry.getValue();
-            if (drops == null) continue;
-            for (var drop : drops) {
-                if (drop == null || drop.getItems() == null) continue;
-                for (int itemId : drop.getItems()) {
-                    var data = GameData.getItemDataMap().get(itemId);
-                    if (data == null
-                            || data.getItemType() != ItemType.ITEM_RELIQUARY
-                            || data.getSetId() <= 0) {
-                        continue;
-                    }
-                    citiesBySet.computeIfAbsent(data.getSetId(), k -> new TreeSet<>()).add(cityId);
-                }
+            for (int setId : artifactSetIds(dungeonEntry.getValue())) {
+                citiesBySet.computeIfAbsent(setId, k -> new TreeSet<>()).add(cityId);
             }
         }
         return citiesBySet;
     }
 
     /**
-     * A completed artifact domain unlocks only the sets that its own drop table contains, and only
-     * in the city that owns that domain. Adventure Rank separately decides which rarity may appear.
+     * Builds dungeonId -> whole-domain set ids. PointData.dungeonIds is the authoritative grouping
+     * for the several difficulty ids exposed by one domain entrance. If an old resource pack lacks
+     * that point relationship, the dungeon falls back to the sets in its own drop table.
      */
-    private static Set<Integer> unlockedSetIds(Player player, int cityId) {
+    private static Int2ObjectMap<Set<Integer>> buildDomainSetIndex() {
+        var exactSets = new Int2ObjectOpenHashMap<Set<Integer>>();
+        for (var dungeonEntry : GameData.getDungeonDropDataMap().int2ObjectEntrySet()) {
+            var dungeon = GameData.getDungeonDataMap().get(dungeonEntry.getIntKey());
+            if (dungeon == null || dungeon.getSubType() != DungeonSubType.DUNGEON_SUB_RELIQUARY) {
+                continue;
+            }
+
+            var sets = artifactSetIds(dungeonEntry.getValue());
+            if (!sets.isEmpty()) {
+                exactSets.put(dungeonEntry.getIntKey(), sets);
+            }
+        }
+
+        var index = new Int2ObjectOpenHashMap<Set<Integer>>();
+        for (var entry : exactSets.int2ObjectEntrySet()) {
+            index.put(entry.getIntKey(), Set.copyOf(entry.getValue()));
+        }
+
+        for (var pointEntry : GameData.getScenePointEntryMap().values()) {
+            var point = pointEntry.getPointData();
+            if (point == null || point.getDungeonIds() == null || point.getDungeonIds().length == 0) {
+                continue;
+            }
+
+            var domainDungeonIds = new IntArrayList();
+            var domainSets = new HashSet<Integer>();
+            for (int dungeonId : point.getDungeonIds()) {
+                var dungeon = GameData.getDungeonDataMap().get(dungeonId);
+                if (dungeon == null
+                        || dungeon.getSubType() != DungeonSubType.DUNGEON_SUB_RELIQUARY) {
+                    continue;
+                }
+
+                domainDungeonIds.add(dungeonId);
+                var sets = exactSets.get(dungeonId);
+                if (sets != null) domainSets.addAll(sets);
+            }
+
+            if (domainDungeonIds.isEmpty() || domainSets.isEmpty()) continue;
+            Set<Integer> sharedSets = Set.copyOf(domainSets);
+            for (int i = 0; i < domainDungeonIds.size(); i++) {
+                index.put(domainDungeonIds.getInt(i), sharedSets);
+            }
+        }
+
+        return index;
+    }
+
+    private static Set<Integer> artifactSetIds(List<DungeonDropEntry> drops) {
+        if (drops == null) return Set.of();
+
+        var sets = new HashSet<Integer>();
+        for (var drop : drops) {
+            if (drop == null || drop.getItems() == null) continue;
+            for (int itemId : drop.getItems()) {
+                var data = GameData.getItemDataMap().get(itemId);
+                if (data != null
+                        && data.getItemType() == ItemType.ITEM_RELIQUARY
+                        && data.getSetId() > 0) {
+                    sets.add(data.getSetId());
+                }
+            }
+        }
+        return sets;
+    }
+
+    /**
+     * Completing any difficulty at an artifact-domain entrance unlocks every set belonging to that
+     * entrance, but only in its own city's shop. Adventure Rank separately gates 3/4/5-star goods.
+     */
+    private Set<Integer> unlockedSetIds(Player player, int cityId) {
         if (cityId <= 0
                 || player == null
                 || player.getPlayerProgress() == null
                 || player.getPlayerProgress().getCompletedDungeons() == null) {
-            return Set.of();
-        }
-
-        try {
-            DungeonDropLoader.ensureLoaded();
-        } catch (Exception e) {
-            Grasscutter.getLogger().warn("Unable to load dungeon drops for artifact shop unlocks.", e);
             return Set.of();
         }
 
@@ -273,19 +339,8 @@ public class ArtifactShop {
                 continue;
             }
 
-            var drops = GameData.getDungeonDropDataMap().get(dungeonId);
-            if (drops == null) continue;
-            for (var drop : drops) {
-                if (drop == null || drop.getItems() == null) continue;
-                for (int itemId : drop.getItems()) {
-                    var data = GameData.getItemDataMap().get(itemId);
-                    if (data != null
-                            && data.getItemType() == ItemType.ITEM_RELIQUARY
-                            && data.getSetId() > 0) {
-                        unlocked.add(data.getSetId());
-                    }
-                }
-            }
+            var domainSets = this.domainSetsByDungeon.get(dungeonId);
+            if (domainSets != null) unlocked.addAll(domainSets);
         }
         return unlocked;
     }

@@ -88,11 +88,11 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             return;
         }
 
+        // Login first so quest start() can safely read World state and register scene triggers.
+        player.onLogin();
+
         // The character was just created: start the quests a new account begins with.
         player.getQuestManager().onPlayerBorn();
-
-        // Login done
-        session.getPlayer().onLogin();
 
         Grasscutter.getLogger()
                 .info(

@@ -52,8 +52,9 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
         Grasscutter.getLogger()
                 .info(
-                        "[born-login-nickname-3064] RECV SetPlayerBornDataReq cmdId={} avatarId={} nickname={}",
+                        "[BORN-TRACE] 1 RECV SetPlayerBornDataReq cmdId={} uid={} avatarId={} nickname={}",
                         PacketOpcodes.SetPlayerBornDataReq,
+                        player.getUid(),
                         avatarId,
                         req.getNickName());
 
@@ -74,8 +75,15 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
         Grasscutter.getLogger()
                 .info(
-                        "[born-login-nickname-3064] persisted Traveler; invoking onLogin so the client receives normal player/scene state before nickname sync.");
+                        "[BORN-TRACE] 2 onLogin BEGIN sceneLoadState={} enterSceneToken={}",
+                        player.getSceneLoadState(),
+                        player.getEnterSceneToken());
         player.onLogin();
+        Grasscutter.getLogger()
+                .info(
+                        "[BORN-TRACE] 3 onLogin END sceneLoadState={} enterSceneToken={}",
+                        player.getSceneLoadState(),
+                        player.getEnterSceneToken());
 
         byte[] nicknamePayload = buildNicknameNotify(req.getNickName());
         BasePacket nicknameNotify = new BasePacket(TEST_PLAYER_NICKNAME_NOTIFY);
@@ -83,15 +91,13 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
         Grasscutter.getLogger()
                 .info(
-                        "[born-login-nickname-3064] SEND PlayerNicknameNotify cmdId={} field={} nickname={} payload={}",
+                        "[BORN-TRACE] 4 SEND PlayerNicknameNotify cmdId={} field={} nickname={} payload={}",
                         TEST_PLAYER_NICKNAME_NOTIFY,
                         NICKNAME_FIELD_NUMBER,
                         req.getNickName(),
                         HexFormat.of().formatHex(nicknamePayload));
         session.send(nicknameNotify);
-
-        // Probe order: persist -> onLogin (including PlayerEnterSceneNotify) -> nickname notify.
-        // No guessed SetPlayerBornDataRsp is sent.
+        Grasscutter.getLogger().info("[BORN-TRACE] 5 PlayerNicknameNotify send() returned");
     }
 
     private static byte[] buildNicknameNotify(String nickname) {

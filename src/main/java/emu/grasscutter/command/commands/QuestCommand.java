@@ -14,11 +14,6 @@ import picocli.CommandLine.Parameters;
 @Command(
         label = "quest",
         aliases = {"q"},
-        usage = {
-            "(add|finish|running|talking|debug|triggers|grouptriggers) [<questId>]",
-            "forcefinish (<questId>|all)",
-            "dungeons"
-        },
         permission = "player.quest",
         permissionTargeted = "player.quest.others")
 public final class QuestCommand implements PicocliCommandHandler {
@@ -31,18 +26,9 @@ public final class QuestCommand implements PicocliCommandHandler {
     }
 
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        // The historical quest dispatcher lower-cased only its first token before switching.
-        var normalized = new ArrayList<>(args);
-        if (!normalized.isEmpty()) normalized.set(0, normalized.get(0).toLowerCase(Locale.ROOT));
-        createCommandLine(sender, targetPlayer).execute(normalized.toArray(String[]::new));
-    }
-
-    @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         var commandLine = new CommandLine(new Root(sender));
         commandLine.setExpandAtFiles(false);
-        commandLine.setUnmatchedOptionsArePositionalParams(true);
 
         commandLine.registerConverter(
                 QuestId.class,
@@ -75,7 +61,6 @@ public final class QuestCommand implements PicocliCommandHandler {
         commandLine.addSubcommand("debug", new Debug(sender, targetPlayer));
         commandLine.addSubcommand("triggers", new Triggers(sender, targetPlayer));
         commandLine.addSubcommand("grouptriggers", new GroupTriggers(sender, targetPlayer));
-        // `list` already existed in the old switch even though the old usage annotation omitted it.
         commandLine.addSubcommand("list", new ListQuests(sender, targetPlayer));
 
         commandLine.setParameterExceptionHandler(

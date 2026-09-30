@@ -61,8 +61,6 @@ public final class CommandMap {
             if (account == null) return INVALID_UID;
             var player = DatabaseHelper.getPlayerByAccount(account, Player.class);
             if (player == null) return INVALID_UID;
-            // We will be immediately fetching the player again after this,
-            // but offline vs online Player safety is more important than saving a lookup
             return player.getUid();
         }
     }
@@ -73,10 +71,6 @@ public final class CommandMap {
      * <p>Legacy handlers get a lossless catch-all positional grammar. Handlers that implement
      * {@link PicocliCommandHandler} expose their real nested grammar to the same tree, so JLine
      * completion and runtime parsing advance together during migration.
-     *
-     * <p>This also keeps legacy plugin registration working: plugins can continue using
-     * {@link #registerCommand(String, CommandHandler)} and the new parser/completer sees the change
-     * immediately.
      */
     private void rebuildPicocliTree() {
         synchronized (this.picocliLock) {
@@ -101,10 +95,6 @@ public final class CommandMap {
                                     .paramLabel("ARG")
                                     .build());
                     child = new CommandLine(childSpec);
-
-                    // Existing commands use compact tokens and negative numbers that can look like
-                    // options. Until each handler has a typed schema, every historical token is a
-                    // positional argument.
                     child.setUnmatchedOptionsArePositionalParams(true);
                     child.setExpandAtFiles(false);
                 }
@@ -112,10 +102,7 @@ public final class CommandMap {
                 String[] effectiveAliases =
                         this.aliases.entrySet().stream()
                                 .filter(alias -> alias.getValue() == handler)
-                                // Invocation lower-cases the command token today, so a mixed-case
-                                // alias is historically unreachable. Do not accidentally add syntax.
                                 .filter(alias -> alias.getKey().equals(alias.getKey().toLowerCase()))
-                                // A real command label has always won over an alias in getHandler().
                                 .filter(alias -> !this.commands.containsKey(alias.getKey()))
                                 .map(Map.Entry::getKey)
                                 .toArray(String[]::new);
@@ -141,21 +128,15 @@ public final class CommandMap {
     }
 
     /**
-     * Resolve the first token through picocli and return the canonical registered command label.
+     * Resolve a top-level command or alias through picocli's registered command model.
      *
-     * <p>Only command/alias selection is authoritative here. A native handler parses its own typed
-     * payload later, after AstaPS has resolved target and permissions; a legacy handler receives the
-     * same historical {@code List<String>} payload as before.
+     * <p>This deliberately does not call {@code parseArgs}: native command roots may have required
+     * positional parameters, and top-level routing happens before those payload tokens are parsed.
      */
     private String resolveCommandLabel(String label) {
         synchronized (this.picocliLock) {
-            try {
-                var result = this.commandLine.parseArgs(label);
-                var subcommand = result.subcommand();
-                return subcommand == null ? null : subcommand.commandSpec().name();
-            } catch (CommandLine.ParameterException ignored) {
-                return null;
-            }
+            var child = this.commandLine.getSubcommands().get(label);
+            return child == null ? null : child.getCommandSpec().name();
         }
     }
 
@@ -221,15 +202,12 @@ public final class CommandMap {
 
     private Player getTargetPlayer(
             String playerId, Player player, Player targetPlayer, List<String> args) {
-        // Top priority: If any @UID argument is present, override targetPlayer with it.
         for (int i = 0; i < args.size(); i++) {
             String arg = args.get(i);
             if (arg.startsWith("@")) {
                 arg = args.remove(i).substring(1);
-                if (arg.isEmpty()) {
-                    // Explicitly target nobody. This is distinct from a failed target lookup.
-                    return null;
-                }
+                if (arg.isEmpty()) return null;
+
                 int uid = getUidFromString(arg);
                 if (uid == INVALID_UID) {
                     CommandHandler.sendTranslatedMessage(player, "commands.generic.invalid.uid");
@@ -319,8 +297,7 @@ public final class CommandMap {
             return;
         }
 
-        // Keep historical tokenization for this compatibility migration. JLine/picocli now own the
-        // command model; quoting semantics can be changed separately after legacy syntax is proven.
+        // Preserve historical tokenization during the compatibility migration.
         String[] split = rawMessage.split(" ");
         String label = split[0].toLowerCase();
         List<String> args = new ArrayList<>(Arrays.asList(split).subList(1, split.length));

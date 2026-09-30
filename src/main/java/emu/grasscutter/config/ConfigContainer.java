@@ -266,7 +266,7 @@ public class ConfigContainer {
 
         /* This is the address used in the default region. */
         public String accessAddress = "127.0.0.1";
-        /* This is the port used in the default region. */
+        /* This is the port used in URLs. */
         public int accessPort = 0;
 
         /* Enabling this will generate a unique packet encryption key for each player. */
@@ -344,7 +344,7 @@ public class ConfigContainer {
         public Level serverLoggerLevel = Level.DEBUG;
 
         /* Log level of the third-party services (works only with -debug arg):
-           javalin, quartz, reflections, jetty, mongodb.driver */
+           javalin, quartz, reflections, jetty,mongodb.driver */
         public Level servicesLoggersLevel = Level.INFO;
 
         /* Controls whether packets should be logged in console or not */
@@ -446,9 +446,6 @@ public class ConfigContainer {
             public int costItemCount = 0;
             /** How many of each piece one player may buy. 0 for unlimited. */
             public int buyLimit = 0;
-
-            /** The upgrade level the piece arrives at, 0 to 20. 20 is a fully levelled artifact. */
-            public int artifactLevel = 20;
 
             /** Weight multiplier for CRIT Rate and CRIT DMG. 1 rolls them as the game does. */
             public double critWeight = 8;

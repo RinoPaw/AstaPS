@@ -15,7 +15,6 @@ import picocli.CommandLine.Parameters;
 @Command(
         label = "setProp",
         aliases = {"prop"},
-        usage = {"<prop> <value>"},
         permission = "player.setprop",
         permissionTargeted = "player.setprop.others")
 public final class SetPropCommand implements PicocliCommandHandler {
@@ -98,7 +97,6 @@ public final class SetPropCommand implements PicocliCommandHandler {
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         var commandLine = new CommandLine(new SetPropArgs(sender, targetPlayer));
         commandLine.setExpandAtFiles(false);
-        commandLine.setUnmatchedOptionsArePositionalParams(true);
         commandLine.registerConverter(
                 PropArg.class,
                 value -> new PropArg(props.get(value.toLowerCase(Locale.ROOT))));
@@ -215,7 +213,6 @@ public final class SetPropCommand implements PicocliCommandHandler {
             recordMap.remove(floor);
         }
 
-        // Entrance floors are supplied by TowerManager.grantEntranceFloors on every read.
         return true;
     }
 

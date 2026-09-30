@@ -151,7 +151,7 @@ public class HandlerBuyGoodsReq extends PacketHandler {
                 // separately rolled pieces rather than one piece counted up.
                 var rolled = new ArrayList<GameItem>(buyCount);
                 for (int i = 0; i < buyCount; i++) {
-                    rolled.add(artifactShop.roll(piece));
+                    rolled.add(artifactShop.roll(player, piece));
                 }
                 player.getInventory().addItems(rolled, ActionReason.Shop);
             } else {

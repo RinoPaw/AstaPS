@@ -37,7 +37,7 @@ public final class GameServerPacketHandler {
     public static void beginBornIntroTrace(GameSession session) {
         bornIntroTraceStartedAt.put(session, System.currentTimeMillis());
         Grasscutter.getLogger()
-                .info("[BORN-INTRO-TRACE] BEGIN; Quest 351 startup is intentionally suspended for this probe.");
+                .info("[BORN-INTRO-TRACE] BEGIN; tracing client packets through the fresh-born scene transition.");
     }
 
     private static void traceBornIntroPacket(

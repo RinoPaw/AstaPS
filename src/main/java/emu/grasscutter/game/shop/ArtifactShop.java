@@ -39,30 +39,17 @@ public class ArtifactShop {
     private static final int LEGACY_DEFAULT_MORA_COST = 20_000;
 
     /**
-     * CityData.cityId -> the city's general-goods shop type.
+     * CityData.cityId -> verified general-goods shop type in the current Shop.json.
      *
-     * <p>1 Mondstadt, 2 Liyue, 3 Inazuma, 4 Sumeru, 5 Fontaine, 6 Natlan, 7 Nod-Krai.
+     * <p>1 Mondstadt, 2 Liyue, 3 Inazuma, 4 Sumeru, 5 Fontaine. Newer regions stay unrouted until
+     * their real city shop exists in the server's shop data; never invent a hidden shop id.
      */
     private static final Map<Integer, Integer> REGIONAL_SHOPS =
-            Map.of(
-                    1, 1004,
-                    2, 1008,
-                    3, 1056,
-                    4, 1074,
-                    5, 1093,
-                    6, 1117,
-                    7, 1134);
+            Map.of(1, 1004, 2, 1008, 3, 1056, 4, 1074, 5, 1093);
 
     /** Shop type -> CityData.cityId, for validating shop requests. */
     private static final Map<Integer, Integer> SHOP_CITIES =
-            Map.of(
-                    1004, 1,
-                    1008, 2,
-                    1056, 3,
-                    1074, 4,
-                    1093, 5,
-                    1117, 6,
-                    1134, 7);
+            Map.of(1004, 1, 1008, 2, 1056, 3, 1074, 4, 1093, 5);
 
     /** Flower, plume, sands, goblet, circlet - the order the bag shows them in. */
     private static final List<EquipType> SLOT_ORDER =
@@ -166,7 +153,18 @@ public class ArtifactShop {
                 Integer shopId = REGIONAL_SHOPS.get(cityId);
                 if (shopId == null) continue;
 
-                var items = shopData.computeIfAbsent(shopId, k -> new ArrayList<ShopInfo>());
+                // A region mapping is only valid when the actual shop is present in Shop.json (or
+                // was loaded from excel). Do not create synthetic shop ids that no NPC can open.
+                var items = shopData.get(shopId);
+                if (items == null) {
+                    Grasscutter.getLogger()
+                            .warn(
+                                    "Artifact shop route for city {} points to missing shop {}.",
+                                    cityId,
+                                    shopId);
+                    continue;
+                }
+
                 items.add(makeGoods(goodsId, piece, options));
                 this.goods.put(goodsId, piece);
                 this.goodsCity.put(goodsId, cityId);

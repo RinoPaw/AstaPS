@@ -26,13 +26,7 @@ public final class CommandMap {
     private final Object2IntMap<String> targetPlayerIds = new Object2IntOpenHashMap<>();
     private final Object picocliLock = new Object();
 
-    /**
-     * Picocli owns command-name/alias parsing and the command model used by JLine completion.
-     *
-     * <p>The built-in handlers still receive their historical {@code List<String>} argument payload
-     * during the compatibility migration. This keeps every existing command spelling and compact DSL
-     * intact while individual handlers are moved to typed picocli parameters.
-     */
+    /** Picocli owns command/alias parsing and the command model used by JLine completion. */
     private volatile CommandLine commandLine = createRootCommandLine();
 
     public CommandMap() {
@@ -76,6 +70,10 @@ public final class CommandMap {
     /**
      * Rebuilds the picocli command tree from the public Grasscutter command registry.
      *
+     * <p>Legacy handlers get a lossless catch-all positional grammar. Handlers that implement
+     * {@link PicocliCommandHandler} expose their real nested grammar to the same tree, so JLine
+     * completion and runtime parsing advance together during migration.
+     *
      * <p>This also keeps legacy plugin registration working: plugins can continue using
      * {@link #registerCommand(String, CommandHandler)} and the new parser/completer sees the change
      * immediately.
@@ -87,22 +85,29 @@ public final class CommandMap {
             for (var entry : this.commands.entrySet()) {
                 String label = entry.getKey();
                 CommandHandler handler = entry.getValue();
+                CommandLine child;
 
-                var childSpec = CommandSpec.create().name(label);
-                childSpec.addPositional(
-                        PositionalParamSpec.builder()
-                                .index("0..*")
-                                .arity("0..*")
-                                .type(String[].class)
-                                .paramLabel("ARG")
-                                .build());
-                var child = new CommandLine(childSpec);
+                if (handler instanceof PicocliCommandHandler nativeHandler) {
+                    child = nativeHandler.createCompletionCommandLine();
+                    child.getCommandSpec().name(label);
+                    child.setExpandAtFiles(false);
+                } else {
+                    var childSpec = CommandSpec.create().name(label);
+                    childSpec.addPositional(
+                            PositionalParamSpec.builder()
+                                    .index("0..*")
+                                    .arity("0..*")
+                                    .type(String[].class)
+                                    .paramLabel("ARG")
+                                    .build());
+                    child = new CommandLine(childSpec);
 
-                // Existing commands use compact tokens and negative numbers that can look like
-                // options. Until each handler has a typed schema, every historical token is a
-                // positional argument.
-                child.setUnmatchedOptionsArePositionalParams(true);
-                child.setExpandAtFiles(false);
+                    // Existing commands use compact tokens and negative numbers that can look like
+                    // options. Until each handler has a typed schema, every historical token is a
+                    // positional argument.
+                    child.setUnmatchedOptionsArePositionalParams(true);
+                    child.setExpandAtFiles(false);
+                }
 
                 String[] effectiveAliases =
                         this.aliases.entrySet().stream()
@@ -118,9 +123,6 @@ public final class CommandMap {
                 root.addSubcommand(label, child, effectiveAliases);
             }
 
-            // Apply these parser settings after adding children so picocli propagates them through
-            // the complete hierarchy.
-            root.setUnmatchedOptionsArePositionalParams(true);
             root.setExpandAtFiles(false);
             this.commandLine = root;
         }
@@ -141,8 +143,9 @@ public final class CommandMap {
     /**
      * Resolve the first token through picocli and return the canonical registered command label.
      *
-     * <p>Only command/alias selection is authoritative in this compatibility phase. Handler payload
-     * tokens remain untouched and are forwarded exactly as the old command system produced them.
+     * <p>Only command/alias selection is authoritative here. A native handler parses its own typed
+     * payload later, after AstaPS has resolved target and permissions; a legacy handler receives the
+     * same historical {@code List<String>} payload as before.
      */
     private String resolveCommandLabel(String label) {
         synchronized (this.picocliLock) {
@@ -156,23 +159,15 @@ public final class CommandMap {
         }
     }
 
-    /**
-     * Register a command handler.
-     *
-     * @param label The command label.
-     * @param command The command handler.
-     * @return Instance chaining.
-     */
+    /** Register a command handler. */
     public CommandMap registerCommand(String label, CommandHandler command) {
         Grasscutter.getLogger().trace("Registered command: " + label);
         label = label.toLowerCase();
 
-        // Get command data.
         Command annotation = command.getClass().getAnnotation(Command.class);
         this.annotations.put(label, annotation);
         this.commands.put(label, command);
 
-        // Register aliases.
         for (String alias : annotation.aliases()) {
             this.aliases.put(alias, command);
             this.annotations.put(alias, annotation);
@@ -182,12 +177,7 @@ public final class CommandMap {
         return this;
     }
 
-    /**
-     * Removes a registered command handler.
-     *
-     * @param label The command label.
-     * @return Instance chaining.
-     */
+    /** Removes a registered command handler. */
     public CommandMap unregisterCommand(String label) {
         Grasscutter.getLogger().trace("Un-registered command: " + label);
 
@@ -198,7 +188,6 @@ public final class CommandMap {
         this.annotations.remove(label);
         this.commands.remove(label);
 
-        // Unregister aliases.
         for (String alias : annotation.aliases()) {
             this.aliases.remove(alias);
             this.annotations.remove(alias);
@@ -216,11 +205,6 @@ public final class CommandMap {
         return new LinkedHashMap<>(this.annotations);
     }
 
-    /**
-     * Returns a list of all registered commands.
-     *
-     * @return All command handlers as a list.
-     */
     public List<CommandHandler> getHandlersAsList() {
         return new ArrayList<>(this.commands.values());
     }
@@ -229,18 +213,9 @@ public final class CommandMap {
         return this.commands;
     }
 
-    /**
-     * Returns a handler by label/alias.
-     *
-     * @param label The command label.
-     * @return The command handler.
-     */
     public CommandHandler getHandler(String label) {
         CommandHandler handler = this.commands.get(label);
-        if (handler == null) {
-            // Try getting by alias
-            handler = this.aliases.get(label);
-        }
+        if (handler == null) handler = this.aliases.get(label);
         return handler;
     }
 
@@ -252,9 +227,7 @@ public final class CommandMap {
             if (arg.startsWith("@")) {
                 arg = args.remove(i).substring(1);
                 if (arg.isEmpty()) {
-                    // This is a special case to target nothing, distinct from failing to assign a target.
-                    // This is specifically to allow in-game players to run a command without targeting
-                    // themselves or anyone else.
+                    // Explicitly target nobody. This is distinct from a failed target lookup.
                     return null;
                 }
                 int uid = getUidFromString(arg);
@@ -271,17 +244,11 @@ public final class CommandMap {
             }
         }
 
-        // Next priority: If we invoked with a target, use that.
-        // By default, this only happens when you message another player in-game with a command.
-        if (targetPlayer != null) {
-            return targetPlayer;
-        }
+        if (targetPlayer != null) return targetPlayer;
 
-        // Next priority: Use previously-set target. (see /target [[@]UID])
         if (targetPlayerIds.containsKey(playerId)) {
             targetPlayer =
                     Grasscutter.getGameServer().getPlayerByUid(targetPlayerIds.getInt(playerId), true);
-            // We check every time in case the target is deleted after being targeted
             if (targetPlayer == null) {
                 CommandHandler.sendTranslatedMessage(player, "commands.execution.player_exist_error");
                 throw new IllegalArgumentException();
@@ -289,19 +256,16 @@ public final class CommandMap {
             return targetPlayer;
         }
 
-        // Lowest priority: Target the player invoking the command. In the case of the console, this
-        // will return null.
         return player;
     }
 
     private boolean setPlayerTarget(String playerId, Player player, String targetUid) {
-        if (targetUid.isEmpty()) { // Clears the default targetPlayer.
+        if (targetUid.isEmpty()) {
             targetPlayerIds.removeInt(playerId);
             CommandHandler.sendTranslatedMessage(player, "commands.execution.clear_target");
             return true;
         }
 
-        // Sets default targetPlayer to the UID provided.
         int uid = getUidFromString(targetUid);
         if (uid == INVALID_UID) {
             CommandHandler.sendTranslatedMessage(player, "commands.generic.invalid.uid");
@@ -325,14 +289,8 @@ public final class CommandMap {
         return true;
     }
 
-    /**
-     * Invoke a command handler with the given arguments.
-     *
-     * @param player The player invoking the command or null for the server console.
-     * @param rawMessage The messaged used to invoke the command.
-     */
+    /** Invoke a command handler with the given raw message. */
     public void invoke(Player player, Player targetPlayer, String rawMessage) {
-        // Invoke the ExecuteCommandEvent.
         var event = new ExecuteCommandEvent(player, targetPlayer, rawMessage);
         if (!event.call()) return;
 
@@ -340,7 +298,6 @@ public final class CommandMap {
         targetPlayer = event.getTarget();
         rawMessage = event.getCommand();
 
-        // The console outputs in-game command. [{Account Username} (Player UID: {Player Uid})]
         if (SERVER.logCommands) {
             if (player != null) {
                 Grasscutter.getLogger()
@@ -362,23 +319,21 @@ public final class CommandMap {
             return;
         }
 
-        // Keep historical tokenization for the compatibility migration. JLine/picocli now own the
-        // command model and top-level routing; quoting semantics can be changed separately later.
+        // Keep historical tokenization for this compatibility migration. JLine/picocli now own the
+        // command model; quoting semantics can be changed separately after legacy syntax is proven.
         String[] split = rawMessage.split(" ");
         String label = split[0].toLowerCase();
         List<String> args = new ArrayList<>(Arrays.asList(split).subList(1, split.length));
         String playerId = (player == null) ? consoleId : player.getAccount().getId();
 
-        // Check for special cases - currently only target command.
-        if (label.startsWith("@")) { // @[UID]
+        // Preserve AstaPS global target syntax outside the per-command grammar.
+        if (label.startsWith("@")) {
             this.setPlayerTarget(playerId, player, label.substring(1));
             return;
-        } else if (label.equalsIgnoreCase("target")) { // target [[@]UID]
+        } else if (label.equalsIgnoreCase("target")) {
             if (!args.isEmpty()) {
                 String targetUidStr = args.get(0);
-                if (targetUidStr.startsWith("@")) {
-                    targetUidStr = targetUidStr.substring(1);
-                }
+                if (targetUidStr.startsWith("@")) targetUidStr = targetUidStr.substring(1);
                 this.setPlayerTarget(playerId, player, targetUidStr);
             } else {
                 this.setPlayerTarget(playerId, player, "");
@@ -386,7 +341,6 @@ public final class CommandMap {
             return;
         }
 
-        // Picocli is authoritative for command/alias selection.
         String resolvedLabel = this.resolveCommandLabel(label);
         if (resolvedLabel == null) {
             CommandHandler.sendTranslatedMessage(player, "commands.generic.unknown_command", label);
@@ -400,14 +354,12 @@ public final class CommandMap {
             return;
         }
 
-        // Resolve 'targetPlayer'.
         try {
             targetPlayer = getTargetPlayer(playerId, player, targetPlayer, args);
         } catch (IllegalArgumentException e) {
             return;
         }
 
-        // Check for permissions.
         if (!Grasscutter.getPermissionHandler()
                 .checkPermission(
                         player,
@@ -417,7 +369,6 @@ public final class CommandMap {
             return;
         }
 
-        // Check if command has unfulfilled constraints on targetPlayer
         Command.TargetRequirement targetRequirement = annotation.targetRequirement();
         if (targetRequirement != Command.TargetRequirement.NONE) {
             if (targetPlayer == null) {
@@ -439,18 +390,13 @@ public final class CommandMap {
             }
         }
 
-        // Copy player and handler to final properties.
         final var playerF = player;
         final var targetPlayerF = targetPlayer;
         final var handlerF = handler;
 
-        // Invoke execute method for handler.
         Runnable runnable = () -> handlerF.execute(playerF, targetPlayerF, args);
-        if (annotation.threading()) {
-            new Thread(runnable).start();
-        } else {
-            runnable.run();
-        }
+        if (annotation.threading()) new Thread(runnable).start();
+        else runnable.run();
     }
 
     /** Scans for all classes annotated with {@link Command} and registers them. */

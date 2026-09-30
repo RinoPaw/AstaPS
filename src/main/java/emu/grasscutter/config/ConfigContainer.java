@@ -375,7 +375,7 @@ public class ConfigContainer {
 
         public static class CORS {
             public boolean enabled = true;
-            public String[] allowedOrigins = {"*"};
+            public String[] allowedOrigins = new String[]{"*"};
         }
     }
 
@@ -440,6 +440,7 @@ public class ConfigContainer {
              * Paimon's Bargains, reachable from the shop menu without walking anywhere.
              */
             public int shopId = 1004;
+
             public int costMora = 20000;
             public int costPrimogems = 0;
             /** An item to charge on top of the currencies above, e.g. 220007 for Sanctifying Unction. */

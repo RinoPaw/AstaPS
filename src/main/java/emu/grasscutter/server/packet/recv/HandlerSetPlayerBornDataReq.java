@@ -16,12 +16,12 @@ import java.util.Arrays;
 
 @Opcodes(PacketOpcodes.SetPlayerBornDataReq)
 public class HandlerSetPlayerBornDataReq extends PacketHandler {
+    private static final int TEST_SET_PLAYER_BORN_DATA_RSP = 4761;
 
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         SetPlayerBornDataReq req = SetPlayerBornDataReq.parseFrom(payload);
 
-        // Sanity checks
         int avatarId = req.getAvatarId();
         int startingSkillDepot;
         if (avatarId == GameConstants.MAIN_CHARACTER_MALE) {
@@ -33,7 +33,6 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             return;
         }
 
-        // Make sure resources folder is set
         if (!GameData.getAvatarDataMap().containsKey(avatarId)) {
             Grasscutter.getLogger()
                     .error("No avatar data found! Please check your ExcelBinOutput folder.");
@@ -42,34 +41,25 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             return;
         }
 
-        // Validate the reply side of the handshake before changing persistent player data. A
-        // negative value in the 7.1 opcode tables is an unresolved placeholder, not a signed
-        // on-wire CmdId.
-        int rspCmdId = GAME_OPTIONS.newAccountIntro.setPlayerBornDataRsp;
-        if (rspCmdId <= 0) {
-            Grasscutter.getLogger()
-                    .error(
-                            "[intro] SetPlayerBornDataRsp CmdId is unknown ({}); character creation aborted before changing account data.",
-                            rspCmdId);
-            session.close();
-            return;
-        }
+        Grasscutter.getLogger()
+                .info(
+                        "[born-rsp-4761] received SetPlayerBornDataReq cmdId={} avatarId={} nickname={}; testing rsp cmdId={}.",
+                        PacketOpcodes.SetPlayerBornDataReq,
+                        avatarId,
+                        req.getNickName(),
+                        TEST_SET_PLAYER_BORN_DATA_RSP);
 
-        // Get player object
         Player player = session.getPlayer();
         player.setNickname(req.getNickName());
 
-        // Create avatar only from the client's explicit selection.
         if (player.getAvatars().getAvatarCount() == 0) {
             Avatar mainCharacter = new Avatar(avatarId);
 
-            // Check if the default Anemo skill should be given.
             if (!GAME_OPTIONS.questing.enabled) {
                 mainCharacter.setSkillDepotData(
                         GameData.getAvatarSkillDepotDataMap().get(startingSkillDepot));
             }
 
-            // Manually handle adding to team
             player.addAvatar(mainCharacter, false);
             player.setMainCharacterId(avatarId);
             player.setHeadImage(avatarId);
@@ -78,37 +68,32 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
                     .getCurrentSinglePlayerTeamInfo()
                     .getAvatars()
                     .add(mainCharacter.getAvatarId());
-            player.save(); // TODO save player team in different object
+            player.save();
         } else {
             Grasscutter.getLogger()
                     .error(
-                            "[intro] received SetPlayerBornDataReq for uid {} after an avatar already existed; refusing to overwrite it.",
+                            "[born-rsp-4761] received SetPlayerBornDataReq for uid {} after an avatar already existed; refusing to overwrite it.",
                             player.getUid());
             session.close();
             return;
         }
 
-        // Login first so quest start() can safely read World state and register scene triggers.
+        // Keep the tested born-order-b sequence: normal login/world creation first, then birth quests.
+        // Packet logging is already ALL, so PlayerEnterSceneNotify will appear in the same trace.
         player.onLogin();
-
-        // The character was just created: start the quests a new account begins with.
         player.getQuestManager().onPlayerBorn();
 
         Grasscutter.getLogger()
                 .info(
-                        "[intro] character creation finished: {} picked avatar {} (rsp cmdId={}).",
-                        req.getNickName(),
-                        avatarId,
-                        rspCmdId);
-        session.send(new BasePacket(rspCmdId));
+                        "[born-rsp-4761] sending empty SetPlayerBornDataRsp candidate cmdId={} for uid={}.",
+                        TEST_SET_PLAYER_BORN_DATA_RSP,
+                        player.getUid());
+        session.send(new BasePacket(TEST_SET_PLAYER_BORN_DATA_RSP));
 
-        // Default mail
         var welcomeMail = GAME_INFO.joinOptions.welcomeMail;
         MailBuilder mailBuilder = new MailBuilder(player.getUid(), new Mail());
         mailBuilder.mail.mailContent.title = welcomeMail.title;
         mailBuilder.mail.mailContent.sender = welcomeMail.sender;
-        // Please credit Grasscutter if changing something here. We don't condone commercial use of the
-        // project.
         mailBuilder.mail.mailContent.content =
                 welcomeMail.content
                         + "\n<type=\"browser\" text=\"GitHub\" href=\"https://github.com/Grasscutters/Grasscutter\"/>";

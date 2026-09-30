@@ -22,15 +22,14 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         Player player = session.getPlayer();
 
         if (player.getAvatars().getAvatarCount() == 0) {
-            // Dedicated 7.1 SetPlayerBornDataRsp=4761 test harness.
-            // Turn packet logging on in memory so the test does not depend on the local config.json.
+            // Dedicated 7.1 PlayerNicknameNotify=3064 page-completion probe.
             Grasscutter.getConfig().server.game.logPackets = Grasscutter.ServerDebugMode.ALL;
 
             session.setState(SessionState.PICKING_CHARACTER);
             session.send(new BasePacket(TEST_DO_SET_PLAYER_BORN_DATA_NOTIFY));
             Grasscutter.getLogger()
                     .info(
-                            "[born-rsp-4761] fresh account: sent DoSetPlayerBornDataNotify cmdId={}; waiting for SetPlayerBornDataReq.",
+                            "[born-nickname-3064] fresh account: sent DoSetPlayerBornDataNotify cmdId={}; waiting for SetPlayerBornDataReq.",
                             TEST_DO_SET_PLAYER_BORN_DATA_NOTIFY);
 
             session.send(new PacketPlayerLoginRsp(session));

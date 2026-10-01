@@ -40,7 +40,7 @@ public final class AccountCommand implements CommandHandler {
                 var username = args.get(1);
 
                 int uid = 0;
-                String password = "";
+                String password = null;
                 if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
                     if (args.size() < 3) {
                         CommandHandler.sendMessage(
@@ -75,24 +75,18 @@ public final class AccountCommand implements CommandHandler {
                     }
                 }
 
-                Account account = DatabaseHelper.createAccountWithUid(username, uid);
+                Account account;
+                try {
+                    account = createAccount(username, uid, password);
+                } catch (IllegalArgumentException invalidPassword) {
+                    CommandHandler.sendMessage(sender, "Invalid password.");
+                    return;
+                }
+
                 if (account == null) {
                     CommandHandler.sendMessage(sender, translate(sender, "commands.account.exists"));
                     return;
                 }
-
-                if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
-                    try {
-                        account.setPassword(password);
-                    } catch (IllegalArgumentException invalidPassword) {
-                        AccountDeletionService.delete(account);
-                        CommandHandler.sendMessage(sender, "Invalid password.");
-                        return;
-                    }
-                }
-
-                account.addPermission("*");
-                account.save();
 
                 CommandHandler.sendMessage(
                         sender,
@@ -171,6 +165,34 @@ public final class AccountCommand implements CommandHandler {
                                         .collect(Collectors.joining("\n")));
             }
         }
+    }
+
+    /** Builds a console-created account completely before its only database write. */
+    private static Account createAccount(String username, int reservedUid, String password) {
+        if (DatabaseHelper.checkIfAccountExists(username)) {
+            return null;
+        }
+
+        if (reservedUid > 0) {
+            if (reservedUid == emu.grasscutter.GameConstants.SERVER_CONSOLE_UID
+                    || DatabaseHelper.checkIfAccountExists(reservedUid)
+                    || DatabaseHelper.checkIfPlayerExists(reservedUid)) {
+                return null;
+            }
+        }
+
+        var account = new Account();
+        account.setUsername(username);
+        account.setId(Integer.toString(DatabaseManager.getNextId(account)));
+        if (reservedUid > 0) {
+            account.setReservedPlayerUid(reservedUid);
+        }
+        if (password != null) {
+            account.setPassword(password);
+        }
+        account.addPermission("*");
+        DatabaseHelper.saveAccount(account);
+        return account;
     }
 
     /**

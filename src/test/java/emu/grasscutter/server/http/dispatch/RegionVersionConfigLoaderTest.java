@@ -13,9 +13,9 @@ class RegionVersionConfigLoaderTest {
 
     @Test
     void loadsPascalCaseRegionInfoFromVersionDirectory() throws Exception {
-        Path versionDirectory = Files.createDirectories(tempDir.resolve("7.0.0"));
+        Path versionDirectory = Files.createDirectories(tempDir.resolve("7.1.0"));
         Files.writeString(
-                versionDirectory.resolve("OSRELWin7.0.0.json"),
+                versionDirectory.resolve("OSRELWin7.1.0.json"),
                 """
                 {
                   "RegionInfo": {
@@ -25,7 +25,7 @@ class RegionVersionConfigLoaderTest {
                     "ResVersionConfig": {
                       "Version": 47805902,
                       "VersionSuffix": "d533609003",
-                      "Branch": "7.0_live"
+                      "Branch": "7.1_live"
                     },
                     "GameBiz": "hk4e_global"
                   },
@@ -33,7 +33,7 @@ class RegionVersionConfigLoaderTest {
                 }
                 """);
 
-        var loaded = RegionVersionConfigLoader.load(tempDir, "OSRELWin7.0.0");
+        var loaded = RegionVersionConfigLoader.load(tempDir, "OSRELWin7.1.0");
 
         assertTrue(loaded.isPresent());
         assertEquals("211.154.22.140", loaded.get().regionInfo().getGateserverIp());
@@ -45,7 +45,7 @@ class RegionVersionConfigLoaderTest {
     @Test
     void loadsSnakeCaseRegionInfoFromFlatVersionDirectory() throws Exception {
         Files.writeString(
-                tempDir.resolve("OSRELiOS7.0.0.json"),
+                tempDir.resolve("OSRELiOS7.1.0.json"),
                 """
                 {
                   "region_info": {
@@ -55,14 +55,14 @@ class RegionVersionConfigLoaderTest {
                     "res_version_config": {
                       "version": 47805902,
                       "version_suffix": "d533609003",
-                      "branch": "7.0_live"
+                      "branch": "7.1_live"
                     },
                     "game_biz": "hk4e_global"
                   }
                 }
                 """);
 
-        var loaded = RegionVersionConfigLoader.load(tempDir, "OSRELiOS7.0.0");
+        var loaded = RegionVersionConfigLoader.load(tempDir, "OSRELiOS7.1.0");
 
         assertTrue(loaded.isPresent());
         assertEquals("47.253.130.114", loaded.get().regionInfo().getGateserverIp());

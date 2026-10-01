@@ -118,13 +118,21 @@ public final class DefaultAuthenticators {
             // the password is checked below for names that already exist.
             if (account == null && ACCOUNT.autoCreate) {
                 // This account has been created AUTOMATICALLY. There will be no permissions added.
-                account =
-                        useIntegrationPassword
-                                // The password came in with the name, so store it now, hashed. The
-                                // other path has none to store and locks one in on first sign-in.
-                                ? DatabaseHelper.createAccountWithPassword(
-                                        requestData.account, requestData.password, null)
-                                : DatabaseHelper.createAccountWithUid(requestData.account, 0);
+                try {
+                    account =
+                            useIntegrationPassword
+                                    // The password came in with the name, so store it now, hashed. The
+                                    // other path has none to store and locks one in on first sign-in.
+                                    ? DatabaseHelper.createAccountWithPassword(
+                                            requestData.account, requestData.password, null)
+                                    : DatabaseHelper.createAccountWithUid(requestData.account, 0);
+                } catch (IllegalArgumentException invalidPassword) {
+                    response.retcode = -3201;
+                    response.message = translate("messages.dispatch.account.password_error");
+                    Grasscutter.getLogger()
+                            .info(translate("messages.dispatch.account.login_password_error", address));
+                    return response;
+                }
 
                 // Check if the account was created successfully.
                 if (account == null) {
@@ -159,17 +167,21 @@ public final class DefaultAuthenticators {
                                             + account.getId()
                                             + " logs in without a password check.");
                 } else {
-                    // Lock the entered password as the account password on first login
-                    // (covers both newly auto-created accounts and old accounts with an empty
-                    // password).
+                    // Accounts created without a password lock the entered password on first login.
                     if ((account.getPassword() == null || account.getPassword().isEmpty())
                             && !rawPassword.isEmpty()) {
                         try {
-                            account.setPassword(
-                                    rawPassword);
+                            account.setPassword(rawPassword);
                             account.save();
-                        } catch (IllegalArgumentException tooLong) {
-                            // Longer than BCrypt takes: leave the account without a password.
+                        } catch (IllegalArgumentException invalidPassword) {
+                            response.retcode = -3201;
+                            response.message = translate("messages.dispatch.account.password_error");
+                            Grasscutter.getLogger()
+                                    .info(
+                                            translate(
+                                                    "messages.dispatch.account.login_password_error",
+                                                    address));
+                            return response;
                         }
                     }
                 }
@@ -242,9 +254,11 @@ public final class DefaultAuthenticators {
             }
 
             if (decryptedPassword == null) {
-                successfulLogin = false;
-                loggerMessage = translate("messages.dispatch.account.login_password_error", address);
-                responseMessage = translate("messages.dispatch.account.password_error");
+                response.retcode = -3201;
+                response.message = translate("messages.dispatch.account.password_error");
+                Grasscutter.getLogger()
+                        .info(translate("messages.dispatch.account.login_password_error", address));
+                return response;
             }
 
             // Get account from database.
@@ -253,7 +267,20 @@ public final class DefaultAuthenticators {
             if (account == null && ACCOUNT.autoCreate) {
                 // This account has been created AUTOMATICALLY. There will be no permissions added.
                 if (decryptedPassword.length() >= 8) {
-                    account = DatabaseHelper.createAccountWithPassword(requestData.account, decryptedPassword);
+                    try {
+                        account =
+                                DatabaseHelper.createAccountWithPassword(
+                                        requestData.account, decryptedPassword);
+                    } catch (IllegalArgumentException invalidPassword) {
+                        response.retcode = -3201;
+                        response.message = translate("messages.dispatch.account.password_error");
+                        Grasscutter.getLogger()
+                                .info(
+                                        translate(
+                                                "messages.dispatch.account.login_password_error",
+                                                address));
+                        return response;
+                    }
 
                     // Check if the account was created successfully.
                     if (account == null) {
@@ -287,12 +314,22 @@ public final class DefaultAuthenticators {
                         responseMessage = translate("messages.dispatch.account.password_error");
                     }
                 } else {
-                    // Empty password account: lock the entered password on first login.
-                    if (decryptedPassword != null && !decryptedPassword.isEmpty()) {
-                        account.setPassword(
-                                decryptedPassword);
-                        account.save();
-                        successfulLogin = true;
+                    // Accounts created without a password lock the entered password on first login.
+                    if (!decryptedPassword.isEmpty()) {
+                        try {
+                            account.setPassword(decryptedPassword);
+                            account.save();
+                            successfulLogin = true;
+                        } catch (IllegalArgumentException invalidPassword) {
+                            response.retcode = -3201;
+                            response.message = translate("messages.dispatch.account.password_error");
+                            Grasscutter.getLogger()
+                                    .info(
+                                            translate(
+                                                    "messages.dispatch.account.login_password_error",
+                                                    address));
+                            return response;
+                        }
                     } else {
                         successfulLogin = false;
                         loggerMessage =
@@ -412,11 +449,19 @@ public final class DefaultAuthenticators {
                 dbKey = sk == null ? "<null>" : sk.substring(0, Math.min(20, sk.length()));
             }
             Grasscutter.getLogger().info(
-                    "[Combo] login from " + address
-                            + " uid=" + loginData.uid
-                            + " token=" + (loginData.token == null ? "<null>" : loginData.token.substring(0, Math.min(20, loginData.token.length())))
-                            + " dbKey=" + dbKey
-                            + " account=" + (account != null));
+                    "[Combo] login from "
+                            + address
+                            + " uid="
+                            + loginData.uid
+                            + " token="
+                            + (loginData.token == null
+                                    ? "<null>"
+                                    : loginData.token.substring(
+                                            0, Math.min(20, loginData.token.length())))
+                            + " dbKey="
+                            + dbKey
+                            + " account="
+                            + (account != null));
 
             // Get account from database.
             // Check if account exists/token is valid.
@@ -426,11 +471,23 @@ public final class DefaultAuthenticators {
             if (account != null) {
                 var sk = account.getSessionKey();
                 if (sk == null || !sk.equals(loginData.token)) {
-                    Grasscutter.getLogger().info(
-                            "[Combo] adopting token for uid=" + loginData.uid
-                                    + " (old=" + (sk == null ? "null" : sk.substring(0, Math.min(12, sk.length())))
-                                    + " new=" + (loginData.token == null ? "null" : loginData.token.substring(0, Math.min(12, loginData.token.length())))
-                                    + ")");
+                    Grasscutter.getLogger()
+                            .info(
+                                    "[Combo] adopting token for uid="
+                                            + loginData.uid
+                                            + " (old="
+                                            + (sk == null
+                                                    ? "null"
+                                                    : sk.substring(0, Math.min(12, sk.length())))
+                                            + " new="
+                                            + (loginData.token == null
+                                                    ? "null"
+                                                    : loginData.token.substring(
+                                                            0,
+                                                            Math.min(
+                                                                    12,
+                                                                    loginData.token.length())))
+                                            + ")");
                     account.setSessionKey(loginData.token);
                     account.save();
                 }

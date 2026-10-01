@@ -118,14 +118,11 @@ public final class UnlockAllCommand implements PicocliCommandHandler {
                                             .add(tag.getId()));
             targetPlayer.sendPacket(new PacketPlayerWorldSceneInfoListNotify(targetPlayer));
 
-            var quests = emu.grasscutter.game.quest.ForcedQuests.allMainQuests();
-            emu.grasscutter.game.quest.ForcedQuests.apply(targetPlayer, quests);
             targetPlayer.save();
 
             CommandHandler.sendMessage(
                     sender, translate(sender, "commands.unlockall.success", targetPlayer.getNickname()));
-            CommandHandler.sendMessage(
-                    sender, "Also unlocked every scene tag and force-finished every main quest.");
+            CommandHandler.sendMessage(sender, "Also unlocked every scene tag.");
         }
     }
 }

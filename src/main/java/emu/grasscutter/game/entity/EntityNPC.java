@@ -15,7 +15,6 @@ public class EntityNPC extends GameEntity {
     @Getter(onMethod_ = @Override)
     private final Position rotation;
 
-    private final SceneNPC metaNpc;
     private final int npcId;
     private final int roomId;
     private final int parentQuestId;
@@ -30,7 +29,6 @@ public class EntityNPC extends GameEntity {
         this.suiteId = suiteId;
         this.position = metaNPC.pos.clone();
         this.rotation = metaNPC.rot.clone();
-        this.metaNpc = metaNPC;
         this.npcId = metaNPC.npc_id;
         this.roomId = 0;
         this.parentQuestId = 0;
@@ -51,13 +49,18 @@ public class EntityNPC extends GameEntity {
         this.rotation = rotation.clone();
         this.roomId = roomId;
         this.parentQuestId = parentQuestId;
-        this.metaNpc = null;
         this.suiteId = 0;
     }
 
     @Override
     public int getEntityTypeId() {
         return this.npcId;
+    }
+
+    public boolean belongsToQuest(int parentQuestId, int npcId) {
+        return this.parentQuestId != 0
+                && this.parentQuestId == parentQuestId
+                && this.npcId == npcId;
     }
 
     /**

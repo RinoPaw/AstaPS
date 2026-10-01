@@ -1435,7 +1435,10 @@ public class Player implements PlayerHook, FieldFetch {
 
     public void onLogin() {
 
-        if (this.getSceneTags().isEmpty() || this.getSceneTags() == null) {
+        if (this.sceneTags == null) {
+            this.sceneTags = new HashMap<>();
+        }
+        if (this.sceneTags.isEmpty()) {
             this.applyStartingSceneTags();
         }
 
@@ -1448,7 +1451,10 @@ public class Player implements PlayerHook, FieldFetch {
             this.position.set(pos);
         }
 
-        World world = new World(this);
+        World world = this.getWorld();
+        if (world == null) {
+            world = new World(this);
+        }
         world.addPlayer(this);
 
         this.setProperty(PlayerProperty.PROP_PLAYER_MP_SETTING_TYPE, this.getMpSetting().getNumber(), false);

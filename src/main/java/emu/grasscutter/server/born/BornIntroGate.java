@@ -165,17 +165,9 @@ public final class BornIntroGate {
                     State state = AWAITING_NATIVE_INTRO.get(session);
                     if (state != null) state.worldLoginComplete = true;
                 }
-
-                // Quest actors need their initial quest state while the first scene is still being
-                // initialized. Starting Quest 351 from PostEnterSceneReq is too late: the tracker and
-                // quest NPC can appear, but AQ351 has already missed its scene bootstrap and Paimon
-                // remains idle. This keeps the proven post-login ordering while moving the quest
-                // bootstrap back in front of PostEnterSceneReq.
-                finishOnSceneReady(session);
-
                 Grasscutter.getLogger()
                         .info(
-                                "[intro-cutover] uid={} login initialization complete; fresh-player quest bootstrap attempted before PostEnterSceneReq.",
+                                "[intro-cutover] uid={} login initialization complete; waiting for PostEnterSceneReq before starting fresh-player quests.",
                                 player.getUid());
             } catch (Throwable t) {
                 synchronized (AWAITING_NATIVE_INTRO) {
@@ -191,11 +183,7 @@ public final class BornIntroGate {
         }
     }
 
-    /**
-     * Starts the fresh-player quest lifecycle exactly once after world login is complete. The normal
-     * path calls this immediately after Player.onLogin; PostEnterSceneReq calls it again as a retry
-     * point if the earlier bootstrap failed.
-     */
+    /** Starts the fresh-player quest lifecycle exactly once after the client finished scene entry. */
     public static void finishOnSceneReady(GameSession session) {
         if (session == null) return;
 
@@ -220,7 +208,7 @@ public final class BornIntroGate {
             AWAITING_NATIVE_INTRO.remove(session);
             Grasscutter.getLogger()
                     .info(
-                            "[intro-cutover] uid={} fresh-player quests started after login initialization.",
+                            "[intro-cutover] uid={} PostEnterScene ready; fresh-player quests started.",
                             player.getUid());
         } catch (Throwable t) {
             synchronized (AWAITING_NATIVE_INTRO) {
@@ -229,7 +217,7 @@ public final class BornIntroGate {
             }
             Grasscutter.getLogger()
                     .error(
-                            "[intro-cutover] uid={} failed to start fresh-player quests after login initialization.",
+                            "[intro-cutover] uid={} failed to start fresh-player quests after scene entry.",
                             player.getUid(),
                             t);
         }

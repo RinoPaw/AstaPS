@@ -69,7 +69,11 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
         session.send(new PacketGetPlayerFriendListRsp(player));
         session.getServer().getChatSystem().ensureServerConversation(player);
 
-        this.playOpeningCutscene(player);
+        // Fresh 7.1 starts the opening from AQ351/35104. A configured legacy first-login cutscene
+        // here would create a second independent source for the same intro after quest bootstrap.
+        if (!freshBorn) {
+            this.playOpeningCutscene(player);
+        }
     }
 
     /** Fired here rather than at login: a cutscene sent before the scene is up is discarded. */

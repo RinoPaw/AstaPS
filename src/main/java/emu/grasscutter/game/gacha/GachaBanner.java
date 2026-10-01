@@ -93,8 +93,6 @@ public class GachaBanner {
     private String pityGroup;
     private String epitomizedTarget;
 
-    // Retained until GachaSystem's load filter is simplified; current configs cannot set it.
-    @Getter private boolean deprecated = false;
     @Getter private boolean disabled = false;
 
     public void onLoad() {

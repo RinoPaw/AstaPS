@@ -63,7 +63,15 @@ public class HandlerQuestCreateEntityReq extends PacketHandler {
                 MonsterData monsterData = GameData.getMonsterDataMap().get(monsterId);
                 gameEntity = new EntityMonster(scene, monsterData, pos, rot, level);
             }
-            case NPC_ID -> {}
+            case NPC_ID ->
+                    gameEntity =
+                            new EntityNPC(
+                                    scene,
+                                    entity.getNpcId(),
+                                    pos,
+                                    rot,
+                                    entity.getRoomId(),
+                                    req.getParentQuestId());
         }
 
         if (gameEntity != null) {

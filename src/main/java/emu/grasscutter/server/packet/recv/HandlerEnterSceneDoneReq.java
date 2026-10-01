@@ -32,6 +32,7 @@ public class HandlerEnterSceneDoneReq extends PacketHandler {
 
         // Finished loading
         player.setSceneLoadState(SceneLoadState.LOADED);
+        session.getServer().getMultiplayerSystem().reconcileMultiplayerWorld(player);
 
         // Suppress LUA SetMonsterBattleByGroup ForceAlert while nearby groups bootstrap
         // under the player's feet (ENTER_REGION false-fires, giving a hilichurl horn on login/reload).

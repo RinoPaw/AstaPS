@@ -1,5 +1,6 @@
 package emu.grasscutter.server.packet.recv;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.data.excels.monster.MonsterData;
@@ -63,7 +64,16 @@ public class HandlerQuestCreateEntityReq extends PacketHandler {
                 MonsterData monsterData = GameData.getMonsterDataMap().get(monsterId);
                 gameEntity = new EntityMonster(scene, monsterData, pos, rot, level);
             }
-            case NPC_ID -> {}
+            case NPC_ID ->
+                    Grasscutter.getLogger()
+                            .info(
+                                    "[quest-npc] QuestCreateEntityReq uid={} parentQuest={} npcId={} scene={} room={} pos={}",
+                                    session.getPlayer().getUid(),
+                                    req.getParentQuestId(),
+                                    entity.getNpcId(),
+                                    entity.getSceneId(),
+                                    entity.getRoomId(),
+                                    pos);
         }
 
         if (gameEntity != null) {

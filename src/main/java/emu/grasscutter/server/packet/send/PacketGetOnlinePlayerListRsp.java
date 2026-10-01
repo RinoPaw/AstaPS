@@ -14,12 +14,13 @@ public class PacketGetOnlinePlayerListRsp extends BasePacket {
                 Grasscutter.getGameServer().getPlayers().values().stream().limit(50).toList();
 
         GetOnlinePlayerListRsp.Builder proto = GetOnlinePlayerListRsp.newBuilder();
+        for (Player player : players) {
+            if (player == null || player.getUid() == session.getUid()) continue;
 
-        if (players.size() != 0) {
-            for (Player player : players) {
-                if (player.getUid() == session.getUid()) continue;
-
+            try {
                 proto.addPlayerInfoList(player.getOnlinePlayerInfo());
+            } catch (RuntimeException ignored) {
+                // Keep one malformed player from suppressing the entire online-player response.
             }
         }
 

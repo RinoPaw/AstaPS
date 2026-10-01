@@ -3,7 +3,6 @@ package emu.grasscutter.auth;
 import static emu.grasscutter.config.Configuration.ACCOUNT;
 import static emu.grasscutter.utils.lang.Language.translate;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Grasscutter.ServerRunMode;
 import emu.grasscutter.auth.AuthenticationSystem.AuthenticationRequest;
@@ -123,7 +122,7 @@ public final class DefaultAuthenticators {
                         useIntegrationPassword
                                 // The password came in with the name, so store it now, hashed. The
                                 // other path has none to store and locks one in on first sign-in.
-                                ? DatabaseHelper.createAccountWithHashedPassword(
+                                ? DatabaseHelper.createAccountWithPassword(
                                         requestData.account, requestData.password, null)
                                 : DatabaseHelper.createAccountWithUid(requestData.account, 0);
 
@@ -167,7 +166,7 @@ public final class DefaultAuthenticators {
                             && !rawPassword.isEmpty()) {
                         try {
                             account.setPassword(
-                                    BCrypt.withDefaults().hashToString(10, rawPassword.toCharArray()));
+                                    rawPassword);
                             account.save();
                         } catch (IllegalArgumentException tooLong) {
                             // Longer than BCrypt takes: leave the account without a password.
@@ -254,10 +253,7 @@ public final class DefaultAuthenticators {
             if (account == null && ACCOUNT.autoCreate) {
                 // This account has been created AUTOMATICALLY. There will be no permissions added.
                 if (decryptedPassword.length() >= 8) {
-                    account = DatabaseHelper.createAccountWithUid(requestData.account, 0);
-                    account.setPassword(
-                            BCrypt.withDefaults().hashToString(12, decryptedPassword.toCharArray()));
-                    account.save();
+                    account = DatabaseHelper.createAccountWithPassword(requestData.account, decryptedPassword);
 
                     // Check if the account was created successfully.
                     if (account == null) {
@@ -283,9 +279,7 @@ public final class DefaultAuthenticators {
                 }
             } else if (account != null) {
                 if (account.getPassword() != null && !account.getPassword().isEmpty()) {
-                    if (BCrypt.verifyer()
-                            .verify(decryptedPassword.toCharArray(), account.getPassword())
-                            .verified) {
+                    if (verifyPassword(account, decryptedPassword)) {
                         successfulLogin = true;
                     } else {
                         successfulLogin = false;
@@ -296,8 +290,7 @@ public final class DefaultAuthenticators {
                     // Empty password account: lock the entered password on first login.
                     if (decryptedPassword != null && !decryptedPassword.isEmpty()) {
                         account.setPassword(
-                                BCrypt.withDefaults()
-                                        .hashToString(12, decryptedPassword.toCharArray()));
+                                decryptedPassword);
                         account.save();
                         successfulLogin = true;
                     } else {

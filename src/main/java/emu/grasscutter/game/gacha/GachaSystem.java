@@ -72,11 +72,7 @@ public class GachaSystem extends BaseGameSystem {
             if (!banners.isEmpty()) {
                 for (var banner : banners) {
                     banner.onLoad();
-                    if (banner.isDeprecated()) {
-                        Grasscutter.getLogger()
-                                .error(
-                                        "A Banner has not been loaded because it contains one or more deprecated fields. Remove the fields mentioned above and reload.");
-                    } else if (banner.isDisabled()) {
+                    if (banner.isDisabled()) {
                         Grasscutter.getLogger().trace("A Banner has not been loaded because it is disabled.");
                     } else {
                         if (banner.scheduleId < 0) banner.scheduleId = autoScheduleId++;
@@ -537,7 +533,6 @@ public class GachaSystem extends BaseGameSystem {
 
     private synchronized GetGachaInfoRsp createProto(Player player) {
         GetGachaInfoRsp.Builder proto = GetGachaInfoRsp.newBuilder().setGachaRandom(12345);
-
         long currentTime = System.currentTimeMillis() / 1000L;
 
         int linkedCharWish = GachaEpitomizedPrefabHelper.resolveChronicleCharacterWish(player);

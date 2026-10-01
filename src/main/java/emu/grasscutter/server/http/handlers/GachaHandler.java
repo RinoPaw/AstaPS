@@ -21,9 +21,6 @@ public final class GachaHandler implements Router {
     @Getter
     private static final Path gachaMappingsPath = FileUtils.getDataUserPath("gacha/mappings.js");
 
-    @Deprecated(forRemoval = true)
-    public static final String gachaMappings = gachaMappingsPath.toString();
-
     /**
      * The client is told these two URLs through GachaInfo.gacha_record_url / gacha_prob_url. Which of
      * the two 7.0 field numbers is which was only recoverable from one dump, so route on the query

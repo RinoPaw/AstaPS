@@ -1,6 +1,7 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.entity.GameEntity;
+import emu.grasscutter.game.systems.CombatSequence;
 import emu.grasscutter.net.packet.BasePacket;
 import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.net.proto.CombatInvocationsNotifyOuterClass.CombatInvocationsNotify;
@@ -27,6 +28,7 @@ public class PacketEvtBeingHealedNotify extends BasePacket {
                 .build();
 
         CombatInvocationsNotify proto = CombatInvocationsNotify.newBuilder()
+                .setClientSequenceId(CombatSequence.next())
                 .addInvokeList(entry)
                 .build();
 

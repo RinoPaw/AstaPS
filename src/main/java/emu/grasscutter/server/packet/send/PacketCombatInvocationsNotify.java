@@ -1,5 +1,6 @@
 package emu.grasscutter.server.packet.send;
 
+import emu.grasscutter.game.systems.CombatSequence;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.CombatInvocationsNotifyOuterClass.CombatInvocationsNotify;
 import emu.grasscutter.net.proto.CombatInvokeEntryOuterClass.CombatInvokeEntry;
@@ -11,7 +12,10 @@ public class PacketCombatInvocationsNotify extends BasePacket {
         super(PacketOpcodes.CombatInvocationsNotify, true);
 
         CombatInvocationsNotify proto =
-                CombatInvocationsNotify.newBuilder().addInvokeList(entry).build();
+                CombatInvocationsNotify.newBuilder()
+                        .setClientSequenceId(CombatSequence.next())
+                        .addInvokeList(entry)
+                        .build();
 
         this.setData(proto);
     }
@@ -20,7 +24,10 @@ public class PacketCombatInvocationsNotify extends BasePacket {
         super(PacketOpcodes.CombatInvocationsNotify, true);
 
         CombatInvocationsNotify proto =
-                CombatInvocationsNotify.newBuilder().addAllInvokeList(entries).build();
+                CombatInvocationsNotify.newBuilder()
+                        .setClientSequenceId(CombatSequence.next())
+                        .addAllInvokeList(entries)
+                        .build();
 
         this.setData(proto);
     }

@@ -30,7 +30,6 @@ import java.util.Map;
 public final class SpecialtyMaterialTrackHelper {
     private static final Path MATERIALS_FILE = Path.of("data", "specialty_materials_points.json");
     private static final String MARK_PREFIX = "Specialty:";
-    private static final String LEGACY_PREFIX = "mat:";
     private static volatile Map<Integer, List<Position>> byItemId;
 
     private SpecialtyMaterialTrackHelper() {}
@@ -92,7 +91,6 @@ public final class SpecialtyMaterialTrackHelper {
     private static boolean isSpecialtyMark(String name) {
         return name != null
                 && (name.startsWith(MARK_PREFIX)
-                        || name.startsWith(LEGACY_PREFIX)
                         || name.startsWith("Purpurbloom")
                         || name.startsWith("Dracolite")
                         || name.startsWith("Lumidouce")
@@ -101,18 +99,7 @@ public final class SpecialtyMaterialTrackHelper {
                         || name.startsWith("Skysplit")
                         || name.startsWith("Clearwater")
                         || name.startsWith("Pale")
-                        || name.startsWith("Material")
-                        // Legacy marks created before the rename still carry the old Chinese names.
-                        // Kept as escapes so /trackmat clear can still remove them.
-                        || name.startsWith("\u67af\u53f6")
-                        || name.startsWith("\u7409\u9cde")
-                        || name.startsWith("\u67d4\u706f")
-                        || name.startsWith("\u51ac\u65e5")
-                        || name.startsWith("\u677e\u8102")
-                        || name.startsWith("\u88c2\u7a7a")
-                        || name.startsWith("\u8309\u6d01")
-                        || name.startsWith("\u82cd\u6676")
-                        || name.startsWith("\u6750\u6599"));
+                        || name.startsWith("Material"));
     }
 
     public static int resolveItemId(String token) {

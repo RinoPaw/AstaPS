@@ -35,27 +35,15 @@ public final class SystemMailHelper {
     /** Prepended to every system mail's title, and what marks one as a system mail. */
     public static final String TITLE_PREFIX = "[Announcement] ";
 
-    /**
-     * The prefix this used to use, still recognised on read.
-     *
-     * <p>The prefix is not only decoration: it is how a mail is identified as a system mail, which
-     * is what stops a player deleting it and what /sysmail matches on. Mails already sitting in
-     * players' inboxes carry the old one, so dropping it would make them deletable and invisible to
-     * the command. Nothing writes it any more.
-     */
-    private static final String LEGACY_TITLE_PREFIX = "[\u7cfb\u7edf\u516c\u544a] ";
-
     public static final long DEFAULT_EXPIRE_SECONDS = 315360000L;
 
     private SystemMailHelper() {
     }
 
-    /** Whether a title already carries a system prefix, with or without its trailing space. */
+    /** Whether a title already carries the system prefix, with or without its trailing space. */
     private static boolean hasSystemPrefix(String title) {
         return title.startsWith(TITLE_PREFIX)
-                || title.startsWith(TITLE_PREFIX.trim())
-                || title.startsWith(LEGACY_TITLE_PREFIX)
-                || title.startsWith(LEGACY_TITLE_PREFIX.trim());
+                || title.startsWith(TITLE_PREFIX.trim());
     }
 
     public static boolean isProtected(Mail mail) {
@@ -70,8 +58,6 @@ public final class SystemMailHelper {
             return TITLE_PREFIX.trim();
         }
         String string2 = string.trim();
-        // An existing prefix is left exactly as it is, so re-titling an old mail does not silently
-        // rewrite its prefix and orphan it from whatever else matched on the old one.
         if (hasSystemPrefix(string2)) {
             return string2;
         }

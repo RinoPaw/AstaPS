@@ -7,13 +7,13 @@ import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.mail.Mail;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.world.World;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
 import emu.grasscutter.net.proto.SetPlayerBornDataReqOuterClass.SetPlayerBornDataReq;
+import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.packet.send.PacketPlayerNicknameNotify;
-import emu.grasscutter.server.packet.send.PacketSetPlayerBornDataRsp;
+import emu.grasscutter.server.game.GameSession.SessionState;
+import emu.grasscutter.server.packet.send.*;
 import java.util.Arrays;
 
 @Opcodes(PacketOpcodes.SetPlayerBornDataReq)
@@ -74,28 +74,18 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             team.add(avatarId);
             player.save();
 
-            // Quest 351 reads world time immediately. Only the questing-enabled path needs this
-            // pre-login World/Scene bootstrap; with questing disabled, onLogin creates the world.
-            if (GAME_OPTIONS.questing.enabled) {
-                if (player.getWorld() == null) {
-                    World world = new World(player);
-                    world.addPlayer(player);
-                }
-                player.getQuestManager().onPlayerBorn();
-            }
-
-            // The 7.1 client expects the born response before the ordinary login/scene packet
-            // stream. PlayerNicknameNotify completes nickname synchronization for the same flow.
             session.send(new PacketSetPlayerBornDataRsp());
             session.send(new PacketPlayerNicknameNotify(req.getNickName()));
 
-            player.onLogin();
-
+            // 7.1 keeps the native second intro client-side after accepting 26105. Keep the session
+            // ACTIVE, but do not establish World/Scene until the second observed false->true pause
+            // cycle marks the native intro boundary.
+            session.setState(SessionState.ACTIVE);
+            BornIntroGate.arm(session);
             Grasscutter.getLogger()
                     .info(
-                            "[intro] character creation finished: {} picked avatar {}.",
-                            req.getNickName(),
-                            avatarId);
+                            "[intro] born handshake complete for uid {}; waiting for native pause-cycle cutover before world login.",
+                            player.getUid());
         }
 
         // Default mail

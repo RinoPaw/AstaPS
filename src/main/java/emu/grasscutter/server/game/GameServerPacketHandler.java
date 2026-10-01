@@ -7,9 +7,11 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Grasscutter.ServerDebugMode;
 import emu.grasscutter.game.systems.ReliquaryDustSystem;
 import emu.grasscutter.net.packet.*;
+import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.server.event.game.ReceivePacketEvent;
 import emu.grasscutter.server.game.GameSession.SessionState;
 import it.unimi.dsi.fastutil.ints.*;
+
 public final class GameServerPacketHandler {
 
     private final Int2ObjectMap<PacketHandler> handlers;
@@ -66,15 +68,20 @@ public final class GameServerPacketHandler {
                     emu.grasscutter.server.packet.recv.HandlerSeeMonsterReq.class);
         }
         // ReliquaryDust (artifact reshaping / 105006)
-        registerIfAbsent(ReliquaryDustSystem.OPCODE_DUST_REQ,
+        registerIfAbsent(
+                ReliquaryDustSystem.OPCODE_DUST_REQ,
                 emu.grasscutter.server.packet.recv.HandlerReliquaryDustReq.class);
-        registerIfAbsent(ReliquaryDustSystem.OPCODE_DUST_COMPANION_REQ,
+        registerIfAbsent(
+                ReliquaryDustSystem.OPCODE_DUST_COMPANION_REQ,
                 emu.grasscutter.server.packet.recv.HandlerReliquaryDustCompanionReq.class);
-        registerIfAbsent(ReliquaryDustSystem.OPCODE_DUST_SELECT_REQ,
+        registerIfAbsent(
+                ReliquaryDustSystem.OPCODE_DUST_SELECT_REQ,
                 emu.grasscutter.server.packet.recv.HandlerReliquaryDustSelectReq.class);
-        registerIfAbsent(ReliquaryDustSystem.OPCODE_DUST_CONFIRM_REQ_A,
+        registerIfAbsent(
+                ReliquaryDustSystem.OPCODE_DUST_CONFIRM_REQ_A,
                 emu.grasscutter.server.packet.recv.HandlerReliquaryDustConfirmReqA.class);
-        registerIfAbsent(ReliquaryDustSystem.OPCODE_DUST_CONFIRM_REQ_B,
+        registerIfAbsent(
+                ReliquaryDustSystem.OPCODE_DUST_CONFIRM_REQ_B,
                 emu.grasscutter.server.packet.recv.HandlerReliquaryDustConfirmReqB.class);
 
         // BuyResinReq was missing from the 7.0 dump; live click confirmed opcode 29821.
@@ -123,8 +130,7 @@ public final class GameServerPacketHandler {
             return false;
         }
         try {
-            var req =
-                    emu.grasscutter.net.proto.CombineReqOuterClass.CombineReq.parseFrom(payload);
+            var req = emu.grasscutter.net.proto.CombineReqOuterClass.CombineReq.parseFrom(payload);
             // Any unknown packet whose first field is a number parses as a CombineReq. A real one
             // always crafts at least one item; without this check a waypoint's UnlockTransPointReq
             // was taken for combineId 6 and answered with a failed CombineRsp.
@@ -150,6 +156,10 @@ public final class GameServerPacketHandler {
     }
 
     public void handle(GameSession session, int opcode, byte[] header, byte[] payload) {
+        // During the native fresh-player intro, log every inbound packet before handler lookup and
+        // before session-state filtering. This intentionally includes loop and unknown opcodes.
+        BornIntroGate.traceInbound(session, opcode, payload);
+
         PacketHandler handler = this.handlers.get(opcode);
 
         if (handler != null) {
@@ -186,10 +196,8 @@ public final class GameServerPacketHandler {
 
                 ReceivePacketEvent event = new ReceivePacketEvent(session, opcode, payload);
                 event.call();
-                if (!event.isCanceled())
-                handler.handle(session, header, event.getPacketData());
+                if (!event.isCanceled()) handler.handle(session, header, event.getPacketData());
             } catch (Exception ex) {
-
                 ex.printStackTrace();
             }
             return;
@@ -247,5 +255,4 @@ public final class GameServerPacketHandler {
             default -> false;
         };
     }
-
 }

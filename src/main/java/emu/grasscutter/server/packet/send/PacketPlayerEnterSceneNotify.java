@@ -9,12 +9,21 @@ import emu.grasscutter.game.world.data.TeleportProperties;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.EnterTypeOuterClass.EnterType;
 import emu.grasscutter.net.proto.PlayerEnterSceneNotifyOuterClass.PlayerEnterSceneNotify;
+import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.utils.Utils;
 
 public class PacketPlayerEnterSceneNotify extends BasePacket {
 
     public PacketPlayerEnterSceneNotify(Player player) {
         super(PacketOpcodes.PlayerEnterSceneNotify);
+
+        // Fresh-born 7.1 sends the login scene-entry at the native intro boundary, before the
+        // expensive tail of Player.onLogin. When onLogin reaches its normal notify later, keep the
+        // original token/state intact and drop that duplicate packet.
+        if (BornIntroGate.shouldSuppressLoginSceneEntry(player.getSession())) {
+            this.setOpcode(-1);
+            return;
+        }
 
         player.setSceneLoadState(SceneLoadState.LOADING);
         player.setEnterSceneToken(Utils.randomRange(1000, 99999));
@@ -102,8 +111,6 @@ public class PacketPlayerEnterSceneNotify extends BasePacket {
                                         + "-"
                                         + 18402);
 
-        // Without a reason the client cannot tell a revive from any other same-scene enter, and the
-        // team was left at the death spot instead of the nearest waypoint.
         if (teleportProperties.getEnterReason() != null) {
             proto.setEnterReason((teleportProperties.getEnterReason().getValue() ^ 43962) + 40350);
         }

@@ -4,10 +4,7 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.net.packet.PacketOpcodesUtils;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.packet.send.PacketFinishedParentQuestNotify;
 import emu.grasscutter.server.packet.send.PacketPlayerEnterSceneNotify;
-import emu.grasscutter.server.packet.send.PacketQuestGlobalVarNotify;
-import emu.grasscutter.server.packet.send.PacketQuestListNotify;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -201,10 +198,10 @@ public final class BornIntroGate {
         }
 
         try {
+            // Player.onLogin already sent the full quest snapshot. onPlayerBorn creates Quest 351
+            // through the normal incremental FinishedParentQuestUpdate/QuestListUpdate path, so a
+            // second full snapshot here can reload a quest actor immediately after its sub-start.
             player.getQuestManager().onPlayerBorn();
-            session.send(new PacketFinishedParentQuestNotify(player));
-            session.send(new PacketQuestListNotify(player));
-            session.send(new PacketQuestGlobalVarNotify(player));
             AWAITING_NATIVE_INTRO.remove(session);
             Grasscutter.getLogger()
                     .info(

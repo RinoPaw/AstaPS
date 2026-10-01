@@ -252,11 +252,6 @@ public final class FileUtils {
         }
     }
 
-    @Deprecated // Misnamed legacy function
-    public static String getFilenameWithoutPath(String filename) {
-        return getFilenameWithoutExtension(filename);
-    }
-
     public static String getFilenameWithoutExtension(String filename) {
         int i = filename.lastIndexOf(".");
         return (i < 0) ? filename : filename.substring(0, i);

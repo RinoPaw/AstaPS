@@ -199,14 +199,6 @@ public final class DatabaseHelper {
     /** The reason text written on an account auto-banned by an IP ban. */
     public static final String IP_BAN_REASON_PREFIX = "Banned IP: ";
 
-    /**
-     * The prefix used before the ban reason was in English.
-     *
-     * <p>Accounts banned back then carry it and have no bannedByIp field, so unbanning an IP still
-     * matches on it to find them. Nothing writes it any more.
-     */
-    private static final String LEGACY_IP_BAN_REASON_PREFIX = "IP\u5df2\u5c01\u7981: ";
-
     public static void saveBannedIp(BannedIp bannedIp) {
         DatabaseHelper.eventExecutorAccount.submit(
                 () -> DatabaseManager.getAccountDatastore().save(bannedIp));
@@ -231,24 +223,12 @@ public final class DatabaseHelper {
         return true;
     }
 
-    /**
-     * Every account that was banned because of this IP.
-     *
-     * <p>Matched on the bannedByIp field, with the old reason-text pattern as a fallback so
-     * accounts banned before that field existed are still found.
-     */
+    /** Returns every account currently associated with this banned IP. */
     public static List<Account> getAccountsBannedByIp(String ip) {
         if (ip == null) return List.of();
         return DatabaseManager.getAccountDatastore()
                 .find(Account.class)
-                .filter(
-                        Filters.or(
-                                Filters.eq("bannedByIp", ip),
-                                Filters.regex("banReason")
-                                        .pattern(
-                                                "^"
-                                                        + java.util.regex.Pattern.quote(
-                                                                LEGACY_IP_BAN_REASON_PREFIX + ip))))
+                .filter(Filters.eq("bannedByIp", ip))
                 .iterator()
                 .toList();
     }

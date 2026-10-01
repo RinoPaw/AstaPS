@@ -8,6 +8,7 @@ import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.inventory.*;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
+import emu.grasscutter.game.reward.RewardScaler;
 import emu.grasscutter.scripts.data.SceneMonster;
 import emu.grasscutter.server.game.*;
 import emu.grasscutter.server.packet.send.*;
@@ -79,6 +80,7 @@ public final class DropSystem extends BaseGameSystem {
         var dropData = dropTable.get(dropId);
         List<GameItem> items = new ArrayList<>();
         processDrop(dropData, doubleReward ? 2 : 1, items);
+        RewardScaler.scaleItems(items, 1.0);
         return items;
     }
 
@@ -121,9 +123,6 @@ public final class DropSystem extends BaseGameSystem {
     }
 
     public boolean handleMonsterDrop(EntityMonster monster) {
-        // Training pad spawns set killDropId=99900001; without this they still get
-        // InvestigationMonsterDropHelper materials, and missing drop-table entries
-        // fall back to DropSystemLegacy (more materials).
         if (shouldSuppressMonsterDrops(monster)) {
             return true;
         }
@@ -140,9 +139,6 @@ public final class DropSystem extends BaseGameSystem {
         int level = monster.getLevel();
         SceneMonster sceneMonster = monster.getMetaMonster();
 
-        // Wildlife (fox/boar/crane/pigeon…): prefer MonsterExcel.killDropId quantities
-        // (e.g. boar to raw meat, crane to fowl). Lua drop_tag used to map to an empty stub
-        // DropTable rows — do not let those override a usable killDrop.
         boolean envAnimal = false;
         try {
             envAnimal =
@@ -173,7 +169,6 @@ public final class DropSystem extends BaseGameSystem {
             return true;
         }
 
-        // Empty/missing script table → killDrop, then EnvAnimalGather (crabs/lizards…).
         if (dropId == 0 || !dropTable.containsKey(dropId) || isEmptyDropTable(dropTable.get(dropId))) {
             if (killDropUsable) {
                 dropId = killDropId;
@@ -188,13 +183,10 @@ public final class DropSystem extends BaseGameSystem {
         }
 
         boolean handled = applyMonsterDropTable(dropId, monster);
-
-        // Still nothing (e.g. energy-only killDrop with empty process result): gather fallback.
         if (!handled) {
             handled = applyEnvAnimalGatherDrop(monster);
         }
 
-        // Official killDrop / script drop_id are often energy-only; grant bounty materials.
         try {
             InvestigationMonsterDropHelper.tryDrop(monster);
         } catch (Throwable ignored) {
@@ -202,10 +194,6 @@ public final class DropSystem extends BaseGameSystem {
         return handled;
     }
 
-    /**
-     * Apply a DropTableExcel row. Empty stub tables (null/empty/zero-weight dropVec) return false so
-     * callers can fall back to killDropId / EnvAnimal gather / legacy Drop.json.
-     */
     private boolean applyMonsterDropTable(int dropId, EntityMonster monster) {
         if (dropId <= 0 || !dropTable.containsKey(dropId)) {
             return false;
@@ -216,6 +204,7 @@ public final class DropSystem extends BaseGameSystem {
         }
         List<GameItem> items = new ArrayList<>();
         processDrop(dropData, 1, items);
+        RewardScaler.scaleItems(items, 1.0);
         if (items.isEmpty()) {
             return false;
         }
@@ -232,9 +221,7 @@ public final class DropSystem extends BaseGameSystem {
         return true;
     }
 
-    /** Ground-drop gather items when killing env animals that have no killDrop table. */
     private boolean applyEnvAnimalGatherDrop(EntityMonster monster) {
-        // Interact path already granted gather items before killEntity.
         if (monster.isEnvGatherRewarded()) {
             return true;
         }
@@ -262,6 +249,7 @@ public final class DropSystem extends BaseGameSystem {
                     new GameItem(
                             gatherData.getGatherItem().getId(), gatherData.getGatherItem().getCount()));
         }
+        RewardScaler.scaleItems(items, 1.0);
         if (items.isEmpty()) {
             return false;
         }
@@ -278,6 +266,7 @@ public final class DropSystem extends BaseGameSystem {
         var dropData = dropTable.get(chestDropId);
         List<GameItem> items = new ArrayList<>();
         processDrop(dropData, dropCount, items);
+        RewardScaler.scaleItems(items, 1.0);
         if (dropData.isFallToGround()) {
             dropItems(items, ActionReason.OpenChest, bornFrom, bornFrom.getWorld().getHost(), false);
         } else {
@@ -320,14 +309,16 @@ public final class DropSystem extends BaseGameSystem {
             BossChestInstructorFilter.apply(items);
         } catch (Throwable ignored) {
         }
+        RewardScaler.scaleItems(items, 1.0);
+        if (items.isEmpty()) {
+            return false;
+        }
         player.getInventory().addItems(items, ActionReason.OpenWorldBossChest);
         player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(items));
         return true;
     }
 
     private void processDrop(DropTableData dropData, int count, List<GameItem> items) {
-        // TODO:Not clear on the meaning of some fields,like "dropLevel".Will ignore them.
-        // TODO:solve drop limits,like everydayLimit.
         if (count > 1) {
             for (int i = 0; i < count; i++) processDrop(dropData, 1, items);
             return;
@@ -347,7 +338,6 @@ public final class DropSystem extends BaseGameSystem {
                 if (id == 0) continue;
                 sum += i.getWeight();
                 if (weight < sum) {
-                    // win the item
                     int amount = calculateDropAmount(i) * count;
                     if (amount <= 0) break;
                     if (dropTable.containsKey(id)) {
@@ -406,9 +396,6 @@ public final class DropSystem extends BaseGameSystem {
         return amount;
     }
 
-    /**
-     * @param share Whether other players in the scene could see the drop items.
-     */
     private void dropItem(
             GameItem item, ActionReason reason, Player player, GameEntity bornFrom, boolean share) {
         DropMaterialData drop = GameData.getDropMaterialDataMap().get(item.getItemId());
@@ -417,7 +404,6 @@ public final class DropSystem extends BaseGameSystem {
                         && item.getItemData().getGadgetId() == 0)) {
             giveItem(item, reason, player, share);
         } else {
-            // TODO:solve share problem
             player.getScene().addDropEntity(item, bornFrom, player, share);
         }
     }
@@ -446,7 +432,6 @@ public final class DropSystem extends BaseGameSystem {
     }
 
     private void giveItems(List<GameItem> items, ActionReason reason, Player player, boolean share) {
-        // don't know whether we need PacketDropHintNotify.
         if (share) {
             for (var p : player.getScene().getPlayers()) {
                 p.getInventory().addItems(items, reason);

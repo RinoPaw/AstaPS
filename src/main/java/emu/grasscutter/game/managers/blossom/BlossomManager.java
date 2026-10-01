@@ -10,6 +10,7 @@ import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.entity.gadget.GadgetWorktop;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.reward.RewardScaler;
 import emu.grasscutter.game.world.*;
 import emu.grasscutter.net.proto.*;
 import emu.grasscutter.server.packet.send.PacketBlossomBriefInfoNotify;
@@ -227,16 +228,6 @@ public class BlossomManager {
         return Math.max(0.0f, rates.global) * Math.max(0.0f, sourceRate);
     }
 
-    static int scaleRewardCount(int baseCount, float rewardRate, boolean useCondensedResin) {
-        double resinMultiplier = useCondensedResin ? 2.0 : 1.0;
-        long scaled =
-                Math.round(
-                        Math.max(0, baseCount)
-                                * (double) Math.max(0.0f, rewardRate)
-                                * resinMultiplier);
-        return (int) Math.min(Integer.MAX_VALUE, scaled);
-    }
-
     public List<GameItem> onReward(Player player, EntityGadget chest, boolean useCondensedResin) {
         var resinManager = player.getResinManager();
         synchronized (activeChests) {
@@ -257,12 +248,14 @@ public class BlossomManager {
                                     .error("Blossom could not support world level : " + worldLevel);
                             return null;
                         }
-                        float rewardRate = getRewardRate(type);
+                        double sourceRate = getRewardRate(type) * (useCondensedResin ? 2.0 : 1.0);
                         var rewards = blossomRewards.getPreviewItems();
                         for (ItemParamData blossomReward : rewards) {
                             int rewardCount =
-                                    scaleRewardCount(
-                                            blossomReward.getCount(), rewardRate, useCondensedResin);
+                                    RewardScaler.scaleCount(
+                                            blossomReward.getItemId(),
+                                            blossomReward.getCount(),
+                                            sourceRate);
                             if (rewardCount > 0) {
                                 items.add(new GameItem(blossomReward.getItemId(), rewardCount));
                             }

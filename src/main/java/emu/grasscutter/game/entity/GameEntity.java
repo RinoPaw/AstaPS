@@ -505,7 +505,7 @@ public abstract class GameEntity {
         this.addFightProperty(FightProperty.FIGHT_PROP_CUR_HP, -effectiveDamage);
 
         this.lastAttackType = attackType;
-        this.checkIfDead();
+        boolean diedNow = this.tryDie();
         this.runLuaCallbacks(event);
 
         this.getScene()
@@ -542,16 +542,17 @@ public abstract class GameEntity {
             }
         }
 
-        if (this.isDead) {
+        if (diedNow) {
             this.getScene().killEntity(this, killerId);
         }
     }
 
-    public void checkIfDead() {
+    public boolean tryDie() {
         if (this.getFightProperties() == null || !hasFightProperty(FightProperty.FIGHT_PROP_CUR_HP)) {
-            return;
+            return false;
         }
 
+        boolean wasDead = this.isDead;
         if (this.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP) <= 0f) {
             this.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, 0f);
             float debt = this.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP_DEBTS);
@@ -562,6 +563,8 @@ public abstract class GameEntity {
             }
             this.isDead = true;
         }
+
+        return !wasDead && this.isDead;
     }
 
     public void runLuaCallbacks(EntityDamageEvent event) {

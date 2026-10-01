@@ -1,20 +1,37 @@
 package emu.grasscutter.command.commands;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.server.packet.send.PacketWindy;
-import java.util.List;
-import emu.grasscutter.game.player.Player;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.game.player.Player;
+import emu.grasscutter.server.packet.send.PacketWindy;
+import picocli.CommandLine;
 
-@Command(label = "RemoveCensorship", usage = "RemoveCensorship", aliases = { "cancer", "rc" }, permission = "player.windy", permissionTargeted = "player.windy.others")
-public class RemoveCensorshipCommand implements CommandHandler
-{
+@Command(
+        label = "RemoveCensorship",
+        aliases = {"cancer", "rc"},
+        permission = "player.windy",
+        permissionTargeted = "player.windy.others")
+public final class RemoveCensorshipCommand implements PicocliCommandHandler {
     @Override
-    public void execute(final Player sender, final Player targetPlayer, final List<String> args) {
-		
-		String path = "RemoveCensorship";
-		targetPlayer.sendPacket(new PacketWindy(path));
-    CommandHandler.sendMessage(sender, "Censhorship removed successfully.");
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        return new CommandLine(new Args(sender, targetPlayer));
+    }
+
+    @CommandLine.Command(name = "RemoveCensorship")
+    private static final class Args implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        private Args(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
+        }
+
+        @Override
+        public void run() {
+            targetPlayer.sendPacket(new PacketWindy("RemoveCensorship"));
+            CommandHandler.sendMessage(sender, "Censorship removed successfully.");
+        }
     }
 }

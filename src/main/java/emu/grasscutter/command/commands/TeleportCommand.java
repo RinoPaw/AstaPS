@@ -2,65 +2,86 @@ package emu.grasscutter.command.commands;
 
 import static emu.grasscutter.utils.lang.Language.translate;
 
-import emu.grasscutter.command.*;
+import emu.grasscutter.command.Command;
+import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.CommandHelpers;
+import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.Position;
 import emu.grasscutter.server.event.player.PlayerTeleportEvent.TeleportType;
-import java.util.List;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
 @Command(
         label = "teleport",
         aliases = {"tp"},
-        usage = {"<x> <y> <z> [sceneId]"},
         permission = "player.teleport",
         permissionTargeted = "player.teleport.others")
-public final class TeleportCommand implements CommandHandler {
-
+public final class TeleportCommand implements PicocliCommandHandler {
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        Position pos = new Position(targetPlayer.getPosition());
-        Position rot = new Position(targetPlayer.getRotation());
-        int sceneId = targetPlayer.getSceneId();
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        return new CommandLine(new Args(sender, targetPlayer));
+    }
 
-        switch (args.size()) {
-            case 4:
-                try {
-                    sceneId = Integer.parseInt(args.get(3));
-                } catch (NumberFormatException ignored) {
-                    CommandHandler.sendMessage(
-                            sender, translate(sender, "commands.execution.argument_error"));
-                } // Fallthrough
-            case 3:
-                try {
-                    pos = CommandHelpers.parsePosition(args.get(0), args.get(1), args.get(2), pos, rot);
-                } catch (NumberFormatException ignored) {
-                    CommandHandler.sendMessage(
-                            sender, translate(sender, "commands.teleport.invalid_position"));
-                }
-                break;
-            default:
-                this.sendUsageMessage(sender);
-                return;
+    @CommandLine.Command(name = "teleport")
+    private static final class Args implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        @Parameters(index = "0", paramLabel = "<x>")
+        private String x;
+
+        @Parameters(index = "1", paramLabel = "<y>")
+        private String y;
+
+        @Parameters(index = "2", paramLabel = "<z>")
+        private String z;
+
+        @Parameters(index = "3", arity = "0..1", paramLabel = "[sceneId]")
+        private Integer sceneId;
+
+        private Args(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
         }
 
-        boolean result =
-                targetPlayer
-                        .getWorld()
-                        .transferPlayerToScene(targetPlayer, sceneId, TeleportType.COMMAND, pos);
+        @Override
+        public void run() {
+            Position basePosition = new Position(targetPlayer.getPosition());
+            Position rotation = new Position(targetPlayer.getRotation());
+            Position destination;
+            try {
+                destination = CommandHelpers.parsePosition(x, y, z, basePosition, rotation);
+            } catch (NumberFormatException ignored) {
+                CommandHandler.sendMessage(
+                        sender, translate(sender, "commands.teleport.invalid_position"));
+                return;
+            }
 
-        if (!result) {
-            CommandHandler.sendMessage(sender, translate(sender, "commands.teleport.exists_error"));
-        } else {
+            int destinationScene = sceneId == null ? targetPlayer.getSceneId() : sceneId;
+            boolean transferred =
+                    targetPlayer
+                            .getWorld()
+                            .transferPlayerToScene(
+                                    targetPlayer,
+                                    destinationScene,
+                                    TeleportType.COMMAND,
+                                    destination);
+            if (!transferred) {
+                CommandHandler.sendMessage(sender, translate(sender, "commands.teleport.exists_error"));
+                return;
+            }
+
             CommandHandler.sendMessage(
                     sender,
                     translate(
                             sender,
                             "commands.teleport.success",
                             targetPlayer.getNickname(),
-                            pos.getX(),
-                            pos.getY(),
-                            pos.getZ(),
-                            sceneId));
+                            destination.getX(),
+                            destination.getY(),
+                            destination.getZ(),
+                            destinationScene));
         }
     }
 }

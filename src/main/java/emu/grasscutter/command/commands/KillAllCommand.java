@@ -2,63 +2,75 @@ package emu.grasscutter.command.commands;
 
 import static emu.grasscutter.utils.lang.Language.translate;
 
-import emu.grasscutter.command.*;
+import emu.grasscutter.command.Command;
+import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.config.Configuration;
-import emu.grasscutter.game.entity.*;
+import emu.grasscutter.game.entity.EntityMonster;
+import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.Scene;
 import java.util.List;
 import java.util.Objects;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
 @Command(
         label = "killall",
-        usage = {"[<sceneId>]"},
         permission = "server.killall",
         permissionTargeted = "server.killall.others")
-public final class KillAllCommand implements CommandHandler {
+public final class KillAllCommand implements PicocliCommandHandler {
 
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        if (args == null
-                || args.isEmpty()
-                || !Objects.equals(args.get(0), Configuration.HTTP_ENCRYPTION.keystorePassword)) {
-            Player recipient = sender != null ? sender : targetPlayer;
-            if (recipient != null) {
-                CommandHandler.sendMessage(recipient, "Wrong key");
-            }
-            return;
-        }
-        args.remove(0);
-        Scene scene = targetPlayer.getScene();
-        try {
-            switch (args.size()) {
-                case 0: // *No args*
-                    break;
-                case 1: // [sceneId]
-                    scene = targetPlayer.getWorld().getSceneById(Integer.parseInt(args.get(0)));
-                    break;
-                default:
-                    sendUsageMessage(sender);
-                    return;
-            }
-        } catch (NumberFormatException ignored) {
-            CommandHandler.sendMessage(sender, translate(sender, "commands.execution.argument_error"));
-        }
-        if (scene == null) {
-            CommandHandler.sendMessage(
-                    sender, translate(sender, "commands.killall.scene_not_found_in_player_world"));
-            return;
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        return new CommandLine(new Args(sender, targetPlayer));
+    }
+
+    @CommandLine.Command(name = "killall")
+    private static final class Args implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        @Parameters(index = "0", paramLabel = "<key>")
+        private String key;
+
+        @Parameters(index = "1", arity = "0..1", paramLabel = "[sceneId]")
+        private Integer sceneId;
+
+        private Args(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
         }
 
-        // Separate into list to avoid concurrency issue
-        final Scene sceneF = scene;
-        List<GameEntity> toKill =
-                sceneF.getEntities().values().stream()
-                        .filter(entity -> entity instanceof EntityMonster)
-                        .toList();
-        toKill.forEach(entity -> sceneF.killEntity(entity, 0));
-        CommandHandler.sendMessage(
-                sender,
-                translate(sender, "commands.killall.kill_monsters_in_scene", toKill.size(), scene.getId()));
+        @Override
+        public void run() {
+            if (!Objects.equals(key, Configuration.HTTP_ENCRYPTION.keystorePassword)) {
+                CommandHandler.sendMessage(sender != null ? sender : targetPlayer, "Wrong key");
+                return;
+            }
+
+            Scene scene =
+                    sceneId == null
+                            ? targetPlayer.getScene()
+                            : targetPlayer.getWorld().getSceneById(sceneId);
+            if (scene == null) {
+                CommandHandler.sendMessage(
+                        sender, translate(sender, "commands.killall.scene_not_found_in_player_world"));
+                return;
+            }
+
+            List<GameEntity> toKill =
+                    scene.getEntities().values().stream()
+                            .filter(EntityMonster.class::isInstance)
+                            .toList();
+            toKill.forEach(entity -> scene.killEntity(entity, 0));
+            CommandHandler.sendMessage(
+                    sender,
+                    translate(
+                            sender,
+                            "commands.killall.kill_monsters_in_scene",
+                            toKill.size(),
+                            scene.getId()));
+        }
     }
 }

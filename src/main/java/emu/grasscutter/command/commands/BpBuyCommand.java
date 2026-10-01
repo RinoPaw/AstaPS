@@ -1,74 +1,83 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  emu.grasscutter.command.Command
- *  emu.grasscutter.command.CommandHandler
- *  emu.grasscutter.game.battlepass.BattlePassManager
- *  emu.grasscutter.game.player.Player
- *  emu.grasscutter.net.packet.BasePacket
- *  emu.grasscutter.server.packet.send.PacketBattlePassCurScheduleUpdateNotify
- *  emu.grasscutter.server.packet.send.PacketBeyondBattlePassCurScheduleUpdateNotify
- */
 package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.game.battlepass.BattlePassManager;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
 import emu.grasscutter.server.packet.send.PacketBattlePassCurScheduleUpdateNotify;
 import emu.grasscutter.server.packet.send.PacketBeyondBattlePassCurScheduleUpdateNotify;
-import java.util.List;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
-@Command(label="bpbuy", usage={"<levels>"}, permission="player.setprop", permissionTargeted="player.setprop.others")
-public final class BpBuyCommand
-implements CommandHandler {
-    public void execute(Player player, Player player2, List<String> list) {
-        int n;
-        Player player3;
-        Player player4 = player3 = player2 != null ? player2 : player;
-        if (player3 == null) {
-            CommandHandler.sendMessage((Player)player, (String)"No player.");
-            return;
+@Command(
+        label = "bpbuy",
+        permission = "player.setprop",
+        permissionTargeted = "player.setprop.others")
+public final class BpBuyCommand implements PicocliCommandHandler {
+
+    @Override
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        return new CommandLine(new Args(sender, targetPlayer));
+    }
+
+    @CommandLine.Command(name = "bpbuy")
+    private static final class Args implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        @Parameters(index = "0", paramLabel = "<levels>")
+        private int levels;
+
+        private Args(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
         }
-        if (list == null || list.isEmpty()) {
-            CommandHandler.sendMessage((Player)player, (String)"Usage: bpbuy <levels>");
-            return;
+
+        @Override
+        public void run() {
+            Player player = targetPlayer != null ? targetPlayer : sender;
+            if (player == null) {
+                CommandHandler.sendMessage(sender, "No player.");
+                return;
+            }
+            if (levels <= 0) {
+                CommandHandler.sendMessage(sender, "levels must be > 0");
+                return;
+            }
+
+            BattlePassManager battlePass = player.getBattlePassManager();
+            if (battlePass == null) {
+                CommandHandler.sendMessage(sender, "No battle pass manager.");
+                return;
+            }
+
+            int purchasable = Math.min(levels, Math.max(0, 50 - battlePass.getLevel()));
+            if (purchasable <= 0) {
+                CommandHandler.sendMessage(sender, "Already at max BP level.");
+                return;
+            }
+
+            int cost = 150 * purchasable;
+            if (player.getPrimogems() < cost) {
+                CommandHandler.sendMessage(
+                        sender, "Need " + cost + " primogems, have " + player.getPrimogems());
+                return;
+            }
+
+            player.setPrimogems(player.getPrimogems() - cost);
+            battlePass.setLevel(battlePass.getLevel() + purchasable);
+            battlePass.save();
+            player.sendPacket(new PacketBattlePassCurScheduleUpdateNotify(player));
+            player.sendPacket(new PacketBeyondBattlePassCurScheduleUpdateNotify(player));
+            CommandHandler.sendMessage(
+                    sender,
+                    "Bought "
+                            + purchasable
+                            + " BP levels for "
+                            + cost
+                            + " primogems. Now level "
+                            + battlePass.getLevel());
         }
-        try {
-            n = Integer.parseInt(list.get(0));
-        }
-        catch (Exception exception) {
-            CommandHandler.sendMessage((Player)player, (String)"Invalid levels.");
-            return;
-        }
-        if (n <= 0) {
-            CommandHandler.sendMessage((Player)player, (String)"levels must be > 0");
-            return;
-        }
-        BattlePassManager battlePassManager = player3.getBattlePassManager();
-        if (battlePassManager == null) {
-            CommandHandler.sendMessage((Player)player, (String)"No battle pass manager.");
-            return;
-        }
-        int n2 = 50 - battlePassManager.getLevel();
-        int n3 = Math.min(n, Math.max(0, n2));
-        if (n3 <= 0) {
-            CommandHandler.sendMessage((Player)player, (String)"Already at max BP level.");
-            return;
-        }
-        int n4 = 150 * n3;
-        if (player3.getPrimogems() < n4) {
-            CommandHandler.sendMessage((Player)player, (String)("Need " + n4 + " primogems, have " + player3.getPrimogems()));
-            return;
-        }
-        player3.setPrimogems(player3.getPrimogems() - n4);
-        battlePassManager.setLevel(battlePassManager.getLevel() + n3);
-        battlePassManager.save();
-        player3.sendPacket((BasePacket)new PacketBattlePassCurScheduleUpdateNotify(player3));
-        player3.sendPacket((BasePacket)new PacketBeyondBattlePassCurScheduleUpdateNotify(player3));
-        CommandHandler.sendMessage((Player)player, (String)("Bought " + n3 + " BP levels for " + n4 + " primogems. Now level " + battlePassManager.getLevel()));
     }
 }
-

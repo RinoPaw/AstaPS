@@ -8,8 +8,6 @@ public @interface Command {
 
     String[] aliases() default {};
 
-    String[] usage() default {""};
-
     String permission() default "";
 
     String permissionTargeted() default "";
@@ -19,9 +17,9 @@ public @interface Command {
     boolean threading() default false;
 
     enum TargetRequirement {
-        NONE, // targetPlayer is not required
-        OFFLINE, // targetPlayer must be offline
-        PLAYER, // targetPlayer can be online or offline
-        ONLINE // targetPlayer must be online
+        NONE,
+        OFFLINE,
+        PLAYER,
+        ONLINE
     }
 }

@@ -1,7 +1,6 @@
 package emu.grasscutter.config;
 
 import ch.qos.logback.classic.Level;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.utils.*;
@@ -487,8 +486,6 @@ public class ConfigContainer {
         public static class Rates {
             public float adventureExp = 1.5f;
             public float mora = 2.0f;
-
-            @com.google.gson.annotations.JsonAdapter(LeyLineRatesAdapter.class)
             public LeyLineRates leyLines = new LeyLineRates();
         }
 
@@ -502,66 +499,6 @@ public class ConfigContainer {
 
             /** Blossom of Revelation. */
             public float experienceBooks = 1.0f;
-        }
-
-        /**
-         * Migrates the old scalar form without changing its effective reward rate. It also accepts
-         * the short-lived experimental {mora, exp} object so configs produced by that branch remain
-         * usable.
-         */
-        public static class LeyLineRatesAdapter
-                implements com.google.gson.JsonDeserializer<LeyLineRates>,
-                        com.google.gson.JsonSerializer<LeyLineRates> {
-            @Override
-            public LeyLineRates deserialize(
-                    com.google.gson.JsonElement json,
-                    java.lang.reflect.Type typeOfT,
-                    com.google.gson.JsonDeserializationContext context) {
-                var rates = new LeyLineRates();
-                if (json == null || json.isJsonNull()) return rates;
-
-                if (json.isJsonPrimitive()) {
-                    rates.global = json.getAsFloat();
-                    return rates;
-                }
-
-                var object = json.getAsJsonObject();
-                if (object.has("global")) {
-                    rates.global = object.get("global").getAsFloat();
-                    if (object.has("mora")) rates.mora = object.get("mora").getAsFloat();
-                    if (object.has("experienceBooks")) {
-                        rates.experienceBooks = object.get("experienceBooks").getAsFloat();
-                    } else if (object.has("exp")) {
-                        rates.experienceBooks = object.get("exp").getAsFloat();
-                    }
-                    return rates;
-                }
-
-                // The first experiment wrote source rates only. Preserve those effective values by
-                // making its implicit global layer explicit as 1.0.
-                rates.global = 1.0f;
-                if (object.has("mora")) rates.mora = object.get("mora").getAsFloat();
-                if (object.has("experienceBooks")) {
-                    rates.experienceBooks = object.get("experienceBooks").getAsFloat();
-                } else if (object.has("exp")) {
-                    rates.experienceBooks = object.get("exp").getAsFloat();
-                }
-                return rates;
-            }
-
-            @Override
-            public com.google.gson.JsonElement serialize(
-                    LeyLineRates src,
-                    java.lang.reflect.Type typeOfSrc,
-                    com.google.gson.JsonSerializationContext context) {
-                if (src == null) return com.google.gson.JsonNull.INSTANCE;
-
-                var object = new JsonObject();
-                object.addProperty("global", src.global);
-                object.addProperty("mora", src.mora);
-                object.addProperty("experienceBooks", src.experienceBooks);
-                return object;
-            }
         }
 
         /** Spiral Abyss. */

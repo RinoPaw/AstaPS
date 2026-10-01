@@ -8,6 +8,7 @@ import emu.grasscutter.net.packet.BasePacket;
 import emu.grasscutter.net.proto.ChatInfoOuterClass;
 import emu.grasscutter.net.proto.SystemHintOuterClass;
 import emu.grasscutter.net.proto.SystemHintTypeOuterClass;
+import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.server.game.GameServer;
 import emu.grasscutter.server.packet.send.PacketDelTeamEntityNotify;
 import emu.grasscutter.server.packet.send.PacketPlayerChatNotify;
@@ -25,8 +26,26 @@ public class HomeWorld extends World {
     public HomeWorld(GameServer server, Player owner) {
         super(server, owner);
 
-        this.home = owner.isOnline() ? owner.getHome() : GameHome.getByUid(owner.getUid());
-        this.refreshModuleManager();
+        GameHome ownerHome = owner.getHome();
+        boolean freshBorn = BornIntroGate.isAwaiting(owner.getSession());
+
+        // Fresh 7.1 character creation has a native intro deadline. A missing Home record is the
+        // expected state on a brand-new database, so do not put a synchronous database miss and
+        // default-home save on the first scene-entry critical path. Existing players still load
+        // their persisted Home normally.
+        this.home =
+                ownerHome != null
+                        ? ownerHome
+                        : freshBorn
+                                ? GameHome.create(owner.getUid())
+                                : GameHome.getByUid(owner.getUid());
+
+        // A fresh player has no realm selected yet. Building the module manager would create Home
+        // scenes that cannot be entered and only delays the first open-world handoff. The manager
+        // is refreshed when a valid realm is selected later.
+        if (!freshBorn || owner.getCurrentRealmId() > 0) {
+            this.refreshModuleManager();
+        }
     }
 
     @Override

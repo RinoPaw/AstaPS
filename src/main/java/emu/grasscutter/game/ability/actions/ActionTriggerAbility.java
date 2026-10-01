@@ -1,13 +1,13 @@
 package emu.grasscutter.game.ability.actions;
 
 import com.google.protobuf.ByteString;
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.binout.AbilityModifier.AbilityModifierAction;
 import emu.grasscutter.game.ability.Ability;
 import emu.grasscutter.game.ability.AbilityManager;
 import emu.grasscutter.game.ability.LaumaC1HealHelper;
-import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.entity.GameEntity;
-import emu.grasscutter.Grasscutter;
+import emu.grasscutter.game.player.Player;
 
 @AbilityAction(AbilityModifierAction.Type.TriggerAbility)
 public final class ActionTriggerAbility extends AbilityActionHandler {
@@ -16,7 +16,7 @@ public final class ActionTriggerAbility extends AbilityActionHandler {
             Ability ability, AbilityModifierAction action, ByteString abilityData, GameEntity target) {
         Grasscutter.getLogger().debug("[Ability] TriggerAbility: {}", action.abilityName);
 
-        var player = ability.getPlayerOwner();
+        Player player = ability.getPlayerOwner();
         if (player == null) {
             Grasscutter.getLogger().error("No player owner found for ability {}", ability);
             return false;
@@ -55,7 +55,11 @@ public final class ActionTriggerAbility extends AbilityActionHandler {
         if (list == null) {
             return null;
         }
-        for (Ability candidate : list) {
+
+        // Ability actions share a worker pool and can add/remove instances while another action is
+        // resolving a TriggerAbility target. Iterate a point-in-time array so ArrayList's fail-fast
+        // iterator cannot throw ConcurrentModificationException in that race.
+        for (Ability candidate : list.toArray(Ability[]::new)) {
             if (candidate == null || candidate.getData() == null) {
                 continue;
             }

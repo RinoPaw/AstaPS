@@ -6,16 +6,16 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.world.World;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.born.BornDataHelper;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.game.GameSession.SessionState;
-import emu.grasscutter.server.packet.send.PacketPlayerLoginRsp;
+import emu.grasscutter.server.packet.send.*;
 
 @Opcodes(PacketOpcodes.PlayerLoginReq)
 public class HandlerPlayerLoginReq extends PacketHandler {
     private static final int DO_SET_PLAYER_BORN_DATA_NOTIFY = 22899;
+    private static final int FIRST_MAIN_QUEST = 351;
 
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
@@ -28,8 +28,6 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         boolean freshAccount = player.getAvatars().getAvatarCount() == 0;
 
         if (freshAccount && GAME_OPTIONS.newAccountIntro.enabled) {
-            // Keep the fresh account outside the world until the 7.1 client finishes its native
-            // Traveler-selection flow. SetPlayerBornDataReq is only accepted in this session state.
             session.setState(SessionState.PICKING_CHARACTER);
             session.send(new BasePacket(DO_SET_PLAYER_BORN_DATA_NOTIFY));
             Grasscutter.getLogger()
@@ -40,25 +38,30 @@ public class HandlerPlayerLoginReq extends PacketHandler {
             return;
         }
 
+        boolean playerBornNow = false;
         if (freshAccount) {
-            // Intro disabled: preserve the existing automatic-Traveler path.
             createDefaultTraveler(player);
-
-            // Quest 351 reads world time when it starts, so questing-enabled fresh accounts need
-            // their own world before the one-time born quest lifecycle runs.
-            if (GAME_OPTIONS.questing.enabled) {
-                if (player.getWorld() == null) {
-                    World world = new World(player);
-                    world.addPlayer(player);
-                }
-                player.getQuestManager().onPlayerBorn();
-            }
+            playerBornNow = true;
         } else {
-            // Repair existing accounts that have avatars but lost their main-character marker.
             BornDataHelper.ensureMainCharacter(player);
+            var quest351 = player.getQuestManager().getMainQuestById(FIRST_MAIN_QUEST);
+            if (quest351 != null && !quest351.getActiveQuests().isEmpty()) {
+                Grasscutter.getLogger()
+                        .info(
+                                "[intro] existing login uid={} has active quest 351; QuestManager.onLogin will rewind it.",
+                                player.getUid());
+            }
         }
 
         player.onLogin();
+
+        if (playerBornNow) {
+            player.getQuestManager().onPlayerBorn();
+            session.send(new PacketFinishedParentQuestNotify(player));
+            session.send(new PacketQuestListNotify(player));
+            session.send(new PacketQuestGlobalVarNotify(player));
+        }
+
         session.send(new PacketPlayerLoginRsp(session));
     }
 

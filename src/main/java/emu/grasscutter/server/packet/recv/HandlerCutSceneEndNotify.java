@@ -1,0 +1,13 @@
+package emu.grasscutter.server.packet.recv;
+
+import emu.grasscutter.net.packet.*;
+import emu.grasscutter.server.born.BornIntroGate;
+import emu.grasscutter.server.game.GameSession;
+
+@Opcodes(PacketOpcodes.CutSceneEndNotify)
+public class HandlerCutSceneEndNotify extends PacketHandler {
+    @Override
+    public void handle(GameSession session, byte[] header, byte[] payload) {
+        BornIntroGate.noteCutsceneEnd(session, payload);
+    }
+}

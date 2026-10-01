@@ -1,16 +1,18 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.game.player.EntryNotice;
+import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.ability.EscoffierSkillCookHelper;
+import emu.grasscutter.game.player.EntryNotice;
 import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.PostEnterSceneReqOuterClass.PostEnterSceneReq;
+import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketCutsceneBeginNotify;
 import emu.grasscutter.server.packet.send.PacketGetPlayerFriendListRsp;
 import emu.grasscutter.server.packet.send.PacketPostEnterSceneRsp;
-
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 @Opcodes(PacketOpcodes.PostEnterSceneReq)
 public class HandlerPostEnterSceneReq extends PacketHandler {
@@ -18,14 +20,27 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         PostEnterSceneReq req = PostEnterSceneReq.parseFrom(payload);
-                
+
         var player = session.getPlayer();
+        Grasscutter.getLogger()
+                .info(
+                        "[intro-handshake] PostEnterSceneReq uid={} state={} loadState={} token={} len={}",
+                        player.getUid(),
+                        session.getState(),
+                        player.getSceneLoadState(),
+                        player.getEnterSceneToken(),
+                        payload == null ? 0 : payload.length);
+
         var scene = player.getScene();
         var questManager = player.getQuestManager();
 
-        switch (session.getPlayer().getScene().getSceneType()) {
-            case SCENE_ROOM -> questManager.queueEvent(
-                    QuestContent.QUEST_CONTENT_ENTER_ROOM, scene.getId(), 0);
+        // Fresh-born 7.1 starts Quest 351 only after the client's first scene-entry handshake is
+        // complete. This also keeps QuestManager.onLogin from rewinding a quest that was just created.
+        BornIntroGate.finishOnSceneReady(session);
+
+        switch (scene.getSceneType()) {
+            case SCENE_ROOM ->
+                    questManager.queueEvent(QuestContent.QUEST_CONTENT_ENTER_ROOM, scene.getId(), 0);
             case SCENE_WORLD -> {
                 questManager.queueEvent(QuestContent.QUEST_CONTENT_ENTER_MY_WORLD, scene.getId());
                 questManager.queueEvent(QuestContent.QUEST_CONTENT_ENTER_MY_WORLD_SCENE, scene.getId());
@@ -37,7 +52,7 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
         }
         questManager.queueEvent(QuestContent.QUEST_CONTENT_LEAVE_SCENE, scene.getPrevScene());
 
-        session.send(new PacketPostEnterSceneRsp(session.getPlayer()));
+        session.send(new PacketPostEnterSceneRsp(player));
 
         // Escoffier's improvised cooking: lightly sync the weekly remainder after entering the scene so a
         // stale CannotCreateFood does not linger.

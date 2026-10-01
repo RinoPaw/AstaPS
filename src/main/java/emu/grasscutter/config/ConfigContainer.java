@@ -22,8 +22,6 @@ public class ConfigContainer {
     public Server server = new Server();
 
     // DO NOT. TOUCH. THE VERSION NUMBER.
-    public int version = version();
-
     /* Option containers. */
 
     public static class Database {

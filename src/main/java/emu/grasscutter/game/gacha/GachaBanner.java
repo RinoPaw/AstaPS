@@ -74,7 +74,6 @@ public class GachaBanner {
     private int eventChance4 = -1; // Chance to win a featured event item
     private int eventChance5 = -1; // Chance to win a featured event item
     private int[] capturingRadianceChances = null; // Defaults to the banner type, see onLoad()
-    //
     @Getter private boolean removeC6FromPool = false;
 
     @Getter
@@ -94,43 +93,11 @@ public class GachaBanner {
     private String pityGroup;
     private String epitomizedTarget;
 
-    // Deprecated fields that were tolerated in early May 2022 but have apparently still being
-    // circulating in new custom configs
-    // For now, throw up big scary errors on load telling people that they will be banned outright in
-    // a future version
-    @Deprecated private int[] rateUpItems1 = {};
-    @Deprecated private int[] rateUpItems2 = {};
-    @Deprecated private int eventChance = -1;
-    @Deprecated private int costItem = 0;
-    @Deprecated private int softPity = -1;
-    @Deprecated private int hardPity = -1;
-    @Deprecated private int minItemType = -1;
-    @Deprecated private int maxItemType = -1;
+    // Retained until GachaSystem's load filter is simplified; current configs cannot set it.
     @Getter private boolean deprecated = false;
     @Getter private boolean disabled = false;
 
-    private void warnDeprecated(String name, String replacement) {
-        Grasscutter.getLogger()
-                .error(
-                        "Deprecated field found in Banners config: "
-                                + name
-                                + " was replaced back in early May 2022, use "
-                                + replacement
-                                + " instead. You MUST remove this field from your config.");
-        this.deprecated = true;
-    }
-
     public void onLoad() {
-        // Handle deprecated configs
-        if (eventChance != -1) warnDeprecated("eventChance", "eventChance4 & eventChance5");
-        if (costItem != 0) warnDeprecated("costItem", "costItemId");
-        if (softPity != -1) warnDeprecated("softPity", "weights5");
-        if (hardPity != -1) warnDeprecated("hardPity", "weights5");
-        if (minItemType != -1) warnDeprecated("minItemType", "fallbackItems[4,5]Pool[1,2]");
-        if (maxItemType != -1) warnDeprecated("maxItemType", "fallbackItems[4,5]Pool[1,2]");
-        if (rateUpItems1.length > 0) warnDeprecated("rateUpItems1", "rateUpItems5");
-        if (rateUpItems2.length > 0) warnDeprecated("rateUpItems2", "rateUpItems4");
-
         // Handle default values
         if (this.previewPrefabPath != null
                 && this.previewPrefabPath.equals("UI_Tab_" + this.prefabPath))
@@ -185,7 +152,9 @@ public class GachaBanner {
 
     public boolean hasEpitomized() {
         if (isChronicleLinkedBanner()) return false;
-        return epitomizedPath || bannerType.equals(BannerType.WEAPON) || bannerType.equals(BannerType.CHRONICLE);
+        return epitomizedPath
+                || bannerType.equals(BannerType.WEAPON)
+                || bannerType.equals(BannerType.CHRONICLE);
     }
 
     public boolean isWeaponFocusedPool() {
@@ -234,10 +203,12 @@ public class GachaBanner {
     private int[] resolveEpitomizedPathItems() {
         int[] items;
         if (epitomizedItems5 != null && epitomizedItems5.length > 0) items = epitomizedItems5;
-        else if (isCharacterEpitomizedPool() && fallbackItems5Pool1 != null && fallbackItems5Pool1.length > 0)
-            items = fallbackItems5Pool1;
-        else if (isWeaponEpitomizedPool() && fallbackItems5Pool2 != null && fallbackItems5Pool2.length > 0)
-            items = fallbackItems5Pool2;
+        else if (isCharacterEpitomizedPool()
+                && fallbackItems5Pool1 != null
+                && fallbackItems5Pool1.length > 0) items = fallbackItems5Pool1;
+        else if (isWeaponEpitomizedPool()
+                && fallbackItems5Pool2 != null
+                && fallbackItems5Pool2.length > 0) items = fallbackItems5Pool2;
         else items = rateUpItems5;
         return filterEpitomizedPathItems(items);
     }

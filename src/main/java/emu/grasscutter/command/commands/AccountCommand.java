@@ -45,7 +45,8 @@ public final class AccountCommand implements CommandHandler {
                     if (args.size() < 3) {
                         CommandHandler.sendMessage(
                                 sender, "EXPERIMENTAL_RealPassword requires a password argument");
-                        CommandHandler.sendMessage(sender, "Usage: account create <username> <password> [uid]");
+                        CommandHandler.sendMessage(
+                                sender, "Usage: account create <username> <password> [uid]");
                         return;
                     }
                     password = args.get(2);
@@ -54,41 +55,51 @@ public final class AccountCommand implements CommandHandler {
                         try {
                             uid = Integer.parseInt(args.get(3));
                         } catch (NumberFormatException ignored) {
-                            CommandHandler.sendMessage(sender, translate(sender, "commands.account.invalid"));
-                            if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
-                                CommandHandler.sendMessage(
-                                        sender,
-                                        "EXPERIMENTAL_RealPassword requires argument 2 to be a password, not a uid");
-                                CommandHandler.sendMessage(
-                                        sender, "Usage: account create <username> <password> [uid]");
-                            }
+                            CommandHandler.sendMessage(
+                                    sender, translate(sender, "commands.account.invalid"));
+                            CommandHandler.sendMessage(
+                                    sender,
+                                    "EXPERIMENTAL_RealPassword requires argument 2 to be a password, not a uid");
+                            CommandHandler.sendMessage(
+                                    sender, "Usage: account create <username> <password> [uid]");
                             return;
                         }
                     }
-                } else {
-                    if (args.size() > 2) {
-                        try {
-                            uid = Integer.parseInt(args.get(2));
-                        } catch (NumberFormatException ignored) {
-                            CommandHandler.sendMessage(sender, translate(sender, "commands.account.invalid"));
-                            return;
-                        }
+                } else if (args.size() > 2) {
+                    try {
+                        uid = Integer.parseInt(args.get(2));
+                    } catch (NumberFormatException ignored) {
+                        CommandHandler.sendMessage(
+                                sender, translate(sender, "commands.account.invalid"));
+                        return;
                     }
                 }
+
                 Account account = DatabaseHelper.createAccountWithUid(username, uid);
                 if (account == null) {
                     CommandHandler.sendMessage(sender, translate(sender, "commands.account.exists"));
                     return;
-                } else {
-                    if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
-                        account.setPassword(password);
-                    }
-                    account.addPermission("*");
-                    account.save(); // Save account to database.
-
-                    CommandHandler.sendMessage(
-                            sender, translate(sender, "commands.account.create", account.getReservedPlayerUid()));
                 }
+
+                if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
+                    try {
+                        account.setPassword(password);
+                    } catch (IllegalArgumentException invalidPassword) {
+                        AccountDeletionService.delete(account);
+                        CommandHandler.sendMessage(sender, "Invalid password.");
+                        return;
+                    }
+                }
+
+                account.addPermission("*");
+                account.save();
+
+                CommandHandler.sendMessage(
+                        sender,
+                        translate(
+                                sender,
+                                "commands.account.create",
+                                account.getReservedPlayerUid()));
             }
             case "delete" -> {
                 if (args.size() < 2) {
@@ -97,7 +108,6 @@ public final class AccountCommand implements CommandHandler {
                 }
                 var username = args.get(1);
 
-                // Get the account we want to delete.
                 Account toDelete = DatabaseHelper.getAccountByName(username);
                 if (toDelete == null) {
                     CommandHandler.sendMessage(sender, translate(sender, "commands.account.no_account"));
@@ -120,7 +130,8 @@ public final class AccountCommand implements CommandHandler {
                 }
                 if (args.size() != 3) {
                     CommandHandler.sendMessage(sender, "Invalid Args");
-                    CommandHandler.sendMessage(sender, "Usage: account resetpass <username> <password>");
+                    CommandHandler.sendMessage(
+                            sender, "Usage: account resetpass <username> <password>");
                     return;
                 }
                 Account toUpdate = DatabaseHelper.getAccountByName(username);
@@ -129,14 +140,21 @@ public final class AccountCommand implements CommandHandler {
                     return;
                 }
 
-                // Make sure player can't stay logged in with old password.
+                try {
+                    toUpdate.setPassword(args.get(2));
+                } catch (IllegalArgumentException invalidPassword) {
+                    CommandHandler.sendMessage(sender, "Invalid password.");
+                    return;
+                }
+
+                // Make sure player can't stay logged in with the old password.
                 kickAccount(toUpdate);
-                toUpdate.setPassword(args.get(2));
                 toUpdate.save();
                 CommandHandler.sendMessage(sender, "Password Updated.");
             }
             case "list" -> {
-                CommandHandler.sendMessage(sender, "Note: This command might take a while to complete.");
+                CommandHandler.sendMessage(
+                        sender, "Note: This command might take a while to complete.");
                 CommandHandler.sendMessage(
                         sender,
                         "Accounts: \n"
@@ -160,7 +178,7 @@ public final class AccountCommand implements CommandHandler {
      * returns "no UID".
      *
      * @param account The account to get the UID of.
-     * @return The UID of the player associated with the given account.
+     * @return The UID of the player associated with the account.
      */
     private String getPlayerUid(Account account) {
         var player = DatabaseHelper.getPlayerByAccount(account, Player.class);

@@ -16,6 +16,9 @@ public class EntityNPC extends GameEntity {
     private final Position rotation;
 
     private final SceneNPC metaNpc;
+    private final int npcId;
+    private final int roomId;
+    private final int parentQuestId;
     @Getter private final int suiteId;
 
     public EntityNPC(Scene scene, SceneNPC metaNPC, int blockId, int suiteId) {
@@ -28,11 +31,33 @@ public class EntityNPC extends GameEntity {
         this.position = metaNPC.pos.clone();
         this.rotation = metaNPC.rot.clone();
         this.metaNpc = metaNPC;
+        this.npcId = metaNPC.npc_id;
+        this.roomId = 0;
+        this.parentQuestId = 0;
+    }
+
+    /** Creates a client-requested quest NPC which has no SceneNPC/group metadata. */
+    public EntityNPC(
+            Scene scene,
+            int npcId,
+            Position position,
+            Position rotation,
+            int roomId,
+            int parentQuestId) {
+        super(scene);
+        this.id = getScene().getWorld().getNextEntityId(EntityIdType.NPC);
+        this.npcId = npcId;
+        this.position = position.clone();
+        this.rotation = rotation.clone();
+        this.roomId = roomId;
+        this.parentQuestId = parentQuestId;
+        this.metaNpc = null;
+        this.suiteId = 0;
     }
 
     @Override
     public int getEntityTypeId() {
-        return this.metaNpc.npc_id;
+        return this.npcId;
     }
 
     /**
@@ -80,7 +105,9 @@ public class EntityNPC extends GameEntity {
 
         entityInfo.setNpc(
                 SceneNpcInfoOuterClass.SceneNpcInfo.newBuilder()
-                        .setNpcId(metaNpc.npc_id)
+                        .setNpcId(this.npcId)
+                        .setRoomId(this.roomId)
+                        .setParentQuestId(this.parentQuestId)
                         .setBlockId(getBlockId())
                         .build());
 

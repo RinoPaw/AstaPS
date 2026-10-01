@@ -118,7 +118,7 @@ public class GachaBanner {
         if (this.capturingRadianceChances == null)
             this.capturingRadianceChances =
                     switch (this.bannerType) {
-                        case EVENT, CHARACTER, CHARACTER2 -> DEFAULT_CAPTURING_RADIANCE;
+                        case CHARACTER, CHARACTER2 -> DEFAULT_CAPTURING_RADIANCE;
                         default -> EMPTY_POOL; // Capturing Radiance only exists on character banners
                     };
         // Set max wish progress based on wish type, otherwise its 0.
@@ -143,11 +143,6 @@ public class GachaBanner {
         };
     }
 
-    @Deprecated
-    public int getCostItem() {
-        return costItemId;
-    }
-
     public boolean hasEpitomized() {
         if (isChronicleLinkedBanner()) return false;
         return epitomizedPath
@@ -165,9 +160,7 @@ public class GachaBanner {
         if (scheduleId == 5099) return true;
         if ("CHRONICLE".equalsIgnoreCase(pityGroup)
                 && !"CHRONICLE_WEAPON".equalsIgnoreCase(pityGroup)) return true;
-        return bannerType == BannerType.CHARACTER
-                || bannerType == BannerType.CHARACTER2
-                || bannerType == BannerType.EVENT;
+        return bannerType == BannerType.CHARACTER || bannerType == BannerType.CHARACTER2;
     }
 
     public boolean isChronicleLinkedBanner() {
@@ -531,15 +524,6 @@ public class GachaBanner {
                 50,
                 DEFAULT_FALLBACK_ITEMS_5_POOL_1,
                 DEFAULT_FALLBACK_ITEMS_5_POOL_2),
-        EVENT(
-                301,
-                223,
-                DEFAULT_WEIGHTS_4,
-                DEFAULT_WEIGHTS_5_CHARACTER,
-                50,
-                50,
-                DEFAULT_FALLBACK_ITEMS_5_POOL_1,
-                DEFAULT_FALLBACK_ITEMS_5_POOL_2), // Legacy value for CHARACTER
         CHARACTER(
                 301,
                 223,

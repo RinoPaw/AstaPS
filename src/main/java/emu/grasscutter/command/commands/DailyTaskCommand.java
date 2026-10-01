@@ -69,6 +69,7 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "list")
     private static final class ListTasks extends DailyCommand {
         private ListTasks(Player sender, Player targetPlayer) {
             super(sender, targetPlayer);
@@ -116,6 +117,7 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "load")
     private static final class Load extends DailyCommand {
         private Load(Player sender, Player targetPlayer) {
             super(sender, targetPlayer);
@@ -140,6 +142,7 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "reset")
     private static final class Reset extends DailyCommand {
         private Reset(Player sender, Player targetPlayer) {
             super(sender, targetPlayer);
@@ -211,6 +214,7 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "support")
     private static final class Support extends DailyCommand {
         private Support(Player sender, Player targetPlayer) {
             super(sender, targetPlayer);
@@ -239,6 +243,7 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "bonus")
     private static final class Bonus extends DailyCommand {
         private Bonus(Player sender, Player targetPlayer) {
             super(sender, targetPlayer);

@@ -82,9 +82,10 @@ dependencies {
     implementation 'ch.qos.logback:logback-core:1.4.7'
     implementation 'ch.qos.logback:logback-classic:1.4.7'
 
-    // Line reading and command parsing libraries.
-    implementation 'org.jline:jline:3.21.0'
-    implementation 'org.jline:jline-terminal-jna:3.21.0'
+    // Line reading and command parsing libraries. Picocli 4.7.7 is built against JLine 3.29.0;
+    // keep the bundle and terminal provider on the same version so the fat jar cannot mix APIs.
+    implementation 'org.jline:jline:3.29.0'
+    implementation 'org.jline:jline-terminal-jna:3.29.0'
     implementation 'info.picocli:picocli:4.7.7'
     implementation 'info.picocli:picocli-shell-jline3:4.7.7'
     implementation 'net.java.dev.jna:jna:5.10.0'
@@ -231,7 +232,7 @@ publishing {
                 }
                 scm {
                     connection = 'scm:git:git@github.com:Grasscutters/Grasscutter.git'
-                    developerConnection = 'scm:git:ssh://github.com/Grasscutters/Grasscutter.git'
+                    developerConnection = 'scm:git:ssh://github.com:Grasscutters/Grasscutter.git'
                     url = 'https://github.com/Grasscutters/Grasscutter'
                 }
             }

@@ -125,6 +125,7 @@ public final class AchievementCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "grantall")
     private static final class GrantAll extends AchievementCommandBase {
         private GrantAll(Player sender, Player targetPlayer) {
             super(sender, targetPlayer);
@@ -147,6 +148,7 @@ public final class AchievementCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "revokeall")
     private static final class RevokeAll extends AchievementCommandBase {
         private RevokeAll(Player sender, Player targetPlayer) {
             super(sender, targetPlayer);

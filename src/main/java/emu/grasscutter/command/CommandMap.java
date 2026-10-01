@@ -123,17 +123,36 @@ public final class CommandMap {
         Grasscutter.getLogger().trace("Registered command: " + label);
         label = label.toLowerCase();
 
-        Command annotation = command.getClass().getAnnotation(Command.class);
-        this.annotations.put(label, annotation);
-        this.commands.put(label, command);
+        synchronized (this.picocliLock) {
+            var previousCommands = new TreeMap<>(this.commands);
+            var previousAliases = new TreeMap<>(this.aliases);
+            var previousAnnotations = new TreeMap<>(this.annotations);
+            CommandLine previousTree = this.commandLine;
 
-        for (String alias : annotation.aliases()) {
-            String normalized = alias.toLowerCase();
-            this.aliases.put(normalized, command);
-            this.annotations.put(normalized, annotation);
+            try {
+                Command annotation = command.getClass().getAnnotation(Command.class);
+                this.annotations.put(label, annotation);
+                this.commands.put(label, command);
+
+                for (String alias : annotation.aliases()) {
+                    String normalized = alias.toLowerCase();
+                    this.aliases.put(normalized, command);
+                    this.annotations.put(normalized, annotation);
+                }
+
+                this.rebuildPicocliTree();
+            } catch (RuntimeException exception) {
+                this.commands.clear();
+                this.commands.putAll(previousCommands);
+                this.aliases.clear();
+                this.aliases.putAll(previousAliases);
+                this.annotations.clear();
+                this.annotations.putAll(previousAnnotations);
+                this.commandLine = previousTree;
+                throw exception;
+            }
         }
 
-        this.rebuildPicocliTree();
         return this;
     }
 

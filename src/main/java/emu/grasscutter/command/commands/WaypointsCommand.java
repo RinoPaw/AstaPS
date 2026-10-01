@@ -98,6 +98,7 @@ public final class WaypointsCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "list")
     private final class ListAreas implements Runnable {
         private final Player sender;
         private final Player targetPlayer;

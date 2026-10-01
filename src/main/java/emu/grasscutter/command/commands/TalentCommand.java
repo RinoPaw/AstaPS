@@ -139,6 +139,7 @@ public final class TalentCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "getid")
     private final class GetIds extends AvatarCommand {
         private GetIds(Player sender, Player targetPlayer) {
             super(sender, targetPlayer);

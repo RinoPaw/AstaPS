@@ -162,6 +162,7 @@ public final class TeapotCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "refreshlimitedshop")
     private static final class RefreshLimitedShop implements Runnable {
         private final Player sender;
 

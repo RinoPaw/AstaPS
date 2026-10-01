@@ -83,6 +83,7 @@ public final class SetSceneTagCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "unlockall")
     private final class UnlockAll implements Runnable {
         private final Player targetPlayer;
 
@@ -116,6 +117,7 @@ public final class SetSceneTagCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "reset")
     private final class Reset implements Runnable {
         private final Player targetPlayer;
 
@@ -140,6 +142,7 @@ public final class SetSceneTagCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "list")
     private final class ListTags implements Runnable {
         private final Player sender;
         private final Player targetPlayer;

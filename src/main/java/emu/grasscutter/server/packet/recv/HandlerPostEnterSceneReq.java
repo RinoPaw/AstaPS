@@ -33,10 +33,14 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
 
         var scene = player.getScene();
         var questManager = player.getQuestManager();
+        var freshBorn = BornIntroGate.isAwaiting(session);
 
-        // Fresh-born 7.1 starts Quest 351 only after the client's first scene-entry handshake is
-        // complete. This also keeps QuestManager.onLogin from rewinding a quest that was just created.
-        BornIntroGate.finishOnSceneReady(session);
+        // The fresh-born quest actor must see the post-enter-scene acknowledgement before its first
+        // QuestListUpdateNotify. Keep the established ordering for ordinary scene entries.
+        if (freshBorn) {
+            session.send(new PacketPostEnterSceneRsp(player));
+            BornIntroGate.finishOnSceneReady(session);
+        }
 
         switch (scene.getSceneType()) {
             case SCENE_ROOM ->
@@ -52,7 +56,9 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
         }
         questManager.queueEvent(QuestContent.QUEST_CONTENT_LEAVE_SCENE, scene.getPrevScene());
 
-        session.send(new PacketPostEnterSceneRsp(player));
+        if (!freshBorn) {
+            session.send(new PacketPostEnterSceneRsp(player));
+        }
 
         // Escoffier's improvised cooking: lightly sync the weekly remainder after entering the scene so a
         // stale CannotCreateFood does not linger.

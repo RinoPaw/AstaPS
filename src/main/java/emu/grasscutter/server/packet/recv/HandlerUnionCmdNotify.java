@@ -4,7 +4,6 @@ import static emu.grasscutter.config.Configuration.*;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Grasscutter.ServerDebugMode;
-import emu.grasscutter.game.entity.EntityAvatar;
 import emu.grasscutter.game.systems.ReliquaryDustSystem;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.UnionCmdNotifyOuterClass.UnionCmdNotify;
@@ -62,29 +61,10 @@ public class HandlerUnionCmdNotify extends PacketHandler {
 
         while (!session.getPlayer().getAttackResults().isEmpty()) {
             var attack = session.getPlayer().getAttackResults().poll();
-            var scene = session.getPlayer().getScene();
-            var target = scene != null ? scene.getEntityById(attack.getDefenseId()) : null;
-            if (attack.getDamage() > 0f
-                    && attack.getAttackerId() > 0
-                    && attack.getAttackerId() == attack.getDefenseId()
-                    && target instanceof EntityAvatar) {
-                Grasscutter.getLogger()
-                        .warn(
-                                "[CombatSelfHit] blocked uid={} entityId={} damage={} elementType={} animEventId={} wireHex={} attackResult={}",
-                                session.getPlayer().getUid(),
-                                attack.getDefenseId(),
-                                attack.getDamage(),
-                                attack.getElementType(),
-                                attack.getAnimEventId(),
-                                java.util.HexFormat.of().formatHex(attack.toByteArray()),
-                                attack);
-                continue;
-            }
-
             // Lets the DPS dummy tell reaction damage from elemental damage inside damage().
             emu.grasscutter.game.dps.DPSAttackContext.set(attack);
             try {
-                scene.handleAttack(attack);
+                session.getPlayer().getScene().handleAttack(attack);
             } finally {
                 emu.grasscutter.game.dps.DPSAttackContext.clear();
             }

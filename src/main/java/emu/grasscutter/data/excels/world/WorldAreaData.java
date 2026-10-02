@@ -8,7 +8,7 @@ import lombok.Getter;
 /** Current 7.1 table field names are case-sensitive. */
 @ResourceType(name = "WorldAreaConfigData.json")
 public class WorldAreaData extends GameResource {
-    @SerializedName("id")
+    @SerializedName("ID")
     private int ID;
 
     @Getter private ElementType elementType;

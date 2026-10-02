@@ -13,35 +13,60 @@ public class HandlerUnlockTransPointReq extends PacketHandler {
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         UnlockTransPointReq req = UnlockTransPointReq.parseFrom(payload);
+        var player = session.getPlayer();
         var entry = GameData.getScenePointEntryById(req.getSceneId(), req.getPointId());
         boolean isStatue =
                 emu.grasscutter.game.managers.StatueTalkQuests.isStatuePoint(
                         entry != null ? entry.getPointData() : null);
-        boolean unlocked =
-                TransPointUnlockHelper.unlock(
-                        session.getPlayer(), req.getSceneId(), req.getPointId(), isStatue);
+        boolean previouslyUnlocked =
+                player.getUnlockedScenePoints(req.getSceneId()).contains(req.getPointId());
+        boolean forceLocked = player.isScenePointForceLocked(req.getSceneId(), req.getPointId());
+        var playerPos = player.getPosition();
+        var pointPos =
+                entry != null && entry.getPointData() != null
+                        ? entry.getPointData().getTranPos()
+                        : null;
+        double distance =
+                playerPos != null && pointPos != null
+                        ? playerPos.computeDistance(pointPos)
+                        : Double.NaN;
+        int currentScene = player.getScene() != null ? player.getScene().getId() : 0;
+
         emu.grasscutter.Grasscutter.getLogger()
                 .info(
-                        "UnlockTransPointReq uid={} scene={} point={} statue={} unlocked={}",
-                        session.getPlayer().getUid(),
+                        "[quest351] unlock-request uid={} requestedScene={} point={} currentScene={} playerPos={} pointPos={} distance={} previouslyUnlocked={} forceLocked={} statue={}",
+                        player.getUid(),
                         req.getSceneId(),
                         req.getPointId(),
-                        isStatue,
+                        currentScene,
+                        playerPos,
+                        pointPos,
+                        distance,
+                        previouslyUnlocked,
+                        forceLocked,
+                        isStatue);
+
+        boolean unlocked =
+                TransPointUnlockHelper.unlock(
+                        player, req.getSceneId(), req.getPointId(), isStatue);
+        emu.grasscutter.Grasscutter.getLogger()
+                .info(
+                        "[quest351] unlock-result uid={} scene={} point={} unlocked={}",
+                        player.getUid(),
+                        req.getSceneId(),
+                        req.getPointId(),
                         unlocked);
         // UnlockTransPointRsp has no known 7.1 CmdId, so the client never hears back and leaves the
         // point drawn as locked. Resend the scene's point list, as the statue auto-unlock does.
         if (unlocked) {
-            session.getPlayer()
-                    .sendPacket(
-                            new emu.grasscutter.server.packet.send.PacketGetScenePointRsp(
-                                    session.getPlayer(), req.getSceneId()));
+            player.sendPacket(
+                    new emu.grasscutter.server.packet.send.PacketGetScenePointRsp(
+                            player, req.getSceneId()));
         }
-        session
-                .getPlayer()
-                .sendPacket(
-                        new PacketUnlockTransPointRsp(
-                                unlocked
-                                        ? RetcodeOuterClass.Retcode.RET_SUCC
-                                        : RetcodeOuterClass.Retcode.RET_FAIL));
+        player.sendPacket(
+                new PacketUnlockTransPointRsp(
+                        unlocked
+                                ? RetcodeOuterClass.Retcode.RET_SUCC
+                                : RetcodeOuterClass.Retcode.RET_FAIL));
     }
 }

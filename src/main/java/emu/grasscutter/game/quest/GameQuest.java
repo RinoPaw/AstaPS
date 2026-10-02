@@ -58,11 +58,28 @@ public class GameQuest {
         this.finishTime = 0;
     }
 
+    private void logQuest351Lifecycle(String action, QuestState before) {
+        if (this.mainQuestId != 351) return;
+
+        Grasscutter.getLogger()
+                .info(
+                        "[quest351] lifecycle action={} uid={} main={} sub={} before={} after={} stack={}",
+                        action,
+                        getOwner() != null ? getOwner().getUid() : 0,
+                        this.mainQuestId,
+                        this.subQuestId,
+                        before,
+                        this.state,
+                        Arrays.toString(Thread.currentThread().getStackTrace()));
+    }
+
     public void start() {
+        var previousState = this.state;
         this.acceptTime = Utils.getCurrentSeconds();
         this.startTime = this.acceptTime;
         this.startGameDay = getOwner().getWorld().getTotalGameTimeDays();
         this.state = QuestState.QUEST_STATE_UNFINISHED;
+        logQuest351Lifecycle("start", previousState);
 
         val triggerCond =
                 questData.getFinishCond().stream()
@@ -208,6 +225,7 @@ public class GameQuest {
         var event = new PlayerCompleteQuestEvent(this.getOwner(), this);
         if (!event.call()) return;
 
+        var previousState = this.state;
         // Check if the quest has been finished.
         synchronized (this) {
             if (this.state == QuestState.QUEST_STATE_FINISHED) {
@@ -217,6 +235,7 @@ public class GameQuest {
 
             this.state = QuestState.QUEST_STATE_FINISHED;
         }
+        logQuest351Lifecycle("finish", previousState);
         this.finishTime = Utils.getCurrentSeconds();
 
         this.getOwner().sendPacket(new PacketQuestListUpdateNotify(this));
@@ -297,6 +316,7 @@ public class GameQuest {
 
     // Return true if it did the rewind
     public boolean rewind(boolean notifyDelete) {
+        logQuest351Lifecycle("rewind", this.state);
         getMainQuest().getChildQuests().values().stream()
                 .filter(p -> p.getQuestData().getOrder() > this.getQuestData().getOrder())
                 .forEach(

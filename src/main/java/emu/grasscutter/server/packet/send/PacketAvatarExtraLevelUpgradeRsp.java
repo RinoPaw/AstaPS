@@ -1,7 +1,7 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.game.avatar.AvatarExtraLevelOpcodes;
 import emu.grasscutter.net.packet.BasePacket;
+import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.net.proto.AvatarExtraLevelUpgradeRsp._AvatarExtraLevelUpgradeRsp;
 
 public class PacketAvatarExtraLevelUpgradeRsp extends BasePacket {
@@ -10,7 +10,7 @@ public class PacketAvatarExtraLevelUpgradeRsp extends BasePacket {
     }
 
     public PacketAvatarExtraLevelUpgradeRsp(long avatarGuid, int oldLevel, int curLevel, int retcode) {
-        super(AvatarExtraLevelOpcodes.resolveResponseOpcode(0));
+        super(PacketOpcodes._AvatarExtraLevelUpgradeRsp);
         this.setData(
                 _AvatarExtraLevelUpgradeRsp.newBuilder()
                         .setAvatarGuid(avatarGuid)

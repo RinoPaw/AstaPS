@@ -1,5 +1,6 @@
 package emu.grasscutter.game.entity;
 
+import emu.grasscutter.game.ability.AbilityMaxHpRatioHelper;
 import emu.grasscutter.game.ability.ArlecchinoBoLUtil;
 import emu.grasscutter.game.ability.ArlecchinoBurstBoL;
 import emu.grasscutter.game.ability.ClorindeBoLUtil;
@@ -23,6 +24,7 @@ public final class EntityRuntimeStateCleanup {
             return;
         }
         int entityId = entity.getId();
+        AbilityMaxHpRatioHelper.clear(entity);
         ArlecchinoBoLUtil.clearEntityState(entityId);
         ArlecchinoBurstBoL.clearEntityState(entityId);
         ClorindeBoLUtil.clearEntityState(entityId);

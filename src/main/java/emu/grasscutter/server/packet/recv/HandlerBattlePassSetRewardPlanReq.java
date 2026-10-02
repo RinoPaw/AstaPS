@@ -13,7 +13,7 @@ import emu.grasscutter.server.packet.send.PacketBattlePassCurScheduleUpdateNotif
 import emu.grasscutter.server.packet.send.PacketBeyondBattlePassCurScheduleUpdateNotify;
 
 @Opcodes(PacketOpcodes._BattlePassSetRewardPlanReq)
-public class HandlerBattlePassSetRewardPlanReq70 extends PacketHandler {
+public class HandlerBattlePassSetRewardPlanReq extends PacketHandler {
     @Override
     public void handle(GameSession gameSession, byte[] header, byte[] payload) throws Exception {
         Player player = gameSession.getPlayer();

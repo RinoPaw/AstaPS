@@ -458,13 +458,19 @@ public class GameItem {
                         .setPromoteLevel(this.getPromoteLevel())
                         .setMainPropId(this.getMainPropId())
                         .addAllAppendPropIdList(this.getAppendPropIdList());
+
         // Defined relics: purple guarantee = purchased/definite. Do NOT wire _is_relic_starred
         // for them - that bit opens a broken StarUp enhance UI on current clients.
         boolean defined =
                 this.purchasedAppendPropIdList != null && !this.purchasedAppendPropIdList.isEmpty();
-        ReliquaryProtoCompat.applyStarred(relic, !defined && this.isRelicStarred());
-        return ReliquaryProtoCompat.finish(
-                relic, this.purchasedAppendPropIdList, this.definiteAppendPropIdList);
+        relic.setIsRelicStarred(!defined && this.isRelicStarred());
+        if (this.purchasedAppendPropIdList != null && !this.purchasedAppendPropIdList.isEmpty()) {
+            relic.addAllPurchasedAppendPropIdList(this.purchasedAppendPropIdList);
+        }
+        if (this.definiteAppendPropIdList != null && !this.definiteAppendPropIdList.isEmpty()) {
+            relic.addAllDefiniteAppendPropIdList(this.definiteAppendPropIdList);
+        }
+        return relic.build();
     }
 
     public Item toProto() {

@@ -7,11 +7,13 @@ public class PacketScenePointUnlockNotify extends BasePacket {
     public PacketScenePointUnlockNotify(int sceneId, int pointId) {
         super(PacketOpcodes.ScenePointUnlockNotify);
 
+        // In the official 7.1 client, wire field 4 is locked_point_list even though the current
+        // generated API names it unhidePointList. A normal unlock only needs scene_id + point_list;
+        // sending field 4 here makes the same point appear in both unlock and lock lists.
         ScenePointUnlockNotify.Builder p =
                 ScenePointUnlockNotify.newBuilder()
                         .setSceneId(sceneId)
-                        .addPointList(pointId)
-                        .addUnhidePointList(pointId);
+                        .addPointList(pointId);
 
         this.setData(p);
     }
@@ -50,8 +52,7 @@ public class PacketScenePointUnlockNotify extends BasePacket {
         ScenePointUnlockNotify.Builder p =
                 ScenePointUnlockNotify.newBuilder()
                         .setSceneId(sceneId)
-                        .addAllPointList(pointIds)
-                        .addAllUnhidePointList(pointIds);
+                        .addAllPointList(pointIds);
 
         this.setData(p);
     }

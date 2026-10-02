@@ -99,6 +99,9 @@ public final class Grasscutter {
 
         // Load server configuration.
         Grasscutter.loadConfig();
+        // Attempt to update configuration.
+        ConfigContainer.updateConfig();
+
         Grasscutter.getLogger().info("Loading Grasscutter...");
 
         // Load translation files.

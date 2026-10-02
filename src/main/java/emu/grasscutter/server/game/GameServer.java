@@ -194,16 +194,6 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
         return inetSocketAddress;
     }
 
-    @Deprecated
-    public ChatSystemHandler getChatManager() {
-        return chatManager;
-    }
-
-    @Deprecated
-    public void setChatManager(ChatSystemHandler chatManager) {
-        this.chatManager = chatManager;
-    }
-
     public ChatSystemHandler getChatSystem() {
         return chatManager;
     }

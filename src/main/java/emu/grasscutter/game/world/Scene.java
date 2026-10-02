@@ -310,16 +310,16 @@ public class Scene {
 
     public void spawnPlayer(Player player) {
         var teamManager = player.getTeamManager();
-        if (this.isInScene(teamManager.getCurrentAvatarEntity())) {
+        var currentAvatar = teamManager.getCurrentAvatarEntity();
+        if (this.isInScene(currentAvatar)) {
             return;
         }
 
-        if (teamManager.getCurrentAvatarEntity().getFightProperty(FightProperty.FIGHT_PROP_CUR_HP)
-                <= 0f) {
-            teamManager.getCurrentAvatarEntity().setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, 1f);
+        if (currentAvatar.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP) <= 0f) {
+            currentAvatar.reviveToRatioSilently(0f);
         }
 
-        this.addEntity(teamManager.getCurrentAvatarEntity());
+        this.addEntity(currentAvatar);
 
         teamManager.getActiveTeam().stream()
                 .map(EntityAvatar::getAvatar)

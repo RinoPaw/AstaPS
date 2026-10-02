@@ -1,9 +1,6 @@
 package emu.grasscutter.game.battlepass;
 
-import emu.grasscutter.game.battlepass.BattlePassManager;
-import emu.grasscutter.game.battlepass.BattlePassReward;
 import emu.grasscutter.net.proto.BattlePassCycleOuterClass.BattlePassCycle;
-import emu.grasscutter.net.proto.BattlePassProductOuterClass.BattlePassProduct;
 import emu.grasscutter.net.proto.BattlePassRewardPlanOption._BattlePassRewardPlanOption;
 import emu.grasscutter.net.proto.BattlePassScheduleOuterClass.BattlePassSchedule;
 import emu.grasscutter.net.proto.BattlePassUnlockStatusOuterClass.BattlePassUnlockStatus;
@@ -13,7 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 
-/** Builds the compatibility schedule with generated protobuf classes only. */
+/** Builds the current battle pass schedule with generated protobuf classes only. */
 public final class SafeBattlePassSchedule {
     public static final int SCHEDULE_ID = 6700;
     public static final int BEGIN_TIME = 1785528000;
@@ -42,17 +39,8 @@ public final class SafeBattlePassSchedule {
                                 .atZone(ZoneId.systemDefault())
                                 .toEpochSecond();
 
-        BattlePassProduct product =
-                BattlePassProduct.newBuilder()
-                        // Legacy 6.x fields retained for clients that still read them.
-                        .setNormalProductId("201")
-                        .setExtraProductId("202")
-                        .setUpgradeProductId("203")
-                        .build();
-
         BattlePassSchedule.Builder builder =
                 BattlePassSchedule.newBuilder()
-                        .setProductInfo(product)
                         .setIsViewed(true)
                         .setUnlockStatus(
                                 paid

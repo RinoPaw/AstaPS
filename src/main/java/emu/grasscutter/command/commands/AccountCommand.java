@@ -29,22 +29,14 @@ public final class AccountCommand implements PicocliCommandHandler {
 
         var commandLine = new CommandLine(new AccountRoot(sender));
         commandLine.setExpandAtFiles(false);
-        commandLine.registerConverter(
-                UidArg.class,
-                value -> {
-                    try {
-                        return new UidArg(Integer.parseInt(value));
-                    } catch (NumberFormatException ignored) {
-                        throw new CommandLine.TypeConversionException(
-                                translate(sender, "commands.account.invalid"));
-                    }
-                });
+        commandLine.registerConverter(UidArg.class, value -> parseUid(sender, value));
 
         if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
             commandLine.addSubcommand("create", new CreateWithPassword(sender));
         } else {
             commandLine.addSubcommand("create", new CreateWithoutPassword(sender));
         }
+        commandLine.addSubcommand("clone", new Clone(sender));
         commandLine.addSubcommand("delete", new Delete(sender));
         commandLine.addSubcommand("resetpass", new ResetPass(sender));
         commandLine.addSubcommand("list", new ListAccounts(sender));
@@ -59,6 +51,21 @@ public final class AccountCommand implements PicocliCommandHandler {
                     return 2;
                 });
         return commandLine;
+    }
+
+    private static UidArg parseUid(Player sender, String raw) {
+        String value = raw;
+        if (value.regionMatches(true, 0, "UID", 0, 3)) {
+            value = value.substring(3);
+        }
+        try {
+            int uid = Integer.parseInt(value);
+            if (uid <= 0) throw new NumberFormatException();
+            return new UidArg(uid);
+        } catch (NumberFormatException ignored) {
+            throw new CommandLine.TypeConversionException(
+                    translate(sender, "commands.account.invalid"));
+        }
     }
 
     @picocli.CommandLine.Command(name = "account")
@@ -98,7 +105,7 @@ public final class AccountCommand implements PicocliCommandHandler {
         @Parameters(index = "0", paramLabel = "<username>")
         private String username;
 
-        @Parameters(index = "1", arity = "0..1", paramLabel = "<UID>")
+        @Parameters(index = "1", arity = "0..1", paramLabel = "[UID]")
         private UidArg uid;
 
         private CreateWithoutPassword(Player sender) {
@@ -121,7 +128,7 @@ public final class AccountCommand implements PicocliCommandHandler {
         @Parameters(index = "1", paramLabel = "<password>")
         private String password;
 
-        @Parameters(index = "2", arity = "0..1", paramLabel = "<UID>")
+        @Parameters(index = "2", arity = "0..1", paramLabel = "[UID]")
         private UidArg uid;
 
         private CreateWithPassword(Player sender) {
@@ -131,6 +138,47 @@ public final class AccountCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             createAccount(sender, username, password, uid == null ? 0 : uid.value());
+        }
+    }
+
+    @picocli.CommandLine.Command(name = "clone")
+    private static final class Clone implements Runnable {
+        private final Player sender;
+
+        @Parameters(index = "0", paramLabel = "<source-account>")
+        private String sourceUsername;
+
+        @Parameters(index = "1", paramLabel = "<target-account>")
+        private String targetUsername;
+
+        @Parameters(index = "2", arity = "0..1", paramLabel = "[UID]")
+        private UidArg uid;
+
+        private Clone(Player sender) {
+            this.sender = sender;
+        }
+
+        @Override
+        public void run() {
+            try {
+                var result =
+                        PlayerCloneService.cloneOffline(
+                                sourceUsername, targetUsername, uid == null ? 0 : uid.value());
+                CommandHandler.sendMessage(
+                        sender,
+                        "Cloned %s (UID %d) to %s (UID %d): %d persisted documents copied."
+                                .formatted(
+                                        sourceUsername,
+                                        result.sourceUid(),
+                                        targetUsername,
+                                        result.targetUid(),
+                                        result.clonedDocuments()));
+                CommandHandler.sendMessage(
+                        sender,
+                        "Friendships and public music-game beatmaps were intentionally not cloned.");
+            } catch (IllegalArgumentException | IllegalStateException failure) {
+                CommandHandler.sendMessage(sender, "Clone failed: " + failure.getMessage());
+            }
         }
     }
 

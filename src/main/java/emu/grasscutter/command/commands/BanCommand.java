@@ -1,30 +1,47 @@
 package emu.grasscutter.command.commands;
 
+import static emu.grasscutter.config.Configuration.HTTP_ENCRYPTION;
+
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.config.Configuration;
 import emu.grasscutter.game.Account;
+import emu.grasscutter.game.BannedIp;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.game.GameSession;
 import java.util.Objects;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
-@Command(
-        label = "ban",
-        permission = "server.ban",
-        targetRequirement = Command.TargetRequirement.PLAYER)
+@Command(label = "ban", targetRequirement = Command.TargetRequirement.NONE)
 public final class BanCommand implements PicocliCommandHandler {
     private static final int DEFAULT_BAN_END = 2051190000;
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
-        return new CommandLine(new Args(sender, targetPlayer));
+        var commandLine = new CommandLine(new Root(sender));
+        commandLine.addSubcommand("player", new BanPlayer(sender, targetPlayer));
+        commandLine.addSubcommand("ip", new BanIp(sender));
+        return commandLine;
     }
 
     @CommandLine.Command(name = "ban")
-    private static final class Args implements Runnable {
+    private final class Root implements Runnable {
+        private final Player sender;
+
+        private Root(Player sender) {
+            this.sender = sender;
+        }
+
+        @Override
+        public void run() {
+            BanCommand.this.sendUsageMessage(sender);
+        }
+    }
+
+    @CommandLine.Command(name = "player")
+    private static final class BanPlayer implements Runnable {
         private final Player sender;
         private final Player targetPlayer;
 
@@ -37,13 +54,18 @@ public final class BanCommand implements PicocliCommandHandler {
         @Parameters(index = "2..*", arity = "0..*", paramLabel = "[reason]")
         private String[] reasonWords = new String[0];
 
-        private Args(Player sender, Player targetPlayer) {
+        private BanPlayer(Player sender, Player targetPlayer) {
             this.sender = sender;
             this.targetPlayer = targetPlayer;
         }
 
         @Override
         public void run() {
+            if (targetPlayer == null) {
+                CommandHandler.sendTranslatedMessage(sender, "commands.execution.need_target");
+                return;
+            }
+            if (!hasPermission(sender, targetPlayer, "server.ban", "server.ban.others")) return;
             if (!Objects.equals(key, Configuration.HTTP_ENCRYPTION.keystorePassword)) {
                 CommandHandler.sendMessage(sender != null ? sender : targetPlayer, "Wrong key");
                 return;
@@ -53,26 +75,62 @@ public final class BanCommand implements PicocliCommandHandler {
             String reason =
                     reasonWords.length == 0 ? "Reason not specified." : String.join(" ", reasonWords);
 
-            if (banAccount(targetPlayer, until, reason)) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.ban.success");
-            } else {
-                CommandHandler.sendTranslatedMessage(sender, "commands.ban.failure");
-            }
-        }
-
-        private static boolean banAccount(Player targetPlayer, int endTime, String reason) {
             Account account = targetPlayer.getAccount();
-            if (account == null) return false;
+            if (account == null) {
+                CommandHandler.sendTranslatedMessage(sender, "commands.ban.failure");
+                return;
+            }
 
             account.setBanReason(reason);
-            account.setBanEndTime(endTime);
+            account.setBanEndTime(until);
             account.setBanStartTime((int) (System.currentTimeMillis() / 1000));
             account.setBanned(true);
             account.save();
 
             GameSession session = targetPlayer.getSession();
             if (session != null) session.close();
-            return true;
+            CommandHandler.sendTranslatedMessage(sender, "commands.ban.success");
         }
+    }
+
+    @CommandLine.Command(name = "ip")
+    private static final class BanIp implements Runnable {
+        private final Player sender;
+
+        @Parameters(index = "0", paramLabel = "<key>")
+        private String key;
+
+        @Parameters(index = "1", paramLabel = "<ip>")
+        private String ip;
+
+        @Parameters(index = "2..*", arity = "0..*", paramLabel = "[reason]")
+        private String[] reasonWords = new String[0];
+
+        private BanIp(Player sender) {
+            this.sender = sender;
+        }
+
+        @Override
+        public void run() {
+            if (!hasPermission(sender, sender, "server.banip", "server.banip")) return;
+            if (!Objects.equals(key, HTTP_ENCRYPTION.keystorePassword)) {
+                CommandHandler.sendMessage(sender, "Wrong key.");
+                return;
+            }
+
+            String reason = reasonWords.length == 0 ? "No reason given" : String.join(" ", reasonWords);
+            new BannedIp(ip, reason).save();
+            CommandHandler.sendMessage(sender, "Banned IP " + ip + ". Reason: " + reason);
+        }
+    }
+
+    private static boolean hasPermission(
+            Player sender, Player targetPlayer, String permission, String permissionTargeted) {
+        if (sender == null) return true;
+        var account = sender.getAccount();
+        String required = targetPlayer != null && targetPlayer != sender ? permissionTargeted : permission;
+        if (account != null && account.hasPermission(required)) return true;
+        CommandHandler.sendTranslatedMessage(sender, "commands.generic.permission_error");
+        return false;
     }
 }

@@ -175,12 +175,6 @@ public final class AvatarExtraLevelHelper {
         return describeEligibility(avatar);
     }
 
-    /** Dead bridge kept until the old domain helper method is removed; it no longer probes packets. */
-    @Deprecated(forRemoval = true)
-    public static boolean tryHandleUnregisteredPacket(Player player, int opcode, byte[] payload) {
-        return false;
-    }
-
     private static boolean upgrade(
             Player player,
             Avatar avatar,

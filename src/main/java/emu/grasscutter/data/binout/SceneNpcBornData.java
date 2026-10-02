@@ -2,6 +2,7 @@ package emu.grasscutter.data.binout;
 
 import com.github.davidmoten.rtreemulti.RTree;
 import com.github.davidmoten.rtreemulti.geometry.Geometry;
+import com.google.gson.annotations.SerializedName;
 import emu.grasscutter.scripts.data.SceneGroup;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,6 +13,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SceneNpcBornData {
     int sceneId;
+
+    @SerializedName("GJLIHAJHKEO")
     List<SceneNpcBornEntry> bornPosList;
 
     /** Spatial Index For NPC */

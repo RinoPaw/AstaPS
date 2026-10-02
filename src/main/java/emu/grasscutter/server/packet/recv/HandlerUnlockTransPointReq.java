@@ -56,8 +56,8 @@ public class HandlerUnlockTransPointReq extends PacketHandler {
                         req.getSceneId(),
                         req.getPointId(),
                         unlocked);
-        // UnlockTransPointRsp has no known 7.1 CmdId, so the client never hears back and leaves the
-        // point drawn as locked. Resend the scene's point list, as the statue auto-unlock does.
+        // UnlockTransPointRsp still has no confirmed 7.1 CmdId. Keep the full point-list refresh as
+        // a gameplay fallback while the current-client live notification path is validated separately.
         if (unlocked) {
             player.sendPacket(
                     new emu.grasscutter.server.packet.send.PacketGetScenePointRsp(

@@ -2,6 +2,7 @@ package emu.grasscutter.data.binout;
 
 import com.github.davidmoten.rtreemulti.RTree;
 import com.github.davidmoten.rtreemulti.geometry.Geometry;
+import com.google.gson.annotations.SerializedName;
 import emu.grasscutter.scripts.data.SceneGroup;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,6 +13,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SceneNpcBornData {
     int sceneId;
+
+    // 7.1 obfuscates this key. Reading only the historical name leaves every loaded scene with an
+    // empty NPC spawn table, so accept the current resource key while keeping the readable name.
+    @SerializedName(value = "bornPosList", alternate = {"GJLIHAJHKEO"})
     List<SceneNpcBornEntry> bornPosList;
 
     /** Spatial Index For NPC */

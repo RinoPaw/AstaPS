@@ -87,11 +87,7 @@ public class AbilityMixinData implements Serializable {
         DoActionByElementReactionMixin,
         DoActionBySelfElementReactionMixin
     }
-    public AbilityModifierAction[] idontknowwhattonamethis;
-    public AbilityModifierAction[] idontknowwhattonamethis2;
 
-    // Newer ability data uses these generic action/reaction fields. Keep them
-    // alongside the legacy names so both data versions deserialize correctly.
     public AbilityModifierAction[] actions;
     public AbilityModifierAction[] actionQueue;
     public List<String> reactionTypes = new ArrayList<>();
@@ -111,10 +107,10 @@ public class AbilityMixinData implements Serializable {
     public AbilityModifierAction[] onTriggerUltimateSkill;
 
     public AbilityModifierAction[] IOKPLLOKGGJ;
-    
+
     @SerializedName("onKill")
     public AbilityModifierAction[] onKill;
-    
+
     @SerializedName("successActions")
     public AbilityModifierAction[] successActions;
 
@@ -126,7 +122,6 @@ public class AbilityMixinData implements Serializable {
 
     public JsonElement modifierName;
 
-
     public DynamicFloat speed = DynamicFloat.ZERO;
     public DynamicFloat costStaminaDelta = DynamicFloat.ZERO;
     public DynamicFloat ratio = DynamicFloat.ONE;
@@ -136,13 +131,16 @@ public class AbilityMixinData implements Serializable {
     public String stateID;
     public DynamicFloat defaultGlobalValueOnCreate = DynamicFloat.ZERO;
     public List<DynamicFloat> ratioSteps = new ArrayList<>();
+
     @JsonAdapter(JsonAdapters.ModifierNameStepsAdapter.class)
     public List<String> modifierNameSteps = new ArrayList<>();
+
     public boolean EJEMBMFPBKF = true;
     public boolean isCheckOnAttach = true;
     public boolean AMFABNCKJNG = true;
     public boolean forceStopWhenRemoved = true;
     public boolean FKAJIEOFOAB = true;
+
     public List<String> getModifierNames() {
         if (modifierName.isJsonArray()) {
             java.lang.reflect.Type listType = (new TypeToken<List<String>>() {}).getType();

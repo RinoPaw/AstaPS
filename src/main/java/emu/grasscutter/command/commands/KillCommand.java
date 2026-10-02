@@ -5,7 +5,6 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.PicocliCommandHandler;
-import emu.grasscutter.config.Configuration;
 import emu.grasscutter.game.entity.EntityAvatar;
 import emu.grasscutter.game.entity.EntityMonster;
 import emu.grasscutter.game.entity.GameEntity;
@@ -16,7 +15,6 @@ import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.server.packet.send.PacketEntityFightPropUpdateNotify;
 import emu.grasscutter.server.packet.send.PacketLifeStateChangeNotify;
 import java.util.List;
-import java.util.Objects;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
@@ -49,10 +47,7 @@ public final class KillCommand implements PicocliCommandHandler {
         private final Player sender;
         private final Player targetPlayer;
 
-        @Parameters(index = "0", paramLabel = "<key>")
-        private String key;
-
-        @Parameters(index = "1", arity = "0..1", paramLabel = "[sceneId]")
+        @Parameters(index = "0", arity = "0..1", paramLabel = "[sceneId]")
         private Integer sceneId;
 
         private KillAll(Player sender, Player targetPlayer) {
@@ -63,10 +58,6 @@ public final class KillCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (!hasPermission(sender, targetPlayer, "server.killall", "server.killall.others")) return;
-            if (!Objects.equals(key, Configuration.HTTP_ENCRYPTION.keystorePassword)) {
-                CommandHandler.sendMessage(sender != null ? sender : targetPlayer, "Wrong key");
-                return;
-            }
 
             Scene scene =
                     sceneId == null

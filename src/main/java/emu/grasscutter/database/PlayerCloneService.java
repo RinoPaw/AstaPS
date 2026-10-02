@@ -78,9 +78,8 @@ public final class PlayerCloneService {
         // Allocate the account id before the barrier. getNextId queues its counter save on a
         // database writer; acquiring the barrier below waits for that save to finish.
         String targetAccountId = Integer.toString(DatabaseManager.getNextId(Account.class));
+        int targetUid = 0;
 
-        Account targetAccount = null;
-        boolean targetPersisted = false;
         try {
             try (DatabaseWriteBarrier ignored = DatabaseWriteBarrier.acquire()) {
                 // Close the races between the initial validation and the stable snapshot window.
@@ -90,7 +89,7 @@ public final class PlayerCloneService {
                             "Target account already exists: " + targetUsername);
                 }
 
-                int targetUid =
+                targetUid =
                         requestedUid == 0 ? allocateTargetUid() : validateRequestedUid(requestedUid);
                 int sourceUid = sourcePlayer.getUid();
 
@@ -102,12 +101,8 @@ public final class PlayerCloneService {
                             "Source player document disappeared while cloning UID " + sourceUid);
                 }
 
-                targetAccount =
-                        createTargetAccount(
-                                sourceAccount, targetUsername, targetAccountId, targetUid);
-                DatabaseManager.getAccountDatastore().save(targetAccount);
-                targetPersisted = true;
-
+                // Persist the player graph before publishing the account. Until the account document
+                // exists, the snapshot cannot be logged into half-cloned.
                 Document targetPlayerDocument = new Document(sourcePlayerDocument);
                 targetPlayerDocument.put("_id", targetUid);
                 targetPlayerDocument.put("accountId", targetAccountId);
@@ -125,18 +120,55 @@ public final class PlayerCloneService {
                     }
                 }
 
+                // If the source came back while the snapshot was being copied, refuse to publish it.
+                ensureOffline(sourceAccount);
+
+                Account targetAccount =
+                        createTargetAccount(
+                                sourceAccount, targetUsername, targetAccountId, targetUid);
+                DatabaseManager.getAccountDatastore().save(targetAccount);
+
                 return new CloneResult(sourceUid, targetUid, clonedDocuments);
             }
         } catch (RuntimeException | Error failure) {
-            if (targetPersisted && targetAccount != null) {
+            if (targetUid > 0) {
                 try {
-                    AccountDeletionService.delete(targetAccount);
+                    rollbackClone(targetUid, targetAccountId);
                 } catch (RuntimeException | Error rollbackFailure) {
                     failure.addSuppressed(rollbackFailure);
                 }
             }
             throw failure;
         }
+    }
+
+    private static void rollbackClone(int targetUid, String targetAccountId) {
+        var database = DatabaseManager.getGameDatabase();
+        var players = database.getCollection("players");
+        Document targetPlayer =
+                players
+                        .find(
+                                com.mongodb.client.model.Filters.and(
+                                        eq("_id", targetUid), eq("accountId", targetAccountId)))
+                        .first();
+
+        // Only remove UID-owned data when the player document proves this clone owns that UID.
+        // If another writer won a UID race before our player insert, leave its data untouched.
+        if (targetPlayer != null) {
+            for (OwnedCollection owned : OWNED_COLLECTIONS) {
+                database
+                        .getCollection(owned.name())
+                        .deleteMany(eq(owned.ownerField(), targetUid));
+            }
+            players.deleteOne(
+                    com.mongodb.client.model.Filters.and(
+                            eq("_id", targetUid), eq("accountId", targetAccountId)));
+        }
+
+        DatabaseManager.getAccountDatastore()
+                .find(Account.class)
+                .filter(dev.morphia.query.experimental.filters.Filters.eq("id", targetAccountId))
+                .delete();
     }
 
     private static Account createTargetAccount(

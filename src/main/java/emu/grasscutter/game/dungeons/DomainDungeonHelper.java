@@ -34,7 +34,6 @@ import emu.grasscutter.data.common.PointData;
 import emu.grasscutter.data.excels.dungeon.DungeonData;
 import emu.grasscutter.data.excels.dungeon.DungeonEntryData;
 import emu.grasscutter.game.avatar.AvatarExtraLevelHelper;
-import emu.grasscutter.game.battlepass.BattlePassBuyHelper;
 import emu.grasscutter.game.dungeons.DomainChallengeKeyHelper;
 import emu.grasscutter.game.dungeons.DomainContinueSpawnHelper;
 import emu.grasscutter.game.dungeons.DomainSceneResetHelper;
@@ -482,9 +481,6 @@ public final class DomainDungeonHelper {
     }
 
     public static boolean tryHandleUnregisteredPacket(GameServerPacketHandler gameServerPacketHandler, GameSession gameSession, int n, byte[] byArray) {
-        if (gameSession != null && byArray != null && BattlePassBuyHelper.tryHandle(gameSession.getPlayer(), n, byArray)) {
-            return true;
-        }
         if (gameSession == null || byArray == null) {
             return false;
         }
@@ -547,4 +543,3 @@ public final class DomainDungeonHelper {
         CLIENT_SCENE_CACHE.defaultReturnValue(Integer.MIN_VALUE);
     }
 }
-

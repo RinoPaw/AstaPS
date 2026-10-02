@@ -38,7 +38,18 @@ public interface PlayerHook {
     }
 
     default void reviveAvatar(Avatar avatar) {
-        this.broadcastPacketToWorld(new PacketAvatarLifeStateChangeNotify(avatar));
+        EntityAvatar entity = avatar != null ? avatar.getAsEntity() : null;
+        if (entity != null && entity.isDead()) {
+            float maxHp = entity.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP);
+            float curHp = entity.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP);
+            float ratio = maxHp > 0f && curHp > 0f ? curHp / maxHp : 0f;
+            if (entity.reviveToRatio(ratio) > 0f) {
+                return;
+            }
+        }
+        if (avatar != null) {
+            this.broadcastPacketToWorld(new PacketAvatarLifeStateChangeNotify(avatar));
+        }
     }
 
     default void teleport(Position position) {

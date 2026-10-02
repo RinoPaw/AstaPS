@@ -2,6 +2,7 @@ package emu.grasscutter.database;
 
 import static com.mongodb.client.model.Filters.eq;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.mongodb.MongoWriteException;
 
 import dev.morphia.query.*;
@@ -199,6 +200,14 @@ public final class DatabaseHelper {
     /** The reason text written on an account auto-banned by an IP ban. */
     public static final String IP_BAN_REASON_PREFIX = "Banned IP: ";
 
+    /**
+     * The prefix used before the ban reason was in English.
+     *
+     * <p>Accounts banned back then carry it and have no bannedByIp field, so unbanning an IP still
+     * matches on it to find them. Nothing writes it any more.
+     */
+    private static final String LEGACY_IP_BAN_REASON_PREFIX = "IP\u5df2\u5c01\u7981: ";
+
     public static void saveBannedIp(BannedIp bannedIp) {
         DatabaseHelper.eventExecutorAccount.submit(
                 () -> DatabaseManager.getAccountDatastore().save(bannedIp));
@@ -223,12 +232,24 @@ public final class DatabaseHelper {
         return true;
     }
 
-    /** Returns every account currently associated with this banned IP. */
+    /**
+     * Every account that was banned because of this IP.
+     *
+     * <p>Matched on the bannedByIp field, with the old reason-text pattern as a fallback so
+     * accounts banned before that field existed are still found.
+     */
     public static List<Account> getAccountsBannedByIp(String ip) {
         if (ip == null) return List.of();
         return DatabaseManager.getAccountDatastore()
                 .find(Account.class)
-                .filter(Filters.eq("bannedByIp", ip))
+                .filter(
+                        Filters.or(
+                                Filters.eq("bannedByIp", ip),
+                                Filters.regex("banReason")
+                                        .pattern(
+                                                "^"
+                                                        + java.util.regex.Pattern.quote(
+                                                                LEGACY_IP_BAN_REASON_PREFIX + ip))))
                 .iterator()
                 .toList();
     }
@@ -431,21 +452,41 @@ public final class DatabaseHelper {
         return account;
     }
 
-    /** Creates an account with a password and optional email address in one database save. */
-    public static Account createAccountWithPassword(String username, String password) {
-        return createAccountWithPassword(username, password, null);
-    }
-
-    /** Creates an account with a password and optional email address in one database save. */
-    public static Account createAccountWithPassword(
+    /**
+     * Creates an account with a hashed password and an email address.
+     *
+     * <p>Separate from the two-argument version, which stores whatever it is handed verbatim.
+     * Account.verifyPassword accepts both a BCrypt hash and a legacy plaintext value, so a password
+     * stored raw does work - it just stays raw forever, since the authenticator only upgrades an
+     * account whose stored password is empty.
+     *
+     * @return the new account, or null if the username is taken.
+     */
+    public static Account createAccountWithHashedPassword(
             String username, String password, String email) {
         if (DatabaseHelper.getAccountByName(username) != null) return null;
 
         var account = new Account();
         account.setId(Integer.toString(DatabaseManager.getNextId(account)));
         account.setUsername(username);
-        account.setPassword(password);
+        account.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
         if (email != null && !email.isBlank()) account.setEmail(email);
+        DatabaseHelper.saveAccount(account);
+        return account;
+    }
+
+    public static Account createAccountWithPassword(String username, String password) {
+        // Unique names only
+        Account exists = DatabaseHelper.getAccountByName(username);
+        if (exists != null) {
+            return null;
+        }
+
+        // Account
+        Account account = new Account();
+        account.setId(Integer.toString(DatabaseManager.getNextId(account)));
+        account.setUsername(username);
+        account.setPassword(password);
         DatabaseHelper.saveAccount(account);
         return account;
     }

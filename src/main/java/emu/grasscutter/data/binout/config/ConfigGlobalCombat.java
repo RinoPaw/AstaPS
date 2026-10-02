@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class ConfigGlobalCombat {
-    @SerializedName("AMCKFHGNPKG")
+    @SerializedName("EHNGNAOKIPB")
     private DefaultAbilities defaultAbilities;
     // TODO: Add more indices
 
@@ -14,9 +14,7 @@ public class ConfigGlobalCombat {
         return this.defaultAbilities == null;
     }
 
-    /**
-     * Never null: every entity's ability setup (the world entity first, during login) reads it.
-     */
+    /** Never null: every entity's ability setup (the world entity first, during login) reads it. */
     public DefaultAbilities getDefaultAbilities() {
         if (this.defaultAbilities == null) this.defaultAbilities = new DefaultAbilities();
         return this.defaultAbilities;
@@ -24,31 +22,31 @@ public class ConfigGlobalCombat {
 
     @Data
     public static class DefaultAbilities {
-        @SerializedName("PPMJNPKNHKA")
+        @SerializedName("CIPPBKBJJFH")
         private String monterEliteAbilityName;
 
-        @SerializedName("OMNNGPJABEN")
+        @SerializedName("LDHLMPMOPKL")
         private List<String> nonHumanoidMoveAbilities;
 
-        @SerializedName("NBGIHCJLEMN")
+        @SerializedName("BJIFBDHAJMN")
         private List<String> levelDefaultAbilities;
 
-        @SerializedName("KAFFOECHNIC")
+        @SerializedName("NEEHFCBBAKF")
         private List<String> levelElementAbilities;
 
-        @SerializedName("OCMDEFNBPON")
+        @SerializedName("NFEJCNKAEEK")
         private List<String> levelItemAbilities;
 
-        @SerializedName("NOAFAICCJNP")
+        @SerializedName("GBDLFMJEKIC")
         private List<String> levelSBuffAbilities;
 
-        @SerializedName("CBCMIDPBDLI")
+        @SerializedName("NHHFOOAIHIA")
         private List<String> defaultMPLevelAbilities;
 
-        @SerializedName("DJOGIFBLBIF")
+        @SerializedName("PPLPBDDJMGM")
         private List<String> defaultAvatarAbilities;
 
-        @SerializedName("NHDLFGILBIL")
+        @SerializedName("GPNPNBPEDOB")
         private List<String> defaultTeamAbilities;
 
         public List<String> getNonHumanoidMoveAbilities() {

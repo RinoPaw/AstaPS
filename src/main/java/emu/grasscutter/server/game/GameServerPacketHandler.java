@@ -171,11 +171,6 @@ public final class GameServerPacketHandler {
         if (!PacketOpcodesUtils.LOOP_PACKETS.contains(opcode)
                 && opcode != PacketOpcodes.PingReq
                 && opcode != PacketOpcodes.PingRsp) {
-            if (session.getPlayer() != null
-                    && emu.grasscutter.game.entity.gadget.OfferingHelper.tryHandleUnknownOfferingReq(
-                            session.getPlayer(), opcode, payload, header)) {
-                return;
-            }
             String hex = "";
             if (payload != null && payload.length > 0 && payload.length <= 128) {
                 StringBuilder sb = new StringBuilder(payload.length * 2);

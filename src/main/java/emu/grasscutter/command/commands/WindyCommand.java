@@ -4,47 +4,122 @@ import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.server.packet.send.PacketWindSeedClientNotify;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import emu.grasscutter.server.packet.send.PacketWindSeedUID;
+import emu.grasscutter.server.packet.send.PacketWindy;
+import java.util.Set;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
-@Command(
-        label = "windy",
-        permission = "server.windy",
-        targetRequirement = Command.TargetRequirement.PLAYER)
+@Command(label = "windy")
 public final class WindyCommand implements PicocliCommandHandler {
+    private static final Set<Double> SUPPORTED_SPEEDS =
+            Set.of(0.1, 0.2, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0);
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
-        return new CommandLine(new Args(sender, targetPlayer));
+        var commandLine = new CommandLine(new Root(sender));
+        commandLine.addSubcommand("fps", new Packaged(sender, targetPlayer, "fps", "FPS script sent."));
+        commandLine.addSubcommand("speed", new Speed(sender, targetPlayer));
+        commandLine.addSubcommand(
+                "hide-ui", new Packaged(sender, targetPlayer, "HideUI", "UI hidden successfully."));
+        commandLine.addSubcommand(
+                "no-fog", new Packaged(sender, targetPlayer, "fog", "No-fog script sent."));
+        commandLine.addSubcommand(
+                "remove-censorship",
+                new Packaged(
+                        sender,
+                        targetPlayer,
+                        "RemoveCensorship",
+                        "Remove-censorship script sent."));
+        commandLine.addSubcommand("uid", new Uid(sender, targetPlayer));
+        return commandLine;
     }
 
     @CommandLine.Command(name = "windy")
-    private static final class Args implements Runnable {
+    private final class Root implements Runnable {
+        private final Player sender;
+
+        private Root(Player sender) {
+            this.sender = sender;
+        }
+
+        @Override
+        public void run() {
+            WindyCommand.this.sendUsageMessage(sender);
+        }
+    }
+
+    private static final class Packaged implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+        private final String script;
+        private final String success;
+
+        private Packaged(Player sender, Player targetPlayer, String script, String success) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
+            this.script = script;
+            this.success = success;
+        }
+
+        @Override
+        public void run() {
+            if (!hasPermission(sender, targetPlayer)) return;
+            targetPlayer.sendPacket(new PacketWindy(script));
+            CommandHandler.sendMessage(sender, success);
+        }
+    }
+
+    @CommandLine.Command(name = "speed")
+    private final class Speed implements Runnable {
         private final Player sender;
         private final Player targetPlayer;
 
-        @Parameters(index = "0", paramLabel = "<lua>")
-        private String lua;
+        @Parameters(index = "0", paramLabel = "<speed>")
+        private double speed;
 
-        private Args(Player sender, Player targetPlayer) {
+        private Speed(Player sender, Player targetPlayer) {
             this.sender = sender;
             this.targetPlayer = targetPlayer;
         }
 
         @Override
         public void run() {
-            Path fullPath = Paths.get(".").toAbsolutePath().normalize().resolve("lua").resolve(lua);
-            try {
-                targetPlayer.sendPacket(new PacketWindSeedClientNotify(Files.readAllBytes(fullPath)));
-                CommandHandler.sendMessage(sender, "Read BYTECODE from Lua script: " + fullPath);
-            } catch (IOException e) {
-                CommandHandler.sendMessage(sender, "Error reading Lua script: " + e.getMessage());
+            if (!hasPermission(sender, targetPlayer)) return;
+            if (!SUPPORTED_SPEEDS.contains(speed)) {
+                WindyCommand.this.sendUsageMessage(sender);
+                return;
             }
+            String text = Double.toString(speed);
+            targetPlayer.sendPacket(new PacketWindy("GameSpeed/speed" + text));
+            CommandHandler.sendMessage(sender, "GameSpeed changed to " + text + " successfully!");
         }
+    }
+
+    @CommandLine.Command(name = "uid")
+    private static final class Uid implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        private Uid(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
+        }
+
+        @Override
+        public void run() {
+            if (!hasPermission(sender, targetPlayer)) return;
+            targetPlayer.sendPacket(new PacketWindSeedUID());
+            CommandHandler.sendMessage(sender, "Loaded the packaged UID watermark script.");
+        }
+    }
+
+    private static boolean hasPermission(Player sender, Player targetPlayer) {
+        if (sender == null) return true;
+        var account = sender.getAccount();
+        String required = targetPlayer != sender ? "player.windy.others" : "player.windy";
+        if (account != null && account.hasPermission(required)) return true;
+        CommandHandler.sendTranslatedMessage(sender, "commands.generic.permission_error");
+        return false;
     }
 }

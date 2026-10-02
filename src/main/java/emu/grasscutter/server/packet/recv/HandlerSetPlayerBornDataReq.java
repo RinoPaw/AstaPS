@@ -74,6 +74,9 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             session.send(new PacketSetPlayerBornDataRsp());
         }
         session.send(new PacketPlayerNicknameNotify(req.getNickName()));
+        // Publish the selected Traveler before the native intro consumes player state. Full
+        // onLogin() remains delayed until the pause-cycle scene-entry handoff below.
+        session.send(new PacketAvatarDataNotify(player));
 
         // Normal packets (including the pause-cycle signal below) arrive after 26105, so leave the
         // character-picking router state before returning from this handler.

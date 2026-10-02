@@ -51,7 +51,7 @@ public class PlayerGachaInfo {
         return switch (banner.getBannerType()) {
             case STANDARD -> this.getStandardBanner();
             case BEGINNER -> this.getBeginnerBanner();
-            case EVENT, CHARACTER, CHARACTER2 -> this.getEventCharacterBanner();
+            case CHARACTER, CHARACTER2 -> this.getEventCharacterBanner();
             case WEAPON -> this.getEventWeaponBanner();
             case CHRONICLE -> this.getChronicleBanner();
         };

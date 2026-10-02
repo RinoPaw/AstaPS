@@ -23,10 +23,7 @@ public final class SafeBattlePassSchedule {
         int point = battlePassManager != null ? battlePassManager.getPoint() : 0;
         int cyclePoints = battlePassManager != null ? battlePassManager.getCyclePoints() : 0;
         boolean paid = battlePassManager != null && battlePassManager.isPaid();
-        int plan =
-                battlePassManager != null && battlePassManager.getPlayer() != null
-                        ? Math.max(1, BattlePassCompatHelper.getSelectedPlan(battlePassManager.getPlayer()))
-                        : 1;
+        int plan = battlePassManager != null ? battlePassManager.getSelectedRewardPlan() : 1;
 
         LocalDate today = LocalDate.now();
         LocalDate nextSunday =

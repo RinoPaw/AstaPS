@@ -111,6 +111,9 @@ public class SotSManager extends BasePlayerManager {
     }
 
     public void checkAndHealAvatar(EntityAvatar entity) {
+        if (entity == null || !entity.isAlive()) {
+            return;
+        }
         int maxHP = (int) (entity.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP) * 100);
         int currentHP = (int) (entity.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP) * 100);
         if (currentHP == maxHP) {
@@ -239,8 +242,6 @@ public class SotSManager extends BasePlayerManager {
         var city = this.getCityByAreaId(areaId);
         if (city == null) return;
         var cityId = city.getCityId();
-
-        var cityInfo = this.getCityInfo(cityId);
         int remainingOffer = itemNum;
         int totalConsumed = 0;
         boolean anyLevelUp = false;

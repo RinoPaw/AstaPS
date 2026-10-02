@@ -982,14 +982,11 @@ public final class TeamManager extends BasePlayerDataManager {
                     return false;
                 }
 
-                entity.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, 1f);
+                if (entity.reviveToRatio(0f) <= 0f) {
+                    return false;
+                }
 
                 player.getSatiationManager().removeSatiationDirectly(entity.getAvatar(), 15000);
-                this.getPlayer()
-                    .sendPacket(
-                        new PacketAvatarFightPropUpdateNotify(
-                            entity.getAvatar(), FightProperty.FIGHT_PROP_CUR_HP));
-                this.getPlayer().sendPacket(new PacketAvatarLifeStateChangeNotify(entity.getAvatar()));
                 return true;
             }
         }
@@ -1032,15 +1029,18 @@ public final class TeamManager extends BasePlayerDataManager {
             .stopSustainedStaminaHandler();
 
         for (EntityAvatar entity : this.getActiveTeam()) {
-            entity.setFightProperty(
-                FightProperty.FIGHT_PROP_CUR_HP,
-                entity.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP) * .4f);
+            if (entity.isDead()) {
+                entity.reviveToRatio(0.4f);
+            } else {
+                entity.setFightProperty(
+                    FightProperty.FIGHT_PROP_CUR_HP,
+                    entity.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP) * .4f);
+                this.getPlayer()
+                    .sendPacket(
+                        new PacketAvatarFightPropUpdateNotify(
+                            entity.getAvatar(), FightProperty.FIGHT_PROP_CUR_HP));
+            }
             this.getPlayer().getSatiationManager().removeSatiationDirectly(entity.getAvatar(), 15000);
-            this.getPlayer()
-                .sendPacket(
-                    new PacketAvatarFightPropUpdateNotify(
-                        entity.getAvatar(), FightProperty.FIGHT_PROP_CUR_HP));
-            this.getPlayer().sendPacket(new PacketAvatarLifeStateChangeNotify(entity.getAvatar()));
         }
 
         try {

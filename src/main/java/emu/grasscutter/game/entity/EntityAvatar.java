@@ -71,7 +71,7 @@ public class EntityAvatar extends GameEntity {
 
         this.initAbilities();
 
-        this.checkIfDead();
+        this.tryDie();
     }
     public long getLastExecutionTime() {
         return this.lastExecutionTime;

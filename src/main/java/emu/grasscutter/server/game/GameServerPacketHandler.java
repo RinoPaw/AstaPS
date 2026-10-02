@@ -5,7 +5,6 @@ import static emu.grasscutter.config.Configuration.SERVER;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Grasscutter.ServerDebugMode;
-import emu.grasscutter.game.systems.ReliquaryDustSystem;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.server.event.game.ReceivePacketEvent;
@@ -67,22 +66,6 @@ public final class GameServerPacketHandler {
             this.registerPacketHandler(
                     emu.grasscutter.server.packet.recv.HandlerSeeMonsterReq.class);
         }
-        // ReliquaryDust (artifact reshaping / 105006)
-        registerIfAbsent(
-                ReliquaryDustSystem.OPCODE_DUST_REQ,
-                emu.grasscutter.server.packet.recv.HandlerReliquaryDustReq.class);
-        registerIfAbsent(
-                ReliquaryDustSystem.OPCODE_DUST_COMPANION_REQ,
-                emu.grasscutter.server.packet.recv.HandlerReliquaryDustCompanionReq.class);
-        registerIfAbsent(
-                ReliquaryDustSystem.OPCODE_DUST_SELECT_REQ,
-                emu.grasscutter.server.packet.recv.HandlerReliquaryDustSelectReq.class);
-        registerIfAbsent(
-                ReliquaryDustSystem.OPCODE_DUST_CONFIRM_REQ_A,
-                emu.grasscutter.server.packet.recv.HandlerReliquaryDustConfirmReqA.class);
-        registerIfAbsent(
-                ReliquaryDustSystem.OPCODE_DUST_CONFIRM_REQ_B,
-                emu.grasscutter.server.packet.recv.HandlerReliquaryDustConfirmReqB.class);
 
         // Ensure the current BuyResinReq handler is registered at its confirmed wire opcode.
         if (!this.handlers.containsKey(PacketOpcodes.BuyResinReq)) {
@@ -129,11 +112,6 @@ public final class GameServerPacketHandler {
 
         if (handler != null) {
             try {
-                if (session.getPlayer() != null) {
-                    emu.grasscutter.game.systems.ReliquaryDustSystem.noteRecvOpcode(
-                            session.getPlayer(), opcode);
-                }
-
                 SessionState state = session.getState();
 
                 if (opcode == PacketOpcodes.PingReq) {
@@ -192,10 +170,6 @@ public final class GameServerPacketHandler {
                     hex
                 };
                 logger.debug(line, args);
-            }
-            if (session.getPlayer() != null) {
-                emu.grasscutter.game.systems.ReliquaryDustSystem.noteRecvOpcode(
-                        session.getPlayer(), opcode);
             }
         }
     }

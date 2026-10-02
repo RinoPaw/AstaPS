@@ -26,7 +26,6 @@ public final class TeapotCommand implements PicocliCommandHandler {
         commandLine.addSubcommand("unlockmodule", new UnlockModule(sender, targetPlayer));
         commandLine.addSubcommand("lockmodule", new LockModule(sender, targetPlayer));
         commandLine.addSubcommand("giveallfurniture", new GiveFurniture(sender, targetPlayer));
-        commandLine.addSubcommand("refreshlimitedshop", new RefreshLimitedShop(sender));
         return commandLine;
     }
 
@@ -54,6 +53,7 @@ public final class TeapotCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "setlevel")
     private static final class SetLevel extends PlayerCommand {
         @Parameters(index = "0", paramLabel = "<level>")
         private int level;
@@ -75,6 +75,7 @@ public final class TeapotCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "unlockmodule")
     private static final class UnlockModule extends PlayerCommand {
         @Parameters(index = "0", paramLabel = "<1-4>")
         private int module;
@@ -85,9 +86,7 @@ public final class TeapotCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
-            if (!validModule(sender, module)) {
-                return;
-            }
+            if (!validModule(sender, module)) return;
             if (targetPlayer.getRealmList() != null && targetPlayer.getRealmList().contains(module)) {
                 CommandHandler.sendMessage(
                         sender, translate(sender, "commands.teapot.unlock_module_contain_error"));
@@ -102,6 +101,7 @@ public final class TeapotCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "lockmodule")
     private static final class LockModule extends PlayerCommand {
         @Parameters(index = "0", paramLabel = "<1-4>")
         private int module;
@@ -112,9 +112,7 @@ public final class TeapotCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
-            if (!validModule(sender, module)) {
-                return;
-            }
+            if (!validModule(sender, module)) return;
             if (module == targetPlayer.getCurrentRealmId()) {
                 CommandHandler.sendMessage(
                         sender, translate(sender, "commands.teapot.lock_module_in_scene_error"));
@@ -138,6 +136,7 @@ public final class TeapotCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "giveallfurniture")
     private static final class GiveFurniture extends PlayerCommand {
         @Parameters(index = "0", paramLabel = "<count>")
         private int count;
@@ -153,27 +152,10 @@ public final class TeapotCommand implements PicocliCommandHandler {
                 return;
             }
             for (ItemData item : GameData.getItemDataMap().values()) {
-                if (item.getFurnType() == null || item.getFurnType().isEmpty()) {
-                    continue;
-                }
+                if (item.getFurnType() == null || item.getFurnType().isEmpty()) continue;
                 targetPlayer.getInventory().addItem(item.getId(), count);
             }
             CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.give_furniture_success"));
-        }
-    }
-
-    @CommandLine.Command(name = "refreshlimitedshop")
-    private static final class RefreshLimitedShop implements Runnable {
-        private final Player sender;
-
-        private RefreshLimitedShop(Player sender) {
-            this.sender = sender;
-        }
-
-        @Override
-        public void run() {
-            CommandHandler.sendMessage(
-                    sender, translate(sender, "commands.teapot.refresh_limited_shop_success"));
         }
     }
 

@@ -10,10 +10,7 @@ import emu.grasscutter.net.proto.BeyondBattlePassProduct._BeyondBattlePassProduc
 import emu.grasscutter.net.proto.BeyondBattlePassSchedule._BeyondBattlePassSchedule;
 import java.util.Collection;
 
-/**
- * Builds the Miliastra (Beyond) battle pass packets. These used to be hand-encoded with field
- * numbers from an older client; 7.1 names every field, so the generated classes are used.
- */
+/** Builds the Miliastra (Beyond) battle pass packets with the 7.1 generated protobuf classes. */
 public final class BeyondBattlePassWireEncoder {
     public static final int FIXED_BEGIN = 1785528000;
     public static final int FIXED_END = 1795982399;
@@ -70,8 +67,8 @@ public final class BeyondBattlePassWireEncoder {
                 .setUnlockStatusValue(paid ? 2 : 1)
                 .setGOKJFDPPOHF(SCHEDULE_ID)
                 .setLevel(level)
-                .setBeginTime(BattlePassCompatHelper.beginTime())
-                .setEndTime(BattlePassCompatHelper.endTime())
+                .setBeginTime(FIXED_BEGIN)
+                .setEndTime(FIXED_END)
                 .setScheduleId(SCHEDULE_ID)
                 .setProductInfo(product())
                 .build();

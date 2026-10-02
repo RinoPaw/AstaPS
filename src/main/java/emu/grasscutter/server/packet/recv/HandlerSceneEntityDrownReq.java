@@ -23,7 +23,9 @@ public class HandlerSceneEntityDrownReq extends PacketHandler {
         entity.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, 0);
 
         // TODO: make a list somewhere of all entities to remove per tick rather than one by one
-        session.getPlayer().getScene().killEntity(entity, 0);
+        if (entity.checkIfDead()) {
+            session.getPlayer().getScene().killEntity(entity, 0);
+        }
         session
                 .getPlayer()
                 .getScene()

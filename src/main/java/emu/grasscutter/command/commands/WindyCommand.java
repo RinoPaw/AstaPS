@@ -49,6 +49,7 @@ public final class WindyCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "packaged")
     private static final class Packaged implements Runnable {
         private final Player sender;
         private final Player targetPlayer;

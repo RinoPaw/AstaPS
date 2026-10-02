@@ -25,9 +25,9 @@ public class BattlePassManager extends BasePlayerDataManager {
     @Getter private int point;
     @Getter private int cyclePoints; // Weekly maximum cap
     @Getter private int level;
+    @Getter private int selectedRewardPlan = 1;
 
     @Getter private boolean viewed;
-    private boolean paid;
 
     private Map<Integer, BattlePassMission> missions;
     private Map<Integer, BattlePassReward> takenRewards;
@@ -47,6 +47,10 @@ public class BattlePassManager extends BasePlayerDataManager {
 
     public void updateViewed() {
         this.viewed = true;
+    }
+
+    public void setSelectedRewardPlan(int plan) {
+        this.selectedRewardPlan = Math.max(1, plan);
     }
 
     public boolean setLevel(int level) {
@@ -344,10 +348,7 @@ public class BattlePassManager extends BasePlayerDataManager {
         this.getPlayer().sendPacket(new PacketBattlePassCurScheduleUpdateNotify(this.getPlayer()));
     }
 
-    //
     public BattlePassSchedule getScheduleProto() {
-        // LunaGC/0be043a path: schedule 6700 + reward plans. The old inline 2700 proto had no
-        // reward-plan options, so the client showed an empty track and a ~3000-day timer.
         return SafeBattlePassSchedule.build(this);
     }
 

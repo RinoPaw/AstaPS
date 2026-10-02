@@ -76,6 +76,9 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
             session.send(new PacketSetPlayerBornDataRsp());
             session.send(new PacketPlayerNicknameNotify(req.getNickName()));
+            // Keep the native 7.1 intro gate, but publish the selected traveler before that intro
+            // consumes player state. Full onLogin() remains delayed until the native pause cutover.
+            session.send(new PacketAvatarDataNotify(player));
 
             // 7.1 keeps the native second intro client-side after accepting 26105. Keep the session
             // ACTIVE, but do not establish World/Scene until the second observed false->true pause

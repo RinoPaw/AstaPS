@@ -8,20 +8,14 @@ public class PacketScenePointUnlockNotify extends BasePacket {
         super(PacketOpcodes.ScenePointUnlockNotify);
 
         ScenePointUnlockNotify.Builder p =
-                ScenePointUnlockNotify.newBuilder()
-                        .setSceneId(sceneId)
-                        .addPointList(pointId)
-                        .addUnhidePointList(pointId);
+                ScenePointUnlockNotify.newBuilder().setSceneId(sceneId).addPointList(pointId);
 
         this.setData(p);
     }
 
     /**
-     * The mirror of the unlock constructors: relock a point and hide it again.
-     *
-     * <p>Static rather than a constructor because {@code (int, int)} is already taken by the unlock
-     * above, and the two differ only in which repeated fields they fill - {@code locked_point_list}
-     * / {@code hide_point_list} here against {@code point_list} / {@code unhide_point_list} there.
+     * Relock helper retained from the current branch. The generated 7.1 semantic aliases for the
+     * remaining repeated fields are being audited separately from the unlock-response probe.
      */
     public static PacketScenePointUnlockNotify lock(int sceneId, int pointId) {
         return lock(sceneId, java.util.List.of(pointId));
@@ -48,10 +42,7 @@ public class PacketScenePointUnlockNotify extends BasePacket {
         super(PacketOpcodes.ScenePointUnlockNotify);
 
         ScenePointUnlockNotify.Builder p =
-                ScenePointUnlockNotify.newBuilder()
-                        .setSceneId(sceneId)
-                        .addAllPointList(pointIds)
-                        .addAllUnhidePointList(pointIds);
+                ScenePointUnlockNotify.newBuilder().setSceneId(sceneId).addAllPointList(pointIds);
 
         this.setData(p);
     }

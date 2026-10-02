@@ -3,6 +3,7 @@ package emu.grasscutter.server.packet.recv;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.TransPointUnlockHelper;
 import emu.grasscutter.net.packet.*;
+import emu.grasscutter.net.proto.PacketHeadOuterClass.PacketHead;
 import emu.grasscutter.net.proto.RetcodeOuterClass;
 import emu.grasscutter.net.proto.UnlockTransPointReqOuterClass.UnlockTransPointReq;
 import emu.grasscutter.server.game.GameSession;
@@ -12,6 +13,7 @@ import emu.grasscutter.server.packet.send.PacketUnlockTransPointRsp;
 public class HandlerUnlockTransPointReq extends PacketHandler {
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
+        PacketHead head = PacketHead.parseFrom(header);
         UnlockTransPointReq req = UnlockTransPointReq.parseFrom(payload);
         var player = session.getPlayer();
         var entry = GameData.getScenePointEntryById(req.getSceneId(), req.getPointId());
@@ -56,17 +58,26 @@ public class HandlerUnlockTransPointReq extends PacketHandler {
                         req.getSceneId(),
                         req.getPointId(),
                         unlocked);
-        // UnlockTransPointRsp has no known 7.1 CmdId, so the client never hears back and leaves the
-        // point drawn as locked. Resend the scene's point list, as the statue auto-unlock does.
-        if (unlocked) {
-            player.sendPacket(
-                    new emu.grasscutter.server.packet.send.PacketGetScenePointRsp(
-                            player, req.getSceneId()));
-        }
-        player.sendPacket(
-                new PacketUnlockTransPointRsp(
-                        unlocked
-                                ? RetcodeOuterClass.Retcode.RET_SUCC
-                                : RetcodeOuterClass.Retcode.RET_FAIL));
+
+        var retcode =
+                unlocked
+                        ? RetcodeOuterClass.Retcode.RET_SUCC
+                        : RetcodeOuterClass.Retcode.RET_FAIL;
+        int rspCmdId = PacketUnlockTransPointRsp.getSelectedCmdId();
+        emu.grasscutter.Grasscutter.getLogger()
+                .info(
+                        "UnlockTransPointRsp probe uid={} scene={} point={} statue={} unlocked={} cmd={} clientSeq={} retcode={}",
+                        player.getUid(),
+                        req.getSceneId(),
+                        req.getPointId(),
+                        isStatue,
+                        unlocked,
+                        rspCmdId,
+                        head.getClientSequenceId(),
+                        retcode.getNumber());
+
+        // Keep the normal ScenePointUnlockNotify emitted by TransPointUnlockHelper, but intentionally
+        // do not resend GetScenePointRsp here: that workaround can mask the candidate response probe.
+        player.sendPacket(new PacketUnlockTransPointRsp(head.getClientSequenceId(), retcode));
     }
 }

@@ -88,6 +88,9 @@ public class AbilityMixinData implements Serializable {
         DoActionBySelfElementReactionMixin
     }
 
+    public AbilityModifierAction[] idontknowwhattonamethis;
+    public AbilityModifierAction[] idontknowwhattonamethis2;
+
     public AbilityModifierAction[] actions;
     public AbilityModifierAction[] actionQueue;
     public List<String> reactionTypes = new ArrayList<>();

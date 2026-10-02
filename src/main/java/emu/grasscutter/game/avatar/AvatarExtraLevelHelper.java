@@ -1,44 +1,13 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  emu.grasscutter.Grasscutter
- *  emu.grasscutter.data.GameData
- *  emu.grasscutter.data.common.ItemParamData
- *  emu.grasscutter.data.excels.avatar.AvatarPromoteData
- *  emu.grasscutter.game.avatar.Avatar
- *  emu.grasscutter.game.avatar.AvatarExtraLevelConfig
- *  emu.grasscutter.game.avatar.AvatarExtraLevelOpcodes
- *  emu.grasscutter.game.player.Player
- *  emu.grasscutter.net.packet.BasePacket
- *  emu.grasscutter.net.proto.AvatarExtraLevelUpgradeReqParser
- *  emu.grasscutter.net.proto.AvatarInfoOuterClass$AvatarInfo$Builder
- *  emu.grasscutter.net.proto.ParsedExtraLevelUpgradeReq
- *  emu.grasscutter.server.packet.send.PacketAvatarDataNotify
- *  emu.grasscutter.server.packet.send.PacketAvatarExtraLevelUpgradeRsp
- *  emu.grasscutter.server.packet.send.PacketAvatarPromoteRsp
- *  emu.grasscutter.server.packet.send.PacketAvatarPropNotify
- *  emu.grasscutter.server.packet.send.PacketAvatarUpgradeRsp
- *  emu.grasscutter.utils.FileUtils
- *  emu.grasscutter.utils.JsonUtils
- *  it.unimi.dsi.fastutil.ints.Int2FloatArrayMap
- *  it.unimi.dsi.fastutil.ints.Int2FloatMap
- */
 package emu.grasscutter.game.avatar;
 
-import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.avatar.AvatarPromoteData;
-import emu.grasscutter.game.avatar.Avatar;
-import emu.grasscutter.game.avatar.AvatarExtraLevelConfig;
-import emu.grasscutter.game.avatar.AvatarExtraLevelOpcodes;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.proto.AvatarExtraLevelUpgradeReqParser;
+import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.net.proto.AvatarInfoOuterClass;
-import emu.grasscutter.net.proto.ParsedExtraLevelUpgradeReq;
 import emu.grasscutter.server.packet.send.PacketAvatarDataNotify;
 import emu.grasscutter.server.packet.send.PacketAvatarExtraLevelUpgradeRsp;
 import emu.grasscutter.server.packet.send.PacketAvatarPromoteRsp;
@@ -51,52 +20,49 @@ import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 public final class AvatarExtraLevelHelper {
-    private static final int MAX_PROMOTE_LEVEL = 6;
     private static List<AvatarExtraLevelConfig> configs = Collections.emptyList();
     private static boolean configsLoaded;
-    private static int lastRequestOpcode;
-    private static final Set<Integer> IGNORED_SNIFF_OPCODES;
 
-    private AvatarExtraLevelHelper() {
-    }
+    private AvatarExtraLevelHelper() {}
 
     public static void ensureConfigsLoaded() {
         if (configsLoaded) {
             return;
         }
         configsLoaded = true;
-        Path path = FileUtils.getResourcePath((String)"ExcelBinOutput/AvatarExtraLevelExcelConfigData.json");
+
+        Path path = FileUtils.getResourcePath("ExcelBinOutput/AvatarExtraLevelExcelConfigData.json");
         if (!Files.isRegularFile(path, new LinkOption[0])) {
-            Grasscutter.getLogger().warn("Missing AvatarExtraLevelExcelConfigData.json at {}", (Object)path);
+            Grasscutter.getLogger().warn("Missing AvatarExtraLevelExcelConfigData.json at {}", path);
             configs = Collections.emptyList();
             return;
         }
+
         try {
-            List<AvatarExtraLevelConfig> list =
-                    JsonUtils.loadToList((Path)path, AvatarExtraLevelConfig.class);
-            configs = list == null ? Collections.emptyList() : list;
-            Grasscutter.getLogger().info("Loaded {} avatar extra level upgrade rows", (Object)configs.size());
-        }
-        catch (Exception exception) {
-            Grasscutter.getLogger().error("Failed to load AvatarExtraLevelExcelConfigData.json", (Throwable)exception);
+            List<AvatarExtraLevelConfig> loaded =
+                    JsonUtils.loadToList(path, AvatarExtraLevelConfig.class);
+            configs = loaded == null ? Collections.emptyList() : loaded;
+            Grasscutter.getLogger().info("Loaded {} avatar extra level upgrade rows", configs.size());
+        } catch (Exception exception) {
+            Grasscutter.getLogger()
+                    .error("Failed to load AvatarExtraLevelExcelConfigData.json", exception);
             configs = Collections.emptyList();
         }
     }
 
-    public static void applyAvatarInfoExtraLevel(AvatarInfoOuterClass.AvatarInfo.Builder builder, Avatar avatar) {
+    public static void applyAvatarInfoExtraLevel(
+            AvatarInfoOuterClass.AvatarInfo.Builder builder, Avatar avatar) {
         if (builder == null || avatar == null || avatar.getPromoteLevel() < 6) {
             return;
         }
-        builder.setJMFFNNBEHGG(AvatarExtraLevelHelper.getExtraLevelTier(avatar));
-        builder.setLDHKKNPGIMH(AvatarExtraLevelHelper.getEffectiveMaxLevel(avatar));
+
+        builder.setJMFFNNBEHGG(getExtraLevelTier(avatar));
+        builder.setLDHKKNPGIMH(getEffectiveMaxLevel(avatar));
     }
 
     public static int getEffectiveMaxLevel(Avatar avatar) {
@@ -104,18 +70,24 @@ public final class AvatarExtraLevelHelper {
             return 90;
         }
         if (avatar.getPromoteLevel() < 6) {
-            AvatarPromoteData avatarPromoteData = GameData.getAvatarPromoteData((int)avatar.getAvatarData().getAvatarPromoteId(), (int)avatar.getPromoteLevel());
-            return avatarPromoteData == null ? 90 : avatarPromoteData.getUnlockMaxLevel();
+            AvatarPromoteData promoteData =
+                    GameData.getAvatarPromoteData(
+                            avatar.getAvatarData().getAvatarPromoteId(), avatar.getPromoteLevel());
+            return promoteData == null ? 90 : promoteData.getUnlockMaxLevel();
         }
-        int n = avatar.getLevel();
-        if (n >= 95) {
+
+        int level = avatar.getLevel();
+        if (level >= 95) {
             return 100;
         }
-        if (n >= 90) {
+        if (level >= 90) {
             return 95;
         }
-        AvatarPromoteData avatarPromoteData = GameData.getAvatarPromoteData((int)avatar.getAvatarData().getAvatarPromoteId(), (int)avatar.getPromoteLevel());
-        return avatarPromoteData == null ? 90 : avatarPromoteData.getUnlockMaxLevel();
+
+        AvatarPromoteData promoteData =
+                GameData.getAvatarPromoteData(
+                        avatar.getAvatarData().getAvatarPromoteId(), avatar.getPromoteLevel());
+        return promoteData == null ? 90 : promoteData.getUnlockMaxLevel();
     }
 
     public static int getExtraLevelTier(Avatar avatar) {
@@ -128,204 +100,161 @@ public final class AvatarExtraLevelHelper {
         return avatar.getLevel() >= 95 ? 1 : 0;
     }
 
-    public static boolean tryHandleKnownOpcodePacket(Player player, int n, byte[] byArray) {
-        ParsedExtraLevelUpgradeReq parsedExtraLevelUpgradeReq;
-        if (n != PacketOpcodes.AvatarPromoteReq) {
-            return false;
-        }
-        if (player == null || byArray == null || byArray.length == 0 || IGNORED_SNIFF_OPCODES.contains(n)) {
-            return false;
-        }
-        try {
-            parsedExtraLevelUpgradeReq = AvatarExtraLevelUpgradeReqParser.parseAnyStrict((byte[])byArray);
-        }
-        catch (Exception exception) {
-            return false;
-        }
-        Avatar avatar = player.getAvatars().getAvatarByGuid(parsedExtraLevelUpgradeReq.getAvatarGuid());
-        if (avatar == null) {
-            return false;
-        }
-        int n2 = avatar.getLevel();
-        if (n2 != 90 && n2 != 95) {
-            return false;
-        }
-        Grasscutter.getLogger().info("AvatarExtraLevel CONFIRMED opcode={} proto={} avatar={} guid={} level={} promote={} target={} eligible={}", new Object[]{n, parsedExtraLevelUpgradeReq.getProtoKind(), avatar.getAvatarId(), parsedExtraLevelUpgradeReq.getAvatarGuid(), n2, avatar.getPromoteLevel(), parsedExtraLevelUpgradeReq.getTargetLevel(), AvatarExtraLevelHelper.isEligibleForUpgrade(avatar)});
-        lastRequestOpcode = n;
-        return AvatarExtraLevelHelper.handleExtraLevelRequest(player, n, parsedExtraLevelUpgradeReq, byArray.length);
-    }
-
     public static boolean upgradeAvatar(Player player, Avatar avatar) {
         if (player == null || avatar == null) {
             return false;
         }
-        lastRequestOpcode = 0;
-        AvatarExtraLevelHelper.ensureConfigsLoaded();
-        if (!AvatarExtraLevelHelper.isEligibleForUpgrade(avatar)) {
+
+        ensureConfigsLoaded();
+        if (!isEligibleForUpgrade(avatar)) {
             return false;
         }
-        AvatarExtraLevelConfig avatarExtraLevelConfig = AvatarExtraLevelHelper.findUpgradeRow(avatar.getLevel());
-        if (avatarExtraLevelConfig == null) {
-            return false;
-        }
-        return AvatarExtraLevelHelper.upgrade(player, avatar, avatarExtraLevelConfig, lastRequestOpcode);
+
+        AvatarExtraLevelConfig config = findUpgradeRow(avatar.getLevel());
+        return config != null && upgrade(player, avatar, config, 0);
     }
 
-    public static boolean onPromoteReq(Player player, long l) {
-        lastRequestOpcode = PacketOpcodes.AvatarPromoteReq;
-        AvatarExtraLevelOpcodes.noteDiscoveredRequest((int)PacketOpcodes.AvatarPromoteReq);
-        AvatarExtraLevelHelper.logPromoteRequest(player, l, PacketOpcodes.AvatarPromoteReq);
-        return AvatarExtraLevelHelper.upgradeByGuid(player, l);
+    public static boolean onPromoteReq(Player player, long guid) {
+        logPromoteRequest(player, guid, PacketOpcodes.AvatarPromoteReq);
+        return upgradeByGuid(player, guid);
     }
 
-    public static void logPromoteRequest(Player player, long l, int n) {
+    public static void logPromoteRequest(Player player, long guid, int opcode) {
         if (player == null) {
             return;
         }
-        Avatar avatar = player.getAvatars().getAvatarByGuid(l);
-        Grasscutter.getLogger().info("AvatarExtraLevel AvatarPromoteReq opcode={} guid={} avatar={} level={} promote={} eligible={} reason={}", new Object[]{n, l, avatar == null ? 0 : avatar.getAvatarId(), avatar == null ? -1 : avatar.getLevel(), avatar == null ? -1 : avatar.getPromoteLevel(), AvatarExtraLevelHelper.isEligibleForUpgrade(avatar), AvatarExtraLevelHelper.describeEligibility(avatar)});
+
+        Avatar avatar = player.getAvatars().getAvatarByGuid(guid);
+        Grasscutter.getLogger()
+                .info(
+                        "AvatarExtraLevel AvatarPromoteReq opcode={} guid={} avatar={} level={} promote={} eligible={} reason={}",
+                        opcode,
+                        guid,
+                        avatar == null ? 0 : avatar.getAvatarId(),
+                        avatar == null ? -1 : avatar.getLevel(),
+                        avatar == null ? -1 : avatar.getPromoteLevel(),
+                        isEligibleForUpgrade(avatar),
+                        describeEligibility(avatar));
     }
 
-    public static boolean upgradeByGuid(Player player, long l) {
-        Avatar avatar;
-        if (lastRequestOpcode <= 0) {
-            lastRequestOpcode = PacketOpcodes.AvatarPromoteReq;
-        }
-        AvatarExtraLevelHelper.ensureConfigsLoaded();
-        Avatar avatar2 = avatar = player == null ? null : player.getAvatars().getAvatarByGuid(l);
-        if (avatar == null || !AvatarExtraLevelHelper.isEligibleForUpgrade(avatar)) {
+    public static boolean upgradeByGuid(Player player, long guid) {
+        ensureConfigsLoaded();
+        Avatar avatar = player == null ? null : player.getAvatars().getAvatarByGuid(guid);
+        if (avatar == null || !isEligibleForUpgrade(avatar)) {
             return false;
         }
-        AvatarExtraLevelConfig avatarExtraLevelConfig = AvatarExtraLevelHelper.findUpgradeRow(avatar.getLevel());
-        if (avatarExtraLevelConfig == null) {
-            Grasscutter.getLogger().warn("AvatarExtraLevel upgradeByGuid avatar={} level={} has no config row", (Object)avatar.getAvatarId(), (Object)avatar.getLevel());
-            return false;
-        }
-        return AvatarExtraLevelHelper.upgrade(player, avatar, avatarExtraLevelConfig, lastRequestOpcode);
-    }
 
-    public static boolean tryHandleUnregisteredPacket(Player player, int n, byte[] byArray) {
-        try {
-            ParsedExtraLevelUpgradeReq parsedExtraLevelUpgradeReq;
-            if (player == null || byArray == null || byArray.length == 0 || IGNORED_SNIFF_OPCODES.contains(n)) {
-                return false;
-            }
-            if (n == 1211) {
-                return false;
-            }
-            AvatarExtraLevelHelper.ensureConfigsLoaded();
-            if (configs.isEmpty()) {
-                return false;
-            }
-            try {
-                parsedExtraLevelUpgradeReq = AvatarExtraLevelUpgradeReqParser.parseAnyStrict((byte[])byArray);
-            }
-            catch (Exception exception) {
-                return false;
-            }
-            Avatar avatar = player.getAvatars().getAvatarByGuid(parsedExtraLevelUpgradeReq.getAvatarGuid());
-            if (avatar == null) {
-                return false;
-            }
-            int n2 = avatar.getLevel();
-            if (n2 != 90 && n2 != 95) {
-                return false;
-            }
-            Grasscutter.getLogger().info("AvatarExtraLevel CONFIRMED unregistered opcode={} proto={} avatar={} guid={} level={} promote={} target={} eligible={}", new Object[]{n, parsedExtraLevelUpgradeReq.getProtoKind(), avatar.getAvatarId(), parsedExtraLevelUpgradeReq.getAvatarGuid(), n2, avatar.getPromoteLevel(), parsedExtraLevelUpgradeReq.getTargetLevel(), AvatarExtraLevelHelper.isEligibleForUpgrade(avatar)});
-            return AvatarExtraLevelHelper.handleExtraLevelRequest(player, n, parsedExtraLevelUpgradeReq, byArray.length);
-        }
-        catch (Throwable throwable) {
-            Grasscutter.getLogger().debug("AvatarExtraLevel unregistered opcode={} skipped", (Object)n, (Object)throwable);
+        AvatarExtraLevelConfig config = findUpgradeRow(avatar.getLevel());
+        if (config == null) {
+            Grasscutter.getLogger()
+                    .warn(
+                            "AvatarExtraLevel upgradeByGuid avatar={} level={} has no config row",
+                            avatar.getAvatarId(),
+                            avatar.getLevel());
             return false;
         }
-    }
 
-    public static boolean handleExtraLevelRequest(Player player, int n, ParsedExtraLevelUpgradeReq parsedExtraLevelUpgradeReq, int n2) {
-        lastRequestOpcode = n;
-        AvatarExtraLevelOpcodes.noteDiscoveredRequest((int)n);
-        Avatar avatar = player.getAvatars().getAvatarByGuid(parsedExtraLevelUpgradeReq.getAvatarGuid());
-        if (avatar == null || !AvatarExtraLevelHelper.isEligibleForUpgrade(avatar)) {
-            return false;
-        }
-        AvatarExtraLevelConfig avatarExtraLevelConfig = AvatarExtraLevelHelper.findUpgradeRow(avatar.getLevel());
-        if (avatarExtraLevelConfig == null) {
-            return false;
-        }
-        Grasscutter.getLogger().info("AvatarExtraLevel request opcode={} proto={} avatar={} level={}->{} target={} payloadLen={}", new Object[]{n, parsedExtraLevelUpgradeReq.getProtoKind(), avatar.getAvatarId(), avatar.getLevel(), avatarExtraLevelConfig.getToLevel(), parsedExtraLevelUpgradeReq.getTargetLevel(), n2});
-        return AvatarExtraLevelHelper.upgrade(player, avatar, avatarExtraLevelConfig, n);
+        return upgrade(player, avatar, config, PacketOpcodes.AvatarPromoteReq);
     }
 
     public static void resyncAfterLogin(Player player) {
         if (player == null || player.getAvatars() == null) {
             return;
         }
-        AvatarExtraLevelHelper.ensureConfigsLoaded();
-        player.sendPacket((BasePacket)new PacketAvatarDataNotify(player));
-        Grasscutter.getLogger().info("AvatarExtraLevel login resync uid={} avatars={}", (Object)player.getUid(), (Object)player.getAvatars().getAvatarCount());
+
+        ensureConfigsLoaded();
+        player.sendPacket(new PacketAvatarDataNotify(player));
+        Grasscutter.getLogger()
+                .info(
+                        "AvatarExtraLevel login resync uid={} avatars={}",
+                        player.getUid(),
+                        player.getAvatars().getAvatarCount());
     }
 
     public static String describeEligibilityPublic(Avatar avatar) {
-        return AvatarExtraLevelHelper.describeEligibility(avatar);
+        return describeEligibility(avatar);
     }
 
-    private static boolean upgrade(Player player, Avatar avatar, AvatarExtraLevelConfig avatarExtraLevelConfig, int n) {
-        if (avatarExtraLevelConfig.getToLevel() <= avatar.getLevel()) {
+    private static boolean upgrade(
+            Player player,
+            Avatar avatar,
+            AvatarExtraLevelConfig config,
+            int requestOpcode) {
+        if (config.getToLevel() <= avatar.getLevel()) {
             return false;
         }
-        ItemParamData[] itemParamDataArray = AvatarExtraLevelHelper.normalizeCosts(avatarExtraLevelConfig.getCostItems());
-        if (itemParamDataArray.length == 0) {
-            Grasscutter.getLogger().warn("Avatar extra level {}->{} has no valid cost items", (Object)avatarExtraLevelConfig.getFromLevel(), (Object)avatarExtraLevelConfig.getToLevel());
+
+        ItemParamData[] costs = normalizeCosts(config.getCostItems());
+        if (costs.length == 0) {
+            Grasscutter.getLogger()
+                    .warn(
+                            "Avatar extra level {}->{} has no valid cost items",
+                            config.getFromLevel(),
+                            config.getToLevel());
             return false;
         }
-        if (!player.getInventory().payItems(itemParamDataArray)) {
-            player.sendMessage(player, (Object)"Not enough masterless stella (104300) for extra level breakthrough.");
-            AvatarExtraLevelHelper.sendFailure(player, avatar, avatarExtraLevelConfig.getFromLevel(), n);
+
+        if (!player.getInventory().payItems(costs)) {
+            player.sendMessage(
+                    player, "Not enough masterless stella (104300) for extra level breakthrough.");
+            sendFailure(player, avatar, config.getFromLevel());
             return true;
         }
-        int n2 = avatar.getLevel();
-        Int2FloatArrayMap int2FloatArrayMap = new Int2FloatArrayMap((Int2FloatMap)avatar.getFightProperties());
-        avatar.setLevel(avatarExtraLevelConfig.getToLevel());
+
+        int oldLevel = avatar.getLevel();
+        Int2FloatArrayMap oldFightProperties =
+                new Int2FloatArrayMap((Int2FloatMap) avatar.getFightProperties());
+        avatar.setLevel(config.getToLevel());
         avatar.setExp(0);
         avatar.recalcStats(true);
         avatar.save();
-        player.sendPacket((BasePacket)new PacketAvatarPropNotify(avatar));
-        player.sendPacket((BasePacket)new PacketAvatarUpgradeRsp(avatar, n2, int2FloatArrayMap));
-        player.sendPacket((BasePacket)new PacketAvatarDataNotify(player));
-        if (n == PacketOpcodes.AvatarPromoteReq) {
-            player.sendPacket((BasePacket)new PacketAvatarPromoteRsp(avatar));
-        } else if (n > 0) {
-            AvatarExtraLevelHelper.sendSuccess(player, avatar, n2, n);
+
+        player.sendPacket(new PacketAvatarPropNotify(avatar));
+        player.sendPacket(new PacketAvatarUpgradeRsp(avatar, oldLevel, oldFightProperties));
+        player.sendPacket(new PacketAvatarDataNotify(player));
+        if (requestOpcode == PacketOpcodes.AvatarPromoteReq) {
+            player.sendPacket(new PacketAvatarPromoteRsp(avatar));
+        } else if (requestOpcode > 0) {
+            sendSuccess(player, avatar, oldLevel);
         }
-        player.sendMessage(player, (Object)String.format(Locale.US, "Extra level breakthrough: avatar %d %d -> %d", avatar.getAvatarId(), n2, avatar.getLevel()));
+
+        player.sendMessage(
+                player,
+                String.format(
+                        Locale.US,
+                        "Extra level breakthrough: avatar %d %d -> %d",
+                        avatar.getAvatarId(),
+                        oldLevel,
+                        avatar.getLevel()));
         return true;
     }
 
-    private static void sendSuccess(Player player, Avatar avatar, int n, int n2) {
-        PacketAvatarExtraLevelUpgradeRsp packetAvatarExtraLevelUpgradeRsp = new PacketAvatarExtraLevelUpgradeRsp(avatar.getGuid(), n, avatar.getLevel());
-        packetAvatarExtraLevelUpgradeRsp.setOpcode(AvatarExtraLevelOpcodes.resolveResponseOpcode((int)n2));
-        AvatarExtraLevelOpcodes.noteDiscoveredResponse((int)packetAvatarExtraLevelUpgradeRsp.getOpcode());
-        player.sendPacket((BasePacket)packetAvatarExtraLevelUpgradeRsp);
+    private static void sendSuccess(Player player, Avatar avatar, int oldLevel) {
+        player.sendPacket(
+                new PacketAvatarExtraLevelUpgradeRsp(
+                        avatar.getGuid(), oldLevel, avatar.getLevel()));
     }
 
-    private static void sendFailure(Player player, Avatar avatar, int n, int n2) {
-        PacketAvatarExtraLevelUpgradeRsp packetAvatarExtraLevelUpgradeRsp = new PacketAvatarExtraLevelUpgradeRsp(avatar.getGuid(), n, n, 1);
-        packetAvatarExtraLevelUpgradeRsp.setOpcode(AvatarExtraLevelOpcodes.resolveResponseOpcode((int)n2));
-        if (packetAvatarExtraLevelUpgradeRsp.getOpcode() > 0) {
-            player.sendPacket((BasePacket)packetAvatarExtraLevelUpgradeRsp);
-        }
+    private static void sendFailure(Player player, Avatar avatar, int level) {
+        player.sendPacket(new PacketAvatarExtraLevelUpgradeRsp(avatar.getGuid(), level, level, 1));
     }
 
-    private static ItemParamData[] normalizeCosts(List<ItemParamData> list) {
-        if (list == null || list.isEmpty()) {
+    private static ItemParamData[] normalizeCosts(List<ItemParamData> costs) {
+        if (costs == null || costs.isEmpty()) {
             return new ItemParamData[0];
         }
-        return (ItemParamData[])list.stream().filter(itemParamData -> itemParamData != null && itemParamData.getId() > 0 && itemParamData.getCount() > 0).map(itemParamData -> new ItemParamData(itemParamData.getId(), itemParamData.getCount())).toArray(ItemParamData[]::new);
+
+        return costs.stream()
+                .filter(cost -> cost != null && cost.getId() > 0 && cost.getCount() > 0)
+                .map(cost -> new ItemParamData(cost.getId(), cost.getCount()))
+                .toArray(ItemParamData[]::new);
     }
 
-    private static AvatarExtraLevelConfig findUpgradeRow(int n) {
-        for (AvatarExtraLevelConfig avatarExtraLevelConfig : configs) {
-            if (avatarExtraLevelConfig.getFromLevel() != n) continue;
-            return avatarExtraLevelConfig;
+    private static AvatarExtraLevelConfig findUpgradeRow(int level) {
+        for (AvatarExtraLevelConfig config : configs) {
+            if (config.getFromLevel() == level) {
+                return config;
+            }
         }
         return null;
     }
@@ -337,30 +266,31 @@ public final class AvatarExtraLevelHelper {
         if (avatar.getPromoteLevel() < 6) {
             return "promote<6 (need full ascension)";
         }
-        int n = avatar.getLevel();
-        if (n != 90 && n != 95) {
-            return "level must be 90 or 95, got " + n;
+
+        int level = avatar.getLevel();
+        if (level != 90 && level != 95) {
+            return "level must be 90 or 95, got " + level;
         }
-        if (n == 90) {
-            AvatarPromoteData avatarPromoteData = GameData.getAvatarPromoteData((int)avatar.getAvatarData().getAvatarPromoteId(), (int)avatar.getPromoteLevel());
-            if (avatarPromoteData == null) {
+        if (level == 90) {
+            AvatarPromoteData promoteData =
+                    GameData.getAvatarPromoteData(
+                            avatar.getAvatarData().getAvatarPromoteId(), avatar.getPromoteLevel());
+            if (promoteData == null) {
                 return "missing promote excel row";
             }
-            if (n != avatarPromoteData.getUnlockMaxLevel()) {
-                return "level " + n + " != unlockMaxLevel " + avatarPromoteData.getUnlockMaxLevel();
+            if (level != promoteData.getUnlockMaxLevel()) {
+                return "level " + level + " != unlockMaxLevel " + promoteData.getUnlockMaxLevel();
             }
         }
-        if (n == 95 && AvatarExtraLevelHelper.getExtraLevelTier(avatar) < 1) {
-            return "tier must be >=1 for 95->100, got " + AvatarExtraLevelHelper.getExtraLevelTier(avatar);
+        if (level == 95 && getExtraLevelTier(avatar) < 1) {
+            return "tier must be >=1 for 95->100, got " + getExtraLevelTier(avatar);
         }
-        return AvatarExtraLevelHelper.findUpgradeRow(n) == null ? "no AvatarExtraLevelExcel row for level " + n : "ok";
+        return findUpgradeRow(level) == null
+                ? "no AvatarExtraLevelExcel row for level " + level
+                : "ok";
     }
 
     private static boolean isEligibleForUpgrade(Avatar avatar) {
-        return "ok".equals(AvatarExtraLevelHelper.describeEligibility(avatar));
-    }
-
-    static {
-        IGNORED_SNIFF_OPCODES = new HashSet<Integer>(Arrays.asList(2151, 5080, 8274, 20808, 21080, 21498, 26395, 26986, 28659, 29324));
+        return "ok".equals(describeEligibility(avatar));
     }
 }

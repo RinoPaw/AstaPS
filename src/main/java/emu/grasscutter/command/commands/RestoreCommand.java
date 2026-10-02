@@ -113,9 +113,13 @@ public final class RestoreCommand implements PicocliCommandHandler {
                 .forEach(
                         entity -> {
                             boolean wasAlive = entity.isAlive();
-                            entity.setFightProperty(
-                                    FightProperty.FIGHT_PROP_CUR_HP,
-                                    entity.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP));
+                            if (wasAlive) {
+                                entity.setFightProperty(
+                                        FightProperty.FIGHT_PROP_CUR_HP,
+                                        entity.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP));
+                            } else {
+                                entity.reviveToRatio(1f);
+                            }
 
                             if (entity.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP_DEBTS) > 0) {
                                 entity.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP_DEBTS, 0.0f);
@@ -135,15 +139,11 @@ public final class RestoreCommand implements PicocliCommandHandler {
                                                                 ._ChangeHpDebtsReason_CHANGE_HP_DEBTS_PAY_FINISH));
                             }
 
-                            entity.getWorld()
-                                    .broadcastPacket(
-                                            new PacketAvatarFightPropUpdateNotify(
-                                                    entity.getAvatar(), FightProperty.FIGHT_PROP_CUR_HP));
-                            if (!wasAlive) {
+                            if (wasAlive) {
                                 entity.getWorld()
                                         .broadcastPacket(
-                                                new PacketAvatarLifeStateChangeNotify(
-                                                        entity.getAvatar()));
+                                                new PacketAvatarFightPropUpdateNotify(
+                                                        entity.getAvatar(), FightProperty.FIGHT_PROP_CUR_HP));
                             }
                         });
     }

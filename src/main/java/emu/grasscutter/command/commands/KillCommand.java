@@ -10,10 +10,8 @@ import emu.grasscutter.game.entity.EntityMonster;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
-import emu.grasscutter.game.props.LifeState;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.server.packet.send.PacketEntityFightPropUpdateNotify;
-import emu.grasscutter.server.packet.send.PacketLifeStateChangeNotify;
 import java.util.List;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
@@ -73,7 +71,7 @@ public final class KillCommand implements PicocliCommandHandler {
                     scene.getEntities().values().stream()
                             .filter(EntityMonster.class::isInstance)
                             .toList();
-            toKill.forEach(entity -> scene.killEntity(entity, 0));
+            toKill.forEach(KillCommand::killEntity);
             CommandHandler.sendMessage(
                     sender,
                     translate(
@@ -107,16 +105,21 @@ public final class KillCommand implements PicocliCommandHandler {
                 CommandHandler.sendMessage(sender, "No active character.");
                 return;
             }
-            entity.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, 0f);
-            entity.getWorld()
-                    .broadcastPacket(
-                            new PacketEntityFightPropUpdateNotify(entity, FightProperty.FIGHT_PROP_CUR_HP));
-            entity.getWorld().broadcastPacket(new PacketLifeStateChangeNotify(0, entity, LifeState.LIFE_DEAD));
-            targetPlayer.getScene().removeEntity(entity);
-            entity.onDeath(0);
+            killEntity(entity);
 
             CommandHandler.sendMessage(
                     sender, translate(sender, "commands.killCharacter.success", targetPlayer.getNickname()));
+        }
+    }
+
+    private static void killEntity(GameEntity entity) {
+        entity.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, 0f);
+        boolean diedNow = entity.checkIfDead();
+        entity.getWorld()
+                .broadcastPacket(
+                        new PacketEntityFightPropUpdateNotify(entity, FightProperty.FIGHT_PROP_CUR_HP));
+        if (diedNow) {
+            entity.getScene().killEntity(entity, 0);
         }
     }
 

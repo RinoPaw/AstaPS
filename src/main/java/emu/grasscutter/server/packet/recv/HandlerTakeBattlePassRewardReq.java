@@ -1,5 +1,7 @@
 package emu.grasscutter.server.packet.recv;
 
+import emu.grasscutter.GameConstants;
+import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.battlepass.BattlePassManager;
 import emu.grasscutter.game.battlepass.BattlePassReward;
 import emu.grasscutter.game.battlepass.BattlePassSelectChestHelper;
@@ -61,7 +63,29 @@ public class HandlerTakeBattlePassRewardReq extends PacketHandler {
                             == BattlePassUnlockStatusOuterClass.BattlePassUnlockStatus
                                     .BattlePassUnlockStatus_BATTLE_PASS_UNLOCK_PAID;
 
-            manager.getTakenRewards().remove(rewardId);
+            if (level <= 0
+                    || level > manager.getLevel()
+                    || manager.getTakenRewards().containsKey(rewardId)) {
+                continue;
+            }
+
+            var rewardData =
+                    GameData.getBattlePassRewardDataMap()
+                            .get(GameConstants.BATTLE_PASS_CURRENT_INDEX * 100 + level);
+            if (rewardData == null) {
+                continue;
+            }
+
+            boolean allowed =
+                    rewardData.getFreeRewardIdList() != null
+                                    && rewardData.getFreeRewardIdList().contains(rewardId)
+                            || manager.isPaid()
+                                    && rewardData.getPaidRewardIdList() != null
+                                    && rewardData.getPaidRewardIdList().contains(rewardId);
+            if (!allowed) {
+                continue;
+            }
+
             List<GameItem> items =
                     BattlePassSelectChestHelper.grant(
                             player, rewardId, option.getOptionIdx(), paid);

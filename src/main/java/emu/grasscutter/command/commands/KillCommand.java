@@ -11,6 +11,7 @@ import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
 import emu.grasscutter.game.world.Scene;
+import emu.grasscutter.net.proto.PlayerDieTypeOuterClass.PlayerDieType;
 import emu.grasscutter.server.packet.send.PacketEntityFightPropUpdateNotify;
 import java.util.List;
 import picocli.CommandLine;
@@ -105,7 +106,16 @@ public final class KillCommand implements PicocliCommandHandler {
                 CommandHandler.sendMessage(sender, "No active character.");
                 return;
             }
-            killEntity(entity);
+
+            entity.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, 0f);
+            if (entity.checkIfDead()) {
+                targetPlayer
+                        .getStaminaManager()
+                        .killAvatar(
+                                targetPlayer.getSession(),
+                                entity,
+                                PlayerDieType.PlayerDieType_PLAYER_DIE_KILL_BY_MONSTER);
+            }
 
             CommandHandler.sendMessage(
                     sender, translate(sender, "commands.killCharacter.success", targetPlayer.getNickname()));

@@ -1,7 +1,6 @@
 package emu.grasscutter.config;
 
 import ch.qos.logback.classic.Level;
-import com.google.gson.annotations.SerializedName;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.utils.*;
 import lombok.NoArgsConstructor;
@@ -460,7 +459,6 @@ public class ConfigContainer {
             public int fallbackSeconds = 15;
         }
 
-        @SerializedName(value = "questing", alternate = "questOptions")
         public Questing questing = new Questing();
         public ResinOptions resinOptions = new ResinOptions();
         public Rates rates = new Rates();

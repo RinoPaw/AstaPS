@@ -191,12 +191,7 @@ public class EntityAvatar extends GameEntity {
         return this.heal(amount, false);
     }
 
-    /**
-     * Revives a downed character to a fraction of max HP. The ordinary {@link #heal} returns 0 outright at
-     * HP &lt;= 0,
-     * so the Qiqi and Barbara C6 revives have to come through here to actually bring the character back.
-     */
-    public float reviveToRatio(float ratio) {
+    private float restoreAliveToRatio(float ratio) {
         float curHp = this.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP);
         if (curHp > 0f && this.isAlive()) {
             return 0f;
@@ -211,6 +206,19 @@ public class EntityAvatar extends GameEntity {
         }
         this.setDead(false);
         this.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, hp);
+        return hp;
+    }
+
+    /**
+     * Revives a downed character to a fraction of max HP. The ordinary {@link #heal} returns 0 outright at
+     * HP &lt;= 0,
+     * so the Qiqi and Barbara C6 revives have to come through here to actually bring the character back.
+     */
+    public float reviveToRatio(float ratio) {
+        float hp = this.restoreAliveToRatio(ratio);
+        if (hp <= 0f) {
+            return 0f;
+        }
         if (this.getScene() != null) {
             this.getScene()
                     .broadcastPacket(
@@ -225,6 +233,14 @@ public class EntityAvatar extends GameEntity {
             player.sendPacket(new PacketAvatarLifeStateChangeNotify(this.getAvatar()));
         }
         return hp;
+    }
+
+    /**
+     * Restores the avatar's server-side life state without sending packets. Use this before the entity is
+     * first exposed to the client, so the subsequent appear packet carries one coherent alive state.
+     */
+    public float reviveToRatioSilently(float ratio) {
+        return this.restoreAliveToRatio(ratio);
     }
         public FightProperty GetEnergyProp(Avatar avatar) {
         if(avatar.getSkillDepot().getEnergySkillData().getSpecialEnergyMin() > 0){

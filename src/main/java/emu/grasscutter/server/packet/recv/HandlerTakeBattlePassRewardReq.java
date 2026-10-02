@@ -1,6 +1,5 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.game.battlepass.BattlePassCompatHelper;
 import emu.grasscutter.game.battlepass.BattlePassManager;
 import emu.grasscutter.game.battlepass.BattlePassReward;
 import emu.grasscutter.game.battlepass.BattlePassSelectChestHelper;
@@ -47,7 +46,7 @@ public class HandlerTakeBattlePassRewardReq extends PacketHandler {
         }
 
         if (!normal.isEmpty()) {
-            BattlePassCompatHelper.takeReward(manager, normal);
+            manager.takeReward(normal);
             if (selectable.isEmpty()) return;
         }
 

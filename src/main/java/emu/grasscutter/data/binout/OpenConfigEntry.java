@@ -23,24 +23,22 @@ public class OpenConfigEntry {
 
         for (OpenConfigData entry : data) {
             if (entry.$type == null) continue;
-            if (entry.$type.contains("AddAbility") || entry.$type.equals("CLMGJOKFOOB")) {
+            if (entry.$type.contains("AddAbility")) {
                 if (entry.abilityName != null) abilityList.add(entry.abilityName);
-            } else if (entry.$type.contains("AddTalentExtraLevel") || entry.$type.equals("DPACHKADLMK")) {
+            } else if (entry.$type.contains("AddTalentExtraLevel")) {
                 if (entry.talentIndex > 0) this.extraTalentIndex = entry.talentIndex;
             } else if (entry.talentIndex > 0) {
                 this.extraTalentIndex = entry.talentIndex;
             } else if (entry.$type.contains("ModifySkillPoint")) {
                 modList.add(new SkillPointModifier(entry.skillID, entry.pointDelta));
-            } else if (entry.$type.equals("NPLMAPHOLOF") || entry.$type.contains("SetAbilityVar")
-                    || entry.$type.equals("ModifyAbility")) {
-
+            } else if (entry.$type.equals("ModifyAbility")) {
                 if (entry.abilityName != null && entry.varName != null && entry.varValue != null) {
                     int paramIdx = parseParamIndex(entry.varValue);
                     if (paramIdx >= 0) {
                         varList.add(new AbilityVarSetter(entry.abilityName, entry.varName, paramIdx));
                     }
                 }
-            } else if (entry.$type.contains("UnlockTalentParam") || entry.$type.equals("JNFAEBAAPDM")) {
+            } else if (entry.$type.contains("UnlockTalentParam")) {
                 if (entry.abilityName != null && entry.talentParam != null) {
                     paramList.add(new TalentParamEntry(entry.abilityName, entry.talentParam));
                 }
@@ -55,7 +53,6 @@ public class OpenConfigEntry {
 
     private static int parseParamIndex(JsonElement el) {
         try {
-
             String val = null;
             if (el.isJsonObject()) {
                 JsonObject obj = el.getAsJsonObject();

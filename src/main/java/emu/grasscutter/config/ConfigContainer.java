@@ -1,7 +1,6 @@
 package emu.grasscutter.config;
 
 import ch.qos.logback.classic.Level;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.utils.*;
@@ -15,94 +14,6 @@ import static emu.grasscutter.Grasscutter.*;
  * *when your JVM fails*
  */
 public class ConfigContainer {
-    /*
-     * Configuration changes:
-     * Version  5 - 'questing' has been changed from a boolean
-     *              to a container of options ('questOptions').
-     *              This field will be removed in future versions.
-     * Version  6 - 'questing' has been fully replaced with 'questOptions'.
-     *              The field for 'legacyResources' has been removed.
-     * Version  7 - 'regionKey' is being added for authentication
-     *              with the new dispatch server.
-     * Version  8 - 'server' is being added for enforcing handbook server
-     *              addresses.
-     * Version  9 - 'limits' was added for handbook requests.
-     * Version 10 - 'trialCostumes' was added for enabling costumes
-     *              on trial avatars.
-     * Version 11 - 'server.fastRequire' was added for disabling the new
-     *              Lua script require system if performance is a concern.
-     * Version 12 - 'http.startImmediately' was added to control whether the
-     *              HTTP server should start immediately.
-     * Version 13 - 'game.useUniquePacketKey' was added to control whether the
-     *              encryption key used for packets is a constant or randomly generated.
-     * Version 14 - 'server.threadPools' was added for managed thread-pool sizing.
-     * Version 15 - 'server.watchdog' was added for the database monitor and timed restart.
-     * Version 16 - 'gameOptions.rates.leyLines' was split into a global rate and
-     *              source-specific Mora / EXP-book rates.
-     * Version 17 - fixed exploration rewards were moved into gameOptions.explorationRewards.
-     */
-    private static int version() {
-        return 17;
-    }
-
-    /**
-     * Folds any pools the running config already names into the current default set.
-     *
-     * <p>A plain field copy would carry the old map over wholesale, so a pool added in a later
-     * version would never appear in config.json and could not be tuned. Taking the defaults first
-     * and overlaying the existing entries adds the new names while keeping every value the server
-     * owner has set.
-     */
-    private static ThreadPoolOptions mergeThreadPoolDefaults(ThreadPoolOptions existing) {
-        var merged = new ThreadPoolOptions();
-        Map<String, ThreadPoolDefinition> pools = new LinkedHashMap<>(merged.pools);
-        if (existing != null && existing.pools != null) pools.putAll(existing.pools);
-        merged.enabled = existing == null || existing.enabled;
-        merged.pools = pools;
-        return merged;
-    }
-
-    /**
-     * Attempts to update the server's existing configuration.
-     */
-    public static void updateConfig() {
-        try { // Check if the server is using a legacy config.
-            var configObject = JsonUtils.loadToClass(Grasscutter.configFile.toPath(), JsonObject.class);
-            if (!configObject.has("version")) {
-                Grasscutter.getLogger().info("Updating legacy config...");
-                Grasscutter.saveConfig(null);
-            }
-        } catch (Exception ignored) { }
-
-        var existing = config.version;
-        var latest = version();
-
-        if (existing == latest)
-            return;
-
-        // Create a new configuration instance.
-        var updated = new ConfigContainer();
-        // Update all configuration fields.
-        var fields = ConfigContainer.class.getDeclaredFields();
-        Arrays.stream(fields).forEach(field -> {
-            try {
-                field.set(updated, field.get(config));
-            } catch (Exception exception) {
-                Grasscutter.getLogger().error("Failed to update a configuration field.", exception);
-            }
-        });
-
-        updated.server.threadPools = mergeThreadPoolDefaults(updated.server.threadPools);
-        updated.version = version();
-
-        try { // Save configuration and reload.
-            Grasscutter.saveConfig(updated);
-            Grasscutter.loadConfig();
-        } catch (Exception exception) {
-            Grasscutter.getLogger().warn("Failed to save the updated configuration.", exception);
-        }
-    }
-
     public Structure folderStructure = new Structure();
     public Database databaseInfo = new Database();
     public Language language = new Language();
@@ -110,8 +21,6 @@ public class ConfigContainer {
     public Server server = new Server();
 
     // DO NOT. TOUCH. THE VERSION NUMBER.
-    public int version = version();
-
     /* Option containers. */
 
     public static class Database {
@@ -577,8 +486,6 @@ public class ConfigContainer {
         public static class Rates {
             public float adventureExp = 1.5f;
             public float mora = 2.0f;
-
-            @com.google.gson.annotations.JsonAdapter(LeyLineRatesAdapter.class)
             public LeyLineRates leyLines = new LeyLineRates();
         }
 
@@ -592,66 +499,6 @@ public class ConfigContainer {
 
             /** Blossom of Revelation. */
             public float experienceBooks = 1.0f;
-        }
-
-        /**
-         * Migrates the old scalar form without changing its effective reward rate. It also accepts
-         * the short-lived experimental {mora, exp} object so configs produced by that branch remain
-         * usable.
-         */
-        public static class LeyLineRatesAdapter
-                implements com.google.gson.JsonDeserializer<LeyLineRates>,
-                        com.google.gson.JsonSerializer<LeyLineRates> {
-            @Override
-            public LeyLineRates deserialize(
-                    com.google.gson.JsonElement json,
-                    java.lang.reflect.Type typeOfT,
-                    com.google.gson.JsonDeserializationContext context) {
-                var rates = new LeyLineRates();
-                if (json == null || json.isJsonNull()) return rates;
-
-                if (json.isJsonPrimitive()) {
-                    rates.global = json.getAsFloat();
-                    return rates;
-                }
-
-                var object = json.getAsJsonObject();
-                if (object.has("global")) {
-                    rates.global = object.get("global").getAsFloat();
-                    if (object.has("mora")) rates.mora = object.get("mora").getAsFloat();
-                    if (object.has("experienceBooks")) {
-                        rates.experienceBooks = object.get("experienceBooks").getAsFloat();
-                    } else if (object.has("exp")) {
-                        rates.experienceBooks = object.get("exp").getAsFloat();
-                    }
-                    return rates;
-                }
-
-                // The first experiment wrote source rates only. Preserve those effective values by
-                // making its implicit global layer explicit as 1.0.
-                rates.global = 1.0f;
-                if (object.has("mora")) rates.mora = object.get("mora").getAsFloat();
-                if (object.has("experienceBooks")) {
-                    rates.experienceBooks = object.get("experienceBooks").getAsFloat();
-                } else if (object.has("exp")) {
-                    rates.experienceBooks = object.get("exp").getAsFloat();
-                }
-                return rates;
-            }
-
-            @Override
-            public com.google.gson.JsonElement serialize(
-                    LeyLineRates src,
-                    java.lang.reflect.Type typeOfSrc,
-                    com.google.gson.JsonSerializationContext context) {
-                if (src == null) return com.google.gson.JsonNull.INSTANCE;
-
-                var object = new JsonObject();
-                object.addProperty("global", src.global);
-                object.addProperty("mora", src.mora);
-                object.addProperty("experienceBooks", src.experienceBooks);
-                return object;
-            }
         }
 
         /** Spiral Abyss. */

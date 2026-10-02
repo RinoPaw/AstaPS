@@ -22,7 +22,6 @@ import emu.grasscutter.game.ability.actions.ActionAvatarSkillStart;
 import emu.grasscutter.game.avatar.SkirkTeamBonusHelper;
 import emu.grasscutter.game.avatar.TartagliaTeamBonusHelper;
 import emu.grasscutter.game.ability.LohenExtraArtSkillLevelHelper;
-import emu.grasscutter.game.battlepass.BattlePassCompatHelper;
 import emu.grasscutter.game.dungeons.DomainContinueSpawnHelper;
 import emu.grasscutter.game.tower.TowerAbyssFix;
 
@@ -56,7 +55,6 @@ public final class PlayerRuntimeStateCleanup {
         run("PartyRevive", () -> PartyReviveHelper.clearPlayerState(player));
         run("QiqiEHeal", () -> QiqiEHealHelper.clearPlayerState(player));
         run("AvatarSkillStart", () -> ActionAvatarSkillStart.clearPlayerState(player));
-        run("BattlePass", () -> BattlePassCompatHelper.clearPlayerState(uid));
         run("Domain continue", () -> DomainContinueSpawnHelper.clearPlayerState(uid));
         run("Tower", () -> TowerAbyssFix.clearEntry(player));
         run("LaumaC1", () -> LaumaC1HealHelper.clearPlayerState(player));

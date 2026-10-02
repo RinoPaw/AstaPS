@@ -16,10 +16,13 @@ public final class ActionSetGlobalValueToOverrideMap extends AbilityActionHandle
         GameEntity entity = target;
         if (action.isFromOwner) {
             if (target instanceof EntityClientGadget) {
-                EntityClientGadget gadget = (EntityClientGadget)target;
-                entity = entity.getScene().getEntityById(gadget.getOwnerEntityId());
+                EntityClientGadget gadget = (EntityClientGadget) target;
+                entity =
+                        entity.getScene() != null
+                                ? entity.getScene().getEntityById(gadget.getOwnerEntityId())
+                                : null;
             } else if (target instanceof EntityGadget) {
-                EntityGadget gadget = (EntityGadget)target;
+                EntityGadget gadget = (EntityGadget) target;
                 entity = gadget.getOwner();
             }
         }
@@ -30,21 +33,36 @@ public final class ActionSetGlobalValueToOverrideMap extends AbilityActionHandle
         String globalValueKey = action.globalValueKey;
         String abilityFormula = action.abilityFormula;
         if (!entity.getGlobalAbilityValues().containsKey(globalValueKey)) {
-            Grasscutter.getLogger().trace("Action does not contains {} global key", (Object)globalValueKey);
+            Grasscutter.getLogger()
+                    .trace("Action does not contains {} global key", (Object) globalValueKey);
             return true;
         }
 
-        Float globalValue = entity.getGlobalAbilityValues().getOrDefault(globalValueKey, Float.valueOf(0.0f));
+        Float globalValue =
+                entity.getGlobalAbilityValues().getOrDefault(globalValueKey, Float.valueOf(0.0f));
         // Most actions name no formula at all. Reading it as one threw before the override map was
         // ever written, so every ability that came through here - Xilonen's and Citlali's bullets,
         // Mavuika's motorcycle - lost the value it was setting, not just the formula.
         if ("DummyThrowSpeed".equals(abilityFormula)) {
-            globalValue = Float.valueOf(globalValue.floatValue() * 30.0f / ((float)Math.sin(0.9424778) * 100.0f) - 1.0f);
+            globalValue =
+                    Float.valueOf(
+                            globalValue.floatValue() * 30.0f
+                                            / ((float) Math.sin(0.9424778) * 100.0f)
+                                    - 1.0f);
         }
         entity.getGlobalAbilityValues().put(globalValueKey, globalValue);
         ability.getAbilitySpecials().put(action.overrideMapKey, globalValue.floatValue());
         entity.onAbilityValueUpdate();
-        entity.getScene().getHost().sendPacket(new PacketServerGlobalValueChangeNotify(entity, globalValueKey, globalValue.floatValue()));
+
+        // Off-field team members have no Scene. Send the update through the ability owner instead
+        // of dereferencing a null scene and aborting the action.
+        var scene = entity.getScene();
+        var host = scene != null ? scene.getHost() : ability.getPlayerOwner();
+        if (host != null) {
+            host.sendPacket(
+                    new PacketServerGlobalValueChangeNotify(
+                            entity, globalValueKey, globalValue.floatValue()));
+        }
         return true;
     }
 }

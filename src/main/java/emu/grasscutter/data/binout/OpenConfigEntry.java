@@ -23,22 +23,31 @@ public class OpenConfigEntry {
 
         for (OpenConfigData entry : data) {
             if (entry.$type == null) continue;
-            if (entry.$type.contains("AddAbility")) {
+            // 7.x talents (Cryo Traveler, the TPS weapons) use obfuscated type names:
+            // PHNIGFHBFMD = AddAbility, GMOELNAHCOH = ModifyAbility, CMGFNDNMFFO = UnlockTalentParam.
+            if (entry.$type.contains("AddAbility")
+                    || entry.$type.equals("CLMGJOKFOOB")
+                    || entry.$type.equals("PHNIGFHBFMD")) {
                 if (entry.abilityName != null) abilityList.add(entry.abilityName);
-            } else if (entry.$type.contains("AddTalentExtraLevel")) {
+            } else if (entry.$type.contains("AddTalentExtraLevel") || entry.$type.equals("DPACHKADLMK")) {
                 if (entry.talentIndex > 0) this.extraTalentIndex = entry.talentIndex;
             } else if (entry.talentIndex > 0) {
                 this.extraTalentIndex = entry.talentIndex;
             } else if (entry.$type.contains("ModifySkillPoint")) {
                 modList.add(new SkillPointModifier(entry.skillID, entry.pointDelta));
-            } else if (entry.$type.equals("ModifyAbility")) {
+            } else if (entry.$type.equals("NPLMAPHOLOF") || entry.$type.contains("SetAbilityVar")
+                    || entry.$type.equals("ModifyAbility")
+                    || entry.$type.equals("GMOELNAHCOH")) {
+
                 if (entry.abilityName != null && entry.varName != null && entry.varValue != null) {
                     int paramIdx = parseParamIndex(entry.varValue);
                     if (paramIdx >= 0) {
                         varList.add(new AbilityVarSetter(entry.abilityName, entry.varName, paramIdx));
                     }
                 }
-            } else if (entry.$type.contains("UnlockTalentParam")) {
+            } else if (entry.$type.contains("UnlockTalentParam")
+                    || entry.$type.equals("JNFAEBAAPDM")
+                    || entry.$type.equals("CMGFNDNMFFO")) {
                 if (entry.abilityName != null && entry.talentParam != null) {
                     paramList.add(new TalentParamEntry(entry.abilityName, entry.talentParam));
                 }
@@ -53,6 +62,7 @@ public class OpenConfigEntry {
 
     private static int parseParamIndex(JsonElement el) {
         try {
+
             String val = null;
             if (el.isJsonObject()) {
                 JsonObject obj = el.getAsJsonObject();

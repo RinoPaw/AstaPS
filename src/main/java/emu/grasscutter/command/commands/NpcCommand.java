@@ -59,9 +59,8 @@ public final class NpcCommand implements PicocliCommandHandler {
                     int groupId = Integer.parseInt(args.get(1));
                     int suiteId = Integer.parseInt(args.get(2));
                     targetPlayer.sendPacket(new PacketGroupSuiteNotify(groupId, suiteId));
-                    CommandHandler.sendMessage(
-                            sender,
-                            "Sent scene group " + groupId + " suite " + suiteId + " to the client.");
+                    CommandHandler.sendTranslatedMessage(
+                            sender, "commands.npc.group_sent", groupId, suiteId);
                 } catch (NumberFormatException e) {
                     usage(sender);
                 }
@@ -74,7 +73,7 @@ public final class NpcCommand implements PicocliCommandHandler {
                     if (entity instanceof EntityNPC npc && npc.isStandalone()) placed.add(npc);
                 }
                 placed.forEach(scene::removeEntity);
-                CommandHandler.sendMessage(sender, "Cleared " + placed.size() + " manually placed NPC(s).");
+                CommandHandler.sendTranslatedMessage(sender, "commands.npc.cleared", placed.size());
                 return;
             }
 
@@ -86,7 +85,7 @@ public final class NpcCommand implements PicocliCommandHandler {
                 return;
             }
             if (!GameData.getNpcDataMap().containsKey(npcId)) {
-                CommandHandler.sendMessage(sender, "NPC " + npcId + " was not found.");
+                CommandHandler.sendTranslatedMessage(sender, "commands.npc.not_found", npcId);
                 return;
             }
 
@@ -115,7 +114,7 @@ public final class NpcCommand implements PicocliCommandHandler {
                             scene.getId(),
                             npc.getBlockId(),
                             pos);
-            CommandHandler.sendMessage(sender, "Placed NPC " + npcId + ".");
+            CommandHandler.sendTranslatedMessage(sender, "commands.npc.spawned", npcId);
         }
     }
 
@@ -150,7 +149,7 @@ public final class NpcCommand implements PicocliCommandHandler {
         }
 
         if (lines.isEmpty()) {
-            CommandHandler.sendMessage(sender, "No NPCs found within " + radius + "m.");
+            CommandHandler.sendTranslatedMessage(sender, "commands.npc.none_near", radius);
             return;
         }
         CommandHandler.sendMessage(sender, String.join("\n", lines));

@@ -6,15 +6,16 @@ import emu.grasscutter.game.player.TeamAbilityToggle;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
 /** Toggles team-bar support buttons backed by team abilities. */
 @Command(
         label = "support",
         aliases = {"assist"},
-        usage = {"<pierro|valeriy|blast|all> [on|off]"},
         permission = "player.support",
         permissionTargeted = "player.support.others")
-public final class SupportCommand implements CommandHandler {
+public final class SupportCommand implements PicocliCommandHandler {
     private static final Map<String, String> BUTTONS = new LinkedHashMap<>();
 
     static {
@@ -24,40 +25,57 @@ public final class SupportCommand implements CommandHandler {
     }
 
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        if (args.isEmpty()) {
-            this.sendUsageMessage(sender);
-            return;
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        return new CommandLine(new Args(sender, targetPlayer));
+    }
+
+    @CommandLine.Command(name = "support")
+    private static final class Args implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        @Parameters(index = "0", paramLabel = "<pierro|valeriy|blast|all>")
+        private String which;
+
+        @Parameters(index = "1", arity = "0..1", paramLabel = "[on|off]")
+        private String state;
+
+        private Args(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
         }
 
-        String which = args.get(0).toLowerCase();
-        List<String> abilities;
-        if (which.equals("all")) {
-            abilities = List.copyOf(BUTTONS.values());
-        } else if (BUTTONS.containsKey(which)) {
-            abilities = List.of(BUTTONS.get(which));
-        } else {
-            this.sendUsageMessage(sender);
-            return;
-        }
+        @Override
+        public void run() {
+            String key = which.toLowerCase();
+            List<String> abilities;
+            if (key.equals("all")) {
+                abilities = List.copyOf(BUTTONS.values());
+            } else if (BUTTONS.containsKey(key)) {
+                abilities = List.of(BUTTONS.get(key));
+            } else {
+                CommandHandler.sendMessage(sender, "Unknown support button: " + which);
+                return;
+            }
 
-        boolean enable;
-        if (args.size() < 2) {
-            enable = !abilities.stream().allMatch(a -> TeamAbilityToggle.isOn(targetPlayer, a));
-        } else {
-            switch (args.get(1).toLowerCase()) {
-                case "on" -> enable = true;
-                case "off" -> enable = false;
-                default -> {
-                    this.sendUsageMessage(sender);
-                    return;
+            boolean enable;
+            if (state == null) {
+                enable = !abilities.stream().allMatch(a -> TeamAbilityToggle.isOn(targetPlayer, a));
+            } else {
+                switch (state.toLowerCase()) {
+                    case "on" -> enable = true;
+                    case "off" -> enable = false;
+                    default -> {
+                        CommandHandler.sendMessage(sender, "State must be on or off.");
+                        return;
+                    }
                 }
             }
-        }
 
-        TeamAbilityToggle.set(targetPlayer, abilities, enable);
-        CommandHandler.sendMessage(
-                sender,
-                (enable ? "Enabled support button(s): " : "Disabled support button(s): ") + which + ".");
+            TeamAbilityToggle.set(targetPlayer, abilities, enable);
+            CommandHandler.sendMessage(
+                    sender,
+                    (enable ? "Enabled support button(s): " : "Disabled support button(s): ") + key + ".");
+        }
     }
 }

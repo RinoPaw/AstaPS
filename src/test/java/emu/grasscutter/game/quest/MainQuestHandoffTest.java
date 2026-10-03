@@ -3,25 +3,26 @@ package emu.grasscutter.game.quest;
 import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.MainQuestData;
 import emu.grasscutter.data.excels.quest.QuestData;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.quest.enums.QuestState;
 import emu.grasscutter.net.packet.BasePacket;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.utils.JsonUtils;
-import com.google.gson.JsonParser;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.GsonBuilder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -207,7 +208,8 @@ public final class MainQuestHandoffTest {
         main.onLoad();
         var statue = JsonUtils.decode("""
                 {"subId":30302,"mainId":303,"order":1,"acceptCond":[],
-                 "finishCond":[],"failCond":[],"beginExec":[],"finishExec":[],"failExec":[]}
+                 "finishCond":[{"type":"QUEST_CONTENT_COMPLETE_TALK","param":[30302,0]}],
+                 "failCond":[],"beginExec":[],"finishExec":[],"failExec":[]}
                 """, QuestData.class);
         statue.onLoad();
         GameData.getQuestDataMap().put(30302, statue);
@@ -230,6 +232,30 @@ public final class MainQuestHandoffTest {
                 .put(35205, new OpeningQuest(parent, GameData.getQuestDataMap().get(35205)));
         player.getQuestManager().getMainQuests().put(352, parent);
         return player;
+    }
+
+    @Test
+    void statueLoginKeepsActivationQuestActiveUntilCompleteTalk() {
+        boolean enabled = GAME_OPTIONS.questing.enabled;
+        try {
+            GAME_OPTIONS.questing.enabled = true;
+            load352AndStatueQuests();
+            var player = new InMemoryPlayer();
+            player.setSession(new PacketSink());
+            var statues = new RecoverableMainQuest(player, 303);
+            player.getQuestManager().getMainQuests().put(303, statues);
+
+            player.getProgressManager().onPlayerLogin();
+            var activation = player.getQuestManager().getQuestById(30302);
+            assertEquals(QuestState.QUEST_STATE_UNFINISHED, activation.getState());
+            assertEquals(0, activation.getFinishTime());
+
+            player.getQuestManager()
+                    .triggerEvent(QuestContent.QUEST_CONTENT_COMPLETE_TALK, "", 30302);
+            assertEquals(QuestState.QUEST_STATE_FINISHED, activation.getState());
+        } finally {
+            GAME_OPTIONS.questing.enabled = enabled;
+        }
     }
 
     @Test
@@ -285,7 +311,7 @@ public final class MainQuestHandoffTest {
     }
 
     @Test
-    void questingOffKeepsTheStarterStatueTalkBypass() {
+    void questingOffDoesNotForgeStarterQuestState() {
         boolean enabled = GAME_OPTIONS.questing.enabled;
         try {
             GAME_OPTIONS.questing.enabled = false;
@@ -294,8 +320,9 @@ public final class MainQuestHandoffTest {
 
             player.getProgressManager().onPlayerLogin();
 
-            assertEquals(QuestState.QUEST_STATE_FINISHED, terminal.getState());
-            assertTrue(terminal.getFinishTime() > 0);
+            assertEquals(QuestState.QUEST_STATE_UNSTARTED, terminal.getState());
+            assertEquals(0, terminal.starts);
+            assertEquals(0, terminal.getFinishTime());
         } finally {
             GAME_OPTIONS.questing.enabled = enabled;
         }

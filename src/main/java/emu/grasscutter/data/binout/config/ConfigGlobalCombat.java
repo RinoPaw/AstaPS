@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class ConfigGlobalCombat {
-    @SerializedName("EHNGNAOKIPB")
+    @SerializedName("AMCKFHGNPKG")
     private DefaultAbilities defaultAbilities;
     // TODO: Add more indices
 
@@ -22,31 +22,31 @@ public class ConfigGlobalCombat {
 
     @Data
     public static class DefaultAbilities {
-        @SerializedName("CIPPBKBJJFH")
+        @SerializedName("PPMJNPKNHKA")
         private String monterEliteAbilityName;
 
-        @SerializedName("LDHLMPMOPKL")
+        @SerializedName("OMNNGPJABEN")
         private List<String> nonHumanoidMoveAbilities;
 
-        @SerializedName("BJIFBDHAJMN")
+        @SerializedName("NBGIHCJLEMN")
         private List<String> levelDefaultAbilities;
 
-        @SerializedName("NEEHFCBBAKF")
+        @SerializedName("KAFFOECHNIC")
         private List<String> levelElementAbilities;
 
-        @SerializedName("NFEJCNKAEEK")
+        @SerializedName("OCMDEFNBPON")
         private List<String> levelItemAbilities;
 
-        @SerializedName("GBDLFMJEKIC")
+        @SerializedName("NOAFAICCJNP")
         private List<String> levelSBuffAbilities;
 
-        @SerializedName("NHHFOOAIHIA")
+        @SerializedName("CBCMIDPBDLI")
         private List<String> defaultMPLevelAbilities;
 
-        @SerializedName("PPLPBDDJMGM")
+        @SerializedName("DJOGIFBLBIF")
         private List<String> defaultAvatarAbilities;
 
-        @SerializedName("GPNPNBPEDOB")
+        @SerializedName("NHDLFGILBIL")
         private List<String> defaultTeamAbilities;
 
         public List<String> getNonHumanoidMoveAbilities() {

@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 public class SceneNpcBornData {
     int sceneId;
 
-    @SerializedName("GJLIHAJHKEO")
+    @SerializedName(value = "bornPosList", alternate = {"GJLIHAJHKEO"})
     List<SceneNpcBornEntry> bornPosList;
 
     /** Spatial Index For NPC */

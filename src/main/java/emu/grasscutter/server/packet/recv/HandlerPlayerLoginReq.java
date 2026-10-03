@@ -9,7 +9,6 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.born.BornDataHelper;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.game.GameSession.SessionState;
 import emu.grasscutter.server.packet.send.*;
 
 @Opcodes(PacketOpcodes.PlayerLoginReq)
@@ -24,33 +23,14 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         }
 
         Player player = session.getPlayer();
-        var intro = GAME_OPTIONS.newAccountIntro;
         boolean freshAccount = player.getAvatars().getAvatarCount() == 0;
-        boolean skipIntro = freshAccount && intro.skip;
-
-        if (freshAccount && intro.enabled && !skipIntro) {
-            session.setState(SessionState.PICKING_CHARACTER);
-            int notifyCmdId =
-                    intro.doSetPlayerBornDataNotify > 0
-                            ? intro.doSetPlayerBornDataNotify
-                            : PacketOpcodes.DoSetPlayerBornDataNotify;
-            session.send(new BasePacket(notifyCmdId));
-            Grasscutter.getLogger()
-                    .info(
-                            "[intro] new account, waiting for character creation (notify cmdId={}).",
-                            notifyCmdId);
-            session.send(new PacketPlayerLoginRsp(session));
-            return;
-        }
 
         boolean playerBornNow = false;
         if (freshAccount) {
-            if (skipIntro) {
-                Grasscutter.getLogger()
-                        .info(
-                                "[intro-skip] new account uid={} bypassing native character/introduction flow.",
-                                player.getUid());
-            }
+            Grasscutter.getLogger()
+                    .info(
+                            "[statue-probe] new account uid={} bypassing native character/introduction flow for statue testing.",
+                            player.getUid());
             createDefaultTraveler(player);
             playerBornNow = true;
         } else {

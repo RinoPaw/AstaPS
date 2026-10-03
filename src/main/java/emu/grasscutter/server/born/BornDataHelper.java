@@ -1,12 +1,15 @@
 package emu.grasscutter.server.born;
 
+import static emu.grasscutter.config.Configuration.GAME_INFO;
 import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import emu.grasscutter.GameConstants;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
+import emu.grasscutter.game.mail.Mail;
 import emu.grasscutter.game.player.Player;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -98,6 +101,20 @@ public final class BornDataHelper {
             player.save();
             return true;
         }
+    }
+
+    /** Sends the standard one-time welcome mail after either birth mode succeeds. */
+    public static void sendWelcomeMail(Player player) {
+        var welcomeMail = GAME_INFO.joinOptions.welcomeMail;
+        Mail mail = new Mail();
+        mail.mailContent.title = welcomeMail.title;
+        mail.mailContent.sender = welcomeMail.sender;
+        mail.mailContent.content =
+                welcomeMail.content
+                        + "\n<type=\"browser\" text=\"GitHub\" href=\"https://github.com/Grasscutters/Grasscutter\"/>";
+        mail.itemList.addAll(Arrays.asList(welcomeMail.items));
+        mail.importance = 1;
+        player.sendMail(mail);
     }
 
     /**

@@ -13,7 +13,6 @@ public class PacketAvatarDataNotify extends BasePacket {
         AvatarDataNotify.Builder proto =
                 AvatarDataNotify.newBuilder()
                         .setCurAvatarTeamId(player.getTeamManager().getCurrentTeamId())
-                        .setChooseAvatarGuid(player.getTeamManager().getCurrentCharacterGuid())
                         .addAllOwnedFlycloakList(player.getFlyCloakList())
                         .addAllOwnedCostumeList(player.getCostumeList())
                         .addAllOwnedTraceEffectList(player.getTraceEffectList());
@@ -31,6 +30,10 @@ public class PacketAvatarDataNotify extends BasePacket {
                             }
                         });
 
+        // This packet is also sent before the first World/Scene exists during the native 7.1 intro.
+        // Asking TeamManager for the current entity at that point used to manufacture a null entry in
+        // activeTeam. The stored main avatar already carries the authoritative guid and this packet
+        // historically overwrote chooseAvatarGuid with it below anyway, so use it directly.
         Avatar mainCharacter = player.getAvatars().getAvatarById(player.getMainCharacterId());
         if (mainCharacter != null) {
             proto.setChooseAvatarGuid(mainCharacter.getGuid());

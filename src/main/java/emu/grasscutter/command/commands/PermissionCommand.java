@@ -6,10 +6,8 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.PicocliCommandHandler;
-import emu.grasscutter.config.Configuration;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.game.player.Player;
-import java.util.Objects;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
@@ -47,19 +45,12 @@ public final class PermissionCommand implements PicocliCommandHandler {
         protected final Player sender;
         protected final Player targetPlayer;
 
-        @Parameters(index = "0", paramLabel = "<key>")
-        private String key;
-
         private PermissionAction(Player sender, Player targetPlayer) {
             this.sender = sender;
             this.targetPlayer = targetPlayer;
         }
 
         protected Account account() {
-            if (!Objects.equals(key, Configuration.HTTP_ENCRYPTION.keystorePassword)) {
-                CommandHandler.sendMessage(sender != null ? sender : targetPlayer, "Wrong key");
-                return null;
-            }
             if (!Grasscutter.getPermissionHandler().EnablePermissionCommand()) {
                 CommandHandler.sendTranslatedMessage(sender, "commands.generic.permission_error");
                 return null;
@@ -72,8 +63,9 @@ public final class PermissionCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "add")
     private static final class Add extends PermissionAction {
-        @Parameters(index = "1", paramLabel = "<permission>")
+        @Parameters(index = "0", paramLabel = "<permission>")
         private String permission;
 
         private Add(Player sender, Player targetPlayer) {
@@ -93,8 +85,9 @@ public final class PermissionCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "remove")
     private static final class Remove extends PermissionAction {
-        @Parameters(index = "1", paramLabel = "<permission>")
+        @Parameters(index = "0", paramLabel = "<permission>")
         private String permission;
 
         private Remove(Player sender, Player targetPlayer) {
@@ -115,6 +108,7 @@ public final class PermissionCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "clear")
     private static final class Clear extends PermissionAction {
         private Clear(Player sender, Player targetPlayer) {
             super(sender, targetPlayer);
@@ -130,6 +124,7 @@ public final class PermissionCommand implements PicocliCommandHandler {
         }
     }
 
+    @CommandLine.Command(name = "list")
     private static final class ListPermissions extends PermissionAction {
         private ListPermissions(Player sender, Player targetPlayer) {
             super(sender, targetPlayer);

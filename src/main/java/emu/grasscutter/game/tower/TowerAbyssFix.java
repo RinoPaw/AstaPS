@@ -200,6 +200,8 @@ public final class TowerAbyssFix {
         if (maxHp <= 0) maxHp = avatar.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP);
         if (maxHp <= 0) return;
 
+        if (entity.isDead() && entity.reviveToRatio(1f) <= 0f) return;
+
         entity.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, maxHp);
         entity.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP_DEBTS, 0);
         avatar.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, maxHp);

@@ -53,11 +53,7 @@ public final class AccountCommand implements PicocliCommandHandler {
         return commandLine;
     }
 
-    private static UidArg parseUid(Player sender, String raw) {
-        String value = raw;
-        if (value.regionMatches(true, 0, "UID", 0, 3)) {
-            value = value.substring(3);
-        }
+    private static UidArg parseUid(Player sender, String value) {
         try {
             int uid = Integer.parseInt(value);
             if (uid <= 0) throw new NumberFormatException();

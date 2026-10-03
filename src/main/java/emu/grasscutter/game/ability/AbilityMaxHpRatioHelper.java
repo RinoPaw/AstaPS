@@ -218,7 +218,8 @@ public final class AbilityMaxHpRatioHelper {
         if (newMax <= 0f || Float.isNaN(newMax)) {
             return;
         }
-        float fraction = (maxHp > 0f && curHp > 0f) ? Math.min(1f, curHp / maxHp) : 1f;
+        float fraction =
+                curHp > 0f ? (maxHp > 0f ? Math.min(1f, curHp / maxHp) : 1f) : 0f;
         entity.setFightProperty(FightProperty.FIGHT_PROP_MAX_HP, newMax);
         entity.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, newMax * fraction);
         broadcastHp(entity);

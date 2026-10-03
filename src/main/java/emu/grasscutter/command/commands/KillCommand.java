@@ -5,18 +5,15 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.PicocliCommandHandler;
-import emu.grasscutter.config.Configuration;
 import emu.grasscutter.game.entity.EntityAvatar;
 import emu.grasscutter.game.entity.EntityMonster;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
-import emu.grasscutter.game.props.LifeState;
 import emu.grasscutter.game.world.Scene;
+import emu.grasscutter.net.proto.PlayerDieTypeOuterClass.PlayerDieType;
 import emu.grasscutter.server.packet.send.PacketEntityFightPropUpdateNotify;
-import emu.grasscutter.server.packet.send.PacketLifeStateChangeNotify;
 import java.util.List;
-import java.util.Objects;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
@@ -49,10 +46,7 @@ public final class KillCommand implements PicocliCommandHandler {
         private final Player sender;
         private final Player targetPlayer;
 
-        @Parameters(index = "0", paramLabel = "<key>")
-        private String key;
-
-        @Parameters(index = "1", arity = "0..1", paramLabel = "[sceneId]")
+        @Parameters(index = "0", arity = "0..1", paramLabel = "[sceneId]")
         private Integer sceneId;
 
         private KillAll(Player sender, Player targetPlayer) {
@@ -63,10 +57,6 @@ public final class KillCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (!hasPermission(sender, targetPlayer, "server.killall", "server.killall.others")) return;
-            if (!Objects.equals(key, Configuration.HTTP_ENCRYPTION.keystorePassword)) {
-                CommandHandler.sendMessage(sender != null ? sender : targetPlayer, "Wrong key");
-                return;
-            }
 
             Scene scene =
                     sceneId == null
@@ -82,7 +72,7 @@ public final class KillCommand implements PicocliCommandHandler {
                     scene.getEntities().values().stream()
                             .filter(EntityMonster.class::isInstance)
                             .toList();
-            toKill.forEach(entity -> scene.killEntity(entity, 0));
+            toKill.forEach(KillCommand::killEntity);
             CommandHandler.sendMessage(
                     sender,
                     translate(
@@ -116,16 +106,30 @@ public final class KillCommand implements PicocliCommandHandler {
                 CommandHandler.sendMessage(sender, "No active character.");
                 return;
             }
+
             entity.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, 0f);
-            entity.getWorld()
-                    .broadcastPacket(
-                            new PacketEntityFightPropUpdateNotify(entity, FightProperty.FIGHT_PROP_CUR_HP));
-            entity.getWorld().broadcastPacket(new PacketLifeStateChangeNotify(0, entity, LifeState.LIFE_DEAD));
-            targetPlayer.getScene().removeEntity(entity);
-            entity.onDeath(0);
+            if (entity.checkIfDead()) {
+                targetPlayer
+                        .getStaminaManager()
+                        .killAvatar(
+                                targetPlayer.getSession(),
+                                entity,
+                                PlayerDieType.PlayerDieType_PLAYER_DIE_KILL_BY_MONSTER);
+            }
 
             CommandHandler.sendMessage(
                     sender, translate(sender, "commands.killCharacter.success", targetPlayer.getNickname()));
+        }
+    }
+
+    private static void killEntity(GameEntity entity) {
+        entity.setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, 0f);
+        boolean diedNow = entity.checkIfDead();
+        entity.getWorld()
+                .broadcastPacket(
+                        new PacketEntityFightPropUpdateNotify(entity, FightProperty.FIGHT_PROP_CUR_HP));
+        if (diedNow) {
+            entity.getScene().killEntity(entity, 0);
         }
     }
 

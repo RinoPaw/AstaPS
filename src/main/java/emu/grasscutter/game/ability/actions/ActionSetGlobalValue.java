@@ -6,13 +6,16 @@ import emu.grasscutter.game.ability.Ability;
 import emu.grasscutter.game.ability.AbilityManager;
 import emu.grasscutter.game.ability.ArlecchinoBurstBoL;
 import emu.grasscutter.game.ability.MavuikaSpiritHelper;
+import emu.grasscutter.game.ability.PredicateEvaluator;
 import emu.grasscutter.game.ability.XilonenC6HealHelper;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
 import emu.grasscutter.server.packet.send.PacketServerGlobalValueChangeNotify;
+import java.util.List;
+import java.util.Map;
 
-/** Writes an ability global value, honoring its configured limit range when enabled. */
+/** Writes an ability global value, honoring its predicates, target and configured limit range. */
 @AbilityAction({
     AbilityModifierAction.Type.SetGlobalValue,
     AbilityModifierAction.Type.SetGlobalValueV2
@@ -22,8 +25,18 @@ public final class ActionSetGlobalValue extends AbilityActionHandler {
     @Override
     public boolean execute(
             Ability ability, AbilityModifierAction action, ByteString abilityData, GameEntity target) {
-        var properties = propertiesFor(ability);
+        // Predicates describe the entity the action is running on. Resolve the write destination only
+        // after evaluating them; configs such as TeamAbility_MoonPhase test Self but write to Team.
+        if (action.predicates != null && !action.predicates.isEmpty()) {
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> preds = (List<Map<String, Object>>) (List<?>) action.predicates;
+            if (!PredicateEvaluator.all(preds, ability, ability.getOwner(), target, action)) return true;
+        }
 
+        target = getTarget(ability, target, action.target);
+        if (target == null) return false;
+
+        var properties = propertiesFor(ability);
         var valueKey = action.key;
         float computedValue = action.writtenValue().get(properties, 0f);
         if (action.useLimitRange) {
@@ -33,7 +46,7 @@ public final class ActionSetGlobalValue extends AbilityActionHandler {
         }
 
         Player owner = ability != null ? ability.getPlayerOwner() : null;
-        if (owner == null && target != null && target.getScene() != null) {
+        if (owner == null && target.getScene() != null) {
             owner = target.getScene().getHost();
         }
         // Mavuika: Nightsoul spend converting to Fighting Spirit, and the C2 blessing state, both
@@ -46,7 +59,7 @@ public final class ActionSetGlobalValue extends AbilityActionHandler {
             } catch (Throwable ignored) {
             }
         }
-        if ("NyxValue".equals(valueKey) && target != null) {
+        if ("NyxValue".equals(valueKey)) {
             Float oldNyx = target.getGlobalAbilityValues().get(valueKey);
             if (oldNyx != null && computedValue < oldNyx) {
                 emu.grasscutter.game.ability.NightsoulStaminaExempt.markNyxCostActive(target);

@@ -47,6 +47,7 @@ public final class PredicateEvaluator {
             case "ByElementType"       -> byElementType(pred, resolved);
             case "ByEntityTypes"       -> byEntityTypes(pred, resolved);
             case "ByEntityIsAlive"     -> resolved != null && resolved.isAlive();
+            case "ByAvatarWeaponType"  -> byAvatarWeaponType(pred, resolved);
             case "ByStamina"           -> byStamina(pred, ability, resolved);
             case "ByNot"               -> byNot(pred, ability, owner, target, action);
             case "ByAny"               -> byAny(pred, ability, owner, target, action);
@@ -63,6 +64,7 @@ public final class PredicateEvaluator {
             case "ILNLCKCOGFD" -> "ByElementType";
             case "DEOFBICNFHF" -> "ByEntityTypes";
             case "FONKGIILJIO" -> "ByEntityIsAlive";
+            case "EIBIHNJLLFH" -> "ByAvatarWeaponType";
             case "OPLIAABFJGD" -> "ByStamina";
             case "GKGBIPDLMMG" -> "ByNot";
             case "GPEMEIHPCCF" -> "ByAny";
@@ -110,7 +112,7 @@ public final class PredicateEvaluator {
         return switch (type) {
             case "BJJDEAIEIGP", "ByUnlockTalentParam", "ByHasModifier",
                     "ByTargetGlobalValue", "ByTargetHPRatio", "ByElementType", "ByEntityTypes",
-                    "ByEntityIsAlive", "ByStamina" -> true;
+                    "ByEntityIsAlive", "ByAvatarWeaponType", "ByStamina" -> true;
             case "ByNot", "ByAny" -> supportedNestedPredicates(pred.get("predicates")) != null;
             default -> false;
         };
@@ -324,6 +326,25 @@ public final class PredicateEvaluator {
         if (!(typesObj instanceof List<?> types) || types.isEmpty()) return true;
 
         String actual = target.getEntityType().name();
+        for (Object type : types) {
+            if (type instanceof String expected && actual.equals(expected)) return true;
+        }
+        return false;
+    }
+
+    private static boolean byAvatarWeaponType(Map<String, Object> pred, GameEntity target) {
+        if (!(target instanceof EntityAvatar entityAvatar)
+                || entityAvatar.getAvatar() == null
+                || entityAvatar.getAvatar().getAvatarData() == null) {
+            return false;
+        }
+
+        Object typesObj = pred.containsKey("weaponTypes")
+                ? pred.get("weaponTypes")
+                : pred.get("GDONICCLGCO");
+        if (!(typesObj instanceof List<?> types) || types.isEmpty()) return true;
+
+        String actual = entityAvatar.getAvatar().getAvatarData().getWeaponType().name();
         for (Object type : types) {
             if (type instanceof String expected && actual.equals(expected)) return true;
         }

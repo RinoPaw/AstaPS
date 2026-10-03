@@ -34,7 +34,7 @@ public final class Configuration extends ConfigContainer {
     public static final ConfigContainer.GameOptions.HandbookOptions HANDBOOK = GAME.handbook;
 
     /** Compatibility alias while older callers are moved to GAME. */
-    @Deprecated(forRemoval = true)
+    @Deprecated
     public static final ConfigContainer.GameOptions GAME_OPTIONS = config.server.game.gameOptions;
 
     public static final boolean FAST_REQUIRE = config.server.fastRequire;

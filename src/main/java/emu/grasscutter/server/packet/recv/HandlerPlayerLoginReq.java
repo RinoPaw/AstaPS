@@ -2,16 +2,14 @@ package emu.grasscutter.server.packet.recv;
 
 import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
-import emu.grasscutter.GameConstants;
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.data.GameData;
-import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.born.BornDataHelper;
+import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.game.GameSession.SessionState;
-import emu.grasscutter.server.packet.send.*;
+import emu.grasscutter.server.packet.send.PacketPlayerLoginRsp;
 
 @Opcodes(PacketOpcodes.PlayerLoginReq)
 public class HandlerPlayerLoginReq extends PacketHandler {
@@ -32,16 +30,21 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         boolean skipIntro = freshAccount && intro.skip;
 
         if (freshAccount && intro.enabled && !skipIntro) {
+            // Native selection keeps the account unborn until the client submits SetPlayerBornDataReq.
+            // World/scene initialization therefore remains outside this login request.
             session.setState(SessionState.PICKING_CHARACTER);
             int notifyCmdId =
                     intro.doSetPlayerBornDataNotify > 0
                             ? intro.doSetPlayerBornDataNotify
                             : PacketOpcodes.DoSetPlayerBornDataNotify;
-            session.send(new BasePacket(notifyCmdId));
+            if (notifyCmdId > 0) {
+                session.send(new BasePacket(notifyCmdId));
+            }
             Grasscutter.getLogger()
                     .info(
-                            "[intro] new account, waiting for character creation (notify cmdId={}).",
-                            notifyCmdId);
+                            "[born-flow] uid={} mode=select; waiting for native character selection (notify cmdId={}).",
+                            player.getUid(),
+                            notifyCmdId > 0 ? notifyCmdId : "unsent");
             session.send(new PacketPlayerLoginRsp(session));
             return;
         }
@@ -51,18 +54,33 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         boolean starterStatueForceLockedBeforeLogin =
                 player.isScenePointForceLocked(STARTER_SCENE_ID, STARTER_STATUE_POINT_ID);
 
-        boolean playerBornNow = false;
+        boolean autoBornNow = false;
         if (freshAccount) {
-            createDefaultTraveler(player);
-            playerBornNow = true;
-            if (skipIntro) {
+            int avatarId = BornDataHelper.resolveAutomaticAvatarId();
+            String nickname = BornDataHelper.resolveAutomaticNickname();
+            if (!BornDataHelper.completeBirth(player, avatarId, nickname)) {
                 Grasscutter.getLogger()
-                        .info(
-                                "[intro-skip] new account uid={} created with default avatar={} nickname={}; native intro and quest 351 bootstrap skipped.",
-                                player.getUid(),
-                                player.getMainCharacterId(),
-                                player.getNickname());
+                        .error(
+                                "[born-flow] uid={} automatic birth failed; closing incomplete session.",
+                                player.getUid());
+                session.close();
+                return;
             }
+
+            // Register the fresh-player lifecycle before Player.onLogin so HomeWorld/scene code can
+            // recognize this first login. The ordinary login scene packet is retained; only Quest
+            // 351 is delayed until the first PostEnterSceneRsp.
+            BornIntroGate.armSceneReady(session);
+            BornDataHelper.sendWelcomeMail(player);
+            autoBornNow = true;
+
+            Grasscutter.getLogger()
+                    .info(
+                            "[born-flow] uid={} mode=auto avatar={} skipIntro={} introEnabled={}; visuals bypassed, scene-ready Quest bootstrap preserved.",
+                            player.getUid(),
+                            avatarId,
+                            skipIntro,
+                            intro.enabled);
         } else {
             BornDataHelper.ensureMainCharacter(player);
             var quest351 = player.getQuestManager().getMainQuestById(FIRST_MAIN_QUEST);
@@ -78,59 +96,13 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         restoreStarterStatueState(
                 player, starterStatueUnlockedBeforeLogin, starterStatueForceLockedBeforeLogin);
 
-        // Explicit intro skip is a sandbox/test path: starting onPlayerBorn here would immediately
-        // bootstrap quest 351 and replay the prologue the user just asked to bypass. The ordinary
-        // auto-create path (newAccountIntro disabled, skip=false) keeps the historic quest bootstrap.
-        if (playerBornNow && !skipIntro) {
-            player.getQuestManager().onPlayerBorn();
-            session.send(new PacketFinishedParentQuestNotify(player));
-            session.send(new PacketQuestListNotify(player));
-            session.send(new PacketQuestGlobalVarNotify(player));
+        if (autoBornNow) {
+            // World/login state is complete. Fresh-player quests remain gated until the client's
+            // first PostEnterSceneReq is acknowledged.
+            BornIntroGate.markWorldLoginComplete(session);
         }
 
         session.send(new PacketPlayerLoginRsp(session));
-    }
-
-    private static void createDefaultTraveler(Player player) {
-        int avatarId = GAME_OPTIONS.defaultAvatarId;
-        if (avatarId != GameConstants.MAIN_CHARACTER_MALE
-                && avatarId != GameConstants.MAIN_CHARACTER_FEMALE) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "Invalid gameOptions.defaultAvatarId {}; falling back to Lumine ({}).",
-                            avatarId,
-                            GameConstants.MAIN_CHARACTER_FEMALE);
-            avatarId = GameConstants.MAIN_CHARACTER_FEMALE;
-        }
-
-        if (!GameData.getAvatarDataMap().containsKey(avatarId)) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "No avatar data for configured default traveler {}; falling back to Lumine ({}).",
-                            avatarId,
-                            GameConstants.MAIN_CHARACTER_FEMALE);
-            avatarId = GameConstants.MAIN_CHARACTER_FEMALE;
-        }
-
-        String nickname = GAME_OPTIONS.defaultNickname;
-        if (nickname == null || nickname.isBlank()) {
-            nickname = "Traveler";
-        }
-
-        Avatar mainCharacter = new Avatar(avatarId);
-        if (!GAME_OPTIONS.questing.enabled) {
-            int skillDepotId = avatarId == GameConstants.MAIN_CHARACTER_MALE ? 504 : 704;
-            mainCharacter.setSkillDepotData(GameData.getAvatarSkillDepotDataMap().get(skillDepotId));
-        }
-
-        player.setNickname(nickname);
-        player.addAvatar(mainCharacter, false);
-        player.setMainCharacterId(avatarId);
-        player.setHeadImage(avatarId);
-        var team = player.getTeamManager().getCurrentSinglePlayerTeamInfo().getAvatars();
-        team.clear();
-        team.add(avatarId);
-        player.save();
     }
 
     /**

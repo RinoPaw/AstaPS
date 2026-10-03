@@ -1,5 +1,6 @@
 package emu.grasscutter.game.quest;
 
+import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.Grasscutter;
@@ -26,9 +27,12 @@ import org.junit.jupiter.api.Test;
 
 public final class MainQuestHandoffTest {
     private static final List<Path> createdDirectories = new ArrayList<>();
+    private static final Path offeringLevels = Path.of("data", "offering_levels.json");
+    private static boolean offeringLevelsExisted;
 
     @BeforeAll
     static void initializeConfig() throws Exception {
+        offeringLevelsExisted = Files.exists(offeringLevels);
         // Grasscutter's startup check requires the two resource directories even though these
         // tests supply every quest row themselves. Preserve any existing resource pack/config.
         var root = Path.of("resources");
@@ -51,6 +55,13 @@ public final class MainQuestHandoffTest {
 
     @AfterAll
     static void removeEmptyFixtureDirectories() throws Exception {
+        // OfferingHelper creates an empty file when the real progress-manager login runs.
+        // Preserve any existing file or any progress written by another process.
+        if (!offeringLevelsExisted
+                && Files.exists(offeringLevels)
+                && Files.readString(offeringLevels).trim().equals("{}")) {
+            Files.delete(offeringLevels);
+        }
         for (int i = createdDirectories.size() - 1; i >= 0; i--) {
             // Delete only the empty directories created here; never remove an existing pack.
             try {
@@ -155,6 +166,138 @@ public final class MainQuestHandoffTest {
         public void start() {
             starts++;
             setState(QuestState.QUEST_STATE_UNFINISHED);
+        }
+    }
+
+    static final class RecoverableMainQuest extends GameMainQuest {
+        RecoverableMainQuest(Player player, int id) {
+            super(player, id);
+        }
+
+        @Override
+        public void save() {}
+    }
+
+    static final class InMemoryPlayer extends Player {
+        @Override
+        public void save() {}
+    }
+
+    private static void load352AndStatueQuests() {
+        loadOpening(352, 0, 3);
+        for (int id = 35201; id <= 35205; id++) {
+            var quest = JsonUtils.decode("""
+                    {"subId":%d,"mainId":352,"order":%d,
+                     "acceptCond":[{"type":"QUEST_COND_STATE_EQUAL","param":[%d,3]}],
+                     "finishCond":[],"failCond":[],"beginExec":[],"finishExec":[],"failExec":[]}
+                    """.formatted(id, id - 35199, id - 1), QuestData.class);
+            quest.onLoad();
+            GameData.getQuestDataMap().put(id, quest);
+        }
+        var main = JsonUtils.decode("""
+                {"id":352,"subQuests":[
+                 {"subId":35200,"order":1,"isRewind":true},
+                 {"subId":35201,"order":2,"isRewind":true},
+                 {"subId":35202,"order":3,"isRewind":true},
+                 {"subId":35203,"order":4},
+                 {"subId":35204,"order":5,"isRewind":true},
+                 {"subId":35205,"order":6,"finishParent":true}]}
+                """, MainQuestData.class);
+        GameData.getMainQuestDataMap().put(352, main);
+        main.onLoad();
+        var statue = JsonUtils.decode("""
+                {"subId":30302,"mainId":303,"order":1,"acceptCond":[],
+                 "finishCond":[],"failCond":[],"beginExec":[],"finishExec":[],"failExec":[]}
+                """, QuestData.class);
+        statue.onLoad();
+        GameData.getQuestDataMap().put(30302, statue);
+        GameData.getMainQuestDataMap().put(303, JsonUtils.decode("""
+                {"id":303,"subQuests":[{"subId":30302,"order":1}]}
+                """, MainQuestData.class));
+    }
+
+    private static Player playerWithStatueAnd352() {
+        load352AndStatueQuests();
+        var player = new InMemoryPlayer();
+        player.setSession(new PacketSink());
+        var statues = new RecoverableMainQuest(player, 303);
+        statues.getChildQuestById(30302).setState(QuestState.QUEST_STATE_FINISHED);
+        player.getQuestManager().getMainQuests().put(303, statues);
+        var parent = new RecoverableMainQuest(player, 352);
+        parent.getChildQuests()
+                .put(35200, new OpeningQuest(parent, GameData.getQuestDataMap().get(35200)));
+        parent.getChildQuests()
+                .put(35205, new OpeningQuest(parent, GameData.getQuestDataMap().get(35205)));
+        player.getQuestManager().getMainQuests().put(352, parent);
+        return player;
+    }
+
+    @Test
+    void statueLoginDoesNotConsume35205AndTheOpeningCanBeHandedOff() {
+        boolean enabled = GAME_OPTIONS.questing.enabled;
+        try {
+            GAME_OPTIONS.questing.enabled = true;
+            var player = playerWithStatueAnd352();
+            var terminal = (OpeningQuest) player.getQuestManager().getQuestById(35205);
+
+            player.getProgressManager().onPlayerLogin();
+
+            assertEquals(QuestState.QUEST_STATE_UNSTARTED, terminal.getState());
+            assertEquals(0, terminal.starts);
+            assertEquals(0, terminal.getFinishTime());
+            player.getQuestManager().startMainQuestIfUnlinked(352);
+            assertEquals(
+                    QuestState.QUEST_STATE_UNFINISHED,
+                    player.getQuestManager().getQuestById(35200).getState());
+        } finally {
+            GAME_OPTIONS.questing.enabled = enabled;
+        }
+    }
+
+    @Test
+    void loginRewindClearsTheSynthetic35205FinishAndStatueSetupDoesNotRestoreIt() {
+        boolean enabled = GAME_OPTIONS.questing.enabled;
+        try {
+            GAME_OPTIONS.questing.enabled = true;
+            var player = playerWithStatueAnd352();
+            var manager = player.getQuestManager();
+            var parent = manager.getMainQuestById(352);
+            var terminal = manager.getQuestById(35205);
+            terminal.setState(QuestState.QUEST_STATE_FINISHED);
+            terminal.setFinishTime(123);
+            terminal.setStartTime(123);
+            terminal.setAcceptTime(123);
+            assertFalse(manager.canStartMainQuestIfUnlinked(352));
+
+            // QuestManager.onLogin visits active parents' rewind before PlayerProgress.onPlayerLogin.
+            parent.rewind();
+            player.getProgressManager().onPlayerLogin();
+
+            assertEquals(QuestState.QUEST_STATE_UNFINISHED, manager.getQuestById(35200).getState());
+            assertEquals(QuestState.QUEST_STATE_UNSTARTED, terminal.getState());
+            assertEquals(0, terminal.getFinishTime());
+            assertEquals(0, terminal.getStartTime());
+            assertEquals(0, terminal.getAcceptTime());
+            assertFalse(parent.isFinished());
+        } finally {
+            GAME_OPTIONS.questing.enabled = enabled;
+        }
+    }
+
+    @Test
+    void questingOffKeepsTheStarterStatueTalkBypass() {
+        boolean enabled = GAME_OPTIONS.questing.enabled;
+        try {
+            GAME_OPTIONS.questing.enabled = false;
+            var player = playerWithStatueAnd352();
+            var terminal = (OpeningQuest) player.getQuestManager().getQuestById(35205);
+
+            player.getProgressManager().onPlayerLogin();
+
+            assertEquals(QuestState.QUEST_STATE_FINISHED, terminal.getState());
+            assertTrue(terminal.getFinishTime() > 0);
+        } finally {
+            GAME_OPTIONS.questing.enabled = enabled;
         }
     }
 

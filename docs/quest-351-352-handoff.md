@@ -26,10 +26,18 @@ Rebuilt directly on `play/rino` at
   rewards, then performs the handoff. With no existing 352 parent and this
   pack, the original code should start 35200.
 
-These establish the code path, not what happened in the user's running
-session. Historical conversation retrieval was rate limited, and no runtime
-log or player save was available. In particular, a missing 35102 completion
-or a server-local Excel override remains possible.
+The subsequent runtime log on 2026-10-03 confirms these resource values. At
+23:01:17, UID 70580 finished 35102 with `finishParent=true`, then logged
+`main-finish` and `handoff next=352 unlinked=true canStart=false`; the result
+was `openingState=QUEST_STATE_UNSTARTED`. Thus 351 completion and its handoff
+both executed, and the skip happened in the existing-parent protection.
+
+`PlayerProgressManager.onPlayerLogin()` runs after `QuestManager.onLogin()`.
+Its statue setup called `addQuest(35205)` and silently marked it finished,
+even with questing enabled. This creates main quest 352 before the handoff,
+with 35200-35204 unstarted and only the final, hidden step 35205 finished.
+The guard correctly rejects that inconsistent parent. The earlier regression
+fixtures did not run this statue setup, so they missed the actual producer.
 
 Both reference projects checked, [LunaGC](https://github.com/girluh/LunaGC/blob/7.0.0/src/main/java/emu/grasscutter/game/quest/GameMainQuest.java)
 and [HunkyMeow](https://github.com/AzureXuanVerse/HunkyMeow/blob/development/src/main/java/emu/grasscutter/game/quest/GameMainQuest.java),
@@ -48,6 +56,12 @@ not repair this resource pack's missing prerequisite.
    finished parent.
 3. The unlinked predicate now requires the full `[0, FINISHED]` condition;
    quest 0 in state 0 is a satisfiable absence check and must not be forced.
+4. Statue setup now pre-finishes 35205 only when questing is disabled. With
+   questing enabled, the Archon Quest keeps ownership of that step. The
+   existing login rewind repairs the affected save: it selects 35200, clears
+   the synthetic later completion, and starts the opening. The following
+   statue setup no longer writes the synthetic completion back. No special
+   database edit or weaker handoff guard is needed.
 
 The startup `[quest351] resources` line reports the selected Excel path,
 35102's merged finish-parent flag, the successor list, and 35200's actual
@@ -73,6 +87,11 @@ preservation, empty-parent startup and idempotence, protection of later or
 failed steps, actual parent completion calling the handoff once, and login
 recovery without repeating parent completion. The tests supply their own
 quest data and do not start a game server or MongoDB.
+
+Additional regression cases execute the real progress-manager login
+setup: it must not consume 35205, and the normal parent rewind must clear the
+old synthetic finish without statue setup restoring it. A third case preserves the
+questing-off statue bypass. Ten cases pass.
 
 CI was not run. Use Java 21 for a local build, then restart the server and
 relog the affected account. Do not use `quest add` or `quest finish` while

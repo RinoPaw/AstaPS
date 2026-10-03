@@ -75,16 +75,6 @@ public final class ActionHealHP extends AbilityActionHandler {
         var amountByTargetMaxHPRatio = action.amountByTargetMaxHPRatio.get(properties, 0);
         var amountToRegenerate = action.amount.get(properties, 0);
 
-        if (action.amount.get(ability) != 0 &&
-            (amountByCasterMaxHPRatio != 0 ||
-            amountByCasterAttackRatio != 0 ||
-            amountByCasterCurrentHPRatio != 0 ||
-            amountByCasterDefRatio != 0 ||
-            amountByTargetCurrentHPRatio != 0 ||
-            amountByTargetMaxHPRatio != 0)) {
-            amountToRegenerate += action.amount.get(ability);
-        }
-
         amountToRegenerate +=
                 amountByCasterMaxHPRatio * owner.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP);
         amountToRegenerate +=

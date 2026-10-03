@@ -285,17 +285,29 @@ public final class MainQuestHandoffTest {
     }
 
     @Test
-    void questingOffKeepsTheStarterStatueTalkBypass() {
+    void questingOffForgesStarterStatueTalkGateWithoutCreating352() {
         boolean enabled = GAME_OPTIONS.questing.enabled;
         try {
             GAME_OPTIONS.questing.enabled = false;
-            var player = playerWithStatueAnd352();
-            var terminal = (OpeningQuest) player.getQuestManager().getQuestById(35205);
+            load352AndStatueQuests();
+            var player = new InMemoryPlayer();
+            player.setSession(new PacketSink());
+            var statues = new RecoverableMainQuest(player, 303);
+            statues.getChildQuestById(30302).setState(QuestState.QUEST_STATE_FINISHED);
+            player.getQuestManager().getMainQuests().put(303, statues);
 
-            player.getProgressManager().onPlayerLogin();
+            assertNull(player.getQuestManager().getMainQuestById(352));
+            var forged = player.getProgressManager().buildForgedStatueTalkQuests();
+            var starterGate =
+                    forged.stream()
+                            .filter(q -> q.getQuestId() == 35205)
+                            .findFirst()
+                            .orElseThrow();
 
-            assertEquals(QuestState.QUEST_STATE_FINISHED, terminal.getState());
-            assertTrue(terminal.getFinishTime() > 0);
+            assertEquals(352, starterGate.getParentQuestId());
+            assertEquals(QuestState.QUEST_STATE_FINISHED.getValue(), starterGate.getState());
+            assertNull(player.getQuestManager().getMainQuestById(352));
+            assertNull(player.getQuestManager().getQuestById(35205));
         } finally {
             GAME_OPTIONS.questing.enabled = enabled;
         }

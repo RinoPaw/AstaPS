@@ -6,6 +6,7 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.player.StatueActivationProbe;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.born.BornDataHelper;
 import emu.grasscutter.server.game.GameSession;
@@ -49,6 +50,14 @@ public class HandlerPlayerLoginReq extends PacketHandler {
 
         if (playerBornNow) {
             player.getQuestManager().onPlayerBorn();
+        }
+
+        // PlayerProgressManager's legacy compatibility path has already seeded/finished statue
+        // state by this point. Restore every still-locked statue quest now, after point 7/area 1
+        // cleanup, and push the corrected UNFINISHED state before gameplay starts.
+        StatueActivationProbe.restoreLockedActivationQuests(player, true);
+
+        if (playerBornNow) {
             session.send(new PacketFinishedParentQuestNotify(player));
             session.send(new PacketQuestListNotify(player));
             session.send(new PacketQuestGlobalVarNotify(player));

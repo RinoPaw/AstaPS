@@ -99,7 +99,12 @@ public class AvatarSkillDepotData extends GameResource {
     }
 
     public IntStream getSkillsAndEnergySkill() {
-        return IntStream.concat(this.skills.stream().mapToInt(i -> i), IntStream.of(this.energySkill))
+        // The attack mode skill (20000 "Main_AimActive" in the TPS traveler's depot 50001, whose
+        // other skills are all 0) is what the client builds its aim and fire input on, so it belongs
+        // in the skill maps like any other skill.
+        return IntStream.concat(
+                        IntStream.concat(this.skills.stream().mapToInt(i -> i), IntStream.of(this.energySkill)),
+                        IntStream.of(this.attackModeSkill))
                 .filter(skillId -> skillId > 0);
     }
 

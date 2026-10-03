@@ -137,6 +137,9 @@ public class HandlerEnterSceneDoneReq extends PacketHandler {
             }
         } catch (Throwable t) {
         }
+        // TPS ammunition reserves, which the client expects before the Rsp.
+        emu.grasscutter.game.tps.TpsWeaponSystem.sendSceneAmmunition(player);
+
         // Rsp
         session.send(new PacketEnterSceneDoneRsp(player));
     }

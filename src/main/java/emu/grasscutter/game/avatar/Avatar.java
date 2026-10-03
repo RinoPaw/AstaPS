@@ -25,6 +25,7 @@ import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.inventory.*;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.*;
+import emu.grasscutter.game.tps.TpsWeaponSystem;
 import emu.grasscutter.net.proto.AvatarFetterInfoOuterClass.AvatarFetterInfo;
 import emu.grasscutter.net.proto.AvatarInfoOuterClass.AvatarInfo;
 import emu.grasscutter.net.proto.AvatarSkillInfoOuterClass.AvatarSkillInfo;
@@ -69,6 +70,9 @@ public class Avatar {
     @Transient @Getter private Set<String> extraAbilityEmbryos;
 
     private List<Integer> fetters;
+
+    // TPS weapons this avatar wears, by item id (each TPS weapon is unique per player).
+    private List<Integer> tpsWeaponIds;
 
     private Map<Integer, Integer> skillLevelMap = new Int2IntArrayMap(7); // Talent levels
 
@@ -461,6 +465,13 @@ public class Avatar {
         } else return 0;
     }
 
+    public List<Integer> getTpsWeaponIds() {
+        if (this.tpsWeaponIds == null) {
+            this.tpsWeaponIds = new ArrayList<>();
+        }
+        return this.tpsWeaponIds;
+    }
+
     public boolean equipItem(GameItem item, boolean shouldRecalc) {
         // Sanity check equip type
         EquipType itemEquipType = item.getItemData().getEquipType();
@@ -710,6 +721,9 @@ public class Avatar {
                 }
             }
         }
+
+        // TPS weapons: their affix openConfigs carry the Avatar_TPS_* aim, shoot and reload abilities
+        TpsWeaponSystem.applyAffixes(this);
 
         // Add proud skills and unlock them if needed
         AvatarSkillDepotData skillDepot =
@@ -1199,6 +1213,7 @@ public class Avatar {
                                         skillId, AvatarSkillInfo.newBuilder().setMaxChargeCount(count).build()));
 
         this.getEquips().forEach((k, item) -> avatarInfo.addEquipGuidList(item.getGuid()));
+        avatarInfo.addAllTpsWeaponList(TpsWeaponSystem.getSceneWeaponInfos(this));
 
         avatarInfo.putPropMap(
                 PlayerProperty.PROP_LEVEL.getId(),

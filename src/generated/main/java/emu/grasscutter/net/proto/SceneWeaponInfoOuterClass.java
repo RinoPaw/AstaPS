@@ -83,27 +83,27 @@ public final class SceneWeaponInfoOuterClass {
     emu.grasscutter.net.proto.EntityRendererChangedInfoOuterClass.EntityRendererChangedInfoOrBuilder getRendererChangedInfoOrBuilder();
 
     /**
-     * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+     * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
      */
-    java.util.List<emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE> 
-        getKCLFBBACHLPList();
+    java.util.List<emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo> 
+        getAmmunitionListList();
     /**
-     * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+     * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
      */
-    emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE getKCLFBBACHLP(int index);
+    emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo getAmmunitionList(int index);
     /**
-     * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+     * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
      */
-    int getKCLFBBACHLPCount();
+    int getAmmunitionListCount();
     /**
-     * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+     * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
      */
-    java.util.List<? extends emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCEOrBuilder> 
-        getKCLFBBACHLPOrBuilderList();
+    java.util.List<? extends emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfoOrBuilder> 
+        getAmmunitionListOrBuilderList();
     /**
-     * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+     * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
      */
-    emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCEOrBuilder getKCLFBBACHLPOrBuilder(
+    emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfoOrBuilder getAmmunitionListOrBuilder(
         int index);
 
     /**
@@ -171,7 +171,7 @@ public final class SceneWeaponInfoOuterClass {
       super(builder);
     }
     private SceneWeaponInfo() {
-      kCLFBBACHLP_ = java.util.Collections.emptyList();
+      ammunitionList_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -286,11 +286,11 @@ public final class SceneWeaponInfoOuterClass {
             }
             case 98: {
               if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                kCLFBBACHLP_ = new java.util.ArrayList<emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE>();
+                ammunitionList_ = new java.util.ArrayList<emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo>();
                 mutable_bitField0_ |= 0x00000002;
               }
-              kCLFBBACHLP_.add(
-                  input.readMessage(emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.parser(), extensionRegistry));
+              ammunitionList_.add(
+                  input.readMessage(emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.parser(), extensionRegistry));
               break;
             }
             default: {
@@ -309,7 +309,7 @@ public final class SceneWeaponInfoOuterClass {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000002) != 0)) {
-          kCLFBBACHLP_ = java.util.Collections.unmodifiableList(kCLFBBACHLP_);
+          ammunitionList_ = java.util.Collections.unmodifiableList(ammunitionList_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -473,44 +473,44 @@ public final class SceneWeaponInfoOuterClass {
       return getRendererChangedInfo();
     }
 
-    public static final int KCLFBBACHLP_FIELD_NUMBER = 12;
-    private java.util.List<emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE> kCLFBBACHLP_;
+    public static final int AMMUNITION_LIST_FIELD_NUMBER = 12;
+    private java.util.List<emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo> ammunitionList_;
     /**
-     * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+     * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
      */
     @java.lang.Override
-    public java.util.List<emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE> getKCLFBBACHLPList() {
-      return kCLFBBACHLP_;
+    public java.util.List<emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo> getAmmunitionListList() {
+      return ammunitionList_;
     }
     /**
-     * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+     * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCEOrBuilder> 
-        getKCLFBBACHLPOrBuilderList() {
-      return kCLFBBACHLP_;
+    public java.util.List<? extends emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfoOrBuilder> 
+        getAmmunitionListOrBuilderList() {
+      return ammunitionList_;
     }
     /**
-     * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+     * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
      */
     @java.lang.Override
-    public int getKCLFBBACHLPCount() {
-      return kCLFBBACHLP_.size();
+    public int getAmmunitionListCount() {
+      return ammunitionList_.size();
     }
     /**
-     * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+     * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
      */
     @java.lang.Override
-    public emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE getKCLFBBACHLP(int index) {
-      return kCLFBBACHLP_.get(index);
+    public emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo getAmmunitionList(int index) {
+      return ammunitionList_.get(index);
     }
     /**
-     * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+     * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
      */
     @java.lang.Override
-    public emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCEOrBuilder getKCLFBBACHLPOrBuilder(
+    public emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfoOrBuilder getAmmunitionListOrBuilder(
         int index) {
-      return kCLFBBACHLP_.get(index);
+      return ammunitionList_.get(index);
     }
 
     public static final int OGKCBEGGBHF_FIELD_NUMBER = 10;
@@ -651,8 +651,8 @@ public final class SceneWeaponInfoOuterClass {
       if (WeaponSkinId_ != 0) {
         output.writeUInt32(11, WeaponSkinId_);
       }
-      for (int i = 0; i < kCLFBBACHLP_.size(); i++) {
-        output.writeMessage(12, kCLFBBACHLP_.get(i));
+      for (int i = 0; i < ammunitionList_.size(); i++) {
+        output.writeMessage(12, ammunitionList_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -713,9 +713,9 @@ public final class SceneWeaponInfoOuterClass {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(11, WeaponSkinId_);
       }
-      for (int i = 0; i < kCLFBBACHLP_.size(); i++) {
+      for (int i = 0; i < ammunitionList_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(12, kCLFBBACHLP_.get(i));
+          .computeMessageSize(12, ammunitionList_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -744,8 +744,8 @@ public final class SceneWeaponInfoOuterClass {
         if (!getRendererChangedInfo()
             .equals(other.getRendererChangedInfo())) return false;
       }
-      if (!getKCLFBBACHLPList()
-          .equals(other.getKCLFBBACHLPList())) return false;
+      if (!getAmmunitionListList()
+          .equals(other.getAmmunitionListList())) return false;
       if (getOGKCBEGGBHF()
           != other.getOGKCBEGGBHF()) return false;
       if (getEntityId()
@@ -785,9 +785,9 @@ public final class SceneWeaponInfoOuterClass {
         hash = (37 * hash) + RENDERER_CHANGED_INFO_FIELD_NUMBER;
         hash = (53 * hash) + getRendererChangedInfo().hashCode();
       }
-      if (getKCLFBBACHLPCount() > 0) {
-        hash = (37 * hash) + KCLFBBACHLP_FIELD_NUMBER;
-        hash = (53 * hash) + getKCLFBBACHLPList().hashCode();
+      if (getAmmunitionListCount() > 0) {
+        hash = (37 * hash) + AMMUNITION_LIST_FIELD_NUMBER;
+        hash = (53 * hash) + getAmmunitionListList().hashCode();
       }
       hash = (37 * hash) + OGKCBEGGBHF_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
@@ -961,7 +961,7 @@ public final class SceneWeaponInfoOuterClass {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getKCLFBBACHLPFieldBuilder();
+          getAmmunitionListFieldBuilder();
         }
       }
       @java.lang.Override
@@ -980,11 +980,11 @@ public final class SceneWeaponInfoOuterClass {
           rendererChangedInfo_ = null;
           rendererChangedInfoBuilder_ = null;
         }
-        if (kCLFBBACHLPBuilder_ == null) {
-          kCLFBBACHLP_ = java.util.Collections.emptyList();
+        if (ammunitionListBuilder_ == null) {
+          ammunitionList_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000002);
         } else {
-          kCLFBBACHLPBuilder_.clear();
+          ammunitionListBuilder_.clear();
         }
         oGKCBEGGBHF_ = false;
 
@@ -1041,14 +1041,14 @@ public final class SceneWeaponInfoOuterClass {
         } else {
           result.rendererChangedInfo_ = rendererChangedInfoBuilder_.build();
         }
-        if (kCLFBBACHLPBuilder_ == null) {
+        if (ammunitionListBuilder_ == null) {
           if (((bitField0_ & 0x00000002) != 0)) {
-            kCLFBBACHLP_ = java.util.Collections.unmodifiableList(kCLFBBACHLP_);
+            ammunitionList_ = java.util.Collections.unmodifiableList(ammunitionList_);
             bitField0_ = (bitField0_ & ~0x00000002);
           }
-          result.kCLFBBACHLP_ = kCLFBBACHLP_;
+          result.ammunitionList_ = ammunitionList_;
         } else {
-          result.kCLFBBACHLP_ = kCLFBBACHLPBuilder_.build();
+          result.ammunitionList_ = ammunitionListBuilder_.build();
         }
         result.oGKCBEGGBHF_ = oGKCBEGGBHF_;
         result.entityId_ = entityId_;
@@ -1114,29 +1114,29 @@ public final class SceneWeaponInfoOuterClass {
         if (other.hasRendererChangedInfo()) {
           mergeRendererChangedInfo(other.getRendererChangedInfo());
         }
-        if (kCLFBBACHLPBuilder_ == null) {
-          if (!other.kCLFBBACHLP_.isEmpty()) {
-            if (kCLFBBACHLP_.isEmpty()) {
-              kCLFBBACHLP_ = other.kCLFBBACHLP_;
+        if (ammunitionListBuilder_ == null) {
+          if (!other.ammunitionList_.isEmpty()) {
+            if (ammunitionList_.isEmpty()) {
+              ammunitionList_ = other.ammunitionList_;
               bitField0_ = (bitField0_ & ~0x00000002);
             } else {
-              ensureKCLFBBACHLPIsMutable();
-              kCLFBBACHLP_.addAll(other.kCLFBBACHLP_);
+              ensureAmmunitionListIsMutable();
+              ammunitionList_.addAll(other.ammunitionList_);
             }
             onChanged();
           }
         } else {
-          if (!other.kCLFBBACHLP_.isEmpty()) {
-            if (kCLFBBACHLPBuilder_.isEmpty()) {
-              kCLFBBACHLPBuilder_.dispose();
-              kCLFBBACHLPBuilder_ = null;
-              kCLFBBACHLP_ = other.kCLFBBACHLP_;
+          if (!other.ammunitionList_.isEmpty()) {
+            if (ammunitionListBuilder_.isEmpty()) {
+              ammunitionListBuilder_.dispose();
+              ammunitionListBuilder_ = null;
+              ammunitionList_ = other.ammunitionList_;
               bitField0_ = (bitField0_ & ~0x00000002);
-              kCLFBBACHLPBuilder_ = 
+              ammunitionListBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getKCLFBBACHLPFieldBuilder() : null;
+                   getAmmunitionListFieldBuilder() : null;
             } else {
-              kCLFBBACHLPBuilder_.addAllMessages(other.kCLFBBACHLP_);
+              ammunitionListBuilder_.addAllMessages(other.ammunitionList_);
             }
           }
         }
@@ -1560,244 +1560,244 @@ public final class SceneWeaponInfoOuterClass {
         return rendererChangedInfoBuilder_;
       }
 
-      private java.util.List<emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE> kCLFBBACHLP_ =
+      private java.util.List<emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo> ammunitionList_ =
         java.util.Collections.emptyList();
-      private void ensureKCLFBBACHLPIsMutable() {
+      private void ensureAmmunitionListIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
-          kCLFBBACHLP_ = new java.util.ArrayList<emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE>(kCLFBBACHLP_);
+          ammunitionList_ = new java.util.ArrayList<emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo>(ammunitionList_);
           bitField0_ |= 0x00000002;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE, emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.Builder, emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCEOrBuilder> kCLFBBACHLPBuilder_;
+          emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo, emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.Builder, emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfoOrBuilder> ammunitionListBuilder_;
 
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public java.util.List<emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE> getKCLFBBACHLPList() {
-        if (kCLFBBACHLPBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(kCLFBBACHLP_);
+      public java.util.List<emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo> getAmmunitionListList() {
+        if (ammunitionListBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(ammunitionList_);
         } else {
-          return kCLFBBACHLPBuilder_.getMessageList();
+          return ammunitionListBuilder_.getMessageList();
         }
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public int getKCLFBBACHLPCount() {
-        if (kCLFBBACHLPBuilder_ == null) {
-          return kCLFBBACHLP_.size();
+      public int getAmmunitionListCount() {
+        if (ammunitionListBuilder_ == null) {
+          return ammunitionList_.size();
         } else {
-          return kCLFBBACHLPBuilder_.getCount();
+          return ammunitionListBuilder_.getCount();
         }
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE getKCLFBBACHLP(int index) {
-        if (kCLFBBACHLPBuilder_ == null) {
-          return kCLFBBACHLP_.get(index);
+      public emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo getAmmunitionList(int index) {
+        if (ammunitionListBuilder_ == null) {
+          return ammunitionList_.get(index);
         } else {
-          return kCLFBBACHLPBuilder_.getMessage(index);
+          return ammunitionListBuilder_.getMessage(index);
         }
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public Builder setKCLFBBACHLP(
-          int index, emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE value) {
-        if (kCLFBBACHLPBuilder_ == null) {
+      public Builder setAmmunitionList(
+          int index, emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo value) {
+        if (ammunitionListBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureKCLFBBACHLPIsMutable();
-          kCLFBBACHLP_.set(index, value);
+          ensureAmmunitionListIsMutable();
+          ammunitionList_.set(index, value);
           onChanged();
         } else {
-          kCLFBBACHLPBuilder_.setMessage(index, value);
+          ammunitionListBuilder_.setMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public Builder setKCLFBBACHLP(
-          int index, emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.Builder builderForValue) {
-        if (kCLFBBACHLPBuilder_ == null) {
-          ensureKCLFBBACHLPIsMutable();
-          kCLFBBACHLP_.set(index, builderForValue.build());
+      public Builder setAmmunitionList(
+          int index, emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.Builder builderForValue) {
+        if (ammunitionListBuilder_ == null) {
+          ensureAmmunitionListIsMutable();
+          ammunitionList_.set(index, builderForValue.build());
           onChanged();
         } else {
-          kCLFBBACHLPBuilder_.setMessage(index, builderForValue.build());
+          ammunitionListBuilder_.setMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public Builder addKCLFBBACHLP(emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE value) {
-        if (kCLFBBACHLPBuilder_ == null) {
+      public Builder addAmmunitionList(emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo value) {
+        if (ammunitionListBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureKCLFBBACHLPIsMutable();
-          kCLFBBACHLP_.add(value);
+          ensureAmmunitionListIsMutable();
+          ammunitionList_.add(value);
           onChanged();
         } else {
-          kCLFBBACHLPBuilder_.addMessage(value);
+          ammunitionListBuilder_.addMessage(value);
         }
         return this;
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public Builder addKCLFBBACHLP(
-          int index, emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE value) {
-        if (kCLFBBACHLPBuilder_ == null) {
+      public Builder addAmmunitionList(
+          int index, emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo value) {
+        if (ammunitionListBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureKCLFBBACHLPIsMutable();
-          kCLFBBACHLP_.add(index, value);
+          ensureAmmunitionListIsMutable();
+          ammunitionList_.add(index, value);
           onChanged();
         } else {
-          kCLFBBACHLPBuilder_.addMessage(index, value);
+          ammunitionListBuilder_.addMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public Builder addKCLFBBACHLP(
-          emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.Builder builderForValue) {
-        if (kCLFBBACHLPBuilder_ == null) {
-          ensureKCLFBBACHLPIsMutable();
-          kCLFBBACHLP_.add(builderForValue.build());
+      public Builder addAmmunitionList(
+          emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.Builder builderForValue) {
+        if (ammunitionListBuilder_ == null) {
+          ensureAmmunitionListIsMutable();
+          ammunitionList_.add(builderForValue.build());
           onChanged();
         } else {
-          kCLFBBACHLPBuilder_.addMessage(builderForValue.build());
+          ammunitionListBuilder_.addMessage(builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public Builder addKCLFBBACHLP(
-          int index, emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.Builder builderForValue) {
-        if (kCLFBBACHLPBuilder_ == null) {
-          ensureKCLFBBACHLPIsMutable();
-          kCLFBBACHLP_.add(index, builderForValue.build());
+      public Builder addAmmunitionList(
+          int index, emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.Builder builderForValue) {
+        if (ammunitionListBuilder_ == null) {
+          ensureAmmunitionListIsMutable();
+          ammunitionList_.add(index, builderForValue.build());
           onChanged();
         } else {
-          kCLFBBACHLPBuilder_.addMessage(index, builderForValue.build());
+          ammunitionListBuilder_.addMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public Builder addAllKCLFBBACHLP(
-          java.lang.Iterable<? extends emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE> values) {
-        if (kCLFBBACHLPBuilder_ == null) {
-          ensureKCLFBBACHLPIsMutable();
+      public Builder addAllAmmunitionList(
+          java.lang.Iterable<? extends emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo> values) {
+        if (ammunitionListBuilder_ == null) {
+          ensureAmmunitionListIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, kCLFBBACHLP_);
+              values, ammunitionList_);
           onChanged();
         } else {
-          kCLFBBACHLPBuilder_.addAllMessages(values);
+          ammunitionListBuilder_.addAllMessages(values);
         }
         return this;
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public Builder clearKCLFBBACHLP() {
-        if (kCLFBBACHLPBuilder_ == null) {
-          kCLFBBACHLP_ = java.util.Collections.emptyList();
+      public Builder clearAmmunitionList() {
+        if (ammunitionListBuilder_ == null) {
+          ammunitionList_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000002);
           onChanged();
         } else {
-          kCLFBBACHLPBuilder_.clear();
+          ammunitionListBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public Builder removeKCLFBBACHLP(int index) {
-        if (kCLFBBACHLPBuilder_ == null) {
-          ensureKCLFBBACHLPIsMutable();
-          kCLFBBACHLP_.remove(index);
+      public Builder removeAmmunitionList(int index) {
+        if (ammunitionListBuilder_ == null) {
+          ensureAmmunitionListIsMutable();
+          ammunitionList_.remove(index);
           onChanged();
         } else {
-          kCLFBBACHLPBuilder_.remove(index);
+          ammunitionListBuilder_.remove(index);
         }
         return this;
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.Builder getKCLFBBACHLPBuilder(
+      public emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.Builder getAmmunitionListBuilder(
           int index) {
-        return getKCLFBBACHLPFieldBuilder().getBuilder(index);
+        return getAmmunitionListFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCEOrBuilder getKCLFBBACHLPOrBuilder(
+      public emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfoOrBuilder getAmmunitionListOrBuilder(
           int index) {
-        if (kCLFBBACHLPBuilder_ == null) {
-          return kCLFBBACHLP_.get(index);  } else {
-          return kCLFBBACHLPBuilder_.getMessageOrBuilder(index);
+        if (ammunitionListBuilder_ == null) {
+          return ammunitionList_.get(index);  } else {
+          return ammunitionListBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public java.util.List<? extends emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCEOrBuilder> 
-           getKCLFBBACHLPOrBuilderList() {
-        if (kCLFBBACHLPBuilder_ != null) {
-          return kCLFBBACHLPBuilder_.getMessageOrBuilderList();
+      public java.util.List<? extends emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfoOrBuilder> 
+           getAmmunitionListOrBuilderList() {
+        if (ammunitionListBuilder_ != null) {
+          return ammunitionListBuilder_.getMessageOrBuilderList();
         } else {
-          return java.util.Collections.unmodifiableList(kCLFBBACHLP_);
+          return java.util.Collections.unmodifiableList(ammunitionList_);
         }
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.Builder addKCLFBBACHLPBuilder() {
-        return getKCLFBBACHLPFieldBuilder().addBuilder(
-            emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.getDefaultInstance());
+      public emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.Builder addAmmunitionListBuilder() {
+        return getAmmunitionListFieldBuilder().addBuilder(
+            emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.getDefaultInstance());
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.Builder addKCLFBBACHLPBuilder(
+      public emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.Builder addAmmunitionListBuilder(
           int index) {
-        return getKCLFBBACHLPFieldBuilder().addBuilder(
-            index, emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.getDefaultInstance());
+        return getAmmunitionListFieldBuilder().addBuilder(
+            index, emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.getDefaultInstance());
       }
       /**
-       * <code>repeated .IMPFHAGJHCE KCLFBBACHLP = 12;</code>
+       * <code>repeated .TpsWeaponAmmunitionInfo ammunition_list = 12;</code>
        */
-      public java.util.List<emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.Builder> 
-           getKCLFBBACHLPBuilderList() {
-        return getKCLFBBACHLPFieldBuilder().getBuilderList();
+      public java.util.List<emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.Builder> 
+           getAmmunitionListBuilderList() {
+        return getAmmunitionListFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE, emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.Builder, emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCEOrBuilder> 
-          getKCLFBBACHLPFieldBuilder() {
-        if (kCLFBBACHLPBuilder_ == null) {
-          kCLFBBACHLPBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE, emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCE.Builder, emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.IMPFHAGJHCEOrBuilder>(
-                  kCLFBBACHLP_,
+          emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo, emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.Builder, emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfoOrBuilder> 
+          getAmmunitionListFieldBuilder() {
+        if (ammunitionListBuilder_ == null) {
+          ammunitionListBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo, emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfo.Builder, emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.TpsWeaponAmmunitionInfoOrBuilder>(
+                  ammunitionList_,
                   ((bitField0_ & 0x00000002) != 0),
                   getParentForChildren(),
                   isClean());
-          kCLFBBACHLP_ = null;
+          ammunitionList_ = null;
         }
-        return kCLFBBACHLPBuilder_;
+        return ammunitionListBuilder_;
       }
 
       private boolean oGKCBEGGBHF_ ;
@@ -2121,32 +2121,33 @@ public final class SceneWeaponInfoOuterClass {
     java.lang.String[] descriptorData = {
       "\n\025SceneWeaponInfo.proto\032\032AbilitySyncStat" +
       "eInfo.proto\032\037EntityRendererChangedInfo.p" +
-      "roto\032\021IMPFHAGJHCE.proto\"\231\003\n\017SceneWeaponI" +
-      "nfo\022+\n\014ability_info\030\007 \001(\0132\025.AbilitySyncS" +
-      "tateInfo\0221\n\taffix_map\030\010 \003(\0132\036.SceneWeapo" +
-      "nInfo.AffixMapEntry\0229\n\025renderer_changed_" +
-      "info\030\t \001(\0132\032.EntityRendererChangedInfo\022!" +
-      "\n\013KCLFBBACHLP\030\014 \003(\0132\014.IMPFHAGJHCE\022\023\n\013OGK" +
-      "CBEGGBHF\030\n \001(\010\022\021\n\tentity_id\030\001 \001(\r\022\027\n\017_we" +
-      "apon_skin_id\030\013 \001(\r\022\021\n\tgadget_id\030\002 \001(\r\022\025\n" +
-      "\rpromote_level\030\006 \001(\r\022\017\n\007item_id\030\003 \001(\r\022\r\n" +
-      "\005level\030\005 \001(\r\022\014\n\004guid\030\004 \001(\004\032/\n\rAffixMapEn" +
-      "try\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031e" +
-      "mu.grasscutter.net.protob\006proto3"
+      "roto\032\035TpsWeaponAmmunitionInfo.proto\"\251\003\n\017" +
+      "SceneWeaponInfo\022+\n\014ability_info\030\007 \001(\0132\025." +
+      "AbilitySyncStateInfo\0221\n\taffix_map\030\010 \003(\0132" +
+      "\036.SceneWeaponInfo.AffixMapEntry\0229\n\025rende" +
+      "rer_changed_info\030\t \001(\0132\032.EntityRendererC" +
+      "hangedInfo\0221\n\017ammunition_list\030\014 \003(\0132\030.Tp" +
+      "sWeaponAmmunitionInfo\022\023\n\013OGKCBEGGBHF\030\n \001" +
+      "(\010\022\021\n\tentity_id\030\001 \001(\r\022\027\n\017_weapon_skin_id" +
+      "\030\013 \001(\r\022\021\n\tgadget_id\030\002 \001(\r\022\025\n\rpromote_lev" +
+      "el\030\006 \001(\r\022\017\n\007item_id\030\003 \001(\r\022\r\n\005level\030\005 \001(\r" +
+      "\022\014\n\004guid\030\004 \001(\004\032/\n\rAffixMapEntry\022\013\n\003key\030\001" +
+      " \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001B\033\n\031emu.grasscutt" +
+      "er.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           emu.grasscutter.net.proto.AbilitySyncStateInfoOuterClass.getDescriptor(),
           emu.grasscutter.net.proto.EntityRendererChangedInfoOuterClass.getDescriptor(),
-          emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.getDescriptor(),
+          emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.getDescriptor(),
         });
     internal_static_SceneWeaponInfo_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_SceneWeaponInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SceneWeaponInfo_descriptor,
-        new java.lang.String[] { "AbilityInfo", "AffixMap", "RendererChangedInfo", "KCLFBBACHLP", "OGKCBEGGBHF", "EntityId", "WeaponSkinId", "GadgetId", "PromoteLevel", "ItemId", "Level", "Guid", });
+        new java.lang.String[] { "AbilityInfo", "AffixMap", "RendererChangedInfo", "AmmunitionList", "OGKCBEGGBHF", "EntityId", "WeaponSkinId", "GadgetId", "PromoteLevel", "ItemId", "Level", "Guid", });
     internal_static_SceneWeaponInfo_AffixMapEntry_descriptor =
       internal_static_SceneWeaponInfo_descriptor.getNestedTypes().get(0);
     internal_static_SceneWeaponInfo_AffixMapEntry_fieldAccessorTable = new
@@ -2155,7 +2156,7 @@ public final class SceneWeaponInfoOuterClass {
         new java.lang.String[] { "Key", "Value", });
     emu.grasscutter.net.proto.AbilitySyncStateInfoOuterClass.getDescriptor();
     emu.grasscutter.net.proto.EntityRendererChangedInfoOuterClass.getDescriptor();
-    emu.grasscutter.net.proto.IMPFHAGJHCEOuterClass.getDescriptor();
+    emu.grasscutter.net.proto.TpsWeaponAmmunitionInfoOuterClass.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -3021,10 +3021,12 @@ public final class PacketOpcodes {
     public static final int Unk2700_OGHMHELMBNN_ServerRsp = 0; // 7.1 CmdId unknown (7.0: 1)
     public static final int WindSeedType1Notify = 29056;
     
-    // TPS (Third-Person Shooter) weapon system
+    // TPS (Third-Person Shooter) weapon system. See docs/tps/README.md for how these were matched.
     public static final int WearTpsEquipReq = 20756;
     public static final int WearTpsEquipRsp = 25902;
     public static final int TpsEquipChangeNotify = 21312;
+    public static final int TpsRegionalPlaySupplyInfoNotify = 6579;
+    public static final int TpsAmmunitionChangeNotify = 24371; // name inferred, see docs/tps
 
     // Opcodes only this repository's handlers use (negative: never matches a packet).
     public static final int AvatarTraceEffectChangeNotify = -1001; // no 7.1 CmdId known

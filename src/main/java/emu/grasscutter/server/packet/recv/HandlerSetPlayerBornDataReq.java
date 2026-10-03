@@ -84,13 +84,25 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
             // 7.1 keeps the native second intro client-side after accepting 26105. Keep the session
             // ACTIVE, but do not establish World/Scene until the second observed false->true pause
-            // cycle marks the native intro boundary.
+            // cycle marks the native intro boundary. For repeated fresh-account testing, the switch
+            // below synthesizes those two cycles and reuses the exact same world-entry path.
             session.setState(SessionState.ACTIVE);
             BornIntroGate.arm(session);
-            Grasscutter.getLogger()
-                    .info(
-                            "[intro] born handshake complete for uid {}; waiting for native pause-cycle cutover before world login.",
-                            player.getUid());
+            if (skipNewAccountIntro()) {
+                Grasscutter.getLogger()
+                        .info(
+                                "[intro-skip] born handshake complete for uid {}; skipping native post-born intro.",
+                                player.getUid());
+                BornIntroGate.notePause(session, false);
+                BornIntroGate.notePause(session, true);
+                BornIntroGate.notePause(session, false);
+                BornIntroGate.notePause(session, true);
+            } else {
+                Grasscutter.getLogger()
+                        .info(
+                                "[intro] born handshake complete for uid {}; waiting for native pause-cycle cutover before world login.",
+                                player.getUid());
+            }
         }
 
         // Default mail
@@ -106,5 +118,13 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         mail.itemList.addAll(Arrays.asList(welcomeMail.items));
         mail.importance = 1;
         player.sendMail(mail);
+    }
+
+    private static boolean skipNewAccountIntro() {
+        String value = System.getProperty("astaps.skipNewAccountIntro");
+        if (value == null || value.isBlank()) {
+            value = System.getenv("ASTAPS_SKIP_NEW_ACCOUNT_INTRO");
+        }
+        return value != null && Boolean.parseBoolean(value.trim());
     }
 }

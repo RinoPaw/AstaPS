@@ -426,6 +426,7 @@ public class AbilityModifier implements Serializable {
 
         @SerializedName(value = "failActions", alternate = "JINAOHPNJKC")
         public AbilityModifierAction[] failActions;
+
         public DropType dropType = DropType.LevelControl;
         public DynamicFloat baseEnergy;
         @SerializedName(value = "ratio", alternate = "value")

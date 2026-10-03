@@ -1,6 +1,6 @@
 package emu.grasscutter.game.reward;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.game.inventory.GameItem;
 import java.util.List;
@@ -55,10 +55,10 @@ public final class RewardScaler {
     }
 
     private static double resourceRate(int itemId) {
-        if (GAME_OPTIONS == null || GAME_OPTIONS.rates == null) return 1.0;
+        if (GAME == null || GAME.rewards == null) return 1.0;
         return switch (itemId) {
-            case ADVENTURE_EXP_ITEM_ID -> GAME_OPTIONS.rates.adventureExp;
-            case MORA_ITEM_ID -> GAME_OPTIONS.rates.mora;
+            case ADVENTURE_EXP_ITEM_ID -> GAME.rewards.adventureExp;
+            case MORA_ITEM_ID -> GAME.rewards.mora;
             default -> 1.0;
         };
     }

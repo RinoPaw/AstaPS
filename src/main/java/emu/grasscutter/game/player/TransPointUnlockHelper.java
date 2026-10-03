@@ -1,8 +1,8 @@
 package emu.grasscutter.game.player;
 
+import static emu.grasscutter.config.Configuration.GAME;
 import static emu.grasscutter.scripts.constants.EventType.EVENT_UNLOCK_TRANS_POINT;
 
-import emu.grasscutter.config.RewardOverrides;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.props.WatcherTriggerType;
@@ -75,12 +75,12 @@ public final class TransPointUnlockHelper {
     }
 
     private static void grantReward(Player player, boolean isStatue) {
-        var reward = RewardOverrides.resolveUnlock(isStatue);
-        add(player, 201, reward.primogems());
-        add(player, RewardScaler.ADVENTURE_EXP_ITEM_ID, reward.adventureExp());
-        add(player, 107009, reward.fragileResin());
-        add(player, 104003, reward.heroWit());
-        add(player, 104013, reward.mysticEnhancementOre());
+        var reward = GAME.rewards.unlock(isStatue);
+        add(player, 201, reward.primogems);
+        add(player, RewardScaler.ADVENTURE_EXP_ITEM_ID, reward.adventureExp);
+        add(player, 107009, reward.fragileResin);
+        add(player, 104003, reward.heroWit);
+        add(player, 104013, reward.mysticEnhancementOre);
     }
 
     private static void add(Player player, int itemId, int baseCount) {

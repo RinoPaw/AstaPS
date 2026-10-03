@@ -16,6 +16,25 @@ public final class TransPointUnlockHelper {
     private TransPointUnlockHelper() {}
 
     public static boolean unlock(Player player, int sceneId, int pointId, boolean isStatue) {
+        return unlock(player, sceneId, pointId, isStatue, false);
+    }
+
+    /**
+     * Quest 303/352 already carries a separate QUEST_EXEC_UNLOCK_AREA immediately after
+     * QUEST_EXEC_UNLOCK_POINT. Keep that transaction split so the client sees point-unlock first and
+     * area-unlock second, matching the stock quest data and preserving the native map reveal trigger.
+     */
+    public static boolean unlockFromQuest(
+            Player player, int sceneId, int pointId, boolean isStatue) {
+        return unlock(player, sceneId, pointId, isStatue, true);
+    }
+
+    private static boolean unlock(
+            Player player,
+            int sceneId,
+            int pointId,
+            boolean isStatue,
+            boolean deferStatueAreaToQuest) {
         if (player == null) return false;
 
         var scenePointEntry = GameData.getScenePointEntryById(sceneId, pointId);
@@ -34,7 +53,10 @@ public final class TransPointUnlockHelper {
         player.getUnlockedScenePoints(sceneId).add(pointId);
 
         var progress = player.getProgressManager();
-        if (isStatue && pointData != null && pointData.getAreaId() > 0) {
+        if (isStatue
+                && !deferStatueAreaToQuest
+                && pointData != null
+                && pointData.getAreaId() > 0) {
             progress.unlockSceneAreaHierarchy(sceneId, pointData.getAreaId());
         }
 
@@ -53,11 +75,14 @@ public final class TransPointUnlockHelper {
         } catch (Throwable ignored) {
         }
 
-        if (isStatue) {
+        // The point notification belongs to QUEST_EXEC_UNLOCK_POINT. For quest-backed statues do
+        // not also synthesize the area/goddess transaction here; QUEST_EXEC_UNLOCK_AREA follows.
+        player.sendPacket(new PacketScenePointUnlockNotify(sceneId, pointId));
+
+        if (isStatue && !deferStatueAreaToQuest) {
             progress.refreshStatueTalkGate(sceneId, pointId);
         }
 
-        player.sendPacket(new PacketScenePointUnlockNotify(sceneId, pointId));
         try {
             int total = 0;
             if (player.getUnlockedScenePoints() != null) {

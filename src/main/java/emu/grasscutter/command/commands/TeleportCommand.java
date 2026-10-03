@@ -21,11 +21,10 @@ import picocli.CommandLine.Parameters;
 public final class TeleportCommand implements PicocliCommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
-        Player resolvedTarget = resolveTarget(sender, targetPlayer);
-        var commandLine = new CommandLine(new Root(sender, resolvedTarget));
-        commandLine.addSubcommand("pos", new PositionTeleport(sender, resolvedTarget));
-        commandLine.addSubcommand("scene", new SceneTeleport(sender, resolvedTarget));
-        commandLine.addSubcommand("all", new TeleportAll(sender, resolvedTarget));
+        var commandLine = new CommandLine(new Root(sender, targetPlayer));
+        commandLine.addSubcommand("pos", new PositionTeleport(sender, targetPlayer));
+        commandLine.addSubcommand("scene", new SceneTeleport(sender, targetPlayer));
+        commandLine.addSubcommand("all", new TeleportAll(sender, targetPlayer));
         return commandLine;
     }
 
@@ -33,10 +32,13 @@ public final class TeleportCommand implements PicocliCommandHandler {
         if (targetPlayer != null) return targetPlayer;
         if (sender != null) return sender;
 
+        var gameServer = Grasscutter.getGameServer();
+        if (gameServer == null) {
+            return null;
+        }
+
         var onlinePlayers =
-                Grasscutter.getGameServer().getPlayers().values().stream()
-                        .filter(Player::isOnline)
-                        .toList();
+                gameServer.getPlayers().values().stream().filter(Player::isOnline).toList();
         if (onlinePlayers.size() == 1) {
             return onlinePlayers.get(0);
         }
@@ -73,8 +75,9 @@ public final class TeleportCommand implements PicocliCommandHandler {
                 TeleportCommand.this.sendUsageMessage(sender);
                 return;
             }
-            if (targetPlayer == null) return;
-            teleportToScenePoint(sender, targetPlayer, pointId, sceneId);
+            Player resolvedTarget = resolveTarget(sender, targetPlayer);
+            if (resolvedTarget == null) return;
+            teleportToScenePoint(sender, resolvedTarget, pointId, sceneId);
         }
     }
 
@@ -152,11 +155,12 @@ public final class TeleportCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
-            if (targetPlayer == null) return;
-            if (!hasPermission(sender, targetPlayer, "player.teleport", "player.teleport.others")) return;
+            Player resolvedTarget = resolveTarget(sender, targetPlayer);
+            if (resolvedTarget == null) return;
+            if (!hasPermission(sender, resolvedTarget, "player.teleport", "player.teleport.others")) return;
 
-            Position basePosition = new Position(targetPlayer.getPosition());
-            Position rotation = new Position(targetPlayer.getRotation());
+            Position basePosition = new Position(resolvedTarget.getPosition());
+            Position rotation = new Position(resolvedTarget.getRotation());
             Position destination;
             try {
                 destination = CommandHelpers.parsePosition(x, y, z, basePosition, rotation);
@@ -166,12 +170,12 @@ public final class TeleportCommand implements PicocliCommandHandler {
                 return;
             }
 
-            int destinationScene = sceneId == null ? targetPlayer.getSceneId() : sceneId;
+            int destinationScene = sceneId == null ? resolvedTarget.getSceneId() : sceneId;
             boolean transferred =
-                    targetPlayer
+                    resolvedTarget
                             .getWorld()
                             .transferPlayerToScene(
-                                    targetPlayer,
+                                    resolvedTarget,
                                     destinationScene,
                                     TeleportType.COMMAND,
                                     destination);
@@ -185,7 +189,7 @@ public final class TeleportCommand implements PicocliCommandHandler {
                     translate(
                             sender,
                             "commands.teleport.success",
-                            targetPlayer.getNickname(),
+                            resolvedTarget.getNickname(),
                             destination.getX(),
                             destination.getY(),
                             destination.getZ(),
@@ -208,10 +212,11 @@ public final class TeleportCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
-            if (targetPlayer == null) return;
-            if (!hasPermission(sender, targetPlayer, "player.teleport", "player.teleport.others")) return;
+            Player resolvedTarget = resolveTarget(sender, targetPlayer);
+            if (resolvedTarget == null) return;
+            if (!hasPermission(sender, resolvedTarget, "player.teleport", "player.teleport.others")) return;
 
-            var scene = targetPlayer.getWorld().getSceneById(sceneId);
+            var scene = resolvedTarget.getWorld().getSceneById(sceneId);
             if (scene == null) {
                 CommandHandler.sendMessage(sender, "Scene " + sceneId + " does not exist.");
                 return;
@@ -226,19 +231,19 @@ public final class TeleportCommand implements PicocliCommandHandler {
             }
 
             Position destination = config.born_pos;
-            if (config.born_rot != null) targetPlayer.getRotation().set(config.born_rot);
+            if (config.born_rot != null) resolvedTarget.getRotation().set(config.born_rot);
             boolean transferred =
-                    targetPlayer
+                    resolvedTarget
                             .getWorld()
                             .transferPlayerToScene(
-                                    targetPlayer, sceneId, TeleportType.COMMAND, destination);
+                                    resolvedTarget, sceneId, TeleportType.COMMAND, destination);
             if (!transferred) {
                 CommandHandler.sendMessage(sender, "Failed to enter scene " + sceneId + ".");
                 return;
             }
 
-            var pos = targetPlayer.getPosition();
-            var rot = targetPlayer.getRotation();
+            var pos = resolvedTarget.getPosition();
+            var rot = resolvedTarget.getRotation();
             CommandHandler.sendTranslatedMessage(
                     sender,
                     "commands.position.success",
@@ -248,7 +253,7 @@ public final class TeleportCommand implements PicocliCommandHandler {
                     rot.getX(),
                     rot.getY(),
                     rot.getZ(),
-                    targetPlayer.getSceneId());
+                    resolvedTarget.getSceneId());
         }
     }
 
@@ -264,21 +269,22 @@ public final class TeleportCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
-            if (targetPlayer == null) return;
-            if (!hasPermission(sender, targetPlayer, "player.tpall", "player.tpall.others")) return;
-            if (!targetPlayer.getWorld().isMultiplayer()) {
+            Player resolvedTarget = resolveTarget(sender, targetPlayer);
+            if (resolvedTarget == null) return;
+            if (!hasPermission(sender, resolvedTarget, "player.tpall", "player.tpall.others")) return;
+            if (!resolvedTarget.getWorld().isMultiplayer()) {
                 CommandHandler.sendMessage(sender, translate(sender, "commands.teleportAll.error"));
                 return;
             }
 
-            for (Player player : targetPlayer.getWorld().getPlayers()) {
-                if (player.equals(targetPlayer)) continue;
+            for (Player player : resolvedTarget.getWorld().getPlayers()) {
+                if (player.equals(resolvedTarget)) continue;
                 player.getWorld()
                         .transferPlayerToScene(
                                 player,
-                                targetPlayer.getSceneId(),
+                                resolvedTarget.getSceneId(),
                                 TeleportType.COMMAND,
-                                targetPlayer.getPosition());
+                                resolvedTarget.getPosition());
             }
 
             CommandHandler.sendMessage(sender, translate(sender, "commands.teleportAll.success"));

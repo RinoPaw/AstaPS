@@ -2,6 +2,7 @@ package emu.grasscutter.server.packet.recv;
 
 import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
+import emu.grasscutter.GameConstants;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
@@ -26,8 +27,9 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         Player player = session.getPlayer();
         var intro = GAME_OPTIONS.newAccountIntro;
         boolean freshAccount = player.getAvatars().getAvatarCount() == 0;
+        boolean skipIntro = freshAccount && intro.skip;
 
-        if (freshAccount && intro.enabled) {
+        if (freshAccount && intro.enabled && !skipIntro) {
             session.setState(SessionState.PICKING_CHARACTER);
             int notifyCmdId =
                     intro.doSetPlayerBornDataNotify > 0
@@ -46,6 +48,14 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         if (freshAccount) {
             createDefaultTraveler(player);
             playerBornNow = true;
+            if (skipIntro) {
+                Grasscutter.getLogger()
+                        .info(
+                                "[intro-skip] new account uid={} created with default avatar={} nickname={}; native intro and quest 351 bootstrap skipped.",
+                                player.getUid(),
+                                player.getMainCharacterId(),
+                                player.getNickname());
+            }
         } else {
             BornDataHelper.ensureMainCharacter(player);
             var quest351 = player.getQuestManager().getMainQuestById(FIRST_MAIN_QUEST);
@@ -59,7 +69,10 @@ public class HandlerPlayerLoginReq extends PacketHandler {
 
         player.onLogin();
 
-        if (playerBornNow) {
+        // Explicit intro skip is a sandbox/test path: starting onPlayerBorn here would immediately
+        // bootstrap quest 351 and replay the prologue the user just asked to bypass. The ordinary
+        // auto-create path (newAccountIntro disabled, skip=false) keeps the historic quest bootstrap.
+        if (playerBornNow && !skipIntro) {
             player.getQuestManager().onPlayerBorn();
             session.send(new PacketFinishedParentQuestNotify(player));
             session.send(new PacketQuestListNotify(player));
@@ -70,13 +83,41 @@ public class HandlerPlayerLoginReq extends PacketHandler {
     }
 
     private static void createDefaultTraveler(Player player) {
-        int avatarId = 10000007;
-        Avatar mainCharacter = new Avatar(avatarId);
-
-        if (!GAME_OPTIONS.questing.enabled) {
-            mainCharacter.setSkillDepotData(GameData.getAvatarSkillDepotDataMap().get(704));
+        int avatarId = GAME_OPTIONS.defaultAvatarId;
+        if (avatarId != GameConstants.MAIN_CHARACTER_MALE
+                && avatarId != GameConstants.MAIN_CHARACTER_FEMALE) {
+            Grasscutter.getLogger()
+                    .warn(
+                            "Invalid gameOptions.defaultAvatarId {}; falling back to Lumine ({}).",
+                            avatarId,
+                            GameConstants.MAIN_CHARACTER_FEMALE);
+            avatarId = GameConstants.MAIN_CHARACTER_FEMALE;
         }
 
+        if (!GameData.getAvatarDataMap().containsKey(avatarId)) {
+            Grasscutter.getLogger()
+                    .warn(
+                            "No avatar data for configured default traveler {}; falling back to Lumine ({}).",
+                            avatarId,
+                            GameConstants.MAIN_CHARACTER_FEMALE);
+            avatarId = GameConstants.MAIN_CHARACTER_FEMALE;
+        }
+
+        String nickname = GAME_OPTIONS.defaultNickname;
+        if (nickname == null || nickname.isBlank()) {
+            nickname = "Traveler";
+        }
+
+        Avatar mainCharacter = new Avatar(avatarId);
+        if (!GAME_OPTIONS.questing.enabled) {
+            int skillDepotId =
+                    avatarId == GameConstants.MAIN_CHARACTER_MALE
+                            ? 504
+                            : 704;
+            mainCharacter.setSkillDepotData(GameData.getAvatarSkillDepotDataMap().get(skillDepotId));
+        }
+
+        player.setNickname(nickname);
         player.addAvatar(mainCharacter, false);
         player.setMainCharacterId(avatarId);
         player.setHeadImage(avatarId);

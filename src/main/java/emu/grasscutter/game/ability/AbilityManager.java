@@ -20,6 +20,7 @@ import emu.grasscutter.data.excels.ProudSkillData;
 import emu.grasscutter.data.excels.avatar.AvatarSkillDepotData;
 import emu.grasscutter.game.player.*;
 import emu.grasscutter.game.props.FightProperty;
+import emu.grasscutter.game.tps.TpsWeaponSystem;
 import emu.grasscutter.net.proto.AbilityInvokeEntryOuterClass.AbilityInvokeEntry;
 import emu.grasscutter.net.proto.AbilityMetaAddAbilityOuterClass.AbilityMetaAddAbility;
 import emu.grasscutter.net.proto.AbilityMetaModifierChangeOuterClass.AbilityMetaModifierChange;
@@ -357,6 +358,11 @@ public final class AbilityManager extends BasePlayerManager {
         if (invoke.getArgumentType()
             == AbilityInvokeArgument.AbilityInvokeArgument_ABILITY_META_ADD_SPECIAL_ENERGY_VALUE) {
             this.handleAddSpecialEnergy(invoke);
+            return;
+        }
+        if (invoke.getArgumentType()
+            == AbilityInvokeArgument.AbilityInvokeArgument_ABILITY_META_UPDATE_TPS_WEAPON_AMMUNITION) {
+            TpsWeaponSystem.onAmmunitionInvoke(this.player, invoke);
             return;
         }
         Grasscutter.getLogger()

@@ -3,6 +3,7 @@ package emu.grasscutter.server.packet.send;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.dungeons.DomainDungeonHelper;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.tps.TpsWeaponSystem;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo;
 import emu.grasscutter.net.proto.SceneTeamAvatarOuterClass.SceneTeamAvatar;
@@ -37,7 +38,9 @@ public class PacketSceneTeamUpdateNotify extends BasePacket {
                                             p.getTeamManager().getCurrentAvatarEntity() == entityAvatar)
                                     .setAvatarAbilityInfo(AbilitySyncStateInfo.newBuilder())
                                     .setWeaponAbilityInfo(AbilitySyncStateInfo.newBuilder())
-                                    .setAbilityControlBlock(entityAvatar.getAbilityControlBlock());
+                                    .setAbilityControlBlock(entityAvatar.getAbilityControlBlock())
+                                    .addAllTpsWeaponList(
+                                            TpsWeaponSystem.getSceneWeaponInfos(entityAvatar.getAvatar()));
 
                     if (player.getWorld().isMultiplayer()) {
                         avatarProto.setAvatarInfo(entityAvatar.getAvatar().toProto());

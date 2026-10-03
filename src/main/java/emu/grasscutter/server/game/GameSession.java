@@ -175,8 +175,9 @@ public class GameSession implements GameSessionManager.KcpChannel {
                     }
                 }
                 tunnel.writeData(bytes);
-            } catch (Exception ignored) {
-                Grasscutter.getLogger().debug("Unable to send packet to client.");
+            } catch (Exception e) {
+                Grasscutter.getLogger()
+                        .debug("Unable to send packet {} to client: {}", packet.getOpcode(), e.toString());
             }
         }
     }

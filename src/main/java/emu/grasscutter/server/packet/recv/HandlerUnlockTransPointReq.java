@@ -3,10 +3,8 @@ package emu.grasscutter.server.packet.recv;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.TransPointUnlockHelper;
 import emu.grasscutter.net.packet.*;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
 import emu.grasscutter.net.proto.UnlockTransPointReqOuterClass.UnlockTransPointReq;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.packet.send.PacketUnlockTransPointRsp;
 
 @Opcodes(PacketOpcodes.UnlockTransPointReq)
 public class HandlerUnlockTransPointReq extends PacketHandler {
@@ -56,17 +54,11 @@ public class HandlerUnlockTransPointReq extends PacketHandler {
                         req.getSceneId(),
                         req.getPointId(),
                         unlocked);
-        // UnlockTransPointRsp still has no confirmed 7.1 CmdId. Keep the full point-list refresh as
-        // a gameplay fallback while the current-client live notification path is validated separately.
-        if (unlocked) {
-            player.sendPacket(
-                    new emu.grasscutter.server.packet.send.PacketGetScenePointRsp(
-                            player, req.getSceneId()));
-        }
-        player.sendPacket(
-                new PacketUnlockTransPointRsp(
-                        unlocked
-                                ? RetcodeOuterClass.Retcode.RET_SUCC
-                                : RetcodeOuterClass.Retcode.RET_FAIL));
+
+        // The exact 7.1 ScenePointUnlockNotify field mapping is now client-backed and is sufficient
+        // to update the live waypoint state. Runtime controls with candidate 36641, candidate 20290,
+        // and no UnlockTransPointRsp at all all produced the same successful unlock/map/teleport
+        // behavior. Do not hide that evidence behind a full GetScenePointRsp refresh, and do not send
+        // an unconfirmed response CmdId until its semantic identity is established independently.
     }
 }

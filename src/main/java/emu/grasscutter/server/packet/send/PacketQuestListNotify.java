@@ -12,10 +12,9 @@ public class PacketQuestListNotify extends BasePacket {
 
         QuestListNotify.Builder proto = QuestListNotify.newBuilder();
 
-        // With questing off, an account that played with it ON still has its old sub-quests saved,
-        // and sending them back as unfinished is what makes the client replay the opening cutscene
-        // - no cutscene setting reaches that, because the client decides it from quest state. New
-        // accounts have nothing saved, which is why only old ones were affected.
+        // With questing off, keep ordinary unfinished story quests hidden so old accounts do not
+        // replay story content. Statue activation quests are different: the stock client needs the
+        // active 303/352 child state in order to expose the locked-statue interaction.
         var questingEnabled = emu.grasscutter.game.quest.QuestManager.isQuestingActive();
 
         player
@@ -24,7 +23,11 @@ public class PacketQuestListNotify extends BasePacket {
                         quest -> {
                             var state = quest.getState();
                             if (state == QuestState.QUEST_STATE_UNSTARTED) return;
-                            if (!questingEnabled && state != QuestState.QUEST_STATE_FINISHED) return;
+                            boolean statueActivationQuest =
+                                    quest.getMainQuestId() == 303 || quest.getMainQuestId() == 352;
+                            if (!questingEnabled
+                                    && !statueActivationQuest
+                                    && state != QuestState.QUEST_STATE_FINISHED) return;
                             proto.addQuestList(quest.toProto());
                         });
 

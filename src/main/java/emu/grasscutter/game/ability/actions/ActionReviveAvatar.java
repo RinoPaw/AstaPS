@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import emu.grasscutter.data.binout.AbilityModifier.AbilityModifierAction;
 import emu.grasscutter.game.ability.Ability;
 import emu.grasscutter.game.ability.PartyReviveHelper;
+import emu.grasscutter.game.entity.EntityAvatar;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
@@ -50,7 +51,25 @@ public final class ActionReviveAvatar extends AbilityActionHandler {
             ratio = PartyReviveHelper.QIQI_REVIVE_RATIO;
         }
 
+        if (isSingleAvatarTarget(action.target)) {
+            GameEntity resolved = getTarget(ability, target, action.target);
+            if (resolved instanceof EntityAvatar avatar) {
+                PartyReviveHelper.reviveTarget(avatar, ratio);
+            }
+            return true;
+        }
+
+        // Current Qiqi/Barbara configs use CurTeamAvatars/AllPlayerAvatars. Keep the existing
+        // whole-team fallback for those targets, absent target names and unknown legacy resources.
         PartyReviveHelper.reviveFallenFromAbility(ability, ratio);
         return true;
+    }
+
+    private static boolean isSingleAvatarTarget(String target) {
+        if (target == null) return false;
+        return switch (target) {
+            case "Self", "Target", "Applier", "Caster", "Owner", "OriginOwner", "CurLocalAvatar" -> true;
+            default -> false;
+        };
     }
 }

@@ -5,6 +5,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.command.*;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.quest.GameQuest;
+import emu.grasscutter.game.quest.QuestManager;
 import emu.grasscutter.game.quest.enums.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -137,6 +138,14 @@ public final class QuestCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
+            if (!QuestManager.isQuestingActive()) {
+                CommandHandler.sendMessage(
+                        sender,
+                        "Questing is disabled. Enable gameOptions.questing.enabled and "
+                                + "server.game.enableScriptInBigWorld, then restart the server.");
+                return;
+            }
+
             var quest = targetPlayer.getQuestManager().addQuest(questId.value());
             if (quest != null) {
                 CommandHandler.sendMessage(

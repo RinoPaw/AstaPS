@@ -20,7 +20,8 @@ import picocli.CommandLine.Parameters;
 @Command(
         label = "mail",
         permission = "server.sendmail",
-        targetRequirement = Command.TargetRequirement.NONE)
+        targetRequirement = Command.TargetRequirement.NONE,
+        inlineTarget = false)
 public final class MailCommand implements PicocliCommandHandler {
     private record Recipient(Integer uid) {
         private boolean all() {
@@ -37,10 +38,17 @@ public final class MailCommand implements PicocliCommandHandler {
                 Recipient.class,
                 value -> {
                     if (value.equalsIgnoreCase("all")) return new Recipient(null);
+                    if (value.length() < 2 || value.charAt(0) != '@') {
+                        throw new CommandLine.TypeConversionException(
+                                "Recipient must be @<UID> or 'all'");
+                    }
                     try {
-                        return new Recipient(Integer.parseInt(value));
+                        int uid = Integer.parseInt(value.substring(1));
+                        if (uid <= 0) throw new NumberFormatException();
+                        return new Recipient(uid);
                     } catch (NumberFormatException ignored) {
-                        throw new CommandLine.TypeConversionException("Recipient must be a UID or 'all'");
+                        throw new CommandLine.TypeConversionException(
+                                "Recipient must be @<UID> or 'all'");
                     }
                 });
         commandLine.registerConverter(
@@ -109,7 +117,7 @@ public final class MailCommand implements PicocliCommandHandler {
     private static final class Send implements Runnable {
         private final Player sender;
 
-        @Parameters(index = "0", paramLabel = "<uid|all>")
+        @Parameters(index = "0", paramLabel = "<@UID|all>")
         private Recipient recipient;
 
         @Option(names = "--title", required = true, arity = "1..*", paramLabel = "<title>")

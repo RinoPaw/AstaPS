@@ -12,6 +12,7 @@ import emu.grasscutter.game.chat.ChatSystem;
 import emu.grasscutter.game.chat.ChatSystemHandler;
 import emu.grasscutter.game.combine.CombineManger;
 import emu.grasscutter.game.drop.DropSystem;
+import emu.grasscutter.game.drop.DropSystemLegacy;
 import emu.grasscutter.game.dungeons.DungeonSystem;
 import emu.grasscutter.game.expedition.ExpeditionSystem;
 import emu.grasscutter.game.gacha.GachaSystem;
@@ -72,6 +73,7 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
     private final DungeonSystem dungeonSystem;
     private final ExpeditionSystem expeditionSystem;
     private final DropSystem dropSystem;
+    private final DropSystemLegacy dropSystemLegacy;
     private final WorldDataSystem worldDataSystem;
     private final BattlePassSystem battlePassSystem;
     private final CombineManger combineSystem;
@@ -120,6 +122,7 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
             this.dungeonSystem = null;
             this.expeditionSystem = null;
             this.dropSystem = null;
+            this.dropSystemLegacy = null;
             this.worldDataSystem = null;
             this.battlePassSystem = null;
             this.combineSystem = null;
@@ -167,6 +170,7 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
         this.homeWorldMPSystem = new HomeWorldMPSystem(this);
         this.dungeonSystem = new DungeonSystem(this);
         this.dropSystem = new DropSystem(this);
+        this.dropSystemLegacy = new DropSystemLegacy(this);
         this.expeditionSystem = new ExpeditionSystem(this);
         this.combineSystem = new CombineManger(this);
         this.towerSystem = new TowerSystem(this);
@@ -188,6 +192,16 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
             inetSocketAddress = new InetSocketAddress(GAME_INFO.bindAddress, GAME_INFO.bindPort);
         }
         return inetSocketAddress;
+    }
+
+    @Deprecated
+    public ChatSystemHandler getChatManager() {
+        return chatManager;
+    }
+
+    @Deprecated
+    public void setChatManager(ChatSystemHandler chatManager) {
+        this.chatManager = chatManager;
     }
 
     public ChatSystemHandler getChatSystem() {
@@ -302,26 +316,31 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
         // Each of these is guarded on its own. One world or one player throwing used to abandon the
         // whole tick, so everybody else's world stopped moving for reasons that had nothing to do
         // with them - and the scheduler at the end never ran at all.
-        this.worlds.removeIf(
-                world -> {
-                    try {
-                        boolean shouldRemove = world.onTick();
-                        if (shouldRemove && world instanceof HomeWorld homeWorld) {
-                            // Home worlds are indexed separately from the world tick set.
-                            // Remove the same instance from that cache, otherwise the host
-                            // player and every loaded home scene stay strongly reachable after
-                            // the last player leaves.
-                            Player host = homeWorld.getHost();
-                            if (host != null) {
-                                this.homeWorlds.remove(host.getUid(), homeWorld);
+        // Lock the home world cache before the world set. Logging in takes them in that order
+        // (computeIfAbsent builds a HomeWorld, which registers itself in the world set), so taking
+        // the world set first here deadlocked the tick against a login and froze the server.
+        synchronized (this.homeWorlds) {
+            this.worlds.removeIf(
+                    world -> {
+                        try {
+                            boolean shouldRemove = world.onTick();
+                            if (shouldRemove && world instanceof HomeWorld homeWorld) {
+                                // Home worlds are indexed separately from the world tick set.
+                                // Remove the same instance from that cache, otherwise the host
+                                // player and every loaded home scene stay strongly reachable after
+                                // the last player leaves.
+                                Player host = homeWorld.getHost();
+                                if (host != null) {
+                                    this.homeWorlds.remove(host.getUid(), homeWorld);
+                                }
                             }
+                            return shouldRemove;
+                        } catch (Throwable e) {
+                            Grasscutter.getLogger().error("A world threw while ticking.", e);
+                            return false;
                         }
-                        return shouldRemove;
-                    } catch (Throwable e) {
-                        Grasscutter.getLogger().error("A world threw while ticking.", e);
-                        return false;
-                    }
-                });
+                    });
+        }
 
         this.players
                 .values()

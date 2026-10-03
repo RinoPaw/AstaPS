@@ -2,6 +2,7 @@ package emu.grasscutter.config;
 
 import static emu.grasscutter.Grasscutter.config;
 
+import emu.grasscutter.utils.FileUtils;
 import java.nio.file.Path;
 import java.util.Locale;
 
@@ -38,13 +39,51 @@ public final class Configuration extends ConfigContainer {
     public static final GameOptions.HandbookOptions HANDBOOK =
             config.server.game.gameOptions.handbook;
     public static final boolean FAST_REQUIRE = config.server.fastRequire;
+    private static final String DATA_FOLDER = config.folderStructure.data;
     private static final String PLUGINS_FOLDER = config.folderStructure.plugins;
+    private static final String SCRIPTS_FOLDER = config.folderStructure.scripts;
+    private static final String PACKETS_FOLDER = config.folderStructure.packets;
 
     /*
      * Utilities
      */
+    @Deprecated(forRemoval = true)
+    public static String DATA() {
+        return DATA_FOLDER;
+    }
+
+    @Deprecated(forRemoval = true)
+    public static String DATA(String path) {
+        return Path.of(DATA_FOLDER, path).toString();
+    }
+
+    @Deprecated(forRemoval = true)
+    public static Path getResourcePath(String path) {
+        return FileUtils.getResourcePath(path);
+    }
+
+    @Deprecated(forRemoval = true)
+    public static String RESOURCE(String path) {
+        return FileUtils.getResourcePath(path).toString();
+    }
+
+    @Deprecated(forRemoval = true)
+    public static String PLUGIN() {
+        return PLUGINS_FOLDER;
+    }
+
     public static String PLUGIN(String path) {
         return Path.of(PLUGINS_FOLDER, path).toString();
+    }
+
+    @Deprecated(forRemoval = true)
+    public static String SCRIPT(String path) {
+        return Path.of(SCRIPTS_FOLDER, path).toString();
+    }
+
+    @Deprecated(forRemoval = true)
+    public static String PACKET(String path) {
+        return Path.of(PACKETS_FOLDER, path).toString();
     }
 
     /**

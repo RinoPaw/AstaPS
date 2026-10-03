@@ -83,14 +83,12 @@ public class AvatarSkillDepotData extends GameResource {
             this.inherentProudSkillOpens = List.of();
         }
 
-        this.questProudSkillGroupIds =
-                (this.specialProudSkillOpens == null)
-                        ? IntLists.EMPTY_LIST
-                        : new IntArrayList(
-                                this.specialProudSkillOpens.stream()
-                                        .mapToInt(SpecialProudSkillOpens::getProudSkillGroupId)
-                                        .filter(id -> id > 0)
-                                        .toArray());
+        this.questProudSkillGroupIds = (this.specialProudSkillOpens == null) ? IntLists.EMPTY_LIST :
+            new IntArrayList(
+                this.specialProudSkillOpens.stream()
+                    .mapToInt(SpecialProudSkillOpens::getProudSkillGroupId)
+                    .filter(id -> id > 0)
+                    .toArray());
 
         // Get constellation item from GameData
         Optional.ofNullable(this.talents)
@@ -101,9 +99,13 @@ public class AvatarSkillDepotData extends GameResource {
     }
 
     public IntStream getSkillsAndEnergySkill() {
-        return IntStream.concat(
-                        this.skills.stream().mapToInt(i -> i), IntStream.of(this.energySkill))
+        return IntStream.concat(this.skills.stream().mapToInt(i -> i), IntStream.of(this.energySkill))
                 .filter(skillId -> skillId > 0);
+    }
+
+    /** Compatibility getter used by the 7.0 obfuscated ability data. */
+    public List<SpecialProudSkillOpens> getDAEIJGCFNLL() {
+        return this.specialProudSkillOpens;
     }
 
     @Getter

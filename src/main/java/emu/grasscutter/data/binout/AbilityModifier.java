@@ -442,7 +442,7 @@ public class AbilityModifier implements Serializable {
          * multiplier, wrong for a write. Gson builds a fresh instance whenever the config carries a
          * value of its own, so still holding the shared default means it carried none, and none
          * means zero. Without this a bare "clear this mark" set it, and 629 of the 1058 animator
-         * bools in the corpus - the ones shipped with no value - were being broadcast as true.
+         * bools in the corpus - the ones shipped with no value - were broadcast as true.
          */
         public DynamicFloat writtenValue() {
             return this.ratio == DynamicFloat.ONE ? DynamicFloat.ZERO : this.ratio;

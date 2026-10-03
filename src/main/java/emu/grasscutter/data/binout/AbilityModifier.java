@@ -351,7 +351,7 @@ public class AbilityModifier implements Serializable {
         @SerializedName(value = "amountByTargetCurrentHPRatio")
         public DynamicFloat amountByTargetCurrentHPRatio = DynamicFloat.ZERO;
 
-        @SerializedName(value = "amountByTargetMaxHPRatio", alternate = "GGLMMJHNGMO")
+        @SerializedName(value = "amountByTargetMaxHPRatio", alternate = {"GGLMMJHNGMO", "FPOCDLCHDPE"})
         public DynamicFloat amountByTargetMaxHPRatio = DynamicFloat.ZERO;
 
         public DynamicFloat limboByTargetMaxHPRatio = DynamicFloat.ZERO;
@@ -426,7 +426,6 @@ public class AbilityModifier implements Serializable {
 
         @SerializedName(value = "failActions", alternate = "JINAOHPNJKC")
         public AbilityModifierAction[] failActions;
-
         public DropType dropType = DropType.LevelControl;
         public DynamicFloat baseEnergy;
         @SerializedName(value = "ratio", alternate = "value")

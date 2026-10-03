@@ -4,12 +4,10 @@ import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.game.managers.StatueTalkQuests;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.packet.send.PacketGetSceneAreaRsp;
 import emu.grasscutter.server.packet.send.PacketGetScenePointRsp;
 import emu.grasscutter.server.packet.send.PacketLevelupCityRsp;
-import emu.grasscutter.server.packet.send.PacketQuestListUpdateNotify;
 import emu.grasscutter.server.packet.send.PacketScenePointUnlockNotify;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
@@ -183,13 +181,6 @@ public final class StatueCommand implements PicocliCommandHandler {
     private static void lock(Player sender, Player player, int sceneId, int pointId) {
         player.getUnlockedScenePoints(sceneId).remove(pointId);
         player.getForceLockedScenePoints(sceneId).add(pointId);
-        var entry = GameData.getScenePointEntryById(sceneId, pointId);
-        if (entry != null && entry.getPointData() != null) {
-            int questId = StatueTalkQuests.questForArea(entry.getPointData().getAreaId());
-            if (questId > 0) {
-                player.sendPacket(new PacketQuestListUpdateNotify(questId, 303, 2));
-            }
-        }
         player.save();
         player.sendPacket(PacketScenePointUnlockNotify.lock(sceneId, pointId));
         player.sendPacket(new PacketGetScenePointRsp(player, sceneId));
@@ -289,7 +280,7 @@ public final class StatueCommand implements PicocliCommandHandler {
             var entry = GameData.getScenePointEntryById(sceneId, pointId);
             if (entry == null || entry.getPointData() == null) continue;
             var data = entry.getPointData();
-            if (!StatueTalkQuests.isStatuePoint(data) || data.getPos() == null) continue;
+            if (!isStatuePoint(data) || data.getPos() == null) continue;
             var point = data.getPos();
             double dx = point.getX() - position.getX();
             double dy = point.getY() - position.getY();
@@ -301,5 +292,11 @@ public final class StatueCommand implements PicocliCommandHandler {
             }
         }
         return best;
+    }
+
+    private static boolean isStatuePoint(emu.grasscutter.data.common.PointData data) {
+        if (data.getMaxSpringVolume() > 0) return true;
+        String type = data.getType();
+        return type != null && type.contains("KDEHKECBDBO");
     }
 }

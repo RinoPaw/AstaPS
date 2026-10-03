@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
@@ -75,11 +76,11 @@ public abstract class GameEntity {
     @Getter @Setter private EntityController entityController;
     @Getter private ElementType lastAttackType = ElementType.None;
 
-    @Getter private List<Ability> instancedAbilities = new ArrayList<>();
+    // Ability actions run on a pool while the game thread also reads and mutates these collections.
+    @Getter private List<Ability> instancedAbilities = new CopyOnWriteArrayList<>();
 
     @Getter
-    private Int2ObjectMap<AbilityModifierController> instancedModifiers =
-            new Int2ObjectOpenHashMap<>();
+    private Map<Integer, AbilityModifierController> instancedModifiers = new ConcurrentHashMap<>();
 
     // Abilities run on a thread pool, so a plain HashMap here threw ConcurrentModificationException
     // out of whichever action happened to be reading the values while another wrote them

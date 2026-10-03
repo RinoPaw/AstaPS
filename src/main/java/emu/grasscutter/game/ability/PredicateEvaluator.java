@@ -45,6 +45,7 @@ public final class PredicateEvaluator {
             case "ByTargetGlobalValue" -> byTargetGlobalValue(pred, ability, resolved);
             case "ByTargetHPRatio"     -> byTargetHPRatio(pred, ability, resolved);
             case "ByElementType"       -> byElementType(pred, resolved);
+            case "ByEntityTypes"       -> byEntityTypes(pred, resolved);
             case "ByStamina"           -> byStamina(pred, ability, resolved);
             case "ByNot"               -> byNot(pred, ability, owner, target, action);
             case "ByAny"               -> byAny(pred, ability, owner, target, action);
@@ -59,6 +60,7 @@ public final class PredicateEvaluator {
             case "HGKCHJOOMCH" -> "ByTargetHPRatio";
             case "LCCNMKNDACG" -> "ByUnlockTalentParam";
             case "ILNLCKCOGFD" -> "ByElementType";
+            case "DEOFBICNFHF" -> "ByEntityTypes";
             case "OPLIAABFJGD" -> "ByStamina";
             case "GKGBIPDLMMG" -> "ByNot";
             case "GPEMEIHPCCF" -> "ByAny";
@@ -105,7 +107,8 @@ public final class PredicateEvaluator {
         String type = normalizeType(rawType);
         return switch (type) {
             case "BJJDEAIEIGP", "ByUnlockTalentParam", "ByHasModifier",
-                    "ByTargetGlobalValue", "ByTargetHPRatio", "ByElementType", "ByStamina" -> true;
+                    "ByTargetGlobalValue", "ByTargetHPRatio", "ByElementType", "ByEntityTypes",
+                    "ByStamina" -> true;
             case "ByNot", "ByAny" -> supportedNestedPredicates(pred.get("predicates")) != null;
             default -> false;
         };
@@ -306,6 +309,23 @@ public final class PredicateEvaluator {
             return true;
         }
         return elementType.equals(entityAvatar.getAvatar().getSkillDepot().getElementType().name());
+    }
+
+    private static boolean byEntityTypes(Map<String, Object> pred, GameEntity target) {
+        // Some configs ask for the event source rather than the resolved action target. The
+        // evaluator is not given an event-source entity yet, so keep those permissive instead of
+        // filtering the wrong object.
+        if (Boolean.TRUE.equals(pred.get("useEventSource"))) return true;
+        if (target == null) return false;
+
+        Object typesObj = pred.get("entityTypes");
+        if (!(typesObj instanceof List<?> types) || types.isEmpty()) return true;
+
+        String actual = target.getEntityType().name();
+        for (Object type : types) {
+            if (type instanceof String expected && actual.equals(expected)) return true;
+        }
+        return false;
     }
 
     private static boolean byStamina(Map<String, Object> pred, Ability ability, GameEntity target) {

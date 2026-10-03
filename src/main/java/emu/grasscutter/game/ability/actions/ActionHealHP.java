@@ -101,7 +101,7 @@ public final class ActionHealHP extends AbilityActionHandler {
                             + target.getFightProperty(FightProperty.FIGHT_PROP_HEALED_ADD);
 
         amountToRegenerate +=
-                amountByTargetCurrentHPRatio * target.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP);
+                amountByTargetCurrentHPRatio * target.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP);
         amountToRegenerate +=
                 amountByTargetMaxHPRatio * target.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP);
 

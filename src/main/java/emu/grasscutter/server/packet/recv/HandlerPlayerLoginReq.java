@@ -86,18 +86,21 @@ public class HandlerPlayerLoginReq extends PacketHandler {
     }
 
     private static void keepLegacyStarterStatueLocked(Player player) {
-        // PlayerProgressManager still carries a legacy scene-3 point-7 starter seed. This probe
-        // branch deliberately removes it after each login so the same Statue of the Seven can be
-        // used as a repeatable locked-state sample. Do not force-lock the point: native unlock must
-        // remain free to add it normally during the current session.
-        boolean removed = player.getUnlockedScenePoints(3).remove(7);
+        // PlayerProgressManager still carries legacy starter seeds for scene 3 point 7 and area 1.
+        // This probe branch deliberately removes both after login so the same Statue of the Seven
+        // starts with its point locked and its map fog still present. Do not force-lock the point:
+        // native unlock must remain free to add it normally during the current session.
+        boolean removedPoint = player.getUnlockedScenePoints(3).remove(7);
+        boolean removedArea = player.getUnlockedSceneAreas(3).remove(1);
         player.getForceLockedScenePoints(3).remove(7);
-        if (removed) {
+        if (removedPoint || removedArea) {
             player.save();
             Grasscutter.getLogger()
                     .info(
-                            "[statue-probe] uid={} removed legacy default unlock for scene=3 point=7.",
-                            player.getUid());
+                            "[statue-probe] uid={} removed legacy starter unlocks point=3:7 area=3:1 pointRemoved={} areaRemoved={}.",
+                            player.getUid(),
+                            removedPoint,
+                            removedArea);
         }
     }
 

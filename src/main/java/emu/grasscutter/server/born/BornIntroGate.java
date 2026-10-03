@@ -10,6 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /** Holds the short-lived fresh-player gate between character creation and first world entry. */
 public final class BornIntroGate {
+    private static final int STARTER_SCENE_ID = 3;
+    private static final int STARTER_STATUE_POINT_ID = 7;
+
     // Key by UID rather than GameSession. The 7.1 client may reconnect while the first cold world
     // login is still finishing; tying this state to the old connection loses the fresh-player quest
     // bootstrap exactly when the replacement session reaches PostEnterSceneReq.
@@ -157,7 +160,16 @@ public final class BornIntroGate {
 
         try {
             synchronized (player) {
+                boolean starterStatueUnlockedBeforeLogin =
+                        player.getUnlockedScenePoints(STARTER_SCENE_ID).contains(STARTER_STATUE_POINT_ID);
+                boolean starterStatueForceLockedBeforeLogin =
+                        player.isScenePointForceLocked(STARTER_SCENE_ID, STARTER_STATUE_POINT_ID);
+
                 player.onLogin();
+                restoreStarterStatueState(
+                        player,
+                        starterStatueUnlockedBeforeLogin,
+                        starterStatueForceLockedBeforeLogin);
             }
 
             GameSession deferredReadySession = null;
@@ -182,6 +194,38 @@ public final class BornIntroGate {
                             "[intro-cutover] uid={} failed while entering world after native intro boundary.",
                             player.getUid(),
                             t);
+        }
+    }
+
+    private static void restoreStarterStatueState(
+            emu.grasscutter.game.player.Player player,
+            boolean wasUnlocked,
+            boolean wasForceLocked) {
+        var unlocked = player.getUnlockedScenePoints(STARTER_SCENE_ID);
+        var forceLocked = player.getForceLockedScenePoints(STARTER_SCENE_ID);
+        boolean changed =
+                unlocked.contains(STARTER_STATUE_POINT_ID) != wasUnlocked
+                        || forceLocked.contains(STARTER_STATUE_POINT_ID) != wasForceLocked;
+
+        if (wasUnlocked) {
+            unlocked.add(STARTER_STATUE_POINT_ID);
+        } else {
+            unlocked.remove(STARTER_STATUE_POINT_ID);
+        }
+        if (wasForceLocked) {
+            forceLocked.add(STARTER_STATUE_POINT_ID);
+        } else {
+            forceLocked.remove(STARTER_STATUE_POINT_ID);
+        }
+
+        if (changed) {
+            player.save();
+            Grasscutter.getLogger()
+                    .debug(
+                            "Preserved starter statue state across native-intro login uid={} unlocked={} forceLocked={}.",
+                            player.getUid(),
+                            wasUnlocked,
+                            wasForceLocked);
         }
     }
 

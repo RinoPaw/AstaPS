@@ -16,6 +16,8 @@ import emu.grasscutter.server.packet.send.*;
 @Opcodes(PacketOpcodes.PlayerLoginReq)
 public class HandlerPlayerLoginReq extends PacketHandler {
     private static final int FIRST_MAIN_QUEST = 351;
+    private static final int STARTER_SCENE_ID = 3;
+    private static final int STARTER_STATUE_POINT_ID = 7;
 
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
@@ -44,6 +46,11 @@ public class HandlerPlayerLoginReq extends PacketHandler {
             return;
         }
 
+        boolean starterStatueUnlockedBeforeLogin =
+                player.getUnlockedScenePoints(STARTER_SCENE_ID).contains(STARTER_STATUE_POINT_ID);
+        boolean starterStatueForceLockedBeforeLogin =
+                player.isScenePointForceLocked(STARTER_SCENE_ID, STARTER_STATUE_POINT_ID);
+
         boolean playerBornNow = false;
         if (freshAccount) {
             createDefaultTraveler(player);
@@ -68,6 +75,8 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         }
 
         player.onLogin();
+        restoreStarterStatueState(
+                player, starterStatueUnlockedBeforeLogin, starterStatueForceLockedBeforeLogin);
 
         // Explicit intro skip is a sandbox/test path: starting onPlayerBorn here would immediately
         // bootstrap quest 351 and replay the prologue the user just asked to bypass. The ordinary
@@ -110,10 +119,7 @@ public class HandlerPlayerLoginReq extends PacketHandler {
 
         Avatar mainCharacter = new Avatar(avatarId);
         if (!GAME_OPTIONS.questing.enabled) {
-            int skillDepotId =
-                    avatarId == GameConstants.MAIN_CHARACTER_MALE
-                            ? 504
-                            : 704;
+            int skillDepotId = avatarId == GameConstants.MAIN_CHARACTER_MALE ? 504 : 704;
             mainCharacter.setSkillDepotData(GameData.getAvatarSkillDepotDataMap().get(skillDepotId));
         }
 
@@ -125,5 +131,27 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         team.clear();
         team.add(avatarId);
         player.save();
+    }
+
+    /**
+     * Legacy progress initialization still seeds scene 3 point 7 during Player.onLogin. Preserve the
+     * persisted pre-login state so locked accounts stay locked while genuinely unlocked old accounts
+     * are not regressed.
+     */
+    private static void restoreStarterStatueState(
+            Player player, boolean wasUnlocked, boolean wasForceLocked) {
+        var unlocked = player.getUnlockedScenePoints(STARTER_SCENE_ID);
+        var forceLocked = player.getForceLockedScenePoints(STARTER_SCENE_ID);
+        boolean changed =
+                unlocked.contains(STARTER_STATUE_POINT_ID) != wasUnlocked
+                        || forceLocked.contains(STARTER_STATUE_POINT_ID) != wasForceLocked;
+
+        if (wasUnlocked) unlocked.add(STARTER_STATUE_POINT_ID);
+        else unlocked.remove(STARTER_STATUE_POINT_ID);
+
+        if (wasForceLocked) forceLocked.add(STARTER_STATUE_POINT_ID);
+        else forceLocked.remove(STARTER_STATUE_POINT_ID);
+
+        if (changed) player.save();
     }
 }

@@ -4,54 +4,82 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.net.packet.PacketOpcodesUtils;
 import emu.grasscutter.server.game.GameSession;
+import emu.grasscutter.server.packet.send.PacketEnterScenePeerNotify;
+import emu.grasscutter.server.packet.send.PacketEnterSceneReadyRsp;
 import emu.grasscutter.server.packet.send.PacketPlayerEnterSceneNotify;
-import java.util.Collections;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** Holds the short-lived fresh-player gate between character creation and first world entry. */
 public final class BornIntroGate {
-    private static final Map<GameSession, State> AWAITING_NATIVE_INTRO =
-            Collections.synchronizedMap(new WeakHashMap<>());
+    // Key by UID rather than GameSession. The 7.1 client may reconnect while the first cold world
+    // login is still finishing; tying this state to the old connection loses the fresh-player quest
+    // bootstrap exactly when the replacement session reaches PostEnterSceneReq.
+    private static final Map<Integer, State> AWAITING_NATIVE_INTRO = new ConcurrentHashMap<>();
 
     private static final class State {
         private final long armedAtNanos = System.nanoTime();
+        private final GameSession originSession;
         private boolean sawUnpaused;
         private int completedPauseCycles;
         private boolean cutoverStarted;
         private boolean earlySceneEntrySent;
+        private GameSession earlySceneEntrySession;
         private boolean worldLoginComplete;
         private boolean questStarted;
+        private boolean sceneReadyDeferred;
+        private GameSession deferredSceneReadySession;
+
+        private State(GameSession originSession) {
+            this.originSession = originSession;
+        }
     }
 
     private BornIntroGate() {}
 
+    private static int uidOf(GameSession session) {
+        var player = session == null ? null : session.getPlayer();
+        return player == null ? 0 : player.getUid();
+    }
+
+    private static State stateFor(GameSession session) {
+        int uid = uidOf(session);
+        return uid > 0 ? AWAITING_NATIVE_INTRO.get(uid) : null;
+    }
+
+    private static void remove(GameSession session) {
+        int uid = uidOf(session);
+        if (uid > 0) AWAITING_NATIVE_INTRO.remove(uid);
+    }
+
     public static void arm(GameSession session) {
-        if (session != null) {
-            AWAITING_NATIVE_INTRO.put(session, new State());
+        int uid = uidOf(session);
+        if (uid > 0) {
+            AWAITING_NATIVE_INTRO.put(uid, new State(session));
         }
     }
 
     public static boolean isAwaiting(GameSession session) {
-        return session != null && AWAITING_NATIVE_INTRO.containsKey(session);
+        return stateFor(session) != null;
     }
 
     /**
      * Player.onLogin normally emits the login PlayerEnterSceneNotify near the end of a long init
      * tail. Fresh-born 7.1 sends that notify at the native intro boundary instead, so suppress the
-     * later duplicate without changing its already-issued enter-scene token.
+     * later duplicate only on the connection that already received that early scene entry. A
+     * replacement session still needs its own ordinary login scene entry.
      */
     public static boolean shouldSuppressLoginSceneEntry(GameSession session) {
-        if (session == null) return false;
-        synchronized (AWAITING_NATIVE_INTRO) {
-            State state = AWAITING_NATIVE_INTRO.get(session);
-            return state != null && state.earlySceneEntrySent;
+        State state = stateFor(session);
+        if (state == null) return false;
+        synchronized (state) {
+            return state.earlySceneEntrySent && state.earlySceneEntrySession == session;
         }
     }
 
     /** Logs every non-ping packet while the native post-born intro is running. */
     public static void traceInbound(GameSession session, int opcode, byte[] payload) {
-        State state = session == null ? null : AWAITING_NATIVE_INTRO.get(session);
+        State state = stateFor(session);
         if (state == null || opcode == PacketOpcodes.PingReq || opcode == PacketOpcodes.PingRsp) {
             return;
         }
@@ -77,11 +105,15 @@ public final class BornIntroGate {
     public static void notePause(GameSession session, boolean paused) {
         if (session == null) return;
 
+        State state = stateFor(session);
+        if (state == null) return;
+
         int completedCycles = 0;
         boolean enterWorld = false;
-        synchronized (AWAITING_NATIVE_INTRO) {
-            State state = AWAITING_NATIVE_INTRO.get(session);
-            if (state == null || state.cutoverStarted) return;
+        synchronized (state) {
+            // A replacement connection may inherit the UID-scoped state, but only the connection
+            // that observed the native born intro is allowed to advance its pause-cycle counter.
+            if (state.originSession != session || state.cutoverStarted) return;
 
             if (!paused) {
                 state.sawUnpaused = true;
@@ -135,7 +167,7 @@ public final class BornIntroGate {
     private static void enterWorld(GameSession session) {
         var player = session.getPlayer();
         if (player == null) {
-            AWAITING_NATIVE_INTRO.remove(session);
+            remove(session);
             return;
         }
 
@@ -144,56 +176,120 @@ public final class BornIntroGate {
                         "[intro-cutover] uid={} second native pause cycle complete; sending scene entry before login tail.",
                         player.getUid());
 
-        synchronized (player) {
-            try {
-                // The client needs scene-entry immediately at the native intro boundary. The full
-                // login tail can take tens of seconds on a cold fresh account, while this packet only
-                // needs persisted player position/scene/world-level state. Send it first and retain its
-                // token; Player.onLogin's later duplicate is suppressed by PacketPlayerEnterSceneNotify.
-                session.send(new PacketPlayerEnterSceneNotify(player));
-                synchronized (AWAITING_NATIVE_INTRO) {
-                    State state = AWAITING_NATIVE_INTRO.get(session);
-                    if (state != null) state.earlySceneEntrySent = true;
-                }
+        State state = stateFor(session);
+        if (state == null) return;
 
-                player.onLogin();
-
-                synchronized (AWAITING_NATIVE_INTRO) {
-                    State state = AWAITING_NATIVE_INTRO.get(session);
-                    if (state != null) state.worldLoginComplete = true;
-                }
-                Grasscutter.getLogger()
-                        .info(
-                                "[intro-cutover] uid={} login initialization complete; waiting for PostEnterSceneReq before starting fresh-player quests.",
-                                player.getUid());
-            } catch (Throwable t) {
-                synchronized (AWAITING_NATIVE_INTRO) {
-                    State state = AWAITING_NATIVE_INTRO.get(session);
-                    if (state != null) state.cutoverStarted = false;
-                }
-                Grasscutter.getLogger()
-                        .error(
-                                "[intro-cutover] uid={} failed while entering world after native intro boundary.",
-                                player.getUid(),
-                                t);
+        try {
+            // Scene-entry itself is cheap and must reach the client immediately at the native intro
+            // boundary. The cold login tail can take tens of seconds, so do not run it on the packet
+            // handling thread: doing so starves pings/handshake packets and makes 7.1 reconnect.
+            session.send(new PacketPlayerEnterSceneNotify(player));
+            synchronized (state) {
+                state.earlySceneEntrySent = true;
+                state.earlySceneEntrySession = session;
             }
+
+            Grasscutter.getThreadPool().submit(() -> completeWorldLogin(session, player));
+        } catch (Throwable t) {
+            synchronized (state) {
+                state.cutoverStarted = false;
+            }
+            Grasscutter.getLogger()
+                    .error(
+                            "[intro-cutover] uid={} failed to schedule world login after native intro boundary.",
+                            player.getUid(),
+                            t);
         }
+    }
+
+    private static void completeWorldLogin(GameSession session, emu.grasscutter.game.player.Player player) {
+        State state = stateFor(session);
+        if (state == null) return;
+
+        try {
+            synchronized (player) {
+                player.onLogin();
+            }
+
+            GameSession deferredReadySession = null;
+            synchronized (state) {
+                state.worldLoginComplete = true;
+                if (state.sceneReadyDeferred) {
+                    deferredReadySession = state.deferredSceneReadySession;
+                    state.sceneReadyDeferred = false;
+                    state.deferredSceneReadySession = null;
+                }
+            }
+
+            Grasscutter.getLogger()
+                    .info(
+                            "[intro-cutover] uid={} login initialization complete; waiting for PostEnterSceneReq before starting fresh-player quests.",
+                            player.getUid());
+
+            if (deferredReadySession != null) {
+                resumeSceneReady(deferredReadySession);
+            }
+        } catch (Throwable t) {
+            synchronized (state) {
+                state.cutoverStarted = false;
+            }
+            Grasscutter.getLogger()
+                    .error(
+                            "[intro-cutover] uid={} failed while entering world after native intro boundary.",
+                            player.getUid(),
+                            t);
+        }
+    }
+
+    /**
+     * Returns true when EnterSceneReadyReq was retained until the async cold login tail completes.
+     * The handler should return without sending its normal response in that case.
+     */
+    public static boolean deferSceneReadyUntilLoginComplete(GameSession session) {
+        State state = stateFor(session);
+        if (state == null) return false;
+
+        synchronized (state) {
+            if (state.worldLoginComplete) return false;
+            state.sceneReadyDeferred = true;
+            state.deferredSceneReadySession = session;
+        }
+
+        var player = session.getPlayer();
+        Grasscutter.getLogger()
+                .info(
+                        "[intro-cutover] uid={} EnterSceneReadyReq arrived during cold login; deferring scene-ready response.",
+                        player == null ? 0 : player.getUid());
+        return true;
+    }
+
+    private static void resumeSceneReady(GameSession session) {
+        if (session == null) return;
+        var player = session.getPlayer();
+        if (player == null || player.getWorld() == null) return;
+
+        Grasscutter.getLogger()
+                .info(
+                        "[intro-cutover] uid={} cold login complete; resuming deferred EnterSceneReadyReq.",
+                        player.getUid());
+        session.send(new PacketEnterScenePeerNotify(player));
+        session.send(new PacketEnterSceneReadyRsp(player));
     }
 
     /** Starts the fresh-player quest lifecycle exactly once after the client finished scene entry. */
     public static void finishOnSceneReady(GameSession session) {
         if (session == null) return;
 
-        State state;
-        synchronized (AWAITING_NATIVE_INTRO) {
-            state = AWAITING_NATIVE_INTRO.get(session);
-            if (state == null || !state.worldLoginComplete || state.questStarted) return;
+        State state = stateFor(session);
+        if (state == null) return;
+        synchronized (state) {
+            if (!state.worldLoginComplete || state.questStarted) return;
             state.questStarted = true;
         }
 
         var player = session.getPlayer();
         if (player == null) {
-            AWAITING_NATIVE_INTRO.remove(session);
+            remove(session);
             return;
         }
 
@@ -202,15 +298,14 @@ public final class BornIntroGate {
             // through the normal incremental FinishedParentQuestUpdate/QuestListUpdate path, so a
             // second full snapshot here can reload a quest actor immediately after its sub-start.
             player.getQuestManager().onPlayerBorn();
-            AWAITING_NATIVE_INTRO.remove(session);
+            remove(session);
             Grasscutter.getLogger()
                     .info(
                             "[intro-cutover] uid={} PostEnterScene ready; fresh-player quests started.",
                             player.getUid());
         } catch (Throwable t) {
-            synchronized (AWAITING_NATIVE_INTRO) {
-                State current = AWAITING_NATIVE_INTRO.get(session);
-                if (current != null) current.questStarted = false;
+            synchronized (state) {
+                state.questStarted = false;
             }
             Grasscutter.getLogger()
                     .error(

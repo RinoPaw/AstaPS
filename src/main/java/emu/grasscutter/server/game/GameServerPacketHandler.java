@@ -1,10 +1,6 @@
 package emu.grasscutter.server.game;
 
-import static emu.grasscutter.config.Configuration.GAME_INFO;
-import static emu.grasscutter.config.Configuration.SERVER;
-
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.Grasscutter.ServerDebugMode;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.server.event.game.ReceivePacketEvent;
@@ -55,51 +51,6 @@ public final class GameServerPacketHandler {
         var combineHandler = this.handlers.get(PacketOpcodes.CombineReq);
         if (combineHandler != null) {
             this.handlers.put(PacketOpcodes.CombineReqUnionCmd, combineHandler);
-        }
-        // Ensure handbook domain refresh is handled even if Reflections misses a hot-patched class.
-        if (!this.handlers.containsKey(PacketOpcodes.InteractDailyDungeonInfoNotify)) {
-            this.registerPacketHandler(
-                    emu.grasscutter.server.packet.recv.HandlerInteractDailyDungeonInfoNotify.class);
-        }
-        // SeeMonsterReq (24569) — hot-patched class may be missed by Reflections scan.
-        if (!this.handlers.containsKey(PacketOpcodes.SeeMonsterReq)) {
-            this.registerPacketHandler(
-                    emu.grasscutter.server.packet.recv.HandlerSeeMonsterReq.class);
-        }
-
-        // Ensure the current BuyResinReq handler is registered at its confirmed wire opcode.
-        if (!this.handlers.containsKey(PacketOpcodes.BuyResinReq)) {
-            this.handlers.put(
-                    PacketOpcodes.BuyResinReq,
-                    new emu.grasscutter.server.packet.recv.HandlerBuyResinReq());
-            Grasscutter.getLogger()
-                    .info("Registered BuyResinReq handler at opcode {}", PacketOpcodes.BuyResinReq);
-        }
-        // Handbook preparation / quick-open (may be missed by Reflections after hot-patch).
-        if (!this.handlers.containsKey(PacketOpcodes.DungeonQuickOpenReq)) {
-            this.registerPacketHandler(
-                    emu.grasscutter.server.packet.recv.HandlerDungeonQuickOpenReq.class);
-        }
-        // Adventurer Handbook Investigation/preparation claim rewards.
-        registerIfAbsent(
-                PacketOpcodes.TakeInvestigationTargetRewardReq,
-                emu.grasscutter.server.packet.recv.HandlerTakeInvestigationTargetRewardReq.class);
-        registerIfAbsent(
-                PacketOpcodes.TakeInvestigationRewardReq,
-                emu.grasscutter.server.packet.recv.HandlerTakeInvestigationRewardReq.class);
-        registerIfAbsent(
-                PacketOpcodes.TakeOfferingLevelRewardReq,
-                emu.grasscutter.server.packet.recv.HandlerTakeOfferingLevelRewardReq.class);
-        registerIfAbsent(
-                PacketOpcodes.PlayerOfferingReq,
-                emu.grasscutter.server.packet.recv.HandlerPlayerOfferingReq.class);
-        Grasscutter.getLogger()
-                .info("Registered PlayerOfferingReq handler at opcode {}", PacketOpcodes.PlayerOfferingReq);
-    }
-
-    private void registerIfAbsent(int opcode, Class<? extends PacketHandler> handlerClass) {
-        if (!this.handlers.containsKey(opcode)) {
-            this.registerPacketHandler(handlerClass);
         }
     }
 
@@ -172,15 +123,5 @@ public final class GameServerPacketHandler {
                 logger.debug(line, args);
             }
         }
-    }
-
-    private static boolean shouldDump(GameSession session, int opcode) {
-        if (PacketOpcodes.BANNED_PACKETS.contains(opcode)) return false;
-        return switch (GAME_INFO.logPackets) {
-            case ALL -> !PacketOpcodesUtils.LOOP_PACKETS.contains(opcode) || GAME_INFO.isShowLoopPackets;
-            case WHITELIST -> SERVER.debugWhitelist.contains(opcode);
-            case BLACKLIST -> !SERVER.debugBlacklist.contains(opcode);
-            default -> false;
-        };
     }
 }

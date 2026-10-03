@@ -431,7 +431,17 @@ public class GameMainQuest {
                                 subQuestWithCond.getQuestData().getFailCondComb(),
                                 subQuestWithCond.getFailProgressList());
 
-                if (shouldFail) subQuestWithCond.fail();
+                if (shouldFail) {
+                    if (this.parentQuestId == 352) {
+                        Grasscutter.getLogger()
+                                .info(
+                                        "[quest352] fail-condition uid={} sub={} content={} params={} progress={}",
+                                        this.ownerUid, subQuestWithCond.getSubQuestId(), condType,
+                                        Arrays.toString(params),
+                                        Arrays.toString(subQuestWithCond.getFailProgressList()));
+                    }
+                    subQuestWithCond.fail();
+                }
             }
 
         } catch (Exception e) {

@@ -63,6 +63,7 @@ public class GameQuest {
         this.startTime = this.acceptTime;
         this.startGameDay = getOwner().getWorld().getTotalGameTimeDays();
         this.state = QuestState.QUEST_STATE_UNFINISHED;
+        this.logQuest352("start");
 
         val triggerCond =
                 questData.getFinishCond().stream()
@@ -218,6 +219,7 @@ public class GameQuest {
             this.state = QuestState.QUEST_STATE_FINISHED;
         }
         this.finishTime = Utils.getCurrentSeconds();
+        this.logQuest352("finish");
 
         if (this.getMainQuestId() == 351) {
             Grasscutter.getLogger()
@@ -283,6 +285,7 @@ public class GameQuest {
     public void fail() {
         this.state = QuestState.QUEST_STATE_FAILED;
         this.finishTime = Utils.getCurrentSeconds();
+        this.logQuest352("fail");
 
         this.getOwner().sendPacket(new PacketQuestListUpdateNotify(this));
 
@@ -304,6 +307,7 @@ public class GameQuest {
 
     // Return true if it did the rewind
     public boolean rewind(boolean notifyDelete) {
+        this.logQuest352("rewind");
         getMainQuest().getChildQuests().values().stream()
                 .filter(p -> p.getQuestData().getOrder() > this.getQuestData().getOrder())
                 .forEach(
@@ -313,6 +317,14 @@ public class GameQuest {
         clearProgress(notifyDelete);
         this.start();
         return true;
+    }
+
+    private void logQuest352(String action) {
+        if (this.mainQuestId != 352) return;
+        Grasscutter.getLogger()
+                .info(
+                        "[quest352] lifecycle uid={} action={} sub={} state={}",
+                        this.getOwner().getUid(), action, this.subQuestId, this.state);
     }
 
     /**

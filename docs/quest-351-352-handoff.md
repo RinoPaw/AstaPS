@@ -93,6 +93,40 @@ setup: it must not consume 35205, and the normal parent rewind must clear the
 old synthetic finish without statue setup restoring it. A third case preserves the
 questing-off statue bypass. Ten cases pass.
 
+## Follow-up: repeated Paimon talk in 352
+
+The 23:22:38 log for UID 70581 confirms that the repaired handoff starts
+35200 (`unlinked=true canStart=true`, opening `UNFINISHED`). That trace has
+no 352 subquest or received talk/content diagnostics, so it does not prove
+which later step stopped or whether 35203's failure rollback ran.
+
+The talk validation did contain a separate defect: `TalkManager` compared
+`TalkConfigData.npcId` against an entity's **scene placement configId**.
+`EntityNPC.getEntityTypeId()` is the NPC/model identity (1005 for Paimon),
+while its configId can be a different group-local number or zero for a quest
+NPC. A completed client dialogue could therefore receive `NpcTalkRsp` while
+the manager returned without recording the talk or queuing COMPLETE_TALK.
+Validation now uses the NPC/model id. The request handler prefers
+`npc_entity_id`, keeping `entity_id` as a fallback when the former is zero.
+Client-local quest actors without a server entity remain supported.
+
+The [Genshin-Reverse talk-chain findings](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/windows-x64/analyses/statue-unlock/FINDINGS_2026-10-03_QUEST_TALK_CHAIN.md)
+cross-check the 7.1 NpcTalkReq opcode/field mapping and the talk-to-quest path.
+The finish/not-finish plot handlers in both LunaGC revisions inspected are
+the same as AstaPS; there is no independent fix to copy for the suspected
+35203 rollback. Its legitimate cancellation/team-death behavior is retained.
+
+Three NPC identity cases cover a Paimon placement with a different configId,
+a different NPC whose configId happens to be 1005, and a client-local actor.
+Together with the ten handoff/login cases, thirteen local tests pass.
+
+The new `[quest352]` logs cover talk reception/validation, single and batch
+content reports for 352xx, start/finish/fail/rewind, and matched failure
+conditions. The expected next transition after talk 35216 is finishing
+35202 and starting 35203. If `fail-condition` precedes `rewind sub=35202`,
+the trace identifies the exact rollback trigger; if a plot report never
+arrives, it identifies a different gap. Do not force-finish 352 to mask it.
+
 CI was not run. Use Java 21 for a local build, then restart the server and
 relog the affected account. Do not use `quest add` or `quest finish` while
 validating natural progression; those commands bypass the path being tested.

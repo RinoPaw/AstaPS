@@ -5,6 +5,9 @@ import static emu.grasscutter.game.quest.enums.QuestContent.*;
 
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.MainQuestData.TalkData;
+import emu.grasscutter.data.excels.TalkConfigData;
+import emu.grasscutter.game.entity.EntityNPC;
+import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.*;
 import emu.grasscutter.server.event.player.PlayerNpcTalkEvent;
 import lombok.NonNull;
@@ -32,10 +35,16 @@ public final class TalkManager extends BasePlayerManager {
         if (talkData != null) {
             // Check if the NPC id is valid.
             var entity = player.getScene().getEntityById(npcEntityId);
-            if (entity != null) {
-                // The config ID of the entity is the NPC's ID.
-                if (!talkData.getNpcId().contains(entity.getConfigId())) return;
+            boolean accepted = isTalkNpc(talkData, entity);
+            if (talkId == 35216) {
+                emu.grasscutter.Grasscutter.getLogger()
+                        .info(
+                                "[quest352] talk uid={} talk={} npcEntity={} npcId={} configId={} accepted={}",
+                                player.getUid(), talkId, npcEntityId,
+                                entity != null ? entity.getEntityTypeId() : null,
+                                entity != null ? entity.getConfigId() : null, accepted);
             }
+            if (!accepted) return;
 
             // Execute the talk action on associated handlers.
             talkData
@@ -51,6 +60,13 @@ public final class TalkManager extends BasePlayerManager {
         questManager.queueEvent(QUEST_CONTENT_COMPLETE_ANY_TALK, talkId);
         questManager.queueEvent(QUEST_CONTENT_COMPLETE_TALK, talkId);
         questManager.queueEvent(QUEST_COND_COMPLETE_TALK, talkId);
+    }
+
+    static boolean isTalkNpc(TalkConfigData talkData, GameEntity entity) {
+        // Quest actors can be client-local, with no matching server entity. When an entity exists,
+        // compare the NPC/model id; configId identifies its placement inside a scene group.
+        if (entity == null || talkData.getNpcId() == null || talkData.getNpcId().isEmpty()) return true;
+        return entity instanceof EntityNPC && talkData.getNpcId().contains(entity.getEntityTypeId());
     }
 
     public void saveTalkToQuest(int talkId, int mainQuestId) {

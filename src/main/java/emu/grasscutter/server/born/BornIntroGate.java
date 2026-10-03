@@ -1,8 +1,6 @@
 package emu.grasscutter.server.born;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketOpcodesUtils;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketEnterScenePeerNotify;
 import emu.grasscutter.server.packet.send.PacketEnterSceneReadyRsp;
@@ -18,7 +16,6 @@ public final class BornIntroGate {
     private static final Map<Integer, State> AWAITING_NATIVE_INTRO = new ConcurrentHashMap<>();
 
     private static final class State {
-        private final long armedAtNanos = System.nanoTime();
         private final GameSession originSession;
         private boolean sawUnpaused;
         private int completedPauseCycles;
@@ -77,26 +74,6 @@ public final class BornIntroGate {
         }
     }
 
-    /** Logs every non-ping packet while the native post-born intro is running. */
-    public static void traceInbound(GameSession session, int opcode, byte[] payload) {
-        State state = stateFor(session);
-        if (state == null || opcode == PacketOpcodes.PingReq || opcode == PacketOpcodes.PingRsp) {
-            return;
-        }
-
-        long elapsedMs = (System.nanoTime() - state.armedAtNanos) / 1_000_000L;
-        var player = session.getPlayer();
-        Grasscutter.getLogger()
-                .info(
-                        "[intro-trace] +{}ms uid={} opcode={} ({}) len={} hex={}",
-                        elapsedMs,
-                        player == null ? 0 : player.getUid(),
-                        opcode,
-                        PacketOpcodesUtils.getOpcodeName(opcode),
-                        payload == null ? 0 : payload.length,
-                        toHex(payload));
-    }
-
     /**
      * The 7.1 native second intro emits two false->true PlayerSetPauseReq cycles after 26105. The
      * second cycle finishes exactly when the intro hands control back to the born page, so release
@@ -131,7 +108,7 @@ public final class BornIntroGate {
 
         var player = session.getPlayer();
         Grasscutter.getLogger()
-                .info(
+                .debug(
                         "[intro-cutover] uid={} completed native pause cycle {}/2.",
                         player == null ? 0 : player.getUid(),
                         completedCycles);
@@ -141,40 +118,12 @@ public final class BornIntroGate {
         }
     }
 
-    public static void noteCutsceneEnd(GameSession session, byte[] payload) {
-        if (!isAwaiting(session)) return;
-        var player = session.getPlayer();
-        Grasscutter.getLogger()
-                .info(
-                        "[intro-cutover] observed CutSceneEndNotify(472) uid={} len={} hex={}; native born cutover still uses pause cycles.",
-                        player == null ? 0 : player.getUid(),
-                        payload == null ? 0 : payload.length,
-                        toHex(payload));
-    }
-
-    public static void noteCutsceneFinish(GameSession session, int cutsceneId, byte[] payload) {
-        if (!isAwaiting(session)) return;
-        var player = session.getPlayer();
-        Grasscutter.getLogger()
-                .info(
-                        "[intro-cutover] observed CutSceneFinishNotify(21200) uid={} cutsceneId={} len={} hex={}; native born cutover still uses pause cycles.",
-                        player == null ? 0 : player.getUid(),
-                        cutsceneId,
-                        payload == null ? 0 : payload.length,
-                        toHex(payload));
-    }
-
     private static void enterWorld(GameSession session) {
         var player = session.getPlayer();
         if (player == null) {
             remove(session);
             return;
         }
-
-        Grasscutter.getLogger()
-                .info(
-                        "[intro-cutover] uid={} second native pause cycle complete; sending scene entry before login tail.",
-                        player.getUid());
 
         State state = stateFor(session);
         if (state == null) return;
@@ -221,11 +170,6 @@ public final class BornIntroGate {
                 }
             }
 
-            Grasscutter.getLogger()
-                    .info(
-                            "[intro-cutover] uid={} login initialization complete; waiting for PostEnterSceneReq before starting fresh-player quests.",
-                            player.getUid());
-
             if (deferredReadySession != null) {
                 resumeSceneReady(deferredReadySession);
             }
@@ -254,12 +198,6 @@ public final class BornIntroGate {
             state.sceneReadyDeferred = true;
             state.deferredSceneReadySession = session;
         }
-
-        var player = session.getPlayer();
-        Grasscutter.getLogger()
-                .info(
-                        "[intro-cutover] uid={} EnterSceneReadyReq arrived during cold login; deferring scene-ready response.",
-                        player == null ? 0 : player.getUid());
         return true;
     }
 
@@ -268,10 +206,6 @@ public final class BornIntroGate {
         var player = session.getPlayer();
         if (player == null || player.getWorld() == null) return;
 
-        Grasscutter.getLogger()
-                .info(
-                        "[intro-cutover] uid={} cold login complete; resuming deferred EnterSceneReadyReq.",
-                        player.getUid());
         session.send(new PacketEnterScenePeerNotify(player));
         session.send(new PacketEnterSceneReadyRsp(player));
     }
@@ -299,10 +233,6 @@ public final class BornIntroGate {
             // second full snapshot here can reload a quest actor immediately after its sub-start.
             player.getQuestManager().onPlayerBorn();
             remove(session);
-            Grasscutter.getLogger()
-                    .info(
-                            "[intro-cutover] uid={} PostEnterScene ready; fresh-player quests started.",
-                            player.getUid());
         } catch (Throwable t) {
             synchronized (state) {
                 state.questStarted = false;
@@ -313,16 +243,5 @@ public final class BornIntroGate {
                             player.getUid(),
                             t);
         }
-    }
-
-    private static String toHex(byte[] payload) {
-        if (payload == null || payload.length == 0) return "";
-        int limit = Math.min(payload.length, 64);
-        StringBuilder out = new StringBuilder(limit * 2 + (payload.length > limit ? 3 : 0));
-        for (int i = 0; i < limit; i++) {
-            out.append(String.format("%02x", payload[i]));
-        }
-        if (payload.length > limit) out.append("...");
-        return out.toString();
     }
 }

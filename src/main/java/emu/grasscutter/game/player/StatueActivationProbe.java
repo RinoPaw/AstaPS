@@ -7,8 +7,8 @@ import emu.grasscutter.game.quest.enums.QuestState;
 import emu.grasscutter.server.packet.send.PacketQuestListUpdateNotify;
 
 /**
- * Test-branch bridge that exposes the client statue interaction without unlocking the statue on
- * proximity. Generic statues still complete through their native 303xx talk quest.
+ * Test-branch bridge that exposes the client statue activation state without unlocking the statue
+ * on proximity. Generic statues still complete through their native 303xx talk quest.
  */
 public final class StatueActivationProbe {
     private StatueActivationProbe() {}
@@ -40,28 +40,33 @@ public final class StatueActivationProbe {
                 quest = player.getQuestManager().getQuestById(questId);
             }
 
-            // Older private-server login code marks every 303xx child FINISHED solely to expose
-            // the client F/talk surface. That destroys the native activation transaction because
-            // COMPLETE_TALK only finishes UNFINISHED children. Repair the server state here while
-            // keeping the client-facing gate FINISHED below.
+            // Private-server login code used to pre-finish every 303xx child. Native activation
+            // requires the matching child to stay UNFINISHED until COMPLETE_TALK(303xx) arrives.
             if (quest != null && quest.getState() == QuestState.QUEST_STATE_FINISHED) {
                 quest.setState(QuestState.QUEST_STATE_UNFINISHED);
                 quest.setFinishTime(0);
+                if (quest.getFinishProgressList() != null) {
+                    for (int i = 0; i < quest.getFinishProgressList().length; i++) {
+                        quest.setFinishProgress(i, 0);
+                    }
+                }
                 quest.save();
             }
-            if (quest != null) serverState = quest.getState();
 
-            // Client-only gate: keep the goddess/F interaction visible while the real server quest
-            // remains UNFINISHED and can consume NpcTalkReq(303xx).
-            player.sendPacket(new PacketQuestListUpdateNotify(questId, 303, 3));
+            if (quest != null) {
+                serverState = quest.getState();
+                // Keep client and server on the same pre-activation state. A FINISHED client-only
+                // quest describes the post-activation goddess interaction and suppresses the locked
+                // statue activation surface on the 7.1 client.
+                player.sendPacket(new PacketQuestListUpdateNotify(quest));
+            }
         }
 
-        // Loading the goddess suite/worktop is presentation only. Do not unlock point or area here.
-        player.getProgressManager().refreshStatueGoddessNpc(sceneId, pointId);
-
+        // Do not load the post-unlock goddess suite/worktop while the statue is still locked. The
+        // activation interaction belongs to the scene point + unfinished 303xx quest itself.
         Grasscutter.getLogger()
                 .info(
-                        "[statue-probe] prepared locked statue interaction uid={} scene={} point={} area={} quest={} serverState={}",
+                        "[statue-probe] prepared locked statue activation uid={} scene={} point={} area={} quest={} state={} clientState=UNFINISHED",
                         player.getUid(),
                         sceneId,
                         pointId,

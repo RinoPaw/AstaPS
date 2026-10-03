@@ -44,6 +44,7 @@ public final class PredicateEvaluator {
             case "ByHasModifier"       -> byHasModifier(pred, ability, resolved);
             case "ByTargetGlobalValue" -> byTargetGlobalValue(pred, ability, resolved);
             case "ByTargetHPRatio"     -> byTargetHPRatio(pred, ability, resolved);
+            case "ByStamina"           -> byStamina(pred, ability, resolved);
             case "ByNot"               -> byNot(pred, ability, owner, target, action);
             case "ByAny"               -> byAny(pred, ability, owner, target, action);
             default -> true;
@@ -56,6 +57,7 @@ public final class PredicateEvaluator {
             case "EOFDCELPGFO" -> "ByTargetGlobalValue";
             case "HGKCHJOOMCH" -> "ByTargetHPRatio";
             case "LCCNMKNDACG" -> "ByUnlockTalentParam";
+            case "OPLIAABFJGD" -> "ByStamina";
             case "GKGBIPDLMMG" -> "ByNot";
             case "GPEMEIHPCCF" -> "ByAny";
             default -> type;
@@ -101,7 +103,7 @@ public final class PredicateEvaluator {
         String type = normalizeType(rawType);
         return switch (type) {
             case "BJJDEAIEIGP", "ByUnlockTalentParam", "ByHasModifier",
-                    "ByTargetGlobalValue", "ByTargetHPRatio" -> true;
+                    "ByTargetGlobalValue", "ByTargetHPRatio", "ByStamina" -> true;
             case "ByNot", "ByAny" -> supportedNestedPredicates(pred.get("predicates")) != null;
             default -> false;
         };
@@ -288,6 +290,29 @@ public final class PredicateEvaluator {
             case "Equal" -> Math.abs(ratio - threshold) < 1e-5f;
             case "NotEqual" -> Math.abs(ratio - threshold) >= 1e-5f;
             default -> ratio > threshold; // Greater / MoreThan
+        };
+    }
+
+    private static boolean byStamina(Map<String, Object> pred, Ability ability, GameEntity target) {
+        var player = ability != null ? ability.getPlayerOwner() : null;
+        if (player == null && target instanceof EntityAvatar avatar) {
+            player = avatar.getPlayer();
+        }
+        if (player == null || player.getStaminaManager() == null) return true;
+
+        float threshold = readFloat(pred.get("stamina"), ability);
+        // Player stamina properties use hundredths (24000 == 240 visible stamina), while ability
+        // predicates use the visible-unit values found in binout configs.
+        float current = player.getStaminaManager().getCurrentCharacterStamina() / 100.0f;
+        Object logicObj = pred.get("logic");
+        String logic = logicObj instanceof String s ? s : "GreaterOrEqual";
+        return switch (logic) {
+            case "Lesser", "LessThan" -> current < threshold;
+            case "LesserOrEqual", "LessThanAndEqual", "LessOrEqual" -> current <= threshold;
+            case "Greater", "MoreThan" -> current > threshold;
+            case "Equal" -> Math.abs(current - threshold) < 1e-5f;
+            case "NotEqual" -> Math.abs(current - threshold) >= 1e-5f;
+            default -> current >= threshold;
         };
     }
 

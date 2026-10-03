@@ -1,6 +1,6 @@
 # AstaPS agent guide
 
-This file is the short, stable contract for AI-assisted maintenance. Keep it concise. Put architecture details under `docs/architecture/` and runtime-only regression procedures under `docs/regression/`.
+This file is the short, stable contract for AI-assisted maintenance. Keep it concise. Put architecture details under `docs/architecture/`, reverse-engineering working discipline under `docs/reverse-workflow.md`, and runtime-only regression procedures under `docs/regression/`.
 
 ## Target and repository boundaries
 
@@ -28,6 +28,14 @@ For a concrete bug or missing feature:
 8. Update architecture notes only when an ownership boundary, important execution path or invariant changes.
 
 Prefer direct commits for focused maintenance changes in this fork. Use a PR when review, discussion or a multi-commit series materially helps.
+
+## Reverse-engineering work discipline
+
+Before starting reverse-engineering work, read `docs/reverse-workflow.md` and search the relevant `Genshin-Reverse` files and history. Check previous candidates, rejected conclusions, notes, scripts and commits before repeating an experiment.
+
+Save useful progress as soon as it becomes expensive to reconstruct. Make small checkpoint commits after meaningful discoveries or reusable tooling, and push/checkpoint before risky bulk edits, long-running analysis, large rebases or other steps that could destroy local state. Important progress must not exist only in chat history, terminal scrollback, an unsaved decompiler database or an untracked local file.
+
+When pausing unfinished work, leave a resumable handoff containing the target, confirmed facts, candidates, rejected paths, relevant artifacts and the next useful step. Store reverse-engineering evidence in `Genshin-Reverse`; AstaPS should consume stable results rather than becoming the scratch workspace.
 
 ## Evidence rules
 

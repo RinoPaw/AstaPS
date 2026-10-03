@@ -139,10 +139,7 @@ public final class QuestCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (!QuestManager.isQuestingActive()) {
-                CommandHandler.sendMessage(
-                        sender,
-                        "Questing is disabled. Enable gameOptions.questing.enabled and "
-                                + "server.game.enableScriptInBigWorld, then restart the server.");
+                CommandHandler.sendMessage(sender, translate(sender, "commands.quest.questing_off"));
                 return;
             }
 

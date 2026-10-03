@@ -185,7 +185,7 @@ public class EntityClientGadget extends EntityBaseGadget {
                         .build();
 
         SceneGadgetInfo.Builder gadgetInfo =
-                SceneGadgetInfoOuterClass.SceneGadgetInfo.newBuilder()
+                SceneGadgetInfo.newBuilder()
                         .setGadgetId(this.getGadgetId())
                         .setOwnerEntityId(this.getOwnerEntityId())
                         .setBornType(this.bornType != null ? this.bornType : GadgetBornType.GadgetBornType_GADGET_BORN_PLAYER)

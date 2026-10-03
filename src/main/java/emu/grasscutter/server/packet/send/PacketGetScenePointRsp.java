@@ -62,24 +62,23 @@ public class PacketGetScenePointRsp extends BasePacket {
             if (pointId == 7) has7 = unlockedSet.contains(7);
         }
 
-        // Map fog areas: only what the player has unlocked (via statues / waypoints).
+        // Map fog areas must mirror persisted player state exactly. In particular, do not inject
+        // area 1 as a fallback for an empty fresh-account set: that pre-reveals the starter region
+        // before its Statue of the Seven is activated and suppresses the native reveal transition.
         var areas = player.getUnlockedSceneAreas(sceneId);
-        if (areas.isEmpty() && sceneId == 3) {
-            p.addUnlockAreaList(1);
-        } else {
-            for (int areaId : areas) {
-                p.addUnlockAreaList(areaId);
-            }
+        for (int areaId : areas) {
+            p.addUnlockAreaList(areaId);
         }
 
         Grasscutter.getLogger()
                 .debug(
-                        "GetScenePointRsp sceneId={} total={} unlocked={} locked={} hasStatue7={} uid={}",
+                        "GetScenePointRsp sceneId={} total={} unlocked={} locked={} hasStatue7={} areas={} uid={}",
                         sceneId,
                         pointIds.size(),
                         unlockedCount,
                         lockedCount,
                         has7,
+                        areas,
                         player.getUid());
 
         this.setData(p);

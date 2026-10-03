@@ -94,9 +94,13 @@ public final class PartyReviveHelper {
                 : 0;
 
         boolean qiqiAbility =
-                ownerId == QIQI_AVATAR_ID || abilityName.contains("Qiqi_Constellation");
+                ownerId == QIQI_AVATAR_ID
+                        || abilityName.contains("Qiqi_Constellation")
+                        || "Avatar_Qiqi_Revive".equals(abilityName);
         boolean barbaraAbility =
-                ownerId == BARBARA_AVATAR_ID || abilityName.contains("Barbara_Constellation");
+                ownerId == BARBARA_AVATAR_ID
+                        || abilityName.contains("Barbara_Constellation")
+                        || "Avatar_Barbara_ReBorn".equals(abilityName);
 
         if (qiqiAbility) {
             Avatar qiqiAvatar =

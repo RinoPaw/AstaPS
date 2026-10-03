@@ -59,6 +59,28 @@ public final class BornIntroGate {
         }
     }
 
+    /**
+     * Arms only the final fresh-player quest bootstrap boundary.
+     *
+     * <p>This is used when character selection/native intro is intentionally skipped. The world has
+     * already completed {@code Player.onLogin()}, so there is no pause-cycle cutover to wait for;
+     * Quest 351 must still wait until {@code PostEnterSceneRsp} just like the native 7.1 path does.
+     */
+    public static void armForSceneReady(GameSession session) {
+        int uid = uidOf(session);
+        if (uid <= 0) return;
+
+        State state = new State(session);
+        state.cutoverStarted = true;
+        state.worldLoginComplete = true;
+        AWAITING_NATIVE_INTRO.put(uid, state);
+
+        Grasscutter.getLogger()
+                .info(
+                        "[intro-cutover] uid={} intro skipped; deferring fresh-player quests until PostEnterSceneReq.",
+                        uid);
+    }
+
     public static boolean isAwaiting(GameSession session) {
         return stateFor(session) != null;
     }

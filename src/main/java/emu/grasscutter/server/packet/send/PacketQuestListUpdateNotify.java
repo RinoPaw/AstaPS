@@ -14,10 +14,15 @@ public class PacketQuestListUpdateNotify extends BasePacket {
     public PacketQuestListUpdateNotify(GameQuest quest) {
         super(PacketOpcodes.QuestListUpdateNotify);
 
-        // Quest events still start quests with questing off; keep their unfinished states off the
-        // client, the same as the login quest list does.
+        // Questing-off normally hides unfinished quest state from the client so old accounts do not
+        // replay story content. Statue activation is the deliberate exception on this probe branch:
+        // quest 303 drives normal statue activation talks, and quest 352 drives the starter statue.
+        // Hiding those unfinished children removes the client's activation interaction entirely.
+        boolean statueActivationQuest = quest.getMainQuestId() == 303 || quest.getMainQuestId() == 352;
         var builder = QuestListUpdateNotify.newBuilder();
-        if (QuestManager.isQuestingActive() || quest.getState() == QuestState.QUEST_STATE_FINISHED) {
+        if (QuestManager.isQuestingActive()
+                || statueActivationQuest
+                || quest.getState() == QuestState.QUEST_STATE_FINISHED) {
             builder.addQuestList(quest.toProto());
         }
         QuestListUpdateNotify proto = builder.build();
@@ -47,22 +52,12 @@ public class PacketQuestListUpdateNotify extends BasePacket {
     public PacketQuestListUpdateNotify(int questId, int parentQuestId, int state) {
         super(PacketOpcodes.QuestListUpdateNotify);
 
-        this.setData(QuestListUpdateNotify.newBuilder().addQuestList(forgeQuest(questId, parentQuestId, state)));
+        this.setData(
+                QuestListUpdateNotify.newBuilder()
+                        .addQuestList(forgeQuest(questId, parentQuestId, state)));
     }
 
-    /**
-     * Build a client-only quest entry for a quest the server has no excel row for.
-     *
-     * <p>Statue Talk options are gated behind 303xx quests that private-server resources do not
-     * ship. The client only checks the state it was told, so handing it a FINISHED entry opens the
-     * Talk without a playthrough. Fields mirror {@link GameQuest#toProto()} so the forged entry is
-     * indistinguishable from a real one - including the fixed {@code startGameTime} 438 that the
-     * real path also sends.
-     *
-     * @param questId sub-quest id
-     * @param parentQuestId owning main-quest id
-     * @param state {@code QuestState} value, e.g. 3 for {@code QUEST_STATE_FINISHED}
-     */
+    /** Build a client-only quest entry when no real server quest object is available. */
     public static Quest forgeQuest(int questId, int parentQuestId, int state) {
         int now = Utils.getCurrentSeconds();
         return Quest.newBuilder()

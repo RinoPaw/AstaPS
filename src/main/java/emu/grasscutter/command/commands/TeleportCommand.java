@@ -2,6 +2,7 @@ package emu.grasscutter.command.commands;
 
 import static emu.grasscutter.utils.lang.Language.translate;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.CommandHelpers;
@@ -13,15 +14,41 @@ import emu.grasscutter.server.event.player.PlayerTeleportEvent.TeleportType;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
-@Command(label = "teleport", aliases = {"tp"})
+@Command(
+        label = "teleport",
+        aliases = {"tp"},
+        targetRequirement = Command.TargetRequirement.NONE)
 public final class TeleportCommand implements PicocliCommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
-        var commandLine = new CommandLine(new Root(sender, targetPlayer));
-        commandLine.addSubcommand("pos", new PositionTeleport(sender, targetPlayer));
-        commandLine.addSubcommand("scene", new SceneTeleport(sender, targetPlayer));
-        commandLine.addSubcommand("all", new TeleportAll(sender, targetPlayer));
+        Player resolvedTarget = resolveTarget(sender, targetPlayer);
+        var commandLine = new CommandLine(new Root(sender, resolvedTarget));
+        commandLine.addSubcommand("pos", new PositionTeleport(sender, resolvedTarget));
+        commandLine.addSubcommand("scene", new SceneTeleport(sender, resolvedTarget));
+        commandLine.addSubcommand("all", new TeleportAll(sender, resolvedTarget));
         return commandLine;
+    }
+
+    private static Player resolveTarget(Player sender, Player targetPlayer) {
+        if (targetPlayer != null) return targetPlayer;
+        if (sender != null) return sender;
+
+        var onlinePlayers =
+                Grasscutter.getGameServer().getPlayers().values().stream()
+                        .filter(Player::isOnline)
+                        .toList();
+        if (onlinePlayers.size() == 1) {
+            return onlinePlayers.get(0);
+        }
+
+        if (onlinePlayers.isEmpty()) {
+            CommandHandler.sendMessage(null, "No online player is available for teleport.");
+        } else {
+            CommandHandler.sendMessage(
+                    null,
+                    "Multiple players are online; add @UID to the command or use target @UID first.");
+        }
+        return null;
     }
 
     @CommandLine.Command(name = "teleport")
@@ -46,6 +73,7 @@ public final class TeleportCommand implements PicocliCommandHandler {
                 TeleportCommand.this.sendUsageMessage(sender);
                 return;
             }
+            if (targetPlayer == null) return;
             teleportToScenePoint(sender, targetPlayer, pointId, sceneId);
         }
     }
@@ -124,6 +152,7 @@ public final class TeleportCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
+            if (targetPlayer == null) return;
             if (!hasPermission(sender, targetPlayer, "player.teleport", "player.teleport.others")) return;
 
             Position basePosition = new Position(targetPlayer.getPosition());
@@ -179,6 +208,7 @@ public final class TeleportCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
+            if (targetPlayer == null) return;
             if (!hasPermission(sender, targetPlayer, "player.teleport", "player.teleport.others")) return;
 
             var scene = targetPlayer.getWorld().getSceneById(sceneId);
@@ -234,6 +264,7 @@ public final class TeleportCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
+            if (targetPlayer == null) return;
             if (!hasPermission(sender, targetPlayer, "player.tpall", "player.tpall.others")) return;
             if (!targetPlayer.getWorld().isMultiplayer()) {
                 CommandHandler.sendMessage(sender, translate(sender, "commands.teleportAll.error"));

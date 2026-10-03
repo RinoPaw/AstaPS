@@ -76,6 +76,16 @@ If a manual action is repeated, turn it into a script or documented command sequ
 
 Keep heavy executable analysis, resource extraction, live-client captures, and long reverse pipelines outside routine CI. Regular CI should stay fast enough that it does not become a reason to avoid committing progress.
 
+## Retire superseded paths
+
+The maintained tree should expose the current method directly. Once a reusable replacement is accepted, remove the superseded one-off script, workflow, helper or duplicate implementation instead of keeping parallel `legacy`, `old`, `deprecated`, `backup` or `workaround` variants.
+
+Rejected conclusions can remain as concise evidence in the focused analysis so future researchers do not repeat them. Rejected executable helpers should usually be deleted after their result is recorded. Git history already preserves the old implementation.
+
+Temporary probes belong on an investigation branch or in an ignored work directory while they are exploratory. At the end of the investigation, promote the generally useful part into maintained tooling and remove the disposable part.
+
+A temporary compatibility path may remain only when the currently supported client or resource set still requires it. Record its concrete dependency and removal condition so it cannot silently become permanent architecture.
+
 ## Promoting results into AstaPS
 
 AstaPS should consume reverse-engineering results only after the relevant evidence is stable enough for implementation.

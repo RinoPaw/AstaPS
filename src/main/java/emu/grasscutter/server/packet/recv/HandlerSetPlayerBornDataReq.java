@@ -18,6 +18,8 @@ import java.util.Arrays;
 
 @Opcodes(PacketOpcodes.SetPlayerBornDataReq)
 public class HandlerSetPlayerBornDataReq extends PacketHandler {
+    private static final String SKIP_INTRO_PROPERTY = "astaps.skipNewAccountIntro";
+    private static final String SKIP_INTRO_ENV = "ASTAPS_SKIP_NEW_ACCOUNT_INTRO";
 
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
@@ -80,15 +82,28 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             // consumes player state. Full onLogin() remains delayed until the native pause cutover.
             session.send(new PacketAvatarDataNotify(player));
 
-            // 7.1 keeps the native second intro client-side after accepting 26105. Keep the session
-            // ACTIVE, but do not establish World/Scene until the second observed false->true pause
-            // cycle marks the native intro boundary.
             session.setState(SessionState.ACTIVE);
             BornIntroGate.arm(session);
-            Grasscutter.getLogger()
-                    .info(
-                            "[intro] born handshake complete for uid {}; waiting for native pause-cycle cutover before world login.",
-                            player.getUid());
+
+            if (shouldSkipNativeIntro()) {
+                Grasscutter.getLogger()
+                        .info(
+                                "[intro-skip] born handshake complete for uid {}; skipping native post-born intro.",
+                                player.getUid());
+
+                // Reuse the already-tested cutover path instead of maintaining a second fresh-player
+                // login sequence. Two synthetic false->true pause cycles are exactly the condition
+                // BornIntroGate normally waits for before entering the world.
+                BornIntroGate.notePause(session, false);
+                BornIntroGate.notePause(session, true);
+                BornIntroGate.notePause(session, false);
+                BornIntroGate.notePause(session, true);
+            } else {
+                Grasscutter.getLogger()
+                        .info(
+                                "[intro] born handshake complete for uid {}; waiting for native pause-cycle cutover before world login.",
+                                player.getUid());
+            }
         }
 
         // Default mail
@@ -104,5 +119,13 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         mail.itemList.addAll(Arrays.asList(welcomeMail.items));
         mail.importance = 1;
         player.sendMail(mail);
+    }
+
+    private static boolean shouldSkipNativeIntro() {
+        String configured = System.getProperty(SKIP_INTRO_PROPERTY);
+        if (configured == null || configured.isBlank()) {
+            configured = System.getenv(SKIP_INTRO_ENV);
+        }
+        return configured != null && Boolean.parseBoolean(configured.trim());
     }
 }

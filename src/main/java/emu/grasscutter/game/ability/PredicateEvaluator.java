@@ -48,6 +48,8 @@ public final class PredicateEvaluator {
             case "ByEntityTypes"       -> byEntityTypes(pred, resolved);
             case "ByEntityIsAlive"     -> resolved != null && resolved.isAlive();
             case "ByAvatarWeaponType"  -> byAvatarWeaponType(pred, resolved);
+            case "ByEnergyRatio"       -> byEnergyRatio(pred, ability, resolved);
+            case "ByEnergy"            -> byEnergy(pred, ability, resolved);
             case "ByStamina"           -> byStamina(pred, ability, resolved);
             case "ByNot"               -> byNot(pred, ability, owner, target, action);
             case "ByAny"               -> byAny(pred, ability, owner, target, action);
@@ -65,6 +67,8 @@ public final class PredicateEvaluator {
             case "DEOFBICNFHF" -> "ByEntityTypes";
             case "FONKGIILJIO" -> "ByEntityIsAlive";
             case "EIBIHNJLLFH" -> "ByAvatarWeaponType";
+            case "KJBEKOGFBKG" -> "ByEnergyRatio";
+            case "PAPHNBCKAGI" -> "ByEnergy";
             case "OPLIAABFJGD" -> "ByStamina";
             case "GKGBIPDLMMG" -> "ByNot";
             case "GPEMEIHPCCF" -> "ByAny";
@@ -112,7 +116,8 @@ public final class PredicateEvaluator {
         return switch (type) {
             case "BJJDEAIEIGP", "ByUnlockTalentParam", "ByHasModifier",
                     "ByTargetGlobalValue", "ByTargetHPRatio", "ByElementType", "ByEntityTypes",
-                    "ByEntityIsAlive", "ByAvatarWeaponType", "ByStamina" -> true;
+                    "ByEntityIsAlive", "ByAvatarWeaponType", "ByEnergyRatio", "ByEnergy",
+                    "ByStamina" -> true;
             case "ByNot", "ByAny" -> supportedNestedPredicates(pred.get("predicates")) != null;
             default -> false;
         };
@@ -353,6 +358,57 @@ public final class PredicateEvaluator {
             if (type instanceof String expected && actual.equals(expected)) return true;
         }
         return false;
+    }
+
+    private static boolean byEnergyRatio(Map<String, Object> pred, Ability ability, GameEntity target) {
+        if (!(target instanceof EntityAvatar entityAvatar)
+                || entityAvatar.getAvatar() == null
+                || entityAvatar.getAvatar().getSkillDepot() == null) {
+            return true;
+        }
+        if (!(pred.get("logic") instanceof String logic)) return true;
+        Object thresholdValue = pred.get("ratio");
+        if (thresholdValue instanceof String && ability == null) return true;
+
+        var avatar = entityAvatar.getAvatar();
+        var currentProp = entityAvatar.GetEnergyProp(avatar);
+        var maxProp = currentProp == emu.grasscutter.game.props.FightProperty.FIGHT_PROP_CUR_SPECIAL_ENERGY
+                ? emu.grasscutter.game.props.FightProperty.FIGHT_PROP_MAX_SPECIAL_ENERGY
+                : avatar.getSkillDepot().getElementType().getMaxEnergyProp();
+        float maxEnergy = entityAvatar.getFightProperty(maxProp);
+        if (maxEnergy <= 0f) return true;
+
+        float ratio = entityAvatar.getFightProperty(currentProp) / maxEnergy;
+        float threshold = readFloat(thresholdValue, ability);
+        return compareEnergy(ratio, threshold, logic);
+    }
+
+    private static boolean byEnergy(Map<String, Object> pred, Ability ability, GameEntity target) {
+        if (!(target instanceof EntityAvatar entityAvatar)
+                || entityAvatar.getAvatar() == null
+                || entityAvatar.getAvatar().getSkillDepot() == null) {
+            // Monster/gadget energy is not modeled by one authoritative fight property here yet.
+            return true;
+        }
+        if (!(pred.get("logic") instanceof String logic)) return true;
+
+        Object boundValue = pred.containsKey("value") ? pred.get("value") : pred.get("CBOMLBFIPJM");
+        if (boundValue instanceof String && ability == null) return true;
+        float bound = readFloat(boundValue, ability);
+        float current = entityAvatar.getFightProperty(entityAvatar.GetEnergyProp(entityAvatar.getAvatar()));
+        return compareEnergy(current, bound, logic);
+    }
+
+    private static boolean compareEnergy(float current, float bound, String logic) {
+        return switch (logic) {
+            case "Lesser", "LessThan" -> current < bound;
+            case "LesserOrEqual", "LessThanAndEqual", "LessOrEqual" -> current <= bound;
+            case "Greater", "MoreThan" -> current > bound;
+            case "GreaterOrEqual", "MoreThanAndEqual", "MoreOrEqual" -> current >= bound;
+            case "Equal" -> Math.abs(current - bound) < 1e-5f;
+            case "NotEqual" -> Math.abs(current - bound) >= 1e-5f;
+            default -> true;
+        };
     }
 
     private static boolean byStamina(Map<String, Object> pred, Ability ability, GameEntity target) {

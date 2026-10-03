@@ -317,22 +317,8 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                 }
             }
 
-            // Starter-statue talk (NPC 1201 / talk 31141) needs 35205 finished in sandbox mode.
-            // With questing enabled this is the final step of main quest 352: pre-finishing it
-            // creates a parent whose opening is UNSTARTED and blocks the handoff from 351.
-            if (!GAME_OPTIONS.questing.enabled) {
-                var q = this.player.getQuestManager().getQuestById(35205);
-                if (q == null) {
-                    this.player.getQuestManager().addQuest(35205);
-                    q = this.player.getQuestManager().getQuestById(35205);
-                }
-                if (q != null && q.getState() != QuestState.QUEST_STATE_FINISHED) {
-                    q.setState(QuestState.QUEST_STATE_FINISHED);
-                    q.setFinishTime(emu.grasscutter.utils.Utils.getCurrentSeconds());
-                    q.save();
-                    finished++;
-                }
-            }
+            // Talk 31141 checks 35205 on the client. The sandbox bypass is forged in
+            // buildForgedStatueTalkQuests(); never create or mutate real quest 352 here.
 
             // Forge EVERY area Talk gate - locked pillars auto-unlock on EnterTrans; F tip ready.
             finished += this.forgeAllStatueTalkGates();
@@ -366,8 +352,9 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
     }
 
     /**
-     * Client-only FINISHED quest entries for every known statue Talk gate (303xx), so goddess F
-     * needs no quest playthrough. Used by login QuestListNotify and EnterTrans refresh.
+     * Client-only FINISHED quest entries for every known statue Talk gate (303xx). When questing is
+     * disabled, this also supplies 35205 only to the client because starter Talk 31141 has that
+     * TalkExcel begin condition. No real main quest 352 is created or advanced.
      */
     public java.util.List<emu.grasscutter.net.proto.QuestOuterClass.Quest>
             buildForgedStatueTalkQuests() {
@@ -392,6 +379,16 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                     emu.grasscutter.server.packet.send.PacketQuestListUpdateNotify.forgeQuest(
                             questId, 303, 3));
             this.player.getForgedStatueTalkQuests().add(questId);
+        }
+
+        if (!GAME_OPTIONS.questing.enabled) {
+            var starterGate = this.player.getQuestManager().getQuestById(35205);
+            if ((starterGate == null || starterGate.getState() != QuestState.QUEST_STATE_FINISHED)
+                    && this.player.getForgedStatueTalkQuests().add(35205)) {
+                out.add(
+                        emu.grasscutter.server.packet.send.PacketQuestListUpdateNotify.forgeQuest(
+                                35205, 352, QuestState.QUEST_STATE_FINISHED.getValue()));
+            }
         }
         return out;
     }

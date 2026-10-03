@@ -29,48 +29,9 @@ public class HandlerEnterTransPointRegionNotify extends PacketHandler {
                             tags);
 
             var player = session.getPlayer();
-            // Locked statues: auto-unlock on enter — no Talk/quest playthrough required for F
-            // or map unlock. Works whether questing is on or off.
-            if (player != null && sceneId > 0 && pointId > 0) {
-                try {
-                    var entry =
-                            emu.grasscutter.data.GameData.getScenePointEntryById(sceneId, pointId);
-                    boolean isStatue =
-                            entry != null
-                                    && emu.grasscutter.game.managers.StatueTalkQuests.isStatuePoint(
-                                            entry.getPointData());
-                    boolean locked =
-                            isStatue
-                                    && (player.isScenePointForceLocked(sceneId, pointId)
-                                            || !player.getUnlockedScenePoints(sceneId)
-                                                    .contains(pointId));
-                    if (locked) {
-                        boolean ok =
-                                player.getProgressManager()
-                                        .unlockTransPoint(sceneId, pointId, true);
-                        Grasscutter.getLogger()
-                                .info(
-                                        "Auto-unlock locked statue uid={} scene={} point={} ok={}",
-                                        uid,
-                                        sceneId,
-                                        pointId,
-                                        ok);
-                        if (ok) {
-                            player.sendPacket(
-                                    new emu.grasscutter.server.packet.send.PacketGetScenePointRsp(
-                                            player, sceneId));
-                            player.sendPacket(
-                                    new emu.grasscutter.server.packet.send.PacketGetSceneAreaRsp(
-                                            player, sceneId));
-                        }
-                    }
-                } catch (Throwable t) {
-                    Grasscutter.getLogger()
-                            .warn("Auto-unlock statue failed uid={} point={}", uid, pointId, t);
-                }
-            }
 
-            // Only nudge unlock notify for points that are already unlocked server-side.
+            // EnterTrans is only a proximity/region signal. A locked Statue of the Seven stays
+            // locked here; activation is owned by Quest 303 and NpcTalkReq.
             if (sceneId > 0
                     && pointId > 0
                     && player != null
@@ -79,10 +40,8 @@ public class HandlerEnterTransPointRegionNotify extends PacketHandler {
                 session.send(
                         new emu.grasscutter.server.packet.send.PacketScenePointUnlockNotify(
                                 sceneId, pointId));
-                // Re-push Talk gate so goddess F appears without playing 303xx.
+                // Re-push the post-unlock Talk gate/goddess state for an already unlocked statue.
                 player.getProgressManager().refreshStatueTalkGate(sceneId, pointId);
-                // Re-scan nearby NPC suites — Fontaine+ SotS groups often lack server Lua;
-                // loadNpcForPlayer now still sends GroupSuiteNotify so the goddess appears.
                 try {
                     player.getScene().loadNpcForPlayerEnter(player);
                 } catch (Throwable ignored) {

@@ -1,5 +1,6 @@
 package emu.grasscutter.server.packet.recv;
 
+import emu.grasscutter.game.managers.StatueUnlockQuestBridge;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.NpcTalkReqOuterClass.NpcTalkReq;
 import emu.grasscutter.server.game.GameSession;
@@ -10,8 +11,14 @@ public class HandlerNpcTalkReq extends PacketHandler {
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         var req = NpcTalkReq.parseFrom(payload);
+        var player = session.getPlayer();
 
-        session.getPlayer().getTalkManager().triggerTalkAction(req.getTalkId(), req.getEntityId());
+        // Quest 303 drives Statue-of-the-Seven activation. Compatibility code may have exposed the
+        // client Talk gate as FINISHED; restore the locked statue's real quest immediately before
+        // the Talk event so GameQuest.finish() can execute the official unlock point/area actions.
+        StatueUnlockQuestBridge.prepareForTalk(player, req.getTalkId());
+
+        player.getTalkManager().triggerTalkAction(req.getTalkId(), req.getEntityId());
         session.send(new PacketNpcTalkRsp(req.getNpcEntityId(), req.getTalkId(), req.getEntityId()));
     }
 }

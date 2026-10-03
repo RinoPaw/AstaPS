@@ -33,15 +33,18 @@ public class PacketQuestListUpdateNotify extends BasePacket {
     /**
      * Push already-built quest protos.
      *
-     * <p>This used to take {@code List<GameQuest>}, but the statue Talk gates have no QuestExcel row
-     * to build a {@link GameQuest} from - they are forged straight into protos by
-     * {@link #forgeQuest}. Erasure allows only one {@code List} overload, and nothing called the
-     * {@code GameQuest} one (single quests go through the constructor above), so this takes protos.
+     * <p>The current caller is the legacy statue compatibility batch. On the native-unlock probe
+     * branch, do not tell the client that every 303xx activation quest is already FINISHED before
+     * the real quest snapshot arrives; doing so suppresses the locked-statue activation surface.
      */
     public PacketQuestListUpdateNotify(List<Quest> quests) {
         super(PacketOpcodes.QuestListUpdateNotify);
         var proto = QuestListUpdateNotify.newBuilder();
         for (Quest quest : quests) {
+            if (quest.getParentQuestId() == 303
+                    && quest.getState() == QuestState.QUEST_STATE_FINISHED.getValue()) {
+                continue;
+            }
             proto.addQuestList(quest);
         }
 

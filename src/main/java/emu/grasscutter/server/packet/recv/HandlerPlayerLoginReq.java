@@ -25,15 +25,20 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         }
 
         Player player = session.getPlayer();
+        var intro = GAME_OPTIONS.newAccountIntro;
         boolean freshAccount = player.getAvatars().getAvatarCount() == 0;
 
-        if (freshAccount && GAME_OPTIONS.newAccountIntro.enabled) {
+        if (freshAccount && intro.enabled) {
             session.setState(SessionState.PICKING_CHARACTER);
-            session.send(new BasePacket(DO_SET_PLAYER_BORN_DATA_NOTIFY));
+            int notifyCmdId =
+                    intro.doSetPlayerBornDataNotify > 0
+                            ? intro.doSetPlayerBornDataNotify
+                            : DO_SET_PLAYER_BORN_DATA_NOTIFY;
+            session.send(new BasePacket(notifyCmdId));
             Grasscutter.getLogger()
                     .info(
                             "[intro] new account, waiting for character creation (notify cmdId={}).",
-                            DO_SET_PLAYER_BORN_DATA_NOTIFY);
+                            notifyCmdId);
             session.send(new PacketPlayerLoginRsp(session));
             return;
         }

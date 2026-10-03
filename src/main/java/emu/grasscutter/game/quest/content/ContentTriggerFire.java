@@ -2,8 +2,10 @@ package emu.grasscutter.game.quest.content;
 
 import static emu.grasscutter.game.quest.enums.QuestContent.QUEST_CONTENT_TRIGGER_FIRE;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.excels.quest.QuestData;
 import emu.grasscutter.game.quest.*;
+import java.util.Arrays;
 import lombok.val;
 
 @QuestValueContent(QUEST_CONTENT_TRIGGER_FIRE)
@@ -13,6 +15,20 @@ public class ContentTriggerFire extends BaseContent {
             GameQuest quest, QuestData.QuestContentCondition condition, String paramStr, int... params) {
         val triggerId = condition.getParam()[0];
         val triggerName = quest.getTriggerNameById(triggerId);
-        return quest.getTriggers().getOrDefault(triggerName, false);
+        var fired = quest.getTriggers().getOrDefault(triggerName, false);
+
+        if (quest.getMainQuestId() == 352) {
+            Grasscutter.getLogger()
+                    .info(
+                            "[quest352] trigger-check uid={} sub={} triggerId={} name={} fired={} eventParams={}",
+                            quest.getOwner().getUid(),
+                            quest.getSubQuestId(),
+                            triggerId,
+                            triggerName,
+                            fired,
+                            Arrays.toString(params));
+        }
+
+        return fired;
     }
 }

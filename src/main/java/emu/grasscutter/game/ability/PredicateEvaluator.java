@@ -46,6 +46,7 @@ public final class PredicateEvaluator {
             case "ByTargetHPRatio"     -> byTargetHPRatio(pred, ability, resolved);
             case "ByElementType"       -> byElementType(pred, resolved);
             case "ByEntityTypes"       -> byEntityTypes(pred, resolved);
+            case "ByEntityIsAlive"     -> resolved != null && resolved.isAlive();
             case "ByStamina"           -> byStamina(pred, ability, resolved);
             case "ByNot"               -> byNot(pred, ability, owner, target, action);
             case "ByAny"               -> byAny(pred, ability, owner, target, action);
@@ -61,6 +62,7 @@ public final class PredicateEvaluator {
             case "LCCNMKNDACG" -> "ByUnlockTalentParam";
             case "ILNLCKCOGFD" -> "ByElementType";
             case "DEOFBICNFHF" -> "ByEntityTypes";
+            case "FONKGIILJIO" -> "ByEntityIsAlive";
             case "OPLIAABFJGD" -> "ByStamina";
             case "GKGBIPDLMMG" -> "ByNot";
             case "GPEMEIHPCCF" -> "ByAny";
@@ -108,7 +110,7 @@ public final class PredicateEvaluator {
         return switch (type) {
             case "BJJDEAIEIGP", "ByUnlockTalentParam", "ByHasModifier",
                     "ByTargetGlobalValue", "ByTargetHPRatio", "ByElementType", "ByEntityTypes",
-                    "ByStamina" -> true;
+                    "ByEntityIsAlive", "ByStamina" -> true;
             case "ByNot", "ByAny" -> supportedNestedPredicates(pred.get("predicates")) != null;
             default -> false;
         };

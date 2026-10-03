@@ -5,6 +5,7 @@ import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
 import emu.grasscutter.net.proto.UnlockTransPointRspOuterClass.UnlockTransPointRsp;
 
 public class PacketUnlockTransPointRsp extends BasePacket {
+    public static final int DISABLED = 0;
     public static final int CANDIDATE_36641 = 36641;
     public static final int CANDIDATE_20290 = 20290;
 
@@ -16,17 +17,29 @@ public class PacketUnlockTransPointRsp extends BasePacket {
         return SELECTED_CMD_ID;
     }
 
+    public static boolean isDisabled() {
+        return SELECTED_CMD_ID == DISABLED;
+    }
+
     public PacketUnlockTransPointRsp(Retcode retcode) {
         this(0, retcode);
     }
 
     public PacketUnlockTransPointRsp(int clientSequenceId, Retcode retcode) {
-        super(SELECTED_CMD_ID, clientSequenceId);
+        super(requireEnabledCmdId(), clientSequenceId);
 
         UnlockTransPointRsp proto =
                 UnlockTransPointRsp.newBuilder().setRetcode(retcode.getNumber()).build();
 
         this.setData(proto);
+    }
+
+    private static int requireEnabledCmdId() {
+        if (SELECTED_CMD_ID == DISABLED) {
+            throw new IllegalStateException(
+                    "UnlockTransPointRsp test probe is disabled; do not construct the response packet");
+        }
+        return SELECTED_CMD_ID;
     }
 
     private static int resolveSelectedCmdId() {
@@ -39,9 +52,14 @@ public class PacketUnlockTransPointRsp extends BasePacket {
             return CANDIDATE_36641;
         }
 
+        configured = configured.trim();
+        if (configured.equalsIgnoreCase("none") || configured.equals("0")) {
+            return DISABLED;
+        }
+
         final int cmdId;
         try {
-            cmdId = Integer.parseInt(configured.trim());
+            cmdId = Integer.parseInt(configured);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
                     "Invalid UnlockTransPointRsp test CmdId '" + configured + "'", e);
@@ -49,7 +67,7 @@ public class PacketUnlockTransPointRsp extends BasePacket {
 
         if (cmdId != CANDIDATE_36641 && cmdId != CANDIDATE_20290) {
             throw new IllegalArgumentException(
-                    "UnlockTransPointRsp test CmdId must be "
+                    "UnlockTransPointRsp test CmdId must be none/0, "
                             + CANDIDATE_36641
                             + " or "
                             + CANDIDATE_20290

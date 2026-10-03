@@ -5,28 +5,27 @@ import emu.grasscutter.data.*;
 import emu.grasscutter.game.props.ElementType;
 import lombok.Getter;
 
-/** Current 7.1 table field names are case-sensitive. */
 @ResourceType(name = "WorldAreaConfigData.json")
 public class WorldAreaData extends GameResource {
-    @SerializedName("ID")
+    @SerializedName(value = "id", alternate = "ID")
     private int ID;
 
     @Getter private ElementType elementType;
 
     @Getter
-    @SerializedName("areaNameTextMapHash")
+    @SerializedName(value = "areaNameTextMapHash", alternate = "AreaNameTextMapHash")
     private long textMapHash;
 
     @Getter
-    @SerializedName("areaID1")
+    @SerializedName(value = "areaID1", alternate = "AreaID1")
     private int parentArea;
 
     @Getter
-    @SerializedName("areaID2")
+    @SerializedName(value = "areaID2", alternate = "AreaID2")
     private int childArea;
 
     @Getter
-    @SerializedName("sceneID")
+    @SerializedName(value = "sceneID", alternate = "SceneID")
     private int sceneId;
 
     @Override

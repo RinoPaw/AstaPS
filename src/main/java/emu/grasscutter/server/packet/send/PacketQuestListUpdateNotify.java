@@ -14,18 +14,6 @@ public class PacketQuestListUpdateNotify extends BasePacket {
     public PacketQuestListUpdateNotify(GameQuest quest) {
         super(PacketOpcodes.QuestListUpdateNotify);
 
-        // Diagnostic A/B for the duplicated 35104 intro performance. Keep the server-side quest
-        // transition intact, but omit the FINISHED quest entry from this one client notification.
-        // If the replay disappears, the trigger is the client's reaction to this state update.
-        if (quest.getSubQuestId() == 35104 && quest.getState() == QuestState.QUEST_STATE_FINISHED) {
-            emu.grasscutter.Grasscutter.getLogger()
-                    .info(
-                            "[quest351-replay-ab] suppress finished QuestListUpdate uid={} sub=35104",
-                            quest.getOwner().getUid());
-            this.setData(QuestListUpdateNotify.newBuilder().build());
-            return;
-        }
-
         // Quest events still start quests with questing off; keep their unfinished states off the
         // client, the same as the login quest list does.
         var builder = QuestListUpdateNotify.newBuilder();

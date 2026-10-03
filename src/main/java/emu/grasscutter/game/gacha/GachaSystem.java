@@ -1,6 +1,6 @@
 package emu.grasscutter.game.gacha;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.*;
@@ -499,7 +499,7 @@ public class GachaSystem extends BaseGameSystem {
 
     @Subscribe
     public synchronized void watchBannerJson(GameServerTickEvent tickEvent) {
-        if (GAME_OPTIONS.watchGachaConfig) {
+        if (GAME.watchGachaConfig) {
             try {
                 // poll(), not take() - this runs on the server tick thread, and take() parks it until
                 // somebody happens to touch a file in the data directory.

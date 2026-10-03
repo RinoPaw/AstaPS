@@ -1,6 +1,7 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.player.StatueActivationProbe;
 import emu.grasscutter.game.quest.enums.QuestState;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.QuestListNotifyOuterClass.QuestListNotify;
@@ -9,6 +10,11 @@ public class PacketQuestListNotify extends BasePacket {
 
     public PacketQuestListNotify(Player player) {
         super(PacketOpcodes.QuestListNotify, true);
+
+        // PlayerProgressManager still contains a legacy compatibility path that pre-finishes statue
+        // activation children. Normalize those states before the client receives its full snapshot;
+        // this prevents a transient FINISHED -> UNFINISHED flip from suppressing the interaction UI.
+        StatueActivationProbe.restoreLockedActivationQuests(player, false);
 
         QuestListNotify.Builder proto = QuestListNotify.newBuilder();
 

@@ -113,7 +113,10 @@ public final class PartyReviveHelper {
             }
         }
         if (barbaraAbility) {
-            Avatar barbaraAvatar = ownerAvatar != null ? ownerAvatar.getAvatar() : null;
+            Avatar barbaraAvatar =
+                    ownerAvatar != null && ownerAvatar.getAvatar() != null
+                            ? ownerAvatar.getAvatar()
+                            : OptionalAvatar(findAvatar(player, BARBARA_AVATAR_ID));
             if (hasC6(barbaraAvatar, BARBARA_AVATAR_ID, BARBARA_TALENT_C6, "Barbara_Constellation")) {
                 float use = ratio > 0.01f ? ratio : BARBARA_REVIVE_RATIO;
                 return reviveFallen(player, use, BARBARA_CD_UNTIL, "BarbaraC6");

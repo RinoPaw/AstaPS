@@ -1,6 +1,5 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.quest.GameQuest;
 import emu.grasscutter.game.quest.QuestManager;
 import emu.grasscutter.game.quest.enums.QuestState;
@@ -19,20 +18,7 @@ public class PacketQuestListUpdateNotify extends BasePacket {
         // client, the same as the login quest list does.
         var builder = QuestListUpdateNotify.newBuilder();
         if (QuestManager.isQuestingActive() || quest.getState() == QuestState.QUEST_STATE_FINISHED) {
-            // 7.1 re-enters the opening plot when it is told that 35100 became UNFINISHED after
-            // finishing 35104. Keep 35100 server-side so its real region trigger (1053) remains
-            // active, but do not expose this transient state to the client. Once the player really
-            // reaches Paimon, 35100 finishes through the region trigger and normal quest sync
-            // resumes with 35101.
-            if (quest.getSubQuestId() == 35100
-                    && quest.getState() == QuestState.QUEST_STATE_UNFINISHED) {
-                Grasscutter.getLogger()
-                        .info(
-                                "[quest351-replay-fix] suppress start QuestListUpdate uid={} sub=35100",
-                                quest.getOwner().getUid());
-            } else {
-                builder.addQuestList(quest.toProto());
-            }
+            builder.addQuestList(quest.toProto());
         }
         QuestListUpdateNotify proto = builder.build();
 

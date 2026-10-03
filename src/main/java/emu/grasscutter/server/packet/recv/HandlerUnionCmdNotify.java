@@ -42,7 +42,9 @@ public class HandlerUnionCmdNotify extends PacketHandler {
         for (UnionCmd cmd : req.getCmdListList()) {
             int cmdOpcode = cmd.getMessageId();
             byte[] cmdPayload = cmd.getBody().toByteArray();
-            if (GAME_INFO.logPackets == ServerDebugMode.WHITELIST
+            if (GAME_INFO.logPackets == ServerDebugMode.ALL) {
+                session.logPacket("RECV in Union", cmdOpcode, cmdPayload);
+            } else if (GAME_INFO.logPackets == ServerDebugMode.WHITELIST
                     && SERVER.debugWhitelist.contains(cmd.getMessageId())) {
                 session.logPacket("RECV in Union", cmdOpcode, cmdPayload);
             } else if (GAME_INFO.logPackets == ServerDebugMode.BLACKLIST

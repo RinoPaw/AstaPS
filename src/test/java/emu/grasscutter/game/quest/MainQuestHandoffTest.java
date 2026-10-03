@@ -170,6 +170,24 @@ public final class MainQuestHandoffTest {
         }
     }
 
+    static final class InMemoryStatueQuest extends GameQuest {
+        InMemoryStatueQuest(GameMainQuest parent, QuestData data) {
+            super(parent, data);
+        }
+
+        @Override
+        public void start() {
+            setState(QuestState.QUEST_STATE_UNFINISHED);
+            setFinishTime(0);
+        }
+
+        @Override
+        public void finish() {
+            setState(QuestState.QUEST_STATE_FINISHED);
+            setFinishTime(1);
+        }
+    }
+
     static final class RecoverableMainQuest extends GameMainQuest {
         RecoverableMainQuest(Player player, int id) {
             super(player, id);
@@ -243,10 +261,12 @@ public final class MainQuestHandoffTest {
             var player = new InMemoryPlayer();
             player.setSession(new PacketSink());
             var statues = new RecoverableMainQuest(player, 303);
+            var activation =
+                    new InMemoryStatueQuest(statues, GameData.getQuestDataMap().get(30302));
+            statues.getChildQuests().put(30302, activation);
             player.getQuestManager().getMainQuests().put(303, statues);
 
             player.getProgressManager().onPlayerLogin();
-            var activation = player.getQuestManager().getQuestById(30302);
             assertEquals(QuestState.QUEST_STATE_UNFINISHED, activation.getState());
             assertEquals(0, activation.getFinishTime());
 

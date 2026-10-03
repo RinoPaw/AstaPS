@@ -2,6 +2,7 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.game.player.StatueActivationProbe;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.EnterTransPointRegionNotifyOuterClass.EnterTransPointRegionNotify;
 import emu.grasscutter.server.game.GameSession;
@@ -51,10 +52,12 @@ public class HandlerEnterTransPointRegionNotify extends PacketHandler {
                             hex,
                             tags);
 
-            // Probe only: do not unlock a locked statue from EnterTransPointRegionNotify and do not
-            // resend ScenePointUnlockNotify/GetScenePointRsp/GetSceneAreaRsp here. If the stock 7.1
-            // client owns a separate statue activation transaction, this lets it become visible.
-            // SotSManager below still handles the actual enter-region behavior (revive/heal timer).
+            // Proximity only prepares the client interaction surface. It deliberately does not
+            // unlock the statue. Generic statues complete through NpcTalkReq(303xx) -> quest finish
+            // exec -> point/area unlock; the starter statue remains a separate quest-352 case.
+            if (isStatue && player != null) {
+                StatueActivationProbe.prepare(player, sceneId, pointId);
+            }
         } catch (Exception e) {
             Grasscutter.getLogger()
                     .warn(

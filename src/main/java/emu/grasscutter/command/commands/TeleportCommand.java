@@ -9,6 +9,7 @@ import emu.grasscutter.command.CommandHelpers;
 import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.player.StatueActivationProbe;
 import emu.grasscutter.game.world.Position;
 import emu.grasscutter.server.event.player.PlayerTeleportEvent.TeleportType;
 import picocli.CommandLine;
@@ -119,6 +120,11 @@ public final class TeleportCommand implements PicocliCommandHandler {
                     sender, "Failed to teleport to scene point " + sceneId + ":" + pointId + ".");
             return;
         }
+
+        // A direct command teleport lands inside the trans-point trigger, so the client may not
+        // emit EnterTransPointRegionNotify. Prepare only the interaction surface here; the helper
+        // deliberately leaves the statue locked until its native talk/quest transaction completes.
+        StatueActivationProbe.prepare(targetPlayer, sceneId, pointId);
 
         CommandHandler.sendMessage(
                 sender,

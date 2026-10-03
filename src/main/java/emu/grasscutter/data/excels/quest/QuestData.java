@@ -94,7 +94,7 @@ public class QuestData extends GameResource {
         correctedParams[0] = 35100;
         condition.setParam(correctedParams);
         Grasscutter.getLogger()
-                .warn(
+                .debug(
                         "Corrected quest 35101 prerequisite: 35107 FINISHED -> 35100 FINISHED");
     }
 

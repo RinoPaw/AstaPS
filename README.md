@@ -26,13 +26,13 @@ If you can fix a bug, please help me.
 
 ## Building
 
-```
-./gradlew jar -PskipHandbook=1
+```bash
+./gradlew jar -PskipHandbook=1 -PjarFilename=grasscutter
 ```
 
 `grasscutter.jar` lands in the project root. Drop `-PskipHandbook=1` to build the in-game handbook as well; that step needs NodeJS and fails without it.
 
-On Windows use `.\gradlew.bat`, or run `gradlew-jar.bat`.
+On Windows use `.\gradlew.bat jar -PskipHandbook=1 -PjarFilename=grasscutter`, or run `gradlew-jar.bat`.
 
 ## Development
 
@@ -46,7 +46,7 @@ Before starting duplicate research, also check [`docs/reverse-status.md`](docs/r
 
 1. Start MongoDB.
 2. Put a 7.1.0 resource pack in `resources/`.
-3. Run the jar once. It writes a `config.json` and stops if anything essential is missing.
+3. Run `java -jar grasscutter.jar` once. On Windows, `ServerStart.cmd` does the same thing. The server writes a `config.json` and stops if anything essential is missing.
 4. Start it again. The dispatch server listens on `8088` and the game server on `22101` by default.
 5. Point the client at the dispatch server. A proxy such as Fiddler or mitmproxy will do it, as will a client patch.
 

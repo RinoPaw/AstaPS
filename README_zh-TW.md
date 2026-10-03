@@ -26,19 +26,19 @@
 
 ## 編譯
 
-```
-./gradlew jar -PskipHandbook=1
+```bash
+./gradlew jar -PskipHandbook=1 -PjarFilename=grasscutter
 ```
 
 `grasscutter.jar` 會產生在專案根目錄。拿掉 `-PskipHandbook=1` 會一併編譯遊戲內手冊，那一步需要 NodeJS，沒有就會失敗。
 
-Windows 用 `.\gradlew.bat`，或直接執行 `gradlew-jar.bat`。
+Windows 用 `.\gradlew.bat jar -PskipHandbook=1 -PjarFilename=grasscutter`，或直接執行 `gradlew-jar.bat`。
 
 ## 執行
 
 1. 啟動 MongoDB。
 2. 把 7.1.0 資源包放進 `resources/`。
-3. 先跑一次 jar。它會寫出 `config.json`，缺少必要東西時會停下來。
+3. 先執行一次 `java -jar grasscutter.jar`；Windows 也可以直接執行 `ServerStart.cmd`。它會寫出 `config.json`，缺少必要東西時會停下來。
 4. 再跑一次。Dispatch 預設監聽 `8088`，遊戲伺服器 `22101`。
 5. 把客戶端指向 dispatch。用 Fiddler、mitmproxy 之類的代理可以，客戶端補丁也可以。
 

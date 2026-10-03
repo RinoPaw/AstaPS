@@ -21,14 +21,6 @@ public class HandlerEnterSceneDoneReq extends PacketHandler {
         EnterSceneDoneReq req = EnterSceneDoneReq.parseFrom(payload);
 
         var player = session.getPlayer();
-        Grasscutter.getLogger()
-                .info(
-                        "[intro-handshake] EnterSceneDoneReq uid={} state={} loadState={} token={} len={}",
-                        player.getUid(),
-                        session.getState(),
-                        player.getSceneLoadState(),
-                        player.getEnterSceneToken(),
-                        payload == null ? 0 : payload.length);
 
         // Finished loading
         player.setSceneLoadState(SceneLoadState.LOADED);

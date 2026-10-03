@@ -63,13 +63,14 @@ public class GameQuest {
 
         Grasscutter.getLogger()
                 .info(
-                        "[quest351] lifecycle action={} uid={} main={} sub={} before={} after={} stack={}",
+                        "[quest351] lifecycle action={} uid={} main={} sub={} before={} after={} finishParent={} stack={}",
                         action,
                         getOwner() != null ? getOwner().getUid() : 0,
                         this.mainQuestId,
                         this.subQuestId,
                         before,
                         this.state,
+                        this.questData.isFinishParent(),
                         Arrays.toString(Thread.currentThread().getStackTrace()));
     }
 

@@ -169,6 +169,12 @@ public class GameMainQuest {
             this.state = ParentQuestState.PARENT_QUEST_STATE_FINISHED;
         }
 
+        Grasscutter.getLogger().debug(
+                "Main quest finished: uid={} main={}", this.ownerUid, this.parentQuestId);
+        if (this.parentQuestId == 351) {
+            Grasscutter.getLogger().info("[quest351] main-finish uid={}", this.ownerUid);
+        }
+
         this.getOwner().getSession().send(new PacketFinishedParentQuestUpdateNotify(this));
         this.getOwner().getSession().send(new PacketCodexDataUpdateNotify(this));
 
@@ -189,11 +195,34 @@ public class GameMainQuest {
             }
         }
 
+        this.tryStartFollowingQuests();
+    }
+
+    /** Replays only the handoff, including after a disconnect between saving and starting it. */
+    public void tryStartFollowingQuests() {
+        if (!this.isFinished && this.state != ParentQuestState.PARENT_QUEST_STATE_FINISHED) return;
+        var mainQuestData = GameData.getMainQuestDataMap().get(this.parentQuestId);
+        if (mainQuestData == null) return;
         // Hand off to the main quests that follow. Only those whose opening can never be met on its
         // own are started here; one with a real prerequisite still starts through that.
         if (mainQuestData.getSuggestTrackMainQuestList() != null) {
             for (int next : mainQuestData.getSuggestTrackMainQuestList()) {
-                this.getOwner().getQuestManager().startMainQuestIfUnlinked(next);
+                Grasscutter.getLogger().debug(
+                        "Main quest handoff: uid={} main={} next={}", this.ownerUid, this.parentQuestId, next);
+                var manager = this.getOwner().getQuestManager();
+                if (this.parentQuestId == 351) {
+                    Grasscutter.getLogger().info(
+                            "[quest351] handoff uid={} next={} unlinked={} canStart={}",
+                            this.ownerUid, next, QuestManager.opensUnlinked(next),
+                            manager.canStartMainQuestIfUnlinked(next));
+                }
+                manager.startMainQuestIfUnlinked(next);
+                if (this.parentQuestId == 351 && next == 352) {
+                    var opening = manager.getQuestById(35200);
+                    Grasscutter.getLogger().info(
+                            "[quest351] handoff-result uid={} next={} openingState={}",
+                            this.ownerUid, next, opening != null ? opening.getState() : null);
+                }
             }
         }
     }

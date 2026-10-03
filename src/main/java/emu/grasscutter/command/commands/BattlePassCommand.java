@@ -3,7 +3,6 @@ package emu.grasscutter.command.commands;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.PicocliCommandHandler;
-import emu.grasscutter.game.battlepass.BattlePassCompatHelper;
 import emu.grasscutter.game.battlepass.BattlePassManager;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.packet.send.PacketBattlePassAllDataNotify;
@@ -147,8 +146,8 @@ public final class BattlePassCommand implements PicocliCommandHandler {
                 return;
             }
 
-            if (!BattlePassCompatHelper.setPaidFlag(battlePass, paid.value())) {
-                CommandHandler.sendMessage(sender, "setPaidFlag failed");
+            if (battlePass.isPaid() != paid.value()) {
+                CommandHandler.sendMessage(sender, "Changing paid BP status is not supported by this server.");
                 return;
             }
 

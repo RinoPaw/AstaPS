@@ -243,14 +243,14 @@ public final class CommandMap {
         return player;
     }
 
-    private boolean setPlayerTarget(String playerId, Player player, String targetUid) {
-        if (targetUid.isEmpty()) {
+    private boolean setPlayerTarget(String playerId, Player player, String selector) {
+        if (selector.isEmpty()) {
             targetPlayerIds.removeInt(playerId);
             CommandHandler.sendTranslatedMessage(player, "commands.execution.clear_target");
             return true;
         }
 
-        int uid = getUidFromString(targetUid);
+        int uid = getUidFromString(selector);
         if (uid == INVALID_UID) {
             CommandHandler.sendTranslatedMessage(player, "commands.generic.invalid.uid");
             return false;
@@ -314,19 +314,25 @@ public final class CommandMap {
         }
         if (tokens.isEmpty()) return;
 
-        String label = tokens.remove(0).toLowerCase();
+        String rawLabel = tokens.remove(0);
+        String label = rawLabel.toLowerCase();
         List<String> args = tokens;
         String playerId = (player == null) ? CONSOLE_ID : player.getAccount().getId();
 
-        if (label.startsWith("@")) {
-            this.setPlayerTarget(playerId, player, label.substring(1));
+        if (rawLabel.startsWith("@")) {
+            this.setPlayerTarget(playerId, player, rawLabel.substring(1));
             return;
         }
         if (label.equals("target")) {
             if (!args.isEmpty()) {
-                String targetUid = args.get(0);
-                if (targetUid.startsWith("@")) targetUid = targetUid.substring(1);
-                this.setPlayerTarget(playerId, player, targetUid);
+                String selector = args.get(0);
+                if (selector.startsWith("@")) {
+                    selector = selector.substring(1);
+                } else if (selector.chars().allMatch(Character::isDigit)) {
+                    CommandHandler.sendMessage(player, "UID must use @<digits> syntax.");
+                    return;
+                }
+                this.setPlayerTarget(playerId, player, selector);
             } else {
                 this.setPlayerTarget(playerId, player, "");
             }

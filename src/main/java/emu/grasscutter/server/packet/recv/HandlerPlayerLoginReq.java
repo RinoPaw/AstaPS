@@ -26,8 +26,9 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         Player player = session.getPlayer();
         var intro = GAME_OPTIONS.newAccountIntro;
         boolean freshAccount = player.getAvatars().getAvatarCount() == 0;
+        boolean skipIntro = skipNewAccountIntro();
 
-        if (freshAccount && intro.enabled) {
+        if (freshAccount && intro.enabled && !skipIntro) {
             session.setState(SessionState.PICKING_CHARACTER);
             int notifyCmdId =
                     intro.doSetPlayerBornDataNotify > 0
@@ -44,6 +45,12 @@ public class HandlerPlayerLoginReq extends PacketHandler {
 
         boolean playerBornNow = false;
         if (freshAccount) {
+            if (skipIntro) {
+                Grasscutter.getLogger()
+                        .info(
+                                "[intro-skip] new account uid={} bypassing native character/introduction flow.",
+                                player.getUid());
+            }
             createDefaultTraveler(player);
             playerBornNow = true;
         } else {
@@ -68,6 +75,14 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         }
 
         session.send(new PacketPlayerLoginRsp(session));
+    }
+
+    private static boolean skipNewAccountIntro() {
+        String value = System.getProperty("astaps.skipNewAccountIntro");
+        if (value == null || value.isBlank()) {
+            value = System.getenv("ASTAPS_SKIP_NEW_ACCOUNT_INTRO");
+        }
+        return value != null && Boolean.parseBoolean(value.trim());
     }
 
     private static void keepLegacyStarterStatueLocked(Player player) {

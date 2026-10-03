@@ -73,6 +73,7 @@ public class HandlerPlayerLoginReq extends PacketHandler {
             // scene-entry code recognize a fresh account while keeping the ordinary login scene
             // packet intact; only Quest 351 is deferred to PostEnterSceneRsp.
             BornIntroGate.armSceneReady(session);
+            BornDataHelper.sendWelcomeMail(player);
             autoBornNow = true;
             Grasscutter.getLogger()
                     .info(

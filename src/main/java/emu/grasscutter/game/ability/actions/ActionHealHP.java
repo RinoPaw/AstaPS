@@ -87,7 +87,7 @@ public final class ActionHealHP extends AbilityActionHandler {
         var abilityRatio = 1.0f;
         if (!action.ignoreAbilityProperty)
             abilityRatio +=
-                    target.getFightProperty(FightProperty.FIGHT_PROP_HEAL_ADD)
+                    owner.getFightProperty(FightProperty.FIGHT_PROP_HEAL_ADD)
                             + target.getFightProperty(FightProperty.FIGHT_PROP_HEALED_ADD);
 
         amountToRegenerate +=
@@ -180,7 +180,7 @@ public final class ActionHealHP extends AbilityActionHandler {
                     if (member.isConvertToHpDebt()) continue;
                     float memberRatio = 1.0f;
                     if (!action.ignoreAbilityProperty)
-                        memberRatio += member.getFightProperty(FightProperty.FIGHT_PROP_HEAL_ADD)
+                        memberRatio += owner.getFightProperty(FightProperty.FIGHT_PROP_HEAL_ADD)
                             + member.getFightProperty(FightProperty.FIGHT_PROP_HEALED_ADD);
                     float spreadAmount = baseAmount * memberRatio;
                     float spreadReal = member.heal(spreadAmount, action.muteHealEffect);

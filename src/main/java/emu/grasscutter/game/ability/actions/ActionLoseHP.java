@@ -11,13 +11,21 @@ public final class ActionLoseHP extends AbilityActionHandler {
     @Override
     public boolean execute(
             Ability ability, AbilityModifierAction action, ByteString abilityData, GameEntity target) {
-                var owner = ability.getOwner();
+        var owner = ability.getOwner();
 
-                if (owner instanceof EntityClientGadget ownerGadget) {
-                    owner = ownerGadget.getScene().getEntityById(ownerGadget.getOwnerEntityId());
+        if (owner instanceof EntityClientGadget ownerGadget) {
+            if (ownerGadget.getOwner().getAbilityManager().isAbilityInvulnerable()) return true;
 
-                    if (ownerGadget.getOwner().getAbilityManager().isAbilityInvulnerable()) return true;
-                }
+            var scene = ownerGadget.getScene();
+            owner =
+                    scene != null
+                            ? scene.getEntityById(ownerGadget.getOriginalOwnerEntityId())
+                            : null;
+            if (owner == null && scene != null) {
+                owner = scene.getEntityById(ownerGadget.getOwnerEntityId());
+            }
+        }
+        if (owner == null) return false;
 
         if (action.enableLockHP && target.isLockHP()) {
             return true;

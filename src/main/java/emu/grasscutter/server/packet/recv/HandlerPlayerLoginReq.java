@@ -3,15 +3,15 @@ package emu.grasscutter.server.packet.recv;
 import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.data.GameData;
-import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.player.StatueActivationProbe;
 import emu.grasscutter.net.packet.*;
+import emu.grasscutter.server.born.BornDataConfig;
 import emu.grasscutter.server.born.BornDataHelper;
 import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.packet.send.*;
+import emu.grasscutter.server.game.GameSession.SessionState;
+import emu.grasscutter.server.packet.send.PacketPlayerLoginRsp;
 
 @Opcodes(PacketOpcodes.PlayerLoginReq)
 public class HandlerPlayerLoginReq extends PacketHandler {
@@ -25,16 +25,60 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         }
 
         Player player = session.getPlayer();
+        var intro = GAME_OPTIONS.newAccountIntro;
         boolean freshAccount = player.getAvatars().getAvatarCount() == 0;
+        boolean nativeSelection = freshAccount && BornDataConfig.isSelectionMode() && intro.enabled;
 
-        boolean playerBornNow = false;
-        if (freshAccount) {
+        if (nativeSelection) {
+            // Native mode leaves the account empty until the client chooses Aether/Lumine. No World
+            // or quest state is created before SetPlayerBornDataReq.
+            session.setState(SessionState.PICKING_CHARACTER);
+            int notifyCmdId =
+                    intro.doSetPlayerBornDataNotify > 0
+                            ? intro.doSetPlayerBornDataNotify
+                            : PacketOpcodes.DoSetPlayerBornDataNotify;
+            if (notifyCmdId > 0) {
+                session.send(new BasePacket(notifyCmdId));
+            }
             Grasscutter.getLogger()
                     .info(
-                            "[statue-probe] new account uid={} bypassing native character/introduction flow for statue testing.",
-                            player.getUid());
-            createDefaultTraveler(player);
-            playerBornNow = true;
+                            "[born-flow] uid={} mode=select; waiting for native character selection (notify cmdId={}).",
+                            player.getUid(),
+                            notifyCmdId > 0 ? notifyCmdId : "unsent");
+            session.send(new PacketPlayerLoginRsp(session));
+            return;
+        }
+
+        boolean autoBornNow = false;
+        if (freshAccount) {
+            if (BornDataConfig.isSelectionMode() && !intro.enabled) {
+                Grasscutter.getLogger()
+                        .warn(
+                                "[born-flow] uid={} config-born mode=select but newAccountIntro is disabled; using automatic birth.",
+                                player.getUid());
+            }
+
+            int avatarId = BornDataHelper.resolveConfiguredAvatarId();
+            String nickname = BornDataHelper.resolveConfiguredNickname(player);
+            if (!BornDataHelper.completeBirth(player, avatarId, nickname)) {
+                Grasscutter.getLogger()
+                        .error(
+                                "[born-flow] uid={} automatic birth failed; closing the incomplete session.",
+                                player.getUid());
+                session.close();
+                return;
+            }
+
+            // Register the fresh-player lifecycle before Player.onLogin. This lets HomeWorld and
+            // scene-entry code recognize a fresh account while keeping the ordinary login scene
+            // packet intact; only Quest 351 is deferred to PostEnterSceneRsp.
+            BornIntroGate.armSceneReady(session);
+            autoBornNow = true;
+            Grasscutter.getLogger()
+                    .info(
+                            "[born-flow] uid={} mode=auto; born as avatar {} and skipping character-selection/native intro visuals.",
+                            player.getUid(),
+                            avatarId);
         } else {
             BornDataHelper.ensureMainCharacter(player);
             var quest351 = player.getQuestManager().getMainQuestById(FIRST_MAIN_QUEST);
@@ -49,19 +93,16 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         player.onLogin();
         keepLegacyStarterStatueLocked(player);
 
-        if (playerBornNow) {
-            // Native 7.1 starts the fresh-player quest actor only after the first scene handshake.
-            // Skipping character selection/the native intro must preserve that ordering: starting
-            // 35104 here, before PostEnterSceneRsp, makes the client retain the born-page quest
-            // actor and then replay it when 35100 starts. It also advances Paimon's actor state
-            // before the playable scene is ready.
-            BornIntroGate.armForSceneReady(session);
-        }
-
         // PlayerProgressManager's legacy compatibility path has already seeded/finished statue
         // state by this point. Restore every still-locked statue quest now, after point 7/area 1
         // cleanup, and push the corrected UNFINISHED state before gameplay starts.
         StatueActivationProbe.restoreLockedActivationQuests(player, true);
+
+        if (autoBornNow) {
+            // World/login state is complete, but fresh-player quests remain gated until the client's
+            // first PostEnterSceneReq has been acknowledged.
+            BornIntroGate.markWorldLoginComplete(session);
+        }
 
         session.send(new PacketPlayerLoginRsp(session));
     }
@@ -83,22 +124,5 @@ public class HandlerPlayerLoginReq extends PacketHandler {
                             removedPoint,
                             removedArea);
         }
-    }
-
-    private static void createDefaultTraveler(Player player) {
-        int avatarId = 10000007;
-        Avatar mainCharacter = new Avatar(avatarId);
-
-        if (!GAME_OPTIONS.questing.enabled) {
-            mainCharacter.setSkillDepotData(GameData.getAvatarSkillDepotDataMap().get(704));
-        }
-
-        player.addAvatar(mainCharacter, false);
-        player.setMainCharacterId(avatarId);
-        player.setHeadImage(avatarId);
-        var team = player.getTeamManager().getCurrentSinglePlayerTeamInfo().getAvatars();
-        team.clear();
-        team.add(avatarId);
-        player.save();
     }
 }

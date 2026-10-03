@@ -127,6 +127,44 @@ conditions. The expected next transition after talk 35216 is finishing
 the trace identifies the exact rollback trigger; if a plot report never
 arrives, it identifies a different gap. Do not force-finish 352 to mask it.
 
+## Runtime validation: UID 70583 (2026-10-03)
+
+The run on code commit `9d61066` confirms 35102 completion at 23:48:41,
+the parent finish, and a successful handoff at 23:48:42:
+`unlinked=true canStart=true`, with 35200 becoming `UNFINISHED`.
+35200 and 35201 then finish, and talk 35216 finishes 35202.
+
+At 23:49:45 the client sends `NOT_FINISH_PLOT(35203)`. The matched failure
+condition logs `progress=[1,0]`, then 35203 fails and 35202 is rewound and
+restarted. Another identical content report arrives, but no second
+failure/rewind is observed. The repeated Paimon dialogue in this sample is
+therefore a configured rollback, **not a rejected NPC identity check**.
+Both talk requests are accepted through the client-local actor path
+(`npc_entity_id=0`, fallback entity lookup absent). The earlier NPC identity
+defect remains a separate fix; this trace does not establish that it caused
+the previous repetition.
+
+The second talk at 23:49:57 restarts 35203; 35203 and 35204 subsequently
+finish. At 23:51:24, the client sends `FINISH_PLOT(35205)` and 35205 is marked
+finished. No received `FINISH_PLOT(35203)` appears in the trace; trigger 1172
+is another configured completion path, so the exact completion source and
+client performance need further checking.
+
+The log ends at the 35205 child completion. It does not independently
+verify main quest 352 completion, finishExec side effects, rewards,
+persistence, or acceptance of 353. The client reason for the earlier
+`NOT_FINISH_PLOT` is also unconfirmed and will be checked against Playthrough
+video; the failure condition is retained.
+
+Other observed errors include login while resources are still loading
+(AvatarData is null), a missing JSON field in
+InvestigationMonsterDropHelper.loadPreviews, and a failed entity creation
+for group 133003090/config 472. They are separate pending investigations;
+this trace does not show that they caused the rollback.
+
+Reusable diagnosis steps, acceptance boundaries, and the Playthrough
+checklist are maintained in [Quest debugging notes](quest-debugging-notes.md).
+
 CI was not run. Use Java 21 for a local build, then restart the server and
 relog the affected account. Do not use `quest add` or `quest finish` while
 validating natural progression; those commands bypass the path being tested.
@@ -151,5 +189,5 @@ java -jar .\grasscutter.jar
 Optional local regression check:
 
 ```powershell
-.\gradlew.bat test --tests emu.grasscutter.game.quest.MainQuestHandoffTest -PskipHandbook=1 -PexcludeTags=integration
+.\gradlew.bat test --tests emu.grasscutter.game.quest.MainQuestHandoffTest --tests emu.grasscutter.game.talk.TalkNpcIdentityTest -PskipHandbook=1 -PexcludeTags=integration
 ```

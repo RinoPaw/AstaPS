@@ -4,71 +4,58 @@ import static emu.grasscutter.scripts.constants.EventType.EVENT_UNLOCK_TRANS_POI
 
 import emu.grasscutter.config.RewardOverrides;
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.data.common.PointData;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.props.WatcherTriggerType;
 import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.reward.RewardScaler;
 import emu.grasscutter.scripts.data.ScriptArgs;
 import emu.grasscutter.server.packet.send.PacketScenePointUnlockNotify;
+import java.util.Set;
 
 /** Unlocks a statue, waypoint, or dungeon entrance and grants its configured exploration reward. */
 public final class TransPointUnlockHelper {
+    private static final Set<Integer> STATUE_GADGET_IDS =
+            Set.of(70130009, 70130010, 70130011, 73176017);
+
     private TransPointUnlockHelper() {}
 
+    /** Returns whether a scene point is a Statue of the Seven. */
+    public static boolean isStatuePoint(PointData data) {
+        if (data == null) return false;
+        if (data.getMaxSpringVolume() > 0) return true;
+        if (STATUE_GADGET_IDS.contains(data.getGadgetId())) return true;
+        String type = data.getType();
+        return type != null && type.contains("KDEHKECBDBO");
+    }
+
     public static boolean unlock(Player player, int sceneId, int pointId, boolean isStatue) {
-        if (player == null) return false;
-
         var scenePointEntry = GameData.getScenePointEntryById(sceneId, pointId);
-        player.getForceLockedScenePoints(sceneId).remove(pointId);
-
         if (scenePointEntry == null || player.getUnlockedScenePoints(sceneId).contains(pointId)) {
             return false;
         }
 
-        var pointData = scenePointEntry.getPointData();
-        if (!isStatue
-                && emu.grasscutter.game.managers.StatueTalkQuests.isStatuePoint(pointData)) {
-            isStatue = true;
-        }
-
+        player.getForceLockedScenePoints(sceneId).remove(pointId);
         player.getUnlockedScenePoints(sceneId).add(pointId);
-
-        var progress = player.getProgressManager();
-        if (isStatue && pointData != null && pointData.getAreaId() > 0) {
-            progress.unlockSceneAreaHierarchy(sceneId, pointData.getAreaId());
-        }
 
         grantReward(player, isStatue);
 
         player
                 .getQuestManager()
                 .queueEvent(QuestContent.QUEST_CONTENT_UNLOCK_TRANS_POINT, sceneId, pointId);
-        try {
-            if (player.getScene() != null) {
-                player
-                        .getScene()
-                        .getScriptManager()
-                        .callEvent(new ScriptArgs(0, EVENT_UNLOCK_TRANS_POINT, sceneId, pointId));
-            }
-        } catch (Throwable ignored) {
-        }
-
-        if (isStatue) {
-            progress.refreshStatueTalkGate(sceneId, pointId);
-        }
+        player
+                .getScene()
+                .getScriptManager()
+                .callEvent(new ScriptArgs(0, EVENT_UNLOCK_TRANS_POINT, sceneId, pointId));
 
         player.sendPacket(new PacketScenePointUnlockNotify(sceneId, pointId));
-        try {
-            int total = 0;
-            if (player.getUnlockedScenePoints() != null) {
-                for (var points : player.getUnlockedScenePoints().values()) {
-                    if (points != null) total += points.size();
-                }
-            }
-            InvestigationHandbookHelper.trigger(
-                    player, WatcherTriggerType.TRIGGER_UNLOCK_TRANS_POINT, 0, total);
-        } catch (Throwable ignored) {
-        }
+
+        int total =
+                player.getUnlockedScenePoints().values().stream()
+                        .mapToInt(java.util.Collection::size)
+                        .sum();
+        InvestigationHandbookHelper.trigger(
+                player, WatcherTriggerType.TRIGGER_UNLOCK_TRANS_POINT, 0, total);
 
         player.save();
         return true;

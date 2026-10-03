@@ -316,26 +316,31 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
         // Each of these is guarded on its own. One world or one player throwing used to abandon the
         // whole tick, so everybody else's world stopped moving for reasons that had nothing to do
         // with them - and the scheduler at the end never ran at all.
-        this.worlds.removeIf(
-                world -> {
-                    try {
-                        boolean shouldRemove = world.onTick();
-                        if (shouldRemove && world instanceof HomeWorld homeWorld) {
-                            // Home worlds are indexed separately from the world tick set.
-                            // Remove the same instance from that cache, otherwise the host
-                            // player and every loaded home scene stay strongly reachable after
-                            // the last player leaves.
-                            Player host = homeWorld.getHost();
-                            if (host != null) {
-                                this.homeWorlds.remove(host.getUid(), homeWorld);
+        // Lock the home world cache before the world set. Logging in takes them in that order
+        // (computeIfAbsent builds a HomeWorld, which registers itself in the world set), so taking
+        // the world set first here deadlocked the tick against a login and froze the server.
+        synchronized (this.homeWorlds) {
+            this.worlds.removeIf(
+                    world -> {
+                        try {
+                            boolean shouldRemove = world.onTick();
+                            if (shouldRemove && world instanceof HomeWorld homeWorld) {
+                                // Home worlds are indexed separately from the world tick set.
+                                // Remove the same instance from that cache, otherwise the host
+                                // player and every loaded home scene stay strongly reachable after
+                                // the last player leaves.
+                                Player host = homeWorld.getHost();
+                                if (host != null) {
+                                    this.homeWorlds.remove(host.getUid(), homeWorld);
+                                }
                             }
+                            return shouldRemove;
+                        } catch (Throwable e) {
+                            Grasscutter.getLogger().error("A world threw while ticking.", e);
+                            return false;
                         }
-                        return shouldRemove;
-                    } catch (Throwable e) {
-                        Grasscutter.getLogger().error("A world threw while ticking.", e);
-                        return false;
-                    }
-                });
+                    });
+        }
 
         this.players
                 .values()

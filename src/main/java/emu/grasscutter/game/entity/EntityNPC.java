@@ -119,7 +119,6 @@ public class EntityNPC extends GameEntity {
 
     @Override
     public void initAbilities() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'initAbilities'");
+        // NPCs do not carry server-side abilities of their own.
     }
 }

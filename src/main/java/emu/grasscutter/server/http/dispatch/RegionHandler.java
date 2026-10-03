@@ -27,6 +27,8 @@ import org.slf4j.Logger;
 /** Handles requests related to region queries. */
 public final class RegionHandler implements Router {
     private static final Map<String, RegionData> regions = new ConcurrentHashMap<>();
+    /** Region name to the title shown for it in the server list. */
+    private static final Map<String, String> regionTitles = new ConcurrentHashMap<>();
     private static String regionListResponse;
     private static String regionListResponseCN;
     private static com.google.protobuf.ByteString regionConfigEncrypted;
@@ -109,6 +111,9 @@ public final class RegionHandler implements Router {
                                     .setClientSecretKey(ByteString.copyFrom(Crypto.DISPATCH_SEED))
                                     .setRegionCustomConfigEncrypted(buildRegionCustomConfigEncrypted())
                                     .build();
+                    regionTitles.put(
+                            region.Name,
+                            region.Title == null || region.Title.isEmpty() ? region.Name : region.Title);
                     regions.put(
                             region.Name,
                             new RegionData(
@@ -155,7 +160,7 @@ public final class RegionHandler implements Router {
                                 servers.add(
                                         RegionSimpleInfo.newBuilder()
                                                 .setName(name)
-                                                .setTitle(name)
+                                                .setTitle(regionTitles.getOrDefault(name, name))
                                                 .setType("DEV_PUBLIC")
                                                 .setDispatchUrl(dispatchDomain + "/query_cur_region/" + name)
                                                 .build()));

@@ -40,6 +40,8 @@ Read [`AGENTS.md`](AGENTS.md) before making maintenance changes.
 
 Reverse-engineering work has an additional workflow contract in [`docs/reverse-workflow.md`](docs/reverse-workflow.md). Before starting an investigation, search the existing `Genshin-Reverse` evidence and history so previous experience, rejected candidates, and known dead ends are not repeated. Save meaningful progress as small checkpoints, and leave unfinished work in a resumable state with the evidence and next step recorded. Important progress should never exist only in chat history, terminal scrollback, or an untracked local file.
 
+Before starting duplicate research, also check [`docs/reverse-status.md`](docs/reverse-status.md). It is the maintainer index of completed, verified, integrated, active, paused, and bounded follow-up work; detailed technical evidence remains in `Genshin-Reverse`.
+
 ## Running
 
 1. Start MongoDB.

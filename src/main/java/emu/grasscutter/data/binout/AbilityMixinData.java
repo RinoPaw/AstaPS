@@ -95,6 +95,7 @@ public class AbilityMixinData implements Serializable {
     // alongside the legacy names so both data versions deserialize correctly.
     public AbilityModifierAction[] actions;
     public AbilityModifierAction[] actionQueue;
+    @SerializedName(value = "reactionTypes", alternate = "IGAMNNAADJB")
     public List<String> reactionTypes = new ArrayList<>();
     public List<String> entityTypes = new ArrayList<>();
     public List<String> attackTags = new ArrayList<>();

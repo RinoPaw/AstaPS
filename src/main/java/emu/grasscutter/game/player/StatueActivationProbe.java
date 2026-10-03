@@ -7,10 +7,14 @@ import emu.grasscutter.game.quest.enums.QuestState;
 import emu.grasscutter.server.packet.send.PacketQuestListUpdateNotify;
 
 /**
- * Test-branch bridge that exposes the client statue activation state without unlocking the statue
- * on proximity. Generic statues still complete through their native 303xx talk quest.
+ * Test-branch bridge that restores the stock pre-activation quest state without unlocking a statue
+ * on proximity. Generic statues use quest 303xx; the starter Mondstadt statue uses quest 35205.
  */
 public final class StatueActivationProbe {
+    private static final int STARTER_SCENE = 3;
+    private static final int STARTER_POINT = 7;
+    private static final int STARTER_QUEST = 35205;
+
     private StatueActivationProbe() {}
 
     public static boolean prepare(Player player, int sceneId, int pointId) {
@@ -30,9 +34,18 @@ public final class StatueActivationProbe {
         }
 
         int areaId = pointData.getAreaId();
-        int questId = StatueTalkQuests.questForArea(areaId);
-        QuestState serverState = null;
+        int questId;
+        int parentQuestId;
+        if (sceneId == STARTER_SCENE && pointId == STARTER_POINT) {
+            questId = STARTER_QUEST;
+            parentQuestId = 352;
+        } else {
+            questId = StatueTalkQuests.questForArea(areaId);
+            parentQuestId = 303;
+        }
 
+        QuestState serverState = null;
+        boolean sentToClient = false;
         if (questId > 0) {
             var quest = player.getQuestManager().getQuestById(questId);
             if (quest == null) {
@@ -40,8 +53,8 @@ public final class StatueActivationProbe {
                 quest = player.getQuestManager().getQuestById(questId);
             }
 
-            // Private-server login code used to pre-finish every 303xx child. Native activation
-            // requires the matching child to stay UNFINISHED until COMPLETE_TALK(303xx) arrives.
+            // Legacy private-server login code pre-finishes statue gate quests. Restore the real
+            // server transaction state so the client can drive the quest's native finish condition.
             if (quest != null && quest.getState() == QuestState.QUEST_STATE_FINISHED) {
                 quest.setState(QuestState.QUEST_STATE_UNFINISHED);
                 quest.setFinishTime(0);
@@ -55,24 +68,27 @@ public final class StatueActivationProbe {
 
             if (quest != null) {
                 serverState = quest.getState();
-                // Keep client and server on the same pre-activation state. A FINISHED client-only
-                // quest describes the post-activation goddess interaction and suppresses the locked
-                // statue activation surface on the 7.1 client.
+                // PacketQuestListUpdateNotify deliberately lets 303/352 through even when general
+                // questing is disabled. This packet must contain the real UNFINISHED quest; an empty
+                // update was the reason the locked-statue interaction never appeared in earlier probes.
                 player.sendPacket(new PacketQuestListUpdateNotify(quest));
+                sentToClient = true;
             }
         }
 
         // Do not load the post-unlock goddess suite/worktop while the statue is still locked. The
-        // activation interaction belongs to the scene point + unfinished 303xx quest itself.
+        // activation surface belongs to the scene point plus its unfinished activation quest.
         Grasscutter.getLogger()
                 .info(
-                        "[statue-probe] prepared locked statue activation uid={} scene={} point={} area={} quest={} state={} clientState=UNFINISHED",
+                        "[statue-probe] activation-ready uid={} scene={} point={} area={} quest={}/{} state={} sent={}",
                         player.getUid(),
                         sceneId,
                         pointId,
                         areaId,
+                        parentQuestId,
                         questId,
-                        serverState);
+                        serverState,
+                        sentToClient);
         return true;
     }
 }

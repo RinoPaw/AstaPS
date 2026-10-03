@@ -50,6 +50,7 @@ public final class PredicateEvaluator {
             case "ByAvatarWeaponType"  -> byAvatarWeaponType(pred, resolved);
             case "ByEnergyRatio"       -> byEnergyRatio(pred, ability, resolved);
             case "ByEnergy"            -> byEnergy(pred, ability, resolved);
+            case "ByCurTeamHasElementType" -> byCurTeamHasElementType(pred, ability, resolved);
             case "ByStamina"           -> byStamina(pred, ability, resolved);
             case "ByNot"               -> byNot(pred, ability, owner, target, action);
             case "ByAny"               -> byAny(pred, ability, owner, target, action);
@@ -69,6 +70,7 @@ public final class PredicateEvaluator {
             case "EIBIHNJLLFH" -> "ByAvatarWeaponType";
             case "KJBEKOGFBKG" -> "ByEnergyRatio";
             case "PAPHNBCKAGI" -> "ByEnergy";
+            case "NLNHFDLONMM" -> "ByCurTeamHasElementType";
             case "OPLIAABFJGD" -> "ByStamina";
             case "GKGBIPDLMMG" -> "ByNot";
             case "GPEMEIHPCCF" -> "ByAny";
@@ -117,7 +119,7 @@ public final class PredicateEvaluator {
             case "BJJDEAIEIGP", "ByUnlockTalentParam", "ByHasModifier",
                     "ByTargetGlobalValue", "ByTargetHPRatio", "ByElementType", "ByEntityTypes",
                     "ByEntityIsAlive", "ByAvatarWeaponType", "ByEnergyRatio", "ByEnergy",
-                    "ByStamina" -> true;
+                    "ByCurTeamHasElementType", "ByStamina" -> true;
             case "ByNot", "ByAny" -> supportedNestedPredicates(pred.get("predicates")) != null;
             default -> false;
         };
@@ -407,6 +409,40 @@ public final class PredicateEvaluator {
             case "GreaterOrEqual", "MoreThanAndEqual", "MoreOrEqual" -> current >= bound;
             case "Equal" -> Math.abs(current - bound) < 1e-5f;
             case "NotEqual" -> Math.abs(current - bound) >= 1e-5f;
+            default -> true;
+        };
+    }
+
+    private static boolean byCurTeamHasElementType(
+            Map<String, Object> pred, Ability ability, GameEntity target) {
+        var player = ability != null ? ability.getPlayerOwner() : null;
+        if (player == null && target instanceof EntityAvatar avatar) {
+            player = avatar.getPlayer();
+        }
+        if (player == null || !(pred.get("logic") instanceof String logic)) return true;
+        Object elementObj = pred.get("elementType");
+        if (!(elementObj instanceof String elementType) || elementType.isEmpty()) return true;
+
+        int count = 0;
+        for (EntityAvatar entityAvatar : player.getTeamManager().getActiveTeam()) {
+            if (entityAvatar == null
+                    || entityAvatar.getAvatar() == null
+                    || entityAvatar.getAvatar().getSkillDepot() == null) {
+                continue;
+            }
+            if (elementType.equals(entityAvatar.getAvatar().getSkillDepot().getElementType().name())) {
+                count++;
+            }
+        }
+
+        float required = readFloat(pred.get("number"), ability);
+        return switch (logic) {
+            case "Lesser", "LessThan" -> count < required;
+            case "LesserOrEqual", "LessThanAndEqual", "LessOrEqual" -> count <= required;
+            case "Greater", "MoreThan" -> count > required;
+            case "GreaterOrEqual", "MoreThanAndEqual", "MoreOrEqual" -> count >= required;
+            case "Equal" -> Math.abs(count - required) < 1e-5f;
+            case "NotEqual" -> Math.abs(count - required) >= 1e-5f;
             default -> true;
         };
     }

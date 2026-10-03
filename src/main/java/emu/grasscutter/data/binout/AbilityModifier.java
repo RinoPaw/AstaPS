@@ -351,9 +351,7 @@ public class AbilityModifier implements Serializable {
         @SerializedName(value = "amountByTargetCurrentHPRatio")
         public DynamicFloat amountByTargetCurrentHPRatio = DynamicFloat.ZERO;
 
-        @SerializedName(
-                value = "amountByTargetMaxHPRatio",
-                alternate = {"GGLMMJHNGMO", "FPOCDLCHDPE"})
+        @SerializedName(value = "amountByTargetMaxHPRatio", alternate = "GGLMMJHNGMO")
         public DynamicFloat amountByTargetMaxHPRatio = DynamicFloat.ZERO;
 
         public DynamicFloat limboByTargetMaxHPRatio = DynamicFloat.ZERO;
@@ -501,83 +499,56 @@ public class AbilityModifier implements Serializable {
     }
 
     public enum State {
-        Invincible,
-        Limbo,
-        LockHP,
-        ElementFreeze,
-        ElementPetrifaction,
-        ElementBurning,
-        ElementWet,
-        GrassGrowing,
-        GrassBurning,
-        LimboBySubValue,
-        ElementFrozen,
-        ElementAttached,
-        ElementFrozenHurt,
-        ElementIce,
-        ElementFire,
-        ElementWater,
-        ElementElectric,
-        ElementGrass,
-        ElementWind,
-        ElementRock,
-        ElementNone,
-        InAir,
-        IgnoreMass,
-        LimboByShield,
-        WaterView
+            LockHP,
+            Invincible,
+            ElementFreeze,
+            ElementPetrifaction,
+            DenyLockOn,
+            Limbo,
+            NoHeal,
+            IgnoreAddEnergy,
+            IsGhostToEnemy,
+            IsGhostToAllied,
+            UnlockFrequencyLimit,
+            AttackUp,
+            DefenseDown,
+            ElementDeadTime,
+            SpeedUp,
+            DefenseUp,
+            Struggle,
+            OvergrowVariation,
+            ElementElectric,
+            ElementFire,
+            NyxState,
+            ElementBurning,
+            ElementShock,
+            ElementWet,
+            ElementIce,
+            ElementFrozen,
+            ElementRock,
+            ElementWind,
+            ElementGrass,
+            ElementOverdose,
+            SpeedDown,
+            MuteTaunt
     }
 
-    /** Accepts either a JSON string/number/bool and stores its textual form; null becomes null. */
-    private static final class NullSafeStringAdapter extends TypeAdapter<String> {
-        @Override
-        public String read(JsonReader in) throws IOException {
-            JsonToken token = in.peek();
-            if (token == JsonToken.NULL) {
-                in.nextNull();
-                return null;
-            }
-            if (token == JsonToken.BOOLEAN) {
-                return Boolean.toString(in.nextBoolean());
-            }
-            if (token == JsonToken.NUMBER) {
-                return in.nextString();
-            }
-            return in.nextString();
-        }
-
+    static class NullSafeStringAdapter extends TypeAdapter<String> {
         @Override
         public void write(JsonWriter out, String value) throws IOException {
-            if (value == null) {
-                out.nullValue();
-            } else {
-                out.value(value);
-            }
+            if (value == null) out.nullValue();
+            else out.value(value);
+        }
+
+        @Override
+        public String read(JsonReader in) throws IOException {
+            if (in.peek() == JsonToken.STRING) return in.nextString();
+            in.skipValue();
+            return null;
         }
     }
 
-    /** Some upstream ability fields flip between JSON booleans and 0/1 across versions. */
-    private static final class LenientBooleanAdapter extends TypeAdapter<Boolean> {
-        @Override
-        public Boolean read(JsonReader in) throws IOException {
-            JsonToken token = in.peek();
-            if (token == JsonToken.NULL) {
-                in.nextNull();
-                return null;
-            }
-            if (token == JsonToken.BOOLEAN) {
-                return in.nextBoolean();
-            }
-            if (token == JsonToken.NUMBER) {
-                return in.nextDouble() != 0.0;
-            }
-            String value = in.nextString();
-            if (value == null || value.isBlank()) return false;
-            if ("1".equals(value)) return true;
-            if ("0".equals(value)) return false;
-            return Boolean.parseBoolean(value);
-        }
-
+    public static class LenientBooleanAdapter extends TypeAdapter<Boolean> {
         @Override
         public void write(JsonWriter out, Boolean value) throws IOException {
             if (value == null) {
@@ -585,6 +556,34 @@ public class AbilityModifier implements Serializable {
             } else {
                 out.value(value);
             }
+        }
+
+        @Override
+        public Boolean read(JsonReader in) throws IOException {
+            JsonToken peek = in.peek();
+            if (peek == JsonToken.BOOLEAN) {
+                return in.nextBoolean();
+            }
+            if (peek == JsonToken.NULL) {
+                in.nextNull();
+                return null;
+            }
+            if (peek == JsonToken.STRING) {
+                String str = in.nextString();
+                if ("true".equalsIgnoreCase(str)) return true;
+                if ("false".equalsIgnoreCase(str)) return false;
+                return null;
+            }
+            if (peek == JsonToken.NUMBER) {
+                try {
+                    return in.nextInt() != 0;
+                } catch (Exception ignored) {
+                    return null;
+                }
+            }
+            // If it's an object, array or unexpected structure (e.g. DungeonFogEffects Vector3 enable {x, y, z}):
+            in.skipValue();
+            return null;
         }
     }
 }

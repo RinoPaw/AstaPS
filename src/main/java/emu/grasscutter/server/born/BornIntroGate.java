@@ -210,19 +210,20 @@ public final class BornIntroGate {
             synchronized (player) {
                 player.onLogin();
 
-                // Legacy login code still seeds scene 3 point 7 as an always-unlocked starter
-                // statue. Fresh-account native-unlock tests need every statue to begin locked, so
-                // remove only that automatic seed after login initialization. This path only runs
-                // for a newly born account; persisted unlock state on ordinary returning accounts is
-                // not rewritten.
+                // Legacy login code still seeds scene 3 point 7 and area 1 as always-unlocked
+                // starter state. Fresh-account native-unlock tests need the statue point locked and
+                // the corresponding map fog still present, so remove both after login initialization.
                 boolean removedStarterStatue = player.getUnlockedScenePoints(3).remove(7);
+                boolean removedStarterArea = player.getUnlockedSceneAreas(3).remove(1);
                 player.getForceLockedScenePoints(3).remove(7);
-                if (removedStarterStatue) {
+                if (removedStarterStatue || removedStarterArea) {
                     player.save();
                     Grasscutter.getLogger()
                             .info(
-                                    "[statue-probe] uid={} removed legacy default unlock for scene=3 point=7.",
-                                    player.getUid());
+                                    "[statue-probe] uid={} removed legacy starter unlocks point=3:7 area=3:1 pointRemoved={} areaRemoved={}.",
+                                    player.getUid(),
+                                    removedStarterStatue,
+                                    removedStarterArea);
                 }
             }
 

@@ -51,9 +51,8 @@ public final class PierroCommand implements PicocliCommandHandler {
             }
 
             TeamAbilityToggle.set(targetPlayer, List.of(SUPPORT_SKILL), enable);
-            CommandHandler.sendMessage(
-                    sender,
-                    enable ? "Enabled Pierro support button." : "Disabled Pierro support button.");
+            CommandHandler.sendTranslatedMessage(
+                    sender, enable ? "commands.pierro.on" : "commands.pierro.off");
         }
     }
 }

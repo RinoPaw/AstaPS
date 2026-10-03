@@ -73,9 +73,8 @@ public final class SupportCommand implements PicocliCommandHandler {
             }
 
             TeamAbilityToggle.set(targetPlayer, abilities, enable);
-            CommandHandler.sendMessage(
-                    sender,
-                    (enable ? "Enabled support button(s): " : "Disabled support button(s): ") + key + ".");
+            CommandHandler.sendTranslatedMessage(
+                    sender, enable ? "commands.support.on" : "commands.support.off", key);
         }
     }
 }

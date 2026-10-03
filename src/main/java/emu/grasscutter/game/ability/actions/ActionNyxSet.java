@@ -30,7 +30,7 @@ public final class ActionNyxSet extends AbilityActionHandler {
                     }
                 });
 
-        float value = action.ratio != null ? action.ratio.get(properties, 0.0f) : 0.0f;
+        float value = action.writtenValue().get(properties, 0.0f);
         float max = resolveBound(properties, action.maxValue, "NyxValueMax", 120.0f);
         float min = resolveBound(properties, action.minValue, "NyxValueMin", 0.0f);
         value = Math.max(min, Math.min(max, value));

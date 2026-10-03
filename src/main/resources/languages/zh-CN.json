@@ -240,11 +240,30 @@
       "success": "坐标：%s, %s, %s\n旋转：%s, %s, %s\n场景 ID：%s",
       "description": "获取所在位置和旋转信息"
     },
+    "npc": {
+      "description": "在面前放一个 NPC 模型（无对话、不会移动）",
+      "spawned": "已在面前放置 NPC %s。",
+      "cleared": "已清除 %s 个用指令放置的 NPC。",
+      "not_found": "找不到 NPC %s。",
+      "none_near": "附近 %s 米内没有 NPC。",
+      "group_sent": "已让客户端加载场景组 %s 的第 %s 组内容；NPC 会出现在脚本里写的位置（需要在该组所在的场景里）。"
+    },
+    "pierro": {
+      "description": "切换若娜瓦战中皮耶罗的支援按钮",
+      "on": "已开启皮耶罗支援按钮，队伍栏会出现他的头像，点击可攻击若娜瓦。下线后失效。",
+      "off": "已关闭皮耶罗支援按钮。"
+    },
+    "support": {
+      "description": "切换队伍栏的支援按钮：皮耶罗(pierro)、瓦列里(valeriy)、支援爆破(blast)",
+      "on": "已开启支援按钮：%s。下线后失效。",
+      "off": "已关闭支援按钮：%s。"
+    },
     "quest": {
       "added": "已添加任务 %s。",
       "finished": "已完成任务 %s。",
       "not_found": "任务不存在。",
       "invalid_id": "无效的任务 ID。",
+      "questing_off": "任务系统没有开启，添加的任务不会显示。请在 config.json 里同时把 gameOptions.questing.enabled 和 server.game.enableScriptInBigWorld 设为 true 并重启。",
       "description": "添加或完成任务",
       "running": "任务 %s 的状态为 %s (%s)。",
       "talking": "对话 %s 的状态为 %s [主要任务 %s] (%s)。",

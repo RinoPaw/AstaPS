@@ -2,7 +2,6 @@ package emu.grasscutter.server.packet.recv;
 
 import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
-import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.ability.EscoffierSkillCookHelper;
 import emu.grasscutter.game.player.EntryNotice;
 import emu.grasscutter.game.quest.enums.QuestContent;
@@ -22,15 +21,6 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
         PostEnterSceneReq req = PostEnterSceneReq.parseFrom(payload);
 
         var player = session.getPlayer();
-        Grasscutter.getLogger()
-                .info(
-                        "[intro-handshake] PostEnterSceneReq uid={} state={} loadState={} token={} len={}",
-                        player.getUid(),
-                        session.getState(),
-                        player.getSceneLoadState(),
-                        player.getEnterSceneToken(),
-                        payload == null ? 0 : payload.length);
-
         var scene = player.getScene();
         var questManager = player.getQuestManager();
         var freshBorn = BornIntroGate.isAwaiting(session);

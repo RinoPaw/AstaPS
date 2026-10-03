@@ -5,9 +5,6 @@ import emu.grasscutter.data.binout.AbilityModifier.AbilityModifierAction;
 import emu.grasscutter.game.ability.Ability;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.props.FightProperty;
-import emu.grasscutter.net.proto.ChangHpReasonOuterClass.ChangHpReason;
-import emu.grasscutter.net.proto.PropChangeReasonOuterClass.PropChangeReason;
-import emu.grasscutter.server.packet.send.PacketEntityFightPropChangeReasonNotify;
 
 @AbilityAction(AbilityModifierAction.Type.LoseHP)
 public final class ActionLoseHP extends AbilityActionHandler {
@@ -66,7 +63,6 @@ public final class ActionLoseHP extends AbilityActionHandler {
 
         if (amountToLose <= 0) return true;
         target.damage(amountToLose);
-        target.getWorld().broadcastPacket(new PacketEntityFightPropChangeReasonNotify(target, FightProperty.FIGHT_PROP_CUR_HP, -amountToLose, PropChangeReason.PropChangeReason_PROP_CHANGE_ABILITY, ChangHpReason.ChangHpReason_CHANGE_HP_SUB_ABILITY));
         return true;
     }
 }

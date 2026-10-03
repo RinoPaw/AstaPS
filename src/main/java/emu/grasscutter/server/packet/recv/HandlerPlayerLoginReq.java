@@ -9,6 +9,7 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.player.StatueActivationProbe;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.born.BornDataHelper;
+import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.*;
 
@@ -49,19 +50,18 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         keepLegacyStarterStatueLocked(player);
 
         if (playerBornNow) {
-            player.getQuestManager().onPlayerBorn();
+            // Native 7.1 starts the fresh-player quest actor only after the first scene handshake.
+            // Skipping character selection/the native intro must preserve that ordering: starting
+            // 35104 here, before PostEnterSceneRsp, makes the client retain the born-page quest
+            // actor and then replay it when 35100 starts. It also advances Paimon's actor state
+            // before the playable scene is ready.
+            BornIntroGate.armForSceneReady(session);
         }
 
         // PlayerProgressManager's legacy compatibility path has already seeded/finished statue
         // state by this point. Restore every still-locked statue quest now, after point 7/area 1
         // cleanup, and push the corrected UNFINISHED state before gameplay starts.
         StatueActivationProbe.restoreLockedActivationQuests(player, true);
-
-        if (playerBornNow) {
-            session.send(new PacketFinishedParentQuestNotify(player));
-            session.send(new PacketQuestListNotify(player));
-            session.send(new PacketQuestGlobalVarNotify(player));
-        }
 
         session.send(new PacketPlayerLoginRsp(session));
     }

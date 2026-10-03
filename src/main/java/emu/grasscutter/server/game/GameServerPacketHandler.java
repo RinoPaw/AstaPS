@@ -7,7 +7,6 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Grasscutter.ServerDebugMode;
 import emu.grasscutter.game.systems.ReliquaryDustSystem;
 import emu.grasscutter.net.packet.*;
-import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.server.event.game.ReceivePacketEvent;
 import emu.grasscutter.server.game.GameSession.SessionState;
 import it.unimi.dsi.fastutil.ints.*;
@@ -156,10 +155,6 @@ public final class GameServerPacketHandler {
     }
 
     public void handle(GameSession session, int opcode, byte[] header, byte[] payload) {
-        // During the native fresh-player intro, log every inbound packet before handler lookup and
-        // before session-state filtering. This intentionally includes loop and unknown opcodes.
-        BornIntroGate.traceInbound(session, opcode, payload);
-
         PacketHandler handler = this.handlers.get(opcode);
 
         if (handler != null) {

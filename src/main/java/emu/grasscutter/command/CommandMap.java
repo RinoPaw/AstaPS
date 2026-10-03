@@ -201,24 +201,30 @@ public final class CommandMap {
     }
 
     private Player getTargetPlayer(
-            String playerId, Player player, Player targetPlayer, List<String> args) {
-        for (int i = 0; i < args.size(); i++) {
-            String arg = args.get(i);
-            if (arg.startsWith("@")) {
-                arg = args.remove(i).substring(1);
-                if (arg.isEmpty()) return null;
+            String playerId,
+            Player player,
+            Player targetPlayer,
+            List<String> args,
+            boolean inlineTarget) {
+        if (inlineTarget) {
+            for (int i = 0; i < args.size(); i++) {
+                String arg = args.get(i);
+                if (arg.startsWith("@")) {
+                    arg = args.remove(i).substring(1);
+                    if (arg.isEmpty()) return null;
 
-                int uid = getUidFromString(arg);
-                if (uid == INVALID_UID) {
-                    CommandHandler.sendTranslatedMessage(player, "commands.generic.invalid.uid");
-                    throw new IllegalArgumentException();
+                    int uid = getUidFromString(arg);
+                    if (uid == INVALID_UID) {
+                        CommandHandler.sendTranslatedMessage(player, "commands.generic.invalid.uid");
+                        throw new IllegalArgumentException();
+                    }
+                    targetPlayer = Grasscutter.getGameServer().getPlayerByUid(uid, true);
+                    if (targetPlayer == null) {
+                        CommandHandler.sendTranslatedMessage(player, "commands.execution.player_exist_error");
+                        throw new IllegalArgumentException();
+                    }
+                    return targetPlayer;
                 }
-                targetPlayer = Grasscutter.getGameServer().getPlayerByUid(uid, true);
-                if (targetPlayer == null) {
-                    CommandHandler.sendTranslatedMessage(player, "commands.execution.player_exist_error");
-                    throw new IllegalArgumentException();
-                }
-                return targetPlayer;
             }
         }
 
@@ -341,7 +347,9 @@ public final class CommandMap {
         }
 
         try {
-            targetPlayer = getTargetPlayer(playerId, player, targetPlayer, args);
+            targetPlayer =
+                    getTargetPlayer(
+                            playerId, player, targetPlayer, args, annotation.inlineTarget());
         } catch (IllegalArgumentException e) {
             return;
         }

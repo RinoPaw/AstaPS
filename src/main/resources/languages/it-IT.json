@@ -240,11 +240,30 @@
       "success": "Coordinate: %s, %s, %s\nRotazione:%s, %s, %s\nID scena: %a",
       "description": "Ottiene informazioni sulla posizione e sulla rotazione attuale del giocatore"
     },
+    "npc": {
+      "description": "Place an NPC model in front of you (no dialogue, does not move)",
+      "spawned": "Placed NPC %s in front of you.",
+      "cleared": "Removed %s NPCs placed by this command.",
+      "not_found": "NPC %s not found.",
+      "none_near": "No NPC within %s m.",
+      "group_sent": "Asked the client to load group %s suite %s; its NPCs appear where the script places them (you must be in that group's scene)."
+    },
+    "pierro": {
+      "description": "Toggle Il Pierro's support button from the Ronova fight",
+      "on": "Pierro's support button is on: his portrait appears on the team bar and strikes Ronova when pressed. It lasts until logout.",
+      "off": "Pierro's support button is off."
+    },
+    "support": {
+      "description": "Toggle team-bar support buttons: Il Pierro (pierro), Valeriy (valeriy), support blast (blast)",
+      "on": "Support button on: %s. It lasts until logout.",
+      "off": "Support button off: %s."
+    },
     "quest": {
       "added": "Missione %s aggiunta.",
       "finished": "Missione completata %s.",
       "not_found": "Missione non trovata.",
       "invalid_id": "ID missione non valido.",
+      "questing_off": "Questing is off, so an added quest would never reach the client. Set both gameOptions.questing.enabled and server.game.enableScriptInBigWorld to true in config.json and restart.",
       "description": "Aggiungi o completa missioni",
       "running": "Missione %s è %s (%s).",
       "talking": "Talk %s è %s per la missione principale %s (%s).",

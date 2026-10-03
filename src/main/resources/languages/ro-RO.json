@@ -240,11 +240,30 @@
       "success": "Coordonate: %s, %s, %s\nGravitează：%s, %s, %s\nScene ID: %s",
       "description": "Obține informații despre poziție și rotație"
     },
+    "npc": {
+      "description": "Place an NPC model in front of you (no dialogue, does not move)",
+      "spawned": "Placed NPC %s in front of you.",
+      "cleared": "Removed %s NPCs placed by this command.",
+      "not_found": "NPC %s not found.",
+      "none_near": "No NPC within %s m.",
+      "group_sent": "Asked the client to load group %s suite %s; its NPCs appear where the script places them (you must be in that group's scene)."
+    },
+    "pierro": {
+      "description": "Toggle Il Pierro's support button from the Ronova fight",
+      "on": "Pierro's support button is on: his portrait appears on the team bar and strikes Ronova when pressed. It lasts until logout.",
+      "off": "Pierro's support button is off."
+    },
+    "support": {
+      "description": "Toggle team-bar support buttons: Il Pierro (pierro), Valeriy (valeriy), support blast (blast)",
+      "on": "Support button on: %s. It lasts until logout.",
+      "off": "Support button off: %s."
+    },
     "quest": {
       "added": "Misiunea %s adăugată.",
       "finished": "Ați terminat misiunea %s.",
       "not_found": "Misiunea nu a fost găsită.",
       "invalid_id": "ID-ul misiunii nu a fost găsit.",
+      "questing_off": "Questing is off, so an added quest would never reach the client. Set both gameOptions.questing.enabled and server.game.enableScriptInBigWorld to true in config.json and restart.",
       "description": "Adaugă sau termină misiuni",
       "running": "🇺🇸Quest %s is %s (%s).",
       "talking": "🇺🇸Talk %s is %s for main quest %s (%s).",

@@ -408,6 +408,7 @@ public class AbilityModifier implements Serializable {
         public boolean useLimitRange;
 
         /** ChangePlayMode: e.g. {@code NyxState}, {@code Avatar_Chasca}. */
+        @SerializedName(value = "toPlayMode", alternate = "FPFLACICBBN")
         public String toPlayMode;
         /** ChangePlayMode enable/disable (onRemoved often clears nightsoul play mode). */
         @JsonAdapter(LenientBooleanAdapter.class)

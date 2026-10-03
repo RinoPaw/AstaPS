@@ -22,11 +22,15 @@ public class HandlerAddQuestContentProgressBatchReq extends PacketHandler {
 
         for (var info : req.getProgressInfoListList()) {
             var type = QuestContent.getContentTriggerByValue(info.getContentType());
-            if (info.getParam() >= 35200 && info.getParam() <= 35205) {
+            if (info.getParam() >= 35100 && info.getParam() <= 35205) {
                 emu.grasscutter.Grasscutter.getLogger()
                         .info(
-                                "[quest352] content-recv uid={} source=batch type={} param={} addProgress={}",
-                                session.getPlayer().getUid(), type, info.getParam(), info.getAddProgress());
+                                "[quest-progress-c2s] uid={} source=batch type={} contentType={} param={} addProgress={}",
+                                session.getPlayer().getUid(),
+                                type,
+                                info.getContentType(),
+                                info.getParam(),
+                                info.getAddProgress());
             }
             if (type != null) {
                 questManager.queueEvent(type, info.getParam());

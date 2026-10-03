@@ -388,6 +388,8 @@ public class AbilityModifier implements Serializable {
         public String abilityName;
         public String globalValueKey;
         public String abilityFormula;
+        @SerializedName(value = "fightPropSourceTarget", alternate = "NKJNADEMKOG")
+        public String fightPropSourceTarget;
         public String srcTarget, dstTarget;
         public String srcKey, dstKey;
         @SerializedName(value = "targetPredicates", alternate = "KNABHPHLAAB")

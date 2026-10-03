@@ -326,10 +326,14 @@ public final class PredicateEvaluator {
         if (!(typesObj instanceof List<?> types) || types.isEmpty()) return true;
 
         String actual = target.getEntityType().name();
+        boolean matches = false;
         for (Object type : types) {
-            if (type instanceof String expected && actual.equals(expected)) return true;
+            if (type instanceof String expected && actual.equals(expected)) {
+                matches = true;
+                break;
+            }
         }
-        return false;
+        return Boolean.TRUE.equals(pred.get("reject")) ? !matches : matches;
     }
 
     private static boolean byAvatarWeaponType(Map<String, Object> pred, GameEntity target) {

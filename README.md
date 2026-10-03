@@ -34,6 +34,12 @@ If you can fix a bug, please help me.
 
 On Windows use `.\gradlew.bat`, or run `gradlew-jar.bat`.
 
+## Development
+
+Read [`AGENTS.md`](AGENTS.md) before making maintenance changes.
+
+Reverse-engineering work has an additional workflow contract in [`docs/reverse-workflow.md`](docs/reverse-workflow.md). Before starting an investigation, search the existing `Genshin-Reverse` evidence and history so previous experience, rejected candidates, and known dead ends are not repeated. Save meaningful progress as small checkpoints, and leave unfinished work in a resumable state with the evidence and next step recorded. Important progress should never exist only in chat history, terminal scrollback, or an untracked local file.
+
 ## Running
 
 1. Start MongoDB.

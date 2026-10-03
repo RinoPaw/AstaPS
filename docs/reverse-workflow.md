@@ -7,10 +7,11 @@ This document defines the working discipline for reverse-engineering tasks that 
 Do not begin from a blank slate.
 
 1. Read `AGENTS.md`, this document, and the relevant file under `docs/architecture/`.
-2. Search `RinoPaw/Genshin-Reverse` for the same feature, packet, symbol, CmdId, field, or subsystem.
-3. Read the relevant history, not only the latest file. Check recent commits and previous rejected/candidate conclusions so old dead ends are not repeated.
-4. Search AstaPS history and comparable projects when they can provide implementation context.
-5. Write down the exact target before probing: client version, platform, subsystem, and the question being answered.
+2. Check `docs/reverse-status.md` for completed, verified, integrated, paused, and bounded follow-up work.
+3. Search `RinoPaw/Genshin-Reverse` for the same feature, packet, symbol, CmdId, field, or subsystem.
+4. Read the relevant history, not only the latest file. Check recent commits and previous rejected/candidate conclusions so old dead ends are not repeated.
+5. Search AstaPS history and comparable projects when they can provide implementation context.
+6. Write down the exact target before probing: client version, platform, subsystem, and the question being answered.
 
 Existing experience is part of the evidence base. Repeating an already documented experiment without a reason wastes time and makes conflicting conclusions more likely.
 
@@ -82,6 +83,14 @@ AstaPS should consume reverse-engineering results only after the relevant eviden
 For non-obvious protocol or client-behavior dependencies, leave a compact pointer in the commit, code comment, or architecture note to the relevant `Genshin-Reverse` artifact or commit. Do not copy large reverse dumps into the server repository.
 
 Keep the server-side change focused. Reverse findings and server implementation may advance at different speeds; an unresolved reverse question should remain explicit instead of being hidden behind guessed constants or broad fallbacks.
+
+## Track completed outcomes
+
+When an investigation becomes reusable, update `docs/reverse-status.md`. This is especially important for work that is **COMPLETED**, **VERIFIED**, **INTEGRATED**, deliberately **PAUSED**, or replaced by a newer result.
+
+The status page is an index, not a second evidence store. Record the topic, state, durable artifact, integration commit when one exists, and the bounded remaining work. Keep detailed proof and chronology in `Genshin-Reverse`.
+
+A completed result that cannot be discovered by the next researcher is only partially maintained.
 
 ## Handoff standard
 

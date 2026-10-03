@@ -23,11 +23,12 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
         var player = session.getPlayer();
         var scene = player.getScene();
         var questManager = player.getQuestManager();
-        var freshBorn = BornIntroGate.isAwaiting(session);
+        var freshPlayerBootstrap = BornIntroGate.isFreshPlayerBootstrap(session);
 
-        // The fresh-born quest actor must see the post-enter-scene acknowledgement before its first
-        // QuestListUpdateNotify. Keep the established ordering for ordinary scene entries.
-        if (freshBorn) {
+        // Native-selection and automatic/skip-intro births converge here. The first
+        // PostEnterSceneRsp must reach the client before Quest 351's incremental start so AQ351 and
+        // Paimon's quest actors initialize against a ready playable scene.
+        if (freshPlayerBootstrap) {
             session.send(new PacketPostEnterSceneRsp(player));
             BornIntroGate.finishOnSceneReady(session);
         }
@@ -46,7 +47,7 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
         }
         questManager.queueEvent(QuestContent.QUEST_CONTENT_LEAVE_SCENE, scene.getPrevScene());
 
-        if (!freshBorn) {
+        if (!freshPlayerBootstrap) {
             session.send(new PacketPostEnterSceneRsp(player));
         }
 
@@ -61,7 +62,7 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
 
         // Fresh 7.1 starts the opening from AQ351/35104. A configured legacy first-login cutscene
         // here would create a second independent source for the same intro after quest bootstrap.
-        if (!freshBorn) {
+        if (!freshPlayerBootstrap) {
             this.playOpeningCutscene(player);
         }
     }

@@ -341,25 +341,26 @@ public class AbilityModifier implements Serializable {
 
         @SerializedName(
                 value = "amountByCasterMaxHPRatio",
-                alternate = {"PKPBLCNMPIG", "HFNJHOGGFKB", "GEJGGCIOLKN", "MEEACMKOLJF", "OLMENJCGGJJ","EJGDELKANMO", "ECOAIFKENNM"})
+                alternate = {"PKPBLCNMPIG", "HFNJHOGGFKB", "GEJGGCIOLKN", "MEEACMKOLJF", "OLMENJCGGJJ","EJGDELKANMO", "ECOAIFKENNM", "GJBFAJMJFOP"})
         public DynamicFloat amountByCasterMaxHPRatio = DynamicFloat.ZERO;
 
         public DynamicFloat amountByGetDamage = DynamicFloat.ZERO;
 
         public DynamicFloat amountByCasterDefRatio = DynamicFloat.ZERO;
 
-        @SerializedName(value = "amountByTargetCurrentHPRatio")
+        @SerializedName(value = "amountByTargetCurrentHPRatio", alternate = "BJEKIJMNDAA")
         public DynamicFloat amountByTargetCurrentHPRatio = DynamicFloat.ZERO;
 
         @SerializedName(value = "amountByTargetMaxHPRatio", alternate = {"GGLMMJHNGMO", "FPOCDLCHDPE"})
         public DynamicFloat amountByTargetMaxHPRatio = DynamicFloat.ZERO;
 
+        @SerializedName(value = "limboByTargetMaxHPRatio", alternate = "KHFHMJCMOHH")
         public DynamicFloat limboByTargetMaxHPRatio = DynamicFloat.ZERO;
 
         public DynamicFloat healRatio = DynamicFloat.ONE;
         public DynamicFloat speed = DynamicFloat.ONE;
 
-        @SerializedName(value = "ignoreAbilityProperty", alternate = "HHFGADCJJDI")
+        @SerializedName(value = "ignoreAbilityProperty", alternate = {"HHFGADCJJDI", "BPFPAELLNIL"})
         public boolean ignoreAbilityProperty;
 
         public String modifierName;
@@ -381,6 +382,7 @@ public class AbilityModifier implements Serializable {
         public GadgetInfo gadgetInfo;
 
         public boolean isFromOwner;
+        @SerializedName(value = "healTag", alternate = "FFNEJGGNAFF")
         public String healTag;
         public String key;
         public String abilityName;

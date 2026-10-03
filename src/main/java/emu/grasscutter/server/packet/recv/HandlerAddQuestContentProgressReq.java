@@ -15,6 +15,12 @@ public class HandlerAddQuestContentProgressReq extends PacketHandler {
 
         // Find all conditions in quest that are the same as the given one
         var type = QuestContent.getContentTriggerByValue(req.getContentType());
+        if (req.getParam() >= 35200 && req.getParam() <= 35205) {
+            emu.grasscutter.Grasscutter.getLogger()
+                    .info(
+                            "[quest352] content-recv uid={} source=single type={} param={} addProgress={}",
+                            session.getPlayer().getUid(), type, req.getParam(), req.getAddProgress());
+        }
         if (type != null) {
             questManager.queueEvent(type, req.getParam());
         }

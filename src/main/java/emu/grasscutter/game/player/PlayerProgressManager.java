@@ -317,17 +317,21 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                 }
             }
 
-            // Starter-statue talk (NPC 1201 / talk 31141) also needs quest 35205 finished.
-            var q = this.player.getQuestManager().getQuestById(35205);
-            if (q == null) {
-                this.player.getQuestManager().addQuest(35205);
-                q = this.player.getQuestManager().getQuestById(35205);
-            }
-            if (q != null && q.getState() != QuestState.QUEST_STATE_FINISHED) {
-                q.setState(QuestState.QUEST_STATE_FINISHED);
-                q.setFinishTime(emu.grasscutter.utils.Utils.getCurrentSeconds());
-                q.save();
-                finished++;
+            // Starter-statue talk (NPC 1201 / talk 31141) needs 35205 finished in sandbox mode.
+            // With questing enabled this is the final step of main quest 352: pre-finishing it
+            // creates a parent whose opening is UNSTARTED and blocks the handoff from 351.
+            if (!GAME_OPTIONS.questing.enabled) {
+                var q = this.player.getQuestManager().getQuestById(35205);
+                if (q == null) {
+                    this.player.getQuestManager().addQuest(35205);
+                    q = this.player.getQuestManager().getQuestById(35205);
+                }
+                if (q != null && q.getState() != QuestState.QUEST_STATE_FINISHED) {
+                    q.setState(QuestState.QUEST_STATE_FINISHED);
+                    q.setFinishTime(emu.grasscutter.utils.Utils.getCurrentSeconds());
+                    q.save();
+                    finished++;
+                }
             }
 
             // Forge EVERY area Talk gate - locked pillars auto-unlock on EnterTrans; F tip ready.

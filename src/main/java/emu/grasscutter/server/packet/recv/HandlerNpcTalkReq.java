@@ -18,7 +18,15 @@ public class HandlerNpcTalkReq extends PacketHandler {
         // the Talk event so GameQuest.finish() can execute the official unlock point/area actions.
         StatueUnlockQuestBridge.prepareForTalk(player, req.getTalkId());
 
-        player.getTalkManager().triggerTalkAction(req.getTalkId(), req.getEntityId());
+        int npcEntityId = req.getNpcEntityId() != 0 ? req.getNpcEntityId() : req.getEntityId();
+        if (req.getTalkId() == 35216) {
+            emu.grasscutter.Grasscutter.getLogger()
+                    .info(
+                            "[quest352] talk-recv uid={} talk={} npcEntity={} entity={}",
+                            player.getUid(), req.getTalkId(),
+                            req.getNpcEntityId(), req.getEntityId());
+        }
+        player.getTalkManager().triggerTalkAction(req.getTalkId(), npcEntityId);
         session.send(new PacketNpcTalkRsp(req.getNpcEntityId(), req.getTalkId(), req.getEntityId()));
     }
 }

@@ -708,6 +708,15 @@ public final class ResourceLoader {
 
         Grasscutter.getLogger()
                 .debug("Loaded " + GameData.getMainQuestDataMap().size() + " MainQuestDatas.");
+        var parent351 = GameData.getMainQuestDataMap().get(351);
+        var end351 = GameData.getQuestDataMap().get(35102);
+        var opening352 = GameData.getQuestDataMap().get(35200);
+        Grasscutter.getLogger().info(
+                "[quest351] resources excel={} main351Loaded={} finishParent35102={} next={} accept35200={}",
+                FileUtils.getExcelPath("QuestExcelConfigData.json"), parent351 != null,
+                end351 != null && end351.isFinishParent(),
+                parent351 != null ? Arrays.toString(parent351.getSuggestTrackMainQuestList()) : null,
+                opening352 != null ? opening352.getAcceptCond() : null);
     }
 
     public static void loadScriptSceneData() {

@@ -254,7 +254,7 @@ public final class QuestManager extends BasePlayerManager {
      * 0, which no player can finish. Such a main quest has to be started by hand, from the quest
      * that suggests it next.
      */
-    private static boolean opensUnlinked(int mainQuestId) {
+    static boolean opensUnlinked(int mainQuestId) {
         var mainQuestData = GameData.getMainQuestDataMap().get(mainQuestId);
         if (mainQuestData == null || mainQuestData.getSubQuests() == null) return false;
 
@@ -263,21 +263,58 @@ public final class QuestManager extends BasePlayerManager {
                         .min(Comparator.comparingInt(MainQuestData.SubQuestData::getOrder))
                         .map(sub -> GameData.getQuestDataMap().get(sub.getSubId()))
                         .orElse(null);
-        if (first == null || first.getAcceptCond().size() != 1) return false;
+        if (first == null || first.getAcceptCond() == null || first.getAcceptCond().size() != 1)
+            return false;
 
         var cond = first.getAcceptCond().get(0);
         return cond.getType() == QuestCond.QUEST_COND_STATE_EQUAL
                 && cond.getParam() != null
-                && cond.getParam().length > 0
-                && cond.getParam()[0] == 0;
+                && cond.getParam().length >= 2
+                && cond.getParam()[0] == 0
+                && cond.getParam()[1] == QuestState.QUEST_STATE_FINISHED.getValue();
+    }
+
+    boolean canStartMainQuestIfUnlinked(int mainQuestId) {
+        if (!opensUnlinked(mainQuestId)) return false;
+        var existing = this.getMainQuestById(mainQuestId);
+        if (existing == null) return true;
+        if (existing.isFinished()
+                || existing.getState() == ParentQuestState.PARENT_QUEST_STATE_FINISHED) return false;
+        // A saved parent alone does not mean the questline started. Do not reset any child that
+        // actually began, including a failed child or a later step in an older save.
+        return existing.getChildQuests().values().stream()
+                .allMatch(q -> q.getState() == QuestState.QUEST_STATE_UNSTARTED);
     }
 
     /** Starts a main quest whose opening can never be met on its own, unless it already began. */
     public void startMainQuestIfUnlinked(int mainQuestId) {
-        if (this.getMainQuestById(mainQuestId) != null || !opensUnlinked(mainQuestId)) return;
-
+        if (!canStartMainQuestIfUnlinked(mainQuestId)) {
+            Grasscutter.getLogger().debug(
+                    "Main quest handoff skipped: uid={} next={} unlinked={} parentExists={}",
+                    player.getUid(), mainQuestId, opensUnlinked(mainQuestId),
+                    this.getMainQuestById(mainQuestId) != null);
+            return;
+        }
         Grasscutter.getLogger().debug("Starting main quest {} for uid {}", mainQuestId, player.getUid());
         this.startMainQuest(mainQuestId);
+    }
+
+    void resumeMainQuestHandoffs() {
+        // Starting a successor adds to mainQuests. Snapshot before visiting the finished parents.
+        // Never call finish() again: recovery must not grant the parent's rewards a second time.
+        this.getMainQuests().values().stream()
+                .filter(q -> q.isFinished()
+                        || q.getState() == ParentQuestState.PARENT_QUEST_STATE_FINISHED)
+                .toList()
+                .forEach(q -> {
+                    try {
+                        q.tryStartFollowingQuests();
+                    } catch (RuntimeException e) {
+                        Grasscutter.getLogger().error(
+                                "Could not resume main quest handoff: uid={} main={}",
+                                player.getUid(), q.getParentQuestId(), e);
+                    }
+                });
     }
 
     public void onLogin() {
@@ -304,6 +341,9 @@ public final class QuestManager extends BasePlayerManager {
             }
             quest.checkProgress();
         }
+
+        // Rewind existing quests first, so a newly handed-off opening is not immediately restarted.
+        if (isQuestingActive()) this.resumeMainQuestHandoffs();
 
         if (this.player.getActivityManager() != null)
             this.player.getActivityManager().triggerActivityConditions();

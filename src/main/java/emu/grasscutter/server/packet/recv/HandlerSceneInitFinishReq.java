@@ -24,14 +24,6 @@ public class HandlerSceneInitFinishReq extends PacketHandler {
 
         var player = session.getPlayer();
         var world = player.getWorld();
-        Grasscutter.getLogger()
-                .info(
-                        "[intro-handshake] SceneInitFinishReq uid={} state={} loadState={} token={} len={}",
-                        player.getUid(),
-                        session.getState(),
-                        player.getSceneLoadState(),
-                        player.getEnterSceneToken(),
-                        payload == null ? 0 : payload.length);
 
         try {
             WatermarkGradientHelper.setCurrentPlayer(player);

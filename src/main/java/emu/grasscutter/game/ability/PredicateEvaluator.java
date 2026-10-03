@@ -44,6 +44,8 @@ public final class PredicateEvaluator {
             case "ByHasModifier"       -> byHasModifier(pred, ability, resolved);
             case "ByTargetGlobalValue" -> byTargetGlobalValue(pred, ability, resolved);
             case "ByTargetHPRatio"     -> byTargetHPRatio(pred, ability, resolved);
+            case "ByNot"               -> byNot(pred, ability, owner, target, action);
+            case "ByAny"               -> byAny(pred, ability, owner, target, action);
             default -> true;
         };
     }
@@ -54,8 +56,64 @@ public final class PredicateEvaluator {
             case "EOFDCELPGFO" -> "ByTargetGlobalValue";
             case "HGKCHJOOMCH" -> "ByTargetHPRatio";
             case "LCCNMKNDACG" -> "ByUnlockTalentParam";
+            case "GKGBIPDLMMG" -> "ByNot";
+            case "GPEMEIHPCCF" -> "ByAny";
             default -> type;
         };
+    }
+
+    private static boolean byNot(Map<String, Object> pred, Ability ability, GameEntity owner,
+                                 GameEntity target, AbilityModifierAction action) {
+        List<Map<String, Object>> nested = supportedNestedPredicates(pred.get("predicates"));
+        if (nested == null) return true;
+        return !all(nested, ability, owner, target, action);
+    }
+
+    private static boolean byAny(Map<String, Object> pred, Ability ability, GameEntity owner,
+                                 GameEntity target, AbilityModifierAction action) {
+        List<Map<String, Object>> nested = supportedNestedPredicates(pred.get("predicates"));
+        if (nested == null) return true;
+        for (var child : nested) {
+            if (evaluate(child, ability, owner, target, action)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns nested predicates only when every child is one we can evaluate. A partially supported
+     * logical expression is left permissive, matching the evaluator's historical unknown-predicate
+     * behavior instead of turning an unknown child into a false gate.
+     */
+    private static List<Map<String, Object>> supportedNestedPredicates(Object value) {
+        if (!(value instanceof List<?> raw) || raw.isEmpty()) return null;
+        var result = new ArrayList<Map<String, Object>>(raw.size());
+        for (Object item : raw) {
+            Map<String, Object> child = predicateMap(item);
+            if (child == null || !isSupportedPredicate(child)) return null;
+            result.add(child);
+        }
+        return result;
+    }
+
+    private static boolean isSupportedPredicate(Map<String, Object> pred) {
+        Object typeObj = pred.get("$type");
+        if (!(typeObj instanceof String rawType)) return false;
+        String type = normalizeType(rawType);
+        return switch (type) {
+            case "BJJDEAIEIGP", "ByUnlockTalentParam", "ByHasModifier",
+                    "ByTargetGlobalValue", "ByTargetHPRatio" -> true;
+            case "ByNot", "ByAny" -> supportedNestedPredicates(pred.get("predicates")) != null;
+            default -> false;
+        };
+    }
+
+    private static Map<String, Object> predicateMap(Object value) {
+        if (!(value instanceof Map<?, ?> raw)) return null;
+        var result = new java.util.HashMap<String, Object>();
+        for (var entry : raw.entrySet()) {
+            if (entry.getKey() instanceof String key) result.put(key, entry.getValue());
+        }
+        return result;
     }
 
     private static GameEntity resolveTalentParamTarget(Map<String, Object> pred, Ability ability,

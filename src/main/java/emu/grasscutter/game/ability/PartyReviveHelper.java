@@ -198,6 +198,11 @@ public final class PartyReviveHelper {
         return revived;
     }
 
+    /** Uses the same authoritative revive/sync path for actions that explicitly target one avatar. */
+    public static float reviveTarget(EntityAvatar entity, float ratio) {
+        return applyRevive(entity, ratio);
+    }
+
     /** Restore HP + life-state packets the client needs to show a fallen avatar as alive again. */
     private static float applyRevive(EntityAvatar entity, float ratio) {
         // reviveToRatio is on EntityAvatar so it can clear the protected dead flag.

@@ -26,7 +26,7 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         Player player = session.getPlayer();
         var intro = GAME_OPTIONS.newAccountIntro;
         boolean freshAccount = player.getAvatars().getAvatarCount() == 0;
-        boolean skipIntro = skipNewAccountIntro();
+        boolean skipIntro = freshAccount && intro.skip;
 
         if (freshAccount && intro.enabled && !skipIntro) {
             session.setState(SessionState.PICKING_CHARACTER);
@@ -75,14 +75,6 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         }
 
         session.send(new PacketPlayerLoginRsp(session));
-    }
-
-    private static boolean skipNewAccountIntro() {
-        String value = System.getProperty("astaps.skipNewAccountIntro");
-        if (value == null || value.isBlank()) {
-            value = System.getenv("ASTAPS_SKIP_NEW_ACCOUNT_INTRO");
-        }
-        return value != null && Boolean.parseBoolean(value.trim());
     }
 
     private static void keepLegacyStarterStatueLocked(Player player) {

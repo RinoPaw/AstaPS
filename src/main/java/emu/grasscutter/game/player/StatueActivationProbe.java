@@ -19,8 +19,9 @@ public final class StatueActivationProbe {
 
     /**
      * Undo the legacy login path which marks statue activation quests FINISHED even while their
-     * points remain locked. Run after login seeding/cleanup so server and client both see the real
-     * pre-activation state before the player starts interacting with statues.
+     * points remain locked. The starter point is intentionally treated as locked on this branch
+     * even during the early login snapshot, because HandlerPlayerLoginReq removes its legacy seed
+     * immediately after Player.onLogin returns.
      */
     public static int restoreLockedActivationQuests(Player player, boolean sendToClient) {
         if (player == null) return 0;
@@ -35,8 +36,10 @@ public final class StatueActivationProbe {
             var pointData = entry.getPointData();
             if (!StatueTalkQuests.isStatuePoint(pointData)) continue;
 
+            boolean starter = pointId == STARTER_POINT;
             boolean locked =
-                    player.isScenePointForceLocked(STARTER_SCENE, pointId)
+                    starter
+                            || player.isScenePointForceLocked(STARTER_SCENE, pointId)
                             || !player.getUnlockedScenePoints(STARTER_SCENE).contains(pointId);
             if (!locked) continue;
 

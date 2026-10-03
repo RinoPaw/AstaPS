@@ -71,6 +71,11 @@ public class QuestData extends GameResource {
     }
 
     private void applyKnownResourceFixups() {
+        this.fixQuest35101Prerequisite();
+        this.restoreEarlyMondstadtParallelPrerequisites();
+    }
+
+    private void fixQuest35101Prerequisite() {
         // In the affected 7.1 resource conversion, 35101 is incorrectly serialized behind
         // 35107. Both sibling subquests should become available when 35100 finishes.
         if (this.mainId != 351
@@ -96,6 +101,41 @@ public class QuestData extends GameResource {
         Grasscutter.getLogger()
                 .debug(
                         "Corrected quest 35101 prerequisite: 35107 FINISHED -> 35100 FINISHED");
+    }
+
+    private void restoreEarlyMondstadtParallelPrerequisites() {
+        // The 7.1 conversion lost the cross-main-quest edge after 35311. The visible successor
+        // 355 and its hidden companion quests all wait on 35311 in the original quest data; when
+        // the edge is missing they are serialized as "quest 0 finished" and can never open on
+        // their own. 361 is especially important: 35501 finishes only after plot 36101, so losing
+        // 361 leaves the player walking toward Mondstadt with the Dvalin encounter never starting.
+        int expectedPredecessor =
+                switch (this.subId) {
+                    case 35501, 36100, 41801, 42301 -> 35311;
+                    default -> 0;
+                };
+        if (expectedPredecessor == 0 || this.acceptCond == null || this.acceptCond.size() != 1) {
+            return;
+        }
+
+        var condition = this.acceptCond.get(0);
+        var params = condition.getParam();
+        if (condition.getType() != QuestCond.QUEST_COND_STATE_EQUAL
+                || params == null
+                || params.length < 2
+                || params[0] != 0
+                || params[1] != QuestState.QUEST_STATE_FINISHED.getValue()) {
+            return;
+        }
+
+        var correctedParams = params.clone();
+        correctedParams[0] = expectedPredecessor;
+        condition.setParam(correctedParams);
+        Grasscutter.getLogger()
+                .debug(
+                        "Restored quest {} prerequisite: quest 0 FINISHED -> {} FINISHED",
+                        this.subId,
+                        expectedPredecessor);
     }
 
     public void applyFrom(MainQuestData.SubQuestData additionalData) {

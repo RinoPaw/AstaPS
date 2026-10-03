@@ -6,6 +6,7 @@ import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.CommandHelpers;
 import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.Position;
 import emu.grasscutter.server.event.player.PlayerTeleportEvent.TeleportType;
@@ -16,7 +17,7 @@ import picocli.CommandLine.Parameters;
 public final class TeleportCommand implements PicocliCommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
-        var commandLine = new CommandLine(new Root(sender));
+        var commandLine = new CommandLine(new Root(sender, targetPlayer));
         commandLine.addSubcommand("pos", new PositionTeleport(sender, targetPlayer));
         commandLine.addSubcommand("scene", new SceneTeleport(sender, targetPlayer));
         commandLine.addSubcommand("all", new TeleportAll(sender, targetPlayer));
@@ -26,15 +27,77 @@ public final class TeleportCommand implements PicocliCommandHandler {
     @CommandLine.Command(name = "teleport")
     private final class Root implements Runnable {
         private final Player sender;
+        private final Player targetPlayer;
 
-        private Root(Player sender) {
+        @Parameters(index = "0", arity = "0..1", paramLabel = "[pointId]")
+        private Integer pointId;
+
+        @Parameters(index = "1", arity = "0..1", paramLabel = "[sceneId]")
+        private Integer sceneId;
+
+        private Root(Player sender, Player targetPlayer) {
             this.sender = sender;
+            this.targetPlayer = targetPlayer;
         }
 
         @Override
         public void run() {
-            TeleportCommand.this.sendUsageMessage(sender);
+            if (pointId == null) {
+                TeleportCommand.this.sendUsageMessage(sender);
+                return;
+            }
+            teleportToScenePoint(sender, targetPlayer, pointId, sceneId);
         }
+    }
+
+    private static void teleportToScenePoint(
+            Player sender, Player targetPlayer, int pointId, Integer requestedSceneId) {
+        if (!hasPermission(sender, targetPlayer, "player.teleport", "player.teleport.others")) return;
+
+        int sceneId = requestedSceneId == null ? targetPlayer.getSceneId() : requestedSceneId;
+        var entry = GameData.getScenePointEntryById(sceneId, pointId);
+        if (entry == null || entry.getPointData() == null) {
+            CommandHandler.sendMessage(
+                    sender, "Scene point " + sceneId + ":" + pointId + " does not exist.");
+            return;
+        }
+
+        var point = entry.getPointData();
+        Position sourcePos = point.getTranPos() != null ? point.getTranPos() : point.getPos();
+        if (sourcePos == null) {
+            CommandHandler.sendMessage(
+                    sender, "Scene point " + sceneId + ":" + pointId + " has no position.");
+            return;
+        }
+
+        // Command teleport intentionally ignores unlockedScenePoints and forceLockedScenePoints.
+        // This is required for testing locked waypoints/statues without mutating their unlock state.
+        Position destination = new Position(sourcePos);
+        Position pointRot = point.getTranRot() != null ? point.getTranRot() : point.getRot();
+        if (pointRot != null) {
+            targetPlayer.getRotation().set(pointRot);
+        }
+
+        boolean transferred =
+                targetPlayer
+                        .getWorld()
+                        .transferPlayerToScene(
+                                targetPlayer, sceneId, TeleportType.COMMAND, destination);
+        if (!transferred) {
+            CommandHandler.sendMessage(
+                    sender, "Failed to teleport to scene point " + sceneId + ":" + pointId + ".");
+            return;
+        }
+
+        CommandHandler.sendMessage(
+                sender,
+                "Teleported "
+                        + targetPlayer.getNickname()
+                        + " to scene point "
+                        + sceneId
+                        + ":"
+                        + pointId
+                        + ".");
     }
 
     @CommandLine.Command(name = "pos")

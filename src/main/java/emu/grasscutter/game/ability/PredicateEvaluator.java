@@ -28,7 +28,8 @@ public final class PredicateEvaluator {
     public static boolean evaluate(Map<String, Object> pred, Ability ability,
                                     GameEntity owner, GameEntity target, AbilityModifierAction action) {
         Object typeObj = pred.get("$type");
-        if (!(typeObj instanceof String type)) return true;
+        if (!(typeObj instanceof String rawType)) return true;
+        String type = normalizeType(rawType);
         GameEntity resolved = resolveTarget(pred, ability, owner, target);
         if ("BJJDEAIEIGP".equals(type)) {
             GameEntity caster = ability != null ? ability.getCasterEntity() : null;
@@ -40,10 +41,20 @@ public final class PredicateEvaluator {
             return byUnlockTalentParam(pred, talentTarget);
         }
         return switch (type) {
-            case "ByHasModifier"      -> byHasModifier(pred, ability, resolved);
+            case "ByHasModifier"       -> byHasModifier(pred, ability, resolved);
             case "ByTargetGlobalValue" -> byTargetGlobalValue(pred, ability, resolved);
-            case "ByTargetHPRatio"    -> byTargetHPRatio(pred, ability, resolved);
+            case "ByTargetHPRatio"     -> byTargetHPRatio(pred, ability, resolved);
             default -> true;
+        };
+    }
+
+    private static String normalizeType(String type) {
+        return switch (type) {
+            case "LJBLAFGJKGI" -> "ByHasModifier";
+            case "EOFDCELPGFO" -> "ByTargetGlobalValue";
+            case "HGKCHJOOMCH" -> "ByTargetHPRatio";
+            case "LCCNMKNDACG" -> "ByUnlockTalentParam";
+            default -> type;
         };
     }
 
@@ -179,7 +190,8 @@ public final class PredicateEvaluator {
         if (current == 0f && valueEntity != target) {
             current = target.getGlobalAbilityValues().getOrDefault(k, 0f);
         }
-        float bound = readFloat(pred.get("value"), ability);
+        Object boundValue = pred.containsKey("value") ? pred.get("value") : pred.get("CBOMLBFIPJM");
+        float bound = readFloat(boundValue, ability);
         Object cmpObj = pred.get("compareType");
         String cmp = cmpObj instanceof String s ? s : "Equal";
         return switch (cmp) {
@@ -194,7 +206,7 @@ public final class PredicateEvaluator {
 
     private static boolean byTargetHPRatio(Map<String, Object> pred, Ability ability, GameEntity target) {
         if (target == null || ability == null) return true;
-        Object hpRatio = pred.get("HPRatio");
+        Object hpRatio = pred.containsKey("HPRatio") ? pred.get("HPRatio") : pred.get("KIKIBABLEMA");
         float threshold;
         if (hpRatio instanceof String key) {
             threshold = ability.getAbilitySpecials().getOrDefault(key, 0f);

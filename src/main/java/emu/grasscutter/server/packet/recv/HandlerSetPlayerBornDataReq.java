@@ -74,11 +74,13 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             team.add(avatarId);
             player.save();
 
-            session.send(new PacketSetPlayerBornDataRsp());
-            session.send(new PacketPlayerNicknameNotify(req.getNickName()));
-            // Keep the native 7.1 intro gate, but publish the selected traveler before that intro
-            // consumes player state. Full onLogin() remains delayed until the native pause cutover.
+            // Publish the selected traveler before acknowledging character creation. The 7.1 client
+            // starts its native black-screen intro from the born-data response; matching Luna's
+            // pre-response login ordering keeps traveler-dependent text and voice selection available
+            // when that intro is initialized, while the full world login remains gated below.
             session.send(new PacketAvatarDataNotify(player));
+            session.send(new PacketPlayerNicknameNotify(req.getNickName()));
+            session.send(new PacketSetPlayerBornDataRsp());
 
             // 7.1 keeps the native second intro client-side after accepting 26105. Keep the session
             // ACTIVE, but do not establish World/Scene until the second observed false->true pause

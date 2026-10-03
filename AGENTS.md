@@ -29,6 +29,14 @@ For a concrete bug or missing feature:
 
 Prefer direct commits for focused maintenance changes in this fork. Use a PR when review, discussion or a multi-commit series materially helps.
 
+## Repository cleanliness
+
+Keep one maintained implementation, one normal entry point and one current source of truth for each behavior. Git history is the rollback archive; do not keep superseded code, scripts, workflows or configuration in the working tree merely as `legacy`, `old`, `deprecated`, `backup` or `workaround` variants.
+
+When a replacement is accepted, remove the superseded path in the same change unless the currently supported 7.1 runtime still depends on it. Temporary compatibility shims are allowed only for a concrete current dependency; keep them narrow and record why they exist and the condition that allows their removal.
+
+Preserve historical research in `Genshin-Reverse`, commit history and `docs/reverse-status.md`, not as dead executable code. Periodically remove retired probes, duplicate helpers, stale documentation and one-off CI workflows after their useful method or evidence has been promoted.
+
 ## Reverse-engineering work discipline
 
 Before starting reverse-engineering work, read `docs/reverse-workflow.md` and search the relevant `Genshin-Reverse` files and history. Check previous candidates, rejected conclusions, notes, scripts and commits before repeating an experiment.

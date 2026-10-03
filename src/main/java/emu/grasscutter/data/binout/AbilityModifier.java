@@ -90,6 +90,9 @@ public class AbilityModifier implements Serializable {
             AddClimateMeter,
             AddElementDurability,
             AddHPDebts,
+            // 7.1 renamed these three; they carry Mavuika's Fighting Spirit, Skirk's Serpent's
+            // Subtlety and every Nightsoul point, so under the old names alone none of them ran.
+            @SerializedName(value = "AddSpecialEnergy", alternate = "ReviveSpecialEnergy")
             AddSpecialEnergy,
             GetHPPaidDebts,
             ChangePhlogiston,
@@ -138,7 +141,9 @@ public class AbilityModifier implements Serializable {
             CreateTile,
             DamageByAttackValue,
             DebugLog,
+            @SerializedName(value = "NyxSet", alternate = "SetNyxValue")
             NyxSet,
+            @SerializedName(value = "NyxAdd", alternate = "AddNyxValue")
             NyxAdd,
             DestroyTile,
             DoBlink,

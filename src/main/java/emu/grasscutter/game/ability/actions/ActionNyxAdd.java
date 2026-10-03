@@ -32,7 +32,7 @@ public final class ActionNyxAdd extends AbilityActionHandler {
                     }
                 });
 
-        float amount = action.ratio != null ? action.ratio.get(properties, 0.0f) : 0.0f;
+        float amount = action.writtenValue().get(properties, 0.0f);
         if (amount > 0.5f && SkirkCunningHelper.isSkirk(entity)) {
             SkirkCunningHelper.syncNyxFromSpecial(entity);
             return true;

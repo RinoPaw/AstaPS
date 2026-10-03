@@ -6,6 +6,7 @@ package emu.grasscutter.game.ability.mixins;
 import com.google.protobuf.ByteString;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.binout.AbilityMixinData;
+import emu.grasscutter.data.common.DynamicFloat;
 import emu.grasscutter.game.ability.Ability;
 import emu.grasscutter.game.ability.MavuikaSpiritHelper;
 import emu.grasscutter.game.ability.mixins.AbilityMixin;
@@ -47,6 +48,14 @@ extends AbilityMixinHandler {
         float f2 = 0.0f;
         if (abilityMixinData.speed != null && (f2 = abilityMixinData.speed.get(object2FloatOpenHashMap, 0.0f)) == 0.0f) {
             f2 = abilityMixinData.speed.get(ability, 0.0f);
+        }
+        if (f2 == 0.0f && abilityMixinData.value != null && abilityMixinData.value != DynamicFloat.ZERO) {
+            // ChangeNyxValueMixin: a delta that works out to zero (NyxFreeze off) means no change,
+            // not "fall back to ratio", whose unset default of one would add a point every time.
+            f2 = abilityMixinData.value.get(object2FloatOpenHashMap, 0.0f);
+            if (f2 == 0.0f) {
+                return true;
+            }
         }
         if (f2 == 0.0f && abilityMixinData.ratio != null) {
             f2 = abilityMixinData.ratio.get(object2FloatOpenHashMap, 0.0f);

@@ -34,6 +34,7 @@ public class AbilityMixinData implements Serializable {
         KENHGCLICPB,
         DoActionOnGlobalValueChangeMixin,
         CurLocalAvatarMixin,
+        @SerializedName(value = "NyxCostMixin", alternate = "ChangeNyxValueMixin")
         NyxCostMixin,
         ModifyDamageMixin,
         AvatarChangeSkillMixin,
@@ -130,6 +131,8 @@ public class AbilityMixinData implements Serializable {
     public DynamicFloat speed = DynamicFloat.ZERO;
     public DynamicFloat costStaminaDelta = DynamicFloat.ZERO;
     public DynamicFloat ratio = DynamicFloat.ONE;
+    /** ChangeNyxValueMixin's Nightsoul delta. Other mixins reuse the key for state IDs and flags. */
+    public DynamicFloat value = DynamicFloat.ZERO;
     public DynamicFloat detectWindow = DynamicFloat.ONE;
     public String globalValueKey;
     public List<String> stateIDs = new ArrayList<>();

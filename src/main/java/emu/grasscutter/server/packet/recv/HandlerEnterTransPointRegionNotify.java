@@ -1,6 +1,7 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.Grasscutter;
+import emu.grasscutter.data.GameData;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.EnterTransPointRegionNotifyOuterClass.EnterTransPointRegionNotify;
 import emu.grasscutter.server.game.GameSession;
@@ -14,90 +15,59 @@ public class HandlerEnterTransPointRegionNotify extends PacketHandler {
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         String hex = Utils.bytesToHex(payload == null ? new byte[0] : payload);
         String tags = dumpVarintTags(payload);
-        int uid = session.getPlayer() != null ? session.getPlayer().getUid() : 0;
+        var player = session.getPlayer();
+        int uid = player != null ? player.getUid() : 0;
+
         try {
             EnterTransPointRegionNotify notify = EnterTransPointRegionNotify.parseFrom(payload);
             int sceneId = notify.getSceneId();
             int pointId = notify.getPointId();
+
+            var entry = GameData.getScenePointEntryById(sceneId, pointId);
+            boolean isStatue =
+                    entry != null
+                            && emu.grasscutter.game.managers.StatueTalkQuests.isStatuePoint(
+                                    entry.getPointData());
+            boolean unlocked =
+                    player != null
+                            && sceneId > 0
+                            && pointId > 0
+                            && player.getUnlockedScenePoints(sceneId).contains(pointId);
+            boolean forceLocked =
+                    player != null
+                            && sceneId > 0
+                            && pointId > 0
+                            && player.isScenePointForceLocked(sceneId, pointId);
+
             Grasscutter.getLogger()
                     .info(
-                            "EnterTransPoint uid={} sceneId={} pointId={} hex={} tags={}",
+                            "[statue-probe] EnterTransPoint uid={} scene={} point={} statue={} unlocked={} forceLocked={} hex={} tags={}",
                             uid,
                             sceneId,
                             pointId,
+                            isStatue,
+                            unlocked,
+                            forceLocked,
                             hex,
                             tags);
 
-            var player = session.getPlayer();
-            // Locked statues: auto-unlock on enter — no Talk/quest playthrough required for F
-            // or map unlock. Works whether questing is on or off.
-            if (player != null && sceneId > 0 && pointId > 0) {
-                try {
-                    var entry =
-                            emu.grasscutter.data.GameData.getScenePointEntryById(sceneId, pointId);
-                    boolean isStatue =
-                            entry != null
-                                    && emu.grasscutter.game.managers.StatueTalkQuests.isStatuePoint(
-                                            entry.getPointData());
-                    boolean locked =
-                            isStatue
-                                    && (player.isScenePointForceLocked(sceneId, pointId)
-                                            || !player.getUnlockedScenePoints(sceneId)
-                                                    .contains(pointId));
-                    if (locked) {
-                        boolean ok =
-                                player.getProgressManager()
-                                        .unlockTransPoint(sceneId, pointId, true);
-                        Grasscutter.getLogger()
-                                .info(
-                                        "Auto-unlock locked statue uid={} scene={} point={} ok={}",
-                                        uid,
-                                        sceneId,
-                                        pointId,
-                                        ok);
-                        if (ok) {
-                            player.sendPacket(
-                                    new emu.grasscutter.server.packet.send.PacketGetScenePointRsp(
-                                            player, sceneId));
-                            player.sendPacket(
-                                    new emu.grasscutter.server.packet.send.PacketGetSceneAreaRsp(
-                                            player, sceneId));
-                        }
-                    }
-                } catch (Throwable t) {
-                    Grasscutter.getLogger()
-                            .warn("Auto-unlock statue failed uid={} point={}", uid, pointId, t);
-                }
-            }
-
-            // Only nudge unlock notify for points that are already unlocked server-side.
-            if (sceneId > 0
-                    && pointId > 0
-                    && player != null
-                    && !player.isScenePointForceLocked(sceneId, pointId)
-                    && player.getUnlockedScenePoints(sceneId).contains(pointId)) {
-                session.send(
-                        new emu.grasscutter.server.packet.send.PacketScenePointUnlockNotify(
-                                sceneId, pointId));
-                // Re-push Talk gate so goddess F appears without playing 303xx.
-                player.getProgressManager().refreshStatueTalkGate(sceneId, pointId);
-                // Re-scan nearby NPC suites — Fontaine+ SotS groups often lack server Lua;
-                // loadNpcForPlayer now still sends GroupSuiteNotify so the goddess appears.
-                try {
-                    player.getScene().loadNpcForPlayerEnter(player);
-                } catch (Throwable ignored) {
-                }
-            }
+            // Probe only: do not unlock a locked statue from EnterTransPointRegionNotify and do not
+            // resend ScenePointUnlockNotify/GetScenePointRsp/GetSceneAreaRsp here. If the stock 7.1
+            // client owns a separate statue activation transaction, this lets it become visible.
+            // SotSManager below still handles the actual enter-region behavior (revive/heal timer).
         } catch (Exception e) {
             Grasscutter.getLogger()
                     .warn(
-                            "EnterTransPoint parse failed uid={} err={} hex={} tags={}",
+                            "[statue-probe] EnterTransPoint parse failed uid={} err={} hex={} tags={}",
                             uid,
                             e.toString(),
                             hex,
                             tags);
         }
-        session.getPlayer().getSotsManager().handleEnterTransPointRegionNotify();
+
+        if (player != null) {
+            player.getSotsManager().handleEnterTransPointRegionNotify();
+        }
     }
 
     /** Dump protobuf field_number->varint for quick wire-layout checks. */

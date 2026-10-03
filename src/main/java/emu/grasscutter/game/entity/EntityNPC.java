@@ -18,6 +18,7 @@ public class EntityNPC extends GameEntity {
     private final int npcId;
     private final int roomId;
     private final int parentQuestId;
+    private final boolean manualSpawned;
     @Getter private final int suiteId;
 
     public EntityNPC(Scene scene, SceneNPC metaNPC, int blockId, int suiteId) {
@@ -32,6 +33,7 @@ public class EntityNPC extends GameEntity {
         this.npcId = metaNPC.npc_id;
         this.roomId = 0;
         this.parentQuestId = 0;
+        this.manualSpawned = false;
     }
 
     /** Creates a client-requested quest NPC which has no SceneNPC/group metadata. */
@@ -50,6 +52,24 @@ public class EntityNPC extends GameEntity {
         this.roomId = roomId;
         this.parentQuestId = parentQuestId;
         this.suiteId = 0;
+        this.manualSpawned = false;
+    }
+
+    /** Creates a bare NPC model placed manually by the /npc command. */
+    public EntityNPC(Scene scene, int npcId, Position position, Position rotation) {
+        super(scene);
+        this.id = getScene().getWorld().getNextEntityId(EntityIdType.NPC);
+        this.npcId = npcId;
+        this.position = position.clone();
+        this.rotation = rotation.clone();
+        this.roomId = 0;
+        this.parentQuestId = 0;
+        this.suiteId = 0;
+        this.manualSpawned = true;
+    }
+
+    public boolean isStandalone() {
+        return this.manualSpawned;
     }
 
     @Override

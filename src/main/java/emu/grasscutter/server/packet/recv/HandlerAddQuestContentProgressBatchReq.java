@@ -18,21 +18,10 @@ public class HandlerAddQuestContentProgressBatchReq extends PacketHandler {
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         var req = _AddQuestContentProgressBatchReq.parseFrom(payload);
-        var player = session.getPlayer();
-        var questManager = player.getQuestManager();
+        var questManager = session.getPlayer().getQuestManager();
 
         for (var info : req.getProgressInfoListList()) {
             var type = QuestContent.getContentTriggerByValue(info.getContentType());
-            var quest35104 = questManager.getQuestById(35104);
-            emu.grasscutter.Grasscutter.getLogger()
-                    .info(
-                            "[quest351] progress-batch uid={} typeRaw={} type={} param={} addProgress={} quest35104={}",
-                            player.getUid(),
-                            info.getContentType(),
-                            type,
-                            info.getParam(),
-                            info.getAddProgress(),
-                            quest35104 != null ? quest35104.getState() : null);
             if (type != null) {
                 questManager.queueEvent(type, info.getParam());
             }

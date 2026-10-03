@@ -1,20 +1,16 @@
 package emu.grasscutter.server.packet.recv;
 
-import static emu.grasscutter.config.Configuration.*;
-
 import emu.grasscutter.*;
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.game.avatar.Avatar;
-import emu.grasscutter.game.mail.Mail;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
 import emu.grasscutter.net.proto.SetPlayerBornDataReqOuterClass.SetPlayerBornDataReq;
+import emu.grasscutter.server.born.BornDataHelper;
 import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.game.GameSession.SessionState;
 import emu.grasscutter.server.packet.send.*;
-import java.util.Arrays;
 
 @Opcodes(PacketOpcodes.SetPlayerBornDataReq)
 public class HandlerSetPlayerBornDataReq extends PacketHandler {
@@ -39,12 +35,8 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
             }
 
             int avatarId = req.getAvatarId();
-            int startingSkillDepot;
-            if (avatarId == GameConstants.MAIN_CHARACTER_MALE) {
-                startingSkillDepot = 504;
-            } else if (avatarId == GameConstants.MAIN_CHARACTER_FEMALE) {
-                startingSkillDepot = 704;
-            } else {
+            if (avatarId != GameConstants.MAIN_CHARACTER_MALE
+                    && avatarId != GameConstants.MAIN_CHARACTER_FEMALE) {
                 session.send(
                         new PacketSetPlayerBornDataRsp(Retcode.RET_AVATAR_ID_ERROR.getNumber()));
                 return;
@@ -58,53 +50,31 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
                 return;
             }
 
-            player.setNickname(req.getNickName());
-
-            Avatar mainCharacter = new Avatar(avatarId);
-            if (!GAME_OPTIONS.questing.enabled) {
-                mainCharacter.setSkillDepotData(
-                        GameData.getAvatarSkillDepotDataMap().get(startingSkillDepot));
+            if (!BornDataHelper.completeBirth(player, avatarId, req.getNickName())) {
+                session.send(
+                        new PacketSetPlayerBornDataRsp(
+                                Retcode.RET_REPEAT_SET_PLAYER_BORN_DATA.getNumber()));
+                return;
             }
 
-            player.addAvatar(mainCharacter, false);
-            player.setMainCharacterId(avatarId);
-            player.setHeadImage(avatarId);
-            var team = player.getTeamManager().getCurrentSinglePlayerTeamInfo().getAvatars();
-            team.clear();
-            team.add(avatarId);
-            player.save();
-
-            // Publish the selected traveler before acknowledging character creation. The 7.1 client
-            // starts its native black-screen intro from the born-data response; matching Luna's
-            // pre-response login ordering keeps traveler-dependent text and voice selection available
-            // when that intro is initialized, while the full world login remains gated below.
-            session.send(new PacketAvatarDataNotify(player));
-            session.send(new PacketPlayerNicknameNotify(req.getNickName()));
-            session.send(new PacketSetPlayerBornDataRsp());
-
-            // 7.1 keeps the native second intro client-side after accepting 26105. Keep the session
-            // ACTIVE, but do not establish World/Scene until the second observed false->true pause
-            // cycle marks the native intro boundary.
+            // Arm native intro before acknowledging birth so immediate pause/cutscene packets are
+            // observed by the correct gate. World creation still waits for the native 7.1 handoff;
+            // Quest 351 later waits for PostEnterSceneRsp.
             session.setState(SessionState.ACTIVE);
-            BornIntroGate.arm(session);
+            BornIntroGate.armNativeIntro(session);
+
+            // Publish the selected Traveler before the born response initializes client-side intro
+            // text/voice state.
+            session.send(new PacketAvatarDataNotify(player));
+            session.send(new PacketPlayerNicknameNotify(player.getNickname()));
+            session.send(new PacketSetPlayerBornDataRsp());
+            BornDataHelper.sendWelcomeMail(player);
+
             Grasscutter.getLogger()
                     .info(
-                            "[intro] born handshake complete for uid {}; waiting for native pause-cycle cutover before world login.",
-                            player.getUid());
+                            "[born-flow] uid={} mode=select; avatar {} accepted, waiting for native intro cutover.",
+                            player.getUid(),
+                            avatarId);
         }
-
-        // Default mail
-        var welcomeMail = GAME_INFO.joinOptions.welcomeMail;
-        Mail mail = new Mail();
-        mail.mailContent.title = welcomeMail.title;
-        mail.mailContent.sender = welcomeMail.sender;
-        // Please credit Grasscutter if changing something here. We don't condone commercial use of the
-        // project.
-        mail.mailContent.content =
-                welcomeMail.content
-                        + "\n<type=\"browser\" text=\"GitHub\" href=\"https://github.com/Grasscutters/Grasscutter\"/>";
-        mail.itemList.addAll(Arrays.asList(welcomeMail.items));
-        mail.importance = 1;
-        player.sendMail(mail);
     }
 }

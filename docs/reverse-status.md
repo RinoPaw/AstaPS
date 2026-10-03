@@ -4,7 +4,7 @@ This page is the maintainer-facing index of reverse-engineering work that may af
 
 The source of truth for technical evidence remains [`RinoPaw/Genshin-Reverse`](https://github.com/RinoPaw/Genshin-Reverse). Do not copy conclusions out of this index and treat the copy as new evidence. Follow the linked artifact or commit before changing server behavior.
 
-Last reviewed against `Genshin-Reverse` main: `7ce16b565449438ef7c43420c7cde8bb8e70b4f2` (2026-10-03).
+Last reviewed against `Genshin-Reverse` main: `0946a9df6ac90bda076cce8205475ebf9381eef8` (2026-10-04).
 
 ## Status vocabulary
 
@@ -14,7 +14,7 @@ Last reviewed against `Genshin-Reverse` main: `7ce16b565449438ef7c43420c7cde8bb8
 - **FOLLOW_UP** — the main direction/result is established, but a bounded validation or integration step remains.
 - **ACTIVE** — research is still needed to answer the stated question.
 - **PAUSED** — unresolved, but deliberately not being pursued until a stated trigger appears.
-- **SUPERSEDED** — retained for history, but a newer result or method replaces it.
+- **SUPERSEDED** — a newer conclusion or method replaces an older one; preserve the reason in history/indexes rather than keeping dead executable paths.
 
 These workflow states do not replace the evidence vocabulary used by `Genshin-Reverse` (`CONFIRMED`, `HIGH_CONFIDENCE`, `CANDIDATE`, `REJECTED`, `UNRESOLVED`).
 
@@ -26,6 +26,7 @@ These workflow states do not replace the evidence vocabulary used by `Genshin-Re
 | 7.1 canonical metadata indexes | **COMPLETED · VERIFIED** | `metadata/types.csv`, `fields.csv`, `methods.csv`, `method-pointers.csv`, `type-methods.json`, `runtime-types.csv`; publication manifest in `generated-artifacts.json` | Type/method/field and method-pointer lookup is available infrastructure. Do not regenerate it ad hoc for each bug. |
 | Confirmed 7.1 protocol anchors | **COMPLETED · VERIFIED** | `reports/protocol-map.md` currently records confirmed identities for `DoSetPlayerBornDataNotify`, `SetPlayerBornDataReq`, `SetPlayerBornDataRsp`, `PlayerNicknameNotify`, `PlayerEnterSceneNotify`, and `UnlockTransPointReq` | Reuse these as controls and current-version anchors. Historical opcode equality is still insufficient for other messages. |
 | Scene-handler dispatch slot extraction | **COMPLETED** | `analyses/scene-handler-dispatch/` preserves the exact-sample scan, provenance and reproducible `genshinre scene-handler-slots` workflow | The one-off Actions artifact has been converted into a durable analysis plus reusable extractor. Future work should reuse the maintained command. |
+| 7.1 plaintext packet capture boundary | **COMPLETED · VERIFIED** | `analyses/unlock-trans-point/RUNTIME_CAPTURE_RECOVERY_2026-10-02.md` preserves exact-build framing/XOR recovery; maintained collector is `tools/runtime/capture_game_packets_71.*`; generic correlation is `genshinre correlate-capture` | Reuse the current 7.1 observation layer instead of rebuilding packet framing or restoring retired framing Actions. |
 | Ordinary waypoint live unlock path | **COMPLETED · VERIFIED · INTEGRATED** | `analyses/unlock-trans-point/README.md` records that corrected `ScenePointUnlockNotify` is sufficient for physical activation, immediate map usability and teleport; exact `UnlockTransPointRsp` is not required by the tested path | Integrated in AstaPS by `21ce7b5c` (`fix(scene): trust 7.1 waypoint unlock notify`) and `e28d5c8e` (`fix(scene): encode 7.1 waypoint unlock fields correctly`). |
 
 ## Follow-up work with a bounded next step
@@ -38,7 +39,7 @@ These workflow states do not replace the evidence vocabulary used by `Genshin-Re
 
 | Work | State | Current boundary |
 | --- | --- | --- |
-| CmdId 186 semantic identity | **ACTIVE** | Current-client static identity is closed to `NLOMEGMJDGJ` / typeDefinition `61556`, and field 14 is closed as packed repeated `uint32`; sender/context and semantic message name remain unresolved. See `analyses/cmdid-186/` and issue #1 in `Genshin-Reverse`. |
+| CmdId 186 semantic identity | **ACTIVE** | Exact Global 7.1 identity is closed to `186 / NLOMEGMJDGJ`; field 14 is packed repeated `uint32`; the Global sender path through `JKFCCMCAMGA` is closed. `GetActivityInfoReq` is the maintained **HIGH_CONFIDENCE** semantic candidate from matching current-version CN evidence. Promotion still waits for an exact-Global semantic edge. See `analyses/cmdid-186/` and issue #1. |
 | Barbara C6 revive authoritative wire invoke | **ACTIVE** | Ability trigger/config and the 900-second cooldown are config-confirmed; the exact authoritative revive wire invoke remains unresolved. See `analyses/barbara-c6-revive/`. |
 
 ## Paused investigations
@@ -55,7 +56,7 @@ Update this page when a research task materially changes state. In particular:
 2. add **VERIFIED** only when the source investigation says its required validation has actually happened;
 3. add **INTEGRATED** only after the corresponding AstaPS/resource change exists, and record the commit or stable path;
 4. move unresolved work to **PAUSED** when the research record explicitly says further effort has no current value;
-5. use **SUPERSEDED** instead of silently deleting an older result when preserving the old path will prevent repeated dead ends;
+5. record **SUPERSEDED** conclusions when the reason matters for avoiding repeated dead ends, but keep retired code/workflows/probes out of the maintained tree once their useful evidence is preserved;
 6. keep detailed evidence, candidate lists and research chronology in `Genshin-Reverse`; this page stays a compact index.
 
 When reviewing other people's work, prioritize completed and closed items first. Missing completion metadata is itself a maintenance problem: if the evidence clearly says `published`, `closed`, `validated`, or otherwise meets its stated gate, make that state discoverable here.

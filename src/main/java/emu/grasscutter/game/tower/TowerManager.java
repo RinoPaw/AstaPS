@@ -1,7 +1,7 @@
 package emu.grasscutter.game.tower;
 
+import static emu.grasscutter.config.Configuration.GAME;
 import static emu.grasscutter.config.Configuration.GAME_INFO;
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
@@ -102,8 +102,6 @@ public class TowerManager extends BasePlayerManager {
 
     /** floor number: 1 - 12, or 0 when no floor is selected * */
     public int getCurrentFloorNumber() {
-        // EntityMonster.recalcStats reads this while scaling tower monsters, and it runs from the
-        // constructor - early enough that no floor need be chosen yet. 0 simply scales nothing.
         var floorData = GameData.getTowerFloorDataMap().get(getCurrentFloorId());
         return floorData != null ? floorData.getFloorIndex() : 0;
     }
@@ -124,7 +122,6 @@ public class TowerManager extends BasePlayerManager {
         var challenge = player.getScene().getChallenge();
         if (!inProgress || challenge == null || !challenge.inProgress()) return;
 
-        // Check star conditions and notify client if any failed.
         int stars = getCurLevelStars();
         while (stars < currentPossibleStars) {
             player
@@ -137,8 +134,6 @@ public class TowerManager extends BasePlayerManager {
     }
 
     public void onBegin() {
-        // onTick() already treats a missing scene challenge as normal; this re-reads it from the
-        // scene rather than using the one that triggered the call, so it can be null here too.
         if (awaitingTeamReconfigure) {
             Grasscutter.getLogger()
                     .info(
@@ -150,35 +145,19 @@ public class TowerManager extends BasePlayerManager {
         inProgress = true;
         currentTimeLimit = challenge != null ? challenge.getTimeLimit() : 0;
 
-        // Re-assert the upper half/the lower half when each half's challenge actually starts (client often resets the label).
         notifyCurLevelRecordChange();
-
-        // Hide the start-key prompt once the challenge is live.
         TowerAbyssFix.clearStartKeyOptions(player);
 
-        // Combat UI: enterLevel / mid-half send CanUseSkill=false (buff select / cutscene).
-        // Lua SetIsAllowUseSkill(1) should restore it on worktop start — but mid-half and some
-        // floors never hit that path, leaving no attack button. Challenge start = always allow.
         try {
             if (player.getSession() != null) {
                 player.sendPacket(new PacketCanUseSkillNotify(true));
             }
         } catch (Throwable ignored) {
-            // Best effort — must not abort onBegin.
         }
 
-        // The abyss hands every character a full burst at the start of a chamber.
         this.fillTeamEnergy();
     }
 
-    /**
-     * Fills the burst gauge of everyone on the team, as entering a chamber does in the game.
-     *
-     * <p>Guarded at every step because this runs inside {@link
-     * emu.grasscutter.game.dungeons.challenge.WorldChallenge#start()}: throwing here would stop the
-     * challenge starting at all, which costs the whole chamber rather than one burst. A depot can be
-     * null, and so can its element - the element-less Traveler is the standing example.
-     */
     private void fillTeamEnergy() {
         player
                 .getTeamManager()
@@ -188,8 +167,6 @@ public class TowerManager extends BasePlayerManager {
                             var depot = entity.getAvatar().getSkillDepot();
                             if (depot == null) return;
 
-                            // Nightsoul characters spend a separate gauge, and addEnergy would top up
-                            // an elemental one they never use.
                             var energySkill = depot.getEnergySkillData();
                             if (energySkill != null && energySkill.getSpecialEnergyMin() > 0) {
                                 entity.addSpecialEnergy(
@@ -212,7 +189,6 @@ public class TowerManager extends BasePlayerManager {
         inProgress = false;
     }
 
-    /** Refresh moon-blessing / floor LevelEntity names from excel for the current floor. */
     public void refreshLevelEntityConfigs() {
         activeLevelEntityConfigs.clear();
         activeLevelEntityConfigs.addAll(TowerLevelEntityHelper.resolveActiveConfigNames(player));
@@ -226,15 +202,12 @@ public class TowerManager extends BasePlayerManager {
 
     public void clearLevelEntityConfigs() {
         activeLevelEntityConfigs.clear();
-        // Drop chamber card server-buffs when leaving the tower run.
         try {
             player.getBuffManager().clearBuffs();
         } catch (Throwable ignored) {
-            // Best effort.
         }
     }
 
-    /** Push LevelEntity abilities to the client after enter / mid-half team swap. */
     public void notifyTowerLevelEntityAbilities() {
         TowerLevelEntityHelper.notifyClient(player);
     }
@@ -248,10 +221,6 @@ public class TowerManager extends BasePlayerManager {
         awaitingTeamReconfigure = false;
     }
 
-    /**
-     * Restart the <b>current chamber</b> (not chamber 1). Used by "retry"/"reconfigure team"so a
-     * retry on chamber 3 stays on chamber 3. Resets to the upper half with full chamber-start HP/energy.
-     */
     public void restartCurrentChamber() {
         int floorId = getTowerData().currentFloorId;
         if (floorId <= 0) return;
@@ -268,7 +237,6 @@ public class TowerManager extends BasePlayerManager {
         currentPossibleStars = 3;
         forceChamberOneOnEnter = false;
 
-        // Stay on this chamber; always retry from the upper half.
         getTowerData().abyssTempTeamIndex = 0;
         resetTowerScriptStage();
 
@@ -289,7 +257,6 @@ public class TowerManager extends BasePlayerManager {
                         getCurrentLevel());
     }
 
-    /** Clear lua stage/TPL_TIME so the chamber restarts from upper half. */
     private void resetTowerScriptStage() {
         var scene = player.getScene();
         if (scene == null || scene.getScriptManager() == null) return;
@@ -313,6 +280,7 @@ public class TowerManager extends BasePlayerManager {
     /**
      * @deprecated Prefer {@link #restartCurrentChamber()}. Kept for any old callers.
      */
+    @Deprecated
     public void restartFloorFromChamberOne() {
         restartCurrentChamber();
     }
@@ -332,14 +300,6 @@ public class TowerManager extends BasePlayerManager {
         return recordMap;
     }
 
-    /**
-     * When the daily/pinned rotation advances, clear stars and chest claims on floors 9-12. Floors
-     * 9-10 often keep the same floorId across rotations, so without this wipe the client still shows
-     * yesterday's checkmarks while monsters already changed.
-     *
-     * <p>Also applies the 5.1+ skip-floor rule: full-star floor 12 last period starts at 11 (skip
-     * 9-10); full-star floor 11 starts at 10 (skip 9).
-     */
     private void syncScheduleProgress(Map<Integer, TowerLevelRecord> recordMap) {
         var towerSystem = player.getServer().getTowerSystem();
         var schedule = towerSystem.getCurrentTowerScheduleData();
@@ -361,8 +321,6 @@ public class TowerManager extends BasePlayerManager {
         var allowed = new HashSet<Integer>(entrance);
         allowed.addAll(scheduleFloors);
 
-        // Drop schedule-floor progress and any stale floor ids from the previous rotation (e.g. old
-        // 11/12). Keep entrance 1-8 records.
         recordMap
                 .keySet()
                 .removeIf(floorId -> scheduleFloors.contains(floorId) || !allowed.contains(floorId));
@@ -387,7 +345,6 @@ public class TowerManager extends BasePlayerManager {
                         scheduleFloors);
     }
 
-    /** Highest schedule floor index (9-12) that currently has a full 9-star clear. */
     private static int bestFullStarScheduleFloorIndex(
             Map<Integer, TowerLevelRecord> recordMap, Set<Integer> scheduleFloors) {
         int best = 0;
@@ -401,17 +358,13 @@ public class TowerManager extends BasePlayerManager {
         return best;
     }
 
-    /**
-     * Unlock skipped floors with full stars (star treasure still claimable) and grant chamber treasure for those
-     * chambers. {@code skipToFloorIndex} is what the client uses to open mid-abyss directly.
-     */
     private void applySkipFloorUnlock(
             Map<Integer, TowerLevelRecord> recordMap,
             List<Integer> scheduleFloors,
             int previousBestFloorIndex) {
         var data = getTowerData();
         data.skipFloorGrantedRewards = new HashMap<>();
-        data.skipFloorState = 1; // CAN_NOT_SKIP
+        data.skipFloorState = 1;
         data.skipToFloorIndex = 9;
 
         if (scheduleFloors == null || scheduleFloors.isEmpty()) return;
@@ -421,7 +374,6 @@ public class TowerManager extends BasePlayerManager {
             return;
         }
 
-        // TowerSkipFloorExcel: prev 12 → skip through 10 (start 11); prev 11 → skip through 9 (start 10).
         int skipThroughIndex = previousBestFloorIndex >= 12 ? 10 : 9;
         data.skipToFloorIndex = skipThroughIndex + 1;
 
@@ -448,9 +400,9 @@ public class TowerManager extends BasePlayerManager {
             player.getInventory()
                     .addItems(items, emu.grasscutter.game.props.ActionReason.TowerSkipFloorReward);
             data.skipFloorGrantedRewards = granted;
-            data.skipFloorState = 3; // TAKEN_REWARD (chamber treasure already granted; star treasure still manual)
+            data.skipFloorState = 3;
         } else {
-            data.skipFloorState = 2; // HAS_REWARD
+            data.skipFloorState = 2;
         }
     }
 
@@ -464,7 +416,6 @@ public class TowerManager extends BasePlayerManager {
         for (int i = 0; i < LEVELS_PER_FLOOR; i++) {
             record.setLevelStars(firstLevelId + i, STARS_PER_LEVEL);
         }
-        // Leave floorStarRewardProgress at 0 so star treasure can still be claimed.
         record.setFloorStarRewardProgress(0);
     }
 
@@ -483,18 +434,8 @@ public class TowerManager extends BasePlayerManager {
         }
     }
 
-    /**
-     * Hands over entrance floors 1-8 already cleared, so an account starts on the floors that
-     * actually rotate.
-     *
-     * <p>The schedule floors are gated twice: TowerAllDataRsp reports {@code
-     * is_finished_entrance_floor} from {@link #canEnterScheduleFloor()}, which wants six stars on
-     * the last entrance floor, and each floor's own {@code unlockStarCount} wants six stars on the
-     * one before it. Full nine-star records on every entrance floor satisfy both. Turn
-     * {@code game.tower.skipEntranceFloors} off to play floors 1-8 for real.
-     */
     private void grantEntranceFloors(Map<Integer, TowerLevelRecord> recordMap) {
-        if (!GAME_OPTIONS.tower.skipEntranceFloors) return;
+        if (!GAME.tower.skipEntranceFloors) return;
 
         var schedule = player.getServer().getTowerSystem().getCurrentTowerScheduleData();
         if (schedule == null) return;
@@ -503,27 +444,19 @@ public class TowerManager extends BasePlayerManager {
         if (entranceFloors == null || entranceFloors.isEmpty()) return;
 
         for (int floorId : entranceFloors) {
-            // Levels within a floor are consecutive ids from levelIndex 1, which is the same
-            // assumption getCurrentLevelId() makes when it walks the floor.
             int firstLevelId = getFirstLevelId(floorId);
             if (firstLevelId == 0) continue;
 
             var record = recordMap.computeIfAbsent(floorId, TowerLevelRecord::new);
             if (record.getPassedLevelMap() == null) {
-                // A record loaded from a save written before the map existed.
                 record.setPassedLevelMap(new HashMap<>());
             }
 
-            // Drop chambers that do not belong to this floor. The old /setprop towerlevel faked the
-            // unlock by writing chamber id 0 with six stars, and a save that still carries it would
-            // report a chamber that does not exist to the client in passed_level_map.
             record
                     .getPassedLevelMap()
                     .keySet()
                     .removeIf(id -> id < firstLevelId || id >= firstLevelId + LEVELS_PER_FLOOR);
 
-            // Always rewrite the three chambers. A save can hold floorStarRewardProgress=9 with an
-            // empty/partial map (UI shows a claimed chest but 0 chamber stars when opened).
             for (int i = 0; i < LEVELS_PER_FLOOR; i++) {
                 record.setLevelStars(firstLevelId + i, STARS_PER_LEVEL);
             }
@@ -532,11 +465,6 @@ public class TowerManager extends BasePlayerManager {
             }
         }
 
-        // Clearing a floor also opens the next one by giving it an empty record - that is what
-        // notifyCurLevelRecordChangeWhenDone does every time. Granting the stars without it leaves
-        // the floor after the corridor with no record at all, which is not a state the game can
-        // otherwise reach, and the client shows it locked. Skip-floor unlock may already have opened
-        // floor 10/11 — only seed floor 9 when nothing schedule-side exists yet.
         boolean hasScheduleRecord =
                 recordMap.keySet().stream().anyMatch(id -> {
                     var floor = GameData.getTowerFloorDataMap().get(id);
@@ -554,7 +482,6 @@ public class TowerManager extends BasePlayerManager {
         }
     }
 
-    /** Id of a floor's first chamber, or 0 if the resources do not describe the floor. */
     private static int getFirstLevelId(int floorId) {
         var floorData = GameData.getTowerFloorDataMap().get(floorId);
         if (floorData == null) return 0;
@@ -572,9 +499,7 @@ public class TowerManager extends BasePlayerManager {
             return;
         }
         int floorId = floorData.getFloorId();
-        // Resume at the first uncleared chamber. Always resetting to chamber 1 after"clear chamber 1, leave, claim rewards"
-        // forced a full floor redo and left star treasure / chamber treasure claim state inconsistent for chambers 2 and 3.
-        int resumeChamber = findResumeChamberIndex(floorId); // 0-based
+        int resumeChamber = findResumeChamberIndex(floorId);
         if (resumeChamber <= 0) {
             applyFloorStart(floorId);
             forceChamberOneOnEnter = true;
@@ -590,10 +515,6 @@ public class TowerManager extends BasePlayerManager {
             getTowerData().entryScene = player.getSceneId();
         }
 
-        // The teams the client picked are the whole point of this packet, and every way they can go
-        // missing looks identical in game - the overworld team just walks in instead. Say what
-        // arrived: no teams at all means the request did not carry them, whereas teams that arrive
-        // and then get refused are reported by setupTemporaryTeam.
         Grasscutter.getLogger()
                 .info(
                         "Tower team select uid={} floor={}: {} team(s), sizes {}, resumeChamber={}",
@@ -608,10 +529,6 @@ public class TowerManager extends BasePlayerManager {
         clearAwaitingTeamReconfigure();
     }
 
-    /**
-     * First 0-based chamber index with no stars yet. Returns 0 when the floor is empty or already
-     * full (full → restart from chamber 1).
-     */
     private int findResumeChamberIndex(int floorId) {
         int firstLevelId = getFirstLevelId(floorId);
         if (firstLevelId == 0) {
@@ -629,7 +546,6 @@ public class TowerManager extends BasePlayerManager {
         return 0;
     }
 
-    /** Persist selected abyss teams so a reconnect can rebuild the temporary party. */
     public void rememberAbyssTeams(List<List<Long>> towerTeams, int teamIndex) {
         var data = getTowerData();
         data.abyssTeamGuids = new ArrayList<>();
@@ -672,12 +588,7 @@ public class TowerManager extends BasePlayerManager {
         abyssCarryRemainingSeconds = 0;
     }
 
-    /**
-     * Prefer server-tracked remaining for lower-half ActiveChallenge when lua TPL_TIME looks wrong
-     * (elapsed / seconds-only / wiped). Returns {@code luaTime} unchanged for a fresh upper half (600).
-     */
     public int resolveAbyssChallengeTimeLimit(int luaTimeLimitOrGroupId) {
-        // Fresh upper half always starts at full chamber time (typically 600).
         if (luaTimeLimitOrGroupId >= 600) {
             abyssCarryRemainingSeconds = 0;
             return luaTimeLimitOrGroupId;
@@ -686,7 +597,6 @@ public class TowerManager extends BasePlayerManager {
         if (carry <= 0) {
             return luaTimeLimitOrGroupId;
         }
-        // Classic corruption: remaining 9:27 (567) collapsed to :27, or elapsed (~30s) used as limit.
         boolean looksCorrupt =
                 luaTimeLimitOrGroupId < 60
                         || (carry - luaTimeLimitOrGroupId) >= 60
@@ -701,12 +611,10 @@ public class TowerManager extends BasePlayerManager {
             abyssCarryRemainingSeconds = 0;
             return carry;
         }
-        // Lua TPL_TIME looks fine — consume carry anyway so it cannot leak into the next chamber.
         abyssCarryRemainingSeconds = 0;
         return luaTimeLimitOrGroupId;
     }
 
-    /** Rebuild temporary teams after a forced reconnect into an abyss dungeon scene. */
     public void restoreAbyssTeamsOnLogin() {
         var data = getTowerData();
         if (!data.resumeAbyssOnLogin) return;
@@ -740,7 +648,6 @@ public class TowerManager extends BasePlayerManager {
         return resolved != null ? resolved : GameData.getTowerLevelDataMap().get(getCurrentLevelId());
     }
 
-    /** Resolve the current chamber from persisted floor/chamber state. */
     public TowerLevelData resolveCurrentLevelData() {
         int floorId = getTowerData().currentFloorId;
         int chamber = getTowerData().currentLevel + 1;
@@ -755,7 +662,6 @@ public class TowerManager extends BasePlayerManager {
                 .orElse(null);
     }
 
-    /** Reset transient chamber state when a floor becomes active. */
     public void applyFloorStart(int floorId) {
         var floorData = GameData.getTowerFloorDataMap().get(floorId);
         if (floorData == null) {
@@ -767,7 +673,6 @@ public class TowerManager extends BasePlayerManager {
         getTowerData().currentLevelId = getFirstLevelId(floorId);
     }
 
-    /** Recover a save/client state that still points at chamber four of an old floor. */
     public void ensureFloorStateForEnter() {
         if (getTowerData().currentLevel < 3) return;
         int nextFloorId = getNextFloorId();
@@ -779,13 +684,10 @@ public class TowerManager extends BasePlayerManager {
     }
 
     public int getCurrentMonsterLevel() {
-        // monsterLevel given in TowerLevelExcelConfigData.json is off by one.
         var levelData = getCurrentTowerLevelDataMap();
         if (levelData != null) {
             return levelData.getMonsterLevel() + 1;
         }
-        // Spawning is not worth aborting over a missing row; the floor's own override is the same
-        // number the client shows for the floor.
         var floorData = GameData.getTowerFloorDataMap().get(getCurrentFloorId());
         Grasscutter.getLogger()
                 .warn("No tower level data for level {}, falling back to the floor level", getCurrentLevelId());
@@ -802,7 +704,6 @@ public class TowerManager extends BasePlayerManager {
         }
         var levelData = getCurrentTowerLevelDataMap();
         if (levelData == null) {
-            // No level means no dungeon to hand off to; entering would NPE on the way in.
             Grasscutter.getLogger()
                     .warn(
                             "Tower enter level {} on floor {} has no level data",
@@ -814,9 +715,7 @@ public class TowerManager extends BasePlayerManager {
         var dungeonId = levelData.getDungeonId();
 
         notifyCurLevelRecordChange();
-        // Resolve abyssal moon blessing / floor LevelEntity before handoff so enter-scene ability blocks include them.
         refreshLevelEntityConfigs();
-        // Always enter a chamber on the upper-half team + slot 1.
         getTowerData().abyssTempTeamIndex = 0;
         if (!player.getTeamManager().hasTemporaryTeam()) {
             ensureAbyssTemporaryTeams();
@@ -828,11 +727,9 @@ public class TowerManager extends BasePlayerManager {
                 .getDungeonSystem()
                 .handoffDungeon(player, dungeonId, towerDungeonSettleListener);
 
-        // make sure user can exit dungeon correctly
         player.getScene().setPrevScene(getTowerData().entryScene);
         player.getScene().setPrevScenePoint(enterPointId);
 
-        // Enter-scene packets already went out; re-push abilities so the client attaches moon blessing.
         notifyTowerLevelEntityAbilities();
 
         var buffOfferings = rollCurrentChamberBuffs();
@@ -841,9 +738,7 @@ public class TowerManager extends BasePlayerManager {
                 .send(
                         new PacketTowerEnterLevelRsp(
                                 getTowerData().currentFloorId, getCurrentLevel(), buffOfferings));
-        // stop using skill
         player.getSession().send(new PacketCanUseSkillNotify(false));
-        // notify the cond of stars
         currentPossibleStars = 3;
         player
                 .getSession()
@@ -859,7 +754,6 @@ public class TowerManager extends BasePlayerManager {
                 .send(
                         new PacketTowerCurLevelRecordChangeNotify(
                                 getTowerData().currentFloorId, getCurrentLevel(), upper, player));
-        // Abyss floor banner and resin counter are separate widgets — keep resin visible.
         if (player.getResinManager() != null) {
             player.getResinManager().refreshClientResinUi();
         }
@@ -885,15 +779,12 @@ public class TowerManager extends BasePlayerManager {
             return 0;
         }
 
-        // After challenge.finish(), scene time keeps ticking. Use finishedTime once done or stars
-        // decay to zero by the time the settle listener runs (all floors).
         int elapsed =
                 challenge.inProgress()
                         ? Math.max(0, scene.getSceneTimeSeconds() - challenge.getStartedAt())
                         : Math.max(0, challenge.getFinishedTime());
         int timeRemaining = challenge.getTimeLimit() - elapsed;
 
-        // 0-based indexing. "star" = 0 means checking for 1-star conditions.
         int star;
         for (star = 2; star >= 0; star--) {
             var cond = levelData.getCondType(star);
@@ -929,8 +820,6 @@ public class TowerManager extends BasePlayerManager {
     }
 
     public void notifyCurLevelRecordChangeWhenDone(int stars) {
-        // Premature settle during mid-half must not advance the chamber or flip team index
-        // back to the upper half — that cancels applyMidHalfTeamSwap.
         if (midHalfCutscenePending) {
             Grasscutter.getLogger()
                     .warn(
@@ -946,7 +835,6 @@ public class TowerManager extends BasePlayerManager {
                     currentFloorId,
                     new TowerLevelRecord(currentFloorId).setLevelStars(getCurrentLevelId(), stars));
         } else {
-            // Only update record if better than previous
             var prevRecord = recordMap.get(currentFloorId);
             int levelId = getCurrentLevelId();
             int prevStars = prevRecord.getLevelStars(levelId);
@@ -956,14 +844,9 @@ public class TowerManager extends BasePlayerManager {
         }
 
         this.getTowerData().currentLevel++;
-        // Next chamber always begins on the upper half / team 0.
         getTowerData().abyssTempTeamIndex = 0;
 
         if (!this.hasNextLevel()) {
-            // Unlock the next floor in the record map, but do NOT jump CurLevelRecord onto it.
-            // applyFloorStart(next) + notify(next,1) made the client show"continue challenge?"on the next
-            // floor and blocked claiming rewards for this floor's remaining star treasure (6/9 after an early 3-star
-            // claim, or chambers 2 and 3 after"clear chamber 1, leave, claim").
             var nextFloorId = this.getNextFloorId();
             if (nextFloorId > 0) {
                 recordMap.computeIfAbsent(nextFloorId, TowerLevelRecord::new);
@@ -971,7 +854,6 @@ public class TowerManager extends BasePlayerManager {
             try {
                 player.getSession().send(PacketTowerCurLevelRecordChangeNotify.empty());
             } catch (Throwable ignored) {
-                // Best effort — must not abort settle.
             }
             Grasscutter.getLogger()
                     .info(
@@ -1024,10 +906,6 @@ public class TowerManager extends BasePlayerManager {
                 >= 6;
     }
 
-    /**
-     * Claim every unpaid 3/6/9-star chest the player has earned on this floor. One client click is
-     * expected to drain all pending tiers; {@code floorStarRewardProgress} is the claim cursor.
-     */
     public boolean claimFloorStarReward(int floorId) {
         var record = getRecordMap().get(floorId);
         if (record == null) {
@@ -1090,7 +968,6 @@ public class TowerManager extends BasePlayerManager {
         if (progress == claimed) return false;
 
         if (!items.isEmpty()) {
-            // Merge stacks so the obtain popup shows totals (e.g. 150 primogems) not three tiny bursts.
             var merged = new java.util.LinkedHashMap<Integer, Integer>();
             for (var item : items) {
                 merged.merge(item.getItemId(), item.getCount(), Integer::sum);
@@ -1105,14 +982,8 @@ public class TowerManager extends BasePlayerManager {
         return true;
     }
 
-    /** Convert real seconds to {@link emu.grasscutter.server.scheduler.ServerTaskScheduler} delay. */
     private static int secondsToSchedulerDelay(int seconds) {
         return Math.max(1, seconds);
-    }
-
-    /** @deprecated Prefer {@link #secondsToSchedulerDelay(int)} for server-scheduler delays. */
-    private static int secondsToTicks(int seconds) {
-        return secondsToSchedulerDelay(seconds);
     }
 
     public void mirrorTeamSetUp(int teamId) {
@@ -1128,18 +999,12 @@ public class TowerManager extends BasePlayerManager {
         midHalfCutscenePending = true;
         midHalfEarliestSwapMs =
                 System.currentTimeMillis() + MID_HALF_TRANSITION_SECONDS * 1000L;
-        // Freeze the two parties now — settle/exit races can empty TowerData.abyssTeamGuids
-        // before the delayed swap runs.
         pendingMidHalfTeamGuids = copyTeamGuids(getAbyssTeamGuids());
         if (pendingMidHalfTeamGuids.isEmpty()) {
-            // Still have live temporary parties — remember them so the delayed swap cannot
-            // hit "abyssTeamGuids empty" after a premature settle race.
             ensureAbyssTemporaryTeams();
             pendingMidHalfTeamGuids = copyTeamGuids(getAbyssTeamGuids());
         }
 
-        // Upper-half challenge often stays inProgress through MirrorTeamSetUp — that keeps the
-        // left HUD on "the upper half" and keeps star-timer ticks going. Finish it quietly as success.
         inProgress = false;
         try {
             var scene = player.getScene();
@@ -1169,7 +1034,6 @@ public class TowerManager extends BasePlayerManager {
                         delayTicks,
                         bornPos);
 
-        // Flip UI to the lower half during the hold.
         player
                 .getSession()
                 .send(
@@ -1200,7 +1064,6 @@ public class TowerManager extends BasePlayerManager {
                         delayTicks);
     }
 
-    /** The mid-half cutscene finished → swap once the minimum hold has passed. */
     public void onMidHalfCutsceneFinished(int cutsceneId) {
         if (cutsceneId != MID_HALF_CUTSCENE_ID) return;
         if (!midHalfCutscenePending) return;
@@ -1241,11 +1104,6 @@ public class TowerManager extends BasePlayerManager {
         return out;
     }
 
-    /**
-     * Rebuild in-memory temporary parties from persisted abyss GUIDs. {@code temporaryTeam} is
-     * {@code @Transient} and is often wiped mid-run (logout path / exitDungeon), which made mid-half
-     * {@code useTemporaryTeam(1)} NPE or silently fall back to the upper team.
-     */
     private boolean ensureAbyssTemporaryTeams(List<List<Long>> fallbackGuids, int teamIndexHint) {
         if (TowerAbyssTeamRestore.ensure(player)) {
             return true;
@@ -1269,7 +1127,6 @@ public class TowerManager extends BasePlayerManager {
             return;
         }
 
-        // Always pin the index to the pending lower team — a premature settle may have reset it to 0.
         getTowerData().abyssTempTeamIndex = teamId;
         getTowerData().resumeAbyssOnLogin = true;
 
@@ -1296,7 +1153,6 @@ public class TowerManager extends BasePlayerManager {
         player.getRotation().set(bornRot);
         player.getTeamManager().useTemporaryTeam(teamId);
 
-        // Lower-half chars may still have overworld HP/energy — reset like chamber start.
         TowerAbyssFix.prepareFirstChamber(player);
 
         var avatar = player.getTeamManager().getCurrentAvatarEntity();
@@ -1318,7 +1174,6 @@ public class TowerManager extends BasePlayerManager {
             scene.broadcastPacket(new PacketScenePlayerLocationNotify(scene));
         }
 
-        // teamId 0 = the upper half, 1+ = the lower half — force is_upper_part=false onto the wire (proto3 omits false).
         boolean isUpper = teamId <= 0;
         player.sendPacket(PacketTowerCurLevelRecordChangeNotify.empty());
         player
@@ -1326,7 +1181,6 @@ public class TowerManager extends BasePlayerManager {
                 .send(
                         new PacketTowerCurLevelRecordChangeNotify(
                                 getTowerData().currentFloorId, getCurrentLevel(), isUpper, player));
-        // Refresh star objectives under the the lower half label.
         player
                 .getSession()
                 .send(
@@ -1334,9 +1188,7 @@ public class TowerManager extends BasePlayerManager {
                                 getTowerData().currentFloorId, getCurrentLevel(), 4));
 
         this.fillTeamEnergy();
-        // Lower team entities are new — re-attach moon blessing / floor LevelEntity abilities.
         notifyTowerLevelEntityAbilities();
-        // Re-assert the lower half after ability/team packets (client often snaps back to the upper half).
         for (int sec : new int[] {1, 2, 3}) {
             final int at = sec;
             player
@@ -1355,7 +1207,7 @@ public class TowerManager extends BasePlayerManager {
                                                         isUpper,
                                                         player));
                             },
-                            secondsToTicks(at));
+                            secondsToSchedulerDelay(at));
         }
         Grasscutter.getLogger()
                 .info(
@@ -1367,7 +1219,6 @@ public class TowerManager extends BasePlayerManager {
                         player.getTeamManager().getCurrentCharacterIndex());
     }
 
-    /** Roll and cache the three buff cards for the current chamber. */
     public List<Integer> rollCurrentChamberBuffs() {
         var levelData = getCurrentTowerLevelDataMap();
         var schedule = player.getServer().getTowerSystem().getCurrentTowerScheduleData();
@@ -1416,7 +1267,6 @@ public class TowerManager extends BasePlayerManager {
                 }
             }
         } catch (Throwable ignored) {
-            // Fall through.
         }
         return new Position(0f, -0.102f, 15.011f);
     }
@@ -1431,7 +1281,6 @@ public class TowerManager extends BasePlayerManager {
                 }
             }
         } catch (Throwable ignored) {
-            // Fall through.
         }
         return new Position(0f, 180f, 0f);
     }

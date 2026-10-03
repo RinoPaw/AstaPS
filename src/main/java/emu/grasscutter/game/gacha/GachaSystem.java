@@ -1,8 +1,7 @@
 package emu.grasscutter.game.gacha;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
-import com.sun.nio.file.SensitivityWatchEventModifier;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.*;
 import emu.grasscutter.data.common.ItemParamData;
@@ -486,10 +485,7 @@ public class GachaSystem extends BaseGameSystem {
             try {
                 this.watchService = FileSystems.getDefault().newWatchService();
                 FileUtils.getDataUserPath("")
-                        .register(
-                                watchService,
-                                new WatchEvent.Kind[] {StandardWatchEventKinds.ENTRY_MODIFY},
-                                SensitivityWatchEventModifier.HIGH);
+                        .register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
             } catch (Exception e) {
                 Grasscutter.getLogger()
                         .error(
@@ -503,7 +499,7 @@ public class GachaSystem extends BaseGameSystem {
 
     @Subscribe
     public synchronized void watchBannerJson(GameServerTickEvent tickEvent) {
-        if (GAME_OPTIONS.watchGachaConfig) {
+        if (GAME.watchGachaConfig) {
             try {
                 // poll(), not take() - this runs on the server tick thread, and take() parks it until
                 // somebody happens to touch a file in the data directory.

@@ -50,7 +50,7 @@ public final class DomainChallengeKeyHelper {
         if (entityGadget.getContent() instanceof GadgetWorktop) {
             return;
         }
-        entityGadget.setContent((GadgetContent)new GadgetWorktop(entityGadget));
+        entityGadget.replaceContent(new GadgetWorktop(entityGadget));
     }
 
     public static boolean isChallengeKeyGroup(SceneScriptManager sceneScriptManager, int n) {
@@ -172,4 +172,3 @@ public final class DomainChallengeKeyHelper {
         }, 2);
     }
 }
-

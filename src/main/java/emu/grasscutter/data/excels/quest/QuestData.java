@@ -49,6 +49,8 @@ public class QuestData extends GameResource {
     }
 
     public void onLoad() {
+        this.applyKnownResourceFixups();
+
         this.acceptCond = acceptCond.stream().filter(p -> p.getType() != null).toList();
         this.finishCond = finishCond.stream().filter(p -> p.getType() != null).toList();
         this.failCond = failCond.stream().filter(p -> p.getType() != null).toList();
@@ -66,6 +68,34 @@ public class QuestData extends GameResource {
         if (this.gainItems == null) this.gainItems = Collections.emptyList();
 
         this.addToCache();
+    }
+
+    private void applyKnownResourceFixups() {
+        // In the affected 7.1 resource conversion, 35101 is incorrectly serialized behind
+        // 35107. Both sibling subquests should become available when 35100 finishes.
+        if (this.mainId != 351
+                || this.subId != 35101
+                || this.acceptCond == null
+                || this.acceptCond.size() != 1) {
+            return;
+        }
+
+        var condition = this.acceptCond.get(0);
+        var params = condition.getParam();
+        if (condition.getType() != QuestCond.QUEST_COND_STATE_EQUAL
+                || params == null
+                || params.length < 2
+                || params[0] != 35107
+                || params[1] != QuestState.QUEST_STATE_FINISHED.getValue()) {
+            return;
+        }
+
+        var correctedParams = params.clone();
+        correctedParams[0] = 35100;
+        condition.setParam(correctedParams);
+        Grasscutter.getLogger()
+                .warn(
+                        "Corrected quest 35101 prerequisite: 35107 FINISHED -> 35100 FINISHED");
     }
 
     public void applyFrom(MainQuestData.SubQuestData additionalData) {

@@ -14,7 +14,6 @@ import emu.grasscutter.server.packet.send.*;
 
 @Opcodes(PacketOpcodes.PlayerLoginReq)
 public class HandlerPlayerLoginReq extends PacketHandler {
-    private static final int DO_SET_PLAYER_BORN_DATA_NOTIFY = 22899;
     private static final int FIRST_MAIN_QUEST = 351;
 
     @Override
@@ -33,7 +32,7 @@ public class HandlerPlayerLoginReq extends PacketHandler {
             int notifyCmdId =
                     intro.doSetPlayerBornDataNotify > 0
                             ? intro.doSetPlayerBornDataNotify
-                            : DO_SET_PLAYER_BORN_DATA_NOTIFY;
+                            : PacketOpcodes.DoSetPlayerBornDataNotify;
             session.send(new BasePacket(notifyCmdId));
             Grasscutter.getLogger()
                     .info(

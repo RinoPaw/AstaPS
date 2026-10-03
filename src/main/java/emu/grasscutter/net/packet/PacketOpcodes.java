@@ -2974,7 +2974,7 @@ public final class PacketOpcodes {
     public static final int CustomTeamListNotify = 0; // 7.1 CmdId unknown (7.0: 1)
     public static final int DeleteFriendNotify = 0; // 7.1 CmdId unknown (7.0: 1)
     public static final int DeleteFriendRsp = 0; // 7.1 CmdId unknown (7.0: 1)
-    public static final int DoSetPlayerBornDataNotify = 0; // 7.1 CmdId unknown (7.0: 1)
+    public static final int DoSetPlayerBornDataNotify = 22899; // 7.1 global, runtime-confirmed
     public static final int EndCameraSceneLookNotify = 0; // 7.1 CmdId unknown (7.0: 1)
     public static final int ExecuteGadgetLuaRsp = 0; // 7.1 CmdId unknown (7.0: 1)
     public static final int ForgeStartRsp = 0; // 7.1 CmdId unknown (7.0: 1)

@@ -4,16 +4,30 @@ import static emu.grasscutter.scripts.constants.EventType.EVENT_UNLOCK_TRANS_POI
 
 import emu.grasscutter.config.RewardOverrides;
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.data.common.PointData;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.props.WatcherTriggerType;
 import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.reward.RewardScaler;
 import emu.grasscutter.scripts.data.ScriptArgs;
 import emu.grasscutter.server.packet.send.PacketScenePointUnlockNotify;
+import java.util.Set;
 
 /** Unlocks a statue, waypoint, or dungeon entrance and grants its configured exploration reward. */
 public final class TransPointUnlockHelper {
+    private static final Set<Integer> STATUE_GADGET_IDS =
+            Set.of(70130009, 70130010, 70130011, 73176017);
+
     private TransPointUnlockHelper() {}
+
+    /** Returns whether a scene point is a Statue of the Seven. */
+    public static boolean isStatuePoint(PointData data) {
+        if (data == null) return false;
+        if (data.getMaxSpringVolume() > 0) return true;
+        if (STATUE_GADGET_IDS.contains(data.getGadgetId())) return true;
+        String type = data.getType();
+        return type != null && type.contains("KDEHKECBDBO");
+    }
 
     public static boolean unlock(Player player, int sceneId, int pointId, boolean isStatue) {
         var scenePointEntry = GameData.getScenePointEntryById(sceneId, pointId);

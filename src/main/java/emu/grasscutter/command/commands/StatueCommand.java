@@ -5,6 +5,7 @@ import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.player.TransPointUnlockHelper;
 import emu.grasscutter.server.packet.send.PacketGetSceneAreaRsp;
 import emu.grasscutter.server.packet.send.PacketGetScenePointRsp;
 import emu.grasscutter.server.packet.send.PacketLevelupCityRsp;
@@ -280,7 +281,7 @@ public final class StatueCommand implements PicocliCommandHandler {
             var entry = GameData.getScenePointEntryById(sceneId, pointId);
             if (entry == null || entry.getPointData() == null) continue;
             var data = entry.getPointData();
-            if (!isStatuePoint(data) || data.getPos() == null) continue;
+            if (!TransPointUnlockHelper.isStatuePoint(data) || data.getPos() == null) continue;
             var point = data.getPos();
             double dx = point.getX() - position.getX();
             double dy = point.getY() - position.getY();
@@ -292,11 +293,5 @@ public final class StatueCommand implements PicocliCommandHandler {
             }
         }
         return best;
-    }
-
-    private static boolean isStatuePoint(emu.grasscutter.data.common.PointData data) {
-        if (data.getMaxSpringVolume() > 0) return true;
-        String type = data.getType();
-        return type != null && type.contains("KDEHKECBDBO");
     }
 }

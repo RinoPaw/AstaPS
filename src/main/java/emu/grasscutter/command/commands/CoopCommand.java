@@ -11,11 +11,29 @@ import picocli.CommandLine.Parameters;
 @Command(
         label = "coop",
         permission = "server.coop",
-        permissionTargeted = "server.coop.others")
+        permissionTargeted = "server.coop.others",
+        inlineTarget = false)
 public final class CoopCommand implements PicocliCommandHandler {
+    private record UidArg(int value) {}
+
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
-        return new CommandLine(new Args(sender, targetPlayer));
+        var commandLine = new CommandLine(new Args(sender, targetPlayer));
+        commandLine.registerConverter(
+                UidArg.class,
+                value -> {
+                    if (value == null || value.length() < 2 || value.charAt(0) != '@') {
+                        throw new CommandLine.TypeConversionException("UID must use @<digits> syntax.");
+                    }
+                    try {
+                        int uid = Integer.parseInt(value.substring(1));
+                        if (uid <= 0) throw new NumberFormatException();
+                        return new UidArg(uid);
+                    } catch (NumberFormatException ignored) {
+                        throw new CommandLine.TypeConversionException("UID must use @<digits> syntax.");
+                    }
+                });
+        return commandLine;
     }
 
     @CommandLine.Command(name = "coop")
@@ -23,8 +41,8 @@ public final class CoopCommand implements PicocliCommandHandler {
         private final Player sender;
         private final Player targetPlayer;
 
-        @Parameters(index = "0", arity = "0..1", paramLabel = "[hostUid]")
-        private Integer hostUid;
+        @Parameters(index = "0", arity = "0..1", paramLabel = "[@hostUID]")
+        private UidArg hostUid;
 
         private Args(Player sender, Player targetPlayer) {
             this.sender = sender;
@@ -41,7 +59,7 @@ public final class CoopCommand implements PicocliCommandHandler {
                 }
                 host = sender;
             } else {
-                host = Grasscutter.getGameServer().getPlayerByUid(hostUid);
+                host = Grasscutter.getGameServer().getPlayerByUid(hostUid.value());
                 if (host == null) {
                     CommandHandler.sendTranslatedMessage(sender, "commands.execution.player_offline_error");
                     return;

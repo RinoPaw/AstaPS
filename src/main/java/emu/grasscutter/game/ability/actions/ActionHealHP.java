@@ -21,28 +21,30 @@ public final class ActionHealHP extends AbilityActionHandler {
         var owner = ability.getOwner();
 
         if (owner instanceof EntityClientGadget ownerGadget) {
+            var scene = ownerGadget.getScene();
             owner =
-                    ownerGadget
-                            .getScene()
-                            .getEntityById(ownerGadget.getOwnerEntityId());
+                    scene != null
+                            ? scene.getEntityById(ownerGadget.getOriginalOwnerEntityId())
+                            : null;
+            if (owner == null && scene != null) {
+                owner = scene.getEntityById(ownerGadget.getOwnerEntityId());
+            }
+            if (owner == null
+                    && (ownerGadget.gadgetId == 41089013
+                            || ownerGadget.gadgetId == 41089012
+                            || ownerGadget.gadgetId == 41089011)
+                    && ability.getPlayerOwner() != null) {
+                owner = ability.getPlayerOwner().getTeamManager().getCurrentAvatarEntity();
+            }
             if (DebugConstants.LOG_ABILITIES) {
                 Grasscutter.getLogger()
                         .debug(
                                 "Owner {} has top owner {}: {}",
                                 ability.getOwner(),
-                                ownerGadget.getOwnerEntityId(),
+                                ownerGadget.getOriginalOwnerEntityId(),
                                 owner);
             }
         }
-        if (owner instanceof EntityClientGadget ownerGadget) {
-                owner = ownerGadget.getScene().getEntityById(ownerGadget.getOwnerEntityId());
-
-                if (ownerGadget.gadgetId == 41089013 || ownerGadget.gadgetId == 41089012 || ownerGadget.gadgetId == 41089011) {
-                    if (owner == null) {
-                        owner = ability.getPlayerOwner().getTeamManager().getCurrentAvatarEntity();
-                    }
-                }
-            }
 
         if (owner == null) return false;
 

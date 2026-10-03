@@ -219,6 +219,13 @@ public class GameQuest {
         }
         this.finishTime = Utils.getCurrentSeconds();
 
+        if (this.getMainQuestId() == 351) {
+            Grasscutter.getLogger()
+                    .info(
+                            "[quest351] sub-finish uid={} sub={} finishParent={}",
+                            this.getOwner().getUid(), this.subQuestId, this.getQuestData().isFinishParent());
+        }
+
         this.getOwner().sendPacket(new PacketQuestListUpdateNotify(this));
 
         if (this.getQuestData().isFinishParent()) {

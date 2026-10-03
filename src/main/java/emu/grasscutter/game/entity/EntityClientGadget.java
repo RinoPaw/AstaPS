@@ -90,11 +90,8 @@ public class EntityClientGadget extends EntityBaseGadget {
         if (ownerEntity == null) {
             ownerEntity = scene.getEntityById(16777225);
         }
-        if (ownerEntity instanceof EntityClientGadget ownerGadget) {
-            this.originalOwnerEntityId = ownerGadget.getOriginalOwnerEntityId();
-        } else {
-            this.originalOwnerEntityId = this.ownerEntityId;
-        }
+        this.originalOwnerEntityId =
+                ownerEntity != null ? ownerEntity.getId() : this.ownerEntityId;
 
         this.initAbilities();
     }
@@ -188,7 +185,7 @@ public class EntityClientGadget extends EntityBaseGadget {
                         .build();
 
         SceneGadgetInfo.Builder gadgetInfo =
-                SceneGadgetInfo.newBuilder()
+                SceneGadgetInfoOuterClass.SceneGadgetInfo.newBuilder()
                         .setGadgetId(this.getGadgetId())
                         .setOwnerEntityId(this.getOwnerEntityId())
                         .setBornType(this.bornType != null ? this.bornType : GadgetBornType.GadgetBornType_GADGET_BORN_PLAYER)

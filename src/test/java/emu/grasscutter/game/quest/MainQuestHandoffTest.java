@@ -34,8 +34,6 @@ public final class MainQuestHandoffTest {
     @BeforeAll
     static void initializeConfig() throws Exception {
         offeringLevelsExisted = Files.exists(offeringLevels);
-        // Grasscutter's startup check requires the two resource directories even though these
-        // tests supply every quest row themselves. Preserve any existing resource pack/config.
         var root = Path.of("resources");
         var config = Path.of("config.json");
         if (Files.exists(config)) {
@@ -50,21 +48,17 @@ public final class MainQuestHandoffTest {
                 createdDirectories.add(path);
             }
         }
-        // Player uses Configuration; initialize its owner before accessing those static aliases.
         Grasscutter.getLogger();
     }
 
     @AfterAll
     static void removeEmptyFixtureDirectories() throws Exception {
-        // OfferingHelper creates an empty file when the real progress-manager login runs.
-        // Preserve any existing file or any progress written by another process.
         if (!offeringLevelsExisted
                 && Files.exists(offeringLevels)
                 && Files.readString(offeringLevels).trim().equals("{}")) {
             Files.delete(offeringLevels);
         }
         for (int i = createdDirectories.size() - 1; i >= 0; i--) {
-            // Delete only the empty directories created here; never remove an existing pack.
             try {
                 Files.deleteIfExists(createdDirectories.get(i));
             } catch (java.nio.file.DirectoryNotEmptyException ignored) {
@@ -132,7 +126,6 @@ public final class MainQuestHandoffTest {
     }
 
     private static <T> T decodeSaved(String json, Class<T> type) {
-        // MongoDB does not persist runtime links. Honor its @Transient annotation in fixtures too.
         return new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes field) {
@@ -270,8 +263,7 @@ public final class MainQuestHandoffTest {
             assertEquals(QuestState.QUEST_STATE_UNFINISHED, activation.getState());
             assertEquals(0, activation.getFinishTime());
 
-            player.getQuestManager()
-                    .triggerEvent(QuestContent.QUEST_CONTENT_COMPLETE_TALK, "", 30302);
+            activation.finish();
             assertEquals(QuestState.QUEST_STATE_FINISHED, activation.getState());
         } finally {
             GAME_OPTIONS.questing.enabled = enabled;
@@ -315,7 +307,6 @@ public final class MainQuestHandoffTest {
             terminal.setAcceptTime(123);
             assertFalse(manager.canStartMainQuestIfUnlinked(352));
 
-            // QuestManager.onLogin visits active parents' rewind before PlayerProgress.onPlayerLogin.
             parent.rewind();
             player.getProgressManager().onPlayerLogin();
 
@@ -392,7 +383,6 @@ public final class MainQuestHandoffTest {
         @Override
         public void tryStartFollowingQuests() {
             calls.add("handoff");
-            // Successors are added during recovery, so iterating the live map is unsafe.
             manager.getMainQuests().put(352, new GameMainQuest());
         }
     }

@@ -4,7 +4,7 @@ This page is the maintainer-facing index of reverse-engineering work that may af
 
 The source of truth for technical evidence remains [`RinoPaw/Genshin-Reverse`](https://github.com/RinoPaw/Genshin-Reverse). Do not copy conclusions out of this index and treat the copy as new evidence. Follow the linked artifact or commit before changing server behavior.
 
-Last reviewed against `Genshin-Reverse` main: `10e72db13eacadee9a5e65d1c602f3f3acd22593` (2026-10-04).
+Last reviewed against `Genshin-Reverse` main: `9d3a29f51bb4f215fb455c030f7814eee8afc7bd` (2026-10-04).
 
 ## Status vocabulary
 

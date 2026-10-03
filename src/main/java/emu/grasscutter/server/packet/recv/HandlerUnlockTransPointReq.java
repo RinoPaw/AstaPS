@@ -2,10 +2,8 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.net.packet.*;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
 import emu.grasscutter.net.proto.UnlockTransPointReqOuterClass.UnlockTransPointReq;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.packet.send.PacketUnlockTransPointRsp;
 
 @Opcodes(PacketOpcodes.UnlockTransPointReq)
 public class HandlerUnlockTransPointReq extends PacketHandler {
@@ -21,12 +19,9 @@ public class HandlerUnlockTransPointReq extends PacketHandler {
             session.getPlayer()
                     .getProgressManager()
                     .miaoUnlockStatue(req.getSceneId(), req.getPointId());
-            session.getPlayer()
-                    .sendPacket(
-                            new PacketUnlockTransPointRsp(
-                                    RetcodeOuterClass.Retcode.RET_SUCC));
             return;
         }
+
         boolean unlocked =
                 session
                         .getPlayer()
@@ -40,20 +35,10 @@ public class HandlerUnlockTransPointReq extends PacketHandler {
                         req.getPointId(),
                         isStatue,
                         unlocked);
-        // UnlockTransPointRsp has no known 7.1 CmdId, so the client never hears back and leaves the
-        // point drawn as locked. Resend the scene's point list, as the statue auto-unlock does.
-        if (unlocked) {
-            session.getPlayer()
-                    .sendPacket(
-                            new emu.grasscutter.server.packet.send.PacketGetScenePointRsp(
-                                    session.getPlayer(), req.getSceneId()));
-        }
-        session
-                .getPlayer()
-                .sendPacket(
-                        new PacketUnlockTransPointRsp(
-                                unlocked
-                                        ? RetcodeOuterClass.Retcode.RET_SUCC
-                                        : RetcodeOuterClass.Retcode.RET_FAIL));
+
+        // Current 7.1 clients update the live waypoint state from ScenePointUnlockNotify. Runtime
+        // controls confirmed that a correctly encoded notify is sufficient for activation, map
+        // usability, and teleport without an extra GetScenePointRsp refresh or an unconfirmed
+        // UnlockTransPointRsp CmdId.
     }
 }

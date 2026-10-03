@@ -1,8 +1,9 @@
 package emu.grasscutter.game.entity.gadget.chest;
 
+import static emu.grasscutter.config.Configuration.GAME;
+
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.config.RewardOverrides;
-import emu.grasscutter.config.RewardOverrides.ChestReward;
+import emu.grasscutter.config.GameConfig.ChestReward;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
@@ -30,7 +31,7 @@ public final class WorldChestLootHelper {
         if (tier == null) {
             return false;
         }
-        ChestReward reward = RewardOverrides.chestReplacement(tier.name());
+        ChestReward reward = GAME.rewards.chest(tier.name());
         if (reward == null) {
             return false;
         }

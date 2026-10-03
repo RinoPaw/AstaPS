@@ -10,7 +10,6 @@
  *  emu.grasscutter.game.entity.EntityBaseGadget
  *  emu.grasscutter.game.entity.EntityGadget
  *  emu.grasscutter.game.entity.GameEntity
- *  emu.grasscutter.game.entity.gadget.GadgetContent
  *  emu.grasscutter.game.entity.gadget.GadgetRewardStatue
  *  emu.grasscutter.game.player.Player
  *  emu.grasscutter.game.props.PlayerProperty

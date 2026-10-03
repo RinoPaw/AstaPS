@@ -8,17 +8,25 @@ import emu.grasscutter.server.packet.send.PacketPlayerEnterSceneNotify;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Holds the short-lived fresh-player gate between character creation and first world entry. */
+/** Coordinates the fresh-player handoff from birth data to the first Quest 351 scene. */
 public final class BornIntroGate {
     private static final int STARTER_SCENE_ID = 3;
     private static final int STARTER_STATUE_POINT_ID = 7;
 
+    private enum Mode {
+        /** Wait for the 7.1 client-side post-born intro before entering the world. */
+        NATIVE_INTRO,
+        /** Character selection/native intro was skipped; only wait for scene-ready Quest bootstrap. */
+        SCENE_READY_ONLY
+    }
+
     // Key by UID rather than GameSession. The 7.1 client may reconnect while the first cold world
-    // login is still finishing; tying this state to the old connection loses the fresh-player quest
-    // bootstrap exactly when the replacement session reaches PostEnterSceneReq.
-    private static final Map<Integer, State> AWAITING_NATIVE_INTRO = new ConcurrentHashMap<>();
+    // login is still finishing; UID scope keeps the fresh-player bootstrap attached to replacement
+    // sessions.
+    private static final Map<Integer, State> FRESH_PLAYER_BOOTSTRAPS = new ConcurrentHashMap<>();
 
     private static final class State {
+        private final Mode mode;
         private final GameSession originSession;
         private boolean sawUnpaused;
         private int completedPauseCycles;
@@ -30,7 +38,8 @@ public final class BornIntroGate {
         private boolean sceneReadyDeferred;
         private GameSession deferredSceneReadySession;
 
-        private State(GameSession originSession) {
+        private State(Mode mode, GameSession originSession) {
+            this.mode = mode;
             this.originSession = originSession;
         }
     }
@@ -44,55 +53,101 @@ public final class BornIntroGate {
 
     private static State stateFor(GameSession session) {
         int uid = uidOf(session);
-        return uid > 0 ? AWAITING_NATIVE_INTRO.get(uid) : null;
+        return uid > 0 ? FRESH_PLAYER_BOOTSTRAPS.get(uid) : null;
     }
 
     private static void remove(GameSession session) {
         int uid = uidOf(session);
-        if (uid > 0) AWAITING_NATIVE_INTRO.remove(uid);
+        if (uid > 0) FRESH_PLAYER_BOOTSTRAPS.remove(uid);
     }
 
-    public static void arm(GameSession session) {
+    /** Begins the native 7.1 post-born intro gate after SetPlayerBornData succeeds. */
+    public static void armNativeIntro(GameSession session) {
         int uid = uidOf(session);
-        if (uid > 0) {
-            AWAITING_NATIVE_INTRO.put(uid, new State(session));
-        }
+        if (uid <= 0) return;
+        FRESH_PLAYER_BOOTSTRAPS.put(uid, new State(Mode.NATIVE_INTRO, session));
     }
 
-    public static boolean isAwaiting(GameSession session) {
-        return stateFor(session) != null;
+    /** Compatibility alias retained for existing native-intro callers. */
+    public static void arm(GameSession session) {
+        armNativeIntro(session);
     }
 
     /**
-     * Player.onLogin normally emits the login PlayerEnterSceneNotify near the end of a long init
-     * tail. Fresh-born 7.1 sends that notify at the native intro boundary instead, so suppress the
-     * later duplicate only on the connection that already received that early scene entry. A
-     * replacement session still needs its own ordinary login scene entry.
+     * Begins the automatic/skip-intro path. World login may start immediately, while Quest 351 is
+     * still held until PostEnterSceneRsp so quest actors initialize against a ready playable scene.
+     */
+    public static void armSceneReady(GameSession session) {
+        int uid = uidOf(session);
+        if (uid <= 0) return;
+
+        State state = new State(Mode.SCENE_READY_ONLY, session);
+        state.cutoverStarted = true;
+        FRESH_PLAYER_BOOTSTRAPS.put(uid, state);
+    }
+
+    /** Marks Player.onLogin complete for the automatic path and resumes any early scene-ready. */
+    public static void markWorldLoginComplete(GameSession session) {
+        State state = stateFor(session);
+        if (state == null) return;
+
+        GameSession deferredReadySession = null;
+        synchronized (state) {
+            state.worldLoginComplete = true;
+            if (state.sceneReadyDeferred) {
+                deferredReadySession = state.deferredSceneReadySession;
+                state.sceneReadyDeferred = false;
+                state.deferredSceneReadySession = null;
+            }
+        }
+
+        if (deferredReadySession != null) {
+            resumeSceneReady(deferredReadySession);
+        }
+    }
+
+    /** True while either fresh-player path still owns the first-scene Quest bootstrap. */
+    public static boolean isFreshPlayerBootstrap(GameSession session) {
+        return stateFor(session) != null;
+    }
+
+    /** Compatibility alias for older call sites. */
+    public static boolean isAwaiting(GameSession session) {
+        return isFreshPlayerBootstrap(session);
+    }
+
+    public static boolean isNativeIntro(GameSession session) {
+        State state = stateFor(session);
+        return state != null && state.mode == Mode.NATIVE_INTRO;
+    }
+
+    /**
+     * Native birth sends scene-entry early at the intro cutover. Suppress only the duplicate login
+     * scene-entry emitted later by Player.onLogin on that same connection. Automatic birth never
+     * uses this suppression.
      */
     public static boolean shouldSuppressLoginSceneEntry(GameSession session) {
         State state = stateFor(session);
-        if (state == null) return false;
+        if (state == null || state.mode != Mode.NATIVE_INTRO) return false;
         synchronized (state) {
             return state.earlySceneEntrySent && state.earlySceneEntrySession == session;
         }
     }
 
     /**
-     * The 7.1 native second intro emits two false->true PlayerSetPauseReq cycles after 26105. The
-     * second cycle finishes exactly when the intro hands control back to the born page, so release
-     * scene entry there rather than guessing a duration.
+     * The native 7.1 second intro emits two false->true PlayerSetPauseReq cycles after born data.
+     * The second cycle is the protocol-visible world-entry boundary. Automatic birth never feeds
+     * this state machine.
      */
     public static void notePause(GameSession session, boolean paused) {
         if (session == null) return;
 
         State state = stateFor(session);
-        if (state == null) return;
+        if (state == null || state.mode != Mode.NATIVE_INTRO) return;
 
         int completedCycles = 0;
         boolean enterWorld = false;
         synchronized (state) {
-            // A replacement connection may inherit the UID-scoped state, but only the connection
-            // that observed the native born intro is allowed to advance its pause-cycle counter.
             if (state.originSession != session || state.cutoverStarted) return;
 
             if (!paused) {
@@ -117,11 +172,11 @@ public final class BornIntroGate {
                         completedCycles);
 
         if (enterWorld) {
-            enterWorld(session);
+            enterWorldAfterNativeIntro(session);
         }
     }
 
-    private static void enterWorld(GameSession session) {
+    private static void enterWorldAfterNativeIntro(GameSession session) {
         var player = session.getPlayer();
         if (player == null) {
             remove(session);
@@ -129,19 +184,17 @@ public final class BornIntroGate {
         }
 
         State state = stateFor(session);
-        if (state == null) return;
+        if (state == null || state.mode != Mode.NATIVE_INTRO) return;
 
         try {
-            // Scene-entry itself is cheap and must reach the client immediately at the native intro
-            // boundary. The cold login tail can take tens of seconds, so do not run it on the packet
-            // handling thread: doing so starves pings/handshake packets and makes 7.1 reconnect.
             session.send(new PacketPlayerEnterSceneNotify(player));
             synchronized (state) {
                 state.earlySceneEntrySent = true;
                 state.earlySceneEntrySession = session;
             }
 
-            Grasscutter.getThreadPool().submit(() -> completeWorldLogin(session, player));
+            // Cold first login can be slow. Keep packet handling alive while the world is built.
+            Grasscutter.getThreadPool().submit(() -> completeNativeWorldLogin(session, player));
         } catch (Throwable t) {
             synchronized (state) {
                 state.cutoverStarted = false;
@@ -154,9 +207,10 @@ public final class BornIntroGate {
         }
     }
 
-    private static void completeWorldLogin(GameSession session, emu.grasscutter.game.player.Player player) {
+    private static void completeNativeWorldLogin(
+            GameSession session, emu.grasscutter.game.player.Player player) {
         State state = stateFor(session);
-        if (state == null) return;
+        if (state == null || state.mode != Mode.NATIVE_INTRO) return;
 
         try {
             synchronized (player) {
@@ -172,19 +226,7 @@ public final class BornIntroGate {
                         starterStatueForceLockedBeforeLogin);
             }
 
-            GameSession deferredReadySession = null;
-            synchronized (state) {
-                state.worldLoginComplete = true;
-                if (state.sceneReadyDeferred) {
-                    deferredReadySession = state.deferredSceneReadySession;
-                    state.sceneReadyDeferred = false;
-                    state.deferredSceneReadySession = null;
-                }
-            }
-
-            if (deferredReadySession != null) {
-                resumeSceneReady(deferredReadySession);
-            }
+            markWorldLoginComplete(session);
         } catch (Throwable t) {
             synchronized (state) {
                 state.cutoverStarted = false;
@@ -207,16 +249,11 @@ public final class BornIntroGate {
                 unlocked.contains(STARTER_STATUE_POINT_ID) != wasUnlocked
                         || forceLocked.contains(STARTER_STATUE_POINT_ID) != wasForceLocked;
 
-        if (wasUnlocked) {
-            unlocked.add(STARTER_STATUE_POINT_ID);
-        } else {
-            unlocked.remove(STARTER_STATUE_POINT_ID);
-        }
-        if (wasForceLocked) {
-            forceLocked.add(STARTER_STATUE_POINT_ID);
-        } else {
-            forceLocked.remove(STARTER_STATUE_POINT_ID);
-        }
+        if (wasUnlocked) unlocked.add(STARTER_STATUE_POINT_ID);
+        else unlocked.remove(STARTER_STATUE_POINT_ID);
+
+        if (wasForceLocked) forceLocked.add(STARTER_STATUE_POINT_ID);
+        else forceLocked.remove(STARTER_STATUE_POINT_ID);
 
         if (changed) {
             player.save();
@@ -229,10 +266,7 @@ public final class BornIntroGate {
         }
     }
 
-    /**
-     * Returns true when EnterSceneReadyReq was retained until the async cold login tail completes.
-     * The handler should return without sending its normal response in that case.
-     */
+    /** Returns true when EnterSceneReadyReq is retained until first Player.onLogin completes. */
     public static boolean deferSceneReadyUntilLoginComplete(GameSession session) {
         State state = stateFor(session);
         if (state == null) return false;
@@ -254,7 +288,7 @@ public final class BornIntroGate {
         session.send(new PacketEnterSceneReadyRsp(player));
     }
 
-    /** Starts the fresh-player quest lifecycle exactly once after the client finished scene entry. */
+    /** Starts the fresh-player quest lifecycle exactly once after PostEnterSceneRsp. */
     public static void finishOnSceneReady(GameSession session) {
         if (session == null) return;
 
@@ -272,9 +306,9 @@ public final class BornIntroGate {
         }
 
         try {
-            // Player.onLogin already sent the full quest snapshot. onPlayerBorn creates Quest 351
-            // through the normal incremental FinishedParentQuestUpdate/QuestListUpdate path, so a
-            // second full snapshot here can reload a quest actor immediately after its sub-start.
+            // Player.onLogin already sent the full new-player quest snapshot. onPlayerBorn creates
+            // Quest 351 through the normal incremental update path. Do not follow it with another
+            // full QuestListNotify, which can reload AQ351 immediately after its first subquest starts.
             player.getQuestManager().onPlayerBorn();
             remove(session);
         } catch (Throwable t) {
@@ -283,7 +317,7 @@ public final class BornIntroGate {
             }
             Grasscutter.getLogger()
                     .error(
-                            "[intro-cutover] uid={} failed to start fresh-player quests after scene entry.",
+                            "[born-flow] uid={} failed to start fresh-player quests after scene entry.",
                             player.getUid(),
                             t);
         }

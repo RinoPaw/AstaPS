@@ -21,6 +21,9 @@ public final class ActionAddGlobalValue extends AbilityActionHandler {
             if (!PredicateEvaluator.all(preds, ability, ability.getOwner(), target, action)) return true;
         }
 
+        target = getTarget(ability, target, action.target);
+        if (target == null) return false;
+
         var properties = propertiesFor(ability);
         String valueKey = action.key;
         float valueToAdd = action.ratio.get(properties, 0f);

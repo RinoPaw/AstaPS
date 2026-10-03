@@ -14,8 +14,7 @@ public class HandlerUnlockTransPointReq extends PacketHandler {
         var player = session.getPlayer();
         var entry = GameData.getScenePointEntryById(req.getSceneId(), req.getPointId());
         boolean isStatue =
-                emu.grasscutter.game.managers.StatueTalkQuests.isStatuePoint(
-                        entry != null ? entry.getPointData() : null);
+                TransPointUnlockHelper.isStatuePoint(entry != null ? entry.getPointData() : null);
 
         TransPointUnlockHelper.unlock(player, req.getSceneId(), req.getPointId(), isStatue);
 

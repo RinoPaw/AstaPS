@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 
 /** Shared configuration access. New gameplay code should read {@link #GAME} directly. */
-public final class Configuration {
+public final class Configuration extends ConfigContainer {
     private Configuration() {}
 
     public static final ConfigContainer c = config;

@@ -78,6 +78,18 @@ public class HandlerUnlockTransPointReq extends PacketHandler {
 
         // TransPointUnlockHelper already sent the corrected 7.1 ScenePointUnlockNotify. Deliberately
         // omit GetScenePointRsp here so a full point-list refresh cannot hide a live-notify failure.
+        // cmd=0/none additionally omits UnlockTransPointRsp, isolating the notify by itself.
+        if (PacketUnlockTransPointRsp.isDisabled()) {
+            emu.grasscutter.Grasscutter.getLogger()
+                    .info(
+                            "UnlockTransPointRsp probe suppressed uid={} scene={} point={} clientSeq={}",
+                            player.getUid(),
+                            req.getSceneId(),
+                            req.getPointId(),
+                            head.getClientSequenceId());
+            return;
+        }
+
         player.sendPacket(new PacketUnlockTransPointRsp(head.getClientSequenceId(), retcode));
     }
 }

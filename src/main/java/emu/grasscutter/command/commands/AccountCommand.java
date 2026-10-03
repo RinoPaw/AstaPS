@@ -14,7 +14,10 @@ import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Unmatched;
 
-@Command(label = "account", targetRequirement = Command.TargetRequirement.NONE)
+@Command(
+        label = "account",
+        targetRequirement = Command.TargetRequirement.NONE,
+        inlineTarget = false)
 public final class AccountCommand implements PicocliCommandHandler {
     private record UidArg(int value) {}
 
@@ -54,8 +57,11 @@ public final class AccountCommand implements PicocliCommandHandler {
     }
 
     private static UidArg parseUid(Player sender, String value) {
+        if (value == null || value.length() < 2 || value.charAt(0) != '@') {
+            throw new CommandLine.TypeConversionException("UID must use @<digits> syntax.");
+        }
         try {
-            int uid = Integer.parseInt(value);
+            int uid = Integer.parseInt(value.substring(1));
             if (uid <= 0) throw new NumberFormatException();
             return new UidArg(uid);
         } catch (NumberFormatException ignored) {
@@ -101,7 +107,7 @@ public final class AccountCommand implements PicocliCommandHandler {
         @Parameters(index = "0", paramLabel = "<username>")
         private String username;
 
-        @Parameters(index = "1", arity = "0..1", paramLabel = "[UID]")
+        @Parameters(index = "1", arity = "0..1", paramLabel = "[@UID]")
         private UidArg uid;
 
         private CreateWithoutPassword(Player sender) {
@@ -124,7 +130,7 @@ public final class AccountCommand implements PicocliCommandHandler {
         @Parameters(index = "1", paramLabel = "<password>")
         private String password;
 
-        @Parameters(index = "2", arity = "0..1", paramLabel = "[UID]")
+        @Parameters(index = "2", arity = "0..1", paramLabel = "[@UID]")
         private UidArg uid;
 
         private CreateWithPassword(Player sender) {
@@ -147,7 +153,7 @@ public final class AccountCommand implements PicocliCommandHandler {
         @Parameters(index = "1", paramLabel = "<target-account>")
         private String targetUsername;
 
-        @Parameters(index = "2", arity = "0..1", paramLabel = "[UID]")
+        @Parameters(index = "2", arity = "0..1", paramLabel = "[@UID]")
         private UidArg uid;
 
         private Clone(Player sender) {

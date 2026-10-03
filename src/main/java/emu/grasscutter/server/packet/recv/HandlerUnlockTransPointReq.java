@@ -16,44 +16,8 @@ public class HandlerUnlockTransPointReq extends PacketHandler {
         boolean isStatue =
                 emu.grasscutter.game.managers.StatueTalkQuests.isStatuePoint(
                         entry != null ? entry.getPointData() : null);
-        boolean previouslyUnlocked =
-                player.getUnlockedScenePoints(req.getSceneId()).contains(req.getPointId());
-        boolean forceLocked = player.isScenePointForceLocked(req.getSceneId(), req.getPointId());
-        var playerPos = player.getPosition();
-        var pointPos =
-                entry != null && entry.getPointData() != null
-                        ? entry.getPointData().getTranPos()
-                        : null;
-        double distance =
-                playerPos != null && pointPos != null
-                        ? playerPos.computeDistance(pointPos)
-                        : Double.NaN;
-        int currentScene = player.getScene() != null ? player.getScene().getId() : 0;
 
-        emu.grasscutter.Grasscutter.getLogger()
-                .info(
-                        "[quest351] unlock-request uid={} requestedScene={} point={} currentScene={} playerPos={} pointPos={} distance={} previouslyUnlocked={} forceLocked={} statue={}",
-                        player.getUid(),
-                        req.getSceneId(),
-                        req.getPointId(),
-                        currentScene,
-                        playerPos,
-                        pointPos,
-                        distance,
-                        previouslyUnlocked,
-                        forceLocked,
-                        isStatue);
-
-        boolean unlocked =
-                TransPointUnlockHelper.unlock(
-                        player, req.getSceneId(), req.getPointId(), isStatue);
-        emu.grasscutter.Grasscutter.getLogger()
-                .info(
-                        "[quest351] unlock-result uid={} scene={} point={} unlocked={}",
-                        player.getUid(),
-                        req.getSceneId(),
-                        req.getPointId(),
-                        unlocked);
+        TransPointUnlockHelper.unlock(player, req.getSceneId(), req.getPointId(), isStatue);
 
         // The exact 7.1 ScenePointUnlockNotify field mapping is now client-backed and is sufficient
         // to update the live waypoint state. Runtime controls with candidate 36641, candidate 20290,

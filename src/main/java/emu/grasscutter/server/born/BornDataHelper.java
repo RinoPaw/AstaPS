@@ -74,7 +74,7 @@ public final class BornDataHelper {
             player.setNickname(resolvedNickname);
 
             Avatar mainCharacter = new Avatar(avatarId);
-            if (!GAME.questing.enabled) {
+            if (!GAME.quests.enabled) {
                 mainCharacter.setSkillDepotData(
                         GameData.getAvatarSkillDepotDataMap().get(startingSkillDepot));
             }
@@ -93,7 +93,7 @@ public final class BornDataHelper {
 
     /** Sends the standard one-time welcome mail after either birth path succeeds. */
     public static void sendWelcomeMail(Player player) {
-        var welcomeMail = GAME.joinOptions.welcomeMail;
+        var welcomeMail = GAME.join.welcomeMail;
         Mail mail = new Mail();
         mail.mailContent.title = welcomeMail.title;
         mail.mailContent.sender = welcomeMail.sender;

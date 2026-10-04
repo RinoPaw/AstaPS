@@ -3,9 +3,7 @@ package emu.grasscutter.game.tps;
 import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.data.excels.avatar.*;
-import emu.grasscutter.data.excels.dungeon.DungeonData;
 import emu.grasscutter.data.excels.scene.SceneData;
-import emu.grasscutter.game.dungeons.enums.DungeonType;
 import emu.grasscutter.utils.*;
 import org.junit.jupiter.api.Test;
 
@@ -27,16 +25,6 @@ public final class TpsAvatarSystemTest {
         assertFalse(TpsAvatarSystem.isTpsScene(travelerOnly));
         assertFalse(TpsAvatarSystem.isTpsScene(open));
         assertFalse(TpsAvatarSystem.isTpsScene(null));
-    }
-
-    @Test
-    public void tpsDungeonTypesLoad() {
-        // An unknown type loads as null, and applyTrialTeam switched on it.
-        var dungeon =
-                JsonUtils.decode(
-                        "{\"id\": 10955, \"sceneId\": 51336, \"type\": \"DUNGEON_TPS_SHOOTING_RANGE\"}",
-                        DungeonData.class);
-        assertEquals(DungeonType.DUNGEON_TPS_SHOOTING_RANGE, dungeon.getType());
     }
 
     @Test

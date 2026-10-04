@@ -76,7 +76,7 @@ public class ArtifactShop implements DynamicShopProvider {
     private final Int2ObjectMap<Set<Integer>> domainSetsByDungeon = new Int2ObjectOpenHashMap<>();
 
     private static ShopSettings.Artifact options() {
-        return GAME.shops.artifact;
+        return GAME.shop.artifact;
     }
 
     @Override

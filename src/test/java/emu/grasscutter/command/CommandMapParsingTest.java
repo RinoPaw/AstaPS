@@ -91,7 +91,7 @@ public final class CommandMapParsingTest {
         public CommandLine createCommandLine(
                 emu.grasscutter.game.player.Player sender,
                 emu.grasscutter.game.player.Player targetPlayer) {
-            return new CommandLine((Runnable) () -> {});
+            return new CommandLine(CommandLine.Model.CommandSpec.create());
         }
     }
 
@@ -100,7 +100,7 @@ public final class CommandMapParsingTest {
         public CommandLine createCommandLine(
                 emu.grasscutter.game.player.Player sender,
                 emu.grasscutter.game.player.Player targetPlayer) {
-            return new CommandLine((Runnable) () -> {});
+            return new CommandLine(CommandLine.Model.CommandSpec.create());
         }
     }
 }

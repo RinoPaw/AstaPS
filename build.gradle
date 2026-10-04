@@ -176,6 +176,7 @@ test {
 }
 
 def buildConfigOutputDir = layout.buildDirectory.dir('generated/sources/buildConfig/java/main')
+def buildInfoOutputDir = layout.buildDirectory.dir('generated/resources/buildInfo/main')
 
 sourceSets {
     main {
@@ -184,6 +185,7 @@ sourceSets {
             srcDir 'src/generated/main/java'
             srcDir buildConfigOutputDir
         }
+        resources.srcDir buildInfoOutputDir
     }
 }
 
@@ -209,29 +211,32 @@ javadoc {
 
 def legacyBuildConfig = file('src/main/java/emu/grasscutter/BuildConfig.java')
 def generatedBuildConfig = buildConfigOutputDir.map { it.file('emu/grasscutter/BuildConfig.java') }
+def generatedBuildInfo = buildInfoOutputDir.map { it.file('build-info.properties') }
+def gitHashProvider = providers.provider {
+    try {
+        def process = new ProcessBuilder('git', 'rev-parse', '--verify', '--short', 'HEAD')
+                .directory(rootDir)
+                .redirectErrorStream(true)
+                .start()
+        def output = process.inputStream.text.trim()
+        if (process.waitFor() == 0 && !output.isEmpty()) {
+            return output
+        }
+    } catch (IOException ignored) {
+        // Source archives can build without a .git directory or git executable.
+    }
+    return 'GIT_NOT_FOUND'
+}
 
 tasks.register('generateBuildConfig') {
     group = 'build setup'
-    description = 'Generate build version and Git hash metadata for the server.'
+    description = 'Generate stable build-version source metadata for the server.'
+    inputs.property('version', version.toString())
     outputs.file(generatedBuildConfig)
 
     doLast {
         if (legacyBuildConfig.exists()) {
             delete legacyBuildConfig
-        }
-
-        def gitHash = 'GIT_NOT_FOUND'
-        try {
-            def process = new ProcessBuilder('git', 'rev-parse', '--verify', '--short', 'HEAD')
-                    .directory(rootDir)
-                    .redirectErrorStream(true)
-                    .start()
-            def output = process.inputStream.text.trim()
-            if (process.waitFor() == 0 && !output.isEmpty()) {
-                gitHash = output
-            }
-        } catch (IOException ignored) {
-            // Source archives can build without a .git directory or git executable.
         }
 
         def outputFile = generatedBuildConfig.get().asFile
@@ -240,7 +245,18 @@ tasks.register('generateBuildConfig') {
 
 public final class BuildConfig {
     public static final String VERSION = \"${version}\";
-    public static final String GIT_HASH = \"${gitHash}\";
+    public static final String GIT_HASH = loadGitHash();
+
+    private static String loadGitHash() {
+        try (var stream = BuildConfig.class.getResourceAsStream(\"/build-info.properties\")) {
+            if (stream == null) return \"GIT_NOT_FOUND\";
+            var properties = new java.util.Properties();
+            properties.load(stream);
+            return properties.getProperty(\"gitHash\", \"GIT_NOT_FOUND\").trim();
+        } catch (java.io.IOException ignored) {
+            return \"GIT_NOT_FOUND\";
+        }
+    }
 
     private BuildConfig() {}
 }
@@ -248,8 +264,25 @@ public final class BuildConfig {
     }
 }
 
+tasks.register('generateBuildInfo') {
+    group = 'build setup'
+    description = 'Generate commit metadata as a runtime resource without invalidating javac.'
+    inputs.property('gitHash', gitHashProvider)
+    outputs.file(generatedBuildInfo)
+
+    doLast {
+        def outputFile = generatedBuildInfo.get().asFile
+        outputFile.parentFile.mkdirs()
+        outputFile.text = "gitHash=${gitHashProvider.get()}\n"
+    }
+}
+
 tasks.named('compileJava') {
     dependsOn 'generateBuildConfig'
+}
+
+tasks.named('processResources') {
+    dependsOn 'generateBuildInfo'
 }
 
 tasks.named('sourcesJar') {

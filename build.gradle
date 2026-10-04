@@ -308,3 +308,5 @@ tasks.register('generateHandbook', Exec) {
 run {
     standardInput = System.in
 }
+
+apply from: 'gradle/protocol-generation.gradle'

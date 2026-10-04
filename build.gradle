@@ -33,10 +33,10 @@ spotless {
         }
 
         importOrder('io.grasscutter', '', 'java', 'javax', '\\#java', '\\#') // Configure import order.
-        googleJavaFormat('1.15.0') // Use Google's Java formatter.
+        googleJavaFormat('1.17.0') // Use Google's Java formatter with JVM 21 support.
         formatAnnotations() // Reformat annotations.
         endWithNewline() // Ensure files end with a newline.
-        indentWithTabs(2); indentWithSpaces(4) // Use 4 spaces for indentation.
+        leadingSpacesToTabs(2); leadingTabsToSpaces(4) // Use 4 spaces for indentation.
         toggleOffOn() // Toggle off/on.
     }
 }

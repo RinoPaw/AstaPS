@@ -2,7 +2,7 @@ package emu.grasscutter.game.dps;
 
 import emu.grasscutter.GameConstants;
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.dungeons.challenge.trigger.ChallengeTrigger;
 import emu.grasscutter.game.dungeons.challenge.trigger.KillMonsterTrigger;
@@ -45,7 +45,7 @@ public final class DPSMeter {
     /** Replies through the friend DPS commander, falling back to a console whisper. */
     public static void reply(Player player, String message) {
         if (player == null) {
-            CommandHandler.sendMessage(null, message);
+            CommandOutput.sendMessage(null, message);
             return;
         }
         try {
@@ -58,7 +58,7 @@ public final class DPSMeter {
         } catch (Throwable t) {
             Grasscutter.getLogger().debug("DPS reply via bot failed, fallback", t);
         }
-        CommandHandler.sendMessage(player, message);
+        CommandOutput.sendMessage(player, message);
     }
 
     /**
@@ -105,7 +105,7 @@ public final class DPSMeter {
      */
     public static void start(Player player, int seconds, int targetCount) {
         if (player == null) {
-            CommandHandler.sendMessage(null, "A DPS test can only be started by a player.");
+            CommandOutput.sendMessage(null, "A DPS test can only be started by a player.");
             return;
         }
 

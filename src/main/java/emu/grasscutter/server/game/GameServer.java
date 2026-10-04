@@ -35,8 +35,8 @@ import emu.grasscutter.game.world.WorldDataSystem;
 import emu.grasscutter.net.packet.PacketHandler;
 import emu.grasscutter.net.proto.ProfilePictureOuterClass.ProfilePicture;
 import emu.grasscutter.net.proto.SocialDetailOuterClass.SocialDetail;
-import emu.grasscutter.server.dispatch.DispatchClient;
 import emu.grasscutter.server.ServerWatchdog;
+import emu.grasscutter.server.dispatch.DispatchClient;
 import emu.grasscutter.server.event.game.ServerTickEvent;
 import emu.grasscutter.server.event.internal.ServerStartEvent;
 import emu.grasscutter.server.event.internal.ServerStopEvent;
@@ -358,6 +358,10 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
         } catch (Throwable e) {
             Grasscutter.getLogger().error("A scheduled task threw.", e);
         }
+
+        // Gacha config auto-reload used to depend on an unregistered GreenRobot EventBus listener,
+        // so it never ran. Poll its non-blocking WatchService from the actual game tick instead.
+        this.gachaSystem.pollConfigWatcher();
 
         // Call server tick event.
         ServerTickEvent event = new ServerTickEvent(tickStart, Instant.now());

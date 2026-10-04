@@ -64,9 +64,7 @@ dependencies {
     // KCP is a custom/unpublished build and remains vendored until its upstream is identified.
     implementation files('lib/kcp-1.5.1.jar')
 
-    // These used to be checked-in JARs; use their published Maven Central artifacts instead.
-    implementation 'at.favre.lib:bcrypt:0.8.0'
-    implementation 'at.favre.lib:bytes:1.3.0'
+    implementation 'at.favre.lib:bcrypt:0.10.2'
 
     implementation 'it.unimi.dsi:fastutil:8.5.19'
 
@@ -94,8 +92,6 @@ dependencies {
     implementation 'com.github.davidmoten:rtree-multi:0.1'
 
     implementation 'dev.morphia.morphia:morphia-core:2.2.10'
-
-    implementation 'org.greenrobot:eventbus-java:3.3.1'
 
     // Quartz 2.5 moves to Jakarta namespaces. Stay on the latest pre-migration line until
     // the scheduler integration is migrated deliberately.

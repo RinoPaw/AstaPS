@@ -28,7 +28,6 @@ import it.unimi.dsi.fastutil.ints.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import org.greenrobot.eventbus.Subscribe;
 
 public class GachaSystem extends BaseGameSystem {
     private static final int starglitterId = 221;
@@ -42,7 +41,7 @@ public class GachaSystem extends BaseGameSystem {
         GachaEpitomizedPrefabHelper.load();
         GachaEpitomizedCompanionHelper.load();
         this.load();
-        this.startWatcher(server);
+        this.startWatcher();
     }
 
     public Int2ObjectMap<GachaBanner> getGachaBanners() {
@@ -469,7 +468,7 @@ public class GachaSystem extends BaseGameSystem {
             inventory.addItem(starglitterId, starglitter);
         }
 
-            // Packets
+        // Packets
         player.sendPacket(new PacketDoGachaRsp(banner, list, gachaInfo));
 
         if (banner.isChronicleMixedBanner()) {
@@ -480,7 +479,7 @@ public class GachaSystem extends BaseGameSystem {
         player.getBattlePassManager().triggerMission(WatcherTriggerType.TRIGGER_GACHA_NUM, 0, times);
     }
 
-    private synchronized void startWatcher(GameServer server) {
+    private synchronized void startWatcher() {
         if (this.watchService == null) {
             try {
                 this.watchService = FileSystems.getDefault().newWatchService();
@@ -489,49 +488,47 @@ public class GachaSystem extends BaseGameSystem {
             } catch (Exception e) {
                 Grasscutter.getLogger()
                         .error(
-                                "Unable to load the Gacha Manager Watch Service. If ServerOptions.watchGacha is true it will not auto-reload");
-                e.printStackTrace();
+                                "Unable to load the Gacha Manager Watch Service. If server.game.watchGachaConfig is true it will not auto-reload",
+                                e);
             }
         } else {
-            Grasscutter.getLogger().error("Cannot reinitialise watcher ");
+            Grasscutter.getLogger().error("Cannot reinitialise watcher");
         }
     }
 
-    @Subscribe
-    public synchronized void watchBannerJson(GameServerTickEvent tickEvent) {
-        if (GAME.watchGachaConfig) {
-            try {
-                // poll(), not take() - this runs on the server tick thread, and take() parks it until
-                // somebody happens to touch a file in the data directory.
-                WatchKey watchKey = watchService.poll();
-                if (watchKey == null) return;
+    /** Polls the gacha config watcher from the normal game tick. */
+    public synchronized void pollConfigWatcher() {
+        if (!GAME.watchGachaConfig || this.watchService == null) return;
 
-                for (WatchEvent<?> event : watchKey.pollEvents()) {
-                    final Path changed = (Path) event.context();
-                    if (changed.endsWith("Banners.json")) {
-                        Grasscutter.getLogger()
-                                .info("Change detected with banners.json. Reloading gacha config");
-                        this.load();
-                    } else if (changed.endsWith("GachaEpitomizedCompanions.json")) {
-                        Grasscutter.getLogger()
-                                .info("Change detected with GachaEpitomizedCompanions.json. Reloading epitomized companions");
-                        GachaEpitomizedCompanionHelper.load();
-                    } else if (changed.endsWith("GachaEpitomizedPrefabMap.json")) {
-                        Grasscutter.getLogger()
-                                .info("Change detected with GachaEpitomizedPrefabMap.json. Reloading epitomized prefabs");
-                        GachaEpitomizedPrefabHelper.load();
-                    }
-                }
+        try {
+            // poll(), not take(): this runs on the server tick thread and must never block it.
+            WatchKey watchKey = watchService.poll();
+            if (watchKey == null) return;
 
-                boolean valid = watchKey.reset();
-                if (!valid) {
+            for (WatchEvent<?> event : watchKey.pollEvents()) {
+                final Path changed = (Path) event.context();
+                if (changed.endsWith("Banners.json")) {
+                    Grasscutter.getLogger().info("Change detected with Banners.json. Reloading gacha config");
+                    this.load();
+                } else if (changed.endsWith("GachaEpitomizedCompanions.json")) {
                     Grasscutter.getLogger()
-                            .error(
-                                    "Unable to reset Gacha Manager Watch Key. Auto-reload of banners.json will no longer work.");
+                            .info("Change detected with GachaEpitomizedCompanions.json. Reloading epitomized companions");
+                    GachaEpitomizedCompanionHelper.load();
+                } else if (changed.endsWith("GachaEpitomizedPrefabMap.json")) {
+                    Grasscutter.getLogger()
+                            .info("Change detected with GachaEpitomizedPrefabMap.json. Reloading epitomized prefabs");
+                    GachaEpitomizedPrefabHelper.load();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+
+            if (!watchKey.reset()) {
+                Grasscutter.getLogger()
+                        .error(
+                                "Unable to reset Gacha Manager Watch Key. Auto-reload of gacha config will no longer work.");
+                this.watchService = null;
+            }
+        } catch (Exception e) {
+            Grasscutter.getLogger().error("Failed while polling the gacha config watcher.", e);
         }
     }
 

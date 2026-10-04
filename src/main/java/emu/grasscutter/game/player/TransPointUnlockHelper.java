@@ -3,6 +3,7 @@ package emu.grasscutter.game.player;
 import static emu.grasscutter.config.Configuration.GAME;
 import static emu.grasscutter.scripts.constants.EventType.EVENT_UNLOCK_TRANS_POINT;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.PointData;
 import emu.grasscutter.game.props.ActionReason;
@@ -38,7 +39,9 @@ public final class TransPointUnlockHelper {
         player.getForceLockedScenePoints(sceneId).remove(pointId);
         player.getUnlockedScenePoints(sceneId).add(pointId);
 
-        grantReward(player, isStatue);
+        // The unlock is authoritative game state. Persist it before optional reward handling so a
+        // broken reward configuration/classpath can never leave the point unlocked only in memory.
+        player.save();
 
         player
                 .getQuestManager()
@@ -57,23 +60,45 @@ public final class TransPointUnlockHelper {
         InvestigationHandbookHelper.trigger(
                 player, WatcherTriggerType.TRIGGER_UNLOCK_TRANS_POINT, 0, total);
 
-        player.save();
+        try {
+            grantReward(player, isStatue);
+        } catch (RuntimeException | LinkageError e) {
+            // Rewards are an auxiliary side effect. In particular, classpath/configuration failures
+            // such as NoClassDefFoundError must not roll back or suppress the actual point unlock.
+            Grasscutter.getLogger()
+                    .error(
+                            "Failed to grant unlock reward for uid={} scene={} point={}; "
+                                    + "the trans point remains unlocked.",
+                            player.getUid(),
+                            sceneId,
+                            pointId,
+                            e);
+        }
+
         return true;
     }
 
     private static void grantReward(Player player, boolean isStatue) {
         var reward = GAME.rewards.unlock(isStatue);
-        add(player, 201, reward.primogems);
-        add(player, RewardScaler.ADVENTURE_EXP_ITEM_ID, reward.adventureExp);
-        add(player, 107009, reward.fragileResin);
-        add(player, 104003, reward.heroWit);
-        add(player, 104013, reward.mysticEnhancementOre);
-    }
 
-    private static void add(Player player, int itemId, int baseCount) {
-        int count = RewardScaler.scaleCount(itemId, baseCount, 1.0);
-        if (count > 0) {
-            player.getInventory().addItem(itemId, count, ActionReason.UnlockPointReward);
+        // Resolve every scaled amount before mutating inventory. If scaling itself fails, no partial
+        // reward set is applied and the already-persisted unlock still succeeds.
+        int[][] rewards = {
+            {201, RewardScaler.scaleCount(201, reward.primogems, 1.0)},
+            {
+                RewardScaler.ADVENTURE_EXP_ITEM_ID,
+                RewardScaler.scaleCount(
+                        RewardScaler.ADVENTURE_EXP_ITEM_ID, reward.adventureExp, 1.0)
+            },
+            {107009, RewardScaler.scaleCount(107009, reward.fragileResin, 1.0)},
+            {104003, RewardScaler.scaleCount(104003, reward.heroWit, 1.0)},
+            {104013, RewardScaler.scaleCount(104013, reward.mysticEnhancementOre, 1.0)}
+        };
+
+        for (int[] entry : rewards) {
+            if (entry[1] > 0) {
+                player.getInventory().addItem(entry[0], entry[1], ActionReason.UnlockPointReward);
+            }
         }
     }
 }

@@ -1,0 +1,104 @@
+import java.util.Locale
+import org.apache.tools.ant.taskdefs.condition.Os
+import org.gradle.api.GradleException
+import org.gradle.api.tasks.JavaExec
+import org.gradle.api.tasks.SourceSetContainer
+
+allprojects { currentProject ->
+    currentProject.pluginManager.withPlugin('java') {
+        if (currentProject != currentProject.rootProject) {
+            return
+        }
+
+        def sourceSets = currentProject.extensions.getByType(SourceSetContainer)
+        def protocolTools = sourceSets.findByName('protocolTools') ?: sourceSets.create('protocolTools')
+        protocolTools.java.srcDir(currentProject.file('tools/protocol/java'))
+
+        currentProject.configurations
+                .getByName(protocolTools.implementationConfigurationName)
+                .extendsFrom(currentProject.configurations.getByName('implementation'))
+
+        def protocVersion = '3.25.9'
+        def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
+        def archName = System.getProperty('os.arch').toLowerCase(Locale.ROOT)
+
+        def osClassifier
+        if (osName.contains('win')) {
+            osClassifier = 'windows'
+        } else if (osName.contains('mac') || osName.contains('darwin')) {
+            osClassifier = 'osx'
+        } else if (osName.contains('linux')) {
+            osClassifier = 'linux'
+        } else {
+            throw new GradleException("Unsupported protoc operating system: ${System.getProperty('os.name')}")
+        }
+
+        def archClassifier
+        if (archName == 'amd64' || archName == 'x86_64') {
+            archClassifier = 'x86_64'
+        } else if (archName == 'aarch64' || archName == 'arm64') {
+            archClassifier = 'aarch_64'
+        } else {
+            throw new GradleException("Unsupported protoc architecture: ${System.getProperty('os.arch')}")
+        }
+
+        def protocClassifier = "${osClassifier}-${archClassifier}"
+        def protocCompiler = currentProject.configurations.maybeCreate('protocCompiler')
+        protocCompiler.canBeConsumed = false
+        protocCompiler.canBeResolved = true
+        currentProject.dependencies.add(
+                protocCompiler.name,
+                "com.google.protobuf:protoc:${protocVersion}:${protocClassifier}@exe")
+
+        def descriptorSet = currentProject.layout.projectDirectory.file('protocol/7.1/protocol.desc')
+        def protocolFileList = currentProject.layout.projectDirectory.file('protocol/7.1/files.txt')
+        def generatedProtocolJava =
+                currentProject.layout.buildDirectory.dir('generated/sources/protocol/7.1/java/main')
+
+        currentProject.tasks.register('generateProtocolJava', JavaExec) { task ->
+            task.group = 'protocol'
+            task.description =
+                    "Generate 7.1 Java protocol sources from the canonical descriptor set with protoc ${protocVersion}."
+            task.dependsOn(currentProject.tasks.named(protocolTools.compileJavaTaskName))
+            task.classpath = protocolTools.runtimeClasspath
+            task.mainClass.set('emu.grasscutter.tools.protocol.ProtocolJavaGenerator')
+            task.inputs.files(descriptorSet, protocolFileList)
+            task.outputs.dir(generatedProtocolJava)
+
+            task.doFirst {
+                def protocExecutable = protocCompiler.singleFile
+                if (!Os.isFamily(Os.FAMILY_WINDOWS) && !protocExecutable.canExecute()) {
+                    if (!protocExecutable.setExecutable(true)) {
+                        throw new GradleException("Cannot make protoc executable: ${protocExecutable}")
+                    }
+                }
+
+                task.setArgs([
+                    protocExecutable.absolutePath,
+                    descriptorSet.asFile.absolutePath,
+                    protocolFileList.asFile.absolutePath,
+                    generatedProtocolJava.get().asFile.absolutePath,
+                ])
+            }
+        }
+
+        currentProject.afterEvaluate {
+            def legacyProtocolJava = currentProject.file('src/generated/main/java').canonicalFile
+            def retainedSourceDirs = sourceSets.main.java.srcDirs.findAll {
+                it.canonicalFile != legacyProtocolJava
+            }
+            sourceSets.main.java.setSrcDirs(retainedSourceDirs)
+            sourceSets.main.java.srcDir(generatedProtocolJava)
+
+            currentProject.tasks.named('compileJava') {
+                dependsOn 'generateProtocolJava'
+            }
+            currentProject.tasks.named('sourcesJar') {
+                dependsOn 'generateProtocolJava'
+            }
+            currentProject.tasks.named('javadoc') {
+                exclude '**/net/proto/**'
+            }
+        }
+    }
+}

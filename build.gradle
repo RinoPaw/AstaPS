@@ -21,7 +21,7 @@ spotless {
             exclude '.idea/**/*.*'
         }
 
-        importOrder('io.grasscutter', '', 'java', 'javax', '\\#java', '\\#')
+        importOrder('io.grasscutter', '', 'java', 'javax', '\#java', '\#')
         googleJavaFormat('1.17.0')
         formatAnnotations()
         endWithNewline()
@@ -140,16 +140,17 @@ application {
     mainClass.set('emu.grasscutter.Grasscutter')
 }
 
-tasks.named('jar') {
+jar {
     exclude '*.proto'
-    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
 
     manifest {
         attributes 'Main-Class': 'emu.grasscutter.Grasscutter'
     }
 
     archiveBaseName = 'grasscutter'
-
     if (project.hasProperty('jarFilename')) {
         archiveFileName = "${jarFilename}.${archiveExtension.get()}"
     }
@@ -167,4 +168,141 @@ tasks.named('jar') {
     }
 
     destinationDirectory = file('.')
+}
+
+test {
+    useJUnitPlatform()
+    setMaxHeapSize('4G')
+}
+
+def buildConfigOutputDir = layout.buildDirectory.dir('generated/sources/buildConfig/java/main')
+
+sourceSets {
+    main {
+        // The 7.1 protocol dump is checked in as generated Java; there are no source .proto files.
+        java {
+            srcDir 'src/generated/main/java'
+            srcDir buildConfigOutputDir
+        }
+    }
+}
+
+eclipse {
+    classpath {
+        file.whenMerged {
+            cp -> cp.entries.add(new SourceFolder('src/generated/main/java', null))
+        }
+    }
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+
+    options.addStringOption('Xdoclint:none', '-quiet')
+    exclude '**/*.md'
+    exclude 'src/handbook/**/*.*'
+    exclude 'src/generated/**/*.*'
+}
+
+def legacyBuildConfig = file('src/main/java/emu/grasscutter/BuildConfig.java')
+def generatedBuildConfig = buildConfigOutputDir.map { it.file('emu/grasscutter/BuildConfig.java') }
+
+tasks.register('generateBuildConfig') {
+    group = 'build setup'
+    description = 'Generate build version and Git hash metadata for the server.'
+    outputs.file(generatedBuildConfig)
+
+    doLast {
+        if (legacyBuildConfig.exists()) {
+            delete legacyBuildConfig
+        }
+
+        def gitHash = 'GIT_NOT_FOUND'
+        try {
+            def process = new ProcessBuilder('git', 'rev-parse', '--verify', '--short', 'HEAD')
+                    .directory(rootDir)
+                    .redirectErrorStream(true)
+                    .start()
+            def output = process.inputStream.text.trim()
+            if (process.waitFor() == 0 && !output.isEmpty()) {
+                gitHash = output
+            }
+        } catch (IOException ignored) {
+            // Source archives can build without a .git directory or git executable.
+        }
+
+        def outputFile = generatedBuildConfig.get().asFile
+        outputFile.parentFile.mkdirs()
+        outputFile.text = """package emu.grasscutter;
+
+public final class BuildConfig {
+    public static final String VERSION = \"${version}\";
+    public static final String GIT_HASH = \"${gitHash}\";
+
+    private BuildConfig() {}
+}
+"""
+    }
+}
+
+tasks.named('compileJava') {
+    dependsOn 'generateBuildConfig'
+}
+
+tasks.named('sourcesJar') {
+    dependsOn 'generateBuildConfig'
+}
+
+def handbookDataFiles = [
+    'src/handbook/data/commands.json',
+    'src/handbook/data/avatars.csv',
+    'src/handbook/data/entities.csv',
+    'src/handbook/data/items.csv',
+    'src/handbook/data/mainquests.csv',
+    'src/handbook/data/quests.csv',
+    'src/handbook/data/scenes.csv'
+]
+def handbookNpm = Os.isFamily(Os.FAMILY_WINDOWS) ? 'npm.cmd' : 'npm'
+
+tasks.register('generateHandbook', Exec) {
+    group = 'documentation'
+    description = 'Install handbook dependencies when handbook source data is available.'
+    workingDir 'src/handbook'
+    commandLine handbookNpm, 'install'
+
+    onlyIf {
+        if (project.hasProperty('skipHandbook')) {
+            logger.lifecycle('Skipping handbook generation.')
+            return false
+        }
+
+        def missingData = handbookDataFiles.find { !file(it).exists() }
+        if (missingData != null) {
+            logger.lifecycle("${missingData} was not found. Skipping handbook generation.")
+            return false
+        }
+
+        try {
+            def process = new ProcessBuilder(handbookNpm, '--version')
+                    .redirectErrorStream(true)
+                    .start()
+            process.inputStream.text
+            if (process.waitFor() != 0) {
+                logger.lifecycle('NPM is not available. Skipping handbook generation.')
+                return false
+            }
+        } catch (IOException ignored) {
+            logger.lifecycle('NPM is not installed. Skipping handbook generation.')
+            return false
+        }
+
+        return true
+    }
+}
+
+run {
+    standardInput = System.in
 }

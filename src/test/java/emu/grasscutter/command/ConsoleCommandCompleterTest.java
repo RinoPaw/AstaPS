@@ -9,23 +9,23 @@ import org.jline.reader.ParsedLine;
 import org.junit.jupiter.api.Test;
 
 public final class ConsoleCommandCompleterTest {
-    @Command(label = "weather", aliases = {"w"})
-    private static final class WeatherHandler implements CommandHandler {}
-
     @Test
     public void completesLabelsAliasesAndTarget() {
-        var commandMap = new CommandMap(false);
-        commandMap.registerCommand("weather", new WeatherHandler());
-        var completer = new ConsoleCommandCompleter(commandMap);
+        var completer = new ConsoleCommandCompleter(List.of("weather", "w"));
 
         assertEquals(List.of("target", "w", "weather"), complete(completer, 0));
     }
 
     @Test
+    public void normalizesAndDeduplicatesCommandNames() {
+        var completer = new ConsoleCommandCompleter(List.of("GameSpeed", "speed", "SPEED"));
+
+        assertEquals(List.of("gamespeed", "speed", "target"), complete(completer, 0));
+    }
+
+    @Test
     public void doesNotCompleteCommandArguments() {
-        var commandMap = new CommandMap(false);
-        commandMap.registerCommand("weather", new WeatherHandler());
-        var completer = new ConsoleCommandCompleter(commandMap);
+        var completer = new ConsoleCommandCompleter(List.of("weather", "w"));
 
         assertEquals(List.of(), complete(completer, 1));
     }

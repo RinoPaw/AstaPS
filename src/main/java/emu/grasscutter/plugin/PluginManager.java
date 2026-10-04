@@ -19,8 +19,7 @@ public final class PluginManager {
      * This should only be changed when a breaking change is made to the plugin API.
      * A 'breaking change' is something which changes the existing logic of the API.
      */
-    @SuppressWarnings("FieldCanBeLocal")
-    public static int API_VERSION = 3;
+    public static final int API_VERSION = 4;
 
     /* All loaded plugins. */
     private final Map<String, Plugin> plugins = new LinkedHashMap<>();

@@ -29,8 +29,8 @@ public final class CommandMap {
     private static final String CONSOLE_ID = "console";
     private static final Parser COMMAND_PARSER = new DefaultParser();
 
-    private final Map<String, PicocliCommandHandler> commands = new TreeMap<>();
-    private final Map<String, PicocliCommandHandler> aliases = new TreeMap<>();
+    private final Map<String, CommandHandler> commands = new TreeMap<>();
+    private final Map<String, CommandHandler> aliases = new TreeMap<>();
     private final Map<String, Command> annotations = new TreeMap<>();
     private final Object2IntMap<String> targetPlayerIds = new Object2IntOpenHashMap<>();
     private final Object picocliLock = new Object();
@@ -54,11 +54,34 @@ public final class CommandMap {
         return this.commandLine;
     }
 
-    private static CommandLine createRootCommandLine() {
+    static CommandLine createRootCommandLine() {
         var root = new CommandLine(CommandSpec.create().name("astaps"));
         // @UID is AstaPS targeting syntax, never a picocli argument file.
         root.setExpandAtFiles(false);
         return root;
+    }
+
+    static List<String> parseCommandTokens(String rawMessage) throws SyntaxError {
+        return new ArrayList<>(
+                COMMAND_PARSER
+                        .parse(rawMessage, rawMessage.length(), Parser.ParseContext.ACCEPT_LINE)
+                        .words());
+    }
+
+    static String normalizeTargetSelector(String selector) {
+        return selector.startsWith("@") ? selector.substring(1) : selector;
+    }
+
+    static String takeInlineTargetSelector(List<String> args, boolean inlineTarget) {
+        if (!inlineTarget) return null;
+
+        for (int i = 0; i < args.size(); i++) {
+            String arg = args.get(i);
+            if (arg.startsWith("@")) {
+                return args.remove(i).substring(1);
+            }
+        }
+        return null;
     }
 
     private static int getUidFromString(String input) {
@@ -73,13 +96,48 @@ public final class CommandMap {
         }
     }
 
+    private static CommandLine configureCommandLine(
+            CommandLine cli, Player sender, CommandHandler handler) {
+        cli.setExpandAtFiles(false);
+        cli.setParameterExceptionHandler(
+                (exception, argv) -> {
+                    Throwable cause = exception.getCause();
+                    if (cause instanceof CommandLine.TypeConversionException conversion
+                            && conversion.getMessage() != null
+                            && !conversion.getMessage().isBlank()) {
+                        CommandOutput.sendMessage(sender, conversion.getMessage());
+                    } else {
+                        String message = exception.getMessage();
+                        if (message != null && !message.isBlank()) {
+                            CommandOutput.sendMessage(sender, message);
+                        }
+                        CommandOutput.sendMessage(
+                                sender, exception.getCommandLine().getUsageMessage().stripTrailing());
+                    }
+                    return exception.getCommandLine().getCommandSpec().exitCodeOnInvalidInput();
+                });
+        cli.setExecutionExceptionHandler(
+                (exception, commandLine, parseResult) -> {
+                    Grasscutter.getLogger()
+                            .error("Failed to execute command " + handler.getLabel() + ".", exception);
+                    String message = exception.getMessage();
+                    CommandOutput.sendMessage(
+                            sender,
+                            message == null || message.isBlank()
+                                    ? "Command execution failed."
+                                    : message);
+                    return commandLine.getCommandSpec().exitCodeOnExecutionException();
+                });
+        return cli;
+    }
+
     private void rebuildPicocliTree() {
         synchronized (this.picocliLock) {
             var root = createRootCommandLine();
 
             for (var entry : this.commands.entrySet()) {
                 String label = entry.getKey();
-                PicocliCommandHandler handler = entry.getValue();
+                CommandHandler handler = entry.getValue();
                 CommandLine child = handler.createCompletionCommandLine();
                 child.getCommandSpec().name(label);
                 child.setExpandAtFiles(false);
@@ -119,7 +177,7 @@ public final class CommandMap {
         }
     }
 
-    public CommandMap registerCommand(String label, PicocliCommandHandler command) {
+    public CommandMap registerCommand(String label, CommandHandler command) {
         Grasscutter.getLogger().trace("Registered command: " + label);
         label = label.toLowerCase();
 
@@ -131,6 +189,9 @@ public final class CommandMap {
 
             try {
                 Command annotation = command.getClass().getAnnotation(Command.class);
+                if (annotation == null) {
+                    throw new IllegalArgumentException("Command handler must be annotated with @Command.");
+                }
                 this.annotations.put(label, annotation);
                 this.commands.put(label, command);
 
@@ -160,7 +221,7 @@ public final class CommandMap {
         Grasscutter.getLogger().trace("Un-registered command: " + label);
         label = label.toLowerCase();
 
-        PicocliCommandHandler handler = this.commands.get(label);
+        CommandHandler handler = this.commands.get(label);
         if (handler == null) return this;
 
         Command annotation = handler.getClass().getAnnotation(Command.class);
@@ -185,17 +246,17 @@ public final class CommandMap {
         return new LinkedHashMap<>(this.annotations);
     }
 
-    public List<PicocliCommandHandler> getHandlersAsList() {
+    public List<CommandHandler> getHandlersAsList() {
         return new ArrayList<>(this.commands.values());
     }
 
-    public Map<String, PicocliCommandHandler> getHandlers() {
+    public Map<String, CommandHandler> getHandlers() {
         return this.commands;
     }
 
-    public PicocliCommandHandler getHandler(String label) {
+    public CommandHandler getHandler(String label) {
         String normalized = label.toLowerCase();
-        PicocliCommandHandler handler = this.commands.get(normalized);
+        CommandHandler handler = this.commands.get(normalized);
         if (handler == null) handler = this.aliases.get(normalized);
         return handler;
     }
@@ -206,26 +267,21 @@ public final class CommandMap {
             Player targetPlayer,
             List<String> args,
             boolean inlineTarget) {
-        if (inlineTarget) {
-            for (int i = 0; i < args.size(); i++) {
-                String arg = args.get(i);
-                if (arg.startsWith("@")) {
-                    arg = args.remove(i).substring(1);
-                    if (arg.isEmpty()) return null;
+        String inlineSelector = takeInlineTargetSelector(args, inlineTarget);
+        if (inlineSelector != null) {
+            if (inlineSelector.isEmpty()) return null;
 
-                    int uid = getUidFromString(arg);
-                    if (uid == INVALID_UID) {
-                        CommandHandler.sendTranslatedMessage(player, "commands.generic.invalid.uid");
-                        throw new IllegalArgumentException();
-                    }
-                    targetPlayer = Grasscutter.getGameServer().getPlayerByUid(uid, true);
-                    if (targetPlayer == null) {
-                        CommandHandler.sendTranslatedMessage(player, "commands.execution.player_exist_error");
-                        throw new IllegalArgumentException();
-                    }
-                    return targetPlayer;
-                }
+            int uid = getUidFromString(inlineSelector);
+            if (uid == INVALID_UID) {
+                CommandOutput.sendTranslatedMessage(player, "commands.generic.invalid.uid");
+                throw new IllegalArgumentException();
             }
+            targetPlayer = Grasscutter.getGameServer().getPlayerByUid(uid, true);
+            if (targetPlayer == null) {
+                CommandOutput.sendTranslatedMessage(player, "commands.execution.player_exist_error");
+                throw new IllegalArgumentException();
+            }
+            return targetPlayer;
         }
 
         if (targetPlayer != null) return targetPlayer;
@@ -234,7 +290,7 @@ public final class CommandMap {
             targetPlayer =
                     Grasscutter.getGameServer().getPlayerByUid(targetPlayerIds.getInt(playerId), true);
             if (targetPlayer == null) {
-                CommandHandler.sendTranslatedMessage(player, "commands.execution.player_exist_error");
+                CommandOutput.sendTranslatedMessage(player, "commands.execution.player_exist_error");
                 throw new IllegalArgumentException();
             }
             return targetPlayer;
@@ -246,25 +302,25 @@ public final class CommandMap {
     private boolean setPlayerTarget(String playerId, Player player, String selector) {
         if (selector.isEmpty()) {
             targetPlayerIds.removeInt(playerId);
-            CommandHandler.sendTranslatedMessage(player, "commands.execution.clear_target");
+            CommandOutput.sendTranslatedMessage(player, "commands.execution.clear_target");
             return true;
         }
 
         int uid = getUidFromString(selector);
         if (uid == INVALID_UID) {
-            CommandHandler.sendTranslatedMessage(player, "commands.generic.invalid.uid");
+            CommandOutput.sendTranslatedMessage(player, "commands.generic.invalid.uid");
             return false;
         }
         Player targetPlayer = Grasscutter.getGameServer().getPlayerByUid(uid, true);
         if (targetPlayer == null) {
-            CommandHandler.sendTranslatedMessage(player, "commands.execution.player_exist_error");
+            CommandOutput.sendTranslatedMessage(player, "commands.execution.player_exist_error");
             return false;
         }
 
         targetPlayerIds.put(playerId, uid);
         String target = uid + " (" + targetPlayer.getAccount().getUsername() + ")";
-        CommandHandler.sendTranslatedMessage(player, "commands.execution.set_target", target);
-        CommandHandler.sendTranslatedMessage(
+        CommandOutput.sendTranslatedMessage(player, "commands.execution.set_target", target);
+        CommandOutput.sendTranslatedMessage(
                 player,
                 targetPlayer.isOnline()
                         ? "commands.execution.set_target_online"
@@ -298,18 +354,15 @@ public final class CommandMap {
 
         rawMessage = rawMessage.trim();
         if (rawMessage.isEmpty()) {
-            CommandHandler.sendTranslatedMessage(player, "commands.generic.not_specified");
+            CommandOutput.sendTranslatedMessage(player, "commands.generic.not_specified");
             return;
         }
 
         final List<String> tokens;
         try {
-            tokens = new ArrayList<>(
-                    COMMAND_PARSER
-                            .parse(rawMessage, rawMessage.length(), Parser.ParseContext.ACCEPT_LINE)
-                            .words());
+            tokens = parseCommandTokens(rawMessage);
         } catch (SyntaxError error) {
-            CommandHandler.sendMessage(player, error.getMessage());
+            CommandOutput.sendMessage(player, error.getMessage());
             return;
         }
         if (tokens.isEmpty()) return;
@@ -325,14 +378,7 @@ public final class CommandMap {
         }
         if (label.equals("target")) {
             if (!args.isEmpty()) {
-                String selector = args.get(0);
-                if (selector.startsWith("@")) {
-                    selector = selector.substring(1);
-                } else if (selector.chars().allMatch(Character::isDigit)) {
-                    CommandHandler.sendMessage(player, "UID must use @<digits> syntax.");
-                    return;
-                }
-                this.setPlayerTarget(playerId, player, selector);
+                this.setPlayerTarget(playerId, player, normalizeTargetSelector(args.get(0)));
             } else {
                 this.setPlayerTarget(playerId, player, "");
             }
@@ -341,14 +387,14 @@ public final class CommandMap {
 
         String resolvedLabel = this.resolveCommandLabel(label);
         if (resolvedLabel == null) {
-            CommandHandler.sendTranslatedMessage(player, "commands.generic.unknown_command", label);
+            CommandOutput.sendTranslatedMessage(player, "commands.generic.unknown_command", label);
             return;
         }
 
-        PicocliCommandHandler handler = this.commands.get(resolvedLabel);
+        CommandHandler handler = this.commands.get(resolvedLabel);
         Command annotation = this.annotations.get(resolvedLabel);
         if (handler == null || annotation == null) {
-            CommandHandler.sendTranslatedMessage(player, "commands.generic.unknown_command", label);
+            CommandOutput.sendTranslatedMessage(player, "commands.generic.unknown_command", label);
             return;
         }
 
@@ -373,17 +419,17 @@ public final class CommandMap {
         if (targetRequirement != Command.TargetRequirement.NONE) {
             if (targetPlayer == null) {
                 handler.sendUsageMessage(player);
-                CommandHandler.sendTranslatedMessage(player, "commands.execution.need_target");
+                CommandOutput.sendTranslatedMessage(player, "commands.execution.need_target");
                 return;
             }
             if (targetRequirement == Command.TargetRequirement.ONLINE && !targetPlayer.isOnline()) {
                 handler.sendUsageMessage(player);
-                CommandHandler.sendTranslatedMessage(player, "commands.execution.need_target_online");
+                CommandOutput.sendTranslatedMessage(player, "commands.execution.need_target_online");
                 return;
             }
             if (targetRequirement == Command.TargetRequirement.OFFLINE && targetPlayer.isOnline()) {
                 handler.sendUsageMessage(player);
-                CommandHandler.sendTranslatedMessage(player, "commands.execution.need_target_offline");
+                CommandOutput.sendTranslatedMessage(player, "commands.execution.need_target_offline");
                 return;
             }
         }
@@ -392,8 +438,7 @@ public final class CommandMap {
         final Player target = targetPlayer;
         final String[] commandArgs = args.toArray(String[]::new);
         Runnable runnable = () -> {
-            CommandLine cli = handler.createCommandLine(sender, target);
-            cli.setExpandAtFiles(false);
+            CommandLine cli = configureCommandLine(handler.createCommandLine(sender, target), sender, handler);
             cli.execute(commandArgs);
         };
 
@@ -410,11 +455,11 @@ public final class CommandMap {
                     try {
                         Command metadata = annotated.getAnnotation(Command.class);
                         Object object = annotated.getDeclaredConstructor().newInstance();
-                        if (object instanceof PicocliCommandHandler handler) {
+                        if (object instanceof CommandHandler handler) {
                             this.registerCommand(metadata.label(), handler);
                         } else {
                             Grasscutter.getLogger()
-                                    .error("Class " + annotated.getName() + " is not a PicocliCommandHandler!");
+                                    .error("Class " + annotated.getName() + " is not a CommandHandler!");
                         }
                     } catch (Exception exception) {
                         Grasscutter.getLogger()

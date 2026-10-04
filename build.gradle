@@ -103,6 +103,7 @@ dependencies {
 
     implementation 'org.reflections:reflections:0.10.2'
     implementation 'com.esotericsoftware:reflectasm:1.11.9'
+    implementation 'com.github.davidmoten:rtree-multi:0.1'
 
     implementation 'dev.morphia.morphia:morphia-core:2.5.3'
 

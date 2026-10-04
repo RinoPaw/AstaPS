@@ -6,7 +6,6 @@ import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.OpenConfigEntry;
 import emu.grasscutter.data.binout.OpenConfigEntry.AbilityVarSetter;
 import emu.grasscutter.data.excels.ProudSkillData;
-import emu.grasscutter.data.excels.avatar.AvatarSkillDepotData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.proto.AbilityInvokeArgumentOuterClass.AbilityInvokeArgument;
 import emu.grasscutter.net.proto.AbilityInvokeEntryHeadOuterClass.AbilityInvokeEntryHead;
@@ -20,26 +19,33 @@ import java.util.List;
 
 @Command(
         label = "debug",
-        usage = "/debug",
+        usage = {
+            "abilities <entityId> [config]",
+            "entity",
+            "setvar <entityId> <varName> <floatValue> [abilityIdx]",
+            "dynamicmap"
+        },
         permission = "grasscutter.command.debug",
         targetRequirement = Command.TargetRequirement.NONE)
 public final class DebugCommand implements CommandHandler {
     @Override
     public void execute(Player sender, Player targetPlayer, List<String> args) {
-        if (sender == null) return;
-
-        if (args.isEmpty()) {
-            sender.dropMessage("No arguments provided. (check command for help)");
+        if (sender == null) {
+            CommandHandler.sendTranslatedMessage(null, "commands.generic.console_execute_error");
             return;
         }
 
-        var subCommand = args.get(0);
-        args.remove(0);
+        if (args.isEmpty()) {
+            this.sendUsageMessage(sender);
+            return;
+        }
+
+        var subCommand = args.remove(0);
         switch (subCommand) {
-            default -> sender.dropMessage("No arguments provided. (check command for help)");
+            default -> this.sendUsageMessage(sender);
             case "abilities" -> {
                 if (args.isEmpty()) {
-                    sender.dropMessage("No arguments provided. (check command for help)");
+                    this.sendUsageMessage(sender);
                     return;
                 }
 
@@ -88,14 +94,17 @@ public final class DebugCommand implements CommandHandler {
                     sender.dropMessage("No current avatar entity.");
                     return;
                 }
-                sender.dropMessage("Current avatar entityId=" + avatarEntity.getId()
-                    + " avatarId=" + avatarEntity.getAvatar().getAvatarId()
-                    + " configId=" + avatarEntity.getConfigId());
+                sender.dropMessage(
+                        "Current avatar entityId="
+                                + avatarEntity.getId()
+                                + " avatarId="
+                                + avatarEntity.getAvatar().getAvatarId()
+                                + " configId="
+                                + avatarEntity.getConfigId());
             }
             case "setvar" -> {
-
                 if (args.size() < 3) {
-                    sender.dropMessage("Usage: /debug setvar <entityId> <varName> <floatValue> [abilityIdx]");
+                    this.sendUsageMessage(sender);
                     return;
                 }
                 int entityId = Integer.parseInt(args.get(0));
@@ -103,36 +112,48 @@ public final class DebugCommand implements CommandHandler {
                 float value = Float.parseFloat(args.get(2));
                 int abilityIdx = args.size() > 3 ? Integer.parseInt(args.get(3)) : 1;
 
-                var entry = AbilityScalarValueEntry.newBuilder()
-                    .setKey(AbilityString.newBuilder().setStr(varName).build())
-                    .setFloatValue(value)
-                    .build();
-                var overrideMap = AbilityMetaReInitOverrideMap.newBuilder()
-                    .addOverrideMap(entry)
-                    .build();
-                var head = AbilityInvokeEntryHead.newBuilder()
-                    .setInstancedAbilityId(abilityIdx)
-                    .build();
-                var invoke = AbilityInvokeEntry.newBuilder()
-                    .setEntityId(entityId)
-                    .setArgumentType(AbilityInvokeArgument.AbilityInvokeArgument_ABILITY_META_REINIT_OVERRIDEMAP)
-                    .setForwardType(ForwardType.ForwardType_FORWARD_TO_ALL)
-                    .setHead(head)
-                    .setAbilityData(overrideMap.toByteString())
-                    .build();
+                var entry =
+                        AbilityScalarValueEntry.newBuilder()
+                                .setKey(AbilityString.newBuilder().setStr(varName).build())
+                                .setFloatValue(value)
+                                .build();
+                var overrideMap = AbilityMetaReInitOverrideMap.newBuilder().addOverrideMap(entry).build();
+                var head =
+                        AbilityInvokeEntryHead.newBuilder().setInstancedAbilityId(abilityIdx).build();
+                var invoke =
+                        AbilityInvokeEntry.newBuilder()
+                                .setEntityId(entityId)
+                                .setArgumentType(
+                                        AbilityInvokeArgument
+                                                .AbilityInvokeArgument_ABILITY_META_REINIT_OVERRIDEMAP)
+                                .setForwardType(ForwardType.ForwardType_FORWARD_TO_ALL)
+                                .setHead(head)
+                                .setAbilityData(overrideMap.toByteString())
+                                .build();
 
                 sender.sendPacket(new PacketAbilityInvocationsNotify(invoke));
 
-                var invokeOverride = AbilityInvokeEntry.newBuilder()
-                    .setEntityId(entityId)
-                    .setArgumentType(AbilityInvokeArgument.AbilityInvokeArgument_ABILITY_META_OVERRIDE_PARAM)
-                    .setForwardType(ForwardType.ForwardType_FORWARD_TO_ALL)
-                    .setHead(head)
-                    .setAbilityData(entry.toByteString())
-                    .build();
+                var invokeOverride =
+                        AbilityInvokeEntry.newBuilder()
+                                .setEntityId(entityId)
+                                .setArgumentType(
+                                        AbilityInvokeArgument
+                                                .AbilityInvokeArgument_ABILITY_META_OVERRIDE_PARAM)
+                                .setForwardType(ForwardType.ForwardType_FORWARD_TO_ALL)
+                                .setHead(head)
+                                .setAbilityData(entry.toByteString())
+                                .build();
                 sender.sendPacket(new PacketAbilityInvocationsNotify(invokeOverride));
 
-                sender.dropMessage("Sent REINIT_OVERRIDEMAP+OVERRIDE_PARAM: entity=" + entityId + " ability=" + abilityIdx + " " + varName + "=" + value);
+                sender.dropMessage(
+                        "Sent REINIT_OVERRIDEMAP+OVERRIDE_PARAM: entity="
+                                + entityId
+                                + " ability="
+                                + abilityIdx
+                                + " "
+                                + varName
+                                + "="
+                                + value);
             }
             case "dynamicmap" -> {
                 var avatar = sender.getTeamManager().getCurrentAvatarEntity().getAvatar();
@@ -140,8 +161,11 @@ public final class DebugCommand implements CommandHandler {
                 var depotData = GameData.getAvatarSkillDepotDataMap().get(avatar.getSkillDepotId());
                 int total = 0;
 
-                Grasscutter.getLogger().info("=== dynamicValueMap for avatar {} (depot {}) ===",
-                    avatar.getAvatarId(), avatar.getSkillDepotId());
+                Grasscutter.getLogger()
+                        .info(
+                                "=== dynamicValueMap for avatar {} (depot {}) ===",
+                                avatar.getAvatarId(),
+                                avatar.getSkillDepotId());
 
                 for (int proudSkillId : avatar.getProudSkillList()) {
                     total += dumpProudSkillVars(proudSkillId, "passive");
@@ -174,10 +198,15 @@ public final class DebugCommand implements CommandHandler {
         for (AbilityVarSetter setter : entry.getAbilityVarSetters()) {
             int idx = setter.getParamIndex();
             float val = (paramList != null && idx < paramList.length) ? paramList[idx] : Float.NaN;
-            Grasscutter.getLogger().info(
-                "  [{}] openConfig={} ability={} var={} paramIdx={} value={}",
-                label, skillData.getOpenConfig(), setter.getAbilityName(),
-                setter.getVarName(), idx, val);
+            Grasscutter.getLogger()
+                    .info(
+                            "  [{}] openConfig={} ability={} var={} paramIdx={} value={}",
+                            label,
+                            skillData.getOpenConfig(),
+                            setter.getAbilityName(),
+                            setter.getVarName(),
+                            idx,
+                            val);
             count++;
         }
         return count;

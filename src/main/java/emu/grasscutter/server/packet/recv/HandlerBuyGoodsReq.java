@@ -21,8 +21,8 @@ public class HandlerBuyGoodsReq extends PacketHandler {
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         BuyGoodsReqOuterClass.BuyGoodsReq buyGoodsReq =
                 BuyGoodsReqOuterClass.BuyGoodsReq.parseFrom(payload);
-        List<ShopInfo> configShop =
-                session.getServer().getShopSystem().getShopData().get(buyGoodsReq.getShopType());
+        var shopSystem = session.getServer().getShopSystem();
+        List<ShopInfo> configShop = shopSystem.getShopData().get(buyGoodsReq.getShopType());
         if (configShop == null) {
             session.send(new PacketBuyGoodsRsp(Retcode.RET_SVR_ERROR));
             return;
@@ -51,8 +51,7 @@ public class HandlerBuyGoodsReq extends PacketHandler {
             }
             ShopInfo sg = sg2.get();
             int itemId = sg.getGoodsItem().getId();
-            AvatarCostumeData costumeData =
-                    GameData.getAvatarCostumeDataItemIdMap().get(itemId);
+            AvatarCostumeData costumeData = GameData.getAvatarCostumeDataItemIdMap().get(itemId);
 
             // Already unlocked costume: refuse repurchase (client may still send BuyGoods).
             if (costumeData != null
@@ -93,37 +92,33 @@ public class HandlerBuyGoodsReq extends PacketHandler {
                 continue;
             }
 
-            var artifactShop = session.getServer().getShopSystem().getArtifactShop();
-            var piece = artifactShop.getPiece(sg.getGoodsId());
-            List<ItemParamData> artifactCostOverride = null;
-            if (piece != null) {
-                // Hidden shop entries are not authorization. A crafted BuyGoodsReq must belong to
-                // this city and pass the same domain-clear difficulty check as the UI.
-                if (!artifactShop.isAvailable(
+            var dynamicProvider = shopSystem.getDynamicShopProvider(sg.getGoodsId());
+            List<ItemParamData> dynamicCostOverride = null;
+            if (dynamicProvider != null) {
+                // Synthetic shop entries are presentation only. Re-run the provider's player-aware
+                // authorization and validation before charging anything.
+                if (!dynamicProvider.isAvailable(
                         player, buyGoodsReq.getShopType(), sg.getGoodsId())) {
                     session.send(new PacketBuyGoodsRsp(Retcode.RET_SHOP_CONTENT_NOT_MATCH));
                     continue;
                 }
 
-                int resinCost = artifactShop.getResinCost(player, sg.getGoodsId());
-                artifactCostOverride =
-                        List.of(
-                                new ItemParamData(
-                                        ArtifactShop.ORIGINAL_RESIN_ID, resinCost));
-
-                // Artifacts do not stack, so a batch buy needs that many free slots. Asking before
-                // the payment keeps a full bag from swallowing the cost and handing back nothing.
-                var relics = player.getInventory().getInventoryTab(ItemType.ITEM_RELIQUARY);
-                if (buyCount > relics.getMaxCapacity() - relics.getSize()) {
-                    session.send(new PacketBuyGoodsRsp(Retcode.RET_PACK_EXCEED_MAX_WEIGHT));
+                Retcode validation =
+                        dynamicProvider.validatePurchase(
+                                player, buyGoodsReq.getShopType(), sg, buyCount);
+                if (validation != Retcode.RET_SUCC) {
+                    session.send(new PacketBuyGoodsRsp(validation));
                     continue;
                 }
+                dynamicCostOverride =
+                        dynamicProvider.getCostItems(
+                                player, buyGoodsReq.getShopType(), sg.getGoodsId());
             }
 
             List<ItemParamData> costs =
                     new ArrayList<>(
-                            artifactCostOverride != null
-                                    ? artifactCostOverride
+                            dynamicCostOverride != null
+                                    ? dynamicCostOverride
                                     : sg.getCostItemList() != null
                                             ? sg.getCostItemList()
                                             : Collections.emptyList());
@@ -146,14 +141,13 @@ public class HandlerBuyGoodsReq extends PacketHandler {
                 session.send(new PacketBuyGoodsRsp(Retcode.RET_SVR_ERROR));
                 continue;
             }
-            if (piece != null) {
-                // An artifact never comes out the same twice, so a batch buy is that many
-                // separately rolled pieces rather than one piece counted up.
-                var rolled = new ArrayList<GameItem>(buyCount);
-                for (int i = 0; i < buyCount; i++) {
-                    rolled.add(artifactShop.roll(player, piece));
-                }
-                player.getInventory().addItems(rolled, ActionReason.Shop);
+
+            List<GameItem> dynamicItems =
+                    dynamicProvider == null
+                            ? null
+                            : dynamicProvider.createItems(player, sg, buyCount);
+            if (dynamicItems != null) {
+                player.getInventory().addItems(dynamicItems, ActionReason.Shop);
             } else {
                 GameItem item = new GameItem(itemId, itemCount);
                 player.getInventory().addItem(item, ActionReason.Shop, true);
@@ -174,7 +168,7 @@ public class HandlerBuyGoodsReq extends PacketHandler {
                             limit.getHasBoughtInPeriod(),
                             sg,
                             refreshes ? limit.getNextRefreshTime() : 0,
-                            artifactCostOverride));
+                            dynamicCostOverride));
         }
 
         player.save();

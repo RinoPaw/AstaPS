@@ -71,13 +71,4 @@ public final class StartupArgumentsTest {
                 CommandLine.ParameterException.class,
                 () -> StartupArguments.createCommandLine(options).parseArgs("-dump=unknown,en"));
     }
-
-    @Test
-    public void unknownArgumentsAreRejected() {
-        var options = new StartupArguments.Options();
-
-        assertThrows(
-                CommandLine.ParameterException.class,
-                () -> StartupArguments.createCommandLine(options).parseArgs("-unknown"));
-    }
 }

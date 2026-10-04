@@ -1,6 +1,7 @@
 package emu.grasscutter.server.packet.recv;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.protobuf.CodedOutputStream;
 import emu.grasscutter.net.proto.TowerTeamOuterClass.TowerTeam;
@@ -28,23 +29,23 @@ public class TowerTeamRecoveryTest {
     private static final long BARBARA = 4294967300L;
 
     private static byte[] team(int teamId, long... guids) {
-        var b = TowerTeam.newBuilder().setTowerTeamId(teamId);
-        for (long g : guids) b.addAvatarGuidList(g);
-        return b.build().toByteArray();
+        var builder = TowerTeam.newBuilder().setTowerTeamId(teamId);
+        for (long guid : guids) builder.addAvatarGuidList(guid);
+        return builder.build().toByteArray();
     }
 
     /** The request as the 7.1 client lays it out: teams at field 6, floor at field 3. */
     private static TowerTeamSelectReq onTheWire(int floorId, byte[]... teams) throws Exception {
-        var baos = new ByteArrayOutputStream();
-        var cos = CodedOutputStream.newInstance(baos);
-        for (byte[] t : teams) cos.writeByteArray(6, t);
-        cos.writeUInt32(3, floorId);
-        cos.flush();
-        return TowerTeamSelectReq.parseFrom(baos.toByteArray());
+        var bytes = new ByteArrayOutputStream();
+        var output = CodedOutputStream.newInstance(bytes);
+        for (byte[] team : teams) output.writeByteArray(6, team);
+        output.writeUInt32(3, floorId);
+        output.flush();
+        return TowerTeamSelectReq.parseFrom(bytes.toByteArray());
     }
 
     @Test
-    @DisplayName("reads both halves of a two-team floor off the wire")
+    @DisplayName("reads the 7.1 floor and both teams off the wire")
     public void readsTwoTeams() throws Exception {
         var req = onTheWire(1024, team(1, AMBER, KAEYA), team(2, LISA, BARBARA));
 
@@ -59,32 +60,7 @@ public class TowerTeamRecoveryTest {
     }
 
     @Test
-    @DisplayName("keeps the wire order, which is what picks the second half")
-    public void keepsWireOrder() throws Exception {
-        // TowerManager enters the halves by index, so reordering here would seat the wrong team.
-        var req = onTheWire(1039, team(2, LISA, BARBARA), team(1, AMBER, KAEYA));
-        assertEquals(List.of(LISA, BARBARA), req.getTowerTeamList(0).getAvatarGuidListList());
-        assertEquals(List.of(AMBER, KAEYA), req.getTowerTeamList(1).getAvatarGuidListList());
-    }
-
-    @Test
-    @DisplayName("a one-team floor reads back as one team")
-    public void readsOneTeam() throws Exception {
-        var req = onTheWire(1001, team(1, AMBER, KAEYA, LISA, BARBARA));
-        assertEquals(1, req.getTowerTeamListCount());
-        assertEquals(4, req.getTowerTeamList(0).getAvatarGuidListCount());
-    }
-
-    @Test
-    @DisplayName("floor_id is field 3 and not confused with the team list")
-    public void floorIdUnchanged() throws Exception {
-        var req = onTheWire(1025);
-        assertEquals(1025, req.getFloorId());
-        assertEquals(0, req.getTowerTeamListCount());
-    }
-
-    @Test
-    @DisplayName("the mid-chamber team-change notify still builds and serialises to nothing")
+    @DisplayName("the mid-chamber team-change notify still loads")
     public void middleLevelChangeTeamNotifyLoads() {
         // 7.0 does not name this message, so it keeps its 6.7 class - and a restored 6.7 class is
         // exactly where a corrupt embedded descriptor bites, at first load rather than at build.

@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -26,30 +27,24 @@ import org.junit.jupiter.api.Test;
  */
 public final class RouteUniquenessTest {
     private static final Path SOURCE_ROOT = Path.of("src/main/java/emu/grasscutter");
+    private static final List<String> ALL_ROUTE_METHODS =
+            List.of("GET", "POST", "PUT", "PATCH", "DELETE");
 
-    /** Matches javalin.get("/path", ...) and the other verbs. */
+    /** Matches Javalin 7 RoutesConfig calls such as routes.get("/path", ...). */
     private static final Pattern ROUTE =
-            Pattern.compile("javalin\\s*\\.\\s*(get|post|put|patch|delete)\\s*\\(\\s*\"([^\"]+)\"");
+            Pattern.compile(
+                    "\\broutes\\s*\\.\\s*(get|post|put|patch|delete)\\s*\\(\\s*\"([^\"]+)\"");
+
+    /** Matches AstaPS's helper, which registers the same path for every game-client HTTP verb. */
+    private static final Pattern ALL_ROUTES =
+            Pattern.compile("\\ballRoutes\\s*\\(\\s*routes\\s*,\\s*\"([^\"]+)\"");
 
     @Test
     @DisplayName("no method and path is registered twice")
     public void routesAreUnique() throws IOException {
-        Map<String, List<String>> registrations = new LinkedHashMap<>();
-
-        try (Stream<Path> files = Files.walk(SOURCE_ROOT)) {
-            for (Path file : files.filter(p -> p.toString().endsWith(".java")).toList()) {
-                var source = Files.readString(file);
-                var matcher = ROUTE.matcher(source);
-                while (matcher.find()) {
-                    var key = matcher.group(1).toUpperCase() + " " + matcher.group(2);
-                    registrations
-                            .computeIfAbsent(key, k -> new ArrayList<>())
-                            .add(file.getFileName().toString());
-                }
-            }
-        }
-
+        Map<String, List<String>> registrations = collectRoutes();
         var duplicates = new ArrayList<String>();
+
         registrations.forEach(
                 (route, files) -> {
                     if (files.size() > 1) duplicates.add(route + " <- " + files);
@@ -64,14 +59,44 @@ public final class RouteUniquenessTest {
     @Test
     @DisplayName("the scan actually finds routes, so an empty result cannot pass by accident")
     public void scanFindsRoutes() throws IOException {
-        var found = 0;
+        int found = collectRoutes().values().stream().mapToInt(List::size).sum();
+        assertTrue(found > 20, "only found " + found + " routes; the pattern has probably rotted");
+    }
+
+    private static Map<String, List<String>> collectRoutes() throws IOException {
+        Map<String, List<String>> registrations = new LinkedHashMap<>();
+
         try (Stream<Path> files = Files.walk(SOURCE_ROOT)) {
             for (Path file : files.filter(p -> p.toString().endsWith(".java")).toList()) {
-                var matcher = ROUTE.matcher(Files.readString(file));
-                while (matcher.find()) found++;
+                String source = Files.readString(file);
+                String fileName = file.getFileName().toString();
+
+                var routeMatcher = ROUTE.matcher(source);
+                while (routeMatcher.find()) {
+                    addRoute(
+                            registrations,
+                            routeMatcher.group(1).toUpperCase(Locale.ROOT),
+                            routeMatcher.group(2),
+                            fileName);
+                }
+
+                var allRoutesMatcher = ALL_ROUTES.matcher(source);
+                while (allRoutesMatcher.find()) {
+                    String path = allRoutesMatcher.group(1);
+                    for (String method : ALL_ROUTE_METHODS) {
+                        addRoute(registrations, method, path, fileName);
+                    }
+                }
             }
         }
 
-        assertTrue(found > 20, "only found " + found + " routes; the pattern has probably rotted");
+        return registrations;
+    }
+
+    private static void addRoute(
+            Map<String, List<String>> registrations, String method, String path, String fileName) {
+        registrations
+                .computeIfAbsent(method + " " + path, ignored -> new ArrayList<>())
+                .add(fileName);
     }
 }

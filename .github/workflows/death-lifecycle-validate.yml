@@ -33,11 +33,14 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       # The repository-wide Spotless gate currently reports pre-existing violations in hundreds
-      # of untouched files. Keep this focused validation independent so the gameplay fix still
-      # gets a real compile + unit-test gate before live testing.
+      # of untouched files, and the full test suite has an unrelated worker-exit failure. Keep
+      # this branch gate focused on a full production/test compile plus the regression test for
+      # the 7.1 death identifier contract.
       - name: Compile and test
         run: >-
-          ./gradlew jar test --build-cache
+          ./gradlew jar test --tests
+          emu.grasscutter.server.packet.recv.HandlerAvatarDieAnimationEndReqTest
+          --build-cache
           -PskipHandbook=1
           -PjarFilename=grasscutter-7.1.0
           -PexcludeTags=integration

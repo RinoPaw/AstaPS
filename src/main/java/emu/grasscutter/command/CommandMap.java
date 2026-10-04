@@ -99,6 +99,15 @@ public final class CommandMap {
         return name.toLowerCase(Locale.ROOT);
     }
 
+    private static String[] normalizeAliases(Command annotation) {
+        String[] declaredAliases = annotation.aliases();
+        String[] normalizedAliases = new String[declaredAliases.length];
+        for (int i = 0; i < declaredAliases.length; i++) {
+            normalizedAliases[i] = normalizeCommandName(declaredAliases[i]);
+        }
+        return normalizedAliases;
+    }
+
     private static int getUidFromString(String input) {
         try {
             return Integer.parseInt(input);
@@ -146,6 +155,14 @@ public final class CommandMap {
         return cli;
     }
 
+    private static CommandLine createCompletionCommandLine(
+            String label, CommandHandler handler) {
+        CommandLine child = handler.createCompletionCommandLine();
+        child.getCommandSpec().name(label);
+        child.setExpandAtFiles(false);
+        return child;
+    }
+
     private void rebuildPicocliTree() {
         synchronized (this.picocliLock) {
             var root = createRootCommandLine();
@@ -153,18 +170,9 @@ public final class CommandMap {
             for (var entry : this.commands.entrySet()) {
                 String label = entry.getKey();
                 CommandHandler handler = entry.getValue();
-                CommandLine child = handler.createCompletionCommandLine();
-                child.getCommandSpec().name(label);
-                child.setExpandAtFiles(false);
-
                 Command annotation = this.annotations.get(label);
-                String[] declaredAliases = annotation.aliases();
-                String[] effectiveAliases = new String[declaredAliases.length];
-                for (int i = 0; i < declaredAliases.length; i++) {
-                    effectiveAliases[i] = normalizeCommandName(declaredAliases[i]);
-                }
-
-                root.addSubcommand(label, child, effectiveAliases);
+                CommandLine child = createCompletionCommandLine(label, handler);
+                root.addSubcommand(label, child, normalizeAliases(annotation));
             }
 
             root.setExpandAtFiles(false);
@@ -177,9 +185,10 @@ public final class CommandMap {
         if (reader instanceof LineReaderImpl lineReader) {
             lineReader.setCompleter(
                     (currentReader, parsedLine, candidates) -> {
-                        CommandLine cli = this.commandLine;
-                        new PicocliJLineCompleter(cli.getCommandSpec())
-                                .complete(currentReader, parsedLine, candidates);
+                        synchronized (this.picocliLock) {
+                            new PicocliJLineCompleter(this.commandLine.getCommandSpec())
+                                    .complete(currentReader, parsedLine, candidates);
+                        }
                     });
         }
     }
@@ -221,7 +230,6 @@ public final class CommandMap {
     }
 
     private void addRegistration(String label, CommandHandler command, Command annotation) {
-        this.validateRegistration(label, annotation);
         this.annotations.put(label, annotation);
         this.commands.put(label, command);
 
@@ -229,6 +237,29 @@ public final class CommandMap {
             String normalized = normalizeCommandName(alias);
             this.aliases.put(normalized, command);
             this.annotations.put(normalized, annotation);
+        }
+    }
+
+    private void removeRegistration(String label, Command annotation) {
+        this.annotations.remove(label);
+        this.commands.remove(label);
+
+        for (String alias : annotation.aliases()) {
+            String normalized = normalizeCommandName(alias);
+            this.aliases.remove(normalized);
+            this.annotations.remove(normalized);
+        }
+    }
+
+    private void removePicocliCommand(String label, Command annotation) {
+        CommandSpec root = this.commandLine.getCommandSpec();
+        CommandLine removed = root.removeSubcommand(label);
+        if (removed == null) {
+            throw new IllegalStateException("Picocli command missing from routing tree: " + label);
+        }
+
+        for (String alias : normalizeAliases(annotation)) {
+            root.removeSubcommand(alias);
         }
     }
 
@@ -256,19 +287,10 @@ public final class CommandMap {
                 throw new IllegalArgumentException("Command handler must be annotated with @Command.");
             }
 
-            var previousCommands = new TreeMap<>(this.commands);
-            var previousAliases = new TreeMap<>(this.aliases);
-            var previousAnnotations = new TreeMap<>(this.annotations);
-            CommandLine previousTree = this.commandLine;
-
-            try {
-                this.addRegistration(label, command, annotation);
-                this.rebuildPicocliTree();
-            } catch (RuntimeException exception) {
-                this.restoreRegistry(
-                        previousCommands, previousAliases, previousAnnotations, previousTree);
-                throw exception;
-            }
+            this.validateRegistration(label, annotation);
+            CommandLine child = createCompletionCommandLine(label, command);
+            this.commandLine.addSubcommand(label, child, normalizeAliases(annotation));
+            this.addRegistration(label, command, annotation);
         }
 
         return this;
@@ -293,6 +315,7 @@ public final class CommandMap {
 
                     String label = normalizeCommandName(annotation.label());
                     Grasscutter.getLogger().trace("Registered command: " + label);
+                    this.validateRegistration(label, annotation);
                     this.addRegistration(label, command, annotation);
                 }
 
@@ -315,28 +338,9 @@ public final class CommandMap {
             CommandHandler handler = this.commands.get(label);
             if (handler == null) return this;
 
-            var previousCommands = new TreeMap<>(this.commands);
-            var previousAliases = new TreeMap<>(this.aliases);
-            var previousAnnotations = new TreeMap<>(this.annotations);
-            CommandLine previousTree = this.commandLine;
-
-            try {
-                Command annotation = handler.getClass().getAnnotation(Command.class);
-                this.annotations.remove(label);
-                this.commands.remove(label);
-
-                for (String alias : annotation.aliases()) {
-                    String normalized = normalizeCommandName(alias);
-                    this.aliases.remove(normalized);
-                    this.annotations.remove(normalized);
-                }
-
-                this.rebuildPicocliTree();
-            } catch (RuntimeException exception) {
-                this.restoreRegistry(
-                        previousCommands, previousAliases, previousAnnotations, previousTree);
-                throw exception;
-            }
+            Command annotation = handler.getClass().getAnnotation(Command.class);
+            this.removePicocliCommand(label, annotation);
+            this.removeRegistration(label, annotation);
         }
         return this;
     }

@@ -6,7 +6,7 @@ import static emu.grasscutter.GameConstants.ILLEGAL_WEAPONS;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.GameDepot;
 import emu.grasscutter.data.NameIndex;
@@ -38,7 +38,7 @@ import picocli.CommandLine.Parameters;
         permission = "player.give",
         permissionTargeted = "player.give.others",
         threading = true)
-public final class GiveCommand implements PicocliCommandHandler {
+public final class GiveCommand implements CommandHandler {
     private static final int DEFAULT_LEVEL = 100;
     private static final int MAX_LEVEL = 100;
 
@@ -84,12 +84,12 @@ public final class GiveCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (amount < 1) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.generic.invalid.amount");
+                CommandOutput.sendTranslatedMessage(sender, "commands.generic.invalid.amount");
                 return;
             }
             refinement = Math.max(1, Math.min(5, refinement));
             if (constellation != null && (constellation < 0 || constellation > 6)) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.setConst.range_error");
+                CommandOutput.sendTranslatedMessage(sender, "commands.setConst.range_error");
                 return;
             }
 
@@ -135,7 +135,7 @@ public final class GiveCommand implements PicocliCommandHandler {
                 Avatar owned = targetPlayer.getAvatars().getAvatarById(param.avatarData.getId());
                 if (owned != null) updateAvatar(targetPlayer, owned, param);
                 else targetPlayer.addAvatar(makeAvatar(param));
-                CommandHandler.sendTranslatedMessage(
+                CommandOutput.sendTranslatedMessage(
                         sender,
                         "commands.give.given_avatar",
                         NameIndex.describe(param.id),
@@ -145,7 +145,7 @@ public final class GiveCommand implements PicocliCommandHandler {
             }
 
             if (param.data == null) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.generic.invalid.itemId");
+                CommandOutput.sendTranslatedMessage(sender, "commands.generic.invalid.itemId");
                 return;
             }
 
@@ -156,7 +156,7 @@ public final class GiveCommand implements PicocliCommandHandler {
                     return;
                 }
                 targetPlayer.getInventory().addItems(makeArtifacts(param), ActionReason.SubfieldDrop);
-                CommandHandler.sendTranslatedMessage(
+                CommandOutput.sendTranslatedMessage(
                         sender,
                         "commands.give.given_level",
                         NameIndex.describe(param.id),
@@ -168,7 +168,7 @@ public final class GiveCommand implements PicocliCommandHandler {
 
             if (param.data.getItemType() == ItemType.ITEM_WEAPON) {
                 targetPlayer.getInventory().addItems(makeUnstackableItems(param), ActionReason.SubfieldDrop);
-                CommandHandler.sendTranslatedMessage(
+                CommandOutput.sendTranslatedMessage(
                         sender,
                         "commands.give.given_with_level_and_refinement",
                         NameIndex.describe(param.id),
@@ -181,7 +181,7 @@ public final class GiveCommand implements PicocliCommandHandler {
 
             targetPlayer.getInventory().addItem(
                     new GameItem(param.data, param.amount), ActionReason.SubfieldDrop);
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender,
                     "commands.give.given",
                     param.amount,
@@ -201,7 +201,7 @@ public final class GiveCommand implements PicocliCommandHandler {
             else param.id = NameIndex.resolveRelic(input, rest);
             if (param.id == 0) param.id = NameIndex.resolve(input, rest);
             if (param.id == 0) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.generic.invalid.itemId");
+                CommandOutput.sendTranslatedMessage(sender, "commands.generic.invalid.itemId");
                 return false;
             }
         }
@@ -217,7 +217,7 @@ public final class GiveCommand implements PicocliCommandHandler {
             int requested = param.lvlGiven ? param.lvl : 0;
             param.lvl = Math.max(0, Math.min(20, requested)) + 1;
             if (ILLEGAL_RELICS.contains(param.id)) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.give.illegal_relic");
+                CommandOutput.sendTranslatedMessage(sender, "commands.give.illegal_relic");
             }
         }
         return true;
@@ -245,7 +245,7 @@ public final class GiveCommand implements PicocliCommandHandler {
                 }
             }
         } catch (IllegalArgumentException exception) {
-            CommandHandler.sendTranslatedMessage(sender, "commands.execution.argument_error");
+            CommandOutput.sendTranslatedMessage(sender, "commands.execution.argument_error");
             throw exception;
         }
     }
@@ -451,12 +451,12 @@ public final class GiveCommand implements PicocliCommandHandler {
             targetPlayer.getInventory().addItems(makeArtifacts(param), ActionReason.SubfieldDrop);
             given++;
         }
-        CommandHandler.sendTranslatedMessage(
+        CommandOutput.sendTranslatedMessage(
                 sender, "commands.give.given", given, "artifacts of the set", targetPlayer.getUid());
     }
 
     private static void successAll(Player sender) {
-        CommandHandler.sendTranslatedMessage(sender, "commands.give.giveall_success");
+        CommandOutput.sendTranslatedMessage(sender, "commands.give.giveall_success");
     }
 
     private static final class GiveItemParameters {

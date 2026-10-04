@@ -3,6 +3,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.api.tasks.compile.JavaCompile
 
 allprojects { currentProject ->
     currentProject.pluginManager.withPlugin('java') {
@@ -79,6 +80,19 @@ allprojects { currentProject ->
         }
 
         sourceSets.main.java.srcDir(generatedProtocolJava)
+
+        currentProject.tasks.register('lintGeneratedProtocolJava', JavaCompile) { task ->
+            task.group = 'verification'
+            task.description = 'Compile regenerated 7.1 protocol Java with all javac lint warnings treated as errors.'
+            task.dependsOn 'generateProtocolJava'
+            task.source(generatedProtocolJava)
+            task.classpath = sourceSets.main.compileClasspath
+            task.destinationDirectory.set(
+                    currentProject.layout.buildDirectory.dir('classes/java/protocolLint'))
+            task.options.encoding = 'UTF-8'
+            task.options.release.set(21)
+            task.options.compilerArgs.addAll(['-Xlint:all', '-Werror'])
+        }
 
         currentProject.tasks.named('compileJava') {
             dependsOn 'generateProtocolJava'

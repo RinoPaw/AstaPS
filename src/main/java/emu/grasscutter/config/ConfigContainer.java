@@ -224,7 +224,6 @@ public class ConfigContainer {
         public boolean isPreventEntityError = true;
         public boolean watchGachaConfig = false;
         public boolean enableShopItems = false;
-        public ArtifactShopOptions artifactShop = new ArtifactShopOptions();
         public boolean staminaUsage = true;
         public boolean energyUsage = true;
         public boolean fishhookTeleport = true;
@@ -244,19 +243,6 @@ public class ConfigContainer {
         public HandbookOptions handbook = new HandbookOptions();
         public BirthdayMailOptions birthdayMail = new BirthdayMailOptions();
         public WatermarkOptions watermark = new WatermarkOptions();
-
-        public static class ArtifactShopOptions {
-            public boolean enabled = true;
-            public int shopId = 1004;
-            public int costMora = 20000;
-            public int costPrimogems = 0;
-            public int costItemId = 0;
-            public int costItemCount = 0;
-            public int buyLimit = 0;
-            public double critWeight = 8;
-            public double damageWeight = 3;
-            public double highRollBias = 3;
-        }
 
         public static class NewAccountIntro {
             public boolean enabled = false;

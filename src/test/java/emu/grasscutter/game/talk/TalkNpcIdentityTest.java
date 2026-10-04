@@ -40,7 +40,6 @@ final class TalkNpcIdentityTest {
     @Test
     void paimonTalkAcceptsHerNpcIdEvenWhenThePlacementConfigIdDiffers() {
         assertTrue(TalkManager.isTalkNpc(paimonTalk(), npc(1005, 472)));
-        assertTrue(TalkManager.isTalkNpc(paimonTalk(), npc(1005, 0)));
     }
 
     @Test

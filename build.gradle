@@ -182,7 +182,7 @@ def buildInfoOutputDir = layout.buildDirectory.dir('generated/resources/buildInf
 
 sourceSets {
     main {
-        // The 7.1 protocol dump is checked in as generated Java; there are no source .proto files.
+        // The legacy protocol dump path is kept empty; protocol Java is generated into build/.
         java {
             srcDir 'src/generated/main/java'
             srcDir buildConfigOutputDir
@@ -341,3 +341,5 @@ tasks.register('generateHandbook', Exec) {
 run {
     standardInput = System.in
 }
+
+apply from: 'gradle/protocol-generation.gradle'

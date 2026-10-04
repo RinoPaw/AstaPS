@@ -116,16 +116,16 @@ public final class Tools {
                         + DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss").format(LocalDateTime.now()));
 
         h.newSection("Commands");
-        final List<PicocliCommandHandler> cmdList = CommandMap.getInstance().getHandlersAsList();
+        final List<CommandHandler> cmdList = CommandMap.getInstance().getHandlersAsList();
         final String padCmdLabel =
                 "%"
                         + cmdList.stream()
-                                .map(PicocliCommandHandler::getLabel)
+                                .map(CommandHandler::getLabel)
                                 .map(String::length)
                                 .max(Integer::compare)
                                 .get()
                         + "s : ";
-        for (PicocliCommandHandler cmd : cmdList) {
+        for (CommandHandler cmd : cmdList) {
             final String label = padCmdLabel.formatted(cmd.getLabel());
             final String descKey = cmd.getDescriptionKey();
             for (int i = 0; i < TextStrings.NUM_LANGUAGES; i++) {

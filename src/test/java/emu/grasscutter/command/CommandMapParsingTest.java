@@ -85,8 +85,97 @@ public final class CommandMapParsingTest {
         assertFalse(map.getCommandLine().getSubcommands().containsKey("invalid"));
     }
 
+    @Test
+    public void registrationRejectsExistingLabelWithoutChangingRouting() {
+        var map = new CommandMap(false);
+        var original = new ProbeCommand();
+        map.registerCommand("probe", original);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> map.registerCommand("probe", new ReplacementProbeCommand()));
+
+        assertSame(original, map.getHandler("probe"));
+        assertSame(original, map.getHandler("p"));
+        assertTrue(map.getCommandLine().getSubcommands().containsKey("probe"));
+    }
+
+    @Test
+    public void registrationRejectsAliasCollisionWithExistingCommand() {
+        var map = new CommandMap(false);
+        var original = new ProbeCommand();
+        map.registerCommand("probe", original);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> map.registerCommand("other", new AliasCollisionCommand()));
+
+        assertSame(original, map.getHandler("probe"));
+        assertNull(map.getHandler("other"));
+        assertFalse(map.getCommandLine().getSubcommands().containsKey("other"));
+    }
+
+    @Test
+    public void registrationRejectsDuplicateAliasesIgnoringCase() {
+        var map = new CommandMap(false);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> map.registerCommand("duplicate", new DuplicateAliasCommand()));
+        assertNull(map.getHandler("duplicate"));
+        assertNull(map.getHandler("d"));
+    }
+
+    @Test
+    public void handlerMapIsASnapshot() {
+        var map = new CommandMap(false);
+        var handler = new ProbeCommand();
+        map.registerCommand("probe", handler);
+
+        map.getHandlers().clear();
+
+        assertSame(handler, map.getHandler("probe"));
+        assertTrue(map.getCommandLine().getSubcommands().containsKey("probe"));
+    }
+
     @Command(label = "probe", aliases = {"p"}, targetRequirement = Command.TargetRequirement.NONE)
     private static final class ProbeCommand implements CommandHandler {
+        @Override
+        public CommandLine createCommandLine(
+                emu.grasscutter.game.player.Player sender,
+                emu.grasscutter.game.player.Player targetPlayer) {
+            return new CommandLine(CommandLine.Model.CommandSpec.create());
+        }
+    }
+
+    @Command(label = "probe", targetRequirement = Command.TargetRequirement.NONE)
+    private static final class ReplacementProbeCommand implements CommandHandler {
+        @Override
+        public CommandLine createCommandLine(
+                emu.grasscutter.game.player.Player sender,
+                emu.grasscutter.game.player.Player targetPlayer) {
+            return new CommandLine(CommandLine.Model.CommandSpec.create());
+        }
+    }
+
+    @Command(
+            label = "other",
+            aliases = {"probe"},
+            targetRequirement = Command.TargetRequirement.NONE)
+    private static final class AliasCollisionCommand implements CommandHandler {
+        @Override
+        public CommandLine createCommandLine(
+                emu.grasscutter.game.player.Player sender,
+                emu.grasscutter.game.player.Player targetPlayer) {
+            return new CommandLine(CommandLine.Model.CommandSpec.create());
+        }
+    }
+
+    @Command(
+            label = "duplicate",
+            aliases = {"d", "D"},
+            targetRequirement = Command.TargetRequirement.NONE)
+    private static final class DuplicateAliasCommand implements CommandHandler {
         @Override
         public CommandLine createCommandLine(
                 emu.grasscutter.game.player.Player sender,

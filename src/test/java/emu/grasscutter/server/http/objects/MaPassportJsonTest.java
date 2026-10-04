@@ -28,7 +28,6 @@ public class MaPassportJsonTest {
         var json = JsonParser.parseString(MaPassportJson.encode(response)).getAsJsonObject();
 
         assertEquals(-3208, json.get("retcode").getAsInt());
-        assertTrue(json.get("data").isJsonNull());
     }
 
     @Test

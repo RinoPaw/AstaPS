@@ -22,6 +22,7 @@ jobs:
   release:
     name: Build and publish jar
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     permissions:
       contents: write
@@ -49,11 +50,13 @@ jobs:
             https://api.grasscutter.io/static/handbook.html \
             -o src/main/resources/html/handbook.html
 
-      - name: Build jar
-        run: ./gradlew jar -PskipHandbook=1 -PjarFilename=grasscutter -Dorg.gradle.jvmargs=-Xmx4g
-
-      - name: Test
-        run: ./gradlew test -PexcludeTags=integration -Dorg.gradle.jvmargs=-Xmx4g
+      - name: Verify release build
+        run: >-
+          ./gradlew spotlessJavaCheck jar test --build-cache
+          -PskipHandbook=1
+          -PjarFilename=grasscutter
+          -PexcludeTags=integration
+          -Dorg.gradle.jvmargs=-Xmx4g
 
       - name: Publish release
         uses: softprops/action-gh-release@v3

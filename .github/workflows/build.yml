@@ -22,10 +22,14 @@ concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build and test
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
@@ -41,18 +45,15 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      # `build` depends on Spotless, so keep the formatter path covered explicitly. This catches
-      # Java/formatter compatibility failures before a developer reaches a local clean build.
-      - name: Check formatting
-        run: ./gradlew spotlessJavaCheck -Dorg.gradle.jvmargs=-Xmx4g
-
-      - name: Build jar
-        run: ./gradlew jar -PskipHandbook=1 -PjarFilename=grasscutter -Dorg.gradle.jvmargs=-Xmx4g
-
-      # GrasscutterTest boots a real server and needs MongoDB plus the resources pack, which
-      # is gitignored. A fresh checkout cannot run it, so CI excludes that integration test.
-      - name: Test
-        run: ./gradlew test -PexcludeTags=integration -Dorg.gradle.jvmargs=-Xmx4g
+      # Keep the formatter, jar, and standalone tests in one Gradle invocation. This avoids repeated
+      # configuration/startup work while preserving the same validation boundary.
+      - name: Verify build
+        run: >-
+          ./gradlew spotlessJavaCheck jar test --build-cache
+          -PskipHandbook=1
+          -PjarFilename=grasscutter
+          -PexcludeTags=integration
+          -Dorg.gradle.jvmargs=-Xmx4g
 
       - name: Upload test report
         if: always()

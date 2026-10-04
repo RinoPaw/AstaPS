@@ -12,7 +12,7 @@ import java.nio.file.StandardCopyOption;
 
 /** Player-facing and gameplay configuration stored directly in {@code game.json}. */
 public final class GameConfig {
-    private static final int CURRENT_VERSION = 3;
+    private static final int CURRENT_VERSION = 4;
     private static final Path FILE = Path.of("game.json");
 
     private static volatile GameConfig current;
@@ -30,8 +30,7 @@ public final class GameConfig {
 
     public boolean watchGachaConfig = false;
     public boolean enableShopItems = false;
-    public ConfigContainer.GameOptions.ArtifactShopOptions artifactShop =
-            new ConfigContainer.GameOptions.ArtifactShopOptions();
+    public ArtifactSettings artifacts = new ArtifactSettings();
 
     public boolean staminaUsage = true;
     public boolean energyUsage = true;
@@ -82,6 +81,7 @@ public final class GameConfig {
                 try {
                     JsonObject stored = JsonUtils.loadToClass(FILE, JsonObject.class);
                     validateRewardSchema(stored);
+                    validateArtifactSchema(stored);
                     current = stored == null ? new GameConfig() : JsonUtils.decode(stored, GameConfig.class);
                     if (current == null) current = new GameConfig();
                     rewrite = migrateStored(stored, current);
@@ -150,6 +150,13 @@ public final class GameConfig {
                         || oldAccount.has("useIntegrationPassword"))) {
             rewrite = true;
         }
+
+        JsonObject oldArtifactShop = object(root, "artifactShop");
+        if (oldArtifactShop != null) {
+            migrateLegacyArtifactShop(oldArtifactShop, target);
+            rewrite = true;
+        }
+        if (!root.has("artifacts")) rewrite = true;
         return rewrite;
     }
 
@@ -163,6 +170,7 @@ public final class GameConfig {
         if (oldOptions != null) {
             var decoded = JsonUtils.decode(oldOptions, GameConfig.class);
             if (decoded != null) migrated = decoded;
+            migrateLegacyArtifactShop(object(oldOptions, "artifactShop"), migrated);
         }
 
         JsonObject oldAccount = object(root, "account");
@@ -201,6 +209,18 @@ public final class GameConfig {
         return migrated;
     }
 
+    private static void migrateLegacyArtifactShop(JsonObject old, GameConfig target) {
+        if (old == null || target == null) return;
+        if (target.artifacts == null) target.artifacts = new ArtifactSettings();
+        if (target.artifacts.shop == null) target.artifacts.shop = new ArtifactSettings.Shop();
+        if (old.has("enabled") && !old.get("enabled").isJsonNull()) {
+            target.artifacts.shop.enabled = old.get("enabled").getAsBoolean();
+        }
+        if (old.has("buyLimit") && !old.get("buyLimit").isJsonNull()) {
+            target.artifacts.shop.buyLimit = Math.max(0, old.get("buyLimit").getAsInt());
+        }
+    }
+
     private void normalize() {
         version = CURRENT_VERSION;
         if (account == null) account = new ConfigContainer.Account();
@@ -208,7 +228,8 @@ public final class GameConfig {
             inventoryLimits = new ConfigContainer.GameOptions.InventoryLimits();
         }
         if (avatarLimits == null) avatarLimits = new ConfigContainer.GameOptions.AvatarLimits();
-        if (artifactShop == null) artifactShop = new ConfigContainer.GameOptions.ArtifactShopOptions();
+        if (artifacts == null) artifacts = new ArtifactSettings();
+        artifacts.normalize();
         if (defaultNickname == null || defaultNickname.isBlank()) defaultNickname = "Traveler";
         if (newAccountIntro == null) {
             newAccountIntro = new ConfigContainer.GameOptions.NewAccountIntro();
@@ -246,7 +267,6 @@ public final class GameConfig {
         legacy.isPreventEntityError = isPreventEntityError;
         legacy.watchGachaConfig = watchGachaConfig;
         legacy.enableShopItems = enableShopItems;
-        legacy.artifactShop = artifactShop;
         legacy.staminaUsage = staminaUsage;
         legacy.energyUsage = energyUsage;
         legacy.fishhookTeleport = fishhookTeleport;
@@ -310,6 +330,28 @@ public final class GameConfig {
             if (reward != null && reward.has("enabled")) {
                 throw new IllegalArgumentException(
                         "game.json rewards.chests." + tier + " contains removed field 'enabled'.");
+            }
+        }
+    }
+
+    private static void validateArtifactSchema(JsonObject root) {
+        JsonObject artifacts = object(root, "artifacts");
+        JsonObject shop = object(artifacts, "shop");
+        if (shop == null) return;
+        for (String removed :
+                new String[] {
+                    "shopId",
+                    "costMora",
+                    "costPrimogems",
+                    "costItemId",
+                    "costItemCount",
+                    "critWeight",
+                    "damageWeight",
+                    "highRollBias"
+                }) {
+            if (shop.has(removed)) {
+                throw new IllegalArgumentException(
+                        "game.json artifacts.shop contains removed field '" + removed + "'.");
             }
         }
     }

@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.player.TransPointUnlockHelper;
@@ -18,7 +18,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"sots"},
         permission = "player.teleport",
         permissionTargeted = "player.teleport.others")
-public final class StatueCommand implements PicocliCommandHandler {
+public final class StatueCommand implements CommandHandler {
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
@@ -71,7 +71,7 @@ public final class StatueCommand implements PicocliCommandHandler {
             int sceneId = targetPlayer.getSceneId();
             int point = pointId != null ? pointId : nearestStatue(targetPlayer, sceneId);
             if (point <= 0) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, "No statue found in this scene. Pass a point ID explicitly.");
                 return;
             }
@@ -142,13 +142,13 @@ public final class StatueCommand implements PicocliCommandHandler {
         public void run() {
             var sots = targetPlayer.getSotsManager();
             if (sots == null) {
-                CommandHandler.sendMessage(sender, "No SotS manager");
+                CommandOutput.sendMessage(sender, "No SotS manager");
                 return;
             }
             if (cityId == null) {
                 var map = targetPlayer.getCityInfoData();
                 if (map == null || map.isEmpty()) {
-                    CommandHandler.sendMessage(sender, "cityInfo empty");
+                    CommandOutput.sendMessage(sender, "cityInfo empty");
                     return;
                 }
                 StringBuilder message =
@@ -161,12 +161,12 @@ public final class StatueCommand implements PicocliCommandHandler {
                                         .append(info.getLevel())
                                         .append(" crystal=")
                                         .append(info.getNumCrystal()));
-                CommandHandler.sendMessage(sender, message.toString());
+                CommandOutput.sendMessage(sender, message.toString());
                 return;
             }
 
             var info = sots.getCityInfo(cityId);
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "uid="
                             + targetPlayer.getUid()
@@ -185,7 +185,7 @@ public final class StatueCommand implements PicocliCommandHandler {
         player.save();
         player.sendPacket(PacketScenePointUnlockNotify.lock(sceneId, pointId));
         player.sendPacket(new PacketGetScenePointRsp(player, sceneId));
-        CommandHandler.sendMessage(
+        CommandOutput.sendMessage(
                 sender,
                 "Locked scene "
                         + sceneId
@@ -205,7 +205,7 @@ public final class StatueCommand implements PicocliCommandHandler {
             player.sendPacket(new PacketGetScenePointRsp(player, sceneId));
         }
         player.save();
-        CommandHandler.sendMessage(
+        CommandOutput.sendMessage(
                 sender,
                 (unlocked ? "Unlocked" : "Already unlocked / refreshed")
                         + " scene "
@@ -222,7 +222,7 @@ public final class StatueCommand implements PicocliCommandHandler {
                 entry != null && entry.getPointData() != null
                         ? entry.getPointData().getMaxSpringVolume()
                         : null;
-        CommandHandler.sendMessage(
+        CommandOutput.sendMessage(
                 sender,
                 "scene="
                         + sceneId
@@ -238,12 +238,12 @@ public final class StatueCommand implements PicocliCommandHandler {
 
     private static void setCityLevel(Player sender, Player player, int cityId, int level) {
         if (cityId < 1 || cityId > 8 || level < 1 || level > 10) {
-            CommandHandler.sendMessage(sender, "cityId 1-8, level 1-10");
+            CommandOutput.sendMessage(sender, "cityId 1-8, level 1-10");
             return;
         }
         var sots = player.getSotsManager();
         if (sots == null) {
-            CommandHandler.sendMessage(sender, "No SotS manager");
+            CommandOutput.sendMessage(sender, "No SotS manager");
             return;
         }
 
@@ -257,7 +257,7 @@ public final class StatueCommand implements PicocliCommandHandler {
         int sceneId = player.getSceneId();
         player.sendPacket(new PacketLevelupCityRsp(sceneId, info.getLevel(), cityId, 0, 0, 0));
         player.sendPacket(new PacketGetSceneAreaRsp(player, sceneId));
-        CommandHandler.sendMessage(
+        CommandOutput.sendMessage(
                 sender,
                 "Set city"
                         + cityId

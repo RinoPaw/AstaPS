@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.entity.EntityAvatar;
 import emu.grasscutter.game.player.Player;
@@ -18,7 +18,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"stats", "stat"},
         permission = "player.setstats",
         permissionTargeted = "player.setstats.others")
-public final class SetStatsCommand implements PicocliCommandHandler {
+public final class SetStatsCommand implements CommandHandler {
     private final Map<String, Stat> stats = new HashMap<>();
 
     private record StatArg(Stat stat) {}
@@ -141,7 +141,7 @@ public final class SetStatsCommand implements PicocliCommandHandler {
                 try {
                     parsed = parsePercent(value);
                 } catch (NumberFormatException ignored) {
-                    CommandHandler.sendTranslatedMessage(sender, "commands.generic.invalid.statValue");
+                    CommandOutput.sendTranslatedMessage(sender, "commands.generic.invalid.statValue");
                     return;
                 }
             }
@@ -179,7 +179,7 @@ public final class SetStatsCommand implements PicocliCommandHandler {
         try {
             value = parsePercent(text);
         } catch (NumberFormatException ignored) {
-            CommandHandler.sendTranslatedMessage(sender, "commands.generic.invalid.statValue");
+            CommandOutput.sendTranslatedMessage(sender, "commands.generic.invalid.statValue");
             return;
         }
 
@@ -195,10 +195,10 @@ public final class SetStatsCommand implements PicocliCommandHandler {
                         ? String.format("%.1f%%", value * 100f)
                         : String.format("%.0f", value);
         if (targetPlayer == sender) {
-            CommandHandler.sendTranslatedMessage(sender, action.messageKeySelf, stat.name, valueStr);
+            CommandOutput.sendTranslatedMessage(sender, action.messageKeySelf, stat.name, valueStr);
         } else {
             String uidStr = targetPlayer.getAccount().getId();
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender, action.messageKeyOther, stat.name, uidStr, valueStr);
         }
     }

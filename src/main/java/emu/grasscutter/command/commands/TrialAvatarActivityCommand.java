@@ -4,7 +4,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.activity.PlayerActivityData;
 import emu.grasscutter.game.activity.trialavatar.TrialAvatarActivityHandler;
 import emu.grasscutter.game.activity.trialavatar.TrialAvatarPlayerData;
@@ -20,7 +20,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"taa"},
         permission = "player.trialavataractivity",
         permissionTargeted = "player.trialavataractivity.others")
-public final class TrialAvatarActivityCommand implements PicocliCommandHandler {
+public final class TrialAvatarActivityCommand implements CommandHandler {
     private record Selection(Integer index) {
         private boolean all() {
             return index == null;
@@ -83,7 +83,7 @@ public final class TrialAvatarActivityCommand implements PicocliCommandHandler {
                             .getPlayerActivityDataByActivityType(
                                     ActivityType.NEW_ACTIVITY_TRIAL_AVATAR);
             if (playerDataOption.isEmpty()) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.trialAvatarActivity.not_found"));
                 return null;
             }
@@ -92,7 +92,7 @@ public final class TrialAvatarActivityCommand implements PicocliCommandHandler {
             var handler = (TrialAvatarActivityHandler) playerData.getActivityHandler();
             var detail = JsonUtils.decode(playerData.getDetail(), TrialAvatarPlayerData.class);
             if (handler == null || detail == null) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.trialAvatarActivity.not_found"));
                 return null;
             }
@@ -128,7 +128,7 @@ public final class TrialAvatarActivityCommand implements PicocliCommandHandler {
                 return;
             }
             if (TrialAvatarPlayerData.getAvatarIdList(scheduleId).isEmpty()) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         translate(
                                 sender,
@@ -139,7 +139,7 @@ public final class TrialAvatarActivityCommand implements PicocliCommandHandler {
 
             context.playerData().setDetail(TrialAvatarPlayerData.create(scheduleId));
             context.playerData().save();
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     translate(sender, "commands.trialAvatarActivity.success_schedule", scheduleId));
             targetPlayer.sendPacket(
@@ -171,7 +171,7 @@ public final class TrialAvatarActivityCommand implements PicocliCommandHandler {
                 context.detail().getRewardInfoList().forEach(
                         reward -> reward.setPassedDungeon(!reward.isPassedDungeon()));
                 saveAndNotify(context);
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         translate(sender, "commands.trialAvatarActivity.success_dungeon_all"));
                 return;
@@ -179,14 +179,14 @@ public final class TrialAvatarActivityCommand implements PicocliCommandHandler {
 
             int offset = selection.index() - 1;
             if (offset < 0 || offset >= context.detail().getRewardInfoList().size()) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.trialAvatarActivity.invalid_param"));
                 return;
             }
             var reward = context.detail().getRewardInfoList().get(offset);
             reward.setPassedDungeon(!reward.isPassedDungeon());
             saveAndNotify(context);
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     translate(
                             sender,
@@ -213,7 +213,7 @@ public final class TrialAvatarActivityCommand implements PicocliCommandHandler {
                 context.detail().getRewardInfoList().forEach(
                         reward -> reward.setReceivedReward(!reward.isReceivedReward()));
                 saveAndNotify(context);
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         translate(sender, "commands.trialAvatarActivity.success_reward_all"));
                 return;
@@ -221,14 +221,14 @@ public final class TrialAvatarActivityCommand implements PicocliCommandHandler {
 
             int offset = selection.index() - 1;
             if (offset < 0 || offset >= context.detail().getRewardInfoList().size()) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.trialAvatarActivity.invalid_param"));
                 return;
             }
             var reward = context.detail().getRewardInfoList().get(offset);
             reward.setReceivedReward(!reward.isReceivedReward());
             saveAndNotify(context);
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     translate(
                             sender,

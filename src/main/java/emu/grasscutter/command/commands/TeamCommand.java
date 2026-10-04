@@ -15,7 +15,7 @@ import picocli.CommandLine.Parameters;
         label = "team",
         permission = "player.team",
         permissionTargeted = "player.team.others")
-public final class TeamCommand implements PicocliCommandHandler {
+public final class TeamCommand implements CommandHandler {
     private static final int BASE_AVATARID = 10000000;
 
     @Override
@@ -26,12 +26,6 @@ public final class TeamCommand implements PicocliCommandHandler {
         commandLine.addSubcommand("add", new Add(sender, targetPlayer));
         commandLine.addSubcommand("remove", new Remove(sender, targetPlayer));
         commandLine.addSubcommand("set", new Set(sender, targetPlayer));
-        commandLine.setParameterExceptionHandler(
-                (exception, argv) -> {
-                    CommandHandler.sendTranslatedMessage(sender, "commands.team.invalid_usage");
-                    this.sendUsageMessage(sender);
-                    return 2;
-                });
         return commandLine;
     }
 
@@ -103,7 +97,7 @@ public final class TeamCommand implements PicocliCommandHandler {
                     index = Integer.parseInt(args.get(1)) - 1;
                     if (index < 0) index = 0;
                 } catch (Exception e) {
-                    CommandHandler.sendTranslatedMessage(sender, "commands.team.invalid_index");
+                    CommandOutput.sendTranslatedMessage(sender, "commands.team.invalid_index");
                     return false;
                 }
             }
@@ -114,7 +108,7 @@ public final class TeamCommand implements PicocliCommandHandler {
 
             if (currentTeamAvatars.size() + avatarIds.length
                     > GAME_OPTIONS.avatarLimits.singlePlayerTeam) {
-                CommandHandler.sendTranslatedMessage(
+                CommandOutput.sendTranslatedMessage(
                         sender,
                         "commands.team.add_too_much",
                         GAME_OPTIONS.avatarLimits.singlePlayerTeam);
@@ -128,14 +122,14 @@ public final class TeamCommand implements PicocliCommandHandler {
                 } else {
                     id = NameIndex.resolve(avatarId, new ArrayList<>());
                     if (!GameData.getAvatarDataMap().containsKey(id)) {
-                        CommandHandler.sendTranslatedMessage(
+                        CommandOutput.sendTranslatedMessage(
                                 sender, "commands.team.failed_to_add_avatar", avatarId);
                         continue;
                     }
                 }
 
                 if (!addAvatar(sender, targetPlayer, id, index))
-                    CommandHandler.sendTranslatedMessage(
+                    CommandOutput.sendTranslatedMessage(
                             sender, "commands.team.failed_to_add_avatar", avatarId);
                 if (index > 0) ++index;
             }
@@ -164,7 +158,7 @@ public final class TeamCommand implements PicocliCommandHandler {
             for (var metaIndex : metaIndexList) {
                 var subIndexes = transformToIndexes(metaIndex, avatarCount);
                 if (subIndexes == null) {
-                    CommandHandler.sendTranslatedMessage(
+                    CommandOutput.sendTranslatedMessage(
                             sender, "commands.team.failed_to_parse_index", metaIndex);
                     continue;
                 }
@@ -179,12 +173,12 @@ public final class TeamCommand implements PicocliCommandHandler {
             }
 
             if (indexes.size() >= avatarCount) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.team.remove_too_much");
+                CommandOutput.sendTranslatedMessage(sender, "commands.team.remove_too_much");
                 return false;
             }
 
             if (!ignoreList.isEmpty()) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.team.ignore_index", ignoreList);
+                CommandOutput.sendTranslatedMessage(sender, "commands.team.ignore_index", ignoreList);
             }
 
             currentTeamAvatars.removeAll(indexes);
@@ -214,13 +208,13 @@ public final class TeamCommand implements PicocliCommandHandler {
                 index = Integer.parseInt(indexText) - 1;
                 if (index < 0) index = 0;
             } catch (Exception e) {
-                CommandHandler.sendTranslatedMessage(
+                CommandOutput.sendTranslatedMessage(
                         sender, "commands.team.failed_to_parse_index", indexText);
                 return false;
             }
 
             if (index + 1 > currentTeamAvatars.size()) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.team.index_out_of_range");
+                CommandOutput.sendTranslatedMessage(sender, "commands.team.index_out_of_range");
                 return false;
             }
 
@@ -228,20 +222,20 @@ public final class TeamCommand implements PicocliCommandHandler {
             try {
                 avatarId = Integer.parseInt(avatarIdText);
             } catch (Exception e) {
-                CommandHandler.sendTranslatedMessage(
+                CommandOutput.sendTranslatedMessage(
                         sender, "commands.team.failed_parse_avatar_id", avatarIdText);
                 return false;
             }
             if (avatarId < BASE_AVATARID) avatarId += BASE_AVATARID;
 
             if (currentTeamAvatars.contains(avatarId)) {
-                CommandHandler.sendTranslatedMessage(
+                CommandOutput.sendTranslatedMessage(
                         sender, "commands.team.avatar_already_in_team", avatarId);
                 return false;
             }
 
             if (!targetPlayer.getAvatars().hasAvatar(avatarId)) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.team.avatar_not_found", avatarId);
+                CommandOutput.sendTranslatedMessage(sender, "commands.team.avatar_not_found", avatarId);
                 return false;
             }
 
@@ -263,12 +257,12 @@ public final class TeamCommand implements PicocliCommandHandler {
         if (avatarId < BASE_AVATARID) avatarId += BASE_AVATARID;
         var currentTeamAvatars = targetPlayer.getTeamManager().getCurrentTeamInfo().getAvatars();
         if (currentTeamAvatars.contains(avatarId)) {
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender, "commands.team.avatar_already_in_team", avatarId);
             return false;
         }
         if (!targetPlayer.getAvatars().hasAvatar(avatarId)) {
-            CommandHandler.sendTranslatedMessage(sender, "commands.team.avatar_not_found", avatarId);
+            CommandOutput.sendTranslatedMessage(sender, "commands.team.avatar_not_found", avatarId);
             return false;
         }
         if (index < 0) currentTeamAvatars.add(avatarId);

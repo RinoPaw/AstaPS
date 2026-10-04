@@ -6,7 +6,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.CommandHelpers;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.NameIndex;
 import emu.grasscutter.data.excels.GadgetData;
@@ -35,7 +35,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"drop", "s"},
         permission = "server.spawn",
         permissionTargeted = "server.spawn.others")
-public final class SpawnCommand implements PicocliCommandHandler {
+public final class SpawnCommand implements CommandHandler {
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
@@ -97,13 +97,13 @@ public final class SpawnCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (amount <= 0 || level <= 0) {
-                CommandHandler.sendMessage(sender, "amount and level must be positive");
+                CommandOutput.sendMessage(sender, "amount and level must be positive");
                 return;
             }
 
             int id = resolveEntityId(entity);
             if (id == 0) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.generic.invalid.entityId"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.generic.invalid.entityId"));
                 return;
             }
 
@@ -120,7 +120,7 @@ public final class SpawnCommand implements PicocliCommandHandler {
                     rot.setZ(CommandHelpers.parseRelative(rotation.get(2), rot.getZ()));
                 }
             } catch (NumberFormatException ignored) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.execution.argument_error"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.execution.argument_error"));
                 return;
             }
 
@@ -128,7 +128,7 @@ public final class SpawnCommand implements PicocliCommandHandler {
             GadgetData gadgetData = GameData.getGadgetDataMap().get(id);
             ItemData itemData = GameData.getItemDataMap().get(id);
             if (monsterData == null && gadgetData == null && itemData == null) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.generic.invalid.entityId"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.generic.invalid.entityId"));
                 return;
             }
 
@@ -155,7 +155,7 @@ public final class SpawnCommand implements PicocliCommandHandler {
                                 GAME_OPTIONS.sceneEntityLimit - param.scene.getEntities().size(),
                                 param.amount),
                         0);
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.spawn.limit_reached", param.amount));
                 if (param.amount <= 0) return;
             }
@@ -175,7 +175,7 @@ public final class SpawnCommand implements PicocliCommandHandler {
                 applyCommonParameters(created, param);
                 param.scene.addEntity(created);
             }
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     translate(sender, "commands.spawn.success", param.amount, NameIndex.describe(param.id)));
         }

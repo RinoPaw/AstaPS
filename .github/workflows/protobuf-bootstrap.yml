@@ -8,6 +8,7 @@ on:
       - "src/generated/main/java/emu/grasscutter/net/proto/**"
       - "tools/protocol/**"
       - "gradle/protocol-bootstrap.gradle"
+      - "gradle/protocol-generation.gradle"
       - ".github/workflows/protobuf-bootstrap.yml"
   workflow_dispatch:
 
@@ -20,7 +21,7 @@ permissions:
 
 jobs:
   export:
-    name: Export embedded descriptors
+    name: Export and regenerate protocol
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -51,6 +52,29 @@ jobs:
           sha256sum build/protocol/7.1/protocol.desc
           ls -lh build/protocol/7.1/protocol.desc
 
+      - name: Generate Java from canonical descriptor set
+        run: >-
+          ./gradlew -I gradle/protocol-generation.gradle generateProtocolJava
+          --build-cache
+          -PskipHandbook=1
+          -Dorg.gradle.jvmargs=-Xmx6g
+
+      - name: Compile against regenerated protocol sources
+        run: >-
+          ./gradlew -I gradle/protocol-generation.gradle compileJava
+          --build-cache
+          -PskipHandbook=1
+          -Dorg.gradle.jvmargs=-Xmx6g
+
+      - name: Inspect generated sources and protobuf runtime
+        shell: bash
+        run: |
+          find build/generated/sources/protocol/7.1/java/main -name '*.java' -type f | wc -l
+          ./gradlew dependencyInsight \
+            --dependency protobuf-java \
+            --configuration compileClasspath \
+            -q
+
       - name: Upload bootstrap artifact
         uses: actions/upload-artifact@v7
         with:
@@ -69,10 +93,27 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add protocol/7.1/protocol.desc protocol/7.1/files.txt
 
-          if git diff --cached --quiet; then
+          if ! git diff --cached --quiet; then
+            git commit -m "build: capture 7.1 protobuf descriptors"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          else
             echo "Descriptor set is already current."
+          fi
+
+      - name: Enable descriptor-based generation in normal builds
+        shell: bash
+        run: |
+          git pull --ff-only origin "${GITHUB_REF_NAME}"
+
+          if ! grep -Fq "apply from: 'gradle/protocol-generation.gradle'" build.gradle; then
+            printf "\napply from: 'gradle/protocol-generation.gradle'\n" >> build.gradle
+          fi
+
+          git add build.gradle
+          if git diff --cached --quiet; then
+            echo "Descriptor-based generation is already enabled."
             exit 0
           fi
 
-          git commit -m "build: capture 7.1 protobuf descriptors"
+          git commit -m "build: generate 7.1 protocol Java from descriptors"
           git push origin "HEAD:${GITHUB_REF_NAME}"

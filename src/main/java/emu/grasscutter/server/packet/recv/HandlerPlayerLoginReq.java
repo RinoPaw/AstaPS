@@ -1,6 +1,6 @@
 package emu.grasscutter.server.packet.recv;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.player.Player;
@@ -25,7 +25,7 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         }
 
         Player player = session.getPlayer();
-        var intro = GAME_OPTIONS.newAccountIntro;
+        var intro = GAME.newAccountIntro;
         boolean freshAccount = player.getAvatars().getAvatarCount() == 0;
         boolean skipIntro = freshAccount && intro.skip;
 

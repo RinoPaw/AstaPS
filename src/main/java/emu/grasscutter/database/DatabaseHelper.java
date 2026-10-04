@@ -245,11 +245,11 @@ public final class DatabaseHelper {
                 .filter(
                         Filters.or(
                                 Filters.eq("bannedByIp", ip),
-                                Filters.regex("banReason")
-                                        .pattern(
-                                                "^"
-                                                        + java.util.regex.Pattern.quote(
-                                                                LEGACY_IP_BAN_REASON_PREFIX + ip))))
+                                Filters.regex(
+                                        "banReason",
+                                        "^"
+                                                + java.util.regex.Pattern.quote(
+                                                        LEGACY_IP_BAN_REASON_PREFIX + ip))))
                 .iterator()
                 .toList();
     }
@@ -754,13 +754,14 @@ public final class DatabaseHelper {
     public static List<GachaRecord> getGachaRecords(
             int ownerId, int page, int gachaType, int pageSize) {
         return DatabaseManager.getGameDatastore()
-                .find(GachaRecord.class)
-                .filter(Filters.eq("ownerId", ownerId), Filters.eq("gachaType", gachaType))
-                .iterator(
+                .find(
+                        GachaRecord.class,
                         new FindOptions()
                                 .sort(Sort.descending("transactionDate"))
                                 .skip(pageSize * page)
                                 .limit(pageSize))
+                .filter(Filters.eq("ownerId", ownerId), Filters.eq("gachaType", gachaType))
+                .iterator()
                 .toList();
     }
 

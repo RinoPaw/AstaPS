@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
@@ -41,6 +42,35 @@ public final class CommandMapParsingTest {
     @Test
     public void rootDisablesPicocliArgumentFiles() {
         assertFalse(CommandMap.createRootCommandLine().isExpandAtFiles());
+    }
+
+    @Test
+    public void threadedExecutionUsesProvidedExecutor() {
+        var submitted = new AtomicBoolean();
+        var ran = new AtomicBoolean();
+
+        CommandMap.executeCommand(
+                () -> ran.set(true),
+                true,
+                command -> {
+                    submitted.set(true);
+                    command.run();
+                });
+
+        assertTrue(submitted.get());
+        assertTrue(ran.get());
+    }
+
+    @Test
+    public void synchronousExecutionDoesNotUseExecutor() {
+        var submitted = new AtomicBoolean();
+        var ran = new AtomicBoolean();
+
+        CommandMap.executeCommand(
+                () -> ran.set(true), true && false, command -> submitted.set(true));
+
+        assertFalse(submitted.get());
+        assertTrue(ran.get());
     }
 
     @Test

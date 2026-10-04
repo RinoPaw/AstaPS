@@ -31,7 +31,9 @@ public final class GameConfig {
     public boolean watchGachaConfig = false;
     public boolean enableShopItems = false;
     public ArtifactSettings artifacts = new ArtifactSettings();
-    public ShopSettings shops = new ShopSettings();
+
+    @SerializedName(value = "shop", alternate = "shops")
+    public ShopSettings shop = new ShopSettings();
 
     public boolean staminaUsage = true;
     public boolean energyUsage = true;
@@ -164,7 +166,7 @@ public final class GameConfig {
             rewrite = true;
         }
 
-        if (!root.has("artifacts") || !root.has("shops")) rewrite = true;
+        if (!root.has("artifacts") || !root.has("shop")) rewrite = true;
         return rewrite;
     }
 
@@ -221,10 +223,10 @@ public final class GameConfig {
         if (old == null || target == null) return;
         ensureArtifactShop(target);
         if (old.has("enabled") && !old.get("enabled").isJsonNull()) {
-            target.shops.artifact.enabled = old.get("enabled").getAsBoolean();
+            target.shop.artifact.enabled = old.get("enabled").getAsBoolean();
         }
         if (old.has("buyLimit") && !old.get("buyLimit").isJsonNull()) {
-            target.shops.artifact.buyLimit = Math.max(0, old.get("buyLimit").getAsInt());
+            target.shop.artifact.buyLimit = Math.max(0, old.get("buyLimit").getAsInt());
         }
     }
 
@@ -232,12 +234,12 @@ public final class GameConfig {
         if (old == null || target == null) return;
         ensureArtifactShop(target);
         var decoded = JsonUtils.decode(old, ShopSettings.Artifact.class);
-        if (decoded != null) target.shops.artifact = decoded;
+        if (decoded != null) target.shop.artifact = decoded;
     }
 
     private static void ensureArtifactShop(GameConfig target) {
-        if (target.shops == null) target.shops = new ShopSettings();
-        if (target.shops.artifact == null) target.shops.artifact = new ShopSettings.Artifact();
+        if (target.shop == null) target.shop = new ShopSettings();
+        if (target.shop.artifact == null) target.shop.artifact = new ShopSettings.Artifact();
     }
 
     private void normalize() {
@@ -249,8 +251,8 @@ public final class GameConfig {
         if (avatarLimits == null) avatarLimits = new ConfigContainer.GameOptions.AvatarLimits();
         if (artifacts == null) artifacts = new ArtifactSettings();
         artifacts.normalize();
-        if (shops == null) shops = new ShopSettings();
-        shops.normalize();
+        if (shop == null) shop = new ShopSettings();
+        shop.normalize();
         if (defaultNickname == null || defaultNickname.isBlank()) defaultNickname = "Traveler";
         if (newAccountIntro == null) {
             newAccountIntro = new ConfigContainer.GameOptions.NewAccountIntro();
@@ -357,6 +359,7 @@ public final class GameConfig {
 
     private static void validateShopSchema(JsonObject root) {
         if (root == null) return;
+        validateArtifactShopFields(object(object(root, "shop"), "artifact"), "shop.artifact");
         validateArtifactShopFields(object(object(root, "shops"), "artifact"), "shops.artifact");
         // Version 4 stored the same shop object under artifacts.shop; accept it for migration while
         // still rejecting the already-removed pre-v4 fields.

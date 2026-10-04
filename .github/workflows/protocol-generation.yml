@@ -22,9 +22,15 @@ permissions:
 
 jobs:
   validate:
-    name: Generate, build, and test
-    runs-on: ubuntu-latest
+    name: Generate, build, and test (${{ runner.os }})
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
 
     steps:
       - name: Checkout
@@ -43,14 +49,19 @@ jobs:
       # compiles the full production jar, then runs the regression test that exercises generated
       # descriptors and protobuf serialization against the pinned runtime.
       - name: Generate, build, and test
-        run: >-
-          ./gradlew generateProtocolJava jar test
-          --tests emu.grasscutter.net.ProtocolGenerationTest
-          --build-cache
-          -PskipHandbook=1
-          -PjarFilename=grasscutter
-          -PexcludeTags=integration
-          -Dorg.gradle.jvmargs=-Xmx4g
+        shell: bash
+        env:
+          JDK_JAVAC_OPTIONS: -Xlint:all
+        run: |
+          set -o pipefail
+          ./gradlew generateProtocolJava jar test \
+            --tests emu.grasscutter.net.ProtocolGenerationTest \
+            --build-cache \
+            -PskipHandbook=1 \
+            -PjarFilename=grasscutter \
+            -PexcludeTags=integration \
+            -Dorg.gradle.jvmargs=-Xmx4g \
+            2>&1 | tee protocol-build.log
 
       - name: Verify generated protocol set
         shell: bash
@@ -60,11 +71,16 @@ jobs:
           echo "Generated $count protocol Java files."
           sha256sum protocol/7.1/protocol.desc
 
+          if grep -E 'build[/\\]generated[/\\]sources[/\\]protocol[/\\].*: warning:' protocol-build.log; then
+            echo "Generated protocol sources emitted javac warnings." >&2
+            exit 1
+          fi
+
       - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: protocol-test-results
+          name: protocol-test-results-${{ runner.os }}
           path: build/reports/tests/test
           if-no-files-found: ignore
           retention-days: 7
@@ -73,6 +89,6 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v7
         with:
-          name: protocol-grasscutter
+          name: protocol-grasscutter-${{ runner.os }}
           path: grasscutter.jar
           retention-days: 14

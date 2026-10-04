@@ -1,6 +1,5 @@
 package io.grasscutter;
 
-import com.mchange.util.AssertException;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.config.Configuration;
 import java.io.IOException;
@@ -44,7 +43,7 @@ public final class GrasscutterTest {
             // Start Grasscutter.
             Grasscutter.main(new String[] {"-test"});
         } catch (Exception ignored) {
-            throw new AssertException("Grasscutter failed to start.");
+            throw new AssertionError("Grasscutter failed to start.");
         }
 
         // Set the ports.

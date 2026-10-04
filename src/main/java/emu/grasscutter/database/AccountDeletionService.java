@@ -81,14 +81,14 @@ public final class AccountDeletionService {
 
         DatabaseManager.getGameDatastore()
                 .find(Player.class)
-                .filter(dev.morphia.query.experimental.filters.Filters.eq("id", uid))
+                .filter(dev.morphia.query.filters.Filters.eq("id", uid))
                 .delete();
     }
 
     private static void deleteAccountDocument(String accountId) {
         DatabaseManager.getAccountDatastore()
                 .find(Account.class)
-                .filter(dev.morphia.query.experimental.filters.Filters.eq("id", accountId))
+                .filter(dev.morphia.query.filters.Filters.eq("id", accountId))
                 .delete();
     }
 }

@@ -17,12 +17,12 @@ public class MaPassportAuthenticator {
     public static LoginByPasswordResponseJson appLoginByPassword(LoginByPasswordRequestJson request) {
         Grasscutter.getLogger().debug("ma-passport login req detected");
         if (request == null) {
-            Grasscutter.getLogger().error("Request is null");
-            return createLoginErrorResponse(-1, "Invalid request");
+            Grasscutter.getLogger().warn("Ma-passport login request is null");
+            return createLoginErrorResponse(MaPassportError.INVALID_REQUEST);
         }
         if (request.account == null || request.password == null) {
-            Grasscutter.getLogger().error("Missing credentials");
-            return createLoginErrorResponse(-1, "Missing credentials");
+            Grasscutter.getLogger().warn("Ma-passport login request is missing credentials");
+            return createLoginErrorResponse(MaPassportError.MISSING_CREDENTIALS);
         }
 
         try {
@@ -30,16 +30,16 @@ public class MaPassportAuthenticator {
             try {
                 username = RSADecryptionUtil.decrypt(request.account);
             } catch (Exception e) {
-                Grasscutter.getLogger().error("Unable to decrypt account", e);
-                return createLoginErrorResponse(-10, "Unable to decrypt account");
+                Grasscutter.getLogger().warn("Unable to decrypt ma-passport account", e);
+                return createLoginErrorResponse(MaPassportError.CREDENTIAL_DECRYPTION_FAILED);
             }
 
             String password;
             try {
                 password = RSADecryptionUtil.decrypt(request.password);
             } catch (Exception e) {
-                Grasscutter.getLogger().error("Unable to decrypt account", e);
-                return createLoginErrorResponse(-10, "Unable to decrypt account");
+                Grasscutter.getLogger().warn("Unable to decrypt ma-passport password", e);
+                return createLoginErrorResponse(MaPassportError.CREDENTIAL_DECRYPTION_FAILED);
             }
 
             Account account = DatabaseHelper.getAccountByName(username);
@@ -49,7 +49,7 @@ public class MaPassportAuthenticator {
             }
             if (account == null) {
                 Grasscutter.getLogger().info("Account not found: " + username);
-                return createLoginErrorResponse(-101, "Account or password error");
+                return createLoginErrorResponse(MaPassportError.ACCOUNT_NOT_FOUND);
             }
 
             if ((account.getPassword() == null || account.getPassword().isEmpty())
@@ -62,7 +62,7 @@ public class MaPassportAuthenticator {
 
             if (!account.verifyPassword(password)) {
                 Grasscutter.getLogger().info("Password verification failed for: " + username);
-                return createLoginErrorResponse(-101, "Account or password error");
+                return createLoginErrorResponse(MaPassportError.LOGIN_FAILED);
             }
 
             Grasscutter.getLogger().debug("Generating session key");
@@ -71,20 +71,23 @@ public class MaPassportAuthenticator {
             Grasscutter.getLogger().info("User " + username + " has successfully logged in");
             return createLoginSuccessResponse(account);
         } catch (Exception e) {
-            Grasscutter.getLogger().error("Exception: " + e.getClass().getName());
-            Grasscutter.getLogger().error("Message: " + e.getMessage());
-            e.printStackTrace();
-            return createLoginErrorResponse(-1, "Internal server error: " + e.getMessage());
+            Grasscutter.getLogger().error("Error in ma-passport password login", e);
+            return createLoginErrorResponse(MaPassportError.INTERNAL_ERROR);
         }
     }
 
     public static VerifySTokenResponseJson verifySToken(VerifySTokenRequestJson request) {
+        if (request == null) {
+            Grasscutter.getLogger().warn("Ma-passport token verify request is null");
+            return createTokenErrorResponse(MaPassportError.INVALID_REQUEST);
+        }
+
         try {
             Grasscutter.getLogger().debug("Ma-passport token verification for mid: " + request.mid);
             Account account = DatabaseHelper.getAccountById(request.mid);
             if (account == null) {
                 Grasscutter.getLogger().info("Account not found for mid: " + request.mid);
-                return createTokenErrorResponse(-101, "For account safety, please log in again");
+                return createTokenErrorResponse(MaPassportError.RELOGIN_REQUIRED);
             }
 
             String accountSessionKey = account.getSessionKey();
@@ -113,7 +116,7 @@ public class MaPassportAuthenticator {
             return createTokenSuccessResponse(account);
         } catch (Exception e) {
             Grasscutter.getLogger().error("Error in ma-passport token verification", e);
-            return createTokenErrorResponse(-1, "Internal server error");
+            return createTokenErrorResponse(MaPassportError.INTERNAL_ERROR);
         }
     }
 
@@ -156,10 +159,10 @@ public class MaPassportAuthenticator {
         return response;
     }
 
-    public static LoginByPasswordResponseJson createLoginErrorResponse(int retcode, String message) {
+    public static LoginByPasswordResponseJson createLoginErrorResponse(MaPassportError error) {
         LoginByPasswordResponseJson response = new LoginByPasswordResponseJson();
-        response.retcode = retcode;
-        response.message = message;
+        response.retcode = error.retcode();
+        response.message = error.message();
         response.data = null;
         return response;
     }
@@ -202,10 +205,10 @@ public class MaPassportAuthenticator {
         return response;
     }
 
-    public static VerifySTokenResponseJson createTokenErrorResponse(int retcode, String message) {
+    public static VerifySTokenResponseJson createTokenErrorResponse(MaPassportError error) {
         VerifySTokenResponseJson response = new VerifySTokenResponseJson();
-        response.retcode = retcode;
-        response.message = message;
+        response.retcode = error.retcode();
+        response.message = error.message();
         response.data = null;
         return response;
     }

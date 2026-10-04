@@ -225,10 +225,6 @@ public class ConfigContainer {
         public boolean watchGachaConfig = false;
         public boolean enableShopItems = false;
         public ArtifactShopOptions artifactShop = new ArtifactShopOptions();
-
-        /** Compatibility-only view for callers predating game.json.rewards. */
-        public ExplorationRewardOptions explorationRewards = new ExplorationRewardOptions();
-
         public boolean staminaUsage = true;
         public boolean energyUsage = true;
         public boolean fishhookTeleport = true;
@@ -244,7 +240,6 @@ public class ConfigContainer {
         public Questing questing = new Questing();
 
         public ResinOptions resinOptions = new ResinOptions();
-        public Rates rates = new Rates();
         public TowerOptions tower = new TowerOptions();
         public HandbookOptions handbook = new HandbookOptions();
         public BirthdayMailOptions birthdayMail = new BirthdayMailOptions();
@@ -261,74 +256,6 @@ public class ConfigContainer {
             public double critWeight = 8;
             public double damageWeight = 3;
             public double highRollBias = 3;
-        }
-
-        public static class ExplorationRewardOptions {
-            public UnlockReward waypoint = new UnlockReward(5, 10, 0, 0, 0);
-            public UnlockReward statue = new UnlockReward(5, 50, 0, 0, 0);
-            public ChestRewards chests = new ChestRewards();
-
-            public static class UnlockReward {
-                public int primogems;
-                public int adventureExp;
-                public int fragileResin;
-                public int heroWit;
-                public int mysticEnhancementOre;
-
-                public UnlockReward() {}
-
-                public UnlockReward(
-                        int primogems,
-                        int adventureExp,
-                        int fragileResin,
-                        int heroWit,
-                        int mysticEnhancementOre) {
-                    this.primogems = primogems;
-                    this.adventureExp = adventureExp;
-                    this.fragileResin = fragileResin;
-                    this.heroWit = heroWit;
-                    this.mysticEnhancementOre = mysticEnhancementOre;
-                }
-            }
-
-            public static class ChestRewards {
-                public ChestReward common = new ChestReward(0, 10, 1, 500, 1, 1, 0, 0);
-                public ChestReward exquisite = new ChestReward(2, 20, 2, 1000, 2, 2, 1, 0);
-                public ChestReward precious = new ChestReward(5, 30, 3, 1500, 3, 2, 2, 1);
-                public ChestReward luxurious = new ChestReward(10, 30, 4, 2000, 4, 2, 3, 1);
-            }
-
-            public static class ChestReward {
-                public int primogems;
-                public int adventureExp;
-                public int sigil;
-                public int mora;
-                public int fineEnhancementOre;
-                public int wanderersAdvice;
-                public int adventurersExperience;
-                public int herosWit;
-
-                public ChestReward() {}
-
-                public ChestReward(
-                        int primogems,
-                        int adventureExp,
-                        int sigil,
-                        int mora,
-                        int fineEnhancementOre,
-                        int wanderersAdvice,
-                        int adventurersExperience,
-                        int herosWit) {
-                    this.primogems = primogems;
-                    this.adventureExp = adventureExp;
-                    this.sigil = sigil;
-                    this.mora = mora;
-                    this.fineEnhancementOre = fineEnhancementOre;
-                    this.wanderersAdvice = wanderersAdvice;
-                    this.adventurersExperience = adventurersExperience;
-                    this.herosWit = herosWit;
-                }
-            }
         }
 
         public static class NewAccountIntro {
@@ -350,71 +277,6 @@ public class ConfigContainer {
         public static class AvatarLimits {
             public int singlePlayerTeam = 4;
             public int multiplayerTeam = 4;
-        }
-
-        public static class Rates {
-            public float adventureExp = 1.5f;
-            public float mora = 2.0f;
-
-            @com.google.gson.annotations.JsonAdapter(LeyLineRatesAdapter.class)
-            public LeyLineRates leyLines = new LeyLineRates();
-        }
-
-        public static class LeyLineRates {
-            public float global = 2.0f;
-            public float mora = 1.0f;
-            public float experienceBooks = 1.0f;
-        }
-
-        public static class LeyLineRatesAdapter
-                implements com.google.gson.JsonDeserializer<LeyLineRates>,
-                        com.google.gson.JsonSerializer<LeyLineRates> {
-            @Override
-            public LeyLineRates deserialize(
-                    com.google.gson.JsonElement json,
-                    java.lang.reflect.Type typeOfT,
-                    com.google.gson.JsonDeserializationContext context) {
-                var rates = new LeyLineRates();
-                if (json == null || json.isJsonNull()) return rates;
-                if (json.isJsonPrimitive()) {
-                    rates.global = json.getAsFloat();
-                    return rates;
-                }
-
-                var object = json.getAsJsonObject();
-                if (object.has("global")) {
-                    rates.global = object.get("global").getAsFloat();
-                    if (object.has("mora")) rates.mora = object.get("mora").getAsFloat();
-                    if (object.has("experienceBooks")) {
-                        rates.experienceBooks = object.get("experienceBooks").getAsFloat();
-                    } else if (object.has("exp")) {
-                        rates.experienceBooks = object.get("exp").getAsFloat();
-                    }
-                    return rates;
-                }
-
-                rates.global = 1.0f;
-                if (object.has("mora")) rates.mora = object.get("mora").getAsFloat();
-                if (object.has("experienceBooks")) {
-                    rates.experienceBooks = object.get("experienceBooks").getAsFloat();
-                } else if (object.has("exp")) {
-                    rates.experienceBooks = object.get("exp").getAsFloat();
-                }
-                return rates;
-            }
-
-            @Override
-            public com.google.gson.JsonElement serialize(
-                    LeyLineRates src,
-                    java.lang.reflect.Type typeOfSrc,
-                    com.google.gson.JsonSerializationContext context) {
-                if (src == null) return com.google.gson.JsonNull.INSTANCE;
-                var object = new JsonObject();
-                object.addProperty("global", src.global);
-                object.addProperty("mora", src.mora);
-                object.addProperty("experienceBooks", src.experienceBooks);
-                return object;
-            }
         }
 
         public static class TowerOptions {

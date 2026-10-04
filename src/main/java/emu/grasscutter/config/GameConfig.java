@@ -2,7 +2,6 @@ package emu.grasscutter.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.utils.JsonUtils;
@@ -13,9 +12,8 @@ import java.nio.file.StandardCopyOption;
 
 /** Player-facing and gameplay configuration stored directly in {@code game.json}. */
 public final class GameConfig {
-    private static final int CURRENT_VERSION = 2;
+    private static final int CURRENT_VERSION = 3;
     private static final Path FILE = Path.of("game.json");
-    private static final Path LEGACY_REWARD_FILE = Path.of("reward-overrides.json");
 
     private static volatile GameConfig current;
 
@@ -55,7 +53,6 @@ public final class GameConfig {
     public ConfigContainer.GameOptions.ResinOptions resin =
             new ConfigContainer.GameOptions.ResinOptions();
 
-    @SerializedName(value = "rewards", alternate = "rates")
     public Rewards rewards = new Rewards();
 
     public ConfigContainer.GameOptions.TowerOptions tower =
@@ -84,6 +81,7 @@ public final class GameConfig {
             if (Files.exists(FILE)) {
                 try {
                     JsonObject stored = JsonUtils.loadToClass(FILE, JsonObject.class);
+                    validateRewardSchema(stored);
                     current = stored == null ? new GameConfig() : JsonUtils.decode(stored, GameConfig.class);
                     if (current == null) current = new GameConfig();
                     rewrite = migrateStored(stored, current);
@@ -96,7 +94,6 @@ public final class GameConfig {
                 }
             } else {
                 current = migrate(legacyRoot);
-                importLegacyRewardOverrides(current);
                 current.normalize();
                 save(current);
                 Grasscutter.getLogger().info("Created game.json from the previous gameplay configuration.");
@@ -267,16 +264,6 @@ public final class GameConfig {
         legacy.birthdayMail = birthdayMail;
         legacy.watermark = watermark;
 
-        if (legacy.rates == null) legacy.rates = new ConfigContainer.GameOptions.Rates();
-        legacy.rates.adventureExp = rewards.adventureExp;
-        legacy.rates.mora = rewards.mora;
-        if (legacy.rates.leyLines == null) {
-            legacy.rates.leyLines = new ConfigContainer.GameOptions.LeyLineRates();
-        }
-        legacy.rates.leyLines.global = rewards.leyLines.global;
-        legacy.rates.leyLines.mora = rewards.leyLines.wealth;
-        legacy.rates.leyLines.experienceBooks = rewards.leyLines.revelation;
-
         serverConfig.server.game.joinOptions = join;
         serverConfig.server.game.serverAccount = serverAccount;
         serverConfig.server.game.dpsAccount = dpsAccount;
@@ -291,63 +278,40 @@ public final class GameConfig {
         }
     }
 
-    private static void importLegacyRewardOverrides(GameConfig target) {
-        if (!Files.exists(LEGACY_REWARD_FILE)) return;
-
-        try {
-            JsonObject root = JsonUtils.loadToClass(LEGACY_REWARD_FILE, JsonObject.class);
-            applyUnlock(root.get("waypoint"), target.rewards.waypoint);
-            applyUnlock(root.get("statue"), target.rewards.statue);
-
-            JsonObject chests = object(root, "chests");
-            if (chests != null) {
-                applyChest(chests.get("common"), target.rewards.chests.common);
-                applyChest(chests.get("exquisite"), target.rewards.chests.exquisite);
-                applyChest(chests.get("precious"), target.rewards.chests.precious);
-                applyChest(chests.get("luxurious"), target.rewards.chests.luxurious);
-            }
-            Grasscutter.getLogger()
-                    .info(
-                            "Imported reward-overrides.json into game.json; the old file is no longer read.");
-        } catch (Exception exception) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "Could not import reward-overrides.json; game.json keeps original-game reward defaults.",
-                            exception);
+    private static void validateRewardSchema(JsonObject root) {
+        if (root == null) return;
+        if (root.has("rates")) {
+            throw new IllegalArgumentException(
+                    "game.json uses the removed rewards alias 'rates'; regenerate or update it to 'rewards'.");
         }
-    }
 
-    private static void applyUnlock(JsonElement element, UnlockReward target) {
-        if (element == null || element.isJsonNull() || !element.isJsonObject()) return;
-        JsonObject object = element.getAsJsonObject();
-        target.primogems = intOr(object, "primogems", target.primogems);
-        target.adventureExp = intOr(object, "adventureExp", target.adventureExp);
-        target.fragileResin = intOr(object, "fragileResin", target.fragileResin);
-        target.heroWit = intOr(object, "heroWit", target.heroWit);
-        target.mysticEnhancementOre =
-                intOr(object, "mysticEnhancementOre", target.mysticEnhancementOre);
-    }
+        JsonObject rewards = object(root, "rewards");
+        if (rewards == null) return;
 
-    private static void applyChest(JsonElement element, ChestReward target) {
-        if (element == null || element.isJsonNull() || !element.isJsonObject()) return;
-        var migrated = JsonUtils.decode(element, ChestReward.class);
-        if (migrated == null) return;
-        target.enabled = true;
-        target.primogems = migrated.primogems;
-        target.adventureExp = migrated.adventureExp;
-        target.sigil = migrated.sigil;
-        target.mora = migrated.mora;
-        target.enhancementOre = migrated.enhancementOre;
-        target.fineEnhancementOre = migrated.fineEnhancementOre;
-        target.mysticEnhancementOre = migrated.mysticEnhancementOre;
-        target.wanderersAdvice = migrated.wanderersAdvice;
-        target.adventurersExperience = migrated.adventurersExperience;
-        target.herosWit = migrated.herosWit;
-    }
+        JsonElement leyLines = rewards.get("leyLines");
+        if (leyLines != null && !leyLines.isJsonNull()) {
+            if (!leyLines.isJsonObject()) {
+                throw new IllegalArgumentException(
+                        "game.json rewards.leyLines must be an object with wealth/revelation only.");
+            }
+            JsonObject rates = leyLines.getAsJsonObject();
+            for (String removed : new String[] {"global", "mora", "exp", "experienceBooks"}) {
+                if (rates.has(removed)) {
+                    throw new IllegalArgumentException(
+                            "game.json rewards.leyLines contains removed field '" + removed + "'.");
+                }
+            }
+        }
 
-    private static int intOr(JsonObject object, String key, int fallback) {
-        if (!object.has(key) || object.get(key).isJsonNull()) return fallback;
-        return Math.max(0, object.get(key).getAsInt());
+        JsonObject chests = object(rewards, "chests");
+        if (chests == null) return;
+        for (String tier : new String[] {"common", "exquisite", "precious", "luxurious"}) {
+            JsonObject reward = object(chests, tier);
+            if (reward != null && reward.has("enabled")) {
+                throw new IllegalArgumentException(
+                        "game.json rewards.chests." + tier + " contains removed field 'enabled'.");
+            }
+        }
     }
 
     private static JsonObject object(JsonObject parent, String key) {
@@ -408,10 +372,7 @@ public final class GameConfig {
     public static final class Rewards {
         public float adventureExp = 1.5f;
         public float mora = 2.0f;
-
-        @JsonAdapter(LeyLineRatesAdapter.class)
         public LeyLineRates leyLines = new LeyLineRates();
-
         public UnlockReward waypoint = new UnlockReward(5, 10, 0, 0, 0);
         public UnlockReward statue = new UnlockReward(5, 50, 0, 0, 0);
         public ChestRewards chests = new ChestRewards();
@@ -421,7 +382,6 @@ public final class GameConfig {
             if (waypoint == null) waypoint = new UnlockReward(5, 10, 0, 0, 0);
             if (statue == null) statue = new UnlockReward(5, 50, 0, 0, 0);
             if (chests == null) chests = new ChestRewards();
-            chests.normalize();
         }
 
         public UnlockReward unlock(boolean statuePoint) {
@@ -430,64 +390,19 @@ public final class GameConfig {
 
         public ChestReward chest(String tier) {
             if (tier == null || chests == null) return null;
-            ChestReward reward =
-                    switch (tier) {
-                        case "COMMON" -> chests.common;
-                        case "EXQUISITE" -> chests.exquisite;
-                        case "PRECIOUS" -> chests.precious;
-                        case "LUXURIOUS" -> chests.luxurious;
-                        default -> null;
-                    };
-            return reward != null && reward.enabled ? reward : null;
+            return switch (tier) {
+                case "COMMON" -> chests.common;
+                case "EXQUISITE" -> chests.exquisite;
+                case "PRECIOUS" -> chests.precious;
+                case "LUXURIOUS" -> chests.luxurious;
+                default -> null;
+            };
         }
     }
 
     public static final class LeyLineRates {
-        public float global = 2.0f;
-        public float wealth = 1.0f;
-        public float revelation = 1.0f;
-    }
-
-    /** Accepts old scalar/source rate shapes and writes one canonical form. */
-    public static final class LeyLineRatesAdapter
-            implements com.google.gson.JsonDeserializer<LeyLineRates>,
-                    com.google.gson.JsonSerializer<LeyLineRates> {
-        @Override
-        public LeyLineRates deserialize(
-                JsonElement json,
-                java.lang.reflect.Type typeOfT,
-                com.google.gson.JsonDeserializationContext context) {
-            var rates = new LeyLineRates();
-            if (json == null || json.isJsonNull()) return rates;
-            if (json.isJsonPrimitive()) {
-                rates.global = json.getAsFloat();
-                return rates;
-            }
-
-            JsonObject object = json.getAsJsonObject();
-            rates.global = object.has("global") ? object.get("global").getAsFloat() : 1.0f;
-            if (object.has("wealth")) rates.wealth = object.get("wealth").getAsFloat();
-            else if (object.has("mora")) rates.wealth = object.get("mora").getAsFloat();
-
-            if (object.has("revelation")) rates.revelation = object.get("revelation").getAsFloat();
-            else if (object.has("experienceBooks")) {
-                rates.revelation = object.get("experienceBooks").getAsFloat();
-            } else if (object.has("exp")) rates.revelation = object.get("exp").getAsFloat();
-            return rates;
-        }
-
-        @Override
-        public JsonElement serialize(
-                LeyLineRates src,
-                java.lang.reflect.Type typeOfSrc,
-                com.google.gson.JsonSerializationContext context) {
-            if (src == null) return com.google.gson.JsonNull.INSTANCE;
-            JsonObject object = new JsonObject();
-            object.addProperty("global", src.global);
-            object.addProperty("wealth", src.wealth);
-            object.addProperty("revelation", src.revelation);
-            return object;
-        }
+        public float wealth = 2.0f;
+        public float revelation = 2.0f;
     }
 
     public static final class UnlockReward {
@@ -514,22 +429,14 @@ public final class GameConfig {
     }
 
     public static final class ChestRewards {
-        public ChestReward common = new ChestReward();
-        public ChestReward exquisite = new ChestReward();
-        public ChestReward precious = new ChestReward();
-        public ChestReward luxurious = new ChestReward();
-
-        private void normalize() {
-            if (common == null) common = new ChestReward();
-            if (exquisite == null) exquisite = new ChestReward();
-            if (precious == null) precious = new ChestReward();
-            if (luxurious == null) luxurious = new ChestReward();
-        }
+        public ChestReward common;
+        public ChestReward exquisite;
+        public ChestReward precious;
+        public ChestReward luxurious;
     }
 
-    /** Set enabled=true to replace the original drop table for that chest tier. */
+    /** Presence of a tier object replaces the original drop table for that chest tier. */
     public static final class ChestReward {
-        public boolean enabled = false;
         public int primogems;
         public int adventureExp;
         public int sigil;

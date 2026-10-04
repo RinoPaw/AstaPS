@@ -40,7 +40,7 @@ import java.util.Map;
 
 /**
  * World chests + world-boss trounce blossoms. Normal chests use the original ChestDrop/DropTable
- * path by default; explicit reward-overrides.json entries can replace a chest tier.
+ * path by default; explicit game.json reward tier objects can replace a chest tier.
  */
 public class GadgetChest extends GadgetContent {
     private static final int CHEST_OPENED_STATE = 102;

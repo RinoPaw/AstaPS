@@ -1,6 +1,6 @@
 package emu.grasscutter.game.managers.blossom;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.*;
@@ -215,17 +215,17 @@ public class BlossomManager {
     }
 
     static float getRewardRate(BlossomType type) {
-        if (type == null || GAME_OPTIONS.rates == null || GAME_OPTIONS.rates.leyLines == null) {
+        if (type == null || GAME == null || GAME.rewards == null || GAME.rewards.leyLines == null) {
             return 1.0f;
         }
 
-        var rates = GAME_OPTIONS.rates.leyLines;
-        float sourceRate =
+        var rates = GAME.rewards.leyLines;
+        return Math.max(
+                0.0f,
                 switch (type) {
-                    case GOLD -> rates.mora;
-                    case BLUE -> rates.experienceBooks;
-                };
-        return Math.max(0.0f, rates.global) * Math.max(0.0f, sourceRate);
+                    case GOLD -> rates.wealth;
+                    case BLUE -> rates.revelation;
+                });
     }
 
     public List<GameItem> onReward(Player player, EntityGadget chest, boolean useCondensedResin) {

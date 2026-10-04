@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.SpecialtyMaterialTrackHelper;
 import picocli.CommandLine;
@@ -14,7 +14,7 @@ import picocli.CommandLine.Parameters;
         permission = "player.teleport",
         permissionTargeted = "player.teleport.others",
         targetRequirement = Command.TargetRequirement.PLAYER)
-public final class TrackMatCommand implements PicocliCommandHandler {
+public final class TrackMatCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         var root = new CommandLine(new Track(sender, targetPlayer));
@@ -40,18 +40,18 @@ public final class TrackMatCommand implements PicocliCommandHandler {
             String query = String.join(" ", material);
             int itemId = SpecialtyMaterialTrackHelper.resolveItemId(query);
             if (itemId <= 0) {
-                CommandHandler.sendMessage(sender, "Unrecognised material: " + query);
+                CommandOutput.sendMessage(sender, "Unrecognised material: " + query);
                 return;
             }
 
             int count = SpecialtyMaterialTrackHelper.track(targetPlayer, itemId);
             if (count <= 0) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, "No specialty point data found for itemId=" + itemId + ".");
                 return;
             }
 
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Marked material "
                             + itemId
@@ -74,7 +74,7 @@ public final class TrackMatCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             int count = SpecialtyMaterialTrackHelper.clear(targetPlayer);
-            CommandHandler.sendMessage(sender, "Cleared " + count + " material map markers.");
+            CommandOutput.sendMessage(sender, "Cleared " + count + " material map markers.");
         }
     }
 }

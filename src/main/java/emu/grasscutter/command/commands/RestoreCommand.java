@@ -4,7 +4,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
 import emu.grasscutter.net.proto.ChangeHpDebtsReason._ChangeHpDebtsReason;
@@ -17,7 +17,7 @@ import emu.grasscutter.server.packet.send.PacketEntityFightPropUpdateNotify;
 import picocli.CommandLine;
 
 @Command(label = "restore")
-public final class RestoreCommand implements PicocliCommandHandler {
+public final class RestoreCommand implements CommandHandler {
     private static final FightProperty[][] ENERGY_PROPERTIES = {
         {FightProperty.FIGHT_PROP_CUR_FIRE_ENERGY, FightProperty.FIGHT_PROP_MAX_FIRE_ENERGY},
         {FightProperty.FIGHT_PROP_CUR_ELEC_ENERGY, FightProperty.FIGHT_PROP_MAX_ELEC_ENERGY},
@@ -65,7 +65,7 @@ public final class RestoreCommand implements PicocliCommandHandler {
         public void run() {
             if (!hasPermission(sender, targetPlayer, "player.heal", "player.heal.others")) return;
             restoreHp(targetPlayer);
-            CommandHandler.sendMessage(sender, translate(sender, "commands.heal.success"));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.heal.success"));
         }
     }
 
@@ -83,7 +83,7 @@ public final class RestoreCommand implements PicocliCommandHandler {
         public void run() {
             if (!hasPermission(sender, targetPlayer, "player.setprop", "player.setprop.others")) return;
             restoreEnergy(targetPlayer);
-            CommandHandler.sendMessage(sender, "Restored elemental energy successfully.");
+            CommandOutput.sendMessage(sender, "Restored elemental energy successfully.");
         }
     }
 
@@ -103,7 +103,7 @@ public final class RestoreCommand implements PicocliCommandHandler {
             if (!hasPermission(sender, targetPlayer, "player.setprop", "player.setprop.others")) return;
             restoreHp(targetPlayer);
             restoreEnergy(targetPlayer);
-            CommandHandler.sendMessage(sender, "Restored HP and elemental energy successfully.");
+            CommandOutput.sendMessage(sender, "Restored HP and elemental energy successfully.");
         }
     }
 
@@ -182,7 +182,7 @@ public final class RestoreCommand implements PicocliCommandHandler {
         var account = sender.getAccount();
         String required = targetPlayer != sender ? permissionTargeted : permission;
         if (account != null && account.hasPermission(required)) return true;
-        CommandHandler.sendTranslatedMessage(sender, "commands.generic.permission_error");
+        CommandOutput.sendTranslatedMessage(sender, "commands.generic.permission_error");
         return false;
     }
 }

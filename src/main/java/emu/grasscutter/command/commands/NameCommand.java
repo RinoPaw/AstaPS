@@ -4,7 +4,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.packet.send.PacketSetPlayerNameRsp;
 import emu.grasscutter.utils.RichTextUtils;
@@ -18,7 +18,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"nickname", "rename"},
         permission = "player.name",
         permissionTargeted = "player.name.others")
-public final class NameCommand implements PicocliCommandHandler {
+public final class NameCommand implements CommandHandler {
     private static final String DEFAULT_NICKNAME = "Traveler";
     private static final int MAX_GRADIENT_LENGTH = 32;
     private static final int MAX_STORED_LENGTH = 1024;
@@ -106,7 +106,7 @@ public final class NameCommand implements PicocliCommandHandler {
         public void run() {
             String value = text.equalsIgnoreCase("uid") ? String.valueOf(targetPlayer.getUid()) : text;
             if (value.length() > MAX_GRADIENT_LENGTH) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.name.too_long", MAX_GRADIENT_LENGTH));
                 return;
             }
@@ -114,7 +114,7 @@ public final class NameCommand implements PicocliCommandHandler {
             int start = RichTextUtils.parseColor(startColor);
             int end = RichTextUtils.parseColor(endColor);
             if (start < 0 || end < 0) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.name.bad_color"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.name.bad_color"));
                 return;
             }
 
@@ -129,7 +129,7 @@ public final class NameCommand implements PicocliCommandHandler {
         }
 
         if (nickname.length() > MAX_STORED_LENGTH) {
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender, translate(sender, "commands.name.too_long", MAX_STORED_LENGTH));
             return;
         }
@@ -137,6 +137,6 @@ public final class NameCommand implements PicocliCommandHandler {
         targetPlayer.setNickname(nickname);
         targetPlayer.save();
         targetPlayer.sendPacket(new PacketSetPlayerNameRsp(targetPlayer));
-        CommandHandler.sendMessage(sender, translate(sender, "commands.name.success", nickname.length()));
+        CommandOutput.sendMessage(sender, translate(sender, "commands.name.success", nickname.length()));
     }
 }

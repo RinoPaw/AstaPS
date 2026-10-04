@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.inventory.GameItem;
@@ -21,7 +21,7 @@ import picocli.CommandLine;
         aliases = {"maxavatar", "maxchar"},
         permission = "player.max",
         permissionTargeted = "player.max.others")
-public final class MaxCommand implements PicocliCommandHandler {
+public final class MaxCommand implements CommandHandler {
     private static final int MAX_AVATAR_LEVEL = 90;
     private static final int MAX_CONSTELLATION = 6;
     private static final int MAX_FETTER_LEVEL = 10;
@@ -55,14 +55,14 @@ public final class MaxCommand implements PicocliCommandHandler {
             } else {
                 var entity = targetPlayer.getTeamManager().getCurrentAvatarEntity();
                 if (entity == null) {
-                    CommandHandler.sendMessage(sender, "No character is currently active.");
+                    CommandOutput.sendMessage(sender, "No character is currently active.");
                     return;
                 }
                 targets.add(entity.getAvatar());
             }
 
             if (targets.isEmpty()) {
-                CommandHandler.sendMessage(sender, "No characters to max out.");
+                CommandOutput.sendMessage(sender, "No characters to max out.");
                 return;
             }
 
@@ -70,9 +70,9 @@ public final class MaxCommand implements PicocliCommandHandler {
             healActiveTeam(targetPlayer);
 
             if (all) {
-                CommandHandler.sendMessage(sender, "Maxed out " + targets.size() + " characters.");
+                CommandOutput.sendMessage(sender, "Maxed out " + targets.size() + " characters.");
             } else {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, "Maxed out " + targets.get(0).getAvatarData().getName() + ".");
             }
         }

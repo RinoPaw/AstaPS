@@ -4,7 +4,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.player.Player;
@@ -17,7 +17,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"setfetterlvl", "setfriendship"},
         permission = "player.setfetterlevel",
         permissionTargeted = "player.setfetterlevel.others")
-public final class SetFetterLevelCommand implements PicocliCommandHandler {
+public final class SetFetterLevelCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         return new CommandLine(new Args(sender, targetPlayer));
@@ -39,7 +39,7 @@ public final class SetFetterLevelCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (level < 0 || level > 10) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.setFetterLevel.range_error"));
                 return;
             }
@@ -51,7 +51,7 @@ public final class SetFetterLevelCommand implements PicocliCommandHandler {
             }
             avatar.save();
             targetPlayer.sendPacket(new PacketAvatarFetterDataNotify(avatar));
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender, translate(sender, "commands.setFetterLevel.success", level));
         }
     }

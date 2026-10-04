@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.scene.SceneTagData;
 import emu.grasscutter.game.player.Player;
@@ -20,7 +20,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"tag"},
         permission = "player.setscenetag",
         permissionTargeted = "player.setscenetag.others")
-public final class SetSceneTagCommand implements PicocliCommandHandler {
+public final class SetSceneTagCommand implements CommandHandler {
     private final Int2ObjectMap<SceneTagData> sceneTagData = GameData.getSceneTagDataMap();
 
     @Override
@@ -69,7 +69,7 @@ public final class SetSceneTagCommand implements PicocliCommandHandler {
         public void run() {
             SceneTagData data = sceneTagData.get(sceneTagId);
             if (data == null) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.generic.invalid.id");
+                CommandOutput.sendTranslatedMessage(sender, "commands.generic.invalid.id");
                 return;
             }
 
@@ -78,7 +78,7 @@ public final class SetSceneTagCommand implements PicocliCommandHandler {
             } else {
                 targetPlayer.getProgressManager().delSceneTag(data.getSceneId(), sceneTagId);
             }
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender, "commands.generic.set_to", sceneTagId, enabled ? "add" : "remove");
         }
     }
@@ -113,7 +113,7 @@ public final class SetSceneTagCommand implements PicocliCommandHandler {
                                             .remove(sceneTag.getId()));
 
             setSceneTags(targetPlayer);
-            CommandHandler.sendMessage(targetPlayer, "All scene tags unlocked.");
+            CommandOutput.sendMessage(targetPlayer, "All scene tags unlocked.");
         }
     }
 
@@ -138,7 +138,7 @@ public final class SetSceneTagCommand implements PicocliCommandHandler {
                                 targetPlayer.getSceneTags().get(sceneTag.getSceneId()).add(sceneTag.getId());
                             });
             setSceneTags(targetPlayer);
-            CommandHandler.sendMessage(targetPlayer, "Scene tags reset to defaults.");
+            CommandOutput.sendMessage(targetPlayer, "Scene tags reset to defaults.");
         }
     }
 
@@ -163,7 +163,7 @@ public final class SetSceneTagCommand implements PicocliCommandHandler {
                             .toList();
 
             if (sceneTags.isEmpty()) {
-                CommandHandler.sendMessage(sender, "No scene tag data for scene " + sceneId + ".");
+                CommandOutput.sendMessage(sender, "No scene tag data for scene " + sceneId + ".");
                 return;
             }
 
@@ -198,7 +198,7 @@ public final class SetSceneTagCommand implements PicocliCommandHandler {
                                         .append('\n'));
             }
 
-            CommandHandler.sendMessage(sender, message.toString());
+            CommandOutput.sendMessage(sender, message.toString());
         }
     }
 

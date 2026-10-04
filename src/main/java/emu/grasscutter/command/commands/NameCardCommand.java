@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.packet.send.PacketSetNameCardRsp;
 import emu.grasscutter.server.packet.send.PacketUnlockNameCardNotify;
@@ -20,7 +20,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"card", "setnamecard"},
         permission = "player.namecard",
         permissionTargeted = "player.namecard.others")
-public final class NameCardCommand implements PicocliCommandHandler {
+public final class NameCardCommand implements CommandHandler {
     private static final int DEFAULT_NAMECARD_ID = 210001;
     private static boolean loadedNameCardIds = false;
     private static final Set<Integer> validNameCardIds = new HashSet<>();
@@ -63,12 +63,12 @@ public final class NameCardCommand implements PicocliCommandHandler {
         public void run() {
             int nameCardId = nameCard.id();
             if (!isValidNameCardId(nameCardId)) {
-                CommandHandler.sendMessage(sender, "Invalid namecard ID: " + nameCardId);
+                CommandOutput.sendMessage(sender, "Invalid namecard ID: " + nameCardId);
                 return;
             }
 
             if (targetPlayer.getNameCardId() == nameCardId) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         "No change needed. Player "
                                 + targetPlayer.getUid()
@@ -88,7 +88,7 @@ public final class NameCardCommand implements PicocliCommandHandler {
             targetPlayer.save();
 
             String action = newlyUnlocked ? "Unlocked and equipped" : "Equipped";
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     action
                             + " namecard "

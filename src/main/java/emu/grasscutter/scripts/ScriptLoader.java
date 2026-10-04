@@ -247,6 +247,21 @@ public class ScriptLoader {
         }
     }
 
+    static String extractRequiredScriptName(String line) {
+        if (line == null) return null;
+
+        var trimmed = line.strip();
+        if (!trimmed.startsWith("require")) return null;
+
+        // Do not rely on fixed offsets. Splitting CRLF text on "\n" leaves a trailing
+        // '\r', which previously made the closing quote part of the script path.
+        int firstQuote = trimmed.indexOf('"');
+        int lastQuote = trimmed.lastIndexOf('"');
+        if (firstQuote < 0 || lastQuote <= firstQuote) return null;
+
+        return trimmed.substring(firstQuote + 1, lastQuote);
+    }
+
     /**
      * Fetches a script and compiles it, or uses the cached varient.
      *
@@ -283,14 +298,12 @@ public class ScriptLoader {
                 var lines = sources.split("\n");
                 var output = new StringBuilder();
                 for (var line : lines) {
-                    // Skip non-require lines.
-                    if (!line.startsWith("require")) {
+                    var scriptName = extractRequiredScriptName(line);
+                    if (scriptName == null) {
                         output.append(line).append("\n");
                         continue;
                     }
 
-                    // Extract the script name.
-                    var scriptName = line.substring(9, line.length() - 1);
                     // Resolve the script path.
                     var scriptPath = "Common/" + scriptName + ".lua";
                     var scriptSource = ScriptLoader.readScript(scriptPath, useAbsPath);

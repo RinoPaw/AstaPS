@@ -433,10 +433,23 @@ public final class GatherInteractHelper {
       return true;
    }
 
+   static boolean hasSubfieldGatherLoot(int gatherItemId, int spawnGatherItemId) {
+      return gatherItemId > 0 || spawnGatherItemId > 0;
+   }
+
    public static boolean shouldDropGroundLootOnBreak(EntityGadget var0) {
       String var1 = resolveServerController(var0);
       if (var1 != null) {
-         if (var1.startsWith("SubfieldDrop") || var1.startsWith("Gather_ElectricRock")) {
+         if (var1.startsWith("SubfieldDrop")) {
+            GatherData gather = resolveGatherData(var0);
+            SpawnDataEntry spawn = var0.getSpawnEntry();
+            return hasSubfieldGatherLoot(
+               gather != null ? gather.getItemId() : 0,
+               spawn != null ? spawn.getGatherItemId() : 0
+            );
+         }
+
+         if (var1.startsWith("Gather_ElectricRock")) {
             return true;
          }
 

@@ -1,0 +1,188 @@
+package emu.grasscutter.config;
+
+import java.util.*;
+
+/** Artifact generation and regional artifact-shop gameplay settings stored in game.json. */
+public final class ArtifactSettings {
+    public RollWeights rolls = new RollWeights();
+    public Shop shop = new Shop();
+
+    public void normalize() {
+        if (rolls == null) rolls = new RollWeights();
+        if (shop == null) shop = new Shop();
+        rolls.normalize();
+        shop.normalize();
+    }
+
+    public static final class RollWeights {
+        public double critical = 1.60;
+        public double criticalDamage = 1.60;
+        public double energyRecharge = 1.20;
+        public double elementalMastery = 1.20;
+        public double percentStat = 1.00;
+        public double flatStat = 0.60;
+        public double[] valueTiers = {0.40, 0.80, 1.20, 1.60};
+
+        private void normalize() {
+            if (valueTiers == null || valueTiers.length == 0) {
+                valueTiers = new double[] {0.40, 0.80, 1.20, 1.60};
+            }
+            for (int i = 0; i < valueTiers.length; i++) {
+                valueTiers[i] = Math.max(0.0, valueTiers[i]);
+            }
+            critical = Math.max(0.0, critical);
+            criticalDamage = Math.max(0.0, criticalDamage);
+            energyRecharge = Math.max(0.0, energyRecharge);
+            elementalMastery = Math.max(0.0, elementalMastery);
+            percentStat = Math.max(0.0, percentStat);
+            flatStat = Math.max(0.0, flatStat);
+        }
+    }
+
+    public static final class Shop {
+        public boolean enabled = true;
+        public int buyLimit = 0;
+        public Map<Integer, Integer> regionalShops = defaultRegionalShops();
+        public Map<Integer, Map<Integer, Integer>> resinCosts = defaultResinCosts();
+        public Map<Integer, EnhancementRange> initialEnhancement = defaultInitialEnhancement();
+
+        public void normalize() {
+            buyLimit = Math.max(0, buyLimit);
+            if (regionalShops == null || regionalShops.isEmpty()) {
+                regionalShops = defaultRegionalShops();
+            } else {
+                regionalShops = new LinkedHashMap<>(regionalShops);
+            }
+            if (resinCosts == null || resinCosts.isEmpty()) {
+                resinCosts = defaultResinCosts();
+            } else {
+                var normalized = new LinkedHashMap<Integer, Map<Integer, Integer>>();
+                resinCosts.entrySet().stream()
+                        .sorted(Map.Entry.comparingByKey())
+                        .forEach(
+                                entry -> {
+                                    if (entry.getKey() == null || entry.getValue() == null) return;
+                                    var prices = new LinkedHashMap<Integer, Integer>();
+                                    entry.getValue().forEach(
+                                            (rank, cost) -> {
+                                                if (rank != null && cost != null && cost > 0) {
+                                                    prices.put(rank, cost);
+                                                }
+                                            });
+                                    normalized.put(entry.getKey(), prices);
+                                });
+                resinCosts = normalized;
+            }
+            if (initialEnhancement == null || initialEnhancement.isEmpty()) {
+                initialEnhancement = defaultInitialEnhancement();
+            } else {
+                var normalized = new LinkedHashMap<Integer, EnhancementRange>();
+                initialEnhancement.entrySet().stream()
+                        .sorted(Map.Entry.comparingByKey())
+                        .forEach(
+                                entry -> {
+                                    if (entry.getKey() == null || entry.getValue() == null) return;
+                                    entry.getValue().normalize();
+                                    normalized.put(entry.getKey(), entry.getValue());
+                                });
+                initialEnhancement = normalized;
+            }
+        }
+
+        public int resinCost(int clearAdventureRank, int artifactRank) {
+            int bestThreshold = Integer.MIN_VALUE;
+            Map<Integer, Integer> prices = null;
+            for (var entry : resinCosts.entrySet()) {
+                Integer threshold = entry.getKey();
+                if (threshold != null
+                        && threshold <= clearAdventureRank
+                        && threshold > bestThreshold) {
+                    bestThreshold = threshold;
+                    prices = entry.getValue();
+                }
+            }
+            return prices == null ? 0 : Math.max(0, prices.getOrDefault(artifactRank, 0));
+        }
+
+        public EnhancementRange initialEnhancementRange(int worldLevel) {
+            if (initialEnhancement.isEmpty()) return new EnhancementRange(0, 0);
+
+            int bestBelow = Integer.MIN_VALUE;
+            EnhancementRange below = null;
+            int bestAbove = Integer.MAX_VALUE;
+            EnhancementRange above = null;
+            for (var entry : initialEnhancement.entrySet()) {
+                int key = entry.getKey();
+                if (key <= worldLevel && key > bestBelow) {
+                    bestBelow = key;
+                    below = entry.getValue();
+                }
+                if (key >= worldLevel && key < bestAbove) {
+                    bestAbove = key;
+                    above = entry.getValue();
+                }
+            }
+            return below != null ? below : above != null ? above : new EnhancementRange(0, 0);
+        }
+
+        private static Map<Integer, Integer> defaultRegionalShops() {
+            var values = new LinkedHashMap<Integer, Integer>();
+            values.put(1, 1004);
+            values.put(2, 1008);
+            values.put(3, 1056);
+            values.put(4, 1074);
+            values.put(5, 1093);
+            return values;
+        }
+
+        private static Map<Integer, Map<Integer, Integer>> defaultResinCosts() {
+            var values = new LinkedHashMap<Integer, Map<Integer, Integer>>();
+            values.put(22, prices(2, 3, 3, 6));
+            values.put(25, prices(2, 2, 3, 5));
+            values.put(30, prices(2, 2, 3, 3, 4, 20));
+            values.put(35, prices(2, 1, 3, 3, 4, 15));
+            values.put(40, prices(2, 1, 3, 2, 4, 10, 5, 50));
+            values.put(45, prices(2, 1, 3, 2, 4, 8, 5, 20));
+            return values;
+        }
+
+        private static Map<Integer, EnhancementRange> defaultInitialEnhancement() {
+            var values = new LinkedHashMap<Integer, EnhancementRange>();
+            values.put(0, new EnhancementRange(0, 0));
+            values.put(1, new EnhancementRange(1, 4));
+            values.put(2, new EnhancementRange(3, 6));
+            values.put(3, new EnhancementRange(5, 8));
+            values.put(4, new EnhancementRange(7, 10));
+            values.put(5, new EnhancementRange(9, 12));
+            values.put(6, new EnhancementRange(11, 14));
+            values.put(7, new EnhancementRange(13, 16));
+            values.put(8, new EnhancementRange(14, 17));
+            values.put(9, new EnhancementRange(15, 18));
+            return values;
+        }
+
+        private static Map<Integer, Integer> prices(int... values) {
+            var out = new LinkedHashMap<Integer, Integer>();
+            for (int i = 0; i + 1 < values.length; i += 2) out.put(values[i], values[i + 1]);
+            return out;
+        }
+    }
+
+    public static final class EnhancementRange {
+        public int min;
+        public int max;
+
+        public EnhancementRange() {}
+
+        public EnhancementRange(int min, int max) {
+            this.min = min;
+            this.max = max;
+            normalize();
+        }
+
+        private void normalize() {
+            min = Math.max(0, min);
+            max = Math.max(min, max);
+        }
+    }
+}

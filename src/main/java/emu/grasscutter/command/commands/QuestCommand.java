@@ -17,7 +17,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"q"},
         permission = "player.quest",
         permissionTargeted = "player.quest.others")
-public final class QuestCommand implements PicocliCommandHandler {
+public final class QuestCommand implements CommandHandler {
     private record QuestId(int value) {}
 
     private record ForceFinishTarget(Integer questId) {
@@ -63,16 +63,6 @@ public final class QuestCommand implements PicocliCommandHandler {
         commandLine.addSubcommand("triggers", new Triggers(sender, targetPlayer));
         commandLine.addSubcommand("grouptriggers", new GroupTriggers(sender, targetPlayer));
         commandLine.addSubcommand("list", new ListQuests(sender, targetPlayer));
-
-        commandLine.setParameterExceptionHandler(
-                (exception, argv) -> {
-                    if (exception.getCause() instanceof CommandLine.TypeConversionException cause) {
-                        CommandHandler.sendMessage(sender, cause.getMessage());
-                    } else {
-                        this.sendUsageMessage(sender);
-                    }
-                    return 2;
-                });
         return commandLine;
     }
 
@@ -123,7 +113,7 @@ public final class QuestCommand implements PicocliCommandHandler {
                             ? emu.grasscutter.game.quest.ForcedQuests.allMainQuests()
                             : List.of(selection.questId());
             int added = emu.grasscutter.game.quest.ForcedQuests.apply(targetPlayer, ids);
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Force-finished " + ids.size() + " main quest(s), " + added + " newly."
                             + " This is saved and re-sent on every login.");
@@ -139,17 +129,17 @@ public final class QuestCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (!QuestManager.isQuestingActive()) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.quest.questing_off"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.quest.questing_off"));
                 return;
             }
 
             var quest = targetPlayer.getQuestManager().addQuest(questId.value());
             if (quest != null) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.quest.added", questId.value()));
                 return;
             }
-            CommandHandler.sendMessage(sender, translate(sender, "commands.quest.not_found"));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.quest.not_found"));
         }
     }
 
@@ -163,11 +153,11 @@ public final class QuestCommand implements PicocliCommandHandler {
         public void run() {
             var quest = targetPlayer.getQuestManager().getQuestById(questId.value());
             if (quest == null) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.quest.not_found"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.quest.not_found"));
                 return;
             }
             quest.finish();
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender, translate(sender, "commands.quest.finished", questId.value()));
         }
     }
@@ -182,11 +172,11 @@ public final class QuestCommand implements PicocliCommandHandler {
         public void run() {
             var quest = targetPlayer.getQuestManager().getQuestById(questId.value());
             if (quest == null) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.quest.not_found"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.quest.not_found"));
                 return;
             }
 
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     translate(
                             sender,
@@ -218,12 +208,12 @@ public final class QuestCommand implements PicocliCommandHandler {
         public void run() {
             var mainQuest = targetPlayer.getQuestManager().getMainQuestByTalkId(questId.value());
             if (mainQuest == null) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.quest.not_found"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.quest.not_found"));
                 return;
             }
 
             var talk = mainQuest.getTalks().get(questId.value());
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     translate(
                             sender,
@@ -250,7 +240,7 @@ public final class QuestCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             var dungeons = targetPlayer.getPlayerProgress().getCompletedDungeons();
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Dungeons completed: "
                             + String.join(", ", dungeons.intStream().mapToObj(String::valueOf).toList()));
@@ -270,7 +260,7 @@ public final class QuestCommand implements PicocliCommandHandler {
             if (shouldAdd) loggedQuests.add(questId.value());
             else loggedQuests.remove(questId.value());
 
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Quest %s will %s."
                             .formatted(
@@ -289,10 +279,10 @@ public final class QuestCommand implements PicocliCommandHandler {
         public void run() {
             var quest = targetPlayer.getQuestManager().getQuestById(questId.value());
             if (quest == null) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.quest.not_found"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.quest.not_found"));
                 return;
             }
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Triggers registered for %s: %s."
                             .formatted(
@@ -312,11 +302,11 @@ public final class QuestCommand implements PicocliCommandHandler {
             var scriptManager = targetPlayer.getScene().getScriptManager();
             var group = scriptManager.getGroupById(questId.value());
             if (group == null) {
-                CommandHandler.sendMessage(sender, "The group does not exist.");
+                CommandOutput.sendMessage(sender, "The group does not exist.");
                 return;
             }
 
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     group.triggers.entrySet().stream()
                             .map(entry -> "%s: %s".formatted(entry.getKey(), entry.getValue()))
@@ -356,7 +346,7 @@ public final class QuestCommand implements PicocliCommandHandler {
                             .map(String::valueOf)
                             .toList();
 
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Quests: "
                             + (allQuestIds.isEmpty()

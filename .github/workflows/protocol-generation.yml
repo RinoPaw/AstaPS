@@ -64,8 +64,11 @@ jobs:
         shell: bash
         run: |
           count="$(find build/generated/sources/protocol/7.1/java/main -name '*.java' -type f | wc -l)"
-          test "$count" -eq 2059
-          echo "Generated $count protocol Java files."
+          descriptor_count="$(grep -cve '^[[:space:]]*$' protocol/7.1/files.txt)"
+          supplemental_count="$(find protocol/7.1/compat -name '*.proto' -type f | wc -l)"
+          expected="$((descriptor_count + supplemental_count))"
+          test "$count" -eq "$expected"
+          echo "Generated $count protocol Java files ($descriptor_count descriptors + $supplemental_count recovered sources)."
           sha256sum protocol/7.1/protocol.desc
 
       - name: Upload test report

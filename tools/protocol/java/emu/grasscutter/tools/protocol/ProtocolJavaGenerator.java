@@ -1,5 +1,6 @@
 package emu.grasscutter.tools.protocol;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -9,26 +10,28 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-/** Regenerates Java protocol sources from the canonical 7.1 descriptor set. */
+/** Regenerates Java protocol sources from the canonical 7.1 descriptor set and recovered additions. */
 public final class ProtocolJavaGenerator {
     private static final int FILES_PER_PROTOC_INVOCATION = 128;
 
     private ProtocolJavaGenerator() {}
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 4) {
+        if (args.length != 5) {
             throw new IllegalArgumentException(
-                    "usage: ProtocolJavaGenerator <protoc> <descriptor-set> <file-list> <java-out>");
+                    "usage: ProtocolJavaGenerator <protoc> <descriptor-set> <file-list> <supplemental-proto-dir> <java-out>");
         }
 
         var protoc = Path.of(args[0]).toAbsolutePath().normalize();
         var descriptorSet = Path.of(args[1]).toAbsolutePath().normalize();
         var fileList = Path.of(args[2]).toAbsolutePath().normalize();
-        var javaOut = Path.of(args[3]).toAbsolutePath().normalize();
+        var supplementalProtoDir = Path.of(args[3]).toAbsolutePath().normalize();
+        var javaOut = Path.of(args[4]).toAbsolutePath().normalize();
 
         requireRegularFile(protoc, "protoc executable");
         requireRegularFile(descriptorSet, "descriptor set");
         requireRegularFile(fileList, "protocol file list");
+        requireDirectory(supplementalProtoDir, "supplemental proto directory");
 
         var protocolFiles = Files.readAllLines(fileList, StandardCharsets.UTF_8).stream()
                 .map(String::trim)
@@ -40,11 +43,32 @@ public final class ProtocolJavaGenerator {
             throw new IllegalStateException("protocol file list is empty: " + fileList);
         }
 
+        List<String> supplementalProtoFiles;
+        try (Stream<Path> files = Files.walk(supplementalProtoDir)) {
+            supplementalProtoFiles = files
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.getFileName().toString().endsWith(".proto"))
+                    .map(supplementalProtoDir::relativize)
+                    .map(Path::toString)
+                    .map(path -> path.replace(File.separatorChar, '/'))
+                    .sorted()
+                    .toList();
+        }
+
         recreateDirectory(javaOut);
 
         for (int offset = 0; offset < protocolFiles.size(); offset += FILES_PER_PROTOC_INVOCATION) {
             var end = Math.min(offset + FILES_PER_PROTOC_INVOCATION, protocolFiles.size());
-            runProtoc(protoc, descriptorSet, javaOut, protocolFiles.subList(offset, end));
+            runDescriptorProtoc(protoc, descriptorSet, javaOut, protocolFiles.subList(offset, end));
+        }
+
+        if (!supplementalProtoFiles.isEmpty()) {
+            runSourceProtoc(
+                    protoc,
+                    descriptorSet,
+                    supplementalProtoDir,
+                    javaOut,
+                    supplementalProtoFiles);
         }
 
         long javaFileCount;
@@ -54,21 +78,26 @@ public final class ProtocolJavaGenerator {
                     .filter(path -> path.getFileName().toString().endsWith(".java"))
                     .count();
         }
-        if (javaFileCount != protocolFiles.size()) {
+        var expectedJavaFileCount = protocolFiles.size() + supplementalProtoFiles.size();
+        if (javaFileCount != expectedJavaFileCount) {
             throw new IllegalStateException(
                     "protoc generated "
                             + javaFileCount
-                            + " Java files from "
+                            + " Java files; expected "
+                            + expectedJavaFileCount
+                            + " from "
                             + protocolFiles.size()
-                            + " protocol descriptors");
+                            + " descriptor files and "
+                            + supplementalProtoFiles.size()
+                            + " supplemental proto files");
         }
 
         System.out.printf(
-                "Generated %,d Java files from %,d protocol descriptors.%n",
-                javaFileCount, protocolFiles.size());
+                "Generated %,d Java files from %,d protocol descriptors and %,d supplemental proto files.%n",
+                javaFileCount, protocolFiles.size(), supplementalProtoFiles.size());
     }
 
-    private static void runProtoc(
+    private static void runDescriptorProtoc(
             Path protoc, Path descriptorSet, Path javaOut, List<String> protocolFiles)
             throws IOException, InterruptedException {
         var command = new ArrayList<String>(protocolFiles.size() + 3);
@@ -77,6 +106,28 @@ public final class ProtocolJavaGenerator {
         command.add("--java_out=" + javaOut);
         command.addAll(protocolFiles);
 
+        runProtoc(command, protocolFiles.getFirst() + " .. " + protocolFiles.getLast());
+    }
+
+    private static void runSourceProtoc(
+            Path protoc,
+            Path descriptorSet,
+            Path supplementalProtoDir,
+            Path javaOut,
+            List<String> supplementalProtoFiles)
+            throws IOException, InterruptedException {
+        var command = new ArrayList<String>(supplementalProtoFiles.size() + 5);
+        command.add(protoc.toString());
+        command.add("--descriptor_set_in=" + descriptorSet);
+        command.add("--proto_path=" + supplementalProtoDir);
+        command.add("--java_out=" + javaOut);
+        command.addAll(supplementalProtoFiles);
+
+        runProtoc(command, "supplemental 7.1 protocol sources");
+    }
+
+    private static void runProtoc(List<String> command, String description)
+            throws IOException, InterruptedException {
         var process = new ProcessBuilder(command).redirectErrorStream(true).start();
         var output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         var exitCode = process.waitFor();
@@ -85,9 +136,7 @@ public final class ProtocolJavaGenerator {
                     "protoc failed with exit code "
                             + exitCode
                             + " while generating "
-                            + protocolFiles.getFirst()
-                            + " .. "
-                            + protocolFiles.getLast()
+                            + description
                             + (output.isBlank() ? "" : ":\n" + output));
         }
         if (!output.isBlank()) {
@@ -108,6 +157,12 @@ public final class ProtocolJavaGenerator {
 
     private static void requireRegularFile(Path path, String description) {
         if (!Files.isRegularFile(path)) {
+            throw new IllegalStateException(description + " was not found: " + path);
+        }
+    }
+
+    private static void requireDirectory(Path path, String description) {
+        if (!Files.isDirectory(path)) {
             throw new IllegalStateException(description + " was not found: " + path);
         }
     }

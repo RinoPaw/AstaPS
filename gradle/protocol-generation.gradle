@@ -49,17 +49,19 @@ allprojects { currentProject ->
 
         def descriptorSet = currentProject.layout.projectDirectory.file('protocol/7.1/protocol.desc')
         def protocolFileList = currentProject.layout.projectDirectory.file('protocol/7.1/files.txt')
+        def supplementalProtoDir = currentProject.layout.projectDirectory.dir('protocol/7.1/compat')
         def generatedProtocolJava =
                 currentProject.layout.buildDirectory.dir('generated/sources/protocol/7.1/java/main')
 
         currentProject.tasks.register('generateProtocolJava', JavaExec) { task ->
             task.group = 'protocol'
             task.description =
-                    "Generate 7.1 Java protocol sources from the canonical descriptor set with protoc ${protocVersion}."
+                    "Generate 7.1 Java protocol sources from the canonical descriptors and recovered additions with protoc ${protocVersion}."
             task.dependsOn(currentProject.tasks.named(protocolTools.compileJavaTaskName))
             task.classpath = protocolTools.runtimeClasspath
             task.mainClass.set('emu.grasscutter.tools.protocol.ProtocolJavaGenerator')
             task.inputs.files(descriptorSet, protocolFileList)
+            task.inputs.dir(supplementalProtoDir)
             task.outputs.dir(generatedProtocolJava)
 
             task.doFirst {
@@ -74,6 +76,7 @@ allprojects { currentProject ->
                     protocExecutable.absolutePath,
                     descriptorSet.asFile.absolutePath,
                     protocolFileList.asFile.absolutePath,
+                    supplementalProtoDir.asFile.absolutePath,
                     generatedProtocolJava.get().asFile.absolutePath,
                 ])
             }

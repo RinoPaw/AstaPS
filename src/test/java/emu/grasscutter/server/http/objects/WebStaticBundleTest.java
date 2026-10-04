@@ -33,10 +33,6 @@ public final class WebStaticBundleTest {
     public void englishBundleHasLoginStrings() throws Exception {
         var bundle = loadBundle("en.json");
 
-        // An empty object parses fine and serves a 200, which is exactly how this failed before:
-        // the client rendered key names because the bundle had no entries.
-        assertFalse(bundle.keySet().isEmpty(), "an empty bundle makes the client print raw keys");
-
         for (var key : new String[] {"account_login", "agree", "another_account"}) {
             assertTrue(bundle.has(key), "login screen string missing: " + key);
         }

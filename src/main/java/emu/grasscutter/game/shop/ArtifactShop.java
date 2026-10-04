@@ -3,7 +3,7 @@ package emu.grasscutter.game.shop;
 import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.config.ArtifactSettings;
+import emu.grasscutter.config.ShopSettings;
 import emu.grasscutter.data.*;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.ItemData;
@@ -75,8 +75,8 @@ public class ArtifactShop implements DynamicShopProvider {
     private final Int2IntMap goodsCity = new Int2IntOpenHashMap();
     private final Int2ObjectMap<Set<Integer>> domainSetsByDungeon = new Int2ObjectOpenHashMap<>();
 
-    private static ArtifactSettings.Shop options() {
-        return GAME.artifacts.shop;
+    private static ShopSettings.Artifact options() {
+        return GAME.shops.artifact;
     }
 
     @Override

@@ -4,9 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import emu.grasscutter.net.proto.AABLEDJBAKKOuterClass.AABLEDJBAKK;
 import emu.grasscutter.net.proto.AbilityMetaUpdateTpsWeaponAmmunitionOuterClass.AbilityMetaUpdateTpsWeaponAmmunition;
+import emu.grasscutter.net.proto.AvatarEnterSceneInfoOuterClass.AvatarEnterSceneInfo;
 import emu.grasscutter.net.proto.AvatarInfoOuterClass.AvatarInfo;
 import emu.grasscutter.net.proto.BirthdayOuterClass.Birthday;
 import emu.grasscutter.net.proto.SceneAvatarInfoOuterClass.SceneAvatarInfo;
+import emu.grasscutter.net.proto.SceneTeamAvatarOuterClass.SceneTeamAvatar;
 import emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo;
 import emu.grasscutter.net.proto.TpsEquipChangeNotifyOuterClass.TpsEquipChangeNotify;
 import emu.grasscutter.net.proto.TpsWeapon._TpsWeapon;
@@ -54,6 +56,12 @@ public final class ProtocolGenerationTest {
         assertEquals(
                 31,
                 SceneAvatarInfo.getDescriptor().findFieldByName("tps_weapon_list").getNumber());
+        assertEquals(
+                382,
+                SceneTeamAvatar.getDescriptor().findFieldByName("tps_weapon_list").getNumber());
+        assertEquals(
+                13,
+                AvatarEnterSceneInfo.getDescriptor().findFieldByName("tps_weapon_list").getNumber());
         assertEquals(
                 12,
                 SceneWeaponInfo.getDescriptor().findFieldByName("ammunition_list").getNumber());

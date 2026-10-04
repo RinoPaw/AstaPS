@@ -141,8 +141,8 @@ public final class ProtocolJavaGenerator {
     }
 
     /**
-     * The canonical descriptor dump predates semantic recovery of four TPS fields on play/rino.
-     * The wire slots already exist under obfuscated names. Validate their legacy shape before
+     * The canonical descriptor dump predates semantic recovery of several TPS fields on play/rino.
+     * Their wire slots already exist under obfuscated names. Validate each legacy shape before
      * replacing only the field descriptor, preserving every other recovered field unchanged.
      */
     private static FileDescriptorProto applyPlayProtocolPatches(FileDescriptorProto file) {
@@ -162,6 +162,22 @@ public final class ProtocolJavaGenerator {
                             "KPJFLNKEFBC",
                             ".SceneWeaponInfo",
                             repeatedMessageField("tps_weapon_list", 31, ".SceneWeaponInfo"),
+                            "SceneWeaponInfo.proto");
+            case "SceneTeamAvatar.proto" ->
+                    replaceMessageField(
+                            file,
+                            "SceneTeamAvatar",
+                            "DGGJCMNHDOJ",
+                            ".SceneWeaponInfo",
+                            repeatedMessageField("tps_weapon_list", 382, ".SceneWeaponInfo"),
+                            "SceneWeaponInfo.proto");
+            case "AvatarEnterSceneInfo.proto" ->
+                    replaceMessageField(
+                            file,
+                            "AvatarEnterSceneInfo",
+                            "DGGJCMNHDOJ",
+                            ".SceneWeaponInfo",
+                            repeatedMessageField("tps_weapon_list", 13, ".SceneWeaponInfo"),
                             "SceneWeaponInfo.proto");
             case "SceneWeaponInfo.proto" ->
                     replaceMessageField(

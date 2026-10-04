@@ -69,8 +69,7 @@ public final class HttpServer {
 
     private static void configureConnector(JavalinConfig config) {
         String bindAddress = HTTP_INFO.bindAddress;
-        config.jetty.host =
-                bindAddress == null || bindAddress.isBlank() ? null : bindAddress;
+        config.jetty.host = bindAddress == null || bindAddress.isBlank() ? null : bindAddress;
         config.jetty.port = HTTP_INFO.bindPort;
 
         if (!HTTP_ENCRYPTION.useEncryption) {
@@ -106,6 +105,17 @@ public final class HttpServer {
     }
 
     @SuppressWarnings("UnusedReturnValue")
+    public HttpServer addRouter(Router router) {
+        if (this.javalin != null) {
+            throw new IllegalStateException(
+                    "HTTP routes must be registered before the server starts.");
+        }
+
+        this.routers.add(Objects.requireNonNull(router));
+        return this;
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
     public HttpServer addRouter(Class<? extends Router> router, Object... args) {
         if (this.javalin != null) {
             throw new IllegalStateException(
@@ -119,7 +129,7 @@ public final class HttpServer {
 
         try {
             var constructor = router.getDeclaredConstructor(types);
-            this.routers.add(constructor.newInstance(args));
+            return this.addRouter(constructor.newInstance(args));
         } catch (Exception exception) {
             Grasscutter.getLogger()
                     .warn(translate("messages.dispatch.router_error"), exception);

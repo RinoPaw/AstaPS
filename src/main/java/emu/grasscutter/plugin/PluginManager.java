@@ -19,7 +19,7 @@ public final class PluginManager {
      * This should only be changed when a breaking change is made to the plugin API.
      * A 'breaking change' is something which changes the existing logic of the API.
      */
-    public static final int API_VERSION = 4;
+    public static final int API_VERSION = 5;
 
     /* All loaded plugins. */
     private final Map<String, Plugin> plugins = new LinkedHashMap<>();

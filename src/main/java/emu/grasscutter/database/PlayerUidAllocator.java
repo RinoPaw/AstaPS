@@ -57,8 +57,10 @@ public final class PlayerUidAllocator {
     private static int highestUid() {
         var highest =
                 DatabaseManager.getGameDatastore()
-                        .find(Player.class)
-                        .iterator(new FindOptions().sort(Sort.descending("_id")).limit(1))
+                        .find(
+                                Player.class,
+                                new FindOptions().sort(Sort.descending("_id")).limit(1))
+                        .iterator()
                         .tryNext();
         return highest == null ? 0 : highest.getUid();
     }

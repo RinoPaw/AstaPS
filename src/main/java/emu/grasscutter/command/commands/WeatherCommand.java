@@ -8,7 +8,7 @@ import java.util.List;
 @Command(
         label = "weather",
         aliases = {"w"},
-        usage = {"weather [<weatherId>] [<climateType>]"},
+        usage = {"[<weatherId>] [<climateType>]"},
         permission = "player.weather",
         permissionTargeted = "player.weather.others")
 public final class WeatherCommand implements CommandHandler {

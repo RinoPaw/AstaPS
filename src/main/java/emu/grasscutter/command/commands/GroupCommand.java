@@ -4,7 +4,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.SceneGroupInstance;
 import picocli.CommandLine;
@@ -15,7 +15,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"gr"},
         permission = "player.group",
         permissionTargeted = "player.group.others")
-public final class GroupCommand implements PicocliCommandHandler {
+public final class GroupCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         var root = new CommandLine(new Root(sender));
@@ -58,7 +58,7 @@ public final class GroupCommand implements PicocliCommandHandler {
             SceneGroupInstance groupInstance =
                     targetPlayer.getScene().getScriptManager().getGroupInstanceById(groupId);
             if (groupInstance == null) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.group.group_not_found", groupId));
                 return;
             }
@@ -68,7 +68,7 @@ public final class GroupCommand implements PicocliCommandHandler {
             } else {
                 targetPlayer.getScene().getScriptManager().refreshGroup(groupInstance, suiteId, false);
             }
-            CommandHandler.sendMessage(sender, translate(sender, "commands.group.refreshed", groupId));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.group.refreshed", groupId));
         }
     }
 }

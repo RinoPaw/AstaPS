@@ -5,7 +5,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.CommandMap;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.game.player.Player;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
 @Command(label = "help", targetRequirement = Command.TargetRequirement.NONE)
-public final class HelpCommand implements PicocliCommandHandler {
+public final class HelpCommand implements CommandHandler {
     private static final boolean SHOW_COMMANDS_WITHOUT_PERMISSIONS = false;
 
     @Override
@@ -46,27 +46,27 @@ public final class HelpCommand implements PicocliCommandHandler {
                         .forEach(
                                 (label, handler) ->
                                         addVisibleCommand(player, account, handler, commands, denied));
-                CommandHandler.sendTranslatedMessage(player, "commands.help.available_commands");
+                CommandOutput.sendTranslatedMessage(player, "commands.help.available_commands");
             } else {
-                PicocliCommandHandler handler = commandMap.getHandler(commandName);
+                CommandHandler handler = commandMap.getHandler(commandName);
                 if (handler == null) {
-                    CommandHandler.sendTranslatedMessage(player, "commands.generic.command_exist_error");
-                    CommandHandler.sendMessage(player, "Command: " + commandName.toLowerCase());
+                    CommandOutput.sendTranslatedMessage(player, "commands.generic.command_exist_error");
+                    CommandOutput.sendMessage(player, "Command: " + commandName.toLowerCase());
                     return;
                 }
                 addVisibleCommand(player, account, handler, commands, denied);
             }
 
             String suffix = "\n\t" + translate(player, "commands.help.warn_player_has_no_permission");
-            commands.forEach(text -> CommandHandler.sendMessage(player, text));
-            denied.forEach(text -> CommandHandler.sendMessage(player, text + suffix));
+            commands.forEach(text -> CommandOutput.sendMessage(player, text));
+            denied.forEach(text -> CommandOutput.sendMessage(player, text + suffix));
         }
     }
 
     private static void addVisibleCommand(
             Player player,
             Account account,
-            PicocliCommandHandler handler,
+            CommandHandler handler,
             List<String> commands,
             List<String> denied) {
         Command metadata = handler.getClass().getAnnotation(Command.class);
@@ -78,7 +78,7 @@ public final class HelpCommand implements PicocliCommandHandler {
         }
     }
 
-    private static String describe(Player player, PicocliCommandHandler handler) {
+    private static String describe(Player player, CommandHandler handler) {
         Command metadata = handler.getClass().getAnnotation(Command.class);
         StringBuilder builder =
                 new StringBuilder(handler.getLabel())

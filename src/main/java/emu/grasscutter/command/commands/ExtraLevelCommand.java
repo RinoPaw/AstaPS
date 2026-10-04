@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.avatar.AvatarExtraLevelHelper;
 import emu.grasscutter.game.entity.EntityAvatar;
@@ -15,7 +15,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"el", "levelbreak"},
         permission = "player.give",
         permissionTargeted = "player.give.others")
-public final class ExtraLevelCommand implements PicocliCommandHandler {
+public final class ExtraLevelCommand implements CommandHandler {
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
@@ -38,7 +38,7 @@ public final class ExtraLevelCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (targetPlayer == null) {
-                CommandHandler.sendMessage(sender, "No target player.");
+                CommandOutput.sendMessage(sender, "No target player.");
                 return;
             }
 
@@ -46,7 +46,7 @@ public final class ExtraLevelCommand implements PicocliCommandHandler {
             if (avatarId != null) {
                 avatar = targetPlayer.getAvatars().getAvatarById(avatarId);
                 if (avatar == null) {
-                    CommandHandler.sendMessage(sender, "Avatar not found: " + avatarId);
+                    CommandOutput.sendMessage(sender, "Avatar not found: " + avatarId);
                     return;
                 }
             } else {
@@ -55,13 +55,13 @@ public final class ExtraLevelCommand implements PicocliCommandHandler {
             }
 
             if (avatar == null) {
-                CommandHandler.sendMessage(sender, "No current avatar.");
+                CommandOutput.sendMessage(sender, "No current avatar.");
                 return;
             }
 
             int oldLevel = avatar.getLevel();
             if (AvatarExtraLevelHelper.upgradeAvatar(targetPlayer, avatar)) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         "Extra level OK: avatar "
                                 + avatar.getAvatarId()
@@ -71,7 +71,7 @@ public final class ExtraLevelCommand implements PicocliCommandHandler {
                                 + avatar.getLevel()
                                 + " (cost 104300)");
             } else {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         "Extra level failed: need promote=6 and level 90 or 95, plus enough 104300. Now level="
                                 + avatar.getLevel()

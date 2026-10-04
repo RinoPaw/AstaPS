@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.OpenConfigEntry;
 import emu.grasscutter.data.binout.OpenConfigEntry.AbilityVarSetter;
@@ -24,7 +24,7 @@ import picocli.CommandLine.Parameters;
         label = "debug",
         permission = "grasscutter.command.debug",
         targetRequirement = Command.TargetRequirement.NONE)
-public final class DebugCommand implements PicocliCommandHandler {
+public final class DebugCommand implements CommandHandler {
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {

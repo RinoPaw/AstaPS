@@ -4,7 +4,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.EntityMonster;
 import emu.grasscutter.game.entity.GameEntity;
@@ -20,7 +20,7 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 @Command(label = "entity", permission = "server.entity")
-public final class EntityCommand implements PicocliCommandHandler {
+public final class EntityCommand implements CommandHandler {
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
@@ -62,7 +62,7 @@ public final class EntityCommand implements PicocliCommandHandler {
         public void run() {
             GameEntity entity = targetPlayer.getScene().getFirstEntityByConfigId(configId);
             if (entity == null) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.entity.not_found_error"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.entity.not_found_error"));
                 return;
             }
 
@@ -73,7 +73,7 @@ public final class EntityCommand implements PicocliCommandHandler {
             if (ai != -1 && entity instanceof EntityMonster monster) {
                 monster.setAiId(ai);
             }
-            CommandHandler.sendMessage(sender, translate(sender, "commands.status.success"));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.status.success"));
         }
     }
 

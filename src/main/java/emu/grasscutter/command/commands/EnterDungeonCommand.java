@@ -4,7 +4,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
@@ -14,7 +14,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"enterdungeon", "dungeon"},
         permission = "player.enterdungeon",
         permissionTargeted = "player.enterdungeon.others")
-public final class EnterDungeonCommand implements PicocliCommandHandler {
+public final class EnterDungeonCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         return new CommandLine(new Args(sender, targetPlayer));
@@ -36,7 +36,7 @@ public final class EnterDungeonCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (dungeonId == targetPlayer.getSceneId()) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.enter_dungeon.in_dungeon_error"));
                 return;
             }
@@ -47,10 +47,10 @@ public final class EnterDungeonCommand implements PicocliCommandHandler {
                             .getDungeonSystem()
                             .enterDungeon(targetPlayer.getSession().getPlayer(), 0, dungeonId, true);
             if (entered) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.enter_dungeon.changed", dungeonId));
             } else {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.enter_dungeon.not_found_error"));
             }
         }

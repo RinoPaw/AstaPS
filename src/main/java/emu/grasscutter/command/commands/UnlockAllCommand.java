@@ -10,11 +10,9 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.player.PlayerProgressManager;
 import emu.grasscutter.server.packet.send.PacketAvatarDataNotify;
 import emu.grasscutter.server.packet.send.PacketOpenStateUpdateNotify;
-import emu.grasscutter.server.packet.send.PacketPlayerWorldSceneInfoListNotify;
 import emu.grasscutter.server.packet.send.PacketSceneAreaUnlockNotify;
 import emu.grasscutter.server.packet.send.PacketScenePointUnlockNotify;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.IntStream;
 import picocli.CommandLine;
@@ -108,21 +106,16 @@ public final class UnlockAllCommand implements CommandHandler {
             }
             targetPlayer.sendPacket(new PacketAvatarDataNotify(targetPlayer));
 
-            GameData.getSceneTagDataMap()
-                    .values()
-                    .forEach(
-                            tag ->
-                                    targetPlayer
-                                            .getSceneTags()
-                                            .computeIfAbsent(tag.getSceneId(), ignored -> new HashSet<>())
-                                            .add(tag.getId()));
-            targetPlayer.sendPacket(new PacketPlayerWorldSceneInfoListNotify(targetPlayer));
+            // Scene tags are intentionally left unchanged.
+            // Many tags represent mutually exclusive quest/activity world states. Enabling all of
+            // them simultaneously can make the client load incompatible terrain variants and produce
+            // missing ground/collision. Use /tag reset or /tag add <id> explicitly instead.
 
             targetPlayer.save();
 
             CommandOutput.sendMessage(
                     sender, translate(sender, "commands.unlockall.success", targetPlayer.getNickname()));
-            CommandOutput.sendMessage(sender, "Also unlocked every scene tag.");
+            CommandOutput.sendMessage(sender, "Scene tags left unchanged.");
         }
     }
 }

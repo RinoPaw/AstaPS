@@ -8,6 +8,14 @@ on:
       - "**"
       # main is covered by the release workflow, which builds and tests the same way.
       - "!main"
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".editorconfig"
+      - ".gitattributes"
+      - ".gitignore"
+      - ".sdkmanrc"
+      - "LICENSE*"
   workflow_dispatch:
 
 concurrency:

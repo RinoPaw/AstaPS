@@ -74,10 +74,15 @@ dependencies {
     implementation 'ch.qos.logback:logback-core:1.5.36'
     implementation 'ch.qos.logback:logback-classic:1.5.36'
 
-    implementation 'org.jline:jline:3.30.14'
+    // Picocli 4.7.7 still depends on the old all-in-one JLine 3.29.0 bundle. Use the current
+    // JLine modules explicitly so the console does not mix bundle classes with newer modules.
+    implementation 'org.jline:jline-reader:3.30.14'
+    implementation 'org.jline:jline-console:3.30.14'
     implementation 'org.jline:jline-terminal-jna:3.30.14'
     implementation 'info.picocli:picocli:4.7.7'
-    implementation 'info.picocli:picocli-shell-jline3:4.7.7'
+    implementation('info.picocli:picocli-shell-jline3:4.7.7') {
+        exclude group: 'org.jline', module: 'jline'
+    }
 
     // KCP uses Netty's core transport APIs plus epoll/kqueue classes. The platform-specific
     // classifier JARs carry the JNI libraries that make Epoll.isAvailable()/KQueue.isAvailable()

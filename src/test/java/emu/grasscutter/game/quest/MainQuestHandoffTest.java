@@ -12,6 +12,7 @@ import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.MainQuestData;
 import emu.grasscutter.data.excels.quest.QuestData;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.quest.content.ContentCompleteTalk;
 import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.quest.enums.QuestState;
 import emu.grasscutter.net.packet.BasePacket;
@@ -270,8 +271,11 @@ public final class MainQuestHandoffTest {
             assertEquals(QuestState.QUEST_STATE_UNFINISHED, activation.getState());
             assertEquals(0, activation.getFinishTime());
 
-            player.getQuestManager()
-                    .triggerEvent(QuestContent.QUEST_CONTENT_COMPLETE_TALK, "", 30302);
+            var condition = activation.getQuestData().getFinishCond().get(0);
+            var completeTalk = new ContentCompleteTalk();
+            assertFalse(completeTalk.execute(activation, condition, "", 30303));
+            assertTrue(completeTalk.execute(activation, condition, "", 30302));
+            activation.finish();
             assertEquals(QuestState.QUEST_STATE_FINISHED, activation.getState());
         } finally {
             GAME_OPTIONS.questing.enabled = enabled;

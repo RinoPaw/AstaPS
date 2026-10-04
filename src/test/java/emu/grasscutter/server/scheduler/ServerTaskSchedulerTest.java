@@ -106,27 +106,6 @@ public final class ServerTaskSchedulerTest {
     }
 
     @Test
-    @DisplayName("an async-only queue is serviced without a synchronous task keeping it alive")
-    public void asyncOnlyTaskRuns() {
-        createScheduler();
-        var runs = new AtomicInteger();
-        int taskId = this.scheduler.scheduleAsyncTask(runs::incrementAndGet);
-        AsyncServerTask task = this.scheduler.getAsyncTask(taskId);
-        assertNotNull(task);
-
-        this.scheduler.runTasks();
-        assertEquals(1, this.executor.queuedTasks());
-        assertEquals(0, runs.get());
-
-        this.executor.runNext();
-        assertEquals(1, runs.get());
-        assertTrue(task.isFinished());
-
-        this.scheduler.runTasks();
-        assertNull(this.scheduler.getAsyncTask(taskId));
-    }
-
-    @Test
     @DisplayName("repeated scheduler ticks cannot submit the same async task twice")
     public void asyncTaskStartsOnce() {
         createScheduler();

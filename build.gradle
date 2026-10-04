@@ -108,9 +108,9 @@ dependencies {
 
     implementation 'org.luaj:luaj-jse:3.0.1'
 
-    // Javalin 6+ changes the HTTP/Jetty integration API. Keep the latest 5.x until that
-    // migration is handled separately.
-    implementation 'io.javalin:javalin:5.6.5'
+    // Javalin 7 moves route registration into startup configuration and runs on Jetty 12.
+    implementation 'io.javalin:javalin:7.2.3'
+    implementation 'io.javalin.community.ssl:javalin-ssl:7.2.3'
     implementation 'org.java-websocket:Java-WebSocket:1.6.0'
 
     implementation 'net.openhft:zero-allocation-hashing:0.26ea0'

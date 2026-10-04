@@ -20,12 +20,13 @@ public class ShopSystem extends BaseGameSystem {
     private final Int2ObjectMap<List<ItemParamData>> shopChestData;
 
     @Getter private final ArtifactShop artifactShop = new ArtifactShop();
-    private final List<DynamicShopProvider> dynamicShopProviders = List.of(artifactShop);
+    private final List<DynamicShopProvider> dynamicShopProviders = new ArrayList<>();
 
     public ShopSystem(GameServer server) {
         super(server);
         this.shopData = new Int2ObjectOpenHashMap<>();
         this.shopChestData = new Int2ObjectOpenHashMap<>();
+        this.dynamicShopProviders.add(artifactShop);
         this.load();
     }
 
@@ -47,6 +48,14 @@ public class ShopSystem extends BaseGameSystem {
 
     public List<ItemParamData> getShopChestData(int chestId) {
         return this.shopChestData.get(chestId);
+    }
+
+    /** Registers another player-aware shop provider and installs it into the current shop table. */
+    public synchronized void registerDynamicShopProvider(DynamicShopProvider provider) {
+        Objects.requireNonNull(provider, "provider");
+        if (dynamicShopProviders.contains(provider)) return;
+        dynamicShopProviders.add(provider);
+        provider.install(getShopData());
     }
 
     public DynamicShopProvider getDynamicShopProvider(int goodsId) {

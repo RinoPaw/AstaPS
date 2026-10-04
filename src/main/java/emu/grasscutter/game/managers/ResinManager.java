@@ -21,147 +21,87 @@ public class ResinManager extends BasePlayerManager {
         super(player);
     }
 
-    /********************
-     * Change resin.
-     ********************/
     public synchronized boolean useResin(int amount) {
-        // Check if resin enabled.
-        if (!GAME.resinOptions.resinUsage) {
-            return true;
-        }
+        if (!GAME.resin.resinUsage) return true;
 
         int currentResin = this.player.getProperty(PlayerProperty.PROP_PLAYER_RESIN);
+        if (currentResin < amount) return false;
 
-        // Check if the player has sufficient resin.
-        if (currentResin < amount) {
-            return false;
-        }
-
-        // Deduct the resin from the player.
         int newResin = currentResin - amount;
         this.player.setProperty(PlayerProperty.PROP_PLAYER_RESIN, newResin);
 
-        // Check if this has taken the player under the recharge cap,
-        // starting the recharging process.
-        if (this.player.getNextResinRefresh() == 0 && newResin < GAME.resinOptions.cap) {
+        if (this.player.getNextResinRefresh() == 0 && newResin < GAME.resin.cap) {
             int currentTime = Utils.getCurrentSeconds();
-            this.player.setNextResinRefresh(currentTime + GAME.resinOptions.rechargeTime);
+            this.player.setNextResinRefresh(currentTime + GAME.resin.rechargeTime);
         }
 
-        // Send packets.
         this.player.sendPacket(new PacketResinChangeNotify(this.player));
-
-        // Battle Pass trigger
         this.player
                 .getBattlePassManager()
-                .triggerMission(
-                        WatcherTriggerType.TRIGGER_COST_MATERIAL, 106, amount); // Resin item id = 106
-
+                .triggerMission(WatcherTriggerType.TRIGGER_COST_MATERIAL, 106, amount);
         return true;
     }
 
     public synchronized boolean useCondensedResin(int amount) {
-        // Don't deduct if resin disabled.
-        if (!GAME.resinOptions.resinUsage) return true;
+        if (!GAME.resin.resinUsage) return true;
         return this.player.getInventory().payItem(220007, amount);
     }
 
     public synchronized void addResin(int amount) {
-        // Check if resin enabled.
-        if (!GAME.resinOptions.resinUsage) {
-            return;
-        }
+        if (!GAME.resin.resinUsage) return;
 
-        // Add resin.
         int currentResin = this.player.getProperty(PlayerProperty.PROP_PLAYER_RESIN);
         int newResin = currentResin + amount;
         this.player.setProperty(PlayerProperty.PROP_PLAYER_RESIN, newResin);
-
-        // Stop recharging if player is now at or over the cap.
-        if (newResin >= GAME.resinOptions.cap) {
-            this.player.setNextResinRefresh(0);
-        }
-
-        // Send packets.
+        if (newResin >= GAME.resin.cap) this.player.setNextResinRefresh(0);
         this.player.sendPacket(new PacketResinChangeNotify(this.player));
     }
 
-    /********************
-     * Recharge resin.
-     ********************/
     public synchronized void rechargeResin() {
-        // Check if resin enabled.
-        if (!GAME.resinOptions.resinUsage) {
-            return;
-        }
+        if (!GAME.resin.resinUsage) return;
 
         int currentResin = this.player.getProperty(PlayerProperty.PROP_PLAYER_RESIN);
         int currentTime = Utils.getCurrentSeconds();
-
-        // Make sure we are currently in "recharging mode".
-        // This is denoted by Player.nextResinRefresh being greater than 0.
-        if (this.player.getNextResinRefresh() <= 0) {
+        if (this.player.getNextResinRefresh() <= 0 || currentTime < this.player.getNextResinRefresh()) {
             return;
         }
 
-        // Determine if we actually need to recharge yet.
-        if (currentTime < this.player.getNextResinRefresh()) {
-            return;
-        }
-
-        // Calculate how much resin we need to refill and update player.
-        // Note that this can be more than one in case the player
-        // logged off with uncapped resin and is now logging in again.
         int recharge =
                 1
                         + (int)
                                 ((currentTime - this.player.getNextResinRefresh())
-                                        / GAME.resinOptions.rechargeTime);
-        int newResin = Math.min(GAME.resinOptions.cap, currentResin + recharge);
+                                        / GAME.resin.rechargeTime);
+        int newResin = Math.min(GAME.resin.cap, currentResin + recharge);
         int resinChange = newResin - currentResin;
-
         this.player.setProperty(PlayerProperty.PROP_PLAYER_RESIN, newResin);
 
-        // Calculate next recharge time.
-        // Set to zero to disable recharge (because on/over cap.)
-        if (newResin >= GAME.resinOptions.cap) {
+        if (newResin >= GAME.resin.cap) {
             this.player.setNextResinRefresh(0);
         } else {
             int nextRecharge =
-                    this.player.getNextResinRefresh() + resinChange * GAME.resinOptions.rechargeTime;
+                    this.player.getNextResinRefresh() + resinChange * GAME.resin.rechargeTime;
             this.player.setNextResinRefresh(nextRecharge);
         }
-
-        // Send packets.
         this.player.sendPacket(new PacketResinChangeNotify(this.player));
     }
 
-    /********************
-     * Player login.
-     ********************/
     public synchronized void onPlayerLogin() {
-        // If resin usage is disabled, set resin to cap.
-        if (!GAME.resinOptions.resinUsage) {
-            this.player.setProperty(PlayerProperty.PROP_PLAYER_RESIN, GAME.resinOptions.cap);
+        if (!GAME.resin.resinUsage) {
+            this.player.setProperty(PlayerProperty.PROP_PLAYER_RESIN, GAME.resin.cap);
             this.player.setNextResinRefresh(0);
         }
 
-        // In case server administrators change the resin cap while players are capped,
-        // we need to restart recharging here.
         int currentResin = this.player.getProperty(PlayerProperty.PROP_PLAYER_RESIN);
         int currentTime = Utils.getCurrentSeconds();
-
-        if (currentResin < GAME.resinOptions.cap && this.player.getNextResinRefresh() == 0) {
-            this.player.setNextResinRefresh(currentTime + GAME.resinOptions.rechargeTime);
+        if (currentResin < GAME.resin.cap && this.player.getNextResinRefresh() == 0) {
+            this.player.setNextResinRefresh(currentTime + GAME.resin.rechargeTime);
         }
 
-        // Keep map/HUD resin visible (stacks with abyss floor banner).
         this.player.getOpenStates().put(45, 1);
         this.player.sendPacket(new PacketOpenStateChangeNotify(45, 1));
         this.player.sendPacket(new PacketResinChangeNotify(this.player));
     }
 
-    /** Re-assert resin open-state + value (e.g. when opening the map). */
     public synchronized void refreshClientResinUi() {
         this.player.getOpenStates().put(45, 1);
         this.player.sendPacket(new PacketOpenStateChangeNotify(45, 1));
@@ -179,50 +119,31 @@ public class ResinManager extends BasePlayerManager {
                 this.player
                         .getInventory()
                         .payItem(201, HCOIN_NUM_TO_BUY_RESIN[this.player.getResinBuyCount()]);
-        if (!res) {
-            return RetcodeOuterClass.Retcode.RET_HCOIN_NOT_ENOUGH_VALUE;
-        }
+        if (!res) return RetcodeOuterClass.Retcode.RET_HCOIN_NOT_ENOUGH_VALUE;
 
         this.player.setResinBuyCount(this.player.getResinBuyCount() + 1);
         this.player.setProperty(PlayerProperty.PROP_PLAYER_WAIT_SUB_HCOIN, 0);
         this.addResin(AMOUNT_TO_ADD);
         this.player.sendPacket(
                 new PacketItemAddHintNotify(new GameItem(106, AMOUNT_TO_ADD), ActionReason.BuyResin));
-
         return 0;
     }
 
-    /**
-     * Domain / ley-line primogem claim — same price ladder and daily count as BuyResin.
-     * Does not grant +60 resin; only pays primogems and increments {@code resinBuyCount}.
-     */
     public synchronized boolean payHcoinRewardClaim() {
-        if (!GAME.resinOptions.resinUsage) {
-            return true;
-        }
+        if (!GAME.resin.resinUsage) return true;
         int used = this.player.getResinBuyCount();
-        if (used >= MAX_RESIN_BUYING_COUNT) {
-            return false;
-        }
+        if (used >= MAX_RESIN_BUYING_COUNT) return false;
         int cost = HCOIN_NUM_TO_BUY_RESIN[used];
-        if (!this.player.getInventory().payItem(201, cost)) {
-            return false;
-        }
+        if (!this.player.getInventory().payItem(201, cost)) return false;
         this.player.setResinBuyCount(used + 1);
         this.player.setProperty(PlayerProperty.PROP_PLAYER_WAIT_SUB_HCOIN, 0);
         this.player.sendPacket(new PacketResinChangeNotify(this.player));
         return true;
     }
 
-    /**
-     * Value for {@code ResinChangeNotify.cur_buy_count}. The 7.0 client assumes a daily max of 6;
-     * keep the exchange UI unlocked until the server-side 15-buy cap is hit.
-     */
     public int getClientResinBuyCount() {
         int actual = this.player.getResinBuyCount();
-        if (actual >= MAX_RESIN_BUYING_COUNT) {
-            return CLIENT_RESIN_BUY_CAP;
-        }
+        if (actual >= MAX_RESIN_BUYING_COUNT) return CLIENT_RESIN_BUY_CAP;
         return Math.min(actual, CLIENT_RESIN_BUY_CAP - 1);
     }
 }

@@ -5,7 +5,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.utils.Utils;
 import java.util.Locale;
@@ -16,7 +16,7 @@ import picocli.CommandLine.Parameters;
         label = "language",
         aliases = {"lang"},
         targetRequirement = Command.TargetRequirement.NONE)
-public final class LanguageCommand implements PicocliCommandHandler {
+public final class LanguageCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         return new CommandLine(new Args(sender));
@@ -40,7 +40,7 @@ public final class LanguageCommand implements PicocliCommandHandler {
                         sender != null
                                 ? Utils.getLanguageCode(sender.getAccount().getLocale())
                                 : Grasscutter.getLanguage().getLanguageCode();
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.language.current_language", current));
                 return;
             }
@@ -61,11 +61,11 @@ public final class LanguageCommand implements PicocliCommandHandler {
             }
 
             if (!languageCode.equals(actualCode)) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         translate(sender, "commands.language.language_not_found", languageCode));
             }
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender, translate(sender, "commands.language.language_changed", actualCode));
         }
     }

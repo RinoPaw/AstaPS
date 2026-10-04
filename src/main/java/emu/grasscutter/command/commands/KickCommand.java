@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.config.Configuration;
 import emu.grasscutter.game.player.Player;
 import java.util.Objects;
@@ -13,7 +13,7 @@ import picocli.CommandLine.Parameters;
         label = "kick",
         aliases = {"restart"},
         permissionTargeted = "server.kick")
-public final class KickCommand implements PicocliCommandHandler {
+public final class KickCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         return new CommandLine(new Args(sender, targetPlayer));
@@ -35,12 +35,12 @@ public final class KickCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (!Objects.equals(key, Configuration.HTTP_ENCRYPTION.keystorePassword)) {
-                CommandHandler.sendMessage(sender != null ? sender : targetPlayer, "Wrong key");
+                CommandOutput.sendMessage(sender != null ? sender : targetPlayer, "Wrong key");
                 return;
             }
 
             if (sender != null) {
-                CommandHandler.sendTranslatedMessage(
+                CommandOutput.sendTranslatedMessage(
                         sender,
                         "commands.kick.player_kick_player",
                         sender.getUid(),
@@ -48,7 +48,7 @@ public final class KickCommand implements PicocliCommandHandler {
                         targetPlayer.getUid(),
                         targetPlayer.getAccount().getUsername());
             } else {
-                CommandHandler.sendTranslatedMessage(
+                CommandOutput.sendTranslatedMessage(
                         null,
                         "commands.kick.server_kick_player",
                         targetPlayer.getUid(),

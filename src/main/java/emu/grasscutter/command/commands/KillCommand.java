@@ -4,7 +4,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.entity.EntityAvatar;
 import emu.grasscutter.game.entity.EntityMonster;
 import emu.grasscutter.game.entity.GameEntity;
@@ -18,7 +18,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
 @Command(label = "kill", targetRequirement = Command.TargetRequirement.PLAYER)
-public final class KillCommand implements PicocliCommandHandler {
+public final class KillCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         var commandLine = new CommandLine(new Root(sender));
@@ -63,7 +63,7 @@ public final class KillCommand implements PicocliCommandHandler {
                             ? targetPlayer.getScene()
                             : targetPlayer.getWorld().getSceneById(sceneId);
             if (scene == null) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.killall.scene_not_found_in_player_world"));
                 return;
             }
@@ -73,7 +73,7 @@ public final class KillCommand implements PicocliCommandHandler {
                             .filter(EntityMonster.class::isInstance)
                             .toList();
             toKill.forEach(KillCommand::killEntity);
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     translate(
                             sender,
@@ -103,7 +103,7 @@ public final class KillCommand implements PicocliCommandHandler {
 
             EntityAvatar entity = targetPlayer.getTeamManager().getCurrentAvatarEntity();
             if (entity == null) {
-                CommandHandler.sendMessage(sender, "No active character.");
+                CommandOutput.sendMessage(sender, "No active character.");
                 return;
             }
 
@@ -117,7 +117,7 @@ public final class KillCommand implements PicocliCommandHandler {
                                 PlayerDieType.PlayerDieType_PLAYER_DIE_KILL_BY_MONSTER);
             }
 
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender, translate(sender, "commands.killCharacter.success", targetPlayer.getNickname()));
         }
     }
@@ -139,7 +139,7 @@ public final class KillCommand implements PicocliCommandHandler {
         var account = sender.getAccount();
         String required = targetPlayer != sender ? permissionTargeted : permission;
         if (account != null && account.hasPermission(required)) return true;
-        CommandHandler.sendTranslatedMessage(sender, "commands.generic.permission_error");
+        CommandOutput.sendTranslatedMessage(sender, "commands.generic.permission_error");
         return false;
     }
 }

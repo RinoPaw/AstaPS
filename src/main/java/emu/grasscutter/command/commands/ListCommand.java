@@ -5,7 +5,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import java.util.Map;
 import picocli.CommandLine;
@@ -15,7 +15,7 @@ import picocli.CommandLine.Parameters;
         label = "list",
         aliases = {"players"},
         targetRequirement = Command.TargetRequirement.NONE)
-public final class ListCommand implements PicocliCommandHandler {
+public final class ListCommand implements CommandHandler {
     private enum Mode {
         UID
     }
@@ -43,7 +43,7 @@ public final class ListCommand implements PicocliCommandHandler {
             Map<Integer, Player> playersMap = Grasscutter.getGameServer().getPlayers();
             boolean includeUid = mode == Mode.UID;
 
-            CommandHandler.sendMessage(sender, translate(sender, "commands.list.success", playersMap.size()));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.list.success", playersMap.size()));
             if (playersMap.isEmpty()) return;
 
             String players =
@@ -61,7 +61,7 @@ public final class ListCommand implements PicocliCommandHandler {
                                     })
                             .reduce((left, right) -> left + ", " + right)
                             .orElse("");
-            CommandHandler.sendMessage(sender, players);
+            CommandOutput.sendMessage(sender, players);
         }
     }
 }

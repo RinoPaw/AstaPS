@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.NameIndex;
 import emu.grasscutter.game.player.Player;
 import picocli.CommandLine;
@@ -13,7 +13,7 @@ import picocli.CommandLine.Parameters;
         label = "lookup",
         aliases = {"find", "search"},
         targetRequirement = Command.TargetRequirement.NONE)
-public final class LookupCommand implements PicocliCommandHandler {
+public final class LookupCommand implements CommandHandler {
     private static final int LIMIT = 15;
 
     @Override
@@ -38,11 +38,11 @@ public final class LookupCommand implements PicocliCommandHandler {
             var found = NameIndex.search(query, LIMIT);
 
             if (found.isEmpty()) {
-                CommandHandler.sendMessage(sender, "Nothing is called anything like \"" + query + "\".");
+                CommandOutput.sendMessage(sender, "Nothing is called anything like \"" + query + "\".");
                 return;
             }
 
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     found.size() < LIMIT
                             ? found.size()
@@ -52,7 +52,7 @@ public final class LookupCommand implements PicocliCommandHandler {
                                     + query
                                     + "\":"
                             : "First " + LIMIT + " matches for \"" + query + "\":");
-            found.forEach(entry -> CommandHandler.sendMessage(sender, "  " + entry));
+            found.forEach(entry -> CommandOutput.sendMessage(sender, "  " + entry));
         }
     }
 }

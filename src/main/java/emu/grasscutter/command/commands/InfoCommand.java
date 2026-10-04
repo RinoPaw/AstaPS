@@ -4,7 +4,7 @@ import emu.grasscutter.BuildConfig;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.tools.Tools;
 import picocli.CommandLine;
@@ -13,7 +13,7 @@ import picocli.CommandLine;
         label = "info",
         aliases = {"troubleshoot", "helpme"},
         targetRequirement = Command.TargetRequirement.NONE)
-public final class InfoCommand implements PicocliCommandHandler {
+public final class InfoCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         return new CommandLine(new Args(sender));
@@ -39,7 +39,7 @@ public final class InfoCommand implements PicocliCommandHandler {
             var scriptsEnabled = gameOptions.enableScriptInBigWorld;
             var fastRequire = config.server.fastRequire;
 
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     """
                     Modified by Kei-Luna and the contributors
@@ -55,7 +55,7 @@ public final class InfoCommand implements PicocliCommandHandler {
             if (sender == null
                     || sender.getAccount().hasPermission("grasscutter.command.troubleshoot")
                     || playerCount == 1) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         """
                         Server Information
@@ -77,7 +77,7 @@ public final class InfoCommand implements PicocliCommandHandler {
                                         System.getProperty("os.name"),
                                         resourceInfo));
             } else {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, "Grasscutter Discord: discord.gg/2AxayFampP");
             }
         }

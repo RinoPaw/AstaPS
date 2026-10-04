@@ -139,6 +139,9 @@ application {
 
 jar {
     exclude '*.proto'
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
 
     manifest {
         attributes 'Main-Class': 'emu.grasscutter.Grasscutter'

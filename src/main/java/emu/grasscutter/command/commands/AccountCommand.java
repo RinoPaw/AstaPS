@@ -5,11 +5,10 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.*;
-import emu.grasscutter.database.*;
+import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.game.player.Player;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Command(
         label = "account",
@@ -108,36 +107,7 @@ public final class AccountCommand implements CommandHandler {
                 }
                 toUpdate.save();
             }
-            case "list" -> {
-                CommandHandler.sendMessage(sender, "Note: This command might take a while to complete.");
-                CommandHandler.sendMessage(
-                        sender,
-                        "Accounts: \n"
-                                + DatabaseManager.getAccountDatastore().find(Account.class).stream()
-                                        .map(
-                                                acc ->
-                                                        "%s: %s (%s)"
-                                                                .formatted(
-                                                                        acc.getId(),
-                                                                        acc.getUsername(),
-                                                                        acc.getReservedPlayerUid() == 0
-                                                                                ? this.getPlayerUid(acc)
-                                                                                : acc.getReservedPlayerUid()))
-                                        .collect(Collectors.joining("\n")));
-            }
         }
-    }
-
-    /**
-     * Returns the UID of the player associated with the given account. If the player is not found,
-     * returns "no UID".
-     *
-     * @param account The account to get the UID of.
-     * @return The UID of the player associated with the given account.
-     */
-    private String getPlayerUid(Account account) {
-        var player = DatabaseHelper.getPlayerByAccount(account, Player.class);
-        return player == null ? "no UID" : String.valueOf(player.getUid());
     }
 
     private void kickAccount(Account account) {

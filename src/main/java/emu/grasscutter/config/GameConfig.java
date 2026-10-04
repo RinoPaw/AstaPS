@@ -12,7 +12,7 @@ import java.nio.file.StandardCopyOption;
 
 /** Player-facing and gameplay configuration stored directly in {@code game.json}. */
 public final class GameConfig {
-    private static final int CURRENT_VERSION = 4;
+    private static final int CURRENT_VERSION = 5;
     private static final Path FILE = Path.of("game.json");
 
     private static volatile GameConfig current;
@@ -31,6 +31,7 @@ public final class GameConfig {
     public boolean watchGachaConfig = false;
     public boolean enableShopItems = false;
     public ArtifactSettings artifacts = new ArtifactSettings();
+    public ShopSettings shops = new ShopSettings();
 
     public boolean staminaUsage = true;
     public boolean energyUsage = true;
@@ -81,7 +82,7 @@ public final class GameConfig {
                 try {
                     JsonObject stored = JsonUtils.loadToClass(FILE, JsonObject.class);
                     validateRewardSchema(stored);
-                    validateArtifactSchema(stored);
+                    validateShopSchema(stored);
                     current = stored == null ? new GameConfig() : JsonUtils.decode(stored, GameConfig.class);
                     if (current == null) current = new GameConfig();
                     rewrite = migrateStored(stored, current);
@@ -156,7 +157,14 @@ public final class GameConfig {
             migrateLegacyArtifactShop(oldArtifactShop, target);
             rewrite = true;
         }
-        if (!root.has("artifacts")) rewrite = true;
+
+        JsonObject oldNestedShop = object(object(root, "artifacts"), "shop");
+        if (oldNestedShop != null) {
+            migrateArtifactShopV4(oldNestedShop, target);
+            rewrite = true;
+        }
+
+        if (!root.has("artifacts") || !root.has("shops")) rewrite = true;
         return rewrite;
     }
 
@@ -211,14 +219,25 @@ public final class GameConfig {
 
     private static void migrateLegacyArtifactShop(JsonObject old, GameConfig target) {
         if (old == null || target == null) return;
-        if (target.artifacts == null) target.artifacts = new ArtifactSettings();
-        if (target.artifacts.shop == null) target.artifacts.shop = new ArtifactSettings.Shop();
+        ensureArtifactShop(target);
         if (old.has("enabled") && !old.get("enabled").isJsonNull()) {
-            target.artifacts.shop.enabled = old.get("enabled").getAsBoolean();
+            target.shops.artifact.enabled = old.get("enabled").getAsBoolean();
         }
         if (old.has("buyLimit") && !old.get("buyLimit").isJsonNull()) {
-            target.artifacts.shop.buyLimit = Math.max(0, old.get("buyLimit").getAsInt());
+            target.shops.artifact.buyLimit = Math.max(0, old.get("buyLimit").getAsInt());
         }
+    }
+
+    private static void migrateArtifactShopV4(JsonObject old, GameConfig target) {
+        if (old == null || target == null) return;
+        ensureArtifactShop(target);
+        var decoded = JsonUtils.decode(old, ShopSettings.Artifact.class);
+        if (decoded != null) target.shops.artifact = decoded;
+    }
+
+    private static void ensureArtifactShop(GameConfig target) {
+        if (target.shops == null) target.shops = new ShopSettings();
+        if (target.shops.artifact == null) target.shops.artifact = new ShopSettings.Artifact();
     }
 
     private void normalize() {
@@ -230,6 +249,8 @@ public final class GameConfig {
         if (avatarLimits == null) avatarLimits = new ConfigContainer.GameOptions.AvatarLimits();
         if (artifacts == null) artifacts = new ArtifactSettings();
         artifacts.normalize();
+        if (shops == null) shops = new ShopSettings();
+        shops.normalize();
         if (defaultNickname == null || defaultNickname.isBlank()) defaultNickname = "Traveler";
         if (newAccountIntro == null) {
             newAccountIntro = new ConfigContainer.GameOptions.NewAccountIntro();
@@ -334,9 +355,15 @@ public final class GameConfig {
         }
     }
 
-    private static void validateArtifactSchema(JsonObject root) {
-        JsonObject artifacts = object(root, "artifacts");
-        JsonObject shop = object(artifacts, "shop");
+    private static void validateShopSchema(JsonObject root) {
+        if (root == null) return;
+        validateArtifactShopFields(object(object(root, "shops"), "artifact"), "shops.artifact");
+        // Version 4 stored the same shop object under artifacts.shop; accept it for migration while
+        // still rejecting the already-removed pre-v4 fields.
+        validateArtifactShopFields(object(object(root, "artifacts"), "shop"), "artifacts.shop");
+    }
+
+    private static void validateArtifactShopFields(JsonObject shop, String path) {
         if (shop == null) return;
         for (String removed :
                 new String[] {
@@ -351,7 +378,7 @@ public final class GameConfig {
                 }) {
             if (shop.has(removed)) {
                 throw new IllegalArgumentException(
-                        "game.json artifacts.shop contains removed field '" + removed + "'.");
+                        "game.json " + path + " contains removed field '" + removed + "'.");
             }
         }
     }

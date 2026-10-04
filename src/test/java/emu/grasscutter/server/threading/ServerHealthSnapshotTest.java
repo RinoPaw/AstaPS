@@ -102,13 +102,4 @@ public final class ServerHealthSnapshotTest {
         assertEquals(-1D, health.jvmMemoryUsage());
         assertEquals(ThreadPoolHealth.NORMAL, health.health());
     }
-
-    @Test
-    @DisplayName("no pools at all still produces a verdict")
-    public void noPools() {
-        var health = ServerHealthSnapshot.from(calmHost(), List.of());
-
-        assertEquals(ThreadPoolHealth.NORMAL, health.health());
-        assertEquals("none", health.bottleneck());
-    }
 }

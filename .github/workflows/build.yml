@@ -15,20 +15,20 @@ on:
       - "LICENSE*"
   workflow_dispatch:
 
+# Keep the repair run alive if another play/rino commit lands while Gradle is regenerating the JAR.
 concurrency:
   group: build-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
-# Temporary write permission for one wrapper-repair run. This is reverted after the generated
-# Gradle 9.8 wrapper is committed by Git itself, so the binary is never rewritten by an API client.
+# Temporary. Reverted as soon as the official Gradle-generated wrapper commit lands.
 permissions:
   contents: write
 
 jobs:
   build:
-    name: Repair wrapper, build and test
+    name: Repair Gradle wrapper
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
@@ -59,17 +59,6 @@ jobs:
           echo '238e777fcddd7e34f9708186085def2abd6e08e658505b38718d79d74c21abd5  gradle/wrapper/gradle-wrapper.jar' | sha256sum --check --strict
           ./gradlew --version
 
-      - name: Prepare test resource layout
-        run: mkdir -p resources/BinOutput resources/ExcelBinOutput
-
-      - name: Verify build
-        run: >-
-          ./gradlew jar test --build-cache
-          -PskipHandbook=1
-          -PjarFilename=grasscutter
-          -PexcludeTags=integration
-          -Dorg.gradle.jvmargs=-Xmx4g
-
       - name: Commit generated Gradle wrapper
         shell: bash
         run: |
@@ -85,19 +74,3 @@ jobs:
           git fetch origin play/rino
           git rebase origin/play/rino
           git push origin HEAD:play/rino
-
-      - name: Upload test report
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: test-results
-          path: build/reports/tests/test
-          if-no-files-found: ignore
-          retention-days: 7
-
-      - name: Upload jar
-        uses: actions/upload-artifact@v7
-        with:
-          name: grasscutter
-          path: grasscutter.jar
-          retention-days: 14

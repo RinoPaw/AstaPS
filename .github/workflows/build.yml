@@ -45,6 +45,11 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # `build` depends on Spotless, so keep the formatter path covered explicitly. This catches
+      # Java/formatter compatibility failures before a developer reaches a local clean build.
+      - name: Check formatting
+        run: ./gradlew spotlessJavaCheck -Dorg.gradle.jvmargs=-Xmx4g
+
       - name: Build jar
         run: ./gradlew jar -PskipHandbook=1 -PjarFilename=grasscutter -Dorg.gradle.jvmargs=-Xmx4g
 

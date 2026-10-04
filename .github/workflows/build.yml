@@ -45,27 +45,6 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      # Temporary bootstrap step: let Gradle 9.8 regenerate the complete wrapper, including the
-      # binary wrapper JAR. The generated files are uploaded below and will be committed back once
-      # this migration run succeeds.
-      - name: Regenerate Gradle wrapper
-        run: >-
-          ./gradlew wrapper
-          --gradle-version 9.8.0
-          --distribution-type bin
-          --gradle-distribution-sha256-sum bafd5ce9cfaea0fbccfdc8439a1ac42fbd4cd9c89dc9a988228d8a2639a58e6c
-
-      - name: Upload regenerated Gradle wrapper
-        uses: actions/upload-artifact@v7
-        with:
-          name: gradle-wrapper-9.8.0
-          path: |
-            gradlew
-            gradlew.bat
-            gradle/wrapper/gradle-wrapper.jar
-            gradle/wrapper/gradle-wrapper.properties
-          retention-days: 1
-
       # Some unit tests touch Grasscutter's static services. The runtime resources themselves are not
       # needed, but startup validation requires the two resource roots to exist.
       - name: Prepare test resource layout

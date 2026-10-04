@@ -13,15 +13,13 @@ public class EntityTeam extends GameEntity {
     private Player player;
 
     public EntityTeam(Player player) {
-        super(player.getScene());        
+        super(player.getScene());
         this.player = player;
-        initAbilities();
+        initializeAbilities();
         this.id = player.getWorld().getNextEntityId(EntityIdType.TEAM);
     }
 
-
-    @Override
-    public void initAbilities() {
+    private void initializeAbilities() {
         // Load abilities from levelElementAbilities
         var defaultAbilities = GameData.getConfigGlobalCombat().getDefaultAbilities();
         if (defaultAbilities.getDefaultTeamAbilities() != null)
@@ -30,6 +28,11 @@ public class EntityTeam extends GameEntity {
                 if (data != null)
                     player.getWorld().getHost().getAbilityManager().addAbilityToEntity(this, data);
             }
+    }
+
+    @Override
+    public void initAbilities() {
+        initializeAbilities();
     }
 
     @Override

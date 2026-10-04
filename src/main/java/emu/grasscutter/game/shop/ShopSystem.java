@@ -27,7 +27,7 @@ public class ShopSystem extends BaseGameSystem {
         this.shopData = new Int2ObjectOpenHashMap<>();
         this.shopChestData = new Int2ObjectOpenHashMap<>();
         this.dynamicShopProviders.add(artifactShop);
-        this.load();
+        loadInternal();
     }
 
     public static int getShopNextRefreshTime(ShopInfo shopInfo) {
@@ -55,7 +55,7 @@ public class ShopSystem extends BaseGameSystem {
         Objects.requireNonNull(provider, "provider");
         if (dynamicShopProviders.contains(provider)) return;
         dynamicShopProviders.add(provider);
-        provider.install(getShopData());
+        provider.install(shopData);
     }
 
     public DynamicShopProvider getDynamicShopProvider(int goodsId) {
@@ -70,18 +70,17 @@ public class ShopSystem extends BaseGameSystem {
             int cityId = provider.cityIdForShop(shopType);
             if (cityId > 0) return cityId;
         }
-        // Preserve the historical fallback for ordinary shops that do not expose a city mapping.
         return 1;
     }
 
     private void loadShop() {
-        getShopData().clear();
+        shopData.clear();
         try {
             List<ShopTable> banners = DataLoader.loadList("Shop.json", ShopTable.class);
             if (banners.size() > 0) {
                 for (ShopTable shopTable : banners) {
                     shopTable.getItems().forEach(ShopInfo::removeVirtualCosts);
-                    getShopData().put(shopTable.getShopId(), shopTable.getItems());
+                    shopData.put(shopTable.getShopId(), shopTable.getItems());
                 }
                 Grasscutter.getLogger().debug("Shop data successfully loaded.");
             } else {
@@ -89,20 +88,17 @@ public class ShopSystem extends BaseGameSystem {
             }
 
             if (GAME.enableShopItems) {
-                // Shop.json is the curated source and every one of its shops also exists in the
-                // excel data, so appending there would list those items twice. Fill only the
-                // shops it does not define.
                 GameData.getShopGoodsDataEntries()
                         .forEach(
                                 (k, v) -> {
                                     int shopId = k.intValue();
-                                    if (getShopData().containsKey(shopId)) return;
+                                    if (shopData.containsKey(shopId)) return;
 
                                     var items = new ArrayList<ShopInfo>(v.size());
                                     for (ShopGoodsData sgd : v) {
                                         items.add(new ShopInfo(sgd));
                                     }
-                                    getShopData().put(shopId, items);
+                                    shopData.put(shopId, items);
                                 });
             }
         } catch (Exception e) {
@@ -134,22 +130,30 @@ public class ShopSystem extends BaseGameSystem {
         }
     }
 
-    public synchronized void load() {
+    private void loadDynamicShopsInternal() {
+        for (var provider : dynamicShopProviders) {
+            provider.install(shopData);
+        }
+    }
+
+    private void loadInternal() {
         loadShop();
         loadShopChest();
-        loadDynamicShops();
+        loadDynamicShopsInternal();
+    }
+
+    public synchronized void load() {
+        loadInternal();
     }
 
     /** Rebuilds every player-aware provider after static shop/resource data changes. */
     public synchronized void loadDynamicShops() {
-        for (var provider : dynamicShopProviders) {
-            provider.install(getShopData());
-        }
+        loadDynamicShopsInternal();
     }
 
     /** Compatibility entry point used by the current resource reload path. */
     public synchronized void loadArtifactShop() {
-        loadDynamicShops();
+        loadDynamicShopsInternal();
     }
 
     public GameServer getServer() {

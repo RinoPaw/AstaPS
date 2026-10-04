@@ -54,7 +54,7 @@ public class EntityWeapon extends EntityBaseGadget {
         Grasscutter.getLogger()
                 .trace("New weapon entity {} in scene {}.", this.id, this.getScene().getId());
 
-        this.initAbilities();
+        initializeAbilities();
     }
 
     private void addConfigAbility(ConfigAbilityData abilityData) {
@@ -62,14 +62,18 @@ public class EntityWeapon extends EntityBaseGadget {
         if (data != null) this.getWorld().getHost().getAbilityManager().addAbilityToEntity(this, data);
     }
 
-    @Override
-    public void initAbilities() {
+    private void initializeAbilities() {
         // TODO: handle pre-dynamic, static and dynamic here
         if (this.configGadget != null && this.configGadget.getAbilities() != null) {
             for (var ability : this.configGadget.getAbilities()) {
                 this.addConfigAbility(ability);
             }
         }
+    }
+
+    @Override
+    public void initAbilities() {
+        initializeAbilities();
     }
 
     @Override

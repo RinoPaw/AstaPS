@@ -1,7 +1,7 @@
 package emu.grasscutter.server.http.handlers;
 
 import emu.grasscutter.server.http.Router;
-import io.javalin.Javalin;
+import io.javalin.config.RoutesConfig;
 import io.javalin.http.Context;
 
 /** Handles logging requests made to the server. */
@@ -12,10 +12,10 @@ public final class LogHandler implements Router {
     }
 
     @Override
-    public void applyRoutes(Javalin javalin) {
+    public void applyRoutes(RoutesConfig routes) {
         // overseauspider.yuanshen.com
-        javalin.post("/log", LogHandler::log);
+        routes.post("/log", LogHandler::log);
         // log-upload-os.mihoyo.com
-        javalin.post("/crash/dataUpload", LogHandler::log);
+        routes.post("/crash/dataUpload", LogHandler::log);
     }
 }

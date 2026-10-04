@@ -1,9 +1,9 @@
 package emu.grasscutter.game.shop;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.config.ConfigContainer.GameOptions.ArtifactShopOptions;
+import emu.grasscutter.config.ArtifactSettings;
 import emu.grasscutter.data.*;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.ItemData;
@@ -14,21 +14,20 @@ import emu.grasscutter.game.dungeons.enums.DungeonSubType;
 import emu.grasscutter.game.inventory.*;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
+import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
 import emu.grasscutter.utils.objects.WeightedList;
 import it.unimi.dsi.fastutil.ints.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.Getter;
 
-public class ArtifactShop {
+/** Regional, player-aware artifact goods backed by ordinary shop packets. */
+public class ArtifactShop implements DynamicShopProvider {
     private static final int GOODS_ID_BASE = 200_000_000;
+    private static final int GOODS_ID_LIMIT = 201_000_000;
     public static final int ORIGINAL_RESIN_ID = 106;
     private static final int FALLBACK_RESIN_COST = 20;
 
-    private static final Map<Integer, Integer> REGIONAL_SHOPS =
-            Map.of(1, 1004, 2, 1008, 3, 1056, 4, 1074, 5, 1093);
-    private static final Map<Integer, Integer> SHOP_CITIES =
-            Map.of(1004, 1, 1008, 2, 1056, 3, 1074, 4, 1093, 5);
     private static final List<EquipType> SLOT_ORDER =
             List.of(
                     EquipType.EQUIP_BRACER,
@@ -76,12 +75,23 @@ public class ArtifactShop {
     private final Int2IntMap goodsCity = new Int2IntOpenHashMap();
     private final Int2ObjectMap<Set<Integer>> domainSetsByDungeon = new Int2ObjectOpenHashMap<>();
 
+    private static ArtifactSettings.Shop options() {
+        return GAME.artifacts.shop;
+    }
+
+    @Override
     public void install(Int2ObjectMap<List<ShopInfo>> shopData) {
-        var options = GAME_OPTIONS.artifactShop;
+        var options = options();
         goods.clear();
         goodsCity.clear();
         domainSetsByDungeon.clear();
-        shopData.values().forEach(list -> list.removeIf(sold -> sold.getGoodsId() >= GOODS_ID_BASE));
+        shopData.values()
+                .forEach(
+                        list ->
+                                list.removeIf(
+                                        sold ->
+                                                sold.getGoodsId() >= GOODS_ID_BASE
+                                                        && sold.getGoodsId() < GOODS_ID_LIMIT));
         if (!options.enabled) return;
 
         try {
@@ -91,13 +101,16 @@ public class ArtifactShop {
             return;
         }
 
-        for (var route : REGIONAL_SHOPS.entrySet()) {
-            if (!shopData.containsKey(route.getValue().intValue())) {
+        for (var route : options.regionalShops.entrySet()) {
+            Integer cityId = route.getKey();
+            Integer shopId = route.getValue();
+            if (cityId == null || shopId == null || cityId <= 0 || shopId <= 0) continue;
+            if (!shopData.containsKey(shopId.intValue())) {
                 Grasscutter.getLogger()
                         .error(
                                 "Artifact shop requires city {} shop {}, but it is missing from current shop data.",
-                                route.getKey(),
-                                route.getValue());
+                                cityId,
+                                shopId);
                 return;
             }
         }
@@ -122,9 +135,13 @@ public class ArtifactShop {
             var cities = citiesBySet.get(piece.getSetId());
             if (cities == null) continue;
             for (int cityId : cities) {
-                Integer shopId = REGIONAL_SHOPS.get(cityId);
+                Integer shopId = options.regionalShops.get(cityId);
                 if (shopId == null) continue;
-                shopData.get(shopId.intValue()).add(makeGoods(goodsId, piece, options));
+                if (goodsId >= GOODS_ID_LIMIT) {
+                    Grasscutter.getLogger().error("Artifact dynamic goods id range exhausted.");
+                    return;
+                }
+                shopData.get(shopId.intValue()).add(makeGoods(goodsId, piece, options.buyLimit));
                 goods.put(goodsId, piece);
                 goodsCity.put(goodsId, cityId);
                 touchedShops.add(shopId);
@@ -139,6 +156,11 @@ public class ArtifactShop {
                         listed,
                         touchedShops.size(),
                         domainSetsByDungeon.size());
+    }
+
+    @Override
+    public boolean ownsGoods(int goodsId) {
+        return goods.containsKey(goodsId);
     }
 
     public ItemData getPiece(int goodsId) {
@@ -158,6 +180,7 @@ public class ArtifactShop {
         return available;
     }
 
+    @Override
     public boolean isAvailable(Player player, int shopType, int goodsId) {
         int cityId = cityIdForShop(shopType);
         return goods.get(goodsId) != null
@@ -166,11 +189,46 @@ public class ArtifactShop {
                 && getResinCost(player, goodsId) > 0;
     }
 
+    @Override
+    public List<ItemParamData> getCostItems(Player player, int shopType, int goodsId) {
+        int resinCost = getResinCost(player, goodsId);
+        return resinCost > 0
+                ? List.of(new ItemParamData(ORIGINAL_RESIN_ID, resinCost))
+                : List.of();
+    }
+
+    @Override
+    public Retcode validatePurchase(Player player, int shopType, ShopInfo goods, int buyCount) {
+        var relics = player.getInventory().getInventoryTab(ItemType.ITEM_RELIQUARY);
+        return buyCount <= relics.getMaxCapacity() - relics.getSize()
+                ? Retcode.RET_SUCC
+                : Retcode.RET_PACK_EXCEED_MAX_WEIGHT;
+    }
+
+    @Override
+    public List<GameItem> createItems(Player player, ShopInfo goodsInfo, int buyCount) {
+        var piece = goods.get(goodsInfo.getGoodsId());
+        if (piece == null) return null;
+        var rolled = new ArrayList<GameItem>(buyCount);
+        for (int i = 0; i < buyCount; i++) rolled.add(roll(player, piece));
+        return rolled;
+    }
+
+    @Override
+    public int cityIdForShop(int shopType) {
+        for (var route : options().regionalShops.entrySet()) {
+            Integer cityId = route.getKey();
+            Integer shopId = route.getValue();
+            if (cityId != null && shopId != null && shopId == shopType) return cityId;
+        }
+        return 0;
+    }
+
     public int getResinCost(Player player, int goodsId) {
         var piece = goods.get(goodsId);
         if (piece == null) return 0;
         int clearAr = highestClearedAr(player, piece, goodsCity.get(goodsId));
-        return resinCost(clearAr, piece.getRankLevel());
+        return options().resinCost(clearAr, piece.getRankLevel());
     }
 
     private int highestClearedAr(Player player, ItemData piece, int cityId) {
@@ -198,59 +256,14 @@ public class ArtifactShop {
         return highest;
     }
 
-    private static int resinCost(int clearAr, int rank) {
-        if (clearAr >= 45)
-            return switch (rank) {
-                case 2 -> 1;
-                case 3 -> 2;
-                case 4 -> 8;
-                case 5 -> 20;
-                default -> 0;
-            };
-        if (clearAr >= 40)
-            return switch (rank) {
-                case 2 -> 1;
-                case 3 -> 2;
-                case 4 -> 10;
-                case 5 -> 50;
-                default -> 0;
-            };
-        if (clearAr >= 35)
-            return switch (rank) {
-                case 2 -> 1;
-                case 3 -> 3;
-                case 4 -> 15;
-                default -> 0;
-            };
-        if (clearAr >= 30)
-            return switch (rank) {
-                case 2 -> 2;
-                case 3 -> 3;
-                case 4 -> 20;
-                default -> 0;
-            };
-        if (clearAr >= 25)
-            return switch (rank) {
-                case 2 -> 2;
-                case 3 -> 5;
-                default -> 0;
-            };
-        if (clearAr >= 22)
-            return switch (rank) {
-                case 2 -> 3;
-                case 3 -> 6;
-                default -> 0;
-            };
-        return 0;
-    }
-
     private static Map<Integer, Set<Integer>> citiesBySet() {
         var out = new HashMap<Integer, Set<Integer>>();
+        var routes = options().regionalShops;
         for (var entry : GameData.getDungeonDropDataMap().int2ObjectEntrySet()) {
             var dungeon = GameData.getDungeonDataMap().get(entry.getIntKey());
             if (dungeon == null
                     || dungeon.getSubType() != DungeonSubType.DUNGEON_SUB_RELIQUARY
-                    || !REGIONAL_SHOPS.containsKey(dungeon.getCityId())) {
+                    || !routes.containsKey(dungeon.getCityId())) {
                 continue;
             }
             for (int setId : artifactSetIds(entry.getValue())) {
@@ -318,10 +331,6 @@ public class ArtifactShop {
         return sets;
     }
 
-    private static int cityIdForShop(int shopType) {
-        return SHOP_CITIES.getOrDefault(shopType, 0);
-    }
-
     public GameItem roll(Player player, ItemData piece) {
         var item = roll(piece);
         int worldLevel = player != null ? player.getWorldLevel() : 0;
@@ -342,19 +351,8 @@ public class ArtifactShop {
     }
 
     static int[] initialEnhancementRange(int worldLevel) {
-        int wl = Math.max(0, Math.min(worldLevel, 9));
-        return switch (wl) {
-            case 0 -> new int[] {0, 0};
-            case 1 -> new int[] {1, 4};
-            case 2 -> new int[] {3, 6};
-            case 3 -> new int[] {5, 8};
-            case 4 -> new int[] {7, 10};
-            case 5 -> new int[] {9, 12};
-            case 6 -> new int[] {11, 14};
-            case 7 -> new int[] {13, 16};
-            case 8 -> new int[] {14, 17};
-            default -> new int[] {15, 18};
-        };
+        var range = options().initialEnhancementRange(worldLevel);
+        return new int[] {range.min, range.max};
     }
 
     private static int rollInitialEnhancementLevel(int worldLevel) {
@@ -377,9 +375,7 @@ public class ArtifactShop {
             if (reqExp <= 0) break;
             totalExp += reqExp;
             level++;
-            if (piece.canAddRelicProp(level)) {
-                upgrades++;
-            }
+            if (piece.canAddRelicProp(level)) upgrades++;
         }
 
         item.addAppendProps(upgrades);
@@ -419,13 +415,13 @@ public class ArtifactShop {
                 && data.getMainPropDepotId() == mainPropDepot(data.getEquipType());
     }
 
-    private static ShopInfo makeGoods(int goodsId, ItemData piece, ArtifactShopOptions options) {
+    private static ShopInfo makeGoods(int goodsId, ItemData piece, int buyLimit) {
         var goods = new ShopInfo();
         goods.setGoodsId(goodsId);
         goods.setGoodsItem(new ItemParamData(piece.getId(), 1));
         goods.setScoin(0);
         goods.setHcoin(0);
-        goods.setBuyLimit(options.buyLimit);
+        goods.setBuyLimit(buyLimit);
         goods.setMinLevel(1);
         goods.setMaxLevel(99);
         goods.setCostItemList(

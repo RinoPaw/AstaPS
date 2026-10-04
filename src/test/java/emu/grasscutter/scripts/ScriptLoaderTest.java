@@ -8,15 +8,7 @@ import org.junit.jupiter.api.Test;
 
 public final class ScriptLoaderTest {
     @Test
-    @DisplayName("require names are parsed from CRLF lines")
-    public void requireWithCarriageReturnIsParsed() {
-        assertEquals(
-                "SeaLampParkour",
-                ScriptLoader.extractRequiredScriptName("require \"SeaLampParkour\"\r"));
-    }
-
-    @Test
-    @DisplayName("surrounding whitespace does not affect require parsing")
+    @DisplayName("surrounding whitespace and CRLF do not affect require parsing")
     public void whitespaceIsIgnored() {
         assertEquals(
                 "CommonConfig",

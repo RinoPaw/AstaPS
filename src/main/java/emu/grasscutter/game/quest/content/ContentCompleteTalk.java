@@ -4,20 +4,19 @@ import static emu.grasscutter.game.quest.enums.QuestContent.QUEST_CONTENT_COMPLE
 
 import emu.grasscutter.data.excels.quest.QuestData;
 import emu.grasscutter.game.quest.*;
-import lombok.val;
 
 @QuestValueContent(QUEST_CONTENT_COMPLETE_TALK)
 public class ContentCompleteTalk extends BaseContent {
     @Override
     public boolean execute(
             GameQuest quest, QuestData.QuestContentCondition condition, String paramStr, int... params) {
-        val talkId = condition.getParam()[0];
-        val checkMainQuest = quest.getOwner().getQuestManager().getMainQuestByTalkId(talkId);
-        if (checkMainQuest == null) {
-            return talkId == params[0];
+        if (params.length == 0 || condition.getParam() == null || condition.getParam().length == 0) {
+            return false;
         }
 
-        val talkData = checkMainQuest.getTalks().get(talkId);
-        return talkData != null;
+        // TalkManager validates the talk and emits COMPLETE_TALK with the talk that just completed.
+        // Match that event directly. Looking at the saved-talk map here made an unrelated later talk
+        // satisfy any active quest whose required talk had happened at some point in the past.
+        return condition.getParam()[0] == params[0];
     }
 }

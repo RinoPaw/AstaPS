@@ -122,7 +122,9 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    testImplementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    // javax.annotation is no longer part of the JDK. Keep the source-level nullability annotations
+    // explicit without packaging them into the server runtime.
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 
     compileOnly 'org.projectlombok:lombok:1.18.48'
     annotationProcessor 'org.projectlombok:lombok:1.18.48'

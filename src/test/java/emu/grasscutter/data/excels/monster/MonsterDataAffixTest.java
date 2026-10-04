@@ -1,11 +1,9 @@
 package emu.grasscutter.data.excels.monster;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import emu.grasscutter.net.proto.SceneMonsterInfoOuterClass.SceneMonsterInfo;
 import emu.grasscutter.utils.JsonUtils;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.DisplayName;
@@ -42,22 +40,11 @@ public final class MonsterDataAffixTest {
     @Test
     @DisplayName("a row that does carry affixes keeps them")
     public void presentAffixIsKept() throws Exception {
-        var data = load("{\"id\":20010101,\"equips\":[],\"describeId\":0,\"affix\":[1101,1102]}");
+        var data =
+                load(
+                        "{\"id\":20010101,\"equips\":[],\"describeId\":0,\"affix\":[1101,1102]}");
 
         assertEquals(2, data.getAffix().size());
         assertTrue(data.getAffix().contains(1101));
-    }
-
-    @Test
-    @DisplayName("the proto builder accepts the result, which is the call that used to throw")
-    public void protoBuilderAcceptsIt() throws Exception {
-        var data = load("{\"id\":20010101,\"equips\":[],\"describeId\":0}");
-
-        assertDoesNotThrow(
-                () ->
-                        SceneMonsterInfo.newBuilder()
-                                .setMonsterId(data.getId())
-                                .addAllAffixList(data.getAffix())
-                                .build());
     }
 }

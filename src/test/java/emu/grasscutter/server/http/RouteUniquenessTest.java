@@ -40,11 +40,13 @@ public final class RouteUniquenessTest {
             Pattern.compile("\\ballRoutes\\s*\\(\\s*routes\\s*,\\s*\"([^\"]+)\"");
 
     @Test
-    @DisplayName("no method and path is registered twice")
+    @DisplayName("route scan finds registrations and none are duplicated")
     public void routesAreUnique() throws IOException {
         Map<String, List<String>> registrations = collectRoutes();
-        var duplicates = new ArrayList<String>();
+        int found = registrations.values().stream().mapToInt(List::size).sum();
+        assertTrue(found > 20, "only found " + found + " routes; the pattern has probably rotted");
 
+        var duplicates = new ArrayList<String>();
         registrations.forEach(
                 (route, files) -> {
                     if (files.size() > 1) duplicates.add(route + " <- " + files);
@@ -54,13 +56,6 @@ public final class RouteUniquenessTest {
                 duplicates.isEmpty(),
                 "These routes are registered more than once, which aborts router setup:\n  "
                         + String.join("\n  ", duplicates));
-    }
-
-    @Test
-    @DisplayName("the scan actually finds routes, so an empty result cannot pass by accident")
-    public void scanFindsRoutes() throws IOException {
-        int found = collectRoutes().values().stream().mapToInt(List::size).sum();
-        assertTrue(found > 20, "only found " + found + " routes; the pattern has probably rotted");
     }
 
     private static Map<String, List<String>> collectRoutes() throws IOException {

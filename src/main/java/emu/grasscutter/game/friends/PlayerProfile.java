@@ -33,8 +33,7 @@ public class PlayerProfile {
     public PlayerProfile() {}
 
     public PlayerProfile(Player player) {
-        this.uid = player.getUid();
-        this.syncWithCharacter(player);
+        this.copyFromCharacter(player);
     }
 
     @Nullable public Player getPlayer() {
@@ -55,7 +54,10 @@ public class PlayerProfile {
         if (player == null) {
             return;
         }
+        this.copyFromCharacter(player);
+    }
 
+    private void copyFromCharacter(Player player) {
         this.uid = player.getUid();
         this.name = player.getNickname();
         this.avatarId = player.getHeadImage();
@@ -70,6 +72,6 @@ public class PlayerProfile {
                         .orElse(
                                 FriendEnterHomeOptionOuterClass.FriendEnterHomeOption
                                         .FriendEnterHomeOption_REFUSE_VALUE);
-        this.updateLastActiveTime();
+        this.lastActiveTime = Utils.getCurrentSeconds();
     }
 }

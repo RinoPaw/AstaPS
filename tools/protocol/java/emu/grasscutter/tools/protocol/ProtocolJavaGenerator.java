@@ -54,8 +54,13 @@ public final class ProtocolJavaGenerator {
                     .filter(path -> path.getFileName().toString().endsWith(".java"))
                     .count();
         }
-        if (javaFileCount == 0) {
-            throw new IllegalStateException("protoc generated no Java sources in " + javaOut);
+        if (javaFileCount != protocolFiles.size()) {
+            throw new IllegalStateException(
+                    "protoc generated "
+                            + javaFileCount
+                            + " Java files from "
+                            + protocolFiles.size()
+                            + " protocol descriptors");
         }
 
         System.out.printf(

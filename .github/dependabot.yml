@@ -5,9 +5,29 @@ updates:
     schedule:
       interval: monthly
     groups:
-      gradle-dependencies:
+      networking:
         patterns:
-          - "*"
+          - "io.netty:*"
+          - "org.jline:*"
+          - "net.java.dev.jna:*"
+          - "org.java-websocket:*"
+      serialization:
+        patterns:
+          - "com.fasterxml.jackson*:*"
+          - "com.google.code.gson:*"
+          - "com.google.protobuf:*"
+      logging:
+        patterns:
+          - "org.slf4j:*"
+          - "ch.qos.logback:*"
+      testing:
+        patterns:
+          - "org.junit*:*"
+          - "com.squareup.okhttp3:*"
+      lombok:
+        patterns:
+          - "org.projectlombok:*"
+          - "io.freefair.lombok"
     open-pull-requests-limit: 5
 
   - package-ecosystem: github-actions

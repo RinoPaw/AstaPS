@@ -103,6 +103,9 @@ public final class InvestigationMonsterDropHelper {
                         .getAsJsonArray();
         for (JsonElement el : arr) {
             JsonObject o = el.getAsJsonObject();
+            if (!o.has("id")) {
+                continue;
+            }
             int id = o.get("id").getAsInt();
             if (!o.has("previewItems")) {
                 continue;

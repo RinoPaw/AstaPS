@@ -1,0 +1,73 @@
+name: Protocol generation
+
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "protocol/**"
+      - "tools/protocol/**"
+      - "gradle/protocol-generation.gradle"
+      - "build.gradle"
+      - ".github/workflows/protocol-generation.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: protocol-generation-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Generate, build, and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Generate, build, and test
+        run: >-
+          ./gradlew generateProtocolJava jar test
+          --build-cache
+          -PskipHandbook=1
+          -PjarFilename=grasscutter
+          -PexcludeTags=integration
+          -Dorg.gradle.jvmargs=-Xmx4g
+
+      - name: Verify generated protocol set
+        shell: bash
+        run: |
+          count="$(find build/generated/sources/protocol/7.1/java/main -name '*.java' -type f | wc -l)"
+          test "$count" -eq 2059
+          echo "Generated $count protocol Java files."
+          sha256sum protocol/7.1/protocol.desc
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: protocol-test-results
+          path: build/reports/tests/test
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload jar
+        if: success()
+        uses: actions/upload-artifact@v7
+        with:
+          name: protocol-grasscutter
+          path: grasscutter.jar
+          retention-days: 14

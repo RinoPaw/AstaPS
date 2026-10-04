@@ -41,6 +41,7 @@ public class GameMainQuest {
     @Deprecated // Morphia only. Do not use.
     public GameMainQuest() {}
 
+    @SuppressWarnings("this-escape")
     public GameMainQuest(Player player, int parentQuestId) {
         this.owner = player;
         this.ownerUid = player.getUid();
@@ -57,6 +58,7 @@ public class GameMainQuest {
         addAllChildQuests();
     }
 
+    @SuppressWarnings("this-escape")
     private void addAllChildQuests() {
         List<Integer> subQuestIds =
                 Arrays.stream(GameData.getMainQuestDataMap().get(this.parentQuestId).getSubQuests())

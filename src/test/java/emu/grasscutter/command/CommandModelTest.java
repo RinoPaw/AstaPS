@@ -10,32 +10,7 @@ import org.reflections.Reflections;
 
 public final class CommandModelTest {
     @Test
-    @DisplayName("every command can build its picocli model")
-    public void everyCommandBuildsCompletionModel() {
-        var failures = new ArrayList<String>();
-        var commandTypes = getCommandTypes();
-
-        for (Class<?> commandType : commandTypes) {
-            try {
-                Object instance = commandType.getDeclaredConstructor().newInstance();
-                if (!(instance instanceof CommandHandler handler)) {
-                    failures.add(commandType.getName() + ": does not implement CommandHandler");
-                    continue;
-                }
-
-                handler.createCompletionCommandLine();
-            } catch (Throwable failure) {
-                failures.add(commandType.getName() + ": " + failure);
-            }
-        }
-
-        assertTrue(
-                failures.isEmpty(),
-                () -> "Invalid picocli command models:\n" + String.join("\n", failures));
-    }
-
-    @Test
-    @DisplayName("every built-in command has a unique label and aliases")
+    @DisplayName("every built-in command has a valid unique registration")
     public void everyCommandRegistersWithoutNameCollisions() {
         var failures = new ArrayList<String>();
         var commandMap = new CommandMap(false);

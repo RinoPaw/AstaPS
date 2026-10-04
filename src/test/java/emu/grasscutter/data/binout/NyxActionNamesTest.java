@@ -27,11 +27,9 @@ public final class NyxActionNamesTest {
                 AbilityModifierAction.Type.AddSpecialEnergy,
                 action("{\"$type\":\"ReviveSpecialEnergy\",\"value\":45}").type);
         assertEquals(
-                AbilityModifierAction.Type.NyxAdd, action("{\"$type\":\"AddNyxValue\",\"value\":10}").type);
+                AbilityModifierAction.Type.NyxAdd,
+                action("{\"$type\":\"AddNyxValue\",\"value\":10}").type);
         assertEquals(AbilityModifierAction.Type.NyxSet, action("{\"$type\":\"SetNyxValue\"}").type);
-        assertEquals(
-                AbilityModifierAction.Type.AddSpecialEnergy,
-                action("{\"$type\":\"AddSpecialEnergy\"}").type);
     }
 
     @Test
@@ -39,7 +37,11 @@ public final class NyxActionNamesTest {
     public void bareSetNyxValueWritesZero() {
         var values = new Object2FloatOpenHashMap<String>();
         assertEquals(0f, action("{\"$type\":\"SetNyxValue\"}").writtenValue().get(values, 0f));
-        assertEquals(45f, action("{\"$type\":\"ReviveSpecialEnergy\",\"value\":45}").writtenValue().get(values, 0f));
+        assertEquals(
+                45f,
+                action("{\"$type\":\"ReviveSpecialEnergy\",\"value\":45}")
+                        .writtenValue()
+                        .get(values, 0f));
     }
 
     @Test

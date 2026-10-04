@@ -63,31 +63,30 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'lib', include: ['*.jar'])
 
-    implementation 'it.unimi.dsi:fastutil:8.5.8'
+    implementation 'it.unimi.dsi:fastutil:8.5.19'
 
-    implementation 'org.slf4j:slf4j-api:2.0.7'
-    implementation 'ch.qos.logback:logback-core:1.4.7'
-    implementation 'ch.qos.logback:logback-classic:1.4.7'
+    implementation 'org.slf4j:slf4j-api:2.0.20'
+    implementation 'ch.qos.logback:logback-core:1.5.36'
+    implementation 'ch.qos.logback:logback-classic:1.5.36'
 
-    // Picocli 4.7.7 is built against JLine 3.29.0; keep the bundle and terminal provider aligned.
-    implementation 'org.jline:jline:3.29.0'
-    implementation 'org.jline:jline-terminal-jna:3.29.0'
+    implementation 'org.jline:jline:3.30.7'
+    implementation 'org.jline:jline-terminal-jna:3.30.7'
     implementation 'info.picocli:picocli:4.7.7'
     implementation 'info.picocli:picocli-shell-jline3:4.7.7'
-    implementation 'net.java.dev.jna:jna:5.10.0'
+    implementation 'net.java.dev.jna:jna:5.19.1'
 
-    implementation 'io.netty:netty-common:4.1.86.Final'
-    implementation 'io.netty:netty-handler:4.1.86.Final'
-    implementation 'io.netty:netty-transport-native-epoll:4.1.86.Final'
-    implementation 'io.netty:netty-transport-native-kqueue:4.1.86.Final'
+    implementation platform('io.netty:netty-bom:4.1.138.Final')
+    implementation 'io.netty:netty-common'
+    implementation 'io.netty:netty-handler'
+    implementation 'io.netty:netty-transport-native-epoll'
+    implementation 'io.netty:netty-transport-native-kqueue'
 
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.14.0'
     implementation 'com.google.protobuf:protobuf-java:3.19.6'
     implementation 'com.github.os72:protobuf-dynamic:1.0.1'
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
-    implementation platform('com.fasterxml.jackson:jackson-bom:2.14.0')
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+    implementation platform('com.fasterxml.jackson:jackson-bom:2.22.3')
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 
     implementation 'org.reflections:reflections:0.10.2'
     implementation 'com.esotericsoftware:reflectasm:1.11.9'
@@ -103,21 +102,22 @@ dependencies {
     implementation 'org.luaj:luaj-jse:3.0.1'
 
     implementation 'io.javalin:javalin:5.5.0'
-    implementation 'org.java-websocket:Java-WebSocket:1.5.2'
+    implementation 'org.java-websocket:Java-WebSocket:1.6.0'
 
     implementation 'net.openhft:zero-allocation-hashing:0.26ea0'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.8.2'
+    testImplementation platform('org.junit:junit-bom:5.14.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    testImplementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    testImplementation 'com.squareup.okhttp3:okhttp:4.12.0'
 
-    compileOnly 'org.projectlombok:lombok:1.18.30'
-    annotationProcessor 'org.projectlombok:lombok:1.18.30'
-    testCompileOnly 'org.projectlombok:lombok:1.18.30'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+    compileOnly 'org.projectlombok:lombok:1.18.48'
+    annotationProcessor 'org.projectlombok:lombok:1.18.48'
+    testCompileOnly 'org.projectlombok:lombok:1.18.48'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.48'
 }
 
 configurations.configureEach {

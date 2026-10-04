@@ -1446,9 +1446,10 @@ public class Player implements PlayerHook, FieldFetch {
         runner.submit(this::loadBattlePassManager);
         runner.submit(this::loadDailyTaskManager);
 
-        // This runs on the one thread that handles every player's packets. Waiting on the loaded
-        // flags forever meant a loader that threw - its exception swallowed by the pool - or a
-        // pool full of stuck tasks froze the whole server. Fail this one login instead.
+        // With asyncLogin off this runs on the one thread that handles every player's packets.
+        // Waiting on the loaded flags forever meant a loader that threw - its exception swallowed
+        // by the pool - or a pool full of stuck tasks froze the whole server. Fail this one login
+        // instead.
         awaitLoad("avatars", avatarsLoad);
         awaitLoad("inventory", inventoryLoad);
 

@@ -280,6 +280,12 @@ public class ConfigContainer {
         public boolean enableScriptInBigWorld = true;
         public boolean enableConsole = true;
 
+        /**
+         * Runs the database half of logins off the thread that handles every player's packets, so
+         * one slow login does not stall everyone. Turn off to go back to the old inline login.
+         */
+        public boolean asyncLogin = true;
+
         /*
          * How often the world is ticked, in milliseconds.
          *

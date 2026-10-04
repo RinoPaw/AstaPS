@@ -8,6 +8,7 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.event.game.PlayerCreationEvent;
 import emu.grasscutter.server.game.GameSession;
+import emu.grasscutter.server.game.GameSessionManager;
 import emu.grasscutter.server.game.GameSession.SessionState;
 import emu.grasscutter.net.proto.GetPlayerTokenReqOuterClass.GetPlayerTokenReq;
 import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
@@ -41,6 +42,78 @@ public class HandlerGetPlayerTokenReq extends PacketHandler {
     private static final int F_KEY_ID = GetPlayerTokenReq.KEY_ID_FIELD_NUMBER;
     private static final int F_CLIENT_RAND_KEY = GetPlayerTokenReq.CLIENT_RAND_KEY_FIELD_NUMBER;
 
+    /**
+     * Sessions with a login under way. The client may send GetPlayerTokenReq again while one is,
+     * and the session stays WAITING_FOR_TOKEN until it ends, so without this a resend would start
+     * a second login for the same session alongside the first.
+     */
+    private static final java.util.Set<GameSession> LOGGING_IN =
+            java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+    private static final java.util.concurrent.atomic.AtomicInteger LOGIN_THREADS =
+            new java.util.concurrent.atomic.AtomicInteger();
+
+    /**
+     * Runs the database half of logins: the token check, the player lookup, the IP-ban check and
+     * the avatar and inventory load. Every player's packets are handled one at a time on the logic
+     * thread, so doing those there made each login stall everyone for its database round trips -
+     * after a restart, a few dozen reconnecting clients queued behind each other until the last
+     * ones timed out, reconnected and queued again. Anything that touches game state or sends to
+     * the client still goes back to the logic thread.
+     *
+     * <p>Separate from the pool {@link Player#loadFromDatabase} submits its loads to, which this
+     * waits on: sharing it would let a burst of logins fill every thread with waiters.
+     */
+    private static final java.util.concurrent.ExecutorService LOGIN_EXECUTOR =
+            java.util.concurrent.Executors.newFixedThreadPool(
+                    4,
+                    runnable -> {
+                        var thread = new Thread(runnable, "login-" + LOGIN_THREADS.incrementAndGet());
+                        thread.setDaemon(true);
+                        return thread;
+                    });
+
+    /** The login steps, run either across the login and logic threads or inline (asyncLogin off). */
+    private record Login(GameSession session, boolean async, String accountId, String clientRandKey, int keyId) {
+        /** Runs a step that only does database work. */
+        void offLogic(Runnable step) {
+            if (this.async) LOGIN_EXECUTOR.execute(() -> this.guarded(step));
+            else this.guarded(step);
+        }
+
+        /** Runs a step that touches game state or the client. */
+        void onLogic(Runnable step) {
+            if (this.async) GameSessionManager.getLogicThread().execute(() -> this.guarded(step));
+            else this.guarded(step);
+        }
+
+        /** Skips steps for a client that has gone, and drops the client if a step throws. */
+        private void guarded(Runnable step) {
+            if (!this.session.isConnected()) {
+                this.done();
+                return;
+            }
+            try {
+                step.run();
+            } catch (Throwable t) {
+                Grasscutter.getLogger()
+                        .error("Login for account '{}' from {} failed.", this.accountId, this.session.getAddress(), t);
+                this.close();
+            }
+        }
+
+        /** Ends this login, letting the session start another. */
+        void done() {
+            LOGGING_IN.remove(this.session);
+        }
+
+        void close() {
+            this.done();
+            if (this.async) GameSessionManager.getLogicThread().execute(this.session::close);
+            else this.session.close();
+        }
+    }
+
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         var accountId = ProtoRead.string(payload, F_ACCOUNT_UID);
@@ -48,28 +121,46 @@ public class HandlerGetPlayerTokenReq extends PacketHandler {
         var clientRandKey = ProtoRead.string(payload, F_CLIENT_RAND_KEY);
         var keyId = (int) ProtoRead.varint(payload, F_KEY_ID);
 
-        var account = DispatchUtils.authenticate(accountId, accountToken);
+        if (!LOGGING_IN.add(session)) return;
+
+        var login =
+                new Login(
+                        session, Grasscutter.getConfig().server.game.asyncLogin, accountId, clientRandKey, keyId);
+        login.offLogic(() -> authenticate(login, accountToken));
+    }
+
+    /** Database: checks the token. */
+    private static void authenticate(Login login, String accountToken) {
+        var session = login.session();
+        var account = DispatchUtils.authenticate(login.accountId(), accountToken);
 
         if (account == null && !DebugConstants.ACCEPT_CLIENT_TOKEN) {
             Grasscutter.getLogger()
                     .warn(
                             "Token check failed for account '{}' from {} - closing the session.",
-                            accountId,
+                            login.accountId(),
                             session.getAddress());
-            session.close();
+            login.close();
             return;
         } else if (account == null && DebugConstants.ACCEPT_CLIENT_TOKEN) {
-            account = DispatchUtils.getAccountById(accountId);
+            account = DispatchUtils.getAccountById(login.accountId());
             if (account == null) {
-                session.close();
+                login.close();
                 return;
             }
         }
 
+        var authenticated = account;
+        login.onLogic(() -> takeOver(login, authenticated));
+    }
+
+    /** Game state: replaces an earlier session of the same account and checks the player limit. */
+    private static void takeOver(Login login, emu.grasscutter.game.Account account) {
+        var session = login.session();
         session.setAccount(account);
 
         boolean kicked = false;
-        var exists = Grasscutter.getGameServer().getPlayerByAccountId(accountId);
+        var exists = Grasscutter.getGameServer().getPlayerByAccountId(login.accountId());
         if (exists != null) {
             var existsSession = exists.getSession();
             if (existsSession != session) {
@@ -85,7 +176,7 @@ public class HandlerGetPlayerTokenReq extends PacketHandler {
 
             if (ACCOUNT.maxPlayer > -1
                 && Grasscutter.getGameServer().getPlayers().size() >= ACCOUNT.maxPlayer) {
-                session.close();
+                login.close();
                 return;
             }
         }
@@ -93,19 +184,27 @@ public class HandlerGetPlayerTokenReq extends PacketHandler {
         var event = new PlayerCreationEvent(session, Player.class);
         event.call();
 
-        var player = DatabaseHelper.getPlayerByAccount(account, event.getPlayerClass());
+        var playerClass = event.getPlayerClass();
+        login.offLogic(() -> findPlayer(login, playerClass));
+    }
+
+    /** Database: finds or creates the player and applies an IP ban. */
+    private static void findPlayer(Login login, Class<? extends Player> playerClass) {
+        var session = login.session();
+        var player = DatabaseHelper.getPlayerByAccount(session.getAccount(), playerClass);
 
         if (player == null) {
             var nextPlayerUid =
                 DatabaseHelper.getNextPlayerId(session.getAccount().getReservedPlayerUid());
 
-            player =
-                event.getPlayerClass().getDeclaredConstructor(GameSession.class).newInstance(session);
+            try {
+                player = playerClass.getDeclaredConstructor(GameSession.class).newInstance(session);
+            } catch (ReflectiveOperationException e) {
+                throw new IllegalStateException("Could not create a " + playerClass.getName(), e);
+            }
 
             DatabaseHelper.generatePlayerUid(player, nextPlayerUid);
         }
-
-        session.setPlayer(player);
 
         // An IP ban takes the account with it: without that, the same person just registers again
         // from the same address. The account ban is what the client is actually told about, since
@@ -126,6 +225,15 @@ public class HandlerGetPlayerTokenReq extends PacketHandler {
             }
         }
 
+        var found = player;
+        login.onLogic(() -> admit(login, found));
+    }
+
+    /** Game state: turns the login away if banned, full or overloaded, before loading anything. */
+    private static void admit(Login login, Player player) {
+        var session = login.session();
+        session.setPlayer(player);
+
         if (session.getAccount().isBanned()) {
             session.setState(SessionState.ACCOUNT_BANNED);
             String banReason = session.getAccount().getBanReason();
@@ -135,6 +243,7 @@ public class HandlerGetPlayerTokenReq extends PacketHandler {
             session.send(
                 new PacketGetPlayerTokenRsp(
                     session, 21, banReason, session.getAccount().getBanEndTime()));
+            login.done();
             return;
         }
 
@@ -147,6 +256,7 @@ public class HandlerGetPlayerTokenReq extends PacketHandler {
                 new PacketGetPlayerTokenRsp(session, Retcode.RET_MP_ALLOW_ENTER_PLAYER_FULL));
             Grasscutter.getLogger()
                 .info("Refused uid {}: the server is full.", session.getPlayer().getUid());
+            login.done();
             return;
         }
 
@@ -169,17 +279,31 @@ public class HandlerGetPlayerTokenReq extends PacketHandler {
                     DatabaseHelper.ITEM_QUEUE_CAPACITY,
                     queueSize(DatabaseHelper.getEventExecutorGroup()),
                     DatabaseHelper.GROUP_QUEUE_CAPACITY);
+            login.done();
             return;
         }
 
+        login.offLogic(() -> load(login, player));
+    }
+
+    /** Database: loads the player's avatars, inventory and the rest. */
+    private static void load(Login login, Player player) {
         try {
             player.loadFromDatabase();
         } catch (IllegalStateException e) {
             // Load failed or timed out: drop this one client rather than leave it hanging.
             Grasscutter.getLogger().error("Refused uid {}: {}", player.getUid(), e.getMessage(), e.getCause());
-            session.close();
+            login.close();
             return;
         }
+        login.onLogic(() -> respond(login));
+    }
+
+    /** Client: answers with the session key. */
+    private static void respond(Login login) {
+        var session = login.session();
+        var keyId = login.keyId();
+        var clientRandKey = login.clientRandKey();
 
         if (Grasscutter.getConfig().server.game.useXorEncryption) {
             session.setState(SessionState.WAITING_FOR_LOGIN);
@@ -237,6 +361,7 @@ public class HandlerGetPlayerTokenReq extends PacketHandler {
             session.setState(SessionState.WAITING_FOR_LOGIN);
             session.send(new PacketGetPlayerTokenRsp(session, keyId));
         }
+        login.done();
     }
 
     /**

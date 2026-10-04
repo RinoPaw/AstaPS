@@ -45,6 +45,11 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
+      # Some unit tests touch Grasscutter's static services. The runtime resources themselves are not
+      # needed, but startup validation requires the two resource roots to exist.
+      - name: Prepare test resource layout
+        run: mkdir -p resources/BinOutput resources/ExcelBinOutput
+
       # The repository predates the current Spotless rules, so a whole-tree formatting check would
       # fail on hundreds of untouched legacy files. Keep CI focused on executable correctness here;
       # formatting can be applied deliberately without creating repository-wide churn.

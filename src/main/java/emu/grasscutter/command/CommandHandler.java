@@ -6,11 +6,14 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.event.game.ReceiveCommandFeedbackEvent;
 
-/** Shared command-output helpers. Command execution is owned exclusively by picocli. */
-public final class CommandHandler {
-    private CommandHandler() {}
-
-    public static void sendMessage(Player player, String message) {
+/**
+ * Unified contract for built-in commands.
+ *
+ * <p>Command parsing is picocli-based. The static output helpers stay here while the command
+ * migration finishes so existing command infrastructure can share the same feedback path.
+ */
+public interface CommandHandler extends PicocliCommandHandler {
+    static void sendMessage(Player player, String message) {
         ReceiveCommandFeedbackEvent event = new ReceiveCommandFeedbackEvent(player, message);
         event.call();
         if (event.isCanceled()) return;
@@ -22,7 +25,7 @@ public final class CommandHandler {
         }
     }
 
-    public static void sendTranslatedMessage(Player player, String messageKey, Object... args) {
+    static void sendTranslatedMessage(Player player, String messageKey, Object... args) {
         sendMessage(player, translate(player, messageKey, args));
     }
 }

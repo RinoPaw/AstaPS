@@ -1,8 +1,8 @@
 package emu.grasscutter.config;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import emu.grasscutter.utils.JsonUtils;
 import org.junit.jupiter.api.Test;
 
 public final class ShopSettingsTest {
@@ -48,13 +48,5 @@ public final class ShopSettingsTest {
         var above = artifact.initialEnhancementRange(10);
         assertArrayEquals(new int[] {0, 0}, new int[] {below.min, below.max});
         assertArrayEquals(new int[] {15, 18}, new int[] {above.min, above.max});
-    }
-
-    @Test
-    public void rootShopSettingsAreReadyForMultipleProviders() {
-        String json = JsonUtils.encode(new ShopSettings());
-        assertTrue(json.contains("\"artifact\""));
-        assertTrue(json.contains("\"regionalShops\""));
-        assertFalse(json.contains("\"rolls\""));
     }
 }

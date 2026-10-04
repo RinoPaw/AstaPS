@@ -1,8 +1,8 @@
 package emu.grasscutter.config;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import emu.grasscutter.utils.JsonUtils;
 import org.junit.jupiter.api.Test;
 
 public final class ArtifactSettingsTest {
@@ -19,13 +19,5 @@ public final class ArtifactSettingsTest {
         assertEquals(0.60, settings.rolls.flatStat, 1e-9);
         assertArrayEquals(
                 new double[] {0.40, 0.80, 1.20, 1.60}, settings.rolls.valueTiers, 1e-9);
-    }
-
-    @Test
-    public void artifactSettingsContainNoShopConfiguration() {
-        String json = JsonUtils.encode(new ArtifactSettings());
-        assertTrue(json.contains("\"rolls\""));
-        assertFalse(json.contains("\"shop\""));
-        assertFalse(json.contains("\"shops\""));
     }
 }

@@ -171,12 +171,7 @@ jar {
 }
 
 test {
-    useJUnitPlatform {
-        // GrasscutterTest boots a real server and needs MongoDB plus the resources pack.
-        if (project.hasProperty('excludeTags')) {
-            excludeTags project.property('excludeTags').split(',')
-        }
-    }
+    useJUnitPlatform()
     setMaxHeapSize('4G')
 }
 

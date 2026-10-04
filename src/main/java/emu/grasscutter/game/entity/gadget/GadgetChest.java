@@ -10,7 +10,6 @@ import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.entity.gadget.chest.BossChestInteractHandler;
 import emu.grasscutter.game.entity.gadget.chest.ChestInteractHandler;
-import emu.grasscutter.game.entity.gadget.chest.WorldChestLootHelper;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
@@ -39,8 +38,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * World chests + world-boss trounce blossoms. Normal chests use the original ChestDrop/DropTable
- * path by default; explicit game.json reward tier objects can replace a chest tier.
+ * World chests + world-boss trounce blossoms. Normal chests resolve rewards through their original
+ * ChestDrop/DropTable metadata; configured chest rates are applied only after that resolution.
  */
 public class GadgetChest extends GadgetContent {
     private static final int CHEST_OPENED_STATE = 102;
@@ -137,8 +136,8 @@ public class GadgetChest extends GadgetContent {
                 return false;
             }
 
-            boolean status = WorldChestLootHelper.grantReplacement(player, getGadget());
-            if (!status && meta != null) {
+            boolean status = false;
+            if (meta != null) {
                 if (meta.drop_tag != null) {
                     status = dropSystem.handleChestDrop(meta.drop_tag, meta.level, getGadget());
                 } else if (meta.chest_drop_id != 0) {
@@ -185,14 +184,10 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            if (WorldChestLootHelper.grantReplacement(player, getGadget())) {
-                finishOpen(player, null);
-            } else {
-                Grasscutter.getLogger()
-                        .warn(
-                                "No original drop metadata or legacy handler for chest {}",
-                                getGadget().getGadgetData().getJsonName());
-            }
+            Grasscutter.getLogger()
+                    .warn(
+                            "No original drop metadata or legacy handler for chest {}",
+                            getGadget().getGadgetData().getJsonName());
             return false;
         }
 
@@ -214,8 +209,6 @@ public class GadgetChest extends GadgetContent {
                             player,
                             req.getResinCostType()
                                     == ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE);
-        } else if (WorldChestLootHelper.grantReplacement(player, getGadget())) {
-            success = true;
         } else {
             success = handler.onInteract(this, player);
         }

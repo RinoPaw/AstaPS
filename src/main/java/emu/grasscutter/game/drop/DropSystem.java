@@ -8,6 +8,7 @@ import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.inventory.*;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
+import emu.grasscutter.game.reward.ChestRewardScaler;
 import emu.grasscutter.game.reward.RewardScaler;
 import emu.grasscutter.scripts.data.SceneMonster;
 import emu.grasscutter.server.game.*;
@@ -266,7 +267,7 @@ public final class DropSystem extends BaseGameSystem {
         var dropData = dropTable.get(chestDropId);
         List<GameItem> items = new ArrayList<>();
         processDrop(dropData, dropCount, items);
-        RewardScaler.scaleItems(items, 1.0);
+        ChestRewardScaler.scaleItems(items);
         if (dropData.isFallToGround()) {
             dropItems(items, ActionReason.OpenChest, bornFrom, bornFrom.getWorld().getHost(), false);
         } else {

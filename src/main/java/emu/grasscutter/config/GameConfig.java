@@ -12,7 +12,7 @@ import java.nio.file.StandardCopyOption;
 
 /** Player-facing and gameplay configuration stored directly in {@code game.json}. */
 public final class GameConfig {
-    private static final int CURRENT_VERSION = 5;
+    private static final int CURRENT_VERSION = 6;
     private static final Path FILE = Path.of("game.json");
 
     private static volatile GameConfig current;
@@ -348,11 +348,12 @@ public final class GameConfig {
 
         JsonObject chests = object(rewards, "chests");
         if (chests == null) return;
-        for (String tier : new String[] {"common", "exquisite", "precious", "luxurious"}) {
-            JsonObject reward = object(chests, tier);
-            if (reward != null && reward.has("enabled")) {
+        for (String removed : new String[] {"common", "exquisite", "precious", "luxurious"}) {
+            if (chests.has(removed)) {
                 throw new IllegalArgumentException(
-                        "game.json rewards.chests." + tier + " contains removed field 'enabled'.");
+                        "game.json rewards.chests contains removed tier replacement field '"
+                                + removed
+                                + "'. Use chest item multipliers instead.");
             }
         }
     }
@@ -442,39 +443,28 @@ public final class GameConfig {
     }
 
     public static final class Rewards {
-        public float adventureExp = 1.5f;
-        public float mora = 2.0f;
+        public float adventureExp = 1.0f;
+        public float mora = 1.0f;
         public LeyLineRates leyLines = new LeyLineRates();
-        public UnlockReward waypoint = new UnlockReward(5, 10, 0, 0, 0);
+        public UnlockReward waypoint = new UnlockReward(5, 50, 0, 0, 0);
         public UnlockReward statue = new UnlockReward(5, 50, 0, 0, 0);
-        public ChestRewards chests = new ChestRewards();
+        public ChestRates chests = new ChestRates();
 
         private void normalize() {
             if (leyLines == null) leyLines = new LeyLineRates();
-            if (waypoint == null) waypoint = new UnlockReward(5, 10, 0, 0, 0);
+            if (waypoint == null) waypoint = new UnlockReward(5, 50, 0, 0, 0);
             if (statue == null) statue = new UnlockReward(5, 50, 0, 0, 0);
-            if (chests == null) chests = new ChestRewards();
+            if (chests == null) chests = new ChestRates();
         }
 
         public UnlockReward unlock(boolean statuePoint) {
             return statuePoint ? statue : waypoint;
         }
-
-        public ChestReward chest(String tier) {
-            if (tier == null || chests == null) return null;
-            return switch (tier) {
-                case "COMMON" -> chests.common;
-                case "EXQUISITE" -> chests.exquisite;
-                case "PRECIOUS" -> chests.precious;
-                case "LUXURIOUS" -> chests.luxurious;
-                default -> null;
-            };
-        }
     }
 
     public static final class LeyLineRates {
-        public float wealth = 2.0f;
-        public float revelation = 2.0f;
+        public float wealth = 1.0f;
+        public float revelation = 1.0f;
     }
 
     public static final class UnlockReward {
@@ -500,24 +490,12 @@ public final class GameConfig {
         }
     }
 
-    public static final class ChestRewards {
-        public ChestReward common;
-        public ChestReward exquisite;
-        public ChestReward precious;
-        public ChestReward luxurious;
-    }
-
-    /** Presence of a tier object replaces the original drop table for that chest tier. */
-    public static final class ChestReward {
-        public int primogems;
-        public int adventureExp;
-        public int sigil;
-        public int mora;
-        public int enhancementOre;
-        public int fineEnhancementOre;
-        public int mysticEnhancementOre;
-        public int wanderersAdvice;
-        public int adventurersExperience;
-        public int herosWit;
+    /** Multipliers applied only after the original chest drop table has produced its reward items. */
+    public static final class ChestRates {
+        public float primogems = 1.0f;
+        public float mora = 1.0f;
+        public float artifacts = 1.0f;
+        public float weapons = 1.0f;
+        public float expBooks = 1.0f;
     }
 }

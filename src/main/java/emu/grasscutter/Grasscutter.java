@@ -276,7 +276,7 @@ public final class Grasscutter {
      * Methods for the configuration system component.
      */
 
-    /** Attempts to load the configuration from a file. */
+    /** Attempts to load configuration from a file. */
     public static void loadConfig() {
         // Check if config.json exists. If not, we generate a new config.
         if (!configFile.exists()) {
@@ -340,7 +340,11 @@ public final class Grasscutter {
                 }
             }
 
-            consoleLineReader = LineReaderBuilder.builder().terminal(terminal).build();
+            consoleLineReader =
+                    LineReaderBuilder.builder()
+                            .terminal(terminal)
+                            .completer(new ConsoleCommandCompleter())
+                            .build();
         }
 
         return consoleLineReader;
@@ -370,11 +374,12 @@ public final class Grasscutter {
             logger.info(translate("messages.status.done"));
         }
 
+        LineReader console = getConsole();
         String input = null;
         var isLastInterrupted = false;
         while (config.server.game.enableConsole) {
             try {
-                input = consoleLineReader.readLine("> ");
+                input = console.readLine("> ");
             } catch (UserInterruptException e) {
                 if (!isLastInterrupted) {
                     isLastInterrupted = true;

@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
@@ -102,6 +103,34 @@ public final class CommandMapParsingTest {
         map.unregisterCommand("probe");
         assertFalse(map.getCommandLine().getSubcommands().containsKey("probe"));
         assertFalse(map.getCommandLine().getSubcommands().containsKey("p"));
+    }
+
+    @Test
+    public void batchRegistrationBuildsEachCompletionModelOnce() {
+        var map = new CommandMap(false);
+        var first = new BatchFirstCommand();
+        var second = new BatchSecondCommand();
+
+        map.registerCommands(List.of(first, second));
+
+        assertEquals(1, first.completionBuilds.get());
+        assertEquals(1, second.completionBuilds.get());
+        assertSame(first, map.getHandler("batch-first"));
+        assertSame(second, map.getHandler("batch-second"));
+    }
+
+    @Test
+    public void batchRegistrationRollsBackOnCollision() {
+        var map = new CommandMap(false);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> map.registerCommands(List.of(new ProbeCommand(), new AliasCollisionCommand())));
+
+        assertNull(map.getHandler("probe"));
+        assertNull(map.getHandler("other"));
+        assertFalse(map.getCommandLine().getSubcommands().containsKey("probe"));
+        assertFalse(map.getCommandLine().getSubcommands().containsKey("other"));
     }
 
     @Test
@@ -210,6 +239,32 @@ public final class CommandMapParsingTest {
         public CommandLine createCommandLine(
                 emu.grasscutter.game.player.Player sender,
                 emu.grasscutter.game.player.Player targetPlayer) {
+            return new CommandLine(CommandLine.Model.CommandSpec.create());
+        }
+    }
+
+    @Command(label = "batch-first", targetRequirement = Command.TargetRequirement.NONE)
+    private static final class BatchFirstCommand implements CommandHandler {
+        private final AtomicInteger completionBuilds = new AtomicInteger();
+
+        @Override
+        public CommandLine createCommandLine(
+                emu.grasscutter.game.player.Player sender,
+                emu.grasscutter.game.player.Player targetPlayer) {
+            if (sender == null && targetPlayer == null) this.completionBuilds.incrementAndGet();
+            return new CommandLine(CommandLine.Model.CommandSpec.create());
+        }
+    }
+
+    @Command(label = "batch-second", targetRequirement = Command.TargetRequirement.NONE)
+    private static final class BatchSecondCommand implements CommandHandler {
+        private final AtomicInteger completionBuilds = new AtomicInteger();
+
+        @Override
+        public CommandLine createCommandLine(
+                emu.grasscutter.game.player.Player sender,
+                emu.grasscutter.game.player.Player targetPlayer) {
+            if (sender == null && targetPlayer == null) this.completionBuilds.incrementAndGet();
             return new CommandLine(CommandLine.Model.CommandSpec.create());
         }
     }

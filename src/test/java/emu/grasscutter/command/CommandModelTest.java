@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
 
-public final class PicocliCommandModelTest {
+public final class CommandModelTest {
     @Test
     @DisplayName("every command can build its picocli model")
     public void everyCommandBuildsCompletionModel() {

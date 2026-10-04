@@ -1,5 +1,6 @@
 package emu.grasscutter.command;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
@@ -11,29 +12,31 @@ import org.jline.reader.ParsedLine;
 
 /** Completes server-console command labels and aliases. */
 public final class ConsoleCommandCompleter implements Completer {
-    private final Supplier<CommandMap> commandMapSupplier;
+    private final Supplier<? extends Collection<String>> commandNamesSupplier;
 
     public ConsoleCommandCompleter() {
-        this(CommandMap::getInstance);
+        this(ConsoleCommandCompleter::registeredCommandNames);
     }
 
-    ConsoleCommandCompleter(CommandMap commandMap) {
-        this(() -> commandMap);
+    ConsoleCommandCompleter(Collection<String> commandNames) {
+        this(() -> commandNames);
     }
 
-    private ConsoleCommandCompleter(Supplier<CommandMap> commandMapSupplier) {
-        this.commandMapSupplier = commandMapSupplier;
+    private ConsoleCommandCompleter(Supplier<? extends Collection<String>> commandNamesSupplier) {
+        this.commandNamesSupplier = commandNamesSupplier;
+    }
+
+    private static Collection<String> registeredCommandNames() {
+        CommandMap commandMap = CommandMap.getInstance();
+        return commandMap == null ? List.of() : commandMap.getAnnotations().keySet();
     }
 
     @Override
     public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
         if (line.wordIndex() != 0) return;
 
-        CommandMap commandMap = commandMapSupplier.get();
-        if (commandMap == null) return;
-
         var names = new TreeSet<String>();
-        commandMap.getAnnotations().keySet().stream()
+        commandNamesSupplier.get().stream()
                 .map(name -> name.toLowerCase(Locale.ROOT))
                 .forEach(names::add);
         names.add("target");

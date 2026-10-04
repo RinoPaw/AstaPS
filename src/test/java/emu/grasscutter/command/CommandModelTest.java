@@ -13,20 +13,27 @@ public final class CommandModelTest {
     @DisplayName("every built-in command has a valid unique registration")
     public void everyCommandRegistersWithoutNameCollisions() {
         var failures = new ArrayList<String>();
+        var handlers = new ArrayList<CommandHandler>();
         var commandMap = new CommandMap(false);
 
         for (Class<?> commandType : getCommandTypes()) {
             try {
                 Object instance = commandType.getDeclaredConstructor().newInstance();
-                if (!(instance instanceof CommandHandler handler)) {
+                if (instance instanceof CommandHandler handler) {
+                    handlers.add(handler);
+                } else {
                     failures.add(commandType.getName() + ": does not implement CommandHandler");
-                    continue;
                 }
-
-                Command metadata = commandType.getAnnotation(Command.class);
-                commandMap.registerCommand(metadata.label(), handler);
             } catch (Throwable failure) {
                 failures.add(commandType.getName() + ": " + failure);
+            }
+        }
+
+        if (failures.isEmpty()) {
+            try {
+                commandMap.registerCommands(handlers);
+            } catch (Throwable failure) {
+                failures.add("batch registration: " + failure);
             }
         }
 

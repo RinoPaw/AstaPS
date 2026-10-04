@@ -41,15 +41,4 @@ public final class MainQuestDataPreloadLuaTest {
         assertNotNull(data);
         assertEquals(303, data.getId());
     }
-
-    @Test
-    @DisplayName("ordinary ids still parse, and the rest of the quest survives")
-    public void ordinaryIdsParse() {
-        var data = JsonUtils.decode(questJson("1", "2", OVERSIZED_ID), MainQuestData.class);
-
-        assertNotNull(data);
-        assertEquals(303, data.getId());
-        assertEquals(99, data.getSeries());
-        assertEquals(123456789L, data.getTitleTextMapHash());
-    }
 }

@@ -5,7 +5,6 @@ import static emu.grasscutter.game.quest.enums.QuestContent.QUEST_CONTENT_COMPLE
 import emu.grasscutter.data.excels.quest.QuestData;
 import emu.grasscutter.game.quest.*;
 import java.util.Arrays;
-import lombok.val;
 
 @QuestValueContent(QUEST_CONTENT_COMPLETE_ANY_TALK)
 public class ContentCompleteAnyTalk extends BaseContent {
@@ -13,21 +12,16 @@ public class ContentCompleteAnyTalk extends BaseContent {
     @Override
     public boolean execute(
             GameQuest quest, QuestData.QuestContentCondition condition, String paramStr, int... params) {
-        var conditionTalk =
-                Arrays.stream(condition.getParamStr().split(",")).mapToInt(Integer::parseInt).toArray();
-
-        for (var talkId : conditionTalk) {
-            val checkMainQuest = quest.getOwner().getQuestManager().getMainQuestByTalkId(talkId);
-            if (checkMainQuest == null) {
-                if (talkId == params[0]) return true;
-                continue;
-            }
-
-            val talkData = checkMainQuest.getTalks().get(talkId);
-            if (talkData != null) {
-                return true;
-            }
+        if (params.length == 0 || condition.getParamStr() == null || condition.getParamStr().isBlank()) {
+            return false;
         }
-        return false;
+
+        // COMPLETE_ANY_TALK carries the talk that just completed. A previously completed talk in the
+        // main-quest save must not make a later, unrelated talk satisfy this condition.
+        return Arrays.stream(condition.getParamStr().split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .mapToInt(Integer::parseInt)
+                .anyMatch(talkId -> talkId == params[0]);
     }
 }

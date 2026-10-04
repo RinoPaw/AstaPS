@@ -115,6 +115,22 @@ public class HandlerBuyGoodsReq extends PacketHandler {
                                 player, buyGoodsReq.getShopType(), sg.getGoodsId());
             }
 
+            // Build the delivery before charging. Dynamic goods may not follow the static stack
+            // count at all; ordinary goods still need overflow validation before payment.
+            List<GameItem> dynamicItems =
+                    dynamicProvider == null
+                            ? null
+                            : dynamicProvider.createItems(player, sg, buyCount);
+            int itemCount = 0;
+            if (dynamicItems == null) {
+                try {
+                    itemCount = Math.multiplyExact(buyCount, sg.getGoodsItem().getCount());
+                } catch (ArithmeticException overflow) {
+                    session.send(new PacketBuyGoodsRsp(Retcode.RET_SVR_ERROR));
+                    continue;
+                }
+            }
+
             List<ItemParamData> costs =
                     new ArrayList<>(
                             dynamicCostOverride != null
@@ -132,20 +148,6 @@ public class HandlerBuyGoodsReq extends PacketHandler {
 
             int nextRefresh = refreshes ? ShopSystem.getShopNextRefreshTime(sg) : 0;
             player.addShopLimit(sg.getGoodsId(), buyCount, nextRefresh);
-            int itemCount;
-            try {
-                // A free good passes payItems whatever the count, so this product is the only
-                // thing standing between a crafted request and an overflowed stack.
-                itemCount = Math.multiplyExact(buyCount, sg.getGoodsItem().getCount());
-            } catch (ArithmeticException overflow) {
-                session.send(new PacketBuyGoodsRsp(Retcode.RET_SVR_ERROR));
-                continue;
-            }
-
-            List<GameItem> dynamicItems =
-                    dynamicProvider == null
-                            ? null
-                            : dynamicProvider.createItems(player, sg, buyCount);
             if (dynamicItems != null) {
                 player.getInventory().addItems(dynamicItems, ActionReason.Shop);
             } else {

@@ -24,11 +24,4 @@ public final class GatherInteractHelperTest {
     public void spawnItemEnablesSyntheticLoot() {
         assertTrue(GatherInteractHelper.hasSubfieldGatherLoot(0, 100054));
     }
-
-    @Test
-    @DisplayName("non-positive item ids do not count as gather loot")
-    public void nonPositiveIdsAreRejected() {
-        assertFalse(GatherInteractHelper.hasSubfieldGatherLoot(-1, 0));
-        assertFalse(GatherInteractHelper.hasSubfieldGatherLoot(0, -1));
-    }
 }

@@ -157,11 +157,12 @@ public final class CommandMap {
                 child.getCommandSpec().name(label);
                 child.setExpandAtFiles(false);
 
-                String[] effectiveAliases =
-                        this.aliases.entrySet().stream()
-                                .filter(alias -> alias.getValue() == handler)
-                                .map(Map.Entry::getKey)
-                                .toArray(String[]::new);
+                Command annotation = this.annotations.get(label);
+                String[] declaredAliases = annotation.aliases();
+                String[] effectiveAliases = new String[declaredAliases.length];
+                for (int i = 0; i < declaredAliases.length; i++) {
+                    effectiveAliases[i] = normalizeCommandName(declaredAliases[i]);
+                }
 
                 root.addSubcommand(label, child, effectiveAliases);
             }
@@ -219,6 +220,32 @@ public final class CommandMap {
         }
     }
 
+    private void addRegistration(String label, CommandHandler command, Command annotation) {
+        this.validateRegistration(label, annotation);
+        this.annotations.put(label, annotation);
+        this.commands.put(label, command);
+
+        for (String alias : annotation.aliases()) {
+            String normalized = normalizeCommandName(alias);
+            this.aliases.put(normalized, command);
+            this.annotations.put(normalized, annotation);
+        }
+    }
+
+    private void restoreRegistry(
+            Map<String, CommandHandler> previousCommands,
+            Map<String, CommandHandler> previousAliases,
+            Map<String, Command> previousAnnotations,
+            CommandLine previousTree) {
+        this.commands.clear();
+        this.commands.putAll(previousCommands);
+        this.aliases.clear();
+        this.aliases.putAll(previousAliases);
+        this.annotations.clear();
+        this.annotations.putAll(previousAnnotations);
+        this.commandLine = previousTree;
+    }
+
     public CommandMap registerCommand(String label, CommandHandler command) {
         label = normalizeCommandName(label);
         Grasscutter.getLogger().trace("Registered command: " + label);
@@ -228,7 +255,6 @@ public final class CommandMap {
             if (annotation == null) {
                 throw new IllegalArgumentException("Command handler must be annotated with @Command.");
             }
-            this.validateRegistration(label, annotation);
 
             var previousCommands = new TreeMap<>(this.commands);
             var previousAliases = new TreeMap<>(this.aliases);
@@ -236,24 +262,44 @@ public final class CommandMap {
             CommandLine previousTree = this.commandLine;
 
             try {
-                this.annotations.put(label, annotation);
-                this.commands.put(label, command);
+                this.addRegistration(label, command, annotation);
+                this.rebuildPicocliTree();
+            } catch (RuntimeException exception) {
+                this.restoreRegistry(
+                        previousCommands, previousAliases, previousAnnotations, previousTree);
+                throw exception;
+            }
+        }
 
-                for (String alias : annotation.aliases()) {
-                    String normalized = normalizeCommandName(alias);
-                    this.aliases.put(normalized, command);
-                    this.annotations.put(normalized, annotation);
+        return this;
+    }
+
+    CommandMap registerCommands(List<? extends CommandHandler> commandHandlers) {
+        if (commandHandlers.isEmpty()) return this;
+
+        synchronized (this.picocliLock) {
+            var previousCommands = new TreeMap<>(this.commands);
+            var previousAliases = new TreeMap<>(this.aliases);
+            var previousAnnotations = new TreeMap<>(this.annotations);
+            CommandLine previousTree = this.commandLine;
+
+            try {
+                for (CommandHandler command : commandHandlers) {
+                    Command annotation = command.getClass().getAnnotation(Command.class);
+                    if (annotation == null) {
+                        throw new IllegalArgumentException(
+                                "Command handler must be annotated with @Command.");
+                    }
+
+                    String label = normalizeCommandName(annotation.label());
+                    Grasscutter.getLogger().trace("Registered command: " + label);
+                    this.addRegistration(label, command, annotation);
                 }
 
                 this.rebuildPicocliTree();
             } catch (RuntimeException exception) {
-                this.commands.clear();
-                this.commands.putAll(previousCommands);
-                this.aliases.clear();
-                this.aliases.putAll(previousAliases);
-                this.annotations.clear();
-                this.annotations.putAll(previousAnnotations);
-                this.commandLine = previousTree;
+                this.restoreRegistry(
+                        previousCommands, previousAliases, previousAnnotations, previousTree);
                 throw exception;
             }
         }
@@ -287,13 +333,8 @@ public final class CommandMap {
 
                 this.rebuildPicocliTree();
             } catch (RuntimeException exception) {
-                this.commands.clear();
-                this.commands.putAll(previousCommands);
-                this.aliases.clear();
-                this.aliases.putAll(previousAliases);
-                this.annotations.clear();
-                this.annotations.putAll(previousAnnotations);
-                this.commandLine = previousTree;
+                this.restoreRegistry(
+                        previousCommands, previousAliases, previousAnnotations, previousTree);
                 throw exception;
             }
         }
@@ -524,24 +565,26 @@ public final class CommandMap {
     private void scan() {
         Reflections reflector = Grasscutter.reflector;
         Set<Class<?>> classes = reflector.getTypesAnnotatedWith(Command.class);
+        var handlers = new ArrayList<CommandHandler>(classes.size());
 
-        classes.forEach(
-                annotated -> {
-                    try {
-                        Command metadata = annotated.getAnnotation(Command.class);
-                        Object object = annotated.getDeclaredConstructor().newInstance();
-                        if (object instanceof CommandHandler handler) {
-                            this.registerCommand(metadata.label(), handler);
-                        } else {
-                            Grasscutter.getLogger()
-                                    .error("Class " + annotated.getName() + " is not a CommandHandler!");
-                        }
-                    } catch (Exception exception) {
-                        Grasscutter.getLogger()
-                                .error(
-                                        "Failed to register command handler for " + annotated.getSimpleName(),
-                                        exception);
-                    }
-                });
+        for (Class<?> annotated : classes) {
+            try {
+                Object object = annotated.getDeclaredConstructor().newInstance();
+                if (object instanceof CommandHandler handler) {
+                    handlers.add(handler);
+                } else {
+                    Grasscutter.getLogger()
+                            .error("Class " + annotated.getName() + " is not a CommandHandler!");
+                }
+            } catch (Exception exception) {
+                Grasscutter.getLogger()
+                        .error(
+                                "Failed to instantiate command handler for "
+                                        + annotated.getSimpleName(),
+                                exception);
+            }
+        }
+
+        this.registerCommands(handlers);
     }
 }

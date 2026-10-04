@@ -82,7 +82,7 @@ dependencies {
     implementation 'io.netty:netty-transport-native-kqueue'
 
     implementation 'com.google.code.gson:gson:2.14.0'
-    implementation 'com.google.protobuf:protobuf-java:3.19.6'
+    implementation 'com.google.protobuf:protobuf-java:3.25.9'
     implementation 'com.github.os72:protobuf-dynamic:1.0.1'
 
     implementation platform('com.fasterxml.jackson:jackson-bom:2.22.3')
@@ -92,16 +92,20 @@ dependencies {
     implementation 'com.esotericsoftware:reflectasm:1.11.9'
     implementation 'com.github.davidmoten:rtree-multi:0.1'
 
-    implementation 'dev.morphia.morphia:morphia-core:2.2.7'
+    implementation 'dev.morphia.morphia:morphia-core:2.2.10'
 
     implementation 'org.greenrobot:eventbus-java:3.3.1'
 
-    implementation 'org.quartz-scheduler:quartz:2.3.2'
-    implementation 'org.quartz-scheduler:quartz-jobs:2.3.2'
+    // Quartz 2.5 moves to Jakarta namespaces. Stay on the latest pre-migration line until
+    // the scheduler integration is migrated deliberately.
+    implementation 'org.quartz-scheduler:quartz:2.4.1'
+    implementation 'org.quartz-scheduler:quartz-jobs:2.4.1'
 
     implementation 'org.luaj:luaj-jse:3.0.1'
 
-    implementation 'io.javalin:javalin:5.5.0'
+    // Javalin 6+ changes the HTTP/Jetty integration API. Keep the latest 5.x until that
+    // migration is handled separately.
+    implementation 'io.javalin:javalin:5.6.5'
     implementation 'org.java-websocket:Java-WebSocket:1.6.0'
 
     implementation 'net.openhft:zero-allocation-hashing:0.26ea0'

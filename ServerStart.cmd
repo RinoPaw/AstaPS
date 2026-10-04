@@ -1,7 +1,7 @@
 @echo off
-if not exist grasscutter.jar (
-    echo grasscutter.jar was not found. Run gradlew-jar.bat first.
-    exit /b 1
-)
+setlocal
+
+call gradlew.bat jar
+if errorlevel 1 exit /b %errorlevel%
+
 java -jar grasscutter.jar
-pause

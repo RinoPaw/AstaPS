@@ -53,6 +53,8 @@ jobs:
       # The repository predates the current Spotless rules, so a whole-tree formatting check would
       # fail on hundreds of untouched legacy files. Keep CI focused on executable correctness here;
       # formatting can be applied deliberately without creating repository-wide churn.
+      # Run jar and tests together so CI validates the same resolved dependency graph that is packed
+      # into the executable fat jar.
       - name: Verify build
         run: >-
           ./gradlew jar test --build-cache

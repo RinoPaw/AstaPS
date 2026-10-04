@@ -52,12 +52,13 @@ public final class ArtifactSettingsTest {
         var settings = new ArtifactSettings();
         settings.normalize();
 
-        assertEquals(1.60, settings.rolls.critical);
-        assertEquals(1.60, settings.rolls.criticalDamage);
-        assertEquals(1.20, settings.rolls.energyRecharge);
-        assertEquals(1.20, settings.rolls.elementalMastery);
-        assertEquals(1.00, settings.rolls.percentStat);
-        assertEquals(0.60, settings.rolls.flatStat);
-        assertArrayEquals(new double[] {0.40, 0.80, 1.20, 1.60}, settings.rolls.valueTiers);
+        assertEquals(1.60, settings.rolls.critical, 1e-9);
+        assertEquals(1.60, settings.rolls.criticalDamage, 1e-9);
+        assertEquals(1.20, settings.rolls.energyRecharge, 1e-9);
+        assertEquals(1.20, settings.rolls.elementalMastery, 1e-9);
+        assertEquals(1.00, settings.rolls.percentStat, 1e-9);
+        assertEquals(0.60, settings.rolls.flatStat, 1e-9);
+        assertArrayEquals(
+                new double[] {0.40, 0.80, 1.20, 1.60}, settings.rolls.valueTiers, 1e-9);
     }
 }

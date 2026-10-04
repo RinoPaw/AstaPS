@@ -9,8 +9,10 @@ import emu.grasscutter.server.event.game.ExecuteCommandEvent;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -84,6 +86,13 @@ public final class CommandMap {
         return null;
     }
 
+    private static String normalizeCommandName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Command names must not be blank.");
+        }
+        return name.toLowerCase(Locale.ROOT);
+    }
+
     private static int getUidFromString(String input) {
         try {
             return Integer.parseInt(input);
@@ -145,8 +154,6 @@ public final class CommandMap {
                 String[] effectiveAliases =
                         this.aliases.entrySet().stream()
                                 .filter(alias -> alias.getValue() == handler)
-                                .filter(alias -> alias.getKey().equals(alias.getKey().toLowerCase()))
-                                .filter(alias -> !this.commands.containsKey(alias.getKey()))
                                 .map(Map.Entry::getKey)
                                 .toArray(String[]::new);
 
@@ -177,26 +184,57 @@ public final class CommandMap {
         }
     }
 
+    private void validateRegistration(String label, Command annotation) {
+        String annotationLabel = normalizeCommandName(annotation.label());
+        if (!label.equals(annotationLabel)) {
+            throw new IllegalArgumentException(
+                    "Registered command label '"
+                            + label
+                            + "' must match @Command label '"
+                            + annotationLabel
+                            + "'.");
+        }
+
+        if (this.commands.containsKey(label) || this.aliases.containsKey(label)) {
+            throw new IllegalArgumentException("Command name already registered: " + label);
+        }
+
+        var registrationNames = new HashSet<String>();
+        registrationNames.add(label);
+        for (String alias : annotation.aliases()) {
+            String normalized = normalizeCommandName(alias);
+            if (!registrationNames.add(normalized)) {
+                throw new IllegalArgumentException(
+                        "Duplicate command label or alias in registration: " + normalized);
+            }
+            if (this.commands.containsKey(normalized) || this.aliases.containsKey(normalized)) {
+                throw new IllegalArgumentException("Command name already registered: " + normalized);
+            }
+        }
+    }
+
     public CommandMap registerCommand(String label, CommandHandler command) {
+        label = normalizeCommandName(label);
         Grasscutter.getLogger().trace("Registered command: " + label);
-        label = label.toLowerCase();
 
         synchronized (this.picocliLock) {
+            Command annotation = command.getClass().getAnnotation(Command.class);
+            if (annotation == null) {
+                throw new IllegalArgumentException("Command handler must be annotated with @Command.");
+            }
+            this.validateRegistration(label, annotation);
+
             var previousCommands = new TreeMap<>(this.commands);
             var previousAliases = new TreeMap<>(this.aliases);
             var previousAnnotations = new TreeMap<>(this.annotations);
             CommandLine previousTree = this.commandLine;
 
             try {
-                Command annotation = command.getClass().getAnnotation(Command.class);
-                if (annotation == null) {
-                    throw new IllegalArgumentException("Command handler must be annotated with @Command.");
-                }
                 this.annotations.put(label, annotation);
                 this.commands.put(label, command);
 
                 for (String alias : annotation.aliases()) {
-                    String normalized = alias.toLowerCase();
+                    String normalized = normalizeCommandName(alias);
                     this.aliases.put(normalized, command);
                     this.annotations.put(normalized, annotation);
                 }
@@ -218,47 +256,75 @@ public final class CommandMap {
     }
 
     public CommandMap unregisterCommand(String label) {
+        label = normalizeCommandName(label);
         Grasscutter.getLogger().trace("Un-registered command: " + label);
-        label = label.toLowerCase();
 
-        CommandHandler handler = this.commands.get(label);
-        if (handler == null) return this;
+        synchronized (this.picocliLock) {
+            CommandHandler handler = this.commands.get(label);
+            if (handler == null) return this;
 
-        Command annotation = handler.getClass().getAnnotation(Command.class);
-        this.annotations.remove(label);
-        this.commands.remove(label);
+            var previousCommands = new TreeMap<>(this.commands);
+            var previousAliases = new TreeMap<>(this.aliases);
+            var previousAnnotations = new TreeMap<>(this.annotations);
+            CommandLine previousTree = this.commandLine;
 
-        for (String alias : annotation.aliases()) {
-            String normalized = alias.toLowerCase();
-            this.aliases.remove(normalized);
-            this.annotations.remove(normalized);
+            try {
+                Command annotation = handler.getClass().getAnnotation(Command.class);
+                this.annotations.remove(label);
+                this.commands.remove(label);
+
+                for (String alias : annotation.aliases()) {
+                    String normalized = normalizeCommandName(alias);
+                    this.aliases.remove(normalized);
+                    this.annotations.remove(normalized);
+                }
+
+                this.rebuildPicocliTree();
+            } catch (RuntimeException exception) {
+                this.commands.clear();
+                this.commands.putAll(previousCommands);
+                this.aliases.clear();
+                this.aliases.putAll(previousAliases);
+                this.annotations.clear();
+                this.annotations.putAll(previousAnnotations);
+                this.commandLine = previousTree;
+                throw exception;
+            }
         }
-
-        this.rebuildPicocliTree();
         return this;
     }
 
     public List<Command> getAnnotationsAsList() {
-        return new ArrayList<>(this.annotations.values());
+        synchronized (this.picocliLock) {
+            return new ArrayList<>(this.annotations.values());
+        }
     }
 
     public Map<String, Command> getAnnotations() {
-        return new LinkedHashMap<>(this.annotations);
+        synchronized (this.picocliLock) {
+            return new LinkedHashMap<>(this.annotations);
+        }
     }
 
     public List<CommandHandler> getHandlersAsList() {
-        return new ArrayList<>(this.commands.values());
+        synchronized (this.picocliLock) {
+            return new ArrayList<>(this.commands.values());
+        }
     }
 
     public Map<String, CommandHandler> getHandlers() {
-        return this.commands;
+        synchronized (this.picocliLock) {
+            return new LinkedHashMap<>(this.commands);
+        }
     }
 
     public CommandHandler getHandler(String label) {
-        String normalized = label.toLowerCase();
-        CommandHandler handler = this.commands.get(normalized);
-        if (handler == null) handler = this.aliases.get(normalized);
-        return handler;
+        String normalized = normalizeCommandName(label);
+        synchronized (this.picocliLock) {
+            CommandHandler handler = this.commands.get(normalized);
+            if (handler == null) handler = this.aliases.get(normalized);
+            return handler;
+        }
     }
 
     private Player getTargetPlayer(
@@ -368,7 +434,7 @@ public final class CommandMap {
         if (tokens.isEmpty()) return;
 
         String rawLabel = tokens.remove(0);
-        String label = rawLabel.toLowerCase();
+        String label = rawLabel.toLowerCase(Locale.ROOT);
         List<String> args = tokens;
         String playerId = (player == null) ? CONSOLE_ID : player.getAccount().getId();
 
@@ -391,8 +457,12 @@ public final class CommandMap {
             return;
         }
 
-        CommandHandler handler = this.commands.get(resolvedLabel);
-        Command annotation = this.annotations.get(resolvedLabel);
+        final CommandHandler handler;
+        final Command annotation;
+        synchronized (this.picocliLock) {
+            handler = this.commands.get(resolvedLabel);
+            annotation = this.annotations.get(resolvedLabel);
+        }
         if (handler == null || annotation == null) {
             CommandOutput.sendTranslatedMessage(player, "commands.generic.unknown_command", label);
             return;

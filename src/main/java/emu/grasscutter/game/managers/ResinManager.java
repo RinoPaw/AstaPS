@@ -1,6 +1,6 @@
 package emu.grasscutter.game.managers;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.*;
@@ -26,7 +26,7 @@ public class ResinManager extends BasePlayerManager {
      ********************/
     public synchronized boolean useResin(int amount) {
         // Check if resin enabled.
-        if (!GAME_OPTIONS.resinOptions.resinUsage) {
+        if (!GAME.resinOptions.resinUsage) {
             return true;
         }
 
@@ -43,9 +43,9 @@ public class ResinManager extends BasePlayerManager {
 
         // Check if this has taken the player under the recharge cap,
         // starting the recharging process.
-        if (this.player.getNextResinRefresh() == 0 && newResin < GAME_OPTIONS.resinOptions.cap) {
+        if (this.player.getNextResinRefresh() == 0 && newResin < GAME.resinOptions.cap) {
             int currentTime = Utils.getCurrentSeconds();
-            this.player.setNextResinRefresh(currentTime + GAME_OPTIONS.resinOptions.rechargeTime);
+            this.player.setNextResinRefresh(currentTime + GAME.resinOptions.rechargeTime);
         }
 
         // Send packets.
@@ -62,13 +62,13 @@ public class ResinManager extends BasePlayerManager {
 
     public synchronized boolean useCondensedResin(int amount) {
         // Don't deduct if resin disabled.
-        if (!GAME_OPTIONS.resinOptions.resinUsage) return true;
+        if (!GAME.resinOptions.resinUsage) return true;
         return this.player.getInventory().payItem(220007, amount);
     }
 
     public synchronized void addResin(int amount) {
         // Check if resin enabled.
-        if (!GAME_OPTIONS.resinOptions.resinUsage) {
+        if (!GAME.resinOptions.resinUsage) {
             return;
         }
 
@@ -78,7 +78,7 @@ public class ResinManager extends BasePlayerManager {
         this.player.setProperty(PlayerProperty.PROP_PLAYER_RESIN, newResin);
 
         // Stop recharging if player is now at or over the cap.
-        if (newResin >= GAME_OPTIONS.resinOptions.cap) {
+        if (newResin >= GAME.resinOptions.cap) {
             this.player.setNextResinRefresh(0);
         }
 
@@ -91,7 +91,7 @@ public class ResinManager extends BasePlayerManager {
      ********************/
     public synchronized void rechargeResin() {
         // Check if resin enabled.
-        if (!GAME_OPTIONS.resinOptions.resinUsage) {
+        if (!GAME.resinOptions.resinUsage) {
             return;
         }
 
@@ -116,19 +116,19 @@ public class ResinManager extends BasePlayerManager {
                 1
                         + (int)
                                 ((currentTime - this.player.getNextResinRefresh())
-                                        / GAME_OPTIONS.resinOptions.rechargeTime);
-        int newResin = Math.min(GAME_OPTIONS.resinOptions.cap, currentResin + recharge);
+                                        / GAME.resinOptions.rechargeTime);
+        int newResin = Math.min(GAME.resinOptions.cap, currentResin + recharge);
         int resinChange = newResin - currentResin;
 
         this.player.setProperty(PlayerProperty.PROP_PLAYER_RESIN, newResin);
 
         // Calculate next recharge time.
         // Set to zero to disable recharge (because on/over cap.)
-        if (newResin >= GAME_OPTIONS.resinOptions.cap) {
+        if (newResin >= GAME.resinOptions.cap) {
             this.player.setNextResinRefresh(0);
         } else {
             int nextRecharge =
-                    this.player.getNextResinRefresh() + resinChange * GAME_OPTIONS.resinOptions.rechargeTime;
+                    this.player.getNextResinRefresh() + resinChange * GAME.resinOptions.rechargeTime;
             this.player.setNextResinRefresh(nextRecharge);
         }
 
@@ -141,8 +141,8 @@ public class ResinManager extends BasePlayerManager {
      ********************/
     public synchronized void onPlayerLogin() {
         // If resin usage is disabled, set resin to cap.
-        if (!GAME_OPTIONS.resinOptions.resinUsage) {
-            this.player.setProperty(PlayerProperty.PROP_PLAYER_RESIN, GAME_OPTIONS.resinOptions.cap);
+        if (!GAME.resinOptions.resinUsage) {
+            this.player.setProperty(PlayerProperty.PROP_PLAYER_RESIN, GAME.resinOptions.cap);
             this.player.setNextResinRefresh(0);
         }
 
@@ -151,8 +151,8 @@ public class ResinManager extends BasePlayerManager {
         int currentResin = this.player.getProperty(PlayerProperty.PROP_PLAYER_RESIN);
         int currentTime = Utils.getCurrentSeconds();
 
-        if (currentResin < GAME_OPTIONS.resinOptions.cap && this.player.getNextResinRefresh() == 0) {
-            this.player.setNextResinRefresh(currentTime + GAME_OPTIONS.resinOptions.rechargeTime);
+        if (currentResin < GAME.resinOptions.cap && this.player.getNextResinRefresh() == 0) {
+            this.player.setNextResinRefresh(currentTime + GAME.resinOptions.rechargeTime);
         }
 
         // Keep map/HUD resin visible (stacks with abyss floor banner).
@@ -197,7 +197,7 @@ public class ResinManager extends BasePlayerManager {
      * Does not grant +60 resin; only pays primogems and increments {@code resinBuyCount}.
      */
     public synchronized boolean payHcoinRewardClaim() {
-        if (!GAME_OPTIONS.resinOptions.resinUsage) {
+        if (!GAME.resinOptions.resinUsage) {
             return true;
         }
         int used = this.player.getResinBuyCount();

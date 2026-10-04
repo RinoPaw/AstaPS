@@ -103,7 +103,6 @@ dependencies {
 
     implementation 'org.reflections:reflections:0.10.2'
     implementation 'com.esotericsoftware:reflectasm:1.11.9'
-    implementation 'com.github.davidmoten:rtree-multi:0.1'
 
     implementation 'dev.morphia.morphia:morphia-core:2.5.3'
 
@@ -122,9 +121,10 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // javax.annotation is no longer part of the JDK. Keep the source-level nullability annotations
-    // explicit without packaging them into the server runtime.
+    // Nullability annotations are source-only dependencies. Keep both APIs explicit instead of
+    // relying on transitive dependencies from networking or console libraries.
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+    compileOnly 'org.jetbrains:annotations:26.1.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.48'
     annotationProcessor 'org.projectlombok:lombok:1.18.48'

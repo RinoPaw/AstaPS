@@ -5,14 +5,12 @@ import static emu.grasscutter.config.Configuration.GAME;
 import emu.grasscutter.*;
 import emu.grasscutter.server.http.Router;
 import emu.grasscutter.server.http.objects.*;
-import io.javalin.Javalin;
+import io.javalin.config.RoutesConfig;
 import io.javalin.http.Context;
 
 /** Handles all generic, hard-coded responses. */
 public final class GenericHandler implements Router {
     private static void serverStatus(Context ctx) {
-        // A dispatch-only node has no game server, and this used to throw there rather than
-        // answer with zero.
         var gameServer = Grasscutter.getGameServer();
         int playerCount = gameServer == null ? 0 : gameServer.getPlayers().size();
         int maxPlayer = GAME.maxOnlinePlayers;
@@ -29,76 +27,67 @@ public final class GenericHandler implements Router {
     }
 
     @Override
-    public void applyRoutes(Javalin javalin) {
-        // hk4e-sdk-os.hoyoverse.com
-        javalin.get(
+    public void applyRoutes(RoutesConfig routes) {
+        routes.get(
                 "/hk4e_global/mdk/agreement/api/getAgreementInfos",
                 new HttpJsonResponse(
                         "{\"retcode\":0,\"message\":\"OK\",\"data\":{\"marketing_agreements\":[]}}"));
-        // hk4e-sdk-os.hoyoverse.com (this could be either GET or POST based on the observation of
-        // different clients)
         this.allRoutes(
-                javalin,
+                routes,
                 "/hk4e_global/combo/granter/api/compareProtocolVersion",
                 new HttpJsonResponse(
                         "{\"retcode\":0,\"message\":\"OK\",\"data\":{\"modified\":true,\"protocol\":{\"id\":0,\"app_id\":4,\"language\":\"en\",\"user_proto\":\"\",\"priv_proto\":\"\",\"major\":7,\"minimum\":0,\"create_time\":\"0\",\"teenager_proto\":\"\",\"third_proto\":\"\"}}}"));
 
-        // api-account-os.hoyoverse.com
-        javalin.post(
+        routes.post(
                 "/account/risky/api/check",
                 new HttpJsonResponse(
                         "{\"retcode\":0,\"message\":\"OK\",\"data\":{\"id\":\"none\",\"action\":\"ACTION_NONE\",\"geetest\":null}}"));
 
-        // sdk-os-static.hoyoverse.com
-        javalin.get(
+        routes.get(
                 "/combo/box/api/config/sdk/combo",
                 new HttpJsonResponse(
                         "{\"retcode\":0,\"message\":\"OK\",\"data\":{\"vals\":{\"disable_email_bind_skip\":\"false\",\"email_bind_remind_interval\":\"7\",\"email_bind_remind\":\"true\"}}}"));
-        // hk4e-sdk-os-static.hoyoverse.com
-        javalin.get(
+        routes.get(
                 "/hk4e_global/combo/granter/api/getConfig",
                 new HttpJsonResponse(
                         "{\"retcode\":0,\"message\":\"OK\",\"data\":{\"protocol\":true,\"qr_enabled\":false,\"log_level\":\"INFO\",\"announce_url\":\"https://webstatic-sea.hoyoverse.com/hk4e/announcement/index.html?sdk_presentation_style=fullscreen\\u0026sdk_screen_transparent=true\\u0026game_biz=hk4e_global\\u0026auth_appid=announcement\\u0026game=hk4e#/\",\"push_alias_type\":2,\"disable_ysdk_guard\":false,\"enable_announce_pic_popup\":true}}"));
-        // hk4e-sdk-os-static.hoyoverse.com
-        javalin.get(
+        routes.get(
                 "/hk4e_global/mdk/shield/api/loadConfig",
                 new HttpJsonResponse(
                         "{\"retcode\":0,\"message\":\"OK\",\"data\":{\"id\":6,\"game_key\":\"hk4e_global\",\"client\":\"PC\",\"identity\":\"I_IDENTITY\",\"guest\":false,\"ignore_versions\":\"\",\"scene\":\"S_NORMAL\",\"name\":\"\u539f\u795e\u6d77\u5916\",\"disable_regist\":false,\"enable_email_captcha\":false,\"thirdparty\":[\"fb\",\"tw\"],\"disable_mmt\":false,\"server_guest\":false,\"thirdparty_ignore\":{\"tw\":\"\",\"fb\":\"\"},\"enable_ps_bind_account\":false,\"thirdparty_login_configs\":{\"tw\":{\"token_type\":\"TK_GAME_TOKEN\",\"game_token_expires_in\":604800},\"fb\":{\"token_type\":\"TK_GAME_TOKEN\",\"game_token_expires_in\":604800}}}}"));
-        // Test api?
-        // abtest-api-data-sg.hoyoverse.com
-        javalin.post(
+        routes.post(
                 "/data_abtest_api/config/experiment/list",
                 new HttpJsonResponse(
                         "{\"retcode\":0,\"success\":true,\"message\":\"\",\"data\":[{\"code\":1000,\"type\":2,\"config_id\":\"14\",\"period_id\":\"6036_99\",\"version\":\"1\",\"configs\":{\"cardType\":\"old\"}}]}"));
 
-        // log-upload-os.mihoyo.com
-        this.allRoutes(javalin, "/log/sdk/upload", new HttpJsonResponse("{\"code\":0}"));
-        this.allRoutes(javalin, "/sdk/upload", new HttpJsonResponse("{\"code\":0}"));
-        javalin.post("/sdk/dataUpload", new HttpJsonResponse("{\"code\":0}"));
-        // /perf/config/verify?device_id=xxx&platform=x&name=xxx
-        this.allRoutes(javalin, "/perf/config/verify", new HttpJsonResponse("{\"code\":0}"));
+        this.allRoutes(routes, "/log/sdk/upload", new HttpJsonResponse("{\"code\":0}"));
+        this.allRoutes(routes, "/sdk/upload", new HttpJsonResponse("{\"code\":0}"));
+        routes.post("/sdk/dataUpload", new HttpJsonResponse("{\"code\":0}"));
+        this.allRoutes(routes, "/perf/config/verify", new HttpJsonResponse("{\"code\":0}"));
 
-        // webstatic-sea.hoyoverse.com
-        // The SDK's localisation bundles - the strings on the login screen. plat_os is the path
-        // the Android client asks for and plat_oversea the one the PC client asks for; both are
-        // served from the same webstatic bundles.
-        //
-        // plat_os used to answer "{}", which is a valid but empty bundle, so the Android client
-        // had no strings to render and fell back to printing the raw keys.
-        javalin.get("/admin/mi18n/plat_oversea/*", new WebStaticVersionResponse());
-        javalin.get("/admin/mi18n/plat_os/*", new WebStaticVersionResponse());
-        javalin.get("/admin/mi18n/plat_cn/*", new WebStaticVersionResponse());
+        routes.get("/admin/mi18n/plat_oversea/*", new WebStaticVersionResponse());
+        routes.get("/admin/mi18n/plat_os/*", new WebStaticVersionResponse());
+        routes.get("/admin/mi18n/plat_cn/*", new WebStaticVersionResponse());
 
-        this.allRoutes(javalin, "/hk4e_global/account/ma-passport/api/getConfig",
-                new HttpJsonResponse("{\"retcode\":0,\"message\":\"OK\",\"data\":{\"support_reactivate_account\":false,\"enable_ps_bind_account\":false,\"login_mode\":\"account_login\",\"guest_mode\":\"close\",\"realperson_mode\":\"none\",\"safeguard_type\":\"none\",\"apple_login_enabled\":false,\"facebook_login_enabled\":false,\"google_login_enabled\":false,\"twitter_login_enabled\":false}}"));
-        this.allRoutes(javalin, "/hk4e_cn/account/ma-passport/api/getConfig",
-                new HttpJsonResponse("{\"retcode\":0,\"message\":\"OK\",\"data\":{\"support_reactivate_account\":false,\"enable_ps_bind_account\":false,\"login_mode\":\"account_login\",\"guest_mode\":\"close\",\"realperson_mode\":\"none\",\"safeguard_type\":\"none\",\"apple_login_enabled\":false,\"facebook_login_enabled\":false,\"google_login_enabled\":false,\"twitter_login_enabled\":false}}"));
+        this.allRoutes(
+                routes,
+                "/hk4e_global/account/ma-passport/api/getConfig",
+                new HttpJsonResponse(
+                        "{\"retcode\":0,\"message\":\"OK\",\"data\":{\"support_reactivate_account\":false,\"enable_ps_bind_account\":false,\"login_mode\":\"account_login\",\"guest_mode\":\"close\",\"realperson_mode\":\"none\",\"safeguard_type\":\"none\",\"apple_login_enabled\":false,\"facebook_login_enabled\":false,\"google_login_enabled\":false,\"twitter_login_enabled\":false}}"));
+        this.allRoutes(
+                routes,
+                "/hk4e_cn/account/ma-passport/api/getConfig",
+                new HttpJsonResponse(
+                        "{\"retcode\":0,\"message\":\"OK\",\"data\":{\"support_reactivate_account\":false,\"enable_ps_bind_account\":false,\"login_mode\":\"account_login\",\"guest_mode\":\"close\",\"realperson_mode\":\"none\",\"safeguard_type\":\"none\",\"apple_login_enabled\":false,\"facebook_login_enabled\":false,\"google_login_enabled\":false,\"twitter_login_enabled\":false}}"));
 
-        javalin.get("/device-fp/api/getExtList",
-                new HttpJsonResponse("{\"retcode\":0,\"message\":\"OK\",\"data\":{\"ext_list\":[],\"pkg_list\":[]}}"));
-        javalin.get("/combo/box/api/config/sw/precache",
+        routes.get(
+                "/device-fp/api/getExtList",
+                new HttpJsonResponse(
+                        "{\"retcode\":0,\"message\":\"OK\",\"data\":{\"ext_list\":[],\"pkg_list\":[]}}"));
+        routes.get(
+                "/combo/box/api/config/sw/precache",
                 new HttpJsonResponse("{\"retcode\":0,\"message\":\"OK\",\"data\":{}}"));
 
-        javalin.get("/status/server", GenericHandler::serverStatus);
+        routes.get("/status/server", GenericHandler::serverStatus);
     }
 }

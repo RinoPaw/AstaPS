@@ -19,10 +19,16 @@ public class HandlerAvatarDieAnimationEndReq extends PacketHandler {
         // value with the transient scene entity id, so the death flow returns before switching
         // to a living teammate or sending WorldPlayerDieNotify. Keep compatibility with clients
         // that still send the scene entity id by only translating a matching avatar GUID.
-        if (currentAvatar != null && currentAvatar.getAvatar().getGuid() == dieGuid) {
-            dieGuid = currentAvatar.getId();
+        if (currentAvatar != null) {
+            dieGuid =
+                    resolveDeathEntityId(
+                            dieGuid, currentAvatar.getAvatar().getGuid(), currentAvatar.getId());
         }
 
         teamManager.onAvatarDie(dieGuid);
+    }
+
+    static long resolveDeathEntityId(long dieGuid, long avatarGuid, int entityId) {
+        return dieGuid == avatarGuid ? entityId : dieGuid;
     }
 }

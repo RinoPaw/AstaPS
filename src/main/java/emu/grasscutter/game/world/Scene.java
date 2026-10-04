@@ -102,7 +102,7 @@ public class Scene {
         this.weaponEntities = new ConcurrentHashMap<>();
 
         this.prevScene = 3;
-        this.sceneRoutes = GameData.getSceneRoutes(getId());
+        this.sceneRoutes = GameData.getSceneRoutes(sceneData.getId());
 
         this.startWorldTime = world.getWorldTime();
 

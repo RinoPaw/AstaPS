@@ -11,23 +11,38 @@ updates:
           - "org.jline:*"
           - "net.java.dev.jna:*"
           - "org.java-websocket:*"
+        update-types:
+          - minor
+          - patch
       serialization:
         patterns:
           - "com.fasterxml.jackson*:*"
           - "com.google.code.gson:*"
           - "com.google.protobuf:*"
+        update-types:
+          - minor
+          - patch
       logging:
         patterns:
           - "org.slf4j:*"
           - "ch.qos.logback:*"
+        update-types:
+          - minor
+          - patch
       testing:
         patterns:
           - "org.junit*:*"
           - "com.squareup.okhttp3:*"
+        update-types:
+          - minor
+          - patch
       lombok:
         patterns:
           - "org.projectlombok:*"
           - "io.freefair.lombok"
+        update-types:
+          - minor
+          - patch
     open-pull-requests-limit: 5
 
   - package-ecosystem: github-actions
@@ -38,4 +53,7 @@ updates:
       github-actions:
         patterns:
           - "*"
+        update-types:
+          - minor
+          - patch
     open-pull-requests-limit: 5

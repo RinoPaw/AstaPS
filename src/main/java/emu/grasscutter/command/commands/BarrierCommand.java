@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.packet.send.PacketOpenStateChangeNotify;
 import picocli.CommandLine;
@@ -13,7 +13,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"br", "pb"},
         permission = "player.setprop",
         permissionTargeted = "player.setprop.others")
-public final class BarrierCommand implements PicocliCommandHandler {
+public final class BarrierCommand implements CommandHandler {
     private enum State {
         ON,
         OFF
@@ -51,7 +51,7 @@ public final class BarrierCommand implements PicocliCommandHandler {
         public void run() {
             boolean enabled = state == State.ON;
             targetPlayer.sendPacket(new PacketOpenStateChangeNotify(48, enabled ? 0 : 1));
-            CommandHandler.sendMessage(sender, enabled ? "Restored barrier" : "Removed barrier");
+            CommandOutput.sendMessage(sender, enabled ? "Restored barrier" : "Removed barrier");
         }
     }
 }

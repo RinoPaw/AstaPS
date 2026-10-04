@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
 import java.util.Locale;
@@ -15,7 +15,7 @@ import picocli.CommandLine.Parameters;
         permission = "player.dailytask",
         permissionTargeted = "player.dailytask.others",
         targetRequirement = Command.TargetRequirement.ONLINE)
-public final class DailyTaskCommand implements PicocliCommandHandler {
+public final class DailyTaskCommand implements CommandHandler {
     private record CityArg(int id) {}
 
     @Override
@@ -79,7 +79,7 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
         public void run() {
             loadManager();
             var manager = targetPlayer.getDailyTaskManager();
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Daily commissions: date=%08d, filter=%s (%d), activeRegion=%s (%d), finished=%d/4, scoreReward=%d, bonusTaken=%s"
                             .formatted(
@@ -93,7 +93,7 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
                                     manager.isScoreRewardTaken()));
 
             if (manager.getDailyTasks().isEmpty()) {
-                CommandHandler.sendMessage(sender, "No daily commissions are currently active.");
+                CommandOutput.sendMessage(sender, "No daily commissions are currently active.");
                 return;
             }
 
@@ -103,7 +103,7 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
                         data == null || data.getNewGroupVec() == null
                                 ? "[]"
                                 : data.getNewGroupVec().toString();
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         "Task %d: progress=%d/%d, finished=%s, reward=%d, groups=%s"
                                 .formatted(
@@ -127,12 +127,12 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
         public void run() {
             loadManager();
             if (targetPlayer.getScene() == null) {
-                CommandHandler.sendMessage(sender, "The target player has no active scene.");
+                CommandOutput.sendMessage(sender, "The target player has no active scene.");
                 return;
             }
             var manager = targetPlayer.getDailyTaskManager();
             int ready = manager.loadActiveGroups(targetPlayer.getScene());
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Ready daily commission groups: %d/%d in scene %d."
                             .formatted(
@@ -153,7 +153,7 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
             loadManager();
             var manager = targetPlayer.getDailyTaskManager();
             int count = manager.resetDailyTasks();
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Generated %d daily commissions for city %d."
                             .formatted(count, manager.getCityId()));
@@ -173,15 +173,15 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
             loadManager();
             var manager = targetPlayer.getDailyTaskManager();
             if (!manager.setCityIdAndReset(city.id())) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         "Region %s (%d) does not contain at least four supported combat commissions."
                                 .formatted(getCityName(city.id()), city.id()));
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, "Supported city IDs: " + manager.getSupportedCityIds());
                 return;
             }
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Daily commission filter: %s (%d). Today's active region: %s (%d)."
                             .formatted(
@@ -205,12 +205,12 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
             loadManager();
             var manager = targetPlayer.getDailyTaskManager();
             if (!manager.finishDailyTask(taskId)) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         "Daily task %d was not active or was already finished.".formatted(taskId));
                 return;
             }
-            CommandHandler.sendMessage(sender, "Daily task %d completed.".formatted(taskId));
+            CommandOutput.sendMessage(sender, "Daily task %d completed.".formatted(taskId));
         }
     }
 
@@ -230,11 +230,11 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
                             .distinct()
                             .sorted()
                             .toList();
-            CommandHandler.sendMessage(sender, "Daily commission Lua resource coverage:");
+            CommandOutput.sendMessage(sender, "Daily commission Lua resource coverage:");
             for (int cityId : cityIds) {
                 long defined = manager.getDefinedCombatTaskCount(cityId);
                 long resourceBacked = manager.getResourceBackedTaskCount(cityId);
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         "%s (%d): %d/%d combat commissions have usable encounter resources."
                                 .formatted(
@@ -253,12 +253,12 @@ public final class DailyTaskCommand implements PicocliCommandHandler {
         public void run() {
             loadManager();
             if (!targetPlayer.getDailyTaskManager().claimScoreReward()) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         "The four-commission bonus cannot be claimed yet, was already claimed, or its reward data was unavailable.");
                 return;
             }
-            CommandHandler.sendMessage(sender, "Daily commission completion bonus claimed.");
+            CommandOutput.sendMessage(sender, "Daily commission completion bonus claimed.");
         }
     }
 

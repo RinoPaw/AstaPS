@@ -3,7 +3,7 @@ package emu.grasscutter.command.commands;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
@@ -13,7 +13,7 @@ import picocli.CommandLine.Parameters;
         permission = "server.coop",
         permissionTargeted = "server.coop.others",
         inlineTarget = false)
-public final class CoopCommand implements PicocliCommandHandler {
+public final class CoopCommand implements CommandHandler {
     private record UidArg(int value) {}
 
     @Override
@@ -54,14 +54,14 @@ public final class CoopCommand implements PicocliCommandHandler {
             Player host;
             if (hostUid == null) {
                 if (sender == null) {
-                    CommandHandler.sendMessage(null, "A host UID is required from the console.");
+                    CommandOutput.sendMessage(null, "A host UID is required from the console.");
                     return;
                 }
                 host = sender;
             } else {
                 host = Grasscutter.getGameServer().getPlayerByUid(hostUid.value());
                 if (host == null) {
-                    CommandHandler.sendTranslatedMessage(sender, "commands.execution.player_offline_error");
+                    CommandOutput.sendTranslatedMessage(sender, "commands.execution.player_offline_error");
                     return;
                 }
             }
@@ -74,7 +74,7 @@ public final class CoopCommand implements PicocliCommandHandler {
                     .getServer()
                     .getMultiplayerSystem()
                     .applyEnterMpReply(host, targetPlayer.getUid(), true);
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender, "commands.coop.success", targetPlayer.getNickname(), host.getNickname());
         }
     }

@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.packet.send.PacketCutsceneBeginNotify;
@@ -15,7 +15,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"c"},
         permission = "player.cutscene",
         permissionTargeted = "player.cutscene.others")
-public final class CutsceneCommand implements PicocliCommandHandler {
+public final class CutsceneCommand implements CommandHandler {
     private static final int MAX_RESULTS = 30;
 
     @Override
@@ -42,7 +42,7 @@ public final class CutsceneCommand implements PicocliCommandHandler {
         public void run() {
             var data = GameData.getCutsceneDataMap().get(cutsceneId);
             if (data != null) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, "Playing %d: %s".formatted(cutsceneId, data.getPath()));
             }
             targetPlayer.sendPacket(new PacketCutsceneBeginNotify(cutsceneId));
@@ -76,12 +76,12 @@ public final class CutsceneCommand implements PicocliCommandHandler {
                             .toList();
 
             if (matches.isEmpty()) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, "No cutscene path contains '%s'.".formatted(search));
                 return;
             }
 
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "%d cutscene(s)%s:"
                             .formatted(
@@ -93,11 +93,11 @@ public final class CutsceneCommand implements PicocliCommandHandler {
                     .limit(MAX_RESULTS)
                     .forEach(
                             data ->
-                                    CommandHandler.sendMessage(
+                                    CommandOutput.sendMessage(
                                             sender,
                                             "  %d - %s".formatted(data.getId(), data.getPath())));
             if (matches.size() > MAX_RESULTS) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         "  ...and %d more; narrow the search."
                                 .formatted(matches.size() - MAX_RESULTS));

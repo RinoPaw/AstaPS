@@ -17,7 +17,7 @@ import picocli.CommandLine.Unmatched;
         label = "account",
         targetRequirement = Command.TargetRequirement.NONE,
         inlineTarget = false)
-public final class AccountCommand implements PicocliCommandHandler {
+public final class AccountCommand implements CommandHandler {
     private record UidArg(int value) {}
 
     @Override
@@ -38,16 +38,6 @@ public final class AccountCommand implements PicocliCommandHandler {
         commandLine.addSubcommand("delete", new Delete(sender));
         commandLine.addSubcommand("resetpass", new ResetPass(sender));
         commandLine.addSubcommand("list", new ListAccounts(sender));
-
-        commandLine.setParameterExceptionHandler(
-                (exception, argv) -> {
-                    if (exception.getCause() instanceof CommandLine.TypeConversionException cause) {
-                        CommandHandler.sendMessage(sender, cause.getMessage());
-                    } else {
-                        this.sendUsageMessage(sender);
-                    }
-                    return 2;
-                });
         return commandLine;
     }
 
@@ -77,7 +67,7 @@ public final class AccountCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
-            CommandHandler.sendTranslatedMessage(sender, "commands.generic.console_execute_error");
+            CommandOutput.sendTranslatedMessage(sender, "commands.generic.console_execute_error");
         }
     }
 
@@ -141,7 +131,7 @@ public final class AccountCommand implements PicocliCommandHandler {
                 var result =
                         PlayerCloneService.cloneOffline(
                                 sourceUsername, targetUsername, uid == null ? 0 : uid.value());
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         "Cloned %s (UID %d) to %s (UID %d): %d persisted documents copied."
                                 .formatted(
@@ -150,11 +140,11 @@ public final class AccountCommand implements PicocliCommandHandler {
                                         targetUsername,
                                         result.targetUid(),
                                         result.clonedDocuments()));
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         "Friendships and public music-game beatmaps were intentionally not cloned.");
             } catch (IllegalArgumentException | IllegalStateException failure) {
-                CommandHandler.sendMessage(sender, "Clone failed: " + failure.getMessage());
+                CommandOutput.sendMessage(sender, "Clone failed: " + failure.getMessage());
             }
         }
     }
@@ -174,12 +164,12 @@ public final class AccountCommand implements PicocliCommandHandler {
         public void run() {
             Account toDelete = DatabaseHelper.getAccountByName(username);
             if (toDelete == null) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.account.no_account"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.account.no_account"));
                 return;
             }
 
             AccountDeletionService.delete(toDelete);
-            CommandHandler.sendMessage(sender, translate(sender, "commands.account.delete"));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.account.delete"));
         }
     }
 
@@ -201,7 +191,7 @@ public final class AccountCommand implements PicocliCommandHandler {
         public void run() {
             Account toUpdate = DatabaseHelper.getAccountByName(username);
             if (toUpdate == null) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.account.no_account"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.account.no_account"));
                 return;
             }
 
@@ -211,7 +201,7 @@ public final class AccountCommand implements PicocliCommandHandler {
             kickAccount(toUpdate);
             toUpdate.setPassword(passwordHash);
             toUpdate.save();
-            CommandHandler.sendMessage(sender, "Password Updated.");
+            CommandOutput.sendMessage(sender, "Password Updated.");
         }
     }
 
@@ -225,8 +215,8 @@ public final class AccountCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
-            CommandHandler.sendMessage(sender, "Note: This command might take a while to complete.");
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(sender, "Note: This command might take a while to complete.");
+            CommandOutput.sendMessage(
                     sender,
                     "Accounts: \n"
                             + DatabaseManager.getAccountDatastore().find(Account.class).stream()
@@ -249,14 +239,14 @@ public final class AccountCommand implements PicocliCommandHandler {
 
         Account account = DatabaseHelper.createAccountWithUid(username, uid);
         if (account == null) {
-            CommandHandler.sendMessage(sender, translate(sender, "commands.account.exists"));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.account.exists"));
             return;
         }
 
         account.setPassword(passwordHash);
         account.addPermission("*");
         account.save();
-        CommandHandler.sendMessage(
+        CommandOutput.sendMessage(
                 sender, translate(sender, "commands.account.create", account.getReservedPlayerUid()));
     }
 
@@ -264,7 +254,7 @@ public final class AccountCommand implements PicocliCommandHandler {
         try {
             return BCrypt.withDefaults().hashToString(12, password.toCharArray());
         } catch (IllegalArgumentException invalidPassword) {
-            CommandHandler.sendMessage(sender, "Invalid password.");
+            CommandOutput.sendMessage(sender, "Invalid password.");
             return null;
         }
     }

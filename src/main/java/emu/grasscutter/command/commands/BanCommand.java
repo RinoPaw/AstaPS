@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.game.BannedIp;
 import emu.grasscutter.game.player.Player;
@@ -11,7 +11,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
 @Command(label = "ban", targetRequirement = Command.TargetRequirement.NONE)
-public final class BanCommand implements PicocliCommandHandler {
+public final class BanCommand implements CommandHandler {
     private static final int DEFAULT_BAN_END = 2051190000;
 
     @Override
@@ -55,7 +55,7 @@ public final class BanCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (targetPlayer == null) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.execution.need_target");
+                CommandOutput.sendTranslatedMessage(sender, "commands.execution.need_target");
                 return;
             }
             if (!hasPermission(sender, targetPlayer, "server.ban", "server.ban.others")) return;
@@ -66,7 +66,7 @@ public final class BanCommand implements PicocliCommandHandler {
 
             Account account = targetPlayer.getAccount();
             if (account == null) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.ban.failure");
+                CommandOutput.sendTranslatedMessage(sender, "commands.ban.failure");
                 return;
             }
 
@@ -78,7 +78,7 @@ public final class BanCommand implements PicocliCommandHandler {
 
             GameSession session = targetPlayer.getSession();
             if (session != null) session.close();
-            CommandHandler.sendTranslatedMessage(sender, "commands.ban.success");
+            CommandOutput.sendTranslatedMessage(sender, "commands.ban.success");
         }
     }
 
@@ -101,7 +101,7 @@ public final class BanCommand implements PicocliCommandHandler {
             if (!hasPermission(sender, sender, "server.banip", "server.banip")) return;
             String reason = reasonWords.length == 0 ? "No reason given" : String.join(" ", reasonWords);
             new BannedIp(ip, reason).save();
-            CommandHandler.sendMessage(sender, "Banned IP " + ip + ". Reason: " + reason);
+            CommandOutput.sendMessage(sender, "Banned IP " + ip + ". Reason: " + reason);
         }
     }
 
@@ -111,7 +111,7 @@ public final class BanCommand implements PicocliCommandHandler {
         var account = sender.getAccount();
         String required = targetPlayer != null && targetPlayer != sender ? permissionTargeted : permission;
         if (account != null && account.hasPermission(required)) return true;
-        CommandHandler.sendTranslatedMessage(sender, "commands.generic.permission_error");
+        CommandOutput.sendTranslatedMessage(sender, "commands.generic.permission_error");
         return false;
     }
 }

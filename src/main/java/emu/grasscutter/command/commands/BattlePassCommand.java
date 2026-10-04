@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.battlepass.BattlePassCompatHelper;
 import emu.grasscutter.game.battlepass.BattlePassManager;
 import emu.grasscutter.game.player.Player;
@@ -19,7 +19,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"battlepass"},
         permission = "player.setprop",
         permissionTargeted = "player.setprop.others")
-public final class BattlePassCommand implements PicocliCommandHandler {
+public final class BattlePassCommand implements CommandHandler {
     private record PaidFlag(boolean value) {}
 
     @Override
@@ -65,13 +65,13 @@ public final class BattlePassCommand implements PicocliCommandHandler {
 
         protected Player player() {
             Player player = targetPlayer != null ? targetPlayer : sender;
-            if (player == null) CommandHandler.sendMessage(sender, "No player.");
+            if (player == null) CommandOutput.sendMessage(sender, "No player.");
             return player;
         }
 
         protected BattlePassManager battlePass(Player player) {
             BattlePassManager battlePass = player.getBattlePassManager();
-            if (battlePass == null) CommandHandler.sendMessage(sender, "No battle pass manager.");
+            if (battlePass == null) CommandOutput.sendMessage(sender, "No battle pass manager.");
             return battlePass;
         }
     }
@@ -90,7 +90,7 @@ public final class BattlePassCommand implements PicocliCommandHandler {
             Player player = player();
             if (player == null) return;
             if (levels <= 0) {
-                CommandHandler.sendMessage(sender, "levels must be > 0");
+                CommandOutput.sendMessage(sender, "levels must be > 0");
                 return;
             }
 
@@ -99,13 +99,13 @@ public final class BattlePassCommand implements PicocliCommandHandler {
 
             int purchasable = Math.min(levels, Math.max(0, 50 - battlePass.getLevel()));
             if (purchasable <= 0) {
-                CommandHandler.sendMessage(sender, "Already at max BP level.");
+                CommandOutput.sendMessage(sender, "Already at max BP level.");
                 return;
             }
 
             int cost = 150 * purchasable;
             if (player.getPrimogems() < cost) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, "Need " + cost + " primogems, have " + player.getPrimogems());
                 return;
             }
@@ -115,7 +115,7 @@ public final class BattlePassCommand implements PicocliCommandHandler {
             battlePass.save();
             player.sendPacket(new PacketBattlePassCurScheduleUpdateNotify(player));
             player.sendPacket(new PacketBeyondBattlePassCurScheduleUpdateNotify(player));
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Bought "
                             + purchasable
@@ -143,12 +143,12 @@ public final class BattlePassCommand implements PicocliCommandHandler {
             if (battlePass == null) return;
 
             if (paid == null) {
-                CommandHandler.sendMessage(sender, "Pearl BP paid=" + battlePass.isPaid());
+                CommandOutput.sendMessage(sender, "Pearl BP paid=" + battlePass.isPaid());
                 return;
             }
 
             if (!BattlePassCompatHelper.setPaidFlag(battlePass, paid.value())) {
-                CommandHandler.sendMessage(sender, "setPaidFlag failed");
+                CommandOutput.sendMessage(sender, "setPaidFlag failed");
                 return;
             }
 
@@ -157,7 +157,7 @@ public final class BattlePassCommand implements PicocliCommandHandler {
             player.sendPacket(new PacketBattlePassCurScheduleUpdateNotify(player));
             player.sendPacket(new PacketBeyondBattlePassAllDataNotify(player));
             player.sendPacket(new PacketBeyondBattlePassCurScheduleUpdateNotify(player));
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Pearl BP paid set to "
                             + paid.value()

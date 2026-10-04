@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.achievement.AchievementData;
 import emu.grasscutter.game.achievement.AchievementControlReturns;
@@ -19,7 +19,7 @@ import picocli.CommandLine.Parameters;
         permissionTargeted = "player.achievement.others",
         targetRequirement = Command.TargetRequirement.PLAYER,
         threading = true)
-public final class AchievementCommand implements PicocliCommandHandler {
+public final class AchievementCommand implements CommandHandler {
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
@@ -73,9 +73,9 @@ public final class AchievementCommand implements PicocliCommandHandler {
             var result = achievements().grant(achievementId);
             switch (result.getRet()) {
                 case SUCCESS -> sendSuccessMessage(sender, "grant", targetPlayer.getNickname());
-                case ACHIEVEMENT_NOT_FOUND -> CommandHandler.sendTranslatedMessage(
+                case ACHIEVEMENT_NOT_FOUND -> CommandOutput.sendTranslatedMessage(
                         sender, result.getRet().getKey());
-                case ALREADY_ACHIEVED -> CommandHandler.sendTranslatedMessage(
+                case ALREADY_ACHIEVED -> CommandOutput.sendTranslatedMessage(
                         sender, result.getRet().getKey(), targetPlayer.getNickname());
             }
         }
@@ -94,9 +94,9 @@ public final class AchievementCommand implements PicocliCommandHandler {
             var result = achievements().revoke(achievementId);
             switch (result.getRet()) {
                 case SUCCESS -> sendSuccessMessage(sender, "revoke", targetPlayer.getNickname());
-                case ACHIEVEMENT_NOT_FOUND -> CommandHandler.sendTranslatedMessage(
+                case ACHIEVEMENT_NOT_FOUND -> CommandOutput.sendTranslatedMessage(
                         sender, result.getRet().getKey());
-                case NOT_YET_ACHIEVED -> CommandHandler.sendTranslatedMessage(
+                case NOT_YET_ACHIEVED -> CommandOutput.sendTranslatedMessage(
                         sender, result.getRet().getKey(), targetPlayer.getNickname());
             }
         }
@@ -119,7 +119,7 @@ public final class AchievementCommand implements PicocliCommandHandler {
             switch (result.getRet()) {
                 case SUCCESS -> sendSuccessMessage(
                         sender, "progress", targetPlayer.getNickname(), achievementId, progress);
-                case ACHIEVEMENT_NOT_FOUND -> CommandHandler.sendTranslatedMessage(
+                case ACHIEVEMENT_NOT_FOUND -> CommandOutput.sendTranslatedMessage(
                         sender, result.getRet().getKey());
             }
         }
@@ -172,7 +172,7 @@ public final class AchievementCommand implements PicocliCommandHandler {
     }
 
     private static void sendSuccessMessage(Player sender, String command, Object... args) {
-        CommandHandler.sendTranslatedMessage(
+        CommandOutput.sendTranslatedMessage(
                 sender, AchievementControlReturns.Return.SUCCESS.getKey() + command, args);
     }
 }

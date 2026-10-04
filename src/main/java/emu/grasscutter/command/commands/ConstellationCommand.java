@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.entity.EntityAvatar;
 import emu.grasscutter.game.player.Player;
@@ -14,7 +14,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
 @Command(label = "constellation")
-public final class ConstellationCommand implements PicocliCommandHandler {
+public final class ConstellationCommand implements CommandHandler {
     private enum Scope {
         ALL
     }
@@ -66,25 +66,25 @@ public final class ConstellationCommand implements PicocliCommandHandler {
                     "player.setconstellation",
                     "player.setconstellation.others")) return;
             if (level < 0 || level > 6) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.setConst.range_error");
+                CommandOutput.sendTranslatedMessage(sender, "commands.setConst.range_error");
                 return;
             }
 
             if (scope == Scope.ALL) {
                 targetPlayer.getAvatars().forEach(avatar -> apply(targetPlayer, avatar, level, false));
                 reloadScene(targetPlayer);
-                CommandHandler.sendTranslatedMessage(sender, "commands.setConst.successall", level);
+                CommandOutput.sendTranslatedMessage(sender, "commands.setConst.successall", level);
                 return;
             }
 
             EntityAvatar entity = targetPlayer.getTeamManager().getCurrentAvatarEntity();
             if (entity == null) {
-                CommandHandler.sendMessage(sender, "No active character.");
+                CommandOutput.sendMessage(sender, "No active character.");
                 return;
             }
             Avatar avatar = entity.getAvatar();
             apply(targetPlayer, avatar, level, true);
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender, "commands.setConst.success", avatar.getAvatarData().getName(), level);
         }
     }
@@ -113,18 +113,18 @@ public final class ConstellationCommand implements PicocliCommandHandler {
             if (scope == Scope.ALL) {
                 targetPlayer.getAvatars().forEach(avatar -> apply(targetPlayer, avatar, -1, false));
                 reloadScene(targetPlayer);
-                CommandHandler.sendTranslatedMessage(sender, "commands.resetConst.reset_all");
+                CommandOutput.sendTranslatedMessage(sender, "commands.resetConst.reset_all");
                 return;
             }
 
             EntityAvatar entity = targetPlayer.getTeamManager().getCurrentAvatarEntity();
             if (entity == null) {
-                CommandHandler.sendMessage(sender, "No active character.");
+                CommandOutput.sendMessage(sender, "No active character.");
                 return;
             }
             Avatar avatar = entity.getAvatar();
             apply(targetPlayer, avatar, -1, true);
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender, "commands.resetConst.success", avatar.getAvatarData().getName());
         }
     }
@@ -155,7 +155,7 @@ public final class ConstellationCommand implements PicocliCommandHandler {
         var account = sender.getAccount();
         String required = targetPlayer != sender ? permissionTargeted : permission;
         if (account != null && account.hasPermission(required)) return true;
-        CommandHandler.sendTranslatedMessage(sender, "commands.generic.permission_error");
+        CommandOutput.sendTranslatedMessage(sender, "commands.generic.permission_error");
         return false;
     }
 }

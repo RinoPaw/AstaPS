@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.inventory.Inventory;
 import emu.grasscutter.game.inventory.ItemType;
@@ -17,7 +17,7 @@ import picocli.CommandLine.Parameters;
         label = "clear",
         permission = "player.clearinv",
         permissionTargeted = "player.clearinv.others")
-public final class ClearCommand implements PicocliCommandHandler {
+public final class ClearCommand implements CommandHandler {
     private enum Scope {
         ALL,
         WEAPONS,
@@ -77,15 +77,15 @@ public final class ClearCommand implements PicocliCommandHandler {
             switch (scope) {
                 case WEAPONS -> {
                     inventory.removeItems(getWeapons(inventory, level, refinement, rarity).toList());
-                    CommandHandler.sendTranslatedMessage(sender, "commands.clear.weapons", playerName);
+                    CommandOutput.sendTranslatedMessage(sender, "commands.clear.weapons", playerName);
                 }
                 case ARTIFACTS -> {
                     inventory.removeItems(getRelics(inventory, level, rarity).toList());
-                    CommandHandler.sendTranslatedMessage(sender, "commands.clear.artifacts", playerName);
+                    CommandOutput.sendTranslatedMessage(sender, "commands.clear.artifacts", playerName);
                 }
                 case MATERIALS -> {
                     inventory.removeItems(getOther(ItemType.ITEM_MATERIAL, inventory, rarity).toList());
-                    CommandHandler.sendTranslatedMessage(sender, "commands.clear.materials", playerName);
+                    CommandOutput.sendTranslatedMessage(sender, "commands.clear.materials", playerName);
                 }
                 case ALL -> clearAll(sender, inventory, playerName, level, refinement, rarity);
             }
@@ -119,17 +119,17 @@ public final class ClearCommand implements PicocliCommandHandler {
             int refinement,
             int rarity) {
         inventory.removeItems(getRelics(inventory, level, rarity).toList());
-        CommandHandler.sendTranslatedMessage(sender, "commands.clear.artifacts", playerName);
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.artifacts", playerName);
         inventory.removeItems(getWeapons(inventory, level, refinement, rarity).toList());
-        CommandHandler.sendTranslatedMessage(sender, "commands.clear.weapons", playerName);
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.weapons", playerName);
         inventory.removeItems(getOther(ItemType.ITEM_MATERIAL, inventory, rarity).toList());
-        CommandHandler.sendTranslatedMessage(sender, "commands.clear.materials", playerName);
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.materials", playerName);
         inventory.removeItems(getOther(ItemType.ITEM_FURNITURE, inventory, rarity).toList());
-        CommandHandler.sendTranslatedMessage(sender, "commands.clear.furniture", playerName);
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.furniture", playerName);
         inventory.removeItems(getOther(ItemType.ITEM_DISPLAY, inventory, rarity).toList());
-        CommandHandler.sendTranslatedMessage(sender, "commands.clear.displays", playerName);
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.displays", playerName);
         inventory.removeItems(getOther(ItemType.ITEM_VIRTUAL, inventory, rarity).toList());
-        CommandHandler.sendTranslatedMessage(sender, "commands.clear.virtuals", playerName);
-        CommandHandler.sendTranslatedMessage(sender, "commands.clear.everything", playerName);
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.virtuals", playerName);
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.everything", playerName);
     }
 }

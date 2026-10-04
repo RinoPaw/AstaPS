@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.dps.DPSMeter;
 import emu.grasscutter.game.player.Player;
 import picocli.CommandLine;
@@ -10,7 +10,7 @@ import picocli.CommandLine.Parameters;
 
 /** Controls the in-server DPS test. */
 @Command(label = "dps", targetRequirement = Command.TargetRequirement.ONLINE)
-public final class DPSCommand implements PicocliCommandHandler {
+public final class DPSCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         var root = new CommandLine(new Root(sender));
@@ -52,7 +52,7 @@ public final class DPSCommand implements PicocliCommandHandler {
             int duration = seconds == null ? DPSMeter.DEFAULT_SECONDS : seconds;
             int count = targetCount == null ? 1 : targetCount;
             if (duration <= 0 || count <= 0) {
-                CommandHandler.sendMessage(targetPlayer, "seconds and targetCount must be positive.");
+                CommandOutput.sendMessage(targetPlayer, "seconds and targetCount must be positive.");
                 return;
             }
             DPSMeter.start(targetPlayer, duration, count);

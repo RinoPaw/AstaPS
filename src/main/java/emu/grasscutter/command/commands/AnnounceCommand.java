@@ -5,7 +5,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.packet.send.PacketServerAnnounceNotify;
 import java.util.Collections;
@@ -19,7 +19,7 @@ import picocli.CommandLine.Parameters;
         permission = "server.announce",
         aliases = {"a"},
         targetRequirement = Command.TargetRequirement.NONE)
-public final class AnnounceCommand implements PicocliCommandHandler {
+public final class AnnounceCommand implements CommandHandler {
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
@@ -48,7 +48,7 @@ public final class AnnounceCommand implements PicocliCommandHandler {
             String text = String.join(" ", content);
             manager.getOnlinePlayers()
                     .forEach(player -> player.sendPacket(new PacketServerAnnounceNotify(text, id)));
-            CommandHandler.sendMessage(sender, translate(sender, "commands.announce.send_success", id));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.announce.send_success", id));
         }
     }
 
@@ -68,12 +68,12 @@ public final class AnnounceCommand implements PicocliCommandHandler {
             var manager = Grasscutter.getGameServer().getAnnouncementSystem();
             var template = manager.getAnnounceConfigItemMap().get(templateId);
             if (template == null) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.announce.not_found", templateId));
                 return;
             }
             manager.broadcast(Collections.singletonList(template));
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender, translate(sender, "commands.announce.send_success", template.getTemplateId()));
         }
     }
@@ -89,7 +89,7 @@ public final class AnnounceCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             int count = Grasscutter.getGameServer().getAnnouncementSystem().refresh();
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender, translate(sender, "commands.announce.refresh_success", count));
         }
     }
@@ -108,7 +108,7 @@ public final class AnnounceCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             Grasscutter.getGameServer().getAnnouncementSystem().revoke(templateId);
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender, translate(sender, "commands.announce.revoke_done", templateId));
         }
     }

@@ -21,7 +21,7 @@ spotless {
             exclude '.idea/**/*.*'
         }
 
-        importOrder('io.grasscutter', '', 'java', 'javax', '\#java', '\#')
+        importOrder('io.grasscutter', '', 'java', 'javax', '\\#java', '\\#')
         googleJavaFormat('1.17.0')
         formatAnnotations()
         endWithNewline()

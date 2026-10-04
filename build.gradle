@@ -101,7 +101,7 @@ dependencies {
     implementation 'com.esotericsoftware:reflectasm:1.11.9'
     implementation 'com.github.davidmoten:rtree-multi:0.1'
 
-    implementation 'dev.morphia.morphia:morphia-core:2.2.10'
+    implementation 'dev.morphia.morphia:morphia-core:2.5.3'
 
     // Quartz 2.5 moves to Jakarta namespaces. Stay on the latest pre-migration line until
     // the scheduler integration is migrated deliberately.

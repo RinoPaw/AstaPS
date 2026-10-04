@@ -1,6 +1,6 @@
 package emu.grasscutter.server.packet.recv;
 
-import static emu.grasscutter.config.Configuration.ACCOUNT;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.*;
 import emu.grasscutter.database.DatabaseHelper;
@@ -83,8 +83,8 @@ public class HandlerGetPlayerTokenReq extends PacketHandler {
 
         if (!kicked) {
 
-            if (ACCOUNT.maxPlayer > -1
-                && Grasscutter.getGameServer().getPlayers().size() >= ACCOUNT.maxPlayer) {
+            if (GAME.maxOnlinePlayers > -1
+                && Grasscutter.getGameServer().getPlayers().size() >= GAME.maxOnlinePlayers) {
                 session.close();
                 return;
             }
@@ -140,8 +140,8 @@ public class HandlerGetPlayerTokenReq extends PacketHandler {
 
         // Refuse the login while the server is already at its player limit. Unlike the guards
         // below, the client has its own wording for this one, so it gets a plain retcode.
-        if (ACCOUNT.maxPlayer > -1
-                && Grasscutter.getGameServer().getPlayers().size() >= ACCOUNT.maxPlayer) {
+        if (GAME.maxOnlinePlayers > -1
+                && Grasscutter.getGameServer().getPlayers().size() >= GAME.maxOnlinePlayers) {
             session.setState(SessionState.SERVER_MAX_PLAYER_OVERFLOW);
             session.send(
                 new PacketGetPlayerTokenRsp(session, Retcode.RET_MP_ALLOW_ENTER_PLAYER_FULL));

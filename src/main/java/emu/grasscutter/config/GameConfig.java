@@ -13,7 +13,7 @@ import java.nio.file.StandardCopyOption;
 
 /** Player-facing and gameplay configuration stored directly in {@code game.json}. */
 public final class GameConfig {
-    private static final int CURRENT_VERSION = 1;
+    private static final int CURRENT_VERSION = 2;
     private static final Path FILE = Path.of("game.json");
     private static final Path LEGACY_REWARD_FILE = Path.of("reward-overrides.json");
 
@@ -22,6 +22,7 @@ public final class GameConfig {
     public int version = CURRENT_VERSION;
 
     public ConfigContainer.Account account = new ConfigContainer.Account();
+    public int maxOnlinePlayers = -1;
     public ConfigContainer.GameOptions.InventoryLimits inventoryLimits =
             new ConfigContainer.GameOptions.InventoryLimits();
     public ConfigContainer.GameOptions.AvatarLimits avatarLimits =
@@ -78,10 +79,14 @@ public final class GameConfig {
     /** Loads game.json, or migrates the gameplay fields out of config.json exactly once. */
     public static synchronized GameConfig loadAndBind(
             JsonObject legacyRoot, ConfigContainer serverConfig) {
+        boolean rewrite = false;
         if (current == null) {
             if (Files.exists(FILE)) {
                 try {
-                    current = JsonUtils.loadToClass(FILE, GameConfig.class);
+                    JsonObject stored = JsonUtils.loadToClass(FILE, JsonObject.class);
+                    current = stored == null ? new GameConfig() : JsonUtils.decode(stored, GameConfig.class);
+                    if (current == null) current = new GameConfig();
+                    rewrite = migrateStored(stored, current);
                 } catch (Exception exception) {
                     Grasscutter.getLogger()
                             .error(
@@ -99,6 +104,10 @@ public final class GameConfig {
         }
 
         current.normalize();
+        if (rewrite) {
+            save(current);
+            Grasscutter.getLogger().info("Migrated game.json to version {}.", CURRENT_VERSION);
+        }
         current.bindLegacyViews(serverConfig);
         return current;
     }
@@ -125,6 +134,28 @@ public final class GameConfig {
         }
     }
 
+    private static boolean migrateStored(JsonObject root, GameConfig target) {
+        if (root == null) return false;
+
+        boolean rewrite = !root.has("version") || root.get("version").getAsInt() < CURRENT_VERSION;
+        JsonObject oldAccount = object(root, "account");
+        if (!root.has("maxOnlinePlayers")
+                && oldAccount != null
+                && oldAccount.has("maxPlayer")
+                && !oldAccount.get("maxPlayer").isJsonNull()) {
+            target.maxOnlinePlayers = oldAccount.get("maxPlayer").getAsInt();
+            rewrite = true;
+        }
+
+        if (oldAccount != null
+                && (oldAccount.has("maxPlayer")
+                        || oldAccount.has("EXPERIMENTAL_RealPassword")
+                        || oldAccount.has("useIntegrationPassword"))) {
+            rewrite = true;
+        }
+        return rewrite;
+    }
+
     private static GameConfig migrate(JsonObject root) {
         GameConfig migrated = new GameConfig();
         if (root == null) return migrated;
@@ -137,9 +168,13 @@ public final class GameConfig {
             if (decoded != null) migrated = decoded;
         }
 
-        if (root.has("account") && root.get("account").isJsonObject()) {
-            var account = JsonUtils.decode(root.get("account"), ConfigContainer.Account.class);
+        JsonObject oldAccount = object(root, "account");
+        if (oldAccount != null) {
+            var account = JsonUtils.decode(oldAccount, ConfigContainer.Account.class);
             if (account != null) migrated.account = account;
+            if (oldAccount.has("maxPlayer") && !oldAccount.get("maxPlayer").isJsonNull()) {
+                migrated.maxOnlinePlayers = oldAccount.get("maxPlayer").getAsInt();
+            }
         }
         if (game != null) {
             migrated.join =

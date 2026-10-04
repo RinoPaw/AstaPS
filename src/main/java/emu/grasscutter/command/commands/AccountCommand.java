@@ -5,7 +5,6 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.*;
-import emu.grasscutter.config.Configuration;
 import emu.grasscutter.database.*;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.game.player.Player;
@@ -34,11 +33,7 @@ public final class AccountCommand implements PicocliCommandHandler {
         commandLine.setExpandAtFiles(false);
         commandLine.registerConverter(UidArg.class, value -> parseUid(sender, value));
 
-        if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
-            commandLine.addSubcommand("create", new CreateWithPassword(sender));
-        } else {
-            commandLine.addSubcommand("create", new CreateWithoutPassword(sender));
-        }
+        commandLine.addSubcommand("create", new CreateWithPassword(sender));
         commandLine.addSubcommand("clone", new Clone(sender));
         commandLine.addSubcommand("delete", new Delete(sender));
         commandLine.addSubcommand("resetpass", new ResetPass(sender));
@@ -97,26 +92,6 @@ public final class AccountCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             AccountCommand.this.sendUsageMessage(sender);
-        }
-    }
-
-    @picocli.CommandLine.Command(name = "create")
-    private final class CreateWithoutPassword implements Runnable {
-        private final Player sender;
-
-        @Parameters(index = "0", paramLabel = "<username>")
-        private String username;
-
-        @Parameters(index = "1", arity = "0..1", paramLabel = "[@UID]")
-        private UidArg uid;
-
-        private CreateWithoutPassword(Player sender) {
-            this.sender = sender;
-        }
-
-        @Override
-        public void run() {
-            createAccount(sender, username, "", uid == null ? 0 : uid.value());
         }
     }
 
@@ -215,7 +190,7 @@ public final class AccountCommand implements PicocliCommandHandler {
         @Parameters(index = "0", paramLabel = "<username>")
         private String username;
 
-        @Parameters(index = "1", arity = "0..1", paramLabel = "<password>")
+        @Parameters(index = "1", paramLabel = "<password>")
         private String password;
 
         private ResetPass(Player sender) {
@@ -224,25 +199,17 @@ public final class AccountCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
-            if (!Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
-                CommandHandler.sendMessage(
-                        sender, "resetpass requires EXPERIMENTAL_RealPassword to be true.");
-                return;
-            }
-            if (password == null) {
-                CommandHandler.sendMessage(sender, "Invalid Args");
-                CommandHandler.sendMessage(sender, "Usage: account resetpass <username> <password>");
-                return;
-            }
-
             Account toUpdate = DatabaseHelper.getAccountByName(username);
             if (toUpdate == null) {
                 CommandHandler.sendMessage(sender, translate(sender, "commands.account.no_account"));
                 return;
             }
 
+            String passwordHash = hashPassword(sender, password);
+            if (passwordHash == null) return;
+
             kickAccount(toUpdate);
-            toUpdate.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
+            toUpdate.setPassword(passwordHash);
             toUpdate.save();
             CommandHandler.sendMessage(sender, "Password Updated.");
         }
@@ -277,19 +244,29 @@ public final class AccountCommand implements PicocliCommandHandler {
     }
 
     private void createAccount(Player sender, String username, String password, int uid) {
+        String passwordHash = hashPassword(sender, password);
+        if (passwordHash == null) return;
+
         Account account = DatabaseHelper.createAccountWithUid(username, uid);
         if (account == null) {
             CommandHandler.sendMessage(sender, translate(sender, "commands.account.exists"));
             return;
         }
 
-        if (Configuration.ACCOUNT.EXPERIMENTAL_RealPassword) {
-            account.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
-        }
+        account.setPassword(passwordHash);
         account.addPermission("*");
         account.save();
         CommandHandler.sendMessage(
                 sender, translate(sender, "commands.account.create", account.getReservedPlayerUid()));
+    }
+
+    private String hashPassword(Player sender, String password) {
+        try {
+            return BCrypt.withDefaults().hashToString(12, password.toCharArray());
+        } catch (IllegalArgumentException invalidPassword) {
+            CommandHandler.sendMessage(sender, "Invalid password.");
+            return null;
+        }
     }
 
     private String getPlayerUid(Account account) {

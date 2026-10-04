@@ -13,12 +13,7 @@ import emu.grasscutter.server.dispatch.*;
 import emu.grasscutter.server.http.objects.*;
 import emu.grasscutter.utils.*;
 import io.javalin.http.ContentType;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.concurrent.*;
-import javax.crypto.Cipher;
 
 /** A class containing default authenticators. */
 public final class DefaultAuthenticators {
@@ -45,10 +40,9 @@ public final class DefaultAuthenticators {
      * The password as the player typed it, or null when the client encrypted it (is_crypto) with a
      * key this server cannot decrypt.
      */
-    private static String plainPassword(LoginAccountRequestJson data, boolean integrationPassword) {
+    private static String plainPassword(LoginAccountRequestJson data) {
         String password = data.password == null ? "" : data.password;
-        // The integration password comes out of the username box, which is never encrypted.
-        if (integrationPassword || !data.is_crypto || password.isEmpty()) return password;
+        if (!data.is_crypto || password.isEmpty()) return password;
         try {
             return RSADecryptionUtil.decrypt(password);
         } catch (Exception e) {
@@ -73,70 +67,47 @@ public final class DefaultAuthenticators {
 
             var requestData = request.getPasswordRequest();
             assert requestData != null; // This should never be null.
-            boolean useIntegrationPassword = ACCOUNT.useIntegrationPassword;
-            if (useIntegrationPassword) {
-                // Rewrites requestData.account and requestData.password in place, and nulls both
-                // when the username box did not hold the "account&&password" form.
-                requestData.parse();
-            }
 
             boolean successfulLogin = false;
             String address = Utils.address(request.getContext());
             String responseMessage = translate("messages.dispatch.account.username_error");
             String loggerMessage = "";
 
-            // Nothing usable came out of the username box. Stop here: signing in registers an
-            // unknown name, so falling through would try to register a null one.
             if (requestData.account == null || requestData.account.isBlank()) {
                 response.retcode = -201;
-                response.message =
-                        useIntegrationPassword
-                                ? "Enter your account and password in the username box as"
-                                        + " account&&password."
-                                : responseMessage;
+                response.message = responseMessage;
                 Grasscutter.getLogger()
                         .info("[Dispatch] Client {} sent no usable account name.", address);
                 return response;
             }
 
-            if (useIntegrationPassword
-                    && (requestData.password == null || requestData.password.isEmpty())) {
-                response.retcode = -201;
-                response.message = "The password half of account&&password is empty.";
-                Grasscutter.getLogger()
-                        .info("[Dispatch] Client {} sent an empty password half.", address);
-                return response;
-            }
-
-            // Get account from database.
+            String rawPassword = plainPassword(requestData);
             Account account = DatabaseHelper.getAccountByName(requestData.account);
-            // Signing in with a name nobody holds registers it, so there is no separate sign-up
-            // step: the launcher's login box is the sign-up form. autoCreate turns this off for a
-            // closed server.
-            //
-            // The cost is that a mistyped username registers that typo rather than reporting a bad
-            // login - unavoidable when the credential comes from one free-text box, and the reason
-            // the password is checked below for names that already exist.
-            if (account == null && ACCOUNT.autoCreate) {
-                // This account has been created AUTOMATICALLY. There will be no permissions added.
-                account =
-                        useIntegrationPassword
-                                // The password came in with the name, so store it now, hashed. The
-                                // other path has none to store and locks one in on first sign-in.
-                                ? DatabaseHelper.createAccountWithHashedPassword(
-                                        requestData.account, requestData.password, null)
-                                : DatabaseHelper.createAccountWithUid(requestData.account, 0);
 
-                // Check if the account was created successfully.
+            // Signing in with an unused account name registers it, so there is no separate sign-up
+            // step. autoCreate turns this off for a closed server. A mistyped account name can
+            // therefore register the typo instead of reporting a bad login.
+            if (account == null && ACCOUNT.autoCreate) {
+                try {
+                    account =
+                            rawPassword != null && !rawPassword.isEmpty()
+                                    ? DatabaseHelper.createAccountWithHashedPassword(
+                                            requestData.account, rawPassword, null)
+                                    : DatabaseHelper.createAccountWithUid(requestData.account, 0);
+                } catch (IllegalArgumentException invalidPassword) {
+                    response.retcode = -3201;
+                    response.message = translate("messages.dispatch.account.password_error");
+                    Grasscutter.getLogger()
+                            .info(translate("messages.dispatch.account.login_password_error", address));
+                    return response;
+                }
+
                 if (account == null) {
                     responseMessage = translate("messages.dispatch.account.username_create_error");
-                    Grasscutter.getLogger()
-                            .info(translate("messages.dispatch.account.account_login_create_error", address));
+                    loggerMessage =
+                            translate("messages.dispatch.account.account_login_create_error", address);
                 } else {
-                    // Continue with login.
                     successfulLogin = true;
-
-                    // Log the creation.
                     Grasscutter.getLogger()
                             .info(
                                     translate(
@@ -145,12 +116,10 @@ public final class DefaultAuthenticators {
                                             account.getId()));
                 }
             } else if (account != null) {
-                String rawPassword = plainPassword(requestData, useIntegrationPassword);
                 if (rawPassword == null) {
-                    // The client encrypted the password with a key this server does not hold, so
-                    // it can be neither stored nor checked. Hashing the ciphertext threw (BCrypt
-                    // takes at most 72 bytes) and reached the client as an HTTP 500; the login is
-                    // let through instead, as the private repo does.
+                    // The client encrypted the password with a key this server does not hold, so it
+                    // can be neither stored nor checked. Keep the private-server compatibility
+                    // behavior and allow the login rather than turning it into an HTTP 500.
                     successfulLogin = true;
                     Grasscutter.getLogger()
                             .info(
@@ -159,159 +128,33 @@ public final class DefaultAuthenticators {
                                             + " sent a password this server cannot decrypt; account "
                                             + account.getId()
                                             + " logs in without a password check.");
-                } else {
-                    // Lock the entered password as the account password on first login
-                    // (covers both newly auto-created accounts and old accounts with an empty
-                    // password).
-                    if ((account.getPassword() == null || account.getPassword().isEmpty())
-                            && !rawPassword.isEmpty()) {
+                } else if (account.getPassword() == null || account.getPassword().isEmpty()) {
+                    // Existing passwordless accounts are upgraded on the first login that carries a
+                    // usable password. Empty-password accounts remain compatible with old installs.
+                    if (rawPassword.isEmpty()) {
+                        successfulLogin = true;
+                    } else {
                         try {
                             account.setPassword(
-                                    BCrypt.withDefaults().hashToString(10, rawPassword.toCharArray()));
+                                    BCrypt.withDefaults().hashToString(12, rawPassword.toCharArray()));
                             account.save();
-                        } catch (IllegalArgumentException tooLong) {
-                            // Longer than BCrypt takes: leave the account without a password.
+                            successfulLogin = true;
+                        } catch (IllegalArgumentException invalidPassword) {
+                            responseMessage = translate("messages.dispatch.account.password_error");
+                            loggerMessage =
+                                    translate("messages.dispatch.account.login_password_error", address);
                         }
                     }
-                }
-                // Verify the password for accounts that have one set.
-                if (successfulLogin
-                        || account.getPassword() == null
-                        || account.getPassword().isEmpty()
-                        || verifyPassword(account, rawPassword)) {
+                } else if (verifyPassword(account, rawPassword)) {
                     successfulLogin = true;
                 } else {
                     responseMessage = translate("messages.dispatch.account.password_error");
                     loggerMessage = translate("messages.dispatch.account.login_password_error", address);
                 }
-            } else
-                loggerMessage = translate("messages.dispatch.account.account_login_exist_error", address);
-
-            // Set response data.
-            if (successfulLogin) {
-                if (account != null && account.isBanned()) {
-                    response.retcode = -201;
-                    response.message = buildBanMessage(account);
-                    loggerMessage = String.format("Login rejected: account %s is banned", account.getId());
-                } else {
-                    response.message = "OK";
-                    response.data.account.uid = account.getId();
-                    response.data.account.token = account.generateSessionKey();
-                    response.data.account.email = account.getEmail();
-
-                    loggerMessage =
-                            translate("messages.dispatch.account.login_success", address, account.getId());
-                }
-            } else {
-                response.retcode = -3201;
-                response.message = responseMessage;
-            }
-            Grasscutter.getLogger().info(loggerMessage);
-
-            return response;
-        }
-    }
-
-    public static class ExperimentalPasswordAuthenticator implements Authenticator<LoginResultJson> {
-        @Override
-        public LoginResultJson authenticate(AuthenticationRequest request) {
-            var response = new LoginResultJson();
-
-            var requestData = request.getPasswordRequest();
-            assert requestData != null; // This should never be null.
-            boolean successfulLogin = false;
-            String address = Utils.address(request.getContext());
-            String responseMessage = translate("messages.dispatch.account.username_error");
-            String loggerMessage = "";
-            String decryptedPassword = "";
-            try {
-                byte[] key = FileUtils.readResource("/keys/auth_private-key.der");
-                PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(key);
-                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-                RSAPrivateKey private_key = (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
-
-                Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-
-                cipher.init(Cipher.DECRYPT_MODE, private_key);
-
-                decryptedPassword =
-                        new String(
-                                cipher.doFinal(Utils.base64Decode(request.getPasswordRequest().password)),
-                                StandardCharsets.UTF_8);
-            } catch (Exception ignored) {
-                decryptedPassword = request.getPasswordRequest().password;
-            }
-
-            if (decryptedPassword == null) {
-                successfulLogin = false;
-                loggerMessage = translate("messages.dispatch.account.login_password_error", address);
-                responseMessage = translate("messages.dispatch.account.password_error");
-            }
-
-            // Get account from database.
-            Account account = DatabaseHelper.getAccountByName(requestData.account);
-            // Check if account exists.
-            if (account == null && ACCOUNT.autoCreate) {
-                // This account has been created AUTOMATICALLY. There will be no permissions added.
-                if (decryptedPassword.length() >= 8) {
-                    account = DatabaseHelper.createAccountWithUid(requestData.account, 0);
-                    account.setPassword(
-                            BCrypt.withDefaults().hashToString(12, decryptedPassword.toCharArray()));
-                    account.save();
-
-                    // Check if the account was created successfully.
-                    if (account == null) {
-                        responseMessage = translate("messages.dispatch.account.username_create_error");
-                        loggerMessage =
-                                translate("messages.dispatch.account.account_login_create_error", address);
-                    } else {
-                        // Continue with login.
-                        successfulLogin = true;
-
-                        // Log the creation.
-                        Grasscutter.getLogger()
-                                .info(
-                                        translate(
-                                                "messages.dispatch.account.account_login_create_success",
-                                                address,
-                                                response.data.account.uid));
-                    }
-                } else {
-                    successfulLogin = false;
-                    loggerMessage = translate("messages.dispatch.account.login_password_error", address);
-                    responseMessage = translate("messages.dispatch.account.password_length_error");
-                }
-            } else if (account != null) {
-                if (account.getPassword() != null && !account.getPassword().isEmpty()) {
-                    if (BCrypt.verifyer()
-                            .verify(decryptedPassword.toCharArray(), account.getPassword())
-                            .verified) {
-                        successfulLogin = true;
-                    } else {
-                        successfulLogin = false;
-                        loggerMessage = translate("messages.dispatch.account.login_password_error", address);
-                        responseMessage = translate("messages.dispatch.account.password_error");
-                    }
-                } else {
-                    // Empty password account: lock the entered password on first login.
-                    if (decryptedPassword != null && !decryptedPassword.isEmpty()) {
-                        account.setPassword(
-                                BCrypt.withDefaults()
-                                        .hashToString(12, decryptedPassword.toCharArray()));
-                        account.save();
-                        successfulLogin = true;
-                    } else {
-                        successfulLogin = false;
-                        loggerMessage =
-                                translate("messages.dispatch.account.login_password_error", address);
-                        responseMessage = translate("messages.dispatch.account.password_error");
-                    }
-                }
             } else {
                 loggerMessage = translate("messages.dispatch.account.account_login_exist_error", address);
             }
 
-            // Set response data.
             if (successfulLogin) {
                 if (account != null && account.isBanned()) {
                     response.retcode = -201;

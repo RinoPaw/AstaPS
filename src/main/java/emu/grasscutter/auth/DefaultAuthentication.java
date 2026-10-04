@@ -1,6 +1,5 @@
 package emu.grasscutter.auth;
 
-import static emu.grasscutter.config.Configuration.GAME;
 import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.Grasscutter;
@@ -12,7 +11,7 @@ import emu.grasscutter.server.http.objects.*;
  * The default Grasscutter authentication implementation. Allows all users to access any account.
  */
 public final class DefaultAuthentication implements AuthenticationSystem {
-    private final Authenticator<LoginResultJson> passwordAuthenticator;
+    private final Authenticator<LoginResultJson> passwordAuthenticator = new PasswordAuthenticator();
     private final Authenticator<LoginResultJson> tokenAuthenticator = new TokenAuthenticator();
     private final Authenticator<ComboTokenResJson> sessionKeyAuthenticator =
             new SessionKeyAuthenticator();
@@ -21,22 +20,14 @@ public final class DefaultAuthentication implements AuthenticationSystem {
     private final OAuthAuthenticator oAuthAuthenticator = new OAuthAuthentication();
     private final HandbookAuthenticator handbookAuthenticator = new HandbookAuthentication();
 
-    public DefaultAuthentication() {
-        if (GAME.account.EXPERIMENTAL_RealPassword) {
-            passwordAuthenticator = new ExperimentalPasswordAuthenticator();
-        } else {
-            passwordAuthenticator = new PasswordAuthenticator();
-        }
-    }
-
     @Override
     public void createAccount(String username, String password) {
-        // Unhandled. The default authenticator doesn't store passwords.
+        // Account creation is handled by the dispatch login flow and console commands.
     }
 
     @Override
     public void resetPassword(String username) {
-        // Unhandled. The default authenticator doesn't store passwords.
+        // Password changes are handled by the account command or another authentication backend.
     }
 
     @Override

@@ -18,7 +18,7 @@ import picocli.CommandLine.Parameters;
         label = "npc",
         permission = "server.npc",
         permissionTargeted = "server.npc.others")
-public final class NpcCommand implements PicocliCommandHandler {
+public final class NpcCommand implements CommandHandler {
     private static final double DISTANCE = 2.5;
 
     @Override
@@ -59,7 +59,7 @@ public final class NpcCommand implements PicocliCommandHandler {
                     int groupId = Integer.parseInt(args.get(1));
                     int suiteId = Integer.parseInt(args.get(2));
                     targetPlayer.sendPacket(new PacketGroupSuiteNotify(groupId, suiteId));
-                    CommandHandler.sendTranslatedMessage(
+                    CommandOutput.sendTranslatedMessage(
                             sender, "commands.npc.group_sent", groupId, suiteId);
                 } catch (NumberFormatException e) {
                     usage(sender);
@@ -73,7 +73,7 @@ public final class NpcCommand implements PicocliCommandHandler {
                     if (entity instanceof EntityNPC npc && npc.isStandalone()) placed.add(npc);
                 }
                 placed.forEach(scene::removeEntity);
-                CommandHandler.sendTranslatedMessage(sender, "commands.npc.cleared", placed.size());
+                CommandOutput.sendTranslatedMessage(sender, "commands.npc.cleared", placed.size());
                 return;
             }
 
@@ -85,7 +85,7 @@ public final class NpcCommand implements PicocliCommandHandler {
                 return;
             }
             if (!GameData.getNpcDataMap().containsKey(npcId)) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.npc.not_found", npcId);
+                CommandOutput.sendTranslatedMessage(sender, "commands.npc.not_found", npcId);
                 return;
             }
 
@@ -114,7 +114,7 @@ public final class NpcCommand implements PicocliCommandHandler {
                             scene.getId(),
                             npc.getBlockId(),
                             pos);
-            CommandHandler.sendTranslatedMessage(sender, "commands.npc.spawned", npcId);
+            CommandOutput.sendTranslatedMessage(sender, "commands.npc.spawned", npcId);
         }
     }
 
@@ -149,14 +149,14 @@ public final class NpcCommand implements PicocliCommandHandler {
         }
 
         if (lines.isEmpty()) {
-            CommandHandler.sendTranslatedMessage(sender, "commands.npc.none_near", radius);
+            CommandOutput.sendTranslatedMessage(sender, "commands.npc.none_near", radius);
             return;
         }
-        CommandHandler.sendMessage(sender, String.join("\n", lines));
+        CommandOutput.sendMessage(sender, String.join("\n", lines));
     }
 
     private static void usage(Player sender) {
-        CommandHandler.sendMessage(
+        CommandOutput.sendMessage(
                 sender,
                 "Usage: /npc <npcId> | /npc near [radius] | /npc group <groupId> <suiteId> | /npc clear");
     }

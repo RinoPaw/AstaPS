@@ -5,7 +5,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.combine.CombineManger;
 import emu.grasscutter.game.player.Player;
 import picocli.CommandLine;
@@ -14,7 +14,7 @@ import picocli.CommandLine;
         label = "reload",
         permission = "server.reload",
         targetRequirement = Command.TargetRequirement.NONE)
-public final class ReloadCommand implements PicocliCommandHandler {
+public final class ReloadCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         return new CommandLine(new Args(sender));
@@ -30,13 +30,13 @@ public final class ReloadCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
-            CommandHandler.sendMessage(sender, translate(sender, "commands.reload.reload_start"));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.reload.reload_start"));
             Grasscutter.loadConfig();
             Grasscutter.loadLanguage();
             Grasscutter.getGameServer().getGachaSystem().load();
             Grasscutter.getGameServer().getShopSystem().load();
             CombineManger.initialize();
-            CommandHandler.sendMessage(sender, translate(sender, "commands.reload.reload_done"));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.reload.reload_done"));
         }
     }
 }

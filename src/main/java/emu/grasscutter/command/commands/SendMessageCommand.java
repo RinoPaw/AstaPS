@@ -3,7 +3,7 @@ package emu.grasscutter.command.commands;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.command.Command.TargetRequirement;
 import emu.grasscutter.game.player.Player;
 import picocli.CommandLine;
@@ -15,7 +15,7 @@ import picocli.CommandLine.Parameters;
         permission = "server.sendmessage",
         permissionTargeted = "server.sendmessage.others",
         targetRequirement = TargetRequirement.NONE)
-public final class SendMessageCommand implements PicocliCommandHandler {
+public final class SendMessageCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         return new CommandLine(new Args(sender, targetPlayer));
@@ -39,12 +39,12 @@ public final class SendMessageCommand implements PicocliCommandHandler {
             String message = String.join(" ", words);
             if (targetPlayer == null) {
                 for (Player player : Grasscutter.getGameServer().getPlayers().values()) {
-                    CommandHandler.sendMessage(player, message);
+                    CommandOutput.sendMessage(player, message);
                 }
             } else {
-                CommandHandler.sendMessage(targetPlayer, message);
+                CommandOutput.sendMessage(targetPlayer, message);
             }
-            CommandHandler.sendTranslatedMessage(sender, "commands.sendMessage.success");
+            CommandOutput.sendTranslatedMessage(sender, "commands.sendMessage.success");
         }
     }
 }

@@ -2,14 +2,14 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import picocli.CommandLine;
 
 @Command(
         label = "position",
         aliases = {"pos"})
-public final class PositionCommand implements PicocliCommandHandler {
+public final class PositionCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         return new CommandLine(new Args(sender, targetPlayer));
@@ -29,7 +29,7 @@ public final class PositionCommand implements PicocliCommandHandler {
         public void run() {
             var pos = targetPlayer.getPosition();
             var rot = targetPlayer.getRotation();
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender,
                     "commands.position.success",
                     pos.getX(),

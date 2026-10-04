@@ -4,7 +4,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import picocli.CommandLine;
 
@@ -13,7 +13,7 @@ import picocli.CommandLine;
         aliases = {"resetshop"},
         permission = "server.resetshop",
         permissionTargeted = "server.resetshop.others")
-public final class ResetShopLimitCommand implements PicocliCommandHandler {
+public final class ResetShopLimitCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         return new CommandLine(new Args(sender, targetPlayer));
@@ -33,7 +33,7 @@ public final class ResetShopLimitCommand implements PicocliCommandHandler {
         public void run() {
             targetPlayer.getShopLimit().forEach(x -> x.setNextRefreshTime(0));
             targetPlayer.save();
-            CommandHandler.sendMessage(sender, translate(sender, "commands.resetShopLimit.success"));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.resetShopLimit.success"));
         }
     }
 }

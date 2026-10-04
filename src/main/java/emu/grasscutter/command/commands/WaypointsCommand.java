@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.packet.send.PacketSceneAreaUnlockNotify;
@@ -20,7 +20,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"wp", "unlockwp"},
         permission = "player.waypoints",
         permissionTargeted = "player.waypoints.others")
-public final class WaypointsCommand implements PicocliCommandHandler {
+public final class WaypointsCommand implements CommandHandler {
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
@@ -47,7 +47,7 @@ public final class WaypointsCommand implements PicocliCommandHandler {
             int sceneId = targetPlayer.getSceneId();
             var waypoints = collectWaypoints(sceneId);
             if (waypoints.isEmpty()) {
-                CommandHandler.sendMessage(sender, "No waypoints are known for scene " + sceneId + ".");
+                CommandOutput.sendMessage(sender, "No waypoints are known for scene " + sceneId + ".");
                 return;
             }
 
@@ -65,7 +65,7 @@ public final class WaypointsCommand implements PicocliCommandHandler {
             }
 
             if (points.isEmpty()) {
-                CommandHandler.sendMessage(sender, "No waypoints matched those areas. Try /waypoints list");
+                CommandOutput.sendMessage(sender, "No waypoints matched those areas. Try /waypoints list");
                 return;
             }
 
@@ -84,7 +84,7 @@ public final class WaypointsCommand implements PicocliCommandHandler {
                             sceneId, targetPlayer.getUnlockedSceneAreas(sceneId)));
             targetPlayer.sendPacket(new PacketScenePointUnlockNotify(sceneId, alreadyUnlocked));
 
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Unlocked "
                             + points.size()
@@ -113,7 +113,7 @@ public final class WaypointsCommand implements PicocliCommandHandler {
             int sceneId = targetPlayer.getSceneId();
             var waypoints = collectWaypoints(sceneId);
             if (waypoints.isEmpty()) {
-                CommandHandler.sendMessage(sender, "No waypoints are known for scene " + sceneId + ".");
+                CommandOutput.sendMessage(sender, "No waypoints are known for scene " + sceneId + ".");
                 return;
             }
 
@@ -136,7 +136,7 @@ public final class WaypointsCommand implements PicocliCommandHandler {
                                     .append(counts[1])
                                     .append("/")
                                     .append(counts[0]));
-            CommandHandler.sendMessage(sender, message.toString());
+            CommandOutput.sendMessage(sender, message.toString());
         }
     }
 

@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ClimateType;
 import java.util.Locale;
@@ -14,7 +14,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"w"},
         permission = "player.weather",
         permissionTargeted = "player.weather.others")
-public final class WeatherCommand implements PicocliCommandHandler {
+public final class WeatherCommand implements CommandHandler {
     private record WeatherToken(Integer weatherId, ClimateType climate) {}
 
     @Override
@@ -53,7 +53,7 @@ public final class WeatherCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (tokens.length == 0) {
-                CommandHandler.sendTranslatedMessage(
+                CommandOutput.sendTranslatedMessage(
                         sender,
                         "commands.weather.status",
                         targetPlayer.getWeatherId(),
@@ -69,7 +69,7 @@ public final class WeatherCommand implements PicocliCommandHandler {
             }
 
             targetPlayer.setWeather(weatherId, climate);
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender,
                     "commands.weather.success",
                     weatherId,

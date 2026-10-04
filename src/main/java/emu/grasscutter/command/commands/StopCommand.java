@@ -5,7 +5,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import picocli.CommandLine;
 
@@ -14,7 +14,7 @@ import picocli.CommandLine;
         aliases = {"shutdown"},
         permission = "server.stop",
         targetRequirement = Command.TargetRequirement.NONE)
-public final class StopCommand implements PicocliCommandHandler {
+public final class StopCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         return new CommandLine(new Args(sender));
@@ -30,9 +30,9 @@ public final class StopCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
-            CommandHandler.sendMessage(null, translate("commands.stop.success"));
+            CommandOutput.sendMessage(null, translate("commands.stop.success"));
             for (Player player : Grasscutter.getGameServer().getPlayers().values()) {
-                CommandHandler.sendMessage(player, translate(player, "commands.stop.success"));
+                CommandOutput.sendMessage(player, translate(player, "commands.stop.success"));
             }
             System.exit(1000);
         }

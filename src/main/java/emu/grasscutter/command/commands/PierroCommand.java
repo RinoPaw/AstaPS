@@ -13,7 +13,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"ronova"},
         permission = "player.pierro",
         permissionTargeted = "player.pierro.others")
-public final class PierroCommand implements PicocliCommandHandler {
+public final class PierroCommand implements CommandHandler {
     private static final String SUPPORT_SKILL = "Level_Ronova_SupportSkillHandler";
 
     @Override
@@ -44,14 +44,14 @@ public final class PierroCommand implements PicocliCommandHandler {
                     case "on" -> enable = true;
                     case "off" -> enable = false;
                     default -> {
-                        CommandHandler.sendMessage(sender, "State must be on or off.");
+                        CommandOutput.sendMessage(sender, "State must be on or off.");
                         return;
                     }
                 }
             }
 
             TeamAbilityToggle.set(targetPlayer, List.of(SUPPORT_SKILL), enable);
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender, enable ? "commands.pierro.on" : "commands.pierro.off");
         }
     }

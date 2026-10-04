@@ -4,7 +4,6 @@ import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.Position;
 import emu.grasscutter.server.packet.send.PacketScenePlayerSoundNotify;
@@ -16,7 +15,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"audio"},
         permission = "player.sound",
         permissionTargeted = "player.sound.others")
-public final class SoundCommand implements PicocliCommandHandler {
+public final class SoundCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         return new CommandLine(new Args(sender, targetPlayer));

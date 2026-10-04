@@ -15,7 +15,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"assist"},
         permission = "player.support",
         permissionTargeted = "player.support.others")
-public final class SupportCommand implements PicocliCommandHandler {
+public final class SupportCommand implements CommandHandler {
     private static final Map<String, String> BUTTONS = new LinkedHashMap<>();
 
     static {
@@ -54,7 +54,7 @@ public final class SupportCommand implements PicocliCommandHandler {
             } else if (BUTTONS.containsKey(key)) {
                 abilities = List.of(BUTTONS.get(key));
             } else {
-                CommandHandler.sendMessage(sender, "Unknown support button: " + which);
+                CommandOutput.sendMessage(sender, "Unknown support button: " + which);
                 return;
             }
 
@@ -66,14 +66,14 @@ public final class SupportCommand implements PicocliCommandHandler {
                     case "on" -> enable = true;
                     case "off" -> enable = false;
                     default -> {
-                        CommandHandler.sendMessage(sender, "State must be on or off.");
+                        CommandOutput.sendMessage(sender, "State must be on or off.");
                         return;
                     }
                 }
             }
 
             TeamAbilityToggle.set(targetPlayer, abilities, enable);
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender, enable ? "commands.support.on" : "commands.support.off", key);
         }
     }

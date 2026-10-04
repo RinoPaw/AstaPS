@@ -5,7 +5,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.game.player.Player;
 import picocli.CommandLine;
@@ -15,7 +15,7 @@ import picocli.CommandLine.Parameters;
         label = "permission",
         permission = "permission",
         targetRequirement = Command.TargetRequirement.PLAYER)
-public final class PermissionCommand implements PicocliCommandHandler {
+public final class PermissionCommand implements CommandHandler {
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
@@ -52,12 +52,12 @@ public final class PermissionCommand implements PicocliCommandHandler {
 
         protected Account account() {
             if (!Grasscutter.getPermissionHandler().EnablePermissionCommand()) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.generic.permission_error");
+                CommandOutput.sendTranslatedMessage(sender, "commands.generic.permission_error");
                 return null;
             }
             Account account = targetPlayer.getAccount();
             if (account == null) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.permission.account_error"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.permission.account_error"));
             }
             return account;
         }
@@ -77,9 +77,9 @@ public final class PermissionCommand implements PicocliCommandHandler {
             Account account = account();
             if (account == null) return;
             if (account.addPermission(permission)) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.permission.add"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.permission.add"));
             } else {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.permission.has_error"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.permission.has_error"));
             }
             account.save();
         }
@@ -99,9 +99,9 @@ public final class PermissionCommand implements PicocliCommandHandler {
             Account account = account();
             if (account == null) return;
             if (account.removePermission(permission)) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.permission.remove"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.permission.remove"));
             } else {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.permission.not_have_error"));
             }
             account.save();
@@ -120,7 +120,7 @@ public final class PermissionCommand implements PicocliCommandHandler {
             if (account == null) return;
             account.clearPermission();
             account.save();
-            CommandHandler.sendMessage(sender, translate(sender, "commands.permission.remove"));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.permission.remove"));
         }
     }
 
@@ -134,7 +134,7 @@ public final class PermissionCommand implements PicocliCommandHandler {
         public void run() {
             Account account = account();
             if (account == null) return;
-            CommandHandler.sendMessage(sender, String.join("\n", account.getPermissions()));
+            CommandOutput.sendMessage(sender, String.join("\n", account.getPermissions()));
         }
     }
 }

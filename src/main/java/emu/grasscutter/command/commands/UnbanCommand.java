@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.game.player.Player;
@@ -10,7 +10,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
 @Command(label = "unban", targetRequirement = Command.TargetRequirement.NONE)
-public final class UnbanCommand implements PicocliCommandHandler {
+public final class UnbanCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         var commandLine = new CommandLine(new Root(sender));
@@ -46,14 +46,14 @@ public final class UnbanCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (targetPlayer == null) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.execution.need_target");
+                CommandOutput.sendTranslatedMessage(sender, "commands.execution.need_target");
                 return;
             }
             if (!hasPermission(sender, targetPlayer, "server.ban", "server.ban")) return;
 
             Account account = targetPlayer.getAccount();
             if (account == null) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.unban.failure");
+                CommandOutput.sendTranslatedMessage(sender, "commands.unban.failure");
                 return;
             }
 
@@ -62,7 +62,7 @@ public final class UnbanCommand implements PicocliCommandHandler {
             account.setBanStartTime(0);
             account.setBanned(false);
             account.save();
-            CommandHandler.sendTranslatedMessage(sender, "commands.unban.success");
+            CommandOutput.sendTranslatedMessage(sender, "commands.unban.success");
         }
     }
 
@@ -81,12 +81,12 @@ public final class UnbanCommand implements PicocliCommandHandler {
         public void run() {
             if (!hasPermission(sender, sender, "server.banip", "server.banip")) return;
             if (!DatabaseHelper.removeBannedIp(ip)) {
-                CommandHandler.sendMessage(sender, "No ban recorded for " + ip + ".");
+                CommandOutput.sendMessage(sender, "No ban recorded for " + ip + ".");
                 return;
             }
 
             int unbanned = DatabaseHelper.unbanAccountsBannedByIp(ip);
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     unbanned > 0
                             ? "Unbanned IP " + ip + ", along with " + unbanned + " account(s)."
@@ -100,7 +100,7 @@ public final class UnbanCommand implements PicocliCommandHandler {
         var account = sender.getAccount();
         String required = targetPlayer != null && targetPlayer != sender ? permissionTargeted : permission;
         if (account != null && account.hasPermission(required)) return true;
-        CommandHandler.sendTranslatedMessage(sender, "commands.generic.permission_error");
+        CommandOutput.sendTranslatedMessage(sender, "commands.generic.permission_error");
         return false;
     }
 }

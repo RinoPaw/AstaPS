@@ -62,6 +62,11 @@ tmp/
 /languages
 /proto
 
+# Local TLS keystores and private-key containers
+*.p12
+*.pfx
+*.jks
+
 # Build product JARs at repo root (keep lib/ and gradle/wrapper tracked)
 /*.jar
 /*.jar.*
@@ -117,6 +122,5 @@ _compile_en.txt
 _errs_only.txt
 _errors_clean.txt
 _compile_errors.txt
-.gitignore
 _errs_detail.txt
 _errors_filtered.txt

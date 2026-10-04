@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 
 @Getter
-public class HomeWorld extends World {
+public final class HomeWorld extends World {
     private final GameHome home;
     private HomeModuleManager moduleManager;
 

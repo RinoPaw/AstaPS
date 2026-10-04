@@ -24,18 +24,41 @@ public final class ArtifactSettings {
         public double[] valueTiers = {0.40, 0.80, 1.20, 1.60};
 
         private void normalize() {
-            if (valueTiers == null || valueTiers.length == 0) {
-                valueTiers = new double[] {0.40, 0.80, 1.20, 1.60};
-            }
-            for (int i = 0; i < valueTiers.length; i++) {
-                valueTiers[i] = Math.max(0.0, valueTiers[i]);
-            }
             critical = Math.max(0.0, critical);
             criticalDamage = Math.max(0.0, criticalDamage);
             energyRecharge = Math.max(0.0, energyRecharge);
             elementalMastery = Math.max(0.0, elementalMastery);
             percentStat = Math.max(0.0, percentStat);
             flatStat = Math.max(0.0, flatStat);
+            if (critical
+                            + criticalDamage
+                            + energyRecharge
+                            + elementalMastery
+                            + percentStat
+                            + flatStat
+                    <= 0.0) {
+                critical = 1.60;
+                criticalDamage = 1.60;
+                energyRecharge = 1.20;
+                elementalMastery = 1.20;
+                percentStat = 1.00;
+                flatStat = 0.60;
+            }
+
+            if (valueTiers == null || valueTiers.length == 0) {
+                valueTiers = defaultValueTiers();
+                return;
+            }
+            double total = 0.0;
+            for (int i = 0; i < valueTiers.length; i++) {
+                valueTiers[i] = Math.max(0.0, valueTiers[i]);
+                total += valueTiers[i];
+            }
+            if (total <= 0.0) valueTiers = defaultValueTiers();
+        }
+
+        private static double[] defaultValueTiers() {
+            return new double[] {0.40, 0.80, 1.20, 1.60};
         }
     }
 
@@ -48,45 +71,65 @@ public final class ArtifactSettings {
 
         public void normalize() {
             buyLimit = Math.max(0, buyLimit);
-            if (regionalShops == null || regionalShops.isEmpty()) {
-                regionalShops = defaultRegionalShops();
-            } else {
-                regionalShops = new LinkedHashMap<>(regionalShops);
+
+            var routes = new LinkedHashMap<Integer, Integer>();
+            if (regionalShops != null) {
+                regionalShops.entrySet().stream()
+                        .filter(
+                                entry ->
+                                        entry.getKey() != null
+                                                && entry.getValue() != null
+                                                && entry.getKey() > 0
+                                                && entry.getValue() > 0)
+                        .sorted(Map.Entry.comparingByKey())
+                        .forEach(entry -> routes.put(entry.getKey(), entry.getValue()));
             }
-            if (resinCosts == null || resinCosts.isEmpty()) {
-                resinCosts = defaultResinCosts();
-            } else {
-                var normalized = new LinkedHashMap<Integer, Map<Integer, Integer>>();
+            regionalShops = routes.isEmpty() ? defaultRegionalShops() : routes;
+
+            var costs = new LinkedHashMap<Integer, Map<Integer, Integer>>();
+            if (resinCosts != null) {
                 resinCosts.entrySet().stream()
+                        .filter(entry -> entry.getKey() != null && entry.getKey() >= 0)
                         .sorted(Map.Entry.comparingByKey())
                         .forEach(
                                 entry -> {
-                                    if (entry.getKey() == null || entry.getValue() == null) return;
+                                    if (entry.getValue() == null) return;
                                     var prices = new LinkedHashMap<Integer, Integer>();
-                                    entry.getValue().forEach(
-                                            (rank, cost) -> {
-                                                if (rank != null && cost != null && cost > 0) {
-                                                    prices.put(rank, cost);
-                                                }
-                                            });
-                                    normalized.put(entry.getKey(), prices);
+                                    entry.getValue().entrySet().stream()
+                                            .filter(
+                                                    price ->
+                                                            price.getKey() != null
+                                                                    && price.getValue() != null
+                                                                    && price.getKey() >= 2
+                                                                    && price.getKey() <= 5
+                                                                    && price.getValue() > 0)
+                                            .sorted(Map.Entry.comparingByKey())
+                                            .forEach(
+                                                    price ->
+                                                            prices.put(
+                                                                    price.getKey(), price.getValue()));
+                                    if (!prices.isEmpty()) costs.put(entry.getKey(), prices);
                                 });
-                resinCosts = normalized;
             }
-            if (initialEnhancement == null || initialEnhancement.isEmpty()) {
-                initialEnhancement = defaultInitialEnhancement();
-            } else {
-                var normalized = new LinkedHashMap<Integer, EnhancementRange>();
+            resinCosts = costs.isEmpty() ? defaultResinCosts() : costs;
+
+            var enhancement = new LinkedHashMap<Integer, EnhancementRange>();
+            if (initialEnhancement != null) {
                 initialEnhancement.entrySet().stream()
+                        .filter(
+                                entry ->
+                                        entry.getKey() != null
+                                                && entry.getKey() >= 0
+                                                && entry.getValue() != null)
                         .sorted(Map.Entry.comparingByKey())
                         .forEach(
                                 entry -> {
-                                    if (entry.getKey() == null || entry.getValue() == null) return;
                                     entry.getValue().normalize();
-                                    normalized.put(entry.getKey(), entry.getValue());
+                                    enhancement.put(entry.getKey(), entry.getValue());
                                 });
-                initialEnhancement = normalized;
             }
+            initialEnhancement =
+                    enhancement.isEmpty() ? defaultInitialEnhancement() : enhancement;
         }
 
         public int resinCost(int clearAdventureRank, int artifactRank) {

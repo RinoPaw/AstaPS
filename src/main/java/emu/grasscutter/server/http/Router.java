@@ -1,33 +1,26 @@
 package emu.grasscutter.server.http;
 
-import io.javalin.Javalin;
+import io.javalin.config.RoutesConfig;
 import io.javalin.http.Handler;
 
-/** Defines routes for an {@link Javalin} instance. */
+/** Defines routes for the HTTP server. */
 public interface Router {
 
     /**
-     * Called when the router is initialized by Express.
+     * Registers this router during Javalin configuration.
      *
-     * @param javalin A Javalin instance.
+     * @param routes Javalin's startup-time route registry.
      */
-    void applyRoutes(Javalin javalin);
+    void applyRoutes(RoutesConfig routes);
 
-    /**
-     * Applies this handler to all endpoint types
-     *
-     * @param javalin A Javalin instance.
-     * @param path
-     * @param ctx
-     * @return The Javalin instance.
-     */
-    default Javalin allRoutes(Javalin javalin, String path, Handler ctx) {
-        javalin.get(path, ctx);
-        javalin.post(path, ctx);
-        javalin.put(path, ctx);
-        javalin.patch(path, ctx);
-        javalin.delete(path, ctx);
+    /** Applies this handler to all endpoint types used by the game client. */
+    default RoutesConfig allRoutes(RoutesConfig routes, String path, Handler handler) {
+        routes.get(path, handler);
+        routes.post(path, handler);
+        routes.put(path, handler);
+        routes.patch(path, handler);
+        routes.delete(path, handler);
 
-        return javalin;
+        return routes;
     }
 }

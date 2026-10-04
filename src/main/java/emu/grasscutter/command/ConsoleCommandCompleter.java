@@ -95,8 +95,9 @@ public final class ConsoleCommandCompleter implements Completer {
 
         for (int i = 0; i < argIndex; i++) {
             List<String> literals = literalsForToken(tokens[i]);
+            String previousArg = previousArgs.get(i);
             if (!literals.isEmpty()
-                    && literals.stream().noneMatch(value -> value.equalsIgnoreCase(previousArgs.get(i)))) {
+                    && literals.stream().noneMatch(value -> value.equalsIgnoreCase(previousArg))) {
                 return;
             }
         }

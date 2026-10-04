@@ -1,5 +1,4 @@
 import org.apache.tools.ant.taskdefs.condition.Os
-import org.gradle.plugins.ide.eclipse.model.SourceFolder
 
 plugins {
     id 'java'
@@ -181,18 +180,8 @@ def buildConfigOutputDir = layout.buildDirectory.dir('generated/sources/buildCon
 
 sourceSets {
     main {
-        // The 7.1 protocol dump is checked in as generated Java; there are no source .proto files.
         java {
-            srcDir 'src/generated/main/java'
             srcDir buildConfigOutputDir
-        }
-    }
-}
-
-eclipse {
-    classpath {
-        file.whenMerged {
-            cp -> cp.entries.add(new SourceFolder('src/generated/main/java', null))
         }
     }
 }
@@ -206,7 +195,6 @@ javadoc {
     options.addStringOption('Xdoclint:none', '-quiet')
     exclude '**/*.md'
     exclude 'src/handbook/**/*.*'
-    exclude 'src/generated/**/*.*'
 }
 
 def legacyBuildConfig = file('src/main/java/emu/grasscutter/BuildConfig.java')

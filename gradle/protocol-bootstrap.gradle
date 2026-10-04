@@ -1,0 +1,38 @@
+import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.api.tasks.JavaExec
+
+allprojects { project ->
+    project.pluginManager.withPlugin('java') {
+        if (project != project.rootProject) {
+            return
+        }
+
+        def sourceSets = project.extensions.getByType(SourceSetContainer)
+        def protocolTools = sourceSets.findByName('protocolTools') ?: sourceSets.create('protocolTools')
+        protocolTools.java.srcDir(project.file('tools/protocol/java'))
+        protocolTools.compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        protocolTools.runtimeClasspath +=
+                protocolTools.output + protocolTools.compileClasspath + sourceSets.main.runtimeClasspath
+
+        def descriptorOutput = project.layout.buildDirectory.file('protocol/7.1/protocol.desc')
+        def fileListOutput = project.layout.buildDirectory.file('protocol/7.1/files.txt')
+
+        project.tasks.register('exportProtocolDescriptorSet', JavaExec) { task ->
+            task.group = 'protocol'
+            task.description = 'Export the FileDescriptorSet embedded in the checked-in 7.1 protocol dump.'
+            task.dependsOn(project.tasks.named('classes'))
+            task.dependsOn(project.tasks.named(protocolTools.compileJavaTaskName))
+            task.classpath = protocolTools.runtimeClasspath
+            task.mainClass.set('emu.grasscutter.tools.protocol.ProtocolDescriptorExporter')
+            task.outputs.files(descriptorOutput, fileListOutput)
+
+            task.doFirst {
+                task.setArgs([
+                    project.layout.buildDirectory.dir('classes/java/main').get().asFile.absolutePath,
+                    descriptorOutput.get().asFile.absolutePath,
+                    fileListOutput.get().asFile.absolutePath,
+                ])
+            }
+        }
+    }
+}

@@ -1,0 +1,78 @@
+name: Bootstrap 7.1 protobuf descriptors
+
+on:
+  push:
+    branches:
+      - fix/protobuf-generation-7.1
+    paths:
+      - "src/generated/main/java/emu/grasscutter/net/proto/**"
+      - "tools/protocol/**"
+      - "gradle/protocol-bootstrap.gradle"
+      - ".github/workflows/protobuf-bootstrap.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: protobuf-bootstrap-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    name: Export embedded descriptors
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Export descriptor set
+        run: >-
+          ./gradlew -I gradle/protocol-bootstrap.gradle exportProtocolDescriptorSet
+          --build-cache
+          -PskipHandbook=1
+          -Dorg.gradle.jvmargs=-Xmx6g
+
+      - name: Inspect export
+        shell: bash
+        run: |
+          wc -l build/protocol/7.1/files.txt
+          sha256sum build/protocol/7.1/protocol.desc
+          ls -lh build/protocol/7.1/protocol.desc
+
+      - name: Upload bootstrap artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: protobuf-7.1-descriptors
+          path: build/protocol/7.1/
+          retention-days: 14
+
+      - name: Capture canonical descriptor set
+        shell: bash
+        run: |
+          mkdir -p protocol/7.1
+          cp build/protocol/7.1/protocol.desc protocol/7.1/protocol.desc
+          cp build/protocol/7.1/files.txt protocol/7.1/files.txt
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add protocol/7.1/protocol.desc protocol/7.1/files.txt
+
+          if git diff --cached --quiet; then
+            echo "Descriptor set is already current."
+            exit 0
+          fi
+
+          git commit -m "build: capture 7.1 protobuf descriptors"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

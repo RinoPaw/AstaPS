@@ -74,11 +74,10 @@ dependencies {
     implementation 'ch.qos.logback:logback-core:1.5.36'
     implementation 'ch.qos.logback:logback-classic:1.5.36'
 
-    implementation 'org.jline:jline:3.30.7'
-    implementation 'org.jline:jline-terminal-jna:3.30.7'
+    implementation 'org.jline:jline:3.30.14'
+    implementation 'org.jline:jline-terminal-jna:3.30.14'
     implementation 'info.picocli:picocli:4.7.7'
     implementation 'info.picocli:picocli-shell-jline3:4.7.7'
-    implementation 'net.java.dev.jna:jna:5.19.1'
 
     // KCP uses Netty's core transport APIs plus epoll/kqueue classes. The platform-specific
     // classifier JARs carry the JNI libraries that make Epoll.isAvailable()/KQueue.isAvailable()
@@ -112,7 +111,7 @@ dependencies {
     implementation 'io.javalin.community.ssl:javalin-ssl:7.2.3'
     implementation 'org.java-websocket:Java-WebSocket:1.6.0'
 
-    testImplementation platform('org.junit:junit-bom:5.14.3')
+    testImplementation platform('org.junit:junit-bom:5.14.4')
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'

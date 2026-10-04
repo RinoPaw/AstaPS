@@ -8,11 +8,16 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /** Regenerates Java protocol sources from the canonical 7.1 descriptor set and recovered additions. */
 public final class ProtocolJavaGenerator {
     private static final int FILES_PER_PROTOC_INVOCATION = 128;
+    private static final Pattern IMPORT_PATTERN =
+            Pattern.compile("^\\s*import\\s+(?:(?:public|weak)\\s+)?\"([^\"]+)\"\\s*;.*$");
 
     private ProtocolJavaGenerator() {}
 
@@ -54,6 +59,8 @@ public final class ProtocolJavaGenerator {
                     .sorted()
                     .toList();
         }
+        var descriptorImports =
+                findDescriptorImports(supplementalProtoDir, supplementalProtoFiles);
 
         recreateDirectory(javaOut);
 
@@ -68,6 +75,7 @@ public final class ProtocolJavaGenerator {
                     descriptorSet,
                     supplementalProtoDir,
                     javaOut,
+                    descriptorImports,
                     supplementalProtoFiles);
         }
 
@@ -97,6 +105,21 @@ public final class ProtocolJavaGenerator {
                 javaFileCount, protocolFiles.size(), supplementalProtoFiles.size());
     }
 
+    private static List<String> findDescriptorImports(
+            Path supplementalProtoDir, List<String> supplementalProtoFiles) throws IOException {
+        var supplementalSet = Set.copyOf(supplementalProtoFiles);
+        var descriptorImports = new TreeSet<String>();
+        for (var protoFile : supplementalProtoFiles) {
+            for (var line : Files.readAllLines(supplementalProtoDir.resolve(protoFile), StandardCharsets.UTF_8)) {
+                var matcher = IMPORT_PATTERN.matcher(line);
+                if (matcher.matches() && !supplementalSet.contains(matcher.group(1))) {
+                    descriptorImports.add(matcher.group(1));
+                }
+            }
+        }
+        return List.copyOf(descriptorImports);
+    }
+
     private static void runDescriptorProtoc(
             Path protoc, Path descriptorSet, Path javaOut, List<String> protocolFiles)
             throws IOException, InterruptedException {
@@ -114,13 +137,16 @@ public final class ProtocolJavaGenerator {
             Path descriptorSet,
             Path supplementalProtoDir,
             Path javaOut,
+            List<String> descriptorImports,
             List<String> supplementalProtoFiles)
             throws IOException, InterruptedException {
-        var command = new ArrayList<String>(supplementalProtoFiles.size() + 5);
+        var command =
+                new ArrayList<String>(descriptorImports.size() + supplementalProtoFiles.size() + 5);
         command.add(protoc.toString());
         command.add("--descriptor_set_in=" + descriptorSet);
         command.add("--proto_path=" + supplementalProtoDir);
         command.add("--java_out=" + javaOut);
+        command.addAll(descriptorImports);
         command.addAll(supplementalProtoFiles);
 
         runProtoc(command, "supplemental 7.1 protocol sources");

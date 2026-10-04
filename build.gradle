@@ -54,6 +54,7 @@ java {
 
 tasks.withType(org.gradle.api.tasks.compile.JavaCompile).configureEach {
     options.release.set(21)
+    options.compilerArgs.addAll(['-Xlint:all', '-Xmaxwarns', '100000'])
 }
 
 repositories {

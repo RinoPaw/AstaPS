@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   verify:
@@ -39,14 +39,14 @@ jobs:
 
       - name: Generate Java from canonical descriptor set
         run: >-
-          ./gradlew -I gradle/protocol-generation.gradle generateProtocolJava
+          ./gradlew generateProtocolJava
           --build-cache
           -PskipHandbook=1
           -Dorg.gradle.jvmargs=-Xmx6g
 
       - name: Compile against regenerated protocol sources
         run: >-
-          ./gradlew -I gradle/protocol-generation.gradle compileJava
+          ./gradlew compileJava
           --build-cache
           -PskipHandbook=1
           -Dorg.gradle.jvmargs=-Xmx6g
@@ -60,23 +60,3 @@ jobs:
             --dependency protobuf-java \
             --configuration compileClasspath \
             -q
-
-      - name: Enable descriptor-based generation in normal builds
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --ff-only origin "${GITHUB_REF_NAME}"
-
-          if ! grep -Fq "apply from: 'gradle/protocol-generation.gradle'" build.gradle; then
-            printf "\napply from: 'gradle/protocol-generation.gradle'\n" >> build.gradle
-          fi
-
-          git add build.gradle
-          if git diff --cached --quiet; then
-            echo "Descriptor-based generation is already enabled."
-            exit 0
-          fi
-
-          git commit -m "build: generate 7.1 protocol Java from descriptors"
-          git push origin "HEAD:${GITHUB_REF_NAME}"

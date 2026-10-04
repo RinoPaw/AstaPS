@@ -705,7 +705,7 @@ public class Player implements PlayerHook, FieldFetch {
     }
 
     private float getExpModifier() {
-        return GAME_OPTIONS.rates.adventureExp;
+        return emu.grasscutter.config.Configuration.GAME.rewards.adventureExp;
     }
 
     public void earnExp(int exp) {

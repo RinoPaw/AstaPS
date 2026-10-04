@@ -1,6 +1,6 @@
 package emu.grasscutter.server.http.api;
 
-import static emu.grasscutter.config.Configuration.ACCOUNT;
+import static emu.grasscutter.config.Configuration.GAME;
 import static emu.grasscutter.server.http.api.ApiHandler.ERROR_RET_CODE;
 import static emu.grasscutter.server.http.api.ApiHandler.SUCCESS_RET_CODE;
 
@@ -45,7 +45,7 @@ public final class ServerStatusHandler {
 
             var game = new LinkedHashMap<String, Object>();
             game.put("players", onlinePlayers());
-            game.put("maxPlayers", ACCOUNT.maxPlayer);
+            game.put("maxPlayers", GAME.maxOnlinePlayers);
             game.put("gameVersion", GameConstants.VERSION);
             game.put("uptime", runtime.uptimeText());
             game.put("startedAt", runtime.startedAtText());

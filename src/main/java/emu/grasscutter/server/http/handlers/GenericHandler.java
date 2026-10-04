@@ -1,6 +1,6 @@
 package emu.grasscutter.server.http.handlers;
 
-import static emu.grasscutter.config.Configuration.ACCOUNT;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.*;
 import emu.grasscutter.server.http.Router;
@@ -15,7 +15,7 @@ public final class GenericHandler implements Router {
         // answer with zero.
         var gameServer = Grasscutter.getGameServer();
         int playerCount = gameServer == null ? 0 : gameServer.getPlayers().size();
-        int maxPlayer = ACCOUNT.maxPlayer;
+        int maxPlayer = GAME.maxOnlinePlayers;
         String version = GameConstants.VERSION;
 
         ctx.result(

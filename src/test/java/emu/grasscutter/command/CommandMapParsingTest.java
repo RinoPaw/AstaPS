@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +57,45 @@ public final class CommandMapParsingTest {
         assertNull(map.getHandler("p"));
     }
 
+    @Test
+    public void registrationBuildsPicocliRoutingTree() {
+        var map = new CommandMap(false);
+        map.registerCommand("probe", new ProbeCommand());
+
+        var root = map.getCommandLine();
+        var probe = root.getSubcommands().get("probe");
+        assertTrue(root.getSubcommands().containsKey("p"));
+        assertSame(probe, root.getSubcommands().get("p"));
+        assertEquals("probe", probe.getCommandName());
+        assertFalse(probe.isExpandAtFiles());
+
+        map.unregisterCommand("probe");
+        assertFalse(map.getCommandLine().getSubcommands().containsKey("probe"));
+        assertFalse(map.getCommandLine().getSubcommands().containsKey("p"));
+    }
+
+    @Test
+    public void registrationRejectsUnannotatedHandlers() {
+        var map = new CommandMap(false);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> map.registerCommand("invalid", new UnannotatedCommand()));
+        assertNull(map.getHandler("invalid"));
+        assertFalse(map.getCommandLine().getSubcommands().containsKey("invalid"));
+    }
+
     @Command(label = "probe", aliases = {"p"}, targetRequirement = Command.TargetRequirement.NONE)
     private static final class ProbeCommand implements CommandHandler {
+        @Override
+        public CommandLine createCommandLine(
+                emu.grasscutter.game.player.Player sender,
+                emu.grasscutter.game.player.Player targetPlayer) {
+            return new CommandLine((Runnable) () -> {});
+        }
+    }
+
+    private static final class UnannotatedCommand implements CommandHandler {
         @Override
         public CommandLine createCommandLine(
                 emu.grasscutter.game.player.Player sender,

@@ -5,38 +5,37 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /** Regenerates Java protocol sources from the canonical 7.1 descriptor set and recovered additions. */
 public final class ProtocolJavaGenerator {
     private static final int FILES_PER_PROTOC_INVOCATION = 128;
-    private static final Pattern IMPORT_PATTERN =
-            Pattern.compile("^\\s*import\\s+(?:(?:public|weak)\\s+)?\"([^\"]+)\"\\s*;.*$");
 
     private ProtocolJavaGenerator() {}
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 5) {
+        if (args.length != 6) {
             throw new IllegalArgumentException(
-                    "usage: ProtocolJavaGenerator <protoc> <descriptor-set> <file-list> <supplemental-proto-dir> <java-out>");
+                    "usage: ProtocolJavaGenerator <protoc> <descriptor-set> <file-list> <supplemental-proto-dir> <supplemental-import-dir> <java-out>");
         }
 
         var protoc = Path.of(args[0]).toAbsolutePath().normalize();
         var descriptorSet = Path.of(args[1]).toAbsolutePath().normalize();
         var fileList = Path.of(args[2]).toAbsolutePath().normalize();
         var supplementalProtoDir = Path.of(args[3]).toAbsolutePath().normalize();
-        var javaOut = Path.of(args[4]).toAbsolutePath().normalize();
+        var supplementalImportDir = Path.of(args[4]).toAbsolutePath().normalize();
+        var javaOut = Path.of(args[5]).toAbsolutePath().normalize();
 
         requireRegularFile(protoc, "protoc executable");
         requireRegularFile(descriptorSet, "descriptor set");
         requireRegularFile(fileList, "protocol file list");
         requireDirectory(supplementalProtoDir, "supplemental proto directory");
+        requireDirectory(supplementalImportDir, "supplemental import stub directory");
 
         var protocolFiles = Files.readAllLines(fileList, StandardCharsets.UTF_8).stream()
                 .map(String::trim)
@@ -48,35 +47,45 @@ public final class ProtocolJavaGenerator {
             throw new IllegalStateException("protocol file list is empty: " + fileList);
         }
 
-        List<String> supplementalProtoFiles;
-        try (Stream<Path> files = Files.walk(supplementalProtoDir)) {
-            supplementalProtoFiles = files
-                    .filter(Files::isRegularFile)
-                    .filter(path -> path.getFileName().toString().endsWith(".proto"))
-                    .map(supplementalProtoDir::relativize)
-                    .map(Path::toString)
-                    .map(path -> path.replace(File.separatorChar, '/'))
-                    .sorted()
-                    .toList();
+        var supplementalProtoFiles = listProtoFiles(supplementalProtoDir);
+        var allProtocolFiles = new TreeSet<String>();
+        allProtocolFiles.addAll(protocolFiles);
+        allProtocolFiles.addAll(supplementalProtoFiles);
+        if (allProtocolFiles.size() != protocolFiles.size() + supplementalProtoFiles.size()) {
+            throw new IllegalStateException(
+                    "supplemental protocol file names overlap the canonical descriptor file list");
         }
-        var descriptorImports =
-                findDescriptorImports(supplementalProtoDir, supplementalProtoFiles);
 
         recreateDirectory(javaOut);
 
-        for (int offset = 0; offset < protocolFiles.size(); offset += FILES_PER_PROTOC_INVOCATION) {
-            var end = Math.min(offset + FILES_PER_PROTOC_INVOCATION, protocolFiles.size());
-            runDescriptorProtoc(protoc, descriptorSet, javaOut, protocolFiles.subList(offset, end));
-        }
+        Path temporaryDirectory = null;
+        try {
+            Path generationDescriptorSet = descriptorSet;
+            if (!supplementalProtoFiles.isEmpty()) {
+                temporaryDirectory = Files.createTempDirectory("astaps-protocol-descriptors-");
+                var supplementalDescriptorSet = temporaryDirectory.resolve("supplemental.desc");
+                var combinedDescriptorSet = temporaryDirectory.resolve("combined.desc");
 
-        if (!supplementalProtoFiles.isEmpty()) {
-            runSourceProtoc(
-                    protoc,
-                    descriptorSet,
-                    supplementalProtoDir,
-                    javaOut,
-                    descriptorImports,
-                    supplementalProtoFiles);
+                runSupplementalDescriptorProtoc(
+                        protoc,
+                        supplementalProtoDir,
+                        supplementalImportDir,
+                        supplementalDescriptorSet,
+                        supplementalProtoFiles);
+                concatenateDescriptorSets(descriptorSet, supplementalDescriptorSet, combinedDescriptorSet);
+                generationDescriptorSet = combinedDescriptorSet;
+            }
+
+            var filesToGenerate = List.copyOf(allProtocolFiles);
+            for (int offset = 0; offset < filesToGenerate.size(); offset += FILES_PER_PROTOC_INVOCATION) {
+                var end = Math.min(offset + FILES_PER_PROTOC_INVOCATION, filesToGenerate.size());
+                runDescriptorProtoc(
+                        protoc, generationDescriptorSet, javaOut, filesToGenerate.subList(offset, end));
+            }
+        } finally {
+            if (temporaryDirectory != null) {
+                deleteDirectory(temporaryDirectory);
+            }
         }
 
         long javaFileCount;
@@ -105,19 +114,45 @@ public final class ProtocolJavaGenerator {
                 javaFileCount, protocolFiles.size(), supplementalProtoFiles.size());
     }
 
-    private static List<String> findDescriptorImports(
-            Path supplementalProtoDir, List<String> supplementalProtoFiles) throws IOException {
-        var supplementalSet = Set.copyOf(supplementalProtoFiles);
-        var descriptorImports = new TreeSet<String>();
-        for (var protoFile : supplementalProtoFiles) {
-            for (var line : Files.readAllLines(supplementalProtoDir.resolve(protoFile), StandardCharsets.UTF_8)) {
-                var matcher = IMPORT_PATTERN.matcher(line);
-                if (matcher.matches() && !supplementalSet.contains(matcher.group(1))) {
-                    descriptorImports.add(matcher.group(1));
-                }
-            }
+    private static List<String> listProtoFiles(Path directory) throws IOException {
+        try (Stream<Path> files = Files.walk(directory)) {
+            return files.filter(Files::isRegularFile)
+                    .filter(path -> path.getFileName().toString().endsWith(".proto"))
+                    .map(directory::relativize)
+                    .map(Path::toString)
+                    .map(path -> path.replace(File.separatorChar, '/'))
+                    .sorted()
+                    .toList();
         }
-        return List.copyOf(descriptorImports);
+    }
+
+    private static void runSupplementalDescriptorProtoc(
+            Path protoc,
+            Path supplementalProtoDir,
+            Path supplementalImportDir,
+            Path supplementalDescriptorSet,
+            List<String> supplementalProtoFiles)
+            throws IOException, InterruptedException {
+        var command = new ArrayList<String>(supplementalProtoFiles.size() + 5);
+        command.add(protoc.toString());
+        command.add("--proto_path=" + supplementalProtoDir);
+        command.add("--proto_path=" + supplementalImportDir);
+        command.add("--descriptor_set_out=" + supplementalDescriptorSet);
+        command.addAll(supplementalProtoFiles);
+
+        runProtoc(command, "supplemental 7.1 descriptor recovery");
+        requireRegularFile(supplementalDescriptorSet, "supplemental descriptor set");
+    }
+
+    /**
+     * FileDescriptorSet contains only a repeated FileDescriptorProto field. Concatenating two
+     * serialized sets is therefore the protobuf wire-format merge of their repeated file entries.
+     * The import stubs are not emitted by protoc because --include_imports is intentionally absent.
+     */
+    private static void concatenateDescriptorSets(Path base, Path supplemental, Path output)
+            throws IOException {
+        Files.write(output, Files.readAllBytes(base));
+        Files.write(output, Files.readAllBytes(supplemental), StandardOpenOption.APPEND);
     }
 
     private static void runDescriptorProtoc(
@@ -130,26 +165,6 @@ public final class ProtocolJavaGenerator {
         command.addAll(protocolFiles);
 
         runProtoc(command, protocolFiles.getFirst() + " .. " + protocolFiles.getLast());
-    }
-
-    private static void runSourceProtoc(
-            Path protoc,
-            Path descriptorSet,
-            Path supplementalProtoDir,
-            Path javaOut,
-            List<String> descriptorImports,
-            List<String> supplementalProtoFiles)
-            throws IOException, InterruptedException {
-        var command =
-                new ArrayList<String>(descriptorImports.size() + supplementalProtoFiles.size() + 5);
-        command.add(protoc.toString());
-        command.add("--descriptor_set_in=" + descriptorSet);
-        command.add("--proto_path=" + supplementalProtoDir);
-        command.add("--java_out=" + javaOut);
-        command.addAll(descriptorImports);
-        command.addAll(supplementalProtoFiles);
-
-        runProtoc(command, "supplemental 7.1 protocol sources");
     }
 
     private static void runProtoc(List<String> command, String description)
@@ -171,14 +186,19 @@ public final class ProtocolJavaGenerator {
     }
 
     private static void recreateDirectory(Path directory) throws IOException {
-        if (Files.exists(directory)) {
-            try (Stream<Path> paths = Files.walk(directory)) {
-                for (var path : paths.sorted(Comparator.reverseOrder()).toList()) {
-                    Files.delete(path);
-                }
+        deleteDirectory(directory);
+        Files.createDirectories(directory);
+    }
+
+    private static void deleteDirectory(Path directory) throws IOException {
+        if (!Files.exists(directory)) {
+            return;
+        }
+        try (Stream<Path> paths = Files.walk(directory)) {
+            for (var path : paths.sorted(Comparator.reverseOrder()).toList()) {
+                Files.delete(path);
             }
         }
-        Files.createDirectories(directory);
     }
 
     private static void requireRegularFile(Path path, String description) {

@@ -50,6 +50,7 @@ allprojects { currentProject ->
         def descriptorSet = currentProject.layout.projectDirectory.file('protocol/7.1/protocol.desc')
         def protocolFileList = currentProject.layout.projectDirectory.file('protocol/7.1/files.txt')
         def supplementalProtoDir = currentProject.layout.projectDirectory.dir('protocol/7.1/compat')
+        def supplementalImportDir = currentProject.layout.projectDirectory.dir('protocol/7.1/compat-imports')
         def generatedProtocolJava =
                 currentProject.layout.buildDirectory.dir('generated/sources/protocol/7.1/java/main')
 
@@ -62,6 +63,7 @@ allprojects { currentProject ->
             task.mainClass.set('emu.grasscutter.tools.protocol.ProtocolJavaGenerator')
             task.inputs.files(descriptorSet, protocolFileList)
             task.inputs.dir(supplementalProtoDir)
+            task.inputs.dir(supplementalImportDir)
             task.outputs.dir(generatedProtocolJava)
 
             task.doFirst {
@@ -77,6 +79,7 @@ allprojects { currentProject ->
                     descriptorSet.asFile.absolutePath,
                     protocolFileList.asFile.absolutePath,
                     supplementalProtoDir.asFile.absolutePath,
+                    supplementalImportDir.asFile.absolutePath,
                     generatedProtocolJava.get().asFile.absolutePath,
                 ])
             }

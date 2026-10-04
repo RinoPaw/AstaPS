@@ -27,12 +27,12 @@ If you can fix a bug, please help me.
 ## Building
 
 ```
-./gradlew jar -PskipHandbook=1
+./gradlew jar -PskipHandbook=1 -PjarFilename=grasscutter
 ```
 
-`grasscutter.jar` lands in the project root. Drop `-PskipHandbook=1` to build the in-game handbook as well; that step needs NodeJS and fails without it.
+`grasscutter.jar` lands in the project root. Drop `-PskipHandbook=1` to allow handbook generation when its source data and npm are available; the build skips that step when they are missing.
 
-On Windows use `.\gradlew.bat`, or run `gradlew-jar.bat`.
+On Windows use `.\gradlew.bat` with the same arguments, or run `gradlew-jar.bat`. `ServerStart.cmd` starts the resulting `grasscutter.jar`.
 
 ## Running
 

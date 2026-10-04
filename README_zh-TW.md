@@ -27,12 +27,12 @@
 ## 編譯
 
 ```
-./gradlew jar -PskipHandbook=1
+./gradlew jar -PskipHandbook=1 -PjarFilename=grasscutter
 ```
 
-`grasscutter.jar` 會產生在專案根目錄。拿掉 `-PskipHandbook=1` 會一併編譯遊戲內手冊，那一步需要 NodeJS，沒有就會失敗。
+`grasscutter.jar` 會產生在專案根目錄。拿掉 `-PskipHandbook=1` 後，建置會在手冊來源資料與 npm 可用時產生遊戲內手冊；缺少時會自動略過。
 
-Windows 用 `.\gradlew.bat`，或直接執行 `gradlew-jar.bat`。
+Windows 可用 `.\gradlew.bat` 搭配相同參數，或直接執行 `gradlew-jar.bat`。`ServerStart.cmd` 會啟動產生的 `grasscutter.jar`。
 
 ## 執行
 

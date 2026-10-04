@@ -12,6 +12,7 @@ import emu.grasscutter.game.player.*;
 import emu.grasscutter.game.props.*;
 import emu.grasscutter.game.props.ItemUseAction.UseItemParams;
 import emu.grasscutter.game.quest.enums.QuestContent;
+import emu.grasscutter.game.tps.TpsWeaponSystem;
 import emu.grasscutter.net.proto.ItemParamOuterClass.ItemParam;
 import emu.grasscutter.server.event.player.PlayerObtainItemEvent;
 import emu.grasscutter.server.packet.send.*;
@@ -43,6 +44,8 @@ public class Inventory extends BasePlayerManager implements Iterable<GameItem> {
                 ItemType.ITEM_MATERIAL, new MaterialInventoryTab(INVENTORY_LIMITS.materials));
         this.createInventoryTab(
                 ItemType.ITEM_FURNITURE, new MaterialInventoryTab(INVENTORY_LIMITS.furniture));
+        this.createInventoryTab(
+                ItemType.ITEM_TPS_WEAPON, new EquipInventoryTab(TpsWeaponSystem.TPS_WEAPON_ITEM_LIMIT));
     }
 
     public AvatarStorage getAvatarStorage() {
@@ -386,6 +389,19 @@ public class Inventory extends BasePlayerManager implements Iterable<GameItem> {
                 // Adds to inventory
                 this.putItem(item, tab);
                 // Set ownership and save to db
+                item.save();
+                return item;
+            case ITEM_TPS_WEAPON:
+                // globalItemLimit is 1 for every TPS weapon: hand back the one already owned.
+                var owned = TpsWeaponSystem.findOwnedWeapon(this.player, item.getItemId());
+                if (owned != null) {
+                    return owned;
+                }
+                if (tab.getSize() >= tab.getMaxCapacity()) {
+                    return null;
+                }
+                item.setCount(1);
+                this.putItem(item, tab);
                 item.save();
                 return item;
             case ITEM_VIRTUAL:

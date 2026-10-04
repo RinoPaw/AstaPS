@@ -164,6 +164,12 @@ public class ConfigContainer {
         public int loadEntitiesForPlayerRange = 300;
         public boolean enableScriptInBigWorld = true;
         public boolean enableConsole = true;
+
+        /**
+         * Runs the database half of logins off the thread that handles all player packets, so
+         * one slow login does not stall everyone. Turn off to go back to the old inline login.
+         */
+        public boolean asyncLogin = true;
         public int tickRateMs = 200;
         public int kcpInterval = 20;
         public ServerDebugMode logPackets = ServerDebugMode.NONE;

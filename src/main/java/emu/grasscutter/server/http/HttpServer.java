@@ -176,7 +176,7 @@ public final class HttpServer {
                         } else {
                             var filePath = file.getPath();
                             ContentType fromExtension =
-                                    ContentType.getContentTypeByExtension(
+                                    ContentType.contentTypeByExtension(
                                             filePath.substring(filePath.lastIndexOf(".") + 1));
                             ctx.contentType(
                                     fromExtension != null ? fromExtension : ContentType.TEXT_HTML);

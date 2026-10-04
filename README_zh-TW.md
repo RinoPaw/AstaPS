@@ -21,7 +21,7 @@
 |---|---|
 | Java | 編譯與執行皆需要 JDK 21。建置強制使用 Java 21 toolchain 與 `--release 21`。 |
 | MongoDB | Community Server，啟動伺服器前必須先跑起來。 |
-| 遊戲客戶端 | 原神 7.1.0 |
+| 遊戲客戶端 | 原神 7.1.0。官方客戶端會校驗 region 的簽名，要連私服需要另外打客戶端補丁，例如 [hk4e-patch-universal](https://github.com/capyb2222/animegamepatch)。AstaPS 本身不附帶補丁。 |
 | 資源檔 | 7.1.0 的資源包，解壓到伺服器目錄下的 `resources/`。如果你沒有資源檔，可以透過[該連結](https://github.com/MeChen618/AstaPS-Resource)下載。 |
 
 ## 編譯
@@ -62,6 +62,37 @@ Windows 可用 `.\gradlew.bat` 搭配相同參數，或直接執行 `gradlew-jar
 | `banip` / `unbanip` | 封禁位址。封 IP 會連帶封掉從該位址登入的帳號。 |
 | `sysmail` | 對全體玩家發送系統郵件。 |
 
+## TPS 射擊玩法（7.1）
+
+至冬的第三人稱射擊玩法可以玩：槍械和手榴彈裝備在角色原本的武器旁邊，在 TPS 秘境裡瞄準射擊。指令需要 `player.tps` 和 `player.enterdungeon` 權限。
+
+**1. 取得武器**
+
+```
+/tps give          全部八把 TPS 武器（224001–224008），或指定一把：/tps give 224001
+/tps accessory     解鎖已擁有武器的全部配件
+```
+
+**2. 進入 TPS 秘境**
+
+```
+/dungeon 10955                       射擊靶場
+/dungeon 10953、10960 到 10964        灰原（Emerged Grey Field）各關
+```
+
+進入後，隊伍會換成 TPS 旅行者（與你的旅行者同性別，20 級），裝備你的 TPS 配裝，第一次進入時是 224001。在秘境裡換的武器會保存成你的配裝。離開秘境後隊伍會恢復原狀。
+
+**3. 秘境外**
+
+任何角色都能裝備 TPS 武器，方便試用：
+
+```
+/tps wear 224001 224004    場上角色裝備一把步槍和一顆手榴彈（最多 2 把槍、1 顆手榴彈）
+/tps refill                補滿全部彈藥
+```
+
+彈藥處理仍有部分屬於實驗性質。伺服器端的實作細節、`/tps ammo` 的切換選項，以及尚未確定的部分，見 [docs/tps/README.md](docs/tps/README.md)。
+
 ## 授權
 
 本專案採用 **GNU General Public License v3.0**，見 [`LICENSE`](LICENSE)。
@@ -71,6 +102,8 @@ Windows 可用 `.\gradlew.bat` 搭配相同參數，或直接執行 `gradlew-jar
 ## 致謝
 
 本伺服器基於 **Grasscutter**。參考專案：**LunaGC**、**HunkyMeow**。
+
+「需求」中提到的客戶端補丁 [hk4e-patch-universal](https://github.com/capyb2222/animegamepatch) 由 **capyb2222** 維護，基於 [xeondev](https://git.xeondev.com/reversedrooms/hk4e-patch) 的原始 hk4e-patch 與 [oureveryday](https://github.com/oureveryday/) 的原始 hk4e-patch-universal。它是獨立專案，以自己的 GPL-3.0 授權發布。
 
 本倉庫根部的匯入提交中，以姓名列出了它所承載的各位作者。
 

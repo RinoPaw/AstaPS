@@ -163,13 +163,32 @@ public class AvatarData extends GameResource {
         this.buildEmbryo();
     }
 
+    private static final int TPS_TRAVELER_MALE = 10000134;
+    private static final int TPS_TRAVELER_FEMALE = 10000135;
+
+    /** ConfigAvatar_AetherShadow/LumineShadow abilities. */
+    private static final List<String> TPS_TRAVELER_ABILITIES =
+            List.of(
+                    "Avatar_TPS_Innate_Ability",
+                    "Avatar_TPS_Animator_Montage_Manager",
+                    "Avatar_TPS_Achievement_Listener",
+                    "Avatar_TPS_HandGrenade_ThrowBullet",
+                    "Avatar_TPS_Grappling_Hook");
+
     /**
      * Create ability embryos.
      */
     public void buildEmbryo() {
         var split = this.iconName.split("_");
         if (split.length > 0) {
-            this.name = split[split.length - 1];
+            // The TPS travelers share the travelers' icons (UI_AvatarIcon_PlayerBoy/PlayerGirl), but
+            // their abilities are in ConfigAvatar_AetherShadow/LumineShadow.
+            this.name =
+                    switch (this.id) {
+                        case TPS_TRAVELER_MALE -> "AetherShadow";
+                        case TPS_TRAVELER_FEMALE -> "LumineShadow";
+                        default -> split[split.length - 1];
+                    };
 
             var info = GameData.getAbilityEmbryoInfo().get(this.name);
             if (info != null) {
@@ -178,6 +197,20 @@ public class AvatarData extends GameResource {
                     this.abilities.add(Utils.abilityHash(ability));
                     this.abilitieNames.add(ability);
                 }
+            }
+        }
+
+        // A cached AbilityEmbryos.json from before 7.0 has no entry for the TPS travelers. Without
+        // Avatar_TPS_Innate_Ability the client shows no shooting HUD at all.
+        if (this.id == TPS_TRAVELER_MALE || this.id == TPS_TRAVELER_FEMALE) {
+            if (this.abilities == null) this.abilities = new IntArrayList();
+            var tpsAbilities = new ArrayList<>(TPS_TRAVELER_ABILITIES);
+            if (this.id == TPS_TRAVELER_FEMALE) tpsAbilities.add("Avatar_TPS_PlayerGirl_Ability");
+            for (String ability : tpsAbilities) {
+                int hash = Utils.abilityHash(ability);
+                if (this.abilities.contains(hash)) continue;
+                this.abilities.add(hash);
+                this.abilitieNames.add(ability);
             }
         }
 

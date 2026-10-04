@@ -89,6 +89,9 @@ public class HandlerEnterSceneDoneReq extends PacketHandler {
                     .warn("ArtifactTransmuter login Offer (EnterSceneDone) failed uid={}: {}", player.getUid(), t.toString());
         }
 
+        // TPS ammunition reserves, which the client expects before the Rsp.
+        emu.grasscutter.game.tps.TpsWeaponSystem.sendSceneAmmunition(player);
+
         // Rsp
         session.send(new PacketEnterSceneDoneRsp(player));
     }

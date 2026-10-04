@@ -11,6 +11,7 @@ import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.*;
 import emu.grasscutter.game.quest.enums.*;
+import emu.grasscutter.game.tps.TpsAvatarSystem;
 import emu.grasscutter.game.world.*;
 import emu.grasscutter.scripts.constants.EventType;
 import emu.grasscutter.scripts.data.ScriptArgs;
@@ -348,6 +349,17 @@ public final class DungeonManager {
 
     public void applyTrialTeam(Player player) {
         if (getDungeonData() == null) return;
+
+        // TPS dungeons only allow the TPS traveler, which differs per player (boy or girl).
+        var tpsTeam = TpsAvatarSystem.getTrialTeam(player, this.scene);
+        if (tpsTeam != null) {
+            this.trialTeam = tpsTeam;
+            player.getTeamManager().addTrialAvatars(tpsTeam.getTrialAvatarIds());
+            return;
+        }
+
+        // Types this server does not know load as null.
+        if (getDungeonData().getType() == null) return;
 
         switch (getDungeonData().getType()) {
                 // case DUNGEON_PLOT is handled by quest execs

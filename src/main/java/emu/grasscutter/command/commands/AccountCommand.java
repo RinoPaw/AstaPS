@@ -8,7 +8,6 @@ import emu.grasscutter.command.*;
 import emu.grasscutter.database.*;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.game.player.Player;
-import java.util.stream.Collectors;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Unmatched;
@@ -37,7 +36,6 @@ public final class AccountCommand implements CommandHandler {
         commandLine.addSubcommand("clone", new Clone(sender));
         commandLine.addSubcommand("delete", new Delete(sender));
         commandLine.addSubcommand("resetpass", new ResetPass(sender));
-        commandLine.addSubcommand("list", new ListAccounts(sender));
         return commandLine;
     }
 
@@ -205,34 +203,6 @@ public final class AccountCommand implements CommandHandler {
         }
     }
 
-    @picocli.CommandLine.Command(name = "list")
-    private final class ListAccounts implements Runnable {
-        private final Player sender;
-
-        private ListAccounts(Player sender) {
-            this.sender = sender;
-        }
-
-        @Override
-        public void run() {
-            CommandOutput.sendMessage(sender, "Note: This command might take a while to complete.");
-            CommandOutput.sendMessage(
-                    sender,
-                    "Accounts: \n"
-                            + DatabaseManager.getAccountDatastore().find(Account.class).stream()
-                                    .map(
-                                            acc ->
-                                                    "%s: %s (%s)"
-                                                            .formatted(
-                                                                    acc.getId(),
-                                                                    acc.getUsername(),
-                                                                    acc.getReservedPlayerUid() == 0
-                                                                            ? getPlayerUid(acc)
-                                                                            : acc.getReservedPlayerUid()))
-                                    .collect(Collectors.joining("\n")));
-        }
-    }
-
     private void createAccount(Player sender, String username, String password, int uid) {
         String passwordHash = hashPassword(sender, password);
         if (passwordHash == null) return;
@@ -257,11 +227,6 @@ public final class AccountCommand implements CommandHandler {
             CommandOutput.sendMessage(sender, "Invalid password.");
             return null;
         }
-    }
-
-    private String getPlayerUid(Account account) {
-        var player = DatabaseHelper.getPlayerByAccount(account, Player.class);
-        return player == null ? "no UID" : String.valueOf(player.getUid());
     }
 
     private void kickAccount(Account account) {

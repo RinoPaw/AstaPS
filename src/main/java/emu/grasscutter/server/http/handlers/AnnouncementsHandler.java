@@ -17,7 +17,7 @@ public final class AnnouncementsHandler implements Router {
     private static void getAnnouncement(Context ctx) {
         String data = "";
         if (Objects.equals(
-                ctx.endpoint().path(), "/common/hk4e_global/announcement/api/getAnnContent")) {
+                ctx.endpoint().path, "/common/hk4e_global/announcement/api/getAnnContent")) {
             try {
                 data = FileUtils.readToString(DataLoader.load("GameAnnouncement.json"));
             } catch (Exception e) {
@@ -26,7 +26,7 @@ public final class AnnouncementsHandler implements Router {
                 }
             }
         } else if (Objects.equals(
-                ctx.endpoint().path(), "/common/hk4e_global/announcement/api/getAnnList")) {
+                ctx.endpoint().path, "/common/hk4e_global/announcement/api/getAnnList")) {
             try {
                 data = FileUtils.readToString(DataLoader.load("GameAnnouncementList.json"));
             } catch (Exception e) {
@@ -72,7 +72,7 @@ public final class AnnouncementsHandler implements Router {
             String possibleFilename = ctx.path();
 
             ContentType fromExtension =
-                    ContentType.getContentTypeByExtension(
+                    ContentType.contentTypeByExtension(
                             possibleFilename.substring(possibleFilename.lastIndexOf(".") + 1));
             ctx.contentType(fromExtension != null ? fromExtension : ContentType.APPLICATION_OCTET_STREAM);
             ctx.result(filestream.readAllBytes());

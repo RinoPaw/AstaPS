@@ -97,6 +97,7 @@ public class Ability {
         }
         String abilityName = data.abilityName;
         for (var member : player.getTeamManager().getActiveTeam()) {
+            if (member == null) continue;
             var av = member.getAvatar();
             var avData = av.getAvatarData();
             if (avData == null) continue;

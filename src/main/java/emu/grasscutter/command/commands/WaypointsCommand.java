@@ -22,6 +22,12 @@ import picocli.CommandLine.Parameters;
         permissionTargeted = "player.waypoints.others")
 public final class WaypointsCommand implements CommandHandler {
 
+    static boolean isWaypointType(String type) {
+        return "SceneTransPoint".equals(type)
+                || "TransPointNormal".equals(type)
+                || "TransPoint".equals(type);
+    }
+
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         var commandLine = new CommandLine(new Unlock(sender, targetPlayer));

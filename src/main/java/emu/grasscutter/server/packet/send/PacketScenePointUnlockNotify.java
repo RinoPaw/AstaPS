@@ -19,7 +19,7 @@ public class PacketScenePointUnlockNotify extends BasePacket {
     }
 
     /**
-     * The mirror of the unlock constructors: relock a point and hide it again.
+     * Relock points and hide them again.
      *
      * <p>The current generated 7.1 API misnames wire field 4 as {@code unhidePointList}; the
      * official client treats field 4 as {@code locked_point_list}. Field 6 is {@code

@@ -12,7 +12,7 @@ public class WebStaticVersionResponse implements Handler {
     private static void getPageResources(String path, Context ctx) {
         try (InputStream filestream = FileUtils.readResourceAsStream(path)) {
             ContentType fromExtension =
-                    ContentType.getContentTypeByExtension(path.substring(path.lastIndexOf(".") + 1));
+                    ContentType.contentTypeByExtension(path.substring(path.lastIndexOf(".") + 1));
             ctx.contentType(fromExtension != null ? fromExtension : ContentType.APPLICATION_OCTET_STREAM);
             ctx.result(filestream.readAllBytes());
         } catch (Exception e) {

@@ -358,27 +358,27 @@ public final class AvatarInfoOuterClass {
         int key);
 
     /**
-     * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+     * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
      */
     java.util.List<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo> 
-        getKPJFLNKEFBCList();
+        getTpsWeaponListList();
     /**
-     * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+     * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
      */
-    emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo getKPJFLNKEFBC(int index);
+    emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo getTpsWeaponList(int index);
     /**
-     * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+     * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
      */
-    int getKPJFLNKEFBCCount();
+    int getTpsWeaponListCount();
     /**
-     * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+     * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
      */
     java.util.List<? extends emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder> 
-        getKPJFLNKEFBCOrBuilderList();
+        getTpsWeaponListOrBuilderList();
     /**
-     * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+     * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
      */
-    emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder getKPJFLNKEFBCOrBuilder(
+    emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder getTpsWeaponListOrBuilder(
         int index);
 
     /**
@@ -560,7 +560,7 @@ public final class AvatarInfoOuterClass {
       SpecialProudSkillList_ = emptyIntList();
       inherentProudSkillList_ = emptyIntList();
       talentIdList_ = emptyIntList();
-      kPJFLNKEFBC_ = java.util.Collections.emptyList();
+      tpsWeaponList_ = java.util.Collections.emptyList();
       UnlockedSkillDepotIdList_ = emptyIntList();
       equipGuidList_ = emptyLongList();
       expeditionState_ = 0;
@@ -971,10 +971,10 @@ public final class AvatarInfoOuterClass {
             }
             case 298: {
               if (!((mutable_bitField0_ & 0x00000800) != 0)) {
-                kPJFLNKEFBC_ = new java.util.ArrayList<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo>();
+                tpsWeaponList_ = new java.util.ArrayList<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo>();
                 mutable_bitField0_ |= 0x00000800;
               }
-              kPJFLNKEFBC_.add(
+              tpsWeaponList_.add(
                   input.readMessage(emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.parser(), extensionRegistry));
               break;
             }
@@ -1018,7 +1018,7 @@ public final class AvatarInfoOuterClass {
           UnlockedSkillDepotIdList_.makeImmutable(); // C
         }
         if (((mutable_bitField0_ & 0x00000800) != 0)) {
-          kPJFLNKEFBC_ = java.util.Collections.unmodifiableList(kPJFLNKEFBC_);
+          tpsWeaponList_ = java.util.Collections.unmodifiableList(tpsWeaponList_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1746,44 +1746,44 @@ public final class AvatarInfoOuterClass {
       return map.get(key);
     }
 
-    public static final int KPJFLNKEFBC_FIELD_NUMBER = 37;
-    private java.util.List<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo> kPJFLNKEFBC_;
+    public static final int TPS_WEAPON_LIST_FIELD_NUMBER = 37;
+    private java.util.List<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo> tpsWeaponList_;
     /**
-     * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+     * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
      */
     @java.lang.Override
-    public java.util.List<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo> getKPJFLNKEFBCList() {
-      return kPJFLNKEFBC_;
+    public java.util.List<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo> getTpsWeaponListList() {
+      return tpsWeaponList_;
     }
     /**
-     * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+     * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
      */
     @java.lang.Override
     public java.util.List<? extends emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder> 
-        getKPJFLNKEFBCOrBuilderList() {
-      return kPJFLNKEFBC_;
+        getTpsWeaponListOrBuilderList() {
+      return tpsWeaponList_;
     }
     /**
-     * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+     * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
      */
     @java.lang.Override
-    public int getKPJFLNKEFBCCount() {
-      return kPJFLNKEFBC_.size();
+    public int getTpsWeaponListCount() {
+      return tpsWeaponList_.size();
     }
     /**
-     * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+     * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
      */
     @java.lang.Override
-    public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo getKPJFLNKEFBC(int index) {
-      return kPJFLNKEFBC_.get(index);
+    public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo getTpsWeaponList(int index) {
+      return tpsWeaponList_.get(index);
     }
     /**
-     * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+     * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
      */
     @java.lang.Override
-    public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder getKPJFLNKEFBCOrBuilder(
+    public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder getTpsWeaponListOrBuilder(
         int index) {
-      return kPJFLNKEFBC_.get(index);
+      return tpsWeaponList_.get(index);
     }
 
     public static final int _UNLOCKED_SKILL_DEPOT_ID_LIST_FIELD_NUMBER = 36;
@@ -2226,8 +2226,8 @@ public final class AvatarInfoOuterClass {
       for (int i = 0; i < UnlockedSkillDepotIdList_.size(); i++) {
         output.writeUInt32NoTag(UnlockedSkillDepotIdList_.getInt(i));
       }
-      for (int i = 0; i < kPJFLNKEFBC_.size(); i++) {
-        output.writeMessage(37, kPJFLNKEFBC_.get(i));
+      for (int i = 0; i < tpsWeaponList_.size(); i++) {
+        output.writeMessage(37, tpsWeaponList_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -2478,9 +2478,9 @@ public final class AvatarInfoOuterClass {
         }
         UnlockedSkillDepotIdListMemoizedSerializedSize = dataSize;
       }
-      for (int i = 0; i < kPJFLNKEFBC_.size(); i++) {
+      for (int i = 0; i < tpsWeaponList_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(37, kPJFLNKEFBC_.get(i));
+          .computeMessageSize(37, tpsWeaponList_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2539,8 +2539,8 @@ public final class AvatarInfoOuterClass {
           other.internalGetSkillLevelMap())) return false;
       if (!internalGetFightPropMap().equals(
           other.internalGetFightPropMap())) return false;
-      if (!getKPJFLNKEFBCList()
-          .equals(other.getKPJFLNKEFBCList())) return false;
+      if (!getTpsWeaponListList()
+          .equals(other.getTpsWeaponListList())) return false;
       if (!getUnlockedSkillDepotIdListList()
           .equals(other.getUnlockedSkillDepotIdListList())) return false;
       if (!getEquipGuidListList()
@@ -2654,9 +2654,9 @@ public final class AvatarInfoOuterClass {
         hash = (37 * hash) + FIGHT_PROP_MAP_FIELD_NUMBER;
         hash = (53 * hash) + internalGetFightPropMap().hashCode();
       }
-      if (getKPJFLNKEFBCCount() > 0) {
-        hash = (37 * hash) + KPJFLNKEFBC_FIELD_NUMBER;
-        hash = (53 * hash) + getKPJFLNKEFBCList().hashCode();
+      if (getTpsWeaponListCount() > 0) {
+        hash = (37 * hash) + TPS_WEAPON_LIST_FIELD_NUMBER;
+        hash = (53 * hash) + getTpsWeaponListList().hashCode();
       }
       if (getUnlockedSkillDepotIdListCount() > 0) {
         hash = (37 * hash) + _UNLOCKED_SKILL_DEPOT_ID_LIST_FIELD_NUMBER;
@@ -2877,7 +2877,7 @@ public final class AvatarInfoOuterClass {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getEquipAffixListFieldBuilder();
-          getKPJFLNKEFBCFieldBuilder();
+          getTpsWeaponListFieldBuilder();
         }
       }
       @java.lang.Override
@@ -2928,11 +2928,11 @@ public final class AvatarInfoOuterClass {
         bitField0_ = (bitField0_ & ~0x00000100);
         internalGetMutableSkillLevelMap().clear();
         internalGetMutableFightPropMap().clear();
-        if (kPJFLNKEFBCBuilder_ == null) {
-          kPJFLNKEFBC_ = java.util.Collections.emptyList();
+        if (tpsWeaponListBuilder_ == null) {
+          tpsWeaponList_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000800);
         } else {
-          kPJFLNKEFBCBuilder_.clear();
+          tpsWeaponListBuilder_.clear();
         }
         UnlockedSkillDepotIdList_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00001000);
@@ -3069,14 +3069,14 @@ public final class AvatarInfoOuterClass {
         result.skillLevelMap_.makeImmutable();
         result.fightPropMap_ = internalGetFightPropMap();
         result.fightPropMap_.makeImmutable();
-        if (kPJFLNKEFBCBuilder_ == null) {
+        if (tpsWeaponListBuilder_ == null) {
           if (((bitField0_ & 0x00000800) != 0)) {
-            kPJFLNKEFBC_ = java.util.Collections.unmodifiableList(kPJFLNKEFBC_);
+            tpsWeaponList_ = java.util.Collections.unmodifiableList(tpsWeaponList_);
             bitField0_ = (bitField0_ & ~0x00000800);
           }
-          result.kPJFLNKEFBC_ = kPJFLNKEFBC_;
+          result.tpsWeaponList_ = tpsWeaponList_;
         } else {
-          result.kPJFLNKEFBC_ = kPJFLNKEFBCBuilder_.build();
+          result.tpsWeaponList_ = tpsWeaponListBuilder_.build();
         }
         if (((bitField0_ & 0x00001000) != 0)) {
           UnlockedSkillDepotIdList_.makeImmutable();
@@ -3256,29 +3256,29 @@ public final class AvatarInfoOuterClass {
             other.internalGetSkillLevelMap());
         internalGetMutableFightPropMap().mergeFrom(
             other.internalGetFightPropMap());
-        if (kPJFLNKEFBCBuilder_ == null) {
-          if (!other.kPJFLNKEFBC_.isEmpty()) {
-            if (kPJFLNKEFBC_.isEmpty()) {
-              kPJFLNKEFBC_ = other.kPJFLNKEFBC_;
+        if (tpsWeaponListBuilder_ == null) {
+          if (!other.tpsWeaponList_.isEmpty()) {
+            if (tpsWeaponList_.isEmpty()) {
+              tpsWeaponList_ = other.tpsWeaponList_;
               bitField0_ = (bitField0_ & ~0x00000800);
             } else {
-              ensureKPJFLNKEFBCIsMutable();
-              kPJFLNKEFBC_.addAll(other.kPJFLNKEFBC_);
+              ensureTpsWeaponListIsMutable();
+              tpsWeaponList_.addAll(other.tpsWeaponList_);
             }
             onChanged();
           }
         } else {
-          if (!other.kPJFLNKEFBC_.isEmpty()) {
-            if (kPJFLNKEFBCBuilder_.isEmpty()) {
-              kPJFLNKEFBCBuilder_.dispose();
-              kPJFLNKEFBCBuilder_ = null;
-              kPJFLNKEFBC_ = other.kPJFLNKEFBC_;
+          if (!other.tpsWeaponList_.isEmpty()) {
+            if (tpsWeaponListBuilder_.isEmpty()) {
+              tpsWeaponListBuilder_.dispose();
+              tpsWeaponListBuilder_ = null;
+              tpsWeaponList_ = other.tpsWeaponList_;
               bitField0_ = (bitField0_ & ~0x00000800);
-              kPJFLNKEFBCBuilder_ = 
+              tpsWeaponListBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getKPJFLNKEFBCFieldBuilder() : null;
+                   getTpsWeaponListFieldBuilder() : null;
             } else {
-              kPJFLNKEFBCBuilder_.addAllMessages(other.kPJFLNKEFBC_);
+              tpsWeaponListBuilder_.addAllMessages(other.tpsWeaponList_);
             }
           }
         }
@@ -5137,244 +5137,244 @@ public final class AvatarInfoOuterClass {
         return this;
       }
 
-      private java.util.List<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo> kPJFLNKEFBC_ =
+      private java.util.List<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo> tpsWeaponList_ =
         java.util.Collections.emptyList();
-      private void ensureKPJFLNKEFBCIsMutable() {
+      private void ensureTpsWeaponListIsMutable() {
         if (!((bitField0_ & 0x00000800) != 0)) {
-          kPJFLNKEFBC_ = new java.util.ArrayList<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo>(kPJFLNKEFBC_);
+          tpsWeaponList_ = new java.util.ArrayList<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo>(tpsWeaponList_);
           bitField0_ |= 0x00000800;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder> kPJFLNKEFBCBuilder_;
+          emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder> tpsWeaponListBuilder_;
 
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public java.util.List<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo> getKPJFLNKEFBCList() {
-        if (kPJFLNKEFBCBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(kPJFLNKEFBC_);
+      public java.util.List<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo> getTpsWeaponListList() {
+        if (tpsWeaponListBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(tpsWeaponList_);
         } else {
-          return kPJFLNKEFBCBuilder_.getMessageList();
+          return tpsWeaponListBuilder_.getMessageList();
         }
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public int getKPJFLNKEFBCCount() {
-        if (kPJFLNKEFBCBuilder_ == null) {
-          return kPJFLNKEFBC_.size();
+      public int getTpsWeaponListCount() {
+        if (tpsWeaponListBuilder_ == null) {
+          return tpsWeaponList_.size();
         } else {
-          return kPJFLNKEFBCBuilder_.getCount();
+          return tpsWeaponListBuilder_.getCount();
         }
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo getKPJFLNKEFBC(int index) {
-        if (kPJFLNKEFBCBuilder_ == null) {
-          return kPJFLNKEFBC_.get(index);
+      public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo getTpsWeaponList(int index) {
+        if (tpsWeaponListBuilder_ == null) {
+          return tpsWeaponList_.get(index);
         } else {
-          return kPJFLNKEFBCBuilder_.getMessage(index);
+          return tpsWeaponListBuilder_.getMessage(index);
         }
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public Builder setKPJFLNKEFBC(
+      public Builder setTpsWeaponList(
           int index, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo value) {
-        if (kPJFLNKEFBCBuilder_ == null) {
+        if (tpsWeaponListBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureKPJFLNKEFBCIsMutable();
-          kPJFLNKEFBC_.set(index, value);
+          ensureTpsWeaponListIsMutable();
+          tpsWeaponList_.set(index, value);
           onChanged();
         } else {
-          kPJFLNKEFBCBuilder_.setMessage(index, value);
+          tpsWeaponListBuilder_.setMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public Builder setKPJFLNKEFBC(
+      public Builder setTpsWeaponList(
           int index, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder builderForValue) {
-        if (kPJFLNKEFBCBuilder_ == null) {
-          ensureKPJFLNKEFBCIsMutable();
-          kPJFLNKEFBC_.set(index, builderForValue.build());
+        if (tpsWeaponListBuilder_ == null) {
+          ensureTpsWeaponListIsMutable();
+          tpsWeaponList_.set(index, builderForValue.build());
           onChanged();
         } else {
-          kPJFLNKEFBCBuilder_.setMessage(index, builderForValue.build());
+          tpsWeaponListBuilder_.setMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public Builder addKPJFLNKEFBC(emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo value) {
-        if (kPJFLNKEFBCBuilder_ == null) {
+      public Builder addTpsWeaponList(emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo value) {
+        if (tpsWeaponListBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureKPJFLNKEFBCIsMutable();
-          kPJFLNKEFBC_.add(value);
+          ensureTpsWeaponListIsMutable();
+          tpsWeaponList_.add(value);
           onChanged();
         } else {
-          kPJFLNKEFBCBuilder_.addMessage(value);
+          tpsWeaponListBuilder_.addMessage(value);
         }
         return this;
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public Builder addKPJFLNKEFBC(
+      public Builder addTpsWeaponList(
           int index, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo value) {
-        if (kPJFLNKEFBCBuilder_ == null) {
+        if (tpsWeaponListBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureKPJFLNKEFBCIsMutable();
-          kPJFLNKEFBC_.add(index, value);
+          ensureTpsWeaponListIsMutable();
+          tpsWeaponList_.add(index, value);
           onChanged();
         } else {
-          kPJFLNKEFBCBuilder_.addMessage(index, value);
+          tpsWeaponListBuilder_.addMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public Builder addKPJFLNKEFBC(
+      public Builder addTpsWeaponList(
           emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder builderForValue) {
-        if (kPJFLNKEFBCBuilder_ == null) {
-          ensureKPJFLNKEFBCIsMutable();
-          kPJFLNKEFBC_.add(builderForValue.build());
+        if (tpsWeaponListBuilder_ == null) {
+          ensureTpsWeaponListIsMutable();
+          tpsWeaponList_.add(builderForValue.build());
           onChanged();
         } else {
-          kPJFLNKEFBCBuilder_.addMessage(builderForValue.build());
+          tpsWeaponListBuilder_.addMessage(builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public Builder addKPJFLNKEFBC(
+      public Builder addTpsWeaponList(
           int index, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder builderForValue) {
-        if (kPJFLNKEFBCBuilder_ == null) {
-          ensureKPJFLNKEFBCIsMutable();
-          kPJFLNKEFBC_.add(index, builderForValue.build());
+        if (tpsWeaponListBuilder_ == null) {
+          ensureTpsWeaponListIsMutable();
+          tpsWeaponList_.add(index, builderForValue.build());
           onChanged();
         } else {
-          kPJFLNKEFBCBuilder_.addMessage(index, builderForValue.build());
+          tpsWeaponListBuilder_.addMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public Builder addAllKPJFLNKEFBC(
+      public Builder addAllTpsWeaponList(
           java.lang.Iterable<? extends emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo> values) {
-        if (kPJFLNKEFBCBuilder_ == null) {
-          ensureKPJFLNKEFBCIsMutable();
+        if (tpsWeaponListBuilder_ == null) {
+          ensureTpsWeaponListIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, kPJFLNKEFBC_);
+              values, tpsWeaponList_);
           onChanged();
         } else {
-          kPJFLNKEFBCBuilder_.addAllMessages(values);
+          tpsWeaponListBuilder_.addAllMessages(values);
         }
         return this;
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public Builder clearKPJFLNKEFBC() {
-        if (kPJFLNKEFBCBuilder_ == null) {
-          kPJFLNKEFBC_ = java.util.Collections.emptyList();
+      public Builder clearTpsWeaponList() {
+        if (tpsWeaponListBuilder_ == null) {
+          tpsWeaponList_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000800);
           onChanged();
         } else {
-          kPJFLNKEFBCBuilder_.clear();
+          tpsWeaponListBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public Builder removeKPJFLNKEFBC(int index) {
-        if (kPJFLNKEFBCBuilder_ == null) {
-          ensureKPJFLNKEFBCIsMutable();
-          kPJFLNKEFBC_.remove(index);
+      public Builder removeTpsWeaponList(int index) {
+        if (tpsWeaponListBuilder_ == null) {
+          ensureTpsWeaponListIsMutable();
+          tpsWeaponList_.remove(index);
           onChanged();
         } else {
-          kPJFLNKEFBCBuilder_.remove(index);
+          tpsWeaponListBuilder_.remove(index);
         }
         return this;
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder getKPJFLNKEFBCBuilder(
+      public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder getTpsWeaponListBuilder(
           int index) {
-        return getKPJFLNKEFBCFieldBuilder().getBuilder(index);
+        return getTpsWeaponListFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder getKPJFLNKEFBCOrBuilder(
+      public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder getTpsWeaponListOrBuilder(
           int index) {
-        if (kPJFLNKEFBCBuilder_ == null) {
-          return kPJFLNKEFBC_.get(index);  } else {
-          return kPJFLNKEFBCBuilder_.getMessageOrBuilder(index);
+        if (tpsWeaponListBuilder_ == null) {
+          return tpsWeaponList_.get(index);  } else {
+          return tpsWeaponListBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
       public java.util.List<? extends emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder> 
-           getKPJFLNKEFBCOrBuilderList() {
-        if (kPJFLNKEFBCBuilder_ != null) {
-          return kPJFLNKEFBCBuilder_.getMessageOrBuilderList();
+           getTpsWeaponListOrBuilderList() {
+        if (tpsWeaponListBuilder_ != null) {
+          return tpsWeaponListBuilder_.getMessageOrBuilderList();
         } else {
-          return java.util.Collections.unmodifiableList(kPJFLNKEFBC_);
+          return java.util.Collections.unmodifiableList(tpsWeaponList_);
         }
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder addKPJFLNKEFBCBuilder() {
-        return getKPJFLNKEFBCFieldBuilder().addBuilder(
+      public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder addTpsWeaponListBuilder() {
+        return getTpsWeaponListFieldBuilder().addBuilder(
             emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.getDefaultInstance());
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
-      public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder addKPJFLNKEFBCBuilder(
+      public emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder addTpsWeaponListBuilder(
           int index) {
-        return getKPJFLNKEFBCFieldBuilder().addBuilder(
+        return getTpsWeaponListFieldBuilder().addBuilder(
             index, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.getDefaultInstance());
       }
       /**
-       * <code>repeated .SceneWeaponInfo KPJFLNKEFBC = 37;</code>
+       * <code>repeated .SceneWeaponInfo tps_weapon_list = 37;</code>
        */
       public java.util.List<emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder> 
-           getKPJFLNKEFBCBuilderList() {
-        return getKPJFLNKEFBCFieldBuilder().getBuilderList();
+           getTpsWeaponListBuilderList() {
+        return getTpsWeaponListFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
           emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder> 
-          getKPJFLNKEFBCFieldBuilder() {
-        if (kPJFLNKEFBCBuilder_ == null) {
-          kPJFLNKEFBCBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+          getTpsWeaponListFieldBuilder() {
+        if (tpsWeaponListBuilder_ == null) {
+          tpsWeaponListBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo.Builder, emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfoOrBuilder>(
-                  kPJFLNKEFBC_,
+                  tpsWeaponList_,
                   ((bitField0_ & 0x00000800) != 0),
                   getParentForChildren(),
                   isClean());
-          kPJFLNKEFBC_ = null;
+          tpsWeaponList_ = null;
         }
-        return kPJFLNKEFBCBuilder_;
+        return tpsWeaponListBuilder_;
       }
 
       private com.google.protobuf.Internal.IntList UnlockedSkillDepotIdList_ = emptyIntList();
@@ -6301,7 +6301,7 @@ public final class AvatarInfoOuterClass {
       "to\032\025AvatarSkillInfo.proto\032\026MirrorAvatarI" +
       "nfo.proto\032\017PropValue.proto\032\025SceneWeaponI" +
       "nfo.proto\032\025TrialAvatarInfo.proto\032\033_Beyon" +
-      "dCostumeSetInfo.proto\"\363\013\n\nAvatarInfo\022&\n\013" +
+      "dCostumeSetInfo.proto\"\367\013\n\nAvatarInfo\022&\n\013" +
       "fetter_info\030\014 \001(\0132\021.AvatarFetterInfo\022#\n\033" +
       "pending_promote_reward_list\030\030 \003(\r\022/\n\020equ" +
       "ip_affix_list\030\026 \003(\0132\025.AvatarEquipAffixIn" +
@@ -6318,29 +6318,29 @@ public final class AvatarInfoOuterClass {
       "fo.PropMapEntry\022\026\n\016talent_id_list\030\006 \003(\r\022" +
       "7\n\017skill_level_map\030\017 \003(\0132\036.AvatarInfo.Sk" +
       "illLevelMapEntry\0225\n\016fight_prop_map\030\007 \003(\013" +
-      "2\035.AvatarInfo.FightPropMapEntry\022%\n\013KPJFL" +
-      "NKEFBC\030% \003(\0132\020.SceneWeaponInfo\022%\n\035_unloc" +
-      "ked_skill_depot_id_list\030$ \003(\r\022\027\n\017equip_g" +
-      "uid_list\030\005 \003(\004\022$\n\nexcel_info\030\032 \001(\0132\020.Ava" +
-      "tarExcelInfo\022\021\n\tanim_hash\030\033 \001(\r\022\021\n\t_voic" +
-      "e_id\030\" \001(\r\022\023\n\013avatar_type\030\023 \001(\r\022\020\n\010is_fo" +
-      "cus\030\022 \001(\010\022\014\n\004guid\030\002 \001(\004\022\023\n\013LDHKKNPGIMH\030\036" +
-      " \001(\r\022\030\n\020_trace_effect_id\030\037 \001(\r\022\036\n\026core_p" +
-      "roud_skill_level\030\r \001(\r\022\033\n\023wearing_flyclo" +
-      "ak_id\030\025 \001(\r\022\027\n\017_weapon_skin_id\030  \001(\r\022\026\n\016" +
-      "skill_depot_id\030\013 \001(\r\022\022\n\ncostume_id\030\031 \001(\r" +
-      "\022\021\n\tborn_time\030\027 \001(\r\0220\n\020expedition_state\030" +
-      "\020 \001(\0162\026.AvatarExpeditionState\022\022\n\nlife_st" +
-      "ate\030\004 \001(\r\022\023\n\013JMFFNNBEHGG\030\035 \001(\r\022\021\n\tavatar" +
-      "_id\030\001 \001(\r\032>\n\034ProudSkillExtraLevelMapEntr" +
-      "y\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032A\n\rSki" +
-      "llMapEntry\022\013\n\003key\030\001 \001(\r\022\037\n\005value\030\002 \001(\0132\020" +
-      ".AvatarSkillInfo:\0028\001\032:\n\014PropMapEntry\022\013\n\003" +
-      "key\030\001 \001(\r\022\031\n\005value\030\002 \001(\0132\n.PropValue:\0028\001" +
-      "\0324\n\022SkillLevelMapEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005v" +
-      "alue\030\002 \001(\r:\0028\001\0323\n\021FightPropMapEntry\022\013\n\003k" +
-      "ey\030\001 \001(\r\022\r\n\005value\030\002 \001(\002:\0028\001B\033\n\031emu.grass" +
-      "cutter.net.protob\006proto3"
+      "2\035.AvatarInfo.FightPropMapEntry\022)\n\017tps_w" +
+      "eapon_list\030% \003(\0132\020.SceneWeaponInfo\022%\n\035_u" +
+      "nlocked_skill_depot_id_list\030$ \003(\r\022\027\n\017equ" +
+      "ip_guid_list\030\005 \003(\004\022$\n\nexcel_info\030\032 \001(\0132\020" +
+      ".AvatarExcelInfo\022\021\n\tanim_hash\030\033 \001(\r\022\021\n\t_" +
+      "voice_id\030\" \001(\r\022\023\n\013avatar_type\030\023 \001(\r\022\020\n\010i" +
+      "s_focus\030\022 \001(\010\022\014\n\004guid\030\002 \001(\004\022\023\n\013LDHKKNPGI" +
+      "MH\030\036 \001(\r\022\030\n\020_trace_effect_id\030\037 \001(\r\022\036\n\026co" +
+      "re_proud_skill_level\030\r \001(\r\022\033\n\023wearing_fl" +
+      "ycloak_id\030\025 \001(\r\022\027\n\017_weapon_skin_id\030  \001(\r" +
+      "\022\026\n\016skill_depot_id\030\013 \001(\r\022\022\n\ncostume_id\030\031" +
+      " \001(\r\022\021\n\tborn_time\030\027 \001(\r\0220\n\020expedition_st" +
+      "ate\030\020 \001(\0162\026.AvatarExpeditionState\022\022\n\nlif" +
+      "e_state\030\004 \001(\r\022\023\n\013JMFFNNBEHGG\030\035 \001(\r\022\021\n\tav" +
+      "atar_id\030\001 \001(\r\032>\n\034ProudSkillExtraLevelMap" +
+      "Entry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\r:\0028\001\032A\n" +
+      "\rSkillMapEntry\022\013\n\003key\030\001 \001(\r\022\037\n\005value\030\002 \001" +
+      "(\0132\020.AvatarSkillInfo:\0028\001\032:\n\014PropMapEntry" +
+      "\022\013\n\003key\030\001 \001(\r\022\031\n\005value\030\002 \001(\0132\n.PropValue" +
+      ":\0028\001\0324\n\022SkillLevelMapEntry\022\013\n\003key\030\001 \001(\r\022" +
+      "\r\n\005value\030\002 \001(\r:\0028\001\0323\n\021FightPropMapEntry\022" +
+      "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\002:\0028\001B\033\n\031emu.g" +
+      "rasscutter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6361,7 +6361,7 @@ public final class AvatarInfoOuterClass {
     internal_static_AvatarInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_AvatarInfo_descriptor,
-        new java.lang.String[] { "FetterInfo", "PendingPromoteRewardList", "EquipAffixList", "TeamResonanceList", "ProudSkillExtraLevelMap", "SpecialProudSkillList", "MirrorAvatarInfo", "AvatarCostumeSet", "TrialAvatarInfo", "InherentProudSkillList", "SkillMap", "PropMap", "TalentIdList", "SkillLevelMap", "FightPropMap", "KPJFLNKEFBC", "UnlockedSkillDepotIdList", "EquipGuidList", "ExcelInfo", "AnimHash", "VoiceId", "AvatarType", "IsFocus", "Guid", "LDHKKNPGIMH", "TraceEffectId", "CoreProudSkillLevel", "WearingFlycloakId", "WeaponSkinId", "SkillDepotId", "CostumeId", "BornTime", "ExpeditionState", "LifeState", "JMFFNNBEHGG", "AvatarId", });
+        new java.lang.String[] { "FetterInfo", "PendingPromoteRewardList", "EquipAffixList", "TeamResonanceList", "ProudSkillExtraLevelMap", "SpecialProudSkillList", "MirrorAvatarInfo", "AvatarCostumeSet", "TrialAvatarInfo", "InherentProudSkillList", "SkillMap", "PropMap", "TalentIdList", "SkillLevelMap", "FightPropMap", "TpsWeaponList", "UnlockedSkillDepotIdList", "EquipGuidList", "ExcelInfo", "AnimHash", "VoiceId", "AvatarType", "IsFocus", "Guid", "LDHKKNPGIMH", "TraceEffectId", "CoreProudSkillLevel", "WearingFlycloakId", "WeaponSkinId", "SkillDepotId", "CostumeId", "BornTime", "ExpeditionState", "LifeState", "JMFFNNBEHGG", "AvatarId", });
     internal_static_AvatarInfo_ProudSkillExtraLevelMapEntry_descriptor =
       internal_static_AvatarInfo_descriptor.getNestedTypes().get(0);
     internal_static_AvatarInfo_ProudSkillExtraLevelMapEntry_fieldAccessorTable = new

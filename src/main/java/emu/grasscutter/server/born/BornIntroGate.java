@@ -158,8 +158,7 @@ public final class BornIntroGate {
             if (!state.sawUnpaused) return;
 
             state.sawUnpaused = false;
-            completedCycles = ++state.completedPauseCycles;
-            if (completedCycles >= 2) {
+            if (++state.completedPauseCycles >= 2) {
                 state.cutoverStarted = true;
                 enterWorld = true;
             }

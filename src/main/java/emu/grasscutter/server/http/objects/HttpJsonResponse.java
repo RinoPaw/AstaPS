@@ -36,14 +36,14 @@ public final class HttpJsonResponse implements Handler {
         // Checking for ALL here isn't required as when ALL is enabled enableDevLogging() gets enabled
         if (DISPATCH_INFO.logRequests == ServerDebugMode.MISSING
                 && Arrays.stream(missingRoutes)
-                        .anyMatch(x -> Objects.equals(x, ctx.endpointHandlerPath()))) {
+                        .anyMatch(x -> Objects.equals(x, ctx.endpoint().path))) {
             Grasscutter.getLogger()
                     .info(
                             translate(
                                             "messages.dispatch.request",
                                             Utils.address(ctx),
                                             ctx.method(),
-                                            ctx.endpointHandlerPath())
+                                            ctx.endpoint().path)
                                     + (DISPATCH_INFO.logRequests == ServerDebugMode.MISSING ? "(MISSING)" : ""));
         }
         ctx.result(response);

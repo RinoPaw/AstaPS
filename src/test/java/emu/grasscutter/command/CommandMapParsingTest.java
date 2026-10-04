@@ -67,7 +67,7 @@ public final class CommandMapParsingTest {
         var ran = new AtomicBoolean();
 
         CommandMap.executeCommand(
-                () -> ran.set(true), true && false, command -> submitted.set(true));
+                () -> ran.set(true), false, command -> submitted.set(true));
 
         assertFalse(submitted.get());
         assertTrue(ran.get());

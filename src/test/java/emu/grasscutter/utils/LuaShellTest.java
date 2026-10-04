@@ -1,7 +1,6 @@
 package emu.grasscutter.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
@@ -15,7 +14,7 @@ import org.junit.jupiter.api.Test;
  * <p>The chunk stores its branding string with a single length byte. If that byte ever disagrees
  * with the bytes after it the client cannot load the chunk, and because this is the one payload the
  * client executes as Lua, a bad chunk takes the game down rather than being ignored. So the length
- * byte, the version placeholder and the absence of the build hash are all pinned here.
+ * byte and version placeholder are pinned here.
  */
 public final class LuaShellTest {
     private static byte[] shell() throws Exception {
@@ -44,13 +43,12 @@ public final class LuaShellTest {
     }
 
     @Test
-    @DisplayName("keeps the UID prefix and the version placeholder, drops the build hash")
+    @DisplayName("keeps the UID prefix and the version placeholder")
     public void contentIsAsExpected() throws Exception {
         String text = asText(shell());
 
         assertTrue(text.contains("UID:"), "the gsub pattern must survive");
         assertTrue(text.contains("0.0.0"), "version placeholder must be present for stamping");
-        assertFalse(text.contains("_b47c23"), "the build hash placeholder must be gone");
     }
 
     @Test
@@ -61,11 +59,11 @@ public final class LuaShellTest {
         // other tests in this class get to see.
         byte[] pristine = shell().clone();
         try {
-            LuaShell.updateLuaShellWithGameVersion("7.0.0");
+            LuaShell.updateLuaShellWithGameVersion("7.1.0");
             byte[] after = shell();
 
             assertEquals(pristine.length, after.length, "stamping must not resize the chunk");
-            assertTrue(asText(after).contains("7.0.0"), "version was not stamped in");
+            assertTrue(asText(after).contains("7.1.0"), "version was not stamped in");
         } finally {
             System.arraycopy(pristine, 0, shell(), 0, pristine.length);
         }

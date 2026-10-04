@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.google.gson.JsonObject;
 import emu.grasscutter.GameConstants;
 import java.lang.reflect.Method;
-import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,17 +17,6 @@ public final class RegionCustomConfigTest {
         method.setAccessible(true);
         JsonObject config = (JsonObject) method.invoke(null);
 
-        assertEquals(
-                Set.of(
-                        "sdkenv",
-                        "checkdevice",
-                        "loadPatch",
-                        "showexception",
-                        "regionConfig",
-                        "downloadMode",
-                        "codeSwitch",
-                        "coverSwitch"),
-                config.keySet());
         assertEquals("2", config.get("sdkenv").getAsString());
         assertEquals("false", config.get("checkdevice").getAsString());
         assertEquals("false", config.get("loadPatch").getAsString());

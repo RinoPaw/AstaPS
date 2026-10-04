@@ -106,6 +106,32 @@ public final class CommandMapParsingTest {
     }
 
     @Test
+    public void runtimeRegistrationAndUnregistrationUpdateTreeIncrementally() {
+        var map = new CommandMap(false);
+        var root = map.getCommandLine();
+        var first = new BatchFirstCommand();
+        var second = new BatchSecondCommand();
+
+        map.registerCommand("batch-first", first);
+        assertSame(root, map.getCommandLine());
+        assertEquals(1, first.completionBuilds.get());
+
+        map.registerCommand("batch-second", second);
+        assertSame(root, map.getCommandLine());
+        assertEquals(1, first.completionBuilds.get());
+        assertEquals(1, second.completionBuilds.get());
+        assertTrue(root.getSubcommands().containsKey("batch-first"));
+        assertTrue(root.getSubcommands().containsKey("batch-second"));
+
+        map.unregisterCommand("batch-second");
+        assertSame(root, map.getCommandLine());
+        assertEquals(1, first.completionBuilds.get());
+        assertEquals(1, second.completionBuilds.get());
+        assertTrue(root.getSubcommands().containsKey("batch-first"));
+        assertFalse(root.getSubcommands().containsKey("batch-second"));
+    }
+
+    @Test
     public void batchRegistrationBuildsEachCompletionModelOnce() {
         var map = new CommandMap(false);
         var first = new BatchFirstCommand();

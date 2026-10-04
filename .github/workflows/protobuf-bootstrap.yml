@@ -1,29 +1,28 @@
-name: Bootstrap 7.1 protobuf descriptors
+name: Verify 7.1 protobuf generation
 
 on:
   push:
     branches:
       - fix/protobuf-generation-7.1
     paths:
-      - "src/generated/main/java/emu/grasscutter/net/proto/**"
+      - "protocol/7.1/**"
       - "tools/protocol/**"
-      - "gradle/protocol-bootstrap.gradle"
       - "gradle/protocol-generation.gradle"
       - ".github/workflows/protobuf-bootstrap.yml"
   workflow_dispatch:
 
 concurrency:
-  group: protobuf-bootstrap-${{ github.ref }}
+  group: protobuf-generation-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: write
 
 jobs:
-  export:
-    name: Export and regenerate protocol
+  verify:
+    name: Regenerate and compile protocol
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -37,20 +36,6 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
-
-      - name: Export descriptor set
-        run: >-
-          ./gradlew -I gradle/protocol-bootstrap.gradle exportProtocolDescriptorSet
-          --build-cache
-          -PskipHandbook=1
-          -Dorg.gradle.jvmargs=-Xmx6g
-
-      - name: Inspect export
-        shell: bash
-        run: |
-          wc -l build/protocol/7.1/files.txt
-          sha256sum build/protocol/7.1/protocol.desc
-          ls -lh build/protocol/7.1/protocol.desc
 
       - name: Generate Java from canonical descriptor set
         run: >-
@@ -70,39 +55,17 @@ jobs:
         shell: bash
         run: |
           find build/generated/sources/protocol/7.1/java/main -name '*.java' -type f | wc -l
+          sha256sum protocol/7.1/protocol.desc
           ./gradlew dependencyInsight \
             --dependency protobuf-java \
             --configuration compileClasspath \
             -q
 
-      - name: Upload bootstrap artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: protobuf-7.1-descriptors
-          path: build/protocol/7.1/
-          retention-days: 14
-
-      - name: Capture canonical descriptor set
-        shell: bash
-        run: |
-          mkdir -p protocol/7.1
-          cp build/protocol/7.1/protocol.desc protocol/7.1/protocol.desc
-          cp build/protocol/7.1/files.txt protocol/7.1/files.txt
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add protocol/7.1/protocol.desc protocol/7.1/files.txt
-
-          if ! git diff --cached --quiet; then
-            git commit -m "build: capture 7.1 protobuf descriptors"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          else
-            echo "Descriptor set is already current."
-          fi
-
       - name: Enable descriptor-based generation in normal builds
         shell: bash
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --ff-only origin "${GITHUB_REF_NAME}"
 
           if ! grep -Fq "apply from: 'gradle/protocol-generation.gradle'" build.gradle; then

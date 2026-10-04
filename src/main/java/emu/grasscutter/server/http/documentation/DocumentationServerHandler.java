@@ -1,17 +1,17 @@
 package emu.grasscutter.server.http.documentation;
 
 import emu.grasscutter.server.http.Router;
-import io.javalin.Javalin;
+import io.javalin.config.RoutesConfig;
 
 public final class DocumentationServerHandler implements Router {
 
     @Override
-    public void applyRoutes(Javalin javalin) {
+    public void applyRoutes(RoutesConfig routes) {
         final var root = new RootRequestHandler();
         final var gachaMapping = new GachaMappingRequestHandler();
 
-        javalin.get("/documentation/handbook", ctx -> ctx.redirect("https://grasscutter.io/handbook"));
-        javalin.get("/documentation/gachamapping", gachaMapping::handle);
-        javalin.get("/documentation", root::handle);
+        routes.get("/documentation/handbook", ctx -> ctx.redirect("https://grasscutter.io/handbook"));
+        routes.get("/documentation/gachamapping", gachaMapping::handle);
+        routes.get("/documentation", root::handle);
     }
 }

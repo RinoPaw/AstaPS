@@ -14,10 +14,6 @@ allprojects { currentProject ->
         def protocolTools = sourceSets.findByName('protocolTools') ?: sourceSets.create('protocolTools')
         protocolTools.java.srcDir(currentProject.file('tools/protocol/java'))
 
-        currentProject.configurations
-                .getByName(protocolTools.implementationConfigurationName)
-                .extendsFrom(currentProject.configurations.getByName('implementation'))
-
         def protocVersion = '3.25.9'
         def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
         def archName = System.getProperty('os.arch').toLowerCase(Locale.ROOT)
@@ -82,23 +78,16 @@ allprojects { currentProject ->
             }
         }
 
-        currentProject.afterEvaluate {
-            def legacyProtocolJava = currentProject.file('src/generated/main/java').canonicalFile
-            def retainedSourceDirs = sourceSets.main.java.srcDirs.findAll {
-                it.canonicalFile != legacyProtocolJava
-            }
-            sourceSets.main.java.setSrcDirs(retainedSourceDirs)
-            sourceSets.main.java.srcDir(generatedProtocolJava)
+        sourceSets.main.java.srcDir(generatedProtocolJava)
 
-            currentProject.tasks.named('compileJava') {
-                dependsOn 'generateProtocolJava'
-            }
-            currentProject.tasks.named('sourcesJar') {
-                dependsOn 'generateProtocolJava'
-            }
-            currentProject.tasks.named('javadoc') {
-                exclude '**/net/proto/**'
-            }
+        currentProject.tasks.named('compileJava') {
+            dependsOn 'generateProtocolJava'
+        }
+        currentProject.tasks.named('sourcesJar') {
+            dependsOn 'generateProtocolJava'
+        }
+        currentProject.tasks.named('javadoc') {
+            exclude '**/net/proto/**'
         }
     }
 }

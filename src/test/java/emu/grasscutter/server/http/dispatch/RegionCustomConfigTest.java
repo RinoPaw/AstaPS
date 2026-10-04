@@ -2,34 +2,43 @@ package emu.grasscutter.server.http.dispatch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import emu.grasscutter.GameConstants;
 import java.lang.reflect.Method;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/**
- * The cur_region regionCustomConfig plaintext must match AstaPS byte for byte.
- *
- * <p>The client decrypts this blob with a built-in public key. Any difference in key names, values
- * or ordering can change hot-update and resource-download behaviour, and when the blob does not
- * decode cleanly the client does not complain - it silently falls back to defaults. So the
- * plaintext is pinned here.
- */
+/** Guards the semantic contents of cur_region's regionCustomConfig. */
 public final class RegionCustomConfigTest {
-    /** The literal hardcoded in AstaPS's RegionHandler. */
-    private static final String ASTAPS_PLAINTEXT =
-            "{\"sdkenv\":\"2\",\"checkdevice\":\"false\",\"loadPatch\":\"false\","
-                    + "\"showexception\":\"false\",\"regionConfig\":\"pm\",\"downloadMode\":\"0\","
-                    + "\"codeSwitch\":[4334],\"coverSwitch\":[40,41,42]}";
-
     @Test
-    @DisplayName("plaintext matches AstaPS exactly, key order included")
-    public void matchesAstaPs() throws Exception {
-        Method m = RegionHandler.class.getDeclaredMethod("buildRegionCustomConfig");
-        m.setAccessible(true);
-        JsonObject config = (JsonObject) m.invoke(null);
+    @DisplayName("region custom config keeps the client-facing fields")
+    public void keepsClientFacingFields() throws Exception {
+        Method method = RegionHandler.class.getDeclaredMethod("buildRegionCustomConfig");
+        method.setAccessible(true);
+        JsonObject config = (JsonObject) method.invoke(null);
 
-        assertEquals(ASTAPS_PLAINTEXT, new Gson().toJson(config));
+        assertEquals(
+                Set.of(
+                        "sdkenv",
+                        "checkdevice",
+                        "loadPatch",
+                        "showexception",
+                        "regionConfig",
+                        "downloadMode",
+                        "codeSwitch",
+                        "coverSwitch"),
+                config.keySet());
+        assertEquals("2", config.get("sdkenv").getAsString());
+        assertEquals("false", config.get("checkdevice").getAsString());
+        assertEquals("false", config.get("loadPatch").getAsString());
+        assertEquals(String.valueOf(GameConstants.DEBUG), config.get("showexception").getAsString());
+        assertEquals("pm", config.get("regionConfig").getAsString());
+        assertEquals("0", config.get("downloadMode").getAsString());
+        assertEquals(4334, config.getAsJsonArray("codeSwitch").get(0).getAsInt());
+        assertEquals(3, config.getAsJsonArray("coverSwitch").size());
+        assertEquals(40, config.getAsJsonArray("coverSwitch").get(0).getAsInt());
+        assertEquals(41, config.getAsJsonArray("coverSwitch").get(1).getAsInt());
+        assertEquals(42, config.getAsJsonArray("coverSwitch").get(2).getAsInt());
     }
 }

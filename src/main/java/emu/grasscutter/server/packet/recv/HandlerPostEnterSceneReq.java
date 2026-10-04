@@ -1,6 +1,6 @@
 package emu.grasscutter.server.packet.recv;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.game.ability.EscoffierSkillCookHelper;
 import emu.grasscutter.game.player.EntryNotice;
@@ -69,8 +69,8 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
 
     /** Fired here rather than at login: a cutscene sent before the scene is up is discarded. */
     private void playOpeningCutscene(emu.grasscutter.game.player.Player player) {
-        int cutscene = GAME_OPTIONS.firstLoginCutscene;
-        if (GAME_OPTIONS.disableCutscenes || cutscene <= 0 || player.isPlayedFirstLoginCutscene()) return;
+        int cutscene = GAME.firstLoginCutscene;
+        if (GAME.disableCutscenes || cutscene <= 0 || player.isPlayedFirstLoginCutscene()) return;
 
         player.setPlayedFirstLoginCutscene(true);
         player.save();

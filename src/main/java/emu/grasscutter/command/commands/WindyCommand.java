@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.packet.send.PacketWindSeedUID;
 import emu.grasscutter.server.packet.send.PacketWindy;
@@ -11,7 +11,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
 @Command(label = "windy")
-public final class WindyCommand implements PicocliCommandHandler {
+public final class WindyCommand implements CommandHandler {
     private static final Set<Double> SUPPORTED_SPEEDS =
             Set.of(0.1, 0.2, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0);
 
@@ -67,7 +67,7 @@ public final class WindyCommand implements PicocliCommandHandler {
         public void run() {
             if (!hasPermission(sender, targetPlayer)) return;
             targetPlayer.sendPacket(new PacketWindy(script));
-            CommandHandler.sendMessage(sender, success);
+            CommandOutput.sendMessage(sender, success);
         }
     }
 
@@ -93,7 +93,7 @@ public final class WindyCommand implements PicocliCommandHandler {
             }
             String text = Double.toString(speed);
             targetPlayer.sendPacket(new PacketWindy("GameSpeed/speed" + text));
-            CommandHandler.sendMessage(sender, "GameSpeed changed to " + text + " successfully!");
+            CommandOutput.sendMessage(sender, "GameSpeed changed to " + text + " successfully!");
         }
     }
 
@@ -111,7 +111,7 @@ public final class WindyCommand implements PicocliCommandHandler {
         public void run() {
             if (!hasPermission(sender, targetPlayer)) return;
             targetPlayer.sendPacket(new PacketWindSeedUID());
-            CommandHandler.sendMessage(sender, "Loaded the packaged UID watermark script.");
+            CommandOutput.sendMessage(sender, "Loaded the packaged UID watermark script.");
         }
     }
 
@@ -120,7 +120,7 @@ public final class WindyCommand implements PicocliCommandHandler {
         var account = sender.getAccount();
         String required = targetPlayer != sender ? "player.windy.others" : "player.windy";
         if (account != null && account.hasPermission(required)) return true;
-        CommandHandler.sendTranslatedMessage(sender, "commands.generic.permission_error");
+        CommandOutput.sendTranslatedMessage(sender, "commands.generic.permission_error");
         return false;
     }
 }

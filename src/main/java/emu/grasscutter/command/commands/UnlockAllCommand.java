@@ -4,7 +4,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.player.PlayerProgressManager;
@@ -23,7 +23,7 @@ import picocli.CommandLine;
         label = "unlockall",
         permission = "player.unlockall",
         permissionTargeted = "player.unlockall.others")
-public final class UnlockAllCommand implements PicocliCommandHandler {
+public final class UnlockAllCommand implements CommandHandler {
     private static final List<Integer> SCENE_AREAS = IntStream.range(1, 1000).boxed().toList();
 
     @Override
@@ -120,9 +120,9 @@ public final class UnlockAllCommand implements PicocliCommandHandler {
 
             targetPlayer.save();
 
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender, translate(sender, "commands.unlockall.success", targetPlayer.getNickname()));
-            CommandHandler.sendMessage(sender, "Also unlocked every scene tag.");
+            CommandOutput.sendMessage(sender, "Also unlocked every scene tag.");
         }
     }
 }

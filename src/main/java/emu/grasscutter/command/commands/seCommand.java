@@ -3,8 +3,8 @@ package emu.grasscutter.command.commands;
 import emu.grasscutter.GameConstants;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.command.ConstellationsHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.avatar.AvatarSkillDepotData;
 import emu.grasscutter.game.avatar.Avatar;
@@ -16,7 +16,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
 @Command(label = "switchelement", aliases = {"se"}, threading = true)
-public final class seCommand implements PicocliCommandHandler {
+public final class seCommand implements CommandHandler {
     private record ElementArg(Element value) {}
 
     @Override
@@ -55,14 +55,14 @@ public final class seCommand implements PicocliCommandHandler {
             int constLevel = constellation == null ? 0 : Math.max(0, Math.min(6, constellation));
             var currentEntity = targetPlayer.getTeamManager().getCurrentAvatarEntity();
             if (currentEntity == null) {
-                CommandHandler.sendMessage(sender, "Switch failed: no active character");
+                CommandOutput.sendMessage(sender, "Switch failed: no active character");
                 return;
             }
 
             int activeAvatarId = currentEntity.getAvatar().getAvatarId();
             if (activeAvatarId != GameConstants.MAIN_CHARACTER_MALE
                     && activeAvatarId != GameConstants.MAIN_CHARACTER_FEMALE) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         "Switch failed: the active character is "
                                 + activeAvatarId
@@ -72,7 +72,7 @@ public final class seCommand implements PicocliCommandHandler {
 
             String failure = changeAvatarElement(targetPlayer, activeAvatarId, element.value());
             if (failure != null) {
-                CommandHandler.sendMessage(sender, "Switch failed: " + failure);
+                CommandOutput.sendMessage(sender, "Switch failed: " + failure);
                 return;
             }
 
@@ -83,9 +83,9 @@ public final class seCommand implements PicocliCommandHandler {
                 targetPlayer.getWorld().transferPlayerToScene(targetPlayer, 1, position);
                 targetPlayer.getWorld().transferPlayerToScene(targetPlayer, sceneId, position);
                 targetPlayer.getScene().broadcastPacket(new PacketSceneEntityAppearNotify(targetPlayer));
-                CommandHandler.sendMessage(sender, "Switched to " + element.value().name());
+                CommandOutput.sendMessage(sender, "Switched to " + element.value().name());
             } catch (Exception ignored) {
-                CommandHandler.sendMessage(sender, "Failed to switch to " + element.value().name());
+                CommandOutput.sendMessage(sender, "Failed to switch to " + element.value().name());
             }
         }
     }

@@ -4,7 +4,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.game.player.Player;
@@ -17,7 +17,7 @@ import picocli.CommandLine.Parameters;
         label = "teapot",
         permission = "player.teapot",
         permissionTargeted = "player.teapot.others")
-public final class TeapotCommand implements PicocliCommandHandler {
+public final class TeapotCommand implements CommandHandler {
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
@@ -65,13 +65,13 @@ public final class TeapotCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (level < 1 || level > 10) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.level_range_error"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.teapot.level_range_error"));
                 return;
             }
             targetPlayer.getHome().setLevel(level);
             targetPlayer.getHome().save();
             targetPlayer.sendPacket(new PacketHomeBasicInfoNotify(targetPlayer, false));
-            CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.level_success", level));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.teapot.level_success", level));
         }
     }
 
@@ -88,7 +88,7 @@ public final class TeapotCommand implements PicocliCommandHandler {
         public void run() {
             if (!validModule(sender, module)) return;
             if (targetPlayer.getRealmList() != null && targetPlayer.getRealmList().contains(module)) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.teapot.unlock_module_contain_error"));
                 return;
             }
@@ -96,7 +96,7 @@ public final class TeapotCommand implements PicocliCommandHandler {
             targetPlayer.addRealmList(module);
             targetPlayer.save();
             targetPlayer.sendPacket(new PacketPlayerHomeCompInfoNotify(targetPlayer));
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender, translate(sender, "commands.teapot.unlock_module_success", module));
         }
     }
@@ -114,12 +114,12 @@ public final class TeapotCommand implements PicocliCommandHandler {
         public void run() {
             if (!validModule(sender, module)) return;
             if (module == targetPlayer.getCurrentRealmId()) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.teapot.lock_module_in_scene_error"));
                 return;
             }
             if (targetPlayer.getRealmList() == null || !targetPlayer.getRealmList().contains(module)) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender, translate(sender, "commands.teapot.lock_module_contain_error"));
                 return;
             }
@@ -131,7 +131,7 @@ public final class TeapotCommand implements PicocliCommandHandler {
             targetPlayer.getRealmList().remove(module);
             targetPlayer.save();
             targetPlayer.sendPacket(new PacketPlayerHomeCompInfoNotify(targetPlayer));
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender, translate(sender, "commands.teapot.lock_module_success", module));
         }
     }
@@ -148,24 +148,24 @@ public final class TeapotCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (count <= 0) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.invalid_param"));
+                CommandOutput.sendMessage(sender, translate(sender, "commands.teapot.invalid_param"));
                 return;
             }
             for (ItemData item : GameData.getItemDataMap().values()) {
                 if (item.getFurnType() == null || item.getFurnType().isEmpty()) continue;
                 targetPlayer.getInventory().addItem(item.getId(), count);
             }
-            CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.give_furniture_success"));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.teapot.give_furniture_success"));
         }
     }
 
     private static boolean validModule(Player sender, int module) {
         if (module > 4) {
-            CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.module_sumeru_error"));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.teapot.module_sumeru_error"));
             return false;
         }
         if (module < 1) {
-            CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.module_range_error"));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.teapot.module_range_error"));
             return false;
         }
         return true;

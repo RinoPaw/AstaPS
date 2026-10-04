@@ -2,7 +2,7 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.avatar.AvatarSkillDepotData;
 import emu.grasscutter.game.avatar.Avatar;
@@ -15,7 +15,7 @@ import picocli.CommandLine.Parameters;
         label = "talent",
         permission = "player.settalent",
         permissionTargeted = "player.settalent.others")
-public final class TalentCommand implements PicocliCommandHandler {
+public final class TalentCommand implements CommandHandler {
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
@@ -59,7 +59,7 @@ public final class TalentCommand implements PicocliCommandHandler {
         protected AvatarSkillDepotData skillDepot(Avatar avatar) {
             AvatarSkillDepotData depot = avatar.getSkillDepot();
             if (depot == null) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.talent.invalid_skill_id");
+                CommandOutput.sendTranslatedMessage(sender, "commands.talent.invalid_skill_id");
             }
             return depot;
         }
@@ -126,7 +126,7 @@ public final class TalentCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             if (level < 1 || level > 15) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.talent.out_of_range");
+                CommandOutput.sendTranslatedMessage(sender, "commands.talent.out_of_range");
                 return;
             }
 
@@ -169,7 +169,7 @@ public final class TalentCommand implements PicocliCommandHandler {
                                 if (desc == null) {
                                     desc = "";
                                 }
-                                CommandHandler.sendTranslatedMessage(
+                                CommandOutput.sendTranslatedMessage(
                                         sender, "commands.talent.id_desc", id, name, desc);
                             });
         }
@@ -182,10 +182,10 @@ public final class TalentCommand implements PicocliCommandHandler {
             if (name == null) {
                 name = skillId;
             }
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender, "commands.talent.set_id", skillId, name, newLevel);
         } else {
-            CommandHandler.sendTranslatedMessage(sender, "commands.talent.out_of_range");
+            CommandOutput.sendTranslatedMessage(sender, "commands.talent.out_of_range");
         }
     }
 

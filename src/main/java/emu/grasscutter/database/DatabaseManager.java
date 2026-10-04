@@ -6,6 +6,7 @@ import com.mongodb.MongoCommandException;
 import com.mongodb.client.*;
 import dev.morphia.*;
 import dev.morphia.annotations.Entity;
+import dev.morphia.config.MorphiaConfig;
 import dev.morphia.mapping.*;
 import dev.morphia.query.filters.Filters;
 import emu.grasscutter.Grasscutter;
@@ -30,16 +31,15 @@ public final class DatabaseManager {
     }
 
     public static void initialize() {
-        // Initialize
         MongoClient gameMongoClient = MongoClients.create(DATABASE.game.connectionUri);
 
-        // Set mapper options.
-        MapperOptions mapperOptions =
-                MapperOptions.builder().storeEmpties(true).storeNulls(false).build();
-
-        // Create data store.
+        // MorphiaConfig is the forward-compatible replacement for MapperOptions. Keep mapping and
+        // index application explicit below so the game and dispatch databases retain their current
+        // entity boundaries and duplicate-index recovery behaviour.
+        MorphiaConfig baseConfig = MorphiaConfig.load().storeEmpties(true).storeNulls(false);
         gameDatastore =
-                Morphia.createDatastore(gameMongoClient, DATABASE.game.collection, mapperOptions);
+                Morphia.createDatastore(
+                        gameMongoClient, baseConfig.database(DATABASE.game.collection));
 
         // Map classes.
         var entities =
@@ -60,7 +60,8 @@ public final class DatabaseManager {
             MongoClient dispatchMongoClient = MongoClients.create(DATABASE.server.connectionUri);
 
             dispatchDatastore =
-                    Morphia.createDatastore(dispatchMongoClient, DATABASE.server.collection, mapperOptions);
+                    Morphia.createDatastore(
+                            dispatchMongoClient, baseConfig.database(DATABASE.server.collection));
             dispatchDatastore.getMapper().map(new Class<?>[] {DatabaseCounter.class, Account.class});
 
             // Ensure indexes for dispatch datastore

@@ -60,6 +60,8 @@ repositories {
     mavenCentral()
 }
 
+def nettyVersion = '4.1.138.Final'
+
 dependencies {
     // KCP is a custom/unpublished build and remains vendored until its upstream is identified.
     implementation files('lib/kcp-1.5.1.jar')
@@ -78,11 +80,19 @@ dependencies {
     implementation 'info.picocli:picocli-shell-jline3:4.7.7'
     implementation 'net.java.dev.jna:jna:5.19.1'
 
-    implementation platform('io.netty:netty-bom:4.1.138.Final')
+    // KCP uses Netty's core transport APIs plus epoll/kqueue classes. The platform-specific
+    // classifier JARs carry the JNI libraries that make Epoll.isAvailable()/KQueue.isAvailable()
+    // succeed; without them the server silently falls back to NIO.
+    implementation platform("io.netty:netty-bom:${nettyVersion}")
     implementation 'io.netty:netty-common'
-    implementation 'io.netty:netty-handler'
-    implementation 'io.netty:netty-transport-native-epoll'
-    implementation 'io.netty:netty-transport-native-kqueue'
+    implementation 'io.netty:netty-buffer'
+    implementation 'io.netty:netty-transport'
+    implementation 'io.netty:netty-transport-classes-epoll'
+    implementation 'io.netty:netty-transport-classes-kqueue'
+    runtimeOnly "io.netty:netty-transport-native-epoll:${nettyVersion}:linux-x86_64"
+    runtimeOnly "io.netty:netty-transport-native-epoll:${nettyVersion}:linux-aarch_64"
+    runtimeOnly "io.netty:netty-transport-native-kqueue:${nettyVersion}:osx-x86_64"
+    runtimeOnly "io.netty:netty-transport-native-kqueue:${nettyVersion}:osx-aarch_64"
 
     implementation 'com.google.code.gson:gson:2.14.0'
     implementation 'com.google.protobuf:protobuf-java:3.25.9'

@@ -1,13 +1,16 @@
 package emu.grasscutter.tools.protocol;
 
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Stream;
@@ -51,36 +54,38 @@ public final class ProtocolJavaGenerator {
         var allProtocolFiles = new TreeSet<String>();
         allProtocolFiles.addAll(protocolFiles);
         allProtocolFiles.addAll(supplementalProtoFiles);
-        if (allProtocolFiles.size() != protocolFiles.size() + supplementalProtoFiles.size()) {
-            throw new IllegalStateException(
-                    "supplemental protocol file names overlap the canonical descriptor file list");
-        }
+        var overlappingFiles = protocolFiles.stream().filter(supplementalProtoFiles::contains).toList();
+        var expectedJavaFileCount = allProtocolFiles.size();
 
         recreateDirectory(javaOut);
 
         Path temporaryDirectory = null;
         try {
-            Path generationDescriptorSet = descriptorSet;
-            if (!supplementalProtoFiles.isEmpty()) {
-                temporaryDirectory = Files.createTempDirectory("astaps-protocol-descriptors-");
-                var supplementalDescriptorSet = temporaryDirectory.resolve("supplemental.desc");
-                var combinedDescriptorSet = temporaryDirectory.resolve("combined.desc");
+            temporaryDirectory = Files.createTempDirectory("astaps-protocol-descriptors-");
+            var supplementalDescriptorSet = temporaryDirectory.resolve("supplemental.desc");
+            var combinedDescriptorSet = temporaryDirectory.resolve("combined.desc");
 
+            FileDescriptorSet supplementalDescriptors = FileDescriptorSet.getDefaultInstance();
+            if (!supplementalProtoFiles.isEmpty()) {
                 runSupplementalDescriptorProtoc(
                         protoc,
                         supplementalProtoDir,
                         supplementalImportDir,
                         supplementalDescriptorSet,
                         supplementalProtoFiles);
-                concatenateDescriptorSets(descriptorSet, supplementalDescriptorSet, combinedDescriptorSet);
-                generationDescriptorSet = combinedDescriptorSet;
+                supplementalDescriptors =
+                        FileDescriptorSet.parseFrom(Files.readAllBytes(supplementalDescriptorSet));
             }
+
+            var baseDescriptors = FileDescriptorSet.parseFrom(Files.readAllBytes(descriptorSet));
+            var combinedDescriptors = mergeAndPatchDescriptors(baseDescriptors, supplementalDescriptors);
+            Files.write(combinedDescriptorSet, combinedDescriptors.toByteArray());
 
             var filesToGenerate = List.copyOf(allProtocolFiles);
             for (int offset = 0; offset < filesToGenerate.size(); offset += FILES_PER_PROTOC_INVOCATION) {
                 var end = Math.min(offset + FILES_PER_PROTOC_INVOCATION, filesToGenerate.size());
                 runDescriptorProtoc(
-                        protoc, generationDescriptorSet, javaOut, filesToGenerate.subList(offset, end));
+                        protoc, combinedDescriptorSet, javaOut, filesToGenerate.subList(offset, end));
             }
         } finally {
             if (temporaryDirectory != null) {
@@ -95,7 +100,6 @@ public final class ProtocolJavaGenerator {
                     .filter(path -> path.getFileName().toString().endsWith(".java"))
                     .count();
         }
-        var expectedJavaFileCount = protocolFiles.size() + supplementalProtoFiles.size();
         if (javaFileCount != expectedJavaFileCount) {
             throw new IllegalStateException(
                     "protoc generated "
@@ -104,14 +108,146 @@ public final class ProtocolJavaGenerator {
                             + expectedJavaFileCount
                             + " from "
                             + protocolFiles.size()
-                            + " descriptor files and "
+                            + " base descriptor files and "
                             + supplementalProtoFiles.size()
-                            + " supplemental proto files");
+                            + " supplemental proto files ("
+                            + overlappingFiles.size()
+                            + " overrides)");
         }
 
         System.out.printf(
-                "Generated %,d Java files from %,d protocol descriptors and %,d supplemental proto files.%n",
-                javaFileCount, protocolFiles.size(), supplementalProtoFiles.size());
+                "Generated %,d Java files from %,d base descriptors and %,d supplemental proto files (%,d overrides).%n",
+                javaFileCount,
+                protocolFiles.size(),
+                supplementalProtoFiles.size(),
+                overlappingFiles.size());
+    }
+
+    private static FileDescriptorSet mergeAndPatchDescriptors(
+            FileDescriptorSet base, FileDescriptorSet supplemental) {
+        var filesByName = new LinkedHashMap<String, FileDescriptorProto>();
+        for (var file : base.getFileList()) {
+            filesByName.put(file.getName(), file);
+        }
+        for (var file : supplemental.getFileList()) {
+            filesByName.put(file.getName(), file);
+        }
+
+        var result = FileDescriptorSet.newBuilder();
+        for (var file : filesByName.values()) {
+            result.addFile(applyPlayProtocolPatches(file));
+        }
+        return result.build();
+    }
+
+    /**
+     * The canonical descriptor dump predates several TPS fields that were added on play/rino.
+     * Preserve every recovered base field and add only the missing 7.1 fields pinned by the old
+     * generated Java descriptors.
+     */
+    private static FileDescriptorProto applyPlayProtocolPatches(FileDescriptorProto file) {
+        return switch (file.getName()) {
+            case "AvatarInfo.proto" ->
+                    addMessageField(
+                            file,
+                            "AvatarInfo",
+                            repeatedMessageField("tps_weapon_list", 37, ".SceneWeaponInfo"),
+                            "SceneWeaponInfo.proto");
+            case "SceneAvatarInfo.proto" ->
+                    addMessageField(
+                            file,
+                            "SceneAvatarInfo",
+                            repeatedMessageField("tps_weapon_list", 31, ".SceneWeaponInfo"),
+                            "SceneWeaponInfo.proto");
+            case "SceneWeaponInfo.proto" ->
+                    addMessageField(
+                            file,
+                            "SceneWeaponInfo",
+                            repeatedMessageField(
+                                    "ammunition_list", 12, ".TpsWeaponAmmunitionInfo"),
+                            "TpsWeaponAmmunitionInfo.proto");
+            case "_TpsWeapon.proto" ->
+                    addMessageField(
+                            file,
+                            "_TpsWeapon",
+                            FieldDescriptorProto.newBuilder()
+                                    .setName("accessory_id_list")
+                                    .setNumber(2)
+                                    .setLabel(FieldDescriptorProto.Label.LABEL_REPEATED)
+                                    .setType(FieldDescriptorProto.Type.TYPE_UINT32)
+                                    .build());
+            default -> file;
+        };
+    }
+
+    private static FieldDescriptorProto repeatedMessageField(
+            String name, int number, String typeName) {
+        return FieldDescriptorProto.newBuilder()
+                .setName(name)
+                .setNumber(number)
+                .setLabel(FieldDescriptorProto.Label.LABEL_REPEATED)
+                .setType(FieldDescriptorProto.Type.TYPE_MESSAGE)
+                .setTypeName(typeName)
+                .build();
+    }
+
+    private static FileDescriptorProto addMessageField(
+            FileDescriptorProto file,
+            String messageName,
+            FieldDescriptorProto field,
+            String... dependencies) {
+        var fileBuilder = file.toBuilder();
+        var messageIndex = -1;
+        for (int index = 0; index < fileBuilder.getMessageTypeCount(); index++) {
+            if (fileBuilder.getMessageType(index).getName().equals(messageName)) {
+                messageIndex = index;
+                break;
+            }
+        }
+        if (messageIndex < 0) {
+            throw new IllegalStateException(
+                    "protocol patch target message " + messageName + " was not found in " + file.getName());
+        }
+
+        var messageBuilder = fileBuilder.getMessageTypeBuilder(messageIndex);
+        var sameName = messageBuilder.getFieldList().stream()
+                .filter(existing -> existing.getName().equals(field.getName()))
+                .findFirst();
+        if (sameName.isPresent()) {
+            if (!sameName.get().equals(field)) {
+                throw new IllegalStateException(
+                        "protocol patch field "
+                                + file.getName()
+                                + ":"
+                                + messageName
+                                + "."
+                                + field.getName()
+                                + " already exists with a different descriptor");
+            }
+        } else {
+            var conflictingNumber = messageBuilder.getFieldList().stream()
+                    .filter(existing -> existing.getNumber() == field.getNumber())
+                    .findFirst();
+            if (conflictingNumber.isPresent()) {
+                throw new IllegalStateException(
+                        "protocol patch field number "
+                                + field.getNumber()
+                                + " in "
+                                + file.getName()
+                                + ":"
+                                + messageName
+                                + " is already used by "
+                                + conflictingNumber.get().getName());
+            }
+            messageBuilder.addField(field);
+        }
+
+        for (var dependency : dependencies) {
+            if (!fileBuilder.getDependencyList().contains(dependency)) {
+                fileBuilder.addDependency(dependency);
+            }
+        }
+        return fileBuilder.build();
     }
 
     private static List<String> listProtoFiles(Path directory) throws IOException {
@@ -142,17 +278,6 @@ public final class ProtocolJavaGenerator {
 
         runProtoc(command, "supplemental 7.1 descriptor recovery");
         requireRegularFile(supplementalDescriptorSet, "supplemental descriptor set");
-    }
-
-    /**
-     * FileDescriptorSet contains only a repeated FileDescriptorProto field. Concatenating two
-     * serialized sets is therefore the protobuf wire-format merge of their repeated file entries.
-     * The import stubs are not emitted by protoc because --include_imports is intentionally absent.
-     */
-    private static void concatenateDescriptorSets(Path base, Path supplemental, Path output)
-            throws IOException {
-        Files.write(output, Files.readAllBytes(base));
-        Files.write(output, Files.readAllBytes(supplemental), StandardOpenOption.APPEND);
     }
 
     private static void runDescriptorProtoc(

@@ -4,8 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import emu.grasscutter.net.proto.AABLEDJBAKKOuterClass.AABLEDJBAKK;
 import emu.grasscutter.net.proto.AbilityMetaUpdateTpsWeaponAmmunitionOuterClass.AbilityMetaUpdateTpsWeaponAmmunition;
+import emu.grasscutter.net.proto.AvatarInfoOuterClass.AvatarInfo;
 import emu.grasscutter.net.proto.BirthdayOuterClass.Birthday;
+import emu.grasscutter.net.proto.SceneAvatarInfoOuterClass.SceneAvatarInfo;
+import emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo;
 import emu.grasscutter.net.proto.TpsEquipChangeNotifyOuterClass.TpsEquipChangeNotify;
+import emu.grasscutter.net.proto.TpsWeapon._TpsWeapon;
 import org.junit.jupiter.api.Test;
 
 /** Pins descriptor-based 7.1 Java generation against the protobuf runtime used by AstaPS. */
@@ -45,5 +49,15 @@ public final class ProtocolGenerationTest {
                         .findMessageTypeByName("TpsWeaponAccessoryInfo")
                         .findFieldByName("ammunition_type")
                         .getNumber());
+
+        assertEquals(37, AvatarInfo.getDescriptor().findFieldByName("tps_weapon_list").getNumber());
+        assertEquals(
+                31,
+                SceneAvatarInfo.getDescriptor().findFieldByName("tps_weapon_list").getNumber());
+        assertEquals(
+                12,
+                SceneWeaponInfo.getDescriptor().findFieldByName("ammunition_list").getNumber());
+        assertEquals(
+                2, _TpsWeapon.getDescriptor().findFieldByName("accessory_id_list").getNumber());
     }
 }

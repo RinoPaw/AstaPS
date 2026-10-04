@@ -16,6 +16,10 @@ allprojects { currentProject ->
         protocolTools.java.srcDir(currentProject.file('tools/protocol/java'))
 
         def protocVersion = '4.36.2'
+        currentProject.dependencies.add(
+                protocolTools.implementationConfigurationName,
+                "com.google.protobuf:protobuf-java:${protocVersion}")
+
         def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
         def archName = System.getProperty('os.arch').toLowerCase(Locale.ROOT)
 

@@ -108,35 +108,47 @@ public final class ConsoleCommandCompleter implements Completer {
         if (token == null || token.isBlank()) return List.of();
 
         String value = token.trim();
-        boolean hasAlternatives = value.contains("|");
-        if (hasAlternatives) {
-            value = stripOuterWrappers(value);
-            return Arrays.stream(value.split("\\|"))
-                    .map(ConsoleCommandCompleter::stripOuterWrappers)
-                    .filter(ConsoleCommandCompleter::isSafeLiteral)
-                    .toList();
+        if (!value.contains("|")) {
+            if (startsWithSyntaxWrapper(value)) return List.of();
+            return isSafeLiteral(value) ? List.of(value) : List.of();
         }
 
-        if (value.startsWith("[") || value.startsWith("<") || value.startsWith("(")) {
-            return List.of();
+        value = stripGroupWrappers(value);
+        if (isWholeAngleGroup(value)) {
+            value = value.substring(1, value.length() - 1).trim();
         }
-        return isSafeLiteral(value) ? List.of(value) : List.of();
+
+        return Arrays.stream(value.split("\\|"))
+                .map(ConsoleCommandCompleter::stripGroupWrappers)
+                .filter(part -> !(part.startsWith("<") && part.endsWith(">")))
+                .filter(ConsoleCommandCompleter::isSafeLiteral)
+                .toList();
     }
 
-    private static String stripOuterWrappers(String value) {
+    private static boolean startsWithSyntaxWrapper(String value) {
+        return value.startsWith("[") || value.startsWith("<") || value.startsWith("(");
+    }
+
+    private static String stripGroupWrappers(String value) {
         String result = value.trim();
         boolean changed;
         do {
             changed = false;
             if (result.length() >= 2
                     && ((result.startsWith("[") && result.endsWith("]"))
-                            || (result.startsWith("(") && result.endsWith(")"))
-                            || (result.startsWith("<") && result.endsWith(">")))) {
+                            || (result.startsWith("(") && result.endsWith(")")))) {
                 result = result.substring(1, result.length() - 1).trim();
                 changed = true;
             }
         } while (changed);
         return result;
+    }
+
+    private static boolean isWholeAngleGroup(String value) {
+        return value.length() >= 2
+                && value.startsWith("<")
+                && value.endsWith(">")
+                && value.indexOf('>') == value.length() - 1;
     }
 
     private static boolean isSafeLiteral(String value) {

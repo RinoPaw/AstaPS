@@ -8,6 +8,7 @@ import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.born.BornDataHelper;
+import emu.grasscutter.server.born.BornIntroGate;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.game.GameSession.SessionState;
 import emu.grasscutter.server.packet.send.*;
@@ -27,8 +28,8 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         boolean freshAccount = player.getAvatars().getAvatarCount() == 0;
 
         if (freshAccount && intro.enabled) {
-            // Keep the account outside the world until the client completes native Traveler
-            // selection. The 7.1 router only accepts SetPlayerBornDataReq in this state.
+            // Native selection keeps the account unborn until the client submits SetPlayerBornDataReq.
+            // World/scene initialization therefore remains outside this login request.
             session.setState(SessionState.PICKING_CHARACTER);
 
             int notifyCmdId =
@@ -47,24 +48,23 @@ public class HandlerPlayerLoginReq extends PacketHandler {
             return;
         }
 
-        boolean playerBornNow = false;
         if (freshAccount) {
             createDefaultTraveler(player);
-            playerBornNow = true;
+
+            // Skipping the visible native intro must still use the ordinary world and scene
+            // lifecycle. Only fresh quest creation is delayed until the first PostEnterSceneRsp.
+            BornIntroGate.armSceneReady(session);
         } else {
             BornDataHelper.ensureMainCharacter(player);
         }
 
         player.onLogin();
 
-        // Keep new-player quest creation after login initialization so the new World exists and the
-        // just-created quests cannot be rewound by QuestManager.onLogin().
-        if (playerBornNow) {
-            player.getQuestManager().onPlayerBorn();
-            session.send(new PacketFinishedParentQuestNotify(player));
-            session.send(new PacketQuestListNotify(player));
-            session.send(new PacketQuestGlobalVarNotify(player));
-        }
+        // Also on a plain login: a client that dropped mid-intro reconnects with its Traveler
+        // already chosen and lands here, while its bootstrap is still waiting on the old
+        // connection's pause cycles. Without this its EnterSceneReady stays deferred forever and
+        // Quest 351 never starts. A no-op for players with no bootstrap.
+        BornIntroGate.markWorldLoginComplete(session);
 
         session.send(new PacketPlayerLoginRsp(session));
     }

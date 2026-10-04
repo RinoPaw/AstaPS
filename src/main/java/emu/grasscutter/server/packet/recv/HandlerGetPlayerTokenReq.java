@@ -172,7 +172,14 @@ public class HandlerGetPlayerTokenReq extends PacketHandler {
             return;
         }
 
-        player.loadFromDatabase();
+        try {
+            player.loadFromDatabase();
+        } catch (IllegalStateException e) {
+            // Load failed or timed out: drop this one client rather than leave it hanging.
+            Grasscutter.getLogger().error("Refused uid {}: {}", player.getUid(), e.getMessage(), e.getCause());
+            session.close();
+            return;
+        }
 
         if (Grasscutter.getConfig().server.game.useXorEncryption) {
             session.setState(SessionState.WAITING_FOR_LOGIN);

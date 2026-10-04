@@ -76,17 +76,11 @@ public final class UnlockAllCommand implements CommandHandler {
         // carries the owned flycloak, costume and trace effect lists, so one refresh covers them
         targetPlayer.sendPacket(new PacketAvatarDataNotify(targetPlayer));
 
-        // Scene tags. New regions are routinely gated behind these - scene 3 alone ships 635 tags
-        // with only 194 valid by default, so leaving them out left a lot of the map switched off.
-        GameData.getSceneTagDataMap()
-                .values()
-                .forEach(
-                        tag ->
-                                targetPlayer
-                                        .getSceneTags()
-                                        .computeIfAbsent(tag.getSceneId(), k -> new HashSet<>())
-                                        .add(tag.getId()));
-        targetPlayer.sendPacket(new PacketPlayerWorldSceneInfoListNotify(targetPlayer));
+        // Scene tags are intentionally left unchanged.
+        //
+        // Many tags represent mutually exclusive quest/activity world states. Enabling all of
+        // them simultaneously can make the client load incompatible terrain variants and produce
+        // missing ground/collision. Use /tag reset or /tag add <id> explicitly instead.
 
         // [removed 2026-10-01 on request] 原来这里会把 jar 内 main_quest_ids.txt 的 4372 条
         // 主线/传说任务 id 全部写进 forcedFinishedQuests，并在客户端标记为“已完成”，
@@ -101,6 +95,6 @@ public final class UnlockAllCommand implements CommandHandler {
                 sender, translate(sender, "commands.unlockall.success", targetPlayer.getNickname()));
         CommandHandler.sendMessage(
                 sender,
-                "Also unlocked every scene tag.");
+                "Scene tags left unchanged.");
     }
 }

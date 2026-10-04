@@ -421,7 +421,10 @@ public class Avatar {
         this.skillDepot
                 .getSkillsAndEnergySkill()
                 .forEach(
-                        skillId -> map.put(skillId, this.skillLevelMap.putIfAbsent(skillId, 1).intValue()));
+                        // putIfAbsent returns the old value, null for a skill the save has never
+                        // seen, so every avatar saved before a depot gained a skill (the attack
+                        // mode skill, for one) failed to load and its player could not log in.
+                        skillId -> map.put(skillId, this.skillLevelMap.computeIfAbsent(skillId, id -> 1).intValue()));
         return map;
     }
 

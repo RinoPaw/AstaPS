@@ -31,6 +31,12 @@ import java.util.TreeMap;
         permissionTargeted = "player.waypoints.others")
 public final class WaypointsCommand implements CommandHandler {
 
+    static boolean isWaypointType(String type) {
+        return "SceneTransPoint".equals(type)
+                || "TransPointNormal".equals(type)
+                || "TransPoint".equals(type);
+    }
+
     @Override
     public void execute(Player sender, Player targetPlayer, List<String> args) {
         int sceneId = targetPlayer.getSceneId();
@@ -44,7 +50,7 @@ public final class WaypointsCommand implements CommandHandler {
                 if (entry == null) continue;
                 var data = entry.getPointData();
                 if (data == null || data.isForbidSimpleUnlock()) continue;
-                if (!"TransPointNormal".equals(data.getType())) continue;
+                if (!isWaypointType(data.getType())) continue;
                 waypoints.put(pointId, data.getAreaId());
             }
         }

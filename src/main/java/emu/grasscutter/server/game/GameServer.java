@@ -57,6 +57,7 @@ import org.jetbrains.annotations.*;
 public final class GameServer extends KcpServer implements Iterable<Player> {
     // Game server base
     private final InetSocketAddress address;
+    private ChannelConfig channelConfig;
     private final GameServerPacketHandler packetHandler;
     private final Map<Integer, Player> players;
     private final Set<World> worlds;
@@ -142,7 +143,10 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
         channelConfig.setUseConvChannel(true);
         channelConfig.setAckNoDelay(false);
 
-        this.init(GameSessionManager.getListener(), channelConfig, address);
+        // The socket is bound in start(), after the resources have loaded. Bound here, it took
+        // logins while the avatar tables were still empty, and every client reconnecting the moment
+        // the server restarted failed with a NullPointerException creating its Traveler.
+        this.channelConfig = channelConfig;
 
         EnergyManager.initialize();
         StaminaManager.initialize();
@@ -399,6 +403,8 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
     }
 
     public void start() {
+        this.init(GameSessionManager.getListener(), this.channelConfig, this.address);
+
         if (Grasscutter.getRunMode() == ServerRunMode.GAME_ONLY) {
             // Connect to dispatch server.
             this.dispatchClient.connect();

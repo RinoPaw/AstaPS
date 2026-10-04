@@ -1320,13 +1320,15 @@ public class Player implements PlayerHook, FieldFetch {
             // Energy pending expiry must not break the player tick.
         }
 
-        if (this.getWorld() != null) {
+        // Read the world once: a duplicate login can clear it from another thread mid-tick.
+        var world = this.getWorld();
+        if (world != null) {
 
-            this.sendPacket(new PacketWorldPlayerRTTNotify(this.getWorld()));
+            this.sendPacket(new PacketWorldPlayerRTTNotify(world));
 
             long time = System.currentTimeMillis();
-            if (this.getWorld().isMultiplayer() && this.getScene() != null && time > nextSendPlayerLocTime) {
-                this.sendPacket(new PacketWorldPlayerLocationNotify(this.getWorld()));
+            if (world.isMultiplayer() && this.getScene() != null && time > nextSendPlayerLocTime) {
+                this.sendPacket(new PacketWorldPlayerLocationNotify(world));
                 this.sendPacket(new PacketScenePlayerLocationNotify(this.getScene()));
                 this.resetSendPlayerLocTime();
             }
@@ -1434,8 +1436,8 @@ public class Player implements PlayerHook, FieldFetch {
         var runner = Grasscutter.getThreadPool();
         runner.submit(() -> this.achievements = Achievements.getByPlayer(this));
 
-        runner.submit(this.getAvatars()::loadFromDatabase);
-        runner.submit(this.getInventory()::loadFromDatabase);
+        var avatarsLoad = runner.submit(this.getAvatars()::loadFromDatabase);
+        var inventoryLoad = runner.submit(this.getInventory()::loadFromDatabase);
 
         runner.submit(this.getFriendsList()::loadFromDatabase);
         runner.submit(this.getMailHandler()::loadFromDatabase);
@@ -1444,11 +1446,32 @@ public class Player implements PlayerHook, FieldFetch {
         runner.submit(this::loadBattlePassManager);
         runner.submit(this::loadDailyTaskManager);
 
-        Utils.waitFor(() ->
-            this.getAvatars().isLoaded() &&
-                this.getInventory().isLoaded());
+        // This runs on the one thread that handles every player's packets. Waiting on the loaded
+        // flags forever meant a loader that threw - its exception swallowed by the pool - or a
+        // pool full of stuck tasks froze the whole server. Fail this one login instead.
+        awaitLoad("avatars", avatarsLoad);
+        awaitLoad("inventory", inventoryLoad);
 
         this.getPlayerProgress().setPlayer(this);
+    }
+
+    private static final long LOAD_TIMEOUT_SECONDS = 30;
+
+    private void awaitLoad(String what, java.util.concurrent.Future<?> load) {
+        try {
+            load.get(LOAD_TIMEOUT_SECONDS, java.util.concurrent.TimeUnit.SECONDS);
+        } catch (java.util.concurrent.ExecutionException e) {
+            throw new IllegalStateException(
+                    "Loading " + what + " for uid " + this.getUid() + " failed.", e.getCause());
+        } catch (java.util.concurrent.TimeoutException e) {
+            load.cancel(true);
+            throw new IllegalStateException(
+                    "Loading " + what + " for uid " + this.getUid() + " took over "
+                            + LOAD_TIMEOUT_SECONDS + "s; the load pool may be stuck.");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Interrupted loading " + what + " for uid " + this.getUid());
+        }
     }
 
     public void onLogin() {

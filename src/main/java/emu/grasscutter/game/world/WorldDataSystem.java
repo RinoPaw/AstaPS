@@ -26,22 +26,8 @@ public class WorldDataSystem extends BaseGameSystem {
     }
 
     public synchronized void loadChestConfig() {
-        // set the special chest first
+        chestInteractHandlerMap.clear();
         chestInteractHandlerMap.put("SceneObj_Chest_Flora", new BossChestInteractHandler());
-
-        try {
-            DataLoader.loadList("ChestReward.json", ChestReward.class)
-                    .forEach(
-                            reward ->
-                                    reward
-                                            .getObjNames()
-                                            .forEach(
-                                                    name ->
-                                                            chestInteractHandlerMap.computeIfAbsent(
-                                                                    name, x -> new NormalChestInteractHandler(reward))));
-        } catch (Exception e) {
-            Grasscutter.getLogger().error("Unable to load chest reward config.", e);
-        }
     }
 
     public Map<String, ChestInteractHandler> getChestInteractHandlerMap() {

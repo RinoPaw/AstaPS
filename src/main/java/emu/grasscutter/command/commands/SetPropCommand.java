@@ -17,7 +17,7 @@ import picocli.CommandLine.Parameters;
         aliases = {"prop"},
         permission = "player.setprop",
         permissionTargeted = "player.setprop.others")
-public final class SetPropCommand implements PicocliCommandHandler {
+public final class SetPropCommand implements CommandHandler {
 
     private static final List<Integer> sceneAreas = IntStream.range(1, 1000).boxed().toList();
     private final Map<String, Prop> props;
@@ -151,7 +151,7 @@ public final class SetPropCommand implements PicocliCommandHandler {
                 return;
             }
             if (requestedValue.value() == null) {
-                CommandHandler.sendTranslatedMessage(sender, "commands.execution.argument_error");
+                CommandOutput.sendTranslatedMessage(sender, "commands.execution.argument_error");
                 return;
             }
 
@@ -173,11 +173,11 @@ public final class SetPropCommand implements PicocliCommandHandler {
 
             if (success) {
                 if (targetPlayer == sender) {
-                    CommandHandler.sendTranslatedMessage(
+                    CommandOutput.sendTranslatedMessage(
                             sender, "commands.generic.set_to", prop.name, requestedValue.text());
                 } else {
                     String uidStr = targetPlayer.getAccount().getId();
-                    CommandHandler.sendTranslatedMessage(
+                    CommandOutput.sendTranslatedMessage(
                             sender,
                             "commands.generic.set_for_to",
                             prop.name,
@@ -187,7 +187,7 @@ public final class SetPropCommand implements PicocliCommandHandler {
             } else if (prop.prop != PlayerProperty.PROP_NONE) {
                 int min = targetPlayer.getPropertyMin(prop.prop);
                 int max = targetPlayer.getPropertyMax(prop.prop);
-                CommandHandler.sendTranslatedMessage(
+                CommandOutput.sendTranslatedMessage(
                         sender, "commands.generic.invalid.value_between", prop.name, min, max);
             }
         }
@@ -196,7 +196,7 @@ public final class SetPropCommand implements PicocliCommandHandler {
     private boolean setTowerLevel(Player sender, Player targetPlayer, int topFloor) {
         List<Integer> floorIds = targetPlayer.getServer().getTowerSystem().getAllFloors();
         if (topFloor < 0 || topFloor > floorIds.size()) {
-            CommandHandler.sendTranslatedMessage(
+            CommandOutput.sendTranslatedMessage(
                     sender, "commands.generic.invalid.value_between", "Tower Level", 0, floorIds.size());
             return false;
         }

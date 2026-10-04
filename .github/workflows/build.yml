@@ -1,9 +1,12 @@
 name: Build
 
 on:
+  # Every in-repo branch is covered here, and GitHub attaches these runs to any PR opened from one,
+  # so a pull_request trigger would only build the same commit a second time.
   push:
     branches:
       - "**"
+      # main is covered by the release workflow, which builds and tests the same way.
       - "!main"
     paths-ignore:
       - "**/*.md"
@@ -15,62 +18,61 @@ on:
       - "LICENSE*"
   workflow_dispatch:
 
-# Keep the repair run alive if another play/rino commit lands while Gradle is regenerating the JAR.
 concurrency:
   group: build-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
-# Temporary. Reverted as soon as the official Gradle-generated wrapper commit lands.
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
-    name: Repair Gradle wrapper
+    name: Build and test
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
 
       - name: Set up Java
         uses: actions/setup-java@v6
         with:
           distribution: temurin
+          # AstaPS uses Java 21 APIs such as virtual threads.
           java-version: "21"
 
-      - name: Set up standalone Gradle 9.8
+      - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
+
+      # Some unit tests touch Grasscutter's static services. The runtime resources themselves are not
+      # needed, but startup validation requires the two resource roots to exist.
+      - name: Prepare test resource layout
+        run: mkdir -p resources/BinOutput resources/ExcelBinOutput
+
+      # The repository predates the current Spotless rules, so a whole-tree formatting check would
+      # fail on hundreds of untouched legacy files. Keep CI focused on executable correctness here;
+      # formatting can be applied deliberately without creating repository-wide churn.
+      - name: Verify build
+        run: >-
+          ./gradlew jar test --build-cache
+          -PskipHandbook=1
+          -PjarFilename=grasscutter
+          -PexcludeTags=integration
+          -Dorg.gradle.jvmargs=-Xmx4g
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
-          gradle-version: "9.8.0"
-          validate-wrappers: false
+          name: test-results
+          path: build/reports/tests/test
+          if-no-files-found: ignore
+          retention-days: 7
 
-      - name: Regenerate and verify Gradle wrapper
-        shell: bash
-        run: |
-          set -euo pipefail
-          gradle wrapper \
-            --gradle-version 9.8.0 \
-            --distribution-type bin \
-            --gradle-distribution-sha256-sum bafd5ce9cfaea0fbccfdc8439a1ac42fbd4cd9c89dc9a988228d8a2639a58e6c
-          echo '238e777fcddd7e34f9708186085def2abd6e08e658505b38718d79d74c21abd5  gradle/wrapper/gradle-wrapper.jar' | sha256sum --check --strict
-          ./gradlew --version
-
-      - name: Commit generated Gradle wrapper
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add gradlew gradlew.bat gradle/wrapper/gradle-wrapper.jar gradle/wrapper/gradle-wrapper.properties
-          if git diff --cached --quiet; then
-            echo "Wrapper already matches Gradle 9.8 output."
-            exit 0
-          fi
-          git commit -m "build: regenerate Gradle 9.8 wrapper [skip ci]"
-          git fetch origin play/rino
-          git rebase origin/play/rino
-          git push origin HEAD:play/rino
+      - name: Upload jar
+        uses: actions/upload-artifact@v7
+        with:
+          name: grasscutter
+          path: grasscutter.jar
+          retention-days: 14

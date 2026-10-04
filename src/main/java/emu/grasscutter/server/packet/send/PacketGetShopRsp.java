@@ -17,27 +17,23 @@ public class PacketGetShopRsp extends BasePacket {
     public PacketGetShopRsp(Player player, int shopType) {
         super(PacketOpcodes.GetShopRsp);
 
+        ShopSystem manager = Grasscutter.getGameServer().getShopSystem();
         Shop.Builder shop =
                 Shop.newBuilder()
                         .setShopType(shopType)
-                        .setCityId(cityIdForShop(shopType))
+                        .setCityId(manager.getCityIdForShop(shopType))
                         .setCityReputationLevel(10); // mock
 
-        ShopSystem manager = Grasscutter.getGameServer().getShopSystem();
         if (manager.getShopData().get(shopType) != null) {
             List<ShopInfo> list = manager.getShopData().get(shopType);
             List<ShopGoods> goodsList = new ArrayList<>();
             int shopNextRefreshTime = 0;
             int currentTs = Utils.getCurrentSeconds();
-            var artifactShop = manager.getArtifactShop();
-            Set<Integer> availableArtifactGoods =
-                    artifactShop.getAvailableGoodsIds(player, shopType);
 
             for (ShopInfo info : list) {
-                // Artifact goods are already routed to the right city shop; each player only sees
-                // pieces unlocked by the highest cleared difficulty of that artifact domain.
-                var artifactPiece = artifactShop.getPiece(info.getGoodsId());
-                if (artifactPiece != null && !availableArtifactGoods.contains(info.getGoodsId())) {
+                var dynamicProvider = manager.getDynamicShopProvider(info.getGoodsId());
+                if (dynamicProvider != null
+                        && !dynamicProvider.isAvailable(player, shopType, info.getGoodsId())) {
                     continue;
                 }
 
@@ -86,14 +82,11 @@ public class PacketGetShopRsp extends BasePacket {
                     syncSoldOutLimit(player, info.getGoodsId(), boughtNum, nextRefreshTime);
                 }
 
-                List<ItemParamData> costOverride = null;
-                if (artifactPiece != null) {
-                    int resinCost = artifactShop.getResinCost(player, info.getGoodsId());
-                    costOverride =
-                            List.of(
-                                    new ItemParamData(
-                                            ArtifactShop.ORIGINAL_RESIN_ID, resinCost));
-                }
+                List<ItemParamData> costOverride =
+                        dynamicProvider == null
+                                ? null
+                                : dynamicProvider.getCostItems(
+                                        player, shopType, info.getGoodsId());
 
                 ShopGoods goods =
                         ShopGoodsBuilder.fromShopInfo(
@@ -116,18 +109,6 @@ public class PacketGetShopRsp extends BasePacket {
 
         player.save();
         this.setData(GetShopRspOuterClass.GetShopRsp.newBuilder().setShop(shop).build());
-    }
-
-    /** Preserve the old city-1 fallback for unrelated shops while reporting verified regional shops exactly. */
-    private static int cityIdForShop(int shopType) {
-        return switch (shopType) {
-            case 1004 -> 1; // Mondstadt
-            case 1008 -> 2; // Liyue
-            case 1056 -> 3; // Inazuma
-            case 1074 -> 4; // Sumeru
-            case 1093 -> 5; // Fontaine
-            default -> 1;
-        };
     }
 
     /** Returns buyLimit when the player already owns this costume item; otherwise 0. */

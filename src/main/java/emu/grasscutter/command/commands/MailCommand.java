@@ -5,7 +5,7 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
-import emu.grasscutter.command.PicocliCommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.mail.Mail;
 import emu.grasscutter.game.mail.SystemMailHelper;
@@ -22,7 +22,7 @@ import picocli.CommandLine.Parameters;
         permission = "server.sendmail",
         targetRequirement = Command.TargetRequirement.NONE,
         inlineTarget = false)
-public final class MailCommand implements PicocliCommandHandler {
+public final class MailCommand implements CommandHandler {
     private record Recipient(Integer uid) {
         private boolean all() {
             return uid == null;
@@ -109,7 +109,7 @@ public final class MailCommand implements PicocliCommandHandler {
 
         @Override
         public void run() {
-            CommandHandler.sendMessage(sender, "Usage: mail system <send|update|retitle|delete|clear> ...");
+            CommandOutput.sendMessage(sender, "Usage: mail system <send|update|retitle|delete|clear> ...");
         }
     }
 
@@ -154,7 +154,7 @@ public final class MailCommand implements PicocliCommandHandler {
                                     target.sendMail(cloneMail(mail, false));
                                     count[0]++;
                                 });
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         translate(sender, "commands.sendMail.send_all_done")
                                 + " ("
@@ -165,7 +165,7 @@ public final class MailCommand implements PicocliCommandHandler {
 
             Player stored = DatabaseHelper.getPlayerByUid(recipient.uid());
             if (stored == null) {
-                CommandHandler.sendMessage(
+                CommandOutput.sendMessage(
                         sender,
                         translate(
                                 sender,
@@ -177,7 +177,7 @@ public final class MailCommand implements PicocliCommandHandler {
                     Objects.requireNonNullElse(
                             Grasscutter.getGameServer().getPlayerByUid(recipient.uid(), false), stored);
             target.sendMail(mail);
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender, translate(sender, "commands.sendMail.send_done", recipient.uid()));
         }
     }
@@ -220,7 +220,7 @@ public final class MailCommand implements PicocliCommandHandler {
                                 target.sendMail(cloneMail(mail, true));
                                 sent[0]++;
                             });
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "Sent a system mail to " + sent[0] + " player(s): " + mail.mailContent.title);
         }
@@ -243,7 +243,7 @@ public final class MailCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             int count = SystemMailHelper.updateContentByTitle(keyword, String.join(" ", body));
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     count > 0
                             ? "Updated the body of " + count + " system mail(s)."
@@ -268,7 +268,7 @@ public final class MailCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             int count = SystemMailHelper.updateTitle(keyword, String.join(" ", title));
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     count > 0
                             ? "Updated the title of " + count + " system mail(s)."
@@ -290,7 +290,7 @@ public final class MailCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             int count = SystemMailHelper.deleteByTitle(String.join(" ", keyword));
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     count > 0
                             ? "Deleted " + count + " system mail(s)."
@@ -309,7 +309,7 @@ public final class MailCommand implements PicocliCommandHandler {
         @Override
         public void run() {
             int count = SystemMailHelper.deleteAllProtected();
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     count > 0
                             ? "Deleted all " + count + " system mail(s)."

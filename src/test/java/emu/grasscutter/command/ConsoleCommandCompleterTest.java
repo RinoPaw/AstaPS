@@ -74,6 +74,17 @@ public final class ConsoleCommandCompleterTest {
     }
 
     @Test
+    public void excludesPlaceholderAlternatives() {
+        var completer =
+                new ConsoleCommandCompleter(
+                        Map.of("quest", List.of("forcefinish (<questId>|all)")));
+
+        assertEquals(
+                List.of("all"),
+                complete(completer, List.of("quest", "forcefinish", ""), 2, ""));
+    }
+
+    @Test
     public void doesNotGuessFreeFormArguments() {
         var completer =
                 new ConsoleCommandCompleter(Map.of("weather", List.of("<weatherId> [<climateType>]")));

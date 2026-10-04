@@ -6,8 +6,6 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.event.game.ExecuteCommandEvent;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -16,6 +14,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executor;
 import org.jline.reader.Parser;
 import org.jline.reader.SyntaxError;
 import org.jline.reader.impl.DefaultParser;
@@ -34,7 +35,7 @@ public final class CommandMap {
     private final Map<String, CommandHandler> commands = new TreeMap<>();
     private final Map<String, CommandHandler> aliases = new TreeMap<>();
     private final Map<String, Command> annotations = new TreeMap<>();
-    private final Object2IntMap<String> targetPlayerIds = new Object2IntOpenHashMap<>();
+    private final ConcurrentMap<String, Integer> targetPlayerIds = new ConcurrentHashMap<>();
     private final Object picocliLock = new Object();
 
     private volatile CommandLine commandLine = createRootCommandLine();
@@ -84,6 +85,11 @@ public final class CommandMap {
             }
         }
         return null;
+    }
+
+    static void executeCommand(Runnable runnable, boolean threaded, Executor executor) {
+        if (threaded) executor.execute(runnable);
+        else runnable.run();
     }
 
     private static String normalizeCommandName(String name) {
@@ -352,9 +358,9 @@ public final class CommandMap {
 
         if (targetPlayer != null) return targetPlayer;
 
-        if (targetPlayerIds.containsKey(playerId)) {
-            targetPlayer =
-                    Grasscutter.getGameServer().getPlayerByUid(targetPlayerIds.getInt(playerId), true);
+        Integer rememberedTargetUid = targetPlayerIds.get(playerId);
+        if (rememberedTargetUid != null) {
+            targetPlayer = Grasscutter.getGameServer().getPlayerByUid(rememberedTargetUid, true);
             if (targetPlayer == null) {
                 CommandOutput.sendTranslatedMessage(player, "commands.execution.player_exist_error");
                 throw new IllegalArgumentException();
@@ -367,7 +373,7 @@ public final class CommandMap {
 
     private boolean setPlayerTarget(String playerId, Player player, String selector) {
         if (selector.isEmpty()) {
-            targetPlayerIds.removeInt(playerId);
+            targetPlayerIds.remove(playerId);
             CommandOutput.sendTranslatedMessage(player, "commands.execution.clear_target");
             return true;
         }
@@ -512,8 +518,7 @@ public final class CommandMap {
             cli.execute(commandArgs);
         };
 
-        if (annotation.threading()) new Thread(runnable).start();
-        else runnable.run();
+        executeCommand(runnable, annotation.threading(), Grasscutter.getThreadPool());
     }
 
     private void scan() {

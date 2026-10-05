@@ -108,7 +108,7 @@ dependencies {
     implementation 'com.esotericsoftware:reflectasm:1.11.9'
     implementation 'com.github.davidmoten:rtree-multi:0.1'
 
-    implementation 'dev.morphia.morphia:morphia-core:2.5.3'
+    implementation 'dev.morphia.morphia:morphia-core:2.2.7'
 
     implementation 'org.quartz-scheduler:quartz:2.5.2'
 

@@ -5,23 +5,22 @@ import lombok.*;
 
 @Entity
 public class Location extends Position {
-    @Transient @Getter @Setter private Scene scene;
+    private static final long serialVersionUID = 1L;
+
+    @Transient @Getter @Setter private transient Scene scene;
 
     public Location(Scene scene, Position position) {
-        this.set(position);
-
+        super.set(position.getX(), position.getY(), position.getZ());
         this.scene = scene;
     }
 
     public Location(Scene scene, float x, float y) {
-        this.set(x, y);
-
+        super.set(x, y);
         this.scene = scene;
     }
 
     public Location(Scene scene, float x, float y, float z) {
-        this.set(x, y, z);
-
+        super.set(x, y, z);
         this.scene = scene;
     }
 

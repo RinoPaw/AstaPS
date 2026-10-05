@@ -1,6 +1,7 @@
 package emu.grasscutter.game.world;
 
-import dev.morphia.annotations.*;
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Transient;
 import lombok.*;
 
 @Entity
@@ -10,17 +11,17 @@ public class Location extends Position {
     @Transient @Getter @Setter private transient Scene scene;
 
     public Location(Scene scene, Position position) {
-        super.set(position.getX(), position.getY(), position.getZ());
+        super(position);
         this.scene = scene;
     }
 
     public Location(Scene scene, float x, float y) {
-        super.set(x, y);
+        super(x, y);
         this.scene = scene;
     }
 
     public Location(Scene scene, float x, float y, float z) {
-        super.set(x, y, z);
+        super(x, y, z);
         this.scene = scene;
     }
 

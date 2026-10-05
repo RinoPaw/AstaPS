@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 import lombok.*;
 
 @ToString(callSuper = true)
-public class EntityWeapon extends EntityBaseGadget {
+public final class EntityWeapon extends EntityBaseGadget {
     @Getter private final GadgetData gadgetData;
 
     @Getter(onMethod_ = @Override)

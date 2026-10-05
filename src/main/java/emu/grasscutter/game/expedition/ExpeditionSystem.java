@@ -12,21 +12,21 @@ public class ExpeditionSystem extends BaseGameSystem {
     public ExpeditionSystem(GameServer server) {
         super(server);
         this.expeditionRewardData = new Int2ObjectOpenHashMap<>();
-        this.load();
+        loadInternal();
     }
 
     public Int2ObjectMap<List<ExpeditionRewardDataList>> getExpeditionRewardDataList() {
         return expeditionRewardData;
     }
 
-    public synchronized void load() {
-        getExpeditionRewardDataList().clear();
+    private void loadInternal() {
+        expeditionRewardData.clear();
         try {
             List<ExpeditionRewardInfo> banners =
                     DataLoader.loadList("ExpeditionReward.json", ExpeditionRewardInfo.class);
             if (banners.size() > 0) {
                 for (ExpeditionRewardInfo di : banners) {
-                    getExpeditionRewardDataList().put(di.getExpId(), di.getExpeditionRewardDataList());
+                    expeditionRewardData.put(di.getExpId(), di.getExpeditionRewardDataList());
                 }
                 Grasscutter.getLogger().debug("Expedition reward successfully loaded.");
             } else {
@@ -36,5 +36,9 @@ public class ExpeditionSystem extends BaseGameSystem {
         } catch (Exception e) {
             Grasscutter.getLogger().error("Unable to load expedition reward.", e);
         }
+    }
+
+    public synchronized void load() {
+        loadInternal();
     }
 }

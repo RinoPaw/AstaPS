@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 
 @Getter
-public class HomeWorld extends World {
+public final class HomeWorld extends World {
     private final GameHome home;
     private HomeModuleManager moduleManager;
 
@@ -72,7 +72,7 @@ public class HomeWorld extends World {
         return false;
     }
 
-    public void refreshModuleManager() {
+    public final void refreshModuleManager() {
         if (this.moduleManager != null) {
             this.moduleManager.onRemovedModule();
         }

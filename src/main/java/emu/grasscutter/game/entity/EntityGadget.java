@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 import lombok.*;
 
 @ToString(callSuper = true, exclude = {"owner", "children", "content", "routeConfig"})
-public class EntityGadget extends EntityBaseGadget {
+public final class EntityGadget extends EntityBaseGadget {
     @Getter private final GadgetData gadgetData;
 
     @Getter(onMethod_ = @Override)

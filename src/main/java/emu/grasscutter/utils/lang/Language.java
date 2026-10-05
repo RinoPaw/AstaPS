@@ -554,6 +554,8 @@ public final class Language {
 
     @EqualsAndHashCode
     public static class TextStrings implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         public static final String[] ARR_LANGUAGES = {
             "EN", "CHS", "CHT", "JP", "KR", "DE", "ES", "FR", "ID", "PT", "RU", "TH", "VI"
         };

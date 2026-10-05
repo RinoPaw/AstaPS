@@ -333,14 +333,14 @@ public final class ResourceLoader {
                         (id, data) ->
                                 GameData.getAvatarSkillLevels()
                                         .put(
-                                                (int) id,
+                                                id,
                                                 GameData.getProudSkillGroupLevels().get(data.getProudSkillGroupId())));
 
         GameData.getProudSkillGroupLevels()
                 .forEach(
                         (id, set) ->
                                 GameData.getProudSkillGroupMaxLevels()
-                                        .put((int) id, set.intStream().max().orElse(-1)));
+                                        .put(id, set.intStream().max().orElse(-1)));
     }
 
     private static void loadAbilityEmbryos() {

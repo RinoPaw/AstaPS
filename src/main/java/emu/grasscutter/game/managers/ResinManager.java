@@ -68,9 +68,8 @@ public class ResinManager extends BasePlayerManager {
 
         int recharge =
                 1
-                        + (int)
-                                ((currentTime - this.player.getNextResinRefresh())
-                                        / GAME.resin.rechargeTime);
+                        + (currentTime - this.player.getNextResinRefresh())
+                                / GAME.resin.rechargeTime;
         int newResin = Math.min(GAME.resin.cap, currentResin + recharge);
         int resinChange = newResin - currentResin;
         this.player.setProperty(PlayerProperty.PROP_PLAYER_RESIN, newResin);

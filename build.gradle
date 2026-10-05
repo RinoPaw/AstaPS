@@ -66,6 +66,8 @@ def nettyVersion = '4.1.138.Final'
 dependencies {
     // KCP is a custom/unpublished build and remains vendored until its upstream is identified.
     implementation files('lib/kcp-1.5.1.jar')
+    // This vendored LunaGC KCP build calls OpenHFT's LongHashFunction at runtime.
+    implementation 'net.openhft:zero-allocation-hashing:0.26ea0'
 
     implementation 'at.favre.lib:bcrypt:0.10.2'
 

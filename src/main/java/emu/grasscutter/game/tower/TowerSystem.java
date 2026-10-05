@@ -1,6 +1,6 @@
 package emu.grasscutter.game.tower;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.*;
@@ -43,15 +43,19 @@ public class TowerSystem extends BaseGameSystem {
 
     public TowerSystem(GameServer server) {
         super(server);
-        this.load();
+        loadInternal();
     }
 
-    public synchronized void load() {
+    private void loadInternal() {
         try {
             towerScheduleConfig = DataLoader.loadClass("TowerSchedule.json", TowerScheduleConfig.class);
         } catch (Exception e) {
             Grasscutter.getLogger().error("Unable to load tower schedule config.", e);
         }
+    }
+
+    public synchronized void load() {
+        loadInternal();
     }
 
     public TowerScheduleConfig getTowerScheduleConfig() {
@@ -156,7 +160,7 @@ public class TowerSystem extends BaseGameSystem {
      */
     private List<Integer> getRotationPool() {
         var all = getAllScheduleIds();
-        int pool = GAME_OPTIONS.tower.rotationPool;
+        int pool = GAME.tower.rotationPool;
         if (pool <= 0 || pool >= all.size()) return all;
         return all.subList(all.size() - pool, all.size());
     }
@@ -197,7 +201,7 @@ public class TowerSystem extends BaseGameSystem {
 
     /** Whether the rotation moves on its own, rather than staying on the newest playable one. */
     private static boolean isRotating() {
-        return GAME_OPTIONS.tower.scheduleId <= 0 && GAME_OPTIONS.tower.rotate;
+        return GAME.tower.scheduleId <= 0 && GAME.tower.rotate;
     }
 
     /** When the rotation on offer began. */
@@ -216,7 +220,7 @@ public class TowerSystem extends BaseGameSystem {
 
     public TowerScheduleData getCurrentTowerScheduleData() {
         // A pinned id is served as asked, playable or not - that is what pinning is for.
-        int pinned = GAME_OPTIONS.tower.scheduleId;
+        int pinned = GAME.tower.scheduleId;
         if (pinned > 0) {
             var data = GameData.getTowerScheduleDataMap().get(pinned);
             if (data != null) return data;
@@ -227,7 +231,7 @@ public class TowerSystem extends BaseGameSystem {
         if (isRotating()) {
             var pool = getRotationPool();
             if (!pool.isEmpty()) {
-                int index = (int) Math.floorMod(periodOrdinal(periodStart(new Date())), pool.size());
+                int index = Math.floorMod(periodOrdinal(periodStart(new Date())), pool.size());
                 var data = GameData.getTowerScheduleDataMap().get(pool.get(index).intValue());
                 if (data != null) return data;
             }

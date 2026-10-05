@@ -41,7 +41,7 @@ public class GachaSystem extends BaseGameSystem {
         this.gachaBanners = new Int2ObjectOpenHashMap<>();
         GachaEpitomizedPrefabHelper.load();
         GachaEpitomizedCompanionHelper.load();
-        this.load();
+        this.loadInternal();
         this.startWatcher(server);
     }
 
@@ -64,6 +64,10 @@ public class GachaSystem extends BaseGameSystem {
     }
 
     public synchronized void load() {
+        loadInternal();
+    }
+
+    private void loadInternal() {
         getGachaBanners().clear();
         int autoScheduleId = 1000;
         int autoSortId = 9000;

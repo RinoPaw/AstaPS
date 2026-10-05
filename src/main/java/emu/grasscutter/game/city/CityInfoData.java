@@ -13,6 +13,8 @@ public class CityInfoData {
 
     @Getter @Setter private int numCrystal = 0; // number of crystals in the city
 
+    public CityInfoData() {}
+
     public CityInfoData(int cityId) {
         this.cityId = cityId;
     }

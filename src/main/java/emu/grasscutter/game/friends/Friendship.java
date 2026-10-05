@@ -26,7 +26,7 @@ public class Friendship {
     public Friendship() {}
 
     public Friendship(Player owner, Player friend, Player asker) {
-        this.setOwner(owner);
+        this.owner = owner;
         this.ownerId = owner.getUid();
         this.friendId = friend.getUid();
         this.profile = friend.getProfile();

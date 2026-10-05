@@ -23,6 +23,10 @@ public interface DispatchUtils {
         return DISPATCH_INFO.dispatchUrl;
     }
 
+    static boolean matchesAuthenticatedAccount(String requestedAccountId, String authenticatedAccountId) {
+        return requestedAccountId != null && requestedAccountId.equals(authenticatedAccountId);
+    }
+
     /**
      * Validates an authentication request.
      *
@@ -32,14 +36,23 @@ public interface DispatchUtils {
      */
     @Nullable static Account authenticate(String accountId, String token) {
         return switch (Grasscutter.getRunMode()) {
-            case GAME_ONLY ->
-            // Use the authentication system to validate the token.
-            Grasscutter.getAuthenticationSystem()
-                    .getSessionTokenValidator()
-                    .authenticate(
-                            AuthenticationRequest.builder()
-                                    .tokenRequest(LoginTokenRequestJson.builder().uid(accountId).token(token).build())
-                                    .build());
+            case GAME_ONLY -> {
+                // Use the authentication system to validate the token.
+                var account =
+                        Grasscutter.getAuthenticationSystem()
+                                .getSessionTokenValidator()
+                                .authenticate(
+                                        AuthenticationRequest.builder()
+                                                .tokenRequest(
+                                                        LoginTokenRequestJson.builder()
+                                                                .uid(accountId)
+                                                                .token(token)
+                                                                .build())
+                                                .build());
+                yield account != null && matchesAuthenticatedAccount(accountId, account.getId())
+                        ? account
+                        : null;
+            }
             case HYBRID, DISPATCH_ONLY -> {
                 // Fetch the account from the database.
                 var account = DatabaseHelper.getAccountById(accountId);

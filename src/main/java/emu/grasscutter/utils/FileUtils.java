@@ -27,22 +27,16 @@ public final class FileUtils {
         try {
             var uri = Grasscutter.class.getResource("/defaults/data").toURI();
             switch (uri.getScheme()) {
-                case "jar": // When running normally, as a jar
-                case "zip": // Honestly I have no idea what setup would result in this, but this should work
-                    // regardless
-                    fs =
-                            FileSystems.newFileSystem(
-                                    uri,
-                                    Map.of()); // Have to mount zip filesystem. This leaks, but we want to keep it
-                    // forever anyway.
-                    // Fall-through
-                case "file": // When running in an IDE
-                    path = Path.of(uri); // Can access directly
-                    break;
-                default:
-                    Grasscutter.getLogger()
-                            .error("Invalid URI scheme for class resources: " + uri.getScheme());
-                    break;
+                case "jar", "zip" -> {
+                    // Mount the archive filesystem first so Path.of(uri) can resolve the resource.
+                    // The filesystem intentionally stays mounted for the lifetime of the server.
+                    fs = FileSystems.newFileSystem(uri, Map.of());
+                    path = Path.of(uri);
+                }
+                case "file" -> path = Path.of(uri); // When running in an IDE
+                default ->
+                        Grasscutter.getLogger()
+                                .error("Invalid URI scheme for class resources: " + uri.getScheme());
             }
         } catch (URISyntaxException | IOException e) {
             // Failed to load this jar. How?

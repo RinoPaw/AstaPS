@@ -10,6 +10,7 @@ import emu.grasscutter.server.game.GameServer;
 import emu.grasscutter.server.http.handlers.GachaHandler;
 import emu.grasscutter.utils.*;
 import emu.grasscutter.utils.objects.HandbookBody;
+import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -26,6 +27,7 @@ public final class DispatchClient extends WebSocketClient implements IDispatcher
     @Getter private final Map<Integer, BiConsumer<WebSocket, JsonElement>> handlers = new HashMap<>();
 
     @Getter private final Map<Integer, List<Consumer<JsonElement>>> callbacks = new HashMap<>();
+    @Getter private final DispatchRpcRegistry rpcRegistry = new DispatchRpcRegistry();
 
     public DispatchClient(URI serverUri) {
         super(serverUri);
@@ -157,13 +159,22 @@ public final class DispatchClient extends WebSocketClient implements IDispatcher
      * @param message The message to send.
      */
     public void sendMessage(int packetId, Object message) {
-        var serverMessage = this.encodeMessage(packetId, message);
+        var armed = this.rpcRegistry.takeArmed();
+        Long requestId = this.rpcRegistry.currentRequestId(this);
+        if (armed != null) requestId = this.rpcRegistry.register(this, armed);
+
+        var serverMessage = this.encodeMessage(packetId, requestId, message);
         // Serialize the message into JSON.
         var serialized = JSON.toJson(serverMessage).getBytes(StandardCharsets.UTF_8);
         // Encrypt the message.
         Crypto.xor(serialized, DISPATCH_INFO.encryptionKey);
         // Send the message.
-        this.send(serialized);
+        try {
+            this.send(serialized);
+        } catch (RuntimeException exception) {
+            if (armed != null && requestId != null) this.rpcRegistry.fail(this, requestId, exception);
+            throw exception;
+        }
     }
 
     @Override
@@ -186,6 +197,7 @@ public final class DispatchClient extends WebSocketClient implements IDispatcher
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
+        this.rpcRegistry.failConnection(this, new IOException("Dispatch connection closed: " + reason));
         this.getLogger().info("Dispatch connection closed.");
 
         // Attempt to reconnect.

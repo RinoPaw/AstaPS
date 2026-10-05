@@ -1,5 +1,6 @@
 package emu.grasscutter.game.quest.exec;
 
+import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.quest.QuestData;
 import emu.grasscutter.game.player.TransPointUnlockHelper;
 import emu.grasscutter.game.quest.*;
@@ -13,8 +14,10 @@ public class ExecUnlockPoint extends QuestExecHandler {
         int sceneId = Integer.parseInt(paramStr[0]);
         int pointId = Integer.parseInt(paramStr[1]);
 
-        // TODO: Determine if the point is a statue from point data consistently.
-        boolean isStatue = quest.getMainQuestId() == 303 || quest.getMainQuestId() == 352;
+        var scenePointEntry = GameData.getScenePointEntryById(sceneId, pointId);
+        boolean isStatue =
+                scenePointEntry != null
+                        && TransPointUnlockHelper.isStatuePoint(scenePointEntry.getPointData());
 
         return TransPointUnlockHelper.unlock(quest.getOwner(), sceneId, pointId, isStatue);
     }

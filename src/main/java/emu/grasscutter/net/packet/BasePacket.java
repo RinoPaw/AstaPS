@@ -33,7 +33,7 @@ public class BasePacket {
         return opcode;
     }
 
-    public void setOpcode(int opcode) {
+    public final void setOpcode(int opcode) {
         this.opcode = opcode;
     }
 
@@ -41,7 +41,7 @@ public class BasePacket {
         return useDispatchKey;
     }
 
-    public void setUseDispatchKey(boolean useDispatchKey) {
+    public final void setUseDispatchKey(boolean useDispatchKey) {
         this.useDispatchKey = useDispatchKey;
     }
 
@@ -49,7 +49,7 @@ public class BasePacket {
         return header;
     }
 
-    public void setHeader(byte[] header) {
+    public final void setHeader(byte[] header) {
         this.header = header;
     }
 
@@ -61,15 +61,15 @@ public class BasePacket {
         return data;
     }
 
-    public void setData(byte[] data) {
+    public final void setData(byte[] data) {
         this.data = data;
     }
 
-    public void setData(MessageLite proto) {
+    public final void setData(MessageLite proto) {
         this.data = proto.toByteArray();
     }
 
-    public void setData(MessageLite.Builder proto) {
+    public final void setData(MessageLite.Builder proto) {
         this.data = proto.build().toByteArray();
     }
 
@@ -85,7 +85,7 @@ public class BasePacket {
                         .toByteArray();
     }
 
-    public BasePacket buildHeader(int clientSequence) {
+    public final BasePacket buildHeader(int clientSequence) {
         initializeHeader(clientSequence);
         return this;
     }

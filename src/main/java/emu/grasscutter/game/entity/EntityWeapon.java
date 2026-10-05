@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 import lombok.*;
 
 @ToString(callSuper = true)
-public class EntityWeapon extends EntityBaseGadget {
+public final class EntityWeapon extends EntityBaseGadget {
     @Getter private final GadgetData gadgetData;
 
     @Getter(onMethod_ = @Override)
@@ -58,7 +58,7 @@ public class EntityWeapon extends EntityBaseGadget {
         Grasscutter.getLogger()
                 .trace("New weapon entity {} in scene {}.", this.id, this.getScene().getId());
 
-        this.initAbilities();
+        initializeAbilities();
     }
 
     private void addConfigAbility(ConfigAbilityData abilityData) {
@@ -66,8 +66,7 @@ public class EntityWeapon extends EntityBaseGadget {
         if (data != null) this.getWorld().getHost().getAbilityManager().addAbilityToEntity(this, data);
     }
 
-    @Override
-    public void initAbilities() {
+    private void initializeAbilities() {
         // TODO: handle pre-dynamic, static and dynamic here
         if (this.configGadget != null && this.configGadget.getAbilities() != null) {
             for (var ability : this.configGadget.getAbilities()) {
@@ -94,6 +93,11 @@ public class EntityWeapon extends EntityBaseGadget {
                             .setAbilityOverrideNameHash(GameConstants.DEFAULT_ABILITY_NAME));
         }
         return block.build();
+    }
+
+    @Override
+    public void initAbilities() {
+        initializeAbilities();
     }
 
     @Override

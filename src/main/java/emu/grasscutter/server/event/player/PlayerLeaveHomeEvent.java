@@ -16,7 +16,7 @@ public class PlayerLeaveHomeEvent extends PlayerEvent {
         this.homeOwner = homeOwner;
         this.home = home;
         this.reason = reason;
-        this.isOtherHome = !this.getPlayer().equals(this.homeOwner);
+        this.isOtherHome = !player.equals(homeOwner);
     }
 
     public enum Reason {

@@ -14,7 +14,6 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.net.packet.BasePacket;
 import emu.grasscutter.net.packet.Opcodes;
 import emu.grasscutter.net.packet.PacketHandler;
 import emu.grasscutter.net.proto.GetBattlePassProductReqOuterClass.GetBattlePassProductReq;
@@ -27,7 +26,7 @@ extends PacketHandler {
     public void handle(GameSession gameSession, byte[] byArray, byte[] byArray2) throws Exception {
         int n = 0;
         try {
-            GetBattlePassProductReq req = GetBattlePassProductReq.parseFrom((byte[])byArray2);
+            GetBattlePassProductReq req = GetBattlePassProductReq.parseFrom(byArray2);
             n = req.getBattlePassProductPlayType();
         }
         catch (Throwable throwable) {
@@ -43,7 +42,7 @@ extends PacketHandler {
             string = "Tier_ugcbp_10";
         }
         Grasscutter.getLogger().info("GetBattlePassProductReq uid={} playType={} product={}", new Object[]{gameSession.getPlayer() != null ? gameSession.getPlayer().getUid() : 0, n, productId});
-        gameSession.send((BasePacket)new PacketGetBattlePassProductRsp(productId, string, n, 6700));
+        gameSession.send(new PacketGetBattlePassProductRsp(productId, string, n, 6700));
     }
 }
 

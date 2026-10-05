@@ -1,8 +1,9 @@
 package emu.grasscutter.server.packet.send;
 
+import static emu.grasscutter.config.Configuration.GAME;
+
 import com.google.protobuf.CodedOutputStream;
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.config.Configuration;
 import emu.grasscutter.net.packet.BasePacket;
 import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.net.proto.WindSeedType1NotifyOuterClass.WindSeedType1Notify;
@@ -27,7 +28,7 @@ public class PacketWindSeedClientNotify extends BasePacket {
      * The payload here is a single flat bytes field, exactly as the original code had it.
      */
     static int cmdId() {
-        int configured = Configuration.GAME_OPTIONS.watermark.cmdId;
+        int configured = GAME.watermark.cmdId;
         return configured > 0 ? configured : PacketOpcodes.WindSeedType1Notify;
     }
 
@@ -40,12 +41,12 @@ public class PacketWindSeedClientNotify extends BasePacket {
      * which is the normal setting now that the number is known.
      */
     public static boolean disabled() {
-        return Configuration.GAME_OPTIONS.watermark.cmdId < 0;
+        return GAME.watermark.cmdId < 0;
     }
 
     /** Encodes a payload at the configured field number. Shared by the other wind seed packets. */
     public static byte[] encode(byte[] luac) {
-        return encode(luac, Configuration.GAME_OPTIONS.watermark.payloadField);
+        return encode(luac, GAME.watermark.payloadField);
     }
 
     /**

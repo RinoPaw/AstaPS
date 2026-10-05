@@ -23,7 +23,6 @@ import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.entity.gadget.GadgetContent;
 import emu.grasscutter.game.entity.gadget.GadgetWorktop;
 import emu.grasscutter.game.world.Scene;
-import emu.grasscutter.net.packet.BasePacket;
 import emu.grasscutter.scripts.SceneScriptManager;
 import emu.grasscutter.scripts.data.SceneGadget;
 import emu.grasscutter.scripts.data.SceneGroup;
@@ -38,7 +37,7 @@ public final class DomainChallengeKeyHelper {
     private static final int START_OPTION_ID = 7;
     private static final int HIDE_DELAY_SECONDS = 2;
     private static final int WORKTOP_HIDE_DELAY_SECONDS = 1;
-    private static final ConcurrentHashMap<Long, Integer> PENDING_HIDE = new ConcurrentHashMap();
+    private static final ConcurrentHashMap<Long, Integer> PENDING_HIDE = new ConcurrentHashMap<>();
 
     private DomainChallengeKeyHelper() {
     }
@@ -79,7 +78,7 @@ public final class DomainChallengeKeyHelper {
         if (entityGadget.getGadgetId() == 70350035) {
             return;
         }
-        long l = (long)scene.getId() << 32 | (long)entityGadget.getId() & 0xFFFFFFFFL;
+        long l = (long) scene.getId() << 32 | entityGadget.getId() & 0xFFFFFFFFL;
         if (PENDING_HIDE.putIfAbsent(l, entityGadget.getId()) != null) {
             return;
         }
@@ -112,7 +111,7 @@ public final class DomainChallengeKeyHelper {
         if (gadgetContent instanceof GadgetWorktop) {
             GadgetWorktop gadgetWorktop = (GadgetWorktop)gadgetContent;
             gadgetWorktop.removeWorktopOption(7);
-            scene.broadcastPacket((BasePacket)new PacketWorktopOptionNotify(entityGadget));
+            scene.broadcastPacket(new PacketWorktopOptionNotify(entityGadget));
         }
         if (entityGadget.getState() != 202) {
             entityGadget.updateState(202);
@@ -143,7 +142,7 @@ public final class DomainChallengeKeyHelper {
             if (!gadgetWorktop.getWorktopOptions().contains(7)) {
                 gadgetWorktop.addWorktopOptions(new int[]{7});
             }
-            scene.broadcastPacket((BasePacket)new PacketWorktopOptionNotify(entityGadget));
+            scene.broadcastPacket(new PacketWorktopOptionNotify(entityGadget));
             ++n;
         }
         if (n > 0) {
@@ -155,7 +154,7 @@ public final class DomainChallengeKeyHelper {
         if (scene == null || !DomainDungeonHelper.isDomainScene(scene)) {
             return;
         }
-        long l = (long)scene.getId() << 32 | (long)n & 0xFFFFFFFFL;
+        long l = (long) scene.getId() << 32 | n & 0xFFFFFFFFL;
         PENDING_HIDE.put(l, n);
         if (Grasscutter.getGameServer() == null) {
             return;

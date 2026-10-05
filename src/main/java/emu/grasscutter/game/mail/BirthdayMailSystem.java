@@ -1,6 +1,6 @@
 package emu.grasscutter.game.mail;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.config.ConfigContainer.GameOptions.BirthdayMailOptions;
 import emu.grasscutter.config.ConfigContainer.GameOptions.BirthdayMailOptions.GiftItem;
@@ -52,7 +52,7 @@ public final class BirthdayMailSystem {
      * @param today The current date, in the server's local time zone.
      */
     public static void checkAndSend(Player player, LocalDate today) {
-        var options = GAME_OPTIONS.birthdayMail;
+        var options = GAME.birthdayMail;
         if (!options.enabled) return;
 
         var birthday = player.getBirthday();

@@ -190,8 +190,7 @@ public class WorldChallenge {
     public void abortQuiet() {
         this.progress = false;
         this.success = false;
-        this.finishedTime =
-                Math.max(0, (int) (this.scene.getSceneTimeSeconds() - this.startedAt));
+        this.finishedTime = Math.max(0, this.scene.getSceneTimeSeconds() - this.startedAt);
         getScene().broadcastPacket(new PacketDungeonChallengeFinishNotify(this));
     }
 
@@ -202,15 +201,14 @@ public class WorldChallenge {
     public void finishSuccessQuiet() {
         this.progress = false;
         this.success = true;
-        this.finishedTime =
-                Math.max(0, (int) (this.scene.getSceneTimeSeconds() - this.startedAt));
+        this.finishedTime = Math.max(0, this.scene.getSceneTimeSeconds() - this.startedAt);
         getScene().broadcastPacket(new PacketDungeonChallengeFinishNotify(this));
     }
 
     private void finish(boolean success) {
         this.progress = false;
         this.success = success;
-        this.finishedTime = (int) ((this.scene.getSceneTimeSeconds() - this.startedAt));
+        this.finishedTime = this.scene.getSceneTimeSeconds() - this.startedAt;
 
         // Despawn all leftover mobs in this challenge's SceneGroup
         getScene().getScriptManager().removeMonstersInGroup(group);

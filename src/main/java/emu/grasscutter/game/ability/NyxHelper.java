@@ -79,7 +79,7 @@ public final class NyxHelper {
             return 0.0f;
         }
         try {
-            Float f = (Float)gameEntity.getGlobalAbilityValues().get(NYX_KEY);
+            Float f = gameEntity.getGlobalAbilityValues().get(NYX_KEY);
             if (f != null && !Float.isNaN(f.floatValue())) {
                 return f.floatValue();
             }
@@ -101,7 +101,7 @@ public final class NyxHelper {
         if (!NyxHelper.isSkirkEntity(gameEntity)) {
             Float f3 = null;
             try {
-                f3 = (Float)gameEntity.getGlobalAbilityValues().get(NYX_MAX_KEY);
+                f3 = gameEntity.getGlobalAbilityValues().get(NYX_MAX_KEY);
             }
             catch (Throwable throwable) {
                 // empty catch block

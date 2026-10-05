@@ -68,7 +68,7 @@ import java.time.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 @Entity(value = "players", useDiscriminator = false)
 public class Player implements PlayerHook, FieldFetch {
@@ -251,7 +251,7 @@ public class Player implements PlayerHook, FieldFetch {
     @Getter private float phlogistonValue = 100.0f; // 燃素值
 
     @Deprecated
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"rawtypes", "unchecked", "this-escape"})
     public Player() {
         this.inventory = new Inventory(this);
         this.avatars = new AvatarStorage(this);
@@ -627,7 +627,7 @@ public class Player implements PlayerHook, FieldFetch {
     }
 
     private void applyProperties() {
-        var withQuesting = GAME_OPTIONS.questing.enabled;
+        var withQuesting = GAME.quests.enabled;
 
         this.setOrFetch(PlayerProperty.PROP_PLAYER_LEVEL, 1);
         this.setOrFetch(PlayerProperty.PROP_IS_SPRING_AUTO_USE, 1);
@@ -1723,6 +1723,11 @@ public class Player implements PlayerHook, FieldFetch {
     public boolean equals(Object obj) {
         return obj instanceof Player otherPlayer &&
             this.id == otherPlayer.getUid();
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(this.id);
     }
 
     @Override

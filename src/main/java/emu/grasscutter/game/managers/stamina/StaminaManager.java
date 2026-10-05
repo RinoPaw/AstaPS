@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 public class StaminaManager extends BasePlayerManager {
 
@@ -308,7 +308,7 @@ public class StaminaManager extends BasePlayerManager {
     // Returns new stamina and sends PlayerPropNotify or VehicleStaminaNotify
     public int setStamina(GameSession session, String reason, int newStamina, boolean isCharacterStamina) {
         // Target Player
-        if (!GAME_OPTIONS.staminaUsage || session.getPlayer().isUnlimitedStamina()) {
+        if (!GAME.staminaUsage || session.getPlayer().isUnlimitedStamina()) {
             newStamina = getMaxCharacterStamina();
         }
 
@@ -518,7 +518,7 @@ public class StaminaManager extends BasePlayerManager {
                 if (consumption.amount < 0 && isCharacterStamina) {
                     // Do not apply reduction factor when recovering stamina
                     if (player.getTeamManager().getTeamResonances().contains(10301)) {
-                        consumption.amount *= 0.85f;
+                        consumption.amount = (int) (consumption.amount * 0.85f);
                     }
                 }
                 // Delay 1 seconds before starts recovering stamina
@@ -590,8 +590,8 @@ public class StaminaManager extends BasePlayerManager {
             consumption.amount = ConsumptionType.CLIMBING.amount;
         }
         // Climbing specific reductions
-        consumption.amount *= getFoodCostReductionFactor(ClimbFoodReductionMap);
-        consumption.amount *= getTalentCostReductionFactor(ClimbTalentReductionMap);
+        consumption.amount = (int) (consumption.amount * getFoodCostReductionFactor(ClimbFoodReductionMap));
+        consumption.amount = (int) (consumption.amount * getTalentCostReductionFactor(ClimbTalentReductionMap));
         return consumption;
     }
 
@@ -607,8 +607,8 @@ public class StaminaManager extends BasePlayerManager {
             consumption.amount = ConsumptionType.SWIM_DASH.amount;
         }
         // Swimming specific reductions
-        consumption.amount *= getFoodCostReductionFactor(SwimFoodReductionMap);
-        consumption.amount *= getTalentCostReductionFactor(SwimTalentReductionMap);
+        consumption.amount = (int) (consumption.amount * getFoodCostReductionFactor(SwimFoodReductionMap));
+        consumption.amount = (int) (consumption.amount * getTalentCostReductionFactor(SwimTalentReductionMap));
         return consumption;
     }
 
@@ -618,7 +618,7 @@ public class StaminaManager extends BasePlayerManager {
             consumption.type = ConsumptionType.DASH;
             consumption.amount = ConsumptionType.DASH.amount;
             // Dashing specific reductions
-            consumption.amount *= getFoodCostReductionFactor(DashFoodReductionMap);
+            consumption.amount = (int) (consumption.amount * getFoodCostReductionFactor(DashFoodReductionMap));
         }
         return consumption;
     }
@@ -630,8 +630,8 @@ public class StaminaManager extends BasePlayerManager {
         }
         Consumption consumption = new Consumption(ConsumptionType.FLY);
         // Flying specific reductions
-        consumption.amount *= getFoodCostReductionFactor(FlyFoodReductionMap);
-        consumption.amount *= getTalentCostReductionFactor(FlyTalentReductionMap);
+        consumption.amount = (int) (consumption.amount * getFoodCostReductionFactor(FlyFoodReductionMap));
+        consumption.amount = (int) (consumption.amount * getTalentCostReductionFactor(FlyTalentReductionMap));
         return consumption;
     }
 

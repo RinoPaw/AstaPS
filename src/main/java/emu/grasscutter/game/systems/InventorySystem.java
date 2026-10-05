@@ -38,12 +38,12 @@ public class InventorySystem extends BaseGameSystem {
                             if (actions == null) return;
                             for (var action : actions) {
                                 if (action.getItemUseOp() == ItemUseOp.ITEM_USE_ADD_WEAPON_EXP) {
-                                    temp.putIfAbsent(((ItemUseAddWeaponExp) action).getExp(), (int) id);
+                                    temp.putIfAbsent(((ItemUseAddWeaponExp) action).getExp(), id);
                                     return;
                                 }
                             }
                         });
-        temp.forEach((exp, id) -> weaponRefundMaterials.putIfAbsent((int) id, (int) exp));
+        temp.forEach((exp, id) -> weaponRefundMaterials.putIfAbsent(id, exp));
     }
 
     public InventorySystem(GameServer server) {

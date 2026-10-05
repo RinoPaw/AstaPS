@@ -1,6 +1,6 @@
 package emu.grasscutter.game.player;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.OpenStateData;
@@ -61,7 +61,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
     public void onPlayerLogin() {
         this.tryUnlockOpenStates(false);
 
-        if (!GAME_OPTIONS.questing.enabled) {
+        if (!GAME.quests.enabled) {
             this.setOpenState(47, 1, false);
             this.setOpenState(48, 1, false);
             this.setOpenState(1101, 1, false);

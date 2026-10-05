@@ -1,6 +1,6 @@
 package emu.grasscutter.game.quest;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.gson.ExclusionStrategy;
@@ -27,6 +27,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("deprecation") // Fixtures intentionally exercise Morphia-only no-arg constructors.
 public final class MainQuestHandoffTest {
     private static final List<Path> createdDirectories = new ArrayList<>();
     private static final Path offeringLevels = Path.of("data", "offering_levels.json");
@@ -255,9 +256,9 @@ public final class MainQuestHandoffTest {
 
     @Test
     void statueLoginKeepsActivationQuestActiveUntilCompleteTalk() {
-        boolean enabled = GAME_OPTIONS.questing.enabled;
+        boolean enabled = GAME.quests.enabled;
         try {
-            GAME_OPTIONS.questing.enabled = true;
+            GAME.quests.enabled = true;
             load352AndStatueQuests();
             var player = new InMemoryPlayer();
             player.setSession(new PacketSink());
@@ -278,15 +279,15 @@ public final class MainQuestHandoffTest {
             activation.finish();
             assertEquals(QuestState.QUEST_STATE_FINISHED, activation.getState());
         } finally {
-            GAME_OPTIONS.questing.enabled = enabled;
+            GAME.quests.enabled = enabled;
         }
     }
 
     @Test
     void statueLoginDoesNotConsume35205AndTheOpeningCanBeHandedOff() {
-        boolean enabled = GAME_OPTIONS.questing.enabled;
+        boolean enabled = GAME.quests.enabled;
         try {
-            GAME_OPTIONS.questing.enabled = true;
+            GAME.quests.enabled = true;
             var player = playerWithStatueAnd352();
             var terminal = (OpeningQuest) player.getQuestManager().getQuestById(35205);
 
@@ -300,15 +301,15 @@ public final class MainQuestHandoffTest {
                     QuestState.QUEST_STATE_UNFINISHED,
                     player.getQuestManager().getQuestById(35200).getState());
         } finally {
-            GAME_OPTIONS.questing.enabled = enabled;
+            GAME.quests.enabled = enabled;
         }
     }
 
     @Test
     void loginRewindClearsTheSynthetic35205FinishAndStatueSetupDoesNotRestoreIt() {
-        boolean enabled = GAME_OPTIONS.questing.enabled;
+        boolean enabled = GAME.quests.enabled;
         try {
-            GAME_OPTIONS.questing.enabled = true;
+            GAME.quests.enabled = true;
             var player = playerWithStatueAnd352();
             var manager = player.getQuestManager();
             var parent = manager.getMainQuestById(352);
@@ -330,15 +331,15 @@ public final class MainQuestHandoffTest {
             assertEquals(0, terminal.getAcceptTime());
             assertFalse(parent.isFinished());
         } finally {
-            GAME_OPTIONS.questing.enabled = enabled;
+            GAME.quests.enabled = enabled;
         }
     }
 
     @Test
     void questingOffDoesNotForgeStarterQuestState() {
-        boolean enabled = GAME_OPTIONS.questing.enabled;
+        boolean enabled = GAME.quests.enabled;
         try {
-            GAME_OPTIONS.questing.enabled = false;
+            GAME.quests.enabled = false;
             var player = playerWithStatueAnd352();
             var terminal = (OpeningQuest) player.getQuestManager().getQuestById(35205);
 
@@ -348,7 +349,7 @@ public final class MainQuestHandoffTest {
             assertEquals(0, terminal.starts);
             assertEquals(0, terminal.getFinishTime());
         } finally {
-            GAME_OPTIONS.questing.enabled = enabled;
+            GAME.quests.enabled = enabled;
         }
     }
 

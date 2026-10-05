@@ -42,26 +42,21 @@ public class Position implements Serializable {
     public Position() {}
 
     public Position(float x, float y) {
-        set(x, y);
+        this.x = x;
+        this.y = y;
     }
 
     public Position(float x, float y, float z) {
-        set(x, y, z);
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public Position(List<Float> xyz) {
-        switch (xyz.size()) {
-            default: // Might want to error on excess elements, but maybe we want to extend to 3+3
-                // representation later.
-            case 3:
-                this.z = xyz.get(2); // Fall-through
-            case 2:
-                this.y = xyz.get(1); // Fall-through
-            case 1:
-                this.x = xyz.get(0); // Fall-through
-            case 0:
-                break;
-        }
+        int size = xyz.size();
+        if (size > 0) this.x = xyz.get(0);
+        if (size > 1) this.y = xyz.get(1);
+        if (size > 2) this.z = xyz.get(2);
     }
 
     public Position(String p) {
@@ -76,11 +71,11 @@ public class Position implements Serializable {
     }
 
     public Position(Vector vector) {
-        this.set(vector);
+        this(vector.getX(), vector.getY(), vector.getZ());
     }
 
     public Position(Position pos) {
-        this.set(pos);
+        this(pos.getX(), pos.getY(), pos.getZ());
     }
 
     public Position set(float x, float y) {
@@ -143,8 +138,8 @@ public class Position implements Serializable {
 
     /** In radians */
     public Position translate(float dist, float angle) {
-        this.x += dist * Math.sin(angle);
-        this.y += dist * Math.cos(angle);
+        this.x = (float) (this.x + dist * Math.sin(angle));
+        this.y = (float) (this.y + dist * Math.cos(angle));
         return this;
     }
 
@@ -173,8 +168,8 @@ public class Position implements Serializable {
 
     public Position translateWithDegrees(float dist, float angle) {
         angle = (float) Math.toRadians(angle);
-        this.x += dist * Math.sin(angle);
-        this.y += -dist * Math.cos(angle);
+        this.x = (float) (this.x + dist * Math.sin(angle));
+        this.y = (float) (this.y - dist * Math.cos(angle));
         return this;
     }
 

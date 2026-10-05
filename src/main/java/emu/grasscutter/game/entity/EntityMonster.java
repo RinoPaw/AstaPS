@@ -37,7 +37,7 @@ import java.util.*;
 import javax.annotation.Nullable;
 import lombok.*;
 
-public class EntityMonster extends GameEntity {
+public final class EntityMonster extends GameEntity {
     @Getter(onMethod_ = @Override)
     private final Int2FloatOpenHashMap fightProperties;
 

@@ -10,13 +10,9 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import emu.grasscutter.utils.JsonAdapters;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.*;
 
-public class AbilityMixinData implements Serializable {
-    private static final long serialVersionUID = -2001232313615923575L;
-
+public class AbilityMixinData {
     public enum Type {
         AttachToGadgetStateMixin,
         AttachToStateIDMixin,

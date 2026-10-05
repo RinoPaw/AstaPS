@@ -1,7 +1,7 @@
 package emu.grasscutter.game.tower;
 
+import static emu.grasscutter.config.Configuration.GAME;
 import static emu.grasscutter.config.Configuration.GAME_INFO;
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
@@ -513,7 +513,7 @@ public class TowerManager extends BasePlayerManager {
      * {@code game.tower.skipEntranceFloors} off to play floors 1-8 for real.
      */
     private void grantEntranceFloors(Map<Integer, TowerLevelRecord> recordMap) {
-        if (!GAME_OPTIONS.tower.skipEntranceFloors) return;
+        if (!GAME.tower.skipEntranceFloors) return;
 
         var schedule = player.getServer().getTowerSystem().getCurrentTowerScheduleData();
         if (schedule == null) return;

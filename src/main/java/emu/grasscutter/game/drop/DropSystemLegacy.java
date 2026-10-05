@@ -20,20 +20,20 @@ public class DropSystemLegacy extends BaseGameSystem {
     public DropSystemLegacy(GameServer server) {
         super(server);
         this.dropData = new Int2ObjectOpenHashMap<>();
-        this.load();
+        loadInternal();
     }
 
     public Int2ObjectMap<List<DropData>> getDropData() {
         return dropData;
     }
 
-    public synchronized void load() {
-        getDropData().clear();
+    private void loadInternal() {
+        dropData.clear();
         try {
             List<DropInfo> banners = DataLoader.loadList("Drop.json", DropInfo.class);
             if (banners.size() > 0) {
                 for (DropInfo di : banners) {
-                    getDropData().put(di.getMonsterId(), di.getDropDataList());
+                    dropData.put(di.getMonsterId(), di.getDropDataList());
                 }
                 Grasscutter.getLogger().debug("Drop data successfully loaded.");
             } else {
@@ -42,6 +42,10 @@ public class DropSystemLegacy extends BaseGameSystem {
         } catch (Exception e) {
             Grasscutter.getLogger().error("Unable to load drop data.", e);
         }
+    }
+
+    public synchronized void load() {
+        loadInternal();
     }
 
     private void addDropEntity(
@@ -55,9 +59,6 @@ public class DropSystemLegacy extends BaseGameSystem {
             if (target != null) {
                 target.getInventory().addItem(new GameItem(itemData, num), ActionReason.SubfieldDrop, true);
             } else {
-                // target is null if items will be added are shared. no one could pick it up because of the
-                // combination(give + shared)
-                // so it will be sent to all players' inventories directly.
                 dropScene
                         .getPlayers()
                         .forEach(
@@ -98,8 +99,8 @@ public class DropSystemLegacy extends BaseGameSystem {
 
     public void callDrop(EntityMonster em) {
         int id = em.getMonsterData().getId();
-        if (getDropData().containsKey(id)) {
-            for (DropData dd : getDropData().get(id)) {
+        if (dropData.containsKey(id)) {
+            for (DropData dd : dropData.get(id)) {
                 if (dd.isShare()) processDrop(dd, em, null);
                 else {
                     for (Player gp : em.getScene().getPlayers()) {

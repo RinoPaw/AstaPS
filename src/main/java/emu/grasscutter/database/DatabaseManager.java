@@ -16,6 +16,7 @@ import dev.morphia.config.MorphiaConfig;
 import dev.morphia.mapping.*;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Grasscutter.ServerRunMode;
+import emu.grasscutter.game.Account;
 import org.bson.Document;
 
 public final class DatabaseManager {

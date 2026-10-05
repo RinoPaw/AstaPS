@@ -7,6 +7,7 @@ import lombok.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Achievement {
     @Setter private Status status;
     private int id;

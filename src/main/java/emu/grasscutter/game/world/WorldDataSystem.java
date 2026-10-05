@@ -22,12 +22,16 @@ public class WorldDataSystem extends BaseGameSystem {
         this.chestInteractHandlerMap = new HashMap<>();
         this.sceneInvestigationGroupMap = new ConcurrentHashMap<>();
 
-        loadChestConfig();
+        loadChestConfigInternal();
+    }
+
+    private void loadChestConfigInternal() {
+        chestInteractHandlerMap.clear();
+        chestInteractHandlerMap.put("SceneObj_Chest_Flora", new BossChestInteractHandler());
     }
 
     public synchronized void loadChestConfig() {
-        chestInteractHandlerMap.clear();
-        chestInteractHandlerMap.put("SceneObj_Chest_Flora", new BossChestInteractHandler());
+        loadChestConfigInternal();
     }
 
     public Map<String, ChestInteractHandler> getChestInteractHandlerMap() {

@@ -118,7 +118,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
         // The last word on cutscenes. The two places that build one already check this, so nothing
         // should reach here - it is logged rather than dropped silently precisely so that a
         // cutscene the server did send stops being invisible.
-        if (GAME_OPTIONS.disableCutscenes && packet.getOpcode() == PacketOpcodes.CutSceneBeginNotify) {
+        if (GAME.disableCutscenes && packet.getOpcode() == PacketOpcodes.CutSceneBeginNotify) {
             Grasscutter.getLogger()
                     .info("Suppressed a CutSceneBeginNotify: game.disableCutscenes is on.");
             return;

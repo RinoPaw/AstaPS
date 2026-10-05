@@ -80,13 +80,14 @@ public class World implements Iterable<Player> {
         this(player, false);
     }
 
+    @SuppressWarnings("this-escape")
     public World(Player player, boolean isMultiplayer) {
         this.host = player;
         this.server = player.getServer();
         this.players = Collections.synchronizedList(new ArrayList<>());
         this.scenes = Int2ObjectMaps.synchronize(new Int2ObjectOpenHashMap<>());
 
-        // this.levelEntityId = this.getNextEntityId(EntityIdType.MPLEVEL);
+        // EntityWorld is the world's back-reference owner and must exist before World registration.
         this.entity = new EntityWorld(this);
         this.worldLevel = player.getWorldLevel();
         this.isMultiplayer = isMultiplayer;
@@ -109,11 +110,13 @@ public class World implements Iterable<Player> {
         this.host.getServer().registerWorld(this);
     }
 
+    @SuppressWarnings("this-escape")
     public World(GameServer server, Player owner) {
         this.server = server;
         this.host = owner;
         this.players = Collections.synchronizedList(new ArrayList<>());
         this.scenes = Int2ObjectMaps.synchronize(new Int2ObjectOpenHashMap<>());
+        // EntityWorld is the world's back-reference owner and must exist before World registration.
         this.entity = new EntityWorld(this);
         this.lastUpdateTime = System.currentTimeMillis();
 

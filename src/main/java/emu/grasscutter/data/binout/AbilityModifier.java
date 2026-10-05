@@ -9,15 +9,12 @@ import com.google.gson.stream.JsonWriter;
 import emu.grasscutter.data.common.DynamicFloat;
 import emu.grasscutter.game.props.ElementType;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 import lombok.ToString;
 
-public class AbilityModifier implements Serializable {
-    private static final long serialVersionUID = -2001232313615923575L;
-
+public class AbilityModifier {
     public State state;
 
     @SerializedName(
@@ -80,7 +77,7 @@ public class AbilityModifier implements Serializable {
     public DynamicFloat elementDurability = DynamicFloat.ZERO;
 
     @ToString
-    public static class AbilityModifierAction implements Serializable {
+    public static class AbilityModifierAction {
         public enum Type {
            PhlogistonCostMixin,
             ActCameraRadialBlur,
@@ -492,7 +489,7 @@ public class AbilityModifier implements Serializable {
         }
     }
 
-    public static class AbilityModifierProperty implements Serializable {
+    public static class AbilityModifierProperty {
         // Usually a constant, but a config may also name an ability special to read it from.
         public DynamicFloat Actor_HpThresholdRatio = DynamicFloat.ZERO;
         /** Max HP multiplier added to FIGHT_PROP_HP_PERCENT (e.g. Yelan C4 / Furina overflow). */

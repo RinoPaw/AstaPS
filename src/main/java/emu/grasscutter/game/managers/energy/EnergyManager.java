@@ -1,6 +1,6 @@
 package emu.grasscutter.game.managers.energy;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import emu.grasscutter.Grasscutter;
@@ -57,7 +57,7 @@ public class EnergyManager extends BasePlayerManager {
     public EnergyManager(Player player) {
         super(player);
         this.avatarNormalProbabilities = new Object2IntOpenHashMap<>();
-        this.energyUsage = GAME_OPTIONS.energyUsage;
+        this.energyUsage = GAME.energyUsage;
     }
 
     public static void initialize() {
@@ -83,7 +83,7 @@ public class EnergyManager extends BasePlayerManager {
 
             Grasscutter.getLogger().debug("Skill particle generation data successfully loaded.");
         } catch (Exception ex) {
-            Grasscutter.getLogger().error("Unable to load skill particle generation data data.", ex);
+            Grasscutter.getLogger().error("Unable to load energy drop data data.", ex);
         }
     }
 
@@ -222,7 +222,7 @@ public class EnergyManager extends BasePlayerManager {
 
     private void handleBurstCast(Avatar avatar, int skillId) {
 
-        if (!GAME_OPTIONS.energyUsage || !this.energyUsage) {
+        if (!GAME.energyUsage || !this.energyUsage) {
             return;
         }
 
@@ -279,7 +279,7 @@ public class EnergyManager extends BasePlayerManager {
      * @return true if energy was consumed on this call
      */
     public boolean confirmBurstCast(Avatar avatar, int skillId) {
-        if (avatar == null || !GAME_OPTIONS.energyUsage || !this.energyUsage) {
+        if (avatar == null || !GAME.energyUsage || !this.energyUsage) {
             return false;
         }
 

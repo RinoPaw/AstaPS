@@ -79,16 +79,16 @@ public class AbilityLocalIdGenerator {
     public long GetLocalId() {
         switch (type) {
             case ACTION -> {
-                return (long) type.value + (configIndex << 3) + (actionIndex << 9);
+                return type.value + (configIndex << 3) + (actionIndex << 9);
             }
             case MIXIN -> {
-                return (long) type.value + (mixinIndex << 3) + (configIndex << 9) + (actionIndex << 15);
+                return type.value + (mixinIndex << 3) + (configIndex << 9) + (actionIndex << 15);
             }
             case MODIFIER_ACTION -> {
-                return (long) type.value + (modifierIndex << 3) + (configIndex << 9) + (actionIndex << 15);
+                return type.value + (modifierIndex << 3) + (configIndex << 9) + (actionIndex << 15);
             }
             case MODIFIER_MIXIN -> {
-                return (long) type.value
+                return type.value
                         + (modifierIndex << 3)
                         + (mixinIndex << 9)
                         + (configIndex << 15)

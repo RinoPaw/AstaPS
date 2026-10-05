@@ -27,7 +27,7 @@ import lombok.*;
 import org.bson.types.ObjectId;
 
 @Entity(value = "items", useDiscriminator = false)
-public class GameItem {
+public final class GameItem {
     @Id private ObjectId id;
     @Indexed private int ownerId;
     @Getter @Setter private int itemId;

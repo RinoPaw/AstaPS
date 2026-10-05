@@ -1,6 +1,6 @@
 package emu.grasscutter.game.tower;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.*;
@@ -25,7 +25,6 @@ public class TowerSystem extends BaseGameSystem {
     private static final java.util.Set<Integer> MISSING_SCHEDULES_REPORTED =
             java.util.concurrent.ConcurrentHashMap.newKeySet();
 
-
     /** Daily rotation rolls over at this hour (server local time). */
     private static final int ROTATION_HOUR = 4;
 
@@ -43,15 +42,19 @@ public class TowerSystem extends BaseGameSystem {
 
     public TowerSystem(GameServer server) {
         super(server);
-        this.load();
+        loadInternal();
     }
 
-    public synchronized void load() {
+    private void loadInternal() {
         try {
             towerScheduleConfig = DataLoader.loadClass("TowerSchedule.json", TowerScheduleConfig.class);
         } catch (Exception e) {
             Grasscutter.getLogger().error("Unable to load tower schedule config.", e);
         }
+    }
+
+    public synchronized void load() {
+        loadInternal();
     }
 
     public TowerScheduleConfig getTowerScheduleConfig() {
@@ -117,7 +120,7 @@ public class TowerSystem extends BaseGameSystem {
         if (playableSchedules != null) return playableSchedules;
 
         var all = GameData.getTowerScheduleDataMap();
-        if (all.isEmpty()) return List.of(); // Resources are not in yet; do not cache that.
+        if (all.isEmpty()) return List.of();
 
         var playable =
                 all.values().stream()
@@ -143,36 +146,28 @@ public class TowerSystem extends BaseGameSystem {
         return playableSchedules;
     }
 
-    /** Every schedule id in the excel, ascending - the full daily cycle. */
     private List<Integer> getAllScheduleIds() {
         var all = GameData.getTowerScheduleDataMap();
         if (all.isEmpty()) return List.of();
         return all.values().stream().map(TowerScheduleData::getScheduleId).sorted().toList();
     }
 
-    /**
-     * The rotations actually cycled through. Default ({@code rotationPool <= 0}) is every schedule
-     * in the excel; a positive pool keeps only the newest N of those.
-     */
     private List<Integer> getRotationPool() {
         var all = getAllScheduleIds();
-        int pool = GAME_OPTIONS.tower.rotationPool;
+        int pool = GAME.tower.rotationPool;
         if (pool <= 0 || pool >= all.size()) return all;
         return all.subList(all.size() - pool, all.size());
     }
 
-    /** The newest rotation this server can actually build, or 0 if none can be. */
     private int getNewestPlayable() {
         var playable = getPlayableSchedules();
         return playable.isEmpty() ? 0 : playable.get(playable.size() - 1);
     }
 
-    /** Start of the daily rotation period holding {@code now}, at {@link #ROTATION_HOUR}. */
     private static Calendar periodStart(Date now) {
         var calendar = Calendar.getInstance();
         calendar.setTime(now);
 
-        // Hours before the rollover still belong to yesterday's rotation.
         if (calendar.get(Calendar.HOUR_OF_DAY) < ROTATION_HOUR) {
             calendar.add(Calendar.DAY_OF_MONTH, -1);
         }
@@ -190,23 +185,19 @@ public class TowerSystem extends BaseGameSystem {
         return calendar;
     }
 
-    /** Days since a fixed epoch, so consecutive days pick consecutive rotations. */
     private static long periodOrdinal(Calendar start) {
         return start.get(Calendar.YEAR) * 366L + start.get(Calendar.DAY_OF_YEAR);
     }
 
-    /** Whether the rotation moves on its own, rather than staying on the newest playable one. */
     private static boolean isRotating() {
-        return GAME_OPTIONS.tower.scheduleId <= 0 && GAME_OPTIONS.tower.rotate;
+        return GAME.tower.scheduleId <= 0 && GAME.tower.rotate;
     }
 
-    /** When the rotation on offer began. */
     public Date getScheduleStartTime() {
         if (!isRotating()) return towerScheduleConfig.getScheduleStartTime();
         return periodStart(new Date()).getTime();
     }
 
-    /** When it gives way to the next one. The client counts down to this. */
     public Date getNextScheduleChangeTime() {
         if (!isRotating()) return towerScheduleConfig.getNextScheduleChangeTime();
         return periodEnd(periodStart(new Date())).getTime();
@@ -215,8 +206,7 @@ public class TowerSystem extends BaseGameSystem {
     // endregion
 
     public TowerScheduleData getCurrentTowerScheduleData() {
-        // A pinned id is served as asked, playable or not - that is what pinning is for.
-        int pinned = GAME_OPTIONS.tower.scheduleId;
+        int pinned = GAME.tower.scheduleId;
         if (pinned > 0) {
             var data = GameData.getTowerScheduleDataMap().get(pinned);
             if (data != null) return data;
@@ -227,13 +217,11 @@ public class TowerSystem extends BaseGameSystem {
         if (isRotating()) {
             var pool = getRotationPool();
             if (!pool.isEmpty()) {
-                int index = (int) Math.floorMod(periodOrdinal(periodStart(new Date())), pool.size());
+                int index = Math.floorMod(periodOrdinal(periodStart(new Date())), pool.size());
                 var data = GameData.getTowerScheduleDataMap().get(pool.get(index).intValue());
                 if (data != null) return data;
             }
         } else {
-            // The newest rotation the resources can build is as close to the live game as this
-            // server gets; anything older is a step backwards from it.
             var newest = getNewestPlayable();
             if (newest > 0) {
                 var data = GameData.getTowerScheduleDataMap().get(newest);
@@ -241,12 +229,8 @@ public class TowerSystem extends BaseGameSystem {
             }
         }
 
-        // Nothing validated - fall back to whatever the config file names, so a resource set this
-        // check does not understand still opens the abyss rather than closing it entirely.
         var fallback = GameData.getTowerScheduleDataMap().get(towerScheduleConfig.getScheduleId());
         if (fallback == null) {
-            // The resource pack does not change while the server runs, so this is the same
-            // complaint every time anyone opens the abyss - twelve lines in a ten-minute log.
             var logger = Grasscutter.getLogger();
             var firstTime = MISSING_SCHEDULES_REPORTED.add(towerScheduleConfig.getScheduleId());
             (firstTime ? logger.atError() : logger.atDebug())
@@ -268,7 +252,6 @@ public class TowerSystem extends BaseGameSystem {
 
     public List<Integer> getScheduleFloors() {
         var schedule = this.getCurrentTowerScheduleData();
-        // TowerScheduleData.onLoad drops the empty slots, so the first one left is the live half.
         if (schedule == null || schedule.getSchedules().isEmpty()) return List.of();
         return schedule.getSchedules().get(0).getFloorList();
     }
@@ -281,7 +264,6 @@ public class TowerSystem extends BaseGameSystem {
         var scheduleFloors = getScheduleFloors();
         var nextId = 0;
 
-        // find in entrance floors first
         for (int i = 0; i < entranceFloors.size() - 1; i++) {
             if (floorId == entranceFloors.get(i)) {
                 nextId = entranceFloors.get(i + 1);
@@ -298,7 +280,6 @@ public class TowerSystem extends BaseGameSystem {
             return nextId;
         }
 
-        // find in schedule floors
         for (int i = 0; i < scheduleFloors.size() - 1; i++) {
             if (floorId == scheduleFloors.get(i)) {
                 nextId = scheduleFloors.get(i + 1);

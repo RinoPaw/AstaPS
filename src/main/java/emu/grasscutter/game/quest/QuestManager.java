@@ -93,7 +93,7 @@ public final class QuestManager extends BasePlayerManager {
      * tracker forever, with a "return to quest point" button for its far-away step.
      */
     public static boolean isQuestingActive() {
-        return SERVER.game.enableScriptInBigWorld && GAME_OPTIONS.questing.enabled;
+        return SERVER.game.enableScriptInBigWorld && GAME.quests.enabled;
     }
 
     /** Checks if questing can be enabled. */
@@ -104,7 +104,7 @@ public final class QuestManager extends BasePlayerManager {
             return false;
         }
 
-        return GAME_OPTIONS.questing.enabled;
+        return GAME.quests.enabled;
     }
 
     /**
@@ -187,7 +187,7 @@ public final class QuestManager extends BasePlayerManager {
         var progress = this.player.getPlayerProgress();
         var bargains = progress.getBargains();
 
-        // Check if the bargain is already present.
+        // Check if the bargain is not present.
         if (bargains.containsKey(bargainId)) {
             throw new IllegalStateException("Bargain " + bargainId + " is already active.");
         }
@@ -211,7 +211,7 @@ public final class QuestManager extends BasePlayerManager {
         var progress = this.player.getPlayerProgress();
         var bargains = progress.getBargains();
 
-        // Check if the bargain is already present.
+        // Check if the action is already present.
         if (!bargains.containsKey(bargainId)) {
             throw new IllegalStateException("Bargain " + bargainId + " is not active.");
         }
@@ -320,7 +320,7 @@ public final class QuestManager extends BasePlayerManager {
     public void onLogin() {
         if (this.isQuestingEnabled()) {
             // The sweep is what fills a fresh quest log at login; see questing.triggerAllOnLogin.
-            if (GAME_OPTIONS.questing.triggerAllOnLogin) {
+            if (GAME.quests.triggerAllOnLogin) {
                 this.enableQuests();
             }
             this.sendGivingRecords();

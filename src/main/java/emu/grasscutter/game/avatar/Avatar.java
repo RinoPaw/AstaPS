@@ -1,6 +1,6 @@
 package emu.grasscutter.game.avatar;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import dev.morphia.annotations.*;
 import emu.grasscutter.Grasscutter;
@@ -136,11 +136,13 @@ public class Avatar {
         this.talentIdList = new HashSet<>();
         this.proudSkillList = new HashSet<>();
 
-        // Combat properties
-        Stream.of(FightProperty.values())
-                .map(FightProperty::getId)
-                .filter(id -> (id > 0) && (id < 3000))
-                .forEach(id -> this.setFightProperty(id, 0f));
+        // Combat properties. Use a plain loop so the constructor does not capture this in a lambda.
+        for (FightProperty property : FightProperty.values()) {
+            int propertyId = property.getId();
+            if (propertyId > 0 && propertyId < 3000) {
+                this.fightProperties.put(propertyId, 0f);
+            }
+        }
 
         this.setSkillDepotData(
                 switch (this.getAvatarId()) {
@@ -334,7 +336,7 @@ public class Avatar {
         var candSkillDepotId = candSkillDepotIdsList.get(candSkillDepotIndex);
 
         // Sanity checks for skill depots
-        val skillDepot = GameData.getAvatarSkillDepotDataMap().get((int) candSkillDepotId);
+        val skillDepot = GameData.getAvatarSkillDepotDataMap().get(candSkillDepotId);
         if (skillDepot == null || skillDepot.getId() == skillDepotId) {
             return false;
         }
@@ -356,7 +358,7 @@ public class Avatar {
     }
 
     public void setCurrentEnergy() {
-        if (GAME_OPTIONS.energyUsage) {
+        if (GAME.energyUsage) {
             this.setCurrentEnergy(this.currentEnergy);
         }
     }
@@ -368,12 +370,12 @@ public class Avatar {
             var maxEnergy = depot.getEnergySkillData().getCostElemVal();
             this.setFightProperty(element.getMaxEnergyProp(), maxEnergy);
             this.setFightProperty(
-                    element.getCurEnergyProp(), GAME_OPTIONS.energyUsage ? currentEnergy : maxEnergy);
+                    element.getCurEnergyProp(), GAME.energyUsage ? currentEnergy : maxEnergy);
         }
     }
 
     public void setCurrentEnergy(FightProperty curEnergyProp, float currentEnergy) {
-        if (GAME_OPTIONS.energyUsage) {
+        if (GAME.energyUsage) {
             this.setFightProperty(curEnergyProp, currentEnergy);
             this.currentEnergy = currentEnergy;
             this.save();
@@ -651,7 +653,7 @@ public class Avatar {
         // Set stuff
         setMap.forEach(
                 (setId, amount) -> {
-                    ReliquarySetData setData = GameData.getReliquarySetDataMap().get((int) setId);
+                    ReliquarySetData setData = GameData.getReliquarySetDataMap().get(setId);
                     if (setData == null) return;
 
                     // Calculate how many items are from the set
@@ -1428,7 +1430,7 @@ public class Avatar {
                         });
 
         // Add costume if avatar has a costume.
-        if (GAME_OPTIONS.trialCostumes) {
+        if (GAME.trialCostumes) {
             GameData.getAvatarCostumeDataItemIdMap()
                     .values()
                     .forEach(

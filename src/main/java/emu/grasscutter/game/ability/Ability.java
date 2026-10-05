@@ -15,7 +15,7 @@ import it.unimi.dsi.fastutil.objects.*;
 import java.util.*;
 import lombok.Getter;
 
-public class Ability {
+public final class Ability {
     @Getter private AbilityData data;
     @Getter private GameEntity owner;
     @Getter private Player playerOwner;

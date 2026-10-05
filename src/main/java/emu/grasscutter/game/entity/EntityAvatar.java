@@ -35,7 +35,7 @@ import emu.grasscutter.utils.helpers.ProtoHelper;
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import lombok.*;
 
-public class EntityAvatar extends GameEntity {
+public final class EntityAvatar extends GameEntity {
     @Getter private final Avatar avatar;
     private static long lastExecutionTime = 0;
     public static final long COOLDOWN = 14000;
@@ -76,7 +76,7 @@ public class EntityAvatar extends GameEntity {
         this.checkIfDead();
     }
     public long getLastExecutionTime() {
-        return this.lastExecutionTime;
+        return EntityAvatar.lastExecutionTime;
     }
     @Override
         public float getNyxValue() {
@@ -89,7 +89,7 @@ public class EntityAvatar extends GameEntity {
         }
 
     public void setLastExecutionTime(long time) {
-        this.lastExecutionTime = time;
+        EntityAvatar.lastExecutionTime = time;
     }
 
     @Override

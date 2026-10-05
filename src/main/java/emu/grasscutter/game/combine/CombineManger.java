@@ -15,7 +15,6 @@ import emu.grasscutter.server.packet.send.*;
 import emu.grasscutter.utils.Utils;
 import it.unimi.dsi.fastutil.ints.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CombineManger extends BaseGameSystem {
     private static final Int2ObjectMap<List<Integer>> reliquaryDecomposeData =
@@ -63,11 +62,6 @@ public class CombineManger extends BaseGameSystem {
         Grasscutter.getLogger()
                 .debug("Combine request from uid {}: combineId={}, count={}", player.getUid(), cid, count);
 
-        if (count <= 0) {
-            player.sendPacket(new PacketCombineRsp(Retcode.RET_COMBINE_COUNT_TOO_LARGE_VALUE));
-            return null;
-        }
-
         CombineData combineData = GameData.getCombineDataMap().get(cid);
         if (combineData == null) {
             Grasscutter.getLogger().warn("Unknown combineId {} for uid {}", cid, player.getUid());
@@ -80,13 +74,31 @@ public class CombineManger extends BaseGameSystem {
             return null;
         }
 
+        List<ItemParamData> material = buildMaterialCost(combineData);
+        var plan =
+                CombineSafety.plan(
+                        count,
+                        combineData.getResultItemCount(),
+                        material.stream()
+                                .map(item -> new CombineSafety.Cost(item.getId(), item.getCount()))
+                                .toList());
+        if (plan == null) {
+            player.sendPacket(new PacketCombineRsp(Retcode.RET_COMBINE_COUNT_TOO_LARGE_VALUE));
+            return null;
+        }
+
         if (!player.getUnlockedCombines().contains(cid)) {
             player.getUnlockedCombines().add(cid);
         }
 
-        List<ItemParamData> material = buildMaterialCost(combineData);
+        List<ItemParamData> scaledMaterial =
+                plan.costs().stream()
+                        .map(cost -> new ItemParamData(cost.itemId(), cost.count()))
+                        .toList();
 
-        if (!player.getInventory().payItems(material, count, ActionReason.Combine)) {
+        // All arithmetic and aggregation is complete before the synchronized Inventory payment.
+        // Passing quantity=1 avoids a second unchecked multiplication in payItems().
+        if (!player.getInventory().payItems(scaledMaterial, 1, ActionReason.Combine)) {
             player.sendPacket(new PacketCombineRsp(Retcode.RET_ITEM_COMBINE_COUNT_NOT_ENOUGH_VALUE));
             return null;
         }
@@ -95,7 +107,7 @@ public class CombineManger extends BaseGameSystem {
             player.sendPacket(new PacketPlayerPropNotify(player, PlayerProperty.PROP_PLAYER_SCOIN));
         }
 
-        int resultCount = combineData.getResultItemCount() * count;
+        int resultCount = plan.resultCount();
         player.getInventory().addItem(combineData.getResultItemId(), resultCount, ActionReason.Combine);
 
         Grasscutter.getLogger()
@@ -107,7 +119,7 @@ public class CombineManger extends BaseGameSystem {
                         resultCount);
 
         CombineResult result = new CombineResult();
-        result.setMaterial(scaleItems(material, count));
+        result.setMaterial(scaledMaterial);
         result.setResult(
                 List.of(new ItemParamData(combineData.getResultItemId(), resultCount)));
         result.setExtra(List.of());
@@ -122,12 +134,6 @@ public class CombineManger extends BaseGameSystem {
             material.add(new ItemParamData(202, combineData.getScoinCost()));
         }
         return material;
-    }
-
-    private static List<ItemParamData> scaleItems(List<ItemParamData> items, int count) {
-        return items.stream()
-                .map(item -> new ItemParamData(item.getId(), item.getCount() * count))
-                .collect(Collectors.toList());
     }
 
     public void decomposeReliquaries(Player player, int configId, int count, List<Long> input) {

@@ -111,7 +111,7 @@ public final class SymphonistWeaponHelper {
             return null;
         }
         int n = Math.max(0, Math.min(4, gameItem.getRefinement()));
-        EquipAffixData equipAffixData = (EquipAffixData)GameData.getEquipAffixDataMap().get(1135140 + n);
+        EquipAffixData equipAffixData = GameData.getEquipAffixDataMap().get(1135140 + n);
         if (equipAffixData == null || equipAffixData.getParamList() == null || equipAffixData.getParamList().length < 4) {
             equipAffixData = SymphonistWeaponHelper.findAffixByLevel(n);
         }

@@ -69,18 +69,16 @@ public class MainQuestData {
         this.talks = this.talks.stream().filter(Objects::nonNull).toList();
         this.talks.forEach(talkData -> GameData.getQuestTalkMap().put(talkData.getId(), this.getId()));
 
+        // Normalize only rows that already exist in QuestExcel. Bin-only rows stay as raw evidence
+        // until their source/materialization role is proven; promoting them now could turn a missing
+        // acceptCond into an unconditional runtime quest.
         Arrays.stream(this.subQuests)
                 .filter(Objects::nonNull)
                 .filter(quest -> quest.getSubId() != 0)
                 .forEach(
                         quest -> {
                             var canonical = GameData.getQuestDataMap().get(quest.getSubId());
-                            if (canonical == null) {
-                                canonical = QuestData.fromBinOutput(quest, this.id);
-                                GameData.getQuestDataMap().put(canonical.getSubId(), canonical);
-                            } else {
-                                canonical.mergeFromBinOutput(quest, this.id);
-                            }
+                            if (canonical != null) canonical.mergeFromBinOutput(quest, this.id);
                         });
     }
 

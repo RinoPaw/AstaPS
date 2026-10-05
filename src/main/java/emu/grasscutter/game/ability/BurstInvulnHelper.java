@@ -129,7 +129,7 @@ public final class BurstInvulnHelper {
             // empty catch block
         }
         try {
-            method = AbilityManager.class.getDeclaredMethod("getPlayer", new Class[0]);
+            method = AbilityManager.class.getDeclaredMethod("getPlayer");
             method.setAccessible(true);
         }
         catch (Throwable throwable) {

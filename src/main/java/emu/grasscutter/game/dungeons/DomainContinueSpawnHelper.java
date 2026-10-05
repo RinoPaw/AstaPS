@@ -188,7 +188,7 @@ public final class DomainContinueSpawnHelper {
 
     private static Position[] findKeyAndBornFromMeta(int n) {
         try {
-            SceneMeta sceneMeta = SceneMeta.of((int)n);
+            SceneMeta sceneMeta = SceneMeta.of(n);
             if (sceneMeta == null) {
                 return null;
             }

@@ -1,7 +1,11 @@
 package emu.grasscutter.data.binout;
 
+import com.google.gson.annotations.SerializedName;
 import dev.morphia.annotations.Entity;
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.data.common.ItemParamData;
+import emu.grasscutter.data.excels.quest.QuestData;
+import emu.grasscutter.game.quest.enums.LogicType;
 import emu.grasscutter.game.quest.enums.QuestType;
 import java.util.*;
 import lombok.Data;
@@ -63,23 +67,56 @@ public class MainQuestData {
         if (this.subQuests == null) this.subQuests = new SubQuestData[0];
 
         this.talks = this.talks.stream().filter(Objects::nonNull).toList();
-        // Apply talk data to the quest talk map.
         this.talks.forEach(talkData -> GameData.getQuestTalkMap().put(talkData.getId(), this.getId()));
-        // Apply additional sub-quest data to sub-quests.
+
         Arrays.stream(this.subQuests)
+                .filter(Objects::nonNull)
+                .filter(quest -> quest.getSubId() != 0)
                 .forEach(
                         quest -> {
-                            var questData = GameData.getQuestDataMap().get(quest.getSubId());
-                            if (questData != null) questData.applyFrom(quest);
+                            var canonical = GameData.getQuestDataMap().get(quest.getSubId());
+                            if (canonical == null) {
+                                canonical = QuestData.fromBinOutput(quest, this.id);
+                                GameData.getQuestDataMap().put(canonical.getSubId(), canonical);
+                            } else {
+                                canonical.mergeFromBinOutput(quest, this.id);
+                            }
                         });
     }
 
     @Data
     public static class SubQuestData {
         private int subId;
-        private int order;
-        private boolean isMpBlock;
-        private boolean isRewind, finishParent;
+        private Integer mainId;
+        private Integer order;
+        private Long descTextMapHash;
+
+        @SerializedName("isMpBlock")
+        private Boolean mpBlock;
+
+        @SerializedName("isRewind")
+        private Boolean rewind;
+
+        private Boolean finishParent;
+
+        private LogicType acceptCondComb;
+        private LogicType finishCondComb;
+        private LogicType failCondComb;
+
+        private List<QuestData.QuestAcceptCondition> acceptCond;
+        private List<QuestData.QuestContentCondition> finishCond;
+        private List<QuestData.QuestContentCondition> failCond;
+        private List<QuestData.QuestExecParam> beginExec;
+        private List<QuestData.QuestExecParam> finishExec;
+        private List<QuestData.QuestExecParam> failExec;
+        private QuestData.Guide guide;
+
+        private String showType;
+        private String banType;
+        private String showGuide;
+
+        private List<Integer> trialAvatarList;
+        private List<ItemParamData> gainItems;
     }
 
     @Data

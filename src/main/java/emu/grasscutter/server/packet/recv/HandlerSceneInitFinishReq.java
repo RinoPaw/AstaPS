@@ -1,8 +1,9 @@
 package emu.grasscutter.server.packet.recv;
 
+import static emu.grasscutter.config.Configuration.GAME;
+
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.config.ConfigContainer;
-import emu.grasscutter.config.Configuration;
 import emu.grasscutter.game.dungeons.DomainDungeonHelper;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.player.Player.SceneLoadState;
@@ -88,7 +89,7 @@ public class HandlerSceneInitFinishReq extends PacketHandler {
      * and is the only way to show per-player text, which the shared shell cannot do.
      */
     private static BasePacket buildWatermarkPacket() {
-        ConfigContainer.GameOptions.WatermarkOptions w = Configuration.GAME_OPTIONS.watermark;
+        ConfigContainer.GameOptions.WatermarkOptions w = GAME.watermark;
         if (!w.enabled) {
             return new PacketWindSeedUID();
         }

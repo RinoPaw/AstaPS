@@ -345,7 +345,8 @@ public class World implements Iterable<Player> {
     }
 
     public void save() {
-        this.getScenes().values().forEach(Scene::saveGroups);
+        WorldSceneSnapshot.forEachOutsideMonitor(
+                this.scenes, this.scenes::values, Scene::saveGroups);
     }
 
     public void queueTransferPlayerToScene(Player player, int sceneId, Position pos, int delayMs) {
@@ -580,12 +581,13 @@ public class World implements Iterable<Player> {
     public boolean onTick() {
         // Check if there are players in this world.
         if (this.getPlayerCount() == 0) return true;
-        // Tick all associated scenes.
-        this.getScenes()
-                .forEach(
-                        (k, scene) -> {
-                            if (scene.getPlayerCount() > 0) scene.onTick();
-                        });
+        // Tick a stable scene snapshot after releasing the scenes collection monitor.
+        WorldSceneSnapshot.forEachOutsideMonitor(
+                this.scenes,
+                this.scenes::values,
+                scene -> {
+                    if (scene.getPlayerCount() > 0) scene.onTick();
+                });
 
         // sync time every 10 seconds
         if (this.tickCount % 10 == 0) {
@@ -661,7 +663,8 @@ public class World implements Iterable<Player> {
 
         this.isPaused = paused;
         this.getPlayers().forEach(player -> player.setPaused(paused));
-        this.getScenes().forEach((key, scene) -> scene.setPaused(paused));
+        WorldSceneSnapshot.forEachOutsideMonitor(
+                this.scenes, this.scenes::values, scene -> scene.setPaused(paused));
     }
 
     /**

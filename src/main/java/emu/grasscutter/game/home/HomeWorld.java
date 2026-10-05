@@ -72,7 +72,7 @@ public class HomeWorld extends World {
         return false;
     }
 
-    public void refreshModuleManager() {
+    public final void refreshModuleManager() {
         if (this.moduleManager != null) {
             this.moduleManager.onRemovedModule();
         }

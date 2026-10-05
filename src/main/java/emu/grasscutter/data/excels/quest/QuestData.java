@@ -90,6 +90,8 @@ public class QuestData extends GameResource {
 
     private static final EnumMap<QuestField, long[]> normalizationAudit =
             new EnumMap<>(QuestField.class);
+    private static final int MAX_CONFLICT_LOGS = 32;
+    private static int conflictLogs;
     private static long binOnlyRows;
 
     public static String questConditionKey(
@@ -117,57 +119,44 @@ public class QuestData extends GameResource {
     /**
      * Returns the source selected by the provisional runtime normalization policy.
      *
-     * <p>This is provenance only. It must not be interpreted as proof that the selected serialized
-     * source owns the field in the client. That source-identity question remains tracked in
-     * Genshin-Reverse #18/#19.
+     * <p>This is provenance only. It does not prove that the selected serialized source owns the
+     * field in the client. Source identity remains tracked in Genshin-Reverse #18/#19.
      */
     public QuestSource getFieldSource(QuestField field) {
         return sources().get(field);
     }
 
-    public void onLoad() {
-        captureQuestExcelPresence();
-        sanitize();
-        // Keep the historical standalone resource-reload behavior. loadQuests() clears and rebuilds
-        // this cache after BinOutput normalization during a full startup.
-        this.addToCache();
-    }
-
-    public static void beginNormalization() {
+    public static void clearNormalizationAudit() {
         normalizationAudit.clear();
+        conflictLogs = 0;
         binOnlyRows = 0;
     }
 
-    public static void finishNormalization() {
-        GameData.getBeginCondQuestMap().clear();
-        GameData.getQuestDataMap()
-                .values()
-                .forEach(
-                        quest -> {
-                            quest.sanitize();
-                            quest.addToCache();
-                        });
-
-        long conflicts = 0;
-        for (var entry : normalizationAudit.entrySet()) {
-            long[] counts = entry.getValue();
-            conflicts += counts[Comparison.CONFLICT.ordinal()];
-            Grasscutter.getLogger()
-                    .debug(
-                            "Quest normalization {}: same={} excelOnly={} binOnly={} conflict={}",
-                            entry.getKey(),
-                            counts[Comparison.SAME.ordinal()],
-                            counts[Comparison.EXCEL_ONLY.ordinal()],
-                            counts[Comparison.BIN_ONLY.ordinal()],
-                            counts[Comparison.CONFLICT.ordinal()]);
+    public static String getNormalizationAuditSummary() {
+        long same = 0;
+        long excelOnly = 0;
+        long binOnly = 0;
+        long conflict = 0;
+        for (long[] counts : normalizationAudit.values()) {
+            same += counts[Comparison.SAME.ordinal()];
+            excelOnly += counts[Comparison.EXCEL_ONLY.ordinal()];
+            binOnly += counts[Comparison.BIN_ONLY.ordinal()];
+            conflict += counts[Comparison.CONFLICT.ordinal()];
         }
+        return String.format(
+                Locale.ROOT,
+                "binOnlyRows=%d same=%d excelOnly=%d binOnly=%d conflict=%d",
+                binOnlyRows,
+                same,
+                excelOnly,
+                binOnly,
+                conflict);
+    }
 
-        Grasscutter.getLogger()
-                .info(
-                        "Quest normalization: canonicalRows={} binOnlyRows={} fieldConflicts={}",
-                        GameData.getQuestDataMap().size(),
-                        binOnlyRows,
-                        conflicts);
+    public void onLoad() {
+        captureQuestExcelPresence();
+        sanitize();
+        addToCache();
     }
 
     public static QuestData fromBinOutput(
@@ -176,7 +165,6 @@ public class QuestData extends GameResource {
         quest.subId = binData.getSubId();
         binOnlyRows++;
         quest.mergeFromBinOutput(binData, containingMainQuestId);
-        quest.sanitize();
         return quest;
     }
 
@@ -191,13 +179,16 @@ public class QuestData extends GameResource {
             MainQuestData.SubQuestData binData, int containingMainQuestId) {
         if (binData == null || binData.getSubId() == 0) return;
 
+        removeFromCache();
+
         boolean hasExcelRow = hasQuestExcelField(QuestField.SUB_ID);
         recordComparison(
                 QuestField.SUB_ID,
                 hasExcelRow,
                 this.subId,
                 true,
-                binData.getSubId());
+                binData.getSubId(),
+                this.subId != 0 ? this.subId : binData.getSubId());
         if (!hasExcelRow) {
             this.subId = binData.getSubId();
             sources().put(QuestField.SUB_ID, QuestSource.BIN_OUTPUT);
@@ -212,7 +203,6 @@ public class QuestData extends GameResource {
                         hasQuestExcelField(QuestField.MAIN_ID),
                         binMainId,
                         binMainId != null);
-
         this.order =
                 resolve(
                         QuestField.ORDER,
@@ -220,7 +210,6 @@ public class QuestData extends GameResource {
                         hasQuestExcelField(QuestField.ORDER),
                         binData.getOrder(),
                         binData.getOrder() != null);
-
         this.descTextMapHash =
                 resolve(
                         QuestField.DESC_TEXT_MAP_HASH,
@@ -366,13 +355,15 @@ public class QuestData extends GameResource {
                         hasQuestExcelField(QuestField.GAIN_ITEMS),
                         binData.getGainItems(),
                         meaningfulList(binData.getGainItems()));
+
+        sanitize();
+        addToCache();
     }
 
     private void captureQuestExcelPresence() {
-        var present = questExcelFields();
-        present.add(QuestField.SUB_ID);
-        present.add(QuestField.MAIN_ID);
-        present.add(QuestField.ORDER);
+        questExcelFields().add(QuestField.SUB_ID);
+        questExcelFields().add(QuestField.MAIN_ID);
+        questExcelFields().add(QuestField.ORDER);
         sources().put(QuestField.SUB_ID, QuestSource.QUEST_EXCEL);
         sources().put(QuestField.MAIN_ID, QuestSource.QUEST_EXCEL);
         sources().put(QuestField.ORDER, QuestSource.QUEST_EXCEL);
@@ -428,7 +419,7 @@ public class QuestData extends GameResource {
             boolean excelPresent,
             T binValue,
             boolean binPresent) {
-        recordComparison(field, excelPresent, excelValue, binPresent, binValue);
+        recordComparison(field, excelPresent, excelValue, binPresent, binValue, this.subId);
 
         if (policyFor(field) == SourcePolicy.BIN_OUTPUT_PRIMARY && binPresent) {
             sources().put(field, QuestSource.BIN_OUTPUT);
@@ -477,24 +468,34 @@ public class QuestData extends GameResource {
             boolean excelPresent,
             Object excelValue,
             boolean binPresent,
-            Object binValue) {
-        var comparison =
-                if (!excelPresent && binPresent) {
-                    yield Comparison.BIN_ONLY;
-                } else if (excelPresent && !binPresent) {
-                    yield Comparison.EXCEL_ONLY;
-                } else if (!excelPresent) {
-                    yield null;
-                } else if (Objects.deepEquals(excelValue, binValue)) {
-                    yield Comparison.SAME;
-                } else {
-                    yield Comparison.CONFLICT;
-                };
+            Object binValue,
+            int questId) {
+        Comparison comparison;
+        if (!excelPresent && binPresent) {
+            comparison = Comparison.BIN_ONLY;
+        } else if (excelPresent && !binPresent) {
+            comparison = Comparison.EXCEL_ONLY;
+        } else if (!excelPresent) {
+            return;
+        } else if (Objects.deepEquals(excelValue, binValue)) {
+            comparison = Comparison.SAME;
+        } else {
+            comparison = Comparison.CONFLICT;
+        }
 
-        if (comparison == null) return;
         normalizationAudit
-                .computeIfAbsent(QuestField.valueOf(field.name()), ignored -> new long[Comparison.values().length])
+                .computeIfAbsent(field, ignored -> new long[Comparison.values().length])
                 [comparison.ordinal()]++;
+
+        if (comparison == Comparison.CONFLICT && conflictLogs < MAX_CONFLICT_LOGS) {
+            conflictLogs++;
+            Grasscutter.getLogger()
+                    .debug(
+                            "Quest normalization conflict: quest={} field={} provisional={}",
+                            questId,
+                            field,
+                            policyFor(field));
+        }
     }
 
     private void sanitize() {
@@ -547,6 +548,27 @@ public class QuestData extends GameResource {
         return value != null && !value.isEmpty();
     }
 
+    private void removeFromCache() {
+        if (this.acceptCond == null) return;
+        if (this.acceptCond.isEmpty()) {
+            removeCacheEntry(questConditionKey(QuestCond.QUEST_COND_NONE, 0, null));
+            return;
+        }
+
+        for (var condition : this.acceptCond) {
+            var params = condition.getParam();
+            if (condition.getType() == null || params == null || params.length == 0) continue;
+            removeCacheEntry(condition.asKey());
+        }
+    }
+
+    private void removeCacheEntry(String key) {
+        var values = GameData.getBeginCondQuestMap().get(key);
+        if (values == null) return;
+        values.remove(this);
+        if (values.isEmpty()) GameData.getBeginCondQuestMap().remove(key);
+    }
+
     private void addToCache() {
         var cacheMap = GameData.getBeginCondQuestMap();
         if (getAcceptCond().isEmpty()) {
@@ -554,7 +576,7 @@ public class QuestData extends GameResource {
                     cacheMap.computeIfAbsent(
                             QuestData.questConditionKey(QuestCond.QUEST_COND_NONE, 0, null),
                             ignored -> new ArrayList<>());
-            list.add(this);
+            if (!list.contains(this)) list.add(this);
             return;
         }
 
@@ -570,7 +592,7 @@ public class QuestData extends GameResource {
 
                             var key = questCondition.asKey();
                             var list = cacheMap.computeIfAbsent(key, ignored -> new ArrayList<>());
-                            list.add(this);
+                            if (!list.contains(this)) list.add(this);
                         });
     }
 

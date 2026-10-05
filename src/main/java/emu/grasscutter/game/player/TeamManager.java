@@ -1,6 +1,6 @@
 package emu.grasscutter.game.player;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import static emu.grasscutter.config.Configuration.GAME;
 
 import dev.morphia.annotations.*;
 import emu.grasscutter.*;
@@ -285,14 +285,14 @@ public final class TeamManager extends BasePlayerDataManager {
 
     public int getMaxTeamSize() {
         if (this.getPlayer().isInMultiplayer()) {
-            int max = GAME_OPTIONS.avatarLimits.multiplayerTeam;
+            int max = GAME.avatarLimits.multiplayerTeam;
             if (this.getPlayer().getWorld().getHost() == this.getPlayer()) {
                 return Math.max(1, (int) Math.ceil(max / (double) this.getWorld().getPlayerCount()));
             }
             return Math.max(1, (int) Math.floor(max / (double) this.getWorld().getPlayerCount()));
         }
 
-        return GAME_OPTIONS.avatarLimits.singlePlayerTeam;
+        return GAME.avatarLimits.singlePlayerTeam;
     }
 
     public boolean canAddAvatarsToTeam(TeamInfo team, int avatars) {

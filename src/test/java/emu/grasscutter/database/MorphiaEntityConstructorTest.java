@@ -1,40 +1,40 @@
 package emu.grasscutter.database;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import emu.grasscutter.game.achievement.Achievement;
-import emu.grasscutter.game.achievement.Achievements;
-import emu.grasscutter.game.home.FurnitureMakeSlotItem;
-import emu.grasscutter.game.home.GameHome;
-import emu.grasscutter.game.home.HomeAnimalItem;
-import emu.grasscutter.game.home.HomeBlockItem;
-import emu.grasscutter.game.home.HomeFurnitureItem;
-import emu.grasscutter.game.home.HomeNPCItem;
-import emu.grasscutter.game.home.HomeSceneItem;
-import java.lang.reflect.Constructor;
+import dev.morphia.annotations.Entity;
+import java.lang.reflect.Modifier;
+import java.util.Comparator;
 import org.junit.jupiter.api.Test;
+import org.reflections.Reflections;
 
 class MorphiaEntityConstructorTest {
     @Test
-    void loginEntitiesProvideNoArgConstructors() {
-        assertNoArgConstructor(Achievements.class);
-        assertNoArgConstructor(Achievement.class);
-        assertNoArgConstructor(GameHome.class);
-        assertNoArgConstructor(FurnitureMakeSlotItem.class);
-        assertNoArgConstructor(HomeAnimalItem.class);
-        assertNoArgConstructor(HomeBlockItem.class);
-        assertNoArgConstructor(HomeFurnitureItem.class);
-        assertNoArgConstructor(HomeNPCItem.class);
-        assertNoArgConstructor(HomeSceneItem.class);
+    void allConcreteMorphiaEntitiesProvideNoArgConstructors() {
+        var missingConstructors =
+                new Reflections("emu.grasscutter")
+                        .getTypesAnnotatedWith(Entity.class)
+                        .stream()
+                        .filter(type -> !type.isInterface())
+                        .filter(type -> !Modifier.isAbstract(type.getModifiers()))
+                        .filter(MorphiaEntityConstructorTest::hasNoArgConstructor)
+                        .sorted(Comparator.comparing(Class::getName))
+                        .map(Class::getName)
+                        .toList();
+
+        assertTrue(
+                missingConstructors.isEmpty(),
+                () ->
+                        "Morphia 2.5 requires constructible mapped entities; missing no-arg constructor(s): "
+                                + String.join(", ", missingConstructors));
     }
 
-    private static void assertNoArgConstructor(Class<?> type) {
-        assertDoesNotThrow(
-                () -> {
-                    Constructor<?> constructor = type.getDeclaredConstructor();
-                    constructor.setAccessible(true);
-                    constructor.newInstance();
-                },
-                () -> type.getName() + " must remain constructible by Morphia");
+    private static boolean hasNoArgConstructor(Class<?> type) {
+        try {
+            type.getDeclaredConstructor();
+            return false;
+        } catch (NoSuchMethodException ignored) {
+            return true;
+        }
     }
 }

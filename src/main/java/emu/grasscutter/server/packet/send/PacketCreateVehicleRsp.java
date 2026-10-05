@@ -17,20 +17,21 @@ public class PacketCreateVehicleRsp extends BasePacket {
         CreateVehicleRsp.Builder proto = CreateVehicleRsp.newBuilder();
 
         // Eject vehicle members and Kill previous vehicles if there are any
-        List<GameEntity> previousVehicles =
+        List<EntityVehicle> previousVehicles =
                 player.getScene().getEntities().values().stream()
+                        .filter(EntityVehicle.class::isInstance)
+                        .map(EntityVehicle.class::cast)
                         .filter(
-                                entity ->
-                                        entity instanceof EntityVehicle
-                                                && ((EntityVehicle) entity).getGadgetId() == vehicleId
-                                                && ((EntityVehicle) entity).getOwner().equals(player))
+                                vehicle ->
+                                        vehicle.getGadgetId() == vehicleId
+                                                && vehicle.getOwner().equals(player))
                         .toList();
 
         previousVehicles.stream()
                 .forEach(
-                        entity -> {
+                        vehicle -> {
                             List<VehicleMember> vehicleMembers =
-                                    ((EntityVehicle) entity).getVehicleMembers().stream().toList();
+                                    vehicle.getVehicleMembers().stream().toList();
 
                             vehicleMembers.stream()
                                     .forEach(
@@ -39,13 +40,13 @@ public class PacketCreateVehicleRsp extends BasePacket {
                                                         .getScene()
                                                         .broadcastPacket(
                                                                 new PacketVehicleInteractRsp(
-                                                                        ((EntityVehicle) entity),
+                                                                        vehicle,
                                                                         vehicleMember,
                                                                         VehicleInteractTypeOuterClass.VehicleInteractType
                                                                                 .VehicleInteractType_VEHICLE_INTERACT_OUT));
                                             });
 
-                            player.getScene().killEntity(entity, 0);
+                            player.getScene().killEntity(vehicle, 0);
                         });
 
         EntityVehicle vehicle =

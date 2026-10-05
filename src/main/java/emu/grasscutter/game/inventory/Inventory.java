@@ -22,7 +22,7 @@ import java.util.*;
 import javax.annotation.Nullable;
 import lombok.val;
 
-public class Inventory extends BasePlayerManager implements Iterable<GameItem> {
+public final class Inventory extends BasePlayerManager implements Iterable<GameItem> {
     /** Material types already reported as missing isUseOnGain, so each is named once. */
     private static final Set<MaterialType> MISSING_USE_ON_GAIN_REPORTED =
             Collections.synchronizedSet(EnumSet.noneOf(MaterialType.class));

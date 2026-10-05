@@ -234,7 +234,7 @@ public final class DomainSceneResetHelper {
         if (sceneSuite.gadgets != null && sceneGroup.gadgets != null) {
             for (Integer n2 : sceneSuite.gadgets) {
                 SceneGadget sceneGadget;
-                if (n2 == null || (sceneGadget = (SceneGadget)sceneGroup.gadgets.get(n2)) == null) continue;
+                if (n2 == null || (sceneGadget = sceneGroup.gadgets.get(n2)) == null) continue;
                 arrayList.add(sceneGadget);
             }
         }

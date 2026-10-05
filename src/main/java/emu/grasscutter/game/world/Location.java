@@ -10,6 +10,10 @@ public class Location extends Position {
 
     @Transient @Getter @Setter private transient Scene scene;
 
+    private Location() {
+        super();
+    }
+
     public Location(Scene scene, Position position) {
         super(position);
         this.scene = scene;

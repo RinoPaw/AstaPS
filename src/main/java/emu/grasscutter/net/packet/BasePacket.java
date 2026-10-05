@@ -21,7 +21,7 @@ public class BasePacket {
 
     public BasePacket(int opcode, int clientSequence) {
         this.opcode = opcode;
-        this.buildHeader(clientSequence);
+        initializeHeader(clientSequence);
     }
 
     public BasePacket(int opcode, boolean buildHeader) {
@@ -73,16 +73,20 @@ public class BasePacket {
         this.data = proto.build().toByteArray();
     }
 
-    public BasePacket buildHeader(int clientSequence) {
-        if (this.getHeader() != null && clientSequence == 0) {
-            return this;
+    private void initializeHeader(int clientSequence) {
+        if (this.header != null && clientSequence == 0) {
+            return;
         }
-        setHeader(
+        this.header =
                 PacketHead.newBuilder()
                         .setClientSequenceId(clientSequence)
                         .setSentMs(System.currentTimeMillis())
                         .build()
-                        .toByteArray());
+                        .toByteArray();
+    }
+
+    public BasePacket buildHeader(int clientSequence) {
+        initializeHeader(clientSequence);
         return this;
     }
 

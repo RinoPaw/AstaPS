@@ -4,13 +4,11 @@ import static emu.grasscutter.config.Configuration.GAME;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.*;
-import emu.grasscutter.data.common.ItemParamData;
-import emu.grasscutter.data.excels.RewardPreviewData;
+import emu.grasscutter.data.excels.BlossomRefreshExcelConfigData;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.entity.gadget.GadgetWorktop;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.reward.RewardScaler;
 import emu.grasscutter.game.world.*;
 import emu.grasscutter.net.proto.*;
 import emu.grasscutter.server.packet.send.PacketBlossomBriefInfoNotify;
@@ -171,7 +169,8 @@ public class BlossomManager {
         return scene.getWorld().getWorldLevel();
     }
 
-    private static Integer getPreviewReward(BlossomType type, int worldLevel) {
+    private static BlossomRefreshExcelConfigData.Drop getDropEntry(
+            BlossomType type, int worldLevel) {
         // TODO: blossoms should be based on their city
         if (type == null) {
             Grasscutter.getLogger().error("Illegal blossom type {}", type);
@@ -192,14 +191,14 @@ public class BlossomManager {
                     Grasscutter.getLogger().error("Illegal world level {}", worldLevel);
                     return null;
                 }
-                return dropVecList[worldLevel].getPreviewReward();
+                return dropVecList[worldLevel];
             }
         }
         // Missing resource rows, so every refresh would log it again (five camps at a time).
         if (MISSING_TYPES_REPORTED.add(type)) {
             Grasscutter.getLogger()
                     .error(
-                            "Cannot find blossom type {} (chest {}) in BlossomRefreshExcelConfigData; its reward preview is skipped",
+                            "Cannot find blossom type {} (chest {}) in BlossomRefreshExcelConfigData",
                             type,
                             blossomChestId);
         } else {
@@ -208,10 +207,12 @@ public class BlossomManager {
         return null;
     }
 
-    private static RewardPreviewData getRewardList(BlossomType type, int worldLevel) {
-        Integer previewReward = getPreviewReward(type, worldLevel);
-        if (previewReward == null) return null;
-        return GameData.getRewardPreviewDataMap().get((int) previewReward);
+    private static Integer getPreviewReward(BlossomType type, int worldLevel) {
+        var drop = getDropEntry(type, worldLevel);
+        if (drop == null || drop.getPreviewReward() <= 0) {
+            return null;
+        }
+        return drop.getPreviewReward();
     }
 
     static float getRewardRate(BlossomType type) {
@@ -235,37 +236,60 @@ public class BlossomManager {
             while (it.hasNext()) {
                 var activeChest = it.next();
                 if (activeChest.getChest() == chest) {
-                    boolean pay =
-                            useCondensedResin ? resinManager.useCondensedResin(1) : resinManager.useResin(20);
-                    if (pay) {
-                        int worldLevel = getWorldLevel();
-                        List<GameItem> items = new ArrayList<>();
-                        var gadget = activeChest.getGadget();
-                        var type = BlossomType.valueOf(gadget.getGadgetId());
-                        RewardPreviewData blossomRewards = getRewardList(type, worldLevel);
-                        if (blossomRewards == null) {
-                            Grasscutter.getLogger()
-                                    .error("Blossom could not support world level : " + worldLevel);
-                            return null;
-                        }
-                        double sourceRate = getRewardRate(type) * (useCondensedResin ? 2.0 : 1.0);
-                        var rewards = blossomRewards.getPreviewItems();
-                        for (ItemParamData blossomReward : rewards) {
-                            int rewardCount =
-                                    RewardScaler.scaleCount(
-                                            blossomReward.getItemId(),
-                                            blossomReward.getCount(),
-                                            sourceRate);
-                            if (rewardCount > 0) {
-                                items.add(new GameItem(blossomReward.getItemId(), rewardCount));
-                            }
-                        }
-                        it.remove();
-                        recycleGadgetEntity(List.of(gadget));
-                        blossomConsumed.add(gadget.getSpawnEntry());
-                        return items;
+                    int worldLevel = getWorldLevel();
+                    var gadget = activeChest.getGadget();
+                    var type = BlossomType.valueOf(gadget.getGadgetId());
+                    var drop = getDropEntry(type, worldLevel);
+                    if (drop == null || drop.getDropId() <= 0) {
+                        Grasscutter.getLogger()
+                                .error(
+                                        "Blossom has no native drop id type={} worldLevel={}",
+                                        type,
+                                        worldLevel);
+                        return null;
                     }
-                    return null;
+
+                    var dropTable = GameData.getDropTableDataMap().get(drop.getDropId());
+                    if (dropTable == null
+                            || dropTable.getDropVec() == null
+                            || dropTable.getDropVec().isEmpty()) {
+                        Grasscutter.getLogger()
+                                .error(
+                                        "Blossom native drop table is missing/empty dropId={} type={} worldLevel={}",
+                                        drop.getDropId(),
+                                        type,
+                                        worldLevel);
+                        return null;
+                    }
+
+                    boolean pay =
+                            useCondensedResin
+                                    ? resinManager.useCondensedResin(1)
+                                    : resinManager.useResin(20);
+                    if (!pay) {
+                        return null;
+                    }
+
+                    double sourceRate = getRewardRate(type) * (useCondensedResin ? 2.0 : 1.0);
+                    List<GameItem> items =
+                            player
+                                    .getServer()
+                                    .getDropSystem()
+                                    .resolveDropItems(drop.getDropId(), 1, sourceRate);
+                    if (items.isEmpty()) {
+                        Grasscutter.getLogger()
+                                .warn(
+                                        "Blossom native drop resolved no items dropId={} type={} worldLevel={} rate={}",
+                                        drop.getDropId(),
+                                        type,
+                                        worldLevel,
+                                        sourceRate);
+                    }
+
+                    it.remove();
+                    recycleGadgetEntity(List.of(gadget));
+                    blossomConsumed.add(gadget.getSpawnEntry());
+                    return items;
                 }
             }
         }

@@ -76,13 +76,22 @@ public final class DropSystem extends BaseGameSystem {
         return dropData.getDropId();
     }
 
-    public List<GameItem> handleDungeonRewardDrop(int dropId, boolean doubleReward) {
-        if (!dropTable.containsKey(dropId)) return List.of();
+    public List<GameItem> resolveDropItems(int dropId, int dropCount, double sourceRate) {
+        if (dropId <= 0 || dropCount <= 0 || !dropTable.containsKey(dropId)) {
+            return List.of();
+        }
         var dropData = dropTable.get(dropId);
+        if (isEmptyDropTable(dropData)) {
+            return List.of();
+        }
         List<GameItem> items = new ArrayList<>();
-        processDrop(dropData, doubleReward ? 2 : 1, items);
-        RewardScaler.scaleItems(items, 1.0);
+        processDrop(dropData, dropCount, items);
+        RewardScaler.scaleItems(items, sourceRate);
         return items;
+    }
+
+    public List<GameItem> handleDungeonRewardDrop(int dropId, boolean doubleReward) {
+        return resolveDropItems(dropId, doubleReward ? 2 : 1, 1.0);
     }
 
     /** TrainingPads / intentional empty killDrop — no materials, no legacy fallback. */

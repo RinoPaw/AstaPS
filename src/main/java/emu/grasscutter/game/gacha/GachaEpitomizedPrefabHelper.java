@@ -56,7 +56,7 @@ public class GachaEpitomizedPrefabHelper {
     }
 
     public static Skin resolve(int itemId) {
-        return (Skin)SKINS.get(itemId);
+        return SKINS.get(itemId);
     }
 
     public static int[] resolveWeaponDisplayPair(int wishItemId) {

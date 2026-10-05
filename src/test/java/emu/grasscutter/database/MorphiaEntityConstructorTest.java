@@ -15,9 +15,10 @@ class MorphiaEntityConstructorTest {
                 new Reflections("emu.grasscutter")
                         .getTypesAnnotatedWith(Entity.class)
                         .stream()
+                        .filter(type -> type.getDeclaredAnnotation(Entity.class) != null)
                         .filter(type -> !type.isInterface())
                         .filter(type -> !Modifier.isAbstract(type.getModifiers()))
-                        .filter(MorphiaEntityConstructorTest::hasNoArgConstructor)
+                        .filter(MorphiaEntityConstructorTest::isMissingNoArgConstructor)
                         .sorted(Comparator.comparing(Class::getName))
                         .map(Class::getName)
                         .toList();
@@ -29,7 +30,7 @@ class MorphiaEntityConstructorTest {
                                 + String.join(", ", missingConstructors));
     }
 
-    private static boolean hasNoArgConstructor(Class<?> type) {
+    private static boolean isMissingNoArgConstructor(Class<?> type) {
         try {
             type.getDeclaredConstructor();
             return false;

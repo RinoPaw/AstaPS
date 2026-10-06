@@ -12,6 +12,7 @@ import emu.grasscutter.data.binout.config.*;
 import emu.grasscutter.data.binout.routes.*;
 import emu.grasscutter.data.common.PointData;
 import emu.grasscutter.data.custom.*;
+import emu.grasscutter.data.excels.quest.QuestData;
 import emu.grasscutter.data.excels.trial.TrialAvatarActivityDataData;
 import emu.grasscutter.data.server.*;
 import emu.grasscutter.game.activity.ActivityManager;
@@ -670,6 +671,8 @@ public final class ResourceLoader {
     }
 
     private static void loadQuests() {
+        QuestData.clearNormalizationAudit();
+
         try (var files = Files.list(getResourcePath("BinOutput/Quest/"))) {
             files.forEach(
                     path -> {
@@ -708,6 +711,8 @@ public final class ResourceLoader {
 
         Grasscutter.getLogger()
                 .debug("Loaded " + GameData.getMainQuestDataMap().size() + " MainQuestDatas.");
+        Grasscutter.getLogger()
+                .debug("Quest source audit: {}", QuestData.getNormalizationAuditSummary());
         var parent351 = GameData.getMainQuestDataMap().get(351);
         var end351 = GameData.getQuestDataMap().get(35102);
         var opening352 = GameData.getQuestDataMap().get(35200);

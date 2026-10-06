@@ -117,10 +117,9 @@ public class QuestData extends GameResource {
     }
 
     /**
-     * Returns the source selected by the provisional runtime normalization policy.
+     * Returns the source selected by the current runtime normalization policy.
      *
-     * <p>This is provenance only. It does not prove that the selected serialized source owns the
-     * field in the client. Source identity remains tracked in Genshin-Reverse #18/#19.
+     * <p>This is provenance only. Unproven BinOutput fields remain audit-only.
      */
     public QuestSource getFieldSource(QuestField field) {
         return sources().get(field);
@@ -159,22 +158,150 @@ public class QuestData extends GameResource {
         addToCache();
     }
 
-    public static QuestData fromBinOutput(
+    /**
+     * Compares one embedded BinOutput subquest with the canonical QuestExcel runtime row.
+     *
+     * <p>Only fields with established BinOutput authority may change runtime state. Other fields are
+     * audit-only until their 7.1 source identity is proven.
+     */
+    public static void auditBinOnlySubQuest(
             MainQuestData.SubQuestData binData, int containingMainQuestId) {
-        var quest = new QuestData();
-        quest.subId = binData.getSubId();
+        if (binData == null || binData.getSubId() == 0) return;
         binOnlyRows++;
-        quest.mergeFromBinOutput(binData, containingMainQuestId);
-        return quest;
+
+        int questId = binData.getSubId();
+        recordComparison(QuestField.SUB_ID, false, null, true, questId, questId);
+        recordComparison(
+                QuestField.MAIN_ID,
+                false,
+                null,
+                binData.getMainId() != null || containingMainQuestId != 0,
+                binData.getMainId() != null ? binData.getMainId() : containingMainQuestId,
+                questId);
+        recordComparison(QuestField.ORDER, false, null, binData.getOrder() != null, binData.getOrder(), questId);
+        recordComparison(
+                QuestField.DESC_TEXT_MAP_HASH,
+                false,
+                null,
+                binData.getDescTextMapHash() != null,
+                binData.getDescTextMapHash(),
+                questId);
+        recordComparison(QuestField.MP_BLOCK, false, null, binData.getMpBlock() != null, binData.getMpBlock(), questId);
+        recordComparison(QuestField.REWIND, false, null, binData.getRewind() != null, binData.getRewind(), questId);
+        recordComparison(
+                QuestField.FINISH_PARENT,
+                false,
+                null,
+                binData.getFinishParent() != null,
+                binData.getFinishParent(),
+                questId);
+        recordComparison(
+                QuestField.ACCEPT_COND_COMB,
+                false,
+                null,
+                binData.getAcceptCondComb() != null,
+                binData.getAcceptCondComb(),
+                questId);
+        recordComparison(
+                QuestField.FINISH_COND_COMB,
+                false,
+                null,
+                binData.getFinishCondComb() != null,
+                binData.getFinishCondComb(),
+                questId);
+        recordComparison(
+                QuestField.FAIL_COND_COMB,
+                false,
+                null,
+                binData.getFailCondComb() != null,
+                binData.getFailCondComb(),
+                questId);
+        recordComparison(
+                QuestField.ACCEPT_COND,
+                false,
+                null,
+                meaningfulList(binData.getAcceptCond()),
+                binData.getAcceptCond(),
+                questId);
+        recordComparison(
+                QuestField.FINISH_COND,
+                false,
+                null,
+                meaningfulList(binData.getFinishCond()),
+                binData.getFinishCond(),
+                questId);
+        recordComparison(
+                QuestField.FAIL_COND,
+                false,
+                null,
+                meaningfulList(binData.getFailCond()),
+                binData.getFailCond(),
+                questId);
+        recordComparison(
+                QuestField.BEGIN_EXEC,
+                false,
+                null,
+                meaningfulList(binData.getBeginExec()),
+                binData.getBeginExec(),
+                questId);
+        recordComparison(
+                QuestField.FINISH_EXEC,
+                false,
+                null,
+                meaningfulList(binData.getFinishExec()),
+                binData.getFinishExec(),
+                questId);
+        recordComparison(
+                QuestField.FAIL_EXEC,
+                false,
+                null,
+                meaningfulList(binData.getFailExec()),
+                binData.getFailExec(),
+                questId);
+        recordComparison(
+                QuestField.GUIDE,
+                false,
+                null,
+                meaningfulGuide(binData.getGuide()),
+                binData.getGuide(),
+                questId);
+        recordComparison(
+                QuestField.SHOW_TYPE,
+                false,
+                null,
+                meaningfulString(binData.getShowType()),
+                binData.getShowType(),
+                questId);
+        recordComparison(
+                QuestField.BAN_TYPE,
+                false,
+                null,
+                meaningfulString(binData.getBanType()),
+                binData.getBanType(),
+                questId);
+        recordComparison(
+                QuestField.SHOW_GUIDE,
+                false,
+                null,
+                meaningfulString(binData.getShowGuide()),
+                binData.getShowGuide(),
+                questId);
+        recordComparison(
+                QuestField.TRIAL_AVATAR_LIST,
+                false,
+                null,
+                meaningfulList(binData.getTrialAvatarList()),
+                binData.getTrialAvatarList(),
+                questId);
+        recordComparison(
+                QuestField.GAIN_ITEMS,
+                false,
+                null,
+                meaningfulList(binData.getGainItems()),
+                binData.getGainItems(),
+                questId);
     }
 
-    /**
-     * Merges one embedded BinOutput subquest into the canonical runtime row.
-     *
-     * <p>The preference table is intentionally provisional. It represents the best current runtime
-     * materialization policy while exact 7.1 source identity is still unresolved. There are no
-     * quest-id-specific rules here.
-     */
     public void mergeFromBinOutput(
             MainQuestData.SubQuestData binData, int containingMainQuestId) {
         if (binData == null || binData.getSubId() == 0) return;
@@ -189,10 +316,6 @@ public class QuestData extends GameResource {
                 true,
                 binData.getSubId(),
                 this.subId != 0 ? this.subId : binData.getSubId());
-        if (!hasExcelRow) {
-            this.subId = binData.getSubId();
-            sources().put(QuestField.SUB_ID, QuestSource.BIN_OUTPUT);
-        }
 
         Integer binMainId =
                 binData.getMainId() != null ? binData.getMainId() : containingMainQuestId;
@@ -427,39 +550,14 @@ public class QuestData extends GameResource {
         }
         if (excelPresent) {
             sources().put(field, QuestSource.QUEST_EXCEL);
-            return excelValue;
-        }
-        if (binPresent) {
-            sources().put(field, QuestSource.BIN_OUTPUT);
-            return binValue;
         }
         return excelValue;
     }
 
     private static SourcePolicy policyFor(QuestField field) {
         return switch (field) {
-            case SUB_ID,
-                    MAIN_ID,
-                    ORDER,
-                    DESC_TEXT_MAP_HASH,
-                    TRIAL_AVATAR_LIST,
-                    GAIN_ITEMS -> SourcePolicy.QUEST_EXCEL_PRIMARY;
-            case MP_BLOCK,
-                    REWIND,
-                    FINISH_PARENT,
-                    ACCEPT_COND_COMB,
-                    FINISH_COND_COMB,
-                    FAIL_COND_COMB,
-                    ACCEPT_COND,
-                    FINISH_COND,
-                    FAIL_COND,
-                    BEGIN_EXEC,
-                    FINISH_EXEC,
-                    FAIL_EXEC,
-                    GUIDE,
-                    SHOW_TYPE,
-                    BAN_TYPE,
-                    SHOW_GUIDE -> SourcePolicy.BIN_OUTPUT_PRIMARY;
+            case REWIND, FINISH_PARENT -> SourcePolicy.BIN_OUTPUT_PRIMARY;
+            default -> SourcePolicy.QUEST_EXCEL_PRIMARY;
         };
     }
 
@@ -491,7 +589,7 @@ public class QuestData extends GameResource {
             conflictLogs++;
             Grasscutter.getLogger()
                     .debug(
-                            "Quest normalization conflict: quest={} field={} provisional={}",
+                            "Quest normalization conflict: quest={} field={} runtime={}",
                             questId,
                             field,
                             policyFor(field));

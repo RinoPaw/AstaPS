@@ -8,6 +8,8 @@ import static emu.grasscutter.config.Configuration.DATABASE;
 import com.mongodb.MongoCommandException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.*;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 import dev.morphia.*;
@@ -63,8 +65,9 @@ public final class DatabaseManager {
 
         gameDatastore.getMapper().map(entities);
 
-        // Ensure indexes for the game datastore
+        // Ensure indexes for the game datastore.
         ensureIndexes(gameDatastore);
+        ensureOpenWorldSpawnIndexes(gameDatastore.getDatabase());
 
         if (Grasscutter.getRunMode() != ServerRunMode.HYBRID) {
             MongoClient dispatchMongoClient = MongoClients.create(DATABASE.server.connectionUri);
@@ -80,25 +83,33 @@ public final class DatabaseManager {
     }
 
     /**
-     * Ensures the database indexes exist and rebuilds them if there is an error with them
+     * Ensures declared indexes exist without deleting operator-managed indexes on conflicts.
      *
      * @param datastore The datastore to ensure indexes on
      */
-    private static void ensureIndexes(Datastore datastore) {
+    static void ensureIndexes(Datastore datastore) {
         try {
             datastore.ensureIndexes();
         } catch (MongoCommandException e) {
-            Grasscutter.getLogger().info("Mongo index error: ", e);
-            // Duplicate index error
-            if (e.getCode() == 85) {
-                // Drop all indexes and re add them
-                MongoIterable<String> collections = datastore.getDatabase().listCollectionNames();
-                for (String name : collections) {
-                    datastore.getDatabase().getCollection(name).dropIndexes();
-                }
-                // Add back indexes
-                datastore.ensureIndexes();
-            }
+            throw new IllegalStateException(
+                    "Unable to create MongoDB entity indexes; existing indexes were preserved. "
+                            + "Inspect and resolve conflicting index definitions explicitly.",
+                    e);
+        }
+    }
+
+    static void ensureOpenWorldSpawnIndexes(MongoDatabase database) {
+        try {
+            database.getCollection("open_world_spawns")
+                    .createIndex(
+                            Indexes.ascending("ownerUid", "sceneId", "groupId", "configId"),
+                            new IndexOptions().name("capacity_open_world_spawns_identity_v1"));
+        } catch (MongoCommandException e) {
+            throw new IllegalStateException(
+                    "Unable to create MongoDB open_world_spawns capacity index; existing indexes "
+                            + "were preserved. Inspect and resolve conflicting index definitions "
+                            + "explicitly.",
+                    e);
         }
     }
 

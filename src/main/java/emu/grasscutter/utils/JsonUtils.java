@@ -17,6 +17,8 @@ public final class JsonUtils {
     static final Gson gson =
             new GsonBuilder()
                     .setPrettyPrinting()
+                    .registerTypeAdapter(long.class, new UnsignedLongAdapter())
+                    .registerTypeAdapter(Long.class, new UnsignedLongAdapter())
                     .registerTypeAdapter(DynamicFloat.class, new DynamicFloatAdapter())
                     .registerTypeAdapter(IntList.class, new IntListAdapter())
                     .registerTypeAdapter(Position.class, new PositionAdapter())

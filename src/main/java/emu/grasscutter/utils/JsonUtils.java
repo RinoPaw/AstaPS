@@ -17,6 +17,8 @@ public final class JsonUtils {
     static final Gson gson =
             new GsonBuilder()
                     .setPrettyPrinting()
+                    .registerTypeAdapter(long.class, new UnsignedLongAdapter())
+                    .registerTypeAdapter(Long.class, new UnsignedLongAdapter())
                     .registerTypeAdapter(DynamicFloat.class, new DynamicFloatAdapter())
                     .registerTypeAdapter(IntList.class, new IntListAdapter())
                     .registerTypeAdapter(Position.class, new PositionAdapter())
@@ -27,7 +29,6 @@ public final class JsonUtils {
                     .disableHtmlEscaping()
                     .create();
 
-    /** For ability dumps, whose number fields may hold global-value names or formulas. */
     static final Gson lenientGson =
             gson.newBuilder()
                     .registerTypeAdapter(int.class, LenientNumberAdapter.INT)
@@ -40,15 +41,6 @@ public final class JsonUtils {
                     .registerTypeAdapter(Double.class, LenientNumberAdapter.DOUBLE)
                     .create();
 
-    /**
-     * Like {@link #loadToList(Path, Class)}, but tolerant of non-numeric values in number fields and
-     * duplicate object keys found in some dumped ability configs.
-     *
-     * <p>Parsing through a {@link JsonElement} first normalizes duplicate object members using
-     * Gson's {@link JsonObject} semantics (the later value replaces the earlier one) before typed
-     * map adapters are invoked. Direct typed deserialization rejects such dumps with a
-     * {@link JsonSyntaxException}.
-     */
     public static <T> List<T> loadToListLenient(Path filename, Class<T> classType) throws IOException {
         try (var fileReader = Files.newBufferedReader(filename, StandardCharsets.UTF_8)) {
             var listType = TypeToken.getParameterized(List.class, classType).getType();
@@ -57,19 +49,10 @@ public final class JsonUtils {
         }
     }
 
-    /**
-     * Converts the given object to a JsonElement.
-     *
-     * @param object The object to convert.
-     * @return The JsonElement.
-     */
     public static JsonElement toJson(Object object) {
         return gson.toJsonTree(object);
     }
 
-    /*
-     * Encode an object to a JSON string
-     */
     public static String encode(Object object) {
         return gson.toJson(object);
     }
@@ -148,12 +131,6 @@ public final class JsonUtils {
         }
     }
 
-    /**
-     * Safely JSON decodes a given string.
-     *
-     * @param jsonData The JSON-encoded data.
-     * @return JSON decoded data, or null if an exception occurred.
-     */
     public static <T> T decode(String jsonData, Class<T> classType) {
         try {
             return gson.fromJson(jsonData, classType);

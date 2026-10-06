@@ -230,26 +230,23 @@ public final class Grasscutter {
 
     /** Server shutdown event. */
     private static void onShutdown() {
-        // Disable all plugins.
-        if (pluginManager != null) pluginManager.disablePlugins();
-        // Shutdown the game server.
-        if (gameServer != null) gameServer.onServerShutdown();
-
+        boolean interrupted = false;
         try {
-            // Wait for Grasscutter's thread pool to finish.
+            if (pluginManager != null) pluginManager.disablePlugins();
+            if (gameServer != null) gameServer.onServerShutdown();
+
             var executor = Grasscutter.getThreadPool();
             executor.shutdown();
             if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
                 executor.shutdownNow();
             }
-
-            // Wait for database operations to finish.
-            var dbExecutor = DatabaseHelper.getEventExecutor();
-            dbExecutor.shutdown();
-            if (!dbExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
-                dbExecutor.shutdownNow();
-            }
-        } catch (InterruptedException ignored) {
+        } catch (InterruptedException exception) {
+            interrupted = true;
+            logger.warn("Interrupted while waiting for the server thread pool during shutdown.");
+        } finally {
+            interrupted |= Thread.interrupted();
+            DatabaseHelper.shutdownExecutors(30, TimeUnit.SECONDS);
+            if (interrupted) Thread.currentThread().interrupt();
         }
     }
 

@@ -17,6 +17,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.Test;
 
+// Regression coverage for the PR #70 index-safety gaps.
 class DatabaseIndexSafetyTest {
     @Test
     void entityIndexErrorsPreserveExistingIndexes() {

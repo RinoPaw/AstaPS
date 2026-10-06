@@ -8,7 +8,6 @@ import emu.grasscutter.data.binout.MainQuestData;
 import emu.grasscutter.data.excels.quest.QuestData;
 import emu.grasscutter.data.excels.quest.QuestData.QuestField;
 import emu.grasscutter.data.excels.quest.QuestData.QuestSource;
-import emu.grasscutter.game.quest.enums.QuestExec;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,10 +29,11 @@ class QuestNormalizationTest {
                                                 quest.getSubId() == COMMON_SUB_ID
                                                         || quest.getSubId() == BIN_ONLY_SUB_ID));
         GameData.getBeginCondQuestMap().entrySet().removeIf(entry -> entry.getValue().isEmpty());
+        QuestData.clearNormalizationAudit();
     }
 
     @Test
-    void meaningfulBinExecReplacesEmptyExcelMaterialization() {
+    void unprovenBinExecIsAuditOnly() {
         var excel =
                 GSON.fromJson(
                         """
@@ -42,9 +42,7 @@ class QuestNormalizationTest {
                           "mainId": 990,
                           "order": 1,
                           "acceptCond": [],
-                          "beginExec": [
-                            {"param": [], "param_str": ""}
-                          ]
+                          "beginExec": []
                         }
                         """,
                         QuestData.class);
@@ -74,14 +72,57 @@ class QuestNormalizationTest {
                         MainQuestData.class);
         mainQuest.onLoad();
 
-        assertEquals(QuestSource.BIN_OUTPUT, excel.getFieldSource(QuestField.BEGIN_EXEC));
-        assertEquals(1, excel.getBeginExec().size());
-        assertEquals(QuestExec.QUEST_EXEC_REFRESH_GROUP_SUITE, excel.getBeginExec().get(0).getType());
-        assertArrayEquals(new String[] {"3", "133003002,2"}, excel.getBeginExec().get(0).getParam());
+        assertEquals(QuestSource.QUEST_EXCEL, excel.getFieldSource(QuestField.BEGIN_EXEC));
+        assertTrue(excel.getBeginExec().isEmpty());
+        assertTrue(QuestData.getNormalizationAuditSummary().contains("conflict="));
     }
 
     @Test
-    void binOnlySubQuestDoesNotBecomeRuntimeQuest() {
+    void establishedBinFieldsStillOverrideRuntime() {
+        var excel =
+                GSON.fromJson(
+                        """
+                        {
+                          "subId": 990001,
+                          "mainId": 990,
+                          "order": 1,
+                          "isRewind": false,
+                          "finishParent": false,
+                          "acceptCond": [],
+                          "beginExec": []
+                        }
+                        """,
+                        QuestData.class);
+        excel.onLoad();
+        GameData.getQuestDataMap().put(excel.getSubId(), excel);
+
+        var mainQuest =
+                GSON.fromJson(
+                        """
+                        {
+                          "id": 990,
+                          "subQuests": [
+                            {
+                              "subId": 990001,
+                              "mainId": 990,
+                              "order": 1,
+                              "isRewind": true,
+                              "finishParent": true
+                            }
+                          ]
+                        }
+                        """,
+                        MainQuestData.class);
+        mainQuest.onLoad();
+
+        assertTrue(excel.isRewind());
+        assertTrue(excel.isFinishParent());
+        assertEquals(QuestSource.BIN_OUTPUT, excel.getFieldSource(QuestField.REWIND));
+        assertEquals(QuestSource.BIN_OUTPUT, excel.getFieldSource(QuestField.FINISH_PARENT));
+    }
+
+    @Test
+    void binOnlySubQuestStaysOutOfRuntimeAndIsAudited() {
         var mainQuest =
                 GSON.fromJson(
                         """
@@ -106,5 +147,6 @@ class QuestNormalizationTest {
         mainQuest.onLoad();
 
         assertFalse(GameData.getQuestDataMap().containsKey(BIN_ONLY_SUB_ID));
+        assertTrue(QuestData.getNormalizationAuditSummary().contains("binOnlyRows=1"));
     }
 }

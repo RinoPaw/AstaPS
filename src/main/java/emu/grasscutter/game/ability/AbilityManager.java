@@ -580,6 +580,12 @@ public final class AbilityManager extends BasePlayerManager {
             ability = entity.getInstancedAbilities().get(head.getInstancedAbilityId() - 1);
         }
 
+        if (ability == null
+                && invoke.getArgumentType()
+                        == AbilityInvokeArgument.AbilityInvokeArgument_ABILITY_ACTION_GENERATE_ELEM_BALL) {
+            ability = this.findOwnerElemBallAbility(entity, head.getLocalId());
+        }
+
         if (ability == null) {
             Grasscutter.getLogger().trace(
                 "[InvokeMiss] ability not found: entity={} abilId={} modId={} listSize={}",
@@ -622,6 +628,38 @@ public final class AbilityManager extends BasePlayerManager {
             ability.getData().abilityName,
             ability.getData().localIdToAction.keySet(),
             ability.getData().localIdToMixin.keySet());
+    }
+
+    private Ability findOwnerElemBallAbility(GameEntity entity, int localId) {
+        var scene = this.player.getScene();
+        if (scene == null) return null;
+        GameEntity owner = entity;
+        for (int hops = 0; hops < 8 && owner instanceof EntityClientGadget gadget; hops++) {
+            owner = scene.getEntityById(gadget.getOwnerEntityId());
+        }
+        if (!(owner instanceof EntityAvatar avatar)
+                || avatar.getAvatar() == null
+                || avatar.getAvatar().getAvatarData() == null) return null;
+
+        var icon = avatar.getAvatar().getAvatarData().getIconName();
+        if (icon == null || icon.isEmpty()) return null;
+        var prefix = "Avatar_" + icon.substring(icon.lastIndexOf('_') + 1) + "_";
+        var data = findElemBallAbilityData(GameData.getAbilityDataMap().values(), prefix, localId);
+        return data != null ? new Ability(data, avatar, this.player) : null;
+    }
+
+    static AbilityData findElemBallAbilityData(
+            java.util.Collection<AbilityData> abilities, String prefix, int localId) {
+        AbilityData match = null;
+        for (var data : abilities) {
+            if (data.abilityName == null || !data.abilityName.startsWith(prefix)) continue;
+            data.initialize();
+            var action = data.localIdToAction.get(localId);
+            if (action == null || action.type != AbilityModifierAction.Type.GenerateElemBall) continue;
+            if (match != null) return null;
+            match = data;
+        }
+        return match;
     }
 
     public void onSkillStart(Player player, int skillId, int casterId) {

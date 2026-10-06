@@ -10,6 +10,8 @@ import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.*;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 import lombok.val;
 
@@ -158,6 +160,35 @@ public interface JsonAdapters {
             writer.beginArray();
             for (val s : steps) writer.value(s);
             writer.endArray();
+        }
+    }
+
+    class UnsignedLongAdapter extends TypeAdapter<Long> {
+        private static final BigDecimal MIN = BigDecimal.valueOf(Long.MIN_VALUE);
+        private static final BigDecimal MAX =
+                new BigDecimal(BigInteger.ONE.shiftLeft(64).subtract(BigInteger.ONE));
+
+        @Override
+        public Long read(JsonReader reader) throws IOException {
+            if (reader.peek() == JsonToken.NULL) {
+                reader.nextNull();
+                return null;
+            }
+            var value = reader.nextString();
+            try {
+                var number = new BigDecimal(value).stripTrailingZeros();
+                if (number.scale() > 0 || number.compareTo(MIN) < 0 || number.compareTo(MAX) > 0) {
+                    throw new ArithmeticException("Long out of range");
+                }
+                return number.toBigIntegerExact().longValue();
+            } catch (ArithmeticException | NumberFormatException invalid) {
+                throw new IOException("Invalid long - " + value, invalid);
+            }
+        }
+
+        @Override
+        public void write(JsonWriter writer, Long value) throws IOException {
+            writer.value(value);
         }
     }
 

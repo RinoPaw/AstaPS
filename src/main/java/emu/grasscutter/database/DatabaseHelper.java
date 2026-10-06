@@ -194,7 +194,36 @@ public final class DatabaseHelper {
      * the stall worse.
      */
     public static boolean isThreadPoolOverloaded(ThreadPoolExecutor executor, int maxCount) {
-        return executor.getQueue().size() > maxCount * 0.7f;
+        return DatabaseExecutorSupport.isOverloaded(executor);
+    }
+
+    public static void shutdownExecutors(long timeout, TimeUnit unit) {
+        var result =
+                DatabaseExecutorSupport.shutdownAndAwait(
+                        List.of(
+                                new DatabaseExecutorSupport.Pool(
+                                        "DATABASE_DEFAULT", (ThreadPoolExecutor) eventExecutor),
+                                new DatabaseExecutorSupport.Pool(
+                                        "DATABASE_ACCOUNT", (ThreadPoolExecutor) eventExecutorAccount),
+                                new DatabaseExecutorSupport.Pool(
+                                        "DATABASE_ITEM", (ThreadPoolExecutor) eventExecutorItem),
+                                new DatabaseExecutorSupport.Pool(
+                                        "DATABASE_GROUP", (ThreadPoolExecutor) eventExecutorGroup)),
+                        timeout,
+                        unit);
+        if (result.interrupted()) {
+            Grasscutter.getLogger()
+                    .warn("Interrupted while waiting for database tasks during shutdown.");
+        }
+        for (var pool : result.unfinishedPools()) {
+            Grasscutter.getLogger()
+                    .error(
+                            "Database executor {} did not drain during shutdown: active={}, queued={}, outstanding~={}.",
+                            pool.name(),
+                            pool.active(),
+                            pool.queued(),
+                            pool.outstanding());
+        }
     }
 
     /** The reason text written on an account auto-banned by an IP ban. */

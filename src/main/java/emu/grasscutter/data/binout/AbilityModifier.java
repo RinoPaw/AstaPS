@@ -53,6 +53,7 @@ public class AbilityModifier {
     @SerializedName(value = "onReconnect", alternate = "OPOMCDOLKFF")
     public AbilityModifierAction[] onReconnect;
 
+    @SerializedName(value = "onChangeAuthority", alternate = {"OOINAHKLNHJ"})
     public AbilityModifierAction[] onChangeAuthority;
 
     @SerializedName(value = "onVehicleIn", alternate = "NNFFLLKFNKN")
@@ -115,6 +116,7 @@ public class AbilityModifier {
             AvatarShareCDSkillStart,
             AvatarSkillStart,
             BroadcastNeuronStimulate,
+            @SerializedName(value = "ByTargetGlobalValue", alternate = {"EOFDCELPGFO"})
             ByTargetGlobalValue,
             CalcDvalinS04RebornPoint,
             CallLuaTask,

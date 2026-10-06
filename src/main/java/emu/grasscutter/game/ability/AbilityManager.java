@@ -148,6 +148,8 @@ public final class AbilityManager extends BasePlayerManager {
     private boolean abilityInvulnerable = false;
     private int burstCasterId;
     private int burstSkillId;
+    private long burstRequestedAt;
+    private static final long BURST_START_WINDOW_MS = 5000L;
 
     private long arlecchinoChargedAttackTime = 0L;
     private long arlecchinoESkillTime = 0L;
@@ -160,6 +162,7 @@ public final class AbilityManager extends BasePlayerManager {
     public void removePendingEnergyClear() {
         this.burstCasterId = 0;
         this.burstSkillId = 0;
+        this.burstRequestedAt = 0L;
     }
 
     public boolean isAbilityInvulnerable() {
@@ -179,6 +182,10 @@ public final class AbilityManager extends BasePlayerManager {
         }
 
         if (this.burstCasterId == 0) return;
+        if (System.currentTimeMillis() - this.burstRequestedAt > BURST_START_WINDOW_MS) {
+            this.removePendingEnergyClear();
+            return;
+        }
 
         boolean skillInvincibility = modifier.state == AbilityModifier.State.Invincible;
         if (modifier.onAdded != null) {
@@ -710,6 +717,7 @@ public final class AbilityManager extends BasePlayerManager {
 
         this.burstSkillId = skillId;
         this.burstCasterId = casterId;
+        this.burstRequestedAt = System.currentTimeMillis();
         try {
             BurstInvulnHelper.arm(this);
         } catch (Throwable ignored) {
@@ -1098,9 +1106,15 @@ public final class AbilityManager extends BasePlayerManager {
             if (fromParentName && hasOrchestration && modifierData.onAdded != null) {
                 final var finalAbility = instancedAbility;
                 final var finalEntity = entity;
-                for (var a : modifierData.onAdded) {
-                    executeAction(finalAbility, a, invoke.getAbilityData(), finalEntity);
-                }
+                runServerOwned(
+                        () -> {
+                            for (var a : modifierData.onAdded) {
+                                if (a != null) {
+                                    executeActionNow(
+                                            finalAbility, a, invoke.getAbilityData(), finalEntity);
+                                }
+                            }
+                        });
             } else if (modifierData.onAdded != null) {
                 // A modifier whose onAdded neither attaches nor applies another modifier used to run
                 // nothing at all here, so anything the server alone is meant to do - spawning an

@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Any
 
 COMPILER_VERSION = "0.1.0"
+MANIFEST_NAME = ".resource-compiler.json"
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 KNOWN_TABLES = (
     "DropTableExcelConfigData",
     "DropSubTableExcelConfigData",
@@ -37,6 +39,61 @@ def require_source(source: Path) -> None:
     if missing:
         noun = "directory" if len(missing) == 1 else "directories"
         raise SystemExit(f"Source {source} is missing required {noun}: " + ", ".join(missing))
+
+
+def paths_overlap(first: Path, second: Path) -> bool:
+    return first == second or first in second.parents or second in first.parents
+
+
+def validate_build_paths(source: Path, output: Path, overlay: Path | None) -> None:
+    if output.parent == output:
+        raise SystemExit(f"Output must not be a filesystem root: {output}")
+
+    if output == REPOSITORY_ROOT or output in REPOSITORY_ROOT.parents:
+        raise SystemExit(
+            f"Output must not be the repository root or one of its ancestors: {output}"
+        )
+
+    if paths_overlap(source, output):
+        raise SystemExit(f"Source and output paths must not overlap: {source}, {output}")
+
+    if overlay is not None and paths_overlap(overlay, output):
+        raise SystemExit(f"Overlay and output paths must not overlap: {overlay}, {output}")
+
+    if overlay is not None and overlay.exists() and not overlay.is_dir():
+        raise SystemExit(f"Overlay path is not a directory: {overlay}")
+
+
+def require_generated_output(output: Path) -> None:
+    if not output.is_dir():
+        raise SystemExit(
+            f"Refusing --force because output is not a generated resource directory: {output}"
+        )
+
+    manifest_path = output / MANIFEST_NAME
+    try:
+        with manifest_path.open("r", encoding="utf-8") as file:
+            manifest = json.load(file)
+    except (OSError, json.JSONDecodeError) as exc:
+        raise SystemExit(
+            f"Refusing --force because output is not a generated resource directory: {output} "
+            f"({MANIFEST_NAME} is missing or invalid: {exc})"
+        ) from exc
+
+    valid_manifest = (
+        isinstance(manifest, dict)
+        and isinstance(manifest.get("compiler_version"), str)
+        and isinstance(manifest.get("game_version"), str)
+        and isinstance(manifest.get("generated_at"), str)
+        and isinstance(manifest.get("source"), str)
+        and isinstance(manifest.get("normalizers"), dict)
+        and (manifest.get("overlay") is None or isinstance(manifest.get("overlay"), str))
+    )
+    if not valid_manifest:
+        raise SystemExit(
+            f"Refusing --force because output is not a generated resource directory: {output} "
+            f"({MANIFEST_NAME} has an unexpected format)"
+        )
 
 
 def load_json_last_wins(path: Path) -> tuple[Any, DuplicateReport | None]:
@@ -217,14 +274,13 @@ def build(args: argparse.Namespace) -> int:
     output = args.output.resolve()
     overlay = args.overlay.resolve() if args.overlay else None
 
-    if source == output:
-        raise SystemExit("Source and output must be different directories.")
-
+    validate_build_paths(source, output, overlay)
     require_source(source)
 
     if output.exists():
         if not args.force:
             raise SystemExit(f"Output already exists: {output}. Use --force to replace it.")
+        require_generated_output(output)
         shutil.rmtree(output)
 
     print(f"Copying raw resources: {source} -> {output}")
@@ -251,7 +307,7 @@ def build(args: argparse.Namespace) -> int:
             "ability_duplicate_keys": [asdict(report) for report in duplicate_reports],
         },
     }
-    write_json(output / ".resource-compiler.json", manifest)
+    write_json(output / MANIFEST_NAME, manifest)
 
     problems = doctor(output)
     print(f"Build complete with {problems} known compatibility issue(s).")

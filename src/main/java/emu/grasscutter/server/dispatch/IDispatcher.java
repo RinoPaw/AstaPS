@@ -110,7 +110,17 @@ public interface IDispatcher {
         // Create the future.
         var future = new CompletableFuture<T>();
         // Listen for the response.
-        this.registerCallback(responseId, packet -> future.complete(parser.apply(packet)));
+        this.getRpcRegistry()
+                .arm(
+                        responseId,
+                        packet -> {
+                            try {
+                                future.complete(parser.apply(packet));
+                            } catch (Throwable throwable) {
+                                future.completeExceptionally(throwable);
+                            }
+                        },
+                        future::completeExceptionally);
         // Broadcast the packet.
         this.sendMessage(requestId, request);
 
@@ -146,9 +156,15 @@ public interface IDispatcher {
      * @return The encoded message.
      */
     default JsonObject encodeMessage(int packetId, Object message) {
+        return this.encodeMessage(packetId, null, message);
+    }
+
+    /** Creates an encoded message carrying an internal RPC correlation ID. */
+    default JsonObject encodeMessage(int packetId, Long requestId, Object message) {
         // Create a message from the message data.
         var serverMessage = new JsonObject();
         serverMessage.addProperty("packetId", packetId);
+        if (requestId != null) serverMessage.addProperty("requestId", requestId);
         serverMessage.addProperty("message", JSON.toJson(message));
 
         return serverMessage;
@@ -173,6 +189,7 @@ public interface IDispatcher {
         var packetId = decoded.get("packetId").getAsInt();
         // Get the packet data.
         var packetData = decoded.get("message");
+        var requestId = decoded.has("requestId") ? decoded.get("requestId").getAsLong() : null;
 
         // Check to see if the client has authenticated.
         if (packetId != PacketIds.LoginNotify) {
@@ -190,16 +207,26 @@ public interface IDispatcher {
             if (this.getHandlers().containsKey(packetId)) {
                 // Get the handler.
                 var handler = this.getHandlers().get(packetId);
-                // Handle the packet.
-                handler.accept(socket, packetData);
+                // Handle the packet while preserving the request ID for a direct response.
+                if (requestId != null) this.getRpcRegistry().enterIncoming(socket, requestId);
+                try {
+                    handler.accept(socket, packetData);
+                } finally {
+                    if (requestId != null) this.getRpcRegistry().leaveIncoming();
+                }
             }
 
-            // Check if the packet ID has callbacks.
-            if (this.getCallbacks().containsKey(packetId)) {
+            if (requestId != null
+                    && this.getRpcRegistry().complete(socket, requestId, packetId, packetData)) {
+                return;
+            }
+
+            // Uncorrelated callbacks are kept only for compatibility with non-RPC packets.
+            if (requestId == null && this.getCallbacks().containsKey(packetId)) {
                 // Get the callbacks.
                 var callbacks = this.getCallbacks().get(packetId);
                 // Call the callbacks.
-                callbacks.forEach(callback -> callback.accept(packetData));
+                List.copyOf(callbacks).forEach(callback -> callback.accept(packetData));
                 callbacks.clear();
             }
         } catch (Exception exception) {
@@ -230,12 +257,7 @@ public interface IDispatcher {
      * @param callback The callback to register.
      */
     default void registerCallback(int packetId, Consumer<JsonElement> callback) {
-        // Check if the packet ID has a list for callbacks.
-        if (!this.getCallbacks().containsKey(packetId))
-            this.getCallbacks().put(packetId, new LinkedList<>());
-
-        // Register the callback.
-        this.getCallbacks().get(packetId).add(callback);
+        this.getRpcRegistry().arm(packetId, callback, ignored -> {});
     }
 
     /**
@@ -295,4 +317,7 @@ public interface IDispatcher {
      * @return The callbacks.
      */
     Map<Integer, List<Consumer<JsonElement>>> getCallbacks();
+
+    /** @return The per-dispatcher RPC pending registry. */
+    DispatchRpcRegistry getRpcRegistry();
 }

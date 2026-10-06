@@ -7,6 +7,7 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.server.event.dispatch.ServerMessageEvent;
 import emu.grasscutter.utils.Crypto;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -24,6 +25,7 @@ public final class DispatchServer extends WebSocketServer implements IDispatcher
     @Getter private final Map<Integer, BiConsumer<WebSocket, JsonElement>> handlers = new HashMap<>();
 
     @Getter private final Map<Integer, List<Consumer<JsonElement>>> callbacks = new HashMap<>();
+    @Getter private final DispatchRpcRegistry rpcRegistry = new DispatchRpcRegistry();
 
     /**
      * Constructs a new {@code DispatchServer} instance.
@@ -105,8 +107,35 @@ public final class DispatchServer extends WebSocketServer implements IDispatcher
      * @param message The message to broadcast.
      */
     public void sendMessage(int packetId, Object message) {
-        var serverMessage = this.encodeMessage(packetId, message);
-        this.getConnections().forEach(socket -> this.sendMessage(socket, serverMessage));
+        var armed = this.rpcRegistry.takeArmed();
+        var connections = List.copyOf(this.getConnections());
+
+        if (armed != null && connections.isEmpty()) {
+            this.rpcRegistry.failArmed(armed, new IOException("No dispatch clients are connected"));
+            return;
+        }
+
+        var requestIds = new IdentityHashMap<WebSocket, Long>();
+        if (armed != null) {
+            for (var socket : connections) {
+                requestIds.put(socket, this.rpcRegistry.register(socket, armed));
+            }
+        }
+
+        for (var socket : connections) {
+            Long requestId =
+                    armed != null
+                            ? requestIds.get(socket)
+                            : this.rpcRegistry.currentRequestId(socket);
+            var serverMessage = this.encodeMessage(packetId, requestId, message);
+            try {
+                this.sendMessage(socket, serverMessage);
+            } catch (RuntimeException exception) {
+                if (armed != null && requestId != null) {
+                    this.rpcRegistry.fail(socket, requestId, exception);
+                }
+            }
+        }
     }
 
     /**
@@ -132,7 +161,16 @@ public final class DispatchServer extends WebSocketServer implements IDispatcher
      * @param message The message to send.
      */
     public void sendMessage(WebSocket socket, int packetId, Object message) {
-        this.sendMessage(socket, this.encodeMessage(packetId, message));
+        var armed = this.rpcRegistry.takeArmed();
+        Long requestId = this.rpcRegistry.currentRequestId(socket);
+        if (armed != null) requestId = this.rpcRegistry.register(socket, armed);
+
+        try {
+            this.sendMessage(socket, this.encodeMessage(packetId, requestId, message));
+        } catch (RuntimeException exception) {
+            if (armed != null && requestId != null) this.rpcRegistry.fail(socket, requestId, exception);
+            throw exception;
+        }
     }
 
     @Override
@@ -158,11 +196,13 @@ public final class DispatchServer extends WebSocketServer implements IDispatcher
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        this.rpcRegistry.failConnection(conn, new IOException("Dispatch connection closed: " + reason));
         this.getLogger().debug("Dispatch client disconnected from {}.", conn.getRemoteSocketAddress());
     }
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
+        if (conn != null) this.rpcRegistry.failConnection(conn, ex);
         this.getLogger().warn("Dispatch server error.", ex);
     }
 }

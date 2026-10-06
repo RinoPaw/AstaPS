@@ -5,6 +5,7 @@ import emu.grasscutter.data.*;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.CombineData;
 import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.ItemType;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.props.PlayerProperty;
@@ -14,7 +15,6 @@ import emu.grasscutter.server.packet.send.*;
 import emu.grasscutter.utils.Utils;
 import it.unimi.dsi.fastutil.ints.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CombineManger extends BaseGameSystem {
     private static final Int2ObjectMap<List<Integer>> reliquaryDecomposeData =
@@ -62,11 +62,6 @@ public class CombineManger extends BaseGameSystem {
         Grasscutter.getLogger()
                 .debug("Combine request from uid {}: combineId={}, count={}", player.getUid(), cid, count);
 
-        if (count <= 0) {
-            player.sendPacket(new PacketCombineRsp(Retcode.RET_COMBINE_COUNT_TOO_LARGE_VALUE));
-            return null;
-        }
-
         CombineData combineData = GameData.getCombineDataMap().get(cid);
         if (combineData == null) {
             Grasscutter.getLogger().warn("Unknown combineId {} for uid {}", cid, player.getUid());
@@ -79,13 +74,31 @@ public class CombineManger extends BaseGameSystem {
             return null;
         }
 
+        List<ItemParamData> material = buildMaterialCost(combineData);
+        var plan =
+                CombineSafety.plan(
+                        count,
+                        combineData.getResultItemCount(),
+                        material.stream()
+                                .map(item -> new CombineSafety.Cost(item.getId(), item.getCount()))
+                                .toList());
+        if (plan == null) {
+            player.sendPacket(new PacketCombineRsp(Retcode.RET_COMBINE_COUNT_TOO_LARGE_VALUE));
+            return null;
+        }
+
         if (!player.getUnlockedCombines().contains(cid)) {
             player.getUnlockedCombines().add(cid);
         }
 
-        List<ItemParamData> material = buildMaterialCost(combineData);
+        List<ItemParamData> scaledMaterial =
+                plan.costs().stream()
+                        .map(cost -> new ItemParamData(cost.itemId(), cost.count()))
+                        .toList();
 
-        if (!player.getInventory().payItems(material, count, ActionReason.Combine)) {
+        // All arithmetic and aggregation is complete before the synchronized Inventory payment.
+        // Passing quantity=1 avoids a second unchecked multiplication in payItems().
+        if (!player.getInventory().payItems(scaledMaterial, 1, ActionReason.Combine)) {
             player.sendPacket(new PacketCombineRsp(Retcode.RET_ITEM_COMBINE_COUNT_NOT_ENOUGH_VALUE));
             return null;
         }
@@ -94,7 +107,7 @@ public class CombineManger extends BaseGameSystem {
             player.sendPacket(new PacketPlayerPropNotify(player, PlayerProperty.PROP_PLAYER_SCOIN));
         }
 
-        int resultCount = combineData.getResultItemCount() * count;
+        int resultCount = plan.resultCount();
         player.getInventory().addItem(combineData.getResultItemId(), resultCount, ActionReason.Combine);
 
         Grasscutter.getLogger()
@@ -106,7 +119,7 @@ public class CombineManger extends BaseGameSystem {
                         resultCount);
 
         CombineResult result = new CombineResult();
-        result.setMaterial(scaleItems(material, count));
+        result.setMaterial(scaledMaterial);
         result.setResult(
                 List.of(new ItemParamData(combineData.getResultItemId(), resultCount)));
         result.setExtra(List.of());
@@ -123,48 +136,64 @@ public class CombineManger extends BaseGameSystem {
         return material;
     }
 
-    private static List<ItemParamData> scaleItems(List<ItemParamData> items, int count) {
-        return items.stream()
-                .map(item -> new ItemParamData(item.getId(), item.getCount() * count))
-                .collect(Collectors.toList());
-    }
-
-    public synchronized void decomposeReliquaries(
-            Player player, int configId, int count, List<Long> input) {
+    public void decomposeReliquaries(Player player, int configId, int count, List<Long> input) {
         List<Integer> possibleDrops = reliquaryDecomposeData.get(configId);
-        if (possibleDrops == null) {
-            player.sendPacket(
-                    new PacketReliquaryDecomposeRsp(Retcode.RET_RELIQUARY_DECOMPOSE_PARAM_ERROR));
+        if (possibleDrops == null || possibleDrops.isEmpty()
+                || !ReliquaryDecomposeSafety.validShape(count, input)) {
+            sendReliquaryDecomposeError(player);
             return;
         }
 
-        if (input.size() != count * 3) {
-            player.sendPacket(
-                    new PacketReliquaryDecomposeRsp(Retcode.RET_RELIQUARY_DECOMPOSE_PARAM_ERROR));
-            return;
-        }
+        var inventory = player.getInventory();
+        synchronized (inventory) {
+            List<GameItem> inputs = new ArrayList<>(input.size());
+            for (long guid : input) {
+                GameItem item = inventory.getItemByGuid(guid);
+                if (!isValidReliquaryInput(item)) {
+                    sendReliquaryDecomposeError(player);
+                    return;
+                }
+                inputs.add(item);
+            }
 
-        for (long guid : input) {
-            if (player.getInventory().getItemByGuid(guid) == null) {
-                player.sendPacket(
-                        new PacketReliquaryDecomposeRsp(Retcode.RET_RELIQUARY_DECOMPOSE_PARAM_ERROR));
-                return;
+            // The inventory monitor is held from validation through removal. Every GUID is unique and
+            // every reliquary is a single-count equip item, so the validated set cannot change through
+            // Inventory's synchronized mutation paths between these two phases.
+            for (GameItem item : inputs) {
+                if (!inventory.removeItem(item.getGuid())) {
+                    sendReliquaryDecomposeError(player);
+                    return;
+                }
             }
         }
 
-        for (long guid : input) {
-            player.getInventory().removeItem(guid);
-        }
-
-        List<Long> resultItems = new ArrayList<>();
+        List<Long> resultItems = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             int itemId = Utils.drawRandomListElement(possibleDrops);
             GameItem newReliquary = new GameItem(itemId, 1);
 
-            player.getInventory().addItem(newReliquary);
+            if (!player.getInventory().addItem(newReliquary)) {
+                sendReliquaryDecomposeError(player);
+                return;
+            }
             resultItems.add(newReliquary.getGuid());
         }
 
         player.sendPacket(new PacketReliquaryDecomposeRsp(resultItems));
+    }
+
+    private static boolean isValidReliquaryInput(GameItem item) {
+        return item != null
+                && item.getItemData() != null
+                && ReliquaryDecomposeSafety.eligible(
+                        item.getItemType() == ItemType.ITEM_RELIQUARY,
+                        item.getItemData().getRankLevel(),
+                        item.isLocked(),
+                        item.isEquipped());
+    }
+
+    private static void sendReliquaryDecomposeError(Player player) {
+        player.sendPacket(
+                new PacketReliquaryDecomposeRsp(Retcode.RET_RELIQUARY_DECOMPOSE_PARAM_ERROR));
     }
 }

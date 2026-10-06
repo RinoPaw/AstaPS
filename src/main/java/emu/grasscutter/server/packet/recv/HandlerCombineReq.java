@@ -27,10 +27,7 @@ public class HandlerCombineReq extends PacketHandler {
                 session
                         .getServer()
                         .getCombineSystem()
-                        .combineItem(
-                                session.getPlayer(),
-                                req.getCombineId(),
-                                req.getCombineCount() > 0 ? req.getCombineCount() : 1);
+                        .combineItem(session.getPlayer(), req.getCombineId(), req.getCombineCount());
 
         if (result == null) {
             return;

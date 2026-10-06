@@ -40,6 +40,11 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
+      # Some unit tests touch Grasscutter's static services. The runtime resources themselves are not
+      # needed, but startup validation requires the two resource roots to exist.
+      - name: Prepare test resource layout
+        run: mkdir -p resources/BinOutput resources/ExcelBinOutput
+
       # Best effort: the handbook is fetched from a third-party host, so a release should not fail
       # because that host is down. Without it the jar simply ships without the handbook page.
       - name: Download handbook

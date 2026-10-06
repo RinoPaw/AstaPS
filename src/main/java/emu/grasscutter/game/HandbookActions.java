@@ -118,21 +118,13 @@ public interface HandbookActions {
             }
 
             // Add the item to the player's inventory.
-            var amount = request.getAmount();
-            if (amount > Integer.MAX_VALUE) {
-                // Calculate the amount of times we need to add the item.
-                var times = Math.floor((double) amount / Integer.MAX_VALUE);
-                amount = amount % Integer.MAX_VALUE;
-
-                // Add the item the amount of times we need to.
-                for (var i = 0; i < times; i++) {
-                    var itemStack = new GameItem(itemData, Integer.MAX_VALUE);
-                    player.getInventory().addItem(itemStack, ActionReason.Gm);
-                }
+            int amount = HandbookActionLimits.itemAmount(request.getAmount());
+            if (amount < 0) {
+                return Response.builder().status(400).message("Invalid item amount.").build();
             }
 
             // Create the item stack and add it to the player's inventory.
-            var itemStack = new GameItem(itemData, (int) amount);
+            var itemStack = new GameItem(itemData, amount);
             player.getInventory().addItem(itemStack, ActionReason.Gm);
 
             return Response.builder().status(200).message("Item granted.").build();
@@ -235,12 +227,13 @@ public interface HandbookActions {
             // Validate request properties.
             var scene = player.getScene();
             var level = request.getLevel();
-            if (scene == null || level > 200 || level < 1) {
-                return Response.builder().status(400).message("Invalid scene or level.").build();
+            int amount = HandbookActionLimits.spawnAmount(request.getAmount());
+            if (scene == null || level > 200 || level < 1 || amount < 0) {
+                return Response.builder().status(400).message("Invalid scene, level, or amount.").build();
             }
 
             // Create the entity.
-            for (var i = 1; i <= request.getAmount(); i++) {
+            for (int i = 0; i < amount; i++) {
                 var entity =
                         new EntityMonster(scene, entityData, player.getPosition(), player.getRotation(), level);
                 scene.addEntity(entity);

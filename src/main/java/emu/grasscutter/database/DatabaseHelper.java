@@ -29,10 +29,12 @@ import emu.grasscutter.server.threading.ThreadPoolConfig;
 import emu.grasscutter.server.threading.ThreadPoolConfigResolver;
 import emu.grasscutter.server.threading.ThreadPoolType;
 import io.netty.util.concurrent.FastThreadLocalThread;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -41,6 +43,31 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 
 public final class DatabaseHelper {
+    private static final AccountCreationService.Store ACCOUNT_CREATION_STORE =
+            new AccountCreationService.Store() {
+                @Override
+                public int nextId() {
+                    return DatabaseManager.getNextId(Account.class);
+                }
+
+                @Override
+                public AccountCreationService.InsertResult tryInsert(Account account) {
+                    try {
+                        DatabaseManager.getAccountDatastore().insert(account);
+                        return AccountCreationService.InsertResult.INSERTED;
+                    } catch (MongoWriteException e) {
+                        if (e.getError() == null || e.getError().getCode() != 11000) throw e;
+                        if (DatabaseHelper.getAccountByName(account.getUsername()) != null) {
+                            return AccountCreationService.InsertResult.USERNAME_TAKEN;
+                        }
+                        if (DatabaseHelper.getAccountById(account.getId()) != null) {
+                            return AccountCreationService.InsertResult.ID_TAKEN;
+                        }
+                        throw e;
+                    }
+                }
+            };
+
     public static final int AVAILABLE_PROCESSORS = Runtime.getRuntime().availableProcessors();
 
     /** Long enough that a pool which idles between logins does not churn its threads. */
@@ -147,9 +174,8 @@ public final class DatabaseHelper {
      * Four pools rather than one, so the traffic classes cannot starve each other: a burst of item
      * writes used to sit in front of the account save that a login was waiting on.
      *
-     * All four reject with CallerRunsPolicy. When a bounded queue fills, the submitting thread does
-     * the write itself: that stalls the caller, which is visible and self-limiting, where the
-     * AbortPolicy this replaces threw the save away and lost the player's progress silently.
+     * All four use AbortPolicy internally so shutdown rejection is observable. DatabaseWriterManager
+     * restores caller-runs backpressure for queue saturation while admission is still open.
      */
     @Getter
     private static final ExecutorService eventExecutor =
@@ -157,7 +183,7 @@ public final class DatabaseHelper {
                     DEFAULT_POOL_CONFIG,
                     databaseQueue(DEFAULT_POOL_CONFIG, DEFAULT_QUEUE_CAPACITY),
                     databaseThreadFactory("database-default"),
-                    new ThreadPoolExecutor.CallerRunsPolicy());
+                    new ThreadPoolExecutor.AbortPolicy());
 
     /** Low volume, but a login blocks on it. */
     @Getter
@@ -166,7 +192,7 @@ public final class DatabaseHelper {
                     ACCOUNT_POOL_CONFIG,
                     databaseQueue(ACCOUNT_POOL_CONFIG, ACCOUNT_QUEUE_CAPACITY),
                     databaseThreadFactory("database-account"),
-                    new ThreadPoolExecutor.CallerRunsPolicy());
+                    new ThreadPoolExecutor.AbortPolicy());
 
     /** The highest-volume traffic on the server. */
     @Getter
@@ -175,7 +201,7 @@ public final class DatabaseHelper {
                     ITEM_POOL_CONFIG,
                     databaseQueue(ITEM_POOL_CONFIG, ITEM_QUEUE_CAPACITY),
                     databaseThreadFactory("database-item"),
-                    new ThreadPoolExecutor.CallerRunsPolicy());
+                    new ThreadPoolExecutor.AbortPolicy());
 
     /** Driven by scene scripts, which is why the dedup above matters. */
     @Getter
@@ -184,7 +210,23 @@ public final class DatabaseHelper {
                     GROUP_POOL_CONFIG,
                     databaseQueue(GROUP_POOL_CONFIG, GROUP_QUEUE_CAPACITY),
                     databaseThreadFactory("database-group"),
-                    new ThreadPoolExecutor.CallerRunsPolicy());
+                    new ThreadPoolExecutor.AbortPolicy());
+
+    private static final DatabaseWriterManager databaseWriters =
+            new DatabaseWriterManager(
+                    Map.of(
+                            "default", eventExecutor,
+                            "account", eventExecutorAccount,
+                            "item", eventExecutorItem,
+                            "group", eventExecutorGroup));
+
+    private static void submitDatabaseWrite(ExecutorService executor, Runnable task) {
+        databaseWriters.submit(executor, task);
+    }
+
+    public static DatabaseWriterManager.ShutdownResult shutdownWriters(Duration timeout) {
+        return databaseWriters.shutdown(timeout);
+    }
 
     /**
      * Whether a pool is backed up far enough that the server should stop letting players in.
@@ -209,8 +251,8 @@ public final class DatabaseHelper {
     private static final String LEGACY_IP_BAN_REASON_PREFIX = "IP\u5df2\u5c01\u7981: ";
 
     public static void saveBannedIp(BannedIp bannedIp) {
-        DatabaseHelper.eventExecutorAccount.submit(
-                () -> DatabaseManager.getAccountDatastore().save(bannedIp));
+        submitDatabaseWrite(
+                eventExecutorAccount, () -> DatabaseManager.getAccountDatastore().save(bannedIp));
     }
 
     public static BannedIp getBannedIp(String ip) {
@@ -274,8 +316,8 @@ public final class DatabaseHelper {
      * @param object The object to save.
      */
     public static void saveAccountAsync(Object object) {
-        DatabaseHelper.eventExecutorAccount.submit(
-                () -> DatabaseManager.getAccountDatastore().save(object));
+        submitDatabaseWrite(
+                eventExecutorAccount, () -> DatabaseManager.getAccountDatastore().save(object));
     }
 
     /**
@@ -288,11 +330,11 @@ public final class DatabaseHelper {
 
         // The three types are unrelated, so the order of these tests carries no meaning.
         if (object instanceof GameItem gameItem) {
-            DatabaseHelper.eventExecutorItem.submit(() -> saveWithRetry(gameItem));
+            submitDatabaseWrite(eventExecutorItem, () -> saveWithRetry(gameItem));
         } else if (object instanceof SceneGroupInstance groupInstance) {
             submitGroupSave(groupInstance);
         } else if (object instanceof Account account) {
-            DatabaseHelper.eventExecutorAccount.submit(() -> saveWithRetry(account));
+            submitDatabaseWrite(eventExecutorAccount, () -> saveWithRetry(account));
         } else {
             submitDefaultSave(object);
         }
@@ -304,7 +346,8 @@ public final class DatabaseHelper {
         if (!pendingDefaultSaves.add(object)) return;
 
         try {
-            DatabaseHelper.eventExecutor.submit(
+            submitDatabaseWrite(
+                    eventExecutor,
                     () -> {
                         // Cleared before the write, not after: anything changed while this one runs
                         // has to be able to queue a write of its own.
@@ -323,7 +366,8 @@ public final class DatabaseHelper {
         if (!pendingGroupSaves.add(groupInstance)) return;
 
         try {
-            DatabaseHelper.eventExecutorGroup.submit(
+            submitDatabaseWrite(
+                    eventExecutorGroup,
                     () -> {
                         pendingGroupSaves.remove(groupInstance);
                         saveWithRetry(groupInstance);
@@ -387,7 +431,7 @@ public final class DatabaseHelper {
      * @param runnable The runnable to run.
      */
     public static void asyncOperation(Runnable runnable) {
-        DatabaseHelper.eventExecutor.submit(runnable);
+        submitDatabaseWrite(eventExecutor, runnable);
     }
 
     /**
@@ -400,7 +444,8 @@ public final class DatabaseHelper {
         var future = new CompletableFuture<T>();
 
         // Run the task on the event executor.
-        DatabaseHelper.eventExecutor.submit(
+        submitDatabaseWrite(
+                eventExecutor,
                 () -> {
                     try {
                         future.complete(task.invoke());
@@ -439,17 +484,16 @@ public final class DatabaseHelper {
             }
         }
 
-        // Account
+        // Account creation is synchronous and insert-only. The unique indexes, not the pre-checks
+        // above, are the authority when another process creates the same account concurrently.
         Account account = new Account();
         account.setUsername(username);
-        account.setId(Integer.toString(DatabaseManager.getNextId(account)));
 
         if (reservedUid > 0) {
             account.setReservedPlayerUid(reservedUid);
         }
 
-        DatabaseHelper.saveAccount(account);
-        return account;
+        return AccountCreationService.insert(account, ACCOUNT_CREATION_STORE);
     }
 
     /**
@@ -467,12 +511,10 @@ public final class DatabaseHelper {
         if (DatabaseHelper.getAccountByName(username) != null) return null;
 
         var account = new Account();
-        account.setId(Integer.toString(DatabaseManager.getNextId(account)));
         account.setUsername(username);
         account.setPassword(BCrypt.withDefaults().hashToString(12, password.toCharArray()));
         if (email != null && !email.isBlank()) account.setEmail(email);
-        DatabaseHelper.saveAccount(account);
-        return account;
+        return AccountCreationService.insert(account, ACCOUNT_CREATION_STORE);
     }
 
     public static Account createAccountWithPassword(String username, String password) {
@@ -484,11 +526,9 @@ public final class DatabaseHelper {
 
         // Account
         Account account = new Account();
-        account.setId(Integer.toString(DatabaseManager.getNextId(account)));
         account.setUsername(username);
         account.setPassword(password);
-        DatabaseHelper.saveAccount(account);
-        return account;
+        return AccountCreationService.insert(account, ACCOUNT_CREATION_STORE);
     }
 
     public static void saveAccount(Account account) {
@@ -661,11 +701,11 @@ public final class DatabaseHelper {
                 > 0;
     }
 
-    public static synchronized void generatePlayerUid(Player character, int reservedId) {
-        PlayerUidAllocator.assign(character, reservedId);
+    public static void generatePlayerUid(Player character, int reservedId) {
+        PlayerUidAllocator.assignReserved(character, reservedId);
     }
 
-    public static synchronized int getNextPlayerId(int reservedId) {
+    public static int getNextPlayerId(int reservedId) {
         return PlayerUidAllocator.next(reservedId);
     }
 

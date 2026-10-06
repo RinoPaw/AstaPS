@@ -200,12 +200,14 @@ public class GachaSystem extends BaseGameSystem {
         boolean rollFeatured =
                 (this.randomRange(1, 100) <= banner.getEventChance(rarity)); // Won this coinflip
         boolean capturedRadiance = false;
-        if ((rarity == 5) && !pityFeatured && !rollFeatured) {
-            // Capturing Radiance: a lost coinflip can still be turned into a featured item, the more
-            // coinflips were lost in a row the likelier it is
+        if ((rarity == 5) && !pityFeatured) {
             int radianceChance =
-                    banner.getCapturingRadianceChance(gachaInfo.getConsecutiveFeaturedLosses());
-            capturedRadiance = (radianceChance > 0) && (this.randomRange(1, 100) <= radianceChance);
+                    banner.getCapturingRadianceChance(gachaInfo.getCapturingRadianceCounter());
+            if (radianceChance >= 100) {
+                capturedRadiance = true;
+            } else if (!rollFeatured) {
+                capturedRadiance = (radianceChance > 0) && (this.randomRange(1, 100) <= radianceChance);
+            }
         }
         boolean pullFeatured = pityFeatured || rollFeatured || capturedRadiance;
 
@@ -217,15 +219,18 @@ public class GachaSystem extends BaseGameSystem {
         } else {
             if (pullFeatured && (featured.length > 0)) {
                 gachaInfo.setFailedFeaturedItemPulls(rarity, 0);
-                // Only an actual coinflip ends a losing streak, the guaranteed pull after one does not
-                if ((rarity == 5) && !pityFeatured) gachaInfo.setConsecutiveFeaturedLosses(0);
+                if ((rarity == 5) && !pityFeatured) {
+                    gachaInfo.onFiftyFifty(true, capturedRadiance, banner.getCapturingRadianceMax());
+                }
                 captured = capturedRadiance;
                 itemId = getRandom(featured);
             } else {
                 gachaInfo.addFailedFeaturedItemPulls(
                         rarity,
                         1); // This could be moved into doFallbackRarePull but having it here makes it clearer
-                if ((rarity == 5) && !pityFeatured) gachaInfo.addConsecutiveFeaturedLosses(1);
+                if ((rarity == 5) && !pityFeatured) {
+                    gachaInfo.onFiftyFifty(false, false, banner.getCapturingRadianceMax());
+                }
                 itemId = doFallbackRarePull(fallback1, fallback2, rarity, banner, gachaInfo);
             }
         }
@@ -384,6 +389,7 @@ public class GachaSystem extends BaseGameSystem {
                         case 4 -> addStarglitter = 2;
                         default -> addStardust = 15;
                     }
+                    isTransferItem = addStarglitter > 0;
                     break;
                 case -1: // New character
                     gachaItem.setIsGachaItemNew(true);

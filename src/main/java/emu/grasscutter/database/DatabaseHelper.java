@@ -157,7 +157,7 @@ public final class DatabaseHelper {
                     DEFAULT_POOL_CONFIG,
                     databaseQueue(DEFAULT_POOL_CONFIG, DEFAULT_QUEUE_CAPACITY),
                     databaseThreadFactory("database-default"),
-                    new ThreadPoolExecutor.CallerRunsPolicy());
+                    DatabaseExecutorSupport.callerRunsUnlessShutdown());
 
     /** Low volume, but a login blocks on it. */
     @Getter
@@ -166,7 +166,7 @@ public final class DatabaseHelper {
                     ACCOUNT_POOL_CONFIG,
                     databaseQueue(ACCOUNT_POOL_CONFIG, ACCOUNT_QUEUE_CAPACITY),
                     databaseThreadFactory("database-account"),
-                    new ThreadPoolExecutor.CallerRunsPolicy());
+                    DatabaseExecutorSupport.callerRunsUnlessShutdown());
 
     /** The highest-volume traffic on the server. */
     @Getter
@@ -175,7 +175,7 @@ public final class DatabaseHelper {
                     ITEM_POOL_CONFIG,
                     databaseQueue(ITEM_POOL_CONFIG, ITEM_QUEUE_CAPACITY),
                     databaseThreadFactory("database-item"),
-                    new ThreadPoolExecutor.CallerRunsPolicy());
+                    DatabaseExecutorSupport.callerRunsUnlessShutdown());
 
     /** Driven by scene scripts, which is why the dedup above matters. */
     @Getter
@@ -184,7 +184,7 @@ public final class DatabaseHelper {
                     GROUP_POOL_CONFIG,
                     databaseQueue(GROUP_POOL_CONFIG, GROUP_QUEUE_CAPACITY),
                     databaseThreadFactory("database-group"),
-                    new ThreadPoolExecutor.CallerRunsPolicy());
+                    DatabaseExecutorSupport.callerRunsUnlessShutdown());
 
     /**
      * Whether a pool is backed up far enough that the server should stop letting players in.

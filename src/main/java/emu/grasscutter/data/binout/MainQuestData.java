@@ -78,7 +78,11 @@ public class MainQuestData {
                 .forEach(
                         quest -> {
                             var canonical = GameData.getQuestDataMap().get(quest.getSubId());
-                            if (canonical != null) canonical.mergeFromBinOutput(quest, this.id);
+                            if (canonical != null) {
+                                canonical.mergeFromBinOutput(quest, this.id);
+                            } else {
+                                QuestData.auditBinOnlySubQuest(quest, this.id);
+                            }
                         });
     }
 

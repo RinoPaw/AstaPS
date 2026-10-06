@@ -136,20 +136,36 @@ public class QuestData extends GameResource {
         long excelOnly = 0;
         long binOnly = 0;
         long conflict = 0;
-        for (long[] counts : normalizationAudit.values()) {
+        var fields = new StringJoiner("; ");
+        for (QuestField field : QuestField.values()) {
+            var counts = normalizationAudit.get(field);
+            if (counts == null) continue;
+
             same += counts[Comparison.SAME.ordinal()];
             excelOnly += counts[Comparison.EXCEL_ONLY.ordinal()];
             binOnly += counts[Comparison.BIN_ONLY.ordinal()];
             conflict += counts[Comparison.CONFLICT.ordinal()];
+            fields.add(
+                    String.format(
+                            Locale.ROOT,
+                            "%s[same=%d excelOnly=%d binOnly=%d conflict=%d]",
+                            field,
+                            counts[Comparison.SAME.ordinal()],
+                            counts[Comparison.EXCEL_ONLY.ordinal()],
+                            counts[Comparison.BIN_ONLY.ordinal()],
+                            counts[Comparison.CONFLICT.ordinal()]));
         }
-        return String.format(
-                Locale.ROOT,
-                "binOnlyRows=%d same=%d excelOnly=%d binOnly=%d conflict=%d",
-                binOnlyRows,
-                same,
-                excelOnly,
-                binOnly,
-                conflict);
+
+        var total =
+                String.format(
+                        Locale.ROOT,
+                        "binOnlyRows=%d same=%d excelOnly=%d binOnly=%d conflict=%d",
+                        binOnlyRows,
+                        same,
+                        excelOnly,
+                        binOnly,
+                        conflict);
+        return fields.length() == 0 ? total : total + "; " + fields;
     }
 
     public void onLoad() {

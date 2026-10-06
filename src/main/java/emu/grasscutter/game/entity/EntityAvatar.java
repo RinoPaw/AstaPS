@@ -244,13 +244,12 @@ public final class EntityAvatar extends GameEntity {
     public float reviveToRatioSilently(float ratio) {
         return this.restoreAliveToRatio(ratio);
     }
-        public FightProperty GetEnergyProp(Avatar avatar) {
-        if(avatar.getSkillDepot().getEnergySkillData().getSpecialEnergyMin() > 0){
+    public FightProperty GetEnergyProp(Avatar avatar) {
+        val energySkill = avatar.getSkillDepot().getEnergySkillData();
+        if (energySkill != null && energySkill.getSpecialEnergyMin() > 0) {
             return FightProperty.FIGHT_PROP_CUR_SPECIAL_ENERGY;
-        }else{
-            return avatar.getSkillDepot().getElementType().getCurEnergyProp();
         }
-
+        return avatar.getSkillDepot().getElementType().getCurEnergyProp();
     }
 
     public void clearEnergy(ChangeEnergyReason reason) {

@@ -34,8 +34,11 @@ public class AbilityMixinData {
         NyxCostMixin,
         ModifyDamageMixin,
         AvatarChangeSkillMixin,
+        @SerializedName(value = "KHOENFHDFJE", alternate = {"AttachModifierToPhlogistonMixin"})
         KHOENFHDFJE,
+        @SerializedName(value = "HJKDMEOOBDK", alternate = {"GOBNKFIFGFJ"})
         HJKDMEOOBDK,
+        @SerializedName(value = "FIGCOCJJHCH", alternate = {"AKFJKJBCFKI"})
         FIGCOCJJHCH,
         DMKDPHHJENO,
         LAAJCBLNLDO,
@@ -44,6 +47,7 @@ public class AbilityMixinData {
         AttachToMultiNormalizedTimeMixin,
         DLJBCMKDMEK,
         PhlogistonCostMixin,
+        @SerializedName(value = "FIHACJPNNED", alternate = {"SkillCanUseByLTMixin"})
         FIHACJPNNED,
         JMEOJHGPNMB,
         AttachModifierToSelfGlobalValueMixin,
@@ -69,7 +73,9 @@ public class AbilityMixinData {
         MuteHitEffectMixin,
         EntityInVisibleMixin,
         DDCOPGJBHLB,
+        @SerializedName(value = "IBAMBHPLNNA", alternate = {"ShaderLerpMixin"})
         IBAMBHPLNNA,
+        @SerializedName(value = "PCKKGOMJIKL", alternate = {"DisableNyxBarMixin"})
         PCKKGOMJIKL,
         TriggerPostProcessEffectMixin,
         JGOOOFOCJBI,
@@ -92,6 +98,7 @@ public class AbilityMixinData {
     public AbilityModifierAction[] actions;
     public AbilityModifierAction[] actionQueue;
     @SerializedName(value = "reactionTypes", alternate = "IGAMNNAADJB")
+    @SerializedName(value = "reactionTypes", alternate = {"IGAMNNAADJB"})
     public List<String> reactionTypes = new ArrayList<>();
     public List<String> entityTypes = new ArrayList<>();
     public List<String> attackTags = new ArrayList<>();
@@ -105,7 +112,7 @@ public class AbilityMixinData {
     @SerializedName("onTriggerSkill")
     public AbilityModifierAction[] onTriggerSkill;
 
-    @SerializedName("onTriggerUltimateSkill")
+    @SerializedName(value = "onTriggerUltimateSkill", alternate = {"HMBEKPDBCEK"})
     public AbilityModifierAction[] onTriggerUltimateSkill;
 
     public AbilityModifierAction[] IOKPLLOKGGJ;
@@ -116,7 +123,7 @@ public class AbilityMixinData {
     @SerializedName("successActions")
     public AbilityModifierAction[] successActions;
 
-    @SerializedName("succActions")
+    @SerializedName(value = "succActions", alternate = {"CMEPEHIJMPL"})
     public AbilityModifierAction[] succActions;
 
     @SerializedName("$type")
@@ -138,6 +145,8 @@ public class AbilityMixinData {
     public String stateID;
     public DynamicFloat defaultGlobalValueOnCreate = DynamicFloat.ZERO;
     public List<DynamicFloat> ratioSteps = new ArrayList<>();
+    @SerializedName(value = "removeAppliedModifier", alternate = {"DEFOFMOIAAI"})
+    public boolean removeAppliedModifier = true;
     @JsonAdapter(JsonAdapters.ModifierNameStepsAdapter.class)
     public List<String> modifierNameSteps = new ArrayList<>();
     public boolean EJEMBMFPBKF = true;

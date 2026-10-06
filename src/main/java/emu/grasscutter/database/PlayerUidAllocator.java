@@ -45,7 +45,11 @@ public final class PlayerUidAllocator {
 
     /** Persists a newly-created player with insert semantics; duplicate keys must stay failures. */
     public static void assignReserved(Player player, int reservedUid) {
-        assignReserved(player, reservedUid, DatabaseManager.getGameDatastore()::insert);
+        assignReserved(
+                player,
+                reservedUid,
+                value -> DatabaseHelper.runSynchronousDatabaseWrite(
+                        () -> DatabaseManager.getGameDatastore().insert(value)));
     }
 
     static void assignReserved(Player player, int reservedUid, Consumer<Player> insert) {

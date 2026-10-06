@@ -35,6 +35,7 @@ import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.GameDepot;
 import emu.grasscutter.data.excels.GatherData;
 import emu.grasscutter.data.excels.RefreshPolicyExcelConfigData;
+import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.database.DatabaseManager;
 import emu.grasscutter.game.dungeons.DomainDungeonHelper;
 import emu.grasscutter.game.entity.EntityGadget;
@@ -280,7 +281,9 @@ public final class OpenWorldSpawnHelper {
         LOCAL_COOLDOWN.put(string, l);
         try {
             Document persistDoc = new Document("ownerUid", n2).append("sceneId", scene.getId()).append("groupId", n3).append("configId", n4).append("gadgetId", entityGadget.getGadgetId()).append("monsterId", 0).append("gatherItemId", n).append("posX", entityGadget.getPosition() != null ? entityGadget.getPosition().getX() : 0.0f).append("posY", entityGadget.getPosition() != null ? entityGadget.getPosition().getY() : 0.0f).append("posZ", entityGadget.getPosition() != null ? entityGadget.getPosition().getZ() : 0.0f).append("consumedAt", l).append("refreshId", n5);
-            OpenWorldSpawnHelper.col().replaceOne(Filters.and(Filters.eq("ownerUid", n2), Filters.eq("sceneId", scene.getId()), Filters.eq("groupId", n3), Filters.eq("configId", n4)), persistDoc, new ReplaceOptions().upsert(true));
+            final Bson filter = Filters.and(Filters.eq("ownerUid", n2), Filters.eq("sceneId", scene.getId()), Filters.eq("groupId", n3), Filters.eq("configId", n4));
+            DatabaseHelper.runSynchronousDatabaseWrite(
+                    () -> OpenWorldSpawnHelper.col().replaceOne(filter, persistDoc, new ReplaceOptions().upsert(true)));
         }
         catch (Throwable throwable) {
             Grasscutter.getLogger().warn("OpenWorldSpawnHelper persist gather failed uid={} group={} cfg={}: {}", new Object[]{n2, n3, n4, throwable.toString()});
@@ -335,7 +338,9 @@ public final class OpenWorldSpawnHelper {
         try {
             int n5 = entityMonster.getMonsterData() != null ? entityMonster.getMonsterData().getId() : 0;
             Document document = new Document("ownerUid", n).append("sceneId", scene.getId()).append("groupId", n2).append("configId", n3).append("gadgetId", 0).append("monsterId", n5).append("gatherItemId", 0).append("posX", entityMonster.getPosition() != null ? entityMonster.getPosition().getX() : 0.0f).append("posY", entityMonster.getPosition() != null ? entityMonster.getPosition().getY() : 0.0f).append("posZ", entityMonster.getPosition() != null ? entityMonster.getPosition().getZ() : 0.0f).append("consumedAt", l).append("refreshId", n4);
-            OpenWorldSpawnHelper.col().replaceOne(Filters.and(Filters.eq("ownerUid", n), Filters.eq("sceneId", scene.getId()), Filters.eq("groupId", n2), Filters.eq("configId", n3)), document, new ReplaceOptions().upsert(true));
+            final Bson filter = Filters.and(Filters.eq("ownerUid", n), Filters.eq("sceneId", scene.getId()), Filters.eq("groupId", n2), Filters.eq("configId", n3));
+            DatabaseHelper.runSynchronousDatabaseWrite(
+                    () -> OpenWorldSpawnHelper.col().replaceOne(filter, document, new ReplaceOptions().upsert(true)));
         }
         catch (Throwable throwable) {
             Grasscutter.getLogger().warn("OpenWorldSpawnHelper persist death failed uid={} group={} cfg={}: {}", new Object[]{n, n2, n3, throwable.toString()});
@@ -426,7 +431,9 @@ public final class OpenWorldSpawnHelper {
         String string = n2 + ":" + scene.getId() + ":" + n + ":";
         LOCAL_COOLDOWN.keySet().removeIf(string2 -> string2.startsWith(string));
         try {
-            OpenWorldSpawnHelper.col().deleteMany(Filters.and((Bson[])new Bson[]{Filters.eq((String)"ownerUid", (Object)n2), Filters.eq((String)"sceneId", (Object)scene.getId()), Filters.eq((String)"groupId", (Object)n)}));
+            final Bson filter = Filters.and((Bson[])new Bson[]{Filters.eq((String)"ownerUid", (Object)n2), Filters.eq((String)"sceneId", (Object)scene.getId()), Filters.eq((String)"groupId", (Object)n)});
+            DatabaseHelper.runSynchronousDatabaseWrite(
+                    () -> OpenWorldSpawnHelper.col().deleteMany(filter));
         }
         catch (Throwable throwable) {
             Grasscutter.getLogger().warn("OpenWorldSpawnHelper clearGroupDeathRecords failed: {}", (Object)throwable.toString());
@@ -443,7 +450,9 @@ public final class OpenWorldSpawnHelper {
         }
         LOCAL_COOLDOWN.remove(OpenWorldSpawnHelper.key(n3, scene.getId(), n, n2));
         try {
-            OpenWorldSpawnHelper.col().deleteMany(Filters.and((Bson[])new Bson[]{Filters.eq((String)"ownerUid", (Object)n3), Filters.eq((String)"sceneId", (Object)scene.getId()), Filters.eq((String)"groupId", (Object)n), Filters.eq((String)"configId", (Object)n2)}));
+            final Bson filter = Filters.and((Bson[])new Bson[]{Filters.eq((String)"ownerUid", (Object)n3), Filters.eq((String)"sceneId", (Object)scene.getId()), Filters.eq((String)"groupId", (Object)n), Filters.eq((String)"configId", (Object)n2)});
+            DatabaseHelper.runSynchronousDatabaseWrite(
+                    () -> OpenWorldSpawnHelper.col().deleteMany(filter));
         }
         catch (Throwable throwable) {
             Grasscutter.getLogger().warn("OpenWorldSpawnHelper clearGroupEntityDeathRecord failed: {}", (Object)throwable.toString());

@@ -75,13 +75,13 @@ public final class PlayerCloneService {
             throw new IllegalArgumentException("UID must be positive");
         }
 
-        // Allocate the account id before the barrier. getNextId queues its counter save on a
-        // database writer; acquiring the barrier below waits for that save to finish.
+        // Reserve the account ID before freezing other writers. UID reservations made inside the
+        // barrier use the same synchronous admission gate through its owner's permit.
         String targetAccountId = Integer.toString(DatabaseManager.getNextId(Account.class));
         int targetUid = 0;
 
-        try {
-            try (DatabaseWriteBarrier ignored = DatabaseWriteBarrier.acquire()) {
+        try (DatabaseWriteBarrier ignored = DatabaseWriteBarrier.acquire()) {
+            try {
                 // Close the races between the initial validation and the stable snapshot window.
                 ensureOffline(sourceAccount);
                 if (DatabaseHelper.getAccountByName(targetUsername) != null) {
@@ -129,16 +129,18 @@ public final class PlayerCloneService {
                 DatabaseManager.getAccountDatastore().save(targetAccount);
 
                 return new CloneResult(sourceUid, targetUid, clonedDocuments);
-            }
-        } catch (RuntimeException | Error failure) {
-            if (targetUid > 0) {
-                try {
-                    rollbackClone(targetUid, targetAccountId);
-                } catch (RuntimeException | Error rollbackFailure) {
-                    failure.addSuppressed(rollbackFailure);
+            } catch (RuntimeException | Error failure) {
+                // Keep cleanup inside the exclusive window so another writer cannot observe or
+                // modify the incomplete clone between failure and rollback.
+                if (targetUid > 0) {
+                    try {
+                        rollbackClone(targetUid, targetAccountId);
+                    } catch (RuntimeException | Error rollbackFailure) {
+                        failure.addSuppressed(rollbackFailure);
+                    }
                 }
+                throw failure;
             }
-            throw failure;
         }
     }
 

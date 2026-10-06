@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -53,7 +54,8 @@ public final class DatabaseHelper {
                 @Override
                 public AccountCreationService.InsertResult tryInsert(Account account) {
                     try {
-                        DatabaseManager.getAccountDatastore().insert(account);
+                        runSynchronousDatabaseWrite(
+                                () -> DatabaseManager.getAccountDatastore().insert(account));
                         return AccountCreationService.InsertResult.INSERTED;
                     } catch (MongoWriteException e) {
                         if (e.getError() == null || e.getError().getCode() != 11000) throw e;
@@ -220,6 +222,27 @@ public final class DatabaseHelper {
                             "item", eventExecutorItem,
                             "group", eventExecutorGroup));
 
+    private static final ItemPersistenceService itemWrites =
+            new ItemPersistenceService(
+                    databaseWriters,
+                    eventExecutorItem,
+                    DatabaseHelper::saveWithRetry,
+                    item -> DatabaseManager.getGameDatastore().delete(item));
+
+    static DatabaseWriterManager getWriterManager() {
+        return databaseWriters;
+    }
+
+    /** Runs a direct write through the same admission gate as asynchronous persistence. */
+    public static void runSynchronousDatabaseWrite(Runnable task) {
+        databaseWriters.runSynchronous(task);
+    }
+
+    /** Returns a direct write's result while honoring shutdown and administrative barriers. */
+    public static <T> T callSynchronousDatabaseWrite(Supplier<T> task) {
+        return databaseWriters.callSynchronous(task);
+    }
+
     private static void submitDatabaseWrite(ExecutorService executor, Runnable task) {
         databaseWriters.submit(executor, task);
     }
@@ -270,7 +293,7 @@ public final class DatabaseHelper {
     public static boolean removeBannedIp(String ip) {
         var banned = DatabaseHelper.getBannedIp(ip);
         if (banned == null) return false;
-        DatabaseManager.getAccountDatastore().delete(banned);
+        runSynchronousDatabaseWrite(() -> DatabaseManager.getAccountDatastore().delete(banned));
         return true;
     }
 
@@ -330,7 +353,7 @@ public final class DatabaseHelper {
 
         // The three types are unrelated, so the order of these tests carries no meaning.
         if (object instanceof GameItem gameItem) {
-            submitDatabaseWrite(eventExecutorItem, () -> saveWithRetry(gameItem));
+            itemWrites.save(gameItem);
         } else if (object instanceof SceneGroupInstance groupInstance) {
             submitGroupSave(groupInstance);
         } else if (object instanceof Account account) {
@@ -588,64 +611,8 @@ public final class DatabaseHelper {
                 > 0;
     }
 
-    public static synchronized void deleteAccount(Account target) {
-        // To delete an account, we need to also delete all the other documents in the database that
-        // reference the account.
-        // This should optimally be wrapped inside a transaction, to make sure an error thrown mid-way
-        // does not leave the
-        // database in an inconsistent state, but unfortunately Mongo only supports that when we have a
-        // replica set ...
-
-        Player player = Grasscutter.getGameServer().getPlayerByAccountId(target.getId());
-
-        // Close session first
-        if (player != null) {
-            player.getSession().close();
-        } else {
-            player = getPlayerByAccount(target);
-            if (player == null) return;
-        }
-        int uid = player.getUid();
-
-        DatabaseHelper.asyncOperation(
-                () -> {
-                    // Delete data from collections
-                    DatabaseManager.getGameDatabase()
-                            .getCollection("achievements")
-                            .deleteMany(eq("uid", uid));
-                    DatabaseManager.getGameDatabase().getCollection("activities").deleteMany(eq("uid", uid));
-                    DatabaseManager.getGameDatabase().getCollection("homes").deleteMany(eq("ownerUid", uid));
-                    DatabaseManager.getGameDatabase().getCollection("mail").deleteMany(eq("ownerUid", uid));
-                    DatabaseManager.getGameDatabase().getCollection("avatars").deleteMany(eq("ownerId", uid));
-                    DatabaseManager.getGameDatabase().getCollection("gachas").deleteMany(eq("ownerId", uid));
-                    DatabaseManager.getGameDatabase().getCollection("items").deleteMany(eq("ownerId", uid));
-                    DatabaseManager.getGameDatabase().getCollection("quests").deleteMany(eq("ownerUid", uid));
-                    DatabaseManager.getGameDatabase()
-                            .getCollection("battlepass")
-                            .deleteMany(eq("ownerUid", uid));
-
-                    // Delete friendships.
-                    // Here, we need to make sure to not only delete the deleted account's friendships,
-                    // but also all friendship entries for that account's friends.
-                    DatabaseManager.getGameDatabase()
-                            .getCollection("friendships")
-                            .deleteMany(eq("ownerId", uid));
-                    DatabaseManager.getGameDatabase()
-                            .getCollection("friendships")
-                            .deleteMany(eq("friendId", uid));
-
-                    // Delete the player last.
-                    DatabaseManager.getGameDatastore()
-                            .find(Player.class)
-                            .filter(Filters.eq("id", uid))
-                            .delete();
-
-                    // Finally, delete the account itself.
-                    DatabaseManager.getAccountDatastore()
-                            .find(Account.class)
-                            .filter(Filters.eq("id", target.getId()))
-                            .delete();
-                });
+    public static void deleteAccount(Account target) {
+        AccountDeletionService.delete(target);
     }
 
     public static <T> Stream<T> getByGameClass(Class<T> classType) {
@@ -736,7 +703,7 @@ public final class DatabaseHelper {
     }
 
     public static void deleteItem(GameItem item) {
-        DatabaseHelper.asyncOperation(() -> DatabaseManager.getGameDatastore().delete(item));
+        itemWrites.delete(item);
     }
 
     /**
@@ -883,7 +850,7 @@ public final class DatabaseHelper {
     }
 
     public static void saveDailyTaskManager(emu.grasscutter.game.dailytask.DailyTaskManager manager) {
-        DatabaseManager.getGameDatastore().save(manager);
+        runSynchronousDatabaseWrite(() -> DatabaseManager.getGameDatastore().save(manager));
     }
 
     public static BattlePassManager loadBattlePass(Player player) {
@@ -938,7 +905,10 @@ public final class DatabaseHelper {
         } catch (IllegalArgumentException e) {
             Grasscutter.getLogger()
                     .debug("Error occurred while getting uid " + uid + "'s achievement data", e);
-            DatabaseManager.getGameDatabase().getCollection("achievements").deleteMany(eq("uid", uid));
+            runSynchronousDatabaseWrite(
+                    () -> DatabaseManager.getGameDatabase()
+                            .getCollection("achievements")
+                            .deleteMany(eq("uid", uid)));
             return null;
         }
     }

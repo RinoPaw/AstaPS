@@ -67,7 +67,9 @@ public class MaPassportAuthenticator {
 
             Grasscutter.getLogger().debug("Generating session key");
             account.generateV2SessionKey();
-            emu.grasscutter.database.DatabaseManager.getGameDatastore().save(account);
+            Account accountToSave = account;
+            DatabaseHelper.runSynchronousDatabaseWrite(
+                    () -> emu.grasscutter.database.DatabaseManager.getGameDatastore().save(accountToSave));
             Grasscutter.getLogger().info("User " + username + " has successfully logged in");
             return createLoginSuccessResponse(account);
         } catch (Exception e) {

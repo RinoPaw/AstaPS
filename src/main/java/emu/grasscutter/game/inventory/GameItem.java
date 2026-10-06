@@ -162,6 +162,12 @@ public final class GameItem {
         return id;
     }
 
+    /** Reserves a stable persistence identity before the first asynchronous write is admitted. */
+    public synchronized ObjectId ensurePersistenceId() {
+        if (id == null) id = new ObjectId();
+        return id;
+    }
+
     public ItemType getItemType() {
         return this.itemData.getItemType();
     }

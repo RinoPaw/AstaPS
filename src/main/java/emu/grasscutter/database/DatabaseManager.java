@@ -110,6 +110,11 @@ public final class DatabaseManager {
      * processes share the same database.
      */
     static int reserveNextId(Datastore datastore, String counterName, int floor) {
+        return DatabaseHelper.callSynchronousDatabaseWrite(
+                () -> reserveNextIdAdmitted(datastore, counterName, floor));
+    }
+
+    private static int reserveNextIdAdmitted(Datastore datastore, String counterName, int floor) {
         if (floor < 0 || floor == Integer.MAX_VALUE) {
             throw new IllegalStateException("No more ids are available for " + counterName);
         }
@@ -159,6 +164,10 @@ public final class DatabaseManager {
     }
 
     static boolean tryReservePlayerUid(int uid) {
+        return DatabaseHelper.callSynchronousDatabaseWrite(() -> tryReservePlayerUidAdmitted(uid));
+    }
+
+    private static boolean tryReservePlayerUidAdmitted(int uid) {
         try {
             getGameDatabase()
                     .getCollection(PLAYER_UID_RESERVATIONS)

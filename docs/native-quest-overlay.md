@@ -81,3 +81,11 @@ the runtime. Removing `quests.json` therefore requires restoring legacy MainQues
 The current 7.1 exporter emits only fully consumed payloads in `mainQuests`. Unsupported payloads
 stay in `failedMainQuests` with their failure family. AstaPS validates the top-level coverage counts
 before applying any overlay.
+
+
+## Mainline-only resource checkpoint
+
+The companion AstaPS-Resource branch `rino-native-mainline-quests` removes legacy
+`BinOutput/Quest/*.json` and provides a 115-MainQuest native `quests.json` covering the
+opening through Sumeru. The runtime loader therefore treats the legacy directory as optional and
+materializes parent MainQuest skeletons from native data when it is absent.

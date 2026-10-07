@@ -209,15 +209,80 @@ public final class NativeQuestParser {
         }
 
         var coverage = data.getCoverage();
-        if (coverage != null && coverage.getFullConsumed() != data.getMainQuests().size()) {
-            throw new IllegalArgumentException(
-                    "quests.json coverage/fullConsumed does not match mainQuests size");
+        if (coverage != null) {
+            if (coverage.getTotal() != coverage.getFullConsumed() + coverage.getFailed()) {
+                throw new IllegalArgumentException(
+                        "quests.json coverage total does not equal fullConsumed + failed");
+            }
+            if (coverage.getFullConsumed() != data.getMainQuests().size()) {
+                throw new IllegalArgumentException(
+                        "quests.json coverage/fullConsumed does not match mainQuests size");
+            }
+            int failedCount =
+                    data.getFailedMainQuests() != null ? data.getFailedMainQuests().size() : 0;
+            if (coverage.getFailed() != failedCount) {
+                throw new IllegalArgumentException(
+                        "quests.json coverage/failed does not match failedMainQuests size");
+            }
         }
-        if (coverage != null
-                && data.getFailedMainQuests() != null
-                && coverage.getFailed() != data.getFailedMainQuests().size()) {
-            throw new IllegalArgumentException(
-                    "quests.json coverage/failed does not match failedMainQuests size");
+
+        var mainIds = new HashSet<Integer>();
+        var subIds = new HashSet<Integer>();
+        for (var main : data.getMainQuests()) {
+            if (main == null || main.getMainId() == 0) {
+                throw new IllegalArgumentException("quests.json contains a mainQuest without mainId");
+            }
+            if (!mainIds.add(main.getMainId())) {
+                throw new IllegalArgumentException(
+                        "quests.json contains duplicate mainId " + main.getMainId());
+            }
+            if (main.getPayloadSize() < 0) {
+                throw new IllegalArgumentException(
+                        "quests.json contains negative payloadSize for mainId " + main.getMainId());
+            }
+            var sha = main.getPayloadSha256();
+            if (sha != null && !sha.isBlank() && !sha.matches("[0-9a-fA-F]{64}")) {
+                throw new IllegalArgumentException(
+                        "quests.json contains invalid payloadSha256 for mainId " + main.getMainId());
+            }
+
+            for (var row : safe(main.getQuests())) {
+                if (row == null || row.getSubId() == 0) {
+                    throw new IllegalArgumentException(
+                            "quests.json mainId " + main.getMainId() + " contains a row without subId");
+                }
+                if (!subIds.add(row.getSubId())) {
+                    throw new IllegalArgumentException(
+                            "quests.json contains duplicate subId " + row.getSubId());
+                }
+                if (row.getMainId() != null && row.getMainId() != main.getMainId()) {
+                    throw new IllegalArgumentException(
+                            "quests.json subId "
+                                    + row.getSubId()
+                                    + " belongs to mainId "
+                                    + row.getMainId()
+                                    + " but is nested under "
+                                    + main.getMainId());
+                }
+            }
+        }
+
+        var failedIds = new HashSet<Integer>();
+        for (var failed : safe(data.getFailedMainQuests())) {
+            if (failed == null || failed.getMainId() == 0) {
+                throw new IllegalArgumentException(
+                        "quests.json contains a failedMainQuest without mainId");
+            }
+            if (!failedIds.add(failed.getMainId())) {
+                throw new IllegalArgumentException(
+                        "quests.json contains duplicate failed mainId " + failed.getMainId());
+            }
+            if (mainIds.contains(failed.getMainId())) {
+                throw new IllegalArgumentException(
+                        "quests.json mainId "
+                                + failed.getMainId()
+                                + " appears in both success and failure sets");
+            }
         }
     }
 

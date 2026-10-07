@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * Applies the Genshin-Reverse native Quest truth layer without importing unproven semantics.
+ * Loads the Genshin-Reverse native Quest truth layer without importing unproven semantics.
  *
  * <p>The numeric ids below are intentionally small: they are the names independently confirmed by
  * the pinned 7.1 native reader. Numeric ids that are merely known from older/public resources stay

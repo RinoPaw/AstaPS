@@ -42,7 +42,7 @@ This gate can expand as Genshin-Reverse proves more native type identities.
 ```json
 {
   "schemaVersion": 1,
-  "version": "7.1.0-global",
+  "gameVersion": "7.1.0-global",
   "coverage": {
     "total": 4417,
     "fullConsumed": 3993,
@@ -79,8 +79,11 @@ the runtime. Removing `quests.json` therefore requires restoring legacy MainQues
 
 
 The current 7.1 exporter emits only fully consumed payloads in `mainQuests`. Unsupported payloads
-stay in `failedMainQuests` with their failure family. AstaPS validates the top-level coverage counts
-before applying any overlay.
+stay in `failedMainQuests` with their failure family. AstaPS validates the coverage counts and
+native identity graph before applying any overlay: successful/failed MainQuest ids may not overlap,
+MainQuest and SubQuest ids must be unique, every row must belong to its containing MainQuest, and
+present payload SHA-256 values must be well formed. A malformed bundle fails closed before runtime
+quest state is changed.
 
 
 ## Mainline-only resource checkpoint

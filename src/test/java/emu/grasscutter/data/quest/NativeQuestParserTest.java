@@ -336,6 +336,87 @@ class NativeQuestParserTest {
     }
 
     @Test
+    void rejectsDuplicateAndCrossParentNativeIds() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        NativeQuestParser.parse(
+                                new StringReader(
+                                        """
+                                        {
+                                          "schemaVersion": 1,
+                                          "gameVersion": "7.1.0-global",
+                                          "mainQuests": [
+                                            {
+                                              "mainId": 991,
+                                              "quests": [
+                                                {"subId": 991001, "mainId": 991}
+                                              ]
+                                            },
+                                            {
+                                              "mainId": 992,
+                                              "quests": [
+                                                {"subId": 991001, "mainId": 992}
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                        """)));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        NativeQuestParser.parse(
+                                new StringReader(
+                                        """
+                                        {
+                                          "schemaVersion": 1,
+                                          "gameVersion": "7.1.0-global",
+                                          "mainQuests": [
+                                            {
+                                              "mainId": 991,
+                                              "quests": [
+                                                {"subId": 991001, "mainId": 992}
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                        """)));
+    }
+
+    @Test
+    void rejectsOverlappingSuccessAndFailureSets() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        NativeQuestParser.parse(
+                                new StringReader(
+                                        """
+                                        {
+                                          "schemaVersion": 1,
+                                          "gameVersion": "7.1.0-global",
+                                          "coverage": {
+                                            "total": 2,
+                                            "fullConsumed": 1,
+                                            "failed": 1
+                                          },
+                                          "mainQuests": [
+                                            {
+                                              "mainId": 991,
+                                              "quests": []
+                                            }
+                                          ],
+                                          "failedMainQuests": [
+                                            {
+                                              "mainId": 991,
+                                              "size": 10
+                                            }
+                                          ]
+                                        }
+                                        """)));
+    }
+
+    @Test
     void rejectsWrongVersionAndSchema() {
         assertThrows(
                 IllegalArgumentException.class,

@@ -78,7 +78,7 @@ class NativeQuestParserTest {
                                 """
                                 {
                                   "schemaVersion": 1,
-                                  "version": "7.1.0-global",
+                                  "gameVersion": "7.1.0-global",
                                   "mainQuests": [
                                     {
                                       "mainId": 992,
@@ -172,7 +172,7 @@ class NativeQuestParserTest {
                                 """
                                 {
                                   "schemaVersion": 1,
-                                  "version": "7.1.0-global",
+                                  "gameVersion": "7.1.0-global",
                                   "mainQuests": [
                                     {
                                       "mainId": 991,
@@ -209,7 +209,7 @@ class NativeQuestParserTest {
                                 """
                                 {
                                   "schemaVersion": 1,
-                                  "version": "7.1.0-global",
+                                  "gameVersion": "7.1.0-global",
                                   "mainQuests": [
                                     {
                                       "mainId": 991,
@@ -249,8 +249,8 @@ class NativeQuestParserTest {
                                         """
                                         {
                                           "schemaVersion": 2,
-                                          "version": "7.1.0-global",
-                                          "quests": []
+                                          "gameVersion": "7.1.0-global",
+                                          "mainQuests": []
                                         }
                                         """)));
 
@@ -262,8 +262,8 @@ class NativeQuestParserTest {
                                         """
                                         {
                                           "schemaVersion": 1,
-                                          "version": "7.0.0-global",
-                                          "quests": []
+                                          "gameVersion": "7.0.0-global",
+                                          "mainQuests": []
                                         }
                                         """)));
     }

@@ -727,6 +727,7 @@ public final class ResourceLoader {
                 opening352 != null ? opening352.getAcceptCond() : null);
     }
 
+    // Native quests.json belongs to the external resource pack beside BinOutput/ExcelBinOutput.
     private static void loadNativeQuestData() {
         var path = getResourcePath("quests.json");
         if (!Files.isRegularFile(path)) {

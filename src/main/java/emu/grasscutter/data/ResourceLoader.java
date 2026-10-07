@@ -18,6 +18,7 @@ import emu.grasscutter.data.server.*;
 import emu.grasscutter.game.activity.ActivityManager;
 import emu.grasscutter.game.managers.blossom.BlossomConfig;
 import emu.grasscutter.game.quest.*;
+import emu.grasscutter.data.quest.NativeQuestParser;
 import emu.grasscutter.game.world.*;
 import emu.grasscutter.game.world.SpawnDataEntry.*;
 import emu.grasscutter.scripts.*;
@@ -709,6 +710,8 @@ public final class ResourceLoader {
             Grasscutter.getLogger().error("Unable to load quest keys.", e);
         }
 
+        loadNativeQuestData();
+
         Grasscutter.getLogger()
                 .debug("Loaded " + GameData.getMainQuestDataMap().size() + " MainQuestDatas.");
         Grasscutter.getLogger()
@@ -722,6 +725,28 @@ public final class ResourceLoader {
                 end351 != null && end351.isFinishParent(),
                 parent351 != null ? Arrays.toString(parent351.getSuggestTrackMainQuestList()) : null,
                 opening352 != null ? opening352.getAcceptCond() : null);
+    }
+
+    private static void loadNativeQuestData() {
+        var path = getDataPath("quests.json");
+        if (!Files.isRegularFile(path)) {
+            Grasscutter.getLogger().debug("Native quests.json not present; using legacy quest sources only.");
+            return;
+        }
+
+        try {
+            var report = NativeQuestParser.loadAndApply(path);
+            Grasscutter.getLogger()
+                    .info(
+                            "Native quest overlay: mainQuests={} rows={} merged={} missingRows={} unresolvedLists={}",
+                            report.mainQuests(),
+                            report.rows(),
+                            report.mergedRows(),
+                            report.missingRows(),
+                            report.unresolvedLists());
+        } catch (Exception e) {
+            Grasscutter.getLogger().error("Failed to load native quests.json; legacy quest data remains active.", e);
+        }
     }
 
     public static void loadScriptSceneData() {

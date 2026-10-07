@@ -240,6 +240,33 @@ class NativeQuestParserTest {
     }
 
     @Test
+    void rejectsCoverageThatDoesNotMatchExportedRows() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->
+                        NativeQuestParser.parse(
+                                new StringReader(
+                                        """
+                                        {
+                                          "schemaVersion": 1,
+                                          "gameVersion": "7.1.0-global",
+                                          "coverage": {
+                                            "total": 2,
+                                            "fullConsumed": 2,
+                                            "failed": 0
+                                          },
+                                          "mainQuests": [
+                                            {
+                                              "mainId": 991,
+                                              "quests": []
+                                            }
+                                          ],
+                                          "failedMainQuests": []
+                                        }
+                                        """)));
+    }
+
+    @Test
     void rejectsWrongVersionAndSchema() {
         assertThrows(
                 IllegalArgumentException.class,

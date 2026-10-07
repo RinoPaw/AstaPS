@@ -49,7 +49,16 @@ public class NativeQuestData {
         private Integer resId;
         private int payloadSize;
         private String payloadSha256;
+        private int[] suggestTrackMainQuestList;
+        private int[] rewardIdList;
+        private List<Talk> talks;
         private List<SubQuest> quests;
+    }
+
+    @Data
+    public static class Talk {
+        private int id;
+        private int questId;
     }
 
     @Data

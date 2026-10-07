@@ -64,27 +64,46 @@ public final class NativeQuestParser {
             if (main == null || main.getMainId() == 0) continue;
             mainQuests++;
 
-            if (!GameData.getMainQuestDataMap().containsKey(main.getMainId())) {
-                var nativeRows =
-                        safe(main.getQuests()).stream()
-                                .filter(Objects::nonNull)
-                                .filter(row -> row.getSubId() != 0)
-                                .map(
-                                        row -> {
-                                            var sub = new MainQuestData.SubQuestData();
-                                            sub.setSubId(row.getSubId());
-                                            sub.setMainId(
-                                                    row.getMainId() != null
-                                                            ? row.getMainId()
-                                                            : main.getMainId());
-                                            sub.setOrder(row.getOrder());
-                                            return sub;
-                                        })
-                                .toArray(MainQuestData.SubQuestData[]::new);
-                GameData.getMainQuestDataMap()
-                        .put(main.getMainId(), new MainQuestData(main.getMainId(), nativeRows));
+            var nativeRows =
+                    safe(main.getQuests()).stream()
+                            .filter(Objects::nonNull)
+                            .filter(row -> row.getSubId() != 0)
+                            .map(
+                                    row -> {
+                                        var sub = new MainQuestData.SubQuestData();
+                                        sub.setSubId(row.getSubId());
+                                        sub.setMainId(
+                                                row.getMainId() != null
+                                                        ? row.getMainId()
+                                                        : main.getMainId());
+                                        sub.setOrder(row.getOrder());
+                                        return sub;
+                                    })
+                            .toArray(MainQuestData.SubQuestData[]::new);
+            var nativeTalks =
+                    safe(main.getTalks()).stream()
+                            .filter(Objects::nonNull)
+                            .filter(talk -> talk.getId() != 0)
+                            .map(talk -> new MainQuestData.TalkData(talk.getId(), ""))
+                            .toList();
+
+            var runtimeMain = GameData.getMainQuestDataMap().get(main.getMainId());
+            if (runtimeMain == null) {
+                runtimeMain =
+                        new MainQuestData(
+                                main.getMainId(),
+                                nativeRows,
+                                main.getSuggestTrackMainQuestList(),
+                                main.getRewardIdList(),
+                                nativeTalks);
+                GameData.getMainQuestDataMap().put(main.getMainId(), runtimeMain);
                 materializedMainQuests++;
+            } else {
+                runtimeMain.mergeNativeRuntimeMetadata(
+                        main.getSuggestTrackMainQuestList(), main.getRewardIdList(), nativeTalks);
             }
+            nativeTalks.forEach(
+                    talk -> GameData.getQuestTalkMap().put(talk.getId(), main.getMainId()));
 
             for (var row : safe(main.getQuests())) {
                 if (row == null || row.getSubId() == 0) continue;

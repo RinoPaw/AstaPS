@@ -24,6 +24,7 @@ class NativeQuestParserTest {
         GameData.getQuestDataMap().remove(NATIVE_ONLY_SUB_ID);
         GameData.getMainQuestDataMap().remove(991);
         GameData.getMainQuestDataMap().remove(992);
+        GameData.getQuestTalkMap().remove(991123);
         GameData.getBeginCondQuestMap()
                 .values()
                 .forEach(
@@ -179,6 +180,11 @@ class NativeQuestParserTest {
                                   "mainQuests": [
                                     {
                                       "mainId": 991,
+                                      "suggestTrackMainQuestList": [992],
+                                      "rewardIdList": [10991],
+                                      "talks": [
+                                        {"id": 991123, "questId": 991}
+                                      ],
                                       "quests": [
                                         {
                                           "subId": 991001,
@@ -257,8 +263,11 @@ class NativeQuestParserTest {
         assertEquals(8, parent.getSubQuests()[0].getOrder());
         assertEquals(991002, parent.getSubQuests()[1].getSubId());
         assertEquals(9, parent.getSubQuests()[1].getOrder());
-        assertNotNull(parent.getTalks());
-        assertTrue(parent.getTalks().isEmpty());
+        assertArrayEquals(new int[] {992}, parent.getSuggestTrackMainQuestList());
+        assertArrayEquals(new int[] {10991}, parent.getRewardIdList());
+        assertEquals(1, parent.getTalks().size());
+        assertEquals(991123, parent.getTalks().get(0).getId());
+        assertEquals(991, GameData.getQuestTalkMap().get(991123));
     }
 
     @Test

@@ -20,8 +20,9 @@ Source policy in the first parser revision:
 - native-only subquest rows are not materialized into the QuestExcel runtime map yet;
 - missing parent MainQuest objects are materialized from native `mainId/subId/order` so
   `GameMainQuest` can be created without legacy BinOutput/Quest files;
-- talks, rewards, and successor links remain unset in a native-only parent until those native
-  field semantics are independently confirmed.
+- native `suggestTrackMainQuestList`, `rewardIdList`, and talk ids are copied into the
+  runtime parent when present, so native-only parents can hand off, grant parent rewards, and
+  register talk ownership without legacy BinOutput/Quest files.
 
 The first confirmed semantic set is intentionally narrow:
 

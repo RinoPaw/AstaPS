@@ -728,9 +728,9 @@ public final class ResourceLoader {
     }
 
     private static void loadNativeQuestData() {
-        var path = getDataPath("quests.json");
+        var path = getResourcePath("quests.json");
         if (!Files.isRegularFile(path)) {
-            Grasscutter.getLogger().debug("Native quests.json not present; using legacy quest sources only.");
+            Grasscutter.getLogger().debug("Native resources/quests.json not present; using legacy quest sources only.");
             return;
         }
 

@@ -1,6 +1,6 @@
 # Native 7.1 Quest overlay
 
-AstaPS can optionally consume `data/quests.json` as a third quest source after
+AstaPS can optionally consume `resources/quests.json` as a third quest source after
 `QuestExcelConfigData.json` and legacy `BinOutput/Quest/*.json`.
 
 The file is generated from the fail-closed Genshin-Reverse native MainQuest decoder. Its purpose is

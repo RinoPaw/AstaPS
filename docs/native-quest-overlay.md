@@ -1,7 +1,9 @@
 # Native 7.1 Quest overlay
 
-AstaPS can optionally consume `resources/quests.json` as a third quest source after
-`QuestExcelConfigData.json` and legacy `BinOutput/Quest/*.json`.
+AstaPS consumes `resources/quests.json` as the native MainQuest truth layer after
+`QuestExcelConfigData.json`. Legacy `BinOutput/Quest/*.json` remains optional: when that
+directory is absent, the native bundle materializes the parent MainQuest skeleton from proven
+`mainId`, `subId`, and `order` fields.
 
 The file is generated from the fail-closed Genshin-Reverse native MainQuest decoder. Its purpose is
 to carry fields proven from the 7.1 client wire format into the server without importing synthetic
@@ -15,7 +17,11 @@ Source policy in the first parser revision:
 - an absent native finish/fail list is an authoritative empty list;
 - a list containing an unresolved numeric type id is parsed but remains audit-only;
 - `acceptCond` and `beginExec` do not exist in the native contract and are never synthesized;
-- native-only subquest rows are not materialized into runtime yet.
+- native-only subquest rows are not materialized into the QuestExcel runtime map yet;
+- missing parent MainQuest objects are materialized from native `mainId/subId/order` so
+  `GameMainQuest` can be created without legacy BinOutput/Quest files;
+- talks, rewards, and successor links remain unset in a native-only parent until those native
+  field semantics are independently confirmed.
 
 The first confirmed semantic set is intentionally narrow:
 
@@ -66,8 +72,9 @@ This gate can expand as Genshin-Reverse proves more native type identities.
 }
 ```
 
-The server treats this file as an overlay. Removing `quests.json` returns AstaPS to its existing
-QuestExcel + legacy BinOutput behavior.
+When legacy `BinOutput/Quest` exists, the native file overlays its proven fields. When that
+directory is absent, the native file also supplies the minimal parent-quest structure required by
+the runtime. Removing `quests.json` therefore requires restoring legacy MainQuest resources.
 
 
 The current 7.1 exporter emits only fully consumed payloads in `mainQuests`. Unsupported payloads

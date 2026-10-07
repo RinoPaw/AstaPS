@@ -2,6 +2,7 @@ package emu.grasscutter.data.quest;
 
 import com.google.gson.Gson;
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.data.binout.MainQuestData;
 import emu.grasscutter.data.excels.quest.QuestData;
 import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.quest.enums.QuestExec;
@@ -53,6 +54,7 @@ public final class NativeQuestParser {
         validate(data);
 
         int mainQuests = 0;
+        int materializedMainQuests = 0;
         int rows = 0;
         int mergedRows = 0;
         int missingRows = 0;
@@ -61,6 +63,28 @@ public final class NativeQuestParser {
         for (var main : safe(data.getMainQuests())) {
             if (main == null || main.getMainId() == 0) continue;
             mainQuests++;
+
+            if (!GameData.getMainQuestDataMap().containsKey(main.getMainId())) {
+                var nativeRows =
+                        safe(main.getQuests()).stream()
+                                .filter(Objects::nonNull)
+                                .filter(row -> row.getSubId() != 0)
+                                .map(
+                                        row -> {
+                                            var sub = new MainQuestData.SubQuestData();
+                                            sub.setSubId(row.getSubId());
+                                            sub.setMainId(
+                                                    row.getMainId() != null
+                                                            ? row.getMainId()
+                                                            : main.getMainId());
+                                            sub.setOrder(row.getOrder());
+                                            return sub;
+                                        })
+                                .toArray(MainQuestData.SubQuestData[]::new);
+                GameData.getMainQuestDataMap()
+                        .put(main.getMainId(), new MainQuestData(main.getMainId(), nativeRows));
+                materializedMainQuests++;
+            }
 
             for (var row : safe(main.getQuests())) {
                 if (row == null || row.getSubId() == 0) continue;
@@ -96,7 +120,13 @@ public final class NativeQuestParser {
             }
         }
 
-        return new Report(mainQuests, rows, mergedRows, missingRows, unresolvedLists);
+        return new Report(
+                mainQuests,
+                materializedMainQuests,
+                rows,
+                mergedRows,
+                missingRows,
+                unresolvedLists);
     }
 
     private static List<QuestData.QuestContentCondition> convertContents(
@@ -173,5 +203,10 @@ public final class NativeQuestParser {
     }
 
     public record Report(
-            int mainQuests, int rows, int mergedRows, int missingRows, int unresolvedLists) {}
+            int mainQuests,
+            int materializedMainQuests,
+            int rows,
+            int mergedRows,
+            int missingRows,
+            int unresolvedLists) {}
 }

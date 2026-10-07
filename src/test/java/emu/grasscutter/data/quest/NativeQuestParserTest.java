@@ -22,6 +22,8 @@ class NativeQuestParserTest {
     void cleanUp() {
         GameData.getQuestDataMap().remove(SUB_ID);
         GameData.getQuestDataMap().remove(NATIVE_ONLY_SUB_ID);
+        GameData.getMainQuestDataMap().remove(991);
+        GameData.getMainQuestDataMap().remove(992);
         GameData.getBeginCondQuestMap()
                 .values()
                 .forEach(
@@ -118,6 +120,7 @@ class NativeQuestParserTest {
         var report = NativeQuestParser.apply(data);
 
         assertEquals(1, report.mainQuests());
+        assertEquals(1, report.materializedMainQuests());
         assertEquals(1, report.rows());
         assertEquals(1, report.mergedRows());
         assertEquals(0, report.missingRows());
@@ -199,6 +202,63 @@ class NativeQuestParserTest {
         assertEquals(QuestContent.QUEST_CONTENT_COMPLETE_TALK, quest.getFinishCond().get(0).getType());
         assertArrayEquals(new int[] {12345, 0}, quest.getFinishCond().get(0).getParam());
         assertEquals(QuestSource.QUEST_EXCEL, quest.getFieldSource(QuestField.FINISH_COND));
+    }
+
+    @Test
+    void nativeBundleMaterializesParentSkeletonWithoutLegacyBinOutput() {
+        var quest =
+                GSON.fromJson(
+                        """
+                        {
+                          "subId": 991001,
+                          "mainId": 991,
+                          "order": 8
+                        }
+                        """,
+                        QuestData.class);
+        quest.onLoad();
+        GameData.getQuestDataMap().put(quest.getSubId(), quest);
+
+        var data =
+                NativeQuestParser.parse(
+                        new StringReader(
+                                """
+                                {
+                                  "schemaVersion": 1,
+                                  "gameVersion": "7.1.0-global",
+                                  "mainQuests": [
+                                    {
+                                      "mainId": 991,
+                                      "quests": [
+                                        {
+                                          "subId": 991001,
+                                          "mainId": 991,
+                                          "order": 8
+                                        },
+                                        {
+                                          "subId": 991002,
+                                          "mainId": 991,
+                                          "order": 9
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                                """));
+
+        var report = NativeQuestParser.apply(data);
+        var parent = GameData.getMainQuestDataMap().get(991);
+
+        assertEquals(1, report.materializedMainQuests());
+        assertNotNull(parent);
+        assertEquals(991, parent.getId());
+        assertEquals(2, parent.getSubQuests().length);
+        assertEquals(991001, parent.getSubQuests()[0].getSubId());
+        assertEquals(8, parent.getSubQuests()[0].getOrder());
+        assertEquals(991002, parent.getSubQuests()[1].getSubId());
+        assertEquals(9, parent.getSubQuests()[1].getOrder());
+        assertNotNull(parent.getTalks());
+        assertTrue(parent.getTalks().isEmpty());
     }
 
     @Test

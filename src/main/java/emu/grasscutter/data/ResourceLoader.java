@@ -674,20 +674,25 @@ public final class ResourceLoader {
     private static void loadQuests() {
         QuestData.clearNormalizationAudit();
 
-        try (var files = Files.list(getResourcePath("BinOutput/Quest/"))) {
-            files.forEach(
-                    path -> {
-                        try {
-                            val mainQuest = JsonUtils.loadToClass(path, MainQuestData.class);
-                            GameData.getMainQuestDataMap().put(mainQuest.getId(), mainQuest);
+        var legacyQuestPath = getResourcePath("BinOutput/Quest/");
+        if (Files.isDirectory(legacyQuestPath)) {
+            try (var files = Files.list(legacyQuestPath)) {
+                files.forEach(
+                        path -> {
+                            try {
+                                val mainQuest = JsonUtils.loadToClass(path, MainQuestData.class);
+                                GameData.getMainQuestDataMap().put(mainQuest.getId(), mainQuest);
 
-                            mainQuest.onLoad();
-                        } catch (IOException ignored) {
-                        }
-                    });
-        } catch (IOException e) {
-            Grasscutter.getLogger().error("Quest data missing");
-            return;
+                                mainQuest.onLoad();
+                            } catch (IOException ignored) {
+                            }
+                        });
+            } catch (IOException e) {
+                Grasscutter.getLogger().error("Unable to read legacy BinOutput/Quest resources", e);
+            }
+        } else {
+            Grasscutter.getLogger()
+                    .info("Legacy BinOutput/Quest resources are absent; loading native quests.json.");
         }
 
         try {
@@ -739,14 +744,15 @@ public final class ResourceLoader {
             var report = NativeQuestParser.loadAndApply(path);
             Grasscutter.getLogger()
                     .info(
-                            "Native quest overlay: mainQuests={} rows={} merged={} missingRows={} unresolvedLists={}",
+                            "Native quest bundle: mainQuests={} materialized={} rows={} merged={} missingRows={} unresolvedLists={}",
                             report.mainQuests(),
+                            report.materializedMainQuests(),
                             report.rows(),
                             report.mergedRows(),
                             report.missingRows(),
                             report.unresolvedLists());
         } catch (Exception e) {
-            Grasscutter.getLogger().error("Failed to load native quests.json; legacy quest data remains active.", e);
+            Grasscutter.getLogger().error("Failed to load native quests.json.", e);
         }
     }
 

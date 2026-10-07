@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -43,7 +44,7 @@ public final class NativeQuestParser {
     }
 
     public static Report loadAndApply(Path path) throws IOException {
-        try (var reader = Files.newBufferedReader(path)) {
+        try (var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             return apply(parse(reader));
         }
     }

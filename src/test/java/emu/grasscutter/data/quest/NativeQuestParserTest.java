@@ -180,11 +180,6 @@ class NativeQuestParserTest {
                                   "mainQuests": [
                                     {
                                       "mainId": 991,
-                                      "suggestTrackMainQuestList": [992],
-                                      "rewardIdList": [10991],
-                                      "talks": [
-                                        {"id": 991123, "questId": 991}
-                                      ],
                                       "quests": [
                                         {
                                           "subId": 991001,
@@ -235,6 +230,11 @@ class NativeQuestParserTest {
                                   "mainQuests": [
                                     {
                                       "mainId": 991,
+                                      "suggestTrackMainQuestList": [992],
+                                      "rewardIdList": [10991],
+                                      "talks": [
+                                        {"id": 991123, "questId": 991}
+                                      ],
                                       "quests": [
                                         {
                                           "subId": 991001,

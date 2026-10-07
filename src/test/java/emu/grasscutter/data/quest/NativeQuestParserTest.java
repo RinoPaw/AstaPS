@@ -210,7 +210,7 @@ class NativeQuestParserTest {
                                 {
                                   "schemaVersion": 1,
                                   "version": "7.1.0-global",
-                                  "quests": [
+                                  "mainQuests": [
                                     {
                                       "mainId": 991,
                                       "quests": [

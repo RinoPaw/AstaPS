@@ -28,3 +28,36 @@ The first confirmed semantic set is intentionally narrow:
 - QuestExec 19 REFRESH_GROUP_SUITE
 
 This gate can expand as Genshin-Reverse proves more native type identities.
+
+
+## Minimal bundle shape
+
+```json
+{
+  "schemaVersion": 1,
+  "version": "7.1.0-global",
+  "quests": [
+    {
+      "mainId": 351,
+      "resId": 1001,
+      "quests": [
+        {
+          "mainId": 351,
+          "subId": 35100,
+          "order": 2,
+          "finishCond": [
+            {
+              "typeId": 4,
+              "type": "QUEST_CONTENT_FINISH_PLOT",
+              "param": [35100, 0]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+The server treats this file as an overlay. Removing `quests.json` returns AstaPS to its existing
+QuestExcel + legacy BinOutput behavior.

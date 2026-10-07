@@ -58,7 +58,7 @@ public final class NativeQuestParser {
         int missingRows = 0;
         int unresolvedLists = 0;
 
-        for (var main : safe(data.getQuests())) {
+        for (var main : safe(data.getMainQuests())) {
             if (main == null || main.getMainId() == 0) continue;
             mainQuests++;
 
@@ -151,12 +151,24 @@ public final class NativeQuestParser {
             throw new IllegalArgumentException(
                     "unsupported quests.json schemaVersion " + data.getSchemaVersion());
         }
-        if (data.getVersion() == null || !data.getVersion().startsWith("7.1")) {
+        if (data.getGameVersion() == null || !data.getGameVersion().startsWith("7.1")) {
             throw new IllegalArgumentException(
-                    "quests.json is not bound to Genshin 7.1: " + data.getVersion());
+                    "quests.json is not bound to Genshin 7.1: " + data.getGameVersion());
         }
-        if (data.getQuests() == null) {
-            throw new IllegalArgumentException("quests.json has no quests array");
+        if (data.getMainQuests() == null) {
+            throw new IllegalArgumentException("quests.json has no mainQuests array");
+        }
+
+        var coverage = data.getCoverage();
+        if (coverage != null && coverage.getFullConsumed() != data.getMainQuests().size()) {
+            throw new IllegalArgumentException(
+                    "quests.json coverage/fullConsumed does not match mainQuests size");
+        }
+        if (coverage != null
+                && data.getFailedMainQuests() != null
+                && coverage.getFailed() != data.getFailedMainQuests().size()) {
+            throw new IllegalArgumentException(
+                    "quests.json coverage/failed does not match failedMainQuests size");
         }
     }
 

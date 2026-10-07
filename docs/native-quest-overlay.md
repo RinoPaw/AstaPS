@@ -36,9 +36,16 @@ This gate can expand as Genshin-Reverse proves more native type identities.
 {
   "schemaVersion": 1,
   "version": "7.1.0-global",
-  "quests": [
+  "coverage": {
+    "total": 4417,
+    "fullConsumed": 3993,
+    "failed": 424
+  },
+  "mainQuests": [
     {
       "mainId": 351,
+      "payloadSize": 920,
+      "payloadSha256": "285d825bedce0611494d114687bc7981789b0ef6d0a724f5abfecf423b6335de",
       "resId": 1001,
       "quests": [
         {
@@ -61,3 +68,8 @@ This gate can expand as Genshin-Reverse proves more native type identities.
 
 The server treats this file as an overlay. Removing `quests.json` returns AstaPS to its existing
 QuestExcel + legacy BinOutput behavior.
+
+
+The current 7.1 exporter emits only fully consumed payloads in `mainQuests`. Unsupported payloads
+stay in `failedMainQuests` with their failure family. AstaPS validates the top-level coverage counts
+before applying any overlay.

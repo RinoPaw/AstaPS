@@ -980,12 +980,24 @@ public class ScriptLib {
                 activeGroup != null ? activeGroup.id : 0);
         if (groupId <= 0) return 1;
 
-        var scene = getSceneScriptManager().getScene();
-        var entity = scene.getEntityByConfigId(configId.toint(), groupId);
-        if (entity == null) {
-            return 0;
+        var scriptManager = getSceneScriptManager();
+        // This Lua API permanently removes the named gadget. Quest 39403
+        // targets five other groups, some outside the visible grid.
+        // Save a tombstone even if the entity has not spawned yet; normal
+        // combat deaths continue using the existing oneoff/persistent policy.
+        var group = scriptManager.getGroupById(groupId);
+        if (group != null && group.gadgets != null
+                && group.gadgets.containsKey(configId.toint())) {
+            var instance = scriptManager.getGroupInstanceById(groupId);
+            if (instance != null && instance.markScriptGadgetDestroyed(configId.toint())) {
+                instance.save();
+            }
         }
-        scene.killEntity(entity, 0);
+        var scene = scriptManager.getScene();
+        var entity = scene.getEntityByConfigId(configId.toint(), groupId);
+        if (entity != null) {
+            scene.killEntity(entity, 0);
+        }
         return 0;
     }
 

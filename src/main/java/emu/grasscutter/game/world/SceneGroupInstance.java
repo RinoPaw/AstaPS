@@ -20,6 +20,9 @@ public final class SceneGroupInstance {
     @Getter @Setter private int targetSuiteId;
     @Getter @Setter private int activeSuiteId;
     @Getter private Set<Integer> deadEntities; // Config_ids
+    // Only an explicit Lua KillEntityByConfigId operation makes a gadget
+    // permanently absent. Ordinary combat deaths retain their old policy.
+    private Set<Integer> scriptDestroyedGadgets = new HashSet<>();
     private boolean isCached;
 
     @Getter private Map<Integer, Integer> cachedGadgetStates;
@@ -85,6 +88,17 @@ public final class SceneGroupInstance {
     public int getCachedGadgetState(SceneGadget g) {
         Integer state = cachedGadgetStates.getOrDefault(g.config_id, null);
         return (state == null) ? g.state : state;
+    }
+
+    public synchronized boolean isScriptGadgetDestroyed(int configId) {
+        return scriptDestroyedGadgets != null && scriptDestroyedGadgets.contains(configId);
+    }
+
+    /** Marks a Lua-destroyed gadget even when its entity is outside the loaded grid. */
+    public synchronized boolean markScriptGadgetDestroyed(int configId) {
+        if (configId <= 0) return false;
+        if (scriptDestroyedGadgets == null) scriptDestroyedGadgets = new HashSet<>();
+        return scriptDestroyedGadgets.add(configId);
     }
 
     public void save() {

@@ -871,6 +871,14 @@ public class SceneScriptManager {
         }
     }
 
+    /** Preserve Lua-persisted gadget removals independently of ordinary death respawns. */
+    static boolean shouldSpawnGadget(
+            boolean alreadySpawned, boolean scriptDestroyed,
+            boolean oneoff, boolean persistent, boolean ordinaryDead) {
+        return !alreadySpawned && !scriptDestroyed
+                && (!oneoff || !persistent || !ordinaryDead);
+    }
+
     public List<EntityGadget> getGadgetsInGroupSuite(
             SceneGroupInstance groupInstance, SceneSuite suite) {
         var group = groupInstance.getLuaGroup();
@@ -878,10 +886,11 @@ public class SceneScriptManager {
                 .filter(
                         m -> {
                             var entity = scene.getEntityByConfigId(m.config_id, group.id);
-                            return (entity == null || entity.getGroupId() != group.id)
-                                    && (!m.isOneoff
-                                            || !m.persistent
-                                            || !groupInstance.getDeadEntities().contains(m.config_id));
+                            return shouldSpawnGadget(
+                                    entity != null && entity.getGroupId() == group.id,
+                                    groupInstance.isScriptGadgetDestroyed(m.config_id),
+                                    m.isOneoff, m.persistent,
+                                    groupInstance.getDeadEntities().contains(m.config_id));
                         })
                 .map(g -> createGadget(group.id, group.block_id, g, groupInstance.getCachedGadgetState(g)))
                 .filter(Objects::nonNull)

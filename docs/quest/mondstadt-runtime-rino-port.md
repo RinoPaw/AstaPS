@@ -153,3 +153,15 @@ ScriptLib.KillEntityByConfigId now honors the explicit Lua `group_id` argument
 instead of always searching the currently executing trigger group. This is
 required for all five cross-group Q394 cleanup targets. Tests cover the scene
 transition gate, quest event type, and explicit/default target group IDs.
+
+## Permanent Lua gadget removal after 39403
+
+The scene-3 cleanup group 133007183 calls `KillEntityByConfigId` for
+five other group IDs. Four of the native 7.1 seal gadgets have no
+`isOneoff/persistent` metadata and can respawn on group reload. The Lua
+operation now stores an explicit script-destroyed gadget config ID in its
+own scene group record, including when a target is outside the visible grid.
+The scene-group gadget spawn filter honors this separate tombstone for any
+gadget type. Ordinary combat deaths continue to use the original temporary
+or oneoff/persistent rules. Unit tests cover both paths and legacy group
+records without the new optional field.

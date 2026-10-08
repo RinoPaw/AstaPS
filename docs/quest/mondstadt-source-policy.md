@@ -145,3 +145,12 @@ lookup by name or value always returned QUEST_EXEC_NONE. The corrected
 QUEST_EXEC_ filter indexes every opcode including SET_WEATHER_GADGET.
 This is decoding/lookup infrastructure only: it does not add weather-gadget
 handler semantics. Enum round-trip tests cover all registered IDs.
+
+## Candidate isolation for quest events
+
+GameMainQuest formerly wrapped an entire group of matching finish/fail
+candidates in one exception boundary. A malformed quest condition aborted
+processing of the rest of the batch. QuestContentDispatch now invokes each
+candidate independently; failures report main/subquest IDs and the event
+opcode, while the remaining candidates still receive that event. The same
+helper is exercised by finish and fail processing, with regression tests.

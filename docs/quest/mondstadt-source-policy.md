@@ -64,3 +64,12 @@ The comparison now uses the requested destination, and explicit quest suite
 refreshes make the second attempt in the same operation. The wrapper only
 announces and records a suite if the transition actually completed. This
 is relevant to 36004's post-battle return to ambient group suite 2.
+
+## Recorded Lua-progress handoff (35309 / 35310 / 35311)
+
+Lua AddQuestProgress can happen before the next subquest's QUEST_CONTENT_LUA_NOTIFY
+handler is active. At quest start, checkQuestAlreadyFulfilled now replays recorded
+Lua progress and numeric ADD_QUEST_PROGRESS only when the exact progress key
+meets the condition's required count. Unset keys and unrelated condition types
+never replay. This preserves the three wave IDs and supports delayed quest
+acceptance without re-spawning an already killed monster.

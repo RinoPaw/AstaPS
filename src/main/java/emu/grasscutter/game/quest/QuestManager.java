@@ -703,6 +703,33 @@ public final class QuestManager extends BasePlayerManager {
      *
      * @param quest The ID of the quest.
      */
+    /**
+     * A Lua progress signal can be delivered before its dependent subquest
+     * begins (e.g. tutorial slimes 35309-35311). The progress is stored on the
+     * player, and a newly started quest must check that stored count once.
+     */
+    static boolean hasRecordedQuestProgress(
+            QuestData.QuestContentCondition condition, PlayerProgress progress) {
+        if (condition == null || progress == null || condition.getType() == null) return false;
+        String key;
+        switch (condition.getType()) {
+            case QUEST_CONTENT_LUA_NOTIFY -> {
+                key = condition.getParamStr();
+                if (key == null || key.isBlank()) return false;
+            }
+            case QUEST_CONTENT_ADD_QUEST_PROGRESS -> {
+                int[] params = condition.getParam();
+                if (params == null || params.length == 0 || params[0] <= 0) return false;
+                key = String.valueOf(params[0]);
+            }
+            default -> {
+                return false;
+            }
+        }
+        int required = condition.getCount() > 0 ? condition.getCount() : 1;
+        return progress.getCurrentProgress(key) >= required;
+    }
+
     public void checkQuestAlreadyFulfilled(GameQuest quest) {
         Grasscutter.getThreadPool()
                 .submit(
@@ -731,6 +758,22 @@ public final class QuestManager extends BasePlayerManager {
                                         if (sceneAreas != null && sceneAreas.contains(condition.getParam()[1])) {
                                             queueEvent(
                                                     condition.getType(), condition.getParam()[0], condition.getParam()[1]);
+                                        }
+                                    }
+                                    case QUEST_CONTENT_LUA_NOTIFY -> {
+                                        // The kill may have occurred while the preceding tutorial
+                                        // objective was still active. Replay its *recorded* progress
+                                        // after this quest starts, rather than requiring another kill.
+                                        if (hasRecordedQuestProgress(condition, player.getPlayerProgress())) {
+                                            queueEvent(condition.getType(), condition.getParamStr());
+                                        }
+                                    }
+                                    case QUEST_CONTENT_ADD_QUEST_PROGRESS -> {
+                                        if (hasRecordedQuestProgress(condition, player.getPlayerProgress())) {
+                                            int id = condition.getParam()[0];
+                                            int progress = player.getPlayerProgress()
+                                                    .getCurrentProgress(String.valueOf(id));
+                                            queueEvent(condition.getType(), id, progress);
                                         }
                                     }
                                     case QUEST_CONTENT_PLAYER_LEVEL_UP -> queueEvent(

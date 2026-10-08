@@ -154,3 +154,14 @@ processing of the rest of the batch. QuestContentDispatch now invokes each
 candidate independently; failures report main/subquest IDs and the event
 opcode, while the remaining candidates still receive that event. The same
 helper is exercised by finish and fail processing, with regression tests.
+
+## Quest group suite persistence across relogs
+
+SceneScriptManager.refreshGroupSuite previously appended every quest suite to
+the MainQuest saved list. Repeated refreshes accumulated duplicate and
+obsolete values (for instance group 133003002 suite 1 followed by suite 2),
+and refreshing to suite 0 never cleared the saved override. On later
+scene entry, Scene.loadGroupForQuest replayed stale suites in order.
+The persistence list now keeps only the current suite per scene/group pair,
+and a successful reset to suite 0 removes the corresponding override.
+Unit tests cover update, deduplication, reset and independent scene/groups.

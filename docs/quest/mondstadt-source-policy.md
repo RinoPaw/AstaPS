@@ -94,3 +94,13 @@ for recorded completions. It now queues that event for each recorded
 matching dungeon on subquest start. Together with its restored LOGIC_AND,
 this permits all three completion flags to satisfy the hidden task in
 any order, including completions preceding 30901 activation.
+
+## Team-wipe quest failure condition
+
+The whole Mondstadt prologue condition census found QUEST_CONTENT_TEAM_DEAD
+in failCond of 35101, 35203, 37602, 39703 and 38802. The server enum
+previously marked it missing. EntityAvatar's two death entrypoints now emit
+one explicit quest content event only if the final living member of the
+active player team dies. ContentTeamDead accepts only that event; a single
+party member's death does not fail a quest. This is a server-side event repair,
+not an assertion of complete in-client retry mechanics.

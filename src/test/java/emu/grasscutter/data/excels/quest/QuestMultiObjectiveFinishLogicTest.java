@@ -45,6 +45,34 @@ final class QuestMultiObjectiveFinishLogicTest {
     }
 
     @Test
+    void eitherPlotFailureOrTeamDeathCanFailReviewedCombatQuest() {
+        var excel = GSON.fromJson("""
+                {"subId":37602,"mainId":376,"acceptCond":[],
+                 "finishCond":[],"failCond":[
+                   {"type":"QUEST_CONTENT_NOT_FINISH_PLOT","param":[37602,0]},
+                   {"type":"QUEST_CONTENT_TEAM_DEAD","param":[0,0]}
+                 ],
+                 "beginExec":[],"finishExec":[],"failExec":[]}
+                """, QuestData.class);
+        var full = GSON.fromJson("""
+                {"subId":37602,"failCondComb":"LOGIC_OR"}
+                """, MainQuestData.SubQuestData.class);
+        excel.applyFrom(full);
+        assertEquals(LogicType.LOGIC_OR, excel.getFailCondComb());
+        assertTrue(LogicType.calculate(excel.getFailCondComb(), new int[] {0, 1}));
+        assertTrue(LogicType.calculate(excel.getFailCondComb(), new int[] {1, 0}));
+        assertFalse(LogicType.calculate(excel.getFailCondComb(), new int[] {0, 0}));
+    }
+
+    @Test
+    void explicitExcelFailureLogicIsPreserved() {
+        assertEquals(LogicType.LOGIC_AND, QuestData.effectiveMondstadtFailLogic(
+                376, LogicType.LOGIC_AND, LogicType.LOGIC_OR, 2));
+        assertEquals(LogicType.LOGIC_NONE, QuestData.effectiveMondstadtFailLogic(
+                88888, LogicType.LOGIC_NONE, LogicType.LOGIC_OR, 2));
+    }
+
+    @Test
     void alternativeCompletionRoutesUseReviewedOrLogic() {
         assertEquals(LogicType.LOGIC_OR, QuestData.effectiveMondstadtFinishLogic(
                 307, LogicType.LOGIC_NONE, LogicType.LOGIC_OR, 2));

@@ -104,3 +104,14 @@ one explicit quest content event only if the final living member of the
 active player team dies. ContentTeamDead accepts only that event; a single
 party member's death does not fail a quest. This is a server-side event repair,
 not an assertion of complete in-client retry mechanics.
+
+## Restored combat failure combinators (37602 / 39703 / 38802)
+
+GCResource 3700 and 4000 both specify LOGIC_OR for these two-predicate
+failCond lists. With their materialized failCondComb missing, QuestData
+previously defaulted to LOGIC_NONE and tested only the first predicate,
+so 37602 ignored the later TEAM_DEAD condition. MainQuestData already
+decodes failCondComb; QuestData now applies the same scoped conservative
+BinOutput fallback for failing quests as for finishing quests. Explicit
+QuestExcel fail logic remains authoritative. This completes the data path
+for the new TEAM_DEAD event.

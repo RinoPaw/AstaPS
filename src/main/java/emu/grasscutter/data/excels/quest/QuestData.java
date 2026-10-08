@@ -101,6 +101,9 @@ public class QuestData extends GameResource {
         this.finishCondComb = effectiveMondstadtFinishLogic(
                 this.mainId, this.finishCondComb, additionalData.getFinishCondComb(),
                 this.finishCond == null ? 0 : this.finishCond.size());
+        this.failCondComb = effectiveMondstadtFailLogic(
+                this.mainId, this.failCondComb, additionalData.getFailCondComb(),
+                this.failCond == null ? 0 : this.failCond.size());
 
         // Keep this data-only merge free of Grasscutter bootstrap side effects:
         // resource-level diagnostics are emitted by ResourceLoader after loading.
@@ -116,6 +119,12 @@ public class QuestData extends GameResource {
             return excel;
         }
         return bin;
+    }
+
+    /** The same conservative fallback applies to multi-condition quest failure. */
+    static LogicType effectiveMondstadtFailLogic(
+            int mainId, LogicType excel, LogicType bin, int predicateCount) {
+        return effectiveMondstadtFinishLogic(mainId, excel, bin, predicateCount);
     }
 
     static List<QuestExecParam> effectiveExecList(

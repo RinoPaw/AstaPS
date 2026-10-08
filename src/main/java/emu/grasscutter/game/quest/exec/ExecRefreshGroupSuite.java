@@ -32,6 +32,35 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
         return !applied ? wasPinned : suiteId > 0 || anotherOverride;
     }
 
+    /**
+     * A Lua suite refresh can throw before reporting success. The group must
+     * never remain visibility-pinned solely because an attempted refresh
+     * failed partway through.
+     */
+    static boolean refreshWithVisibilityPin(
+            emu.grasscutter.scripts.data.SceneGroup group,
+            int suiteId,
+            java.util.function.BooleanSupplier refresh,
+            java.util.function.BooleanSupplier anotherOverrideCheck) {
+        boolean wasPinned = group.dontUnload;
+        group.dontUnload = true;
+        boolean applied = false;
+        try {
+            applied = refresh.getAsBoolean();
+            return applied;
+        } finally {
+            // Restore first: even if anotherOverrideCheck throws, the old
+            // unload protection is restored instead of leaking the temp pin.
+            group.dontUnload = wasPinned;
+            if (applied) {
+                boolean anotherOverride =
+                        suiteId == 0 && anotherOverrideCheck.getAsBoolean();
+                group.dontUnload = pinAfterRefresh(
+                        wasPinned, true, suiteId, anotherOverride);
+            }
+        }
+    }
+
     private boolean executeWhenReady(GameQuest quest, String[] paramStr, QuestState stateAtDispatch) {
         // The quest worker may reach this action after the subquest was completed,
         // failed or rewound. Do not create an obsolete combat group.
@@ -130,14 +159,11 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
             // Temporarily pin while switching the suite. On success, only
             // keep that pin if an active quest override still owns the group.
             // A failed refresh restores its previous unload protection.
-            boolean wasPinned = group.dontUnload;
-            group.dontUnload = true;
-            boolean applied = scriptManager.refreshGroupSuite(groupId, suiteId, quest);
-            boolean anotherOverride = applied && suiteId == 0
-                    && quest.getOwner().getQuestManager().getSceneGroupSuite(sceneId).stream()
-                            .anyMatch(saved -> saved.getGroup() == groupId);
-            group.dontUnload = pinAfterRefresh(
-                    wasPinned, applied, suiteId, anotherOverride);
+            boolean applied = refreshWithVisibilityPin(
+                    group, suiteId,
+                    () -> scriptManager.refreshGroupSuite(groupId, suiteId, quest),
+                    () -> quest.getOwner().getQuestManager().getSceneGroupSuite(sceneId).stream()
+                            .anyMatch(saved -> saved.getGroup() == groupId));
             // 35302's Suite 2 contains the combat-training slime (config 439). Report the
             // actual world entity too: an active suite alone does not prove that it spawned.
             if (groupId == 133003002 && suiteId == 2) {

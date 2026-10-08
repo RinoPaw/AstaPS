@@ -23,4 +23,64 @@ final class QuestGroupVisibilityPinTest {
         assertTrue(ExecRefreshGroupSuite.pinAfterRefresh(true, false, 0, false));
         assertFalse(ExecRefreshGroupSuite.pinAfterRefresh(false, false, 2, false));
     }
+
+    @Test
+    void failedOrThrowingRefreshRestoresOldVisibilityPin() {
+        var group = emu.grasscutter.scripts.data.SceneGroup.of(133003002);
+        assertFalse(ExecRefreshGroupSuite.refreshWithVisibilityPin(
+                group, 2, () -> {
+                    assertTrue(group.dontUnload, "temporary pin must cover refresh");
+                    return false;
+                }, () -> false));
+        assertFalse(group.dontUnload);
+
+        assertThrows(IllegalStateException.class, () ->
+                ExecRefreshGroupSuite.refreshWithVisibilityPin(
+                        group, 2, () -> {
+                            assertTrue(group.dontUnload);
+                            throw new IllegalStateException("Lua refresh failed");
+                        }, () -> false));
+        assertFalse(group.dontUnload, "exception must not leak a temporary pin");
+
+        group.dontUnload = true;
+        assertThrows(IllegalStateException.class, () ->
+                ExecRefreshGroupSuite.refreshWithVisibilityPin(
+                        group, 0, () -> {
+                            throw new IllegalStateException("Lua reset failed");
+                        }, () -> false));
+        assertTrue(group.dontUnload, "failed reset must preserve old pin");
+    }
+
+    @Test
+    void successfulResetCanReleasePinOrKeepAnotherQuestOwner() {
+        var group = emu.grasscutter.scripts.data.SceneGroup.of(133003002);
+        group.dontUnload = true;
+        assertTrue(ExecRefreshGroupSuite.refreshWithVisibilityPin(
+                group, 0, () -> true, () -> false));
+        assertFalse(group.dontUnload);
+
+        group.dontUnload = true;
+        assertTrue(ExecRefreshGroupSuite.refreshWithVisibilityPin(
+                group, 0, () -> true, () -> true));
+        assertTrue(group.dontUnload);
+
+        group.dontUnload = false;
+        assertTrue(ExecRefreshGroupSuite.refreshWithVisibilityPin(
+                group, 2, () -> true, () -> {
+                    fail("only resets should check another owner");
+                    return false;
+                }));
+        assertTrue(group.dontUnload);
+    }
+
+    @Test
+    void ownershipCheckExceptionDoesNotStrandNewTemporaryPin() {
+        var group = emu.grasscutter.scripts.data.SceneGroup.of(133003002);
+        assertThrows(IllegalStateException.class, () ->
+                ExecRefreshGroupSuite.refreshWithVisibilityPin(
+                        group, 0, () -> true, () -> {
+                            throw new IllegalStateException("lookup failed");
+                        }));
+        assertFalse(group.dontUnload);
+    }
 }

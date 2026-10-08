@@ -4,19 +4,34 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.excels.quest.QuestData;
 import emu.grasscutter.game.quest.*;
 import emu.grasscutter.game.quest.enums.QuestExec;
+import emu.grasscutter.game.quest.enums.QuestState;
 import emu.grasscutter.game.quest.handlers.QuestExecHandler;
 import lombok.val;
 
 @QuestValueExec(QuestExec.QUEST_EXEC_REFRESH_GROUP_SUITE)
 public class ExecRefreshGroupSuite extends QuestExecHandler {
-    private static final int MAX_SCRIPT_INIT_RETRIES = 100;
-
     @Override
     public boolean execute(GameQuest quest, QuestData.QuestExecParam condition, String... paramStr) {
-        return executeWhenReady(quest, paramStr, 0);
+        return execute(quest, condition, quest.getState(), paramStr);
     }
 
-    private boolean executeWhenReady(GameQuest quest, String[] paramStr, int attempt) {
+    @Override
+    public boolean execute(
+            GameQuest quest, QuestData.QuestExecParam condition,
+            QuestState stateAtDispatch, String... paramStr) {
+        return executeWhenReady(quest, paramStr, stateAtDispatch);
+    }
+
+    private boolean executeWhenReady(GameQuest quest, String[] paramStr, QuestState stateAtDispatch) {
+        // The quest worker may reach this action after the subquest was completed,
+        // failed or rewound. Do not create an obsolete combat group.
+        if (quest.getState() != stateAtDispatch) {
+            Grasscutter.getLogger().debug(
+                    "Skipping obsolete quest group refresh main={} sub={} queued={} current={}",
+                    quest.getMainQuestId(), quest.getSubQuestId(),
+                    stateAtDispatch, quest.getState());
+            return true;
+        }
         if (paramStr.length < 2) {
             Grasscutter.getLogger().warn(
                     "Quest {} refresh-group-suite exec has invalid params {}",
@@ -37,24 +52,41 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
 
         val scriptManager = scene.getScriptManager();
         if (!scriptManager.isInit()) {
-            if (!scriptManager.isInitAttempted() && attempt < MAX_SCRIPT_INIT_RETRIES) {
-                if (attempt == 0) {
-                    Grasscutter.getLogger().debug(
-                            "Quest {} deferring group-suite refresh in scene {} until scripts initialize",
-                            quest.getSubQuestId(),
-                            sceneId);
-                }
-                scene.getScheduler()
-                        .scheduleDelayedTaskTicks(
-                                () -> executeWhenReady(quest, paramStr, attempt + 1), 1);
+            if (!scriptManager.isInitAttempted() && !scriptManager.isDestroyed()) {
+                Grasscutter.getLogger().debug(
+                        "Quest {} deferring group-suite refresh until scene {} scripts initialize",
+                        quest.getSubQuestId(), sceneId);
+                scriptManager.whenInitialized(ready -> {
+                    if (!ready) {
+                        Grasscutter.getLogger().warn(
+                                "Quest {} could not refresh group suite: scene {} scripts unavailable",
+                                quest.getSubQuestId(), sceneId);
+                        return;
+                    }
+                    // The initialization callback runs on the scene-loading thread. Execute
+                    // the scene mutation on its scheduler, not on the loader thread.
+                    scene.getScheduler().scheduleDelayedTask(() -> {
+                        var world = quest.getOwner().getWorld();
+                        if (scriptManager.isDestroyed()
+                                || quest.getState() != stateAtDispatch
+                                || world == null || world.getSceneById(sceneId) != scene) {
+                            Grasscutter.getLogger().debug(
+                                    "Dropping obsolete suite refresh: quest {} scene {}",
+                                    quest.getSubQuestId(), sceneId);
+                            return;
+                        }
+                        if (!executeWhenReady(quest, paramStr, stateAtDispatch)) {
+                            Grasscutter.getLogger().warn(
+                                    "Deferred suite refresh failed: quest {} scene {}",
+                                    quest.getSubQuestId(), sceneId);
+                        }
+                    }, 1);
+                });
                 return true;
             }
-
             Grasscutter.getLogger().warn(
-                    "Quest {} could not refresh group suite in scene {}: scripts failed to initialize after {} attempt(s)",
-                    quest.getSubQuestId(),
-                    sceneId,
-                    attempt);
+                    "Quest {} could not refresh group suite: scene {} scripts unavailable",
+                    quest.getSubQuestId(), sceneId);
             return false;
         }
 
@@ -90,7 +122,31 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
             // entities that are about to be spawned.
             group.dontUnload = true;
 
-            if (!scriptManager.refreshGroupSuite(groupId, suiteId, quest)) {
+            boolean applied = scriptManager.refreshGroupSuite(groupId, suiteId, quest);
+            // 35302's Suite 2 contains the combat-training slime (config 439). Report the
+            // actual world entity too: an active suite alone does not prove that it spawned.
+            if (groupId == 133003002 && suiteId == 2) {
+                var slime = scene.getEntityByConfigId(439, groupId);
+                Grasscutter.getLogger()
+                        .info(
+                                "[quest-slime] uid={} sub={} group={} suite={} applied={} spawned={} entityId={}",
+                                quest.getOwner().getUid(),
+                                quest.getSubQuestId(),
+                                groupId, suiteId, applied, slime != null,
+                                slime != null ? slime.getId() : 0);
+            }
+            if (quest.getMainQuestId() >= 351 && quest.getMainQuestId() <= 353) {
+                var instance = scriptManager.getGroupInstanceById(groupId);
+                Grasscutter.getLogger()
+                        .info(
+                                "[quest-group] uid={} main={} sub={} scene={} group={} suite={} applied={} activeSuite={}",
+                                quest.getOwner().getUid(),
+                                quest.getMainQuestId(),
+                                quest.getSubQuestId(),
+                                sceneId, groupId, suiteId, applied,
+                                instance != null ? instance.getActiveSuiteId() : 0);
+            }
+            if (!applied) {
                 Grasscutter.getLogger().warn(
                         "Quest {} failed to refresh group {} suite {} in scene {}",
                         quest.getSubQuestId(),

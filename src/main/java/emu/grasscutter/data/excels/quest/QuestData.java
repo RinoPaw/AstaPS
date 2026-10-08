@@ -618,6 +618,10 @@ public class QuestData extends GameResource {
      * Mondstadt prologue. Preserve the native-overlay and QuestExcel source
      * policy for all other quests; never promote BinOutput-only quest rows.
      */
+    public static boolean isReviewedMondstadtMainQuest(int mainId) {
+        return REVIEWED_MONDSTADT.contains(mainId);
+    }
+
     private static final Set<Integer> REVIEWED_MONDSTADT = Set.of(
             351, 359, 361, 363, 352, 353, 355, 354, 360, 356, 357, 358,
             306, 307, 308, 309, 311, 370, 371, 372, 373, 374, 375,

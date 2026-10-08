@@ -20,6 +20,7 @@ final class QuestRuntimeActionCoverageTest {
                 QuestExec.QUEST_EXEC_DEL_PACK_ITEM, ExecDelPackItem.class,
                 QuestExec.QUEST_EXEC_ADD_QUEST_PROGRESS, ExecAddQuestProgress.class,
                 QuestExec.QUEST_EXEC_UNLOCK_POINT, ExecUnlockPoint.class,
+                QuestExec.QUEST_EXEC_LOCK_POINT, ExecLockPoint.class,
                 QuestExec.QUEST_EXEC_ROLLBACK_QUEST, ExecRollbackQuest.class,
                 QuestExec.QUEST_EXEC_REMOVE_TRIAL_AVATAR, ExecRemoveTrialAvatar.class);
         for (var entry : required.entrySet()) {

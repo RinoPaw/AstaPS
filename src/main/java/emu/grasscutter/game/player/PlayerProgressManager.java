@@ -1100,6 +1100,19 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
         this.refreshStatueGoddessNpc(sceneId, pointId);
     }
 
+    /**
+     * Re-lock a story-controlled scene point. Keep the persisted unlock list and
+     * the client map update consistent; a later normal unlock clears this lock.
+     */
+    public boolean lockTransPoint(int sceneId, int pointId) {
+        if (sceneId <= 0 || pointId <= 0) return false;
+        this.player.getUnlockedScenePoints(sceneId).remove(pointId);
+        this.player.getForceLockedScenePoints(sceneId).add(pointId);
+        this.player.sendPacket(PacketScenePointUnlockNotify.lock(sceneId, pointId));
+        this.player.save();
+        return true;
+    }
+
     public boolean unlockTransPoint(int sceneId, int pointId, boolean isStatue) {
         // Check whether the unlocked point exists and whether it is still locked.
         ScenePointEntry scenePointEntry = GameData.getScenePointEntryById(sceneId, pointId);

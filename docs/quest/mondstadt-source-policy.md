@@ -43,3 +43,11 @@ to choose QUEST_START versus QUEST_FINISH. Scene callbacks still discard
 events when a quest has changed state, so a late scene load cannot execute
 an obsolete tutorial spawn. This prevents an asynchronous start action
 from being reinterpreted as a finish event.
+
+## Prologue point lock (35106)
+
+35106 finishExec locks scene 3 point 1720 using native protocol field 4
+(locked point) and field 6 (hide point). The new QuestExec handler stores the
+relocked point in the persisted player point state and sends the existing
+ScenePointUnlockNotify.lock packet. Later unlockTransPoint clears its forced
+lock. The ordinary waypoint 3/6 remains unaffected.

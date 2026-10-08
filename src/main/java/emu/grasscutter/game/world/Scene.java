@@ -87,6 +87,7 @@ public class Scene {
     @Getter private boolean isPaused = false;
 
     private final SceneLoadCallbackGate afterLoadedCallbacks = new SceneLoadCallbackGate();
+    private final ScenePlayerEntryGate playerEntryCallbacks = new ScenePlayerEntryGate();
     private final List<Runnable> afterHostInitCallbacks = new ArrayList<>();
 
     @Getter private GameEntity sceneEntity;
@@ -234,6 +235,7 @@ public class Scene {
 
             this.setupPlayerAvatars(player);
         }
+        this.playerEntryCallbacks.enter(player.getUid());
     }
 
     public synchronized void removePlayer(Player player) {
@@ -243,6 +245,7 @@ public class Scene {
         }
 
         getPlayers().remove(player);
+        this.playerEntryCallbacks.leave(player.getUid());
         player.setScene(null);
 
         this.removePlayerAvatars(player);
@@ -942,6 +945,11 @@ public class Scene {
 
     public void runWhenFinished(Runnable runnable) {
         this.afterLoadedCallbacks.whenComplete(runnable);
+    }
+
+    /** Wait for a particular player, even if this scene finished loading earlier. */
+    public void runWhenPlayerEnters(Player player, Runnable runnable) {
+        if (player != null) this.playerEntryCallbacks.whenPresent(player.getUid(), runnable);
     }
 
     public void playerSceneInitialized(Player player) {

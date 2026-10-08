@@ -59,7 +59,10 @@ public class ExecNotifyGroupLua extends QuestExecHandler {
         };
         scriptManager.whenInitialized(ready -> {
             if (ready) {
-                scene.runWhenFinished(deliver);
+                // An already-loaded scene can still be empty while the player
+                // remains inside a dungeon. Wait for the player to enter that scene
+                // before the completion event is delivered.
+                scene.runWhenPlayerEnters(quest.getOwner(), () -> scene.runWhenFinished(deliver));
             } else {
                 emu.grasscutter.Grasscutter.getLogger().warn(
                         "Quest {} cannot notify Lua group {} in scene {}: scripts unavailable",

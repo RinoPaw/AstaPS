@@ -165,3 +165,14 @@ The scene-group gadget spawn filter honors this separate tombstone for any
 gadget type. Ordinary combat deaths continue to use the original temporary
 or oneoff/persistent rules. Unit tests cover both paths and legacy group
 records without the new optional field.
+
+## Scene loaded before returning player
+
+When 39403 completes in dungeon scene 1008, Mondstadt scene 3 may already
+have completed its loading cycle while having no players. Using only
+`runWhenFinished` immediately invoked the cleanup callback and discarded it
+because the player was still in the dungeon. The target scene now also waits
+for that specific player to enter; script initialization, player presence,
+and scene loading must all be satisfied before the saved quest-finish event
+is delivered. The new player-entry callback gate runs callbacks once and is
+tested for both callback-registration orders and concurrent scene returns.

@@ -32,6 +32,29 @@ final class SceneQuestSuitePersistenceTest {
     }
 
     @Test
+    void repeatedOrRedundantResetDoesNotDirtyPersistedQuestState() {
+        var saved = new ArrayList<QuestGroupSuite>();
+        assertFalse(SceneScriptManager.rememberQuestGroupSuite(saved, 3, 133003002, 0));
+        assertTrue(SceneScriptManager.rememberQuestGroupSuite(saved, 3, 133003002, 1));
+        assertFalse(SceneScriptManager.rememberQuestGroupSuite(saved, 3, 133003002, 1));
+        assertTrue(SceneScriptManager.rememberQuestGroupSuite(saved, 3, 133003002, 2));
+        assertFalse(SceneScriptManager.rememberQuestGroupSuite(saved, 3, 133003002, 2));
+        assertTrue(SceneScriptManager.rememberQuestGroupSuite(saved, 3, 133003002, 0));
+        assertFalse(SceneScriptManager.rememberQuestGroupSuite(saved, 3, 133003002, 0));
+        assertTrue(saved.isEmpty());
+    }
+
+    @Test
+    void legacyDuplicateEntriesAreConsideredDirtyEvenIfLatestMatches() {
+        var saved = new ArrayList<QuestGroupSuite>();
+        saved.add(QuestGroupSuite.of().scene(3).group(133003002).suite(1).build());
+        saved.add(QuestGroupSuite.of().scene(3).group(133003002).suite(2).build());
+        assertTrue(SceneScriptManager.rememberQuestGroupSuite(saved, 3, 133003002, 2));
+        assertEquals(1, saved.size());
+        assertEquals(2, saved.get(0).getSuite());
+    }
+
+    @Test
     void invalidOrMissingPersistenceListIsIgnored() {
         var saved = new ArrayList<QuestGroupSuite>();
         SceneScriptManager.rememberQuestGroupSuite(null, 3, 1, 2);

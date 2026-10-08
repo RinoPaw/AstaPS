@@ -48,3 +48,13 @@ choosing a scene or a climate value. No guessed handler is included.
 
 This branch has unit/static coverage but still requires paired 7.1 resource
 validation and full-client scene and battle testing before upstream merge.
+
+## Persist queued suite transitions after quest start
+
+`GameQuest.start()` saves its new state immediately after queueing beginExec.
+`SceneScriptManager.refreshGroupSuite` applies the suite on the quest worker
+later. The old code updated the in-memory `questGroupSuites` list but never
+saved it, so a server restart could restore a pre-refresh group. A successful
+change now triggers `quest.save()` after the list lock is released. Duplicate
+refreshes and resets are no-ops; malformed legacy duplicate entries are
+normalized on the next successful refresh.

@@ -50,13 +50,10 @@ jobs:
       - name: Prepare test resource layout
         run: mkdir -p resources/BinOutput resources/ExcelBinOutput
 
-      # One-off warning audit: force a fresh compile, print every Gradle warning, and pair this with
-      # javac -Xlint:all/-Xmaxwarns from build.gradle. This is reverted after the audit run.
       - name: Verify build
         run: >-
-          ./gradlew clean jar test --no-build-cache --warning-mode all
+          ./gradlew clean jar test --no-build-cache
           -PskipHandbook=1
-          -PjarFilename=grasscutter
           -Dorg.gradle.jvmargs=-Xmx4g
 
       - name: Upload test report
@@ -72,5 +69,5 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: grasscutter
-          path: grasscutter.jar
+          path: grasscutter-7.1.0.jar
           retention-days: 14

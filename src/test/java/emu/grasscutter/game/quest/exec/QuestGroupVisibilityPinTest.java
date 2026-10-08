@@ -83,4 +83,11 @@ final class QuestGroupVisibilityPinTest {
                         }));
         assertFalse(group.dontUnload);
     }
+
+    @Test
+    void visibilityPinIsVisibleAcrossSceneAndQuestThreads() throws Exception {
+        var field = emu.grasscutter.scripts.data.SceneGroup.class.getField("dontUnload");
+        assertTrue(java.lang.reflect.Modifier.isVolatile(field.getModifiers()),
+                "quest thread writes and scene visibility reads require a volatile pin");
+    }
 }

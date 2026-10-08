@@ -32,7 +32,9 @@ public final class SceneGroup {
     public SceneGarbage garbages;
     public SceneInitConfig init_config;
     @Getter public boolean dynamic_load = false;
-    public boolean dontUnload = false;
+    // Quest actions and the scene visibility sweep run on separate threads.
+    // Changes to this pin must be visible to the scene update thread.
+    public volatile boolean dontUnload = false;
 
     public SceneReplaceable is_replaceable;
 

@@ -628,7 +628,7 @@ public class QuestData extends GameResource {
             376, 377, 20101, 379, 380, 381, 382, 383, 384,
             397, 388, 389, 390, 393, 394, 398, 396);
     private static final Set<Integer> REVIEWED_FINISH_LOGIC = Set.of(
-            30710, 30810, 30814, 30901, 31101, 35901);
+            35201, 30710, 30810, 30814, 30901, 31101, 35901);
     private static final Set<Integer> REVIEWED_FAIL_LOGIC = Set.of(
             35203, 37602, 39703, 38802, 39404);
 

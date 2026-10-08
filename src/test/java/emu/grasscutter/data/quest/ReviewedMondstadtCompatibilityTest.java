@@ -98,6 +98,25 @@ final class ReviewedMondstadtCompatibilityTest {
     }
 
     @Test
+    void amberOpeningSupportsEitherOfTwoVerifiedTriggerFires() {
+        // Historical 3.7/4.0 and 7.1 BinOutput agree: 35201 is OR.
+        var excel = GSON.fromJson("""
+                {"subId":35201,"mainId":352,"order":1,"acceptCond":[],
+                 "finishCond":[
+                    {"type":"QUEST_CONTENT_TRIGGER_FIRE","param":[1001,0]},
+                    {"type":"QUEST_CONTENT_TRIGGER_FIRE","param":[1095,0]}
+                 ],"finishCondComb":"LOGIC_NONE"}
+                """, QuestData.class);
+        excel.onLoad();
+        excel.mergeFromBinOutput(GSON.fromJson("""
+                {"subId":35201,"mainId":352,"finishCondComb":"LOGIC_OR"}
+                """, MainQuestData.SubQuestData.class), 352);
+        assertEquals(LogicType.LOGIC_OR, excel.getFinishCondComb());
+        assertEquals(QuestSource.BIN_OUTPUT,
+                excel.getFieldSource(QuestField.FINISH_COND_COMB));
+    }
+
+    @Test
     void stormCleanupReturnsFromReviewedBinWhenExcelOmitsFinishActions() {
         var excel = GSON.fromJson("""
                 {"subId":35901,"mainId":359,"order":1,"acceptCond":[],

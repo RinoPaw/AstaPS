@@ -173,3 +173,13 @@ not mark the group `dontUnload`. The normal visibility unload sweep can
 remove an off-grid quest group immediately after login, even though
 ExecRefreshGroupSuite pinned it on the original start. Rehydrating a saved
 quest suite now reapplies the same pin before refreshing the group.
+
+## Backward-compatible recovery of legacy saved group suites
+
+Older database records may already contain duplicate quest group suite
+entries. The write-side deduplication only affects new actions and does
+not fix that history at login. QuestManager.getSceneGroupSuite now snapshots
+quest-owned overrides and selects only the final suite for each matching
+scene/group pair. An old suite 0 entry acts as a reset. Read-side recovery
+is non-destructive and prevents old records from respawning previous
+story battle waves during reconnection.

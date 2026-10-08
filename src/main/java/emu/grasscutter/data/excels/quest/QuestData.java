@@ -601,7 +601,9 @@ public class QuestData extends GameResource {
             boolean binPresent) {
         recordComparison(field, excelPresent, excelValue, binPresent, binValue, this.subId);
 
-        if (policyFor(field) == SourcePolicy.BIN_OUTPUT_PRIMARY && binPresent) {
+        if (binPresent
+                && (policyFor(field) == SourcePolicy.BIN_OUTPUT_PRIMARY
+                        || reviewedMondstadtBinFallback(field, excelValue, binValue))) {
             sources().put(field, QuestSource.BIN_OUTPUT);
             return binValue;
         }
@@ -609,6 +611,50 @@ public class QuestData extends GameResource {
             sources().put(field, QuestSource.QUEST_EXCEL);
         }
         return excelValue;
+    }
+
+    /**
+     * Compatibility fields proven against GCResource 3700/4000 for the 7.1
+     * Mondstadt prologue. Preserve the native-overlay and QuestExcel source
+     * policy for all other quests; never promote BinOutput-only quest rows.
+     */
+    private static final Set<Integer> REVIEWED_MONDSTADT = Set.of(
+            351, 359, 361, 363, 352, 353, 355, 354, 360, 356, 357, 358,
+            306, 307, 308, 309, 311, 370, 371, 372, 373, 374, 375,
+            376, 377, 20101, 379, 380, 381, 382, 383, 384,
+            397, 388, 389, 390, 393, 394, 398, 396);
+    private static final Set<Integer> REVIEWED_FINISH_LOGIC = Set.of(
+            30710, 30810, 30814, 30901, 31101, 35901);
+    private static final Set<Integer> REVIEWED_FAIL_LOGIC = Set.of(
+            35203, 37602, 39703, 38802, 39404);
+
+    private boolean reviewedMondstadtBinFallback(
+            QuestField field, Object excelValue, Object binValue) {
+        if (!REVIEWED_MONDSTADT.contains(this.mainId)) return false;
+        return switch (field) {
+            // 7.1 ordinary native Quest has no acceptCond. Historical
+            // prerequisites are the reviewed compatibility source.
+            case ACCEPT_COND, ACCEPT_COND_COMB -> true;
+            // The 7.1 QuestExcel rows can omit reviewed tutorial actions
+            // and rewards. Explicit populated Excel values still win.
+            case BEGIN_EXEC, GAIN_ITEMS ->
+                    excelValue == null
+                            || (excelValue instanceof Collection<?> items && items.isEmpty());
+            // Only independently reviewed multiple-condition combinators.
+            case FINISH_COND_COMB ->
+                    REVIEWED_FINISH_LOGIC.contains(this.subId)
+                            && this.finishCond != null && this.finishCond.size() > 1
+                            && binValue instanceof LogicType bin
+                            && bin != LogicType.LOGIC_NONE
+                            && (excelValue == null || excelValue == LogicType.LOGIC_NONE);
+            case FAIL_COND_COMB ->
+                    REVIEWED_FAIL_LOGIC.contains(this.subId)
+                            && this.failCond != null && this.failCond.size() > 1
+                            && binValue instanceof LogicType bin
+                            && bin != LogicType.LOGIC_NONE
+                            && (excelValue == null || excelValue == LogicType.LOGIC_NONE);
+            default -> false;
+        };
     }
 
     private static SourcePolicy policyFor(QuestField field) {

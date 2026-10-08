@@ -117,10 +117,14 @@ public final class QuestSystem extends BaseGameSystem {
             return;
         }
 
+        // Capture the semantic event before the single-threaded queue runs. The
+        // quest may already have finished when this action reaches its handler.
+        final var stateAtDispatch = quest.getState();
+        final var args = params.clone();
         QuestManager.eventExecutor.submit(
                 () -> {
                     try {
-                        if (!handler.execute(quest, execParam, params)) {
+                        if (!handler.execute(quest, execParam, stateAtDispatch, args)) {
                             if (QuestData.isReviewedMondstadtMainQuest(quest.getMainQuestId())) {
                                 Grasscutter.getLogger().warn(
                                         "[quest-exec] failed main={} sub={} action={}",

@@ -33,3 +33,13 @@ The quest group Lua notification captures the state at dispatch and drops
 deferred notifications after the quest or scene changes. Scene group suite
 refresh waits for script initialization without polling. Neither behavior
 alone proves the client-visible monster chain.
+
+## Quest exec dispatch state
+
+QuestSystem snapshots the quest state and action parameters **before** queuing
+each execution. QuestExecHandler's new state-aware overload is backward
+compatible with ordinary handlers; ExecNotifyGroupLua uses the saved state
+to choose QUEST_START versus QUEST_FINISH. Scene callbacks still discard
+events when a quest has changed state, so a late scene load cannot execute
+an obsolete tutorial spawn. This prevents an asynchronous start action
+from being reinterpreted as a finish event.

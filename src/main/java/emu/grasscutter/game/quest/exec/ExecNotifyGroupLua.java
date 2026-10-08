@@ -13,6 +13,14 @@ public class ExecNotifyGroupLua extends QuestExecHandler {
 
     @Override
     public boolean execute(GameQuest quest, QuestData.QuestExecParam condition, String... paramStr) {
+        return execute(quest, condition, quest.getState(), paramStr);
+    }
+
+    @Override
+    public boolean execute(
+            GameQuest quest, QuestData.QuestExecParam condition,
+            QuestState stateAtDispatch, String... paramStr) {
+        if (paramStr.length < 2) return false;
         val sceneId = Integer.parseInt(paramStr[0]);
         val groupId = Integer.parseInt(paramStr[1]);
 
@@ -22,16 +30,11 @@ public class ExecNotifyGroupLua extends QuestExecHandler {
         if (scene.getId() != sceneId) {
             return false;
         }
-        // Capture the action's meaning now: a deferred beginExec must never turn into
-        // EVENT_QUEST_FINISH just because the quest state changed before scene loading.
-        final var startingState = quest.getState();
-        final var eventType =
-                startingState == QuestState.QUEST_STATE_FINISHED
-                        ? EventType.EVENT_QUEST_FINISH
-                        : EventType.EVENT_QUEST_START;
+        // The dispatch state is captured before the quest worker queues this action.
+        final var eventType = eventTypeFor(stateAtDispatch);
         scene.runWhenFinished(
                 () -> {
-                    if (quest.getOwner().getScene() != scene || quest.getState() != startingState
+                    if (quest.getOwner().getScene() != scene || quest.getState() != stateAtDispatch
                             || scriptManager.isDestroyed()) {
                         emu.grasscutter.Grasscutter.getLogger()
                                 .debug("Ignoring stale Lua group notification main={} sub={} group={}",
@@ -52,10 +55,16 @@ public class ExecNotifyGroupLua extends QuestExecHandler {
                                             groupId,
                                             eventType,
                                             quest.getSubQuestId(),
-                                            startingState == QuestState.QUEST_STATE_FINISHED ? 1 : 0)
+                                            stateAtDispatch == QuestState.QUEST_STATE_FINISHED ? 1 : 0)
                                     .setEventSource(quest.getSubQuestId()));
                 });
 
         return true;
+    }
+
+    static int eventTypeFor(QuestState state) {
+        return state == QuestState.QUEST_STATE_FINISHED
+                ? EventType.EVENT_QUEST_FINISH
+                : EventType.EVENT_QUEST_START;
     }
 }

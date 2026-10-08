@@ -56,7 +56,6 @@ jobs:
         run: >-
           ./gradlew clean jar test --no-build-cache --warning-mode all
           -PskipHandbook=1
-          -PjarFilename=grasscutter
           -Dorg.gradle.jvmargs=-Xmx4g
 
       - name: Upload test report
@@ -72,5 +71,5 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: grasscutter
-          path: grasscutter.jar
+          path: grasscutter-7.1.0.jar
           retention-days: 14

@@ -19,6 +19,7 @@ public class QuestData extends GameResource {
     public enum QuestSource {
         QUEST_EXCEL,
         BIN_OUTPUT,
+        REVIEWED_COMPAT,
         NATIVE_QUEST
     }
 
@@ -46,6 +47,16 @@ public class QuestData extends GameResource {
         TRIAL_AVATAR_LIST,
         GAIN_ITEMS
     }
+
+    /**
+     * Historical or reviewed compatibility fields for the 7.1 Mondstadt prologue.
+     * These are explicitly not native full-Quest acceptCond/beginExec fields.
+     */
+    private static final Set<Integer> REVIEWED_MONDSTADT_MAIN_QUESTS = Set.of(
+            351, 359, 361, 363, 352, 353, 355, 354, 360, 356, 357, 358,
+            306, 307, 308, 309, 311, 370, 371, 372, 373, 374, 375, 376,
+            377, 20101, 379, 380, 381, 382, 383, 384,
+            397, 388, 389, 390, 393, 394, 398, 396);
 
     private enum SourcePolicy {
         QUEST_EXCEL_PRIMARY,
@@ -601,6 +612,10 @@ public class QuestData extends GameResource {
             boolean binPresent) {
         recordComparison(field, excelPresent, excelValue, binPresent, binValue, this.subId);
 
+        if (useReviewedMondstadtCompatibility(field, excelValue, binValue, binPresent)) {
+            sources().put(field, QuestSource.REVIEWED_COMPAT);
+            return binValue;
+        }
         if (policyFor(field) == SourcePolicy.BIN_OUTPUT_PRIMARY && binPresent) {
             sources().put(field, QuestSource.BIN_OUTPUT);
             return binValue;
@@ -609,6 +624,38 @@ public class QuestData extends GameResource {
             sources().put(field, QuestSource.QUEST_EXCEL);
         }
         return excelValue;
+    }
+
+    /**
+     * Restrict historically reconstructed prerequisites and beginExec to the
+     * reviewed 40 MainQuests. For genuine native 7.1 fields, NativeQuestParser
+     * still owns the final overlay after this compatibility merge.
+     */
+    private <T> boolean useReviewedMondstadtCompatibility(
+            QuestField field, T excelValue, T binValue, boolean binPresent) {
+        if (!REVIEWED_MONDSTADT_MAIN_QUESTS.contains(this.mainId) || !binPresent) {
+            return false;
+        }
+        return switch (field) {
+            case ACCEPT_COND, ACCEPT_COND_COMB -> true;
+            case BEGIN_EXEC, FINISH_EXEC, FAIL_EXEC, GAIN_ITEMS ->
+                    excelValue == null
+                            || (excelValue instanceof Collection<?> values && values.isEmpty());
+            case FINISH_COND_COMB ->
+                    shouldRecoverMultiConditionLogic(
+                            excelValue, binValue, this.finishCond);
+            case FAIL_COND_COMB ->
+                    shouldRecoverMultiConditionLogic(
+                            excelValue, binValue, this.failCond);
+            default -> false;
+        };
+    }
+
+    private static boolean shouldRecoverMultiConditionLogic(
+            Object excel, Object bin, List<?> predicates) {
+        return (excel == null || excel == LogicType.LOGIC_NONE)
+                && bin != null && bin != LogicType.LOGIC_NONE
+                && predicates != null && predicates.size() > 1;
     }
 
     private static SourcePolicy policyFor(QuestField field) {

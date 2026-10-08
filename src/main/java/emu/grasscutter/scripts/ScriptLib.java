@@ -387,10 +387,37 @@ public class ScriptLib {
         return 1;
     }
 
+    /** The three Stormterror seal lights are receipts (1, 2, 4), not counters. */
+    static boolean isSealLightReceipt(int groupId, String var, int value) {
+        return groupId >= 133007228 && groupId <= 133007230
+                && "Temp_Point_Value".equals(var)
+                && (value == 1 || value == 2 || value == 4);
+    }
+
+    static int recordSealLightReceipt(int oldMask, int receiptBit) {
+        return oldMask | receiptBit;
+    }
+
     public LuaValue ChangeGroupVariableValue(String var, int value) {
         logger.debug("[LUA] Call ChangeGroupVariableValue with {},{}", var, value);
         val groupId = currentGroup.get().id;
         val variables = getSceneScriptManager().getVariables(groupId);
+
+        if (isSealLightReceipt(groupId, var, value)) {
+            final int old;
+            final int updated;
+            synchronized (variables) {
+                old = variables.getOrDefault(var, 0);
+                updated = recordSealLightReceipt(old, value);
+                variables.put(var, updated);
+            }
+            if (updated != old) {
+                getSceneScriptManager().callEvent(
+                        new ScriptArgs(groupId, EventType.EVENT_VARIABLE_CHANGE, updated, old)
+                                .setEventSource(var));
+            }
+            return LuaValue.ZERO;
+        }
 
         val old = variables.getOrDefault(var, 0);
         variables.put(var, old + value);

@@ -94,7 +94,7 @@ public enum QuestExec implements QuestTrigger {
 
     static {
         Stream.of(values())
-                .filter(e -> e.name().startsWith("QUEST_CONTENT_"))
+                .filter(e -> e.name().startsWith("QUEST_EXEC_"))
                 .forEach(
                         e -> {
                             contentMap.put(e.getValue(), e);

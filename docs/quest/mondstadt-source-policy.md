@@ -136,3 +136,12 @@ from the monster death event before inspecting whether its own target group
 is cleared. Without this guard an unrelated monster death could finish
 39703 or 38802 after its target group's entities disappeared from the
 scene. Unit tests cover event isolation and missing event arguments.
+
+## QuestExec ID/name lookup correction
+
+QuestExec's static lookup builder accidentally filtered names with the
+QUEST_CONTENT_ prefix; no QuestExec member uses this prefix, so dynamic
+lookup by name or value always returned QUEST_EXEC_NONE. The corrected
+QUEST_EXEC_ filter indexes every opcode including SET_WEATHER_GADGET.
+This is decoding/lookup infrastructure only: it does not add weather-gadget
+handler semantics. Enum round-trip tests cover all registered IDs.

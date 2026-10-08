@@ -780,6 +780,28 @@ public final class QuestManager extends BasePlayerManager {
         return List.copyOf(current.values());
     }
 
+    /**
+     * Quest weather areas are not stored in Player.weatherId across logins.
+     * Restore only a uniquely identifiable ongoing quest weather activation
+     * before the scene's initial weather notify. Do not override other live
+     * weather selections or guess which of several competing areas should win.
+     *
+     * @return whether setWeather has already sent the initial weather packet
+     */
+    public boolean restoreActiveQuestWeather(int sceneId) {
+        if (sceneId <= 0 || player.getWeatherId() != 0) return false;
+        var active = getActiveMainQuests().stream()
+                .flatMap(main -> main.getActiveQuests().stream())
+                .map(GameQuest::getQuestData)
+                .filter(Objects::nonNull)
+                .toList();
+        int areaId = QuestWeatherRestore.selectArea(
+                active, sceneId, GameData.getWeatherDataMap()::get);
+        if (areaId <= 0) return false;
+        player.setWeather(areaId);
+        return true;
+    }
+
     public List<QuestGroupSuite> getSceneGroupSuite(int sceneId) {
         var saved = new ArrayList<QuestGroupSuite>();
         for (var mainQuest : getMainQuests().values()) {

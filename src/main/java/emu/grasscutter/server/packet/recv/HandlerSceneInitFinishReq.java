@@ -57,7 +57,11 @@ public class HandlerSceneInitFinishReq extends PacketHandler {
                     .filter(e -> PacketPlayerEnterSceneInfoNotify.getHexenzirkelIds().contains(e.getAvatar().getAvatarId()))
                     .count();
             session.send(new PacketTeamHexenzirkelChangeNotify(hexenzirkelCount));
-            session.send(new PacketSceneAreaWeatherNotify(player));
+            // setWeather sends its own SceneAreaWeatherNotify when restoring an
+            // active quest storm after relog. Avoid sending the same packet twice.
+            if (!player.getQuestManager().restoreActiveQuestWeather(player.getSceneId())) {
+                session.send(new PacketSceneAreaWeatherNotify(player));
+            }
             session.send(new PacketScenePlayerInfoNotify(world));
             session.send(new PacketSceneTeamUpdateNotify(player));
 

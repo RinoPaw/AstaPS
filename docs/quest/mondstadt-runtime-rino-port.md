@@ -85,3 +85,26 @@ outside player visibility. The group is still pinned while its suite changes;
 a successful reset releases the pin unless another active quest override
 references the group. Failed refreshes restore the previous pin. This logic
 is covered by regression tests.
+
+## Active quest weather after relog / returning to scene
+
+Player.weatherId and Player.climate are transient. When the server restarts
+during 35901, the quest still has state UNFINISHED but weather defaults to
+clear even though the storm action ran at quest start.
+
+At SceneInitFinishReq, the QuestManager now examines **only active subquests**.
+A quest weather activation is rehydratable when its beginExec activates a
+WeatherExcel gadget and the same subquest's finishExec explicitly deactivates
+that area. The weather area's owning scene and valid gadget ID must match,
+and competing active areas are left unchanged rather than choosing one
+arbitrarily. Existing nonzero weather selections are never overwritten.
+
+The restore operation runs before the initial scene weather notify and sends
+that notify through Player.setWeather exactly once. State is reconstructed
+from persisted quest progress and source-gated native/resource definitions,
+without adding a new persistent weather field or duplicating action scripts.
+Regression tests cover 35901 in scene 3, leaving Mondstadt, missing resets,
+malformed parameters, foreign-scene data and ambiguous active areas.
+
+This remains a per-player weather model. Polygon/area transitions and
+world-wide multi-gadget weather composition need client-level confirmation.

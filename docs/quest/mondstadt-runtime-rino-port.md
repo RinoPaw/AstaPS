@@ -75,3 +75,13 @@ saved it, so a server restart could restore a pre-refresh group. A successful
 change now triggers `quest.save()` after the list lock is released. Duplicate
 refreshes and resets are no-ops; malformed legacy duplicate entries are
 normalized on the next successful refresh.
+
+## Release group unload protection after a successful reset
+
+`ExecRefreshGroupSuite` previously set `group.dontUnload = true` for every
+refresh, including suite 0 (the default reset). That flag remained sticky after
+the saved override had been removed, so expired quest groups stayed loaded
+outside player visibility. The group is still pinned while its suite changes;
+a successful reset releases the pin unless another active quest override
+references the group. Failed refreshes restore the previous pin. This logic
+is covered by regression tests.

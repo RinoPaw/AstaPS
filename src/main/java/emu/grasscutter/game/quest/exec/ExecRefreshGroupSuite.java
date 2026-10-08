@@ -22,6 +22,16 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
         return executeWhenReady(quest, paramStr, stateAtDispatch);
     }
 
+    /**
+     * Keep quest groups pinned while an override is in force, but release
+     * the pin once their suite returns to the scene's default. A failed
+     * refresh must not change the previous protection.
+     */
+    static boolean pinAfterRefresh(
+            boolean wasPinned, boolean applied, int suiteId, boolean anotherOverride) {
+        return !applied ? wasPinned : suiteId > 0 || anotherOverride;
+    }
+
     private boolean executeWhenReady(GameQuest quest, String[] paramStr, QuestState stateAtDispatch) {
         // The quest worker may reach this action after the subquest was completed,
         // failed or rewound. Do not create an obsolete combat group.
@@ -117,12 +127,17 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
                 continue;
             }
 
-            // Quest-owned groups must survive the normal visibility unload pass. Mark this before
-            // switching suites so a concurrently ticking scene cannot immediately discard the quest
-            // entities that are about to be spawned.
+            // Temporarily pin while switching the suite. On success, only
+            // keep that pin if an active quest override still owns the group.
+            // A failed refresh restores its previous unload protection.
+            boolean wasPinned = group.dontUnload;
             group.dontUnload = true;
-
             boolean applied = scriptManager.refreshGroupSuite(groupId, suiteId, quest);
+            boolean anotherOverride = applied && suiteId == 0
+                    && quest.getOwner().getQuestManager().getSceneGroupSuite(sceneId).stream()
+                            .anyMatch(saved -> saved.getGroup() == groupId);
+            group.dontUnload = pinAfterRefresh(
+                    wasPinned, applied, suiteId, anotherOverride);
             // 35302's Suite 2 contains the combat-training slime (config 439). Report the
             // actual world entity too: an active suite alone does not prove that it spawned.
             if (groupId == 133003002 && suiteId == 2) {

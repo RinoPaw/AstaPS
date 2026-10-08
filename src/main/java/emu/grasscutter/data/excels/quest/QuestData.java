@@ -81,16 +81,16 @@ public class QuestData extends GameResource {
         this.failExec = effectiveExecList(this.failExec, additionalData.getFailExec());
         this.gainItems = effectiveGainItems(this.gainItems, additionalData.getGainItems());
 
-        // Native 7.1 prerequisites govern Paimon's 35101 and the 36301 chapter gate.
+        // Reviewed compatibility prerequisites override synthetic QuestExcel chains within Mondstadt only.
         // A flattened quest-0 placeholder must not start the chapter before hilltop 35202.
-        var corrected = selectNativePrologueAcceptConditions(
+        var corrected = selectReviewedMondstadtAcceptConditions(
                 this.mainId, this.acceptCond, additionalData.getAcceptCond());
         if (!sameAcceptConditions(this.acceptCond, corrected)) {
             removeFromAcceptCache();
             this.acceptCond = corrected;
             addToCache();
         }
-        if ((this.mainId == 351 || this.mainId == 363)
+        if (REVIEWED_MONDSTADT_MAIN_QUESTS.contains(this.mainId)
                 && additionalData.getAcceptCondComb() != null) {
             this.acceptCondComb = additionalData.getAcceptCondComb();
         }
@@ -133,10 +133,27 @@ public class QuestData extends GameResource {
                 .toList();
     }
 
-    /** Use native prologue prerequisites, including the hilltop 35202 -> 36301 chapter trigger. */
+    /**
+     * Reviewed compatibility policy only. Native ordinary 7.1 Quest files no longer
+     * own acceptCond; BinOutput values here come from historical restoration.
+     * Mainline scope follows Genshin-Reverse's 7.1 Mondstadt manifest; 361 is
+     * retained as the forest transition despite WQ type.
+     */
+    private static final Set<Integer> REVIEWED_MONDSTADT_MAIN_QUESTS = Set.of(
+            351, 359, 361,
+            363, 352, 353, 355, 354, 360, 356, 357, 358, 306, 307, 308, 309, 311,
+            370, 371, 372, 373, 374, 375, 376, 377, 20101, 379, 380, 381, 382, 383, 384,
+            397, 388, 389, 390, 393, 394, 398, 396);
+
+    static boolean isReviewedMondstadtMainQuest(int id) {
+        return REVIEWED_MONDSTADT_MAIN_QUESTS.contains(id);
+    }
+
+    /** Use populated reviewed BinOutput conditions; retain Excel for absent conditions. */
     static List<QuestAcceptCondition> selectNativePrologueAcceptConditions(
             int mainId, List<QuestAcceptCondition> excel, List<QuestAcceptCondition> nativeValues) {
-        if ((mainId != 351 && mainId != 363) || nativeValues == null || nativeValues.isEmpty()) return excel;
+        if (!REVIEWED_MONDSTADT_MAIN_QUESTS.contains(mainId)
+                || nativeValues == null || nativeValues.isEmpty()) return excel;
         var validNative = nativeValues.stream()
                 .filter(Objects::nonNull)
                 .filter(c -> c.getType() != null && c.getParam() != null && c.getParam().length > 0)

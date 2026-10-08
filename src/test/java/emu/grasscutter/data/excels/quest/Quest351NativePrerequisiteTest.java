@@ -19,7 +19,7 @@ final class Quest351NativePrerequisiteTest {
     void paimonHandoffUsesNative35100FinishedPrerequisite() {
         var stale = List.of(cond("QUEST_COND_STATE_EQUAL", 0, 3));
         var nativeValue = List.of(cond("QUEST_COND_STATE_EQUAL", 35100, 3));
-        var chosen = QuestData.selectNativePrologueAcceptConditions(351, stale, nativeValue);
+        var chosen = QuestData.selectReviewedMondstadtAcceptConditions(351, stale, nativeValue);
         assertEquals(35100, chosen.get(0).getParam()[0]);
         assertFalse(QuestData.sameAcceptConditions(stale, chosen));
         assertTrue(QuestData.sameAcceptConditions(nativeValue, chosen));
@@ -29,9 +29,10 @@ final class Quest351NativePrerequisiteTest {
     void otherMainQuestsAndMissingNativeConditionsRemainUntouched() {
         var excel = List.of(cond("QUEST_COND_STATE_EQUAL", 35100, 3));
         var nativeValue = List.of(cond("QUEST_COND_STATE_EQUAL", 35205, 3));
-        assertSame(excel, QuestData.selectNativePrologueAcceptConditions(353, excel, nativeValue));
-        assertSame(excel, QuestData.selectNativePrologueAcceptConditions(351, excel, null));
-        assertSame(excel, QuestData.selectNativePrologueAcceptConditions(351, excel, List.of()));
+        assertSame(nativeValue, QuestData.selectReviewedMondstadtAcceptConditions(353, excel, nativeValue));
+        assertSame(excel, QuestData.selectReviewedMondstadtAcceptConditions(1000, excel, nativeValue));
+        assertSame(excel, QuestData.selectReviewedMondstadtAcceptConditions(351, excel, null));
+        assertSame(excel, QuestData.selectReviewedMondstadtAcceptConditions(351, excel, List.of()));
     }
 
     @Test
@@ -39,7 +40,7 @@ final class Quest351NativePrerequisiteTest {
         var nativeValue = List.of(
                 cond("QUEST_COND_STATE_EQUAL", 35106, 3),
                 cond("QUEST_COND_STATE_NOT_EQUAL", 35105, 3));
-        var chosen = QuestData.selectNativePrologueAcceptConditions(351, List.of(), nativeValue);
+        var chosen = QuestData.selectReviewedMondstadtAcceptConditions(351, List.of(), nativeValue);
         assertEquals(2, chosen.size());
         assertEquals("QUEST_COND_STATE_NOT_EQUAL", chosen.get(1).getType().name());
     }

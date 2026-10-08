@@ -7,10 +7,18 @@ import emu.grasscutter.game.quest.*;
 
 @QuestValueContent(QUEST_CONTENT_ENTER_MY_WORLD)
 public class ContentEnterMyWorld extends BaseContent {
-    // params[0] scene ID
+    // The event carries the scene entered by the player.
+    static boolean matchesScene(int expectedSceneId, int enteredSceneId, int currentSceneId) {
+        return expectedSceneId > 0
+                && expectedSceneId == enteredSceneId
+                && currentSceneId == enteredSceneId;
+    }
+
     @Override
     public boolean execute(
             GameQuest quest, QuestData.QuestContentCondition condition, String paramStr, int... params) {
-        return quest.getOwner().getSceneId() == params[0];
+        if (condition == null || condition.getParam() == null
+                || condition.getParam().length == 0 || params.length == 0) return false;
+        return matchesScene(condition.getParam()[0], params[0], quest.getOwner().getSceneId());
     }
 }

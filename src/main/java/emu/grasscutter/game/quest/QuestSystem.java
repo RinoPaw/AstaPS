@@ -104,22 +104,40 @@ public final class QuestSystem extends BaseGameSystem {
         QuestExecHandler handler = execHandlers.get(execParam.getType().getValue());
 
         if (handler == null || quest.getQuestData() == null) {
-            Grasscutter.getLogger()
-                    .debug(
-                            "Could not trigger exec {} at {}",
-                            execParam.getType().getValue(),
-                            quest.getQuestData());
+            if (QuestData.isReviewedMondstadtMainQuest(quest.getMainQuestId())) {
+                Grasscutter.getLogger().warn(
+                        "[quest-exec] missing handler main={} sub={} action={}",
+                        quest.getMainQuestId(), quest.getSubQuestId(), execParam.getType());
+            } else {
+                Grasscutter.getLogger().debug(
+                        "Could not trigger exec {} at {}",
+                        execParam.getType().getValue(), quest.getQuestData());
+            }
             return;
         }
 
+        // A queued beginExec must retain its quest-start meaning even if
+        // the quest has advanced by the time the worker executes it.
+        final var stateAtDispatch = quest.getState();
+        final var arguments = params.clone();
         QuestManager.eventExecutor.submit(
                 () -> {
-                    if (!handler.execute(quest, execParam, params)) {
-                        Grasscutter.getLogger()
-                                .debug(
+                    try {
+                        if (!handler.execute(quest, execParam, stateAtDispatch, arguments)) {
+                            if (QuestData.isReviewedMondstadtMainQuest(quest.getMainQuestId())) {
+                                Grasscutter.getLogger().warn(
+                                        "[quest-exec] failed main={} sub={} action={}",
+                                        quest.getMainQuestId(), quest.getSubQuestId(), execParam.getType());
+                            } else {
+                                Grasscutter.getLogger().debug(
                                         "Execute trigger failed for {} at {}.",
-                                        execParam.getType().name(),
-                                        quest.getQuestData());
+                                        execParam.getType().name(), quest.getQuestData());
+                            }
+                        }
+                    } catch (RuntimeException e) {
+                        Grasscutter.getLogger().error(
+                                "Quest execution failure main={} sub={} action={}",
+                                quest.getMainQuestId(), quest.getSubQuestId(), execParam.getType(), e);
                     }
                 });
     }

@@ -58,6 +58,10 @@ public class QuestData extends GameResource {
             377, 20101, 379, 380, 381, 382, 383, 384,
             397, 388, 389, 390, 393, 394, 398, 396);
 
+    public static boolean isReviewedMondstadtMainQuest(int mainId) {
+        return REVIEWED_MONDSTADT_MAIN_QUESTS.contains(mainId);
+    }
+
     private enum SourcePolicy {
         QUEST_EXCEL_PRIMARY,
         BIN_OUTPUT_PRIMARY

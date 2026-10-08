@@ -22,6 +22,15 @@ public final class ExecSetWeatherGadget extends QuestExecHandler {
         return enabled ? questArea : (activeArea == questArea ? 0 : activeArea);
     }
 
+    /**
+     * Activating a weather gadget requires its owning scene. Disabling it
+     * must still clear the player override after a teleport out of that scene:
+     * otherwise the completed quest's storm reappears on the next visit.
+     */
+    static boolean canApply(boolean enabled, int owningSceneId, int currentSceneId) {
+        return !enabled || owningSceneId == currentSceneId;
+    }
+
     @Override
     public boolean execute(GameQuest quest, QuestData.QuestExecParam condition, String... args) {
         if (args.length < 2) {
@@ -53,11 +62,12 @@ public final class ExecSetWeatherGadget extends QuestExecHandler {
         }
 
         var player = quest.getOwner();
-        // Weather-area IDs and scene IDs differ for some quests (e.g. 2150
-        // belongs to scene 4), so validate the weather data's owning scene.
-        if (player.getSceneId() != data.getSceneID()) {
+        // Weather-area IDs and scene IDs differ (area 2150 is in scene 4).
+        // Allow a 0/reset action from another scene to remove the stored
+        // quest weather; only activation needs to run in the owning scene.
+        if (!canApply(activation == 1, data.getSceneID(), player.getSceneId())) {
             Grasscutter.getLogger().debug(
-                    "[quest-weather] deferring area {} for scene {} while player is in scene {}",
+                    "[quest-weather] deferring activation of area {} for scene {} while in {}",
                     areaId, data.getSceneID(), player.getSceneId());
             return false;
         }

@@ -24,4 +24,13 @@ final class ExecSetWeatherGadgetTest {
         assertEquals(3, ExecSetWeatherGadget.nextArea(3, 1, false));
         assertEquals(1, ExecSetWeatherGadget.nextArea(1, 3, false));
     }
+
+    @Test
+    void lateCleanupCanClearStormAfterPlayerLeavesMondstadt() {
+        assertTrue(ExecSetWeatherGadget.canApply(false, 3, 1004));
+        assertEquals(0, ExecSetWeatherGadget.nextArea(3, 3, false));
+        assertTrue(ExecSetWeatherGadget.canApply(false, 3, 3));
+        assertFalse(ExecSetWeatherGadget.canApply(true, 3, 1004));
+        assertTrue(ExecSetWeatherGadget.canApply(true, 3, 3));
+    }
 }

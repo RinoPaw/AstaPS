@@ -40,11 +40,23 @@ Ported changes handle:
 
 ## Open
 
-Weather action `QUEST_EXEC_SET_WEATHER_GADGET` in 35901 requires correct
-client effect realization. WeatherExcel identifies its first parameter as a
-weather-area ID: 3 = Mondstadt city storm, 1 = normal Mondstadt weather.
-The second parameter is a 0/1 activation flag. This is **not** equivalent to
-choosing a scene or a climate value. No guessed handler is included.
+Quest weather action `QUEST_EXEC_SET_WEATHER_GADGET` now has a
+WeatherExcel-aware server handler. It interprets parameter 1 as the weather
+area ID and parameter 2 as a 0/1 activation flag; the handler validates the
+area's WeatherExcel gadget and scene before updating the player's area
+notification. 7.1 `SceneAreaWeatherNotify` has a separate
+`weather_gadget_id` field; this now comes from WeatherExcel
+(area 3 = Mondstadt city storm / gadget 70020003; area 1 = Mondstadt
+general / gadget 70020001). The independent 35901 actor 70700004 stays
+untouched. Deactivation only resets the player's override when it targets
+the currently selected area.
+
+**Client behavior still needs verification**: this first pass uses the
+existing per-player weather notification. It does not yet track concurrent
+weather gadgets as a world-wide scene state, automatically restore active
+quest weather after reconnection, or implement polygon crossing and client
+SetSceneWeatherAreaReq handshakes. Do not claim full visual/weather parity
+until those flows are validated on the 7.1 client.
 
 This branch has unit/static coverage but still requires paired 7.1 resource
 validation and full-client scene and battle testing before upstream merge.

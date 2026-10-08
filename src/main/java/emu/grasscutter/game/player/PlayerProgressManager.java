@@ -221,7 +221,14 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
     }
 
     public void unlockSceneArea(int sceneId, int areaId) {
-        this.player.getUnlockedSceneAreas(sceneId).add(areaId);
+        boolean newlyUnlocked = this.player.getUnlockedSceneAreas(sceneId).add(areaId);
+        // Notify the quest engine only for a newly unlocked area. A quest may
+        // require several areas in one scene; its handler checks persisted
+        // unlocks so later events cannot erase earlier condition progress.
+        if (newlyUnlocked) {
+            this.player.getQuestManager()
+                    .queueEvent(QuestContent.QUEST_CONTENT_UNLOCK_AREA, sceneId, areaId);
+        }
         this.player.sendPacket(new PacketSceneAreaUnlockNotify(sceneId, areaId));
         InvestigationHandbookHelper.trigger(
                 this.player,

@@ -719,11 +719,12 @@ public final class QuestManager extends BasePlayerManager {
                                 switch (condition.getType()) {
                                     case QUEST_CONTENT_OBTAIN_ITEM, QUEST_CONTENT_ITEM_LESS_THAN -> {
                                         // check if we already own enough of the item
-                                        var item = getPlayer().getInventory().getItemByGuid(condition.getParam()[0]);
-                                        queueEvent(
-                                                condition.getType(),
-                                                condition.getParam()[0],
-                                                item != null ? item.getCount() : 0);
+                                        // Condition params contain an ITEM ID, not a game GUID.
+                                        // Use the same aggregate inventory query as the content
+                                        // handlers, including quantities spread over stacks.
+                                        int itemId = condition.getParam()[0];
+                                        int ownedCount = getPlayer().getInventory().getItemCountById(itemId);
+                                        queueEvent(condition.getType(), itemId, ownedCount);
                                     }
                                     case QUEST_CONTENT_UNLOCK_TRANS_POINT -> {
                                         var scenePoints =

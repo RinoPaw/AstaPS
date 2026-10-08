@@ -115,3 +115,13 @@ decodes failCondComb; QuestData now applies the same scoped conservative
 BinOutput fallback for failing quests as for finishing quests. Explicit
 QuestExcel fail logic remains authoritative. This completes the data path
 for the new TEAM_DEAD event.
+
+## Last-monster death ordering in 39703 / 38802
+
+EntityMonster.onDeath queues QUEST_CONTENT_CLEAR_GROUP_MONSTER before the
+dead monster is necessarily removed from Scene's entity table. Previously,
+SceneScriptManager.isClearedGroupMonsters could still count that dead
+entity as a surviving group monster, and the completion event would be
+lost. The check now ignores dead entities with matching group ID, but
+continues to block completion while a living member remains. Unit tests
+cover dead-in-scene and living-group cases.

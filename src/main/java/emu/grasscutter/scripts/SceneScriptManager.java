@@ -287,9 +287,7 @@ public class SceneScriptManager {
             }
         }
 
-        if (waitForOne
-                && (groupInstance.getTargetSuiteId() == 0
-                        || prevSuiteIndex != groupInstance.getTargetSuiteId())) {
+        if (shouldDeferBanRefresh(waitForOne, groupInstance.getTargetSuiteId(), suiteIndex)) {
             groupInstance.setTargetSuiteId(suiteIndex);
             Grasscutter.getLogger()
                     .debug("Group {} suite {} wating one more refresh", group.id, suiteIndex);
@@ -329,6 +327,11 @@ public class SceneScriptManager {
         return suiteIndex;
     }
 
+    /** A previously requested destination is the second, permitted refresh attempt. */
+    static boolean shouldDeferBanRefresh(boolean leavingProtectedSuite, int pendingTarget, int targetSuite) {
+        return leavingProtectedSuite && pendingTarget != targetSuite;
+    }
+
     public boolean refreshGroupSuite(int groupId, int suiteId) {
         var targetGroupInstance = getGroupInstanceById(groupId);
         if (targetGroupInstance == null) {
@@ -345,19 +348,27 @@ public class SceneScriptManager {
             if (targetGroupInstance == null) return false;
         }
         Grasscutter.getLogger().debug("Refreshing group {} suite {}", groupId, suiteId);
-        suiteId =
-                refreshGroup(
-                        targetGroupInstance,
-                        suiteId,
-                        false); // If suiteId is zero, the value of suiteId changes
-        scene.broadcastPacket(new PacketGroupSuiteNotify(groupId, suiteId));
+        int appliedSuite = refreshGroup(targetGroupInstance, suiteId, false);
+        // Leaving a ban_refresh combat suite defers one ordinary refresh. An explicit
+        // quest suite change supplies that second attempt immediately; otherwise
+        // 36004 would never restore ambient suite 2 after its hilichurl battle.
+        if (appliedSuite == 0 && targetGroupInstance.getTargetSuiteId() != 0) {
+            appliedSuite = refreshGroup(targetGroupInstance, suiteId, false);
+        }
+        if (appliedSuite == 0) {
+            Grasscutter.getLogger().warn(
+                    "Group {} could not switch to suite {} in scene {}",
+                    groupId, suiteId, getScene().getId());
+            return false;
+        }
+        scene.broadcastPacket(new PacketGroupSuiteNotify(groupId, appliedSuite));
 
         return true;
     }
 
     public boolean refreshGroupSuite(int groupId, int suiteId, GameQuest quest) {
         var result = refreshGroupSuite(groupId, suiteId);
-        if (suiteId != 0 && quest != null) {
+        if (result && suiteId != 0 && quest != null) {
             quest
                     .getMainQuest()
                     .getQuestGroupSuites()

@@ -51,3 +51,16 @@ from being reinterpreted as a finish event.
 relocked point in the persisted player point state and sends the existing
 ScenePointUnlockNotify.lock packet. Later unlockTransPoint clears its forced
 lock. The ordinary waypoint 3/6 remains unaffected.
+
+## Explicit quest suite restoration after protected combat groups
+
+SceneGroup suite 1 of 133003136 has ban_refresh=true. The original
+refreshGroup compared the *previous active* suite with the queued target,
+so a pending switch to suite 2 could never satisfy the second-attempt
+condition. Explicit REFRESH_GROUP_SUITE also reported success when
+refreshGroup returned 0 (no scene mutation).
+
+The comparison now uses the requested destination, and explicit quest suite
+refreshes make the second attempt in the same operation. The wrapper only
+announces and records a suite if the transition actually completed. This
+is relevant to 36004's post-battle return to ambient group suite 2.

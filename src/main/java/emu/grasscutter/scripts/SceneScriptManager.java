@@ -37,6 +37,7 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 public class SceneScriptManager {
     private final Scene scene;
+    private final SealBattleManager sealBattleManager;
     private final Map<String, Integer> variables;
     /** Mutable fallbacks when a group instance is not cached yet (tower stage/TPL_TIME writes). */
     private final Map<Integer, Map<String, Integer>> orphanGroupVariables = new ConcurrentHashMap<>();
@@ -83,6 +84,7 @@ public class SceneScriptManager {
 
     public SceneScriptManager(Scene scene) {
         this.scene = scene;
+        this.sealBattleManager = new SealBattleManager(this);
         this.currentTriggers = new ConcurrentHashMap<>();
         this.ongoingTriggers = ConcurrentHashMap.newKeySet();
         this.triggersByGroupScene = new ConcurrentHashMap<>();
@@ -111,6 +113,10 @@ public class SceneScriptManager {
 
     public Scene getScene() {
         return scene;
+    }
+
+    public SealBattleManager getSealBattleManager() {
+        return sealBattleManager;
     }
 
     public SceneConfig getConfig() {
@@ -973,6 +979,9 @@ public class SceneScriptManager {
         if (this.destroyed) {
             return;
         }
+        if (params.type == EventType.EVENT_ANY_MONSTER_DIE) {
+            this.sealBattleManager.onMonsterDeath(params.getGroupId(), params.param1);
+        }
         try {
             ScriptLoader.getScriptLib().setSceneScriptManager(this);
 
@@ -1453,6 +1462,7 @@ public class SceneScriptManager {
         }
         this.destroyed = true;
         this.initialization.complete(false);
+        this.sealBattleManager.clear();
 
         activeGroupTimers.forEach(
                 (gid, times) ->

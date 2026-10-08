@@ -782,6 +782,7 @@ public class Scene {
         }
 
         this.scriptManager.checkRegions();
+        this.scriptManager.getSealBattleManager().onTick();
 
         if (challenge != null) {
             challenge.onCheckTimeOut();

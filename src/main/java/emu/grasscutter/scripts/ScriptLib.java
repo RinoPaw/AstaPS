@@ -1537,10 +1537,13 @@ public class ScriptLib {
         return entityGadget.startPlatform() ? 0 : 2;
     }
 
-    public int StartSealBattle(int gadgetId, LuaTable var2) {
-        logger.warn("[LUA] unimplemented Call StartSealBattle with {} {}", gadgetId, printTable(var2));
-
-        return 0;
+    public int StartSealBattle(int gadgetId, LuaTable parameters) {
+        var group = getCurrentGroup().get();
+        if (group == null) return 1;
+        return getSceneScriptManager().getSealBattleManager().start(
+                group.id, gadgetId, parameters.get("monster_group_id").toint(),
+                parameters.get("max_progress").toint(), parameters.get("kill_time").toint(),
+                parameters.get("radius").todouble(), parameters.get("battle_type").toint());
     }
 
     public int StopChallenge(int var1, int var2) {

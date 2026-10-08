@@ -125,3 +125,14 @@ entity as a surviving group monster, and the completion event would be
 lost. The check now ignores dead entities with matching group ID, but
 continues to block completion while a living member remains. Unit tests
 cover dead-in-scene and living-group cases.
+
+## Source-specific world entry and group-clear conditions
+
+CONTENT_ENTER_MY_WORLD must match the entered scene ID against the
+condition's required scene ID and the player's actual scene; previously it
+checked only player scene == event scene and could falsely complete a quest
+for another scene. CONTENT_CLEAR_GROUP_MONSTER must match the group ID
+from the monster death event before inspecting whether its own target group
+is cleared. Without this guard an unrelated monster death could finish
+39703 or 38802 after its target group's entities disappeared from the
+scene. Unit tests cover event isolation and missing event arguments.

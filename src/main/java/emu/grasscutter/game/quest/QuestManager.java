@@ -601,7 +601,8 @@ public final class QuestManager extends BasePlayerManager {
         var questSystem = getPlayer().getServer().getQuestSystem();
         var owner = getPlayer();
 
-        potentialQuests.forEach(
+        QuestContentDispatch.forEachCandidate(
+                potentialQuests,
                 questData -> {
                     if (this.wasSubQuestStarted(questData)) {
                         return;
@@ -649,7 +650,12 @@ public final class QuestManager extends BasePlayerManager {
                         GameQuest quest = owner.getQuestManager().addQuest(questData);
                         Grasscutter.getLogger().debug("Added quest {}", questData.getSubId());
                     }
-                });
+                },
+                (questData, error) ->
+                        Grasscutter.getLogger().error(
+                                "[quest-accept] condition error quest={} event={} paramStr={}",
+                                questData != null ? questData.getSubId() : 0,
+                                condType, paramStr, error));
     }
 
     public boolean wasSubQuestStarted(QuestData questData) {

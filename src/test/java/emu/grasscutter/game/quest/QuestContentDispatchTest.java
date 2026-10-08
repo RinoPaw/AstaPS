@@ -26,6 +26,23 @@ final class QuestContentDispatchTest {
     }
 
     @Test
+    void malformedAcceptConditionDoesNotBlockFollowingChapterHandoff() {
+        var accepted = new ArrayList<Integer>();
+        var errors = new ArrayList<Integer>();
+        QuestContentDispatch.forEachCandidate(
+                List.of(35502, 36101, 35302),
+                subId -> {
+                    if (subId == 35502) {
+                        throw new IllegalStateException("incomplete acceptance data");
+                    }
+                    accepted.add(subId);
+                },
+                (subId, error) -> errors.add(subId));
+        assertEquals(List.of(36101, 35302), accepted);
+        assertEquals(List.of(35502), errors);
+    }
+
+    @Test
     void aHealthyBatchRunsEveryCandidateWithoutError() {
         var processed = new ArrayList<Integer>();
         QuestContentDispatch.forEachCandidate(

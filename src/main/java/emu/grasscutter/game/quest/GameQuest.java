@@ -302,6 +302,10 @@ public class GameQuest {
                     .forEach(t -> this.getOwner().getTeamManager().removeTrialAvatar(t));
         }
 
+        // Start and finish both persist their transitions. Persist failures as well;
+        // otherwise a disconnect before an automatic rewind can resurrect the
+        // unfinished battle state from the previous database snapshot.
+        this.save();
         Grasscutter.getLogger().debug("Quest {} is failed", subQuestId);
     }
 

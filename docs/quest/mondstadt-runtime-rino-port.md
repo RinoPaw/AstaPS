@@ -108,3 +108,16 @@ malformed parameters, foreign-scene data and ambiguous active areas.
 
 This remains a per-player weather model. Polygon/area transitions and
 world-wide multi-gadget weather composition need client-level confirmation.
+
+## Acceptance event isolation and failed-state persistence
+
+The same source event can satisfy acceptance prerequisites for multiple
+subquests. A malformed condition previously aborted the entire acceptance
+batch. QuestManager now reuses QuestContentDispatch for candidate isolation,
+with the failed quest ID and event opcode in the diagnostic log; remaining
+candidates are still checked. QuestContentDispatchTest covers this scenario.
+
+GameQuest.fail previously mutated the failed quest state and sent client
+notifications without saving the parent quest. It now persists the failure
+transition, so a disconnect before rewind cannot restore an obsolete active
+battle state. This retains the normal failExec and team-cleanup ordering.

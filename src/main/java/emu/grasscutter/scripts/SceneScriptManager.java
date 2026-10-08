@@ -49,6 +49,8 @@ public class SceneScriptManager {
     private boolean noCacheGroupGridsToDisk;
 
     private final Map<String, SceneTimeAxis> timeAxis = new ConcurrentHashMap<>();
+    /** Quest Lua groups waiting for the client's cutscene completion. */
+    private final Map<Integer, Set<Integer>> pendingCutsceneGroups = new HashMap<>();
 
     /** current triggers controlled by RefreshGroup */
     private final Map<Integer, Set<SceneTrigger>> currentTriggers;
@@ -1456,12 +1458,33 @@ public class SceneScriptManager {
         }
     }
 
+    /** A cutscene can block multiple quest groups; each completion is delivered once. */
+    public synchronized void registerCutscene(int cutsceneId, int groupId) {
+        if (destroyed || cutsceneId <= 0 || groupId <= 0) return;
+        pendingCutsceneGroups.computeIfAbsent(cutsceneId, id -> new HashSet<>()).add(groupId);
+    }
+
+    static Set<Integer> takeCutsceneGroups(
+            Map<Integer, Set<Integer>> pending, int cutsceneId) {
+        var groups = pending.remove(cutsceneId);
+        return groups == null ? Set.of() : Set.copyOf(groups);
+    }
+
+    public synchronized void finishCutscene(int cutsceneId) {
+        var groups = takeCutsceneGroups(pendingCutsceneGroups, cutsceneId);
+        if (destroyed) return;
+        for (int groupId : groups) {
+            callEvent(new ScriptArgs(groupId, EventType.EVENT_CUTSCENE_END, cutsceneId));
+        }
+    }
+
     public synchronized void onDestroy() {
         if (this.destroyed) {
             return;
         }
         this.destroyed = true;
         this.initialization.complete(false);
+        this.pendingCutsceneGroups.clear();
         this.sealBattleManager.clear();
 
         activeGroupTimers.forEach(

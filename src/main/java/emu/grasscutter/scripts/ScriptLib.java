@@ -1018,13 +1018,15 @@ public class ScriptLib {
     }
 
     public int PlayCutScene(int cutsceneId, int var2) {
-        logger.warn("[LUA] Call unchecked PlayCutScene with {} {}", cutsceneId, var2);
+        logger.debug("[LUA] Call PlayCutScene with {} {}", cutsceneId, var2);
+        var scriptManager = getSceneScriptManager();
+        getCurrentGroup().ifPresent(group -> scriptManager.registerCutscene(cutsceneId, group.id));
         if (emu.grasscutter.config.Configuration.GAME_OPTIONS.disableCutscenes) {
             logger.debug("Cutscene {} suppressed by game.disableCutscenes.", cutsceneId);
+            scriptManager.finishCutscene(cutsceneId);
             return 0;
         }
-        sceneScriptManager.get().getScene().broadcastPacket(new PacketCutsceneBeginNotify(cutsceneId));
-
+        scriptManager.getScene().broadcastPacket(new PacketCutsceneBeginNotify(cutsceneId, true));
         return 0;
     }
 

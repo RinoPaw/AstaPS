@@ -18,6 +18,10 @@ public class HandlerCutSceneFinishNotify extends PacketHandler {
 
         // Preserve the ordinary 7.1 cutscene acknowledgement path.
         session.send(new PacketCutSceneEndNotify(cutsceneId));
+        var scene = player.getScene();
+        if (scene != null) {
+            scene.getScriptManager().finishCutscene(cutsceneId);
+        }
         player.getTowerManager().onMidHalfCutsceneFinished(cutsceneId);
     }
 }

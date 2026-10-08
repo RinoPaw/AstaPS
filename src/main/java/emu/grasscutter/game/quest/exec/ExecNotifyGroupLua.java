@@ -24,18 +24,17 @@ public class ExecNotifyGroupLua extends QuestExecHandler {
         val sceneId = Integer.parseInt(paramStr[0]);
         val groupId = Integer.parseInt(paramStr[1]);
 
-        val scene = quest.getOwner().getScene();
+        val world = quest.getOwner().getWorld();
+        if (world == null) return false;
+        val scene = world.getSceneById(sceneId);
+        if (scene == null) return false;
         val scriptManager = scene.getScriptManager();
-
-        if (scene.getId() != sceneId) {
-            return false;
-        }
         // The dispatch state is captured before the quest worker queues this action.
         final var eventType = eventTypeFor(stateAtDispatch);
-        scene.runWhenFinished(
-                () -> {
-                    if (quest.getOwner().getScene() != scene || quest.getState() != stateAtDispatch
-                            || scriptManager.isDestroyed()) {
+        Runnable deliver = () -> {
+                    if (quest.getOwner().getWorld() != world
+                            || !canDeliver(stateAtDispatch, quest.getState(),
+                                    sceneId, quest.getOwner().getSceneId(), scriptManager.isDestroyed())) {
                         emu.grasscutter.Grasscutter.getLogger()
                                 .debug("Ignoring stale Lua group notification main={} sub={} group={}",
                                         quest.getMainQuestId(), quest.getSubQuestId(), groupId);
@@ -57,9 +56,23 @@ public class ExecNotifyGroupLua extends QuestExecHandler {
                                             quest.getSubQuestId(),
                                             stateAtDispatch == QuestState.QUEST_STATE_FINISHED ? 1 : 0)
                                     .setEventSource(quest.getSubQuestId()));
-                });
-
+        };
+        scriptManager.whenInitialized(ready -> {
+            if (ready) {
+                scene.runWhenFinished(deliver);
+            } else {
+                emu.grasscutter.Grasscutter.getLogger().warn(
+                        "Quest {} cannot notify Lua group {} in scene {}: scripts unavailable",
+                        quest.getSubQuestId(), groupId, sceneId);
+            }
+        });
         return true;
+    }
+
+    static boolean canDeliver(
+            QuestState dispatched, QuestState actual, int targetSceneId,
+            int currentSceneId, boolean destroyed) {
+        return dispatched == actual && targetSceneId == currentSceneId && !destroyed;
     }
 
     static int eventTypeFor(QuestState state) {

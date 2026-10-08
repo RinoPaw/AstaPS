@@ -138,3 +138,18 @@ Only these two subquest IDs can recover those exact finishExec sequences, and
 only if QuestExcel has no populated finishExec. Unexpected params or opcodes
 invalidate the entire fallback; explicit QuestExcel actions remain authoritative.
 All other BinOutput finishExec stay subject to the original audit-only policy.
+
+## Cross-scene Act III cleanup
+
+Q394 subquest 39403 uses quest actors in dungeon scene 1008 but its finish
+notification targets scene 3 Lua group 133007183. The group's native
+QUEST_FINISH trigger expects (39403, success=1) and references gadgets in
+five other scene-3 groups. ExecNotifyGroupLua now resolves the scene given
+by the quest action and defers until target script initialization and scene
+load. It retains the queued quest-state snapshot so obsolete actions cannot
+be reclassified as a different quest event.
+
+ScriptLib.KillEntityByConfigId now honors the explicit Lua `group_id` argument
+instead of always searching the currently executing trigger group. This is
+required for all five cross-group Q394 cleanup targets. Tests cover the scene
+transition gate, quest event type, and explicit/default target group IDs.

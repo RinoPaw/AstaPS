@@ -4,6 +4,7 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.excels.quest.QuestData;
 import emu.grasscutter.game.quest.*;
 import emu.grasscutter.game.quest.enums.QuestExec;
+import emu.grasscutter.game.quest.enums.QuestState;
 import emu.grasscutter.game.quest.handlers.QuestExecHandler;
 import lombok.val;
 
@@ -11,10 +12,26 @@ import lombok.val;
 public class ExecRefreshGroupSuite extends QuestExecHandler {
     @Override
     public boolean execute(GameQuest quest, QuestData.QuestExecParam condition, String... paramStr) {
-        return executeWhenReady(quest, paramStr);
+        return execute(quest, condition, quest.getState(), paramStr);
     }
 
-    private boolean executeWhenReady(GameQuest quest, String[] paramStr) {
+    @Override
+    public boolean execute(
+            GameQuest quest, QuestData.QuestExecParam condition,
+            QuestState stateAtDispatch, String... paramStr) {
+        return executeWhenReady(quest, paramStr, stateAtDispatch);
+    }
+
+    private boolean executeWhenReady(GameQuest quest, String[] paramStr, QuestState stateAtDispatch) {
+        // The quest worker may reach this action after the subquest was completed,
+        // failed or rewound. Do not create an obsolete combat group.
+        if (quest.getState() != stateAtDispatch) {
+            Grasscutter.getLogger().debug(
+                    "Skipping obsolete quest group refresh main={} sub={} queued={} current={}",
+                    quest.getMainQuestId(), quest.getSubQuestId(),
+                    stateAtDispatch, quest.getState());
+            return true;
+        }
         if (paramStr.length < 2) {
             Grasscutter.getLogger().warn(
                     "Quest {} refresh-group-suite exec has invalid params {}",
@@ -36,7 +53,6 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
         val scriptManager = scene.getScriptManager();
         if (!scriptManager.isInit()) {
             if (!scriptManager.isInitAttempted() && !scriptManager.isDestroyed()) {
-                var stateAtDispatch = quest.getState();
                 Grasscutter.getLogger().debug(
                         "Quest {} deferring group-suite refresh until scene {} scripts initialize",
                         quest.getSubQuestId(), sceneId);
@@ -59,7 +75,7 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
                                     quest.getSubQuestId(), sceneId);
                             return;
                         }
-                        if (!executeWhenReady(quest, paramStr)) {
+                        if (!executeWhenReady(quest, paramStr, stateAtDispatch)) {
                             Grasscutter.getLogger().warn(
                                     "Deferred suite refresh failed: quest {} scene {}",
                                     quest.getSubQuestId(), sceneId);

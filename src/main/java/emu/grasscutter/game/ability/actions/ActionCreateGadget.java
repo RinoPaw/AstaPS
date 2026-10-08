@@ -103,7 +103,12 @@ public class ActionCreateGadget extends AbilityActionHandler {
     @Override
     public boolean execute(
             Ability ability, AbilityModifierAction action, ByteString abilityData, GameEntity target) {
-        var entity = ability.getOwner();
+        // Light-guide effects need a server gadget at the current avatar. The existing
+        // per-owner replacement below keeps repeated create invocations to one follower.
+        final var entity = action.gadgetID == 70950005 && "CurLocalAvatar".equals(action.target)
+                ? resolveTarget(ability, target, action.target)
+                : ability.getOwner();
+        if (entity == null) return false;
 
         // The client owns these chains and spawns its own copies, so ours are only ever duplicates -
         // and duplicates the owner can see, since addEntity below broadcasts to everyone while a

@@ -14,6 +14,7 @@ import emu.grasscutter.game.entity.gadget.chest.WorldChestLootHelper;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
+import emu.grasscutter.game.props.SceneType;
 import emu.grasscutter.game.props.WatcherTriggerType;
 import emu.grasscutter.game.world.NodKraiExploreSpawnHelper;
 import emu.grasscutter.game.world.WorldBossSpawnHelper;
@@ -135,7 +136,7 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            WorldChestLootHelper.grant(player, getGadget());
+            grantOrdinaryChestLoot(player);
             finishOpen(player, meta);
             return false;
         }
@@ -163,7 +164,7 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            WorldChestLootHelper.grant(player, getGadget());
+            grantOrdinaryChestLoot(player);
             finishOpen(player, null);
             return false;
         }
@@ -187,7 +188,7 @@ public class GadgetChest extends GadgetContent {
                             req.getResinCostType()
                                     == ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE);
         } else {
-            WorldChestLootHelper.grant(player, getGadget());
+            grantOrdinaryChestLoot(player);
             success = true;
         }
         if (!success) {
@@ -200,6 +201,23 @@ public class GadgetChest extends GadgetContent {
             finishOpen(player, null);
         }
         return false;
+    }
+
+    private void grantOrdinaryChestLoot(Player player) {
+        EntityGadget gadget = getGadget();
+        SceneGadget meta = resolveChestMeta();
+        if (meta != null && meta.chest_drop_id > 0) {
+            DropSystem dropSystem = player.getServer().getDropSystem();
+            // Quest-created chests have no Lua group; scripted quest chests are identified by loot.
+            if ((gadget.getScene().getSceneType() == SceneType.SCENE_DUNGEON
+                            || gadget.getGroupId() == 0
+                            || dropSystem.hasQuestItemDrop(meta.chest_drop_id))
+                    && dropSystem.handleChestDrop(
+                            meta.chest_drop_id, Math.max(1, meta.drop_count), gadget)) {
+                return;
+            }
+        }
+        WorldChestLootHelper.grant(player, gadget);
     }
 
     private boolean grantBossChestFallback(Player player, SceneGadget meta) {

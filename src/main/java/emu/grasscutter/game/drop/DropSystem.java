@@ -273,6 +273,27 @@ public final class DropSystem extends BaseGameSystem {
         return true;
     }
 
+    public boolean hasQuestItemDrop(int dropId) {
+        return hasQuestItemDrop(dropId, new HashSet<>());
+    }
+
+    private boolean hasQuestItemDrop(int dropId, Set<Integer> visited) {
+        if (!visited.add(dropId)) return false;
+        var table = dropTable.get(dropId);
+        if (table == null || table.getDropVec() == null) return false;
+        for (var entry : table.getDropVec()) {
+            if (entry == null || entry.getWeight() <= 0) continue;
+            int id = entry.getId();
+            if (dropTable.containsKey(id)) {
+                if (hasQuestItemDrop(id, visited)) return true;
+            } else {
+                var item = GameData.getItemDataMap().get(id);
+                if (item != null && item.getMaterialType() == MaterialType.MATERIAL_QUEST) return true;
+            }
+        }
+        return false;
+    }
+
     public boolean handleChestDrop(int chestDropId, int dropCount, GameEntity bornFrom) {
         if (!dropTable.containsKey(chestDropId)) return false;
         var dropData = dropTable.get(chestDropId);

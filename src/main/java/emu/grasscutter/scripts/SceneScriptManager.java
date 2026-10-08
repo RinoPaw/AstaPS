@@ -37,6 +37,7 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 public class SceneScriptManager {
     private final Scene scene;
+    private final SealBattleManager sealBattleManager;
     private final Map<String, Integer> variables;
     /** Mutable fallbacks when a group instance is not cached yet (tower stage/TPL_TIME writes). */
     private final Map<Integer, Map<String, Integer>> orphanGroupVariables = new ConcurrentHashMap<>();
@@ -47,6 +48,7 @@ public class SceneScriptManager {
     private boolean noCacheGroupGridsToDisk;
 
     private final Map<String, SceneTimeAxis> timeAxis = new ConcurrentHashMap<>();
+    private final Map<Integer, Set<Integer>> pendingCutsceneGroups = new HashMap<>();
 
     /** current triggers controlled by RefreshGroup */
     private final Map<Integer, Set<SceneTrigger>> currentTriggers;
@@ -82,6 +84,7 @@ public class SceneScriptManager {
 
     public SceneScriptManager(Scene scene) {
         this.scene = scene;
+        this.sealBattleManager = new SealBattleManager(this);
         this.currentTriggers = new ConcurrentHashMap<>();
         this.ongoingTriggers = ConcurrentHashMap.newKeySet();
         this.triggersByGroupScene = new ConcurrentHashMap<>();
@@ -108,6 +111,10 @@ public class SceneScriptManager {
 
     public Scene getScene() {
         return scene;
+    }
+
+    public SealBattleManager getSealBattleManager() {
+        return sealBattleManager;
     }
 
     public SceneConfig getConfig() {
@@ -905,6 +912,9 @@ public class SceneScriptManager {
         if (this.destroyed) {
             return;
         }
+        if (params.type == EventType.EVENT_ANY_MONSTER_DIE) {
+            this.sealBattleManager.onMonsterDeath(params.getGroupId(), params.param1);
+        }
         try {
             ScriptLoader.getScriptLib().setSceneScriptManager(this);
 
@@ -1374,11 +1384,28 @@ public class SceneScriptManager {
         }
     }
 
+    /** Associates a scene cutscene with the groups waiting for its completion. */
+    public synchronized void registerCutscene(int cutsceneId, int groupId) {
+        if (destroyed || cutsceneId <= 0 || groupId <= 0) return;
+        pendingCutsceneGroups.computeIfAbsent(cutsceneId, id -> new HashSet<>()).add(groupId);
+    }
+
+    /** Consumes the pending request once, even if multiple clients report completion. */
+    public synchronized void finishCutscene(int cutsceneId) {
+        var groups = pendingCutsceneGroups.remove(cutsceneId);
+        if (destroyed || groups == null) return;
+        for (int groupId : groups) {
+            callEvent(new ScriptArgs(groupId, EventType.EVENT_CUTSCENE_END, cutsceneId));
+        }
+    }
+
     public synchronized void onDestroy() {
         if (this.destroyed) {
             return;
         }
         this.destroyed = true;
+        this.pendingCutsceneGroups.clear();
+        this.sealBattleManager.clear();
 
         activeGroupTimers.forEach(
                 (gid, times) ->

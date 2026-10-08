@@ -1054,11 +1054,15 @@ public final class AbilityManager extends BasePlayerManager {
                 entity.getInstancedModifiers().put(head.getInstancedModifierId(), modifier);
             }
 
-            if (fromParentName && hasOrchestration && modifierData.onAdded != null) {
+            // Light-lock gadgets report modifier additions by instance ID, without parentAbilityName.
+            // Their Lua receiver and follower cleanup must also run for that explicit client request.
+            if (((fromParentName && hasOrchestration)
+                    || isLightLockAbility(instancedAbilityData))
+                    && modifierData.onAdded != null) {
                 final var finalAbility = instancedAbility;
                 final var finalEntity = entity;
                 for (var a : modifierData.onAdded) {
-                    executeAction(finalAbility, a, invoke.getAbilityData(), finalEntity);
+                    executeActionNow(finalAbility, a, invoke.getAbilityData(), finalEntity);
                 }
             } else if (modifierData.onAdded != null) {
                 // A modifier whose onAdded neither attaches nor applies another modifier used to run
@@ -1127,6 +1131,12 @@ public final class AbilityManager extends BasePlayerManager {
         } else if (modChange.getAction() == ModifierAction.ModifierAction_REMOVED) {
             AbilityModifierController removed =
                     entity.getInstancedModifiers().remove(head.getInstancedModifierId());
+            if (removed != null && isLightLockAbility(removed.getAbilityData())
+                    && removed.getModifierData().onRemoved != null) {
+                for (var action : removed.getModifierData().onRemoved) {
+                    executeActionNow(removed.getAbility(), action, invoke.getAbilityData(), entity);
+                }
+            }
             try {
                 LohenExtraArtSkillLevelHelper.onModifierRemovedByInstance(
                         this.player, head.getInstancedModifierId());
@@ -1152,6 +1162,7 @@ public final class AbilityManager extends BasePlayerManager {
                 Grasscutter.getLogger().warn("[MaxHPRatio] modifierChange remove failed: {}", t.toString());
             }
             try {
+                entity.refreshModifierLockHP();
                 entity.refreshModifierInvincible();
                 emu.grasscutter.game.world.EffigyCombatHelper.onModifiersChanged(entity);
             } catch (Throwable ignored) {
@@ -1165,6 +1176,15 @@ public final class AbilityManager extends BasePlayerManager {
         } catch (Throwable ignored) {
             // Compatibility hook must not affect modifier state.
         }
+    }
+
+    private static boolean isLightLockAbility(AbilityData data) {
+        if (data == null || data.abilityName == null) return false;
+        return switch (data.abilityName) {
+            case "Test_LightLock_Point", "Test_LightLock_Seal",
+                    "Test_LightLock_Seal_Logic", "Test_LightLock_Bullet" -> true;
+            default -> false;
+        };
     }
 
     /** Match {@link AbilityData} sorted modifier keys used for localId indexing. */
@@ -1193,6 +1213,10 @@ public final class AbilityManager extends BasePlayerManager {
     private void handleGlobalFloatValue(AbilityInvokeEntry invoke)
         throws InvalidProtocolBufferException {
         var entity = this.player.getScene().getEntityById(invoke.getEntityId());
+        var teamEntity = this.player.getTeamManager().getEntity();
+        if (entity == null && teamEntity != null && teamEntity.getId() == invoke.getEntityId()) {
+            entity = teamEntity;
+        }
         if (entity == null) return;
 
         var entry = AbilityScalarValueEntry.parseFrom(invoke.getAbilityData());

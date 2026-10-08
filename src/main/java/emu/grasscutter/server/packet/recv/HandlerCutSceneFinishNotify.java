@@ -19,7 +19,12 @@ public class HandlerCutSceneFinishNotify extends PacketHandler {
         // Ack so the client dismisses the cutscene overlay.
         session.send(new PacketCutSceneEndNotify(cutsceneId));
 
-        // Spiral Abyss mid-half waits for cutscene 59 before swapping teams.
+        var scene = player.getScene();
+        if (scene != null) {
+            scene.getScriptManager().finishCutscene(cutsceneId);
+        }
+
+        // Spiral Abyss mid-half waits for its cutscene before swapping teams.
         player.getTowerManager().onMidHalfCutsceneFinished(cutsceneId);
     }
 }

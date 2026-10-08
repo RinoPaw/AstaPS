@@ -11,6 +11,7 @@ import emu.grasscutter.game.entity.gadget.platform.*;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.*;
 import emu.grasscutter.game.world.*;
+import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.net.proto.*;
 import emu.grasscutter.net.proto.AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo;
 import emu.grasscutter.net.proto.AnimatorParameterValueInfoPairOuterClass.AnimatorParameterValueInfoPair;
@@ -455,6 +456,15 @@ public class EntityGadget extends EntityBaseGadget {
 
         if (routeConfig instanceof ConfigRoute configRoute) {
             var route = this.getScene().getSceneRouteById(configRoute.getRouteId());
+            if (route == null || route.getPoints() == null || route.getPoints().length == 0) {
+                Grasscutter.getLogger()
+                        .warn(
+                                "Cannot start platform group={} config={} route={}: route is missing",
+                                getGroupId(),
+                                getConfigId(),
+                                configRoute.getRouteId());
+                return false;
+            }
             if (route != null) {
                 var points = route.getPoints();
                 if (configRoute.getStartIndex() == points.length - 1) {
@@ -516,7 +526,18 @@ public class EntityGadget extends EntityBaseGadget {
 
         getScene().broadcastPacket(new PacketSceneTimeNotify(getScene()));
         routeConfig.startRoute(getScene());
-        getScene().broadcastPacket(new PacketPlatformStartRouteNotify(this));
+        if (PacketOpcodes.PlatformStartRouteNotify > 0) {
+            getScene().broadcastPacket(new PacketPlatformStartRouteNotify(this));
+        } else if (routeConfig instanceof ConfigRoute) {
+            getScene()
+                    .broadcastPacket(
+                            new PacketSceneEntityDisappearNotify(
+                                    this, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH));
+            getScene()
+                    .broadcastPacket(
+                            new PacketSceneEntityAppearNotify(
+                                    this, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH, 0));
+        }
 
         return true;
     }
@@ -538,7 +559,18 @@ public class EntityGadget extends EntityBaseGadget {
         }
 
         routeConfig.stopRoute(getScene());
-        getScene().broadcastPacket(new PacketPlatformStopRouteNotify(this));
+        if (PacketOpcodes.PlatformStopRouteNotify > 0) {
+            getScene().broadcastPacket(new PacketPlatformStopRouteNotify(this));
+        } else if (routeConfig instanceof ConfigRoute) {
+            getScene()
+                    .broadcastPacket(
+                            new PacketSceneEntityDisappearNotify(
+                                    this, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH));
+            getScene()
+                    .broadcastPacket(
+                            new PacketSceneEntityAppearNotify(
+                                    this, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH, 0));
+        }
 
         return true;
     }

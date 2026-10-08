@@ -417,6 +417,24 @@ public class ScriptLib {
         val groupId = currentGroup.get().id;
         val variables = getSceneScriptManager().getVariables(groupId);
 
+        // These three seals store pickup receipts as bits, not a numeric counter.
+        // Repeated or concurrent reports for one light must not add its bit twice.
+        if (groupId >= 133007228 && groupId <= 133007230
+                && "Temp_Point_Value".equals(var) && (value == 1 || value == 2 || value == 4)) {
+            final int old;
+            final int updated;
+            synchronized (variables) {
+                old = variables.getOrDefault(var, 0);
+                updated = old | value;
+                variables.put(var, updated);
+            }
+            if (updated != old) {
+                getSceneScriptManager().callEvent(new ScriptArgs(groupId,
+                        EventType.EVENT_VARIABLE_CHANGE, updated, old).setEventSource(var));
+            }
+            return LuaValue.ZERO;
+        }
+
         val old = variables.getOrDefault(var, 0);
         variables.put(var, old + value);
         getSceneScriptManager().callEvent(new ScriptArgs(groupId, EventType.EVENT_VARIABLE_CHANGE, old + value, old).setEventSource(var));
@@ -1043,12 +1061,16 @@ public class ScriptLib {
     }
 
     public int PlayCutScene(int cutsceneId, int var2) {
-        logger.warn("[LUA] Call unchecked PlayCutScene with {} {}", cutsceneId, var2);
+        logger.debug("[LUA] Call PlayCutScene with {} {}", cutsceneId, var2);
+        var scriptManager = getSceneScriptManager();
+        getCurrentGroup().ifPresent(group -> scriptManager.registerCutscene(cutsceneId, group.id));
         if (emu.grasscutter.config.Configuration.GAME_OPTIONS.disableCutscenes) {
             logger.debug("Cutscene {} suppressed by game.disableCutscenes.", cutsceneId);
+            scriptManager.finishCutscene(cutsceneId);
             return 0;
         }
-        sceneScriptManager.get().getScene().broadcastPacket(new PacketCutsceneBeginNotify(cutsceneId));
+        // Scene triggers need the client's finish acknowledgement to resume after the movie.
+        scriptManager.getScene().broadcastPacket(new PacketCutsceneBeginNotify(cutsceneId, true));
 
         return 0;
     }
@@ -1562,10 +1584,13 @@ public class ScriptLib {
         return entityGadget.startPlatform() ? 0 : 2;
     }
 
-    public int StartSealBattle(int gadgetId, LuaTable var2) {
-        logger.warn("[LUA] unimplemented Call StartSealBattle with {} {}", gadgetId, printTable(var2));
-
-        return 0;
+    public int StartSealBattle(int gadgetId, LuaTable parameters) {
+        var group = getCurrentGroup().get();
+        if (group == null) return 1;
+        return getSceneScriptManager().getSealBattleManager().start(
+                group.id, gadgetId, parameters.get("monster_group_id").toint(),
+                parameters.get("max_progress").toint(), parameters.get("kill_time").toint(),
+                parameters.get("radius").todouble(), parameters.get("battle_type").toint());
     }
 
     public int StopChallenge(int var1, int var2) {

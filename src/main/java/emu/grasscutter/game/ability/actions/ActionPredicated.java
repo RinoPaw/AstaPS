@@ -18,13 +18,15 @@ public final class ActionPredicated extends AbilityActionHandler {
     public boolean execute(Ability ability, AbilityModifierAction action, ByteString abilityData, GameEntity target) {
         AbilityManager mgr = ability != null ? ability.getManager() : null;
         if (mgr == null) return true;
+        var predicateTarget = resolveTarget(ability, target, action.target);
+        if (predicateTarget == null) return false;
 
         // A block with otherTargets asks a question about something else in the scene - the nearest
         // enemy, say - so its predicates and actions run against whatever that picks out, not
         // against the entity carrying the modifier.
-        List<GameEntity> selected = AbilityTargetSelector.select(action.otherTargets, ability, target);
+        List<GameEntity> selected = AbilityTargetSelector.select(action.otherTargets, ability, predicateTarget);
         if (selected == null) {
-            run(mgr, ability, action, abilityData, target, target);
+            run(mgr, ability, action, abilityData, target, predicateTarget);
             return true;
         }
 

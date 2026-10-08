@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString;
 import emu.grasscutter.data.binout.AbilityModifier.AbilityModifierAction;
 import emu.grasscutter.game.ability.Ability;
 import emu.grasscutter.game.ability.AbilityModifierController;
+import emu.grasscutter.game.ability.AbilityTargetSelector;
 import emu.grasscutter.game.ability.ColumbinaMountainDew;
 import emu.grasscutter.game.ability.EscoffierHealUtil;
 import emu.grasscutter.game.ability.LaumaC1HealHelper;
@@ -17,6 +18,20 @@ import java.util.Map;
 public final class ActionApplyModifier extends AbilityActionHandler {
     @Override
     public boolean execute(
+            Ability ability, AbilityModifierAction action, ByteString abilityData, GameEntity target) {
+        target = resolveTarget(ability, target, action.target);
+        if (target == null) return false;
+        var selected = AbilityTargetSelector.select(action.otherTargets, ability, target);
+        if (selected != null) {
+            for (var candidate : selected) {
+                apply(ability, action, abilityData, candidate);
+            }
+            return true;
+        }
+        return apply(ability, action, abilityData, target);
+    }
+
+    private boolean apply(
             Ability ability, AbilityModifierAction action, ByteString abilityData, GameEntity target) {
         if (action.predicates != null && !action.predicates.isEmpty()) {
             @SuppressWarnings("unchecked")

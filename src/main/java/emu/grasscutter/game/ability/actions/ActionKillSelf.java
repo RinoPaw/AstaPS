@@ -5,7 +5,9 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.binout.AbilityModifier.AbilityModifierAction;
 import emu.grasscutter.game.ability.Ability;
 import emu.grasscutter.game.entity.EntityAvatar;
+import emu.grasscutter.game.entity.EntityBaseGadget;
 import emu.grasscutter.game.entity.GameEntity;
+import java.util.Arrays;
 
 @AbilityAction(AbilityModifierAction.Type.KillSelf)
 public final class ActionKillSelf extends AbilityActionHandler {
@@ -19,6 +21,13 @@ public final class ActionKillSelf extends AbilityActionHandler {
 
         if (target instanceof EntityAvatar) {
             return true;
+        }
+
+        if (action.configIdArray != null && action.configIdArray.length > 0) {
+            if (!(target instanceof EntityBaseGadget gadget)
+                    || Arrays.stream(action.configIdArray).noneMatch(id -> id == gadget.getGadgetId())) {
+                return true;
+            }
         }
 
         target.getScene().killEntity(target);

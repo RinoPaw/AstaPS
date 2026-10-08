@@ -448,6 +448,8 @@ public class AbilityModifier implements Serializable {
         public String determineType;
         public int configID;
 
+        public int[] configIdArray;
+
         public DynamicFloat valueRangeMin;
         public DynamicFloat valueRangeMax;
         public String overrideMapKey;

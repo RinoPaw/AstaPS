@@ -478,6 +478,9 @@ public class World implements Iterable<Player> {
             // Don't deregister scenes if the player is going to tp back into them
             if (oldScene == newScene) {
                 oldScene.setDontDestroyWhenEmpty(true);
+            } else {
+                // Clear a same-scene re-entry hold before removing the final player.
+                oldScene.setDontDestroyWhenEmpty(false);
             }
             oldScene.removePlayer(player);
         }
@@ -515,7 +518,6 @@ public class World implements Iterable<Player> {
 
         if (oldScene != null && newScene != null && newScene != oldScene) {
             newScene.setPrevScenePoint(oldScene.getPrevScenePoint());
-            oldScene.setDontDestroyWhenEmpty(false);
         }
 
         // Teleport packet — remap client scene art for domains without client assets

@@ -63,7 +63,8 @@ public abstract class GameEntity {
 
     @Getter @Setter private int lastMoveReliableSeq;
 
-    @Getter @Setter private boolean lockHP;
+    @Setter private boolean lockHP;
+    private boolean modifierLockHP;
     /** Set when an ability modifier with {@code state: Invincible} is active. */
     @Getter @Setter private boolean modifierInvincible;
     private boolean limbo;
@@ -256,7 +257,7 @@ public abstract class GameEntity {
         // LockHP / Invincible / shield-bar are combat states; they must apply even when the
         // modifier has no Actor_* properties (Hypostasis ShieldModifier is LockHP-only).
         if (data.state == AbilityModifier.State.LockHP) {
-            this.setLockHP(true);
+            this.modifierLockHP = true;
         }
         if (data.state == AbilityModifier.State.Invincible) {
             this.setModifierInvincible(true);
@@ -282,6 +283,19 @@ public abstract class GameEntity {
             Grasscutter.getLogger().debug("Limbo set to {}", hpThresholdRatio);
             this.setLimbo(hpThresholdRatio);
         }
+    }
+
+    public boolean isLockHP() {
+        return lockHP || modifierLockHP;
+    }
+
+    /** Recompute modifier protection without clearing locks set directly by scene mechanics. */
+    public void refreshModifierLockHP() {
+        this.modifierLockHP = this.instancedModifiers.values().stream()
+                .filter(java.util.Objects::nonNull)
+                .map(AbilityModifierController::getModifierData)
+                .filter(java.util.Objects::nonNull)
+                .anyMatch(data -> data.state == AbilityModifier.State.LockHP);
     }
 
     /** Recompute Invincible from remaining instanced modifiers after a remove. */
@@ -495,8 +509,8 @@ public abstract class GameEntity {
 
                 effectiveDamage = curHp - 1;
             }
-        } else if (curHp != Float.POSITIVE_INFINITY && (!lockHP || !respectLockHp)
-                || lockHP && curHp <= event.getDamage()) {
+        } else if (curHp != Float.POSITIVE_INFINITY && (!isLockHP() || !respectLockHp)
+                || isLockHP() && curHp <= event.getDamage()) {
             effectiveDamage = event.getDamage();
         }
 

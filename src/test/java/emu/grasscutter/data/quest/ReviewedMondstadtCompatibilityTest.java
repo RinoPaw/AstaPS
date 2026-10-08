@@ -98,6 +98,89 @@ final class ReviewedMondstadtCompatibilityTest {
     }
 
     @Test
+    void stormCleanupReturnsFromReviewedBinWhenExcelOmitsFinishActions() {
+        var excel = GSON.fromJson("""
+                {"subId":35901,"mainId":359,"order":1,"acceptCond":[],
+                 "finishExec":[]}
+                """, QuestData.class);
+        excel.onLoad();
+        var bin = GSON.fromJson("""
+                {"subId":35901,"mainId":359,
+                 "finishExec":[
+                     {"type":"QUEST_EXEC_SET_WEATHER_GADGET","param":["3","0"]},
+                     {"type":"QUEST_EXEC_SET_WEATHER_GADGET","param":["1","0"]}
+                 ]}
+                """, MainQuestData.SubQuestData.class);
+        excel.mergeFromBinOutput(bin, 359);
+        assertEquals(2, excel.getFinishExec().size());
+        assertArrayEquals(new String[]{"3", "0"}, excel.getFinishExec().get(0).getParam());
+        assertArrayEquals(new String[]{"1", "0"}, excel.getFinishExec().get(1).getParam());
+        assertEquals(QuestSource.BIN_OUTPUT,
+                excel.getFieldSource(QuestField.FINISH_EXEC));
+    }
+
+    @Test
+    void thirdActCleanupRetainsVerifiedAvatarWeatherAndLuaSequence() {
+        var excel = GSON.fromJson("""
+                {"subId":39403,"mainId":394,"order":3,"acceptCond":[],
+                 "finishExec":[]}
+                """, QuestData.class);
+        excel.onLoad();
+        var bin = GSON.fromJson("""
+                {"subId":39403,"mainId":394,
+                 "finishExec":[
+                     {"type":"QUEST_EXEC_REMOVE_TRIAL_AVATAR","param":["5"]},
+                     {"type":"QUEST_EXEC_SET_WEATHER_GADGET","param":["2","0"]},
+                     {"type":"QUEST_EXEC_NOTIFY_GROUP_LUA","param":["3","133007183"]}
+                 ]}
+                """, MainQuestData.SubQuestData.class);
+        excel.mergeFromBinOutput(bin, 394);
+        assertEquals(3, excel.getFinishExec().size());
+        assertArrayEquals(new String[]{"5"}, excel.getFinishExec().get(0).getParam());
+        assertArrayEquals(new String[]{"2", "0"}, excel.getFinishExec().get(1).getParam());
+        assertArrayEquals(new String[]{"3", "133007183"},
+                excel.getFinishExec().get(2).getParam());
+        assertEquals(QuestSource.BIN_OUTPUT,
+                excel.getFieldSource(QuestField.FINISH_EXEC));
+    }
+
+    @Test
+    void reviewedFinishCleanupCannotOverrideExcelOrAcceptChangedActions() {
+        var excel = GSON.fromJson("""
+                {"subId":35901,"mainId":359,"order":1,"acceptCond":[],
+                 "finishExec":[{"type":"QUEST_EXEC_NOTIFY_GROUP_LUA",
+                                "param":["3","123"]}]}
+                """, QuestData.class);
+        excel.onLoad();
+        var valid = GSON.fromJson("""
+                {"subId":35901,"mainId":359,
+                 "finishExec":[
+                     {"type":"QUEST_EXEC_SET_WEATHER_GADGET","param":["3","0"]},
+                     {"type":"QUEST_EXEC_SET_WEATHER_GADGET","param":["1","0"]}]}
+                """, MainQuestData.SubQuestData.class);
+        excel.mergeFromBinOutput(valid, 359);
+        assertEquals(1, excel.getFinishExec().size());
+        assertEquals(QuestSource.QUEST_EXCEL,
+                excel.getFieldSource(QuestField.FINISH_EXEC));
+
+        var empty = GSON.fromJson("""
+                {"subId":35901,"mainId":359,"order":1,"acceptCond":[],
+                 "finishExec":[]}
+                """, QuestData.class);
+        empty.onLoad();
+        var changed = GSON.fromJson("""
+                {"subId":35901,"mainId":359,
+                 "finishExec":[
+                     {"type":"QUEST_EXEC_SET_WEATHER_GADGET","param":["3","1"]},
+                     {"type":"QUEST_EXEC_SET_WEATHER_GADGET","param":["1","0"]}]}
+                """, MainQuestData.SubQuestData.class);
+        empty.mergeFromBinOutput(changed, 359);
+        assertTrue(empty.getFinishExec().isEmpty());
+        assertEquals(QuestSource.QUEST_EXCEL,
+                empty.getFieldSource(QuestField.FINISH_EXEC));
+    }
+
+    @Test
     void confirmedNativeQuestFinishConditionsRemainAuthoritative() {
         var excel = GSON.fromJson("""
                 {"subId":30901,"mainId":309,"order":1,"acceptCond":[],

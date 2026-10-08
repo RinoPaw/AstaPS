@@ -121,3 +121,20 @@ GameQuest.fail previously mutated the failed quest state and sent client
 notifications without saving the parent quest. It now persists the failure
 transition, so a disconnect before rewind cannot restore an obsolete active
 battle state. This retains the normal failExec and team-cleanup ordering.
+
+## Reviewed 35901/39403 finish-action recovery
+
+NativeQuestParser still treats WEATHER_GADGET numeric opcode as unconfirmed,
+so any 7.1 native finishExec list containing it remains audit-only. QuestExcel
+may also provide an empty finishExec list, leaving the weather activation
+without its corresponding cleanup on quest completion. Historical GCResource
+3.7 and 4.0 and the paired 7.1 BinOutput agree on **exact action ordering**:
+
+- 35901: SET_WEATHER_GADGET(3,0), then SET_WEATHER_GADGET(1,0).
+- 39403: REMOVE_TRIAL_AVATAR(5), SET_WEATHER_GADGET(2,0),
+  NOTIFY_GROUP_LUA(3,133007183).
+
+Only these two subquest IDs can recover those exact finishExec sequences, and
+only if QuestExcel has no populated finishExec. Unexpected params or opcodes
+invalidate the entire fallback; explicit QuestExcel actions remain authoritative.
+All other BinOutput finishExec stay subject to the original audit-only policy.

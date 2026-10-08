@@ -644,6 +644,14 @@ public class QuestData extends GameResource {
             case BEGIN_EXEC, GAIN_ITEMS ->
                     excelValue == null
                             || (excelValue instanceof Collection<?> items && items.isEmpty());
+            // Both 35901 and 39403 have independently verified historical
+            // finish actions containing WEATHER_GADGET (not yet decoded by
+            // the 7.1 native Quest parser). Never promote arbitrary finish
+            // actions or replace an explicit populated QuestExcel list.
+            case FINISH_EXEC ->
+                    (excelValue == null
+                            || (excelValue instanceof Collection<?> actions && actions.isEmpty()))
+                            && reviewedWeatherFinishActions(this.subId, binValue);
             // Only independently reviewed multiple-condition combinators.
             case FINISH_COND_COMB ->
                     REVIEWED_FINISH_LOGIC.contains(this.subId)
@@ -659,6 +667,39 @@ public class QuestData extends GameResource {
                             && (excelValue == null || excelValue == LogicType.LOGIC_NONE);
             default -> false;
         };
+    }
+
+    /**
+     * Exact cross-checked 3.7/4.0 and paired 7.1 BinOutput compatibility
+     * actions. Keep the order: weather changes and Lua notifications execute
+     * sequentially on the quest worker.
+     */
+    private static boolean reviewedWeatherFinishActions(int subId, Object binValue) {
+        if (!(binValue instanceof List<?> actions)) return false;
+        if (subId == 35901) {
+            return actions.size() == 2
+                    && matchesReviewedExec(actions.get(0),
+                            QuestExec.QUEST_EXEC_SET_WEATHER_GADGET, "3", "0")
+                    && matchesReviewedExec(actions.get(1),
+                            QuestExec.QUEST_EXEC_SET_WEATHER_GADGET, "1", "0");
+        }
+        if (subId == 39403) {
+            return actions.size() == 3
+                    && matchesReviewedExec(actions.get(0),
+                            QuestExec.QUEST_EXEC_REMOVE_TRIAL_AVATAR, "5")
+                    && matchesReviewedExec(actions.get(1),
+                            QuestExec.QUEST_EXEC_SET_WEATHER_GADGET, "2", "0")
+                    && matchesReviewedExec(actions.get(2),
+                            QuestExec.QUEST_EXEC_NOTIFY_GROUP_LUA, "3", "133007183");
+        }
+        return false;
+    }
+
+    private static boolean matchesReviewedExec(
+            Object action, QuestExec opcode, String... expectedParams) {
+        return action instanceof QuestExecParam exec
+                && exec.getType() == opcode
+                && Arrays.equals(exec.getParam(), expectedParams);
     }
 
     private static SourcePolicy policyFor(QuestField field) {

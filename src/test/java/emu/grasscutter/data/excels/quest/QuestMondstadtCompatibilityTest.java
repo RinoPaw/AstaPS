@@ -24,7 +24,9 @@ final class QuestMondstadtCompatibilityTest {
     void restoresBranchInsteadOfSyntheticPhysicalSequence() {
         var excel = List.of(state(2010104));
         var reviewed = List.of(state(2010144));
-        assertSame(reviewed, QuestData.selectReviewedMondstadtAcceptConditions(20101, excel, reviewed));
+        var selected = QuestData.selectReviewedMondstadtAcceptConditions(20101, excel, reviewed);
+        assertTrue(QuestData.sameAcceptConditions(reviewed, selected));
+        assertFalse(QuestData.sameAcceptConditions(excel, selected));
     }
     @Test
     void emptyAndMalformedCompatibilityFallBackToExcel() {

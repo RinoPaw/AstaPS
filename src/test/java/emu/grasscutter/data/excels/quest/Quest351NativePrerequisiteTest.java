@@ -29,7 +29,9 @@ final class Quest351NativePrerequisiteTest {
     void otherMainQuestsAndMissingNativeConditionsRemainUntouched() {
         var excel = List.of(cond("QUEST_COND_STATE_EQUAL", 35100, 3));
         var nativeValue = List.of(cond("QUEST_COND_STATE_EQUAL", 35205, 3));
-        assertSame(nativeValue, QuestData.selectReviewedMondstadtAcceptConditions(353, excel, nativeValue));
+        var selected = QuestData.selectReviewedMondstadtAcceptConditions(353, excel, nativeValue);
+        assertTrue(QuestData.sameAcceptConditions(nativeValue, selected));
+        assertFalse(QuestData.sameAcceptConditions(excel, selected));
         assertSame(excel, QuestData.selectReviewedMondstadtAcceptConditions(1000, excel, nativeValue));
         assertSame(excel, QuestData.selectReviewedMondstadtAcceptConditions(351, excel, null));
         assertSame(excel, QuestData.selectReviewedMondstadtAcceptConditions(351, excel, List.of()));

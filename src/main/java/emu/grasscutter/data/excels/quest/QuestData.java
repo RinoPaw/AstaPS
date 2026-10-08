@@ -150,7 +150,7 @@ public class QuestData extends GameResource {
     }
 
     /** Use populated reviewed BinOutput conditions; retain Excel for absent conditions. */
-    static List<QuestAcceptCondition> selectNativePrologueAcceptConditions(
+    static List<QuestAcceptCondition> selectReviewedMondstadtAcceptConditions(
             int mainId, List<QuestAcceptCondition> excel, List<QuestAcceptCondition> nativeValues) {
         if (!REVIEWED_MONDSTADT_MAIN_QUESTS.contains(mainId)
                 || nativeValues == null || nativeValues.isEmpty()) return excel;

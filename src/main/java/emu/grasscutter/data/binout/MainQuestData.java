@@ -87,6 +87,10 @@ public class MainQuestData {
         // Preserve native 7.1 prerequisite conditions, including chapter controller 36301.
         private List<QuestData.QuestAcceptCondition> acceptCond;
         private LogicType acceptCondComb;
+        // Native 7.1 full Quest also stores finish/fail combinators. Preserve these
+        // alongside historical compatibility data instead of dropping them at deserialization.
+        private LogicType finishCondComb;
+        private LogicType failCondComb;
 
         // Actions present in native BinOutput can be absent from the flattened Excel export.
         private List<QuestData.QuestExecParam> beginExec;

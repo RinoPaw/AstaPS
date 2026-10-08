@@ -73,3 +73,14 @@ Lua progress and numeric ADD_QUEST_PROGRESS only when the exact progress key
 meets the condition's required count. Unset keys and unrelated condition types
 never replay. This preserves the three wave IDs and supports delayed quest
 acceptance without re-spawning an already killed monster.
+
+## Multi-objective dungeon completion (30901)
+
+Both GCResource 3700 and 4000 record LOGIC_AND for 30901's three
+QUEST_CONTENT_FINISH_DUNGEON conditions (IDs 1001, 1, 1003). The original
+flattened 7.1 file omitted finishCondComb and QuestData's loader defaulted
+to LOGIC_NONE, which acts as OR. MainQuestData now decodes full Quest
+finishCondComb/failCondComb, and Mondstadt-only compatibility fallback
+restores a nontrivial BinOutput finish combinator only if the flattened
+Excel combinator is NONE and the objective has multiple conditions.
+An explicit Excel combinator remains authoritative.

@@ -95,10 +95,28 @@ public class QuestData extends GameResource {
             this.acceptCondComb = additionalData.getAcceptCondComb();
         }
 
+        // Asta's flattened QuestExcel sometimes loses nontrivial finish logic.
+        // Preserve its populated combinator, but restore a reviewed BinOutput
+        // combinator when Excel only has LOGIC_NONE and there are multiple predicates.
+        this.finishCondComb = effectiveMondstadtFinishLogic(
+                this.mainId, this.finishCondComb, additionalData.getFinishCondComb(),
+                this.finishCond == null ? 0 : this.finishCond.size());
+
         // Keep this data-only merge free of Grasscutter bootstrap side effects:
         // resource-level diagnostics are emitted by ResourceLoader after loading.
     }
 
+
+    static LogicType effectiveMondstadtFinishLogic(
+            int mainId, LogicType excel, LogicType bin, int predicateCount) {
+        if (!REVIEWED_MONDSTADT_MAIN_QUESTS.contains(mainId)
+                || predicateCount < 2
+                || bin == null || bin == LogicType.LOGIC_NONE
+                || (excel != null && excel != LogicType.LOGIC_NONE)) {
+            return excel;
+        }
+        return bin;
+    }
 
     static List<QuestExecParam> effectiveExecList(
             List<QuestExecParam> excel, List<QuestExecParam> bin) {

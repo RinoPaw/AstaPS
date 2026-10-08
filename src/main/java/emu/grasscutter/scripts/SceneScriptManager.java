@@ -288,9 +288,7 @@ public class SceneScriptManager {
             }
         }
 
-        if (waitForOne
-                && (groupInstance.getTargetSuiteId() == 0
-                        || prevSuiteIndex != groupInstance.getTargetSuiteId())) {
+        if (shouldDeferBanRefresh(waitForOne, groupInstance.getTargetSuiteId(), suiteIndex)) {
             groupInstance.setTargetSuiteId(suiteIndex);
             Grasscutter.getLogger()
                     .debug("Group {} suite {} wating one more refresh", group.id, suiteIndex);
@@ -330,6 +328,11 @@ public class SceneScriptManager {
         return suiteIndex;
     }
 
+    /** A matching second request is sufficient to leave a ban_refresh suite. */
+    static boolean shouldDeferBanRefresh(boolean leavingProtectedSuite, int pendingTarget, int targetSuite) {
+        return leavingProtectedSuite && pendingTarget != targetSuite;
+    }
+
     public boolean refreshGroupSuite(int groupId, int suiteId) {
         var targetGroupInstance = getGroupInstanceById(groupId);
         if (targetGroupInstance == null) {
@@ -346,13 +349,21 @@ public class SceneScriptManager {
             if (targetGroupInstance == null) return false;
         }
         Grasscutter.getLogger().debug("Refreshing group {} suite {}", groupId, suiteId);
-        suiteId =
-                refreshGroup(
-                        targetGroupInstance,
-                        suiteId,
-                        false); // If suiteId is zero, the value of suiteId changes
-        scene.broadcastPacket(new PacketGroupSuiteNotify(groupId, suiteId));
-
+        int appliedSuite = refreshGroup(targetGroupInstance, suiteId, false);
+        // A protected combat suite defers the first switch to an ordinary
+        // suite. An explicit quest change supplies the second request here.
+        if (appliedSuite == 0 && targetGroupInstance.getTargetSuiteId() != 0) {
+            appliedSuite = refreshGroup(targetGroupInstance, suiteId, false);
+        }
+        // A missing suite or a blocked refresh must never be treated as an
+        // applied suite: don't send suite 0 and don't persist a false override.
+        if (appliedSuite == 0) {
+            Grasscutter.getLogger().warn(
+                    "Group {} could not switch to suite {} in scene {}",
+                    groupId, suiteId, getScene().getId());
+            return false;
+        }
+        scene.broadcastPacket(new PacketGroupSuiteNotify(groupId, appliedSuite));
         return true;
     }
 

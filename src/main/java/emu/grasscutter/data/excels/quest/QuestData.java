@@ -145,7 +145,7 @@ public class QuestData extends GameResource {
             370, 371, 372, 373, 374, 375, 376, 377, 20101, 379, 380, 381, 382, 383, 384,
             397, 388, 389, 390, 393, 394, 398, 396);
 
-    static boolean isReviewedMondstadtMainQuest(int id) {
+    public static boolean isReviewedMondstadtMainQuest(int id) {
         return REVIEWED_MONDSTADT_MAIN_QUESTS.contains(id);
     }
 

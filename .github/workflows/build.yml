@@ -38,7 +38,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build jar
-        run: ./gradlew jar -PskipHandbook=1 -PjarFilename=grasscutter -Dorg.gradle.jvmargs=-Xmx4g
+        run: ./gradlew jar -PskipHandbook=1 -Dorg.gradle.jvmargs=-Xmx4g
 
       # GrasscutterTest boots a real server and needs MongoDB plus the resources pack, which is
       # gitignored and so absent from a fresh checkout. Without them Grasscutter.main calls
@@ -60,5 +60,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: grasscutter
-          path: grasscutter.jar
+          path: grasscutter-7.1.0.jar
           retention-days: 14

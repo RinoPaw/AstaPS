@@ -165,3 +165,11 @@ scene entry, Scene.loadGroupForQuest replayed stale suites in order.
 The persistence list now keeps only the current suite per scene/group pair,
 and a successful reset to suite 0 removes the corresponding override.
 Unit tests cover update, deduplication, reset and independent scene/groups.
+
+## Reconnection preserves pinned quest-owned scene groups
+
+Scene.loadGroupForQuest reapplies persisted suite overrides but previously did
+not mark the group `dontUnload`. The normal visibility unload sweep can
+remove an off-grid quest group immediately after login, even though
+ExecRefreshGroupSuite pinned it on the original start. Rehydrating a saved
+quest suite now reapplies the same pin before refreshing the group.

@@ -1521,6 +1521,10 @@ public class Scene {
                         return;
                     }
 
+                    // A saved quest suite can be far outside the player's current
+                    // visible grid. The ordinary unload sweep must not discard it
+                    // immediately after reconnect.
+                    group.dontUnload = true;
                     scriptManager.refreshGroup(groupInstance, i.getSuite(), false);
                 });
     }

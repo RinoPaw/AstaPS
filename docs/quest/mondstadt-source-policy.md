@@ -84,3 +84,13 @@ finishCondComb/failCondComb, and Mondstadt-only compatibility fallback
 restores a nontrivial BinOutput finish combinator only if the flattened
 Excel combinator is NONE and the objective has multiple conditions.
 An explicit Excel combinator remains authoritative.
+
+## Previously completed dungeons at quest start
+
+30901 can become active after a player has completed one or more starter
+dungeons. ContentFinishDungeon reads the persisted completedDungeons set,
+but checkQuestAlreadyFulfilled previously did not dispatch FINISH_DUNGEON
+for recorded completions. It now queues that event for each recorded
+matching dungeon on subquest start. Together with its restored LOGIC_AND,
+this permits all three completion flags to satisfy the hidden task in
+any order, including completions preceding 30901 activation.

@@ -708,6 +708,17 @@ public final class QuestManager extends BasePlayerManager {
      * begins (e.g. tutorial slimes 35309-35311). The progress is stored on the
      * player, and a newly started quest must check that stored count once.
      */
+    static boolean hasCompletedQuestDungeon(
+            QuestData.QuestContentCondition condition, PlayerProgress progress) {
+        return condition != null
+                && condition.getType() == QuestContent.QUEST_CONTENT_FINISH_DUNGEON
+                && condition.getParam() != null
+                && condition.getParam().length > 0
+                && progress != null
+                && progress.getCompletedDungeons() != null
+                && progress.getCompletedDungeons().contains(condition.getParam()[0]);
+    }
+
     static boolean hasRecordedQuestProgress(
             QuestData.QuestContentCondition condition, PlayerProgress progress) {
         if (condition == null || progress == null || condition.getType() == null) return false;
@@ -758,6 +769,14 @@ public final class QuestManager extends BasePlayerManager {
                                         if (sceneAreas != null && sceneAreas.contains(condition.getParam()[1])) {
                                             queueEvent(
                                                     condition.getType(), condition.getParam()[0], condition.getParam()[1]);
+                                        }
+                                    }
+                                    case QUEST_CONTENT_FINISH_DUNGEON -> {
+                                        // 30901 may activate after one or more of the three
+                                        // starter dungeons are already complete. Their completion
+                                        // history is persisted even if this quest was inactive.
+                                        if (hasCompletedQuestDungeon(condition, player.getPlayerProgress())) {
+                                            queueEvent(condition.getType(), condition.getParam()[0]);
                                         }
                                     }
                                     case QUEST_CONTENT_LUA_NOTIFY -> {

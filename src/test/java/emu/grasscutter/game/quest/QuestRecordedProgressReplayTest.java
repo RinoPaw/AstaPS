@@ -46,6 +46,26 @@ final class QuestRecordedProgressReplayTest {
     }
 
     @Test
+    void completedDungeonsBeforeQuest30901StartsAreRecognized() {
+        var progress = new PlayerProgress();
+        var first = condition(QuestContent.QUEST_CONTENT_FINISH_DUNGEON, "", 1001, 0);
+        var second = condition(QuestContent.QUEST_CONTENT_FINISH_DUNGEON, "", 1, 0);
+        var third = condition(QuestContent.QUEST_CONTENT_FINISH_DUNGEON, "", 1003, 0);
+        assertFalse(QuestManager.hasCompletedQuestDungeon(first, progress));
+
+        progress.getCompletedDungeons().add(1001);
+        progress.getCompletedDungeons().add(1);
+        assertTrue(QuestManager.hasCompletedQuestDungeon(first, progress));
+        assertTrue(QuestManager.hasCompletedQuestDungeon(second, progress));
+        assertFalse(QuestManager.hasCompletedQuestDungeon(third, progress));
+
+        progress.getCompletedDungeons().add(1003);
+        assertTrue(QuestManager.hasCompletedQuestDungeon(third, progress));
+        assertFalse(QuestManager.hasCompletedQuestDungeon(
+                condition(QuestContent.QUEST_CONTENT_FINISH_DUNGEON, "", 9999, 0), progress));
+    }
+
+    @Test
     void invalidAndUnrelatedConditionsAreNotReplayed() {
         var progress = new PlayerProgress();
         progress.addToCurrentProgress("123", 1);

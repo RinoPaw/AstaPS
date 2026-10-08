@@ -958,17 +958,34 @@ public class ScriptLib {
         return true;
     }
 
+    /**
+     * Lua may target a gadget in another group. The caller's current group
+     * is only a fallback when the table does not specify group_id.
+     */
+    static int killEntityTargetGroup(int requestedGroupId, int currentGroupId) {
+        return requestedGroupId > 0 ? requestedGroupId : currentGroupId;
+    }
+
     public int KillEntityByConfigId(LuaTable table) {
         logger.debug("[LUA] Call KillEntityByConfigId with {}", printTable(table));
         var configId = table.get("config_id");
-        if (configId == LuaValue.NIL) {
+        if (!configId.isnumber() || configId.toint() <= 0) {
             return 1;
         }
-        var entity = getSceneScriptManager().getScene().getEntityByConfigId(configId.toint(), getCurrentGroup().get().id);
+
+        var groupValue = table.get("group_id");
+        var activeGroup = this.currentGroup.get();
+        int groupId = killEntityTargetGroup(
+                groupValue.isnumber() ? groupValue.toint() : 0,
+                activeGroup != null ? activeGroup.id : 0);
+        if (groupId <= 0) return 1;
+
+        var scene = getSceneScriptManager().getScene();
+        var entity = scene.getEntityByConfigId(configId.toint(), groupId);
         if (entity == null) {
             return 0;
         }
-        getSceneScriptManager().getScene().killEntity(entity, 0);
+        scene.killEntity(entity, 0);
         return 0;
     }
 

@@ -86,7 +86,7 @@ public class Scene {
     @Getter protected int tickCount = 0;
     @Getter private boolean isPaused = false;
 
-    private final List<Runnable> afterLoadedCallbacks = new ArrayList<>();
+    private final SceneLoadCallbackGate afterLoadedCallbacks = new SceneLoadCallbackGate();
     private final List<Runnable> afterHostInitCallbacks = new ArrayList<>();
 
     @Getter private GameEntity sceneEntity;
@@ -936,19 +936,12 @@ public class Scene {
 
     public void finishLoading() {
         if (this.finishedLoading) return;
-
         this.finishedLoading = true;
-        this.afterLoadedCallbacks.forEach(Runnable::run);
-        this.afterLoadedCallbacks.clear();
+        this.afterLoadedCallbacks.complete();
     }
 
     public void runWhenFinished(Runnable runnable) {
-        if (this.isFinishedLoading()) {
-            runnable.run();
-            return;
-        }
-
-        this.afterLoadedCallbacks.add(runnable);
+        this.afterLoadedCallbacks.whenComplete(runnable);
     }
 
     public void playerSceneInitialized(Player player) {

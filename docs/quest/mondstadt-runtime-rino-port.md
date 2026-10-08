@@ -36,9 +36,10 @@ Ported changes handle:
 - the last-party-member-dead quest failure event;
 - independent delivery of content events when another subquest throws;
 - persisted and legacy quest group-suite state, including login rehydration;
-- replay of already recorded quest Lua progress and dungeon completion.
+- replay of already recorded quest Lua progress and dungeon completion;
+- verified 7.1 weather-area/gadget activation and cross-scene cleanup.
 
-## Open
+## Remaining validation
 
 Quest weather action `QUEST_EXEC_SET_WEATHER_GADGET` now has a
 WeatherExcel-aware server handler. It interprets parameter 1 as the weather
@@ -50,6 +51,10 @@ notification. 7.1 `SceneAreaWeatherNotify` has a separate
 general / gadget 70020001). The independent 35901 actor 70700004 stays
 untouched. Deactivation only resets the player's override when it targets
 the currently selected area.
+
+All 20 reviewed quest-action types have a concrete registered Java handler,
+including weather gadget actions. The source coverage test and paired
+resource audit agree on all 20 types.
 
 **Client behavior still needs verification**: this first pass uses the
 existing per-player weather notification. It does not yet track concurrent

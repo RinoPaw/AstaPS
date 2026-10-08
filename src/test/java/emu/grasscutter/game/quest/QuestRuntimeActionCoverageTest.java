@@ -31,14 +31,17 @@ final class QuestRuntimeActionCoverageTest {
                 Map.entry(QuestExec.QUEST_EXEC_CHANGE_AVATAR_ELEMET, ExecChangeAvatarElemet.class),
                 Map.entry(QuestExec.QUEST_EXEC_SET_OPEN_STATE, ExecSetOpenState.class),
                 Map.entry(QuestExec.QUEST_EXEC_SET_QUEST_GLOBAL_VAR, ExecSetQuestGlobalVar.class),
-                Map.entry(QuestExec.QUEST_EXEC_REFRESH_GROUP_MONSTER, ExecRefreshGroupMonster.class));
-        assertEquals(19, handlers.size());
+                Map.entry(QuestExec.QUEST_EXEC_REFRESH_GROUP_MONSTER, ExecRefreshGroupMonster.class),
+                Map.entry(QuestExec.QUEST_EXEC_SET_WEATHER_GADGET, ExecSetWeatherGadget.class));
+        assertEquals(20, handlers.size());
         for (var entry : handlers.entrySet()) {
             var annotation = entry.getValue().getAnnotation(QuestValueExec.class);
             assertNotNull(annotation, "No registration annotation for " + entry.getKey());
             assertEquals(entry.getKey(), annotation.value());
         }
-        // SET_WEATHER_GADGET remains excluded: it has no verified implementation.
-        assertFalse(handlers.containsKey(QuestExec.QUEST_EXEC_SET_WEATHER_GADGET));
+        // All 20 action types observed in the paired 7.1 resource scope
+        // must have a concrete opcode-annotated handler.
+        assertEquals(ExecSetWeatherGadget.class,
+                handlers.get(QuestExec.QUEST_EXEC_SET_WEATHER_GADGET));
     }
 }

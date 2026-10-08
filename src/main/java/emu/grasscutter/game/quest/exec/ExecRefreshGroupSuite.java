@@ -9,14 +9,12 @@ import lombok.val;
 
 @QuestValueExec(QuestExec.QUEST_EXEC_REFRESH_GROUP_SUITE)
 public class ExecRefreshGroupSuite extends QuestExecHandler {
-    private static final int MAX_SCRIPT_INIT_RETRIES = 100;
-
     @Override
     public boolean execute(GameQuest quest, QuestData.QuestExecParam condition, String... paramStr) {
-        return executeWhenReady(quest, paramStr, 0);
+        return executeWhenReady(quest, paramStr);
     }
 
-    private boolean executeWhenReady(GameQuest quest, String[] paramStr, int attempt) {
+    private boolean executeWhenReady(GameQuest quest, String[] paramStr) {
         if (paramStr.length < 2) {
             Grasscutter.getLogger().warn(
                     "Quest {} refresh-group-suite exec has invalid params {}",
@@ -37,24 +35,42 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
 
         val scriptManager = scene.getScriptManager();
         if (!scriptManager.isInit()) {
-            if (!scriptManager.isInitAttempted() && attempt < MAX_SCRIPT_INIT_RETRIES) {
-                if (attempt == 0) {
-                    Grasscutter.getLogger().debug(
-                            "Quest {} deferring group-suite refresh in scene {} until scripts initialize",
-                            quest.getSubQuestId(),
-                            sceneId);
-                }
-                scene.getScheduler()
-                        .scheduleDelayedTask(
-                                () -> executeWhenReady(quest, paramStr, attempt + 1), 1);
+            if (!scriptManager.isInitAttempted() && !scriptManager.isDestroyed()) {
+                var stateAtDispatch = quest.getState();
+                Grasscutter.getLogger().debug(
+                        "Quest {} deferring group-suite refresh until scene {} scripts initialize",
+                        quest.getSubQuestId(), sceneId);
+                scriptManager.whenInitialized(ready -> {
+                    if (!ready) {
+                        Grasscutter.getLogger().warn(
+                                "Quest {} could not refresh group suite: scene {} scripts unavailable",
+                                quest.getSubQuestId(), sceneId);
+                        return;
+                    }
+                    // The initialization callback runs on the scene-loading thread. Execute
+                    // the scene mutation on its scheduler, not on the loader thread.
+                    scene.getScheduler().scheduleDelayedTask(() -> {
+                        var world = quest.getOwner().getWorld();
+                        if (scriptManager.isDestroyed()
+                                || quest.getState() != stateAtDispatch
+                                || world == null || world.getSceneById(sceneId) != scene) {
+                            Grasscutter.getLogger().debug(
+                                    "Dropping obsolete suite refresh: quest {} scene {}",
+                                    quest.getSubQuestId(), sceneId);
+                            return;
+                        }
+                        if (!executeWhenReady(quest, paramStr)) {
+                            Grasscutter.getLogger().warn(
+                                    "Deferred suite refresh failed: quest {} scene {}",
+                                    quest.getSubQuestId(), sceneId);
+                        }
+                    }, 1);
+                });
                 return true;
             }
-
             Grasscutter.getLogger().warn(
-                    "Quest {} could not refresh group suite in scene {}: scripts failed to initialize after {} attempt(s)",
-                    quest.getSubQuestId(),
-                    sceneId,
-                    attempt);
+                    "Quest {} could not refresh group suite: scene {} scripts unavailable",
+                    quest.getSubQuestId(), sceneId);
             return false;
         }
 

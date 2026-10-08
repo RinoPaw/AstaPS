@@ -45,6 +45,7 @@ public class SceneScriptManager {
     private volatile boolean isInit;
     private volatile boolean initAttempted;
     private volatile boolean destroyed;
+    private final SceneScriptInitGate initialization = new SceneScriptInitGate();
     private boolean noCacheGroupGridsToDisk;
 
     private final Map<String, SceneTimeAxis> timeAxis = new ConcurrentHashMap<>();
@@ -102,6 +103,8 @@ public class SceneScriptManager {
         // TEMPORARY
         if (this.getScene().getId() < 10
                 && !Grasscutter.getConfig().server.game.enableScriptInBigWorld) {
+            this.initAttempted = true;
+            this.initialization.complete(false);
             return;
         }
 
@@ -530,31 +533,29 @@ public class SceneScriptManager {
     }
 
     private void init() {
-        if (this.destroyed) {
-            this.initAttempted = true;
-            return;
-        }
-        var event = new SceneMetaLoadEvent(getScene());
-        event.call();
+        try {
+            if (this.destroyed) return;
+            var event = new SceneMetaLoadEvent(getScene());
+            event.call();
 
-        if (event.isOverride()) {
-            // Group grids should not be cached to disk when a scene
-            // group override is in effect. Otherwise, when the server
-            // next runs without that override, the cached content
-            // will not make sense.
-            noCacheGroupGridsToDisk = true;
-        }
-
-        if (!this.destroyed) {
-            var meta = ScriptLoader.getSceneMeta(getScene().getId());
-            if (meta != null) {
-                this.meta = meta;
-
-                // TEMP
-                this.isInit = true;
+            if (event.isOverride()) {
+                // Do not write a cached grid when an event overrides scene group data.
+                noCacheGroupGridsToDisk = true;
             }
+
+            if (!this.destroyed) {
+                var loadedMeta = ScriptLoader.getSceneMeta(getScene().getId());
+                if (loadedMeta != null) {
+                    this.meta = loadedMeta;
+                    this.isInit = true;
+                }
+            }
+        } catch (RuntimeException exception) {
+            Grasscutter.getLogger().error("Scene {} script initialization failed", scene.getId(), exception);
+        } finally {
+            this.initAttempted = true;
+            this.initialization.complete(this.isInit && !this.destroyed);
         }
-        this.initAttempted = true;
     }
 
     public List<Grid> getGroupGrids() {
@@ -724,6 +725,15 @@ public class SceneScriptManager {
      */
     public boolean isInitAttempted() {
         return initAttempted;
+    }
+
+    /** Runs exactly once after script initialization succeeds or fails, without polling scene ticks. */
+    public void whenInitialized(java.util.function.Consumer<Boolean> callback) {
+        initialization.whenComplete(callback);
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
     public void loadBlockFromScript(SceneBlock block) {
@@ -1404,6 +1414,7 @@ public class SceneScriptManager {
             return;
         }
         this.destroyed = true;
+        this.initialization.complete(false);
         this.pendingCutsceneGroups.clear();
         this.sealBattleManager.clear();
 

@@ -206,6 +206,16 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
         }
     }
 
+    /** Re-lock a quest-controlled scene point, including its durable player state. */
+    public boolean lockTransPoint(int sceneId, int pointId) {
+        if (sceneId <= 0 || pointId <= 0) return false;
+        this.player.getUnlockedScenePoints(sceneId).remove(pointId);
+        this.player.getForceLockedScenePoints(sceneId).add(pointId);
+        this.player.sendPacket(PacketScenePointUnlockNotify.lock(sceneId, pointId));
+        this.player.save();
+        return true;
+    }
+
     public boolean unlockTransPoint(int sceneId, int pointId, boolean isStatue) {
         return TransPointUnlockHelper.unlock(this.player, sceneId, pointId, isStatue);
     }

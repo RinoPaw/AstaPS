@@ -1518,6 +1518,9 @@ public class Scene {
                         return;
                     }
 
+                    // Off-grid quest groups must survive the visibility unload sweep
+                    // after their saved suite is reapplied on reconnect.
+                    group.dontUnload = true;
                     scriptManager.refreshGroup(groupInstance, i.getSuite(), false);
                 });
     }

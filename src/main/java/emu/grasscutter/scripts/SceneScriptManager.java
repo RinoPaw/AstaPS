@@ -345,16 +345,28 @@ public class SceneScriptManager {
         return true;
     }
 
+    /**
+     * Keep the latest persisted quest override for a scene/group.
+     * A successful suite 0 refresh removes any older override.
+     */
+    static void rememberQuestGroupSuite(
+            List<QuestGroupSuite> suites, int sceneId, int groupId, int suiteId) {
+        if (suites == null || sceneId <= 0 || groupId <= 0 || suiteId < 0) return;
+        synchronized (suites) {
+            suites.removeIf(entry -> entry.getScene() == sceneId && entry.getGroup() == groupId);
+            if (suiteId > 0) {
+                suites.add(QuestGroupSuite.of().scene(sceneId).group(groupId).suite(suiteId).build());
+            }
+        }
+    }
+
     public boolean refreshGroupSuite(int groupId, int suiteId, GameQuest quest) {
         var result = refreshGroupSuite(groupId, suiteId);
-        if (suiteId != 0 && quest != null) {
-            quest
-                    .getMainQuest()
-                    .getQuestGroupSuites()
-                    .add(
-                            QuestGroupSuite.of().scene(getScene().getId()).group(groupId).suite(suiteId).build());
+        if (result && quest != null) {
+            rememberQuestGroupSuite(
+                    quest.getMainQuest().getQuestGroupSuites(),
+                    getScene().getId(), groupId, suiteId);
         }
-
         return result;
     }
 

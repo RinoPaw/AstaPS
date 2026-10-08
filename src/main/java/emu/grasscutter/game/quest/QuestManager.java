@@ -715,14 +715,30 @@ public final class QuestManager extends BasePlayerManager {
                         });
     }
 
+    /** Recover last-applied suite from older save files with duplicate overrides. */
+    static List<QuestGroupSuite> latestSceneGroupSuites(
+            List<QuestGroupSuite> saved, int sceneId) {
+        var current = new LinkedHashMap<Integer, QuestGroupSuite>();
+        if (saved == null || sceneId <= 0) return List.of();
+        for (var entry : saved) {
+            if (entry == null || entry.getScene() != sceneId || entry.getGroup() <= 0) continue;
+            if (entry.getSuite() <= 0) current.remove(entry.getGroup());
+            else current.put(entry.getGroup(), entry);
+        }
+        return List.copyOf(current.values());
+    }
+
     public List<QuestGroupSuite> getSceneGroupSuite(int sceneId) {
-        return getMainQuests().values().stream()
-                .filter(i -> i.getState() != ParentQuestState.PARENT_QUEST_STATE_FINISHED)
-                .map(GameMainQuest::getQuestGroupSuites)
-                .filter(Objects::nonNull)
-                .flatMap(Collection::stream)
-                .filter(i -> i.getScene() == sceneId)
-                .toList();
+        var saved = new ArrayList<QuestGroupSuite>();
+        for (var mainQuest : getMainQuests().values()) {
+            if (mainQuest.getState() == ParentQuestState.PARENT_QUEST_STATE_FINISHED) continue;
+            var overrides = mainQuest.getQuestGroupSuites();
+            if (overrides == null) continue;
+            synchronized (overrides) {
+                saved.addAll(overrides);
+            }
+        }
+        return latestSceneGroupSuites(saved, sceneId);
     }
 
     public void loadFromDatabase() {

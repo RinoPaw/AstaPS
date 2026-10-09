@@ -17,6 +17,8 @@ public class NativeQuestOverlay {
     private int subId;
     private Integer mainId;
     private Integer order;
+    private Boolean rewind;
+    private Boolean finishParent;
     private List<QuestData.QuestContentCondition> finishCond;
     private List<QuestData.QuestContentCondition> failCond;
     private List<QuestData.QuestExecParam> finishExec;

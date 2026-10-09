@@ -11,12 +11,13 @@ legacy prerequisite chains.
 
 Source policy in the first parser revision:
 
-- native `mainId` and `order` are authoritative when a matching QuestExcel row exists;
+- native `mainId`, `order`, `isRewind`, and `finishParent` are authoritative when a matching QuestExcel row exists;
 - native `finishCond`, `failCond`, `finishExec`, and `failExec` may override runtime data only
   when every type in that list has independently confirmed 7.1 semantics;
 - an absent native finish/fail list is an authoritative empty list;
 - a list containing an unresolved numeric type id is parsed but remains audit-only;
 - `acceptCond` and `beginExec` do not exist in the native contract and are never synthesized;
+- `isRewind` is consumed by rewind target selection and `finishParent` decides whether finishing a child quest completes its parent, so both flags are carried from the exact native row rather than left to legacy BinOutput fallback;
 - native-only subquest rows are not materialized into the QuestExcel runtime map yet;
 - missing parent MainQuest objects are materialized from native `mainId/subId/order` so
   `GameMainQuest` can be created without legacy BinOutput/Quest files;

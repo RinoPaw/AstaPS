@@ -38,27 +38,92 @@ public class GameSession implements GameSessionManager.KcpChannel {
             java.util.concurrent.ConcurrentHashMap.newKeySet();
     private final java.util.Set<Integer> amberTraceSendOpcodes =
             java.util.concurrent.ConcurrentHashMap.newKeySet();
+    private final java.util.concurrent.ConcurrentMap<String, java.util.concurrent.atomic.AtomicInteger>
+            amberPacketCounts = new java.util.concurrent.ConcurrentHashMap<>();
+    private final java.util.concurrent.atomic.AtomicBoolean amberSummaryReported =
+            new java.util.concurrent.atomic.AtomicBoolean();
 
     public void beginAmberInputTrace() {
         amberTraceRecvOpcodes.clear();
         amberTraceSendOpcodes.clear();
+        amberPacketCounts.clear();
+        amberSummaryReported.set(false);
         amberTraceStartNanos = System.nanoTime();
+        var world = player != null ? player.getWorld() : null;
         Grasscutter.getLogger().info(
-                "[AmberWire] Starting 30-second dialogue handoff trace uid={}",
-                player != null ? player.getUid() : 0);
+                "[AmberWire] Starting 45-second dialogue handoff trace uid={} playerPaused={} worldPaused={} timeLocked={}",
+                player != null ? player.getUid() : 0,
+                player != null && player.isPaused(),
+                world != null && world.isPaused(),
+                world != null && world.isTimeLocked());
     }
 
-    private void traceAmberPacket(String direction, int opcode) {
+    private boolean isAmberTraceActive() {
         long started = amberTraceStartNanos;
-        if (started == 0 || System.nanoTime() - started > java.util.concurrent.TimeUnit.SECONDS.toNanos(30)) {
+        return started != 0
+                && System.nanoTime() - started <= java.util.concurrent.TimeUnit.SECONDS.toNanos(45);
+    }
+
+    private void traceAmberPacket(String direction, int opcode, byte[] payload) {
+        long started = amberTraceStartNanos;
+        if (started == 0) return;
+        long elapsedMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started);
+        if (!isAmberTraceActive()) {
+            if (amberSummaryReported.compareAndSet(false, true)) {
+                Grasscutter.getLogger().info(
+                        "[AmberWire] uid={} 45-second packet counts: {}",
+                        player != null ? player.getUid() : 0,
+                        amberPacketCounts.entrySet().stream()
+                                .sorted(java.util.Map.Entry.comparingByKey())
+                                .map(e -> e.getKey() + "=" + e.getValue().get())
+                                .collect(java.util.stream.Collectors.joining(", ")));
+            }
             return;
         }
+
+        var name = PacketOpcodesUtils.getOpcodeName(opcode);
+        amberPacketCounts.computeIfAbsent(direction + ":" + name,
+                        ignored -> new java.util.concurrent.atomic.AtomicInteger()).incrementAndGet();
         var seen = "RECV".equals(direction) ? amberTraceRecvOpcodes : amberTraceSendOpcodes;
         if (seen.add(opcode)) {
             Grasscutter.getLogger().info(
-                    "[AmberWire] uid={} {} {} ({})",
-                    player != null ? player.getUid() : 0,
-                    direction, PacketOpcodesUtils.getOpcodeName(opcode), opcode);
+                    "[AmberWire] uid={} +{}ms {} {} ({})",
+                    player != null ? player.getUid() : 0, elapsedMs, direction, name, opcode);
+        }
+        // Pause requests and cutscene acknowledgements can occur more than once; their ordering
+        // and values matter more than the first-seen packet list when client input stays locked.
+        if ("RECV".equals(direction) && opcode == PacketOpcodes.PlayerSetPauseReq) {
+            try {
+                var request = emu.grasscutter.net.proto.PlayerSetPauseReqOuterClass.PlayerSetPauseReq.parseFrom(payload);
+                var world = player != null ? player.getWorld() : null;
+                Grasscutter.getLogger().info(
+                        "[AmberWire] uid={} +{}ms pause request={} serverWorldPaused={} playerPaused={} timeLocked={}",
+                        player != null ? player.getUid() : 0, elapsedMs, request.getIsPaused(),
+                        world != null && world.isPaused(),
+                        player != null && player.isPaused(),
+                        world != null && world.isTimeLocked());
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                Grasscutter.getLogger().warn("[AmberWire] Could not decode pause request", e);
+            }
+        } else if ("RECV".equals(direction) && opcode == PacketOpcodes.CutSceneFinishNotify) {
+            try {
+                var request = emu.grasscutter.net.proto.CutSceneFinishNotifyOuterClass.CutSceneFinishNotify.parseFrom(payload);
+                Grasscutter.getLogger().info(
+                        "[AmberWire] uid={} +{}ms cutscene finish id={}",
+                        player != null ? player.getUid() : 0, elapsedMs, request.getCutsceneId());
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                Grasscutter.getLogger().warn("[AmberWire] Could not decode cutscene finish", e);
+            }
+        } else if ("SEND".equals(direction) && opcode == PacketOpcodes.CutSceneEndNotify) {
+            try {
+                var response = emu.grasscutter.net.proto.CutSceneEndNotifyOuterClass.CutSceneEndNotify.parseFrom(payload);
+                Grasscutter.getLogger().info(
+                        "[AmberWire] uid={} +{}ms cutscene end ack id={} retcode={}",
+                        player != null ? player.getUid() : 0, elapsedMs,
+                        response.getCutsceneId(), response.getRetcode());
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                Grasscutter.getLogger().warn("[AmberWire] Could not decode cutscene end ack", e);
+            }
         }
     }
 
@@ -206,7 +271,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
                     }
                 }
                 tunnel.writeData(bytes);
-                traceAmberPacket("SEND", packet.getOpcode());
+                traceAmberPacket("SEND", packet.getOpcode(), packet.getData());
             } catch (Exception e) {
                 Grasscutter.getLogger()
                         .debug("Unable to send packet {} to client: {}", packet.getOpcode(), e.toString());
@@ -352,8 +417,17 @@ public class GameSession implements GameSessionManager.KcpChannel {
                     default -> {}
                 }
 
-                traceAmberPacket("RECV", opcode);
+                traceAmberPacket("RECV", opcode, payload);
                 getServer().getPacketHandler().handle(this, opcode, header, payload);
+                if (opcode == PacketOpcodes.PlayerSetPauseReq && isAmberTraceActive()) {
+                    var world = player != null ? player.getWorld() : null;
+                    Grasscutter.getLogger().info(
+                            "[AmberWire] pause handled uid={} playerPaused={} worldPaused={} timeLocked={}",
+                            player != null ? player.getUid() : 0,
+                            player != null && player.isPaused(),
+                            world != null && world.isPaused(),
+                            world != null && world.isTimeLocked());
+                }
             }
         } catch (Throwable e) {
             // The rest of this datagram is lost either way, but printed to the console it never

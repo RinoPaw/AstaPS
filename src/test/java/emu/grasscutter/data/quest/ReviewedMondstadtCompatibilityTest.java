@@ -17,7 +17,7 @@ final class ReviewedMondstadtCompatibilityTest {
 
     @AfterEach
     void cleanUp() {
-        for (int sub : new int[] {35302, 30901, 37602}) {
+        for (int sub : new int[] {35302, 30901, 37602, 35100, 35203, 38201, 39807}) {
             GameData.getQuestDataMap().remove(sub);
             GameData.getBeginCondQuestMap().values()
                     .forEach(rows -> rows.removeIf(q -> q.getSubId() == sub));
@@ -197,6 +197,67 @@ final class ReviewedMondstadtCompatibilityTest {
         assertTrue(empty.getFinishExec().isEmpty());
         assertEquals(QuestSource.QUEST_EXCEL,
                 empty.getFieldSource(QuestField.FINISH_EXEC));
+    }
+
+    @Test
+    void allFourOtherReviewedMultiObjectiveFinishCombinatorsAreRestored() {
+        // Resource-side 7.1 audit contains these, but the server's reviewed
+        // whitelist previously omitted all four. Two are OR alternatives,
+        // and 35203 requires both plot completion and its fire trigger.
+        record Case(int id, int main, String logic, String firstType,
+                    int firstId, String secondType, int secondId) {}
+        var cases = java.util.List.of(
+                new Case(35100, 351, "LOGIC_OR",
+                        "QUEST_CONTENT_FINISH_PLOT", 35100,
+                        "QUEST_CONTENT_TRIGGER_FIRE", 1053),
+                new Case(35203, 352, "LOGIC_AND",
+                        "QUEST_CONTENT_FINISH_PLOT", 35203,
+                        "QUEST_CONTENT_TRIGGER_FIRE", 1172),
+                new Case(38201, 382, "LOGIC_OR",
+                        "QUEST_CONTENT_TRIGGER_FIRE", 1065,
+                        "QUEST_CONTENT_TRIGGER_FIRE", 1066),
+                new Case(39807, 398, "LOGIC_OR",
+                        "QUEST_CONTENT_COMPLETE_TALK", 39807,
+                        "QUEST_CONTENT_COMPLETE_TALK", 39806));
+        for (var sample : cases) {
+            var excel = GSON.fromJson("""
+                    {"subId":%d,"mainId":%d,"order":1,"acceptCond":[],
+                     "finishCondComb":"LOGIC_NONE","finishCond":[
+                       {"type":"%s","param":[%d,0]},
+                       {"type":"%s","param":[%d,0]}
+                     ]}
+                    """.formatted(sample.id(), sample.main(),
+                        sample.firstType(), sample.firstId(),
+                        sample.secondType(), sample.secondId()), QuestData.class);
+            excel.onLoad();
+            excel.mergeFromBinOutput(GSON.fromJson(
+                    "{\"subId\":" + sample.id() + ",\"mainId\":" + sample.main()
+                            + ",\"finishCondComb\":\"" + sample.logic() + "\"}",
+                    MainQuestData.SubQuestData.class), sample.main());
+            assertEquals(LogicType.valueOf(sample.logic()), excel.getFinishCondComb(),
+                    "reviewed logical operator for " + sample.id());
+            assertEquals(QuestSource.BIN_OUTPUT,
+                    excel.getFieldSource(QuestField.FINISH_COND_COMB),
+                    "provenance for " + sample.id());
+        }
+    }
+
+    @Test
+    void explicitExcelMultiObjectiveLogicCannotBeReplacedByCompatibility() {
+        var excel = GSON.fromJson("""
+                {"subId":35203,"mainId":352,"order":3,"acceptCond":[],
+                 "finishCondComb":"LOGIC_OR",
+                 "finishCond":[
+                   {"type":"QUEST_CONTENT_FINISH_PLOT","param":[35203,0]},
+                   {"type":"QUEST_CONTENT_TRIGGER_FIRE","param":[1172,0]}]}
+                """, QuestData.class);
+        excel.onLoad();
+        excel.mergeFromBinOutput(GSON.fromJson("""
+                {"subId":35203,"mainId":352,"finishCondComb":"LOGIC_AND"}
+                """, MainQuestData.SubQuestData.class), 352);
+        assertEquals(LogicType.LOGIC_OR, excel.getFinishCondComb());
+        assertEquals(QuestSource.QUEST_EXCEL,
+                excel.getFieldSource(QuestField.FINISH_COND_COMB));
     }
 
     @Test

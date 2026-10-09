@@ -627,8 +627,12 @@ public class QuestData extends GameResource {
             306, 307, 308, 309, 311, 370, 371, 372, 373, 374, 375,
             376, 377, 20101, 379, 380, 381, 382, 383, 384,
             397, 388, 389, 390, 393, 394, 398, 396);
+    // Keep aligned with the 7.1 resource audit's COMBINATORS inventory.
+    // Each entry has two or more native/reviewed predicates, including
+    // 35203 whose finish AND differs from its independent failure OR.
     private static final Set<Integer> REVIEWED_FINISH_LOGIC = Set.of(
-            35201, 30710, 30810, 30814, 30901, 31101, 35901);
+            35100, 35201, 35203, 31101, 35901, 38201, 39807,
+            30710, 30810, 30814, 30901);
     private static final Set<Integer> REVIEWED_FAIL_LOGIC = Set.of(
             35203, 37602, 39703, 38802, 39404);
 

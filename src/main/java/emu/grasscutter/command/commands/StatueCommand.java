@@ -5,7 +5,8 @@ import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.player.TransPointUnlockHelper;
+import emu.grasscutter.data.common.PointData;
+import java.util.Set;
 import emu.grasscutter.server.packet.send.PacketGetSceneAreaRsp;
 import emu.grasscutter.server.packet.send.PacketGetScenePointRsp;
 import emu.grasscutter.server.packet.send.PacketLevelupCityRsp;
@@ -270,6 +271,17 @@ public final class StatueCommand implements CommandHandler {
                         + ".");
     }
 
+    private static final Set<Integer> STATUE_GADGET_IDS =
+            Set.of(70130009, 70130010, 70130011, 73176017);
+
+    private static boolean isStatuePoint(PointData data) {
+        if (data == null) return false;
+        if (data.getMaxSpringVolume() > 0) return true;
+        if (STATUE_GADGET_IDS.contains(data.getGadgetId())) return true;
+        String type = data.getType();
+        return type != null && type.contains("KDEHKECBDBO");
+    }
+
     private static int nearestStatue(Player player, int sceneId) {
         var pointIds = GameData.getScenePointsPerScene().get(sceneId);
         if (pointIds == null || pointIds.isEmpty()) return -1;
@@ -281,7 +293,7 @@ public final class StatueCommand implements CommandHandler {
             var entry = GameData.getScenePointEntryById(sceneId, pointId);
             if (entry == null || entry.getPointData() == null) continue;
             var data = entry.getPointData();
-            if (!TransPointUnlockHelper.isStatuePoint(data) || data.getPos() == null) continue;
+            if (!isStatuePoint(data) || data.getPos() == null) continue;
             var point = data.getPos();
             double dx = point.getX() - position.getX();
             double dy = point.getY() - position.getY();

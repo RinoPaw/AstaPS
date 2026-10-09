@@ -82,8 +82,9 @@ dependencies {
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.7'
 
     // Line reading libraries.
-    implementation group: 'org.jline', name: 'jline', version: '3.21.0'
-    implementation group: 'org.jline', name: 'jline-terminal-jna', version: '3.21.0'
+    implementation 'org.jline:jline-reader:3.30.14'
+    implementation 'org.jline:jline-console:3.30.14'
+    implementation 'org.jline:jline-terminal-jna:3.30.14'
     implementation 'info.picocli:picocli:4.7.7'
     implementation('info.picocli:picocli-shell-jline3:4.7.7') {
         exclude group: 'org.jline', module: 'jline'

@@ -24,17 +24,21 @@ Source policy in the first parser revision:
   runtime parent when present, so native-only parents can hand off, grant parent rewards, and
   register talk ownership without legacy BinOutput/Quest files.
 
-The first confirmed semantic set is intentionally narrow:
+The runtime gate follows the Genshin-Reverse product contract instead of maintaining a second
+handwritten allowlist. Genshin-Reverse emits a `type` name only when the numeric type id has been
+aligned against the exact 7.1 Quest corpus. AstaPS accepts a native condition/exec only when:
 
-- QuestContent 4 FINISH_PLOT
-- QuestContent 6 TRIGGER_FIRE
-- QuestContent 21 TEAM_DEAD
-- QuestContent 23 UNLOCK_TRANS_POINT
-- QuestExec 14 ROLLBACK_QUEST
-- QuestExec 17 LOCK_POINT
-- QuestExec 19 REFRESH_GROUP_SUITE
+1. the exported `type` name is present;
+2. AstaPS has an enum constant with that exact name;
+3. the enum constant's numeric value equals the exported `typeId`.
 
-This gate can expand as Genshin-Reverse proves more native type identities.
+If any check fails, the whole native list remains audit-only and the QuestExcel runtime list is
+left untouched.
+
+At the current Genshin-Reverse semantic set this makes 59 QuestContent ids and 54 QuestExec ids
+directly usable by this AstaPS branch. The remaining proven 7.1 ids stay audit-only until AstaPS
+gains matching enum constants. This avoids duplicating semantic truth in two repositories while
+keeping the overlay fail-closed.
 
 
 ## Minimal bundle shape

@@ -186,3 +186,12 @@ domain. The history now records each unique dungeon once, but emits a quest
 event on **every** successful settlement. The first clear is saved immediately
 so a late-activated quest (e.g. 30901) can replay its historical objectives
 after reconnection. Unit tests cover repeated and distinct clears.
+
+## Interaction event provenance
+
+HandlerGadgetInteractReq previously queued INTERACT_GADGET using only the
+client-supplied gadget ID before looking up the referenced scene entity. An
+invalid or mismatched entity could advance a quest with no world interaction.
+Quest-content delivery now requires that the entity exists as an EntityGadget
+and that its server-known gadget ID equals the requested ID. The normal
+interaction handler still runs without changes for non-quest interactions.

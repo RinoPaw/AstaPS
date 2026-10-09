@@ -42,11 +42,14 @@ public class GameSession implements GameSessionManager.KcpChannel {
             amberPacketCounts = new java.util.concurrent.ConcurrentHashMap<>();
     private final java.util.concurrent.atomic.AtomicBoolean amberSummaryReported =
             new java.util.concurrent.atomic.AtomicBoolean();
+    private final java.util.concurrent.ConcurrentMap<String, Boolean> amberLastTimeNotifyPaused =
+            new java.util.concurrent.ConcurrentHashMap<>();
 
     public void beginAmberInputTrace() {
         amberTraceRecvOpcodes.clear();
         amberTraceSendOpcodes.clear();
         amberPacketCounts.clear();
+        amberLastTimeNotifyPaused.clear();
         amberSummaryReported.set(false);
         amberTraceStartNanos = System.nanoTime();
         var world = player != null ? player.getWorld() : null;
@@ -116,6 +119,32 @@ public class GameSession implements GameSessionManager.KcpChannel {
                         world != null && world.isTimeLocked());
             } catch (com.google.protobuf.InvalidProtocolBufferException e) {
                 Grasscutter.getLogger().warn("[AmberWire] Could not decode pause request", e);
+            }
+        } else if ("SEND".equals(direction) && opcode == PacketOpcodes.SceneTimeNotify) {
+            try {
+                var message = emu.grasscutter.net.proto.SceneTimeNotifyOuterClass.SceneTimeNotify.parseFrom(payload);
+                var previous = amberLastTimeNotifyPaused.put("scene", message.getIsPaused());
+                if (previous == null || previous != message.getIsPaused()) {
+                    Grasscutter.getLogger().info(
+                            "[AmberWire] uid={} +{}ms SceneTimeNotify sceneId={} paused={} sceneTime={}",
+                            player != null ? player.getUid() : 0, elapsedMs,
+                            message.getSceneId(), message.getIsPaused(), message.getSceneTime());
+                }
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                Grasscutter.getLogger().warn("[AmberWire] Could not decode SceneTimeNotify", e);
+            }
+        } else if ("SEND".equals(direction) && opcode == PacketOpcodes.PlayerTimeNotify) {
+            try {
+                var message = emu.grasscutter.net.proto.PlayerTimeNotifyOuterClass.PlayerTimeNotify.parseFrom(payload);
+                var previous = amberLastTimeNotifyPaused.put("player", message.getIsPaused());
+                if (previous == null || previous != message.getIsPaused()) {
+                    Grasscutter.getLogger().info(
+                            "[AmberWire] uid={} +{}ms PlayerTimeNotify paused={} playerTime={}",
+                            player != null ? player.getUid() : 0, elapsedMs,
+                            message.getIsPaused(), message.getPlayerTime());
+                }
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                Grasscutter.getLogger().warn("[AmberWire] Could not decode PlayerTimeNotify", e);
             }
         } else if ("RECV".equals(direction) && opcode == PacketOpcodes.CutSceneFinishNotify) {
             try {

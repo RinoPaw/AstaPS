@@ -606,9 +606,16 @@ public final class QuestManager extends BasePlayerManager {
         });
     }
 
+    // Lua can notify a quest with only a string payload. Its indexed integer argument
+    // is then the default 0, not an array element that the event does not carry.
+    static int firstQuestConditionParam(int... params) {
+        return params.length == 0 ? 0 : params[0];
+    }
+
     public void triggerEvent(QuestCond condType, String paramStr, int... params) {
         Grasscutter.getLogger().trace("Trigger Event {}, {}, {}", condType, paramStr, params);
-        var potentialQuests = GameData.getQuestDataByConditions(condType, params[0], paramStr);
+        var potentialQuests =
+                GameData.getQuestDataByConditions(condType, firstQuestConditionParam(params), paramStr);
         if (condType == QuestCond.QUEST_COND_STATE_EQUAL && params.length > 1
                 && (params[0] == 36005 || params[0] == 35601)) {
             Grasscutter.getLogger().info(

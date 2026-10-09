@@ -64,20 +64,32 @@ public class GameSession implements GameSessionManager.KcpChannel {
                 && System.nanoTime() - started <= java.util.concurrent.TimeUnit.SECONDS.toNanos(45);
     }
 
+    private void reportAmberSummary(String reason) {
+        if (amberTraceStartNanos == 0 || !amberSummaryReported.compareAndSet(false, true)) return;
+        var world = player != null ? player.getWorld() : null;
+        var quests = player != null ? player.getQuestManager() : null;
+        var quest35602 = quests != null ? quests.getQuestById(35602) : null;
+        var quest35603 = quests != null ? quests.getQuestById(35603) : null;
+        Grasscutter.getLogger().info(
+                "[AmberWire] summary reason={} uid={} worldPaused={} playerPaused={} timeLocked={} quest35602={} quest35603={} packets=[{}]",
+                reason, player != null ? player.getUid() : 0,
+                world != null && world.isPaused(),
+                player != null && player.isPaused(),
+                world != null && world.isTimeLocked(),
+                quest35602 == null ? "NOT_STARTED" : quest35602.getState().name(),
+                quest35603 == null ? "NOT_STARTED" : quest35603.getState().name(),
+                amberPacketCounts.entrySet().stream()
+                        .sorted(java.util.Map.Entry.comparingByKey())
+                        .map(e -> e.getKey() + "=" + e.getValue().get())
+                        .collect(java.util.stream.Collectors.joining(", ")));
+    }
+
     private void traceAmberPacket(String direction, int opcode, byte[] payload) {
         long started = amberTraceStartNanos;
         if (started == 0) return;
         long elapsedMs = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started);
         if (!isAmberTraceActive()) {
-            if (amberSummaryReported.compareAndSet(false, true)) {
-                Grasscutter.getLogger().info(
-                        "[AmberWire] uid={} 45-second packet counts: {}",
-                        player != null ? player.getUid() : 0,
-                        amberPacketCounts.entrySet().stream()
-                                .sorted(java.util.Map.Entry.comparingByKey())
-                                .map(e -> e.getKey() + "=" + e.getValue().get())
-                                .collect(java.util.stream.Collectors.joining(", ")));
-            }
+            reportAmberSummary("elapsed");
             return;
         }
 
@@ -450,6 +462,9 @@ public class GameSession implements GameSessionManager.KcpChannel {
 
         @Override
         public void handleClose() {
+            // The client may be force-closed before the 45-second timer expires. Capture the
+            // pending quest and pause state before logout resets the session.
+            reportAmberSummary("disconnect");
             setState(SessionState.INACTIVE);
 
             Grasscutter.getLogger()

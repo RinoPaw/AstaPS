@@ -91,6 +91,8 @@ class NativeQuestParserTest {
                                           "subId": 991001,
                                           "mainId": 992,
                                           "order": 7,
+                                          "isRewind": true,
+                                          "finishParent": true,
                                           "finishCond": [
                                             {
                                               "typeId": 4,
@@ -130,8 +132,12 @@ class NativeQuestParserTest {
 
         assertEquals(992, quest.getMainId());
         assertEquals(7, quest.getOrder());
+        assertTrue(quest.isRewind());
+        assertTrue(quest.isFinishParent());
         assertEquals(QuestSource.NATIVE_QUEST, quest.getFieldSource(QuestField.MAIN_ID));
         assertEquals(QuestSource.NATIVE_QUEST, quest.getFieldSource(QuestField.ORDER));
+        assertEquals(QuestSource.NATIVE_QUEST, quest.getFieldSource(QuestField.REWIND));
+        assertEquals(QuestSource.NATIVE_QUEST, quest.getFieldSource(QuestField.FINISH_PARENT));
 
         assertEquals(1, quest.getFinishCond().size());
         assertEquals(QuestContent.QUEST_CONTENT_FINISH_PLOT, quest.getFinishCond().get(0).getType());
@@ -488,7 +494,9 @@ class NativeQuestParserTest {
                                         {
                                           "subId": 991001,
                                           "mainId": 991,
-                                          "order": 8
+                                          "order": 8,
+                                          "isRewind": true,
+                                          "finishParent": true
                                         },
                                         {
                                           "subId": 991002,
@@ -510,6 +518,8 @@ class NativeQuestParserTest {
         assertEquals(2, parent.getSubQuests().length);
         assertEquals(991001, parent.getSubQuests()[0].getSubId());
         assertEquals(8, parent.getSubQuests()[0].getOrder());
+        assertTrue(parent.getSubQuests()[0].getRewind());
+        assertTrue(parent.getSubQuests()[0].getFinishParent());
         assertEquals(991002, parent.getSubQuests()[1].getSubId());
         assertEquals(9, parent.getSubQuests()[1].getOrder());
         assertArrayEquals(new int[] {992}, parent.getSuggestTrackMainQuestList());

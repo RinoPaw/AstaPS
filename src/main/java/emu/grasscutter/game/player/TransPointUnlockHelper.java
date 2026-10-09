@@ -32,49 +32,51 @@ public final class TransPointUnlockHelper {
 
     public static boolean unlock(Player player, int sceneId, int pointId, boolean isStatue) {
         var scenePointEntry = GameData.getScenePointEntryById(sceneId, pointId);
-        if (scenePointEntry == null || player.getUnlockedScenePoints(sceneId).contains(pointId)) {
+        if (scenePointEntry == null) {
             return false;
         }
 
-        player.getForceLockedScenePoints(sceneId).remove(pointId);
-        player.getUnlockedScenePoints(sceneId).add(pointId);
-
-        // The unlock is authoritative game state. Persist it before optional reward handling so a
-        // broken reward configuration/classpath can never leave the point unlocked only in memory.
-        player.save();
-
-        player
-                .getQuestManager()
-                .queueEvent(QuestContent.QUEST_CONTENT_UNLOCK_TRANS_POINT, sceneId, pointId);
-        player
-                .getScene()
-                .getScriptManager()
-                .callEvent(new ScriptArgs(0, EVENT_UNLOCK_TRANS_POINT, sceneId, pointId));
-
-        player.sendPacket(new PacketScenePointUnlockNotify(sceneId, pointId));
-
-        int total =
-                player.getUnlockedScenePoints().values().stream()
-                        .mapToInt(java.util.Collection::size)
-                        .sum();
-        InvestigationHandbookHelper.trigger(
-                player, WatcherTriggerType.TRIGGER_UNLOCK_TRANS_POINT, 0, total);
-
-        try {
-            grantReward(player, isStatue);
-        } catch (RuntimeException | LinkageError e) {
-            // Rewards are an auxiliary side effect. In particular, classpath/configuration failures
-            // such as NoClassDefFoundError must not roll back or suppress the actual point unlock.
-            Grasscutter.getLogger()
-                    .error(
-                            "Failed to grant unlock reward for uid={} scene={} point={}; "
-                                    + "the trans point remains unlocked.",
-                            player.getUid(),
-                            sceneId,
-                            pointId,
-                            e);
+        boolean wasForceLocked = player.getForceLockedScenePoints(sceneId).remove(pointId);
+        boolean newlyUnlocked = player.getUnlockedScenePoints(sceneId).add(pointId);
+        if (!wasForceLocked && !newlyUnlocked) {
+            return false;
         }
 
+        // Both permanent unlock state and quest-forced lock state are authoritative and persisted.
+        player.save();
+
+        if (newlyUnlocked) {
+            player
+                    .getQuestManager()
+                    .queueEvent(QuestContent.QUEST_CONTENT_UNLOCK_TRANS_POINT, sceneId, pointId);
+            player
+                    .getScene()
+                    .getScriptManager()
+                    .callEvent(new ScriptArgs(0, EVENT_UNLOCK_TRANS_POINT, sceneId, pointId));
+
+            int total =
+                    player.getUnlockedScenePoints().values().stream()
+                            .mapToInt(java.util.Collection::size)
+                            .sum();
+            InvestigationHandbookHelper.trigger(
+                    player, WatcherTriggerType.TRIGGER_UNLOCK_TRANS_POINT, 0, total);
+
+            try {
+                grantReward(player, isStatue);
+            } catch (RuntimeException | LinkageError e) {
+                // Rewards are auxiliary. The persisted point unlock remains authoritative.
+                Grasscutter.getLogger()
+                        .error(
+                                "Failed to grant unlock reward for uid={} scene={} point={}; "
+                                        + "the trans point remains unlocked.",
+                                player.getUid(),
+                                sceneId,
+                                pointId,
+                                e);
+            }
+        }
+
+        player.sendPacket(new PacketScenePointUnlockNotify(sceneId, pointId));
         return true;
     }
 

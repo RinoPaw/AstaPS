@@ -585,11 +585,25 @@ public final class QuestManager extends BasePlayerManager {
     }
 
     public void queueEvent(QuestContent condType, String paramStr, int... params) {
-        eventExecutor.submit(() -> triggerEvent(condType, paramStr, params));
+        eventExecutor.submit(() -> {
+            try {
+                triggerEvent(condType, paramStr, params);
+            } catch (RuntimeException e) {
+                Grasscutter.getLogger().error(
+                        "Quest event {} failed for uid={}", condType, getPlayer().getUid(), e);
+            }
+        });
     }
 
     public void queueEvent(QuestCond condType, String paramStr, int... params) {
-        eventExecutor.submit(() -> triggerEvent(condType, paramStr, params));
+        eventExecutor.submit(() -> {
+            try {
+                triggerEvent(condType, paramStr, params);
+            } catch (RuntimeException e) {
+                Grasscutter.getLogger().error(
+                        "Quest event {} failed for uid={}", condType, getPlayer().getUid(), e);
+            }
+        });
     }
 
     public void triggerEvent(QuestCond condType, String paramStr, int... params) {

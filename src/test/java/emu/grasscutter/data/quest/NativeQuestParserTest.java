@@ -269,6 +269,66 @@ class NativeQuestParserTest {
     }
 
     @Test
+    void implementedMondstadtNativeTypesOverrideRuntime() {
+        var quest =
+                GSON.fromJson(
+                        """
+                        {
+                          "subId": 991001,
+                          "mainId": 991,
+                          "order": 1,
+                          "failCond": [],
+                          "finishExec": []
+                        }
+                        """,
+                        QuestData.class);
+        quest.onLoad();
+        GameData.getQuestDataMap().put(quest.getSubId(), quest);
+
+        var data =
+                NativeQuestParser.parse(
+                        new StringReader(
+                                """
+                                {
+                                  "schemaVersion": 1,
+                                  "gameVersion": "7.1.0-global",
+                                  "mainQuests": [
+                                    {
+                                      "mainId": 991,
+                                      "quests": [
+                                        {
+                                          "subId": 991001,
+                                          "failCond": [
+                                            {
+                                              "typeId": 21,
+                                              "type": "QUEST_CONTENT_TEAM_DEAD",
+                                              "param": [0, 0]
+                                            }
+                                          ],
+                                          "finishExec": [
+                                            {
+                                              "typeId": 17,
+                                              "type": "QUEST_EXEC_LOCK_POINT",
+                                              "param": ["3", "1720"]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                                """));
+
+        var report = NativeQuestParser.apply(data);
+
+        assertEquals(0, report.unresolvedLists());
+        assertEquals(QuestContent.QUEST_CONTENT_TEAM_DEAD, quest.getFailCond().get(0).getType());
+        assertEquals(QuestExec.QUEST_EXEC_LOCK_POINT, quest.getFinishExec().get(0).getType());
+        assertEquals(QuestSource.NATIVE_QUEST, quest.getFieldSource(QuestField.FAIL_COND));
+        assertEquals(QuestSource.NATIVE_QUEST, quest.getFieldSource(QuestField.FINISH_EXEC));
+    }
+
+    @Test
     void exactTypeWithoutImplementedHandlerStaysAuditOnly() {
         var quest =
                 GSON.fromJson(
@@ -317,9 +377,9 @@ class NativeQuestParserTest {
                                           ],
                                           "finishExec": [
                                             {
-                                              "typeId": 17,
-                                              "type": "QUEST_EXEC_LOCK_POINT",
-                                              "param": ["3", "1720"]
+                                              "typeId": 22,
+                                              "type": "QUEST_EXEC_SET_WEATHER_GADGET",
+                                              "param": ["3", "0"]
                                             }
                                           ]
                                         }

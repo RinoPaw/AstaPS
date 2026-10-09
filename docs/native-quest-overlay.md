@@ -38,9 +38,19 @@ If any check fails, the whole native list remains audit-only and the QuestExcel 
 left untouched.
 
 At the current Genshin-Reverse semantic set and AstaPS handler inventory this makes 39
-QuestContent ids and 37 QuestExec ids directly usable by this branch. Types such as `QUEST_CONTENT_CITY_LEVEL_UP` and `QUEST_EXEC_SET_WEATHER_GADGET` are
-semantically identified but remain audit-only because the current server has no matching handler. This keeps native truth from replacing compatibility data with behavior the server cannot
-execute.
+QuestContent ids and 37 QuestExec ids directly usable by this branch. On the companion
+115-MainQuest resource bundle (1,261 subquest rows), 2,116 finish/fail condition or exec lists are
+non-empty. The old bootstrap allowlist could authoritatively apply 557 of them; the current
+semantic-plus-handler gate applies 2,022, a gain of 1,465 lists. The remaining 94 stay on the
+QuestExcel compatibility data.
+
+Types such as `QUEST_CONTENT_CITY_LEVEL_UP` and `QUEST_EXEC_SET_WEATHER_GADGET` are
+semantically identified but remain audit-only because the current server has no matching handler.
+The latter affects native finish execs in Mondstadt MainQuests 359 and 394, but no maintained
+Grasscutter/Luna implementation was found and the 7.1 client probe currently proves only the enum
+identity. Keeping those lists on the compatibility source is safer than pretending the server can
+execute them. This keeps native truth from replacing compatibility data with behavior the server
+cannot execute.
 
 
 ## Minimal bundle shape

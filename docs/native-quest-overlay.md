@@ -30,15 +30,18 @@ aligned against the exact 7.1 Quest corpus. AstaPS accepts a native condition/ex
 
 1. the exported `type` name is present;
 2. AstaPS has an enum constant with that exact name;
-3. the enum constant's numeric value equals the exported `typeId`.
+3. the enum constant's numeric value equals the exported `typeId`;
+4. AstaPS has an actual runtime handler for that condition/exec.
 
 If any check fails, the whole native list remains audit-only and the QuestExcel runtime list is
 left untouched.
 
-At the current Genshin-Reverse semantic set this makes 59 QuestContent ids and 54 QuestExec ids
-directly usable by this AstaPS branch. The remaining proven 7.1 ids stay audit-only until AstaPS
-gains matching enum constants. This avoids duplicating semantic truth in two repositories while
-keeping the overlay fail-closed.
+At the current Genshin-Reverse semantic set and AstaPS handler inventory this makes 38
+QuestContent ids and 36 QuestExec ids directly usable by this branch. Types such as
+`QUEST_CONTENT_CITY_LEVEL_UP`, `QUEST_CONTENT_TEAM_DEAD` and `QUEST_EXEC_LOCK_POINT`
+are semantically identified but remain audit-only because the current server has no matching
+handler. This keeps native truth from replacing compatibility data with behavior the server cannot
+execute.
 
 
 ## Minimal bundle shape

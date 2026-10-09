@@ -519,6 +519,14 @@ public class QuestData extends GameResource {
             this.order = overlay.getOrder();
             sources().put(QuestField.ORDER, QuestSource.NATIVE_QUEST);
         }
+        if (overlay.getRewind() != null) {
+            this.isRewind = overlay.getRewind();
+            sources().put(QuestField.REWIND, QuestSource.NATIVE_QUEST);
+        }
+        if (overlay.getFinishParent() != null) {
+            this.finishParent = overlay.getFinishParent();
+            sources().put(QuestField.FINISH_PARENT, QuestSource.NATIVE_QUEST);
+        }
 
         if (overlay.getFinishCond() != null) {
             this.finishCond = overlay.getFinishCond();

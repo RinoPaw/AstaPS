@@ -37,6 +37,14 @@ That report is from a different, older client; treat it as a competing hypothesi
 - `HandlerPlayerSetPauseReq` constructs a success response, but `GameSession.send()` returns without sending when `opcode <= 0`. Thus **no pause acknowledgement reaches the client**. It is unknown whether the client needs that acknowledgement for this particular input lock.
 - AstaPS `NpcTalkRsp=3514` and `CutSceneEndNotify=472` are server mappings; their role in this particular handoff is still to be confirmed against the exact client.
 
+## Exact 7.1 protocol cross-check (Genshin-Reverse #23)
+
+The [pinned 7.1 Global native analysis](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/windows-x64/analyses/amber-pause-ack/README.md) resolves the request construction path: CmdId `5963`, obfuscated type `GLIHKBGFALC`, generated bool tag `0x58` (**field 11**) and the `Miscs.PauseLevelTime(bool, ...Talk)` caller. A hosted inspection of this repo's `protocol/7.1/protocol.desc` confirmed `PlayerSetPauseReq.is_paused = 11`. Thus the request field-number mapping is **consistent** with the current client.
+
+That same *server descriptor* retains `PlayerSetPauseRsp.retcode = 4`, but the native 7.1 response identity and field number are **not confirmed**. If it is still an inbound one-int32 response at field 4, parser evidence conditionally narrows it to CmdIds `22120` or `24380`. The pinned native client handlers for both return immediately on success; neither directly changes the receiver's `+0x1D0` pause field. A pending-RPC callback remains possible. **Do not patch either candidate opcode without semantic verification.**
+
+The pinned client also demonstrates that incoming CmdIds `1307` and `20114` update receiver pause state and can cause a new `5963` request. The diagnostics branch therefore also traces the outgoing `SceneTimeNotify` / `PlayerTimeNotify` paused fields, logging transitions rather than all repeated notifications.
+
 ## Diagnostic branch instrumentation
 
 Branch: `diagnostics/amber-input-lock-35601` (based on the post-PR71 handoff fixes). Logs **packet names and limited decoded state only, never whole decrypted frames or auth payloads**.

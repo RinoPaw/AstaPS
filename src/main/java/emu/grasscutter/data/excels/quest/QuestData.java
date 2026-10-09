@@ -96,7 +96,7 @@ public class QuestData extends GameResource {
             if (this.subId == 35603) {
                 Grasscutter.getLogger().info(
                         "[Prologue] Quest 35603 accept gate restored: flattened={} reviewed={}",
-                        this.acceptCond.stream().map(QuestAcceptCondition::asKey).toList(),
+                        this.acceptCond == null ? List.of() : this.acceptCond.stream().map(QuestAcceptCondition::asKey).toList(),
                         corrected.stream().map(QuestAcceptCondition::asKey).toList());
             }
             removeFromAcceptCache();

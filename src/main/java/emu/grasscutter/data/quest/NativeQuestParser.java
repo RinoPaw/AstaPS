@@ -149,7 +149,7 @@ public final class NativeQuestParser {
                                                         ? row.getMainId()
                                                         : main.getMainId());
                                         sub.setOrder(row.getOrder());
-                                        sub.setRewind(row.getIsRewind());
+                                        sub.setRewind(row.getRewind());
                                         sub.setFinishParent(row.getFinishParent());
                                         return sub;
                                     })
@@ -204,7 +204,7 @@ public final class NativeQuestParser {
                                 .subId(row.getSubId())
                                 .mainId(row.getMainId() != null ? row.getMainId() : main.getMainId())
                                 .order(row.getOrder())
-                                .rewind(row.getIsRewind())
+                                .rewind(row.getRewind())
                                 .finishParent(row.getFinishParent())
                                 .finishCond(finishCond)
                                 .failCond(failCond)

@@ -90,7 +90,7 @@ public class QuestData extends GameResource {
         // Reviewed compatibility prerequisites govern the 351/363 chapter gates and
         // 35603 (move to high ground after Amber's automatic dialogue).
         // QuestExcel's physical-order fallback must not make 35603 depend on 35602.
-        var corrected = selectNativePrologueAcceptConditions(
+        var corrected = selectReviewedPrologueAcceptConditions(
                 this.mainId, this.subId, this.acceptCond, additionalData.getAcceptCond());
         if (!sameAcceptConditions(this.acceptCond, corrected)) {
             if (this.subId == 35603) {
@@ -162,7 +162,7 @@ public class QuestData extends GameResource {
     }
 
     /** Select source-reviewed compatibility gates instead of flattened physical-order fallbacks. */
-    static List<QuestAcceptCondition> selectNativePrologueAcceptConditions(
+    static List<QuestAcceptCondition> selectReviewedPrologueAcceptConditions(
             int mainId, int subId, List<QuestAcceptCondition> excel, List<QuestAcceptCondition> reviewedValues) {
         boolean reviewed = mainId == 351 || mainId == 363 || (mainId == 356 && subId == 35603);
         if (!reviewed || reviewedValues == null || reviewedValues.isEmpty()) return excel;

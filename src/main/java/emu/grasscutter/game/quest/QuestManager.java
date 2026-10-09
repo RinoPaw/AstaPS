@@ -585,16 +585,37 @@ public final class QuestManager extends BasePlayerManager {
     }
 
     public void queueEvent(QuestContent condType, String paramStr, int... params) {
-        eventExecutor.submit(() -> triggerEvent(condType, paramStr, params));
+        eventExecutor.submit(() -> {
+            try {
+                triggerEvent(condType, paramStr, params);
+            } catch (RuntimeException e) {
+                Grasscutter.getLogger().error(
+                        "Quest event {} failed for uid={}", condType, getPlayer().getUid(), e);
+            }
+        });
     }
 
     public void queueEvent(QuestCond condType, String paramStr, int... params) {
-        eventExecutor.submit(() -> triggerEvent(condType, paramStr, params));
+        eventExecutor.submit(() -> {
+            try {
+                triggerEvent(condType, paramStr, params);
+            } catch (RuntimeException e) {
+                Grasscutter.getLogger().error(
+                        "Quest event {} failed for uid={}", condType, getPlayer().getUid(), e);
+            }
+        });
     }
 
     public void triggerEvent(QuestCond condType, String paramStr, int... params) {
         Grasscutter.getLogger().trace("Trigger Event {}, {}, {}", condType, paramStr, params);
         var potentialQuests = GameData.getQuestDataByConditions(condType, params[0], paramStr);
+        if (condType == QuestCond.QUEST_COND_STATE_EQUAL && params.length > 1
+                && (params[0] == 36005 || params[0] == 35601)) {
+            Grasscutter.getLogger().info(
+                    "[Prologue] Quest state event uid={} id={} state={} candidates={}",
+                    getPlayer().getUid(), params[0], params[1],
+                    potentialQuests != null ? potentialQuests.size() : 0);
+        }
         if (potentialQuests == null) {
             return;
         }
@@ -656,6 +677,12 @@ public final class QuestManager extends BasePlayerManager {
                         }
                     }
 
+                    if (questData.getId() == 35601 || questData.getId() == 35603) {
+                        Grasscutter.getLogger().info(
+                                "[Prologue] Quest accept uid={} subQuest={} from={} progress={} accepted={}",
+                                owner.getUid(), questData.getId(), condType,
+                                Arrays.toString(acceptProgressLists.get(questData.getId())), shouldAccept);
+                    }
                     if (shouldAccept) {
                         GameQuest quest = owner.getQuestManager().addQuest(questData);
                         Grasscutter.getLogger().debug("Added quest {}", questData.getSubId());

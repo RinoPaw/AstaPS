@@ -87,16 +87,23 @@ public class QuestData extends GameResource {
                 effectiveConditionCombinator(
                         this.failCondComb, additionalData.getFailCondComb(), this.failCond);
 
-        // Reviewed BinOutput prerequisites govern 35101 and the 36301 chapter gate.
-        // A flattened quest-0 placeholder must not start the chapter before hilltop 35202.
-        var corrected = selectNativePrologueAcceptConditions(
-                this.mainId, this.acceptCond, additionalData.getAcceptCond());
+        // Reviewed compatibility prerequisites govern the 351/363 chapter gates and
+        // 35603 (move to high ground after Amber's automatic dialogue).
+        // QuestExcel's physical-order fallback must not make 35603 depend on 35602.
+        var corrected = selectReviewedPrologueAcceptConditions(
+                this.mainId, this.subId, this.acceptCond, additionalData.getAcceptCond());
         if (!sameAcceptConditions(this.acceptCond, corrected)) {
+            if (this.subId == 35603) {
+                Grasscutter.getLogger().info(
+                        "[Prologue] Quest 35603 accept gate restored: flattened={} reviewed={}",
+                        this.acceptCond == null ? List.of() : this.acceptCond.stream().map(QuestAcceptCondition::asKey).toList(),
+                        corrected.stream().map(QuestAcceptCondition::asKey).toList());
+            }
             removeFromAcceptCache();
             this.acceptCond = corrected;
             addToCache();
         }
-        if ((this.mainId == 351 || this.mainId == 363)
+        if ((this.mainId == 351 || this.mainId == 363 || this.subId == 35603)
                 && additionalData.getAcceptCondComb() != null) {
             this.acceptCondComb = additionalData.getAcceptCondComb();
         }
@@ -154,15 +161,16 @@ public class QuestData extends GameResource {
                 .toList();
     }
 
-    /** Use reviewed 351/363 BinOutput prerequisites for the hilltop 35202 -> 36301 gate. */
-    static List<QuestAcceptCondition> selectNativePrologueAcceptConditions(
-            int mainId, List<QuestAcceptCondition> excel, List<QuestAcceptCondition> nativeValues) {
-        if ((mainId != 351 && mainId != 363) || nativeValues == null || nativeValues.isEmpty()) return excel;
-        var validNative = nativeValues.stream()
+    /** Select source-reviewed compatibility gates instead of flattened physical-order fallbacks. */
+    static List<QuestAcceptCondition> selectReviewedPrologueAcceptConditions(
+            int mainId, int subId, List<QuestAcceptCondition> excel, List<QuestAcceptCondition> reviewedValues) {
+        boolean reviewed = mainId == 351 || mainId == 363 || (mainId == 356 && subId == 35603);
+        if (!reviewed || reviewedValues == null || reviewedValues.isEmpty()) return excel;
+        var validReviewed = reviewedValues.stream()
                 .filter(Objects::nonNull)
                 .filter(c -> c.getType() != null && c.getParam() != null && c.getParam().length > 0)
                 .toList();
-        return validNative.isEmpty() ? excel : validNative;
+        return validReviewed.isEmpty() ? excel : validReviewed;
     }
 
     static boolean sameAcceptConditions(

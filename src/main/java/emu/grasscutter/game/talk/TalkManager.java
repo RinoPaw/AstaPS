@@ -3,6 +3,7 @@ package emu.grasscutter.game.talk;
 import static emu.grasscutter.game.quest.enums.QuestCond.QUEST_COND_COMPLETE_TALK;
 import static emu.grasscutter.game.quest.enums.QuestContent.*;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.MainQuestData.TalkData;
 import emu.grasscutter.data.excels.TalkConfigData;
@@ -27,16 +28,30 @@ public final class TalkManager extends BasePlayerManager {
         var player = this.getPlayer();
 
         var talkData = GameData.getTalkConfigDataMap().get(talkId);
+        boolean tracePrologue = talkId == 35404 || talkId == 35601 || talkId == 35604 || talkId == 36001;
 
         // Invoke PlayerNpcTalkEvent.
         var event = new PlayerNpcTalkEvent(player, talkData, talkId, npcEntityId);
-        if (!event.call()) return;
+        if (!event.call()) {
+            if (tracePrologue) {
+                Grasscutter.getLogger().warn("[Prologue] Talk {} cancelled by event", talkId);
+            }
+            return;
+        }
 
         if (talkData != null) {
             // Quest actors can be client-local. If a server entity exists, validate the NPC/model
             // identity rather than the scene-local placement config id.
             var entity = player.getScene().getEntityById(npcEntityId);
-            if (!isTalkNpc(talkData, entity)) return;
+            if (!isTalkNpc(talkData, entity)) {
+                if (tracePrologue) {
+                    Grasscutter.getLogger().warn(
+                            "[Prologue] Talk {} rejected: npcEntity={} expectedNpcIds={} actualNpcId={}",
+                            talkId, npcEntityId, talkData.getNpcId(),
+                            entity != null ? entity.getEntityTypeId() : 0);
+                }
+                return;
+            }
 
             // Execute the talk action on associated handlers.
             talkData
@@ -52,6 +67,11 @@ public final class TalkManager extends BasePlayerManager {
         questManager.queueEvent(QUEST_CONTENT_COMPLETE_ANY_TALK, talkId);
         questManager.queueEvent(QUEST_CONTENT_COMPLETE_TALK, talkId);
         questManager.queueEvent(QUEST_COND_COMPLETE_TALK, talkId);
+        if (tracePrologue) {
+            Grasscutter.getLogger().info(
+                    "[Prologue] Talk {} queued COMPLETE_TALK and COMPLETE_TALK prerequisite for uid={}",
+                    talkId, player.getUid());
+        }
     }
 
     static boolean isTalkNpc(TalkConfigData talkData, GameEntity entity) {

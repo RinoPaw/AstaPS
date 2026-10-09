@@ -63,6 +63,9 @@ public class GameQuest {
         this.startTime = this.acceptTime;
         this.startGameDay = getOwner().getWorld().getTotalGameTimeDays();
         this.state = QuestState.QUEST_STATE_UNFINISHED;
+        if (subQuestId == 35403 || subQuestId == 35404 || subQuestId == 36005 || subQuestId == 35601 || subQuestId == 35603 || subQuestId == 35604) {
+            Grasscutter.getLogger().info("[Prologue] Quest start uid={} subQuest={}", getOwner().getUid(), subQuestId);
+        }
 
         val triggerCond =
                 questData.getFinishCond().stream()

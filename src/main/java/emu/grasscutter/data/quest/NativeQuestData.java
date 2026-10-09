@@ -66,6 +66,8 @@ public class NativeQuestData {
         private Integer mainId;
         private int subId;
         private Integer order;
+        private Boolean isRewind;
+        private Boolean finishParent;
         private List<Content> failCond;
         private List<Content> finishCond;
         private List<Exec> failExec;

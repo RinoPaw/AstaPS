@@ -41,11 +41,22 @@ final class QuestProgressTest {
     void twoAcceptancePredicatesOfTheSameTypeRemainSatisfied() {
         // Two required quest-state transitions arrive as separate events.
         var accepted = new int[2];
-        assertTrue(QuestProgress.recordMatch(accepted, 0, true));
-        assertFalse(QuestProgress.recordMatch(accepted, 1, false));
-        assertFalse(QuestProgress.recordMatch(accepted, 0, false));
-        assertTrue(QuestProgress.recordMatch(accepted, 1, true));
+        QuestProgress.recordCurrent(accepted, 0, true);
+        QuestProgress.recordCurrent(accepted, 1, false);
+        assertFalse(LogicType.calculate(LogicType.LOGIC_AND, accepted));
+        QuestProgress.recordCurrent(accepted, 1, true);
         assertTrue(LogicType.calculate(LogicType.LOGIC_AND, accepted));
+    }
+
+    @Test
+    void liveNotEqualGateCanBecomeFalseBeforeAnotherPrerequisiteFinishes() {
+        // 35103: prerequisite 35105 must still be unfinished when 35106 finishes.
+        var accepted = new int[2];
+        QuestProgress.recordCurrent(accepted, 1, true);
+        QuestProgress.recordCurrent(accepted, 1, false);
+        QuestProgress.recordCurrent(accepted, 0, true);
+        assertArrayEquals(new int[]{1, 0}, accepted);
+        assertFalse(LogicType.calculate(LogicType.LOGIC_AND, accepted));
     }
 
     @Test

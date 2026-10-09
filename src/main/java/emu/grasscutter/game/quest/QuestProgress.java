@@ -11,6 +11,11 @@ package emu.grasscutter.game.quest;
 final class QuestProgress {
     private QuestProgress() {}
 
+    /** Rechecks a live prerequisite rather than latching an obsolete quest state. */
+    static void recordCurrent(int[] progress, int index, boolean satisfied) {
+        progress[index] = satisfied ? 1 : 0;
+    }
+
     /** @return true only when a new objective becomes satisfied. */
     static boolean recordMatch(int[] progress, int index, boolean matched) {
         if (!matched || progress[index] == 1) return false;

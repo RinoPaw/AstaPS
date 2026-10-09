@@ -611,11 +611,21 @@ public final class QuestManager extends BasePlayerManager {
                     acceptProgressLists.putIfAbsent(questData.getId(), new int[acceptCond.size()]);
                     for (int i = 0; i < acceptCond.size(); i++) {
                         val condition = acceptCond.get(i);
-                        if (condition.getType() == condType) {
+                        // Quest-state conditions are live gates: a previously true
+                        // NOT_EQUAL can become false before the other prerequisite
+                        // finishes. Recheck both kinds on every candidate event.
+                        boolean liveQuestState =
+                                condition.getType() == QuestCond.QUEST_COND_STATE_EQUAL
+                                        || condition.getType() == QuestCond.QUEST_COND_STATE_NOT_EQUAL;
+                        if (condition.getType() == condType || liveQuestState) {
                             boolean result =
                                     questSystem.triggerCondition(owner, questData, condition, paramStr, params);
-                            QuestProgress.recordMatch(
-                                    acceptProgressLists.get(questData.getId()), i, result);
+                            var progress = acceptProgressLists.get(questData.getId());
+                            if (liveQuestState) {
+                                QuestProgress.recordCurrent(progress, i, result);
+                            } else {
+                                QuestProgress.recordMatch(progress, i, result);
+                            }
                         }
                     }
 

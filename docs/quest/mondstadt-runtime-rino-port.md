@@ -218,6 +218,10 @@ applied to multi-condition acceptance and failure progress.
 
 The generic `QuestProgress.recordMatch` helper now latches each successful
 objective until the normal quest rewind resets its progress arrays.
-Nonmatching or repeated events do not erase flags or send redundant progress
-notifications. Unit coverage exercises a three-dungeon AND, repeated and
-unrelated events, and independent acceptance events.
+Nonmatching or repeated content events do not erase flags or send redundant
+progress notifications. Quest-state acceptance conditions (EQUAL / NOT_EQUAL)
+are different: these are live gates and are re-evaluated together on every
+candidate state event. This prevents stale NOT_EQUAL results from unlocking
+mutually exclusive branches such as 35103 after 35105 has finished. Unit
+coverage exercises a three-dungeon AND, repeated and unrelated content
+events, and current-state acceptance gates.

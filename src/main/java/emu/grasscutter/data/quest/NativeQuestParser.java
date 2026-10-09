@@ -16,25 +16,13 @@ import java.util.*;
 /**
  * Loads the Genshin-Reverse native Quest truth layer without importing unproven semantics.
  *
- * <p>The numeric ids below are intentionally small: they are the names independently confirmed by
- * the pinned 7.1 native reader. Numeric ids that are merely known from older/public resources stay
- * parsed but do not override runtime quest behavior.
+ * <p>Genshin-Reverse emits a type name only for numeric ids independently aligned against the
+ * pinned 7.1 Quest corpus. This consumer therefore requires both the exported name and id to match
+ * a local enum constant before native data may override runtime behavior. Types that are proven by
+ * the decoder but not yet represented by AstaPS remain audit-only.
  */
 public final class NativeQuestParser {
     private static final Gson GSON = new Gson();
-
-    private static final Map<Integer, QuestContent> CONFIRMED_CONTENT =
-            Map.of(
-                    4, QuestContent.QUEST_CONTENT_FINISH_PLOT,
-                    6, QuestContent.QUEST_CONTENT_TRIGGER_FIRE,
-                    21, QuestContent.QUEST_CONTENT_TEAM_DEAD,
-                    23, QuestContent.QUEST_CONTENT_UNLOCK_TRANS_POINT);
-
-    private static final Map<Integer, QuestExec> CONFIRMED_EXEC =
-            Map.of(
-                    14, QuestExec.QUEST_EXEC_ROLLBACK_QUEST,
-                    17, QuestExec.QUEST_EXEC_LOCK_POINT,
-                    19, QuestExec.QUEST_EXEC_REFRESH_GROUP_SUITE);
 
     private NativeQuestParser() {}
 
@@ -156,8 +144,8 @@ public final class NativeQuestParser {
         for (var value : values) {
             if (value == null || value.getValue() != null) return null;
 
-            var type = CONFIRMED_CONTENT.get(value.getTypeId());
-            if (type == null || !nameMatches(value.getType(), type.name())) return null;
+            var type = resolveContentType(value.getTypeId(), value.getType());
+            if (type == null) return null;
 
             var converted = new QuestData.QuestContentCondition();
             converted.setType(type);
@@ -175,8 +163,8 @@ public final class NativeQuestParser {
         for (var value : values) {
             if (value == null) return null;
 
-            var type = CONFIRMED_EXEC.get(value.getTypeId());
-            if (type == null || !nameMatches(value.getType(), type.name())) return null;
+            var type = resolveExecType(value.getTypeId(), value.getType());
+            if (type == null) return null;
 
             var converted = new QuestData.QuestExecParam();
             converted.setType(type);
@@ -186,8 +174,24 @@ public final class NativeQuestParser {
         return List.copyOf(out);
     }
 
-    private static boolean nameMatches(String nativeName, String expected) {
-        return nativeName == null || nativeName.isBlank() || nativeName.equals(expected);
+    private static QuestContent resolveContentType(int typeId, String typeName) {
+        if (typeName == null || typeName.isBlank()) return null;
+        try {
+            var type = QuestContent.valueOf(typeName);
+            return type.getValue() == typeId ? type : null;
+        } catch (IllegalArgumentException ignored) {
+            return null;
+        }
+    }
+
+    private static QuestExec resolveExecType(int typeId, String typeName) {
+        if (typeName == null || typeName.isBlank()) return null;
+        try {
+            var type = QuestExec.valueOf(typeName);
+            return type.getValue() == typeId ? type : null;
+        } catch (IllegalArgumentException ignored) {
+            return null;
+        }
     }
 
     private static <T> List<T> safe(List<T> values) {

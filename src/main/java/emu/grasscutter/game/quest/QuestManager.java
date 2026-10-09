@@ -689,6 +689,39 @@ public final class QuestManager extends BasePlayerManager {
      *
      * @param quest The ID of the quest.
      */
+    static boolean hasCompletedQuestDungeon(
+            QuestData.QuestContentCondition condition, PlayerProgress progress) {
+        return condition != null
+                && condition.getType() == QuestContent.QUEST_CONTENT_FINISH_DUNGEON
+                && condition.getParam() != null
+                && condition.getParam().length > 0
+                && progress != null
+                && progress.getCompletedDungeons() != null
+                && progress.getCompletedDungeons().contains(condition.getParam()[0]);
+    }
+
+    static boolean hasRecordedQuestProgress(
+            QuestData.QuestContentCondition condition, PlayerProgress progress) {
+        if (condition == null || progress == null || condition.getType() == null) return false;
+        String key;
+        switch (condition.getType()) {
+            case QUEST_CONTENT_LUA_NOTIFY -> {
+                key = condition.getParamStr();
+                if (key == null || key.isBlank()) return false;
+            }
+            case QUEST_CONTENT_ADD_QUEST_PROGRESS -> {
+                int[] params = condition.getParam();
+                if (params == null || params.length == 0 || params[0] <= 0) return false;
+                key = String.valueOf(params[0]);
+            }
+            default -> {
+                return false;
+            }
+        }
+        int required = condition.getCount() > 0 ? condition.getCount() : 1;
+        return progress.getCurrentProgress(key) >= required;
+    }
+
     public void checkQuestAlreadyFulfilled(GameQuest quest) {
         Grasscutter.getThreadPool()
                 .submit(
@@ -719,6 +752,25 @@ public final class QuestManager extends BasePlayerManager {
                                                     condition.getType(), condition.getParam()[0], condition.getParam()[1]);
                                         }
                                     }
+                                    case QUEST_CONTENT_FINISH_DUNGEON -> {
+                                        if (hasCompletedQuestDungeon(condition, player.getPlayerProgress())) {
+                                            queueEvent(condition.getType(), condition.getParam()[0]);
+                                        }
+                                    }
+                                    case QUEST_CONTENT_LUA_NOTIFY -> {
+                                        if (hasRecordedQuestProgress(condition, player.getPlayerProgress())) {
+                                            queueEvent(condition.getType(), condition.getParamStr());
+                                        }
+                                    }
+                                    case QUEST_CONTENT_ADD_QUEST_PROGRESS -> {
+                                        if (hasRecordedQuestProgress(condition, player.getPlayerProgress())) {
+                                            int id = condition.getParam()[0];
+                                            int progress =
+                                                    player.getPlayerProgress()
+                                                            .getCurrentProgress(String.valueOf(id));
+                                            queueEvent(condition.getType(), id, progress);
+                                        }
+                                    }
                                     case QUEST_CONTENT_PLAYER_LEVEL_UP -> queueEvent(
                                             condition.getType(), player.getLevel());
                                 }
@@ -744,14 +796,42 @@ public final class QuestManager extends BasePlayerManager {
         return true;
     }
 
+    static List<QuestGroupSuite> latestSceneGroupSuites(
+            List<QuestGroupSuite> saved, int sceneId) {
+        var current = new LinkedHashMap<Integer, QuestGroupSuite>();
+        if (saved == null || sceneId <= 0) return List.of();
+
+        for (var entry : saved) {
+            if (entry == null || entry.getScene() != sceneId || entry.getGroup() <= 0) {
+                continue;
+            }
+            if (entry.getSuite() <= 0) {
+                current.remove(entry.getGroup());
+            } else {
+                current.put(entry.getGroup(), entry);
+            }
+        }
+        return List.copyOf(current.values());
+    }
+
     public List<QuestGroupSuite> getSceneGroupSuite(int sceneId) {
-        return getMainQuests().values().stream()
-                .filter(i -> i.getState() != ParentQuestState.PARENT_QUEST_STATE_FINISHED)
-                .map(GameMainQuest::getQuestGroupSuites)
-                .filter(Objects::nonNull)
-                .flatMap(Collection::stream)
-                .filter(i -> i.getScene() == sceneId)
-                .toList();
+        var restored = new ArrayList<QuestGroupSuite>();
+        for (var mainQuest : getMainQuests().values()) {
+            if (mainQuest.getState() == ParentQuestState.PARENT_QUEST_STATE_FINISHED) {
+                continue;
+            }
+            var overrides = mainQuest.getQuestGroupSuites();
+            if (overrides == null) continue;
+
+            List<QuestGroupSuite> snapshot;
+            synchronized (overrides) {
+                snapshot = List.copyOf(overrides);
+            }
+            // Recover duplicate history inside one parent quest only. Separate active
+            // MainQuests may legitimately own transitions for the same scene group.
+            restored.addAll(latestSceneGroupSuites(snapshot, sceneId));
+        }
+        return List.copyOf(restored);
     }
 
     public void loadFromDatabase() {

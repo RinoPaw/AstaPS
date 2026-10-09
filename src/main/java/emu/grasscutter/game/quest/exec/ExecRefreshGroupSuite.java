@@ -16,6 +16,16 @@ import java.util.function.BooleanSupplier;
 public class ExecRefreshGroupSuite extends QuestExecHandler {
     @Override
     public boolean execute(GameQuest quest, QuestData.QuestExecParam condition, String... params) {
+        return execute(quest, condition, quest.getState(), params);
+    }
+
+    @Override
+    public boolean execute(
+            GameQuest quest,
+            QuestData.QuestExecParam condition,
+            QuestState stateAtDispatch,
+            String... params) {
+        if (quest.getState() != stateAtDispatch) return true;
         if (params == null || params.length < 2) {
             Grasscutter.getLogger().warn(
                     "Quest {} refresh-group-suite exec has invalid params {}",
@@ -33,7 +43,6 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
         var scene = world.getSceneById(sceneId);
         if (scene == null) return false;
         var scripts = scene.getScriptManager();
-        var dispatchedState = quest.getState();
 
         if (!scripts.isInit()) {
             scripts.whenInitialized(ready -> {
@@ -46,17 +55,17 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
                 // Execute mutations on the scene scheduler, never its loader thread.
                 scene.getScheduler().scheduleDelayedTask(
                         () -> {
-                            if (quest.getState() == dispatchedState
+                            if (quest.getState() == stateAtDispatch
                                     && quest.getOwner().getWorld() == world
                                     && world.getScenes().get(sceneId) == scene
                                     && !scripts.isDestroyed()) {
-                                apply(quest, params, sceneId, scene);
+                                apply(quest, params, sceneId, scene, stateAtDispatch);
                             }
                         }, 1);
             });
             return true;
         }
-        return apply(quest, params, sceneId, scene);
+        return apply(quest, params, sceneId, scene, stateAtDispatch);
     }
 
     /** Keep a group visible only while a successful quest suite override owns it. */
@@ -85,8 +94,12 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
     }
 
     private boolean apply(
-            GameQuest quest, String[] params, int sceneId,
-            emu.grasscutter.game.world.Scene scene) {
+            GameQuest quest,
+            String[] params,
+            int sceneId,
+            emu.grasscutter.game.world.Scene scene,
+            QuestState stateAtDispatch) {
+        if (quest.getState() != stateAtDispatch) return true;
         var scripts = scene.getScriptManager();
         if (!scripts.isInit() || scripts.isDestroyed()) return false;
         boolean complete = true;

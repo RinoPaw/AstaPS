@@ -15,6 +15,15 @@ import emu.grasscutter.scripts.data.ScriptArgs;
 public class ExecNotifyGroupLua extends QuestExecHandler {
     @Override
     public boolean execute(GameQuest quest, QuestData.QuestExecParam condition, String... params) {
+        return execute(quest, condition, quest.getState(), params);
+    }
+
+    @Override
+    public boolean execute(
+            GameQuest quest,
+            QuestData.QuestExecParam condition,
+            QuestState stateAtDispatch,
+            String... params) {
         if (params == null || params.length < 2) return false;
         final int sceneId, groupId;
         try {
@@ -32,13 +41,10 @@ public class ExecNotifyGroupLua extends QuestExecHandler {
         if (scene == null) return false;
         var scriptManager = scene.getScriptManager();
 
-        // A queued callback must not turn an originally finished action into
-        // a later quest start/failure event.
-        QuestState dispatchedState = quest.getState();
         Runnable dispatch = () -> {
             boolean sceneGone = world.getScenes().get(sceneId) != scene;
             if (player.getWorld() != world
-                    || !canDeliver(dispatchedState, quest.getState(), sceneId,
+                    || !canDeliver(stateAtDispatch, quest.getState(), sceneId,
                             player.getSceneId(), sceneGone)) {
                 return;
             }
@@ -51,8 +57,8 @@ public class ExecNotifyGroupLua extends QuestExecHandler {
                 return;
             }
             scriptManager.callEvent(
-                    new ScriptArgs(groupId, eventTypeFor(dispatchedState), quest.getSubQuestId(),
-                            dispatchedState == QuestState.QUEST_STATE_FINISHED ? 1 : 0)
+                    new ScriptArgs(groupId, eventTypeFor(stateAtDispatch), quest.getSubQuestId(),
+                            stateAtDispatch == QuestState.QUEST_STATE_FINISHED ? 1 : 0)
                             .setEventSource(quest.getSubQuestId()));
         };
 

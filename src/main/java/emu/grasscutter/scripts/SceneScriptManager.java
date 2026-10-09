@@ -1383,6 +1383,10 @@ public class SceneScriptManager {
     }
 
     // todo use killed monsters instead of spawned entites for check?
+    static boolean isLivingGroupMonster(boolean dead, int entityGroupId, int groupId) {
+        return !dead && entityGroupId == groupId;
+    }
+
     public boolean isClearedGroupMonsters(int groupId) {
         val groupInstance = getGroupInstanceById(groupId);
         if (groupInstance == null || groupInstance.getLuaGroup() == null) return false;
@@ -1395,7 +1399,9 @@ public class SceneScriptManager {
                 .noneMatch(
                         m -> {
                             val entity = scene.getEntityByConfigId(m.config_id, groupId);
-                            return entity != null && entity.getGroupId() == groupId;
+                            return entity != null
+                                    && isLivingGroupMonster(
+                                            entity.isDead(), entity.getGroupId(), groupId);
                         });
     }
 

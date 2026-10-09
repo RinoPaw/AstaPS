@@ -1524,6 +1524,9 @@ public class Scene {
                         return;
                     }
 
+                    // Persisted quest-owned groups may be outside the player's visible grid.
+                    // Restore the live pin before applying the saved suite.
+                    group.dontUnload = true;
                     scriptManager.refreshGroup(groupInstance, i.getSuite(), false);
                 });
     }

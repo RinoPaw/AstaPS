@@ -112,9 +112,11 @@ public final class QuestSystem extends BaseGameSystem {
             return;
         }
 
+        final var stateAtDispatch = quest.getState();
+        final var args = params != null ? params.clone() : new String[0];
         QuestManager.eventExecutor.submit(
                 () -> {
-                    if (!handler.execute(quest, execParam, params)) {
+                    if (!handler.execute(quest, execParam, stateAtDispatch, args)) {
                         Grasscutter.getLogger()
                                 .debug(
                                         "Execute trigger failed for {} at {}.",

@@ -1,5 +1,4 @@
 name: Build
-# Native Quest checkpoint: validate the semantic-identity plus implemented-handler gate.
 
 on:
   # Every in-repo branch is covered here, and GitHub attaches these runs to any PR opened from one,

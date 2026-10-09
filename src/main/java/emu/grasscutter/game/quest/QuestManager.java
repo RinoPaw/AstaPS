@@ -684,7 +684,7 @@ public final class QuestManager extends BasePlayerManager {
                         }
                     }
 
-                    if (questData.getId() == 35601 || questData.getId() == 35603) {
+                    if (questData.getId() == 35601 || questData.getId() == 35602 || questData.getId() == 35603) {
                         Grasscutter.getLogger().info(
                                 "[Prologue] Quest accept uid={} subQuest={} from={} progress={} accepted={}",
                                 owner.getUid(), questData.getId(), condType,
@@ -706,6 +706,16 @@ public final class QuestManager extends BasePlayerManager {
 
     public void triggerEvent(QuestContent condType, String paramStr, int... params) {
         Grasscutter.getLogger().trace("Trigger Event {}, {}, {}", condType, paramStr, params);
+
+        if (condType == QuestContent.QUEST_CONTENT_TRIGGER_FIRE
+                && params.length > 0 && (params[0] == 1126 || params[0] == 1102)) {
+            int subQuestId = params[0] == 1126 ? 35602 : 35603;
+            var quest = getQuestById(subQuestId);
+            Grasscutter.getLogger().info(
+                    "[AmberState] region trigger uid={} trigger={} subQuest={} state={}",
+                    player.getUid(), params[0], subQuestId,
+                    quest == null ? "NOT_STARTED" : quest.getState().name());
+        }
 
         List<GameMainQuest> checkMainQuests =
                 this.getMainQuests().values().stream()

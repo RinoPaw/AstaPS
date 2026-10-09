@@ -472,7 +472,7 @@ public class GameMainQuest {
                 if (shouldFinish) subQuestWithCond.finish();
             }
         } catch (Exception e) {
-            Grasscutter.getLogger().debug("An error occurred while trying to finish quest.", e);
+            Grasscutter.getLogger().error("An error occurred while trying to finish quest.", e);
         }
     }
 

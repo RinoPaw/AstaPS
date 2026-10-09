@@ -269,6 +269,76 @@ class NativeQuestParserTest {
     }
 
     @Test
+    void exactTypeWithoutImplementedHandlerStaysAuditOnly() {
+        var quest =
+                GSON.fromJson(
+                        """
+                        {
+                          "subId": 991001,
+                          "mainId": 991,
+                          "order": 1,
+                          "finishCond": [
+                            {
+                              "type": "QUEST_CONTENT_COMPLETE_TALK",
+                              "param": [12345, 0]
+                            }
+                          ],
+                          "finishExec": [
+                            {
+                              "type": "QUEST_EXEC_UNLOCK_POINT",
+                              "param": ["3", "6"]
+                            }
+                          ]
+                        }
+                        """,
+                        QuestData.class);
+        quest.onLoad();
+        GameData.getQuestDataMap().put(quest.getSubId(), quest);
+
+        var data =
+                NativeQuestParser.parse(
+                        new StringReader(
+                                """
+                                {
+                                  "schemaVersion": 1,
+                                  "gameVersion": "7.1.0-global",
+                                  "mainQuests": [
+                                    {
+                                      "mainId": 991,
+                                      "quests": [
+                                        {
+                                          "subId": 991001,
+                                          "finishCond": [
+                                            {
+                                              "typeId": 109,
+                                              "type": "QUEST_CONTENT_CITY_LEVEL_UP",
+                                              "param": [1, 0]
+                                            }
+                                          ],
+                                          "finishExec": [
+                                            {
+                                              "typeId": 17,
+                                              "type": "QUEST_EXEC_LOCK_POINT",
+                                              "param": ["3", "1720"]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                                """));
+
+        var report = NativeQuestParser.apply(data);
+
+        assertEquals(2, report.unresolvedLists());
+        assertEquals(QuestContent.QUEST_CONTENT_COMPLETE_TALK, quest.getFinishCond().get(0).getType());
+        assertEquals(QuestExec.QUEST_EXEC_UNLOCK_POINT, quest.getFinishExec().get(0).getType());
+        assertEquals(QuestSource.QUEST_EXCEL, quest.getFieldSource(QuestField.FINISH_COND));
+        assertEquals(QuestSource.QUEST_EXCEL, quest.getFieldSource(QuestField.FINISH_EXEC));
+    }
+
+    @Test
     void unresolvedNativeTypeLeavesLegacyRuntimeListUntouched() {
         var quest =
                 GSON.fromJson(

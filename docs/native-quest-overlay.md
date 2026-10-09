@@ -36,11 +36,9 @@ aligned against the exact 7.1 Quest corpus. AstaPS accepts a native condition/ex
 If any check fails, the whole native list remains audit-only and the QuestExcel runtime list is
 left untouched.
 
-At the current Genshin-Reverse semantic set and AstaPS handler inventory this makes 38
-QuestContent ids and 36 QuestExec ids directly usable by this branch. Types such as
-`QUEST_CONTENT_CITY_LEVEL_UP`, `QUEST_CONTENT_TEAM_DEAD` and `QUEST_EXEC_LOCK_POINT`
-are semantically identified but remain audit-only because the current server has no matching
-handler. This keeps native truth from replacing compatibility data with behavior the server cannot
+At the current Genshin-Reverse semantic set and AstaPS handler inventory this makes 39
+QuestContent ids and 37 QuestExec ids directly usable by this branch. Types such as `QUEST_CONTENT_CITY_LEVEL_UP` and `QUEST_EXEC_SET_WEATHER_GADGET` are
+semantically identified but remain audit-only because the current server has no matching handler. This keeps native truth from replacing compatibility data with behavior the server cannot
 execute.
 
 

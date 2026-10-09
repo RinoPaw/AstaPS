@@ -25,10 +25,12 @@ public class HandlerGadgetInteractReq extends PacketHandler {
         boolean matchesQuestTarget = target instanceof EntityGadget gadget
                 && matchesQuestGadget(gadget.getGadgetId(), req.getGadgetId());
 
-        if (scene != null) player.interactWith(req.getGadgetEntityId(), req);
+        // Preserve the event's original ordering relative to the gadget Lua
+        // interaction; scripts may synchronously enqueue follow-up quest events.
         if (matchesQuestTarget) {
             player.getQuestManager().queueEvent(
                     QuestContent.QUEST_CONTENT_INTERACT_GADGET, req.getGadgetId());
         }
+        if (scene != null) player.interactWith(req.getGadgetEntityId(), req);
     }
 }

@@ -14,7 +14,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 class NativeQuestParserTest {
-    // CI checkpoint for the expanded exact 7.1 native type contract.
     private static final Gson GSON = new Gson();
     private static final int SUB_ID = 991001;
     private static final int NATIVE_ONLY_SUB_ID = 991002;

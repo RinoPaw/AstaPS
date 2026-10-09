@@ -207,3 +207,17 @@ without the prior condition definitions. Unchanged lengths preserve
 saved progress. Persistent item, dungeon and quest-Lua histories can then
 be checked by the normal replay logic. This prevents out-of-range
 condition updates without fabricating completed objectives.
+
+## Cumulative multi-objective event progress
+
+Quest event dispatch checks each predicate of the event's type. A later
+nonmatching event previously overwrote a previously satisfied predicate with
+zero. For 30901 this made the three distinct FINISH_DUNGEON conditions under
+LOGIC_AND impossible to accumulate across separate clears. The same reset
+applied to multi-condition acceptance and failure progress.
+
+The generic `QuestProgress.recordMatch` helper now latches each successful
+objective until the normal quest rewind resets its progress arrays.
+Nonmatching or repeated events do not erase flags or send redundant progress
+notifications. Unit coverage exercises a three-dungeon AND, repeated and
+unrelated events, and independent acceptance events.

@@ -614,7 +614,8 @@ public final class QuestManager extends BasePlayerManager {
                         if (condition.getType() == condType) {
                             boolean result =
                                     questSystem.triggerCondition(owner, questData, condition, paramStr, params);
-                            acceptProgressLists.get(questData.getId())[i] = result ? 1 : 0;
+                            QuestProgress.recordMatch(
+                                    acceptProgressLists.get(questData.getId()), i, result);
                         }
                     }
 

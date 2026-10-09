@@ -423,8 +423,8 @@ public class GameMainQuest {
                                             .getServer()
                                             .getQuestSystem()
                                             .triggerContent(subQuestWithCond, condition, paramStr, params);
-                            subQuestWithCond.setFailProgress(i, result ? 1 : 0);
-                            if (result) {
+                            if (QuestProgress.recordMatch(
+                                    subQuestWithCond.getFailProgressList(), i, result)) {
                                 getOwner().getSession().send(new PacketQuestProgressUpdateNotify(subQuestWithCond));
                             }
                         }
@@ -486,8 +486,8 @@ public class GameMainQuest {
                                             .getServer()
                                             .getQuestSystem()
                                             .triggerContent(subQuestWithCond, condition, paramStr, params);
-                            subQuestWithCond.setFinishProgress(i, result ? 1 : 0);
-                            if (result) {
+                            if (QuestProgress.recordMatch(
+                                    subQuestWithCond.getFinishProgressList(), i, result)) {
                                 getOwner().getSession().send(new PacketQuestProgressUpdateNotify(subQuestWithCond));
                             }
                         }

@@ -26,12 +26,28 @@ final class GameQuestProgressMigrationTest {
         return GSON.fromJson(json.append("]}").toString(), QuestData.class);
     }
 
+    @SuppressWarnings("deprecation")
+    private static GameQuest savedQuest(int id, int[] finish, int[] fail) {
+        var quest = new GameQuest();
+        try {
+            var idField = GameQuest.class.getDeclaredField("subQuestId");
+            idField.setAccessible(true);
+            idField.setInt(quest, id);
+            var finishField = GameQuest.class.getDeclaredField("finishProgressList");
+            finishField.setAccessible(true);
+            finishField.set(quest, finish);
+            var failField = GameQuest.class.getDeclaredField("failProgressList");
+            failField.setAccessible(true);
+            failField.set(quest, fail);
+        } catch (ReflectiveOperationException e) {
+            throw new AssertionError(e);
+        }
+        return quest;
+    }
+
     @Test
     void oldSaveWithDifferentConditionCountsResetsBothProgressArrays() {
-        var quest = GSON.fromJson("""
-                {"subQuestId":35901,"finishProgressList":[1],
-                 "failProgressList":[1,0,1]}
-                """, GameQuest.class);
+        var quest = savedQuest(35901, new int[]{1}, new int[]{1, 0, 1});
         quest.setConfig(definition(35901, 2, 1));
 
         assertArrayEquals(new int[]{0, 0}, quest.getFinishProgressList());
@@ -40,10 +56,7 @@ final class GameQuestProgressMigrationTest {
 
     @Test
     void unchangedDefinitionsKeepRecordedProgress() {
-        var quest = GSON.fromJson("""
-                {"subQuestId":35901,"finishProgressList":[1,0],
-                 "failProgressList":[1]}
-                """, GameQuest.class);
+        var quest = savedQuest(35901, new int[]{1, 0}, new int[]{1});
         var originalFinish = quest.getFinishProgressList();
         var originalFail = quest.getFailProgressList();
         quest.setConfig(definition(35901, 2, 1));
@@ -56,7 +69,7 @@ final class GameQuestProgressMigrationTest {
 
     @Test
     void missingLegacyArraysAreInitializedForCurrentDefinition() {
-        var quest = GSON.fromJson("{\"subQuestId\":35901}", GameQuest.class);
+        var quest = savedQuest(35901, null, null);
         quest.setConfig(definition(35901, 1, 2));
 
         assertArrayEquals(new int[]{0}, quest.getFinishProgressList());
@@ -65,9 +78,7 @@ final class GameQuestProgressMigrationTest {
 
     @Test
     void unrelatedDefinitionMustNotChangeTheSavedQuest() {
-        var quest = GSON.fromJson("""
-                {"subQuestId":35901,"finishProgressList":[1],"failProgressList":[1]}
-                """, GameQuest.class);
+        var quest = savedQuest(35901, new int[]{1}, new int[]{1});
         quest.setConfig(definition(39403, 2, 2));
 
         assertArrayEquals(new int[]{1}, quest.getFinishProgressList());

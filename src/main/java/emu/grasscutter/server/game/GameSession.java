@@ -221,6 +221,11 @@ public class GameSession implements GameSessionManager.KcpChannel {
         }
 
         if (packet.getOpcode() <= 0) {
+            if (isAmberTraceActive()
+                    && packet instanceof emu.grasscutter.server.packet.send.PacketPlayerSetPauseRsp) {
+                Grasscutter.getLogger().warn(
+                        "[AmberWire] PlayerSetPauseRsp dropped: 7.1 response CmdId is unknown; client receives no pause acknowledgement");
+            }
             // A non-positive opcode is a message 7.1 has no known CmdId for. Named once per packet
             // class, at debug: there are dozens of them and none is actionable in normal play.
             if (missingCmdIdReported.add(packet.getClass().getSimpleName())) {

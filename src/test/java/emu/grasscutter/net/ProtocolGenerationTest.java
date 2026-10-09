@@ -10,6 +10,7 @@ import emu.grasscutter.net.proto.AvatarEnterSceneInfoOuterClass.AvatarEnterScene
 import emu.grasscutter.net.proto.AvatarInfoOuterClass.AvatarInfo;
 import emu.grasscutter.net.proto.BirthdayOuterClass.Birthday;
 import emu.grasscutter.net.proto.GetActivityInfoReqOuterClass.GetActivityInfoReq;
+import emu.grasscutter.net.proto.PlayerSetPauseReqOuterClass.PlayerSetPauseReq;
 import emu.grasscutter.net.proto.SceneAvatarInfoOuterClass.SceneAvatarInfo;
 import emu.grasscutter.net.proto.SceneTeamAvatarOuterClass.SceneTeamAvatar;
 import emu.grasscutter.net.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo;
@@ -72,6 +73,17 @@ public final class ProtocolGenerationTest {
                 SceneWeaponInfo.getDescriptor().findFieldByName("ammunition_list").getNumber());
         assertEquals(
                 2, _TpsWeapon.getDescriptor().findFieldByName("accessory_id_list").getNumber());
+    }
+
+    @Test
+    public void playerSetPauseReqUsesNativeGlobal71Field11() throws Exception {
+        // Exact 7.1 Global executable: GLIHKBGFALC.IENGFLPCLNM @ 0xA580610
+        // writes protobuf tag 0x58 (field 11, varint), documented in
+        // Genshin-Reverse research/amber-pause-ack-71/native-probe.json.
+        assertEquals(5963, PacketOpcodes.PlayerSetPauseReq);
+        assertEquals(11, PlayerSetPauseReq.getDescriptor().findFieldByName("is_paused").getNumber());
+        assertEquals(true, PlayerSetPauseReq.parseFrom(HexFormat.of().parseHex("5801")).getIsPaused());
+        assertEquals(false, PlayerSetPauseReq.parseFrom(HexFormat.of().parseHex("5800")).getIsPaused());
     }
 
     @Test

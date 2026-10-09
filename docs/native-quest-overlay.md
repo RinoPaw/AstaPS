@@ -50,9 +50,10 @@ Types such as `QUEST_CONTENT_CITY_LEVEL_UP` and `QUEST_EXEC_SET_WEATHER_GADGET` 
 semantically identified but remain audit-only because the current server has no matching handler.
 The latter affects native finish execs in Mondstadt MainQuests 359 and 394, but no maintained
 Grasscutter/Luna implementation was found and the 7.1 client probe currently proves only the enum
-identity. Keeping those lists on the compatibility source is safer than pretending the server can
-execute them. This keeps native truth from replacing compatibility data with behavior the server
-cannot execute.
+identity. The QuestExcel fallback rows 35901 and 39403 were compared against the native bundle and
+their finish-exec type/parameter sequences are identical, so leaving these two lists on the
+compatibility source does not change current Mondstadt behavior. This keeps native truth from
+replacing compatibility data with behavior the server cannot execute.
 
 
 ## Minimal bundle shape

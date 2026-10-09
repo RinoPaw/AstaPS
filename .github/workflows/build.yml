@@ -1,5 +1,5 @@
 name: Build
-# Quest runtime checkpoint: exercise the branch after handler-gate changes.
+# Native Quest checkpoint: validate the semantic-identity plus implemented-handler gate.
 
 on:
   # Every in-repo branch is covered here, and GitHub attaches these runs to any PR opened from one,

@@ -14,6 +14,9 @@ public class HandlerNpcTalkReq extends PacketHandler {
         int talkId = req.getTalkId();
         boolean tracePrologue = talkId == 35404 || talkId == 35601 || talkId == 35604 || talkId == 36001;
 
+        if (talkId == 35601) {
+            session.beginAmberInputTrace();
+        }
         if (tracePrologue) {
             Grasscutter.getLogger().info(
                     "[Prologue] NpcTalkReq uid={} talk={} npcEntity={} entity={}",

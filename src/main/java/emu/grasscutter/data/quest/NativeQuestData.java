@@ -1,5 +1,6 @@
 package emu.grasscutter.data.quest;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 import lombok.Data;
 
@@ -66,7 +67,8 @@ public class NativeQuestData {
         private Integer mainId;
         private int subId;
         private Integer order;
-        private Boolean isRewind;
+        @SerializedName("isRewind")
+        private Boolean rewind;
         private Boolean finishParent;
         private List<Content> failCond;
         private List<Content> finishCond;

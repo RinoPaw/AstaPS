@@ -1,128 +1,173 @@
 package emu.grasscutter.command.commands;
 
+import static emu.grasscutter.utils.lang.Language.translate;
+
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.packet.send.PacketHomeBasicInfoNotify;
 import emu.grasscutter.server.packet.send.PacketPlayerHomeCompInfoNotify;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
-import java.util.List;
-
-import static emu.grasscutter.utils.lang.Language.translate;
-
-@Command(label = "teapot",
-        usage = {"setLevel <level>",
-            "unlockModule <1 - 4>",
-            "lockModule <1 - 4>",
-            "giveAllFurniture <count>",
-            "refreshLimitedShop"},
+@Command(
+        label = "teapot",
         permission = "player.teapot",
         permissionTargeted = "player.teapot.others")
 public final class TeapotCommand implements CommandHandler {
 
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        if (args.size() == 0) {
-            sendUsageMessage(sender);
-            return;
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        var commandLine = new CommandLine(new Root(sender));
+        commandLine.addSubcommand("setlevel", new SetLevel(sender, targetPlayer));
+        commandLine.addSubcommand("unlockmodule", new UnlockModule(sender, targetPlayer));
+        commandLine.addSubcommand("lockmodule", new LockModule(sender, targetPlayer));
+        commandLine.addSubcommand("giveallfurniture", new GiveFurniture(sender, targetPlayer));
+        return commandLine;
+    }
+
+    @CommandLine.Command(name = "teapot")
+    private final class Root implements Runnable {
+        private final Player sender;
+
+        private Root(Player sender) {
+            this.sender = sender;
         }
 
-        String cmd = args.remove(0).toLowerCase();
+        @Override
+        public void run() {
+            TeapotCommand.this.sendUsageMessage(sender);
+        }
+    }
 
-        int param = 0;
-        if (args.size() == 1) {
-            try {
-                param = Integer.parseInt(args.get(0));
-            } catch (Exception e) {
-                CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.invalid_param"));
+    private abstract static class PlayerCommand implements Runnable {
+        protected final Player sender;
+        protected final Player targetPlayer;
+
+        private PlayerCommand(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
+        }
+    }
+
+    @CommandLine.Command(name = "setlevel")
+    private static final class SetLevel extends PlayerCommand {
+        @Parameters(index = "0", paramLabel = "<level>")
+        private int level;
+
+        private SetLevel(Player sender, Player targetPlayer) {
+            super(sender, targetPlayer);
+        }
+
+        @Override
+        public void run() {
+            if (level < 1 || level > 10) {
+                CommandOutput.sendMessage(sender, translate(sender, "commands.teapot.level_range_error"));
                 return;
             }
+            targetPlayer.getHome().setLevel(level);
+            targetPlayer.getHome().save();
+            targetPlayer.sendPacket(new PacketHomeBasicInfoNotify(targetPlayer, false));
+            CommandOutput.sendMessage(sender, translate(sender, "commands.teapot.level_success", level));
+        }
+    }
+
+    @CommandLine.Command(name = "unlockmodule")
+    private static final class UnlockModule extends PlayerCommand {
+        @Parameters(index = "0", paramLabel = "<1-4>")
+        private int module;
+
+        private UnlockModule(Player sender, Player targetPlayer) {
+            super(sender, targetPlayer);
         }
 
-        switch (cmd) {
-            case "setlevel" -> {
-                if (param < 1 || param > 10) {
-                    CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.level_range_error"));
-                    return;
-                }
-                targetPlayer.getHome().setLevel(param);
-                targetPlayer.getHome().save();
-                targetPlayer.sendPacket(new PacketHomeBasicInfoNotify(targetPlayer, false));
-                CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.level_success", param));
+        @Override
+        public void run() {
+            if (!validModule(sender, module)) return;
+            if (targetPlayer.getRealmList() != null && targetPlayer.getRealmList().contains(module)) {
+                CommandOutput.sendMessage(
+                        sender, translate(sender, "commands.teapot.unlock_module_contain_error"));
+                return;
             }
-            case "unlockmodule" -> {
-                if (param > 4) {
-                    CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.module_sumeru_error"));
-                    return;
-                }
 
-                if (param < 1) {
-                    CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.module_range_error"));
-                    return;
-                }
-
-                if (targetPlayer.getRealmList() != null && targetPlayer.getRealmList().contains(param)) {
-                    CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.unlock_module_contain_error"));
-                    return;
-                }
-
-                // addRealmList() already persists the unlock notify (and home claim reward) for modules > 3.
-                targetPlayer.addRealmList(param);
-                targetPlayer.save();
-                targetPlayer.sendPacket(new PacketPlayerHomeCompInfoNotify(targetPlayer));
-                CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.unlock_module_success", param));
-            }
-            case "lockmodule" -> {
-                if (param > 4) {
-                    CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.module_sumeru_error"));
-                    return;
-                }
-
-                if (param < 1) {
-                    CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.module_range_error"));
-                    return;
-                }
-
-                if (param == targetPlayer.getCurrentRealmId()) {
-                    CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.lock_module_in_scene_error"));
-                    return;
-                }
-
-                if (targetPlayer.getRealmList() == null || !targetPlayer.getRealmList().contains(param)) {
-                    CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.lock_module_contain_error"));
-                    return;
-                }
-
-                // LunaGC stores realm arrangement state per outdoor scene id (realmId + 2000) rather
-                // than a single realmBlockMap, so clear both the outdoor scene and its attached main
-                // house so the module regenerates from defaults if unlocked again.
-                int outdoorSceneId = param + 2000;
-                targetPlayer.getHome().getSceneMap().remove(outdoorSceneId);
-                targetPlayer.getHome().getMainHouseMap().remove(outdoorSceneId);
-                targetPlayer.getHome().save();
-
-                targetPlayer.getRealmList().remove(param);
-                targetPlayer.save();
-
-                targetPlayer.sendPacket(new PacketPlayerHomeCompInfoNotify(targetPlayer));
-                CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.lock_module_success", param));
-            }
-            case "giveallfurniture" -> {
-                for (ItemData item : GameData.getItemDataMap().values()) {
-                    if (item.getFurnType() == null || item.getFurnType().isEmpty()) continue;
-
-                    targetPlayer.getInventory().addItem(item.getId(), param);
-                }
-                CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.give_furniture_success"));
-            }
-            case "refreshlimitedshop" -> {
-                // TODO: the Serenitea Pot limited shop (weekly Djinn shop) is not implemented yet -
-                // it requires client packets/proto messages LunaGC doesn't currently have mapped.
-                CommandHandler.sendMessage(sender, translate(sender, "commands.teapot.refresh_limited_shop_success"));
-            }
-            default -> sendUsageMessage(sender);
+            targetPlayer.addRealmList(module);
+            targetPlayer.save();
+            targetPlayer.sendPacket(new PacketPlayerHomeCompInfoNotify(targetPlayer));
+            CommandOutput.sendMessage(
+                    sender, translate(sender, "commands.teapot.unlock_module_success", module));
         }
+    }
+
+    @CommandLine.Command(name = "lockmodule")
+    private static final class LockModule extends PlayerCommand {
+        @Parameters(index = "0", paramLabel = "<1-4>")
+        private int module;
+
+        private LockModule(Player sender, Player targetPlayer) {
+            super(sender, targetPlayer);
+        }
+
+        @Override
+        public void run() {
+            if (!validModule(sender, module)) return;
+            if (module == targetPlayer.getCurrentRealmId()) {
+                CommandOutput.sendMessage(
+                        sender, translate(sender, "commands.teapot.lock_module_in_scene_error"));
+                return;
+            }
+            if (targetPlayer.getRealmList() == null || !targetPlayer.getRealmList().contains(module)) {
+                CommandOutput.sendMessage(
+                        sender, translate(sender, "commands.teapot.lock_module_contain_error"));
+                return;
+            }
+
+            int outdoorSceneId = module + 2000;
+            targetPlayer.getHome().getSceneMap().remove(outdoorSceneId);
+            targetPlayer.getHome().getMainHouseMap().remove(outdoorSceneId);
+            targetPlayer.getHome().save();
+            targetPlayer.getRealmList().remove(module);
+            targetPlayer.save();
+            targetPlayer.sendPacket(new PacketPlayerHomeCompInfoNotify(targetPlayer));
+            CommandOutput.sendMessage(
+                    sender, translate(sender, "commands.teapot.lock_module_success", module));
+        }
+    }
+
+    @CommandLine.Command(name = "giveallfurniture")
+    private static final class GiveFurniture extends PlayerCommand {
+        @Parameters(index = "0", paramLabel = "<count>")
+        private int count;
+
+        private GiveFurniture(Player sender, Player targetPlayer) {
+            super(sender, targetPlayer);
+        }
+
+        @Override
+        public void run() {
+            if (count <= 0) {
+                CommandOutput.sendMessage(sender, translate(sender, "commands.teapot.invalid_param"));
+                return;
+            }
+            for (ItemData item : GameData.getItemDataMap().values()) {
+                if (item.getFurnType() == null || item.getFurnType().isEmpty()) continue;
+                targetPlayer.getInventory().addItem(item.getId(), count);
+            }
+            CommandOutput.sendMessage(sender, translate(sender, "commands.teapot.give_furniture_success"));
+        }
+    }
+
+    private static boolean validModule(Player sender, int module) {
+        if (module > 4) {
+            CommandOutput.sendMessage(sender, translate(sender, "commands.teapot.module_sumeru_error"));
+            return false;
+        }
+        if (module < 1) {
+            CommandOutput.sendMessage(sender, translate(sender, "commands.teapot.module_range_error"));
+            return false;
+        }
+        return true;
     }
 }

@@ -1,7 +1,5 @@
 package emu.grasscutter.command.commands;
 
-import static emu.grasscutter.utils.lang.Language.translate;
-
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.*;
 import emu.grasscutter.data.GameData;
@@ -12,122 +10,121 @@ import emu.grasscutter.server.packet.send.PacketGroupSuiteNotify;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
-/**
- * Places an NPC model from NpcExcelConfigData in front of the player, facing them.
- *
- * <p>The NPC only shows its model: it has no dialogue and does not move, since nothing behind it
- * comes from a scene script. It stays until {@code /npc clear} or until the scene unloads.
- */
+/** Places or inspects NPCs for 7.1 scene/quest debugging. */
 @Command(
         label = "npc",
-        usage = {"<npcId>", "near [radius]", "group <groupId> <suiteId>", "clear"},
         permission = "server.npc",
         permissionTargeted = "server.npc.others")
 public final class NpcCommand implements CommandHandler {
-    /** How far in front of the player the NPC stands, in metres. */
     private static final double DISTANCE = 2.5;
 
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        if (args.isEmpty()) {
-            this.sendUsageMessage(sender);
-            return;
-        }
-
-        var scene = targetPlayer.getScene();
-        if (scene == null) return;
-
-        if (args.get(0).equalsIgnoreCase("near")) {
-            this.listNearby(sender, targetPlayer, args);
-            return;
-        }
-
-        if (args.get(0).equalsIgnoreCase("group")) {
-            // How a scene script brings in its NPCs: the client loads the group from its own copy of
-            // the Lua and draws that suite's NPCs where the script puts them. The server needs no
-            // Lua for it, so this also reaches quest groups missing from the resources.
-            if (args.size() < 3) {
-                this.sendUsageMessage(sender);
-                return;
-            }
-            try {
-                int groupId = Integer.parseInt(args.get(1));
-                int suiteId = Integer.parseInt(args.get(2));
-                targetPlayer.sendPacket(new PacketGroupSuiteNotify(groupId, suiteId));
-                CommandHandler.sendMessage(
-                        sender, translate(sender, "commands.npc.group_sent", groupId, suiteId));
-            } catch (NumberFormatException e) {
-                this.sendUsageMessage(sender);
-            }
-            return;
-        }
-
-        if (args.get(0).equalsIgnoreCase("clear")) {
-            var placed = new ArrayList<EntityNPC>();
-            for (var entity : scene.getEntities().values()) {
-                if (entity instanceof EntityNPC npc && npc.isStandalone()) placed.add(npc);
-            }
-            placed.forEach(scene::removeEntity);
-            CommandHandler.sendMessage(
-                    sender, translate(sender, "commands.npc.cleared", placed.size()));
-            return;
-        }
-
-        int npcId;
-        try {
-            npcId = Integer.parseInt(args.get(0));
-        } catch (NumberFormatException e) {
-            this.sendUsageMessage(sender);
-            return;
-        }
-        if (!GameData.getNpcDataMap().containsKey(npcId)) {
-            CommandHandler.sendMessage(sender, translate(sender, "commands.npc.not_found", npcId));
-            return;
-        }
-
-        // Rotation is in degrees about y; 0 faces +z.
-        double yaw = Math.toRadians(targetPlayer.getRotation().getY());
-        var pos =
-                targetPlayer
-                        .getPosition()
-                        .clone()
-                        .addX((float) (Math.sin(yaw) * DISTANCE))
-                        .addZ((float) (Math.cos(yaw) * DISTANCE));
-        var rot = new Position(0, (targetPlayer.getRotation().getY() + 180) % 360, 0);
-
-        var npc = new EntityNPC(scene, npcId, pos, rot);
-        // The client files NPCs under the scene block they belong to and drops one whose block it
-        // does not have loaded; block 0 never is, so give it the block the player stands in.
-        for (var block : scene.getLoadedBlocks()) {
-            if (block.contains(pos)) {
-                npc.setBlockId(block.id);
-                break;
-            }
-        }
-        scene.addEntity(npc);
-        Grasscutter.getLogger()
-                .info(
-                        "[npc] placed npc {} as entity {} in scene {} block {} at {}",
-                        npcId,
-                        npc.getId(),
-                        scene.getId(),
-                        npc.getBlockId(),
-                        pos);
-        CommandHandler.sendMessage(sender, translate(sender, "commands.npc.spawned", npcId));
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        return new CommandLine(new Args(sender, targetPlayer));
     }
 
-    /**
-     * Lists the NPCs the scene's spawn data places around the player, nearest first. The 7.1 text
-     * map no longer names NPCs, so standing next to one is the practical way to learn its id.
-     */
-    private void listNearby(Player sender, Player targetPlayer, List<String> args) {
+    @CommandLine.Command(name = "npc")
+    private static final class Args implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        @Parameters(index = "0..*", arity = "1..3", paramLabel = "<npcId|near|group|clear> [args]")
+        private List<String> args = List.of();
+
+        private Args(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
+        }
+
+        @Override
+        public void run() {
+            var scene = targetPlayer.getScene();
+            if (scene == null) return;
+
+            String op = args.get(0);
+            if (op.equalsIgnoreCase("near")) {
+                listNearby(sender, targetPlayer, args);
+                return;
+            }
+
+            if (op.equalsIgnoreCase("group")) {
+                if (args.size() < 3) {
+                    usage(sender);
+                    return;
+                }
+                try {
+                    int groupId = Integer.parseInt(args.get(1));
+                    int suiteId = Integer.parseInt(args.get(2));
+                    targetPlayer.sendPacket(new PacketGroupSuiteNotify(groupId, suiteId));
+                    CommandOutput.sendTranslatedMessage(
+                            sender, "commands.npc.group_sent", groupId, suiteId);
+                } catch (NumberFormatException e) {
+                    usage(sender);
+                }
+                return;
+            }
+
+            if (op.equalsIgnoreCase("clear")) {
+                var placed = new ArrayList<EntityNPC>();
+                for (var entity : scene.getEntities().values()) {
+                    if (entity instanceof EntityNPC npc && npc.isStandalone()) placed.add(npc);
+                }
+                placed.forEach(scene::removeEntity);
+                CommandOutput.sendTranslatedMessage(sender, "commands.npc.cleared", placed.size());
+                return;
+            }
+
+            int npcId;
+            try {
+                npcId = Integer.parseInt(op);
+            } catch (NumberFormatException e) {
+                usage(sender);
+                return;
+            }
+            if (!GameData.getNpcDataMap().containsKey(npcId)) {
+                CommandOutput.sendTranslatedMessage(sender, "commands.npc.not_found", npcId);
+                return;
+            }
+
+            double yaw = Math.toRadians(targetPlayer.getRotation().getY());
+            var pos =
+                    targetPlayer
+                            .getPosition()
+                            .clone()
+                            .addX((float) (Math.sin(yaw) * DISTANCE))
+                            .addZ((float) (Math.cos(yaw) * DISTANCE));
+            var rot = new Position(0, (targetPlayer.getRotation().getY() + 180) % 360, 0);
+
+            var npc = new EntityNPC(scene, npcId, pos, rot);
+            for (var block : scene.getLoadedBlocks()) {
+                if (block.contains(pos)) {
+                    npc.setBlockId(block.id);
+                    break;
+                }
+            }
+            scene.addEntity(npc);
+            Grasscutter.getLogger()
+                    .info(
+                            "[npc] placed npc {} as entity {} in scene {} block {} at {}",
+                            npcId,
+                            npc.getId(),
+                            scene.getId(),
+                            npc.getBlockId(),
+                            pos);
+            CommandOutput.sendTranslatedMessage(sender, "commands.npc.spawned", npcId);
+        }
+    }
+
+    private static void listNearby(Player sender, Player targetPlayer, List<String> args) {
         float radius = 15f;
         if (args.size() > 1) {
             try {
                 radius = Float.parseFloat(args.get(1));
             } catch (NumberFormatException e) {
-                this.sendUsageMessage(sender);
+                usage(sender);
                 return;
             }
         }
@@ -152,9 +149,15 @@ public final class NpcCommand implements CommandHandler {
         }
 
         if (lines.isEmpty()) {
-            CommandHandler.sendMessage(sender, translate(sender, "commands.npc.none_near", radius));
+            CommandOutput.sendTranslatedMessage(sender, "commands.npc.none_near", radius);
             return;
         }
-        CommandHandler.sendMessage(sender, String.join("\n", lines));
+        CommandOutput.sendMessage(sender, String.join("\n", lines));
+    }
+
+    private static void usage(Player sender) {
+        CommandOutput.sendMessage(
+                sender,
+                "Usage: /npc <npcId> | /npc near [radius] | /npc group <groupId> <suiteId> | /npc clear");
     }
 }

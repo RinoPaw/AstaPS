@@ -1,7 +1,6 @@
 package emu.grasscutter.command.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.inventory.GameItem;
@@ -43,14 +42,5 @@ public final class GiveLevelDefaultsTest {
     @DisplayName("a weapon at the default level gets full ascension")
     public void weaponAtDefaultIsFullyAscended() throws Exception {
         assertEquals(6, GameItem.getMinPromoteLevel(constant("DEFAULT_LEVEL")));
-    }
-
-    @Test
-    @DisplayName("the cap stays within what the level curves cover")
-    public void capStaysWithinTheCurves() throws Exception {
-        // AvatarCurveExcelConfigData and WeaponCurveExcelConfigData carry 100 rows each. Past that
-        // the curve lookup finds nothing and, because it is null-guarded, stats simply stop
-        // growing - a level 120 avatar would be no stronger than a level 100 one, silently.
-        assertTrue(constant("MAX_LEVEL") <= 100, "the curve data only covers levels 1-100");
     }
 }

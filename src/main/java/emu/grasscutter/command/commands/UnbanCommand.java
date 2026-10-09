@@ -3,26 +3,23 @@ package emu.grasscutter.command.commands;
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
 import emu.grasscutter.command.CommandOutput;
+import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.Account;
-import emu.grasscutter.game.BannedIp;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.server.game.GameSession;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
-@Command(label = "ban", targetRequirement = Command.TargetRequirement.NONE)
-public final class BanCommand implements CommandHandler {
-    private static final int DEFAULT_BAN_END = 2051190000;
-
+@Command(label = "unban", targetRequirement = Command.TargetRequirement.NONE)
+public final class UnbanCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         var commandLine = new CommandLine(new Root(sender));
-        commandLine.addSubcommand("player", new BanPlayer(sender, targetPlayer));
-        commandLine.addSubcommand("ip", new BanIp(sender));
+        commandLine.addSubcommand("player", new UnbanPlayer(sender, targetPlayer));
+        commandLine.addSubcommand("ip", new UnbanIp(sender));
         return commandLine;
     }
 
-    @CommandLine.Command(name = "ban")
+    @CommandLine.Command(name = "unban")
     private final class Root implements Runnable {
         private final Player sender;
 
@@ -32,22 +29,16 @@ public final class BanCommand implements CommandHandler {
 
         @Override
         public void run() {
-            BanCommand.this.sendUsageMessage(sender);
+            UnbanCommand.this.sendUsageMessage(sender);
         }
     }
 
     @CommandLine.Command(name = "player")
-    private static final class BanPlayer implements Runnable {
+    private static final class UnbanPlayer implements Runnable {
         private final Player sender;
         private final Player targetPlayer;
 
-        @Parameters(index = "0", arity = "0..1", paramLabel = "[endTime]")
-        private Integer endTime;
-
-        @Parameters(index = "1..*", arity = "0..*", paramLabel = "[reason]")
-        private String[] reasonWords = new String[0];
-
-        private BanPlayer(Player sender, Player targetPlayer) {
+        private UnbanPlayer(Player sender, Player targetPlayer) {
             this.sender = sender;
             this.targetPlayer = targetPlayer;
         }
@@ -58,50 +49,48 @@ public final class BanCommand implements CommandHandler {
                 CommandOutput.sendTranslatedMessage(sender, "commands.execution.need_target");
                 return;
             }
-            if (!hasPermission(sender, targetPlayer, "server.ban", "server.ban.others")) return;
-
-            int until = endTime == null ? DEFAULT_BAN_END : endTime;
-            String reason =
-                    reasonWords.length == 0 ? "Reason not specified." : String.join(" ", reasonWords);
+            if (!hasPermission(sender, targetPlayer, "server.ban", "server.ban")) return;
 
             Account account = targetPlayer.getAccount();
             if (account == null) {
-                CommandOutput.sendTranslatedMessage(sender, "commands.ban.failure");
+                CommandOutput.sendTranslatedMessage(sender, "commands.unban.failure");
                 return;
             }
 
-            account.setBanReason(reason);
-            account.setBanEndTime(until);
-            account.setBanStartTime((int) (System.currentTimeMillis() / 1000));
-            account.setBanned(true);
+            account.setBanReason(null);
+            account.setBanEndTime(0);
+            account.setBanStartTime(0);
+            account.setBanned(false);
             account.save();
-
-            GameSession session = targetPlayer.getSession();
-            if (session != null) session.close();
-            CommandOutput.sendTranslatedMessage(sender, "commands.ban.success");
+            CommandOutput.sendTranslatedMessage(sender, "commands.unban.success");
         }
     }
 
     @CommandLine.Command(name = "ip")
-    private static final class BanIp implements Runnable {
+    private static final class UnbanIp implements Runnable {
         private final Player sender;
 
         @Parameters(index = "0", paramLabel = "<ip>")
         private String ip;
 
-        @Parameters(index = "1..*", arity = "0..*", paramLabel = "[reason]")
-        private String[] reasonWords = new String[0];
-
-        private BanIp(Player sender) {
+        private UnbanIp(Player sender) {
             this.sender = sender;
         }
 
         @Override
         public void run() {
             if (!hasPermission(sender, sender, "server.banip", "server.banip")) return;
-            String reason = reasonWords.length == 0 ? "No reason given" : String.join(" ", reasonWords);
-            new BannedIp(ip, reason).save();
-            CommandOutput.sendMessage(sender, "Banned IP " + ip + ". Reason: " + reason);
+            if (!DatabaseHelper.removeBannedIp(ip)) {
+                CommandOutput.sendMessage(sender, "No ban recorded for " + ip + ".");
+                return;
+            }
+
+            int unbanned = DatabaseHelper.unbanAccountsBannedByIp(ip);
+            CommandOutput.sendMessage(
+                    sender,
+                    unbanned > 0
+                            ? "Unbanned IP " + ip + ", along with " + unbanned + " account(s)."
+                            : "Unbanned IP " + ip + ".");
         }
     }
 

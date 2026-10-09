@@ -2,187 +2,171 @@ package emu.grasscutter.command.commands;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.player.TransPointUnlockHelper;
 import emu.grasscutter.server.packet.send.PacketGetSceneAreaRsp;
 import emu.grasscutter.server.packet.send.PacketGetScenePointRsp;
 import emu.grasscutter.server.packet.send.PacketLevelupCityRsp;
 import emu.grasscutter.server.packet.send.PacketScenePointUnlockNotify;
-import java.util.List;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
-/**
- * Lock/unlock Statue-of-the-Seven for testing the unlock F flow.
- *
- * <p>{@code /statue lock} — locks the nearest statue ({@code maxSpringVolume} or Nod-Krai SotS
- * gadgets). Nod-Krai City 7: points {@code 1515}/{@code 1516}/{@code 1517} (areas 70/71/72).
- *
- * <p>{@code /statue level <cityId> <level>} — set SotS / city level (e.g. {@code /statue level 8
- * 1} resets Snezhnaya so you can re-offer).
- */
 @Command(
         label = "statue",
         aliases = {"sots"},
-        usage = {
-            "lock [pointId]",
-            "unlock [pointId]",
-            "status [pointId]",
-            "level <cityId> <level>",
-            "city [cityId]"
-        },
         permission = "player.teleport",
         permissionTargeted = "player.teleport.others")
 public final class StatueCommand implements CommandHandler {
 
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        if (args.isEmpty()) {
-            this.sendUsageMessage(sender);
-            return;
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        var commandLine = new CommandLine(new Root(sender));
+        commandLine.addSubcommand("lock", new PointAction(sender, targetPlayer, PointMode.LOCK));
+        commandLine.addSubcommand("unlock", new PointAction(sender, targetPlayer, PointMode.UNLOCK));
+        commandLine.addSubcommand("status", new PointAction(sender, targetPlayer, PointMode.STATUS));
+        commandLine.addSubcommand("level", new Level(sender, targetPlayer));
+        commandLine.addSubcommand("city", new City(sender, targetPlayer));
+        commandLine.addSubcommand("reset", new Reset(sender, targetPlayer));
+        return commandLine;
+    }
+
+    @CommandLine.Command(name = "statue")
+    private final class Root implements Runnable {
+        private final Player sender;
+
+        private Root(Player sender) {
+            this.sender = sender;
         }
 
-        String op = args.get(0).toLowerCase();
-
-        // City-level ops do not need a statue point.
-        if (op.equals("level") || op.equals("city") || op.equals("reset")) {
-            handleCityLevel(sender, targetPlayer, op, args);
-            return;
-        }
-
-        int sceneId = targetPlayer.getSceneId();
-        Integer pointId = null;
-        if (args.size() >= 2) {
-            try {
-                pointId = Integer.parseInt(args.get(1));
-            } catch (NumberFormatException e) {
-                CommandHandler.sendMessage(sender, "Not a point id: " + args.get(1));
-                return;
-            }
-        }
-
-        if (pointId == null) {
-            pointId = findNearestStatue(targetPlayer, sceneId);
-            if (pointId == null) {
-                CommandHandler.sendMessage(
-                        sender, "No nearby statue found. Pass a point id, e.g. /statue lock 471");
-                return;
-            }
-        }
-
-        switch (op) {
-            case "lock" -> {
-                targetPlayer.getUnlockedScenePoints(sceneId).remove(pointId);
-                targetPlayer.getForceLockedScenePoints(sceneId).add(pointId);
-
-                // Unlock tip Talk needs gate quest ≠ finished (state 3).
-                var entry = GameData.getScenePointEntryById(sceneId, pointId);
-                if (entry != null && entry.getPointData() != null) {
-                    int questId =
-                            emu.grasscutter.game.managers.StatueTalkQuests.questForArea(
-                                    entry.getPointData().getAreaId());
-                    if (questId > 0) {
-                        // state 2 = QUEST_STATE_UNFINISHED
-                        targetPlayer.sendPacket(
-                                new emu.grasscutter.server.packet.send.PacketQuestListUpdateNotify(
-                                        questId, 303, 2));
-                    }
-                }
-
-                targetPlayer.save();
-                targetPlayer.sendPacket(PacketScenePointUnlockNotify.lock(sceneId, pointId));
-                targetPlayer.sendPacket(new PacketGetScenePointRsp(targetPlayer, sceneId));
-                CommandHandler.sendMessage(
-                        sender,
-                        "Locked scene "
-                                + sceneId
-                                + " statue/point "
-                                + pointId
-                                + " for uid "
-                                + targetPlayer.getUid()
-                                + ". Walk away & back. Expect unlock F (not goddess).");
-            }
-            case "unlock" -> {
-                targetPlayer.getForceLockedScenePoints(sceneId).remove(pointId);
-                boolean ok =
-                        targetPlayer.getProgressManager().unlockTransPoint(sceneId, pointId, true);
-                if (!ok) {
-                    targetPlayer.getUnlockedScenePoints(sceneId).add(pointId);
-                    targetPlayer.sendPacket(new PacketScenePointUnlockNotify(sceneId, pointId));
-                    targetPlayer.sendPacket(new PacketGetScenePointRsp(targetPlayer, sceneId));
-                }
-                targetPlayer.save();
-                CommandHandler.sendMessage(
-                        sender,
-                        (ok ? "Unlocked" : "Already unlocked / refreshed")
-                                + " scene "
-                                + sceneId
-                                + " point "
-                                + pointId);
-            }
-            case "status" -> {
-                boolean force = targetPlayer.isScenePointForceLocked(sceneId, pointId);
-                boolean unlocked = targetPlayer.getUnlockedScenePoints(sceneId).contains(pointId);
-                var entry = GameData.getScenePointEntryById(sceneId, pointId);
-                Integer spring =
-                        entry != null && entry.getPointData() != null
-                                ? entry.getPointData().getMaxSpringVolume()
-                                : null;
-                CommandHandler.sendMessage(
-                        sender,
-                        "scene="
-                                + sceneId
-                                + " point="
-                                + pointId
-                                + " forceLocked="
-                                + force
-                                + " unlockedSet="
-                                + unlocked
-                                + " maxSpring="
-                                + spring);
-            }
-            default -> this.sendUsageMessage(sender);
+        @Override
+        public void run() {
+            StatueCommand.this.sendUsageMessage(sender);
         }
     }
 
-    private void handleCityLevel(
-            Player sender, Player targetPlayer, String op, List<String> args) {
-        var sots = targetPlayer.getSotsManager();
-        if (sots == null) {
-            CommandHandler.sendMessage(sender, "No SotS manager");
-            return;
+    private enum PointMode {
+        LOCK,
+        UNLOCK,
+        STATUS
+    }
+
+    private static final class PointAction implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+        private final PointMode mode;
+
+        @Parameters(index = "0", arity = "0..1", paramLabel = "[pointId]")
+        private Integer pointId;
+
+        private PointAction(Player sender, Player targetPlayer, PointMode mode) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
+            this.mode = mode;
         }
 
-        if (op.equals("city")) {
-            Integer cityId = null;
-            if (args.size() >= 2) {
-                try {
-                    cityId = Integer.parseInt(args.get(1));
-                } catch (NumberFormatException e) {
-                    CommandHandler.sendMessage(sender, "Not a city id: " + args.get(1));
-                    return;
-                }
-            }
-            if (cityId == null) {
-                // Dump all known cities on this account.
-                var map = targetPlayer.getCityInfoData();
-                if (map == null || map.isEmpty()) {
-                    CommandHandler.sendMessage(sender, "cityInfo empty");
-                    return;
-                }
-                StringBuilder sb = new StringBuilder("cityInfo uid=").append(targetPlayer.getUid());
-                for (var e : map.entrySet()) {
-                    var c = e.getValue();
-                    sb.append(" | city")
-                            .append(e.getKey())
-                            .append(" Lv.")
-                            .append(c.getLevel())
-                            .append(" crystal=")
-                            .append(c.getNumCrystal());
-                }
-                CommandHandler.sendMessage(sender, sb.toString());
+        @Override
+        public void run() {
+            int sceneId = targetPlayer.getSceneId();
+            int point = pointId != null ? pointId : nearestStatue(targetPlayer, sceneId);
+            if (point <= 0) {
+                CommandOutput.sendMessage(
+                        sender, "No statue found in this scene. Pass a point ID explicitly.");
                 return;
             }
+
+            switch (mode) {
+                case LOCK -> lock(sender, targetPlayer, sceneId, point);
+                case UNLOCK -> unlock(sender, targetPlayer, sceneId, point);
+                case STATUS -> status(sender, targetPlayer, sceneId, point);
+            }
+        }
+    }
+
+    @CommandLine.Command(name = "level")
+    private static final class Level implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        @Parameters(index = "0", paramLabel = "<cityId>")
+        private int cityId;
+
+        @Parameters(index = "1", paramLabel = "<level>")
+        private int level;
+
+        private Level(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
+        }
+
+        @Override
+        public void run() {
+            setCityLevel(sender, targetPlayer, cityId, level);
+        }
+    }
+
+    @CommandLine.Command(name = "reset")
+    private static final class Reset implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        @Parameters(index = "0", arity = "0..1", defaultValue = "8", paramLabel = "[cityId]")
+        private int cityId;
+
+        private Reset(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
+        }
+
+        @Override
+        public void run() {
+            setCityLevel(sender, targetPlayer, cityId, 1);
+        }
+    }
+
+    @CommandLine.Command(name = "city")
+    private static final class City implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        @Parameters(index = "0", arity = "0..1", paramLabel = "[cityId]")
+        private Integer cityId;
+
+        private City(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
+        }
+
+        @Override
+        public void run() {
+            var sots = targetPlayer.getSotsManager();
+            if (sots == null) {
+                CommandOutput.sendMessage(sender, "No SotS manager");
+                return;
+            }
+            if (cityId == null) {
+                var map = targetPlayer.getCityInfoData();
+                if (map == null || map.isEmpty()) {
+                    CommandOutput.sendMessage(sender, "cityInfo empty");
+                    return;
+                }
+                StringBuilder message =
+                        new StringBuilder("cityInfo uid=").append(targetPlayer.getUid());
+                map.forEach(
+                        (id, info) ->
+                                message.append(" | city")
+                                        .append(id)
+                                        .append(" Lv.")
+                                        .append(info.getLevel())
+                                        .append(" crystal=")
+                                        .append(info.getNumCrystal()));
+                CommandOutput.sendMessage(sender, message.toString());
+                return;
+            }
+
             var info = sots.getCityInfo(cityId);
-            CommandHandler.sendMessage(
+            CommandOutput.sendMessage(
                     sender,
                     "uid="
                             + targetPlayer.getUid()
@@ -192,36 +176,74 @@ public final class StatueCommand implements CommandHandler {
                             + info.getLevel()
                             + " crystal="
                             + info.getNumCrystal());
+        }
+    }
+
+    private static void lock(Player sender, Player player, int sceneId, int pointId) {
+        player.getUnlockedScenePoints(sceneId).remove(pointId);
+        player.getForceLockedScenePoints(sceneId).add(pointId);
+        player.save();
+        player.sendPacket(PacketScenePointUnlockNotify.lock(sceneId, pointId));
+        player.sendPacket(new PacketGetScenePointRsp(player, sceneId));
+        CommandOutput.sendMessage(
+                sender,
+                "Locked scene "
+                        + sceneId
+                        + " statue/point "
+                        + pointId
+                        + " for uid "
+                        + player.getUid()
+                        + ".");
+    }
+
+    private static void unlock(Player sender, Player player, int sceneId, int pointId) {
+        player.getForceLockedScenePoints(sceneId).remove(pointId);
+        boolean unlocked = player.getProgressManager().unlockTransPoint(sceneId, pointId, true);
+        if (!unlocked) {
+            player.getUnlockedScenePoints(sceneId).add(pointId);
+            player.sendPacket(new PacketScenePointUnlockNotify(sceneId, pointId));
+            player.sendPacket(new PacketGetScenePointRsp(player, sceneId));
+        }
+        player.save();
+        CommandOutput.sendMessage(
+                sender,
+                (unlocked ? "Unlocked" : "Already unlocked / refreshed")
+                        + " scene "
+                        + sceneId
+                        + " point "
+                        + pointId);
+    }
+
+    private static void status(Player sender, Player player, int sceneId, int pointId) {
+        boolean forceLocked = player.isScenePointForceLocked(sceneId, pointId);
+        boolean unlocked = player.getUnlockedScenePoints(sceneId).contains(pointId);
+        var entry = GameData.getScenePointEntryById(sceneId, pointId);
+        Integer spring =
+                entry != null && entry.getPointData() != null
+                        ? entry.getPointData().getMaxSpringVolume()
+                        : null;
+        CommandOutput.sendMessage(
+                sender,
+                "scene="
+                        + sceneId
+                        + " point="
+                        + pointId
+                        + " forceLocked="
+                        + forceLocked
+                        + " unlockedSet="
+                        + unlocked
+                        + " maxSpring="
+                        + spring);
+    }
+
+    private static void setCityLevel(Player sender, Player player, int cityId, int level) {
+        if (cityId < 1 || cityId > 8 || level < 1 || level > 10) {
+            CommandOutput.sendMessage(sender, "cityId 1-8, level 1-10");
             return;
         }
-
-        // level / reset
-        int cityId;
-        int level;
-        if (op.equals("reset")) {
-            try {
-                cityId = args.size() >= 2 ? Integer.parseInt(args.get(1)) : 8;
-            } catch (NumberFormatException e) {
-                CommandHandler.sendMessage(sender, "Not a city id: " + args.get(1));
-                return;
-            }
-            level = 1;
-        } else {
-            if (args.size() < 3) {
-                CommandHandler.sendMessage(sender, "Usage: /statue level <cityId> <level>");
-                return;
-            }
-            try {
-                cityId = Integer.parseInt(args.get(1));
-                level = Integer.parseInt(args.get(2));
-            } catch (NumberFormatException e) {
-                CommandHandler.sendMessage(sender, "cityId/level must be integers");
-                return;
-            }
-        }
-
-        if (cityId < 1 || cityId > 8 || level < 1 || level > 10) {
-            CommandHandler.sendMessage(sender, "cityId 1-8, level 1-10");
+        var sots = player.getSotsManager();
+        if (sots == null) {
+            CommandOutput.sendMessage(sender, "No SotS manager");
             return;
         }
 
@@ -230,15 +252,12 @@ public final class StatueCommand implements CommandHandler {
         info.setLevel(level);
         info.setNumCrystal(0);
         sots.addCityInfo(info);
-        targetPlayer.save();
+        player.save();
 
-        int sceneId = targetPlayer.getSceneId();
-        int areaId = 0;
-        targetPlayer.sendPacket(
-                new PacketLevelupCityRsp(sceneId, info.getLevel(), cityId, 0, areaId, 0));
-        targetPlayer.sendPacket(new PacketGetSceneAreaRsp(targetPlayer, sceneId));
-
-        CommandHandler.sendMessage(
+        int sceneId = player.getSceneId();
+        player.sendPacket(new PacketLevelupCityRsp(sceneId, info.getLevel(), cityId, 0, 0, 0));
+        player.sendPacket(new PacketGetSceneAreaRsp(player, sceneId));
+        CommandOutput.sendMessage(
                 sender,
                 "Set city"
                         + cityId
@@ -247,38 +266,32 @@ public final class StatueCommand implements CommandHandler {
                         + " → Lv."
                         + level
                         + " (crystal=0) for uid "
-                        + targetPlayer.getUid()
-                        + ". Re-open map / re-offer to verify.");
+                        + player.getUid()
+                        + ".");
     }
 
-    private static Integer findNearestStatue(Player player, int sceneId) {
+    private static int nearestStatue(Player player, int sceneId) {
         var pointIds = GameData.getScenePointsPerScene().get(sceneId);
-        if (pointIds == null || pointIds.isEmpty()) {
-            return null;
-        }
-        var pos = player.getPosition();
-        Integer best = null;
-        double bestDist = Double.MAX_VALUE;
+        if (pointIds == null || pointIds.isEmpty()) return -1;
+
+        var position = player.getPosition();
+        int best = -1;
+        double bestDistance = Double.MAX_VALUE;
         for (int pointId : pointIds) {
             var entry = GameData.getScenePointEntryById(sceneId, pointId);
             if (entry == null || entry.getPointData() == null) continue;
             var data = entry.getPointData();
-            if (!emu.grasscutter.game.managers.StatueTalkQuests.isStatuePoint(data)) continue;
-            var p = data.getPos();
-            if (p == null) continue;
-            double dx = p.getX() - pos.getX();
-            double dy = p.getY() - pos.getY();
-            double dz = p.getZ() - pos.getZ();
-            double d = dx * dx + dy * dy + dz * dz;
-            if (d < bestDist) {
-                bestDist = d;
+            if (!TransPointUnlockHelper.isStatuePoint(data) || data.getPos() == null) continue;
+            var point = data.getPos();
+            double dx = point.getX() - position.getX();
+            double dy = point.getY() - position.getY();
+            double dz = point.getZ() - position.getZ();
+            double distance = dx * dx + dy * dy + dz * dz;
+            if (distance < bestDistance) {
+                bestDistance = distance;
                 best = pointId;
             }
         }
-        // Only accept if within ~80m
-        if (best != null && bestDist <= 80 * 80) {
-            return best;
-        }
-        return best; // still return nearest even if far — better than nothing
+        return best;
     }
 }

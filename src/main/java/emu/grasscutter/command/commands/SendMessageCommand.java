@@ -1,36 +1,50 @@
 package emu.grasscutter.command.commands;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.command.*;
+import emu.grasscutter.command.Command;
+import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.command.Command.TargetRequirement;
 import emu.grasscutter.game.player.Player;
-import java.util.List;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
 @Command(
         label = "sendMessage",
         aliases = {"say", "sendservmsg", "sendservermessage", "b", "broadcast"},
-        usage = {"<message>"},
         permission = "server.sendmessage",
         permissionTargeted = "server.sendmessage.others",
         targetRequirement = TargetRequirement.NONE)
 public final class SendMessageCommand implements CommandHandler {
-
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        if (args.size() == 0) {
-            sendUsageMessage(sender);
-            return;
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        return new CommandLine(new Args(sender, targetPlayer));
+    }
+
+    @CommandLine.Command(name = "sendMessage")
+    private static final class Args implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        @Parameters(index = "0..*", arity = "1..*", paramLabel = "<message>")
+        private String[] words;
+
+        private Args(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
         }
 
-        String message = String.join(" ", args);
-
-        if (targetPlayer == null) {
-            for (Player p : Grasscutter.getGameServer().getPlayers().values()) {
-                CommandHandler.sendMessage(p, message);
+        @Override
+        public void run() {
+            String message = String.join(" ", words);
+            if (targetPlayer == null) {
+                for (Player player : Grasscutter.getGameServer().getPlayers().values()) {
+                    CommandOutput.sendMessage(player, message);
+                }
+            } else {
+                CommandOutput.sendMessage(targetPlayer, message);
             }
-        } else {
-            CommandHandler.sendMessage(targetPlayer, message);
+            CommandOutput.sendTranslatedMessage(sender, "commands.sendMessage.success");
         }
-        CommandHandler.sendTranslatedMessage(sender, "commands.sendMessage.success");
     }
 }

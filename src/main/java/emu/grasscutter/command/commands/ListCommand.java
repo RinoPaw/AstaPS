@@ -3,52 +3,65 @@ package emu.grasscutter.command.commands;
 import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.command.*;
+import emu.grasscutter.command.Command;
+import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.game.player.Player;
-import java.util.*;
+import java.util.Map;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
 @Command(
         label = "list",
         aliases = {"players"},
-        usage = {"[uid]"},
         targetRequirement = Command.TargetRequirement.NONE)
 public final class ListCommand implements CommandHandler {
+    private enum Mode {
+        UID
+    }
 
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        Map<Integer, Player> playersMap = Grasscutter.getGameServer().getPlayers();
-        boolean needUID = false;
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        var commandLine = new CommandLine(new Args(sender));
+        commandLine.setCaseInsensitiveEnumValuesAllowed(true);
+        return commandLine;
+    }
 
-        if (args.size() > 0) {
-            needUID = args.get(0).equals("uid");
+    @CommandLine.Command(name = "list")
+    private static final class Args implements Runnable {
+        private final Player sender;
+
+        @Parameters(index = "0", arity = "0..1", paramLabel = "[uid]")
+        private Mode mode;
+
+        private Args(Player sender) {
+            this.sender = sender;
         }
 
-        CommandHandler.sendMessage(
-                sender, translate(sender, "commands.list.success", playersMap.size()));
+        @Override
+        public void run() {
+            Map<Integer, Player> playersMap = Grasscutter.getGameServer().getPlayers();
+            boolean includeUid = mode == Mode.UID;
 
-        if (playersMap.size() != 0) {
-            StringBuilder playerSet = new StringBuilder();
-            boolean finalNeedUID = needUID;
+            CommandOutput.sendMessage(sender, translate(sender, "commands.list.success", playersMap.size()));
+            if (playersMap.isEmpty()) return;
 
-            playersMap
-                    .values()
-                    .forEach(
-                            player -> {
-                                playerSet.append(player.getNickname());
-
-                                if (finalNeedUID) {
-                                    if (sender != null) {
-                                        playerSet.append(" <color=green>(").append(player.getUid()).append(")</color>");
-                                    } else {
-                                        playerSet.append(" (").append(player.getUid()).append(")");
-                                    }
-                                }
-
-                                playerSet.append(", ");
-                            });
-
-            String players = playerSet.toString();
-            CommandHandler.sendMessage(sender, players.substring(0, players.length() - 2));
+            String players =
+                    playersMap.values().stream()
+                            .map(
+                                    player -> {
+                                        if (!includeUid) return player.getNickname();
+                                        if (sender != null) {
+                                            return player.getNickname()
+                                                    + " <color=green>("
+                                                    + player.getUid()
+                                                    + ")</color>";
+                                        }
+                                        return player.getNickname() + " (" + player.getUid() + ")";
+                                    })
+                            .reduce((left, right) -> left + ", " + right)
+                            .orElse("");
+            CommandOutput.sendMessage(sender, players);
         }
     }
 }

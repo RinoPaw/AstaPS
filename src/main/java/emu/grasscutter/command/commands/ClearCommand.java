@@ -1,101 +1,135 @@
 package emu.grasscutter.command.commands;
 
-import static emu.grasscutter.command.CommandHelpers.*;
-
-import emu.grasscutter.command.*;
-import emu.grasscutter.game.inventory.*;
+import emu.grasscutter.command.Command;
+import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.CommandOutput;
+import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.Inventory;
+import emu.grasscutter.game.inventory.ItemType;
 import emu.grasscutter.game.player.Player;
-import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.regex.Pattern;
+import java.util.Locale;
 import java.util.stream.Stream;
-import lombok.Setter;
+import picocli.CommandLine;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 @Command(
         label = "clear",
-        usage = {"(all|wp|art|mat) [lv<max level>] [r<max refinement>] [<max rarity>*]"},
         permission = "player.clearinv",
         permissionTargeted = "player.clearinv.others")
 public final class ClearCommand implements CommandHandler {
-
-    private static final Map<Pattern, BiConsumer<ClearItemParameters, Integer>> intCommandHandlers =
-            Map.ofEntries(
-                    Map.entry(lvlRegex, ClearItemParameters::setLvl),
-                    Map.entry(refineRegex, ClearItemParameters::setRefinement),
-                    Map.entry(rankRegex, ClearItemParameters::setRank));
-
-    private Stream<GameItem> getOther(
-            ItemType type, Inventory playerInventory, ClearItemParameters param) {
-        return playerInventory.getItems().values().stream()
-                .filter(item -> item.getItemType() == type)
-                .filter(item -> item.getItemData().getRankLevel() <= param.rank)
-                .filter(item -> !item.isLocked() && !item.isEquipped());
-    }
-
-    private Stream<GameItem> getWeapons(Inventory playerInventory, ClearItemParameters param) {
-        return getOther(ItemType.ITEM_WEAPON, playerInventory, param)
-                .filter(item -> item.getLevel() <= param.lvl)
-                .filter(item -> item.getRefinement() < param.refinement);
-    }
-
-    private Stream<GameItem> getRelics(Inventory playerInventory, ClearItemParameters param) {
-        return getOther(ItemType.ITEM_RELIQUARY, playerInventory, param)
-                .filter(item -> item.getLevel() <= param.lvl + 1);
+    private enum Scope {
+        ALL,
+        WEAPONS,
+        ARTIFACTS,
+        MATERIALS
     }
 
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        Inventory playerInventory = targetPlayer.getInventory();
-        ClearItemParameters param = new ClearItemParameters();
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        var commandLine = new CommandLine(new Args(sender, targetPlayer));
+        commandLine.registerConverter(
+                Scope.class,
+                value ->
+                        switch (value.toLowerCase(Locale.ROOT)) {
+                            case "all" -> Scope.ALL;
+                            case "wp", "weapon", "weapons" -> Scope.WEAPONS;
+                            case "art", "artifact", "artifacts" -> Scope.ARTIFACTS;
+                            case "mat", "material", "materials" -> Scope.MATERIALS;
+                            default -> throw new CommandLine.TypeConversionException(
+                                    "scope must be all|weapons|artifacts|materials");
+                        });
+        return commandLine;
+    }
 
-        // Extract any tagged int arguments (e.g. "lv90", "x100", "r5")
-        parseIntParameters(args, param, intCommandHandlers);
+    @CommandLine.Command(name = "clear")
+    private final class Args implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
 
-        if (args.size() < 1) {
-            sendUsageMessage(sender);
-            return;
+        @Parameters(index = "0", paramLabel = "<all|weapons|artifacts|materials>")
+        private Scope scope;
+
+        @Option(names = {"-l", "--level"}, defaultValue = "1", paramLabel = "<maxLevel>")
+        private int level;
+
+        @Option(names = {"-r", "--refinement"}, defaultValue = "1", paramLabel = "<maxRefinement>")
+        private int refinement;
+
+        @Option(names = {"--rarity"}, defaultValue = "4", paramLabel = "<maxRarity>")
+        private int rarity;
+
+        private Args(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
         }
 
-        String playerString = targetPlayer.getNickname(); // Should probably be UID instead but whatever
-        switch (args.get(0)) {
-            case "wp" -> {
-                playerInventory.removeItems(getWeapons(playerInventory, param).toList());
-                CommandHandler.sendTranslatedMessage(sender, "commands.clear.weapons", playerString);
+        @Override
+        public void run() {
+            if (level < 0 || refinement < 0 || rarity < 0) {
+                throw new CommandLine.ParameterException(
+                        createCommandLine(sender, targetPlayer),
+                        "level, refinement and rarity must be non-negative");
             }
-            case "art" -> {
-                playerInventory.removeItems(getRelics(playerInventory, param).toList());
-                CommandHandler.sendTranslatedMessage(sender, "commands.clear.artifacts", playerString);
-            }
-            case "mat" -> {
-                playerInventory.removeItems(
-                        getOther(ItemType.ITEM_MATERIAL, playerInventory, param).toList());
-                CommandHandler.sendTranslatedMessage(sender, "commands.clear.materials", playerString);
-            }
-            case "all" -> {
-                playerInventory.removeItems(getRelics(playerInventory, param).toList());
-                CommandHandler.sendTranslatedMessage(sender, "commands.clear.artifacts", playerString);
-                playerInventory.removeItems(getWeapons(playerInventory, param).toList());
-                CommandHandler.sendTranslatedMessage(sender, "commands.clear.weapons", playerString);
-                playerInventory.removeItems(
-                        getOther(ItemType.ITEM_MATERIAL, playerInventory, param).toList());
-                CommandHandler.sendTranslatedMessage(sender, "commands.clear.materials", playerString);
-                playerInventory.removeItems(
-                        getOther(ItemType.ITEM_FURNITURE, playerInventory, param).toList());
-                CommandHandler.sendTranslatedMessage(sender, "commands.clear.furniture", playerString);
-                playerInventory.removeItems(
-                        getOther(ItemType.ITEM_DISPLAY, playerInventory, param).toList());
-                CommandHandler.sendTranslatedMessage(sender, "commands.clear.displays", playerString);
-                playerInventory.removeItems(
-                        getOther(ItemType.ITEM_VIRTUAL, playerInventory, param).toList());
-                CommandHandler.sendTranslatedMessage(sender, "commands.clear.virtuals", playerString);
-                CommandHandler.sendTranslatedMessage(sender, "commands.clear.everything", playerString);
+
+            Inventory inventory = targetPlayer.getInventory();
+            String playerName = targetPlayer.getNickname();
+            switch (scope) {
+                case WEAPONS -> {
+                    inventory.removeItems(getWeapons(inventory, level, refinement, rarity).toList());
+                    CommandOutput.sendTranslatedMessage(sender, "commands.clear.weapons", playerName);
+                }
+                case ARTIFACTS -> {
+                    inventory.removeItems(getRelics(inventory, level, rarity).toList());
+                    CommandOutput.sendTranslatedMessage(sender, "commands.clear.artifacts", playerName);
+                }
+                case MATERIALS -> {
+                    inventory.removeItems(getOther(ItemType.ITEM_MATERIAL, inventory, rarity).toList());
+                    CommandOutput.sendTranslatedMessage(sender, "commands.clear.materials", playerName);
+                }
+                case ALL -> clearAll(sender, inventory, playerName, level, refinement, rarity);
             }
         }
     }
 
-    private static class ClearItemParameters {
-        @Setter public int lvl = 1;
-        @Setter public int refinement = 1;
-        @Setter public int rank = 4;
+    private static Stream<GameItem> getOther(ItemType type, Inventory inventory, int rarity) {
+        return inventory.getItems().values().stream()
+                .filter(item -> item.getItemType() == type)
+                .filter(item -> item.getItemData().getRankLevel() <= rarity)
+                .filter(item -> !item.isLocked() && !item.isEquipped());
+    }
+
+    private static Stream<GameItem> getWeapons(
+            Inventory inventory, int level, int refinement, int rarity) {
+        return getOther(ItemType.ITEM_WEAPON, inventory, rarity)
+                .filter(item -> item.getLevel() <= level)
+                .filter(item -> item.getRefinement() < refinement);
+    }
+
+    private static Stream<GameItem> getRelics(Inventory inventory, int level, int rarity) {
+        return getOther(ItemType.ITEM_RELIQUARY, inventory, rarity)
+                .filter(item -> item.getLevel() <= level + 1);
+    }
+
+    private static void clearAll(
+            Player sender,
+            Inventory inventory,
+            String playerName,
+            int level,
+            int refinement,
+            int rarity) {
+        inventory.removeItems(getRelics(inventory, level, rarity).toList());
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.artifacts", playerName);
+        inventory.removeItems(getWeapons(inventory, level, refinement, rarity).toList());
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.weapons", playerName);
+        inventory.removeItems(getOther(ItemType.ITEM_MATERIAL, inventory, rarity).toList());
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.materials", playerName);
+        inventory.removeItems(getOther(ItemType.ITEM_FURNITURE, inventory, rarity).toList());
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.furniture", playerName);
+        inventory.removeItems(getOther(ItemType.ITEM_DISPLAY, inventory, rarity).toList());
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.displays", playerName);
+        inventory.removeItems(getOther(ItemType.ITEM_VIRTUAL, inventory, rarity).toList());
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.virtuals", playerName);
+        CommandOutput.sendTranslatedMessage(sender, "commands.clear.everything", playerName);
     }
 }

@@ -7,39 +7,126 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.tps.TpsWeaponSystem;
 import emu.grasscutter.server.packet.send.PacketStoreItemChangeNotify;
 import java.util.*;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
 /** Third-person shooter weapons: hand them out, wear them on the current avatar, refill ammo. */
-@Command(
-        label = "tps",
-        usage = {
-            "give [<weaponId>]",
-            "accessory",
-            "wear [<weaponId>...]",
-            "refill",
-            "ammo [type slot|one] [current reserve|limit|<n>] [notify] [supply]"
-        },
-        permission = "player.tps",
-        permissionTargeted = "player.tps.others")
+@Command(label = "tps", permission = "player.tps", permissionTargeted = "player.tps.others")
 public final class TpsCommand implements CommandHandler {
-
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        if (args.isEmpty()) {
-            sendUsageMessage(sender);
-            return;
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        var commandLine = new CommandLine(new Root(sender));
+        commandLine.setExpandAtFiles(false);
+        commandLine.addSubcommand("give", new Give(sender, targetPlayer));
+        commandLine.addSubcommand("accessory", new Accessory(sender, targetPlayer));
+        commandLine.addSubcommand("wear", new Wear(sender, targetPlayer));
+        commandLine.addSubcommand("refill", new Refill(sender, targetPlayer));
+        commandLine.addSubcommand("ammo", new Ammo(sender, targetPlayer));
+        return commandLine;
+    }
+
+    @picocli.CommandLine.Command(name = "tps")
+    private final class Root implements Runnable {
+        private final Player sender;
+
+        private Root(Player sender) {
+            this.sender = sender;
         }
 
-        var rest = args.subList(1, args.size());
-        switch (args.get(0).toLowerCase()) {
-            case "give" -> this.give(sender, targetPlayer, rest);
-            case "accessory" -> this.unlockAccessories(sender, targetPlayer);
-            case "wear" -> this.wear(sender, targetPlayer, rest);
-            case "ammo" -> this.ammo(sender, targetPlayer, rest);
-            case "refill" -> {
-                TpsWeaponSystem.refillAmmunition(targetPlayer);
-                CommandHandler.sendMessage(sender, "TPS ammunition refilled.");
-            }
-            default -> sendUsageMessage(sender);
+        @Override
+        public void run() {
+            TpsCommand.this.sendUsageMessage(sender);
+        }
+    }
+
+    @picocli.CommandLine.Command(name = "give")
+    private final class Give implements Runnable {
+        private final Player sender;
+        private final Player target;
+
+        @Parameters(index = "0", arity = "0..1", paramLabel = "<weaponId>")
+        private String weaponId;
+
+        private Give(Player sender, Player target) {
+            this.sender = sender;
+            this.target = target;
+        }
+
+        @Override
+        public void run() {
+            TpsCommand.this.give(
+                    sender, target, weaponId == null ? List.of() : List.of(weaponId));
+        }
+    }
+
+    @picocli.CommandLine.Command(name = "accessory")
+    private final class Accessory implements Runnable {
+        private final Player sender;
+        private final Player target;
+
+        private Accessory(Player sender, Player target) {
+            this.sender = sender;
+            this.target = target;
+        }
+
+        @Override
+        public void run() {
+            TpsCommand.this.unlockAccessories(sender, target);
+        }
+    }
+
+    @picocli.CommandLine.Command(name = "wear")
+    private final class Wear implements Runnable {
+        private final Player sender;
+        private final Player target;
+
+        @Parameters(arity = "0..*", paramLabel = "<weaponId>")
+        private List<String> weaponIds = new ArrayList<>();
+
+        private Wear(Player sender, Player target) {
+            this.sender = sender;
+            this.target = target;
+        }
+
+        @Override
+        public void run() {
+            TpsCommand.this.wear(sender, target, weaponIds);
+        }
+    }
+
+    @picocli.CommandLine.Command(name = "refill")
+    private static final class Refill implements Runnable {
+        private final Player sender;
+        private final Player target;
+
+        private Refill(Player sender, Player target) {
+            this.sender = sender;
+            this.target = target;
+        }
+
+        @Override
+        public void run() {
+            TpsWeaponSystem.refillAmmunition(target);
+            CommandOutput.sendMessage(sender, "TPS ammunition refilled.");
+        }
+    }
+
+    @picocli.CommandLine.Command(name = "ammo")
+    private final class Ammo implements Runnable {
+        private final Player sender;
+        private final Player target;
+
+        @Parameters(arity = "0..*", paramLabel = "<setting>")
+        private List<String> settings = new ArrayList<>();
+
+        private Ammo(Player sender, Player target) {
+            this.sender = sender;
+            this.target = target;
+        }
+
+        @Override
+        public void run() {
+            TpsCommand.this.ammo(sender, target, settings);
         }
     }
 
@@ -53,7 +140,7 @@ public final class TpsCommand implements CommandHandler {
             ids.add(id);
         }
         ids.forEach(target.getInventory()::addItem);
-        CommandHandler.sendMessage(sender, "Gave TPS weapons " + ids + ".");
+        CommandOutput.sendMessage(sender, "Gave TPS weapons " + ids + ".");
     }
 
     private void unlockAccessories(Player sender, Player target) {
@@ -73,13 +160,14 @@ public final class TpsCommand implements CommandHandler {
             avatar.recalcStats();
             TpsWeaponSystem.sendEquipChange(avatar);
         }
-        CommandHandler.sendMessage(sender, "Unlocked accessories on " + changed.size() + " TPS weapons.");
+        CommandOutput.sendMessage(
+                sender, "Unlocked accessories on " + changed.size() + " TPS weapons.");
     }
 
     private void wear(Player sender, Player target, List<String> args) {
         var entity = target.getTeamManager().getCurrentAvatarEntity();
         if (entity == null) {
-            CommandHandler.sendMessage(sender, "No avatar on the field.");
+            CommandOutput.sendMessage(sender, "No avatar on the field.");
             return;
         }
 
@@ -89,15 +177,19 @@ public final class TpsCommand implements CommandHandler {
             if (id == null) return;
             var item = TpsWeaponSystem.findOwnedWeapon(target, id);
             if (item == null) {
-                CommandHandler.sendMessage(sender, "TPS weapon " + id + " is not owned; /tps give first.");
+                CommandOutput.sendMessage(
+                        sender, "TPS weapon " + id + " is not owned; /tps give first.");
                 return;
             }
             guids.add(item.getGuid());
         }
 
         int retcode = TpsWeaponSystem.wear(target, entity.getAvatar().getGuid(), guids);
-        CommandHandler.sendMessage(
-                sender, retcode == 0 ? "TPS weapons now worn: " + args : "Wear failed, retcode " + retcode + ".");
+        CommandOutput.sendMessage(
+                sender,
+                retcode == 0
+                        ? "TPS weapons now worn: " + args
+                        : "Wear failed, retcode " + retcode + ".");
     }
 
     /**
@@ -117,8 +209,11 @@ public final class TpsCommand implements CommandHandler {
                 }
                 case "current" -> {
                     switch (next) {
-                        case "reserve" -> TpsWeaponSystem.ammoCurrent = TpsWeaponSystem.AmmoCurrent.RESERVE;
-                        case "limit" -> TpsWeaponSystem.ammoCurrent = TpsWeaponSystem.AmmoCurrent.LIMIT;
+                        case "reserve" ->
+                                TpsWeaponSystem.ammoCurrent =
+                                        TpsWeaponSystem.AmmoCurrent.RESERVE;
+                        case "limit" ->
+                                TpsWeaponSystem.ammoCurrent = TpsWeaponSystem.AmmoCurrent.LIMIT;
                         default -> {
                             try {
                                 TpsWeaponSystem.ammoFixed = Integer.parseInt(next);
@@ -133,11 +228,17 @@ public final class TpsCommand implements CommandHandler {
                     i++;
                 }
                 case "notify" ->
-                        CommandHandler.sendMessage(
-                                sender, "Sent 24371 with " + TpsWeaponSystem.sendAmmunitionNotify(target) + " entries.");
+                        CommandOutput.sendMessage(
+                                sender,
+                                "Sent 24371 with "
+                                        + TpsWeaponSystem.sendAmmunitionNotify(target)
+                                        + " entries.");
                 case "supply" ->
-                        CommandHandler.sendMessage(
-                                sender, "Sent SUPPLY to " + TpsWeaponSystem.sendAmmunitionSupply(target) + " avatars.");
+                        CommandOutput.sendMessage(
+                                sender,
+                                "Sent SUPPLY to "
+                                        + TpsWeaponSystem.sendAmmunitionSupply(target)
+                                        + " avatars.");
                 default -> {
                     sendUsageMessage(sender);
                     return;
@@ -145,7 +246,7 @@ public final class TpsCommand implements CommandHandler {
             }
         }
         if (resend) TpsWeaponSystem.getTpsWearers(target).forEach(TpsWeaponSystem::sendEquipChange);
-        CommandHandler.sendMessage(
+        CommandOutput.sendMessage(
                 sender,
                 "TPS ammo list: type="
                         + (TpsWeaponSystem.ammoTypeIsSlot ? "slot" : "one")
@@ -162,8 +263,9 @@ public final class TpsCommand implements CommandHandler {
             if (GameData.getTpsWeaponDataMap().containsKey(id)) return id;
         } catch (NumberFormatException ignored) {
         }
-        CommandHandler.sendMessage(
-                sender, "Unknown TPS weapon " + arg + ". Known: " + GameData.getTpsWeaponDataMap().keySet());
+        CommandOutput.sendMessage(
+                sender,
+                "Unknown TPS weapon " + arg + ". Known: " + GameData.getTpsWeaponDataMap().keySet());
         return null;
     }
 }

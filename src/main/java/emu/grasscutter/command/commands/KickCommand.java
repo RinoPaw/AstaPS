@@ -1,45 +1,60 @@
 package emu.grasscutter.command.commands;
 
-import emu.grasscutter.command.*;
+import emu.grasscutter.command.Command;
+import emu.grasscutter.command.CommandHandler;
+import emu.grasscutter.command.CommandOutput;
 import emu.grasscutter.config.Configuration;
 import emu.grasscutter.game.player.Player;
-import java.util.List;
 import java.util.Objects;
+import picocli.CommandLine;
+import picocli.CommandLine.Parameters;
 
 @Command(
         label = "kick",
         aliases = {"restart"},
         permissionTargeted = "server.kick")
 public final class KickCommand implements CommandHandler {
-
     @Override
-    public void execute(Player sender, Player targetPlayer, List<String> args) {
-        if (args == null
-                || args.isEmpty()
-                || !Objects.equals(args.get(0), Configuration.HTTP_ENCRYPTION.keystorePassword)) {
-            Player recipient = sender != null ? sender : targetPlayer;
-            if (recipient != null) {
-                CommandHandler.sendMessage(recipient, "Wrong key");
-            }
-            return;
-        }
-        args.remove(0);
-        if (sender != null) {
-            CommandHandler.sendTranslatedMessage(
-                    sender,
-                    "commands.kick.player_kick_player",
-                    sender.getUid(),
-                    sender.getAccount().getUsername(),
-                    targetPlayer.getUid(),
-                    targetPlayer.getAccount().getUsername());
-        } else {
-            CommandHandler.sendTranslatedMessage(
-                    sender,
-                    "commands.kick.server_kick_player",
-                    targetPlayer.getUid(),
-                    targetPlayer.getAccount().getUsername());
+    public CommandLine createCommandLine(Player sender, Player targetPlayer) {
+        return new CommandLine(new Args(sender, targetPlayer));
+    }
+
+    @CommandLine.Command(name = "kick")
+    private static final class Args implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        @Parameters(index = "0", paramLabel = "<key>")
+        private String key;
+
+        private Args(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
         }
 
-        targetPlayer.getSession().close();
+        @Override
+        public void run() {
+            if (!Objects.equals(key, Configuration.HTTP_ENCRYPTION.keystorePassword)) {
+                CommandOutput.sendMessage(sender != null ? sender : targetPlayer, "Wrong key");
+                return;
+            }
+
+            if (sender != null) {
+                CommandOutput.sendTranslatedMessage(
+                        sender,
+                        "commands.kick.player_kick_player",
+                        sender.getUid(),
+                        sender.getAccount().getUsername(),
+                        targetPlayer.getUid(),
+                        targetPlayer.getAccount().getUsername());
+            } else {
+                CommandOutput.sendTranslatedMessage(
+                        null,
+                        "commands.kick.server_kick_player",
+                        targetPlayer.getUid(),
+                        targetPlayer.getAccount().getUsername());
+            }
+            targetPlayer.getSession().close();
+        }
     }
 }

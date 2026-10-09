@@ -84,6 +84,10 @@ dependencies {
     // Line reading libraries.
     implementation group: 'org.jline', name: 'jline', version: '3.21.0'
     implementation group: 'org.jline', name: 'jline-terminal-jna', version: '3.21.0'
+    implementation 'info.picocli:picocli:4.7.7'
+    implementation('info.picocli:picocli-shell-jline3:4.7.7') {
+        exclude group: 'org.jline', module: 'jline'
+    }
     implementation group: 'net.java.dev.jna', name: 'jna', version: '5.10.0'
 
     // Java Netty for networking.

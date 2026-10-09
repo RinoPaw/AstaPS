@@ -114,12 +114,20 @@ public final class QuestSystem extends BaseGameSystem {
 
         QuestManager.eventExecutor.submit(
                 () -> {
-                    if (!handler.execute(quest, execParam, params)) {
-                        Grasscutter.getLogger()
-                                .debug(
-                                        "Execute trigger failed for {} at {}.",
-                                        execParam.getType().name(),
-                                        quest.getQuestData());
+                    try {
+                        if (!handler.execute(quest, execParam, params)) {
+                            Grasscutter.getLogger()
+                                    .debug(
+                                            "Execute trigger failed for {} at {}.",
+                                            execParam.getType().name(),
+                                            quest.getQuestData());
+                        }
+                    } catch (RuntimeException e) {
+                        // submit() retains the exception in its Future, which nobody reads.
+                        Grasscutter.getLogger().error(
+                                "Quest exec {} failed for uid={} subQuest={}",
+                                execParam.getType(), quest.getOwner().getUid(),
+                                quest.getSubQuestId(), e);
                     }
                 });
     }

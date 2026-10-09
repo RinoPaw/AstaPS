@@ -1,4 +1,5 @@
 name: Build
+# Quest runtime checkpoint: exercise the branch after handler-gate changes.
 
 on:
   # Every in-repo branch is covered here, and GitHub attaches these runs to any PR opened from one,

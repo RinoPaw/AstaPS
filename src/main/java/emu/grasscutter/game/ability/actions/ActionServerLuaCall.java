@@ -7,7 +7,6 @@ import emu.grasscutter.game.ability.Ability;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.scripts.ScriptLoader;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 import javax.script.Bindings;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
@@ -117,21 +116,25 @@ public final class ActionServerLuaCall extends AbilityActionHandler {
     // One global warning sample per interval; never retain players, bindings or missing names.
     static final class MissingFunctionWarningLimiter {
         private final long intervalNanos;
-        private final AtomicLong lastWarningNanos = new AtomicLong(Long.MIN_VALUE);
-        private final AtomicLong suppressedWarnings = new AtomicLong();
+        private long lastWarningNanos = Long.MIN_VALUE;
+        private long suppressedWarnings;
 
         MissingFunctionWarningLimiter(long intervalNanos) {
             this.intervalNanos = intervalNanos;
         }
 
-        long acquireWarning(long nowNanos) {
-            long previous = this.lastWarningNanos.get();
-            if ((previous != Long.MIN_VALUE && nowNanos - previous < this.intervalNanos)
-                    || !this.lastWarningNanos.compareAndSet(previous, nowNanos)) {
-                this.suppressedWarnings.incrementAndGet();
+        // Keep the interval transition and counter reset atomic with suppressed increments.
+        // Separate atomics lose increments between the timestamp CAS and getAndSet(0).
+        synchronized long acquireWarning(long nowNanos) {
+            if (this.lastWarningNanos != Long.MIN_VALUE
+                    && nowNanos - this.lastWarningNanos < this.intervalNanos) {
+                this.suppressedWarnings++;
                 return -1;
             }
-            return this.suppressedWarnings.getAndSet(0);
+            this.lastWarningNanos = nowNanos;
+            long suppressed = this.suppressedWarnings;
+            this.suppressedWarnings = 0;
+            return suppressed;
         }
     }
 }

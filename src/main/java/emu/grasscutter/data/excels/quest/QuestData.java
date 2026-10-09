@@ -93,6 +93,12 @@ public class QuestData extends GameResource {
         var corrected = selectNativePrologueAcceptConditions(
                 this.mainId, this.subId, this.acceptCond, additionalData.getAcceptCond());
         if (!sameAcceptConditions(this.acceptCond, corrected)) {
+            if (this.subId == 35603) {
+                Grasscutter.getLogger().info(
+                        "[Prologue] Quest 35603 accept gate restored: flattened={} reviewed={}",
+                        this.acceptCond.stream().map(QuestAcceptCondition::asKey).toList(),
+                        corrected.stream().map(QuestAcceptCondition::asKey).toList());
+            }
             removeFromAcceptCache();
             this.acceptCond = corrected;
             addToCache();

@@ -24,6 +24,88 @@ import java.util.*;
 public final class NativeQuestParser {
     private static final Gson GSON = new Gson();
 
+    // Exact 7.1 identities that AstaPS can actually execute today.
+    // Keep this as an implementation-capability gate, not a second semantic oracle.
+    private static final Set<QuestContent> SUPPORTED_CONTENT =
+            EnumSet.of(
+                    QuestContent.QUEST_CONTENT_ADD_QUEST_PROGRESS,
+                    QuestContent.QUEST_CONTENT_ANY_MANUAL_TRANSPORT,
+                    QuestContent.QUEST_CONTENT_BARGAIN_FAIL,
+                    QuestContent.QUEST_CONTENT_ITEM_LESS_THAN_BARGAIN,
+                    QuestContent.QUEST_CONTENT_BARGAIN_SUCC,
+                    QuestContent.QUEST_CONTENT_CLEAR_GROUP_MONSTER,
+                    QuestContent.QUEST_CONTENT_COMPLETE_ANY_TALK,
+                    QuestContent.QUEST_CONTENT_COMPLETE_TALK,
+                    QuestContent.QUEST_CONTENT_DESTROY_GADGET,
+                    QuestContent.QUEST_CONTENT_ENTER_DUNGEON,
+                    QuestContent.QUEST_CONTENT_ENTER_MY_WORLD,
+                    QuestContent.QUEST_CONTENT_ENTER_MY_WORLD_SCENE,
+                    QuestContent.QUEST_CONTENT_ENTER_ROOM,
+                    QuestContent.QUEST_CONTENT_ENTER_VEHICLE,
+                    QuestContent.QUEST_CONTENT_FAIL_DUNGEON,
+                    QuestContent.QUEST_CONTENT_FINISH_DUNGEON,
+                    QuestContent.QUEST_CONTENT_FINISH_ITEM_GIVING,
+                    QuestContent.QUEST_CONTENT_FINISH_PLOT,
+                    QuestContent.QUEST_CONTENT_GAME_TIME_TICK,
+                    QuestContent.QUEST_CONTENT_INTERACT_GADGET,
+                    QuestContent.QUEST_CONTENT_ITEM_LESS_THAN,
+                    QuestContent.QUEST_CONTENT_LEAVE_SCENE,
+                    QuestContent.QUEST_CONTENT_LUA_NOTIFY,
+                    QuestContent.QUEST_CONTENT_MONSTER_DIE,
+                    QuestContent.QUEST_CONTENT_NOT_FINISH_PLOT,
+                    QuestContent.QUEST_CONTENT_OBTAIN_ITEM,
+                    QuestContent.QUEST_CONTENT_PLAYER_LEVEL_UP,
+                    QuestContent.QUEST_CONTENT_QUEST_STATE_EQUAL,
+                    QuestContent.QUEST_CONTENT_QUEST_STATE_NOT_EQUAL,
+                    QuestContent.QUEST_CONTENT_QUEST_VAR_EQUAL,
+                    QuestContent.QUEST_CONTENT_QUEST_VAR_GREATER,
+                    QuestContent.QUEST_CONTENT_QUEST_VAR_LESS,
+                    QuestContent.QUEST_CONTENT_SKILL,
+                    QuestContent.QUEST_CONTENT_TIME_VAR_GT_EQ,
+                    QuestContent.QUEST_CONTENT_TIME_VAR_PASS_DAY,
+                    QuestContent.QUEST_CONTENT_TRIGGER_FIRE,
+                    QuestContent.QUEST_CONTENT_UNLOCK_TRANS_POINT,
+                    QuestContent.QUEST_CONTENT_USE_ITEM);
+
+    private static final Set<QuestExec> SUPPORTED_EXEC =
+            EnumSet.of(
+                    QuestExec.QUEST_EXEC_ACTIVE_ITEM_GIVING,
+                    QuestExec.QUEST_EXEC_ADD_CUR_AVATAR_ENERGY,
+                    QuestExec.QUEST_EXEC_ADD_QUEST_PROGRESS,
+                    QuestExec.QUEST_EXEC_ADD_SCENE_TAG,
+                    QuestExec.QUEST_EXEC_CHANGE_AVATAR_ELEMET,
+                    QuestExec.QUEST_EXEC_CLEAR_TIME_VAR,
+                    QuestExec.QUEST_EXEC_DEACTIVE_ITEM_GIVING,
+                    QuestExec.QUEST_EXEC_DEC_QUEST_VAR,
+                    QuestExec.QUEST_EXEC_DEL_PACK_ITEM,
+                    QuestExec.QUEST_EXEC_DEL_PACK_ITEM_BATCH,
+                    QuestExec.QUEST_EXEC_DEL_SCENE_TAG,
+                    QuestExec.QUEST_EXEC_GRANT_TRIAL_AVATAR,
+                    QuestExec.QUEST_EXEC_INC_QUEST_GLOBAL_VAR,
+                    QuestExec.QUEST_EXEC_INC_QUEST_VAR,
+                    QuestExec.QUEST_EXEC_INIT_TIME_VAR,
+                    QuestExec.QUEST_EXEC_NOTIFY_GROUP_LUA,
+                    QuestExec.QUEST_EXEC_RANDOM_QUEST_VAR,
+                    QuestExec.QUEST_EXEC_REFRESH_GROUP_MONSTER,
+                    QuestExec.QUEST_EXEC_REFRESH_GROUP_SUITE,
+                    QuestExec.QUEST_EXEC_REFRESH_GROUP_SUITE_RANDOM,
+                    QuestExec.QUEST_EXEC_REGISTER_DYNAMIC_GROUP,
+                    QuestExec.QUEST_EXEC_REMOVE_TRIAL_AVATAR,
+                    QuestExec.QUEST_EXEC_ROLLBACK_PARENT_QUEST,
+                    QuestExec.QUEST_EXEC_ROLLBACK_QUEST,
+                    QuestExec.QUEST_EXEC_SET_IS_FLYABLE,
+                    QuestExec.QUEST_EXEC_SET_GAME_TIME,
+                    QuestExec.QUEST_EXEC_SET_IS_GAME_TIME_LOCKED,
+                    QuestExec.QUEST_EXEC_SET_OPEN_STATE,
+                    QuestExec.QUEST_EXEC_SET_QUEST_GLOBAL_VAR,
+                    QuestExec.QUEST_EXEC_SET_QUEST_VAR,
+                    QuestExec.QUEST_EXEC_SET_IS_WEATHER_LOCKED,
+                    QuestExec.QUEST_EXEC_STOP_BARGAIN,
+                    QuestExec.QUEST_EXEC_UNLOCK_AREA,
+                    QuestExec.QUEST_EXEC_UNLOCK_PLAYER_WORLD_SCENE,
+                    QuestExec.QUEST_EXEC_UNLOCK_POINT,
+                    QuestExec.QUEST_EXEC_UNREGISTER_DYNAMIC_GROUP);
+
     private NativeQuestParser() {}
 
     public static NativeQuestData parse(Reader reader) {
@@ -178,7 +260,7 @@ public final class NativeQuestParser {
         if (typeName == null || typeName.isBlank()) return null;
         try {
             var type = QuestContent.valueOf(typeName);
-            return type.getValue() == typeId ? type : null;
+            return type.getValue() == typeId && SUPPORTED_CONTENT.contains(type) ? type : null;
         } catch (IllegalArgumentException ignored) {
             return null;
         }
@@ -188,7 +270,7 @@ public final class NativeQuestParser {
         if (typeName == null || typeName.isBlank()) return null;
         try {
             var type = QuestExec.valueOf(typeName);
-            return type.getValue() == typeId ? type : null;
+            return type.getValue() == typeId && SUPPORTED_EXEC.contains(type) ? type : null;
         } catch (IllegalArgumentException ignored) {
             return null;
         }

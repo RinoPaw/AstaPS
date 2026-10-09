@@ -1,6 +1,7 @@
 name: Build
 
 on:
+  pull_request:
   # Every in-repo branch is covered here, and GitHub attaches these runs to any PR opened from one,
   # so a pull_request trigger would only build the same commit a second time.
   push:

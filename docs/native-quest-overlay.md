@@ -18,7 +18,9 @@ Source policy in the first parser revision:
 - a list containing an unresolved numeric type id is parsed but remains audit-only;
 - `acceptCond` and `beginExec` do not exist in the native contract and are never synthesized;
 - `isRewind` is consumed by rewind target selection and `finishParent` decides whether finishing a child quest completes its parent, so both flags are carried from the exact native row rather than left to legacy BinOutput fallback;
-- native-only subquest rows are not materialized into the QuestExcel runtime map yet;
+- native-only subquest rows are not materialized into the QuestExcel runtime map yet; the current
+  115-MainQuest bundle has 1,261 native rows and all 1,261 already exist in the 33,217-row
+  QuestExcel table, so this limitation has no effect on the current mainline resource set;
 - missing parent MainQuest objects are materialized from native `mainId/subId/order` so
   `GameMainQuest` can be created without legacy BinOutput/Quest files;
 - native `suggestTrackMainQuestList`, `rewardIdList`, and talk ids are copied into the

@@ -24,6 +24,7 @@ import emu.grasscutter.utils.*;
 import emu.grasscutter.utils.lang.Language;
 import io.netty.util.concurrent.FastThreadLocalThread;
 import java.io.*;
+import java.time.Duration;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Locale;
@@ -236,6 +237,7 @@ public final class Grasscutter {
         // Shutdown the game server.
         if (gameServer != null) gameServer.onServerShutdown();
 
+        boolean interrupted = false;
         try {
             // Wait for Grasscutter's thread pool to finish.
             var executor = Grasscutter.getThreadPool();
@@ -243,15 +245,22 @@ public final class Grasscutter {
             if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
                 executor.shutdownNow();
             }
-
-            // Wait for database operations to finish.
-            var dbExecutor = DatabaseHelper.getEventExecutor();
-            dbExecutor.shutdown();
-            if (!dbExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
-                dbExecutor.shutdownNow();
-            }
         } catch (InterruptedException ignored) {
+            // Still drain accepted database writes before restoring the shutdown hook's interrupt.
+            interrupted = true;
         }
+
+        // Stop admission first, then drain every database writer against one shared deadline.
+        var databaseShutdown = DatabaseHelper.shutdownWriters(Duration.ofSeconds(5));
+        if (!databaseShutdown.completed()) {
+            logger.error(
+                    "Database shutdown incomplete: {} active at timeout, {} accepted tasks never started, interrupted={}; pools={}",
+                    databaseShutdown.activeAtTimeoutTaskCount(),
+                    databaseShutdown.notStartedTaskCount(),
+                    databaseShutdown.interrupted(),
+                    databaseShutdown.pools());
+        }
+        if (interrupted) Thread.currentThread().interrupt();
     }
 
     /** Utility method for starting the: - SDK server - Dispatch server */

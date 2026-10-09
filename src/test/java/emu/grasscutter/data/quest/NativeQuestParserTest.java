@@ -46,6 +46,8 @@ class NativeQuestParserTest {
                           "subId": 991001,
                           "mainId": 991,
                           "order": 99,
+                          "isRewind": true,
+                          "finishParent": false,
                           "acceptCond": [
                             {
                               "type": "QUEST_COND_STATE_EQUAL",
@@ -91,7 +93,7 @@ class NativeQuestParserTest {
                                           "subId": 991001,
                                           "mainId": 992,
                                           "order": 7,
-                                          "isRewind": true,
+                                          "isRewind": false,
                                           "finishParent": true,
                                           "finishCond": [
                                             {
@@ -132,7 +134,7 @@ class NativeQuestParserTest {
 
         assertEquals(992, quest.getMainId());
         assertEquals(7, quest.getOrder());
-        assertTrue(quest.isRewind());
+        assertFalse(quest.isRewind());
         assertTrue(quest.isFinishParent());
         assertEquals(QuestSource.NATIVE_QUEST, quest.getFieldSource(QuestField.MAIN_ID));
         assertEquals(QuestSource.NATIVE_QUEST, quest.getFieldSource(QuestField.ORDER));

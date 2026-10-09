@@ -147,6 +147,20 @@ public class GameQuest {
     public void setConfig(QuestData config) {
         if (config == null || getSubQuestId() != config.getId()) return;
         this.questData = config;
+
+        // Saved progress is indexed by the old definition's condition positions.
+        // When the 7.1 native overlay changes the number of conditions, the
+        // previous indices are no longer trustworthy. Reset rather than carry
+        // possibly misassigned completion flags or index past the saved arrays.
+        this.finishProgressList =
+                reconcileProgress(this.finishProgressList, config.getFinishCond().size());
+        this.failProgressList =
+                reconcileProgress(this.failProgressList, config.getFailCond().size());
+    }
+
+    private static int[] reconcileProgress(int[] saved, int expectedSize) {
+        if (saved != null && saved.length == expectedSize) return saved;
+        return new int[expectedSize];
     }
 
     public void setFinishProgress(int index, int value) {

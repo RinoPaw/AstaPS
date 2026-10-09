@@ -58,9 +58,9 @@ resource audit agree on all 20 types.
 
 **Client behavior still needs verification**: this first pass uses the
 existing per-player weather notification. It does not yet track concurrent
-weather gadgets as a world-wide scene state, automatically restore active
-quest weather after reconnection, or implement polygon crossing and client
-SetSceneWeatherAreaReq handshakes. Do not claim full visual/weather parity
+weather gadgets as a world-wide scene state or implement polygon crossing and
+client SetSceneWeatherAreaReq handshakes. Reconnection restoration is covered
+in the later section on active quest weather. Do not claim full visual/weather parity
 until those flows are validated on the 7.1 client.
 
 This branch has unit/static coverage but still requires paired 7.1 resource
@@ -195,3 +195,15 @@ invalid or mismatched entity could advance a quest with no world interaction.
 Quest-content delivery now requires that the entity exists as an EntityGadget
 and that its server-known gadget ID equals the requested ID. The normal
 interaction handler still runs without changes for non-quest interactions.
+
+## Saved progress when native condition counts change
+
+Existing accounts can have quest progress arrays written against older
+QuestExcel condition counts. During database rebind, `GameQuest.setConfig`
+now reconciles the saved finish/fail array lengths with the loaded 7.1
+definition. When a count differs or an array is missing, it initializes
+that array to zero: the old positional flags cannot be mapped reliably
+without the prior condition definitions. Unchanged lengths preserve
+saved progress. Persistent item, dungeon and quest-Lua histories can then
+be checked by the normal replay logic. This prevents out-of-range
+condition updates without fabricating completed objectives.

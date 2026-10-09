@@ -233,6 +233,9 @@ public class GameQuest {
             this.state = QuestState.QUEST_STATE_FINISHED;
         }
         this.finishTime = Utils.getCurrentSeconds();
+        if (subQuestId == 35403 || subQuestId == 35404 || subQuestId == 36005 || subQuestId == 35601 || subQuestId == 35603 || subQuestId == 35604) {
+            Grasscutter.getLogger().info("[Prologue] Quest finish uid={} subQuest={}", getOwner().getUid(), subQuestId);
+        }
 
         this.getOwner().sendPacket(new PacketQuestListUpdateNotify(this));
 

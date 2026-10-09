@@ -63,8 +63,15 @@ public class GameQuest {
         this.startTime = this.acceptTime;
         this.startGameDay = getOwner().getWorld().getTotalGameTimeDays();
         this.state = QuestState.QUEST_STATE_UNFINISHED;
-        if (subQuestId == 35403 || subQuestId == 35404 || subQuestId == 36005 || subQuestId == 35601 || subQuestId == 35603 || subQuestId == 35604) {
+        if (subQuestId == 35403 || subQuestId == 35404 || subQuestId == 36005 || subQuestId == 35601 || subQuestId == 35602 || subQuestId == 35603 || subQuestId == 35604) {
             Grasscutter.getLogger().info("[Prologue] Quest start uid={} subQuest={}", getOwner().getUid(), subQuestId);
+        }
+
+        if (subQuestId == 35602 && getOwner().getPosition() != null) {
+            var pos = getOwner().getPosition();
+            Grasscutter.getLogger().info(
+                    "[AmberState] hidden 35602 starts at player position=({}, {}, {}); region 289 is scene 3 trigger 1126",
+                    pos.getX(), pos.getY(), pos.getZ());
         }
 
         val triggerCond =
@@ -239,7 +246,7 @@ public class GameQuest {
                     "[AmberState] uid={} playerPaused={} worldPaused={} timeLocked={}",
                     getOwner().getUid(), getOwner().isPaused(), world.isPaused(), world.isTimeLocked());
         }
-        if (subQuestId == 35403 || subQuestId == 35404 || subQuestId == 36005 || subQuestId == 35601 || subQuestId == 35603 || subQuestId == 35604) {
+        if (subQuestId == 35403 || subQuestId == 35404 || subQuestId == 36005 || subQuestId == 35601 || subQuestId == 35602 || subQuestId == 35603 || subQuestId == 35604) {
             Grasscutter.getLogger().info("[Prologue] Quest finish uid={} subQuest={}", getOwner().getUid(), subQuestId);
         }
 

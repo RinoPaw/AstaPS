@@ -129,23 +129,45 @@ public class PlayerProgress {
      *
      * @param dungeonId The dungeon which was completed.
      */
-    public void markDungeonAsComplete(int dungeonId) {
-        if (this.getCompletedDungeons().contains(dungeonId)) return;
-
-        // Mark the dungeon as completed.
-        this.getCompletedDungeons().add(dungeonId);
-        // Trigger the completion event.
-        if (this.getPlayer() != null) {
-            this.getPlayer()
-                    .getQuestManager()
-                    .queueEvent(QuestContent.QUEST_CONTENT_FINISH_DUNGEON, dungeonId);
-        } else {
-            Grasscutter.getLogger()
-                    .warn("Unable to execute 'QUEST_CONTENT_FINISH_DUNGEON'. The player is null.");
+    /**
+     * A cleared dungeon is historical progress, but FINISH_DUNGEON is a
+     * per-run quest event. A second successful run must emit the event too.
+     *
+     * @return true only when the dungeon was added to history for the first time
+     */
+    static boolean recordDungeonClear(
+            IntList completed, int dungeonId, Runnable emitCompletion) {
+        if (completed == null || dungeonId <= 0) return false;
+        boolean firstClear;
+        synchronized (completed) {
+            firstClear = !completed.contains(dungeonId);
+            if (firstClear) completed.add(dungeonId);
         }
+        // Emit for every successful run, including repeatable domains.
+        emitCompletion.run();
+        return firstClear;
+    }
 
-        Grasscutter.getLogger()
-                .debug("Dungeon {} has been marked complete for {}.", dungeonId, this.getPlayer().getUid());
+    public void markDungeonAsComplete(int dungeonId) {
+        var owner = getPlayer();
+        boolean firstClear = recordDungeonClear(
+                this.getCompletedDungeons(), dungeonId, () -> {
+                    if (owner != null) {
+                        owner.getQuestManager().queueEvent(
+                                QuestContent.QUEST_CONTENT_FINISH_DUNGEON, dungeonId);
+                    }
+                });
+        if (owner == null) {
+            Grasscutter.getLogger().warn(
+                    "Unable to execute 'QUEST_CONTENT_FINISH_DUNGEON' for dungeon {}: player is null.",
+                    dungeonId);
+            return;
+        }
+        // Quest replays depend on the historical first clear surviving relog.
+        if (firstClear) owner.save();
+        Grasscutter.getLogger().debug(
+                "Dungeon {} cleared for uid={} (firstClear={}).",
+                dungeonId, owner.getUid(), firstClear);
     }
 
     public boolean hasPlayerObtainedItemHistorically(int itemId) {

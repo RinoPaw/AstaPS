@@ -176,3 +176,13 @@ for that specific player to enter; script initialization, player presence,
 and scene loading must all be satisfied before the saved quest-finish event
 is delivered. The new player-entry callback gate runs callbacks once and is
 tested for both callback-registration orders and concurrent scene returns.
+
+## Repeated dungeon clear events and durable first-clear history
+
+PlayerProgress.markDungeonAsComplete previously returned immediately when the
+completed-dungeon history already contained an ID. This prevented the quest
+engine from receiving FINISH_DUNGEON on any later successful run of the same
+domain. The history now records each unique dungeon once, but emits a quest
+event on **every** successful settlement. The first clear is saved immediately
+so a late-activated quest (e.g. 30901) can replay its historical objectives
+after reconnection. Unit tests cover repeated and distinct clears.

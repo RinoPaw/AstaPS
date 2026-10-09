@@ -31,6 +31,37 @@ public class GameSession implements GameSessionManager.KcpChannel {
     /** Whether this session has already reported a frame that would not decrypt. */
     private boolean reportedBadMagic;
 
+    // Temporary, session-local diagnostic for the 7.1 Amber dialogue input lock.
+    // Record only packet names, never payloads or authentication data.
+    private volatile long amberTraceStartNanos;
+    private final java.util.Set<Integer> amberTraceRecvOpcodes =
+            java.util.concurrent.ConcurrentHashMap.newKeySet();
+    private final java.util.Set<Integer> amberTraceSendOpcodes =
+            java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+    public void beginAmberInputTrace() {
+        amberTraceRecvOpcodes.clear();
+        amberTraceSendOpcodes.clear();
+        amberTraceStartNanos = System.nanoTime();
+        Grasscutter.getLogger().info(
+                "[AmberWire] Starting 30-second dialogue handoff trace uid={}",
+                player != null ? player.getUid() : 0);
+    }
+
+    private void traceAmberPacket(String direction, int opcode) {
+        long started = amberTraceStartNanos;
+        if (started == 0 || System.nanoTime() - started > java.util.concurrent.TimeUnit.SECONDS.toNanos(30)) {
+            return;
+        }
+        var seen = "RECV".equals(direction) ? amberTraceRecvOpcodes : amberTraceSendOpcodes;
+        if (seen.add(opcode)) {
+            Grasscutter.getLogger().info(
+                    "[AmberWire] uid={} {} {} ({})",
+                    player != null ? player.getUid() : 0,
+                    direction, PacketOpcodesUtils.getOpcodeName(opcode), opcode);
+        }
+    }
+
     /** Packet classes already reported as having no 7.0 CmdId, so each is said once. */
     private static final java.util.Set<String> missingCmdIdReported =
             java.util.concurrent.ConcurrentHashMap.newKeySet();
@@ -175,6 +206,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
                     }
                 }
                 tunnel.writeData(bytes);
+                traceAmberPacket("SEND", packet.getOpcode());
             } catch (Exception e) {
                 Grasscutter.getLogger()
                         .debug("Unable to send packet {} to client: {}", packet.getOpcode(), e.toString());
@@ -320,6 +352,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
                     default -> {}
                 }
 
+                traceAmberPacket("RECV", opcode);
                 getServer().getPacketHandler().handle(this, opcode, header, payload);
             }
         } catch (Throwable e) {

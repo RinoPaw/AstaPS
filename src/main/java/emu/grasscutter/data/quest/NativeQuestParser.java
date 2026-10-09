@@ -63,6 +63,7 @@ public final class NativeQuestParser {
                     QuestContent.QUEST_CONTENT_SKILL,
                     QuestContent.QUEST_CONTENT_TIME_VAR_GT_EQ,
                     QuestContent.QUEST_CONTENT_TIME_VAR_PASS_DAY,
+                    QuestContent.QUEST_CONTENT_TEAM_DEAD,
                     QuestContent.QUEST_CONTENT_TRIGGER_FIRE,
                     QuestContent.QUEST_CONTENT_UNLOCK_TRANS_POINT,
                     QuestContent.QUEST_CONTENT_USE_ITEM);
@@ -84,6 +85,7 @@ public final class NativeQuestParser {
                     QuestExec.QUEST_EXEC_INC_QUEST_GLOBAL_VAR,
                     QuestExec.QUEST_EXEC_INC_QUEST_VAR,
                     QuestExec.QUEST_EXEC_INIT_TIME_VAR,
+                    QuestExec.QUEST_EXEC_LOCK_POINT,
                     QuestExec.QUEST_EXEC_NOTIFY_GROUP_LUA,
                     QuestExec.QUEST_EXEC_RANDOM_QUEST_VAR,
                     QuestExec.QUEST_EXEC_REFRESH_GROUP_MONSTER,

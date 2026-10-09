@@ -815,7 +815,7 @@ public final class QuestManager extends BasePlayerManager {
     }
 
     public List<QuestGroupSuite> getSceneGroupSuite(int sceneId) {
-        var saved = new ArrayList<QuestGroupSuite>();
+        var restored = new ArrayList<QuestGroupSuite>();
         for (var mainQuest : getMainQuests().values()) {
             if (mainQuest.getState() == ParentQuestState.PARENT_QUEST_STATE_FINISHED) {
                 continue;
@@ -823,11 +823,15 @@ public final class QuestManager extends BasePlayerManager {
             var overrides = mainQuest.getQuestGroupSuites();
             if (overrides == null) continue;
 
+            List<QuestGroupSuite> snapshot;
             synchronized (overrides) {
-                saved.addAll(overrides);
+                snapshot = List.copyOf(overrides);
             }
+            // Recover duplicate history inside one parent quest only. Separate active
+            // MainQuests may legitimately own transitions for the same scene group.
+            restored.addAll(latestSceneGroupSuites(snapshot, sceneId));
         }
-        return latestSceneGroupSuites(saved, sceneId);
+        return List.copyOf(restored);
     }
 
     public void loadFromDatabase() {

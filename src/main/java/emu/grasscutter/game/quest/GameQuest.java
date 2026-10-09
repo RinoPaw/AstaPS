@@ -233,6 +233,12 @@ public class GameQuest {
             this.state = QuestState.QUEST_STATE_FINISHED;
         }
         this.finishTime = Utils.getCurrentSeconds();
+        if (subQuestId == 35601 && getOwner().getWorld() != null) {
+            var world = getOwner().getWorld();
+            Grasscutter.getLogger().info(
+                    "[AmberState] uid={} playerPaused={} worldPaused={} timeLocked={}",
+                    getOwner().getUid(), getOwner().isPaused(), world.isPaused(), world.isTimeLocked());
+        }
         if (subQuestId == 35403 || subQuestId == 35404 || subQuestId == 36005 || subQuestId == 35601 || subQuestId == 35603 || subQuestId == 35604) {
             Grasscutter.getLogger().info("[Prologue] Quest finish uid={} subQuest={}", getOwner().getUid(), subQuestId);
         }

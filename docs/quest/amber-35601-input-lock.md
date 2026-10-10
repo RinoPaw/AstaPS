@@ -37,6 +37,18 @@ That report is from a different, older client; treat it as a competing hypothesi
 - `HandlerPlayerSetPauseReq` constructs a success response, but `GameSession.send()` returns without sending when `opcode <= 0`. Thus **no pause acknowledgement reaches the client**. It is unknown whether the client needs that acknowledgement for this particular input lock.
 - AstaPS `NpcTalkRsp=3514` and `CutSceneEndNotify=472` are server mappings; their role in this particular handoff is still to be confirmed against the exact client.
 
+## 2026-10-10 stuck dialogue capture: interaction marker CmdId 27447
+
+The provided server console transcript ends about **2.7 seconds after** NpcTalkReq(35601), so it does not contain the expected 45-second summary or forced-reconnect comparison.
+
+At 19:43:41 the server sends NpcTalkRsp(3514), finishes quest 35601 and starts both 35602/35603. At 19:43:42 the client sends unknown CmdId **27447**, followed by QuestDestroyNpcReq(23280); the server responds with QuestDestroyNpcRsp(3992). At 19:43:43 SceneTimeNotify(1307) explicitly says `is_paused=false`. World `timeLocked=true` predates the dialogue by more than 20 minutes and is not, on its own, evidence for the new client input lock.
+
+Pinned Global 7.1 native analysis resolves 27447 to `NDAJDBCBAAE` (typeDefinition 75026) with **one bool protobuf field 7**; native serializer emits tag `0x38`. `LLCGIEDMIIG.GKJKIBOALJO(bool)` at RVA `0xC22D780` constructs/sends the request. Direct callers originate in `InteractionManager`: `OnCreateTalkFinish` calls with **true**; `ClearOnDisconnect`, `ResumeGameTime`, `ClearAll` and `ClearAfterKeyListFinish` call with **false**. Source runs: [structural lookup](https://github.com/RinoPaw/Genshin-Reverse/actions/runs/38049568765), [native serializer/sender](https://github.com/RinoPaw/Genshin-Reverse/actions/runs/38049670386), [native direct call sites](https://github.com/RinoPaw/Genshin-Reverse/actions/runs/38049772524).
+
+This is a strong **interaction-lifecycle lead**, but the server transcript did **not** capture the 27447 payload. Do not claim the observed packet value was true, infer a response is required, or force-send a guessed unlock packet.
+
+The current diagnostic branch decodes and logs only the bool at field 7 (or `null` when absent) for inbound CmdId 27447 during its Amber trace. The wire probe has focused unit coverage. A complete 45-second trace and reconnect comparison still form the causal evidence gate.
+
 ## Exact 7.1 protocol cross-check (Genshin-Reverse #23)
 
 The [pinned 7.1 Global native analysis](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/windows-x64/analyses/amber-pause-ack/README.md) resolves the request construction path: CmdId `5963`, obfuscated type `GLIHKBGFALC`, generated bool tag `0x58` (**field 11**) and the `Miscs.PauseLevelTime(bool, ...Talk)` caller. A hosted inspection of this repo's `protocol/7.1/protocol.desc` confirmed `PlayerSetPauseReq.is_paused = 11`. Thus the request field-number mapping is **consistent** with the current client.

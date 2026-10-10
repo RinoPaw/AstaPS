@@ -219,6 +219,15 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
         return addItem(itemParam.getId(), itemParam.getCount(), reason);
     }
 
+    /**
+     * Validate the complete item grant before charging for a dungeon claim. This checks
+     * available equipment slots, material slots and stack limits, including repeated IDs in
+     * one reward roll. This does not reserve inventory space or provide a database transaction.
+     */
+    public synchronized boolean canAcceptRewards(Collection<GameItem> items) {
+        return InventoryRewardAdmission.canAccept(items, this::getInventoryTab);
+    }
+
     public void addItems(Collection<GameItem> items) {
         this.addItems(items, null);
     }

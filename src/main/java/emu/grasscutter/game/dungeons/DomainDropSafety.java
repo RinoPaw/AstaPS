@@ -98,13 +98,18 @@ final class DomainDropSafety {
             if (rewarded == null || rewarded.contains(uid) || rewards == null) {
                 return false;
             }
-            List<T> validRewards = new ArrayList<>();
+            // Never charge for a partial reward. A single invalid item rejects the entire roll.
+            // Copy valid input so immutable lists can be passed to a grant implementation.
+            if (rewards.isEmpty()) {
+                return false;
+            }
             for (T item : rewards) {
-                if (usable.test(item)) {
-                    validRewards.add(item);
+                if (!usable.test(item)) {
+                    return false;
                 }
             }
-            if (validRewards.isEmpty() || !pay.getAsBoolean()) {
+            List<T> validRewards = new ArrayList<>(rewards);
+            if (!pay.getAsBoolean()) {
                 return false;
             }
             // Inventory writes are not transactional. Record a successful payment before

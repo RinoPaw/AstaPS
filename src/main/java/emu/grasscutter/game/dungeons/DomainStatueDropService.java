@@ -7,6 +7,7 @@ import emu.grasscutter.data.excels.RewardPreviewData;
 import emu.grasscutter.data.excels.dungeon.DungeonData;
 import emu.grasscutter.game.dungeons.DomainStatueClaimHelper.ClaimMode;
 import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.Inventory;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.scripts.constants.EventType;
@@ -109,6 +110,7 @@ public final class DomainStatueDropService {
         // The commit guard filters invalid items into a new list. Use exactly the
         // granted list for the client packet, not the original unfiltered rolls.
         List<GameItem> grantedRewards = new ArrayList<>();
+        Inventory inventory = player.getInventory();
         try {
             granted = DomainDropSafety.commitOnce(
                     dm,
@@ -117,9 +119,10 @@ public final class DomainStatueDropService {
                     rewards,
                     it -> it != null && it.getCount() > 0 && it.getItemId() > 0
                             && it.getItemData() != null,
-                    () -> payCost(player, dungeonData, paymentMode),
+                    () -> inventory.canAcceptRewards(rewards)
+                            && payCost(player, dungeonData, paymentMode),
                     items -> {
-                        player.getInventory().addItems(items, ActionReason.DungeonStatueDrop);
+                        inventory.addItems(items, ActionReason.DungeonStatueDrop);
                         grantedRewards.addAll(items);
                     });
         } catch (RuntimeException e) {

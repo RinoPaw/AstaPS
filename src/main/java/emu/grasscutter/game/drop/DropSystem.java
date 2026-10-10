@@ -225,7 +225,8 @@ public final class DropSystem extends BaseGameSystem {
             }
         } else {
             for (Player p : monster.getScene().getPlayers()) {
-                p.getInventory().addItems(items, ActionReason.MonsterDie, InventoryAddPolicy.BEST_EFFORT);
+                p.getInventory().addItems(
+                        copyForRecipient(items), ActionReason.MonsterDie, InventoryAddPolicy.BEST_EFFORT);
             }
         }
         return true;
@@ -426,14 +427,18 @@ public final class DropSystem extends BaseGameSystem {
         }
     }
 
+    private static List<GameItem> copyForRecipient(List<GameItem> items) {
+        return items.stream().map(GameItem::copyForGrant).toList();
+    }
+
     private void giveItem(GameItem item, ActionReason reason, Player player, boolean share) {
         if (share) {
             for (var p : player.getScene().getPlayers()) {
-                p.getInventory().addItem(item, reason);
+                p.getInventory().addItem(item.copyForGrant(), reason);
                 p.sendPacket(new PacketDropHintNotify(item.getItemId(), player.getPosition().toProto()));
             }
         } else {
-            player.getInventory().addItem(item, reason);
+            player.getInventory().addItem(item.copyForGrant(), reason);
             player.sendPacket(new PacketDropHintNotify(item.getItemId(), player.getPosition().toProto()));
         }
     }
@@ -441,11 +446,13 @@ public final class DropSystem extends BaseGameSystem {
     private void giveItems(List<GameItem> items, ActionReason reason, Player player, boolean share) {
         if (share) {
             for (var p : player.getScene().getPlayers()) {
-                p.getInventory().addItems(items, reason, InventoryAddPolicy.BEST_EFFORT);
+                p.getInventory().addItems(
+                        copyForRecipient(items), reason, InventoryAddPolicy.BEST_EFFORT);
                 p.sendPacket(new PacketDropHintNotify(items, player.getPosition().toProto()));
             }
         } else {
-            player.getInventory().addItems(items, reason, InventoryAddPolicy.BEST_EFFORT);
+            player.getInventory().addItems(
+                    copyForRecipient(items), reason, InventoryAddPolicy.BEST_EFFORT);
             player.sendPacket(new PacketDropHintNotify(items, player.getPosition().toProto()));
         }
     }

@@ -136,6 +136,40 @@ public final class GameItem {
         }
     }
 
+    /**
+     * Create an unowned, unsaved copy for a different inventory recipient. Share immutable
+     * item definition data, but never share identity, owner or mutable affix collections.
+     * This also preserves a rolled artifact's stats rather than rolling them again.
+     */
+    public GameItem copyForGrant() {
+        GameItem copy = new GameItem();
+        copy.itemId = this.itemId;
+        copy.itemData = this.itemData;
+        copy.count = this.count;
+        copy.level = this.level;
+        copy.exp = this.exp;
+        copy.totalExp = this.totalExp;
+        copy.promoteLevel = this.promoteLevel;
+        copy.favourite = this.favourite;
+        copy.locked = this.locked;
+        copy.affixes = this.affixes == null ? null : new ArrayList<>(this.affixes);
+        copy.refinement = this.refinement;
+        copy.mainPropId = this.mainPropId;
+        copy.appendPropIdList =
+                this.appendPropIdList == null ? null : new ArrayList<>(this.appendPropIdList);
+        copy.relicStarred = this.relicStarred;
+        copy.purchasedAppendPropIdList =
+                this.purchasedAppendPropIdList == null
+                        ? null : new ArrayList<>(this.purchasedAppendPropIdList);
+        copy.definiteAppendPropIdList =
+                this.definiteAppendPropIdList == null
+                        ? null : new ArrayList<>(this.definiteAppendPropIdList);
+        copy.equipCharacter = this.equipCharacter;
+        copy.tpsAccessoryIds =
+                this.tpsAccessoryIds == null ? null : new ArrayList<>(this.tpsAccessoryIds);
+        return copy;
+    }
+
     public int getOwnerId() {
         return ownerId;
     }

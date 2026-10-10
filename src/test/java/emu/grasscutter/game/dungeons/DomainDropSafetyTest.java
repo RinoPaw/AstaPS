@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.Gson;
+import emu.grasscutter.game.dungeons.enums.DungeonSubType;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -85,6 +86,21 @@ final class DomainDropSafetyTest {
         assertTrue(byId.containsKey(dungeonId));
         assertThrows(IllegalArgumentException.class,
                 () -> DomainDropSafety.validatePool(dungeonId, byId.get(dungeonId)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {4480, 4484, 4665, 4683, 4687, 5018, 5022, 5050, 5060, 5064})
+    void weaponMaterialsInReliquaryProxyAreRejected(int dungeonId) throws IOException {
+        var source = Files.readString(Path.of("data", "DungeonDrop.json"));
+        DungeonDrop[] drops = new Gson().fromJson(source, DungeonDrop[].class);
+        Map<Integer, List<DungeonDropEntry>> byId = new HashMap<>();
+        for (DungeonDrop drop : drops) {
+            byId.put(drop.getDungeonId(), drop.getDrops());
+        }
+        assertTrue(byId.containsKey(dungeonId));
+        assertThrows(IllegalArgumentException.class,
+                () -> DomainDropSafety.validatePool(
+                        dungeonId, byId.get(dungeonId), DungeonSubType.DUNGEON_SUB_RELIQUARY));
     }
 
     @Test

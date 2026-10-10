@@ -106,6 +106,9 @@ public final class DomainStatueDropService {
         // Prepare and validate rewards before charging. A missing/invalid reward pool must
         // not consume Resin, Condensed Resin, Fragile Resin or Primogems.
         boolean granted;
+        // The commit guard filters invalid items into a new list. Use exactly the
+        // granted list for the client packet, not the original unfiltered rolls.
+        List<GameItem> grantedRewards = new ArrayList<>();
         try {
             granted = DomainDropSafety.commitOnce(
                     dm,
@@ -115,7 +118,10 @@ public final class DomainStatueDropService {
                     it -> it != null && it.getCount() > 0 && it.getItemId() > 0
                             && it.getItemData() != null,
                     () -> payCost(player, dungeonData, paymentMode),
-                    items -> player.getInventory().addItems(items, ActionReason.DungeonStatueDrop));
+                    items -> {
+                        player.getInventory().addItems(items, ActionReason.DungeonStatueDrop);
+                        grantedRewards.addAll(items);
+                    });
         } catch (RuntimeException e) {
             Grasscutter.getLogger()
                     .error("StatueDrop claim failed uid={} dungeon={}", player.getUid(), dungeonData.getId(), e);
@@ -127,7 +133,7 @@ public final class DomainStatueDropService {
                             player.getUid(), dungeonData.getId(), mode);
             return false;
         }
-        player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(rewards));
+        player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(grantedRewards));
 
         try {
             dm.getScene()
@@ -144,7 +150,7 @@ public final class DomainStatueDropService {
                         dungeonData.getId(),
                         mode,
                         rollTimes,
-                        rewards.size());
+                        grantedRewards.size());
         return true;
     }
 

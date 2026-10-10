@@ -168,11 +168,28 @@ public final class DungeonSystem extends BaseGameSystem {
         return true;
     }
 
+    /** Destination for a clean dungeon exit, without scheduling a teleport. */
+    public record DungeonExitLocation(int sceneId, Position position) {}
+
     public void exitDungeon(Player player) {
+        DungeonExitLocation destination = prepareDungeonExit(player);
+        if (destination != null) {
+            // Interactive exits still need the delay to avoid double teleport packets.
+            player.getWorld().queueTransferPlayerToScene(
+                    player, destination.sceneId(), destination.position(), 200);
+        }
+    }
+
+    /** Clean up temporary dungeon state before logout; caller persists the destination. */
+    public DungeonExitLocation prepareDungeonLogout(Player player) {
+        return prepareDungeonExit(player);
+    }
+
+    private DungeonExitLocation prepareDungeonExit(Player player) {
         Scene scene = player.getScene();
 
         if (scene == null || scene.getSceneType() != SceneType.SCENE_DUNGEON) {
-            return;
+            return null;
         }
 
         // Get previous scene
@@ -225,12 +242,7 @@ public final class DungeonSystem extends BaseGameSystem {
             dungeonManager.setTowerDungeon(false);
         }
 
-        // Transfer player back to world after a small delay.
-        // This wait is important for avoiding double teleports,
-        // which specifically happen when player quits a dungeon
-        // by teleporting to map waypoints.
-        // From testing, 200ms seem reasonable.
-        player.getWorld().queueTransferPlayerToScene(player, prevScene, prevPos, 200);
+        return new DungeonExitLocation(prevScene, prevPos);
     }
 
     public void restartDungeon(Player player) {

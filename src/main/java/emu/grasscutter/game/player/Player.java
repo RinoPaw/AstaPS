@@ -1484,22 +1484,9 @@ public class Player implements PlayerHook, FieldFetch {
             this.applyStartingSceneTags();
         }
 
-        // A TPS dungeon is not saved: logging back into one finds no dungeon running, an empty
-        // scene and a client that never finishes loading. Start in Teyvat instead.
-        var savedScene = GameData.getSceneDataMap().get(this.getSceneId());
-        if (emu.grasscutter.game.tps.TpsAvatarSystem.isTpsScene(savedScene)) {
-            this.setSceneId(3);
-            this.position.set(ScriptLoader.getSceneMeta(3).config.born_pos);
-        }
-
-        if (GameHome.HOME_SCENE_IDS.contains(this.getSceneId())) {
-            this.setSceneId(this.prevScene <= 0 ? 3 : this.prevScene);
-            var pos = this.getPrevPosForHome();
-            if (pos.equals(Position.ZERO)) {
-                pos = ScriptLoader.getSceneMeta(this.getSceneId()).config.born_pos;
-            }
-            this.position.set(pos);
-        }
+        // Persistent sceneId is not enough to rebuild a transient dungeon's manager.
+        // Resolve the saved location before World.addPlayer creates the login scene.
+        LoginSceneRecovery.prepare(this);
 
         World world = new World(this);
         world.addPlayer(this);
@@ -1596,16 +1583,23 @@ public class Player implements PlayerHook, FieldFetch {
             // otherwise keep this player and their world reachable after they leave.
             PlayerRuntimeStateCleanup.clear(this);
 
-            // Leaving the dungeon (trial team, TPS traveler) must not keep the player in the world:
-            // a world left behind keeps ticking and sending to the closed session forever.
+            // Do not queue the usual delayed dungeon teleport during logout. The save may
+            // happen before it fires, and the callback can race with world teardown.
+            emu.grasscutter.game.dungeons.DungeonSystem.DungeonExitLocation logoutDestination = null;
             try {
-                this.getServer().getDungeonSystem().exitDungeon(this);
+                logoutDestination = this.getServer().getDungeonSystem().prepareDungeonLogout(this);
             } catch (Throwable e) {
-                Grasscutter.getLogger().warn("Player (UID {}) could not leave the dungeon on logout", getUid(), e);
+                Grasscutter.getLogger().warn("Player (UID {}) could not prepare dungeon logout", getUid(), e);
             }
 
+            // World.removePlayer locates the live scene by player.sceneId. Change the saved
+            // destination only after removing the player from that scene.
             if (this.getWorld() != null) {
                 this.getWorld().removePlayer(this);
+            }
+            if (logoutDestination != null) {
+                this.setSceneId(logoutDestination.sceneId());
+                this.position.set(logoutDestination.position());
             }
 
             this.getProfile().syncWithCharacter(this);

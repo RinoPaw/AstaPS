@@ -13,4 +13,20 @@ public final class DungeonDataCityIdTest {
         var dungeon = JsonUtils.decode("{\"id\":5008,\"cityId\":5}", DungeonData.class);
         assertEquals(5, dungeon.getCityId());
     }
+    @Test
+    @DisplayName("7.1 obfuscated Dungeon drop root loads into statueDrop")
+    public void nativeDungeonRootDecodes() {
+        var dungeon = JsonUtils.decode(
+                "{\\"id\\":4200,\\"IAOMJCLOIEL\\":82012700}", DungeonData.class);
+        assertEquals(82012700, dungeon.getStatueDrop());
+    }
+
+    @Test
+    @DisplayName("legacy named Dungeon drop root remains readable")
+    public void legacyDungeonRootDecodes() {
+        var dungeon = JsonUtils.decode(
+                "{\\"id\\":4200,\\"statueDrop\\":82012700}", DungeonData.class);
+        assertEquals(82012700, dungeon.getStatueDrop());
+    }
+
 }

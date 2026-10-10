@@ -196,45 +196,45 @@ public final class DomainStatueDropService {
             RewardPreviewData preview,
             boolean hasPreview,
             int rollTimes) {
-        List<GameItem> rewards = null;
         int dungeonId = dungeonData.getId();
-        boolean hasDungeonDrop =
-                GameData.getDungeonDropDataMap() != null
-                        && GameData.getDungeonDropDataMap().containsKey(dungeonId);
-        if (hasDungeonDrop) {
-            try {
-                rewards = rollDungeonDropJson(dm, dungeonData, rollTimes);
-            } catch (IllegalArgumentException invalidProxy) {
-                Grasscutter.getLogger()
-                        .warn("StatueDrop: rejecting DungeonDrop.json proxy dungeon={}", dungeonId, invalidProxy);
-                // A malformed or mismatched proxy must not pay out preview placeholders.
-                // Use the source-bound drop root only if it exists and can yield rewards.
-                int nativeRoot = dungeonData.getStatueDrop();
-                return nativeRoot > 0
-                        ? rollStatueDropTable(player, nativeRoot, rollTimes)
-                        : null;
-            }
-        }
-        int statueDrop = dungeonData.getStatueDrop();
-        if ((rewards == null || rewards.isEmpty()) && statueDrop > 0) {
-            rewards = rollStatueDropTable(player, statueDrop, rollTimes);
-            // A configured native root with no resolved rewards must not silently turn into
-            // an advertised preview that omits the actual domain material/artifact drops.
-            if (rewards == null || rewards.isEmpty()) {
-                return rewards;
-            }
-        }
-        // A configured proxy that rolled no items is not an excuse to grant
-        // unrelated preview placeholders. Refuse before charging instead.
-        if ((rewards == null || rewards.isEmpty()) && !hasDungeonDrop && hasPreview) {
-            rewards = new ArrayList<>();
-            for (ItemParamData param : preview.getPreviewItems()) {
-                if (param != null && param.getId() > 0) {
-                    rewards.add(new GameItem(param.getId(), Math.max(param.getCount(), 1) * rollTimes));
+        int nativeRoot = dungeonData.getStatueDrop();
+        boolean hasProxy = GameData.getDungeonDropDataMap() != null
+                && GameData.getDungeonDropDataMap().containsKey(dungeonId);
+        boolean nativeReady = player.getServer().getDropSystem()
+                .hasUsableDungeonRewardRoot(nativeRoot);
+        var source = DomainDropSafety.chooseRewardSource(
+                nativeReady, hasProxy, nativeRoot > 0, hasPreview);
+        switch (source) {
+            case NATIVE_ROOT:
+                // This root is backed by the pinned 7.1 resource graph. Do not
+                // replace an empty native roll with guessed proxy/preview items.
+                return rollStatueDropTable(player, nativeRoot, rollTimes);
+            case VALIDATED_PROXY:
+                // Reconstructed server-side rates only when the native root is absent.
+                // Invalid or zero-only pools refuse the claim before resin is paid.
+                try {
+                    return rollDungeonDropJson(dm, dungeonData, rollTimes);
+                } catch (IllegalArgumentException invalidProxy) {
+                    Grasscutter.getLogger().warn(
+                            "StatueDrop: rejecting DungeonDrop.json proxy dungeon={}",
+                            dungeonId, invalidProxy);
+                    return null;
                 }
-            }
+            case PREVIEW_ONLY:
+                List<GameItem> previewRewards = new ArrayList<>();
+                for (ItemParamData param : preview.getPreviewItems()) {
+                    if (param != null && param.getId() > 0) {
+                        previewRewards.addAll(InventoryGrantBuilder.create(
+                                GameData.getItemDataMap().get(param.getId()),
+                                Math.multiplyExact(Math.max(param.getCount(), 1), rollTimes),
+                                1));
+                    }
+                }
+                return previewRewards;
+            case NONE:
+            default:
+                return null;
         }
-        return rewards;
     }
 
     private static List<GameItem> rollStatueDropTable(Player player, int statueDrop, int rollTimes) {

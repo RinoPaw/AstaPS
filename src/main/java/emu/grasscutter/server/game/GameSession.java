@@ -112,6 +112,24 @@ public class GameSession implements GameSessionManager.KcpChannel {
                         .collect(java.util.stream.Collectors.joining(", ")));
     }
 
+    // Exact Global 7.1 native serializer NDAJDBCBAAE writes bool field 7 (tag 0x38).
+    // Caller provenance: InteractionManager.OnCreateTalkFinish / ResumeGameTime / ClearOnDisconnect.
+    // A null result means the native flag was not present; it is not assumed false.
+    static Boolean readAmberInteraction27447Flag(byte[] payload) throws java.io.IOException {
+        var input = com.google.protobuf.CodedInputStream.newInstance(payload);
+        Boolean flag = null;
+        while (!input.isAtEnd()) {
+            int tag = input.readTag();
+            if (tag == 0) break;
+            if (tag == 0x38) {
+                flag = input.readBool();
+            } else if (!input.skipField(tag)) {
+                break;
+            }
+        }
+        return flag;
+    }
+
     private void traceAmberPacket(String direction, int opcode, byte[] payload) {
         long started = amberTraceStartNanos;
         if (started == 0) return;
@@ -132,7 +150,17 @@ public class GameSession implements GameSessionManager.KcpChannel {
         }
         // Pause requests and cutscene acknowledgements can occur more than once; their ordering
         // and values matter more than the first-seen packet list when client input stays locked.
-        if ("RECV".equals(direction) && opcode == PacketOpcodes.PlayerSetPauseReq) {
+        if ("RECV".equals(direction) && opcode == 27447) {
+            try {
+                Grasscutter.getLogger().info(
+                        "[AmberWire] uid={} +{}ms client InteractionManager bool(field7)={} cmd=27447",
+                        player != null ? player.getUid() : 0, elapsedMs,
+                        readAmberInteraction27447Flag(payload));
+            } catch (java.io.IOException e) {
+                Grasscutter.getLogger().warn(
+                        "[AmberWire] Could not decode client CmdId 27447 bool field 7", e);
+            }
+        } else if ("RECV".equals(direction) && opcode == PacketOpcodes.PlayerSetPauseReq) {
             try {
                 var request = emu.grasscutter.net.proto.PlayerSetPauseReqOuterClass.PlayerSetPauseReq.parseFrom(payload);
                 var world = player != null ? player.getWorld() : null;

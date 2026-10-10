@@ -116,6 +116,36 @@ final class InventoryRewardAdmissionTest {
     }
 
     @Test
+    void duplicateItemReferenceFailsBeforePayment() {
+        var materials = new MaterialInventoryTab(4);
+        var shared = item(2001, ItemType.ITEM_MATERIAL, 1, 10);
+        var events = new java.util.ArrayList<String>();
+        var result = InventoryRewardAdmission.grantIfAccepted(
+                List.of(shared, shared),
+                type -> type == ItemType.ITEM_MATERIAL ? materials : null,
+                () -> { events.add("authorize"); return true; },
+                () -> events.add("confirmed"),
+                items -> { events.add("grant"); return accepted(items); });
+        assertFalse(result.allAccepted());
+        assertEquals(InventoryAddResult.Status.INVALID_ITEM, result.entries().get(0).status());
+        assertTrue(events.isEmpty());
+    }
+
+    @Test
+    void rejectedBatchReportsSpecificReason() {
+        var relics = new EquipInventoryTab(1);
+        relics.onAddItem(item(1001, ItemType.ITEM_RELIQUARY, 1, 1));
+        var result = InventoryRewardAdmission.grantIfAccepted(
+                List.of(item(1002, ItemType.ITEM_RELIQUARY, 1, 1)),
+                type -> type == ItemType.ITEM_RELIQUARY ? relics : null,
+                () -> true,
+                () -> {},
+                InventoryRewardAdmissionTest::accepted);
+        assertEquals(InventoryAddResult.Status.CAPACITY_FULL, result.entries().get(0).status());
+        assertFalse(result.allAccepted());
+    }
+
+    @Test
     void fullBagDoesNotInvokeAuthorizationOrGrant() {
         var relics = new EquipInventoryTab(1);
         relics.onAddItem(item(1001, ItemType.ITEM_RELIQUARY, 1, 1));

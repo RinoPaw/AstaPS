@@ -2,6 +2,7 @@ package emu.grasscutter.game.inventory;
 
 import emu.grasscutter.data.excels.ItemData;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -55,11 +56,13 @@ final class InventoryRewardAdmission {
         if (rewards == null || rewards.isEmpty()) {
             return InventoryAddResult.Status.INVALID_ITEM;
         }
+        Set<GameItem> seen = Collections.newSetFromMap(new IdentityHashMap<>());
         Map<InventoryTab, Integer> reservedSlots = new IdentityHashMap<>();
         Map<InventoryTab, Map<Integer, Long>> projectedStacks = new IdentityHashMap<>();
 
         for (GameItem item : rewards) {
-            if (item == null || item.getCount() <= 0 || item.getItemId() <= 0) {
+            if (item == null || item.getCount() <= 0 || item.getItemId() <= 0
+                    || !seen.add(item)) {
                 return InventoryAddResult.Status.INVALID_ITEM;
             }
             ItemData data = item.getItemData();

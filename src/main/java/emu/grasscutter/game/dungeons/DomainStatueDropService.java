@@ -9,17 +9,15 @@ import emu.grasscutter.game.dungeons.DomainStatueClaimHelper.ClaimMode;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.inventory.Inventory;
 import emu.grasscutter.game.inventory.InventoryAddPolicy;
+import emu.grasscutter.game.inventory.InventoryGrantBuilder;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.scripts.constants.EventType;
 import emu.grasscutter.scripts.data.ScriptArgs;
 import emu.grasscutter.server.packet.send.PacketGadgetAutoPickDropInfoNotify;
-import emu.grasscutter.utils.Utils;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /** Petrified-tree claim implementation shared with {@link DungeonManager}. */
 public final class DomainStatueDropService {
@@ -262,40 +260,21 @@ public final class DomainStatueDropService {
 
     private static List<GameItem> rollDungeonDropJson(
             DungeonManager dm, DungeonData dungeonData, int rollTimes) {
-        int times = Math.max(1, rollTimes);
-        List<GameItem> rewards = new ArrayList<>();
         int dungeonId = dungeonData.getId();
-        if (!GameData.getDungeonDropDataMap().containsKey(dungeonId)) {
-            return rewards;
+        var entries = GameData.getDungeonDropDataMap().get(dungeonId);
+        if (entries == null) {
+            return List.of();
         }
-        List<DungeonDropEntry> dropEntries = GameData.getDungeonDropDataMap().get(dungeonId);
-        DomainDropSafety.validatePool(dungeonId, dropEntries, dungeonData.getSubType());
-        for (var entry : dropEntries) {
-            int start = entry.getCounts().get(0);
-            int end = entry.getCounts().get(entry.getCounts().size() - 1);
-            var candidateAmounts = IntStream.range(start, end + 1).boxed().collect(Collectors.toList());
-
-            int amount = 0;
-            for (int t = 0; t < times; t++) {
-                amount += Utils.drawRandomListElement(candidateAmounts, entry.getProbabilities());
-            }
-            if (entry.isMpDouble() && dm.getScene().getPlayerCount() > 1) {
-                amount *= 2;
-            }
-            // Optional artifact rolls legitimately yield zero. Omitting that entry
-            // keeps the other rewards valid instead of rejecting the entire claim.
-            if (amount == 0) {
-                continue;
-            }
-            if (entry.getItems().size() == 1) {
-                rewards.add(new GameItem(entry.getItems().get(0), amount));
-            } else {
-                for (int i = 0; i < amount; i++) {
-                    int itemId =
-                            Utils.drawRandomListElement(entry.getItems(), entry.getItemProbabilities());
-                    rewards.add(new GameItem(itemId, 1));
-                }
-            }
+        List<ItemParamData> rolled = DomainDropRoller.roll(
+                dungeonId,
+                dungeonData.getSubType(),
+                entries,
+                rollTimes,
+                dm.getScene().getPlayerCount() > 1);
+        List<GameItem> rewards = new ArrayList<>();
+        for (ItemParamData reward : rolled) {
+            rewards.addAll(InventoryGrantBuilder.create(
+                    GameData.getItemDataMap().get(reward.getId()), reward.getCount(), 1));
         }
         return rewards;
     }

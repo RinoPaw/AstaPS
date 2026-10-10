@@ -326,7 +326,7 @@ public final class EscoffierSkillCookHelper {
         int count = rewards.size(); // one dish, or two when the double roll hits
 
         GameItem granted = new GameItem(itemId, count);
-        if (!player.getInventory().addItem(granted, ActionReason.SubfieldDrop, true)) {
+        if (!player.getInventory().addItem(granted, ActionReason.SubfieldDrop)) {
             Grasscutter.getLogger()
                     .warn("[EscoffierCook] uid={} failed to add item {} x{}", uid, itemId, count);
             if (session != 0L && GRANTED_SESSION.get(uid) == session) {

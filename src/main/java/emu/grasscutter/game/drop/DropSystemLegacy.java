@@ -57,14 +57,14 @@ public class DropSystemLegacy extends BaseGameSystem {
             else dropScene.addEntity(entity);
         } else {
             if (target != null) {
-                target.getInventory().addItem(new GameItem(itemData, num), ActionReason.SubfieldDrop, true);
+                target.getInventory().addItem(new GameItem(itemData, num), ActionReason.SubfieldDrop);
             } else {
                 dropScene
                         .getPlayers()
                         .forEach(
                                 x ->
                                         x.getInventory()
-                                                .addItem(new GameItem(itemData, num), ActionReason.SubfieldDrop, true));
+                                                .addItem(new GameItem(itemData, num), ActionReason.SubfieldDrop));
             }
         }
     }

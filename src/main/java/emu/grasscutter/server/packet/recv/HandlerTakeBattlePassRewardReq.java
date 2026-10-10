@@ -56,17 +56,47 @@ public class HandlerTakeBattlePassRewardReq extends PacketHandler {
         }
         List<GameItem> granted = new ArrayList<>();
         List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> claimed = new ArrayList<>();
+        var handled = new java.util.HashSet<Integer>();
         for (var option : selectable) {
             int rewardId = option.getTag().getRewardId();
             int level = option.getTag().getLevel();
             boolean paid = option.getTag().getUnlockStatus()
                     == BattlePassUnlockStatusOuterClass.BattlePassUnlockStatus.BattlePassUnlockStatus_BATTLE_PASS_UNLOCK_PAID;
-            manager.getTakenRewards().remove(rewardId);
-            List<GameItem> items = BattlePassSelectChestHelper.grant(player, rewardId, option.getOptionIdx(), paid);
+            if (!handled.add(rewardId)
+                    || manager.getTakenRewards().containsKey(rewardId)
+                    || level < 1 || level > manager.getLevel()
+                    || (paid && !manager.isPaid())
+                    || !isRewardInBattlePass(manager, level, rewardId, paid)) {
+                continue;
+            }
+            List<GameItem> items = BattlePassSelectChestHelper.resolve(rewardId, option.getOptionIdx());
             if (items.isEmpty()) continue;
-            manager.getTakenRewards().put(rewardId, new BattlePassReward(level, rewardId, paid));
-            granted.addAll(items);
-            claimed.add(option);
+            var rewardMarker = new BattlePassReward(level, rewardId, paid);
+            var reason = paid
+                    ? emu.grasscutter.game.props.ActionReason.BattlePassPaidReward
+                    : emu.grasscutter.game.props.ActionReason.BattlePassLevelReward;
+            try {
+                var result = player.getInventory().addItems(
+                        items, reason,
+                        emu.grasscutter.game.inventory.InventoryAddPolicy.ALL_OR_NOTHING,
+                        () -> !manager.getTakenRewards().containsKey(rewardId),
+                        () -> {
+                            manager.getTakenRewards().put(rewardId, rewardMarker);
+                            manager.save();
+                        });
+                if (!result.allAccepted()) {
+                    Grasscutter.getLogger().warn(
+                            "TakeBP select rejected uid={} reward={} result={}",
+                            player.getUid(), rewardId, result.entries());
+                    continue;
+                }
+                granted.addAll(items);
+                claimed.add(option);
+            } catch (RuntimeException failure) {
+                Grasscutter.getLogger().error(
+                        "TakeBP select interrupted uid={} reward={}",
+                        player.getUid(), rewardId, failure);
+            }
         }
         if (!claimed.isEmpty()) {
             manager.save();
@@ -75,6 +105,18 @@ public class HandlerTakeBattlePassRewardReq extends PacketHandler {
         } else if (normal.isEmpty()) {
             player.sendPacket(new PacketTakeBattlePassRewardRsp(options, granted));
         }
+    }
+
+    /** Never accept a reward solely because the reward ID exists in RewardData. */
+    private static boolean isRewardInBattlePass(
+            BattlePassManager manager, int level, int rewardId, boolean paid) {
+        for (int plan = 1; plan <= 4; plan++) {
+            BattlePassRewardData data = GameData.getBattlePassRewardDataMap().get(plan * 100 + level);
+            if (data == null) continue;
+            var available = paid ? data.getPaidRewardIdList() : data.getFreeRewardIdList();
+            if (available != null && available.contains(rewardId)) return true;
+        }
+        return false;
     }
 
     private static List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> parseOptionsFromWire(byte[] payload) {

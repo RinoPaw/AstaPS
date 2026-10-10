@@ -124,44 +124,12 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
         return addItem(item, reason);
     }
 
+    /**
+     * Add one item through the shared inventory grant path. Returns whether it was accepted;
+     * callers that add items in batches may instead use addItems or addItemsChecked.
+     */
     public boolean addItem(GameItem item) {
-        var data = item.getItemData();
-        if (data == null) {
-            return false;
-        }
-
-        // Consumables that apply on gain never enter the bag.
-        if (data.isUseOnGain()) {
-            try {
-                this.player.getProgressManager().addItemObtainedHistory(item.getItemId(), item.getCount());
-            } catch (Exception e) {
-                Grasscutter.getLogger().debug("addItemObtainedHistory failed", e);
-            }
-            var params = new UseItemParams(this.player, data.getUseTarget());
-            params.usedItemId = data.getId();
-            boolean used =
-                    this.player.getServer().getInventorySystem().useItemDirect(data, params);
-            if (!used) {
-                Grasscutter.getLogger()
-                        .warn("useOnGain failed for item {} (buff/use action rejected)", data.getId());
-                return false;
-            }
-            new PlayerObtainItemEvent(this.getPlayer(), item).call();
-            return true;
-        }
-
-        GameItem result = putItem(item);
-
-        if (result != null) {
-            this.triggerAddItemEvents(result);
-            getPlayer().sendPacket(new PacketStoreItemChangeNotify(result));
-
-            // Call PlayerObtainItemEvent.
-            new PlayerObtainItemEvent(this.getPlayer(), item).call();
-            return true;
-        }
-
-        return false;
+        return addItemsInternal(Collections.singletonList(item), null, false, false);
     }
 
     public boolean addItem(GameItem item, ActionReason reason) {
@@ -169,30 +137,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     }
 
     public boolean addItem(GameItem item, ActionReason reason, boolean forceNotify) {
-        boolean result = addItem(item);
-
-        // putItem() bails out on a null itemData, so an unknown item id gets this far with none.
-        var itemData = item.getItemData();
-        if (itemData != null && itemData.getMaterialType() == MaterialType.MATERIAL_AVATAR) {
-            getPlayer()
-                    .sendPacket(
-                            new PacketAddNoGachaAvatarCardNotify(
-                                    (item.getItemId() % 1000) + 10000000, reason, item));
-        }
-
-        // useOnGain (elem balls) skip the obtain tip. Primogem(201)/Mora(202) are ADSORBATE in
-        // Excel but still show on the left tip list like normal items.
-        if ((forceNotify || result) && !shouldSkipItemAddHint(item)) {
-            ActionReason hintReason = reason;
-            if (hintReason == null && (item.getItemId() == 201 || item.getItemId() == 202)) {
-                hintReason = ActionReason.OpenChest;
-            }
-            if (hintReason != null) {
-                getPlayer().sendPacket(new PacketItemAddHintNotify(item, hintReason));
-            }
-        }
-
-        return result;
+        return addItemsInternal(Collections.singletonList(item), reason, forceNotify, true);
     }
 
     /** Skip elem-ball spam; keep Primogem/Mora tips. */
@@ -221,14 +166,11 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     }
 
     /**
-     * Check and grant an entire item batch while holding the inventory lock.
+     * Check and grant a complete batch while holding the inventory monitor.
      *
-     * <p>The authorization callback (such as charging a cost) runs only after the inventory
-     * verifies that all items fit. The confirmed callback runs immediately after authorization,
-     * before any inventory mutation, so callers can record a charged operation even when a later
-     * inventory write throws. This does not make database writes transactional.
-     *
-     * @return false if the batch cannot fit or authorization is declined
+     * <p>Admission runs before authorization; after a successful authorization, confirmed
+     * records the operation before the first write. All four add entry points share
+     * addItemsInternal and putItem. A partial persistence failure still cannot be rolled back.
      */
     public synchronized boolean addItemsChecked(
             Collection<GameItem> items,
@@ -237,38 +179,94 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
             Runnable confirmed) {
         return InventoryRewardAdmission.grantIfAccepted(
                 items, this::getInventoryTab, authorize, confirmed,
-                accepted -> this.addItems(accepted, reason));
+                accepted -> {
+                    if (!addItemsInternal(accepted, reason, false, false)) {
+                        throw new IllegalStateException(
+                                "Inventory batch admission passed, but an item grant was rejected");
+                    }
+                });
     }
 
     public void addItems(Collection<GameItem> items) {
-        this.addItems(items, null);
+        addItems(items, null);
     }
 
     public void addItems(Collection<GameItem> items, ActionReason reason) {
+        addItemsInternal(items, reason, false, false);
+    }
+
+    /**
+     * The common item grant path. Legacy addItem/addItems can accept a partial batch,
+     * while the checked variant validates every member before reaching this method.
+     *
+     * @return true only if every requested item was accepted
+     */
+    private synchronized boolean addItemsInternal(
+            Collection<GameItem> items,
+            ActionReason reason,
+            boolean forceNotify,
+            boolean notifyAvatarCard) {
+        if (items == null || items.isEmpty()) {
+            return false;
+        }
         List<GameItem> changedItems = new ArrayList<>();
-        for (var item : items) {
-            if (item.getItemId() == 0) continue;
-            GameItem result = null;
+        List<GameItem> hintedItems = new ArrayList<>();
+        boolean allAccepted = true;
 
-            result = putItem(item);
+        for (GameItem item : items) {
+            InsertResult inserted = putItem(item);
+            if (!inserted.accepted()) {
+                allAccepted = false;
+                // Preserve the legacy shop force-hint parameter for a failed insertion only
+                // when explicitly requested. Normal callers never announce a rejected item.
+                if (forceNotify && item != null && !shouldSkipItemAddHint(item)) {
+                    hintedItems.add(item);
+                }
+                continue;
+            }
+            if (inserted.changedItem() != null) {
+                GameItem changed = inserted.changedItem();
+                changedItems.add(changed);
+                triggerAddItemEvents(changed);
+            }
+            new PlayerObtainItemEvent(getPlayer(), item).call();
 
-            if (result != null) {
-                this.triggerAddItemEvents(result);
-                changedItems.add(result);
+            if (notifyAvatarCard && reason != null
+                    && item.getItemData().getMaterialType() == MaterialType.MATERIAL_AVATAR) {
+                getPlayer()
+                        .sendPacket(
+                                new PacketAddNoGachaAvatarCardNotify(
+                                        (item.getItemId() % 1000) + 10000000, reason, item));
+            }
+            if (!shouldSkipItemAddHint(item)) {
+                hintedItems.add(item);
             }
         }
-        if (changedItems.size() == 0) {
-            return;
+
+        if (!changedItems.isEmpty()) {
+            getPlayer().sendPacket(new PacketStoreItemChangeNotify(changedItems));
         }
-        getPlayer().sendPacket(new PacketStoreItemChangeNotify(changedItems));
-        if (reason != null) {
-            var hintItems =
-                    items.stream()
-                            .filter(i -> i != null && i.getItemId() != 0 && !shouldSkipItemAddHint(i))
-                            .toList();
-            if (!hintItems.isEmpty()) {
-                getPlayer().sendPacket(new PacketItemAddHintNotify(hintItems, reason));
+        if (!hintedItems.isEmpty()) {
+            ActionReason hintReason = reason;
+            if (hintReason == null && hintedItems.size() == 1
+                    && (hintedItems.get(0).getItemId() == 201
+                            || hintedItems.get(0).getItemId() == 202)) {
+                hintReason = ActionReason.OpenChest;
             }
+            if (hintReason != null) {
+                getPlayer().sendPacket(new PacketItemAddHintNotify(hintedItems, hintReason));
+            }
+        }
+        return allAccepted;
+    }
+
+    /** A successful use-on-gain effect has no changed inventory slot. */
+    private record InsertResult(boolean accepted, @Nullable GameItem changedItem) {
+        private static final InsertResult REJECTED = new InsertResult(false, null);
+        private static final InsertResult APPLIED = new InsertResult(true, null);
+
+        private static InsertResult stored(GameItem item) {
+            return new InsertResult(true, item);
         }
     }
 
@@ -375,10 +373,18 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
                 reason);
     }
 
-    private synchronized GameItem putItem(GameItem item) {
-        // Dont add items that dont have a valid item definition.
-        var data = item.getItemData();
-        if (data == null) return null;
+    /**
+     * Sole insertion implementation for both single and batch grants. Loading previously
+     * persisted items uses registerStoredItem directly and never counts as a new grant.
+     */
+    private synchronized InsertResult putItem(GameItem item) {
+        if (item == null || item.getCount() <= 0 || item.getItemId() <= 0) {
+            return InsertResult.REJECTED;
+        }
+        ItemData data = item.getItemData();
+        if (data == null || data.getItemType() == null) {
+            return InsertResult.REJECTED;
+        }
         try {
             this.player.getProgressManager().addItemObtainedHistory(item.getItemId(), item.getCount());
         } catch (Exception e) {
@@ -386,108 +392,93 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
         }
 
         if (data.isUseOnGain()) {
-            // Prefer addItem() for a proper success result; keep applying here so
-            // addItems() / other putItem callers still consume useOnGain materials.
             var params = new UseItemParams(this.player, data.getUseTarget());
             params.usedItemId = data.getId();
-            this.player.getServer().getInventorySystem().useItemDirect(data, params);
-            return null;
+            if (!this.player.getServer().getInventorySystem().useItemDirect(data, params)) {
+                Grasscutter.getLogger()
+                        .warn("useOnGain failed for item {} (buff/use action rejected)", data.getId());
+                return InsertResult.REJECTED;
+            }
+            return InsertResult.APPLIED;
         }
 
-        // Add item to inventory store
-        ItemType type = item.getItemData().getItemType();
+        ItemType type = data.getItemType();
         InventoryTab tab = getInventoryTab(type);
-
-        // Add
         switch (type) {
             case ITEM_WEAPON:
             case ITEM_RELIQUARY:
-                if (tab.getSize() >= tab.getMaxCapacity()) {
-                    return null;
+                if (tab == null || tab.getSize() >= tab.getMaxCapacity()) {
+                    return InsertResult.REJECTED;
                 }
-                // Duplicates cause problems
                 item.setCount(Math.max(item.getCount(), 1));
-                // Adds to inventory
-                this.putItem(item, tab);
-                // Set ownership and save to db
+                registerStoredItem(item, tab);
                 item.save();
-                return item;
+                return InsertResult.stored(item);
             case ITEM_TPS_WEAPON:
-                // globalItemLimit is 1 for every TPS weapon: hand back the one already owned.
                 var owned = TpsWeaponSystem.findOwnedWeapon(this.player, item.getItemId());
                 if (owned != null) {
-                    return owned;
+                    return InsertResult.stored(owned);
                 }
-                if (tab.getSize() >= tab.getMaxCapacity()) {
-                    return null;
+                if (tab == null || tab.getSize() >= tab.getMaxCapacity()) {
+                    return InsertResult.REJECTED;
                 }
                 item.setCount(1);
-                this.putItem(item, tab);
+                registerStoredItem(item, tab);
                 item.save();
-                return item;
+                return InsertResult.stored(item);
             case ITEM_VIRTUAL:
-                // Handle
-                this.addVirtualItem(item.getItemId(), item.getCount());
-                return item;
+                addVirtualItem(item.getItemId(), item.getCount());
+                return InsertResult.stored(item);
             default:
-                switch (item.getItemData().getMaterialType()) {
+                switch (data.getMaterialType()) {
                     case MATERIAL_AVATAR:
                     case MATERIAL_FLYCLOAK:
                     case MATERIAL_COSTUME:
                     case MATERIAL_NAMECARD:
-                        // The resource pack does not change while the server runs, so this is the
-                        // same complaint every time an item of that type is handed out. Once per
-                        // material type is enough to go and fix the pack.
-                        if (MISSING_USE_ON_GAIN_REPORTED.add(item.getItemData().getMaterialType())) {
+                        if (MISSING_USE_ON_GAIN_REPORTED.add(data.getMaterialType())) {
                             Grasscutter.getLogger()
                                     .warn(
                                             "Attempted to add a {} to inventory, but item definition"
                                                 + " lacks isUseOnGain. This indicates a Resources"
                                                 + " error. Further {} items are logged at debug.",
-                                            item.getItemData().getMaterialType().name(),
-                                            item.getItemData().getMaterialType().name());
+                                            data.getMaterialType().name(),
+                                            data.getMaterialType().name());
                         } else {
                             Grasscutter.getLogger()
                                     .debug(
                                             "Attempted to add a {} to inventory, but item definition"
                                                 + " lacks isUseOnGain.",
-                                            item.getItemData().getMaterialType().name());
+                                            data.getMaterialType().name());
                         }
-                        return null;
+                        return InsertResult.REJECTED;
                     default:
                         if (tab == null) {
-                            return null;
+                            return InsertResult.REJECTED;
                         }
                         GameItem existingItem = tab.getItemById(item.getItemId());
                         if (existingItem == null) {
-                            // Item type didnt exist before, we will add it to main inventory map if there is
-                            // enough space
                             if (tab.getSize() >= tab.getMaxCapacity()) {
-                                return null;
+                                return InsertResult.REJECTED;
                             }
-                            this.putItem(item, tab);
-                            // Set ownership and save to db
+                            registerStoredItem(item, tab);
                             item.save();
-                            return item;
-                        } else {
-                            // Add count
-                            existingItem.setCount(
-                                    Math.min(
-                                            existingItem.getCount() + item.getCount(),
-                                            item.getItemData().getStackLimit()));
-                            existingItem.save();
-                            return existingItem;
+                            return InsertResult.stored(item);
                         }
+                        existingItem.setCount(
+                                Math.min(
+                                        existingItem.getCount() + item.getCount(),
+                                        data.getStackLimit()));
+                        existingItem.save();
+                        return InsertResult.stored(existingItem);
                 }
         }
     }
 
-    private synchronized void putItem(GameItem item, InventoryTab tab) {
+    private synchronized void registerStoredItem(GameItem item, InventoryTab tab) {
         this.player.getCodex().checkAddedItem(item);
         // Set owner and guid FIRST!
         item.setOwner(this.player);
         item.checkIsNew(this);
-        // Put in item store
         getItems().put(item.getGuid(), item);
         if (tab != null) {
             tab.onAddItem(item);
@@ -799,7 +790,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
                 tab = getInventoryTab(item.getItemData().getItemType());
             }
 
-            this.putItem(item, tab);
+            this.registerStoredItem(item, tab);
 
             // Equip to a character if possible
             if (item.isEquipped()) {

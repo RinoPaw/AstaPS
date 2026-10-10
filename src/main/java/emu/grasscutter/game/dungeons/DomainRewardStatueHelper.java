@@ -68,6 +68,13 @@ public final class DomainRewardStatueHelper {
         return n == 70340011 || n == 70340012 || n == 70340013 || n == 70340014 || n == 70380008 || n == 70350008;
     }
 
+    // Scene 40773 carries the native-style base and a generic item prop.
+    // Only the reward point (70340012) may open the resin claim UI.
+    static boolean isRewardClaimTarget(int sceneId, int gadgetId) {
+        return isExitRewardStatue(gadgetId)
+                && !(sceneId == 40773 && gadgetId == REWARD_TREE_GADGET_ID);
+    }
+
     public static boolean isClaimableState(int n) {
         return n == 203 || n == 401;
     }
@@ -103,6 +110,7 @@ public final class DomainRewardStatueHelper {
         int n2 = 0;
         ArrayList<EntityGadget> arrayList = new ArrayList<EntityGadget>();
         ArrayList<EntityGadget> arrayList2 = new ArrayList<EntityGadget>();
+        ArrayList<EntityGadget> decorations = new ArrayList<EntityGadget>();
         for (GameEntity gameEntity : scene.getEntities().values()) {
             if (!(gameEntity instanceof EntityGadget)) continue;
             EntityGadget entityGadget = (EntityGadget)gameEntity;
@@ -113,6 +121,13 @@ public final class DomainRewardStatueHelper {
                 continue;
             }
             if (!DomainRewardStatueHelper.isExitRewardStatue(n3)) continue;
+            if (!isRewardClaimTarget(scene.getId(), n3)) {
+                // 70350008 is the noninteractive generic item in the
+                // 40773 native-style pair. It must not obscure the reward base.
+                entityGadget.setInteractEnabled(false);
+                decorations.add(entityGadget);
+                continue;
+            }
             DomainRewardStatueHelper.forceRewardStatueContent(entityGadget);
             entityGadget.setInteractEnabled(true);
             entityGadget.updateState(rewardGadgetStateAfterSettle(n3));
@@ -123,6 +138,8 @@ public final class DomainRewardStatueHelper {
             scene.killEntity((GameEntity)entityGadget, 0);
             ++n;
         }
+        // Rebuild both objects' client protos after changing interaction flags.
+        arrayList2.addAll(decorations);
         for (EntityGadget entityGadget : arrayList2) {
             try {
                 scene.broadcastPacket((BasePacket)new PacketSceneEntityDisappearNotify((GameEntity)entityGadget, VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE));
@@ -135,7 +152,7 @@ public final class DomainRewardStatueHelper {
                 catch (Exception exception2) {}
             }
         }
-        Grasscutter.getLogger().info("Domain reward tree scene={} keysKilled={} exitLit={} dmFinished={}", new Object[]{scene.getId(), n, n2, bl});
+        Grasscutter.getLogger().info("Domain reward tree scene={} keysKilled={} exitLit={} decorations={} dmFinished={}", new Object[]{scene.getId(), n, n2, decorations.size(), bl});
         // The 40773 reward fixture is synthetic. Log what the client actually
         // receives so placement and interact flags can be audited independently.
         if (scene.getId() == 40773) {

@@ -1,5 +1,6 @@
 package emu.grasscutter.game.dungeons;
 
+import emu.grasscutter.game.dungeons.enums.DungeonSubType;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
@@ -14,6 +15,11 @@ final class DomainDropSafety {
     private DomainDropSafety() {}
 
     static void validatePool(int dungeonId, List<DungeonDropEntry> entries) {
+        validatePool(dungeonId, entries, DungeonSubType.DUNGEON_SUB_NONE);
+    }
+
+    static void validatePool(
+            int dungeonId, List<DungeonDropEntry> entries, DungeonSubType subType) {
         if (entries == null || entries.isEmpty()) {
             throw invalid(dungeonId, "no reward entries");
         }
@@ -40,6 +46,10 @@ final class DomainDropSafety {
                 throw invalid(dungeonId, "entry " + index + " has no valid item pool");
             }
             validateWeights(dungeonId, index, "item", entry.getItemProbabilities(), items.size());
+            if (subType == DungeonSubType.DUNGEON_SUB_RELIQUARY
+                    && items.stream().anyMatch(id -> id >= 114000 && id < 115000)) {
+                throw invalid(dungeonId, "reliquary pool contains weapon ascension materials");
+            }
         }
     }
 

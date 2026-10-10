@@ -75,21 +75,19 @@ final class DomainDropSafetyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {5000, 5001, 5002, 5008, 5100, 5101})
-    void knownBrokenDungeonPoolsAreRejected(int dungeonId) throws IOException {
+    @ValueSource(ints = {5000, 5001, 5002, 5008, 5050, 5100, 5101})
+    void domainsWithSourceBackedRootsDoNotUseBrokenProxies(int dungeonId) throws IOException {
         var source = Files.readString(Path.of("data", "DungeonDrop.json"));
         DungeonDrop[] drops = new Gson().fromJson(source, DungeonDrop[].class);
         Map<Integer, List<DungeonDropEntry>> byId = new HashMap<>();
         for (DungeonDrop drop : drops) {
             byId.put(drop.getDungeonId(), drop.getDrops());
         }
-        assertTrue(byId.containsKey(dungeonId));
-        assertThrows(IllegalArgumentException.class,
-                () -> DomainDropSafety.validatePool(dungeonId, byId.get(dungeonId)));
+        assertFalse(byId.containsKey(dungeonId));
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {4480, 4484, 4665, 4683, 4687, 5018, 5022, 5050, 5060, 5064})
+    @ValueSource(ints = {4480, 4484, 4665, 4683, 4687, 5018, 5022, 5060, 5064})
     void weaponMaterialsInReliquaryProxyAreRejected(int dungeonId) throws IOException {
         var source = Files.readString(Path.of("data", "DungeonDrop.json"));
         DungeonDrop[] drops = new Gson().fromJson(source, DungeonDrop[].class);
@@ -115,9 +113,7 @@ final class DomainDropSafetyTest {
                 invalid.add(drop.getDungeonId());
             }
         }
-        assertEquals(
-                new HashSet<>(List.of(5000, 5001, 5002, 5008, 5100, 5101)),
-                invalid);
+        assertTrue(invalid.isEmpty());
     }
 
     @Test

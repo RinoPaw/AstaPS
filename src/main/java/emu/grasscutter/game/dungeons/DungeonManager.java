@@ -2,7 +2,6 @@ package emu.grasscutter.game.dungeons;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.dungeon.*;
 import emu.grasscutter.game.activity.trialavatar.TrialAvatarActivityHandler;
 import emu.grasscutter.game.dungeons.dungeon_results.BaseDungeonResult;
@@ -17,7 +16,6 @@ import emu.grasscutter.scripts.constants.EventType;
 import emu.grasscutter.scripts.data.ScriptArgs;
 import emu.grasscutter.server.event.player.PlayerFinishDungeonEvent;
 import emu.grasscutter.server.packet.send.*;
-import emu.grasscutter.utils.Utils;
 import it.unimi.dsi.fastutil.ints.*;
 import java.util.*;
 import java.util.stream.*;
@@ -152,120 +150,16 @@ public final class DungeonManager {
     }
 
     public boolean getStatueDrops(Player player, boolean useCondensed, int groupId) {
-        if (!isFinishedSuccessfully()) {
-            Grasscutter.getLogger()
-                    .warn("getStatueDrops abort: not finished dungeon={}", dungeonData.getId());
-            return false;
-        }
-
-        var preview = dungeonData.getRewardPreviewData();
-        if (preview == null && dungeonData.getPassRewardPreviewID() > 0) {
-            preview = GameData.getRewardPreviewDataMap().get(dungeonData.getPassRewardPreviewID());
-            // keep resolved preview for subsequent claims in this process
-            try {
-                var field = dungeonData.getClass().getDeclaredField("rewardPreviewData");
-                field.setAccessible(true);
-                field.set(dungeonData, preview);
-            } catch (Throwable ignored) {
-            }
-        }
-        boolean hasPreview =
-                preview != null
-                        && preview.getPreviewItems() != null
-                        && preview.getPreviewItems().length > 0;
-        if (!hasPreview && dungeonData.getStatueDrop() <= 0) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "getStatueDrops abort: no preview/statueDrop dungeon={}",
-                            dungeonData.getId());
-            return false;
-        }
-
-        // Already rewarded
-        if (rewardedPlayers.contains(player.getUid())) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "getStatueDrops abort: already rewarded uid={} dungeon={}",
-                            player.getUid(),
-                            dungeonData.getId());
-            return false;
-        }
-
-        if (!handleCost(player, useCondensed)) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "getStatueDrops abort: handleCost failed uid={} dungeon={}",
-                            player.getUid(),
-                            dungeonData.getId());
-            return false;
-        }
-
-        try {
-            DungeonDropLoader.ensureLoaded();
-        } catch (Throwable ignored) {
-        }
-
-        // Prefer DungeonDrop.json when present. Many Nod-Krai/Snezhnaya reliquary domains
-        // reuse Peak-of-Vindagnyr statueDrop IDs (e.g. 4706 -> 85315500), which would
-        // incorrectly grant Blizzard Strayer instead of Scarlet Proof / Heart of the Furnace.
-        List<GameItem> rewards = null;
-        int dungeonId = dungeonData.getId();
-        boolean hasDungeonDrop =
-                GameData.getDungeonDropDataMap() != null
-                        && GameData.getDungeonDropDataMap().containsKey(dungeonId);
-        if (hasDungeonDrop) {
-            rewards = new ArrayList<>(this.rollRewards(useCondensed));
-            Grasscutter.getLogger()
-                    .info(
-                            "getStatueDrops using DungeonDrop.json dungeon={} items={}",
-                            dungeonId,
-                            rewards != null ? rewards.size() : 0);
-        }
-        int statueDrop = dungeonData.getStatueDrop();
-        if ((rewards == null || rewards.isEmpty()) && statueDrop > 0) {
-            rewards =
-                    player.getServer().getDropSystem().handleDungeonRewardDrop(statueDrop, useCondensed);
-        }
-        if (rewards == null || rewards.isEmpty()) {
-            rewards = new ArrayList<>(this.rollRewards(useCondensed));
-        }
-        if ((rewards == null || rewards.isEmpty()) && hasPreview) {
-            rewards = new ArrayList<>();
-            for (ItemParamData param : preview.getPreviewItems()) {
-                if (param != null && param.getId() > 0) {
-                    rewards.add(new GameItem(param.getId(), Math.max(param.getCount(), 1)));
-                }
-            }
-        }
-        if (rewards == null || rewards.isEmpty()) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "getStatueDrops abort: empty rewards dungeon={} statueDrop={}",
-                            dungeonData.getId(),
-                            statueDrop);
-            return false;
-        }
-
-        try {
-            ReliquaryDomainBonusHelper.appendToRewards(this, rewards);
-        } catch (Throwable t) {
-            Grasscutter.getLogger().warn("appendToRewards failed", t);
-        }
-
-        // Add rewards to player and send notification.
-        player.getInventory().addItems(rewards, ActionReason.DungeonStatueDrop);
-        player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(rewards));
-
-        rewardedPlayers.add(player.getUid());
-
-        scene.getScriptManager().callEvent(new ScriptArgs(groupId, EventType.EVENT_DUNGEON_REWARD_GET));
-        Grasscutter.getLogger()
-                .info(
-                        "getStatueDrops ok uid={} dungeon={} items={}",
-                        player.getUid(),
-                        dungeonData.getId(),
-                        rewards.size());
-        return true;
+        // The legacy claim entry point must use the same checked reward path. Preserve
+        // its historical 2x condensed multiplier; the 7.1 interaction mode uses 3x.
+        return DomainStatueDropService.claim(
+                player,
+                this,
+                useCondensed
+                        ? DomainStatueClaimHelper.ClaimMode.CONDENSE
+                        : DomainStatueClaimHelper.ClaimMode.NORMAL_1X,
+                groupId,
+                useCondensed ? 2 : 1);
     }
 
     public boolean handleCost(Player player, boolean useCondensed) {
@@ -288,63 +182,6 @@ public final class DungeonManager {
             return player.getResinManager().useResin(resinCost);
         }
         return true;
-    }
-
-    private List<GameItem> rollRewards(boolean useCondensed) {
-        List<GameItem> rewards = new ArrayList<>();
-        int dungeonId = this.dungeonData.getId();
-        // If we have specific drop data for this dungeon, we use it.
-        if (GameData.getDungeonDropDataMap().containsKey(dungeonId)) {
-            List<DungeonDropEntry> dropEntries = GameData.getDungeonDropDataMap().get(dungeonId);
-
-            // Roll for each drop group.
-            for (var entry : dropEntries) {
-                // Determine the number of drops we get for this entry.
-                int start = entry.getCounts().get(0);
-                int end = entry.getCounts().get(entry.getCounts().size() - 1);
-                var candidateAmounts = IntStream.range(start, end + 1).boxed().collect(Collectors.toList());
-
-                int amount = Utils.drawRandomListElement(candidateAmounts, entry.getProbabilities());
-
-                if (useCondensed) {
-                    amount += Utils.drawRandomListElement(candidateAmounts, entry.getProbabilities());
-                }
-
-                // Double rewards in multiply mode, if specified.
-                if (entry.isMpDouble() && this.getScene().getPlayerCount() > 1) {
-                    amount *= 2;
-                }
-
-                // Roll items for this group.
-                // Here, we have to handle stacking, or the client will not display results correctly.
-                // For now, we use the following logic: If the possible drop item are a list of multiple
-                // items,
-                // we roll them separately. If not, we stack them. This should work out in practice, at
-                // least
-                // for the currently existing set of dungeons.
-                if (entry.getItems().size() == 1) {
-                    rewards.add(new GameItem(entry.getItems().get(0), amount));
-                } else {
-                    for (int i = 0; i < amount; i++) {
-                        // int itemIndex = ThreadLocalRandom.current().nextInt(0, entry.getItems().size());
-                        // int itemId = entry.getItems().get(itemIndex);
-                        int itemId =
-                                Utils.drawRandomListElement(entry.getItems(), entry.getItemProbabilities());
-                        rewards.add(new GameItem(itemId, 1));
-                    }
-                }
-            }
-        }
-        // Otherwise, we fall back to the preview data.
-        else {
-            Grasscutter.getLogger()
-                    .info("No drop data found or dungeon {}, falling back to preview data ...", dungeonId);
-            for (ItemParamData param : dungeonData.getRewardPreviewData().getPreviewItems()) {
-                rewards.add(new GameItem(param.getId(), Math.max(param.getCount(), 1)));
-            }
-        }
-
-        return rewards;
     }
 
     public void applyTrialTeam(Player player) {

@@ -1,5 +1,6 @@
 package emu.grasscutter.server.packet.recv;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.avatar.AvatarCostumeData;
@@ -115,52 +116,86 @@ public class HandlerBuyGoodsReq extends PacketHandler {
                                 player, buyGoodsReq.getShopType(), sg.getGoodsId());
             }
 
-            // Build the delivery before charging. Dynamic goods may not follow the static stack
-            // count at all; ordinary goods still need overflow validation before payment.
-            List<GameItem> dynamicItems =
-                    dynamicProvider == null
-                            ? null
-                            : dynamicProvider.createItems(player, sg, buyCount);
-            int itemCount = 0;
-            if (dynamicItems == null) {
-                try {
+            // Materialize the exact delivery before charging. Equipment purchases with a
+            // quantity greater than one must create separate instances.
+            List<GameItem> items;
+            int itemCount;
+            try {
+                List<GameItem> dynamicItems = dynamicProvider == null
+                        ? null
+                        : dynamicProvider.createItems(player, sg, buyCount);
+                if (dynamicItems != null) {
+                    items = List.copyOf(dynamicItems);
+                    itemCount = 0;
+                } else {
                     itemCount = Math.multiplyExact(buyCount, sg.getGoodsItem().getCount());
-                } catch (ArithmeticException overflow) {
-                    session.send(new PacketBuyGoodsRsp(Retcode.RET_SVR_ERROR));
-                    continue;
+                    items = InventoryGrantBuilder.create(
+                            GameData.getItemDataMap().get(itemId), itemCount, 1);
                 }
-            }
-
-            List<ItemParamData> costs =
-                    new ArrayList<>(
-                            dynamicCostOverride != null
-                                    ? dynamicCostOverride
-                                    : sg.getCostItemList() != null
-                                            ? sg.getCostItemList()
-                                            : Collections.emptyList());
-            costs.add(new ItemParamData(202, sg.getScoin()));
-            costs.add(new ItemParamData(201, sg.getHcoin()));
-            costs.add(new ItemParamData(203, sg.getMcoin()));
-            if (!player.getInventory().payItems(costs, buyCount)) {
-                session.send(new PacketBuyGoodsRsp(Retcode.RET_SHOP_CONTENT_NOT_MATCH));
+                if (items.isEmpty()) {
+                    throw new IllegalArgumentException("Empty shop delivery");
+                }
+            } catch (RuntimeException badDelivery) {
+                Grasscutter.getLogger().warn(
+                        "Shop purchase rejected: invalid delivery goods={} uid={}",
+                        sg.getGoodsId(), player.getUid(), badDelivery);
+                session.send(new PacketBuyGoodsRsp(Retcode.RET_SVR_ERROR));
                 continue;
             }
 
+            List<ItemParamData> costs = new ArrayList<>(
+                    dynamicCostOverride != null
+                            ? dynamicCostOverride
+                            : sg.getCostItemList() != null
+                                    ? sg.getCostItemList()
+                                    : Collections.emptyList());
+            costs.add(new ItemParamData(202, sg.getScoin()));
+            costs.add(new ItemParamData(201, sg.getHcoin()));
+            costs.add(new ItemParamData(203, sg.getMcoin()));
             int nextRefresh = refreshes ? ShopSystem.getShopNextRefreshTime(sg) : 0;
-            player.addShopLimit(sg.getGoodsId(), buyCount, nextRefresh);
-            if (dynamicItems != null) {
-                player.getInventory().addItems(
-                        dynamicItems, ActionReason.Shop, InventoryAddPolicy.BEST_EFFORT);
-            } else {
-                GameItem item = new GameItem(itemId, itemCount);
-                player.getInventory().addItem(item, ActionReason.Shop);
+            var inventory = player.getInventory();
+            boolean delivered;
+            try {
+                if (costumeData != null && dynamicProvider == null) {
+                    // Costumes unlock an account flag rather than occupying an inventory
+                    // slot. Do not charge through a checked bag grant that rejects useOnGain.
+                    synchronized (inventory) {
+                        delivered = buyCount == 1 && itemCount == 1
+                                && (player.getCostumeList() == null
+                                        || !player.getCostumeList().contains(costumeData.getId()))
+                                && withinCurrentLimit(player.getGoodsLimit(sg.getGoodsId()), sg, buyCount)
+                                && inventory.payItems(costs, buyCount);
+                        if (delivered) {
+                            player.addShopLimit(sg.getGoodsId(), buyCount, nextRefresh);
+                            player.addCostume(costumeData.getId());
+                        }
+                    }
+                } else {
+                    var outcome = inventory.addItems(
+                            items,
+                            ActionReason.Shop,
+                            InventoryAddPolicy.ALL_OR_NOTHING,
+                            () -> withinCurrentLimit(
+                                            player.getGoodsLimit(sg.getGoodsId()), sg, buyCount)
+                                    && inventory.payItems(costs, buyCount),
+                            () -> player.addShopLimit(sg.getGoodsId(), buyCount, nextRefresh));
+                    delivered = outcome.allAccepted();
+                    if (!delivered) {
+                        Grasscutter.getLogger().warn(
+                                "Shop purchase refused goods={} uid={} result={}",
+                                sg.getGoodsId(), player.getUid(), outcome.entries());
+                    }
+                }
+            } catch (RuntimeException failure) {
+                Grasscutter.getLogger().error(
+                        "Shop delivery interrupted goods={} uid={}",
+                        sg.getGoodsId(), player.getUid(), failure);
+                session.send(new PacketBuyGoodsRsp(Retcode.RET_SVR_ERROR));
+                continue;
             }
-
-            // Costume materials use useOnGain; also unlock directly if inventory path skipped it.
-            if (costumeData != null
-                    && (player.getCostumeList() == null
-                            || !player.getCostumeList().contains(costumeData.getId()))) {
-                player.addCostume(costumeData.getId());
+            if (!delivered) {
+                session.send(new PacketBuyGoodsRsp(Retcode.RET_SHOP_CONTENT_NOT_MATCH));
+                continue;
             }
 
             // Return full server-side goods (buy_limit / next_refresh), not the client stub.
@@ -176,4 +211,11 @@ public class HandlerBuyGoodsReq extends PacketHandler {
 
         player.save();
     }
+    private static boolean withinCurrentLimit(ShopLimit current, ShopInfo goods, int count) {
+        int bought = current == null ? 0 : current.getHasBoughtInPeriod();
+        return count > 0
+                && (goods.getBuyLimit() == 0
+                        || (long) bought + count <= goods.getBuyLimit());
+    }
+
 }

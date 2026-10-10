@@ -226,7 +226,9 @@ public final class DomainStatueDropService {
                 return rewards;
             }
         }
-        if ((rewards == null || rewards.isEmpty()) && hasPreview) {
+        // A configured proxy that rolled no items is not an excuse to grant
+        // unrelated preview placeholders. Refuse before charging instead.
+        if ((rewards == null || rewards.isEmpty()) && !hasDungeonDrop && hasPreview) {
             rewards = new ArrayList<>();
             for (ItemParamData param : preview.getPreviewItems()) {
                 if (param != null && param.getId() > 0) {
@@ -279,6 +281,11 @@ public final class DomainStatueDropService {
             }
             if (entry.isMpDouble() && dm.getScene().getPlayerCount() > 1) {
                 amount *= 2;
+            }
+            // Optional artifact rolls legitimately yield zero. Omitting that entry
+            // keeps the other rewards valid instead of rejecting the entire claim.
+            if (amount == 0) {
+                continue;
             }
             if (entry.getItems().size() == 1) {
                 rewards.add(new GameItem(entry.getItems().get(0), amount));

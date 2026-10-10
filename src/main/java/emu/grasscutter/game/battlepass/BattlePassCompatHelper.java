@@ -33,7 +33,6 @@ package emu.grasscutter.game.battlepass;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.ItemParamData;
-import emu.grasscutter.data.common.ItemUseData;
 import emu.grasscutter.data.excels.BattlePassRewardData;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.data.excels.RewardData;
@@ -44,7 +43,6 @@ import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.inventory.InventoryGrantBuilder;
 import emu.grasscutter.game.inventory.MaterialType;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.props.ItemUseOp;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.net.packet.BasePacket;
 import emu.grasscutter.net.proto.BattlePassCycleOuterClass;
@@ -228,32 +226,6 @@ public final class BattlePassCompatHelper {
             player.sendPacket(new PacketBeyondBattlePassCurScheduleUpdateNotify(player));
         } catch (RuntimeException failure) {
             Grasscutter.getLogger().debug("Beyond BP notify failed", failure);
-        }
-    }
-
-    private static void takeRewardsFromSelectChest(ItemData itemData, int n, ItemParamData itemParamData, List<GameItem> list) {
-        String[] stringArray;
-        ItemUseData itemUseData;
-        if (itemData.getItemUse() != null && itemData.getItemUse().size() >= 1 && (itemUseData = (ItemUseData)itemData.getItemUse().get(0)).getUseParam() != null && itemUseData.getUseParam().length >= 1 && (stringArray = itemUseData.getUseParam()[0].split(",")).length >= n && n >= 1) {
-            int n2 = Integer.parseInt(stringArray[n - 1].trim());
-            if (itemUseData.getUseOp() == ItemUseOp.ITEM_USE_ADD_SELECT_ITEM) {
-                ItemData itemData2 = (ItemData)GameData.getItemDataMap().get(n2);
-                if (itemData2 != null) {
-                    list.add(new GameItem(itemData2, BattlePassCompatHelper.scaledCount(n2, itemParamData.getItemCount())));
-                }
-            } else if (itemUseData.getUseOp() == ItemUseOp.ITEM_USE_GRANT_SELECT_REWARD) {
-                RewardData rewardData = (RewardData)GameData.getRewardDataMap().get(n2);
-                if (rewardData == null) {
-                    return;
-                }
-                for (ItemParamData itemParamData2 : rewardData.getRewardItemList()) {
-                    ItemData itemData3;
-                    if (itemParamData2 == null || itemParamData2.getItemId() <= 0 || (itemData3 = (ItemData)GameData.getItemDataMap().get(itemParamData2.getItemId())) == null) continue;
-                    list.add(new GameItem(itemData3, BattlePassCompatHelper.scaledCount(itemParamData2.getItemId(), itemParamData2.getItemCount())));
-                }
-            } else {
-                Grasscutter.getLogger().error("Invalid chest type for BP reward.");
-            }
         }
     }
 

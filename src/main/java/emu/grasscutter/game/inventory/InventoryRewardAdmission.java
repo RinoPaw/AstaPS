@@ -1,8 +1,6 @@
 package emu.grasscutter.game.inventory;
 
 import emu.grasscutter.data.excels.ItemData;
-import emu.grasscutter.game.props.ItemType;
-import emu.grasscutter.game.props.MaterialType;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;

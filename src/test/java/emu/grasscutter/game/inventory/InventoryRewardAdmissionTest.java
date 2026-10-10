@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.Gson;
 import emu.grasscutter.data.excels.ItemData;
-import emu.grasscutter.game.props.ItemType;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;

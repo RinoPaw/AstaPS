@@ -75,8 +75,10 @@ public class GameSession implements GameSessionManager.KcpChannel {
                 world != null && world.isTimeLocked());
         if (player != null) {
             Grasscutter.getLogger().info(
-                    "[AmberGuide] uid={} questingEnabled={} openStates=[{}] mapSize={}",
+                    "[AmberGuide] uid={} questingEnabled={} worldScriptsEnabled={} questingActive={} openStates=[{}] mapSize={}",
                     player.getUid(), GAME_OPTIONS.questing.enabled,
+                    SERVER.game.enableScriptInBigWorld,
+                    emu.grasscutter.game.quest.QuestManager.isQuestingActive(),
                     summarizeAmberGuideOpenStates(
                             player.getOpenStates(),
                             emu.grasscutter.game.player.PlayerProgressManager.DEFAULT_OPEN_STATES),
@@ -153,6 +155,28 @@ public class GameSession implements GameSessionManager.KcpChannel {
         return flag;
     }
 
+    // Exact 7.1 registry: C2S CmdId 2178 = LIGFLGNNAHP, one uint32 field.
+    // The protobuf field number and client-side meaning are still unknown.
+    // Log only a short decoded field summary, never raw packet bytes.
+    static String summarizeAmber2178Fields(byte[] payload) throws java.io.IOException {
+        if (payload.length > 64) return "oversized";
+        var input = com.google.protobuf.CodedInputStream.newInstance(payload);
+        var parts = new java.util.ArrayList<String>();
+        while (!input.isAtEnd() && parts.size() < 8) {
+            int tag = input.readTag();
+            if (tag == 0) break;
+            int field = com.google.protobuf.WireFormat.getTagFieldNumber(tag);
+            int wireType = com.google.protobuf.WireFormat.getTagWireType(tag);
+            if (wireType == com.google.protobuf.WireFormat.WIRETYPE_VARINT) {
+                parts.add(field + "=" + Integer.toUnsignedString(input.readUInt32()));
+            } else {
+                parts.add(field + "(wire=" + wireType + ")");
+                if (!input.skipField(tag)) break;
+            }
+        }
+        return parts.isEmpty() ? "(empty)" : String.join(", ", parts);
+    }
+
     private void traceAmberPacket(String direction, int opcode, byte[] payload) {
         long started = amberTraceStartNanos;
         if (started == 0) return;
@@ -173,7 +197,16 @@ public class GameSession implements GameSessionManager.KcpChannel {
         }
         // Pause requests and cutscene acknowledgements can occur more than once; their ordering
         // and values matter more than the first-seen packet list when client input stays locked.
-        if ("RECV".equals(direction) && opcode == 27447) {
+        if ("RECV".equals(direction) && opcode == 2178) {
+            try {
+                Grasscutter.getLogger().info(
+                        "[AmberGuide] uid={} +{}ms client CmdId 2178 fields={}",
+                        player != null ? player.getUid() : 0, elapsedMs,
+                        summarizeAmber2178Fields(payload));
+            } catch (java.io.IOException e) {
+                Grasscutter.getLogger().warn("[AmberGuide] Could not decode CmdId 2178", e);
+            }
+        } else if ("RECV".equals(direction) && opcode == 27447) {
             try {
                 Grasscutter.getLogger().info(
                         "[AmberWire] uid={} +{}ms client InteractionManager bool(field7)={} cmd=27447",

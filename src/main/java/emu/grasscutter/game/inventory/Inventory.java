@@ -129,7 +129,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
      * callers that add items in batches may instead use addItems or addItemsChecked.
      */
     public boolean addItem(GameItem item) {
-        return addItemsInternal(Collections.singletonList(item), null, false, false, false);
+        return addItemsInternal(Collections.singletonList(item), null, false, false);
     }
 
     public boolean addItem(GameItem item, ActionReason reason) {
@@ -137,7 +137,9 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     }
 
     public boolean addItem(GameItem item, ActionReason reason, boolean forceNotify) {
-        return addItemsInternal(Collections.singletonList(item), reason, forceNotify, true, true);
+        // Kept for compatibility with callers using the old forceNotify overload.
+        // A rejected grant never produces a success hint, even when forceNotify is true.
+        return addItemsInternal(Collections.singletonList(item), reason, true, true);
     }
 
     /** Skip elem-ball spam; keep Primogem/Mora tips. */
@@ -180,7 +182,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
         return InventoryRewardAdmission.grantIfAccepted(
                 items, this::getInventoryTab, authorize, confirmed,
                 accepted -> {
-                    if (!addItemsInternal(accepted, reason, false, false, false)) {
+                    if (!addItemsInternal(accepted, reason, false, false)) {
                         throw new IllegalStateException(
                                 "Inventory batch admission passed, but an item grant was rejected");
                     }
@@ -192,7 +194,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     }
 
     public void addItems(Collection<GameItem> items, ActionReason reason) {
-        addItemsInternal(items, reason, false, false, false);
+        addItemsInternal(items, reason, false, false);
     }
 
     /**
@@ -204,13 +206,12 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     private synchronized boolean addItemsInternal(
             Collection<GameItem> items,
             ActionReason reason,
-            boolean forceNotify,
             boolean notifyAvatarCard,
             boolean allowCurrencyFallback) {
         if (items == null || items.isEmpty()) {
             return false;
         }
-        List<GameItem> changedItems = new ArrayList<>();
+        Set<GameItem> changedItems = new LinkedHashSet<>();
         List<GameItem> hintedItems = new ArrayList<>();
         boolean allAccepted = true;
 
@@ -218,17 +219,14 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
             InsertResult inserted = putItem(item);
             if (!inserted.accepted()) {
                 allAccepted = false;
-                // Preserve the legacy shop force-hint parameter for a failed insertion only
-                // when explicitly requested. Normal callers never announce a rejected item.
-                if (forceNotify && item != null && !shouldSkipItemAddHint(item)) {
-                    hintedItems.add(item);
-                }
                 continue;
             }
             if (inserted.changedItem() != null) {
                 GameItem changed = inserted.changedItem();
                 changedItems.add(changed);
-                triggerAddItemEvents(changed);
+                // The stored stack may already contain many items. Watchers need the
+                // newly obtained quantity, not the post-merge stack total.
+                triggerAddItemEvents(item);
             }
             new PlayerObtainItemEvent(getPlayer(), item).call();
 

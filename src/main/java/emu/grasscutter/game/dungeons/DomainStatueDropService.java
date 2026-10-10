@@ -30,6 +30,13 @@ public final class DomainStatueDropService {
 
     public static boolean claim(
             Player player, DungeonManager dm, ClaimMode mode, int groupId) {
+        return claim(player, dm, mode, groupId, mode == null ? 1 : mode.rollTimes);
+    }
+
+    // Preserve the legacy DungeonManager condensed-claim 2x multiplier while both entry
+    // points share the same reward safety and payment logic.
+    static boolean claim(
+            Player player, DungeonManager dm, ClaimMode mode, int groupId, int rewardRollTimes) {
         if (player == null || dm == null) {
             return false;
         }
@@ -80,7 +87,8 @@ public final class DomainStatueDropService {
             return false;
         }
 
-        int rollTimes = Math.max(1, mode.rollTimes);
+        final ClaimMode paymentMode = mode;
+        int rollTimes = Math.max(1, rewardRollTimes);
         List<GameItem> rewards;
         try {
             rewards = buildRewards(player, dm, dungeonData, preview, hasPreview, rollTimes);
@@ -115,7 +123,7 @@ public final class DomainStatueDropService {
                     rewards,
                     it -> it != null && it.getCount() > 0 && it.getItemId() > 0
                             && it.getItemData() != null,
-                    () -> payCost(player, dungeonData, mode),
+                    () -> payCost(player, dungeonData, paymentMode),
                     items -> player.getInventory().addItems(items, ActionReason.DungeonStatueDrop));
         } catch (RuntimeException e) {
             Grasscutter.getLogger()

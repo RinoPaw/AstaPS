@@ -7,6 +7,7 @@ import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.*;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.inventory.*;
+import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.player.*;
 import emu.grasscutter.game.props.*;
 import emu.grasscutter.net.proto.BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption;
@@ -283,7 +284,8 @@ public class BattlePassManager extends BasePlayerDataManager {
             this.save();
 
             // Add items and send battle pass schedule packet
-            getPlayer().getInventory().addItems(rewardItems);
+            getPlayer().getInventory().addItems(
+                    rewardItems, null, InventoryAddPolicy.BEST_EFFORT);
             getPlayer().sendPacket(new PacketBattlePassCurScheduleUpdateNotify(getPlayer()));
         }
 

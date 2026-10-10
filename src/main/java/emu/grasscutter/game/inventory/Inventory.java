@@ -209,11 +209,15 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
             return new InventoryAddResult(List.of());
         }
         Set<GameItem> changedItems = new LinkedHashSet<>();
+        Set<GameItem> seen = Collections.newSetFromMap(new IdentityHashMap<>());
         List<GameItem> hintedItems = new ArrayList<>();
         List<InventoryAddResult.Entry> outcome = new ArrayList<>();
 
         for (GameItem item : items) {
-            InsertResult inserted = putItem(item);
+            InsertResult inserted =
+                    item != null && !seen.add(item)
+                            ? InsertResult.refused(InventoryAddResult.Status.INVALID_ITEM)
+                            : putItem(item);
             int itemId = item == null ? 0 : item.getItemId();
             int requested = item == null ? 0 : item.getCount();
             if (!inserted.accepted()) {
@@ -223,6 +227,11 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
             }
             outcome.add(new InventoryAddResult.Entry(
                     itemId, requested, requested, inserted.status()));
+            try {
+                this.player.getProgressManager().addItemObtainedHistory(itemId, requested);
+            } catch (Exception e) {
+                Grasscutter.getLogger().debug("addItemObtainedHistory failed", e);
+            }
             if (inserted.changedItem() != null) {
                 changedItems.add(inserted.changedItem());
                 // Use this grant's quantity, not the total of an existing stack.
@@ -365,7 +374,8 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     public void addItemParams(Collection<ItemParam> items) {
         addItems(
                 items.stream().map(param -> new GameItem(param.getItemId(), param.getCount())).toList(),
-                null);
+                null,
+                InventoryAddPolicy.BEST_EFFORT);
     }
 
     public void addItemParamDatas(Collection<ItemParamData> items) {
@@ -375,7 +385,8 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     public void addItemParamDatas(Collection<ItemParamData> items, ActionReason reason) {
         addItems(
                 items.stream().map(param -> new GameItem(param.getItemId(), param.getCount())).toList(),
-                reason);
+                reason,
+                InventoryAddPolicy.BEST_EFFORT);
     }
 
     /**
@@ -389,12 +400,6 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
         if (data == null || data.getItemType() == null || data.getId() != item.getItemId()) {
             return InsertResult.refused(InventoryAddResult.Status.INVALID_ITEM);
         }
-        try {
-            this.player.getProgressManager().addItemObtainedHistory(item.getItemId(), item.getCount());
-        } catch (Exception e) {
-            Grasscutter.getLogger().debug("addItemObtainedHistory failed", e);
-        }
-
         if (data.isUseOnGain()) {
             var params = new UseItemParams(this.player, data.getUseTarget());
             params.usedItemId = data.getId();

@@ -15,7 +15,6 @@ public record InventoryAddResult(List<Entry> entries) {
         STACK_LIMIT,
         UNSUPPORTED_TYPE,
         EFFECT_FAILED,
-        BATCH_REJECTED,
         AUTHORIZATION_FAILED
     }
 

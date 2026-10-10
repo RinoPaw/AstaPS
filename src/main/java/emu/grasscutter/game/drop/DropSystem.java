@@ -6,7 +6,6 @@ import emu.grasscutter.data.common.DropItemData;
 import emu.grasscutter.data.excels.*;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.inventory.*;
-import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.reward.ChestRewardScaler;

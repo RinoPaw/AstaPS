@@ -2,6 +2,7 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.expedition.*;
 import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.AvatarExpeditionGetRewardReqOuterClass.AvatarExpeditionGetRewardReq;
@@ -55,7 +56,8 @@ public class HandlerAvatarExpeditionGetRewardReq extends PacketHandler {
         }
 
         if (!allItems.isEmpty()) {
-            player.getInventory().addItems(allItems, ActionReason.ExpeditionReward);
+            player.getInventory().addItems(
+                    allItems, ActionReason.ExpeditionReward, InventoryAddPolicy.BEST_EFFORT);
         }
 
         player.save();

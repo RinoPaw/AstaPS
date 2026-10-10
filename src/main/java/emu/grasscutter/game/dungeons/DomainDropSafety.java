@@ -1,6 +1,7 @@
 package emu.grasscutter.game.dungeons;
 
 import emu.grasscutter.game.dungeons.enums.DungeonSubType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
@@ -81,6 +82,9 @@ final class DomainDropSafety {
     /**
      * Serialize the final reward check, payment, inventory grant and claim marker. Callers must
      * prepare and decorate rewards first, before a consumable resource can be charged.
+     *
+     * <p>This is an in-memory, at-most-once guard, not a database transaction. Once payment
+     * succeeds, the claim is marked even if grant throws, to prevent a second charge on retry.
      */
     static <T> boolean commitOnce(
             Object lock,
@@ -94,12 +98,19 @@ final class DomainDropSafety {
             if (rewarded == null || rewarded.contains(uid) || rewards == null) {
                 return false;
             }
-            rewards.removeIf(item -> !usable.test(item));
-            if (rewards.isEmpty() || !pay.getAsBoolean()) {
+            List<T> validRewards = new ArrayList<>();
+            for (T item : rewards) {
+                if (usable.test(item)) {
+                    validRewards.add(item);
+                }
+            }
+            if (validRewards.isEmpty() || !pay.getAsBoolean()) {
                 return false;
             }
-            grant.accept(rewards);
+            // Inventory writes are not transactional. Record a successful payment before
+            // granting to avoid charging again if inventory code throws midway.
             rewarded.add(uid);
+            grant.accept(validRewards);
             return true;
         }
     }

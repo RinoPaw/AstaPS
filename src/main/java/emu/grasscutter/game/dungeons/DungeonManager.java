@@ -33,6 +33,13 @@ public final class DungeonManager {
 
     @Getter private final int[] finishedConditions;
     private final IntSet rewardedPlayers = new IntOpenHashSet();
+
+    // Package-private access for the shared domain claim service. The service synchronizes
+    // on this DungeonManager while checking and recording a claim.
+    IntSet getRewardedPlayersForClaims() {
+        return rewardedPlayers;
+    }
+
     private final Set<Integer> activeDungeonWayPoints = new HashSet<>();
     private boolean ended = false;
     private int newestWayPoint = 0;

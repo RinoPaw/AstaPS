@@ -164,4 +164,35 @@ final class DomainDropSafetyTest {
         assertEquals(1, grants.get());
         assertTrue(rewarded.contains(101));
     }
+
+    @Test
+    void immutableRewardInputsAreFilteredWithoutMutation() {
+        var rewarded = new HashSet<Integer>();
+        var charged = new AtomicInteger();
+        var granted = new ArrayList<Integer>();
+        assertTrue(DomainDropSafety.commitOnce(new Object(), rewarded, 101,
+                List.of(202, 0), n -> n > 0,
+                () -> { charged.incrementAndGet(); return true; },
+                granted::addAll));
+        assertEquals(List.of(202), granted);
+        assertEquals(1, charged.get());
+    }
+
+    @Test
+    void grantExceptionDoesNotPermitSecondCharge() {
+        Object lock = new Object();
+        var rewarded = new HashSet<Integer>();
+        var charged = new AtomicInteger();
+        assertThrows(IllegalStateException.class,
+                () -> DomainDropSafety.commitOnce(lock, rewarded, 101,
+                        List.of(202), n -> n > 0,
+                        () -> { charged.incrementAndGet(); return true; },
+                        items -> { throw new IllegalStateException("inventory failure"); }));
+        assertTrue(rewarded.contains(101));
+        assertFalse(DomainDropSafety.commitOnce(lock, rewarded, 101,
+                List.of(202), n -> n > 0,
+                () -> { charged.incrementAndGet(); return true; },
+                items -> {}));
+        assertEquals(1, charged.get());
+    }
 }

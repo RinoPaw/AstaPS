@@ -14,16 +14,12 @@ import emu.grasscutter.scripts.data.ScriptArgs;
 import emu.grasscutter.server.packet.send.PacketGadgetAutoPickDropInfoNotify;
 import emu.grasscutter.utils.Utils;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * Petrified-tree claim implementation that does <b>not</b> replace {@link DungeonManager}.
- * Uses reflection only for the private rewardedPlayers set.
- */
+/** Petrified-tree claim implementation shared with {@link DungeonManager}. */
 public final class DomainStatueDropService {
 
     private DomainStatueDropService() {}
@@ -50,12 +46,7 @@ public final class DomainStatueDropService {
         }
 
         DungeonData dungeonData = dm.getDungeonData();
-        IntSet rewarded = getRewardedPlayers(dm);
-        if (rewarded == null) {
-            Grasscutter.getLogger()
-                    .warn("StatueDrop abort: reward-state access failed dungeon={}", dungeonData.getId());
-            return false;
-        }
+        IntSet rewarded = dm.getRewardedPlayersForClaims();
         if (rewarded.contains(player.getUid())) {
             Grasscutter.getLogger()
                     .warn(
@@ -288,15 +279,4 @@ public final class DomainStatueDropService {
         return rewards;
     }
 
-    @SuppressWarnings("unchecked")
-    private static IntSet getRewardedPlayers(DungeonManager dm) {
-        try {
-            Field field = DungeonManager.class.getDeclaredField("rewardedPlayers");
-            field.setAccessible(true);
-            return (IntSet) field.get(dm);
-        } catch (Throwable t) {
-            Grasscutter.getLogger().warn("StatueDrop: cannot access rewardedPlayers", t);
-            return null;
-        }
-    }
 }

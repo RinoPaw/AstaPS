@@ -44,7 +44,12 @@ public final class DomainStatueDropService {
 
         DungeonData dungeonData = dm.getDungeonData();
         IntSet rewarded = getRewardedPlayers(dm);
-        if (rewarded != null && rewarded.contains(player.getUid())) {
+        if (rewarded == null) {
+            Grasscutter.getLogger()
+                    .warn("StatueDrop abort: reward-state access failed dungeon={}", dungeonData.getId());
+            return false;
+        }
+        if (rewarded.contains(player.getUid())) {
             Grasscutter.getLogger()
                     .warn(
                             "StatueDrop abort: already rewarded uid={} dungeon={}",
@@ -61,31 +66,29 @@ public final class DomainStatueDropService {
                 preview != null
                         && preview.getPreviewItems() != null
                         && preview.getPreviewItems().length > 0;
-        if (!hasPreview && dungeonData.getStatueDrop() <= 0) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "StatueDrop abort: no preview/statueDrop dungeon={}",
-                            dungeonData.getId());
-            return false;
-        }
-
-        if (!payCost(player, dungeonData, mode)) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "StatueDrop abort: payCost failed uid={} dungeon={} mode={}",
-                            player.getUid(),
-                            dungeonData.getId(),
-                            mode);
-            return false;
-        }
-
         try {
             DungeonDropLoader.ensureLoaded();
-        } catch (Throwable ignored) {
+        } catch (RuntimeException e) {
+            Grasscutter.getLogger().warn("StatueDrop: unable to reload DungeonDrop.json", e);
+        }
+        boolean hasConfiguredDrops =
+                GameData.getDungeonDropDataMap() != null
+                        && GameData.getDungeonDropDataMap().containsKey(dungeonData.getId());
+        if (!hasPreview && dungeonData.getStatueDrop() <= 0 && !hasConfiguredDrops) {
+            Grasscutter.getLogger()
+                    .warn("StatueDrop abort: no reward source dungeon={}", dungeonData.getId());
+            return false;
         }
 
         int rollTimes = Math.max(1, mode.rollTimes);
-        List<GameItem> rewards = buildRewards(player, dm, dungeonData, preview, hasPreview, rollTimes);
+        List<GameItem> rewards;
+        try {
+            rewards = buildRewards(player, dm, dungeonData, preview, hasPreview, rollTimes);
+        } catch (RuntimeException e) {
+            Grasscutter.getLogger()
+                    .warn("StatueDrop abort: invalid reward configuration dungeon={}", dungeonData.getId(), e);
+            return false;
+        }
         if (rewards == null || rewards.isEmpty()) {
             Grasscutter.getLogger()
                     .warn(
@@ -101,22 +104,31 @@ public final class DomainStatueDropService {
             Grasscutter.getLogger().warn("appendToRewards failed", t);
         }
 
-        // Never grant/show empty stacks (e.g. drop table rolled count 0).
-        rewards.removeIf(it -> it == null || it.getCount() <= 0);
-        if (rewards.isEmpty()) {
+        // Prepare and validate rewards before charging. A missing/invalid reward pool must
+        // not consume Resin, Condensed Resin, Fragile Resin or Primogems.
+        boolean granted;
+        try {
+            granted = DomainDropSafety.commitOnce(
+                    dm,
+                    rewarded,
+                    player.getUid(),
+                    rewards,
+                    it -> it != null && it.getCount() > 0 && it.getItemId() > 0
+                            && it.getItemData() != null,
+                    () -> payCost(player, dungeonData, mode),
+                    items -> player.getInventory().addItems(items, ActionReason.DungeonStatueDrop));
+        } catch (RuntimeException e) {
             Grasscutter.getLogger()
-                    .warn(
-                            "StatueDrop abort: all rewards filtered empty dungeon={}",
-                            dungeonData.getId());
+                    .error("StatueDrop claim failed uid={} dungeon={}", player.getUid(), dungeonData.getId(), e);
             return false;
         }
-
-        player.getInventory().addItems(rewards, ActionReason.DungeonStatueDrop);
-        player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(rewards));
-
-        if (rewarded != null) {
-            rewarded.add(player.getUid());
+        if (!granted) {
+            Grasscutter.getLogger()
+                    .warn("StatueDrop abort: claim rejected or payment failed uid={} dungeon={} mode={}",
+                            player.getUid(), dungeonData.getId(), mode);
+            return false;
         }
+        player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(rewards));
 
         try {
             dm.getScene()
@@ -229,6 +241,7 @@ public final class DomainStatueDropService {
             return rewards;
         }
         List<DungeonDropEntry> dropEntries = GameData.getDungeonDropDataMap().get(dungeonId);
+        DomainDropSafety.validatePool(dungeonId, dropEntries);
         for (var entry : dropEntries) {
             int start = entry.getCounts().get(0);
             int end = entry.getCounts().get(entry.getCounts().size() - 1);

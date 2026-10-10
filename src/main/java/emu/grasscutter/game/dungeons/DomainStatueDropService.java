@@ -215,6 +215,11 @@ public final class DomainStatueDropService {
         int statueDrop = dungeonData.getStatueDrop();
         if ((rewards == null || rewards.isEmpty()) && statueDrop > 0) {
             rewards = rollStatueDropTable(player, statueDrop, rollTimes);
+            // A configured native root with no resolved rewards must not silently turn into
+            // an advertised preview that omits the actual domain material/artifact drops.
+            if (rewards == null || rewards.isEmpty()) {
+                return rewards;
+            }
         }
         if ((rewards == null || rewards.isEmpty()) && hasPreview) {
             rewards = new ArrayList<>();

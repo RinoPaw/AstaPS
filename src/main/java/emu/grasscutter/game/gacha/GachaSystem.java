@@ -354,9 +354,17 @@ public class GachaSystem extends BaseGameSystem {
             return;
         }
 
-        // Set properties.
+        // Plugins may change the wish count or banner in the pre-event. Validate the
+        // final request, not only the packet's original request, before charging anything.
         banner = event.getBanner();
         times = event.getWishCount();
+        if (banner == null || (times != 1 && times != 10)) {
+            Grasscutter.getLogger().warn(
+                    "[Gacha] Pre-wish hook supplied invalid banner or count: {}", times);
+            player.sendPacket(new PacketDoGachaRsp(Retcode.RET_GACHA_INVALID_TIMES));
+            return;
+        }
+        gachaInfo = player.getGachaInfo().getBannerInfo(banner);
 
         int gachaTimesLimit = banner.getGachaTimesLimit();
         if (gachaTimesLimit != Integer.MAX_VALUE
@@ -504,6 +512,17 @@ public class GachaSystem extends BaseGameSystem {
         event.finish(items.stream().map(PlayerWishEvent.WishCompute::getItem).toList());
 
         var eventItems = event.getReceivedItems();
+        if (eventItems == null || eventItems.size() != items.size()
+                || eventItems.stream().anyMatch(item -> item == null
+                        || item.getItemData() == null
+                        || item.getItemId() <= 0
+                        || item.getCount() <= 0)) {
+            Grasscutter.getLogger().error(
+                    "[Gacha] Post-wish hook returned invalid items uid={} banner={};"
+                            + " reverting to the server-generated results",
+                    player.getUid(), banner.getScheduleId());
+            eventItems = items.stream().map(PlayerWishEvent.WishCompute::getItem).toList();
+        }
         for (var i = 0; i < items.size(); i++) {
             var compute = items.get(i);
             var gameItem = eventItems.get(i);

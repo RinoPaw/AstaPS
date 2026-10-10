@@ -37,6 +37,27 @@ That report is from a different, older client; treat it as a competing hypothesi
 - `HandlerPlayerSetPauseReq` constructs a success response, but `GameSession.send()` returns without sending when `opcode <= 0`. Thus **no pause acknowledgement reaches the client**. It is unknown whether the client needs that acknowledgement for this particular input lock.
 - AstaPS `NpcTalkRsp=3514` and `CutSceneEndNotify=472` are server mappings; their role in this particular handoff is still to be confirmed against the exact client.
 
+## 2026-10-10 completed stuck-vs-reconnect comparison (UID 70629)
+
+The extended console transcript captures **both 45-second summaries on the same running server**.
+
+| Observation | Stuck after dialogue, starting 19:43:41 | Reconnect, starting 20:09:32 |
+| --- | --- | --- |
+| Quest 35601 | Finished immediately at 19:43:41 | Persisted as FINISHED |
+| Quest 35602 / 35603 | Both UNFINISHED at +45s | Both UNFINISHED at +45s |
+| Server worldPaused / playerPaused | false / false | false / false |
+| Server timeLocked | true (already true before talk) | true (unchanged) |
+| SceneTimeNotify | is_paused=false throughout | is_paused=false throughout |
+| PlayerTimeNotify | not present in this already-loaded trace | is_paused=false at scene-enter completion |
+| PlayerSetPauseReq / response | no pause request in 45s | one is_paused=false at +1648ms; PlayerSetPauseRsp dropped because CmdId=0 |
+| Interaction marker CmdId 27447 | one C2S at +1050ms; payload unlogged on this version | not observed during 45s re-enter |
+| QuestDestroyNpcReq / Rsp | two of each in 45s (timing of second unknown) | zero |
+| Other | Ping and ongoing UnionCmdNotify continue | complete scene reinitialization, PostEnterSceneRsp, ability init |
+
+**Causal interpretation:** Client control recovery after reconnection despite a **still-missing** PlayerSetPauseRsp weighs strongly against missing ACK being *sufficient to explain* the stuck dialogue state. Neither `timeLocked=true` nor ordinary server pause distinguishes the stuck vs recovered state. New scene-enter notifications plus client-local InteractionManager reset are confounded; cannot separate the two without a narrower test. The stuck trace lacks a C2S false transition of 27447. The absence of such a transition is evidence for an interaction-lifecycle gap, but the precise sender semantics and expected close conditions are still unresolved.
+
+The uploaded log was captured on upstream-sync commit `aa0e951`, **before** the subsequent diagnostic change that decodes 27447 protobuf bool field 7. Do not claim this uploaded sample gives the bool value. The new diagnostic CI (`b8adb5b`) passed independently; it requires a new process to take effect and does not retroactively decode the old log. Do not require another gameplay reproduction before extracting additional native-client evidence.
+
 ## 2026-10-10 stuck dialogue capture: interaction marker CmdId 27447
 
 The provided server console transcript ends about **2.7 seconds after** NpcTalkReq(35601), so it does not contain the expected 45-second summary or forced-reconnect comparison.

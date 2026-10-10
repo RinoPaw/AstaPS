@@ -14,6 +14,16 @@ import org.junit.jupiter.api.Test;
 final class InventoryRewardAdmissionTest {
     private static final Gson GSON = new Gson();
 
+    private static InventoryAddResult accepted(java.util.Collection<GameItem> items) {
+        var rows = new java.util.ArrayList<InventoryAddResult.Entry>();
+        for (var item : items) {
+            rows.add(new InventoryAddResult.Entry(
+                    item.getItemId(), item.getCount(), item.getCount(),
+                    InventoryAddResult.Status.ADDED));
+        }
+        return new InventoryAddResult(rows);
+    }
+
     private static GameItem item(int id, ItemType type, int count, int stackLimit) {
         ItemData data = GSON.fromJson(
                 "{\"id\":" + id + ",\"itemType\":\"" + type.name() +
@@ -85,6 +95,27 @@ final class InventoryRewardAdmissionTest {
     }
 
     @Test
+    void resultDistinguishesPartialFromTotalDelivery() {
+        var result = new InventoryAddResult(List.of(
+                new InventoryAddResult.Entry(202, 100, 100, InventoryAddResult.Status.ADDED),
+                new InventoryAddResult.Entry(35611, 1, 0, InventoryAddResult.Status.CAPACITY_FULL)));
+        assertFalse(result.allAccepted());
+        assertTrue(result.partiallyAccepted());
+        assertEquals(0, result.entries().get(1).added());
+    }
+
+    @Test
+    void constructorKeepsOversizedQuantityForAdmissionToReject() {
+        ItemData data = GSON.fromJson(
+                "{\"id\":2001,\"itemType\":\"ITEM_MATERIAL\",\"materialType\":\"MATERIAL_NONE\",\"stackLimit\":10}",
+                ItemData.class);
+        var oversized = new GameItem(data, 12);
+        assertEquals(12, oversized.getCount());
+        assertFalse(InventoryRewardAdmission.canAccept(
+                List.of(oversized), type -> new MaterialInventoryTab(5)));
+    }
+
+    @Test
     void fullBagDoesNotInvokeAuthorizationOrGrant() {
         var relics = new EquipInventoryTab(1);
         relics.onAddItem(item(1001, ItemType.ITEM_RELIQUARY, 1, 1));
@@ -94,7 +125,7 @@ final class InventoryRewardAdmissionTest {
                 type -> type == ItemType.ITEM_RELIQUARY ? relics : null,
                 () -> { events.add("authorize"); return true; },
                 () -> events.add("confirmed"),
-                items -> events.add("grant")));
+                items -> { events.add("grant"); return accepted(items); }).allAccepted());
         assertTrue(events.isEmpty());
     }
 
@@ -107,7 +138,7 @@ final class InventoryRewardAdmissionTest {
                 type -> type == ItemType.ITEM_MATERIAL ? materials : null,
                 () -> { events.add("authorize"); return false; },
                 () -> events.add("confirmed"),
-                items -> events.add("grant")));
+                items -> { events.add("grant"); return accepted(items); }).allAccepted());
         assertEquals(List.of("authorize"), events);
     }
 
@@ -120,7 +151,7 @@ final class InventoryRewardAdmissionTest {
                 type -> type == ItemType.ITEM_MATERIAL ? materials : null,
                 () -> { events.add("authorize"); return true; },
                 () -> events.add("confirmed"),
-                items -> events.add("grant")));
+                items -> { events.add("grant"); return accepted(items); }).allAccepted());
         assertEquals(List.of("authorize", "confirmed", "grant"), events);
     }
 

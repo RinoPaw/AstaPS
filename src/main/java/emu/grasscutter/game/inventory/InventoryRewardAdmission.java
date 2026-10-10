@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+
 /**
  * Projects a whole reward batch against the current inventory without modifying it.
  *
@@ -82,7 +83,7 @@ final class InventoryRewardAdmission {
             }
 
             if (type == ItemType.ITEM_WEAPON || type == ItemType.ITEM_RELIQUARY) {
-                if (!reserveSlot(tab, reservedSlots)) {
+                if (item.getCount() != 1 || !reserveSlot(tab, reservedSlots)) {
                     return false;
                 }
                 continue;

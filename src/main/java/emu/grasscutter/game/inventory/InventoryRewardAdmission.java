@@ -18,8 +18,9 @@ final class InventoryRewardAdmission {
 
     private InventoryRewardAdmission() {}
 
-    static boolean isBoundedCurrency(int id) {
-        return id == 201 || id == 202 || id == 203 || id == 204;
+    static boolean isBoundedVirtualBalance(int id) {
+        // Stored player properties use signed 32-bit counters, just like currencies.
+        return id == 106 || id == 107 || id == 201 || id == 202 || id == 203 || id == 204;
     }
 
     static boolean supportsVirtualItem(int itemId) {
@@ -88,7 +89,7 @@ final class InventoryRewardAdmission {
                     return InventoryAddResult.Status.UNSUPPORTED_TYPE;
                 }
                 int currencyId = item.getItemId();
-                if (isBoundedCurrency(currencyId)) {
+                if (isBoundedVirtualBalance(currencyId)) {
                     long current = projectedCurrencies.computeIfAbsent(
                             currencyId, id -> (long) currentBalance.applyAsInt(id));
                     long next = current + item.getCount();

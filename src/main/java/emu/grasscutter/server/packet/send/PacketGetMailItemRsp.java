@@ -61,7 +61,11 @@ public class PacketGetMailItemRsp extends BasePacket {
                             () -> {
                                 // Mark before writes so an interrupted grant cannot be replayed.
                                 message.isAttachmentGot = true;
-                                player.replaceMailByIndex(mailId, message);
+                                if (!player.replaceMailByIndex(mailId, message)) {
+                                    message.isAttachmentGot = false;
+                                    throw new IllegalStateException(
+                                            "Mail disappeared before attachment confirmation");
+                                }
                             });
                     if (!result.allAccepted()) {
                         Grasscutter.getLogger().warn(

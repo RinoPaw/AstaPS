@@ -105,6 +105,22 @@ final class InventoryRewardAdmissionTest {
     }
 
     @Test
+    void rejectsResinAndLegendaryKeyOverflowBeforeAuthorization() {
+        for (int virtualId : List.of(106, 107)) {
+            var events = new java.util.ArrayList<String>();
+            var result = InventoryRewardAdmission.grantIfAccepted(
+                    List.of(item(virtualId, ItemType.ITEM_VIRTUAL, 3, 1)),
+                    type -> null,
+                    id -> id == virtualId ? Integer.MAX_VALUE - 2 : 0,
+                    () -> { events.add("charge"); return true; },
+                    () -> events.add("confirm"),
+                    InventoryRewardAdmissionTest::accepted);
+            assertEquals(InventoryAddResult.Status.STACK_LIMIT, result.entries().get(0).status());
+            assertTrue(events.isEmpty());
+        }
+    }
+
+    @Test
     void acceptsCurrencyWithinIntegerCapacity() {
         var result = InventoryRewardAdmission.grantIfAccepted(
                 List.of(item(201, ItemType.ITEM_VIRTUAL, 10, 1)),

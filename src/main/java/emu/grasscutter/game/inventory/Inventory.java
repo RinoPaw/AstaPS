@@ -254,14 +254,27 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
                 // Use this grant's quantity, not the total of an existing stack.
                 triggerAddItemEvents(item);
             }
-            new PlayerObtainItemEvent(getPlayer(), item).call();
+            // Plugin listeners are not part of inventory persistence. Their failure must not
+            // interrupt a grant after the payment/claim has already been confirmed.
+            try {
+                new PlayerObtainItemEvent(getPlayer(), item).call();
+            } catch (RuntimeException listenerFailure) {
+                Grasscutter.getLogger().error(
+                        "PlayerObtainItemEvent failed after granting item {} to uid={}",
+                        itemId, getPlayer().getUid(), listenerFailure);
+            }
 
             if (notifyAvatarCard && reason != null
                     && item.getItemData().getMaterialType() == MaterialType.MATERIAL_AVATAR) {
-                getPlayer()
-                        .sendPacket(
-                                new PacketAddNoGachaAvatarCardNotify(
-                                        (itemId % 1000) + 10000000, reason, item));
+                try {
+                    getPlayer().sendPacket(
+                            new PacketAddNoGachaAvatarCardNotify(
+                                    (itemId % 1000) + 10000000, reason, item));
+                } catch (RuntimeException notifyFailure) {
+                    Grasscutter.getLogger().error(
+                            "Avatar card notification failed after granting item {} to uid={}",
+                            itemId, getPlayer().getUid(), notifyFailure);
+                }
             }
             if (!shouldSkipItemAddHint(item)) {
                 hintedItems.add(item);
@@ -269,7 +282,13 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
         }
 
         if (!changedItems.isEmpty()) {
-            getPlayer().sendPacket(new PacketStoreItemChangeNotify(changedItems));
+            try {
+                getPlayer().sendPacket(new PacketStoreItemChangeNotify(changedItems));
+            } catch (RuntimeException notifyFailure) {
+                Grasscutter.getLogger().error(
+                        "Inventory change notification failed for uid={}",
+                        getPlayer().getUid(), notifyFailure);
+            }
         }
         if (!hintedItems.isEmpty()) {
             ActionReason hintReason = reason;
@@ -279,7 +298,13 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
                 hintReason = ActionReason.OpenChest;
             }
             if (hintReason != null) {
-                getPlayer().sendPacket(new PacketItemAddHintNotify(hintedItems, hintReason));
+                try {
+                    getPlayer().sendPacket(new PacketItemAddHintNotify(hintedItems, hintReason));
+                } catch (RuntimeException notifyFailure) {
+                    Grasscutter.getLogger().error(
+                            "Item hint notification failed for uid={}",
+                            getPlayer().getUid(), notifyFailure);
+                }
             }
         }
         return new InventoryAddResult(outcome);
@@ -457,7 +482,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
                 if (!InventoryRewardAdmission.supportsVirtualItem(item.getItemId())) {
                     return InsertResult.refused(InventoryAddResult.Status.UNSUPPORTED_TYPE);
                 }
-                if (InventoryRewardAdmission.isBoundedCurrency(item.getItemId())) {
+                if (InventoryRewardAdmission.isBoundedVirtualBalance(item.getItemId())) {
                     long current = getVirtualItemCount(item.getItemId());
                     if (current < 0 || current + item.getCount() > Integer.MAX_VALUE) {
                         return InsertResult.refused(InventoryAddResult.Status.STACK_LIMIT);

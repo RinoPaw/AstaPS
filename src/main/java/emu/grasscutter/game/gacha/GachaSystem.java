@@ -405,6 +405,34 @@ public class GachaSystem extends BaseGameSystem {
             player.sendPacket(new PacketDoGachaRsp(Retcode.RET_SVR_ERROR));
             return;
         }
+        // Resolve the actual pools, including linked Chronicle wishes and C6 filtering,
+        // before the payment. Banner JSON checks alone cannot validate these dynamic IDs.
+        BannerPools pools;
+        try {
+            pools = new BannerPools(banner, player);
+            if (banner.isRemoveC6FromPool()) {
+                pools.rateUpItems4 = removeC6FromPool(pools.rateUpItems4, player);
+                pools.rateUpItems5 = removeC6FromPool(pools.rateUpItems5, player);
+                pools.fallbackItems4Pool1 = removeC6FromPool(pools.fallbackItems4Pool1, player);
+                pools.fallbackItems4Pool2 = removeC6FromPool(pools.fallbackItems4Pool2, player);
+                pools.fallbackItems5Pool1 = removeC6FromPool(pools.fallbackItems5Pool1, player);
+                pools.fallbackItems5Pool2 = removeC6FromPool(pools.fallbackItems5Pool2, player);
+            }
+            if (!allPoolItemsKnown(
+                    pools.rateUpItems4, pools.rateUpItems5,
+                    pools.fallbackItems4Pool1, pools.fallbackItems4Pool2,
+                    pools.fallbackItems5Pool1, pools.fallbackItems5Pool2)) {
+                player.sendPacket(new PacketDoGachaRsp(Retcode.RET_SVR_ERROR));
+                return;
+            }
+        } catch (RuntimeException malformedPools) {
+            Grasscutter.getLogger().error(
+                    "[Gacha] Failed to resolve banner {} pools before payment",
+                    banner.getScheduleId(), malformedPools);
+            player.sendPacket(new PacketDoGachaRsp(Retcode.RET_SVR_ERROR));
+            return;
+        }
+
         if (cost.getCount() > 0 && !inventory.payItem(cost)) {
             player.sendPacket(new PacketDoGachaRsp(Retcode.RET_GACHA_COST_ITEM_NOT_ENOUGH));
             return;
@@ -412,18 +440,8 @@ public class GachaSystem extends BaseGameSystem {
 
         // Add to character
         gachaInfo.addTotalPulls(times);
-        BannerPools pools = new BannerPools(banner, player);
         List<GachaItem> list = new ArrayList<>();
         int stardust = 0, starglitter = 0;
-
-        if (banner.isRemoveC6FromPool()) { // The ultimate form of pity (non-vanilla)
-            pools.rateUpItems4 = removeC6FromPool(pools.rateUpItems4, player);
-            pools.rateUpItems5 = removeC6FromPool(pools.rateUpItems5, player);
-            pools.fallbackItems4Pool1 = removeC6FromPool(pools.fallbackItems4Pool1, player);
-            pools.fallbackItems4Pool2 = removeC6FromPool(pools.fallbackItems4Pool2, player);
-            pools.fallbackItems5Pool1 = removeC6FromPool(pools.fallbackItems5Pool1, player);
-            pools.fallbackItems5Pool2 = removeC6FromPool(pools.fallbackItems5Pool2, player);
-        }
 
         var items = new ArrayList<PlayerWishEvent.WishCompute>();
         for (int i = 0; i < times; i++) {

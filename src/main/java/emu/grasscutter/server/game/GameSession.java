@@ -33,6 +33,20 @@ public class GameSession implements GameSessionManager.KcpChannel {
 
     // Temporary, session-local diagnostic for the 7.1 Amber dialogue input lock.
     // Record only packet names, never payloads or authentication data.
+    private static final int[] AMBER_GUIDE_OPEN_STATE_IDS = {1, 2, 7, 8, 16, 17, 24, 60};
+
+    // Distinguish explicit 0, explicit 1, automatic default 1, and omitted.
+    // An omitted state is not evidence that the actual client UI is unlocked or locked.
+    static String summarizeAmberGuideOpenStates(
+            java.util.Map<Integer, Integer> explicit, java.util.Set<Integer> defaults) {
+        return java.util.Arrays.stream(AMBER_GUIDE_OPEN_STATE_IDS)
+                .mapToObj(id -> id + "="
+                        + (explicit.containsKey(id)
+                                ? "stored:" + explicit.get(id)
+                                : defaults.contains(id) ? "default:1" : "absent"))
+                .collect(java.util.stream.Collectors.joining(", "));
+    }
+
     private volatile long amberTraceStartNanos;
     private final java.util.Set<Integer> amberTraceRecvOpcodes =
             java.util.concurrent.ConcurrentHashMap.newKeySet();
@@ -59,6 +73,15 @@ public class GameSession implements GameSessionManager.KcpChannel {
                 player != null && player.isPaused(),
                 world != null && world.isPaused(),
                 world != null && world.isTimeLocked());
+        if (player != null) {
+            Grasscutter.getLogger().info(
+                    "[AmberGuide] uid={} questingEnabled={} openStates=[{}] mapSize={}",
+                    player.getUid(), GAME_OPTIONS.questing.enabled,
+                    summarizeAmberGuideOpenStates(
+                            player.getOpenStates(),
+                            emu.grasscutter.game.player.PlayerProgressManager.DEFAULT_OPEN_STATES),
+                    player.getOpenStates().size());
+        }
     }
 
     /**
@@ -159,6 +182,26 @@ public class GameSession implements GameSessionManager.KcpChannel {
             } catch (java.io.IOException e) {
                 Grasscutter.getLogger().warn(
                         "[AmberWire] Could not decode client CmdId 27447 bool field 7", e);
+            }
+        } else if ("RECV".equals(direction) && opcode == PacketOpcodes.SetOpenStateReq) {
+            try {
+                var req = emu.grasscutter.net.proto.SetOpenStateReqOuterClass.SetOpenStateReq.parseFrom(payload);
+                Grasscutter.getLogger().info(
+                        "[AmberGuide] uid={} +{}ms SetOpenStateReq key={} value={}",
+                        player != null ? player.getUid() : 0, elapsedMs, req.getKey(), req.getValue());
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                Grasscutter.getLogger().warn("[AmberGuide] Could not decode SetOpenStateReq", e);
+            }
+        } else if ("SEND".equals(direction) && opcode == PacketOpcodes.OpenStateChangeNotify) {
+            try {
+                var notify = emu.grasscutter.net.proto.OpenStateChangeNotifyOuterClass
+                        .OpenStateChangeNotify.parseFrom(payload);
+                Grasscutter.getLogger().info(
+                        "[AmberGuide] uid={} +{}ms OpenStateChangeNotify map={}",
+                        player != null ? player.getUid() : 0, elapsedMs,
+                        notify.getOpenStateMapMap());
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                Grasscutter.getLogger().warn("[AmberGuide] Could not decode OpenStateChangeNotify", e);
             }
         } else if ("RECV".equals(direction) && opcode == PacketOpcodes.PlayerSetPauseReq) {
             try {

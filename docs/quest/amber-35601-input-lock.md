@@ -1,3 +1,11 @@
+## 2026-10-10 candidate: request-correlated talk response headers
+
+The server already echoes a client request sequence in `GetPlayerSocialDetailRsp` because that client callback was observed to reject an unrelated sequence. The 7.1 Amber handlers did not: `NpcTalkRsp` had no header and `QuestDestroyNpcRsp` used `super(opcode,true)`, generating a **new server sequence**. In `fix/amber-talk-rpc-sequence-71`, both handlers now extract `PacketHead.clientSequenceId` from each request and place it into the response header. The response bodies and opcodes are unchanged. QuestDestroyNpcReq logs its `npcId`, `parentQuestId` and request sequence so the two requests observed during the 45-second lock can be distinguished without assuming retransmission.
+
+Exact Global 7.1 client evidence narrows the callback: `NpcTalkRsp(3514)` is `IMLLBMOMMEH`; native reader `NLGBJEEJDLG @ 0x11E83970` places protobuf **field 7** in object offset `+0x24`. Handler `HBBDJPCGCAH.JCIMEKEEFOH @ 0xA5E18C0` loads `+0x24` and tail-calls `InteractionManager.FinishCurrTalk(uint32) @ 0xFE57430`. AstaPS already puts talk `35601` into field 7; do **not** repurpose field 5 (`retcode`). The handler `HBBDJPCGCAH.HGDBBLBCPMH @ 0xA5E1D30` for `QuestDestroyNpcRsp(3992)` appears to return immediately when the parsed response is non-null, so it is not presently supported as the direct input-unlock callback.
+
+The native handler identities and `FinishCurrTalk` call are confirmed. Whether this handler **requires** a matching `PacketHead.clientSequenceId` to be dispatched is still **unresolved**; some protocol handlers may be dispatched only by command ID. This is therefore a bounded, CI-tested **candidate**, not a proven fix. Retain the previous 45-second stuck/reconnect logs for comparison; do not claim the client is repaired until tested.
+
 # Mondstadt Amber dialogue input lock — 7.1 Global
 
 Status: **unresolved, instrumented**. Source: AstaPS issue [#40](https://github.com/MeChen618/AstaPS/issues/40). Native-client protocol investigation: [Genshin-Reverse #23](https://github.com/RinoPaw/Genshin-Reverse/issues/23).

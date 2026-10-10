@@ -41,8 +41,9 @@ public class HandlerEnterSceneDoneReq extends PacketHandler {
         } catch (Throwable ignored) {
         }
 
-        // Done
-
+        // Done. On reconnect after Amber 35601, trace the first server-time pause value
+        // before it reaches the client, not only the packets that arrive afterward.
+        session.beginAmberReconnectTraceIfNeeded();
         session.send(new PacketPlayerTimeNotify(player)); // Probably not the right place
 
         // Spawn player in world

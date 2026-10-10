@@ -49,7 +49,9 @@ public final class BattlePassSelectChestHelper {
      * are the caller's responsibility. Return an empty list if the choice is invalid.
      */
     public static List<GameItem> resolve(int rewardId, int optionIdx) {
-        if (rewardId <= 0 || optionIdx < 1) {
+        // The 7.1 grouped selection list uses indices no higher than 61. Keep room
+        // for extended client data, but never extrapolate arbitrary attacker indices.
+        if (rewardId <= 0 || optionIdx < 1 || optionIdx > 128) {
             return List.of();
         }
         ItemData chest = chestItemData(rewardId);

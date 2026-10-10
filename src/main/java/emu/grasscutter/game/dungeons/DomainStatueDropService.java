@@ -48,13 +48,15 @@ public final class DomainStatueDropService {
 
         DungeonData dungeonData = dm.getDungeonData();
         IntSet rewarded = dm.getRewardedPlayersForClaims();
-        if (rewarded.contains(player.getUid())) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "StatueDrop abort: already rewarded uid={} dungeon={}",
-                            player.getUid(),
-                            dungeonData.getId());
-            return false;
+        synchronized (dm) {
+            if (rewarded.contains(player.getUid())) {
+                Grasscutter.getLogger()
+                        .warn(
+                                "StatueDrop abort: already rewarded uid={} dungeon={}",
+                                player.getUid(),
+                                dungeonData.getId());
+                return false;
+            }
         }
 
         var preview = dungeonData.getRewardPreviewData();
@@ -107,8 +109,7 @@ public final class DomainStatueDropService {
         // Prepare and validate rewards before charging. A missing/invalid reward pool must
         // not consume Resin, Condensed Resin, Fragile Resin or Primogems.
         boolean granted;
-        // The commit guard filters invalid items into a new list. Use exactly the
-        // granted list for the client packet, not the original unfiltered rolls.
+        // Send only the validated reward batch after a successful payment and grant.
         List<GameItem> grantedRewards = new ArrayList<>();
         Inventory inventory = player.getInventory();
         try {
@@ -119,8 +120,22 @@ public final class DomainStatueDropService {
                     rewards,
                     it -> it != null && it.getCount() > 0 && it.getItemId() > 0
                             && it.getItemData() != null,
-                    () -> inventory.canAcceptRewards(rewards)
-                            && payCost(player, dungeonData, paymentMode),
+                    () -> {
+                        // Dungeon restarts use the same DungeonManager lock, so they cannot
+                        // reset the pass conditions between this check and payment.
+                        if (!dm.isFinishedSuccessfully()) {
+                            return false;
+                        }
+                        if (!inventory.canAcceptRewards(rewards)) {
+                            Grasscutter.getLogger()
+                                    .warn(
+                                            "StatueDrop abort: insufficient inventory capacity uid={} dungeon={}",
+                                            player.getUid(),
+                                            dungeonData.getId());
+                            return false;
+                        }
+                        return payCost(player, dungeonData, paymentMode);
+                    },
                     items -> {
                         inventory.addItems(items, ActionReason.DungeonStatueDrop);
                         grantedRewards.addAll(items);

@@ -337,7 +337,7 @@ public final class DungeonManager {
         ended = true;
     }
 
-    public void restartDungeon() {
+    public synchronized void restartDungeon() {
         this.scene.setKilledMonsterCount(0);
         this.rewardedPlayers.clear();
         Arrays.fill(finishedConditions, 0);

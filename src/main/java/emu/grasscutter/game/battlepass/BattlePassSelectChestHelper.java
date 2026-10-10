@@ -7,12 +7,8 @@ import emu.grasscutter.data.common.ItemUseData;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.data.excels.RewardData;
 import emu.grasscutter.game.inventory.GameItem;
-import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.inventory.InventoryGrantBuilder;
-import emu.grasscutter.game.inventory.Inventory;
 import emu.grasscutter.game.inventory.MaterialType;
-import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.props.ItemUseOp;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,18 +100,6 @@ public final class BattlePassSelectChestHelper {
             return List.of();
         }
         return result;
-    }
-
-    /** For legacy callers; modern claims must authorize and record ownership externally. */
-    public static List<GameItem> grant(Player player, int rewardId, int optionIdx, boolean paid) {
-        if (player == null) return List.of();
-        List<GameItem> items = resolve(rewardId, optionIdx);
-        if (items.isEmpty()) return List.of();
-        ActionReason reason = paid ? ActionReason.BattlePassPaidReward : ActionReason.BattlePassLevelReward;
-        return player.getInventory()
-                        .addItems(items, reason, InventoryAddPolicy.ALL_OR_NOTHING)
-                        .allAccepted()
-                ? items : List.of();
     }
 
     /**

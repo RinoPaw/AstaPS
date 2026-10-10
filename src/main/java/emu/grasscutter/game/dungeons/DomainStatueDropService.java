@@ -8,6 +8,7 @@ import emu.grasscutter.data.excels.dungeon.DungeonData;
 import emu.grasscutter.game.dungeons.DomainStatueClaimHelper.ClaimMode;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.inventory.Inventory;
+import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.scripts.constants.EventType;
@@ -121,11 +122,13 @@ public final class DomainStatueDropService {
                         if (!dm.isFinishedSuccessfully()) {
                             return false;
                         }
-                        return inventory.addItemsChecked(
-                                items,
-                                ActionReason.DungeonStatueDrop,
-                                () -> payCost(player, dungeonData, paymentMode),
-                                confirmPayment);
+                        return inventory.addItems(
+                                        items,
+                                        ActionReason.DungeonStatueDrop,
+                                        InventoryAddPolicy.ALL_OR_NOTHING,
+                                        () -> payCost(player, dungeonData, paymentMode),
+                                        confirmPayment)
+                                .allAccepted();
                     });
         } catch (RuntimeException e) {
             Grasscutter.getLogger()

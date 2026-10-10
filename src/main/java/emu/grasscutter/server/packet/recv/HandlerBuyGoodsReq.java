@@ -152,7 +152,7 @@ public class HandlerBuyGoodsReq extends PacketHandler {
                 player.getInventory().addItems(dynamicItems, ActionReason.Shop);
             } else {
                 GameItem item = new GameItem(itemId, itemCount);
-                player.getInventory().addItem(item, ActionReason.Shop, true);
+                player.getInventory().addItem(item, ActionReason.Shop);
             }
 
             // Costume materials use useOnGain; also unlock directly if inventory path skipped it.

@@ -131,7 +131,8 @@ public final class GameItem {
                 this.addAppendProps(data.getAppendPropNum());
                 break;
             default:
-                this.count = Math.min(count, data.getStackLimit());
+                // Keep the requested quantity. Inventory must detect stack overflow.
+                this.count = count;
         }
     }
 

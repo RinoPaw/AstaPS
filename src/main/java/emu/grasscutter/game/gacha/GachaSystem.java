@@ -276,19 +276,29 @@ public class GachaSystem extends BaseGameSystem {
 
     private static boolean hasValidRewardPools(GachaBanner banner) {
         int[] base = banner.getFallbackItems3();
-        if (base == null || base.length == 0) return false;
-        return allPoolItemsKnown(
-                base,
-                banner.getRateUpItems4(),
-                banner.getRateUpItems5(),
-                banner.getFallbackItems4Pool1(),
-                banner.getFallbackItems4Pool2(),
-                banner.getFallbackItems5Pool1(),
-                banner.getFallbackItems5Pool2(),
-                GachaBanner.DEFAULT_FALLBACK_ITEMS_4_POOL_1,
-                GachaBanner.DEFAULT_FALLBACK_ITEMS_4_POOL_2,
-                GachaBanner.DEFAULT_FALLBACK_ITEMS_5_POOL_1,
-                GachaBanner.DEFAULT_FALLBACK_ITEMS_5_POOL_2);
+        if (base == null || base.length == 0
+                || !allPoolItemsKnown(
+                        base,
+                        banner.getRateUpItems4(),
+                        banner.getRateUpItems5(),
+                        banner.getFallbackItems4Pool1(),
+                        banner.getFallbackItems4Pool2(),
+                        banner.getFallbackItems5Pool1(),
+                        banner.getFallbackItems5Pool2())) {
+            return false;
+        }
+        // A default fallback is only reachable when both configured pools are empty.
+        // Rejecting every banner due to an unused default would disable valid wishes.
+        boolean missingFour = isEmptyPool(banner.getFallbackItems4Pool1())
+                && isEmptyPool(banner.getFallbackItems4Pool2());
+        boolean missingFive = isEmptyPool(banner.getFallbackItems5Pool1())
+                && isEmptyPool(banner.getFallbackItems5Pool2());
+        return (!missingFour || allPoolItemsKnown(GachaBanner.DEFAULT_FALLBACK_ITEMS_4_POOL_2))
+                && (!missingFive || allPoolItemsKnown(GachaBanner.DEFAULT_FALLBACK_ITEMS_5_POOL_2));
+    }
+
+    private static boolean isEmptyPool(int[] items) {
+        return items == null || items.length == 0;
     }
 
     private static boolean allPoolItemsKnown(int[]... pools) {

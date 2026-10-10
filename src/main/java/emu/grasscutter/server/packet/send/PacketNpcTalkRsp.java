@@ -5,7 +5,11 @@ import emu.grasscutter.net.proto.NpcTalkRspOuterClass.NpcTalkRsp;
 
 public class PacketNpcTalkRsp extends BasePacket {
     public PacketNpcTalkRsp(int npcEntityId, int curTalkId, int entityId) {
-        super(PacketOpcodes.NpcTalkRsp);
+        this(npcEntityId, curTalkId, entityId, 0);
+    }
+
+    public PacketNpcTalkRsp(int npcEntityId, int curTalkId, int entityId, int requestSequence) {
+        super(PacketOpcodes.NpcTalkRsp, requestSequence);
 
         NpcTalkRsp p =
                 NpcTalkRsp.newBuilder()

@@ -2,6 +2,7 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.net.packet.*;
+import emu.grasscutter.net.proto.PacketHeadOuterClass.PacketHead;
 import emu.grasscutter.net.proto.NpcTalkReqOuterClass.NpcTalkReq;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketNpcTalkRsp;
@@ -11,6 +12,8 @@ public class HandlerNpcTalkReq extends PacketHandler {
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         var req = NpcTalkReq.parseFrom(payload);
+        int sequence = header != null && header.length > 0
+                ? PacketHead.parseFrom(header).getClientSequenceId() : 0;
         int talkId = req.getTalkId();
         boolean tracePrologue = talkId == 35404 || talkId == 35601 || talkId == 35604 || talkId == 36001;
 
@@ -19,8 +22,8 @@ public class HandlerNpcTalkReq extends PacketHandler {
         }
         if (tracePrologue) {
             Grasscutter.getLogger().info(
-                    "[Prologue] NpcTalkReq uid={} talk={} npcEntity={} entity={}",
-                    session.getPlayer().getUid(), talkId, req.getNpcEntityId(), req.getEntityId());
+                    "[Prologue] NpcTalkReq uid={} talk={} npcEntity={} entity={} requestSeq={}",
+                    session.getPlayer().getUid(), talkId, req.getNpcEntityId(), req.getEntityId(), sequence);
         }
 
         try {
@@ -29,7 +32,7 @@ public class HandlerNpcTalkReq extends PacketHandler {
             runTalkAndReply(
                     () -> session.getPlayer().getTalkManager().triggerTalkAction(talkId, req.getEntityId()),
                     () -> {
-                        session.send(new PacketNpcTalkRsp(req.getNpcEntityId(), talkId, req.getEntityId()));
+                        session.send(new PacketNpcTalkRsp(req.getNpcEntityId(), talkId, req.getEntityId(), sequence));
                         if (tracePrologue) {
                             Grasscutter.getLogger().info(
                                     "[Prologue] NpcTalkRsp sent uid={} talk={}",

@@ -72,6 +72,16 @@ public final class DomainRewardStatueHelper {
         return n == 203 || n == 401;
     }
 
+    /**
+     * The native domain settle script activates the statue base (70340012,
+     * config 5001), not the separate clickable tree (70350008, config 5002).
+     * Forcing StatueActive on the tree gives its client gadget an invalid
+     * state and can remove its interaction prompt.
+     */
+    static int rewardGadgetStateAfterSettle(int gadgetId) {
+        return gadgetId == REWARD_TREE_GADGET_ID ? 0 : 401;
+    }
+
     public static void onChallengeSuccess(Scene scene) {
         if (scene == null || !DomainDungeonHelper.isDomainScene(scene)) {
             return;
@@ -111,7 +121,7 @@ public final class DomainRewardStatueHelper {
             if (!DomainRewardStatueHelper.isExitRewardStatue(n3)) continue;
             DomainRewardStatueHelper.forceRewardStatueContent(entityGadget);
             entityGadget.setInteractEnabled(true);
-            entityGadget.updateState(401);
+            entityGadget.updateState(rewardGadgetStateAfterSettle(n3));
             ++n2;
             arrayList2.add(entityGadget);
         }
@@ -132,6 +142,25 @@ public final class DomainRewardStatueHelper {
             }
         }
         Grasscutter.getLogger().info("Domain reward tree scene={} keysKilled={} exitLit={} dmFinished={}", new Object[]{scene.getId(), n, n2, bl});
+        // The 40773 reward fixture is synthetic. Log what the client actually
+        // receives so placement and interact flags can be audited independently.
+        if (scene.getId() == 40773) {
+            for (EntityGadget reward : arrayList2) {
+                Grasscutter.getLogger().info(
+                        "Domain 40773 reward gadget={} cfg={} entity={} state={} pos={} clientInteract={} content={}",
+                        new Object[] {
+                            reward.getGadgetId(), reward.getConfigId(), reward.getId(),
+                            reward.getState(), reward.getPosition(),
+                            reward.toProto().getGadget().getIsEnableInteract(),
+                            reward.getContent().getClass().getSimpleName()
+                        });
+            }
+            for (Player player : scene.getPlayers()) {
+                Grasscutter.getLogger().info(
+                        "Domain 40773 reward proximity uid={} playerPos={}",
+                        player.getUid(), player.getPosition());
+            }
+        }
     }
 
     private static void forceRewardStatueContent(EntityGadget entityGadget) {
@@ -204,12 +233,13 @@ public final class DomainRewardStatueHelper {
         try {
             Scene scene;
             entityGadget.setInteractEnabled(true);
-            if (!DomainRewardStatueHelper.isClaimableState(entityGadget.getState())) {
-                entityGadget.updateState(401);
-            } else {
-                entityGadget.updateState(0);
-                entityGadget.updateState(401);
+            int expected = rewardGadgetStateAfterSettle(entityGadget.getGadgetId());
+            // Refresh the client even if its previous state already matches.
+            // The two-piece tree must end in Default(0), never StatueActive(401).
+            if (entityGadget.getState() == expected) {
+                entityGadget.updateState(expected == 0 ? 401 : 0);
             }
+            entityGadget.updateState(expected);
             Scene scene2 = scene = player != null ? player.getScene() : entityGadget.getScene();
             if (scene != null) {
                 try {

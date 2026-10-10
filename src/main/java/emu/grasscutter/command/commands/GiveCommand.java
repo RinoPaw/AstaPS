@@ -16,6 +16,7 @@ import emu.grasscutter.data.excels.reliquary.ReliquaryAffixData;
 import emu.grasscutter.data.excels.reliquary.ReliquaryMainPropData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.inventory.ItemType;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
@@ -155,7 +156,7 @@ public final class GiveCommand implements CommandHandler {
                     giveWholeSet(sender, targetPlayer, param);
                     return;
                 }
-                targetPlayer.getInventory().addItems(makeArtifacts(param), ActionReason.SubfieldDrop);
+                targetPlayer.getInventory().addItems(makeArtifacts(param), ActionReason.SubfieldDrop, InventoryAddPolicy.BEST_EFFORT);
                 CommandOutput.sendTranslatedMessage(
                         sender,
                         "commands.give.given_level",
@@ -167,7 +168,7 @@ public final class GiveCommand implements CommandHandler {
             }
 
             if (param.data.getItemType() == ItemType.ITEM_WEAPON) {
-                targetPlayer.getInventory().addItems(makeUnstackableItems(param), ActionReason.SubfieldDrop);
+                targetPlayer.getInventory().addItems(makeUnstackableItems(param), ActionReason.SubfieldDrop, InventoryAddPolicy.BEST_EFFORT);
                 CommandOutput.sendTranslatedMessage(
                         sender,
                         "commands.give.given_with_level_and_refinement",
@@ -398,7 +399,7 @@ public final class GiveCommand implements CommandHandler {
 
     private static void addItemsChunked(Player player, List<GameItem> items, int packetSize) {
         for (int i = 0; i < items.size(); i += packetSize) {
-            player.getInventory().addItems(items.subList(i, Math.min(i + packetSize, items.size())));
+            player.getInventory().addItems(items.subList(i, Math.min(i + packetSize, items.size())), null, InventoryAddPolicy.BEST_EFFORT);
         }
     }
 
@@ -448,7 +449,7 @@ public final class GiveCommand implements CommandHandler {
             if (data == null) continue;
             param.data = data;
             param.id = piece;
-            targetPlayer.getInventory().addItems(makeArtifacts(param), ActionReason.SubfieldDrop);
+            targetPlayer.getInventory().addItems(makeArtifacts(param), ActionReason.SubfieldDrop, InventoryAddPolicy.BEST_EFFORT);
             given++;
         }
         CommandOutput.sendTranslatedMessage(

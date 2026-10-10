@@ -6,6 +6,7 @@ import emu.grasscutter.data.common.DropItemData;
 import emu.grasscutter.data.excels.*;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.inventory.*;
+import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.reward.ChestRewardScaler;
@@ -225,7 +226,7 @@ public final class DropSystem extends BaseGameSystem {
             }
         } else {
             for (Player p : monster.getScene().getPlayers()) {
-                p.getInventory().addItems(items, ActionReason.MonsterDie);
+                p.getInventory().addItems(items, ActionReason.MonsterDie, InventoryAddPolicy.BEST_EFFORT);
             }
         }
         return true;
@@ -280,7 +281,7 @@ public final class DropSystem extends BaseGameSystem {
         if (dropData.isFallToGround()) {
             dropItems(items, ActionReason.OpenChest, bornFrom, bornFrom.getWorld().getHost(), false);
         } else {
-            bornFrom.getWorld().getHost().getInventory().addItems(items, ActionReason.OpenChest);
+            bornFrom.getWorld().getHost().getInventory().addItems(items, ActionReason.OpenChest, InventoryAddPolicy.BEST_EFFORT);
         }
         return true;
     }
@@ -323,7 +324,7 @@ public final class DropSystem extends BaseGameSystem {
         if (items.isEmpty()) {
             return false;
         }
-        player.getInventory().addItems(items, ActionReason.OpenWorldBossChest);
+        player.getInventory().addItems(items, ActionReason.OpenWorldBossChest, InventoryAddPolicy.BEST_EFFORT);
         player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(items));
         return true;
     }
@@ -441,11 +442,11 @@ public final class DropSystem extends BaseGameSystem {
     private void giveItems(List<GameItem> items, ActionReason reason, Player player, boolean share) {
         if (share) {
             for (var p : player.getScene().getPlayers()) {
-                p.getInventory().addItems(items, reason);
+                p.getInventory().addItems(items, reason, InventoryAddPolicy.BEST_EFFORT);
                 p.sendPacket(new PacketDropHintNotify(items, player.getPosition().toProto()));
             }
         } else {
-            player.getInventory().addItems(items, reason);
+            player.getInventory().addItems(items, reason, InventoryAddPolicy.BEST_EFFORT);
             player.sendPacket(new PacketDropHintNotify(items, player.getPosition().toProto()));
         }
     }

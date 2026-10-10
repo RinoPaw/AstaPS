@@ -114,16 +114,23 @@ public final class BattlePassCompatHelper {
         return n2;
     }
 
-    public static boolean isRewardAllowed(BattlePassManager manager, int level, int rewardId) {
-        if (manager == null || level <= 0 || rewardId <= 0) return false;
+    public static boolean isRewardAllowed(
+            BattlePassManager manager, int level, int rewardId) {
+        return isRewardAllowed(manager, level, rewardId, false)
+                || isRewardAllowed(manager, level, rewardId, true);
+    }
+
+    public static boolean isRewardAllowed(
+            BattlePassManager manager, int level, int rewardId, boolean paid) {
+        if (manager == null || level <= 0 || rewardId <= 0
+                || (paid && !manager.isPaid())) return false;
         for (int plan = 1; plan <= 4; plan++) {
             BattlePassRewardData data =
                     GameData.getBattlePassRewardDataMap().get(plan * 100 + level);
             if (data == null) continue;
-            if (data.getFreeRewardIdList() != null
-                    && data.getFreeRewardIdList().contains(rewardId)) return true;
-            if (manager.isPaid() && data.getPaidRewardIdList() != null
-                    && data.getPaidRewardIdList().contains(rewardId)) return true;
+            List<Integer> allowed = paid
+                    ? data.getPaidRewardIdList() : data.getFreeRewardIdList();
+            if (allowed != null && allowed.contains(rewardId)) return true;
         }
         return false;
     }
@@ -154,7 +161,7 @@ public final class BattlePassCompatHelper {
                     || (paid && !manager.isPaid())
                     || !seenIds.add(rewardId)
                     || manager.getTakenRewards().containsKey(rewardId)
-                    || !isRewardAllowed(manager, level, rewardId)) {
+                    || !isRewardAllowed(manager, level, rewardId, paid)) {
                 continue;
             }
             RewardData definition = GameData.getRewardDataMap().get(rewardId);

@@ -287,6 +287,7 @@ public class GachaSystem extends BaseGameSystem {
                 banner.getFallbackItems5Pool2(),
                 GachaBanner.DEFAULT_FALLBACK_ITEMS_4_POOL_1,
                 GachaBanner.DEFAULT_FALLBACK_ITEMS_4_POOL_2,
+                GachaBanner.DEFAULT_FALLBACK_ITEMS_5_POOL_1,
                 GachaBanner.DEFAULT_FALLBACK_ITEMS_5_POOL_2);
     }
 

@@ -66,7 +66,7 @@ public class HandlerTakeBattlePassRewardReq extends PacketHandler {
                     || manager.getTakenRewards().containsKey(rewardId)
                     || level < 1 || level > manager.getLevel()
                     || (paid && !manager.isPaid())
-                    || !isRewardInBattlePass(manager, level, rewardId, paid)) {
+                    || !BattlePassCompatHelper.isRewardAllowed(manager, level, rewardId, paid)) {
                 continue;
             }
             List<GameItem> items = BattlePassSelectChestHelper.resolve(rewardId, option.getOptionIdx());
@@ -105,18 +105,6 @@ public class HandlerTakeBattlePassRewardReq extends PacketHandler {
         } else if (normal.isEmpty()) {
             player.sendPacket(new PacketTakeBattlePassRewardRsp(options, granted));
         }
-    }
-
-    /** Never accept a reward solely because the reward ID exists in RewardData. */
-    private static boolean isRewardInBattlePass(
-            BattlePassManager manager, int level, int rewardId, boolean paid) {
-        for (int plan = 1; plan <= 4; plan++) {
-            BattlePassRewardData data = GameData.getBattlePassRewardDataMap().get(plan * 100 + level);
-            if (data == null) continue;
-            var available = paid ? data.getPaidRewardIdList() : data.getFreeRewardIdList();
-            if (available != null && available.contains(rewardId)) return true;
-        }
-        return false;
     }
 
     private static List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> parseOptionsFromWire(byte[] payload) {

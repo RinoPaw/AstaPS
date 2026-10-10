@@ -90,6 +90,12 @@ public final class DropSystem extends BaseGameSystem {
         return items;
     }
 
+    /** True only when the native 7.1 drop root is loaded and has positive-weight entries. */
+    public boolean hasUsableDungeonRewardRoot(int dropId) {
+        return dropId > 0 && dropTable.containsKey(dropId)
+                && !isEmptyDropTable(dropTable.get(dropId));
+    }
+
     public List<GameItem> handleDungeonRewardDrop(int dropId, boolean doubleReward) {
         return resolveDropItems(dropId, doubleReward ? 2 : 1, 1.0);
     }

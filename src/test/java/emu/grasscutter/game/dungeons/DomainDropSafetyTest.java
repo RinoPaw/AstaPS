@@ -29,6 +29,20 @@ final class DomainDropSafetyTest {
     }
 
     @Test
+    void nativeRootHasPriorityAndMissingSourceDoesNotUsePreviewPlaceholder() {
+        assertEquals(DomainDropSafety.RewardSource.NATIVE_ROOT,
+                DomainDropSafety.chooseRewardSource(true, true, true, true));
+        assertEquals(DomainDropSafety.RewardSource.VALIDATED_PROXY,
+                DomainDropSafety.chooseRewardSource(false, true, true, true));
+        assertEquals(DomainDropSafety.RewardSource.NONE,
+                DomainDropSafety.chooseRewardSource(false, false, true, true));
+        assertEquals(DomainDropSafety.RewardSource.PREVIEW_ONLY,
+                DomainDropSafety.chooseRewardSource(false, false, false, true));
+        assertEquals(DomainDropSafety.RewardSource.NONE,
+                DomainDropSafety.chooseRewardSource(false, false, false, false));
+    }
+
+    @Test
     void acceptsUniformAndWeightedValidPools() {
         var first = entry(List.of(1, 3), List.of(104301, 104302));
         first.setProbabilities(List.of(1, 2, 1));

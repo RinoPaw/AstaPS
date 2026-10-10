@@ -12,6 +12,17 @@ final class DomainDropSafety {
 
     private DomainDropSafety() {}
 
+    enum RewardSource { NATIVE_ROOT, VALIDATED_PROXY, PREVIEW_ONLY, NONE }
+
+    /** Original 7.1 drop roots take precedence over reconstructed server proxies. */
+    static RewardSource chooseRewardSource(
+            boolean nativeReady, boolean hasProxy, boolean hasRootPointer, boolean hasPreview) {
+        if (nativeReady) return RewardSource.NATIVE_ROOT;
+        if (hasProxy) return RewardSource.VALIDATED_PROXY;
+        if (hasRootPointer) return RewardSource.NONE;
+        return hasPreview ? RewardSource.PREVIEW_ONLY : RewardSource.NONE;
+    }
+
     static void validatePool(int dungeonId, List<DungeonDropEntry> entries) {
         validatePool(dungeonId, entries, DungeonSubType.DUNGEON_SUB_NONE);
     }

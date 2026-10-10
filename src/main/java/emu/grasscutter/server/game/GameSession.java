@@ -61,6 +61,31 @@ public class GameSession implements GameSessionManager.KcpChannel {
                 world != null && world.isTimeLocked());
     }
 
+    /**
+     * Record the reconnect half of the Amber 35601 lock comparison. The talk-triggered trace
+     * belongs to the previous (now closed) session; enable a new one once scene loading completes
+     * if 35601 persisted as finished but the following quest is still in progress.
+     */
+    public void beginAmberReconnectTraceIfNeeded() {
+        if (amberTraceStartNanos != 0 || player == null || player.getQuestManager() == null) {
+            return;
+        }
+        var completedTalk = player.getQuestManager().getQuestById(35601);
+        var nextQuest = player.getQuestManager().getQuestById(35603);
+        if (completedTalk == null || nextQuest == null
+                || completedTalk.getState()
+                        != emu.grasscutter.game.quest.enums.QuestState.QUEST_STATE_FINISHED
+                || nextQuest.getState()
+                        != emu.grasscutter.game.quest.enums.QuestState.QUEST_STATE_UNFINISHED) {
+            return;
+        }
+        beginAmberInputTrace();
+        Grasscutter.getLogger().info(
+                "[AmberWire] Reconnect comparison armed uid={} sceneId={} quest35601={} quest35603={}",
+                player.getUid(), player.getSceneId(),
+                completedTalk.getState(), nextQuest.getState());
+    }
+
     private boolean isAmberTraceActive() {
         long started = amberTraceStartNanos;
         return started != 0

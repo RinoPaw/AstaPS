@@ -321,12 +321,6 @@ public class GachaSystem extends BaseGameSystem {
             return;
         }
         Inventory inventory = player.getInventory();
-        if (inventory.getInventoryTab(ItemType.ITEM_WEAPON).getSize() + times
-                > inventory.getInventoryTab(ItemType.ITEM_WEAPON).getMaxCapacity()) {
-            player.sendPacket(new PacketDoGachaRsp(Retcode.RET_ITEM_EXCEED_LIMIT));
-            return;
-        }
-
         // Get banner
         GachaBanner banner = this.getGachaBanners().get(scheduleId);
         if (banner == null) {

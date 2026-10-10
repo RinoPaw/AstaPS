@@ -34,15 +34,6 @@ final class InventoryRewardAdmission {
     static InventoryAddResult grantIfAccepted(
             Collection<GameItem> items,
             Function<ItemType, InventoryTab> getTab,
-            BooleanSupplier authorize,
-            Runnable confirmed,
-            Function<Collection<GameItem>, InventoryAddResult> grant) {
-        return grantIfAccepted(items, getTab, ignored -> 0, authorize, confirmed, grant);
-    }
-
-    static InventoryAddResult grantIfAccepted(
-            Collection<GameItem> items,
-            Function<ItemType, InventoryTab> getTab,
             IntUnaryOperator currentBalance,
             BooleanSupplier authorize,
             Runnable confirmed,

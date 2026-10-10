@@ -152,6 +152,7 @@ final class InventoryRewardAdmissionTest {
         var result = InventoryRewardAdmission.grantIfAccepted(
                 List.of(shared, shared),
                 type -> type == ItemType.ITEM_MATERIAL ? materials : null,
+                ignored -> 0,
                 () -> { events.add("authorize"); return true; },
                 () -> events.add("confirmed"),
                 items -> { events.add("grant"); return accepted(items); });
@@ -167,6 +168,7 @@ final class InventoryRewardAdmissionTest {
         var result = InventoryRewardAdmission.grantIfAccepted(
                 List.of(item(1002, ItemType.ITEM_RELIQUARY, 1, 1)),
                 type -> type == ItemType.ITEM_RELIQUARY ? relics : null,
+                ignored -> 0,
                 () -> true,
                 () -> {},
                 InventoryRewardAdmissionTest::accepted);
@@ -182,6 +184,7 @@ final class InventoryRewardAdmissionTest {
         assertFalse(InventoryRewardAdmission.grantIfAccepted(
                 List.of(item(1002, ItemType.ITEM_RELIQUARY, 1, 1)),
                 type -> type == ItemType.ITEM_RELIQUARY ? relics : null,
+                ignored -> 0,
                 () -> { events.add("authorize"); return true; },
                 () -> events.add("confirmed"),
                 items -> { events.add("grant"); return accepted(items); }).allAccepted());
@@ -195,6 +198,7 @@ final class InventoryRewardAdmissionTest {
         assertFalse(InventoryRewardAdmission.grantIfAccepted(
                 List.of(item(2001, ItemType.ITEM_MATERIAL, 1, 10)),
                 type -> type == ItemType.ITEM_MATERIAL ? materials : null,
+                ignored -> 0,
                 () -> { events.add("authorize"); return false; },
                 () -> events.add("confirmed"),
                 items -> { events.add("grant"); return accepted(items); }).allAccepted());
@@ -208,6 +212,7 @@ final class InventoryRewardAdmissionTest {
         assertTrue(InventoryRewardAdmission.grantIfAccepted(
                 List.of(item(2001, ItemType.ITEM_MATERIAL, 1, 10)),
                 type -> type == ItemType.ITEM_MATERIAL ? materials : null,
+                ignored -> 0,
                 () -> { events.add("authorize"); return true; },
                 () -> events.add("confirmed"),
                 items -> { events.add("grant"); return accepted(items); }).allAccepted());
@@ -221,6 +226,7 @@ final class InventoryRewardAdmissionTest {
         assertThrows(IllegalStateException.class, () -> InventoryRewardAdmission.grantIfAccepted(
                 List.of(item(2001, ItemType.ITEM_MATERIAL, 1, 10)),
                 type -> type == ItemType.ITEM_MATERIAL ? materials : null,
+                ignored -> 0,
                 () -> { events.add("authorize"); return true; },
                 () -> events.add("confirmed"),
                 items -> { throw new IllegalStateException("write failed"); }));

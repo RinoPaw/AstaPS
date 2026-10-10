@@ -119,9 +119,26 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
             return false;
         }
 
-        GameItem item = new GameItem(itemData, count);
-
-        return addItem(item, reason);
+        if (count <= 0) {
+            return false;
+        }
+        ItemType type = itemData.getItemType();
+        if ((type == ItemType.ITEM_WEAPON || type == ItemType.ITEM_RELIQUARY
+                        || type == ItemType.ITEM_TPS_WEAPON)
+                && count > 1) {
+            try {
+                return addItems(
+                        InventoryGrantBuilder.create(itemData, count, 1),
+                        reason,
+                        InventoryAddPolicy.ALL_OR_NOTHING)
+                        .allAccepted();
+            } catch (IllegalArgumentException e) {
+                Grasscutter.getLogger().warn(
+                        "Rejected oversized equipment grant id={} count={}", itemId, count);
+                return false;
+            }
+        }
+        return addItem(new GameItem(itemData, count), reason);
     }
 
     /** Add one item through the common insertion path. */
@@ -594,7 +611,9 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     }
 
     public synchronized boolean payItem(int id, int count) {
-        if (id <= 0 || count <= 0 || this.getVirtualItemCount(id) < count) return false;
+        if (id <= 0 || count < 0) return false;
+        if (count == 0) return true;
+        if (this.getVirtualItemCount(id) < count) return false;
         this.payVirtualItem(id, count);
         return true;
     }

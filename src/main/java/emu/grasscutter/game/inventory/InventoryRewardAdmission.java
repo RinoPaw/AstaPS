@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.IntUnaryOperator;
 
 /** Validates the entire proposed item batch against current inventory capacity. */
 final class InventoryRewardAdmission {
@@ -16,6 +17,10 @@ final class InventoryRewardAdmission {
             Set.of(101, 102, 105, 106, 107, 121, 201, 202, 203, 204);
 
     private InventoryRewardAdmission() {}
+
+    static boolean isBoundedCurrency(int id) {
+        return id == 201 || id == 202 || id == 203 || id == 204;
+    }
 
     static boolean supportsVirtualItem(int itemId) {
         return VIRTUAL_REWARDS.contains(itemId);
@@ -32,7 +37,17 @@ final class InventoryRewardAdmission {
             BooleanSupplier authorize,
             Runnable confirmed,
             Function<Collection<GameItem>, InventoryAddResult> grant) {
-        InventoryAddResult.Status failure = admissionFailure(items, getTab);
+        return grantIfAccepted(items, getTab, ignored -> 0, authorize, confirmed, grant);
+    }
+
+    static InventoryAddResult grantIfAccepted(
+            Collection<GameItem> items,
+            Function<ItemType, InventoryTab> getTab,
+            IntUnaryOperator currentBalance,
+            BooleanSupplier authorize,
+            Runnable confirmed,
+            Function<Collection<GameItem>, InventoryAddResult> grant) {
+        InventoryAddResult.Status failure = admissionFailure(items, getTab, currentBalance);
         if (failure != null) {
             return InventoryAddResult.rejected(items, failure);
         }
@@ -47,18 +62,20 @@ final class InventoryRewardAdmission {
     static boolean canAccept(
             Collection<GameItem> rewards,
             Function<ItemType, InventoryTab> getTab) {
-        return admissionFailure(rewards, getTab) == null;
+        return admissionFailure(rewards, getTab, ignored -> 0) == null;
     }
 
     private static InventoryAddResult.Status admissionFailure(
             Collection<GameItem> rewards,
-            Function<ItemType, InventoryTab> getTab) {
+            Function<ItemType, InventoryTab> getTab,
+            IntUnaryOperator currentBalance) {
         if (rewards == null || rewards.isEmpty()) {
             return InventoryAddResult.Status.INVALID_ITEM;
         }
         Set<GameItem> seen = Collections.newSetFromMap(new IdentityHashMap<>());
         Map<InventoryTab, Integer> reservedSlots = new IdentityHashMap<>();
         Map<InventoryTab, Map<Integer, Long>> projectedStacks = new IdentityHashMap<>();
+        Map<Integer, Long> projectedCurrencies = new HashMap<>();
 
         for (GameItem item : rewards) {
             if (item == null || item.getCount() <= 0 || item.getItemId() <= 0
@@ -78,6 +95,16 @@ final class InventoryRewardAdmission {
             if (type == ItemType.ITEM_VIRTUAL) {
                 if (!supportsVirtualItem(item.getItemId())) {
                     return InventoryAddResult.Status.UNSUPPORTED_TYPE;
+                }
+                int currencyId = item.getItemId();
+                if (isBoundedCurrency(currencyId)) {
+                    long current = projectedCurrencies.computeIfAbsent(
+                            currencyId, id -> (long) currentBalance.applyAsInt(id));
+                    long next = current + item.getCount();
+                    if (current < 0 || next > Integer.MAX_VALUE) {
+                        return InventoryAddResult.Status.STACK_LIMIT;
+                    }
+                    projectedCurrencies.put(currencyId, next);
                 }
                 continue;
             }

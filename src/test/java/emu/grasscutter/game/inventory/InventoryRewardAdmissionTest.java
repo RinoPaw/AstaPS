@@ -88,6 +88,35 @@ final class InventoryRewardAdmissionTest {
     }
 
     @Test
+    void rejectsCombinedCurrencyOverflowBeforeAuthorization() {
+        var events = new java.util.ArrayList<String>();
+        var result = InventoryRewardAdmission.grantIfAccepted(
+                List.of(
+                        item(202, ItemType.ITEM_VIRTUAL, 15, 1),
+                        item(202, ItemType.ITEM_VIRTUAL, 10, 1)),
+                type -> null,
+                id -> id == 202 ? Integer.MAX_VALUE - 20 : 0,
+                () -> { events.add("charge"); return true; },
+                () -> events.add("confirm"),
+                InventoryRewardAdmissionTest::accepted);
+        assertFalse(result.allAccepted());
+        assertEquals(InventoryAddResult.Status.STACK_LIMIT, result.entries().get(0).status());
+        assertTrue(events.isEmpty());
+    }
+
+    @Test
+    void acceptsCurrencyWithinIntegerCapacity() {
+        var result = InventoryRewardAdmission.grantIfAccepted(
+                List.of(item(201, ItemType.ITEM_VIRTUAL, 10, 1)),
+                type -> null,
+                id -> Integer.MAX_VALUE - 10,
+                () -> true,
+                () -> {},
+                InventoryRewardAdmissionTest::accepted);
+        assertTrue(result.allAccepted());
+    }
+
+    @Test
     void rejectsUnknownVirtualReward() {
         assertFalse(InventoryRewardAdmission.canAccept(
                 List.of(item(99999, ItemType.ITEM_VIRTUAL, 1, 1)),

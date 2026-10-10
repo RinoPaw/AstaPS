@@ -209,7 +209,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
         Objects.requireNonNull(authorize, "authorize");
         Objects.requireNonNull(confirmed, "confirmed");
         return InventoryRewardAdmission.grantIfAccepted(
-                items, this::getInventoryTab, authorize, confirmed,
+                items, this::getInventoryTab, this::getVirtualItemCount, authorize, confirmed,
                 accepted -> addItemsInternal(accepted, reason, false, false));
     }
 
@@ -456,6 +456,12 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
             case ITEM_VIRTUAL:
                 if (!InventoryRewardAdmission.supportsVirtualItem(item.getItemId())) {
                     return InsertResult.refused(InventoryAddResult.Status.UNSUPPORTED_TYPE);
+                }
+                if (InventoryRewardAdmission.isBoundedCurrency(item.getItemId())) {
+                    long current = getVirtualItemCount(item.getItemId());
+                    if (current < 0 || current + item.getCount() > Integer.MAX_VALUE) {
+                        return InsertResult.refused(InventoryAddResult.Status.STACK_LIMIT);
+                    }
                 }
                 addVirtualItem(item.getItemId(), item.getCount());
                 return InsertResult.stored(item);

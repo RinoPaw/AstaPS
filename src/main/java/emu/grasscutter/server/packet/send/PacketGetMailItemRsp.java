@@ -45,7 +45,7 @@ public class PacketGetMailItemRsp extends BasePacket {
                                 .setPromoteLevel(GameItem.getMinPromoteLevel(attachment.itemLevel))
                                 .build());
                     }
-                } catch (IllegalArgumentException exception) {
+                } catch (RuntimeException exception) {
                     Grasscutter.getLogger().warn(
                             "Mail attachment preparation rejected uid={} mail={}",
                             player.getUid(), mailId, exception);

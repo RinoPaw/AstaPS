@@ -88,7 +88,7 @@ public class HandlerBuyGoodsReq extends PacketHandler {
                 player.save();
             }
 
-            if ((bought + buyCount > sg.getBuyLimit()) && sg.getBuyLimit() != 0) {
+            if (((long) bought + buyCount > sg.getBuyLimit()) && sg.getBuyLimit() != 0) {
                 session.send(new PacketBuyGoodsRsp(Retcode.RET_SHOP_BATCH_BUY_COUNT_LIMIT));
                 continue;
             }
@@ -161,8 +161,8 @@ public class HandlerBuyGoodsReq extends PacketHandler {
                     // slot. Do not charge through a checked bag grant that rejects useOnGain.
                     synchronized (inventory) {
                         delivered = buyCount == 1 && itemCount == 1
-                                && (player.getCostumeList() == null
-                                        || !player.getCostumeList().contains(costumeData.getId()))
+                                && player.getCostumeList() != null
+                                && !player.getCostumeList().contains(costumeData.getId())
                                 && withinCurrentLimit(player.getGoodsLimit(sg.getGoodsId()), sg, buyCount)
                                 && inventory.payItems(costs, buyCount);
                         if (delivered) {

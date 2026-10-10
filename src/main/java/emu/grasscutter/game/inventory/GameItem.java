@@ -164,7 +164,8 @@ public final class GameItem {
         copy.definiteAppendPropIdList =
                 this.definiteAppendPropIdList == null
                         ? null : new ArrayList<>(this.definiteAppendPropIdList);
-        copy.equipCharacter = this.equipCharacter;
+        // A new recipient must never inherit another owner's equipped-avatar linkage.
+        copy.equipCharacter = 0;
         copy.tpsAccessoryIds =
                 this.tpsAccessoryIds == null ? null : new ArrayList<>(this.tpsAccessoryIds);
         return copy;

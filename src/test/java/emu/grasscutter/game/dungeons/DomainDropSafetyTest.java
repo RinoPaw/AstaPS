@@ -88,6 +88,23 @@ final class DomainDropSafetyTest {
     }
 
     @Test
+    void allOtherCommittedDungeonPoolsRemainValid() throws IOException {
+        var source = Files.readString(Path.of("data", "DungeonDrop.json"));
+        DungeonDrop[] drops = new Gson().fromJson(source, DungeonDrop[].class);
+        var invalid = new HashSet<Integer>();
+        for (DungeonDrop drop : drops) {
+            try {
+                DomainDropSafety.validatePool(drop.getDungeonId(), drop.getDrops());
+            } catch (IllegalArgumentException e) {
+                invalid.add(drop.getDungeonId());
+            }
+        }
+        assertEquals(
+                new HashSet<>(List.of(5000, 5001, 5002, 5008, 5100, 5101)),
+                invalid);
+    }
+
+    @Test
     void emptyRewardsNeverChargeOrGrant() {
         var payments = new AtomicInteger();
         var grants = new AtomicInteger();

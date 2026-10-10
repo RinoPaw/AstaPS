@@ -129,7 +129,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
      * callers that add items in batches may instead use addItems or addItemsChecked.
      */
     public boolean addItem(GameItem item) {
-        return addItemsInternal(Collections.singletonList(item), null, false, false);
+        return addItemsInternal(Collections.singletonList(item), null, false, false, false);
     }
 
     public boolean addItem(GameItem item, ActionReason reason) {
@@ -137,7 +137,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     }
 
     public boolean addItem(GameItem item, ActionReason reason, boolean forceNotify) {
-        return addItemsInternal(Collections.singletonList(item), reason, forceNotify, true);
+        return addItemsInternal(Collections.singletonList(item), reason, forceNotify, true, true);
     }
 
     /** Skip elem-ball spam; keep Primogem/Mora tips. */
@@ -180,7 +180,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
         return InventoryRewardAdmission.grantIfAccepted(
                 items, this::getInventoryTab, authorize, confirmed,
                 accepted -> {
-                    if (!addItemsInternal(accepted, reason, false, false)) {
+                    if (!addItemsInternal(accepted, reason, false, false, false)) {
                         throw new IllegalStateException(
                                 "Inventory batch admission passed, but an item grant was rejected");
                     }
@@ -192,7 +192,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     }
 
     public void addItems(Collection<GameItem> items, ActionReason reason) {
-        addItemsInternal(items, reason, false, false);
+        addItemsInternal(items, reason, false, false, false);
     }
 
     /**
@@ -205,7 +205,8 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
             Collection<GameItem> items,
             ActionReason reason,
             boolean forceNotify,
-            boolean notifyAvatarCard) {
+            boolean notifyAvatarCard,
+            boolean allowCurrencyFallback) {
         if (items == null || items.isEmpty()) {
             return false;
         }
@@ -248,7 +249,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
         }
         if (!hintedItems.isEmpty()) {
             ActionReason hintReason = reason;
-            if (hintReason == null && hintedItems.size() == 1
+            if (allowCurrencyFallback && hintReason == null && hintedItems.size() == 1
                     && (hintedItems.get(0).getItemId() == 201
                             || hintedItems.get(0).getItemId() == 202)) {
                 hintReason = ActionReason.OpenChest;
@@ -382,7 +383,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
             return InsertResult.REJECTED;
         }
         ItemData data = item.getItemData();
-        if (data == null || data.getItemType() == null) {
+        if (data == null || data.getItemType() == null || data.getId() != item.getItemId()) {
             return InsertResult.REJECTED;
         }
         try {
@@ -427,6 +428,9 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
                 item.save();
                 return InsertResult.stored(item);
             case ITEM_VIRTUAL:
+                if (!InventoryRewardAdmission.supportsVirtualItem(item.getItemId())) {
+                    return InsertResult.REJECTED;
+                }
                 addVirtualItem(item.getItemId(), item.getCount());
                 return InsertResult.stored(item);
             default:
@@ -465,8 +469,8 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
                             return InsertResult.stored(item);
                         }
                         existingItem.setCount(
-                                Math.min(
-                                        existingItem.getCount() + item.getCount(),
+                                (int) Math.min(
+                                        (long) existingItem.getCount() + item.getCount(),
                                         data.getStackLimit()));
                         existingItem.save();
                         return InsertResult.stored(existingItem);

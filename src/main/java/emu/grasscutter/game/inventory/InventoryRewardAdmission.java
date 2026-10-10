@@ -21,6 +21,10 @@ final class InventoryRewardAdmission {
 
     private InventoryRewardAdmission() {}
 
+    static boolean supportsVirtualItem(int itemId) {
+        return VIRTUAL_REWARDS.contains(itemId);
+    }
+
     /**
      * Execute an optional cost and the full grant under Inventory's lock. The confirmation
      * callback must run after authorization but before any potentially partial write.
@@ -63,7 +67,7 @@ final class InventoryRewardAdmission {
             }
             ItemType type = data.getItemType();
             if (type == ItemType.ITEM_VIRTUAL) {
-                if (!VIRTUAL_REWARDS.contains(item.getItemId())) {
+                if (!supportsVirtualItem(item.getItemId())) {
                     return false;
                 }
                 continue;

@@ -2,6 +2,7 @@ package emu.grasscutter.game.dungeons.fallback;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.excels.dungeon.DungeonData;
+import emu.grasscutter.game.dungeons.DomainChallengeKeyHelper;
 import emu.grasscutter.game.dungeons.challenge.WorldChallenge;
 import emu.grasscutter.game.dungeons.challenge.trigger.InTimeTrigger;
 import emu.grasscutter.game.dungeons.challenge.trigger.KillMonsterCountTrigger;
@@ -12,6 +13,8 @@ import emu.grasscutter.game.entity.gadget.GadgetWorktop;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.net.proto.VisionTypeOuterClass.VisionType;
 import emu.grasscutter.scripts.data.SceneGroup;
+import emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify;
+import emu.grasscutter.server.packet.send.PacketSceneEntityDisappearNotify;
 import emu.grasscutter.server.packet.send.PacketWorktopOptionNotify;
 import java.util.Arrays;
 import java.util.List;
@@ -959,8 +962,8 @@ public final class MissingDomainFallbackManager {
             return false;
         }
 
-        if (gadget.getGroupId() != config.combatGroupId
-                || gadget.getConfigId() != config.starterKeyConfigId) {
+        if (!isConfiguredStarterKey(
+                scene.getId(), gadget.getGroupId(), gadget.getConfigId(), gadget.getGadgetId())) {
             return false;
         }
 
@@ -981,6 +984,16 @@ public final class MissingDomainFallbackManager {
         startFallback(scene, config);
 
         return true;
+    }
+
+    // Keep the compatibility starter isolated from unrelated scene worktops.
+    static boolean isConfiguredStarterKey(
+            int sceneId, int groupId, int configId, int gadgetId) {
+        FallbackDomainConfig config = CONFIGS_BY_SCENE.get(sceneId);
+        return config != null
+                && groupId == config.combatGroupId
+                && configId == config.starterKeyConfigId
+                && DomainChallengeKeyHelper.isChallengeKeyGadgetId(gadgetId);
     }
 
     private static void prepareFallbackDomain(Scene scene, FallbackDomainConfig config) {
@@ -1037,22 +1050,44 @@ public final class MissingDomainFallbackManager {
             gadget = refreshedGadget;
         }
 
-        if (!(gadget.getContent() instanceof GadgetWorktop worktop)) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "[MissingDomainFallback] Starter key config {} in scene {} is not a worktop gadget.",
-                            config.starterKeyConfigId,
-                            config.sceneId);
+        if (!isConfiguredStarterKey(
+                scene.getId(), gadget.getGroupId(), gadget.getConfigId(), gadget.getGadgetId())) {
+            Grasscutter.getLogger().warn(
+                    "[MissingDomainFallback] Unexpected starter entity scene={} group={} config={} gadget={}",
+                    scene.getId(), gadget.getGroupId(), gadget.getConfigId(), gadget.getGadgetId());
             return;
         }
 
+        // Resource-only compatibility scenes can construct a generic GadgetObject
+        // for an otherwise valid challenge-key prefab. Convert only the known
+        // fallback starter to a worktop, before notifying the client.
+        if (!(gadget.getContent() instanceof GadgetWorktop)) {
+            Grasscutter.getLogger().info(
+                    "[MissingDomainFallback] Adapting starter key scene={} gadget={} oldContent={}",
+                    scene.getId(), gadget.getGadgetId(),
+                    gadget.getContent() == null ? "null" : gadget.getContent().getClass().getSimpleName());
+            gadget.replaceContent(new GadgetWorktop(gadget));
+        }
+        GadgetWorktop worktop = (GadgetWorktop) gadget.getContent();
         worktop.addWorktopOptions(new int[] {START_OPTION_ID});
+        if (gadget.getState() != 0) {
+            gadget.updateState(0);
+        }
+        gadget.setInteractEnabled(true);
+        // A worktop option notify alone cannot reclassify a previously sent
+        // generic gadget on the client. Resend the full updated entity proto.
+        scene.broadcastPacket(new PacketSceneEntityDisappearNotify(
+                gadget, VisionType.VisionType_VISION_REMOVE));
+        scene.broadcastPacket(new PacketSceneEntityAppearNotify(gadget));
         scene.broadcastPacket(new PacketWorktopOptionNotify(gadget));
 
-        Grasscutter.getLogger()
-                .info(
-                        "[MissingDomainFallback] Starter key armed for scene {}.",
-                        config.sceneId);
+        Grasscutter.getLogger().info(
+                "[MissingDomainFallback] Starter key armed scene={} entity={} gadget={} "
+                        + "group={} cfg={} state={} pos=({}, {}, {}) options={}",
+                scene.getId(), gadget.getId(), gadget.getGadgetId(),
+                gadget.getGroupId(), gadget.getConfigId(), gadget.getState(),
+                gadget.getPosition().getX(), gadget.getPosition().getY(),
+                gadget.getPosition().getZ(), worktop.getWorktopOptions());
     }
 
     private static void startFallback(Scene scene, FallbackDomainConfig config) {

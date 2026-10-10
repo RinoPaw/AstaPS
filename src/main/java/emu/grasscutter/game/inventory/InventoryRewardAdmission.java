@@ -9,12 +9,7 @@ import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-/**
- * Projects a whole reward batch against the current inventory without modifying it.
- *
- * <p>Inventory still does the insertion. This guards common no-space and stack-overflow cases
- * before payment; it cannot roll back a database or item-use failure after payment.
- */
+/** Validates the entire proposed item batch against current inventory capacity. */
 final class InventoryRewardAdmission {
     private static final Set<Integer> VIRTUAL_REWARDS =
             Set.of(101, 102, 105, 106, 107, 121, 201, 202, 203, 204);
@@ -26,8 +21,9 @@ final class InventoryRewardAdmission {
     }
 
     /**
-     * Execute an optional cost and the full grant under Inventory's lock. The confirmation
-     * callback must run after authorization but before any potentially partial write.
+     * Authorization runs only after every item passes admission. The confirmation callback
+     * runs before the first write, so a partial persistence failure is not charged twice.
+     * This is not a durable database transaction.
      */
     static InventoryAddResult grantIfAccepted(
             Collection<GameItem> items,
@@ -35,9 +31,9 @@ final class InventoryRewardAdmission {
             BooleanSupplier authorize,
             Runnable confirmed,
             Function<Collection<GameItem>, InventoryAddResult> grant) {
-        if (!canAccept(items, getTab)) {
-            return InventoryAddResult.rejected(
-                    items, InventoryAddResult.Status.BATCH_REJECTED);
+        InventoryAddResult.Status failure = admissionFailure(items, getTab);
+        if (failure != null) {
+            return InventoryAddResult.rejected(items, failure);
         }
         if (!authorize.getAsBoolean()) {
             return InventoryAddResult.rejected(
@@ -50,59 +46,71 @@ final class InventoryRewardAdmission {
     static boolean canAccept(
             Collection<GameItem> rewards,
             Function<ItemType, InventoryTab> getTab) {
+        return admissionFailure(rewards, getTab) == null;
+    }
+
+    private static InventoryAddResult.Status admissionFailure(
+            Collection<GameItem> rewards,
+            Function<ItemType, InventoryTab> getTab) {
         if (rewards == null || rewards.isEmpty()) {
-            return false;
+            return InventoryAddResult.Status.INVALID_ITEM;
         }
         Map<InventoryTab, Integer> reservedSlots = new IdentityHashMap<>();
         Map<InventoryTab, Map<Integer, Long>> projectedStacks = new IdentityHashMap<>();
 
         for (GameItem item : rewards) {
             if (item == null || item.getCount() <= 0 || item.getItemId() <= 0) {
-                return false;
+                return InventoryAddResult.Status.INVALID_ITEM;
             }
             ItemData data = item.getItemData();
             if (data == null || data.getId() != item.getItemId()
-                    || data.getItemType() == null || data.isUseOnGain()) {
-                // useOnGain is a non-inventory side effect whose success cannot be guaranteed.
-                return false;
+                    || data.getItemType() == null) {
+                return InventoryAddResult.Status.INVALID_ITEM;
+            }
+            if (data.isUseOnGain()) {
+                // A direct use has an external side effect and cannot be reserved as a bag slot.
+                return InventoryAddResult.Status.UNSUPPORTED_TYPE;
             }
             ItemType type = data.getItemType();
             if (type == ItemType.ITEM_VIRTUAL) {
                 if (!supportsVirtualItem(item.getItemId())) {
-                    return false;
+                    return InventoryAddResult.Status.UNSUPPORTED_TYPE;
                 }
                 continue;
             }
-            // TPS weapons have unique-owned semantics. They are not valid domain prizes.
-            if (type == ItemType.ITEM_TPS_WEAPON) {
-                return false;
+            if (type == ItemType.ITEM_TPS_WEAPON || type == ItemType.ITEM_NONE
+                    || type == ItemType.ITEM_DISPLAY) {
+                return InventoryAddResult.Status.UNSUPPORTED_TYPE;
             }
             InventoryTab tab = getTab.apply(type);
             if (tab == null) {
-                return false;
+                return InventoryAddResult.Status.UNSUPPORTED_TYPE;
             }
 
             if (type == ItemType.ITEM_WEAPON || type == ItemType.ITEM_RELIQUARY) {
-                if (item.getCount() != 1 || !reserveSlot(tab, reservedSlots)) {
-                    return false;
+                if (item.getCount() != 1) {
+                    return InventoryAddResult.Status.INVALID_ITEM;
+                }
+                if (!reserveSlot(tab, reservedSlots)) {
+                    return InventoryAddResult.Status.CAPACITY_FULL;
                 }
                 continue;
             }
             MaterialType materialType = data.getMaterialType();
             if (materialType == null) {
-                return false;
+                return InventoryAddResult.Status.INVALID_ITEM;
             }
             switch (materialType) {
                 case MATERIAL_AVATAR, MATERIAL_FLYCLOAK, MATERIAL_COSTUME, MATERIAL_NAMECARD -> {
-                    return false;
+                    return InventoryAddResult.Status.UNSUPPORTED_TYPE;
                 }
                 default -> {
-                    // Material and furniture items share one slot for each distinct item ID.
+                    // Material and furniture items share a slot for each distinct item ID.
                 }
             }
             long limit = data.getStackLimit();
             if (limit <= 0) {
-                return false;
+                return InventoryAddResult.Status.STACK_LIMIT;
             }
             Map<Integer, Long> stacks =
                     projectedStacks.computeIfAbsent(tab, unused -> new HashMap<>());
@@ -110,15 +118,15 @@ final class InventoryRewardAdmission {
                     item.getItemId(), id -> (long) tab.getItemCountById(id));
             long next = current + item.getCount();
             if (next > limit) {
-                return false;
+                return InventoryAddResult.Status.STACK_LIMIT;
             }
             if (current == 0 && tab.getItemById(item.getItemId()) == null
                     && !reserveSlot(tab, reservedSlots)) {
-                return false;
+                return InventoryAddResult.Status.CAPACITY_FULL;
             }
             stacks.put(item.getItemId(), next);
         }
-        return true;
+        return null;
     }
 
     private static boolean reserveSlot(

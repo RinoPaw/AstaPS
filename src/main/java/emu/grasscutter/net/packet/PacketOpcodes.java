@@ -1149,7 +1149,7 @@ public final class PacketOpcodes {
     public static final int SetPlayerNameReq = 22295;
     public static final int SetWidgetSlotRsp = 25794;
     // public static final int FMKDPHDBHIM = 4251;
-    public static final int TakeInvestigationTargetRewardReq = 0; // 7.1 CmdId unknown (7.0: 7412)
+    public static final int TakeInvestigationTargetRewardReq = 2703; // Confirmed by 7.1 Experience claims
     // public static final int PCLEHGGPNKK = 1947;
     // public static final int BENHPFCNFNE = 29598;
     // public static final int DNFBFDPINBA = 22612;
@@ -2521,7 +2521,7 @@ public final class PacketOpcodes {
     public static final int CheckGroupReplacedRsp = 8911;
     public static final int AchievementUpdateNotify = 5513;
     public static final int _PlayerNormalLuaShellNotify = 0; // 7.1 CmdId unknown (7.0: 27286)
-    public static final int AvatarPromoteReq = 0; // 7.1 CmdId unknown (7.0: 27289)
+    public static final int AvatarPromoteReq = 28539; // live click (7.0: 27289)
     public static final int WidgetQuickHitTreeReq = 4121;
     public static final int GCGWeekChallengeInfoNotify = 20117;
     // public static final int HCDFOHEBFJJ = 25159;

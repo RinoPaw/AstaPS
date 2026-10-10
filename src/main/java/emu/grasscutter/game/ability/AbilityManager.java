@@ -993,16 +993,16 @@ public final class AbilityManager extends BasePlayerManager {
                 Grasscutter.getLogger().trace("handleModifierChange: modifiers map is null for ability={} entityId={}", instancedAbilityData.abilityName, invoke.getEntityId());
                 return;
             }
-            var modifierArray = instancedAbilityData.modifiers.values().toArray();
-            if (modChange.getModifierLocalId() >= modifierArray.length) {
+            var modifierLocalId = modChange.getModifierLocalId();
+            var modifierData = instancedAbilityData.modifierAt(modifierLocalId);
+            if (modifierData == null) {
                 Grasscutter.getLogger().trace(
                     "handleModifierChange: modifierLocalId={} out of bounds for ability={} (modifierCount={}), entityId={} modId={}",
-                    modChange.getModifierLocalId(), instancedAbilityData.abilityName, modifierArray.length,
+                    modifierLocalId, instancedAbilityData.abilityName, instancedAbilityData.modifierCount(),
                     invoke.getEntityId(), head.getInstancedModifierId());
                 return;
             }
 
-            var modifierData = (AbilityModifier) modifierArray[modChange.getModifierLocalId()];
             if (entity.getInstancedModifiers().containsKey(head.getInstancedModifierId())) {
                 Grasscutter.getLogger()
                     .trace(
@@ -1099,7 +1099,7 @@ public final class AbilityManager extends BasePlayerManager {
 
             try {
                 String lohenModName =
-                        resolveModifierMapName(instancedAbilityData, modChange.getModifierLocalId());
+                        instancedAbilityData.modifierNameAt(modChange.getModifierLocalId());
                 if (LohenExtraArtSkillLevelHelper.isExtraArtModifier(lohenModName) && instancedAbility != null) {
                     LohenExtraArtSkillLevelHelper.onModifierApplied(
                             instancedAbility, head.getInstancedModifierId());
@@ -1119,7 +1119,7 @@ public final class AbilityManager extends BasePlayerManager {
                 }
                 if (resolvedModName == null) {
                     resolvedModName =
-                            resolveModifierMapName(instancedAbilityData, modChange.getModifierLocalId());
+                            instancedAbilityData.modifierNameAt(modChange.getModifierLocalId());
                 }
                 if (resolvedModName != null && AbilityMaxHpRatioHelper.hasMaxHpRatio(modifierData)) {
                     AbilityMaxHpRatioHelper.onModifierAdded(
@@ -1192,8 +1192,8 @@ public final class AbilityManager extends BasePlayerManager {
                         }
                         if (limboModName == null && removed.getAbilityData() != null) {
                             limboModName =
-                                    resolveModifierMapName(
-                                            removed.getAbilityData(), modChange.getModifierLocalId());
+                                    removed.getAbilityData()
+                                            .modifierNameAt(modChange.getModifierLocalId());
                         }
                         if (limboModName != null) {
                             entity.onLimboModifierRemoved(removed.getAbility(), limboModName);
@@ -1221,18 +1221,6 @@ public final class AbilityManager extends BasePlayerManager {
                     "Test_LightLock_Seal_Logic", "Test_LightLock_Bullet" -> true;
             default -> false;
         };
-    }
-
-    /** Match {@link AbilityData} sorted modifier keys used for localId indexing. */
-    private static String resolveModifierMapName(AbilityData abilityData, int modifierLocalId) {
-        if (abilityData == null || abilityData.modifiers == null || modifierLocalId < 0) {
-            return null;
-        }
-        var names = abilityData.modifiers.keySet().stream().sorted().toList();
-        if (modifierLocalId >= names.size()) {
-            return null;
-        }
-        return names.get(modifierLocalId);
     }
 
     private void handleMixinCostStamina(AbilityInvokeEntry invoke)

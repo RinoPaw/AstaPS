@@ -11,14 +11,14 @@ import emu.grasscutter.game.avatar.AvatarExtraLevelOpcodes;
 import emu.grasscutter.game.avatar.AvatarGuidCodec;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.proto.AvatarExtraLevelUpgradeReqParser;
-import emu.grasscutter.net.proto.AvatarPromoteReqOuterClass;
+import emu.grasscutter.net.proto.AvatarPromoteReqParser;
 import emu.grasscutter.net.proto.ParsedExtraLevelUpgradeReq;
 import java.util.Set;
 
 public final class ExtraLevelUiBridge {
     private static final int MAX_PAYLOAD = 256;
     private static final int UNION_CMD_NOTIFY = PacketOpcodes.UnionCmdNotify;
-    private static final int PROMOTE_REQ_70 = PacketOpcodes.AvatarPromoteReq;
+    private static final int PROMOTE_REQ = PacketOpcodes.AvatarPromoteReq;
     private static final Set<Integer> IGNORE = Set.of(Integer.valueOf(1211), Integer.valueOf(119), Integer.valueOf(24997), Integer.valueOf(27433), Integer.valueOf(28092), Integer.valueOf(23961), Integer.valueOf(1185), Integer.valueOf(7886), Integer.valueOf(4646));
 
     private ExtraLevelUiBridge() {
@@ -35,7 +35,8 @@ public final class ExtraLevelUiBridge {
     }
 
     private static boolean tryHandleOne(Player player, int n, byte[] byArray) {
-        if (AvatarExtraLevelOpcodes.isKnownRequestOpcode(n) && n != 6091) {
+        // Promote opcodes use their own wire layout, including after opcode discovery.
+        if (n != PROMOTE_REQ && n != 6091 && AvatarExtraLevelOpcodes.isKnownRequestOpcode(n)) {
             try {
                 Avatar avatar;
                 ParsedExtraLevelUpgradeReq parsedExtraLevelUpgradeReq = AvatarExtraLevelUpgradeReqParser.parseAnyStrict(byArray);
@@ -53,13 +54,12 @@ public final class ExtraLevelUiBridge {
             }
             return false;
         }
-        if ((n == PROMOTE_REQ_70 && n != 0) || n == 6091) {
+        if (n == PROMOTE_REQ || n == 6091) {
             if (byArray.length > 256) {
                 return false;
             }
             try {
-                AvatarPromoteReqOuterClass.AvatarPromoteReq avatarPromoteReq = AvatarPromoteReqOuterClass.AvatarPromoteReq.parseFrom(byArray);
-                long l = AvatarGuidCodec.resolve(player, avatarPromoteReq.getGuid());
+                long l = AvatarGuidCodec.resolve(player, AvatarPromoteReqParser.parseGuid(byArray));
                 Avatar avatar = player.getAvatars().getAvatarByGuid(l);
                 if (avatar != null && ExtraLevelUiBridge.isExtraLevelCandidate(avatar)) {
                     Grasscutter.getLogger().info("ExtraLevel PromoteReq opcode={} avatar={} level={}", n, avatar.getAvatarId(), avatar.getLevel());

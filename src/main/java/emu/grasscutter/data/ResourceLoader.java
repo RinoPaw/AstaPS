@@ -412,7 +412,14 @@ public final class ResourceLoader {
         }
     }
 
+    /**
+     * Abilities whose loaded definition came from {@code BinOutput/Ability/Temp/QuestAbilities/}.
+     * Only a quest may grant these, so they are never merged into an avatar's default embryo.
+     */
+    private static final Set<String> questAbilityNames = ConcurrentHashMap.newKeySet();
+
     private static void loadAbilityModifiers() {
+        questAbilityNames.clear();
 
         try (Stream<Path> paths = Files.walk(getResourcePath("BinOutput/Ability/Temp/"))) {
             paths
@@ -426,12 +433,21 @@ public final class ResourceLoader {
     }
 
     private static void loadAbilityModifiers(Path path) {
+        boolean fromQuestDir = isQuestAbilityPath(path);
         try {
             JsonUtils.loadToListLenient(path, AbilityConfigData.class)
                     .forEach(data -> {
                         if (data.Default != null) {
                             data.Default.isDynamicAbility = data.Default.isDynamicAbility || data.isDynamicAbility;
                             loadAbilityData(data.Default);
+                            // Last definition loaded wins in the ability map, so track it the same way.
+                            if (data.Default.abilityName != null) {
+                                if (fromQuestDir) {
+                                    questAbilityNames.add(data.Default.abilityName);
+                                } else {
+                                    questAbilityNames.remove(data.Default.abilityName);
+                                }
+                            }
                         }
                     });
         } catch (IOException e) {
@@ -457,8 +473,11 @@ public final class ResourceLoader {
 
             // Quest abilities are dynamic too, but only a quest may grant them. Avatar_Columbina_MainQuest
             // sets a team global value that hides Slot2/Slot5 for every member, so merging it made
-            // Columbina's whole team lose E and Q.
-            if (abilityData.abilityName.contains("Quest")) {
+            // Columbina's whole team lose E and Q. The name check alone misses quest abilities without
+            // "Quest" in their name: Avatar_Nahida_BossRush_SpecialArt adds a 30s special raycast that
+            // forced every Nahida E, tapped or held, into an uncancellable hold. So anything loaded from
+            // the QuestAbilities directory is skipped as well.
+            if (isQuestAbility(abilityData.abilityName)) {
                 continue;
             }
 
@@ -482,6 +501,17 @@ public final class ResourceLoader {
         GameData.getAbilityEmbryoInfo().put(avatarName, mergedEntry);
     }
 }
+
+    static boolean isQuestAbilityPath(Path path) {
+        for (Path segment : path) {
+            if (segment.toString().equals("QuestAbilities")) return true;
+        }
+        return false;
+    }
+
+    static boolean isQuestAbility(String abilityName) {
+        return abilityName.contains("Quest") || questAbilityNames.contains(abilityName);
+    }
 
     private static void loadAbilityData(AbilityData data) {
         // An ability config from a dump whose field names are still obfuscated leaves this null.

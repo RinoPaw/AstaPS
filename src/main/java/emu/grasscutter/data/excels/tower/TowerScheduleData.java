@@ -1,5 +1,6 @@
 package emu.grasscutter.data.excels.tower;
 
+import com.google.gson.annotations.SerializedName;
 import emu.grasscutter.data.*;
 import java.util.List;
 
@@ -7,6 +8,8 @@ import java.util.List;
 public class TowerScheduleData extends GameResource {
     private int scheduleId;
     private List<Integer> entranceFloorId;
+    // The 7.1 resources name this list LHOGNLPBILP; reading it as empty hides floors 9-12.
+    @SerializedName(value = "schedules", alternate = {"LHOGNLPBILP"})
     private List<ScheduleDetail> schedules;
     private int monthlyLevelConfigId;
 

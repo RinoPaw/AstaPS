@@ -48,7 +48,9 @@ public class AccountPersistenceTest {
                 complete.countDown();
             }
 
-            assertEquals(persisted.get(), issued.get(5, TimeUnit.SECONDS));
+            String issuedToken = issued.get(5, TimeUnit.SECONDS);
+            assertNotNull(issuedToken);
+            assertEquals(issuedToken, persisted.get());
         }
     }
 

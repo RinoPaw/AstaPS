@@ -86,7 +86,19 @@ public class AbilityMixinData implements Serializable {
         AttackCostElementMixin,
         OnAvatarUseSkillMixin,
         DoActionByElementReactionMixin,
-        DoActionBySelfElementReactionMixin
+        DoActionBySelfElementReactionMixin,
+        // Saurians, and the scan that opens it. Each of these names is in the 7.1 resource data with no
+        // constant here, so GSON leaves type null; a null type matches no handler, and the mixin is dropped
+        // without a sound while the action lists beside it still parse.
+        TryEnterVehicleMixin,
+        DoActionOnVehicleInteractPostMixin,
+        TriggerVehicleOff,
+        PhlogistonAreaMixin,
+        // The "is a Saurian in range" scan that opens the ride, plus its siblings from the same
+        // modifier. Missing here too, so GSON nulled them the same way.
+        CheckSubTagScanEntityMixin,
+        SubTagScanEntityMixin,
+        StageReadyMixin
     }
     public AbilityModifierAction[] idontknowwhattonamethis;
     public AbilityModifierAction[] idontknowwhattonamethis2;
@@ -121,6 +133,46 @@ public class AbilityMixinData implements Serializable {
 
     @SerializedName("succActions")
     public AbilityModifierAction[] succActions;
+
+    /** DoActionOnVehicleInteractPostMixin: runs once the player is on the vehicle. */
+    @SerializedName("onVehicleIn")
+    public AbilityModifierAction[] onVehicleIn;
+
+    /** DoActionOnVehicleInteractPostMixin: runs once the player is off the vehicle again. */
+    @SerializedName(value = "onVehicleOut", alternate = "NFPAFDMIGFA")
+    public AbilityModifierAction[] onVehicleOut;
+
+    /** TryEnterVehicleMixin's action list; the key is still obfuscated in the resource data. */
+    public AbilityModifierAction[] AIKNGFLJEDJ;
+
+    /** TryEnterVehicleMixin: which vehicle family this accepts, "Natsaurus" for the Natlan Saurians. */
+    public String vehicleType;
+
+    /** TryEnterVehicleMixin's only numeric param (0.6 for the Natlan Saurians); its meaning is not settled. */
+    public DynamicFloat FKKOBPIDGPC = DynamicFloat.ZERO;
+
+    /** CheckSubTagScanEntityMixin: runs when the scan first picks up an entity carrying {@link #tag}. */
+    @SerializedName("onSelectStart")
+    public AbilityModifierAction[] onSelectStart;
+
+    /** CheckSubTagScanEntityMixin: runs when the scan loses its entity. The key is still obfuscated. */
+    @SerializedName("IMEDGAOLLEM")
+    public AbilityModifierAction[] onSelectEnd;
+
+    /** The area mixins' action list for entering it. */
+    @SerializedName("onEnterArea")
+    public AbilityModifierAction[] onEnterArea;
+
+    /** The area mixins' action list for leaving it. */
+    @SerializedName("onExitArea")
+    public AbilityModifierAction[] onExitArea;
+
+    /** StageReadyMixin's action list. */
+    @SerializedName("onStageReady")
+    public AbilityModifierAction[] onStageReady;
+
+    /** CheckSubTagScanEntityMixin / SubTagScanEntityMixin: the sub-tag the scan filters on. */
+    public String tag;
 
     @SerializedName("$type")
     public Type type;

@@ -365,6 +365,13 @@ public class GachaSystem extends BaseGameSystem {
             return;
         }
         gachaInfo = player.getGachaInfo().getBannerInfo(banner);
+        // A wish hook can change the count after the original capacity check.
+        var finalWeaponTab = inventory.getInventoryTab(ItemType.ITEM_WEAPON);
+        if (finalWeaponTab == null
+                || (long) finalWeaponTab.getSize() + times > finalWeaponTab.getMaxCapacity()) {
+            player.sendPacket(new PacketDoGachaRsp(Retcode.RET_ITEM_EXCEED_LIMIT));
+            return;
+        }
 
         int gachaTimesLimit = banner.getGachaTimesLimit();
         if (gachaTimesLimit != Integer.MAX_VALUE

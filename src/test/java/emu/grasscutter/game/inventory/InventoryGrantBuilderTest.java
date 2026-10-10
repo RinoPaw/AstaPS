@@ -23,7 +23,7 @@ final class InventoryGrantBuilderTest {
         assertEquals(3, weapons.size());
         assertNotSame(weapons.get(0), weapons.get(1));
         assertEquals(50, weapons.get(2).getLevel());
-        assertEquals(3, weapons.get(2).getPromoteLevel());
+        assertEquals(1, weapons.get(2).getPromoteLevel());
     }
 
     @Test

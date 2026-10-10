@@ -594,13 +594,13 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     }
 
     public synchronized boolean payItem(int id, int count) {
-        if (this.getVirtualItemCount(id) < count) return false;
+        if (id <= 0 || count <= 0 || this.getVirtualItemCount(id) < count) return false;
         this.payVirtualItem(id, count);
         return true;
     }
 
     public boolean payItem(ItemParamData costItem) {
-        return this.payItem(costItem.getId(), costItem.getCount());
+        return costItem != null && this.payItem(costItem.getId(), costItem.getCount());
     }
 
     public boolean payItems(ItemParamData[] costItems) {
@@ -613,19 +613,7 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
 
     public synchronized boolean payItems(
             ItemParamData[] costItems, int quantity, ActionReason reason) {
-        // Make sure player has requisite items
-        for (ItemParamData cost : costItems)
-            if (this.getVirtualItemCount(cost.getId()) < (cost.getCount() * quantity)) return false;
-        // All costs are satisfied, now remove them all
-        for (ItemParamData cost : costItems) {
-            this.payVirtualItem(cost.getId(), cost.getCount() * quantity);
-        }
-
-        if (reason != null) { // Do we need these?
-            // getPlayer().sendPacket(new PacketItemAddHintNotify(changedItems, reason));
-        }
-        // getPlayer().sendPacket(new PacketStoreItemChangeNotify(changedItems));
-        return true;
+        return costItems != null && payItems(Arrays.asList(costItems), quantity, reason);
     }
 
     public boolean payItems(Iterable<ItemParamData> costItems) {
@@ -636,14 +624,24 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
         return this.payItems(costItems, quantity, null);
     }
 
+    /**
+     * Validate a whole payment, including repeated item IDs and arithmetic overflow,
+     * before consuming anything. All payment entry points share the same inventory lock.
+     */
     public synchronized boolean payItems(
             Iterable<ItemParamData> costItems, int quantity, ActionReason reason) {
-        // Make sure player has requisite items
-        for (ItemParamData cost : costItems)
-            if (getVirtualItemCount(cost.getId()) < (cost.getCount() * quantity)) return false;
-        // All costs are satisfied, now remove them all
-        costItems.forEach(cost -> this.payVirtualItem(cost.getId(), cost.getCount() * quantity));
-        // TODO:handle the reason(need to send certain package)
+        Map<Integer, Integer> totals = InventoryPaymentQuote.calculate(costItems, quantity);
+        if (totals == null) {
+            return false;
+        }
+        for (var cost : totals.entrySet()) {
+            if (getVirtualItemCount(cost.getKey()) < cost.getValue()) {
+                return false;
+            }
+        }
+        for (var cost : totals.entrySet()) {
+            payVirtualItem(cost.getKey(), cost.getValue());
+        }
         return true;
     }
 

@@ -80,10 +80,9 @@ public final class DomainRewardStatueHelper {
     }
 
     /**
-     * The native domain settle script activates the statue base (70340012,
-     * config 5001), not the separate clickable tree (70350008, config 5002).
-     * Forcing StatueActive on the tree gives its client gadget an invalid
-     * state and can remove its interaction prompt.
+     * The native domain settle script activates the reward base (70340012,
+     * config 5001), not the separate generic item accessory (70350008,
+     * config 5002). Keep the accessory in its default state.
      */
     static int rewardGadgetStateAfterSettle(int gadgetId) {
         return gadgetId == REWARD_TREE_GADGET_ID ? 0 : 401;

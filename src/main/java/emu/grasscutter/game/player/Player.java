@@ -456,6 +456,11 @@ public class Player implements PlayerHook, FieldFetch {
         return scene;
     }
 
+    /** Only Natlan's outdoor scene uses the shared phlogiston gauge. */
+    public boolean isInNatlan() {
+        return this.scene != null && this.scene.getId() == 101;
+    }
+
     public void setScene(Scene scene) {
         this.scene = scene;
     }
@@ -664,7 +669,8 @@ public class Player implements PlayerHook, FieldFetch {
                 withQuesting ? 10000 : 0);
         this.setOrFetch(PlayerProperty.PROP_PLAYER_RESIN, 200);
         this.setOrFetch(PlayerProperty.PROP_PHLOGISTON_MAX_VALUE, 10000);
-        this.setProperty(PlayerProperty.PROP_PHLOGISTON_ENABLE, 1);
+        // The active scene enables phlogiston when the player actually enters Natlan.
+        this.setProperty(PlayerProperty.PROP_PHLOGISTON_ENABLE, 0, false);
 
         this.setProperty(PlayerProperty.PROP_CUR_PERSIST_STAMINA,
             this.getProperty(PlayerProperty.PROP_MAX_STAMINA));

@@ -20,6 +20,7 @@ import emu.grasscutter.utils.Utils;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.*;
 import java.util.*;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import lombok.val;
 
@@ -220,12 +221,23 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     }
 
     /**
-     * Validate the complete item grant before charging for a dungeon claim. This checks
-     * available equipment slots, material slots and stack limits, including repeated IDs in
-     * one reward roll. This does not reserve inventory space or provide a database transaction.
+     * Check and grant an entire item batch while holding the inventory lock.
+     *
+     * <p>The authorization callback (such as charging a cost) runs only after the inventory
+     * verifies that all items fit. The confirmed callback runs immediately after authorization,
+     * before any inventory mutation, so callers can record a charged operation even when a later
+     * inventory write throws. This does not make database writes transactional.
+     *
+     * @return false if the batch cannot fit or authorization is declined
      */
-    public synchronized boolean canAcceptRewards(Collection<GameItem> items) {
-        return InventoryRewardAdmission.canAccept(items, this::getInventoryTab);
+    public synchronized boolean addItemsChecked(
+            Collection<GameItem> items,
+            ActionReason reason,
+            BooleanSupplier authorize,
+            Runnable confirmed) {
+        return InventoryRewardAdmission.grantIfAccepted(
+                items, this::getInventoryTab, authorize, confirmed,
+                accepted -> this.addItems(accepted, reason));
     }
 
     public void addItems(Collection<GameItem> items) {

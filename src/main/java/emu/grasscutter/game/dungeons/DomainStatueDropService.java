@@ -106,11 +106,9 @@ public final class DomainStatueDropService {
             Grasscutter.getLogger().warn("appendToRewards failed", t);
         }
 
-        // Prepare and validate rewards before charging. A missing/invalid reward pool must
-        // not consume Resin, Condensed Resin, Fragile Resin or Primogems.
+        // The inventory owns the entire batch admission and insertion. Domain logic only
+        // guards claim eligibility and decides which consumable resource pays for the claim.
         boolean granted;
-        // Send only the validated reward batch after a successful payment and grant.
-        List<GameItem> grantedRewards = new ArrayList<>();
         Inventory inventory = player.getInventory();
         try {
             granted = DomainDropSafety.commitOnce(
@@ -118,27 +116,16 @@ public final class DomainStatueDropService {
                     rewarded,
                     player.getUid(),
                     rewards,
-                    it -> it != null && it.getCount() > 0 && it.getItemId() > 0
-                            && it.getItemData() != null,
-                    () -> {
-                        // Dungeon restarts use the same DungeonManager lock, so they cannot
-                        // reset the pass conditions between this check and payment.
+                    (items, confirmPayment) -> {
+                        // Recheck completion under the DungeonManager lock before charging.
                         if (!dm.isFinishedSuccessfully()) {
                             return false;
                         }
-                        if (!inventory.canAcceptRewards(rewards)) {
-                            Grasscutter.getLogger()
-                                    .warn(
-                                            "StatueDrop abort: insufficient inventory capacity uid={} dungeon={}",
-                                            player.getUid(),
-                                            dungeonData.getId());
-                            return false;
-                        }
-                        return payCost(player, dungeonData, paymentMode);
-                    },
-                    items -> {
-                        inventory.addItems(items, ActionReason.DungeonStatueDrop);
-                        grantedRewards.addAll(items);
+                        return inventory.addItemsChecked(
+                                items,
+                                ActionReason.DungeonStatueDrop,
+                                () -> payCost(player, dungeonData, paymentMode),
+                                confirmPayment);
                     });
         } catch (RuntimeException e) {
             Grasscutter.getLogger()
@@ -151,7 +138,7 @@ public final class DomainStatueDropService {
                             player.getUid(), dungeonData.getId(), mode);
             return false;
         }
-        player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(grantedRewards));
+        player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(rewards));
 
         try {
             dm.getScene()
@@ -168,7 +155,7 @@ public final class DomainStatueDropService {
                         dungeonData.getId(),
                         mode,
                         rollTimes,
-                        grantedRewards.size());
+                        rewards.size());
         return true;
     }
 

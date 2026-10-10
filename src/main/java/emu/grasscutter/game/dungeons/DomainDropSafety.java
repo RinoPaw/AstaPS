@@ -1,12 +1,9 @@
 package emu.grasscutter.game.dungeons;
 
 import emu.grasscutter.game.dungeons.enums.DungeonSubType;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.BiFunction;
 
 /** Validation and one-claim commit guard for configured dungeon rewards. */
 final class DomainDropSafety {
@@ -80,43 +77,25 @@ final class DomainDropSafety {
     }
 
     /**
-     * Serialize the final reward check, payment, inventory grant and claim marker. Callers must
-     * prepare and decorate rewards first, before a consumable resource can be charged.
+     * Serialize a single claim for this dungeon session. The grant implementation is responsible
+     * for validating the complete item batch and applying any inventory constraints.
      *
-     * <p>This is an in-memory, at-most-once guard, not a database transaction. Once payment
-     * succeeds, the claim is marked even if grant throws, to prevent a second charge on retry.
+     * <p>The grant receives a confirmation callback. It must invoke that callback only after
+     * a payment succeeds, and before adding any items. This prevents a retry from charging a
+     * second time if the subsequent grant throws. It is not a database transaction.
      */
     static <T> boolean commitOnce(
             Object lock,
             Set<Integer> rewarded,
             int uid,
             List<T> rewards,
-            Predicate<T> usable,
-            BooleanSupplier pay,
-            Consumer<List<T>> grant) {
+            BiFunction<List<T>, Runnable, Boolean> attemptGrant) {
         synchronized (lock) {
-            if (rewarded == null || rewarded.contains(uid) || rewards == null) {
+            if (rewarded == null || rewarded.contains(uid) || rewards == null
+                    || rewards.isEmpty()) {
                 return false;
             }
-            // Never charge for a partial reward. A single invalid item rejects the entire roll.
-            // Copy valid input so immutable lists can be passed to a grant implementation.
-            if (rewards.isEmpty()) {
-                return false;
-            }
-            for (T item : rewards) {
-                if (!usable.test(item)) {
-                    return false;
-                }
-            }
-            List<T> validRewards = new ArrayList<>(rewards);
-            if (!pay.getAsBoolean()) {
-                return false;
-            }
-            // Inventory writes are not transactional. Record a successful payment before
-            // granting to avoid charging again if inventory code throws midway.
-            rewarded.add(uid);
-            grant.accept(validRewards);
-            return true;
+            return attemptGrant.apply(rewards, () -> rewarded.add(uid));
         }
     }
 }

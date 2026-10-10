@@ -1,6 +1,8 @@
 package emu.grasscutter.game.inventory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.Gson;
@@ -80,5 +82,58 @@ final class InventoryRewardAdmissionTest {
         assertFalse(InventoryRewardAdmission.canAccept(
                 List.of(item(99999, ItemType.ITEM_VIRTUAL, 1, 1)),
                 type -> null));
+    }
+
+    @Test
+    void fullBagDoesNotInvokeAuthorizationOrGrant() {
+        var relics = new EquipInventoryTab(1);
+        relics.onAddItem(item(1001, ItemType.ITEM_RELIQUARY, 1, 1));
+        var events = new java.util.ArrayList<String>();
+        assertFalse(InventoryRewardAdmission.grantIfAccepted(
+                List.of(item(1002, ItemType.ITEM_RELIQUARY, 1, 1)),
+                type -> type == ItemType.ITEM_RELIQUARY ? relics : null,
+                () -> { events.add("authorize"); return true; },
+                () -> events.add("confirmed"),
+                items -> events.add("grant")));
+        assertTrue(events.isEmpty());
+    }
+
+    @Test
+    void rejectedAuthorizationDoesNotConfirmOrGrant() {
+        var materials = new MaterialInventoryTab(2);
+        var events = new java.util.ArrayList<String>();
+        assertFalse(InventoryRewardAdmission.grantIfAccepted(
+                List.of(item(2001, ItemType.ITEM_MATERIAL, 1, 10)),
+                type -> type == ItemType.ITEM_MATERIAL ? materials : null,
+                () -> { events.add("authorize"); return false; },
+                () -> events.add("confirmed"),
+                items -> events.add("grant")));
+        assertEquals(List.of("authorize"), events);
+    }
+
+    @Test
+    void successfulGrantConfirmsChargeBeforeWriting() {
+        var materials = new MaterialInventoryTab(2);
+        var events = new java.util.ArrayList<String>();
+        assertTrue(InventoryRewardAdmission.grantIfAccepted(
+                List.of(item(2001, ItemType.ITEM_MATERIAL, 1, 10)),
+                type -> type == ItemType.ITEM_MATERIAL ? materials : null,
+                () -> { events.add("authorize"); return true; },
+                () -> events.add("confirmed"),
+                items -> events.add("grant")));
+        assertEquals(List.of("authorize", "confirmed", "grant"), events);
+    }
+
+    @Test
+    void grantExceptionStillHappensAfterPaymentConfirmation() {
+        var materials = new MaterialInventoryTab(2);
+        var events = new java.util.ArrayList<String>();
+        assertThrows(IllegalStateException.class, () -> InventoryRewardAdmission.grantIfAccepted(
+                List.of(item(2001, ItemType.ITEM_MATERIAL, 1, 10)),
+                type -> type == ItemType.ITEM_MATERIAL ? materials : null,
+                () -> { events.add("authorize"); return true; },
+                () -> events.add("confirmed"),
+                items -> { throw new IllegalStateException("write failed"); }));
+        assertEquals(List.of("authorize", "confirmed"), events);
     }
 }

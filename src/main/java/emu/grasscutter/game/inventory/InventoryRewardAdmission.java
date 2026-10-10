@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.Function;
 /**
  * Projects a whole reward batch against the current inventory without modifying it.
  *
@@ -19,9 +21,30 @@ final class InventoryRewardAdmission {
 
     private InventoryRewardAdmission() {}
 
+    /**
+     * Execute an optional cost and the full grant under Inventory's lock. The confirmation
+     * callback must run after authorization but before any potentially partial write.
+     */
+    static boolean grantIfAccepted(
+            Collection<GameItem> items,
+            Function<ItemType, InventoryTab> getTab,
+            BooleanSupplier authorize,
+            Runnable confirmed,
+            Consumer<Collection<GameItem>> grant) {
+        if (!canAccept(items, getTab)) {
+            return false;
+        }
+        if (!authorize.getAsBoolean()) {
+            return false;
+        }
+        confirmed.run();
+        grant.accept(items);
+        return true;
+    }
+
     static boolean canAccept(
             Collection<GameItem> rewards,
-            java.util.function.Function<ItemType, InventoryTab> getTab) {
+            Function<ItemType, InventoryTab> getTab) {
         if (rewards == null || rewards.isEmpty()) {
             return false;
         }

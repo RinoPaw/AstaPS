@@ -162,7 +162,7 @@ public final class DomainRewardStatueHelper {
                             reward.getGadgetId(), reward.getConfigId(), reward.getId(),
                             reward.getState(), reward.getPosition(),
                             reward.toProto().getGadget().getIsEnableInteract(),
-                            reward.getContent().getClass().getSimpleName()
+                            reward.getContent() == null ? "none" : reward.getContent().getClass().getSimpleName()
                         });
             }
             for (Player player : scene.getPlayers()) {

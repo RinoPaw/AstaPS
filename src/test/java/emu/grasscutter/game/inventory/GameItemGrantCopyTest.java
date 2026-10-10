@@ -23,7 +23,7 @@ final class GameItemGrantCopyTest {
         source.getAffixes().add(1002);
         source.setPurchasedAppendPropIdList(new ArrayList<>(List.of(3001)));
         source.setDefiniteAppendPropIdList(new ArrayList<>(List.of(3002)));
-        source.getTpsAccessoryIds().add(4001);
+        source.setTpsAccessoryIds(new ArrayList<>(List.of(4001)));
         source.ensurePersistenceId();
 
         var first = source.copyForGrant();

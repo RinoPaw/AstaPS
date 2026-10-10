@@ -1,70 +1,95 @@
 package emu.grasscutter.server.packet.send;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.InventoryAddPolicy;
+import emu.grasscutter.game.inventory.InventoryAddResult;
+import emu.grasscutter.game.inventory.InventoryGrantBuilder;
 import emu.grasscutter.game.mail.Mail;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.net.packet.*;
-import emu.grasscutter.net.proto.EquipParamOuterClass;
+import emu.grasscutter.net.proto.EquipParamOuterClass.EquipParam;
 import emu.grasscutter.net.proto.GetMailItemRspOuterClass.GetMailItemRsp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PacketGetMailItemRsp extends BasePacket {
-
     public PacketGetMailItemRsp(Player player, List<Integer> mailList) {
         super(PacketOpcodes.GetMailItemRsp);
         List<Mail> claimedMessages = new ArrayList<>();
-        List<EquipParamOuterClass.EquipParam> claimedItems = new ArrayList<>();
-
-        GetMailItemRsp.Builder proto = GetMailItemRsp.newBuilder();
+        List<EquipParam> claimedItems = new ArrayList<>();
+        var proto = GetMailItemRsp.newBuilder();
 
         synchronized (player) {
-            boolean modified = false;
-            for (int mailId : mailList) {
+            for (int mailId : new LinkedHashSet<>(mailList)) {
                 Mail message = player.getMail(mailId);
-                if (!message.isAttachmentGot) { // No duplicated item
-                    for (Mail.MailItem mailItem : message.itemList) {
-                        EquipParamOuterClass.EquipParam.Builder item =
-                                EquipParamOuterClass.EquipParam.newBuilder();
-                        int promoteLevel = GameItem.getMinPromoteLevel(mailItem.itemLevel);
-
-                        item.setItemId(mailItem.itemId);
-                        item.setItemNum(mailItem.itemCount);
-                        item.setItemLevel(mailItem.itemLevel);
-                        item.setPromoteLevel(promoteLevel);
-                        claimedItems.add(item.build());
-
-                        GameItem gameItem = new GameItem(GameData.getItemDataMap().get(mailItem.itemId));
-                        gameItem.setCount(mailItem.itemCount);
-                        gameItem.setLevel(mailItem.itemLevel);
-                        gameItem.setPromoteLevel(promoteLevel);
-                        player.getInventory().addItem(gameItem, ActionReason.MailAttachment);
+                if (message == null || message.isAttachmentGot
+                        || message.itemList == null || message.itemList.isEmpty()) {
+                    continue;
+                }
+                List<GameItem> items = new ArrayList<>();
+                List<EquipParam> itemParams = new ArrayList<>();
+                try {
+                    for (Mail.MailItem attachment : message.itemList) {
+                        if (attachment == null || attachment.itemCount <= 0) {
+                            throw new IllegalArgumentException("Invalid mail attachment count");
+                        }
+                        var data = GameData.getItemDataMap().get(attachment.itemId);
+                        items.addAll(InventoryGrantBuilder.create(
+                                data, attachment.itemCount, attachment.itemLevel));
+                        itemParams.add(EquipParam.newBuilder()
+                                .setItemId(attachment.itemId)
+                                .setItemNum(attachment.itemCount)
+                                .setItemLevel(attachment.itemLevel)
+                                .setPromoteLevel(GameItem.getMinPromoteLevel(attachment.itemLevel))
+                                .build());
                     }
+                } catch (IllegalArgumentException exception) {
+                    Grasscutter.getLogger().warn(
+                            "Mail attachment preparation rejected uid={} mail={}",
+                            player.getUid(), mailId, exception);
+                    continue;
+                }
 
-                    message.isAttachmentGot = true;
+                try {
+                    InventoryAddResult result = player.getInventory().addItems(
+                            items,
+                            ActionReason.MailAttachment,
+                            InventoryAddPolicy.ALL_OR_NOTHING,
+                            () -> !message.isAttachmentGot,
+                            () -> {
+                                // Mark before writes so an interrupted grant cannot be replayed.
+                                message.isAttachmentGot = true;
+                                player.replaceMailByIndex(mailId, message);
+                            });
+                    if (!result.allAccepted()) {
+                        Grasscutter.getLogger().warn(
+                                "Mail claim rejected uid={} mail={} result={}",
+                                player.getUid(), mailId, result.entries());
+                        continue;
+                    }
                     claimedMessages.add(message);
-
-                    player.replaceMailByIndex(mailId, message);
-                    modified = true;
+                    claimedItems.addAll(itemParams);
+                } catch (RuntimeException exception) {
+                    Grasscutter.getLogger().error(
+                            "Mail claim interrupted uid={} mail={}",
+                            player.getUid(), mailId, exception);
                 }
             }
-            if (modified) {
+            if (!claimedMessages.isEmpty()) {
                 player.save();
             }
         }
 
-        proto.addAllMailIdList(claimedMessages.stream().map(player::getMailId).map(player.getMailHandler() ::toClientMailId).collect(Collectors.toList()));
+        for (Mail message : claimedMessages) {
+            proto.addMailIdList(player.getMailHandler().toClientMailId(player.getMailId(message)));
+        }
         proto.addAllItemList(claimedItems);
+        setData(proto.build());
 
-        this.setData(proto.build());
-        player
-                .getSession()
-                .send(
-                        new PacketMailChangeNotify(
-                                player,
-                                claimedMessages)); // For some reason you have to also send the MailChangeNotify
-        // packet
+        if (!claimedMessages.isEmpty()) {
+            player.getSession().send(new PacketMailChangeNotify(player, claimedMessages));
+        }
     }
 }

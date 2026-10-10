@@ -1,6 +1,7 @@
 package emu.grasscutter.game.dungeons;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import emu.grasscutter.scripts.constants.ScriptGadgetState;
@@ -23,6 +24,14 @@ final class DomainRewardStatueStateTest {
                 DomainRewardStatueHelper.rewardGadgetStateAfterSettle(70340012));
         assertTrue(DomainRewardStatueHelper.isExitRewardStatue(70340012));
         assertTrue(DomainRewardStatueHelper.isExitRewardStatue(70350008));
+    }
+
+    @Test
+    void synthetic40773PairHasOnlyOneClaimTarget() {
+        assertTrue(DomainRewardStatueHelper.isRewardClaimTarget(40773, 70340012));
+        assertFalse(DomainRewardStatueHelper.isRewardClaimTarget(40773, 70350008));
+        // The compatibility exception is scoped to 40773.
+        assertTrue(DomainRewardStatueHelper.isRewardClaimTarget(40501, 70350008));
     }
 
     @Test

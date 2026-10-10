@@ -96,14 +96,8 @@ public final class DomainRewardStatueHelper {
                 Grasscutter.getLogger().warn("trigger FINISH_CHALLENGE failed scene={}", (Object)scene.getId(), (Object)exception);
             }
             bl = dungeonManager.isFinishedSuccessfully();
-            if (bl) {
-                try {
-                    dungeonManager.finishDungeon();
-                }
-                catch (Exception exception) {
-                    Grasscutter.getLogger().warn("finishDungeon failed scene={}", (Object)scene.getId(), (Object)exception);
-                }
-            }
+            // triggerEvent already settles the dungeon on success.
+
         }
         int n = 0;
         int n2 = 0;

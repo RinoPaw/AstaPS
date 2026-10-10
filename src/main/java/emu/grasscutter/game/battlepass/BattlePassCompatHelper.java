@@ -40,9 +40,12 @@ import emu.grasscutter.data.excels.RewardData;
 import emu.grasscutter.game.battlepass.BattlePassManager;
 import emu.grasscutter.game.battlepass.BattlePassReward;
 import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.InventoryAddPolicy;
+import emu.grasscutter.game.inventory.InventoryGrantBuilder;
 import emu.grasscutter.game.inventory.MaterialType;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ItemUseOp;
+import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.net.packet.BasePacket;
 import emu.grasscutter.net.proto.BattlePassCycleOuterClass;
 import emu.grasscutter.net.proto.BattlePassProductOuterClass;
@@ -62,6 +65,8 @@ import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class BattlePassCompatHelper {
@@ -106,86 +111,124 @@ public final class BattlePassCompatHelper {
         }
         for (int n3 : BP_STACK_TRIPLE_ITEMS) {
             if (n3 != n) continue;
-            return n2 * 3;
+            return Math.multiplyExact(n2, 3);
         }
         return n2;
     }
 
-    public static boolean isRewardAllowed(BattlePassManager battlePassManager, int n, int n2) {
-        if (n2 > 0 && n > 0) {
-            for (int i = 1; i <= 4; ++i) {
-                BattlePassRewardData battlePassRewardData = (BattlePassRewardData)GameData.getBattlePassRewardDataMap().get(i * 100 + n);
-                if (battlePassRewardData == null) continue;
-                if (battlePassRewardData.getFreeRewardIdList() != null && battlePassRewardData.getFreeRewardIdList().contains(n2)) {
-                    return true;
-                }
-                if (!battlePassManager.isPaid() || battlePassRewardData.getPaidRewardIdList() == null || !battlePassRewardData.getPaidRewardIdList().contains(n2)) continue;
-                return true;
-            }
-            return GameData.getRewardDataMap().containsKey(n2);
+    public static boolean isRewardAllowed(BattlePassManager manager, int level, int rewardId) {
+        if (manager == null || level <= 0 || rewardId <= 0) return false;
+        for (int plan = 1; plan <= 4; plan++) {
+            BattlePassRewardData data =
+                    GameData.getBattlePassRewardDataMap().get(plan * 100 + level);
+            if (data == null) continue;
+            if (data.getFreeRewardIdList() != null
+                    && data.getFreeRewardIdList().contains(rewardId)) return true;
+            if (manager.isPaid() && data.getPaidRewardIdList() != null
+                    && data.getPaidRewardIdList().contains(rewardId)) return true;
         }
         return false;
     }
 
-    public static void takeReward(BattlePassManager battlePassManager, List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> list) {
-        if (battlePassManager != null && battlePassManager.getPlayer() != null && list != null) {
-            ArrayList<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> arrayList = new ArrayList<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption>();
-            for (BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption object : list) {
-                if (object == null || object.getTag() == null) continue;
-                int battlePassRewardTakeOption = object.getTag().getRewardId();
-                int battlePassRewardTag = object.getTag().getLevel();
-                if (battlePassRewardTakeOption != 0 && battlePassRewardTag <= battlePassManager.getLevel()) {
-                    if (battlePassManager.getTakenRewards().containsKey(battlePassRewardTakeOption)) {
-                        Grasscutter.getLogger().info("BattlePass already taken uid={} rewardId={}", (Object)battlePassManager.getPlayer().getUid(), (Object)battlePassRewardTakeOption);
-                        continue;
+    /**
+     * Process normal Battle Pass rewards independently. Confirm each claim only after a
+     * complete inventory admission check; reject malformed or incomplete reward definitions.
+     */
+    public static void takeReward(
+            BattlePassManager manager,
+            List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> requested) {
+        if (manager == null || manager.getPlayer() == null || requested == null) return;
+        Player player = manager.getPlayer();
+        List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> claimed =
+                new ArrayList<>();
+        List<GameItem> granted = new ArrayList<>();
+        Set<Integer> seenIds = new HashSet<>();
+
+        for (var option : requested) {
+            if (option == null || !option.hasTag()) continue;
+            var tag = option.getTag();
+            int rewardId = tag.getRewardId();
+            int level = tag.getLevel();
+            boolean paid = tag.getUnlockStatus()
+                    == BattlePassUnlockStatusOuterClass.BattlePassUnlockStatus
+                            .BattlePassUnlockStatus_BATTLE_PASS_UNLOCK_PAID;
+            if (rewardId <= 0 || level < 1 || level > manager.getLevel()
+                    || (paid && !manager.isPaid())
+                    || !seenIds.add(rewardId)
+                    || manager.getTakenRewards().containsKey(rewardId)
+                    || !isRewardAllowed(manager, level, rewardId)) {
+                continue;
+            }
+            RewardData definition = GameData.getRewardDataMap().get(rewardId);
+            if (definition == null || definition.getRewardItemList() == null
+                    || definition.getRewardItemList().isEmpty()) {
+                continue;
+            }
+            List<GameItem> items = new ArrayList<>();
+            try {
+                for (ItemParamData entry : definition.getRewardItemList()) {
+                    if (entry == null || entry.getItemId() <= 0 || entry.getItemCount() <= 0) {
+                        throw new IllegalArgumentException("Invalid BP reward item");
                     }
-                    if (!BattlePassCompatHelper.isRewardAllowed(battlePassManager, battlePassRewardTag, battlePassRewardTakeOption)) {
-                        Grasscutter.getLogger().info("Not in rewards list: {}", (Object)battlePassRewardTakeOption);
-                        continue;
+                    ItemData itemData = GameData.getItemDataMap().get(entry.getItemId());
+                    if (itemData == null) {
+                        throw new IllegalArgumentException("Missing BP item " + entry.getItemId());
                     }
-                    arrayList.add(object);
+                    if (itemData.getMaterialType() == MaterialType.MATERIAL_SELECTABLE_CHEST) {
+                        List<GameItem> chosen = BattlePassSelectChestHelper.resolve(
+                                rewardId, option.getOptionIdx());
+                        if (chosen.isEmpty()) {
+                            throw new IllegalArgumentException("Invalid BP selection");
+                        }
+                        items.addAll(chosen);
+                    } else {
+                        items.addAll(InventoryGrantBuilder.create(
+                                itemData, scaledCount(entry.getItemId(), entry.getItemCount()), 1));
+                    }
+                }
+            } catch (RuntimeException invalid) {
+                Grasscutter.getLogger().warn(
+                        "BattlePass claim invalid uid={} rewardId={}",
+                        player.getUid(), rewardId, invalid);
+                continue;
+            }
+            if (items.isEmpty()) continue;
+
+            BattlePassReward claim = new BattlePassReward(level, rewardId, paid);
+            ActionReason reason = paid ? ActionReason.BattlePassPaidReward
+                    : ActionReason.BattlePassLevelReward;
+            try {
+                var result = player.getInventory().addItems(
+                        items, reason, InventoryAddPolicy.ALL_OR_NOTHING,
+                        () -> !manager.getTakenRewards().containsKey(rewardId),
+                        () -> {
+                            manager.getTakenRewards().put(rewardId, claim);
+                            manager.save();
+                        });
+                if (!result.allAccepted()) {
+                    Grasscutter.getLogger().warn(
+                            "BattlePass claim refused uid={} rewardId={} result={}",
+                            player.getUid(), rewardId, result.entries());
                     continue;
                 }
-                Grasscutter.getLogger().info("BattlePass claim skip uid={} rewardId={} level={} playerLv={}", new Object[]{battlePassManager.getPlayer().getUid(), battlePassRewardTakeOption, battlePassRewardTag, battlePassManager.getLevel()});
+                claimed.add(option);
+                granted.addAll(items);
+            } catch (RuntimeException failure) {
+                Grasscutter.getLogger().error(
+                        "BattlePass grant interrupted uid={} rewardId={}",
+                        player.getUid(), rewardId, failure);
             }
-            if (arrayList.isEmpty()) {
-                Grasscutter.getLogger().info("BattlePass claim empty uid={} requested={}", (Object)battlePassManager.getPlayer().getUid(), (Object)list.size());
-            }
-            List<GameItem> items = null;
-            if (!arrayList.isEmpty()) {
-                items = new ArrayList<>();
-                for (BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption battlePassRewardTakeOption : arrayList) {
-                    BattlePassRewardTagOuterClass.BattlePassRewardTag battlePassRewardTag = battlePassRewardTakeOption.getTag();
-                    int n = battlePassRewardTakeOption.getOptionIdx();
-                    RewardData rewardData = (RewardData)GameData.getRewardDataMap().get(battlePassRewardTag.getRewardId());
-                    if (rewardData == null) continue;
-                    for (ItemParamData itemParamData : rewardData.getRewardItemList()) {
-                        ItemData itemData;
-                        if (itemParamData == null || itemParamData.getItemId() <= 0 || (itemData = (ItemData)GameData.getItemDataMap().get(itemParamData.getItemId())) == null) continue;
-                        if (itemData.getMaterialType() == MaterialType.MATERIAL_SELECTABLE_CHEST) {
-                            BattlePassCompatHelper.takeRewardsFromSelectChest(itemData, n, itemParamData, items);
-                            continue;
-                        }
-                        int n2 = BattlePassCompatHelper.scaledCount(itemParamData.getItemId(), itemParamData.getItemCount());
-                        items.add(new GameItem(itemData, n2));
-                    }
-                    BattlePassReward battlePassReward = new BattlePassReward(battlePassRewardTag.getLevel(), battlePassRewardTag.getRewardId(), battlePassRewardTag.getUnlockStatus() == BattlePassUnlockStatusOuterClass.BattlePassUnlockStatus.BattlePassUnlockStatus_BATTLE_PASS_UNLOCK_PAID);
-                    battlePassManager.getTakenRewards().put(battlePassReward.getRewardId(), battlePassReward);
-                }
-                battlePassManager.save();
-                battlePassManager.getPlayer().getInventory().addItems(items);
-                battlePassManager.getPlayer().sendPacket((BasePacket)new PacketBattlePassCurScheduleUpdateNotify(battlePassManager.getPlayer()));
-                Grasscutter.getLogger().info("BattlePass claim ok uid={} granted={} items={}", new Object[]{battlePassManager.getPlayer().getUid(), arrayList.size(), items.size()});
-            }
-            battlePassManager.getPlayer().sendPacket((BasePacket)new PacketTakeBattlePassRewardRsp(list, items));
         }
-        Object var14_16 = null;
+
+        if (!claimed.isEmpty()) {
+            player.sendPacket(new PacketBattlePassCurScheduleUpdateNotify(player));
+        }
+        player.sendPacket(new PacketTakeBattlePassRewardRsp(claimed, granted));
         try {
-            if (battlePassManager != null && battlePassManager.getPlayer() != null) {
-                battlePassManager.getPlayer().sendPacket((BasePacket)new PacketBeyondBattlePassCurScheduleUpdateNotify(battlePassManager.getPlayer()));
-            }
+            player.sendPacket(new PacketBeyondBattlePassCurScheduleUpdateNotify(player));
+        } catch (RuntimeException failure) {
+            Grasscutter.getLogger().debug("Beyond BP notify failed", failure);
         }
-        catch (Throwable throwable) {}
     }
 
     private static void takeRewardsFromSelectChest(ItemData itemData, int n, ItemParamData itemParamData, List<GameItem> list) {

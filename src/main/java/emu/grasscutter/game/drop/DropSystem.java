@@ -353,15 +353,7 @@ public final class DropSystem extends BaseGameSystem {
                     if (dropTable.containsKey(id)) {
                         processDrop(dropTable.get(id), amount, items);
                     } else {
-                        boolean flag = true;
-                        for (var j : items) {
-                            if (j.getItemId() == id) {
-                                j.setCount(j.getCount() + amount);
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (flag) items.add(new GameItem(id, amount));
+                        appendTerminalReward(items, id, amount);
                     }
                     break;
                 }
@@ -376,19 +368,24 @@ public final class DropSystem extends BaseGameSystem {
                     if (dropTable.containsKey(id)) {
                         processDrop(dropTable.get(id), amount, items);
                     } else {
-                        boolean flag = true;
-                        for (var j : items) {
-                            if (j.getItemId() == id) {
-                                j.setCount(j.getCount() + amount);
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (flag) items.add(new GameItem(id, amount));
+                        appendTerminalReward(items, id, amount);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Terminal drop IDs are item IDs, not nested DropTable IDs. Roll each equipment copy
+     * separately: coalescing reliquaries by template ID loses independently rolled affixes.
+     */
+    private static void appendTerminalReward(List<GameItem> items, int itemId, int amount) {
+        var data = GameData.getItemDataMap().get(itemId);
+        if (data == null) {
+            throw new IllegalArgumentException("Unknown terminal drop item " + itemId);
+        }
+        DropRewardAccumulator.add(
+                items, itemId, amount, data.getItemType(), count -> new GameItem(data, count));
     }
 
     private int calculateDropAmount(DropItemData i) {

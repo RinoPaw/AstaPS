@@ -35,8 +35,8 @@ public class HandlerNpcTalkReq extends PacketHandler {
                         session.send(new PacketNpcTalkRsp(req.getNpcEntityId(), talkId, req.getEntityId(), sequence));
                         if (tracePrologue) {
                             Grasscutter.getLogger().info(
-                                    "[Prologue] NpcTalkRsp sent uid={} talk={}",
-                                    session.getPlayer().getUid(), talkId);
+                                    "[Prologue] NpcTalkRsp sent uid={} talk={} replySeq={}",
+                                    session.getPlayer().getUid(), talkId, sequence);
                         }
                     });
         } catch (RuntimeException e) {

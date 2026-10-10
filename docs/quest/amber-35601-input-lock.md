@@ -50,6 +50,7 @@ The pinned client also demonstrates that incoming CmdIds `1307` and `20114` upda
 Branch: `diagnostics/amber-input-lock-35601` (based on the post-PR71 handoff fixes). Logs **packet names and limited decoded state only, never whole decrypted frames or auth payloads**.
 
 - `[AmberWire]`: 45-second packet-name/direction trace following talk `35601`, first occurrence and packet counts; every pause request (value + world/player pause flags); cutscene finish and end-ack IDs; explicit warning if the pause response is dropped.
+- On a **new session**, `EnterSceneDoneReq` automatically arms a fresh 45-second `[AmberWire]` trace before sending `PlayerTimeNotify` when persisted quest `35601` is FINISHED and `35603` remains UNFINISHED. This supplies the missing reconnect comparison; no instrumentation is activated for other quest states.
 - `[AmberState]`: world/player/time-lock flags at quest completion, `35602` start position, candidate acceptance and region triggers `1126` / `1102`.
 - `[Prologue]`: 35601, 35602, 35603 quest start/finish and talk response ordering.
 

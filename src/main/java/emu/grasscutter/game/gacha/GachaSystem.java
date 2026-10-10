@@ -360,7 +360,7 @@ public class GachaSystem extends BaseGameSystem {
 
         int gachaTimesLimit = banner.getGachaTimesLimit();
         if (gachaTimesLimit != Integer.MAX_VALUE
-                && (gachaInfo.getTotalPulls() + times) > gachaTimesLimit) {
+                && ((long) gachaInfo.getTotalPulls() + times) > gachaTimesLimit) {
             player.sendPacket(new PacketDoGachaRsp(Retcode.RET_GACHA_TIMES_LIMIT));
             return;
         }
@@ -375,8 +375,28 @@ public class GachaSystem extends BaseGameSystem {
             return;
         }
 
-        // Spend currency
+        // The Epitomized Path can award the player's chosen item directly, outside
+        // the regular banner arrays. Validate it before charging as well.
+        int desired = gachaInfo.getWishItemId();
+        if (banner.hasEpitomized()
+                && desired != 0
+                && GameData.getItemDataMap().get(desired) == null) {
+            Grasscutter.getLogger().warn(
+                    "[Gacha] Invalid Epitomized Path item {} on banner {}", desired,
+                    banner.getScheduleId());
+            player.sendPacket(new PacketDoGachaRsp(Retcode.RET_SVR_ERROR));
+            return;
+        }
+
+        // Reject an invalid price rather than accidentally turning overflow into free pulls.
         ItemParamData cost = banner.getCost(times);
+        if (cost == null || cost.getCount() < 0
+                || (cost.getCount() > 0 && cost.getId() <= 0)) {
+            Grasscutter.getLogger().error(
+                    "[Gacha] Invalid price on banner {}", banner.getScheduleId());
+            player.sendPacket(new PacketDoGachaRsp(Retcode.RET_SVR_ERROR));
+            return;
+        }
         if (cost.getCount() > 0 && !inventory.payItem(cost)) {
             player.sendPacket(new PacketDoGachaRsp(Retcode.RET_GACHA_COST_ITEM_NOT_ENOUGH));
             return;
@@ -490,7 +510,11 @@ public class GachaSystem extends BaseGameSystem {
             var gachaItem = compute.getGacha();
 
             gachaItem.setGachaItem(gameItem.toItemParam());
-            inventory.addItem(gameItem);
+            if (!inventory.addItem(gameItem)) {
+                Grasscutter.getLogger().error(
+                        "[Gacha] Paid pull delivery rejected uid={} banner={} item={}",
+                        player.getUid(), banner.getScheduleId(), gameItem.getItemId());
+            }
             stardust += compute.getAddStardust();
             starglitter += compute.getAddStarglitter();
 

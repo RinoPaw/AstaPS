@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 /** Validation and one-claim commit guard for configured dungeon rewards. */
 final class DomainDropSafety {
     private static final int MAX_COUNT_CHOICES = 10_000;
+    private static final int MAX_ITEMS_PER_ROLL = 10_000;
 
     private DomainDropSafety() {}
 
@@ -24,7 +25,8 @@ final class DomainDropSafety {
             List<Integer> counts = entry.getCounts();
             Integer start = counts.get(0);
             Integer end = counts.get(counts.size() - 1);
-            if (start == null || end == null || start < 0 || end < start) {
+            if (start == null || end == null || start < 0 || end < start
+                    || end > MAX_ITEMS_PER_ROLL) {
                 throw invalid(dungeonId, "entry " + index + " has invalid count bounds");
             }
             long choices = (long) end - start + 1;

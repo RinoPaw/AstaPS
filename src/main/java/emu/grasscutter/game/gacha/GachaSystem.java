@@ -274,6 +274,35 @@ public class GachaSystem extends BaseGameSystem {
         };
     }
 
+    private static boolean hasValidRewardPools(GachaBanner banner) {
+        int[] base = banner.getFallbackItems3();
+        if (base == null || base.length == 0) return false;
+        return allPoolItemsKnown(
+                base,
+                banner.getRateUpItems4(),
+                banner.getRateUpItems5(),
+                banner.getFallbackItems4Pool1(),
+                banner.getFallbackItems4Pool2(),
+                banner.getFallbackItems5Pool1(),
+                banner.getFallbackItems5Pool2(),
+                GachaBanner.DEFAULT_FALLBACK_ITEMS_4_POOL_1,
+                GachaBanner.DEFAULT_FALLBACK_ITEMS_4_POOL_2,
+                GachaBanner.DEFAULT_FALLBACK_ITEMS_5_POOL_2);
+    }
+
+    private static boolean allPoolItemsKnown(int[]... pools) {
+        for (int[] pool : pools) {
+            if (pool == null) continue;
+            for (int itemId : pool) {
+                if (itemId <= 0 || GameData.getItemDataMap().get(itemId) == null) {
+                    Grasscutter.getLogger().warn("[Gacha] Invalid item {} in configured pool", itemId);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public synchronized void doPulls(Player player, int scheduleId, int times) {
         // Sanity check
         if (times != 10 && times != 1) {
@@ -322,6 +351,16 @@ public class GachaSystem extends BaseGameSystem {
         if (gachaTimesLimit != Integer.MAX_VALUE
                 && (gachaInfo.getTotalPulls() + times) > gachaTimesLimit) {
             player.sendPacket(new PacketDoGachaRsp(Retcode.RET_GACHA_TIMES_LIMIT));
+            return;
+        }
+
+        // Every possible base/featured item must exist before spending currency. An invalid
+        // pool used to deduct wishes and silently omit rolled items.
+        if (!hasValidRewardPools(banner)) {
+            Grasscutter.getLogger().error(
+                    "[Gacha] Denying pull from banner {} with an invalid reward pool",
+                    banner.getScheduleId());
+            player.sendPacket(new PacketDoGachaRsp(Retcode.RET_SVR_ERROR));
             return;
         }
 

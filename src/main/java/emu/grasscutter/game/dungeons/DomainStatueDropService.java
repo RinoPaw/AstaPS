@@ -199,14 +199,22 @@ public final class DomainStatueDropService {
                 GameData.getDungeonDropDataMap() != null
                         && GameData.getDungeonDropDataMap().containsKey(dungeonId);
         if (hasDungeonDrop) {
-            rewards = rollDungeonDropJson(dm, dungeonData, rollTimes);
+            try {
+                rewards = rollDungeonDropJson(dm, dungeonData, rollTimes);
+            } catch (IllegalArgumentException invalidProxy) {
+                Grasscutter.getLogger()
+                        .warn("StatueDrop: rejecting DungeonDrop.json proxy dungeon={}", dungeonId, invalidProxy);
+                // A malformed or mismatched proxy must not pay out preview placeholders.
+                // Use the source-bound drop root only if it exists and can yield rewards.
+                int nativeRoot = dungeonData.getStatueDrop();
+                return nativeRoot > 0
+                        ? rollStatueDropTable(player, nativeRoot, rollTimes)
+                        : null;
+            }
         }
         int statueDrop = dungeonData.getStatueDrop();
         if ((rewards == null || rewards.isEmpty()) && statueDrop > 0) {
             rewards = rollStatueDropTable(player, statueDrop, rollTimes);
-        }
-        if ((rewards == null || rewards.isEmpty()) && hasDungeonDrop) {
-            rewards = rollDungeonDropJson(dm, dungeonData, rollTimes);
         }
         if ((rewards == null || rewards.isEmpty()) && hasPreview) {
             rewards = new ArrayList<>();
@@ -249,7 +257,7 @@ public final class DomainStatueDropService {
             return rewards;
         }
         List<DungeonDropEntry> dropEntries = GameData.getDungeonDropDataMap().get(dungeonId);
-        DomainDropSafety.validatePool(dungeonId, dropEntries);
+        DomainDropSafety.validatePool(dungeonId, dropEntries, dungeonData.getSubType());
         for (var entry : dropEntries) {
             int start = entry.getCounts().get(0);
             int end = entry.getCounts().get(entry.getCounts().size() - 1);

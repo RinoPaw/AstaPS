@@ -2,6 +2,7 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.quest.GameQuest;
 import emu.grasscutter.game.quest.QuestManager;
+import emu.grasscutter.game.quest.QuestClientVisibility;
 import emu.grasscutter.game.quest.enums.QuestState;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.QuestListUpdateNotifyOuterClass.QuestListUpdateNotify;
@@ -17,8 +18,16 @@ public class PacketQuestListUpdateNotify extends BasePacket {
         // Quest events still start quests with questing off; keep their unfinished states off the
         // client, the same as the login quest list does.
         var builder = QuestListUpdateNotify.newBuilder();
-        if (QuestManager.isQuestingActive() || quest.getState() == QuestState.QUEST_STATE_FINISHED) {
+        if (QuestClientVisibility.includes(quest)) {
             builder.addQuestList(quest.toProto());
+        }
+        if (quest.getSubQuestId() == 35601
+                || quest.getSubQuestId() == 35602
+                || quest.getSubQuestId() == 35603) {
+            emu.grasscutter.Grasscutter.getLogger().info(
+                    "[AmberGuide] QuestListUpdateNotify uid={} quest={} state={} entries={} questingActive={}",
+                    quest.getOwner().getUid(), quest.getSubQuestId(), quest.getState(),
+                    builder.getQuestListCount(), QuestManager.isQuestingActive());
         }
         QuestListUpdateNotify proto = builder.build();
 

@@ -2,6 +2,7 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.quest.enums.QuestState;
+import emu.grasscutter.game.quest.QuestClientVisibility;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.QuestListNotifyOuterClass.QuestListNotify;
 
@@ -24,7 +25,7 @@ public class PacketQuestListNotify extends BasePacket {
                         quest -> {
                             var state = quest.getState();
                             if (state == QuestState.QUEST_STATE_UNSTARTED) return;
-                            if (!questingEnabled && state != QuestState.QUEST_STATE_FINISHED) return;
+                            if (!questingEnabled && !QuestClientVisibility.includes(quest)) return;
                             proto.addQuestList(quest.toProto());
                         });
 

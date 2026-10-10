@@ -19,6 +19,17 @@ public class HandlerNpcTalkReq extends PacketHandler {
 
         if (talkId == 35601) {
             session.beginAmberInputTrace();
+            var player = session.getPlayer();
+            var states = player.getOpenStates();
+            Grasscutter.getLogger().info(
+                    "[AmberGuide] uid={} questingActive={} tutorialOpenStates 7={} 8={} 16={} 17={} 60={}",
+                    player.getUid(),
+                    emu.grasscutter.game.quest.QuestManager.isQuestingActive(),
+                    states.getOrDefault(7, 0),
+                    states.getOrDefault(8, 0),
+                    states.getOrDefault(16, 0),
+                    states.getOrDefault(17, 0),
+                    states.getOrDefault(60, 0));
         }
         if (tracePrologue) {
             Grasscutter.getLogger().info(

@@ -28,7 +28,7 @@ public final class RewardGrantJournal {
     }
 
     public enum Stage {
-        PREPARED, CONFIRMED, COMPLETED
+        PREPARED, CONFIRMED, COMPLETED, ABORTED
     }
 
     public record Key(Source source, int uid, String operationId) {
@@ -114,6 +114,16 @@ public final class RewardGrantJournal {
     /** Confirm only after the caller has accepted its irreversible action. */
     public void confirm(Key key) {
         advance(key, Stage.PREPARED, Stage.CONFIRMED);
+    }
+
+    /**
+     * End a PREPARED attempt only if the caller has positively established that
+     * no payment, claim flag or inventory write took place. Never call this from
+     * an exception handler or for an ambiguous remote/database outcome.
+     * ABORTED receipts remain durable and reject reuse of the same operation ID.
+     */
+    public void abortUnpaid(Key key) {
+        advance(key, Stage.PREPARED, Stage.ABORTED);
     }
 
     /** Call only after all rewards have been delivered; this is not a DB transaction. */

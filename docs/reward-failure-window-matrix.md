@@ -27,3 +27,7 @@ before or after a write and inventory callbacks failing before or after grant
 starts. They do **not** simulate Mongo durability, actual process crashes or
 cross-collection atomicity. These need integration tests before stronger
 guarantees are claimed.
+
+## Database writer boundary
+
+`RewardGrantJournal` submits Mongo writes synchronously, but `DatabaseHelper.saveBattlePass()`, `savePlayer()` and `saveItem()` enqueue asynchronous saves. `DatabaseWriterManager.callSynchronous()` is an admission gate for a direct write; it does **not** drain earlier queued writes. Some asynchronous save failures are logged rather than propagated to the claim caller. Therefore even a `COMPLETED` receipt cannot prove claim flags, property debits, or inventory items are durable. This remains true when the normal process is stopped before outstanding writes finish.

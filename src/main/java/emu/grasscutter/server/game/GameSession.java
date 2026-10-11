@@ -338,6 +338,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
 
         @Override
         public void handleClose() {
+            emu.grasscutter.server.born.BornIntroGate.onSessionDisconnected(this);
             setState(SessionState.INACTIVE);
 
             Grasscutter.getLogger()

@@ -1604,21 +1604,23 @@ public class Player implements PlayerHook, FieldFetch {
             PlayerRuntimeStateCleanup.clear(this);
 
             // Logout cannot queue a delayed teleport: the player leaves the world immediately.
-            // Save the resolved exit destination, not the orphaned dungeon scene.
+            // Keep the old scene ID until World.removePlayer has removed the old scene occupant:
+            // World.removePlayer locates the scene through player.getSceneId().
+            emu.grasscutter.game.dungeons.DungeonSystem.DungeonExitLocation logoutExit = null;
             try {
-                var exit = this.getServer().getDungeonSystem().prepareDungeonLogout(this);
-                if (exit != null) {
-                    this.setSceneId(exit.sceneId());
-                    this.getPosition().set(exit.position());
-                    this.setDungeonReturnSceneId(0);
-                    this.setDungeonReturnPosition(null);
-                }
+                logoutExit = this.getServer().getDungeonSystem().prepareDungeonLogout(this);
             } catch (Throwable e) {
                 Grasscutter.getLogger().warn("Player (UID {}) could not leave the dungeon on logout", getUid(), e);
             }
 
             if (this.getWorld() != null) {
                 this.getWorld().removePlayer(this);
+            }
+            if (logoutExit != null) {
+                this.setSceneId(logoutExit.sceneId());
+                this.getPosition().set(logoutExit.position());
+                this.setDungeonReturnSceneId(0);
+                this.setDungeonReturnPosition(null);
             }
 
             this.getProfile().syncWithCharacter(this);

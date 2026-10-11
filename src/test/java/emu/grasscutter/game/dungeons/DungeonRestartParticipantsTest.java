@@ -11,7 +11,7 @@ final class DungeonRestartParticipantsTest {
     @Test
     void singlePlayerCanBeDetachedDuringRestart() {
         var live = new ArrayList<>(List.of(70632));
-        var detached = DungeonRestartParticipants.detachAll(live, live::remove);
+        var detached = DungeonRestartParticipants.detachAll(live, value -> live.remove((Object) value));
         assertEquals(List.of(70632), detached);
         assertTrue(live.isEmpty());
     }

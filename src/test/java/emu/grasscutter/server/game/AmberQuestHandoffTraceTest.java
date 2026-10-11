@@ -52,6 +52,20 @@ class AmberQuestHandoffTraceTest {
     }
 
     @Test
+    void distinguishesAbsentDefaultsAndStoredUiState() {
+        assertEquals(
+                "1=absent 2=absent 7=stored:1 8=default:1 16=absent "
+                        + "17=stored:0 24=absent 60=absent",
+                AmberQuestHandoffTrace.describeOpenStates(
+                        java.util.Map.of(7, 1, 17, 0), java.util.Set.of(7, 8)));
+        assertEquals(
+                "1=absent 2=absent 7=absent 8=absent 16=absent "
+                        + "17=absent 24=absent 60=absent",
+                AmberQuestHandoffTrace.describeOpenStates(
+                        java.util.Map.of(), java.util.Set.of()));
+    }
+
+    @Test
     void decodesKnownScalarFieldsButNeverAssignsMeaningToUnknownOpcodes() {
         assertEquals("1", AmberQuestHandoffTrace.readOptionalVarint(
                 new byte[] {0x38, 0x01}, 7));

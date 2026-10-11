@@ -347,7 +347,9 @@ public class GameSession implements GameSessionManager.KcpChannel {
 
             if (this.isLoggedIn() && !worldLoginWorkerOwnsCleanup) {
                 Player player = getPlayer();
-                player.onLogout();
+                synchronized (player) {
+                    player.onLogout();
+                }
             }
             try {
                 send(new BasePacket(PacketOpcodes.ServerDisconnectClientNotify));

@@ -87,6 +87,7 @@ final class InventoryRewardAdmission {
                     return InventoryAddResult.Status.INVALID_ITEM;
                 }
                 if (data.getItemType() != ItemType.ITEM_MATERIAL
+                        || data.getMaterialType() == null
                         || data.getItemUseActions() == null
                         || data.getItemUseActions().isEmpty()) {
                     return InventoryAddResult.Status.UNSUPPORTED_TYPE;

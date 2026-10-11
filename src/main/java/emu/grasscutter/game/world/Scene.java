@@ -216,6 +216,8 @@ public class Scene {
         return this.entities.containsKey(entity.getId());
     }
 
+    private final Set<Integer> mondstadtLoggedEntrants = ConcurrentHashMap.newKeySet();
+
     public void addPlayer(Player player) {
         // Leave the old scene before taking this scene's lock. Holding one scene's lock while
         // waiting for another's deadlocks two players swapping between the same two scenes.
@@ -236,6 +238,19 @@ public class Scene {
             this.setupPlayerAvatars(player);
         }
         this.playerEntryCallbacks.enter(player.getUid());
+        if (getId() == 3 && mondstadtLoggedEntrants.add(player.getUid())) {
+            var quests = player.getQuestManager();
+            var team = player.getTeamManager();
+            var q35301 = quests != null ? quests.getQuestById(35301) : null;
+            var q35404 = quests != null ? quests.getQuestById(35404) : null;
+            Grasscutter.getLogger().info(
+                    "[MondstadtTrial] initial uid={} scene=3 quest35301={} quest35404={} usingTrialTeam={} trialIds={} activeTeamSize={}",
+                    player.getUid(),
+                    q35301 != null ? q35301.getState() : "missing",
+                    q35404 != null ? q35404.getState() : "missing",
+                    team.isUsingTrialTeam(), team.getTrialAvatars().keySet(),
+                    team.getActiveTeam().size());
+        }
     }
 
     public synchronized void removePlayer(Player player) {

@@ -35,6 +35,7 @@ public class PacketDoGachaRsp extends BasePacket {
                         .setCostItemNum(costItem.getCount())
                         .setTenCostItemId(costItem10.getId())
                         .setTenCostItemNum(costItem10.getCount())
+                        .setIsCapturingRadiance(list.stream().anyMatch(GachaItem::getIsFlashCard))
                         .addAllGachaItemList(list);
 
         if (banner.hasEpitomized()) {

@@ -12,11 +12,13 @@ import java.util.function.IntPredicate;
 public final class DungeonLoginRecovery {
     private DungeonLoginRecovery() {}
 
+    static boolean hasValidWorldEntry(
+            int candidateId, Position returnPosition, IntPredicate isWorld) {
+        return candidateId > 0 && validPosition(returnPosition) && isWorld.test(candidateId);
+    }
+
     static int chooseWorldScene(int candidateId, Position returnPosition, IntPredicate isWorld) {
-        if (candidateId > 0 && validPosition(returnPosition) && isWorld.test(candidateId)) {
-            return candidateId;
-        }
-        return 3;
+        return hasValidWorldEntry(candidateId, returnPosition, isWorld) ? candidateId : 3;
     }
 
     private static boolean validPosition(Position pos) {
@@ -37,20 +39,19 @@ public final class DungeonLoginRecovery {
         int oldScene = player.getSceneId();
         int requestedWorld = player.getDungeonReturnSceneId();
         Position entryPosition = player.getDungeonReturnPosition();
-        int newScene = chooseWorldScene(requestedWorld, entryPosition,
+        boolean hasEntry = hasValidWorldEntry(requestedWorld, entryPosition,
                 id -> {
                     var data = GameData.getSceneDataMap().get(id);
                     return data != null && data.getSceneType() == SceneType.SCENE_WORLD;
                 });
+        int newScene = hasEntry ? requestedWorld : 3;
 
         player.setSceneId(newScene);
-        player.getPosition().set(newScene == requestedWorld
-                ? entryPosition
-                : GameConstants.START_POSITION);
+        player.getPosition().set(hasEntry ? entryPosition : GameConstants.START_POSITION);
         player.setDungeonReturnSceneId(0);
         player.setDungeonReturnPosition(null);
         Grasscutter.getLogger().info(
                 "Dungeon login recovery uid={} orphanScene={} -> worldScene={} returnEntry={}",
-                player.getUid(), oldScene, newScene, newScene == requestedWorld);
+                player.getUid(), oldScene, newScene, hasEntry);
     }
 }

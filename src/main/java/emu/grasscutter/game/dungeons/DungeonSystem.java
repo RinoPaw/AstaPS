@@ -223,22 +223,22 @@ public final class DungeonSystem extends BaseGameSystem {
             player.getRotation().set(TowerAbyssFix.resolveExitRotation(player));
         }
 
-        int storedReturn = DungeonLoginRecovery.chooseWorldScene(
+        boolean hasStoredEntry = DungeonLoginRecovery.hasValidWorldEntry(
                 player.getDungeonReturnSceneId(),
                 player.getDungeonReturnPosition(),
                 id -> {
                     var target = GameData.getSceneDataMap().get(id);
                     return target != null && target.getSceneType() == SceneType.SCENE_WORLD;
                 });
-        if (!towerDungeon && storedReturn != 3) {
-            prevScene = storedReturn;
+        if (!towerDungeon && hasStoredEntry) {
+            prevScene = player.getDungeonReturnSceneId();
             prevPos.set(player.getDungeonReturnPosition());
         }
 
         if (dungeonData != null) {
             ScenePointEntry entry = GameData.getScenePointEntryById(prevScene, scene.getPrevScenePoint());
 
-            if (!towerDungeon && storedReturn == 3 && entry != null
+            if (!towerDungeon && !hasStoredEntry && entry != null
                     && entry.getPointData() != null
                     && entry.getPointData().getTranPos() != null) {
                 prevPos.set(entry.getPointData().getTranPos());

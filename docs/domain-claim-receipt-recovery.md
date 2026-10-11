@@ -48,3 +48,8 @@ within one dungeon run. `restartDungeon()` creates a new run identity.
 Repeated entry and crash recovery across restarts still require client
 testing; a process crash does not resume the prior DungeonManager.
 Native 7.1 drop rates are unaffected by this change.
+
+A clean `payCost() == false` now marks its attempt `ABORTED` and rotates
+the run's claim token. This permits another attempt without reopening the
+same receipt. An exception or unknown database result must **not** be
+aborted. Expected `debits` are audit data, not verified charges.

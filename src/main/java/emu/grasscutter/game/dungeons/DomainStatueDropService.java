@@ -113,11 +113,17 @@ public final class DomainStatueDropService {
         RewardGrantJournal.Key receiptKey = new RewardGrantJournal.Key(
                 RewardGrantJournal.Source.DOMAIN, player.getUid(), dm.getClaimOperationId());
         List<RewardGrantJournal.Reward> intended;
+        List<RewardGrantJournal.Debit> debits;
         try {
             intended = rewards.stream()
                     .map(item -> new RewardGrantJournal.Reward(
                             item.getItemId(), item.getCount(), item.getLevel()))
                     .toList();
+            debits = DomainClaimPaymentSnapshot.debits(
+                    paymentMode, dungeonData.getStatueCostID(),
+                    dungeonData.getStatueCostCount(),
+                    emu.grasscutter.config.Configuration.GAME.resin.resinUsage,
+                    player.getResinBuyCount());
         } catch (RuntimeException invalid) {
             Grasscutter.getLogger().warn(
                     "StatueDrop abort: invalid receipt snapshot uid={} dungeon={}",
@@ -144,10 +150,21 @@ public final class DomainStatueDropService {
                                         items,
                                         ActionReason.DungeonStatueDrop,
                                         InventoryAddPolicy.ALL_OR_NOTHING,
-                                        () -> DomainClaimPaymentPreflight.canPay(
-                                                        player, dungeonData, paymentMode)
-                                                && journal.prepare(receiptKey, intended)
-                                                && payCost(player, dungeonData, paymentMode),
+                                        () -> {
+                                            if (!DomainClaimPaymentPreflight.canPay(
+                                                    player, dungeonData, paymentMode)
+                                                    || !journal.prepare(receiptKey, intended, debits)) {
+                                                return false;
+                                            }
+                                            if (payCost(player, dungeonData, paymentMode)) {
+                                                return true;
+                                            }
+                                            // A clean failure guarantees no payment. An
+                                            // exception remains unresolved for manual review.
+                                            journal.abortUnpaid(receiptKey);
+                                            dm.rotateClaimIdentityAfterUnpaidAttempt();
+                                            return false;
+                                        },
                                         () -> {
                                             // A paid run remains unclaimable if inventory or
                                             // the journal fails after confirmation.

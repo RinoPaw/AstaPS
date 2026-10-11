@@ -36,8 +36,13 @@ public final class DungeonManager {
     private final DomainClaimRunIdentity claimRunIdentity = new DomainClaimRunIdentity();
 
     // Stable for one dungeon run and different across restarts.
-    String getClaimOperationId() {
+    synchronized String getClaimOperationId() {
         return claimRunIdentity.operationId(dungeonData.getId());
+    }
+
+    /** Only under the dungeon claim lock after a proven no-payment result. */
+    void rotateClaimIdentityAfterUnpaidAttempt() {
+        claimRunIdentity.restart();
     }
 
     // Package-private access for the shared domain claim service. The service synchronizes

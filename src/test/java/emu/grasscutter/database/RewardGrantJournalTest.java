@@ -25,14 +25,14 @@ final class RewardGrantJournalTest {
         public boolean transition(Key key, Stage from, Stage to) {
             Receipt old = receipts.get(key);
             if (old == null || old.stage() != from) return false;
-            receipts.put(key, new Receipt(key, to, old.rewards()));
+            receipts.put(key, new Receipt(key, to, old.rewards(), old.debits()));
             return true;
         }
 
         @Override
         public List<Receipt> unresolved() {
             return receipts.values().stream()
-                    .filter(r -> r.stage() != Stage.COMPLETED)
+                    .filter(r -> r.stage() == Stage.PREPARED || r.stage() == Stage.CONFIRMED)
                     .toList();
         }
     }
@@ -88,4 +88,46 @@ final class RewardGrantJournalTest {
         assertEquals(REWARDS, journal.unresolved().getFirst().rewards());
         assertEquals("mail:10001:deadbeef01", CLAIM.storageId());
     }
+    @Test
+    void preservesPaymentSnapshotThroughAllStages() {
+        var journal = new RewardGrantJournal(new FakeStore());
+        var debits = new ArrayList<>(List.of(new Debit(202, 200), new Debit(201, 5)));
+        assertTrue(journal.prepare(CLAIM, REWARDS, debits));
+        debits.clear();
+        journal.confirm(CLAIM);
+        var receipt = journal.unresolved().getFirst();
+        assertEquals(Stage.CONFIRMED, receipt.stage());
+        assertEquals(List.of(new Debit(202, 200), new Debit(201, 5)), receipt.debits());
+        assertThrows(UnsupportedOperationException.class, () -> receipt.debits().clear());
+        journal.complete(CLAIM);
+        assertTrue(journal.unresolved().isEmpty());
+    }
+
+    @Test
+    void rejectsMalformedDebitAndRetainsOldReceiptConstructor() {
+        assertThrows(IllegalArgumentException.class, () -> new Debit(202, 0));
+        assertThrows(IllegalArgumentException.class, () -> new Debit(-1, 1));
+        assertTrue(new Receipt(CLAIM, Stage.PREPARED, REWARDS).debits().isEmpty());
+    }
+
+    @Test
+    void knownUnpaidAttemptCanAbortButCannotReuseReceiptIdentity() {
+        var journal = new RewardGrantJournal(new FakeStore());
+        assertTrue(journal.prepare(CLAIM, REWARDS));
+        journal.abortUnpaid(CLAIM);
+        assertTrue(journal.unresolved().isEmpty());
+        assertFalse(journal.prepare(CLAIM, REWARDS));
+        assertThrows(IllegalStateException.class, () -> journal.confirm(CLAIM));
+        assertThrows(IllegalStateException.class, () -> journal.abortUnpaid(CLAIM));
+    }
+
+    @Test
+    void confirmedAttemptCannotBeAborted() {
+        var journal = new RewardGrantJournal(new FakeStore());
+        assertTrue(journal.prepare(CLAIM, REWARDS));
+        journal.confirm(CLAIM);
+        assertThrows(IllegalStateException.class, () -> journal.abortUnpaid(CLAIM));
+        assertEquals(Stage.CONFIRMED, journal.unresolved().getFirst().stage());
+    }
+
 }

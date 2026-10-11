@@ -48,15 +48,8 @@ public final class AmberQuestHandoffTrace {
         if (player == null) return;
         var trace = new Trace(player.getUid());
         ACTIVE.put(session, trace);
-        var progress = player.getProgressManager();
-        var fields = new StringBuilder();
-        for (int id : OPEN_STATE_IDS) {
-            if (!fields.isEmpty()) fields.append(' ');
-            boolean stored = player.getOpenStates().containsKey(id);
-            int value = stored ? progress.getOpenState(id)
-                    : PlayerProgressManager.DEFAULT_OPEN_STATES.contains(id) ? 1 : 0;
-            fields.append(id).append('=').append(stored ? "stored:" : "default:").append(value);
-        }
+        String fields = describeOpenStates(
+                player.getOpenStates(), PlayerProgressManager.DEFAULT_OPEN_STATES);
         Grasscutter.getLogger().info(
                 "[AmberHandoff] start uid={} talk={} questingActive={} opens=[{}]",
                 trace.uid, talkId, QuestManager.isQuestingActive(), fields);
@@ -147,6 +140,20 @@ public final class AmberQuestHandoffTrace {
                 "[AmberHandoff] uid={} index={} elapsedMs={} {}",
                 trace.uid, ordinal, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - trace.start),
                 event);
+    }
+
+    /** Absent is not the same as an explicitly stored zero or a resource default. */
+    static String describeOpenStates(
+            java.util.Map<Integer, Integer> stored, java.util.Set<Integer> defaults) {
+        var result = new java.util.StringJoiner(" ");
+        for (int id : OPEN_STATE_IDS) {
+            String value;
+            if (stored.containsKey(id)) value = "stored:" + stored.get(id);
+            else if (defaults.contains(id)) value = "default:1";
+            else value = "absent";
+            result.add(id + "=" + value);
+        }
+        return result.toString();
     }
 
     /** Format only the three quest IDs involved in the tutorial, retaining wire parent/state. */

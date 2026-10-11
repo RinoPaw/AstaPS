@@ -33,6 +33,12 @@ public final class DungeonManager {
 
     @Getter private final int[] finishedConditions;
     private final IntSet rewardedPlayers = new IntOpenHashSet();
+    private final DomainClaimRunIdentity claimRunIdentity = new DomainClaimRunIdentity();
+
+    // Stable for one dungeon run and different across restarts.
+    String getClaimOperationId() {
+        return claimRunIdentity.operationId(dungeonData.getId());
+    }
 
     // Package-private access for the shared domain claim service. The service synchronizes
     // on this DungeonManager while checking and recording a claim.
@@ -340,6 +346,7 @@ public final class DungeonManager {
     public synchronized void restartDungeon() {
         this.scene.setKilledMonsterCount(0);
         this.rewardedPlayers.clear();
+        this.claimRunIdentity.restart();
         Arrays.fill(finishedConditions, 0);
         this.ended = false;
         this.activeDungeonWayPoints.clear();

@@ -253,6 +253,20 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
     /**********
      * Triggered unlocking of open states (unlock states whose conditions have been met.)
      **********/
+    /**
+     * A missing unlock condition is not an automatically satisfied unlock condition.
+     *
+     * <p>The 7.1 OpenStateConfigData resource has server-owned, non-default states without a
+     * condition. Unlocking them on login exposes gated menus and tutorial reminders before the
+     * related quests. Leave such states locked until a quest or another handler explicitly opens
+     * them. Client-owned states must still be opened by the client.
+     */
+    static boolean isAutomaticOpenStateCandidate(OpenStateData state) {
+        return !state.isAllowClientOpen()
+                && (state.isDefaultState()
+                        || (state.getCond() != null && !state.getCond().isEmpty()));
+    }
+
     public void tryUnlockOpenStates(boolean sendNotify) {
         // Get list of open states that are not yet unlocked.
         var lockedStates =
@@ -260,13 +274,10 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                         .filter(s -> this.player.getOpenStates().getOrDefault(s, 0) == 0)
                         .toList();
 
-        // Try unlocking all of them.
+        // Try unlocking only defaults and server-owned states with explicit conditions.
+        // Existing stored unlocks are not revoked; the questing-off login force-fill is unchanged.
         for (var state : lockedStates) {
-            // To auto-unlock a state, it has to meet three conditions:
-            // * it can not be a state that is unlocked by the client,
-            // * it has to meet all its unlock conditions, and
-            // * it can not be in the blacklist.
-            if (!state.isAllowClientOpen()
+            if (isAutomaticOpenStateCandidate(state)
                     && this.areConditionsMet(state)
                     && !BLACKLIST_OPEN_STATES.contains(state.getId())
                     && !IGNORED_OPEN_STATES.contains(state.getId())) {

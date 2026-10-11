@@ -154,3 +154,36 @@ OpenState-7 → BtnToggleQuest visibility dependency has been proven**.
 Do not force this state as a gameplay fix without a controlled test or native
 UI evidence. Do not send a guessed tutorial opcode, auto-advance the guide,
 or bypass local-avatar input locks.
+
+## Second controlled playthrough and verified open-state initialization defect (2026-10-11)
+
+The user created UID 70638 and set **stored** `quest_remind(7)=true`
+before dialogue 35601. The server trace confirms effective questing, `35601`
+FINISHED, `35602` and `35603` UNFINISHED, and stored OpenState 7=1.
+They observed "Press J to open quest menu"; after pressing J, the screen
+darkened and the guide progressed through navigating/tracking the quest.
+The compulsory lock ended when the player clicked the left-side quest
+title. This establishes that the PC guide is **completable**, and that the
+earlier inability to move can be normal compulsory-guide input blocking
+with overlooked first-step hints. It **does not prove** OpenState 7
+caused the success: the first playthrough did not attempt pressing J.
+The user specifically reports the BlackMask should already appear at the
+first "Press J" stage, but instead appeared after opening the menu.
+That presentation discrepancy remains unverified independently.
+
+Separate **confirmed server-side bug**: `OpenStateConfigData.json` (7.1)
+contains **181 server-owned states** with `defaultState=false` and no
+parsed unlock conditions. `PlayerProgressManager.tryUnlockOpenStates`
+previously regarded the empty condition list as trivially met and opened
+them on login, even with questing enabled. That prematurely exposes
+menus and associated tutorial prompts, matching the reported startup HUD
+clutter. The fix requires a **default-open flag or at least one explicit
+server-side condition** before evaluating the normal unlock predicate.
+Client-owned states remain client-controlled; stored unlocks are
+preserved, and questing-off bulk unlock stays unchanged. Automated
+unit tests cover these policy boundaries.
+
+The policy fix is **not** a claimed restoration of the exact
+`GuideQuestGuidePC` first-frame BlackMask. That needs a fresh,
+unmodified tutorial UI observation after unrelated startup notifications
+are reduced. Do not force guide completion or bypass native input.

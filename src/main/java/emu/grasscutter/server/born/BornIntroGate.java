@@ -1,7 +1,6 @@
 package emu.grasscutter.server.born;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.game.quest.QuestChapterBootstrap;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketEnterScenePeerNotify;
 import emu.grasscutter.server.packet.send.PacketEnterSceneReadyRsp;
@@ -14,34 +13,22 @@ public final class BornIntroGate {
     private static final int STARTER_SCENE_ID = 3;
     private static final int STARTER_STATUE_POINT_ID = 7;
 
-    private enum Mode {
-        /** Wait for the 7.1 client-side post-born intro before entering the world. */
-        NATIVE_INTRO,
-        /** Character selection/native intro was skipped; only wait for scene-ready Quest bootstrap. */
-        SCENE_READY_ONLY
-    }
-
     // Key by UID rather than GameSession. The 7.1 client may reconnect while the first cold world
     // login is still finishing; UID scope keeps the fresh-player bootstrap attached to replacement
     // sessions.
     private static final Map<Integer, State> FRESH_PLAYER_BOOTSTRAPS = new ConcurrentHashMap<>();
 
     private static final class State {
-        private final Mode mode;
         private final GameSession originSession;
-        private boolean sawUnpaused;
-        private int completedPauseCycles;
-        private boolean cutoverStarted;
+        private final FreshPlayerLifecycle lifecycle;
         private boolean earlySceneEntrySent;
         private GameSession earlySceneEntrySession;
-        private boolean worldLoginComplete;
-        private boolean questStarted;
         private boolean sceneReadyDeferred;
         private GameSession deferredSceneReadySession;
 
-        private State(Mode mode, GameSession originSession) {
-            this.mode = mode;
+        private State(FreshPlayerLifecycle.Mode mode, GameSession originSession) {
             this.originSession = originSession;
+            this.lifecycle = new FreshPlayerLifecycle(mode);
         }
     }
 
@@ -59,14 +46,24 @@ public final class BornIntroGate {
 
     private static void remove(GameSession session) {
         int uid = uidOf(session);
-        if (uid > 0) FRESH_PLAYER_BOOTSTRAPS.remove(uid);
+        if (uid > 0) {
+            var state = FRESH_PLAYER_BOOTSTRAPS.get(uid);
+            if (state != null && state.originSession == session) {
+                FRESH_PLAYER_BOOTSTRAPS.remove(uid, state);
+            }
+        }
+    }
+
+    /** Releases a disconnected session without deleting another connection's state. */
+    public static void onSessionDisconnected(GameSession session) {
+        remove(session);
     }
 
     /** Begins the native 7.1 post-born intro gate after SetPlayerBornData succeeds. */
     public static void armNativeIntro(GameSession session) {
         int uid = uidOf(session);
         if (uid <= 0) return;
-        FRESH_PLAYER_BOOTSTRAPS.put(uid, new State(Mode.NATIVE_INTRO, session));
+        FRESH_PLAYER_BOOTSTRAPS.put(uid, new State(FreshPlayerLifecycle.Mode.NATIVE_INTRO, session));
     }
 
     /** Compatibility alias retained for existing native-intro callers. */
@@ -82,8 +79,7 @@ public final class BornIntroGate {
         int uid = uidOf(session);
         if (uid <= 0) return;
 
-        State state = new State(Mode.SCENE_READY_ONLY, session);
-        state.cutoverStarted = true;
+        State state = new State(FreshPlayerLifecycle.Mode.SCENE_READY_ONLY, session);
         FRESH_PLAYER_BOOTSTRAPS.put(uid, state);
     }
 
@@ -94,7 +90,7 @@ public final class BornIntroGate {
 
         GameSession deferredReadySession = null;
         synchronized (state) {
-            state.worldLoginComplete = true;
+            if (!state.lifecycle.worldLoginCompleted()) return;
             if (state.sceneReadyDeferred) {
                 deferredReadySession = state.deferredSceneReadySession;
                 state.sceneReadyDeferred = false;
@@ -109,7 +105,8 @@ public final class BornIntroGate {
 
     /** True while either fresh-player path still owns the first-scene Quest bootstrap. */
     public static boolean isFreshPlayerBootstrap(GameSession session) {
-        return stateFor(session) != null;
+        State state = stateFor(session);
+        return state != null && state.originSession == session;
     }
 
     /** Compatibility alias for older call sites. */
@@ -119,7 +116,8 @@ public final class BornIntroGate {
 
     public static boolean isNativeIntro(GameSession session) {
         State state = stateFor(session);
-        return state != null && state.mode == Mode.NATIVE_INTRO;
+        return state != null && state.originSession == session
+                && state.lifecycle.mode() == FreshPlayerLifecycle.Mode.NATIVE_INTRO;
     }
 
     /**
@@ -129,7 +127,8 @@ public final class BornIntroGate {
      */
     public static boolean shouldSuppressLoginSceneEntry(GameSession session) {
         State state = stateFor(session);
-        if (state == null || state.mode != Mode.NATIVE_INTRO) return false;
+        if (state == null || state.originSession != session
+                || state.lifecycle.mode() != FreshPlayerLifecycle.Mode.NATIVE_INTRO) return false;
         synchronized (state) {
             return state.earlySceneEntrySent && state.earlySceneEntrySession == session;
         }
@@ -141,39 +140,23 @@ public final class BornIntroGate {
      * this state machine.
      */
     public static void notePause(GameSession session, boolean paused) {
-        if (session == null) return;
-
         State state = stateFor(session);
-        if (state == null || state.mode != Mode.NATIVE_INTRO) return;
+        if (state == null || state.originSession != session) return;
 
-        int completedCycles = 0;
-        boolean enterWorld = false;
+        boolean enterWorld;
+        int completedCycles;
         synchronized (state) {
-            if (state.originSession != session || state.cutoverStarted) return;
-
-            if (!paused) {
-                state.sawUnpaused = true;
-                return;
-            }
-            if (!state.sawUnpaused) return;
-
-            state.sawUnpaused = false;
-            if (++state.completedPauseCycles >= 2) {
-                state.cutoverStarted = true;
-                enterWorld = true;
-            }
+            int before = state.lifecycle.completedPauseCycles();
+            enterWorld = state.lifecycle.observeNativePause(paused);
+            completedCycles = state.lifecycle.completedPauseCycles();
+            if (before == completedCycles) return;
         }
 
         var player = session.getPlayer();
-        Grasscutter.getLogger()
-                .debug(
-                        "[intro-cutover] uid={} completed native pause cycle {}/2.",
-                        player == null ? 0 : player.getUid(),
-                        completedCycles);
-
-        if (enterWorld) {
-            enterWorldAfterNativeIntro(session);
-        }
+        Grasscutter.getLogger().debug(
+                "[intro-cutover] uid={} completed native pause cycle {}/2.",
+                player == null ? 0 : player.getUid(), completedCycles);
+        if (enterWorld) enterWorldAfterNativeIntro(session);
     }
 
     private static void enterWorldAfterNativeIntro(GameSession session) {
@@ -184,7 +167,8 @@ public final class BornIntroGate {
         }
 
         State state = stateFor(session);
-        if (state == null || state.mode != Mode.NATIVE_INTRO) return;
+        if (state == null || state.originSession != session
+                || state.lifecycle.mode() != FreshPlayerLifecycle.Mode.NATIVE_INTRO) return;
 
         try {
             session.send(new PacketPlayerEnterSceneNotify(player));
@@ -197,7 +181,7 @@ public final class BornIntroGate {
             Grasscutter.getThreadPool().submit(() -> completeNativeWorldLogin(session, player));
         } catch (Throwable t) {
             synchronized (state) {
-                state.cutoverStarted = false;
+                state.lifecycle.nativeWorldLoginFailed();
             }
             Grasscutter.getLogger()
                     .error(
@@ -210,7 +194,8 @@ public final class BornIntroGate {
     private static void completeNativeWorldLogin(
             GameSession session, emu.grasscutter.game.player.Player player) {
         State state = stateFor(session);
-        if (state == null || state.mode != Mode.NATIVE_INTRO) return;
+        if (state == null || state.originSession != session
+                || state.lifecycle.mode() != FreshPlayerLifecycle.Mode.NATIVE_INTRO) return;
 
         try {
             synchronized (player) {
@@ -229,7 +214,7 @@ public final class BornIntroGate {
             markWorldLoginComplete(session);
         } catch (Throwable t) {
             synchronized (state) {
-                state.cutoverStarted = false;
+                state.lifecycle.nativeWorldLoginFailed();
             }
             Grasscutter.getLogger()
                     .error(
@@ -272,7 +257,7 @@ public final class BornIntroGate {
         if (state == null) return false;
 
         synchronized (state) {
-            if (state.worldLoginComplete) return false;
+            if (!state.lifecycle.mustDeferSceneReady()) return false;
             state.sceneReadyDeferred = true;
             state.deferredSceneReadySession = session;
         }
@@ -295,8 +280,7 @@ public final class BornIntroGate {
         State state = stateFor(session);
         if (state == null) return;
         synchronized (state) {
-            if (!state.worldLoginComplete || state.questStarted) return;
-            state.questStarted = true;
+            if (state.originSession != session || !state.lifecycle.claimQuestBootstrap()) return;
         }
 
         var player = session.getPlayer();
@@ -306,15 +290,14 @@ public final class BornIntroGate {
         }
 
         try {
-            // Player.onLogin already sent the full new-player quest snapshot. onPlayerBorn creates
-            // the visible prologue through normal incremental updates; then restore any hidden
-            // chapter controller linked to the active main-quest series from ChapterData.
+            // Chapter controllers now start only through normalized prerequisite events.
+            // Scene-ready is the single bootstrap entry for the fresh Quest 351 chain.
             player.getQuestManager().onPlayerBorn();
-            QuestChapterBootstrap.startForActiveMainQuests(player.getQuestManager());
+            state.lifecycle.questBootstrapCompleted();
             remove(session);
         } catch (Throwable t) {
             synchronized (state) {
-                state.questStarted = false;
+                state.lifecycle.questBootstrapFailed();
             }
             Grasscutter.getLogger()
                     .error(

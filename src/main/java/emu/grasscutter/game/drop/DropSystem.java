@@ -90,6 +90,12 @@ public final class DropSystem extends BaseGameSystem {
         return items;
     }
 
+    /** True only when the native 7.1 drop root is loaded and has positive-weight entries. */
+    public boolean hasUsableDungeonRewardRoot(int dropId) {
+        return dropId > 0 && dropTable.containsKey(dropId)
+                && !isEmptyDropTable(dropTable.get(dropId));
+    }
+
     public List<GameItem> handleDungeonRewardDrop(int dropId, boolean doubleReward) {
         return resolveDropItems(dropId, doubleReward ? 2 : 1, 1.0);
     }
@@ -225,7 +231,8 @@ public final class DropSystem extends BaseGameSystem {
             }
         } else {
             for (Player p : monster.getScene().getPlayers()) {
-                p.getInventory().addItems(items, ActionReason.MonsterDie);
+                p.getInventory().addItems(
+                        copyForRecipient(items), ActionReason.MonsterDie, InventoryAddPolicy.BEST_EFFORT);
             }
         }
         return true;
@@ -280,7 +287,7 @@ public final class DropSystem extends BaseGameSystem {
         if (dropData.isFallToGround()) {
             dropItems(items, ActionReason.OpenChest, bornFrom, bornFrom.getWorld().getHost(), false);
         } else {
-            bornFrom.getWorld().getHost().getInventory().addItems(items, ActionReason.OpenChest);
+            bornFrom.getWorld().getHost().getInventory().addItems(items, ActionReason.OpenChest, InventoryAddPolicy.BEST_EFFORT);
         }
         return true;
     }
@@ -323,7 +330,7 @@ public final class DropSystem extends BaseGameSystem {
         if (items.isEmpty()) {
             return false;
         }
-        player.getInventory().addItems(items, ActionReason.OpenWorldBossChest);
+        player.getInventory().addItems(items, ActionReason.OpenWorldBossChest, InventoryAddPolicy.BEST_EFFORT);
         player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(items));
         return true;
     }
@@ -353,15 +360,7 @@ public final class DropSystem extends BaseGameSystem {
                     if (dropTable.containsKey(id)) {
                         processDrop(dropTable.get(id), amount, items);
                     } else {
-                        boolean flag = true;
-                        for (var j : items) {
-                            if (j.getItemId() == id) {
-                                j.setCount(j.getCount() + amount);
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (flag) items.add(new GameItem(id, amount));
+                        appendTerminalReward(items, id, amount);
                     }
                     break;
                 }
@@ -376,19 +375,24 @@ public final class DropSystem extends BaseGameSystem {
                     if (dropTable.containsKey(id)) {
                         processDrop(dropTable.get(id), amount, items);
                     } else {
-                        boolean flag = true;
-                        for (var j : items) {
-                            if (j.getItemId() == id) {
-                                j.setCount(j.getCount() + amount);
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (flag) items.add(new GameItem(id, amount));
+                        appendTerminalReward(items, id, amount);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Terminal drop IDs are item IDs, not nested DropTable IDs. Roll each equipment copy
+     * separately: coalescing reliquaries by template ID loses independently rolled affixes.
+     */
+    private static void appendTerminalReward(List<GameItem> items, int itemId, int amount) {
+        var data = GameData.getItemDataMap().get(itemId);
+        if (data == null) {
+            throw new IllegalArgumentException("Unknown terminal drop item " + itemId);
+        }
+        DropRewardAccumulator.add(
+                items, itemId, amount, data.getItemType(), count -> new GameItem(data, count));
     }
 
     private int calculateDropAmount(DropItemData i) {
@@ -429,14 +433,18 @@ public final class DropSystem extends BaseGameSystem {
         }
     }
 
+    private static List<GameItem> copyForRecipient(List<GameItem> items) {
+        return items.stream().map(GameItem::copyForGrant).toList();
+    }
+
     private void giveItem(GameItem item, ActionReason reason, Player player, boolean share) {
         if (share) {
             for (var p : player.getScene().getPlayers()) {
-                p.getInventory().addItem(item, reason);
+                p.getInventory().addItem(item.copyForGrant(), reason);
                 p.sendPacket(new PacketDropHintNotify(item.getItemId(), player.getPosition().toProto()));
             }
         } else {
-            player.getInventory().addItem(item, reason);
+            player.getInventory().addItem(item.copyForGrant(), reason);
             player.sendPacket(new PacketDropHintNotify(item.getItemId(), player.getPosition().toProto()));
         }
     }
@@ -444,11 +452,13 @@ public final class DropSystem extends BaseGameSystem {
     private void giveItems(List<GameItem> items, ActionReason reason, Player player, boolean share) {
         if (share) {
             for (var p : player.getScene().getPlayers()) {
-                p.getInventory().addItems(items, reason);
+                p.getInventory().addItems(
+                        copyForRecipient(items), reason, InventoryAddPolicy.BEST_EFFORT);
                 p.sendPacket(new PacketDropHintNotify(items, player.getPosition().toProto()));
             }
         } else {
-            player.getInventory().addItems(items, reason);
+            player.getInventory().addItems(
+                    copyForRecipient(items), reason, InventoryAddPolicy.BEST_EFFORT);
             player.sendPacket(new PacketDropHintNotify(items, player.getPosition().toProto()));
         }
     }

@@ -68,11 +68,16 @@ public final class DomainRewardStatueHelper {
         return n == 70340011 || n == 70340012 || n == 70340013 || n == 70340014 || n == 70380008 || n == 70350008;
     }
 
-    // Scene 40773 carries the native-style base and a generic item prop.
-    // Only the reward point (70340012) may open the resin claim UI.
+    // Scenes 40770-40773 use a synthetic two-piece Fontaine reward fixture.
+    // The base opens the resin UI; the 70350008 accessory is decorative here.
+    static boolean isFontaineWeaponCompatibilityScene(int sceneId) {
+        return sceneId >= 40770 && sceneId <= 40773;
+    }
+
     static boolean isRewardClaimTarget(int sceneId, int gadgetId) {
         return isExitRewardStatue(gadgetId)
-                && !(sceneId == 40773 && gadgetId == REWARD_TREE_GADGET_ID);
+                && !(isFontaineWeaponCompatibilityScene(sceneId)
+                        && gadgetId == REWARD_TREE_GADGET_ID);
     }
 
     public static boolean isClaimableState(int n) {
@@ -121,8 +126,8 @@ public final class DomainRewardStatueHelper {
             }
             if (!DomainRewardStatueHelper.isExitRewardStatue(n3)) continue;
             if (!isRewardClaimTarget(scene.getId(), n3)) {
-                // 70350008 is the noninteractive generic item in the
-                // 40773 native-style pair. It must not obscure the reward base.
+                // For compatibility scenes, 70350008 is a noninteractive
+                // accessory and must not obscure the 70340012 reward base.
                 entityGadget.setInteractEnabled(false);
                 decorations.add(entityGadget);
                 continue;
@@ -152,14 +157,14 @@ public final class DomainRewardStatueHelper {
             }
         }
         Grasscutter.getLogger().info("Domain reward tree scene={} keysKilled={} exitLit={} decorations={} dmFinished={}", new Object[]{scene.getId(), n, n2, decorations.size(), bl});
-        // The 40773 reward fixture is synthetic. Log what the client actually
-        // receives so placement and interact flags can be audited independently.
-        if (scene.getId() == 40773) {
+        // Log the four synthetic fixtures so reward geometry and client
+        // interaction flags can be audited independently.
+        if (isFontaineWeaponCompatibilityScene(scene.getId())) {
             for (EntityGadget reward : arrayList2) {
                 Grasscutter.getLogger().info(
-                        "Domain 40773 reward gadget={} cfg={} entity={} state={} pos={} clientInteract={} content={}",
+                        "Domain {} reward gadget={} cfg={} entity={} state={} pos={} clientInteract={} content={}",
                         new Object[] {
-                            reward.getGadgetId(), reward.getConfigId(), reward.getId(),
+                            scene.getId(), reward.getGadgetId(), reward.getConfigId(), reward.getId(),
                             reward.getState(), reward.getPosition(),
                             reward.toProto().getGadget().getIsEnableInteract(),
                             reward.getContent() == null ? "none" : reward.getContent().getClass().getSimpleName()
@@ -167,8 +172,8 @@ public final class DomainRewardStatueHelper {
             }
             for (Player player : scene.getPlayers()) {
                 Grasscutter.getLogger().info(
-                        "Domain 40773 reward proximity uid={} playerPos={}",
-                        player.getUid(), player.getPosition());
+                        "Domain {} reward proximity uid={} playerPos={}",
+                        scene.getId(), player.getUid(), player.getPosition());
             }
         }
     }

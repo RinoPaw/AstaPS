@@ -280,8 +280,9 @@ final class InventoryRewardAdmissionTest {
     void rejectsUnsupportedOrMultiCountDirectUseBeforeClaim() {
         GameItem multi = directUseCard(210001, "MATERIAL_NAMECARD", 2);
         GameItem unrelated = directUseCard(210002, "MATERIAL_NONE", 1);
+        GameItem wrongAction = directUseCard(210003, "MATERIAL_AVATAR", 1);
         var events = new java.util.ArrayList<String>();
-        for (GameItem rejected : List.of(multi, unrelated)) {
+        for (GameItem rejected : List.of(multi, unrelated, wrongAction)) {
             var result = InventoryRewardAdmission.grantIfAccepted(
                     List.of(rejected), ignored -> null, ignored -> 0,
                     () -> { events.add("charge"); return true; },

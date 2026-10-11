@@ -676,8 +676,8 @@ public class QuestData extends GameResource {
                 && original.getAcceptCondComb() != LogicType.LOGIC_AND
                 && original.getAcceptCondComb() != LogicType.LOGIC_OR) return false;
 
-        if (this.getFieldSource(QuestField.ACCEPT_COND) == QuestSource.BIN_OUTPUT
-                && this.acceptCond == conditions) return false;
+        if (this.getFieldSource(QuestField.ACCEPT_COND) == QuestSource.BIN_OUTPUT)
+            return false;
 
         removeFromCache();
         this.acceptCond = List.copyOf(conditions);

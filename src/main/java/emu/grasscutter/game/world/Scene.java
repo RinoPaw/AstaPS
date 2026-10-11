@@ -875,8 +875,39 @@ public class Scene {
 
         this.finishLoading();
         this.checkPlayerRespawn();
-        if (this.tickCount % 50 == 0) this.reportFrozenState();
+        if (this.tickCount % 50 == 0) {
+            this.reportFrozenState();
+            this.reportMondstadtSlimeDensity();
+        }
         if (this.tickCount++ % 10 == 0) this.broadcastPacket(new PacketSceneTimeNotify(this));
+    }
+
+    /** Bounded density sample; a spawn log alone cannot count already loaded monsters. */
+    private void reportMondstadtSlimeDensity() {
+        if (getId() != 3 || getPlayers().isEmpty()) return;
+        var player = getPlayers().get(0);
+        if (player.getPosition() == null) return;
+        var counts = new HashMap<String, Integer>();
+        int pyro = 0;
+        int anemo = 0;
+        for (var entity : getEntities().values()) {
+            if (!(entity instanceof EntityMonster monster)
+                    || monster.getMonsterData() == null
+                    || monster.getPosition() == null) continue;
+            int id = monster.getMonsterData().getId();
+            if (!isMondstadtTutorialSlime(getId(), id)
+                    || monster.getPosition().computeDistance(player.getPosition()) > 260.0) continue;
+            if (id == 20010301 || id == 20010401) anemo++;
+            else pyro++;
+            String group = id + ":" + monster.getGroupId();
+            counts.merge(group, 1, Integer::sum);
+        }
+        var busiest = counts.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(8).map(e -> e.getKey() + "=" + e.getValue()).toList();
+        Grasscutter.getLogger().info(
+                "[MondstadtSlime] density uid={} scene=3 within=260m pyro={} anemo={} totalEntities={} groups={}",
+                player.getUid(), pyro, anemo, getEntities().size(), busiest);
     }
 
     /**

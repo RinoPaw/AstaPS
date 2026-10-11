@@ -147,6 +147,15 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     }
 
     public boolean addItem(GameItem item, ActionReason reason) {
+        return addItem(item, reason, false);
+    }
+
+    /**
+     * Keep the legacy forceNotify overload for drop, shop and cooking callers.
+     * The shared insertion path already sends hints for accepted grants with a
+     * reason. Never send a forced success hint for a rejected grant.
+     */
+    public boolean addItem(GameItem item, ActionReason reason, boolean forceNotify) {
         return addItemsInternal(Collections.singletonList(item), reason, true, true).allAccepted();
     }
 

@@ -135,7 +135,9 @@ public final class DomainStatueDropService {
                     rewards,
                     (items, confirmPayment) -> {
                         // Run this under the same locks as inventory admission/payment.
-                        if (!dm.isFinishedSuccessfully()) {
+                        if (!dm.isFinishedSuccessfully()
+                                || !receiptKey.operationId().equals(dm.getClaimOperationId())) {
+                            // restartDungeon may have rotated the run while drops were rolled.
                             return false;
                         }
                         return inventory.addItems(

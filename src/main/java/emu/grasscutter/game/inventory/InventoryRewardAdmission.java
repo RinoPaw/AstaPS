@@ -80,8 +80,25 @@ final class InventoryRewardAdmission {
                 return InventoryAddResult.Status.INVALID_ITEM;
             }
             if (data.isUseOnGain()) {
-                // A direct use has an external side effect and cannot be reserved as a bag slot.
-                return InventoryAddResult.Status.UNSUPPORTED_TYPE;
+                // Mail and other reward sources legitimately deliver avatar, namecard,
+                // glider and costume unlock cards. They consume no inventory slot.
+                // Count must be one: putItem invokes the direct-use action once per item.
+                if (item.getCount() != 1) {
+                    return InventoryAddResult.Status.INVALID_ITEM;
+                }
+                if (data.getItemType() != ItemType.ITEM_MATERIAL
+                        || data.getItemUseActions() == null
+                        || data.getItemUseActions().isEmpty()) {
+                    return InventoryAddResult.Status.UNSUPPORTED_TYPE;
+                }
+                switch (data.getMaterialType()) {
+                    case MATERIAL_AVATAR, MATERIAL_FLYCLOAK, MATERIAL_COSTUME, MATERIAL_NAMECARD -> {}
+                    default -> {
+                        // Unknown effects cannot be preflighted as an atomic reward.
+                        return InventoryAddResult.Status.UNSUPPORTED_TYPE;
+                    }
+                }
+                continue;
             }
             ItemType type = data.getItemType();
             if (type == ItemType.ITEM_VIRTUAL) {

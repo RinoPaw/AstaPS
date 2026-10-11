@@ -2,6 +2,7 @@ package emu.grasscutter.game.dungeons;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.database.RewardGrantJournal;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.RewardPreviewData;
 import emu.grasscutter.data.excels.dungeon.DungeonData;
@@ -105,8 +106,25 @@ public final class DomainStatueDropService {
             Grasscutter.getLogger().warn("appendToRewards failed", t);
         }
 
-        // The inventory owns the entire batch admission and insertion. Domain logic only
-        // guards claim eligibility and decides which consumable resource pays for the claim.
+        // A DungeonManager has one stable claim ID per run, rotated by restartDungeon().
+        // Record the intended grant before payment; a crash leaves a receipt for inspection.
+        // This is intentionally not a multi-document Mongo transaction.
+        RewardGrantJournal journal = new RewardGrantJournal();
+        RewardGrantJournal.Key receiptKey = new RewardGrantJournal.Key(
+                RewardGrantJournal.Source.DOMAIN, player.getUid(), dm.getClaimOperationId());
+        List<RewardGrantJournal.Reward> intended;
+        try {
+            intended = rewards.stream()
+                    .map(item -> new RewardGrantJournal.Reward(
+                            item.getItemId(), item.getCount(), item.getLevel()))
+                    .toList();
+        } catch (RuntimeException invalid) {
+            Grasscutter.getLogger().warn(
+                    "StatueDrop abort: invalid receipt snapshot uid={} dungeon={}",
+                    player.getUid(), dungeonData.getId(), invalid);
+            return false;
+        }
+
         boolean granted;
         Inventory inventory = player.getInventory();
         try {
@@ -116,7 +134,7 @@ public final class DomainStatueDropService {
                     player.getUid(),
                     rewards,
                     (items, confirmPayment) -> {
-                        // Recheck completion under the DungeonManager lock before charging.
+                        // Run this under the same locks as inventory admission/payment.
                         if (!dm.isFinishedSuccessfully()) {
                             return false;
                         }
@@ -124,13 +142,23 @@ public final class DomainStatueDropService {
                                         items,
                                         ActionReason.DungeonStatueDrop,
                                         InventoryAddPolicy.ALL_OR_NOTHING,
-                                        () -> payCost(player, dungeonData, paymentMode),
-                                        confirmPayment)
+                                        () -> DomainClaimPaymentPreflight.canPay(
+                                                        player, dungeonData, paymentMode)
+                                                && journal.prepare(receiptKey, intended)
+                                                && payCost(player, dungeonData, paymentMode),
+                                        () -> {
+                                            // A paid run remains unclaimable if inventory or
+                                            // the journal fails after confirmation.
+                                            confirmPayment.run();
+                                            journal.confirm(receiptKey);
+                                        })
                                 .allAccepted();
                     });
         } catch (RuntimeException e) {
             Grasscutter.getLogger()
-                    .error("StatueDrop claim failed uid={} dungeon={}", player.getUid(), dungeonData.getId(), e);
+                    .error("StatueDrop claim interrupted uid={} dungeon={} receipt={}",
+                            player.getUid(), dungeonData.getId(),
+                            receiptKey.storageId(), e);
             return false;
         }
         if (!granted) {
@@ -138,6 +166,15 @@ public final class DomainStatueDropService {
                     .warn("StatueDrop abort: claim rejected or payment failed uid={} dungeon={} mode={}",
                             player.getUid(), dungeonData.getId(), mode);
             return false;
+        }
+        // Report delivered rewards even if the final receipt update fails.
+        // A CONFIRMED receipt remains available for manual recovery.
+        try {
+            journal.complete(receiptKey);
+        } catch (RuntimeException failure) {
+            Grasscutter.getLogger().error(
+                    "StatueDrop delivered but receipt remains unresolved uid={} dungeon={} receipt={}",
+                    player.getUid(), dungeonData.getId(), receiptKey.storageId(), failure);
         }
         player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(rewards));
 

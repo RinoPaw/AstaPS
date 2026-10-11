@@ -53,14 +53,31 @@ public final class RewardGrantJournal {
         }
     }
 
-    public record Receipt(Key key, Stage stage, List<Reward> rewards) {
+    /** Price debits are recorded for inspection, never automatically replayed. */
+    public record Debit(int itemId, int count) {
+        public Debit {
+            if (itemId <= 0 || count <= 0) {
+                throw new IllegalArgumentException("Invalid payment descriptor");
+            }
+        }
+    }
+
+    public record Receipt(Key key, Stage stage, List<Reward> rewards, List<Debit> debits) {
+        public Receipt(Key key, Stage stage, List<Reward> rewards) {
+            this(key, stage, rewards, List.of());
+        }
+
         public Receipt {
             Objects.requireNonNull(key, "key");
             Objects.requireNonNull(stage, "stage");
             if (rewards == null || rewards.isEmpty() || rewards.size() > 10_000) {
                 throw new IllegalArgumentException("Invalid reward batch");
             }
+            if (debits == null || debits.size() > 10_000) {
+                throw new IllegalArgumentException("Invalid payment batch");
+            }
             rewards = List.copyOf(rewards);
+            debits = List.copyOf(debits);
         }
     }
 
@@ -87,7 +104,11 @@ public final class RewardGrantJournal {
      * never replace the original receipt or permit a second attempt.
      */
     public boolean prepare(Key key, List<Reward> rewards) {
-        return store.insert(new Receipt(key, Stage.PREPARED, rewards));
+        return prepare(key, rewards, List.of());
+    }
+
+    public boolean prepare(Key key, List<Reward> rewards, List<Debit> debits) {
+        return store.insert(new Receipt(key, Stage.PREPARED, rewards, debits));
     }
 
     /** Confirm only after the caller has accepted its irreversible action. */
@@ -126,6 +147,10 @@ public final class RewardGrantJournal {
                                 .append("count", line.count())
                                 .append("level", line.level()))
                         .toList();
+                List<Document> debits = receipt.debits().stream()
+                        .map(line -> new Document("itemId", line.itemId())
+                                .append("count", line.count()))
+                        .toList();
                 long now = System.currentTimeMillis();
                 var doc = new Document("_id", receipt.key().storageId())
                         .append("uid", receipt.key().uid())
@@ -133,6 +158,7 @@ public final class RewardGrantJournal {
                         .append("operationId", receipt.key().operationId())
                         .append("stage", receipt.stage().name())
                         .append("rewards", lines)
+                        .append("debits", debits)
                         .append("createdAt", now)
                         .append("updatedAt", now);
                 try {
@@ -174,7 +200,14 @@ public final class RewardGrantJournal {
                             line.getInteger("count"),
                             line.getInteger("level")));
                 }
-                result.add(new Receipt(key, Stage.valueOf(doc.getString("stage")), rewards));
+                var debits = new ArrayList<Debit>();
+                var storedDebits = doc.getList("debits", Document.class);
+                if (storedDebits != null) {
+                    for (Document line : storedDebits) {
+                        debits.add(new Debit(line.getInteger("itemId"), line.getInteger("count")));
+                    }
+                }
+                result.add(new Receipt(key, Stage.valueOf(doc.getString("stage")), rewards, debits));
             }
             return result;
         }

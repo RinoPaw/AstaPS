@@ -32,6 +32,7 @@ package emu.grasscutter.game.battlepass;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.database.RewardGrantJournal;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.BattlePassRewardData;
 import emu.grasscutter.data.excels.ItemData;
@@ -148,6 +149,7 @@ public final class BattlePassCompatHelper {
                 new ArrayList<>();
         List<GameItem> granted = new ArrayList<>();
         Set<Integer> seenIds = new HashSet<>();
+        RewardGrantJournal journal = new RewardGrantJournal();
 
         for (var option : requested) {
             if (option == null || !option.hasTag()) continue;
@@ -202,13 +204,23 @@ public final class BattlePassCompatHelper {
             BattlePassReward claim = new BattlePassReward(level, rewardId, paid);
             ActionReason reason = paid ? ActionReason.BattlePassPaidReward
                     : ActionReason.BattlePassLevelReward;
+            // The schedule start and reward ID provide a durable idempotency key
+            // across retries and reconnects. The key changes for a new season.
+            RewardGrantJournal.Key key = BattlePassClaimIdentity.key(
+                    player.getUid(), SCHEDULE_ID, beginTime(), rewardId);
             try {
+                List<RewardGrantJournal.Reward> snapshot = items.stream()
+                        .map(item -> new RewardGrantJournal.Reward(
+                                item.getItemId(), item.getCount(), item.getLevel()))
+                        .toList();
                 var result = player.getInventory().addItems(
                         items, reason, InventoryAddPolicy.ALL_OR_NOTHING,
-                        () -> !manager.getTakenRewards().containsKey(rewardId),
+                        () -> !manager.getTakenRewards().containsKey(rewardId)
+                                && journal.prepare(key, snapshot),
                         () -> {
                             manager.getTakenRewards().put(rewardId, claim);
                             manager.save();
+                            journal.confirm(key);
                         });
                 if (!result.allAccepted()) {
                     Grasscutter.getLogger().warn(
@@ -216,12 +228,19 @@ public final class BattlePassCompatHelper {
                             player.getUid(), rewardId, result.entries());
                     continue;
                 }
+                try {
+                    journal.complete(key);
+                } catch (RuntimeException journalFailure) {
+                    Grasscutter.getLogger().error(
+                            "BattlePass delivered but receipt unresolved uid={} rewardId={} receipt={}",
+                            player.getUid(), rewardId, key.storageId(), journalFailure);
+                }
                 claimed.add(option);
                 granted.addAll(items);
             } catch (RuntimeException failure) {
                 Grasscutter.getLogger().error(
-                        "BattlePass grant interrupted uid={} rewardId={}",
-                        player.getUid(), rewardId, failure);
+                        "BattlePass grant interrupted uid={} rewardId={} receipt={}",
+                        player.getUid(), rewardId, key.storageId(), failure);
             }
         }
 

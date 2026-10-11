@@ -15,11 +15,21 @@ public class ExecGrantTrialAvatar extends QuestExecHandler {
                     .getOwner()
                     .getTeamManager()
                     .addTrialAvatar(Integer.parseInt(paramStr[0]), quest.getMainQuestId());
-            Grasscutter.getLogger()
-                    .debug("Added trial avatar to team for quest {}", quest.getSubQuestId());
+            if (quest.getSubQuestId() == 35301) {
+                var team = quest.getOwner().getTeamManager();
+                Grasscutter.getLogger().info(
+                        "[MondstadtTrial] uid={} quest=35301 trialId={} usingTrialTeam={} trialIds={} teamSize={}",
+                        quest.getOwner().getUid(), paramStr[0], team.isUsingTrialTeam(),
+                        team.getTrialAvatars().keySet(), team.getActiveTeam().size());
+            } else {
+                Grasscutter.getLogger()
+                        .debug("Added trial avatar to team for quest {}", quest.getSubQuestId());
+            }
             return true;
         } catch (RuntimeException exception) {
-            exception.printStackTrace();
+            Grasscutter.getLogger().error(
+                    "[MondstadtTrial] quest={} trial grant failed",
+                    quest.getSubQuestId(), exception);
             return false;
         }
     }

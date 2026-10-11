@@ -110,11 +110,24 @@ public final class AmberQuestHandoffTrace {
         if (trace == null) return null;
         if (System.nanoTime() - trace.start < WINDOW_NANOS) return trace;
         if (ACTIVE.remove(session, trace)) {
+            var player = session.getPlayer();
+            var main = player == null ? null : player.getQuestManager();
+            var world = player == null ? null : player.getWorld();
             Grasscutter.getLogger().info(
-                    "[AmberHandoff] end uid={} observedEvents={}",
-                    trace.uid, trace.ordinal.get());
+                    "[AmberHandoff] end uid={} observedEvents={} quest35601={} quest35602={} quest35603={} worldPaused={} playerPaused={} timeLocked={}",
+                    trace.uid, trace.ordinal.get(),
+                    main == null ? "unknown" : questState(main.getQuestById(35601)),
+                    main == null ? "unknown" : questState(main.getQuestById(35602)),
+                    main == null ? "unknown" : questState(main.getQuestById(35603)),
+                    world == null ? "unknown" : world.isPaused(),
+                    player == null ? "unknown" : player.isPaused(),
+                    world == null ? "unknown" : world.isTimeLocked());
         }
         return null;
+    }
+
+    private static String questState(emu.grasscutter.game.quest.GameQuest quest) {
+        return quest == null ? "absent" : quest.getState().name();
     }
 
     private static void recordWire(Trace trace, String event) {

@@ -5658,6 +5658,282 @@
     ]
   },
   {
+    "dungeonId": 4470,
+    "comment": "Fontaine weapon 1 tier 1 (Monday/Thursday); compatibility proxy, NOT native 7.1 rates",
+    "drops": [
+      {
+        "comment": "AR exp",
+        "counts": [
+          100
+        ],
+        "items": [
+          102
+        ]
+      },
+      {
+        "comment": "Mora",
+        "counts": [
+          1125
+        ],
+        "items": [
+          202
+        ]
+      },
+      {
+        "comment": "Friendship exp",
+        "counts": [
+          10
+        ],
+        "items": [
+          105
+        ],
+        "mpDouble": true
+      },
+      {
+        "comment": "2-star Weapon Material",
+        "counts": [
+          4,
+          6
+        ],
+        "probabilities": [
+          20,
+          60,
+          30
+        ],
+        "items": [
+          114049
+        ]
+      }
+    ]
+  },
+  {
+    "dungeonId": 4471,
+    "comment": "Fontaine weapon 1 tier 2 (Monday/Thursday); compatibility proxy, NOT native 7.1 rates",
+    "drops": [
+      {
+        "comment": "AR exp",
+        "counts": [
+          100
+        ],
+        "items": [
+          102
+        ]
+      },
+      {
+        "comment": "Mora",
+        "counts": [
+          1550
+        ],
+        "items": [
+          202
+        ]
+      },
+      {
+        "comment": "Friendship exp",
+        "counts": [
+          15
+        ],
+        "items": [
+          105
+        ],
+        "mpDouble": true
+      },
+      {
+        "comment": "2-star Weapon Material",
+        "counts": [
+          2,
+          3
+        ],
+        "probabilities": [
+          20,
+          80
+        ],
+        "items": [
+          114049
+        ]
+      },
+      {
+        "comment": "3-star Weapon Material",
+        "counts": [
+          2
+        ],
+        "items": [
+          114050
+        ]
+      }
+    ]
+  },
+  {
+    "dungeonId": 4472,
+    "comment": "Fontaine weapon 1 tier 3 (Monday/Thursday); compatibility proxy, NOT native 7.1 rates",
+    "drops": [
+      {
+        "comment": "AR exp",
+        "counts": [
+          100
+        ],
+        "items": [
+          102
+        ]
+      },
+      {
+        "comment": "Mora",
+        "counts": [
+          1850
+        ],
+        "items": [
+          202
+        ]
+      },
+      {
+        "comment": "Friendship exp",
+        "counts": [
+          15
+        ],
+        "items": [
+          105
+        ],
+        "mpDouble": true
+      },
+      {
+        "comment": "2-star Weapon Material",
+        "counts": [
+          2,
+          3
+        ],
+        "probabilities": [
+          80,
+          20
+        ],
+        "items": [
+          114049
+        ]
+      },
+      {
+        "comment": "3-star Weapon Material",
+        "counts": [
+          2,
+          3
+        ],
+        "probabilities": [
+          20,
+          80
+        ],
+        "items": [
+          114050
+        ]
+      },
+      {
+        "comment": "4-star Weapon Material",
+        "counts": [
+          1,
+          2
+        ],
+        "probabilities": [
+          50,
+          50
+        ],
+        "items": [
+          114051
+        ]
+      }
+    ]
+  },
+  {
+    "dungeonId": 4473,
+    "comment": "Fontaine weapon 1 tier 4 (Monday/Thursday); compatibility proxy, NOT native 7.1 rates",
+    "drops": [
+      {
+        "comment": "AR exp",
+        "counts": [
+          100
+        ],
+        "items": [
+          102
+        ]
+      },
+      {
+        "comment": "Mora",
+        "counts": [
+          2200
+        ],
+        "items": [
+          202
+        ]
+      },
+      {
+        "comment": "Friendship exp",
+        "counts": [
+          20
+        ],
+        "items": [
+          105
+        ],
+        "mpDouble": true
+      },
+      {
+        "comment": "2-star Weapon Material",
+        "counts": [
+          2,
+          3
+        ],
+        "probabilities": [
+          80,
+          20
+        ],
+        "items": [
+          114049
+        ]
+      },
+      {
+        "comment": "3-star Weapon Material",
+        "counts": [
+          1,
+          4
+        ],
+        "probabilities": [
+          25,
+          25,
+          25,
+          25
+        ],
+        "items": [
+          114050
+        ]
+      },
+      {
+        "comment": "4-star Weapon Material",
+        "counts": [
+          1,
+          4
+        ],
+        "probabilities": [
+          25,
+          25,
+          25,
+          25
+        ],
+        "items": [
+          114051
+        ]
+      },
+      {
+        "comment": "5-star Weapon Material",
+        "counts": [
+          1,
+          2
+        ],
+        "probabilities": [
+          50,
+          50
+        ],
+        "items": [
+          114052
+        ]
+      }
+    ]
+  },
+  {
     "dungeonId": 4480,
     "comment": "Generated reliquary domain 4480",
     "drops": [
@@ -7229,6 +7505,558 @@
         ],
         "items": [
           104346
+        ]
+      }
+    ]
+  },
+  {
+    "dungeonId": 4500,
+    "comment": "Fontaine weapon 2 tier 1 (Tuesday/Friday); compatibility proxy, NOT native 7.1 rates",
+    "drops": [
+      {
+        "comment": "AR exp",
+        "counts": [
+          100
+        ],
+        "items": [
+          102
+        ]
+      },
+      {
+        "comment": "Mora",
+        "counts": [
+          1125
+        ],
+        "items": [
+          202
+        ]
+      },
+      {
+        "comment": "Friendship exp",
+        "counts": [
+          10
+        ],
+        "items": [
+          105
+        ],
+        "mpDouble": true
+      },
+      {
+        "comment": "2-star Weapon Material",
+        "counts": [
+          4,
+          6
+        ],
+        "probabilities": [
+          20,
+          60,
+          30
+        ],
+        "items": [
+          114053
+        ]
+      }
+    ]
+  },
+  {
+    "dungeonId": 4501,
+    "comment": "Fontaine weapon 2 tier 2 (Tuesday/Friday); compatibility proxy, NOT native 7.1 rates",
+    "drops": [
+      {
+        "comment": "AR exp",
+        "counts": [
+          100
+        ],
+        "items": [
+          102
+        ]
+      },
+      {
+        "comment": "Mora",
+        "counts": [
+          1550
+        ],
+        "items": [
+          202
+        ]
+      },
+      {
+        "comment": "Friendship exp",
+        "counts": [
+          15
+        ],
+        "items": [
+          105
+        ],
+        "mpDouble": true
+      },
+      {
+        "comment": "2-star Weapon Material",
+        "counts": [
+          2,
+          3
+        ],
+        "probabilities": [
+          20,
+          80
+        ],
+        "items": [
+          114053
+        ]
+      },
+      {
+        "comment": "3-star Weapon Material",
+        "counts": [
+          2
+        ],
+        "items": [
+          114054
+        ]
+      }
+    ]
+  },
+  {
+    "dungeonId": 4502,
+    "comment": "Fontaine weapon 2 tier 3 (Tuesday/Friday); compatibility proxy, NOT native 7.1 rates",
+    "drops": [
+      {
+        "comment": "AR exp",
+        "counts": [
+          100
+        ],
+        "items": [
+          102
+        ]
+      },
+      {
+        "comment": "Mora",
+        "counts": [
+          1850
+        ],
+        "items": [
+          202
+        ]
+      },
+      {
+        "comment": "Friendship exp",
+        "counts": [
+          15
+        ],
+        "items": [
+          105
+        ],
+        "mpDouble": true
+      },
+      {
+        "comment": "2-star Weapon Material",
+        "counts": [
+          2,
+          3
+        ],
+        "probabilities": [
+          80,
+          20
+        ],
+        "items": [
+          114053
+        ]
+      },
+      {
+        "comment": "3-star Weapon Material",
+        "counts": [
+          2,
+          3
+        ],
+        "probabilities": [
+          20,
+          80
+        ],
+        "items": [
+          114054
+        ]
+      },
+      {
+        "comment": "4-star Weapon Material",
+        "counts": [
+          1,
+          2
+        ],
+        "probabilities": [
+          50,
+          50
+        ],
+        "items": [
+          114055
+        ]
+      }
+    ]
+  },
+  {
+    "dungeonId": 4503,
+    "comment": "Fontaine weapon 2 tier 4 (Tuesday/Friday); compatibility proxy, NOT native 7.1 rates",
+    "drops": [
+      {
+        "comment": "AR exp",
+        "counts": [
+          100
+        ],
+        "items": [
+          102
+        ]
+      },
+      {
+        "comment": "Mora",
+        "counts": [
+          2200
+        ],
+        "items": [
+          202
+        ]
+      },
+      {
+        "comment": "Friendship exp",
+        "counts": [
+          20
+        ],
+        "items": [
+          105
+        ],
+        "mpDouble": true
+      },
+      {
+        "comment": "2-star Weapon Material",
+        "counts": [
+          2,
+          3
+        ],
+        "probabilities": [
+          80,
+          20
+        ],
+        "items": [
+          114053
+        ]
+      },
+      {
+        "comment": "3-star Weapon Material",
+        "counts": [
+          1,
+          4
+        ],
+        "probabilities": [
+          25,
+          25,
+          25,
+          25
+        ],
+        "items": [
+          114054
+        ]
+      },
+      {
+        "comment": "4-star Weapon Material",
+        "counts": [
+          1,
+          4
+        ],
+        "probabilities": [
+          25,
+          25,
+          25,
+          25
+        ],
+        "items": [
+          114055
+        ]
+      },
+      {
+        "comment": "5-star Weapon Material",
+        "counts": [
+          1,
+          2
+        ],
+        "probabilities": [
+          50,
+          50
+        ],
+        "items": [
+          114056
+        ]
+      }
+    ]
+  },
+  {
+    "dungeonId": 4504,
+    "comment": "Fontaine weapon 3 tier 1 (Wednesday/Saturday); compatibility proxy, NOT native 7.1 rates",
+    "drops": [
+      {
+        "comment": "AR exp",
+        "counts": [
+          100
+        ],
+        "items": [
+          102
+        ]
+      },
+      {
+        "comment": "Mora",
+        "counts": [
+          1125
+        ],
+        "items": [
+          202
+        ]
+      },
+      {
+        "comment": "Friendship exp",
+        "counts": [
+          10
+        ],
+        "items": [
+          105
+        ],
+        "mpDouble": true
+      },
+      {
+        "comment": "2-star Weapon Material",
+        "counts": [
+          4,
+          6
+        ],
+        "probabilities": [
+          20,
+          60,
+          30
+        ],
+        "items": [
+          114057
+        ]
+      }
+    ]
+  },
+  {
+    "dungeonId": 4505,
+    "comment": "Fontaine weapon 3 tier 2 (Wednesday/Saturday); compatibility proxy, NOT native 7.1 rates",
+    "drops": [
+      {
+        "comment": "AR exp",
+        "counts": [
+          100
+        ],
+        "items": [
+          102
+        ]
+      },
+      {
+        "comment": "Mora",
+        "counts": [
+          1550
+        ],
+        "items": [
+          202
+        ]
+      },
+      {
+        "comment": "Friendship exp",
+        "counts": [
+          15
+        ],
+        "items": [
+          105
+        ],
+        "mpDouble": true
+      },
+      {
+        "comment": "2-star Weapon Material",
+        "counts": [
+          2,
+          3
+        ],
+        "probabilities": [
+          20,
+          80
+        ],
+        "items": [
+          114057
+        ]
+      },
+      {
+        "comment": "3-star Weapon Material",
+        "counts": [
+          2
+        ],
+        "items": [
+          114058
+        ]
+      }
+    ]
+  },
+  {
+    "dungeonId": 4506,
+    "comment": "Fontaine weapon 3 tier 3 (Wednesday/Saturday); compatibility proxy, NOT native 7.1 rates",
+    "drops": [
+      {
+        "comment": "AR exp",
+        "counts": [
+          100
+        ],
+        "items": [
+          102
+        ]
+      },
+      {
+        "comment": "Mora",
+        "counts": [
+          1850
+        ],
+        "items": [
+          202
+        ]
+      },
+      {
+        "comment": "Friendship exp",
+        "counts": [
+          15
+        ],
+        "items": [
+          105
+        ],
+        "mpDouble": true
+      },
+      {
+        "comment": "2-star Weapon Material",
+        "counts": [
+          2,
+          3
+        ],
+        "probabilities": [
+          80,
+          20
+        ],
+        "items": [
+          114057
+        ]
+      },
+      {
+        "comment": "3-star Weapon Material",
+        "counts": [
+          2,
+          3
+        ],
+        "probabilities": [
+          20,
+          80
+        ],
+        "items": [
+          114058
+        ]
+      },
+      {
+        "comment": "4-star Weapon Material",
+        "counts": [
+          1,
+          2
+        ],
+        "probabilities": [
+          50,
+          50
+        ],
+        "items": [
+          114059
+        ]
+      }
+    ]
+  },
+  {
+    "dungeonId": 4507,
+    "comment": "Fontaine weapon 3 tier 4 (Wednesday/Saturday); compatibility proxy, NOT native 7.1 rates",
+    "drops": [
+      {
+        "comment": "AR exp",
+        "counts": [
+          100
+        ],
+        "items": [
+          102
+        ]
+      },
+      {
+        "comment": "Mora",
+        "counts": [
+          2200
+        ],
+        "items": [
+          202
+        ]
+      },
+      {
+        "comment": "Friendship exp",
+        "counts": [
+          20
+        ],
+        "items": [
+          105
+        ],
+        "mpDouble": true
+      },
+      {
+        "comment": "2-star Weapon Material",
+        "counts": [
+          2,
+          3
+        ],
+        "probabilities": [
+          80,
+          20
+        ],
+        "items": [
+          114057
+        ]
+      },
+      {
+        "comment": "3-star Weapon Material",
+        "counts": [
+          1,
+          4
+        ],
+        "probabilities": [
+          25,
+          25,
+          25,
+          25
+        ],
+        "items": [
+          114058
+        ]
+      },
+      {
+        "comment": "4-star Weapon Material",
+        "counts": [
+          1,
+          4
+        ],
+        "probabilities": [
+          25,
+          25,
+          25,
+          25
+        ],
+        "items": [
+          114059
+        ]
+      },
+      {
+        "comment": "5-star Weapon Material",
+        "counts": [
+          1,
+          2
+        ],
+        "probabilities": [
+          50,
+          50
+        ],
+        "items": [
+          114060
         ]
       }
     ]
@@ -12504,259 +13332,6 @@
     "comment": "Snezhnaya Weapon cycle3 IV"
   },
   {
-    "dungeonId": 5000,
-    "comment": "Generated reliquary domain 5000",
-    "drops": [
-      {
-        "comment": "AR exp",
-        "counts": [
-          100
-        ],
-        "items": [
-          102
-        ]
-      },
-      {
-        "comment": "Mora",
-        "counts": [
-          1350
-        ],
-        "items": [
-          202
-        ]
-      },
-      {
-        "comment": "Friendship exp",
-        "counts": [
-          10
-        ],
-        "items": [
-          105
-        ],
-        "mpDouble": true
-      },
-      {
-        "comment": "2-star Artifacts",
-        "counts": [
-          5
-        ],
-        "items": []
-      },
-      {
-        "comment": "3-star Artifacts",
-        "counts": [
-          2,
-          3
-        ],
-        "probabilities": [
-          85,
-          15
-        ],
-        "items": [
-          51310,
-          51311,
-          51312,
-          51313,
-          51314,
-          51320,
-          51321,
-          51322,
-          51323,
-          51324,
-          51330,
-          51331,
-          51332,
-          51333,
-          51334,
-          51340,
-          51341,
-          51342,
-          51343,
-          51344,
-          51350,
-          51351,
-          51352,
-          51353,
-          51354,
-          60310,
-          60311,
-          60312,
-          60313,
-          60314,
-          60320,
-          60321,
-          60322,
-          60323,
-          60324,
-          60330,
-          60331,
-          60332,
-          60333,
-          60334,
-          60340,
-          60341,
-          60342,
-          60343,
-          60344,
-          60350,
-          60351,
-          60352,
-          60353,
-          60354
-        ]
-      }
-    ]
-  },
-  {
-    "dungeonId": 5001,
-    "comment": "Midsummer Courtyard 1",
-    "drops": [
-      {
-        "comment": "AR exp",
-        "counts": [
-          100
-        ],
-        "items": [
-          102
-        ]
-      },
-      {
-        "comment": "Mora",
-        "counts": [
-          1525
-        ],
-        "items": [
-          202
-        ]
-      },
-      {
-        "comment": "Friendship exp",
-        "counts": [
-          15
-        ],
-        "items": [
-          105
-        ],
-        "mpDouble": true
-      },
-      {
-        "comment": "2-star Artifacts",
-        "counts": [
-          5
-        ],
-        "items": []
-      },
-      {
-        "comment": "3-star Artifacts",
-        "counts": [
-          2,
-          3
-        ],
-        "probabilities": [
-          85,
-          15
-        ],
-        "items": [
-          60341,
-          60342,
-          60321,
-          60322,
-          60351,
-          60352,
-          60311,
-          60312,
-          60331,
-          60332,
-          51341,
-          51342,
-          51321,
-          51322,
-          51351,
-          51352,
-          51311,
-          51312,
-          51331,
-          51332
-        ]
-      }
-    ]
-  },
-  {
-    "dungeonId": 5002,
-    "comment": "Midsummer Courtyard 2",
-    "drops": [
-      {
-        "comment": "AR exp",
-        "counts": [
-          100
-        ],
-        "items": [
-          102
-        ]
-      },
-      {
-        "comment": "Mora",
-        "counts": [
-          1700
-        ],
-        "items": [
-          202
-        ]
-      },
-      {
-        "comment": "Friendship exp",
-        "counts": [
-          15
-        ],
-        "items": [
-          105
-        ],
-        "mpDouble": true
-      },
-      {
-        "comment": "2-star Artifacts",
-        "counts": [
-          2,
-          3
-        ],
-        "items": []
-      },
-      {
-        "comment": "3-star Artifacts",
-        "counts": [
-          4,
-          5
-        ],
-        "probabilities": [
-          20,
-          80
-        ],
-        "items": [
-          60341,
-          60342,
-          60321,
-          60322,
-          60351,
-          60352,
-          60311,
-          60312,
-          60331,
-          60332,
-          51341,
-          51342,
-          51321,
-          51322,
-          51351,
-          51352,
-          51311,
-          51312,
-          51331,
-          51332
-        ]
-      }
-    ]
-  },
-  {
     "dungeonId": 5003,
     "comment": "Midsummer Courtyard 3",
     "drops": [
@@ -13282,81 +13857,6 @@
           79552,
           79553,
           79554
-        ]
-      }
-    ]
-  },
-  {
-    "dungeonId": 5008,
-    "comment": "Valley of Remembrance 1",
-    "drops": [
-      {
-        "comment": "AR exp",
-        "counts": [
-          100
-        ],
-        "items": [
-          102
-        ]
-      },
-      {
-        "comment": "Mora",
-        "counts": [
-          1700
-        ],
-        "items": [
-          202
-        ]
-      },
-      {
-        "comment": "Friendship exp",
-        "counts": [
-          15
-        ],
-        "items": [
-          105
-        ],
-        "mpDouble": true
-      },
-      {
-        "comment": "2-star Artifacts",
-        "counts": [
-          2,
-          3
-        ],
-        "items": []
-      },
-      {
-        "comment": "3-star Artifacts",
-        "counts": [
-          4,
-          5
-        ],
-        "probabilities": [
-          20,
-          80
-        ],
-        "items": [
-          63341,
-          63342,
-          63321,
-          63322,
-          63351,
-          63352,
-          63311,
-          63312,
-          63331,
-          63332,
-          54341,
-          54342,
-          54321,
-          54322,
-          54351,
-          54352,
-          54311,
-          54312,
-          54331,
-          54332
         ]
       }
     ]
@@ -15423,82 +15923,6 @@
     ]
   },
   {
-    "dungeonId": 5050,
-    "comment": "Generated reliquary domain 5050",
-    "drops": [
-      {
-        "comment": "AR exp",
-        "counts": [
-          100
-        ],
-        "items": [
-          102
-        ]
-      },
-      {
-        "comment": "Mora",
-        "counts": [
-          1850
-        ],
-        "items": [
-          202
-        ]
-      },
-      {
-        "comment": "Friendship exp",
-        "counts": [
-          15
-        ],
-        "items": [
-          105
-        ],
-        "mpDouble": true
-      },
-      {
-        "comment": "2-star Weapon Material",
-        "counts": [
-          2,
-          3
-        ],
-        "probabilities": [
-          80,
-          20
-        ],
-        "items": [
-          114021
-        ]
-      },
-      {
-        "comment": "3-star Weapon Material",
-        "counts": [
-          2,
-          3
-        ],
-        "probabilities": [
-          20,
-          80
-        ],
-        "items": [
-          114022
-        ]
-      },
-      {
-        "comment": "4-star Weapon Material",
-        "counts": [
-          1,
-          2
-        ],
-        "probabilities": [
-          50,
-          50
-        ],
-        "items": [
-          114023
-        ]
-      }
-    ]
-  },
-  {
     "dungeonId": 5051,
     "comment": "Generated reliquary domain 5051",
     "drops": [
@@ -17044,155 +17468,6 @@
           30544,
           30553,
           30554
-        ]
-      }
-    ]
-  },
-  {
-    "dungeonId": 5100,
-    "comment": "Domain of Guyun 1",
-    "drops": [
-      {
-        "comment": "AR exp",
-        "counts": [
-          100
-        ],
-        "items": [
-          102
-        ]
-      },
-      {
-        "comment": "Mora",
-        "counts": [
-          1525
-        ],
-        "items": [
-          202
-        ]
-      },
-      {
-        "comment": "Friendship exp",
-        "counts": [
-          15
-        ],
-        "items": [
-          105
-        ],
-        "mpDouble": true
-      },
-      {
-        "comment": "2-star Artifacts",
-        "counts": [
-          5
-        ],
-        "items": []
-      },
-      {
-        "comment": "3-star Artifacts",
-        "counts": [
-          2,
-          3
-        ],
-        "probabilities": [
-          85,
-          15
-        ],
-        "items": [
-          61341,
-          61342,
-          61321,
-          61322,
-          61351,
-          61352,
-          61311,
-          61312,
-          61331,
-          61332,
-          52341,
-          52342,
-          52321,
-          52322,
-          52351,
-          52352,
-          52311,
-          52312,
-          52331,
-          52332
-        ]
-      }
-    ]
-  },
-  {
-    "dungeonId": 5101,
-    "comment": "Domain of Guyun 2",
-    "drops": [
-      {
-        "comment": "AR exp",
-        "counts": [
-          100
-        ],
-        "items": [
-          102
-        ]
-      },
-      {
-        "comment": "Mora",
-        "counts": [
-          1700
-        ],
-        "items": [
-          202
-        ]
-      },
-      {
-        "comment": "Friendship exp",
-        "counts": [
-          15
-        ],
-        "items": [
-          105
-        ],
-        "mpDouble": true
-      },
-      {
-        "comment": "2-star Artifacts",
-        "counts": [
-          2,
-          3
-        ],
-        "items": []
-      },
-      {
-        "comment": "3-star Artifacts",
-        "counts": [
-          4,
-          5
-        ],
-        "probabilities": [
-          20,
-          80
-        ],
-        "items": [
-          61341,
-          61342,
-          61321,
-          61322,
-          61351,
-          61352,
-          61311,
-          61312,
-          61331,
-          61332,
-          52341,
-          52342,
-          52321,
-          52322,
-          52351,
-          52352,
-          52311,
-          52312,
-          52331,
-          52332
         ]
       }
     ]

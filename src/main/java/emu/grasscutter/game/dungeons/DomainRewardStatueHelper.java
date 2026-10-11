@@ -68,8 +68,29 @@ public final class DomainRewardStatueHelper {
         return n == 70340011 || n == 70340012 || n == 70340013 || n == 70340014 || n == 70380008 || n == 70350008;
     }
 
+    // Scenes 40770-40773 use a synthetic two-piece Fontaine reward fixture.
+    // The base opens the resin UI; the 70350008 accessory is decorative here.
+    static boolean isFontaineWeaponCompatibilityScene(int sceneId) {
+        return sceneId >= 40770 && sceneId <= 40773;
+    }
+
+    static boolean isRewardClaimTarget(int sceneId, int gadgetId) {
+        return isExitRewardStatue(gadgetId)
+                && !(isFontaineWeaponCompatibilityScene(sceneId)
+                        && gadgetId == REWARD_TREE_GADGET_ID);
+    }
+
     public static boolean isClaimableState(int n) {
         return n == 203 || n == 401;
+    }
+
+    /**
+     * The native domain settle script activates the reward base (70340012,
+     * config 5001), not the separate generic item accessory (70350008,
+     * config 5002). Keep the accessory in its default state.
+     */
+    static int rewardGadgetStateAfterSettle(int gadgetId) {
+        return gadgetId == REWARD_TREE_GADGET_ID ? 0 : 401;
     }
 
     public static void onChallengeSuccess(Scene scene) {
@@ -86,19 +107,14 @@ public final class DomainRewardStatueHelper {
                 Grasscutter.getLogger().warn("trigger FINISH_CHALLENGE failed scene={}", (Object)scene.getId(), (Object)exception);
             }
             bl = dungeonManager.isFinishedSuccessfully();
-            if (bl) {
-                try {
-                    dungeonManager.finishDungeon();
-                }
-                catch (Exception exception) {
-                    Grasscutter.getLogger().warn("finishDungeon failed scene={}", (Object)scene.getId(), (Object)exception);
-                }
-            }
+            // triggerEvent already settles the dungeon on success.
+
         }
         int n = 0;
         int n2 = 0;
         ArrayList<EntityGadget> arrayList = new ArrayList<EntityGadget>();
         ArrayList<EntityGadget> arrayList2 = new ArrayList<EntityGadget>();
+        ArrayList<EntityGadget> decorations = new ArrayList<EntityGadget>();
         for (GameEntity gameEntity : scene.getEntities().values()) {
             if (!(gameEntity instanceof EntityGadget)) continue;
             EntityGadget entityGadget = (EntityGadget)gameEntity;
@@ -109,9 +125,16 @@ public final class DomainRewardStatueHelper {
                 continue;
             }
             if (!DomainRewardStatueHelper.isExitRewardStatue(n3)) continue;
+            if (!isRewardClaimTarget(scene.getId(), n3)) {
+                // For compatibility scenes, 70350008 is a noninteractive
+                // accessory and must not obscure the 70340012 reward base.
+                entityGadget.setInteractEnabled(false);
+                decorations.add(entityGadget);
+                continue;
+            }
             DomainRewardStatueHelper.forceRewardStatueContent(entityGadget);
             entityGadget.setInteractEnabled(true);
-            entityGadget.updateState(401);
+            entityGadget.updateState(rewardGadgetStateAfterSettle(n3));
             ++n2;
             arrayList2.add(entityGadget);
         }
@@ -119,6 +142,8 @@ public final class DomainRewardStatueHelper {
             scene.killEntity((GameEntity)entityGadget, 0);
             ++n;
         }
+        // Rebuild both objects' client protos after changing interaction flags.
+        arrayList2.addAll(decorations);
         for (EntityGadget entityGadget : arrayList2) {
             try {
                 scene.broadcastPacket((BasePacket)new PacketSceneEntityDisappearNotify((GameEntity)entityGadget, VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE));
@@ -131,7 +156,26 @@ public final class DomainRewardStatueHelper {
                 catch (Exception exception2) {}
             }
         }
-        Grasscutter.getLogger().info("Domain reward tree scene={} keysKilled={} exitLit={} dmFinished={}", new Object[]{scene.getId(), n, n2, bl});
+        Grasscutter.getLogger().info("Domain reward tree scene={} keysKilled={} exitLit={} decorations={} dmFinished={}", new Object[]{scene.getId(), n, n2, decorations.size(), bl});
+        // Log the four synthetic fixtures so reward geometry and client
+        // interaction flags can be audited independently.
+        if (isFontaineWeaponCompatibilityScene(scene.getId())) {
+            for (EntityGadget reward : arrayList2) {
+                Grasscutter.getLogger().info(
+                        "Domain {} reward gadget={} cfg={} entity={} state={} pos={} clientInteract={} content={}",
+                        new Object[] {
+                            scene.getId(), reward.getGadgetId(), reward.getConfigId(), reward.getId(),
+                            reward.getState(), reward.getPosition(),
+                            reward.toProto().getGadget().getIsEnableInteract(),
+                            reward.getContent() == null ? "none" : reward.getContent().getClass().getSimpleName()
+                        });
+            }
+            for (Player player : scene.getPlayers()) {
+                Grasscutter.getLogger().info(
+                        "Domain {} reward proximity uid={} playerPos={}",
+                        scene.getId(), player.getUid(), player.getPosition());
+            }
+        }
     }
 
     private static void forceRewardStatueContent(EntityGadget entityGadget) {
@@ -204,12 +248,13 @@ public final class DomainRewardStatueHelper {
         try {
             Scene scene;
             entityGadget.setInteractEnabled(true);
-            if (!DomainRewardStatueHelper.isClaimableState(entityGadget.getState())) {
-                entityGadget.updateState(401);
-            } else {
-                entityGadget.updateState(0);
-                entityGadget.updateState(401);
+            int expected = rewardGadgetStateAfterSettle(entityGadget.getGadgetId());
+            // Refresh the client even if its previous state already matches.
+            // The two-piece tree must end in Default(0), never StatueActive(401).
+            if (entityGadget.getState() == expected) {
+                entityGadget.updateState(expected == 0 ? 401 : 0);
             }
+            entityGadget.updateState(expected);
             Scene scene2 = scene = player != null ? player.getScene() : entityGadget.getScene();
             if (scene != null) {
                 try {

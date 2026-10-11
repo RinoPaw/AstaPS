@@ -219,10 +219,12 @@ public class GameSession implements GameSessionManager.KcpChannel {
                     "[AmberWire] uid={} +{}ms {} {} ({})",
                     player != null ? player.getUid() : 0, elapsedMs, direction, name, opcode);
         }
-        // Actual server outgoing sequence around the first dialogue handoff.
+        // Actual server outgoing sequence around the full dialogue handoff window.
         // Records *both* the finished talk step and newly visible steps, rather
         // than just the first packet with this opcode.
-        if ("SEND".equals(direction) && elapsedMs <= 5000
+        // Capture the full existing 45-second Amber trace window. Quest events
+        // run on an executor and need not complete within the first five seconds.
+        if ("SEND".equals(direction)
                 && (opcode == PacketOpcodes.NpcTalkRsp
                         || opcode == PacketOpcodes.QuestListUpdateNotify)) {
             if (opcode == PacketOpcodes.NpcTalkRsp) {

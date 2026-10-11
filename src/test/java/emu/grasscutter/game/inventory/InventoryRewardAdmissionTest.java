@@ -248,4 +248,46 @@ final class InventoryRewardAdmissionTest {
                 items -> { throw new IllegalStateException("write failed"); }));
         assertEquals(List.of("authorize", "confirmed"), events);
     }
+
+    private static GameItem directUseCard(int id, String materialType, int count) {
+        ItemData data = GSON.fromJson(
+                "{\"id\":" + id + ",\"itemType\":\"ITEM_MATERIAL\",\"materialType\":\""
+                        + materialType + "\",\"useOnGain\":true,\"itemUse\":[{\"useOp\":"
+                        + "\"ITEM_USE_GAIN_NAME_CARD\",\"useParam\":[\"210001\"]}]}",
+                ItemData.class);
+        data.onLoad();
+        GameItem card = new GameItem();
+        card.setItemId(id);
+        card.setItemData(data);
+        card.setCount(count);
+        return card;
+    }
+
+    @Test
+    void admitsSingleUseUnlockCardsWithoutReservingBagSlots() {
+        GameItem namecard = directUseCard(210001, "MATERIAL_NAMECARD", 1);
+        var events = new java.util.ArrayList<String>();
+        var result = InventoryRewardAdmission.grantIfAccepted(
+                List.of(namecard), ignored -> null, ignored -> 0,
+                () -> { events.add("authorize"); return true; },
+                () -> events.add("confirmed"),
+                items -> { events.add("grant"); return accepted(items); });
+        assertTrue(result.allAccepted());
+        assertEquals(List.of("authorize", "confirmed", "grant"), events);
+    }
+
+    @Test
+    void rejectsUnsupportedOrMultiCountDirectUseBeforeClaim() {
+        GameItem multi = directUseCard(210001, "MATERIAL_NAMECARD", 2);
+        GameItem unrelated = directUseCard(210002, "MATERIAL_NONE", 1);
+        var events = new java.util.ArrayList<String>();
+        for (GameItem rejected : List.of(multi, unrelated)) {
+            var result = InventoryRewardAdmission.grantIfAccepted(
+                    List.of(rejected), ignored -> null, ignored -> 0,
+                    () -> { events.add("charge"); return true; },
+                    () -> events.add("confirm"), InventoryRewardAdmissionTest::accepted);
+            assertFalse(result.allAccepted());
+        }
+        assertTrue(events.isEmpty());
+    }
 }

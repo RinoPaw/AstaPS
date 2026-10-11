@@ -45,6 +45,40 @@ The trace never updates quests, OpenStates, player input, cutscenes, wire
 responses or packet ordering. Observed outbound order does **not** prove the
 client received those packets in the same order.
 
+## OpenState 7/8 and native guide candidates (2026-10-11)
+
+The loaded 7.1 resource `ExcelBinOutput/OpenStateConfigData.json` has
+`id=7, defaultState=true, allowClientOpen=true`, while `id=8` has
+`allowClientOpen=true` but no `defaultState=true`. The upstream
+`OpenStateNames` legacy registry identifies 7 as `QUEST_REMIND` and 8
+as `GAME_GUIDE`; it does **not** identify 7 as the quest-menu button.
+Neither legacy name proves how the exact 7.1 Global client gates the quest UI.
+
+`PlayerProgressManager.DEFAULT_OPEN_STATES` deliberately excludes default-open
+states whose `allowClientOpen` is true. In this 7.1 resource, **41** states
+have both flags, including 7. The login `PacketOpenStateUpdateNotify`
+serializes stored entries before consulting the default set; an absent stored
+entry cannot be treated as an explicit zero. Whether the client itself applies
+the resource default when the server omits a key is **not observed**.
+Changing the filter wholesale would alter 41 states, not just the Amber quest.
+Do **not** forcibly set 7 or 8 or change the global default policy as an
+unverified Amber fix.
+
+The server has a defined `PacketShowClientGuideNotify` and a world-script
+`ScriptLib.ShowClientGuide`, but `BinOutput/Quest/356.json` gives subquest
+35601 only a `QUEST_CONTENT_COMPLETE_TALK` finish condition, with no explicit
+`finishExec` invoking a server guide packet. The historical *client-local*
+`AQ356.lua` instead invokes `StartGuide`. Existence of the server packet
+is **not evidence** it should be injected after NPC talk 35601.
+
+The exact 7.1 native `GuideManager.CanStart` disassembly confirms config
+lookup, preflight gates, and deferred-list insertion; it does not establish an
+OpenState-7 dependency. The next decisive observation is the matched-client
+trace from before 35601 starts: identify the actual `StartGuide` request,
+preflight/deferred retry, UI mask and avatar input transitions, alongside the
+already-scoped outgoing 35603 quest packet. A missing client callback after a
+late attach remains unknown, never a proved absence.
+
 ## Next evidence gate
 
 Capture one complete exact-7.1 client run using the existing **read-only**

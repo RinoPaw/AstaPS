@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import emu.grasscutter.scripts.constants.ScriptGadgetState;
 import org.junit.jupiter.api.Test;
 
-/** The domain fixture has a distinct active base and a default-state clickable tree. */
+/** Synthetic Fontaine fixtures have an active base and noninteractive accessory. */
 final class DomainRewardStatueStateTest {
     @Test
     void rewardTreeMustKeepDefaultClientState() {
@@ -27,11 +27,19 @@ final class DomainRewardStatueStateTest {
     }
 
     @Test
-    void synthetic40773PairHasOnlyOneClaimTarget() {
-        assertTrue(DomainRewardStatueHelper.isRewardClaimTarget(40773, 70340012));
-        assertFalse(DomainRewardStatueHelper.isRewardClaimTarget(40773, 70350008));
-        // The compatibility exception is scoped to 40773.
+    void syntheticFontaineWeaponScenesHaveOneClaimTarget() {
+        for (int sceneId = 40770; sceneId <= 40773; sceneId++) {
+            assertTrue(DomainRewardStatueHelper.isFontaineWeaponCompatibilityScene(sceneId));
+            assertTrue(DomainRewardStatueHelper.isRewardClaimTarget(sceneId, 70340012));
+            assertFalse(DomainRewardStatueHelper.isRewardClaimTarget(sceneId, 70350008));
+            assertFalse(DomainRewardStatueHelper.isRewardClaimTarget(sceneId, 70360010));
+        }
+
+        // Other domain scenes keep the existing gadget behavior.
+        assertFalse(DomainRewardStatueHelper.isFontaineWeaponCompatibilityScene(40769));
+        assertFalse(DomainRewardStatueHelper.isFontaineWeaponCompatibilityScene(40774));
         assertTrue(DomainRewardStatueHelper.isRewardClaimTarget(40501, 70350008));
+        assertTrue(DomainRewardStatueHelper.isRewardClaimTarget(40774, 70350008));
     }
 
     @Test

@@ -56,6 +56,10 @@ public class GameSession implements GameSessionManager.KcpChannel {
             amberPacketCounts = new java.util.concurrent.ConcurrentHashMap<>();
     private final java.util.concurrent.atomic.AtomicBoolean amberSummaryReported =
             new java.util.concurrent.atomic.AtomicBoolean();
+    // Diagnostic observation order after the KCP send returns. Concurrent sends
+    // can interleave; event indices alone do not prove remote receive order.
+    private final java.util.concurrent.atomic.AtomicLong amberObservedPacketOrdinal =
+            new java.util.concurrent.atomic.AtomicLong();
     private final java.util.concurrent.ConcurrentMap<String, Boolean> amberLastTimeNotifyPaused =
             new java.util.concurrent.ConcurrentHashMap<>();
 
@@ -65,6 +69,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
         amberPacketCounts.clear();
         amberLastTimeNotifyPaused.clear();
         amberSummaryReported.set(false);
+        amberObservedPacketOrdinal.set(0);
         amberTraceStartNanos = System.nanoTime();
         var world = player != null ? player.getWorld() : null;
         Grasscutter.getLogger().info(
@@ -177,6 +182,24 @@ public class GameSession implements GameSessionManager.KcpChannel {
         return parts.isEmpty() ? "(empty)" : String.join(", ", parts);
     }
 
+    // Compact semantic payload report; limit to the three Amber handoff subquests.
+    // An empty result is not evidence that quest 35603 was accepted by the client.
+    static String summarizeAmberHandoffQuestEntries(byte[] payload)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        var notify = emu.grasscutter.net.proto.QuestListUpdateNotifyOuterClass
+                .QuestListUpdateNotify.parseFrom(payload);
+        var result = new java.util.ArrayList<String>();
+        for (var quest : notify.getQuestListList()) {
+            if (quest.getQuestId() == 35601
+                    || quest.getQuestId() == 35602
+                    || quest.getQuestId() == 35603) {
+                result.add(quest.getQuestId() + "(parent=" + quest.getParentQuestId()
+                        + ",state=" + quest.getState() + ")");
+            }
+        }
+        return result.isEmpty() ? "(none)" : String.join(", ", result);
+    }
+
     private void traceAmberPacket(String direction, int opcode, byte[] payload) {
         long started = amberTraceStartNanos;
         if (started == 0) return;
@@ -186,6 +209,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
             return;
         }
 
+        long observationOrdinal = amberObservedPacketOrdinal.incrementAndGet();
         var name = PacketOpcodesUtils.getOpcodeName(opcode);
         amberPacketCounts.computeIfAbsent(direction + ":" + name,
                         ignored -> new java.util.concurrent.atomic.AtomicInteger()).incrementAndGet();
@@ -194,6 +218,27 @@ public class GameSession implements GameSessionManager.KcpChannel {
             Grasscutter.getLogger().info(
                     "[AmberWire] uid={} +{}ms {} {} ({})",
                     player != null ? player.getUid() : 0, elapsedMs, direction, name, opcode);
+        }
+        // Actual server outgoing sequence around the first dialogue handoff.
+        // Records *both* the finished talk step and newly visible steps, rather
+        // than just the first packet with this opcode.
+        if ("SEND".equals(direction) && elapsedMs <= 5000
+                && (opcode == PacketOpcodes.NpcTalkRsp
+                        || opcode == PacketOpcodes.QuestListUpdateNotify)) {
+            if (opcode == PacketOpcodes.NpcTalkRsp) {
+                Grasscutter.getLogger().info(
+                        "[AmberGuideOrder] uid={} +{}ms observation={} sent=NpcTalkRsp",
+                        player != null ? player.getUid() : 0, elapsedMs, observationOrdinal);
+            } else {
+                try {
+                    Grasscutter.getLogger().info(
+                            "[AmberGuideOrder] uid={} +{}ms observation={} sent=QuestListUpdateNotify entries={}",
+                            player != null ? player.getUid() : 0, elapsedMs, observationOrdinal,
+                            summarizeAmberHandoffQuestEntries(payload));
+                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                    Grasscutter.getLogger().warn("[AmberGuideOrder] Cannot decode outgoing quest entries", e);
+                }
+            }
         }
         // Pause requests and cutscene acknowledgements can occur more than once; their ordering
         // and values matter more than the first-seen packet list when client input stays locked.

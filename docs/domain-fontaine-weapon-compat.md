@@ -25,3 +25,19 @@ claim before resin is deducted.
 
 Evidence: `versions/7.1.0-global/analyses/progression/economy/7.1-domain-drop-links.json`
 and `7.1-dungeon-reward-previews.json` in `RinoPaw/Genshin-Reverse`.
+
+## Scene reward fixtures
+
+Scenes 40770–40773 currently have synthetic Lua scene blocks and reward groups
+in `RinoPaw/AstaPS-Resource` branch
+`fix/fontaine-weapon-domain-scene-71`. The native 40650/40801 reward geometry
+provides a same-template reference: base `70340012` at
+`(0.016, -0.438, -40.416)`, accessory `70350008` at
+`(0.000, 2.394, -35.712)`. The base becomes
+`StatueActive` when the dungeon settles; the accessory remains in its
+default state and is **not** a resin interaction target in these four scenes.
+
+Dungeon 4473 / scene 40773 was client-verified: the reward UI opened and
+the item grant succeeded. Scene positions and rewards for 4470–4472 need
+separate client verification. This fixture is not a recovered native group
+and does not establish native drop probabilities.

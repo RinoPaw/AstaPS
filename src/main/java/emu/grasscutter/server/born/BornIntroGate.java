@@ -30,6 +30,7 @@ public final class BornIntroGate {
         private final GameSession originSession;
         private final FreshPlayerLifecycle lifecycle;
         private volatile boolean disconnected;
+        private volatile boolean workerOwnsDisconnectCleanup;
         private boolean earlySceneEntrySent;
         private GameSession earlySceneEntrySession;
         private boolean sceneReadyDeferred;
@@ -75,6 +76,7 @@ public final class BornIntroGate {
             workerOwnsCleanup =
                     state.lifecycle.phase() == FreshPlayerLifecycle.Phase.WORLD_LOGIN_ACTIVE;
             state.disconnected = true;
+            state.workerOwnsDisconnectCleanup = workerOwnsCleanup;
             FRESH_PLAYER_BOOTSTRAPS.remove(uidOf(session), state);
         }
         return workerOwnsCleanup;
@@ -251,21 +253,22 @@ public final class BornIntroGate {
 
                     player.onLogin();
                     restoreStarterStatueState(player, statueUnlocked, statueForceLocked);
+                    // Advance the phase while holding the player monitor. On disconnect the
+                    // scene-ready phase transfers cleanup ownership to GameSession.handleClose.
+                    if (!state.disconnected && session.isConnected()) {
+                        markWorldLoginComplete(session);
+                    }
                 } catch (Throwable error) {
                     failWorldLogin(session, state, error);
                 } finally {
                     // The disconnect handler deliberately defers cleanup to this worker while
                     // Player.onLogin is running. Never leave a zombie world registered after a
                     // cancelled cold login.
-                    if (state.disconnected || !session.isConnected()) {
-                        if (player.getWorld() != null) player.onLogout();
+                    if (state.workerOwnsDisconnectCleanup && player.getWorld() != null) {
+                        player.onLogout();
                     }
                 }
             }
-        }
-
-        if (!state.disconnected && session.isConnected()) {
-            markWorldLoginComplete(session);
         }
     }
 

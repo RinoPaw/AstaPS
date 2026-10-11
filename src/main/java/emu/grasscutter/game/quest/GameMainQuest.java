@@ -451,19 +451,25 @@ public class GameMainQuest {
         }
     }
 
+    /**
+     * Only the child's active state and finish conditions determine whether it receives a finish
+     * event. An opening cutscene may have no accept conditions (35104 is one example), because
+     * its parent was activated by the first-scene bootstrap.
+     */
+    static boolean acceptsFinishEvent(GameQuest quest, QuestContent event) {
+        return quest != null
+                && quest.getState() == QuestState.QUEST_STATE_UNFINISHED
+                && quest.getQuestData() != null
+                && quest.getQuestData().getFinishCond() != null
+                && quest.getQuestData().getFinishCond().stream()
+                        .anyMatch(condition -> condition.getType() == event);
+    }
+
     public void tryFinishSubQuests(QuestContent condType, String paramStr, int... params) {
         try {
             List<GameQuest> subQuestsWithCond =
                     getChildQuests().values().stream()
-                            // There are subQuests with no acceptCond, but can be finished (example: 35104)
-                            .filter(
-                                    p ->
-                                            p.getState() == QuestState.QUEST_STATE_UNFINISHED
-                                                    && p.getQuestData().getAcceptCond() != null)
-                            .filter(
-                                    p ->
-                                            p.getQuestData().getFinishCond().stream()
-                                                    .anyMatch(q -> q.getType() == condType))
+                            .filter(p -> acceptsFinishEvent(p, condType))
                             .toList();
 
             for (GameQuest subQuestWithCond : subQuestsWithCond) {

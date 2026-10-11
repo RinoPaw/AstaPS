@@ -86,7 +86,7 @@ public final class BornIntroGate {
     /** Marks Player.onLogin complete for the automatic path and resumes any early scene-ready. */
     public static void markWorldLoginComplete(GameSession session) {
         State state = stateFor(session);
-        if (state == null) return;
+        if (state == null || state.originSession != session) return;
 
         GameSession deferredReadySession = null;
         synchronized (state) {
@@ -254,7 +254,7 @@ public final class BornIntroGate {
     /** Returns true when EnterSceneReadyReq is retained until first Player.onLogin completes. */
     public static boolean deferSceneReadyUntilLoginComplete(GameSession session) {
         State state = stateFor(session);
-        if (state == null) return false;
+        if (state == null || state.originSession != session) return false;
 
         synchronized (state) {
             if (!state.lifecycle.mustDeferSceneReady()) return false;

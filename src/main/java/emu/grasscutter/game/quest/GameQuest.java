@@ -63,7 +63,7 @@ public class GameQuest {
         this.startTime = this.acceptTime;
         this.startGameDay = getOwner().getWorld().getTotalGameTimeDays();
         this.state = QuestState.QUEST_STATE_UNFINISHED;
-        if (subQuestId == 35403 || subQuestId == 35404 || subQuestId == 36005 || subQuestId == 35601 || subQuestId == 35602 || subQuestId == 35603 || subQuestId == 35604) {
+        if ((subQuestId >= 35301 && subQuestId <= 35312) || subQuestId == 35402 || subQuestId == 35403 || subQuestId == 35404 || subQuestId == 36005 || subQuestId == 35601 || subQuestId == 35602 || subQuestId == 35603 || subQuestId == 35604) {
             Grasscutter.getLogger().info("[Prologue] Quest start uid={} subQuest={}", getOwner().getUid(), subQuestId);
         }
 
@@ -246,7 +246,7 @@ public class GameQuest {
                     "[AmberState] uid={} playerPaused={} worldPaused={} timeLocked={}",
                     getOwner().getUid(), getOwner().isPaused(), world.isPaused(), world.isTimeLocked());
         }
-        if (subQuestId == 35403 || subQuestId == 35404 || subQuestId == 36005 || subQuestId == 35601 || subQuestId == 35602 || subQuestId == 35603 || subQuestId == 35604) {
+        if ((subQuestId >= 35301 && subQuestId <= 35312) || subQuestId == 35402 || subQuestId == 35403 || subQuestId == 35404 || subQuestId == 36005 || subQuestId == 35601 || subQuestId == 35602 || subQuestId == 35603 || subQuestId == 35604) {
             Grasscutter.getLogger().info("[Prologue] Quest finish uid={} subQuest={}", getOwner().getUid(), subQuestId);
         }
 

@@ -35,12 +35,7 @@ public final class GadgetRewardStatue extends GadgetContent {
                 dm.triggerEvent(DungeonPassConditionType.DUNGEON_COND_FINISH_CHALLENGE, new int[] {1, 0, 0});
             } catch (Exception ignored) {
             }
-            try {
-                if (dm.isFinishedSuccessfully()) {
-                    dm.finishDungeon();
-                }
-            } catch (Exception ignored) {
-            }
+            // triggerEvent() already sends the dungeon settle when conditions pass.
         }
 
         // Step 1: open the petrified tree selection UI without claiming yet.

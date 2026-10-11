@@ -2,6 +2,7 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.database.RewardGrantJournal;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.inventory.InventoryAddResult;
@@ -20,6 +21,7 @@ public class PacketGetMailItemRsp extends BasePacket {
         List<Mail> claimedMessages = new ArrayList<>();
         List<EquipParam> claimedItems = new ArrayList<>();
         var proto = GetMailItemRsp.newBuilder();
+        var receipts = new RewardGrantJournal();
 
         synchronized (player) {
             for (int mailId : new LinkedHashSet<>(mailList)) {
@@ -53,19 +55,35 @@ public class PacketGetMailItemRsp extends BasePacket {
                 }
 
                 try {
+                    if (message.getId() == null) {
+                        Grasscutter.getLogger().warn(
+                                "Mail claim rejected: unsaved message uid={} index={}",
+                                player.getUid(), mailId);
+                        continue;
+                    }
+                    var key = new RewardGrantJournal.Key(
+                            RewardGrantJournal.Source.MAIL,
+                            player.getUid(), message.getId().toHexString());
+                    var expected = items.stream()
+                            .map(item -> new RewardGrantJournal.Reward(
+                                    item.getItemId(), item.getCount(), item.getLevel()))
+                            .toList();
                     InventoryAddResult result = player.getInventory().addItems(
                             items,
                             ActionReason.MailAttachment,
                             InventoryAddPolicy.ALL_OR_NOTHING,
-                            () -> !message.isAttachmentGot,
+                            // Prepare a durable receipt after capacity checks, before any
+                            // claim mutation. Existing receipts require manual reconciliation.
+                            () -> !message.isAttachmentGot && receipts.prepare(key, expected),
                             () -> {
-                                // Mark before writes so an interrupted grant cannot be replayed.
+                                // Mark before item writes to prevent duplicate delivery.
                                 message.isAttachmentGot = true;
                                 if (!player.replaceMailByIndex(mailId, message)) {
                                     message.isAttachmentGot = false;
                                     throw new IllegalStateException(
                                             "Mail disappeared before attachment confirmation");
                                 }
+                                receipts.confirm(key);
                             });
                     if (!result.allAccepted()) {
                         Grasscutter.getLogger().warn(
@@ -73,11 +91,12 @@ public class PacketGetMailItemRsp extends BasePacket {
                                 player.getUid(), mailId, result.entries());
                         continue;
                     }
+                    receipts.complete(key);
                     claimedMessages.add(message);
                     claimedItems.addAll(itemParams);
                 } catch (RuntimeException exception) {
                     Grasscutter.getLogger().error(
-                            "Mail claim interrupted uid={} mail={}",
+                            "Mail claim interrupted uid={} mail={} (inspect reward_grant_receipts)",
                             player.getUid(), mailId, exception);
                 }
             }

@@ -100,15 +100,19 @@ public class HandlerPlayerLoginReq extends PacketHandler {
             }
         }
 
+        if (BornIntroGate.isFreshPlayerBootstrap(session)) {
+            // Cold scene initialization can block the logic thread long enough for 7.1 to
+            // reconnect. Acknowledge login, publish the scene token, then build the world on
+            // the same worker-backed lifecycle used by native character selection.
+            session.setState(SessionState.ACTIVE);
+            session.send(new PacketPlayerLoginRsp(session));
+            BornIntroGate.beginSceneReadyWorldLogin(session);
+            return;
+        }
+
         player.onLogin();
         restoreStarterStatueState(
                 player, starterStatueUnlockedBeforeLogin, starterStatueForceLockedBeforeLogin);
-
-        if (BornIntroGate.isFreshPlayerBootstrap(session)) {
-            // Both newly created and recovered accounts use the same first-scene transition.
-            BornIntroGate.markWorldLoginComplete(session);
-        }
-
         session.send(new PacketPlayerLoginRsp(session));
     }
 

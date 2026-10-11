@@ -68,15 +68,14 @@ public final class AmberQuestHandoffTrace {
         try {
             if (packet.getOpcode() == PacketOpcodes.NpcTalkRsp) {
                 int talkId = NpcTalkRsp.parseFrom(packet.getData()).getCurTalkId();
-                if (talkId == AMBER_TALK) record(trace, "sent=NpcTalkRsp talk=" + talkId);
+                if (talkId == AMBER_TALK) recordWire(trace, "sent=NpcTalkRsp talk=" + talkId);
             } else if (packet.getOpcode() == PacketOpcodes.QuestListUpdateNotify) {
                 var notify = QuestListUpdateNotify.parseFrom(packet.getData());
                 var detail = formatQuestEntries(notify);
                 if (!detail.equals("(none)")) {
-                    record(trace, "sent=QuestListUpdateNotify entries=" + detail
-                            + " count=" + notify.getQuestListCount());
+                    recordWire(trace, "sent=QuestListUpdateNotify entries=" + detail);
                 } else if (notify.getQuestListCount() == 0) {
-                    record(trace, "sent=QuestListUpdateNotify entries=(empty)");
+                    recordWire(trace, "sent=QuestListUpdateNotify entries=(none)");
                 }
             }
         } catch (Exception e) {
@@ -116,6 +115,16 @@ public final class AmberQuestHandoffTrace {
                     trace.uid, trace.ordinal.get());
         }
         return null;
+    }
+
+    private static void recordWire(Trace trace, String event) {
+        if (trace.ordinal.get() >= 200) return;
+        int ordinal = trace.ordinal.incrementAndGet();
+        // Preserve the wire-evidence grammar consumed by Genshin-Reverse's cross-source tool.
+        Grasscutter.getLogger().info(
+                "[AmberGuideOrder] uid={} +{}ms observation={} {}",
+                trace.uid, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - trace.start),
+                ordinal, event);
     }
 
     private static void record(Trace trace, String event) {

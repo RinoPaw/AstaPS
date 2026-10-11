@@ -11,6 +11,8 @@ public class HandlerNpcTalkReq extends PacketHandler {
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         var req = NpcTalkReq.parseFrom(payload);
 
+        // Begin the bounded 35601 trace before talk events are enqueued on the quest executor.
+        emu.grasscutter.server.game.AmberQuestHandoffTrace.begin(session, req.getTalkId());
         session.getPlayer().getTalkManager().triggerTalkAction(req.getTalkId(), req.getEntityId());
         session.send(new PacketNpcTalkRsp(req.getNpcEntityId(), req.getTalkId(), req.getEntityId()));
     }

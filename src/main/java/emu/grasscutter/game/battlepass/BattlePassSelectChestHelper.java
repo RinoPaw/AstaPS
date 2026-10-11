@@ -137,6 +137,11 @@ public final class BattlePassSelectChestHelper {
             return -1;
         }
 
+        // Apply the native grouped-option limit even to explicit useParam
+        // entries; only unknown chest definitions use the generic upper bound.
+        if (!isAllowedGroupedIndex(chestId, optionIdx)) {
+            return -1;
+        }
         if (optionIdx <= choices.size()) {
             return choices.get(optionIdx - 1);
         }
@@ -161,6 +166,11 @@ public final class BattlePassSelectChestHelper {
         }
         // ADD_SELECT_ITEM uses item IDs which need not be contiguous.
         return -1;
+    }
+
+    static boolean isAllowedGroupedIndex(int chestId, int index) {
+        Integer limit = GROUPED_SELECTION_LIMITS.get(chestId);
+        return index >= 1 && index <= 128 && (limit == null || index <= limit);
     }
 
     static boolean permitsGroupedExtension(int chestId, int optionIdx, List<Integer> explicit) {

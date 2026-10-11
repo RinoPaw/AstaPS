@@ -256,15 +256,17 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
     /**
      * A missing unlock condition is not an automatically satisfied unlock condition.
      *
-     * <p>The 7.1 OpenStateConfigData resource has server-owned, non-default states without a
-     * condition. Unlocking them on login exposes gated menus and tutorial reminders before the
-     * related quests. Leave such states locked until a quest or another handler explicitly opens
+     * <p>The 7.1 OpenStateConfigData resource uses the JSON key cond_type. Before that key was
+     * decoded correctly, genuine quest- and level-gated states appeared to have no conditions;
+     * an empty condition list then opened them on login, exposing menus and tutorial reminders
+     * before the related quests. Leave such states locked until a quest or another handler explicitly opens
      * them. Client-owned states must still be opened by the client.
      */
     static boolean isAutomaticOpenStateCandidate(OpenStateData state) {
         return !state.isAllowClientOpen()
                 && (state.isDefaultState()
-                        || (state.getCond() != null && !state.getCond().isEmpty()));
+                        || (state.getCond() != null
+                                && state.getCond().stream().anyMatch(c -> c.getCondType() != null)));
     }
 
     public void tryUnlockOpenStates(boolean sendNotify) {

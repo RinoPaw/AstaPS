@@ -172,8 +172,9 @@ first "Press J" stage, but instead appeared after opening the menu.
 That presentation discrepancy remains unverified independently.
 
 Separate **confirmed server-side bug**: `OpenStateConfigData.json` (7.1)
-contains **181 server-owned states** with `defaultState=false` and no
-parsed unlock conditions. `PlayerProgressManager.tryUnlockOpenStates`
+contains **181 server-owned, non-default** states that *formerly appeared* to
+have no parsed unlock conditions; **152 have actual `cond_type` data and 29
+have no condition**. `PlayerProgressManager.tryUnlockOpenStates`
 previously regarded the empty condition list as trivially met and opened
 them on login, even with questing enabled. That prematurely exposes
 menus and associated tutorial prompts, matching the reported startup HUD
@@ -187,3 +188,31 @@ The policy fix is **not** a claimed restoration of the exact
 `GuideQuestGuidePC` first-frame BlackMask. That needs a fresh,
 unmodified tutorial UI observation after unrelated startup notifications
 are reduced. Do not force guide completion or bypass native input.
+
+### Root cause confirmed from the 7.1 resource schema
+
+The underlying issue is a missing field mapping: JSON
+`ExcelBinOutput/OpenStateConfigData.json` uses `cond_type` for
+individual unlock-condition enum values, while Java `OpenStateData.OpenStateCond`
+previously declared only `condType` and did not annotate it.
+Gson did not recognize the snake-case key. `onLoad()` then removed
+each condition as null, and the empty-condition check in
+`tryUnlockOpenStates()` vacuously returned true. This prematurely
+unlocked quest-restricted states such as **31** (Gacha,
+`OPEN_STATE_COND_QUEST`, quest `2010001`) and level-gated **30**
+(`OPEN_STATE_COND_PLAYER_LEVEL`, level 2). The raw resource contains
+152 server-owned non-default states with real `cond_type` entries
+and 29 server-owned non-default states with none. Other enumerated
+condition types present in 7.1 but not yet supported by
+`OpenStateData.OpenStateCondType` remain unsupported and must not
+be treated as automatically satisfied.
+
+The code now recognizes `cond_type` with a `condType` compatibility alias,
+requires a default flag or at least one **parsed recognized condition**,
+and applies the existing conditions. The questing-off mass-unlock path,
+explicit unlock commands and already-stored states remain unchanged.
+Unit tests validate the 7.1 field name and compatibility alias.
+**The exact first-step BlackMask visibility is still an independent,
+unverified UI issue.** The second playthrough reached and completed the
+full compulsory quest guide by pressing J; no valid client comparison
+establishes a causal benefit from manually enabling `quest_remind(7)`.

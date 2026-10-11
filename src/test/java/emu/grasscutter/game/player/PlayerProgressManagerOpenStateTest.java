@@ -1,5 +1,6 @@
 package emu.grasscutter.game.player;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,6 +33,29 @@ final class PlayerProgressManagerOpenStateTest {
         assertTrue(PlayerProgressManager.isAutomaticOpenStateCandidate(
                 state(false, false,
                         "[{\"condType\":\"OPEN_STATE_COND_QUEST\",\"param\":35601}]")));
+    }
+
+    @Test
+    void parsesActualSevenOneQuestConditionSnakeCase() {
+        var state = new Gson().fromJson(
+                "{\"id\":31,\"cond\":[{\"cond_type\":\"OPEN_STATE_COND_QUEST\",\"param\":2010001},{}]}",
+                OpenStateData.class);
+        assertEquals(OpenStateData.OpenStateCondType.OPEN_STATE_COND_QUEST,
+                state.getCond().get(0).getCondType());
+        assertEquals(2010001, state.getCond().get(0).getParam());
+        assertTrue(PlayerProgressManager.isAutomaticOpenStateCandidate(state));
+    }
+
+    @Test
+    void acceptsOlderCamelCaseAndRejectsOnlyUnknownConditions() {
+        var legacy = new Gson().fromJson(
+                "{\"id\":30,\"cond\":[{\"condType\":\"OPEN_STATE_COND_PLAYER_LEVEL\",\"param\":2}]}",
+                OpenStateData.class);
+        assertEquals(OpenStateData.OpenStateCondType.OPEN_STATE_COND_PLAYER_LEVEL,
+                legacy.getCond().get(0).getCondType());
+        assertTrue(PlayerProgressManager.isAutomaticOpenStateCandidate(legacy));
+        assertFalse(PlayerProgressManager.isAutomaticOpenStateCandidate(
+                state(false, false, "[{}]")));
     }
 
     @Test

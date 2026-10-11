@@ -1,6 +1,7 @@
 package emu.grasscutter.game.inventory;
 
 import emu.grasscutter.data.excels.ItemData;
+import emu.grasscutter.game.props.ItemUseOp;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -92,12 +93,17 @@ final class InventoryRewardAdmission {
                         || data.getItemUseActions().isEmpty()) {
                     return InventoryAddResult.Status.UNSUPPORTED_TYPE;
                 }
-                switch (data.getMaterialType()) {
-                    case MATERIAL_AVATAR, MATERIAL_FLYCLOAK, MATERIAL_COSTUME, MATERIAL_NAMECARD -> {}
-                    default -> {
-                        // Unknown effects cannot be preflighted as an atomic reward.
-                        return InventoryAddResult.Status.UNSUPPORTED_TYPE;
-                    }
+                ItemUseOp expected = switch (data.getMaterialType()) {
+                    case MATERIAL_AVATAR -> ItemUseOp.ITEM_USE_GAIN_AVATAR;
+                    case MATERIAL_FLYCLOAK -> ItemUseOp.ITEM_USE_GAIN_FLYCLOAK;
+                    case MATERIAL_COSTUME -> ItemUseOp.ITEM_USE_GAIN_COSTUME;
+                    case MATERIAL_NAMECARD -> ItemUseOp.ITEM_USE_GAIN_NAME_CARD;
+                    default -> null;
+                };
+                if (expected == null || data.getItemUseActions().stream()
+                        .noneMatch(action -> action.getItemUseOp() == expected)) {
+                    // Refuse unknown and mismatched direct-use effects.
+                    return InventoryAddResult.Status.UNSUPPORTED_TYPE;
                 }
                 continue;
             }

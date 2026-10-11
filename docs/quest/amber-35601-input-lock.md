@@ -1,3 +1,13 @@
+## 2026-10-11: Full-window wire trace and offline client/server comparison
+
+The `[AmberGuideOrder]` recorder now covers the **whole 45-second existing trace window**, not only the first five seconds. The quest event completion path uses `QuestManager.eventExecutor`; an overburdened queue may deliver quest 35603 later than five seconds. The filter continues to record only outgoing `NpcTalkRsp` and `QuestListUpdateNotify`, decoded only for matching 35601/35602/35603 entries (actual main ID and numeric state).
+
+The companion [Genshin-Reverse comparison tool](https://github.com/RinoPaw/Genshin-Reverse/blob/research/amber-2178-quest-notify-20261010/tools/runtime/compare_amber_handoff_71.py) accepts AstaPS log lines plus 7.1 native trace NDJSON and checks server send observations separately from client guide and UI-lock events. It rejects mixed UID attribution, missing/multiple handoffs and malformed server lines; it **does not claim** a received `QuestListUpdateNotify` contained 35603 merely because the receiver was entered. The old 2026-10-10 21:45 server trace predates the wire payload recorder and cannot supply that missing data.
+
+Source-level audit of the 7.1 resource [BinOutput/Quest/356.json](https://github.com/RinoPaw/AstaPS-Resource/blob/play/rino/BinOutput/Quest/356.json) confirms `35601` finishes on `QUEST_CONTENT_COMPLETE_TALK`, `35603` begins after 35601 FINISHED (condition `QUEST_COND_STATE_EQUAL(35601,3)`), and both belong to main quest 356. Native 7.1 CN UI config targets parent quest 356 for its **second** PC guide step; these static facts alone do not prove the first BlackMask step can initialize.
+
+This diagnostic does not change any quest state, server packet ordering, UI OpenState or NPC talk response behavior.
+
 ## 2026-10-11: Quest-to-dialogue notification order is asynchronous; bounded wire-order evidence
 
 Source audit of `HandlerNpcTalkReq`, `TalkManager.triggerTalkAction`, `QuestManager.queueEvent` and `GameQuest.finish/start` shows that talk 35601 queues `COMPLETE_TALK` quest events on a separate executor, while the handler independently sends `NpcTalkRsp` in its `finally` callback. The two paths can overlap. Consequently **source-level Java statement order does not prove the network order** of `NpcTalkRsp` and `QuestListUpdateNotify`. Prior 21:45 capture's first-send timestamps (talk response +0ms, quest update +1ms) suggest the response won in *that capture*, not that the order is universal. The original upstream Grasscutter uses the same talk-action-before-response structure, so this is not sufficient evidence of a new AstaPS defect.

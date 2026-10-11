@@ -323,6 +323,12 @@ public class ScriptLib {
 
     public int AddQuestProgress(String var1) {
         logger.debug("[LUA] Call AddQuestProgress with {}", var1);
+        if (var1 != null && (var1.startsWith("133003002") || var1.equals("133003079"))) {
+            logger.info("[MondstadtQuestLua] progress={} scene={} players={}",
+                    var1, getSceneScriptManager().getScene().getId(),
+                    getSceneScriptManager().getScene().getPlayers().stream()
+                            .map(p -> p.getUid()).toList());
+        }
         for (var player : getSceneScriptManager().getScene().getPlayers()) {
             player.getPlayerProgress().addToCurrentProgress(var1, 1);
             player.getQuestManager().queueEvent(QuestCond.QUEST_COND_LUA_NOTIFY, var1);

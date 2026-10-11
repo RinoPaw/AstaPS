@@ -12,7 +12,7 @@ import java.nio.file.StandardCopyOption;
 
 /** Player-facing and gameplay configuration stored directly in {@code game.json}. */
 public final class GameConfig {
-    private static final int CURRENT_VERSION = 6;
+    private static final int CURRENT_VERSION = 7;
     private static final Path FILE = Path.of("game.json");
 
     private static volatile GameConfig current;

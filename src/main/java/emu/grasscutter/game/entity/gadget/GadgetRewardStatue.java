@@ -3,7 +3,6 @@ package emu.grasscutter.game.entity.gadget;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.dungeons.DomainRewardStatueHelper;
 import emu.grasscutter.game.dungeons.DomainStatueClaimHelper;
-import emu.grasscutter.game.dungeons.DomainRetryOpcodeProbe;
 import emu.grasscutter.game.dungeons.DomainStatueClaimHelper.ClaimMode;
 import emu.grasscutter.game.dungeons.DomainStatueDropService;
 import emu.grasscutter.game.dungeons.DungeonDropLoader;
@@ -105,11 +104,7 @@ public final class GadgetRewardStatue extends GadgetContent {
                         player.getUid(),
                         mode,
                         ok);
-        if (ok) {
-            // The 7.1 CmdId for DungeonRestartReq is unresolved. Capture the actual
-            // post-claim inbound opcode without recording payload contents.
-            DomainRetryOpcodeProbe.arm(player, dm);
-        } else {
+        if (!ok) {
             DomainRewardStatueHelper.remindAfterFailedClaim(player, dm, getGadget());
         }
         // Always false: EntityGadget kills the gadget when onInteract returns true.

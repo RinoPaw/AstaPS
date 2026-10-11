@@ -156,14 +156,6 @@ public final class GameServerPacketHandler {
 
     public void handle(GameSession session, int opcode, byte[] header, byte[] payload) {
         PacketHandler handler = this.handlers.get(opcode);
-        // Capture the actual 7.1 retry request even when its CmdId has no registered handler.
-        // Run before the generic unknown-packet fallbacks can consume it.
-        if (session.getPlayer() != null) {
-            emu.grasscutter.game.dungeons.DomainRetryOpcodeProbe.observe(
-                    session.getPlayer(), opcode, payload == null ? 0 : payload.length,
-                    handler != null, PacketOpcodesUtils.getOpcodeName(opcode));
-        }
-
         if (handler != null) {
             try {
                 if (session.getPlayer() != null) {

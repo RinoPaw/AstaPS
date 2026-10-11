@@ -1,7 +1,7 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.game.dungeons.FontaineDomainRetryGuard;
+import emu.grasscutter.game.dungeons.DungeonRestartGuard;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.game.GameSession;
 
@@ -10,16 +10,19 @@ public class HandlerDungeonRestartReq extends PacketHandler {
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         var player = session.getPlayer();
-        if (player == null || !FontaineDomainRetryGuard.mayRestart(player, payload)) {
+        if (!DungeonRestartGuard.mayRestart(player, payload)) {
             Grasscutter.getLogger().warn(
-                    "DungeonRestartReq ignored: uid={} scene={} (not a claimed Fontaine weapon domain)",
+                    "DungeonRestartReq rejected uid={} scene={}: no completed and claimed solo dungeon",
                     player == null ? 0 : player.getUid(),
                     player == null ? 0 : player.getSceneId());
             return;
         }
 
-        Grasscutter.getLogger().info("DungeonRestartReq uid={} scene={} opcode={}",
-                player.getUid(), player.getSceneId(), PacketOpcodes.DungeonRestartReq);
+        Grasscutter.getLogger().info(
+                "DungeonRestartReq uid={} dungeon={} scene={} opcode={}",
+                player.getUid(),
+                player.getScene().getDungeonManager().getDungeonData().getId(),
+                player.getSceneId(), PacketOpcodes.DungeonRestartReq);
         player.getServer().getDungeonSystem().restartDungeon(player);
         player.sendPacket(new BasePacket(PacketOpcodes.DungeonRestartRsp));
     }

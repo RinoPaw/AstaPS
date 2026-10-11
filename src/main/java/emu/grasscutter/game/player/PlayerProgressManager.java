@@ -2,6 +2,7 @@ package emu.grasscutter.game.player;
 
 import static emu.grasscutter.config.Configuration.GAME;
 
+import emu.grasscutter.config.GameConfig;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.OpenStateData;
 import emu.grasscutter.data.excels.OpenStateData.OpenStateCondType;
@@ -61,7 +62,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
     public void onPlayerLogin() {
         this.tryUnlockOpenStates(false);
 
-        if (!GAME.quests.enabled) {
+        if (shouldUnlockAllOnLogin(GAME.openStates)) {
             this.setOpenState(47, 1, false);
             this.setOpenState(48, 1, false);
             this.setOpenState(1101, 1, false);
@@ -163,6 +164,25 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
         this.setOpenState(openState, value);
     }
 
+    /**
+     * Explicit opt-in only. Disabled questing does not implicitly unlock every feature.
+     * Stored unlocks are preserved; this controls future login behavior only.
+     */
+    static boolean shouldUnlockAllOnLogin(GameConfig.OpenStateOptions options) {
+        return options != null && options.unlockAllOnLogin;
+    }
+
+    /**
+     * Empty unlock conditions cannot authorize automatic opening of a non-default state.
+     * True defaults still open; client-owned states are managed by the client.
+     */
+    static boolean isAutomaticOpenStateCandidate(OpenStateData state) {
+        return !state.isAllowClientOpen()
+                && (state.isDefaultState()
+                        || (state.getCond() != null
+                                && state.getCond().stream().anyMatch(c -> c.getCondType() != null)));
+    }
+
     public void tryUnlockOpenStates(boolean sendNotify) {
         var lockedStates =
                 GameData.getOpenStateList().stream()
@@ -170,7 +190,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                         .toList();
 
         for (var state : lockedStates) {
-            if (!state.isAllowClientOpen()
+            if (isAutomaticOpenStateCandidate(state)
                     && this.areConditionsMet(state)
                     && !BLACKLIST_OPEN_STATES.contains(state.getId())
                     && !IGNORED_OPEN_STATES.contains(state.getId())) {

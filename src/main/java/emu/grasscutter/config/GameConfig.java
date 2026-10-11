@@ -51,6 +51,9 @@ public final class GameConfig {
     public ConfigContainer.GameOptions.Questing quests =
             new ConfigContainer.GameOptions.Questing();
 
+    /** Explicit opt-in for mass-unlocking features at login. Defaults to normal progression. */
+    public OpenStateOptions openStates = new OpenStateOptions();
+
     @SerializedName(value = "resin", alternate = "resinOptions")
     public ConfigContainer.GameOptions.ResinOptions resin =
             new ConfigContainer.GameOptions.ResinOptions();
@@ -258,6 +261,7 @@ public final class GameConfig {
             newAccountIntro = new ConfigContainer.GameOptions.NewAccountIntro();
         }
         if (quests == null) quests = new ConfigContainer.GameOptions.Questing();
+        if (openStates == null) openStates = new OpenStateOptions();
         if (resin == null) resin = new ConfigContainer.GameOptions.ResinOptions();
         if (rewards == null) rewards = new Rewards();
         rewards.normalize();
@@ -440,6 +444,12 @@ public final class GameConfig {
             new ConfigContainer.VisionOptions("VISION_LEVEL_NEARBY", 40, 20),
             new ConfigContainer.VisionOptions("VISION_LEVEL_SUPER_NEARBY", 20, 20)
         };
+    }
+
+    /** Feature unlock policy in game.json, independent of questing.enabled. */
+    public static final class OpenStateOptions {
+        /** Force open every non-blacklisted state on login, including quest-gated states. */
+        public boolean unlockAllOnLogin = false;
     }
 
     public static final class Rewards {

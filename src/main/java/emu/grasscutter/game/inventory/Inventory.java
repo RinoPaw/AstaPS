@@ -683,6 +683,21 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
         return this.payItems(costItems, quantity, null);
     }
 
+    /** Check affordability under the inventory monitor without making a payment. */
+    public synchronized boolean canPayItems(Iterable<ItemParamData> costItems, int quantity) {
+        Map<Integer, Integer> totals = InventoryPaymentQuote.calculate(costItems, quantity);
+        return totals != null && canPayQuote(totals);
+    }
+
+    private boolean canPayQuote(Map<Integer, Integer> totals) {
+        for (var cost : totals.entrySet()) {
+            if (getVirtualItemCount(cost.getKey()) < cost.getValue()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Validate a whole payment, including repeated item IDs and arithmetic overflow,
      * before consuming anything. All payment entry points share the same inventory lock.
@@ -690,13 +705,8 @@ public final class Inventory extends BasePlayerManager implements Iterable<GameI
     public synchronized boolean payItems(
             Iterable<ItemParamData> costItems, int quantity, ActionReason reason) {
         Map<Integer, Integer> totals = InventoryPaymentQuote.calculate(costItems, quantity);
-        if (totals == null) {
+        if (totals == null || !canPayQuote(totals)) {
             return false;
-        }
-        for (var cost : totals.entrySet()) {
-            if (getVirtualItemCount(cost.getKey()) < cost.getValue()) {
-                return false;
-            }
         }
         for (var cost : totals.entrySet()) {
             payVirtualItem(cost.getKey(), cost.getValue());

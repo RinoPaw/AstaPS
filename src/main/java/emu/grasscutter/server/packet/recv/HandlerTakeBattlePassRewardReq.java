@@ -42,69 +42,9 @@ public class HandlerTakeBattlePassRewardReq extends PacketHandler {
         if (options.isEmpty()) options.addAll(parseOptionsFromWire(payload));
         if (options.isEmpty()) options.addAll(buildAllClaimableNonSelectable(manager));
 
-        List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> normal = new ArrayList<>();
-        List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> selectable = new ArrayList<>();
-        for (var option : options) {
-            if (option == null || !option.hasTag() || option.getTag().getRewardId() <= 0) continue;
-            if (BattlePassSelectChestHelper.isSelectableReward(option.getTag().getRewardId())) {
-                if (option.getOptionIdx() > 0) selectable.add(option);
-            } else normal.add(option);
-        }
-        if (!normal.isEmpty()) {
-            BattlePassCompatHelper.takeReward(manager, normal);
-            if (selectable.isEmpty()) return;
-        }
-        List<GameItem> granted = new ArrayList<>();
-        List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> claimed = new ArrayList<>();
-        var handled = new java.util.HashSet<Integer>();
-        for (var option : selectable) {
-            int rewardId = option.getTag().getRewardId();
-            int level = option.getTag().getLevel();
-            boolean paid = option.getTag().getUnlockStatus()
-                    == BattlePassUnlockStatusOuterClass.BattlePassUnlockStatus.BattlePassUnlockStatus_BATTLE_PASS_UNLOCK_PAID;
-            if (!handled.add(rewardId)
-                    || manager.getTakenRewards().containsKey(rewardId)
-                    || level < 1 || level > manager.getLevel()
-                    || (paid && !manager.isPaid())
-                    || !BattlePassCompatHelper.isRewardAllowed(manager, level, rewardId, paid)) {
-                continue;
-            }
-            List<GameItem> items = BattlePassSelectChestHelper.resolve(rewardId, option.getOptionIdx());
-            if (items.isEmpty()) continue;
-            var rewardMarker = new BattlePassReward(level, rewardId, paid);
-            var reason = paid
-                    ? emu.grasscutter.game.props.ActionReason.BattlePassPaidReward
-                    : emu.grasscutter.game.props.ActionReason.BattlePassLevelReward;
-            try {
-                var result = player.getInventory().addItems(
-                        items, reason,
-                        emu.grasscutter.game.inventory.InventoryAddPolicy.ALL_OR_NOTHING,
-                        () -> !manager.getTakenRewards().containsKey(rewardId),
-                        () -> {
-                            manager.getTakenRewards().put(rewardId, rewardMarker);
-                            manager.save();
-                        });
-                if (!result.allAccepted()) {
-                    Grasscutter.getLogger().warn(
-                            "TakeBP select rejected uid={} reward={} result={}",
-                            player.getUid(), rewardId, result.entries());
-                    continue;
-                }
-                granted.addAll(items);
-                claimed.add(option);
-            } catch (RuntimeException failure) {
-                Grasscutter.getLogger().error(
-                        "TakeBP select interrupted uid={} reward={}",
-                        player.getUid(), rewardId, failure);
-            }
-        }
-        if (!claimed.isEmpty()) {
-            manager.save();
-            player.sendPacket(new PacketBattlePassCurScheduleUpdateNotify(player));
-            player.sendPacket(new PacketTakeBattlePassRewardRsp(claimed, granted));
-        } else if (normal.isEmpty()) {
-            player.sendPacket(new PacketTakeBattlePassRewardRsp(options, granted));
-        }
+        // All reward types, including selectable chests, use the same
+        // validated, durable receipt path. Never grant selections separately.
+        BattlePassCompatHelper.takeReward(manager, options);
     }
 
     private static List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> parseOptionsFromWire(byte[] payload) {

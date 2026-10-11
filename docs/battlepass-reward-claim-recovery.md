@@ -1,7 +1,9 @@
 # Battle Pass reward claim receipts (7.1)
 
 This branch adds persisted claim receipts to the existing validated
-Battle Pass reward path. Each claimed reward uses a stable key:
+Battle Pass reward path. Both selectable chests and ordinary rewards now
+flow through BattlePassCompatHelper.takeReward; the packet handler must not
+bypass the receipt journal for selected items. Each claimed reward uses a stable key:
 
 `BATTLE_PASS : player UID : schedule ID . season begin . reward ID`
 

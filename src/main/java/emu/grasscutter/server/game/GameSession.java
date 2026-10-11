@@ -190,6 +190,8 @@ public class GameSession implements GameSessionManager.KcpChannel {
                     }
                 }
                 tunnel.writeData(bytes);
+                // Observe the actual outbound payload only after the KCP tunnel accepted it.
+                AmberQuestHandoffTrace.observeSent(this, packet);
             } catch (Exception e) {
                 Grasscutter.getLogger()
                         .debug("Unable to send packet {} to client: {}", packet.getOpcode(), e.toString());
@@ -335,6 +337,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
                     default -> {}
                 }
 
+                AmberQuestHandoffTrace.observeReceived(this, opcode, payload);
                 getServer().getPacketHandler().handle(this, opcode, header, payload);
             }
         } catch (Throwable e) {
@@ -353,6 +356,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
 
         @Override
         public void handleClose() {
+            AmberQuestHandoffTrace.onDisconnect(this);
             setState(SessionState.INACTIVE);
 
             Grasscutter.getLogger()

@@ -12,15 +12,22 @@ import emu.grasscutter.game.inventory.MaterialType;
 import emu.grasscutter.game.props.ItemUseOp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Resolve MATERIAL_SELECTABLE_CHEST BP rewards into real inventory items.
  *
  * <p>Client option_idx for specialty chests (e.g. 116018) is the 1-based slot id from
  * GroupedItemSelectionExcelConfig (can be up to 61), not necessarily bounded by a truncated
- * MaterialExcel useParam list. We extend consecutive GRANT_SELECT reward ids when present.
+ * MaterialExcel useParam list. Only verified 7.1 group bounds permit such extensions.
  */
 public final class BattlePassSelectChestHelper {
+    // From 7.1 GroupedItemSelectionExcelConfigData, OCPCFBMOECN[0].EDDMCFGILPC.
+    // These are client-visible indices, NOT arbitrary neighboring reward IDs.
+    private static final Map<Integer, Integer> GROUPED_SELECTION_LIMITS = Map.of(
+            115016, 24, 115017, 24, 115024, 24, 115025, 24,
+            116016, 24, 116017, 24, 116018, 61);
+
     private BattlePassSelectChestHelper() {}
 
     public static boolean isSelectableReward(int rewardId) {
@@ -130,58 +137,47 @@ public final class BattlePassSelectChestHelper {
             return -1;
         }
 
-        // Auto-extend consecutive reward ids when MaterialExcel list is truncated vs client UI.
-        if (use.getUseOp() == ItemUseOp.ITEM_USE_GRANT_SELECT_REWARD) {
-            int last = choices.get(choices.size() - 1);
-            while (true) {
-                int next = last + 1;
-                if (GameData.getRewardDataMap().get(next) == null) {
-                    break;
-                }
-                choices.add(next);
-                last = next;
-                if (choices.size() > 128) {
-                    break;
-                }
-            }
-        }
-
         if (optionIdx <= choices.size()) {
             return choices.get(optionIdx - 1);
         }
 
-        // Fallback: treat optionIdx as 1-based offset from the first reward/item id.
-        int extrapolated = choices.get(0) + (optionIdx - 1);
-        if (use.getUseOp() == ItemUseOp.ITEM_USE_GRANT_SELECT_REWARD) {
-            if (GameData.getRewardDataMap().get(extrapolated) != null) {
-                Grasscutter.getLogger()
-                        .info(
-                                "TakeBP select: optionIdx {} beyond list ({}) chest {}, using reward {}",
-                                optionIdx,
-                                choices.size(),
-                                chestId,
-                                extrapolated);
-                return extrapolated;
-            }
-        } else if (GameData.getItemDataMap().get(extrapolated) != null) {
-            Grasscutter.getLogger()
-                    .info(
-                            "TakeBP select: optionIdx {} beyond list ({}) chest {}, using item {}",
-                            optionIdx,
-                            choices.size(),
-                            chestId,
-                            extrapolated);
-            return extrapolated;
+        // The 7.1 grouped selector can be longer than the MaterialExcel useParam
+        // list. Restrict the compatibility mapping to that exact chest's client
+        // option count, and only extend a proven contiguous prefix.
+        if (!permitsGroupedExtension(chestId, optionIdx, choices)) {
+            Grasscutter.getLogger().warn(
+                    "TakeBP select: optionIdx {} is not configured for chest {}",
+                    optionIdx, chestId);
+            return -1;
         }
 
-        Grasscutter.getLogger()
-                .warn(
-                        "TakeBP select: optionIdx {} out of range {} for chest {} (extrapolated {} missing)",
-                        optionIdx,
-                        choices.size(),
-                        chestId,
-                        extrapolated);
+        long candidate = (long) choices.get(0) + optionIdx - 1;
+        if (candidate > Integer.MAX_VALUE) {
+            return -1;
+        }
+        int chosen = (int) candidate;
+        if (use.getUseOp() == ItemUseOp.ITEM_USE_GRANT_SELECT_REWARD) {
+            return GameData.getRewardDataMap().get(chosen) != null ? chosen : -1;
+        }
+        // ADD_SELECT_ITEM uses item IDs which need not be contiguous.
         return -1;
+    }
+
+    static boolean permitsGroupedExtension(int chestId, int optionIdx, List<Integer> explicit) {
+        Integer maxIndex = GROUPED_SELECTION_LIMITS.get(chestId);
+        if (maxIndex == null || optionIdx < 1 || optionIdx > maxIndex
+                || explicit == null || explicit.isEmpty() || explicit.size() >= optionIdx) {
+            return false;
+        }
+        long first = explicit.get(0);
+        if (first <= 0) return false;
+        for (int i = 0; i < explicit.size(); i++) {
+            Integer id = explicit.get(i);
+            if (id == null || (long) id != first + i) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static ItemUseData firstUse(ItemData chest) {

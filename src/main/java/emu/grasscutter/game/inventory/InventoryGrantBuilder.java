@@ -6,7 +6,7 @@ import java.util.List;
 
 /** Materialize a grant without silently truncating equipment quantities or material stacks. */
 public final class InventoryGrantBuilder {
-    private static final int MAX_EQUIPMENT_PER_BATCH = 10_000;
+    private static final int MAX_INDIVIDUAL_ITEMS_PER_BATCH = 10_000;
 
     private InventoryGrantBuilder() {}
 
@@ -16,13 +16,14 @@ public final class InventoryGrantBuilder {
         }
         ItemType type = definition.getItemType();
         if (type == ItemType.ITEM_WEAPON || type == ItemType.ITEM_RELIQUARY
-                || type == ItemType.ITEM_TPS_WEAPON) {
-            if (count > MAX_EQUIPMENT_PER_BATCH) {
-                throw new IllegalArgumentException("Excessive equipment grant count " + count);
+                || type == ItemType.ITEM_TPS_WEAPON || definition.isUseOnGain()) {
+            if (count > MAX_INDIVIDUAL_ITEMS_PER_BATCH) {
+                throw new IllegalArgumentException("Excessive individual-item grant count " + count);
             }
             List<GameItem> copies = new ArrayList<>(count);
             for (int i = 0; i < count; i++) {
                 GameItem item = new GameItem(definition);
+                // Each use-on-gain card applies one effect; never pack several into one card.
                 item.setLevel(Math.max(1, level));
                 item.setPromoteLevel(GameItem.getMinPromoteLevel(item.getLevel()));
                 copies.add(item);

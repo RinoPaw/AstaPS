@@ -711,6 +711,9 @@ public final class ResourceLoader {
         }
 
         loadNativeQuestData();
+        // Reconcile provenance-backed chapter predecessors after all quest overlays have loaded.
+        // The regular accept-condition event index now owns chapter starts and recovery.
+        emu.grasscutter.game.quest.QuestChapterProgression.reconcileResourceConditions();
 
         Grasscutter.getLogger()
                 .debug("Loaded " + GameData.getMainQuestDataMap().size() + " MainQuestDatas.");

@@ -329,8 +329,47 @@ public class Scene {
                 .forEach(Avatar::sendSkillExtraChargeMap);
     }
 
+    // Bounded observation: tutorial Pyro/Anemo slimes near the player's position.
+    // Does not create, remove or mutate any entity.
+    private final java.util.concurrent.atomic.AtomicInteger mondstadtSlimeTraceCount =
+            new java.util.concurrent.atomic.AtomicInteger();
+
+    static boolean isMondstadtTutorialSlime(int sceneId, int monsterId) {
+        return sceneId == 3 && (monsterId == 20011201 || monsterId == 20011202
+                || monsterId == 20011301 || monsterId == 20010301
+                || monsterId == 20010401);
+    }
+
     private void addEntityDirectly(GameEntity entity) {
         getEntities().put(entity.getId(), entity);
+        if (entity instanceof EntityMonster monster
+                && monster.getMonsterData() != null
+                && isMondstadtTutorialSlime(getId(), monster.getMonsterData().getId())
+                && monster.getPosition() != null
+                && !getPlayers().isEmpty()) {
+            var position = monster.getPosition();
+            var nearby = getPlayers().stream()
+                    .filter(p -> p.getPosition() != null
+                            && p.getPosition().computeDistance(position) <= 260.0)
+                    .findFirst();
+            if (nearby.isPresent()) {
+                int count = mondstadtSlimeTraceCount.incrementAndGet();
+                if (count <= 60) {
+                    long sameConfig = getEntities().values().stream()
+                            .filter(e -> e instanceof EntityMonster
+                                    && e.getGroupId() == monster.getGroupId()
+                                    && e.getConfigId() == monster.getConfigId())
+                            .count();
+                    Grasscutter.getLogger().info(
+                            "[MondstadtSlime] uid={} scene=3 n={} id={} monster={} group={} config={} block={} nativeSpawn={} at=({}, {}, {}) sameConfig={}",
+                            nearby.get().getUid(), count, monster.getId(),
+                            monster.getMonsterData().getId(), monster.getGroupId(),
+                            monster.getConfigId(), monster.getBlockId(),
+                            monster.getSpawnEntry() != null,
+                            position.getX(), position.getY(), position.getZ(), sameConfig);
+                }
+            }
+        }
         entity.onCreate();
     }
 

@@ -104,7 +104,15 @@ public final class DungeonSystem extends BaseGameSystem {
 
         var sceneId = data.getSceneId();
         var scene = player.getScene();
-        if (savePrevious) scene.setPrevScene(scene.getId());
+        int returnSceneId = 0;
+        Position returnPosition = null;
+        if (savePrevious && scene != null) {
+            scene.setPrevScene(scene.getId());
+            if (scene.getSceneType() == SceneType.SCENE_WORLD && player.getPosition() != null) {
+                returnSceneId = scene.getId();
+                returnPosition = new Position(player.getPosition());
+            }
+        }
 
         // Domain / material / talent / weapon / relic: force teardown when reusing the same
         // dungeon scene so old monsters/gadgets do not linger (mirrors tower handoff).
@@ -117,6 +125,11 @@ public final class DungeonSystem extends BaseGameSystem {
         }
 
         if (player.getWorld().transferPlayerToScene(player, sceneId, data)) {
+            if (returnPosition != null) {
+                player.setDungeonReturnSceneId(returnSceneId);
+                player.setDungeonReturnPosition(returnPosition);
+                player.save();
+            }
             scene = player.getScene();
             scene.setDungeonManager(new DungeonManager(scene, data));
             MissingDomainFallbackManager.install(scene, data);
@@ -192,7 +205,8 @@ public final class DungeonSystem extends BaseGameSystem {
             return null;
         }
 
-        // Get previous scene
+        // Get previous scene, preferring the persistent open-world entry (which survives
+        // a server restart). Scene.prevScene and prevScenePoint are transient.
         int prevScene = scene.getPrevScene() > 0 ? scene.getPrevScene() : 3;
 
         // Get previous position
@@ -209,10 +223,24 @@ public final class DungeonSystem extends BaseGameSystem {
             player.getRotation().set(TowerAbyssFix.resolveExitRotation(player));
         }
 
+        int storedReturn = DungeonLoginRecovery.chooseWorldScene(
+                player.getDungeonReturnSceneId(),
+                player.getDungeonReturnPosition(),
+                id -> {
+                    var target = GameData.getSceneDataMap().get(id);
+                    return target != null && target.getSceneType() == SceneType.SCENE_WORLD;
+                });
+        if (!towerDungeon && storedReturn != 3) {
+            prevScene = storedReturn;
+            prevPos.set(player.getDungeonReturnPosition());
+        }
+
         if (dungeonData != null) {
             ScenePointEntry entry = GameData.getScenePointEntryById(prevScene, scene.getPrevScenePoint());
 
-            if (!towerDungeon && entry != null) {
+            if (!towerDungeon && storedReturn == 3 && entry != null
+                    && entry.getPointData() != null
+                    && entry.getPointData().getTranPos() != null) {
                 prevPos.set(entry.getPointData().getTranPos());
             }
             if (!dungeonManager.isFinishedSuccessfully()) {

@@ -88,6 +88,9 @@ public class Player implements PlayerHook, FieldFetch {
     @Getter @Setter private Position prevPos;
     @Getter @Setter private Position prevPosForHome;
     @Getter @Setter private int prevScene;
+    // Persist the open-world entry used to leave a dungeon after logout or server restart.
+    @Getter @Setter private int dungeonReturnSceneId;
+    @Getter @Setter private Position dungeonReturnPosition;
     @Getter private Position rotation;
     @Getter private PlayerBirthday birthday;
     @Getter private PlayerCodex codex;
@@ -1501,6 +1504,10 @@ public class Player implements PlayerHook, FieldFetch {
             this.position.set(pos);
         }
 
+        // The persisted scene can outlive its in-memory DungeonManager across a restart.
+        // Never load directly into an orphaned dungeon with a nonfunctional challenge key.
+        emu.grasscutter.game.dungeons.DungeonLoginRecovery.recover(this);
+
         World world = new World(this);
         world.addPlayer(this);
 
@@ -1596,10 +1603,16 @@ public class Player implements PlayerHook, FieldFetch {
             // otherwise keep this player and their world reachable after they leave.
             PlayerRuntimeStateCleanup.clear(this);
 
-            // Leaving the dungeon (trial team, TPS traveler) must not keep the player in the world:
-            // a world left behind keeps ticking and sending to the closed session forever.
+            // Logout cannot queue a delayed teleport: the player leaves the world immediately.
+            // Save the resolved exit destination, not the orphaned dungeon scene.
             try {
-                this.getServer().getDungeonSystem().exitDungeon(this);
+                var exit = this.getServer().getDungeonSystem().prepareDungeonLogout(this);
+                if (exit != null) {
+                    this.setSceneId(exit.sceneId());
+                    this.getPosition().set(exit.position());
+                    this.setDungeonReturnSceneId(0);
+                    this.setDungeonReturnPosition(null);
+                }
             } catch (Throwable e) {
                 Grasscutter.getLogger().warn("Player (UID {}) could not leave the dungeon on logout", getUid(), e);
             }

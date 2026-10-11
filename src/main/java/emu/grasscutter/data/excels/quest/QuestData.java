@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.*;
 import emu.grasscutter.data.binout.MainQuestData;
+import emu.grasscutter.data.quest.NativeQuestOverlay;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.game.quest.enums.*;
 import java.util.*;
@@ -17,7 +18,8 @@ import lombok.experimental.FieldDefaults;
 public class QuestData extends GameResource {
     public enum QuestSource {
         QUEST_EXCEL,
-        BIN_OUTPUT
+        BIN_OUTPUT,
+        NATIVE_QUEST
     }
 
     public enum QuestField {
@@ -497,6 +499,45 @@ public class QuestData extends GameResource {
 
         sanitize();
         addToCache();
+    }
+
+    /**
+     * Applies fields decoded directly from the 7.1 native MainQuest payload.
+     *
+     * <p>The overlay is already evidence-gated by {@code NativeQuestParser}: a null list means the
+     * native list contains an unresolved semantic type and must stay audit-only, while an empty list
+     * is an authoritative native absence.
+     */
+    public void mergeFromNative(NativeQuestOverlay overlay) {
+        if (overlay == null || overlay.getSubId() == 0 || overlay.getSubId() != this.subId) return;
+
+        if (overlay.getMainId() != null && overlay.getMainId() != 0) {
+            this.mainId = overlay.getMainId();
+            sources().put(QuestField.MAIN_ID, QuestSource.NATIVE_QUEST);
+        }
+        if (overlay.getOrder() != null) {
+            this.order = overlay.getOrder();
+            sources().put(QuestField.ORDER, QuestSource.NATIVE_QUEST);
+        }
+
+        if (overlay.getFinishCond() != null) {
+            this.finishCond = overlay.getFinishCond();
+            sources().put(QuestField.FINISH_COND, QuestSource.NATIVE_QUEST);
+        }
+        if (overlay.getFailCond() != null) {
+            this.failCond = overlay.getFailCond();
+            sources().put(QuestField.FAIL_COND, QuestSource.NATIVE_QUEST);
+        }
+        if (overlay.getFinishExec() != null) {
+            this.finishExec = overlay.getFinishExec();
+            sources().put(QuestField.FINISH_EXEC, QuestSource.NATIVE_QUEST);
+        }
+        if (overlay.getFailExec() != null) {
+            this.failExec = overlay.getFailExec();
+            sources().put(QuestField.FAIL_EXEC, QuestSource.NATIVE_QUEST);
+        }
+
+        sanitize();
     }
 
     private void captureQuestExcelPresence() {

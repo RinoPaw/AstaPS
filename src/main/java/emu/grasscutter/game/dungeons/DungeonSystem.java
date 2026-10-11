@@ -104,7 +104,15 @@ public final class DungeonSystem extends BaseGameSystem {
 
         var sceneId = data.getSceneId();
         var scene = player.getScene();
-        if (savePrevious) scene.setPrevScene(scene.getId());
+        int returnSceneId = 0;
+        Position returnPosition = null;
+        if (savePrevious && scene != null) {
+            scene.setPrevScene(scene.getId());
+            if (scene.getSceneType() == SceneType.SCENE_WORLD && player.getPosition() != null) {
+                returnSceneId = scene.getId();
+                returnPosition = new Position(player.getPosition());
+            }
+        }
 
         // Domain / material / talent / weapon / relic: force teardown when reusing the same
         // dungeon scene so old monsters/gadgets do not linger (mirrors tower handoff).
@@ -117,6 +125,11 @@ public final class DungeonSystem extends BaseGameSystem {
         }
 
         if (player.getWorld().transferPlayerToScene(player, sceneId, data)) {
+            if (returnPosition != null) {
+                player.setDungeonReturnSceneId(returnSceneId);
+                player.setDungeonReturnPosition(returnPosition);
+                player.save();
+            }
             scene = player.getScene();
             scene.setDungeonManager(new DungeonManager(scene, data));
             MissingDomainFallbackManager.install(scene, data);
@@ -168,14 +181,32 @@ public final class DungeonSystem extends BaseGameSystem {
         return true;
     }
 
+    /** Destination for a clean dungeon exit, without scheduling a teleport. */
+    public record DungeonExitLocation(int sceneId, Position position) {}
+
     public void exitDungeon(Player player) {
+        DungeonExitLocation destination = prepareDungeonExit(player);
+        if (destination != null) {
+            // Interactive exits still need the delay to avoid double teleport packets.
+            player.getWorld().queueTransferPlayerToScene(
+                    player, destination.sceneId(), destination.position(), 200);
+        }
+    }
+
+    /** Clean up temporary dungeon state before logout; caller persists the destination. */
+    public DungeonExitLocation prepareDungeonLogout(Player player) {
+        return prepareDungeonExit(player);
+    }
+
+    private DungeonExitLocation prepareDungeonExit(Player player) {
         Scene scene = player.getScene();
 
         if (scene == null || scene.getSceneType() != SceneType.SCENE_DUNGEON) {
-            return;
+            return null;
         }
 
-        // Get previous scene
+        // Get previous scene, preferring the persistent open-world entry (which survives
+        // a server restart). Scene.prevScene and prevScenePoint are transient.
         int prevScene = scene.getPrevScene() > 0 ? scene.getPrevScene() : 3;
 
         // Get previous position
@@ -192,10 +223,24 @@ public final class DungeonSystem extends BaseGameSystem {
             player.getRotation().set(TowerAbyssFix.resolveExitRotation(player));
         }
 
+        boolean hasStoredEntry = DungeonLoginRecovery.hasValidWorldEntry(
+                player.getDungeonReturnSceneId(),
+                player.getDungeonReturnPosition(),
+                id -> {
+                    var target = GameData.getSceneDataMap().get(id);
+                    return target != null && target.getSceneType() == SceneType.SCENE_WORLD;
+                });
+        if (!towerDungeon && hasStoredEntry) {
+            prevScene = player.getDungeonReturnSceneId();
+            prevPos.set(player.getDungeonReturnPosition());
+        }
+
         if (dungeonData != null) {
             ScenePointEntry entry = GameData.getScenePointEntryById(prevScene, scene.getPrevScenePoint());
 
-            if (!towerDungeon && entry != null) {
+            if (!towerDungeon && !hasStoredEntry && entry != null
+                    && entry.getPointData() != null
+                    && entry.getPointData().getTranPos() != null) {
                 prevPos.set(entry.getPointData().getTranPos());
             }
             if (!dungeonManager.isFinishedSuccessfully()) {
@@ -225,12 +270,7 @@ public final class DungeonSystem extends BaseGameSystem {
             dungeonManager.setTowerDungeon(false);
         }
 
-        // Transfer player back to world after a small delay.
-        // This wait is important for avoiding double teleports,
-        // which specifically happen when player quits a dungeon
-        // by teleporting to map waypoints.
-        // From testing, 200ms seem reasonable.
-        player.getWorld().queueTransferPlayerToScene(player, prevScene, prevPos, 200);
+        return new DungeonExitLocation(prevScene, prevPos);
     }
 
     public void restartDungeon(Player player) {
@@ -240,8 +280,16 @@ public final class DungeonSystem extends BaseGameSystem {
         }
         var dungeonManager = scene.getDungeonManager();
         if (dungeonManager == null || dungeonManager.getDungeonData() == null) {
+            Grasscutter.getLogger().warn("Dungeon restart ignored uid={} scene={}: no active dungeon manager",
+                    player.getUid(), scene.getId());
             return;
         }
+        if (!scene.getPlayers().contains(player)) {
+            Grasscutter.getLogger().warn("Dungeon restart ignored uid={} scene={}: player is not in scene",
+                    player.getUid(), scene.getId());
+            return;
+        }
+
         var dungeonData = dungeonManager.getDungeonData();
         var sceneId = dungeonData.getSceneId();
         var isTower = dungeonManager.isTowerDungeon();
@@ -250,37 +298,54 @@ public final class DungeonSystem extends BaseGameSystem {
             TowerAbyssFix.endChallengeUi(player);
             var tower = player.getTowerManager();
             tower.onEnd();
-            // Keep the current chamber; reset to the upper half with full chamber-start HP/energy and slot 1.
             tower.restartCurrentChamber();
         }
 
-        // Forward over previous scene and scene point
+        // Preserve the exit destination before destroying the old scene.
         var prevScene = scene.getPrevScene();
         var pointId = scene.getPrevScenePoint();
 
-        // Force teardown so the scene is rebuilt fresh instead of reused stale.
+        // Removing players mutates scene.getPlayers(). Iterating over that live collection
+        // throws ConcurrentModificationException before a replacement scene can be created.
+        // Snapshot and detach everyone first; then transfer all participants into the new run.
         scene.setDontDestroyWhenEmpty(false);
-        scene.getPlayers().forEach(scene::removePlayer);
-
-        if (player.getWorld().transferPlayerToScene(player, sceneId, dungeonData)) {
-            scene = player.getScene();
-            scene.setPrevScene(prevScene);
-            scene.setPrevScenePoint(pointId);
-            var newManager = new DungeonManager(scene, dungeonData);
-            newManager.setTowerDungeon(isTower);
-            scene.setDungeonManager(newManager);
-            if (isTower) {
-                scene.addDungeonSettleObserver(new TowerDungeonSettleListener());
-                // Re-apply lead avatar after scene rebuild.
-                TowerAbyssFix.prepareFirstChamber(player);
-                player.getTowerManager().notifyCurLevelRecordChange();
-            } else {
-                MissingDomainFallbackManager.install(scene, dungeonData);
-                scene.addDungeonSettleObserver(basicDungeonSettleObserver);
-                if (DomainDungeonHelper.isDomainScene(scene)) {
-                    DomainDungeonHelper.onPlayerEnterDomain(player);
+        var participants = DungeonRestartParticipants.detachAll(
+                scene.getPlayers(), scene::removePlayer);
+        Scene restartedScene = null;
+        int restored = 0;
+        for (var participant : participants) {
+            if (!participant.getWorld().transferPlayerToScene(participant, sceneId, dungeonData)) {
+                Grasscutter.getLogger().warn(
+                        "Dungeon restart transfer failed uid={} dungeon={} scene={}",
+                        participant.getUid(), dungeonData.getId(), sceneId);
+                continue;
+            }
+            var joinedScene = participant.getScene();
+            if (restartedScene == null) {
+                restartedScene = joinedScene;
+                restartedScene.setPrevScene(prevScene);
+                restartedScene.setPrevScenePoint(pointId);
+                var newManager = new DungeonManager(restartedScene, dungeonData);
+                newManager.setTowerDungeon(isTower);
+                restartedScene.setDungeonManager(newManager);
+                if (isTower) {
+                    restartedScene.addDungeonSettleObserver(new TowerDungeonSettleListener());
+                } else {
+                    MissingDomainFallbackManager.install(restartedScene, dungeonData);
+                    restartedScene.addDungeonSettleObserver(basicDungeonSettleObserver);
                 }
             }
+            if (isTower) {
+                TowerAbyssFix.prepareFirstChamber(participant);
+                participant.getTowerManager().notifyCurLevelRecordChange();
+            } else if (DomainDungeonHelper.isDomainScene(joinedScene)) {
+                DomainDungeonHelper.onPlayerEnterDomain(participant);
+            }
+            restored++;
         }
+        Grasscutter.getLogger().info(
+                "Dungeon restart uid={} dungeon={} scene={} restored={}/{}",
+                player.getUid(), dungeonData.getId(), sceneId, restored, participants.size());
     }
+
 }

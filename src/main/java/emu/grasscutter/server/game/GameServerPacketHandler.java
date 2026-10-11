@@ -156,7 +156,6 @@ public final class GameServerPacketHandler {
 
     public void handle(GameSession session, int opcode, byte[] header, byte[] payload) {
         PacketHandler handler = this.handlers.get(opcode);
-
         if (handler != null) {
             try {
                 if (session.getPlayer() != null) {

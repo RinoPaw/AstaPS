@@ -200,6 +200,14 @@ public class GameSession implements GameSessionManager.KcpChannel {
         return result.isEmpty() ? "(none)" : String.join(", ", result);
     }
 
+    // The 45-second trace may include more than one NPC talk. Decode the
+    // actual response's talk ID; never label a later talk as Amber 35601.
+    static int readAmberNpcTalkResponseId(byte[] payload)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+        return emu.grasscutter.net.proto.NpcTalkRspOuterClass.NpcTalkRsp
+                .parseFrom(payload).getCurTalkId();
+    }
+
     private void traceAmberPacket(String direction, int opcode, byte[] payload) {
         long started = amberTraceStartNanos;
         if (started == 0) return;
@@ -228,9 +236,15 @@ public class GameSession implements GameSessionManager.KcpChannel {
                 && (opcode == PacketOpcodes.NpcTalkRsp
                         || opcode == PacketOpcodes.QuestListUpdateNotify)) {
             if (opcode == PacketOpcodes.NpcTalkRsp) {
-                Grasscutter.getLogger().info(
-                        "[AmberGuideOrder] uid={} +{}ms observation={} sent=NpcTalkRsp",
-                        player != null ? player.getUid() : 0, elapsedMs, observationOrdinal);
+                try {
+                    Grasscutter.getLogger().info(
+                            "[AmberGuideOrder] uid={} +{}ms observation={} sent=NpcTalkRsp talk={}",
+                            player != null ? player.getUid() : 0, elapsedMs, observationOrdinal,
+                            readAmberNpcTalkResponseId(payload));
+                } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                    Grasscutter.getLogger().warn(
+                            "[AmberGuideOrder] Cannot decode outgoing NPC talk response", e);
+                }
             } else {
                 try {
                     Grasscutter.getLogger().info(

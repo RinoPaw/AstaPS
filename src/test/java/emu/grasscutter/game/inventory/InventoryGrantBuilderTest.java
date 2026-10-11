@@ -42,4 +42,19 @@ final class InventoryGrantBuilderTest {
         assertThrows(IllegalArgumentException.class,
                 () -> InventoryGrantBuilder.create(item(11501, "ITEM_WEAPON", 1), 10001, 1));
     }
+
+    @Test
+    void useOnGainQuantityCreatesOneEffectPerCard() {
+        ItemData data = GSON.fromJson(
+                "{\"id\":210001,\"itemType\":\"ITEM_MATERIAL\","
+                        + "\"materialType\":\"MATERIAL_NAMECARD\",\"useOnGain\":true}",
+                ItemData.class);
+        var cards = InventoryGrantBuilder.create(data, 3, 1);
+        assertEquals(3, cards.size());
+        assertNotSame(cards.get(0), cards.get(1));
+        assertEquals(1, cards.get(0).getCount());
+        assertEquals(1, cards.get(2).getCount());
+        assertThrows(IllegalArgumentException.class,
+                () -> InventoryGrantBuilder.create(data, 10_001, 1));
+    }
 }

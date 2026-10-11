@@ -12,6 +12,7 @@ public final class FreshPlayerLifecycle {
     public enum Phase {
         WAITING_FOR_NATIVE_HANDOFF,
         WORLD_LOGIN,
+        WORLD_LOGIN_ACTIVE,
         SCENE_READY,
         QUEST_BOOTSTRAP,
         COMPLETE
@@ -58,11 +59,20 @@ public final class FreshPlayerLifecycle {
 
     /** The initial scene-ready request is held while cold world login is running. */
     public synchronized boolean mustDeferSceneReady() {
-        return phase == Phase.WAITING_FOR_NATIVE_HANDOFF || phase == Phase.WORLD_LOGIN;
+        return phase == Phase.WAITING_FOR_NATIVE_HANDOFF
+                || phase == Phase.WORLD_LOGIN
+                || phase == Phase.WORLD_LOGIN_ACTIVE;
+    }
+
+    /** Claims the world-login worker exactly once, even if the client repeats the login request. */
+    public synchronized boolean claimWorldLogin() {
+        if (phase != Phase.WORLD_LOGIN) return false;
+        phase = Phase.WORLD_LOGIN_ACTIVE;
+        return true;
     }
 
     public synchronized boolean worldLoginCompleted() {
-        if (phase != Phase.WORLD_LOGIN) return false;
+        if (phase != Phase.WORLD_LOGIN_ACTIVE) return false;
         phase = Phase.SCENE_READY;
         return true;
     }
@@ -86,7 +96,7 @@ public final class FreshPlayerLifecycle {
 
     /** A failed world-login attempt may be retried only by a new native pause boundary. */
     public synchronized void nativeWorldLoginFailed() {
-        if (mode != Mode.NATIVE_INTRO || phase != Phase.WORLD_LOGIN) return;
+        if (mode != Mode.NATIVE_INTRO || phase != Phase.WORLD_LOGIN_ACTIVE) return;
         phase = Phase.WAITING_FOR_NATIVE_HANDOFF;
         completedPauseCycles = 0;
         sawUnpaused = false;

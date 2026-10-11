@@ -1,3 +1,9 @@
+## 2026-10-11: NPC talk response identity is required to reason about wire order
+
+A 45-second `[AmberGuideOrder]` trace can include later NPC dialogues such as talk 35604. Previously the trace printed `sent=NpcTalkRsp` **without decoding its `curTalkId`**, and the offline cross-repository comparison could incorrectly count any later response as the 35601 handoff. This was a diagnostic attribution bug, not evidence of gameplay corruption.
+
+The outgoing NpcTalkRsp's generated protobuf message has `curTalkId`, which is set from the actual request in `PacketNpcTalkRsp`. The diagnostic branch now decodes the **exact outgoing packet payload**, logging `sent=NpcTalkRsp talk=35601` (or the actual later ID), and fails gracefully on corrupt messages. The corresponding JUnit tests cover 35601, 35604, 36001 and malformed payloads. `Genshin-Reverse/tools/runtime/compare_amber_handoff_71.py` now attributes only observed `talk=35601` responses, treating legacy unlabeled lines and corrupt/interleaved sequences as unknown. The order field remains a local post-KCP-write observation, not proof of client reception or of cause.
+
 ## 2026-10-11: Full-window wire trace and offline client/server comparison
 
 The `[AmberGuideOrder]` recorder now covers the **whole 45-second existing trace window**, not only the first five seconds. The quest event completion path uses `QuestManager.eventExecutor`; an overburdened queue may deliver quest 35603 later than five seconds. The filter continues to record only outgoing `NpcTalkRsp` and `QuestListUpdateNotify`, decoded only for matching 35601/35602/35603 entries (actual main ID and numeric state).

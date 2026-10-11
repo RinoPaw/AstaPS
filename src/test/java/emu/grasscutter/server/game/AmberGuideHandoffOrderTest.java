@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.protobuf.InvalidProtocolBufferException;
 import emu.grasscutter.net.proto.QuestListUpdateNotifyOuterClass.QuestListUpdateNotify;
 import emu.grasscutter.net.proto.QuestOuterClass.Quest;
+import emu.grasscutter.net.proto.NpcTalkRspOuterClass.NpcTalkRsp;
 import org.junit.jupiter.api.Test;
 
 class AmberGuideHandoffOrderTest {
@@ -46,6 +47,23 @@ class AmberGuideHandoffOrderTest {
         assertEquals("(none)", GameSession.summarizeAmberHandoffQuestEntries(
                 QuestListUpdateNotify.newBuilder().addQuestList(quest(42, 4, 2))
                         .build().toByteArray()));
+    }
+
+    @Test
+    void decodesActualNpcTalkResponseRatherThanAssuming35601() throws Exception {
+        assertEquals(35601, GameSession.readAmberNpcTalkResponseId(
+                NpcTalkRsp.newBuilder().setCurTalkId(35601).build().toByteArray()));
+        assertEquals(35604, GameSession.readAmberNpcTalkResponseId(
+                NpcTalkRsp.newBuilder().setCurTalkId(35604).build().toByteArray()));
+        assertEquals(36001, GameSession.readAmberNpcTalkResponseId(
+                NpcTalkRsp.newBuilder().setCurTalkId(36001).build().toByteArray()));
+    }
+
+    @Test
+    void malformedTalkResponseDoesNotBecomeAmber35601() {
+        assertThrows(
+                InvalidProtocolBufferException.class,
+                () -> GameSession.readAmberNpcTalkResponseId(new byte[] {0x0A, 0x05, 0x08}));
     }
 
     @Test

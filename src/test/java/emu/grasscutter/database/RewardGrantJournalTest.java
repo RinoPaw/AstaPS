@@ -25,7 +25,7 @@ final class RewardGrantJournalTest {
         public boolean transition(Key key, Stage from, Stage to) {
             Receipt old = receipts.get(key);
             if (old == null || old.stage() != from) return false;
-            receipts.put(key, new Receipt(key, to, old.rewards()));
+            receipts.put(key, new Receipt(key, to, old.rewards(), old.debits()));
             return true;
         }
 
@@ -88,4 +88,26 @@ final class RewardGrantJournalTest {
         assertEquals(REWARDS, journal.unresolved().getFirst().rewards());
         assertEquals("mail:10001:deadbeef01", CLAIM.storageId());
     }
+    @Test
+    void preservesPaymentSnapshotThroughAllStages() {
+        var journal = new RewardGrantJournal(new FakeStore());
+        var debits = new ArrayList<>(List.of(new Debit(202, 200), new Debit(201, 5)));
+        assertTrue(journal.prepare(CLAIM, REWARDS, debits));
+        debits.clear();
+        journal.confirm(CLAIM);
+        var receipt = journal.unresolved().getFirst();
+        assertEquals(Stage.CONFIRMED, receipt.stage());
+        assertEquals(List.of(new Debit(202, 200), new Debit(201, 5)), receipt.debits());
+        assertThrows(UnsupportedOperationException.class, () -> receipt.debits().clear());
+        journal.complete(CLAIM);
+        assertTrue(journal.unresolved().isEmpty());
+    }
+
+    @Test
+    void rejectsMalformedDebitAndRetainsOldReceiptConstructor() {
+        assertThrows(IllegalArgumentException.class, () -> new Debit(202, 0));
+        assertThrows(IllegalArgumentException.class, () -> new Debit(-1, 1));
+        assertTrue(new Receipt(CLAIM, Stage.PREPARED, REWARDS).debits().isEmpty());
+    }
+
 }

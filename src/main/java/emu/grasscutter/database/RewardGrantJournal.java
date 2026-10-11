@@ -18,8 +18,9 @@ import org.bson.Document;
  * persisted. Never blindly replay unresolved receipts: virtual rewards and
  * merged material stacks are not inherently idempotent.
  *
- * <p>This is infrastructure only. Existing claim paths are not journaled until
- * each source has a source-specific reconciliation procedure.
+ * <p>Mail attachment claims write receipts to this journal. They must still be
+ * reconciled by an operator if interrupted: confirmation does not guarantee
+ * delivery. Other reward sources are not yet journaled.
  */
 public final class RewardGrantJournal {
     public enum Source {

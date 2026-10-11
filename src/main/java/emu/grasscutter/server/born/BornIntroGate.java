@@ -13,6 +13,15 @@ public final class BornIntroGate {
     private static final int STARTER_SCENE_ID = 3;
     private static final int STARTER_STATUE_POINT_ID = 7;
 
+    // Serialize overlapping first-world loads for the same player, including replacement
+    // connections. Striped locks avoid unbounded per-UID lock retention.
+    private static final Object[] WORLD_LOGIN_LOCKS = new Object[128];
+    static {
+        for (int i = 0; i < WORLD_LOGIN_LOCKS.length; i++) {
+            WORLD_LOGIN_LOCKS[i] = new Object();
+        }
+    }
+
     // Index by UID for cleanup, but bind each transition to its originating session.
     // Reconnections rebuild an interrupted bootstrap rather than sharing a half-built world.
     private static final Map<Integer, State> FRESH_PLAYER_BOOTSTRAPS = new ConcurrentHashMap<>();
@@ -20,6 +29,7 @@ public final class BornIntroGate {
     private static final class State {
         private final GameSession originSession;
         private final FreshPlayerLifecycle lifecycle;
+        private volatile boolean disconnected;
         private boolean earlySceneEntrySent;
         private GameSession earlySceneEntrySession;
         private boolean sceneReadyDeferred;
@@ -53,9 +63,21 @@ public final class BornIntroGate {
         }
     }
 
-    /** Releases a disconnected session without deleting another connection's state. */
-    public static void onSessionDisconnected(GameSession session) {
-        remove(session);
+    /**
+     * Returns true if an in-flight world-login worker now owns final cleanup.
+     * The logic thread must not call Player.onLogout concurrently with Player.onLogin.
+     */
+    public static boolean onSessionDisconnected(GameSession session) {
+        State state = stateFor(session);
+        if (state == null || state.originSession != session) return false;
+        boolean workerOwnsCleanup;
+        synchronized (state) {
+            workerOwnsCleanup =
+                    state.lifecycle.phase() == FreshPlayerLifecycle.Phase.WORLD_LOGIN_ACTIVE;
+            state.disconnected = true;
+            FRESH_PLAYER_BOOTSTRAPS.remove(uidOf(session), state);
+        }
+        return workerOwnsCleanup;
     }
 
     /** Begins the native 7.1 post-born intro gate after SetPlayerBornData succeeds. */
@@ -213,26 +235,37 @@ public final class BornIntroGate {
     private static void completeWorldLogin(
             GameSession session, emu.grasscutter.game.player.Player player) {
         State state = stateFor(session);
-        if (state == null || state.originSession != session || !session.isConnected()) return;
+        if (state == null || state.originSession != session) return;
 
-        try {
+        // Another connection for this UID cannot create a second world until this worker has
+        // completed and cleaned up its world. Do not hold the logic thread while loading assets.
+        Object lock = WORLD_LOGIN_LOCKS[Math.floorMod(player.getUid(), WORLD_LOGIN_LOCKS.length)];
+        synchronized (lock) {
             synchronized (player) {
-                if (!session.isConnected()) return;
-                boolean starterStatueUnlockedBeforeLogin =
-                        player.getUnlockedScenePoints(STARTER_SCENE_ID).contains(STARTER_STATUE_POINT_ID);
-                boolean starterStatueForceLockedBeforeLogin =
-                        player.isScenePointForceLocked(STARTER_SCENE_ID, STARTER_STATUE_POINT_ID);
+                if (state.disconnected || !session.isConnected()) return;
+                try {
+                    boolean statueUnlocked =
+                            player.getUnlockedScenePoints(STARTER_SCENE_ID).contains(STARTER_STATUE_POINT_ID);
+                    boolean statueForceLocked =
+                            player.isScenePointForceLocked(STARTER_SCENE_ID, STARTER_STATUE_POINT_ID);
 
-                player.onLogin();
-                restoreStarterStatueState(
-                        player,
-                        starterStatueUnlockedBeforeLogin,
-                        starterStatueForceLockedBeforeLogin);
+                    player.onLogin();
+                    restoreStarterStatueState(player, statueUnlocked, statueForceLocked);
+                } catch (Throwable error) {
+                    failWorldLogin(session, state, error);
+                } finally {
+                    // The disconnect handler deliberately defers cleanup to this worker while
+                    // Player.onLogin is running. Never leave a zombie world registered after a
+                    // cancelled cold login.
+                    if (state.disconnected || !session.isConnected()) {
+                        if (player.getWorld() != null) player.onLogout();
+                    }
+                }
             }
+        }
 
+        if (!state.disconnected && session.isConnected()) {
             markWorldLoginComplete(session);
-        } catch (Throwable t) {
-            failWorldLogin(session, state, t);
         }
     }
 

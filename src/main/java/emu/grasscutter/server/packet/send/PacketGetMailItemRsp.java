@@ -91,7 +91,16 @@ public class PacketGetMailItemRsp extends BasePacket {
                                 player.getUid(), mailId, result.entries());
                         continue;
                     }
-                    receipts.complete(key);
+                    // Item delivery and the mail claim already succeeded. If closing
+                    // the receipt fails, report the success to the client and leave the
+                    // CONFIRMED record available for operator reconciliation.
+                    try {
+                        receipts.complete(key);
+                    } catch (RuntimeException journalFailure) {
+                        Grasscutter.getLogger().error(
+                                "Mail delivered but reward receipt remains unresolved uid={} mail={}",
+                                player.getUid(), mailId, journalFailure);
+                    }
                     claimedMessages.add(message);
                     claimedItems.addAll(itemParams);
                 } catch (RuntimeException exception) {

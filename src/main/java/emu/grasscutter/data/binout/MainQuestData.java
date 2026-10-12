@@ -11,6 +11,39 @@ import java.util.*;
 import lombok.Data;
 
 public class MainQuestData {
+    public MainQuestData() {}
+
+    /**
+     * Builds the runtime parent-quest skeleton from fields proven by the native 7.1 Quest decoder.
+     *
+     * <p>Talks, rewards and successor links stay unset until their native semantics are confirmed.
+     */
+    public MainQuestData(
+            int id,
+            SubQuestData[] subQuests,
+            int[] suggestTrackMainQuestList,
+            int[] rewardIdList,
+            List<TalkData> talks) {
+        this.id = id;
+        this.subQuests = subQuests != null ? subQuests : new SubQuestData[0];
+        this.suggestTrackMainQuestList = suggestTrackMainQuestList;
+        this.rewardIdList = rewardIdList;
+        this.talks = talks != null ? new ArrayList<>(talks) : new ArrayList<>();
+    }
+
+    public void mergeNativeRuntimeMetadata(
+            int[] suggestTrackMainQuestList, int[] rewardIdList, List<TalkData> talks) {
+        if (suggestTrackMainQuestList != null) {
+            this.suggestTrackMainQuestList = suggestTrackMainQuestList;
+        }
+        if (rewardIdList != null) {
+            this.rewardIdList = rewardIdList;
+        }
+        if (talks != null && !talks.isEmpty()) {
+            this.talks = new ArrayList<>(talks);
+        }
+    }
+
     private int id;
     private int ICLLDPJFIMA;
     private int series;

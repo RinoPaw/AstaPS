@@ -406,8 +406,10 @@ public class GameMainQuest {
                             .filter(p -> p.getState() == QuestState.QUEST_STATE_UNFINISHED)
                             .filter(
                                     p ->
-                                            p.getQuestData().getFailCond().stream()
-                                                    .anyMatch(q -> q.getType() == condType))
+                                            p.getQuestData() != null
+                                                    && p.getQuestData().getFailCond() != null
+                                                    && p.getQuestData().getFailCond().stream()
+                                                            .anyMatch(q -> q != null && q.getType() == condType))
                             .toList();
 
             QuestContentDispatch.forEachCandidate(
@@ -456,19 +458,22 @@ public class GameMainQuest {
         }
     }
 
+    /** Active quests may finish even when their resource has no acceptance conditions. */
+    static boolean acceptsFinishEvent(GameQuest quest, QuestContent event) {
+        return quest != null
+                && quest.getState() == QuestState.QUEST_STATE_UNFINISHED
+                && quest.getQuestData() != null
+                && quest.getQuestData().getFinishCond() != null
+                && quest.getQuestData().getFinishCond().stream()
+                        .anyMatch(condition -> condition != null && condition.getType() == event);
+    }
+
     public void tryFinishSubQuests(QuestContent condType, String paramStr, int... params) {
         try {
             List<GameQuest> subQuestsWithCond =
                     getChildQuests().values().stream()
-                            // There are subQuests with no acceptCond, but can be finished (example: 35104)
-                            .filter(
-                                    p ->
-                                            p.getState() == QuestState.QUEST_STATE_UNFINISHED
-                                                    && p.getQuestData().getAcceptCond() != null)
-                            .filter(
-                                    p ->
-                                            p.getQuestData().getFinishCond().stream()
-                                                    .anyMatch(q -> q.getType() == condType))
+                            // Accept conditions govern quest start, not completion.
+                            .filter(p -> acceptsFinishEvent(p, condType))
                             .toList();
 
             QuestContentDispatch.forEachCandidate(

@@ -410,41 +410,46 @@ public class GameMainQuest {
                                                     .anyMatch(q -> q.getType() == condType))
                             .toList();
 
-            for (GameQuest subQuestWithCond : subQuestsWithCond) {
-                val failCond = subQuestWithCond.getQuestData().getFailCond();
+            QuestContentDispatch.forEachCandidate(
+                    subQuestsWithCond,
+                    subQuestWithCond -> {
+                        val failCond = subQuestWithCond.getQuestData().getFailCond();
 
-                for (int i = 0; i < failCond.size(); i++) {
-                    val condition = failCond.get(i);
-                    if (condition.getType() == condType) {
-                        boolean result =
-                                this.getOwner()
-                                        .getServer()
-                                        .getQuestSystem()
-                                        .triggerContent(subQuestWithCond, condition, paramStr, params);
-                        subQuestWithCond.setFailProgress(i, result ? 1 : 0);
-                        if (result) {
-                            getOwner().getSession().send(new PacketQuestProgressUpdateNotify(subQuestWithCond));
+                        for (int i = 0; i < failCond.size(); i++) {
+                            val condition = failCond.get(i);
+                            if (condition.getType() == condType) {
+                                boolean result =
+                                        this.getOwner()
+                                                .getServer()
+                                                .getQuestSystem()
+                                                .triggerContent(subQuestWithCond, condition, paramStr, params);
+                                if (QuestProgress.recordMatch(subQuestWithCond.getFailProgressList(), i, result)) {
+                                    getOwner().getSession().send(new PacketQuestProgressUpdateNotify(subQuestWithCond));
+                                }
+                            }
                         }
-                    }
-                }
 
-                boolean shouldFail =
-                        LogicType.calculate(
-                                subQuestWithCond.getQuestData().getFailCondComb(),
-                                subQuestWithCond.getFailProgressList());
+                        boolean shouldFail =
+                                LogicType.calculate(
+                                        subQuestWithCond.getQuestData().getFailCondComb(),
+                                        subQuestWithCond.getFailProgressList());
 
-                if (shouldFail) {
-                    if (this.parentQuestId == 352) {
-                        Grasscutter.getLogger()
-                                .info(
-                                        "[quest352] fail-condition uid={} sub={} content={} params={} progress={}",
-                                        this.ownerUid, subQuestWithCond.getSubQuestId(), condType,
-                                        Arrays.toString(params),
-                                        Arrays.toString(subQuestWithCond.getFailProgressList()));
-                    }
-                    subQuestWithCond.fail();
-                }
-            }
+                        if (shouldFail) {
+                            if (this.parentQuestId == 352) {
+                                Grasscutter.getLogger()
+                                        .info(
+                                                "[quest352] fail-condition uid={} sub={} content={} params={} progress={}",
+                                                this.ownerUid, subQuestWithCond.getSubQuestId(), condType,
+                                                Arrays.toString(params),
+                                                Arrays.toString(subQuestWithCond.getFailProgressList()));
+                            }
+                            subQuestWithCond.fail();
+                        }
+                    },
+                    (subQuestWithCond, exception) ->
+                            Grasscutter.getLogger().error(
+                                    "[quest-content] fail failure main={} sub={} event={}",
+                                    getParentQuestId(), subQuestWithCond.getSubQuestId(), condType, exception));
 
         } catch (Exception e) {
             Grasscutter.getLogger().error("An error occurred while trying to fail quest.", e);
@@ -466,46 +471,51 @@ public class GameMainQuest {
                                                     .anyMatch(q -> q.getType() == condType))
                             .toList();
 
-            for (GameQuest subQuestWithCond : subQuestsWithCond) {
-                val finishCond = subQuestWithCond.getQuestData().getFinishCond();
+            QuestContentDispatch.forEachCandidate(
+                    subQuestsWithCond,
+                    subQuestWithCond -> {
+                        val finishCond = subQuestWithCond.getQuestData().getFinishCond();
 
-                for (int i = 0; i < finishCond.size(); i++) {
-                    val condition = finishCond.get(i);
-                    if (condition.getType() == condType) {
-                        boolean result =
-                                this.getOwner()
-                                        .getServer()
-                                        .getQuestSystem()
-                                        .triggerContent(subQuestWithCond, condition, paramStr, params);
-                        subQuestWithCond.setFinishProgress(i, result ? 1 : 0);
-                        if (result) {
-                            getOwner().getSession().send(new PacketQuestProgressUpdateNotify(subQuestWithCond));
+                        for (int i = 0; i < finishCond.size(); i++) {
+                            val condition = finishCond.get(i);
+                            if (condition.getType() == condType) {
+                                boolean result =
+                                        this.getOwner()
+                                                .getServer()
+                                                .getQuestSystem()
+                                                .triggerContent(subQuestWithCond, condition, paramStr, params);
+                                if (QuestProgress.recordMatch(subQuestWithCond.getFinishProgressList(), i, result)) {
+                                    getOwner().getSession().send(new PacketQuestProgressUpdateNotify(subQuestWithCond));
+                                }
+                            }
                         }
-                    }
-                }
 
-                boolean shouldFinish =
-                        LogicType.calculate(
-                                subQuestWithCond.getQuestData().getFinishCondComb(),
-                                subQuestWithCond.getFinishProgressList());
+                        boolean shouldFinish =
+                                LogicType.calculate(
+                                        subQuestWithCond.getQuestData().getFinishCondComb(),
+                                        subQuestWithCond.getFinishProgressList());
 
-                var questManager = this.getQuestManager();
-                if (questManager != null
-                        && questManager.getLoggedQuests().contains(subQuestWithCond.getSubQuestId())) {
-                    Grasscutter.getLogger()
-                            .debug(
-                                    ">>> Quest {} will be {} as a result of content trigger {} ({}, {}).",
-                                    subQuestWithCond.getSubQuestId(),
-                                    shouldFinish ? "finished" : "not finished",
-                                    condType.name(),
-                                    paramStr,
-                                    Arrays.stream(params)
-                                            .mapToObj(String::valueOf)
-                                            .collect(Collectors.joining(", ")));
-                }
+                        var questManager = this.getQuestManager();
+                        if (questManager != null
+                                && questManager.getLoggedQuests().contains(subQuestWithCond.getSubQuestId())) {
+                            Grasscutter.getLogger()
+                                    .debug(
+                                            ">>> Quest {} will be {} as a result of content trigger {} ({}, {}).",
+                                            subQuestWithCond.getSubQuestId(),
+                                            shouldFinish ? "finished" : "not finished",
+                                            condType.name(),
+                                            paramStr,
+                                            Arrays.stream(params)
+                                                    .mapToObj(String::valueOf)
+                                                    .collect(Collectors.joining(", ")));
+                        }
 
-                if (shouldFinish) subQuestWithCond.finish();
-            }
+                        if (shouldFinish) subQuestWithCond.finish();
+                    },
+                    (subQuestWithCond, exception) ->
+                            Grasscutter.getLogger().error(
+                                    "[quest-content] finish failure main={} sub={} event={}",
+                                    getParentQuestId(), subQuestWithCond.getSubQuestId(), condType, exception));
         } catch (Exception e) {
             Grasscutter.getLogger().debug("An error occurred while trying to finish quest.", e);
         }

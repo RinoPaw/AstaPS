@@ -112,14 +112,27 @@ public final class QuestSystem extends BaseGameSystem {
             return;
         }
 
+        // Record the event's meaning when queued. The quest may advance before this executes.
+        final var stateAtDispatch = quest.getState();
+        final var arguments = params.clone();
         QuestManager.eventExecutor.submit(
                 () -> {
-                    if (!handler.execute(quest, execParam, params)) {
+                    try {
+                        if (!handler.execute(quest, execParam, stateAtDispatch, arguments)) {
+                            Grasscutter.getLogger()
+                                    .debug(
+                                            "Execute trigger failed for {} at {}.",
+                                            execParam.getType().name(),
+                                            quest.getQuestData());
+                        }
+                    } catch (RuntimeException exception) {
                         Grasscutter.getLogger()
-                                .debug(
-                                        "Execute trigger failed for {} at {}.",
-                                        execParam.getType().name(),
-                                        quest.getQuestData());
+                                .error(
+                                        "Quest execution failure main={} sub={} action={}",
+                                        quest.getMainQuestId(),
+                                        quest.getSubQuestId(),
+                                        execParam.getType(),
+                                        exception);
                     }
                 });
     }

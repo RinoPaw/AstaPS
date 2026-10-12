@@ -17,13 +17,13 @@ The claim order is:
 1. Check reward membership, level, claimed state, selection and inventory
    capacity. Construct the exact item snapshot.
 2. Insert `PREPARED` in `reward_grant_receipts`.
-3. Persist the existing `takenRewards` state and advance to `CONFIRMED`.
+3. Mark `takenRewards` in memory, enqueue its asynchronous save, and advance the receipt to `CONFIRMED`. The save is **not** known to have completed at confirmation.
 4. Apply the prepared rewards.
 5. Advance to `COMPLETED` and return the reward response.
 
 On failure in steps 2–4, do not automatically rerun or restore the
 claim; some items may already have been delivered. `CONFIRMED` proves
-that the claim state was persisted before the inventory write began,
+that the claim state was marked in memory before the inventory write began,
 not that the entire batch was delivered.
 
 Inspect unresolved entries against Battle Pass reward state and player
@@ -40,3 +40,5 @@ Existing receipts cannot be replayed automatically because the reward
 batch may include unlock effects, virtual balances or stacked materials.
 No cross-collection transaction or automatic recovery is claimed.
 This patch does not alter the actual selection tables or reward contents.
+
+Persistence boundary: `BattlePassManager.save()` delegates to `DatabaseHelper.saveBattlePass()`, which calls `saveGameAsync()`. The receipt transition uses a separate synchronous Mongo write. Thus a `CONFIRMED` (or even `COMPLETED`) receipt does **not** prove that the Battle Pass claim flag or inventory changes reached MongoDB. On restart, inspect all three independently; do not replay or clear receipts automatically.

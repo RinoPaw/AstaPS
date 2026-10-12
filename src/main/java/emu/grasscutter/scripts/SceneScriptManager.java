@@ -280,9 +280,7 @@ public class SceneScriptManager {
             }
         }
 
-        if (waitForOne
-                && (groupInstance.getTargetSuiteId() == 0
-                        || prevSuiteIndex != groupInstance.getTargetSuiteId())) {
+        if (shouldDeferBanRefresh(waitForOne, groupInstance.getTargetSuiteId(), suiteIndex)) {
             groupInstance.setTargetSuiteId(suiteIndex);
             Grasscutter.getLogger()
                     .debug("Group {} suite {} wating one more refresh", group.id, suiteIndex);
@@ -322,6 +320,11 @@ public class SceneScriptManager {
         return suiteIndex;
     }
 
+    /** A matching second request releases a ban_refresh protected suite. */
+    static boolean shouldDeferBanRefresh(boolean protectedSuite, int pendingSuiteId, int requestedSuiteId) {
+        return protectedSuite && pendingSuiteId != requestedSuiteId;
+    }
+
     public boolean refreshGroupSuite(int groupId, int suiteId) {
         var targetGroupInstance = getGroupInstanceById(groupId);
         if (targetGroupInstance == null) {
@@ -338,26 +341,62 @@ public class SceneScriptManager {
             if (targetGroupInstance == null) return false;
         }
         Grasscutter.getLogger().debug("Refreshing group {} suite {}", groupId, suiteId);
-        suiteId =
-                refreshGroup(
-                        targetGroupInstance,
-                        suiteId,
-                        false); // If suiteId is zero, the value of suiteId changes
-        scene.broadcastPacket(new PacketGroupSuiteNotify(groupId, suiteId));
-
+        int appliedSuite = refreshGroup(targetGroupInstance, suiteId, false);
+        // A protected combat suite defers the first switch to an ordinary
+        // suite. An explicit quest change supplies the second request here.
+        if (appliedSuite == 0 && targetGroupInstance.getTargetSuiteId() != 0) {
+            appliedSuite = refreshGroup(targetGroupInstance, suiteId, false);
+        }
+        // A missing suite or a blocked refresh must never be treated as an
+        // applied suite: don't send suite 0 and don't persist a false override.
+        if (appliedSuite == 0) {
+            Grasscutter.getLogger().warn(
+                    "Group {} could not switch to suite {} in scene {}",
+                    groupId, suiteId, getScene().getId());
+            return false;
+        }
+        scene.broadcastPacket(new PacketGroupSuiteNotify(groupId, appliedSuite));
         return true;
+    }
+
+    /**
+     * Keep the latest persisted quest override for a scene/group.
+     * A successful suite 0 refresh removes any older override.
+     */
+    static boolean rememberQuestGroupSuite(
+            List<QuestGroupSuite> suites, int sceneId, int groupId, int suiteId) {
+        if (suites == null || sceneId <= 0 || groupId <= 0 || suiteId < 0) return false;
+        synchronized (suites) {
+            int matching = 0;
+            int savedSuite = -1;
+            for (var entry : suites) {
+                if (entry != null && entry.getScene() == sceneId && entry.getGroup() == groupId) {
+                    matching++;
+                    savedSuite = entry.getSuite();
+                }
+            }
+            // Do not issue a database write for a duplicate quest action.
+            if ((suiteId == 0 && matching == 0)
+                    || (suiteId > 0 && matching == 1 && savedSuite == suiteId)) return false;
+            suites.removeIf(entry -> entry != null
+                    && entry.getScene() == sceneId && entry.getGroup() == groupId);
+            if (suiteId > 0) {
+                suites.add(QuestGroupSuite.of().scene(sceneId).group(groupId).suite(suiteId).build());
+            }
+            return true;
+        }
     }
 
     public boolean refreshGroupSuite(int groupId, int suiteId, GameQuest quest) {
         var result = refreshGroupSuite(groupId, suiteId);
-        if (suiteId != 0 && quest != null) {
-            quest
-                    .getMainQuest()
-                    .getQuestGroupSuites()
-                    .add(
-                            QuestGroupSuite.of().scene(getScene().getId()).group(groupId).suite(suiteId).build());
+        if (result && quest != null) {
+            var changed = rememberQuestGroupSuite(
+                    quest.getMainQuest().getQuestGroupSuites(),
+                    getScene().getId(), groupId, suiteId);
+            // Quest beginExec is queued after GameQuest.start() saves its state.
+            // Without this write, the refreshed suite can disappear on relog.
+            if (changed) quest.save();
         }
-
         return result;
     }
 

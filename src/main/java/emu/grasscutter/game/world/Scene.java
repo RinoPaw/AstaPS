@@ -1504,7 +1504,22 @@ public class Scene {
     }
 
     public void loadGroupForQuest(List<QuestGroupSuite> sceneGroupSuite) {
+        if (sceneGroupSuite == null || sceneGroupSuite.isEmpty()) return;
         if (!scriptManager.isInit()) {
+            if (!scriptManager.isInitAttempted() && !scriptManager.isDestroyed()) {
+                // EnterSceneDone can arrive while scripts are still loading. Do not discard the
+                // persisted override: retry on the scene scheduler once initialization succeeds.
+                var pendingSuites = List.copyOf(sceneGroupSuite);
+                scriptManager.whenInitialized(ready -> {
+                    if (!ready || scriptManager.isDestroyed()) return;
+                    getScheduler().scheduleDelayedTask(() -> {
+                        if (scriptManager.isDestroyed()
+                                || getWorld().getScenes().get(getId()) != this) return;
+                        loadGroupForQuest(pendingSuites);
+                        broadcastPacket(new PacketGroupSuiteNotify(pendingSuites));
+                    }, 1);
+                });
+            }
             return;
         }
 
@@ -1519,7 +1534,15 @@ public class Scene {
                         return;
                     }
 
-                    scriptManager.refreshGroup(groupInstance, i.getSuite(), false);
+                    // Restore quest-owned off-grid groups without leaking pins for failed suites.
+                    boolean wasPinned = group.dontUnload;
+                    group.dontUnload = true;
+                    boolean applied = false;
+                    try {
+                        applied = scriptManager.refreshGroup(groupInstance, i.getSuite(), false) != 0;
+                    } finally {
+                        group.dontUnload = wasPinned || applied;
+                    }
                 });
     }
 

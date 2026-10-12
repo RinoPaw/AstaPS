@@ -653,6 +653,42 @@ public class QuestData extends GameResource {
         }
     }
 
+    /**
+     * A chapter opening with concrete BinOutput quest-state prerequisites uses that relationship
+     * instead of a synthetic QuestExcel quest-0 placeholder. This compatibility choice is
+     * restricted to resource-declared chapter openings; ordinary quest fields keep their
+     * existing source policy. The runtime condition index is updated atomically with the row.
+     *
+     * @return whether a concrete resource prerequisite was installed
+     */
+    public boolean useChapterOpeningPrerequisites(MainQuestData.SubQuestData original) {
+        if (original == null || original.getSubId() != this.subId) return false;
+        var conditions = meaningfulConditions(original.getAcceptCond());
+        if (conditions.isEmpty()) return false;
+
+        // Only accept explicit quest-state edges. In particular, never interpret a missing quest 0
+        // as a completed predecessor or guess an ordering from the chapter's series membership.
+        if (conditions.stream().anyMatch(condition ->
+                condition.getType() != QuestCond.QUEST_COND_STATE_EQUAL
+                        || condition.getParam() == null || condition.getParam().length < 2
+                        || condition.getParam()[0] <= 0)) return false;
+        if (conditions.size() > 1
+                && original.getAcceptCondComb() != LogicType.LOGIC_AND
+                && original.getAcceptCondComb() != LogicType.LOGIC_OR) return false;
+
+        if (this.getFieldSource(QuestField.ACCEPT_COND) == QuestSource.BIN_OUTPUT)
+            return false;
+
+        removeFromCache();
+        this.acceptCond = List.copyOf(conditions);
+        this.acceptCondComb = original.getAcceptCondComb() == null
+                ? LogicType.LOGIC_NONE : original.getAcceptCondComb();
+        sources().put(QuestField.ACCEPT_COND, QuestSource.BIN_OUTPUT);
+        sources().put(QuestField.ACCEPT_COND_COMB, QuestSource.BIN_OUTPUT);
+        addToCache();
+        return true;
+    }
+
     private void sanitize() {
         this.acceptCond = meaningfulConditions(this.acceptCond);
         this.finishCond = meaningfulConditions(this.finishCond);

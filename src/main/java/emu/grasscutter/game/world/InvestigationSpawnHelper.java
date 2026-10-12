@@ -358,8 +358,8 @@ public final class InvestigationSpawnHelper {
                         if (!seenGroups.add(gid)) continue;
                         Path gp = sceneDir.resolve("scene3_group" + gid + ".lua");
                         if (!Files.isRegularFile(gp)) continue;
+                        // Never index an unrelated monster as a handbook target.
                         ParsedMonster pm = parseFirstMonster(gp, mids);
-                        if (pm == null) pm = parseFirstMonster(gp, null);
                         if (pm == null) continue;
                         int blockId = (gid / 1000) % 10000;
                         list.add(new SpawnEntry(invId, gid, blockId, pm.monsterId, pm.pos, mids, elite));
@@ -409,6 +409,11 @@ public final class InvestigationSpawnHelper {
         return null;
     }
 
+    // Native scene loading and quest suites own their groups; the fallback only fills gaps.
+    static boolean shouldForceSpawnGroup(int groupId, Set<Integer> normallyLoadedGroups) {
+        return !normallyLoadedGroups.contains(groupId);
+    }
+
     public static void ensureNearby(Scene scene) {
         if (scene == null || scene.getId() != 3) return;
         if (scene.getPlayers() == null || scene.getPlayers().isEmpty()) return;
@@ -418,6 +423,8 @@ public final class InvestigationSpawnHelper {
         if (index == null || index.isEmpty()) return;
 
         long now = System.currentTimeMillis();
+        Set<Integer> normallyLoadedGroups = new HashSet<>();
+        for (SceneGroup group : scene.getLoadedGroups()) normallyLoadedGroups.add(group.id);
         for (Player player : scene.getPlayers()) {
             if (player == null || player.getPosition() == null) continue;
             Long last = lastCheckMs.get(player.getUid());
@@ -430,6 +437,7 @@ public final class InvestigationSpawnHelper {
                     double d = ppos.computeDistance(e.position);
                     if (d > LEAVE_DIST) continue;
                     if (d > NEAR_DIST) continue;
+                    if (!shouldForceSpawnGroup(e.groupId, normallyLoadedGroups)) continue;
 
                     if (hasAliveMonster(scene, e)) {
                         heldGroups.add(e.groupId);

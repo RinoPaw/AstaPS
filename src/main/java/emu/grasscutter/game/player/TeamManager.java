@@ -1225,20 +1225,21 @@ public final class TeamManager extends BasePlayerDataManager {
     }
 
     public List<Integer> getTrialAvatarParam(int trialAvatarId) {
-        if (GameData.getTrialAvatarCustomData()
-            .isEmpty()) {
-            if (GameData.getTrialAvatarDataMap().get(trialAvatarId) == null) return List.of();
-
-            return GameData.getTrialAvatarDataMap().get(trialAvatarId).getTrialAvatarParamList();
+        // Custom trial avatars override matching IDs only. An unrelated custom entry must not
+        // hide native quest trial avatars, such as Amber's trial ID 1 in the Mondstadt prologue.
+        var custom = GameData.getTrialAvatarCustomData().get(trialAvatarId);
+        if (custom != null
+            && custom.getTrialAvatarParamList() != null
+            && !custom.getTrialAvatarParamList().isEmpty()) {
+            return Stream.of(custom.getTrialAvatarParamList().get(0).split(";"))
+                .map(Integer::parseInt)
+                .toList();
         }
 
-        if (GameData.getTrialAvatarCustomData().get(trialAvatarId) == null) return List.of();
-
-        val trialCustomParams =
-            GameData.getTrialAvatarCustomData().get(trialAvatarId).getTrialAvatarParamList();
-        return trialCustomParams.isEmpty()
-            ? List.of()
-            : Stream.of(trialCustomParams.get(0).split(";")).map(Integer::parseInt).toList();
+        var nativeData = GameData.getTrialAvatarDataMap().get(trialAvatarId);
+        return nativeData != null && nativeData.getTrialAvatarParamList() != null
+            ? nativeData.getTrialAvatarParamList()
+            : List.of();
     }
 
     public boolean addTrialAvatar(int avatarId, int questMainId, GrantReason reason) {

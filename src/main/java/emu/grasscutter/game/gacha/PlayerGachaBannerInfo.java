@@ -18,9 +18,8 @@ public class PlayerGachaBannerInfo {
     @Getter @Setter private int failedChosenItemPulls = 0;
     @Getter @Setter private int wishItemId = 0;
 
-    // How many 50/50s were lost in a row, used by Capturing Radiance. The guaranteed pull that
-    // follows a lost coinflip is not a coinflip itself, so it leaves this counter untouched.
-    @Getter @Setter private int consecutiveFeaturedLosses = 0;
+    private int consecutiveFeaturedLosses = 0;
+    @Setter private Integer capturingRadianceCounter;
 
     public void addTotalPulls(int amount) {
         this.totalPulls += amount;
@@ -38,14 +37,27 @@ public class PlayerGachaBannerInfo {
         failedChosenItemPulls += amount;
     }
 
-    public void addConsecutiveFeaturedLosses(int amount) {
-        consecutiveFeaturedLosses += amount;
+    public int getCapturingRadianceCounter() {
+        if (capturingRadianceCounter == null)
+            capturingRadianceCounter = Math.min(2, Math.max(0, consecutiveFeaturedLosses)) + 1;
+        return capturingRadianceCounter;
+    }
+
+    public void onFiftyFifty(boolean won, boolean captured, int max) {
+        int counter = getCapturingRadianceCounter();
+        if (captured) {
+            capturingRadianceCounter = 1;
+        } else if (won) {
+            capturingRadianceCounter = counter == 1 ? 0 : 1;
+        } else {
+            capturingRadianceCounter = Math.min(counter + 1, max);
+        }
     }
 
     public int getFailedFeaturedItemPulls(int rarity) {
         return switch (rarity) {
             case 4 -> failedFeatured4ItemPulls;
-            default -> failedFeaturedItemPulls; // 5
+            default -> failedFeaturedItemPulls;
         };
     }
 
@@ -53,7 +65,7 @@ public class PlayerGachaBannerInfo {
         if (rarity == 4) {
             failedFeatured4ItemPulls = amount;
         } else {
-            failedFeaturedItemPulls = amount; // 5
+            failedFeaturedItemPulls = amount;
         }
     }
 
@@ -61,7 +73,7 @@ public class PlayerGachaBannerInfo {
         if (rarity == 4) {
             failedFeatured4ItemPulls += amount;
         } else {
-            failedFeaturedItemPulls += amount; // 5
+            failedFeaturedItemPulls += amount;
         }
     }
 

@@ -261,20 +261,27 @@ public final class PredicateEvaluator {
             var team = ability.getPlayerOwner().getTeamManager().getEntity();
             if (team != null) valueEntity = team;
         }
-        float current = valueEntity.getGlobalAbilityValues().getOrDefault(k, 0f);
+        Float stored = valueEntity.getGlobalAbilityValues().get(k);
+        float current = stored != null ? stored : 0f;
         // Also accept avatar-local copies for AddCount / temp keys.
         if (current == 0f && valueEntity != target) {
-            current = target.getGlobalAbilityValues().getOrDefault(k, 0f);
+            Float local = target.getGlobalAbilityValues().get(k);
+            if (local != null) {
+                stored = local;
+                current = local;
+            }
         }
         Object boundValue = pred.containsKey("value") ? pred.get("value") : pred.get("CBOMLBFIPJM");
-        float bound = readFloat(boundValue, ability);
+        float bound = readFloat(boundValue, ability, target);
         Object cmpObj = pred.get("compareType");
         String cmp = cmpObj instanceof String s ? s : "Equal";
         return switch (cmp) {
             case "MoreThan", "Greater"    -> current > bound;
             case "MoreThanAndEqual", "MoreOrEqual", "GreaterOrEqual" -> current >= bound;
             case "LessThan", "Lesser"     -> current < bound;
-            case "LessThanAndEqual", "LessOrEqual", "LesserOrEqual" -> current <= bound;
+            case "LessAndEqual", "LessThanAndEqual", "LessOrEqual", "LesserOrEqual" -> current <= bound;
+            case "Between" -> current >= bound && current <= readFloat(pred.get("maxValue"), ability, target);
+            case "NoneOrEqual" -> stored == null || current == bound;
             case "NotEqual"               -> current != bound;
             default                       -> current == bound;
         };
@@ -479,11 +486,17 @@ public final class PredicateEvaluator {
      * {@code ["MoonOverGrow_CountMax", 1.0, "SUB"]} used by Columbina PermanentSkill_2.
      */
     private static float readFloat(Object v, Ability ability) {
+        return readFloat(v, ability, null);
+    }
+
+    private static float readFloat(Object v, Ability ability, GameEntity target) {
         if (v instanceof Number n) return n.floatValue();
         if (v instanceof String s) {
-            if (ability != null) {
+            if (ability != null && ability.getAbilitySpecials().containsKey(s)) {
                 return ability.getAbilitySpecials().getOrDefault(s, 0f);
             }
+            Float global = target != null ? target.getGlobalAbilityValues().get(s) : null;
+            if (global != null) return global;
             try {
                 return Float.parseFloat(s);
             } catch (NumberFormatException ignored) {

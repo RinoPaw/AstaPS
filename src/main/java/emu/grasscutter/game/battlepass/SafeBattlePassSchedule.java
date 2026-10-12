@@ -1,5 +1,6 @@
 package emu.grasscutter.game.battlepass;
 
+import emu.grasscutter.data.excels.BattlePassScheduleData;
 import emu.grasscutter.game.battlepass.BattlePassManager;
 import emu.grasscutter.game.battlepass.BattlePassReward;
 import emu.grasscutter.net.proto.BattlePassCycleOuterClass.BattlePassCycle;
@@ -65,7 +66,7 @@ public final class SafeBattlePassSchedule {
                                         .setEndTime(cycleEnd)
                                         .setCycleIdx(1)
                                         .build())
-                        .setScheduleId(SCHEDULE_ID)
+                        .setScheduleId(BattlePassScheduleData.currentId())
                         .setBeginTime(BEGIN_TIME)
                         .setLevel(level)
                         .setPaidPlatformFlags(paid ? 3 : 0)

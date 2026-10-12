@@ -22,8 +22,11 @@ public class AbilityData {
     public AbilityModifierAction[] onRemoved;
     public AbilityModifierAction[] onAbilityStart;
     public AbilityModifierAction[] onKill;
+    @SerializedName(value = "onFieldEnter", alternate = {"PFJMEMFDGOH"})
     public AbilityModifierAction[] onFieldEnter;
+    @SerializedName(value = "onExit", alternate = {"BJFNHPKOOLF"})
     public AbilityModifierAction[] onExit;
+    @SerializedName(value = "onAttach", alternate = {"KHCFCFACICO"})
     public AbilityModifierAction[] onAttach;
     public AbilityModifierAction[] onDetach;
     public AbilityModifierAction[] onAvatarIn;
@@ -40,7 +43,7 @@ public class AbilityData {
 
     private boolean _initialized = false;
 
-    public void initialize() {
+    public synchronized void initialize() {
         if (_initialized) return;
         _initialized = true;
 

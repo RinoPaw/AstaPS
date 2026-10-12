@@ -3,6 +3,7 @@ package emu.grasscutter.game.ability.actions;
 import com.google.protobuf.*;
 import emu.grasscutter.*;
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.data.common.DynamicFloat;
 import emu.grasscutter.data.binout.AbilityModifier.AbilityModifierAction;
 import emu.grasscutter.data.binout.AbilityModifier.AbilityModifierAction.DropType;
 import emu.grasscutter.data.binout.config.ConfigLevelEntity;
@@ -11,6 +12,7 @@ import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.props.SceneType;
 import emu.grasscutter.game.world.Position;
 import emu.grasscutter.net.proto.AbilityActionGenerateElemBallOuterClass.AbilityActionGenerateElemBall;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 
 @AbilityAction(AbilityModifierAction.Type.GenerateElemBall)
 public final class ActionGenerateElemBall extends AbilityActionHandler {
@@ -43,7 +45,7 @@ public final class ActionGenerateElemBall extends AbilityActionHandler {
             }
         } // Else the drop is forced
 
-        var energy = action.baseEnergy.get(ability) * action.ratio.get(ability);
+        var energy = action.baseEnergy.get(ability) * ratioOf(action.ratio, ability.getAbilitySpecials());
         if (energy <= 0.0) return true;
 
         var itemData = GameData.getItemDataMap().get(action.configID);
@@ -96,5 +98,14 @@ public final class ActionGenerateElemBall extends AbilityActionHandler {
         }
 
         return true;
+    }
+    static float ratioOf(DynamicFloat ratio, Object2FloatMap<String> specials) {
+        if (ratio.isDynamic() && ratio.getOps().size() == 1) {
+            var name = ratio.getOps().get(0).sValue;
+            if (name != null && name.endsWith("GetElementRatio") && !specials.containsKey(name)) {
+                return 1f;
+            }
+        }
+        return ratio.get(specials, 0f);
     }
 }

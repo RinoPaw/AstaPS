@@ -35,11 +35,7 @@ public class GachaBanner {
     }; // Default weapons
     static final int[] EMPTY_POOL = {}; // Used to remove a type of fallback
     private static final int[] EPITOMIZED_EXCLUDED_CHAR_IDS = {1005, 1007};
-    // Capturing Radiance (5.0+): chance in % for a lost coinflip to still hand out a featured item,
-    // indexed by how many coinflips were lost in a row before it. So the first 50/50 is a plain
-    // 50/50, the one after a single loss is 55/45, the one after two losses is 75/25, and a fourth
-    // loss in a row cannot happen. Character banners only.
-    static final int[] DEFAULT_CAPTURING_RADIANCE = {0, 10, 50, 100};
+    static final int[] DEFAULT_CAPTURING_RADIANCE = {0, 0, 10, 100};
     @Getter int scheduleId = -1;
     @Getter int sortId = -1;
     @Getter private int gachaType = -1;
@@ -320,10 +316,15 @@ public class GachaBanner {
         };
     }
 
-    public int getCapturingRadianceChance(int consecutiveLosses) {
+    public int getCapturingRadianceMax() {
+        return capturingRadianceChances == null || capturingRadianceChances.length == 0
+                ? 0
+                : capturingRadianceChances.length - 1;
+    }
+
+    public int getCapturingRadianceChance(int counter) {
         if (capturingRadianceChances == null || capturingRadianceChances.length == 0) return 0;
-        // Streaks longer than the table keep the last (guaranteed) entry
-        int index = Math.min(Math.max(consecutiveLosses, 0), capturingRadianceChances.length - 1);
+        int index = Math.min(Math.max(counter, 0), capturingRadianceChances.length - 1);
         return capturingRadianceChances[index];
     }
 

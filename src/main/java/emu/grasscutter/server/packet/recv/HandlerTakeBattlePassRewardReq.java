@@ -42,39 +42,9 @@ public class HandlerTakeBattlePassRewardReq extends PacketHandler {
         if (options.isEmpty()) options.addAll(parseOptionsFromWire(payload));
         if (options.isEmpty()) options.addAll(buildAllClaimableNonSelectable(manager));
 
-        List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> normal = new ArrayList<>();
-        List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> selectable = new ArrayList<>();
-        for (var option : options) {
-            if (option == null || !option.hasTag() || option.getTag().getRewardId() <= 0) continue;
-            if (BattlePassSelectChestHelper.isSelectableReward(option.getTag().getRewardId())) {
-                if (option.getOptionIdx() > 0) selectable.add(option);
-            } else normal.add(option);
-        }
-        if (!normal.isEmpty()) {
-            BattlePassCompatHelper.takeReward(manager, normal);
-            if (selectable.isEmpty()) return;
-        }
-        List<GameItem> granted = new ArrayList<>();
-        List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> claimed = new ArrayList<>();
-        for (var option : selectable) {
-            int rewardId = option.getTag().getRewardId();
-            int level = option.getTag().getLevel();
-            boolean paid = option.getTag().getUnlockStatus()
-                    == BattlePassUnlockStatusOuterClass.BattlePassUnlockStatus.BattlePassUnlockStatus_BATTLE_PASS_UNLOCK_PAID;
-            manager.getTakenRewards().remove(rewardId);
-            List<GameItem> items = BattlePassSelectChestHelper.grant(player, rewardId, option.getOptionIdx(), paid);
-            if (items.isEmpty()) continue;
-            manager.getTakenRewards().put(rewardId, new BattlePassReward(level, rewardId, paid));
-            granted.addAll(items);
-            claimed.add(option);
-        }
-        if (!claimed.isEmpty()) {
-            manager.save();
-            player.sendPacket(new PacketBattlePassCurScheduleUpdateNotify(player));
-            player.sendPacket(new PacketTakeBattlePassRewardRsp(claimed, granted));
-        } else if (normal.isEmpty()) {
-            player.sendPacket(new PacketTakeBattlePassRewardRsp(options, granted));
-        }
+        // All reward types, including selectable chests, use the same
+        // validated, durable receipt path. Never grant selections separately.
+        BattlePassCompatHelper.takeReward(manager, options);
     }
 
     private static List<BattlePassRewardTakeOptionOuterClass.BattlePassRewardTakeOption> parseOptionsFromWire(byte[] payload) {

@@ -12,6 +12,7 @@ import emu.grasscutter.game.ability.PartyReviveHelper;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.props.*;
+import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.tps.TpsAvatarSystem;
 import emu.grasscutter.game.world.*;
 import emu.grasscutter.net.packet.*;
@@ -961,6 +962,9 @@ public final class TeamManager extends BasePlayerDataManager {
                     new PlayerTeamDeathEvent(
                         this.getPlayer(), this.getActiveTeam().get(this.getCurrentCharacterIndex()));
                 event.call();
+                this.getPlayer()
+                        .getQuestManager()
+                        .queueEvent(QuestContent.QUEST_CONTENT_TEAM_DEAD, 0, 0);
             }
         }
 

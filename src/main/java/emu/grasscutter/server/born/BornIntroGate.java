@@ -1,7 +1,6 @@
 package emu.grasscutter.server.born;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.game.quest.QuestChapterBootstrap;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketEnterScenePeerNotify;
 import emu.grasscutter.server.packet.send.PacketEnterSceneReadyRsp;
@@ -14,34 +13,32 @@ public final class BornIntroGate {
     private static final int STARTER_SCENE_ID = 3;
     private static final int STARTER_STATUE_POINT_ID = 7;
 
-    private enum Mode {
-        /** Wait for the 7.1 client-side post-born intro before entering the world. */
-        NATIVE_INTRO,
-        /** Character selection/native intro was skipped; only wait for scene-ready Quest bootstrap. */
-        SCENE_READY_ONLY
+    // Serialize overlapping first-world loads for the same player, including replacement
+    // connections. Striped locks avoid unbounded per-UID lock retention.
+    private static final Object[] WORLD_LOGIN_LOCKS = new Object[128];
+    static {
+        for (int i = 0; i < WORLD_LOGIN_LOCKS.length; i++) {
+            WORLD_LOGIN_LOCKS[i] = new Object();
+        }
     }
 
-    // Key by UID rather than GameSession. The 7.1 client may reconnect while the first cold world
-    // login is still finishing; UID scope keeps the fresh-player bootstrap attached to replacement
-    // sessions.
+    // Index by UID for cleanup, but bind each transition to its originating session.
+    // Reconnections rebuild an interrupted bootstrap rather than sharing a half-built world.
     private static final Map<Integer, State> FRESH_PLAYER_BOOTSTRAPS = new ConcurrentHashMap<>();
 
     private static final class State {
-        private final Mode mode;
         private final GameSession originSession;
-        private boolean sawUnpaused;
-        private int completedPauseCycles;
-        private boolean cutoverStarted;
+        private final FreshPlayerLifecycle lifecycle;
+        private volatile boolean disconnected;
+        private volatile boolean workerOwnsDisconnectCleanup;
         private boolean earlySceneEntrySent;
         private GameSession earlySceneEntrySession;
-        private boolean worldLoginComplete;
-        private boolean questStarted;
         private boolean sceneReadyDeferred;
         private GameSession deferredSceneReadySession;
 
-        private State(Mode mode, GameSession originSession) {
-            this.mode = mode;
+        private State(FreshPlayerLifecycle.Mode mode, GameSession originSession) {
             this.originSession = originSession;
+            this.lifecycle = new FreshPlayerLifecycle(mode);
         }
     }
 
@@ -59,14 +56,37 @@ public final class BornIntroGate {
 
     private static void remove(GameSession session) {
         int uid = uidOf(session);
-        if (uid > 0) FRESH_PLAYER_BOOTSTRAPS.remove(uid);
+        if (uid > 0) {
+            var state = FRESH_PLAYER_BOOTSTRAPS.get(uid);
+            if (state != null && state.originSession == session) {
+                FRESH_PLAYER_BOOTSTRAPS.remove(uid, state);
+            }
+        }
+    }
+
+    /**
+     * Returns true if an in-flight world-login worker now owns final cleanup.
+     * The logic thread must not call Player.onLogout concurrently with Player.onLogin.
+     */
+    public static boolean onSessionDisconnected(GameSession session) {
+        State state = stateFor(session);
+        if (state == null || state.originSession != session) return false;
+        boolean workerOwnsCleanup;
+        synchronized (state) {
+            workerOwnsCleanup =
+                    state.lifecycle.phase() == FreshPlayerLifecycle.Phase.WORLD_LOGIN_ACTIVE;
+            state.disconnected = true;
+            state.workerOwnsDisconnectCleanup = workerOwnsCleanup;
+            FRESH_PLAYER_BOOTSTRAPS.remove(uidOf(session), state);
+        }
+        return workerOwnsCleanup;
     }
 
     /** Begins the native 7.1 post-born intro gate after SetPlayerBornData succeeds. */
     public static void armNativeIntro(GameSession session) {
         int uid = uidOf(session);
         if (uid <= 0) return;
-        FRESH_PLAYER_BOOTSTRAPS.put(uid, new State(Mode.NATIVE_INTRO, session));
+        FRESH_PLAYER_BOOTSTRAPS.put(uid, new State(FreshPlayerLifecycle.Mode.NATIVE_INTRO, session));
     }
 
     /** Compatibility alias retained for existing native-intro callers. */
@@ -82,19 +102,18 @@ public final class BornIntroGate {
         int uid = uidOf(session);
         if (uid <= 0) return;
 
-        State state = new State(Mode.SCENE_READY_ONLY, session);
-        state.cutoverStarted = true;
+        State state = new State(FreshPlayerLifecycle.Mode.SCENE_READY_ONLY, session);
         FRESH_PLAYER_BOOTSTRAPS.put(uid, state);
     }
 
     /** Marks Player.onLogin complete for the automatic path and resumes any early scene-ready. */
     public static void markWorldLoginComplete(GameSession session) {
         State state = stateFor(session);
-        if (state == null) return;
+        if (state == null || state.originSession != session) return;
 
         GameSession deferredReadySession = null;
         synchronized (state) {
-            state.worldLoginComplete = true;
+            if (!state.lifecycle.worldLoginCompleted()) return;
             if (state.sceneReadyDeferred) {
                 deferredReadySession = state.deferredSceneReadySession;
                 state.sceneReadyDeferred = false;
@@ -109,7 +128,8 @@ public final class BornIntroGate {
 
     /** True while either fresh-player path still owns the first-scene Quest bootstrap. */
     public static boolean isFreshPlayerBootstrap(GameSession session) {
-        return stateFor(session) != null;
+        State state = stateFor(session);
+        return state != null && state.originSession == session;
     }
 
     /** Compatibility alias for older call sites. */
@@ -119,7 +139,8 @@ public final class BornIntroGate {
 
     public static boolean isNativeIntro(GameSession session) {
         State state = stateFor(session);
-        return state != null && state.mode == Mode.NATIVE_INTRO;
+        return state != null && state.originSession == session
+                && state.lifecycle.mode() == FreshPlayerLifecycle.Mode.NATIVE_INTRO;
     }
 
     /**
@@ -129,7 +150,7 @@ public final class BornIntroGate {
      */
     public static boolean shouldSuppressLoginSceneEntry(GameSession session) {
         State state = stateFor(session);
-        if (state == null || state.mode != Mode.NATIVE_INTRO) return false;
+        if (state == null || state.originSession != session) return false;
         synchronized (state) {
             return state.earlySceneEntrySent && state.earlySceneEntrySession == session;
         }
@@ -141,50 +162,50 @@ public final class BornIntroGate {
      * this state machine.
      */
     public static void notePause(GameSession session, boolean paused) {
-        if (session == null) return;
-
         State state = stateFor(session);
-        if (state == null || state.mode != Mode.NATIVE_INTRO) return;
+        if (state == null || state.originSession != session) return;
 
-        int completedCycles = 0;
-        boolean enterWorld = false;
+        boolean enterWorld;
+        int completedCycles;
         synchronized (state) {
-            if (state.originSession != session || state.cutoverStarted) return;
-
-            if (!paused) {
-                state.sawUnpaused = true;
-                return;
-            }
-            if (!state.sawUnpaused) return;
-
-            state.sawUnpaused = false;
-            if (++state.completedPauseCycles >= 2) {
-                state.cutoverStarted = true;
-                enterWorld = true;
-            }
+            int before = state.lifecycle.completedPauseCycles();
+            enterWorld = state.lifecycle.observeNativePause(paused);
+            completedCycles = state.lifecycle.completedPauseCycles();
+            if (before == completedCycles) return;
         }
 
         var player = session.getPlayer();
-        Grasscutter.getLogger()
-                .debug(
-                        "[intro-cutover] uid={} completed native pause cycle {}/2.",
-                        player == null ? 0 : player.getUid(),
-                        completedCycles);
+        Grasscutter.getLogger().debug(
+                "[intro-cutover] uid={} completed native pause cycle {}/2.",
+                player == null ? 0 : player.getUid(), completedCycles);
+        if (enterWorld) enterWorldAfterNativeIntro(session);
+    }
 
-        if (enterWorld) {
-            enterWorldAfterNativeIntro(session);
-        }
+    /**
+     * Automatic birth and reconnect recovery use the same early scene-entry handoff as native
+     * birth. Sending the scene token before the cold Player.onLogin tail keeps the client alive;
+     * EnterSceneReady is deferred until the worker completes.
+     */
+    public static void beginSceneReadyWorldLogin(GameSession session) {
+        startWorldLogin(session);
     }
 
     private static void enterWorldAfterNativeIntro(GameSession session) {
-        var player = session.getPlayer();
+        startWorldLogin(session);
+    }
+
+    private static void startWorldLogin(GameSession session) {
+        var player = session == null ? null : session.getPlayer();
         if (player == null) {
             remove(session);
             return;
         }
 
         State state = stateFor(session);
-        if (state == null || state.mode != Mode.NATIVE_INTRO) return;
+        if (state == null || state.originSession != session) return;
+        synchronized (state) {
+            if (!state.lifecycle.claimWorldLogin()) return;
+        }
 
         try {
             session.send(new PacketPlayerEnterSceneNotify(player));
@@ -193,49 +214,61 @@ public final class BornIntroGate {
                 state.earlySceneEntrySession = session;
             }
 
-            // Cold first login can be slow. Keep packet handling alive while the world is built.
-            Grasscutter.getThreadPool().submit(() -> completeNativeWorldLogin(session, player));
+            // Loading scene groups may take longer than the client's reconnect timeout.
+            // The logic thread must remain available to acknowledge the first scene request.
+            Grasscutter.getThreadPool().submit(() -> completeWorldLogin(session, player));
         } catch (Throwable t) {
-            synchronized (state) {
-                state.cutoverStarted = false;
-            }
-            Grasscutter.getLogger()
-                    .error(
-                            "[intro-cutover] uid={} failed to schedule world login after native intro boundary.",
-                            player.getUid(),
-                            t);
+            failWorldLogin(session, state, t);
         }
     }
 
-    private static void completeNativeWorldLogin(
+    private static void failWorldLogin(GameSession session, State state, Throwable error) {
+        Grasscutter.getLogger().error(
+                "[born-flow] uid={} failed while initializing first world.",
+                uidOf(session), error);
+        if (state.lifecycle.mode() == FreshPlayerLifecycle.Mode.NATIVE_INTRO) {
+            state.lifecycle.nativeWorldLoginFailed();
+        } else {
+            remove(session);
+            session.close();
+        }
+    }
+
+    private static void completeWorldLogin(
             GameSession session, emu.grasscutter.game.player.Player player) {
         State state = stateFor(session);
-        if (state == null || state.mode != Mode.NATIVE_INTRO) return;
+        if (state == null || state.originSession != session) return;
 
-        try {
+        // Another connection for this UID cannot create a second world until this worker has
+        // completed and cleaned up its world. Do not hold the logic thread while loading assets.
+        Object lock = WORLD_LOGIN_LOCKS[Math.floorMod(player.getUid(), WORLD_LOGIN_LOCKS.length)];
+        synchronized (lock) {
             synchronized (player) {
-                boolean starterStatueUnlockedBeforeLogin =
-                        player.getUnlockedScenePoints(STARTER_SCENE_ID).contains(STARTER_STATUE_POINT_ID);
-                boolean starterStatueForceLockedBeforeLogin =
-                        player.isScenePointForceLocked(STARTER_SCENE_ID, STARTER_STATUE_POINT_ID);
+                if (state.disconnected || !session.isConnected()) return;
+                try {
+                    boolean statueUnlocked =
+                            player.getUnlockedScenePoints(STARTER_SCENE_ID).contains(STARTER_STATUE_POINT_ID);
+                    boolean statueForceLocked =
+                            player.isScenePointForceLocked(STARTER_SCENE_ID, STARTER_STATUE_POINT_ID);
 
-                player.onLogin();
-                restoreStarterStatueState(
-                        player,
-                        starterStatueUnlockedBeforeLogin,
-                        starterStatueForceLockedBeforeLogin);
+                    player.onLogin();
+                    restoreStarterStatueState(player, statueUnlocked, statueForceLocked);
+                    // Advance the phase while holding the player monitor. On disconnect the
+                    // scene-ready phase transfers cleanup ownership to GameSession.handleClose.
+                    if (!state.disconnected && session.isConnected()) {
+                        markWorldLoginComplete(session);
+                    }
+                } catch (Throwable error) {
+                    failWorldLogin(session, state, error);
+                } finally {
+                    // The disconnect handler deliberately defers cleanup to this worker while
+                    // Player.onLogin is running. Never leave a zombie world registered after a
+                    // cancelled cold login.
+                    if (state.workerOwnsDisconnectCleanup && player.getWorld() != null) {
+                        player.onLogout();
+                    }
+                }
             }
-
-            markWorldLoginComplete(session);
-        } catch (Throwable t) {
-            synchronized (state) {
-                state.cutoverStarted = false;
-            }
-            Grasscutter.getLogger()
-                    .error(
-                            "[intro-cutover] uid={} failed while entering world after native intro boundary.",
-                            player.getUid(),
-                            t);
         }
     }
 
@@ -269,10 +302,10 @@ public final class BornIntroGate {
     /** Returns true when EnterSceneReadyReq is retained until first Player.onLogin completes. */
     public static boolean deferSceneReadyUntilLoginComplete(GameSession session) {
         State state = stateFor(session);
-        if (state == null) return false;
+        if (state == null || state.originSession != session) return false;
 
         synchronized (state) {
-            if (state.worldLoginComplete) return false;
+            if (!state.lifecycle.mustDeferSceneReady()) return false;
             state.sceneReadyDeferred = true;
             state.deferredSceneReadySession = session;
         }
@@ -295,8 +328,7 @@ public final class BornIntroGate {
         State state = stateFor(session);
         if (state == null) return;
         synchronized (state) {
-            if (!state.worldLoginComplete || state.questStarted) return;
-            state.questStarted = true;
+            if (state.originSession != session || !state.lifecycle.claimQuestBootstrap()) return;
         }
 
         var player = session.getPlayer();
@@ -306,15 +338,14 @@ public final class BornIntroGate {
         }
 
         try {
-            // Player.onLogin already sent the full new-player quest snapshot. onPlayerBorn creates
-            // the visible prologue through normal incremental updates; then restore any hidden
-            // chapter controller linked to the active main-quest series from ChapterData.
+            // Chapter controllers now start only through normalized prerequisite events.
+            // Scene-ready is the single bootstrap entry for the fresh Quest 351 chain.
             player.getQuestManager().onPlayerBorn();
-            QuestChapterBootstrap.startForActiveMainQuests(player.getQuestManager());
+            state.lifecycle.questBootstrapCompleted();
             remove(session);
         } catch (Throwable t) {
             synchronized (state) {
-                state.questStarted = false;
+                state.lifecycle.questBootstrapFailed();
             }
             Grasscutter.getLogger()
                     .error(

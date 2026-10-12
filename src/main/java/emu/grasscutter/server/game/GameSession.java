@@ -338,15 +338,18 @@ public class GameSession implements GameSessionManager.KcpChannel {
 
         @Override
         public void handleClose() {
+            boolean worldLoginWorkerOwnsCleanup =
+                    emu.grasscutter.server.born.BornIntroGate.onSessionDisconnected(this);
             setState(SessionState.INACTIVE);
 
             Grasscutter.getLogger()
                     .info(translate("messages.game.disconnect", this.getAddress().toString()));
 
-            if (this.isLoggedIn()) {
+            if (this.isLoggedIn() && !worldLoginWorkerOwnsCleanup) {
                 Player player = getPlayer();
-
-                player.onLogout();
+                synchronized (player) {
+                    player.onLogout();
+                }
             }
             try {
                 send(new BasePacket(PacketOpcodes.ServerDisconnectClientNotify));

@@ -54,7 +54,6 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         boolean starterStatueForceLockedBeforeLogin =
                 player.isScenePointForceLocked(STARTER_SCENE_ID, STARTER_STATUE_POINT_ID);
 
-        boolean autoBornNow = false;
         if (freshAccount) {
             int avatarId = BornDataHelper.resolveAutomaticAvatarId();
             String nickname = BornDataHelper.resolveAutomaticNickname();
@@ -72,7 +71,6 @@ public class HandlerPlayerLoginReq extends PacketHandler {
             // 351 is delayed until the first PostEnterSceneRsp.
             BornIntroGate.armSceneReady(session);
             BornDataHelper.sendWelcomeMail(player);
-            autoBornNow = true;
 
             Grasscutter.getLogger()
                     .info(
@@ -83,6 +81,16 @@ public class HandlerPlayerLoginReq extends PacketHandler {
                             intro.enabled);
         } else {
             BornDataHelper.ensureMainCharacter(player);
+            // Birth saves the Traveler before the first quest can be started. A disconnect in
+            // that interval leaves a valid account with no quest state. Resume the exact same
+            // scene-ready bootstrap on reconnect instead of silently abandoning Quest 351.
+            if (emu.grasscutter.game.quest.QuestManager.isQuestingActive()
+                    && player.getQuestManager().getMainQuests().isEmpty()) {
+                BornIntroGate.armSceneReady(session);
+                Grasscutter.getLogger().info(
+                        "[born-flow] uid={} resuming uncommitted first-scene quest bootstrap.",
+                        player.getUid());
+            }
             var quest351 = player.getQuestManager().getMainQuestById(FIRST_MAIN_QUEST);
             if (quest351 != null && !quest351.getActiveQuests().isEmpty()) {
                 Grasscutter.getLogger()
@@ -92,16 +100,19 @@ public class HandlerPlayerLoginReq extends PacketHandler {
             }
         }
 
+        if (BornIntroGate.isFreshPlayerBootstrap(session)) {
+            // Cold scene initialization can block the logic thread long enough for 7.1 to
+            // reconnect. Acknowledge login, publish the scene token, then build the world on
+            // the same worker-backed lifecycle used by native character selection.
+            session.setState(SessionState.ACTIVE);
+            session.send(new PacketPlayerLoginRsp(session));
+            BornIntroGate.beginSceneReadyWorldLogin(session);
+            return;
+        }
+
         player.onLogin();
         restoreStarterStatueState(
                 player, starterStatueUnlockedBeforeLogin, starterStatueForceLockedBeforeLogin);
-
-        if (autoBornNow) {
-            // World/login state is complete. Fresh-player quests remain gated until the client's
-            // first PostEnterSceneReq is acknowledged.
-            BornIntroGate.markWorldLoginComplete(session);
-        }
-
         session.send(new PacketPlayerLoginRsp(session));
     }
 

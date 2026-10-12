@@ -80,7 +80,9 @@ public class ExecRefreshGroupSuite extends QuestExecHandler {
         }
 
         val sceneId = Integer.parseInt(paramStr[0]);
-        val scene = quest.getOwner().getWorld().getSceneById(sceneId);
+        var currentWorld = quest.getOwner().getWorld();
+        if (currentWorld == null) return false;
+        val scene = currentWorld.getSceneById(sceneId);
         if (scene == null) {
             Grasscutter.getLogger().warn(
                     "Quest {} could not refresh group suite: scene {} is unavailable",

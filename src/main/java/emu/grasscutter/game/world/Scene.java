@@ -86,7 +86,8 @@ public class Scene {
     @Getter protected int tickCount = 0;
     @Getter private boolean isPaused = false;
 
-    private final List<Runnable> afterLoadedCallbacks = new ArrayList<>();
+    private final SceneLoadCallbackGate afterLoadedCallbacks = new SceneLoadCallbackGate();
+    private final ScenePlayerEntryGate playerEntryCallbacks = new ScenePlayerEntryGate();
     private final List<Runnable> afterHostInitCallbacks = new ArrayList<>();
 
     @Getter private GameEntity sceneEntity;
@@ -234,6 +235,7 @@ public class Scene {
 
             this.setupPlayerAvatars(player);
         }
+        this.playerEntryCallbacks.enter(player.getUid());
     }
 
     public synchronized void removePlayer(Player player) {
@@ -243,6 +245,7 @@ public class Scene {
         }
 
         getPlayers().remove(player);
+        this.playerEntryCallbacks.leave(player.getUid());
         player.setScene(null);
 
         this.removePlayerAvatars(player);
@@ -935,19 +938,17 @@ public class Scene {
 
     public void finishLoading() {
         if (this.finishedLoading) return;
-
         this.finishedLoading = true;
-        this.afterLoadedCallbacks.forEach(Runnable::run);
-        this.afterLoadedCallbacks.clear();
+        this.afterLoadedCallbacks.complete();
     }
 
     public void runWhenFinished(Runnable runnable) {
-        if (this.isFinishedLoading()) {
-            runnable.run();
-            return;
-        }
+        this.afterLoadedCallbacks.whenComplete(runnable);
+    }
 
-        this.afterLoadedCallbacks.add(runnable);
+    /** Wait for a specific player, even when the scene itself finished loading earlier. */
+    public void runWhenPlayerEnters(Player player, Runnable runnable) {
+        if (player != null) this.playerEntryCallbacks.whenPresent(player.getUid(), runnable);
     }
 
     public void playerSceneInitialized(Player player) {

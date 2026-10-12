@@ -147,6 +147,14 @@ public class GameQuest {
     public void setConfig(QuestData config) {
         if (config == null || getSubQuestId() != config.getId()) return;
         this.questData = config;
+        // Saved arrays refer to condition positions in an older resource version.
+        // A changed condition count invalidates those indices; reset only mismatched arrays.
+        this.finishProgressList = reconcileProgress(this.finishProgressList, config.getFinishCond().size());
+        this.failProgressList = reconcileProgress(this.failProgressList, config.getFailCond().size());
+    }
+
+    private static int[] reconcileProgress(int[] saved, int expectedSize) {
+        return saved != null && saved.length == expectedSize ? saved : new int[expectedSize];
     }
 
     public void setFinishProgress(int index, int value) {
@@ -302,6 +310,7 @@ public class GameQuest {
                     .forEach(t -> this.getOwner().getTeamManager().removeTrialAvatar(t));
         }
 
+        this.save();
         Grasscutter.getLogger().debug("Quest {} is failed", subQuestId);
     }
 

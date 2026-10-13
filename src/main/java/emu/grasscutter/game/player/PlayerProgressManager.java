@@ -7,6 +7,7 @@ import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.ScenePointEntry;
 import emu.grasscutter.data.excels.OpenStateData;
 import emu.grasscutter.data.excels.OpenStateData.OpenStateCondType;
+import emu.grasscutter.game.dungeons.DungeonEntryUnlock;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.quest.enums.*;
 import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
@@ -933,7 +934,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
             this.unlockSceneAreaHierarchy(sceneId, pointData.getAreaId());
         }
 
-        // Unlock rewards: statues vs waypoints/dungeon entries. Never duplicate them when a quest
+        // Unlock rewards: statues, dungeon entrances and waypoints. Never duplicate when a quest
         // temporarily re-locks a point the player had already discovered.
         if (newlyUnlocked && isStatue) {
             this.player.getInventory().addItem(201, 2888, ActionReason.UnlockPointReward); // primogems
@@ -941,6 +942,21 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
             this.player.getInventory().addItem(107009, 3, ActionReason.UnlockPointReward); // fragile resin
             this.player.getInventory().addItem(104003, 50, ActionReason.UnlockPointReward); // hero's wit
             this.player.getInventory().addItem(104013, 20, ActionReason.UnlockPointReward); // mystic enhancement ore
+        } else if (newlyUnlocked && pointData != null && "DungeonEntry".equals(pointData.getType())) {
+            // Dungeon entrances have their own rewardDataId in DungeonEntryExcelConfigData.
+            // This does not run for re-exploration or a quest point lock being released.
+            int rewardId = DungeonEntryUnlock.rewardId(sceneId, pointId);
+            if (rewardId > 0) {
+                var reward = GameData.getRewardDataMap().get(rewardId);
+                if (reward != null) {
+                    this.player.getInventory()
+                            .addItemParamDatas(reward.getAllRewardItems(), ActionReason.UnlockPointReward);
+                } else {
+                    emu.grasscutter.Grasscutter.getLogger()
+                            .warn("Missing dungeon entrance reward {} for scene {} point {}",
+                                    rewardId, sceneId, pointId);
+                }
+            }
         } else if (newlyUnlocked) {
             // Ordinary waypoints use their scene-point reward, not a fixed grant.
             var pointReward =

@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Spawn exploration / specialty markers near players on scene 3:
- * Nod-Krai (lunar oculi / chests), Snezhnaya (cryo oculi / chests), Fontaine/Natlan/Sumeru
+ * Nod-Krai (lunar oculi / chests), Fontaine/Natlan/Sumeru
  * (hydro/pyro/dendro oculi plus chests from region_explore_points.json), specialty plants.
  */
 public final class NodKraiExploreSpawnHelper {
@@ -36,7 +36,6 @@ public final class NodKraiExploreSpawnHelper {
     private static final long CHECK_INTERVAL_MS = 2500L;
     private static final int SYNTH_GROUP_BASE = 910700000;
     private static final Path POINTS_FILE = Path.of("data", "nodkrai_explore_points.json");
-    private static final Path SNEZHNAYA_POINTS_FILE = Path.of("data", "snezhnaya_explore_points.json");
     private static final Path MATERIALS_FILE = Path.of("data", "specialty_materials_points.json");
     private static final Path REGION_POINTS_FILE = Path.of("data", "region_explore_points.json");
     private static final Path CLAIMED_FILE = Path.of("data", "nodkrai_explore_claimed.json");
@@ -181,7 +180,6 @@ public final class NodKraiExploreSpawnHelper {
             if (points != null) return;
             ArrayList<ExplorePoint> list = new ArrayList<ExplorePoint>();
             loadPointsFile(POINTS_FILE, list);
-            loadPointsFile(SNEZHNAYA_POINTS_FILE, list);
             loadPointsFile(MATERIALS_FILE, list);
             loadPointsFile(REGION_POINTS_FILE, list);
             points = List.copyOf(list);

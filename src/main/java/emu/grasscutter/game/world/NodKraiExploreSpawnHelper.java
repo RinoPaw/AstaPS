@@ -816,10 +816,10 @@ public final class NodKraiExploreSpawnHelper {
         // The existing server Mora roots are distinct from puzzle chest roots.
         // Their 7.1-native provenance remains unverified.
         if ("chest_mora".equals(kind)
-                && ("须弥".equals(region)
-                    || "枫丹".equals(region)
-                    || "纳塔".equals(region))) {
-            return "摩拉石箱" + region;
+                && ("\u987b\u5f25".equals(region)
+                    || "\u67ab\u4e39".equals(region)
+                    || "\u7eb3\u5854".equals(region))) {
+            return "\u6469\u62c9\u77f3\u7bb1" + region;
         }
         if (kind == null) return "\u89e3\u8c1c\u4f4e\u7ea7" + region;
         switch (kind) {

@@ -10,6 +10,7 @@ import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.entity.gadget.chest.BossChestInteractHandler;
 import emu.grasscutter.game.entity.gadget.chest.ChestInteractHandler;
+import emu.grasscutter.game.entity.gadget.chest.SyntheticMoraChestRewardSource;
 import emu.grasscutter.game.entity.gadget.chest.WorldChestLootHelper;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
@@ -149,7 +150,7 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            grantOrdinaryChestLoot(player);
+            if (!grantOrdinaryChestLoot(player)) return false;
             finishOpen(player, meta);
             return false;
         }
@@ -174,7 +175,7 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            grantOrdinaryChestLoot(player);
+            if (!grantOrdinaryChestLoot(player)) return false;
             finishOpen(player, null);
             return false;
         }
@@ -209,8 +210,7 @@ public class GadgetChest extends GadgetContent {
                             req.getResinCostType()
                                     == ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE);
         } else {
-            grantOrdinaryChestLoot(player);
-            success = true;
+            success = grantOrdinaryChestLoot(player);
         }
         if (!success) {
             return false;
@@ -290,10 +290,27 @@ public class GadgetChest extends GadgetContent {
         return allClaimed;
     }
 
-    private void grantOrdinaryChestLoot(Player player) {
-        ordinaryClaimed = true;
+    private boolean grantOrdinaryChestLoot(Player player) {
         EntityGadget gadget = getGadget();
         SceneGadget meta = resolveChestMeta();
+        // Synthetic Mora chests have a defined, currency-only root. The legacy generic
+        // fallback would incorrectly add primogems, sigils and equipment. Reject a
+        // missing/failed native grant without marking this one-shot chest opened.
+        if (meta != null && SyntheticMoraChestRewardSource.applies(
+                gadget.getGroupId(), meta.drop_tag)) {
+            DropSystem drops = player.getServer().getDropSystem();
+            if (drops == null || !drops.handleChestDrop(
+                    meta.drop_tag, Math.max(1, meta.level), gadget)) {
+                Grasscutter.getLogger().warn(
+                        "Synthetic Mora chest unresolved scene={} group={} config={} tag={}",
+                        player.getSceneId(), gadget.getGroupId(), gadget.getConfigId(), meta.drop_tag);
+                return false;
+            }
+            ordinaryClaimed = true;
+            return true;
+        }
+
+        // Preserve unrelated upstream chest behavior until its source data is aligned.
         if (meta != null && meta.chest_drop_id > 0) {
             DropSystem dropSystem = player.getServer().getDropSystem();
             // Quest-created chests have no Lua group; scripted quest chests are identified by loot.
@@ -302,10 +319,13 @@ public class GadgetChest extends GadgetContent {
                             || dropSystem.hasQuestItemDrop(meta.chest_drop_id))
                     && dropSystem.handleChestDrop(
                             meta.chest_drop_id, Math.max(1, meta.drop_count), gadget)) {
-                return;
+                ordinaryClaimed = true;
+                return true;
             }
         }
         WorldChestLootHelper.grant(player, gadget);
+        ordinaryClaimed = true;
+        return true;
     }
 
     protected boolean grantBossChestFallback(Player player, SceneGadget meta) {

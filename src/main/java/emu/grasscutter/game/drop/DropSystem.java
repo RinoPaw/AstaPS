@@ -301,16 +301,31 @@ public final class DropSystem extends BaseGameSystem {
     }
 
     public boolean handleChestDrop(int chestDropId, int dropCount, GameEntity bornFrom) {
-        if (!dropTable.containsKey(chestDropId)) return false;
+        if (bornFrom == null || dropCount <= 0 || dropCount > 1000) return false;
         var dropData = dropTable.get(chestDropId);
+        if (isEmptyDropTable(dropData)) return false;
+
         List<GameItem> items = new ArrayList<>();
-        processDrop(dropData, dropCount, items);
-        if (dropData.isFallToGround()) {
-            dropItems(items, ActionReason.OpenChest, bornFrom, bornFrom.getWorld().getHost(), false);
-        } else {
-            bornFrom.getWorld().getHost().getInventory().addItems(items, ActionReason.OpenChest);
+        try {
+            processDrop(dropData, dropCount, items);
+        } catch (RuntimeException invalidDrop) {
+            Grasscutter.getLogger().warn("Cannot roll chest drop id={}", chestDropId, invalidDrop);
+            return false;
         }
-        return true;
+        if (items.isEmpty() || items.stream().anyMatch(item ->
+                item == null || item.getCount() <= 0
+                        || GameData.getItemDataMap().get(item.getItemId()) == null)) {
+            Grasscutter.getLogger().warn("Chest drop id={} produced no valid items", chestDropId);
+            return false;
+        }
+
+        Player recipient = bornFrom.getWorld().getHost();
+        if (dropData.isFallToGround()) {
+            dropItems(items, ActionReason.OpenChest, bornFrom, recipient, false);
+            return true;
+        }
+        // Inventory grants must be fully accepted before an ordinary one-shot claim.
+        return recipient.getInventory().addItems(items, ActionReason.OpenChest).allAccepted();
     }
 
     public boolean handleChestDrop(String dropTag, int level, GameEntity bornFrom) {

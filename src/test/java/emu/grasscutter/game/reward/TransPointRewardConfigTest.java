@@ -105,11 +105,12 @@ final class TransPointRewardConfigTest {
     }
 
     @Test
-    void createsNestedLocalConfigAndPreservesOwnerEdits(@TempDir Path tempDir) throws Exception {
-        Path config = tempDir.resolve("config/rewards.toml");
+    void createsRootConfigAndPreservesOwnerEdits(@TempDir Path tempDir) throws Exception {
+        Path config = tempDir.resolve("rewards.toml");
         TransPointRewardConfig.loadOrCreate(config);
         assertTrue(Files.exists(config));
         assertTrue(Files.readString(config).contains("[transPoint.\"kind=waypoint\"]"));
+        assertFalse(Files.exists(tempDir.resolve("config")));
 
         Files.writeString(config, RULES);
         TransPointRewardConfig.loadOrCreate(config);
@@ -121,7 +122,7 @@ final class TransPointRewardConfigTest {
     void upgradesExistingTransportOverridesWithoutChangingValuesOrComments(@TempDir Path tempDir)
             throws Exception {
         Path oldConfig = tempDir.resolve("config/rewards/trans-point-rewards.toml");
-        Path newConfig = tempDir.resolve("config/rewards.toml");
+        Path newConfig = tempDir.resolve("rewards.toml");
         Files.createDirectories(oldConfig.getParent());
         String legacy = "# Custom operator rule\n" +
                 RULES.replace("[transPoint.", "[")
@@ -130,15 +131,16 @@ final class TransPointRewardConfigTest {
 
         TransPointRewardConfig.loadOrCreate(newConfig);
         assertTrue(Files.exists(newConfig));
-        assertEquals(legacy, Files.readString(oldConfig));
+        assertFalse(Files.exists(oldConfig));
+        assertFalse(Files.exists(tempDir.resolve("config")));
         assertTrue(Files.readString(newConfig).contains("# Custom operator rule"));
         assertEquals(Map.of(102, 17),
                 items(TransPointRewardConfig.current()
                         .resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
 
-        Files.writeString(oldConfig, legacy.replace("adventureExp = 17", "adventureExp = 40"));
+        Files.writeString(newConfig, Files.readString(newConfig).replace("adventureExp = 17", "adventureExp = 18"));
         TransPointRewardConfig.loadOrCreate(newConfig);
-        assertEquals(Map.of(102, 17),
+        assertEquals(Map.of(102, 18),
                 items(TransPointRewardConfig.current()
                         .resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
     }

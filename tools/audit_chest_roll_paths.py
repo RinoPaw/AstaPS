@@ -20,6 +20,16 @@ from tools.audit_chest_scene_exceptions import (
     SCENE_RE, TAG_RE, chest_types, gadget_entries, load, num,
 )
 
+# The ItemData @ResourceType list on the AstaPS server (7.1).
+ITEM_TABLES = (
+    "MaterialExcelConfigData.json",
+    "WeaponExcelConfigData.json",
+    "ReliquaryExcelConfigData.json",
+    "HomeWorldFurnitureExcelConfigData.json",
+    "TpsWeaponExcelConfigData.json",
+)
+NON_BOSS_SOURCES = frozenset({15, 17, 19, 24, 2001, 2104, 2501})
+
 
 @dataclass(frozen=True)
 class PathResult:
@@ -128,14 +138,27 @@ def audit(server: Path, resources: Path) -> dict:
                 raise ValueError(f"Duplicate drop node {node_id}")
             nodes[node_id] = row
     tags = defaultdict(list)
-    for row in load(server / "data/ChestDrop.json"):
+    chest_rows = load(server / "data/ChestDrop.json")
+    for row in chest_rows:
         tags[row["index"]].append(row)
+    item_ids = set()
+    for filename in ITEM_TABLES:
+        for row in load(resources / "ExcelBinOutput" / filename):
+            if isinstance(row, dict) and isinstance(row.get("id"), int):
+                item_ids.add(row["id"])
     for rows in tags.values():
         rows.sort(key=lambda row: row.get("minLevel", 0))
     gadget_ids = chest_types(load(resources / "ExcelBinOutput/GadgetExcelConfigData.json"))
     cache = {}
+    missing_terminals = {}
     totals, by_source, by_path = Counter(), Counter(), Counter()
     examples = defaultdict(list)
+    missing_item_examples = []
+    def evaluate(drop_id: int) -> PathResult:
+        if drop_id not in cache:
+            cache[drop_id] = analyze_root(drop_id, nodes)
+            missing_terminals[drop_id] = sorted(cache[drop_id].terminal_ids - item_ids)
+        return cache[drop_id]
     for path in sorted((resources / "Scripts/Scene").rglob("*.lua")):
         scene_match = SCENE_RE.search(path.name)
         scene_id = int(scene_match.group(1)) if scene_match else 0
@@ -163,9 +186,15 @@ def audit(server: Path, resources: Path) -> dict:
             elif drop_id not in nodes:
                 status = "root_missing"
             else:
-                if drop_id not in cache:
-                    cache[drop_id] = analyze_root(drop_id, nodes)
-                outcome = cache[drop_id]
+                outcome = evaluate(drop_id)
+                if missing_terminals[drop_id]:
+                    totals["chests_with_missing_item_ids"] += 1
+                    if len(missing_item_examples) < 15:
+                        missing_item_examples.append({
+                            "root_id": drop_id,
+                            "scene": scene_id,
+                            "missing_item_ids": missing_terminals[drop_id][:20],
+                        })
                 if drop_id in outcome.empty_nodes:
                     status = "root_empty"
                 elif outcome.invalid_nodes:
@@ -191,15 +220,44 @@ def audit(server: Path, resources: Path) -> dict:
                     "root_id": drop_id,
                     "source": source_kind,
                 })
+    # Independently audit every configured ordinary/non-Boss tag, including
+    # tags unused by scenes. Unknown item IDs are reported, never substituted.
+    bridge = [r for r in chest_rows if r.get("sourceType") in NON_BOSS_SOURCES]
+    for row in bridge:
+        if row["dropId"] in nodes:
+            evaluate(row["dropId"])
+    bridge_results = [evaluate(row["dropId"]) for row in bridge
+                      if row["dropId"] in nodes]
+    bridge_missing_ids = sorted({item_id for row in bridge
+                                 for item_id in missing_terminals.get(row["dropId"], ())})
+    all_missing_ids = sorted({item_id for values in missing_terminals.values()
+                              for item_id in values})
+    all_terminal_ids = set().union(*(res.terminal_ids for res in cache.values()))
     return {
-        "scope": "Static DropSystem roll-path approximation; terminal IDs are not validated items",
+        "scope": "Static DropSystem roll-path approximation with 7.1 ItemData ID cross-check; no inventory/grant verification",
         "totals": dict(totals),
         "sources": dict(by_source),
         "path_status": dict(by_path),
         "unique_roots_analyzed": len(cache),
+        "item_validation": {
+            "item_ids_loaded": len(item_ids),
+            "distinct_terminal_ids": len(all_terminal_ids),
+            "missing_terminal_ids": all_missing_ids,
+            "scene_chests_with_missing_item_ids": totals["chests_with_missing_item_ids"],
+            "scene_missing_item_examples": missing_item_examples,
+        },
+        "non_boss_bridge": {
+            "rows": len(bridge),
+            "existing_roots": len(bridge_results),
+            "guaranteed_terminal_rows": sum(r.guaranteed_terminal for r in bridge_results),
+            "rows_with_empty_descendants": sum(bool(r.empty_nodes - {row["dropId"]})
+                for row, r in zip((row for row in bridge if row["dropId"] in nodes),
+                                  bridge_results)),
+            "missing_terminal_ids": bridge_missing_ids,
+        },
         "examples": dict(examples),
         "notes": [
-            "A guaranteed terminal ID is not verified item validity or inventory acceptance.",
+            "All checked terminal IDs are compared with the five ItemData resource files; presence does not guarantee inventory acceptance.",
             "A reachable empty descendant does not imply missing rewards.",
             "This audit does not establish native 7.1 rates or chest claim semantics.",
         ],

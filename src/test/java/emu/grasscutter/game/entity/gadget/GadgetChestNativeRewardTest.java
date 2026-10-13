@@ -47,15 +47,15 @@ final class GadgetChestNativeRewardTest {
 
         player = new TestPlayer(server, 990010);
         var world = new World(player);
-        var scene = new Scene(world, JsonUtils.decode("{\\"id\\":3}", SceneData.class));
+        var scene = new Scene(world, JsonUtils.decode("{\"id\":3}", SceneData.class));
         player.setWorld(world);
         player.setScene(scene);
         scene.getPlayers().add(player);
 
         priorGadget = GameData.getGadgetDataMap().put(GADGET_ID,
-                JsonUtils.decode("{\\"id\\":99002010,\\"type\\":\\"Chest\\"}", GadgetData.class));
+                JsonUtils.decode("{\"id\":99002010,\"type\":\"Chest\"}", GadgetData.class));
         priorMora = GameData.getItemDataMap().put(202,
-                JsonUtils.decode("{\\"id\\":202,\\"itemType\\":\\"ITEM_VIRTUAL\\"}", ItemData.class));
+                JsonUtils.decode("{\"id\":202,\"itemType\":\"ITEM_VIRTUAL\"}", ItemData.class));
         priorDrop = GameData.getDropTableDataMap().remove(DROP_ID);
         gadget = new EntityGadget(scene, GADGET_ID, new Position(player.getPosition()));
         var meta = new SceneGadget();
@@ -81,7 +81,7 @@ final class GadgetChestNativeRewardTest {
 
     private static DropTableData table(String vector) {
         return JsonUtils.decode(
-                "{\\"id\\":99002011,\\"randomType\\":1,\\"fallToGround\\":false,\\"dropVec\\":" + vector + "}",
+                "{\"id\":99002011,\"randomType\":1,\"fallToGround\":false,\"dropVec\":" + vector + "}",
                 DropTableData.class);
     }
 
@@ -98,7 +98,7 @@ final class GadgetChestNativeRewardTest {
         assertEquals(before, player.getMora());
 
         GameData.getDropTableDataMap().put(DROP_ID,
-                table("[{\\"itemId\\":202,\\"countRange\\":\\"100\\",\\"weight\\":10000}]"));
+                table("[{\"itemId\":202,\"countRange\":\"100\",\"weight\":10000}]"));
         claim();
         assertEquals(102, gadget.getState());
         assertEquals(before + 100, player.getMora());
@@ -117,7 +117,7 @@ final class GadgetChestNativeRewardTest {
     @Test
     void rejectedBackpackGrantDoesNotConsumeChest() {
         GameData.getDropTableDataMap().put(DROP_ID,
-                table("[{\\"itemId\\":202,\\"countRange\\":\\"2147483647\\",\\"weight\\":10000}]"));
+                table("[{\"itemId\":202,\"countRange\":\"2147483647\",\"weight\":10000}]"));
         player.setMora(1);
         claim();
         assertEquals(1, player.getMora());

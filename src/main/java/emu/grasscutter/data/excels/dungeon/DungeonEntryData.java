@@ -23,6 +23,7 @@ public class DungeonEntryData extends GameResource {
     private boolean isShowInAdvHandbook = true;
     private boolean isDefaultOpen;
 
+    @Getter
     public static class DungeonEntryCondition {
         private DungeonEntrySatisfiedConditionType type;
         private int param1;

@@ -3,10 +3,27 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-from tools.audit_chest_data_alignment import assess, check_mora_root, legacy_tag, mora_candidate_tag
+from tools.audit_chest_data_alignment import (assess, check_mora_root, empty_descendant_nodes, legacy_tag, mora_candidate_tag)
 
 
 class ChestDataAlignmentTest(unittest.TestCase):
+    def test_empty_children_are_reported_as_evidence_not_missing_loot(self):
+        nodes = {
+            52040000: {"dropVec": [
+                {"itemId": 102, "weight": 10000},
+                {"itemId": 52040011, "weight": 10000},
+                {"itemId": 52040012, "weight": 10000},
+                {"itemId": 52040013, "weight": 0},
+            ]},
+            52040011: {"dropVec": []},
+            52040012: {"dropVec": [{"itemId": 202, "weight": 10000}]},
+            52040013: {"dropVec": []},
+        }
+        self.assertEqual([52040011], empty_descendant_nodes(52040000, nodes))
+        self.assertEqual([], empty_descendant_nodes(52049999, nodes))
+        self.assertEqual([], empty_descendant_nodes(52040012, nodes))
+
+
     def test_mora_root_requires_only_weighted_currency_leaves(self):
         data = {
             "id": 8100400, "nodeType": 1, "sourceType": 19,

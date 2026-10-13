@@ -1,5 +1,5 @@
 # AstaPS server-owned reward configuration. Generated once, then operator-owned.
-# Only transPoint is currently implemented. Chest drops remain in native tables.
+# Direct reward tables only. Chest selectors are parsed but not yet connected to runtime.
 # Trans-point selectors: "kind=waypoint", "kind=statue", "kind=domain", "7:*", "3:6".
 # Priority: exact point > scene > kind. Every table replaces the entire reward.
 version = 1
@@ -25,3 +25,29 @@ adventureExp = 10
 [transPoint."7:*"]
 primogems = 5
 items = [{ id = 101692, count = 20 }]
+
+# Ordinary exploration chest baseline, for regions using the higher gem tier.
+# The 7.1 game has five chest families. All five award 30 Adventure EXP.
+# Standard Mondstadt/Liyue regions and Tsurumi have different Primogem values.
+# Shrine, Primal Obelisk, event, and special quest chests have separate rewards.
+# Do not apply these values to those exceptions until classified accurately.
+[chest."kind=common"]
+adventureExp = 30
+primogems = 2
+
+[chest."kind=exquisite"]
+adventureExp = 30
+primogems = 5
+
+[chest."kind=precious"]
+adventureExp = 30
+primogems = 10
+
+[chest."kind=luxurious"]
+adventureExp = 30
+primogems = 10
+
+# Furniture blueprints are chest-specific and remain native data.
+[chest."kind=remarkable"]
+adventureExp = 30
+primogems = 5

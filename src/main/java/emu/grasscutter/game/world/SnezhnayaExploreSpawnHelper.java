@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -40,6 +41,9 @@ public final class SnezhnayaExploreSpawnHelper {
     private static final int SYNTH_GROUP_BASE = 910800000;
     private static final Path POINTS_FILE = Path.of("data", "snezhnaya_explore_points.json");
     private static final Path CLAIMED_FILE = Path.of("data", "snezhnaya_explore_claimed.json");
+    // Older builds spawned these same points from NodKraiExploreSpawnHelper.
+    private static final Path LEGACY_CLAIMED_FILE = Path.of("data", "nodkrai_explore_claimed.json");
+    private static final Path LEGACY_GUARD_KILL_FILE = Path.of("data", "nodkrai_guard_respawn.json");
     private static final Path GUARD_KILL_FILE = Path.of("data", "snezhnaya_guard_respawn.json");
     /** Same as the bounty system: 12h after a camp wipe before guards respawn. */
     private static final long GUARD_RESPAWN_MS = 12L * 60L * 60L * 1000L;
@@ -93,6 +97,52 @@ public final class SnezhnayaExploreSpawnHelper {
         }
     }
 
+    /** Valid chest IDs from the dedicated Snezhnaya dataset, not every legacy claim. */
+    private static Set<Integer> knownChestIds() {
+        Set<Integer> ids = new HashSet<>();
+        if (points != null) {
+            for (ExplorePoint point : points) {
+                if (point.id >= 10000 && point.id < 20000
+                        && point.kind != null && point.kind.startsWith("chest")) {
+                    ids.add(point.id);
+                }
+            }
+        }
+        return ids;
+    }
+
+    static int importLegacyClaims(JsonObject source, Set<Integer> target, Set<Integer> permitted) {
+        int added = 0;
+        for (Map.Entry<String, JsonElement> entry : source.entrySet()) {
+            try {
+                int id = Integer.parseInt(entry.getKey());
+                if (permitted.contains(id) && target.add(id)) added++;
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return added;
+    }
+
+    static int importLegacyGuardTimes(
+            JsonObject source, Map<Integer, Long> target, Set<Integer> permitted) {
+        int added = 0;
+        for (Map.Entry<String, JsonElement> entry : source.entrySet()) {
+            try {
+                int id = Integer.parseInt(entry.getKey());
+                if (!permitted.contains(id)) continue;
+                long timestamp = entry.getValue().getAsLong();
+                if (timestamp <= 0) continue;
+                Long existing = target.get(id);
+                if (existing == null || timestamp > existing) {
+                    target.put(id, timestamp);
+                    added++;
+                }
+            } catch (RuntimeException ignored) {
+            }
+        }
+        return added;
+    }
+
     private static void ensureLoaded() {
         if (points != null) return;
         synchronized (SnezhnayaExploreSpawnHelper.class) {
@@ -144,6 +194,23 @@ public final class SnezhnayaExploreSpawnHelper {
             } catch (Exception e) {
                 Grasscutter.getLogger().warn("SnezhnayaExploreSpawnHelper claimed load failed: {}", e.toString());
             }
+            // Migrate already-opened Snezhnaya chests from the old 910700000 owner.
+            // Import only IDs that are present as chests in the Snezhnaya dataset.
+            try {
+                if (Files.isRegularFile(LEGACY_CLAIMED_FILE)) {
+                    JsonObject legacy = JsonParser.parseString(
+                            Files.readString(LEGACY_CLAIMED_FILE, StandardCharsets.UTF_8)).getAsJsonObject();
+                    int imported = importLegacyClaims(legacy, claimed, knownChestIds());
+                    if (imported > 0) {
+                        saveClaimed();
+                        Grasscutter.getLogger().info(
+                                "SnezhnayaExploreSpawnHelper migrated {} legacy chest claims", imported);
+                    }
+                }
+            } catch (Exception e) {
+                Grasscutter.getLogger().warn(
+                        "SnezhnayaExploreSpawnHelper legacy claim migration failed: {}", e.toString());
+            }
             claimedLoaded = true;
         }
     }
@@ -183,6 +250,22 @@ public final class SnezhnayaExploreSpawnHelper {
                 }
             } catch (Exception e) {
                 Grasscutter.getLogger().warn("SnezhnayaExploreSpawnHelper guard-kill load failed: {}", e.toString());
+            }
+            try {
+                if (Files.isRegularFile(LEGACY_GUARD_KILL_FILE)) {
+                    JsonObject legacy = JsonParser.parseString(
+                            Files.readString(LEGACY_GUARD_KILL_FILE, StandardCharsets.UTF_8)).getAsJsonObject();
+                    int imported = importLegacyGuardTimes(
+                            legacy, guardKilledAtMs, knownChestIds());
+                    if (imported > 0) {
+                        saveGuardKills();
+                        Grasscutter.getLogger().info(
+                                "SnezhnayaExploreSpawnHelper migrated {} legacy guard timers", imported);
+                    }
+                }
+            } catch (Exception e) {
+                Grasscutter.getLogger().warn(
+                        "SnezhnayaExploreSpawnHelper legacy guard migration failed: {}", e.toString());
             }
             guardKillLoaded = true;
         }

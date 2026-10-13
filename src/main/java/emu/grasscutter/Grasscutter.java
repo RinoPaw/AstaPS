@@ -131,7 +131,7 @@ public final class Grasscutter {
         logger.info(translate("messages.status.game_version", GameConstants.VERSION));
         logger.info(translate("messages.status.version", GameConstants.VERSION, "Asta"));
 
-        // Server-owned rewards.toml. Preserve existing trans-point overrides on first migration.
+        // The operator-owned rewards.toml lives beside config.json.
         emu.grasscutter.game.reward.RewardConfig.loadOrCreate(
                 java.nio.file.Path.of("rewards.toml"));
 

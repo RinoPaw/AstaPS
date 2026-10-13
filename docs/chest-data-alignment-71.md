@@ -110,6 +110,36 @@ and should not be overwritten with guessed equipment or probabilities.
 descendants and counts, without confusing absent node IDs with terminal
 item IDs. Authentic 7.1 item-family and probability validation remains open.
 
+## Runtime roll-path distinction (read-only follow-up)
+
+The old scene coverage script's `partial` label means a reachable branch
+was empty or structurally suspect. It does **not** mean every roll yields
+no items. In the current `DropSystem.processDrop`, `randomType=0` chooses
+one weighted entry; `randomType=1` independently checks each entry on a
+10,000-point scale. A guaranteed payable-looking terminal path can therefore
+coexist with optional empty subnodes. Conversely, an existing populated root
+may still fail to produce an item on some rolls.
+
+`tools/audit_chest_roll_paths.py` now audits **all ordinary scene chest
+references** under these current Java roll semantics, separately reporting
+empty roots, missing roots, invalid graphs, potentially empty outcomes and
+roots with a guaranteed terminal ID path. It also counts chests that have
+empty descendants *despite* a guaranteed terminal ID path. This is a
+read-only instrument; no tables or runtime reward behavior are changed.
+
+Run from the server checkout with the matching resource tree:
+
+```powershell
+python -m tools.audit_chest_roll_paths --server . --resources resources --output chest-roll-paths.json
+python -m unittest discover -s tests -p test_chest_roll_paths.py -v
+```
+
+**Scope limit:** A terminal ID has not yet been cross-checked against all
+7.1 item tables or the live inventory acceptance path. A guaranteed
+terminal *ID* is not a guaranteed successful grant. These new roll-path
+categories have **not yet been populated by a full scan**, and no new
+numerical coverage claim is made here. Uncertain branches remain unchanged.
+
 ## Synthetic markers: mapping is not native proof
 
 There are 2,038 synthetic chest markers, none with an explicit reward ID.

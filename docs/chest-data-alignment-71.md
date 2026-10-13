@@ -206,6 +206,32 @@ than generic world-chest tier rewards. Existing runtime world-chest
 fallback remains a separate gameplay issue to address with verified
 payout and quest-state semantics.
 
+## Runtime payout selection gap (not fixed in this data phase)
+
+The static graph coverage is **not** an assertion of live native payout
+coverage. `GadgetChest.grantOrdinaryChestLoot` currently calls
+`DropSystem.handleChestDrop(meta.drop_tag, ...)` for the scoped synthetic
+Mora source only. Its other native call uses **explicit**
+`meta.chest_drop_id` and is gated on dungeon scene, group zero, or a
+reachable `MATERIAL_QUEST`. It does not attempt the regular
+`drop_tag` bridge for ordinary world chests. The fallback is
+`WorldChestLootHelper.grant(...)`, which awards hardcoded tier rewards.
+The 9,020 tagged scene configurations are thus *configured*, but their
+native reward tags are generally unused by this runtime decision.
+
+Furthermore `WorldChestLootHelper.grant`, `Scene.addItemEntity`
+and `Scene.addDropEntity` currently return `void`. The fallback logs
+or silently skips individual ground drops without a success result, and
+`GadgetChest` marks its ordinary reward attempt claimed afterwards.
+`DropSystem.handleChestDrop` likewise returns success after attempting
+ground drops, without proving all entities were spawned. The previous
+`fix/chest-native-authority-71` branch must not be merged wholesale
+before this grant/claim confirmation contract is designed and tested.
+
+Do not correct the runtime gap by overwriting already linked reward
+data, inventing 7.1 rates, or auto-paying generic tier items for
+quest-specific missing roots.
+
 ## Synthetic markers: mapping is not native proof
 
 There are 2,038 synthetic chest markers, none with an explicit reward ID.

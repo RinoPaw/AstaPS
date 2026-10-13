@@ -134,8 +134,7 @@ public final class WorldAreaIndex {
             if (nested != null) {
                 for (JsonElement child : nested) {
                     JsonObject object = asObject(child);
-                    if (object == null || !object.has(AREA_ID1)
-                            || object.get(AREA_ID1).getAsInt() != level1.id) continue;
+                    if (positiveId(object, AREA_ID1) != level1.id) continue;
                     Area level2 = parseArea(object, AREA_ID2);
                     if (level2 != null) subareas.add(level2);
                 }
@@ -147,8 +146,7 @@ public final class WorldAreaIndex {
     }
 
     private static Area parseArea(JsonObject source, String idField) {
-        if (source == null || !source.has(idField)) return null;
-        int id = source.get(idField).getAsInt();
+        int id = positiveId(source, idField);
         if (id <= 0) return null;
         JsonObject outline = asObject(source.get(OUTLINE));
         JsonArray points = outline == null ? null : asArray(outline.get(POINTS));
@@ -159,7 +157,8 @@ public final class WorldAreaIndex {
         int count = 0;
         for (JsonElement element : points) {
             JsonObject point = asObject(element);
-            if (point == null || !point.has("_x") || !point.has("_z")) continue;
+            if (point == null || !isNumber(point.get("_x"))
+                    || !isNumber(point.get("_z"))) continue;
             float x = point.get("_x").getAsFloat();
             float z = point.get("_z").getAsFloat();
             if (!Float.isFinite(x) || !Float.isFinite(z)) continue;
@@ -177,9 +176,18 @@ public final class WorldAreaIndex {
 
     private static float boundY(JsonObject outline, String key, float fallback) {
         JsonObject bound = asObject(outline.get(key));
-        if (bound == null || !bound.has("_y")) return fallback;
+        if (bound == null || !isNumber(bound.get("_y"))) return fallback;
         float value = bound.get("_y").getAsFloat();
         return Float.isFinite(value) ? value : fallback;
+    }
+
+    private static boolean isNumber(JsonElement value) {
+        return value != null && value.isJsonPrimitive() && value.getAsJsonPrimitive().isNumber();
+    }
+
+    private static int positiveId(JsonObject object, String key) {
+        if (object == null || !isNumber(object.get(key))) return 0;
+        return Math.max(object.get(key).getAsInt(), 0);
     }
 
     private static JsonObject asObject(JsonElement element) {

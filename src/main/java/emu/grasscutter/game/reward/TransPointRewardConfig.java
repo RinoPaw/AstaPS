@@ -2,10 +2,8 @@ package emu.grasscutter.game.reward;
 
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.common.PointData;
-import org.tomlj.TomlArray;
 import org.tomlj.TomlTable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +12,6 @@ import java.util.Set;
 /** Server-owned first-unlock rewards from the transPoint section of rewards.toml. */
 public final class TransPointRewardConfig {
     public enum Kind { WAYPOINT, STATUE, DOMAIN }
-
-    private static final Set<String> REWARD_KEYS =
-            Set.of("adventureExp", "primogems", "mora", "items");
 
     private final Map<Kind, List<ItemParamData>> kinds;
     private final Map<Integer, List<ItemParamData>> scenes;
@@ -41,7 +36,7 @@ public final class TransPointRewardConfig {
             if (!(entry.getValue() instanceof TomlTable table)) {
                 throw new IllegalArgumentException("Expected reward table for [" + selector + "]");
             }
-            List<ItemParamData> reward = reward(selector, table);
+            List<ItemParamData> reward = DirectReward.parse(selector, table);
             if (selector.startsWith("kind=")) {
                 Kind kind = switch (selector.substring(5)) {
                     case "waypoint" -> Kind.WAYPOINT;
@@ -76,51 +71,6 @@ public final class TransPointRewardConfig {
             }
         }
         return new TransPointRewardConfig(kinds, scenes, points);
-    }
-
-    private static List<ItemParamData> reward(String name, TomlTable table) {
-        for (String field : table.keySet()) {
-            if (!REWARD_KEYS.contains(field)) {
-                throw new IllegalArgumentException("Unknown reward field " + field + " in " + name);
-            }
-        }
-        var result = new ArrayList<ItemParamData>();
-        add(result, 102, number(table, "adventureExp", name, false));
-        add(result, 201, number(table, "primogems", name, false));
-        add(result, 202, number(table, "mora", name, false));
-        Object rawItems = table.get("items");
-        if (rawItems != null) {
-            if (!(rawItems instanceof TomlArray items)) {
-                throw new IllegalArgumentException(name + ".items must be an array");
-            }
-            for (int i = 0; i < items.size(); i++) {
-                if (!(items.get(i) instanceof TomlTable item)) {
-                    throw new IllegalArgumentException(name + ".items[" + i + "] must be a table");
-                }
-                if (!item.keySet().equals(Set.of("id", "count"))) {
-                    throw new IllegalArgumentException(name + ".items[" + i + "] needs id and count");
-                }
-                int id = number(item, "id", name, true);
-                int count = number(item, "count", name, true);
-                result.add(new ItemParamData(id, count));
-            }
-        }
-        return List.copyOf(result);
-    }
-
-    private static int number(TomlTable table, String field, String name, boolean positive) {
-        Object value = table.get(field);
-        if (value == null && !positive) return 0;
-        if (!(value instanceof Long n) || n > Integer.MAX_VALUE
-                || (positive ? n <= 0 : n < 0)) {
-            throw new IllegalArgumentException(name + "." + field + " must be a "
-                    + (positive ? "positive" : "non-negative") + " integer");
-        }
-        return n.intValue();
-    }
-
-    private static void add(List<ItemParamData> items, int id, int count) {
-        if (count > 0) items.add(new ItemParamData(id, count));
     }
 
     private static long key(int sceneId, int pointId) {

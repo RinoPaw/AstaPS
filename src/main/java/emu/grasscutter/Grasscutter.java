@@ -131,9 +131,9 @@ public final class Grasscutter {
         logger.info(translate("messages.status.game_version", GameConstants.VERSION));
         logger.info(translate("messages.status.version", GameConstants.VERSION, "Asta"));
 
-        // Server-owned reward rules are authoritative; never read the native point reward map.
+        // Server-owned rewards.toml. Preserve existing trans-point overrides on first migration.
         emu.grasscutter.game.reward.TransPointRewardConfig.loadOrCreate(
-                java.nio.file.Path.of("config", "rewards", "trans-point-rewards.toml"));
+                java.nio.file.Path.of("config", "rewards.toml"));
 
         // Initialize database.
         DatabaseManager.initialize();

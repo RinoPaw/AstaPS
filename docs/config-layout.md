@@ -40,19 +40,12 @@ semantics and data have been verified. These namespaces are not active today.
 Unrelated gameplay configuration needs its own review; no `config/`
 subdirectory hierarchy is planned.
 
-## Deployment and legacy cleanup
+## Deployment
 
-The bundled reward template is `src/main/resources/rewards.toml`.
-On startup, if the root-level `rewards.toml` is missing, the loader first
-imports a previous `config/rewards.toml`, or otherwise converts an older
-`config/rewards/trans-point-rewards.toml`. It validates before writing,
-does not overwrite a root-level file, and removes the successfully migrated
-old reward file. If two old generations coexist, an older copy is removed
-only when its migrated contents are identical to the new root file.
-Any now-empty directories are removed. Unrelated or divergent files inside
-`config/` are never deleted automatically. Once the
-root-level file exists, it is the sole authority.
+The bundled default template lives in `src/main/resources/rewards.toml`.
+The server reads only the root-level `rewards.toml`, generating it from the
+template when absent. It never overwrites operator values. Unknown keys and
+invalid values fail validation rather than falling back to a different
+reward source.
 
-Both `config.json` and `rewards.toml` are ignored by Git. Generated
-runtime files must not be committed; malformed files fail startup rather than
-being silently replaced with defaults.
+Both `config.json` and `rewards.toml` are ignored by Git.

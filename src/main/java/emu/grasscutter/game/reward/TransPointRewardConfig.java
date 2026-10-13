@@ -85,7 +85,7 @@ public final class TransPointRewardConfig {
         }
         for (Kind kind : Kind.values()) {
             if (!kinds.containsKey(kind)) {
-                throw new IllegalArgumentException("Missing [\"kind="
+                throw new IllegalArgumentException("Missing [transPoint.\"kind="
                         + kind.name().toLowerCase(java.util.Locale.ROOT) + "\"]");
             }
         }

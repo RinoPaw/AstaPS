@@ -102,7 +102,21 @@ public final class RewardConfig {
             RewardConfig parsed = parse(Files.readString(target));
             if (migratedFrom != null) {
                 Files.delete(migratedFrom);
-                removeIfEmpty(migratedFrom.getParent());
+                // A previous rollout could have left both generations of the
+                // old config. Delete the older copy only when it matches the
+                // successfully migrated owner configuration byte-for-byte.
+                if (migratedFrom.equals(previousUnified)
+                        && Files.isRegularFile(previousTransport)) {
+                    try {
+                        if (upgradeLegacy(Files.readString(previousTransport))
+                                .equals(Files.readString(target))) {
+                            Files.delete(previousTransport);
+                        }
+                    } catch (IllegalArgumentException invalidOldConfig) {
+                        // Preserve a divergent/broken legacy file for manual review.
+                    }
+                }
+                removeIfEmpty(previousTransport.getParent());
                 removeIfEmpty(legacyDirectory);
             }
             active = parsed;

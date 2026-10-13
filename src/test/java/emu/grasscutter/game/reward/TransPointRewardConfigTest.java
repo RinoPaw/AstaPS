@@ -39,7 +39,7 @@ final class TransPointRewardConfigTest {
 
     @Test
     void selectorsReplaceRewardsByExactSceneThenKind() {
-        var rules = TransPointRewardConfig.parse(RULES);
+        var rules = RewardConfig.parse(RULES).transPoint();
         assertEquals(Map.of(102, 10), items(rules.resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
         assertEquals(Map.of(102, 50, 201, 5),
                 items(rules.resolve(3, 8, TransPointRewardConfig.Kind.WAYPOINT)));
@@ -57,7 +57,7 @@ final class TransPointRewardConfigTest {
                 [transPoint."7:2"]
                 adventureExp = 15
                 """;
-        var rules = TransPointRewardConfig.parse(text);
+        var rules = RewardConfig.parse(text).transPoint();
         assertEquals(Map.of(102, 15), items(rules.resolve(7, 2, TransPointRewardConfig.Kind.WAYPOINT)));
         assertEquals(Map.of(101692, 20, 201, 5),
                 items(rules.resolve(7, 3, TransPointRewardConfig.Kind.WAYPOINT)));
@@ -66,13 +66,13 @@ final class TransPointRewardConfigTest {
     @Test
     void unsupportedSelectorsAndBrokenConfigurationFailClosed() {
         assertThrows(IllegalArgumentException.class,
-                () -> TransPointRewardConfig.parse(RULES + "[transPoint.\"region=mondstadt\"]\nprimogems = 3\n"));
+                () -> RewardConfig.parse(RULES + "[transPoint.\"region=mondstadt\"]\nprimogems = 3\n"));
         assertThrows(IllegalArgumentException.class,
-                () -> TransPointRewardConfig.parse(RULES.replace("adventureExp = 10", "adventureExp = -10")));
+                () -> RewardConfig.parse(RULES.replace("adventureExp = 10", "adventureExp = -10")));
         assertThrows(IllegalArgumentException.class,
-                () -> TransPointRewardConfig.parse(RULES.replace("version = 1", "version = 2")));
+                () -> RewardConfig.parse(RULES.replace("version = 1", "version = 2")));
         assertThrows(IllegalArgumentException.class,
-                () -> TransPointRewardConfig.parse(RULES.replace("id = 101692", "id = 0")));
+                () -> RewardConfig.parse(RULES.replace("id = 101692", "id = 0")));
     }
 
     @Test
@@ -107,74 +107,21 @@ final class TransPointRewardConfigTest {
     @Test
     void createsRootConfigAndPreservesOwnerEdits(@TempDir Path tempDir) throws Exception {
         Path config = tempDir.resolve("rewards.toml");
-        TransPointRewardConfig.loadOrCreate(config);
+        RewardConfig.loadOrCreate(config);
         assertTrue(Files.exists(config));
         assertTrue(Files.readString(config).contains("[transPoint.\"kind=waypoint\"]"));
         assertFalse(Files.exists(tempDir.resolve("config")));
 
         Files.writeString(config, RULES);
-        TransPointRewardConfig.loadOrCreate(config);
+        RewardConfig.loadOrCreate(config);
         assertEquals(RULES, Files.readString(config));
     }
 
 
     @Test
-    void upgradesExistingTransportOverridesWithoutChangingValuesOrComments(@TempDir Path tempDir)
-            throws Exception {
-        Path oldConfig = tempDir.resolve("config/rewards/trans-point-rewards.toml");
-        Path newConfig = tempDir.resolve("rewards.toml");
-        Files.createDirectories(oldConfig.getParent());
-        String legacy = "# Custom operator rule\n" +
-                RULES.replace("[transPoint.", "[")
-                        .replace("adventureExp = 10", "adventureExp = 17");
-        Files.writeString(oldConfig, legacy);
-
-        TransPointRewardConfig.loadOrCreate(newConfig);
-        assertTrue(Files.exists(newConfig));
-        assertFalse(Files.exists(oldConfig));
-        assertFalse(Files.exists(tempDir.resolve("config")));
-        assertTrue(Files.readString(newConfig).contains("# Custom operator rule"));
-        assertEquals(Map.of(102, 17),
-                items(TransPointRewardConfig.current()
-                        .resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
-
-        Files.writeString(newConfig, Files.readString(newConfig).replace("adventureExp = 17", "adventureExp = 18"));
-        TransPointRewardConfig.loadOrCreate(newConfig);
-        assertEquals(Map.of(102, 18),
-                items(TransPointRewardConfig.current()
-                        .resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
-    }
-
-    @Test
-    void malformedLegacyConfigurationDoesNotCreateNewFile(@TempDir Path tempDir)
-            throws Exception {
-        Path oldConfig = tempDir.resolve("config/rewards/trans-point-rewards.toml");
-        Path newConfig = tempDir.resolve("rewards.toml");
-        Files.createDirectories(oldConfig.getParent());
-        Files.writeString(oldConfig, "version = 1\n[\"kind=waypoint\"]\nprimogems = -4\n");
-        assertThrows(IllegalStateException.class,
-                () -> TransPointRewardConfig.loadOrCreate(newConfig));
-        assertFalse(Files.exists(newConfig));
-        assertTrue(Files.exists(oldConfig));
-    }
-
-    @Test
-    void malformedUnifiedConfigDoesNotRevertToLegacy(@TempDir Path tempDir)
-            throws Exception {
-        Path newConfig = tempDir.resolve("rewards.toml");
-        Path oldConfig = tempDir.resolve("config/rewards/trans-point-rewards.toml");
-        Files.createDirectories(oldConfig.getParent());
-        Files.writeString(oldConfig, RULES.replace("[transPoint.", "["));
-        Files.writeString(newConfig, "version = 2\n");
-        assertThrows(IllegalStateException.class,
-                () -> TransPointRewardConfig.loadOrCreate(newConfig));
-        assertEquals("version = 2\n", Files.readString(newConfig));
-    }
-
-    @Test
     void unknownRewardSectionsFailUntilImplemented() {
         assertThrows(IllegalArgumentException.class,
-                () -> TransPointRewardConfig.parse(RULES + "[chest]\nmode = \"native\"\n"));
+                () -> RewardConfig.parse(RULES + "[chest]\nmode = \"native\"\n"));
     }
 
 
@@ -190,7 +137,7 @@ final class TransPointRewardConfigTest {
         assertEquals(0, domain.getRewardDataId());
         assertEquals(TransPointRewardConfig.Kind.DOMAIN,
                 TransPointRewardConfig.kindOf(point, false));
-        var rewards = TransPointRewardConfig.parse(RULES)
+        var rewards = RewardConfig.parse(RULES).transPoint()
                 .resolve(domain.getSceneId(), domain.getDungeonEntryId(),
                         TransPointRewardConfig.kindOf(point, false));
         assertEquals(Map.of(102, 50, 201, 5), items(rewards));

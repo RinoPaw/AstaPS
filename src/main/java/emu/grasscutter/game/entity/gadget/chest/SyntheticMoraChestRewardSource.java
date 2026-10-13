@@ -15,9 +15,9 @@ public final class SyntheticMoraChestRewardSource {
             return false;
         }
         int id = groupId - GROUP_BASE;
-        if (id >= 40000 && id < 50000) return "摩拉石箱须弥".equals(tag);
-        if (id >= 30000 && id < 40000) return "摩拉石箱纳塔".equals(tag);
-        if (id >= 20000 && id < 30000) return "摩拉石箱枫丹".equals(tag);
+        if (id >= 40000 && id < 50000) return "\u6469\u62c9\u77f3\u7bb1\u987b\u5f25".equals(tag);
+        if (id >= 30000 && id < 40000) return "\u6469\u62c9\u77f3\u7bb1\u7eb3\u5854".equals(tag);
+        if (id >= 20000 && id < 30000) return "\u6469\u62c9\u77f3\u7bb1\u67ab\u4e39".equals(tag);
         return false; // Nod-Krai has no validated Mora table; Snezhnaya is a separate owner.
     }
 }

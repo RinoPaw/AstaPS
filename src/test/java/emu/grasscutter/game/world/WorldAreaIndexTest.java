@@ -95,6 +95,10 @@ class WorldAreaIndexTest {
                              "JLFEAGHGCLP": {"BFLLDPOAJGD": [
                                {"_x": 40, "_z": 40}, {"_x": 50, "_z": 40},
                                {"_x": 50, "_z": 50}, {"_x": 40, "_z": 50}]}},
+                            {"BBLLBIOLMHP": "invalid", "EOIFEEDBAFJ": 9997,
+                             "JLFEAGHGCLP": {"BFLLDPOAJGD": [
+                               {"_x": 40, "_z": 40}, {"_x": 50, "_z": 40},
+                               {"_x": 50, "_z": 50}, {"_x": 40, "_z": 50}]}},
                             {"BBLLBIOLMHP": 55, "EOIFEEDBAFJ": 9998,
                              "JLFEAGHGCLP": {"BFLLDPOAJGD": [
                                {"_x": 40, "_z": 40}, {"_x": 50, "_z": 40}]}}

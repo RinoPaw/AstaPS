@@ -1,6 +1,7 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.game.dungeons.DungeonEntryUnlock;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.UnlockTransPointReqOuterClass.UnlockTransPointReq;
 import emu.grasscutter.server.game.GameSession;
@@ -17,6 +18,22 @@ public class HandlerUnlockTransPointReq extends PacketHandler {
         // A Statue of the Seven is activated by quest 303 (or the starter quest 352),
         // not by the ordinary waypoint request.
         if (isStatue) return;
+
+        // The client cannot bypass quest-controlled entrances or resource unlock conditions.
+        if (entry != null && entry.getPointData() != null
+                && "DungeonEntry".equals(entry.getPointData().getType())) {
+            var player = session.getPlayer();
+            var dungeon = DungeonEntryUnlock.find(req.getSceneId(), req.getPointId());
+            if (entry.getPointData().isForbidSimpleUnlock()
+                    || dungeon == null
+                    || player.isScenePointForceLocked(req.getSceneId(), req.getPointId())
+                    || !DungeonEntryUnlock.canExplore(player, dungeon)) {
+                emu.grasscutter.Grasscutter.getLogger()
+                        .debug("Rejected dungeon entrance unlock uid={} scene={} point={}",
+                                player.getUid(), req.getSceneId(), req.getPointId());
+                return;
+            }
+        }
 
         boolean unlocked =
                 session

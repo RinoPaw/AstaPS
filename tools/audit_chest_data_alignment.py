@@ -159,10 +159,12 @@ def assess(server: Path, resources: Path) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--server", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--resources", type=Path, default=Path("resources"))
+    parser.add_argument("--resources", type=Path, help="defaults to SERVER/resources")
     parser.add_argument("--output", type=Path, help="write an audit JSON snapshot")
     args = parser.parse_args()
-    report = assess(args.server.resolve(), args.resources.resolve())
+    server = args.server.resolve()
+    resources = args.resources.resolve() if args.resources else server / "resources"
+    report = assess(server, resources)
     rendered = json.dumps(report, ensure_ascii=False, indent=2) + "\n"
     if args.output:
         args.output.write_text(rendered, encoding="utf-8")

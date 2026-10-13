@@ -51,6 +51,65 @@ level-specific entries. This is a **separate** Boss reward problem.
 All other rows have defined entry roots, but many referenced graphs are not
 known to be complete. Do not fill the 625 gaps with guessed item pools.
 
+## Full-scene explicit-ID exceptions
+
+The full scene audit identified **493** explicit-ID chests whose referenced
+root cannot produce an item in the currently shipped tables. These are
+different cases and must not be mass-remapped.
+
+- **479 chests** explicitly reference `1000100`. That root exists, but has
+  `sourceType = 0` and an empty `dropVec`. Monster scripts also use
+  `drop_id = 1000100`; it is **plausibly a no-drop sentinel**, not proof
+  that 479 chest reward tables were lost. Some such chests advance Lua
+  `ChestOpened` triggers (example:
+  [scene 50079 group 250079007](https://github.com/MeChen618/AstaPS-Resource/blob/main/Scripts/Scene/50079/scene50079_group250079007.lua)).
+  Do not block their interaction or fabricate rewards without determining
+  their intended quest progression behavior.
+- **14 chests** reference distinct missing IDs **`1050256` through
+  `1050269`**, all in scene 3 and ten Lua groups. The records are marked
+  `isOneoff = true`, `persistent = true`, `autopick = true`, and
+  `drop_count = 1`. They include
+  [Deshret rune gadgets](https://github.com/MeChen618/AstaPS-Resource/blob/main/Scripts/Scene/3/scene3_group133307177.lua)
+  and
+  [other Sumeru gadgets](https://github.com/MeChen618/AstaPS-Resource/blob/main/Scripts/Scene/3/scene3_group133307415.lua).
+  The native server drop table has `1050255`, but no `1050256`–`1050269`
+  rows. Neighboring `1050235`–`1050252` entries commonly grant unique
+  `MATERIAL_QUEST` items, so generic chest loot would lose quest items.
+  This is a **hypothesis about content family**, not recovery of the
+  missing item IDs.
+- Cross-checking `Merprose2/LunaGCR-Resources` (main-table Git blob
+  `fcc5f1879349e9228022978078a7220ba4256a07`) and
+  `invoker-bot/LunaGC-Resources` (`812bdf7372b58d23887540682b910b1486ad3efa`)
+  finds `1000100` empty and all 14 subsequent IDs absent in both
+  datasets. LunaGCR adds 98 roots and 100 subnodes relative to AstaPS,
+  but its additions contain **none** of these 14 IDs or the 625 Boss
+  reward roots. Do not import historical data for these gaps.
+
+New read-only audit:
+`tools/audit_chest_scene_exceptions.py`, with the complete per-gadget
+evidence emitted using `--output`. This adds evidence but deliberately
+does **not** assign new rewards.
+
+## Populated roots with empty descendants
+
+A second, separate source of apparent partial coverage is an **existing
+nonempty root** referencing one or more **existing empty subnodes**.
+
+For the 296 non-Boss reward bridge rows (`ChestDrop.json`):
+192 rows, corresponding to 108 distinct root IDs, reach 205 different
+empty descendant nodes. All affected rows are within the battle/puzzle
+(and Dragonspine battle/puzzle/agate) families. For example,
+`52040000` has mandatory currency/EXP leaves and subnodes
+`52040011` and `52040012` with empty `dropVec`.
+The analogous battle root `51040000` has different empty child IDs.
+An empty subnode may intentionally represent a no-drop possibility.
+These 192 rows are **not equivalent** to 192 missing reward roots,
+and should not be overwritten with guessed equipment or probabilities.
+
+`tools/audit_chest_data_alignment.py` now reports the exact empty
+descendants and counts, without confusing absent node IDs with terminal
+item IDs. Authentic 7.1 item-family and probability validation remains open.
+
 ## Synthetic markers: mapping is not native proof
 
 There are 2,038 synthetic chest markers, none with an explicit reward ID.
@@ -119,6 +178,7 @@ From the AstaPS checkout with the 7.1 resource checkout mounted at
 
 ```powershell
 python tools/audit_chest_data_alignment.py --server . --resources resources --output chest-alignment.json
+python tools/audit_chest_scene_exceptions.py --resources resources --output chest-scene-exceptions.json
 python -m unittest discover -s tests -p test_chest_data_alignment.py -v
 ```
 

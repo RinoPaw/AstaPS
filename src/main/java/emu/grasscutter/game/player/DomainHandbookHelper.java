@@ -47,7 +47,6 @@ public final class DomainHandbookHelper {
         }
         try {
             ensureLoaded();
-            applyUnlocks(player);
             DEFERRED_DONE.remove(player.getUid());
             LAST_FULL_SYNC_MS.remove(player.getUid());
             scheduleDeferredSync(player);
@@ -57,7 +56,7 @@ public final class DomainHandbookHelper {
                             player.getUid(),
                             HANDBOOK_ENTRIES.values().stream().mapToInt(List::size).sum(),
                             HANDBOOK_AREAS.values().stream().mapToInt(Set::size).sum());
-            // Investigation chapters - same login window as the domain unlock.
+            // Keep investigation chapter synchronization in the existing login window.
             try {
                 InvestigationHandbookHelper.onPlayerLogin(player);
             } catch (Throwable t) {
@@ -74,7 +73,6 @@ public final class DomainHandbookHelper {
         }
         try {
             ensureLoaded();
-            applyUnlocks(player);
             syncToClient(player, "enter-scene");
         } catch (Throwable t) {
             Grasscutter.getLogger().warn("DomainHandbook enter-scene failed: {}", t.toString());
@@ -88,7 +86,6 @@ public final class DomainHandbookHelper {
         }
         try {
             ensureLoaded();
-            applyUnlocks(player);
             // Avoid re-sending GetScenePointRsp here (resets handbook scroll).
             // Handler sends both wire layouts after this returns.
             return true;
@@ -131,13 +128,8 @@ public final class DomainHandbookHelper {
                 }
             }
             if (!pointIds.isEmpty()) {
-                // After applyUnlocks, handbook entry points are in the unlocked set -
-                // push them so the handbook domain tab stays populated.
-                var unlocked = player.getUnlockedScenePoints(sceneId);
-                var already = new ArrayList<Integer>();
-                for (int pid : pointIds) {
-                    if (unlocked.contains(pid)) already.add(pid);
-                }
+                // Re-send only entries that gameplay has already unlocked.
+                var already = alreadyUnlockedEntries(pointIds, player.getUnlockedScenePoints(sceneId));
                 if (!already.isEmpty()) {
                     player.getSession().send(new PacketScenePointUnlockNotify(sceneId, already));
                     points += already.size();
@@ -155,12 +147,13 @@ public final class DomainHandbookHelper {
                         areas);
     }
 
-    private static void applyUnlocks(Player player) {
-        // Unlock handbook dungeon-entry points only. Do NOT unlock HANDBOOK_AREAS -
-        // that previously forced map fog/waypoints open on new accounts (a8e01cd).
-        for (Map.Entry<Integer, List<Integer>> entry : HANDBOOK_ENTRIES.entrySet()) {
-            player.getUnlockedScenePoints(entry.getKey()).addAll(entry.getValue());
+    /** Handbook entries are metadata, not permission to unlock those scene points. */
+    static List<Integer> alreadyUnlockedEntries(List<Integer> entries, Set<Integer> unlocked) {
+        var result = new ArrayList<Integer>();
+        for (int pointId : entries) {
+            if (unlocked.contains(pointId)) result.add(pointId);
         }
+        return result;
     }
 
     private static void scheduleDeferredSync(Player player) {
@@ -177,7 +170,6 @@ public final class DomainHandbookHelper {
                                 if (!DEFERRED_DONE.add(uid)) {
                                     return;
                                 }
-                                applyUnlocks(online);
                                 syncToClient(online, "deferred");
                             } catch (InterruptedException ie) {
                                 Thread.currentThread().interrupt();

@@ -5,7 +5,6 @@ import emu.grasscutter.data.common.PointData;
 import org.tomlj.TomlArray;
 import org.tomlj.TomlTable;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -1,5 +1,6 @@
 package emu.grasscutter.data.excels.dungeon;
 
+import com.google.gson.annotations.SerializedName;
 import emu.grasscutter.data.*;
 import emu.grasscutter.game.dungeons.enums.*;
 import java.util.List;
@@ -16,7 +17,9 @@ public class DungeonEntryData extends GameResource {
     private int sceneId;
     private DungunEntryType type;
     private DungeonEntryCondCombType condComb;
+    @SerializedName(value = "NCPHMNJMPKB", alternate = "satisfiedCond")
     private List<DungeonEntryCondition> satisfiedCond;
+    private int rewardDataId;
     private boolean isShowInAdvHandbook = true;
     private boolean isDefaultOpen;
 
@@ -40,6 +43,7 @@ public class DungeonEntryData extends GameResource {
     }
 
     public int getLevelCondition() {
+        if (satisfiedCond == null) return 0;
         for (var cond : satisfiedCond) {
             if (cond.type != null
                     && cond.type.equals(DungeonEntrySatisfiedConditionType.DUNGEON_ENTRY_CONDITION_LEVEL)) {
@@ -50,6 +54,7 @@ public class DungeonEntryData extends GameResource {
     }
 
     public int getQuestCondition() {
+        if (satisfiedCond == null) return 0;
         for (var cond : satisfiedCond) {
             if (cond.type != null
                     && cond.type.equals(DungeonEntrySatisfiedConditionType.DUNGEON_ENTRY_CONDITION_QUEST)) {

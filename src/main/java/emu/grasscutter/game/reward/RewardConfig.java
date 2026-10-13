@@ -65,28 +65,56 @@ public final class RewardConfig {
         return migrated;
     }
 
+    /**
+     * The only active configuration path is the caller's root-level rewards.toml.
+     * Old files are imported once and removed only after the new file parses.
+     * Never delete unknown content from a former config/ directory.
+     */
     public static void loadOrCreate(Path path) {
+        Path target = path.toAbsolutePath().normalize();
         try {
-            if (Files.notExists(path)) {
-                Files.createDirectories(path.toAbsolutePath().getParent());
-                Path legacy = path.resolveSibling("rewards").resolve("trans-point-rewards.toml");
-                if (Files.isRegularFile(legacy)) {
-                    String migrated = upgradeLegacy(Files.readString(legacy));
-                    // Keep the old owner-edited file as a backup. Never overwrite a
-                    // new unified config, nor silently substitute bundled defaults.
-                    Files.writeString(path, migrated,
+            Path parent = target.getParent();
+            Path legacyDirectory = parent.resolve("config");
+            Path previousUnified = legacyDirectory.resolve("rewards.toml");
+            Path previousTransport = legacyDirectory.resolve("rewards")
+                    .resolve("trans-point-rewards.toml");
+            Path migratedFrom = null;
+            if (Files.notExists(target)) {
+                if (Files.isRegularFile(previousUnified)) {
+                    String previous = Files.readString(previousUnified);
+                    parse(previous);
+                    Files.writeString(target, previous,
                             StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+                    migratedFrom = previousUnified;
+                } else if (Files.isRegularFile(previousTransport)) {
+                    String upgraded = upgradeLegacy(Files.readString(previousTransport));
+                    Files.writeString(target, upgraded,
+                            StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+                    migratedFrom = previousTransport;
                 } else {
                     try (InputStream stream = RewardConfig.class.getResourceAsStream(TEMPLATE)) {
                         if (stream == null) throw new IOException("Missing bundled template " + TEMPLATE);
-                        Files.copy(stream, path);
+                        Files.copy(stream, target);
                     }
                 }
             }
-            // Parse completely before publishing the new immutable snapshot.
-            active = parse(Files.readString(path));
+            // Parse before publishing state or deleting the source of a migration.
+            RewardConfig parsed = parse(Files.readString(target));
+            if (migratedFrom != null) {
+                Files.delete(migratedFrom);
+                removeIfEmpty(migratedFrom.getParent());
+                removeIfEmpty(legacyDirectory);
+            }
+            active = parsed;
         } catch (IOException | IllegalArgumentException e) {
             throw new IllegalStateException("Cannot load " + path + ": " + e.getMessage(), e);
+        }
+    }
+
+    private static void removeIfEmpty(Path directory) throws IOException {
+        if (!Files.isDirectory(directory)) return;
+        try (var contents = Files.list(directory)) {
+            if (contents.findAny().isEmpty()) Files.delete(directory);
         }
     }
 }

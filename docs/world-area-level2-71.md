@@ -87,3 +87,25 @@ are unchanged.
 This branch does not yet change chest reward calculation, `rewards.toml`,
 or player state. For chest selectors, use scene ID plus the resolved level-1
 and level-2 IDs, and preserve unresolved cases explicitly.
+
+## Independent source-provenance check
+
+The focused reverse-engineering evidence now lives in
+[RinoPaw/Genshin-Reverse: 7.1 WorldArea audit](https://github.com/RinoPaw/Genshin-Reverse/blob/research/world-area-boundaries-71/versions/7.1.0-global/analyses/progression/world/7.1-world-area-boundary-audit.md).
+Numeric normalization of `_x/_z/_y` in AstaPS-Resource against `x/z/y` in
+the historical `Merprose2/LunaGCR-Resources:7.0` file proves that **all 65
+level-1 polygons, 400 level-2 polygons, 7,598 vertices and height bounds
+are identical**. The current resource folder is labelled 7.1 but this geometry
+cannot be verified as native 7.1 solely by that label.
+
+All 13 missing areas were already definition-only in this older resource
+lineage. The four parent/child crossing polygons are also numerically identical
+across those sources. An alternate `Scripts/Scene/3/scene3_world_areas.json`
+export covers just 142 area2 IDs (subset of the full 396), and recovers none
+of the thirteen.
+
+Consequently the current index's parent-gated child search is a conservative
+**server policy**, not independently validated client precedence. Do not
+silently synthesize polygon geometry or use crossing/missing IDs as guaranteed
+reward selectors. Revalidation requires a fresh 7.1 geometry extraction
+or a controlled native `EnterWorldAreaReq` observation at conflict points.

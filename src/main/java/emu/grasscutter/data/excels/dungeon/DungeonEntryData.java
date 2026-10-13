@@ -20,7 +20,8 @@ public class DungeonEntryData extends GameResource {
     @SerializedName(value = "NCPHMNJMPKB", alternate = "satisfiedCond")
     private List<DungeonEntryCondition> satisfiedCond;
     private int rewardDataId;
-    private boolean isShowInAdvHandbook = true;
+    // Absence of the resource flag means this entry does not belong in the handbook.
+    private boolean isShowInAdvHandbook;
     private boolean isDefaultOpen;
 
     @Getter

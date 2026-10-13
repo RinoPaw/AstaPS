@@ -1,75 +1,56 @@
 # Runtime configuration layout
 
-The server operator owns **config/**. The project and resource pack must not
-silently overwrite local policy. `config.json` remains the global settings
-entry point for network, database, services, and existing global tuning.
-
-Only one gameplay config currently exists:
+Server-operator configuration files belong in the AstaPS working directory,
+alongside `config.json`. **Do not create a `config/` directory** for new
+settings. Packaged default templates remain in `src/main/resources/`.
 
 ```text
 AstaPS/
-├── config.json                          # Existing global settings
-├── config/
-│   ├── rewards/
-│   │   └── trans-point-rewards.toml     # Implemented
-│   ├── drops/
-│   │   ├── chests.toml                 # Future, not yet created
-│   │   ├── monsters.toml               # Future, not yet created
-│   │   └── domains.toml                # Future, not yet created
-│   ├── artifacts/
-│   │   └── rolls.toml                  # Future, not yet created
-│   └── domains/
-│       └── schedules.toml              # Future, not yet created
-├── data/                                # Server data tables and some runtime state
-└── resources/                           # Client-extracted and server-supported game resources
+├── config.json                  # Existing global server settings
+├── rewards.toml                # Unified operator-owned reward policy (implemented)
+├── data/                       # Server data tables and some runtime state
+└── resources/                  # Client-extracted and server-supported game resources
 ```
 
 ## Ownership and precedence
 
-- `resources/`: client-extracted point, dungeon, item, quest, and Excel data.
-  Native IDs and scene topology may be used to identify a target. They do not
-  override an operator's gameplay policy.
-- `data/`: server-defined data tables, especially `ChestDrop.json`,
-  `MonsterDrop.json`, and `DungeonDrop.json`. Most DataLoader calls prefer a
-  local `data/` copy over the bundled `src/main/resources/defaults/data/` copy,
-  whereas certain bundled-first loaders intentionally reverse that priority.
-  This directory currently also contains state and generated files; it has mixed
-  ownership and should not become the default home for new human-written policy.
-  Existing tables and their load behavior remain untouched.
-- `config/`: server-owner policy written in TOML when concise enough to maintain
-  by hand. Large, machine-generated data should not be converted to huge TOML
-  arrays merely for consistency.
-- Database and existing claimed-state files: runtime player/claim state, never
-  treated as configurable reward definitions.
+- `config.json`: network, database, services and global settings.
+- `rewards.toml`: operator-owned reward policies. Currently only the
+  `transPoint` section is active. It owns first activation rewards for
+  waypoints, Statues of The Seven and domain entrances, but not dungeon
+  completion or resin rewards.
+- `resources/`: client-extracted point, dungeon, item, quest and Excel data.
+  Native IDs and scene topology identify the target, but do not override
+  documented operator policy.
+- `data/`: server-owned data tables, including `ChestDrop.json`,
+  `MonsterDrop.json` and `DungeonDrop.json`. This also contains some
+  generated state. Large drop graphs remain in their own JSON files; do
+  not duplicate them as huge hand-written TOML arrays.
+- Database and claim-state files: player progression, not reward definitions.
 
-Each subsystem must document exactly one policy authority and a single precedence
-scheme. Reject malformed or conflicting operator files; do not silently return to
-stale native rewards. Configured values may refer to native IDs, but they are not
-overwritten by native asset changes.
+Each reward feature must declare a single authority and matching priority.
+Unknown `rewards.toml` fields fail validation; native tables do not silently
+replace invalid operator settings.
 
-## Future subsystem boundaries
+## Future features
 
-- `rewards/trans-point-rewards.toml`: first discovery/activation rewards for
-  waypoints, Statues of The Seven and manually activated domain entrances.
-- `drops/chests.toml`, `drops/monsters.toml`, `drops/domains.toml`:
-  loot pool policy, drop probabilities and counts. These do not define
-  the first-activation domain reward or domain unlock rules.
-- `artifacts/rolls.toml`: generation of artifact main stats, substats,
-  initial rolls, and upgrade weights; independent of the dungeon's chance to
-  produce an artifact.
-- `domains/schedules.toml`: domain availability by day/time and reset-time
-  interpretation; independent of domain pool/drop rates. Keep native dungeon
-  identity and client-visible schedules consistent with server admission.
+New reward families (world chests, Boss rewards, domain completion rewards)
+may receive independent namespaces in `rewards.toml` once their grant/claim
+semantics and data have been verified. These namespaces are not active today.
+Unrelated gameplay configuration needs its own review; no `config/`
+subdirectory hierarchy is planned.
 
-Do not introduce a global generic selector engine or shared hot-reload behavior
-until another subsystem needs them. Each feature owns validation and tests.
+## Deployment and legacy cleanup
 
-## Deployment
+The bundled reward template is `src/main/resources/rewards.toml`.
+On startup, if the root-level `rewards.toml` is missing, the loader first
+imports a previous `config/rewards.toml`, or otherwise converts an older
+`config/rewards/trans-point-rewards.toml`. It validates before writing,
+does not overwrite a root-level file, and removes **only the successfully
+migrated old reward file**, followed by any now-empty legacy directories.
+Other files inside `config/` are never deleted automatically. Once the
+root-level file exists, it is the sole authority.
 
-Bundled defaults belong to `src/main/resources/`, while runtime files under
-`config/` are gitignored. First startup generates a missing file. Updates do
-not overwrite operator values. Unknown keys and invalid values fail validation.
-
-Only the documented config path is read. No automatic legacy-path imports,
-migration branches, or undocumented fallbacks are added for draft features.
-Breaking schema changes must be documented and tested explicitly.
+Both `config.json` and `rewards.toml` are ignored by Git. Generated
+runtime files must not be committed; malformed files fail startup rather than
+being silently replaced with defaults.

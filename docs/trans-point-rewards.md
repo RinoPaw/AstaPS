@@ -1,14 +1,17 @@
 # AstaPS first-unlock rewards
 
-`config/rewards.toml` is a server-owned configuration, generated
-on the first startup. Existing configuration is never overwritten. Malformed or
-unsupported configuration stops startup; there is no native reward-table fallback.
-On first startup, if `config/rewards.toml` does not exist, the server
-migrates `config/rewards/trans-point-rewards.toml` if present. Migration wraps
-legacy selector tables into the `transPoint` namespace, validates them, and
-keeps the legacy file unchanged as a backup. Once created, only
-`config/rewards.toml` is authoritative; subsequent edits to the legacy file
-have no effect. If neither file exists, the bundled template is generated.
+`rewards.toml` is an operator-owned configuration, generated in the AstaPS
+working directory alongside `config.json` on first startup. Existing files
+are never overwritten. Malformed or unsupported configuration stops startup;
+there is no native reward-table fallback.
+
+If root-level `rewards.toml` does not exist, startup first imports a
+previous `config/rewards.toml`, or otherwise migrates the older
+`config/rewards/trans-point-rewards.toml` format into the `transPoint`
+namespace. After successful validation, the migrated source file is deleted,
+then the old directories are removed **if empty**. Other files are not
+deleted. An existing root-level file is always authoritative.
+If no old reward file exists, the bundled template is generated.
 
 ## Supported selectors
 
@@ -23,7 +26,7 @@ mean zero, not inherited values. `adventureExp`, `primogems`, and `mora` are
 non-negative integers; `items` is an array of `{ id = ..., count = ... }`.
 
 The bundled template is `src/main/resources/rewards.toml`.
-The local generated config directory is gitignored. This intentionally does **not** load
+The root-level operator-owned `rewards.toml` is gitignored. This intentionally does **not** load
 `ExcelBinOutput/TransPointRewardConfigData.json` or look up the old `rewardId`
 in `RewardExcelConfigData.json`.
 

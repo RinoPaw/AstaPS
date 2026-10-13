@@ -69,7 +69,7 @@ final class RewardConfigTest {
     void rejectsUnknownSectionsUntilTheirRuntimeOwnerExists() throws IOException {
         String base = bundledTemplate();
         assertThrows(IllegalArgumentException.class,
-                () -> RewardConfig.parse(base + "[chest]\nsource = \"native\"\n"));
+                () -> RewardConfig.parse(base + "[boss]\nsource = \"native\"\n"));
         assertThrows(IllegalArgumentException.class,
                 () -> RewardConfig.parse(base.replace("version = 1", "version = 2")));
     }

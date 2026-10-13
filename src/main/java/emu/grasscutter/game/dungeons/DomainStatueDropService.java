@@ -317,9 +317,24 @@ public final class DomainStatueDropService {
             }
             return id >= 100000 && id < 200000;
         };
+        // ITEM_DISPLAY preview IDs map to a reliquary set via DisplayItem.param.
+        // They are not inventory items and must never be included in a reward roll.
+        java.util.function.IntFunction<Integer> reliquarySetId = id -> {
+            var item = GameData.getItemDataMap().get(id);
+            return item != null
+                    && item.getItemType() == emu.grasscutter.game.inventory.ItemType.ITEM_RELIQUARY
+                    ? item.getSetId() : 0;
+        };
+        java.util.function.IntFunction<Integer> displaySetId = id -> {
+            var display = GameData.getDisplayItemDataMap().get(id);
+            return display != null ? display.getParam() : 0;
+        };
         boolean verifiedNative = nativeReady && knownNativeItems
-                && DomainDropSafety.matchesNativeFamilies(
-                        nativeItems, expectedIds, subType, categoryItem);
+                && (subType == emu.grasscutter.game.dungeons.enums.DungeonSubType.DUNGEON_SUB_RELIQUARY
+                        ? DomainDropSafety.matchesNativeArtifactSets(
+                                nativeItems, expectedIds, reliquarySetId, displaySetId)
+                        : DomainDropSafety.matchesNativeFamilies(
+                                nativeItems, expectedIds, subType, categoryItem));
 
         var source = DomainDropSafety.chooseRewardSource(verifiedNative, verifiedProxy);
         if (nativeReady && !verifiedNative) {

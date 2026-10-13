@@ -246,6 +246,10 @@ public final class GameData {
             new Int2ObjectOpenHashMap<>();
 
     @Getter
+    private static final Int2ObjectMap<DisplayItemData> displayItemDataMap =
+            new Int2ObjectOpenHashMap<>();
+
+    @Getter
     private static final Int2ObjectMap<DropTableData> dropTableDataMap =
             new Int2ObjectOpenHashMap<>();
 

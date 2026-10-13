@@ -56,6 +56,25 @@ final class DomainDropSafetyTest {
     }
 
     @Test
+    void displayItemPreviewAndNativeReliquariesMustHaveMatchingSetIds() {
+        // These correspond to 7.1 DisplayItem.param and Reliquary.setId.
+        var relicSets = Map.of(51310, 10001, 60353, 10010, 71513, 15071);
+        var displaySets = Map.of(400002, 10001, 400045, 10010);
+        java.util.function.IntFunction<Integer> relicId = id -> relicSets.getOrDefault(id, 0);
+        java.util.function.IntFunction<Integer> displayId = id -> displaySets.getOrDefault(id, 0);
+
+        assertTrue(DomainDropSafety.matchesNativeArtifactSets(
+                Set.of(202, 51310, 60353), Set.of(400002, 400045),
+                relicId, displayId));
+        assertFalse(DomainDropSafety.matchesNativeArtifactSets(
+                Set.of(71513), Set.of(400002, 400045), relicId, displayId));
+        assertFalse(DomainDropSafety.matchesNativeArtifactSets(
+                Set.of(51310), Set.of(400099), relicId, displayId));
+        assertFalse(DomainDropSafety.matchesNativeArtifactSets(
+                Set.of(202), Set.of(400002), relicId, displayId));
+    }
+
+    @Test
     void brokenAndCyclicNativeGraphsFailClosed() {
         assertTrue(DomainDropSafety.nativeLeafIds(1,
                 Map.of(1, List.<Integer>of())::get).isEmpty());

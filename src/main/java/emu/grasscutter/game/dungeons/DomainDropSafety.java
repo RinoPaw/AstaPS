@@ -89,6 +89,36 @@ final class DomainDropSafety {
         return !actual.isEmpty() && expected.containsAll(actual);
     }
 
+    /**
+     * Artifact previews advertise ITEM_DISPLAY IDs, not payable reliquary IDs.
+     * Resolve both kinds to Reliquary.setId before comparing native leaves.
+     * Null or unknown mappings contribute no sets, so missing evidence fails closed.
+     */
+    static boolean matchesNativeArtifactSets(
+            Set<Integer> nativeItems,
+            Set<Integer> expectedItems,
+            IntFunction<Integer> reliquarySetId,
+            IntFunction<Integer> displaySetId) {
+        if (nativeItems == null || nativeItems.isEmpty()
+                || expectedItems == null || expectedItems.isEmpty()) return false;
+
+        var expectedSets = new HashSet<Integer>();
+        for (int id : expectedItems) {
+            Integer relicSet = reliquarySetId.apply(id);
+            Integer displaySet = displaySetId.apply(id);
+            if (relicSet != null && relicSet > 0) expectedSets.add(relicSet);
+            if (displaySet != null && displaySet > 0) expectedSets.add(displaySet);
+        }
+        if (expectedSets.isEmpty()) return false;
+
+        var nativeSets = new HashSet<Integer>();
+        for (int id : nativeItems) {
+            Integer set = reliquarySetId.apply(id);
+            if (set != null && set > 0) nativeSets.add(set);
+        }
+        return !nativeSets.isEmpty() && expectedSets.containsAll(nativeSets);
+    }
+
     /** Confirm the known 4706 compatibility pool points to the 475/485 artifact sets. */
     static boolean isVerifiedCompatibilityPool(int dungeonId, Set<Integer> artifactIds) {
         if (dungeonId != 4706) return true;

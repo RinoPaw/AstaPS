@@ -6,6 +6,7 @@ import emu.grasscutter.data.binout.ScenePointEntry;
 import emu.grasscutter.data.common.PointData;
 import emu.grasscutter.data.excels.dungeon.DungeonData;
 import emu.grasscutter.data.excels.dungeon.DungeonEntryData;
+import emu.grasscutter.game.dungeons.DungeonEntryUnlock;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.DailyDungeonEntryInfoOuterClass.DailyDungeonEntryInfo;
@@ -53,7 +54,7 @@ public class PacketGetDailyDungeonEntryInfoRsp extends BasePacket {
             if (!data.isShowInAdvHandbook()) {
                 continue;
             }
-            var entry = buildEntry(data, playerLevel);
+            var entry = buildEntry(data, player, playerLevel);
             if (entry != null) {
                 rsp.addDailyDungeonInfoList(entry);
             }
@@ -68,7 +69,7 @@ public class PacketGetDailyDungeonEntryInfoRsp extends BasePacket {
         return rsp.build();
     }
 
-    private static DailyDungeonEntryInfo buildEntry(DungeonEntryData data, int playerLevel) {
+    private static DailyDungeonEntryInfo buildEntry(DungeonEntryData data, Player player, int playerLevel) {
         int[] dungeonIds = resolveDungeonIds(data);
         if (dungeonIds == null || dungeonIds.length == 0) {
             return null;
@@ -83,12 +84,16 @@ public class PacketGetDailyDungeonEntryInfoRsp extends BasePacket {
             }
         }
 
+        boolean unlocked = DungeonEntryUnlock.isUnlocked(player, data.getSceneId(), data.getDungeonEntryId());
+        boolean passed = player != null && player.getPlayerProgress() != null
+                && player.getPlayerProgress().getCompletedDungeons().contains(recommend);
+
         return DailyDungeonEntryInfo.newBuilder()
                 .setEDEOIILGGJC(true)
-                .setIsQuickOpen(true)
+                .setIsQuickOpen(unlocked)
                 .setRecommendDungeonId(recommend)
                 .setRecommendDungeonEntryInfo(
-                        DungeonEntryInfo.newBuilder().setDungeonId(recommend).setIsPassed(true))
+                        DungeonEntryInfo.newBuilder().setDungeonId(recommend).setIsPassed(passed))
                 .setAKNPDDFHEKO(true)
                 .setDungeonEntryId(data.getDungeonEntryId())
                 .setDungeonEntryConfigId(data.getId())

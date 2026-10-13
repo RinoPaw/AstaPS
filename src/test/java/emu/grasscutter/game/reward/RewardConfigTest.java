@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.data.common.ItemParamData;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.junit.jupiter.api.io.TempDir;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,6 +54,58 @@ final class RewardConfigTest {
         assertEquals(Map.of(102, 12),
                 items(RewardConfig.parse(upgraded).transPoint()
                         .resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
+    }
+
+    @Test
+    void migratesPreviousUnifiedFileAndRemovesEmptyConfigDirectory(@TempDir Path tempDir)
+            throws IOException {
+        Path prior = tempDir.resolve("config/rewards.toml");
+        Files.createDirectories(prior.getParent());
+        try (var source = RewardConfig.class.getResourceAsStream("/rewards.toml")) {
+            assertNotNull(source);
+            Files.copy(source, prior);
+        }
+        Path target = tempDir.resolve("rewards.toml");
+        RewardConfig.loadOrCreate(target);
+        assertTrue(Files.isRegularFile(target));
+        assertFalse(Files.exists(prior));
+        assertFalse(Files.exists(tempDir.resolve("config")));
+        assertEquals(Map.of(102, 10),
+                items(RewardConfig.current().transPoint()
+                        .resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
+    }
+
+    @Test
+    void neverDeletesUnknownLegacyFiles(@TempDir Path tempDir) throws IOException {
+        Path prior = tempDir.resolve("config/rewards.toml");
+        Files.createDirectories(prior.getParent());
+        Files.writeString(prior, bundledTemplate());
+        Path unrelated = prior.getParent().resolve("other-setting.txt");
+        Files.writeString(unrelated, "preserve this");
+        RewardConfig.loadOrCreate(tempDir.resolve("rewards.toml"));
+        assertFalse(Files.exists(prior));
+        assertTrue(Files.isRegularFile(unrelated));
+    }
+
+    @Test
+    void rootConfigTakesPriorityOverAnyLegacyFile(@TempDir Path tempDir) throws IOException {
+        Path target = tempDir.resolve("rewards.toml");
+        Files.writeString(target, bundledTemplate().replace("adventureExp = 10", "adventureExp = 12"));
+        Path legacy = tempDir.resolve("config/rewards.toml");
+        Files.createDirectories(legacy.getParent());
+        Files.writeString(legacy, bundledTemplate().replace("adventureExp = 10", "adventureExp = 99"));
+        RewardConfig.loadOrCreate(target);
+        assertEquals(Map.of(102, 12),
+                items(RewardConfig.current().transPoint()
+                        .resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
+        assertTrue(Files.exists(legacy)); // Never delete a source that was not migrated.
+    }
+
+    private static String bundledTemplate() throws IOException {
+        try (var source = RewardConfig.class.getResourceAsStream("/rewards.toml")) {
+            assertNotNull(source);
+            return new String(source.readAllBytes(), StandardCharsets.UTF_8);
+        }
     }
 
     @Test

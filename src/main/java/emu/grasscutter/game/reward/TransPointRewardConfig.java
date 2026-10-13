@@ -32,19 +32,6 @@ public final class TransPointRewardConfig {
         this.points = Map.copyOf(points);
     }
 
-    /** Compatibility entrypoint for callers that only need teleport reward rules. */
-    public static void loadOrCreate(Path path) {
-        RewardConfig.loadOrCreate(path);
-    }
-
-    public static TransPointRewardConfig current() {
-        return RewardConfig.current().transPoint();
-    }
-
-    public static TransPointRewardConfig parse(String text) {
-        return RewardConfig.parse(text).transPoint();
-    }
-
     /** Internal namespace parser, invoked by the unified root config. */
     static TransPointRewardConfig parseTable(TomlTable transPoints) {
         var kinds = new HashMap<Kind, List<ItemParamData>>();

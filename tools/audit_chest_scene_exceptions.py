@@ -7,7 +7,7 @@ Requires a local resource checkout with Scripts/Scene and ExcelBinOutput.
 from __future__ import annotations
 
 import argparse
-from collections import Counter, defaultdict
+from collections import Counter
 import json
 from pathlib import Path
 import re
@@ -15,8 +15,6 @@ import re
 
 SCENE_RE = re.compile(r"scene(\d+)_group")
 ENTRY_RE = re.compile(r"\bgadgets\s*=\s*\{")
-GADGET_RE = re.compile(r"\bgadget_id\s*=\s*(\d+)")
-NUMBER_RE = re.compile(r"\b([A-Za-z_]+)\s*=\s*(\d+)")
 TAG_RE = re.compile(r"""\bdrop_tag\s*=\s*["']([^"']+)["']""")
 CHEST_EXPLORE_RE = re.compile(r"""\bexplore\s*=\s*\{[^}]*\bname\s*=\s*["']chest["']""")
 TRUE_RE = lambda key: re.compile(r"\b" + re.escape(key) + r"\s*=\s*true\b")

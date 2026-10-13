@@ -113,8 +113,11 @@ public final class RewardConfig {
 
     private static void removeIfEmpty(Path directory) throws IOException {
         if (!Files.isDirectory(directory)) return;
+        // Close the directory stream before deletion (required on Windows).
+        boolean empty;
         try (var contents = Files.list(directory)) {
-            if (contents.findAny().isEmpty()) Files.delete(directory);
+            empty = contents.findAny().isEmpty();
         }
+        if (empty) Files.deleteIfExists(directory);
     }
 }

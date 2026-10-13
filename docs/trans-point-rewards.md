@@ -54,7 +54,7 @@ Domain completion loot, resin, tree claims, and repeated challenges are unaffect
 
 The top-level `version = 1` belongs to the unified rewards file. The
 `transPoint` namespace contains the existing unlock rules. Other reward
-families (world chests, domains, bosses) are **not yet implemented in this
+families (world chests, dungeon completion rewards, bosses) are **not yet implemented in this
 file**. Unknown top-level sections, unknown selectors and invalid values
 cause loading to fail rather than silently activating an unused policy.
 

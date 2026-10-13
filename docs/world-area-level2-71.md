@@ -60,6 +60,18 @@ corresponding scene 3 boundary source:
 The current parser **does not invent outlines** for those IDs. They require
 a validated alternate source before being used as precise reward selectors.
 
+The level-2 audit also checks whether a child polygon's centroid
+falls outside its declared level-1 polygon. Four scene-3 children have this
+property in the pinned source: `3302` under `33`, `3205` under `31`,
+`4104` under `41`, and `5210` under `52`. These are
+**boundary consistency warnings**, not additional missing polygon IDs.
+Some of their polygons cross parent borders. The new runtime resolver
+intentionally requires a matching parent before selecting its subarea;
+it does not silently move a polygon into a different parent.
+The original client's choice in such overlaps needs separate verification
+before guaranteeing complete region-based reward coverage.
+
+
 ## Verify
 
 ```powershell

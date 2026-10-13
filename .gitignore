@@ -73,8 +73,10 @@ _transmuter_classes/
 GM Handbook*.txt
 handbook.html
 
-config.json
-# Local game rules (all subdirectories) are owned by the server operator.
+/config.json
+# Owner-edited runtime reward rules sit alongside config.json.
+/rewards.toml
+# Legacy runtime reward directories remain ignored until safely migrated.
 /config/
 mitmdump.exe
 mongod.exe

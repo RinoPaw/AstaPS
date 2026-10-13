@@ -2,17 +2,10 @@ package emu.grasscutter.game.reward;
 
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.common.PointData;
-import org.tomlj.Toml;
 import org.tomlj.TomlArray;
-import org.tomlj.TomlParseResult;
 import org.tomlj.TomlTable;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,13 +16,8 @@ import java.util.Set;
 public final class TransPointRewardConfig {
     public enum Kind { WAYPOINT, STATUE, DOMAIN }
 
-    private static final String TEMPLATE = "/rewards.toml";
-    private static final Pattern LEGACY_SELECTORS = Pattern.compile(
-            "(?m)^([ \\t]*)\\[[ \\t]*(\"[^\"]+\"|'[^']+')[ \\t]*\\]");
-    private static final int FORMAT_VERSION = 1;
     private static final Set<String> REWARD_KEYS =
             Set.of("adventureExp", "primogems", "mora", "items");
-    private static volatile TransPointRewardConfig active;
 
     private final Map<Kind, List<ItemParamData>> kinds;
     private final Map<Integer, List<ItemParamData>> scenes;
@@ -44,54 +32,21 @@ public final class TransPointRewardConfig {
         this.points = Map.copyOf(points);
     }
 
+    /** Compatibility entrypoint for callers that only need teleport reward rules. */
     public static void loadOrCreate(Path path) {
-        try {
-            if (Files.notExists(path)) {
-                Files.createDirectories(path.toAbsolutePath().getParent());
-                Path legacy = path.resolveSibling("rewards").resolve("trans-point-rewards.toml");
-                if (Files.isRegularFile(legacy)) {
-                    // Upgrade once, preserving the actual operator-configured values.
-                    // Keep the legacy file untouched as a recovery copy.
-                    String upgraded = upgradeLegacy(Files.readString(legacy));
-                    parse(upgraded); // Fail before creating a broken new file.
-                    Files.writeString(path, upgraded, StandardOpenOption.CREATE_NEW);
-                } else {
-                    try (InputStream source = TransPointRewardConfig.class.getResourceAsStream(TEMPLATE)) {
-                        if (source == null) throw new IOException("Missing bundled template " + TEMPLATE);
-                        Files.copy(source, path);
-                    }
-                }
-            }
-            // A broken new config never silently falls back to stale legacy rules.
-            active = parse(Files.readString(path));
-        } catch (IOException | IllegalArgumentException e) {
-            throw new IllegalStateException("Cannot load " + path + ": " + e.getMessage(), e);
-        }
+        RewardConfig.loadOrCreate(path);
     }
 
     public static TransPointRewardConfig current() {
-        var value = active;
-        if (value == null) throw new IllegalStateException("rewards.toml was not loaded");
-        return value;
+        return RewardConfig.current().transPoint();
     }
 
     public static TransPointRewardConfig parse(String text) {
-        TomlParseResult root = Toml.parse(text);
-        if (root.hasErrors()) throw new IllegalArgumentException("Invalid TOML: " + root.errors());
+        return RewardConfig.parse(text).transPoint();
+    }
 
-        Object version = root.get("version");
-        if (!(version instanceof Long n) || n != FORMAT_VERSION) {
-            throw new IllegalArgumentException("Expected version = " + FORMAT_VERSION);
-        }
-        for (var key : root.keySet()) {
-            if (!Set.of("version", "transPoint").contains(key)) {
-                throw new IllegalArgumentException("Unknown rewards.toml section: " + key);
-            }
-        }
-        if (!(root.get("transPoint") instanceof TomlTable transPoints)) {
-            throw new IllegalArgumentException("Missing [transPoint] reward tables");
-        }
-
+    /** Internal namespace parser, invoked by the unified root config. */
+    static TransPointRewardConfig parseTable(TomlTable transPoints) {
         var kinds = new HashMap<Kind, List<ItemParamData>>();
         var scenes = new HashMap<Integer, List<ItemParamData>>();
         var points = new HashMap<Long, List<ItemParamData>>();
@@ -135,14 +90,6 @@ public final class TransPointRewardConfig {
             }
         }
         return new TransPointRewardConfig(kinds, scenes, points);
-    }
-
-    /** Convert legacy top-level selectors to the new namespace without changing values/comments. */
-    static String upgradeLegacy(String oldText) {
-        var migrated = LEGACY_SELECTORS.matcher(oldText).replaceAll("$1[transPoint.$2]");
-        // Reject unknown or malformed legacy selectors: never apply the template instead.
-        parse(migrated);
-        return migrated;
     }
 
     private static List<ItemParamData> reward(String name, TomlTable table) {

@@ -1,0 +1,27 @@
+# AstaPS server-owned reward configuration. Generated once, then operator-owned.
+# Only transPoint is currently implemented. Chest drops remain in native tables.
+# Trans-point selectors: "kind=waypoint", "kind=statue", "kind=domain", "7:*", "3:6".
+# Priority: exact point > scene > kind. Every table replaces the entire reward.
+version = 1
+
+[transPoint."kind=waypoint"]
+adventureExp = 50
+primogems = 5
+
+[transPoint."kind=statue"]
+adventureExp = 50
+primogems = 5
+
+# Awarded on first manual activation of a dungeon entrance, not on entering it.
+[transPoint."kind=domain"]
+adventureExp = 50
+primogems = 5
+
+# The tutorial waypoint's native first-unlock reward has no primogems.
+[transPoint."3:6"]
+adventureExp = 10
+
+# Three Realms Gateway Offering (scene 7).
+[transPoint."7:*"]
+primogems = 5
+items = [{ id = 101692, count = 20 }]

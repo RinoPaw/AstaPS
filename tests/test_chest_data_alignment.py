@@ -3,10 +3,31 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-from tools.audit_chest_data_alignment import assess, legacy_tag, mora_candidate_tag
+from tools.audit_chest_data_alignment import assess, check_mora_root, legacy_tag, mora_candidate_tag
 
 
 class ChestDataAlignmentTest(unittest.TestCase):
+    def test_mora_root_requires_only_weighted_currency_leaves(self):
+        data = {
+            "id": 8100400, "nodeType": 1, "sourceType": 19,
+            "randomType": 0, "fallToGround": False,
+            "dropVec": [
+                {"itemId": 202, "countRange": "10000", "weight": 6500},
+                {"itemId": 202, "countRange": "15000", "weight": 2500},
+                {"itemId": 202, "countRange": "20000", "weight": 1000},
+            ],
+        }
+        self.assertEqual(
+            {"present": True, "currency_only": True,
+             "weights": {"10000": 6500, "15000": 2500, "20000": 1000},
+             "weight_total": 10000},
+            check_mora_root(data))
+        self.assertFalse(check_mora_root(None)["currency_only"])
+        self.assertFalse(check_mora_root({**data, "fallToGround": True})["currency_only"])
+        self.assertFalse(check_mora_root({
+            **data, "dropVec": [{"itemId": 201, "countRange": "5", "weight": 10000}]
+        })["currency_only"])
+
     def test_mora_is_distinct_from_puzzle_tiers(self):
         point = {"id": 40001, "kind": "chest_mora"}
         self.assertEqual("解谜低级须弥", legacy_tag(point))

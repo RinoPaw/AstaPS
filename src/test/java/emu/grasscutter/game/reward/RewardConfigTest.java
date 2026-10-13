@@ -76,6 +76,38 @@ final class RewardConfigTest {
     }
 
     @Test
+    void cleansBothLegacyGenerationsOnlyWhenTheirContentsMatch(@TempDir Path tempDir)
+            throws IOException {
+        Path intermediate = tempDir.resolve("config/rewards.toml");
+        Path oldest = tempDir.resolve("config/rewards/trans-point-rewards.toml");
+        Files.createDirectories(oldest.getParent());
+        String oldContent = bundledTemplate().replace("[transPoint.", "[");
+        Files.writeString(oldest, oldContent);
+        Files.writeString(intermediate, RewardConfig.upgradeLegacy(oldContent));
+
+        RewardConfig.loadOrCreate(tempDir.resolve("rewards.toml"));
+        assertFalse(Files.exists(intermediate));
+        assertFalse(Files.exists(oldest));
+        assertFalse(Files.exists(tempDir.resolve("config")));
+    }
+
+    @Test
+    void preservesDivergentLegacyRewardFiles(@TempDir Path tempDir) throws IOException {
+        Path intermediate = tempDir.resolve("config/rewards.toml");
+        Path oldest = tempDir.resolve("config/rewards/trans-point-rewards.toml");
+        Files.createDirectories(oldest.getParent());
+        String oldContent = bundledTemplate().replace("[transPoint.", "[");
+        Files.writeString(oldest, oldContent);
+        Files.writeString(intermediate, bundledTemplate().replace("adventureExp = 10",
+                "adventureExp = 15"));
+
+        RewardConfig.loadOrCreate(tempDir.resolve("rewards.toml"));
+        assertFalse(Files.exists(intermediate));
+        assertTrue(Files.exists(oldest));
+        assertEquals(oldContent, Files.readString(oldest));
+    }
+
+    @Test
     void neverDeletesUnknownLegacyFiles(@TempDir Path tempDir) throws IOException {
         Path prior = tempDir.resolve("config/rewards.toml");
         Files.createDirectories(prior.getParent());

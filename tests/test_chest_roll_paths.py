@@ -23,6 +23,7 @@ class ChestRollPathAuditTest(unittest.TestCase):
         self.assertEqual((False, False), count_bounds("0"))
         self.assertIsNone(count_bounds("5;2"))
         self.assertIsNone(count_bounds("invalid"))
+        self.assertIsNone(count_bounds("1e1"))
 
     def test_independent_mandatory_leaf_survives_empty_optional_child(self):
         graph = {

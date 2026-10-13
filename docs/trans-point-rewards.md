@@ -8,9 +8,10 @@ there is no native reward-table fallback.
 If root-level `rewards.toml` does not exist, startup first imports a
 previous `config/rewards.toml`, or otherwise migrates the older
 `config/rewards/trans-point-rewards.toml` format into the `transPoint`
-namespace. After successful validation, the migrated source file is deleted,
-then the old directories are removed **if empty**. Other files are not
-deleted. An existing root-level file is always authoritative.
+namespace. After successful validation, the migrated source file is deleted.
+A second older reward file is removed only when its content matches the
+new file after conversion. Empty directories are removed; other files
+remain untouched. An existing root-level file is always authoritative.
 If no old reward file exists, the bundled template is generated.
 
 ## Supported selectors

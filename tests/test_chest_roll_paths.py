@@ -24,6 +24,9 @@ class ChestRollPathAuditTest(unittest.TestCase):
         self.assertIsNone(count_bounds("5;2"))
         self.assertIsNone(count_bounds("invalid"))
         self.assertIsNone(count_bounds("1e1"))
+        self.assertIsNone(count_bounds("2147483648"))
+        self.assertIsNone(count_bounds("0;2147483647"))
+        self.assertIsNone(count_bounds(" 1"))
 
     def test_independent_mandatory_leaf_survives_empty_optional_child(self):
         graph = {
@@ -51,6 +54,16 @@ class ChestRollPathAuditTest(unittest.TestCase):
             1, {1: node(1, 1, edge(202, 9999))}).guaranteed_terminal)
         self.assertFalse(analyze_root(
             1, {1: node(1, 0, edge(202, 10000, "0.5"))}).guaranteed_terminal)
+
+    def test_invalid_optional_branch_cannot_claim_runtime_guarantee(self):
+        graph = {
+            1: node(1, 1, edge(202), edge(2, 5000)),
+            2: node(2, 0, edge(203, 10000, "bad")),
+        }
+        result = analyze_root(1, graph)
+        self.assertTrue(result.possible_terminal)
+        self.assertFalse(result.guaranteed_terminal)
+        self.assertIn(2, result.invalid_nodes)
 
     def test_bad_count_and_cycle_are_invalid_not_missing_items(self):
         graph = {1: node(1, 0, edge(2)),

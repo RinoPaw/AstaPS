@@ -20,6 +20,7 @@ SYNTH_FILES = (
     "region_explore_points.json",
 )
 REGIONS = ("挪德卡莱", "至冬", "枫丹", "纳塔", "须弥")
+MORA_ROOTS = {"须弥": 8100300, "枫丹": 8100400, "纳塔": 8100500, "至冬": 8100600}
 
 
 def load_json(path: Path):
@@ -58,6 +59,35 @@ def mora_candidate_tag(point: dict) -> str:
     return legacy_tag(point)
 
 
+def check_mora_root(root: dict | None) -> dict:
+    """Check only the configured leaf structure; never assert 7.1-native rates."""
+    if root is None:
+        return {"present": False, "currency_only": False, "weights": {}}
+    vec = root.get("dropVec") or []
+    valid = (
+        root.get("randomType") == 0
+        and root.get("nodeType") == 1
+        and root.get("sourceType") == 19
+        and root.get("fallToGround") is False
+        and bool(vec)
+        and all(
+            entry.get("itemId") == 202
+            and isinstance(entry.get("countRange"), str)
+            and entry["countRange"].isdigit()
+            and isinstance(entry.get("weight"), int)
+            and entry["weight"] > 0
+            for entry in vec
+        )
+    )
+    weights = dict(sorted(
+        (entry["countRange"], entry["weight"])
+        for entry in vec
+        if entry.get("itemId") == 202 and entry.get("countRange")
+    ))
+    return {"present": True, "currency_only": valid, "weights": weights,
+            "weight_total": sum(weights.values())}
+
+
 def assess(server: Path, resources: Path) -> dict:
     chest = load_json(server / "data" / "ChestDrop.json")
     root_rows = load_json(resources / "Server" / "DropTableExcelConfigData.json")
@@ -66,6 +96,15 @@ def assess(server: Path, resources: Path) -> dict:
     subroots = {row["id"] for row in sub_rows}
     known = roots | subroots
     tags = {row["index"] for row in chest}
+    root_index = {row["id"]: row for row in root_rows}
+    mora_pools = {}
+    for region, root_id in MORA_ROOTS.items():
+        matching = [row for row in chest if row["index"] == "摩拉石箱" + region]
+        links = {row["dropId"] for row in matching}
+        pool = check_mora_root(root_index.get(root_id))
+        pool.update({"root_id": root_id, "tag_matches_root": links == {root_id},
+                     "tag_rows": len(matching)})
+        mora_pools[region] = pool
     missing = [row for row in chest if row["dropId"] not in known]
     missing_tags = Counter(row["index"] for row in missing)
     by_source = {}
@@ -132,6 +171,7 @@ def assess(server: Path, resources: Path) -> dict:
             "sub_table_rows": len(sub_rows),
             "missing_root_rows": len(missing),
             "missing_root_tags": dict(sorted(missing_tags.items())),
+            "mora_pools": mora_pools,
         },
         "synthetic": {
             "source_files": by_source,

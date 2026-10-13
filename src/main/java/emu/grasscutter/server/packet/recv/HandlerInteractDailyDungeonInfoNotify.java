@@ -12,7 +12,7 @@ public class HandlerInteractDailyDungeonInfoNotify extends PacketHandler {
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
         Player player = session.getPlayer();
-        // Unlock points/areas; do not echo on 3913 (that notify is an empty message).
+        // Refresh handbook data without modifying dungeon-entry unlock state.
         DomainHandbookHelper.onInteractDailyDungeon(player);
         PacketGetDailyDungeonEntryInfoRsp.sendBothLayouts(player, 3);
     }

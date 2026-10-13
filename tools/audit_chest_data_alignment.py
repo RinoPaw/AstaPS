@@ -132,7 +132,11 @@ def assess(server: Path, resources: Path) -> dict:
     known = roots | subroots
     node_table = {row["id"]: row for row in [*root_rows, *sub_rows]}
     tags = {row["index"] for row in chest}
-    exploration = [row for row in chest if row.get("sourceType") not in (34, 35)]
+    # The legacy bridge has one Boss family with no sourceType at all.
+    # Whitelist known non-Boss source types rather than treating a missing
+    # discriminator as an ordinary chest reward.
+    non_boss_sources = {15, 17, 19, 24, 2001, 2104, 2501}
+    exploration = [row for row in chest if row.get("sourceType") in non_boss_sources]
     active_exploration = [row for row in exploration if row["dropId"] in known]
     empty_children_by_root = {
         root_id: empty_descendant_nodes(root_id, node_table)

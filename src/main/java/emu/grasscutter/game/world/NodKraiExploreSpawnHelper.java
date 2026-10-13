@@ -810,9 +810,17 @@ public final class NodKraiExploreSpawnHelper {
      * Written as escapes so this source stays pure ASCII while the keys remain byte-identical.
      */
     /** Region-aware drop tags so WorldChestLootHelper grants the correct region sigil. */
-    private static String dropTagForKind(ExplorePoint ep) {
+    static String dropTagForKind(ExplorePoint ep) {
         String region = regionNameForPoint(ep);
         String kind = ep != null ? ep.kind : null;
+        // The existing server Mora roots are distinct from puzzle chest roots.
+        // Their 7.1-native provenance remains unverified.
+        if ("chest_mora".equals(kind)
+                && ("须弥".equals(region)
+                    || "枫丹".equals(region)
+                    || "纳塔".equals(region))) {
+            return "摩拉石箱" + region;
+        }
         if (kind == null) return "\u89e3\u8c1c\u4f4e\u7ea7" + region;
         switch (kind) {
             case "chest_luxurious":

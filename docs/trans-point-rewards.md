@@ -5,14 +5,9 @@ working directory alongside `config.json` on first startup. Existing files
 are never overwritten. Malformed or unsupported configuration stops startup;
 there is no native reward-table fallback.
 
-If root-level `rewards.toml` does not exist, startup first imports a
-previous `config/rewards.toml`, or otherwise migrates the older
-`config/rewards/trans-point-rewards.toml` format into the `transPoint`
-namespace. After successful validation, the migrated source file is deleted.
-A second older reward file is removed only when its content matches the
-new file after conversion. Empty directories are removed; other files
-remain untouched. An existing root-level file is always authoritative.
-If no old reward file exists, the bundled template is generated.
+Only root-level `rewards.toml` is read. When it is absent, startup
+generates the bundled default template. No alternate configuration
+locations are searched, and nothing is moved or deleted automatically.
 
 ## Supported selectors
 
@@ -65,6 +60,6 @@ cause loading to fail rather than silently activating an unused policy.
 Chest data remains in `data/ChestDrop.json` and the resource
 `Server/DropTableExcelConfigData.json` and
 `Server/DropSubTableExcelConfigData.json` graphs. The existing runtime
-chest behavior is unchanged by this configuration-path migration.
+chest behavior is unchanged by this configuration change.
 New chest policy must be designed and tested separately, including
 confirmation that ground drops and inventory grants succeed before claiming.

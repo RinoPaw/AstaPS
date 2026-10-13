@@ -83,6 +83,14 @@ class ChestRollPathAuditTest(unittest.TestCase):
             write("resources/ExcelBinOutput/GadgetExcelConfigData.json", [
                 {"id": 70001, "type": "Chest"},
             ])
+            write("resources/ExcelBinOutput/MaterialExcelConfigData.json", [
+                {"id": 202, "itemType": "ITEM_VIRTUAL"},
+            ])
+            for name in ("WeaponExcelConfigData.json",
+                         "ReliquaryExcelConfigData.json",
+                         "HomeWorldFurnitureExcelConfigData.json",
+                         "TpsWeaponExcelConfigData.json"):
+                write("resources/ExcelBinOutput/" + name, [])
             scene = resources / "Scripts/Scene/3/scene3_group100.lua"
             scene.parent.mkdir(parents=True)
             scene.write_text(
@@ -98,6 +106,50 @@ class ChestRollPathAuditTest(unittest.TestCase):
             self.assertEqual(1, report["path_status"]["guaranteed_terminal"])
             self.assertEqual(1, report["path_status"]["root_empty"])
             self.assertEqual(1, report["path_status"]["no_metadata"])
+            self.assertEqual(0, report["non_boss_bridge"]["rows"])
+            self.assertEqual(0, report["non_boss_bridge"]["guaranteed_terminal_rows"])
+            self.assertEqual(0, report["item_validation"]["scene_chests_with_missing_item_ids"])
+            self.assertEqual([], report["item_validation"]["missing_terminal_ids"])
+
+    def test_unregistered_terminal_item_id_is_reported(self):
+        with TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            server = base / "server"
+            resources = base / "resources"
+
+            def write(path, data):
+                target = base / path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(json.dumps(data), encoding="utf-8")
+
+            write("server/data/ChestDrop.json", [
+                {"index": "测试", "sourceType": 19, "minLevel": 1, "dropId": 1}
+            ])
+            write("resources/Server/DropTableExcelConfigData.json", [
+                node(1, 1, edge(202), edge(99999999, 5000))
+            ])
+            write("resources/Server/DropSubTableExcelConfigData.json", [])
+            write("resources/ExcelBinOutput/GadgetExcelConfigData.json", [
+                {"id": 70001, "type": "Chest"}
+            ])
+            write("resources/ExcelBinOutput/MaterialExcelConfigData.json", [
+                {"id": 202}
+            ])
+            for filename in ("WeaponExcelConfigData.json", "ReliquaryExcelConfigData.json",
+                             "HomeWorldFurnitureExcelConfigData.json", "TpsWeaponExcelConfigData.json"):
+                write("resources/ExcelBinOutput/" + filename, [])
+            target = resources / "Scripts/Scene/3/scene3_group100.lua"
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(
+                'gadgets = { { config_id = 1, gadget_id = 70001, drop_tag = "测试" } }',
+                encoding="utf-8")
+            report = audit(server, resources)
+            self.assertEqual([99999999], report["item_validation"]["missing_terminal_ids"])
+            self.assertEqual(1, report["item_validation"]["scene_chests_with_missing_item_ids"])
+            self.assertEqual(1, report["non_boss_bridge"]["rows"])
+            self.assertEqual(1, report["non_boss_bridge"]["guaranteed_terminal_rows"])
+            self.assertEqual([99999999], report["non_boss_bridge"]["missing_terminal_ids"])
+
 
 
 if __name__ == "__main__":

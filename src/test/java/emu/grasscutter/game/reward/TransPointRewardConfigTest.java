@@ -17,18 +17,18 @@ final class TransPointRewardConfigTest {
     private static final Gson GSON = new Gson();
     private static final String RULES = """
             version = 1
-            ["kind=waypoint"]
+            [transPoint."kind=waypoint"]
             adventureExp = 50
             primogems = 5
-            ["kind=statue"]
+            [transPoint."kind=statue"]
             adventureExp = 50
             primogems = 5
-            ["kind=domain"]
+            [transPoint."kind=domain"]
             adventureExp = 50
             primogems = 5
-            ["3:6"]
+            [transPoint."3:6"]
             adventureExp = 10
-            ["7:*"]
+            [transPoint."7:*"]
             primogems = 5
             items = [{ id = 101692, count = 20 }]
             """;
@@ -54,7 +54,7 @@ final class TransPointRewardConfigTest {
     @Test
     void exactPointOverridesSceneWildcard() {
         var text = RULES + """
-                ["7:2"]
+                [transPoint."7:2"]
                 adventureExp = 15
                 """;
         var rules = TransPointRewardConfig.parse(text);
@@ -66,7 +66,7 @@ final class TransPointRewardConfigTest {
     @Test
     void unsupportedSelectorsAndBrokenConfigurationFailClosed() {
         assertThrows(IllegalArgumentException.class,
-                () -> TransPointRewardConfig.parse(RULES + "[\"region=mondstadt\"]\nprimogems = 3\n"));
+                () -> TransPointRewardConfig.parse(RULES + "[transPoint.\"region=mondstadt\"]\nprimogems = 3\n"));
         assertThrows(IllegalArgumentException.class,
                 () -> TransPointRewardConfig.parse(RULES.replace("adventureExp = 10", "adventureExp = -10")));
         assertThrows(IllegalArgumentException.class,
@@ -106,15 +106,75 @@ final class TransPointRewardConfigTest {
 
     @Test
     void createsNestedLocalConfigAndPreservesOwnerEdits(@TempDir Path tempDir) throws Exception {
-        Path config = tempDir.resolve("config/rewards/trans-point-rewards.toml");
+        Path config = tempDir.resolve("config/rewards.toml");
         TransPointRewardConfig.loadOrCreate(config);
         assertTrue(Files.exists(config));
-        assertTrue(Files.readString(config).contains("[\"kind=waypoint\"]"));
+        assertTrue(Files.readString(config).contains("[transPoint.\"kind=waypoint\"]"));
 
         Files.writeString(config, RULES);
         TransPointRewardConfig.loadOrCreate(config);
         assertEquals(RULES, Files.readString(config));
     }
+
+
+    @Test
+    void upgradesExistingTransportOverridesWithoutChangingValuesOrComments(@TempDir Path tempDir)
+            throws Exception {
+        Path oldConfig = tempDir.resolve("config/rewards/trans-point-rewards.toml");
+        Path newConfig = tempDir.resolve("config/rewards.toml");
+        Files.createDirectories(oldConfig.getParent());
+        String legacy = "# Custom operator rule\n" +
+                RULES.replace("[transPoint.", "[")
+                        .replace("adventureExp = 10", "adventureExp = 17");
+        Files.writeString(oldConfig, legacy);
+
+        TransPointRewardConfig.loadOrCreate(newConfig);
+        assertTrue(Files.exists(newConfig));
+        assertEquals(legacy, Files.readString(oldConfig));
+        assertTrue(Files.readString(newConfig).contains("# Custom operator rule"));
+        assertEquals(Map.of(102, 17),
+                items(TransPointRewardConfig.current()
+                        .resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
+
+        Files.writeString(oldConfig, legacy.replace("adventureExp = 17", "adventureExp = 40"));
+        TransPointRewardConfig.loadOrCreate(newConfig);
+        assertEquals(Map.of(102, 17),
+                items(TransPointRewardConfig.current()
+                        .resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
+    }
+
+    @Test
+    void malformedLegacyConfigurationDoesNotCreateNewFile(@TempDir Path tempDir)
+            throws Exception {
+        Path oldConfig = tempDir.resolve("config/rewards/trans-point-rewards.toml");
+        Path newConfig = tempDir.resolve("config/rewards.toml");
+        Files.createDirectories(oldConfig.getParent());
+        Files.writeString(oldConfig, "version = 1\n[\"kind=waypoint\"]\nprimogems = -4\n");
+        assertThrows(IllegalStateException.class,
+                () -> TransPointRewardConfig.loadOrCreate(newConfig));
+        assertFalse(Files.exists(newConfig));
+        assertTrue(Files.exists(oldConfig));
+    }
+
+    @Test
+    void malformedUnifiedConfigDoesNotRevertToLegacy(@TempDir Path tempDir)
+            throws Exception {
+        Path newConfig = tempDir.resolve("config/rewards.toml");
+        Path oldConfig = tempDir.resolve("config/rewards/trans-point-rewards.toml");
+        Files.createDirectories(oldConfig.getParent());
+        Files.writeString(oldConfig, RULES.replace("[transPoint.", "["));
+        Files.writeString(newConfig, "version = 2\n");
+        assertThrows(IllegalStateException.class,
+                () -> TransPointRewardConfig.loadOrCreate(newConfig));
+        assertEquals("version = 2\n", Files.readString(newConfig));
+    }
+
+    @Test
+    void unknownRewardSectionsFailUntilImplemented() {
+        assertThrows(IllegalArgumentException.class,
+                () -> TransPointRewardConfig.parse(RULES + "[chest]\nmode = \"native\"\n"));
+    }
+
 
     @Test
     void domainWithNoNativeRewardIdStillUsesServerOwnedFirstActivationReward() {

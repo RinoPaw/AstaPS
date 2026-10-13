@@ -16,17 +16,23 @@ import org.tomlj.TomlTable;
 public final class RewardConfig {
     private static final String TEMPLATE = "/rewards.toml";
     private static final int FORMAT_VERSION = 1;
-    private static final Set<String> ROOT_FIELDS = Set.of("version", "transPoint");
+    private static final Set<String> ROOT_FIELDS = Set.of("version", "transPoint", "chest");
     private static volatile RewardConfig active;
 
     private final TransPointRewardConfig transPoint;
+    private final ChestRewardConfig chest;
 
-    private RewardConfig(TransPointRewardConfig transPoint) {
+    private RewardConfig(TransPointRewardConfig transPoint, ChestRewardConfig chest) {
         this.transPoint = transPoint;
+        this.chest = chest;
     }
 
     public TransPointRewardConfig transPoint() {
         return this.transPoint;
+    }
+
+    public ChestRewardConfig chest() {
+        return this.chest;
     }
 
     public static RewardConfig current() {
@@ -50,7 +56,12 @@ public final class RewardConfig {
         if (!(root.get("transPoint") instanceof TomlTable transport)) {
             throw new IllegalArgumentException("Missing transPoint reward tables");
         }
-        return new RewardConfig(TransPointRewardConfig.parseTable(transport));
+        if (!(root.get("chest") instanceof TomlTable chest)) {
+            throw new IllegalArgumentException("Missing chest reward tables");
+        }
+        return new RewardConfig(
+                TransPointRewardConfig.parseTable(transport),
+                ChestRewardConfig.parseTable(chest));
     }
 
     /** Generate a missing root-level file; never overwrite user-edited rules. */

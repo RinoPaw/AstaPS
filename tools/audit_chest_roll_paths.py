@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Read-only audit of terminal drop paths in 7.1 scene chests.
 
-A guaranteed terminal ID is NOT proof of an existing item, grant success, or
-native 7.1 probabilities. This models only DropSystem.processDrop's randomType
+A guaranteed terminal ID path is not proof of grant success or
+native 7.1 probabilities; all reached IDs are separately compared with 7.1
+ItemData resource rows. This models only DropSystem.processDrop's randomType
 0 (weighted choice) and 1 (independent 1/10000 rolls) as currently implemented.
 
 Run from the AstaPS checkout:
@@ -47,15 +48,19 @@ def count_bounds(value: object) -> tuple[bool, bool] | None:
             return None
         if ";" in value:
             parts = value.split(";")
-            if len(parts) != 2:
+            if len(parts) != 2 or any(not p.isdecimal() for p in parts):
                 return None
             low, high = (int(s) for s in parts)
-            if low < 0 or high < low:
+            # Java's nextInt(origin, bound) requires bound=high+1 to
+            # remain a representable int, and all values are >= 0.
+            if low < 0 or high < low or high >= 2147483647:
                 return None
             return high >= 1, low >= 1
         # Match DropSystem.calculateDropAmount: only dotted strings use
         # Double.parseDouble; other scalar strings use Integer.parseInt.
         # For example, Java rejects "1e1" (which Python float accepts).
+        if "." not in value and (not value.isdecimal() or int(value) > 2147483647):
+            return None
         amount = float(value) if "." in value else int(value)
         if not (0 <= amount < float("inf")):
             return None
@@ -120,7 +125,7 @@ def analyze_root(root_id: int, table: dict[int, dict]) -> PathResult:
                           and all(v[2] for v in choices)
                           and not invalid)
         elif rtype == 1:
-            guaranteed = any(v[0] >= 10000 and v[2] for v in choices)
+            guaranteed = any(v[0] >= 10000 and v[2] for v in choices) and not invalid
         else:
             guaranteed = False
         return PathResult(possible, guaranteed, frozenset(empty),

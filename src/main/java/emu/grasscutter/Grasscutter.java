@@ -132,7 +132,7 @@ public final class Grasscutter {
         logger.info(translate("messages.status.version", GameConstants.VERSION, "Asta"));
 
         // Server-owned rewards.toml. Preserve existing trans-point overrides on first migration.
-        emu.grasscutter.game.reward.TransPointRewardConfig.loadOrCreate(
+        emu.grasscutter.game.reward.RewardConfig.loadOrCreate(
                 java.nio.file.Path.of("config", "rewards.toml"));
 
         // Initialize database.

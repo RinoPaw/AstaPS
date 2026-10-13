@@ -3,7 +3,7 @@
 Snapshot: AstaPS upstream `4ae9884dc25703848f01fa274803a39e29dac70f`;
 AstaPS-Resource upstream `85b81a691fcf3d9e8e7db50a8febc8f9043bc084`.
 The synthetic-data and `ChestDrop.json` counts below describe that **unmodified**
-upstream snapshot. This branch separately fixes one duplicate spawn owner.
+upstream snapshot. This branch fixes duplicate synthetic spawn ownership and maps the existing currency-only pools for 539 synthetic Mora chests. Other reward families are unchanged.
 
 ## Inputs and provenance
 
@@ -67,13 +67,28 @@ even when the server tag bridge has no such string.
 | **Total** | **2,038** | **167** | **635** | **1,403** |
 
 The 539 `chest_mora` markers in Sumeru (71), Fontaine (265), and Natlan
-(203) can **reference** existing `摩拉石箱<region>` tags backed by reward
-roots `8100300`, `8100400`, and `8100500`. For Fontaine/Natlan, this
-adds 468 lookups; for Sumeru, it corrects a category mismatch in 71 already
-matched markers. **This candidate change is not applied on this branch**:
-the upstream `GadgetChest` still uses a hardcoded fallback for ordinary
-world chests, bypassing the native tag route. Changing a tag alone would
-not establish that the player received Mora-only loot.
+(203) now **reference** the existing `摩拉石箱<region>` tag backed by root
+`8100300`, `8100400`, or `8100500`. Fontaine/Natlan add 468
+matched labels; Sumeru fixes a classification mismatch in 71 already-matched
+markers. The separate dedicated payout route in `GadgetChest` accepts
+**only** matching synthetic Mora sources, skips the tier-based
+`WorldChestLootHelper`, and leaves the chest open on missing/failed
+tag/pool grants. This is the only ordinary-world chest family whose payout
+route is changed in this branch. The existing unrelated chest payout
+behavior remains in place until further data alignment.
+
+The matching roots currently contain only Mora item `202`, with
+`randomType=0`, `fallToGround=false`, and weighted quantities
+`10000:6500`, `15000:2500`, `20000:1000` (weight total 10,000).
+The new audit verifies this leaf shape and that the tag points to the
+corresponding root. These are **configured weights**, not proven official
+7.1-native rates. A valid lookup or a matching root is not itself proof
+of a successful in-game payout.
+
+Of 635 lookups after the Mora mapping, **539 have the explicit scoped
+native payout route**. The other 96 are Sumeru exquisite lookups; they
+still run through the upstream world-chest fallback. The unmatched
+1,403 remain unresolved.
 
 There are also 56 `chest_remarkable` markers (21 Nod-Krai, 35 Snezhnaya)
 mapped to the same `解谜超级` tier as luxurious chests. Furnishing
@@ -117,11 +132,15 @@ copies candidate rewards into active game data.
    including item-family checks for partial, empty, and missing roots.
 2. Establish verifiable 7.1 reward data for 1,403 unmatched synthetic chests.
    First determine which synthetic markers correspond to *actual* game chests.
-3. Validate `chest_mora` roots and 56 remarkable chests against their
-   actual 7.1 item families, then make deliberate data/runtime changes.
+3. Verify the three now-bound `chest_mora` pools against 7.1-native evidence;\n   investigate the 56 remarkable chests' blueprint rewards separately.
 4. Check Boss pool gaps separately; never count them as ordinary chests.
 5. Require a verified successful payout before recording a claim. The upstream
    hardcoded world-chest fallback is not a valid authority for new data.
+
+The scoped `handleChestDrop` validation now rejects missing or empty
+roots, invalid rolled item IDs/counts and rejected direct inventory
+grants. The ground-drop path still has weaker confirmation; only the
+currency-only roots used here are direct-grant (`fallToGround=false`).
 
 Only after the inventory and source-of-truth checks are reconciled should
 `rewards.toml` receive a schema. No `rewards.toml` was created here.

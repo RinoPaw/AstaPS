@@ -31,6 +31,21 @@ final class TransPointRewardConfigTest {
             [transPoint."7:*"]
             primogems = 5
             items = [{ id = 101692, count = 20 }]
+            [chest."kind=common"]
+            adventureExp = 30
+            primogems = 2
+            [chest."kind=exquisite"]
+            adventureExp = 30
+            primogems = 5
+            [chest."kind=precious"]
+            adventureExp = 30
+            primogems = 10
+            [chest."kind=luxurious"]
+            adventureExp = 30
+            primogems = 10
+            [chest."kind=remarkable"]
+            adventureExp = 30
+            primogems = 5
             """;
 
     private static Map<Integer, Integer> items(java.util.List<ItemParamData> reward) {
@@ -119,7 +134,7 @@ final class TransPointRewardConfigTest {
 
 
     @Test
-    void unknownRewardSectionsFailUntilImplemented() {
+    void unknownRewardSectionsAreRejected() {
         assertThrows(IllegalArgumentException.class,
                 () -> RewardConfig.parse(RULES + "[chest]\nmode = \"native\"\n"));
     }

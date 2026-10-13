@@ -43,7 +43,10 @@ def count_bounds(value: object) -> tuple[bool, bool] | None:
             if low < 0 or high < low:
                 return None
             return high >= 1, low >= 1
-        amount = float(value)
+        # Match DropSystem.calculateDropAmount: only dotted strings use
+        # Double.parseDouble; other scalar strings use Integer.parseInt.
+        # For example, Java rejects "1e1" (which Python float accepts).
+        amount = float(value) if "." in value else int(value)
         if not (0 <= amount < float("inf")):
             return None
         return amount > 0, amount >= 1

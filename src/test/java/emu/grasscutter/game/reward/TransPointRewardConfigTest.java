@@ -149,7 +149,7 @@ final class TransPointRewardConfigTest {
     void malformedLegacyConfigurationDoesNotCreateNewFile(@TempDir Path tempDir)
             throws Exception {
         Path oldConfig = tempDir.resolve("config/rewards/trans-point-rewards.toml");
-        Path newConfig = tempDir.resolve("config/rewards.toml");
+        Path newConfig = tempDir.resolve("rewards.toml");
         Files.createDirectories(oldConfig.getParent());
         Files.writeString(oldConfig, "version = 1\n[\"kind=waypoint\"]\nprimogems = -4\n");
         assertThrows(IllegalStateException.class,
@@ -161,7 +161,7 @@ final class TransPointRewardConfigTest {
     @Test
     void malformedUnifiedConfigDoesNotRevertToLegacy(@TempDir Path tempDir)
             throws Exception {
-        Path newConfig = tempDir.resolve("config/rewards.toml");
+        Path newConfig = tempDir.resolve("rewards.toml");
         Path oldConfig = tempDir.resolve("config/rewards/trans-point-rewards.toml");
         Files.createDirectories(oldConfig.getParent());
         Files.writeString(oldConfig, RULES.replace("[transPoint.", "["));

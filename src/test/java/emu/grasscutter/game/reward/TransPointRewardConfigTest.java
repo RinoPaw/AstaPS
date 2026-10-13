@@ -136,7 +136,7 @@ final class TransPointRewardConfigTest {
     @Test
     void unknownRewardSectionsAreRejected() {
         assertThrows(IllegalArgumentException.class,
-                () -> RewardConfig.parse(RULES + "[chest]\nmode = \"native\"\n"));
+                () -> RewardConfig.parse(RULES + "[boss]\nmode = \"native\"\n"));
     }
 
 

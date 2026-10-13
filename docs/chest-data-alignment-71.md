@@ -134,11 +134,68 @@ python -m tools.audit_chest_roll_paths --server . --resources resources --output
 python -m unittest discover -s tests -p test_chest_roll_paths.py -v
 ```
 
-**Scope limit:** A terminal ID has not yet been cross-checked against all
-7.1 item tables or the live inventory acceptance path. A guaranteed
-terminal *ID* is not a guaranteed successful grant. These new roll-path
-categories have **not yet been populated by a full scan**, and no new
-numerical coverage claim is made here. Uncertain branches remain unchanged.
+**Scope limit:** The new local roll-path audit now cross-checks terminal
+IDs with all five 7.1 ItemData resources. This updated tool has **not**
+yet been run on the entire scene checkout, so its full-scene refined
+classification remains pending. The prior successful resource CI scan
+below independently established terminal-path guarantees but did not
+cross-check every explicit-ID leaf against current 7.1 items or inventory
+acceptance. No uncertain rewards were changed.
+
+## Confirmed 7.1 static item and scene checks (2026-10-13)
+
+The complete source-pinned scan was already performed by the resource fork
+[successful workflow run 38342651934](https://github.com/RinoPaw/AstaPS-Resource/actions/runs/38342651934)
+(41,110 Lua files, 14,084 ordinary chest configurations). The workflow's
+`GUARANTEE_SCOPE scene_all` output is:
+
+| Category | Scene chests | Guaranteed terminal-ID path |
+| --- | ---: | ---: |
+| Structurally complete | 4,586 | 4,586 |
+| Structurally partial | 5,280 | **5,280** |
+| Explicit empty root `1000100` | 479 | 0 |
+| Missing explicit root `1050256..1050269` | 14 | 0 |
+| No reward metadata | 3,725 | untested |
+| **All ordinary** | **14,084** | **9,866** |
+
+Here "guaranteed" means a terminal drop ID under the existing Java
+`randomType` semantics, **not a confirmed inventory payout**. The
+reference-coverage count among 10,359 scene chests with reward metadata is
+9,866 (95.24%). The older `partial` classification is **not** a
+failure count. No new CI was run for this investigation.
+
+The separate read-only analysis of the **current pinned resource tables**
+(13,823 main nodes, 1,885 subnodes) and all **296 non-Boss** server tag
+configuration rows finds 212 distinct roots. All 296 rows guarantee a
+terminal-ID path; 192 have empty descendants yet still guarantee a
+terminal-ID path. Their graph reaches 228 distinct terminal IDs, **all 228
+present** in the 7.1 `Material`, `Weapon`, `Reliquary`,
+`HomeWorldFurniture` or `TpsWeapon` ItemData source JSONs (17,672
+distinct defined item IDs total). This proves *ID existence* for the
+tag-bridge scope, not native reward quantities/rates or grant acceptance.
+The full scene explicit-ID population has not yet received the same
+terminal item-family validation. The audit instrument now includes
+this 7.1 item-ID cross-check to make re-runs reproducible.
+
+### Fourteen absent explicit-ID roots: source classification
+
+All 14 appear in scene 3, marked `isOneoff`, `persistent` and
+`autopick`, and use `drop_count = 1`. The source objects are actual
+GadgetExcel `Chest` types, including special pickup objects,
+**not all ordinary treasure-box prefabs**:
+
+| Missing IDs | Objects | Lua group(s) | Evidence |
+| --- | --- | --- | --- |
+| `1050256..1050262` | 7 `70217021` objects (`SceneObj_Area_Xm_Property_Prop_Qzft_Chest_01`) | `133307306`, `133307410`, `133307411`, `133307412`, `133307408`, `133307414`, `133307409` | Explicit Chinese comment: `注意自己配一下对应发条的dropID`; chest-open state triggers operate the groups |
+| `1050263..1050267` | 5 `70211001` chest objects | `133307415` | Five named objects in Lua: 太阳船、显圣厅、阿如村、赤王之心、流沙遗迹 |
+| `1050268` | `70330368`, Deshret rune chest type | `133314164` | Explicit source comment `dropID没有` |
+| `1050269` | `70330386`, Deshret rune chest type | `133307177` | Same group has neighboring populated `1050235`/`1050236` references |
+
+No replacement item ID or table was inferred. Their scripts and prefab
+types are higher-confidence evidence for *quest/puzzle-specific behavior*
+than generic world-chest tier rewards. Existing runtime world-chest
+fallback remains a separate gameplay issue to address with verified
+payout and quest-state semantics.
 
 ## Synthetic markers: mapping is not native proof
 

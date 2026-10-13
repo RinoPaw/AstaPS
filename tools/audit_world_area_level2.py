@@ -16,6 +16,22 @@ import json
 from pathlib import Path
 
 
+def contains_polygon(points: list[dict], x: float, z: float) -> bool:
+    """Match WorldAreaIndex's 2-D even-odd polygon test."""
+    if len(points) < 3:
+        return False
+    inside = False
+    j = len(points) - 1
+    for i, a in enumerate(points):
+        b = points[j]
+        if ((a["_z"] > z) != (b["_z"] > z)
+                and x < (b["_x"] - a["_x"]) * (z - a["_z"]) / (b["_z"] - a["_z"])
+                + a["_x"]):
+            inside = not inside
+        j = i
+    return inside
+
+
 def audit(config: list[dict], outlines: dict[int, dict]) -> dict:
     """Report matching scene/areaID1/areaID2 entries and duplicated polygons."""
     configured = defaultdict(dict)
@@ -35,8 +51,11 @@ def audit(config: list[dict], outlines: dict[int, dict]) -> dict:
         polygon_count = Counter()
         parents = {}
         bounds_with_y = 0
+        centroid_outside_parent = []
         for parent in source.get("OBKNAJCIHEA", []):
             level1 = parent.get("LKBLPFHOAFB") or {}
+            parent_points = ((level1.get("JLFEAGHGCLP") or {})
+                             .get("BFLLDPOAJGD") or [])
             for sub in parent.get("OPHHFKKPLDI") or []:
                 area2 = sub.get("EOIFEEDBAFJ")
                 if not isinstance(area2, int) or area2 <= 0:
@@ -51,6 +70,23 @@ def audit(config: list[dict], outlines: dict[int, dict]) -> dict:
                 high = (shape.get("NFFDCMLAAFO") or {}).get("_y")
                 if low != -1000 or high != 1000:
                     bounds_with_y += 1
+
+                # Diagnostic only: some child outlines extend beyond their
+                # configured parent's outline. Do not auto-reparent them.
+                child_points = shape.get("BFLLDPOAJGD") or []
+                if len(parent_points) >= 3 and len(child_points) >= 3:
+                    x = sum(p["_x"] for p in child_points) / len(child_points)
+                    z = sum(p["_z"] for p in child_points) / len(child_points)
+                    if (contains_polygon(child_points, x, z)
+                            and not contains_polygon(parent_points, x, z)):
+                        centroid_outside_parent.append({
+                            "areaID1": parent_id, "areaID2": area2,
+                            "x": round(x, 1), "z": round(z, 1),
+                            "vertices_inside_parent": sum(
+                                contains_polygon(parent_points, p["_x"], p["_z"])
+                                for p in child_points),
+                            "vertex_count": len(child_points),
+                        })
 
         expected = configured.get(scene, {})
         missing = [
@@ -69,6 +105,7 @@ def audit(config: list[dict], outlines: dict[int, dict]) -> dict:
             "outlined_level2_ids": len(polygon_count),
             "level2_polygons": sum(polygon_count.values()),
             "non_default_y_bounds": bounds_with_y,
+            "child_centroids_outside_parent_polygon": centroid_outside_parent,
             "repeated_polygon_ids": {str(k): count for k, count in sorted(polygon_count.items())
                                      if count > 1},
             "missing_config_ids_with_no_outline": missing,

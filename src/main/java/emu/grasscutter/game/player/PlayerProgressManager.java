@@ -983,7 +983,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
             int sceneId,
             int pointId,
             emu.grasscutter.game.reward.TransPointRewardConfig.Kind kind) {
-        var reward = emu.grasscutter.game.reward.TransPointRewardConfig.current()
+        var reward = emu.grasscutter.game.reward.RewardConfig.current().transPoint()
                 .resolve(sceneId, pointId, kind);
         if (!reward.isEmpty()) {
             this.player.getInventory().addItemParamDatas(reward, ActionReason.UnlockPointReward);

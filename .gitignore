@@ -76,8 +76,6 @@ handbook.html
 /config.json
 # Owner-edited runtime reward rules sit alongside config.json.
 /rewards.toml
-# Legacy runtime reward directories remain ignored until safely migrated.
-/config/
 mitmdump.exe
 mongod.exe
 

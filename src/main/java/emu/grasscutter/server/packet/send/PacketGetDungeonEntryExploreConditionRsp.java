@@ -1,34 +1,41 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.data.excels.dungeon.DungeonEntryData;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.DungeonEntryBlockReasonOuterClass.DungeonEntryBlockReason;
 import emu.grasscutter.net.proto.DungeonEntryCondOuterClass.DungeonEntryCond;
 import emu.grasscutter.net.proto.GetDungeonEntryExploreConditionRspOuterClass.GetDungeonEntryExploreConditionRsp;
 
 public class PacketGetDungeonEntryExploreConditionRsp extends BasePacket {
-    public PacketGetDungeonEntryExploreConditionRsp(int dungeonId) {
+    public PacketGetDungeonEntryExploreConditionRsp(int entryConfigId) {
         super(PacketOpcodes.GetDungeonEntryExploreConditionRsp);
 
-        var data =
-                GameData.getDungeonEntryDataMap().values().stream()
-                        .filter(d -> d.getId() == dungeonId)
-                        .toList()
-                        .get(0);
-
-        var level = data.getLevelCondition();
-        var quest = data.getQuestCondition();
-        var proto =
-                GetDungeonEntryExploreConditionRsp.newBuilder()
-                        .setRetcode(0)
-                        .setDungeonEntryCond(
-                                DungeonEntryCond.newBuilder()
-                                        // There is also a DUNGEON_ENTRY_REASON_MULIPLE but only one param1
-                                        // field to put values in. Only report the required level for now, then.
-                                        .setCondReason(DungeonEntryBlockReason.DungeonEntryBlockReason_DUNGEON_ENTRY_REASON_LEVEL)
-                                        .setParam1(level))
-                        .build();
-
-        this.setData(proto);
+        DungeonEntryData data = GameData.getDungeonEntryDataMap().get(entryConfigId);
+        var rsp = GetDungeonEntryExploreConditionRsp.newBuilder();
+        if (data == null) {
+            rsp.setRetcode(1);
+        } else {
+            // The 7.1 resource uses a level/quest OR gate for guarded entrances.
+            // Prefer the level requirement for the blocked UI, as in the original packet.
+            int level = data.getLevelCondition();
+            int quest = data.getQuestCondition();
+            var reason = DungeonEntryBlockReason.DungeonEntryBlockReason_DUNGEON_ENTRY_REASON_LEVEL;
+            int param = level;
+            if (level == 0 && quest > 0) {
+                // Resolve by name so an enum absent from a protocol variant is not a hard dependency.
+                for (var candidate : DungeonEntryBlockReason.values()) {
+                    if (candidate.name().endsWith("DUNGEON_ENTRY_REASON_QUEST")) {
+                        reason = candidate;
+                        param = quest;
+                        break;
+                    }
+                }
+            }
+            rsp.setRetcode(0)
+                    .setDungeonEntryCond(
+                            DungeonEntryCond.newBuilder().setCondReason(reason).setParam1(param));
+        }
+        this.setData(rsp.build());
     }
 }

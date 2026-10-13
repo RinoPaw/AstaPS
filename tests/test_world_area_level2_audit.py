@@ -45,6 +45,31 @@ class WorldAreaLevel2AuditTest(unittest.TestCase):
         self.assertEqual([{"areaID2": 103, "configAreaID1": 1, "outlineAreaID1": 9}],
                          result["parent_mismatches"])
 
+    def test_child_outline_outside_its_parent_is_diagnosed(self):
+        config = [{"ID": 1101, "sceneID": 3, "areaID1": 1, "areaID2": 101,
+                   "areaNameTextMapHash": 123, "MBOHIOJBBHO": "LEVEL_2"}]
+        outline = {
+            3: {"OBKNAJCIHEA": [
+                {"LKBLPFHOAFB": {
+                    "BBLLBIOLMHP": 1,
+                    "JLFEAGHGCLP": {"BFLLDPOAJGD": [
+                        {"_x": 0, "_z": 0}, {"_x": 10, "_z": 0},
+                        {"_x": 10, "_z": 10}, {"_x": 0, "_z": 10}]}},
+                 "OPHHFKKPLDI": [
+                     {"EOIFEEDBAFJ": 101, "JLFEAGHGCLP": {
+                         "BFLLDPOAJGD": [
+                             {"_x": 20, "_z": 20}, {"_x": 30, "_z": 20},
+                             {"_x": 30, "_z": 30}, {"_x": 20, "_z": 30}]}}
+                 ]}
+            ]}
+        }
+        row = audit(config, outline)["scenes"]["3"]
+        self.assertEqual(
+            [{"areaID1": 1, "areaID2": 101, "x": 25.0, "z": 25.0,
+              "vertices_inside_parent": 0, "vertex_count": 4}],
+            row["child_centroids_outside_parent_polygon"])
+        self.assertEqual([], row["missing_config_ids_with_no_outline"])
+
     def test_duplicate_configuration_is_rejected(self):
         row = {"ID": 10, "sceneID": 3, "areaID1": 1, "areaID2": 101,
                "areaNameTextMapHash": 12, "MBOHIOJBBHO": "LEVEL_2"}

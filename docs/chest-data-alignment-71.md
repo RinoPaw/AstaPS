@@ -191,6 +191,15 @@ GadgetExcel `Chest` types, including special pickup objects,
 | `1050268` | `70330368`, Deshret rune chest type | `133314164` | Explicit source comment `dropID没有` |
 | `1050269` | `70330386`, Deshret rune chest type | `133307177` | Same group has neighboring populated `1050235`/`1050236` references |
 
+The previous successful full-scene scan also shows that the **3,725
+no-metadata chest configurations** all have both `isOneoff=false` and
+`persistent=false` in their parsed Lua declarations. Of these, **3,636**
+are in scene 3, **83** are in scene 101, and **6** in other scenes. They
+must be audited as a distinct implicit/default-source population:
+missing explicit reward metadata alone does not prove intended zero loot.
+Examples in scene 101 include multiple different GadgetExcel `Chest`
+prefabs with no `chest_drop_id` or `drop_tag`.
+
 No replacement item ID or table was inferred. Their scripts and prefab
 types are higher-confidence evidence for *quest/puzzle-specific behavior*
 than generic world-chest tier rewards. Existing runtime world-chest

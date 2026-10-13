@@ -812,9 +812,18 @@ public final class NodKraiExploreSpawnHelper {
      * Written as escapes so this source stays pure ASCII while the keys remain byte-identical.
      */
     /** Region-aware drop tags so WorldChestLootHelper grants the correct region sigil. */
-    private static String dropTagForKind(ExplorePoint ep) {
+    static String dropTagForKind(ExplorePoint ep) {
         String region = regionNameForPoint(ep);
         String kind = ep != null ? ep.kind : null;
+        // Currency-only chests have their own native drop roots. Do not give them
+        // generic puzzle-chest rewards (primogems, sigils, equipment, etc.).
+        if ("chest_mora".equals(kind)
+                && ("\u987b\u5f25".equals(region)
+                    || "\u67ab\u4e39".equals(region)
+                    || "\u7eb3\u5854".equals(region)
+                    || "\u81f3\u51ac".equals(region))) {
+            return "\u6469\u62c9\u77f3\u7bb1" + region;
+        }
         if (kind == null) return "\u89e3\u8c1c\u4f4e\u7ea7" + region;
         switch (kind) {
             case "chest_luxurious":

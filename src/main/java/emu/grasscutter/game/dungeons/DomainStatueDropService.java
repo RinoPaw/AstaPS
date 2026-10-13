@@ -285,48 +285,12 @@ public final class DomainStatueDropService {
             }
         }
 
-        // Preview entries corroborate expected item families, but are never rolled as loot.
-        var previewIds = new java.util.HashSet<Integer>();
-        if (hasPreview) {
-            for (ItemParamData entry : preview.getPreviewItems()) {
-                if (entry != null && entry.getId() > 0) previewIds.add(entry.getId());
-            }
-        }
-        var expectedIds = verifiedProxy ? proxyIds : previewIds;
-        var nativeGraph = GameData.getDropTableDataMap();
+        // The source DungeonExcel statueDrop and DropTable JSON define payable items.
+        // Reward previews and item-family guesses must not override native drop data.
         boolean nativeReady = player.getServer().getDropSystem()
                 .hasUsableDungeonRewardRoot(nativeRoot);
-        java.util.Set<Integer> nativeItems = nativeReady
-                ? DomainDropSafety.nativeLeafIds(nativeRoot, id -> {
-                    var table = nativeGraph.get(id);
-                    if (table == null) return null;
-                    if (table.getDropVec() == null) return List.of();
-                    return table.getDropVec().stream()
-                            .filter(entry -> entry != null && entry.getWeight() > 0)
-                            .map(emu.grasscutter.data.common.DropItemData::getId)
-                            .toList();
-                })
-                : java.util.Set.of();
-        boolean knownNativeItems = !nativeItems.isEmpty()
-                && nativeItems.stream().allMatch(GameData.getItemDataMap()::containsKey);
-        java.util.function.IntPredicate categoryItem = id -> {
-            var data = GameData.getItemDataMap().get(id);
-            if (data == null) return false;
-            if (subType == emu.grasscutter.game.dungeons.enums.DungeonSubType.DUNGEON_SUB_RELIQUARY) {
-                return data.getItemType() == emu.grasscutter.game.inventory.ItemType.ITEM_RELIQUARY;
-            }
-            return id >= 100000 && id < 200000;
-        };
-        boolean verifiedNative = nativeReady && knownNativeItems
-                && DomainDropSafety.matchesNativeFamilies(
-                        nativeItems, expectedIds, subType, categoryItem);
 
-        var source = DomainDropSafety.chooseRewardSource(verifiedNative, verifiedProxy);
-        if (nativeReady && !verifiedNative) {
-            Grasscutter.getLogger().warn(
-                    "StatueDrop: native root rejected dungeon={} root={} leaves={} proxyValidated={}",
-                    dungeonId, nativeRoot, nativeItems.size(), verifiedProxy);
-        }
+        var source = DomainDropSafety.chooseRewardSource(nativeReady, verifiedProxy);
         switch (source) {
             case NATIVE_ROOT:
                 return rollStatueDropTable(player, nativeRoot, rollTimes);

@@ -41,47 +41,17 @@ final class DomainDropSafetyTest {
     }
 
     @Test
-    void nativeGraphDoesNotTrustLegacyArtifactsFor4706() {
-        var graph = Map.of(85315500, List.of(85315501),
-                85315501, List.of(202, 71513, 72523));
-        var nativeItems = DomainDropSafety.nativeLeafIds(85315500, graph::get);
-        var proxyItems = Set.of(202, 47513, 47523, 48513, 48523);
-        assertFalse(DomainDropSafety.matchesNativeFamilies(nativeItems, proxyItems,
-                DungeonSubType.DUNGEON_SUB_RELIQUARY, id -> id >= 20000));
+    void nativeJsonTakesPriorityEvenWhenPreviewOrProxyDisagrees() {
+        // The configured native DropTable is authoritative for item IDs,
+        // amounts and weights. An incompatible preview cannot veto it.
+        assertEquals(DomainDropSafety.RewardSource.NATIVE_ROOT,
+                DomainDropSafety.chooseRewardSource(true, false));
+        assertEquals(DomainDropSafety.RewardSource.NATIVE_ROOT,
+                DomainDropSafety.chooseRewardSource(true, true));
         assertEquals(DomainDropSafety.RewardSource.VALIDATED_PROXY,
                 DomainDropSafety.chooseRewardSource(false, true));
-        assertTrue(DomainDropSafety.matchesNativeFamilies(
-                Set.of(202, 47513, 48513), proxyItems,
-                DungeonSubType.DUNGEON_SUB_RELIQUARY, id -> id >= 20000));
-    }
-
-    @Test
-    void brokenAndCyclicNativeGraphsFailClosed() {
-        assertTrue(DomainDropSafety.nativeLeafIds(1,
-                Map.of(1, List.<Integer>of())::get).isEmpty());
-        assertTrue(DomainDropSafety.nativeLeafIds(1,
-                Map.of(1, List.of(2), 2, List.of(1))::get).isEmpty());
-        assertTrue(DomainDropSafety.nativeLeafIds(1,
-                Map.of(1, List.of(0))::get).isEmpty());
-    }
-
-    @Test
-    void mixedCyclicNativeGraphIsRejectedEvenWithValidLeaves() {
-        var graph = Map.of(
-                1, List.of(2, 3),
-                2, List.of(1),
-                3, List.of(114049));
-        assertTrue(DomainDropSafety.nativeLeafIds(1, graph::get).isEmpty());
-    }
-
-    @Test
-    void sharedNativeSubtableIsNotMistakenForACycle() {
-        var graph = Map.of(
-                1, List.of(2, 3),
-                2, List.of(4),
-                3, List.of(4),
-                4, List.of(114049));
-        assertEquals(Set.of(114049), DomainDropSafety.nativeLeafIds(1, graph::get));
+        assertEquals(DomainDropSafety.RewardSource.NONE,
+                DomainDropSafety.chooseRewardSource(false, false));
     }
 
     @Test
@@ -202,13 +172,15 @@ final class DomainDropSafetyTest {
 
     @ParameterizedTest
     @ValueSource(ints = {5000, 5001, 5002, 5008, 5050, 5100, 5101})
-    void nativeRootIsPreferredOverExistingServerProxy(int dungeonId) throws IOException {
+    void nativeRootIsSelectedEvenWhenCompatPoolIsInvalid(int dungeonId) throws IOException {
         // Upstream still includes these proxies; do not require deleting them.
         var source = Files.readString(Path.of("data", "DungeonDrop.json"));
         DungeonDrop[] drops = new Gson().fromJson(source, DungeonDrop[].class);
         assertTrue(Arrays.stream(drops).anyMatch(drop -> drop.getDungeonId() == dungeonId));
+        // Five of these contain empty pools; 5050 has mismatched artifact proxy
+        // contents. Native roots must not depend on proxy content validation.
         assertEquals(DomainDropSafety.RewardSource.NATIVE_ROOT,
-                DomainDropSafety.chooseRewardSource(true, true));
+                DomainDropSafety.chooseRewardSource(true, false));
     }
 
     @ParameterizedTest

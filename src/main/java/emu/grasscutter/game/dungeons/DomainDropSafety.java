@@ -1,11 +1,8 @@
 package emu.grasscutter.game.dungeons;
 
 import emu.grasscutter.game.dungeons.enums.DungeonSubType;
-import java.util.ArrayDeque;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.IntFunction;
 import java.util.function.BiFunction;
 
 /** Validation and one-claim commit guard for configured dungeon rewards. */
@@ -18,75 +15,12 @@ final class DomainDropSafety {
     enum RewardSource { NATIVE_ROOT, VALIDATED_PROXY, NONE }
 
     /**
-     * Presence of positive weights is not proof that a legacy native root belongs to
-     * this dungeon. Compare every reachable reward-family leaf before selecting it.
-     * Preview data is corroborating metadata, never a payable reward source.
+     * Prefer a usable native DropTable root. Previews and compatibility reward
+     * families do not determine what the source JSON is allowed to award.
      */
-    static RewardSource chooseRewardSource(boolean verifiedNative, boolean verifiedProxy) {
-        if (verifiedNative) return RewardSource.NATIVE_ROOT;
+    static RewardSource chooseRewardSource(boolean nativeReady, boolean verifiedProxy) {
+        if (nativeReady) return RewardSource.NATIVE_ROOT;
         return verifiedProxy ? RewardSource.VALIDATED_PROXY : RewardSource.NONE;
-    }
-
-    /** Resolve every positive-weight terminal; reject broken or cyclic graphs, including mixed cycles. */
-    static Set<Integer> nativeLeafIds(int root, IntFunction<List<Integer>> children) {
-        if (root <= 0) return Set.of();
-        var pending = new ArrayDeque<NativeVisit>();
-        var active = new HashSet<Integer>();
-        var finished = new HashSet<Integer>();
-        var leaves = new HashSet<Integer>();
-        pending.push(new NativeVisit(root, false));
-        while (!pending.isEmpty()) {
-            var visit = pending.pop();
-            int id = visit.id();
-            if (visit.exiting()) {
-                active.remove(id);
-                finished.add(id);
-                continue;
-            }
-            if (id <= 0 || active.contains(id)) return Set.of();
-            if (finished.contains(id)) continue; // Shared descendant in an acyclic DAG.
-            if (finished.size() + active.size() >= 10_000) return Set.of();
-            var targets = children.apply(id);
-            if (targets == null) {
-                leaves.add(id);
-                finished.add(id);
-                continue;
-            }
-            if (targets.isEmpty() || targets.stream().anyMatch(x -> x == null || x <= 0)) {
-                return Set.of();
-            }
-            active.add(id);
-            pending.push(new NativeVisit(id, true));
-            for (int i = targets.size() - 1; i >= 0; i--) {
-                pending.push(new NativeVisit(targets.get(i), false));
-            }
-        }
-        return leaves;
-    }
-
-    private record NativeVisit(int id, boolean exiting) {}
-
-    /** Artifact IDs use a three-digit set family; talent/weapon tiers use a five-digit family. */
-    static int rewardFamily(int itemId, DungeonSubType subType) {
-        return subType == DungeonSubType.DUNGEON_SUB_RELIQUARY
-                ? itemId / 100 : itemId / 10;
-    }
-
-    static boolean matchesNativeFamilies(
-            Set<Integer> nativeItems, Set<Integer> expectedItems, DungeonSubType type,
-            java.util.function.IntPredicate isCategoryReward) {
-        if (nativeItems == null || nativeItems.isEmpty()
-                || expectedItems == null || expectedItems.isEmpty()) return false;
-        var expected = new HashSet<Integer>();
-        for (int id : expectedItems) {
-            if (isCategoryReward.test(id)) expected.add(rewardFamily(id, type));
-        }
-        if (expected.isEmpty()) return false;
-        var actual = new HashSet<Integer>();
-        for (int id : nativeItems) {
-            if (isCategoryReward.test(id)) actual.add(rewardFamily(id, type));
-        }
-        return !actual.isEmpty() && expected.containsAll(actual);
     }
 
     /** Confirm the known 4706 compatibility pool points to the 475/485 artifact sets. */

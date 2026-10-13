@@ -10,7 +10,7 @@ import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.entity.gadget.chest.BossChestInteractHandler;
 import emu.grasscutter.game.entity.gadget.chest.ChestInteractHandler;
-import emu.grasscutter.game.entity.gadget.chest.WorldChestLootHelper;
+import emu.grasscutter.game.entity.gadget.chest.ChestRewardSource;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
@@ -43,8 +43,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * World chests + world-boss trounce blossoms. When DropTable misses ChestDrop ids,
- * falls back to InvestigationMonster reward preview.
+ * World chests and trounce blossoms. Ordinary chest rewards use native Lua chest IDs or
+ * ChestDrop tags; unresolved loot must not mark a one-off chest as claimed.
  */
 public class GadgetChest extends GadgetContent {
     private static final int CHEST_OPENED_STATE = 102;
@@ -149,7 +149,9 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            grantOrdinaryChestLoot(player);
+            if (!grantOrdinaryChestLoot(player)) {
+                return false;
+            }
             finishOpen(player, meta);
             return false;
         }
@@ -174,7 +176,9 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            grantOrdinaryChestLoot(player);
+            if (!grantOrdinaryChestLoot(player)) {
+                return false;
+            }
             finishOpen(player, null);
             return false;
         }
@@ -209,8 +213,7 @@ public class GadgetChest extends GadgetContent {
                             req.getResinCostType()
                                     == ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE);
         } else {
-            grantOrdinaryChestLoot(player);
-            success = true;
+            success = grantOrdinaryChestLoot(player);
         }
         if (!success) {
             return false;
@@ -290,22 +293,35 @@ public class GadgetChest extends GadgetContent {
         return allClaimed;
     }
 
-    private void grantOrdinaryChestLoot(Player player) {
-        ordinaryClaimed = true;
-        EntityGadget gadget = getGadget();
+    /** Resolve one source before claiming the chest. Never replace missing native loot with
+     * a fabricated tier-based pack: a failed grant leaves the chest retryable.
+     */
+    private boolean grantOrdinaryChestLoot(Player player) {
         SceneGadget meta = resolveChestMeta();
-        if (meta != null && meta.chest_drop_id > 0) {
-            DropSystem dropSystem = player.getServer().getDropSystem();
-            // Quest-created chests have no Lua group; scripted quest chests are identified by loot.
-            if ((gadget.getScene().getSceneType() == SceneType.SCENE_DUNGEON
-                            || gadget.getGroupId() == 0
-                            || dropSystem.hasQuestItemDrop(meta.chest_drop_id))
-                    && dropSystem.handleChestDrop(
-                            meta.chest_drop_id, Math.max(1, meta.drop_count), gadget)) {
-                return;
-            }
+        if (meta == null) {
+            Grasscutter.getLogger().warn(
+                    "Chest has no native metadata scene={} group={} config={} gadget={}",
+                    player.getSceneId(), getGadget().getGroupId(), getGadget().getConfigId(),
+                    getGadget().getGadgetId());
+            return false;
         }
-        WorldChestLootHelper.grant(player, gadget);
+        DropSystem drops = player.getServer().getDropSystem();
+        if (drops == null) {
+            return false;
+        }
+        boolean granted = ChestRewardSource.grant(
+                meta.chest_drop_id, meta.drop_count, meta.drop_tag, meta.level,
+                (id, count) -> drops.handleChestDrop(id, count, getGadget()),
+                (tag, level) -> drops.handleChestDrop(tag, level, getGadget()));
+        if (!granted) {
+            Grasscutter.getLogger().warn(
+                    "Chest native loot unresolved scene={} group={} config={} id={} tag={}",
+                    player.getSceneId(), getGadget().getGroupId(), getGadget().getConfigId(),
+                    meta.chest_drop_id, meta.drop_tag);
+            return false;
+        }
+        ordinaryClaimed = true;
+        return true;
     }
 
     protected boolean grantBossChestFallback(Player player, SceneGadget meta) {

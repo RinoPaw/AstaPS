@@ -94,7 +94,7 @@ final class GadgetChestSyntheticMoraRewardTest {
 
     private static DropTableData table(String entries) {
         return JsonUtils.decode(
-                "{\"id\":99002061,\"randomType\":1,\"fallToGround\":false,\"dropVec\":" + entries + "}",
+                "{\"id\":99002061,\"randomType\":0,\"fallToGround\":false,\"dropVec\":" + entries + "}",
                 DropTableData.class);
     }
 

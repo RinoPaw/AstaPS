@@ -88,6 +88,41 @@ def check_mora_root(root: dict | None) -> dict:
             "weight_total": sum(weights.values())}
 
 
+def empty_descendant_nodes(root_id: int, table: dict[int, dict]) -> list[int]:
+    """Return IDs of present empty child nodes, without guessing missing leaf IDs.
+
+    A child absent from the node table may be a terminal item ID. Without
+    verifying ItemExcel, such an edge is *not* classified as missing.
+    Empty child nodes can also intentionally represent no-drop outcomes.
+    """
+    if root_id not in table:
+        return []
+    visited = set()
+    empty = set()
+    stack = [root_id]
+    while stack:
+        node_id = stack.pop()
+        if node_id in visited:
+            continue
+        visited.add(node_id)
+        node = table.get(node_id)
+        if node is None:
+            continue
+        entries = node.get("dropVec") or []
+        if node_id != root_id and not any(
+            isinstance(e, dict) and e.get("weight", 0) > 0
+            and e.get("itemId", 0) > 0 for e in entries
+        ):
+            empty.add(node_id)
+        for entry in entries:
+            if not isinstance(entry, dict) or (entry.get("weight") or 0) <= 0:
+                continue
+            child = entry.get("itemId")
+            if child in table and child not in visited:
+                stack.append(child)
+    return sorted(empty)
+
+
 def assess(server: Path, resources: Path) -> dict:
     chest = load_json(server / "data" / "ChestDrop.json")
     root_rows = load_json(resources / "Server" / "DropTableExcelConfigData.json")
@@ -95,7 +130,19 @@ def assess(server: Path, resources: Path) -> dict:
     roots = {row["id"] for row in root_rows}
     subroots = {row["id"] for row in sub_rows}
     known = roots | subroots
+    node_table = {row["id"]: row for row in [*root_rows, *sub_rows]}
     tags = {row["index"] for row in chest}
+    exploration = [row for row in chest if row.get("sourceType") not in (34, 35)]
+    active_exploration = [row for row in exploration if row["dropId"] in known]
+    empty_children_by_root = {
+        root_id: empty_descendant_nodes(root_id, node_table)
+        for root_id in {row["dropId"] for row in active_exploration}
+    }
+    affected_rows = [row for row in active_exploration
+                     if empty_children_by_root[row["dropId"]]]
+    empty_child_references = Counter(
+        child for row in affected_rows for child in empty_children_by_root[row["dropId"]]
+    )
     root_index = {row["id"]: row for row in root_rows}
     mora_pools = {}
     for region, root_id in MORA_ROOTS.items():
@@ -172,6 +219,21 @@ def assess(server: Path, resources: Path) -> dict:
             "missing_root_rows": len(missing),
             "missing_root_tags": dict(sorted(missing_tags.items())),
             "mora_pools": mora_pools,
+            "exploration_graph": {
+                "configured_rows": len(exploration),
+                "existing_root_rows": len(active_exploration),
+                "rows_with_reachable_empty_children": len(affected_rows),
+                "unique_roots_with_reachable_empty_children": sum(
+                    bool(children) for children in empty_children_by_root.values()
+                ),
+                "empty_child_ids": sorted(empty_child_references),
+                "most_referenced_empty_children": [
+                    {"id": node, "affected_configuration_rows": count}
+                    for node, count in empty_child_references.most_common(30)
+                ],
+                "note": "An empty child may be an intentional no-drop branch; "
+                        "these counts do not prove a defective 7.1 reward or payout.",
+            },
         },
         "synthetic": {
             "source_files": by_source,

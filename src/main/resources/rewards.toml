@@ -1,11 +1,44 @@
-# Standard exploration chest fixed rewards. Generated once at ./rewards.toml.
-# The operator owns that file; later server updates never overwrite it.
-# Only kind and optional area are valid selectors.
-# Matching tables apply top to bottom; later fields override earlier fields.
-# Missing fields keep their preceding value. Explicit zero clears that reward.
-# Order your defaults first, broad areas next, and precise exceptions last.
-# 'items = [{ id = 104001, count = 2 }]' adds direct item rewards.
-# Random drops, quest items, Shrine of Depths, events and remarkable chests are separate.
+# AstaPS unified fixed rewards. Generated once at ./rewards.toml.
+# This file belongs to the server operator and is never overwritten on updates.
+# Sections: transPoint = first unlock; chest = standard exploration chest fixed rewards.
+# Rules match in TOML file order, top to bottom. A later matching value wins.
+# An omitted field keeps its previous value; an explicit zero removes that reward.
+# Only direct rewards belong here. Native random drops and special-object rewards are separate.
+version = 1
+
+# =========================================
+# Transport: first activation only
+# =========================================
+
+[transPoint."kind=waypoint"]
+adventureExp = 50
+primogems = 5
+
+[transPoint."kind=statue"]
+adventureExp = 50
+primogems = 5
+
+[transPoint."kind=domain"]
+adventureExp = 50
+primogems = 5
+
+# The tutorial waypoint only gives 10 Adventure EXP, without primogems.
+# Explicitly clear the inherited 5 Primogems.
+[transPoint."3:6"]
+adventureExp = 10
+primogems = 0
+
+# Three Realms Gateway Offering. Explicitly clear ordinary waypoint EXP.
+[transPoint."7:*"]
+adventureExp = 0
+primogems = 5
+items = [{ id = 101692, count = 20 }]
+
+# =========================================
+# Chest: four standard exploration qualities
+# =========================================
+# Selectors: kind=common, kind=common,area=3:1, kind=common,area=3:1:104.
+# Defaults first, broad historical regions next, exact high-gem exceptions last.
 
 # High-Primogem-area defaults (including modern regions not listed below).
 [chest."kind=common"]

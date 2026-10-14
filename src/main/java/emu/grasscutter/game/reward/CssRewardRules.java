@@ -149,6 +149,10 @@ final class CssRewardRules {
                         }
                     }
                 }
+                if (!random.isEmpty() && !"missing".equals(attributes.get("pool"))) {
+                    throw new IllegalArgumentException(
+                            "Random chest rolls require [pool=\"missing\"]: " + selector);
+                }
                 if (offset != remainder.length()
                         || (attributes.containsKey("point") && !attributes.containsKey("scene"))
                         || (attributes.containsKey("area1") && !attributes.containsKey("scene"))

@@ -12,26 +12,14 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 class StandardChestRewardResolverTest {
-    private static final ChestRewardConfig RULES = ChestRewardConfig.parse(
-            """
-            [chest."kind=common"]
-            adventureExp = 30
-            primogems = 2
-            [chest."kind=exquisite"]
-            adventureExp = 30
-            primogems = 5
-            [chest."kind=precious"]
-            adventureExp = 30
-            primogems = 10
-            [chest."kind=luxurious"]
-            adventureExp = 30
-            primogems = 10
-            [chest."kind=common,area=3:1"]
-            primogems = 0
-            [chest."kind=common,area=3:1:104"]
-            primogems = 2
-            [chest."kind=exquisite,area=3:1"]
-            primogems = 2
+    private static final ChestRewardConfig RULES = ChestRewardConfig.parse("""
+            chest[kind="common"] { adventureExp: 30; primogems: 2; }
+            chest[kind="exquisite"] { adventureExp: 30; primogems: 5; }
+            chest[kind="precious"] { adventureExp: 30; primogems: 10; }
+            chest[kind="luxurious"] { adventureExp: 30; primogems: 10; }
+            chest[kind="common"][scene="3"][area1="1"] { primogems: 0; }
+            chest[kind="common"][scene="3"][area1="1"][area2="104"] { primogems: 2; }
+            chest[kind="exquisite"][scene="3"][area1="1"] { primogems: 2; }
             """);
 
     private static Classification standard(Kind kind) {
@@ -50,17 +38,17 @@ class StandardChestRewardResolverTest {
         var high = StandardChestRewardResolver.resolve(
                 common, 3, new AreaIds(1, 104), RULES).orElseThrow();
         assertEquals(Map.of(102, 30, 201, 2), rewards(high));
-        assertEquals("kind=common,area=3:1:104", high.lastSelector());
+        assertEquals("chest[kind=\"common\"][scene=\"3\"][area1=\"1\"][area2=\"104\"]", high.lastSelector());
 
         var low = StandardChestRewardResolver.resolve(
                 common, 3, new AreaIds(1, 107), RULES).orElseThrow();
         assertEquals(Map.of(102, 30), rewards(low));
-        assertEquals("kind=common,area=3:1", low.lastSelector());
+        assertEquals("chest[kind=\"common\"][scene=\"3\"][area1=\"1\"]", low.lastSelector());
 
         var other = StandardChestRewardResolver.resolve(
                 common, 3, new AreaIds(10, 1506), RULES).orElseThrow();
         assertEquals(Map.of(102, 30, 201, 2), rewards(other));
-        assertEquals("kind=common", other.lastSelector());
+        assertEquals("chest[kind=\"common\"]", other.lastSelector());
     }
 
     @Test

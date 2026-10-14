@@ -54,8 +54,9 @@ overwritten by native asset changes.
 - `rewards.toml` / `[transPoint]`: first discovery/activation rewards for
   waypoints, Statues of The Seven and manually activated domain entrances.
 - `rewards.toml` / `[chest]`: fixed amounts for standard exploration chest
-  kinds and area overrides. These values are parsed but not yet used by
-  the chest runtime path.
+  kinds and area overrides. Live consumption is limited to accepted native
+  ordinary roots with `fallToGround=false`. Native ground-drop roots and
+  special/unsupported chest sources remain on the legacy path.
 - `drops/chests.toml`, `drops/monsters.toml`, `drops/domains.toml`:
   loot pool policy, drop probabilities and counts. These do not define
   the first-activation domain reward or domain unlock rules.

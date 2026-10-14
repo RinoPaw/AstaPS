@@ -47,8 +47,15 @@ final class StandardChestLootConfig {
     record Table(int id, int randomType, boolean fallToGround, List<Drop> dropVec) {}
     record Quality(List<Source> sources, List<Table> tables) {}
     record Document(Map<String, Quality> chests) {}
-    record Roll(Map<Integer, Integer> amounts, boolean fallToGround) {
-        Roll { amounts = Map.copyOf(amounts); }
+    record ItemDrop(int itemId, int count) {}
+    record Roll(List<ItemDrop> drops, boolean fallToGround) {
+        Roll { drops = List.copyOf(drops); }
+
+        Map<Integer, Integer> amounts() {
+            var summed = new LinkedHashMap<Integer, Integer>();
+            drops.forEach(drop -> summed.merge(drop.itemId(), drop.count(), Math::addExact));
+            return Map.copyOf(summed);
+        }
     }
 
     private final Map<String, Map<String, List<Source>>> sources;
@@ -286,9 +293,9 @@ final class StandardChestLootConfig {
         var lookup = tables.get(kind);
         Table root = lookup.get(selected.dropId());
         if (!usable(root)) return null;
-        var amounts = new LinkedHashMap<Integer, Integer>();
-        rollNode(root, 1, lookup, random, amounts, new HashSet<>());
-        return new Roll(amounts, root.fallToGround());
+        var drops = new ArrayList<ItemDrop>();
+        rollNode(root, 1, lookup, random, drops, new HashSet<>());
+        return new Roll(drops, root.fallToGround());
     }
 
     private static boolean usable(Table table) {
@@ -297,7 +304,7 @@ final class StandardChestLootConfig {
     }
 
     private static void rollNode(Table table, int times, Map<Integer, Table> lookup,
-                                 Random random, Map<Integer, Integer> result, Set<Integer> stack) {
+                                 Random random, List<ItemDrop> result, Set<Integer> stack) {
         if (!stack.add(table.id())) {
             throw new IllegalArgumentException("Cyclic chest drop table " + table.id());
         }
@@ -338,7 +345,7 @@ final class StandardChestLootConfig {
             rollNode(child, count, lookup, random, result, stack);
             return;
         }
-        result.merge(drop.itemId(), count, Math::addExact);
+        result.add(new ItemDrop(drop.itemId(), count));
     }
 
     private static void checkCountRange(String range, String context) {

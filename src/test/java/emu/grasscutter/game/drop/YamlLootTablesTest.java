@@ -160,6 +160,27 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void missingCountProbabilityIsFilledAndCanBeZero() {
+        var distribution = LootCount.parse("0:40,1,2:18");
+        int[] outcome = new int[3];
+        var rng = new Random(9876);
+        for (int i = 0; i < 50_000; i++) outcome[distribution.sample(rng)]++;
+        assertEquals(0.40, outcome[0] / 50_000.0, 0.015);
+        assertEquals(0.42, outcome[1] / 50_000.0, 0.015);
+        assertEquals(0.18, outcome[2] / 50_000.0, 0.015);
+
+        var nullable = parse("""
+                pool:
+                  - {item: null, weight: 2}
+                  - {item: Genshin.Mora, weight: 3}
+                """);
+        int empty = 0;
+        rng = new Random(123);
+        for (int i = 0; i < 5_000; i++) if (nullable.roll("pool", rng).isEmpty()) empty++;
+        assertEquals(0.4, empty / 5000.0, 0.04);
+    }
+
+    @Test
     void itemNamesKeepEnglishNamesAndDetectAmbiguity() {
         var names = new LootItemNames(Map.of(
                 104003, "Hero's Wit",

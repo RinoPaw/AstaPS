@@ -70,9 +70,10 @@ chest[kind="luxurious"] {
 chest[kind="common"][pool="missing"] {
     mora: 1000;
     sigils: 3;
-    item-104011: 2;
-    item-104001: 2;
-    item-104002: 1;
+    /* Demo only: min max chance/10000, independent draws. */
+    random-104011: 1 3 10000;
+    random-104001: 1 3 7000;
+    random-104002: 1 2 3000;
 }
 
 chest[kind="exquisite"][pool="missing"] {

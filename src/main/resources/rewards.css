@@ -41,8 +41,9 @@ transPoint[scene="7"] {
 /* ========================================= */
 
 /* 7.1: all four qualities grant 30 Adventure EXP (Luna I patch notes). */
-/* Native DropTable supplies variable Mora, regional sigils and material loot. */
-/* An explicit item-ID declaration overrides that native item, including zero. */
+/* chest-loot.json (generated on first launch) owns all ordinary-chest random loot. */
+/* Its four qualities include source tags/levels, item IDs, weights and ranges. */
+/* Here, CSS can override any rolled item ID, including with zero. */
 chest[kind="common"] {
     adventureExp: 30;
     primogems: 2;

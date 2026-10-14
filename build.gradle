@@ -103,7 +103,9 @@ dependencies {
 
     // Serialization.
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
-    implementation 'org.tomlj:tomlj:1.1.1'
+    // Real CSS stylesheet parsing and compiled attribute selectors for rewards.css.
+    implementation 'com.helger:ph-css:8.2.1'
+    implementation 'org.jsoup:jsoup:1.21.2'
     implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '4.36.2'
     implementation group: 'com.github.os72', name: 'protobuf-dynamic', version: '1.0.1'
 

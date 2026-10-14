@@ -58,14 +58,14 @@ class YamlLootTablesTest {
         Random random = new Random(42);
         for (int i = 0; i < 40_000; i++) {
             var r = tables.roll("chest", random);
-            assertEquals(300, r.get(202));
+            assertEquals(300, r.get(202).intValue());
             if (!r.containsKey(104003) && !r.containsKey(104002)) none++;
             else if (r.containsKey(104003)) {
-                assertEquals(1, r.get(104003));
+                assertEquals(1, r.get(104003).intValue());
                 assertFalse(r.containsKey(104002));
                 big++;
             } else {
-                assertEquals(2, r.get(104002));
+                assertEquals(2, r.get(104002).intValue());
                 small++;
             }
         }

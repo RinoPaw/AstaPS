@@ -1,69 +1,72 @@
 # AstaPS first-unlock rewards
 
-The server-owned root-level `rewards.toml` contains both `[transPoint]` and
-`[chest]` sections. It is copied once from
-`src/main/resources/rewards.toml`. Existing files are never overwritten.
-Malformed or unsupported configuration stops startup; native reward tables do
-not replace a failing operator file.
+The root-level operator-owned file is now **rewards.css**. On first launch,
+the bundled src/main/resources/rewards.css is copied to the server's
+working directory. Existing rewards.css is never overwritten.
 
-The old `config/rewards/trans-point-rewards.toml` is **no longer read**.
-Existing operators must manually transfer custom rules to `[transPoint]`
-in the new file. No automatic legacy import is performed.
+If the old rewards.toml exists and rewards.css does not, startup **fails**
+instead of silently discarding custom rewards. Back up the TOML file and
+port custom rules to CSS before restarting. The old TOML remains untouched;
+there is no automatic conversion and no legacy fallback.
 
-## Supported selectors
+## Selectors and declarations
 
-- `[transPoint."kind=waypoint"]`: ordinary teleport points
-- `[transPoint."kind=statue"]`: Statues of The Seven
-- `[transPoint."kind=domain"]`: manually activated dungeon entrances
-- `[transPoint."7:*"]`: all eligible points in scene 7
-- `[transPoint."3:6"]`: exact scene/point pair
+Selectors match game object attributes; the brace block contains only rewards:
 
-**All matching rules apply from top to bottom.** Each later matching item
-amount overrides only that amount; missing fields inherit earlier values.
-Explicit zero removes an inherited item. A broad rule written later can
-override a more specific rule. For example:
+```css
+transPoint[kind="waypoint"],
+transPoint[kind="statue"],
+transPoint[kind="domain"] {
+    adventureExp: 50;
+    primogems: 5;
+}
 
-```toml
-[transPoint."kind=waypoint"]
-adventureExp = 50
-primogems = 5
+transPoint[scene="3"][point="6"] {
+    adventureExp: 10;
+    primogems: 0;
+}
 
-[transPoint."3:6"]
-adventureExp = 10
-primogems = 0
+transPoint[scene="7"] {
+    adventureExp: 0;
+    primogems: 5;
+    item-101692: 20;
+}
 ```
 
-`adventureExp`, `primogems`, and `mora` are non-negative integers.
-`items` is an array of `{ id = ..., count = ... }`, with non-negative
-counts so an explicit zero can cancel inherited items. Item IDs must be
-positive and duplicate item IDs inside one table are invalid.
+The three supported transport kinds are waypoint, statue and domain.
+The selector attributes are kind, scene and point. All IDs are positive
+decimal numbers; omitting point means any point in that scene. Groups of
+selectors separated by commas share one declaration block.
 
-The supplied `[transPoint."7:*"]` template includes
-`adventureExp = 0`, so it preserves the old three-realms 5-Primogem and
-20-item reward without inheriting ordinary waypoint EXP.
+All valid CSS selectors are parsed using ph-css. The supported safe subset
+allows only object types and equality-attribute selectors; no descendant
+combinators, pseudo-selectors, at-rules or dynamic expressions.
 
-The native `ExcelBinOutput/TransPointRewardConfigData.json` and old
-`rewardId` are not used to decide these amounts.
+CSS specificity applies: a selector with more equality attributes wins even
+if a more general rule appears later. At equal specificity, the later
+matching declaration wins. Fields not mentioned in a rule are inherited from
+other matching rules; an explicit zero clears an item count.
+
+adventureExp, primogems and mora are non-negative 32-bit integers.
+Additional item amounts are written as item-<positive ID>: <non-negative count>.
+Unknown properties, duplicate item IDs in a block, invalid amounts and
+unsupported selectors stop startup instead of being ignored.
+
+The old ExcelBinOutput/TransPointRewardConfigData.json and rewardId do
+not decide rewards.
 
 ## Native first-unlock boundaries
 
-For waypoints and statues, rewards follow the existing permanent first-unlock state
-change. Releasing a quest lock does not pay a second reward. Pre-unlocked points,
-portal/unknown point subtypes, and hidden ordinary waypoints are ineligible.
+For waypoints and statues, rewards use the existing permanent unlock state.
+Releasing quest locks never grants an additional reward. Pre-unlocked or
+hidden native points, portals and unknown subtypes are ineligible.
 
-For domains, the client `UnlockTransPointReq` for a native `DungeonEntry`
-point is the activation event, including story entrances without
-`DungeonEntryExcelConfigData.rewardDataId` (scene 3 points 1 and 20).
-Native `rewardDataId` no longer decides eligibility or amounts.
-The handbook only lists native handbook entries and re-synchronizes already-unlocked
-points; it does not discover or unlock new entrances. A separate persisted
-`rewardedDungeonEntries` activation receipt prevents duplicate claims and keeps
-older player saves with historical synthetic unlocks safe from repeat rewards.
-Hidden and natively pre-unlocked domain points are ineligible.
-Entering or re-entering a dungeon never grants discovery rewards.
+For domain entrances, UnlockTransPointReq for a native DungeonEntry is
+the activation event, even for story entries without rewardDataId.
+A persisted rewardedDungeonEntries activation receipt guards against duplicate
+claims. The Adventurer Handbook only resynchronizes existing discoveries,
+and entering or replaying a dungeon never triggers a first-unlock payout.
 
-For existing player accounts, previously activated domain points have no
-historical claim receipt from before this implementation. Their first new
-activation request may pay once; no retroactive mass award is performed.
-
-Domain completion loot, resin, tree claims, and repeated challenges are unaffected.
+Existing saves can lack old activation receipts; no retroactive mass award
+occurs. Domain completion loot, resin, repeated challenges and tree claims
+are unaffected.

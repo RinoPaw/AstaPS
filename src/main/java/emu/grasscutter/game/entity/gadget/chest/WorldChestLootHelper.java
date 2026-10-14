@@ -34,8 +34,8 @@ public final class WorldChestLootHelper {
                 ? preview.orElseThrow().amounts() : base.amounts();
         int fallbackSigilId = resolveSigilId(entityGadget);
         SceneGadget meta = entityGadget.getMetaGadget();
-        if (StandardChestClassifier.classify(entityGadget).isStandard()
-                && meta != null && meta.drop_tag != null
+        boolean standard = StandardChestClassifier.classify(entityGadget).isStandard();
+        if (standard && meta != null && meta.drop_tag != null
                 && player.getServer().getDropSystem().handleStandardChestDrop(
                         meta.drop_tag, Math.max(1, meta.level), entityGadget,
                         amounts, fallbackSigilId)) {
@@ -44,7 +44,15 @@ public final class WorldChestLootHelper {
                     player.getUid(), entityGadget.getGadgetId(), meta.drop_tag, meta.level);
             return;
         }
-        // Missing native tag/root: retain the operator's CSS-only fixed payout.
+        if (standard) {
+            Grasscutter.getLogger().warn(
+                    "Standard chest native drop unavailable: uid={} scene={} group={} config={} tag={} "
+                            + "level={}; using CSS-only rewards (no native random loot)",
+                    player.getUid(), entityGadget.getScene().getId(),
+                    entityGadget.getGroupId(), entityGadget.getConfigId(),
+                    meta == null ? null : meta.drop_tag, meta == null ? 0 : meta.level);
+        }
+        // Missing native tag/root: use CSS-only fixed payout without invented loot.
         Map<Integer, Integer> rewards =
                 ChestRewardConfig.resolveRegionalSigils(amounts, fallbackSigilId);
         Scene scene = entityGadget.getScene();

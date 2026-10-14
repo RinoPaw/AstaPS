@@ -11,7 +11,8 @@ Verified ordinary world chests use area selectors and roll the native
 ChestDrop/DropTable pool once; CSS values replace matching native item IDs,
 including explicit zero. Unconfigured random ores, books and weapons retain
 their native rolls. Missing native roots and other legacy fallback chest
-objects use CSS quality defaults. Defaults define the universal Adventure EXP and Primogem counts;
+objects use CSS quality defaults. Defaults define the universal Adventure EXP (30 for every standard quality
+since Luna I) and Primogem counts;
 native tables supply variable Mora and regional sigil counts.
 Java contains no numeric quality reward table. Native quest and Boss
 drop paths remain separate. `GadgetChest` claim timing and ground-item

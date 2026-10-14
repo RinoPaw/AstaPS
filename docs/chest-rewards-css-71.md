@@ -63,8 +63,10 @@ The bundled policy preserves the historical low-gem areas 3:1..7 and 3:9;
 Dragonspine 3:10, Lisha 3:8 and the Chasm 3:19/6:300 use higher defaults.
 
 Universal chest defaults (Adventure EXP and Primogems) live in CSS.
-The default Adventure EXP follows the historical native quality pattern:
-10 / 20 / 30 / 30. Native DropTable supplies variable Mora, regional sigils,
+All four grades receive 30 Adventure EXP since Version Luna I (6.0); see the
+[official update notes](https://genshin.hoyoverse.com/en/news/detail/159349).
+The historical 10 / 20 / 30 / 30 quality pattern is outdated in 7.1.
+Native DropTable supplies variable Mora, regional sigils,
 ores, books and weapons. Optional CSS `mora`, `sigils` and `item-ID`
 declarations replace those native items, including explicit zero.
 Java's Tier enum contains quality names only. Regional rules override named fields. Old numerical
@@ -74,7 +76,10 @@ Existing operator CSS is never rewritten. Older CSS files with `mora`,
 `sigils` or `item-104xxx` continue to override the native quantities.
 Remove those declarations to use native rolls and region-specific sigils.
 Native tables are historical, and their 7.1 probabilities are not independently
-verified.
+verified. Older cached operator CSS values of 10 / 20 remain active unless
+manually changed to 30, since the server does not rewrite user files.
+If a native root is missing, the server logs a warning and grants only the
+CSS-configured values; it does not fabricate random material rewards.
 Existing operator CSS is read without modification. Missing chest reward
 fields inherit bundled defaults in memory, including for old CSS versions.
 Explicit user values (including zero) take precedence. The loader does not

@@ -40,16 +40,16 @@ transPoint[scene="7"] {
 /* Chest: four standard exploration qualities */
 /* ========================================= */
 
-/* Four quality defaults for CSS-owned fixed rewards. */
+/* 7.1: all four qualities grant 30 Adventure EXP (Luna I patch notes). */
 /* Native DropTable supplies variable Mora, regional sigils and material loot. */
 /* An explicit item-ID declaration overrides that native item, including zero. */
 chest[kind="common"] {
-    adventureExp: 10;
+    adventureExp: 30;
     primogems: 2;
 }
 
 chest[kind="exquisite"] {
-    adventureExp: 20;
+    adventureExp: 30;
     primogems: 5;
 }
 

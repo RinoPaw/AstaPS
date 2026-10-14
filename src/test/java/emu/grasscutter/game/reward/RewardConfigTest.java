@@ -30,7 +30,7 @@ final class RewardConfigTest {
     void bundledPolicyParsesBothKindsOfReward() throws Exception {
         var cfg = RewardConfig.parse(bundled());
         var chest = amounts(cfg.chest().resolve(Kind.COMMON, 3, 1, 104).rewards());
-        assertEquals(10, chest.get(102));
+        assertEquals(30, chest.get(102));
         assertEquals(2, chest.get(201));
         assertFalse(chest.containsKey(202));
         assertFalse(chest.containsKey(104011));
@@ -47,8 +47,8 @@ final class RewardConfigTest {
         assertEquals(bundled(), Files.readString(file));
         var before = RewardConfig.current();
         String modified = bundled().replace(
-                "chest[kind=\"common\"] {\n    adventureExp: 10;\n    primogems: 2;",
-                "chest[kind=\"common\"] {\n    adventureExp: 10;\n    primogems: 7;");
+                "chest[kind=\"common\"] {\n    adventureExp: 30;\n    primogems: 2;",
+                "chest[kind=\"common\"] {\n    adventureExp: 30;\n    primogems: 7;");
         assertNotEquals(bundled(), modified);
         Files.writeString(file, modified);
         RewardConfig.loadOrCreate(file);
@@ -100,8 +100,8 @@ final class RewardConfigTest {
                 chest[kind="common"][scene="3"][area1="1"] { primogems: 0; item-104001: 0; }
                 """;
         // Include a user edit to a base declaration. No migration may overwrite it.
-        legacy = legacy.replace("chest[kind=\"common\"] {\n    adventureExp: 10;\n    primogems: 2;",
-                "chest[kind=\"common\"] {\n    adventureExp: 10;\n    primogems: 7;");
+        legacy = legacy.replace("chest[kind=\"common\"] {\n    adventureExp: 30;\n    primogems: 2;",
+                "chest[kind=\"common\"] {\n    adventureExp: 30;\n    primogems: 7;");
         Path file = temp.resolve("rewards.css");
         Files.writeString(file, legacy);
         RewardConfig.loadOrCreate(file);

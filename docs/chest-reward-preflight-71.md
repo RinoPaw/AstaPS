@@ -18,7 +18,9 @@ Java contains no numeric quality reward table. Native quest and Boss
 drop paths remain separate. `GadgetChest` claim timing and ground-item
 delivery remain unchanged, including their existing safety limitations.
 
-The resolver deliberately fails closed when the level-1 world area is unknown: it cannot safely assume that a chest belongs to a high-Primogem region. If level-1 is known but level-2 is unknown, level-1 overrides can still apply.
+The resolver deliberately fails closed when the level-1 world area is unknown: it cannot safely assume that a chest belongs to a high-Primogem region. The live ordinary-chest CSS path also enforces this: if a classified standard chest has no resolved level-1 area, it logs a warning, rejects the payout attempt and leaves the chest unopened for retry instead of substituting quality defaults. If level-1 is known but level-2 is unknown, level-1 overrides can still apply.
+
+A native pool that legitimately rolls zero items counts as a present pool; explicit CSS zeros must not trigger the `pool="missing"` compatibility policy. A successful grant return still means a payout attempt, **not** confirmed inventory/ground delivery; transactional grant and claim confirmation remain outstanding.
 
 Remaining limitations before expanding this integration:
 

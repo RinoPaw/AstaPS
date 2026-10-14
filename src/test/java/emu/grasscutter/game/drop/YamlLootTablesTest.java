@@ -181,6 +181,23 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void itemClassificationUsesGameResourceTypes() {
+        assertEquals("Weapons", LootItemNames.categoryOf(
+                emu.grasscutter.game.inventory.ItemType.ITEM_WEAPON,
+                emu.grasscutter.game.inventory.MaterialType.MATERIAL_NONE));
+        assertEquals("Artifacts", LootItemNames.categoryOf(
+                emu.grasscutter.game.inventory.ItemType.ITEM_RELIQUARY,
+                emu.grasscutter.game.inventory.MaterialType.MATERIAL_NONE));
+        assertEquals("Character EXP Materials", LootItemNames.categoryOf(
+                emu.grasscutter.game.inventory.ItemType.ITEM_MATERIAL,
+                emu.grasscutter.game.inventory.MaterialType.MATERIAL_EXP_FRUIT));
+        assertEquals("Food", LootItemNames.categoryOf(
+                emu.grasscutter.game.inventory.ItemType.ITEM_MATERIAL,
+                emu.grasscutter.game.inventory.MaterialType.MATERIAL_FOOD));
+        assertEquals(104003, new LootItemNames(java.util.Collections.singletonMap(104003, null)).resolve("Genshin.HerosWit"));
+    }
+
+    @Test
     void itemNamesKeepEnglishNamesAndDetectAmbiguity() {
         var names = new LootItemNames(Map.of(
                 104003, "Hero's Wit",

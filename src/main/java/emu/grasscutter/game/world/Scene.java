@@ -361,6 +361,64 @@ public class Scene {
                 || itemId == 100097; // mysterious meat
     }
 
+    private static final int MAX_STAGED_CHEST_PICKUPS = 10_000;
+
+    /**
+     * Construct all native chest pickup entities before any of them becomes visible.
+     * Their contents retain the original rolled GameItem, not a freshly rerolled item.
+     *
+     * <p>This does not publish or persist the entities. It allocates runtime entity
+     * IDs/GUIDs, which are allowed to have gaps when preparation fails. The caller
+     * must coordinate durable receipt and pickup lifecycle before calling addEntities.
+     */
+    public List<EntityItem> prepareChestGroundEntities(
+            Collection<GameItem> groundItems, GameEntity bornFrom, Player owner) {
+        Objects.requireNonNull(groundItems, "groundItems");
+        Objects.requireNonNull(bornFrom, "bornFrom");
+        Objects.requireNonNull(owner, "owner");
+        if (bornFrom.getScene() != this || owner.getScene() != this
+                || groundItems.isEmpty()) {
+            throw new IllegalArgumentException("Invalid chest ground pickup context");
+        }
+
+        // Preflight the entire batch first. Do not create even one entity until
+        // every item has a supported pickup gadget and the expansion fits limits.
+        long entityCount = 0;
+        for (GameItem item : groundItems) {
+            if (item == null || item.getItemId() <= 0 || item.getCount() <= 0
+                    || item.getItemData() == null
+                    || item.getItemData().getId() != item.getItemId()
+                    || item.getItemData().getGadgetId() <= 0) {
+                throw new IllegalArgumentException("Invalid chest ground pickup item");
+            }
+            boolean split = item.getItemData().isEquip()
+                    || isSplitGroundDropItem(item.getItemId());
+            entityCount += split ? item.getCount() : 1;
+            if (entityCount > MAX_STAGED_CHEST_PICKUPS) {
+                throw new IllegalArgumentException("Excessive chest ground pickup entities");
+            }
+        }
+
+        var entities = new ArrayList<EntityItem>((int) entityCount);
+        for (GameItem item : groundItems) {
+            boolean split = item.getItemData().isEquip()
+                    || isSplitGroundDropItem(item.getItemId());
+            if (split) {
+                float range = 1.5f + (.05f * item.getCount());
+                for (int i = 0; i < item.getCount(); i++) {
+                    var one = item.copyForGrant();
+                    one.setCount(1);
+                    Position pos = bornFrom.getPosition().nearby2d(range).addY(0.5f);
+                    entities.add(new EntityItem(this, owner, one, pos, false));
+                }
+            } else {
+                Position pos = bornFrom.getPosition().clone().addY(0.5f);
+                entities.add(new EntityItem(this, owner, item, pos, false));
+            }
+        }
+        return List.copyOf(entities);
+    }
+
     public void addDropEntity(GameItem item, GameEntity bornForm, Player player, boolean share) {
 
         ItemData itemData = GameData.getItemDataMap().get(item.getItemId());

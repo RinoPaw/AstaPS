@@ -67,14 +67,12 @@ fallback amounts 66/166/366/566 have been removed.
 
 Auxiliary material counts preserve the previous server behavior; they
 are not independently verified native random-drop values.
-Existing operator CSS is preserved. When older CSS lacks quality reward
-fields, AstaPS reads the missing amounts from its bundled CSS template and
-prepends only those declarations. Your original stylesheet remains unchanged
-after the generated prefix and still wins when it explicitly defines a value,
-including zero. Before writing, the server saves a separate
-`rewards.css.backup-*.css` file. The migration runs only once for each
-set of missing fields. Invalid CSS syntax and unknown properties still fail
-startup. Set a property explicitly to zero to suppress that reward.
+Existing operator CSS is read without modification. Missing chest reward
+fields inherit bundled defaults in memory, including for old CSS versions.
+Explicit user values (including zero) take precedence. The loader does not
+write migrated files, backups or temporary files. Invalid CSS syntax and
+unknown properties still fail validation. Set a property to zero to suppress
+that reward.
 
 Native random drops, quest rewards, boss flowers, Shrines of Depths and
 special chests remain outside this direct-reward policy. See
@@ -83,8 +81,7 @@ for live payout boundaries.
 
 ## Migration
 
-The former rewards.toml is not read. If it exists when rewards.css does not,
-startup fails with instructions to back it up and port any custom rules.
-A new CSS file must be generated from the bundled template, then reviewed
-against customized TOML. Do not silently assume that an old custom TOML
-file and the new bundled CSS represent the same intent.
+The former rewards.toml is not read or modified. When rewards.css does not
+exist, AstaPS generates it from bundled defaults even if a legacy TOML file
+is present. Any settings in legacy TOML have no effect until the operator
+ports them manually. No backup is created.

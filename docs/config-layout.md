@@ -73,14 +73,12 @@ until another subsystem needs them. Each feature owns validation and tests.
 
 Bundled defaults belong to `src/main/resources/`. The operator-owned
 root-level `rewards.css` and runtime files under `config/` are gitignored.
-First startup generates the unified rewards file if missing. If legacy
-`rewards.toml` exists but `rewards.css` does not, startup refuses to ignore
-operator customizations; back up/migrate the legacy file explicitly.
-Existing operator CSS rules are preserved. When a newer release needs
-additional chest fields, the loader prepends missing defaults from the
-bundled CSS, saving a `rewards.css.backup-*.css` copy before replacing the
-original. The user's explicit values and selectors still take precedence.
-Unknown selectors, properties and invalid amounts fail validation.
+First startup generates rewards.css if it is missing. Existing operator CSS
+is only read, never rewritten: absent chest fields inherit bundled defaults
+in memory while explicit operator values and selectors take precedence.
+No migration, backup, or temporary files are created. The old rewards.toml
+is ignored but left untouched if present. Invalid selectors, properties, and
+reward amounts fail validation.
 
 Only the documented unified rewards path is read. The old
 `config/rewards/trans-point-rewards.css` is no longer read; operators with

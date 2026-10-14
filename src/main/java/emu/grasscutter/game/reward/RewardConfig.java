@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.AtomicMoveNotSupportedException;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,20 +39,11 @@ public final class RewardConfig {
                 ChestRewardConfig.fromRules(all));
     }
 
-    /**
-     * Generate only if missing. Never silently replace an existing operator policy.
-     * If a legacy TOML file exists, require an explicit choice before switching.
-     */
+    /** Generate defaults if missing, otherwise load without rewriting user CSS. */
     public static void loadOrCreate(Path path) {
         Objects.requireNonNull(path, "path");
         try {
             if (Files.notExists(path)) {
-                Path old = path.resolveSibling("rewards.toml");
-                if (Files.exists(old)) {
-                    throw new IllegalStateException(
-                            "Legacy " + old + " exists. Back it up and remove/rename it before "
-                            + "generating " + path + "; convert custom rules manually.");
-                }
                 Path parent = path.toAbsolutePath().getParent();
                 if (parent != null) Files.createDirectories(parent);
                 try (InputStream source = RewardConfig.class.getResourceAsStream(TEMPLATE)) {
@@ -63,12 +52,11 @@ public final class RewardConfig {
                 }
             }
             String operatorCss = Files.readString(path);
-            String migratedCss = RewardCssMigration.migrate(operatorCss, readBundledTemplate());
-            RewardConfig candidate = parse(migratedCss);
+            // Like config.json: keep the operator file unchanged and apply missing
+            // bundled defaults only to the active in-memory configuration.
+            String effectiveCss = RewardCssDefaults.overlayMissing(operatorCss, readBundledTemplate());
+            RewardConfig candidate = parse(effectiveCss);
             candidate.chest().requireCompleteBaseRewards();
-            if (!migratedCss.equals(operatorCss)) {
-                installMigration(path, migratedCss);
-            }
             active = candidate;
         } catch (IOException | IllegalArgumentException e) {
             throw new IllegalStateException("Cannot load " + path + ": " + e.getMessage(), e);
@@ -82,36 +70,4 @@ public final class RewardConfig {
         }
     }
 
-    /**
-     * Save a byte-for-byte backup before replacing the user's CSS.
-     * Prepare and validate the new snapshot before writing any files.
-     * A temporary sibling file prevents partially written CSS on interruption.
-     */
-    private static void installMigration(Path path, String updatedCss) throws IOException {
-        Path file = path.toAbsolutePath();
-        Path dir = file.getParent();
-        String name = file.getFileName().toString();
-        Path staged = Files.createTempFile(dir, "." + name + ".migration-", ".tmp");
-        try {
-            Files.writeString(staged, updatedCss);
-            Path backup = Files.createTempFile(dir, name + ".backup-", ".css");
-            try {
-                Files.copy(file, backup, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                Files.deleteIfExists(backup);
-                throw e;
-            }
-            try {
-                Files.move(staged, file, StandardCopyOption.ATOMIC_MOVE,
-                        StandardCopyOption.REPLACE_EXISTING);
-            } catch (AtomicMoveNotSupportedException unsupported) {
-                Files.move(staged, file, StandardCopyOption.REPLACE_EXISTING);
-            }
-            emu.grasscutter.Grasscutter.getLogger().info(
-                    "Migrated {} with missing chest defaults; original backed up to {}",
-                    file, backup);
-        } finally {
-            Files.deleteIfExists(staged);
-        }
-    }
 }

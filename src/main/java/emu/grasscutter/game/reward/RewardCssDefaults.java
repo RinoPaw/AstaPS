@@ -5,17 +5,17 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Upgrades older operator-owned CSS without replacing any existing rules.
+ * Supplies missing fields from bundled CSS in memory without modifying the user's file.
  *
  * <p>Only missing base reward fields are inherited from the bundled template.
  * More-specific user selectors remain untouched, and explicit zeroes are kept.
- * Migration rules are inserted BEFORE the user's CSS so equal-specificity
- * user declarations win.
+ * Compatibility defaults are inserted BEFORE the user's CSS, so explicit
+ * user declarations always win on equal specificity.
  */
-final class RewardCssMigration {
-    private RewardCssMigration() {}
+final class RewardCssDefaults {
+    private RewardCssDefaults() {}
 
-    static String migrate(String operatorCss, String bundledCss) {
+    static String overlayMissing(String operatorCss, String bundledCss) {
         var existing = RewardConfig.parse(operatorCss);
         var defaults = RewardConfig.parse(bundledCss);
 
@@ -40,15 +40,13 @@ final class RewardCssMigration {
         }
         if (additions.isEmpty()) return operatorCss;
 
-        String migrated = "/* Added by AstaPS to fill missing chest reward defaults. */\n"
-                + "/* Your original rules follow unchanged; explicit values (including 0) win. */\n"
+        String effectiveCss = "/* Runtime-only defaults; operator CSS remains unchanged. */\n"
                 + String.join("\n", additions)
                 + "\n" + operatorCss;
 
-        // Validate the final combination before any operator file is touched.
-        var result = RewardConfig.parse(migrated);
+        var result = RewardConfig.parse(effectiveCss);
         result.chest().requireCompleteBaseRewards();
-        return migrated;
+        return effectiveCss;
     }
 
     private static String propertyName(int id) {

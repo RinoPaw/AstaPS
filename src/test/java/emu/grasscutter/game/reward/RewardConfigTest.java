@@ -64,18 +64,13 @@ final class RewardConfigTest {
     }
 
     @Test
-    void refusesToIgnoreLegacyTomlOnFirstCssStart() throws Exception {
+    void missingCssGeneratesDefaultsEvenIfOldTomlExists() throws Exception {
         Path old = temp.resolve("rewards.toml");
         Path current = temp.resolve("rewards.css");
-        Files.writeString(old, "# manually customized config\n");
-        var ex = assertThrows(IllegalStateException.class,
-                () -> RewardConfig.loadOrCreate(current));
-        assertTrue(ex.getMessage().contains("rewards.toml"));
-        assertFalse(Files.exists(current));
-        assertEquals("# manually customized config\n", Files.readString(old));
-        // Once an explicit CSS is present it is authoritative; the old file is never read.
-        Files.writeString(current, bundled());
+        Files.writeString(old, "# legacy file\n");
         RewardConfig.loadOrCreate(current);
+        assertEquals(bundled(), Files.readString(current));
+        assertEquals("# legacy file\n", Files.readString(old));
         assertNotNull(RewardConfig.current().transPoint());
     }
 
@@ -92,7 +87,7 @@ final class RewardConfigTest {
                 () -> RewardConfig.parse("chest[kind=\"common\"] { primogems: 2; "));
     }
     @Test
-    void oldOperatorCssIsMigratedAndPreservesSelectorsOverridesAndExplicitZero() throws Exception {
+    void oldOperatorCssInheritsDefaultsInMemoryWithoutWritingFiles() throws Exception {
         String source = bundled();
         int chestStart = source.indexOf("/* Chest: four standard exploration qualities */");
         assertTrue(chestStart > 0);
@@ -111,9 +106,7 @@ final class RewardConfigTest {
         Files.writeString(file, legacy);
         RewardConfig.loadOrCreate(file);
 
-        String migrated = Files.readString(file);
-        assertTrue(migrated.endsWith(legacy));
-        assertTrue(migrated.contains("/* Added by AstaPS"));
+        assertEquals(legacy, Files.readString(file));
         assertEquals(7, RewardConfig.current().chest().resolve(Kind.COMMON, 3, 10, 0)
                 .amounts().get(201));
         assertEquals(0, RewardConfig.current().chest().resolve(Kind.COMMON, 3, 1, 0)
@@ -130,20 +123,12 @@ final class RewardConfigTest {
         assertEquals(2500, RewardConfig.current().chest().resolve(Kind.LUXURIOUS, 3, 1, 0)
                 .amounts().get(202));
 
-        try (var files = Files.list(temp)) {
-            var backups = files
-                    .filter(p -> p.getFileName().toString().startsWith("rewards.css.backup-"))
-                    .toList();
-            assertEquals(1, backups.size());
-            assertEquals(legacy, Files.readString(backups.getFirst()));
-        }
-
-        // Upgraded CSS does not grow another prefix or create another backup.
+        // Reloading uses the same defaults but creates no additional files.
         RewardConfig.loadOrCreate(file);
-        assertEquals(migrated, Files.readString(file));
+        assertEquals(legacy, Files.readString(file));
         try (var files = Files.list(temp)) {
-            assertEquals(1, files.filter(p -> p.getFileName().toString()
-                    .startsWith("rewards.css.backup-")).count());
+            assertEquals(java.util.List.of("rewards.css"),
+                    files.map(p -> p.getFileName().toString()).toList());
         }
     }
 

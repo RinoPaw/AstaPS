@@ -309,7 +309,8 @@ public class GadgetChest extends GadgetContent {
         var staged = StandardChestRewardResolver.stage(gadget, player.getServer().getDropSystem());
         if (staged.isEmpty()) return null;
         var reward = staged.orElseThrow();
-        if (reward.nativeRoll().fallToGround()) return null;
+        if (!StandardChestRewardResolver.supportsInventoryClaim(
+                reward, gadget.getGroupId(), meta.config_id)) return null;
 
         try {
             var inventoryBatch =

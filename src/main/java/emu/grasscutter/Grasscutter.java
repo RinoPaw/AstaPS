@@ -133,7 +133,7 @@ public final class Grasscutter {
 
         // One owner-edited file supplies every direct reward policy.
         emu.grasscutter.game.reward.RewardConfig.loadOrCreate(
-                java.nio.file.Path.of("rewards.toml"));
+                java.nio.file.Path.of("rewards.css"));
 
         // Initialize database.
         DatabaseManager.initialize();

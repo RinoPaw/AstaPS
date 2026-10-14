@@ -149,7 +149,7 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            grantOrdinaryChestLoot(player);
+            if (!grantOrdinaryChestLoot(player)) return false;
             finishOpen(player, meta);
             return false;
         }
@@ -174,7 +174,7 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            grantOrdinaryChestLoot(player);
+            if (!grantOrdinaryChestLoot(player)) return false;
             finishOpen(player, null);
             return false;
         }
@@ -209,8 +209,7 @@ public class GadgetChest extends GadgetContent {
                             req.getResinCostType()
                                     == ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE);
         } else {
-            grantOrdinaryChestLoot(player);
-            success = true;
+            success = grantOrdinaryChestLoot(player);
         }
         if (!success) {
             return false;
@@ -290,8 +289,7 @@ public class GadgetChest extends GadgetContent {
         return allClaimed;
     }
 
-    private void grantOrdinaryChestLoot(Player player) {
-        ordinaryClaimed = true;
+    private boolean grantOrdinaryChestLoot(Player player) {
         EntityGadget gadget = getGadget();
         SceneGadget meta = resolveChestMeta();
         if (meta != null && meta.chest_drop_id > 0) {
@@ -302,10 +300,14 @@ public class GadgetChest extends GadgetContent {
                             || dropSystem.hasQuestItemDrop(meta.chest_drop_id))
                     && dropSystem.handleChestDrop(
                             meta.chest_drop_id, Math.max(1, meta.drop_count), gadget)) {
-                return;
+                ordinaryClaimed = true;
+                return true;
             }
         }
-        WorldChestLootHelper.grant(player, gadget);
+        // A rejected reward preflight must not consume a chest.
+        if (!WorldChestLootHelper.grant(player, gadget)) return false;
+        ordinaryClaimed = true;
+        return true;
     }
 
     protected boolean grantBossChestFallback(Player player, SceneGadget meta) {

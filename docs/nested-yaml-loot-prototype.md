@@ -61,10 +61,11 @@ those keys back to the loaded numeric item ID. Wiki-verified names for Hero's
 Wit, Adventurer's Experience, Wanderer's Advice, Mora and Primogem are also
 registered. Ambiguous keys are rejected; numeric IDs remain available.
 
-English names are derived from current game data. Wiki classification metadata
-is currently supplied only for the three character EXP materials. A complete
-Wiki category reconciliation and a stable-version alias manifest are future
-work, not claims of the prototype.
+English names are derived from current game data. Broad English item
+categories are derived from ItemType and MaterialType, using Wiki-style labels
+(e.g. Weapons, Artifacts, Character EXP Materials). This is not a one-to-one
+mapping of every Wiki category. A complete Wiki category reconciliation and a
+stable-version alias manifest are future work, not claims of the prototype.
 
 Sources:
 - https://genshin-impact.fandom.com/wiki/Character_EXP_Material

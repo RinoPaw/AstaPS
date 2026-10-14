@@ -32,8 +32,21 @@ public final class WorldChestLootHelper {
                         ChestRewardConfig.Kind.valueOf(tier.name()), 0, 0, 0);
         Map<Integer, Integer> amounts = preview.isPresent()
                 ? preview.orElseThrow().amounts() : base.amounts();
+        int fallbackSigilId = resolveSigilId(entityGadget);
+        SceneGadget meta = entityGadget.getMetaGadget();
+        if (StandardChestClassifier.classify(entityGadget).isStandard()
+                && meta != null && meta.drop_tag != null
+                && player.getServer().getDropSystem().handleStandardChestDrop(
+                        meta.drop_tag, Math.max(1, meta.level), entityGadget,
+                        amounts, fallbackSigilId)) {
+            Grasscutter.getLogger().debug(
+                    "Native chest rewards uid={} gadgetId={} tag={} level={}",
+                    player.getUid(), entityGadget.getGadgetId(), meta.drop_tag, meta.level);
+            return;
+        }
+        // Missing native tag/root: retain the operator's CSS-only fixed payout.
         Map<Integer, Integer> rewards =
-                ChestRewardConfig.resolveRegionalSigils(amounts, resolveSigilId(entityGadget));
+                ChestRewardConfig.resolveRegionalSigils(amounts, fallbackSigilId);
         Scene scene = entityGadget.getScene();
         int adventureExp = rewards.getOrDefault(102, 0);
         if (adventureExp > 0) {

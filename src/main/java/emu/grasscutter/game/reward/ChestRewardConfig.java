@@ -37,11 +37,7 @@ public final class ChestRewardConfig {
         return new ChestRewardConfig(selected);
     }
 
-    /**
-     * A previously generated operator CSS lacks material/sigil defaults.
-     * Fail startup rather than silently removing those rewards. Explicit
-     * zero is valid and intentionally suppresses an amount.
-     */
+    /** Ensure every quality has its four CSS-owned fixed fields (zero is valid). */
     void requireCompleteBaseRewards() {
         for (Kind kind : Kind.values()) {
             Map<Integer, Integer> amounts = resolve(kind, 0, 0, 0).amounts();
@@ -52,13 +48,6 @@ public final class ChestRewardConfig {
                                     + "\"] lacks adventureExp, primogems, mora or sigils. "
                                     + "Back up the old CSS and update its four quality defaults.");
                 }
-            }
-            int oreId = kind == Kind.COMMON ? 104011 : 104012;
-            if (!amounts.containsKey(oreId)) {
-                throw new IllegalArgumentException(
-                        "Old rewards.css chest[kind=\"" + kind.selectorValue()
-                                + "\"] lacks item-" + oreId
-                                + " (use zero to disable). Update the old CSS.");
             }
         }
     }

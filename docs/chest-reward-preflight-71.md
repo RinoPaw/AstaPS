@@ -6,11 +6,13 @@ The branch now combines three read-only components:
 2. `WorldAreaIndex` resolves world coordinates to the level-1 region and, when possible, the level-2 region. Level-2 outlines may be height-limited; an unknown level-1 region is not guessed.
 3. `StandardChestRewardResolver.preview` uses the classification, region and operator-owned `RewardConfig.current().chest()` selectors. It returns the proposed direct rewards and last matched selector, or an empty result for excluded/unresolved sources.
 
-The existing `WorldChestLootHelper` now uses CSS for **all fixed quantities**.
-Verified ordinary world chests use area selectors; other legacy
-fallback chest objects use CSS quality defaults only and do not
-assume regional overrides. Defaults explicitly define Adventure EXP,
-Primogems, Mora, regional sigil counts, ores and books.
+The existing `WorldChestLootHelper` uses CSS for fixed quantities.
+Verified ordinary world chests use area selectors and roll the native
+ChestDrop/DropTable pool once; CSS values replace matching native item IDs,
+including explicit zero. Unconfigured random ores, books and weapons retain
+their native rolls. Missing native roots and other legacy fallback chest
+objects use CSS quality defaults. Defaults define Adventure EXP,
+Primogems, Mora and regional sigil counts.
 Java contains no numeric quality reward table. Native quest and Boss
 drop paths remain separate. `GadgetChest` claim timing and ground-item
 delivery remain unchanged, including their existing safety limitations.

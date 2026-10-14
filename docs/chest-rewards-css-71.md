@@ -7,7 +7,9 @@ updated snapshot. A malformed selector or reward amount prevents startup.
 
 **Important:** transport reward rules are live. Verified standard world chests
 now use the CSS fixed rewards on the existing WorldChestLootHelper fallback path.
-Random/native quest loot and special chest flows remain separate. Chest claim
+Native random loot is rolled once for verified standard chests, then CSS-owned
+fields replace matching item IDs before payout. Native quest loot and special
+chest flows remain separate. Chest claim
 lifecycle and ground-item delivery retain their existing behavior.
 
 ## Selectors
@@ -60,13 +62,17 @@ The bundled policy preserves the historical low-gem areas 3:1..7 and 3:9;
 3:1:104 (望风山地) and 3:7:703 (孤云阁) restore higher amounts.
 Dragonspine 3:10, Lisha 3:8 and the Chasm 3:19/6:300 use higher defaults.
 
-All fixed reward counts come from CSS, including Adventure EXP, Primogems,
-Mora, sigils, ores, and EXP books. Java's Tier enum contains quality
-names only. Regional rules override named fields. Old numerical
+Four base rewards (Adventure EXP, Primogems, Mora and sigils) are configured in
+CSS. Native DropTable supplies the variable loot, including ores, books and
+weapons. Any operator-defined `item-ID` overrides the corresponding native
+item amount; zero removes that item. Java's Tier enum contains quality names
+only. Regional rules override named fields. Old numerical
 fallback amounts 66/166/366/566 have been removed.
 
-Auxiliary material counts preserve the previous server behavior; they
-are not independently verified native random-drop values.
+Existing operator CSS is never rewritten. Older CSS files that still declare
+`item-104xxx` keep those explicit overrides; remove such declarations to use
+native random ore/book rolls. Native tables are historical, and their 7.1
+probabilities are not independently verified.
 Existing operator CSS is read without modification. Missing chest reward
 fields inherit bundled defaults in memory, including for old CSS versions.
 Explicit user values (including zero) take precedence. The loader does not

@@ -69,11 +69,14 @@ class StandardChestClassifierTest {
 
     @Test
     void preservesAllExplicitNativeAndQuestDropReferences() {
-        for (int dropId : new int[] {1000100, 1050256, 2004900, 52040000}) {
+        for (int dropId : new int[] {1050256, 2004900, 52040000}) {
             var script = meta("战斗低级蒙德");
             script.chest_drop_id = dropId;
             excluded("SceneObj_Chest_Default_Lv1", script, Exclusion.EXPLICIT_DROP);
         }
+        var sentinel = meta("战斗低级蒙德");
+        sentinel.chest_drop_id = 1000100;
+        assertTrue(identify("SceneObj_Chest_Default_Lv1", sentinel).isStandard());
         var direct = meta("解谜低级蒙德");
         direct.drop_id = 8001000;
         excluded("SceneObj_Chest_Default_Lv1", direct, Exclusion.EXPLICIT_DROP);

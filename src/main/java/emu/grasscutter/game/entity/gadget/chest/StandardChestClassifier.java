@@ -104,9 +104,10 @@ public final class StandardChestClassifier {
         if (groupId <= 0) return excluded(Exclusion.NO_SCENE_GROUP);
         if (meta != null && meta.boss_chest != null) return excluded(Exclusion.BOSS_FLOWER);
 
-        // Native and quest roots (including the empty 1000100 sentinel) are
-        // authoritative for that object; never replace them with standard fixed loot.
-        if (meta != null && (meta.chest_drop_id > 0 || meta.drop_id > 0)) {
+        // Preserve explicit quest/native roots. 1000100 is an empty sentinel,
+        // not a payable reward root; a matching ordinary drop_tag may still be used.
+        if (meta != null && ((meta.chest_drop_id > 0 && meta.chest_drop_id != 1000100)
+                || meta.drop_id > 0)) {
             return excluded(Exclusion.EXPLICIT_DROP);
         }
 

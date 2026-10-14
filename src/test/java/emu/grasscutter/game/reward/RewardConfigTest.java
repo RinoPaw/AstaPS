@@ -33,7 +33,7 @@ final class RewardConfigTest {
         assertEquals(30, chest.get(102));
         assertEquals(2, chest.get(201));
         assertEquals(1000, chest.get(202));
-        assertEquals(2, chest.get(104011));
+        assertFalse(chest.containsKey(104011));
         assertEquals(Map.of(102, 10),
                 amounts(cfg.transPoint().resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
         assertEquals(Map.of(201, 5, 101692, 20),

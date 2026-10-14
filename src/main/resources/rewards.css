@@ -40,17 +40,14 @@ transPoint[scene="7"] {
 /* Chest: four standard exploration qualities */
 /* ========================================= */
 
-/* Full quality defaults including previously hardcoded material counts. */
-/* sigils is a count; existing region lookup selects the sigil item ID. */
-/* These auxiliary quantities preserve the previous fallback behavior. */
+/* Four quality defaults for CSS-owned fixed rewards. */
+/* Ores, books, weapons and other random loot come from native DropTable pools. */
+/* An explicit item-ID declaration overrides that native item, including zero. */
 chest[kind="common"] {
     adventureExp: 30;
     primogems: 2;
     mora: 1000;
     sigils: 3;
-    item-104011: 2;
-    item-104001: 2;
-    item-104002: 1;
 }
 
 chest[kind="exquisite"] {
@@ -58,10 +55,6 @@ chest[kind="exquisite"] {
     primogems: 5;
     mora: 1500;
     sigils: 5;
-    item-104012: 2;
-    item-104001: 3;
-    item-104002: 2;
-    item-104003: 1;
 }
 
 chest[kind="precious"] {
@@ -69,11 +62,6 @@ chest[kind="precious"] {
     primogems: 10;
     mora: 2000;
     sigils: 8;
-    item-104012: 3;
-    item-104013: 1;
-    item-104001: 3;
-    item-104002: 3;
-    item-104003: 2;
 }
 
 chest[kind="luxurious"] {
@@ -81,11 +69,6 @@ chest[kind="luxurious"] {
     primogems: 10;
     mora: 2500;
     sigils: 10;
-    item-104012: 4;
-    item-104013: 1;
-    item-104001: 2;
-    item-104002: 4;
-    item-104003: 3;
 }
 
 /* Historical low-Primogem areas only (Mondstadt/Liyue); do not add modern areas */

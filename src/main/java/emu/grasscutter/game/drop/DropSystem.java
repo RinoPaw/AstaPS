@@ -7,6 +7,7 @@ import emu.grasscutter.data.excels.*;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.inventory.*;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.reward.ChestRewardConfig;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.scripts.data.SceneMonster;
 import emu.grasscutter.server.game.*;
@@ -317,6 +318,50 @@ public final class DropSystem extends BaseGameSystem {
         int dropId = queryDropData(dropTag, level, chestReward);
         if (dropId == 0) return false;
         return handleChestDrop(dropId, 1, bornFrom);
+    }
+
+    /**
+     * Standard exploration chests: retain the native random roll and replace only
+     * CSS-declared item IDs (including zero). Never pay both versions of a fixed
+     * reward. The native root chooses the actual regional sigil item when present.
+     */
+    public boolean handleStandardChestDrop(
+            String dropTag, int level, GameEntity bornFrom,
+            Map<Integer, Integer> cssAmounts, int fallbackSigilId) {
+        int dropId = queryDropData(dropTag, level, chestReward);
+        if (dropId == 0 || !dropTable.containsKey(dropId)) return false;
+        var root = dropTable.get(dropId);
+        if (isEmptyDropTable(root)) return false;
+
+        List<GameItem> items = new ArrayList<>();
+        processDrop(root, 1, items);
+        int sigilId = nativeChestSigilId(items, fallbackSigilId);
+        var fixed = ChestRewardConfig.resolveRegionalSigils(cssAmounts, sigilId);
+
+        // Keep native weapon/artifact instances: merging counts would reroll or
+        // collapse separate equipment drops. Only replace explicitly owned IDs.
+        items.removeIf(item -> fixed.containsKey(item.getItemId()));
+        for (var entry : fixed.entrySet()) {
+            if (entry.getKey() != 102 && entry.getValue() > 0) {
+                items.add(new GameItem(entry.getKey(), entry.getValue()));
+            }
+        }
+        int adventureExp = fixed.getOrDefault(102, 0);
+        if (items.isEmpty() && adventureExp == 0) return false;
+        var host = bornFrom.getWorld().getHost();
+        if (root.isFallToGround()) {
+            dropItems(items, ActionReason.OpenChest, bornFrom, host, false);
+        } else {
+            host.getInventory().addItems(items, ActionReason.OpenChest);
+        }
+        if (adventureExp > 0) host.earnExp(adventureExp);
+        return true;
+    }
+
+    static int nativeChestSigilId(List<GameItem> items, int fallback) {
+        return items.stream().mapToInt(GameItem::getItemId)
+                .filter(id -> id >= 301 && id <= 308)
+                .findFirst().orElse(fallback);
     }
 
     public boolean handleBossChestDrop(String dropTag, Player player) {

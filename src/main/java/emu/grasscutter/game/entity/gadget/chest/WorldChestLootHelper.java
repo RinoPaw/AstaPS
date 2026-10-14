@@ -9,6 +9,7 @@ import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.reward.ChestRewardConfig;
+import emu.grasscutter.game.reward.ChestRandomDrops;
 import emu.grasscutter.game.reward.RewardConfig;
 import emu.grasscutter.game.reward.StandardChestRewardResolver;
 import java.util.Map;
@@ -74,7 +75,12 @@ public final class WorldChestLootHelper {
                             preview.orElseThrow().area().level1(),
                             preview.orElseThrow().area().level2(), true)
                     : config.resolve(ChestRewardConfig.Kind.valueOf(tier.name()), 0, 0, 0, true);
-            amounts = missing.amounts();
+            amounts = new java.util.HashMap<>(missing.amounts());
+            // Random items supplement fixed currency in this fallback only.
+            // The roll definition wins over an inherited fixed item of the
+            // same ID; the config cascade has already resolved overrides.
+            amounts.putAll(ChestRandomDrops.sample(
+                    missing.randomRolls(), java.util.concurrent.ThreadLocalRandom.current()));
         }
         // No native random rewards when pool is missing. CSS supplies a
         // clearly labelled compatibility payout without inventing probabilities.

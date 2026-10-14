@@ -1,11 +1,11 @@
-/* AstaPS fixed rewards. Generated once as ./rewards.css. */
-/* A rule applies to the game's object type and matching attributes. */
-/* More equality attributes win. Equally specific rules use file order. */
-/* Omitted declarations inherit the previous reward; zero clears that reward. */
-/* This configuration controls fixed rewards, not native random loot. */
+/* AstaPS fixed rewards; generated once as ./rewards.css. */
+/* Attribute selectors match game objects; declarations specify rewards. */
+/* Greater attribute specificity wins; ties use later file order. */
+/* Zero clears a field; omitted fields retain their other matching values. */
 
-
+/* ========================================= */
 /* Transport: first activation only */
+/* ========================================= */
 
 transPoint[kind="waypoint"] {
     adventureExp: 50;
@@ -20,28 +20,27 @@ transPoint[kind="statue"] {
 transPoint[kind="domain"] {
     adventureExp: 50;
     primogems: 5;
+}
 
 /* The tutorial waypoint only gives 10 Adventure EXP, without primogems. */
 /* Explicitly clear the inherited 5 Primogems. */
-}
-
 transPoint[scene="3"][point="6"] {
     adventureExp: 10;
     primogems: 0;
-
-/* Three Realms Gateway Offering. Explicitly clear ordinary waypoint EXP. */
 }
 
+/* Three Realms Gateway Offering. Explicitly clear ordinary waypoint EXP. */
 transPoint[scene="7"] {
     adventureExp: 0;
     primogems: 5;
     item-101692: 20;
-
-/* Chest: four standard exploration qualities */
-
-/* High-Primogem-area defaults (including modern regions not listed below). */
 }
 
+/* ========================================= */
+/* Chest: four standard exploration qualities */
+/* ========================================= */
+
+/* High-Primogem-area defaults (including modern regions not listed below). */
 chest[kind="common"] {
     adventureExp: 30;
     primogems: 2;
@@ -60,13 +59,13 @@ chest[kind="precious"] {
 chest[kind="luxurious"] {
     adventureExp: 30;
     primogems: 10;
+}
 
+/* Historical low-Primogem areas only (Mondstadt/Liyue); do not add modern areas */
 /* solely because they belong to the same nation. */
 /* Dragonspine (3:10), Lisha (3:8), and Chasm (3:19, 6:300) use the defaults. */
 
 /* 坠星山谷 (scene 3, level-1 1) */
-}
-
 chest[kind="common"][scene="3"][area1="1"] {
     primogems: 0;
 }
@@ -77,10 +76,9 @@ chest[kind="exquisite"][scene="3"][area1="1"] {
 
 chest[kind="precious"][scene="3"][area1="1"] {
     primogems: 5;
-
-/* 风啸山坡 (scene 3, level-1 2) */
 }
 
+/* 风啸山坡 (scene 3, level-1 2) */
 chest[kind="common"][scene="3"][area1="2"] {
     primogems: 0;
 }
@@ -91,10 +89,9 @@ chest[kind="exquisite"][scene="3"][area1="2"] {
 
 chest[kind="precious"][scene="3"][area1="2"] {
     primogems: 5;
-
-/* 苍风高地 (scene 3, level-1 3) */
 }
 
+/* 苍风高地 (scene 3, level-1 3) */
 chest[kind="common"][scene="3"][area1="3"] {
     primogems: 0;
 }
@@ -105,10 +102,9 @@ chest[kind="exquisite"][scene="3"][area1="3"] {
 
 chest[kind="precious"][scene="3"][area1="3"] {
     primogems: 5;
-
-/* 明冠山地 (scene 3, level-1 4) */
 }
 
+/* 明冠山地 (scene 3, level-1 4) */
 chest[kind="common"][scene="3"][area1="4"] {
     primogems: 0;
 }
@@ -119,10 +115,9 @@ chest[kind="exquisite"][scene="3"][area1="4"] {
 
 chest[kind="precious"][scene="3"][area1="4"] {
     primogems: 5;
-
-/* 碧水原 (scene 3, level-1 5) */
 }
 
+/* 碧水原 (scene 3, level-1 5) */
 chest[kind="common"][scene="3"][area1="5"] {
     primogems: 0;
 }
@@ -133,10 +128,9 @@ chest[kind="exquisite"][scene="3"][area1="5"] {
 
 chest[kind="precious"][scene="3"][area1="5"] {
     primogems: 5;
-
-/* 珉林 (scene 3, level-1 6) */
 }
 
+/* 珉林 (scene 3, level-1 6) */
 chest[kind="common"][scene="3"][area1="6"] {
     primogems: 0;
 }
@@ -147,10 +141,9 @@ chest[kind="exquisite"][scene="3"][area1="6"] {
 
 chest[kind="precious"][scene="3"][area1="6"] {
     primogems: 5;
-
-/* 云来海 (scene 3, level-1 7) */
 }
 
+/* 云来海 (scene 3, level-1 7) */
 chest[kind="common"][scene="3"][area1="7"] {
     primogems: 0;
 }
@@ -161,10 +154,9 @@ chest[kind="exquisite"][scene="3"][area1="7"] {
 
 chest[kind="precious"][scene="3"][area1="7"] {
     primogems: 5;
-
-/* 琼玑野 (scene 3, level-1 9) */
 }
 
+/* 琼玑野 (scene 3, level-1 9) */
 chest[kind="common"][scene="3"][area1="9"] {
     primogems: 0;
 }
@@ -175,10 +167,9 @@ chest[kind="exquisite"][scene="3"][area1="9"] {
 
 chest[kind="precious"][scene="3"][area1="9"] {
     primogems: 5;
-
-/* 望风山地: higher-grade exception inside a historical low-grade parent */
 }
 
+/* 望风山地: higher-grade exception inside a historical low-grade parent */
 chest[kind="common"][scene="3"][area1="1"][area2="104"] {
     primogems: 2;
 }
@@ -189,10 +180,9 @@ chest[kind="exquisite"][scene="3"][area1="1"][area2="104"] {
 
 chest[kind="precious"][scene="3"][area1="1"][area2="104"] {
     primogems: 10;
-
-/* 孤云阁: higher-grade exception inside a historical low-grade parent */
 }
 
+/* 孤云阁: higher-grade exception inside a historical low-grade parent */
 chest[kind="common"][scene="3"][area1="7"][area2="703"] {
     primogems: 2;
 }
@@ -204,3 +194,4 @@ chest[kind="exquisite"][scene="3"][area1="7"][area2="703"] {
 chest[kind="precious"][scene="3"][area1="7"][area2="703"] {
     primogems: 10;
 }
+

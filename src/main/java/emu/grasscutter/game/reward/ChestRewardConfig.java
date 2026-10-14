@@ -6,13 +6,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.tomlj.Toml;
@@ -23,9 +24,11 @@ import org.tomlj.TomlTable;
 /**
  * Operator-owned fixed rewards for the four standard exploration chest qualities.
  *
- * <p>This class parses and selects rewards; it does not classify gadgets, roll random drops, or
- * grant items. The entire winning table replaces the fallback table. A missing reward field means
- * zero, not inheritance.
+ * <p>Rules are applied in the order in which they appear in rewards.toml. Later matching entries
+ * override earlier values for the same item ID. Unspecified reward fields are inherited, whereas
+ * explicitly setting an amount to zero removes that item from the final reward.
+ *
+ * <p>This class does not identify gadgets, roll random drops or grant items.
  */
 public final class ChestRewardConfig {
     public enum Kind {
@@ -45,14 +48,23 @@ public final class ChestRewardConfig {
         }
     }
 
-    /** Full selected rule, including the original selector for diagnostics. */
+    /** Final merged reward and last matched selector for diagnostics. */
     public record Match(String selector, List<ItemParamData> rewards) {
         public Match {
             rewards = List.copyOf(rewards);
         }
     }
 
-    private record AreaKey(Kind kind, int sceneId, int level1, int level2) {}
+    private record Rule(
+            Kind kind, int sceneId, int level1, int level2, String selector,
+            Map<Integer, Integer> overrides, int line, int column) {
+        boolean matches(Kind requestedKind, int scene, int parent, int child) {
+            if (kind != requestedKind) return false;
+            if (sceneId == 0) return true;
+            if (sceneId != scene || level1 != parent) return false;
+            return level2 == 0 || (child > 0 && level2 == child);
+        }
+    }
 
     private static final String TEMPLATE = "/rewards.toml";
     private static final Pattern SELECTOR =
@@ -63,23 +75,22 @@ public final class ChestRewardConfig {
             Set.of("adventureExp", "primogems", "mora", "items");
 
     private static volatile ChestRewardConfig active;
+    private final List<Rule> rules;
 
-    private final Map<Kind, Match> defaults;
-    private final Map<AreaKey, Match> regions;
-
-    private ChestRewardConfig(Map<Kind, Match> defaults, Map<AreaKey, Match> regions) {
-        this.defaults = Map.copyOf(defaults);
-        this.regions = Map.copyOf(regions);
+    private ChestRewardConfig(List<Rule> rules) {
+        this.rules = List.copyOf(rules);
     }
 
     /**
-     * Create the root-level operator file only if it is missing. Parse and validate the entire file
-     * before publishing an immutable configuration. Invalid edits never reset it to defaults.
+     * Create the root-level operator file only if it is missing. Validate the entire file before
+     * publishing an immutable snapshot. Invalid edits never reset operator settings.
      */
     public static void loadOrCreate(Path path) {
         Objects.requireNonNull(path, "path");
         try {
             if (Files.notExists(path)) {
+                Path parent = path.toAbsolutePath().getParent();
+                if (parent != null) Files.createDirectories(parent);
                 try (InputStream stream = ChestRewardConfig.class.getResourceAsStream(TEMPLATE)) {
                     if (stream == null) {
                         throw new IOException("Bundled " + TEMPLATE + " template is missing");
@@ -105,13 +116,14 @@ public final class ChestRewardConfig {
         if (root.hasErrors()) {
             throw new IllegalArgumentException("Invalid rewards.toml syntax: " + root.errors());
         }
-        if (!root.keySet().equals(Set.of("chest")) || !(root.get("chest") instanceof TomlTable chest)) {
+        if (!root.keySet().equals(Set.of("chest"))
+                || !(root.get("chest") instanceof TomlTable chest)) {
             throw new IllegalArgumentException(
                     "rewards.toml must contain only the [chest] selector tables");
         }
 
-        var defaults = new EnumMap<Kind, Match>(Kind.class);
-        var regions = new HashMap<AreaKey, Match>();
+        var seenDefaults = EnumSet.noneOf(Kind.class);
+        var rules = new ArrayList<Rule>();
 
         for (var entry : chest.entrySet()) {
             String selector = entry.getKey();
@@ -122,34 +134,38 @@ public final class ChestRewardConfig {
                                 + "\"]; expected kind=<quality>[,area=<scene>:<level1>[:<level2>]]");
             }
             if (!(entry.getValue() instanceof TomlTable table)) {
-                throw new IllegalArgumentException("Expected reward table for [chest.\"" + selector + "\"]");
+                throw new IllegalArgumentException(
+                        "Expected reward table for [chest.\"" + selector + "\"]");
             }
 
             Kind kind = Kind.valueOf(parsed.group(1).toUpperCase(java.util.Locale.ROOT));
-            Match match = new Match(selector, parseDirectReward(selector, table));
-
-            if (parsed.group(2) == null) {
-                if (defaults.putIfAbsent(kind, match) != null) {
-                    throw new IllegalArgumentException("Duplicate chest selector: " + selector);
-                }
-                continue;
+            int scene = parsed.group(2) == null ? 0 : positiveId(parsed.group(2), selector);
+            int parent = parsed.group(3) == null ? 0 : positiveId(parsed.group(3), selector);
+            int child = parsed.group(4) == null ? 0 : positiveId(parsed.group(4), selector);
+            if (scene == 0 && !seenDefaults.add(kind)) {
+                throw new IllegalArgumentException("Duplicate chest quality default: " + selector);
             }
 
-            int sceneId = positiveId(parsed.group(2), selector);
-            int level1 = positiveId(parsed.group(3), selector);
-            int level2 = parsed.group(4) == null ? 0 : positiveId(parsed.group(4), selector);
-            if (regions.putIfAbsent(new AreaKey(kind, sceneId, level1, level2), match) != null) {
-                throw new IllegalArgumentException("Duplicate chest selector: " + selector);
+            // TomlTable.entrySet() is not specified to iterate in source order. Read the actual
+            // location recorded by tomlj and sort by that, so the last written rule really wins.
+            var position = root.inputPositionOf(List.of("chest", selector));
+            if (position == null) {
+                throw new IllegalArgumentException(
+                        "Missing source position for [chest.\"" + selector + "\"]");
             }
+            rules.add(new Rule(
+                    kind, scene, parent, child, selector, parseDirectReward(selector, table),
+                    position.line(), position.column()));
         }
 
         for (Kind kind : Kind.values()) {
-            if (!defaults.containsKey(kind)) {
+            if (!seenDefaults.contains(kind)) {
                 throw new IllegalArgumentException(
                         "Missing [chest.\"kind=" + kind.selectorValue() + "\"] in rewards.toml");
             }
         }
-        return new ChestRewardConfig(defaults, regions);
+        rules.sort(Comparator.comparingInt(Rule::line).thenComparingInt(Rule::column));
+        return new ChestRewardConfig(rules);
     }
 
     private static int positiveId(String text, String selector) {
@@ -162,26 +178,34 @@ public final class ChestRewardConfig {
     }
 
     /**
-     * Exact level-2 area first; then level-1; finally kind default.
-     * Zero level-2 indicates an unknown child and never matches a child-specific rule.
+     * Apply all matching selectors in written order. A later general selector may deliberately
+     * override an earlier specific selector; specificity is never an implicit priority.
      */
     public Match resolve(Kind kind, int sceneId, int level1, int level2) {
         Objects.requireNonNull(kind, "kind");
         if (sceneId < 0 || level1 < 0 || level2 < 0) {
             throw new IllegalArgumentException("Scene and area IDs cannot be negative");
         }
-        if (sceneId > 0 && level1 > 0) {
-            if (level2 > 0) {
-                Match child = regions.get(new AreaKey(kind, sceneId, level1, level2));
-                if (child != null) return child;
-            }
-            Match parent = regions.get(new AreaKey(kind, sceneId, level1, 0));
-            if (parent != null) return parent;
+        var reward = new TreeMap<Integer, Integer>();
+        String lastSelector = null;
+        for (Rule rule : rules) {
+            if (!rule.matches(kind, sceneId, level1, level2)) continue;
+            reward.putAll(rule.overrides());
+            lastSelector = rule.selector();
         }
-        return defaults.get(kind);
+        if (lastSelector == null) {
+            throw new IllegalStateException("No default rule for chest kind " + kind);
+        }
+        var direct = new ArrayList<ItemParamData>();
+        for (var entry : reward.entrySet()) {
+            if (entry.getValue() > 0) {
+                direct.add(new ItemParamData(entry.getKey(), entry.getValue()));
+            }
+        }
+        return new Match(lastSelector, direct);
     }
 
-    private static List<ItemParamData> parseDirectReward(String selector, TomlTable table) {
+    private static Map<Integer, Integer> parseDirectReward(String selector, TomlTable table) {
         String context = "[chest.\"" + selector + "\"]";
         for (String field : table.keySet()) {
             if (!REWARD_FIELDS.contains(field)) {
@@ -190,11 +214,16 @@ public final class ChestRewardConfig {
             }
         }
 
-        var items = new ArrayList<ItemParamData>();
-        var seen = new HashSet<Integer>();
-        direct(items, seen, 102, amount(table, "adventureExp", context, false));
-        direct(items, seen, 201, amount(table, "primogems", context, false));
-        direct(items, seen, 202, amount(table, "mora", context, false));
+        var entries = new HashMap<Integer, Integer>();
+        if (table.contains("adventureExp")) {
+            entries.put(102, amount(table, "adventureExp", context, false));
+        }
+        if (table.contains("primogems")) {
+            entries.put(201, amount(table, "primogems", context, false));
+        }
+        if (table.contains("mora")) {
+            entries.put(202, amount(table, "mora", context, false));
+        }
 
         Object raw = table.get("items");
         if (raw != null) {
@@ -202,27 +231,25 @@ public final class ChestRewardConfig {
                 throw new IllegalArgumentException(context + ".items must be an array");
             }
             for (int i = 0; i < array.size(); ++i) {
-                String entry = context + ".items[" + i + "]";
+                String itemContext = context + ".items[" + i + "]";
                 if (!(array.get(i) instanceof TomlTable item)
                         || !item.keySet().equals(Set.of("id", "count"))) {
                     throw new IllegalArgumentException(
-                            entry + " must have exactly integer 'id' and 'count' fields");
+                            itemContext + " must have exactly integer 'id' and 'count' fields");
                 }
-                int id = amount(item, "id", entry, true);
-                int count = amount(item, "count", entry, true);
-                if (!seen.add(id)) {
+                int id = amount(item, "id", itemContext, true);
+                int count = amount(item, "count", itemContext, true);
+                if (entries.putIfAbsent(id, count) != null) {
                     throw new IllegalArgumentException(
                             "Duplicate item ID " + id + " in " + context);
                 }
-                items.add(new ItemParamData(id, count));
             }
         }
-        return List.copyOf(items);
+        return Map.copyOf(entries);
     }
 
     private static int amount(TomlTable table, String key, String context, boolean positive) {
         Object raw = table.get(key);
-        if (raw == null && !positive) return 0;
         if (!(raw instanceof Long value)
                 || value > Integer.MAX_VALUE
                 || (positive ? value <= 0 : value < 0)) {
@@ -231,12 +258,5 @@ public final class ChestRewardConfig {
                             + (positive ? "positive" : "non-negative") + " 32-bit integer");
         }
         return value.intValue();
-    }
-
-    private static void direct(List<ItemParamData> out, Set<Integer> seen, int id, int count) {
-        if (count > 0) {
-            seen.add(id);
-            out.add(new ItemParamData(id, count));
-        }
     }
 }

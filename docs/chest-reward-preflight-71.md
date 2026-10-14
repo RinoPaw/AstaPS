@@ -19,7 +19,10 @@ matched TOML tables, including explicit zero clears. The final nonzero
 which native items should be suppressed. `ChestRewardOverlay.plan()`
 keeps every unowned native roll item (and its rolled equipment properties),
 removes only owned IDs, and attaches the final configured direct rewards.
-It makes no delivery attempts. `Plan.inventoryBatch()` can build a complete
+The read-only `StandardChestRewardResolver.stage(gadget, dropSystem)` composes
+this configured preview with a native tag roll and returns both original routing
+metadata and the filtered overlay. It never calls `GadgetChest` interaction or
+inventory methods. It makes no delivery attempts. `Plan.inventoryBatch()` can build a complete
 in-memory inventory grant from the retained native items and configured direct
 items, rejecting missing/mismatched item definitions before any grant. The
 caller still has to establish one verified admission and delivery operation.

@@ -25,6 +25,15 @@ public final class YamlLootTables {
     private record Entry(Integer item, Pool nested, LootCount.Spec count, BigDecimal weight) {}
     private record Pool(boolean weighted, List<Entry> entries, double totalWeight) {}
 
+    private static final int MAX_DEPTH = 64;
+    private static final int MAX_TABLES = 4096;
+    private static final int MAX_ENTRIES = 20_000;
+
+    private static final class CompileBudget {
+        int tables;
+        int entries;
+    }
+
     private final Map<String, Pool> pools;
     private YamlLootTables(Map<String, Pool> pools) { this.pools = Map.copyOf(pools); }
 
@@ -39,6 +48,8 @@ public final class YamlLootTables {
         if (!(document instanceof Map<?, ?> raw)) {
             throw new IllegalArgumentException("Loot YAML root must be a mapping of named lists");
         }
+        if (raw.size() > MAX_TABLES) throw new IllegalArgumentException("Too many loot tables");
+        var budget = new CompileBudget();
         var parsed = new LinkedHashMap<String, Pool>();
         var compiled = new IdentityHashMap<Object, Pool>();
         var visiting = new IdentityHashMap<Object, Boolean>();
@@ -46,14 +57,16 @@ public final class YamlLootTables {
             if (!(e.getKey() instanceof String name) || name.isBlank()) {
                 throw new IllegalArgumentException("Loot table name must be a nonempty string");
             }
-            parsed.put(name, parseList(e.getValue(), resolver, compiled, visiting, name));
+            parsed.put(name, parseList(e.getValue(), resolver, compiled, visiting, budget, name, 0));
         }
         return new YamlLootTables(parsed);
     }
 
     private static Pool parseList(Object raw, ItemResolver resolver,
             IdentityHashMap<Object, Pool> compiled,
-            IdentityHashMap<Object, Boolean> visiting, String location) {
+            IdentityHashMap<Object, Boolean> visiting, CompileBudget budget,
+            String location, int depth) {
+        if (depth > MAX_DEPTH) throw new IllegalArgumentException(location + ": loot nesting too deep");
         if (!(raw instanceof List<?> list)) {
             throw new IllegalArgumentException(location + ": expected a YAML list");
         }
@@ -62,6 +75,11 @@ public final class YamlLootTables {
         }
         Pool cached = compiled.get(raw);
         if (cached != null) return cached;
+        if (++budget.tables > MAX_TABLES) throw new IllegalArgumentException("Too many unique nested loot lists");
+        if (list.size() > MAX_ENTRIES - budget.entries) {
+            throw new IllegalArgumentException(location + ": too many loot entries");
+        }
+        budget.entries += list.size();
         visiting.put(raw, true);
         try {
             var entries = new ArrayList<Entry>();
@@ -83,7 +101,7 @@ public final class YamlLootTables {
                 Integer item = null;
                 Pool nested = null;
                 if (target instanceof List<?>) {
-                    nested = parseList(target, resolver, compiled, visiting, at + ".item");
+                    nested = parseList(target, resolver, compiled, visiting, budget, at + ".item", depth + 1);
                 } else if (target != null) {
                     if (!(target instanceof String || target instanceof Number)) {
                         throw new IllegalArgumentException(at + ": invalid item: " + target);
@@ -138,7 +156,7 @@ public final class YamlLootTables {
 
     private static void rollPool(Pool pool, int times, RandomGenerator random,
             Map<Integer, Integer> reward, int[] remaining, int depth) {
-        if (depth > 64) throw new IllegalStateException("Loot nesting exceeds 64 levels");
+        if (depth > MAX_DEPTH) throw new IllegalStateException("Loot nesting exceeds " + MAX_DEPTH + " levels");
         for (int n = 0; n < times; n++) {
             if (--remaining[0] < 0) throw new IllegalStateException("Loot evaluation budget exceeded");
             if (pool.weighted) {

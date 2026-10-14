@@ -12,6 +12,34 @@ fields replace matching item IDs before payout. Native quest loot and special
 chest flows remain separate. Rejected standard-chest area preflight now leaves
 the chest unopened; confirmed inventory/ground delivery remains outstanding.
 
+## Quick start: edit the four chest qualities
+
+After the server's first successful launch, edit `rewards.css` for fixed
+rewards and `chest-loot.json` for randomized loot. Both are created in the
+server working directory; **restart the server** after editing. They are
+operator-owned files, not regenerated or overwritten at each launch.
+
+| JSON/CSS kind | Chest quality |
+| --- | --- |
+| `common` | 普通宝箱 |
+| `exquisite` | 精致宝箱 |
+| `precious` | 珍贵宝箱 |
+| `luxurious` | 华丽宝箱 |
+
+For fixed amounts, edit the relevant `chest[kind="..."]` rule in CSS.
+For randomized drops, find the matching quality and region `tag` under
+`chests.<kind>.sources`, read its `dropId`, then edit that ID in
+`chests.<kind>.tables`. A table entry pointing to another table ID follows
+that subtable; final item IDs determine what the player receives. This retains
+the actual source graph instead of replacing regional and level variants with
+one invented universal drop list.
+
+A configured `weight: 0` prevents that entry from rolling; a
+`countRange: "0"` produces no quantity. CSS can override an item that
+normally rolls from JSON, with `item-<id>: 0;` explicitly suppressing it.
+Changes to one quality's JSON tables do not affect the other qualities,
+even when their original table IDs match.
+
 ## Four editable ordinary-chest loot pools
 
 AstaPS uses **two operator-owned files** so fixed rewards and native random

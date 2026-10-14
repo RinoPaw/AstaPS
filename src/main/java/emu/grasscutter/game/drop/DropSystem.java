@@ -14,10 +14,13 @@ import emu.grasscutter.server.game.*;
 import emu.grasscutter.server.packet.send.*;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.*;
+import java.nio.file.Path;
+import java.io.IOException;
 
 public final class DropSystem extends BaseGameSystem {
     private final Int2ObjectMap<DropTableData> dropTable;
     private final Map<String, List<BaseDropData>> chestReward;
+    private final StandardChestLootConfig standardChestLoot;
     private final Map<String, List<BaseDropData>> monsterDrop;
     private final Random rand;
 
@@ -43,6 +46,15 @@ public final class DropSystem extends BaseGameSystem {
         } catch (Exception ignored) {
             Grasscutter.getLogger()
                     .error("Unable to load chest drop data. Please place ChestDrop.json in data folder.");
+        }
+
+        // Export the existing standard-chest native graph once, then use the
+        // operator's editable copy on later launches. Boss/special tables stay native.
+        try {
+            this.standardChestLoot = StandardChestLootConfig.loadOrCreate(
+                    Path.of("chest-loot.json"), chestReward, dropTable);
+        } catch (IOException | IllegalArgumentException e) {
+            throw new IllegalStateException("Cannot load chest-loot.json", e);
         }
 
         try {
@@ -328,21 +340,20 @@ public final class DropSystem extends BaseGameSystem {
     public boolean handleStandardChestDrop(
             String dropTag, int level, GameEntity bornFrom,
             Map<Integer, Integer> cssAmounts, int fallbackSigilId) {
-        int dropId = queryDropData(dropTag, level, chestReward);
-        if (dropId == 0 || !dropTable.containsKey(dropId)) return false;
-        var root = dropTable.get(dropId);
-        if (isEmptyDropTable(root)) return false;
-
+        // The editable chest-loot.json owns every standard-chest random entry,
+        // including regional/level roots, probabilities and quantity ranges.
+        StandardChestLootConfig.Roll roll;
         List<GameItem> items = new ArrayList<>();
         try {
-            // A historic partial root may contain a malformed/missing item
-            // definition. Roll everything before sending any payout so failure
-            // can safely fall back to CSS without partially granting native loot.
-            processDrop(root, 1, items);
+            roll = standardChestLoot.roll(dropTag, level, rand);
+            if (roll == null) return false;
+            for (var entry : roll.amounts().entrySet()) {
+                items.add(new GameItem(entry.getKey(), entry.getValue()));
+            }
         } catch (RuntimeException e) {
             Grasscutter.getLogger().warn(
-                    "Invalid native standard chest drop tag={} root={}: {}",
-                    dropTag, dropId, e.toString());
+                    "Invalid configured standard chest drop tag={} level={}: {}",
+                    dropTag, level, e.toString());
             return false;
         }
         int sigilId = nativeChestSigilId(items, fallbackSigilId);
@@ -366,7 +377,7 @@ public final class DropSystem extends BaseGameSystem {
         // A usable native pool can legitimately yield no items, and CSS may
         // explicitly zero its fields. Neither makes the native pool missing.
         var host = bornFrom.getWorld().getHost();
-        if (root.isFallToGround()) {
+        if (roll.fallToGround()) {
             dropItems(items, ActionReason.OpenChest, bornFrom, host, false);
         } else {
             host.getInventory().addItems(items, ActionReason.OpenChest);

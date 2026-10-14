@@ -1,17 +1,16 @@
 # Runtime configuration layout
 
-The server operator owns **config/**. The project and resource pack must not
+The server operator owns **rewards.toml** and **config/**. The project and resource pack must not
 silently overwrite local policy. `config.json` remains the global settings
 entry point for network, database, services, and existing global tuning.
 
-Only one gameplay config currently exists:
+The first-unlock and standard-chest fixed-reward definitions now share one file:
 
 ```text
 AstaPS/
 ├── config.json                          # Existing global settings
+├── rewards.toml                         # Unified first-unlock + chest fixed rewards
 ├── config/
-│   ├── rewards/
-│   │   └── trans-point-rewards.toml     # Implemented
 │   ├── drops/
 │   │   ├── chests.toml                 # Future, not yet created
 │   │   ├── monsters.toml               # Future, not yet created
@@ -36,8 +35,11 @@ AstaPS/
   This directory currently also contains state and generated files; it has mixed
   ownership and should not become the default home for new human-written policy.
   Existing tables and their load behavior remain untouched.
-- `config/`: server-owner policy written in TOML when concise enough to maintain
-  by hand. Large, machine-generated data should not be converted to huge TOML
+- `rewards.toml`: the **single** server-owner authority for transport first-unlock
+  rewards and standard exploration chest fixed rewards. Rules cascade in source
+  order; later matching fields override earlier values.
+- `config/`: server-owner policy for other gameplay systems written in TOML
+  when concise enough to maintain by hand. Large, machine-generated data should not be converted to huge TOML
   arrays merely for consistency.
 - Database and existing claimed-state files: runtime player/claim state, never
   treated as configurable reward definitions.
@@ -49,8 +51,11 @@ overwritten by native asset changes.
 
 ## Future subsystem boundaries
 
-- `rewards/trans-point-rewards.toml`: first discovery/activation rewards for
+- `rewards.toml` / `[transPoint]`: first discovery/activation rewards for
   waypoints, Statues of The Seven and manually activated domain entrances.
+- `rewards.toml` / `[chest]`: fixed amounts for standard exploration chest
+  kinds and area overrides. These values are parsed but not yet used by
+  the chest runtime path.
 - `drops/chests.toml`, `drops/monsters.toml`, `drops/domains.toml`:
   loot pool policy, drop probabilities and counts. These do not define
   the first-activation domain reward or domain unlock rules.
@@ -66,10 +71,14 @@ until another subsystem needs them. Each feature owns validation and tests.
 
 ## Deployment
 
-Bundled defaults belong to `src/main/resources/`, while runtime files under
-`config/` are gitignored. First startup generates a missing file. Updates do
+Bundled defaults belong to `src/main/resources/`. The operator-owned
+root-level `rewards.toml` and runtime files under `config/` are gitignored.
+First startup generates the unified rewards file if missing. Updates do
 not overwrite operator values. Unknown keys and invalid values fail validation.
 
-Only the documented config path is read. No automatic legacy-path imports,
+Only the documented unified rewards path is read. The old
+`config/rewards/trans-point-rewards.toml` is no longer read; operators with
+custom transport rules must transfer them into `[transPoint]` in `rewards.toml`.
+No automatic legacy-path imports,
 migration branches, or undocumented fallbacks are added for draft features.
 Breaking schema changes must be documented and tested explicitly.

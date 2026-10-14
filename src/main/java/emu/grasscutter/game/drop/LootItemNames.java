@@ -60,7 +60,9 @@ public final class LootItemNames implements YamlLootTables.ItemResolver {
         for (var item : GameData.getItemDataMap().values()) {
             var text = Language.getTextMapKey(item.getNameTextMapHash());
             String english = text == null ? null : text.get(0);
-            if (english != null && !english.isBlank()) names.put(item.getId(), english);
+            if (english != null && (english.isBlank() || english.startsWith("[N/A]"))) english = null;
+            // Every real item must keep its numeric-ID fallback, even without English text.
+            names.put(item.getId(), english);
         }
         return new LootItemNames(names);
     }

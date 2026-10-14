@@ -61,7 +61,7 @@ final class StandardChestLootConfig {
     private final Map<String, Map<String, List<Source>>> sources;
     private final Map<String, Map<Integer, Table>> tables;
 
-    private StandardChestLootConfig(Document doc) {
+    StandardChestLootConfig(Document doc) {
         if (doc == null || doc.chests() == null || !doc.chests().keySet().equals(Set.copyOf(KINDS))) {
             throw new IllegalArgumentException("chest-loot.json requires exactly four chest qualities");
         }
@@ -337,7 +337,7 @@ final class StandardChestLootConfig {
     }
 
     private static void deliver(Drop drop, Map<Integer, Table> lookup, Random random,
-                                Map<Integer, Integer> result, Set<Integer> stack) {
+                                List<ItemDrop> result, Set<Integer> stack) {
         int count = amount(drop.countRange(), random);
         if (count <= 0) return;
         var child = lookup.get(drop.itemId());

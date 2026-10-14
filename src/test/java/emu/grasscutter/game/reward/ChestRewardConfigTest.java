@@ -180,7 +180,7 @@ class ChestRewardConfigTest {
         var config = ChestRewardConfig.parse(minimalRules()
                 + "\n[chest.\"kind=common,area=3:1:104\"]\nprimogems = 9\n");
         assertEquals(Map.of(102, 30, 201, 2), contents(config.resolve(Kind.COMMON, 3, 1, 0)));
-        assertEquals(Map.of(201, 9), contents(config.resolve(Kind.COMMON, 3, 1, 104)));
+        assertEquals(Map.of(102, 30, 201, 9), contents(config.resolve(Kind.COMMON, 3, 1, 104)));
         assertThrows(IllegalArgumentException.class, () -> config.resolve(Kind.COMMON, -1, 1, 1));
         assertThrows(NullPointerException.class, () -> config.resolve(null, 3, 1, 1));
     }

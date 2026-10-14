@@ -113,3 +113,7 @@ Dragonspine chests tagged with "蒙德" use Anemo Sigils, not Snezhnaya's
 Cryo Sigils. Existing root `rewards.css` files are intentionally never
 overwritten. To activate new rules, merge them into the operator CSS file,
 or copy the bundled template after preserving any custom settings.
+
+Runtime loading inherits absent `pool="missing"` fields from the bundled
+template in memory, while preserving the existing operator CSS byte-for-byte.
+Explicit custom values (including zero) take precedence.

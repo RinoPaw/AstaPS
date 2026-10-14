@@ -133,6 +133,32 @@ final class RewardConfigTest {
     }
 
     @Test
+    void oldOperatorCssInheritsMissingNativePoolRulesOnlyInMemory() throws Exception {
+        String all = bundled();
+        int start = all.indexOf("/* Only for ordinary chests WITHOUT");
+        int end = all.indexOf("/* Historical low-Primogem areas only");
+        assertTrue(start > 0 && end > start);
+        String old = all.substring(0, start) + all.substring(end);
+        // The operator disables fallback Mora; inherited CSS must not overwrite zero.
+        old += "\nchest[kind=\"common\"][pool=\"missing\"] { mora: 0; }\n";
+
+        Path file = temp.resolve("rewards.css");
+        Files.writeString(file, old);
+        RewardConfig.loadOrCreate(file);
+
+        assertEquals(old, Files.readString(file));
+        var chest = RewardConfig.current().chest();
+        assertFalse(chest.resolve(Kind.COMMON, 0, 0, 0).amounts().containsKey(202));
+        var missing = chest.resolve(Kind.COMMON, 0, 0, 0, true).amounts();
+        assertEquals(0, missing.get(202));
+        assertEquals(3, missing.get(-1));
+        assertEquals(2, missing.get(104011));
+        assertEquals(30, missing.get(102));
+        assertEquals(2500, chest.resolve(Kind.LUXURIOUS, 0, 0, 0, true)
+                .amounts().get(202));
+    }
+
+    @Test
     void malformedCssIsNotAutoFixedAndActiveSnapshotIsKept() throws Exception {
         Path file = temp.resolve("rewards.css");
         RewardConfig.loadOrCreate(file);

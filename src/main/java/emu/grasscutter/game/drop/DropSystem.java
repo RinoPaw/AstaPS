@@ -363,7 +363,8 @@ public final class DropSystem extends BaseGameSystem {
             }
         }
         int adventureExp = fixed.getOrDefault(102, 0);
-        if (items.isEmpty() && adventureExp == 0) return false;
+        // A usable native pool can legitimately yield no items, and CSS may
+        // explicitly zero its fields. Neither makes the native pool missing.
         var host = bornFrom.getWorld().getHost();
         if (root.isFallToGround()) {
             dropItems(items, ActionReason.OpenChest, bornFrom, host, false);

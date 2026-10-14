@@ -82,8 +82,8 @@ public final class WorldChestLootHelper {
             amounts.putAll(ChestRandomDrops.sample(
                     missing.randomRolls(), java.util.concurrent.ThreadLocalRandom.current()));
         }
-        // No native random rewards when pool is missing. CSS supplies a
-        // clearly labelled compatibility payout without inventing probabilities.
+        // No native roll when the pool is missing. Only explicitly configured
+        // compatibility probabilities are sampled; they are not verified 7.1 data.
         Map<Integer, Integer> rewards =
                 ChestRewardConfig.resolveRegionalSigils(amounts, fallbackSigilId);
         Scene scene = entityGadget.getScene();

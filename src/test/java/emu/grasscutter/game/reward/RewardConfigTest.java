@@ -90,9 +90,14 @@ final class RewardConfigTest {
     void oldOperatorCssInheritsDefaultsInMemoryWithoutWritingFiles() throws Exception {
         String source = bundled();
         int chestStart = source.indexOf("/* Chest: four standard exploration qualities */");
-        assertTrue(chestStart > 0);
-        String legacy = source.substring(0, chestStart)
-                + source.substring(chestStart).replaceAll(
+        int missingStart = source.indexOf("/* Only for ordinary chests WITHOUT");
+        int missingEnd = source.indexOf("/* Historical low-Primogem areas only");
+        assertTrue(chestStart > 0 && missingStart > chestStart && missingEnd > missingStart);
+        // Simulate an older CSS which predates pool=missing. Simply stripping its
+        // declarations leaves empty CSS blocks that real operators never had.
+        String withoutMissing = source.substring(0, missingStart) + source.substring(missingEnd);
+        String legacy = withoutMissing.substring(0, chestStart)
+                + withoutMissing.substring(chestStart).replaceAll(
                         "(?m)^    (?:mora|sigils|item-[0-9]+): [0-9]+;\r?\n", "");
         legacy += """
 

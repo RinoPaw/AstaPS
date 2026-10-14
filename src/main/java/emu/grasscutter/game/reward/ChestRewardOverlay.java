@@ -1,10 +1,13 @@
 package emu.grasscutter.game.reward;
 
 import emu.grasscutter.data.common.ItemParamData;
+import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.InventoryGrantBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.IntFunction;
 
 /**
  * Read-only partition of a rolled native chest reward and operator-owned fixed amounts.
@@ -21,6 +24,36 @@ public final class ChestRewardOverlay {
         public Plan {
             nativeItems = List.copyOf(nativeItems);
             configuredItems = List.copyOf(configuredItems);
+        }
+
+        /**
+         * Prepare a single inventory batch, preserving the native item's rolled stats
+         * and expanding configured equipment and direct-use cards correctly.
+         *
+         * <p>This only prepares an in-memory batch. The caller must still decide whether
+         * the original ground-drop behavior can safely be replaced, then perform full
+         * inventory admission and durable claim coordination. No state is changed here.
+         */
+        public List<GameItem> inventoryBatch(IntFunction<ItemData> definitions) {
+            Objects.requireNonNull(definitions, "definitions");
+            var batch = new ArrayList<GameItem>();
+            for (GameItem item : nativeItems) {
+                if (item.getItemData() == null
+                        || item.getItemData().getId() != item.getItemId()) {
+                    throw new IllegalArgumentException(
+                            "Missing native chest item definition: " + item.getItemId());
+                }
+                batch.add(item.copyForGrant());
+            }
+            for (ItemParamData direct : configuredItems) {
+                ItemData data = definitions.apply(direct.getId());
+                if (data == null || data.getId() != direct.getId()) {
+                    throw new IllegalArgumentException(
+                            "Missing configured chest item definition: " + direct.getId());
+                }
+                batch.addAll(InventoryGrantBuilder.create(data, direct.getCount(), 1));
+            }
+            return List.copyOf(batch);
         }
     }
 

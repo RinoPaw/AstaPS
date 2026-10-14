@@ -1,26 +1,49 @@
 # AstaPS first-unlock rewards
 
-`config/rewards/trans-point-rewards.toml` is a server-owned configuration, generated
-on the first startup. Existing configuration is never overwritten. Malformed or
-unsupported configuration stops startup; there is no native reward-table fallback.
-There is no legacy-path migration: only this path is read.
+The server-owned root-level `rewards.toml` contains both `[transPoint]` and
+`[chest]` sections. It is copied once from
+`src/main/resources/rewards.toml`. Existing files are never overwritten.
+Malformed or unsupported configuration stops startup; native reward tables do
+not replace a failing operator file.
+
+The old `config/rewards/trans-point-rewards.toml` is **no longer read**.
+Existing operators must manually transfer custom rules to `[transPoint]`
+in the new file. No automatic legacy import is performed.
 
 ## Supported selectors
 
-- `["kind=waypoint"]`: ordinary teleport points
-- `["kind=statue"]`: Statues of The Seven
-- `["kind=domain"]`: dungeon entrances activated by the player
-- `["7:*"]`: every eligible point in scene 7
-- `["3:6"]`: one exact scene/point pair
+- `[transPoint."kind=waypoint"]`: ordinary teleport points
+- `[transPoint."kind=statue"]`: Statues of The Seven
+- `[transPoint."kind=domain"]`: manually activated dungeon entrances
+- `[transPoint."7:*"]`: all eligible points in scene 7
+- `[transPoint."3:6"]`: exact scene/point pair
 
-Priority: exact point > scene > kind. Exactly one table applies; missing reward fields
-mean zero, not inherited values. `adventureExp`, `primogems`, and `mora` are
-non-negative integers; `items` is an array of `{ id = ..., count = ... }`.
+**All matching rules apply from top to bottom.** Each later matching item
+amount overrides only that amount; missing fields inherit earlier values.
+Explicit zero removes an inherited item. A broad rule written later can
+override a more specific rule. For example:
 
-The bundled template is `src/main/resources/trans-point-rewards.toml`.
-The local generated config directory is gitignored. This intentionally does **not** load
-`ExcelBinOutput/TransPointRewardConfigData.json` or look up the old `rewardId`
-in `RewardExcelConfigData.json`.
+```toml
+[transPoint."kind=waypoint"]
+adventureExp = 50
+primogems = 5
+
+[transPoint."3:6"]
+adventureExp = 10
+primogems = 0
+```
+
+`adventureExp`, `primogems`, and `mora` are non-negative integers.
+`items` is an array of `{ id = ..., count = ... }`, with non-negative
+counts so an explicit zero can cancel inherited items. Item IDs must be
+positive and duplicate item IDs inside one table are invalid.
+
+The supplied `[transPoint."7:*"]` template includes
+`adventureExp = 0`, so it preserves the old three-realms 5-Primogem and
+20-item reward without inheriting ordinary waypoint EXP.
+
+The native `ExcelBinOutput/TransPointRewardConfigData.json` and old
+`rewardId` are not used to decide these amounts.
 
 ## Native first-unlock boundaries
 

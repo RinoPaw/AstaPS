@@ -292,15 +292,12 @@ final class StandardChestLootConfig {
         if (selected == null) return null;
         var lookup = tables.get(kind);
         Table root = lookup.get(selected.dropId());
-        if (!usable(root)) return null;
+        // An explicitly empty/zero-weight configured pool is valid; it must
+        // not trigger pool=missing compatibility rewards.
+        if (root == null) return null;
         var drops = new ArrayList<ItemDrop>();
         rollNode(root, 1, lookup, random, drops, new HashSet<>());
         return new Roll(drops, root.fallToGround());
-    }
-
-    private static boolean usable(Table table) {
-        return table != null && table.dropVec().stream()
-                .anyMatch(x -> x.itemId() != 0 && x.weight() > 0);
     }
 
     private static void rollNode(Table table, int times, Map<Integer, Table> lookup,

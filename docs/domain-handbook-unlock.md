@@ -8,7 +8,7 @@ AstaPS uses separate rules for the Adventurer Handbook, world-map discovery, and
 - `GetDailyDungeonEntryInfoRsp` reports `isQuickOpen` only for a genuinely unlocked, not force-locked point. Dungeon `isPassed` reflects recorded dungeon completion instead of being hardcoded.
 - `DomainHandbookHelper` may synchronize known state to the client but never adds handbook entries to `unlockedScenePoints`.
 
-Reward selection remains server-owned: `config/rewards/trans-point-rewards.toml`. The `rewardedDungeonEntries` receipt guards each first activation independently.
+Reward selection remains server-owned: `[transPoint]` rules in root-level `rewards.toml`. The `rewardedDungeonEntries` receipt guards each first activation independently.
 
 ## Existing player data
 

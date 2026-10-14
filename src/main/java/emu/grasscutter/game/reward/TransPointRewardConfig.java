@@ -2,177 +2,136 @@ package emu.grasscutter.game.reward;
 
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.common.PointData;
-import org.tomlj.Toml;
-import org.tomlj.TomlArray;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.regex.Pattern;
 import org.tomlj.TomlParseResult;
 import org.tomlj.TomlTable;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-/** Server-owned, first-unlock rewards. The native TransPointRewardConfigData table is unused. */
+/**
+ * First-unlock rewards for waypoints, statues and domain entrances, from the shared rewards.toml.
+ *
+ * <p>All matching tables are applied in written order; later fields override earlier fields,
+ * including when the later selector is less specific. This does not change point eligibility.
+ */
 public final class TransPointRewardConfig {
     public enum Kind { WAYPOINT, STATUE, DOMAIN }
 
-    private static final String TEMPLATE = "/trans-point-rewards.toml";
-    private static final int FORMAT_VERSION = 1;
-    private static final Set<String> REWARD_KEYS =
-            Set.of("adventureExp", "primogems", "mora", "items");
-    private static volatile TransPointRewardConfig active;
-
-    private final Map<Kind, List<ItemParamData>> kinds;
-    private final Map<Integer, List<ItemParamData>> scenes;
-    private final Map<Long, List<ItemParamData>> points;
-
-    private TransPointRewardConfig(
-            Map<Kind, List<ItemParamData>> kinds,
-            Map<Integer, List<ItemParamData>> scenes,
-            Map<Long, List<ItemParamData>> points) {
-        this.kinds = Map.copyOf(kinds);
-        this.scenes = Map.copyOf(scenes);
-        this.points = Map.copyOf(points);
+    private record Rule(
+            Kind kind, int scene, int point, String selector,
+            Map<Integer, Integer> overrides, int line, int column) {
+        boolean matches(int sceneId, int pointId, Kind requestedKind) {
+            if (kind != null) return kind == requestedKind;
+            return scene == sceneId && (point == 0 || point == pointId);
+        }
     }
 
-    public static void loadOrCreate(Path path) {
-        try {
-            if (Files.notExists(path)) {
-                Files.createDirectories(path.toAbsolutePath().getParent());
-                try (InputStream source = TransPointRewardConfig.class.getResourceAsStream(TEMPLATE)) {
-                    if (source == null) throw new IOException("Missing bundled template " + TEMPLATE);
-                    Files.copy(source, path);
-                }
-            }
-            // Failed edits must never silently reset the owner's configuration.
-            active = parse(Files.readString(path));
-        } catch (IOException | IllegalArgumentException e) {
-            throw new IllegalStateException("Cannot load " + path + ": " + e.getMessage(), e);
-        }
+    private static final Pattern LOCATION =
+            Pattern.compile("^[1-9][0-9]*:([1-9][0-9]*|\\*)$");
+
+    private final List<Rule> rules;
+
+    private TransPointRewardConfig(List<Rule> rules) {
+        this.rules = List.copyOf(rules);
     }
 
     public static TransPointRewardConfig current() {
-        var value = active;
-        if (value == null) throw new IllegalStateException("trans-point-rewards.toml was not loaded");
-        return value;
+        return RewardConfig.current().transPoint();
     }
 
-    public static TransPointRewardConfig parse(String text) {
-        TomlParseResult root = Toml.parse(text);
-        if (root.hasErrors()) throw new IllegalArgumentException("Invalid TOML: " + root.errors());
+    /** For pure unit tests; production loads the shared root-level rewards.toml once. */
+    public static TransPointRewardConfig parse(String source) {
+        return RewardConfig.parse(source).transPoint();
+    }
 
-        Object version = root.get("version");
-        if (!(version instanceof Long n) || n != FORMAT_VERSION) {
-            throw new IllegalArgumentException("Expected version = " + FORMAT_VERSION);
+    static TransPointRewardConfig parseTable(TomlParseResult root) {
+        if (!(root.get("transPoint") instanceof TomlTable section)) {
+            throw new IllegalArgumentException("Missing [transPoint] section");
         }
 
-        var kinds = new HashMap<Kind, List<ItemParamData>>();
-        var scenes = new HashMap<Integer, List<ItemParamData>>();
-        var points = new HashMap<Long, List<ItemParamData>>();
-        for (var entry : root.entrySet()) {
+        var rules = new ArrayList<Rule>();
+        var defaults = EnumSet.noneOf(Kind.class);
+        for (var entry : section.entrySet()) {
             String selector = entry.getKey();
-            if ("version".equals(selector)) continue;
             if (!(entry.getValue() instanceof TomlTable table)) {
-                throw new IllegalArgumentException("Expected reward table for [" + selector + "]");
+                throw new IllegalArgumentException(
+                        "Expected reward table for [transPoint.\\\"" + selector + "\\\"]");
             }
-            List<ItemParamData> reward = reward(selector, table);
+
+            Kind kind = null;
+            int scene = 0;
+            int point = 0;
             if (selector.startsWith("kind=")) {
-                Kind kind = switch (selector.substring(5)) {
-                    case "waypoint" -> Kind.WAYPOINT;
-                    case "statue" -> Kind.STATUE;
-                    case "domain" -> Kind.DOMAIN;
-                    default -> throw new IllegalArgumentException("Unknown selector: " + selector);
+                kind = switch (selector) {
+                    case "kind=waypoint" -> Kind.WAYPOINT;
+                    case "kind=statue" -> Kind.STATUE;
+                    case "kind=domain" -> Kind.DOMAIN;
+                    default -> throw new IllegalArgumentException(
+                            "Unknown transPoint selector: " + selector);
                 };
-                kinds.put(kind, reward);
-                continue;
-            }
-            if (!selector.matches("[1-9][0-9]*:([1-9][0-9]*|\\*)")) {
-                throw new IllegalArgumentException("Unsupported selector: " + selector);
-            }
-            String[] pair = selector.split(":", 2);
-            int sceneId;
-            try {
-                sceneId = Integer.parseInt(pair[0]);
-                if ("*".equals(pair[1])) {
-                    scenes.put(sceneId, reward);
-                } else {
-                    int pointId = Integer.parseInt(pair[1]);
-                    points.put(key(sceneId, pointId), reward);
+                if (!defaults.add(kind)) {
+                    throw new IllegalArgumentException(
+                            "Duplicate transPoint kind rule: " + selector);
                 }
-            } catch (NumberFormatException ex) {
-                throw new IllegalArgumentException("Selector ID is too large: " + selector, ex);
+            } else if (LOCATION.matcher(selector).matches()) {
+                int separator = selector.indexOf(':');
+                scene = positiveId(selector.substring(0, separator), selector);
+                String second = selector.substring(separator + 1);
+                point = "*".equals(second) ? 0 : positiveId(second, selector);
+            } else {
+                throw new IllegalArgumentException(
+                        "Unsupported transPoint selector: " + selector);
             }
+
+            var position = root.inputPositionOf(List.of("transPoint", selector));
+            if (position == null) {
+                throw new IllegalArgumentException(
+                        "Missing source position for [transPoint.\\\"" + selector + "\\\"]");
+            }
+            rules.add(new Rule(
+                    kind, scene, point, selector,
+                    DirectReward.parse("[transPoint.\\\"" + selector + "\\\"]", table),
+                    position.line(), position.column()));
         }
         for (Kind kind : Kind.values()) {
-            if (!kinds.containsKey(kind)) {
-                throw new IllegalArgumentException("Missing [\"kind="
-                        + kind.name().toLowerCase(java.util.Locale.ROOT) + "\"]");
+            if (!defaults.contains(kind)) {
+                throw new IllegalArgumentException(
+                        "Missing [transPoint.\\\"kind="
+                                + kind.name().toLowerCase(java.util.Locale.ROOT) + "\\\"]");
             }
         }
-        return new TransPointRewardConfig(kinds, scenes, points);
+        rules.sort(Comparator.comparingInt(Rule::line).thenComparingInt(Rule::column));
+        return new TransPointRewardConfig(rules);
     }
 
-    private static List<ItemParamData> reward(String name, TomlTable table) {
-        for (String field : table.keySet()) {
-            if (!REWARD_KEYS.contains(field)) {
-                throw new IllegalArgumentException("Unknown reward field " + field + " in " + name);
-            }
+    private static int positiveId(String value, String selector) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                    "TransPoint selector ID out of 32-bit range: " + selector, e);
         }
-        var result = new ArrayList<ItemParamData>();
-        add(result, 102, number(table, "adventureExp", name, false));
-        add(result, 201, number(table, "primogems", name, false));
-        add(result, 202, number(table, "mora", name, false));
-        Object rawItems = table.get("items");
-        if (rawItems != null) {
-            if (!(rawItems instanceof TomlArray items)) {
-                throw new IllegalArgumentException(name + ".items must be an array");
-            }
-            for (int i = 0; i < items.size(); i++) {
-                if (!(items.get(i) instanceof TomlTable item)) {
-                    throw new IllegalArgumentException(name + ".items[" + i + "] must be a table");
-                }
-                if (!item.keySet().equals(Set.of("id", "count"))) {
-                    throw new IllegalArgumentException(name + ".items[" + i + "] needs id and count");
-                }
-                int id = number(item, "id", name, true);
-                int count = number(item, "count", name, true);
-                result.add(new ItemParamData(id, count));
-            }
-        }
-        return List.copyOf(result);
     }
 
-    private static int number(TomlTable table, String field, String name, boolean positive) {
-        Object value = table.get(field);
-        if (value == null && !positive) return 0;
-        if (!(value instanceof Long n) || n > Integer.MAX_VALUE
-                || (positive ? n <= 0 : n < 0)) {
-            throw new IllegalArgumentException(name + "." + field + " must be a "
-                    + (positive ? "positive" : "non-negative") + " integer");
-        }
-        return n.intValue();
-    }
-
-    private static void add(List<ItemParamData> items, int id, int count) {
-        if (count > 0) items.add(new ItemParamData(id, count));
-    }
-
-    private static long key(int sceneId, int pointId) {
-        return ((long) sceneId << 32) | (pointId & 0xffffffffL);
-    }
-
-    /** Exact point > scene > kind. A selected table replaces the entire reward. */
+    /** Last matching fields win, even if a broad selector appears after a precise selector. */
     public List<ItemParamData> resolve(int sceneId, int pointId, Kind kind) {
-        var exact = points.get(key(sceneId, pointId));
-        if (exact != null) return exact;
-        var scene = scenes.get(sceneId);
-        if (scene != null) return scene;
-        return kinds.getOrDefault(kind, List.of());
+        Objects.requireNonNull(kind, "kind");
+        if (sceneId < 0 || pointId < 0) {
+            throw new IllegalArgumentException("Scene and point IDs cannot be negative");
+        }
+        var direct = new TreeMap<Integer, Integer>();
+        for (Rule rule : rules) {
+            if (rule.matches(sceneId, pointId, kind)) {
+                direct.putAll(rule.overrides());
+            }
+        }
+        return DirectReward.materialize(direct);
     }
 
     /** Point subtype and native pre-unlock flags are eligibility, not reward configuration. */

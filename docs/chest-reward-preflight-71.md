@@ -31,6 +31,37 @@ would change player-visible behavior. Thus the live claim only uses this batch
 when the native root has `fallToGround=false`. Mixed inventory + ground-entity
 deliveries are not yet supported as a single commit.
 
+## Ground pickup staging (not yet connected to the claim)
+
+`ChestGroundDropPlan.prepare` now partitions the merged native roll using the
+same rule as `DropSystem.dropItem`: DropMaterial.autoPick and non-gadget virtual
+currency are delivered directly; remaining native items keep physical ground
+pickup behavior. Every TOML fixed item is direct. The planner rejects missing
+item definitions or ground loot without a pickup gadget before changing state.
+`StandardChestRewardResolver.Staged.prepareDelivery` exposes the result; the
+existing inventory-only path consumes it with an explicit assertion that no
+ground entities were selected.
+
+`Scene.prepareChestGroundEntities` validates the **entire** physical batch,
+including per-unit meat/equipment expansion (bounded to 10,000 entities),
+then constructs unpublished, owner-only `EntityItem` instances. Native rolled
+item properties survive both spawn and pickup; regular `EntityItem` pickup
+now grants a copy of the stored roll instead of constructing a fresh item.
+`Scene.publishChestGroundEntities` validates the prepared batch and
+registers all items before sending appear packets. If `onCreate` fails, it
+removes all registered items without publishing any. After successful
+registration, a network notification failure is logged without treating
+the batch as unspawned.
+
+**These scene operations are not durable persistence.** Scene entity registration
+can be lost at server restart. A claim receipt alone cannot guarantee an
+uncollected ground item survives restart, and an inventory grant plus scene
+spawn is not one atomic transaction. Consequently `GadgetChest` does **not**
+publish these staged ground items or mark those chests claimed through the new
+reward path yet. Before enabling them, the server needs persistent pending
+pickup records, restoration on world/scene load, and explicit coordination with
+direct rewards in the same claim receipt.
+
 ## Limited live claim path
 
 `GadgetChest.grantOrdinaryChestLoot` now attempts staged delivery for authored,

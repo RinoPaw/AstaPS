@@ -6,7 +6,7 @@ The branch now combines three read-only components:
 2. `WorldAreaIndex` resolves world coordinates to the level-1 region and, when possible, the level-2 region. Level-2 outlines may be height-limited; an unknown level-1 region is not guessed.
 3. `StandardChestRewardResolver.preview` uses the classification, region and operator-owned `RewardConfig.current().chest()` selectors. It returns the proposed direct rewards and last matched selector, or an empty result for excluded/unresolved sources.
 
-This remains **read-only**. No calls from `GadgetChest` have been added. Editing `rewards.toml` does **not** change live chest payouts yet. Native drop tables, inventory, ground entities, scripts and claim state are untouched.
+This remains **read-only**. No calls from `GadgetChest` have been added. Editing `rewards.css` does **not** change live chest payouts yet. Native drop tables, inventory, ground entities, scripts and claim state are untouched.
 
 The resolver deliberately fails closed when the level-1 world area is unknown: it cannot safely assume that a chest belongs to a high-Primogem region. If level-1 is known but level-2 is unknown, level-1 overrides can still apply.
 
@@ -18,4 +18,4 @@ Before enabling payouts, three contracts must be established:
 
 Run `./gradlew test -PexcludeTags=integration -Dorg.gradle.jvmargs=-Xmx4g`. The world-area integration assertions that require extracted resources skip automatically when those resources are missing.
 
-Related evidence: `docs/chest-rewards-toml-selectors-71.md`, `feat/chest-kind-special-classifier-71`, `feat/world-area-level2-71`, `audit/chest-data-alignment-71`. Some world-area geometry also exists in older resource snapshots; its provenance must not be treated as independently confirmed native 7.1 geometry.
+Related evidence: `docs/chest-rewards-css-71.md`, `feat/chest-kind-special-classifier-71`, `feat/world-area-level2-71`, `audit/chest-data-alignment-71`. Some world-area geometry also exists in older resource snapshots; its provenance must not be treated as independently confirmed native 7.1 geometry.

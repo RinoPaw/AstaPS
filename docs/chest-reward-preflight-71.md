@@ -6,6 +6,23 @@ The branch now combines three read-only components:
 2. `WorldAreaIndex` resolves world coordinates to the level-1 region and, when possible, the level-2 region. Level-2 outlines may be height-limited; an unknown level-1 region is not guessed.
 3. `StandardChestRewardResolver.preview` uses the classification, region and operator-owned `RewardConfig.current().chest()` selectors. It returns the proposed direct rewards and last matched selector, or an empty result for excluded/unresolved sources.
 
+## Staged native-drop ownership (not enabled)
+
+`DropSystem.rollChestTag(tag, level)` can now roll a validated tag/root without
+spawning an entity or touching inventory. Its `ChestRoll` retains the native
+`fallToGround` flag. A missing root is distinct from an accepted, empty
+random roll. No existing `handleChestDrop` call site was redirected.
+
+`ChestRewardConfig.Match.ownedItemIds()` records **every** item ID specified by
+matched TOML tables, including explicit zero clears. The final nonzero
+`Match.rewards()` is only the desired fixed amount; it cannot alone express
+which native items should be suppressed. `ChestRewardOverlay.plan()`
+keeps every unowned native roll item (and its rolled equipment properties),
+removes only owned IDs, and attaches the final configured direct rewards.
+It makes no delivery attempts. These identities must eventually enter a
+single verified delivery operation; mixed inventory + world-ground deliveries
+cannot be assumed transactional.
+
 This remains **read-only**. No calls from `GadgetChest` have been added. Editing `rewards.toml` does **not** change live chest payouts yet. Native drop tables, inventory, ground entities, scripts and claim state are untouched.
 
 The resolver deliberately fails closed when the level-1 world area is unknown: it cannot safely assume that a chest belongs to a high-Primogem region. If level-1 is known but level-2 is unknown, level-1 overrides can still apply.

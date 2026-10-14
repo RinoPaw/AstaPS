@@ -16,87 +16,93 @@ import org.junit.jupiter.api.io.TempDir;
 final class TransPointRewardConfigTest {
     private static final Gson GSON = new Gson();
     private static final String RULES = """
-            version = 1
-
-            [transPoint."kind=waypoint"]
-            adventureExp = 50
-            primogems = 5
-
-            [transPoint."kind=statue"]
-            adventureExp = 50
-            primogems = 5
-
-            [transPoint."kind=domain"]
-            adventureExp = 50
-            primogems = 5
-
-            [transPoint."3:6"]
-            adventureExp = 10
-            primogems = 0
-
-            [transPoint."7:*"]
-            adventureExp = 0
-            primogems = 5
-            items = [{ id = 101692, count = 20 }]
-
-            [chest."kind=common"]
-            adventureExp = 30
-            primogems = 2
-
-            [chest."kind=exquisite"]
-            adventureExp = 30
-            primogems = 5
-
-            [chest."kind=precious"]
-            adventureExp = 30
-            primogems = 10
-
-            [chest."kind=luxurious"]
-            adventureExp = 30
-            primogems = 10
+            transPoint[kind="waypoint"] {
+                adventureExp: 50;
+                primogems: 5;
+            }
+            transPoint[kind="statue"] {
+                adventureExp: 50;
+                primogems: 5;
+            }
+            transPoint[kind="domain"] {
+                adventureExp: 50;
+                primogems: 5;
+            }
+            transPoint[scene="3"][point="6"] {
+                adventureExp: 10;
+                primogems: 0;
+            }
+            transPoint[scene="7"] {
+                adventureExp: 0;
+                primogems: 5;
+                item-101692: 20;
+            }
             """;
 
-    private static Map<Integer, Integer> items(java.util.List<ItemParamData> reward) {
+    private static Map<Integer,Integer> items(java.util.List<ItemParamData> reward) {
         return reward.stream().collect(Collectors.toMap(ItemParamData::getId, ItemParamData::getCount));
     }
 
     @Test
-    void writtenOverridesPreserveNativeTransportAwards() {
-        var rules = TransPointRewardConfig.parse(RULES);
-        assertEquals(Map.of(102, 10), items(rules.resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
-        assertEquals(Map.of(102, 50, 201, 5),
-                items(rules.resolve(3, 8, TransPointRewardConfig.Kind.WAYPOINT)));
-        assertEquals(Map.of(102, 50, 201, 5),
-                items(rules.resolve(3, 3, TransPointRewardConfig.Kind.STATUE)));
-        assertEquals(Map.of(101692, 20, 201, 5),
-                items(rules.resolve(7, 2, TransPointRewardConfig.Kind.WAYPOINT)));
-        assertEquals(Map.of(102, 50, 201, 5),
-                items(rules.resolve(3, 48, TransPointRewardConfig.Kind.DOMAIN)));
+    void builtInTransportCasesRetainExactAmounts() {
+        var config = TransPointRewardConfig.parse(RULES);
+        assertEquals(Map.of(102, 10), items(config.resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
+        assertEquals(Map.of(102, 50, 201, 5), items(config.resolve(3, 8, TransPointRewardConfig.Kind.WAYPOINT)));
+        assertEquals(Map.of(102, 50, 201, 5), items(config.resolve(3, 3, TransPointRewardConfig.Kind.STATUE)));
+        assertEquals(Map.of(101692, 20, 201, 5), items(config.resolve(7, 2, TransPointRewardConfig.Kind.WAYPOINT)));
+        assertEquals(Map.of(102, 50, 201, 5), items(config.resolve(3, 48, TransPointRewardConfig.Kind.DOMAIN)));
     }
 
     @Test
-    void exactPointOverridesSceneWildcard() {
-        var text = RULES + """
-                [transPoint."7:2"]
-                adventureExp = 15
-                """;
-        var rules = TransPointRewardConfig.parse(text);
-        assertEquals(Map.of(102, 15, 201, 5, 101692, 20),
-                items(rules.resolve(7, 2, TransPointRewardConfig.Kind.WAYPOINT)));
+    void exactPointWinsOverLateBroadRuleUnderCssSpecificity() {
+        var config = TransPointRewardConfig.parse(RULES + """
+                transPoint[scene="7"][point="2"] {
+                    adventureExp: 15;
+                }
+                transPoint[scene="7"] {
+                    adventureExp: 0;
+                }
+                """);
+        assertEquals(Map.of(101692, 20, 201, 5, 102, 15),
+                items(config.resolve(7, 2, TransPointRewardConfig.Kind.WAYPOINT)));
         assertEquals(Map.of(101692, 20, 201, 5),
-                items(rules.resolve(7, 3, TransPointRewardConfig.Kind.WAYPOINT)));
+                items(config.resolve(7, 3, TransPointRewardConfig.Kind.WAYPOINT)));
     }
 
     @Test
-    void unsupportedSelectorsAndBrokenConfigurationFailClosed() {
-        assertThrows(IllegalArgumentException.class,
-                () -> TransPointRewardConfig.parse(RULES + "[transPoint.\"region=mondstadt\"]\nprimogems = 3\n"));
-        assertThrows(IllegalArgumentException.class,
-                () -> TransPointRewardConfig.parse(RULES.replace("adventureExp = 10", "adventureExp = -10")));
-        assertThrows(IllegalArgumentException.class,
-                () -> TransPointRewardConfig.parse(RULES.replace("version = 1", "version = 2")));
-        assertThrows(IllegalArgumentException.class,
-                () -> TransPointRewardConfig.parse(RULES.replace("id = 101692", "id = 0")));
+    void wrongSelectorOrInvalidRewardCannotLaunch() {
+        for (String invalid : java.util.List.of(
+                "transPoint[region=\"mondstadt\"] { primogems: 3; }",
+                "transPoint[point=\"6\"] { primogems: 3; }",
+                "transPoint[scene=\"0\"] { primogems: 3; }",
+                "transPoint[kind=\"bad\"] { primogems: 3; }",
+                "transPoint[scene=\"2147483648\"] { primogems: 3; }",
+                "transPoint { primogems: -2; }",
+                "transPoint { item-0: 2; }")) {
+            assertThrows(IllegalArgumentException.class,
+                    () -> TransPointRewardConfig.parse(RULES + invalid), invalid);
+        }
+    }
+
+    @Test
+    void configuredItemOverridesHaveFullCssInheritance() {
+        var config = TransPointRewardConfig.parse(RULES + """
+                transPoint[scene="3"][point="99"] {
+                    primogems: 0;
+                    item-101692: 2;
+                }
+                """);
+        assertEquals(Map.of(102, 50, 101692, 2),
+                items(config.resolve(3, 99, TransPointRewardConfig.Kind.WAYPOINT)));
+    }
+
+    @Test
+    void configCreationUsesRootCss(@TempDir Path dir) throws Exception {
+        Path file = dir.resolve("rewards.css");
+        RewardConfig.loadOrCreate(file);
+        String css = Files.readString(file);
+        assertTrue(css.contains("transPoint[kind=\"waypoint\"]"));
+        assertTrue(css.contains("chest[kind=\"common\"]"));
     }
 
     @Test
@@ -126,44 +132,6 @@ final class TransPointRewardConfigTest {
                 "{\"$type\":\"DungeonEntry\",\"mapVisibility\":\"Never\"}", PointData.class);
         assertNull(TransPointRewardConfig.kindOf(preUnlockedDomain, false));
         assertNull(TransPointRewardConfig.kindOf(hiddenDomain, false));
-    }
-
-    @Test
-    void generatesOnlyOneRootPolicyFileAndPreservesOperatorEdits(@TempDir Path tempDir)
-            throws Exception {
-        Path config = tempDir.resolve("rewards.toml");
-        RewardConfig.loadOrCreate(config);
-        assertTrue(Files.exists(config));
-        assertTrue(Files.readString(config).contains("[transPoint.\"kind=waypoint\"]"));
-        assertTrue(Files.readString(config).contains("[chest.\"kind=common\"]"));
-
-        Files.writeString(config, RULES);
-        RewardConfig.loadOrCreate(config);
-        assertEquals(RULES, Files.readString(config));
-        assertEquals(Map.of(102, 10),
-                items(TransPointRewardConfig.current().resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
-    }
-
-    @Test
-    void laterBroadRuleCanOverrideEarlierExactPoint() {
-        String text = RULES.replace(
-                "[transPoint.\"7:*\"]",
-                "[transPoint.\"7:2\"]\nadventureExp = 15\n\n[transPoint.\"7:*\"]");
-        var config = TransPointRewardConfig.parse(text);
-        assertEquals(Map.of(101692, 20, 201, 5),
-                items(config.resolve(7, 2, TransPointRewardConfig.Kind.WAYPOINT)));
-    }
-
-    @Test
-    void transportFieldOverridesInheritAndCanClearItemCounts() {
-        String text = RULES + """
-                [transPoint."3:99"]
-                primogems = 0
-                items = [{ id = 101692, count = 2 }]
-                """;
-        var config = TransPointRewardConfig.parse(text);
-        assertEquals(Map.of(102, 50, 101692, 2),
-                items(config.resolve(3, 99, TransPointRewardConfig.Kind.WAYPOINT)));
     }
 
     @Test

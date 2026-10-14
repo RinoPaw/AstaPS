@@ -85,7 +85,7 @@ final class StandardChestLootConfigTest {
                 List.of(new StandardChestLootConfig.Source(COMMON_TAG, 1, 123)),
                 List.of(new StandardChestLootConfig.Table(123, 1, false,
                         List.of(new StandardChestLootConfig.Drop(202, "777", 10000)))));
-        Files.writeString(file, new Gson().toJson(custom), StandardCharsets.UTF_8);
+        Files.writeString(file, StandardChestLootConfig.toJson(custom), StandardCharsets.UTF_8);
         var edited = Files.readString(file, StandardCharsets.UTF_8);
         var reloaded = StandardChestLootConfig.loadOrCreate(file, Map.of(), Map.of());
         assertEquals(Map.of(202, 777), reloaded.roll(COMMON_TAG, 1, new Random(4)).amounts());
@@ -118,6 +118,20 @@ final class StandardChestLootConfigTest {
         int mora = new StandardChestLootConfig(exported)
                 .roll(COMMON_TAG, 1, new Random(5)).amounts().get(202);
         assertTrue(mora >= 200 && mora <= 300);
+    }
+
+    @Test
+    void jsonRoundTripRetainsSourceLevelsAndFullRandomGraph() {
+        var document = withCommon(
+                List.of(new StandardChestLootConfig.Source(COMMON_TAG, 1, 17)),
+                List.of(new StandardChestLootConfig.Table(17, 0, true,
+                        List.of(new StandardChestLootConfig.Drop(104002, "0.5", 7),
+                                new StandardChestLootConfig.Drop(202, "5;9", 3)))));
+        String json = StandardChestLootConfig.toJson(document);
+        assertTrue(json.contains("\"itemId\""));
+        assertTrue(json.contains("\"fallToGround\""));
+        var parsed = new StandardChestLootConfig(StandardChestLootConfig.fromJson(json));
+        assertNotNull(parsed.roll(COMMON_TAG, 1, new Random(2)));
     }
 
     @Test

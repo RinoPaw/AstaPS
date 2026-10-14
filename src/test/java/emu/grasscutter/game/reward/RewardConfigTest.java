@@ -29,8 +29,11 @@ final class RewardConfigTest {
     @Test
     void bundledPolicyParsesBothKindsOfReward() throws Exception {
         var cfg = RewardConfig.parse(bundled());
-        assertEquals(Map.of(102, 30, 201, 2),
-                amounts(cfg.chest().resolve(Kind.COMMON, 3, 1, 104).rewards()));
+        var chest = amounts(cfg.chest().resolve(Kind.COMMON, 3, 1, 104).rewards());
+        assertEquals(30, chest.get(102));
+        assertEquals(2, chest.get(201));
+        assertEquals(1000, chest.get(202));
+        assertEquals(2, chest.get(104011));
         assertEquals(Map.of(102, 10),
                 amounts(cfg.transPoint().resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
         assertEquals(Map.of(201, 5, 101692, 20),
@@ -88,4 +91,17 @@ final class RewardConfigTest {
         assertThrows(IllegalArgumentException.class,
                 () -> RewardConfig.parse("chest[kind=\"common\"] { primogems: 2; "));
     }
+    @Test
+    void oldOperatorCssIsRejectedInsteadOfSilentlyDroppingAuxiliaryRewards() throws Exception {
+        String old = bundled().replaceAll("(?m)^    (?:mora|sigils|item-[0-9]+): [0-9]+;\r?\n", "");
+        Path file = temp.resolve("old.css");
+        Files.writeString(file, old);
+        var previous = RewardConfig.current();
+        var ex = assertThrows(IllegalStateException.class,
+                () -> RewardConfig.loadOrCreate(file));
+        assertTrue(ex.getMessage().contains("Back up"));
+        assertSame(previous, RewardConfig.current());
+        assertEquals(old, Files.readString(file));
+    }
+
 }

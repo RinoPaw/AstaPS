@@ -1,15 +1,13 @@
-/*
- * Decompiled with CFR 0.152.
- */
 package emu.grasscutter.game.entity.gadget.chest;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.reward.ChestRewardConfig;
+import emu.grasscutter.game.reward.RewardConfig;
 import emu.grasscutter.game.reward.StandardChestRewardResolver;
 import java.util.Map;
-import java.util.TreeMap;
 import emu.grasscutter.game.world.Position;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.scripts.data.SceneGadget;
@@ -19,20 +17,23 @@ public final class WorldChestLootHelper {
     }
 
     /**
-     * This is the existing fallback chest payout. Only verified standard chests
-     * receive CSS overrides; special/unknown chests retain fallback behavior.
-     * Native quest chest drop tables are handled by GadgetChest before this call.
+     * All fixed quantities come from CSS. Verified standard chests use area
+     * selectors; other legacy fallback chests use quality defaults only.
+     * Native quest/Boss drops have separate paths.
      */
     public static void grant(Player player, EntityGadget entityGadget) {
         if (player == null || entityGadget == null || entityGadget.getScene() == null) {
             return;
         }
         Tier tier = resolveTier(entityGadget);
-        int sigilId = resolveSigilId(entityGadget);
         var preview = StandardChestRewardResolver.preview(entityGadget);
-        Map<Integer, Integer> rewards = composeRewards(
-                tier, sigilId, preview.map(StandardChestRewardResolver.Preview::amounts)
-                        .orElse(Map.of()));
+        ChestRewardConfig.Match base = preview.isPresent() ? null
+                : RewardConfig.current().chest().resolve(
+                        ChestRewardConfig.Kind.valueOf(tier.name()), 0, 0, 0);
+        Map<Integer, Integer> amounts = preview.isPresent()
+                ? preview.orElseThrow().amounts() : base.amounts();
+        Map<Integer, Integer> rewards =
+                ChestRewardConfig.resolveRegionalSigils(amounts, resolveSigilId(entityGadget));
         Scene scene = entityGadget.getScene();
         int adventureExp = rewards.getOrDefault(102, 0);
         if (adventureExp > 0) {
@@ -45,36 +46,9 @@ public final class WorldChestLootHelper {
                 "WorldChestLoot drop uid={} gadgetId={} tier={} policy={} selector={} "
                         + "adventureExp={} primogems={}",
                 player.getUid(), entityGadget.getGadgetId(), tier.name(),
-                preview.isPresent() ? "css" : "fallback",
-                preview.map(StandardChestRewardResolver.Preview::lastSelector).orElse("none"),
+                preview.isPresent() ? "css-region" : "css-default",
+                preview.isPresent() ? preview.orElseThrow().lastSelector() : base.selector(),
                 adventureExp, rewards.getOrDefault(201, 0));
-    }
-
-    /**
-     * Compose pre-existing material/sigil/Mora fallback with the full CSS rule result.
-     * CSS zeroes are retained until delivery so a zero removes a fallback item,
-     * and a custom item-<id> does not get awarded twice.
-     */
-    static Map<Integer, Integer> composeRewards(
-            Tier tier, int sigilId, Map<Integer, Integer> cssAmounts) {
-        var values = new TreeMap<Integer, Integer>();
-        values.put(102, tier.adventureExp);
-        values.put(201, tier.primogems);
-        values.put(202, tier.mora);
-        if (sigilId > 0) values.put(sigilId, tier.sigil);
-        if (tier == Tier.COMMON) {
-            values.put(104011, Math.max(tier.oreFine, 2));
-        } else {
-            values.put(104012, tier.oreFine);
-            if (tier.oreFine >= 3) {
-                values.put(104013, Math.max(1, tier.oreFine / 3));
-            }
-        }
-        if (tier.expWanderer > 0) values.put(104001, tier.expWanderer);
-        if (tier.expAdventurer > 0) values.put(104002, tier.expAdventurer);
-        if (tier.expHero > 0) values.put(104003, tier.expHero);
-        values.putAll(cssAmounts);
-        return Map.copyOf(values);
     }
 
     private static void drop(Scene scene, GameEntity gameEntity, int n, int n2) {
@@ -252,30 +226,7 @@ public final class WorldChestLootHelper {
         return 305;
     }
 
-    public static enum Tier {
-        COMMON(2, 30, 3, 1000, 2, 2, 1, 0),
-        EXQUISITE(5, 30, 5, 1500, 2, 3, 2, 1),
-        PRECIOUS(10, 30, 8, 2000, 3, 3, 3, 2),
-        LUXURIOUS(10, 30, 10, 2500, 4, 2, 4, 3);
-
-        final int primogems;
-        final int adventureExp;
-        final int sigil;
-        final int mora;
-        final int oreFine;
-        final int expWanderer;
-        final int expAdventurer;
-        final int expHero;
-
-        private Tier(int n2, int n3, int n4, int n5, int n6, int n7, int n8, int n9) {
-            this.primogems = n2;
-            this.adventureExp = n3;
-            this.sigil = n4;
-            this.mora = n5;
-            this.oreFine = n6;
-            this.expWanderer = n7;
-            this.expAdventurer = n8;
-            this.expHero = n9;
-        }
+    public enum Tier {
+        COMMON, EXQUISITE, PRECIOUS, LUXURIOUS
     }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** Preview-only direct rewards for verified ordinary chests. */
+/** CSS-defined fixed rewards for chest qualities and verified area overrides. */
 public final class ChestRewardConfig {
     public enum Kind {
         COMMON("common"), EXQUISITE("exquisite"), PRECIOUS("precious"), LUXURIOUS("luxurious");
@@ -35,6 +35,43 @@ public final class ChestRewardConfig {
         CssRewardRules.requireDefaults(selected, "chest",
                 "common", "exquisite", "precious", "luxurious");
         return new ChestRewardConfig(selected);
+    }
+
+    /**
+     * A previously generated operator CSS lacks material/sigil defaults.
+     * Fail startup rather than silently removing those rewards. Explicit
+     * zero is valid and intentionally suppresses an amount.
+     */
+    void requireCompleteBaseRewards() {
+        for (Kind kind : Kind.values()) {
+            Map<Integer, Integer> amounts = resolve(kind, 0, 0, 0).amounts();
+            for (int id : new int[] {102, 201, 202, DirectReward.REGIONAL_SIGILS}) {
+                if (!amounts.containsKey(id)) {
+                    throw new IllegalArgumentException(
+                            "Old rewards.css chest[kind=\"" + kind.selectorValue()
+                                    + "\"] lacks adventureExp, primogems, mora or sigils. "
+                                    + "Back up the old CSS and update its four quality defaults.");
+                }
+            }
+            int oreId = kind == Kind.COMMON ? 104011 : 104012;
+            if (!amounts.containsKey(oreId)) {
+                throw new IllegalArgumentException(
+                        "Old rewards.css chest[kind=\"" + kind.selectorValue()
+                                + "\"] lacks item-" + oreId
+                                + " (use zero to disable). Update the old CSS.");
+            }
+        }
+    }
+
+    /** Generic sigil counts become region-selected items; explicit item IDs win. */
+    public static Map<Integer, Integer> resolveRegionalSigils(
+            Map<Integer, Integer> amounts, int sigilItemId) {
+        var resolved = new java.util.TreeMap<Integer, Integer>(amounts);
+        Integer count = resolved.remove(DirectReward.REGIONAL_SIGILS);
+        if (count != null && sigilItemId > 0) {
+            resolved.putIfAbsent(sigilItemId, count);
+        }
+        return Map.copyOf(resolved);
     }
 
     /** Specificity first, then source order; absent fields inherit and zero clears. */

@@ -6,7 +6,14 @@ The branch now combines three read-only components:
 2. `WorldAreaIndex` resolves world coordinates to the level-1 region and, when possible, the level-2 region. Level-2 outlines may be height-limited; an unknown level-1 region is not guessed.
 3. `StandardChestRewardResolver.preview` uses the classification, region and operator-owned `RewardConfig.current().chest()` selectors. It returns the proposed direct rewards and last matched selector, or an empty result for excluded/unresolved sources.
 
-The CSS preview is now used by the existing `WorldChestLootHelper` fallback payout **only for verified standard world chests**. CSS direct reward amounts (including explicit zeroes) replace the same fallback item IDs, while the remaining fallback material, sigil, and book drops are retained. Native quest and boss-drop paths remain unchanged. Unverified/special chests do not receive CSS overrides. `GadgetChest` claim timing and entity-delivery behavior are unchanged; this does not solve their existing confirmation/claim safety limitations.
+The existing `WorldChestLootHelper` now uses CSS for **all fixed quantities**.
+Verified ordinary world chests use area selectors; other legacy
+fallback chest objects use CSS quality defaults only and do not
+assume regional overrides. Defaults explicitly define Adventure EXP,
+Primogems, Mora, regional sigil counts, ores and books.
+Java contains no numeric quality reward table. Native quest and Boss
+drop paths remain separate. `GadgetChest` claim timing and ground-item
+delivery remain unchanged, including their existing safety limitations.
 
 The resolver deliberately fails closed when the level-1 world area is unknown: it cannot safely assume that a chest belongs to a high-Primogem region. If level-1 is known but level-2 is unknown, level-1 overrides can still apply.
 

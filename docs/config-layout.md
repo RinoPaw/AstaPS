@@ -53,9 +53,9 @@ overwritten by native asset changes.
 
 - `rewards.css` / `transPoint`: first discovery/activation rewards for
   waypoints, Statues of The Seven and manually activated domain entrances.
-- `rewards.css` / `chest`: fixed amounts for standard exploration chest
-  kinds and area overrides. These values are parsed but not yet used by
-  the chest runtime path.
+- `rewards.css` / `chest`: all fixed quantities for four chest qualities
+  (including Mora, sigils, ores and books), with regional overrides for
+  verified standard world chests. Native quest/Boss drops stay separate.
 - `drops/chests.toml`, `drops/monsters.toml`, `drops/domains.toml`:
   loot pool policy, drop probabilities and counts. These do not define
   the first-activation domain reward or domain unlock rules.

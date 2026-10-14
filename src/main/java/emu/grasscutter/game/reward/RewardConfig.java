@@ -9,7 +9,7 @@ import java.util.Objects;
 
 /**
  * One operator-owned rewards.css, parsed and validated as an immutable snapshot.
- * Transport payouts use the snapshot live; chest rewards remain preview-only.
+ * Both transport and fallback chest fixed payouts use the validated snapshot.
  */
 public final class RewardConfig {
     private static final String TEMPLATE = "/rewards.css";
@@ -61,6 +61,7 @@ public final class RewardConfig {
                 }
             }
             RewardConfig candidate = parse(Files.readString(path));
+            candidate.chest().requireCompleteBaseRewards();
             active = candidate;
         } catch (IOException | IllegalArgumentException e) {
             throw new IllegalStateException("Cannot load " + path + ": " + e.getMessage(), e);

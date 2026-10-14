@@ -2,71 +2,82 @@ package emu.grasscutter.game.entity.gadget.chest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.game.entity.gadget.chest.StandardChestClassifier.Classification;
 import emu.grasscutter.game.entity.gadget.chest.StandardChestClassifier.Exclusion;
 import emu.grasscutter.game.entity.gadget.chest.StandardChestClassifier.Kind;
+import emu.grasscutter.game.reward.ChestRewardConfig;
 import emu.grasscutter.game.reward.RewardConfig;
 import emu.grasscutter.game.reward.StandardChestRewardResolver;
 import emu.grasscutter.game.world.WorldAreaIndex.AreaIds;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class WorldChestLootHelperPolicyTest {
-    private static Map<Integer, Integer> rulesFor(Kind kind, int scene, int area1, int area2) throws IOException {
-        try (InputStream stream = RewardConfig.class.getResourceAsStream("/rewards.css")) {
+    private static RewardConfig config() throws IOException {
+        try (var stream = RewardConfig.class.getResourceAsStream("/rewards.css")) {
             assertNotNull(stream);
-            var config = RewardConfig.parse(new String(stream.readAllBytes(), StandardCharsets.UTF_8));
-            return StandardChestRewardResolver.resolve(
-                    new Classification(kind, Exclusion.NONE), scene, new AreaIds(area1, area2),
-                    config.chest()).orElseThrow().amounts();
+            return RewardConfig.parse(new String(stream.readAllBytes(), StandardCharsets.UTF_8));
         }
     }
 
-    @Test
-    void standardCommonChestUsesCssZeroInsteadOfLegacy66() throws IOException {
-        var low = WorldChestLootHelper.composeRewards(
-                WorldChestLootHelper.Tier.COMMON, 305,
-                rulesFor(Kind.COMMON, 3, 1, 0));
-        assertEquals(0, low.get(201));
-        assertEquals(30, low.get(102));
-        assertEquals(1000, low.get(202));
-        assertEquals(3, low.get(305));
-        assertEquals(2, low.get(104011));
-
-        var exceptional = WorldChestLootHelper.composeRewards(
-                WorldChestLootHelper.Tier.COMMON, 305,
-                rulesFor(Kind.COMMON, 3, 1, 104));
-        assertEquals(2, exceptional.get(201));
-
-        var high = WorldChestLootHelper.composeRewards(
-                WorldChestLootHelper.Tier.COMMON, 305,
-                rulesFor(Kind.COMMON, 3, 10, 0));
-        assertEquals(2, high.get(201));
+    private static Map<Integer,Integer> regional(Kind kind, int scene, int area1, int area2)
+            throws IOException {
+        return StandardChestRewardResolver.resolve(
+                new Classification(kind, Exclusion.NONE), scene,
+                new AreaIds(area1, area2), config().chest()).orElseThrow().amounts();
     }
 
     @Test
-    void cssAmountsReplaceExistingMaterialWithoutDoubleGranting() {
-        var values = WorldChestLootHelper.composeRewards(
-                WorldChestLootHelper.Tier.COMMON, 305,
-                Map.of(102, 45, 201, 0, 104011, 0, 104001, 5, 104004, 4));
-        assertEquals(45, values.get(102));
-        assertEquals(0, values.get(201));
-        assertEquals(0, values.get(104011));
-        assertEquals(5, values.get(104001));
-        assertEquals(4, values.get(104004));
-        assertEquals(1000, values.get(202));
+    void commonLowGemsAreZeroWhileOtherFixedItemsComeFromCss() throws IOException {
+        var low = ChestRewardConfig.resolveRegionalSigils(regional(Kind.COMMON,3,1,0),305);
+        assertEquals(Map.of(102,30,201,0,202,1000,305,3,104011,2,104001,2,104002,1),low);
+        assertEquals(2, ChestRewardConfig.resolveRegionalSigils(
+                regional(Kind.COMMON,3,10,0),305).get(201));
+        assertEquals(2, ChestRewardConfig.resolveRegionalSigils(
+                regional(Kind.COMMON,3,1,104),305).get(201));
     }
 
     @Test
-    void unverifiedAndSpecialChestFallbackDoesNotGrant66OrMore() {
+    void allFourKindsResolveQuantitiesExclusivelyFromCss() throws IOException {
+        var cfg = config().chest();
+        assertEquals(Map.of(102,30,201,2,202,1000,305,3,104011,2,104001,2,104002,1),
+                ChestRewardConfig.resolveRegionalSigils(
+                        cfg.resolve(ChestRewardConfig.Kind.COMMON,0,0,0).amounts(),305));
+        assertEquals(Map.of(102,30,201,5,202,1500,307,5,104012,2,104001,3,104002,2,104003,1),
+                ChestRewardConfig.resolveRegionalSigils(
+                        cfg.resolve(ChestRewardConfig.Kind.EXQUISITE,0,0,0).amounts(),307));
+        assertEquals(Map.of(102,30,201,10,202,2000,303,8,104012,3,104013,1,104001,3,104002,3,104003,2),
+                ChestRewardConfig.resolveRegionalSigils(
+                        cfg.resolve(ChestRewardConfig.Kind.PRECIOUS,0,0,0).amounts(),303));
+        assertEquals(Map.of(102,30,201,10,202,2500,301,10,104012,4,104013,1,104001,2,104002,4,104003,3),
+                ChestRewardConfig.resolveRegionalSigils(
+                        cfg.resolve(ChestRewardConfig.Kind.LUXURIOUS,0,0,0).amounts(),301));
+    }
+
+    @Test
+    void explicitItemOverridesSigilsWithoutDuplicateDrops() throws IOException {
+        var base = new java.util.HashMap<>(
+                config().chest().resolve(ChestRewardConfig.Kind.COMMON,0,0,0).amounts());
+        base.put(104001,7);
+        base.put(305,0);
+        base.put(-1,8);
+        var result = ChestRewardConfig.resolveRegionalSigils(base,305);
+        assertEquals(7,result.get(104001));
+        assertEquals(0,result.get(305));
+        assertFalse(result.containsKey(-1));
+        assertEquals(0,ChestRewardConfig.resolveRegionalSigils(
+                Map.of(-1,0,201,3),303).get(303));
+        assertEquals(Map.of(201,3),ChestRewardConfig.resolveRegionalSigils(
+                Map.of(-1,8,201,3),0));
+    }
+
+    @Test
+    void tierIsClassificationOnlyAndHasNoNumericPayoutTable() {
+        assertEquals(4, WorldChestLootHelper.Tier.values().length);
         for (var tier : WorldChestLootHelper.Tier.values()) {
-            var values = WorldChestLootHelper.composeRewards(tier, 305, Map.of());
-            assertTrue(values.get(201) <= 10, tier.name());
-            assertEquals(30, values.get(102), tier.name());
+            assertEquals(tier.name(),ChestRewardConfig.Kind.valueOf(tier.name()).name());
         }
     }
 }

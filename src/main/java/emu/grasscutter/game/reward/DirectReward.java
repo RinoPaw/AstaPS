@@ -10,6 +10,9 @@ import java.util.TreeMap;
 
 /** Typed reward declarations. Zero explicitly clears a previously defined amount. */
 final class DirectReward {
+    /** Resolved to the region's sigil item ID at delivery. */
+    static final int REGIONAL_SIGILS = -1;
+
     private DirectReward() {}
 
     static Map<Integer,Integer> parse(List<CSSDeclaration> declarations, String context) {
@@ -26,6 +29,8 @@ final class DirectReward {
                 id = 201;
             } else if (field.equalsIgnoreCase("mora")) {
                 id = 202;
+            } else if (field.equalsIgnoreCase("sigils")) {
+                id = REGIONAL_SIGILS;
             } else if (field.startsWith("item-") && field.substring(5).matches("[1-9][0-9]*")) {
                 try {
                     id = Integer.parseInt(field.substring(5));
@@ -56,7 +61,7 @@ final class DirectReward {
     static List<ItemParamData> materialize(Map<Integer,Integer> values) {
         var items = new ArrayList<ItemParamData>();
         new TreeMap<>(values).forEach((id, count) -> {
-            if (count > 0) items.add(new ItemParamData(id, count));
+            if (id > 0 && count > 0) items.add(new ItemParamData(id, count));
         });
         return List.copyOf(items);
     }

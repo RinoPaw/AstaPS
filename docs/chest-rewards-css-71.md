@@ -50,6 +50,9 @@ rule is written below it.
 A missing property does not clear a value inherited from another matching
 rule. Zero does clear it. adventureExp -> item 102, primogems -> item 201,
 mora -> item 202. Other items are written as item-104001: 2; etc.
+The chest-only sigils declaration configures the nation's sigil *quantity*;
+the existing source/region mapping chooses the item ID. Explicit
+item-<id> overrides the generic sigils field for the same item.
 All quantities must be non-negative signed 32-bit integers.
 No !important, @import, media queries, CSS layout properties or expressions.
 
@@ -57,10 +60,17 @@ The bundled policy preserves the historical low-gem areas 3:1..7 and 3:9;
 3:1:104 (望风山地) and 3:7:703 (孤云阁) restore higher amounts.
 Dragonspine 3:10, Lisha 3:8 and the Chasm 3:19/6:300 use higher defaults.
 
-Matching CSS amounts override the corresponding fallback item ID. Explicit zero
-prevents that item from dropping, while omitted fields retain the existing
-fallback values (e.g. Mora, materials and sigils). Legacy tier fallback gems
-are 2/5/10/10, never the obsolete 66/166/366/566 values.
+All fixed reward counts come from CSS, including Adventure EXP, Primogems,
+Mora, sigils, ores, and EXP books. Java's Tier enum contains quality
+names only. Regional rules override named fields. Old numerical
+fallback amounts 66/166/366/566 have been removed.
+
+Auxiliary material counts preserve the previous server behavior; they
+are not independently verified native random-drop values.
+Existing operator-owned CSS is not overwritten. Older CSS missing
+complete quality defaults fails startup rather than silently omitting
+materials. Back up/regenerate the CSS template, then reapply custom rules.
+Set a required field explicitly to zero to disable that reward.
 
 Native random drops, quest rewards, boss flowers, Shrines of Depths and
 special chests remain outside this direct-reward policy. See

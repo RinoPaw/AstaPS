@@ -76,6 +76,10 @@ final class CssRewardRules {
                     throw new IllegalArgumentException("Unsupported reward selector: " + selector);
                 }
                 String target = type.group(1);
+                if (target.equals("transPoint")
+                        && amounts.containsKey(DirectReward.REGIONAL_SIGILS)) {
+                    throw new IllegalArgumentException("sigils applies only to chests: " + selector);
+                }
                 String remainder = selector.substring(type.end());
                 Map<String,String> attributes = new HashMap<>();
                 Matcher matcher = ATTRIBUTE.matcher(remainder);

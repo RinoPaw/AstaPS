@@ -3,12 +3,16 @@
 ## Scope
 
 The root-level `rewards.toml` is a **server-operator owned** file alongside
-`config.json`. On first server startup it is copied from the bundled
+`config.json`. It now includes both `[transPoint]` and `[chest]` tables.
+On first server startup it is copied from the bundled
 `src/main/resources/rewards.toml`; an existing file is never overwritten.
 Invalid TOML or an invalid rule prevents startup with an error naming the
 configuration file, field or selector. Local `rewards.toml` is gitignored.
 
-This phase adds **configuration parsing and rule resolution only**.
+The shared loader validates and publishes both reward subsystems atomically.
+TransPoint rewards are already consumed by the running server, and their selector
+rules now use the same source-order and field-override semantics. This phase
+adds **chest configuration parsing and rule resolution only**.
 `GadgetChest` and `WorldChestLootHelper` still use their existing reward
 paths. The scene's `WorldAreaIndex.areaAt(x,y,z)` and
 `StandardChestClassifier` are being developed separately and are not yet
@@ -93,7 +97,14 @@ native random drops must not double-award fixed currency/EXP when integrated.
 
 ## Tests
 
-`./gradlew test -PexcludeTags=integration` exercises TOML parsing, bundled
+`./gradlew test -PexcludeTags=integration` exercises unified TOML parsing, bundled
 defaults, first-run file creation and edits, unknown keys, invalid amounts,
 source order, broad-rule-over-specific-rule ordering, missing area2 and
 zero-value overrides. These tests do not require game resources or MongoDB.
+
+## Related policy
+
+The `transPoint` selector grammar and explicit zero overrides (for the
+scene-3 tutorial waypoint and scene-7 Three Realms Gateway Offering) are
+documented in [trans-point-rewards.md](trans-point-rewards.md). There is no
+second transport-reward TOML file.

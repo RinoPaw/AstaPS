@@ -1,6 +1,6 @@
 # Runtime configuration layout
 
-The server operator owns **rewards.toml** and **config/**. The project and resource pack must not
+The server operator owns **rewards.css** and **config/**. The project and resource pack must not
 silently overwrite local policy. `config.json` remains the global settings
 entry point for network, database, services, and existing global tuning.
 
@@ -9,7 +9,7 @@ The first-unlock and standard-chest fixed-reward definitions now share one file:
 ```text
 AstaPS/
 ├── config.json                          # Existing global settings
-├── rewards.toml                         # Unified first-unlock + chest fixed rewards
+├── rewards.css                         # Unified first-unlock + chest fixed rewards
 ├── config/
 │   ├── drops/
 │   │   ├── chests.toml                 # Future, not yet created
@@ -35,9 +35,9 @@ AstaPS/
   This directory currently also contains state and generated files; it has mixed
   ownership and should not become the default home for new human-written policy.
   Existing tables and their load behavior remain untouched.
-- `rewards.toml`: the **single** server-owner authority for transport first-unlock
-  rewards and standard exploration chest fixed rewards. Rules cascade in source
-  order; later matching fields override earlier values.
+- `rewards.css`: the **single** server-owner authority for transport first-unlock
+  rewards and standard exploration chest fixed rewards. CSS equality-attribute specificity determines
+  precedence; later source order resolves equal-specificity fields.
 - `config/`: server-owner policy for other gameplay systems written in TOML
   when concise enough to maintain by hand. Large, machine-generated data should not be converted to huge TOML
   arrays merely for consistency.
@@ -51,9 +51,9 @@ overwritten by native asset changes.
 
 ## Future subsystem boundaries
 
-- `rewards.toml` / `[transPoint]`: first discovery/activation rewards for
+- `rewards.css` / `transPoint`: first discovery/activation rewards for
   waypoints, Statues of The Seven and manually activated domain entrances.
-- `rewards.toml` / `[chest]`: fixed amounts for standard exploration chest
+- `rewards.css` / `chest`: fixed amounts for standard exploration chest
   kinds and area overrides. These values are parsed but not yet used by
   the chest runtime path.
 - `drops/chests.toml`, `drops/monsters.toml`, `drops/domains.toml`:
@@ -72,13 +72,16 @@ until another subsystem needs them. Each feature owns validation and tests.
 ## Deployment
 
 Bundled defaults belong to `src/main/resources/`. The operator-owned
-root-level `rewards.toml` and runtime files under `config/` are gitignored.
-First startup generates the unified rewards file if missing. Updates do
-not overwrite operator values. Unknown keys and invalid values fail validation.
+root-level `rewards.css` and runtime files under `config/` are gitignored.
+First startup generates the unified rewards file if missing. If legacy
+`rewards.toml` exists but `rewards.css` does not, startup refuses to ignore
+operator customizations; back up/migrate the legacy file explicitly.
+Existing CSS is never overwritten. Unknown selectors, properties and invalid
+amounts fail validation.
 
 Only the documented unified rewards path is read. The old
-`config/rewards/trans-point-rewards.toml` is no longer read; operators with
-custom transport rules must transfer them into `[transPoint]` in `rewards.toml`.
+`config/rewards/trans-point-rewards.css` is no longer read; operators with
+custom transport rules must transfer them into `transPoint` selector rules in `rewards.css`.
 No automatic legacy-path imports,
 migration branches, or undocumented fallbacks are added for draft features.
 Breaking schema changes must be documented and tested explicitly.

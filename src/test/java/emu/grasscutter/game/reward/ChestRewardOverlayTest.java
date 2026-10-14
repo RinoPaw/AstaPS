@@ -2,7 +2,9 @@ package emu.grasscutter.game.reward;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.gson.Gson;
 import emu.grasscutter.data.common.ItemParamData;
+import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.reward.ChestRewardConfig.Kind;
 import java.util.List;
@@ -121,6 +123,43 @@ class ChestRewardOverlayTest {
                 () -> ChestRewardOverlay.plan(match, null));
         assertThrows(NullPointerException.class,
                 () -> ChestRewardOverlay.plan(null, List.of()));
+    }
+
+    private static ItemData definition(int id, String type) {
+        return new Gson().fromJson(
+                "{\"id\":" + id + ",\"itemType\":\"" + type
+                        + "\",\"materialType\":\"MATERIAL_NONE\",\"stackLimit\":99999}",
+                ItemData.class);
+    }
+
+    @Test
+    void stagesOneInventoryBatchOnlyAfterAllDefinitionsValidate() {
+        var nativeMaterial = nativeItem(104001, 4);
+        nativeMaterial.setItemData(definition(104001, "ITEM_MATERIAL"));
+        var plan = ChestRewardOverlay.plan(
+                ChestRewardConfig.parse(defaults()).resolve(Kind.COMMON, 3, 10, 0),
+                List.of(nativeMaterial));
+        var prepared = plan.inventoryBatch(id -> definition(id, "ITEM_VIRTUAL"));
+        assertEquals(List.of(104001, 102, 201),
+                prepared.stream().map(GameItem::getItemId).toList());
+        assertEquals(List.of(4, 30, 2),
+                prepared.stream().map(GameItem::getCount).toList());
+        assertNotSame(nativeMaterial, prepared.get(0));
+        assertEquals(4, nativeMaterial.getCount());
+
+        assertThrows(IllegalArgumentException.class,
+                () -> plan.inventoryBatch(id -> null));
+        assertThrows(IllegalArgumentException.class,
+                () -> plan.inventoryBatch(id -> definition(id + 1, "ITEM_VIRTUAL")));
+    }
+
+    @Test
+    void missingNativeDefinitionCannotBePreparedForInventory() {
+        var plan = ChestRewardOverlay.plan(
+                ChestRewardConfig.parse(defaults()).resolve(Kind.COMMON, 3, 10, 0),
+                List.of(nativeItem(104001, 2)));
+        assertThrows(IllegalArgumentException.class,
+                () -> plan.inventoryBatch(id -> definition(id, "ITEM_VIRTUAL")));
     }
 
     @Test

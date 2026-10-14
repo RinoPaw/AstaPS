@@ -2,6 +2,7 @@ package emu.grasscutter.game.world;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -59,6 +60,90 @@ class WorldAreaIndexTest {
                                                 + " \"JLFEAGHGCLP\": {\"BFLLDPOAJGD\": [{\"_x\": 0, \"_z\": 0},"
                                                 + " {\"_x\": 1, \"_z\": 1}]}}}]}"))
                         .isEmpty());
+    }
+
+    private static WorldAreaIndex nestedFixture() {
+        return WorldAreaIndex.parse(
+                JsonParser.parseString(
+                        """
+                        {"OBKNAJCIHEA": [
+                          {"LKBLPFHOAFB": {"BBLLBIOLMHP": 55, "JLFEAGHGCLP": {"BFLLDPOAJGD": [
+                            {"_x": 0, "_z": 0}, {"_x": 100, "_z": 0}, {"_x": 100, "_z": 100},
+                            {"_x": 0, "_z": 100}]}},
+                           "OPHHFKKPLDI": [
+                            {"BBLLBIOLMHP": 55, "EOIFEEDBAFJ": 5501,
+                             "JLFEAGHGCLP": {"BFLLDPOAJGD": [
+                               {"_x": 10, "_z": 10}, {"_x": 30, "_z": 10},
+                               {"_x": 30, "_z": 30}, {"_x": 10, "_z": 30}],
+                               "MHLOLALFHHF": {"_y": 0},
+                               "NFFDCMLAAFO": {"_y": 10}}},
+                            {"BBLLBIOLMHP": 55, "EOIFEEDBAFJ": 5502,
+                             "JLFEAGHGCLP": {"BFLLDPOAJGD": [
+                               {"_x": 10, "_z": 10}, {"_x": 30, "_z": 10},
+                               {"_x": 30, "_z": 30}, {"_x": 10, "_z": 30}],
+                               "MHLOLALFHHF": {"_y": 11},
+                               "NFFDCMLAAFO": {"_y": 20}}},
+                            {"BBLLBIOLMHP": 55, "EOIFEEDBAFJ": 5503,
+                             "JLFEAGHGCLP": {"BFLLDPOAJGD": [
+                               {"_x": 50, "_z": 10}, {"_x": 70, "_z": 10},
+                               {"_x": 70, "_z": 30}, {"_x": 50, "_z": 30}]}},
+                            {"BBLLBIOLMHP": 55, "EOIFEEDBAFJ": 5503,
+                             "JLFEAGHGCLP": {"BFLLDPOAJGD": [
+                               {"_x": 80, "_z": 10}, {"_x": 90, "_z": 10},
+                               {"_x": 90, "_z": 30}, {"_x": 80, "_z": 30}]}},
+                            {"BBLLBIOLMHP": 9, "EOIFEEDBAFJ": 9999,
+                             "JLFEAGHGCLP": {"BFLLDPOAJGD": [
+                               {"_x": 40, "_z": 40}, {"_x": 50, "_z": 40},
+                               {"_x": 50, "_z": 50}, {"_x": 40, "_z": 50}]}},
+                            {"BBLLBIOLMHP": "invalid", "EOIFEEDBAFJ": 9997,
+                             "JLFEAGHGCLP": {"BFLLDPOAJGD": [
+                               {"_x": 40, "_z": 40}, {"_x": 50, "_z": 40},
+                               {"_x": 50, "_z": 50}, {"_x": 40, "_z": 50}]}},
+                            {"BBLLBIOLMHP": 55, "EOIFEEDBAFJ": 9998,
+                             "JLFEAGHGCLP": {"BFLLDPOAJGD": [
+                               {"_x": 40, "_z": 40}, {"_x": 50, "_z": 40}]}}
+                           ]}
+                        ]}
+                        """));
+    }
+
+    @Test
+    void level2RespectsHeightWhenPolygonsOverlapInXZ() {
+        var index = nestedFixture();
+        assertEquals(new WorldAreaIndex.AreaIds(55, 5501), index.areaAt(20, 5, 20));
+        assertEquals(new WorldAreaIndex.AreaIds(55, 5502), index.areaAt(20, 15, 20));
+        assertEquals(new WorldAreaIndex.AreaIds(55, 0), index.areaAt(20, -5, 20));
+        assertEquals(new WorldAreaIndex.AreaIds(55, 0), index.areaAt(20, 25, 20));
+        assertEquals(5502, index.level2AreaAt(20, 15, 20));
+        assertEquals(55, index.level1AreaAt(20, 20));
+    }
+
+    @Test
+    void separatePolygonsWithSameLevel2IdAreRetained() {
+        var index = nestedFixture();
+        assertEquals(5503, index.level2AreaAt(60, 120, 20));
+        assertEquals(5503, index.level2AreaAt(85, -120, 20));
+        assertEquals(0, index.level2AreaAt(75, 0, 20));
+    }
+
+    @Test
+    void missingAndInvalidSubareasDoNotBecomeGuessedAreas() {
+        var index = nestedFixture();
+        assertEquals(new WorldAreaIndex.AreaIds(55, 0), index.areaAt(45, 0, 45));
+        assertEquals(new WorldAreaIndex.AreaIds(0, 0), index.areaAt(150, 0, 20));
+        assertFalse(index.isEmpty());
+    }
+
+    @Test
+    void realScene3SupportsBothAreaLevels() {
+        var file = Path.of("resources/BinOutput/Scene/WorldArea/scene3_worldArea.json");
+        assumeTrue(Files.exists(file), "needs the extracted 7.1 world area resource");
+        var index = WorldAreaIndex.forScene(3);
+        // Ground-level Mondstadt polygons, confirmed against 7.1 world-area source.
+        assertEquals(new WorldAreaIndex.AreaIds(1, 107), index.areaAt(2253.4f, 0, -1648.3f));
+        // Area 1506 is a high-elevation region in level-1 area 10.
+        assertEquals(new WorldAreaIndex.AreaIds(10, 1506), index.areaAt(1043.4f, 556.8f, -842.4f));
+        assertNotEquals(1506, index.level2AreaAt(1043.4f, 0, -842.4f));
     }
 
     @Test

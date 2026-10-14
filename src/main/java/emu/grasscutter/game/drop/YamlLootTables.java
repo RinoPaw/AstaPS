@@ -32,7 +32,7 @@ public final class YamlLootTables {
         if (resolver == null) throw new IllegalArgumentException("Missing item resolver");
         var settings = LoadSettings.builder()
                 .setAllowDuplicateKeys(false)
-                .setMaxAliasesForCollections(128)
+                .setMaxAliasesForCollections(2048)
                 .setCodePointLimit(1_000_000)
                 .build();
         Object document = new Load(settings).loadFromString(yaml);

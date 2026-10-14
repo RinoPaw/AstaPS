@@ -40,17 +40,17 @@ final class RewardConfigTest {
     void rejectsMissingSectionsUnknownRootsAndBadVersion() throws Exception {
         String text = bundled();
         assertThrows(IllegalArgumentException.class, () -> RewardConfig.parse(
-                text.replaceFirst("(?m)^version = 1\\n", "")));
+                text.replace("version = 1", "")));
         assertThrows(IllegalArgumentException.class, () -> RewardConfig.parse(
-                text.replaceFirst("(?m)^version = 1", "version = 2")));
+                text.replace("version = 1", "version = 2")));
         assertThrows(IllegalArgumentException.class, () -> RewardConfig.parse(
-                text.replaceFirst("(?m)^version = 1", "version = 1\\nunknown = true")));
+                text.replace("version = 1", "version = 1\nunknown = true")));
         assertThrows(IllegalArgumentException.class, () -> RewardConfig.parse(
-                text.replaceFirst("(?m)^\\[transPoint\\.\\\"kind=waypoint\\\"\\]",
-                        "[transPoint.\\\"kind=unknown\\\"]")));
+                text.replace("[transPoint.\"kind=waypoint\"]",
+                        "[transPoint.\"kind=unknown\"]")));
         assertThrows(IllegalArgumentException.class, () -> RewardConfig.parse(
-                text.replaceFirst("(?m)^\\[chest\\.\\\"kind=common\\\"\\]",
-                        "[chest.\\\"kind=unknown\\\"]")));
+                text.replace("[chest.\"kind=common\"]",
+                        "[chest.\"kind=unknown\"]")));
     }
 
     @Test

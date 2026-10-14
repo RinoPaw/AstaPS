@@ -347,8 +347,18 @@ public final class DropSystem extends BaseGameSystem {
         try {
             roll = standardChestLoot.roll(dropTag, level, rand);
             if (roll == null) return false;
-            for (var entry : roll.amounts().entrySet()) {
-                items.add(new GameItem(entry.getKey(), entry.getValue()));
+            // Match processDrop's first-item and repeated-item handling,
+            // particularly for equipment whose GameItem constructor normalizes count.
+            for (var drop : roll.drops()) {
+                boolean merged = false;
+                for (var item : items) {
+                    if (item.getItemId() == drop.itemId()) {
+                        item.setCount(Math.addExact(item.getCount(), drop.count()));
+                        merged = true;
+                        break;
+                    }
+                }
+                if (!merged) items.add(new GameItem(drop.itemId(), drop.count()));
             }
         } catch (RuntimeException e) {
             Grasscutter.getLogger().warn(

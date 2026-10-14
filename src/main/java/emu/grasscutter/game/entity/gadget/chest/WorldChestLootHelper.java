@@ -7,6 +7,9 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.reward.StandardChestRewardResolver;
+import java.util.Map;
+import java.util.TreeMap;
 import emu.grasscutter.game.world.Position;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.scripts.data.SceneGadget;
@@ -15,36 +18,63 @@ public final class WorldChestLootHelper {
     private WorldChestLootHelper() {
     }
 
+    /**
+     * This is the existing fallback chest payout. Only verified standard chests
+     * receive CSS overrides; special/unknown chests retain fallback behavior.
+     * Native quest chest drop tables are handled by GadgetChest before this call.
+     */
     public static void grant(Player player, EntityGadget entityGadget) {
         if (player == null || entityGadget == null || entityGadget.getScene() == null) {
             return;
         }
-        Tier tier = WorldChestLootHelper.resolveTier(entityGadget);
-        int n = WorldChestLootHelper.resolveSigilId(entityGadget);
+        Tier tier = resolveTier(entityGadget);
+        int sigilId = resolveSigilId(entityGadget);
+        var preview = StandardChestRewardResolver.preview(entityGadget);
+        Map<Integer, Integer> rewards = composeRewards(
+                tier, sigilId, preview.map(StandardChestRewardResolver.Preview::amounts)
+                        .orElse(Map.of()));
         Scene scene = entityGadget.getScene();
-        EntityGadget entityGadget2 = entityGadget;
-        player.earnExp(tier.adventureExp);
-        WorldChestLootHelper.drop(scene, entityGadget2, 201, tier.primogems);
-        WorldChestLootHelper.drop(scene, entityGadget2, 202, tier.mora);
-        WorldChestLootHelper.drop(scene, entityGadget2, n, tier.sigil);
+        int adventureExp = rewards.getOrDefault(102, 0);
+        if (adventureExp > 0) {
+            player.earnExp(adventureExp);
+        }
+        rewards.forEach((itemId, count) -> {
+            if (itemId != 102) drop(scene, entityGadget, itemId, count);
+        });
+        Grasscutter.getLogger().info(
+                "WorldChestLoot drop uid={} gadgetId={} tier={} policy={} selector={} "
+                        + "adventureExp={} primogems={}",
+                player.getUid(), entityGadget.getGadgetId(), tier.name(),
+                preview.isPresent() ? "css" : "fallback",
+                preview.map(StandardChestRewardResolver.Preview::lastSelector).orElse("none"),
+                adventureExp, rewards.getOrDefault(201, 0));
+    }
+
+    /**
+     * Compose pre-existing material/sigil/Mora fallback with the full CSS rule result.
+     * CSS zeroes are retained until delivery so a zero removes a fallback item,
+     * and a custom item-<id> does not get awarded twice.
+     */
+    static Map<Integer, Integer> composeRewards(
+            Tier tier, int sigilId, Map<Integer, Integer> cssAmounts) {
+        var values = new TreeMap<Integer, Integer>();
+        values.put(102, tier.adventureExp);
+        values.put(201, tier.primogems);
+        values.put(202, tier.mora);
+        if (sigilId > 0) values.put(sigilId, tier.sigil);
         if (tier == Tier.COMMON) {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104011, Math.max(tier.oreFine, 2));
+            values.put(104011, Math.max(tier.oreFine, 2));
         } else {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104012, tier.oreFine);
+            values.put(104012, tier.oreFine);
             if (tier.oreFine >= 3) {
-                WorldChestLootHelper.drop(scene, entityGadget2, 104013, Math.max(1, tier.oreFine / 3));
+                values.put(104013, Math.max(1, tier.oreFine / 3));
             }
         }
-        if (tier.expWanderer > 0) {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104001, tier.expWanderer);
-        }
-        if (tier.expAdventurer > 0) {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104002, tier.expAdventurer);
-        }
-        if (tier.expHero > 0) {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104003, tier.expHero);
-        }
-        Grasscutter.getLogger().info("WorldChestLoot drop uid={} gadgetId={} tier={} primogems={}", player.getUid(), entityGadget.getGadgetId(), tier.name(), tier.primogems);
+        if (tier.expWanderer > 0) values.put(104001, tier.expWanderer);
+        if (tier.expAdventurer > 0) values.put(104002, tier.expAdventurer);
+        if (tier.expHero > 0) values.put(104003, tier.expHero);
+        values.putAll(cssAmounts);
+        return Map.copyOf(values);
     }
 
     private static void drop(Scene scene, GameEntity gameEntity, int n, int n2) {
@@ -223,10 +253,10 @@ public final class WorldChestLootHelper {
     }
 
     public static enum Tier {
-        COMMON(66, 20, 3, 1000, 2, 2, 1, 0),
-        EXQUISITE(166, 25, 5, 1500, 2, 3, 2, 1),
-        PRECIOUS(366, 30, 8, 2000, 3, 3, 3, 2),
-        LUXURIOUS(566, 30, 10, 2500, 4, 2, 4, 3);
+        COMMON(2, 30, 3, 1000, 2, 2, 1, 0),
+        EXQUISITE(5, 30, 5, 1500, 2, 3, 2, 1),
+        PRECIOUS(10, 30, 8, 2000, 3, 3, 3, 2),
+        LUXURIOUS(10, 30, 10, 2500, 4, 2, 4, 3);
 
         final int primogems;
         final int adventureExp;

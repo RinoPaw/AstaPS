@@ -15,8 +15,12 @@ public final class ChestRewardConfig {
         public String selectorValue() { return value; }
     }
 
-    public record Match(String selector, List<ItemParamData> rewards) {
-        public Match { rewards = List.copyOf(rewards); }
+    /** Keep explicit zeroes for live payout; the preview list omits zero-count items. */
+    public record Match(String selector, List<ItemParamData> rewards, Map<Integer, Integer> amounts) {
+        public Match {
+            rewards = List.copyOf(rewards);
+            amounts = Map.copyOf(amounts);
+        }
     }
 
     private final List<CssRewardRules.Rule> rules;
@@ -54,6 +58,6 @@ public final class ChestRewardConfig {
             }
         }
         if (lastSelector == null) throw new IllegalStateException("No chest default for " + kind);
-        return new Match(lastSelector, DirectReward.materialize(merged));
+        return new Match(lastSelector, DirectReward.materialize(merged), merged);
     }
 }

@@ -5,10 +5,10 @@ The file is copied once from src/main/resources/rewards.css; existing files
 are not overwritten. The loader validates **all** rules before publishing an
 updated snapshot. A malformed selector or reward amount prevents startup.
 
-**Important:** transport reward rules are live. Chest CSS rules are currently
-parsed and used by StandardChestRewardResolver.preview only.
-GadgetChest and WorldChestLootHelper retain their existing grant routes;
-editing chest CSS does not yet change live chest drops.
+**Important:** transport reward rules are live. Verified standard world chests
+now use the CSS fixed rewards on the existing WorldChestLootHelper fallback path.
+Random/native quest loot and special chest flows remain separate. Chest claim
+lifecycle and ground-item delivery retain their existing behavior.
 
 ## Selectors
 
@@ -56,6 +56,11 @@ No !important, @import, media queries, CSS layout properties or expressions.
 The bundled policy preserves the historical low-gem areas 3:1..7 and 3:9;
 3:1:104 (望风山地) and 3:7:703 (孤云阁) restore higher amounts.
 Dragonspine 3:10, Lisha 3:8 and the Chasm 3:19/6:300 use higher defaults.
+
+Matching CSS amounts override the corresponding fallback item ID. Explicit zero
+prevents that item from dropping, while omitted fields retain the existing
+fallback values (e.g. Mora, materials and sigils). Legacy tier fallback gems
+are 2/5/10/10, never the obsolete 66/166/366/566 values.
 
 Native random drops, quest rewards, boss flowers, Shrines of Depths and
 special chests remain outside this direct-reward policy. See

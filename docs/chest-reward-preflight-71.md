@@ -6,11 +6,11 @@ The branch now combines three read-only components:
 2. `WorldAreaIndex` resolves world coordinates to the level-1 region and, when possible, the level-2 region. Level-2 outlines may be height-limited; an unknown level-1 region is not guessed.
 3. `StandardChestRewardResolver.preview` uses the classification, region and operator-owned `RewardConfig.current().chest()` selectors. It returns the proposed direct rewards and last matched selector, or an empty result for excluded/unresolved sources.
 
-This remains **read-only**. No calls from `GadgetChest` have been added. Editing `rewards.css` does **not** change live chest payouts yet. Native drop tables, inventory, ground entities, scripts and claim state are untouched.
+The CSS preview is now used by the existing `WorldChestLootHelper` fallback payout **only for verified standard world chests**. CSS direct reward amounts (including explicit zeroes) replace the same fallback item IDs, while the remaining fallback material, sigil, and book drops are retained. Native quest and boss-drop paths remain unchanged. Unverified/special chests do not receive CSS overrides. `GadgetChest` claim timing and entity-delivery behavior are unchanged; this does not solve their existing confirmation/claim safety limitations.
 
 The resolver deliberately fails closed when the level-1 world area is unknown: it cannot safely assume that a chest belongs to a high-Primogem region. If level-1 is known but level-2 is unknown, level-1 overrides can still apply.
 
-Before enabling payouts, three contracts must be established:
+Remaining limitations before expanding this integration:
 
 - Native fixed currency/EXP must not be paid twice when an operator-owned direct reward takes authority. Native randomized material/weapon loot and per-object quest rewards must remain.
 - Inventory or ground-drop delivery must return a meaningful success result before a chest is marked claimed. The current `WorldChestLootHelper.grant` and ground-entity creation calls do not offer this confirmation, while `GadgetChest.grantOrdinaryChestLoot` currently marks `ordinaryClaimed` before delivery.

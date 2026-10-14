@@ -7,6 +7,7 @@ import emu.grasscutter.game.entity.gadget.chest.StandardChestClassifier.Classifi
 import emu.grasscutter.game.world.WorldAreaIndex;
 import emu.grasscutter.game.world.WorldAreaIndex.AreaIds;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -14,7 +15,8 @@ import java.util.Optional;
  * Read-only preflight for ordinary exploration chest direct rewards.
  *
  * <p>A preview never proves native/random drop delivery, and it must not be used
- * to open a chest or record a claim. The live GadgetChest payout remains unchanged.
+ * to open a chest or record a claim. The fallback world-chest helper uses the
+ * resolved fixed amounts; claim lifecycle remains owned by GadgetChest.
  */
 public final class StandardChestRewardResolver {
     private StandardChestRewardResolver() {}
@@ -24,9 +26,11 @@ public final class StandardChestRewardResolver {
             int sceneId,
             AreaIds area,
             String lastSelector,
-            List<ItemParamData> rewards) {
+            List<ItemParamData> rewards,
+            Map<Integer, Integer> amounts) {
         public Preview {
             rewards = List.copyOf(rewards);
+            amounts = Map.copyOf(amounts);
         }
     }
 
@@ -48,7 +52,7 @@ public final class StandardChestRewardResolver {
         var kind = ChestRewardConfig.Kind.valueOf(classification.kind().name());
         var match = config.resolve(kind, sceneId, area.level1(), area.level2());
         return Optional.of(
-                new Preview(kind, sceneId, area, match.selector(), match.rewards()));
+                new Preview(kind, sceneId, area, match.selector(), match.rewards(), match.amounts()));
     }
 
     /** Inspects real gadget metadata and position, without writing player state. */

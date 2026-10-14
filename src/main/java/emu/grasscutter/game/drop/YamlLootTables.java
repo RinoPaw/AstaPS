@@ -35,7 +35,9 @@ public final class YamlLootTables {
     }
 
     private final Map<String, Pool> pools;
-    private YamlLootTables(Map<String, Pool> pools) { this.pools = Map.copyOf(pools); }
+    private YamlLootTables(Map<String, Pool> pools) {
+        this.pools = java.util.Collections.unmodifiableMap(new LinkedHashMap<>(pools));
+    }
 
     public static YamlLootTables parse(String yaml, ItemResolver resolver) {
         if (resolver == null) throw new IllegalArgumentException("Missing item resolver");

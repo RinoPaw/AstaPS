@@ -65,133 +65,56 @@ chest[kind="luxurious"] {
 /* solely because they belong to the same nation. */
 /* Dragonspine (3:10), Lisha (3:8), and Chasm (3:19, 6:300) use the defaults. */
 
-/* 坠星山谷 (scene 3, level-1 1) */
-chest[kind="common"][scene="3"][area1="1"] {
-    primogems: 0;
-}
+/* Historical low-Primogem scene-3 regions:
+ * 1 坠星山谷, 2 风啸山坡, 3 苍风高地, 4 明冠山地,
+ * 5 碧水原, 6 珉林, 7 云来海, 9 琼玑野
+ */
 
-chest[kind="exquisite"][scene="3"][area1="1"] {
-    primogems: 2;
-}
-
-chest[kind="precious"][scene="3"][area1="1"] {
-    primogems: 5;
-}
-
-/* 风啸山坡 (scene 3, level-1 2) */
-chest[kind="common"][scene="3"][area1="2"] {
-    primogems: 0;
-}
-
-chest[kind="exquisite"][scene="3"][area1="2"] {
-    primogems: 2;
-}
-
-chest[kind="precious"][scene="3"][area1="2"] {
-    primogems: 5;
-}
-
-/* 苍风高地 (scene 3, level-1 3) */
-chest[kind="common"][scene="3"][area1="3"] {
-    primogems: 0;
-}
-
-chest[kind="exquisite"][scene="3"][area1="3"] {
-    primogems: 2;
-}
-
-chest[kind="precious"][scene="3"][area1="3"] {
-    primogems: 5;
-}
-
-/* 明冠山地 (scene 3, level-1 4) */
-chest[kind="common"][scene="3"][area1="4"] {
-    primogems: 0;
-}
-
-chest[kind="exquisite"][scene="3"][area1="4"] {
-    primogems: 2;
-}
-
-chest[kind="precious"][scene="3"][area1="4"] {
-    primogems: 5;
-}
-
-/* 碧水原 (scene 3, level-1 5) */
-chest[kind="common"][scene="3"][area1="5"] {
-    primogems: 0;
-}
-
-chest[kind="exquisite"][scene="3"][area1="5"] {
-    primogems: 2;
-}
-
-chest[kind="precious"][scene="3"][area1="5"] {
-    primogems: 5;
-}
-
-/* 珉林 (scene 3, level-1 6) */
-chest[kind="common"][scene="3"][area1="6"] {
-    primogems: 0;
-}
-
-chest[kind="exquisite"][scene="3"][area1="6"] {
-    primogems: 2;
-}
-
-chest[kind="precious"][scene="3"][area1="6"] {
-    primogems: 5;
-}
-
-/* 云来海 (scene 3, level-1 7) */
-chest[kind="common"][scene="3"][area1="7"] {
-    primogems: 0;
-}
-
-chest[kind="exquisite"][scene="3"][area1="7"] {
-    primogems: 2;
-}
-
-chest[kind="precious"][scene="3"][area1="7"] {
-    primogems: 5;
-}
-
-/* 琼玑野 (scene 3, level-1 9) */
+chest[kind="common"][scene="3"][area1="1"],
+chest[kind="common"][scene="3"][area1="2"],
+chest[kind="common"][scene="3"][area1="3"],
+chest[kind="common"][scene="3"][area1="4"],
+chest[kind="common"][scene="3"][area1="5"],
+chest[kind="common"][scene="3"][area1="6"],
+chest[kind="common"][scene="3"][area1="7"],
 chest[kind="common"][scene="3"][area1="9"] {
     primogems: 0;
 }
 
+chest[kind="exquisite"][scene="3"][area1="1"],
+chest[kind="exquisite"][scene="3"][area1="2"],
+chest[kind="exquisite"][scene="3"][area1="3"],
+chest[kind="exquisite"][scene="3"][area1="4"],
+chest[kind="exquisite"][scene="3"][area1="5"],
+chest[kind="exquisite"][scene="3"][area1="6"],
+chest[kind="exquisite"][scene="3"][area1="7"],
 chest[kind="exquisite"][scene="3"][area1="9"] {
     primogems: 2;
 }
 
+chest[kind="precious"][scene="3"][area1="1"],
+chest[kind="precious"][scene="3"][area1="2"],
+chest[kind="precious"][scene="3"][area1="3"],
+chest[kind="precious"][scene="3"][area1="4"],
+chest[kind="precious"][scene="3"][area1="5"],
+chest[kind="precious"][scene="3"][area1="6"],
+chest[kind="precious"][scene="3"][area1="7"],
 chest[kind="precious"][scene="3"][area1="9"] {
     primogems: 5;
 }
+/* Higher-Primogem exceptions: 望风山地 3:1:104 and 孤云阁 3:7:703. */
 
-/* 望风山地: higher-grade exception inside a historical low-grade parent */
-chest[kind="common"][scene="3"][area1="1"][area2="104"] {
-    primogems: 2;
-}
-
-chest[kind="exquisite"][scene="3"][area1="1"][area2="104"] {
-    primogems: 5;
-}
-
-chest[kind="precious"][scene="3"][area1="1"][area2="104"] {
-    primogems: 10;
-}
-
-/* 孤云阁: higher-grade exception inside a historical low-grade parent */
+chest[kind="common"][scene="3"][area1="1"][area2="104"],
 chest[kind="common"][scene="3"][area1="7"][area2="703"] {
     primogems: 2;
 }
 
+chest[kind="exquisite"][scene="3"][area1="1"][area2="104"],
 chest[kind="exquisite"][scene="3"][area1="7"][area2="703"] {
     primogems: 5;
 }
 
+chest[kind="precious"][scene="3"][area1="1"][area2="104"],
 chest[kind="precious"][scene="3"][area1="7"][area2="703"] {
     primogems: 10;
 }
-

@@ -45,6 +45,10 @@ final class ChestRewardConfigTest {
         }
         assertEquals(Map.of(102, 30, 201, 2), values(cfg.resolve(Kind.COMMON, 3, 1, 104)));
         assertEquals(Map.of(102, 30, 201, 2), values(cfg.resolve(Kind.COMMON, 3, 7, 703)));
+        assertEquals(Map.of(102, 30, 201, 5), values(cfg.resolve(Kind.EXQUISITE, 3, 1, 104)));
+        assertEquals(Map.of(102, 30, 201, 10), values(cfg.resolve(Kind.PRECIOUS, 3, 1, 104)));
+        assertEquals(Map.of(102, 30, 201, 5), values(cfg.resolve(Kind.EXQUISITE, 3, 7, 703)));
+        assertEquals(Map.of(102, 30, 201, 10), values(cfg.resolve(Kind.PRECIOUS, 3, 7, 703)));
         assertEquals(Map.of(102, 30), values(cfg.resolve(Kind.COMMON, 3, 1, 0)));
         assertEquals("chest[kind=\"common\"][scene=\"3\"][area1=\"1\"][area2=\"104\"]",
                 cfg.resolve(Kind.COMMON, 3, 1, 104).selector());

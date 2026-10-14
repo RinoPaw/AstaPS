@@ -2,6 +2,8 @@ package emu.grasscutter.game.entity.gadget;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.common.ItemParamData;
+import emu.grasscutter.data.GameData;
+import emu.grasscutter.database.RewardGrantJournal;
 import emu.grasscutter.data.excels.RewardPreviewData;
 import emu.grasscutter.game.drop.BossChestDropTagResolver;
 import emu.grasscutter.game.drop.DropSystem;
@@ -12,6 +14,9 @@ import emu.grasscutter.game.entity.gadget.chest.BossChestInteractHandler;
 import emu.grasscutter.game.entity.gadget.chest.ChestInteractHandler;
 import emu.grasscutter.game.entity.gadget.chest.WorldChestLootHelper;
 import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.InventoryAddPolicy;
+import emu.grasscutter.game.reward.ChestInventoryClaim;
+import emu.grasscutter.game.reward.StandardChestRewardResolver;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.props.SceneType;
@@ -149,7 +154,7 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            grantOrdinaryChestLoot(player);
+            if (!grantOrdinaryChestLoot(player)) return false;
             finishOpen(player, meta);
             return false;
         }
@@ -174,7 +179,7 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            grantOrdinaryChestLoot(player);
+            if (!grantOrdinaryChestLoot(player)) return false;
             finishOpen(player, null);
             return false;
         }
@@ -209,8 +214,7 @@ public class GadgetChest extends GadgetContent {
                             req.getResinCostType()
                                     == ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE);
         } else {
-            grantOrdinaryChestLoot(player);
-            success = true;
+            success = grantOrdinaryChestLoot(player);
         }
         if (!success) {
             return false;
@@ -290,10 +294,67 @@ public class GadgetChest extends GadgetContent {
         return allClaimed;
     }
 
-    private void grantOrdinaryChestLoot(Player player) {
-        ordinaryClaimed = true;
+    /**
+     * A standard native-tag chest can use the durable inventory-only grant boundary when
+     * its original root does not fall to ground. All other chest families keep their old
+     * route; we must not quietly convert their pickup entities to backpack items.
+     *
+     * @return null when the standard path does not apply, otherwise whether full delivery
+     *         was confirmed. A failed supported grant must never fall back to tier loot.
+     */
+    private Boolean tryGrantStandardChest(Player player, EntityGadget gadget) {
+        SceneGadget meta = gadget.getMetaGadget();
+        if (meta == null || meta.config_id <= 0 || gadget.getGroupId() <= 0) return null;
+
+        var staged = StandardChestRewardResolver.stage(gadget, player.getServer().getDropSystem());
+        if (staged.isEmpty()) return null;
+        var reward = staged.orElseThrow();
+        if (reward.nativeRoll().fallToGround()) return null;
+
+        try {
+            var inventoryBatch =
+                    reward.overlay().inventoryBatch(id -> GameData.getItemDataMap().get(id));
+            var key = ChestInventoryClaim.key(
+                    player.getUid(), gadget.getScene().getId(), gadget.getGroupId(), meta.config_id);
+            boolean delivered = ChestInventoryClaim.deliver(
+                    new RewardGrantJournal(), key, inventoryBatch,
+                    (items, authorize, confirmed) -> player.getInventory().addItems(
+                            items, ActionReason.OpenChest, InventoryAddPolicy.ALL_OR_NOTHING,
+                            authorize, confirmed));
+            if (!delivered) {
+                Grasscutter.getLogger().warn(
+                        "Standard chest reward refused uid={} scene={} group={} config={} tag={}; "
+                                + "inspect inventory and reward_grant_receipts before retry",
+                        player.getUid(), gadget.getScene().getId(), gadget.getGroupId(),
+                        meta.config_id, meta.drop_tag);
+                return false;
+            }
+            Grasscutter.getLogger().debug(
+                    "Standard chest reward delivered uid={} group={} config={} root={} selector={}",
+                    player.getUid(), gadget.getGroupId(), meta.config_id,
+                    reward.nativeRoll().rootId(), reward.preview().lastSelector());
+            return true;
+        } catch (RuntimeException failure) {
+            Grasscutter.getLogger().warn(
+                    "Standard chest reward interrupted uid={} group={} config={} tag={}; "
+                            + "inspect reward_grant_receipts before retry",
+                    player.getUid(), gadget.getGroupId(), meta.config_id, meta.drop_tag, failure);
+            return false;
+        }
+    }
+
+    private boolean grantOrdinaryChestLoot(Player player) {
         EntityGadget gadget = getGadget();
         SceneGadget meta = resolveChestMeta();
+        Boolean standard = tryGrantStandardChest(player, gadget);
+        if (standard != null) {
+            if (standard) ordinaryClaimed = true;
+            return standard;
+        }
+
+        // Legacy families still have an unacknowledged ground-drop API; do not
+        // advertise success guarantees or change their quest/pickup semantics here.
+        ordinaryClaimed = true;
         if (meta != null && meta.chest_drop_id > 0) {
             DropSystem dropSystem = player.getServer().getDropSystem();
             // Quest-created chests have no Lua group; scripted quest chests are identified by loot.
@@ -302,10 +363,11 @@ public class GadgetChest extends GadgetContent {
                             || dropSystem.hasQuestItemDrop(meta.chest_drop_id))
                     && dropSystem.handleChestDrop(
                             meta.chest_drop_id, Math.max(1, meta.drop_count), gadget)) {
-                return;
+                return true;
             }
         }
         WorldChestLootHelper.grant(player, gadget);
+        return true;
     }
 
     protected boolean grantBossChestFallback(Player player, SceneGadget meta) {

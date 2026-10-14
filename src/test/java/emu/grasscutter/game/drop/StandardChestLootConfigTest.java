@@ -32,6 +32,31 @@ final class StandardChestLootConfigTest {
     }
 
     @Test
+    void fourChestQualitiesHaveIndependentEditablePoolsEvenWhenTableIdsMatch() {
+        var kinds = new LinkedHashMap<String, StandardChestLootConfig.Quality>();
+        var tags = Map.of(
+                "common", "战斗低级蒙德",
+                "exquisite", "战斗中级蒙德",
+                "precious", "战斗高级蒙德",
+                "luxurious", "战斗超级蒙德");
+        int amount = 100;
+        for (var kind : List.of("common", "exquisite", "precious", "luxurious")) {
+            kinds.put(kind, new StandardChestLootConfig.Quality(
+                    List.of(new StandardChestLootConfig.Source(tags.get(kind), 1, 100)),
+                    List.of(new StandardChestLootConfig.Table(100, 1, false,
+                            List.of(new StandardChestLootConfig.Drop(202,
+                                    Integer.toString(amount), 10000))))));
+            amount += 100;
+        }
+
+        var config = new StandardChestLootConfig(new StandardChestLootConfig.Document(kinds));
+        assertEquals(100, config.roll(tags.get("common"), 1, new Random(1)).amounts().get(202));
+        assertEquals(200, config.roll(tags.get("exquisite"), 1, new Random(1)).amounts().get(202));
+        assertEquals(300, config.roll(tags.get("precious"), 1, new Random(1)).amounts().get(202));
+        assertEquals(400, config.roll(tags.get("luxurious"), 1, new Random(1)).amounts().get(202));
+    }
+
+    @Test
     void configuredWeightedAndIndependentRollsUseTheirOwnNumbers() {
         var cfg = new StandardChestLootConfig(withCommon(
                 List.of(new StandardChestLootConfig.Source(COMMON_TAG, 1, 51010000)),

@@ -1,6 +1,7 @@
 package emu.grasscutter.game.reward;
 
 import com.helger.css.decl.CSSStyleRule;
+import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.writer.CSSWriterSettings;
 import java.util.ArrayList;
@@ -29,7 +30,8 @@ final class CssRewardRules {
     private static final Set<String> CHEST_FIELDS = Set.of("kind", "scene", "area1", "area2", "pool");
 
     record Rule(String type, String selector, Evaluator evaluator, Map<String,String> filters,
-                int specificity, int sourceOrder, Map<Integer,Integer> amounts) {
+                int specificity, int sourceOrder, Map<Integer,Integer> amounts,
+                Map<Integer,ChestRandomDrops.Roll> randomRolls) {
         boolean matches(Element target) {
             return evaluator.matches(target.root(), target);
         }
@@ -64,9 +66,35 @@ final class CssRewardRules {
                 throw new IllegalArgumentException(
                         "Only simple CSS style rules are supported in rewards.css");
             }
-            Map<Integer,Integer> amounts = DirectReward.parse(
-                    style.getAllDeclarations(), "rewards.css rule " + (order + 1));
-            if (amounts.isEmpty()) {
+            var fixed = new ArrayList<CSSDeclaration>();
+            var random = new HashMap<Integer,ChestRandomDrops.Roll>();
+            for (var declaration : style.getAllDeclarations()) {
+                String property = declaration.getProperty();
+                if (!property.startsWith("random-")) {
+                    fixed.add(declaration);
+                    continue;
+                }
+                if (declaration.isImportant() || !property.substring(7).matches("[1-9][0-9]*")) {
+                    throw new IllegalArgumentException("Invalid chest random property: " + property);
+                }
+                try {
+                    int id = Integer.parseInt(property.substring(7));
+                    String[] parts = declaration.getExpressionAsCSSString().trim().split("\\s+");
+                    if (parts.length != 3) {
+                        throw new IllegalArgumentException("Expected min max chance for " + property);
+                    }
+                    var roll = new ChestRandomDrops.Roll(
+                            id, Integer.parseInt(parts[0]), Integer.parseInt(parts[1]),
+                            Integer.parseInt(parts[2]));
+                    if (random.putIfAbsent(id, roll) != null) {
+                        throw new IllegalArgumentException("Duplicate random item " + id);
+                    }
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid random item numbers: " + property, e);
+                }
+            }
+            Map<Integer,Integer> amounts = DirectReward.parse(fixed, "rewards.css rule " + (order + 1));
+            if (amounts.isEmpty() && random.isEmpty()) {
                 throw new IllegalArgumentException("Empty reward declaration block");
             }
             for (var rawSelector : style.getAllSelectors()) {
@@ -77,6 +105,9 @@ final class CssRewardRules {
                     throw new IllegalArgumentException("Unsupported reward selector: " + selector);
                 }
                 String target = type.group(1);
+                if (target.equals("transPoint") && !random.isEmpty()) {
+                    throw new IllegalArgumentException("Random drops apply only to chests: " + selector);
+                }
                 if (target.equals("transPoint")
                         && amounts.containsKey(DirectReward.REGIONAL_SIGILS)) {
                     throw new IllegalArgumentException("sigils applies only to chests: " + selector);
@@ -131,7 +162,7 @@ final class CssRewardRules {
                     throw new IllegalArgumentException("Invalid CSS selector: " + selector, e);
                 }
                 result.add(new Rule(target, selector, evaluator, Map.copyOf(attributes),
-                        attributes.size(), order, amounts));
+                        attributes.size(), order, amounts, Map.copyOf(random)));
             }
             order++;
         }

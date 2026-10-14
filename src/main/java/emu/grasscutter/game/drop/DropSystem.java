@@ -305,6 +305,7 @@ public final class DropSystem extends BaseGameSystem {
         var dropData = dropTable.get(chestDropId);
         List<GameItem> items = new ArrayList<>();
         processDrop(dropData, dropCount, items);
+        if (items.isEmpty()) return false;
         if (dropData.isFallToGround()) {
             dropItems(items, ActionReason.OpenChest, bornFrom, bornFrom.getWorld().getHost(), false);
         } else {

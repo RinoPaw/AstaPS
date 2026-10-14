@@ -10,6 +10,7 @@ import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.entity.gadget.chest.BossChestInteractHandler;
 import emu.grasscutter.game.entity.gadget.chest.ChestInteractHandler;
+import emu.grasscutter.game.entity.gadget.chest.StandardChestClassifier;
 import emu.grasscutter.game.entity.gadget.chest.WorldChestLootHelper;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
@@ -149,8 +150,9 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            grantOrdinaryChestLoot(player);
-            finishOpen(player, meta);
+            if (grantOrdinaryChestLoot(player)) {
+                finishOpen(player, meta);
+            }
             return false;
         }
 
@@ -174,8 +176,9 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            grantOrdinaryChestLoot(player);
-            finishOpen(player, null);
+            if (grantOrdinaryChestLoot(player)) {
+                finishOpen(player, null);
+            }
             return false;
         }
 
@@ -209,8 +212,7 @@ public class GadgetChest extends GadgetContent {
                             req.getResinCostType()
                                     == ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE);
         } else {
-            grantOrdinaryChestLoot(player);
-            success = true;
+            success = grantOrdinaryChestLoot(player);
         }
         if (!success) {
             return false;
@@ -290,22 +292,39 @@ public class GadgetChest extends GadgetContent {
         return allClaimed;
     }
 
-    private void grantOrdinaryChestLoot(Player player) {
-        ordinaryClaimed = true;
+    private boolean grantOrdinaryChestLoot(Player player) {
         EntityGadget gadget = getGadget();
         SceneGadget meta = resolveChestMeta();
+        DropSystem dropSystem = player.getServer().getDropSystem();
         if (meta != null && meta.chest_drop_id > 0) {
-            DropSystem dropSystem = player.getServer().getDropSystem();
-            // Quest-created chests have no Lua group; scripted quest chests are identified by loot.
+            // Keep quest-created and dungeon chest rewards on their explicit native root.
             if ((gadget.getScene().getSceneType() == SceneType.SCENE_DUNGEON
                             || gadget.getGroupId() == 0
                             || dropSystem.hasQuestItemDrop(meta.chest_drop_id))
                     && dropSystem.handleChestDrop(
                             meta.chest_drop_id, Math.max(1, meta.drop_count), gadget)) {
-                return;
+                ordinaryClaimed = true;
+                return true;
             }
         }
-        WorldChestLootHelper.grant(player, gadget);
+
+        if (StandardChestClassifier.classify(gadget).isStandard()) {
+            // ChestDrop maps the authored tag and chest level to a native DropTable root.
+            // The root already contains Adventure EXP, currencies and randomized materials.
+            // Do not add quality-based fixed loot on top of that root.
+            if (!dropSystem.handleChestDrop(meta.drop_tag, Math.max(1, meta.level), gadget)) {
+                Grasscutter.getLogger().warn(
+                        "Missing native standard chest drop uid={} gadgetId={} group={} config={} tag={} level={}",
+                        player.getUid(), gadget.getGadgetId(), gadget.getGroupId(),
+                        gadget.getConfigId(), meta.drop_tag, meta.level);
+                return false;
+            }
+        } else {
+            // Special/unknown chests retain their existing behavior for now.
+            WorldChestLootHelper.grant(player, gadget);
+        }
+        ordinaryClaimed = true;
+        return true;
     }
 
     protected boolean grantBossChestFallback(Player player, SceneGadget meta) {

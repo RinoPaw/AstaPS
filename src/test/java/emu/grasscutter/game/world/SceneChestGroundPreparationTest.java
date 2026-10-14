@@ -8,6 +8,7 @@ import emu.grasscutter.data.excels.GadgetData;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.data.excels.scene.SceneData;
 import emu.grasscutter.game.entity.EntityGadget;
+import emu.grasscutter.game.entity.EntityItem;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.systems.TestPlayers;
 import emu.grasscutter.utils.JsonUtils;
@@ -108,6 +109,50 @@ final class SceneChestGroundPreparationTest {
                         List.of(item(100061, 70310001, 10_001)),
                         setup.chest(), setup.player()));
         assertEquals(before, setup.scene().getEntities().size());
+    }
+
+    @Test
+    void publicationRegistersTheWholeOwnedBatchAndRejectsDuplicatePublication() {
+        var setup = setup();
+        int before = setup.scene().getEntities().size();
+        var staged = setup.scene().prepareChestGroundEntities(
+                List.of(item(100061, 70310001, 2), item(104001, 70310002, 4)),
+                setup.chest(), setup.player());
+
+        setup.scene().publishChestGroundEntities(staged, setup.player());
+        assertEquals(before + 3, setup.scene().getEntities().size());
+        for (var spawned : staged) {
+            assertSame(spawned, setup.scene().getEntities().get(spawned.getId()));
+        }
+        assertThrows(IllegalArgumentException.class,
+                () -> setup.scene().publishChestGroundEntities(staged, setup.player()));
+        assertEquals(before + 3, setup.scene().getEntities().size());
+    }
+
+    @Test
+    void onCreateFailureRollsBackAllEntitiesWithoutSendingAppearPackets() {
+        var setup = setup();
+        int before = setup.scene().getEntities().size();
+        int packetsBefore = setup.player().sent.size();
+        var ordinary = setup.scene().prepareChestGroundEntities(
+                List.of(item(104001, 70310001, 4)),
+                setup.chest(), setup.player()).getFirst();
+        var throwsOnCreate = new EntityItem(
+                setup.scene(), setup.player(), item(104002, 70310002, 2),
+                setup.chest().getPosition(), false) {
+            @Override
+            public void onCreate() {
+                throw new IllegalStateException("injected native drop spawn failure");
+            }
+        };
+
+        assertThrows(IllegalStateException.class,
+                () -> setup.scene().publishChestGroundEntities(
+                        List.of(ordinary, throwsOnCreate), setup.player()));
+        assertEquals(before, setup.scene().getEntities().size());
+        assertEquals(packetsBefore, setup.player().sent.size());
+        assertFalse(setup.scene().getEntities().containsKey(ordinary.getId()));
+        assertFalse(setup.scene().getEntities().containsKey(throwsOnCreate.getId()));
     }
 
     @Test

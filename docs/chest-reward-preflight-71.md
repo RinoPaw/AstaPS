@@ -7,6 +7,10 @@ The branch now combines three read-only components:
 3. `StandardChestRewardResolver.preview` uses the classification, region and operator-owned `RewardConfig.current().chest()` selectors. It returns the proposed direct rewards and last matched selector, or an empty result for excluded/unresolved sources.
 
 The existing `WorldChestLootHelper` uses CSS for fixed quantities.
+Ordinary-chest native random tables are now exported into the operator-owned
+`chest-loot.json` on first launch. After that, random roots, quantities,
+probabilities and item pools are read from the edited JSON, not silently
+reloaded from the upstream DropTable. See `chest-rewards-css-71.md`.
 Verified ordinary world chests use area selectors and roll the native
 ChestDrop/DropTable pool once; CSS values replace matching native item IDs,
 including explicit zero. Unconfigured random ores, books and weapons retain

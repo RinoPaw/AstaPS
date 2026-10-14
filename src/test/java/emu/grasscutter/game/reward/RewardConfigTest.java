@@ -157,7 +157,8 @@ final class RewardConfigTest {
         var missing = chest.resolve(Kind.COMMON, 0, 0, 0, true).amounts();
         assertEquals(0, missing.get(202));
         assertEquals(3, missing.get(-1));
-        assertEquals(2, missing.get(104011));
+        assertFalse(missing.containsKey(104011));
+        assertEquals(3, chest.resolve(Kind.COMMON, 0, 0, 0, true).randomRolls().size());
         assertEquals(30, missing.get(102));
         assertEquals(2500, chest.resolve(Kind.LUXURIOUS, 0, 0, 0, true)
                 .amounts().get(202));

@@ -63,6 +63,18 @@ public final class StandardChestRewardResolver {
         return Optional.of(new Preview(kind, sceneId, area, match));
     }
 
+    /**
+     * Native ground-drop roots must retain their pickup behavior. Only known authored
+     * identities and direct-inventory roots may enter the current journaled runtime path.
+     */
+    public static boolean supportsInventoryClaim(Staged staged, int groupId, int configId) {
+        return staged != null
+                && staged.nativeRoll() != null
+                && !staged.nativeRoll().fallToGround()
+                && staged.preview() != null
+                && groupId > 0 && configId > 0;
+    }
+
     /** Compose an already rolled native result with the exact config preview snapshot. */
     public static Staged stage(Preview preview, DropSystem.ChestRoll nativeRoll) {
         Objects.requireNonNull(preview, "preview");

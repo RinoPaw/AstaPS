@@ -19,9 +19,14 @@ matched TOML tables, including explicit zero clears. The final nonzero
 which native items should be suppressed. `ChestRewardOverlay.plan()`
 keeps every unowned native roll item (and its rolled equipment properties),
 removes only owned IDs, and attaches the final configured direct rewards.
-It makes no delivery attempts. These identities must eventually enter a
-single verified delivery operation; mixed inventory + world-ground deliveries
-cannot be assumed transactional.
+It makes no delivery attempts. `Plan.inventoryBatch()` can build a complete
+in-memory inventory grant from the retained native items and configured direct
+items, rejecting missing/mismatched item definitions before any grant. The
+caller still has to establish one verified admission and delivery operation.
+Converting originally ground-spawned native items to direct inventory delivery
+would change player-visible behavior, so this method is **not** used by the live
+chest handler. Mixed inventory + world-ground deliveries cannot be assumed
+transactional.
 
 This remains **read-only**. No calls from `GadgetChest` have been added. Editing `rewards.toml` does **not** change live chest payouts yet. Native drop tables, inventory, ground entities, scripts and claim state are untouched.
 

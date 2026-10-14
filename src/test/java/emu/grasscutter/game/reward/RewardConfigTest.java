@@ -93,8 +93,12 @@ final class RewardConfigTest {
     }
     @Test
     void oldOperatorCssIsMigratedAndPreservesSelectorsOverridesAndExplicitZero() throws Exception {
-        String legacy = bundled().replaceAll(
-                "(?m)^    (?:mora|sigils|item-[0-9]+): [0-9]+;\r?\n", "");
+        String source = bundled();
+        int chestStart = source.indexOf("/* Chest: four standard exploration qualities */");
+        assertTrue(chestStart > 0);
+        String legacy = source.substring(0, chestStart)
+                + source.substring(chestStart).replaceAll(
+                        "(?m)^    (?:mora|sigils|item-[0-9]+): [0-9]+;\r?\n", "");
         legacy += """
 
                 /* User-customized higher-specificity regional override */
@@ -120,14 +124,19 @@ final class RewardConfigTest {
                 .amounts().get(202));
         assertEquals(3, RewardConfig.current().chest().resolve(Kind.COMMON, 3, 1, 0)
                 .amounts().get(-1));
+        assertEquals(20, RewardConfig.current().transPoint()
+                .resolve(7, 9, TransPointRewardConfig.Kind.DOMAIN).stream()
+                .filter(item -> item.getId() == 101692).findFirst().orElseThrow().getCount());
         assertEquals(2500, RewardConfig.current().chest().resolve(Kind.LUXURIOUS, 3, 1, 0)
                 .amounts().get(202));
 
-        var backups = Files.list(temp)
-                .filter(p -> p.getFileName().toString().startsWith("rewards.css.backup-"))
-                .toList();
-        assertEquals(1, backups.size());
-        assertEquals(legacy, Files.readString(backups.getFirst()));
+        try (var files = Files.list(temp)) {
+            var backups = files
+                    .filter(p -> p.getFileName().toString().startsWith("rewards.css.backup-"))
+                    .toList();
+            assertEquals(1, backups.size());
+            assertEquals(legacy, Files.readString(backups.getFirst()));
+        }
 
         // Upgraded CSS does not grow another prefix or create another backup.
         RewardConfig.loadOrCreate(file);

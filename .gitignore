@@ -76,6 +76,7 @@ handbook.html
 config.json
 # Operator-owned reward configuration (and legacy TOML kept for migration).
 /rewards.css
+/rewards.css.backup-*.css
 /rewards.toml
 # Local game rules (all subdirectories) are owned by the server operator.
 /config/

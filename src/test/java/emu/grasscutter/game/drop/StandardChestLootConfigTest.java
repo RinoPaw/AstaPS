@@ -159,6 +159,18 @@ final class StandardChestLootConfigTest {
     }
 
     @Test
+    void explicitlyEmptyPoolDoesNotFallBackToMissingPool() {
+        var cfg = new StandardChestLootConfig(withCommon(
+                List.of(new StandardChestLootConfig.Source(COMMON_TAG, 1, 10)),
+                List.of(new StandardChestLootConfig.Table(10, 0, false,
+                        List.of(new StandardChestLootConfig.Drop(202, "0", 0))))));
+        var payout = cfg.roll(COMMON_TAG, 1, new Random(1));
+        assertNotNull(payout);
+        assertTrue(payout.amounts().isEmpty());
+        assertFalse(payout.fallToGround());
+    }
+
+    @Test
     void cyclicTablesDoNotHangOrPayPartialLoot() {
         var cfg = new StandardChestLootConfig(withCommon(
                 List.of(new StandardChestLootConfig.Source(COMMON_TAG, 1, 10)),

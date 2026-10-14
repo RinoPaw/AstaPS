@@ -92,16 +92,79 @@ final class RewardConfigTest {
                 () -> RewardConfig.parse("chest[kind=\"common\"] { primogems: 2; "));
     }
     @Test
-    void oldOperatorCssIsRejectedInsteadOfSilentlyDroppingAuxiliaryRewards() throws Exception {
-        String old = bundled().replaceAll("(?m)^    (?:mora|sigils|item-[0-9]+): [0-9]+;\r?\n", "");
-        Path file = temp.resolve("old.css");
-        Files.writeString(file, old);
+    void oldOperatorCssIsMigratedAndPreservesSelectorsOverridesAndExplicitZero() throws Exception {
+        String legacy = bundled().replaceAll(
+                "(?m)^    (?:mora|sigils|item-[0-9]+): [0-9]+;\r?\n", "");
+        legacy += """
+
+                /* User-customized higher-specificity regional override */
+                chest[kind="common"][scene="3"][area1="1"] { primogems: 0; item-104001: 0; }
+                """;
+        // Include a user edit to a base declaration. No migration may overwrite it.
+        legacy = legacy.replace("chest[kind=\"common\"] {\n    adventureExp: 30;\n    primogems: 2;",
+                "chest[kind=\"common\"] {\n    adventureExp: 30;\n    primogems: 7;");
+        Path file = temp.resolve("rewards.css");
+        Files.writeString(file, legacy);
+        RewardConfig.loadOrCreate(file);
+
+        String migrated = Files.readString(file);
+        assertTrue(migrated.endsWith(legacy));
+        assertTrue(migrated.contains("/* Added by AstaPS"));
+        assertEquals(7, RewardConfig.current().chest().resolve(Kind.COMMON, 3, 10, 0)
+                .amounts().get(201));
+        assertEquals(0, RewardConfig.current().chest().resolve(Kind.COMMON, 3, 1, 0)
+                .amounts().get(201));
+        assertEquals(0, RewardConfig.current().chest().resolve(Kind.COMMON, 3, 1, 0)
+                .amounts().get(104001));
+        assertEquals(1000, RewardConfig.current().chest().resolve(Kind.COMMON, 3, 1, 0)
+                .amounts().get(202));
+        assertEquals(3, RewardConfig.current().chest().resolve(Kind.COMMON, 3, 1, 0)
+                .amounts().get(-1));
+        assertEquals(2500, RewardConfig.current().chest().resolve(Kind.LUXURIOUS, 3, 1, 0)
+                .amounts().get(202));
+
+        var backups = Files.list(temp)
+                .filter(p -> p.getFileName().toString().startsWith("rewards.css.backup-"))
+                .toList();
+        assertEquals(1, backups.size());
+        assertEquals(legacy, Files.readString(backups.getFirst()));
+
+        // Upgraded CSS does not grow another prefix or create another backup.
+        RewardConfig.loadOrCreate(file);
+        assertEquals(migrated, Files.readString(file));
+        try (var files = Files.list(temp)) {
+            assertEquals(1, files.filter(p -> p.getFileName().toString()
+                    .startsWith("rewards.css.backup-")).count());
+        }
+    }
+
+    @Test
+    void malformedCssIsNotAutoFixedAndActiveSnapshotIsKept() throws Exception {
+        Path file = temp.resolve("rewards.css");
+        RewardConfig.loadOrCreate(file);
         var previous = RewardConfig.current();
-        var ex = assertThrows(IllegalStateException.class,
-                () -> RewardConfig.loadOrCreate(file));
-        assertTrue(ex.getMessage().contains("Back up"));
+        String invalid = bundled() + "\nchest[kind=\"common\"] { primogems: -2; }\n";
+        Files.writeString(file, invalid);
+        assertThrows(IllegalStateException.class, () -> RewardConfig.loadOrCreate(file));
         assertSame(previous, RewardConfig.current());
-        assertEquals(old, Files.readString(file));
+        assertEquals(invalid, Files.readString(file));
+        try (var files = Files.list(temp)) {
+            assertEquals(0, files.filter(p -> p.getFileName().toString()
+                    .contains(".backup-")).count());
+        }
+    }
+
+    @Test
+    void validUpdatedCssRemainsByteForByteUnmodified() throws Exception {
+        Path file = temp.resolve("rewards.css");
+        String updated = "/* my CSS */\n" + bundled();
+        Files.writeString(file, updated);
+        RewardConfig.loadOrCreate(file);
+        assertEquals(updated, Files.readString(file));
+        try (var files = Files.list(temp)) {
+            assertEquals(0, files.filter(p -> p.getFileName().toString()
+                    .contains(".backup-")).count());
+        }
     }
 
 }

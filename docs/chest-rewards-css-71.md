@@ -67,10 +67,14 @@ fallback amounts 66/166/366/566 have been removed.
 
 Auxiliary material counts preserve the previous server behavior; they
 are not independently verified native random-drop values.
-Existing operator-owned CSS is not overwritten. Older CSS missing
-complete quality defaults fails startup rather than silently omitting
-materials. Back up/regenerate the CSS template, then reapply custom rules.
-Set a required field explicitly to zero to disable that reward.
+Existing operator CSS is preserved. When older CSS lacks quality reward
+fields, AstaPS reads the missing amounts from its bundled CSS template and
+prepends only those declarations. Your original stylesheet remains unchanged
+after the generated prefix and still wins when it explicitly defines a value,
+including zero. Before writing, the server saves a separate
+`rewards.css.backup-*.css` file. The migration runs only once for each
+set of missing fields. Invalid CSS syntax and unknown properties still fail
+startup. Set a property explicitly to zero to suppress that reward.
 
 Native random drops, quest rewards, boss flowers, Shrines of Depths and
 special chests remain outside this direct-reward policy. See

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,11 +62,56 @@ public final class RewardConfig {
                     Files.copy(source, path);
                 }
             }
-            RewardConfig candidate = parse(Files.readString(path));
+            String operatorCss = Files.readString(path);
+            String migratedCss = RewardCssMigration.migrate(operatorCss, readBundledTemplate());
+            RewardConfig candidate = parse(migratedCss);
             candidate.chest().requireCompleteBaseRewards();
+            if (!migratedCss.equals(operatorCss)) {
+                installMigration(path, migratedCss);
+            }
             active = candidate;
         } catch (IOException | IllegalArgumentException e) {
             throw new IllegalStateException("Cannot load " + path + ": " + e.getMessage(), e);
+        }
+    }
+
+    private static String readBundledTemplate() throws IOException {
+        try (InputStream source = RewardConfig.class.getResourceAsStream(TEMPLATE)) {
+            if (source == null) throw new IOException("Missing bundled " + TEMPLATE);
+            return new String(source.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        }
+    }
+
+    /**
+     * Save a byte-for-byte backup before replacing the user's CSS.
+     * Prepare and validate the new snapshot before writing any files.
+     * A temporary sibling file prevents partially written CSS on interruption.
+     */
+    private static void installMigration(Path path, String updatedCss) throws IOException {
+        Path file = path.toAbsolutePath();
+        Path dir = file.getParent();
+        String name = file.getFileName().toString();
+        Path staged = Files.createTempFile(dir, "." + name + ".migration-", ".tmp");
+        try {
+            Files.writeString(staged, updatedCss);
+            Path backup = Files.createTempFile(dir, name + ".backup-", ".css");
+            try {
+                Files.copy(file, backup, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                Files.deleteIfExists(backup);
+                throw e;
+            }
+            try {
+                Files.move(staged, file, StandardCopyOption.ATOMIC_MOVE,
+                        StandardCopyOption.REPLACE_EXISTING);
+            } catch (AtomicMoveNotSupportedException unsupported) {
+                Files.move(staged, file, StandardCopyOption.REPLACE_EXISTING);
+            }
+            emu.grasscutter.Grasscutter.getLogger().info(
+                    "Migrated {} with missing chest defaults; original backed up to {}",
+                    file, backup);
+        } finally {
+            Files.deleteIfExists(staged);
         }
     }
 }

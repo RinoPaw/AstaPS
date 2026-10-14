@@ -76,8 +76,11 @@ root-level `rewards.css` and runtime files under `config/` are gitignored.
 First startup generates the unified rewards file if missing. If legacy
 `rewards.toml` exists but `rewards.css` does not, startup refuses to ignore
 operator customizations; back up/migrate the legacy file explicitly.
-Existing CSS is never overwritten. Unknown selectors, properties and invalid
-amounts fail validation.
+Existing operator CSS rules are preserved. When a newer release needs
+additional chest fields, the loader prepends missing defaults from the
+bundled CSS, saving a `rewards.css.backup-*.css` copy before replacing the
+original. The user's explicit values and selectors still take precedence.
+Unknown selectors, properties and invalid amounts fail validation.
 
 Only the documented unified rewards path is read. The old
 `config/rewards/trans-point-rewards.css` is no longer read; operators with

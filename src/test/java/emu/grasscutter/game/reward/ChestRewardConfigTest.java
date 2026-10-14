@@ -51,7 +51,7 @@ class ChestRewardConfigTest {
 
     @Test
     void templateDefinesFourDefaultQualitiesAndCompleteOverrides() throws IOException {
-        var config = ChestRewardConfig.parse(template());
+        var config = RewardConfig.parse(template()).chest();
         assertEquals(Map.of(102, 30, 201, 2), contents(config.resolve(Kind.COMMON, 3, 10, 1501)));
         assertEquals(Map.of(102, 30, 201, 5), contents(config.resolve(Kind.EXQUISITE, 3, 8, 801)));
         assertEquals(Map.of(102, 30, 201, 10), contents(config.resolve(Kind.PRECIOUS, 6, 300, 0)));
@@ -61,7 +61,7 @@ class ChestRewardConfigTest {
 
     @Test
     void historicLowAreasAreLimitedToExplicitlyConfiguredParents() throws IOException {
-        var config = ChestRewardConfig.parse(template());
+        var config = RewardConfig.parse(template()).chest();
         for (int parent : new int[] {1, 2, 3, 4, 5, 6, 7, 9}) {
             assertEquals(
                     Map.of(102, 30),
@@ -85,7 +85,7 @@ class ChestRewardConfigTest {
 
     @Test
     void exactLevelTwoOverridesLevelOneAndKind() throws IOException {
-        var config = ChestRewardConfig.parse(template());
+        var config = RewardConfig.parse(template()).chest();
         assertEquals("kind=common,area=3:1:104", config.resolve(Kind.COMMON, 3, 1, 104).selector());
         assertEquals(Map.of(102, 30, 201, 2), contents(config.resolve(Kind.COMMON, 3, 1, 104)));
         assertEquals(Map.of(102, 30), contents(config.resolve(Kind.COMMON, 3, 1, 105)));
@@ -260,25 +260,26 @@ class ChestRewardConfigTest {
     }
 
     @Test
-    void createsRootFileOnlyOnceAndPreservesOperatorEditsAndActiveSnapshot() throws IOException {
+    void createsOneCombinedFileOnlyOnceAndPreservesOperatorEditsAndActiveSnapshot() throws IOException {
         Path path = tempDir.resolve("rewards.toml");
         assertFalse(Files.exists(path));
-        ChestRewardConfig.loadOrCreate(path);
+        RewardConfig.loadOrCreate(path);
         assertEquals(template(), Files.readString(path));
         assertEquals(Map.of(102, 30, 201, 2),
-                contents(ChestRewardConfig.current().resolve(Kind.COMMON, 3, 10, 0)));
+                contents(RewardConfig.current().chest().resolve(Kind.COMMON, 3, 10, 0)));
 
-        String customized = minimalRules().replace("primogems = 2", "primogems = 7");
+        String customized = template().replace("primogems = 2", "primogems = 7");
         Files.writeString(path, customized);
-        ChestRewardConfig.loadOrCreate(path);
+        RewardConfig.loadOrCreate(path);
         assertEquals(customized, Files.readString(path));
-        var previous = ChestRewardConfig.current();
+        var previous = RewardConfig.current();
         assertEquals(Map.of(102, 30, 201, 7),
-                contents(previous.resolve(Kind.COMMON, 3, 1, 0)));
+                contents(previous.chest().resolve(Kind.COMMON, 3, 10, 0)));
 
-        Files.writeString(path, "invalid = true\n");
-        assertThrows(IllegalStateException.class, () -> ChestRewardConfig.loadOrCreate(path));
-        assertEquals(previous, ChestRewardConfig.current());
-        assertEquals("invalid = true\n", Files.readString(path));
+        Files.writeString(path, "invalid = true\\n");
+        assertThrows(IllegalStateException.class, () -> RewardConfig.loadOrCreate(path));
+        assertSame(previous, RewardConfig.current());
+        assertEquals("invalid = true\\n", Files.readString(path));
     }
+
 }

@@ -16,10 +16,12 @@ public final class ChestRewardConfig {
     }
 
     /** Keep explicit zeroes for live payout; the preview list omits zero-count items. */
-    public record Match(String selector, List<ItemParamData> rewards, Map<Integer, Integer> amounts) {
+    public record Match(String selector, List<ItemParamData> rewards,
+                        Map<Integer, Integer> amounts, List<ChestRandomDrops.Roll> randomRolls) {
         public Match {
             rewards = List.copyOf(rewards);
             amounts = Map.copyOf(amounts);
+            randomRolls = List.copyOf(randomRolls);
         }
     }
 
@@ -82,14 +84,25 @@ public final class ChestRewardConfig {
         if (level2 > 0) properties.put("area2", Integer.toString(level2));
         var target = CssRewardRules.target("chest", properties);
         var merged = new HashMap<Integer,Integer>();
+        var random = new java.util.TreeMap<Integer,ChestRandomDrops.Roll>();
         String lastSelector = null;
         for (var rule : rules) {
             if (rule.matches(target)) {
-                merged.putAll(rule.amounts());
+                // Both fixed and random item declarations compete for the same
+                // item ID under the normal CSS specificity/source-order cascade.
+                rule.amounts().forEach((id, count) -> {
+                    random.remove(id);
+                    merged.put(id, count);
+                });
+                rule.randomRolls().forEach((id, roll) -> {
+                    merged.remove(id);
+                    random.put(id, roll);
+                });
                 lastSelector = rule.selector();
             }
         }
         if (lastSelector == null) throw new IllegalStateException("No chest default for " + kind);
-        return new Match(lastSelector, DirectReward.materialize(merged), merged);
+        return new Match(lastSelector, DirectReward.materialize(merged),
+                merged, List.copyOf(random.values()));
     }
 }

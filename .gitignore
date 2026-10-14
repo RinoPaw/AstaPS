@@ -74,6 +74,8 @@ GM Handbook*.txt
 handbook.html
 
 config.json
+# Operator-edited root-level chest reward policy.
+/rewards.toml
 # Local game rules (all subdirectories) are owned by the server operator.
 /config/
 mitmdump.exe

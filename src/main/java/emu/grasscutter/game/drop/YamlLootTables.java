@@ -1,5 +1,6 @@
 package emu.grasscutter.game.drop;
 
+import emu.grasscutter.data.common.ItemParamData;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -185,6 +186,21 @@ public final class YamlLootTables {
         } else if (entry.item != null) {
             reward.merge(entry.item, count, Math::addExact);
         }
+    }
+
+    public boolean contains(String name) {
+        return pools.containsKey(name);
+    }
+
+    /**
+     * Structured reward output for AstaPS settlement. This evaluates a pool
+     * only; it never grants items or modifies chest claim state.
+     */
+    public List<ItemParamData> rollItems(String name, RandomGenerator random) {
+        return roll(name, random).entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(e -> new ItemParamData(e.getKey(), e.getValue()))
+                .toList();
     }
 
     public List<String> names() { return List.copyOf(pools.keySet()); }

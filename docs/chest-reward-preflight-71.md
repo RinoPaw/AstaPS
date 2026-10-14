@@ -29,3 +29,11 @@ Remaining limitations before expanding this integration:
 Run `./gradlew test -PexcludeTags=integration -Dorg.gradle.jvmargs=-Xmx4g`. The world-area integration assertions that require extracted resources skip automatically when those resources are missing.
 
 Related evidence: `docs/chest-rewards-css-71.md`, `feat/chest-kind-special-classifier-71`, `feat/world-area-level2-71`, `audit/chest-data-alignment-71`. Some world-area geometry also exists in older resource snapshots; its provenance must not be treated as independently confirmed native 7.1 geometry.
+
+## 7.1 missing native roots
+
+Ordinary chests with unavailable native `drop_tag`/roots get their
+quality-specific `pool="missing"` compatibility rewards from CSS.
+Native roots remain unchanged and missing weights are not fabricated.
+The compatibility material amounts are estimates, not authenticated
+7.1 drop data. These rules do not apply when a native pool exists.

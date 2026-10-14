@@ -47,12 +47,21 @@ public final class WorldChestLootHelper {
         if (standard) {
             Grasscutter.getLogger().warn(
                     "Standard chest native drop unavailable: uid={} scene={} group={} config={} tag={} "
-                            + "level={}; using CSS-only rewards (no native random loot)",
+                            + "level={}; using CSS pool=missing compatibility rewards",
                     player.getUid(), entityGadget.getScene().getId(),
                     entityGadget.getGroupId(), entityGadget.getConfigId(),
                     meta == null ? null : meta.drop_tag, meta == null ? 0 : meta.level);
+            var config = RewardConfig.current().chest();
+            ChestRewardConfig.Match missing = preview.isPresent()
+                    ? config.resolve(preview.orElseThrow().kind(),
+                            preview.orElseThrow().sceneId(),
+                            preview.orElseThrow().area().level1(),
+                            preview.orElseThrow().area().level2(), true)
+                    : config.resolve(ChestRewardConfig.Kind.valueOf(tier.name()), 0, 0, 0, true);
+            amounts = missing.amounts();
         }
-        // Missing native tag/root: use CSS-only fixed payout without invented loot.
+        // No native random rewards when pool is missing. CSS supplies a
+        // clearly labelled compatibility payout without inventing probabilities.
         Map<Integer, Integer> rewards =
                 ChestRewardConfig.resolveRegionalSigils(amounts, fallbackSigilId);
         Scene scene = entityGadget.getScene();
@@ -178,7 +187,7 @@ public final class WorldChestLootHelper {
             if (string.contains("\u7eb3\u5854")) {
                 return 301;
             }
-            if (string.contains("\u81f3\u51ac") || string.contains("\u96ea\u5c71")) {
+            if (string.contains("\u81f3\u51ac")) {
                 return 306;
             }
             if (string.contains("\u632a\u5fb7\u5361\u83b1")

@@ -76,6 +76,48 @@ final class ChestRewardConfigTest {
     }
 
     @Test
+    void missingNativePoolIsExplicitAndNeverEntersOrdinaryNativeRewards() throws Exception {
+        String css;
+        try (var in = ChestRewardConfig.class.getResourceAsStream("/rewards.css")) {
+            assertNotNull(in);
+            css = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        }
+        var config = ChestRewardConfig.parse(css);
+        for (Kind kind : Kind.values()) {
+            var nativeValues = config.resolve(kind, 3, 10, 0).amounts();
+            assertEquals(30, nativeValues.get(102));
+            assertFalse(nativeValues.containsKey(202));
+            assertFalse(nativeValues.containsKey(-1));
+            var missingValues = config.resolve(kind, 3, 10, 0, true).amounts();
+            assertEquals(30, missingValues.get(102));
+            assertTrue(missingValues.get(202) > 0);
+            assertTrue(missingValues.get(-1) > 0);
+        }
+    }
+
+    @Test
+    void missingPoolCssCanBeChangedAndDisabledWithoutAffectingNative() throws Exception {
+        String css;
+        try (var in = ChestRewardConfig.class.getResourceAsStream("/rewards.css")) {
+            assertNotNull(in);
+            css = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        }
+        var cfg = ChestRewardConfig.parse(css + """
+            chest[kind="common"][pool="missing"] {
+                mora: 0;
+                sigils: 0;
+                item-104011: 0;
+            }
+            """);
+        var fallback = cfg.resolve(Kind.COMMON, 0, 0, 0, true).amounts();
+        assertEquals(0, fallback.get(202));
+        assertEquals(0, fallback.get(-1));
+        assertEquals(0, fallback.get(104011));
+        assertEquals(30, fallback.get(102));
+        assertFalse(cfg.resolve(Kind.COMMON, 0, 0, 0).amounts().containsKey(202));
+    }
+
+    @Test
     void specificityBeatsLateBroadRulesAndFileOrderBreaksTies() {
         var cfg = ChestRewardConfig.parse(RULES + """
             chest[kind="common"][scene="3"][area1="1"][area2="104"] { primogems: 8; }
@@ -111,6 +153,7 @@ final class ChestRewardConfigTest {
                 "chest[kind=\"remarkable\"]", "chest[kind=\"common\"][area1=\"1\"]",
                 "chest[kind=\"common\"][area2=\"104\"]", "chest[kind=\"common\"][scene=\"0\"]",
                 "chest[kind=\"common\"][scene=\"03\"]", "chest[kind=\"common\"][scene=\"2147483648\"]",
+                "chest[kind=\"common\"][pool=\"unknown\"]",
                 "chest[kind=\"common\"][point=\"6\"]", "chest[kind=\"common\"]:hover",
                 "chest.kind", "chest > chest", "chest[id=\"9\"]",
                 "chest[kind=\"common\"][kind=\"exquisite\"]")) {

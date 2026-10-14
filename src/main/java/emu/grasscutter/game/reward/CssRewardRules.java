@@ -26,7 +26,7 @@ final class CssRewardRules {
             "\\[([a-z][a-zA-Z0-9]*)\\s*=\\s*(?:\"([^\"]+)\"|'([^']+)')\\]");
     private static final Pattern POSITIVE = Pattern.compile("[1-9][0-9]*");
     private static final Set<String> TRANSPORT_FIELDS = Set.of("kind", "scene", "point");
-    private static final Set<String> CHEST_FIELDS = Set.of("kind", "scene", "area1", "area2");
+    private static final Set<String> CHEST_FIELDS = Set.of("kind", "scene", "area1", "area2", "pool");
 
     record Rule(String type, String selector, Evaluator evaluator, Map<String,String> filters,
                 int specificity, int sourceOrder, Map<Integer,Integer> amounts) {
@@ -39,6 +39,7 @@ final class CssRewardRules {
                     && !filters.containsKey("point")
                     && !filters.containsKey("area1")
                     && !filters.containsKey("area2")
+                    && !filters.containsKey("pool")
                     && (!filters.containsKey("kind") || filters.get("kind").equals(kind));
         }
     }
@@ -102,6 +103,10 @@ final class CssRewardRules {
                                 : Set.of("waypoint", "statue", "domain");
                         if (!allowed.contains(value)) {
                             throw new IllegalArgumentException("Invalid kind in " + selector);
+                        }
+                    } else if (key.equals("pool")) {
+                        if (!value.equals("missing")) {
+                            throw new IllegalArgumentException("Invalid chest pool in " + selector);
                         }
                     } else if (!POSITIVE.matcher(value).matches()) {
                         throw new IllegalArgumentException("Expected positive decimal ID in " + selector);

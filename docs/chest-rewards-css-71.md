@@ -98,3 +98,18 @@ The former rewards.toml is not read or modified. When rewards.css does not
 exist, AstaPS generates it from bundled defaults even if a legacy TOML file
 is present. Any settings in legacy TOML have no effect until the operator
 ports them manually. No backup is created.
+
+## Missing native pools
+
+`chest[kind="..."][pool="missing"]` in the bundled `rewards.css` applies
+only if a regular chest's original native `ChestDrop.json` tag/root cannot
+be used. It supplies clearly labelled compatibility Mora, sigils, books
+and ores from the older server fallback. Those numbers are **estimates**,
+not recovered 7.1 drop rates. Normal native chest rolls do not match these
+rules and therefore never duplicate their random yields. Optional explicit
+CSS zeroes can disable any compatibility item.
+
+Dragonspine chests tagged with "蒙德" use Anemo Sigils, not Snezhnaya's
+Cryo Sigils. Existing root `rewards.css` files are intentionally never
+overwritten. To activate new rules, merge them into the operator CSS file,
+or copy the bundled template after preserving any custom settings.

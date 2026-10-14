@@ -65,12 +65,18 @@ public final class ChestRewardConfig {
 
     /** Specificity first, then source order; absent fields inherit and zero clears. */
     public Match resolve(Kind kind, int sceneId, int level1, int level2) {
+        return resolve(kind, sceneId, level1, level2, false);
+    }
+
+    /** Enables pool=missing only when the actual native root cannot be used. */
+    public Match resolve(Kind kind, int sceneId, int level1, int level2, boolean nativeMissing) {
         Objects.requireNonNull(kind, "kind");
         if (sceneId < 0 || level1 < 0 || level2 < 0) {
             throw new IllegalArgumentException("Scene and area IDs cannot be negative");
         }
         var properties = new HashMap<String,String>();
         properties.put("kind", kind.selectorValue());
+        if (nativeMissing) properties.put("pool", "missing");
         if (sceneId > 0) properties.put("scene", Integer.toString(sceneId));
         if (level1 > 0) properties.put("area1", Integer.toString(level1));
         if (level2 > 0) properties.put("area2", Integer.toString(level2));

@@ -131,12 +131,8 @@ public final class Grasscutter {
         logger.info(translate("messages.status.game_version", GameConstants.VERSION));
         logger.info(translate("messages.status.version", GameConstants.VERSION, "Asta"));
 
-        // Server-owned reward rules are authoritative; never read the native point reward map.
-        emu.grasscutter.game.reward.TransPointRewardConfig.loadOrCreate(
-                java.nio.file.Path.of("config", "rewards", "trans-point-rewards.toml"));
-
-        // Prepare fixed chest reward policy without changing the existing chest payout path.
-        emu.grasscutter.game.reward.ChestRewardConfig.loadOrCreate(
+        // One owner-edited file supplies every direct reward policy.
+        emu.grasscutter.game.reward.RewardConfig.loadOrCreate(
                 java.nio.file.Path.of("rewards.toml"));
 
         // Initialize database.

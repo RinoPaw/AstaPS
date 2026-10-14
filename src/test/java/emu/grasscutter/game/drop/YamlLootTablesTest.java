@@ -29,6 +29,23 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void parsedPoolCanProduceAstapsItemParamData() {
+        var tables = parse("""
+                basic:
+                  - {item: Genshin.Mora, count: 300}
+                  - {item: Genshin.HerosWit}
+                """);
+        assertTrue(tables.contains("basic"));
+        assertFalse(tables.contains("unknown"));
+        var reward = tables.rollItems("basic", new Random(1));
+        assertEquals(2, reward.size());
+        assertEquals(202, reward.get(0).getId());
+        assertEquals(300, reward.get(0).getCount());
+        assertEquals(104003, reward.get(1).getId());
+        assertEquals(1, reward.get(1).getCount());
+    }
+
+    @Test
     void quotedCountSupportsLegacyAndReadability() {
         var tables = parse("""
                 chest:

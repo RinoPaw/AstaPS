@@ -1,0 +1,159 @@
+# Standard exploration chest fixed rewards. Generated once at ./rewards.toml.
+# The operator owns that file; later server updates never overwrite it.
+# Only kind and optional area are valid selectors.
+# Precedence: kind + level-2 area > kind + level-1 area > kind.
+# A winning table replaces the whole reward; missing fields mean zero.
+# 'items = [{ id = 104001, count = 2 }]' adds direct item rewards.
+# Random drops, quest items, Shrine of Depths, events and remarkable chests are separate.
+
+# High-Primogem-area defaults (including modern regions not listed below).
+[chest."kind=common"]
+adventureExp = 30
+primogems = 2
+
+[chest."kind=exquisite"]
+adventureExp = 30
+primogems = 5
+
+[chest."kind=precious"]
+adventureExp = 30
+primogems = 10
+
+[chest."kind=luxurious"]
+adventureExp = 30
+primogems = 10
+
+# Historical low-Primogem areas only (Mondstadt/Liyue); do not add modern areas
+# solely because they belong to the same nation.
+# Dragonspine (3:10), Lisha (3:8), and Chasm (3:19, 6:300) use the defaults.
+
+# 坠星山谷 (scene 3, level-1 1)
+[chest."kind=common,area=3:1"]
+adventureExp = 30
+primogems = 0
+
+[chest."kind=exquisite,area=3:1"]
+adventureExp = 30
+primogems = 2
+
+[chest."kind=precious,area=3:1"]
+adventureExp = 30
+primogems = 5
+
+# 风啸山坡 (scene 3, level-1 2)
+[chest."kind=common,area=3:2"]
+adventureExp = 30
+primogems = 0
+
+[chest."kind=exquisite,area=3:2"]
+adventureExp = 30
+primogems = 2
+
+[chest."kind=precious,area=3:2"]
+adventureExp = 30
+primogems = 5
+
+# 苍风高地 (scene 3, level-1 3)
+[chest."kind=common,area=3:3"]
+adventureExp = 30
+primogems = 0
+
+[chest."kind=exquisite,area=3:3"]
+adventureExp = 30
+primogems = 2
+
+[chest."kind=precious,area=3:3"]
+adventureExp = 30
+primogems = 5
+
+# 明冠山地 (scene 3, level-1 4)
+[chest."kind=common,area=3:4"]
+adventureExp = 30
+primogems = 0
+
+[chest."kind=exquisite,area=3:4"]
+adventureExp = 30
+primogems = 2
+
+[chest."kind=precious,area=3:4"]
+adventureExp = 30
+primogems = 5
+
+# 碧水原 (scene 3, level-1 5)
+[chest."kind=common,area=3:5"]
+adventureExp = 30
+primogems = 0
+
+[chest."kind=exquisite,area=3:5"]
+adventureExp = 30
+primogems = 2
+
+[chest."kind=precious,area=3:5"]
+adventureExp = 30
+primogems = 5
+
+# 珉林 (scene 3, level-1 6)
+[chest."kind=common,area=3:6"]
+adventureExp = 30
+primogems = 0
+
+[chest."kind=exquisite,area=3:6"]
+adventureExp = 30
+primogems = 2
+
+[chest."kind=precious,area=3:6"]
+adventureExp = 30
+primogems = 5
+
+# 云来海 (scene 3, level-1 7)
+[chest."kind=common,area=3:7"]
+adventureExp = 30
+primogems = 0
+
+[chest."kind=exquisite,area=3:7"]
+adventureExp = 30
+primogems = 2
+
+[chest."kind=precious,area=3:7"]
+adventureExp = 30
+primogems = 5
+
+# 琼玑野 (scene 3, level-1 9)
+[chest."kind=common,area=3:9"]
+adventureExp = 30
+primogems = 0
+
+[chest."kind=exquisite,area=3:9"]
+adventureExp = 30
+primogems = 2
+
+[chest."kind=precious,area=3:9"]
+adventureExp = 30
+primogems = 5
+
+# 望风山地: higher-grade exception inside a historical low-grade parent
+[chest."kind=common,area=3:1:104"]
+adventureExp = 30
+primogems = 2
+
+[chest."kind=exquisite,area=3:1:104"]
+adventureExp = 30
+primogems = 5
+
+[chest."kind=precious,area=3:1:104"]
+adventureExp = 30
+primogems = 10
+
+# 孤云阁: higher-grade exception inside a historical low-grade parent
+[chest."kind=common,area=3:7:703"]
+adventureExp = 30
+primogems = 2
+
+[chest."kind=exquisite,area=3:7:703"]
+adventureExp = 30
+primogems = 5
+
+[chest."kind=precious,area=3:7:703"]
+adventureExp = 30
+primogems = 10
+

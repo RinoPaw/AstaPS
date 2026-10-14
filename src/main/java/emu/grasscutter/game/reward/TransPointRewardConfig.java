@@ -61,7 +61,7 @@ public final class TransPointRewardConfig {
             String selector = entry.getKey();
             if (!(entry.getValue() instanceof TomlTable table)) {
                 throw new IllegalArgumentException(
-                        "Expected reward table for [transPoint.\\\"" + selector + "\\\"]");
+                        "Expected reward table for [transPoint.\"" + selector + "\"]");
             }
 
             Kind kind = null;
@@ -92,18 +92,18 @@ public final class TransPointRewardConfig {
             var position = root.inputPositionOf(List.of("transPoint", selector));
             if (position == null) {
                 throw new IllegalArgumentException(
-                        "Missing source position for [transPoint.\\\"" + selector + "\\\"]");
+                        "Missing source position for [transPoint.\"" + selector + "\"]");
             }
             rules.add(new Rule(
                     kind, scene, point, selector,
-                    DirectReward.parse("[transPoint.\\\"" + selector + "\\\"]", table),
+                    DirectReward.parse("[transPoint.\"" + selector + "\"]", table),
                     position.line(), position.column()));
         }
         for (Kind kind : Kind.values()) {
             if (!defaults.contains(kind)) {
                 throw new IllegalArgumentException(
-                        "Missing [transPoint.\\\"kind="
-                                + kind.name().toLowerCase(java.util.Locale.ROOT) + "\\\"]");
+                        "Missing [transPoint.\"kind="
+                                + kind.name().toLowerCase(java.util.Locale.ROOT) + "\"]");
             }
         }
         rules.sort(Comparator.comparingInt(Rule::line).thenComparingInt(Rule::column));

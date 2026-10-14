@@ -3,18 +3,18 @@ package emu.grasscutter.game.drop;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.gson.JsonParser;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 final class StandardChestNativeDropDataTest {
     @Test
     void fourStandardGradesHaveDistinctNativeRoots() throws Exception {
-        try (var input = getClass().getResourceAsStream("/defaults/data/ChestDrop.json")) {
-            assertNotNull(input);
-            var records = JsonParser.parseReader(
-                    new InputStreamReader(input, StandardCharsets.UTF_8)).getAsJsonArray();
+        try (var input = Files.newBufferedReader(Path.of("data/ChestDrop.json"), StandardCharsets.UTF_8)) {
+            // Runtime DataLoader prefers this editable data table over bundled defaults.
+            var records = JsonParser.parseReader(input).getAsJsonArray();
 
             // These are 1-level source mappings, not guessed chest rewards.
             Map<String, Integer> expected = Map.of(

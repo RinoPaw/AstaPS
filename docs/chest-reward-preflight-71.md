@@ -15,8 +15,9 @@ objects use CSS quality defaults. Defaults define the universal Adventure EXP (3
 since Luna I) and Primogem counts;
 native tables supply variable Mora and regional sigil counts.
 Java contains no numeric quality reward table. Native quest and Boss
-drop paths remain separate. `GadgetChest` claim timing and ground-item
-delivery remain unchanged, including their existing safety limitations.
+drop paths remain separate. `GadgetChest` now leaves an ordinary chest
+unclaimed when reward preflight rejects it; ground-item delivery retains
+its existing unconfirmed-success limitation.
 
 The resolver deliberately fails closed when the level-1 world area is unknown: it cannot safely assume that a chest belongs to a high-Primogem region. The live ordinary-chest CSS path also enforces this: if a classified standard chest has no resolved level-1 area, it logs a warning, rejects the payout attempt and leaves the chest unopened for retry instead of substituting quality defaults. If level-1 is known but level-2 is unknown, level-1 overrides can still apply.
 
@@ -25,7 +26,7 @@ A native pool that legitimately rolls zero items counts as a present pool; expli
 Remaining limitations before expanding this integration:
 
 - Native fixed currency/EXP must not be paid twice when an operator-owned direct reward takes authority. Native randomized material/weapon loot and per-object quest rewards must remain.
-- Inventory or ground-drop delivery must return a meaningful success result before a chest is marked claimed. The current `WorldChestLootHelper.grant` and ground-entity creation calls do not offer this confirmation, while `GadgetChest.grantOrdinaryChestLoot` currently marks `ordinaryClaimed` before delivery.
+- Inventory or ground-drop delivery must return a meaningful success result before a chest is marked claimed. `GadgetChest.grantOrdinaryChestLoot` now records `ordinaryClaimed` only after a payout attempt reports success, but `WorldChestLootHelper.grant` and ground-entity creation still cannot confirm actual delivery.
 - Lua interactions and intentionally empty, one-off, special and unknown chest metadata must not be redirected to generic quality rewards.
 
 Run `./gradlew test -PexcludeTags=integration -Dorg.gradle.jvmargs=-Xmx4g`. The world-area integration assertions that require extracted resources skip automatically when those resources are missing.

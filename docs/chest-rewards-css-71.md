@@ -12,6 +12,77 @@ fields replace matching item IDs before payout. Native quest loot and special
 chest flows remain separate. Rejected standard-chest area preflight now leaves
 the chest unopened; confirmed inventory/ground delivery remains outstanding.
 
+## Four editable ordinary-chest loot pools
+
+AstaPS uses **two operator-owned files** so fixed rewards and native random
+probabilities can both be edited without losing the original drop graph:
+
+- `rewards.css` controls Adventure EXP, Primogems, any explicit item-ID
+  overrides, and the regional exceptions described below.
+- **`chest-loot.json`** controls *all* ordinary-chest random pool contents:
+  Mora, sigils, books, ores, equipment, quantity ranges and probabilities.
+  On the first server launch after this change, the server exports the actual
+  loaded `ChestDrop.json` + `DropTableExcelConfigData.json` tables to the
+  file in the working directory. Later launches **read the user's file without
+  rewriting it**. If the underlying native data changes, delete or rename
+  `chest-loot.json` to regenerate it; preserve custom edits first.
+
+The JSON root contains `chests` with exactly four keys: `common`,
+`exquisite`, `precious`, and `luxurious`. Each has `sources` (the original
+`drop_tag`, minimum chest level and table/root ID) and `tables` (every
+reachable random subtable). One grade has multiple sources because region,
+chest level and combat/puzzle origin can change the outcome. Reusing the
+original IDs retains their relationships, and changing a table affects only
+that grade; the other grades have independent copies.
+
+Example excerpt, **illustrative rather than real 7.1 drop rates**:
+
+```json
+{
+  "chests": {
+    "common": {
+      "sources": [{ "tag": "战斗低级蒙德", "minLevel": 1, "dropId": 51010000 }],
+      "tables": [{
+        "id": 51010000,
+        "randomType": 1,
+        "fallToGround": false,
+        "dropVec": [
+          { "itemId": 202, "countRange": "1000;1500", "weight": 10000 },
+          { "itemId": 104001, "countRange": "1;2", "weight": 5000 }
+        ]
+      }]
+    },
+    "exquisite": { "sources": [], "tables": [] },
+    "precious": { "sources": [], "tables": [] },
+    "luxurious": { "sources": [], "tables": [] }
+  }
+}
+```
+
+`randomType: 0` chooses **one** positive-weight entry proportionally;
+`randomType: 1` checks each entry independently using `weight / 10000`
+(the engine treats weights above 10000 as guaranteed). `countRange` is
+an integer (`"3"`), inclusive integer range (`"1;3"`), or fractional
+expected count (`"0.5"`). An `itemId` that is also present in `tables`
+recursively rolls that child table; otherwise it is a final item ID.
+`fallToGround` on the root controls chest loot delivery mode.
+The JSON is validated on startup. An invalid file reports an error instead
+of being replaced by defaults.
+
+When a configured root is unavailable, the existing CSS
+`chest[pool="missing"]` compatibility policy applies. Special/quest chests,
+Shrines of Depths and boss chests still use their original paths, not this
+four-grade config. The generated values reflect the **server's installed
+resource tables**, whose exact 7.1 client probability provenance is not yet
+independently established. No substitute probabilities are invented.
+
+**CSS precedence:** a value such as `chest[kind="common"] { mora: 2500; }`
+replaces the rolled Mora total for common chests; omitting `mora` leaves the
+JSON-defined random amount intact. An explicit `item-104001: 0;` removes
+that item from the rolled result. Avoid specifying an item in both files
+unless replacement is intended. `adventureExp` is still delivered separately
+from item 102.
+
 ## Selectors
 
 This is actual CSS-style syntax with a restricted set of game attributes:

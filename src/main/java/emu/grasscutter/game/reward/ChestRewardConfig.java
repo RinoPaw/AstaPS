@@ -66,49 +66,15 @@ public final class ChestRewardConfig {
         }
     }
 
-    private static final String TEMPLATE = "/rewards.toml";
     private static final Pattern SELECTOR =
             Pattern.compile(
                     "^kind=(common|exquisite|precious|luxurious)"
                             + "(?:,area=([1-9][0-9]*):([1-9][0-9]*)(?::([1-9][0-9]*))?)?$");
-    private static final Set<String> REWARD_FIELDS =
-            Set.of("adventureExp", "primogems", "mora", "items");
 
-    private static volatile ChestRewardConfig active;
     private final List<Rule> rules;
 
     private ChestRewardConfig(List<Rule> rules) {
         this.rules = List.copyOf(rules);
-    }
-
-    /**
-     * Create the root-level operator file only if it is missing. Validate the entire file before
-     * publishing an immutable snapshot. Invalid edits never reset operator settings.
-     */
-    public static void loadOrCreate(Path path) {
-        Objects.requireNonNull(path, "path");
-        try {
-            if (Files.notExists(path)) {
-                Path parent = path.toAbsolutePath().getParent();
-                if (parent != null) Files.createDirectories(parent);
-                try (InputStream stream = ChestRewardConfig.class.getResourceAsStream(TEMPLATE)) {
-                    if (stream == null) {
-                        throw new IOException("Bundled " + TEMPLATE + " template is missing");
-                    }
-                    Files.copy(stream, path);
-                }
-            }
-            var replacement = parse(Files.readString(path));
-            active = replacement;
-        } catch (IOException | IllegalArgumentException e) {
-            throw new IllegalStateException("Cannot load " + path + ": " + e.getMessage(), e);
-        }
-    }
-
-    public static ChestRewardConfig current() {
-        var value = active;
-        if (value == null) throw new IllegalStateException("rewards.toml has not been loaded");
-        return value;
     }
 
     public static ChestRewardConfig parse(String source) {
@@ -116,10 +82,16 @@ public final class ChestRewardConfig {
         if (root.hasErrors()) {
             throw new IllegalArgumentException("Invalid rewards.toml syntax: " + root.errors());
         }
-        if (!root.keySet().equals(Set.of("chest"))
-                || !(root.get("chest") instanceof TomlTable chest)) {
-            throw new IllegalArgumentException(
-                    "rewards.toml must contain only the [chest] selector tables");
+        if (!root.keySet().equals(Set.of("chest"))) {
+            throw new IllegalArgumentException("Standalone chest rules require only [chest] tables");
+        }
+        return parseTable(root);
+    }
+
+    /** The shared rewards.toml loader supplies the already parsed document. */
+    static ChestRewardConfig parseTable(TomlParseResult root) {
+        if (!(root.get("chest") instanceof TomlTable chest)) {
+            throw new IllegalArgumentException("Missing [chest] section");
         }
 
         var seenDefaults = EnumSet.noneOf(Kind.class);
@@ -154,7 +126,7 @@ public final class ChestRewardConfig {
                         "Missing source position for [chest.\"" + selector + "\"]");
             }
             rules.add(new Rule(
-                    kind, scene, parent, child, selector, parseDirectReward(selector, table),
+                    kind, scene, parent, child, selector, DirectReward.parse("[chest.\\\"" + selector + "\\\"]", table),
                     position.line(), position.column()));
         }
 
@@ -196,67 +168,7 @@ public final class ChestRewardConfig {
         if (lastSelector == null) {
             throw new IllegalStateException("No default rule for chest kind " + kind);
         }
-        var direct = new ArrayList<ItemParamData>();
-        for (var entry : reward.entrySet()) {
-            if (entry.getValue() > 0) {
-                direct.add(new ItemParamData(entry.getKey(), entry.getValue()));
-            }
-        }
-        return new Match(lastSelector, direct);
+        return new Match(lastSelector, DirectReward.materialize(reward));
     }
 
-    private static Map<Integer, Integer> parseDirectReward(String selector, TomlTable table) {
-        String context = "[chest.\"" + selector + "\"]";
-        for (String field : table.keySet()) {
-            if (!REWARD_FIELDS.contains(field)) {
-                throw new IllegalArgumentException(
-                        "Unknown reward field '" + field + "' in " + context);
-            }
-        }
-
-        var entries = new HashMap<Integer, Integer>();
-        if (table.contains("adventureExp")) {
-            entries.put(102, amount(table, "adventureExp", context, false));
-        }
-        if (table.contains("primogems")) {
-            entries.put(201, amount(table, "primogems", context, false));
-        }
-        if (table.contains("mora")) {
-            entries.put(202, amount(table, "mora", context, false));
-        }
-
-        Object raw = table.get("items");
-        if (raw != null) {
-            if (!(raw instanceof TomlArray array)) {
-                throw new IllegalArgumentException(context + ".items must be an array");
-            }
-            for (int i = 0; i < array.size(); ++i) {
-                String itemContext = context + ".items[" + i + "]";
-                if (!(array.get(i) instanceof TomlTable item)
-                        || !item.keySet().equals(Set.of("id", "count"))) {
-                    throw new IllegalArgumentException(
-                            itemContext + " must have exactly integer 'id' and 'count' fields");
-                }
-                int id = amount(item, "id", itemContext, true);
-                int count = amount(item, "count", itemContext, false);
-                if (entries.putIfAbsent(id, count) != null) {
-                    throw new IllegalArgumentException(
-                            "Duplicate item ID " + id + " in " + context);
-                }
-            }
-        }
-        return Map.copyOf(entries);
-    }
-
-    private static int amount(TomlTable table, String key, String context, boolean positive) {
-        Object raw = table.get(key);
-        if (!(raw instanceof Long value)
-                || value > Integer.MAX_VALUE
-                || (positive ? value <= 0 : value < 0)) {
-            throw new IllegalArgumentException(
-                    context + "." + key + " must be a "
-                            + (positive ? "positive" : "non-negative") + " 32-bit integer");
-        }
-        return value.intValue();
-    }
 }

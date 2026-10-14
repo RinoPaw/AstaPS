@@ -135,6 +135,10 @@ public final class Grasscutter {
         emu.grasscutter.game.reward.TransPointRewardConfig.loadOrCreate(
                 java.nio.file.Path.of("config", "rewards", "trans-point-rewards.toml"));
 
+        // Prepare fixed chest reward policy without changing the existing chest payout path.
+        emu.grasscutter.game.reward.ChestRewardConfig.loadOrCreate(
+                java.nio.file.Path.of("rewards.toml"));
+
         // Initialize database.
         DatabaseManager.initialize();
 

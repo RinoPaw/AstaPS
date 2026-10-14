@@ -126,7 +126,7 @@ public final class ChestRewardConfig {
                         "Missing source position for [chest.\"" + selector + "\"]");
             }
             rules.add(new Rule(
-                    kind, scene, parent, child, selector, DirectReward.parse("[chest.\\\"" + selector + "\\\"]", table),
+                    kind, scene, parent, child, selector, DirectReward.parse("[chest.\"" + selector + "\"]", table),
                     position.line(), position.column()));
         }
 

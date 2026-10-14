@@ -300,6 +300,34 @@ public final class DropSystem extends BaseGameSystem {
         return false;
     }
 
+    /**
+     * Roll a native chest tag without delivering items or changing a claim.
+     *
+     * <p>The caller can apply operator-owned fixed amounts before admission and
+     * delivery. An absent tag/root is different from a valid random roll that
+     * happened to produce no items. The ground flag is retained so a later
+     * commit path can preserve native pickup behavior.
+     */
+    public record ChestRoll(int rootId, boolean fallToGround, List<GameItem> items) {
+        public ChestRoll {
+            items = List.copyOf(items);
+        }
+    }
+
+    public Optional<ChestRoll> rollChestTag(String dropTag, int level) {
+        if (dropTag == null || dropTag.isBlank() || level < 0) {
+            return Optional.empty();
+        }
+        int rootId = queryDropData(dropTag, level, chestReward);
+        var root = dropTable.get(rootId);
+        if (root == null || root.getDropVec() == null) {
+            return Optional.empty();
+        }
+        var items = new ArrayList<GameItem>();
+        processDrop(root, 1, items);
+        return Optional.of(new ChestRoll(rootId, root.isFallToGround(), items));
+    }
+
     public boolean handleChestDrop(int chestDropId, int dropCount, GameEntity bornFrom) {
         if (!dropTable.containsKey(chestDropId)) return false;
         var dropData = dropTable.get(chestDropId);

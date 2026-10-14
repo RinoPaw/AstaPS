@@ -1,71 +1,63 @@
 package emu.grasscutter.game.reward;
 
+import com.helger.css.decl.CSSDeclaration;
 import emu.grasscutter.data.common.ItemParamData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import org.tomlj.TomlArray;
-import org.tomlj.TomlTable;
 
-/** Shared, typed direct-reward fields. Each matching table overrides only the fields it names. */
+/** Typed reward declarations. Zero explicitly clears a previously defined amount. */
 final class DirectReward {
-    private static final Set<String> FIELDS = Set.of("adventureExp", "primogems", "mora", "items");
-
     private DirectReward() {}
 
-    static Map<Integer, Integer> parse(String context, TomlTable table) {
-        for (String field : table.keySet()) {
-            if (!FIELDS.contains(field)) {
-                throw new IllegalArgumentException("Unknown reward field '" + field + "' in " + context);
+    static Map<Integer,Integer> parse(List<CSSDeclaration> declarations, String context) {
+        var values = new HashMap<Integer,Integer>();
+        for (var declaration : declarations) {
+            String field = declaration.getProperty();
+            if (declaration.isImportant()) {
+                throw new IllegalArgumentException("!important is not supported in " + context);
+            }
+            int id;
+            if (field.equalsIgnoreCase("adventureExp") || field.equals("adventure-exp")) {
+                id = 102;
+            } else if (field.equalsIgnoreCase("primogems")) {
+                id = 201;
+            } else if (field.equalsIgnoreCase("mora")) {
+                id = 202;
+            } else if (field.startsWith("item-") && field.substring(5).matches("[1-9][0-9]*")) {
+                try {
+                    id = Integer.parseInt(field.substring(5));
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid item ID in " + context + ": " + field, e);
+                }
+            } else {
+                throw new IllegalArgumentException("Unknown reward property '" + field + "' in " + context);
+            }
+            String raw = declaration.getExpressionAsCSSString().trim();
+            if (!raw.matches("[0-9]+")) {
+                throw new IllegalArgumentException(
+                        context + " " + field + " must be a non-negative integer, not '" + raw + "'");
+            }
+            int count;
+            try {
+                count = Integer.parseInt(raw);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Reward amount out of range in " + context, e);
+            }
+            if (values.putIfAbsent(id, count) != null) {
+                throw new IllegalArgumentException("Duplicate reward item " + id + " in " + context);
             }
         }
-        var entries = new HashMap<Integer, Integer>();
-        if (table.contains("adventureExp")) entries.put(102, amount(table, "adventureExp", context, false));
-        if (table.contains("primogems")) entries.put(201, amount(table, "primogems", context, false));
-        if (table.contains("mora")) entries.put(202, amount(table, "mora", context, false));
-
-        Object raw = table.get("items");
-        if (raw != null) {
-            if (!(raw instanceof TomlArray items)) {
-                throw new IllegalArgumentException(context + ".items must be an array");
-            }
-            for (int i = 0; i < items.size(); i++) {
-                String source = context + ".items[" + i + "]";
-                if (!(items.get(i) instanceof TomlTable item)
-                        || !item.keySet().equals(Set.of("id", "count"))) {
-                    throw new IllegalArgumentException(
-                            source + " must have exactly integer 'id' and 'count' fields");
-                }
-                int id = amount(item, "id", source, true);
-                int count = amount(item, "count", source, false);
-                if (entries.putIfAbsent(id, count) != null) {
-                    throw new IllegalArgumentException("Duplicate item ID " + id + " in " + context);
-                }
-            }
-        }
-        return Map.copyOf(entries);
+        return Map.copyOf(values);
     }
 
-    static List<ItemParamData> materialize(Map<Integer, Integer> values) {
-        var result = new ArrayList<ItemParamData>();
-        for (var entry : new TreeMap<>(values).entrySet()) {
-            if (entry.getValue() > 0) result.add(new ItemParamData(entry.getKey(), entry.getValue()));
-        }
-        return List.copyOf(result);
-    }
-
-    private static int amount(TomlTable table, String key, String context, boolean positive) {
-        Object raw = table.get(key);
-        if (!(raw instanceof Long value)
-                || value > Integer.MAX_VALUE
-                || (positive ? value <= 0 : value < 0)) {
-            throw new IllegalArgumentException(
-                    context + "." + key + " must be a "
-                            + (positive ? "positive" : "non-negative") + " 32-bit integer");
-        }
-        return value.intValue();
+    static List<ItemParamData> materialize(Map<Integer,Integer> values) {
+        var items = new ArrayList<ItemParamData>();
+        new TreeMap<>(values).forEach((id, count) -> {
+            if (count > 0) items.add(new ItemParamData(id, count));
+        });
+        return List.copyOf(items);
     }
 }

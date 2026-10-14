@@ -276,10 +276,10 @@ class ChestRewardConfigTest {
         assertEquals(Map.of(102, 30, 201, 7),
                 contents(previous.chest().resolve(Kind.COMMON, 3, 10, 0)));
 
-        Files.writeString(path, "invalid = true\\n");
+        Files.writeString(path, "invalid = true\n");
         assertThrows(IllegalStateException.class, () -> RewardConfig.loadOrCreate(path));
         assertSame(previous, RewardConfig.current());
-        assertEquals("invalid = true\\n", Files.readString(path));
+        assertEquals("invalid = true\n", Files.readString(path));
     }
 
 }

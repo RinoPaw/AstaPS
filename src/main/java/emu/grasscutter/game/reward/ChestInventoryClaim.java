@@ -16,6 +16,9 @@ import java.util.function.BooleanSupplier;
  * does not guarantee asynchronous player/item database writes have reached durable storage.
  */
 public final class ChestInventoryClaim {
+    private static final org.slf4j.Logger LOGGER =
+            org.slf4j.LoggerFactory.getLogger(ChestInventoryClaim.class);
+
     private ChestInventoryClaim() {}
 
     @FunctionalInterface
@@ -84,7 +87,7 @@ public final class ChestInventoryClaim {
         } catch (RuntimeException writeFailure) {
             // Delivery is already acknowledged: do not create a second grant attempt.
             // The durable CONFIRMED receipt is left for source-specific reconciliation.
-            emu.grasscutter.Grasscutter.getLogger().warn(
+            LOGGER.warn(
                     "Chest rewards delivered but completion receipt unresolved key={}",
                     key.storageId(), writeFailure);
         }

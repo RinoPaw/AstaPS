@@ -12,6 +12,7 @@ import emu.grasscutter.game.world.WorldAreaIndex.AreaIds;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class WorldChestLootHelperPolicyTest {
@@ -71,6 +72,25 @@ class WorldChestLootHelperPolicyTest {
                 Map.of(-1,0,201,3),303).get(303));
         assertEquals(Map.of(201,3),ChestRewardConfig.resolveRegionalSigils(
                 Map.of(-1,8,201,3),0));
+    }
+
+    @Test
+    void unknownAreaBlocksStandardCssRatherThanAwardingHigherGemDefaults()
+            throws IOException {
+        var ordinary = new Classification(Kind.COMMON, Exclusion.NONE);
+        var missing = StandardChestRewardResolver.resolve(
+                ordinary, 3, new AreaIds(0, 0), config().chest());
+        assertTrue(missing.isEmpty());
+        assertFalse(WorldChestLootHelper.allowsCssPayout(ordinary, missing));
+
+        var known = StandardChestRewardResolver.resolve(
+                ordinary, 3, new AreaIds(1, 0), config().chest());
+        assertTrue(known.isPresent());
+        assertTrue(WorldChestLootHelper.allowsCssPayout(ordinary, known));
+
+        // The older nonstandard fallback does not gain verified area status.
+        var special = new Classification(null, Exclusion.SPECIAL_SOURCE);
+        assertTrue(WorldChestLootHelper.allowsCssPayout(special, Optional.empty()));
     }
 
     @Test

@@ -127,6 +127,23 @@ class StandardChestRewardResolverTest {
     }
 
     @Test
+    void neverConvertsNativeGroundDropsOrUnidentifiedChestsToInventory() {
+        var preview = StandardChestRewardResolver.resolve(
+                standard(Kind.COMMON), 3, new AreaIds(1, 104), RULES).orElseThrow();
+        var emptyNative = List.<GameItem>of();
+        var ground = StandardChestRewardResolver.stage(
+                preview, new DropSystem.ChestRoll(51010000, true, emptyNative));
+        var inventory = StandardChestRewardResolver.stage(
+                preview, new DropSystem.ChestRoll(51010000, false, emptyNative));
+
+        assertFalse(StandardChestRewardResolver.supportsInventoryClaim(ground, 131110001, 1001));
+        assertFalse(StandardChestRewardResolver.supportsInventoryClaim(inventory, 0, 1001));
+        assertFalse(StandardChestRewardResolver.supportsInventoryClaim(inventory, 131110001, 0));
+        assertFalse(StandardChestRewardResolver.supportsInventoryClaim(null, 131110001, 1001));
+        assertTrue(StandardChestRewardResolver.supportsInventoryClaim(inventory, 131110001, 1001));
+    }
+
+    @Test
     void allFourChestKindsMapWithoutGuessingTierValues() {
         for (Kind kind : Kind.values()) {
             var preview = StandardChestRewardResolver.resolve(

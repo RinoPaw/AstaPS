@@ -174,13 +174,13 @@ final class StandardChestLootConfigTest {
             assertThrows(IllegalArgumentException.class,
                     () -> new StandardChestLootConfig(withCommon(List.of(),
                             List.of(new StandardChestLootConfig.Table(10, 1, false,
-                                    List.of(new StandardChestLootConfig.Drop(202, invalid, 10000))))),
+                                    List.of(new StandardChestLootConfig.Drop(202, invalid, 10000)))))),
                     invalid);
         }
         assertThrows(IllegalArgumentException.class,
                 () -> new StandardChestLootConfig(withCommon(List.of(),
                         List.of(new StandardChestLootConfig.Table(10, 1, false,
-                                List.of(new StandardChestLootConfig.Drop(202, "1", -1))))));
+                                List.of(new StandardChestLootConfig.Drop(202, "1", -1)))))));
     }
 
     @Test

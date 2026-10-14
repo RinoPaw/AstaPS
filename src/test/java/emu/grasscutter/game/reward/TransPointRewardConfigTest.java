@@ -17,20 +17,43 @@ final class TransPointRewardConfigTest {
     private static final Gson GSON = new Gson();
     private static final String RULES = """
             version = 1
-            ["kind=waypoint"]
+
+            [transPoint."kind=waypoint"]
             adventureExp = 50
             primogems = 5
-            ["kind=statue"]
+
+            [transPoint."kind=statue"]
             adventureExp = 50
             primogems = 5
-            ["kind=domain"]
+
+            [transPoint."kind=domain"]
             adventureExp = 50
             primogems = 5
-            ["3:6"]
+
+            [transPoint."3:6"]
             adventureExp = 10
-            ["7:*"]
+            primogems = 0
+
+            [transPoint."7:*"]
+            adventureExp = 0
             primogems = 5
             items = [{ id = 101692, count = 20 }]
+
+            [chest."kind=common"]
+            adventureExp = 30
+            primogems = 2
+
+            [chest."kind=exquisite"]
+            adventureExp = 30
+            primogems = 5
+
+            [chest."kind=precious"]
+            adventureExp = 30
+            primogems = 10
+
+            [chest."kind=luxurious"]
+            adventureExp = 30
+            primogems = 10
             """;
 
     private static Map<Integer, Integer> items(java.util.List<ItemParamData> reward) {
@@ -38,7 +61,7 @@ final class TransPointRewardConfigTest {
     }
 
     @Test
-    void selectorsReplaceRewardsByExactSceneThenKind() {
+    void writtenOverridesPreserveNativeTransportAwards() {
         var rules = TransPointRewardConfig.parse(RULES);
         assertEquals(Map.of(102, 10), items(rules.resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
         assertEquals(Map.of(102, 50, 201, 5),
@@ -58,7 +81,8 @@ final class TransPointRewardConfigTest {
                 adventureExp = 15
                 """;
         var rules = TransPointRewardConfig.parse(text);
-        assertEquals(Map.of(102, 15), items(rules.resolve(7, 2, TransPointRewardConfig.Kind.WAYPOINT)));
+        assertEquals(Map.of(102, 15, 201, 5, 101692, 20),
+                items(rules.resolve(7, 2, TransPointRewardConfig.Kind.WAYPOINT)));
         assertEquals(Map.of(101692, 20, 201, 5),
                 items(rules.resolve(7, 3, TransPointRewardConfig.Kind.WAYPOINT)));
     }
@@ -66,7 +90,7 @@ final class TransPointRewardConfigTest {
     @Test
     void unsupportedSelectorsAndBrokenConfigurationFailClosed() {
         assertThrows(IllegalArgumentException.class,
-                () -> TransPointRewardConfig.parse(RULES + "[\"region=mondstadt\"]\nprimogems = 3\n"));
+                () -> TransPointRewardConfig.parse(RULES + "[transPoint.\"region=mondstadt\"]\nprimogems = 3\n"));
         assertThrows(IllegalArgumentException.class,
                 () -> TransPointRewardConfig.parse(RULES.replace("adventureExp = 10", "adventureExp = -10")));
         assertThrows(IllegalArgumentException.class,
@@ -105,15 +129,41 @@ final class TransPointRewardConfigTest {
     }
 
     @Test
-    void createsNestedLocalConfigAndPreservesOwnerEdits(@TempDir Path tempDir) throws Exception {
-        Path config = tempDir.resolve("config/rewards/trans-point-rewards.toml");
-        TransPointRewardConfig.loadOrCreate(config);
+    void generatesOnlyOneRootPolicyFileAndPreservesOperatorEdits(@TempDir Path tempDir)
+            throws Exception {
+        Path config = tempDir.resolve("rewards.toml");
+        RewardConfig.loadOrCreate(config);
         assertTrue(Files.exists(config));
-        assertTrue(Files.readString(config).contains("[\"kind=waypoint\"]"));
+        assertTrue(Files.readString(config).contains("[transPoint.\"kind=waypoint\"]"));
+        assertTrue(Files.readString(config).contains("[chest.\"kind=common\"]"));
 
         Files.writeString(config, RULES);
-        TransPointRewardConfig.loadOrCreate(config);
+        RewardConfig.loadOrCreate(config);
         assertEquals(RULES, Files.readString(config));
+        assertEquals(Map.of(102, 10),
+                items(TransPointRewardConfig.current().resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
+    }
+
+    @Test
+    void laterBroadRuleCanOverrideEarlierExactPoint() {
+        String text = RULES.replace(
+                "[transPoint.\"7:*\"]",
+                "[transPoint.\"7:2\"]\nadventureExp = 15\n\n[transPoint.\"7:*\"]");
+        var config = TransPointRewardConfig.parse(text);
+        assertEquals(Map.of(101692, 20, 201, 5),
+                items(config.resolve(7, 2, TransPointRewardConfig.Kind.WAYPOINT)));
+    }
+
+    @Test
+    void transportFieldOverridesInheritAndCanClearItemCounts() {
+        String text = RULES + """
+                [transPoint."3:99"]
+                primogems = 0
+                items = [{ id = 101692, count = 2 }]
+                """;
+        var config = TransPointRewardConfig.parse(text);
+        assertEquals(Map.of(102, 50, 101692, 2),
+                items(config.resolve(3, 99, TransPointRewardConfig.Kind.WAYPOINT)));
     }
 
     @Test

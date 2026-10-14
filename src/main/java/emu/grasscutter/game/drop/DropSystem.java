@@ -334,7 +334,17 @@ public final class DropSystem extends BaseGameSystem {
         if (isEmptyDropTable(root)) return false;
 
         List<GameItem> items = new ArrayList<>();
-        processDrop(root, 1, items);
+        try {
+            // A historic partial root may contain a malformed/missing item
+            // definition. Roll everything before sending any payout so failure
+            // can safely fall back to CSS without partially granting native loot.
+            processDrop(root, 1, items);
+        } catch (RuntimeException e) {
+            Grasscutter.getLogger().warn(
+                    "Invalid native standard chest drop tag={} root={}: {}",
+                    dropTag, dropId, e.toString());
+            return false;
+        }
         int sigilId = nativeChestSigilId(items, fallbackSigilId);
         var fixed = ChestRewardConfig.resolveRegionalSigils(cssAmounts, sigilId);
 
@@ -343,6 +353,12 @@ public final class DropSystem extends BaseGameSystem {
         items.removeIf(item -> fixed.containsKey(item.getItemId()));
         for (var entry : fixed.entrySet()) {
             if (entry.getKey() != 102 && entry.getValue() > 0) {
+                if (!GameData.getItemDataMap().containsKey(entry.getKey())) {
+                    Grasscutter.getLogger().warn(
+                            "Chest CSS references unknown item ID {} for tag={}",
+                            entry.getKey(), dropTag);
+                    return false;
+                }
                 items.add(new GameItem(entry.getKey(), entry.getValue()));
             }
         }

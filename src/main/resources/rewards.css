@@ -41,34 +41,26 @@ transPoint[scene="7"] {
 /* ========================================= */
 
 /* Four quality defaults for CSS-owned fixed rewards. */
-/* Ores, books, weapons and other random loot come from native DropTable pools. */
+/* Native DropTable supplies variable Mora, regional sigils and material loot. */
 /* An explicit item-ID declaration overrides that native item, including zero. */
 chest[kind="common"] {
-    adventureExp: 30;
+    adventureExp: 10;
     primogems: 2;
-    mora: 1000;
-    sigils: 3;
 }
 
 chest[kind="exquisite"] {
-    adventureExp: 30;
+    adventureExp: 20;
     primogems: 5;
-    mora: 1500;
-    sigils: 5;
 }
 
 chest[kind="precious"] {
     adventureExp: 30;
     primogems: 10;
-    mora: 2000;
-    sigils: 8;
 }
 
 chest[kind="luxurious"] {
     adventureExp: 30;
     primogems: 10;
-    mora: 2500;
-    sigils: 10;
 }
 
 /* Historical low-Primogem areas only (Mondstadt/Liyue); do not add modern areas */

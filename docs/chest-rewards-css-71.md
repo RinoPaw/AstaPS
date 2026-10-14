@@ -62,17 +62,19 @@ The bundled policy preserves the historical low-gem areas 3:1..7 and 3:9;
 3:1:104 (望风山地) and 3:7:703 (孤云阁) restore higher amounts.
 Dragonspine 3:10, Lisha 3:8 and the Chasm 3:19/6:300 use higher defaults.
 
-Four base rewards (Adventure EXP, Primogems, Mora and sigils) are configured in
-CSS. Native DropTable supplies the variable loot, including ores, books and
-weapons. Any operator-defined `item-ID` overrides the corresponding native
-item amount; zero removes that item. Java's Tier enum contains quality names
-only. Regional rules override named fields. Old numerical
+Universal chest defaults (Adventure EXP and Primogems) live in CSS.
+The default Adventure EXP follows the historical native quality pattern:
+10 / 20 / 30 / 30. Native DropTable supplies variable Mora, regional sigils,
+ores, books and weapons. Optional CSS `mora`, `sigils` and `item-ID`
+declarations replace those native items, including explicit zero.
+Java's Tier enum contains quality names only. Regional rules override named fields. Old numerical
 fallback amounts 66/166/366/566 have been removed.
 
-Existing operator CSS is never rewritten. Older CSS files that still declare
-`item-104xxx` keep those explicit overrides; remove such declarations to use
-native random ore/book rolls. Native tables are historical, and their 7.1
-probabilities are not independently verified.
+Existing operator CSS is never rewritten. Older CSS files with `mora`,
+`sigils` or `item-104xxx` continue to override the native quantities.
+Remove those declarations to use native rolls and region-specific sigils.
+Native tables are historical, and their 7.1 probabilities are not independently
+verified.
 Existing operator CSS is read without modification. Missing chest reward
 fields inherit bundled defaults in memory, including for old CSS versions.
 Explicit user values (including zero) take precedence. The loader does not

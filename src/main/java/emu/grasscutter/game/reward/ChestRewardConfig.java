@@ -37,16 +37,16 @@ public final class ChestRewardConfig {
         return new ChestRewardConfig(selected);
     }
 
-    /** Ensure every quality has its four CSS-owned fixed fields (zero is valid). */
+    /** Ensure every quality has the common CSS fields (zero is valid). */
     void requireCompleteBaseRewards() {
         for (Kind kind : Kind.values()) {
             Map<Integer, Integer> amounts = resolve(kind, 0, 0, 0).amounts();
-            for (int id : new int[] {102, 201, 202, DirectReward.REGIONAL_SIGILS}) {
+            for (int id : new int[] {102, 201}) {
                 if (!amounts.containsKey(id)) {
                     throw new IllegalArgumentException(
                             "Old rewards.css chest[kind=\"" + kind.selectorValue()
-                                    + "\"] lacks adventureExp, primogems, mora or sigils. "
-                                    + "Back up the old CSS and update its four quality defaults.");
+                                    + "\"] lacks adventureExp or primogems. "
+                                    + "Set the missing value in rewards.css.");
                 }
             }
         }

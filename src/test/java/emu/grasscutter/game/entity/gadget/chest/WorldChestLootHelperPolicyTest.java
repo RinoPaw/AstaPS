@@ -32,7 +32,7 @@ class WorldChestLootHelperPolicyTest {
     @Test
     void commonLowGemsAreZeroWhileOtherFixedItemsComeFromCss() throws IOException {
         var low = ChestRewardConfig.resolveRegionalSigils(regional(Kind.COMMON,3,1,0),305);
-        assertEquals(Map.of(102,30,201,0,202,1000,305,3),low);
+        assertEquals(Map.of(102,10,201,0),low);
         assertEquals(2, ChestRewardConfig.resolveRegionalSigils(
                 regional(Kind.COMMON,3,10,0),305).get(201));
         assertEquals(2, ChestRewardConfig.resolveRegionalSigils(
@@ -42,16 +42,16 @@ class WorldChestLootHelperPolicyTest {
     @Test
     void allFourKindsResolveQuantitiesExclusivelyFromCss() throws IOException {
         var cfg = config().chest();
-        assertEquals(Map.of(102,30,201,2,202,1000,305,3),
+        assertEquals(Map.of(102,10,201,2),
                 ChestRewardConfig.resolveRegionalSigils(
                         cfg.resolve(ChestRewardConfig.Kind.COMMON,0,0,0).amounts(),305));
-        assertEquals(Map.of(102,30,201,5,202,1500,307,5),
+        assertEquals(Map.of(102,20,201,5),
                 ChestRewardConfig.resolveRegionalSigils(
                         cfg.resolve(ChestRewardConfig.Kind.EXQUISITE,0,0,0).amounts(),307));
-        assertEquals(Map.of(102,30,201,10,202,2000,303,8),
+        assertEquals(Map.of(102,30,201,10),
                 ChestRewardConfig.resolveRegionalSigils(
                         cfg.resolve(ChestRewardConfig.Kind.PRECIOUS,0,0,0).amounts(),303));
-        assertEquals(Map.of(102,30,201,10,202,2500,301,10),
+        assertEquals(Map.of(102,30,201,10),
                 ChestRewardConfig.resolveRegionalSigils(
                         cfg.resolve(ChestRewardConfig.Kind.LUXURIOUS,0,0,0).amounts(),301));
     }

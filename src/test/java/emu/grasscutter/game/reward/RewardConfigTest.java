@@ -30,9 +30,9 @@ final class RewardConfigTest {
     void bundledPolicyParsesBothKindsOfReward() throws Exception {
         var cfg = RewardConfig.parse(bundled());
         var chest = amounts(cfg.chest().resolve(Kind.COMMON, 3, 1, 104).rewards());
-        assertEquals(30, chest.get(102));
+        assertEquals(10, chest.get(102));
         assertEquals(2, chest.get(201));
-        assertEquals(1000, chest.get(202));
+        assertFalse(chest.containsKey(202));
         assertFalse(chest.containsKey(104011));
         assertEquals(Map.of(102, 10),
                 amounts(cfg.transPoint().resolve(3, 6, TransPointRewardConfig.Kind.WAYPOINT)));
@@ -47,8 +47,8 @@ final class RewardConfigTest {
         assertEquals(bundled(), Files.readString(file));
         var before = RewardConfig.current();
         String modified = bundled().replace(
-                "chest[kind=\"common\"] {\n    adventureExp: 30;\n    primogems: 2;",
-                "chest[kind=\"common\"] {\n    adventureExp: 30;\n    primogems: 7;");
+                "chest[kind=\"common\"] {\n    adventureExp: 10;\n    primogems: 2;",
+                "chest[kind=\"common\"] {\n    adventureExp: 10;\n    primogems: 7;");
         assertNotEquals(bundled(), modified);
         Files.writeString(file, modified);
         RewardConfig.loadOrCreate(file);
@@ -100,8 +100,8 @@ final class RewardConfigTest {
                 chest[kind="common"][scene="3"][area1="1"] { primogems: 0; item-104001: 0; }
                 """;
         // Include a user edit to a base declaration. No migration may overwrite it.
-        legacy = legacy.replace("chest[kind=\"common\"] {\n    adventureExp: 30;\n    primogems: 2;",
-                "chest[kind=\"common\"] {\n    adventureExp: 30;\n    primogems: 7;");
+        legacy = legacy.replace("chest[kind=\"common\"] {\n    adventureExp: 10;\n    primogems: 2;",
+                "chest[kind=\"common\"] {\n    adventureExp: 10;\n    primogems: 7;");
         Path file = temp.resolve("rewards.css");
         Files.writeString(file, legacy);
         RewardConfig.loadOrCreate(file);
@@ -113,15 +113,15 @@ final class RewardConfigTest {
                 .amounts().get(201));
         assertEquals(0, RewardConfig.current().chest().resolve(Kind.COMMON, 3, 1, 0)
                 .amounts().get(104001));
-        assertEquals(1000, RewardConfig.current().chest().resolve(Kind.COMMON, 3, 1, 0)
-                .amounts().get(202));
-        assertEquals(3, RewardConfig.current().chest().resolve(Kind.COMMON, 3, 1, 0)
-                .amounts().get(-1));
+        assertFalse(RewardConfig.current().chest().resolve(Kind.COMMON, 3, 1, 0)
+                .amounts().containsKey(202));
+        assertFalse(RewardConfig.current().chest().resolve(Kind.COMMON, 3, 1, 0)
+                .amounts().containsKey(-1));
         assertEquals(20, RewardConfig.current().transPoint()
                 .resolve(7, 9, TransPointRewardConfig.Kind.DOMAIN).stream()
                 .filter(item -> item.getId() == 101692).findFirst().orElseThrow().getCount());
-        assertEquals(2500, RewardConfig.current().chest().resolve(Kind.LUXURIOUS, 3, 1, 0)
-                .amounts().get(202));
+        assertFalse(RewardConfig.current().chest().resolve(Kind.LUXURIOUS, 3, 1, 0)
+                .amounts().containsKey(202));
 
         // Reloading uses the same defaults but creates no additional files.
         RewardConfig.loadOrCreate(file);

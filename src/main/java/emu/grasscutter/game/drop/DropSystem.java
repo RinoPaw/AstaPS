@@ -322,8 +322,8 @@ public final class DropSystem extends BaseGameSystem {
 
     /**
      * Standard exploration chests: retain the native random roll and replace only
-     * CSS-declared item IDs (including zero). Never pay both versions of a fixed
-     * reward. The native root chooses the actual regional sigil item when present.
+     * CSS-declared item IDs (including zero). Never pay both versions of a
+     * reward. The native root chooses the actual regional sigil when present.
      */
     public boolean handleStandardChestDrop(
             String dropTag, int level, GameEntity bornFrom,

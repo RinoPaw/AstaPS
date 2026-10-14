@@ -17,9 +17,9 @@ public final class WorldChestLootHelper {
     }
 
     /**
-     * All fixed quantities come from CSS. Verified standard chests use area
-     * selectors; other legacy fallback chests use quality defaults only.
-     * Native quest/Boss drops have separate paths.
+     * Generic fixed fields come from CSS. Ordinary chests use the native
+     * random pool once, with explicit CSS values replacing matching items.
+     * Other fallback and quest/Boss chests retain their existing paths.
      */
     public static void grant(Player player, EntityGadget entityGadget) {
         if (player == null || entityGadget == null || entityGadget.getScene() == null) {

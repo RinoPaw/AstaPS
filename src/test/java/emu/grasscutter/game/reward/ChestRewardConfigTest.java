@@ -40,22 +40,22 @@ final class ChestRewardConfigTest {
             css = new String(in.readAllBytes(), StandardCharsets.UTF_8);
         }
         var cfg = ChestRewardConfig.parse(css);
-        assertEquals(Map.of(102, 30, 201, 2), fixedOnly(cfg.resolve(Kind.COMMON, 3, 10, 1501)));
-        assertEquals(Map.of(102, 30, 201, 5), fixedOnly(cfg.resolve(Kind.EXQUISITE, 3, 8, 801)));
+        assertEquals(Map.of(102, 10, 201, 2), fixedOnly(cfg.resolve(Kind.COMMON, 3, 10, 1501)));
+        assertEquals(Map.of(102, 20, 201, 5), fixedOnly(cfg.resolve(Kind.EXQUISITE, 3, 8, 801)));
         assertEquals(Map.of(102, 30, 201, 10), fixedOnly(cfg.resolve(Kind.PRECIOUS, 6, 300, 0)));
         assertEquals(Map.of(102, 30, 201, 10), fixedOnly(cfg.resolve(Kind.LUXURIOUS, 3, 2, 201)));
         for (int area : List.of(1, 2, 3, 4, 5, 6, 7, 9)) {
-            assertEquals(Map.of(102, 30), fixedOnly(cfg.resolve(Kind.COMMON, 3, area, 0)));
-            assertEquals(Map.of(102, 30, 201, 2), fixedOnly(cfg.resolve(Kind.EXQUISITE, 3, area, 0)));
+            assertEquals(Map.of(102, 10), fixedOnly(cfg.resolve(Kind.COMMON, 3, area, 0)));
+            assertEquals(Map.of(102, 20, 201, 2), fixedOnly(cfg.resolve(Kind.EXQUISITE, 3, area, 0)));
             assertEquals(Map.of(102, 30, 201, 5), fixedOnly(cfg.resolve(Kind.PRECIOUS, 3, area, 0)));
         }
-        assertEquals(Map.of(102, 30, 201, 2), fixedOnly(cfg.resolve(Kind.COMMON, 3, 1, 104)));
-        assertEquals(Map.of(102, 30, 201, 2), fixedOnly(cfg.resolve(Kind.COMMON, 3, 7, 703)));
-        assertEquals(Map.of(102, 30, 201, 5), fixedOnly(cfg.resolve(Kind.EXQUISITE, 3, 1, 104)));
+        assertEquals(Map.of(102, 10, 201, 2), fixedOnly(cfg.resolve(Kind.COMMON, 3, 1, 104)));
+        assertEquals(Map.of(102, 10, 201, 2), fixedOnly(cfg.resolve(Kind.COMMON, 3, 7, 703)));
+        assertEquals(Map.of(102, 20, 201, 5), fixedOnly(cfg.resolve(Kind.EXQUISITE, 3, 1, 104)));
         assertEquals(Map.of(102, 30, 201, 10), fixedOnly(cfg.resolve(Kind.PRECIOUS, 3, 1, 104)));
-        assertEquals(Map.of(102, 30, 201, 5), fixedOnly(cfg.resolve(Kind.EXQUISITE, 3, 7, 703)));
+        assertEquals(Map.of(102, 20, 201, 5), fixedOnly(cfg.resolve(Kind.EXQUISITE, 3, 7, 703)));
         assertEquals(Map.of(102, 30, 201, 10), fixedOnly(cfg.resolve(Kind.PRECIOUS, 3, 7, 703)));
-        assertEquals(Map.of(102, 30), fixedOnly(cfg.resolve(Kind.COMMON, 3, 1, 0)));
+        assertEquals(Map.of(102, 10), fixedOnly(cfg.resolve(Kind.COMMON, 3, 1, 0)));
         assertEquals("chest[kind=\"common\"][scene=\"3\"][area1=\"1\"][area2=\"104\"]",
                 cfg.resolve(Kind.COMMON, 3, 1, 104).selector());
     }

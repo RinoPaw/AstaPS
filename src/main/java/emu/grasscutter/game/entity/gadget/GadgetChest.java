@@ -314,8 +314,14 @@ public class GadgetChest extends GadgetContent {
             if (!StandardChestRewardResolver.supportsInventoryClaim(
                     reward, gadget.getGroupId(), meta.config_id)) return null;
 
-            var inventoryBatch =
-                    reward.overlay().inventoryBatch(id -> GameData.getItemDataMap().get(id));
+            var prepared = reward.prepareDelivery(
+                    id -> GameData.getItemDataMap().get(id),
+                    id -> GameData.getDropMaterialDataMap().get(id));
+            if (prepared.hasGroundItems()) {
+                throw new IllegalStateException(
+                        "Inventory-only chest route produced ground pickups");
+            }
+            var inventoryBatch = prepared.directItems();
             var key = ChestInventoryClaim.key(
                     player.getUid(), gadget.getScene().getId(), gadget.getGroupId(), meta.config_id);
             boolean delivered = ChestInventoryClaim.deliver(

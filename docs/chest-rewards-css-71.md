@@ -14,8 +14,8 @@ the chest unopened; confirmed inventory/ground delivery remains outstanding.
 
 ## Quick start: edit the four chest qualities
 
-After the server's first successful launch, edit `rewards.css` for fixed
-rewards and `chest-loot.json` for randomized loot. Both are created in the
+After the server loads Excel resources and starts the game server for the
+first time, edit `rewards.css` for fixed rewards and `chest-loot.json` for randomized loot. Both are created in the
 server working directory; **restart the server** after editing. They are
 operator-owned files, not regenerated or overwritten at each launch.
 

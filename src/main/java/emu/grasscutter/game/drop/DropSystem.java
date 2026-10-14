@@ -20,7 +20,8 @@ import java.util.*;
 public final class DropSystem extends BaseGameSystem {
     private final Int2ObjectMap<DropTableData> dropTable;
     private final Map<String, List<BaseDropData>> chestReward;
-    private final StandardChestLootConfig standardChestLoot;
+    // Initialized after ResourceLoader.loadAll(), before network admission.
+    private volatile StandardChestLootConfig standardChestLoot;
     private final Map<String, List<BaseDropData>> monsterDrop;
     private final Random rand;
 
@@ -48,15 +49,6 @@ public final class DropSystem extends BaseGameSystem {
                     .error("Unable to load chest drop data. Please place ChestDrop.json in data folder.");
         }
 
-        // Export the existing standard-chest native graph once, then use the
-        // operator's editable copy on later launches. Boss/special tables stay native.
-        try {
-            this.standardChestLoot = StandardChestLootConfig.loadOrCreate(
-                    Path.of("chest-loot.json"), chestReward, dropTable);
-        } catch (IOException | IllegalArgumentException e) {
-            throw new IllegalStateException("Cannot load chest-loot.json", e);
-        }
-
         try {
             var dataList = DataLoader.loadList("MonsterDrop.json", BaseDropData.class);
             for (var i : dataList) {
@@ -68,6 +60,23 @@ public final class DropSystem extends BaseGameSystem {
         } catch (Exception ignored) {
             Grasscutter.getLogger()
                     .error("Unable to load monster drop data. Please place MonsterDrop.json in data folder.");
+        }
+    }
+
+    /**
+     * GameServer is constructed before Excel resources load. Export or read the
+     * operator-owned drop graph only after ResourceLoader.loadAll(), prior to
+     * binding the game server socket.
+     */
+    public synchronized void initializeStandardChestLoot() {
+        if (standardChestLoot != null) return;
+        try {
+            standardChestLoot = StandardChestLootConfig.loadOrCreate(
+                    Path.of("chest-loot.json"), chestReward, dropTable);
+            Grasscutter.getLogger().info("Standard chest rewards loaded from chest-loot.json");
+        } catch (IOException | RuntimeException e) {
+            throw new IllegalStateException("Cannot initialize chest-loot.json after loading game resources: "
+                    + e.getMessage(), e);
         }
     }
 
@@ -340,12 +349,17 @@ public final class DropSystem extends BaseGameSystem {
     public boolean handleStandardChestDrop(
             String dropTag, int level, GameEntity bornFrom,
             Map<Integer, Integer> cssAmounts, int fallbackSigilId) {
+        // A failed startup initialization must not silently grant compatibility loot.
+        var loot = standardChestLoot;
+        if (loot == null) {
+            throw new IllegalStateException("Standard chest loot is not initialized");
+        }
         // The editable chest-loot.json owns every standard-chest random entry,
         // including regional/level roots, probabilities and quantity ranges.
         StandardChestLootConfig.Roll roll;
         List<GameItem> items = new ArrayList<>();
         try {
-            roll = standardChestLoot.roll(dropTag, level, rand);
+            roll = loot.roll(dropTag, level, rand);
             if (roll == null) return false;
             // Match processDrop's first-item and repeated-item handling,
             // particularly for equipment whose GameItem constructor normalizes count.

@@ -447,6 +447,9 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
     }
 
     public void start() {
+        // ResourceLoader.loadAll() runs after the GameServer constructor.
+        // Initialize configurable chest drops here, before accepting players.
+        this.dropSystem.initializeStandardChestLoot();
         this.init(GameSessionManager.getListener(), this.channelConfig, this.address);
 
         if (Grasscutter.getRunMode() == ServerRunMode.GAME_ONLY) {

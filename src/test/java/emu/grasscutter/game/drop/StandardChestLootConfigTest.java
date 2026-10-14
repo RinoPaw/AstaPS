@@ -89,6 +89,29 @@ final class StandardChestLootConfigTest {
     }
 
     @Test
+    void firstExportRejectsUnloadedTablesWithoutWritingAnEmptyConfig() throws Exception {
+        Path file = directory.resolve("chest-loot.json");
+        var unavailable = assertThrows(IllegalStateException.class,
+                () -> StandardChestLootConfig.loadOrCreate(file, Map.of(), Map.of()));
+        assertTrue(unavailable.getMessage().contains("unavailable"));
+        assertFalse(Files.exists(file));
+
+        // Simulate ResourceLoader populating the native map later in startup.
+        var gson = new Gson();
+        BaseDropData source = gson.fromJson(
+                "{\"index\":\"战斗低级蒙德\",\"minLevel\":1,\"dropId\":10}",
+                BaseDropData.class);
+        DropTableData table = gson.fromJson(
+                "{\"id\":10,\"randomType\":1,\"dropVec\":["
+                        + "{\"itemId\":202,\"countRange\":\"150\",\"weight\":10000}]}",
+                DropTableData.class);
+        var loaded = StandardChestLootConfig.loadOrCreate(file,
+                Map.of(COMMON_TAG, List.of(source)), Map.of(10, table));
+        assertEquals(150, loaded.roll(COMMON_TAG, 1, new Random(0)).amounts().get(202));
+        assertTrue(Files.exists(file));
+    }
+
+    @Test
     void generatesOnceAndPreservesEditedProbabilities() throws Exception {
         Path file = directory.resolve("chest-loot.json");
         var gson = new Gson();

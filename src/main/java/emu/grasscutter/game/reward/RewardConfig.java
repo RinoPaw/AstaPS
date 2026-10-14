@@ -4,20 +4,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import org.tomlj.Toml;
-import org.tomlj.TomlParseResult;
 
 /**
- * Single operator-owned rewards.toml for all direct-reward subsystems.
- *
- * <p>Both transPoint and chest rules are validated before publication. Each subsystem only sees
- * the immutable, fully validated snapshot; no second reward file is read or generated.
+ * One operator-owned rewards.css, parsed and validated as an immutable snapshot.
+ * Transport payouts use the snapshot live; chest rewards remain preview-only.
  */
 public final class RewardConfig {
-    private static final String TEMPLATE = "/rewards.toml";
-    private static final Set<String> ROOT_FIELDS = Set.of("version", "transPoint", "chest");
+    private static final String TEMPLATE = "/rewards.css";
     private static volatile RewardConfig active;
 
     private final TransPointRewardConfig transPoint;
@@ -28,44 +23,36 @@ public final class RewardConfig {
         this.chest = chest;
     }
 
-    public TransPointRewardConfig transPoint() {
-        return transPoint;
-    }
-
-    public ChestRewardConfig chest() {
-        return chest;
-    }
+    public TransPointRewardConfig transPoint() { return transPoint; }
+    public ChestRewardConfig chest() { return chest; }
 
     public static RewardConfig current() {
-        var value = active;
-        if (value == null) throw new IllegalStateException("rewards.toml has not been loaded");
-        return value;
+        var config = active;
+        if (config == null) throw new IllegalStateException("rewards.css has not been loaded");
+        return config;
     }
 
     public static RewardConfig parse(String source) {
-        TomlParseResult root = Toml.parse(source);
-        if (root.hasErrors()) {
-            throw new IllegalArgumentException("Invalid rewards.toml syntax: " + root.errors());
-        }
-        if (!(root.get("version") instanceof Long version) || version != 1) {
-            throw new IllegalArgumentException("Expected rewards.toml version = 1");
-        }
-        if (!root.keySet().equals(ROOT_FIELDS)) {
-            throw new IllegalArgumentException(
-                    "rewards.toml must contain only version = 1, [transPoint] and [chest] tables");
-        }
-
-        // Validate both sections before the caller can publish the new snapshot.
+        List<CssRewardRules.Rule> all = CssRewardRules.parse(source);
         return new RewardConfig(
-                TransPointRewardConfig.parseTable(root),
-                ChestRewardConfig.parseTable(root));
+                TransPointRewardConfig.fromRules(all),
+                ChestRewardConfig.fromRules(all));
     }
 
-    /** Generate missing root-level policy exactly once. Existing operator files are never reset. */
+    /**
+     * Generate only if missing. Never silently replace an existing operator policy.
+     * If a legacy TOML file exists, require an explicit choice before switching.
+     */
     public static void loadOrCreate(Path path) {
         Objects.requireNonNull(path, "path");
         try {
             if (Files.notExists(path)) {
+                Path old = path.resolveSibling("rewards.toml");
+                if (Files.exists(old)) {
+                    throw new IllegalStateException(
+                            "Legacy " + old + " exists. Back it up and remove/rename it before "
+                            + "generating " + path + "; convert custom rules manually.");
+                }
                 Path parent = path.toAbsolutePath().getParent();
                 if (parent != null) Files.createDirectories(parent);
                 try (InputStream source = RewardConfig.class.getResourceAsStream(TEMPLATE)) {

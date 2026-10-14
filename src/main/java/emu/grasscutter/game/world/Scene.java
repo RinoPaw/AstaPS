@@ -419,6 +419,73 @@ public class Scene {
         return List.copyOf(entities);
     }
 
+    /**
+     * Publish an already validated chest pickup batch to this scene in one registry phase.
+     * No player may see the batch until every entity's onCreate has succeeded.
+     *
+     * <p>If registration fails, all entities from this batch are removed before
+     * any appear packets are sent. Once registration succeeds, packet failure is
+     * not a grant failure: pickups remain in the scene for the next sync.
+     *
+     * <p>This is not persistent storage. Do not mark a chest durably claimed merely
+     * because this in-memory scene operation succeeded.
+     */
+    public synchronized void publishChestGroundEntities(
+            List<EntityItem> prepared, Player owner) {
+        Objects.requireNonNull(prepared, "prepared");
+        Objects.requireNonNull(owner, "owner");
+        if (prepared.isEmpty() || prepared.size() > MAX_STAGED_CHEST_PICKUPS
+                || owner.getScene() != this) {
+            throw new IllegalArgumentException("Invalid chest pickup publication");
+        }
+
+        var ids = new HashSet<Integer>();
+        for (EntityItem item : prepared) {
+            if (item == null || item.getScene() != this || item.isShare()
+                    || item.getId() <= 0 || !ids.add(item.getId())
+                    || getEntities().containsKey(item.getId())
+                    || (int) (item.getGuid() >> 32) != owner.getUid()
+                    || item.getItemData() == null || item.getItemData().getGadgetId() <= 0
+                    || item.getCount() <= 0) {
+                throw new IllegalArgumentException("Invalid or duplicate chest pickup entity");
+            }
+        }
+
+        var inserted = new ArrayList<EntityItem>(prepared.size());
+        try {
+            for (EntityItem item : prepared) {
+                getEntities().put(item.getId(), item);
+                inserted.add(item);
+                item.onCreate();
+            }
+        } catch (RuntimeException | Error failure) {
+            for (int i = inserted.size() - 1; i >= 0; i--) {
+                EntityItem entity = inserted.get(i);
+                if (getEntities().remove(entity.getId(), entity)) {
+                    try {
+                        entity.onRemoved();
+                    } catch (RuntimeException cleanupFailure) {
+                        failure.addSuppressed(cleanupFailure);
+                    }
+                }
+            }
+            throw failure;
+        }
+
+        // Scene registration is complete. If one client packet fails, do not
+        // remove world pickups or encourage the caller to repeat the grant.
+        try {
+            for (var part : chopped(new ArrayList<>(prepared), 100)) {
+                broadcastPacket(new PacketSceneEntityAppearNotify(part, VisionType.VisionType_VISION_BORN));
+            }
+        } catch (RuntimeException notifyFailure) {
+            Grasscutter.getLogger().warn(
+                    "Chest ground pickups registered, but scene appear notification failed"
+                            + " scene={} count={}",
+                    getId(), prepared.size(), notifyFailure);
+        }
+    }
+
     public void addDropEntity(GameItem item, GameEntity bornForm, Player player, boolean share) {
 
         ItemData itemData = GameData.getItemDataMap().get(item.getItemId());

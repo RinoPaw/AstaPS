@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import emu.grasscutter.data.common.DropItemData;
 import emu.grasscutter.data.excels.DropTableData;
-import emu.grasscutter.game.inventory.GameItem;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -45,7 +44,9 @@ final class StandardChestLootConfig {
     record Table(int id, int randomType, boolean fallToGround, List<Drop> dropVec) {}
     record Quality(List<Source> sources, List<Table> tables) {}
     record Document(Map<String, Quality> chests) {}
-    record Roll(List<GameItem> items, boolean fallToGround) {}
+    record Roll(Map<Integer, Integer> amounts, boolean fallToGround) {
+        Roll { amounts = Map.copyOf(amounts); }
+    }
 
     private final Map<String, Map<String, List<Source>>> sources;
     private final Map<String, Map<Integer, Table>> tables;
@@ -190,9 +191,9 @@ final class StandardChestLootConfig {
         var lookup = tables.get(kind);
         Table root = lookup.get(selected.dropId());
         if (!usable(root)) return null;
-        var amounts = new ArrayList<GameItem>();
+        var amounts = new LinkedHashMap<Integer, Integer>();
         rollNode(root, 1, lookup, random, amounts, new HashSet<>());
-        return new Roll(List.copyOf(amounts), root.fallToGround());
+        return new Roll(amounts, root.fallToGround());
     }
 
     private static boolean usable(Table table) {
@@ -201,7 +202,7 @@ final class StandardChestLootConfig {
     }
 
     private static void rollNode(Table table, int times, Map<Integer, Table> lookup,
-                                 Random random, List<GameItem> result, Set<Integer> stack) {
+                                 Random random, Map<Integer, Integer> result, Set<Integer> stack) {
         if (!stack.add(table.id())) {
             throw new IllegalArgumentException("Cyclic chest drop table " + table.id());
         }
@@ -234,7 +235,7 @@ final class StandardChestLootConfig {
     }
 
     private static void deliver(Drop drop, Map<Integer, Table> lookup, Random random,
-                                List<GameItem> result, Set<Integer> stack) {
+                                Map<Integer, Integer> result, Set<Integer> stack) {
         int count = amount(drop.countRange(), random);
         if (count <= 0) return;
         var child = lookup.get(drop.itemId());
@@ -242,13 +243,7 @@ final class StandardChestLootConfig {
             rollNode(child, count, lookup, random, result, stack);
             return;
         }
-        for (GameItem item : result) {
-            if (item.getItemId() == drop.itemId()) {
-                item.setCount(Math.addExact(item.getCount(), count));
-                return;
-            }
-        }
-        result.add(new GameItem(drop.itemId(), count));
+        result.merge(drop.itemId(), count, Math::addExact);
     }
 
     private static void checkCountRange(String range, String context) {

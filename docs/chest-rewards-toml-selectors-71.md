@@ -14,9 +14,11 @@ TransPoint rewards are already consumed by the running server, and their selecto
 rules now use the same source-order and field-override semantics. This phase
 adds **chest configuration parsing and rule resolution only**.
 `GadgetChest` and `WorldChestLootHelper` still use their existing reward
-paths. The scene's `WorldAreaIndex.areaAt(x,y,z)` and
-`StandardChestClassifier` are being developed separately and are not yet
-integrated here. **Do not assume editing this TOML changes in-game drops.**
+paths. The read-only `StandardChestRewardResolver` now combines
+`WorldAreaIndex.areaAt(x,y,z)` and `StandardChestClassifier` with these
+selectors. `GadgetChest` does not call this preflight yet. **Editing this TOML
+still does not change in-game drops.** See
+[chest-reward-preflight-71.md](chest-reward-preflight-71.md).
 
 ## Selectors
 

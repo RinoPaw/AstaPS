@@ -77,7 +77,7 @@ final class TransPointRewardConfigTest {
     @Test
     void exactPointOverridesSceneWildcard() {
         var text = RULES + """
-                ["7:2"]
+                [transPoint."7:2"]
                 adventureExp = 15
                 """;
         var rules = TransPointRewardConfig.parse(text);

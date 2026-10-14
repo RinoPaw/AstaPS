@@ -12,6 +12,7 @@ import emu.grasscutter.game.reward.ChestRewardConfig;
 import emu.grasscutter.game.reward.RewardConfig;
 import emu.grasscutter.game.reward.StandardChestRewardResolver;
 import java.util.Map;
+import java.util.Optional;
 import emu.grasscutter.game.world.Position;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.scripts.data.SceneGadget;
@@ -25,12 +26,23 @@ public final class WorldChestLootHelper {
      * random pool once, with explicit CSS values replacing matching items.
      * Other fallback and quest/Boss chests retain their existing paths.
      */
-    public static void grant(Player player, EntityGadget entityGadget) {
+    public static boolean grant(Player player, EntityGadget entityGadget) {
         if (player == null || entityGadget == null || entityGadget.getScene() == null) {
-            return;
+            return false;
+        }
+        var classification = StandardChestClassifier.classify(entityGadget);
+        var preview = StandardChestRewardResolver.preview(entityGadget);
+        // An unknown level-1 area must not inherit the higher-Primogem default.
+        // Reject the payout attempt so GadgetChest can leave the chest unopened.
+        if (!allowsCssPayout(classification, preview)) {
+            Grasscutter.getLogger().warn(
+                    "Standard chest area unresolved: uid={} scene={} group={} config={}; "
+                            + "leaving chest unopened",
+                    player.getUid(), entityGadget.getScene().getId(),
+                    entityGadget.getGroupId(), entityGadget.getConfigId());
+            return false;
         }
         Tier tier = resolveTier(entityGadget);
-        var preview = StandardChestRewardResolver.preview(entityGadget);
         ChestRewardConfig.Match base = preview.isPresent() ? null
                 : RewardConfig.current().chest().resolve(
                         ChestRewardConfig.Kind.valueOf(tier.name()), 0, 0, 0);
@@ -38,7 +50,7 @@ public final class WorldChestLootHelper {
                 ? preview.orElseThrow().amounts() : base.amounts();
         int fallbackSigilId = resolveSigilId(entityGadget);
         SceneGadget meta = entityGadget.getMetaGadget();
-        boolean standard = StandardChestClassifier.classify(entityGadget).isStandard();
+        boolean standard = classification.isStandard();
         if (standard && meta != null && meta.drop_tag != null
                 && player.getServer().getDropSystem().handleStandardChestDrop(
                         meta.drop_tag, Math.max(1, meta.level), entityGadget,
@@ -46,7 +58,7 @@ public final class WorldChestLootHelper {
             Grasscutter.getLogger().debug(
                     "Native chest rewards uid={} gadgetId={} tag={} level={}",
                     player.getUid(), entityGadget.getGadgetId(), meta.drop_tag, meta.level);
-            return;
+            return true;
         }
         if (standard) {
             Grasscutter.getLogger().warn(
@@ -83,6 +95,16 @@ public final class WorldChestLootHelper {
                 preview.isPresent() ? "css-region" : "css-default",
                 preview.isPresent() ? preview.orElseThrow().lastSelector() : base.selector(),
                 adventureExp, rewards.getOrDefault(201, 0));
+        // Ground drop creation is not yet transactional; this reports an attempt.
+        return true;
+    }
+
+    /** Nonstandard legacy fallbacks are not verified regional CSS chests. */
+    static boolean allowsCssPayout(
+            StandardChestClassifier.Classification classification,
+            Optional<StandardChestRewardResolver.Preview> preview) {
+        return classification != null
+                && (!classification.isStandard() || (preview != null && preview.isPresent()));
     }
 
     private static void drop(Player player, Scene scene, GameEntity source, int id, int amount) {

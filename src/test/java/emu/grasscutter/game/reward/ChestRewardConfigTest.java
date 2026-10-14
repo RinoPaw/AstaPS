@@ -96,23 +96,83 @@ class ChestRewardConfigTest {
     }
 
     @Test
-    void parentAndChildSelectorsCanBeInAnyOrder() {
+    void laterMatchingRuleOverridesEarlierValuesRegardlessOfSpecificity() {
+        // The second, broader rule must win when it occurs later in the file.
         String text = minimalRules()
-                + "\n[chest.\"kind=common,area=3:1:104\"]\nprimogems = 9\n"
-                + "\n[chest.\"kind=common,area=3:1\"]\nprimogems = 1\n";
+                + "\\n[chest.\\\"kind=common,area=3:1:104\\\"]\\nprimogems = 9\\n"
+                + "\\n[chest.\\\"kind=common,area=3:1\\\"]\\nprimogems = 1\\n";
         var config = ChestRewardConfig.parse(text);
-        assertEquals(Map.of(201, 9), contents(config.resolve(Kind.COMMON, 3, 1, 104)));
-        assertEquals(Map.of(201, 1), contents(config.resolve(Kind.COMMON, 3, 1, 109)));
+        assertEquals(Map.of(102, 30, 201, 1), contents(config.resolve(Kind.COMMON, 3, 1, 104)));
+        assertEquals("kind=common,area=3:1",
+                config.resolve(Kind.COMMON, 3, 1, 104).selector());
+        assertEquals(Map.of(102, 30, 201, 1), contents(config.resolve(Kind.COMMON, 3, 1, 109)));
         assertEquals(Map.of(102, 30, 201, 2), contents(config.resolve(Kind.COMMON, 3, 2, 0)));
     }
 
     @Test
-    void entireWinningTableReplacesDefaultWithNoFieldInheritance() {
+    void laterSpecificRuleOverridesEarlierGeneralRule() {
         var config = ChestRewardConfig.parse(minimalRules()
-                + "\n[chest.\"kind=common,area=3:1\"]\nprimogems = 0\n");
+                + "\\n[chest.\\\"kind=common,area=3:1\\\"]\\nprimogems = 1\\n"
+                + "\\n[chest.\\\"kind=common,area=3:1:104\\\"]\\nprimogems = 9\\n");
+        assertEquals(Map.of(102, 30, 201, 9), contents(config.resolve(Kind.COMMON, 3, 1, 104)));
+        assertEquals("kind=common,area=3:1:104",
+                config.resolve(Kind.COMMON, 3, 1, 104).selector());
+    }
+
+    @Test
+    void evenLaterKindDefaultOverridesEarlierAreaRule() {
+        String text = """
+                [chest."kind=common,area=3:1:104"]
+                primogems = 9
+
+                [chest."kind=common,area=3:1"]
+                primogems = 1
+
+                [chest."kind=common"]
+                primogems = 2
+                adventureExp = 30
+
+                [chest."kind=exquisite"]
+                primogems = 5
+
+                [chest."kind=precious"]
+                primogems = 10
+
+                [chest."kind=luxurious"]
+                primogems = 10
+                """;
+        var config = ChestRewardConfig.parse(text);
+        assertEquals(Map.of(102, 30, 201, 2), contents(config.resolve(Kind.COMMON, 3, 1, 104)));
+        assertEquals("kind=common", config.resolve(Kind.COMMON, 3, 1, 104).selector());
+    }
+
+    @Test
+    void laterRulesOnlyOverrideFieldsTheySpecify() {
+        var config = ChestRewardConfig.parse(minimalRules()
+                + "\\n[chest.\\\"kind=common,area=3:1\\\"]\\nprimogems = 0\\n");
         var match = config.resolve(Kind.COMMON, 3, 1, 104);
         assertEquals("kind=common,area=3:1", match.selector());
-        assertTrue(match.rewards().isEmpty());
+        assertEquals(Map.of(102, 30), contents(match));
+
+        var another = ChestRewardConfig.parse(minimalRules()
+                + "\\n[chest.\\\"kind=common,area=3:1\\\"]\\nadventureExp = 11\\n");
+        assertEquals(Map.of(102, 11, 201, 2),
+                contents(another.resolve(Kind.COMMON, 3, 1, 101)));
+    }
+
+    @Test
+    void itemOverridesCanReplaceOrRemoveEarlierItems() {
+        String text = minimalRules().replace(
+                "[chest.\\\"kind=common\\\"]\\n",
+                "[chest.\\\"kind=common\\\"]\\n"
+                        + "items = [{ id = 104001, count = 2 }, { id = 104002, count = 1 }]\\n")
+                + "\\n[chest.\\\"kind=common,area=3:1\\\"]\\n"
+                + "items = [{ id = 104001, count = 7 }, { id = 104002, count = 0 }]\\n";
+        var config = ChestRewardConfig.parse(text);
+        assertEquals(Map.of(102, 30, 201, 2, 104001, 7),
+                contents(config.resolve(Kind.COMMON, 3, 1, 0)));
+        assertEquals(Map.of(102, 30, 201, 2, 104001, 2, 104002, 1),
+                contents(config.resolve(Kind.COMMON, 3, 2, 0)));
     }
 
     @Test
@@ -188,7 +248,6 @@ class ChestRewardConfigTest {
                 contents(ChestRewardConfig.parse(valid).resolve(Kind.COMMON, 0, 0, 0)));
         for (String line : List.of(
                 "items = [{ id = 0, count = 1 }]",
-                "items = [{ id = 104001, count = 0 }]",
                 "items = [{ id = 104001, count = -1 }]",
                 "items = [{ id = 104001, count = 1, chance = 0.1 }]",
                 "items = [{ id = 104001 }]",

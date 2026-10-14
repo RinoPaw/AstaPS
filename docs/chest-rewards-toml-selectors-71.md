@@ -10,15 +10,14 @@ Invalid TOML or an invalid rule prevents startup with an error naming the
 configuration file, field or selector. Local `rewards.toml` is gitignored.
 
 The shared loader validates and publishes both reward subsystems atomically.
-TransPoint rewards are already consumed by the running server, and their selector
-rules now use the same source-order and field-override semantics. This phase
-adds **chest configuration parsing and rule resolution only**.
-`GadgetChest` and `WorldChestLootHelper` still use their existing reward
-paths. The read-only `StandardChestRewardResolver` now combines
-`WorldAreaIndex.areaAt(x,y,z)` and `StandardChestClassifier` with these
-selectors. `GadgetChest` does not call this preflight yet. **Editing this TOML
-still does not change in-game drops.** See
-[chest-reward-preflight-71.md](chest-reward-preflight-71.md).
+TransPoint rewards are already consumed by the running server. The new
+`StandardChestRewardResolver` combines `WorldAreaIndex.areaAt(x,y,z)` and
+`StandardChestClassifier` with the chest selectors. `GadgetChest` now uses
+these values **only for verified ordinary chest roots whose native
+`fallToGround=false`**. Native ground-drop roots and all unsupported or
+special objects still follow the legacy chest implementation. Claims in the
+supported path require full inventory admission and a durable duplicate-key
+receipt. See [limited runtime scope](chest-reward-preflight-71.md).
 
 ## Selectors
 
@@ -75,8 +74,9 @@ matched rule remains. An explicit zero clears a reward:
 
 A successful `resolve(kind, sceneId, areaID1, areaID2)` returns the final
 direct reward list and the last matched selector for debugging. Unknown level
-2 (zero) never matches a level-2-only rule; unknown scene/parent use the
-quality defaults. Matching is independent of source order *among TOML
+2 (zero) never matches a level-2-only rule. The isolated resolver can
+apply a quality default to zero scene/parent inputs, but the **runtime preview
+rejects an unknown level-1 area** rather than guessing a high-Primogem region. Matching is independent of source order *among TOML
 properties within the same table*.
 
 ## Default policy

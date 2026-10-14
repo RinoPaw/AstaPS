@@ -134,6 +134,67 @@ public class GameSession implements GameSessionManager.KcpChannel {
         if (GAME_INFO.isShowPacketPayload) System.out.println(Utils.bytesToHex(payload));
     }
 
+    /**
+     * Temporary, narrowly-scoped trace for the Mondstadt prologue's Dvalin air-combat load.
+     * Observe the actual scene handshake and early-plot state; do not change quest progress.
+     */
+    private void traceDvalinEntryPacket(String direction, int opcode) {
+        var currentPlayer = this.player;
+        if (currentPlayer == null) return;
+
+        int sceneId = currentPlayer.getSceneId();
+        boolean isHandshake =
+                opcode == PacketOpcodes.PlayerEnterSceneNotify
+                        || opcode == PacketOpcodes.EnterSceneReadyReq
+                        || opcode == PacketOpcodes.EnterSceneReadyRsp
+                        || opcode == PacketOpcodes.EnterScenePeerNotify
+                        || opcode == PacketOpcodes.SceneInitFinishReq
+                        || opcode == PacketOpcodes.SceneInitFinishRsp
+                        || opcode == PacketOpcodes.EnterSceneDoneReq
+                        || opcode == PacketOpcodes.EnterSceneDoneRsp
+                        || opcode == PacketOpcodes.PostEnterSceneReq
+                        || opcode == PacketOpcodes.PostEnterSceneRsp;
+        boolean isCutscene =
+                opcode == PacketOpcodes.CutSceneBeginNotify
+                        || opcode == PacketOpcodes.CutSceneFinishNotify
+                        || opcode == PacketOpcodes.CutSceneEndNotify;
+
+        if (sceneId != 20020 && !(sceneId == 3 && isCutscene)) return;
+        if (!isHandshake && !isCutscene) return;
+
+        try {
+            var quests = currentPlayer.getQuestManager();
+            var intro = quests != null ? quests.getQuestById(35104) : null;
+            var dvalinEntry = quests != null ? quests.getQuestById(35721) : null;
+            var dvalinFight = quests != null ? quests.getQuestById(35722) : null;
+            // Scene 3 has other cutscenes; only report them when the Dvalin entry is relevant.
+            if (sceneId == 3
+                    && (dvalinEntry == null
+                            || dvalinEntry.getState()
+                                    == emu.grasscutter.game.quest.enums.QuestState.QUEST_STATE_UNSTARTED))
+                return;
+
+            var world = currentPlayer.getWorld();
+            Grasscutter.getLogger()
+                    .info(
+                            "[DVALIN-ENTRY] {} uid={} cmd={}({}) scene={} load={} token={} 35104={} 35721={} 35722={} timeLocked={}",
+                            direction,
+                            currentPlayer.getUid(),
+                            PacketOpcodesUtils.getOpcodeName(opcode),
+                            opcode,
+                            sceneId,
+                            currentPlayer.getSceneLoadState(),
+                            currentPlayer.getEnterSceneToken(),
+                            intro != null ? intro.getState() : "ABSENT",
+                            dvalinEntry != null ? dvalinEntry.getState() : "ABSENT",
+                            dvalinFight != null ? dvalinFight.getState() : "ABSENT",
+                            world != null && world.isTimeLocked());
+        } catch (RuntimeException e) {
+            Grasscutter.getLogger()
+                    .warn("[DVALIN-ENTRY] Trace failed for opcode {}: {}", opcode, e.toString());
+        }
+    }
+
     public void send(BasePacket packet) {
 
         // The last word on cutscenes. The two places that build one already check this, so nothing
@@ -196,6 +257,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
                     }
                 }
                 tunnel.writeData(bytes);
+                traceDvalinEntryPacket("S2C", packet.getOpcode());
             } catch (Exception e) {
                 Grasscutter.getLogger()
                         .debug("Unable to send packet {} to client: {}", packet.getOpcode(), e.toString());
@@ -341,6 +403,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
                     default -> {}
                 }
 
+                traceDvalinEntryPacket("C2S", opcode);
                 getServer().getPacketHandler().handle(this, opcode, header, payload);
             }
         } catch (Throwable e) {

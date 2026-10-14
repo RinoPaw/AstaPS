@@ -306,13 +306,14 @@ public class GadgetChest extends GadgetContent {
         SceneGadget meta = gadget.getMetaGadget();
         if (meta == null || meta.config_id <= 0 || gadget.getGroupId() <= 0) return null;
 
-        var staged = StandardChestRewardResolver.stage(gadget, player.getServer().getDropSystem());
-        if (staged.isEmpty()) return null;
-        var reward = staged.orElseThrow();
-        if (!StandardChestRewardResolver.supportsInventoryClaim(
-                reward, gadget.getGroupId(), meta.config_id)) return null;
-
         try {
+            var staged = StandardChestRewardResolver.stage(
+                    gadget, player.getServer().getDropSystem());
+            if (staged.isEmpty()) return null;
+            var reward = staged.orElseThrow();
+            if (!StandardChestRewardResolver.supportsInventoryClaim(
+                    reward, gadget.getGroupId(), meta.config_id)) return null;
+
             var inventoryBatch =
                     reward.overlay().inventoryBatch(id -> GameData.getItemDataMap().get(id));
             var key = ChestInventoryClaim.key(

@@ -66,8 +66,16 @@ final class StandardChestLootConfigTest {
     @Test
     void generatesOnceAndPreservesEditedProbabilities() throws Exception {
         Path file = directory.resolve("chest-loot.json");
-        var first = StandardChestLootConfig.loadOrCreate(file, Map.of(), Map.of());
-        assertNull(first.roll(COMMON_TAG, 10, new Random(0)));
+        var gson = new Gson();
+        BaseDropData source = gson.fromJson(
+                "{\"index\":\"战斗低级蒙德\",\"minLevel\":1,\"dropId\":10}", BaseDropData.class);
+        DropTableData original = gson.fromJson(
+                "{\"id\":10,\"randomType\":1,\"dropVec\":["
+                        + "{\"itemId\":202,\"countRange\":\"50\",\"weight\":10000}]}",
+                DropTableData.class);
+        var first = StandardChestLootConfig.loadOrCreate(file,
+                Map.of(COMMON_TAG, List.of(source)), Map.of(10, original));
+        assertEquals(Map.of(202, 50), first.roll(COMMON_TAG, 10, new Random(0)).amounts());
         String generated = Files.readString(file, StandardCharsets.UTF_8);
         for (String kind : List.of("common", "exquisite", "precious", "luxurious")) {
             assertTrue(generated.contains("\"" + kind + "\""));
@@ -133,7 +141,7 @@ final class StandardChestLootConfigTest {
         assertThrows(IllegalArgumentException.class,
                 () -> new StandardChestLootConfig(withCommon(List.of(),
                         List.of(new StandardChestLootConfig.Table(10, 1, false,
-                                List.of(new StandardChestLootConfig.Drop(202, "1", 10001))))));
+                                List.of(new StandardChestLootConfig.Drop(202, "1", -1))))));
     }
 
     @Test

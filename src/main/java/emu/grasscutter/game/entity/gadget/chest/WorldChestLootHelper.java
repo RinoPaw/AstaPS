@@ -1,6 +1,10 @@
 package emu.grasscutter.game.entity.gadget.chest;
 
 import emu.grasscutter.Grasscutter;
+import emu.grasscutter.data.GameData;
+import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.ItemType;
+import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
@@ -70,7 +74,7 @@ public final class WorldChestLootHelper {
             player.earnExp(adventureExp);
         }
         rewards.forEach((itemId, count) -> {
-            if (itemId != 102) drop(scene, entityGadget, itemId, count);
+            if (itemId != 102) drop(player, scene, entityGadget, itemId, count);
         });
         Grasscutter.getLogger().info(
                 "WorldChestLoot drop uid={} gadgetId={} tier={} policy={} selector={} "
@@ -81,15 +85,31 @@ public final class WorldChestLootHelper {
                 adventureExp, rewards.getOrDefault(201, 0));
     }
 
-    private static void drop(Scene scene, GameEntity gameEntity, int n, int n2) {
-        if (scene == null || gameEntity == null || n <= 0 || n2 <= 0) {
+    private static void drop(Player player, Scene scene, GameEntity source, int id, int amount) {
+        if (player == null || scene == null || source == null || id <= 0 || amount <= 0) {
             return;
         }
         try {
-            scene.addItemEntity(n, n2, gameEntity);
-        }
-        catch (Throwable throwable) {
-            Grasscutter.getLogger().warn("WorldChestLoot drop failed item={} x{}: {}", n, n2, throwable.toString());
+            var data = GameData.getItemDataMap().get(id);
+            if (data == null) {
+                Grasscutter.getLogger().warn("Chest CSS reward has unknown item ID {}", id);
+                return;
+            }
+            // A zero-gadget virtual item cannot be picked up as a scene trifle.
+            // Native DropSystem auto-picks these up; CSS fallback must do the same.
+            if (data.getItemType() == ItemType.ITEM_VIRTUAL && data.getGadgetId() == 0) {
+                if (!player.getInventory().addItem(new GameItem(data, amount), ActionReason.OpenChest)) {
+                    Grasscutter.getLogger().warn(
+                            "Chest CSS virtual reward rejected uid={} item={} x{}",
+                            player.getUid(), id, amount);
+                }
+            } else {
+                scene.addItemEntity(id, amount, source);
+            }
+        } catch (RuntimeException e) {
+            Grasscutter.getLogger().warn(
+                    "Chest CSS drop failed uid={} item={} x{}: {}",
+                    player.getUid(), id, amount, e.toString());
         }
     }
 

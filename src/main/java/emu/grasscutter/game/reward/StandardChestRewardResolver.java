@@ -1,6 +1,8 @@
 package emu.grasscutter.game.reward;
 
 import emu.grasscutter.data.common.ItemParamData;
+import emu.grasscutter.data.excels.DropMaterialData;
+import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.game.drop.DropSystem;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.gadget.chest.StandardChestClassifier;
@@ -10,6 +12,7 @@ import emu.grasscutter.game.world.WorldAreaIndex.AreaIds;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.IntFunction;
 
 /**
  * Read-only preflight for ordinary exploration chest direct rewards.
@@ -41,7 +44,15 @@ public final class StandardChestRewardResolver {
 
     /** In-memory proposal: no entity, inventory or claim-state side effects. */
     public record Staged(
-            Preview preview, DropSystem.ChestRoll nativeRoll, ChestRewardOverlay.Plan overlay) {}
+            Preview preview, DropSystem.ChestRoll nativeRoll, ChestRewardOverlay.Plan overlay) {
+        /** Preserve the drop system's auto-pick versus physical pickup split. */
+        public ChestGroundDropPlan.Prepared prepareDelivery(
+                IntFunction<ItemData> definitions,
+                IntFunction<DropMaterialData> dropMaterials) {
+            return ChestGroundDropPlan.prepare(
+                    overlay, nativeRoll.fallToGround(), definitions, dropMaterials);
+        }
+    }
 
     /**
      * Unknown level-1 area fails closed instead of selecting the higher-Primogem

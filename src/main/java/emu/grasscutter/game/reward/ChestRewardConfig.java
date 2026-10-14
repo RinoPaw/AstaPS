@@ -238,7 +238,7 @@ public final class ChestRewardConfig {
                             itemContext + " must have exactly integer 'id' and 'count' fields");
                 }
                 int id = amount(item, "id", itemContext, true);
-                int count = amount(item, "count", itemContext, true);
+                int count = amount(item, "count", itemContext, false);
                 if (entries.putIfAbsent(id, count) != null) {
                     throw new IllegalArgumentException(
                             "Duplicate item ID " + id + " in " + context);

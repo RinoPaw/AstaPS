@@ -107,9 +107,9 @@ final class StandardChestLootConfigTest {
         assertEquals(1, exported.chests().get("common").sources().size());
         assertEquals(2, exported.chests().get("common").tables().size());
         assertTrue(exported.chests().get("luxurious").sources().isEmpty());
-        assertEquals(Map.of(202, 200), new StandardChestLootConfig(exported)
-                .roll(COMMON_TAG, 1, new Random(5)).amounts().entrySet().stream()
-                .collect(java.util.stream.Collectors.toMap(Map.Entry::getKey, e -> 200)));
+        int mora = new StandardChestLootConfig(exported)
+                .roll(COMMON_TAG, 1, new Random(5)).amounts().get(202);
+        assertTrue(mora >= 200 && mora <= 300);
     }
 
     @Test

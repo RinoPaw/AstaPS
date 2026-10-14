@@ -82,11 +82,13 @@ final class StandardChestLootConfig {
                 }
                 long totalWeight = 0;
                 for (Drop drop : table.dropVec()) {
-                    if (drop == null || drop.itemId() < 0 || drop.weight() < 0
-                            || (table.randomType() == 1 && drop.weight() > 10000)) {
+                    if (drop == null || drop.itemId() < 0 || drop.weight() < 0) {
                         throw new IllegalArgumentException("Invalid drop in " + kind + " table " + table.id());
                     }
-                    checkCountRange(drop.countRange(), kind + " table " + table.id());
+                    // A zero-ID entry never rolls; native data may omit its count range.
+                    if (drop.itemId() != 0) {
+                        checkCountRange(drop.countRange(), kind + " table " + table.id());
+                    }
                     if (drop.itemId() != 0) totalWeight += drop.weight();
                 }
                 if (totalWeight > Integer.MAX_VALUE) {
@@ -105,10 +107,16 @@ final class StandardChestLootConfig {
             Map<Integer, DropTableData> nativeTables) throws IOException {
         Objects.requireNonNull(path);
         if (Files.notExists(path)) {
+            Document defaults = export(nativeSources, nativeTables);
+            boolean hasTables = defaults.chests().values().stream()
+                    .anyMatch(quality -> !quality.tables().isEmpty());
+            if (!hasTables) {
+                throw new IllegalStateException(
+                        "Cannot generate chest-loot.json: ordinary native chest tables are unavailable");
+            }
             var parent = path.toAbsolutePath().getParent();
             if (parent != null) Files.createDirectories(parent);
-            Files.writeString(path, JSON.toJson(export(nativeSources, nativeTables)) + "\n",
-                    StandardCharsets.UTF_8);
+            Files.writeString(path, JSON.toJson(defaults) + "\n", StandardCharsets.UTF_8);
         }
         try {
             return new StandardChestLootConfig(

@@ -3,6 +3,8 @@ package emu.grasscutter.game.world;
 import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.ServerResourceFixture;
+import emu.grasscutter.data.GameData;
+import emu.grasscutter.data.excels.GadgetData;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.data.excels.scene.SceneData;
 import emu.grasscutter.game.entity.EntityGadget;
@@ -10,11 +12,29 @@ import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.systems.TestPlayers;
 import emu.grasscutter.utils.JsonUtils;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(ServerResourceFixture.class)
 final class SceneChestGroundPreparationTest {
+    private static final int GADGET_ID = 99002101;
+    private GadgetData priorGadget;
+
+    @BeforeEach
+    void installGadgetDefinition() {
+        priorGadget = GameData.getGadgetDataMap().put(
+                GADGET_ID, JsonUtils.decode(
+                        "{\"id\":99002101,\"type\":\"Chest\"}", GadgetData.class));
+    }
+
+    @AfterEach
+    void restoreGadgetDefinition() {
+        if (priorGadget == null) GameData.getGadgetDataMap().remove(GADGET_ID);
+        else GameData.getGadgetDataMap().put(GADGET_ID, priorGadget);
+    }
+
     private record Setup(Scene scene, EntityGadget chest, TestPlayers.TestPlayer player) {}
 
     private static Setup setup() {
@@ -27,7 +47,7 @@ final class SceneChestGroundPreparationTest {
         scene.getPlayers().add(player);
         // Construction is enough for a born-from source; this gadget is not
         // inserted into the scene because no chest interaction is performed.
-        var chest = new EntityGadget(scene, 70210001, new Position(player.getPosition()));
+        var chest = new EntityGadget(scene, GADGET_ID, new Position(player.getPosition()));
         return new Setup(scene, chest, player);
     }
 

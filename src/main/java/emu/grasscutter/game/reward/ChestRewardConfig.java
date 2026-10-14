@@ -49,9 +49,10 @@ public final class ChestRewardConfig {
     }
 
     /** Final merged reward and last matched selector for diagnostics. */
-    public record Match(String selector, List<ItemParamData> rewards) {
+    public record Match(String selector, List<ItemParamData> rewards, Set<Integer> ownedItemIds) {
         public Match {
             rewards = List.copyOf(rewards);
+            ownedItemIds = Set.copyOf(ownedItemIds);
         }
     }
 
@@ -168,7 +169,9 @@ public final class ChestRewardConfig {
         if (lastSelector == null) {
             throw new IllegalStateException("No default rule for chest kind " + kind);
         }
-        return new Match(lastSelector, DirectReward.materialize(reward));
+        // Keep explicit zero overrides in the authority set. A cleared item must not
+        // reappear via a native drop table during a future combined grant.
+        return new Match(lastSelector, DirectReward.materialize(reward), reward.keySet());
     }
 
 }

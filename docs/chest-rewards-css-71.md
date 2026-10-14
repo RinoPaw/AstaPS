@@ -9,8 +9,8 @@ updated snapshot. A malformed selector or reward amount prevents startup.
 now use the CSS fixed rewards on the existing WorldChestLootHelper fallback path.
 Native random loot is rolled once for verified standard chests, then CSS-owned
 fields replace matching item IDs before payout. Native quest loot and special
-chest flows remain separate. Chest claim
-lifecycle and ground-item delivery retain their existing behavior.
+chest flows remain separate. Rejected standard-chest area preflight now leaves
+the chest unopened; confirmed inventory/ground delivery remains outstanding.
 
 ## Selectors
 

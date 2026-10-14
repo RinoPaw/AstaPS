@@ -33,7 +33,17 @@ final class RewardCssDefaults {
                         missing.put(entry.getKey(), entry.getValue());
                     }
                 }
-                if (!missing.isEmpty()) {
+                var rolls = new ArrayList<ChestRandomDrops.Roll>();
+                var currentRollIds = existing.chest().resolve(kind, 0, 0, 0, missingPool)
+                        .randomRolls().stream().map(ChestRandomDrops.Roll::itemId)
+                        .collect(java.util.stream.Collectors.toSet());
+                for (var roll : defaults.chest().resolve(kind, 0, 0, 0, missingPool)
+                        .randomRolls()) {
+                    if (!current.containsKey(roll.itemId()) && !currentRollIds.contains(roll.itemId())) {
+                        rolls.add(roll);
+                    }
+                }
+                if (!missing.isEmpty() || !rolls.isEmpty()) {
                     var rule = new StringBuilder("chest[kind=\"")
                             .append(kind.selectorValue()).append("\"]");
                     if (missingPool) rule.append("[pool=\"missing\"]");
@@ -41,6 +51,10 @@ final class RewardCssDefaults {
                     missing.forEach((id, amount) -> rule.append("    ")
                             .append(propertyName(id)).append(": ")
                             .append(amount).append(";\n"));
+                    rolls.forEach(roll -> rule.append("    random-").append(roll.itemId())
+                            .append(": ").append(roll.min()).append(" ")
+                            .append(roll.max()).append(" ").append(roll.chance())
+                            .append(";\n"));
                     additions.add(rule.append("}\n").toString());
                 }
             }

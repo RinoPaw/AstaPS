@@ -24,7 +24,7 @@ import org.bson.Document;
  */
 public final class RewardGrantJournal {
     public enum Source {
-        MAIL, SHOP, BATTLE_PASS, DOMAIN, GACHA, CHEST
+        MAIL, SHOP, BATTLE_PASS, DOMAIN, GACHA
     }
 
     public enum Stage {

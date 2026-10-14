@@ -59,29 +59,11 @@ public class EntityItem extends EntityBaseGadget {
             Position rotation,
             int count,
             boolean share) {
-        this(scene, player, new GameItem(itemData, count), pos, rotation, share);
-    }
-
-    /**
-     * Create a native ground pickup from a pre-rolled item, retaining rolled stats.
-     * The original item is never owned or mutated by the pickup entity.
-     */
-    public EntityItem(Scene scene, Player player, GameItem item, Position pos, boolean share) {
-        this(scene, player, item, pos, null, share);
-    }
-
-    private EntityItem(
-            Scene scene,
-            Player player,
-            GameItem item,
-            Position pos,
-            Position rotation,
-            boolean share) {
         super(scene, pos, rotation);
         this.id = getScene().getWorld().getNextEntityId(EntityIdType.GADGET);
         this.guid =
                 player == null ? scene.getWorld().getHost().getNextGameGuid() : player.getNextGameGuid();
-        this.item = java.util.Objects.requireNonNull(item, "item").copyForGrant();
+        this.item = new GameItem(itemData, count);
         this.share = share;
     }
 
@@ -119,7 +101,7 @@ public class EntityItem extends EntityBaseGadget {
             }
         }
 
-        GameItem item = this.getItem().copyForGrant();
+        GameItem item = new GameItem(this.getItemData(), this.getCount());
 
         // Add to inventory before despawning: removing first meant a rejected add (a full bag,
         // most often) destroyed the drop and told nobody, so the item was simply gone.

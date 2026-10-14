@@ -1,9 +1,6 @@
 package emu.grasscutter.game.reward;
 
 import emu.grasscutter.data.common.ItemParamData;
-import emu.grasscutter.data.excels.DropMaterialData;
-import emu.grasscutter.data.excels.ItemData;
-import emu.grasscutter.game.drop.DropSystem;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.gadget.chest.StandardChestClassifier;
 import emu.grasscutter.game.entity.gadget.chest.StandardChestClassifier.Classification;
@@ -12,7 +9,6 @@ import emu.grasscutter.game.world.WorldAreaIndex.AreaIds;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.IntFunction;
 
 /**
  * Read-only preflight for ordinary exploration chest direct rewards.
@@ -23,34 +19,14 @@ import java.util.function.IntFunction;
 public final class StandardChestRewardResolver {
     private StandardChestRewardResolver() {}
 
-    /** The selected rule and its ownership are from one immutable config snapshot. */
     public record Preview(
             ChestRewardConfig.Kind kind,
             int sceneId,
             AreaIds area,
-            ChestRewardConfig.Match match) {
+            String lastSelector,
+            List<ItemParamData> rewards) {
         public Preview {
-            Objects.requireNonNull(match, "match");
-        }
-
-        public String lastSelector() {
-            return match.selector();
-        }
-
-        public List<ItemParamData> rewards() {
-            return match.rewards();
-        }
-    }
-
-    /** In-memory proposal: no entity, inventory or claim-state side effects. */
-    public record Staged(
-            Preview preview, DropSystem.ChestRoll nativeRoll, ChestRewardOverlay.Plan overlay) {
-        /** Preserve the drop system's auto-pick versus physical pickup split. */
-        public ChestGroundDropPlan.Prepared prepareDelivery(
-                IntFunction<ItemData> definitions,
-                IntFunction<DropMaterialData> dropMaterials) {
-            return ChestGroundDropPlan.prepare(
-                    overlay, nativeRoll.fallToGround(), definitions, dropMaterials);
+            rewards = List.copyOf(rewards);
         }
     }
 
@@ -71,41 +47,8 @@ public final class StandardChestRewardResolver {
         }
         var kind = ChestRewardConfig.Kind.valueOf(classification.kind().name());
         var match = config.resolve(kind, sceneId, area.level1(), area.level2());
-        return Optional.of(new Preview(kind, sceneId, area, match));
-    }
-
-    /**
-     * Native ground-drop roots must retain their pickup behavior. Only known authored
-     * identities and direct-inventory roots may enter the current journaled runtime path.
-     */
-    public static boolean supportsInventoryClaim(Staged staged, int groupId, int configId) {
-        return staged != null
-                && staged.nativeRoll() != null
-                && !staged.nativeRoll().fallToGround()
-                && staged.preview() != null
-                && groupId > 0 && configId > 0;
-    }
-
-    /** Compose an already rolled native result with the exact config preview snapshot. */
-    public static Staged stage(Preview preview, DropSystem.ChestRoll nativeRoll) {
-        Objects.requireNonNull(preview, "preview");
-        Objects.requireNonNull(nativeRoll, "nativeRoll");
-        return new Staged(
-                preview, nativeRoll, ChestRewardOverlay.plan(preview.match(), nativeRoll.items()));
-    }
-
-    /**
-     * Full read-only pipeline. Never call repeatedly after an ambiguous delivery:
-     * the native random roll must be retained with the eventual claim receipt.
-     */
-    public static Optional<Staged> stage(EntityGadget chest, DropSystem dropSystem) {
-        Objects.requireNonNull(dropSystem, "dropSystem");
-        var preview = preview(chest);
-        if (preview.isEmpty() || chest.getMetaGadget() == null) {
-            return Optional.empty();
-        }
-        String tag = chest.getMetaGadget().drop_tag;
-        return dropSystem.rollChestTag(tag, 1).map(roll -> stage(preview.orElseThrow(), roll));
+        return Optional.of(
+                new Preview(kind, sceneId, area, match.selector(), match.rewards()));
     }
 
     /** Inspects real gadget metadata and position, without writing player state. */

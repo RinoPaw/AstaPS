@@ -3,13 +3,10 @@ package emu.grasscutter.game.reward;
 import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.data.common.ItemParamData;
-import emu.grasscutter.game.drop.DropSystem;
-import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.entity.gadget.chest.StandardChestClassifier.Classification;
 import emu.grasscutter.game.entity.gadget.chest.StandardChestClassifier.Exclusion;
 import emu.grasscutter.game.entity.gadget.chest.StandardChestClassifier.Kind;
 import emu.grasscutter.game.world.WorldAreaIndex.AreaIds;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
@@ -100,47 +97,6 @@ class StandardChestRewardResolverTest {
         }
         assertTrue(StandardChestRewardResolver.resolve(
                 null, 3, new AreaIds(1, 104), RULES).isEmpty());
-    }
-
-    @Test
-    void stagesOneNativeRollWithExactPreviewOwnership() {
-        var preview = StandardChestRewardResolver.resolve(
-                standard(Kind.COMMON), 3, new AreaIds(1, 107), RULES).orElseThrow();
-        var nativeCurrency = new GameItem();
-        nativeCurrency.setItemId(201);
-        nativeCurrency.setCount(99);
-        var nativeMora = new GameItem();
-        nativeMora.setItemId(202);
-        nativeMora.setCount(1500);
-        var rolled = new DropSystem.ChestRoll(
-                51010000, true, List.of(nativeCurrency, nativeMora));
-
-        var staged = StandardChestRewardResolver.stage(preview, rolled);
-        assertEquals(51010000, staged.nativeRoll().rootId());
-        assertTrue(staged.nativeRoll().fallToGround());
-        assertEquals("kind=common,area=3:1", staged.preview().lastSelector());
-        assertEquals(Map.of(102, 30), staged.overlay().configuredItems().stream()
-                .collect(Collectors.toMap(ItemParamData::getId, ItemParamData::getCount)));
-        assertEquals(List.of(202),
-                staged.overlay().nativeItems().stream().map(GameItem::getItemId).toList());
-        assertEquals(99, nativeCurrency.getCount());
-    }
-
-    @Test
-    void neverConvertsNativeGroundDropsOrUnidentifiedChestsToInventory() {
-        var preview = StandardChestRewardResolver.resolve(
-                standard(Kind.COMMON), 3, new AreaIds(1, 104), RULES).orElseThrow();
-        var emptyNative = List.<GameItem>of();
-        var ground = StandardChestRewardResolver.stage(
-                preview, new DropSystem.ChestRoll(51010000, true, emptyNative));
-        var inventory = StandardChestRewardResolver.stage(
-                preview, new DropSystem.ChestRoll(51010000, false, emptyNative));
-
-        assertFalse(StandardChestRewardResolver.supportsInventoryClaim(ground, 131110001, 1001));
-        assertFalse(StandardChestRewardResolver.supportsInventoryClaim(inventory, 0, 1001));
-        assertFalse(StandardChestRewardResolver.supportsInventoryClaim(inventory, 131110001, 0));
-        assertFalse(StandardChestRewardResolver.supportsInventoryClaim(null, 131110001, 1001));
-        assertTrue(StandardChestRewardResolver.supportsInventoryClaim(inventory, 131110001, 1001));
     }
 
     @Test

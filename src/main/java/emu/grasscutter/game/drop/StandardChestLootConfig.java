@@ -2,7 +2,10 @@ package emu.grasscutter.game.drop;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import emu.grasscutter.data.common.DropItemData;
 import emu.grasscutter.data.excels.DropTableData;
 import java.io.IOException;
@@ -40,7 +43,7 @@ final class StandardChestLootConfig {
             List.of("common", "exquisite", "precious", "luxurious");
 
     record Source(String tag, int minLevel, int dropId) {}
-    record Drop(@SerializedName("itemId") int itemId, String countRange, int weight) {}
+    record Drop(int itemId, String countRange, int weight) {}
     record Table(int id, int randomType, boolean fallToGround, List<Drop> dropVec) {}
     record Quality(List<Source> sources, List<Table> tables) {}
     record Document(Map<String, Quality> chests) {}
@@ -116,14 +119,98 @@ final class StandardChestLootConfig {
             }
             var parent = path.toAbsolutePath().getParent();
             if (parent != null) Files.createDirectories(parent);
-            Files.writeString(path, JSON.toJson(defaults) + "\n", StandardCharsets.UTF_8);
+            Files.writeString(path, toJson(defaults) + "\n", StandardCharsets.UTF_8);
         }
         try {
             return new StandardChestLootConfig(
-                    JSON.fromJson(Files.readString(path, StandardCharsets.UTF_8), Document.class));
+                    fromJson(Files.readString(path, StandardCharsets.UTF_8)));
         } catch (RuntimeException e) {
             throw new IllegalArgumentException("Invalid " + path + ": " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Gson 2.9 (the version pinned by AstaPS) cannot deserialize Java records.
+     * Read/write our explicit JSON schema rather than relying on record reflection.
+     */
+    static String toJson(Document document) {
+        var root = new JsonObject();
+        var kinds = new JsonObject();
+        for (String kind : KINDS) {
+            var quality = document.chests().get(kind);
+            var qualityJson = new JsonObject();
+            var sourceJson = new JsonArray();
+            for (Source source : quality.sources()) {
+                var entry = new JsonObject();
+                entry.addProperty("tag", source.tag());
+                entry.addProperty("minLevel", source.minLevel());
+                entry.addProperty("dropId", source.dropId());
+                sourceJson.add(entry);
+            }
+            qualityJson.add("sources", sourceJson);
+            var tableJson = new JsonArray();
+            for (Table table : quality.tables()) {
+                var entry = new JsonObject();
+                entry.addProperty("id", table.id());
+                entry.addProperty("randomType", table.randomType());
+                entry.addProperty("fallToGround", table.fallToGround());
+                var dropJson = new JsonArray();
+                for (Drop drop : table.dropVec()) {
+                    var item = new JsonObject();
+                    item.addProperty("itemId", drop.itemId());
+                    if (drop.countRange() != null) {
+                        item.addProperty("countRange", drop.countRange());
+                    }
+                    item.addProperty("weight", drop.weight());
+                    dropJson.add(item);
+                }
+                entry.add("dropVec", dropJson);
+                tableJson.add(entry);
+            }
+            qualityJson.add("tables", tableJson);
+            kinds.add(kind, qualityJson);
+        }
+        root.add("chests", kinds);
+        return JSON.toJson(root);
+    }
+
+    static Document fromJson(String json) {
+        JsonObject root = JsonParser.parseString(json).getAsJsonObject();
+        JsonObject kinds = root.getAsJsonObject("chests");
+        if (kinds == null || !kinds.keySet().equals(Set.copyOf(KINDS))) {
+            throw new IllegalArgumentException("Expected four chest kinds under chests");
+        }
+        var result = new LinkedHashMap<String, Quality>();
+        for (String kind : KINDS) {
+            JsonObject quality = kinds.getAsJsonObject(kind);
+            if (quality == null) throw new IllegalArgumentException("Missing " + kind + " quality");
+            var sources = new ArrayList<Source>();
+            for (JsonElement e : quality.getAsJsonArray("sources")) {
+                var source = e.getAsJsonObject();
+                sources.add(new Source(
+                        source.get("tag").getAsString(), source.get("minLevel").getAsInt(),
+                        source.get("dropId").getAsInt()));
+            }
+            var tables = new ArrayList<Table>();
+            for (JsonElement e : quality.getAsJsonArray("tables")) {
+                var table = e.getAsJsonObject();
+                var drops = new ArrayList<Drop>();
+                for (JsonElement element : table.getAsJsonArray("dropVec")) {
+                    var drop = element.getAsJsonObject();
+                    JsonElement countRange = drop.get("countRange");
+                    drops.add(new Drop(drop.get("itemId").getAsInt(),
+                            countRange == null || countRange.isJsonNull()
+                                    ? null : countRange.getAsString(),
+                            drop.get("weight").getAsInt()));
+                }
+                tables.add(new Table(
+                        table.get("id").getAsInt(), table.get("randomType").getAsInt(),
+                        table.has("fallToGround") && table.get("fallToGround").getAsBoolean(),
+                        drops));
+            }
+            result.put(kind, new Quality(sources, tables));
+        }
+        return new Document(result);
     }
 
     /** The exported numbers describe the server's loaded tables, not audited 7.1 client odds. */

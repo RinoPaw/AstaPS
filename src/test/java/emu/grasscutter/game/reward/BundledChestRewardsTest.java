@@ -22,8 +22,28 @@ class BundledChestRewardsTest {
     private static YamlLootTables bundledLoot() throws Exception {
         // Native root contents use original numeric item IDs. Their lookup is validated
         // against actual game resources at server startup, not by this isolated fixture.
-        return YamlLootTables.parse(resource("/rewards/loot.yaml"),
-                reference -> Integer.parseInt(reference));
+        var ids = new ItemIdRegistry(Map.ofEntries(
+                Map.entry(102, "Adventure EXP"),
+                Map.entry(201, "Primogem"),
+                Map.entry(202, "Mora"),
+                Map.entry(301, "Pyro Sigil"),
+                Map.entry(302, "Hydro Sigil"),
+                Map.entry(303, "Dendro Sigil"),
+                Map.entry(304, "Electro Sigil"),
+                Map.entry(305, "Anemo Sigil"),
+                Map.entry(306, "Cryo Sigil"),
+                Map.entry(307, "Geo Sigil"),
+                Map.entry(308, "Lunar Sigil"),
+                Map.entry(104001, "Wanderer's Advice"),
+                Map.entry(104002, "Adventurer's Experience"),
+                Map.entry(104003, "Hero's Wit"),
+                Map.entry(104011, "Enhancement Ore"),
+                Map.entry(104012, "Fine Enhancement Ore"),
+                Map.entry(104013, "Mystic Enhancement Ore")));
+        return YamlLootTables.parse(resource("/rewards/loot.yaml"), reference ->
+                reference.startsWith("genshin.item.")
+                        ? ids.resolve(reference)
+                        : Integer.parseInt(reference));
     }
 
     private static CssRewards bundledCss(YamlLootTables loot) throws Exception {
@@ -52,7 +72,7 @@ class BundledChestRewardsTest {
             assertTrue(loot.contains(target), "Missing native root " + target);
             var selected = css.resolve("chest", Map.of(
                     "dropTag", tag,
-                    "level", Integer.toString(level),
+                    "minLevel", Integer.toString(level),
                     "kind", "common",
                     "sigil", "305"));
             assertEquals(Map.of(target, 1), selected.loot(),
@@ -98,7 +118,7 @@ class BundledChestRewardsTest {
         var css = bundledCss(loot);
         var selected = css.resolve("chest", Map.of(
                 "dropTag", "解谜低级蒙德",
-                "level", "1",
+                "minLevel", "1",
                 "kind", "common",
                 "sigil", "305"));
         assertEquals(Map.of("astaps.loot.native_52010000", 1), selected.loot());
@@ -118,13 +138,13 @@ class BundledChestRewardsTest {
     }
 
     @Test
-    void adventureRankMapsToNativeChestMinLevel() {
-        assertEquals(1, WorldChestLootHelper.chestLevelBand(1));
-        assertEquals(1, WorldChestLootHelper.chestLevelBand(5));
-        assertEquals(6, WorldChestLootHelper.chestLevelBand(6));
-        assertEquals(11, WorldChestLootHelper.chestLevelBand(15));
-        assertEquals(16, WorldChestLootHelper.chestLevelBand(20));
-        assertEquals(21, WorldChestLootHelper.chestLevelBand(25));
-        assertEquals(26, WorldChestLootHelper.chestLevelBand(60));
+    void sceneGadgetLevelMapsToNativeChestMinLevel() {
+        assertEquals(1, WorldChestLootHelper.minLevelFromSourceLevel(1));
+        assertEquals(1, WorldChestLootHelper.minLevelFromSourceLevel(5));
+        assertEquals(6, WorldChestLootHelper.minLevelFromSourceLevel(6));
+        assertEquals(11, WorldChestLootHelper.minLevelFromSourceLevel(15));
+        assertEquals(16, WorldChestLootHelper.minLevelFromSourceLevel(20));
+        assertEquals(21, WorldChestLootHelper.minLevelFromSourceLevel(25));
+        assertEquals(26, WorldChestLootHelper.minLevelFromSourceLevel(60));
     }
 }

@@ -187,4 +187,60 @@ class CssRewardsTest {
                 chest { mora: 1; }
                 """, items, loot));
     }
+
+    @Test
+    void levelThresholdsSelectTheHighestMatchingTier() {
+        // The first six ChestLevelSet chest levels are 1, 6, 11, 16, 21, 26.
+        var css = CssRewards.parse("""
+                chest[kind="common"] { --loot: currency; }
+                chest[kind="common"][level>=6] { --loot: surprise; }
+                chest[kind="common"][level>=11] { --loot: currency 2; }
+                chest[kind="common"][level>=16] { --loot: surprise 3; }
+                chest[kind="common"][level>=21] { --loot: currency 4; }
+                chest[kind="common"][level>=26] { --loot: surprise 5; }
+                """, items, loot);
+        int[] levels = {1, 5, 6, 10, 11, 15, 16, 20, 21, 25, 26, 99};
+        String[] names = {
+                "currency", "currency", "surprise", "surprise",
+                "currency", "currency", "surprise", "surprise",
+                "currency", "currency", "surprise", "surprise"
+        };
+        int[] times = {1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5};
+        for (int i = 0; i < levels.length; i++) {
+            assertEquals(Map.of("astaps.loot." + names[i], times[i]),
+                    css.resolve("chest", Map.of("kind", "common",
+                            "level", Integer.toString(levels[i]))).loot(),
+                    "level " + levels[i]);
+        }
+        assertEquals(Map.of("astaps.loot.currency", 1),
+                css.resolve("chest", Map.of("kind", "common")).loot());
+        assertEquals(Map.of("astaps.loot.currency", 1),
+                css.resolve("chest", Map.of("kind", "common", "level", "unknown")).loot());
+    }
+
+    @Test
+    void levelRangesSupportAllNumericComparatorsAndPreserveSpecificity() {
+        var css = CssRewards.parse("""
+                chest { --loot: currency; }
+                chest[level>=6][level<11] { --loot: surprise 2; }
+                chest[level>10][level<=16] { --loot: currency 3; }
+                chest[kind="common"][level>=16][level<21] { --loot: surprise 4; }
+                """, items, loot);
+        assertEquals(Map.of("astaps.loot.currency", 1),
+                css.resolve("chest", Map.of("level", "5")).loot());
+        assertEquals(Map.of("astaps.loot.surprise", 2),
+                css.resolve("chest", Map.of("level", "6")).loot());
+        assertEquals(Map.of("astaps.loot.surprise", 2),
+                css.resolve("chest", Map.of("level", "10")).loot());
+        assertEquals(Map.of("astaps.loot.currency", 3),
+                css.resolve("chest", Map.of("level", "11")).loot());
+        assertEquals(Map.of("astaps.loot.surprise", 4),
+                css.resolve("chest", Map.of("kind", "common", "level", "16")).loot());
+        assertEquals(Map.of("astaps.loot.currency", 1),
+                css.resolve("chest", Map.of("kind", "common", "level", "21")).loot());
+        assertEquals(Map.of("astaps.loot.currency", 1),
+                css.resolve("chest", Map.of("kind", "common", "level", "invalid")).loot());
+        assertEquals(Map.of("astaps.loot.currency", 1),
+                css.resolve("chest", Map.of("kind", "common")).loot());
+    }
 }

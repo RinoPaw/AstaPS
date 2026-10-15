@@ -15,64 +15,83 @@ class CssRewardsTest {
             202, "Mora",
             104003, "Hero's Wit"));
 
-    /** Pure table definitions: no region, level, object type or selector logic. */
+    /** Table content has no knowledge of region, level, source type or selector. */
     private final YamlLootTables loot = YamlLootTables.parse("""
-            astaps.loot.currency:
+            currency:
               - {reward: genshin.item.mora, count: 100}
-            astaps.loot.experience:
+            经验书:
+              - {reward: genshin.item.heros_wit}
+            surprise:
+              - {reward: genshin.item.mora, count: 30}
               - {reward: genshin.item.heros_wit}
             """, items::resolve);
 
     @Test
-    void oneObjectCanSelectAndExecuteMultipleTables() {
+    void oneChestCanExecuteSeveralNamedLootTables() {
         var css = CssRewards.parse("""
                 chest[kind="common"] {
-                    --astaps-loot-currency: 2;
-                    --astaps-loot-experience: 1;
+                    --loot: currency, 经验书 2;
                     --genshin-item-primogem: 2;
                 }
                 """, items, loot);
 
         var selected = css.resolve("chest", Map.of("kind", "common"));
-        assertEquals(Map.of(
-                "astaps.loot.currency", 2,
-                "astaps.loot.experience", 1), selected.loot());
+        assertEquals(Map.of("astaps.loot.currency", 1, "astaps.loot.经验书", 2),
+                selected.loot());
         assertEquals(Map.of(201, 2), selected.items());
-        assertEquals(Map.of(202, 200, 104003, 1, 201, 2),
+        assertEquals(Map.of(202, 100, 104003, 2, 201, 2),
                 RewardRoller.roll(selected, loot, new Random(1)));
     }
 
     @Test
-    void objectPropertiesOnlySelectAndOverrideExecutionCounts() {
+    void aQualifiedNameResolvesToTheSameTable() {
         var css = CssRewards.parse("""
-                chest[kind="common"] {
-                    --astaps-loot-currency: 1;
-                }
-                chest[kind="common"][level="6"] {
-                    --astaps-loot-currency: 2;
-                    --astaps-loot-experience: 1;
-                }
-                chest[kind="common"][level="6"][scene="3"] {
-                    --astaps-loot-experience: 0;
-                }
+                chest { --loot: astaps.loot.surprise 3; }
                 """, items, loot);
-
-        assertEquals(Map.of("astaps.loot.currency", 1),
-                css.resolve("chest", Map.of("kind", "common", "level", "1")).loot());
-        assertEquals(Map.of("astaps.loot.currency", 2, "astaps.loot.experience", 1),
-                css.resolve("chest", Map.of("kind", "common", "level", "6")).loot());
-
-        var disabled = css.resolve("chest", Map.of("kind", "common", "level", "6", "scene", "3"));
-        assertEquals(Map.of("astaps.loot.currency", 2, "astaps.loot.experience", 0),
-                disabled.loot());
-        assertEquals(Map.of(202, 200), RewardRoller.roll(disabled, loot, new Random(1)));
+        assertEquals(Map.of("astaps.loot.surprise", 3),
+                css.resolve("chest", Map.of()).loot());
+        assertEquals(Map.of(202, 90, 104003, 3),
+                RewardRoller.roll(css.resolve("chest", Map.of()), loot, new Random(1)));
     }
 
     @Test
-    void theSameTableMayServeUnrelatedRewardSources() {
+    void listCascadesAsOnePropertyRatherThanAppending() {
         var css = CssRewards.parse("""
-                monster[rank="elite"] { --astaps-loot-currency: 1; }
-                chest[kind="common"] { --astaps-loot-currency: 3; }
+                chest[kind="common"] {
+                    --loot: currency, 经验书;
+                    --genshin-item-primogem: 2;
+                }
+                chest[kind="common"][level="6"] {
+                    --loot: surprise 2;
+                }
+                """, items, loot);
+        assertEquals(Map.of("astaps.loot.currency", 1, "astaps.loot.经验书", 1),
+                css.resolve("chest", Map.of("kind", "common", "level", "1")).loot());
+
+        var selected = css.resolve("chest", Map.of("kind", "common", "level", "6"));
+        assertEquals(Map.of("astaps.loot.surprise", 2), selected.loot());
+        assertEquals(Map.of(201, 2), selected.items());
+        assertEquals(Map.of(202, 60, 104003, 2, 201, 2),
+                RewardRoller.roll(selected, loot, new Random(1)));
+    }
+
+    @Test
+    void noneClearsLootButPreservesFixedItems() {
+        var css = CssRewards.parse("""
+                chest { --loot: currency, 经验书; --genshin-item-primogem: 2; }
+                chest[level="6"] { --loot: none; }
+                """, items, loot);
+        var selected = css.resolve("chest", Map.of("level", "6"));
+        assertEquals(Map.of(), selected.loot());
+        assertEquals(Map.of(201, 2),
+                RewardRoller.roll(selected, loot, new Random(1)));
+    }
+
+    @Test
+    void aTableCanBeUsedByUnrelatedObjects() {
+        var css = CssRewards.parse("""
+                monster[rank="elite"] { --loot: currency; }
+                chest[kind="common"] { --loot: currency 3; }
                 """, items, loot);
         assertEquals(Map.of(202, 100),
                 RewardRoller.roll(css.resolve("monster", Map.of("rank", "elite")), loot,
@@ -83,67 +102,69 @@ class CssRewardsTest {
     }
 
     @Test
-    void fixedItemsReplaceRolledTotalsAndZeroSuppressesAnItem() {
+    void fixedItemQuantitiesOverrideRolledTotals() {
         var css = CssRewards.parse("""
                 chest {
-                    --astaps-loot-currency: 3;
-                    --astaps-loot-experience: 1;
+                    --loot: currency, 经验书;
                     --genshin-item-mora: 25;
                     --genshin-item-primogem: 2;
                 }
-                chest[scene="3"] {
-                    --genshin-item-mora: 0;
-                }
+                chest[scene="3"] { --genshin-item-mora: 0; }
                 """, items, loot);
-
-        assertEquals(Map.of(202, 25, 201, 2, 104003, 1),
-                RewardRoller.roll(css.resolve("chest", Map.of()), loot, new Random(2)));
-        assertEquals(Map.of(201, 2, 104003, 1),
+        assertEquals(Map.of(202, 25, 104003, 1, 201, 2),
+                RewardRoller.roll(css.resolve("chest", Map.of()), loot, new Random(1)));
+        assertEquals(Map.of(104003, 1, 201, 2),
                 RewardRoller.roll(css.resolve("chest", Map.of("scene", "3")), loot,
-                        new Random(2)));
+                        new Random(1)));
     }
 
     @Test
-    void specificityBeatsLaterSourceOrder() {
+    void selectorSpecificityBeatsLaterSourceOrder() {
         var css = CssRewards.parse("""
-                chest[kind="common"][scene="3"] {
-                    --astaps-loot-currency: 3;
-                }
-                chest[kind="common"] {
-                    --astaps-loot-currency: 1;
-                    --astaps-loot-experience: 2;
-                }
+                chest[kind="common"][scene="3"] { --loot: surprise; }
+                chest[kind="common"] { --loot: currency, 经验书; }
                 """, items, loot);
-
-        assertEquals(Map.of("astaps.loot.currency", 3, "astaps.loot.experience", 2),
+        assertEquals(Map.of("astaps.loot.surprise", 1),
                 css.resolve("chest", Map.of("kind", "common", "scene", "3")).loot());
     }
 
     @Test
-    void rejectsUnknownTablesAndNonItemOrLootProperties() {
+    void repeatedTablesInTheListAccumulateExecutionCount() {
+        var css = CssRewards.parse("""
+                chest { --loot: currency, currency 2; }
+                """, items, loot);
+        assertEquals(Map.of("astaps.loot.currency", 3),
+                css.resolve("chest", Map.of()).loot());
+    }
+
+    @Test
+    void laterLootDeclarationReplacesTheEarlierList() {
+        var css = CssRewards.parse("""
+                chest {
+                    --loot: currency;
+                    --loot: surprise;
+                }
+                """, items, loot);
+        assertEquals(Map.of("astaps.loot.surprise", 1),
+                css.resolve("chest", Map.of()).loot());
+    }
+
+    @Test
+    void invalidReferencesAndOldTablePropertiesAreRejected() {
         assertThrows(IllegalArgumentException.class, () -> CssRewards.parse("""
-                chest { --astaps-loot-not_defined: 1; }
+                chest { --loot: missing; }
+                """, items, loot));
+        assertThrows(IllegalArgumentException.class, () -> CssRewards.parse("""
+                chest { --loot: genshin.item.mora; }
+                """, items, loot));
+        assertThrows(IllegalArgumentException.class, () -> CssRewards.parse("""
+                chest { --astaps-loot-currency: 1; }
                 """, items, loot));
         assertThrows(IllegalArgumentException.class, () -> CssRewards.parse("""
                 chest { --genshin-avatar-amber: 1; }
                 """, items, loot));
         assertThrows(IllegalArgumentException.class, () -> CssRewards.parse("""
-                chest { --genshin-item-not_defined: 1; }
-                """, items, loot));
-        assertThrows(IllegalArgumentException.class, () -> CssRewards.parse("""
                 chest { mora: 1; }
                 """, items, loot));
-    }
-
-    @Test
-    void laterCustomPropertyValueWinsInSameRule() {
-        var css = CssRewards.parse("""
-                chest {
-                    --astaps-loot-currency: 1;
-                    --astaps-loot-currency: 2;
-                }
-                """, items, loot);
-        assertEquals(Map.of("astaps.loot.currency", 2),
-                css.resolve("chest", Map.of()).loot());
     }
 }

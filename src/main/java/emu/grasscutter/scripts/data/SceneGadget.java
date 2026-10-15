@@ -10,6 +10,8 @@ public class SceneGadget extends SceneObject {
     public int drop_id;
     public int drop_count;
     public String drop_tag;
+    /** Source region for imported objects that have no native area_id. */
+    public String rewardRegion;
     public boolean showcutscene;
     boolean persistence;
     public int state;

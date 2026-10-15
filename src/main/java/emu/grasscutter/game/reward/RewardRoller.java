@@ -1,6 +1,7 @@
 package emu.grasscutter.game.reward;
 
 import emu.grasscutter.game.drop.YamlLootTables;
+import emu.grasscutter.data.ItemIdRegistry;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.random.RandomGenerator;
@@ -11,6 +12,12 @@ public final class RewardRoller {
 
     public static Map<Integer, Integer> roll(
             CssRewards.Selection selection, YamlLootTables loot, RandomGenerator random) {
+        return roll(selection, loot, random, RewardContext.NONE);
+    }
+
+    public static Map<Integer, Integer> roll(
+            CssRewards.Selection selection, YamlLootTables loot, RandomGenerator random,
+            RewardContext context) {
         var result = new TreeMap<Integer, Integer>();
         new TreeMap<>(selection.loot()).forEach((table, repetitions) -> {
             for (int i = 0; i < repetitions; i++) {
@@ -22,6 +29,20 @@ public final class RewardRoller {
             if (count == 0) result.remove(id);
             else result.put(id, count);
         });
-        return Map.copyOf(result);
+        return resolveRegionalItems(result, context);
+    }
+
+    static Map<Integer, Integer> resolveRegionalItems(
+            Map<Integer, Integer> items, RewardContext context) {
+        if (!items.containsKey(ItemIdRegistry.REGIONAL_SIGIL)) {
+            return Map.copyOf(items);
+        }
+        var resolved = new TreeMap<>(items);
+        int count = resolved.remove(ItemIdRegistry.REGIONAL_SIGIL);
+        if (count > 0) {
+            int id = RegionalSigilResolver.resolve(context);
+            resolved.merge(id, count, Math::addExact);
+        }
+        return Map.copyOf(resolved);
     }
 }

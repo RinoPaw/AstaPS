@@ -18,6 +18,9 @@ import java.util.Set;
  * An unnamed item remains addressable by its numeric ID.
  */
 public final class ItemIdRegistry {
+    /** Internal placeholder, never a real game item ID. */
+    public static final int REGIONAL_SIGIL = -1;
+
     public record Info(int id, String english, String key, String category) {}
 
     private static final Map<Integer, String> VERIFIED_ENGLISH = Map.of(
@@ -105,6 +108,10 @@ public final class ItemIdRegistry {
             throw new IllegalArgumentException("Missing item reference");
         }
         String input = reference.trim();
+        if (input.equalsIgnoreCase("sigil")
+                || input.equalsIgnoreCase("genshin.item.sigil")) {
+            return REGIONAL_SIGIL;
+        }
         if (input.matches("[0-9]+")) {
             try {
                 int id = Integer.parseInt(input);

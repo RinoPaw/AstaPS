@@ -69,11 +69,17 @@ public final class RewardConfiguration {
 
     public Map<Integer, Integer> roll(
             String targetType, Map<String, String> properties, RandomGenerator random) {
-        return RewardRoller.roll(css.resolve(targetType, properties), loot, random);
+        return roll(targetType, properties, random, RewardContext.NONE);
+    }
+
+    public Map<Integer, Integer> roll(
+            String targetType, Map<String, String> properties, RandomGenerator random,
+            RewardContext context) {
+        return RewardRoller.roll(css.resolve(targetType, properties), loot, random, context);
     }
 
     /** Qualified table IDs can be executed without CSS selection. */
     public Map<Integer, Integer> rollLoot(String resourceId, RandomGenerator random) {
-        return loot.roll(resourceId, random);
+        return RewardRoller.resolveRegionalItems(loot.roll(resourceId, random), RewardContext.NONE);
     }
 }

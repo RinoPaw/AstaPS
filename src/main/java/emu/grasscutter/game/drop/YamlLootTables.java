@@ -120,7 +120,9 @@ public final class YamlLootTables {
                         throw new IllegalArgumentException(at + ": invalid reward: " + target);
                     }
                     int id = resolver.resolve(target.toString());
-                    if (id <= 0) throw new IllegalArgumentException(at + ": unknown reward: " + target);
+                    if (id <= 0 && id != emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL) {
+                        throw new IllegalArgumentException(at + ": unknown reward: " + target);
+                    }
                     rewardId = id;
                 }
                 LootCount.Spec count = LootCount.parse(fields.get("count"));
@@ -218,7 +220,12 @@ public final class YamlLootTables {
      * only; it never grants items or modifies chest claim state.
      */
     public List<ItemParamData> rollItems(String name, RandomGenerator random) {
-        return roll(name, random).entrySet().stream()
+        var reward = roll(name, random);
+        if (reward.containsKey(emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL)) {
+            throw new IllegalArgumentException(
+                    "Regional sigil in " + name + " requires reward context");
+        }
+        return reward.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .map(e -> new ItemParamData(e.getKey(), e.getValue()))
                 .toList();

@@ -22,14 +22,15 @@ Each top-level key names a loot list. List entries accept exactly three fields:
 No separate `all`, `pick`, `table`, or `chance` keys are needed.
 
 ```yaml
-experience_books: &books
+astaps.loot.currency:
+  - {reward: genshin.item.mora, count: "240~360"}
+
+astaps.loot.experience_books: &books
   - {reward: genshin.item.heros_wit, weight: 1}
   - {reward: genshin.item.adventurers_experience, count: 2, weight: 1}
 
-common_chest:
-  - {reward: genshin.item.mora, count: "240~360"}
+astaps.loot.book_bundle:
   - {reward: *books, count: "1:70"}
-  - {reward: null}
 ```
 
 YAML anchors must be defined before their aliases, and they are scoped to the
@@ -67,43 +68,67 @@ fixtures and tests. Only `item` resources are supported in this phase.
 A `genshin.avatar.amber` reference is rejected instead of treating an
 avatar ID as a bag item.
 
-For example, `loot.yaml` can contain:
+## Responsibility boundary
 
-```yaml
-common_chest:
-  - {reward: genshin.item.mora, count: "240~360"}
-  - {reward: genshin.item.heros_wit, count: "1:70"}
+`loot.yaml` contains only named loot tables and their contents. It does
+not match or inspect chests, monsters, scene IDs, regions, levels, qualities,
+or any other attributes of a reward source. Table names describe reusable
+contents, such as `currency` or `experience_books`, not where those
+tables will be used.
+
+`rewards.css` owns the source selection, the number of independent times
+to run each named table, and fixed item overrides. A CSS loot property
+`--astaps-loot-currency` references the `astaps.loot.currency` key
+in `loot.yaml`.
+
+For example:
+
+```css
+chest[kind="common"] {
+    --astaps-loot-currency: 1;
+    --genshin-item-primogem: 2;
+}
+
+chest[kind="common"][level="6"] {
+    --astaps-loot-experience_books: 2;
+}
+
+monster[rank="elite"] {
+    --astaps-loot-currency: 3;
+}
 ```
 
-The same item ID in `rewards.css` is encoded as a CSS custom property.
-The initial `--` is required by CSS, and the remaining single hyphens
-separate namespace, type and name:
+The two matching loot properties on the level-6 common chest execute
+separately. Each table count is its own CSS property; a more specific rule
+can override it independently, including with `0` to disable the table.
+The monster can use the same table without any monster-specific data in
+the YAML file.
+
+The `CssRewards` parser resolves both `item` and `loot` custom
+properties through their resource IDs and validates that every referenced
+table exists. `RewardRoller` runs the selected tables, merges resulting
+item counts, then applies fixed CSS item quantities (including zero to
+remove a rolled item). It does not grant rewards or mark anything claimed.
+
+For fixed items, the same resource ID is encoded as an independent CSS
+custom property:
 
 ```css
 chest[kind="common"] {
     --genshin-item-mora: 300;
     --genshin-item-heros_wit: 1;
 }
-
-chest[kind="common"][scene="3"] {
-    --genshin-item-mora: 0;
-}
 ```
 
-Only namespaced CSS item properties are supported; there are no old
-properties such as `mora`, `primogems`, `adventureExp`, or `item-202`.
-Each custom property names exactly one item, so CSS rules override items
-independently. Explicit zero overrides the previous quantity.
+No legacy properties, compatibility aliases, or repeating `reward:`
+CSS declarations are supported. The `ResourceId` model uses exactly
+`namespace.type.name`, encoded as `--namespace-type-name` in CSS.
+The CSS parser leaves source element names and selector attributes open.
+Its current cascade ordering is defined for element and attribute
+selectors, not full browser CSS specificity.
 
-The `ResourceId` model uses `namespace.type.name`, with exactly three
-segments. CSS encoding uses `--namespace-type-name`; namespace and type
-do not contain hyphens, and the final name may contain hyphens.
-The CSS parser leaves source types and selector attributes open.
-Its current cascade ordering is defined for element and attribute selectors,
-not full browser CSS specificity.
-
-The `CssItemRewards` parser is **not yet connected to live chest or
-transport settlement**.
+These remain **standalone configuration and evaluation prototypes**,
+not live chest, monster, or transport reward settlement.
 
 ## Native migration
 

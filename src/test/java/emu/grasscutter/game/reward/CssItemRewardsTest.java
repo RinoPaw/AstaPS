@@ -58,6 +58,21 @@ class CssItemRewardsTest {
     }
 
     @Test
+    void selectorSpecificityBeatsSourceOrder() {
+        var css = CssItemRewards.parse("""
+                chest[kind="common"][scene="3"] {
+                    reward: "genshin:item:mora" 75;
+                }
+                chest[kind="common"] {
+                    reward: "genshin:item:mora" 300;
+                    reward: "genshin:item:primogem" 2;
+                }
+                """, items);
+        assertEquals(Map.of(202, 75, 201, 2),
+                css.resolve("chest", Map.of("kind", "common", "scene", "3")));
+    }
+
+    @Test
     void oldRewardPropertiesDoNotExist() {
         for (String property : new String[]{"mora", "primogems", "adventureExp", "item-202"}) {
             assertThrows(IllegalArgumentException.class,

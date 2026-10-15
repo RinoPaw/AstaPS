@@ -115,10 +115,16 @@ class BundledChestRewardsTest {
                 assertEquals(normal[i], css.resolve("chest",
                         Map.of("kind", kind, "city", "1", "area", area))
                         .items().get(201).intValue());
+                assertEquals(normal[i], css.resolve("chest",
+                        Map.of("kind", kind, "area", area))
+                        .items().get(201).intValue());
             }
             for (String area : new String[]{"8", "19", "40", "41", "47", "300"}) {
                 assertEquals(normal[i], css.resolve("chest",
                         Map.of("kind", kind, "city", "2", "area", area))
+                        .items().get(201).intValue());
+                assertEquals(normal[i], css.resolve("chest",
+                        Map.of("kind", kind, "area", area))
                         .items().get(201).intValue());
             }
         }

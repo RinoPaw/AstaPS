@@ -153,36 +153,36 @@ chest[kind="precious"][city="2"] {
 
 /* Higher-value areas in those nations; child-area exceptions need source data. */
 
-chest[kind="common"][city="1"][area="10"],
-chest[kind="common"][city="1"][area="77"],
-chest[kind="common"][city="2"][area="8"],
-chest[kind="common"][city="2"][area="19"],
-chest[kind="common"][city="2"][area="40"],
-chest[kind="common"][city="2"][area="41"],
-chest[kind="common"][city="2"][area="47"],
-chest[kind="common"][city="2"][area="300"] {
+chest[kind="common"][area="10"],
+chest[kind="common"][area="77"],
+chest[kind="common"][area="8"],
+chest[kind="common"][area="19"],
+chest[kind="common"][area="40"],
+chest[kind="common"][area="41"],
+chest[kind="common"][area="47"],
+chest[kind="common"][area="300"] {
     --genshin-item-primogem: 2;
 }
 
-chest[kind="exquisite"][city="1"][area="10"],
-chest[kind="exquisite"][city="1"][area="77"],
-chest[kind="exquisite"][city="2"][area="8"],
-chest[kind="exquisite"][city="2"][area="19"],
-chest[kind="exquisite"][city="2"][area="40"],
-chest[kind="exquisite"][city="2"][area="41"],
-chest[kind="exquisite"][city="2"][area="47"],
-chest[kind="exquisite"][city="2"][area="300"] {
+chest[kind="exquisite"][area="10"],
+chest[kind="exquisite"][area="77"],
+chest[kind="exquisite"][area="8"],
+chest[kind="exquisite"][area="19"],
+chest[kind="exquisite"][area="40"],
+chest[kind="exquisite"][area="41"],
+chest[kind="exquisite"][area="47"],
+chest[kind="exquisite"][area="300"] {
     --genshin-item-primogem: 5;
 }
 
-chest[kind="precious"][city="1"][area="10"],
-chest[kind="precious"][city="1"][area="77"],
-chest[kind="precious"][city="2"][area="8"],
-chest[kind="precious"][city="2"][area="19"],
-chest[kind="precious"][city="2"][area="40"],
-chest[kind="precious"][city="2"][area="41"],
-chest[kind="precious"][city="2"][area="47"],
-chest[kind="precious"][city="2"][area="300"] {
+chest[kind="precious"][area="10"],
+chest[kind="precious"][area="77"],
+chest[kind="precious"][area="8"],
+chest[kind="precious"][area="19"],
+chest[kind="precious"][area="40"],
+chest[kind="precious"][area="41"],
+chest[kind="precious"][area="47"],
+chest[kind="precious"][area="300"] {
     --genshin-item-primogem: 10;
 }
 

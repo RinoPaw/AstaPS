@@ -165,3 +165,7 @@ Stormbearer Mountains and Guyun Stone Forest are local exceptions
 inside larger parent areas; original chest area_id does not distinguish
 them precisely, so they still need native subarea evidence. The two
 on-disk reward files are not automatically overwritten.
+
+The exceptional top-level area IDs are unique in the 7.1 CityConfigData
+ownership lists; area selectors therefore do not need an additional
+city filter.

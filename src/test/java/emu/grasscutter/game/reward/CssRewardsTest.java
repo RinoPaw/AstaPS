@@ -46,7 +46,7 @@ class CssRewardsTest {
     @Test
     void aQualifiedNameResolvesToTheSameTable() {
         var css = CssRewards.parse("""
-                chest { --loot: astaps.loot.surprise 3; }
+                chest { --loot: "astaps.loot.surprise" 3; }
                 """, items, loot);
         assertEquals(Map.of("astaps.loot.surprise", 3),
                 css.resolve("chest", Map.of()).loot());

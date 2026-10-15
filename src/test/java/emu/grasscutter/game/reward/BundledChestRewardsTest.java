@@ -29,17 +29,24 @@ class BundledChestRewardsTest {
                 Map.entry(104012, "Fine Enhancement Ore")));
     }
 
+    private static YamlLootTables loadLoot(ItemIdRegistry registry) throws Exception {
+        // Historic reference tables contain many numeric item IDs beyond this test's
+        // small fixture registry. Production startup still validates against GameData.
+        return YamlLootTables.parse(resource("/rewards/loot.yaml"), name ->
+                name.matches("[0-9]+") ? Integer.parseInt(name) : registry.resolve(name));
+    }
+
     @Test
     void bundledChestsUseExactlyFourNamedTables() throws Exception {
         var registry = items();
-        var loot = YamlLootTables.parse(resource("/rewards/loot.yaml"), registry::resolve);
+        var loot = loadLoot(registry);
         var css = CssRewards.parse(resource("/rewards/rewards.css"), registry, loot);
         String[] kinds = {"common", "exquisite", "precious", "luxurious"};
         int[] primogems = {2, 5, 10, 10};
         int[] sigils = {1, 2, 3, 4};
         int[] minMora = {257, 756, 1433, 2000};
         int[] maxMora = {996, 1367, 1433, 3000};
-        assertEquals(29, loot.names().size()); // Four source pools, 24 tier aliases, one scene-point pool.
+        assertEquals(708, loot.names().size()); // 29 active presets and 679 reference nodes.
         assertTrue(loot.contains("astaps.loot.three_realms_point"));
 
         for (int tier = 0; tier < kinds.length; tier++) {
@@ -66,7 +73,7 @@ class BundledChestRewardsTest {
     @Test
     void sixNamedLevelTiersUseTheCorrespondingTableForEveryChestKind() throws Exception {
         var registry = items();
-        var loot = YamlLootTables.parse(resource("/rewards/loot.yaml"), registry::resolve);
+        var loot = loadLoot(registry);
         var css = CssRewards.parse(resource("/rewards/rewards.css"), registry, loot);
         String[] kinds = {"common", "exquisite", "precious", "luxurious"};
         String[] names = {"light", "low", "medium", "high", "xhigh", "max"};
@@ -91,7 +98,7 @@ class BundledChestRewardsTest {
     @Test
     void cityAndAreaChoosePrimogemsIndependentlyOfLevel() throws Exception {
         var registry = items();
-        var loot = YamlLootTables.parse(resource("/rewards/loot.yaml"), registry::resolve);
+        var loot = loadLoot(registry);
         var css = CssRewards.parse(resource("/rewards/rewards.css"), registry, loot);
         String[] kinds = {"common", "exquisite", "precious", "luxurious"};
         int[] normal = {2, 5, 10, 10};
@@ -137,7 +144,7 @@ class BundledChestRewardsTest {
     @Test
     void everyWorldChestTierAndRegionGrantsThirtyAdventureExp() throws Exception {
         var registry = items();
-        var loot = YamlLootTables.parse(resource("/rewards/loot.yaml"), registry::resolve);
+        var loot = loadLoot(registry);
         var css = CssRewards.parse(resource("/rewards/rewards.css"), registry, loot);
         for (String kind : new String[]{"common", "exquisite", "precious", "luxurious"}) {
             for (String level : new String[]{"1", "5", "6", "11", "16", "21", "26", "99"}) {
@@ -156,7 +163,7 @@ class BundledChestRewardsTest {
     @Test
     void samePresetResolvesSigilForOtherSourceRegions() throws Exception {
         var registry = items();
-        var loot = YamlLootTables.parse(resource("/rewards/loot.yaml"), registry::resolve);
+        var loot = loadLoot(registry);
         var css = CssRewards.parse(resource("/rewards/rewards.css"), registry, loot);
         var selection = css.resolve("chest", Map.of("kind", "exquisite"));
         var rolled = RewardRoller.roll(selection, loot, new Random(5),
@@ -173,13 +180,45 @@ class BundledChestRewardsTest {
     @Test
     void regionMetadataDoesNotAffectAnOrdinaryChestPreset() throws Exception {
         var registry = items();
-        var loot = YamlLootTables.parse(resource("/rewards/loot.yaml"), registry::resolve);
+        var loot = loadLoot(registry);
         var css = CssRewards.parse(resource("/rewards/rewards.css"), registry, loot);
         var basic = css.resolve("chest", Map.of("kind", "common"));
         assertEquals(basic, css.resolve("chest", Map.of(
                 "kind", "common", "scene", "3", "level", "26",
                 "group", "910700123", "config", "10")));
         assertTrue(css.resolve("chest", Map.of()).loot().isEmpty());
+    }
+
+    @Test
+    void historicalCombatAndPuzzleTablesRemainIndependentOfCss() throws Exception {
+        var registry = items();
+        var loot = loadLoot(registry);
+        var css = CssRewards.parse(resource("/rewards/rewards.css"), registry, loot);
+
+        for (int tableId : new int[]{51010000, 52010000, 51010700, 52010700,
+                51310000, 52310000, 53010000, 54010000, 55010000}) {
+            assertTrue(loot.contains("astaps.loot.chest_drop_" + tableId));
+        }
+        assertEquals(679, loot.names().stream()
+                .filter(name -> name.startsWith("astaps.loot.chest_drop_")).count());
+
+        for (int seed = 0; seed < 64; seed++) {
+            var combat = loot.roll("astaps.loot.chest_drop_51010000", new Random(seed));
+            var puzzle = loot.roll("astaps.loot.chest_drop_52010000", new Random(seed));
+            assertEquals(10, combat.get(102).intValue());
+            assertEquals(10, puzzle.get(102).intValue());
+            assertEquals(1, combat.get(305).intValue());
+            assertEquals(1, puzzle.get(305).intValue());
+            assertTrue(combat.get(202) >= 240 && combat.get(202) <= 360);
+            assertTrue(puzzle.get(202) >= 240 && puzzle.get(202) <= 360);
+            assertTrue(combat.get(104001) >= 1 && combat.get(104001) <= 2);
+            assertFalse(combat.containsKey(104011));
+            assertTrue(puzzle.get(104011) >= 2 && puzzle.get(104011) <= 3);
+            assertFalse(puzzle.containsKey(104001));
+        }
+
+        assertEquals(Map.of("astaps.loot.common_chest", 1),
+                css.resolve("chest", Map.of("kind", "common")).loot());
     }
 
     @Test

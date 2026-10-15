@@ -18,7 +18,6 @@ public final class WorldChestLootHelper {
     public static void grant(Player player, EntityGadget entityGadget) {
         var props = new java.util.HashMap<String, String>();
         props.put("kind", resolveTier(entityGadget).name().toLowerCase(java.util.Locale.ROOT));
-        props.put("level", Integer.toString(chestLevelBand(player.getLevel())));
         props.put("scene", Integer.toString(entityGadget.getScene().getId()));
         props.put("gadget", Integer.toString(entityGadget.getGadgetId()));
         props.put("group", Integer.toString(entityGadget.getGroupId()));
@@ -30,7 +29,7 @@ public final class WorldChestLootHelper {
         // ChestDrop's six minimum levels are 1, 6, 11, 16, 21, and 26.
         // Preserve the raw level and expose the corresponding source threshold
         // so CSS can select the correct native root with ordinary equality.
-        props.put("minLevel", Integer.toString(Math.min(26, ((level - 1) / 5) * 5 + 1)));
+        props.put("minLevel", Integer.toString(minLevelFromSourceLevel(level)));
         if (meta != null && meta.drop_tag != null) {
             props.put("dropTag", meta.drop_tag);
         }
@@ -52,13 +51,13 @@ public final class WorldChestLootHelper {
                 player.getUid(), entityGadget.getGadgetId(), props.get("kind"), items.size());
     }
 
-    /** ChestDrop.minLevel thresholds select a reward band from adventure rank. */
-    public static int chestLevelBand(int adventureRank) {
-        if (adventureRank >= 26) return 26;
-        if (adventureRank >= 21) return 21;
-        if (adventureRank >= 16) return 16;
-        if (adventureRank >= 11) return 11;
-        if (adventureRank >= 6) return 6;
+    /** Map the SceneGadget.level to the nearest ChestDrop.minLevel threshold. */
+    public static int minLevelFromSourceLevel(int level) {
+        if (level >= 26) return 26;
+        if (level >= 21) return 21;
+        if (level >= 16) return 16;
+        if (level >= 11) return 11;
+        if (level >= 6) return 6;
         return 1;
     }
 

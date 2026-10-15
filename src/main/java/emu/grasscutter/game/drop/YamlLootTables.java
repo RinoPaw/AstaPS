@@ -15,7 +15,7 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 /**
  * YAML loot lists: an all-null-weight list executes all entries; an all-numeric-weight
  * list chooses one. Mixed weights are rejected, even if the numeric weight is zero.
- * item may be an item name, numeric ID, nested YAML list, or null (empty reward).
+ * reward may be an item name, numeric ID, nested YAML list, or null (empty reward).
  */
 public final class YamlLootTables {
     @FunctionalInterface
@@ -23,7 +23,7 @@ public final class YamlLootTables {
         int resolve(String itemName);
     }
 
-    private record Entry(Integer item, Pool nested, LootCount.Spec count, BigDecimal weight) {}
+    private record Entry(Integer rewardId, Pool nested, LootCount.Spec count, BigDecimal weight) {}
     private record Pool(boolean weighted, List<Entry> entries, double totalWeight) {}
 
     private static final int MAX_DEPTH = 64;
@@ -90,28 +90,28 @@ public final class YamlLootTables {
             for (int i = 0; i < list.size(); i++) {
                 String at = location + "[" + i + "]";
                 if (!(list.get(i) instanceof Map<?, ?> fields)) {
-                    throw new IllegalArgumentException(at + ": expected {item, count?, weight?}");
+                    throw new IllegalArgumentException(at + ": expected {reward, count?, weight?}");
                 }
                 for (Object key : fields.keySet()) {
-                    if (!"item".equals(key) && !"count".equals(key) && !"weight".equals(key)) {
+                    if (!"reward".equals(key) && !"count".equals(key) && !"weight".equals(key)) {
                         throw new IllegalArgumentException(at + ": unknown field: " + key);
                     }
                 }
-                if (!fields.containsKey("item")) {
-                    throw new IllegalArgumentException(at + ": missing item field");
+                if (!fields.containsKey("reward")) {
+                    throw new IllegalArgumentException(at + ": missing reward field");
                 }
-                Object target = fields.get("item");
-                Integer item = null;
+                Object target = fields.get("reward");
+                Integer rewardId = null;
                 Pool nested = null;
                 if (target instanceof List<?>) {
-                    nested = parseList(target, resolver, compiled, visiting, budget, at + ".item", depth + 1);
+                    nested = parseList(target, resolver, compiled, visiting, budget, at + ".reward", depth + 1);
                 } else if (target != null) {
                     if (!(target instanceof String || target instanceof Number)) {
-                        throw new IllegalArgumentException(at + ": invalid item: " + target);
+                        throw new IllegalArgumentException(at + ": invalid reward: " + target);
                     }
                     int id = resolver.resolve(target.toString());
-                    if (id <= 0) throw new IllegalArgumentException(at + ": unknown item: " + target);
-                    item = id;
+                    if (id <= 0) throw new IllegalArgumentException(at + ": unknown reward: " + target);
+                    rewardId = id;
                 }
                 LootCount.Spec count = LootCount.parse(fields.get("count"));
                 BigDecimal weight = null;
@@ -128,7 +128,7 @@ public final class YamlLootTables {
                     }
                     hasWeight = true;
                 } else hasNull = true;
-                entries.add(new Entry(item, nested, count, weight));
+                entries.add(new Entry(rewardId, nested, count, weight));
             }
             if (hasWeight && hasNull) {
                 throw new IllegalArgumentException(location + ": cannot mix null and numeric weights");
@@ -183,8 +183,8 @@ public final class YamlLootTables {
         if (count == 0) return;
         if (entry.nested != null) {
             rollPool(entry.nested, count, random, reward, remaining, depth + 1);
-        } else if (entry.item != null) {
-            reward.merge(entry.item, count, Math::addExact);
+        } else if (entry.rewardId != null) {
+            reward.merge(entry.rewardId, count, Math::addExact);
         }
     }
 

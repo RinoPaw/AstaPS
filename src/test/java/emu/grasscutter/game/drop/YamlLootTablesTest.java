@@ -57,7 +57,7 @@ class YamlLootTablesTest {
                 other.resolveName("my_mod.loot.surprise"));
         assertEquals(Map.of(202, 7),
                 other.roll("my_mod.loot.surprise", new Random(0)));
-        assertThrows(IllegalArgumentException.class, () -> other.resolveName("surprise"));
+        assertEquals("my_mod.loot.surprise", other.resolveName("surprise"));
     }
 
     @Test

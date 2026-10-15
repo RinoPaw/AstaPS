@@ -36,8 +36,10 @@ public final class YamlLootTables {
         int entries;
     }
 
+    private final String namespace;
     private final Map<String, Pool> pools;
-    private YamlLootTables(Map<String, Pool> pools) {
+    private YamlLootTables(String namespace, Map<String, Pool> pools) {
+        this.namespace = namespace;
         this.pools = java.util.Collections.unmodifiableMap(new LinkedHashMap<>(pools));
     }
 
@@ -70,7 +72,7 @@ public final class YamlLootTables {
             String id = new ResourceId(namespace, "loot", name).toString();
             parsed.put(id, parseList(e.getValue(), resolver, compiled, visiting, budget, name, 0));
         }
-        return new YamlLootTables(parsed);
+        return new YamlLootTables(namespace, parsed);
     }
 
     private static Pool parseList(Object raw, ItemResolver resolver,
@@ -200,11 +202,11 @@ public final class YamlLootTables {
         return pools.containsKey(id);
     }
 
-    /** Local names in CSS resolve within astaps; qualified IDs are kept unchanged. */
+    /** Local names resolve within the loader's namespace; qualified IDs stay unchanged. */
     public String resolveName(String reference) {
         ResourceId id = reference.contains(".")
                 ? ResourceId.parse(reference)
-                : new ResourceId("astaps", "loot", reference);
+                : new ResourceId(namespace, "loot", reference);
         if (!id.type().equals("loot") || !contains(id.toString())) {
             throw new IllegalArgumentException("Unknown loot table: " + reference);
         }

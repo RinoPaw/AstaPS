@@ -199,6 +199,26 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void sharedItemRegistryIsUsedByYaml() {
+        var registry = new ItemIdRegistry(Map.of(202, "Mora", 104003, "Hero's Wit"));
+        var tables = YamlLootTables.parse("""
+                chest:
+                  - {reward: genshin:item:mora, count: 300}
+                  - {reward: genshin:item:heros_wit}
+                """, registry::resolve);
+        assertEquals(Map.of(202, 300, 104003, 1), tables.roll("chest", new Random(1)));
+
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                chest:
+                  - {reward: genshin:avatar:amber}
+                """, registry::resolve));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                chest:
+                  - {item: genshin:item:mora}
+                """, registry::resolve));
+    }
+
+    @Test
     void itemClassificationUsesGameResourceTypes() {
         assertEquals("Weapons", ItemIdRegistry.categoryOf(
                 emu.grasscutter.game.inventory.ItemType.ITEM_WEAPON,

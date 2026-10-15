@@ -133,13 +133,15 @@ chest[kind="common"] {
 }
 
 monster[rank="elite"] {
-    --loot: astaps.loot.currency 3;
+    --loot: "astaps.loot.currency" 3;
 }
 ```
 
 The common chest executes `astaps.loot.currency` once and
 `astaps.loot.经验书` twice. Explicit qualified loot IDs work alongside
-short names. Repeating the same table in one list adds execution counts.
+short names. Qualified IDs must be quoted as CSS string values; short local
+names such as `currency` and `经验书` need no quotes. Repeating the same table
+in one list adds execution counts.
 
 `--loot` follows CSS property replacement: a later, higher-priority
 matching rule replaces the **entire** list, rather than appending to it.

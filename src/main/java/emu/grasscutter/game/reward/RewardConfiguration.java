@@ -4,8 +4,7 @@ import emu.grasscutter.data.ItemIdRegistry;
 import emu.grasscutter.game.drop.YamlLootTables;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.random.RandomGenerator;
 
@@ -21,43 +20,22 @@ public final class RewardConfiguration {
         this.css = css;
     }
 
-    public static void loadOrCreate(Path directory) {
-        Path lootPath = directory.resolve("loot.yaml");
-        Path cssPath = directory.resolve("rewards.css");
+    /** Load the two authoritative classpath resources; no config/rewards directory. */
+    public static void load() {
         try {
-            Files.createDirectories(directory);
-            copyTemplateIfMissing(lootPath, "/rewards/loot.yaml");
-            copyTemplateIfMissing(cssPath, "/rewards/rewards.css");
             var registry = ItemIdRegistry.fromGameResources();
-            String yaml = Files.readString(lootPath);
-            String stylesheet = Files.readString(cssPath);
-            rejectLegacyChestTemplates(yaml, stylesheet);
-            var loot = YamlLootTables.parse(yaml, registry::resolve);
-            var css = CssRewards.parse(stylesheet, registry, loot);
+            var loot = YamlLootTables.parse(readBundled("loot.yaml"), registry::resolve);
+            var css = CssRewards.parse(readBundled("rewards.css"), registry, loot);
             active = new RewardConfiguration(loot, css);
         } catch (IOException | RuntimeException e) {
-            throw new IllegalStateException("Cannot load reward configuration from " + directory, e);
+            throw new IllegalStateException("Cannot load bundled reward configuration", e);
         }
     }
 
-    // Previously generated configurations remain on disk after upgrades.
-    // Prevent old selector data from silently continuing to grant old rewards.
-    static void rejectLegacyChestTemplates(String yaml, String css) {
-        if (yaml.contains("fallback_common:")
-                || yaml.contains("native_51010000:")
-                || css.contains("--loot: fallback_common")
-                || css.contains("--loot: native_")) {
-            throw new IllegalArgumentException(
-                    "Obsolete chest reward configuration in config/rewards."
-                            + " Back up and regenerate loot.yaml and rewards.css together.");
-        }
-    }
-
-    private static void copyTemplateIfMissing(Path destination, String template) throws IOException {
-        if (Files.exists(destination)) return;
-        try (InputStream source = RewardConfiguration.class.getResourceAsStream(template)) {
-            if (source == null) throw new IOException("Missing bundled resource " + template);
-            Files.copy(source, destination);
+    static String readBundled(String filename) throws IOException {
+        try (InputStream stream = RewardConfiguration.class.getResourceAsStream("/rewards/" + filename)) {
+            if (stream == null) throw new IOException("Missing bundled reward resource " + filename);
+            return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
 

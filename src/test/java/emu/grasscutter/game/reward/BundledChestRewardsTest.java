@@ -73,8 +73,11 @@ class BundledChestRewardsTest {
                 new RewardContext(3, 0, "liyue"));
         assertEquals(2, rolled.get(307).intValue());
         assertFalse(rolled.containsKey(305));
-        assertThrows(IllegalArgumentException.class,
-                () -> RewardRoller.roll(selection, loot, new Random(5)));
+        var unresolved = RewardRoller.roll(selection, loot, new Random(5));
+        assertEquals(5, unresolved.get(201).intValue());
+        assertEquals(30, unresolved.get(102).intValue());
+        assertFalse(unresolved.containsKey(305));
+        assertFalse(unresolved.containsKey(307));
     }
 
     @Test

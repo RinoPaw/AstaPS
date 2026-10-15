@@ -106,9 +106,10 @@ class RegionalSigilResolverTest {
         assertEquals(Map.of(302, 4, 201, 5), RewardRoller.roll(
                 css.resolve("chest", Map.of("kind", "exquisite")),
                 loot, new Random(1), fontaine));
-        assertThrows(IllegalArgumentException.class, () ->
-                RewardRoller.roll(css.resolve("chest", Map.of("kind", "common")),
-                        loot, new Random(1)));
+        var unresolved = RewardRoller.roll(
+                css.resolve("chest", Map.of("kind", "common")),
+                loot, new Random(1));
+        assertEquals(Map.of(202, 50), unresolved);
         assertThrows(IllegalArgumentException.class, () ->
                 loot.rollItems("astaps.loot.seals", new Random(1)));
     }

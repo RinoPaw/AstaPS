@@ -97,15 +97,14 @@ Generated world chests use source provenance: `region` from imported
 `region_explore_points.json` and the explicitly named Nod-Krai or
 Snezhnaya point source files. Their region is not guessed using
 coordinates, synthetic group ranges, translated drop tags, or the
-player's current location. Unknown, missing, or ambiguous locations
-produce a clear resolution error instead of a wrong sigil.
+player's current location. Unknown, missing, or ambiguous locations cause a warning and omit only
+the regional sigil; other rewards are still granted. No sigil is guessed.
 
 Direct loot-table execution without a reward context cannot resolve
 `sigil`. The four bundled chest presets now include 1, 2, 3, and 4 regional
 sigils respectively. These amounts remain approximate. If an area cannot
-be resolved (such as an auxiliary event city), the resolver raises an error
-rather than issuing another nation's sigil. Those sources need separate
-verified rules before the full reward can be granted.
+be resolved (such as an auxiliary event city), the resolver warns and omits only the sigil rather than issuing another
+nation's sigil. Those sources need separate verified rules for sigils.
 
 Source audit: `region_explore_points.json` has 1,957 entries, including
 891 `fontaine`, 863 `natlan`, and 203 `sumeru36` entries. The resolver

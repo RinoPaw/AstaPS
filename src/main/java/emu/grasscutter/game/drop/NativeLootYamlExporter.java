@@ -152,12 +152,12 @@ public final class NativeLootYamlExporter {
                         throw new IllegalArgumentException("Invalid independent roll probability");
                     }
                     // Preserve all native basis-point chances without decimal counts.
-                    int divisor = gcd(entry.weight, 10000 - entry.weight);
+                    int chanceDivisor = gcd(entry.weight, 10000 - entry.weight);
                     yaml.append("  - reward:\n");
                     appendEntry(yaml, "      ", "null", "1",
-                            (10000 - entry.weight) / divisor);
+                            (10000 - entry.weight) / chanceDivisor);
                     appendEntry(yaml, "      ", target, entry.countRange,
-                            entry.weight / divisor);
+                            entry.weight / chanceDivisor);
                 }
             }
             yaml.append('\n');

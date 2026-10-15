@@ -91,7 +91,7 @@ public final class CssRewards {
             if (!match.matches()) {
                 throw new IllegalArgumentException("Invalid loot entry: " + entry);
             }
-            String id = loot.resolveName(match.group(1).trim());
+            String id = loot.resolveName(match.group(1).trim().replaceAll("\\s*\\.\\s*", "."));
             int count = match.group(2) == null ? 1 : Integer.parseInt(match.group(2));
             selected.merge(id, count, Math::addExact);
         }

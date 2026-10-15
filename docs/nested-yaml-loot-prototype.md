@@ -104,3 +104,10 @@ Direct loot-table execution without a reward context cannot resolve
 `sigil`. The four bundled chest presets still omit this alias until
 coverage of all supported chest spawn sources is confirmed. Users may
 add it explicitly to a known source once validated.
+
+Source audit: `region_explore_points.json` has 1,957 entries, including
+891 `fontaine`, 863 `natlan`, and 203 `sumeru36` entries. The resolver
+accepts `sumeru36` as Dendro/Sumeru. Nod-Krai has 424 and the standalone
+Snezhnaya list has 486 entries; these two datasets have no `region`
+property but their file provenance is unambiguous. This validates the
+imported data labels, not every original scene script chest.

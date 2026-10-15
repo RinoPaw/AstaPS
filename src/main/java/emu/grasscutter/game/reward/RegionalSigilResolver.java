@@ -71,7 +71,7 @@ public final class RegionalSigilResolver {
             case "mondstadt" -> 305;
             case "liyue" -> 307;
             case "inazuma" -> 304;
-            case "sumeru" -> 303;
+            case "sumeru", "sumeru36" -> 303;
             case "fontaine" -> 302;
             case "natlan" -> 301;
             case "nodkrai", "nod-krai", "nod_krai" -> 308;

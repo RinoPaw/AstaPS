@@ -64,6 +64,8 @@ class RegionalSigilResolverTest {
                 new RewardContext(3, 0, "natlan")));
         assertEquals(303, RegionalSigilResolver.resolve(
                 new RewardContext(3, 0, "sumeru")));
+        assertEquals(303, RegionalSigilResolver.resolve(
+                new RewardContext(3, 0, "sumeru36")));
         assertEquals(308, RegionalSigilResolver.resolve(
                 new RewardContext(3, 0, "nodkrai")));
         assertEquals(306, RegionalSigilResolver.resolve(

@@ -29,6 +29,10 @@ public final class NativeLootYamlExporter {
         if (item == null || item.getItemType() != ItemType.ITEM_RELIQUARY) {
             throw new IllegalArgumentException("Missing native artifact item: " + itemId);
         }
+        if (item.getAppendPropDepotId() != item.getRankLevel() * 100 + 1) {
+            throw new IllegalArgumentException(
+                    "Special native artifact cannot be represented by ordinary properties: " + itemId);
+        }
         return new ArtifactProperties(ArtifactResolver.slotName(item.getEquipType().getValue()),
                 item.getRankLevel(), item.getAppendPropNum());
     }
@@ -108,6 +112,13 @@ public final class NativeLootYamlExporter {
                     target = "*" + target;
                 } else {
                     target = itemNames.apply(entry.id);
+                    if (target == null) {
+                        var nativeItem = GameData.getItemDataMap().get(entry.id);
+                        if (nativeItem != null && nativeItem.getItemType() == ItemType.ITEM_RELIQUARY) {
+                            String set = ArtifactResolver.setName(nativeItem.getSetId());
+                            if (set != null) target = "genshin.artifact." + set;
+                        }
+                    }
                     if (target == null) throw new IllegalArgumentException("Unknown item in chest source");
                     ResourceId resource = ResourceId.parse(target);
                     if (!"genshin".equals(resource.namespace())

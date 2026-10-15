@@ -112,6 +112,11 @@ public final class ArtifactResolver {
         this.bySet = Map.copyOf(sets);
     }
 
+    /** Stable set identity for the first native chest-artifact families. */
+    public static String setName(int nativeSetId) {
+        return SET_NAMES.get(nativeSetId);
+    }
+
     public static ArtifactResolver fromGameResources() {
         var variants = new ArrayList<Variant>();
         for (ItemData item : GameData.getItemDataMap().values()) {

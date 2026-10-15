@@ -1,3 +1,9 @@
+# Authoritative bundled reward definitions. CSS selects these tables at runtime.
+# Tables contain only item rolls; selection by chest kind, level or area stays in rewards.css.
+# Missing count means one item (or one execution of a nested pool).
+# Numeric weight is relative within one list; omitting weight runs every entry.
+
+# Four current approximate chest presets and their six named level aliases.
 common_chest: &common_chest_items
   - {reward: genshin.item.mora, count: "257~996"}
   - {reward: genshin.item.enhancement_ore, count: "1~3"}
@@ -56,196 +62,207 @@ luxurious_chest_high: *luxurious_chest_items
 luxurious_chest_xhigh: *luxurious_chest_items
 luxurious_chest_max: *luxurious_chest_items
 
+# First activation in the Three Realms Gateway Offering scene.
 three_realms_point:
-  - {reward: 101692, count: 20}
+  - {reward: genshin.item.id_101692, count: 20}
 
-# Historical chest reward graph (data only; not selected by current rewards.css).
-# Sources: AstaPS-Resource/Server/DropTableExcelConfigData.json and
-# AstaPS-Resource/Server/DropSubTableExcelConfigData.json.
-# All 108 sourceType=19 chest roots and their 571 reachable dependencies are retained.
-# IDs beginning 510/513 and 520/523 retain the combat/puzzle table families.
-# 530/540/550 are additional historical families; IDs are preserved verbatim.
-# Pools are unverified against the current 7.1 game resources.
-# A randomType=0 node selects one weighted entry; type=1 rolls entries independently.
-# Historical source graph roots: 51010000, 51010100, 51010200, 51010300, 51010400, 51010500, 51010600, 51010700, 51010800, 51010900, 51011000, 51011100, 51020000, 51020100, 51020200, 51020300, 51020400, 51020500, 51020600, 51020700, 51020800, 51020900, 51021000, 51021100, 51030000, 51032000, 51033000, 51034000, 51040000, 51042000, 51043000, 51044000, 51310000, 51312000, 51313000, 51314000, 52010000, 52010100, 52010200, 52010300, 52010400, 52010500, 52010600, 52010700, 52010800, 52010900, 52011000, 52011100, 52020000, 52020100, 52020200, 52020300, 52020400, 52020500, 52020600, 52020700, 52020800, 52020900, 52021000, 52021100, 52030000, 52032000, 52033000, 52034000, 52040000, 52042000, 52043000, 52044000, 52310000, 52312000, 52313000, 52314000, 53010000, 53010100, 53010200, 53010300, 53010400, 53010500, 53010600, 53010700, 53010800, 53010900, 53011000, 53011100, 54010000, 54010100, 54010200, 54010300, 54010400, 54010500, 54010600, 54010700, 54010800, 54010900, 54011000, 54011100, 55010000, 55010100, 55010200, 55010300, 55010400, 55010500, 55010600, 55010700, 55010800, 55010900, 55011000, 55011100
+# Archived historical chest drop tables: available to invoke by qualified table ID,
+# but NOT selected by the unchanged rewards.css default rules.
+# Original datasets: AstaPS-Resource/Server/DropTableExcelConfigData.json and
+# Server/DropSubTableExcelConfigData.json (sourceType=19).
+# 108 independent root tables + 571 dependencies; 1,843 positive-weight entries.
+# 510/513 families: combat; 520/523: puzzle; 530/540/550: other source families.
+# These historical contents have not been independently confirmed for Genshin 7.1.
+# Each table key chest_drop_<ID> is registered as astaps.loot.chest_drop_<ID>.
+# YAML anchors link child pools; no region, enemy, puzzle or level selection lives here.
+# In the original data randomType=0 selects a weighted entry; randomType=1
+# rolls independent entries. Small decimal counts encode independent chances.
+# Known item names use genshin.item.<name>; less certain identities use
+# genshin.item.id_<numeric ID>, a version-stable, resolvable resource alias.
+# Relative weights below are reduced, without changing their probabilities.
 
 chest_drop_500100: &chest_500100
-  - {reward: 100061, count: "1", weight: 1000}
-  - {reward: 100064, count: "1", weight: 1000}
+  - {reward: genshin.item.id_100061, weight: 1}
+  - {reward: genshin.item.id_100064, weight: 1}
 
 chest_drop_51010011: &chest_51010011
-  - {reward: 104001, count: "1.6"}
-  - {reward: 104002, count: "0.15"}
+  - {reward: genshin.item.wanderers_advice, count: "1.6"}
+  - {reward: genshin.item.adventurers_experience, count: "0.15"}
 
 chest_drop_51010013: &chest_51010013 []
 
 chest_drop_51010014: &chest_51010014 []
 
 chest_drop_520000: &chest_520000
-  - {reward: 60110, count: "1", weight: 1000}
-  - {reward: 60120, count: "1", weight: 1000}
-  - {reward: 60130, count: "1", weight: 1000}
-  - {reward: 60140, count: "1", weight: 1000}
-  - {reward: 60150, count: "1", weight: 1000}
+  - {reward: genshin.item.id_60110, weight: 1}
+  - {reward: genshin.item.id_60120, weight: 1}
+  - {reward: genshin.item.id_60130, weight: 1}
+  - {reward: genshin.item.id_60140, weight: 1}
+  - {reward: genshin.item.id_60150, weight: 1}
 
 chest_drop_520100: &chest_520100
-  - {reward: 63110, count: "1", weight: 1000}
-  - {reward: 63120, count: "1", weight: 1000}
-  - {reward: 63130, count: "1", weight: 1000}
-  - {reward: 63140, count: "1", weight: 1000}
-  - {reward: 63150, count: "1", weight: 1000}
+  - {reward: genshin.item.id_63110, weight: 1}
+  - {reward: genshin.item.id_63120, weight: 1}
+  - {reward: genshin.item.id_63130, weight: 1}
+  - {reward: genshin.item.id_63140, weight: 1}
+  - {reward: genshin.item.id_63150, weight: 1}
 
 chest_drop_541150: &chest_541150
-  - {reward: *chest_520000, count: "1", weight: 1000}
-  - {reward: *chest_520100, count: "1", weight: 1000}
+  - {reward: *chest_520000, weight: 1}
+  - {reward: *chest_520100, weight: 1}
 
 chest_drop_520005: &chest_520005
-  - {reward: 60210, count: "1", weight: 1000}
-  - {reward: 60220, count: "1", weight: 1000}
-  - {reward: 60230, count: "1", weight: 1000}
-  - {reward: 60240, count: "1", weight: 1000}
-  - {reward: 60250, count: "1", weight: 1000}
+  - {reward: genshin.item.id_60210, weight: 1}
+  - {reward: genshin.item.id_60220, weight: 1}
+  - {reward: genshin.item.id_60230, weight: 1}
+  - {reward: genshin.item.id_60240, weight: 1}
+  - {reward: genshin.item.id_60250, weight: 1}
 
 chest_drop_520105: &chest_520105
-  - {reward: 63210, count: "1", weight: 1000}
-  - {reward: 63220, count: "1", weight: 1000}
-  - {reward: 63230, count: "1", weight: 1000}
-  - {reward: 63240, count: "1", weight: 1000}
-  - {reward: 63250, count: "1", weight: 1000}
+  - {reward: genshin.item.id_63210, weight: 1}
+  - {reward: genshin.item.id_63220, weight: 1}
+  - {reward: genshin.item.id_63230, weight: 1}
+  - {reward: genshin.item.id_63240, weight: 1}
+  - {reward: genshin.item.id_63250, weight: 1}
 
 chest_drop_541155: &chest_541155
-  - {reward: *chest_520005, count: "1", weight: 1000}
-  - {reward: *chest_520105, count: "1", weight: 1000}
+  - {reward: *chest_520005, weight: 1}
+  - {reward: *chest_520105, weight: 1}
 
 chest_drop_520006: &chest_520006
-  - {reward: 60211, count: "1", weight: 1000}
-  - {reward: 60221, count: "1", weight: 1000}
-  - {reward: 60231, count: "1", weight: 1000}
-  - {reward: 60241, count: "1", weight: 1000}
-  - {reward: 60251, count: "1", weight: 1000}
+  - {reward: genshin.item.id_60211, weight: 1}
+  - {reward: genshin.item.id_60221, weight: 1}
+  - {reward: genshin.item.id_60231, weight: 1}
+  - {reward: genshin.item.id_60241, weight: 1}
+  - {reward: genshin.item.id_60251, weight: 1}
 
 chest_drop_520106: &chest_520106
-  - {reward: 63211, count: "1", weight: 1000}
-  - {reward: 63221, count: "1", weight: 1000}
-  - {reward: 63231, count: "1", weight: 1000}
-  - {reward: 63241, count: "1", weight: 1000}
-  - {reward: 63251, count: "1", weight: 1000}
+  - {reward: genshin.item.id_63211, weight: 1}
+  - {reward: genshin.item.id_63221, weight: 1}
+  - {reward: genshin.item.id_63231, weight: 1}
+  - {reward: genshin.item.id_63241, weight: 1}
+  - {reward: genshin.item.id_63251, weight: 1}
 
 chest_drop_541156: &chest_541156
-  - {reward: *chest_520006, count: "1", weight: 1000}
-  - {reward: *chest_520106, count: "1", weight: 1000}
+  - {reward: *chest_520006, weight: 1}
+  - {reward: *chest_520106, weight: 1}
 
 chest_drop_51010015: &chest_51010015
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 51010000 (combat); kept for explicit selection or comparison.
 chest_drop_51010000: &chest_51010000
-  - {reward: 102, count: "10"}
-  - {reward: 305, count: "1"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.anemo_sigil}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_51010011, count: "1"}
+  - {reward: *chest_51010011}
   - {reward: *chest_51010013, count: "0.4"}
-  - {reward: *chest_51010014, count: "1"}
+  - {reward: *chest_51010014}
   - {reward: *chest_51010015, count: "0.52"}
 
 chest_drop_51010111: &chest_51010111
-  - {reward: 104001, count: "2.1"}
-  - {reward: 104002, count: "0.3"}
+  - {reward: genshin.item.wanderers_advice, count: "2.1"}
+  - {reward: genshin.item.adventurers_experience, count: "0.3"}
 
 chest_drop_51010113: &chest_51010113 []
 
 chest_drop_51010114: &chest_51010114 []
 
 chest_drop_51010115: &chest_51010115
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 51010100 (combat); kept for explicit selection or comparison.
 chest_drop_51010100: &chest_51010100
-  - {reward: 102, count: "10"}
-  - {reward: 305, count: "1"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.anemo_sigil}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_51010111, count: "1"}
+  - {reward: *chest_51010111}
   - {reward: *chest_51010113, count: "0.5"}
-  - {reward: *chest_51010114, count: "1"}
+  - {reward: *chest_51010114}
   - {reward: *chest_51010115, count: "0.8"}
 
 chest_drop_51010211: &chest_51010211
-  - {reward: 104001, count: "2.6"}
-  - {reward: 104002, count: "0.4"}
+  - {reward: genshin.item.wanderers_advice, count: "2.6"}
+  - {reward: genshin.item.adventurers_experience, count: "0.4"}
 
 chest_drop_51010213: &chest_51010213 []
 
 chest_drop_51010214: &chest_51010214 []
 
 chest_drop_51010215: &chest_51010215
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 51010200 (combat); kept for explicit selection or comparison.
 chest_drop_51010200: &chest_51010200
-  - {reward: 102, count: "10"}
-  - {reward: 305, count: "2"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_51010211, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.anemo_sigil, count: "2"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_51010211}
   - {reward: *chest_51010213, count: "0.6"}
-  - {reward: *chest_51010214, count: "1"}
+  - {reward: *chest_51010214}
   - {reward: *chest_51010215, count: "1.2"}
 
 chest_drop_51010311: &chest_51010311
-  - {reward: 104001, count: "3.1"}
-  - {reward: 104002, count: "0.5"}
+  - {reward: genshin.item.wanderers_advice, count: "3.1"}
+  - {reward: genshin.item.adventurers_experience, count: "0.5"}
 
 chest_drop_51010313: &chest_51010313 []
 
 chest_drop_51010314: &chest_51010314 []
 
 chest_drop_51010315: &chest_51010315
-  - {reward: *chest_541150, count: "1", weight: 6600}
-  - {reward: *chest_541155, count: "1", weight: 3060}
-  - {reward: *chest_541156, count: "1", weight: 340}
+  - {reward: *chest_541150, weight: 33}
+  - {reward: *chest_541155, weight: 15.3}
+  - {reward: *chest_541156, weight: 1.7}
 
+# Historical root 51010300 (combat); kept for explicit selection or comparison.
 chest_drop_51010300: &chest_51010300
-  - {reward: 102, count: "20"}
-  - {reward: 305, count: "2"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_51010311, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.anemo_sigil, count: "2"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_51010311}
   - {reward: *chest_51010313, count: "0.7"}
-  - {reward: *chest_51010314, count: "1"}
+  - {reward: *chest_51010314}
   - {reward: *chest_51010315, count: "1.5"}
 
 chest_drop_51010411: &chest_51010411
-  - {reward: 104001, count: "3.6"}
-  - {reward: 104002, count: "0.6"}
+  - {reward: genshin.item.wanderers_advice, count: "3.6"}
+  - {reward: genshin.item.adventurers_experience, count: "0.6"}
 
 chest_drop_51010413: &chest_51010413 []
 
 chest_drop_51010414: &chest_51010414 []
 
 chest_drop_51010415: &chest_51010415
-  - {reward: *chest_541150, count: "1", weight: 6600}
-  - {reward: *chest_541155, count: "1", weight: 3060}
-  - {reward: *chest_541156, count: "1", weight: 340}
+  - {reward: *chest_541150, weight: 33}
+  - {reward: *chest_541155, weight: 15.3}
+  - {reward: *chest_541156, weight: 1.7}
 
+# Historical root 51010400 (combat); kept for explicit selection or comparison.
 chest_drop_51010400: &chest_51010400
-  - {reward: 102, count: "20"}
-  - {reward: 305, count: "3"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: *chest_51010411, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.anemo_sigil, count: "3"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: *chest_51010411}
   - {reward: *chest_51010413, count: "0.8"}
-  - {reward: *chest_51010414, count: "1"}
+  - {reward: *chest_51010414}
   - {reward: *chest_51010415, count: "1.75"}
 
 chest_drop_51010511: &chest_51010511
-  - {reward: 104002, count: "2.1"}
+  - {reward: genshin.item.adventurers_experience, count: "2.1"}
 
 chest_drop_510000: &chest_510000
-  - {reward: 104301, count: "1", weight: 1000}
-  - {reward: 104304, count: "1", weight: 1000}
-  - {reward: 104307, count: "1", weight: 1000}
+  - {reward: genshin.item.id_104301, weight: 1}
+  - {reward: genshin.item.id_104304, weight: 1}
+  - {reward: genshin.item.id_104307, weight: 1}
 
 chest_drop_51010512: &chest_51010512
   - {reward: *chest_510000, count: "0.25"}
@@ -255,93 +272,94 @@ chest_drop_51010513: &chest_51010513 []
 chest_drop_51010514: &chest_51010514 []
 
 chest_drop_520611: &chest_520611
-  - {reward: 55311, count: "1", weight: 1000}
-  - {reward: 55321, count: "1", weight: 1000}
-  - {reward: 55331, count: "1", weight: 1000}
-  - {reward: 55341, count: "1", weight: 1000}
-  - {reward: 55351, count: "1", weight: 1000}
+  - {reward: genshin.item.id_55311, weight: 1}
+  - {reward: genshin.item.id_55321, weight: 1}
+  - {reward: genshin.item.id_55331, weight: 1}
+  - {reward: genshin.item.id_55341, weight: 1}
+  - {reward: genshin.item.id_55351, weight: 1}
 
 chest_drop_520661: &chest_520661
-  - {reward: 57311, count: "1", weight: 1000}
-  - {reward: 57321, count: "1", weight: 1000}
-  - {reward: 57331, count: "1", weight: 1000}
-  - {reward: 57341, count: "1", weight: 1000}
-  - {reward: 57351, count: "1", weight: 1000}
+  - {reward: genshin.item.id_57311, weight: 1}
+  - {reward: genshin.item.id_57321, weight: 1}
+  - {reward: genshin.item.id_57331, weight: 1}
+  - {reward: genshin.item.id_57341, weight: 1}
+  - {reward: genshin.item.id_57351, weight: 1}
 
 chest_drop_520011: &chest_520011
-  - {reward: 60311, count: "1", weight: 1000}
-  - {reward: 60321, count: "1", weight: 1000}
-  - {reward: 60331, count: "1", weight: 1000}
-  - {reward: 60341, count: "1", weight: 1000}
-  - {reward: 60351, count: "1", weight: 1000}
+  - {reward: genshin.item.id_60311, weight: 1}
+  - {reward: genshin.item.id_60321, weight: 1}
+  - {reward: genshin.item.id_60331, weight: 1}
+  - {reward: genshin.item.id_60341, weight: 1}
+  - {reward: genshin.item.id_60351, weight: 1}
 
 chest_drop_520111: &chest_520111
-  - {reward: 63311, count: "1", weight: 1000}
-  - {reward: 63321, count: "1", weight: 1000}
-  - {reward: 63331, count: "1", weight: 1000}
-  - {reward: 63341, count: "1", weight: 1000}
-  - {reward: 63351, count: "1", weight: 1000}
+  - {reward: genshin.item.id_63311, weight: 1}
+  - {reward: genshin.item.id_63321, weight: 1}
+  - {reward: genshin.item.id_63331, weight: 1}
+  - {reward: genshin.item.id_63341, weight: 1}
+  - {reward: genshin.item.id_63351, weight: 1}
 
 chest_drop_541161: &chest_541161
-  - {reward: *chest_520611, count: "1", weight: 1000}
-  - {reward: *chest_520661, count: "1", weight: 1000}
-  - {reward: *chest_520011, count: "1", weight: 1000}
-  - {reward: *chest_520111, count: "1", weight: 1000}
+  - {reward: *chest_520611, weight: 1}
+  - {reward: *chest_520661, weight: 1}
+  - {reward: *chest_520011, weight: 1}
+  - {reward: *chest_520111, weight: 1}
 
 chest_drop_520612: &chest_520612
-  - {reward: 55312, count: "1", weight: 1000}
-  - {reward: 55322, count: "1", weight: 1000}
-  - {reward: 55332, count: "1", weight: 1000}
-  - {reward: 55342, count: "1", weight: 1000}
-  - {reward: 55352, count: "1", weight: 1000}
+  - {reward: genshin.item.id_55312, weight: 1}
+  - {reward: genshin.item.id_55322, weight: 1}
+  - {reward: genshin.item.id_55332, weight: 1}
+  - {reward: genshin.item.id_55342, weight: 1}
+  - {reward: genshin.item.id_55352, weight: 1}
 
 chest_drop_520662: &chest_520662
-  - {reward: 57312, count: "1", weight: 1000}
-  - {reward: 57322, count: "1", weight: 1000}
-  - {reward: 57332, count: "1", weight: 1000}
-  - {reward: 57342, count: "1", weight: 1000}
-  - {reward: 57352, count: "1", weight: 1000}
+  - {reward: genshin.item.id_57312, weight: 1}
+  - {reward: genshin.item.id_57322, weight: 1}
+  - {reward: genshin.item.id_57332, weight: 1}
+  - {reward: genshin.item.id_57342, weight: 1}
+  - {reward: genshin.item.id_57352, weight: 1}
 
 chest_drop_520012: &chest_520012
-  - {reward: 60312, count: "1", weight: 1000}
-  - {reward: 60322, count: "1", weight: 1000}
-  - {reward: 60332, count: "1", weight: 1000}
-  - {reward: 60342, count: "1", weight: 1000}
-  - {reward: 60352, count: "1", weight: 1000}
+  - {reward: genshin.item.id_60312, weight: 1}
+  - {reward: genshin.item.id_60322, weight: 1}
+  - {reward: genshin.item.id_60332, weight: 1}
+  - {reward: genshin.item.id_60342, weight: 1}
+  - {reward: genshin.item.id_60352, weight: 1}
 
 chest_drop_520112: &chest_520112
-  - {reward: 63312, count: "1", weight: 1000}
-  - {reward: 63322, count: "1", weight: 1000}
-  - {reward: 63332, count: "1", weight: 1000}
-  - {reward: 63342, count: "1", weight: 1000}
-  - {reward: 63352, count: "1", weight: 1000}
+  - {reward: genshin.item.id_63312, weight: 1}
+  - {reward: genshin.item.id_63322, weight: 1}
+  - {reward: genshin.item.id_63332, weight: 1}
+  - {reward: genshin.item.id_63342, weight: 1}
+  - {reward: genshin.item.id_63352, weight: 1}
 
 chest_drop_541162: &chest_541162
-  - {reward: *chest_520612, count: "1", weight: 1000}
-  - {reward: *chest_520662, count: "1", weight: 1000}
-  - {reward: *chest_520012, count: "1", weight: 1000}
-  - {reward: *chest_520112, count: "1", weight: 1000}
+  - {reward: *chest_520612, weight: 1}
+  - {reward: *chest_520662, weight: 1}
+  - {reward: *chest_520012, weight: 1}
+  - {reward: *chest_520112, weight: 1}
 
 chest_drop_51010515: &chest_51010515
-  - {reward: *chest_541150, count: "1", weight: 3400}
-  - {reward: *chest_541155, count: "1", weight: 5040}
-  - {reward: *chest_541156, count: "1", weight: 560}
-  - {reward: *chest_541161, count: "1", weight: 900}
-  - {reward: *chest_541162, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 17}
+  - {reward: *chest_541155, weight: 25.2}
+  - {reward: *chest_541156, weight: 2.8}
+  - {reward: *chest_541161, weight: 4.5}
+  - {reward: *chest_541162, weight: 0.5}
 
+# Historical root 51010500 (combat); kept for explicit selection or comparison.
 chest_drop_51010500: &chest_51010500
-  - {reward: 102, count: "20"}
-  - {reward: 305, count: "3"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_51010511, count: "1"}
-  - {reward: *chest_51010512, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.anemo_sigil, count: "3"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_51010511}
+  - {reward: *chest_51010512}
   - {reward: *chest_51010513, count: "0.9"}
-  - {reward: *chest_51010514, count: "1"}
+  - {reward: *chest_51010514}
   - {reward: *chest_51010515, count: "1.75"}
 
 chest_drop_51010611: &chest_51010611
-  - {reward: 104002, count: "2.6"}
+  - {reward: genshin.item.adventurers_experience, count: "2.6"}
 
 chest_drop_51010612: &chest_51010612
   - {reward: *chest_510000, count: "0.25"}
@@ -351,354 +369,365 @@ chest_drop_51010613: &chest_51010613 []
 chest_drop_51010614: &chest_51010614 []
 
 chest_drop_51010615: &chest_51010615
-  - {reward: *chest_541150, count: "1", weight: 3400}
-  - {reward: *chest_541155, count: "1", weight: 5040}
-  - {reward: *chest_541156, count: "1", weight: 560}
-  - {reward: *chest_541161, count: "1", weight: 900}
-  - {reward: *chest_541162, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 17}
+  - {reward: *chest_541155, weight: 25.2}
+  - {reward: *chest_541156, weight: 2.8}
+  - {reward: *chest_541161, weight: 4.5}
+  - {reward: *chest_541162, weight: 0.5}
 
+# Historical root 51010600 (combat); kept for explicit selection or comparison.
 chest_drop_51010600: &chest_51010600
-  - {reward: 102, count: "20"}
-  - {reward: 305, count: "4"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_51010611, count: "1"}
-  - {reward: *chest_51010612, count: "1"}
-  - {reward: *chest_51010613, count: "1"}
-  - {reward: *chest_51010614, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.anemo_sigil, count: "4"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_51010611}
+  - {reward: *chest_51010612}
+  - {reward: *chest_51010613}
+  - {reward: *chest_51010614}
   - {reward: *chest_51010615, count: "2"}
 
 chest_drop_51010711: &chest_51010711
-  - {reward: 104002, count: "1.1"}
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.adventurers_experience, count: "1.1"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_51010712: &chest_51010712
-  - {reward: *chest_510000, count: "1"}
+  - {reward: *chest_510000}
 
 chest_drop_51010713: &chest_51010713 []
 
 chest_drop_51010714: &chest_51010714 []
 
 chest_drop_51010715: &chest_51010715
-  - {reward: *chest_541155, count: "1", weight: 6300}
-  - {reward: *chest_541156, count: "1", weight: 699}
-  - {reward: *chest_541161, count: "1", weight: 2700}
-  - {reward: *chest_541162, count: "1", weight: 300}
+  - {reward: *chest_541155, weight: 21}
+  - {reward: *chest_541156, weight: 2.33}
+  - {reward: *chest_541161, weight: 9}
+  - {reward: *chest_541162, weight: 1}
 
+# Historical root 51010700 (combat); kept for explicit selection or comparison.
 chest_drop_51010700: &chest_51010700
-  - {reward: 102, count: "30"}
-  - {reward: 305, count: "4"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_51010711, count: "1"}
-  - {reward: *chest_51010712, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.anemo_sigil, count: "4"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_51010711}
+  - {reward: *chest_51010712}
   - {reward: *chest_51010713, count: "1.1"}
-  - {reward: *chest_51010714, count: "1"}
+  - {reward: *chest_51010714}
   - {reward: *chest_51010715, count: "2"}
 
 chest_drop_51010811: &chest_51010811
-  - {reward: 104002, count: "1.6"}
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.adventurers_experience, count: "1.6"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_51010812: &chest_51010812
-  - {reward: *chest_510000, count: "1"}
+  - {reward: *chest_510000}
 
 chest_drop_51010813: &chest_51010813 []
 
 chest_drop_51010814: &chest_51010814 []
 
 chest_drop_520617: &chest_520617
-  - {reward: 55412, count: "1", weight: 1000}
-  - {reward: 55422, count: "1", weight: 1000}
-  - {reward: 55432, count: "1", weight: 1000}
-  - {reward: 55442, count: "1", weight: 1000}
-  - {reward: 55452, count: "1", weight: 1000}
+  - {reward: genshin.item.id_55412, weight: 1}
+  - {reward: genshin.item.id_55422, weight: 1}
+  - {reward: genshin.item.id_55432, weight: 1}
+  - {reward: genshin.item.id_55442, weight: 1}
+  - {reward: genshin.item.id_55452, weight: 1}
 
 chest_drop_520667: &chest_520667
-  - {reward: 57412, count: "1", weight: 1000}
-  - {reward: 57422, count: "1", weight: 1000}
-  - {reward: 57432, count: "1", weight: 1000}
-  - {reward: 57442, count: "1", weight: 1000}
-  - {reward: 57452, count: "1", weight: 1000}
+  - {reward: genshin.item.id_57412, weight: 1}
+  - {reward: genshin.item.id_57422, weight: 1}
+  - {reward: genshin.item.id_57432, weight: 1}
+  - {reward: genshin.item.id_57442, weight: 1}
+  - {reward: genshin.item.id_57452, weight: 1}
 
 chest_drop_541167: &chest_541167
-  - {reward: *chest_520617, count: "1", weight: 1000}
-  - {reward: *chest_520667, count: "1", weight: 1000}
+  - {reward: *chest_520617, weight: 1}
+  - {reward: *chest_520667, weight: 1}
 
 chest_drop_520618: &chest_520618
-  - {reward: 55413, count: "1", weight: 1000}
-  - {reward: 55423, count: "1", weight: 1000}
-  - {reward: 55433, count: "1", weight: 1000}
-  - {reward: 55443, count: "1", weight: 1000}
-  - {reward: 55453, count: "1", weight: 1000}
+  - {reward: genshin.item.id_55413, weight: 1}
+  - {reward: genshin.item.id_55423, weight: 1}
+  - {reward: genshin.item.id_55433, weight: 1}
+  - {reward: genshin.item.id_55443, weight: 1}
+  - {reward: genshin.item.id_55453, weight: 1}
 
 chest_drop_520668: &chest_520668
-  - {reward: 57413, count: "1", weight: 1000}
-  - {reward: 57423, count: "1", weight: 1000}
-  - {reward: 57433, count: "1", weight: 1000}
-  - {reward: 57443, count: "1", weight: 1000}
-  - {reward: 57453, count: "1", weight: 1000}
+  - {reward: genshin.item.id_57413, weight: 1}
+  - {reward: genshin.item.id_57423, weight: 1}
+  - {reward: genshin.item.id_57433, weight: 1}
+  - {reward: genshin.item.id_57443, weight: 1}
+  - {reward: genshin.item.id_57453, weight: 1}
 
 chest_drop_541168: &chest_541168
-  - {reward: *chest_520618, count: "1", weight: 1000}
-  - {reward: *chest_520668, count: "1", weight: 1000}
+  - {reward: *chest_520618, weight: 1}
+  - {reward: *chest_520668, weight: 1}
 
 chest_drop_51010815: &chest_51010815
-  - {reward: *chest_541161, count: "1", weight: 8100}
-  - {reward: *chest_541162, count: "1", weight: 900}
-  - {reward: *chest_541167, count: "1", weight: 900}
-  - {reward: *chest_541168, count: "1", weight: 100}
+  - {reward: *chest_541161, weight: 81}
+  - {reward: *chest_541162, weight: 9}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 51010800 (combat); kept for explicit selection or comparison.
 chest_drop_51010800: &chest_51010800
-  - {reward: 102, count: "30"}
-  - {reward: 305, count: "5"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 201, count: "5"}
-  - {reward: 109207, count: "1"}
-  - {reward: *chest_51010811, count: "1"}
-  - {reward: *chest_51010812, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.anemo_sigil, count: "5"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: genshin.item.id_109207}
+  - {reward: *chest_51010811}
+  - {reward: *chest_51010812}
   - {reward: *chest_51010813, count: "1.2"}
-  - {reward: *chest_51010814, count: "1"}
+  - {reward: *chest_51010814}
   - {reward: *chest_51010815, count: "2.25"}
 
 chest_drop_51010911: &chest_51010911
-  - {reward: 104003, count: "2"}
+  - {reward: genshin.item.heros_wit, count: "2"}
 
 chest_drop_510001: &chest_510001
-  - {reward: 104302, count: "1", weight: 1000}
-  - {reward: 104305, count: "1", weight: 1000}
-  - {reward: 104308, count: "1", weight: 1000}
+  - {reward: genshin.item.id_104302, weight: 1}
+  - {reward: genshin.item.id_104305, weight: 1}
+  - {reward: genshin.item.id_104308, weight: 1}
 
 chest_drop_51010912: &chest_51010912
-  - {reward: *chest_510001, count: "1"}
+  - {reward: *chest_510001}
 
 chest_drop_51010913: &chest_51010913 []
 
 chest_drop_51010914: &chest_51010914 []
 
 chest_drop_51010915: &chest_51010915
-  - {reward: *chest_541161, count: "1", weight: 8100}
-  - {reward: *chest_541162, count: "1", weight: 900}
-  - {reward: *chest_541167, count: "1", weight: 900}
-  - {reward: *chest_541168, count: "1", weight: 100}
+  - {reward: *chest_541161, weight: 81}
+  - {reward: *chest_541162, weight: 9}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 51010900 (combat); kept for explicit selection or comparison.
 chest_drop_51010900: &chest_51010900
-  - {reward: 102, count: "30"}
-  - {reward: 305, count: "5"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_51010911, count: "1"}
-  - {reward: *chest_51010912, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.anemo_sigil, count: "5"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_51010911}
+  - {reward: *chest_51010912}
   - {reward: *chest_51010913, count: "1.3"}
-  - {reward: *chest_51010914, count: "1"}
+  - {reward: *chest_51010914}
   - {reward: *chest_51010915, count: "2.25"}
 
 chest_drop_51011011: &chest_51011011
-  - {reward: 104003, count: "2.05"}
+  - {reward: genshin.item.heros_wit, count: "2.05"}
 
 chest_drop_51011012: &chest_51011012
-  - {reward: *chest_510001, count: "1"}
+  - {reward: *chest_510001}
 
 chest_drop_51011013: &chest_51011013 []
 
 chest_drop_51011014: &chest_51011014 []
 
 chest_drop_51011015: &chest_51011015
-  - {reward: *chest_541161, count: "1", weight: 7200}
-  - {reward: *chest_541162, count: "1", weight: 800}
-  - {reward: *chest_541167, count: "1", weight: 1800}
-  - {reward: *chest_541168, count: "1", weight: 200}
+  - {reward: *chest_541161, weight: 36}
+  - {reward: *chest_541162, weight: 4}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 51011000 (combat); kept for explicit selection or comparison.
 chest_drop_51011000: &chest_51011000
-  - {reward: 102, count: "30"}
-  - {reward: 305, count: "6"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_51011011, count: "1"}
-  - {reward: *chest_51011012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.anemo_sigil, count: "6"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_51011011}
+  - {reward: *chest_51011012}
   - {reward: *chest_51011013, count: "1.4"}
-  - {reward: *chest_51011014, count: "1"}
+  - {reward: *chest_51011014}
   - {reward: *chest_51011015, count: "2.5"}
 
 chest_drop_51011111: &chest_51011111
-  - {reward: 104003, count: "2.1"}
+  - {reward: genshin.item.heros_wit, count: "2.1"}
 
 chest_drop_51011112: &chest_51011112
-  - {reward: *chest_510001, count: "1"}
+  - {reward: *chest_510001}
 
 chest_drop_51011113: &chest_51011113 []
 
 chest_drop_51011114: &chest_51011114 []
 
 chest_drop_51011115: &chest_51011115
-  - {reward: *chest_541161, count: "1", weight: 7200}
-  - {reward: *chest_541162, count: "1", weight: 800}
-  - {reward: *chest_541167, count: "1", weight: 1800}
-  - {reward: *chest_541168, count: "1", weight: 200}
+  - {reward: *chest_541161, weight: 36}
+  - {reward: *chest_541162, weight: 4}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 51011100 (combat); kept for explicit selection or comparison.
 chest_drop_51011100: &chest_51011100
-  - {reward: 102, count: "30"}
-  - {reward: 305, count: "6"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_51011111, count: "1"}
-  - {reward: *chest_51011112, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.anemo_sigil, count: "6"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_51011111}
+  - {reward: *chest_51011112}
   - {reward: *chest_51011113, count: "1.5"}
-  - {reward: *chest_51011114, count: "1"}
+  - {reward: *chest_51011114}
   - {reward: *chest_51011115, count: "2.5"}
 
 chest_drop_51020011: &chest_51020011
-  - {reward: 104001, count: "1.6"}
-  - {reward: 104002, count: "0.15"}
+  - {reward: genshin.item.wanderers_advice, count: "1.6"}
+  - {reward: genshin.item.adventurers_experience, count: "0.15"}
 
 chest_drop_51020013: &chest_51020013 []
 
 chest_drop_51020014: &chest_51020014 []
 
 chest_drop_520050: &chest_520050
-  - {reward: 61110, count: "1", weight: 1000}
-  - {reward: 61120, count: "1", weight: 1000}
-  - {reward: 61130, count: "1", weight: 1000}
-  - {reward: 61140, count: "1", weight: 1000}
-  - {reward: 61150, count: "1", weight: 1000}
+  - {reward: genshin.item.id_61110, weight: 1}
+  - {reward: genshin.item.id_61120, weight: 1}
+  - {reward: genshin.item.id_61130, weight: 1}
+  - {reward: genshin.item.id_61140, weight: 1}
+  - {reward: genshin.item.id_61150, weight: 1}
 
 chest_drop_541700: &chest_541700
-  - {reward: *chest_520050, count: "1", weight: 1000}
-  - {reward: *chest_520100, count: "1", weight: 1000}
+  - {reward: *chest_520050, weight: 1}
+  - {reward: *chest_520100, weight: 1}
 
 chest_drop_520055: &chest_520055
-  - {reward: 61210, count: "1", weight: 1000}
-  - {reward: 61220, count: "1", weight: 1000}
-  - {reward: 61230, count: "1", weight: 1000}
-  - {reward: 61240, count: "1", weight: 1000}
-  - {reward: 61250, count: "1", weight: 1000}
+  - {reward: genshin.item.id_61210, weight: 1}
+  - {reward: genshin.item.id_61220, weight: 1}
+  - {reward: genshin.item.id_61230, weight: 1}
+  - {reward: genshin.item.id_61240, weight: 1}
+  - {reward: genshin.item.id_61250, weight: 1}
 
 chest_drop_541705: &chest_541705
-  - {reward: *chest_520055, count: "1", weight: 1000}
-  - {reward: *chest_520105, count: "1", weight: 1000}
+  - {reward: *chest_520055, weight: 1}
+  - {reward: *chest_520105, weight: 1}
 
 chest_drop_520056: &chest_520056
-  - {reward: 61211, count: "1", weight: 1000}
-  - {reward: 61221, count: "1", weight: 1000}
-  - {reward: 61231, count: "1", weight: 1000}
-  - {reward: 61241, count: "1", weight: 1000}
-  - {reward: 61251, count: "1", weight: 1000}
+  - {reward: genshin.item.id_61211, weight: 1}
+  - {reward: genshin.item.id_61221, weight: 1}
+  - {reward: genshin.item.id_61231, weight: 1}
+  - {reward: genshin.item.id_61241, weight: 1}
+  - {reward: genshin.item.id_61251, weight: 1}
 
 chest_drop_541706: &chest_541706
-  - {reward: *chest_520056, count: "1", weight: 1000}
-  - {reward: *chest_520106, count: "1", weight: 1000}
+  - {reward: *chest_520056, weight: 1}
+  - {reward: *chest_520106, weight: 1}
 
 chest_drop_51020015: &chest_51020015
-  - {reward: *chest_541700, count: "1", weight: 9000}
-  - {reward: *chest_541705, count: "1", weight: 900}
-  - {reward: *chest_541706, count: "1", weight: 100}
+  - {reward: *chest_541700, weight: 90}
+  - {reward: *chest_541705, weight: 9}
+  - {reward: *chest_541706, weight: 1}
 
+# Historical root 51020000 (combat); kept for explicit selection or comparison.
 chest_drop_51020000: &chest_51020000
-  - {reward: 102, count: "10"}
-  - {reward: 307, count: "1"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.geo_sigil}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_51020011, count: "1"}
+  - {reward: *chest_51020011}
   - {reward: *chest_51020013, count: "0.4"}
-  - {reward: *chest_51020014, count: "1"}
+  - {reward: *chest_51020014}
   - {reward: *chest_51020015, count: "0.52"}
 
 chest_drop_51020111: &chest_51020111
-  - {reward: 104001, count: "2.1"}
-  - {reward: 104002, count: "0.3"}
+  - {reward: genshin.item.wanderers_advice, count: "2.1"}
+  - {reward: genshin.item.adventurers_experience, count: "0.3"}
 
 chest_drop_51020113: &chest_51020113 []
 
 chest_drop_51020114: &chest_51020114 []
 
 chest_drop_51020115: &chest_51020115
-  - {reward: *chest_541700, count: "1", weight: 9000}
-  - {reward: *chest_541705, count: "1", weight: 900}
-  - {reward: *chest_541706, count: "1", weight: 100}
+  - {reward: *chest_541700, weight: 90}
+  - {reward: *chest_541705, weight: 9}
+  - {reward: *chest_541706, weight: 1}
 
+# Historical root 51020100 (combat); kept for explicit selection or comparison.
 chest_drop_51020100: &chest_51020100
-  - {reward: 102, count: "10"}
-  - {reward: 307, count: "1"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.geo_sigil}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_51020111, count: "1"}
+  - {reward: *chest_51020111}
   - {reward: *chest_51020113, count: "0.5"}
-  - {reward: *chest_51020114, count: "1"}
+  - {reward: *chest_51020114}
   - {reward: *chest_51020115, count: "0.8"}
 
 chest_drop_51020211: &chest_51020211
-  - {reward: 104001, count: "2.6"}
-  - {reward: 104002, count: "0.4"}
+  - {reward: genshin.item.wanderers_advice, count: "2.6"}
+  - {reward: genshin.item.adventurers_experience, count: "0.4"}
 
 chest_drop_51020213: &chest_51020213 []
 
 chest_drop_51020214: &chest_51020214 []
 
 chest_drop_51020215: &chest_51020215
-  - {reward: *chest_541700, count: "1", weight: 9000}
-  - {reward: *chest_541705, count: "1", weight: 900}
-  - {reward: *chest_541706, count: "1", weight: 100}
+  - {reward: *chest_541700, weight: 90}
+  - {reward: *chest_541705, weight: 9}
+  - {reward: *chest_541706, weight: 1}
 
+# Historical root 51020200 (combat); kept for explicit selection or comparison.
 chest_drop_51020200: &chest_51020200
-  - {reward: 102, count: "10"}
-  - {reward: 307, count: "2"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_51020211, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.geo_sigil, count: "2"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_51020211}
   - {reward: *chest_51020213, count: "0.6"}
-  - {reward: *chest_51020214, count: "1"}
+  - {reward: *chest_51020214}
   - {reward: *chest_51020215, count: "1.2"}
 
 chest_drop_51020311: &chest_51020311
-  - {reward: 104001, count: "3.1"}
-  - {reward: 104002, count: "0.5"}
+  - {reward: genshin.item.wanderers_advice, count: "3.1"}
+  - {reward: genshin.item.adventurers_experience, count: "0.5"}
 
 chest_drop_51020313: &chest_51020313 []
 
 chest_drop_51020314: &chest_51020314 []
 
 chest_drop_51020315: &chest_51020315
-  - {reward: *chest_541700, count: "1", weight: 6600}
-  - {reward: *chest_541705, count: "1", weight: 3060}
-  - {reward: *chest_541706, count: "1", weight: 340}
+  - {reward: *chest_541700, weight: 33}
+  - {reward: *chest_541705, weight: 15.3}
+  - {reward: *chest_541706, weight: 1.7}
 
+# Historical root 51020300 (combat); kept for explicit selection or comparison.
 chest_drop_51020300: &chest_51020300
-  - {reward: 102, count: "20"}
-  - {reward: 307, count: "2"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_51020311, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.geo_sigil, count: "2"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_51020311}
   - {reward: *chest_51020313, count: "0.7"}
-  - {reward: *chest_51020314, count: "1"}
+  - {reward: *chest_51020314}
   - {reward: *chest_51020315, count: "1.5"}
 
 chest_drop_51020411: &chest_51020411
-  - {reward: 104001, count: "3.6"}
-  - {reward: 104002, count: "0.6"}
+  - {reward: genshin.item.wanderers_advice, count: "3.6"}
+  - {reward: genshin.item.adventurers_experience, count: "0.6"}
 
 chest_drop_51020413: &chest_51020413 []
 
 chest_drop_51020414: &chest_51020414 []
 
 chest_drop_51020415: &chest_51020415
-  - {reward: *chest_541700, count: "1", weight: 6600}
-  - {reward: *chest_541705, count: "1", weight: 3060}
-  - {reward: *chest_541706, count: "1", weight: 340}
+  - {reward: *chest_541700, weight: 33}
+  - {reward: *chest_541705, weight: 15.3}
+  - {reward: *chest_541706, weight: 1.7}
 
+# Historical root 51020400 (combat); kept for explicit selection or comparison.
 chest_drop_51020400: &chest_51020400
-  - {reward: 102, count: "20"}
-  - {reward: 307, count: "3"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: *chest_51020411, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.geo_sigil, count: "3"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: *chest_51020411}
   - {reward: *chest_51020413, count: "0.8"}
-  - {reward: *chest_51020414, count: "1"}
+  - {reward: *chest_51020414}
   - {reward: *chest_51020415, count: "1.75"}
 
 chest_drop_51020511: &chest_51020511
-  - {reward: 104002, count: "2.1"}
+  - {reward: genshin.item.adventurers_experience, count: "2.1"}
 
 chest_drop_510010: &chest_510010
-  - {reward: 104310, count: "1", weight: 1000}
-  - {reward: 104313, count: "1", weight: 1000}
-  - {reward: 104316, count: "1", weight: 1000}
+  - {reward: genshin.item.id_104310, weight: 1}
+  - {reward: genshin.item.id_104313, weight: 1}
+  - {reward: genshin.item.id_104316, weight: 1}
 
 chest_drop_51020512: &chest_51020512
   - {reward: *chest_510010, count: "0.25"}
@@ -708,65 +737,66 @@ chest_drop_51020513: &chest_51020513 []
 chest_drop_51020514: &chest_51020514 []
 
 chest_drop_520711: &chest_520711
-  - {reward: 59311, count: "1", weight: 1000}
-  - {reward: 59321, count: "1", weight: 1000}
-  - {reward: 59331, count: "1", weight: 1000}
-  - {reward: 59341, count: "1", weight: 1000}
-  - {reward: 59351, count: "1", weight: 1000}
+  - {reward: genshin.item.id_59311, weight: 1}
+  - {reward: genshin.item.id_59321, weight: 1}
+  - {reward: genshin.item.id_59331, weight: 1}
+  - {reward: genshin.item.id_59341, weight: 1}
+  - {reward: genshin.item.id_59351, weight: 1}
 
 chest_drop_520061: &chest_520061
-  - {reward: 61311, count: "1", weight: 1000}
-  - {reward: 61321, count: "1", weight: 1000}
-  - {reward: 61331, count: "1", weight: 1000}
-  - {reward: 61341, count: "1", weight: 1000}
-  - {reward: 61351, count: "1", weight: 1000}
+  - {reward: genshin.item.id_61311, weight: 1}
+  - {reward: genshin.item.id_61321, weight: 1}
+  - {reward: genshin.item.id_61331, weight: 1}
+  - {reward: genshin.item.id_61341, weight: 1}
+  - {reward: genshin.item.id_61351, weight: 1}
 
 chest_drop_541711: &chest_541711
-  - {reward: *chest_520611, count: "1", weight: 1000}
-  - {reward: *chest_520711, count: "1", weight: 1000}
-  - {reward: *chest_520061, count: "1", weight: 1000}
-  - {reward: *chest_520111, count: "1", weight: 1000}
+  - {reward: *chest_520611, weight: 1}
+  - {reward: *chest_520711, weight: 1}
+  - {reward: *chest_520061, weight: 1}
+  - {reward: *chest_520111, weight: 1}
 
 chest_drop_520712: &chest_520712
-  - {reward: 59312, count: "1", weight: 1000}
-  - {reward: 59322, count: "1", weight: 1000}
-  - {reward: 59332, count: "1", weight: 1000}
-  - {reward: 59342, count: "1", weight: 1000}
-  - {reward: 59352, count: "1", weight: 1000}
+  - {reward: genshin.item.id_59312, weight: 1}
+  - {reward: genshin.item.id_59322, weight: 1}
+  - {reward: genshin.item.id_59332, weight: 1}
+  - {reward: genshin.item.id_59342, weight: 1}
+  - {reward: genshin.item.id_59352, weight: 1}
 
 chest_drop_520062: &chest_520062
-  - {reward: 61312, count: "1", weight: 1000}
-  - {reward: 61322, count: "1", weight: 1000}
-  - {reward: 61332, count: "1", weight: 1000}
-  - {reward: 61342, count: "1", weight: 1000}
-  - {reward: 61352, count: "1", weight: 1000}
+  - {reward: genshin.item.id_61312, weight: 1}
+  - {reward: genshin.item.id_61322, weight: 1}
+  - {reward: genshin.item.id_61332, weight: 1}
+  - {reward: genshin.item.id_61342, weight: 1}
+  - {reward: genshin.item.id_61352, weight: 1}
 
 chest_drop_541712: &chest_541712
-  - {reward: *chest_520612, count: "1", weight: 1000}
-  - {reward: *chest_520712, count: "1", weight: 1000}
-  - {reward: *chest_520062, count: "1", weight: 1000}
-  - {reward: *chest_520112, count: "1", weight: 1000}
+  - {reward: *chest_520612, weight: 1}
+  - {reward: *chest_520712, weight: 1}
+  - {reward: *chest_520062, weight: 1}
+  - {reward: *chest_520112, weight: 1}
 
 chest_drop_51020515: &chest_51020515
-  - {reward: *chest_541700, count: "1", weight: 3400}
-  - {reward: *chest_541705, count: "1", weight: 5040}
-  - {reward: *chest_541706, count: "1", weight: 560}
-  - {reward: *chest_541711, count: "1", weight: 900}
-  - {reward: *chest_541712, count: "1", weight: 100}
+  - {reward: *chest_541700, weight: 17}
+  - {reward: *chest_541705, weight: 25.2}
+  - {reward: *chest_541706, weight: 2.8}
+  - {reward: *chest_541711, weight: 4.5}
+  - {reward: *chest_541712, weight: 0.5}
 
+# Historical root 51020500 (combat); kept for explicit selection or comparison.
 chest_drop_51020500: &chest_51020500
-  - {reward: 102, count: "20"}
-  - {reward: 307, count: "3"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_51020511, count: "1"}
-  - {reward: *chest_51020512, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.geo_sigil, count: "3"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_51020511}
+  - {reward: *chest_51020512}
   - {reward: *chest_51020513, count: "0.9"}
-  - {reward: *chest_51020514, count: "1"}
+  - {reward: *chest_51020514}
   - {reward: *chest_51020515, count: "1.75"}
 
 chest_drop_51020611: &chest_51020611
-  - {reward: 104002, count: "2.6"}
+  - {reward: genshin.item.adventurers_experience, count: "2.6"}
 
 chest_drop_51020612: &chest_51020612
   - {reward: *chest_510010, count: "0.25"}
@@ -776,195 +806,201 @@ chest_drop_51020613: &chest_51020613 []
 chest_drop_51020614: &chest_51020614 []
 
 chest_drop_51020615: &chest_51020615
-  - {reward: *chest_541700, count: "1", weight: 3400}
-  - {reward: *chest_541705, count: "1", weight: 5040}
-  - {reward: *chest_541706, count: "1", weight: 560}
-  - {reward: *chest_541711, count: "1", weight: 900}
-  - {reward: *chest_541712, count: "1", weight: 100}
+  - {reward: *chest_541700, weight: 17}
+  - {reward: *chest_541705, weight: 25.2}
+  - {reward: *chest_541706, weight: 2.8}
+  - {reward: *chest_541711, weight: 4.5}
+  - {reward: *chest_541712, weight: 0.5}
 
+# Historical root 51020600 (combat); kept for explicit selection or comparison.
 chest_drop_51020600: &chest_51020600
-  - {reward: 102, count: "20"}
-  - {reward: 307, count: "4"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "2"}
-  - {reward: 109406, count: "1"}
-  - {reward: *chest_51020611, count: "1"}
-  - {reward: *chest_51020612, count: "1"}
-  - {reward: *chest_51020613, count: "1"}
-  - {reward: *chest_51020614, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.geo_sigil, count: "4"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: genshin.item.id_109406}
+  - {reward: *chest_51020611}
+  - {reward: *chest_51020612}
+  - {reward: *chest_51020613}
+  - {reward: *chest_51020614}
   - {reward: *chest_51020615, count: "2"}
 
 chest_drop_51020711: &chest_51020711
-  - {reward: 104002, count: "1.1"}
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.adventurers_experience, count: "1.1"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_51020712: &chest_51020712
-  - {reward: *chest_510010, count: "1"}
+  - {reward: *chest_510010}
 
 chest_drop_51020713: &chest_51020713 []
 
 chest_drop_51020714: &chest_51020714 []
 
 chest_drop_51020715: &chest_51020715
-  - {reward: *chest_541705, count: "1", weight: 6300}
-  - {reward: *chest_541706, count: "1", weight: 699}
-  - {reward: *chest_541711, count: "1", weight: 2700}
-  - {reward: *chest_541712, count: "1", weight: 300}
+  - {reward: *chest_541705, weight: 21}
+  - {reward: *chest_541706, weight: 2.33}
+  - {reward: *chest_541711, weight: 9}
+  - {reward: *chest_541712, weight: 1}
 
+# Historical root 51020700 (combat); kept for explicit selection or comparison.
 chest_drop_51020700: &chest_51020700
-  - {reward: 102, count: "30"}
-  - {reward: 307, count: "4"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_51020711, count: "1"}
-  - {reward: *chest_51020712, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.geo_sigil, count: "4"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_51020711}
+  - {reward: *chest_51020712}
   - {reward: *chest_51020713, count: "1.1"}
-  - {reward: *chest_51020714, count: "1"}
+  - {reward: *chest_51020714}
   - {reward: *chest_51020715, count: "2"}
 
 chest_drop_51020811: &chest_51020811
-  - {reward: 104002, count: "1.6"}
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.adventurers_experience, count: "1.6"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_51020812: &chest_51020812
-  - {reward: *chest_510010, count: "1"}
+  - {reward: *chest_510010}
 
 chest_drop_51020813: &chest_51020813 []
 
 chest_drop_51020814: &chest_51020814 []
 
 chest_drop_520717: &chest_520717
-  - {reward: 59412, count: "1", weight: 1000}
-  - {reward: 59422, count: "1", weight: 1000}
-  - {reward: 59432, count: "1", weight: 1000}
-  - {reward: 59442, count: "1", weight: 1000}
-  - {reward: 59452, count: "1", weight: 1000}
+  - {reward: genshin.item.id_59412, weight: 1}
+  - {reward: genshin.item.id_59422, weight: 1}
+  - {reward: genshin.item.id_59432, weight: 1}
+  - {reward: genshin.item.id_59442, weight: 1}
+  - {reward: genshin.item.id_59452, weight: 1}
 
 chest_drop_541717: &chest_541717
-  - {reward: *chest_520617, count: "1", weight: 1000}
-  - {reward: *chest_520717, count: "1", weight: 1000}
+  - {reward: *chest_520617, weight: 1}
+  - {reward: *chest_520717, weight: 1}
 
 chest_drop_520718: &chest_520718
-  - {reward: 59413, count: "1", weight: 1000}
-  - {reward: 59423, count: "1", weight: 1000}
-  - {reward: 59433, count: "1", weight: 1000}
-  - {reward: 59443, count: "1", weight: 1000}
-  - {reward: 59453, count: "1", weight: 1000}
+  - {reward: genshin.item.id_59413, weight: 1}
+  - {reward: genshin.item.id_59423, weight: 1}
+  - {reward: genshin.item.id_59433, weight: 1}
+  - {reward: genshin.item.id_59443, weight: 1}
+  - {reward: genshin.item.id_59453, weight: 1}
 
 chest_drop_541718: &chest_541718
-  - {reward: *chest_520618, count: "1", weight: 1000}
-  - {reward: *chest_520718, count: "1", weight: 1000}
+  - {reward: *chest_520618, weight: 1}
+  - {reward: *chest_520718, weight: 1}
 
 chest_drop_51020815: &chest_51020815
-  - {reward: *chest_541711, count: "1", weight: 8100}
-  - {reward: *chest_541712, count: "1", weight: 900}
-  - {reward: *chest_541717, count: "1", weight: 900}
-  - {reward: *chest_541718, count: "1", weight: 100}
+  - {reward: *chest_541711, weight: 81}
+  - {reward: *chest_541712, weight: 9}
+  - {reward: *chest_541717, weight: 9}
+  - {reward: *chest_541718, weight: 1}
 
+# Historical root 51020800 (combat); kept for explicit selection or comparison.
 chest_drop_51020800: &chest_51020800
-  - {reward: 102, count: "30"}
-  - {reward: 307, count: "5"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_51020811, count: "1"}
-  - {reward: *chest_51020812, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.geo_sigil, count: "5"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_51020811}
+  - {reward: *chest_51020812}
   - {reward: *chest_51020813, count: "1.2"}
-  - {reward: *chest_51020814, count: "1"}
+  - {reward: *chest_51020814}
   - {reward: *chest_51020815, count: "2.25"}
 
 chest_drop_51020911: &chest_51020911
-  - {reward: 104003, count: "2"}
+  - {reward: genshin.item.heros_wit, count: "2"}
 
 chest_drop_510011: &chest_510011
-  - {reward: 104311, count: "1", weight: 1000}
-  - {reward: 104314, count: "1", weight: 1000}
-  - {reward: 104317, count: "1", weight: 1000}
+  - {reward: genshin.item.id_104311, weight: 1}
+  - {reward: genshin.item.id_104314, weight: 1}
+  - {reward: genshin.item.id_104317, weight: 1}
 
 chest_drop_51020912: &chest_51020912
-  - {reward: *chest_510011, count: "1"}
+  - {reward: *chest_510011}
 
 chest_drop_51020913: &chest_51020913 []
 
 chest_drop_51020914: &chest_51020914 []
 
 chest_drop_51020915: &chest_51020915
-  - {reward: *chest_541711, count: "1", weight: 8100}
-  - {reward: *chest_541712, count: "1", weight: 900}
-  - {reward: *chest_541717, count: "1", weight: 900}
-  - {reward: *chest_541718, count: "1", weight: 100}
+  - {reward: *chest_541711, weight: 81}
+  - {reward: *chest_541712, weight: 9}
+  - {reward: *chest_541717, weight: 9}
+  - {reward: *chest_541718, weight: 1}
 
+# Historical root 51020900 (combat); kept for explicit selection or comparison.
 chest_drop_51020900: &chest_51020900
-  - {reward: 102, count: "30"}
-  - {reward: 307, count: "5"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_51020911, count: "1"}
-  - {reward: *chest_51020912, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.geo_sigil, count: "5"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_51020911}
+  - {reward: *chest_51020912}
   - {reward: *chest_51020913, count: "1.3"}
-  - {reward: *chest_51020914, count: "1"}
+  - {reward: *chest_51020914}
   - {reward: *chest_51020915, count: "2.25"}
 
 chest_drop_51021011: &chest_51021011
-  - {reward: 104003, count: "2.05"}
+  - {reward: genshin.item.heros_wit, count: "2.05"}
 
 chest_drop_51021012: &chest_51021012
-  - {reward: *chest_510011, count: "1"}
+  - {reward: *chest_510011}
 
 chest_drop_51021013: &chest_51021013 []
 
 chest_drop_51021014: &chest_51021014 []
 
 chest_drop_51021015: &chest_51021015
-  - {reward: *chest_541711, count: "1", weight: 7200}
-  - {reward: *chest_541712, count: "1", weight: 800}
-  - {reward: *chest_541717, count: "1", weight: 1800}
-  - {reward: *chest_541718, count: "1", weight: 200}
+  - {reward: *chest_541711, weight: 36}
+  - {reward: *chest_541712, weight: 4}
+  - {reward: *chest_541717, weight: 9}
+  - {reward: *chest_541718, weight: 1}
 
+# Historical root 51021000 (combat); kept for explicit selection or comparison.
 chest_drop_51021000: &chest_51021000
-  - {reward: 102, count: "30"}
-  - {reward: 307, count: "6"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_51021011, count: "1"}
-  - {reward: *chest_51021012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.geo_sigil, count: "6"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_51021011}
+  - {reward: *chest_51021012}
   - {reward: *chest_51021013, count: "1.4"}
-  - {reward: *chest_51021014, count: "1"}
+  - {reward: *chest_51021014}
   - {reward: *chest_51021015, count: "2.5"}
 
 chest_drop_51021111: &chest_51021111
-  - {reward: 104003, count: "2.1"}
+  - {reward: genshin.item.heros_wit, count: "2.1"}
 
 chest_drop_51021112: &chest_51021112
-  - {reward: *chest_510011, count: "1"}
+  - {reward: *chest_510011}
 
 chest_drop_51021113: &chest_51021113 []
 
 chest_drop_51021114: &chest_51021114 []
 
 chest_drop_51021115: &chest_51021115
-  - {reward: *chest_541711, count: "1", weight: 7200}
-  - {reward: *chest_541712, count: "1", weight: 800}
-  - {reward: *chest_541717, count: "1", weight: 1800}
-  - {reward: *chest_541718, count: "1", weight: 200}
+  - {reward: *chest_541711, weight: 36}
+  - {reward: *chest_541712, weight: 4}
+  - {reward: *chest_541717, weight: 9}
+  - {reward: *chest_541718, weight: 1}
 
+# Historical root 51021100 (combat); kept for explicit selection or comparison.
 chest_drop_51021100: &chest_51021100
-  - {reward: 102, count: "30"}
-  - {reward: 307, count: "6"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_51021111, count: "1"}
-  - {reward: *chest_51021112, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.geo_sigil, count: "6"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_51021111}
+  - {reward: *chest_51021112}
   - {reward: *chest_51021113, count: "1.5"}
-  - {reward: *chest_51021114, count: "1"}
+  - {reward: *chest_51021114}
   - {reward: *chest_51021115, count: "2.5"}
 
 chest_drop_51030011: &chest_51030011
-  - {reward: 104002, count: "2.1"}
+  - {reward: genshin.item.adventurers_experience, count: "2.1"}
 
 chest_drop_510020: &chest_510020
-  - {reward: 104320, count: "1", weight: 1000}
-  - {reward: 104323, count: "1", weight: 1000}
-  - {reward: 104326, count: "1", weight: 1000}
+  - {reward: genshin.item.id_104320, weight: 1}
+  - {reward: genshin.item.id_104323, weight: 1}
+  - {reward: genshin.item.id_104326, weight: 1}
 
 chest_drop_51030012: &chest_51030012
   - {reward: *chest_510020, count: "0.25"}
@@ -974,44 +1010,45 @@ chest_drop_51030013: &chest_51030013 []
 chest_drop_51030014: &chest_51030014 []
 
 chest_drop_542205: &chest_542205
-  - {reward: *chest_520055, count: "1", weight: 1000}
-  - {reward: *chest_520105, count: "1", weight: 1000}
+  - {reward: *chest_520055, weight: 1}
+  - {reward: *chest_520105, weight: 1}
 
 chest_drop_542206: &chest_542206
-  - {reward: *chest_520056, count: "1", weight: 1000}
-  - {reward: *chest_520106, count: "1", weight: 1000}
+  - {reward: *chest_520056, weight: 1}
+  - {reward: *chest_520106, weight: 1}
 
 chest_drop_542211: &chest_542211
-  - {reward: *chest_520611, count: "1", weight: 1000}
-  - {reward: *chest_520711, count: "1", weight: 1000}
-  - {reward: *chest_520061, count: "1", weight: 1000}
-  - {reward: *chest_520111, count: "1", weight: 1000}
+  - {reward: *chest_520611, weight: 1}
+  - {reward: *chest_520711, weight: 1}
+  - {reward: *chest_520061, weight: 1}
+  - {reward: *chest_520111, weight: 1}
 
 chest_drop_542212: &chest_542212
-  - {reward: *chest_520612, count: "1", weight: 1000}
-  - {reward: *chest_520712, count: "1", weight: 1000}
-  - {reward: *chest_520062, count: "1", weight: 1000}
-  - {reward: *chest_520112, count: "1", weight: 1000}
+  - {reward: *chest_520612, weight: 1}
+  - {reward: *chest_520712, weight: 1}
+  - {reward: *chest_520062, weight: 1}
+  - {reward: *chest_520112, weight: 1}
 
 chest_drop_51030015: &chest_51030015
-  - {reward: *chest_542205, count: "1", weight: 6300}
-  - {reward: *chest_542206, count: "1", weight: 699}
-  - {reward: *chest_542211, count: "1", weight: 2700}
-  - {reward: *chest_542212, count: "1", weight: 300}
+  - {reward: *chest_542205, weight: 21}
+  - {reward: *chest_542206, weight: 2.33}
+  - {reward: *chest_542211, weight: 9}
+  - {reward: *chest_542212, weight: 1}
 
+# Historical root 51030000 (combat); kept for explicit selection or comparison.
 chest_drop_51030000: &chest_51030000
-  - {reward: 102, count: "10"}
-  - {reward: 304, count: "1"}
-  - {reward: 202, count: "800;1000"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_51030011, count: "1"}
-  - {reward: *chest_51030012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.electro_sigil}
+  - {reward: genshin.item.mora, count: "800;1000"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_51030011}
+  - {reward: *chest_51030012}
   - {reward: *chest_51030013, count: "0.5"}
-  - {reward: *chest_51030014, count: "1"}
+  - {reward: *chest_51030014}
   - {reward: *chest_51030015, count: "1.5"}
 
 chest_drop_51032011: &chest_51032011
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_51032012: &chest_51032012
   - {reward: *chest_510020, count: "0.5"}
@@ -1021,25 +1058,26 @@ chest_drop_51032013: &chest_51032013 []
 chest_drop_51032014: &chest_51032014 []
 
 chest_drop_51032015: &chest_51032015
-  - {reward: *chest_542205, count: "1", weight: 3060}
-  - {reward: *chest_542206, count: "1", weight: 340}
-  - {reward: *chest_542211, count: "1", weight: 5940}
-  - {reward: *chest_542212, count: "1", weight: 660}
+  - {reward: *chest_542205, weight: 15.3}
+  - {reward: *chest_542206, weight: 1.7}
+  - {reward: *chest_542211, weight: 29.7}
+  - {reward: *chest_542212, weight: 3.3}
 
+# Historical root 51032000 (combat); kept for explicit selection or comparison.
 chest_drop_51032000: &chest_51032000
-  - {reward: 102, count: "20"}
-  - {reward: 304, count: "2"}
-  - {reward: 202, count: "1100;1300"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_51032011, count: "1"}
-  - {reward: *chest_51032012, count: "1"}
-  - {reward: *chest_51032013, count: "1"}
-  - {reward: *chest_51032014, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.electro_sigil, count: "2"}
+  - {reward: genshin.item.mora, count: "1100;1300"}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_51032011}
+  - {reward: *chest_51032012}
+  - {reward: *chest_51032013}
+  - {reward: *chest_51032014}
   - {reward: *chest_51032015, count: "2"}
 
 chest_drop_51033011: &chest_51033011
-  - {reward: 104002, count: "2.1"}
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.adventurers_experience, count: "2.1"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_51033012: &chest_51033012
   - {reward: *chest_510020, count: "1.2"}
@@ -1049,69 +1087,71 @@ chest_drop_51033013: &chest_51033013 []
 chest_drop_51033014: &chest_51033014 []
 
 chest_drop_542217: &chest_542217
-  - {reward: *chest_520617, count: "1", weight: 1000}
-  - {reward: *chest_520717, count: "1", weight: 1000}
+  - {reward: *chest_520617, weight: 1}
+  - {reward: *chest_520717, weight: 1}
 
 chest_drop_542218: &chest_542218
-  - {reward: *chest_520618, count: "1", weight: 1000}
-  - {reward: *chest_520718, count: "1", weight: 1000}
+  - {reward: *chest_520618, weight: 1}
+  - {reward: *chest_520718, weight: 1}
 
 chest_drop_51033015: &chest_51033015
-  - {reward: *chest_542211, count: "1", weight: 8100}
-  - {reward: *chest_542212, count: "1", weight: 900}
-  - {reward: *chest_542217, count: "1", weight: 900}
-  - {reward: *chest_542218, count: "1", weight: 100}
+  - {reward: *chest_542211, weight: 81}
+  - {reward: *chest_542212, weight: 9}
+  - {reward: *chest_542217, weight: 9}
+  - {reward: *chest_542218, weight: 1}
 
+# Historical root 51033000 (combat); kept for explicit selection or comparison.
 chest_drop_51033000: &chest_51033000
-  - {reward: 102, count: "30"}
-  - {reward: 304, count: "3"}
-  - {reward: 202, count: "1400;1600"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_51033011, count: "1"}
-  - {reward: *chest_51033012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.electro_sigil, count: "3"}
+  - {reward: genshin.item.mora, count: "1400;1600"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_51033011}
+  - {reward: *chest_51033012}
   - {reward: *chest_51033013, count: "1.5"}
-  - {reward: *chest_51033014, count: "1"}
+  - {reward: *chest_51033014}
   - {reward: *chest_51033015, count: "2.5"}
 
 chest_drop_51034011: &chest_51034011
-  - {reward: 104003, count: "2.1"}
+  - {reward: genshin.item.heros_wit, count: "2.1"}
 
 chest_drop_510021: &chest_510021
-  - {reward: 104321, count: "1", weight: 1000}
-  - {reward: 104324, count: "1", weight: 1000}
-  - {reward: 104327, count: "1", weight: 1000}
+  - {reward: genshin.item.id_104321, weight: 1}
+  - {reward: genshin.item.id_104324, weight: 1}
+  - {reward: genshin.item.id_104327, weight: 1}
 
 chest_drop_51034012: &chest_51034012
-  - {reward: *chest_510021, count: "1"}
+  - {reward: *chest_510021}
 
 chest_drop_51034013: &chest_51034013 []
 
 chest_drop_51034014: &chest_51034014 []
 
 chest_drop_51034015: &chest_51034015
-  - {reward: *chest_542211, count: "1", weight: 7200}
-  - {reward: *chest_542212, count: "1", weight: 800}
-  - {reward: *chest_542217, count: "1", weight: 1800}
-  - {reward: *chest_542218, count: "1", weight: 200}
+  - {reward: *chest_542211, weight: 36}
+  - {reward: *chest_542212, weight: 4}
+  - {reward: *chest_542217, weight: 9}
+  - {reward: *chest_542218, weight: 1}
 
+# Historical root 51034000 (combat); kept for explicit selection or comparison.
 chest_drop_51034000: &chest_51034000
-  - {reward: 102, count: "30"}
-  - {reward: 304, count: "4"}
-  - {reward: 202, count: "1700;1900"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_51034011, count: "1"}
-  - {reward: *chest_51034012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.electro_sigil, count: "4"}
+  - {reward: genshin.item.mora, count: "1700;1900"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_51034011}
+  - {reward: *chest_51034012}
   - {reward: *chest_51034013, count: "2"}
-  - {reward: *chest_51034014, count: "1"}
+  - {reward: *chest_51034014}
   - {reward: *chest_51034015, count: "3.5"}
 
 chest_drop_51040011: &chest_51040011
-  - {reward: 104002, count: "2.1"}
+  - {reward: genshin.item.adventurers_experience, count: "2.1"}
 
 chest_drop_510030: &chest_510030
-  - {reward: 104329, count: "1", weight: 1000}
-  - {reward: 104332, count: "1", weight: 1000}
-  - {reward: 104335, count: "1", weight: 1000}
+  - {reward: genshin.item.id_104329, weight: 1}
+  - {reward: genshin.item.id_104332, weight: 1}
+  - {reward: genshin.item.id_104335, weight: 1}
 
 chest_drop_51040012: &chest_51040012
   - {reward: *chest_510030, count: "0.25"}
@@ -1121,44 +1161,45 @@ chest_drop_51040013: &chest_51040013 []
 chest_drop_51040014: &chest_51040014 []
 
 chest_drop_542705: &chest_542705
-  - {reward: *chest_520005, count: "1", weight: 1000}
-  - {reward: *chest_520055, count: "1", weight: 1000}
+  - {reward: *chest_520005, weight: 1}
+  - {reward: *chest_520055, weight: 1}
 
 chest_drop_542706: &chest_542706
-  - {reward: *chest_520006, count: "1", weight: 1000}
-  - {reward: *chest_520056, count: "1", weight: 1000}
+  - {reward: *chest_520006, weight: 1}
+  - {reward: *chest_520056, weight: 1}
 
 chest_drop_542711: &chest_542711
-  - {reward: *chest_520661, count: "1", weight: 1000}
-  - {reward: *chest_520711, count: "1", weight: 1000}
-  - {reward: *chest_520011, count: "1", weight: 1000}
-  - {reward: *chest_520061, count: "1", weight: 1000}
+  - {reward: *chest_520661, weight: 1}
+  - {reward: *chest_520711, weight: 1}
+  - {reward: *chest_520011, weight: 1}
+  - {reward: *chest_520061, weight: 1}
 
 chest_drop_542712: &chest_542712
-  - {reward: *chest_520662, count: "1", weight: 1000}
-  - {reward: *chest_520712, count: "1", weight: 1000}
-  - {reward: *chest_520012, count: "1", weight: 1000}
-  - {reward: *chest_520062, count: "1", weight: 1000}
+  - {reward: *chest_520662, weight: 1}
+  - {reward: *chest_520712, weight: 1}
+  - {reward: *chest_520012, weight: 1}
+  - {reward: *chest_520062, weight: 1}
 
 chest_drop_51040015: &chest_51040015
-  - {reward: *chest_542705, count: "1", weight: 6300}
-  - {reward: *chest_542706, count: "1", weight: 699}
-  - {reward: *chest_542711, count: "1", weight: 2700}
-  - {reward: *chest_542712, count: "1", weight: 300}
+  - {reward: *chest_542705, weight: 21}
+  - {reward: *chest_542706, weight: 2.33}
+  - {reward: *chest_542711, weight: 9}
+  - {reward: *chest_542712, weight: 1}
 
+# Historical root 51040000 (combat); kept for explicit selection or comparison.
 chest_drop_51040000: &chest_51040000
-  - {reward: 102, count: "10"}
-  - {reward: 303, count: "1"}
-  - {reward: 202, count: "800;1000"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_51040011, count: "1"}
-  - {reward: *chest_51040012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.dendro_sigil}
+  - {reward: genshin.item.mora, count: "800;1000"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_51040011}
+  - {reward: *chest_51040012}
   - {reward: *chest_51040013, count: "0.5"}
-  - {reward: *chest_51040014, count: "1"}
+  - {reward: *chest_51040014}
   - {reward: *chest_51040015, count: "1.5"}
 
 chest_drop_51042011: &chest_51042011
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_51042012: &chest_51042012
   - {reward: *chest_510030, count: "0.5"}
@@ -1168,25 +1209,26 @@ chest_drop_51042013: &chest_51042013 []
 chest_drop_51042014: &chest_51042014 []
 
 chest_drop_51042015: &chest_51042015
-  - {reward: *chest_542705, count: "1", weight: 3060}
-  - {reward: *chest_542706, count: "1", weight: 340}
-  - {reward: *chest_542711, count: "1", weight: 5940}
-  - {reward: *chest_542712, count: "1", weight: 660}
+  - {reward: *chest_542705, weight: 15.3}
+  - {reward: *chest_542706, weight: 1.7}
+  - {reward: *chest_542711, weight: 29.7}
+  - {reward: *chest_542712, weight: 3.3}
 
+# Historical root 51042000 (combat); kept for explicit selection or comparison.
 chest_drop_51042000: &chest_51042000
-  - {reward: 102, count: "20"}
-  - {reward: 303, count: "2"}
-  - {reward: 202, count: "1100;1300"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_51042011, count: "1"}
-  - {reward: *chest_51042012, count: "1"}
-  - {reward: *chest_51042013, count: "1"}
-  - {reward: *chest_51042014, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.dendro_sigil, count: "2"}
+  - {reward: genshin.item.mora, count: "1100;1300"}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_51042011}
+  - {reward: *chest_51042012}
+  - {reward: *chest_51042013}
+  - {reward: *chest_51042014}
   - {reward: *chest_51042015, count: "2"}
 
 chest_drop_51043011: &chest_51043011
-  - {reward: 104002, count: "2.1"}
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.adventurers_experience, count: "2.1"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_51043012: &chest_51043012
   - {reward: *chest_510030, count: "1.2"}
@@ -1196,64 +1238,66 @@ chest_drop_51043013: &chest_51043013 []
 chest_drop_51043014: &chest_51043014 []
 
 chest_drop_542717: &chest_542717
-  - {reward: *chest_520667, count: "1", weight: 1000}
-  - {reward: *chest_520717, count: "1", weight: 1000}
+  - {reward: *chest_520667, weight: 1}
+  - {reward: *chest_520717, weight: 1}
 
 chest_drop_542718: &chest_542718
-  - {reward: *chest_520668, count: "1", weight: 1000}
-  - {reward: *chest_520718, count: "1", weight: 1000}
+  - {reward: *chest_520668, weight: 1}
+  - {reward: *chest_520718, weight: 1}
 
 chest_drop_51043015: &chest_51043015
-  - {reward: *chest_542711, count: "1", weight: 8100}
-  - {reward: *chest_542712, count: "1", weight: 900}
-  - {reward: *chest_542717, count: "1", weight: 900}
-  - {reward: *chest_542718, count: "1", weight: 100}
+  - {reward: *chest_542711, weight: 81}
+  - {reward: *chest_542712, weight: 9}
+  - {reward: *chest_542717, weight: 9}
+  - {reward: *chest_542718, weight: 1}
 
+# Historical root 51043000 (combat); kept for explicit selection or comparison.
 chest_drop_51043000: &chest_51043000
-  - {reward: 102, count: "30"}
-  - {reward: 303, count: "3"}
-  - {reward: 202, count: "1400;1600"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_51043011, count: "1"}
-  - {reward: *chest_51043012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.dendro_sigil, count: "3"}
+  - {reward: genshin.item.mora, count: "1400;1600"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_51043011}
+  - {reward: *chest_51043012}
   - {reward: *chest_51043013, count: "1.5"}
-  - {reward: *chest_51043014, count: "1"}
+  - {reward: *chest_51043014}
   - {reward: *chest_51043015, count: "2.5"}
 
 chest_drop_51044011: &chest_51044011
-  - {reward: 104003, count: "2.1"}
+  - {reward: genshin.item.heros_wit, count: "2.1"}
 
 chest_drop_510031: &chest_510031
-  - {reward: 104330, count: "1", weight: 1000}
-  - {reward: 104333, count: "1", weight: 1000}
-  - {reward: 104336, count: "1", weight: 1000}
+  - {reward: genshin.item.id_104330, weight: 1}
+  - {reward: genshin.item.id_104333, weight: 1}
+  - {reward: genshin.item.id_104336, weight: 1}
 
 chest_drop_51044012: &chest_51044012
-  - {reward: *chest_510031, count: "1"}
+  - {reward: *chest_510031}
 
 chest_drop_51044013: &chest_51044013 []
 
 chest_drop_51044014: &chest_51044014 []
 
 chest_drop_51044015: &chest_51044015
-  - {reward: *chest_542711, count: "1", weight: 7200}
-  - {reward: *chest_542712, count: "1", weight: 800}
-  - {reward: *chest_542717, count: "1", weight: 1800}
-  - {reward: *chest_542718, count: "1", weight: 200}
+  - {reward: *chest_542711, weight: 36}
+  - {reward: *chest_542712, weight: 4}
+  - {reward: *chest_542717, weight: 9}
+  - {reward: *chest_542718, weight: 1}
 
+# Historical root 51044000 (combat); kept for explicit selection or comparison.
 chest_drop_51044000: &chest_51044000
-  - {reward: 102, count: "30"}
-  - {reward: 303, count: "4"}
-  - {reward: 202, count: "1700;1900"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_51044011, count: "1"}
-  - {reward: *chest_51044012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.dendro_sigil, count: "4"}
+  - {reward: genshin.item.mora, count: "1700;1900"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_51044011}
+  - {reward: *chest_51044012}
   - {reward: *chest_51044013, count: "2"}
-  - {reward: *chest_51044014, count: "1"}
+  - {reward: *chest_51044014}
   - {reward: *chest_51044015, count: "3.5"}
 
 chest_drop_51310011: &chest_51310011
-  - {reward: 104002, count: "2.1"}
+  - {reward: genshin.item.adventurers_experience, count: "2.1"}
 
 chest_drop_51310012: &chest_51310012 []
 
@@ -1262,22 +1306,23 @@ chest_drop_51310013: &chest_51310013 []
 chest_drop_51310014: &chest_51310014 []
 
 chest_drop_51310015: &chest_51310015
-  - {reward: *chest_541155, count: "1", weight: 6300}
-  - {reward: *chest_541156, count: "1", weight: 699}
-  - {reward: *chest_541161, count: "1", weight: 2700}
-  - {reward: *chest_541162, count: "1", weight: 300}
+  - {reward: *chest_541155, weight: 21}
+  - {reward: *chest_541156, weight: 2.33}
+  - {reward: *chest_541161, weight: 9}
+  - {reward: *chest_541162, weight: 1}
 
+# Historical root 51310000 (combat); kept for explicit selection or comparison.
 chest_drop_51310000: &chest_51310000
-  - {reward: 202, count: "800;1000"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_51310011, count: "1"}
-  - {reward: *chest_51310012, count: "1"}
+  - {reward: genshin.item.mora, count: "800;1000"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_51310011}
+  - {reward: *chest_51310012}
   - {reward: *chest_51310013, count: "0.5"}
-  - {reward: *chest_51310014, count: "1"}
+  - {reward: *chest_51310014}
   - {reward: *chest_51310015, count: "1.5"}
 
 chest_drop_51312011: &chest_51312011
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_51312012: &chest_51312012 []
 
@@ -1286,23 +1331,24 @@ chest_drop_51312013: &chest_51312013 []
 chest_drop_51312014: &chest_51312014 []
 
 chest_drop_51312015: &chest_51312015
-  - {reward: *chest_541155, count: "1", weight: 3060}
-  - {reward: *chest_541156, count: "1", weight: 340}
-  - {reward: *chest_541161, count: "1", weight: 5940}
-  - {reward: *chest_541162, count: "1", weight: 660}
+  - {reward: *chest_541155, weight: 15.3}
+  - {reward: *chest_541156, weight: 1.7}
+  - {reward: *chest_541161, weight: 29.7}
+  - {reward: *chest_541162, weight: 3.3}
 
+# Historical root 51312000 (combat); kept for explicit selection or comparison.
 chest_drop_51312000: &chest_51312000
-  - {reward: 202, count: "1100;1300"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_51312011, count: "1"}
-  - {reward: *chest_51312012, count: "1"}
-  - {reward: *chest_51312013, count: "1"}
-  - {reward: *chest_51312014, count: "1"}
+  - {reward: genshin.item.mora, count: "1100;1300"}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_51312011}
+  - {reward: *chest_51312012}
+  - {reward: *chest_51312013}
+  - {reward: *chest_51312014}
   - {reward: *chest_51312015, count: "2"}
 
 chest_drop_51313011: &chest_51313011
-  - {reward: 104002, count: "2.1"}
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.adventurers_experience, count: "2.1"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_51313012: &chest_51313012 []
 
@@ -1311,22 +1357,23 @@ chest_drop_51313013: &chest_51313013 []
 chest_drop_51313014: &chest_51313014 []
 
 chest_drop_51313015: &chest_51313015
-  - {reward: *chest_541161, count: "1", weight: 8100}
-  - {reward: *chest_541162, count: "1", weight: 900}
-  - {reward: *chest_541167, count: "1", weight: 900}
-  - {reward: *chest_541168, count: "1", weight: 100}
+  - {reward: *chest_541161, weight: 81}
+  - {reward: *chest_541162, weight: 9}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 51313000 (combat); kept for explicit selection or comparison.
 chest_drop_51313000: &chest_51313000
-  - {reward: 202, count: "1400;1600"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_51313011, count: "1"}
-  - {reward: *chest_51313012, count: "1"}
+  - {reward: genshin.item.mora, count: "1400;1600"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_51313011}
+  - {reward: *chest_51313012}
   - {reward: *chest_51313013, count: "1.5"}
-  - {reward: *chest_51313014, count: "1"}
+  - {reward: *chest_51313014}
   - {reward: *chest_51313015, count: "2.5"}
 
 chest_drop_51314011: &chest_51314011
-  - {reward: 104003, count: "2.1"}
+  - {reward: genshin.item.heros_wit, count: "2.1"}
 
 chest_drop_51314012: &chest_51314012 []
 
@@ -1335,154 +1382,160 @@ chest_drop_51314013: &chest_51314013 []
 chest_drop_51314014: &chest_51314014 []
 
 chest_drop_51314015: &chest_51314015
-  - {reward: *chest_541161, count: "1", weight: 7200}
-  - {reward: *chest_541162, count: "1", weight: 800}
-  - {reward: *chest_541167, count: "1", weight: 1800}
-  - {reward: *chest_541168, count: "1", weight: 200}
+  - {reward: *chest_541161, weight: 36}
+  - {reward: *chest_541162, weight: 4}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 51314000 (combat); kept for explicit selection or comparison.
 chest_drop_51314000: &chest_51314000
-  - {reward: 202, count: "1700;1900"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_51314011, count: "1"}
-  - {reward: *chest_51314012, count: "1"}
+  - {reward: genshin.item.mora, count: "1700;1900"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_51314011}
+  - {reward: *chest_51314012}
   - {reward: *chest_51314013, count: "2"}
-  - {reward: *chest_51314014, count: "1"}
+  - {reward: *chest_51314014}
   - {reward: *chest_51314015, count: "3.5"}
 
 chest_drop_52010011: &chest_52010011 []
 
 chest_drop_500000: &chest_500000
-  - {reward: 11101, count: "1", weight: 1000}
-  - {reward: 12101, count: "1", weight: 1000}
-  - {reward: 13101, count: "1", weight: 1000}
-  - {reward: 14101, count: "1", weight: 1000}
-  - {reward: 15101, count: "1", weight: 1000}
+  - {reward: genshin.item.id_11101, weight: 1}
+  - {reward: genshin.item.id_12101, weight: 1}
+  - {reward: genshin.item.id_13101, weight: 1}
+  - {reward: genshin.item.id_14101, weight: 1}
+  - {reward: genshin.item.id_15101, weight: 1}
 
 chest_drop_500001: &chest_500001
-  - {reward: 11201, count: "1", weight: 1000}
-  - {reward: 12201, count: "1", weight: 1000}
-  - {reward: 13201, count: "1", weight: 1000}
-  - {reward: 14201, count: "1", weight: 1000}
-  - {reward: 15201, count: "1", weight: 1000}
+  - {reward: genshin.item.id_11201, weight: 1}
+  - {reward: genshin.item.id_12201, weight: 1}
+  - {reward: genshin.item.id_13201, weight: 1}
+  - {reward: genshin.item.id_14201, weight: 1}
+  - {reward: genshin.item.id_15201, weight: 1}
 
 chest_drop_52010013: &chest_52010013
-  - {reward: *chest_500000, count: "1", weight: 8000}
-  - {reward: *chest_500001, count: "1", weight: 2000}
+  - {reward: *chest_500000, weight: 4}
+  - {reward: *chest_500001, weight: 1}
 
 chest_drop_52010014: &chest_52010014
-  - {reward: 104011, count: "2.1"}
-  - {reward: 104012, count: "0.2"}
+  - {reward: genshin.item.enhancement_ore, count: "2.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.2"}
 
 chest_drop_52010015: &chest_52010015
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 52010000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52010000: &chest_52010000
-  - {reward: 102, count: "10"}
-  - {reward: 305, count: "1"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.anemo_sigil}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_52010011, count: "1"}
+  - {reward: *chest_52010011}
   - {reward: *chest_52010013, count: "0.4"}
-  - {reward: *chest_52010014, count: "1"}
+  - {reward: *chest_52010014}
   - {reward: *chest_52010015, count: "0.52"}
 
 chest_drop_52010111: &chest_52010111 []
 
 chest_drop_52010113: &chest_52010113
-  - {reward: *chest_500000, count: "1", weight: 7800}
-  - {reward: *chest_500001, count: "1", weight: 2200}
+  - {reward: *chest_500000, weight: 39}
+  - {reward: *chest_500001, weight: 11}
 
 chest_drop_52010114: &chest_52010114
-  - {reward: 104011, count: "2.6"}
-  - {reward: 104012, count: "0.4"}
+  - {reward: genshin.item.enhancement_ore, count: "2.6"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.4"}
 
 chest_drop_52010115: &chest_52010115
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 52010100 (puzzle); kept for explicit selection or comparison.
 chest_drop_52010100: &chest_52010100
-  - {reward: 102, count: "10"}
-  - {reward: 305, count: "1"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.anemo_sigil}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_52010111, count: "1"}
+  - {reward: *chest_52010111}
   - {reward: *chest_52010113, count: "0.5"}
-  - {reward: *chest_52010114, count: "1"}
+  - {reward: *chest_52010114}
   - {reward: *chest_52010115, count: "0.8"}
 
 chest_drop_52010211: &chest_52010211 []
 
 chest_drop_52010213: &chest_52010213
-  - {reward: *chest_500000, count: "1", weight: 7600}
-  - {reward: *chest_500001, count: "1", weight: 2400}
+  - {reward: *chest_500000, weight: 19}
+  - {reward: *chest_500001, weight: 6}
 
 chest_drop_52010214: &chest_52010214
-  - {reward: 104011, count: "3.1"}
-  - {reward: 104012, count: "0.6"}
+  - {reward: genshin.item.enhancement_ore, count: "3.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.6"}
 
 chest_drop_52010215: &chest_52010215
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 52010200 (puzzle); kept for explicit selection or comparison.
 chest_drop_52010200: &chest_52010200
-  - {reward: 102, count: "10"}
-  - {reward: 305, count: "2"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_52010211, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.anemo_sigil, count: "2"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_52010211}
   - {reward: *chest_52010213, count: "0.6"}
-  - {reward: *chest_52010214, count: "1"}
+  - {reward: *chest_52010214}
   - {reward: *chest_52010215, count: "1.2"}
 
 chest_drop_52010311: &chest_52010311 []
 
 chest_drop_52010313: &chest_52010313
-  - {reward: *chest_500000, count: "1", weight: 7400}
-  - {reward: *chest_500001, count: "1", weight: 2600}
+  - {reward: *chest_500000, weight: 37}
+  - {reward: *chest_500001, weight: 13}
 
 chest_drop_52010314: &chest_52010314
-  - {reward: 104011, count: "4.1"}
-  - {reward: 104012, count: "0.6"}
+  - {reward: genshin.item.enhancement_ore, count: "4.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.6"}
 
 chest_drop_52010315: &chest_52010315
-  - {reward: *chest_541150, count: "1", weight: 6600}
-  - {reward: *chest_541155, count: "1", weight: 3060}
-  - {reward: *chest_541156, count: "1", weight: 340}
+  - {reward: *chest_541150, weight: 33}
+  - {reward: *chest_541155, weight: 15.3}
+  - {reward: *chest_541156, weight: 1.7}
 
+# Historical root 52010300 (puzzle); kept for explicit selection or comparison.
 chest_drop_52010300: &chest_52010300
-  - {reward: 102, count: "20"}
-  - {reward: 305, count: "2"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_52010311, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.anemo_sigil, count: "2"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_52010311}
   - {reward: *chest_52010313, count: "0.7"}
-  - {reward: *chest_52010314, count: "1"}
+  - {reward: *chest_52010314}
   - {reward: *chest_52010315, count: "1.5"}
 
 chest_drop_52010411: &chest_52010411 []
 
 chest_drop_52010413: &chest_52010413
-  - {reward: *chest_500000, count: "1", weight: 7200}
-  - {reward: *chest_500001, count: "1", weight: 2800}
+  - {reward: *chest_500000, weight: 18}
+  - {reward: *chest_500001, weight: 7}
 
 chest_drop_52010414: &chest_52010414
-  - {reward: 104011, count: "5.1"}
-  - {reward: 104012, count: "0.6"}
+  - {reward: genshin.item.enhancement_ore, count: "5.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.6"}
 
 chest_drop_52010415: &chest_52010415
-  - {reward: *chest_541150, count: "1", weight: 6600}
-  - {reward: *chest_541155, count: "1", weight: 3060}
-  - {reward: *chest_541156, count: "1", weight: 340}
+  - {reward: *chest_541150, weight: 33}
+  - {reward: *chest_541155, weight: 15.3}
+  - {reward: *chest_541156, weight: 1.7}
 
+# Historical root 52010400 (puzzle); kept for explicit selection or comparison.
 chest_drop_52010400: &chest_52010400
-  - {reward: 102, count: "20"}
-  - {reward: 305, count: "3"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: *chest_52010411, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.anemo_sigil, count: "3"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: *chest_52010411}
   - {reward: *chest_52010413, count: "0.8"}
-  - {reward: *chest_52010414, count: "1"}
+  - {reward: *chest_52010414}
   - {reward: *chest_52010415, count: "1.75"}
 
 chest_drop_52010511: &chest_52010511 []
@@ -1490,65 +1543,67 @@ chest_drop_52010511: &chest_52010511 []
 chest_drop_52010512: &chest_52010512 []
 
 chest_drop_52010513: &chest_52010513
-  - {reward: *chest_500000, count: "1", weight: 7000}
-  - {reward: *chest_500001, count: "1", weight: 3000}
+  - {reward: *chest_500000, weight: 7}
+  - {reward: *chest_500001, weight: 3}
 
 chest_drop_52010514: &chest_52010514
-  - {reward: 104012, count: "3.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "3.1"}
 
 chest_drop_52010515: &chest_52010515
-  - {reward: *chest_541150, count: "1", weight: 3400}
-  - {reward: *chest_541155, count: "1", weight: 5040}
-  - {reward: *chest_541156, count: "1", weight: 560}
-  - {reward: *chest_541161, count: "1", weight: 900}
-  - {reward: *chest_541162, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 17}
+  - {reward: *chest_541155, weight: 25.2}
+  - {reward: *chest_541156, weight: 2.8}
+  - {reward: *chest_541161, weight: 4.5}
+  - {reward: *chest_541162, weight: 0.5}
 
+# Historical root 52010500 (puzzle); kept for explicit selection or comparison.
 chest_drop_52010500: &chest_52010500
-  - {reward: 102, count: "20"}
-  - {reward: 305, count: "3"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_52010511, count: "1"}
-  - {reward: *chest_52010512, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.anemo_sigil, count: "3"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_52010511}
+  - {reward: *chest_52010512}
   - {reward: *chest_52010513, count: "0.9"}
-  - {reward: *chest_52010514, count: "1"}
+  - {reward: *chest_52010514}
   - {reward: *chest_52010515, count: "1.75"}
 
 chest_drop_500002: &chest_500002
-  - {reward: 11303, count: "1", weight: 1000}
-  - {reward: 12303, count: "1", weight: 1000}
-  - {reward: 14303, count: "1", weight: 1000}
-  - {reward: 15303, count: "1", weight: 1000}
+  - {reward: genshin.item.id_11303, weight: 1}
+  - {reward: genshin.item.id_12303, weight: 1}
+  - {reward: genshin.item.id_14303, weight: 1}
+  - {reward: genshin.item.id_15303, weight: 1}
 
 chest_drop_52010611: &chest_52010611 []
 
 chest_drop_52010612: &chest_52010612 []
 
 chest_drop_52010613: &chest_52010613
-  - {reward: *chest_500000, count: "1", weight: 6800}
-  - {reward: *chest_500001, count: "1", weight: 3200}
+  - {reward: *chest_500000, weight: 17}
+  - {reward: *chest_500001, weight: 8}
 
 chest_drop_52010614: &chest_52010614
-  - {reward: 104012, count: "4.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "4.1"}
 
 chest_drop_52010615: &chest_52010615
-  - {reward: *chest_541150, count: "1", weight: 3400}
-  - {reward: *chest_541155, count: "1", weight: 5040}
-  - {reward: *chest_541156, count: "1", weight: 560}
-  - {reward: *chest_541161, count: "1", weight: 900}
-  - {reward: *chest_541162, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 17}
+  - {reward: *chest_541155, weight: 25.2}
+  - {reward: *chest_541156, weight: 2.8}
+  - {reward: *chest_541161, weight: 4.5}
+  - {reward: *chest_541162, weight: 0.5}
 
+# Historical root 52010600 (puzzle); kept for explicit selection or comparison.
 chest_drop_52010600: &chest_52010600
-  - {reward: 102, count: "20"}
-  - {reward: 305, count: "4"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "2"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.anemo_sigil, count: "4"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "2"}
   - {reward: *chest_500002, count: "0.2999"}
-  - {reward: 109202, count: "1"}
-  - {reward: *chest_52010611, count: "1"}
-  - {reward: *chest_52010612, count: "1"}
-  - {reward: *chest_52010613, count: "1"}
-  - {reward: *chest_52010614, count: "1"}
+  - {reward: genshin.item.id_109202}
+  - {reward: *chest_52010611}
+  - {reward: *chest_52010612}
+  - {reward: *chest_52010613}
+  - {reward: *chest_52010614}
   - {reward: *chest_52010615, count: "2"}
 
 chest_drop_52010711: &chest_52010711 []
@@ -1556,29 +1611,30 @@ chest_drop_52010711: &chest_52010711 []
 chest_drop_52010712: &chest_52010712 []
 
 chest_drop_52010713: &chest_52010713
-  - {reward: *chest_500000, count: "1", weight: 6600}
-  - {reward: *chest_500001, count: "1", weight: 3400}
+  - {reward: *chest_500000, weight: 33}
+  - {reward: *chest_500001, weight: 17}
 
 chest_drop_52010714: &chest_52010714
-  - {reward: 104012, count: "2.1"}
-  - {reward: 104013, count: "1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "2.1"}
+  - {reward: genshin.item.mystic_enhancement_ore}
 
 chest_drop_52010715: &chest_52010715
-  - {reward: *chest_541155, count: "1", weight: 6300}
-  - {reward: *chest_541156, count: "1", weight: 699}
-  - {reward: *chest_541161, count: "1", weight: 2700}
-  - {reward: *chest_541162, count: "1", weight: 300}
+  - {reward: *chest_541155, weight: 21}
+  - {reward: *chest_541156, weight: 2.33}
+  - {reward: *chest_541161, weight: 9}
+  - {reward: *chest_541162, weight: 1}
 
+# Historical root 52010700 (puzzle); kept for explicit selection or comparison.
 chest_drop_52010700: &chest_52010700
-  - {reward: 102, count: "30"}
-  - {reward: 305, count: "4"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "5"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.anemo_sigil, count: "4"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "5"}
   - {reward: *chest_500002, count: "0.2999"}
-  - {reward: *chest_52010711, count: "1"}
-  - {reward: *chest_52010712, count: "1"}
+  - {reward: *chest_52010711}
+  - {reward: *chest_52010712}
   - {reward: *chest_52010713, count: "1.1"}
-  - {reward: *chest_52010714, count: "1"}
+  - {reward: *chest_52010714}
   - {reward: *chest_52010715, count: "2"}
 
 chest_drop_52010811: &chest_52010811 []
@@ -1586,29 +1642,30 @@ chest_drop_52010811: &chest_52010811 []
 chest_drop_52010812: &chest_52010812 []
 
 chest_drop_52010813: &chest_52010813
-  - {reward: *chest_500000, count: "1", weight: 6400}
-  - {reward: *chest_500001, count: "1", weight: 3600}
+  - {reward: *chest_500000, weight: 16}
+  - {reward: *chest_500001, weight: 9}
 
 chest_drop_52010814: &chest_52010814
-  - {reward: 104012, count: "3.1"}
-  - {reward: 104013, count: "1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "3.1"}
+  - {reward: genshin.item.mystic_enhancement_ore}
 
 chest_drop_52010815: &chest_52010815
-  - {reward: *chest_541161, count: "1", weight: 8100}
-  - {reward: *chest_541162, count: "1", weight: 900}
-  - {reward: *chest_541167, count: "1", weight: 900}
-  - {reward: *chest_541168, count: "1", weight: 100}
+  - {reward: *chest_541161, weight: 81}
+  - {reward: *chest_541162, weight: 9}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 52010800 (puzzle); kept for explicit selection or comparison.
 chest_drop_52010800: &chest_52010800
-  - {reward: 102, count: "30"}
-  - {reward: 305, count: "5"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 201, count: "5"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.anemo_sigil, count: "5"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.primogem, count: "5"}
   - {reward: *chest_500002, count: "0.6499"}
-  - {reward: *chest_52010811, count: "1"}
-  - {reward: *chest_52010812, count: "1"}
+  - {reward: *chest_52010811}
+  - {reward: *chest_52010812}
   - {reward: *chest_52010813, count: "1.2"}
-  - {reward: *chest_52010814, count: "1"}
+  - {reward: *chest_52010814}
   - {reward: *chest_52010815, count: "2.25"}
 
 chest_drop_52010911: &chest_52010911 []
@@ -1616,28 +1673,29 @@ chest_drop_52010911: &chest_52010911 []
 chest_drop_52010912: &chest_52010912 []
 
 chest_drop_52010913: &chest_52010913
-  - {reward: *chest_500000, count: "1", weight: 6200}
-  - {reward: *chest_500001, count: "1", weight: 3800}
+  - {reward: *chest_500000, weight: 31}
+  - {reward: *chest_500001, weight: 19}
 
 chest_drop_52010914: &chest_52010914
-  - {reward: 104013, count: "3"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "3"}
 
 chest_drop_52010915: &chest_52010915
-  - {reward: *chest_541161, count: "1", weight: 8100}
-  - {reward: *chest_541162, count: "1", weight: 900}
-  - {reward: *chest_541167, count: "1", weight: 900}
-  - {reward: *chest_541168, count: "1", weight: 100}
+  - {reward: *chest_541161, weight: 81}
+  - {reward: *chest_541162, weight: 9}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 52010900 (puzzle); kept for explicit selection or comparison.
 chest_drop_52010900: &chest_52010900
-  - {reward: 102, count: "30"}
-  - {reward: 305, count: "5"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 201, count: "10"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.anemo_sigil, count: "5"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.primogem, count: "10"}
   - {reward: *chest_500002, count: "0.6499"}
-  - {reward: *chest_52010911, count: "1"}
-  - {reward: *chest_52010912, count: "1"}
+  - {reward: *chest_52010911}
+  - {reward: *chest_52010912}
   - {reward: *chest_52010913, count: "1.3"}
-  - {reward: *chest_52010914, count: "1"}
+  - {reward: *chest_52010914}
   - {reward: *chest_52010915, count: "2.25"}
 
 chest_drop_52011011: &chest_52011011 []
@@ -1645,28 +1703,29 @@ chest_drop_52011011: &chest_52011011 []
 chest_drop_52011012: &chest_52011012 []
 
 chest_drop_52011013: &chest_52011013
-  - {reward: *chest_500000, count: "1", weight: 6000}
-  - {reward: *chest_500001, count: "1", weight: 4000}
+  - {reward: *chest_500000, weight: 3}
+  - {reward: *chest_500001, weight: 2}
 
 chest_drop_52011014: &chest_52011014
-  - {reward: 104013, count: "3.1"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "3.1"}
 
 chest_drop_52011015: &chest_52011015
-  - {reward: *chest_541161, count: "1", weight: 7200}
-  - {reward: *chest_541162, count: "1", weight: 800}
-  - {reward: *chest_541167, count: "1", weight: 1800}
-  - {reward: *chest_541168, count: "1", weight: 200}
+  - {reward: *chest_541161, weight: 36}
+  - {reward: *chest_541162, weight: 4}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 52011000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52011000: &chest_52011000
-  - {reward: 102, count: "30"}
-  - {reward: 305, count: "6"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_500002, count: "1"}
-  - {reward: *chest_52011011, count: "1"}
-  - {reward: *chest_52011012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.anemo_sigil, count: "6"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_500002}
+  - {reward: *chest_52011011}
+  - {reward: *chest_52011012}
   - {reward: *chest_52011013, count: "1.4"}
-  - {reward: *chest_52011014, count: "1"}
+  - {reward: *chest_52011014}
   - {reward: *chest_52011015, count: "2.5"}
 
 chest_drop_52011111: &chest_52011111 []
@@ -1674,150 +1733,156 @@ chest_drop_52011111: &chest_52011111 []
 chest_drop_52011112: &chest_52011112 []
 
 chest_drop_52011113: &chest_52011113
-  - {reward: *chest_500000, count: "1", weight: 5800}
-  - {reward: *chest_500001, count: "1", weight: 4200}
+  - {reward: *chest_500000, weight: 29}
+  - {reward: *chest_500001, weight: 21}
 
 chest_drop_52011114: &chest_52011114
-  - {reward: 104013, count: "3.2"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "3.2"}
 
 chest_drop_52011115: &chest_52011115
-  - {reward: *chest_541161, count: "1", weight: 7200}
-  - {reward: *chest_541162, count: "1", weight: 800}
-  - {reward: *chest_541167, count: "1", weight: 1800}
-  - {reward: *chest_541168, count: "1", weight: 200}
+  - {reward: *chest_541161, weight: 36}
+  - {reward: *chest_541162, weight: 4}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 52011100 (puzzle); kept for explicit selection or comparison.
 chest_drop_52011100: &chest_52011100
-  - {reward: 102, count: "30"}
-  - {reward: 305, count: "6"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_500002, count: "1"}
-  - {reward: *chest_52011111, count: "1"}
-  - {reward: *chest_52011112, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.anemo_sigil, count: "6"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_500002}
+  - {reward: *chest_52011111}
+  - {reward: *chest_52011112}
   - {reward: *chest_52011113, count: "1.5"}
-  - {reward: *chest_52011114, count: "1"}
+  - {reward: *chest_52011114}
   - {reward: *chest_52011115, count: "2.5"}
 
 chest_drop_52020011: &chest_52020011 []
 
 chest_drop_52020013: &chest_52020013
-  - {reward: *chest_500000, count: "1", weight: 8000}
-  - {reward: *chest_500001, count: "1", weight: 2000}
+  - {reward: *chest_500000, weight: 4}
+  - {reward: *chest_500001, weight: 1}
 
 chest_drop_52020014: &chest_52020014
-  - {reward: 104011, count: "2.1"}
-  - {reward: 104012, count: "0.2"}
+  - {reward: genshin.item.enhancement_ore, count: "2.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.2"}
 
 chest_drop_52020015: &chest_52020015
-  - {reward: *chest_541700, count: "1", weight: 9000}
-  - {reward: *chest_541705, count: "1", weight: 900}
-  - {reward: *chest_541706, count: "1", weight: 100}
+  - {reward: *chest_541700, weight: 90}
+  - {reward: *chest_541705, weight: 9}
+  - {reward: *chest_541706, weight: 1}
 
+# Historical root 52020000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52020000: &chest_52020000
-  - {reward: 102, count: "10"}
-  - {reward: 307, count: "1"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.geo_sigil}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_52020011, count: "1"}
+  - {reward: *chest_52020011}
   - {reward: *chest_52020013, count: "0.4"}
-  - {reward: *chest_52020014, count: "1"}
+  - {reward: *chest_52020014}
   - {reward: *chest_52020015, count: "0.52"}
 
 chest_drop_52020111: &chest_52020111 []
 
 chest_drop_52020113: &chest_52020113
-  - {reward: *chest_500000, count: "1", weight: 7800}
-  - {reward: *chest_500001, count: "1", weight: 2200}
+  - {reward: *chest_500000, weight: 39}
+  - {reward: *chest_500001, weight: 11}
 
 chest_drop_52020114: &chest_52020114
-  - {reward: 104011, count: "2.6"}
-  - {reward: 104012, count: "0.4"}
+  - {reward: genshin.item.enhancement_ore, count: "2.6"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.4"}
 
 chest_drop_52020115: &chest_52020115
-  - {reward: *chest_541700, count: "1", weight: 9000}
-  - {reward: *chest_541705, count: "1", weight: 900}
-  - {reward: *chest_541706, count: "1", weight: 100}
+  - {reward: *chest_541700, weight: 90}
+  - {reward: *chest_541705, weight: 9}
+  - {reward: *chest_541706, weight: 1}
 
+# Historical root 52020100 (puzzle); kept for explicit selection or comparison.
 chest_drop_52020100: &chest_52020100
-  - {reward: 102, count: "10"}
-  - {reward: 307, count: "1"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.geo_sigil}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_52020111, count: "1"}
+  - {reward: *chest_52020111}
   - {reward: *chest_52020113, count: "0.5"}
-  - {reward: *chest_52020114, count: "1"}
+  - {reward: *chest_52020114}
   - {reward: *chest_52020115, count: "0.8"}
 
 chest_drop_52020211: &chest_52020211 []
 
 chest_drop_52020213: &chest_52020213
-  - {reward: *chest_500000, count: "1", weight: 7600}
-  - {reward: *chest_500001, count: "1", weight: 2400}
+  - {reward: *chest_500000, weight: 19}
+  - {reward: *chest_500001, weight: 6}
 
 chest_drop_52020214: &chest_52020214
-  - {reward: 104011, count: "3.1"}
-  - {reward: 104012, count: "0.6"}
+  - {reward: genshin.item.enhancement_ore, count: "3.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.6"}
 
 chest_drop_52020215: &chest_52020215
-  - {reward: *chest_541700, count: "1", weight: 9000}
-  - {reward: *chest_541705, count: "1", weight: 900}
-  - {reward: *chest_541706, count: "1", weight: 100}
+  - {reward: *chest_541700, weight: 90}
+  - {reward: *chest_541705, weight: 9}
+  - {reward: *chest_541706, weight: 1}
 
+# Historical root 52020200 (puzzle); kept for explicit selection or comparison.
 chest_drop_52020200: &chest_52020200
-  - {reward: 102, count: "10"}
-  - {reward: 307, count: "2"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_52020211, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.geo_sigil, count: "2"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_52020211}
   - {reward: *chest_52020213, count: "0.6"}
-  - {reward: *chest_52020214, count: "1"}
+  - {reward: *chest_52020214}
   - {reward: *chest_52020215, count: "1.2"}
 
 chest_drop_52020311: &chest_52020311 []
 
 chest_drop_52020313: &chest_52020313
-  - {reward: *chest_500000, count: "1", weight: 7400}
-  - {reward: *chest_500001, count: "1", weight: 2600}
+  - {reward: *chest_500000, weight: 37}
+  - {reward: *chest_500001, weight: 13}
 
 chest_drop_52020314: &chest_52020314
-  - {reward: 104011, count: "4.1"}
-  - {reward: 104012, count: "0.6"}
+  - {reward: genshin.item.enhancement_ore, count: "4.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.6"}
 
 chest_drop_52020315: &chest_52020315
-  - {reward: *chest_541700, count: "1", weight: 6600}
-  - {reward: *chest_541705, count: "1", weight: 3060}
-  - {reward: *chest_541706, count: "1", weight: 340}
+  - {reward: *chest_541700, weight: 33}
+  - {reward: *chest_541705, weight: 15.3}
+  - {reward: *chest_541706, weight: 1.7}
 
+# Historical root 52020300 (puzzle); kept for explicit selection or comparison.
 chest_drop_52020300: &chest_52020300
-  - {reward: 102, count: "20"}
-  - {reward: 307, count: "2"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_52020311, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.geo_sigil, count: "2"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_52020311}
   - {reward: *chest_52020313, count: "0.7"}
-  - {reward: *chest_52020314, count: "1"}
+  - {reward: *chest_52020314}
   - {reward: *chest_52020315, count: "1.5"}
 
 chest_drop_52020411: &chest_52020411 []
 
 chest_drop_52020413: &chest_52020413
-  - {reward: *chest_500000, count: "1", weight: 7200}
-  - {reward: *chest_500001, count: "1", weight: 2800}
+  - {reward: *chest_500000, weight: 18}
+  - {reward: *chest_500001, weight: 7}
 
 chest_drop_52020414: &chest_52020414
-  - {reward: 104011, count: "5.1"}
-  - {reward: 104012, count: "0.6"}
+  - {reward: genshin.item.enhancement_ore, count: "5.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.6"}
 
 chest_drop_52020415: &chest_52020415
-  - {reward: *chest_541700, count: "1", weight: 6600}
-  - {reward: *chest_541705, count: "1", weight: 3060}
-  - {reward: *chest_541706, count: "1", weight: 340}
+  - {reward: *chest_541700, weight: 33}
+  - {reward: *chest_541705, weight: 15.3}
+  - {reward: *chest_541706, weight: 1.7}
 
+# Historical root 52020400 (puzzle); kept for explicit selection or comparison.
 chest_drop_52020400: &chest_52020400
-  - {reward: 102, count: "20"}
-  - {reward: 307, count: "3"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: *chest_52020411, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.geo_sigil, count: "3"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: *chest_52020411}
   - {reward: *chest_52020413, count: "0.8"}
-  - {reward: *chest_52020414, count: "1"}
+  - {reward: *chest_52020414}
   - {reward: *chest_52020415, count: "1.75"}
 
 chest_drop_52020511: &chest_52020511 []
@@ -1825,67 +1890,69 @@ chest_drop_52020511: &chest_52020511 []
 chest_drop_52020512: &chest_52020512 []
 
 chest_drop_52020513: &chest_52020513
-  - {reward: *chest_500000, count: "1", weight: 7000}
-  - {reward: *chest_500001, count: "1", weight: 3000}
+  - {reward: *chest_500000, weight: 7}
+  - {reward: *chest_500001, weight: 3}
 
 chest_drop_52020514: &chest_52020514
-  - {reward: 104012, count: "3.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "3.1"}
 
 chest_drop_52020515: &chest_52020515
-  - {reward: *chest_541700, count: "1", weight: 3400}
-  - {reward: *chest_541705, count: "1", weight: 5040}
-  - {reward: *chest_541706, count: "1", weight: 560}
-  - {reward: *chest_541711, count: "1", weight: 900}
-  - {reward: *chest_541712, count: "1", weight: 100}
+  - {reward: *chest_541700, weight: 17}
+  - {reward: *chest_541705, weight: 25.2}
+  - {reward: *chest_541706, weight: 2.8}
+  - {reward: *chest_541711, weight: 4.5}
+  - {reward: *chest_541712, weight: 0.5}
 
+# Historical root 52020500 (puzzle); kept for explicit selection or comparison.
 chest_drop_52020500: &chest_52020500
-  - {reward: 102, count: "20"}
-  - {reward: 307, count: "3"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_52020511, count: "1"}
-  - {reward: *chest_52020512, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.geo_sigil, count: "3"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_52020511}
+  - {reward: *chest_52020512}
   - {reward: *chest_52020513, count: "0.9"}
-  - {reward: *chest_52020514, count: "1"}
+  - {reward: *chest_52020514}
   - {reward: *chest_52020515, count: "1.75"}
 
 chest_drop_500003: &chest_500003
-  - {reward: 11305, count: "1", weight: 1000}
-  - {reward: 12306, count: "1", weight: 1000}
-  - {reward: 13301, count: "1", weight: 1000}
-  - {reward: 13302, count: "1", weight: 1000}
-  - {reward: 14305, count: "1", weight: 1000}
-  - {reward: 15305, count: "1", weight: 1000}
+  - {reward: genshin.item.id_11305, weight: 1}
+  - {reward: genshin.item.id_12306, weight: 1}
+  - {reward: genshin.item.id_13301, weight: 1}
+  - {reward: genshin.item.id_13302, weight: 1}
+  - {reward: genshin.item.id_14305, weight: 1}
+  - {reward: genshin.item.id_15305, weight: 1}
 
 chest_drop_52020611: &chest_52020611 []
 
 chest_drop_52020612: &chest_52020612 []
 
 chest_drop_52020613: &chest_52020613
-  - {reward: *chest_500000, count: "1", weight: 6800}
-  - {reward: *chest_500001, count: "1", weight: 3200}
+  - {reward: *chest_500000, weight: 17}
+  - {reward: *chest_500001, weight: 8}
 
 chest_drop_52020614: &chest_52020614
-  - {reward: 104012, count: "4.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "4.1"}
 
 chest_drop_52020615: &chest_52020615
-  - {reward: *chest_541700, count: "1", weight: 3400}
-  - {reward: *chest_541705, count: "1", weight: 5040}
-  - {reward: *chest_541706, count: "1", weight: 560}
-  - {reward: *chest_541711, count: "1", weight: 900}
-  - {reward: *chest_541712, count: "1", weight: 100}
+  - {reward: *chest_541700, weight: 17}
+  - {reward: *chest_541705, weight: 25.2}
+  - {reward: *chest_541706, weight: 2.8}
+  - {reward: *chest_541711, weight: 4.5}
+  - {reward: *chest_541712, weight: 0.5}
 
+# Historical root 52020600 (puzzle); kept for explicit selection or comparison.
 chest_drop_52020600: &chest_52020600
-  - {reward: 102, count: "20"}
-  - {reward: 307, count: "4"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "2"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.geo_sigil, count: "4"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "2"}
   - {reward: *chest_500003, count: "0.2999"}
-  - {reward: 109407, count: "1"}
-  - {reward: *chest_52020611, count: "1"}
-  - {reward: *chest_52020612, count: "1"}
-  - {reward: *chest_52020613, count: "1"}
-  - {reward: *chest_52020614, count: "1"}
+  - {reward: genshin.item.id_109407}
+  - {reward: *chest_52020611}
+  - {reward: *chest_52020612}
+  - {reward: *chest_52020613}
+  - {reward: *chest_52020614}
   - {reward: *chest_52020615, count: "2"}
 
 chest_drop_52020711: &chest_52020711 []
@@ -1893,29 +1960,30 @@ chest_drop_52020711: &chest_52020711 []
 chest_drop_52020712: &chest_52020712 []
 
 chest_drop_52020713: &chest_52020713
-  - {reward: *chest_500000, count: "1", weight: 6600}
-  - {reward: *chest_500001, count: "1", weight: 3400}
+  - {reward: *chest_500000, weight: 33}
+  - {reward: *chest_500001, weight: 17}
 
 chest_drop_52020714: &chest_52020714
-  - {reward: 104012, count: "2.1"}
-  - {reward: 104013, count: "1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "2.1"}
+  - {reward: genshin.item.mystic_enhancement_ore}
 
 chest_drop_52020715: &chest_52020715
-  - {reward: *chest_541705, count: "1", weight: 6300}
-  - {reward: *chest_541706, count: "1", weight: 699}
-  - {reward: *chest_541711, count: "1", weight: 2700}
-  - {reward: *chest_541712, count: "1", weight: 300}
+  - {reward: *chest_541705, weight: 21}
+  - {reward: *chest_541706, weight: 2.33}
+  - {reward: *chest_541711, weight: 9}
+  - {reward: *chest_541712, weight: 1}
 
+# Historical root 52020700 (puzzle); kept for explicit selection or comparison.
 chest_drop_52020700: &chest_52020700
-  - {reward: 102, count: "30"}
-  - {reward: 307, count: "4"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "5"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.geo_sigil, count: "4"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "5"}
   - {reward: *chest_500003, count: "0.2999"}
-  - {reward: *chest_52020711, count: "1"}
-  - {reward: *chest_52020712, count: "1"}
+  - {reward: *chest_52020711}
+  - {reward: *chest_52020712}
   - {reward: *chest_52020713, count: "1.1"}
-  - {reward: *chest_52020714, count: "1"}
+  - {reward: *chest_52020714}
   - {reward: *chest_52020715, count: "2"}
 
 chest_drop_52020811: &chest_52020811 []
@@ -1923,29 +1991,30 @@ chest_drop_52020811: &chest_52020811 []
 chest_drop_52020812: &chest_52020812 []
 
 chest_drop_52020813: &chest_52020813
-  - {reward: *chest_500000, count: "1", weight: 6400}
-  - {reward: *chest_500001, count: "1", weight: 3600}
+  - {reward: *chest_500000, weight: 16}
+  - {reward: *chest_500001, weight: 9}
 
 chest_drop_52020814: &chest_52020814
-  - {reward: 104012, count: "3.1"}
-  - {reward: 104013, count: "1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "3.1"}
+  - {reward: genshin.item.mystic_enhancement_ore}
 
 chest_drop_52020815: &chest_52020815
-  - {reward: *chest_541711, count: "1", weight: 8100}
-  - {reward: *chest_541712, count: "1", weight: 900}
-  - {reward: *chest_541717, count: "1", weight: 900}
-  - {reward: *chest_541718, count: "1", weight: 100}
+  - {reward: *chest_541711, weight: 81}
+  - {reward: *chest_541712, weight: 9}
+  - {reward: *chest_541717, weight: 9}
+  - {reward: *chest_541718, weight: 1}
 
+# Historical root 52020800 (puzzle); kept for explicit selection or comparison.
 chest_drop_52020800: &chest_52020800
-  - {reward: 102, count: "30"}
-  - {reward: 307, count: "5"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 201, count: "5"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.geo_sigil, count: "5"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.primogem, count: "5"}
   - {reward: *chest_500003, count: "0.6499"}
-  - {reward: *chest_52020811, count: "1"}
-  - {reward: *chest_52020812, count: "1"}
+  - {reward: *chest_52020811}
+  - {reward: *chest_52020812}
   - {reward: *chest_52020813, count: "1.2"}
-  - {reward: *chest_52020814, count: "1"}
+  - {reward: *chest_52020814}
   - {reward: *chest_52020815, count: "2.25"}
 
 chest_drop_52020911: &chest_52020911 []
@@ -1953,28 +2022,29 @@ chest_drop_52020911: &chest_52020911 []
 chest_drop_52020912: &chest_52020912 []
 
 chest_drop_52020913: &chest_52020913
-  - {reward: *chest_500000, count: "1", weight: 6200}
-  - {reward: *chest_500001, count: "1", weight: 3800}
+  - {reward: *chest_500000, weight: 31}
+  - {reward: *chest_500001, weight: 19}
 
 chest_drop_52020914: &chest_52020914
-  - {reward: 104013, count: "3"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "3"}
 
 chest_drop_52020915: &chest_52020915
-  - {reward: *chest_541711, count: "1", weight: 8100}
-  - {reward: *chest_541712, count: "1", weight: 900}
-  - {reward: *chest_541717, count: "1", weight: 900}
-  - {reward: *chest_541718, count: "1", weight: 100}
+  - {reward: *chest_541711, weight: 81}
+  - {reward: *chest_541712, weight: 9}
+  - {reward: *chest_541717, weight: 9}
+  - {reward: *chest_541718, weight: 1}
 
+# Historical root 52020900 (puzzle); kept for explicit selection or comparison.
 chest_drop_52020900: &chest_52020900
-  - {reward: 102, count: "30"}
-  - {reward: 307, count: "5"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 201, count: "10"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.geo_sigil, count: "5"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.primogem, count: "10"}
   - {reward: *chest_500003, count: "0.6499"}
-  - {reward: *chest_52020911, count: "1"}
-  - {reward: *chest_52020912, count: "1"}
+  - {reward: *chest_52020911}
+  - {reward: *chest_52020912}
   - {reward: *chest_52020913, count: "1.3"}
-  - {reward: *chest_52020914, count: "1"}
+  - {reward: *chest_52020914}
   - {reward: *chest_52020915, count: "2.25"}
 
 chest_drop_52021011: &chest_52021011 []
@@ -1982,28 +2052,29 @@ chest_drop_52021011: &chest_52021011 []
 chest_drop_52021012: &chest_52021012 []
 
 chest_drop_52021013: &chest_52021013
-  - {reward: *chest_500000, count: "1", weight: 6000}
-  - {reward: *chest_500001, count: "1", weight: 4000}
+  - {reward: *chest_500000, weight: 3}
+  - {reward: *chest_500001, weight: 2}
 
 chest_drop_52021014: &chest_52021014
-  - {reward: 104013, count: "3.1"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "3.1"}
 
 chest_drop_52021015: &chest_52021015
-  - {reward: *chest_541711, count: "1", weight: 7200}
-  - {reward: *chest_541712, count: "1", weight: 800}
-  - {reward: *chest_541717, count: "1", weight: 1800}
-  - {reward: *chest_541718, count: "1", weight: 200}
+  - {reward: *chest_541711, weight: 36}
+  - {reward: *chest_541712, weight: 4}
+  - {reward: *chest_541717, weight: 9}
+  - {reward: *chest_541718, weight: 1}
 
+# Historical root 52021000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52021000: &chest_52021000
-  - {reward: 102, count: "30"}
-  - {reward: 307, count: "6"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_500003, count: "1"}
-  - {reward: *chest_52021011, count: "1"}
-  - {reward: *chest_52021012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.geo_sigil, count: "6"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_500003}
+  - {reward: *chest_52021011}
+  - {reward: *chest_52021012}
   - {reward: *chest_52021013, count: "1.4"}
-  - {reward: *chest_52021014, count: "1"}
+  - {reward: *chest_52021014}
   - {reward: *chest_52021015, count: "2.5"}
 
 chest_drop_52021111: &chest_52021111 []
@@ -2011,28 +2082,29 @@ chest_drop_52021111: &chest_52021111 []
 chest_drop_52021112: &chest_52021112 []
 
 chest_drop_52021113: &chest_52021113
-  - {reward: *chest_500000, count: "1", weight: 5800}
-  - {reward: *chest_500001, count: "1", weight: 4200}
+  - {reward: *chest_500000, weight: 29}
+  - {reward: *chest_500001, weight: 21}
 
 chest_drop_52021114: &chest_52021114
-  - {reward: 104013, count: "3.2"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "3.2"}
 
 chest_drop_52021115: &chest_52021115
-  - {reward: *chest_541711, count: "1", weight: 7200}
-  - {reward: *chest_541712, count: "1", weight: 800}
-  - {reward: *chest_541717, count: "1", weight: 1800}
-  - {reward: *chest_541718, count: "1", weight: 200}
+  - {reward: *chest_541711, weight: 36}
+  - {reward: *chest_541712, weight: 4}
+  - {reward: *chest_541717, weight: 9}
+  - {reward: *chest_541718, weight: 1}
 
+# Historical root 52021100 (puzzle); kept for explicit selection or comparison.
 chest_drop_52021100: &chest_52021100
-  - {reward: 102, count: "30"}
-  - {reward: 307, count: "6"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_500003, count: "1"}
-  - {reward: *chest_52021111, count: "1"}
-  - {reward: *chest_52021112, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.geo_sigil, count: "6"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_500003}
+  - {reward: *chest_52021111}
+  - {reward: *chest_52021112}
   - {reward: *chest_52021113, count: "1.5"}
-  - {reward: *chest_52021114, count: "1"}
+  - {reward: *chest_52021114}
   - {reward: *chest_52021115, count: "2.5"}
 
 chest_drop_52030011: &chest_52030011 []
@@ -2040,27 +2112,28 @@ chest_drop_52030011: &chest_52030011 []
 chest_drop_52030012: &chest_52030012 []
 
 chest_drop_52030013: &chest_52030013
-  - {reward: *chest_500000, count: "1", weight: 7500}
-  - {reward: *chest_500001, count: "1", weight: 2500}
+  - {reward: *chest_500000, weight: 3}
+  - {reward: *chest_500001, weight: 1}
 
 chest_drop_52030014: &chest_52030014
-  - {reward: 104012, count: "3.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "3.1"}
 
 chest_drop_52030015: &chest_52030015
-  - {reward: *chest_542205, count: "1", weight: 6300}
-  - {reward: *chest_542206, count: "1", weight: 699}
-  - {reward: *chest_542211, count: "1", weight: 2700}
-  - {reward: *chest_542212, count: "1", weight: 300}
+  - {reward: *chest_542205, weight: 21}
+  - {reward: *chest_542206, weight: 2.33}
+  - {reward: *chest_542211, weight: 9}
+  - {reward: *chest_542212, weight: 1}
 
+# Historical root 52030000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52030000: &chest_52030000
-  - {reward: 102, count: "10"}
-  - {reward: 304, count: "1"}
-  - {reward: 202, count: "800;1000"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_52030011, count: "1"}
-  - {reward: *chest_52030012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.electro_sigil}
+  - {reward: genshin.item.mora, count: "800;1000"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_52030011}
+  - {reward: *chest_52030012}
   - {reward: *chest_52030013, count: "0.5"}
-  - {reward: *chest_52030014, count: "1"}
+  - {reward: *chest_52030014}
   - {reward: *chest_52030015, count: "1.5"}
 
 chest_drop_52032011: &chest_52032011 []
@@ -2068,28 +2141,29 @@ chest_drop_52032011: &chest_52032011 []
 chest_drop_52032012: &chest_52032012 []
 
 chest_drop_52032013: &chest_52032013
-  - {reward: *chest_500000, count: "1", weight: 6500}
-  - {reward: *chest_500001, count: "1", weight: 3500}
+  - {reward: *chest_500000, weight: 13}
+  - {reward: *chest_500001, weight: 7}
 
 chest_drop_52032014: &chest_52032014
-  - {reward: 104012, count: "2.1"}
-  - {reward: 104013, count: "1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "2.1"}
+  - {reward: genshin.item.mystic_enhancement_ore}
 
 chest_drop_52032015: &chest_52032015
-  - {reward: *chest_542205, count: "1", weight: 3060}
-  - {reward: *chest_542206, count: "1", weight: 340}
-  - {reward: *chest_542211, count: "1", weight: 5940}
-  - {reward: *chest_542212, count: "1", weight: 660}
+  - {reward: *chest_542205, weight: 15.3}
+  - {reward: *chest_542206, weight: 1.7}
+  - {reward: *chest_542211, weight: 29.7}
+  - {reward: *chest_542212, weight: 3.3}
 
+# Historical root 52032000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52032000: &chest_52032000
-  - {reward: 102, count: "20"}
-  - {reward: 304, count: "2"}
-  - {reward: 202, count: "1100;1300"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_52032011, count: "1"}
-  - {reward: *chest_52032012, count: "1"}
-  - {reward: *chest_52032013, count: "1"}
-  - {reward: *chest_52032014, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.electro_sigil, count: "2"}
+  - {reward: genshin.item.mora, count: "1100;1300"}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_52032011}
+  - {reward: *chest_52032012}
+  - {reward: *chest_52032013}
+  - {reward: *chest_52032014}
   - {reward: *chest_52032015, count: "2"}
 
 chest_drop_52033011: &chest_52033011 []
@@ -2097,27 +2171,28 @@ chest_drop_52033011: &chest_52033011 []
 chest_drop_52033012: &chest_52033012 []
 
 chest_drop_52033013: &chest_52033013
-  - {reward: *chest_500000, count: "1", weight: 5000}
-  - {reward: *chest_500001, count: "1", weight: 5000}
+  - {reward: *chest_500000, weight: 1}
+  - {reward: *chest_500001, weight: 1}
 
 chest_drop_52033014: &chest_52033014
-  - {reward: 104013, count: "2"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "2"}
 
 chest_drop_52033015: &chest_52033015
-  - {reward: *chest_542211, count: "1", weight: 8100}
-  - {reward: *chest_542212, count: "1", weight: 900}
-  - {reward: *chest_542217, count: "1", weight: 900}
-  - {reward: *chest_542218, count: "1", weight: 100}
+  - {reward: *chest_542211, weight: 81}
+  - {reward: *chest_542212, weight: 9}
+  - {reward: *chest_542217, weight: 9}
+  - {reward: *chest_542218, weight: 1}
 
+# Historical root 52033000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52033000: &chest_52033000
-  - {reward: 102, count: "30"}
-  - {reward: 304, count: "3"}
-  - {reward: 202, count: "1400;1600"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_52033011, count: "1"}
-  - {reward: *chest_52033012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.electro_sigil, count: "3"}
+  - {reward: genshin.item.mora, count: "1400;1600"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_52033011}
+  - {reward: *chest_52033012}
   - {reward: *chest_52033013, count: "1.5"}
-  - {reward: *chest_52033014, count: "1"}
+  - {reward: *chest_52033014}
   - {reward: *chest_52033015, count: "2.5"}
 
 chest_drop_52034011: &chest_52034011 []
@@ -2125,26 +2200,27 @@ chest_drop_52034011: &chest_52034011 []
 chest_drop_52034012: &chest_52034012 []
 
 chest_drop_52034013: &chest_52034013
-  - {reward: *chest_500001, count: "1", weight: 10000}
+  - {reward: *chest_500001, weight: 1}
 
 chest_drop_52034014: &chest_52034014
-  - {reward: 104013, count: "4.2"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "4.2"}
 
 chest_drop_52034015: &chest_52034015
-  - {reward: *chest_542211, count: "1", weight: 7200}
-  - {reward: *chest_542212, count: "1", weight: 800}
-  - {reward: *chest_542217, count: "1", weight: 1800}
-  - {reward: *chest_542218, count: "1", weight: 200}
+  - {reward: *chest_542211, weight: 36}
+  - {reward: *chest_542212, weight: 4}
+  - {reward: *chest_542217, weight: 9}
+  - {reward: *chest_542218, weight: 1}
 
+# Historical root 52034000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52034000: &chest_52034000
-  - {reward: 102, count: "30"}
-  - {reward: 304, count: "4"}
-  - {reward: 202, count: "1700;1900"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_52034011, count: "1"}
-  - {reward: *chest_52034012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.electro_sigil, count: "4"}
+  - {reward: genshin.item.mora, count: "1700;1900"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_52034011}
+  - {reward: *chest_52034012}
   - {reward: *chest_52034013, count: "2"}
-  - {reward: *chest_52034014, count: "1"}
+  - {reward: *chest_52034014}
   - {reward: *chest_52034015, count: "3.5"}
 
 chest_drop_52040011: &chest_52040011 []
@@ -2152,27 +2228,28 @@ chest_drop_52040011: &chest_52040011 []
 chest_drop_52040012: &chest_52040012 []
 
 chest_drop_52040013: &chest_52040013
-  - {reward: *chest_500000, count: "1", weight: 7500}
-  - {reward: *chest_500001, count: "1", weight: 2500}
+  - {reward: *chest_500000, weight: 3}
+  - {reward: *chest_500001, weight: 1}
 
 chest_drop_52040014: &chest_52040014
-  - {reward: 104012, count: "3.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "3.1"}
 
 chest_drop_52040015: &chest_52040015
-  - {reward: *chest_542705, count: "1", weight: 6300}
-  - {reward: *chest_542706, count: "1", weight: 699}
-  - {reward: *chest_542711, count: "1", weight: 2700}
-  - {reward: *chest_542712, count: "1", weight: 300}
+  - {reward: *chest_542705, weight: 21}
+  - {reward: *chest_542706, weight: 2.33}
+  - {reward: *chest_542711, weight: 9}
+  - {reward: *chest_542712, weight: 1}
 
+# Historical root 52040000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52040000: &chest_52040000
-  - {reward: 102, count: "10"}
-  - {reward: 303, count: "1"}
-  - {reward: 202, count: "800;1000"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_52040011, count: "1"}
-  - {reward: *chest_52040012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.dendro_sigil}
+  - {reward: genshin.item.mora, count: "800;1000"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_52040011}
+  - {reward: *chest_52040012}
   - {reward: *chest_52040013, count: "0.5"}
-  - {reward: *chest_52040014, count: "1"}
+  - {reward: *chest_52040014}
   - {reward: *chest_52040015, count: "1.5"}
 
 chest_drop_52042011: &chest_52042011 []
@@ -2180,28 +2257,29 @@ chest_drop_52042011: &chest_52042011 []
 chest_drop_52042012: &chest_52042012 []
 
 chest_drop_52042013: &chest_52042013
-  - {reward: *chest_500000, count: "1", weight: 6500}
-  - {reward: *chest_500001, count: "1", weight: 3500}
+  - {reward: *chest_500000, weight: 13}
+  - {reward: *chest_500001, weight: 7}
 
 chest_drop_52042014: &chest_52042014
-  - {reward: 104012, count: "2.1"}
-  - {reward: 104013, count: "1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "2.1"}
+  - {reward: genshin.item.mystic_enhancement_ore}
 
 chest_drop_52042015: &chest_52042015
-  - {reward: *chest_542705, count: "1", weight: 3060}
-  - {reward: *chest_542706, count: "1", weight: 340}
-  - {reward: *chest_542711, count: "1", weight: 5940}
-  - {reward: *chest_542712, count: "1", weight: 660}
+  - {reward: *chest_542705, weight: 15.3}
+  - {reward: *chest_542706, weight: 1.7}
+  - {reward: *chest_542711, weight: 29.7}
+  - {reward: *chest_542712, weight: 3.3}
 
+# Historical root 52042000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52042000: &chest_52042000
-  - {reward: 102, count: "20"}
-  - {reward: 303, count: "2"}
-  - {reward: 202, count: "1100;1300"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_52042011, count: "1"}
-  - {reward: *chest_52042012, count: "1"}
-  - {reward: *chest_52042013, count: "1"}
-  - {reward: *chest_52042014, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.dendro_sigil, count: "2"}
+  - {reward: genshin.item.mora, count: "1100;1300"}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_52042011}
+  - {reward: *chest_52042012}
+  - {reward: *chest_52042013}
+  - {reward: *chest_52042014}
   - {reward: *chest_52042015, count: "2"}
 
 chest_drop_52043011: &chest_52043011 []
@@ -2209,27 +2287,28 @@ chest_drop_52043011: &chest_52043011 []
 chest_drop_52043012: &chest_52043012 []
 
 chest_drop_52043013: &chest_52043013
-  - {reward: *chest_500000, count: "1", weight: 5000}
-  - {reward: *chest_500001, count: "1", weight: 5000}
+  - {reward: *chest_500000, weight: 1}
+  - {reward: *chest_500001, weight: 1}
 
 chest_drop_52043014: &chest_52043014
-  - {reward: 104013, count: "2"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "2"}
 
 chest_drop_52043015: &chest_52043015
-  - {reward: *chest_542711, count: "1", weight: 8100}
-  - {reward: *chest_542712, count: "1", weight: 900}
-  - {reward: *chest_542717, count: "1", weight: 900}
-  - {reward: *chest_542718, count: "1", weight: 100}
+  - {reward: *chest_542711, weight: 81}
+  - {reward: *chest_542712, weight: 9}
+  - {reward: *chest_542717, weight: 9}
+  - {reward: *chest_542718, weight: 1}
 
+# Historical root 52043000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52043000: &chest_52043000
-  - {reward: 102, count: "30"}
-  - {reward: 303, count: "3"}
-  - {reward: 202, count: "1400;1600"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_52043011, count: "1"}
-  - {reward: *chest_52043012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.dendro_sigil, count: "3"}
+  - {reward: genshin.item.mora, count: "1400;1600"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_52043011}
+  - {reward: *chest_52043012}
   - {reward: *chest_52043013, count: "1.5"}
-  - {reward: *chest_52043014, count: "1"}
+  - {reward: *chest_52043014}
   - {reward: *chest_52043015, count: "2.5"}
 
 chest_drop_52044011: &chest_52044011 []
@@ -2237,26 +2316,27 @@ chest_drop_52044011: &chest_52044011 []
 chest_drop_52044012: &chest_52044012 []
 
 chest_drop_52044013: &chest_52044013
-  - {reward: *chest_500001, count: "1", weight: 10000}
+  - {reward: *chest_500001, weight: 1}
 
 chest_drop_52044014: &chest_52044014
-  - {reward: 104013, count: "4.2"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "4.2"}
 
 chest_drop_52044015: &chest_52044015
-  - {reward: *chest_542711, count: "1", weight: 7200}
-  - {reward: *chest_542712, count: "1", weight: 800}
-  - {reward: *chest_542717, count: "1", weight: 1800}
-  - {reward: *chest_542718, count: "1", weight: 200}
+  - {reward: *chest_542711, weight: 36}
+  - {reward: *chest_542712, weight: 4}
+  - {reward: *chest_542717, weight: 9}
+  - {reward: *chest_542718, weight: 1}
 
+# Historical root 52044000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52044000: &chest_52044000
-  - {reward: 102, count: "30"}
-  - {reward: 303, count: "4"}
-  - {reward: 202, count: "1700;1900"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_52044011, count: "1"}
-  - {reward: *chest_52044012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.dendro_sigil, count: "4"}
+  - {reward: genshin.item.mora, count: "1700;1900"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_52044011}
+  - {reward: *chest_52044012}
   - {reward: *chest_52044013, count: "2"}
-  - {reward: *chest_52044014, count: "1"}
+  - {reward: *chest_52044014}
   - {reward: *chest_52044015, count: "3.5"}
 
 chest_drop_52310011: &chest_52310011 []
@@ -2264,25 +2344,26 @@ chest_drop_52310011: &chest_52310011 []
 chest_drop_52310012: &chest_52310012 []
 
 chest_drop_52310013: &chest_52310013
-  - {reward: *chest_500000, count: "1", weight: 7500}
-  - {reward: *chest_500001, count: "1", weight: 2500}
+  - {reward: *chest_500000, weight: 3}
+  - {reward: *chest_500001, weight: 1}
 
 chest_drop_52310014: &chest_52310014
-  - {reward: 104012, count: "3.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "3.1"}
 
 chest_drop_52310015: &chest_52310015
-  - {reward: *chest_541155, count: "1", weight: 6300}
-  - {reward: *chest_541156, count: "1", weight: 699}
-  - {reward: *chest_541161, count: "1", weight: 2700}
-  - {reward: *chest_541162, count: "1", weight: 300}
+  - {reward: *chest_541155, weight: 21}
+  - {reward: *chest_541156, weight: 2.33}
+  - {reward: *chest_541161, weight: 9}
+  - {reward: *chest_541162, weight: 1}
 
+# Historical root 52310000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52310000: &chest_52310000
-  - {reward: 202, count: "800;1000"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_52310011, count: "1"}
-  - {reward: *chest_52310012, count: "1"}
+  - {reward: genshin.item.mora, count: "800;1000"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_52310011}
+  - {reward: *chest_52310012}
   - {reward: *chest_52310013, count: "0.5"}
-  - {reward: *chest_52310014, count: "1"}
+  - {reward: *chest_52310014}
   - {reward: *chest_52310015, count: "1.5"}
 
 chest_drop_52312011: &chest_52312011 []
@@ -2290,26 +2371,27 @@ chest_drop_52312011: &chest_52312011 []
 chest_drop_52312012: &chest_52312012 []
 
 chest_drop_52312013: &chest_52312013
-  - {reward: *chest_500000, count: "1", weight: 6500}
-  - {reward: *chest_500001, count: "1", weight: 3500}
+  - {reward: *chest_500000, weight: 13}
+  - {reward: *chest_500001, weight: 7}
 
 chest_drop_52312014: &chest_52312014
-  - {reward: 104012, count: "2.1"}
-  - {reward: 104013, count: "1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "2.1"}
+  - {reward: genshin.item.mystic_enhancement_ore}
 
 chest_drop_52312015: &chest_52312015
-  - {reward: *chest_541155, count: "1", weight: 3060}
-  - {reward: *chest_541156, count: "1", weight: 340}
-  - {reward: *chest_541161, count: "1", weight: 5940}
-  - {reward: *chest_541162, count: "1", weight: 660}
+  - {reward: *chest_541155, weight: 15.3}
+  - {reward: *chest_541156, weight: 1.7}
+  - {reward: *chest_541161, weight: 29.7}
+  - {reward: *chest_541162, weight: 3.3}
 
+# Historical root 52312000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52312000: &chest_52312000
-  - {reward: 202, count: "1100;1300"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_52312011, count: "1"}
-  - {reward: *chest_52312012, count: "1"}
-  - {reward: *chest_52312013, count: "1"}
-  - {reward: *chest_52312014, count: "1"}
+  - {reward: genshin.item.mora, count: "1100;1300"}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_52312011}
+  - {reward: *chest_52312012}
+  - {reward: *chest_52312013}
+  - {reward: *chest_52312014}
   - {reward: *chest_52312015, count: "2"}
 
 chest_drop_52313011: &chest_52313011 []
@@ -2317,25 +2399,26 @@ chest_drop_52313011: &chest_52313011 []
 chest_drop_52313012: &chest_52313012 []
 
 chest_drop_52313013: &chest_52313013
-  - {reward: *chest_500000, count: "1", weight: 5000}
-  - {reward: *chest_500001, count: "1", weight: 5000}
+  - {reward: *chest_500000, weight: 1}
+  - {reward: *chest_500001, weight: 1}
 
 chest_drop_52313014: &chest_52313014
-  - {reward: 104013, count: "2"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "2"}
 
 chest_drop_52313015: &chest_52313015
-  - {reward: *chest_541161, count: "1", weight: 8100}
-  - {reward: *chest_541162, count: "1", weight: 900}
-  - {reward: *chest_541167, count: "1", weight: 900}
-  - {reward: *chest_541168, count: "1", weight: 100}
+  - {reward: *chest_541161, weight: 81}
+  - {reward: *chest_541162, weight: 9}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 52313000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52313000: &chest_52313000
-  - {reward: 202, count: "1400;1600"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_52313011, count: "1"}
-  - {reward: *chest_52313012, count: "1"}
+  - {reward: genshin.item.mora, count: "1400;1600"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_52313011}
+  - {reward: *chest_52313012}
   - {reward: *chest_52313013, count: "1.5"}
-  - {reward: *chest_52313014, count: "1"}
+  - {reward: *chest_52313014}
   - {reward: *chest_52313015, count: "2.5"}
 
 chest_drop_52314011: &chest_52314011 []
@@ -2343,135 +2426,141 @@ chest_drop_52314011: &chest_52314011 []
 chest_drop_52314012: &chest_52314012 []
 
 chest_drop_52314013: &chest_52314013
-  - {reward: *chest_500001, count: "1", weight: 10000}
+  - {reward: *chest_500001, weight: 1}
 
 chest_drop_52314014: &chest_52314014
-  - {reward: 104013, count: "4.2"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "4.2"}
 
 chest_drop_52314015: &chest_52314015
-  - {reward: *chest_541161, count: "1", weight: 7200}
-  - {reward: *chest_541162, count: "1", weight: 800}
-  - {reward: *chest_541167, count: "1", weight: 1800}
-  - {reward: *chest_541168, count: "1", weight: 200}
+  - {reward: *chest_541161, weight: 36}
+  - {reward: *chest_541162, weight: 4}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 52314000 (puzzle); kept for explicit selection or comparison.
 chest_drop_52314000: &chest_52314000
-  - {reward: 202, count: "1700;1900"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_52314011, count: "1"}
-  - {reward: *chest_52314012, count: "1"}
+  - {reward: genshin.item.mora, count: "1700;1900"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_52314011}
+  - {reward: *chest_52314012}
   - {reward: *chest_52314013, count: "2"}
-  - {reward: *chest_52314014, count: "1"}
+  - {reward: *chest_52314014}
   - {reward: *chest_52314015, count: "3.5"}
 
 chest_drop_53010011: &chest_53010011
-  - {reward: 104001, count: "1.6"}
-  - {reward: 104002, count: "0.15"}
+  - {reward: genshin.item.wanderers_advice, count: "1.6"}
+  - {reward: genshin.item.adventurers_experience, count: "0.15"}
 
 chest_drop_53010013: &chest_53010013 []
 
 chest_drop_53010014: &chest_53010014 []
 
 chest_drop_53010015: &chest_53010015
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 53010000 (other); kept for explicit selection or comparison.
 chest_drop_53010000: &chest_53010000
-  - {reward: 102, count: "10"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_53010011, count: "1"}
+  - {reward: *chest_53010011}
   - {reward: *chest_53010013, count: "0.4"}
-  - {reward: *chest_53010014, count: "1"}
+  - {reward: *chest_53010014}
   - {reward: *chest_53010015, count: "0.52"}
 
 chest_drop_53010111: &chest_53010111
-  - {reward: 104001, count: "2.1"}
-  - {reward: 104002, count: "0.3"}
+  - {reward: genshin.item.wanderers_advice, count: "2.1"}
+  - {reward: genshin.item.adventurers_experience, count: "0.3"}
 
 chest_drop_53010113: &chest_53010113 []
 
 chest_drop_53010114: &chest_53010114 []
 
 chest_drop_53010115: &chest_53010115
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 53010100 (other); kept for explicit selection or comparison.
 chest_drop_53010100: &chest_53010100
-  - {reward: 102, count: "10"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_53010111, count: "1"}
+  - {reward: *chest_53010111}
   - {reward: *chest_53010113, count: "0.5"}
-  - {reward: *chest_53010114, count: "1"}
+  - {reward: *chest_53010114}
   - {reward: *chest_53010115, count: "0.8"}
 
 chest_drop_53010211: &chest_53010211
-  - {reward: 104001, count: "2.6"}
-  - {reward: 104002, count: "0.4"}
+  - {reward: genshin.item.wanderers_advice, count: "2.6"}
+  - {reward: genshin.item.adventurers_experience, count: "0.4"}
 
 chest_drop_53010213: &chest_53010213 []
 
 chest_drop_53010214: &chest_53010214 []
 
 chest_drop_53010215: &chest_53010215
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 53010200 (other); kept for explicit selection or comparison.
 chest_drop_53010200: &chest_53010200
-  - {reward: 102, count: "10"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_53010211, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_53010211}
   - {reward: *chest_53010213, count: "0.6"}
-  - {reward: *chest_53010214, count: "1"}
+  - {reward: *chest_53010214}
   - {reward: *chest_53010215, count: "1.2"}
 
 chest_drop_53010311: &chest_53010311
-  - {reward: 104001, count: "3.1"}
-  - {reward: 104002, count: "0.5"}
+  - {reward: genshin.item.wanderers_advice, count: "3.1"}
+  - {reward: genshin.item.adventurers_experience, count: "0.5"}
 
 chest_drop_53010313: &chest_53010313 []
 
 chest_drop_53010314: &chest_53010314 []
 
 chest_drop_53010315: &chest_53010315
-  - {reward: *chest_541150, count: "1", weight: 6600}
-  - {reward: *chest_541155, count: "1", weight: 3060}
-  - {reward: *chest_541156, count: "1", weight: 340}
+  - {reward: *chest_541150, weight: 33}
+  - {reward: *chest_541155, weight: 15.3}
+  - {reward: *chest_541156, weight: 1.7}
 
+# Historical root 53010300 (other); kept for explicit selection or comparison.
 chest_drop_53010300: &chest_53010300
-  - {reward: 102, count: "20"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_53010311, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_53010311}
   - {reward: *chest_53010313, count: "0.7"}
-  - {reward: *chest_53010314, count: "1"}
+  - {reward: *chest_53010314}
   - {reward: *chest_53010315, count: "1.5"}
 
 chest_drop_53010411: &chest_53010411
-  - {reward: 104001, count: "3.6"}
-  - {reward: 104002, count: "0.6"}
+  - {reward: genshin.item.wanderers_advice, count: "3.6"}
+  - {reward: genshin.item.adventurers_experience, count: "0.6"}
 
 chest_drop_53010413: &chest_53010413 []
 
 chest_drop_53010414: &chest_53010414 []
 
 chest_drop_53010415: &chest_53010415
-  - {reward: *chest_541150, count: "1", weight: 6600}
-  - {reward: *chest_541155, count: "1", weight: 3060}
-  - {reward: *chest_541156, count: "1", weight: 340}
+  - {reward: *chest_541150, weight: 33}
+  - {reward: *chest_541155, weight: 15.3}
+  - {reward: *chest_541156, weight: 1.7}
 
+# Historical root 53010400 (other); kept for explicit selection or comparison.
 chest_drop_53010400: &chest_53010400
-  - {reward: 102, count: "20"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: *chest_53010411, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: *chest_53010411}
   - {reward: *chest_53010413, count: "0.8"}
-  - {reward: *chest_53010414, count: "1"}
+  - {reward: *chest_53010414}
   - {reward: *chest_53010415, count: "1.75"}
 
 chest_drop_53010511: &chest_53010511
-  - {reward: 104002, count: "2.1"}
+  - {reward: genshin.item.adventurers_experience, count: "2.1"}
 
 chest_drop_53010512: &chest_53010512
   - {reward: *chest_510000, count: "0.25"}
@@ -2481,24 +2570,25 @@ chest_drop_53010513: &chest_53010513 []
 chest_drop_53010514: &chest_53010514 []
 
 chest_drop_53010515: &chest_53010515
-  - {reward: *chest_541150, count: "1", weight: 3400}
-  - {reward: *chest_541155, count: "1", weight: 5040}
-  - {reward: *chest_541156, count: "1", weight: 560}
-  - {reward: *chest_541161, count: "1", weight: 900}
-  - {reward: *chest_541162, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 17}
+  - {reward: *chest_541155, weight: 25.2}
+  - {reward: *chest_541156, weight: 2.8}
+  - {reward: *chest_541161, weight: 4.5}
+  - {reward: *chest_541162, weight: 0.5}
 
+# Historical root 53010500 (other); kept for explicit selection or comparison.
 chest_drop_53010500: &chest_53010500
-  - {reward: 102, count: "20"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_53010511, count: "1"}
-  - {reward: *chest_53010512, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_53010511}
+  - {reward: *chest_53010512}
   - {reward: *chest_53010513, count: "0.9"}
-  - {reward: *chest_53010514, count: "1"}
+  - {reward: *chest_53010514}
   - {reward: *chest_53010515, count: "1.75"}
 
 chest_drop_53010611: &chest_53010611
-  - {reward: 104002, count: "2.6"}
+  - {reward: genshin.item.adventurers_experience, count: "2.6"}
 
 chest_drop_53010612: &chest_53010612
   - {reward: *chest_510000, count: "0.25"}
@@ -2508,269 +2598,280 @@ chest_drop_53010613: &chest_53010613 []
 chest_drop_53010614: &chest_53010614 []
 
 chest_drop_53010615: &chest_53010615
-  - {reward: *chest_541150, count: "1", weight: 3400}
-  - {reward: *chest_541155, count: "1", weight: 5040}
-  - {reward: *chest_541156, count: "1", weight: 560}
-  - {reward: *chest_541161, count: "1", weight: 900}
-  - {reward: *chest_541162, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 17}
+  - {reward: *chest_541155, weight: 25.2}
+  - {reward: *chest_541156, weight: 2.8}
+  - {reward: *chest_541161, weight: 4.5}
+  - {reward: *chest_541162, weight: 0.5}
 
+# Historical root 53010600 (other); kept for explicit selection or comparison.
 chest_drop_53010600: &chest_53010600
-  - {reward: 102, count: "20"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_53010611, count: "1"}
-  - {reward: *chest_53010612, count: "1"}
-  - {reward: *chest_53010613, count: "1"}
-  - {reward: *chest_53010614, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_53010611}
+  - {reward: *chest_53010612}
+  - {reward: *chest_53010613}
+  - {reward: *chest_53010614}
   - {reward: *chest_53010615, count: "2"}
 
 chest_drop_53010711: &chest_53010711
-  - {reward: 104002, count: "1.1"}
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.adventurers_experience, count: "1.1"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_53010712: &chest_53010712
-  - {reward: *chest_510000, count: "1"}
+  - {reward: *chest_510000}
 
 chest_drop_53010713: &chest_53010713 []
 
 chest_drop_53010714: &chest_53010714 []
 
 chest_drop_53010715: &chest_53010715
-  - {reward: *chest_541155, count: "1", weight: 6300}
-  - {reward: *chest_541156, count: "1", weight: 699}
-  - {reward: *chest_541161, count: "1", weight: 2700}
-  - {reward: *chest_541162, count: "1", weight: 300}
+  - {reward: *chest_541155, weight: 21}
+  - {reward: *chest_541156, weight: 2.33}
+  - {reward: *chest_541161, weight: 9}
+  - {reward: *chest_541162, weight: 1}
 
+# Historical root 53010700 (other); kept for explicit selection or comparison.
 chest_drop_53010700: &chest_53010700
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_53010711, count: "1"}
-  - {reward: *chest_53010712, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_53010711}
+  - {reward: *chest_53010712}
   - {reward: *chest_53010713, count: "1.1"}
-  - {reward: *chest_53010714, count: "1"}
+  - {reward: *chest_53010714}
   - {reward: *chest_53010715, count: "2"}
 
 chest_drop_53010811: &chest_53010811
-  - {reward: 104002, count: "1.6"}
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.adventurers_experience, count: "1.6"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_53010812: &chest_53010812
-  - {reward: *chest_510000, count: "1"}
+  - {reward: *chest_510000}
 
 chest_drop_53010813: &chest_53010813 []
 
 chest_drop_53010814: &chest_53010814 []
 
 chest_drop_53010815: &chest_53010815
-  - {reward: *chest_541161, count: "1", weight: 8100}
-  - {reward: *chest_541162, count: "1", weight: 900}
-  - {reward: *chest_541167, count: "1", weight: 900}
-  - {reward: *chest_541168, count: "1", weight: 100}
+  - {reward: *chest_541161, weight: 81}
+  - {reward: *chest_541162, weight: 9}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 53010800 (other); kept for explicit selection or comparison.
 chest_drop_53010800: &chest_53010800
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_53010811, count: "1"}
-  - {reward: *chest_53010812, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_53010811}
+  - {reward: *chest_53010812}
   - {reward: *chest_53010813, count: "1.2"}
-  - {reward: *chest_53010814, count: "1"}
+  - {reward: *chest_53010814}
   - {reward: *chest_53010815, count: "2.25"}
 
 chest_drop_53010911: &chest_53010911
-  - {reward: 104003, count: "2"}
+  - {reward: genshin.item.heros_wit, count: "2"}
 
 chest_drop_53010912: &chest_53010912
-  - {reward: *chest_510001, count: "1"}
+  - {reward: *chest_510001}
 
 chest_drop_53010913: &chest_53010913 []
 
 chest_drop_53010914: &chest_53010914 []
 
 chest_drop_53010915: &chest_53010915
-  - {reward: *chest_541161, count: "1", weight: 8100}
-  - {reward: *chest_541162, count: "1", weight: 900}
-  - {reward: *chest_541167, count: "1", weight: 900}
-  - {reward: *chest_541168, count: "1", weight: 100}
+  - {reward: *chest_541161, weight: 81}
+  - {reward: *chest_541162, weight: 9}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 53010900 (other); kept for explicit selection or comparison.
 chest_drop_53010900: &chest_53010900
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_53010911, count: "1"}
-  - {reward: *chest_53010912, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_53010911}
+  - {reward: *chest_53010912}
   - {reward: *chest_53010913, count: "1.3"}
-  - {reward: *chest_53010914, count: "1"}
+  - {reward: *chest_53010914}
   - {reward: *chest_53010915, count: "2.25"}
 
 chest_drop_53011011: &chest_53011011
-  - {reward: 104003, count: "2.05"}
+  - {reward: genshin.item.heros_wit, count: "2.05"}
 
 chest_drop_53011012: &chest_53011012
-  - {reward: *chest_510001, count: "1"}
+  - {reward: *chest_510001}
 
 chest_drop_53011013: &chest_53011013 []
 
 chest_drop_53011014: &chest_53011014 []
 
 chest_drop_53011015: &chest_53011015
-  - {reward: *chest_541161, count: "1", weight: 7200}
-  - {reward: *chest_541162, count: "1", weight: 800}
-  - {reward: *chest_541167, count: "1", weight: 1800}
-  - {reward: *chest_541168, count: "1", weight: 200}
+  - {reward: *chest_541161, weight: 36}
+  - {reward: *chest_541162, weight: 4}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 53011000 (other); kept for explicit selection or comparison.
 chest_drop_53011000: &chest_53011000
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_53011011, count: "1"}
-  - {reward: *chest_53011012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_53011011}
+  - {reward: *chest_53011012}
   - {reward: *chest_53011013, count: "1.4"}
-  - {reward: *chest_53011014, count: "1"}
+  - {reward: *chest_53011014}
   - {reward: *chest_53011015, count: "2.5"}
 
 chest_drop_53011111: &chest_53011111
-  - {reward: 104003, count: "2.1"}
+  - {reward: genshin.item.heros_wit, count: "2.1"}
 
 chest_drop_53011112: &chest_53011112
-  - {reward: *chest_510001, count: "1"}
+  - {reward: *chest_510001}
 
 chest_drop_53011113: &chest_53011113 []
 
 chest_drop_53011114: &chest_53011114 []
 
 chest_drop_53011115: &chest_53011115
-  - {reward: *chest_541161, count: "1", weight: 7200}
-  - {reward: *chest_541162, count: "1", weight: 800}
-  - {reward: *chest_541167, count: "1", weight: 1800}
-  - {reward: *chest_541168, count: "1", weight: 200}
+  - {reward: *chest_541161, weight: 36}
+  - {reward: *chest_541162, weight: 4}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 53011100 (other); kept for explicit selection or comparison.
 chest_drop_53011100: &chest_53011100
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_53011111, count: "1"}
-  - {reward: *chest_53011112, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_53011111}
+  - {reward: *chest_53011112}
   - {reward: *chest_53011113, count: "1.5"}
-  - {reward: *chest_53011114, count: "1"}
+  - {reward: *chest_53011114}
   - {reward: *chest_53011115, count: "2.5"}
 
 chest_drop_54010011: &chest_54010011 []
 
 chest_drop_54010013: &chest_54010013
-  - {reward: *chest_500000, count: "1", weight: 8000}
-  - {reward: *chest_500001, count: "1", weight: 2000}
+  - {reward: *chest_500000, weight: 4}
+  - {reward: *chest_500001, weight: 1}
 
 chest_drop_54010014: &chest_54010014
-  - {reward: 104011, count: "2.1"}
-  - {reward: 104012, count: "0.2"}
+  - {reward: genshin.item.enhancement_ore, count: "2.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.2"}
 
 chest_drop_54010015: &chest_54010015
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 54010000 (other); kept for explicit selection or comparison.
 chest_drop_54010000: &chest_54010000
-  - {reward: 102, count: "10"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_54010011, count: "1"}
+  - {reward: *chest_54010011}
   - {reward: *chest_54010013, count: "0.4"}
-  - {reward: *chest_54010014, count: "1"}
+  - {reward: *chest_54010014}
   - {reward: *chest_54010015, count: "0.52"}
 
 chest_drop_54010111: &chest_54010111 []
 
 chest_drop_54010113: &chest_54010113
-  - {reward: *chest_500000, count: "1", weight: 7800}
-  - {reward: *chest_500001, count: "1", weight: 2200}
+  - {reward: *chest_500000, weight: 39}
+  - {reward: *chest_500001, weight: 11}
 
 chest_drop_54010114: &chest_54010114
-  - {reward: 104011, count: "2.6"}
-  - {reward: 104012, count: "0.4"}
+  - {reward: genshin.item.enhancement_ore, count: "2.6"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.4"}
 
 chest_drop_54010115: &chest_54010115
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 54010100 (other); kept for explicit selection or comparison.
 chest_drop_54010100: &chest_54010100
-  - {reward: 102, count: "10"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_54010111, count: "1"}
+  - {reward: *chest_54010111}
   - {reward: *chest_54010113, count: "0.5"}
-  - {reward: *chest_54010114, count: "1"}
+  - {reward: *chest_54010114}
   - {reward: *chest_54010115, count: "0.8"}
 
 chest_drop_54010211: &chest_54010211 []
 
 chest_drop_54010213: &chest_54010213
-  - {reward: *chest_500000, count: "1", weight: 7600}
-  - {reward: *chest_500001, count: "1", weight: 2400}
+  - {reward: *chest_500000, weight: 19}
+  - {reward: *chest_500001, weight: 6}
 
 chest_drop_54010214: &chest_54010214
-  - {reward: 104011, count: "3.1"}
-  - {reward: 104012, count: "0.6"}
+  - {reward: genshin.item.enhancement_ore, count: "3.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.6"}
 
 chest_drop_54010215: &chest_54010215
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 54010200 (other); kept for explicit selection or comparison.
 chest_drop_54010200: &chest_54010200
-  - {reward: 102, count: "10"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_54010211, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_54010211}
   - {reward: *chest_54010213, count: "0.6"}
-  - {reward: *chest_54010214, count: "1"}
+  - {reward: *chest_54010214}
   - {reward: *chest_54010215, count: "1.2"}
 
 chest_drop_54010311: &chest_54010311 []
 
 chest_drop_54010313: &chest_54010313
-  - {reward: *chest_500000, count: "1", weight: 7400}
-  - {reward: *chest_500001, count: "1", weight: 2600}
+  - {reward: *chest_500000, weight: 37}
+  - {reward: *chest_500001, weight: 13}
 
 chest_drop_54010314: &chest_54010314
-  - {reward: 104011, count: "4.1"}
-  - {reward: 104012, count: "0.6"}
+  - {reward: genshin.item.enhancement_ore, count: "4.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.6"}
 
 chest_drop_54010315: &chest_54010315
-  - {reward: *chest_541150, count: "1", weight: 6600}
-  - {reward: *chest_541155, count: "1", weight: 3060}
-  - {reward: *chest_541156, count: "1", weight: 340}
+  - {reward: *chest_541150, weight: 33}
+  - {reward: *chest_541155, weight: 15.3}
+  - {reward: *chest_541156, weight: 1.7}
 
+# Historical root 54010300 (other); kept for explicit selection or comparison.
 chest_drop_54010300: &chest_54010300
-  - {reward: 102, count: "20"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_54010311, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_54010311}
   - {reward: *chest_54010313, count: "0.7"}
-  - {reward: *chest_54010314, count: "1"}
+  - {reward: *chest_54010314}
   - {reward: *chest_54010315, count: "1.5"}
 
 chest_drop_54010411: &chest_54010411 []
 
 chest_drop_54010413: &chest_54010413
-  - {reward: *chest_500000, count: "1", weight: 7200}
-  - {reward: *chest_500001, count: "1", weight: 2800}
+  - {reward: *chest_500000, weight: 18}
+  - {reward: *chest_500001, weight: 7}
 
 chest_drop_54010414: &chest_54010414
-  - {reward: 104011, count: "5.1"}
-  - {reward: 104012, count: "0.6"}
+  - {reward: genshin.item.enhancement_ore, count: "5.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "0.6"}
 
 chest_drop_54010415: &chest_54010415
-  - {reward: *chest_541150, count: "1", weight: 6600}
-  - {reward: *chest_541155, count: "1", weight: 3060}
-  - {reward: *chest_541156, count: "1", weight: 340}
+  - {reward: *chest_541150, weight: 33}
+  - {reward: *chest_541155, weight: 15.3}
+  - {reward: *chest_541156, weight: 1.7}
 
+# Historical root 54010400 (other); kept for explicit selection or comparison.
 chest_drop_54010400: &chest_54010400
-  - {reward: 102, count: "20"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: *chest_54010411, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: *chest_54010411}
   - {reward: *chest_54010413, count: "0.8"}
-  - {reward: *chest_54010414, count: "1"}
+  - {reward: *chest_54010414}
   - {reward: *chest_54010415, count: "1.75"}
 
 chest_drop_54010511: &chest_54010511 []
@@ -2778,27 +2879,28 @@ chest_drop_54010511: &chest_54010511 []
 chest_drop_54010512: &chest_54010512 []
 
 chest_drop_54010513: &chest_54010513
-  - {reward: *chest_500000, count: "1", weight: 7000}
-  - {reward: *chest_500001, count: "1", weight: 3000}
+  - {reward: *chest_500000, weight: 7}
+  - {reward: *chest_500001, weight: 3}
 
 chest_drop_54010514: &chest_54010514
-  - {reward: 104012, count: "3.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "3.1"}
 
 chest_drop_54010515: &chest_54010515
-  - {reward: *chest_541150, count: "1", weight: 3400}
-  - {reward: *chest_541155, count: "1", weight: 5040}
-  - {reward: *chest_541156, count: "1", weight: 560}
-  - {reward: *chest_541161, count: "1", weight: 900}
-  - {reward: *chest_541162, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 17}
+  - {reward: *chest_541155, weight: 25.2}
+  - {reward: *chest_541156, weight: 2.8}
+  - {reward: *chest_541161, weight: 4.5}
+  - {reward: *chest_541162, weight: 0.5}
 
+# Historical root 54010500 (other); kept for explicit selection or comparison.
 chest_drop_54010500: &chest_54010500
-  - {reward: 102, count: "20"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_54010511, count: "1"}
-  - {reward: *chest_54010512, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_54010511}
+  - {reward: *chest_54010512}
   - {reward: *chest_54010513, count: "0.9"}
-  - {reward: *chest_54010514, count: "1"}
+  - {reward: *chest_54010514}
   - {reward: *chest_54010515, count: "1.75"}
 
 chest_drop_54010611: &chest_54010611 []
@@ -2806,28 +2908,29 @@ chest_drop_54010611: &chest_54010611 []
 chest_drop_54010612: &chest_54010612 []
 
 chest_drop_54010613: &chest_54010613
-  - {reward: *chest_500000, count: "1", weight: 6800}
-  - {reward: *chest_500001, count: "1", weight: 3200}
+  - {reward: *chest_500000, weight: 17}
+  - {reward: *chest_500001, weight: 8}
 
 chest_drop_54010614: &chest_54010614
-  - {reward: 104012, count: "4.1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "4.1"}
 
 chest_drop_54010615: &chest_54010615
-  - {reward: *chest_541150, count: "1", weight: 3400}
-  - {reward: *chest_541155, count: "1", weight: 5040}
-  - {reward: *chest_541156, count: "1", weight: 560}
-  - {reward: *chest_541161, count: "1", weight: 900}
-  - {reward: *chest_541162, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 17}
+  - {reward: *chest_541155, weight: 25.2}
+  - {reward: *chest_541156, weight: 2.8}
+  - {reward: *chest_541161, weight: 4.5}
+  - {reward: *chest_541162, weight: 0.5}
 
+# Historical root 54010600 (other); kept for explicit selection or comparison.
 chest_drop_54010600: &chest_54010600
-  - {reward: 102, count: "20"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "2"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "2"}
   - {reward: *chest_500002, count: "0.2999"}
-  - {reward: *chest_54010611, count: "1"}
-  - {reward: *chest_54010612, count: "1"}
-  - {reward: *chest_54010613, count: "1"}
-  - {reward: *chest_54010614, count: "1"}
+  - {reward: *chest_54010611}
+  - {reward: *chest_54010612}
+  - {reward: *chest_54010613}
+  - {reward: *chest_54010614}
   - {reward: *chest_54010615, count: "2"}
 
 chest_drop_54010711: &chest_54010711 []
@@ -2835,28 +2938,29 @@ chest_drop_54010711: &chest_54010711 []
 chest_drop_54010712: &chest_54010712 []
 
 chest_drop_54010713: &chest_54010713
-  - {reward: *chest_500000, count: "1", weight: 6600}
-  - {reward: *chest_500001, count: "1", weight: 3400}
+  - {reward: *chest_500000, weight: 33}
+  - {reward: *chest_500001, weight: 17}
 
 chest_drop_54010714: &chest_54010714
-  - {reward: 104012, count: "2.1"}
-  - {reward: 104013, count: "1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "2.1"}
+  - {reward: genshin.item.mystic_enhancement_ore}
 
 chest_drop_54010715: &chest_54010715
-  - {reward: *chest_541155, count: "1", weight: 6300}
-  - {reward: *chest_541156, count: "1", weight: 699}
-  - {reward: *chest_541161, count: "1", weight: 2700}
-  - {reward: *chest_541162, count: "1", weight: 300}
+  - {reward: *chest_541155, weight: 21}
+  - {reward: *chest_541156, weight: 2.33}
+  - {reward: *chest_541161, weight: 9}
+  - {reward: *chest_541162, weight: 1}
 
+# Historical root 54010700 (other); kept for explicit selection or comparison.
 chest_drop_54010700: &chest_54010700
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "5"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "5"}
   - {reward: *chest_500002, count: "0.2999"}
-  - {reward: *chest_54010711, count: "1"}
-  - {reward: *chest_54010712, count: "1"}
+  - {reward: *chest_54010711}
+  - {reward: *chest_54010712}
   - {reward: *chest_54010713, count: "1.1"}
-  - {reward: *chest_54010714, count: "1"}
+  - {reward: *chest_54010714}
   - {reward: *chest_54010715, count: "2"}
 
 chest_drop_54010811: &chest_54010811 []
@@ -2864,28 +2968,29 @@ chest_drop_54010811: &chest_54010811 []
 chest_drop_54010812: &chest_54010812 []
 
 chest_drop_54010813: &chest_54010813
-  - {reward: *chest_500000, count: "1", weight: 6400}
-  - {reward: *chest_500001, count: "1", weight: 3600}
+  - {reward: *chest_500000, weight: 16}
+  - {reward: *chest_500001, weight: 9}
 
 chest_drop_54010814: &chest_54010814
-  - {reward: 104012, count: "3.1"}
-  - {reward: 104013, count: "1"}
+  - {reward: genshin.item.fine_enhancement_ore, count: "3.1"}
+  - {reward: genshin.item.mystic_enhancement_ore}
 
 chest_drop_54010815: &chest_54010815
-  - {reward: *chest_541161, count: "1", weight: 8100}
-  - {reward: *chest_541162, count: "1", weight: 900}
-  - {reward: *chest_541167, count: "1", weight: 900}
-  - {reward: *chest_541168, count: "1", weight: 100}
+  - {reward: *chest_541161, weight: 81}
+  - {reward: *chest_541162, weight: 9}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 54010800 (other); kept for explicit selection or comparison.
 chest_drop_54010800: &chest_54010800
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 201, count: "5"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.primogem, count: "5"}
   - {reward: *chest_500002, count: "0.6499"}
-  - {reward: *chest_54010811, count: "1"}
-  - {reward: *chest_54010812, count: "1"}
+  - {reward: *chest_54010811}
+  - {reward: *chest_54010812}
   - {reward: *chest_54010813, count: "1.2"}
-  - {reward: *chest_54010814, count: "1"}
+  - {reward: *chest_54010814}
   - {reward: *chest_54010815, count: "2.25"}
 
 chest_drop_54010911: &chest_54010911 []
@@ -2893,27 +2998,28 @@ chest_drop_54010911: &chest_54010911 []
 chest_drop_54010912: &chest_54010912 []
 
 chest_drop_54010913: &chest_54010913
-  - {reward: *chest_500000, count: "1", weight: 6200}
-  - {reward: *chest_500001, count: "1", weight: 3800}
+  - {reward: *chest_500000, weight: 31}
+  - {reward: *chest_500001, weight: 19}
 
 chest_drop_54010914: &chest_54010914
-  - {reward: 104013, count: "3"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "3"}
 
 chest_drop_54010915: &chest_54010915
-  - {reward: *chest_541161, count: "1", weight: 8100}
-  - {reward: *chest_541162, count: "1", weight: 900}
-  - {reward: *chest_541167, count: "1", weight: 900}
-  - {reward: *chest_541168, count: "1", weight: 100}
+  - {reward: *chest_541161, weight: 81}
+  - {reward: *chest_541162, weight: 9}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 54010900 (other); kept for explicit selection or comparison.
 chest_drop_54010900: &chest_54010900
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 201, count: "10"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.primogem, count: "10"}
   - {reward: *chest_500002, count: "0.6499"}
-  - {reward: *chest_54010911, count: "1"}
-  - {reward: *chest_54010912, count: "1"}
+  - {reward: *chest_54010911}
+  - {reward: *chest_54010912}
   - {reward: *chest_54010913, count: "1.3"}
-  - {reward: *chest_54010914, count: "1"}
+  - {reward: *chest_54010914}
   - {reward: *chest_54010915, count: "2.25"}
 
 chest_drop_54011011: &chest_54011011 []
@@ -2921,27 +3027,28 @@ chest_drop_54011011: &chest_54011011 []
 chest_drop_54011012: &chest_54011012 []
 
 chest_drop_54011013: &chest_54011013
-  - {reward: *chest_500000, count: "1", weight: 6000}
-  - {reward: *chest_500001, count: "1", weight: 4000}
+  - {reward: *chest_500000, weight: 3}
+  - {reward: *chest_500001, weight: 2}
 
 chest_drop_54011014: &chest_54011014
-  - {reward: 104013, count: "3.1"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "3.1"}
 
 chest_drop_54011015: &chest_54011015
-  - {reward: *chest_541161, count: "1", weight: 7200}
-  - {reward: *chest_541162, count: "1", weight: 800}
-  - {reward: *chest_541167, count: "1", weight: 1800}
-  - {reward: *chest_541168, count: "1", weight: 200}
+  - {reward: *chest_541161, weight: 36}
+  - {reward: *chest_541162, weight: 4}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 54011000 (other); kept for explicit selection or comparison.
 chest_drop_54011000: &chest_54011000
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_500002, count: "1"}
-  - {reward: *chest_54011011, count: "1"}
-  - {reward: *chest_54011012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_500002}
+  - {reward: *chest_54011011}
+  - {reward: *chest_54011012}
   - {reward: *chest_54011013, count: "1.4"}
-  - {reward: *chest_54011014, count: "1"}
+  - {reward: *chest_54011014}
   - {reward: *chest_54011015, count: "2.5"}
 
 chest_drop_54011111: &chest_54011111 []
@@ -2949,138 +3056,144 @@ chest_drop_54011111: &chest_54011111 []
 chest_drop_54011112: &chest_54011112 []
 
 chest_drop_54011113: &chest_54011113
-  - {reward: *chest_500000, count: "1", weight: 5800}
-  - {reward: *chest_500001, count: "1", weight: 4200}
+  - {reward: *chest_500000, weight: 29}
+  - {reward: *chest_500001, weight: 21}
 
 chest_drop_54011114: &chest_54011114
-  - {reward: 104013, count: "3.2"}
+  - {reward: genshin.item.mystic_enhancement_ore, count: "3.2"}
 
 chest_drop_54011115: &chest_54011115
-  - {reward: *chest_541161, count: "1", weight: 7200}
-  - {reward: *chest_541162, count: "1", weight: 800}
-  - {reward: *chest_541167, count: "1", weight: 1800}
-  - {reward: *chest_541168, count: "1", weight: 200}
+  - {reward: *chest_541161, weight: 36}
+  - {reward: *chest_541162, weight: 4}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 54011100 (other); kept for explicit selection or comparison.
 chest_drop_54011100: &chest_54011100
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_500002, count: "1"}
-  - {reward: *chest_54011111, count: "1"}
-  - {reward: *chest_54011112, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_500002}
+  - {reward: *chest_54011111}
+  - {reward: *chest_54011112}
   - {reward: *chest_54011113, count: "1.5"}
-  - {reward: *chest_54011114, count: "1"}
+  - {reward: *chest_54011114}
   - {reward: *chest_54011115, count: "2.5"}
 
 chest_drop_55010011: &chest_55010011
-  - {reward: 104001, count: "1.6"}
-  - {reward: 104002, count: "0.15"}
+  - {reward: genshin.item.wanderers_advice, count: "1.6"}
+  - {reward: genshin.item.adventurers_experience, count: "0.15"}
 
 chest_drop_55010013: &chest_55010013 []
 
 chest_drop_55010014: &chest_55010014 []
 
 chest_drop_55010015: &chest_55010015
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 55010000 (other); kept for explicit selection or comparison.
 chest_drop_55010000: &chest_55010000
-  - {reward: 102, count: "10"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_55010011, count: "1"}
+  - {reward: *chest_55010011}
   - {reward: *chest_55010013, count: "0.4"}
-  - {reward: *chest_55010014, count: "1"}
+  - {reward: *chest_55010014}
   - {reward: *chest_55010015, count: "0.52"}
 
 chest_drop_55010111: &chest_55010111
-  - {reward: 104001, count: "2.1"}
-  - {reward: 104002, count: "0.3"}
+  - {reward: genshin.item.wanderers_advice, count: "2.1"}
+  - {reward: genshin.item.adventurers_experience, count: "0.3"}
 
 chest_drop_55010113: &chest_55010113 []
 
 chest_drop_55010114: &chest_55010114 []
 
 chest_drop_55010115: &chest_55010115
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 55010100 (other); kept for explicit selection or comparison.
 chest_drop_55010100: &chest_55010100
-  - {reward: 102, count: "10"}
-  - {reward: 202, count: "240;360"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.mora, count: "240;360"}
   - {reward: *chest_500100, count: "0.5"}
-  - {reward: *chest_55010111, count: "1"}
+  - {reward: *chest_55010111}
   - {reward: *chest_55010113, count: "0.5"}
-  - {reward: *chest_55010114, count: "1"}
+  - {reward: *chest_55010114}
   - {reward: *chest_55010115, count: "0.8"}
 
 chest_drop_55010211: &chest_55010211
-  - {reward: 104001, count: "2.6"}
-  - {reward: 104002, count: "0.4"}
+  - {reward: genshin.item.wanderers_advice, count: "2.6"}
+  - {reward: genshin.item.adventurers_experience, count: "0.4"}
 
 chest_drop_55010213: &chest_55010213 []
 
 chest_drop_55010214: &chest_55010214 []
 
 chest_drop_55010215: &chest_55010215
-  - {reward: *chest_541150, count: "1", weight: 9000}
-  - {reward: *chest_541155, count: "1", weight: 900}
-  - {reward: *chest_541156, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 90}
+  - {reward: *chest_541155, weight: 9}
+  - {reward: *chest_541156, weight: 1}
 
+# Historical root 55010200 (other); kept for explicit selection or comparison.
 chest_drop_55010200: &chest_55010200
-  - {reward: 102, count: "10"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_55010211, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "10"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_55010211}
   - {reward: *chest_55010213, count: "0.6"}
-  - {reward: *chest_55010214, count: "1"}
+  - {reward: *chest_55010214}
   - {reward: *chest_55010215, count: "1.2"}
 
 chest_drop_55010311: &chest_55010311
-  - {reward: 104001, count: "3.1"}
-  - {reward: 104002, count: "0.5"}
+  - {reward: genshin.item.wanderers_advice, count: "3.1"}
+  - {reward: genshin.item.adventurers_experience, count: "0.5"}
 
 chest_drop_55010313: &chest_55010313 []
 
 chest_drop_55010314: &chest_55010314 []
 
 chest_drop_55010315: &chest_55010315
-  - {reward: *chest_541150, count: "1", weight: 6600}
-  - {reward: *chest_541155, count: "1", weight: 3060}
-  - {reward: *chest_541156, count: "1", weight: 340}
+  - {reward: *chest_541150, weight: 33}
+  - {reward: *chest_541155, weight: 15.3}
+  - {reward: *chest_541156, weight: 1.7}
 
+# Historical root 55010300 (other); kept for explicit selection or comparison.
 chest_drop_55010300: &chest_55010300
-  - {reward: 102, count: "20"}
-  - {reward: 202, count: "480;720"}
-  - {reward: *chest_55010311, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.mora, count: "480;720"}
+  - {reward: *chest_55010311}
   - {reward: *chest_55010313, count: "0.7"}
-  - {reward: *chest_55010314, count: "1"}
+  - {reward: *chest_55010314}
   - {reward: *chest_55010315, count: "1.5"}
 
 chest_drop_55010411: &chest_55010411
-  - {reward: 104001, count: "3.6"}
-  - {reward: 104002, count: "0.6"}
+  - {reward: genshin.item.wanderers_advice, count: "3.6"}
+  - {reward: genshin.item.adventurers_experience, count: "0.6"}
 
 chest_drop_55010413: &chest_55010413 []
 
 chest_drop_55010414: &chest_55010414 []
 
 chest_drop_55010415: &chest_55010415
-  - {reward: *chest_541150, count: "1", weight: 6600}
-  - {reward: *chest_541155, count: "1", weight: 3060}
-  - {reward: *chest_541156, count: "1", weight: 340}
+  - {reward: *chest_541150, weight: 33}
+  - {reward: *chest_541155, weight: 15.3}
+  - {reward: *chest_541156, weight: 1.7}
 
+# Historical root 55010400 (other); kept for explicit selection or comparison.
 chest_drop_55010400: &chest_55010400
-  - {reward: 102, count: "20"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: *chest_55010411, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: *chest_55010411}
   - {reward: *chest_55010413, count: "0.8"}
-  - {reward: *chest_55010414, count: "1"}
+  - {reward: *chest_55010414}
   - {reward: *chest_55010415, count: "1.75"}
 
 chest_drop_55010511: &chest_55010511
-  - {reward: 104002, count: "2.1"}
+  - {reward: genshin.item.adventurers_experience, count: "2.1"}
 
 chest_drop_55010512: &chest_55010512
   - {reward: *chest_510000, count: "0.25"}
@@ -3090,24 +3203,25 @@ chest_drop_55010513: &chest_55010513 []
 chest_drop_55010514: &chest_55010514 []
 
 chest_drop_55010515: &chest_55010515
-  - {reward: *chest_541150, count: "1", weight: 3400}
-  - {reward: *chest_541155, count: "1", weight: 5040}
-  - {reward: *chest_541156, count: "1", weight: 560}
-  - {reward: *chest_541161, count: "1", weight: 900}
-  - {reward: *chest_541162, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 17}
+  - {reward: *chest_541155, weight: 25.2}
+  - {reward: *chest_541156, weight: 2.8}
+  - {reward: *chest_541161, weight: 4.5}
+  - {reward: *chest_541162, weight: 0.5}
 
+# Historical root 55010500 (other); kept for explicit selection or comparison.
 chest_drop_55010500: &chest_55010500
-  - {reward: 102, count: "20"}
-  - {reward: 202, count: "720;1080"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_55010511, count: "1"}
-  - {reward: *chest_55010512, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.mora, count: "720;1080"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_55010511}
+  - {reward: *chest_55010512}
   - {reward: *chest_55010513, count: "0.9"}
-  - {reward: *chest_55010514, count: "1"}
+  - {reward: *chest_55010514}
   - {reward: *chest_55010515, count: "1.75"}
 
 chest_drop_55010611: &chest_55010611
-  - {reward: 104002, count: "2.6"}
+  - {reward: genshin.item.adventurers_experience, count: "2.6"}
 
 chest_drop_55010612: &chest_55010612
   - {reward: *chest_510000, count: "0.25"}
@@ -3117,156 +3231,161 @@ chest_drop_55010613: &chest_55010613 []
 chest_drop_55010614: &chest_55010614 []
 
 chest_drop_55010615: &chest_55010615
-  - {reward: *chest_541150, count: "1", weight: 3400}
-  - {reward: *chest_541155, count: "1", weight: 5040}
-  - {reward: *chest_541156, count: "1", weight: 560}
-  - {reward: *chest_541161, count: "1", weight: 900}
-  - {reward: *chest_541162, count: "1", weight: 100}
+  - {reward: *chest_541150, weight: 17}
+  - {reward: *chest_541155, weight: 25.2}
+  - {reward: *chest_541156, weight: 2.8}
+  - {reward: *chest_541161, weight: 4.5}
+  - {reward: *chest_541162, weight: 0.5}
 
+# Historical root 55010600 (other); kept for explicit selection or comparison.
 chest_drop_55010600: &chest_55010600
-  - {reward: 102, count: "20"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 201, count: "2"}
-  - {reward: *chest_55010611, count: "1"}
-  - {reward: *chest_55010612, count: "1"}
-  - {reward: *chest_55010613, count: "1"}
-  - {reward: *chest_55010614, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "20"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.primogem, count: "2"}
+  - {reward: *chest_55010611}
+  - {reward: *chest_55010612}
+  - {reward: *chest_55010613}
+  - {reward: *chest_55010614}
   - {reward: *chest_55010615, count: "2"}
 
 chest_drop_55010711: &chest_55010711
-  - {reward: 104002, count: "1.1"}
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.adventurers_experience, count: "1.1"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_55010712: &chest_55010712
-  - {reward: *chest_510000, count: "1"}
+  - {reward: *chest_510000}
 
 chest_drop_55010713: &chest_55010713 []
 
 chest_drop_55010714: &chest_55010714 []
 
 chest_drop_55010715: &chest_55010715
-  - {reward: *chest_541155, count: "1", weight: 6300}
-  - {reward: *chest_541156, count: "1", weight: 699}
-  - {reward: *chest_541161, count: "1", weight: 2700}
-  - {reward: *chest_541162, count: "1", weight: 300}
+  - {reward: *chest_541155, weight: 21}
+  - {reward: *chest_541156, weight: 2.33}
+  - {reward: *chest_541161, weight: 9}
+  - {reward: *chest_541162, weight: 1}
 
+# Historical root 55010700 (other); kept for explicit selection or comparison.
 chest_drop_55010700: &chest_55010700
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "960;1440"}
-  - {reward: 107010, count: "1"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_55010711, count: "1"}
-  - {reward: *chest_55010712, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "960;1440"}
+  - {reward: genshin.item.id_107010}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_55010711}
+  - {reward: *chest_55010712}
   - {reward: *chest_55010713, count: "1.1"}
-  - {reward: *chest_55010714, count: "1"}
+  - {reward: *chest_55010714}
   - {reward: *chest_55010715, count: "2"}
 
 chest_drop_55010811: &chest_55010811
-  - {reward: 104002, count: "1.6"}
-  - {reward: 104003, count: "1"}
+  - {reward: genshin.item.adventurers_experience, count: "1.6"}
+  - {reward: genshin.item.heros_wit}
 
 chest_drop_55010812: &chest_55010812
-  - {reward: *chest_510000, count: "1"}
+  - {reward: *chest_510000}
 
 chest_drop_55010813: &chest_55010813 []
 
 chest_drop_55010814: &chest_55010814 []
 
 chest_drop_55010815: &chest_55010815
-  - {reward: *chest_541161, count: "1", weight: 8100}
-  - {reward: *chest_541162, count: "1", weight: 900}
-  - {reward: *chest_541167, count: "1", weight: 900}
-  - {reward: *chest_541168, count: "1", weight: 100}
+  - {reward: *chest_541161, weight: 81}
+  - {reward: *chest_541162, weight: 9}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 55010800 (other); kept for explicit selection or comparison.
 chest_drop_55010800: &chest_55010800
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 107010, count: "1"}
-  - {reward: 201, count: "5"}
-  - {reward: *chest_55010811, count: "1"}
-  - {reward: *chest_55010812, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.id_107010}
+  - {reward: genshin.item.primogem, count: "5"}
+  - {reward: *chest_55010811}
+  - {reward: *chest_55010812}
   - {reward: *chest_55010813, count: "1.2"}
-  - {reward: *chest_55010814, count: "1"}
+  - {reward: *chest_55010814}
   - {reward: *chest_55010815, count: "2.25"}
 
 chest_drop_55010911: &chest_55010911
-  - {reward: 104003, count: "2"}
+  - {reward: genshin.item.heros_wit, count: "2"}
 
 chest_drop_55010912: &chest_55010912
-  - {reward: *chest_510001, count: "1"}
+  - {reward: *chest_510001}
 
 chest_drop_55010913: &chest_55010913 []
 
 chest_drop_55010914: &chest_55010914 []
 
 chest_drop_55010915: &chest_55010915
-  - {reward: *chest_541161, count: "1", weight: 8100}
-  - {reward: *chest_541162, count: "1", weight: 900}
-  - {reward: *chest_541167, count: "1", weight: 900}
-  - {reward: *chest_541168, count: "1", weight: 100}
+  - {reward: *chest_541161, weight: 81}
+  - {reward: *chest_541162, weight: 9}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 55010900 (other); kept for explicit selection or comparison.
 chest_drop_55010900: &chest_55010900
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "1200;1800"}
-  - {reward: 107010, count: "1"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_55010911, count: "1"}
-  - {reward: *chest_55010912, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "1200;1800"}
+  - {reward: genshin.item.id_107010}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_55010911}
+  - {reward: *chest_55010912}
   - {reward: *chest_55010913, count: "1.3"}
-  - {reward: *chest_55010914, count: "1"}
+  - {reward: *chest_55010914}
   - {reward: *chest_55010915, count: "2.25"}
 
 chest_drop_55011011: &chest_55011011
-  - {reward: 104003, count: "2.05"}
+  - {reward: genshin.item.heros_wit, count: "2.05"}
 
 chest_drop_55011012: &chest_55011012
-  - {reward: *chest_510001, count: "1"}
+  - {reward: *chest_510001}
 
 chest_drop_55011013: &chest_55011013 []
 
 chest_drop_55011014: &chest_55011014 []
 
 chest_drop_55011015: &chest_55011015
-  - {reward: *chest_541161, count: "1", weight: 7200}
-  - {reward: *chest_541162, count: "1", weight: 800}
-  - {reward: *chest_541167, count: "1", weight: 1800}
-  - {reward: *chest_541168, count: "1", weight: 200}
+  - {reward: *chest_541161, weight: 36}
+  - {reward: *chest_541162, weight: 4}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 55011000 (other); kept for explicit selection or comparison.
 chest_drop_55011000: &chest_55011000
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 107010, count: "1"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_55011011, count: "1"}
-  - {reward: *chest_55011012, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.id_107010}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_55011011}
+  - {reward: *chest_55011012}
   - {reward: *chest_55011013, count: "1.4"}
-  - {reward: *chest_55011014, count: "1"}
+  - {reward: *chest_55011014}
   - {reward: *chest_55011015, count: "2.5"}
 
 chest_drop_55011111: &chest_55011111
-  - {reward: 104003, count: "2.1"}
+  - {reward: genshin.item.heros_wit, count: "2.1"}
 
 chest_drop_55011112: &chest_55011112
-  - {reward: *chest_510001, count: "1"}
+  - {reward: *chest_510001}
 
 chest_drop_55011113: &chest_55011113 []
 
 chest_drop_55011114: &chest_55011114 []
 
 chest_drop_55011115: &chest_55011115
-  - {reward: *chest_541161, count: "1", weight: 7200}
-  - {reward: *chest_541162, count: "1", weight: 800}
-  - {reward: *chest_541167, count: "1", weight: 1800}
-  - {reward: *chest_541168, count: "1", weight: 200}
+  - {reward: *chest_541161, weight: 36}
+  - {reward: *chest_541162, weight: 4}
+  - {reward: *chest_541167, weight: 9}
+  - {reward: *chest_541168, weight: 1}
 
+# Historical root 55011100 (other); kept for explicit selection or comparison.
 chest_drop_55011100: &chest_55011100
-  - {reward: 102, count: "30"}
-  - {reward: 202, count: "1440;2160"}
-  - {reward: 107010, count: "1"}
-  - {reward: 201, count: "10"}
-  - {reward: *chest_55011111, count: "1"}
-  - {reward: *chest_55011112, count: "1"}
+  - {reward: genshin.item.adventure_exp, count: "30"}
+  - {reward: genshin.item.mora, count: "1440;2160"}
+  - {reward: genshin.item.id_107010}
+  - {reward: genshin.item.primogem, count: "10"}
+  - {reward: *chest_55011111}
+  - {reward: *chest_55011112}
   - {reward: *chest_55011113, count: "1.5"}
-  - {reward: *chest_55011114, count: "1"}
+  - {reward: *chest_55011114}
   - {reward: *chest_55011115, count: "2.5"}
-

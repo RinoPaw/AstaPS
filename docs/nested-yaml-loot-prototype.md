@@ -1,6 +1,9 @@
 # Reward configuration
 
-AstaPS bundles two editable reward files for chests and scene-point activations.
+AstaPS bundles two authoritative reward resources for chests and scene-point activations.
+They are read directly from the JAR: `src/main/resources/rewards/loot.yaml`
+and `src/main/resources/rewards/rewards.css`. No files are copied to
+`config/rewards/`, and any previous copies there are ignored.
 
 `loot.yaml` defines reusable loot content. A table does not inspect chest
 type, location, rank, scene, or other spawn data. Four base chest pools
@@ -28,9 +31,8 @@ keep their separate first-activation receipt because map synchronization
 can reveal them before manual activation. The eligibility check still
 excludes hidden points, portals, and unrelated point types.
 
-The separate `trans-point-rewards.toml` has been retired. Existing
-`config/rewards/rewards.css` files are not overwritten automatically:
-add these selectors or regenerate the file to apply them.
+The separate `trans-point-rewards.toml` has been retired. Scene-point
+rewards are defined in the bundled `rewards.css` alongside chest rewards.
 
 Example:
 
@@ -65,9 +67,9 @@ reference data. Region-dependent sigils are resolved at grant time from verified
 source metadata. Special chest variants still require verified selection data;
 location heuristics do not determine their loot composition.
 
-The server copies these files to `config/rewards` at first start.
-Existing files are not silently overwritten. Back up and regenerate
-both files if the installation has a previously generated chest schema.
+The server reads the bundled resources after game items load. To change
+the defaults, edit `src/main/resources/rewards/` and rebuild the JAR.
+An old local `config/rewards/` directory can be deleted; it is no longer read.
 
 Ordinary world chests and eligible scene-point activations now use CSS
 reward selection. Quest-created chests, boss flowers, and monster loot
@@ -172,7 +174,12 @@ counts and chance weights are retained, including empty source tables.
 The historical pools are research data and **are not selected by the
 bundled `rewards.css`**, which remains unchanged. The existing four
 active presets and their six level aliases continue to have their
-approximate rewards.
+approximate rewards. Fixed item IDs use qualified `genshin.item` names.
+Stable, verified keys use descriptive names (for example,
+`genshin.item.adventure_exp`); the old source items with no reliable
+name use `genshin.item.id_55311`-style aliases, validated against
+the real item registry at load time. `count: 1` is omitted and exclusive
+weights are scaled to small relative values without changing odds.
 
 This archive preserves the source graph itself. The
 `ChestDrop.json` tag/minLevel-to-root selection mapping is not encoded
@@ -192,8 +199,7 @@ Native SceneGadget.area_id joins WorldAreaConfigData and CityConfigData
 to produce CSS area/city attributes. These are independent of level.
 Stormbearer Mountains and Guyun Stone Forest are local exceptions
 inside larger parent areas; original chest area_id does not distinguish
-them precisely, so they still need native subarea evidence. The two
-on-disk reward files are not automatically overwritten.
+them precisely, so they still need native subarea evidence. The bundled reward files do not create or overwrite local `config/rewards` files.
 
 The exceptional top-level area IDs are unique in the 7.1 CityConfigData
 ownership lists; area selectors therefore do not need an additional

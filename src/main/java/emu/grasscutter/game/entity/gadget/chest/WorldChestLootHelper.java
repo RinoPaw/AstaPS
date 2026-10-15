@@ -7,13 +7,13 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.inventory.ItemType;
 import emu.grasscutter.game.props.ActionReason;
-import emu.grasscutter.server.packet.send.PacketDropHintNotify;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.Position;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.scripts.data.SceneGadget;
+import emu.grasscutter.server.packet.send.PacketDropHintNotify;
 
 public final class WorldChestLootHelper {
     private WorldChestLootHelper() {

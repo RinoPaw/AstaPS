@@ -139,6 +139,16 @@ class CssRewardsTest {
     }
 
     @Test
+    void unsupportedSelectorFamiliesAreRejectedRatherThanSilentlyMisprioritized() {
+        assertThrows(IllegalArgumentException.class, () -> CssRewards.parse(
+                "chest.special { --loot: currency; }", items, loot));
+        assertThrows(IllegalArgumentException.class, () -> CssRewards.parse(
+                "#chest { --loot: currency; }", items, loot));
+        assertThrows(IllegalArgumentException.class, () -> CssRewards.parse(
+                "chest > monster { --loot: currency; }", items, loot));
+    }
+
+    @Test
     void repeatedTablesInTheListAccumulateExecutionCount() {
         var css = CssRewards.parse("""
                 chest { --loot: currency, currency 2; }

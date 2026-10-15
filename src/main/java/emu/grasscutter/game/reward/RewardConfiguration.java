@@ -30,21 +30,30 @@ public final class RewardConfiguration {
             copyTemplateIfMissing(cssPath, "/rewards/rewards.css");
             var registry = ItemIdRegistry.fromGameResources();
             String yaml = Files.readString(lootPath);
-            // Older installations keep their generated config files across JAR
-            // upgrades. Do not silently rewrite a user's edits, but do flag the
-            // deliberately inflated legacy template so it cannot be overlooked.
-            if (yaml.contains("{reward: genshin.item.primogem, count: 66}")
-                    && yaml.contains("{reward: genshin.item.primogem, count: 566}")) {
-                emu.grasscutter.Grasscutter.getLogger().warn(
-                        "Detected old inflated chest defaults in {}. Back up and remove this"
-                                + " file to regenerate the vanilla-style loot template.",
-                        lootPath);
-            }
+            String stylesheet = Files.readString(cssPath);
+            rejectLegacyChestTemplates(yaml, stylesheet);
             var loot = YamlLootTables.parse(yaml, registry::resolve);
-            var css = CssRewards.parse(Files.readString(cssPath), registry, loot);
+            var css = CssRewards.parse(stylesheet, registry, loot);
             active = new RewardConfiguration(loot, css);
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Cannot load reward configuration from " + directory, e);
+        }
+    }
+
+    // Refuse the unmodified historical server presets. Never overwrite user files:
+    // the operator must deliberately regenerate or migrate both configuration files.
+    static void rejectLegacyChestTemplates(String yaml, String css) {
+        if (yaml.contains("{reward: genshin.item.primogem, count: 66}")
+                && yaml.contains("{reward: genshin.item.primogem, count: 566}")) {
+            throw new IllegalArgumentException(
+                    "Old inflated chest rewards detected in config/rewards/loot.yaml."
+                            + " Back up and regenerate both reward configuration files.");
+        }
+        if (css.contains("chest[kind=\"common\"] { --loot: fallback_common; }")
+                && css.contains("chest[kind=\"luxurious\"] { --loot: fallback_luxurious; }")) {
+            throw new IllegalArgumentException(
+                    "Outdated chest selectors in config/rewards/rewards.css."
+                            + " Back up and regenerate both reward configuration files.");
         }
     }
 

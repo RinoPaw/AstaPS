@@ -18,8 +18,8 @@ handles state, notifications, and despawn.
 This does not replace quest-chest native quest-item drops, boss flowers,
 monster kills, or trans-point rewards. Those are separate settlement paths.
 The bundled `rewards.css` now maps **52 tagged ordinary chest variants
-across 192 source rows and six minimum-adventure-rank thresholds** to
-**108 distinct native roots**, via the `level` (adventure rank band) and
+across 192 source rows and six native chest-level thresholds** to
+**108 distinct native roots**, via the `minLevel` (source-gadget level band) and
 `dropTag` attributes. The bundled `loot.yaml` contains their full
 reachable DAG of **679 nodes and 1,843 drop entries**. This is a historical
 AstaPS compatibility snapshot, based on `Server/DropTableExcelConfigData.json`
@@ -224,6 +224,8 @@ source rules; ordinary fallback is not a substitute.
 The server never overwrites existing files in `config/rewards`. If an older
 instance already generated the inflated template, back it up and remove
 `config/rewards/loot.yaml` to regenerate it on the next start. An old
-untouched template emits a startup warning when its signature is detected.
-Modifications to `rewards.css` are also not overwritten automatically;
-merge or regenerate it to receive updated selectors and fixed rewards.
+unmodified template instead stops startup with clear migration instructions.
+Recreate both `config/rewards/loot.yaml` and `config/rewards/rewards.css`
+together, after backing up any custom edits. Mixing a new loot file with an
+old CSS file can suppress fixed Primogems. CSS currently accepts only simple
+type/universal and attribute selectors, with correct priority for that subset.

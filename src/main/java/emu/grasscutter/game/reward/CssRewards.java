@@ -30,6 +30,10 @@ public final class CssRewards {
     }
 
     private static final Pattern TABLE = Pattern.compile("^(.+?)(?:\\s+([0-9]+))?$");
+    // A type (or *) followed by attribute filters is the only supported
+    // selector syntax. Do not silently miscalculate priority for other CSS.
+    private static final Pattern SIMPLE_SELECTOR = Pattern.compile(
+            "^(?:\\*|[a-zA-Z][a-zA-Z0-9_-]*)(?:\\[[^\\[\\]]+\\])*$");
 
     private record Rule(
             Evaluator selector, Map<Integer, Integer> items, Map<String, Integer> loot,
@@ -72,7 +76,9 @@ public final class CssRewards {
 
             for (var selector : style.getAllSelectors()) {
                 String css = selector.getAsCSSString(CSSWriterSettings.DEFAULT_SETTINGS, 0).trim();
-                // Element and attribute selectors are the supported subset for now.
+                if (!SIMPLE_SELECTOR.matcher(css).matches()) {
+                    throw new IllegalArgumentException("Unsupported reward selector: " + css);
+                }
                 int attributeCount = (int) css.chars().filter(ch -> ch == '[').count();
                 // Within our supported type-and-attribute subset, a type selector
                 // outranks a universal selector when attribute counts are equal.

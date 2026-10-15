@@ -24,7 +24,7 @@ class NativeLootYamlExporterTest {
         int none = 0, big = 0, small = 0;
         var random = new Random(42);
         for (int n = 0; n < 30000; n++) {
-            var reward = loot.roll("native_100", random);
+            var reward = loot.roll("astaps.loot.native_100", random);
             assertEquals(300, reward.get(202).intValue());
             if (!reward.containsKey(104003) && !reward.containsKey(104002)) none++;
             else if (reward.containsKey(104003)) {
@@ -50,7 +50,7 @@ class NativeLootYamlExporterTest {
         int zero = 0, two = 0, three = 0;
         var random = new Random(9);
         for (int n = 0; n < 30000; n++) {
-            int count = loot.roll("native_100", random).getOrDefault(104003, 0);
+            int count = loot.roll("astaps.loot.native_100", random).getOrDefault(104003, 0);
             switch (count) {
                 case 0 -> zero++;
                 case 2 -> two++;
@@ -68,7 +68,7 @@ class NativeLootYamlExporterTest {
         var empty = Map.of(10, new NativeLootYamlExporter.NativeTable(1, List.of()));
         assertEquals(Map.of(), YamlLootTables.parse(
                 NativeLootYamlExporter.export(empty, List.of(10)), Integer::parseInt)
-                .roll("native_10", new Random(0)));
+                .roll("astaps.loot.native_10", new Random(0)));
         var cyclic = Map.of(10, new NativeLootYamlExporter.NativeTable(0,
                 List.of(new NativeLootYamlExporter.NativeEntry(10, "1", 1))));
         assertThrows(IllegalArgumentException.class,

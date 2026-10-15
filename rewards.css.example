@@ -1,7 +1,10 @@
 /* Review draft: historical Mondstadt combat rewards; not verified for other sources. */
 
-chest[kind="common"] {
+Chest {
     --genshin-item-adventure_exp: 30;
+}
+
+chest[kind="common"] {
     --genshin-item-sigil: 1;
     --genshin-item-primogem: 2;
 }
@@ -182,9 +185,7 @@ chest[kind="precious"][area="300"] {
     --genshin-item-primogem: 10;
 }
 
-transpoint[kind="waypoint"],
-transpoint[kind="statue"],
-transpoint[kind="domain"] {
+transpoint {
     --genshin-item-adventure_exp: 50;
     --genshin-item-primogem: 5;
 }

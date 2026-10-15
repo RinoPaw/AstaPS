@@ -27,12 +27,24 @@ public final class ItemIdRegistry {
             201, "Primogem",
             202, "Mora");
 
-    private static final Map<Integer, String> STABLE_NAMES = Map.of(
-            104001, "wanderers_advice",
-            104002, "adventurers_experience",
-            104003, "heros_wit",
-            201, "primogem",
-            202, "mora");
+    private static final Map<Integer, String> STABLE_NAMES = Map.ofEntries(
+            Map.entry(102, "adventure_exp"),
+            Map.entry(201, "primogem"),
+            Map.entry(202, "mora"),
+            Map.entry(301, "pyro_sigil"),
+            Map.entry(302, "hydro_sigil"),
+            Map.entry(303, "dendro_sigil"),
+            Map.entry(304, "electro_sigil"),
+            Map.entry(305, "anemo_sigil"),
+            Map.entry(306, "cryo_sigil"),
+            Map.entry(307, "geo_sigil"),
+            Map.entry(308, "lunar_sigil"),
+            Map.entry(104001, "wanderers_advice"),
+            Map.entry(104002, "adventurers_experience"),
+            Map.entry(104003, "heros_wit"),
+            Map.entry(104011, "enhancement_ore"),
+            Map.entry(104012, "fine_enhancement_ore"),
+            Map.entry(104013, "mystic_enhancement_ore"));
 
     private final Map<Integer, Info> byId;
     private final Map<String, Integer> byName;

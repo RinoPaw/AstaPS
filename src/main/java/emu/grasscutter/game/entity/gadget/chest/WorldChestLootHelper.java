@@ -16,35 +16,33 @@ public final class WorldChestLootHelper {
     }
 
     public static void grant(Player player, EntityGadget entityGadget) {
-        if (player == null || entityGadget == null || entityGadget.getScene() == null) {
-            return;
+        var props = new java.util.HashMap<String, String>();
+        props.put("kind", resolveTier(entityGadget).name().toLowerCase(java.util.Locale.ROOT));
+        props.put("scene", Integer.toString(entityGadget.getScene().getId()));
+        props.put("gadget", Integer.toString(entityGadget.getGadgetId()));
+        props.put("group", Integer.toString(entityGadget.getGroupId()));
+        props.put("config", Integer.toString(entityGadget.getConfigId()));
+        props.put("sigil", Integer.toString(resolveSigilId(entityGadget)));
+        SceneGadget meta = entityGadget.getMetaGadget();
+        if (meta != null && meta.drop_tag != null) {
+            props.put("dropTag", meta.drop_tag);
         }
-        Tier tier = WorldChestLootHelper.resolveTier(entityGadget);
-        int n = WorldChestLootHelper.resolveSigilId(entityGadget);
-        Scene scene = entityGadget.getScene();
-        EntityGadget entityGadget2 = entityGadget;
-        player.earnExp(tier.adventureExp);
-        WorldChestLootHelper.drop(scene, entityGadget2, 201, tier.primogems);
-        WorldChestLootHelper.drop(scene, entityGadget2, 202, tier.mora);
-        WorldChestLootHelper.drop(scene, entityGadget2, n, tier.sigil);
-        if (tier == Tier.COMMON) {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104011, Math.max(tier.oreFine, 2));
-        } else {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104012, tier.oreFine);
-            if (tier.oreFine >= 3) {
-                WorldChestLootHelper.drop(scene, entityGadget2, 104013, Math.max(1, tier.oreFine / 3));
+
+        var items = emu.grasscutter.game.reward.RewardConfiguration.current().roll(
+                "chest", props, java.util.concurrent.ThreadLocalRandom.current());
+        for (var entry : items.entrySet()) {
+            int id = entry.getKey();
+            int amount = entry.getValue();
+            if (amount <= 0) continue;
+            if (id == 102) {
+                player.earnExp(amount);
+            } else {
+                drop(entityGadget.getScene(), entityGadget, id, amount);
             }
         }
-        if (tier.expWanderer > 0) {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104001, tier.expWanderer);
-        }
-        if (tier.expAdventurer > 0) {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104002, tier.expAdventurer);
-        }
-        if (tier.expHero > 0) {
-            WorldChestLootHelper.drop(scene, entityGadget2, 104003, tier.expHero);
-        }
-        Grasscutter.getLogger().info("WorldChestLoot drop uid={} gadgetId={} tier={} primogems={}", player.getUid(), entityGadget.getGadgetId(), tier.name(), tier.primogems);
+        Grasscutter.getLogger().info(
+                "World chest rewards uid={} gadget={} kind={} itemTypes={}",
+                player.getUid(), entityGadget.getGadgetId(), props.get("kind"), items.size());
     }
 
     private static void drop(Scene scene, GameEntity gameEntity, int n, int n2) {
@@ -222,30 +220,10 @@ public final class WorldChestLootHelper {
         return 305;
     }
 
-    public static enum Tier {
-        COMMON(66, 20, 3, 1000, 2, 2, 1, 0),
-        EXQUISITE(166, 25, 5, 1500, 2, 3, 2, 1),
-        PRECIOUS(366, 30, 8, 2000, 3, 3, 3, 2),
-        LUXURIOUS(566, 30, 10, 2500, 4, 2, 4, 3);
-
-        final int primogems;
-        final int adventureExp;
-        final int sigil;
-        final int mora;
-        final int oreFine;
-        final int expWanderer;
-        final int expAdventurer;
-        final int expHero;
-
-        private Tier(int n2, int n3, int n4, int n5, int n6, int n7, int n8, int n9) {
-            this.primogems = n2;
-            this.adventureExp = n3;
-            this.sigil = n4;
-            this.mora = n5;
-            this.oreFine = n6;
-            this.expWanderer = n7;
-            this.expAdventurer = n8;
-            this.expHero = n9;
-        }
+    public enum Tier {
+        COMMON,
+        EXQUISITE,
+        PRECIOUS,
+        LUXURIOUS
     }
 }

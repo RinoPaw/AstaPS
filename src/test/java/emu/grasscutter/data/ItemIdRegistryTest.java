@@ -28,8 +28,10 @@ class ItemIdRegistryTest {
         assertEquals(202, names.resolve("genshin.item.mora"));
         assertEquals(104003, names.resolve("genshin.item.heros_wit"));
         assertEquals(202, names.resolve("202"));
-        assertEquals(202, names.resolve("genshin.item.id_202"));
-        assertEquals(104003, names.resolve("genshin.item.id_104003"));
+        assertThrows(IllegalArgumentException.class,
+                () -> names.resolve("genshin.item.id_202"));
+        assertThrows(IllegalArgumentException.class,
+                () -> names.resolve("genshin.item.id_104003"));
         assertThrows(IllegalArgumentException.class,
                 () -> names.resolve("genshin.item.id_999999"));
         assertThrows(IllegalArgumentException.class, () -> names.resolve("genshin.avatar.amber"));

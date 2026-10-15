@@ -23,11 +23,11 @@ No separate `all`, `pick`, `table`, or `chance` keys are needed.
 
 ```yaml
 experience_books: &books
-  - {reward: genshin:item:heros_wit, weight: 1}
-  - {reward: genshin:item:adventurers_experience, count: 2, weight: 1}
+  - {reward: genshin.item.heros_wit, weight: 1}
+  - {reward: genshin.item.adventurers_experience, count: 2, weight: 1}
 
 common_chest:
-  - {reward: genshin:item:mora, count: "240~360"}
+  - {reward: genshin.item.mora, count: "240~360"}
   - {reward: *books, count: "1:70"}
   - {reward: null}
 ```
@@ -55,7 +55,7 @@ validation.
 
 ## Item IDs (shared with rewards.css)
 
-A common `ItemIdRegistry` resolves `genshin:item:mora`, `genshin:item:heros_wit`
+A common `ItemIdRegistry` resolves `genshin.item.mora`, `genshin.item.heros_wit`
 and other currently unambiguous English TextMap slugs. The five known
 keys (Mora, Primogem and the three Character EXP books) are explicitly
 pinned. Other generated names remain **provisional** until checked
@@ -64,37 +64,46 @@ items without usable names can still be addressed by numeric ID.
 
 `reward` now replaces `item` throughout the YAML parser, exporter,
 fixtures and tests. Only `item` resources are supported in this phase.
-A `genshin:avatar:amber` reference is rejected instead of treating an
+A `genshin.avatar.amber` reference is rejected instead of treating an
 avatar ID as a bag item.
 
 For example, `loot.yaml` can contain:
 
 ```yaml
 common_chest:
-  - {reward: genshin:item:mora, count: "240~360"}
-  - {reward: genshin:item:heros_wit, count: "1:70"}
+  - {reward: genshin.item.mora, count: "240~360"}
+  - {reward: genshin.item.heros_wit, count: "1:70"}
 ```
 
-The CSS item declaration counterpart is:
+The same item ID in `rewards.css` is encoded as a CSS custom property.
+The initial `--` is required by CSS, and the remaining single hyphens
+separate namespace, type and name:
 
 ```css
 chest[kind="common"] {
-    reward: "genshin:item:mora" 300;
-    reward: "genshin:item:heros_wit" 1;
+    --genshin-item-mora: 300;
+    --genshin-item-heros_wit: 1;
+}
+
+chest[kind="common"][scene="3"] {
+    --genshin-item-mora: 0;
 }
 ```
-The `CssItemRewards` prototype accepts only `reward` declarations.
-Every declaration refers to an item through the shared `ItemIdRegistry`.
-There are no legacy item properties, short aliases or migration rules.
-Multiple declarations may appear in one CSS rule, and the last value for a
-given item wins. A more-specific attribute selector overrides a less-specific
-selector per item, even if the less-specific rule appears later in the file.
-Explicit zero is an override; it does not mean that a rule is absent.
 
-The CSS parser does not maintain a closed list of source types or selector
-attributes. Its current cascade ordering is defined for element and attribute
-selectors; no claim is made of full browser CSS specificity. The parser is
-**not yet installed in the real chest/transport reward chain**.
+Only namespaced CSS item properties are supported; there are no old
+properties such as `mora`, `primogems`, `adventureExp`, or `item-202`.
+Each custom property names exactly one item, so CSS rules override items
+independently. Explicit zero overrides the previous quantity.
+
+The `ResourceId` model uses `namespace.type.name`, with exactly three
+segments. CSS encoding uses `--namespace-type-name`; namespace and type
+do not contain hyphens, and the final name may contain hyphens.
+The CSS parser leaves source types and selector attributes open.
+Its current cascade ordering is defined for element and attribute selectors,
+not full browser CSS specificity.
+
+The `CssItemRewards` parser is **not yet connected to live chest or
+transport settlement**.
 
 ## Native migration
 

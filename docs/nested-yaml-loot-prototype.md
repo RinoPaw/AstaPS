@@ -1,8 +1,23 @@
 # Nested YAML loot prototype (7.1)
 
-This is an **experimental library**, not a live chest-reward replacement. The
-upstream world-chest payment path is unchanged. Do not use this branch to test
-in-game rewards until the evaluator is explicitly connected to reward settlement.
+The CSS and YAML evaluators now feed **ordinary world-chest settlement**.
+Configuration is generated at first start in `config/rewards/loot.yaml`
+and `config/rewards/rewards.css`, using classpath templates bundled in the jar.
+The server loads and validates the two files **after game resources** are
+available. Invalid configuration stops startup: there is no legacy fallthrough.
+
+The live entry is `GadgetChest.grantOrdinaryChestLoot`, which delegates to
+`WorldChestLootHelper.grant` after the existing quest-chest eligibility check.
+CSS replaces that helper's old hard-coded tier quantities. The server rolls the
+selected YAML tables, overrides the specified fixed items, grants adventure EXP
+via `Player.earnExp` (item 102), and creates ground item entities for other
+items, preserving the chest's pickup behavior. The chest claim path still
+handles state, notifications, and despawn.
+
+This does not replace quest-chest native quest-item drops, boss flowers,
+monster kills, or trans-point rewards. Those are separate settlement paths.
+The default templates reproduce the previous four ordinary chest tiers and
+regional sigils. The branch still requires CI and in-client verification.
 
 ## Syntax
 
@@ -131,10 +146,10 @@ Only `--loot` selects tables: the earlier per-table
 `--astaps-loot-currency: 1` spelling is not supported. No legacy
 CSS reward fields or compatibility paths are retained.
 
-Current implementation is an **independent parser and evaluator**.
-It does not yet change actual chest, monster or transport reward delivery.
-A future `give astaps.loot.surprise` command will be able to call the
-same table evaluation API; this branch does not add that command yet.
+The current runtime integration covers ordinary world chests only.
+Other loot consumers can call `RewardConfiguration.current().rollLoot(
+"astaps.loot.surprise", random)` without CSS; the `give` command has
+not yet been extended.
 
 ## Native migration
 
@@ -157,4 +172,5 @@ selection, null rewards, mixed-weight rejection, percentage distributions,
 alias reuse, cyclic references, and native-to-YAML conversion. The library also
 enforces an evaluation budget and nesting-depth limit.
 
-These tests have been committed, but CI has not yet verified the branch.
+These tests have been committed. CI and client-side chest interaction
+verification are required before treating the implementation as validated.

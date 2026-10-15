@@ -67,6 +67,22 @@ fixtures and tests. Only `item` resources are supported in this phase.
 A `genshin:avatar:amber` reference is rejected instead of treating an
 avatar ID as a bag item.
 
+For example, `loot.yaml` can contain:
+
+```yaml
+common_chest:
+  - {reward: genshin:item:mora, count: "240~360"}
+  - {reward: genshin:item:heros_wit, count: "1:70"}
+```
+
+The CSS item declaration counterpart is:
+
+```css
+chest[kind="common"] {
+    reward: "genshin:item:mora" 300;
+    reward: "genshin:item:heros_wit" 1;
+}
+```
 The `CssItemRewards` prototype accepts multiple declarations of the form
 `reward: "genshin:item:mora" 300;` inside a CSS rule. It accepts existing
 `mora`, `primogems`, `adventureExp`, and `item-202` spellings as

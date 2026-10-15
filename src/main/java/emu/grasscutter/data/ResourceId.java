@@ -37,7 +37,7 @@ public record ResourceId(String namespace, String type, String name) {
     }
 
     private static boolean validName(String part) {
-        return part != null && part.matches("[a-z][a-z0-9_-]*");
+        return part != null && part.matches("[\\p{L}_][\\p{L}\\p{N}_-]*");
     }
 
     @Override

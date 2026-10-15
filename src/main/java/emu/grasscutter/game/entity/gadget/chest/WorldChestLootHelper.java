@@ -4,6 +4,10 @@
 package emu.grasscutter.game.entity.gadget.chest;
 
 import emu.grasscutter.Grasscutter;
+import emu.grasscutter.data.GameData;
+import emu.grasscutter.game.inventory.ItemType;
+import emu.grasscutter.game.props.ActionReason;
+import emu.grasscutter.server.packet.send.PacketDropHintNotify;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
@@ -43,12 +47,33 @@ public final class WorldChestLootHelper {
             if (id == 102) {
                 player.earnExp(amount);
             } else {
+                var item = GameData.getItemDataMap().get(id);
+                var dropRule = GameData.getDropMaterialDataMap().get(id);
+                if (shouldAutoCollect(
+                        item == null ? null : item.getItemType(),
+                        item == null ? -1 : item.getGadgetId(),
+                        dropRule != null && dropRule.isAutoPick())) {
+                    if (player.getInventory().addItem(id, amount, ActionReason.OpenChest)) {
+                        player.sendPacket(new PacketDropHintNotify(
+                                id, entityGadget.getPosition().toProto()));
+                        continue;
+                    }
+                    Grasscutter.getLogger().warn(
+                            "World chest auto-pick failed uid={} item={} x{}; dropping to ground",
+                            player.getUid(), id, amount);
+                }
                 drop(entityGadget.getScene(), entityGadget, id, amount);
             }
         }
         Grasscutter.getLogger().info(
                 "World chest rewards uid={} gadget={} kind={} itemTypes={}",
                 player.getUid(), entityGadget.getGadgetId(), props.get("kind"), items.size());
+    }
+
+    // Same policy as DropSystem.dropItem: virtual currency without a gadget,
+    // or a native DropMaterial entry explicitly marked for automatic pickup.
+    static boolean shouldAutoCollect(ItemType type, int gadgetId, boolean autoPick) {
+        return autoPick || (type == ItemType.ITEM_VIRTUAL && gadgetId == 0);
     }
 
     /** Map the SceneGadget.level to the nearest ChestDrop.minLevel threshold. */

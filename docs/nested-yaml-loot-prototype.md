@@ -10,8 +10,9 @@ The live entry is `GadgetChest.grantOrdinaryChestLoot`, which delegates to
 `WorldChestLootHelper.grant` after the existing quest-chest eligibility check.
 CSS replaces that helper's old hard-coded tier quantities. The server rolls the
 selected YAML tables, overrides the specified fixed items, grants adventure EXP
-via `Player.earnExp` (item 102), and creates ground item entities for other
-items, preserving the chest's pickup behavior. The chest claim path still
+via `Player.earnExp` (item 102), and credits auto-pick currencies/items directly to inventory when the
+native drop metadata requires it. Other items remain ground drops, following
+the existing DropSystem pickup policy. The chest claim path still
 handles state, notifications, and despawn.
 
 This does not replace quest-chest native quest-item drops, boss flowers,

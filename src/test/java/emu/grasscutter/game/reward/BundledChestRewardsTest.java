@@ -45,6 +45,7 @@ class BundledChestRewardsTest {
         int[] mora = {1000, 1500, 2000, 2500};
         int[] adventureExp = {20, 25, 30, 30};
         int[] sigils = {3, 5, 8, 10};
+        int[] itemTypes = {7, 8, 9, 9};
 
         for (int tier = 0; tier < tiers.length; tier++) {
             for (int sigil = 301; sigil <= 308; sigil++) {
@@ -52,12 +53,12 @@ class BundledChestRewardsTest {
                         "kind", tiers[tier], "scene", "3", "sigil", Integer.toString(sigil)));
                 assertEquals(1, selected.loot().size());
                 var rolled = RewardRoller.roll(selected, loot, new Random(tier * 100L + sigil));
-                assertEquals(primogems[tier], rolled.get(201));
-                assertEquals(mora[tier], rolled.get(202));
-                assertEquals(adventureExp[tier], rolled.get(102));
-                assertEquals(sigils[tier], rolled.get(sigil));
-                assertEquals(5 + (tier == 0 ? -1 : tier == 3 ? 0 : 0),
-                        rolled.size(), "Check all material entries exist");
+                assertEquals(primogems[tier], rolled.get(201).intValue());
+                assertEquals(mora[tier], rolled.get(202).intValue());
+                assertEquals(adventureExp[tier], rolled.get(102).intValue());
+                assertEquals(sigils[tier], rolled.get(sigil).intValue());
+                assertEquals(itemTypes[tier], rolled.size(),
+                        "Every ore and experience material should be present");
             }
         }
         assertTrue(css.resolve("monster", Map.of("rank", "elite")).loot().isEmpty());

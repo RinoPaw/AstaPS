@@ -27,6 +27,103 @@ chest[kind="luxurious"] {
     --genshin-item-adventure_exp: 30;
 }
 
+/* Native chest level intervals; current item pools remain approximate. */
+chest[kind="common"][level="1~5"] {
+    --loot: common_chest_light;
+}
+
+chest[kind="common"][level="6~10"] {
+    --loot: common_chest_low;
+}
+
+chest[kind="common"][level="11~15"] {
+    --loot: common_chest_medium;
+}
+
+chest[kind="common"][level="16~20"] {
+    --loot: common_chest_high;
+}
+
+chest[kind="common"][level="21~25"] {
+    --loot: common_chest_xhigh;
+}
+
+chest[kind="common"][level="26~"] {
+    --loot: common_chest_max;
+}
+
+chest[kind="exquisite"][level="1~5"] {
+    --loot: exquisite_chest_light;
+}
+
+chest[kind="exquisite"][level="6~10"] {
+    --loot: exquisite_chest_low;
+}
+
+chest[kind="exquisite"][level="11~15"] {
+    --loot: exquisite_chest_medium;
+}
+
+chest[kind="exquisite"][level="16~20"] {
+    --loot: exquisite_chest_high;
+}
+
+chest[kind="exquisite"][level="21~25"] {
+    --loot: exquisite_chest_xhigh;
+}
+
+chest[kind="exquisite"][level="26~"] {
+    --loot: exquisite_chest_max;
+}
+
+chest[kind="precious"][level="1~5"] {
+    --loot: precious_chest_light;
+}
+
+chest[kind="precious"][level="6~10"] {
+    --loot: precious_chest_low;
+}
+
+chest[kind="precious"][level="11~15"] {
+    --loot: precious_chest_medium;
+}
+
+chest[kind="precious"][level="16~20"] {
+    --loot: precious_chest_high;
+}
+
+chest[kind="precious"][level="21~25"] {
+    --loot: precious_chest_xhigh;
+}
+
+chest[kind="precious"][level="26~"] {
+    --loot: precious_chest_max;
+}
+
+chest[kind="luxurious"][level="1~5"] {
+    --loot: luxurious_chest_light;
+}
+
+chest[kind="luxurious"][level="6~10"] {
+    --loot: luxurious_chest_low;
+}
+
+chest[kind="luxurious"][level="11~15"] {
+    --loot: luxurious_chest_medium;
+}
+
+chest[kind="luxurious"][level="16~20"] {
+    --loot: luxurious_chest_high;
+}
+
+chest[kind="luxurious"][level="21~25"] {
+    --loot: luxurious_chest_xhigh;
+}
+
+chest[kind="luxurious"][level="26~"] {
+    --loot: luxurious_chest_max;
+}
+
 /* First-time activation of an eligible point. */
 transpoint[kind="waypoint"],
 transpoint[kind="statue"],

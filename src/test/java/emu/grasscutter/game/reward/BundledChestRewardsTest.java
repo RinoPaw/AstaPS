@@ -39,7 +39,7 @@ class BundledChestRewardsTest {
         int[] sigils = {1, 2, 3, 4};
         int[] minMora = {257, 756, 1433, 2000};
         int[] maxMora = {996, 1367, 1433, 3000};
-        assertEquals(5, loot.names().size()); // Four chests and one scene-point item pool.
+        assertEquals(29, loot.names().size()); // Four source pools, 24 tier aliases, one scene-point pool.
         assertTrue(loot.contains("astaps.loot.three_realms_point"));
 
         for (int tier = 0; tier < kinds.length; tier++) {
@@ -60,6 +60,32 @@ class BundledChestRewardsTest {
                 assertTrue(rolled.keySet().stream().noneMatch(
                         id -> id >= 301 && id <= 308 && id != 305));
             }
+        }
+    }
+
+
+    @Test
+    void sixNamedLevelTiersUseTheCorrespondingTableForEveryChestKind() throws Exception {
+        var registry = items();
+        var loot = YamlLootTables.parse(resource("/rewards/loot.yaml"), registry::resolve);
+        var css = CssRewards.parse(resource("/rewards/rewards.css"), registry, loot);
+        String[] kinds = {"common", "exquisite", "precious", "luxurious"};
+        String[] names = {"light", "low", "medium", "high", "xhigh", "max"};
+        int[] levels = {1, 6, 11, 16, 21, 26, 99};
+        for (String kind : kinds) {
+            for (int i = 0; i < levels.length; i++) {
+                String tier = names[Math.min(i, names.length - 1)];
+                var selection = css.resolve("chest", Map.of(
+                        "kind", kind, "level", Integer.toString(levels[i])));
+                String table = "astaps.loot." + kind + "_chest_" + tier;
+                assertEquals(Map.of(table, 1), selection.loot());
+                assertTrue(loot.contains(table));
+                var actual = loot.roll(table, new Random(300));
+                var base = loot.roll("astaps.loot." + kind + "_chest", new Random(300));
+                assertEquals(base, actual, "Unverified tiers must not fabricate new drops");
+            }
+            assertEquals(Map.of("astaps.loot." + kind + "_chest", 1),
+                    css.resolve("chest", Map.of("kind", kind)).loot());
         }
     }
 

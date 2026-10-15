@@ -115,33 +115,37 @@ imported data labels, not every original scene script chest.
 
 ## Chest level selectors
 
-Scene Lua `SceneGadget.level` is passed to CSS as the original `level`
-attribute. ChestLevelSetConfigData lists chest-level thresholds
-`1, 6, 11, 16, 21, 26`; ChestDrop.json's Mondstadt/Liyue combat and
-puzzle families include matching `minLevel` thresholds. The historical
-DropSystem chose the largest `minLevel` not greater than the chest's
-`level` for the matching drop tag.
-
-Numeric comparisons are a small extension to the supported CSS subset:
+The source `ChestLevelSetConfigData` defines six thresholds: 1, 6, 11,
+16, 21, 26. The historical chest source table uses the highest eligible
+`minLevel`. The CSS template now expresses these as inclusive numeric
+ranges on the existing `SceneGadget.level` property:
 
 ```css
-chest[kind="common"][level>=6] { --loot: common_level_6; }
-chest[kind="common"][level>=11] { --loot: common_level_11; }
-chest[kind="common"][level>=16][level<21] { --loot: common_level_16; }
+chest[kind="common"][level="1~5"] { --loot: common_chest_light; }
+chest[kind="common"][level="6~10"] { --loot: common_chest_low; }
+chest[kind="common"][level="11~15"] { --loot: common_chest_medium; }
+chest[kind="common"][level="16~20"] { --loot: common_chest_high; }
+chest[kind="common"][level="21~25"] { --loot: common_chest_xhigh; }
+chest[kind="common"][level="26~"] { --loot: common_chest_max; }
 ```
 
-`>`, `>=`, `<`, and `<=` are supported for `level` only.
-These are not standard CSS attribute selectors. Each comparison counts as
-one attribute for specificity; normal CSS cascade order still applies.
-Write overlapping minimum-threshold selectors in ascending order so
-that the largest matching bound wins. Missing/non-numeric levels never
-match numeric selectors. The existing `kind`-only rules cover such cases.
+The open upper bound `26~` retains the highest eligible tier for
+higher levels, matching `minLevel` semantics. Numeric ranges are
+an AstaPS extension to ordinary CSS attribute matching, and are only
+interpreted for `level`. A missing, zero, or invalid level does not match
+these ranges; the general `kind` rule still applies. Exact equality
+such as `[level="16"]` still works.
 
-The six thresholds are **not** proof of 24 distinct item distributions.
-In the server ChestDrop.json there are 20 combat and 20 puzzle tags;
-only the 16 Mondstadt/Liyue tags have all six thresholds, and many
-thresholds within a tag refer to the **same** drop ID. Other nations'
-tags use a single level-1 row. Furthermore no verified native field
-currently distinguishes combat from puzzle chests. Therefore the
-bundled four approximate drop tables remain unchanged until the content
-and source selector for each genuinely distinct variant can be proven.
+All four chest kinds use the same six interval names. The bundled YAML
+declares these names as aliases to each kind's existing base table.
+**No 7.1 item distributions for these levels have been verified.**
+The aliases intentionally share the same approximate content until
+source-specific probabilities are validated; they can be replaced
+independently with confirmed data. There are six source thresholds,
+so no seventh `ultra` tier is introduced.
+
+The source `ChestDrop.json` has 40 combat/puzzle tags; 16 (Mondstadt
+and Liyue) contain all six thresholds, while 24 have only a single
+level-1 entry. Repeated thresholds sometimes point to the same drop
+ID. Distinguishing combat versus puzzle selection still requires
+verified source metadata, not guessed tag strings.

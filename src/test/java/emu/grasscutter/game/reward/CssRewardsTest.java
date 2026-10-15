@@ -189,42 +189,45 @@ class CssRewardsTest {
     }
 
     @Test
-    void levelThresholdsSelectTheHighestMatchingTier() {
-        // The first six ChestLevelSet chest levels are 1, 6, 11, 16, 21, 26.
+    void quotedLevelRangesCoverTheSixSourceIntervals() {
         var css = CssRewards.parse("""
                 chest[kind="common"] { --loot: currency; }
-                chest[kind="common"][level>=6] { --loot: surprise; }
-                chest[kind="common"][level>=11] { --loot: currency 2; }
-                chest[kind="common"][level>=16] { --loot: surprise 3; }
-                chest[kind="common"][level>=21] { --loot: currency 4; }
-                chest[kind="common"][level>=26] { --loot: surprise 5; }
+                chest[kind="common"][level="1~5"] { --loot: surprise; }
+                chest[kind="common"][level="6~10"] { --loot: currency 2; }
+                chest[kind="common"][level="11~15"] { --loot: surprise 3; }
+                chest[kind="common"][level="16~20"] { --loot: currency 4; }
+                chest[kind="common"][level="21~25"] { --loot: surprise 5; }
+                chest[kind="common"][level="26~"] { --loot: currency 6; }
                 """, items, loot);
         int[] levels = {1, 5, 6, 10, 11, 15, 16, 20, 21, 25, 26, 99};
         String[] names = {
-                "currency", "currency", "surprise", "surprise",
-                "currency", "currency", "surprise", "surprise",
-                "currency", "currency", "surprise", "surprise"
+                "surprise", "surprise", "currency", "currency",
+                "surprise", "surprise", "currency", "currency",
+                "surprise", "surprise", "currency", "currency"
         };
-        int[] times = {1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5};
+        int[] times = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6};
         for (int i = 0; i < levels.length; i++) {
             assertEquals(Map.of("astaps.loot." + names[i], times[i]),
                     css.resolve("chest", Map.of("kind", "common",
                             "level", Integer.toString(levels[i]))).loot(),
                     "level " + levels[i]);
         }
+        for (String value : new String[]{"0", "unknown"}) {
+            assertEquals(Map.of("astaps.loot.currency", 1),
+                    css.resolve("chest", Map.of("kind", "common", "level", value)).loot());
+        }
         assertEquals(Map.of("astaps.loot.currency", 1),
                 css.resolve("chest", Map.of("kind", "common")).loot());
-        assertEquals(Map.of("astaps.loot.currency", 1),
-                css.resolve("chest", Map.of("kind", "common", "level", "unknown")).loot());
     }
 
     @Test
-    void levelRangesSupportAllNumericComparatorsAndPreserveSpecificity() {
+    void quotedRangesPreserveSelectorSpecificityAndExactLevelEquality() {
         var css = CssRewards.parse("""
                 chest { --loot: currency; }
-                chest[level>=6][level<11] { --loot: surprise 2; }
-                chest[level>10][level<=16] { --loot: currency 3; }
-                chest[kind="common"][level>=16][level<21] { --loot: surprise 4; }
+                chest[level="6~10"] { --loot: surprise 2; }
+                chest[level="11~16"] { --loot: currency 3; }
+                chest[kind="common"][level="16~20"] { --loot: surprise 4; }
+                chest[level="30"] { --loot: currency 5; }
                 """, items, loot);
         assertEquals(Map.of("astaps.loot.currency", 1),
                 css.resolve("chest", Map.of("level", "5")).loot());
@@ -238,9 +241,17 @@ class CssRewardsTest {
                 css.resolve("chest", Map.of("kind", "common", "level", "16")).loot());
         assertEquals(Map.of("astaps.loot.currency", 1),
                 css.resolve("chest", Map.of("kind", "common", "level", "21")).loot());
-        assertEquals(Map.of("astaps.loot.currency", 1),
-                css.resolve("chest", Map.of("kind", "common", "level", "invalid")).loot());
-        assertEquals(Map.of("astaps.loot.currency", 1),
-                css.resolve("chest", Map.of("kind", "common")).loot());
+        assertEquals(Map.of("astaps.loot.currency", 5),
+                css.resolve("chest", Map.of("level", "30")).loot());
+    }
+
+    @Test
+    void invalidRangesAreRejected() {
+        for (String range : new String[]{"10~5", "a~5", "2~x", "~5"}) {
+            assertThrows(IllegalArgumentException.class, () ->
+                    CssRewards.parse(
+                            "chest[level=\"" + range + "\"] { --loot: currency; }",
+                            items, loot), range);
+        }
     }
 }

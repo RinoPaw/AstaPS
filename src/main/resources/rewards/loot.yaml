@@ -1,11 +1,18 @@
-common_chest:
+common_chest: &common_chest_items
   - {reward: genshin.item.mora, count: "257~996"}
   - {reward: genshin.item.enhancement_ore, count: "1~3"}
   - reward:
       - {reward: genshin.item.wanderers_advice, count: "1~2", weight: 3}
       - {reward: genshin.item.adventurers_experience, weight: 1}
 
-exquisite_chest:
+common_chest_light: *common_chest_items
+common_chest_low: *common_chest_items
+common_chest_medium: *common_chest_items
+common_chest_high: *common_chest_items
+common_chest_xhigh: *common_chest_items
+common_chest_max: *common_chest_items
+
+exquisite_chest: &exquisite_chest_items
   - {reward: genshin.item.mora, count: "756~1367"}
   - reward:
       - {reward: genshin.item.enhancement_ore, count: "2~4", weight: 2}
@@ -14,19 +21,40 @@ exquisite_chest:
       - {reward: genshin.item.wanderers_advice, count: "2~3", weight: 2}
       - {reward: genshin.item.adventurers_experience, count: "1~2", weight: 3}
 
-precious_chest:
+exquisite_chest_light: *exquisite_chest_items
+exquisite_chest_low: *exquisite_chest_items
+exquisite_chest_medium: *exquisite_chest_items
+exquisite_chest_high: *exquisite_chest_items
+exquisite_chest_xhigh: *exquisite_chest_items
+exquisite_chest_max: *exquisite_chest_items
+
+precious_chest: &precious_chest_items
   - {reward: genshin.item.mora, count: 1433}
   - {reward: genshin.item.fine_enhancement_ore, count: "1~3"}
   - reward:
       - {reward: genshin.item.adventurers_experience, count: "1~3", weight: 3}
       - {reward: genshin.item.heros_wit, weight: 1}
 
-luxurious_chest:
+precious_chest_light: *precious_chest_items
+precious_chest_low: *precious_chest_items
+precious_chest_medium: *precious_chest_items
+precious_chest_high: *precious_chest_items
+precious_chest_xhigh: *precious_chest_items
+precious_chest_max: *precious_chest_items
+
+luxurious_chest: &luxurious_chest_items
   - {reward: genshin.item.mora, count: "2000~3000"}
   - {reward: genshin.item.fine_enhancement_ore, count: "2~4"}
   - reward:
       - {reward: genshin.item.adventurers_experience, count: "2~3", weight: 2}
       - {reward: genshin.item.heros_wit, count: "1~2", weight: 3}
+
+luxurious_chest_light: *luxurious_chest_items
+luxurious_chest_low: *luxurious_chest_items
+luxurious_chest_medium: *luxurious_chest_items
+luxurious_chest_high: *luxurious_chest_items
+luxurious_chest_xhigh: *luxurious_chest_items
+luxurious_chest_max: *luxurious_chest_items
 
 three_realms_point:
   - {reward: 101692, count: 20}

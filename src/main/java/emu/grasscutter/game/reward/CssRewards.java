@@ -34,27 +34,20 @@ public final class CssRewards {
     // selector syntax. Do not silently miscalculate priority for other CSS.
     private static final Pattern SIMPLE_SELECTOR = Pattern.compile(
             "^(?:\\*|[a-zA-Z][a-zA-Z0-9_-]*)(?:\\[[^\\[\\]]+\\])*$");
-    // Numeric comparisons extend the supported CSS subset. The CSS parser
-    // understands only ordinary selectors, so replace comparisons with valid
-    // temporary attributes and evaluate their bounds separately.
-    private static final Pattern LEVEL_COMPARISON = Pattern.compile(
-            "\\[\\s*level\\s*(>=|<=|>|<)\\s*([0-9]+)\\s*\\]");
-    private static final Pattern LEVEL_MARKER = Pattern.compile(
-            "\\[data-reward-level-([0-9]+)\\]");
+    // A quoted level value such as "1~5" selects an inclusive numeric range.
+    // A missing upper bound ("26~") means all levels from 26 onwards.
+    private static final Pattern LEVEL_RANGE = Pattern.compile(
+            "\\[\\s*level\\s*=\\s*([\"'])([0-9]+)~([0-9]*)\\1\\s*\\]");
+    private static final Pattern MALFORMED_LEVEL_RANGE = Pattern.compile(
+            "\\[\\s*level\\s*=\\s*([\"'])[^\"']*~[^\"']*\\1\\s*\\]");
 
-    private record LevelCondition(String operator, long threshold) {
+    private record LevelRange(long min, Long max) {
         boolean matches(Map<String, String> attributes) {
             String value = attributes.get("level");
             if (value == null) return false;
             try {
                 long actual = Long.parseLong(value);
-                return switch (operator) {
-                    case ">=" -> actual >= threshold;
-                    case ">" -> actual > threshold;
-                    case "<=" -> actual <= threshold;
-                    case "<" -> actual < threshold;
-                    default -> throw new IllegalStateException("Invalid level comparison");
-                };
+                return actual >= min && (max == null || actual <= max);
             } catch (NumberFormatException e) {
                 return false;
             }
@@ -62,7 +55,7 @@ public final class CssRewards {
     }
 
     private record Rule(
-            Evaluator selector, List<LevelCondition> levelConditions,
+            Evaluator selector, List<LevelRange> levelRanges,
             Map<Integer, Integer> items, Map<String, Integer> loot,
             int specificity, int order) {}
 
@@ -73,18 +66,7 @@ public final class CssRewards {
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
-        var conditions = new ArrayList<LevelCondition>();
-        var normalized = new StringBuffer();
-        var comparisons = LEVEL_COMPARISON.matcher(source);
-        while (comparisons.find()) {
-            long threshold = Long.parseLong(comparisons.group(2));
-            int index = conditions.size();
-            conditions.add(new LevelCondition(comparisons.group(1), threshold));
-            comparisons.appendReplacement(normalized,
-                    "[data-reward-level-" + index + "]");
-        }
-        comparisons.appendTail(normalized);
-        var sheet = CSSReader.readFromString(normalized.toString());
+        var sheet = CSSReader.readFromString(source);
         if (sheet == null) throw new IllegalArgumentException("Invalid rewards.css");
 
         var rules = new ArrayList<Rule>();
@@ -114,19 +96,24 @@ public final class CssRewards {
 
             for (var selector : style.getAllSelectors()) {
                 String css = selector.getAsCSSString(CSSWriterSettings.DEFAULT_SETTINGS, 0).trim();
-                var levelConditions = new ArrayList<LevelCondition>();
-                var selectorText = new StringBuffer();
-                var markers = LEVEL_MARKER.matcher(css);
-                while (markers.find()) {
-                    int index = Integer.parseInt(markers.group(1));
-                    if (index >= conditions.size()) {
-                        throw new IllegalArgumentException("Invalid numeric selector: " + css);
+                var levelRanges = new ArrayList<LevelRange>();
+                var normalized = new StringBuffer();
+                var matcher = LEVEL_RANGE.matcher(css);
+                while (matcher.find()) {
+                    long min = Long.parseLong(matcher.group(2));
+                    Long max = matcher.group(3).isEmpty()
+                            ? null : Long.parseLong(matcher.group(3));
+                    if (max != null && max < min) {
+                        throw new IllegalArgumentException("Reversed reward level range: " + css);
                     }
-                    levelConditions.add(conditions.get(index));
-                    markers.appendReplacement(selectorText, "[level]");
+                    levelRanges.add(new LevelRange(min, max));
+                    matcher.appendReplacement(normalized, "[level]");
                 }
-                markers.appendTail(selectorText);
-                String normalizedSelector = selectorText.toString();
+                matcher.appendTail(normalized);
+                String normalizedSelector = normalized.toString();
+                if (MALFORMED_LEVEL_RANGE.matcher(normalizedSelector).find()) {
+                    throw new IllegalArgumentException("Invalid reward level range: " + css);
+                }
                 if (!SIMPLE_SELECTOR.matcher(normalizedSelector).matches()) {
                     throw new IllegalArgumentException("Unsupported reward selector: " + css);
                 }
@@ -137,7 +124,7 @@ public final class CssRewards {
                 int specificity = attributeCount * 100
                         + (css.matches("^[a-zA-Z][a-zA-Z0-9_-]*.*") ? 1 : 0);
                 rules.add(new Rule(Selector.evaluatorOf(normalizedSelector),
-                        List.copyOf(levelConditions), Map.copyOf(fixed),
+                        List.copyOf(levelRanges), Map.copyOf(fixed),
                         selectedLoot, specificity, order++));
             }
         }
@@ -175,8 +162,8 @@ public final class CssRewards {
         Map<String, Integer> selectedLoot = Map.of();
         for (var rule : rules) {
             if (rule.selector.matches(element.root(), element)
-                    && rule.levelConditions.stream().allMatch(condition ->
-                            condition.matches(attributes))) {
+                    && rule.levelRanges.stream().allMatch(range ->
+                            range.matches(attributes))) {
                 fixed.putAll(rule.items);
                 if (rule.loot != null) selectedLoot = rule.loot;
             }

@@ -254,4 +254,37 @@ class CssRewardsTest {
                             items, loot), range);
         }
     }
+    @Test
+    void cssRangedCurrencyRollsInclusivelyAndOverridesLoot() {
+        var css = CssRewards.parse("""
+                chest {
+                    --loot: currency;
+                    --genshin-item-mora: 3~5;
+                }
+                """, items, loot);
+        var selected = css.resolve("chest", Map.of());
+        var observed = new java.util.HashSet<Integer>();
+        for (int seed = 0; seed < 50; seed++) {
+            int mora = RewardRoller.roll(selected, loot, new Random(seed)).get(202);
+            assertTrue(mora >= 3 && mora <= 5);
+            observed.add(mora);
+        }
+        assertEquals(java.util.Set.of(3, 4, 5), observed);
+    }
+
+    @Test
+    void cssFixedAndRangedQuantitiesRespectCascadePrecedence() {
+        var css = CssRewards.parse("""
+                chest { --genshin-item-mora: 3~5; }
+                chest[city="1"] { --genshin-item-mora: 9; }
+                chest[city="1"][area="2"] { --genshin-item-mora: 11~12; }
+                """, items, loot);
+        assertEquals(9, RewardRoller.roll(
+                css.resolve("chest", Map.of("city", "1")), loot, new Random(1))
+                .get(202).intValue());
+        int value = RewardRoller.roll(css.resolve("chest",
+                Map.of("city", "1", "area", "2")), loot, new Random(2)).get(202);
+        assertTrue(value == 11 || value == 12);
+    }
+
 }

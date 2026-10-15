@@ -6,6 +6,7 @@ import com.helger.css.writer.CSSWriterSettings;
 import emu.grasscutter.data.ItemIdRegistry;
 import emu.grasscutter.data.ResourceId;
 import emu.grasscutter.game.drop.YamlLootTables;
+import emu.grasscutter.game.drop.LootCount;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -22,10 +23,15 @@ import org.jsoup.select.Selector;
  * Each --loot declaration is one complete list; item properties cascade independently.
  */
 public final class CssRewards {
-    public record Selection(Map<Integer, Integer> items, Map<String, Integer> loot) {
+    public record Selection(Map<Integer, Integer> items, Map<String, Integer> loot,
+            Map<Integer, LootCount.Spec> rangedItems) {
+        public Selection(Map<Integer, Integer> items, Map<String, Integer> loot) {
+            this(items, loot, Map.of());
+        }
         public Selection {
             items = Map.copyOf(items);
             loot = Map.copyOf(loot);
+            rangedItems = Map.copyOf(rangedItems);
         }
     }
 
@@ -57,7 +63,7 @@ public final class CssRewards {
     private record Rule(
             Evaluator selector, List<LevelRange> levelRanges,
             Map<Integer, Integer> items, Map<String, Integer> loot,
-            int specificity, int order) {}
+            Map<Integer, LootCount.Spec> rangedItems, int specificity, int order) {}
 
     private final List<Rule> rules;
 
@@ -77,6 +83,7 @@ public final class CssRewards {
             }
 
             var fixed = new HashMap<Integer, Integer>();
+            var ranged = new HashMap<Integer, LootCount.Spec>();
             Map<String, Integer> selectedLoot = null;
             for (var declaration : style.getAllDeclarations()) {
                 String property = declaration.getProperty();
@@ -86,11 +93,17 @@ public final class CssRewards {
                 } else {
                     ResourceId resource = ResourceId.fromCssProperty(property);
                     int id = items.resolve(resource.toString());
-                    if (!value.matches("[0-9]+")) {
-                        throw new IllegalArgumentException("Invalid item count for "
-                                + resource + ": " + value);
+                    if (value.matches("[0-9]+\\s*~\\s*[0-9]+")) {
+                        ranged.put(id, LootCount.parse(value.replaceAll("\\s+", "")));
+                        fixed.remove(id);
+                    } else {
+                        if (!value.matches("[0-9]+")) {
+                            throw new IllegalArgumentException("Invalid item count for "
+                                    + resource + ": " + value);
+                        }
+                        fixed.put(id, Integer.parseInt(value));
+                        ranged.remove(id);
                     }
-                    fixed.put(id, Integer.parseInt(value));
                 }
             }
 
@@ -125,7 +138,7 @@ public final class CssRewards {
                         + (css.matches("^[a-zA-Z][a-zA-Z0-9_-]*.*") ? 1 : 0);
                 rules.add(new Rule(Selector.evaluatorOf(normalizedSelector),
                         List.copyOf(levelRanges), Map.copyOf(fixed),
-                        selectedLoot, specificity, order++));
+                        selectedLoot, Map.copyOf(ranged), specificity, order++));
             }
         }
 
@@ -159,15 +172,19 @@ public final class CssRewards {
         var element = new Element(type);
         attributes.forEach(element::attr);
         var fixed = new HashMap<Integer, Integer>();
+        var ranged = new HashMap<Integer, LootCount.Spec>();
         Map<String, Integer> selectedLoot = Map.of();
         for (var rule : rules) {
             if (rule.selector.matches(element.root(), element)
                     && rule.levelRanges.stream().allMatch(range ->
                             range.matches(attributes))) {
+                rule.items.keySet().forEach(ranged::remove);
+                rule.rangedItems.keySet().forEach(fixed::remove);
                 fixed.putAll(rule.items);
+                ranged.putAll(rule.rangedItems);
                 if (rule.loot != null) selectedLoot = rule.loot;
             }
         }
-        return new Selection(fixed, selectedLoot);
+        return new Selection(fixed, selectedLoot, ranged);
     }
 }

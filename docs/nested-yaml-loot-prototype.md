@@ -1,208 +1,109 @@
 # Reward configuration
 
-AstaPS bundles two authoritative reward resources for chests and scene-point activations.
-They are read directly from the JAR: `src/main/resources/rewards/loot.yaml`
-and `src/main/resources/rewards/rewards.css`. No files are copied to
-`config/rewards/`, and any previous copies there are ignored.
+The runtime reads two bundled files: `src/main/resources/rewards/loot.yaml`
+and `src/main/resources/rewards/rewards.css`. There is no editable
+`config/rewards` copy.
 
-`loot.yaml` defines reusable loot content. A table does not inspect chest
-type, location, rank, scene, or other spawn data. Four base chest pools
-are defined, each with six named level aliases (`light`, `low`, `medium`,
-`high`, `xhigh`, `max`). Names register under `astaps.loot.<name>`.
+## Twelve ordinary chest tiers
 
-`rewards.css` selects a named loot table and sets fixed quantities. The
-sample includes four basic `chest[kind="..."]` rules plus the six
-level intervals for each kind. Chest metadata
-includes `kind`, `scene`, `gadget`, `group`, `config`, and when
-available the source gadget's `level`, plus source `area` and its parent `city` where available.
-No calculated regional currency,
-translated tag, or derived rank band is provided.
+CSS selects among twelve reusable item reward tiers, based on the native
+chest grade and `SceneGadget.level` (not the player's Adventure Rank).
 
-Eligible scene-point activations use `transpoint` selectors. The server
-classifies points as `waypoint`, `statue`, or `domain` from game data;
-CSS receives `kind`, `scene`, and `point`. The default first activation
-gives 50 Adventure EXP and 5 Primogems for each kind. Scene 3 point 6
-gets 10 Adventure EXP and no Primogems. Scene 7 gives 5 Primogems and
-20 units of item 101692 via `three_realms_point` in `loot.yaml`, and
-no Adventure EXP. These amounts preserve the existing TOML defaults.
+| Grade | level 1–5 | 6–10 | 11–15 | 16–20 | 21–25 | 26+ |
+|---|---|---|---|---|---|---|
+| Common | common_light | common_low | common_medium | common_high | common_xhigh | common_max |
+| Exquisite | common_max | common_max | common_max | common_max | exquisite_xhigh | exquisite_max |
+| Precious | exquisite_max | exquisite_max | exquisite_max | exquisite_max | precious_xhigh | precious_max |
+| Luxurious | precious_max | precious_max | precious_max | precious_max | luxurious_xhigh | luxurious_max |
 
-Only genuine first unlocks grant waypoint/statue rewards. Dungeon entrances
-keep their separate first-activation receipt because map synchronization
-can reveal them before manual activation. The eligibility check still
-excludes hidden points, portals, and unrelated point types.
+These names take the `chest_` prefix in `loot.yaml`, and are registered
+under `astaps.loot`. YAML also contains supporting subpools and
+`three_realms_point`. Those are not additional world-chest tiers.
 
-The separate `trans-point-rewards.toml` has been retired. Scene-point
-rewards are defined in the bundled `rewards.css` alongside chest rewards.
+Loot tiers contain variable contents: character experience items,
+talent books, ingredients, recipe items, weapons, enhancement ores and
+artifacts. The 12 tables are based on one branch of the historical chest
+drop data without combat/puzzle selection. They do not yet reproduce
+location-specific book pools, special recipes, or Dragonspine Crimson
+Agate rewards correctly. Those variants require separately verified
+selection data. The artifact item resource identities have not changed.
 
-Example:
+## Common rewards belong to CSS
+
+Since Luna I, ordinary Common, Exquisite, Precious and Luxurious chests
+all grant **30 Adventure EXP**. CSS assigns it once:
 
 ```css
-chest[kind="common"] {
-    --loot: common_chest;
-    --genshin-item-primogem: 2;
+chest {
     --genshin-item-adventure_exp: 30;
+}
+
+chest[kind="common"][level="1~5"] {
+    --loot: chest_common_light;
+    --genshin-item-mora: 240~360;
+    --genshin-item-sigil: 1;
 }
 ```
 
-A loot entry has `reward`, optional `count`, and optional `weight`.
-`reward` is a qualified item resource name (the parser also recognizes an English item name,
-as well as a nested list or `null`). `count` defaults to 1. For nested lists it
-means independent repetitions. A list with all-null weights executes
-all entries; one with all-numeric weights selects one by relative weight.
-Mixing weighted and unweighted entries within a list is invalid.
-Counts support ranges `1~3` / `1;3`, fractional expectations `2.2`,
-percentage `3:20`, and distributions `0:40,1,2:18`.
-YAML aliases can reuse preceding lists but cannot create cycles.
+Mora, Primogems, and regional sigils are likewise defined in CSS only.
+Integer counts or inclusive `low~high` ranges are supported for CSS item
+quantities; ranges are rolled at grant time. CSS item properties cascade
+independently of the complete `--loot` selection. A later fixed amount
+overrides an earlier range, and vice versa. A count of zero removes an item.
 
-In CSS, `--loot: currency, books 2;` executes two independent tables;
-`--loot: none` disables them. A subsequent matching `--loot`
-declaration replaces the whole list. Fixed item declarations cascade
-independently, override table results, and can remove an item with count 0.
-Qualified table IDs must be CSS quoted strings.
+Ordinary Primogem baselines are 2/5/10/10 for Common/Exquisite/Precious/
+Luxurious. Older Mondstadt and Liyue areas give 0/2/5/10 except for the
+explicit higher-value area exceptions listed in CSS. The regional sigil
+placeholder is resolved using existing authoritative area and scene
+metadata at grant time, rather than a guessed translated tag.
 
-**Data status:** the sample chest amounts remain approximate and are
-not independently validated against all 7.1 game records. The historical
-sourceType=19 chest drop graph is now also included in `loot.yaml` as
-reference data. Region-dependent sigils are resolved at grant time from verified
-source metadata. Special chest variants still require verified selection data;
-location heuristics do not determine their loot composition.
+CSS supports `[level="1~5"]` through `[level="26~"]`, with the upper
+bound open in the final range. Missing or invalid levels fall back
+to the general chest-kind rule. CSS has no combat/puzzle selector;
+future selectors belong here, never in a YAML item table.
 
-The server reads the bundled resources after game items load. To change
-the defaults, edit `src/main/resources/rewards/` and rebuild the JAR.
-An old local `config/rewards/` directory can be deleted; it is no longer read.
+## Weapon and ore investigation
 
-Ordinary world chests and eligible scene-point activations now use CSS
-reward selection. Quest-created chests, boss flowers, and monster loot
-remain separate paths. Runtime testing should follow configuration review.
+The previous export of `DropTableExcelConfigData` and nested tables
+produced empty `weapons` and `enhancement_ore` lists for all twelve
+examined root tables. That does **not** mean Genshin 7.1 chests cannot
+drop those items. Both are confirmed chest reward categories in public
+gameplay documentation, and the repository's old bundled
+`src/main/resources/defaults/data/ChestReward.json` contains concrete
+examples.
 
-## Regional sigil alias
+The new YAML weapon and ore entries are **provisional**. Known 1★/2★/3★
+weapons and ordinary/fine/mystic enhancement ores have been placed into
+sensible tiered pools. Their exact probabilities and counts are not
+validated against native Genshin 7.1 reward data. This uncertainty is
+intentional and must not be mistaken for confirmed reversed drop rates.
 
-`genshin.item.sigil` is an item reference resolved at reward-grant time,
-not a CSS selector field. For example:
+Source records remain at `data/ChestDrop.json` and
+`data/Server/DropTableExcelConfigData.json`. The earlier verbose
+artifact item identities are kept unchanged for a separate naming pass.
 
-```css
-chest[kind="exquisite"] { --genshin-item-sigil: 2; }
-```
+## Scene points and other reward paths
 
-```yaml
-seals:
-  - {reward: genshin.item.sigil, count: 2}
-```
+The CSS also covers first activation of eligible waypoints, statues
+and dungeon entrances (50 Adventure EXP and 5 Primogems by default).
+Scene 3 point 6 receives 10 Adventure EXP and no Primogems. In scene 7,
+`three_realms_point` grants 20 Light Realm Sigils; its CSS awards
+5 Primogems and no Adventure EXP.
 
-Both forms use the same resolver. Original scene chests use their native
-`SceneGadget.area_id`. That area must match a WorldAreaConfig record in
-the active scene and exactly one CityConfig record; only nation city IDs
-1–9 have a supported sigil mapping. City IDs 99+ are excluded, because
-special scene areas such as the Golden Apple Archipelago and Enkanomiya
-share other nations' city icons without sharing their regional rewards.
+Quest-created chests, boss flowers, and monster rewards remain separate
+routes. World chest metadata sent to the CSS engine includes `kind`,
+`scene`, `gadget`, `group`, `config`, and any verified native `level`,
+`area`, and `city`.
 
-Generated world chests use source provenance: `region` from imported
-`region_explore_points.json` and the explicitly named Nod-Krai or
-Snezhnaya point source files. Their region is not guessed using
-coordinates, synthetic group ranges, translated drop tags, or the
-player's current location. Unknown, missing, or ambiguous locations cause a warning and omit only
-the regional sigil; other rewards are still granted. No sigil is guessed.
+## YAML semantics
 
-Direct loot-table execution without a reward context cannot resolve
-`sigil`. The four bundled chest presets now include 1, 2, 3, and 4 regional
-sigils respectively. These amounts remain approximate. If an area cannot
-be resolved (such as an auxiliary event city), the resolver warns and omits only the sigil rather than issuing another
-nation's sigil. Those sources need separate verified rules for sigils.
+All unweighted entries in one list execute; a fully weighted list chooses
+one entry by relative weight. Mixed weighted and unweighted entries are
+invalid. `count` defaults to one and supports fixed values, ranges,
+fractional expectations and native percentage distributions. A nested
+list repeats the entire pool according to the outer count.
 
-Source audit: `region_explore_points.json` has 1,957 entries, including
-891 `fontaine`, 863 `natlan`, and 203 `sumeru36` entries. The resolver
-accepts `sumeru36` as Dendro/Sumeru. Nod-Krai has 424 and the standalone
-Snezhnaya list has 486 entries; these two datasets have no `region`
-property but their file provenance is unambiguous. This validates the
-imported data labels, not every original scene script chest.
+Qualified `genshin.item.<name>` identities resolve to game item IDs.
+No numeric source IDs are used in the bundled loot configuration.
 
-## Chest level selectors
-
-The source `ChestLevelSetConfigData` defines six thresholds: 1, 6, 11,
-16, 21, 26. The historical chest source table uses the highest eligible
-`minLevel`. The CSS template now expresses these as inclusive numeric
-ranges on the existing `SceneGadget.level` property:
-
-```css
-chest[kind="common"][level="1~5"] { --loot: common_chest_light; }
-chest[kind="common"][level="6~10"] { --loot: common_chest_low; }
-chest[kind="common"][level="11~15"] { --loot: common_chest_medium; }
-chest[kind="common"][level="16~20"] { --loot: common_chest_high; }
-chest[kind="common"][level="21~25"] { --loot: common_chest_xhigh; }
-chest[kind="common"][level="26~"] { --loot: common_chest_max; }
-```
-
-The open upper bound `26~` retains the highest eligible tier for
-higher levels, matching `minLevel` semantics. Numeric ranges are
-an AstaPS extension to ordinary CSS attribute matching, and are only
-interpreted for `level`. A missing, zero, or invalid level does not match
-these ranges; the general `kind` rule still applies. Exact equality
-such as `[level="16"]` still works.
-
-All four chest kinds use the same six interval names. The bundled YAML
-declares these names as aliases to each kind's existing base table.
-**No 7.1 item distributions for these levels have been verified.**
-The aliases intentionally share the same approximate content until
-source-specific probabilities are validated; they can be replaced
-independently with confirmed data. There are six source thresholds,
-so no seventh `ultra` tier is introduced.
-
-The source `ChestDrop.json` has 40 combat/puzzle tags; 16 (Mondstadt
-and Liyue) contain all six thresholds, while 24 have only a single
-level-1 entry. Repeated thresholds sometimes point to the same drop
-ID. Distinguishing combat versus puzzle selection still requires
-verified source metadata, not guessed tag strings.
-
-## Historical combat and puzzle loot tables
-
-The bundled `loot.yaml` preserves the full historical chest source graph:
-108 roots, 571 referenced subtables, and 1,843 positive-weight entries.
-The source records come from
-`AstaPS-Resource/Server/DropTableExcelConfigData.json` and
-`Server/DropSubTableExcelConfigData.json`. Historical roots were matched
-against the original `ChestDrop.json` index/minLevel labels. All source
-identifiers were replaced by descriptive names, for example:
-
-- `astaps.loot.mondstadt_combat_common`
-- `astaps.loot.mondstadt_puzzle_common`
-- `astaps.loot.dragonspine_crimson_agate_common`
-- `astaps.loot.golden_apple_archipelago_puzzle_common`
-
-Internal pools carry descriptive category names, such as `experience`,
-`weapons`, `enhancement_ore`, `talent_books`, and `artifacts`. The
-YAML anchors reuse these names and preserve the full nested structure.
-Every item reward uses a qualified `genshin.item.<name>` reference; raw
-numeric IDs and synthetic `id_<number>` aliases are prohibited in this
-configuration. Names for historical artifacts include the set, slot,
-rarity, and initial substat count, so distinct source items remain distinct.
-Their mapping to numeric game resources belongs to `ItemIdRegistry`.
-
-A native exclusive pool is a weighted choice; an independent pool rolls
-each entry separately. Nested counts, fractional expectations, and empty
-source nodes are preserved. Default `count: 1` is omitted, and relative
-weights are reduced without changing the probability distribution.
-
-The history tables are archived research data. **The bundled
-`rewards.css` does not select them.** Existing world-chest presets are
-still approximate. The original `ChestDrop.json` tag/minLevel selector
-mapping belongs outside `loot.yaml`, so no location or source decisions
-are embedded in the tables. No 7.1 gameplay verification has been
-performed for historical distribution data.
-
-## Chest Primogems by native location
-
-Base amounts: common 2, exquisite 5, precious 10, luxurious 10.
-The original Mondstadt (city=1) and Liyue (city=2) areas generally
-award 0/2/5 for common/exquisite/precious. Source areas 10, 77
-(Mondstadt) and 8, 19, 40, 41, 47, 300 (Liyue) explicitly restore
-the normal amounts for known later/higher-value world regions.
-
-Native SceneGadget.area_id joins WorldAreaConfigData and CityConfigData
-to produce CSS area/city attributes. These are independent of level.
-Stormbearer Mountains and Guyun Stone Forest are local exceptions
-inside larger parent areas; original chest area_id does not distinguish
-them precisely, so they still need native subarea evidence. The bundled reward files do not create or overwrite local `config/rewards` files.
-
-The exceptional top-level area IDs are unique in the 7.1 CityConfigData
-ownership lists; area selectors therefore do not need an additional
-city filter.
+Full 7.1 gameplay validation is still required before upstream submission.

@@ -1,128 +1,125 @@
-/* Ordinary world chest reward presets; amounts remain approximate. */
-
+/* Every ordinary world chest grants 30 Adventure EXP in Luna I and later. */
 chest {
     --genshin-item-adventure_exp: 30;
 }
 
+/* Fixed currencies and tier selection. Mora values are inclusive ranges. */
 chest[kind="common"] {
-    --loot: common_chest;
+    --loot: chest_common_light;
+    --genshin-item-mora: 240~360;
     --genshin-item-sigil: 1;
     --genshin-item-primogem: 2;
 }
 
-chest[kind="exquisite"] {
-    --loot: exquisite_chest;
-    --genshin-item-sigil: 2;
-    --genshin-item-primogem: 5;
-}
-
-chest[kind="precious"] {
-    --loot: precious_chest;
-    --genshin-item-sigil: 3;
-    --genshin-item-primogem: 10;
-}
-
-chest[kind="luxurious"] {
-    --loot: luxurious_chest;
-    --genshin-item-sigil: 4;
-    --genshin-item-primogem: 10;
-}
-
-/* Native chest level intervals; current item pools remain approximate. */
 chest[kind="common"][level="1~5"] {
-    --loot: common_chest_light;
+    --loot: chest_common_light;
+    --genshin-item-mora: 240~360;
+    --genshin-item-sigil: 1;
 }
 
 chest[kind="common"][level="6~10"] {
-    --loot: common_chest_low;
+    --loot: chest_common_low;
+    --genshin-item-mora: 240~360;
+    --genshin-item-sigil: 1;
 }
 
 chest[kind="common"][level="11~15"] {
-    --loot: common_chest_medium;
+    --loot: chest_common_medium;
+    --genshin-item-mora: 480~720;
+    --genshin-item-sigil: 2;
 }
 
 chest[kind="common"][level="16~20"] {
-    --loot: common_chest_high;
+    --loot: chest_common_high;
+    --genshin-item-mora: 480~720;
+    --genshin-item-sigil: 2;
 }
 
 chest[kind="common"][level="21~25"] {
-    --loot: common_chest_xhigh;
+    --loot: chest_common_xhigh;
+    --genshin-item-mora: 720~1080;
+    --genshin-item-sigil: 3;
 }
 
 chest[kind="common"][level="26~"] {
-    --loot: common_chest_max;
+    --loot: chest_common_max;
+    --genshin-item-mora: 720~1080;
+    --genshin-item-sigil: 3;
 }
 
-chest[kind="exquisite"][level="1~5"] {
-    --loot: exquisite_chest_light;
+chest[kind="exquisite"] {
+    --loot: chest_exquisite_max;
+    --genshin-item-mora: 960~1440;
+    --genshin-item-sigil: 4;
+    --genshin-item-primogem: 5;
 }
 
-chest[kind="exquisite"][level="6~10"] {
-    --loot: exquisite_chest_low;
-}
-
-chest[kind="exquisite"][level="11~15"] {
-    --loot: exquisite_chest_medium;
-}
-
-chest[kind="exquisite"][level="16~20"] {
-    --loot: exquisite_chest_high;
+chest[kind="exquisite"][level="1~20"] {
+    --loot: chest_common_max;
+    --genshin-item-mora: 720~1080;
+    --genshin-item-sigil: 3;
 }
 
 chest[kind="exquisite"][level="21~25"] {
-    --loot: exquisite_chest_xhigh;
+    --loot: chest_exquisite_xhigh;
+    --genshin-item-mora: 960~1440;
+    --genshin-item-sigil: 4;
 }
 
 chest[kind="exquisite"][level="26~"] {
-    --loot: exquisite_chest_max;
+    --loot: chest_exquisite_max;
+    --genshin-item-mora: 960~1440;
+    --genshin-item-sigil: 4;
 }
 
-chest[kind="precious"][level="1~5"] {
-    --loot: precious_chest_light;
+chest[kind="precious"] {
+    --loot: chest_precious_max;
+    --genshin-item-mora: 1200~1800;
+    --genshin-item-sigil: 5;
+    --genshin-item-primogem: 10;
 }
 
-chest[kind="precious"][level="6~10"] {
-    --loot: precious_chest_low;
-}
-
-chest[kind="precious"][level="11~15"] {
-    --loot: precious_chest_medium;
-}
-
-chest[kind="precious"][level="16~20"] {
-    --loot: precious_chest_high;
+chest[kind="precious"][level="1~20"] {
+    --loot: chest_exquisite_max;
+    --genshin-item-mora: 960~1440;
+    --genshin-item-sigil: 4;
 }
 
 chest[kind="precious"][level="21~25"] {
-    --loot: precious_chest_xhigh;
+    --loot: chest_precious_xhigh;
+    --genshin-item-mora: 1200~1800;
+    --genshin-item-sigil: 5;
 }
 
 chest[kind="precious"][level="26~"] {
-    --loot: precious_chest_max;
+    --loot: chest_precious_max;
+    --genshin-item-mora: 1200~1800;
+    --genshin-item-sigil: 5;
 }
 
-chest[kind="luxurious"][level="1~5"] {
-    --loot: luxurious_chest_light;
+chest[kind="luxurious"] {
+    --loot: chest_luxurious_max;
+    --genshin-item-mora: 1440~2160;
+    --genshin-item-sigil: 6;
+    --genshin-item-primogem: 10;
 }
 
-chest[kind="luxurious"][level="6~10"] {
-    --loot: luxurious_chest_low;
-}
-
-chest[kind="luxurious"][level="11~15"] {
-    --loot: luxurious_chest_medium;
-}
-
-chest[kind="luxurious"][level="16~20"] {
-    --loot: luxurious_chest_high;
+chest[kind="luxurious"][level="1~20"] {
+    --loot: chest_precious_max;
+    --genshin-item-mora: 1200~1800;
+    --genshin-item-sigil: 5;
 }
 
 chest[kind="luxurious"][level="21~25"] {
-    --loot: luxurious_chest_xhigh;
+    --loot: chest_luxurious_xhigh;
+    --genshin-item-mora: 1440~2160;
+    --genshin-item-sigil: 6;
 }
 
 chest[kind="luxurious"][level="26~"] {
-    --loot: luxurious_chest_max;
+    --loot: chest_luxurious_max;
+    --genshin-item-mora: 1440~2160;
+    --genshin-item-sigil: 6;
 }
 
 /* Older Mondstadt and Liyue chests use fewer Primogems. */

@@ -29,6 +29,11 @@ public final class RewardRoller {
             if (count == 0) result.remove(id);
             else result.put(id, count);
         });
+        selection.rangedItems().forEach((id, spec) -> {
+            int count = spec.sample(random);
+            if (count == 0) result.remove(id);
+            else result.put(id, count);
+        });
         return resolveRegionalItems(result, context);
     }
 

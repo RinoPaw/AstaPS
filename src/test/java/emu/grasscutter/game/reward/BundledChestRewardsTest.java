@@ -77,7 +77,7 @@ class BundledChestRewardsTest {
                     "sigil", "305"));
             assertEquals(Map.of(target, 1), selected.loot(),
                     "Incorrect CSS mapping: " + tag + " level " + level);
-            assertEquals(30, selected.items().get(102));
+            assertEquals(30, selected.items().get(102).intValue());
             assertTrue(selected.items().containsKey(201),
                     "Native tables still require a fixed Primogem decision");
         }

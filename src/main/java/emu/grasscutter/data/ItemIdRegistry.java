@@ -93,6 +93,10 @@ public final class ItemIdRegistry {
             englishNames.put(item.getId(), english);
             categories.put(item.getId(), categoryOf(item.getItemType(), item.getMaterialType()));
         }
+        // Adventure EXP (102) is settled by Player.earnExp, not dropped as
+        // a bag item. It can be absent from material/weapon Excel resources.
+        englishNames.putIfAbsent(102, "Adventure EXP");
+        categories.putIfAbsent(102, "Currencies and Virtual Items");
         return new ItemIdRegistry(englishNames, categories);
     }
 

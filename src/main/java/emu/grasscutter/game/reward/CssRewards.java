@@ -9,15 +9,17 @@ import emu.grasscutter.game.drop.YamlLootTables;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Evaluator;
 import org.jsoup.select.Selector;
 
 /**
- * Selects item quantities and loot-table execution counts from CSS.
- * Loot definitions never inspect the selector or the matched game object.
+ * CSS selects named loot tables and fixes item quantities.
+ * Each --loot declaration is one complete list; item properties cascade independently.
  */
 public final class CssRewards {
     public record Selection(Map<Integer, Integer> items, Map<String, Integer> loot) {
@@ -27,15 +29,16 @@ public final class CssRewards {
         }
     }
 
+    private static final Pattern TABLE = Pattern.compile("^(.+?)(?:\\s+([0-9]+))?$");
+
     private record Rule(
-            Evaluator selector, Map<ResourceId, Integer> values, int specificity, int order) {}
+            Evaluator selector, Map<Integer, Integer> items, Map<String, Integer> loot,
+            int specificity, int order) {}
 
     private final List<Rule> rules;
-    private final ItemIdRegistry items;
 
-    private CssRewards(List<Rule> rules, ItemIdRegistry items) {
+    private CssRewards(List<Rule> rules) {
         this.rules = List.copyOf(rules);
-        this.items = items;
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
@@ -49,56 +52,63 @@ public final class CssRewards {
                 throw new IllegalArgumentException("Expected CSS style rules");
             }
 
-            var values = new HashMap<ResourceId, Integer>();
+            var fixed = new HashMap<Integer, Integer>();
+            Map<String, Integer> selectedLoot = null;
             for (var declaration : style.getAllDeclarations()) {
-                ResourceId resource = ResourceId.fromCssProperty(declaration.getProperty());
-                switch (resource.type()) {
-                    case "item" -> items.resolve(resource.toString());
-                    case "loot" -> {
-                        if (!loot.contains(resource.toString())) {
-                            throw new IllegalArgumentException("Unknown loot table: " + resource);
-                        }
+                String property = declaration.getProperty();
+                String value = declaration.getExpressionAsCSSString().trim();
+                if (property.equals("--loot")) {
+                    selectedLoot = parseLoot(value, loot);
+                } else {
+                    ResourceId resource = ResourceId.fromCssProperty(property);
+                    int id = items.resolve(resource.toString());
+                    if (!value.matches("[0-9]+")) {
+                        throw new IllegalArgumentException("Invalid item count for "
+                                + resource + ": " + value);
                     }
-                    default -> throw new IllegalArgumentException("Unsupported reward type: " + resource);
+                    fixed.put(id, Integer.parseInt(value));
                 }
-                String raw = declaration.getExpressionAsCSSString().trim();
-                if (!raw.matches("[0-9]+")) {
-                    throw new IllegalArgumentException("Invalid quantity for " + resource + ": " + raw);
-                }
-                values.put(resource, Integer.parseInt(raw));
             }
 
             for (var selector : style.getAllSelectors()) {
                 String css = selector.getAsCSSString(CSSWriterSettings.DEFAULT_SETTINGS, 0).trim();
+                // Element and attribute selectors are the supported subset for now.
                 int specificity = (int) css.chars().filter(ch -> ch == '[').count();
-                rules.add(new Rule(
-                        Selector.evaluatorOf(css), Map.copyOf(values), specificity, order++));
+                rules.add(new Rule(Selector.evaluatorOf(css), Map.copyOf(fixed),
+                        selectedLoot, specificity, order++));
             }
         }
 
         rules.sort(Comparator.comparingInt(Rule::specificity).thenComparingInt(Rule::order));
-        return new CssRewards(rules, items);
+        return new CssRewards(rules);
+    }
+
+    private static Map<String, Integer> parseLoot(String value, YamlLootTables loot) {
+        if (value.equals("none")) return Map.of();
+        var selected = new LinkedHashMap<String, Integer>();
+        for (String entry : value.split(",", -1)) {
+            var match = TABLE.matcher(entry.trim());
+            if (!match.matches()) {
+                throw new IllegalArgumentException("Invalid loot entry: " + entry);
+            }
+            String id = loot.resolveName(match.group(1).trim());
+            int count = match.group(2) == null ? 1 : Integer.parseInt(match.group(2));
+            selected.merge(id, count, Math::addExact);
+        }
+        return Map.copyOf(selected);
     }
 
     public Selection resolve(String type, Map<String, String> attributes) {
         var element = new Element(type);
         attributes.forEach(element::attr);
-        var selected = new HashMap<ResourceId, Integer>();
+        var fixed = new HashMap<Integer, Integer>();
+        Map<String, Integer> selectedLoot = Map.of();
         for (var rule : rules) {
             if (rule.selector.matches(element.root(), element)) {
-                selected.putAll(rule.values);
+                fixed.putAll(rule.items);
+                if (rule.loot != null) selectedLoot = rule.loot;
             }
         }
-
-        var fixedItems = new HashMap<Integer, Integer>();
-        var selectedLoot = new HashMap<String, Integer>();
-        selected.forEach((resource, quantity) -> {
-            switch (resource.type()) {
-                case "item" -> fixedItems.put(items.resolve(resource.toString()), quantity);
-                case "loot" -> selectedLoot.put(resource.toString(), quantity);
-                default -> throw new IllegalStateException("Unsupported reward type: " + resource);
-            }
-        });
-        return new Selection(fixedItems, selectedLoot);
+        return new Selection(fixed, selectedLoot);
     }
 }

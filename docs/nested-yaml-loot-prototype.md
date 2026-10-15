@@ -8,7 +8,7 @@ in-game rewards until the evaluator is explicitly connected to reward settlement
 
 Each top-level key names a loot list. List entries accept exactly three fields:
 
-- `item`: an English resource key, English item name, numeric item ID, a nested
+- `reward`: an namespaced item ID, English item name, numeric item ID, a nested
   YAML list, or `null` for no reward. A YAML alias referencing another list is
   treated exactly like a nested list.
 - `count`: defaults to `1`. On an item it specifies quantity; on a list it
@@ -23,13 +23,13 @@ No separate `all`, `pick`, `table`, or `chance` keys are needed.
 
 ```yaml
 experience_books: &books
-  - {item: Genshin.HerosWit, weight: 1}
-  - {item: Genshin.AdventurersExperience, count: 2, weight: 1}
+  - {reward: genshin:item:heros_wit, weight: 1}
+  - {reward: genshin:item:adventurers_experience, count: 2, weight: 1}
 
 common_chest:
-  - {item: Genshin.Mora, count: "240~360"}
-  - {item: *books, count: "1:70"}
-  - {item: null}
+  - {reward: genshin:item:mora, count: "240~360"}
+  - {reward: *books, count: "1:70"}
+  - {reward: null}
 ```
 
 YAML anchors must be defined before their aliases, and they are scoped to the
@@ -53,24 +53,26 @@ the remainder is added to the zero outcome. Duplicate outcomes, negative
 numbers, probability totals over 100, and counts greater than 100000 fail
 validation.
 
-## Naming
+## Item IDs (shared with rewards.css)
 
-`LootItemNames.fromGameResources()` derives readable English names and
-`Genshin.`-prefixed keys from the current game's English TextMap, then resolves
-those keys back to the loaded numeric item ID. Wiki-verified names for Hero's
-Wit, Adventurer's Experience, Wanderer's Advice, Mora and Primogem are also
-registered. Ambiguous keys are rejected; numeric IDs remain available.
+A common `ItemIdRegistry` resolves `genshin:item:mora`, `genshin:item:heros_wit`
+and other currently unambiguous English TextMap slugs. The five known
+keys (Mora, Primogem and the three Character EXP books) are explicitly
+pinned. Other generated names remain **provisional** until checked
+against stable, versioned resource mappings. A collision is an error;
+items without usable names can still be addressed by numeric ID.
 
-English names are derived from current game data. Broad English item
-categories are derived from ItemType and MaterialType, using Wiki-style labels
-(e.g. Weapons, Artifacts, Character EXP Materials). This is not a one-to-one
-mapping of every Wiki category. A complete Wiki category reconciliation and a
-stable-version alias manifest are future work, not claims of the prototype.
+`reward` now replaces `item` throughout the YAML parser, exporter,
+fixtures and tests. Only `item` resources are supported in this phase.
+A `genshin:avatar:amber` reference is rejected instead of treating an
+avatar ID as a bag item.
 
-Sources:
-- https://genshin-impact.fandom.com/wiki/Character_EXP_Material
-- https://wiki.hoyolab.com/pc/genshin/entry/475?lang=en-us
-- https://wiki.hoyolab.com/pc/genshin/entry/303?lang=en-us
+The `CssItemRewards` prototype accepts multiple declarations of the form
+`reward: "genshin:item:mora" 300;` inside a CSS rule. It accepts existing
+`mora`, `primogems`, `adventureExp`, and `item-202` spellings as
+compatibility aliases and uses the same item ID registry. Per-item
+CSS override and zero semantics are tested separately from live payout.
+The parser is **not yet installed in the real chest/transport reward chain**.
 
 ## Native migration
 

@@ -151,19 +151,13 @@ public final class NativeLootYamlExporter {
                     if (entry.weight > 10000) {
                         throw new IllegalArgumentException("Invalid independent roll probability");
                     }
-                    if (entry.weight % 100 != 0) {
-                        throw new IllegalArgumentException(
-                                "Native chance needs sub-percent precision: " + entry.weight);
-                    }
-                    int percentage = entry.weight / 100;
-                    String chance = "0:" + (100 - percentage) + ",1:" + percentage;
-                    if ("1".equals(entry.countRange)) {
-                        appendEntry(yaml, "  ", target, chance, null);
-                    } else {
-                        yaml.append("  - reward:\n");
-                        appendEntry(yaml, "      ", target, entry.countRange, null);
-                        yaml.append("    count: \"").append(chance).append("\"\n");
-                    }
+                    // Preserve all native basis-point chances without decimal counts.
+                    int divisor = gcd(entry.weight, 10000 - entry.weight);
+                    yaml.append("  - reward:\n");
+                    appendEntry(yaml, "      ", "null", "1",
+                            (10000 - entry.weight) / divisor);
+                    appendEntry(yaml, "      ", target, entry.countRange,
+                            entry.weight / divisor);
                 }
             }
             yaml.append('\n');

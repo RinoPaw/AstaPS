@@ -73,7 +73,8 @@ class NativeLootYamlExporterTest {
                 new NativeLootYamlExporter.NativeEntry(104003, "2;3", 5000))));
         var yaml = NativeLootYamlExporter.export(source, List.of(100), TABLES,
                 NativeLootYamlExporterTest::itemName);
-        assertTrue(yaml.contains("reward:\n      - {reward: genshin.item.heros_wit, count: \"2;3\"}"));
+        assertTrue(yaml.contains("reward:\n      - {reward: null, weight: 1}\n"
+                + "      - {reward: genshin.item.heros_wit, count: \"2;3\", weight: 1}"));
         var loot = YamlLootTables.parse(yaml, NativeLootYamlExporterTest::itemId);
         int zero = 0, two = 0, three = 0;
         var random = new Random(9);
@@ -90,6 +91,18 @@ class NativeLootYamlExporterTest {
         assertEquals(0.5, zero / 30_000.0, 0.02);
         assertEquals(0.25, two / 30_000.0, 0.02);
         assertEquals(0.25, three / 30_000.0, 0.02);
+    }
+
+    @Test
+    void subPercentNativeChanceStillHasExactIntegerWeights() {
+        var source = Map.of(100, new NativeLootYamlExporter.NativeTable(1, List.of(
+                new NativeLootYamlExporter.NativeEntry(202, "1", 1))));
+        var yaml = NativeLootYamlExporter.export(source, List.of(100),
+                Map.of(100, "rare"), NativeLootYamlExporterTest::itemName);
+        assertTrue(yaml.contains("{reward: null, weight: 9999}"));
+        assertTrue(yaml.contains("{reward: genshin.item.mora, weight: 1}"));
+        var loot = YamlLootTables.parse(yaml, NativeLootYamlExporterTest::itemId);
+        assertTrue(loot.roll("astaps.loot.rare", new Random(4)).isEmpty());
     }
 
     @Test

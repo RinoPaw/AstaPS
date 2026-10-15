@@ -99,7 +99,7 @@ public final class ItemIdRegistry {
             throw new IllegalArgumentException("Unknown item ID: " + input);
         }
 
-        if (input.contains(":")) {
+        if (input.matches("[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\..+")) {
             ResourceId resource = ResourceId.parse(input);
             if (!resource.namespace().equals("genshin") || !resource.type().equals("item")) {
                 throw new IllegalArgumentException("Unsupported item resource: " + input);

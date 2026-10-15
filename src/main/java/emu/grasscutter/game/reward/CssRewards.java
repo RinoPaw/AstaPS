@@ -87,7 +87,9 @@ public final class CssRewards {
         if (value.equals("none")) return Map.of();
         var selected = new LinkedHashMap<String, Integer>();
         for (String entry : value.split(",", -1)) {
-            var match = TABLE.matcher(entry.trim());
+            // The CSS serializer may insert spaces around a qualified ID's dots.
+            // Resource IDs use those dots as separators, not CSS selector punctuation.
+            var match = TABLE.matcher(entry.trim().replaceAll("\\s*\\.\\s*", "."));
             if (!match.matches()) {
                 throw new IllegalArgumentException("Invalid loot entry: " + entry);
             }

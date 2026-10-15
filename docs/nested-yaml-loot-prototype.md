@@ -79,8 +79,8 @@ loader, not to individual table definitions.
 A qualified loot resource is independent of the system using it. Code and
 future commands can execute `astaps.loot.surprise` directly by resolving
 its global ID, without running a CSS selector. `YamlLootTables.roll()`
-accepts the qualified ID; `resolveName()` resolves the short default
-namespace name or an explicitly qualified ID.
+accepts the qualified ID; `resolveName()` resolves a short name in the loader's namespace
+(or an explicitly qualified ID). The AstaPS loader defaults to `astaps`.
 
 Loot tables define **contents only**: items, quantities, weights, nesting,
 and optional empty results. They do not inspect area, level, chest quality,

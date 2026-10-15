@@ -264,8 +264,9 @@ class CssRewardsTest {
                 """, items, loot);
         var selected = css.resolve("chest", Map.of());
         var observed = new java.util.HashSet<Integer>();
-        for (int seed = 0; seed < 50; seed++) {
-            int mora = RewardRoller.roll(selected, loot, new Random(seed)).get(202);
+        var random = new Random(214);
+        for (int i = 0; i < 100; i++) {
+            int mora = RewardRoller.roll(selected, loot, random).get(202);
             assertTrue(mora >= 3 && mora <= 5);
             observed.add(mora);
         }

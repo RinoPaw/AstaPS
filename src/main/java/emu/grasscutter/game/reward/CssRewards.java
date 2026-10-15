@@ -72,7 +72,11 @@ public final class CssRewards {
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
-        var sheet = CSSReader.readFromString(source);
+        // Quote bare quantity ranges before CSS tokenization to preserve both bounds.
+        String normalized = source.replaceAll(
+                "(--genshin-item-[a-zA-Z0-9_-]+\\s*:\\s*)([0-9]+)\\s*~\\s*([0-9]+)(\\s*;)",
+                "$1'$2~$3'$4");
+        var sheet = CSSReader.readFromString(normalized);
         if (sheet == null) throw new IllegalArgumentException("Invalid rewards.css");
 
         var rules = new ArrayList<Rule>();
@@ -88,6 +92,11 @@ public final class CssRewards {
             for (var declaration : style.getAllDeclarations()) {
                 String property = declaration.getProperty();
                 String value = declaration.getExpressionAsCSSString().trim();
+                if (!property.equals("--loot") && value.length() >= 2
+                        && ((value.startsWith("\"") && value.endsWith("\""))
+                        || (value.startsWith("'") && value.endsWith("'")))) {
+                    value = value.substring(1, value.length() - 1);
+                }
                 if (property.equals("--loot")) {
                     selectedLoot = parseLoot(value, loot);
                 } else {

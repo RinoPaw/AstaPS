@@ -12,7 +12,7 @@ class YamlLootTablesTest {
         case "genshin.item.mora", "202" -> 202;
         case "genshin.item.heros_wit", "104003" -> 104003;
         case "genshin.item.adventurers_experience", "104002" -> 104002;
-        default -> -1;
+        default -> -2; // -1 is reserved for the regional-sigil placeholder.
     };
 
     private YamlLootTables parse(String yaml) {

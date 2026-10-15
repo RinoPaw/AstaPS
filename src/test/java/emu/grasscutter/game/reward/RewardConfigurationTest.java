@@ -6,15 +6,14 @@ import org.junit.jupiter.api.Test;
 
 class RewardConfigurationTest {
     @Test
-    void previousChestPresetsCannotBeMistakenForTheNewSchema() {
-        assertThrows(IllegalArgumentException.class,
-                () -> RewardConfiguration.rejectLegacyChestTemplates(
-                        "fallback_common: []", ""));
-        assertThrows(IllegalArgumentException.class,
-                () -> RewardConfiguration.rejectLegacyChestTemplates(
-                        "", "chest { --loot: native_51010000; }"));
-        assertDoesNotThrow(() -> RewardConfiguration.rejectLegacyChestTemplates(
-                "common_chest: []",
-                "chest[kind=\"common\"] { --loot: common_chest; }"));
+    void rewardConfigurationReadsOnlyBundledResources() throws Exception {
+        assertTrue(RewardConfiguration.readBundled("loot.yaml").contains("common_chest:"));
+        assertTrue(RewardConfiguration.readBundled("rewards.css").contains("--loot: common_chest;"));
+    }
+
+    @Test
+    void missingBundledResourcesAreReported() {
+        assertThrows(java.io.IOException.class, () ->
+                RewardConfiguration.readBundled("missing.yaml"));
     }
 }

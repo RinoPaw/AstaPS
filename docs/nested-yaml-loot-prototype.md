@@ -11,7 +11,8 @@ are defined, each with six named level aliases (`light`, `low`, `medium`,
 sample includes four basic `chest[kind="..."]` rules plus the six
 level intervals for each kind. Chest metadata
 includes `kind`, `scene`, `gadget`, `group`, `config`, and when
-available the source gadget's `level`. No calculated regional currency,
+available the source gadget's `level`, plus source `area` and its parent `city` where available.
+No calculated regional currency,
 translated tag, or derived rank band is provided.
 
 Eligible scene-point activations use `transpoint` selectors. The server
@@ -149,3 +150,18 @@ and Liyue) contain all six thresholds, while 24 have only a single
 level-1 entry. Repeated thresholds sometimes point to the same drop
 ID. Distinguishing combat versus puzzle selection still requires
 verified source metadata, not guessed tag strings.
+
+## Chest Primogems by native location
+
+Base amounts: common 2, exquisite 5, precious 10, luxurious 10.
+The original Mondstadt (city=1) and Liyue (city=2) areas generally
+award 0/2/5 for common/exquisite/precious. Source areas 10, 77
+(Mondstadt) and 8, 19, 40, 41, 47, 300 (Liyue) explicitly restore
+the normal amounts for known later/higher-value world regions.
+
+Native SceneGadget.area_id joins WorldAreaConfigData and CityConfigData
+to produce CSS area/city attributes. These are independent of level.
+Stormbearer Mountains and Guyun Stone Forest are local exceptions
+inside larger parent areas; original chest area_id does not distinguish
+them precisely, so they still need native subarea evidence. The two
+on-disk reward files are not automatically overwritten.

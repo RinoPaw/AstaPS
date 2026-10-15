@@ -89,6 +89,46 @@ class BundledChestRewardsTest {
     }
 
     @Test
+    void cityAndAreaChoosePrimogemsIndependentlyOfLevel() throws Exception {
+        var registry = items();
+        var loot = YamlLootTables.parse(resource("/rewards/loot.yaml"), registry::resolve);
+        var css = CssRewards.parse(resource("/rewards/rewards.css"), registry, loot);
+        String[] kinds = {"common", "exquisite", "precious", "luxurious"};
+        int[] normal = {2, 5, 10, 10};
+        int[] low = {0, 2, 5, 10};
+        for (int i = 0; i < kinds.length; i++) {
+            String kind = kinds[i];
+            assertEquals(normal[i], css.resolve("chest", Map.of("kind", kind))
+                    .items().get(201).intValue());
+            for (String city : new String[]{"1", "2"}) {
+                for (String level : new String[]{"1", "6", "16", "26"}) {
+                    var selected = css.resolve("chest", Map.of(
+                            "kind", kind, "city", city, "level", level));
+                    assertEquals(low[i], selected.items().get(201).intValue());
+                }
+            }
+            for (String city : new String[]{"3", "4", "5", "6", "7", "8"}) {
+                assertEquals(normal[i], css.resolve("chest",
+                        Map.of("kind", kind, "city", city)).items().get(201).intValue());
+            }
+            for (String area : new String[]{"10", "77"}) {
+                assertEquals(normal[i], css.resolve("chest",
+                        Map.of("kind", kind, "city", "1", "area", area))
+                        .items().get(201).intValue());
+            }
+            for (String area : new String[]{"8", "19", "40", "41", "47", "300"}) {
+                assertEquals(normal[i], css.resolve("chest",
+                        Map.of("kind", kind, "city", "2", "area", area))
+                        .items().get(201).intValue());
+            }
+        }
+        var lowCommon = css.resolve("chest", Map.of(
+                "kind", "common", "city", "2", "area", "5", "level", "26"));
+        assertEquals(0, lowCommon.items().get(201).intValue());
+        assertEquals(Map.of("astaps.loot.common_chest_max", 1), lowCommon.loot());
+    }
+
+    @Test
     void samePresetResolvesSigilForOtherSourceRegions() throws Exception {
         var registry = items();
         var loot = YamlLootTables.parse(resource("/rewards/loot.yaml"), registry::resolve);

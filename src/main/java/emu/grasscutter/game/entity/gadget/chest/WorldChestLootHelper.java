@@ -28,6 +28,10 @@ public final class WorldChestLootHelper {
         SceneGadget meta = entityGadget.getMetaGadget();
         if (meta != null) {
             props.put("level", Integer.toString(meta.level));
+            if (meta.area_id > 0) {
+                emu.grasscutter.game.reward.RewardAreaAttributes.add(
+                        props, entityGadget.getScene().getId(), meta.area_id);
+            }
         }
 
         var items = emu.grasscutter.game.reward.RewardConfiguration.current().roll(

@@ -3,7 +3,7 @@
 chest[kind="common"] {
     --genshin-item-adventure_exp: 10;
     --genshin-item-sigil: 1;
-    --genshin-item-primogem: 0;
+    --genshin-item-primogem: 2;
 }
 
 chest[kind="common"][level="1~5"] {
@@ -35,13 +35,12 @@ chest[kind="common"][level="26~"] {
     --loot: common_chest_max;
     --genshin-item-adventure_exp: 20;
     --genshin-item-sigil: 3;
-    --genshin-item-primogem: 2;
 }
 
 chest[kind="exquisite"] {
     --genshin-item-adventure_exp: 20;
     --genshin-item-sigil: 3;
-    --genshin-item-primogem: 2;
+    --genshin-item-primogem: 5;
 }
 
 chest[kind="exquisite"][level="1~5"] {
@@ -69,13 +68,12 @@ chest[kind="exquisite"][level="26~"] {
     --loot: exquisite_chest_max;
     --genshin-item-adventure_exp: 30;
     --genshin-item-sigil: 4;
-    --genshin-item-primogem: 5;
 }
 
 chest[kind="precious"] {
     --genshin-item-adventure_exp: 30;
     --genshin-item-sigil: 4;
-    --genshin-item-primogem: 5;
+    --genshin-item-primogem: 10;
 }
 
 chest[kind="precious"][level="1~5"] {
@@ -102,7 +100,6 @@ chest[kind="precious"][level="21~25"] {
 chest[kind="precious"][level="26~"] {
     --loot: precious_chest_max;
     --genshin-item-sigil: 5;
-    --genshin-item-primogem: 10;
 }
 
 chest[kind="luxurious"] {
@@ -135,6 +132,58 @@ chest[kind="luxurious"][level="21~25"] {
 chest[kind="luxurious"][level="26~"] {
     --loot: luxurious_chest_max;
     --genshin-item-sigil: 6;
+}
+
+/* Older Mondstadt and Liyue chests use fewer Primogems. */
+
+chest[kind="common"][city="1"],
+chest[kind="common"][city="2"] {
+    --genshin-item-primogem: 0;
+}
+
+chest[kind="exquisite"][city="1"],
+chest[kind="exquisite"][city="2"] {
+    --genshin-item-primogem: 2;
+}
+
+chest[kind="precious"][city="1"],
+chest[kind="precious"][city="2"] {
+    --genshin-item-primogem: 5;
+}
+
+/* Higher-value areas in those nations; child-area exceptions need source data. */
+
+chest[kind="common"][city="1"][area="10"],
+chest[kind="common"][city="1"][area="77"],
+chest[kind="common"][city="2"][area="8"],
+chest[kind="common"][city="2"][area="19"],
+chest[kind="common"][city="2"][area="40"],
+chest[kind="common"][city="2"][area="41"],
+chest[kind="common"][city="2"][area="47"],
+chest[kind="common"][city="2"][area="300"] {
+    --genshin-item-primogem: 2;
+}
+
+chest[kind="exquisite"][city="1"][area="10"],
+chest[kind="exquisite"][city="1"][area="77"],
+chest[kind="exquisite"][city="2"][area="8"],
+chest[kind="exquisite"][city="2"][area="19"],
+chest[kind="exquisite"][city="2"][area="40"],
+chest[kind="exquisite"][city="2"][area="41"],
+chest[kind="exquisite"][city="2"][area="47"],
+chest[kind="exquisite"][city="2"][area="300"] {
+    --genshin-item-primogem: 5;
+}
+
+chest[kind="precious"][city="1"][area="10"],
+chest[kind="precious"][city="1"][area="77"],
+chest[kind="precious"][city="2"][area="8"],
+chest[kind="precious"][city="2"][area="19"],
+chest[kind="precious"][city="2"][area="40"],
+chest[kind="precious"][city="2"][area="41"],
+chest[kind="precious"][city="2"][area="47"],
+chest[kind="precious"][city="2"][area="300"] {
+    --genshin-item-primogem: 10;
 }
 
 transpoint[kind="waypoint"],

@@ -618,6 +618,7 @@ public final class SnezhnayaExploreSpawnHelper {
             meta.gadget_id = gadgetId;
             meta.config_id = ep.id;
             meta.drop_tag = dropTagForKind(ep.kind);
+            meta.rewardRegion = "snezhnaya"; // The point source is Snezhnaya-specific.
             meta.isOneoff = true;
             gadget.setMetaGadget(meta);
         }

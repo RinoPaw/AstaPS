@@ -71,3 +71,36 @@ both files if the installation has a previously generated chest schema.
 Ordinary world chests and eligible scene-point activations now use CSS
 reward selection. Quest-created chests, boss flowers, and monster loot
 remain separate paths. Runtime testing should follow configuration review.
+
+## Regional sigil alias
+
+`genshin.item.sigil` is an item reference resolved at reward-grant time,
+not a CSS selector field. For example:
+
+```css
+chest[kind="exquisite"] { --genshin-item-sigil: 2; }
+```
+
+```yaml
+seals:
+  - {reward: genshin.item.sigil, count: 2}
+```
+
+Both forms use the same resolver. Original scene chests use their native
+`SceneGadget.area_id`. That area must match a WorldAreaConfig record in
+the active scene and exactly one CityConfig record; only nation city IDs
+1–9 have a supported sigil mapping. City IDs 99+ are excluded, because
+special scene areas such as the Golden Apple Archipelago and Enkanomiya
+share other nations' city icons without sharing their regional rewards.
+
+Generated world chests use source provenance: `region` from imported
+`region_explore_points.json` and the explicitly named Nod-Krai or
+Snezhnaya point source files. Their region is not guessed using
+coordinates, synthetic group ranges, translated drop tags, or the
+player's current location. Unknown, missing, or ambiguous locations
+produce a clear resolution error instead of a wrong sigil.
+
+Direct loot-table execution without a reward context cannot resolve
+`sigil`. The four bundled chest presets still omit this alias until
+coverage of all supported chest spawn sources is confirmed. Users may
+add it explicitly to a known source once validated.

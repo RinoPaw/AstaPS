@@ -73,7 +73,11 @@ public final class CssRewards {
             for (var selector : style.getAllSelectors()) {
                 String css = selector.getAsCSSString(CSSWriterSettings.DEFAULT_SETTINGS, 0).trim();
                 // Element and attribute selectors are the supported subset for now.
-                int specificity = (int) css.chars().filter(ch -> ch == '[').count();
+                int attributeCount = (int) css.chars().filter(ch -> ch == '[').count();
+                // Within our supported type-and-attribute subset, a type selector
+                // outranks a universal selector when attribute counts are equal.
+                int specificity = attributeCount * 100
+                        + (css.matches("^[a-zA-Z][a-zA-Z0-9_-]*.*") ? 1 : 0);
                 rules.add(new Rule(Selector.evaluatorOf(css), Map.copyOf(fixed),
                         selectedLoot, specificity, order++));
             }

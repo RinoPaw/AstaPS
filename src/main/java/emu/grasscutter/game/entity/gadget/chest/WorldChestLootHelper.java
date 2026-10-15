@@ -167,7 +167,7 @@ public final class WorldChestLootHelper {
             if (string.contains("\u7eb3\u5854")) {
                 return 301;
             }
-            if (string.contains("\u81f3\u51ac") || string.contains("\u96ea\u5c71")) {
+            if (string.contains("\u81f3\u51ac")) {
                 return 306;
             }
             if (string.contains("\u632a\u5fb7\u5361\u83b1")

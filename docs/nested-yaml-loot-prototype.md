@@ -28,17 +28,21 @@ blob `b46d383b535babd1be6b95e3ea031eef64d1fdfd` and
 `RinoPaw/AstaPS-Resource`. That shared dataset predates game 7.1;
 **its probabilities must not be described as verified original 7.1 values.**
 
-A chest without a recognized `dropTag` continues to use the four old
-base tier compositions and region sigils, but those fallback amounts are
-now loot contents defined in YAML and chosen in CSS, with no Java
-hard-coded reward quantities. Tagged native rules override the entire
-fallback `--loot` list, so they do not accidentally combine with fixed
-fallback Mora, Primogems, or Adventure EXP.
+A chest without a recognized `dropTag` uses conservative, randomized
+approximate fallback loot (not the inflated legacy compositions). CSS owns
+the fixed 7.1-era **30 Adventure EXP** and 0–10 Primogem decisions, while
+YAML owns random items and Mora. Ordinary Mondstadt/Liyue chest tags use
+the low early-region Primogem amounts (0/2/5); other and untagged chests
+use 2/5/10, with 10 for luxurious chests. Native rules replace the entire
+fallback `--loot` list without discarding the independent fixed CSS items.
+The existing generic sigil fallback is conservative (1/2/3/4 by tier).
+These defaults approximate vanilla behavior; they are not complete exact
+reconstructions for shrines, remarkable chests or special quest chests.
 
 The bundled `src/test/resources/loot/chest-native-selectors.json` pins all
 192 source-to-root mappings. The tests assert all selections and four-tier
-fallback composition, in addition to the existing YAML semantics. CI and
-in-client verification are still required.
+fallback composition, in addition to the existing YAML semantics. A GitHub build/test check has passed on the prototype; the changed defaults
+and live chest interactions still require CI and client verification.
 
 ## Syntax
 
@@ -201,3 +205,24 @@ enforces an evaluation budget and nesting-depth limit.
 
 These tests have been committed. CI and client-side chest interaction
 verification are required before treating the implementation as validated.
+
+## Vanilla-style fallback and existing configuration
+
+The earlier server defaults of 66/166/366/566 Primogems per chest were
+non-vanilla, inherited from upstream, and are no longer bundled. The new
+fallback gives modest randomized Mora, ores and EXP materials. Fixed chest
+Primogems are selected by CSS; the original snapshot's native loot tables
+usually do not contain Primogems, so those are supplied independently.
+
+The default 30 Adventure EXP follows the game's 7.1-era chest normalization;
+older exported native tables can still contain 10 or 20 and are overridden
+at the CSS settlement stage. Chest-tag probabilities remain historical.
+Tagged high-value or region-specific special chests need their own verified
+source rules; ordinary fallback is not a substitute.
+
+The server never overwrites existing files in `config/rewards`. If an older
+instance already generated the inflated template, back it up and remove
+`config/rewards/loot.yaml` to regenerate it on the next start. An old
+untouched template emits a startup warning when its signature is detected.
+Modifications to `rewards.css` are also not overwritten automatically;
+merge or regenerate it to receive updated selectors and fixed rewards.

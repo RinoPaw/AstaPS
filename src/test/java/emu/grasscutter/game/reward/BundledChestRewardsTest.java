@@ -77,7 +77,9 @@ class BundledChestRewardsTest {
                     "sigil", "305"));
             assertEquals(Map.of(target, 1), selected.loot(),
                     "Incorrect CSS mapping: " + tag + " level " + level);
-            assertTrue(selected.items().isEmpty(), "Fixed CSS values override native loot");
+            assertEquals(30, selected.items().get(102));
+            assertTrue(selected.items().containsKey(201),
+                    "Native tables still require a fixed Primogem decision");
         }
         assertEquals(52, seen.size());
         assertEquals(108, roots.size());
@@ -88,11 +90,10 @@ class BundledChestRewardsTest {
         var loot = bundledLoot();
         var css = bundledCss(loot);
         String[] kinds = {"common", "exquisite", "precious", "luxurious"};
-        int[] primogems = {66, 166, 366, 566};
-        int[] mora = {1000, 1500, 2000, 2500};
-        int[] adventureExp = {20, 25, 30, 30};
-        int[] sigils = {3, 5, 8, 10};
-        int[] itemTypes = {7, 8, 9, 9};
+        int[] primogems = {2, 5, 10, 10};
+        int[] minMora = {257, 756, 1433, 2000};
+        int[] maxMora = {996, 1367, 1433, 3000};
+        int[] sigils = {1, 2, 3, 4};
         for (int tier = 0; tier < kinds.length; tier++) {
             for (int sigil = 301; sigil <= 308; sigil++) {
                 var selected = css.resolve("chest", Map.of(
@@ -104,10 +105,10 @@ class BundledChestRewardsTest {
                 assertEquals(2, selected.loot().size());
                 var rolled = RewardRoller.roll(selected, loot, new Random(tier * 100L + sigil));
                 assertEquals(primogems[tier], rolled.get(201).intValue());
-                assertEquals(mora[tier], rolled.get(202).intValue());
-                assertEquals(adventureExp[tier], rolled.get(102).intValue());
+                assertTrue(rolled.get(202) >= minMora[tier] && rolled.get(202) <= maxMora[tier]);
+                assertEquals(30, rolled.get(102).intValue());
                 assertEquals(sigils[tier], rolled.get(sigil).intValue());
-                assertEquals(itemTypes[tier], rolled.size());
+                assertTrue(rolled.size() >= 5);
             }
         }
     }
@@ -123,10 +124,36 @@ class BundledChestRewardsTest {
                 "sigil", "305"));
         assertEquals(Map.of("astaps.loot.native_52010000", 1), selected.loot());
         var reward = RewardRoller.roll(selected, loot, new Random(1));
-        assertEquals(10, reward.get(102).intValue());
+        assertEquals(30, reward.get(102).intValue());
         assertEquals(1, reward.get(305).intValue());
         assertTrue(reward.get(202) >= 240 && reward.get(202) <= 360);
-        assertFalse(reward.containsKey(201));
+        assertFalse(reward.containsKey(201), "Old Mondstadt common chests give zero Primogems");
+    }
+
+    @Test
+    void nativeChestPrimogemsFollowRegionAndTierInsteadOfLegacyCheatAmounts() throws Exception {
+        var loot = bundledLoot();
+        var css = bundledCss(loot);
+        var cases = new Object[][]{
+                {"战斗低级蒙德", "common", 0},
+                {"解谜中级璃月", "exquisite", 2},
+                {"战斗高级蒙德", "precious", 5},
+                {"雪山战斗低级蒙德", "common", 2},
+                {"战斗低级须弥", "common", 2},
+                {"解谜中级稻妻", "exquisite", 5}
+        };
+        for (var sample : cases) {
+            String tag = (String) sample[0];
+            String tier = (String) sample[1];
+            int gems = (Integer) sample[2];
+            var selected = css.resolve("chest", Map.of(
+                    "kind", tier, "dropTag", tag, "minLevel", "1", "sigil", "305"));
+            assertEquals(30, selected.items().get(102).intValue(), tag);
+            assertEquals(gems, selected.items().get(201).intValue(), tag);
+            var rolled = RewardRoller.roll(selected, loot, new Random(1));
+            assertEquals(30, rolled.get(102).intValue(), tag);
+            assertEquals(gems, rolled.getOrDefault(201, 0).intValue(), tag);
+        }
     }
 
     @Test

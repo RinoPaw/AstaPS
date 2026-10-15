@@ -80,8 +80,9 @@ class NativeChestMigrationTest {
                     "level", Integer.toString(minLevel)));
             assertEquals(Map.of("astaps.loot.native_" + rootId, 1), selected.loot(),
                     "Wrong root for " + dropTag + " at " + minLevel);
-            assertTrue(selected.items().isEmpty(),
-                    "The fallback must not override native item quantities");
+            assertEquals(30, selected.items().get(102).intValue());
+            assertTrue(selected.items().containsKey(201),
+                    "Every ordinary chest needs a Primogem amount");
             rows++;
         }
         assertEquals(192, rows);
@@ -118,9 +119,9 @@ class NativeChestMigrationTest {
                 "astaps.loot.fallback_common", 1,
                 "astaps.loot.anemo_sigil", 3), selection.loot());
         var rolled = RewardRoller.roll(selection, loot, new Random(1));
-        assertEquals(66, rolled.get(201).intValue());
-        assertEquals(1000, rolled.get(202).intValue());
-        assertEquals(20, rolled.get(102).intValue());
-        assertEquals(3, rolled.get(305).intValue());
+        assertEquals(2, rolled.get(201).intValue());
+        assertTrue(rolled.get(202) >= 257 && rolled.get(202) <= 996);
+        assertEquals(30, rolled.get(102).intValue());
+        assertEquals(1, rolled.get(305).intValue());
     }
 }

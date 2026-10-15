@@ -129,6 +129,16 @@ class CssRewardsTest {
     }
 
     @Test
+    void anElementSelectorOutranksAnEqualAttributeCountUniversalSelector() {
+        var css = CssRewards.parse("""
+                chest[kind="common"] { --loot: currency; }
+                *[kind="common"] { --loot: surprise; }
+                """, items, loot);
+        assertEquals(Map.of("astaps.loot.currency", 1),
+                css.resolve("chest", Map.of("kind", "common")).loot());
+    }
+
+    @Test
     void repeatedTablesInTheListAccumulateExecutionCount() {
         var css = CssRewards.parse("""
                 chest { --loot: currency, currency 2; }

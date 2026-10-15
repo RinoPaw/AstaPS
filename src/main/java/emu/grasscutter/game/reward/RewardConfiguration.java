@@ -29,7 +29,18 @@ public final class RewardConfiguration {
             copyTemplateIfMissing(lootPath, "/rewards/loot.yaml");
             copyTemplateIfMissing(cssPath, "/rewards/rewards.css");
             var registry = ItemIdRegistry.fromGameResources();
-            var loot = YamlLootTables.parse(Files.readString(lootPath), registry::resolve);
+            String yaml = Files.readString(lootPath);
+            // Older installations keep their generated config files across JAR
+            // upgrades. Do not silently rewrite a user's edits, but do flag the
+            // deliberately inflated legacy template so it cannot be overlooked.
+            if (yaml.contains("{reward: genshin.item.primogem, count: 66}")
+                    && yaml.contains("{reward: genshin.item.primogem, count: 566}")) {
+                emu.grasscutter.Grasscutter.getLogger().warn(
+                        "Detected old inflated chest defaults in {}. Back up and remove this"
+                                + " file to regenerate the vanilla-style loot template.",
+                        lootPath);
+            }
+            var loot = YamlLootTables.parse(yaml, registry::resolve);
             var css = CssRewards.parse(Files.readString(cssPath), registry, loot);
             active = new RewardConfiguration(loot, css);
         } catch (IOException | RuntimeException e) {

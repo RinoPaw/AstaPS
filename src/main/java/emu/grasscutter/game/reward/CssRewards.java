@@ -119,7 +119,7 @@ public final class CssRewards {
             for (var selector : style.getAllSelectors()) {
                 String css = selector.getAsCSSString(CSSWriterSettings.DEFAULT_SETTINGS, 0).trim();
                 var levelRanges = new ArrayList<LevelRange>();
-                var normalized = new StringBuffer();
+                var selectorBuffer = new StringBuffer();
                 var matcher = LEVEL_RANGE.matcher(css);
                 while (matcher.find()) {
                     long min = Long.parseLong(matcher.group(2));
@@ -129,10 +129,10 @@ public final class CssRewards {
                         throw new IllegalArgumentException("Reversed reward level range: " + css);
                     }
                     levelRanges.add(new LevelRange(min, max));
-                    matcher.appendReplacement(normalized, "[level]");
+                    matcher.appendReplacement(selectorBuffer, "[level]");
                 }
-                matcher.appendTail(normalized);
-                String normalizedSelector = normalized.toString();
+                matcher.appendTail(selectorBuffer);
+                String normalizedSelector = selectorBuffer.toString();
                 if (MALFORMED_LEVEL_RANGE.matcher(normalizedSelector).find()) {
                     throw new IllegalArgumentException("Invalid reward level range: " + css);
                 }

@@ -8,7 +8,7 @@ in-game rewards until the evaluator is explicitly connected to reward settlement
 
 Each top-level key names a loot list. List entries accept exactly three fields:
 
-- `reward`: an namespaced item ID, English item name, numeric item ID, a nested
+- `reward`: a namespaced item ID, English item name, numeric item ID, a nested
   YAML list, or `null` for no reward. A YAML alias referencing another list is
   treated exactly like a nested list.
 - `count`: defaults to `1`. On an item it specifies quantity; on a list it
@@ -83,12 +83,18 @@ chest[kind="common"] {
     reward: "genshin:item:heros_wit" 1;
 }
 ```
-The `CssItemRewards` prototype accepts multiple declarations of the form
-`reward: "genshin:item:mora" 300;` inside a CSS rule. It accepts existing
-`mora`, `primogems`, `adventureExp`, and `item-202` spellings as
-compatibility aliases and uses the same item ID registry. Per-item
-CSS override and zero semantics are tested separately from live payout.
-The parser is **not yet installed in the real chest/transport reward chain**.
+The `CssItemRewards` prototype accepts only `reward` declarations.
+Every declaration refers to an item through the shared `ItemIdRegistry`.
+There are no legacy item properties, short aliases or migration rules.
+Multiple declarations may appear in one CSS rule, and the last value for a
+given item wins. A more-specific attribute selector overrides a less-specific
+selector per item, even if the less-specific rule appears later in the file.
+Explicit zero is an override; it does not mean that a rule is absent.
+
+The CSS parser does not maintain a closed list of source types or selector
+attributes. Its current cascade ordering is defined for element and attribute
+selectors; no claim is made of full browser CSS specificity. The parser is
+**not yet installed in the real chest/transport reward chain**.
 
 ## Native migration
 

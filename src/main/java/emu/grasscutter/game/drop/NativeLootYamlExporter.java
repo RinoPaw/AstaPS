@@ -110,7 +110,7 @@ public final class NativeLootYamlExporter {
                         appendEntry(yaml, "  ", target, chance, null);
                     } else {
                         yaml.append("  - reward:\n");
-                        appendEntry(yaml, "    ", target, entry.countRange, null);
+                        appendEntry(yaml, "      ", target, entry.countRange, null);
                         yaml.append("    count: \"").append(chance).append("\"\n");
                     }
                 }

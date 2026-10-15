@@ -1,5 +1,5 @@
-# Default ordinary world-chest rewards. Edit values here; loot.yaml stores only table contents.
-# Quest chest and boss flower payouts remain on their separate settlement paths.
+/* Default ordinary world-chest rewards; loot.yaml stores only table contents.
+   Quest chests and boss flowers have separate settlement paths. */
 
 chest[kind="common"] {
     --loot: starter_materials;

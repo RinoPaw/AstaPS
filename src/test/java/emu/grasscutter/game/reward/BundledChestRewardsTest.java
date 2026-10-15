@@ -26,14 +26,21 @@ class BundledChestRewardsTest {
                 Map.entry(104002, "Adventurer's Experience"),
                 Map.entry(104003, "Hero's Wit"),
                 Map.entry(104011, "Enhancement Ore"),
-                Map.entry(104012, "Fine Enhancement Ore")));
+                Map.entry(104012, "Fine Enhancement Ore"),
+                Map.entry(104013, "Mystic Enhancement Ore"),
+                Map.entry(303, "Dendro Sigil"),
+                Map.entry(304, "Electro Sigil"),
+                Map.entry(305, "Anemo Sigil"),
+                Map.entry(307, "Geo Sigil")));
     }
 
     private static YamlLootTables loadLoot(ItemIdRegistry registry) throws Exception {
-        // Historic reference tables contain many numeric item IDs beyond this test's
-        // small fixture registry. Production startup still validates against GameData.
+        // Historical reference tables include ID-backed names outside this fixture.
+        // Production validates all of them against loaded GameData instead.
         return YamlLootTables.parse(resource("/rewards/loot.yaml"), name ->
-                name.matches("[0-9]+") ? Integer.parseInt(name) : registry.resolve(name));
+                name.matches("genshin\\.item\\.id_[0-9]+")
+                        ? Integer.parseInt(name.substring("genshin.item.id_".length()))
+                        : registry.resolve(name));
     }
 
     @Test

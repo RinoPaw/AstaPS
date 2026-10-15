@@ -86,7 +86,7 @@ public final class ItemIdRegistry {
         var categories = new LinkedHashMap<Integer, String>();
         for (var item : GameData.getItemDataMap().values()) {
             var strings = Language.getTextMapKey(item.getNameTextMapHash());
-            String english = strings == null || strings.isEmpty() ? null : strings.get(0);
+            String english = strings == null ? null : strings.get(0);
             if (english != null && (english.isBlank() || english.startsWith("["))) {
                 english = null;
             }

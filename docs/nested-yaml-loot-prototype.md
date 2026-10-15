@@ -3,13 +3,13 @@
 AstaPS bundles two editable reward files for chests and scene-point activations.
 
 `loot.yaml` defines reusable loot content. A table does not inspect chest
-type, location, rank, scene, or other spawn data. Four ordinary chest tables
-are defined: `common_chest`, `exquisite_chest`, `precious_chest`,
-and `luxurious_chest`. Each is registered in the resource namespace as
-`astaps.loot.<name>`.
+type, location, rank, scene, or other spawn data. Four base chest pools
+are defined, each with six named level aliases (`light`, `low`, `medium`,
+`high`, `xhigh`, `max`). Names register under `astaps.loot.<name>`.
 
 `rewards.css` selects a named loot table and sets fixed quantities. The
-sample includes four `chest[kind="..."]` selectors. Chest metadata
+sample includes four basic `chest[kind="..."]` rules plus the six
+level intervals for each kind. Chest metadata
 includes `kind`, `scene`, `gadget`, `group`, `config`, and when
 available the source gadget's `level`. No calculated regional currency,
 translated tag, or derived rank band is provided.
@@ -60,9 +60,9 @@ Qualified table IDs must be CSS quoted strings.
 **Data status:** the sample chest amounts remain approximate and are
 not independently validated against all 7.1 game records. The removed
 historical table graph remains available from the separate resource
-repository for research. Regional seals and special chest variants are
-not added without a verified way to select them. Unverified runtime
-location heuristics should not determine loot composition.
+repository for research. Region-dependent sigils are resolved at grant time from verified source
+metadata. Special chest variants still require verified selection data;
+location heuristics do not determine their loot composition.
 
 The server copies these files to `config/rewards` at first start.
 Existing files are not silently overwritten. Back up and regenerate

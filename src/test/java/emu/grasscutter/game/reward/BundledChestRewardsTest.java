@@ -63,7 +63,6 @@ class BundledChestRewardsTest {
         }
     }
 
-
     @Test
     void sixNamedLevelTiersUseTheCorrespondingTableForEveryChestKind() throws Exception {
         var registry = items();

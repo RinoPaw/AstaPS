@@ -1,7 +1,7 @@
 /* Review draft: historical Mondstadt combat rewards; not verified for other sources. */
 
 chest[kind="common"] {
-    --genshin-item-adventure_exp: 10;
+    --genshin-item-adventure_exp: 30;
     --genshin-item-sigil: 1;
     --genshin-item-primogem: 2;
 }
@@ -21,24 +21,21 @@ chest[kind="common"][level="11~15"] {
 
 chest[kind="common"][level="16~20"] {
     --loot: common_chest_high;
-    --genshin-item-adventure_exp: 20;
     --genshin-item-sigil: 2;
 }
 
 chest[kind="common"][level="21~25"] {
     --loot: common_chest_xhigh;
-    --genshin-item-adventure_exp: 20;
     --genshin-item-sigil: 3;
 }
 
 chest[kind="common"][level="26~"] {
     --loot: common_chest_max;
-    --genshin-item-adventure_exp: 20;
     --genshin-item-sigil: 3;
 }
 
 chest[kind="exquisite"] {
-    --genshin-item-adventure_exp: 20;
+    --genshin-item-adventure_exp: 30;
     --genshin-item-sigil: 3;
     --genshin-item-primogem: 5;
 }
@@ -66,7 +63,6 @@ chest[kind="exquisite"][level="21~25"] {
 
 chest[kind="exquisite"][level="26~"] {
     --loot: exquisite_chest_max;
-    --genshin-item-adventure_exp: 30;
     --genshin-item-sigil: 4;
 }
 

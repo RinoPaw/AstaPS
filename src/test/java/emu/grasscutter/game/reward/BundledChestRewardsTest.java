@@ -135,6 +135,25 @@ class BundledChestRewardsTest {
     }
 
     @Test
+    void everyWorldChestTierAndRegionGrantsThirtyAdventureExp() throws Exception {
+        var registry = items();
+        var loot = YamlLootTables.parse(resource("/rewards/loot.yaml"), registry::resolve);
+        var css = CssRewards.parse(resource("/rewards/rewards.css"), registry, loot);
+        for (String kind : new String[]{"common", "exquisite", "precious", "luxurious"}) {
+            for (String level : new String[]{"1", "5", "6", "11", "16", "21", "26", "99"}) {
+                for (String city : new String[]{"1", "2", "3"}) {
+                    var selected = css.resolve("chest", Map.of(
+                            "kind", kind, "level", level, "city", city, "area", "1"));
+                    assertEquals(30, selected.items().get(102).intValue(),
+                            kind + " level=" + level + " city=" + city);
+                }
+            }
+            assertEquals(30, css.resolve("chest", Map.of("kind", kind))
+                    .items().get(102).intValue());
+        }
+    }
+
+    @Test
     void samePresetResolvesSigilForOtherSourceRegions() throws Exception {
         var registry = items();
         var loot = YamlLootTables.parse(resource("/rewards/loot.yaml"), registry::resolve);

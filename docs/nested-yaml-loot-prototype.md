@@ -59,10 +59,10 @@ independently, override table results, and can remove an item with count 0.
 Qualified table IDs must be CSS quoted strings.
 
 **Data status:** the sample chest amounts remain approximate and are
-not independently validated against all 7.1 game records. The removed
-historical table graph remains available from the separate resource
-repository for research. Region-dependent sigils are resolved at grant time from verified source
-metadata. Special chest variants still require verified selection data;
+not independently validated against all 7.1 game records. The historical
+sourceType=19 chest drop graph is now also included in `loot.yaml` as
+reference data. Region-dependent sigils are resolved at grant time from verified
+source metadata. Special chest variants still require verified selection data;
 location heuristics do not determine their loot composition.
 
 The server copies these files to `config/rewards` at first start.
@@ -150,6 +150,35 @@ and Liyue) contain all six thresholds, while 24 have only a single
 level-1 entry. Repeated thresholds sometimes point to the same drop
 ID. Distinguishing combat versus puzzle selection still requires
 verified source metadata, not guessed tag strings.
+
+## Historical combat and puzzle loot tables
+
+The bundled `loot.yaml` contains 679 historical `chest_drop_<ID>` tables,
+including all 108 sourceType=19 root tables from
+`AstaPS-Resource/Server/DropTableExcelConfigData.json` and the 571
+reachable subtable dependencies from that file and
+`Server/DropSubTableExcelConfigData.json`. The source graph includes 1,843
+positive-weight entries. Original table IDs are retained in names:
+`astaps.loot.chest_drop_51010000` and
+`astaps.loot.chest_drop_52010000` are representative Mondstadt
+combat/puzzle roots. The 510/513 and 520/523 families preserve their
+separate combat/puzzle drop compositions; additional 530/540/550
+families are retained under their original numeric identities.
+
+YAML aliases represent nested source-table references, not string names
+and not conditional loot rules. Native `randomType=0` becomes a weighted
+choice; `randomType=1` becomes independent item rolls. Native fractional
+counts and chance weights are retained, including empty source tables.
+The historical pools are research data and **are not selected by the
+bundled `rewards.css`**, which remains unchanged. The existing four
+active presets and their six level aliases continue to have their
+approximate rewards.
+
+This archive preserves the source graph itself. The
+`ChestDrop.json` tag/minLevel-to-root selection mapping is not encoded
+in the loot tables, so the historical roots must not be assumed to
+correspond one-to-one with the six CSS level buckets. No 7.1 gameplay
+validation has been performed for the archived item IDs.
 
 ## Chest Primogems by native location
 

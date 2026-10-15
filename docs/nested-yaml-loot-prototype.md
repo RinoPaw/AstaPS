@@ -18,9 +18,19 @@ chest grade and `SceneGadget.level` (not the player's Adventure Rank).
 | Precious | xhigh | xhigh | xhigh | xhigh | xxhigh | xxxhigh |
 | Luxurious | xxxhigh | xxxhigh | xxxhigh | xxxhigh | max | ultra |
 
-These twelve short names are registered directly under `astaps.loot`,
-for example `astaps.loot.nano` and `astaps.loot.ultra`. YAML also contains supporting subpools and
-`three_realms_point`. Those are not additional world-chest tiers.
+These twelve names are registered under `astaps.loot`, for example
+`astaps.loot.nano` and `astaps.loot.ultra`. All 23 supporting tables come
+first in `loot.yaml`, grouped by reward content (weapons, ingredients, talent
+books and artifacts) rather than by chest type or level. The twelve selectable
+tiers follow in ascending order, then the separate `three_realms_point`
+table. There are 36 tables in total.
+
+The artifact distributions are `artifacts_1_to_2_1`,
+`artifacts_1_to_2_2`, `artifacts_1_to_3`, `artifacts_2_to_3`,
+`artifacts_3_to_4_1` and `artifacts_3_to_4_2`. The suffixes identify
+different weight ratios; neither chest grade nor level belongs in a subtable.
+The last two distributions include four-star artifacts, so calling them
+another `2_to_3` pool would misrepresent the source.
 
 Loot tiers contain variable contents: character experience items,
 talent books, ingredients, recipe items, weapons, enhancement ores and

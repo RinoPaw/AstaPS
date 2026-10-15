@@ -82,9 +82,20 @@ class BundledChestRewardsTest {
             "xxhigh", "xxxhigh",
             "max", "ultra"
         };
-        assertEquals(99, loot.names().size()); // 12 tiers, 86 supporting pools, one point
+        assertEquals(36, loot.names().size()); // 12 tiers, 23 supporting pools, one point
         for (String tier : tiers) assertTrue(loot.contains("astaps.loot." + tier), tier);
         assertTrue(loot.contains("astaps.loot.three_realms_point"));
+        for (String pool : new String[]{
+                "artifacts_1_to_2_1", "artifacts_1_to_2_2",
+                "artifacts_1_to_3", "artifacts_2_to_3",
+                "artifacts_3_to_4_1", "artifacts_3_to_4_2"}) {
+            assertTrue(loot.contains("astaps.loot." + pool));
+        }
+        assertTrue(loot.names().stream().noneMatch(name ->
+                name.startsWith("astaps.loot.chest_")));
+        String reorderedYaml = resource("/rewards/loot.yaml");
+        assertTrue(reorderedYaml.indexOf("artifacts_3_to_4_2:") <
+                reorderedYaml.indexOf("minimal:"));
         String yaml = resource("/rewards/loot.yaml");
         for (String name : new String[]{
                 "adventure_exp", "primogem", "mora", "anemo_sigil", "geo_sigil",

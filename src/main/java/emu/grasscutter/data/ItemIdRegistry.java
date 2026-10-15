@@ -53,7 +53,12 @@ public final class ItemIdRegistry {
             if (english == null || english.isBlank()) english = VERIFIED_ENGLISH.get(id);
             String name = STABLE_NAMES.getOrDefault(id, slug(english));
             String key = name.isEmpty() ? null : new ResourceId("genshin", "item", name).toString();
-            ids.put(id, new Info(id, english, key, categories.getOrDefault(id, "")));
+            String category = categories.getOrDefault(id, switch (id) {
+                case 104001, 104002, 104003 -> "Character EXP Materials";
+                case 201, 202 -> "Currencies";
+                default -> "";
+            });
+            ids.put(id, new Info(id, english, key, category));
             if (key != null) putUnique(names, collisions, key, id);
             if (english != null && !english.isBlank()) {
                 putUnique(names, collisions, english, id);

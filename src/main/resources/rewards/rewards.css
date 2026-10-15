@@ -1,24 +1,28 @@
 /* Ordinary world chest reward presets; amounts remain approximate. */
 chest[kind="common"] {
     --loot: common_chest;
+    --genshin-item-sigil: 1;
     --genshin-item-primogem: 2;
     --genshin-item-adventure_exp: 30;
 }
 
 chest[kind="exquisite"] {
     --loot: exquisite_chest;
+    --genshin-item-sigil: 2;
     --genshin-item-primogem: 5;
     --genshin-item-adventure_exp: 30;
 }
 
 chest[kind="precious"] {
     --loot: precious_chest;
+    --genshin-item-sigil: 3;
     --genshin-item-primogem: 10;
     --genshin-item-adventure_exp: 30;
 }
 
 chest[kind="luxurious"] {
     --loot: luxurious_chest;
+    --genshin-item-sigil: 4;
     --genshin-item-primogem: 10;
     --genshin-item-adventure_exp: 30;
 }

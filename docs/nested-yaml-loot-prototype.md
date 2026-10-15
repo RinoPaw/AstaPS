@@ -163,10 +163,10 @@ The source records come from
 against the original `ChestDrop.json` index/minLevel labels. All source
 identifiers were replaced by descriptive names, for example:
 
-- `astaps.loot.historical_mondstadt_combat_common`
-- `astaps.loot.historical_mondstadt_puzzle_common`
-- `astaps.loot.historical_dragonspine_crimson_agate_common`
-- `astaps.loot.historical_golden_apple_archipelago_puzzle_common`
+- `astaps.loot.mondstadt_combat_common`
+- `astaps.loot.mondstadt_puzzle_common`
+- `astaps.loot.dragonspine_crimson_agate_common`
+- `astaps.loot.golden_apple_archipelago_puzzle_common`
 
 Internal pools carry descriptive category names, such as `experience`,
 `weapons`, `enhancement_ore`, `talent_books`, and `artifacts`. The

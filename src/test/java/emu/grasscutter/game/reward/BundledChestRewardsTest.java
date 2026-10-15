@@ -216,23 +216,24 @@ class BundledChestRewardsTest {
         var css = CssRewards.parse(resource("/rewards/rewards.css"), registry, loot);
 
         for (String table : new String[]{
-                "historical_mondstadt_combat_common",
-                "historical_mondstadt_puzzle_common",
-                "historical_mondstadt_combat_exquisite_max",
-                "historical_mondstadt_puzzle_exquisite_max",
-                "historical_golden_apple_archipelago_combat_common",
-                "historical_golden_apple_archipelago_puzzle_common",
-                "historical_dragonspine_combat_common",
-                "historical_dragonspine_puzzle_common",
-                "historical_dragonspine_crimson_agate_common"}) {
+                "mondstadt_combat_common",
+                "mondstadt_puzzle_common",
+                "mondstadt_combat_exquisite_max",
+                "mondstadt_puzzle_exquisite_max",
+                "golden_apple_archipelago_combat_common",
+                "golden_apple_archipelago_puzzle_common",
+                "dragonspine_combat_common",
+                "dragonspine_puzzle_common",
+                "dragonspine_crimson_agate_common"}) {
             assertTrue(loot.contains("astaps.loot." + table), table);
         }
-        assertEquals(679, loot.names().stream()
-                .filter(name -> name.startsWith("astaps.loot.historical_")).count());
+        assertTrue(loot.names().stream().noneMatch(name ->
+                name.matches("astaps\\.loot\\.(historical|legacy|archived|deprecated)_.+")),
+                "Loot names must describe content, not their provenance");
 
         for (int seed = 0; seed < 64; seed++) {
-            var combat = loot.roll("astaps.loot.historical_mondstadt_combat_common", new Random(seed));
-            var puzzle = loot.roll("astaps.loot.historical_mondstadt_puzzle_common", new Random(seed));
+            var combat = loot.roll("astaps.loot.mondstadt_combat_common", new Random(seed));
+            var puzzle = loot.roll("astaps.loot.mondstadt_puzzle_common", new Random(seed));
             assertEquals(10, combat.get(102).intValue());
             assertEquals(10, puzzle.get(102).intValue());
             assertEquals(1, combat.get(305).intValue());

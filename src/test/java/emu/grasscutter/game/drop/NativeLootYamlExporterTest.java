@@ -45,7 +45,7 @@ class NativeLootYamlExporterTest {
         var source = Map.of(100, new NativeLootYamlExporter.NativeTable(1, List.of(
                 new NativeLootYamlExporter.NativeEntry(104003, "2;3", 5000))));
         var yaml = NativeLootYamlExporter.export(source, List.of(100));
-        assertTrue(yaml.contains("item:\n      - {item: 104003, count: \"2;3\"}"));
+        assertTrue(yaml.contains("reward:\n      - {reward: 104003, count: \"2;3\"}"));
         var loot = YamlLootTables.parse(yaml, Integer::parseInt);
         int zero = 0, two = 0, three = 0;
         var random = new Random(9);

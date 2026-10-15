@@ -89,7 +89,7 @@ class YamlLootTablesTest {
         var loot = YamlLootTables.parse("""
                 chest:
                   - reward: genshin.artifact.adventurer
-                    properties: {slot: "1~5", rarity: 1}
+                    properties: {rarity: 1}
                 """, resolver, artifacts);
         for (int i = 0; i < 100; i++) {
             var reward = loot.roll("astaps.loot.chest", new Random(i));

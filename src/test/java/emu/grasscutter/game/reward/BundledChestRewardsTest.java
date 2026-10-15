@@ -144,9 +144,14 @@ class BundledChestRewardsTest {
     }
 
     @Test
-    void sourceArtifactIdentitiesRemainUnchanged() throws Exception {
+    void semanticArtifactReferencesResolveWithoutChangingNativeItemIds() throws Exception {
         String source = resource("/rewards/loot.yaml");
-        assertTrue(source.contains("genshin.item.artifact_adventurer_flower_one_star_zero_initial_substats"));
-        assertTrue(source.contains("genshin.item.artifact_instructor_circlet_four_star_three_initial_substats"));
+        assertTrue(source.contains("artifact:adventurer:goblet:1:0"));
+        assertTrue(source.contains("artifact:instructor:sands:4:3"));
+        assertFalse(source.contains("genshin.item.artifact_"));
+        assertEquals(90, java.util.regex.Pattern.compile(
+                "reward: artifact:[a-z0-9_]+:(flower|plume|sands|goblet|circlet):[1-5]:[0-4]")
+                .matcher(source).results().count());
+        assertEquals(55311, items().resolve("artifact:berserker:goblet:3:1"));
     }
 }

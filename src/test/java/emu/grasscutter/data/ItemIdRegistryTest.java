@@ -42,6 +42,32 @@ class ItemIdRegistryTest {
     }
 
     @Test
+    void nativeArtifactVariantsUseSetSlotRarityAndInitialCount() {
+        var names = new ItemIdRegistry(Map.of(
+                55311, "Berserker 3 Star Goblet",
+                55312, "Berserker 3 Star Goblet 2",
+                55341, "Berserker 3 Star Flower",
+                60110, "Adventurer 1 Star Goblet"));
+        assertEquals("artifact:berserker:goblet:3:1", names.describe(55311).key());
+        assertEquals("artifact:berserker:goblet:3:2", names.describe(55312).key());
+        assertEquals("artifact:berserker:flower:3:1", names.describe(55341).key());
+        assertEquals("artifact:adventurer:goblet:1:0", names.describe(60110).key());
+        assertEquals(55311, names.resolve("artifact:berserker:goblet:3:1"));
+        assertEquals(55312, names.resolve("artifact:berserker:goblet:3:2"));
+        assertEquals(60110, names.resolve("artifact:adventurer:goblet:1:0"));
+        assertThrows(IllegalArgumentException.class, () ->
+                names.resolve("genshin.item.artifact_berserker_flower_three_star_one_initial_substats"));
+        assertThrows(IllegalArgumentException.class, () ->
+                names.resolve("artifact:berserker:goblet:3:5"));
+        assertThrows(IllegalArgumentException.class, () ->
+                names.resolve("artifact:berserker:goblet:3"));
+        assertEquals(135, ItemIdRegistry.chestDropNames().values().stream()
+                .filter(name -> name.startsWith("artifact:")).count());
+        assertEquals(135, ItemIdRegistry.chestDropNames().values().stream()
+                .filter(ItemIdRegistry::isArtifactReference).distinct().count());
+    }
+
+    @Test
     void identicalEnglishNamesDoNotSilentlySelectOneItem() {
         var names = new ItemIdRegistry(Map.of(501, "Duplicated", 502, "Duplicated"));
         assertThrows(IllegalArgumentException.class,

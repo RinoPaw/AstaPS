@@ -93,6 +93,27 @@ class NativeLootYamlExporterTest {
     }
 
     @Test
+    void exporterPreservesNativeArtifactReferences() {
+        var source = Map.of(100, new NativeLootYamlExporter.NativeTable(1, List.of(
+                new NativeLootYamlExporter.NativeEntry(55311, "1", 10000))));
+        var yaml = NativeLootYamlExporter.export(source, List.of(100),
+                Map.of(100, "artifact_chest"), id -> {
+                    if (id == 55311) return "artifact:berserker:goblet:3:1";
+                    throw new IllegalArgumentException("Unknown item");
+                });
+        assertTrue(yaml.contains("reward: artifact:berserker:goblet:3:1"));
+        var loot = YamlLootTables.parse(yaml, name -> {
+            if (name.equals("artifact:berserker:goblet:3:1")) return 55311;
+            return -2;
+        });
+        assertEquals(Map.of(55311, 1),
+                loot.roll("astaps.loot.artifact_chest", new Random(1)));
+        assertThrows(IllegalArgumentException.class, () ->
+                NativeLootYamlExporter.export(source, List.of(100),
+                        Map.of(100, "artifact_chest"), id -> "artifact:berserker:goblet:3"));
+    }
+
+    @Test
     void exporterRejectsMissingOrFakeNamesAndCyclicTables() {
         var empty = Map.of(10, new NativeLootYamlExporter.NativeTable(1, List.of()));
         String yaml = NativeLootYamlExporter.export(empty, List.of(10),

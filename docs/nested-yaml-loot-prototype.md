@@ -28,7 +28,8 @@ artifacts. The 12 tables are based on one branch of the historical chest
 drop data without combat/puzzle selection. They do not yet reproduce
 location-specific book pools, special recipes, or Dragonspine Crimson
 Agate rewards correctly. Those variants require separately verified
-selection data. The artifact item resource identities have not changed.
+selection data. The native artifact item IDs are unchanged. Their YAML semantic names now use
+`artifact:<set>:<slot>:<rarity>:<initial_substats>`.
 
 ## Common rewards belong to CSS
 
@@ -81,8 +82,8 @@ validated against native Genshin 7.1 reward data. This uncertainty is
 intentional and must not be mistaken for confirmed reversed drop rates.
 
 Source records remain at `data/ChestDrop.json` and
-`data/Server/DropTableExcelConfigData.json`. The earlier verbose
-artifact item identities are kept unchanged for a separate naming pass.
+`data/Server/DropTableExcelConfigData.json`. The earlier verbose artifact names have been replaced by shorter typed references
+that reflect the native `setId`, `equipType`, `rankLevel` and `appendPropNum`.
 
 ## Scene points and other reward paths
 
@@ -105,7 +106,12 @@ invalid. `count` defaults to one and supports fixed values, ranges,
 fractional expectations and native percentage distributions. A nested
 list repeats the entire pool according to the outer count.
 
-Qualified `genshin.item.<name>` identities resolve to game item IDs.
+Qualified `genshin.item.<name>` identities resolve materials and weapons to game
+item IDs. Artifacts use `artifact:<set>:<slot>:<rarity>:<initial_substats>`,
+for example `artifact:berserker:goblet:3:1` and `artifact:adventurer:goblet:1:0`.
+The final number is the native *initial* substat count (including zero), not
+the count after upgrades. The artifact reference resolves to its unchanged
+native item ID. Dotted item IDs and `astaps.loot.<name>` remain unchanged.
 No numeric source IDs are used in the bundled loot configuration.
 
 Full 7.1 gameplay validation is still required before upstream submission.

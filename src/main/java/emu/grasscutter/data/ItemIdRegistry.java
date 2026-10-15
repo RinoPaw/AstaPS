@@ -127,6 +127,17 @@ public final class ItemIdRegistry {
             if (!resource.namespace().equals("genshin") || !resource.type().equals("item")) {
                 throw new IllegalArgumentException("Unsupported item resource: " + input);
             }
+            // Historical tables can name items with no verified stable TextMap
+            // slug. The ID-backed name is still a typed resource identity.
+            if (resource.name().matches("id_[0-9]+")) {
+                try {
+                    int id = Integer.parseInt(resource.name().substring(3));
+                    if (byId.containsKey(id)) return id;
+                } catch (NumberFormatException ignored) {
+                    // Rejected as unknown below.
+                }
+                throw new IllegalArgumentException("Unknown item resource: " + input);
+            }
         }
 
         String name = input.toLowerCase(Locale.ROOT);

@@ -4,7 +4,7 @@
 # Other regions and puzzle chests need their own selection logic; do not deploy this draft as-is.
 # Numerical leaf rewards are original item IDs. Empty nodes are kept as empty rewards.
 
-# Source: ChestDrop "战斗低级蒙德" minLevel=1 -> 51010000
+# Source drop root 51010000: Mondstadt combat, common, minLevel 1
 common_chest_light: &root_51010000
   - {reward: 202, count: "240~360"}
   - reward: &share_500100
@@ -70,7 +70,7 @@ common_chest_light: &root_51010000
         weight: 100
     count: "1:52"
 
-# Source: ChestDrop "战斗低级蒙德" minLevel=6 -> 51010100
+# Source drop root 51010100: Mondstadt combat, common, minLevel 6
 common_chest_low: &root_51010100
   - {reward: 202, count: "240~360"}
   - reward: *share_500100
@@ -92,7 +92,7 @@ common_chest_low: &root_51010100
         weight: 100
     count: "1:80"
 
-# Source: ChestDrop "战斗低级蒙德" minLevel=11 -> 51010200
+# Source drop root 51010200: Mondstadt combat, common, minLevel 11
 common_chest_medium: &root_51010200
   - {reward: 202, count: "480~720"}
   - reward:
@@ -112,7 +112,7 @@ common_chest_medium: &root_51010200
         weight: 100
     count: "1.2"
 
-# Source: ChestDrop "战斗低级蒙德" minLevel=16 -> 51010300
+# Source drop root 51010300: Mondstadt combat, common, minLevel 16
 common_chest_high: &root_51010300
   - {reward: 202, count: "480~720"}
   - reward:
@@ -132,7 +132,7 @@ common_chest_high: &root_51010300
         weight: 340
     count: "1.5"
 
-# Source: ChestDrop "战斗低级蒙德" minLevel=21 -> 51010400
+# Source drop root 51010400: Mondstadt combat, common, minLevel 21
 common_chest_xhigh: &root_51010400
   - {reward: 202, count: "720~1080"}
   - reward:
@@ -152,7 +152,7 @@ common_chest_xhigh: &root_51010400
         weight: 340
     count: "1.75"
 
-# Source: ChestDrop "战斗低级蒙德" minLevel=26 -> 51010500
+# Source drop root 51010500: Mondstadt combat, common, minLevel 26
 common_chest_max: &root_51010500
   - {reward: 202, count: "720~1080"}
   - reward:
@@ -245,7 +245,7 @@ exquisite_chest_medium: *root_51010500
 
 exquisite_chest_high: *root_51010500
 
-# Source: ChestDrop "战斗中级蒙德" minLevel=21 -> 51010600
+# Source drop root 51010600: Mondstadt combat, exquisite, minLevel 21
 exquisite_chest_xhigh: &root_51010600
   - {reward: 202, count: "960~1440"}
   - reward:
@@ -270,7 +270,7 @@ exquisite_chest_xhigh: &root_51010600
         weight: 100
     count: "2"
 
-# Source: ChestDrop "战斗中级蒙德" minLevel=26 -> 51010700
+# Source drop root 51010700: Mondstadt combat, exquisite, minLevel 26
 exquisite_chest_max: &root_51010700
   - {reward: 202, count: "960~1440"}
   - reward:
@@ -302,7 +302,7 @@ precious_chest_medium: *root_51010700
 
 precious_chest_high: *root_51010700
 
-# Source: ChestDrop "战斗高级蒙德" minLevel=21 -> 51010800
+# Source drop root 51010800: Mondstadt combat, precious, minLevel 21
 precious_chest_xhigh: &root_51010800
   - {reward: 202, count: "1200~1800"}
   - {reward: 109207}
@@ -355,7 +355,7 @@ precious_chest_xhigh: &root_51010800
         weight: 100
     count: "2.25"
 
-# Source: ChestDrop "战斗高级蒙德" minLevel=26 -> 51010900
+# Source drop root 51010900: Mondstadt combat, precious, minLevel 26
 precious_chest_max: &root_51010900
   - {reward: 202, count: "1200~1800"}
   - reward:
@@ -389,7 +389,7 @@ luxurious_chest_medium: *root_51010900
 
 luxurious_chest_high: *root_51010900
 
-# Source: ChestDrop "战斗超级蒙德" minLevel=21 -> 51011000
+# Source drop root 51011000: Mondstadt combat, luxurious, minLevel 21
 luxurious_chest_xhigh: &root_51011000
   - {reward: 202, count: "1440~2160"}
   - reward:
@@ -412,7 +412,7 @@ luxurious_chest_xhigh: &root_51011000
         weight: 200
     count: "2.5"
 
-# Source: ChestDrop "战斗超级蒙德" minLevel=26 -> 51011100
+# Source drop root 51011100: Mondstadt combat, luxurious, minLevel 26
 luxurious_chest_max: &root_51011100
   - {reward: 202, count: "1440~2160"}
   - reward:

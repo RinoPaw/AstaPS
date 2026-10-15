@@ -22,14 +22,14 @@ Each top-level key names a loot list. List entries accept exactly three fields:
 No separate `all`, `pick`, `table`, or `chance` keys are needed.
 
 ```yaml
-astaps.loot.currency:
+currency:
   - {reward: genshin.item.mora, count: "240~360"}
 
-astaps.loot.experience_books: &books
+经验书: &books
   - {reward: genshin.item.heros_wit, weight: 1}
   - {reward: genshin.item.adventurers_experience, count: 2, weight: 1}
 
-astaps.loot.book_bundle:
+book_bundle:
   - {reward: *books, count: "1:70"}
 ```
 
@@ -68,67 +68,73 @@ fixtures and tests. Only `item` resources are supported in this phase.
 A `genshin.avatar.amber` reference is rejected instead of treating an
 avatar ID as a bag item.
 
-## Responsibility boundary
+## Named loot resources and responsibility boundary
 
-`loot.yaml` contains only named loot tables and their contents. It does
-not match or inspect chests, monsters, scene IDs, regions, levels, qualities,
-or any other attributes of a reward source. Table names describe reusable
-contents, such as `currency` or `experience_books`, not where those
-tables will be used.
+The top-level keys in `loot.yaml` are **local table names**, not qualified
+resource IDs. On load, AstaPS publishes each table as `astaps.loot.<name>`.
+For example, `currency` becomes `astaps.loot.currency`, and `经验书`
+becomes `astaps.loot.经验书`. The owner namespace belongs to the
+loader, not to individual table definitions.
 
-`rewards.css` owns the source selection, the number of independent times
-to run each named table, and fixed item overrides. A CSS loot property
-`--astaps-loot-currency` references the `astaps.loot.currency` key
-in `loot.yaml`.
+A qualified loot resource is independent of the system using it. Code and
+future commands can execute `astaps.loot.surprise` directly by resolving
+its global ID, without running a CSS selector. `YamlLootTables.roll()`
+accepts the qualified ID; `resolveName()` resolves the short default
+namespace name or an explicitly qualified ID.
 
-For example:
+Loot tables define **contents only**: items, quantities, weights, nesting,
+and optional empty results. They do not inspect area, level, chest quality,
+object kind, scene ID or other source metadata.
+
+`rewards.css` selects loot based on source attributes. `--loot` is one
+CSS custom property whose value is a comma-separated list. Each name
+means one execution unless followed by an explicit count:
 
 ```css
 chest[kind="common"] {
-    --astaps-loot-currency: 1;
+    --loot: currency, 经验书 2;
     --genshin-item-primogem: 2;
 }
 
-chest[kind="common"][level="6"] {
-    --astaps-loot-experience_books: 2;
-}
-
 monster[rank="elite"] {
-    --astaps-loot-currency: 3;
+    --loot: astaps.loot.currency 3;
 }
 ```
 
-The two matching loot properties on the level-6 common chest execute
-separately. Each table count is its own CSS property; a more specific rule
-can override it independently, including with `0` to disable the table.
-The monster can use the same table without any monster-specific data in
-the YAML file.
+The common chest executes `astaps.loot.currency` once and
+`astaps.loot.经验书` twice. Explicit qualified loot IDs work alongside
+short names. Repeating the same table in one list adds execution counts.
 
-The `CssRewards` parser resolves both `item` and `loot` custom
-properties through their resource IDs and validates that every referenced
-table exists. `RewardRoller` runs the selected tables, merges resulting
-item counts, then applies fixed CSS item quantities (including zero to
-remove a rolled item). It does not grant rewards or mark anything claimed.
-
-For fixed items, the same resource ID is encoded as an independent CSS
-custom property:
+`--loot` follows CSS property replacement: a later, higher-priority
+matching rule replaces the **entire** list, rather than appending to it.
 
 ```css
-chest[kind="common"] {
-    --genshin-item-mora: 300;
-    --genshin-item-heros_wit: 1;
+chest[kind="common"][level="6"] {
+    --loot: surprise;
+}
+
+chest[kind="common"][scene="7"] {
+    --loot: none;
 }
 ```
 
-No legacy properties, compatibility aliases, or repeating `reward:`
-CSS declarations are supported. The `ResourceId` model uses exactly
-`namespace.type.name`, encoded as `--namespace-type-name` in CSS.
-The CSS parser leaves source element names and selector attributes open.
-Its current cascade ordering is defined for element and attribute
-selectors, not full browser CSS specificity.
+`none` is an empty loot list. Fixed item declarations such as
+`--genshin-item-primogem` cascade independently of `--loot`.
+`RewardRoller` executes the selected tables, merges their items and
+then applies CSS fixed item quantities. A fixed quantity of zero removes
+that item from the result. The table definition never determines which
+CSS selector should use it.
 
-These remain **standalone configuration and evaluation prototypes**,
-not live chest, monster, or transport reward settlement.
+The `ResourceId` format remains `namespace.type.name`. CSS item
+properties use the corresponding `--namespace-type-name` spelling.
+Only `--loot` selects tables: the earlier per-table
+`--astaps-loot-currency: 1` spelling is not supported. No legacy
+CSS reward fields or compatibility paths are retained.
+
+Current implementation is an **independent parser and evaluator**.
+It does not yet change actual chest, monster or transport reward delivery.
+A future `give astaps.loot.surprise` command will be able to call the
+same table evaluation API; this branch does not add that command yet.
 
 ## Native migration
 

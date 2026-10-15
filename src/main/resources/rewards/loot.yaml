@@ -1,0 +1,26 @@
+# Reusable reward contents only. The selectors live in rewards.css.
+# A table named starter_materials is published as astaps.loot.starter_materials.
+starter_materials:
+  - {reward: genshin.item.enhancement_ore, count: 2}
+  - {reward: genshin.item.wanderers_advice, count: 2}
+  - {reward: genshin.item.adventurers_experience}
+
+intermediate_materials:
+  - {reward: genshin.item.fine_enhancement_ore, count: 2}
+  - {reward: genshin.item.wanderers_advice, count: 3}
+  - {reward: genshin.item.adventurers_experience, count: 2}
+  - {reward: genshin.item.heros_wit}
+
+advanced_materials:
+  - {reward: genshin.item.fine_enhancement_ore, count: 3}
+  - {reward: genshin.item.mystic_enhancement_ore}
+  - {reward: genshin.item.wanderers_advice, count: 3}
+  - {reward: genshin.item.adventurers_experience, count: 3}
+  - {reward: genshin.item.heros_wit, count: 2}
+
+rich_materials:
+  - {reward: genshin.item.fine_enhancement_ore, count: 4}
+  - {reward: genshin.item.mystic_enhancement_ore}
+  - {reward: genshin.item.wanderers_advice, count: 2}
+  - {reward: genshin.item.adventurers_experience, count: 4}
+  - {reward: genshin.item.heros_wit, count: 3}

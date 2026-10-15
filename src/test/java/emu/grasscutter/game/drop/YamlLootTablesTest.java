@@ -1,6 +1,7 @@
 package emu.grasscutter.game.drop;
 
 import static org.junit.jupiter.api.Assertions.*;
+import emu.grasscutter.data.ItemIdRegistry;
 
 import java.util.Map;
 import java.util.Random;
@@ -8,9 +9,9 @@ import org.junit.jupiter.api.Test;
 
 class YamlLootTablesTest {
     private final YamlLootTables.ItemResolver resolver = name -> switch (name) {
-        case "Genshin.Mora", "202" -> 202;
-        case "Genshin.HerosWit", "104003" -> 104003;
-        case "Genshin.AdventurersExperience", "104002" -> 104002;
+        case "genshin:item:mora", "202" -> 202;
+        case "genshin:item:heros_wit", "104003" -> 104003;
+        case "genshin:item:adventurers_experience", "104002" -> 104002;
         default -> -1;
     };
 
@@ -22,8 +23,8 @@ class YamlLootTablesTest {
     void fixedItemsAndOmittedCount() {
         var tables = parse("""
                 common_chest:
-                  - {item: Genshin.Mora, count: 300}
-                  - {item: Genshin.HerosWit}
+                  - {reward: genshin:item:mora, count: 300}
+                  - {reward: genshin:item:heros_wit}
                 """);
         assertEquals(Map.of(202, 300, 104003, 1), tables.roll("common_chest", new Random(1)));
     }
@@ -32,8 +33,8 @@ class YamlLootTablesTest {
     void parsedPoolCanProduceAstapsItemParamData() {
         var tables = parse("""
                 basic:
-                  - {item: Genshin.Mora, count: 300}
-                  - {item: Genshin.HerosWit}
+                  - {reward: genshin:item:mora, count: 300}
+                  - {reward: genshin:item:heros_wit}
                 """);
         assertTrue(tables.contains("basic"));
         assertFalse(tables.contains("unknown"));
@@ -49,9 +50,9 @@ class YamlLootTablesTest {
     void quotedCountSupportsLegacyAndReadability() {
         var tables = parse("""
                 chest:
-                  - {item: 202, count: "2~4"}
-                  - {item: Genshin.HerosWit, count: "1:80"}
-                  - {item: Genshin.AdventurersExperience, count: "2.2"}
+                  - {reward: 202, count: "2~4"}
+                  - {reward: genshin:item:heros_wit, count: "1:80"}
+                  - {reward: genshin:item:adventurers_experience, count: "2.2"}
                 """);
         for (int i = 0; i < 300; i++) {
             var rewards = tables.roll("chest", new Random(i));
@@ -65,11 +66,11 @@ class YamlLootTablesTest {
     void mutuallyExclusiveWeightedChoiceAndAlias() {
         var tables = parse("""
                 experience: &exp
-                  - {item: Genshin.HerosWit, weight: 1}
-                  - {item: Genshin.AdventurersExperience, count: 2, weight: 3}
+                  - {reward: genshin:item:heros_wit, weight: 1}
+                  - {reward: genshin:item:adventurers_experience, count: 2, weight: 3}
                 chest:
-                  - {item: 202, count: 300}
-                  - {item: *exp, count: "0.7"}
+                  - {reward: 202, count: 300}
+                  - {reward: *exp, count: "0.7"}
                 """);
         int none = 0, big = 0, small = 0;
         Random random = new Random(42);
@@ -95,10 +96,10 @@ class YamlLootTablesTest {
     void nestedCountRepeatsIndependentRolls() {
         var tables = parse("""
                 experience: &exp
-                  - {item: Genshin.HerosWit, weight: 1}
-                  - {item: Genshin.AdventurersExperience, weight: 1}
+                  - {reward: genshin:item:heros_wit, weight: 1}
+                  - {reward: genshin:item:adventurers_experience, weight: 1}
                 chest:
-                  - {item: *exp, count: 2}
+                  - {reward: *exp, count: 2}
                 """);
         int mixed = 0;
         Random random = new Random(7);
@@ -114,16 +115,16 @@ class YamlLootTablesTest {
     void explicitEmptyChoiceAndNullItem() {
         var tables = parse("""
                 chance:
-                  - item:
-                      - {item: Genshin.HerosWit, weight: 5}
-                      - {item: Genshin.AdventurersExperience, weight: 3}
+                  - reward:
+                      - {reward: genshin:item:heros_wit, weight: 5}
+                      - {reward: genshin:item:adventurers_experience, weight: 3}
                     count: "1:80"
                 empty:
-                  - {item: null}
-                  - {item: []}
+                  - {reward: null}
+                  - {reward: []}
                 weighted_empty:
-                  - {item: null, weight: 1}
-                  - {item: Genshin.Mora, weight: 1}
+                  - {reward: null, weight: 1}
+                  - {reward: genshin:item:mora, weight: 1}
                 """);
         assertEquals(Map.of(), tables.roll("empty", new Random(0)));
         for (int i = 0; i < 100; i++) {
@@ -136,8 +137,8 @@ class YamlLootTablesTest {
     void numericAndNullWeightsCannotMix() {
         var error = assertThrows(IllegalArgumentException.class, () -> parse("""
                 invalid:
-                  - {item: Genshin.Mora, weight: 0}
-                  - {item: Genshin.HerosWit}
+                  - {reward: genshin:item:mora, weight: 0}
+                  - {reward: genshin:item:heros_wit}
                 """));
         assertTrue(error.getMessage().contains("cannot mix"));
     }
@@ -146,8 +147,8 @@ class YamlLootTablesTest {
     void explicitlyNumericZeroWeightIsAllowedWhenAnotherIsPositive() {
         var tables = parse("""
                 pool:
-                  - {item: Genshin.Mora, weight: 0}
-                  - {item: Genshin.HerosWit, weight: 1}
+                  - {reward: genshin:item:mora, weight: 0}
+                  - {reward: genshin:item:heros_wit, weight: 1}
                 """);
         assertEquals(Map.of(104003, 1), tables.roll("pool", new Random(0)));
     }
@@ -156,23 +157,23 @@ class YamlLootTablesTest {
     void failsClosedOnBrokenContent() {
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 invalid:
-                  - {item: missing_item}
+                  - {reward: missing_item}
                 """));
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 invalid:
-                  - {item: Genshin.Mora, count: "1:60,2:60"}
+                  - {reward: genshin:item:mora, count: "1:60,2:60"}
                 """));
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 invalid:
-                  - {item: Genshin.Mora, unknown: true}
+                  - {reward: genshin:item:mora, unknown: true}
                 """));
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 invalid:
-                  - {item: Genshin.Mora, weight: 0}
+                  - {reward: genshin:item:mora, weight: 0}
                 """));
         assertThrows(RuntimeException.class, () -> parse("""
                 recursive: &self
-                  - {item: *self}
+                  - {reward: *self}
                 """));
     }
 
@@ -188,8 +189,8 @@ class YamlLootTablesTest {
 
         var nullable = parse("""
                 pool:
-                  - {item: null, weight: 2}
-                  - {item: Genshin.Mora, weight: 3}
+                  - {reward: null, weight: 2}
+                  - {reward: genshin:item:mora, weight: 3}
                 """);
         int empty = 0;
         rng = new Random(123);
@@ -199,33 +200,33 @@ class YamlLootTablesTest {
 
     @Test
     void itemClassificationUsesGameResourceTypes() {
-        assertEquals("Weapons", LootItemNames.categoryOf(
+        assertEquals("Weapons", ItemIdRegistry.categoryOf(
                 emu.grasscutter.game.inventory.ItemType.ITEM_WEAPON,
                 emu.grasscutter.game.inventory.MaterialType.MATERIAL_NONE));
-        assertEquals("Artifacts", LootItemNames.categoryOf(
+        assertEquals("Artifacts", ItemIdRegistry.categoryOf(
                 emu.grasscutter.game.inventory.ItemType.ITEM_RELIQUARY,
                 emu.grasscutter.game.inventory.MaterialType.MATERIAL_NONE));
-        assertEquals("Character EXP Materials", LootItemNames.categoryOf(
+        assertEquals("Character EXP Materials", ItemIdRegistry.categoryOf(
                 emu.grasscutter.game.inventory.ItemType.ITEM_MATERIAL,
                 emu.grasscutter.game.inventory.MaterialType.MATERIAL_EXP_FRUIT));
-        assertEquals("Food", LootItemNames.categoryOf(
+        assertEquals("Food", ItemIdRegistry.categoryOf(
                 emu.grasscutter.game.inventory.ItemType.ITEM_MATERIAL,
                 emu.grasscutter.game.inventory.MaterialType.MATERIAL_FOOD));
-        assertEquals(104003, new LootItemNames(java.util.Collections.singletonMap(104003, null)).resolve("Genshin.HerosWit"));
+        assertEquals(104003, new ItemIdRegistry(java.util.Collections.singletonMap(104003, null)).resolve("genshin:item:heros_wit"));
     }
 
     @Test
     void itemNamesKeepEnglishNamesAndDetectAmbiguity() {
-        var names = new LootItemNames(Map.of(
+        var names = new ItemIdRegistry(Map.of(
                 104003, "Hero's Wit",
                 104002, "Adventurer's Experience",
                 202, "Mora"));
-        assertEquals("Genshin.HerosWit", names.describe(104003).key());
+        assertEquals("genshin:item:heros_wit", names.describe(104003).key());
         assertEquals("Character EXP Materials", names.describe(104003).category());
         assertEquals(104003, names.resolve("Hero's Wit"));
-        assertEquals(104003, names.resolve("Genshin.HerosWit"));
+        assertEquals(104003, names.resolve("genshin:item:heros_wit"));
         assertEquals(202, names.resolve("202"));
-        var colliding = new LootItemNames(Map.of(1, "Same", 2, "Same"));
-        assertThrows(IllegalArgumentException.class, () -> colliding.resolve("Genshin.Same"));
+        var colliding = new ItemIdRegistry(Map.of(1, "Same", 2, "Same"));
+        assertThrows(IllegalArgumentException.class, () -> colliding.resolve("genshin:item:same"));
     }
 }

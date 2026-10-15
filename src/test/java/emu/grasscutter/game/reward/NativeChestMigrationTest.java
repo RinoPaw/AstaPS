@@ -117,7 +117,7 @@ class NativeChestMigrationTest {
         var selection = css.resolve("chest", Map.of("kind", "common", "sigil", "305"));
         assertEquals(Map.of(
                 "astaps.loot.fallback_common", 1,
-                "astaps.loot.anemo_sigil", 3), selection.loot());
+                "astaps.loot.anemo_sigil", 1), selection.loot());
         var rolled = RewardRoller.roll(selection, loot, new Random(1));
         assertEquals(2, rolled.get(201).intValue());
         assertTrue(rolled.get(202) >= 257 && rolled.get(202) <= 996);

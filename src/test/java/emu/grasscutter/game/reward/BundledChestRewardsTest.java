@@ -18,29 +18,25 @@ class BundledChestRewardsTest {
     }
 
     private static ItemIdRegistry items() {
-        return new ItemIdRegistry(Map.ofEntries(
-                Map.entry(102, "Adventure EXP"),
-                Map.entry(201, "Primogem"),
-                Map.entry(202, "Mora"),
-                Map.entry(104001, "Wanderer's Advice"),
-                Map.entry(104002, "Adventurer's Experience"),
-                Map.entry(104003, "Hero's Wit"),
-                Map.entry(104011, "Enhancement Ore"),
-                Map.entry(104012, "Fine Enhancement Ore"),
-                Map.entry(104013, "Mystic Enhancement Ore"),
-                Map.entry(303, "Dendro Sigil"),
-                Map.entry(304, "Electro Sigil"),
-                Map.entry(305, "Anemo Sigil"),
-                Map.entry(307, "Geo Sigil")));
+        var names = new java.util.HashMap<Integer, String>(ItemIdRegistry.chestDropNames());
+        names.put(102, "Adventure EXP");
+        names.put(201, "Primogem");
+        names.put(202, "Mora");
+        names.put(104001, "Wanderer's Advice");
+        names.put(104002, "Adventurer's Experience");
+        names.put(104003, "Hero's Wit");
+        names.put(104011, "Enhancement Ore");
+        names.put(104012, "Fine Enhancement Ore");
+        names.put(104013, "Mystic Enhancement Ore");
+        names.put(303, "Dendro Sigil");
+        names.put(304, "Electro Sigil");
+        names.put(305, "Anemo Sigil");
+        names.put(307, "Geo Sigil");
+        return new ItemIdRegistry(names);
     }
 
     private static YamlLootTables loadLoot(ItemIdRegistry registry) throws Exception {
-        // Historical reference tables include ID-backed names outside this fixture.
-        // Production validates all of them against loaded GameData instead.
-        return YamlLootTables.parse(resource("/rewards/loot.yaml"), name ->
-                name.matches("genshin\\.item\\.id_[0-9]+")
-                        ? Integer.parseInt(name.substring("genshin.item.id_".length()))
-                        : registry.resolve(name));
+        return YamlLootTables.parse(resource("/rewards/loot.yaml"), registry::resolve);
     }
 
     @Test
@@ -219,16 +215,24 @@ class BundledChestRewardsTest {
         var loot = loadLoot(registry);
         var css = CssRewards.parse(resource("/rewards/rewards.css"), registry, loot);
 
-        for (int tableId : new int[]{51010000, 52010000, 51010700, 52010700,
-                51310000, 52310000, 53010000, 54010000, 55010000}) {
-            assertTrue(loot.contains("astaps.loot.chest_drop_" + tableId));
+        for (String table : new String[]{
+                "historical_mondstadt_combat_common",
+                "historical_mondstadt_puzzle_common",
+                "historical_mondstadt_combat_exquisite_max",
+                "historical_mondstadt_puzzle_exquisite_max",
+                "historical_golden_apple_archipelago_combat_common",
+                "historical_golden_apple_archipelago_puzzle_common",
+                "historical_dragonspine_combat_common",
+                "historical_dragonspine_puzzle_common",
+                "historical_dragonspine_crimson_agate_common"}) {
+            assertTrue(loot.contains("astaps.loot." + table), table);
         }
         assertEquals(679, loot.names().stream()
-                .filter(name -> name.startsWith("astaps.loot.chest_drop_")).count());
+                .filter(name -> name.startsWith("astaps.loot.historical_")).count());
 
         for (int seed = 0; seed < 64; seed++) {
-            var combat = loot.roll("astaps.loot.chest_drop_51010000", new Random(seed));
-            var puzzle = loot.roll("astaps.loot.chest_drop_52010000", new Random(seed));
+            var combat = loot.roll("astaps.loot.historical_mondstadt_combat_common", new Random(seed));
+            var puzzle = loot.roll("astaps.loot.historical_mondstadt_puzzle_common", new Random(seed));
             assertEquals(10, combat.get(102).intValue());
             assertEquals(10, puzzle.get(102).intValue());
             assertEquals(1, combat.get(305).intValue());

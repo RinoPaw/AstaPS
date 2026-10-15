@@ -341,6 +341,11 @@ public final class ItemIdRegistry {
         return id;
     }
 
+    /** Stable item identities for the archived historical chest rewards. */
+    public static Map<Integer, String> chestDropNames() {
+        return CHEST_DROP_NAMES;
+    }
+
     public Info describe(int id) {
         return byId.get(id);
     }

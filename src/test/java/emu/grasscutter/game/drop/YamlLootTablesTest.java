@@ -47,6 +47,71 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void artifactPropertiesChooseNativeIdsIndependentlyPerAward() {
+        var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
+        for (int slot = 1; slot <= 5; slot++) {
+            for (int substats = 1; substats <= 2; substats++) {
+                variants.add(new ArtifactResolver.Variant(55300 + slot * 10 + substats,
+                        "berserker", slot, 3, substats));
+            }
+        }
+        var artifactResolver = new ArtifactResolver(variants);
+        var loot = YamlLootTables.parse("""
+                chest:
+                  - reward: genshin.artifact.berserker
+                    properties: {slot: "1~5", rarity: 3, substats: "1:80,2:20"}
+                    count: 2
+                """, resolver, artifactResolver);
+        int one = 0, two = 0;
+        var random = new Random(101);
+        for (int i = 0; i < 5000; i++) {
+            var rewards = loot.roll("astaps.loot.chest", random);
+            assertEquals(2, rewards.values().stream().mapToInt(Integer::intValue).sum());
+            for (var entry : rewards.entrySet()) {
+                int slot = (entry.getKey() / 10) % 10;
+                int substats = entry.getKey() % 10;
+                assertTrue(slot >= 1 && slot <= 5);
+                if (substats == 1) one += entry.getValue();
+                else if (substats == 2) two += entry.getValue();
+                else fail("Unexpected native artifact variant");
+            }
+        }
+        assertEquals(10_000, one + two);
+        assertEquals(0.80, one / 10_000.0, 0.025);
+        assertEquals(0.20, two / 10_000.0, 0.025);
+    }
+
+    @Test
+    void missingArtifactPropertiesSelectOnlyAvailableNativeVariants() {
+        var artifacts = new ArtifactResolver(java.util.List.of(
+                new ArtifactResolver.Variant(60140, "adventurer", 1, 1, 0),
+                new ArtifactResolver.Variant(60110, "adventurer", 4, 1, 0)));
+        var loot = YamlLootTables.parse("""
+                chest:
+                  - reward: genshin.artifact.adventurer
+                    properties: {slot: "1~5", rarity: 1}
+                """, resolver, artifacts);
+        for (int i = 0; i < 100; i++) {
+            var reward = loot.roll("astaps.loot.chest", new Random(i));
+            // The native test inventory has two slots; only their IDs can appear.
+            // An explicitly selected unavailable slot fails instead of inventing an ID.
+            assertTrue(reward.containsKey(60140) || reward.containsKey(60110));
+        }
+        assertThrows(IllegalArgumentException.class, () ->
+                YamlLootTables.parse("""
+                        bad:
+                          - reward: genshin.artifact.adventurer
+                            properties: {invalid: 1}
+                        """, resolver, artifacts));
+        assertThrows(IllegalArgumentException.class, () ->
+                YamlLootTables.parse("""
+                        bad:
+                          - reward: genshin.item.mora
+                            properties: {rarity: 1}
+                        """, resolver, artifacts));
+    }
+
+    @Test
     void aDifferentLoaderNamespaceStillUsesShortYamlNames() {
         var other = YamlLootTables.parse("""
                 surprise:

@@ -1,7 +1,10 @@
 # Authoritative bundled reward definitions. CSS selects these tables at runtime.
 # Tables contain only item rolls; selection by chest kind, level or area stays in rewards.css.
 # Missing count means one item (or one execution of a nested pool).
-# Numeric weight is relative within one list; omitting weight runs every entry.
+# Weight is a ratio within one weighted list: 3 and 1 give a 75% / 25% choice.
+# Omitted weight runs every entry; mixing weighted and unweighted entries is invalid.
+# count: "0.5" rolls once with 50% probability; count: "2.25" rolls 2 or 3.
+# A count on a nested pool repeats the whole pool; count: 1 is always omitted.
 
 # Four current approximate chest presets and their six named level aliases.
 common_chest: &common_chest_items
@@ -78,7 +81,9 @@ three_realms_point:
 # In the original data randomType=0 selects a weighted entry; randomType=1
 # rolls independent entries. Small decimal counts encode independent chances.
 # Known item names use genshin.item.<name>; less certain identities use
-# genshin.item.id_<numeric ID>, a version-stable, resolvable resource alias.
+# genshin.item.id_<numeric ID>, an exact source-backed fallback when no
+# verified semantic name exists. These aliases make no cross-version guarantee.
+# All 187 distinct numeric fallbacks were found in the archived item Excel data.
 # Relative weights below are reduced, without changing their probabilities.
 
 chest_drop_500100: &chest_500100

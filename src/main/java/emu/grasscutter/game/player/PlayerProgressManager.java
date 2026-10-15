@@ -957,12 +957,12 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
         }
 
         // Only the first permanent activation grants rewards. Quest-lock release does not.
-        // The server-owned TOML is the sole source of the reward amounts.
+        // CSS and YAML own the first-activation reward amounts.
         if (newlyUnlocked) {
-            var kind = emu.grasscutter.game.reward.TransPointRewardConfig.kindOf(pointData, isStatue);
+            var kind = emu.grasscutter.game.reward.TransPointRewardEligibility.kindOf(pointData, isStatue);
             // Domain entries have a separate activation receipt: handbook syncing can
             // pre-mark their map points unlocked before the player reaches the entrance.
-            if (kind != null && kind != emu.grasscutter.game.reward.TransPointRewardConfig.Kind.DOMAIN) {
+            if (kind != null && kind != emu.grasscutter.game.reward.TransPointRewardEligibility.Kind.DOMAIN) {
                 grantTransPointReward(sceneId, pointId, kind);
             }
         }
@@ -1009,11 +1009,22 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
     private void grantTransPointReward(
             int sceneId,
             int pointId,
-            emu.grasscutter.game.reward.TransPointRewardConfig.Kind kind) {
-        var reward = emu.grasscutter.game.reward.TransPointRewardConfig.current()
-                .resolve(sceneId, pointId, kind);
+            emu.grasscutter.game.reward.TransPointRewardEligibility.Kind kind) {
+        var reward = emu.grasscutter.game.reward.RewardConfiguration.current().roll(
+                "transpoint",
+                java.util.Map.of(
+                        "kind", kind.name().toLowerCase(java.util.Locale.ROOT),
+                        "scene", Integer.toString(sceneId),
+                        "point", Integer.toString(pointId)),
+                java.util.concurrent.ThreadLocalRandom.current());
         if (!reward.isEmpty()) {
-            this.player.getInventory().addItemParamDatas(reward, ActionReason.UnlockPointReward);
+            this.player.getInventory().addItemParamDatas(
+                    reward.entrySet().stream()
+                            .filter(item -> item.getValue() > 0)
+                            .map(item -> new emu.grasscutter.data.common.ItemParamData(
+                                    item.getKey(), item.getValue()))
+                            .toList(),
+                    ActionReason.UnlockPointReward);
         }
     }
 
@@ -1025,9 +1036,9 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
     public boolean rewardDomainActivation(int sceneId, int pointId) {
         var entry = GameData.getScenePointEntryById(sceneId, pointId);
         if (entry == null
-                || emu.grasscutter.game.reward.TransPointRewardConfig.kindOf(
+                || emu.grasscutter.game.reward.TransPointRewardEligibility.kindOf(
                         entry.getPointData(), false)
-                        != emu.grasscutter.game.reward.TransPointRewardConfig.Kind.DOMAIN) {
+                        != emu.grasscutter.game.reward.TransPointRewardEligibility.Kind.DOMAIN) {
             return false;
         }
 
@@ -1036,7 +1047,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
             if (receipts.contains(pointId)) return false;
             grantTransPointReward(
                     sceneId, pointId,
-                    emu.grasscutter.game.reward.TransPointRewardConfig.Kind.DOMAIN);
+                    emu.grasscutter.game.reward.TransPointRewardEligibility.Kind.DOMAIN);
             receipts.add(pointId);
             this.player.save();
             emu.grasscutter.Grasscutter.getLogger()

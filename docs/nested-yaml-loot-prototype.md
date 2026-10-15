@@ -1,6 +1,6 @@
 # Reward configuration
 
-AstaPS bundles two concise, editable reward files.
+AstaPS bundles two editable reward files for chests and scene-point activations.
 
 `loot.yaml` defines reusable loot content. A table does not inspect chest
 type, location, rank, scene, or other spawn data. Four ordinary chest tables
@@ -9,10 +9,27 @@ and `luxurious_chest`. Each is registered in the resource namespace as
 `astaps.loot.<name>`.
 
 `rewards.css` selects a named loot table and sets fixed quantities. The
-supplied sample uses only four `chest[kind="..."]` selectors. The current
-runtime exposes `kind`, `scene`, `gadget`, `group`, `config`, and when
+sample includes four `chest[kind="..."]` selectors. Chest metadata
+includes `kind`, `scene`, `gadget`, `group`, `config`, and when
 available the source gadget's `level`. No calculated regional currency,
 translated tag, or derived rank band is provided.
+
+Eligible scene-point activations use `transpoint` selectors. The server
+classifies points as `waypoint`, `statue`, or `domain` from game data;
+CSS receives `kind`, `scene`, and `point`. The default first activation
+gives 50 Adventure EXP and 5 Primogems for each kind. Scene 3 point 6
+gets 10 Adventure EXP and no Primogems. Scene 7 gives 5 Primogems and
+20 units of item 101692 via `three_realms_point` in `loot.yaml`, and
+no Adventure EXP. These amounts preserve the existing TOML defaults.
+
+Only genuine first unlocks grant waypoint/statue rewards. Dungeon entrances
+keep their separate first-activation receipt because map synchronization
+can reveal them before manual activation. The eligibility check still
+excludes hidden points, portals, and unrelated point types.
+
+The separate `trans-point-rewards.toml` has been retired. Existing
+`config/rewards/rewards.css` files are not overwritten automatically:
+add these selectors or regenerate the file to apply them.
 
 Example:
 
@@ -51,6 +68,6 @@ The server copies these files to `config/rewards` at first start.
 Existing files are not silently overwritten. Back up and regenerate
 both files if the installation has a previously generated chest schema.
 
-Only ordinary world chests currently use CSS-based reward settlement.
-Quest-created chests, boss flowers, monster loot, and waypoint rewards
-are separate paths. Runtime testing should follow configuration review.
+Ordinary world chests and eligible scene-point activations now use CSS
+reward selection. Quest-created chests, boss flowers, and monster loot
+remain separate paths. Runtime testing should follow configuration review.

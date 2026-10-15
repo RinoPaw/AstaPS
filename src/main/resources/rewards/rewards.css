@@ -22,3 +22,24 @@ chest[kind="luxurious"] {
     --genshin-item-primogem: 10;
     --genshin-item-adventure_exp: 30;
 }
+
+/* First-time activation of an eligible point. */
+transpoint[kind="waypoint"],
+transpoint[kind="statue"],
+transpoint[kind="domain"] {
+    --genshin-item-adventure_exp: 50;
+    --genshin-item-primogem: 5;
+}
+
+/* Tutorial waypoint, scene 3, point 6. */
+transpoint[scene="3"][point="6"] {
+    --genshin-item-adventure_exp: 10;
+    --genshin-item-primogem: 0;
+}
+
+/* Three Realms Gateway Offering, scene 7. */
+transpoint[scene="7"] {
+    --loot: three_realms_point;
+    --genshin-item-adventure_exp: 0;
+    --genshin-item-primogem: 5;
+}

@@ -27,3 +27,6 @@ luxurious_chest:
   - reward:
       - {reward: genshin.item.adventurers_experience, count: "2~3", weight: 2}
       - {reward: genshin.item.heros_wit, count: "1~2", weight: 3}
+
+three_realms_point:
+  - {reward: 101692, count: 20}

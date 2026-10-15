@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.random.RandomGenerator;
 
-/** Loaded after the game item resources; the CSS configuration owns world-chest rewards. */
+/** Loaded after the game item resources; CSS owns chest and scene-point rewards. */
 public final class RewardConfiguration {
     private static volatile RewardConfiguration active;
 

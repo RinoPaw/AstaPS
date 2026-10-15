@@ -24,6 +24,12 @@ public final class WorldChestLootHelper {
         props.put("config", Integer.toString(entityGadget.getConfigId()));
         props.put("sigil", Integer.toString(resolveSigilId(entityGadget)));
         SceneGadget meta = entityGadget.getMetaGadget();
+        int level = meta != null ? Math.max(1, meta.level) : 1;
+        props.put("level", Integer.toString(level));
+        // ChestDrop's six minimum levels are 1, 6, 11, 16, 21, and 26.
+        // Preserve the raw level and expose the corresponding source threshold
+        // so CSS can select the correct native root with ordinary equality.
+        props.put("minLevel", Integer.toString(Math.min(26, ((level - 1) / 5) * 5 + 1)));
         if (meta != null && meta.drop_tag != null) {
             props.put("dropTag", meta.drop_tag);
         }

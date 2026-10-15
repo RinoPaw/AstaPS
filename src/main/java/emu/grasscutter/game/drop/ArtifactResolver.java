@@ -3,10 +3,8 @@ package emu.grasscutter.game.drop;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.ResourceId;
 import emu.grasscutter.data.excels.ItemData;
-import emu.grasscutter.game.inventory.EquipType;
 import emu.grasscutter.game.inventory.ItemType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -101,6 +99,16 @@ public final class ArtifactResolver {
         }
         sets.replaceAll((name, list) -> List.copyOf(list.stream()
                 .sorted(Comparator.comparingInt(Variant::id)).toList()));
+        for (var entry : sets.entrySet()) {
+            var seen = new java.util.HashSet<String>();
+            for (Variant v : entry.getValue()) {
+                String key = v.slot + ":" + v.rarity + ":" + v.substats;
+                if (!seen.add(key)) {
+                    throw new IllegalArgumentException("Ambiguous native artifact variant "
+                            + entry.getKey() + " " + key);
+                }
+            }
+        }
         this.bySet = Map.copyOf(sets);
     }
 
@@ -111,6 +119,8 @@ public final class ArtifactResolver {
             String set = SET_NAMES.get(item.getSetId());
             if (set == null) continue;
             int slot = item.getEquipType().getValue();
+            // Special affix depots may duplicate ordinary set/slot/rarity/count combinations.
+            if (item.getAppendPropDepotId() != item.getRankLevel() * 100 + 1) continue;
             if (slot < 1 || slot > 5) continue;
             variants.add(new Variant(item.getId(), set, slot,
                     item.getRankLevel(), item.getAppendPropNum()));

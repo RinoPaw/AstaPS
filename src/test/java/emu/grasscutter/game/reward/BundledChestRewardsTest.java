@@ -201,7 +201,7 @@ class BundledChestRewardsTest {
         String yaml = resource("/rewards/loot.yaml");
         assertFalse(java.util.regex.Pattern.compile("\\breward:\\s*[0-9]")
                 .matcher(yaml).find(), "Item rewards must use qualified names");
-        assertFalse(yaml.contains("count: \\"1\\""), "The default count is implicit");
+        assertFalse(yaml.contains("count: \"1\""), "The default count is implicit");
         var matcher = java.util.regex.Pattern.compile("\\bweight:\\s*([0-9]+(?:\\.[0-9]+)?)")
                 .matcher(yaml);
         int weights = 0;

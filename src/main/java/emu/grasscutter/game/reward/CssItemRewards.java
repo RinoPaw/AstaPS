@@ -129,6 +129,9 @@ public final class CssItemRewards {
     }
 
     public Map<Integer, Integer> resolve(String type, Map<String, String> attributes) {
+        if (type == null || attributes == null) {
+            throw new IllegalArgumentException("Missing reward selector target");
+        }
         if (!type.equals("chest") && !type.equals("transPoint")) {
             throw new IllegalArgumentException("Unknown reward selector type: " + type);
         }

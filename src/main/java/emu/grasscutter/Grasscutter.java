@@ -185,6 +185,12 @@ public final class Grasscutter {
             Grasscutter.updateDayOfWeek();
             ResourceLoader.loadAll();
 
+            // Item identities are available only after ExcelBinOutput has been loaded.
+            // The CSS/loot configuration is the single authority for ordinary world chests.
+            emu.grasscutter.game.reward.RewardConfiguration.loadOrCreate(
+                    java.nio.file.Path.of("config", "rewards"));
+
+
             // GameServer is constructed before resources load, so cooking/compound default-unlock
             // tables were empty at that point. Rebuild them now that ExcelBinOutput is available.
             CookingManager.initialize();

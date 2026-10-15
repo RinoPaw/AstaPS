@@ -20,13 +20,54 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void yamlShortKeysBecomeGlobalLootIds() {
+        var tables = parse("""
+                surprise:
+                  - {reward: genshin.item.mora, count: 300}
+                经验书:
+                  - {reward: genshin.item.heros_wit}
+                """);
+        assertEquals(java.util.List.of("astaps.loot.surprise", "astaps.loot.经验书"),
+                tables.names());
+        assertEquals("astaps.loot.surprise", tables.resolveName("surprise"));
+        assertEquals("astaps.loot.surprise",
+                tables.resolveName("astaps.loot.surprise"));
+        assertEquals("astaps.loot.经验书", tables.resolveName("经验书"));
+        assertEquals(Map.of(202, 300),
+                tables.roll("astaps.loot.surprise", new Random(0)));
+        assertThrows(IllegalArgumentException.class, () -> tables.resolveName("missing"));
+        assertThrows(IllegalArgumentException.class,
+                () -> tables.resolveName("genshin.item.mora"));
+        assertThrows(IllegalArgumentException.class,
+                () -> tables.roll("surprise", new Random(0)));
+        assertThrows(IllegalArgumentException.class, () -> parse("""
+                astaps.loot.surprise:
+                  - {reward: genshin.item.mora}
+                """));
+    }
+
+    @Test
+    void aDifferentLoaderNamespaceStillUsesShortYamlNames() {
+        var other = YamlLootTables.parse("""
+                surprise:
+                  - {reward: genshin.item.mora, count: 7}
+                """, "my_mod", resolver);
+        assertEquals(java.util.List.of("my_mod.loot.surprise"), other.names());
+        assertEquals("my_mod.loot.surprise",
+                other.resolveName("my_mod.loot.surprise"));
+        assertEquals(Map.of(202, 7),
+                other.roll("my_mod.loot.surprise", new Random(0)));
+        assertThrows(IllegalArgumentException.class, () -> other.resolveName("surprise"));
+    }
+
+    @Test
     void fixedItemsAndOmittedCount() {
         var tables = parse("""
                 common_chest:
                   - {reward: genshin.item.mora, count: 300}
                   - {reward: genshin.item.heros_wit}
                 """);
-        assertEquals(Map.of(202, 300, 104003, 1), tables.roll("common_chest", new Random(1)));
+        assertEquals(Map.of(202, 300, 104003, 1), tables.roll("astaps.loot.common_chest", new Random(1)));
     }
 
     @Test
@@ -36,9 +77,9 @@ class YamlLootTablesTest {
                   - {reward: genshin.item.mora, count: 300}
                   - {reward: genshin.item.heros_wit}
                 """);
-        assertTrue(tables.contains("basic"));
-        assertFalse(tables.contains("unknown"));
-        var reward = tables.rollItems("basic", new Random(1));
+        assertTrue(tables.contains("astaps.loot.basic"));
+        assertFalse(tables.contains("astaps.loot.unknown"));
+        var reward = tables.rollItems("astaps.loot.basic", new Random(1));
         assertEquals(2, reward.size());
         assertEquals(202, reward.get(0).getId());
         assertEquals(300, reward.get(0).getCount());
@@ -55,7 +96,7 @@ class YamlLootTablesTest {
                   - {reward: genshin.item.adventurers_experience, count: "2.2"}
                 """);
         for (int i = 0; i < 300; i++) {
-            var rewards = tables.roll("chest", new Random(i));
+            var rewards = tables.roll("astaps.loot.chest", new Random(i));
             assertTrue(rewards.get(202) >= 2 && rewards.get(202) <= 4);
             assertTrue(rewards.getOrDefault(104003, 0) <= 1);
             assertTrue(rewards.get(104002) == 2 || rewards.get(104002) == 3);
@@ -75,7 +116,7 @@ class YamlLootTablesTest {
         int none = 0, big = 0, small = 0;
         Random random = new Random(42);
         for (int i = 0; i < 40_000; i++) {
-            var r = tables.roll("chest", random);
+            var r = tables.roll("astaps.loot.chest", random);
             assertEquals(300, r.get(202).intValue());
             if (!r.containsKey(104003) && !r.containsKey(104002)) none++;
             else if (r.containsKey(104003)) {
@@ -104,7 +145,7 @@ class YamlLootTablesTest {
         int mixed = 0;
         Random random = new Random(7);
         for (int i = 0; i < 2000; i++) {
-            var r = tables.roll("chest", random);
+            var r = tables.roll("astaps.loot.chest", random);
             assertEquals(2, r.values().stream().mapToInt(Integer::intValue).sum());
             if (r.containsKey(104003) && r.containsKey(104002)) mixed++;
         }
@@ -126,9 +167,9 @@ class YamlLootTablesTest {
                   - {reward: null, weight: 1}
                   - {reward: genshin.item.mora, weight: 1}
                 """);
-        assertEquals(Map.of(), tables.roll("empty", new Random(0)));
+        assertEquals(Map.of(), tables.roll("astaps.loot.empty", new Random(0)));
         for (int i = 0; i < 100; i++) {
-            var rewards = tables.roll("weighted_empty", new Random(i));
+            var rewards = tables.roll("astaps.loot.weighted_empty", new Random(i));
             assertTrue(rewards.isEmpty() || rewards.equals(Map.of(202, 1)));
         }
     }
@@ -150,7 +191,7 @@ class YamlLootTablesTest {
                   - {reward: genshin.item.mora, weight: 0}
                   - {reward: genshin.item.heros_wit, weight: 1}
                 """);
-        assertEquals(Map.of(104003, 1), tables.roll("pool", new Random(0)));
+        assertEquals(Map.of(104003, 1), tables.roll("astaps.loot.pool", new Random(0)));
     }
 
     @Test
@@ -194,7 +235,7 @@ class YamlLootTablesTest {
                 """);
         int empty = 0;
         rng = new Random(123);
-        for (int i = 0; i < 5_000; i++) if (nullable.roll("pool", rng).isEmpty()) empty++;
+        for (int i = 0; i < 5_000; i++) if (nullable.roll("astaps.loot.pool", rng).isEmpty()) empty++;
         assertEquals(0.4, empty / 5000.0, 0.04);
     }
 
@@ -206,7 +247,7 @@ class YamlLootTablesTest {
                   - {reward: genshin.item.mora, count: 300}
                   - {reward: genshin.item.heros_wit}
                 """, registry::resolve);
-        assertEquals(Map.of(202, 300, 104003, 1), tables.roll("chest", new Random(1)));
+        assertEquals(Map.of(202, 300, 104003, 1), tables.roll("astaps.loot.chest", new Random(1)));
 
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 chest:

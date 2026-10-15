@@ -31,8 +31,8 @@ chest_common_food_ingredients: &chest_common_food_ingredients
 
 
 chest_common_experience: &chest_common_experience
-  - {reward: genshin.item.wanderers_advice, count: "1.6"}
-  - {reward: genshin.item.adventurers_experience, count: "0.15"}
+  - {reward: genshin.item.wanderers_advice, count: "1:40,2:60"}
+  - {reward: genshin.item.adventurers_experience, count: "0:85,1:15"}
 
 
 chest_common_weapons: &chest_common_weapons
@@ -44,19 +44,15 @@ chest_common_enhancement_ore: &chest_common_enhancement_ore
 
 
 chest_common_artifacts: &chest_common_artifacts
-  - {reward: genshin.artifact.adventurer.goblet.1.0, weight: 1}
-  - {reward: genshin.artifact.adventurer.plume.1.0, weight: 1}
-  - {reward: genshin.artifact.adventurer.circlet.1.0, weight: 1}
-  - {reward: genshin.artifact.adventurer.flower.1.0, weight: 1}
-  - {reward: genshin.artifact.adventurer.sands.1.0, weight: 1}
+  - reward: genshin.artifact.adventurer
+    properties: {slot: "1~5", rarity: 1}
+    weight: 1
 
 
 chest_common_artifacts_bonus: &chest_common_artifacts_bonus
-  - {reward: genshin.artifact.traveling_doctor.goblet.1.0, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.plume.1.0, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.circlet.1.0, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.flower.1.0, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.sands.1.0, weight: 1}
+  - reward: genshin.artifact.traveling_doctor
+    properties: {slot: "1~5", rarity: 1}
+    weight: 1
 
 
 chest_common_artifacts_secondary: &chest_common_artifacts_secondary
@@ -65,19 +61,15 @@ chest_common_artifacts_secondary: &chest_common_artifacts_secondary
 
 
 chest_common_artifacts_alternative: &chest_common_artifacts_alternative
-  - {reward: genshin.artifact.adventurer.goblet.2.0, weight: 1}
-  - {reward: genshin.artifact.adventurer.plume.2.0, weight: 1}
-  - {reward: genshin.artifact.adventurer.circlet.2.0, weight: 1}
-  - {reward: genshin.artifact.adventurer.flower.2.0, weight: 1}
-  - {reward: genshin.artifact.adventurer.sands.2.0, weight: 1}
+  - reward: genshin.artifact.adventurer
+    properties: {slot: "1~5", rarity: 2, substats: 0}
+    weight: 1
 
 
 chest_common_artifacts_special: &chest_common_artifacts_special
-  - {reward: genshin.artifact.traveling_doctor.goblet.2.0, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.plume.2.0, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.circlet.2.0, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.flower.2.0, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.sands.2.0, weight: 1}
+  - reward: genshin.artifact.traveling_doctor
+    properties: {slot: "1~5", rarity: 2, substats: 0}
+    weight: 1
 
 
 chest_common_artifacts_supplementary: &chest_common_artifacts_supplementary
@@ -86,19 +78,15 @@ chest_common_artifacts_supplementary: &chest_common_artifacts_supplementary
 
 
 chest_common_artifacts_additional: &chest_common_artifacts_additional
-  - {reward: genshin.artifact.adventurer.goblet.2.1, weight: 1}
-  - {reward: genshin.artifact.adventurer.plume.2.1, weight: 1}
-  - {reward: genshin.artifact.adventurer.circlet.2.1, weight: 1}
-  - {reward: genshin.artifact.adventurer.flower.2.1, weight: 1}
-  - {reward: genshin.artifact.adventurer.sands.2.1, weight: 1}
+  - reward: genshin.artifact.adventurer
+    properties: {slot: "1~5", rarity: 2, substats: 1}
+    weight: 1
 
 
 chest_common_artifacts_reserve: &chest_common_artifacts_reserve
-  - {reward: genshin.artifact.traveling_doctor.goblet.2.1, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.plume.2.1, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.circlet.2.1, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.flower.2.1, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.sands.2.1, weight: 1}
+  - reward: genshin.artifact.traveling_doctor
+    properties: {slot: "1~5", rarity: 2, substats: 1}
+    weight: 1
 
 
 chest_common_artifacts_optional: &chest_common_artifacts_optional
@@ -114,16 +102,16 @@ chest_common_artifacts_rare: &chest_common_artifacts_rare
 # Chest common — source reward tier.
 
 minimal: &minimal
-  - {reward: *chest_common_food_ingredients, count: "0.5"}
+  - {reward: *chest_common_food_ingredients, count: "0:50,1:50"}
   - {reward: *chest_common_experience}
-  - {reward: *chest_common_weapons, count: "0.4"}
+  - {reward: *chest_common_weapons, count: "0:60,1:40"}
   - {reward: *chest_common_enhancement_ore}
-  - {reward: *chest_common_artifacts_rare, count: "0.52"}
+  - {reward: *chest_common_artifacts_rare, count: "0:48,1:52"}
 
 
 chest_common_low_experience: &chest_common_low_experience
-  - {reward: genshin.item.wanderers_advice, count: "2.1"}
-  - {reward: genshin.item.adventurers_experience, count: "0.3"}
+  - {reward: genshin.item.wanderers_advice, count: "2:90,3:10"}
+  - {reward: genshin.item.adventurers_experience, count: "0:70,1:30"}
 
 
 chest_common_low_weapons: &chest_common_low_weapons
@@ -143,16 +131,16 @@ chest_common_low_artifacts: &chest_common_low_artifacts
 # Chest common low — source reward tier.
 
 nano: &nano
-  - {reward: *chest_common_food_ingredients, count: "0.5"}
+  - {reward: *chest_common_food_ingredients, count: "0:50,1:50"}
   - {reward: *chest_common_low_experience}
-  - {reward: *chest_common_low_weapons, count: "0.5"}
+  - {reward: *chest_common_low_weapons, count: "0:50,1:50"}
   - {reward: *chest_common_low_enhancement_ore}
-  - {reward: *chest_common_low_artifacts, count: "0.8"}
+  - {reward: *chest_common_low_artifacts, count: "0:20,1:80"}
 
 
 chest_common_medium_experience: &chest_common_medium_experience
-  - {reward: genshin.item.wanderers_advice, count: "2.6"}
-  - {reward: genshin.item.adventurers_experience, count: "0.4"}
+  - {reward: genshin.item.wanderers_advice, count: "2:40,3:60"}
+  - {reward: genshin.item.adventurers_experience, count: "0:60,1:40"}
 
 
 chest_common_medium_weapons: &chest_common_medium_weapons
@@ -173,14 +161,14 @@ chest_common_medium_artifacts: &chest_common_medium_artifacts
 
 micro: &micro
   - {reward: *chest_common_medium_experience}
-  - {reward: *chest_common_medium_weapons, count: "0.6"}
+  - {reward: *chest_common_medium_weapons, count: "0:40,1:60"}
   - {reward: *chest_common_medium_enhancement_ore}
-  - {reward: *chest_common_medium_artifacts, count: "1.2"}
+  - {reward: *chest_common_medium_artifacts, count: "1:80,2:20"}
 
 
 chest_common_high_experience: &chest_common_high_experience
-  - {reward: genshin.item.wanderers_advice, count: "3.1"}
-  - {reward: genshin.item.adventurers_experience, count: "0.5"}
+  - {reward: genshin.item.wanderers_advice, count: "3:90,4:10"}
+  - {reward: genshin.item.adventurers_experience, count: "0:50,1:50"}
 
 
 chest_common_high_weapons: &chest_common_high_weapons
@@ -193,22 +181,22 @@ chest_common_high_enhancement_ore: &chest_common_high_enhancement_ore
 
 
 chest_common_high_artifacts: &chest_common_high_artifacts
-  - {reward: *chest_common_artifacts_secondary, weight: 33}
-  - {reward: *chest_common_artifacts_supplementary, weight: 15.3}
-  - {reward: *chest_common_artifacts_optional, weight: 1.7}
+  - {reward: *chest_common_artifacts_secondary, weight: 330}
+  - {reward: *chest_common_artifacts_supplementary, weight: 153}
+  - {reward: *chest_common_artifacts_optional, weight: 17}
 
 # Chest common high — source reward tier.
 
 light: &light
   - {reward: *chest_common_high_experience}
-  - {reward: *chest_common_high_weapons, count: "0.7"}
+  - {reward: *chest_common_high_weapons, count: "0:30,1:70"}
   - {reward: *chest_common_high_enhancement_ore}
-  - {reward: *chest_common_high_artifacts, count: "1.5"}
+  - {reward: *chest_common_high_artifacts, count: "1:50,2:50"}
 
 
 chest_common_xhigh_experience: &chest_common_xhigh_experience
-  - {reward: genshin.item.wanderers_advice, count: "3.6"}
-  - {reward: genshin.item.adventurers_experience, count: "0.6"}
+  - {reward: genshin.item.wanderers_advice, count: "3:40,4:60"}
+  - {reward: genshin.item.adventurers_experience, count: "0:40,1:60"}
 
 
 chest_common_xhigh_weapons: &chest_common_xhigh_weapons
@@ -220,21 +208,21 @@ chest_common_xhigh_enhancement_ore: &chest_common_xhigh_enhancement_ore
 
 
 chest_common_xhigh_artifacts: &chest_common_xhigh_artifacts
-  - {reward: *chest_common_artifacts_secondary, weight: 33}
-  - {reward: *chest_common_artifacts_supplementary, weight: 15.3}
-  - {reward: *chest_common_artifacts_optional, weight: 1.7}
+  - {reward: *chest_common_artifacts_secondary, weight: 330}
+  - {reward: *chest_common_artifacts_supplementary, weight: 153}
+  - {reward: *chest_common_artifacts_optional, weight: 17}
 
 # Chest common xhigh — source reward tier.
 
 low: &low
   - {reward: *chest_common_xhigh_experience}
-  - {reward: *chest_common_xhigh_weapons, count: "0.8"}
+  - {reward: *chest_common_xhigh_weapons, count: "0:20,1:80"}
   - {reward: *chest_common_xhigh_enhancement_ore}
-  - {reward: *chest_common_xhigh_artifacts, count: "1.75"}
+  - {reward: *chest_common_xhigh_artifacts, count: "1:25,2:75"}
 
 
 chest_common_max_experience: &chest_common_max_experience
-  - {reward: genshin.item.adventurers_experience, count: "2.1"}
+  - {reward: genshin.item.adventurers_experience, count: "2:90,3:10"}
 
 
 chest_common_max_talent_books: &chest_common_max_talent_books
@@ -244,7 +232,7 @@ chest_common_max_talent_books: &chest_common_max_talent_books
 
 
 chest_common_max_talent_books_bonus: &chest_common_max_talent_books_bonus
-  - {reward: *chest_common_max_talent_books, count: "0.25"}
+  - {reward: *chest_common_max_talent_books, count: "0:75,1:25"}
 
 
 chest_common_max_weapons: &chest_common_max_weapons
@@ -256,35 +244,27 @@ chest_common_max_enhancement_ore: &chest_common_max_enhancement_ore
 
 
 chest_common_max_artifacts: &chest_common_max_artifacts
-  - {reward: genshin.artifact.berserker.goblet.3.1, weight: 1}
-  - {reward: genshin.artifact.berserker.plume.3.1, weight: 1}
-  - {reward: genshin.artifact.berserker.circlet.3.1, weight: 1}
-  - {reward: genshin.artifact.berserker.flower.3.1, weight: 1}
-  - {reward: genshin.artifact.berserker.sands.3.1, weight: 1}
+  - reward: genshin.artifact.berserker
+    properties: {slot: "1~5", rarity: 3, substats: 1}
+    weight: 1
 
 
 chest_common_max_artifacts_bonus: &chest_common_max_artifacts_bonus
-  - {reward: genshin.artifact.instructor.goblet.3.1, weight: 1}
-  - {reward: genshin.artifact.instructor.plume.3.1, weight: 1}
-  - {reward: genshin.artifact.instructor.circlet.3.1, weight: 1}
-  - {reward: genshin.artifact.instructor.flower.3.1, weight: 1}
-  - {reward: genshin.artifact.instructor.sands.3.1, weight: 1}
+  - reward: genshin.artifact.instructor
+    properties: {slot: "1~5", rarity: 3, substats: 1}
+    weight: 1
 
 
 chest_common_max_artifacts_secondary: &chest_common_max_artifacts_secondary
-  - {reward: genshin.artifact.adventurer.goblet.3.1, weight: 1}
-  - {reward: genshin.artifact.adventurer.plume.3.1, weight: 1}
-  - {reward: genshin.artifact.adventurer.circlet.3.1, weight: 1}
-  - {reward: genshin.artifact.adventurer.flower.3.1, weight: 1}
-  - {reward: genshin.artifact.adventurer.sands.3.1, weight: 1}
+  - reward: genshin.artifact.adventurer
+    properties: {slot: "1~5", rarity: 3, substats: 1}
+    weight: 1
 
 
 chest_common_max_artifacts_alternative: &chest_common_max_artifacts_alternative
-  - {reward: genshin.artifact.traveling_doctor.goblet.3.1, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.plume.3.1, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.circlet.3.1, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.flower.3.1, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.sands.3.1, weight: 1}
+  - reward: genshin.artifact.traveling_doctor
+    properties: {slot: "1~5", rarity: 3, substats: 1}
+    weight: 1
 
 
 chest_common_max_artifacts_special: &chest_common_max_artifacts_special
@@ -295,35 +275,27 @@ chest_common_max_artifacts_special: &chest_common_max_artifacts_special
 
 
 chest_common_max_artifacts_supplementary: &chest_common_max_artifacts_supplementary
-  - {reward: genshin.artifact.berserker.goblet.3.2, weight: 1}
-  - {reward: genshin.artifact.berserker.plume.3.2, weight: 1}
-  - {reward: genshin.artifact.berserker.circlet.3.2, weight: 1}
-  - {reward: genshin.artifact.berserker.flower.3.2, weight: 1}
-  - {reward: genshin.artifact.berserker.sands.3.2, weight: 1}
+  - reward: genshin.artifact.berserker
+    properties: {slot: "1~5", rarity: 3, substats: 2}
+    weight: 1
 
 
 chest_common_max_artifacts_additional: &chest_common_max_artifacts_additional
-  - {reward: genshin.artifact.instructor.goblet.3.2, weight: 1}
-  - {reward: genshin.artifact.instructor.plume.3.2, weight: 1}
-  - {reward: genshin.artifact.instructor.circlet.3.2, weight: 1}
-  - {reward: genshin.artifact.instructor.flower.3.2, weight: 1}
-  - {reward: genshin.artifact.instructor.sands.3.2, weight: 1}
+  - reward: genshin.artifact.instructor
+    properties: {slot: "1~5", rarity: 3, substats: 2}
+    weight: 1
 
 
 chest_common_max_artifacts_reserve: &chest_common_max_artifacts_reserve
-  - {reward: genshin.artifact.adventurer.goblet.3.2, weight: 1}
-  - {reward: genshin.artifact.adventurer.plume.3.2, weight: 1}
-  - {reward: genshin.artifact.adventurer.circlet.3.2, weight: 1}
-  - {reward: genshin.artifact.adventurer.flower.3.2, weight: 1}
-  - {reward: genshin.artifact.adventurer.sands.3.2, weight: 1}
+  - reward: genshin.artifact.adventurer
+    properties: {slot: "1~5", rarity: 3, substats: 2}
+    weight: 1
 
 
 chest_common_max_artifacts_optional: &chest_common_max_artifacts_optional
-  - {reward: genshin.artifact.traveling_doctor.goblet.3.2, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.plume.3.2, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.circlet.3.2, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.flower.3.2, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor.sands.3.2, weight: 1}
+  - reward: genshin.artifact.traveling_doctor
+    properties: {slot: "1~5", rarity: 3, substats: 2}
+    weight: 1
 
 
 chest_common_max_artifacts_rare: &chest_common_max_artifacts_rare
@@ -334,28 +306,28 @@ chest_common_max_artifacts_rare: &chest_common_max_artifacts_rare
 
 
 chest_common_max_artifacts_common: &chest_common_max_artifacts_common
-  - {reward: *chest_common_artifacts_secondary, weight: 17}
-  - {reward: *chest_common_artifacts_supplementary, weight: 25.2}
-  - {reward: *chest_common_artifacts_optional, weight: 2.8}
-  - {reward: *chest_common_max_artifacts_special, weight: 4.5}
-  - {reward: *chest_common_max_artifacts_rare, weight: 0.5}
+  - {reward: *chest_common_artifacts_secondary, weight: 170}
+  - {reward: *chest_common_artifacts_supplementary, weight: 252}
+  - {reward: *chest_common_artifacts_optional, weight: 28}
+  - {reward: *chest_common_max_artifacts_special, weight: 45}
+  - {reward: *chest_common_max_artifacts_rare, weight: 5}
 
 # Chest common max — source reward tier.
 
 medium: &medium
   - {reward: *chest_common_max_experience}
   - {reward: *chest_common_max_talent_books_bonus}
-  - {reward: *chest_common_max_weapons, count: "0.9"}
+  - {reward: *chest_common_max_weapons, count: "0:10,1:90"}
   - {reward: *chest_common_max_enhancement_ore}
-  - {reward: *chest_common_max_artifacts_common, count: "1.75"}
+  - {reward: *chest_common_max_artifacts_common, count: "1:25,2:75"}
 
 
 chest_exquisite_xhigh_experience: &chest_exquisite_xhigh_experience
-  - {reward: genshin.item.adventurers_experience, count: "2.6"}
+  - {reward: genshin.item.adventurers_experience, count: "2:40,3:60"}
 
 
 chest_exquisite_xhigh_talent_books: &chest_exquisite_xhigh_talent_books
-  - {reward: *chest_common_max_talent_books, count: "0.25"}
+  - {reward: *chest_common_max_talent_books, count: "0:75,1:25"}
 
 
 chest_exquisite_xhigh_weapons: &chest_exquisite_xhigh_weapons
@@ -368,11 +340,11 @@ chest_exquisite_xhigh_enhancement_ore: &chest_exquisite_xhigh_enhancement_ore
 
 
 chest_exquisite_xhigh_artifacts: &chest_exquisite_xhigh_artifacts
-  - {reward: *chest_common_artifacts_secondary, weight: 17}
-  - {reward: *chest_common_artifacts_supplementary, weight: 25.2}
-  - {reward: *chest_common_artifacts_optional, weight: 2.8}
-  - {reward: *chest_common_max_artifacts_special, weight: 4.5}
-  - {reward: *chest_common_max_artifacts_rare, weight: 0.5}
+  - {reward: *chest_common_artifacts_secondary, weight: 170}
+  - {reward: *chest_common_artifacts_supplementary, weight: 252}
+  - {reward: *chest_common_artifacts_optional, weight: 28}
+  - {reward: *chest_common_max_artifacts_special, weight: 45}
+  - {reward: *chest_common_max_artifacts_rare, weight: 5}
 
 # Chest exquisite xhigh — source reward tier.
 
@@ -385,7 +357,7 @@ high: &high
 
 
 chest_exquisite_max_experience: &chest_exquisite_max_experience
-  - {reward: genshin.item.adventurers_experience, count: "1.1"}
+  - {reward: genshin.item.adventurers_experience, count: "1:90,2:10"}
   - {reward: genshin.item.heros_wit}
 
 
@@ -403,23 +375,23 @@ chest_exquisite_max_enhancement_ore: &chest_exquisite_max_enhancement_ore
 
 
 chest_exquisite_max_artifacts: &chest_exquisite_max_artifacts
-  - {reward: *chest_common_artifacts_supplementary, weight: 21}
-  - {reward: *chest_common_artifacts_optional, weight: 2.33}
-  - {reward: *chest_common_max_artifacts_special, weight: 9}
-  - {reward: *chest_common_max_artifacts_rare, weight: 1}
+  - {reward: *chest_common_artifacts_supplementary, weight: 2100}
+  - {reward: *chest_common_artifacts_optional, weight: 233}
+  - {reward: *chest_common_max_artifacts_special, weight: 900}
+  - {reward: *chest_common_max_artifacts_rare, weight: 100}
 
 # Chest exquisite max — source reward tier.
 
 xhigh: &xhigh
   - {reward: *chest_exquisite_max_experience}
   - {reward: *chest_exquisite_max_talent_books}
-  - {reward: *chest_exquisite_max_weapons, count: "1.1"}
+  - {reward: *chest_exquisite_max_weapons, count: "1:90,2:10"}
   - {reward: *chest_exquisite_max_enhancement_ore}
   - {reward: *chest_exquisite_max_artifacts, count: "2"}
 
 
 chest_precious_xhigh_experience: &chest_precious_xhigh_experience
-  - {reward: genshin.item.adventurers_experience, count: "1.6"}
+  - {reward: genshin.item.adventurers_experience, count: "1:40,2:60"}
   - {reward: genshin.item.heros_wit}
 
 
@@ -437,19 +409,15 @@ chest_precious_xhigh_enhancement_ore: &chest_precious_xhigh_enhancement_ore
 
 
 chest_precious_xhigh_artifacts: &chest_precious_xhigh_artifacts
-  - {reward: genshin.artifact.berserker.goblet.4.2, weight: 1}
-  - {reward: genshin.artifact.berserker.plume.4.2, weight: 1}
-  - {reward: genshin.artifact.berserker.circlet.4.2, weight: 1}
-  - {reward: genshin.artifact.berserker.flower.4.2, weight: 1}
-  - {reward: genshin.artifact.berserker.sands.4.2, weight: 1}
+  - reward: genshin.artifact.berserker
+    properties: {slot: "1~5", rarity: 4, substats: 2}
+    weight: 1
 
 
 chest_precious_xhigh_artifacts_bonus: &chest_precious_xhigh_artifacts_bonus
-  - {reward: genshin.artifact.instructor.goblet.4.2, weight: 1}
-  - {reward: genshin.artifact.instructor.plume.4.2, weight: 1}
-  - {reward: genshin.artifact.instructor.circlet.4.2, weight: 1}
-  - {reward: genshin.artifact.instructor.flower.4.2, weight: 1}
-  - {reward: genshin.artifact.instructor.sands.4.2, weight: 1}
+  - reward: genshin.artifact.instructor
+    properties: {slot: "1~5", rarity: 4, substats: 2}
+    weight: 1
 
 
 chest_precious_xhigh_artifacts_secondary: &chest_precious_xhigh_artifacts_secondary
@@ -458,19 +426,15 @@ chest_precious_xhigh_artifacts_secondary: &chest_precious_xhigh_artifacts_second
 
 
 chest_precious_xhigh_artifacts_alternative: &chest_precious_xhigh_artifacts_alternative
-  - {reward: genshin.artifact.berserker.goblet.4.3, weight: 1}
-  - {reward: genshin.artifact.berserker.plume.4.3, weight: 1}
-  - {reward: genshin.artifact.berserker.circlet.4.3, weight: 1}
-  - {reward: genshin.artifact.berserker.flower.4.3, weight: 1}
-  - {reward: genshin.artifact.berserker.sands.4.3, weight: 1}
+  - reward: genshin.artifact.berserker
+    properties: {slot: "1~5", rarity: 4, substats: 3}
+    weight: 1
 
 
 chest_precious_xhigh_artifacts_special: &chest_precious_xhigh_artifacts_special
-  - {reward: genshin.artifact.instructor.goblet.4.3, weight: 1}
-  - {reward: genshin.artifact.instructor.plume.4.3, weight: 1}
-  - {reward: genshin.artifact.instructor.circlet.4.3, weight: 1}
-  - {reward: genshin.artifact.instructor.flower.4.3, weight: 1}
-  - {reward: genshin.artifact.instructor.sands.4.3, weight: 1}
+  - reward: genshin.artifact.instructor
+    properties: {slot: "1~5", rarity: 4, substats: 3}
+    weight: 1
 
 
 chest_precious_xhigh_artifacts_supplementary: &chest_precious_xhigh_artifacts_supplementary
@@ -490,9 +454,9 @@ xxhigh: &xxhigh
   - {reward: genshin.item.recipe_mushroom_pizza}
   - {reward: *chest_precious_xhigh_experience}
   - {reward: *chest_precious_xhigh_talent_books}
-  - {reward: *chest_precious_xhigh_weapons, count: "1.2"}
+  - {reward: *chest_precious_xhigh_weapons, count: "1:80,2:20"}
   - {reward: *chest_precious_xhigh_enhancement_ore}
-  - {reward: *chest_precious_xhigh_artifacts_additional, count: "2.25"}
+  - {reward: *chest_precious_xhigh_artifacts_additional, count: "2:75,3:25"}
 
 
 chest_precious_max_experience: &chest_precious_max_experience
@@ -529,13 +493,13 @@ chest_precious_max_artifacts: &chest_precious_max_artifacts
 xxxhigh: &xxxhigh
   - {reward: *chest_precious_max_experience}
   - {reward: *chest_precious_max_talent_books_bonus}
-  - {reward: *chest_precious_max_weapons, count: "1.3"}
+  - {reward: *chest_precious_max_weapons, count: "1:70,2:30"}
   - {reward: *chest_precious_max_enhancement_ore}
-  - {reward: *chest_precious_max_artifacts, count: "2.25"}
+  - {reward: *chest_precious_max_artifacts, count: "2:75,3:25"}
 
 
 chest_luxurious_xhigh_experience: &chest_luxurious_xhigh_experience
-  - {reward: genshin.item.heros_wit, count: "2.05"}
+  - {reward: genshin.item.heros_wit, count: "2:95,3:5"}
 
 
 chest_luxurious_xhigh_talent_books: &chest_luxurious_xhigh_talent_books
@@ -561,13 +525,13 @@ chest_luxurious_xhigh_artifacts: &chest_luxurious_xhigh_artifacts
 max: &max
   - {reward: *chest_luxurious_xhigh_experience}
   - {reward: *chest_luxurious_xhigh_talent_books}
-  - {reward: *chest_luxurious_xhigh_weapons, count: "1.4"}
+  - {reward: *chest_luxurious_xhigh_weapons, count: "1:60,2:40"}
   - {reward: *chest_luxurious_xhigh_enhancement_ore}
-  - {reward: *chest_luxurious_xhigh_artifacts, count: "2.5"}
+  - {reward: *chest_luxurious_xhigh_artifacts, count: "2:50,3:50"}
 
 
 chest_luxurious_max_experience: &chest_luxurious_max_experience
-  - {reward: genshin.item.heros_wit, count: "2.1"}
+  - {reward: genshin.item.heros_wit, count: "2:90,3:10"}
 
 
 chest_luxurious_max_talent_books: &chest_luxurious_max_talent_books
@@ -593,9 +557,9 @@ chest_luxurious_max_artifacts: &chest_luxurious_max_artifacts
 ultra: &ultra
   - {reward: *chest_luxurious_max_experience}
   - {reward: *chest_luxurious_max_talent_books}
-  - {reward: *chest_luxurious_max_weapons, count: "1.5"}
+  - {reward: *chest_luxurious_max_weapons, count: "1:50,2:50"}
   - {reward: *chest_luxurious_max_enhancement_ore}
-  - {reward: *chest_luxurious_max_artifacts, count: "2.5"}
+  - {reward: *chest_luxurious_max_artifacts, count: "2:50,3:50"}
 
 
 three_realms_point:

@@ -1,63 +1,234 @@
-/* Default ordinary world-chest rewards; loot.yaml stores only table contents.
-   Quest chests and boss flowers have separate settlement paths. */
+/* Ordinary world-chest reward selection. All values are CSS lists of reusable loot tables. */
+/* Fallback for world chests without a matching original dropTag. */
 
-chest[kind="common"] {
-    --loot: starter_materials;
-    --genshin-item-primogem: 66;
-    --genshin-item-mora: 1000;
-    --genshin-item-adventure_exp: 20;
-}
+chest[kind="common"] { --loot: fallback_common; }
+chest[kind="exquisite"] { --loot: fallback_exquisite; }
+chest[kind="precious"] { --loot: fallback_precious; }
+chest[kind="luxurious"] { --loot: fallback_luxurious; }
 
-chest[kind="exquisite"] {
-    --loot: intermediate_materials;
-    --genshin-item-primogem: 166;
-    --genshin-item-mora: 1500;
-    --genshin-item-adventure_exp: 25;
-}
+chest[kind="common"][sigil="301"] { --loot: fallback_common, pyro_sigil 3; }
+chest[kind="common"][sigil="302"] { --loot: fallback_common, hydro_sigil 3; }
+chest[kind="common"][sigil="303"] { --loot: fallback_common, dendro_sigil 3; }
+chest[kind="common"][sigil="304"] { --loot: fallback_common, electro_sigil 3; }
+chest[kind="common"][sigil="305"] { --loot: fallback_common, anemo_sigil 3; }
+chest[kind="common"][sigil="306"] { --loot: fallback_common, cryo_sigil 3; }
+chest[kind="common"][sigil="307"] { --loot: fallback_common, geo_sigil 3; }
+chest[kind="common"][sigil="308"] { --loot: fallback_common, lunar_sigil 3; }
+chest[kind="exquisite"][sigil="301"] { --loot: fallback_exquisite, pyro_sigil 5; }
+chest[kind="exquisite"][sigil="302"] { --loot: fallback_exquisite, hydro_sigil 5; }
+chest[kind="exquisite"][sigil="303"] { --loot: fallback_exquisite, dendro_sigil 5; }
+chest[kind="exquisite"][sigil="304"] { --loot: fallback_exquisite, electro_sigil 5; }
+chest[kind="exquisite"][sigil="305"] { --loot: fallback_exquisite, anemo_sigil 5; }
+chest[kind="exquisite"][sigil="306"] { --loot: fallback_exquisite, cryo_sigil 5; }
+chest[kind="exquisite"][sigil="307"] { --loot: fallback_exquisite, geo_sigil 5; }
+chest[kind="exquisite"][sigil="308"] { --loot: fallback_exquisite, lunar_sigil 5; }
+chest[kind="precious"][sigil="301"] { --loot: fallback_precious, pyro_sigil 8; }
+chest[kind="precious"][sigil="302"] { --loot: fallback_precious, hydro_sigil 8; }
+chest[kind="precious"][sigil="303"] { --loot: fallback_precious, dendro_sigil 8; }
+chest[kind="precious"][sigil="304"] { --loot: fallback_precious, electro_sigil 8; }
+chest[kind="precious"][sigil="305"] { --loot: fallback_precious, anemo_sigil 8; }
+chest[kind="precious"][sigil="306"] { --loot: fallback_precious, cryo_sigil 8; }
+chest[kind="precious"][sigil="307"] { --loot: fallback_precious, geo_sigil 8; }
+chest[kind="precious"][sigil="308"] { --loot: fallback_precious, lunar_sigil 8; }
+chest[kind="luxurious"][sigil="301"] { --loot: fallback_luxurious, pyro_sigil 10; }
+chest[kind="luxurious"][sigil="302"] { --loot: fallback_luxurious, hydro_sigil 10; }
+chest[kind="luxurious"][sigil="303"] { --loot: fallback_luxurious, dendro_sigil 10; }
+chest[kind="luxurious"][sigil="304"] { --loot: fallback_luxurious, electro_sigil 10; }
+chest[kind="luxurious"][sigil="305"] { --loot: fallback_luxurious, anemo_sigil 10; }
+chest[kind="luxurious"][sigil="306"] { --loot: fallback_luxurious, cryo_sigil 10; }
+chest[kind="luxurious"][sigil="307"] { --loot: fallback_luxurious, geo_sigil 10; }
+chest[kind="luxurious"][sigil="308"] { --loot: fallback_luxurious, lunar_sigil 10; }
 
-chest[kind="precious"] {
-    --loot: advanced_materials;
-    --genshin-item-primogem: 366;
-    --genshin-item-mora: 2000;
-    --genshin-item-adventure_exp: 30;
-}
-
-chest[kind="luxurious"] {
-    --loot: rich_materials;
-    --genshin-item-primogem: 566;
-    --genshin-item-mora: 2500;
-    --genshin-item-adventure_exp: 30;
-}
-
-chest[kind="common"][sigil="301"] { --genshin-item-pyro_sigil: 3; }
-chest[kind="common"][sigil="302"] { --genshin-item-hydro_sigil: 3; }
-chest[kind="common"][sigil="303"] { --genshin-item-dendro_sigil: 3; }
-chest[kind="common"][sigil="304"] { --genshin-item-electro_sigil: 3; }
-chest[kind="common"][sigil="305"] { --genshin-item-anemo_sigil: 3; }
-chest[kind="common"][sigil="306"] { --genshin-item-cryo_sigil: 3; }
-chest[kind="common"][sigil="307"] { --genshin-item-geo_sigil: 3; }
-chest[kind="common"][sigil="308"] { --genshin-item-lunar_sigil: 3; }
-chest[kind="exquisite"][sigil="301"] { --genshin-item-pyro_sigil: 5; }
-chest[kind="exquisite"][sigil="302"] { --genshin-item-hydro_sigil: 5; }
-chest[kind="exquisite"][sigil="303"] { --genshin-item-dendro_sigil: 5; }
-chest[kind="exquisite"][sigil="304"] { --genshin-item-electro_sigil: 5; }
-chest[kind="exquisite"][sigil="305"] { --genshin-item-anemo_sigil: 5; }
-chest[kind="exquisite"][sigil="306"] { --genshin-item-cryo_sigil: 5; }
-chest[kind="exquisite"][sigil="307"] { --genshin-item-geo_sigil: 5; }
-chest[kind="exquisite"][sigil="308"] { --genshin-item-lunar_sigil: 5; }
-chest[kind="precious"][sigil="301"] { --genshin-item-pyro_sigil: 8; }
-chest[kind="precious"][sigil="302"] { --genshin-item-hydro_sigil: 8; }
-chest[kind="precious"][sigil="303"] { --genshin-item-dendro_sigil: 8; }
-chest[kind="precious"][sigil="304"] { --genshin-item-electro_sigil: 8; }
-chest[kind="precious"][sigil="305"] { --genshin-item-anemo_sigil: 8; }
-chest[kind="precious"][sigil="306"] { --genshin-item-cryo_sigil: 8; }
-chest[kind="precious"][sigil="307"] { --genshin-item-geo_sigil: 8; }
-chest[kind="precious"][sigil="308"] { --genshin-item-lunar_sigil: 8; }
-chest[kind="luxurious"][sigil="301"] { --genshin-item-pyro_sigil: 10; }
-chest[kind="luxurious"][sigil="302"] { --genshin-item-hydro_sigil: 10; }
-chest[kind="luxurious"][sigil="303"] { --genshin-item-dendro_sigil: 10; }
-chest[kind="luxurious"][sigil="304"] { --genshin-item-electro_sigil: 10; }
-chest[kind="luxurious"][sigil="305"] { --genshin-item-anemo_sigil: 10; }
-chest[kind="luxurious"][sigil="306"] { --genshin-item-cryo_sigil: 10; }
-chest[kind="luxurious"][sigil="307"] { --genshin-item-geo_sigil: 10; }
-chest[kind="luxurious"][sigil="308"] { --genshin-item-lunar_sigil: 10; }
+/* Native drop-tag variants take precedence over fallback tier and sigil rules. */
+chest[dropTag="战斗低级蒙德"][minLevel="1"] { --loot: native_51010000; }
+chest[dropTag="战斗低级蒙德"][minLevel="6"] { --loot: native_51010100; }
+chest[dropTag="战斗低级蒙德"][minLevel="11"] { --loot: native_51010200; }
+chest[dropTag="战斗低级蒙德"][minLevel="16"] { --loot: native_51010300; }
+chest[dropTag="战斗低级蒙德"][minLevel="21"] { --loot: native_51010400; }
+chest[dropTag="战斗低级蒙德"][minLevel="26"] { --loot: native_51010500; }
+chest[dropTag="战斗中级蒙德"][minLevel="1"] { --loot: native_51010500; }
+chest[dropTag="战斗中级蒙德"][minLevel="6"] { --loot: native_51010500; }
+chest[dropTag="战斗中级蒙德"][minLevel="11"] { --loot: native_51010500; }
+chest[dropTag="战斗中级蒙德"][minLevel="16"] { --loot: native_51010500; }
+chest[dropTag="战斗中级蒙德"][minLevel="21"] { --loot: native_51010600; }
+chest[dropTag="战斗中级蒙德"][minLevel="26"] { --loot: native_51010700; }
+chest[dropTag="战斗高级蒙德"][minLevel="1"] { --loot: native_51010700; }
+chest[dropTag="战斗高级蒙德"][minLevel="6"] { --loot: native_51010700; }
+chest[dropTag="战斗高级蒙德"][minLevel="11"] { --loot: native_51010700; }
+chest[dropTag="战斗高级蒙德"][minLevel="16"] { --loot: native_51010700; }
+chest[dropTag="战斗高级蒙德"][minLevel="21"] { --loot: native_51010800; }
+chest[dropTag="战斗高级蒙德"][minLevel="26"] { --loot: native_51010900; }
+chest[dropTag="战斗超级蒙德"][minLevel="1"] { --loot: native_51010900; }
+chest[dropTag="战斗超级蒙德"][minLevel="6"] { --loot: native_51010900; }
+chest[dropTag="战斗超级蒙德"][minLevel="11"] { --loot: native_51010900; }
+chest[dropTag="战斗超级蒙德"][minLevel="16"] { --loot: native_51010900; }
+chest[dropTag="战斗超级蒙德"][minLevel="21"] { --loot: native_51011000; }
+chest[dropTag="战斗超级蒙德"][minLevel="26"] { --loot: native_51011100; }
+chest[dropTag="解谜低级蒙德"][minLevel="1"] { --loot: native_52010000; }
+chest[dropTag="解谜低级蒙德"][minLevel="6"] { --loot: native_52010100; }
+chest[dropTag="解谜低级蒙德"][minLevel="11"] { --loot: native_52010200; }
+chest[dropTag="解谜低级蒙德"][minLevel="16"] { --loot: native_52010300; }
+chest[dropTag="解谜低级蒙德"][minLevel="21"] { --loot: native_52010400; }
+chest[dropTag="解谜低级蒙德"][minLevel="26"] { --loot: native_52010500; }
+chest[dropTag="解谜中级蒙德"][minLevel="1"] { --loot: native_52010500; }
+chest[dropTag="解谜中级蒙德"][minLevel="6"] { --loot: native_52010500; }
+chest[dropTag="解谜中级蒙德"][minLevel="11"] { --loot: native_52010500; }
+chest[dropTag="解谜中级蒙德"][minLevel="16"] { --loot: native_52010500; }
+chest[dropTag="解谜中级蒙德"][minLevel="21"] { --loot: native_52010600; }
+chest[dropTag="解谜中级蒙德"][minLevel="26"] { --loot: native_52010700; }
+chest[dropTag="解谜高级蒙德"][minLevel="1"] { --loot: native_52010700; }
+chest[dropTag="解谜高级蒙德"][minLevel="6"] { --loot: native_52010700; }
+chest[dropTag="解谜高级蒙德"][minLevel="11"] { --loot: native_52010700; }
+chest[dropTag="解谜高级蒙德"][minLevel="16"] { --loot: native_52010700; }
+chest[dropTag="解谜高级蒙德"][minLevel="21"] { --loot: native_52010800; }
+chest[dropTag="解谜高级蒙德"][minLevel="26"] { --loot: native_52010900; }
+chest[dropTag="解谜超级蒙德"][minLevel="1"] { --loot: native_52010900; }
+chest[dropTag="解谜超级蒙德"][minLevel="6"] { --loot: native_52010900; }
+chest[dropTag="解谜超级蒙德"][minLevel="11"] { --loot: native_52010900; }
+chest[dropTag="解谜超级蒙德"][minLevel="16"] { --loot: native_52010900; }
+chest[dropTag="解谜超级蒙德"][minLevel="21"] { --loot: native_52011000; }
+chest[dropTag="解谜超级蒙德"][minLevel="26"] { --loot: native_52011100; }
+chest[dropTag="战斗低级璃月"][minLevel="1"] { --loot: native_51020000; }
+chest[dropTag="战斗低级璃月"][minLevel="6"] { --loot: native_51020100; }
+chest[dropTag="战斗低级璃月"][minLevel="11"] { --loot: native_51020200; }
+chest[dropTag="战斗低级璃月"][minLevel="16"] { --loot: native_51020300; }
+chest[dropTag="战斗低级璃月"][minLevel="21"] { --loot: native_51020400; }
+chest[dropTag="战斗低级璃月"][minLevel="26"] { --loot: native_51020500; }
+chest[dropTag="战斗中级璃月"][minLevel="1"] { --loot: native_51020500; }
+chest[dropTag="战斗中级璃月"][minLevel="6"] { --loot: native_51020500; }
+chest[dropTag="战斗中级璃月"][minLevel="11"] { --loot: native_51020500; }
+chest[dropTag="战斗中级璃月"][minLevel="16"] { --loot: native_51020500; }
+chest[dropTag="战斗中级璃月"][minLevel="21"] { --loot: native_51020600; }
+chest[dropTag="战斗中级璃月"][minLevel="26"] { --loot: native_51020700; }
+chest[dropTag="战斗高级璃月"][minLevel="1"] { --loot: native_51020700; }
+chest[dropTag="战斗高级璃月"][minLevel="6"] { --loot: native_51020700; }
+chest[dropTag="战斗高级璃月"][minLevel="11"] { --loot: native_51020700; }
+chest[dropTag="战斗高级璃月"][minLevel="16"] { --loot: native_51020700; }
+chest[dropTag="战斗高级璃月"][minLevel="21"] { --loot: native_51020800; }
+chest[dropTag="战斗高级璃月"][minLevel="26"] { --loot: native_51020900; }
+chest[dropTag="战斗超级璃月"][minLevel="1"] { --loot: native_51020900; }
+chest[dropTag="战斗超级璃月"][minLevel="6"] { --loot: native_51020900; }
+chest[dropTag="战斗超级璃月"][minLevel="11"] { --loot: native_51020900; }
+chest[dropTag="战斗超级璃月"][minLevel="16"] { --loot: native_51020900; }
+chest[dropTag="战斗超级璃月"][minLevel="21"] { --loot: native_51021000; }
+chest[dropTag="战斗超级璃月"][minLevel="26"] { --loot: native_51021100; }
+chest[dropTag="解谜低级璃月"][minLevel="1"] { --loot: native_52020000; }
+chest[dropTag="解谜低级璃月"][minLevel="6"] { --loot: native_52020100; }
+chest[dropTag="解谜低级璃月"][minLevel="11"] { --loot: native_52020200; }
+chest[dropTag="解谜低级璃月"][minLevel="16"] { --loot: native_52020300; }
+chest[dropTag="解谜低级璃月"][minLevel="21"] { --loot: native_52020400; }
+chest[dropTag="解谜低级璃月"][minLevel="26"] { --loot: native_52020500; }
+chest[dropTag="解谜中级璃月"][minLevel="1"] { --loot: native_52020500; }
+chest[dropTag="解谜中级璃月"][minLevel="6"] { --loot: native_52020500; }
+chest[dropTag="解谜中级璃月"][minLevel="11"] { --loot: native_52020500; }
+chest[dropTag="解谜中级璃月"][minLevel="16"] { --loot: native_52020500; }
+chest[dropTag="解谜中级璃月"][minLevel="21"] { --loot: native_52020600; }
+chest[dropTag="解谜中级璃月"][minLevel="26"] { --loot: native_52020700; }
+chest[dropTag="解谜高级璃月"][minLevel="1"] { --loot: native_52020700; }
+chest[dropTag="解谜高级璃月"][minLevel="6"] { --loot: native_52020700; }
+chest[dropTag="解谜高级璃月"][minLevel="11"] { --loot: native_52020700; }
+chest[dropTag="解谜高级璃月"][minLevel="16"] { --loot: native_52020700; }
+chest[dropTag="解谜高级璃月"][minLevel="21"] { --loot: native_52020800; }
+chest[dropTag="解谜高级璃月"][minLevel="26"] { --loot: native_52020900; }
+chest[dropTag="解谜超级璃月"][minLevel="1"] { --loot: native_52020900; }
+chest[dropTag="解谜超级璃月"][minLevel="6"] { --loot: native_52020900; }
+chest[dropTag="解谜超级璃月"][minLevel="11"] { --loot: native_52020900; }
+chest[dropTag="解谜超级璃月"][minLevel="16"] { --loot: native_52020900; }
+chest[dropTag="解谜超级璃月"][minLevel="21"] { --loot: native_52021000; }
+chest[dropTag="解谜超级璃月"][minLevel="26"] { --loot: native_52021100; }
+chest[dropTag="雪山战斗低级蒙德"][minLevel="1"] { --loot: native_53010000; }
+chest[dropTag="雪山战斗低级蒙德"][minLevel="6"] { --loot: native_53010100; }
+chest[dropTag="雪山战斗低级蒙德"][minLevel="11"] { --loot: native_53010200; }
+chest[dropTag="雪山战斗低级蒙德"][minLevel="16"] { --loot: native_53010300; }
+chest[dropTag="雪山战斗低级蒙德"][minLevel="21"] { --loot: native_53010400; }
+chest[dropTag="雪山战斗低级蒙德"][minLevel="26"] { --loot: native_53010500; }
+chest[dropTag="雪山战斗中级蒙德"][minLevel="1"] { --loot: native_53010500; }
+chest[dropTag="雪山战斗中级蒙德"][minLevel="6"] { --loot: native_53010500; }
+chest[dropTag="雪山战斗中级蒙德"][minLevel="11"] { --loot: native_53010500; }
+chest[dropTag="雪山战斗中级蒙德"][minLevel="16"] { --loot: native_53010500; }
+chest[dropTag="雪山战斗中级蒙德"][minLevel="21"] { --loot: native_53010600; }
+chest[dropTag="雪山战斗中级蒙德"][minLevel="26"] { --loot: native_53010700; }
+chest[dropTag="雪山战斗高级蒙德"][minLevel="1"] { --loot: native_53010700; }
+chest[dropTag="雪山战斗高级蒙德"][minLevel="6"] { --loot: native_53010700; }
+chest[dropTag="雪山战斗高级蒙德"][minLevel="11"] { --loot: native_53010700; }
+chest[dropTag="雪山战斗高级蒙德"][minLevel="16"] { --loot: native_53010700; }
+chest[dropTag="雪山战斗高级蒙德"][minLevel="21"] { --loot: native_53010800; }
+chest[dropTag="雪山战斗高级蒙德"][minLevel="26"] { --loot: native_53010900; }
+chest[dropTag="雪山战斗超级蒙德"][minLevel="1"] { --loot: native_53010900; }
+chest[dropTag="雪山战斗超级蒙德"][minLevel="6"] { --loot: native_53010900; }
+chest[dropTag="雪山战斗超级蒙德"][minLevel="11"] { --loot: native_53010900; }
+chest[dropTag="雪山战斗超级蒙德"][minLevel="16"] { --loot: native_53010900; }
+chest[dropTag="雪山战斗超级蒙德"][minLevel="21"] { --loot: native_53011000; }
+chest[dropTag="雪山战斗超级蒙德"][minLevel="26"] { --loot: native_53011100; }
+chest[dropTag="雪山解谜低级蒙德"][minLevel="1"] { --loot: native_54010000; }
+chest[dropTag="雪山解谜低级蒙德"][minLevel="6"] { --loot: native_54010100; }
+chest[dropTag="雪山解谜低级蒙德"][minLevel="11"] { --loot: native_54010200; }
+chest[dropTag="雪山解谜低级蒙德"][minLevel="16"] { --loot: native_54010300; }
+chest[dropTag="雪山解谜低级蒙德"][minLevel="21"] { --loot: native_54010400; }
+chest[dropTag="雪山解谜低级蒙德"][minLevel="26"] { --loot: native_54010500; }
+chest[dropTag="雪山解谜中级蒙德"][minLevel="1"] { --loot: native_54010500; }
+chest[dropTag="雪山解谜中级蒙德"][minLevel="6"] { --loot: native_54010500; }
+chest[dropTag="雪山解谜中级蒙德"][minLevel="11"] { --loot: native_54010500; }
+chest[dropTag="雪山解谜中级蒙德"][minLevel="16"] { --loot: native_54010500; }
+chest[dropTag="雪山解谜中级蒙德"][minLevel="21"] { --loot: native_54010600; }
+chest[dropTag="雪山解谜中级蒙德"][minLevel="26"] { --loot: native_54010700; }
+chest[dropTag="雪山解谜高级蒙德"][minLevel="1"] { --loot: native_54010700; }
+chest[dropTag="雪山解谜高级蒙德"][minLevel="6"] { --loot: native_54010700; }
+chest[dropTag="雪山解谜高级蒙德"][minLevel="11"] { --loot: native_54010700; }
+chest[dropTag="雪山解谜高级蒙德"][minLevel="16"] { --loot: native_54010700; }
+chest[dropTag="雪山解谜高级蒙德"][minLevel="21"] { --loot: native_54010800; }
+chest[dropTag="雪山解谜高级蒙德"][minLevel="26"] { --loot: native_54010900; }
+chest[dropTag="雪山解谜超级蒙德"][minLevel="1"] { --loot: native_54010900; }
+chest[dropTag="雪山解谜超级蒙德"][minLevel="6"] { --loot: native_54010900; }
+chest[dropTag="雪山解谜超级蒙德"][minLevel="11"] { --loot: native_54010900; }
+chest[dropTag="雪山解谜超级蒙德"][minLevel="16"] { --loot: native_54010900; }
+chest[dropTag="雪山解谜超级蒙德"][minLevel="21"] { --loot: native_54011000; }
+chest[dropTag="雪山解谜超级蒙德"][minLevel="26"] { --loot: native_54011100; }
+chest[dropTag="雪山玉髓低级蒙德"][minLevel="1"] { --loot: native_55010000; }
+chest[dropTag="雪山玉髓低级蒙德"][minLevel="6"] { --loot: native_55010100; }
+chest[dropTag="雪山玉髓低级蒙德"][minLevel="11"] { --loot: native_55010200; }
+chest[dropTag="雪山玉髓低级蒙德"][minLevel="16"] { --loot: native_55010300; }
+chest[dropTag="雪山玉髓低级蒙德"][minLevel="21"] { --loot: native_55010400; }
+chest[dropTag="雪山玉髓低级蒙德"][minLevel="26"] { --loot: native_55010500; }
+chest[dropTag="雪山玉髓中级蒙德"][minLevel="1"] { --loot: native_55010500; }
+chest[dropTag="雪山玉髓中级蒙德"][minLevel="6"] { --loot: native_55010500; }
+chest[dropTag="雪山玉髓中级蒙德"][minLevel="11"] { --loot: native_55010500; }
+chest[dropTag="雪山玉髓中级蒙德"][minLevel="16"] { --loot: native_55010500; }
+chest[dropTag="雪山玉髓中级蒙德"][minLevel="21"] { --loot: native_55010600; }
+chest[dropTag="雪山玉髓中级蒙德"][minLevel="26"] { --loot: native_55010700; }
+chest[dropTag="雪山玉髓高级蒙德"][minLevel="1"] { --loot: native_55010700; }
+chest[dropTag="雪山玉髓高级蒙德"][minLevel="6"] { --loot: native_55010700; }
+chest[dropTag="雪山玉髓高级蒙德"][minLevel="11"] { --loot: native_55010700; }
+chest[dropTag="雪山玉髓高级蒙德"][minLevel="16"] { --loot: native_55010700; }
+chest[dropTag="雪山玉髓高级蒙德"][minLevel="21"] { --loot: native_55010800; }
+chest[dropTag="雪山玉髓高级蒙德"][minLevel="26"] { --loot: native_55010900; }
+chest[dropTag="雪山玉髓超级蒙德"][minLevel="1"] { --loot: native_55010900; }
+chest[dropTag="雪山玉髓超级蒙德"][minLevel="6"] { --loot: native_55010900; }
+chest[dropTag="雪山玉髓超级蒙德"][minLevel="11"] { --loot: native_55010900; }
+chest[dropTag="雪山玉髓超级蒙德"][minLevel="16"] { --loot: native_55010900; }
+chest[dropTag="雪山玉髓超级蒙德"][minLevel="21"] { --loot: native_55011000; }
+chest[dropTag="雪山玉髓超级蒙德"][minLevel="26"] { --loot: native_55011100; }
+chest[dropTag="战斗低级群岛"][sigil] { --loot: native_51310000; }
+chest[dropTag="战斗中级群岛"][sigil] { --loot: native_51312000; }
+chest[dropTag="战斗高级群岛"][sigil] { --loot: native_51313000; }
+chest[dropTag="战斗超级群岛"][sigil] { --loot: native_51314000; }
+chest[dropTag="解谜低级群岛"][sigil] { --loot: native_52310000; }
+chest[dropTag="解谜中级群岛"][sigil] { --loot: native_52312000; }
+chest[dropTag="解谜高级群岛"][sigil] { --loot: native_52313000; }
+chest[dropTag="解谜超级群岛"][sigil] { --loot: native_52314000; }
+chest[dropTag="战斗低级稻妻"][sigil] { --loot: native_51030000; }
+chest[dropTag="战斗中级稻妻"][sigil] { --loot: native_51032000; }
+chest[dropTag="战斗高级稻妻"][sigil] { --loot: native_51033000; }
+chest[dropTag="战斗超级稻妻"][sigil] { --loot: native_51034000; }
+chest[dropTag="解谜低级稻妻"][sigil] { --loot: native_52030000; }
+chest[dropTag="解谜中级稻妻"][sigil] { --loot: native_52032000; }
+chest[dropTag="解谜高级稻妻"][sigil] { --loot: native_52033000; }
+chest[dropTag="解谜超级稻妻"][sigil] { --loot: native_52034000; }
+chest[dropTag="战斗低级须弥"][sigil] { --loot: native_51040000; }
+chest[dropTag="战斗中级须弥"][sigil] { --loot: native_51042000; }
+chest[dropTag="战斗高级须弥"][sigil] { --loot: native_51043000; }
+chest[dropTag="战斗超级须弥"][sigil] { --loot: native_51044000; }
+chest[dropTag="解谜低级须弥"][sigil] { --loot: native_52040000; }
+chest[dropTag="解谜中级须弥"][sigil] { --loot: native_52042000; }
+chest[dropTag="解谜高级须弥"][sigil] { --loot: native_52043000; }
+chest[dropTag="解谜超级须弥"][sigil] { --loot: native_52044000; }

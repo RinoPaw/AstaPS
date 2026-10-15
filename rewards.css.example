@@ -182,7 +182,9 @@ chest[kind="precious"][area="300"] {
     --genshin-item-primogem: 10;
 }
 
-transpoint {
+transpoint[kind="waypoint"],
+transpoint[kind="statue"],
+transpoint[kind="domain"] {
     --genshin-item-adventure_exp: 50;
     --genshin-item-primogem: 5;
 }

@@ -69,22 +69,21 @@ luxurious_chest_max: *luxurious_chest_items
 three_realms_point:
   - {reward: genshin.item.light_realm_sigil, count: 20}
 
-# Archived historical chest drop tables: available to invoke by qualified table ID,
-# but NOT selected by the unchanged rewards.css default rules.
+# Historical chest drop data. These tables are preserved for research and
+# explicit selection; the bundled rewards.css does not currently select them.
 # Original datasets: AstaPS-Resource/Server/DropTableExcelConfigData.json and
-# Server/DropSubTableExcelConfigData.json (sourceType=19).
-# 108 independent root tables + 571 dependencies; 1,843 positive-weight entries.
-# 510/513 families: combat; 520/523: puzzle; 530/540/550: other source families.
-# These historical contents have not been independently confirmed for Genshin 7.1.
-# Each table key chest_drop_<ID> is registered as astaps.loot.chest_drop_<ID>.
-# YAML anchors link child pools; no region, enemy, puzzle or level selection lives here.
-# In the original data randomType=0 selects a weighted entry; randomType=1
-# rolls independent entries. Small decimal counts encode independent chances.
-# Known item names use genshin.item.<name>; less certain identities use
-# genshin.item.id_<numeric ID>, an exact source-backed fallback when no
-# verified semantic name exists. These aliases make no cross-version guarantee.
-# All 187 distinct numeric fallbacks were found in the archived item Excel data.
-# Relative weights below are reduced, without changing their probabilities.
+# Server/DropSubTableExcelConfigData.json (chest source tables and dependencies).
+# 108 historical root tables, 571 dependent pools, 1,843 positive-weight entries.
+# Names describe region, chest source, grade, and contents; e.g.
+# astaps.loot.historical_mondstadt_combat_common.
+# YAML anchors connect the nested pools. The tables contain no location,
+# combat, puzzle, rank, or other selector logic.
+# Every item uses a descriptive genshin.item.<name> resource identity.
+# Actual numeric resource mappings live only in ItemIdRegistry, not this file.
+# Native weighted choices and independent rolls are retained; common weight
+# factors are removed without changing probability ratios.
+# Empty pools and conditional drops are kept as in the historical resources.
+# The historical distribution has not been validated against Genshin 7.1.
 
 historical_mondstadt_combat_common_food_ingredients: &historical_mondstadt_combat_common_food_ingredients
   - {reward: genshin.item.raw_meat, weight: 1}

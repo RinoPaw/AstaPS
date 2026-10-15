@@ -40,20 +40,16 @@ public final class RewardConfiguration {
         }
     }
 
-    // Refuse the unmodified historical server presets. Never overwrite user files:
-    // the operator must deliberately regenerate or migrate both configuration files.
+    // Previously generated configurations remain on disk after upgrades.
+    // Prevent old selector data from silently continuing to grant old rewards.
     static void rejectLegacyChestTemplates(String yaml, String css) {
-        if (yaml.contains("{reward: genshin.item.primogem, count: 66}")
-                && yaml.contains("{reward: genshin.item.primogem, count: 566}")) {
+        if (yaml.contains("fallback_common:")
+                || yaml.contains("native_51010000:")
+                || css.contains("--loot: fallback_common")
+                || css.contains("--loot: native_")) {
             throw new IllegalArgumentException(
-                    "Old inflated chest rewards detected in config/rewards/loot.yaml."
-                            + " Back up and regenerate both reward configuration files.");
-        }
-        if (css.contains("chest[kind=\"common\"] { --loot: fallback_common; }")
-                && css.contains("chest[kind=\"luxurious\"] { --loot: fallback_luxurious; }")) {
-            throw new IllegalArgumentException(
-                    "Outdated chest selectors in config/rewards/rewards.css."
-                            + " Back up and regenerate both reward configuration files.");
+                    "Obsolete chest reward configuration in config/rewards."
+                            + " Back up and regenerate loot.yaml and rewards.css together.");
         }
     }
 

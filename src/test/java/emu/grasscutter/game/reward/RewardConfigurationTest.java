@@ -6,27 +6,15 @@ import org.junit.jupiter.api.Test;
 
 class RewardConfigurationTest {
     @Test
-    void historicGeneratedTemplatesCannotSilentlyKeepInflatedRewards() {
-        var oldYaml = """
-                fallback_common:
-                  - {reward: genshin.item.primogem, count: 66}
-                fallback_luxurious:
-                  - {reward: genshin.item.primogem, count: 566}
-                """;
-        var oldCss = """
-                chest[kind="common"] { --loot: fallback_common; }
-                chest[kind="luxurious"] { --loot: fallback_luxurious; }
-                """;
+    void previousChestPresetsCannotBeMistakenForTheNewSchema() {
         assertThrows(IllegalArgumentException.class,
-                () -> RewardConfiguration.rejectLegacyChestTemplates(oldYaml, ""));
+                () -> RewardConfiguration.rejectLegacyChestTemplates(
+                        "fallback_common: []", ""));
         assertThrows(IllegalArgumentException.class,
-                () -> RewardConfiguration.rejectLegacyChestTemplates("", oldCss));
+                () -> RewardConfiguration.rejectLegacyChestTemplates(
+                        "", "chest { --loot: native_51010000; }"));
         assertDoesNotThrow(() -> RewardConfiguration.rejectLegacyChestTemplates(
-                "fallback_common: []", """
-                chest[kind="common"] {
-                    --loot: fallback_common;
-                    --genshin-item-primogem: 2;
-                }
-                """));
+                "common_chest: []",
+                "chest[kind=\"common\"] { --loot: common_chest; }"));
     }
 }

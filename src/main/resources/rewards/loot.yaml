@@ -3264,6 +3264,69 @@ native_55011100: &n55011100
   - {reward: *n55011114, count: "1"}
   - {reward: *n55011115, count: "2.5"}
 
+# Compatibility contents for unclassified ordinary world chests.
+# These pools describe reward compositions, without referencing chest attributes.
+starting_contents:
+  - {reward: 201, count: 66}
+  - {reward: 202, count: 1000}
+  - {reward: 102, count: 20}
+  - {reward: 104011, count: 2}
+  - {reward: 104001, count: 2}
+  - {reward: 104002, count: 1}
+
+intermediate_contents:
+  - {reward: 201, count: 166}
+  - {reward: 202, count: 1500}
+  - {reward: 102, count: 25}
+  - {reward: 104012, count: 2}
+  - {reward: 104001, count: 3}
+  - {reward: 104002, count: 2}
+  - {reward: 104003, count: 1}
+
+advanced_contents:
+  - {reward: 201, count: 366}
+  - {reward: 202, count: 2000}
+  - {reward: 102, count: 30}
+  - {reward: 104012, count: 3}
+  - {reward: 104013, count: 1}
+  - {reward: 104001, count: 3}
+  - {reward: 104002, count: 3}
+  - {reward: 104003, count: 2}
+
+rich_contents:
+  - {reward: 201, count: 566}
+  - {reward: 202, count: 2500}
+  - {reward: 102, count: 30}
+  - {reward: 104012, count: 4}
+  - {reward: 104013, count: 1}
+  - {reward: 104001, count: 2}
+  - {reward: 104002, count: 4}
+  - {reward: 104003, count: 3}
+
+pyro_sigil:
+  - {reward: 301}
+
+hydro_sigil:
+  - {reward: 302}
+
+dendro_sigil:
+  - {reward: 303}
+
+electro_sigil:
+  - {reward: 304}
+
+anemo_sigil:
+  - {reward: 305}
+
+cryo_sigil:
+  - {reward: 306}
+
+geo_sigil:
+  - {reward: 307}
+
+lunar_sigil:
+  - {reward: 308}
+
 # Historical Server DropTable + DropSubTable compatibility snapshot.
 # Roots from AstaPS data/ChestDrop.json (52 ordinary tags, 192 level rows).
 # Source blob SHA: b46d383b535babd1be6b95e3ea031eef64d1fdfd

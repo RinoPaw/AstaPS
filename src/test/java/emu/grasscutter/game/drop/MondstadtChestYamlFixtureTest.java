@@ -18,8 +18,8 @@ class MondstadtChestYamlFixtureTest {
             yaml = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
         }
         var loot = YamlLootTables.parse(yaml, Integer::parseInt);
-        var lower = sample(loot, "native_52010000", 13);
-        var higher = sample(loot, "native_52010100", 29);
+        var lower = sample(loot, "astaps.loot.native_52010000", 13);
+        var higher = sample(loot, "astaps.loot.native_52010100", 29);
 
         // Native roots: weapon roll 40/50%, artifact roll 52/80%,
         // fine ore roll 20/40%, base ore expected 2.1/2.6.

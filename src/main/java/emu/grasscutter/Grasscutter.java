@@ -183,8 +183,7 @@ public final class Grasscutter {
 
             // Item identities are available only after ExcelBinOutput has been loaded.
             // CSS and YAML own ordinary chest and scene-point activation rewards.
-            emu.grasscutter.game.reward.RewardConfiguration.loadOrCreate(
-                    java.nio.file.Path.of("config", "rewards"));
+            emu.grasscutter.game.reward.RewardConfiguration.load();
 
 
             // GameServer is constructed before resources load, so cooking/compound default-unlock

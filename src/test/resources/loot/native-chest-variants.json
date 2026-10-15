@@ -1,0 +1,1165 @@
+{
+  "source": {
+    "chestDrop": "RinoPaw/AstaPS@feat/nested-yaml-loot-71:data/ChestDrop.json",
+    "dropTableGitBlob": "b46d383b535babd1be6b95e3ea031eef64d1fdfd",
+    "dropSubTableGitBlob": "9397fb0b15c8c4cc82194ec429682f2ef4333767"
+  },
+  "tags": 52,
+  "rows": 192,
+  "rootTables": 108,
+  "reachableTables": 679,
+  "variants": [
+    {
+      "dropTag": "战斗低级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51010000
+    },
+    {
+      "dropTag": "战斗低级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 6,
+      "rootId": 51010100
+    },
+    {
+      "dropTag": "战斗低级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 11,
+      "rootId": 51010200
+    },
+    {
+      "dropTag": "战斗低级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 16,
+      "rootId": 51010300
+    },
+    {
+      "dropTag": "战斗低级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 21,
+      "rootId": 51010400
+    },
+    {
+      "dropTag": "战斗低级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 26,
+      "rootId": 51010500
+    },
+    {
+      "dropTag": "战斗中级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51010500
+    },
+    {
+      "dropTag": "战斗中级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 6,
+      "rootId": 51010500
+    },
+    {
+      "dropTag": "战斗中级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 11,
+      "rootId": 51010500
+    },
+    {
+      "dropTag": "战斗中级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 16,
+      "rootId": 51010500
+    },
+    {
+      "dropTag": "战斗中级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 21,
+      "rootId": 51010600
+    },
+    {
+      "dropTag": "战斗中级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 26,
+      "rootId": 51010700
+    },
+    {
+      "dropTag": "战斗高级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51010700
+    },
+    {
+      "dropTag": "战斗高级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 6,
+      "rootId": 51010700
+    },
+    {
+      "dropTag": "战斗高级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 11,
+      "rootId": 51010700
+    },
+    {
+      "dropTag": "战斗高级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 16,
+      "rootId": 51010700
+    },
+    {
+      "dropTag": "战斗高级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 21,
+      "rootId": 51010800
+    },
+    {
+      "dropTag": "战斗高级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 26,
+      "rootId": 51010900
+    },
+    {
+      "dropTag": "战斗超级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51010900
+    },
+    {
+      "dropTag": "战斗超级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 6,
+      "rootId": 51010900
+    },
+    {
+      "dropTag": "战斗超级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 11,
+      "rootId": 51010900
+    },
+    {
+      "dropTag": "战斗超级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 16,
+      "rootId": 51010900
+    },
+    {
+      "dropTag": "战斗超级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 21,
+      "rootId": 51011000
+    },
+    {
+      "dropTag": "战斗超级蒙德",
+      "sourceType": "战斗",
+      "minLevel": 26,
+      "rootId": 51011100
+    },
+    {
+      "dropTag": "解谜低级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52010000
+    },
+    {
+      "dropTag": "解谜低级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 6,
+      "rootId": 52010100
+    },
+    {
+      "dropTag": "解谜低级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 11,
+      "rootId": 52010200
+    },
+    {
+      "dropTag": "解谜低级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 16,
+      "rootId": 52010300
+    },
+    {
+      "dropTag": "解谜低级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 21,
+      "rootId": 52010400
+    },
+    {
+      "dropTag": "解谜低级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 26,
+      "rootId": 52010500
+    },
+    {
+      "dropTag": "解谜中级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52010500
+    },
+    {
+      "dropTag": "解谜中级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 6,
+      "rootId": 52010500
+    },
+    {
+      "dropTag": "解谜中级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 11,
+      "rootId": 52010500
+    },
+    {
+      "dropTag": "解谜中级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 16,
+      "rootId": 52010500
+    },
+    {
+      "dropTag": "解谜中级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 21,
+      "rootId": 52010600
+    },
+    {
+      "dropTag": "解谜中级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 26,
+      "rootId": 52010700
+    },
+    {
+      "dropTag": "解谜高级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52010700
+    },
+    {
+      "dropTag": "解谜高级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 6,
+      "rootId": 52010700
+    },
+    {
+      "dropTag": "解谜高级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 11,
+      "rootId": 52010700
+    },
+    {
+      "dropTag": "解谜高级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 16,
+      "rootId": 52010700
+    },
+    {
+      "dropTag": "解谜高级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 21,
+      "rootId": 52010800
+    },
+    {
+      "dropTag": "解谜高级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 26,
+      "rootId": 52010900
+    },
+    {
+      "dropTag": "解谜超级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52010900
+    },
+    {
+      "dropTag": "解谜超级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 6,
+      "rootId": 52010900
+    },
+    {
+      "dropTag": "解谜超级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 11,
+      "rootId": 52010900
+    },
+    {
+      "dropTag": "解谜超级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 16,
+      "rootId": 52010900
+    },
+    {
+      "dropTag": "解谜超级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 21,
+      "rootId": 52011000
+    },
+    {
+      "dropTag": "解谜超级蒙德",
+      "sourceType": "解谜",
+      "minLevel": 26,
+      "rootId": 52011100
+    },
+    {
+      "dropTag": "战斗低级璃月",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51020000
+    },
+    {
+      "dropTag": "战斗低级璃月",
+      "sourceType": "战斗",
+      "minLevel": 6,
+      "rootId": 51020100
+    },
+    {
+      "dropTag": "战斗低级璃月",
+      "sourceType": "战斗",
+      "minLevel": 11,
+      "rootId": 51020200
+    },
+    {
+      "dropTag": "战斗低级璃月",
+      "sourceType": "战斗",
+      "minLevel": 16,
+      "rootId": 51020300
+    },
+    {
+      "dropTag": "战斗低级璃月",
+      "sourceType": "战斗",
+      "minLevel": 21,
+      "rootId": 51020400
+    },
+    {
+      "dropTag": "战斗低级璃月",
+      "sourceType": "战斗",
+      "minLevel": 26,
+      "rootId": 51020500
+    },
+    {
+      "dropTag": "战斗中级璃月",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51020500
+    },
+    {
+      "dropTag": "战斗中级璃月",
+      "sourceType": "战斗",
+      "minLevel": 6,
+      "rootId": 51020500
+    },
+    {
+      "dropTag": "战斗中级璃月",
+      "sourceType": "战斗",
+      "minLevel": 11,
+      "rootId": 51020500
+    },
+    {
+      "dropTag": "战斗中级璃月",
+      "sourceType": "战斗",
+      "minLevel": 16,
+      "rootId": 51020500
+    },
+    {
+      "dropTag": "战斗中级璃月",
+      "sourceType": "战斗",
+      "minLevel": 21,
+      "rootId": 51020600
+    },
+    {
+      "dropTag": "战斗中级璃月",
+      "sourceType": "战斗",
+      "minLevel": 26,
+      "rootId": 51020700
+    },
+    {
+      "dropTag": "战斗高级璃月",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51020700
+    },
+    {
+      "dropTag": "战斗高级璃月",
+      "sourceType": "战斗",
+      "minLevel": 6,
+      "rootId": 51020700
+    },
+    {
+      "dropTag": "战斗高级璃月",
+      "sourceType": "战斗",
+      "minLevel": 11,
+      "rootId": 51020700
+    },
+    {
+      "dropTag": "战斗高级璃月",
+      "sourceType": "战斗",
+      "minLevel": 16,
+      "rootId": 51020700
+    },
+    {
+      "dropTag": "战斗高级璃月",
+      "sourceType": "战斗",
+      "minLevel": 21,
+      "rootId": 51020800
+    },
+    {
+      "dropTag": "战斗高级璃月",
+      "sourceType": "战斗",
+      "minLevel": 26,
+      "rootId": 51020900
+    },
+    {
+      "dropTag": "战斗超级璃月",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51020900
+    },
+    {
+      "dropTag": "战斗超级璃月",
+      "sourceType": "战斗",
+      "minLevel": 6,
+      "rootId": 51020900
+    },
+    {
+      "dropTag": "战斗超级璃月",
+      "sourceType": "战斗",
+      "minLevel": 11,
+      "rootId": 51020900
+    },
+    {
+      "dropTag": "战斗超级璃月",
+      "sourceType": "战斗",
+      "minLevel": 16,
+      "rootId": 51020900
+    },
+    {
+      "dropTag": "战斗超级璃月",
+      "sourceType": "战斗",
+      "minLevel": 21,
+      "rootId": 51021000
+    },
+    {
+      "dropTag": "战斗超级璃月",
+      "sourceType": "战斗",
+      "minLevel": 26,
+      "rootId": 51021100
+    },
+    {
+      "dropTag": "解谜低级璃月",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52020000
+    },
+    {
+      "dropTag": "解谜低级璃月",
+      "sourceType": "解谜",
+      "minLevel": 6,
+      "rootId": 52020100
+    },
+    {
+      "dropTag": "解谜低级璃月",
+      "sourceType": "解谜",
+      "minLevel": 11,
+      "rootId": 52020200
+    },
+    {
+      "dropTag": "解谜低级璃月",
+      "sourceType": "解谜",
+      "minLevel": 16,
+      "rootId": 52020300
+    },
+    {
+      "dropTag": "解谜低级璃月",
+      "sourceType": "解谜",
+      "minLevel": 21,
+      "rootId": 52020400
+    },
+    {
+      "dropTag": "解谜低级璃月",
+      "sourceType": "解谜",
+      "minLevel": 26,
+      "rootId": 52020500
+    },
+    {
+      "dropTag": "解谜中级璃月",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52020500
+    },
+    {
+      "dropTag": "解谜中级璃月",
+      "sourceType": "解谜",
+      "minLevel": 6,
+      "rootId": 52020500
+    },
+    {
+      "dropTag": "解谜中级璃月",
+      "sourceType": "解谜",
+      "minLevel": 11,
+      "rootId": 52020500
+    },
+    {
+      "dropTag": "解谜中级璃月",
+      "sourceType": "解谜",
+      "minLevel": 16,
+      "rootId": 52020500
+    },
+    {
+      "dropTag": "解谜中级璃月",
+      "sourceType": "解谜",
+      "minLevel": 21,
+      "rootId": 52020600
+    },
+    {
+      "dropTag": "解谜中级璃月",
+      "sourceType": "解谜",
+      "minLevel": 26,
+      "rootId": 52020700
+    },
+    {
+      "dropTag": "解谜高级璃月",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52020700
+    },
+    {
+      "dropTag": "解谜高级璃月",
+      "sourceType": "解谜",
+      "minLevel": 6,
+      "rootId": 52020700
+    },
+    {
+      "dropTag": "解谜高级璃月",
+      "sourceType": "解谜",
+      "minLevel": 11,
+      "rootId": 52020700
+    },
+    {
+      "dropTag": "解谜高级璃月",
+      "sourceType": "解谜",
+      "minLevel": 16,
+      "rootId": 52020700
+    },
+    {
+      "dropTag": "解谜高级璃月",
+      "sourceType": "解谜",
+      "minLevel": 21,
+      "rootId": 52020800
+    },
+    {
+      "dropTag": "解谜高级璃月",
+      "sourceType": "解谜",
+      "minLevel": 26,
+      "rootId": 52020900
+    },
+    {
+      "dropTag": "解谜超级璃月",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52020900
+    },
+    {
+      "dropTag": "解谜超级璃月",
+      "sourceType": "解谜",
+      "minLevel": 6,
+      "rootId": 52020900
+    },
+    {
+      "dropTag": "解谜超级璃月",
+      "sourceType": "解谜",
+      "minLevel": 11,
+      "rootId": 52020900
+    },
+    {
+      "dropTag": "解谜超级璃月",
+      "sourceType": "解谜",
+      "minLevel": 16,
+      "rootId": 52020900
+    },
+    {
+      "dropTag": "解谜超级璃月",
+      "sourceType": "解谜",
+      "minLevel": 21,
+      "rootId": 52021000
+    },
+    {
+      "dropTag": "解谜超级璃月",
+      "sourceType": "解谜",
+      "minLevel": 26,
+      "rootId": 52021100
+    },
+    {
+      "dropTag": "雪山战斗低级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 1,
+      "rootId": 53010000
+    },
+    {
+      "dropTag": "雪山战斗低级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 6,
+      "rootId": 53010100
+    },
+    {
+      "dropTag": "雪山战斗低级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 11,
+      "rootId": 53010200
+    },
+    {
+      "dropTag": "雪山战斗低级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 16,
+      "rootId": 53010300
+    },
+    {
+      "dropTag": "雪山战斗低级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 21,
+      "rootId": 53010400
+    },
+    {
+      "dropTag": "雪山战斗低级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 26,
+      "rootId": 53010500
+    },
+    {
+      "dropTag": "雪山战斗中级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 1,
+      "rootId": 53010500
+    },
+    {
+      "dropTag": "雪山战斗中级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 6,
+      "rootId": 53010500
+    },
+    {
+      "dropTag": "雪山战斗中级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 11,
+      "rootId": 53010500
+    },
+    {
+      "dropTag": "雪山战斗中级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 16,
+      "rootId": 53010500
+    },
+    {
+      "dropTag": "雪山战斗中级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 21,
+      "rootId": 53010600
+    },
+    {
+      "dropTag": "雪山战斗中级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 26,
+      "rootId": 53010700
+    },
+    {
+      "dropTag": "雪山战斗高级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 1,
+      "rootId": 53010700
+    },
+    {
+      "dropTag": "雪山战斗高级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 6,
+      "rootId": 53010700
+    },
+    {
+      "dropTag": "雪山战斗高级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 11,
+      "rootId": 53010700
+    },
+    {
+      "dropTag": "雪山战斗高级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 16,
+      "rootId": 53010700
+    },
+    {
+      "dropTag": "雪山战斗高级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 21,
+      "rootId": 53010800
+    },
+    {
+      "dropTag": "雪山战斗高级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 26,
+      "rootId": 53010900
+    },
+    {
+      "dropTag": "雪山战斗超级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 1,
+      "rootId": 53010900
+    },
+    {
+      "dropTag": "雪山战斗超级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 6,
+      "rootId": 53010900
+    },
+    {
+      "dropTag": "雪山战斗超级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 11,
+      "rootId": 53010900
+    },
+    {
+      "dropTag": "雪山战斗超级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 16,
+      "rootId": 53010900
+    },
+    {
+      "dropTag": "雪山战斗超级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 21,
+      "rootId": 53011000
+    },
+    {
+      "dropTag": "雪山战斗超级蒙德",
+      "sourceType": "雪山战斗",
+      "minLevel": 26,
+      "rootId": 53011100
+    },
+    {
+      "dropTag": "雪山解谜低级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 1,
+      "rootId": 54010000
+    },
+    {
+      "dropTag": "雪山解谜低级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 6,
+      "rootId": 54010100
+    },
+    {
+      "dropTag": "雪山解谜低级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 11,
+      "rootId": 54010200
+    },
+    {
+      "dropTag": "雪山解谜低级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 16,
+      "rootId": 54010300
+    },
+    {
+      "dropTag": "雪山解谜低级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 21,
+      "rootId": 54010400
+    },
+    {
+      "dropTag": "雪山解谜低级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 26,
+      "rootId": 54010500
+    },
+    {
+      "dropTag": "雪山解谜中级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 1,
+      "rootId": 54010500
+    },
+    {
+      "dropTag": "雪山解谜中级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 6,
+      "rootId": 54010500
+    },
+    {
+      "dropTag": "雪山解谜中级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 11,
+      "rootId": 54010500
+    },
+    {
+      "dropTag": "雪山解谜中级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 16,
+      "rootId": 54010500
+    },
+    {
+      "dropTag": "雪山解谜中级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 21,
+      "rootId": 54010600
+    },
+    {
+      "dropTag": "雪山解谜中级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 26,
+      "rootId": 54010700
+    },
+    {
+      "dropTag": "雪山解谜高级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 1,
+      "rootId": 54010700
+    },
+    {
+      "dropTag": "雪山解谜高级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 6,
+      "rootId": 54010700
+    },
+    {
+      "dropTag": "雪山解谜高级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 11,
+      "rootId": 54010700
+    },
+    {
+      "dropTag": "雪山解谜高级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 16,
+      "rootId": 54010700
+    },
+    {
+      "dropTag": "雪山解谜高级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 21,
+      "rootId": 54010800
+    },
+    {
+      "dropTag": "雪山解谜高级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 26,
+      "rootId": 54010900
+    },
+    {
+      "dropTag": "雪山解谜超级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 1,
+      "rootId": 54010900
+    },
+    {
+      "dropTag": "雪山解谜超级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 6,
+      "rootId": 54010900
+    },
+    {
+      "dropTag": "雪山解谜超级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 11,
+      "rootId": 54010900
+    },
+    {
+      "dropTag": "雪山解谜超级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 16,
+      "rootId": 54010900
+    },
+    {
+      "dropTag": "雪山解谜超级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 21,
+      "rootId": 54011000
+    },
+    {
+      "dropTag": "雪山解谜超级蒙德",
+      "sourceType": "雪山解谜",
+      "minLevel": 26,
+      "rootId": 54011100
+    },
+    {
+      "dropTag": "雪山玉髓低级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 1,
+      "rootId": 55010000
+    },
+    {
+      "dropTag": "雪山玉髓低级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 6,
+      "rootId": 55010100
+    },
+    {
+      "dropTag": "雪山玉髓低级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 11,
+      "rootId": 55010200
+    },
+    {
+      "dropTag": "雪山玉髓低级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 16,
+      "rootId": 55010300
+    },
+    {
+      "dropTag": "雪山玉髓低级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 21,
+      "rootId": 55010400
+    },
+    {
+      "dropTag": "雪山玉髓低级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 26,
+      "rootId": 55010500
+    },
+    {
+      "dropTag": "雪山玉髓中级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 1,
+      "rootId": 55010500
+    },
+    {
+      "dropTag": "雪山玉髓中级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 6,
+      "rootId": 55010500
+    },
+    {
+      "dropTag": "雪山玉髓中级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 11,
+      "rootId": 55010500
+    },
+    {
+      "dropTag": "雪山玉髓中级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 16,
+      "rootId": 55010500
+    },
+    {
+      "dropTag": "雪山玉髓中级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 21,
+      "rootId": 55010600
+    },
+    {
+      "dropTag": "雪山玉髓中级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 26,
+      "rootId": 55010700
+    },
+    {
+      "dropTag": "雪山玉髓高级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 1,
+      "rootId": 55010700
+    },
+    {
+      "dropTag": "雪山玉髓高级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 6,
+      "rootId": 55010700
+    },
+    {
+      "dropTag": "雪山玉髓高级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 11,
+      "rootId": 55010700
+    },
+    {
+      "dropTag": "雪山玉髓高级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 16,
+      "rootId": 55010700
+    },
+    {
+      "dropTag": "雪山玉髓高级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 21,
+      "rootId": 55010800
+    },
+    {
+      "dropTag": "雪山玉髓高级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 26,
+      "rootId": 55010900
+    },
+    {
+      "dropTag": "雪山玉髓超级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 1,
+      "rootId": 55010900
+    },
+    {
+      "dropTag": "雪山玉髓超级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 6,
+      "rootId": 55010900
+    },
+    {
+      "dropTag": "雪山玉髓超级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 11,
+      "rootId": 55010900
+    },
+    {
+      "dropTag": "雪山玉髓超级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 16,
+      "rootId": 55010900
+    },
+    {
+      "dropTag": "雪山玉髓超级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 21,
+      "rootId": 55011000
+    },
+    {
+      "dropTag": "雪山玉髓超级蒙德",
+      "sourceType": "雪山玉髓",
+      "minLevel": 26,
+      "rootId": 55011100
+    },
+    {
+      "dropTag": "战斗低级群岛",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51310000
+    },
+    {
+      "dropTag": "战斗中级群岛",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51312000
+    },
+    {
+      "dropTag": "战斗高级群岛",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51313000
+    },
+    {
+      "dropTag": "战斗超级群岛",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51314000
+    },
+    {
+      "dropTag": "解谜低级群岛",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52310000
+    },
+    {
+      "dropTag": "解谜中级群岛",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52312000
+    },
+    {
+      "dropTag": "解谜高级群岛",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52313000
+    },
+    {
+      "dropTag": "解谜超级群岛",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52314000
+    },
+    {
+      "dropTag": "战斗低级稻妻",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51030000
+    },
+    {
+      "dropTag": "战斗中级稻妻",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51032000
+    },
+    {
+      "dropTag": "战斗高级稻妻",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51033000
+    },
+    {
+      "dropTag": "战斗超级稻妻",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51034000
+    },
+    {
+      "dropTag": "解谜低级稻妻",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52030000
+    },
+    {
+      "dropTag": "解谜中级稻妻",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52032000
+    },
+    {
+      "dropTag": "解谜高级稻妻",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52033000
+    },
+    {
+      "dropTag": "解谜超级稻妻",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52034000
+    },
+    {
+      "dropTag": "战斗低级须弥",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51040000
+    },
+    {
+      "dropTag": "战斗中级须弥",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51042000
+    },
+    {
+      "dropTag": "战斗高级须弥",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51043000
+    },
+    {
+      "dropTag": "战斗超级须弥",
+      "sourceType": "战斗",
+      "minLevel": 1,
+      "rootId": 51044000
+    },
+    {
+      "dropTag": "解谜低级须弥",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52040000
+    },
+    {
+      "dropTag": "解谜中级须弥",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52042000
+    },
+    {
+      "dropTag": "解谜高级须弥",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52043000
+    },
+    {
+      "dropTag": "解谜超级须弥",
+      "sourceType": "解谜",
+      "minLevel": 1,
+      "rootId": 52044000
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+# Default ordinary world-chest rewards. Edit values here; loot.yaml stores only table contents.
+# Quest chest and boss flower payouts remain on their separate settlement paths.
+
+chest[kind="common"] {
+    --loot: starter_materials;
+    --genshin-item-primogem: 66;
+    --genshin-item-mora: 1000;
+    --genshin-item-adventure_exp: 20;
+}
+
+chest[kind="exquisite"] {
+    --loot: intermediate_materials;
+    --genshin-item-primogem: 166;
+    --genshin-item-mora: 1500;
+    --genshin-item-adventure_exp: 25;
+}
+
+chest[kind="precious"] {
+    --loot: advanced_materials;
+    --genshin-item-primogem: 366;
+    --genshin-item-mora: 2000;
+    --genshin-item-adventure_exp: 30;
+}
+
+chest[kind="luxurious"] {
+    --loot: rich_materials;
+    --genshin-item-primogem: 566;
+    --genshin-item-mora: 2500;
+    --genshin-item-adventure_exp: 30;
+}
+
+chest[kind="common"][sigil="301"] { --genshin-item-pyro_sigil: 3; }
+chest[kind="common"][sigil="302"] { --genshin-item-hydro_sigil: 3; }
+chest[kind="common"][sigil="303"] { --genshin-item-dendro_sigil: 3; }
+chest[kind="common"][sigil="304"] { --genshin-item-electro_sigil: 3; }
+chest[kind="common"][sigil="305"] { --genshin-item-anemo_sigil: 3; }
+chest[kind="common"][sigil="306"] { --genshin-item-cryo_sigil: 3; }
+chest[kind="common"][sigil="307"] { --genshin-item-geo_sigil: 3; }
+chest[kind="common"][sigil="308"] { --genshin-item-lunar_sigil: 3; }
+chest[kind="exquisite"][sigil="301"] { --genshin-item-pyro_sigil: 5; }
+chest[kind="exquisite"][sigil="302"] { --genshin-item-hydro_sigil: 5; }
+chest[kind="exquisite"][sigil="303"] { --genshin-item-dendro_sigil: 5; }
+chest[kind="exquisite"][sigil="304"] { --genshin-item-electro_sigil: 5; }
+chest[kind="exquisite"][sigil="305"] { --genshin-item-anemo_sigil: 5; }
+chest[kind="exquisite"][sigil="306"] { --genshin-item-cryo_sigil: 5; }
+chest[kind="exquisite"][sigil="307"] { --genshin-item-geo_sigil: 5; }
+chest[kind="exquisite"][sigil="308"] { --genshin-item-lunar_sigil: 5; }
+chest[kind="precious"][sigil="301"] { --genshin-item-pyro_sigil: 8; }
+chest[kind="precious"][sigil="302"] { --genshin-item-hydro_sigil: 8; }
+chest[kind="precious"][sigil="303"] { --genshin-item-dendro_sigil: 8; }
+chest[kind="precious"][sigil="304"] { --genshin-item-electro_sigil: 8; }
+chest[kind="precious"][sigil="305"] { --genshin-item-anemo_sigil: 8; }
+chest[kind="precious"][sigil="306"] { --genshin-item-cryo_sigil: 8; }
+chest[kind="precious"][sigil="307"] { --genshin-item-geo_sigil: 8; }
+chest[kind="precious"][sigil="308"] { --genshin-item-lunar_sigil: 8; }
+chest[kind="luxurious"][sigil="301"] { --genshin-item-pyro_sigil: 10; }
+chest[kind="luxurious"][sigil="302"] { --genshin-item-hydro_sigil: 10; }
+chest[kind="luxurious"][sigil="303"] { --genshin-item-dendro_sigil: 10; }
+chest[kind="luxurious"][sigil="304"] { --genshin-item-electro_sigil: 10; }
+chest[kind="luxurious"][sigil="305"] { --genshin-item-anemo_sigil: 10; }
+chest[kind="luxurious"][sigil="306"] { --genshin-item-cryo_sigil: 10; }
+chest[kind="luxurious"][sigil="307"] { --genshin-item-geo_sigil: 10; }
+chest[kind="luxurious"][sigil="308"] { --genshin-item-lunar_sigil: 10; }

@@ -93,24 +93,25 @@ class NativeLootYamlExporterTest {
     }
 
     @Test
-    void exporterPreservesNativeArtifactReferences() {
+    void exporterPreservesNativeArtifactProperties() {
         var source = Map.of(100, new NativeLootYamlExporter.NativeTable(1, List.of(
                 new NativeLootYamlExporter.NativeEntry(55311, "1", 10000))));
         var yaml = NativeLootYamlExporter.export(source, List.of(100),
-                Map.of(100, "artifact_chest"), id -> {
-                    if (id == 55311) return "genshin.artifact.berserker.goblet.3.1";
-                    throw new IllegalArgumentException("Unknown item");
-                });
-        assertTrue(yaml.contains("reward: genshin.artifact.berserker.goblet.3.1"));
-        var loot = YamlLootTables.parse(yaml, name -> {
-            if (name.equals("genshin.artifact.berserker.goblet.3.1")) return 55311;
-            return -2;
-        });
+                Map.of(100, "artifact_chest"),
+                id -> id == 55311 ? "genshin.artifact.berserker" : null,
+                id -> new NativeLootYamlExporter.ArtifactProperties("goblet", 3, 1));
+        assertTrue(yaml.contains(
+                "reward: genshin.artifact.berserker, properties: {slot: goblet, rarity: 3, substats: 1}"));
+        var artifacts = new ArtifactResolver(List.of(
+                new ArtifactResolver.Variant(55311, "berserker", 4, 3, 1)));
+        var loot = YamlLootTables.parse(yaml, name -> -2, artifacts);
         assertEquals(Map.of(55311, 1),
                 loot.roll("astaps.loot.artifact_chest", new Random(1)));
         assertThrows(IllegalArgumentException.class, () ->
                 NativeLootYamlExporter.export(source, List.of(100),
-                        Map.of(100, "artifact_chest"), id -> "artifact:berserker:goblet:3"));
+                        Map.of(100, "artifact_chest"),
+                        id -> "genshin.artifact.berserker.goblet.3.1",
+                        id -> new NativeLootYamlExporter.ArtifactProperties("goblet", 3, 1)));
     }
 
     @Test

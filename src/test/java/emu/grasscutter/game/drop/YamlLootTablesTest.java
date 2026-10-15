@@ -88,12 +88,12 @@ class YamlLootTablesTest {
     }
 
     @Test
-    void quotedCountSupportsLegacyAndReadability() {
+    void quotedCountSupportsRangesAndPercentages() {
         var tables = parse("""
                 chest:
                   - {reward: 202, count: "2~4"}
                   - {reward: genshin.item.heros_wit, count: "1:80"}
-                  - {reward: genshin.item.adventurers_experience, count: "2.2"}
+                  - {reward: genshin.item.adventurers_experience, count: "2:80,3:20"}
                 """);
         for (int i = 0; i < 300; i++) {
             var rewards = tables.roll("astaps.loot.chest", new Random(i));
@@ -104,6 +104,17 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void decimalCountsAndWeightsAreRejected() {
+        assertThrows(IllegalArgumentException.class, () -> LootCount.parse("0.7"));
+        assertThrows(IllegalArgumentException.class, () -> LootCount.parse("2.2"));
+        assertThrows(IllegalArgumentException.class, () -> LootCount.parse("1:12.5,2:87.5"));
+        assertThrows(IllegalArgumentException.class, () -> parse("""
+                bad:
+                  - {reward: genshin.item.mora, weight: 1.5}
+                """));
+    }
+
+    @Test
     void mutuallyExclusiveWeightedChoiceAndAlias() {
         var tables = parse("""
                 experience: &exp
@@ -111,7 +122,7 @@ class YamlLootTablesTest {
                   - {reward: genshin.item.adventurers_experience, count: 2, weight: 3}
                 chest:
                   - {reward: 202, count: 300}
-                  - {reward: *exp, count: "0.7"}
+                  - {reward: *exp, count: "0:30,1:70"}
                 """);
         int none = 0, big = 0, small = 0;
         Random random = new Random(42);

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.data.ItemIdRegistry;
 import emu.grasscutter.game.drop.YamlLootTables;
+import emu.grasscutter.game.drop.ArtifactResolver;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Random;
@@ -35,8 +36,32 @@ class BundledChestRewardsTest {
         return new ItemIdRegistry(names);
     }
 
+    private static ArtifactResolver artifacts() {
+        var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
+        String[] sets = {"berserker", "instructor", "the_exile",
+                "adventurer", "lucky_dog", "traveling_doctor"};
+        int[] prefixes = {55, 57, 59, 60, 61, 63};
+        for (int set = 0; set < sets.length; set++) {
+            for (int slot = 1; slot <= 5; slot++) {
+                int firstRank = set < 3 ? 3 : 1;
+                int lastRank = set < 3 ? 4 : 3;
+                for (int rank = firstRank; rank <= lastRank; rank++) {
+                    int firstSubstat = rank <= 2 ? 0 : rank - 2;
+                    int lastSubstat = rank == 1 ? 0 : firstSubstat + 1;
+                    for (int substats = firstSubstat; substats <= lastSubstat; substats++) {
+                        variants.add(new ArtifactResolver.Variant(
+                                prefixes[set] * 1000 + rank * 100 + slot * 10 + substats,
+                                sets[set], slot, rank, substats));
+                    }
+                }
+            }
+        }
+        return new ArtifactResolver(variants);
+    }
+
     private static YamlLootTables loot() throws Exception {
-        return YamlLootTables.parse(resource("/rewards/loot.yaml"), items()::resolve);
+        return YamlLootTables.parse(resource("/rewards/loot.yaml"),
+                items()::resolve, artifacts());
     }
 
     @Test
@@ -62,6 +87,8 @@ class BundledChestRewardsTest {
         assertFalse(java.util.regex.Pattern.compile("\\breward:\\s*[0-9]")
                 .matcher(yaml).find());
         assertFalse(yaml.contains("count: \"1\""));
+        assertFalse(java.util.regex.Pattern.compile(
+                "(?:count|weight):\\s*\\\"?\\d+\\.\\d+").matcher(yaml).find());
     }
 
     @Test
@@ -144,14 +171,15 @@ class BundledChestRewardsTest {
     }
 
     @Test
-    void semanticArtifactReferencesResolveWithoutChangingNativeItemIds() throws Exception {
+    void nativeArtifactVariantsRemainResolvableWithSetProperties() throws Exception {
         String source = resource("/rewards/loot.yaml");
-        assertTrue(source.contains("genshin.artifact.adventurer.goblet.1.0"));
-        assertTrue(source.contains("genshin.artifact.instructor.sands.4.3"));
-        assertFalse(source.contains("genshin.item.artifact_"));
-        assertEquals(90, java.util.regex.Pattern.compile(
-                "reward: genshin\\.artifact\\.[a-z0-9_]+\\.(flower|plume|sands|goblet|circlet)\\.[1-5]\\.[0-4]")
+        assertTrue(source.contains("reward: genshin.artifact.adventurer"));
+        assertTrue(source.contains("properties: {slot: \"1~5\", rarity: 1}"));
+        assertEquals(18, java.util.regex.Pattern.compile(
+                "reward: genshin\\\\.artifact\\\\.[a-z0-9_]+")
                 .matcher(source).results().count());
-        assertEquals(55311, items().resolve("genshin.artifact.berserker.goblet.3.1"));
+        var chosen = artifacts().compile("genshin.artifact.berserker",
+                Map.of("slot", "goblet", "rarity", 3, "substats", 1));
+        assertEquals(55311, chosen.select(new Random(1)));
     }
 }

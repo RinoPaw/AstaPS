@@ -28,8 +28,9 @@ artifacts. The 12 tables are based on one branch of the historical chest
 drop data without combat/puzzle selection. They do not yet reproduce
 location-specific book pools, special recipes, or Dragonspine Crimson
 Agate rewards correctly. Those variants require separately verified
-selection data. The native artifact item IDs are unchanged. Their YAML semantic names now use
-`genshin.artifact.<set>.<slot>.<rarity>.<initial_substats>`.
+selection data. The native artifact item IDs are unchanged. The resource ID names a set
+(for example `genshin.artifact.berserker`); each artifact's `slot`, `rarity`
+and initial `substats` are separate properties.
 
 ## Common rewards belong to CSS
 
@@ -82,8 +83,9 @@ validated against native Genshin 7.1 reward data. This uncertainty is
 intentional and must not be mistaken for confirmed reversed drop rates.
 
 Source records remain at `data/ChestDrop.json` and
-`data/Server/DropTableExcelConfigData.json`. The earlier verbose artifact names have been replaced by shorter typed references
-that reflect the native `setId`, `equipType`, `rankLevel` and `appendPropNum`.
+`data/Server/DropTableExcelConfigData.json`. The artifact resolver uses native `setId`, `equipType`, `rankLevel` and
+`appendPropNum` rather than an ID-by-variant name dictionary. Ordinary
+generation excludes special append-prop depots with different stat behavior.
 
 ## Scene points and other reward paths
 
@@ -103,15 +105,30 @@ routes. World chest metadata sent to the CSS engine includes `kind`,
 All unweighted entries in one list execute; a fully weighted list chooses
 one entry by relative weight. Mixed weighted and unweighted entries are
 invalid. `count` defaults to one and supports fixed values, ranges,
-fractional expectations and native percentage distributions. A nested
+integer percentage distributions. Fractional expected counts are forbidden. A nested
 list repeats the entire pool according to the outer count.
 
-Qualified `genshin.item.<name>` identities resolve materials and weapons to game
-item IDs. Artifacts use `genshin.artifact.<set>.<slot>.<rarity>.<initial_substats>`,
-for example `genshin.artifact.berserker.goblet.3.1` and `genshin.artifact.adventurer.goblet.1.0`.
-The final number is the native *initial* substat count (including zero), not
-the count after upgrades. The artifact reference resolves to its unchanged
-native item ID. Dotted item IDs and `astaps.loot.<name>` remain unchanged.
+Qualified `genshin.item.<name>` identities resolve other items to game
+item IDs. Artifacts use `genshin.artifact.<set>` plus an optional `properties`
+mapping:
+
+```yaml
+- reward: genshin.artifact.berserker
+  properties: {slot: goblet, rarity: 3, substats: "1:80,2:20"}
+- reward: genshin.artifact.adventurer
+  properties: {slot: "1~5", rarity: 1}
+```
+
+Slots 1–5 mean flower, plume, sands, goblet, circlet. Omitted slot and rarity
+choose uniformly from available ordinary variants. Missing `substats` chooses
+uniformly from the usual valid counts per rank (1★ 0, 2★ 0–1, 3★ 1–2,
+4★ 2–3, 5★ 3–4). This is a project policy, not a confirmed 7.1 drop-rate
+distribution; specify `substats: "1:80,2:20"` to define exact odds.
+Each artifact gets an independent roll, even when `count` is greater than one.
+All counts and weighted-choice weights are integers. Use an explicit percentage
+distribution such as `count: "0:48,1:52"` instead of decimal count `0.52`.
+Relative probabilities in the original weighted loot lists are preserved.
+
 No numeric source IDs are used in the bundled loot configuration.
 
 Full 7.1 gameplay validation is still required before upstream submission.

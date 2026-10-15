@@ -38,7 +38,8 @@ class BundledChestRewardsTest {
         int[] primogems = {2, 5, 10, 10};
         int[] minMora = {257, 756, 1433, 2000};
         int[] maxMora = {996, 1367, 1433, 3000};
-        assertEquals(4, loot.names().size());
+        assertEquals(5, loot.names().size()); // Four chests and one scene-point item pool.
+        assertTrue(loot.contains("astaps.loot.three_realms_point"));
 
         for (int tier = 0; tier < kinds.length; tier++) {
             var selection = css.resolve("chest", Map.of("kind", kinds[tier]));

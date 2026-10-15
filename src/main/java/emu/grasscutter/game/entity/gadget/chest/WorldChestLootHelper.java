@@ -18,6 +18,7 @@ public final class WorldChestLootHelper {
     public static void grant(Player player, EntityGadget entityGadget) {
         var props = new java.util.HashMap<String, String>();
         props.put("kind", resolveTier(entityGadget).name().toLowerCase(java.util.Locale.ROOT));
+        props.put("level", Integer.toString(chestLevelBand(player.getLevel())));
         props.put("scene", Integer.toString(entityGadget.getScene().getId()));
         props.put("gadget", Integer.toString(entityGadget.getGadgetId()));
         props.put("group", Integer.toString(entityGadget.getGroupId()));
@@ -49,6 +50,16 @@ public final class WorldChestLootHelper {
         Grasscutter.getLogger().info(
                 "World chest rewards uid={} gadget={} kind={} itemTypes={}",
                 player.getUid(), entityGadget.getGadgetId(), props.get("kind"), items.size());
+    }
+
+    /** ChestDrop.minLevel thresholds select a reward band from adventure rank. */
+    public static int chestLevelBand(int adventureRank) {
+        if (adventureRank >= 26) return 26;
+        if (adventureRank >= 21) return 21;
+        if (adventureRank >= 16) return 16;
+        if (adventureRank >= 11) return 11;
+        if (adventureRank >= 6) return 6;
+        return 1;
     }
 
     private static void drop(Scene scene, GameEntity gameEntity, int n, int n2) {

@@ -45,8 +45,8 @@ chest[kind="common"] {
 ```
 
 A loot entry has `reward`, optional `count`, and optional `weight`.
-`reward` can be a numeric or qualified item ID, an English item name,
-a nested list, or `null`. `count` defaults to 1. For nested lists it
+`reward` is a qualified item resource name (the parser also recognizes an English item name,
+as well as a nested list or `null`). `count` defaults to 1. For nested lists it
 means independent repetitions. A list with all-null weights executes
 all entries; one with all-numeric weights selects one by relative weight.
 Mixing weighted and unweighted entries within a list is invalid.
@@ -155,37 +155,39 @@ verified source metadata, not guessed tag strings.
 
 ## Historical combat and puzzle loot tables
 
-The bundled `loot.yaml` contains 679 historical `chest_drop_<ID>` tables,
-including all 108 sourceType=19 root tables from
-`AstaPS-Resource/Server/DropTableExcelConfigData.json` and the 571
-reachable subtable dependencies from that file and
-`Server/DropSubTableExcelConfigData.json`. The source graph includes 1,843
-positive-weight entries. Original table IDs are retained in names:
-`astaps.loot.chest_drop_51010000` and
-`astaps.loot.chest_drop_52010000` are representative Mondstadt
-combat/puzzle roots. The 510/513 and 520/523 families preserve their
-separate combat/puzzle drop compositions; additional 530/540/550
-families are retained under their original numeric identities.
+The bundled `loot.yaml` preserves the full historical chest source graph:
+108 roots, 571 referenced subtables, and 1,843 positive-weight entries.
+The source records come from
+`AstaPS-Resource/Server/DropTableExcelConfigData.json` and
+`Server/DropSubTableExcelConfigData.json`. Historical roots were matched
+against the original `ChestDrop.json` index/minLevel labels. All source
+identifiers were replaced by descriptive names, for example:
 
-YAML aliases represent nested source-table references, not string names
-and not conditional loot rules. Native `randomType=0` becomes a weighted
-choice; `randomType=1` becomes independent item rolls. Native fractional
-counts and chance weights are retained, including empty source tables.
-The historical pools are research data and **are not selected by the
-bundled `rewards.css`**, which remains unchanged. The existing four
-active presets and their six level aliases continue to have their
-approximate rewards. Fixed item IDs use qualified `genshin.item` names.
-Stable, verified keys use descriptive names (for example,
-`genshin.item.adventure_exp`); the old source items with no reliable
-name use `genshin.item.id_55311`-style aliases, validated against
-the real item registry at load time. `count: 1` is omitted and exclusive
-weights are scaled to small relative values without changing odds.
+- `astaps.loot.historical_mondstadt_combat_common`
+- `astaps.loot.historical_mondstadt_puzzle_common`
+- `astaps.loot.historical_dragonspine_crimson_agate_common`
+- `astaps.loot.historical_golden_apple_archipelago_puzzle_common`
 
-This archive preserves the source graph itself. The
-`ChestDrop.json` tag/minLevel-to-root selection mapping is not encoded
-in the loot tables, so the historical roots must not be assumed to
-correspond one-to-one with the six CSS level buckets. No 7.1 gameplay
-validation has been performed for the archived item IDs.
+Internal pools carry descriptive category names, such as `experience`,
+`weapons`, `enhancement_ore`, `talent_books`, and `artifacts`. The
+YAML anchors reuse these names and preserve the full nested structure.
+Every item reward uses a qualified `genshin.item.<name>` reference; raw
+numeric IDs and synthetic `id_<number>` aliases are prohibited in this
+configuration. Names for historical artifacts include the set, slot,
+rarity, and initial substat count, so distinct source items remain distinct.
+Their mapping to numeric game resources belongs to `ItemIdRegistry`.
+
+A native exclusive pool is a weighted choice; an independent pool rolls
+each entry separately. Nested counts, fractional expectations, and empty
+source nodes are preserved. Default `count: 1` is omitted, and relative
+weights are reduced without changing the probability distribution.
+
+The history tables are archived research data. **The bundled
+`rewards.css` does not select them.** Existing world-chest presets are
+still approximate. The original `ChestDrop.json` tag/minLevel selector
+mapping belongs outside `loot.yaml`, so no location or source decisions
+are embedded in the tables. No 7.1 gameplay verification has been
+performed for historical distribution data.
 
 ## Chest Primogems by native location
 

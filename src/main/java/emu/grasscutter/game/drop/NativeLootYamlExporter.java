@@ -59,11 +59,11 @@ public final class NativeLootYamlExporter {
                         ? "*n" + entry.id : Integer.toString(entry.id);
                 String originalCount = entry.countRange;
                 if (table.randomType == 0) {
-                    yaml.append("  - {item: ").append(target).append(", count: \"")
+                    yaml.append("  - {reward: ").append(target).append(", count: \"")
                             .append(originalCount).append("\", weight: ")
                             .append(entry.weight).append("}\n");
                 } else if (entry.weight == 10000) {
-                    yaml.append("  - {item: ").append(target).append(", count: \"")
+                    yaml.append("  - {reward: ").append(target).append(", count: \"")
                             .append(originalCount).append("\"}\n");
                 } else {
                     if (entry.weight > 10000) {
@@ -72,11 +72,11 @@ public final class NativeLootYamlExporter {
                     String chance = BigDecimal.valueOf(entry.weight)
                             .movePointLeft(4).stripTrailingZeros().toPlainString();
                     if ("1".equals(originalCount)) {
-                        yaml.append("  - {item: ").append(target).append(", count: \"")
+                        yaml.append("  - {reward: ").append(target).append(", count: \"")
                                 .append(chance).append("\"}\n");
                     } else {
-                        yaml.append("  - item:\n")
-                                .append("      - {item: ").append(target).append(", count: \"")
+                        yaml.append("  - reward:\n")
+                                .append("      - {reward: ").append(target).append(", count: \"")
                                 .append(originalCount).append("\"}\n")
                                 .append("    count: \"").append(chance).append("\"\n");
                     }

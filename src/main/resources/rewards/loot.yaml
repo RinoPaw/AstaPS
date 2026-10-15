@@ -44,19 +44,19 @@ chest_common_enhancement_ore: &chest_common_enhancement_ore
 
 
 chest_common_artifacts: &chest_common_artifacts
-  - {reward: artifact:adventurer:goblet:1:0, weight: 1}
-  - {reward: artifact:adventurer:plume:1:0, weight: 1}
-  - {reward: artifact:adventurer:circlet:1:0, weight: 1}
-  - {reward: artifact:adventurer:flower:1:0, weight: 1}
-  - {reward: artifact:adventurer:sands:1:0, weight: 1}
+  - {reward: genshin.artifact.adventurer.goblet.1.0, weight: 1}
+  - {reward: genshin.artifact.adventurer.plume.1.0, weight: 1}
+  - {reward: genshin.artifact.adventurer.circlet.1.0, weight: 1}
+  - {reward: genshin.artifact.adventurer.flower.1.0, weight: 1}
+  - {reward: genshin.artifact.adventurer.sands.1.0, weight: 1}
 
 
 chest_common_artifacts_bonus: &chest_common_artifacts_bonus
-  - {reward: artifact:traveling_doctor:goblet:1:0, weight: 1}
-  - {reward: artifact:traveling_doctor:plume:1:0, weight: 1}
-  - {reward: artifact:traveling_doctor:circlet:1:0, weight: 1}
-  - {reward: artifact:traveling_doctor:flower:1:0, weight: 1}
-  - {reward: artifact:traveling_doctor:sands:1:0, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.goblet.1.0, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.plume.1.0, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.circlet.1.0, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.flower.1.0, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.sands.1.0, weight: 1}
 
 
 chest_common_artifacts_secondary: &chest_common_artifacts_secondary
@@ -65,19 +65,19 @@ chest_common_artifacts_secondary: &chest_common_artifacts_secondary
 
 
 chest_common_artifacts_alternative: &chest_common_artifacts_alternative
-  - {reward: artifact:adventurer:goblet:2:0, weight: 1}
-  - {reward: artifact:adventurer:plume:2:0, weight: 1}
-  - {reward: artifact:adventurer:circlet:2:0, weight: 1}
-  - {reward: artifact:adventurer:flower:2:0, weight: 1}
-  - {reward: artifact:adventurer:sands:2:0, weight: 1}
+  - {reward: genshin.artifact.adventurer.goblet.2.0, weight: 1}
+  - {reward: genshin.artifact.adventurer.plume.2.0, weight: 1}
+  - {reward: genshin.artifact.adventurer.circlet.2.0, weight: 1}
+  - {reward: genshin.artifact.adventurer.flower.2.0, weight: 1}
+  - {reward: genshin.artifact.adventurer.sands.2.0, weight: 1}
 
 
 chest_common_artifacts_special: &chest_common_artifacts_special
-  - {reward: artifact:traveling_doctor:goblet:2:0, weight: 1}
-  - {reward: artifact:traveling_doctor:plume:2:0, weight: 1}
-  - {reward: artifact:traveling_doctor:circlet:2:0, weight: 1}
-  - {reward: artifact:traveling_doctor:flower:2:0, weight: 1}
-  - {reward: artifact:traveling_doctor:sands:2:0, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.goblet.2.0, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.plume.2.0, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.circlet.2.0, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.flower.2.0, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.sands.2.0, weight: 1}
 
 
 chest_common_artifacts_supplementary: &chest_common_artifacts_supplementary
@@ -86,19 +86,19 @@ chest_common_artifacts_supplementary: &chest_common_artifacts_supplementary
 
 
 chest_common_artifacts_additional: &chest_common_artifacts_additional
-  - {reward: artifact:adventurer:goblet:2:1, weight: 1}
-  - {reward: artifact:adventurer:plume:2:1, weight: 1}
-  - {reward: artifact:adventurer:circlet:2:1, weight: 1}
-  - {reward: artifact:adventurer:flower:2:1, weight: 1}
-  - {reward: artifact:adventurer:sands:2:1, weight: 1}
+  - {reward: genshin.artifact.adventurer.goblet.2.1, weight: 1}
+  - {reward: genshin.artifact.adventurer.plume.2.1, weight: 1}
+  - {reward: genshin.artifact.adventurer.circlet.2.1, weight: 1}
+  - {reward: genshin.artifact.adventurer.flower.2.1, weight: 1}
+  - {reward: genshin.artifact.adventurer.sands.2.1, weight: 1}
 
 
 chest_common_artifacts_reserve: &chest_common_artifacts_reserve
-  - {reward: artifact:traveling_doctor:goblet:2:1, weight: 1}
-  - {reward: artifact:traveling_doctor:plume:2:1, weight: 1}
-  - {reward: artifact:traveling_doctor:circlet:2:1, weight: 1}
-  - {reward: artifact:traveling_doctor:flower:2:1, weight: 1}
-  - {reward: artifact:traveling_doctor:sands:2:1, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.goblet.2.1, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.plume.2.1, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.circlet.2.1, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.flower.2.1, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.sands.2.1, weight: 1}
 
 
 chest_common_artifacts_optional: &chest_common_artifacts_optional
@@ -256,35 +256,35 @@ chest_common_max_enhancement_ore: &chest_common_max_enhancement_ore
 
 
 chest_common_max_artifacts: &chest_common_max_artifacts
-  - {reward: artifact:berserker:goblet:3:1, weight: 1}
-  - {reward: artifact:berserker:plume:3:1, weight: 1}
-  - {reward: artifact:berserker:circlet:3:1, weight: 1}
-  - {reward: artifact:berserker:flower:3:1, weight: 1}
-  - {reward: artifact:berserker:sands:3:1, weight: 1}
+  - {reward: genshin.artifact.berserker.goblet.3.1, weight: 1}
+  - {reward: genshin.artifact.berserker.plume.3.1, weight: 1}
+  - {reward: genshin.artifact.berserker.circlet.3.1, weight: 1}
+  - {reward: genshin.artifact.berserker.flower.3.1, weight: 1}
+  - {reward: genshin.artifact.berserker.sands.3.1, weight: 1}
 
 
 chest_common_max_artifacts_bonus: &chest_common_max_artifacts_bonus
-  - {reward: artifact:instructor:goblet:3:1, weight: 1}
-  - {reward: artifact:instructor:plume:3:1, weight: 1}
-  - {reward: artifact:instructor:circlet:3:1, weight: 1}
-  - {reward: artifact:instructor:flower:3:1, weight: 1}
-  - {reward: artifact:instructor:sands:3:1, weight: 1}
+  - {reward: genshin.artifact.instructor.goblet.3.1, weight: 1}
+  - {reward: genshin.artifact.instructor.plume.3.1, weight: 1}
+  - {reward: genshin.artifact.instructor.circlet.3.1, weight: 1}
+  - {reward: genshin.artifact.instructor.flower.3.1, weight: 1}
+  - {reward: genshin.artifact.instructor.sands.3.1, weight: 1}
 
 
 chest_common_max_artifacts_secondary: &chest_common_max_artifacts_secondary
-  - {reward: artifact:adventurer:goblet:3:1, weight: 1}
-  - {reward: artifact:adventurer:plume:3:1, weight: 1}
-  - {reward: artifact:adventurer:circlet:3:1, weight: 1}
-  - {reward: artifact:adventurer:flower:3:1, weight: 1}
-  - {reward: artifact:adventurer:sands:3:1, weight: 1}
+  - {reward: genshin.artifact.adventurer.goblet.3.1, weight: 1}
+  - {reward: genshin.artifact.adventurer.plume.3.1, weight: 1}
+  - {reward: genshin.artifact.adventurer.circlet.3.1, weight: 1}
+  - {reward: genshin.artifact.adventurer.flower.3.1, weight: 1}
+  - {reward: genshin.artifact.adventurer.sands.3.1, weight: 1}
 
 
 chest_common_max_artifacts_alternative: &chest_common_max_artifacts_alternative
-  - {reward: artifact:traveling_doctor:goblet:3:1, weight: 1}
-  - {reward: artifact:traveling_doctor:plume:3:1, weight: 1}
-  - {reward: artifact:traveling_doctor:circlet:3:1, weight: 1}
-  - {reward: artifact:traveling_doctor:flower:3:1, weight: 1}
-  - {reward: artifact:traveling_doctor:sands:3:1, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.goblet.3.1, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.plume.3.1, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.circlet.3.1, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.flower.3.1, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.sands.3.1, weight: 1}
 
 
 chest_common_max_artifacts_special: &chest_common_max_artifacts_special
@@ -295,35 +295,35 @@ chest_common_max_artifacts_special: &chest_common_max_artifacts_special
 
 
 chest_common_max_artifacts_supplementary: &chest_common_max_artifacts_supplementary
-  - {reward: artifact:berserker:goblet:3:2, weight: 1}
-  - {reward: artifact:berserker:plume:3:2, weight: 1}
-  - {reward: artifact:berserker:circlet:3:2, weight: 1}
-  - {reward: artifact:berserker:flower:3:2, weight: 1}
-  - {reward: artifact:berserker:sands:3:2, weight: 1}
+  - {reward: genshin.artifact.berserker.goblet.3.2, weight: 1}
+  - {reward: genshin.artifact.berserker.plume.3.2, weight: 1}
+  - {reward: genshin.artifact.berserker.circlet.3.2, weight: 1}
+  - {reward: genshin.artifact.berserker.flower.3.2, weight: 1}
+  - {reward: genshin.artifact.berserker.sands.3.2, weight: 1}
 
 
 chest_common_max_artifacts_additional: &chest_common_max_artifacts_additional
-  - {reward: artifact:instructor:goblet:3:2, weight: 1}
-  - {reward: artifact:instructor:plume:3:2, weight: 1}
-  - {reward: artifact:instructor:circlet:3:2, weight: 1}
-  - {reward: artifact:instructor:flower:3:2, weight: 1}
-  - {reward: artifact:instructor:sands:3:2, weight: 1}
+  - {reward: genshin.artifact.instructor.goblet.3.2, weight: 1}
+  - {reward: genshin.artifact.instructor.plume.3.2, weight: 1}
+  - {reward: genshin.artifact.instructor.circlet.3.2, weight: 1}
+  - {reward: genshin.artifact.instructor.flower.3.2, weight: 1}
+  - {reward: genshin.artifact.instructor.sands.3.2, weight: 1}
 
 
 chest_common_max_artifacts_reserve: &chest_common_max_artifacts_reserve
-  - {reward: artifact:adventurer:goblet:3:2, weight: 1}
-  - {reward: artifact:adventurer:plume:3:2, weight: 1}
-  - {reward: artifact:adventurer:circlet:3:2, weight: 1}
-  - {reward: artifact:adventurer:flower:3:2, weight: 1}
-  - {reward: artifact:adventurer:sands:3:2, weight: 1}
+  - {reward: genshin.artifact.adventurer.goblet.3.2, weight: 1}
+  - {reward: genshin.artifact.adventurer.plume.3.2, weight: 1}
+  - {reward: genshin.artifact.adventurer.circlet.3.2, weight: 1}
+  - {reward: genshin.artifact.adventurer.flower.3.2, weight: 1}
+  - {reward: genshin.artifact.adventurer.sands.3.2, weight: 1}
 
 
 chest_common_max_artifacts_optional: &chest_common_max_artifacts_optional
-  - {reward: artifact:traveling_doctor:goblet:3:2, weight: 1}
-  - {reward: artifact:traveling_doctor:plume:3:2, weight: 1}
-  - {reward: artifact:traveling_doctor:circlet:3:2, weight: 1}
-  - {reward: artifact:traveling_doctor:flower:3:2, weight: 1}
-  - {reward: artifact:traveling_doctor:sands:3:2, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.goblet.3.2, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.plume.3.2, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.circlet.3.2, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.flower.3.2, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor.sands.3.2, weight: 1}
 
 
 chest_common_max_artifacts_rare: &chest_common_max_artifacts_rare
@@ -437,19 +437,19 @@ chest_precious_xhigh_enhancement_ore: &chest_precious_xhigh_enhancement_ore
 
 
 chest_precious_xhigh_artifacts: &chest_precious_xhigh_artifacts
-  - {reward: artifact:berserker:goblet:4:2, weight: 1}
-  - {reward: artifact:berserker:plume:4:2, weight: 1}
-  - {reward: artifact:berserker:circlet:4:2, weight: 1}
-  - {reward: artifact:berserker:flower:4:2, weight: 1}
-  - {reward: artifact:berserker:sands:4:2, weight: 1}
+  - {reward: genshin.artifact.berserker.goblet.4.2, weight: 1}
+  - {reward: genshin.artifact.berserker.plume.4.2, weight: 1}
+  - {reward: genshin.artifact.berserker.circlet.4.2, weight: 1}
+  - {reward: genshin.artifact.berserker.flower.4.2, weight: 1}
+  - {reward: genshin.artifact.berserker.sands.4.2, weight: 1}
 
 
 chest_precious_xhigh_artifacts_bonus: &chest_precious_xhigh_artifacts_bonus
-  - {reward: artifact:instructor:goblet:4:2, weight: 1}
-  - {reward: artifact:instructor:plume:4:2, weight: 1}
-  - {reward: artifact:instructor:circlet:4:2, weight: 1}
-  - {reward: artifact:instructor:flower:4:2, weight: 1}
-  - {reward: artifact:instructor:sands:4:2, weight: 1}
+  - {reward: genshin.artifact.instructor.goblet.4.2, weight: 1}
+  - {reward: genshin.artifact.instructor.plume.4.2, weight: 1}
+  - {reward: genshin.artifact.instructor.circlet.4.2, weight: 1}
+  - {reward: genshin.artifact.instructor.flower.4.2, weight: 1}
+  - {reward: genshin.artifact.instructor.sands.4.2, weight: 1}
 
 
 chest_precious_xhigh_artifacts_secondary: &chest_precious_xhigh_artifacts_secondary
@@ -458,19 +458,19 @@ chest_precious_xhigh_artifacts_secondary: &chest_precious_xhigh_artifacts_second
 
 
 chest_precious_xhigh_artifacts_alternative: &chest_precious_xhigh_artifacts_alternative
-  - {reward: artifact:berserker:goblet:4:3, weight: 1}
-  - {reward: artifact:berserker:plume:4:3, weight: 1}
-  - {reward: artifact:berserker:circlet:4:3, weight: 1}
-  - {reward: artifact:berserker:flower:4:3, weight: 1}
-  - {reward: artifact:berserker:sands:4:3, weight: 1}
+  - {reward: genshin.artifact.berserker.goblet.4.3, weight: 1}
+  - {reward: genshin.artifact.berserker.plume.4.3, weight: 1}
+  - {reward: genshin.artifact.berserker.circlet.4.3, weight: 1}
+  - {reward: genshin.artifact.berserker.flower.4.3, weight: 1}
+  - {reward: genshin.artifact.berserker.sands.4.3, weight: 1}
 
 
 chest_precious_xhigh_artifacts_special: &chest_precious_xhigh_artifacts_special
-  - {reward: artifact:instructor:goblet:4:3, weight: 1}
-  - {reward: artifact:instructor:plume:4:3, weight: 1}
-  - {reward: artifact:instructor:circlet:4:3, weight: 1}
-  - {reward: artifact:instructor:flower:4:3, weight: 1}
-  - {reward: artifact:instructor:sands:4:3, weight: 1}
+  - {reward: genshin.artifact.instructor.goblet.4.3, weight: 1}
+  - {reward: genshin.artifact.instructor.plume.4.3, weight: 1}
+  - {reward: genshin.artifact.instructor.circlet.4.3, weight: 1}
+  - {reward: genshin.artifact.instructor.flower.4.3, weight: 1}
+  - {reward: genshin.artifact.instructor.sands.4.3, weight: 1}
 
 
 chest_precious_xhigh_artifacts_supplementary: &chest_precious_xhigh_artifacts_supplementary

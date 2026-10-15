@@ -1,6 +1,5 @@
 package emu.grasscutter.game.drop;
 
-import emu.grasscutter.data.ItemIdRegistry;
 import emu.grasscutter.data.ResourceId;
 import emu.grasscutter.data.excels.DropTableData;
 import java.math.BigDecimal;
@@ -88,13 +87,11 @@ public final class NativeLootYamlExporter {
                 } else {
                     target = itemNames.apply(entry.id);
                     if (target == null) throw new IllegalArgumentException("Unknown item in chest source");
-                    if (!ItemIdRegistry.isArtifactReference(target)) {
-                        ResourceId resource = ResourceId.parse(target);
-                        if (!"genshin".equals(resource.namespace())
-                                || !"item".equals(resource.type())
-                                || resource.name().matches("id_[0-9]+")) {
-                            throw new IllegalArgumentException("Expected semantic item name");
-                        }
+                    ResourceId resource = ResourceId.parse(target);
+                    if (!"genshin".equals(resource.namespace())
+                            || !(resource.type().equals("item") || resource.type().equals("artifact"))
+                            || resource.name().matches("id_[0-9]+")) {
+                        throw new IllegalArgumentException("Expected semantic genshin resource name");
                     }
                 }
 

@@ -17,6 +17,12 @@ class ItemIdRegistryTest {
         assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("genshin.item"));
         assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("Genshin.item.mora"));
         assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("genshin.item.mora.more"));
+        assertEquals("genshin.artifact.berserker.goblet.3.1",
+                ResourceId.parse("genshin.artifact.berserker.goblet.3.1").toString());
+        assertThrows(IllegalArgumentException.class, () ->
+                ResourceId.parse("genshin.artifact.berserker.goblet.3"));
+        assertThrows(IllegalArgumentException.class, () ->
+                ResourceId.parse("genshin.artifact.berserker.goblet.3.5"));
         assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("genshin:item:mora"));
         assertThrows(IllegalArgumentException.class,
                 () -> ResourceId.fromCssProperty("--genshin--item--mora"));
@@ -48,21 +54,25 @@ class ItemIdRegistryTest {
                 55312, "Berserker 3 Star Goblet 2",
                 55341, "Berserker 3 Star Flower",
                 60110, "Adventurer 1 Star Goblet"));
-        assertEquals("artifact:berserker:goblet:3:1", names.describe(55311).key());
-        assertEquals("artifact:berserker:goblet:3:2", names.describe(55312).key());
-        assertEquals("artifact:berserker:flower:3:1", names.describe(55341).key());
-        assertEquals("artifact:adventurer:goblet:1:0", names.describe(60110).key());
-        assertEquals(55311, names.resolve("artifact:berserker:goblet:3:1"));
-        assertEquals(55312, names.resolve("artifact:berserker:goblet:3:2"));
-        assertEquals(60110, names.resolve("artifact:adventurer:goblet:1:0"));
+        assertEquals("genshin.artifact.berserker.goblet.3.1", names.describe(55311).key());
+        assertEquals("genshin.artifact.berserker.goblet.3.2", names.describe(55312).key());
+        assertEquals("genshin.artifact.berserker.flower.3.1", names.describe(55341).key());
+        assertEquals("genshin.artifact.adventurer.goblet.1.0", names.describe(60110).key());
+        assertEquals(55311, names.resolve("genshin.artifact.berserker.goblet.3.1"));
+        assertEquals(55312, names.resolve("genshin.artifact.berserker.goblet.3.2"));
+        assertEquals(60110, names.resolve("genshin.artifact.adventurer.goblet.1.0"));
         assertThrows(IllegalArgumentException.class, () ->
                 names.resolve("genshin.item.artifact_berserker_flower_three_star_one_initial_substats"));
         assertThrows(IllegalArgumentException.class, () ->
-                names.resolve("artifact:berserker:goblet:3:5"));
+                names.resolve("genshin.artifact.berserker.goblet.3.5"));
         assertThrows(IllegalArgumentException.class, () ->
-                names.resolve("artifact:berserker:goblet:3"));
+                names.resolve("genshin.artifact.berserker.goblet.3"));
+        assertThrows(IllegalArgumentException.class, () ->
+                names.resolve("astaps.artifact.berserker.goblet.3.1"));
+        assertThrows(IllegalArgumentException.class, () ->
+                names.resolve("artifact:berserker:goblet:3:1"));
         assertEquals(135, ItemIdRegistry.chestDropNames().values().stream()
-                .filter(name -> name.startsWith("artifact:")).count());
+                .filter(name -> name.startsWith("genshin.artifact.")).count());
         assertEquals(135, ItemIdRegistry.chestDropNames().values().stream()
                 .filter(ItemIdRegistry::isArtifactReference).distinct().count());
     }

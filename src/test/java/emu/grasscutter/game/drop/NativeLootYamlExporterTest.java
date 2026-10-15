@@ -98,12 +98,12 @@ class NativeLootYamlExporterTest {
                 new NativeLootYamlExporter.NativeEntry(55311, "1", 10000))));
         var yaml = NativeLootYamlExporter.export(source, List.of(100),
                 Map.of(100, "artifact_chest"), id -> {
-                    if (id == 55311) return "artifact:berserker:goblet:3:1";
+                    if (id == 55311) return "genshin.artifact.berserker.goblet.3.1";
                     throw new IllegalArgumentException("Unknown item");
                 });
-        assertTrue(yaml.contains("reward: artifact:berserker:goblet:3:1"));
+        assertTrue(yaml.contains("reward: genshin.artifact.berserker.goblet.3.1"));
         var loot = YamlLootTables.parse(yaml, name -> {
-            if (name.equals("artifact:berserker:goblet:3:1")) return 55311;
+            if (name.equals("genshin.artifact.berserker.goblet.3.1")) return 55311;
             return -2;
         });
         assertEquals(Map.of(55311, 1),

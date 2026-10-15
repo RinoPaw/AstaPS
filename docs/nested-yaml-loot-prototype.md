@@ -29,7 +29,7 @@ drop data without combat/puzzle selection. They do not yet reproduce
 location-specific book pools, special recipes, or Dragonspine Crimson
 Agate rewards correctly. Those variants require separately verified
 selection data. The native artifact item IDs are unchanged. Their YAML semantic names now use
-`artifact:<set>:<slot>:<rarity>:<initial_substats>`.
+`genshin.artifact.<set>.<slot>.<rarity>.<initial_substats>`.
 
 ## Common rewards belong to CSS
 
@@ -107,8 +107,8 @@ fractional expectations and native percentage distributions. A nested
 list repeats the entire pool according to the outer count.
 
 Qualified `genshin.item.<name>` identities resolve materials and weapons to game
-item IDs. Artifacts use `artifact:<set>:<slot>:<rarity>:<initial_substats>`,
-for example `artifact:berserker:goblet:3:1` and `artifact:adventurer:goblet:1:0`.
+item IDs. Artifacts use `genshin.artifact.<set>.<slot>.<rarity>.<initial_substats>`,
+for example `genshin.artifact.berserker.goblet.3.1` and `genshin.artifact.adventurer.goblet.1.0`.
 The final number is the native *initial* substat count (including zero), not
 the count after upgrades. The artifact reference resolves to its unchanged
 native item ID. Dotted item IDs and `astaps.loot.<name>` remain unchanged.

@@ -1,15 +1,15 @@
 package emu.grasscutter.data;
 
-/** A resource identity in namespace.type.name form. */
+/** A dotted resource identity, including typed artifact subfields. */
 public record ResourceId(String namespace, String type, String name) {
     public ResourceId {
-        if (!validHead(namespace) || !validHead(type) || !validName(name)) {
+        if (!validHead(namespace) || !validHead(type) || !validName(type, name)) {
             throw new IllegalArgumentException("Invalid resource ID: " + namespace + "." + type + "." + name);
         }
     }
 
     public static ResourceId parse(String value) {
-        String[] parts = value.split("\\.", -1);
+        String[] parts = value.split("\\.", 3);
         if (parts.length != 3) {
             throw new IllegalArgumentException("Expected namespace.type.name: " + value);
         }
@@ -36,7 +36,11 @@ public record ResourceId(String namespace, String type, String name) {
         return part != null && part.matches("[a-z][a-z0-9_]*");
     }
 
-    private static boolean validName(String part) {
+    private static boolean validName(String type, String part) {
+        if ("artifact".equals(type)) {
+            return part != null && part.matches(
+                    "[a-z][a-z0-9_]*\\.(flower|plume|sands|goblet|circlet)\\.[1-5]\\.[0-4]");
+        }
         return part != null && part.matches("[\\p{L}_][\\p{L}\\p{N}_-]*");
     }
 

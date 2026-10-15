@@ -36,7 +36,7 @@ class BundledChestRewardsTest {
         return new ItemIdRegistry(names);
     }
 
-    private static ArtifactResolver artifacts() {
+    static ArtifactResolver artifacts() {
         var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
         String[] sets = {"berserker", "instructor", "the_exile",
                 "adventurer", "lucky_dog", "traveling_doctor"};
@@ -176,7 +176,7 @@ class BundledChestRewardsTest {
         assertTrue(source.contains("reward: genshin.artifact.adventurer"));
         assertTrue(source.contains("properties: {slot: \"1~5\", rarity: 1}"));
         assertEquals(18, java.util.regex.Pattern.compile(
-                "reward: genshin\\\\.artifact\\\\.[a-z0-9_]+")
+                "reward: genshin\\.artifact\\.[a-z0-9_]+")
                 .matcher(source).results().count());
         var chosen = artifacts().compile("genshin.artifact.berserker",
                 Map.of("slot", "goblet", "rarity", 3, "substats", 1));

@@ -44,7 +44,8 @@ final class TransPointRewardsTest {
                 Map.entry(104012, "Fine Enhancement Ore"),
                 Map.entry(101692, "Three Realms Item")));
         var ids = new ItemIdRegistry(names);
-        var loot = YamlLootTables.parse(read("/rewards/loot.yaml"), ids::resolve);
+        var loot = YamlLootTables.parse(read("/rewards/loot.yaml"), ids::resolve,
+                BundledChestRewardsTest.artifacts());
         var css = CssRewards.parse(read("/rewards/rewards.css"), ids, loot);
         var standard = Map.of(102, 50, 201, 5);
         assertEquals(standard, roll(css, loot, "waypoint", 3, 8));

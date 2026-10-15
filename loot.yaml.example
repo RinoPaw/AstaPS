@@ -1,0 +1,439 @@
+# REVIEW DRAFT — source graphs from a historical 6.5-lineage Server/DropTable snapshot.
+# Exact ID/count/weight structure follows that snapshot, NOT verified original Genshin 7.1 rates.
+# These 24 tier names use the Mondstadt COMBAT tables as one representative source family.
+# Other regions and puzzle chests need their own selection logic; do not deploy this draft as-is.
+# Numerical leaf rewards are original item IDs. Empty nodes are kept as empty rewards.
+
+# Source: ChestDrop "战斗低级蒙德" minLevel=1 -> 51010000
+common_chest_light: &root_51010000
+  - {reward: 202, count: "240~360"}
+  - reward: &share_500100
+      - {reward: 100061, weight: 1000}
+      - {reward: 100064, weight: 1000}
+    count: "1:50"
+  - reward:
+      - {reward: 104001, count: "1.6"}
+      - {reward: 104002, count: "1:15"}
+  - reward:
+      - {reward: null}
+    count: "1:40"
+  - reward:
+      - {reward: null}
+  - reward:
+      - reward: &share_541150
+          - reward: &share_520000
+              - {reward: 60110, weight: 1000}
+              - {reward: 60120, weight: 1000}
+              - {reward: 60130, weight: 1000}
+              - {reward: 60140, weight: 1000}
+              - {reward: 60150, weight: 1000}
+            weight: 1000
+          - reward: &share_520100
+              - {reward: 63110, weight: 1000}
+              - {reward: 63120, weight: 1000}
+              - {reward: 63130, weight: 1000}
+              - {reward: 63140, weight: 1000}
+              - {reward: 63150, weight: 1000}
+            weight: 1000
+        weight: 9000
+      - reward: &share_541155
+          - reward: &share_520005
+              - {reward: 60210, weight: 1000}
+              - {reward: 60220, weight: 1000}
+              - {reward: 60230, weight: 1000}
+              - {reward: 60240, weight: 1000}
+              - {reward: 60250, weight: 1000}
+            weight: 1000
+          - reward: &share_520105
+              - {reward: 63210, weight: 1000}
+              - {reward: 63220, weight: 1000}
+              - {reward: 63230, weight: 1000}
+              - {reward: 63240, weight: 1000}
+              - {reward: 63250, weight: 1000}
+            weight: 1000
+        weight: 900
+      - reward: &share_541156
+          - reward: &share_520006
+              - {reward: 60211, weight: 1000}
+              - {reward: 60221, weight: 1000}
+              - {reward: 60231, weight: 1000}
+              - {reward: 60241, weight: 1000}
+              - {reward: 60251, weight: 1000}
+            weight: 1000
+          - reward: &share_520106
+              - {reward: 63211, weight: 1000}
+              - {reward: 63221, weight: 1000}
+              - {reward: 63231, weight: 1000}
+              - {reward: 63241, weight: 1000}
+              - {reward: 63251, weight: 1000}
+            weight: 1000
+        weight: 100
+    count: "1:52"
+
+# Source: ChestDrop "战斗低级蒙德" minLevel=6 -> 51010100
+common_chest_low: &root_51010100
+  - {reward: 202, count: "240~360"}
+  - reward: *share_500100
+    count: "1:50"
+  - reward:
+      - {reward: 104001, count: "2.1"}
+      - {reward: 104002, count: "1:30"}
+  - reward:
+      - {reward: null}
+    count: "1:50"
+  - reward:
+      - {reward: null}
+  - reward:
+      - reward: *share_541150
+        weight: 9000
+      - reward: *share_541155
+        weight: 900
+      - reward: *share_541156
+        weight: 100
+    count: "1:80"
+
+# Source: ChestDrop "战斗低级蒙德" minLevel=11 -> 51010200
+common_chest_medium: &root_51010200
+  - {reward: 202, count: "480~720"}
+  - reward:
+      - {reward: 104001, count: "2.6"}
+      - {reward: 104002, count: "1:40"}
+  - reward:
+      - {reward: null}
+    count: "1:60"
+  - reward:
+      - {reward: null}
+  - reward:
+      - reward: *share_541150
+        weight: 9000
+      - reward: *share_541155
+        weight: 900
+      - reward: *share_541156
+        weight: 100
+    count: "1.2"
+
+# Source: ChestDrop "战斗低级蒙德" minLevel=16 -> 51010300
+common_chest_high: &root_51010300
+  - {reward: 202, count: "480~720"}
+  - reward:
+      - {reward: 104001, count: "3.1"}
+      - {reward: 104002, count: "1:50"}
+  - reward:
+      - {reward: null}
+    count: "1:70"
+  - reward:
+      - {reward: null}
+  - reward:
+      - reward: *share_541150
+        weight: 6600
+      - reward: *share_541155
+        weight: 3060
+      - reward: *share_541156
+        weight: 340
+    count: "1.5"
+
+# Source: ChestDrop "战斗低级蒙德" minLevel=21 -> 51010400
+common_chest_xhigh: &root_51010400
+  - {reward: 202, count: "720~1080"}
+  - reward:
+      - {reward: 104001, count: "3.6"}
+      - {reward: 104002, count: "1:60"}
+  - reward:
+      - {reward: null}
+    count: "1:80"
+  - reward:
+      - {reward: null}
+  - reward:
+      - reward: *share_541150
+        weight: 6600
+      - reward: *share_541155
+        weight: 3060
+      - reward: *share_541156
+        weight: 340
+    count: "1.75"
+
+# Source: ChestDrop "战斗低级蒙德" minLevel=26 -> 51010500
+common_chest_max: &root_51010500
+  - {reward: 202, count: "720~1080"}
+  - reward:
+      - {reward: 104002, count: "2.1"}
+  - reward:
+      - reward: &share_510000
+          - {reward: 104301, weight: 1000}
+          - {reward: 104304, weight: 1000}
+          - {reward: 104307, weight: 1000}
+        count: "1:25"
+  - reward:
+      - {reward: null}
+    count: "1:90"
+  - reward:
+      - {reward: null}
+  - reward:
+      - reward: *share_541150
+        weight: 3400
+      - reward: *share_541155
+        weight: 5040
+      - reward: *share_541156
+        weight: 560
+      - reward: &share_541161
+          - reward: &share_520611
+              - {reward: 55311, weight: 1000}
+              - {reward: 55321, weight: 1000}
+              - {reward: 55331, weight: 1000}
+              - {reward: 55341, weight: 1000}
+              - {reward: 55351, weight: 1000}
+            weight: 1000
+          - reward: &share_520661
+              - {reward: 57311, weight: 1000}
+              - {reward: 57321, weight: 1000}
+              - {reward: 57331, weight: 1000}
+              - {reward: 57341, weight: 1000}
+              - {reward: 57351, weight: 1000}
+            weight: 1000
+          - reward: &share_520011
+              - {reward: 60311, weight: 1000}
+              - {reward: 60321, weight: 1000}
+              - {reward: 60331, weight: 1000}
+              - {reward: 60341, weight: 1000}
+              - {reward: 60351, weight: 1000}
+            weight: 1000
+          - reward: &share_520111
+              - {reward: 63311, weight: 1000}
+              - {reward: 63321, weight: 1000}
+              - {reward: 63331, weight: 1000}
+              - {reward: 63341, weight: 1000}
+              - {reward: 63351, weight: 1000}
+            weight: 1000
+        weight: 900
+      - reward: &share_541162
+          - reward: &share_520612
+              - {reward: 55312, weight: 1000}
+              - {reward: 55322, weight: 1000}
+              - {reward: 55332, weight: 1000}
+              - {reward: 55342, weight: 1000}
+              - {reward: 55352, weight: 1000}
+            weight: 1000
+          - reward: &share_520662
+              - {reward: 57312, weight: 1000}
+              - {reward: 57322, weight: 1000}
+              - {reward: 57332, weight: 1000}
+              - {reward: 57342, weight: 1000}
+              - {reward: 57352, weight: 1000}
+            weight: 1000
+          - reward: &share_520012
+              - {reward: 60312, weight: 1000}
+              - {reward: 60322, weight: 1000}
+              - {reward: 60332, weight: 1000}
+              - {reward: 60342, weight: 1000}
+              - {reward: 60352, weight: 1000}
+            weight: 1000
+          - reward: &share_520112
+              - {reward: 63312, weight: 1000}
+              - {reward: 63322, weight: 1000}
+              - {reward: 63332, weight: 1000}
+              - {reward: 63342, weight: 1000}
+              - {reward: 63352, weight: 1000}
+            weight: 1000
+        weight: 100
+    count: "1.75"
+
+exquisite_chest_light: *root_51010500
+
+exquisite_chest_low: *root_51010500
+
+exquisite_chest_medium: *root_51010500
+
+exquisite_chest_high: *root_51010500
+
+# Source: ChestDrop "战斗中级蒙德" minLevel=21 -> 51010600
+exquisite_chest_xhigh: &root_51010600
+  - {reward: 202, count: "960~1440"}
+  - reward:
+      - {reward: 104002, count: "2.6"}
+  - reward:
+      - reward: *share_510000
+        count: "1:25"
+  - reward:
+      - {reward: null}
+  - reward:
+      - {reward: null}
+  - reward:
+      - reward: *share_541150
+        weight: 3400
+      - reward: *share_541155
+        weight: 5040
+      - reward: *share_541156
+        weight: 560
+      - reward: *share_541161
+        weight: 900
+      - reward: *share_541162
+        weight: 100
+    count: "2"
+
+# Source: ChestDrop "战斗中级蒙德" minLevel=26 -> 51010700
+exquisite_chest_max: &root_51010700
+  - {reward: 202, count: "960~1440"}
+  - reward:
+      - {reward: 104002, count: "1.1"}
+      - {reward: 104003}
+  - reward:
+      - reward: *share_510000
+  - reward:
+      - {reward: null}
+    count: "1.1"
+  - reward:
+      - {reward: null}
+  - reward:
+      - reward: *share_541155
+        weight: 6300
+      - reward: *share_541156
+        weight: 699
+      - reward: *share_541161
+        weight: 2700
+      - reward: *share_541162
+        weight: 300
+    count: "2"
+
+precious_chest_light: *root_51010700
+
+precious_chest_low: *root_51010700
+
+precious_chest_medium: *root_51010700
+
+precious_chest_high: *root_51010700
+
+# Source: ChestDrop "战斗高级蒙德" minLevel=21 -> 51010800
+precious_chest_xhigh: &root_51010800
+  - {reward: 202, count: "1200~1800"}
+  - {reward: 109207}
+  - reward:
+      - {reward: 104002, count: "1.6"}
+      - {reward: 104003}
+  - reward:
+      - reward: *share_510000
+  - reward:
+      - {reward: null}
+    count: "1.2"
+  - reward:
+      - {reward: null}
+  - reward:
+      - reward: *share_541161
+        weight: 8100
+      - reward: *share_541162
+        weight: 900
+      - reward: &share_541167
+          - reward: &share_520617
+              - {reward: 55412, weight: 1000}
+              - {reward: 55422, weight: 1000}
+              - {reward: 55432, weight: 1000}
+              - {reward: 55442, weight: 1000}
+              - {reward: 55452, weight: 1000}
+            weight: 1000
+          - reward: &share_520667
+              - {reward: 57412, weight: 1000}
+              - {reward: 57422, weight: 1000}
+              - {reward: 57432, weight: 1000}
+              - {reward: 57442, weight: 1000}
+              - {reward: 57452, weight: 1000}
+            weight: 1000
+        weight: 900
+      - reward: &share_541168
+          - reward: &share_520618
+              - {reward: 55413, weight: 1000}
+              - {reward: 55423, weight: 1000}
+              - {reward: 55433, weight: 1000}
+              - {reward: 55443, weight: 1000}
+              - {reward: 55453, weight: 1000}
+            weight: 1000
+          - reward: &share_520668
+              - {reward: 57413, weight: 1000}
+              - {reward: 57423, weight: 1000}
+              - {reward: 57433, weight: 1000}
+              - {reward: 57443, weight: 1000}
+              - {reward: 57453, weight: 1000}
+            weight: 1000
+        weight: 100
+    count: "2.25"
+
+# Source: ChestDrop "战斗高级蒙德" minLevel=26 -> 51010900
+precious_chest_max: &root_51010900
+  - {reward: 202, count: "1200~1800"}
+  - reward:
+      - {reward: 104003, count: "2"}
+  - reward:
+      - reward: &share_510001
+          - {reward: 104302, weight: 1000}
+          - {reward: 104305, weight: 1000}
+          - {reward: 104308, weight: 1000}
+  - reward:
+      - {reward: null}
+    count: "1.3"
+  - reward:
+      - {reward: null}
+  - reward:
+      - reward: *share_541161
+        weight: 8100
+      - reward: *share_541162
+        weight: 900
+      - reward: *share_541167
+        weight: 900
+      - reward: *share_541168
+        weight: 100
+    count: "2.25"
+
+luxurious_chest_light: *root_51010900
+
+luxurious_chest_low: *root_51010900
+
+luxurious_chest_medium: *root_51010900
+
+luxurious_chest_high: *root_51010900
+
+# Source: ChestDrop "战斗超级蒙德" minLevel=21 -> 51011000
+luxurious_chest_xhigh: &root_51011000
+  - {reward: 202, count: "1440~2160"}
+  - reward:
+      - {reward: 104003, count: "2.05"}
+  - reward:
+      - reward: *share_510001
+  - reward:
+      - {reward: null}
+    count: "1.4"
+  - reward:
+      - {reward: null}
+  - reward:
+      - reward: *share_541161
+        weight: 7200
+      - reward: *share_541162
+        weight: 800
+      - reward: *share_541167
+        weight: 1800
+      - reward: *share_541168
+        weight: 200
+    count: "2.5"
+
+# Source: ChestDrop "战斗超级蒙德" minLevel=26 -> 51011100
+luxurious_chest_max: &root_51011100
+  - {reward: 202, count: "1440~2160"}
+  - reward:
+      - {reward: 104003, count: "2.1"}
+  - reward:
+      - reward: *share_510001
+  - reward:
+      - {reward: null}
+    count: "1.5"
+  - reward:
+      - {reward: null}
+  - reward:
+      - reward: *share_541161
+        weight: 7200
+      - reward: *share_541162
+        weight: 800
+      - reward: *share_541167
+        weight: 1800
+      - reward: *share_541168
+        weight: 200
+    count: "2.5"
+
+three_realms_point:
+  - {reward: 101692, count: 20}

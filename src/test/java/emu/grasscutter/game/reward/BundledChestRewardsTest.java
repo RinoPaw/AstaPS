@@ -43,11 +43,11 @@ class BundledChestRewardsTest {
     void twelveChestTiersContainNoFixedCurrencies() throws Exception {
         var loot = loot();
         String[] tiers = {
-            "chest_common_light", "chest_common_low", "chest_common_medium",
-            "chest_common_high", "chest_common_xhigh", "chest_common_max",
-            "chest_exquisite_xhigh", "chest_exquisite_max",
-            "chest_precious_xhigh", "chest_precious_max",
-            "chest_luxurious_xhigh", "chest_luxurious_max"
+            "minimal", "nano", "micro",
+            "light", "low", "medium",
+            "high", "xhigh",
+            "xxhigh", "xxxhigh",
+            "max", "ultra"
         };
         assertEquals(99, loot.names().size()); // 12 tiers, 86 supporting pools, one point
         for (String tier : tiers) assertTrue(loot.contains("astaps.loot." + tier), tier);
@@ -69,14 +69,14 @@ class BundledChestRewardsTest {
         var loot = loot();
         var css = CssRewards.parse(resource("/rewards/rewards.css"), items(), loot);
         String[][] expected = {
-            {"chest_common_light", "chest_common_low", "chest_common_medium",
-             "chest_common_high", "chest_common_xhigh", "chest_common_max"},
-            {"chest_common_max", "chest_common_max", "chest_common_max",
-             "chest_common_max", "chest_exquisite_xhigh", "chest_exquisite_max"},
-            {"chest_exquisite_max", "chest_exquisite_max", "chest_exquisite_max",
-             "chest_exquisite_max", "chest_precious_xhigh", "chest_precious_max"},
-            {"chest_precious_max", "chest_precious_max", "chest_precious_max",
-             "chest_precious_max", "chest_luxurious_xhigh", "chest_luxurious_max"}
+            {"minimal", "nano", "micro",
+             "light", "low", "medium"},
+            {"medium", "medium", "medium",
+             "medium", "high", "xhigh"},
+            {"xhigh", "xhigh", "xhigh",
+             "xhigh", "xxhigh", "xxxhigh"},
+            {"xxxhigh", "xxxhigh", "xxxhigh",
+             "xxxhigh", "max", "ultra"}
         };
         String[] kinds = {"common", "exquisite", "precious", "luxurious"};
         int[] levels = {1, 6, 11, 16, 21, 26};
@@ -125,11 +125,11 @@ class BundledChestRewardsTest {
     void allTiersHaveWeaponAndEnhancementOreCandidates() throws Exception {
         var loot = loot();
         for (String tier : new String[]{
-                "chest_common_light", "chest_common_low", "chest_common_medium",
-                "chest_common_high", "chest_common_xhigh", "chest_common_max",
-                "chest_exquisite_xhigh", "chest_exquisite_max",
-                "chest_precious_xhigh", "chest_precious_max",
-                "chest_luxurious_xhigh", "chest_luxurious_max"}) {
+                "minimal", "nano", "micro",
+                "light", "low", "medium",
+                "high", "xhigh",
+                "xxhigh", "xxxhigh",
+                "max", "ultra"}) {
             boolean hasWeapon = false, hasOre = false;
             for (int seed = 0; seed < 120; seed++) {
                 var rewards = loot.roll("astaps.loot." + tier, new Random(seed));

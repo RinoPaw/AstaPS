@@ -6,18 +6,20 @@ and `src/main/resources/rewards/rewards.css`. There is no editable
 
 ## Twelve ordinary chest tiers
 
+Ascending tier order: minimal → nano → micro → light → low → medium → high → xhigh → xxhigh → xxxhigh → max → ultra.
+
 CSS selects among twelve reusable item reward tiers, based on the native
 chest grade and `SceneGadget.level` (not the player's Adventure Rank).
 
 | Grade | level 1–5 | 6–10 | 11–15 | 16–20 | 21–25 | 26+ |
 |---|---|---|---|---|---|---|
-| Common | common_light | common_low | common_medium | common_high | common_xhigh | common_max |
-| Exquisite | common_max | common_max | common_max | common_max | exquisite_xhigh | exquisite_max |
-| Precious | exquisite_max | exquisite_max | exquisite_max | exquisite_max | precious_xhigh | precious_max |
-| Luxurious | precious_max | precious_max | precious_max | precious_max | luxurious_xhigh | luxurious_max |
+| Common | minimal | nano | micro | light | low | medium |
+| Exquisite | medium | medium | medium | medium | high | xhigh |
+| Precious | xhigh | xhigh | xhigh | xhigh | xxhigh | xxxhigh |
+| Luxurious | xxxhigh | xxxhigh | xxxhigh | xxxhigh | max | ultra |
 
-These names take the `chest_` prefix in `loot.yaml`, and are registered
-under `astaps.loot`. YAML also contains supporting subpools and
+These twelve short names are registered directly under `astaps.loot`,
+for example `astaps.loot.nano` and `astaps.loot.ultra`. YAML also contains supporting subpools and
 `three_realms_point`. Those are not additional world-chest tiers.
 
 Loot tiers contain variable contents: character experience items,
@@ -39,7 +41,7 @@ chest {
 }
 
 chest[kind="common"][level="1~5"] {
-    --loot: chest_common_light;
+    --loot: minimal;
     --genshin-item-mora: 240~360;
     --genshin-item-sigil: 1;
 }

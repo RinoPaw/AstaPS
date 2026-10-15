@@ -32,7 +32,8 @@ final class TransPointRewardsTest {
 
     @Test
     void bundledPointRulesPreserveAllFormerTomlPayouts() throws Exception {
-        var ids = new ItemIdRegistry(Map.ofEntries(
+        var names = new java.util.HashMap<Integer, String>(ItemIdRegistry.chestDropNames());
+        names.putAll(Map.ofEntries(
                 Map.entry(102, "Adventure EXP"),
                 Map.entry(201, "Primogem"),
                 Map.entry(202, "Mora"),
@@ -42,6 +43,7 @@ final class TransPointRewardsTest {
                 Map.entry(104011, "Enhancement Ore"),
                 Map.entry(104012, "Fine Enhancement Ore"),
                 Map.entry(101692, "Three Realms Item")));
+        var ids = new ItemIdRegistry(names);
         var loot = YamlLootTables.parse(read("/rewards/loot.yaml"), ids::resolve);
         var css = CssRewards.parse(read("/rewards/rewards.css"), ids, loot);
         var standard = Map.of(102, 50, 201, 5);

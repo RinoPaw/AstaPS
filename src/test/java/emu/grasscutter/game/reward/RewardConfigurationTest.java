@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 class RewardConfigurationTest {
     @Test
     void rewardConfigurationReadsOnlyBundledResources() throws Exception {
-        assertTrue(RewardConfiguration.readBundled("loot.yaml").contains("common_chest:"));
-        assertTrue(RewardConfiguration.readBundled("rewards.css").contains("--loot: common_chest;"));
+        assertTrue(RewardConfiguration.readBundled("loot.yaml").contains("minimal:"));
+        assertTrue(RewardConfiguration.readBundled("rewards.css").contains("--loot: minimal;"));
     }
 
     @Test

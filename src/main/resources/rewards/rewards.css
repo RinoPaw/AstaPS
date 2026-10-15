@@ -5,119 +5,119 @@ chest {
 
 /* Fixed currencies and tier selection. Mora values are inclusive ranges. */
 chest[kind="common"] {
-    --loot: chest_common_light;
+    --loot: minimal;
     --genshin-item-mora: 240~360;
     --genshin-item-sigil: 1;
     --genshin-item-primogem: 2;
 }
 
 chest[kind="common"][level="1~5"] {
-    --loot: chest_common_light;
+    --loot: minimal;
     --genshin-item-mora: 240~360;
     --genshin-item-sigil: 1;
 }
 
 chest[kind="common"][level="6~10"] {
-    --loot: chest_common_low;
+    --loot: nano;
     --genshin-item-mora: 240~360;
     --genshin-item-sigil: 1;
 }
 
 chest[kind="common"][level="11~15"] {
-    --loot: chest_common_medium;
+    --loot: micro;
     --genshin-item-mora: 480~720;
     --genshin-item-sigil: 2;
 }
 
 chest[kind="common"][level="16~20"] {
-    --loot: chest_common_high;
+    --loot: light;
     --genshin-item-mora: 480~720;
     --genshin-item-sigil: 2;
 }
 
 chest[kind="common"][level="21~25"] {
-    --loot: chest_common_xhigh;
+    --loot: low;
     --genshin-item-mora: 720~1080;
     --genshin-item-sigil: 3;
 }
 
 chest[kind="common"][level="26~"] {
-    --loot: chest_common_max;
+    --loot: medium;
     --genshin-item-mora: 720~1080;
     --genshin-item-sigil: 3;
 }
 
 chest[kind="exquisite"] {
-    --loot: chest_exquisite_max;
+    --loot: xhigh;
     --genshin-item-mora: 960~1440;
     --genshin-item-sigil: 4;
     --genshin-item-primogem: 5;
 }
 
 chest[kind="exquisite"][level="1~20"] {
-    --loot: chest_common_max;
+    --loot: medium;
     --genshin-item-mora: 720~1080;
     --genshin-item-sigil: 3;
 }
 
 chest[kind="exquisite"][level="21~25"] {
-    --loot: chest_exquisite_xhigh;
+    --loot: high;
     --genshin-item-mora: 960~1440;
     --genshin-item-sigil: 4;
 }
 
 chest[kind="exquisite"][level="26~"] {
-    --loot: chest_exquisite_max;
+    --loot: xhigh;
     --genshin-item-mora: 960~1440;
     --genshin-item-sigil: 4;
 }
 
 chest[kind="precious"] {
-    --loot: chest_precious_max;
+    --loot: xxxhigh;
     --genshin-item-mora: 1200~1800;
     --genshin-item-sigil: 5;
     --genshin-item-primogem: 10;
 }
 
 chest[kind="precious"][level="1~20"] {
-    --loot: chest_exquisite_max;
+    --loot: xhigh;
     --genshin-item-mora: 960~1440;
     --genshin-item-sigil: 4;
 }
 
 chest[kind="precious"][level="21~25"] {
-    --loot: chest_precious_xhigh;
+    --loot: xxhigh;
     --genshin-item-mora: 1200~1800;
     --genshin-item-sigil: 5;
 }
 
 chest[kind="precious"][level="26~"] {
-    --loot: chest_precious_max;
+    --loot: xxxhigh;
     --genshin-item-mora: 1200~1800;
     --genshin-item-sigil: 5;
 }
 
 chest[kind="luxurious"] {
-    --loot: chest_luxurious_max;
+    --loot: ultra;
     --genshin-item-mora: 1440~2160;
     --genshin-item-sigil: 6;
     --genshin-item-primogem: 10;
 }
 
 chest[kind="luxurious"][level="1~20"] {
-    --loot: chest_precious_max;
+    --loot: xxxhigh;
     --genshin-item-mora: 1200~1800;
     --genshin-item-sigil: 5;
 }
 
 chest[kind="luxurious"][level="21~25"] {
-    --loot: chest_luxurious_xhigh;
+    --loot: max;
     --genshin-item-mora: 1440~2160;
     --genshin-item-sigil: 6;
 }
 
 chest[kind="luxurious"][level="26~"] {
-    --loot: chest_luxurious_max;
+    --loot: ultra;
     --genshin-item-mora: 1440~2160;
     --genshin-item-sigil: 6;
 }

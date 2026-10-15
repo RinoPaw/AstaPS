@@ -1,4 +1,5 @@
 # The twelve chest reward tiers contain variable item rewards only.
+# Tier order (weak to strong): minimal → nano → micro → light → low → medium → high → xhigh → xxhigh → xxxhigh → max → ultra.
 # CSS owns Adventure EXP, Mora, Primogems and regional sigils.
 # Weapon and ore pools are provisional pending verified 7.1 source drops.
 # Artifact item names are unchanged.
@@ -112,7 +113,7 @@ chest_common_artifacts_rare: &chest_common_artifacts_rare
 
 # Chest common — source reward tier.
 
-chest_common_light: &chest_common_light
+minimal: &minimal
   - {reward: *chest_common_food_ingredients, count: "0.5"}
   - {reward: *chest_common_experience}
   - {reward: *chest_common_weapons, count: "0.4"}
@@ -141,7 +142,7 @@ chest_common_low_artifacts: &chest_common_low_artifacts
 
 # Chest common low — source reward tier.
 
-chest_common_low: &chest_common_low
+nano: &nano
   - {reward: *chest_common_food_ingredients, count: "0.5"}
   - {reward: *chest_common_low_experience}
   - {reward: *chest_common_low_weapons, count: "0.5"}
@@ -170,7 +171,7 @@ chest_common_medium_artifacts: &chest_common_medium_artifacts
 
 # Chest common medium — source reward tier.
 
-chest_common_medium: &chest_common_medium
+micro: &micro
   - {reward: *chest_common_medium_experience}
   - {reward: *chest_common_medium_weapons, count: "0.6"}
   - {reward: *chest_common_medium_enhancement_ore}
@@ -198,7 +199,7 @@ chest_common_high_artifacts: &chest_common_high_artifacts
 
 # Chest common high — source reward tier.
 
-chest_common_high: &chest_common_high
+light: &light
   - {reward: *chest_common_high_experience}
   - {reward: *chest_common_high_weapons, count: "0.7"}
   - {reward: *chest_common_high_enhancement_ore}
@@ -225,7 +226,7 @@ chest_common_xhigh_artifacts: &chest_common_xhigh_artifacts
 
 # Chest common xhigh — source reward tier.
 
-chest_common_xhigh: &chest_common_xhigh
+low: &low
   - {reward: *chest_common_xhigh_experience}
   - {reward: *chest_common_xhigh_weapons, count: "0.8"}
   - {reward: *chest_common_xhigh_enhancement_ore}
@@ -341,7 +342,7 @@ chest_common_max_artifacts_common: &chest_common_max_artifacts_common
 
 # Chest common max — source reward tier.
 
-chest_common_max: &chest_common_max
+medium: &medium
   - {reward: *chest_common_max_experience}
   - {reward: *chest_common_max_talent_books_bonus}
   - {reward: *chest_common_max_weapons, count: "0.9"}
@@ -375,7 +376,7 @@ chest_exquisite_xhigh_artifacts: &chest_exquisite_xhigh_artifacts
 
 # Chest exquisite xhigh — source reward tier.
 
-chest_exquisite_xhigh: &chest_exquisite_xhigh
+high: &high
   - {reward: *chest_exquisite_xhigh_experience}
   - {reward: *chest_exquisite_xhigh_talent_books}
   - {reward: *chest_exquisite_xhigh_weapons}
@@ -409,7 +410,7 @@ chest_exquisite_max_artifacts: &chest_exquisite_max_artifacts
 
 # Chest exquisite max — source reward tier.
 
-chest_exquisite_max: &chest_exquisite_max
+xhigh: &xhigh
   - {reward: *chest_exquisite_max_experience}
   - {reward: *chest_exquisite_max_talent_books}
   - {reward: *chest_exquisite_max_weapons, count: "1.1"}
@@ -485,7 +486,7 @@ chest_precious_xhigh_artifacts_additional: &chest_precious_xhigh_artifacts_addit
 
 # Chest precious xhigh — source reward tier.
 
-chest_precious_xhigh: &chest_precious_xhigh
+xxhigh: &xxhigh
   - {reward: genshin.item.recipe_mushroom_pizza}
   - {reward: *chest_precious_xhigh_experience}
   - {reward: *chest_precious_xhigh_talent_books}
@@ -525,7 +526,7 @@ chest_precious_max_artifacts: &chest_precious_max_artifacts
 
 # Chest precious max — source reward tier.
 
-chest_precious_max: &chest_precious_max
+xxxhigh: &xxxhigh
   - {reward: *chest_precious_max_experience}
   - {reward: *chest_precious_max_talent_books_bonus}
   - {reward: *chest_precious_max_weapons, count: "1.3"}
@@ -557,7 +558,7 @@ chest_luxurious_xhigh_artifacts: &chest_luxurious_xhigh_artifacts
 
 # Chest luxurious xhigh — source reward tier.
 
-chest_luxurious_xhigh: &chest_luxurious_xhigh
+max: &max
   - {reward: *chest_luxurious_xhigh_experience}
   - {reward: *chest_luxurious_xhigh_talent_books}
   - {reward: *chest_luxurious_xhigh_weapons, count: "1.4"}
@@ -589,7 +590,7 @@ chest_luxurious_max_artifacts: &chest_luxurious_max_artifacts
 
 # Chest luxurious max — source reward tier.
 
-chest_luxurious_max: &chest_luxurious_max
+ultra: &ultra
   - {reward: *chest_luxurious_max_experience}
   - {reward: *chest_luxurious_max_talent_books}
   - {reward: *chest_luxurious_max_weapons, count: "1.5"}

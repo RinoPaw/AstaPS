@@ -1,78 +1,36 @@
-/* REVIEW DRAFT only: representative Mondstadt combat family from historical Server/DropTable.
- * Six thresholds: 1, 6, 11, 16, 21, 26 (ChestLevelSetConfigData).
- * The source does NOT prove these are the right roots for other regions or puzzle chests.
- * CSS currently cannot distinguish combat/puzzle reliably. Do not deploy as production rules.
- */
+/* Review draft: historical Mondstadt combat rewards; not verified for other sources. */
 
 chest[kind="common"] {
-    --loot: common_chest_light;
     --genshin-item-adventure_exp: 10;
     --genshin-item-sigil: 1;
     --genshin-item-primogem: 0;
 }
 
-chest[kind="exquisite"] {
-    --loot: exquisite_chest_light;
-    --genshin-item-adventure_exp: 20;
-    --genshin-item-sigil: 3;
-    --genshin-item-primogem: 2;
-}
-
-chest[kind="precious"] {
-    --loot: precious_chest_light;
-    --genshin-item-adventure_exp: 30;
-    --genshin-item-sigil: 4;
-    --genshin-item-primogem: 5;
-}
-
-chest[kind="luxurious"] {
-    --loot: luxurious_chest_light;
-    --genshin-item-adventure_exp: 30;
-    --genshin-item-sigil: 5;
-    --genshin-item-primogem: 10;
-}
-
-/* Historical battle source root 51010000; level 1~5. */
 chest[kind="common"][level="1~5"] {
     --loot: common_chest_light;
-    --genshin-item-adventure_exp: 10;
-    --genshin-item-sigil: 1;
-    --genshin-item-primogem: 0;
 }
 
-/* Historical battle source root 51010100; level 6~10. */
 chest[kind="common"][level="6~10"] {
     --loot: common_chest_low;
-    --genshin-item-adventure_exp: 10;
-    --genshin-item-sigil: 1;
-    --genshin-item-primogem: 0;
 }
 
-/* Historical battle source root 51010200; level 11~15. */
 chest[kind="common"][level="11~15"] {
     --loot: common_chest_medium;
-    --genshin-item-adventure_exp: 10;
     --genshin-item-sigil: 2;
-    --genshin-item-primogem: 0;
 }
 
-/* Historical battle source root 51010300; level 16~20. */
 chest[kind="common"][level="16~20"] {
     --loot: common_chest_high;
     --genshin-item-adventure_exp: 20;
     --genshin-item-sigil: 2;
-    --genshin-item-primogem: 0;
 }
 
-/* Historical battle source root 51010400; level 21~25. */
 chest[kind="common"][level="21~25"] {
     --loot: common_chest_xhigh;
     --genshin-item-adventure_exp: 20;
     --genshin-item-sigil: 3;
-    --genshin-item-primogem: 0;
 }
 
-/* Historical battle source root 51010500; level 26~. */
 chest[kind="common"][level="26~"] {
     --loot: common_chest_max;
     --genshin-item-adventure_exp: 20;
@@ -80,47 +38,33 @@ chest[kind="common"][level="26~"] {
     --genshin-item-primogem: 2;
 }
 
-/* Historical battle source root 51010500; level 1~5. */
+chest[kind="exquisite"] {
+    --genshin-item-adventure_exp: 20;
+    --genshin-item-sigil: 3;
+    --genshin-item-primogem: 2;
+}
+
 chest[kind="exquisite"][level="1~5"] {
     --loot: exquisite_chest_light;
-    --genshin-item-adventure_exp: 20;
-    --genshin-item-sigil: 3;
-    --genshin-item-primogem: 2;
 }
 
-/* Historical battle source root 51010500; level 6~10. */
 chest[kind="exquisite"][level="6~10"] {
     --loot: exquisite_chest_low;
-    --genshin-item-adventure_exp: 20;
-    --genshin-item-sigil: 3;
-    --genshin-item-primogem: 2;
 }
 
-/* Historical battle source root 51010500; level 11~15. */
 chest[kind="exquisite"][level="11~15"] {
     --loot: exquisite_chest_medium;
-    --genshin-item-adventure_exp: 20;
-    --genshin-item-sigil: 3;
-    --genshin-item-primogem: 2;
 }
 
-/* Historical battle source root 51010500; level 16~20. */
 chest[kind="exquisite"][level="16~20"] {
     --loot: exquisite_chest_high;
-    --genshin-item-adventure_exp: 20;
-    --genshin-item-sigil: 3;
-    --genshin-item-primogem: 2;
 }
 
-/* Historical battle source root 51010600; level 21~25. */
 chest[kind="exquisite"][level="21~25"] {
     --loot: exquisite_chest_xhigh;
-    --genshin-item-adventure_exp: 20;
     --genshin-item-sigil: 4;
-    --genshin-item-primogem: 2;
 }
 
-/* Historical battle source root 51010700; level 26~. */
 chest[kind="exquisite"][level="26~"] {
     --loot: exquisite_chest_max;
     --genshin-item-adventure_exp: 30;
@@ -128,105 +72,71 @@ chest[kind="exquisite"][level="26~"] {
     --genshin-item-primogem: 5;
 }
 
-/* Historical battle source root 51010700; level 1~5. */
+chest[kind="precious"] {
+    --genshin-item-adventure_exp: 30;
+    --genshin-item-sigil: 4;
+    --genshin-item-primogem: 5;
+}
+
 chest[kind="precious"][level="1~5"] {
     --loot: precious_chest_light;
-    --genshin-item-adventure_exp: 30;
-    --genshin-item-sigil: 4;
-    --genshin-item-primogem: 5;
 }
 
-/* Historical battle source root 51010700; level 6~10. */
 chest[kind="precious"][level="6~10"] {
     --loot: precious_chest_low;
-    --genshin-item-adventure_exp: 30;
-    --genshin-item-sigil: 4;
-    --genshin-item-primogem: 5;
 }
 
-/* Historical battle source root 51010700; level 11~15. */
 chest[kind="precious"][level="11~15"] {
     --loot: precious_chest_medium;
-    --genshin-item-adventure_exp: 30;
-    --genshin-item-sigil: 4;
-    --genshin-item-primogem: 5;
 }
 
-/* Historical battle source root 51010700; level 16~20. */
 chest[kind="precious"][level="16~20"] {
     --loot: precious_chest_high;
-    --genshin-item-adventure_exp: 30;
-    --genshin-item-sigil: 4;
-    --genshin-item-primogem: 5;
 }
 
-/* Historical battle source root 51010800; level 21~25. */
 chest[kind="precious"][level="21~25"] {
     --loot: precious_chest_xhigh;
-    --genshin-item-adventure_exp: 30;
     --genshin-item-sigil: 5;
-    --genshin-item-primogem: 5;
 }
 
-/* Historical battle source root 51010900; level 26~. */
 chest[kind="precious"][level="26~"] {
     --loot: precious_chest_max;
+    --genshin-item-sigil: 5;
+    --genshin-item-primogem: 10;
+}
+
+chest[kind="luxurious"] {
     --genshin-item-adventure_exp: 30;
     --genshin-item-sigil: 5;
     --genshin-item-primogem: 10;
 }
 
-/* Historical battle source root 51010900; level 1~5. */
 chest[kind="luxurious"][level="1~5"] {
     --loot: luxurious_chest_light;
-    --genshin-item-adventure_exp: 30;
-    --genshin-item-sigil: 5;
-    --genshin-item-primogem: 10;
 }
 
-/* Historical battle source root 51010900; level 6~10. */
 chest[kind="luxurious"][level="6~10"] {
     --loot: luxurious_chest_low;
-    --genshin-item-adventure_exp: 30;
-    --genshin-item-sigil: 5;
-    --genshin-item-primogem: 10;
 }
 
-/* Historical battle source root 51010900; level 11~15. */
 chest[kind="luxurious"][level="11~15"] {
     --loot: luxurious_chest_medium;
-    --genshin-item-adventure_exp: 30;
-    --genshin-item-sigil: 5;
-    --genshin-item-primogem: 10;
 }
 
-/* Historical battle source root 51010900; level 16~20. */
 chest[kind="luxurious"][level="16~20"] {
     --loot: luxurious_chest_high;
-    --genshin-item-adventure_exp: 30;
-    --genshin-item-sigil: 5;
-    --genshin-item-primogem: 10;
 }
 
-/* Historical battle source root 51011000; level 21~25. */
 chest[kind="luxurious"][level="21~25"] {
     --loot: luxurious_chest_xhigh;
-    --genshin-item-adventure_exp: 30;
     --genshin-item-sigil: 6;
-    --genshin-item-primogem: 10;
 }
 
-/* Historical battle source root 51011100; level 26~. */
 chest[kind="luxurious"][level="26~"] {
     --loot: luxurious_chest_max;
-    --genshin-item-adventure_exp: 30;
     --genshin-item-sigil: 6;
-    --genshin-item-primogem: 10;
 }
 
-/* Level absent or zero: use the first recorded tier for this kind. */
-chest[kind="luxurious"]:not([level]) { /* replace this rule before use */ }
-/* First-time activation of an eligible point. */
 transpoint[kind="waypoint"],
 transpoint[kind="statue"],
 transpoint[kind="domain"] {

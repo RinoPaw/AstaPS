@@ -2,6 +2,7 @@ package emu.grasscutter.game.reward;
 
 import emu.grasscutter.data.ItemIdRegistry;
 import emu.grasscutter.game.drop.YamlLootTables;
+import emu.grasscutter.game.drop.ArtifactResolver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +25,8 @@ public final class RewardConfiguration {
     public static void load() {
         try {
             var registry = ItemIdRegistry.fromGameResources();
-            var loot = YamlLootTables.parse(readBundled("loot.yaml"), registry::resolve);
+            var loot = YamlLootTables.parse(readBundled("loot.yaml"), registry::resolve,
+                    ArtifactResolver.fromGameResources());
             var css = CssRewards.parse(readBundled("rewards.css"), registry, loot);
             active = new RewardConfiguration(loot, css);
         } catch (IOException | RuntimeException e) {

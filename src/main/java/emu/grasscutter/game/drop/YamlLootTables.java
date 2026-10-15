@@ -24,7 +24,8 @@ public final class YamlLootTables {
         int resolve(String itemName);
     }
 
-    private record Entry(Integer rewardId, Pool nested, LootCount.Spec count, BigDecimal weight) {}
+    private record Entry(Integer rewardId, ArtifactResolver.Selector artifact,
+                         Pool nested, LootCount.Spec count, BigDecimal weight) {}
     private record Pool(boolean weighted, List<Entry> entries, double totalWeight) {}
 
     private static final int MAX_DEPTH = 64;
@@ -50,6 +51,16 @@ public final class YamlLootTables {
 
     /** The owning namespace is a property of the loader, never of an individual YAML table. */
     public static YamlLootTables parse(String yaml, String namespace, ItemResolver resolver) {
+        return parse(yaml, namespace, resolver, null);
+    }
+
+    public static YamlLootTables parse(String yaml, ItemResolver resolver,
+                                        ArtifactResolver artifacts) {
+        return parse(yaml, "astaps", resolver, artifacts);
+    }
+
+    public static YamlLootTables parse(String yaml, String namespace, ItemResolver resolver,
+                                        ArtifactResolver artifacts) {
         if (resolver == null) throw new IllegalArgumentException("Missing item resolver");
         var settings = LoadSettings.builder()
                 .setAllowDuplicateKeys(false)
@@ -70,12 +81,12 @@ public final class YamlLootTables {
                 throw new IllegalArgumentException("Loot table name must be a nonempty string");
             }
             String id = new ResourceId(namespace, "loot", name).toString();
-            parsed.put(id, parseList(e.getValue(), resolver, compiled, visiting, budget, name, 0));
+            parsed.put(id, parseList(e.getValue(), resolver, artifacts, compiled, visiting, budget, name, 0));
         }
         return new YamlLootTables(namespace, parsed);
     }
 
-    private static Pool parseList(Object raw, ItemResolver resolver,
+    private static Pool parseList(Object raw, ItemResolver resolver, ArtifactResolver artifacts,
             IdentityHashMap<Object, Pool> compiled,
             IdentityHashMap<Object, Boolean> visiting, CompileBudget budget,
             String location, int depth) {
@@ -103,7 +114,8 @@ public final class YamlLootTables {
                     throw new IllegalArgumentException(at + ": expected {reward, count?, weight?}");
                 }
                 for (Object key : fields.keySet()) {
-                    if (!"reward".equals(key) && !"count".equals(key) && !"weight".equals(key)) {
+                    if (!"reward".equals(key) && !"count".equals(key) && !"weight".equals(key)
+                            && !"properties".equals(key)) {
                         throw new IllegalArgumentException(at + ": unknown field: " + key);
                     }
                 }
@@ -112,35 +124,46 @@ public final class YamlLootTables {
                 }
                 Object target = fields.get("reward");
                 Integer rewardId = null;
+                ArtifactResolver.Selector artifact = null;
                 Pool nested = null;
                 if (target instanceof List<?>) {
-                    nested = parseList(target, resolver, compiled, visiting, budget, at + ".reward", depth + 1);
+                    nested = parseList(target, resolver, artifacts, compiled, visiting, budget, at + ".reward", depth + 1);
                 } else if (target != null) {
                     if (!(target instanceof String || target instanceof Number)) {
                         throw new IllegalArgumentException(at + ": invalid reward: " + target);
                     }
-                    int id = resolver.resolve(target.toString());
-                    if (id <= 0 && id != emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL) {
-                        throw new IllegalArgumentException(at + ": unknown reward: " + target);
+                    String reference = target.toString();
+                    if (reference.startsWith("genshin.artifact.")) {
+                        if (artifacts == null) {
+                            throw new IllegalArgumentException(at + ": artifact resolver unavailable");
+                        }
+                        artifact = artifacts.compile(reference, fields.get("properties"));
+                    } else {
+                        int id = resolver.resolve(reference);
+                        if (id <= 0 && id != emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL) {
+                            throw new IllegalArgumentException(at + ": unknown reward: " + target);
+                        }
+                        rewardId = id;
                     }
-                    rewardId = id;
+                }
+                if (fields.containsKey("properties") && artifact == null) {
+                    throw new IllegalArgumentException(at + ": properties require an artifact reward");
                 }
                 LootCount.Spec count = LootCount.parse(fields.get("count"));
                 BigDecimal weight = null;
                 Object value = fields.get("weight");
                 if (value != null) {
-                    if (!(value instanceof Number)) throw new IllegalArgumentException(at + ": weight must be numeric or null");
-                    try {
-                        weight = new BigDecimal(value.toString());
-                    } catch (NumberFormatException ex) {
-                        throw new IllegalArgumentException(at + ": invalid weight", ex);
+                    if (!(value instanceof Number)
+                            || !value.toString().matches("[0-9]+")) {
+                        throw new IllegalArgumentException(at + ": weight must be an integer");
                     }
+                    weight = new BigDecimal(value.toString());
                     if (weight.signum() < 0 || weight.compareTo(new BigDecimal("1000000000")) > 0) {
                         throw new IllegalArgumentException(at + ": weight outside 0..1000000000");
                     }
                     hasWeight = true;
                 } else hasNull = true;
-                entries.add(new Entry(rewardId, nested, count, weight));
+                entries.add(new Entry(rewardId, artifact, nested, count, weight));
             }
             if (hasWeight && hasNull) {
                 throw new IllegalArgumentException(location + ": cannot mix null and numeric weights");
@@ -195,6 +218,11 @@ public final class YamlLootTables {
         if (count == 0) return;
         if (entry.nested != null) {
             rollPool(entry.nested, count, random, reward, remaining, depth + 1);
+        } else if (entry.artifact != null) {
+            // Distinct artifact instances are rolled independently, even for count > 1.
+            for (int i = 0; i < count; i++) {
+                reward.merge(entry.artifact.select(random), 1, Math::addExact);
+            }
         } else if (entry.rewardId != null) {
             reward.merge(entry.rewardId, count, Math::addExact);
         }

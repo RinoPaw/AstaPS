@@ -30,13 +30,6 @@ public final class LootCount {
             if (high < low) throw new IllegalArgumentException("Reversed range: " + text);
             return rng -> low == high ? low : rng.nextInt(low, high + 1);
         }
-        if (text.contains(".")) {
-            BigDecimal expected = decimal(text);
-            int base = expected.intValue();
-            double fraction = expected.subtract(BigDecimal.valueOf(base)).doubleValue();
-            if (base == MAX_COUNT && fraction > 0) throw new IllegalArgumentException("Count too large");
-            return rng -> rng.nextDouble() < fraction ? base + 1 : base;
-        }
         int fixed = integer(text);
         return rng -> fixed;
     }
@@ -55,7 +48,7 @@ public final class LootCount {
                 missing = amount;
                 probabilities.put(amount, null);
             } else {
-                BigDecimal probability = decimal(parts[1].trim());
+                BigDecimal probability = BigDecimal.valueOf(integer(parts[1].trim()));
                 if (probability.compareTo(HUNDRED) > 0) throw new IllegalArgumentException("Probability above 100%");
                 total = total.add(probability);
                 probabilities.put(amount, probability);

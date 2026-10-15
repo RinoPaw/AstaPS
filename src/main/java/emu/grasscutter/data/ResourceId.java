@@ -39,7 +39,7 @@ public record ResourceId(String namespace, String type, String name) {
     private static boolean validName(String type, String part) {
         if ("artifact".equals(type)) {
             return part != null && part.matches(
-                    "[a-z][a-z0-9_]*\\.(flower|plume|sands|goblet|circlet)\\.[1-5]\\.[0-4]");
+                    "[a-z][a-z0-9_]*");
         }
         return part != null && part.matches("[\\p{L}_][\\p{L}\\p{N}_-]*");
     }

@@ -48,7 +48,7 @@ class BundledChestRewardsTest {
 
     private static CssRewards bundledCss(YamlLootTables loot) throws Exception {
         return CssRewards.parse(resource("/rewards/rewards.css"),
-                new ItemIdRegistry(Map.of()), loot);
+                new ItemIdRegistry(Map.of(102, "Adventure EXP", 201, "Primogem")), loot);
     }
 
     @Test

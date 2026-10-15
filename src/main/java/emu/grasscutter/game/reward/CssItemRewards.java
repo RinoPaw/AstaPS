@@ -4,24 +4,21 @@ import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.writer.CSSWriterSettings;
 import emu.grasscutter.data.ItemIdRegistry;
+import emu.grasscutter.data.ResourceId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Evaluator;
 import org.jsoup.select.Selector;
 
 /**
- * CSS rules for fixed item rewards. Only the reward declaration is supported.
- * Reward sources and selector attributes are not hard-coded into this parser.
+ * Fixed item rewards use CSS custom properties.
+ * A resource like genshin.item.mora is written --genshin-item-mora: 300.
  */
 public final class CssItemRewards {
-    private static final Pattern REWARD_VALUE =
-            Pattern.compile("^(?:\"([^\"]+)\"|'([^']+)'|(\\S+))\\s+([0-9]+)$");
-
     private record Rule(Evaluator selector, Map<Integer, Integer> amounts,
                         int specificity, int order) {}
 
@@ -44,29 +41,17 @@ public final class CssItemRewards {
 
             var amounts = new HashMap<Integer, Integer>();
             for (var declaration : style.getAllDeclarations()) {
-                if (!declaration.getProperty().equals("reward")) {
-                    throw new IllegalArgumentException("Unknown reward property: "
-                            + declaration.getProperty());
+                ResourceId resource = ResourceId.fromCssProperty(declaration.getProperty());
+                int id = items.resolve(resource.toString());
+                String value = declaration.getExpressionAsCSSString().trim();
+                if (!value.matches("[0-9]+")) {
+                    throw new IllegalArgumentException("Invalid item count for " + resource + ": " + value);
                 }
-                if (declaration.isImportant()) {
-                    throw new IllegalArgumentException("!important is not supported");
-                }
-
-                var match = REWARD_VALUE.matcher(declaration.getExpressionAsCSSString().trim());
-                if (!match.matches()) {
-                    throw new IllegalArgumentException("Expected reward: resource-id count");
-                }
-                String name = match.group(1) != null ? match.group(1)
-                        : match.group(2) != null ? match.group(2) : match.group(3);
-                int id = items.resolve(name);
-                int count = Integer.parseInt(match.group(4));
-                amounts.put(id, count);
+                amounts.put(id, Integer.parseInt(value));
             }
 
             for (var selector : style.getAllSelectors()) {
                 String css = selector.getAsCSSString(CSSWriterSettings.DEFAULT_SETTINGS, 0).trim();
-                // For the current element+attribute selector form, each attribute
-                // increases specificity; later rules win ties.
                 int specificity = (int) css.chars().filter(ch -> ch == '[').count();
                 rules.add(new Rule(Selector.evaluatorOf(css), Map.copyOf(amounts),
                         specificity, order++));

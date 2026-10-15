@@ -49,8 +49,16 @@ class BundledChestRewardsTest {
                     int firstSubstat = rank <= 2 ? 0 : rank - 2;
                     int lastSubstat = rank == 1 ? 0 : firstSubstat + 1;
                     for (int substats = firstSubstat; substats <= lastSubstat; substats++) {
+                        int nativeSlot = switch (slot) {
+                            case 1 -> 4; // flower
+                            case 2 -> 2; // plume
+                            case 3 -> 5; // sands
+                            case 4 -> 1; // goblet
+                            case 5 -> 3; // circlet
+                            default -> throw new IllegalArgumentException("Invalid slot");
+                        };
                         variants.add(new ArtifactResolver.Variant(
-                                prefixes[set] * 1000 + rank * 100 + slot * 10 + substats,
+                                prefixes[set] * 1000 + rank * 100 + nativeSlot * 10 + substats,
                                 sets[set], slot, rank, substats));
                     }
                 }

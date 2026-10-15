@@ -42,6 +42,7 @@ final class TransPointRewardsTest {
                 Map.entry(104003, "Hero's Wit"),
                 Map.entry(104011, "Enhancement Ore"),
                 Map.entry(104012, "Fine Enhancement Ore"),
+                Map.entry(104013, "Mystic Enhancement Ore"),
                 Map.entry(101692, "Three Realms Item")));
         var ids = new ItemIdRegistry(names);
         var loot = YamlLootTables.parse(read("/rewards/loot.yaml"), ids::resolve,

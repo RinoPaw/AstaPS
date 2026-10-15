@@ -1,5 +1,6 @@
 package emu.grasscutter.game.drop;
 
+import emu.grasscutter.data.ResourceId;
 import emu.grasscutter.data.common.ItemParamData;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,7 +41,13 @@ public final class YamlLootTables {
         this.pools = java.util.Collections.unmodifiableMap(new LinkedHashMap<>(pools));
     }
 
+    /** Short keys in loot.yaml are registered under astaps.loot by default. */
     public static YamlLootTables parse(String yaml, ItemResolver resolver) {
+        return parse(yaml, "astaps", resolver);
+    }
+
+    /** The owning namespace is a property of the loader, never of an individual YAML table. */
+    public static YamlLootTables parse(String yaml, String namespace, ItemResolver resolver) {
         if (resolver == null) throw new IllegalArgumentException("Missing item resolver");
         var settings = LoadSettings.builder()
                 .setAllowDuplicateKeys(false)
@@ -60,7 +67,8 @@ public final class YamlLootTables {
             if (!(e.getKey() instanceof String name) || name.isBlank()) {
                 throw new IllegalArgumentException("Loot table name must be a nonempty string");
             }
-            parsed.put(name, parseList(e.getValue(), resolver, compiled, visiting, budget, name, 0));
+            String id = new ResourceId(namespace, "loot", name).toString();
+            parsed.put(id, parseList(e.getValue(), resolver, compiled, visiting, budget, name, 0));
         }
         return new YamlLootTables(parsed);
     }
@@ -188,8 +196,19 @@ public final class YamlLootTables {
         }
     }
 
-    public boolean contains(String name) {
-        return pools.containsKey(name);
+    public boolean contains(String id) {
+        return pools.containsKey(id);
+    }
+
+    /** Local names in CSS resolve within astaps; qualified IDs are kept unchanged. */
+    public String resolveName(String reference) {
+        ResourceId id = reference.contains(".")
+                ? ResourceId.parse(reference)
+                : new ResourceId("astaps", "loot", reference);
+        if (!id.type().equals("loot") || !contains(id.toString())) {
+            throw new IllegalArgumentException("Unknown loot table: " + reference);
+        }
+        return id.toString();
     }
 
     /**

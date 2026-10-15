@@ -126,7 +126,10 @@ uniformly from the usual valid counts per rank (1★ 0, 2★ 0–1, 3★ 1–2,
 distribution; specify `substats: "1:80,2:20"` to define exact odds.
 Each artifact gets an independent roll, even when `count` is greater than one.
 All counts and weighted-choice weights are integers. Use an explicit percentage
-distribution such as `count: "0:48,1:52"` instead of decimal count `0.52`.
+distribution such as `count: "1:52"` instead of decimal count `0.52`.
+The remainder of an explicitly specified count distribution implicitly means zero:
+`count: "1:20"` means one item 20% of the time and none 80% of the time.
+An explicit `0:80` is therefore unnecessary.
 Relative probabilities in the original weighted loot lists are preserved.
 
 No numeric source IDs are used in the bundled loot configuration.

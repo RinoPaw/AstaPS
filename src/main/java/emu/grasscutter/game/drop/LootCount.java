@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.random.RandomGenerator;
 
-/** Supports native counts plus 1~3 and percentage distributions such as 0:40,1,2:18. */
+/** Supports integral counts, 1~3 ranges and percentages; unallocated probability means zero. */
 public final class LootCount {
     private static final BigDecimal HUNDRED = new BigDecimal("100");
     public static final int MAX_COUNT = 100_000;

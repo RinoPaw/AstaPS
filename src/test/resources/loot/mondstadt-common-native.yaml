@@ -29,7 +29,7 @@ native_52010013: &n52010013
 
 native_52010014: &n52010014
   - {reward: 104011, count: "2:90,3:10"}
-  - {reward: 104012, count: "0:80,1:20"}
+  - {reward: 104012, count: "1:20"}
 
 native_520000: &n520000
   - {reward: 60110, count: "1", weight: 1000}
@@ -94,11 +94,11 @@ native_52010000: &n52010000
   - {reward: 102, count: "10"}
   - {reward: 305, count: "1"}
   - {reward: 202, count: "240;360"}
-  - {reward: *n500100, count: "0:50,1:50"}
+  - {reward: *n500100, count: "1:50"}
   - {reward: *n52010011, count: "1"}
-  - {reward: *n52010013, count: "0:60,1:40"}
+  - {reward: *n52010013, count: "1:40"}
   - {reward: *n52010014, count: "1"}
-  - {reward: *n52010015, count: "0:48,1:52"}
+  - {reward: *n52010015, count: "1:52"}
 
 native_52010111: &n52010111 []
 
@@ -108,7 +108,7 @@ native_52010113: &n52010113
 
 native_52010114: &n52010114
   - {reward: 104011, count: "2:40,3:60"}
-  - {reward: 104012, count: "0:60,1:40"}
+  - {reward: 104012, count: "1:40"}
 
 native_52010115: &n52010115
   - {reward: *n541150, count: "1", weight: 9000}
@@ -119,9 +119,9 @@ native_52010100: &n52010100
   - {reward: 102, count: "10"}
   - {reward: 305, count: "1"}
   - {reward: 202, count: "240;360"}
-  - {reward: *n500100, count: "0:50,1:50"}
+  - {reward: *n500100, count: "1:50"}
   - {reward: *n52010111, count: "1"}
-  - {reward: *n52010113, count: "0:50,1:50"}
+  - {reward: *n52010113, count: "1:50"}
   - {reward: *n52010114, count: "1"}
-  - {reward: *n52010115, count: "0:20,1:80"}
+  - {reward: *n52010115, count: "1:80"}
 

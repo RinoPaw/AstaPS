@@ -32,7 +32,7 @@ chest_common_food_ingredients: &chest_common_food_ingredients
 
 chest_common_experience: &chest_common_experience
   - {reward: genshin.item.wanderers_advice, count: "1:40,2:60"}
-  - {reward: genshin.item.adventurers_experience, count: "0:85,1:15"}
+  - {reward: genshin.item.adventurers_experience, count: "1:15"}
 
 
 chest_common_weapons: &chest_common_weapons
@@ -102,16 +102,16 @@ chest_common_artifacts_rare: &chest_common_artifacts_rare
 # Chest common — source reward tier.
 
 minimal: &minimal
-  - {reward: *chest_common_food_ingredients, count: "0:50,1:50"}
+  - {reward: *chest_common_food_ingredients, count: "1:50"}
   - {reward: *chest_common_experience}
-  - {reward: *chest_common_weapons, count: "0:60,1:40"}
+  - {reward: *chest_common_weapons, count: "1:40"}
   - {reward: *chest_common_enhancement_ore}
-  - {reward: *chest_common_artifacts_rare, count: "0:48,1:52"}
+  - {reward: *chest_common_artifacts_rare, count: "1:52"}
 
 
 chest_common_low_experience: &chest_common_low_experience
   - {reward: genshin.item.wanderers_advice, count: "2:90,3:10"}
-  - {reward: genshin.item.adventurers_experience, count: "0:70,1:30"}
+  - {reward: genshin.item.adventurers_experience, count: "1:30"}
 
 
 chest_common_low_weapons: &chest_common_low_weapons
@@ -131,16 +131,16 @@ chest_common_low_artifacts: &chest_common_low_artifacts
 # Chest common low — source reward tier.
 
 nano: &nano
-  - {reward: *chest_common_food_ingredients, count: "0:50,1:50"}
+  - {reward: *chest_common_food_ingredients, count: "1:50"}
   - {reward: *chest_common_low_experience}
-  - {reward: *chest_common_low_weapons, count: "0:50,1:50"}
+  - {reward: *chest_common_low_weapons, count: "1:50"}
   - {reward: *chest_common_low_enhancement_ore}
-  - {reward: *chest_common_low_artifacts, count: "0:20,1:80"}
+  - {reward: *chest_common_low_artifacts, count: "1:80"}
 
 
 chest_common_medium_experience: &chest_common_medium_experience
   - {reward: genshin.item.wanderers_advice, count: "2:40,3:60"}
-  - {reward: genshin.item.adventurers_experience, count: "0:60,1:40"}
+  - {reward: genshin.item.adventurers_experience, count: "1:40"}
 
 
 chest_common_medium_weapons: &chest_common_medium_weapons
@@ -161,14 +161,14 @@ chest_common_medium_artifacts: &chest_common_medium_artifacts
 
 micro: &micro
   - {reward: *chest_common_medium_experience}
-  - {reward: *chest_common_medium_weapons, count: "0:40,1:60"}
+  - {reward: *chest_common_medium_weapons, count: "1:60"}
   - {reward: *chest_common_medium_enhancement_ore}
   - {reward: *chest_common_medium_artifacts, count: "1:80,2:20"}
 
 
 chest_common_high_experience: &chest_common_high_experience
   - {reward: genshin.item.wanderers_advice, count: "3:90,4:10"}
-  - {reward: genshin.item.adventurers_experience, count: "0:50,1:50"}
+  - {reward: genshin.item.adventurers_experience, count: "1:50"}
 
 
 chest_common_high_weapons: &chest_common_high_weapons
@@ -189,14 +189,14 @@ chest_common_high_artifacts: &chest_common_high_artifacts
 
 light: &light
   - {reward: *chest_common_high_experience}
-  - {reward: *chest_common_high_weapons, count: "0:30,1:70"}
+  - {reward: *chest_common_high_weapons, count: "1:70"}
   - {reward: *chest_common_high_enhancement_ore}
   - {reward: *chest_common_high_artifacts, count: "1:50,2:50"}
 
 
 chest_common_xhigh_experience: &chest_common_xhigh_experience
   - {reward: genshin.item.wanderers_advice, count: "3:40,4:60"}
-  - {reward: genshin.item.adventurers_experience, count: "0:40,1:60"}
+  - {reward: genshin.item.adventurers_experience, count: "1:60"}
 
 
 chest_common_xhigh_weapons: &chest_common_xhigh_weapons
@@ -216,7 +216,7 @@ chest_common_xhigh_artifacts: &chest_common_xhigh_artifacts
 
 low: &low
   - {reward: *chest_common_xhigh_experience}
-  - {reward: *chest_common_xhigh_weapons, count: "0:20,1:80"}
+  - {reward: *chest_common_xhigh_weapons, count: "1:80"}
   - {reward: *chest_common_xhigh_enhancement_ore}
   - {reward: *chest_common_xhigh_artifacts, count: "1:25,2:75"}
 
@@ -232,7 +232,7 @@ chest_common_max_talent_books: &chest_common_max_talent_books
 
 
 chest_common_max_talent_books_bonus: &chest_common_max_talent_books_bonus
-  - {reward: *chest_common_max_talent_books, count: "0:75,1:25"}
+  - {reward: *chest_common_max_talent_books, count: "1:25"}
 
 
 chest_common_max_weapons: &chest_common_max_weapons
@@ -317,7 +317,7 @@ chest_common_max_artifacts_common: &chest_common_max_artifacts_common
 medium: &medium
   - {reward: *chest_common_max_experience}
   - {reward: *chest_common_max_talent_books_bonus}
-  - {reward: *chest_common_max_weapons, count: "0:10,1:90"}
+  - {reward: *chest_common_max_weapons, count: "1:90"}
   - {reward: *chest_common_max_enhancement_ore}
   - {reward: *chest_common_max_artifacts_common, count: "1:25,2:75"}
 
@@ -327,7 +327,7 @@ chest_exquisite_xhigh_experience: &chest_exquisite_xhigh_experience
 
 
 chest_exquisite_xhigh_talent_books: &chest_exquisite_xhigh_talent_books
-  - {reward: *chest_common_max_talent_books, count: "0:75,1:25"}
+  - {reward: *chest_common_max_talent_books, count: "1:25"}
 
 
 chest_exquisite_xhigh_weapons: &chest_exquisite_xhigh_weapons

@@ -187,7 +187,7 @@ class YamlLootTablesTest {
                   - {reward: genshin.item.adventurers_experience, count: 2, weight: 3}
                 chest:
                   - {reward: 202, count: 300}
-                  - {reward: *exp, count: "0:30,1:70"}
+                  - {reward: *exp, count: "1:70"}
                 """);
         int none = 0, big = 0, small = 0;
         Random random = new Random(42);
@@ -292,6 +292,30 @@ class YamlLootTablesTest {
                 recursive: &self
                   - {reward: *self}
                 """));
+    }
+
+    @Test
+    void aSingleSpecifiedPercentageImpliesZeroForTheRemainder() {
+        var distribution = LootCount.parse("1:20");
+        int[] outcomes = new int[2];
+        var random = new Random(2026);
+        for (int i = 0; i < 20_000; i++) {
+            int count = distribution.sample(random);
+            assertTrue(count == 0 || count == 1);
+            outcomes[count]++;
+        }
+        assertEquals(0.80, outcomes[0] / 20_000.0, 0.015);
+        assertEquals(0.20, outcomes[1] / 20_000.0, 0.015);
+
+        var table = parse("""
+                chance:
+                  - {reward: genshin.item.mora, count: "1:20"}
+                """);
+        int awarded = 0;
+        for (int i = 0; i < 2_000; i++) {
+            awarded += table.roll("astaps.loot.chance", random).getOrDefault(202, 0);
+        }
+        assertEquals(0.20, awarded / 2_000.0, 0.04);
     }
 
     @Test

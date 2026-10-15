@@ -16,8 +16,29 @@ handles state, notifications, and despawn.
 
 This does not replace quest-chest native quest-item drops, boss flowers,
 monster kills, or trans-point rewards. Those are separate settlement paths.
-The default templates reproduce the previous four ordinary chest tiers and
-regional sigils. The branch still requires CI and in-client verification.
+The bundled `rewards.css` now maps **52 tagged ordinary chest variants
+across 192 source rows and six minimum-adventure-rank thresholds** to
+**108 distinct native roots**, via the `level` (adventure rank band) and
+`dropTag` attributes. The bundled `loot.yaml` contains their full
+reachable DAG of **679 nodes and 1,843 drop entries**. This is a historical
+AstaPS compatibility snapshot, based on `Server/DropTableExcelConfigData.json`
+blob `b46d383b535babd1be6b95e3ea031eef64d1fdfd` and
+`Server/DropSubTableExcelConfigData.json` blob
+`9397fb0b15c8c4cc82194ec429682f2ef4333767` from
+`RinoPaw/AstaPS-Resource`. That shared dataset predates game 7.1;
+**its probabilities must not be described as verified original 7.1 values.**
+
+A chest without a recognized `dropTag` continues to use the four old
+base tier compositions and region sigils, but those fallback amounts are
+now loot contents defined in YAML and chosen in CSS, with no Java
+hard-coded reward quantities. Tagged native rules override the entire
+fallback `--loot` list, so they do not accidentally combine with fixed
+fallback Mora, Primogems, or Adventure EXP.
+
+The bundled `src/test/resources/loot/chest-native-selectors.json` pins all
+192 source-to-root mappings. The tests assert all selections and four-tier
+fallback composition, in addition to the existing YAML semantics. CI and
+in-client verification are still required.
 
 ## Syntax
 
@@ -162,8 +183,12 @@ named YAML pools `native_<id>` using YAML anchors in dependency order.
   list when needed, so chance and countRange remain independent rolls.
 - Empty tables become `[]`.
 
-The original native resource tables are not overwritten. The exporter is for
-research and migration checks; it does not establish a new live authority.
+The native tables in `resources/Server` are not overwritten. Their exported
+YAML copies are bundled into the live configuration, with CSS as the
+selection authority for ordinary world chests. Resource contents remain
+separate from the chest source and region selectors. This export is a
+historical compatibility source, not a reverse-engineered 7.1 probability
+verification.
 
 ## Validation
 

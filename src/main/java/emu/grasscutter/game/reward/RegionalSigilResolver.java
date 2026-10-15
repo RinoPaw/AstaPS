@@ -2,6 +2,8 @@ package emu.grasscutter.game.reward;
 
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.CityData;
+import emu.grasscutter.data.excels.world.WorldAreaData;
+import java.util.Collection;
 import java.util.Locale;
 
 /** Resolves a regional sigil using source-backed geographic identity. */
@@ -19,20 +21,28 @@ public final class RegionalSigilResolver {
             throw new IllegalArgumentException(
                     "Cannot resolve regional sigil: no source region or area ID");
         }
-        var worldArea = GameData.getWorldAreaDataMap().get(context.areaId());
-        if (worldArea == null || worldArea.getSceneId() != context.sceneId()) {
+        return resolveArea(
+                context.sceneId(), context.areaId(),
+                GameData.getWorldAreaDataMap().get(context.areaId()),
+                GameData.getCityDataMap().values());
+    }
+
+    static int resolveArea(
+            int sceneId, int areaId, WorldAreaData worldArea,
+            Collection<CityData> cities) {
+        if (worldArea == null || worldArea.getSceneId() != sceneId) {
             throw new IllegalArgumentException(
-                    "Cannot resolve regional sigil: scene " + context.sceneId()
-                            + " area " + context.areaId() + " has no matching world-area row");
+                    "Cannot resolve regional sigil: scene " + sceneId
+                            + " area " + areaId + " has no matching world-area row");
         }
 
         int cityId = 0;
-        for (CityData city : GameData.getCityDataMap().values()) {
+        for (CityData city : cities) {
             var areas = city.getAreaIdVec();
-            if (areas == null || !areas.contains(context.areaId())) continue;
+            if (areas == null || !areas.contains(areaId)) continue;
             if (cityId != 0) {
                 throw new IllegalArgumentException(
-                        "Ambiguous regional sigil: area " + context.areaId()
+                        "Ambiguous regional sigil: area " + areaId
                                 + " belongs to multiple cities");
             }
             cityId = city.getCityId();

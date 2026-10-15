@@ -197,6 +197,23 @@ class BundledChestRewardsTest {
     }
 
     @Test
+    void bundledLootUsesQualifiedItemNamesAndCompactProbabilities() throws Exception {
+        String yaml = resource("/rewards/loot.yaml");
+        assertFalse(java.util.regex.Pattern.compile("\\breward:\\s*[0-9]")
+                .matcher(yaml).find(), "Item rewards must use qualified names");
+        assertFalse(yaml.contains("count: \\"1\\""), "The default count is implicit");
+        var matcher = java.util.regex.Pattern.compile("\\bweight:\\s*([0-9]+(?:\\.[0-9]+)?)")
+                .matcher(yaml);
+        int weights = 0;
+        while (matcher.find()) {
+            assertTrue(Double.parseDouble(matcher.group(1)) <= 100,
+                    "Unexpected large relative weight: " + matcher.group(1));
+            weights++;
+        }
+        assertTrue(weights > 200);
+    }
+
+    @Test
     void historicalCombatAndPuzzleTablesRemainIndependentOfCss() throws Exception {
         var registry = items();
         var loot = loadLoot(registry);

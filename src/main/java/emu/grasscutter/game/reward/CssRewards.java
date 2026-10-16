@@ -85,7 +85,7 @@ public final class CssRewards {
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
         // Preserve unquoted count ranges and distributions across CSS tokenization.
         String normalized = source.replaceAll(
-                "(--(?:genshin-(?:currency|experience|avatar_exp|weapon_exp|artifact_exp|material|food|furnishing|weapon)|astaps-loot)-[\\p{L}\\p{N}_-]+\\s*:\\s*)([0-9]+)\\s*~\\s*([0-9]+)(\\s*;)",
+                "(--(?:genshin-(?:currency|experience|avatar_exp|avatar_ascension|weapon_exp|artifact_exp|material|food|furnishing|weapon)|astaps-loot)-[\\p{L}\\p{N}_-]+\\s*:\\s*)([0-9]+)\\s*~\\s*([0-9]+)(\\s*;)",
                 "$1'$2~$3'$4");
         normalized = normalized.replaceAll(
                 "(--astaps-loot-[\\p{L}\\p{N}_-]+\\s*:\\s*)([0-9]+\\s*:[^;'\\\"{}]*)(\\s*;)",

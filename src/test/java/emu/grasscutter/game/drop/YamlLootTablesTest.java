@@ -20,6 +20,27 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void canonicalTalentBookPathsAwardMatchingNativeItems() {
+        var books = new ItemIdRegistry(Map.of(
+                7201, "Teachings of Freedom",
+                7202, "Guide to Freedom",
+                7203, "Philosophies of Freedom"));
+        var loot = YamlLootTables.parse("""
+                freedom:
+                  - {reward: genshin.talent_up.freedom.teachings}
+                  - {reward: genshin.talent_up.freedom.guide}
+                  - {reward: genshin.talent_up.freedom.philosophies}
+                """, books::resolve);
+        assertEquals(Map.of(7201, 1, 7202, 1, 7203, 1),
+                loot.roll("astaps.loot.freedom", new Random(7)));
+        assertThrows(IllegalArgumentException.class, () ->
+                YamlLootTables.parse("""
+                        legacy:
+                          - {reward: genshin.talent_up.guide_to_freedom}
+                        """, books::resolve));
+    }
+
+    @Test
     void yamlShortKeysBecomeGlobalLootIds() {
         var tables = parse("""
                 surprise:

@@ -25,9 +25,13 @@ class GenshinResourceIdsTest {
         assertThrows(IllegalArgumentException.class,
                 () -> ids.resolve("genshin.resource.resin"));
         assertEquals(100014, ids.resolve("genshin.recipe.mora_meat"));
-        assertEquals(109406, ids.resolve("genshin.material.recipe_mora_meat"));
-        assertNotEquals(ids.resolve("genshin.material.recipe_mora_meat"),
+        assertEquals(109406, ids.resolve("genshin.recipe.mora_meat.item"));
+        assertNotEquals(ids.resolve("genshin.recipe.mora_meat.item"),
                 ids.resolve("genshin.recipe.mora_meat"));
+        assertThrows(IllegalArgumentException.class,
+                () -> ids.resolve("genshin.material.recipe_mora_meat"));
+        assertThrows(IllegalArgumentException.class,
+                () -> ids.resolve("genshin.recipe.mora_meat.scroll"));
     }
 
     @Test

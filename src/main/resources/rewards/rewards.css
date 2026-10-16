@@ -197,3 +197,37 @@ transpoint[scene="7"] {
     --genshin-experience-adventure: 0;
     --genshin-currency-primogem: 5;
 }
+
+
+/* Ley-line blossoms: world level is explicit; no fallback for an unknown kind/tier. */
+blossom { --genshin-experience-adventure: 100; }
+blossom[world_level="0"] { --genshin-experience-companionship: 10; }
+blossom[world_level="1"] { --genshin-experience-companionship: 15; }
+blossom[world_level="2"] { --genshin-experience-companionship: 15; }
+blossom[world_level="3"] { --genshin-experience-companionship: 15; }
+blossom[world_level="4"] { --genshin-experience-companionship: 15; }
+blossom[world_level="5"] { --genshin-experience-companionship: 20; }
+blossom[world_level="6"] { --genshin-experience-companionship: 20; }
+blossom[world_level="7"] { --genshin-experience-companionship: 20; }
+blossom[world_level="8"] { --genshin-experience-companionship: 20; }
+blossom[world_level="9"] { --genshin-experience-companionship: 20; }
+blossom[kind="wealth"][world_level="0"] { --genshin-currency-mora: 12000; }
+blossom[kind="revelation"][world_level="0"] { --astaps-loot-revelation_0: 1; }
+blossom[kind="wealth"][world_level="1"] { --genshin-currency-mora: 20000; }
+blossom[kind="revelation"][world_level="1"] { --astaps-loot-revelation_1: 1; }
+blossom[kind="wealth"][world_level="2"] { --genshin-currency-mora: 28000; }
+blossom[kind="revelation"][world_level="2"] { --astaps-loot-revelation_2: 1; }
+blossom[kind="wealth"][world_level="3"] { --genshin-currency-mora: 36000; }
+blossom[kind="revelation"][world_level="3"] { --astaps-loot-revelation_3: 1; }
+blossom[kind="wealth"][world_level="4"] { --genshin-currency-mora: 44000; }
+blossom[kind="revelation"][world_level="4"] { --astaps-loot-revelation_4: 1; }
+blossom[kind="wealth"][world_level="5"] { --genshin-currency-mora: 52000; }
+blossom[kind="revelation"][world_level="5"] { --astaps-loot-revelation_5: 1; }
+blossom[kind="wealth"][world_level="6"] { --genshin-currency-mora: 60000; }
+blossom[kind="revelation"][world_level="6"] { --astaps-loot-revelation_6: 1; }
+blossom[kind="wealth"][world_level="7"] { --genshin-currency-mora: 60000; }
+blossom[kind="revelation"][world_level="7"] { --astaps-loot-revelation_6: 1; }
+blossom[kind="wealth"][world_level="8"] { --genshin-currency-mora: 60000; }
+blossom[kind="revelation"][world_level="8"] { --astaps-loot-revelation_6: 1; }
+blossom[kind="wealth"][world_level="9"] { --genshin-currency-mora: 60000; }
+blossom[kind="revelation"][world_level="9"] { --astaps-loot-revelation_6: 1; }

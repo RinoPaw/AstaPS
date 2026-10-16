@@ -16,7 +16,7 @@ public final class RewardConfiguration {
     private final YamlLootTables loot;
     private final CssRewards css;
 
-    private RewardConfiguration(YamlLootTables loot, CssRewards css) {
+    RewardConfiguration(YamlLootTables loot, CssRewards css) {
         this.loot = loot;
         this.css = css;
     }
@@ -57,6 +57,9 @@ public final class RewardConfiguration {
             RewardContext context) {
         var selected = css.resolve(targetType, properties);
         requireChestLoot(targetType, selected, properties);
+        if ("blossom".equals(targetType)) {
+            requireBlossomReward(selected, properties);
+        }
         return RewardRoller.roll(selected, loot, random, context);
     }
 
@@ -68,6 +71,38 @@ public final class RewardConfiguration {
             throw new IllegalStateException(
                     "No chest loot table matched (missing or invalid type/grade/level): " + properties);
         }
+    }
+
+    /** Refuse unconfigured or partially configured ley-line rewards. */
+    static void requireBlossomReward(
+            CssRewards.Selection selected, Map<String, String> properties) {
+        String kind = properties.get("kind");
+        boolean experience = selected.items().getOrDefault(102, 0) > 0;
+        boolean companionship = selected.items().getOrDefault(105, 0) > 0;
+        boolean wealth = selected.items().getOrDefault(202, 0) > 0;
+        boolean revelation = selected.loot().values().stream().anyMatch(n -> n > 0);
+        if (!experience || !companionship
+                || !("wealth".equals(kind) && wealth && !revelation
+                    || "revelation".equals(kind) && revelation && !wealth)) {
+            throw new IllegalStateException("No complete blossom reward configured for " + properties);
+        }
+    }
+
+    /** One independent roll per 20 resin; condensed resin executes two rolls. */
+    public Map<Integer, Integer> rollBlossom(
+            String kind, int worldLevel, boolean condensed, RandomGenerator random) {
+        if (!("wealth".equals(kind) || "revelation".equals(kind))
+                || worldLevel < 0 || worldLevel > 9) {
+            throw new IllegalArgumentException(
+                    "Unknown blossom kind/world level: " + kind + "/" + worldLevel);
+        }
+        var attrs = Map.of("kind", kind, "world_level", Integer.toString(worldLevel));
+        var total = new java.util.TreeMap<Integer, Integer>();
+        for (int i = 0; i < (condensed ? 2 : 1); i++) {
+            roll("blossom", attrs, random).forEach(
+                    (id, count) -> total.merge(id, count, Math::addExact));
+        }
+        return Map.copyOf(total);
     }
 
     /** Qualified table IDs can be executed without CSS selection. */

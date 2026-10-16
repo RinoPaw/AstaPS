@@ -66,6 +66,30 @@ public class GadgetChest extends GadgetContent {
     @Override
     public synchronized boolean onInteract(
             Player player, GadgetInteractReqOuterClass.GadgetInteractReq req) {
+        var blossomManager = getGadget().getScene().getBlossomManager();
+        if (blossomManager.hasRewardChest(getGadget())) {
+            SceneGadget meta = resolveChestMeta();
+            if (meta == null || meta.boss_chest == null
+                    || finishIfAbandoned(player, meta) || !canClaimBossFlower(player)) {
+                return false;
+            }
+            if (req.getOpType() == InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START) {
+                player.sendPacket(
+                        new PacketGadgetInteractRsp(
+                                getGadget(),
+                                InteractTypeOuterClass.InteractType.InteractType_INTERACT_OPEN_CHEST,
+                                InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
+                return false;
+            }
+            var rewards = blossomManager.claimReward(player, getGadget(),
+                    req.getResinCostType()
+                            == ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE);
+            if (rewards != null) {
+                player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(rewards));
+                finishBossClaim(player, meta);
+            }
+            return false;
+        }
         if (Grasscutter.getConfig().server.game.enableScriptInBigWorld) {
             SceneGadget meta = resolveChestMeta();
             DropSystem dropSystem = player.getServer().getDropSystem();

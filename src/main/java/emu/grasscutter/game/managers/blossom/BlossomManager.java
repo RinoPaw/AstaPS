@@ -2,8 +2,9 @@ package emu.grasscutter.game.managers.blossom;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.*;
-import emu.grasscutter.data.common.ItemParamData;
-import emu.grasscutter.data.excels.RewardPreviewData;
+import emu.grasscutter.game.inventory.InventoryAddPolicy;
+import emu.grasscutter.game.props.ActionReason;
+import emu.grasscutter.game.reward.RewardConfiguration;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.entity.gadget.GadgetWorktop;
 import emu.grasscutter.game.inventory.GameItem;
@@ -169,46 +170,36 @@ public class BlossomManager {
     }
 
     private static Integer getPreviewReward(BlossomType type, int worldLevel) {
-        // TODO: blossoms should be based on their city
-        if (type == null) {
-            Grasscutter.getLogger().error("Illegal blossom type {}", type);
-            return null;
+        if (type == null || worldLevel < 0 || worldLevel > 9) {
+            throw new IllegalArgumentException(
+                    "Unsupported blossom type/world level: " + type + "/" + worldLevel);
         }
-
-        int blossomChestId = type.getBlossomChestId();
-        var dataMap = GameData.getBlossomRefreshExcelConfigDataMap();
-        for (var data : dataMap.values()) {
-            if (blossomChestId == data.getBlossomChestId()) {
-                var dropVecList = data.getDropVec();
-                if (dropVecList == null) {
-                    Grasscutter.getLogger()
-                            .debug("Blossom chest {} has no dropVec configured", blossomChestId);
-                    return null;
-                }
-                if (worldLevel < 0 || worldLevel >= dropVecList.length) {
-                    Grasscutter.getLogger().error("Illegal world level {}", worldLevel);
-                    return null;
-                }
-                return dropVecList[worldLevel].getPreviewReward();
+        // Both kinds have blossomChestId=1 in the native Excel rows. The actual
+        // distinction is refreshType (SCOIN vs EXP), shared across cities.
+        Integer previewId = null;
+        for (var data : GameData.getBlossomRefreshExcelConfigDataMap().values()) {
+            if (!type.refreshType().equals(data.getRefreshType())) continue;
+            var drops = data.getDropVec();
+            // Native Excel has 9 preview tiers (WL0..WL8); WL9 shares the capped WL8 preview.
+            int index = worldLevel == 9 ? 8 : worldLevel;
+            if (drops == null || drops.length <= index || drops[index] == null
+                    || drops[index].getPreviewReward() <= 0) {
+                throw new IllegalStateException(
+                        "Missing native blossom preview: " + type + " WL" + worldLevel
+                                + " refresh=" + data.getId());
             }
+            int candidate = drops[index].getPreviewReward();
+            if (previewId != null && previewId != candidate) {
+                throw new IllegalStateException(
+                        "Conflicting native blossom previews: " + type + " WL" + worldLevel);
+            }
+            previewId = candidate;
         }
-        // Missing resource rows, so every refresh would log it again (five camps at a time).
-        if (MISSING_TYPES_REPORTED.add(type)) {
-            Grasscutter.getLogger()
-                    .error(
-                            "Cannot find blossom type {} (chest {}) in BlossomRefreshExcelConfigData; its reward preview is skipped",
-                            type,
-                            blossomChestId);
-        } else {
-            Grasscutter.getLogger().debug("Cannot find blossom type {}", type);
+        if (previewId == null && MISSING_TYPES_REPORTED.add(type)) {
+            Grasscutter.getLogger().error(
+                    "Missing native blossom refresh type {} for {}", type.refreshType(), type);
         }
-        return null;
-    }
-
-    private static RewardPreviewData getRewardList(BlossomType type, int worldLevel) {
-        Integer previewReward = getPreviewReward(type, worldLevel);
-        if (previewReward == null) return null;
-        return GameData.getRewardPreviewDataMap().get((int) previewReward);
+        return previewId;
     }
 
     public boolean hasRewardChest(EntityGadget chest) {
@@ -233,41 +224,41 @@ public class BlossomManager {
         }
     }
 
-    public List<GameItem> onReward(Player player, EntityGadget chest, boolean useCondensedResin) {
-        var resinManager = player.getResinManager();
+    /**
+     * Claim a completed ley-line flower. Roll the two rewards independently for
+     * condensed resin, preflight the complete inventory batch, then charge once.
+     * Failure leaves the chest available for retry and never falls back to boss loot.
+     */
+    public List<GameItem> claimReward(Player player, EntityGadget chest, boolean condensed) {
         synchronized (activeChests) {
-            var it = activeChests.iterator();
-            while (it.hasNext()) {
-                var activeChest = it.next();
-                if (activeChest.getChest() == chest) {
-                    boolean pay =
-                            useCondensedResin ? resinManager.useCondensedResin(1) : resinManager.useResin(20);
-                    if (pay) {
-                        int worldLevel = getWorldLevel();
-                        List<GameItem> items = new ArrayList<>();
-                        var gadget = activeChest.getGadget();
-                        var type = BlossomType.valueOf(gadget.getGadgetId());
-                        RewardPreviewData blossomRewards = getRewardList(type, worldLevel);
-                        if (blossomRewards == null) {
-                            Grasscutter.getLogger()
-                                    .error("Blossom could not support world level : " + worldLevel);
-                            return null;
-                        }
-                        var rewards = blossomRewards.getPreviewItems();
-                        for (ItemParamData blossomReward : rewards) {
-                            int rewardCount = blossomReward.getCount();
-                            if (useCondensedResin) {
-                                rewardCount += blossomReward.getCount(); // Double!
-                            }
-                            items.add(new GameItem(blossomReward.getItemId(), rewardCount));
-                        }
-                        return items;
-                    }
-                    return null;
-                }
+            BlossomActivity active = activeChests.stream()
+                    .filter(candidate -> candidate.getChest() == chest)
+                    .findFirst().orElse(null);
+            if (active == null) return null;
+
+            BlossomType type = BlossomType.valueOf(active.getGadget().getGadgetId());
+            if (type == null) throw new IllegalStateException("Unknown claimed blossom type");
+            int worldLevel = getWorldLevel();
+            Map<Integer, Integer> rolled = RewardConfiguration.current().rollBlossom(
+                    type.rewardKind(), worldLevel, condensed,
+                    java.util.concurrent.ThreadLocalRandom.current());
+            var items = rolled.entrySet().stream()
+                    .map(entry -> new GameItem(entry.getKey(), entry.getValue()))
+                    .toList();
+            var resin = player.getResinManager();
+            var result = player.getInventory().addItems(
+                    items, ActionReason.OpenWorldBossChest, InventoryAddPolicy.ALL_OR_NOTHING,
+                    () -> condensed ? resin.useCondensedResin(1) : resin.useResin(20),
+                    () -> {});
+            if (!result.allAccepted()) {
+                Grasscutter.getLogger().warn(
+                        "Ley-line claim refused uid={} kind={} WL{} condensed={} statuses={}",
+                        player.getUid(), type, worldLevel, condensed,
+                        result.entries().stream().map(entry -> entry.status()).toList());
+                return null;
             }
+            return items;
         }
-        return null;
     }
 
     public static IntList getRandomMonstersID(int difficulty, int count) {

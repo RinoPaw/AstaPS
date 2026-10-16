@@ -1,0 +1,89 @@
+package emu.grasscutter.game.reward;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import emu.grasscutter.data.ItemIdRegistry;
+import emu.grasscutter.game.drop.YamlLootTables;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Random;
+import org.junit.jupiter.api.Test;
+
+class BlossomRewardsTest {
+    private static RewardConfiguration rewards() throws IOException {
+        var items = new ItemIdRegistry(Map.of(
+                101, "Character EXP",
+                102, "Adventure EXP",
+                105, "Companionship EXP",
+                201, "Primogem",
+                202, "Mora",
+                104001, "Wanderer's Advice",
+                104002, "Adventurer's Experience",
+                104003, "Hero's Wit"));
+        String yaml = RewardConfiguration.readBundled("loot.yaml");
+        String prefix = "# Ley-line Blossoms of Revelation";
+        int start = yaml.indexOf(prefix);
+        assertTrue(start >= 0, "Missing bundled ley-line pools");
+        var loot = YamlLootTables.parse(yaml.substring(start), items::resolve);
+        return new RewardConfiguration(loot, CssRewards.parse(
+                RewardConfiguration.readBundled("rewards.css"), items, loot));
+    }
+
+    @Test
+    void wealthIsFixedAtEveryWorldLevelAndCondensedDoublesEverything() throws IOException {
+        var config = rewards();
+        int[] mora = {12000, 20000, 28000, 36000, 44000, 52000, 60000, 60000, 60000, 60000};
+        int[] friendship = {10, 15, 15, 15, 15, 20, 20, 20, 20, 20};
+        for (int wl = 0; wl <= 9; wl++) {
+            assertEquals(Map.of(102, 100, 105, friendship[wl], 202, mora[wl]),
+                    config.rollBlossom("wealth", wl, false, new Random(wl)));
+            assertEquals(Map.of(102, 200, 105, friendship[wl] * 2, 202, mora[wl] * 2),
+                    config.rollBlossom("wealth", wl, true, new Random(wl)));
+        }
+    }
+
+    @Test
+    void revelationUsesSeparateRangesAndIndependentCondensedRolls() throws IOException {
+        var config = rewards();
+        int[][] advice = {{7,8}, {10,12}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}};
+        int[][] adventurer = {{3,4}, {5,6}, {10,11}, {13,14}, {6,7}, {6,7}, {6,7}};
+        int[][] hero = {{0,0}, {0,0}, {0,0}, {0,0}, {2,3}, {3,4}, {4,5}};
+        for (int wl = 0; wl <= 9; wl++) {
+            int tier = Math.min(wl, 6);
+            var result = config.rollBlossom("revelation", wl, false, new Random(wl));
+            assertEquals(100, result.get(102));
+            assertTrue(result.get(105) > 0);
+            assertFalse(result.containsKey(202));
+            for (var expected : new Object[][]{{104001, advice[tier]}, {104002, adventurer[tier]}, {104003, hero[tier]}}) {
+                int count = result.getOrDefault((int) expected[0], 0);
+                int[] interval = (int[]) expected[1];
+                assertTrue(count >= interval[0] && count <= interval[1],
+                        "WL" + wl + " id=" + expected[0] + " count=" + count);
+            }
+            var doubled = config.rollBlossom("revelation", wl, true, new Random(wl));
+            assertEquals(200, doubled.get(102));
+            for (var expected : new Object[][]{{104001, advice[tier]}, {104002, adventurer[tier]}, {104003, hero[tier]}}) {
+                int count = doubled.getOrDefault((int) expected[0], 0);
+                int[] interval = (int[]) expected[1];
+                assertTrue(count >= interval[0] * 2 && count <= interval[1] * 2);
+            }
+        }
+    }
+
+    @Test
+    void missingKindOrWorldLevelCannotGrantCommonExperienceOnly() throws IOException {
+        var config = rewards();
+        for (var attrs : java.util.List.of(
+                Map.of("kind", "wealth", "world_level", "10"),
+                Map.of("kind", "revelation", "world_level", "-1"),
+                Map.of("kind", "other", "world_level", "4"),
+                Map.of("world_level", "4"))) {
+            assertThrows(RuntimeException.class,
+                    () -> config.roll("blossom", attrs, new Random(1)), attrs.toString());
+        }
+        assertThrows(IllegalArgumentException.class,
+                () -> config.rollBlossom("wealth", 10, false, new Random(1)));
+        assertThrows(IllegalArgumentException.class,
+                () -> config.rollBlossom("unknown", 5, false, new Random(1)));
+    }
+}

@@ -31,7 +31,7 @@ class BlossomRewardsTest {
                 line.startsWith("blossom[type=")).count());
         assertTrue(selectors.contains("blossom[type=\"wealth\"][world_level=\"6~9\"]"));
         assertTrue(selectors.contains("blossom[type=\"revelation\"][world_level=\"6~9\"]"));
-        assertFalse(selectors.contains("--astaps-loot-"));
+        assertFalse(selectors.contains("astaps.loot."));
         return new RewardConfiguration(loot, CssRewards.parse(
                 selectors, items, loot));
     }

@@ -1195,35 +1195,35 @@ boss[type="weekly"][tag="signora"][level="93~"] {
 
 /* Raiden Shogun (雷电将军) */
 boss[type="weekly"][tag="raiden_shogun"][level="1~4"] {
-    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:0.79';
+    --genshin-material-vajrada_amethyst_sliver: '2+1:0.79';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="5~9"] {
-    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:14.32';
+    --genshin-material-vajrada_amethyst_sliver: '2+1:14.32';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="10~14"] {
-    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:31.24';
+    --genshin-material-vajrada_amethyst_sliver: '2+1:31.24';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="15~19"] {
-    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:48.16';
+    --genshin-material-vajrada_amethyst_sliver: '2+1:48.16';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="20~24"] {
-    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:65.08';
+    --genshin-material-vajrada_amethyst_sliver: '2+1:65.08';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="25~29"] {
-    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:82';
+    --genshin-material-vajrada_amethyst_sliver: '2+1:82';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="30~34"] {
-    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:98.92';
+    --genshin-material-vajrada_amethyst_sliver: '2+1:98.92';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="35~39"] {
-    --astaps-loot-material_vajrada_amethyst_sliver: '3+1:15.84';
+    --genshin-material-vajrada_amethyst_sliver: '3+1:15.84';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="40~44"] {
@@ -1422,19 +1422,19 @@ boss[type="world"][tag="frostnight_scion"][level="1~4"] {
 }
 
 boss[type="world"][tag="frostnight_scion"][level="5~9"] {
-    --astaps-loot-material_frostnights_glory: '1+1:42.89';
+    --genshin-material-frostnights_glory: '1+1:42.89';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="10~14"] {
-    --astaps-loot-material_frostnights_glory: '1+1:54.17';
+    --genshin-material-frostnights_glory: '1+1:54.17';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="15~19"] {
-    --astaps-loot-material_frostnights_glory: '1+1:65.45';
+    --genshin-material-frostnights_glory: '1+1:65.45';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="20~24"] {
-    --astaps-loot-material_frostnights_glory: '1+1:76.73';
+    --genshin-material-frostnights_glory: '1+1:76.73';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="25~29"] {
@@ -1454,15 +1454,15 @@ boss[type="world"][tag="frostnight_scion"][level="40~44"] {
 }
 
 boss[type="world"][tag="frostnight_scion"][level="45~49"] {
-    --astaps-loot-material_frostnights_glory: '1+1:78.03';
+    --genshin-material-frostnights_glory: '1+1:78.03';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="50~54"] {
-    --astaps-loot-material_frostnights_glory: '1+1:86.64';
+    --genshin-material-frostnights_glory: '1+1:86.64';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="55~59"] {
-    --astaps-loot-material_frostnights_glory: '1+1:95.26';
+    --genshin-material-frostnights_glory: '1+1:95.26';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="60~64"] {
@@ -1507,19 +1507,19 @@ boss[type="world"][tag="knuckle_duck"][level="1~4"] {
 }
 
 boss[type="world"][tag="knuckle_duck"][level="5~9"] {
-    --astaps-loot-material_precision_kuuvahki_stamping_die: '1+1:42.89';
+    --genshin-material-precision_kuuvahki_stamping_die: '1+1:42.89';
 }
 
 boss[type="world"][tag="knuckle_duck"][level="10~14"] {
-    --astaps-loot-material_precision_kuuvahki_stamping_die: '1+1:54.17';
+    --genshin-material-precision_kuuvahki_stamping_die: '1+1:54.17';
 }
 
 boss[type="world"][tag="knuckle_duck"][level="15~19"] {
-    --astaps-loot-material_precision_kuuvahki_stamping_die: '1+1:65.45';
+    --genshin-material-precision_kuuvahki_stamping_die: '1+1:65.45';
 }
 
 boss[type="world"][tag="knuckle_duck"][level="20~24"] {
-    --astaps-loot-material_precision_kuuvahki_stamping_die: '1+1:76.73';
+    --genshin-material-precision_kuuvahki_stamping_die: '1+1:76.73';
 }
 
 boss[type="world"][tag="knuckle_duck"][level="25~29"] {
@@ -1592,19 +1592,19 @@ boss[type="world"][tag="lightbearing_lunar_moth"][level="1~4"] {
 }
 
 boss[type="world"][tag="lightbearing_lunar_moth"][level="5~9"] {
-    --astaps-loot-material_lightbearing_scale_feather: '1+1:42.89';
+    --genshin-material-lightbearing_scale_feather: '1+1:42.89';
 }
 
 boss[type="world"][tag="lightbearing_lunar_moth"][level="10~14"] {
-    --astaps-loot-material_lightbearing_scale_feather: '1+1:54.17';
+    --genshin-material-lightbearing_scale_feather: '1+1:54.17';
 }
 
 boss[type="world"][tag="lightbearing_lunar_moth"][level="15~19"] {
-    --astaps-loot-material_lightbearing_scale_feather: '1+1:65.45';
+    --genshin-material-lightbearing_scale_feather: '1+1:65.45';
 }
 
 boss[type="world"][tag="lightbearing_lunar_moth"][level="20~24"] {
-    --astaps-loot-material_lightbearing_scale_feather: '1+1:76.73';
+    --genshin-material-lightbearing_scale_feather: '1+1:76.73';
 }
 
 boss[type="world"][tag="lightbearing_lunar_moth"][level="25~29"] {
@@ -1677,19 +1677,19 @@ boss[type="world"][tag="radiant_beast"][level="1~4"] {
 }
 
 boss[type="world"][tag="radiant_beast"][level="5~9"] {
-    --astaps-loot-material_prismatic_severed_tail: '1+1:42.89';
+    --genshin-material-prismatic_severed_tail: '1+1:42.89';
 }
 
 boss[type="world"][tag="radiant_beast"][level="10~14"] {
-    --astaps-loot-material_prismatic_severed_tail: '1+1:54.17';
+    --genshin-material-prismatic_severed_tail: '1+1:54.17';
 }
 
 boss[type="world"][tag="radiant_beast"][level="15~19"] {
-    --astaps-loot-material_prismatic_severed_tail: '1+1:65.45';
+    --genshin-material-prismatic_severed_tail: '1+1:65.45';
 }
 
 boss[type="world"][tag="radiant_beast"][level="20~24"] {
-    --astaps-loot-material_prismatic_severed_tail: '1+1:76.73';
+    --genshin-material-prismatic_severed_tail: '1+1:76.73';
 }
 
 boss[type="world"][tag="radiant_beast"][level="25~29"] {
@@ -1762,19 +1762,19 @@ boss[type="world"][tag="primal_watcher"][level="1~4"] {
 }
 
 boss[type="world"][tag="primal_watcher"][level="5~9"] {
-    --astaps-loot-material_plume_of_the_fallen_watcher: '1+1:42.89';
+    --genshin-material-plume_of_the_fallen_watcher: '1+1:42.89';
 }
 
 boss[type="world"][tag="primal_watcher"][level="10~14"] {
-    --astaps-loot-material_plume_of_the_fallen_watcher: '1+1:54.17';
+    --genshin-material-plume_of_the_fallen_watcher: '1+1:54.17';
 }
 
 boss[type="world"][tag="primal_watcher"][level="15~19"] {
-    --astaps-loot-material_plume_of_the_fallen_watcher: '1+1:65.45';
+    --genshin-material-plume_of_the_fallen_watcher: '1+1:65.45';
 }
 
 boss[type="world"][tag="primal_watcher"][level="20~24"] {
-    --astaps-loot-material_plume_of_the_fallen_watcher: '1+1:76.73';
+    --genshin-material-plume_of_the_fallen_watcher: '1+1:76.73';
 }
 
 boss[type="world"][tag="primal_watcher"][level="25~29"] {
@@ -1932,19 +1932,19 @@ boss[type="world"][tag="emperor_of_fire_and_iron"][level="1~4"] {
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="5~9"] {
-    --astaps-loot-material_emperors_resolution: '1+1:42.89';
+    --genshin-material-emperors_resolution: '1+1:42.89';
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="10~14"] {
-    --astaps-loot-material_emperors_resolution: '1+1:54.17';
+    --genshin-material-emperors_resolution: '1+1:54.17';
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="15~19"] {
-    --astaps-loot-material_emperors_resolution: '1+1:65.45';
+    --genshin-material-emperors_resolution: '1+1:65.45';
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="20~24"] {
-    --astaps-loot-material_emperors_resolution: '1+1:76.73';
+    --genshin-material-emperors_resolution: '1+1:76.73';
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="25~29"] {
@@ -2017,19 +2017,19 @@ boss[type="world"][tag="experimental_field_generator"][level="1~4"] {
 }
 
 boss[type="world"][tag="experimental_field_generator"][level="5~9"] {
-    --astaps-loot-material_tourbillon_device: '1+1:42.89';
+    --genshin-material-tourbillon_device: '1+1:42.89';
 }
 
 boss[type="world"][tag="experimental_field_generator"][level="10~14"] {
-    --astaps-loot-material_tourbillon_device: '1+1:54.17';
+    --genshin-material-tourbillon_device: '1+1:54.17';
 }
 
 boss[type="world"][tag="experimental_field_generator"][level="15~19"] {
-    --astaps-loot-material_tourbillon_device: '1+1:65.45';
+    --genshin-material-tourbillon_device: '1+1:65.45';
 }
 
 boss[type="world"][tag="experimental_field_generator"][level="20~24"] {
-    --astaps-loot-material_tourbillon_device: '1+1:76.73';
+    --genshin-material-tourbillon_device: '1+1:76.73';
 }
 
 boss[type="world"][tag="experimental_field_generator"][level="25~29"] {
@@ -2102,19 +2102,19 @@ boss[type="world"][tag="millennial_pearl_seahorse"][level="1~4"] {
 }
 
 boss[type="world"][tag="millennial_pearl_seahorse"][level="5~9"] {
-    --astaps-loot-material_fontemer_unihorn: '1+1:42.89';
+    --genshin-material-fontemer_unihorn: '1+1:42.89';
 }
 
 boss[type="world"][tag="millennial_pearl_seahorse"][level="10~14"] {
-    --astaps-loot-material_fontemer_unihorn: '1+1:54.17';
+    --genshin-material-fontemer_unihorn: '1+1:54.17';
 }
 
 boss[type="world"][tag="millennial_pearl_seahorse"][level="15~19"] {
-    --astaps-loot-material_fontemer_unihorn: '1+1:65.45';
+    --genshin-material-fontemer_unihorn: '1+1:65.45';
 }
 
 boss[type="world"][tag="millennial_pearl_seahorse"][level="20~24"] {
-    --astaps-loot-material_fontemer_unihorn: '1+1:76.73';
+    --genshin-material-fontemer_unihorn: '1+1:76.73';
 }
 
 boss[type="world"][tag="millennial_pearl_seahorse"][level="25~29"] {
@@ -2187,19 +2187,19 @@ boss[type="world"][tag="hydro_tulpa"][level="1~4"] {
 }
 
 boss[type="world"][tag="hydro_tulpa"][level="5~9"] {
-    --astaps-loot-material_water_that_failed_to_transcend: '1+1:42.89';
+    --genshin-material-water_that_failed_to_transcend: '1+1:42.89';
 }
 
 boss[type="world"][tag="hydro_tulpa"][level="10~14"] {
-    --astaps-loot-material_water_that_failed_to_transcend: '1+1:54.17';
+    --genshin-material-water_that_failed_to_transcend: '1+1:54.17';
 }
 
 boss[type="world"][tag="hydro_tulpa"][level="15~19"] {
-    --astaps-loot-material_water_that_failed_to_transcend: '1+1:65.45';
+    --genshin-material-water_that_failed_to_transcend: '1+1:65.45';
 }
 
 boss[type="world"][tag="hydro_tulpa"][level="20~24"] {
-    --astaps-loot-material_water_that_failed_to_transcend: '1+1:76.73';
+    --genshin-material-water_that_failed_to_transcend: '1+1:76.73';
 }
 
 boss[type="world"][tag="hydro_tulpa"][level="25~29"] {
@@ -2272,19 +2272,19 @@ boss[type="world"][tag="legatus_golem"][level="1~4"] {
 }
 
 boss[type="world"][tag="legatus_golem"][level="5~9"] {
-    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:42.89';
+    --genshin-material-fragment_of_a_golden_melody: '1+1:42.89';
 }
 
 boss[type="world"][tag="legatus_golem"][level="10~14"] {
-    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:54.17';
+    --genshin-material-fragment_of_a_golden_melody: '1+1:54.17';
 }
 
 boss[type="world"][tag="legatus_golem"][level="15~19"] {
-    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:65.45';
+    --genshin-material-fragment_of_a_golden_melody: '1+1:65.45';
 }
 
 boss[type="world"][tag="legatus_golem"][level="20~24"] {
-    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:76.73';
+    --genshin-material-fragment_of_a_golden_melody: '1+1:76.73';
 }
 
 boss[type="world"][tag="legatus_golem"][level="25~29"] {
@@ -2304,15 +2304,15 @@ boss[type="world"][tag="legatus_golem"][level="40~44"] {
 }
 
 boss[type="world"][tag="legatus_golem"][level="45~49"] {
-    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:78.03';
+    --genshin-material-fragment_of_a_golden_melody: '1+1:78.03';
 }
 
 boss[type="world"][tag="legatus_golem"][level="50~54"] {
-    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:86.64';
+    --genshin-material-fragment_of_a_golden_melody: '1+1:86.64';
 }
 
 boss[type="world"][tag="legatus_golem"][level="55~59"] {
-    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:95.26';
+    --genshin-material-fragment_of_a_golden_melody: '1+1:95.26';
 }
 
 boss[type="world"][tag="legatus_golem"][level="60~64"] {
@@ -2357,19 +2357,19 @@ boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="1~4"] {
 }
 
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="5~9"] {
-    --astaps-loot-material_overripe_flamegranate: '1+1:42.89';
+    --genshin-material-overripe_flamegranate: '1+1:42.89';
 }
 
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="10~14"] {
-    --astaps-loot-material_overripe_flamegranate: '1+1:54.17';
+    --genshin-material-overripe_flamegranate: '1+1:54.17';
 }
 
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="15~19"] {
-    --astaps-loot-material_overripe_flamegranate: '1+1:65.45';
+    --genshin-material-overripe_flamegranate: '1+1:65.45';
 }
 
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="20~24"] {
-    --astaps-loot-material_overripe_flamegranate: '1+1:76.73';
+    --genshin-material-overripe_flamegranate: '1+1:76.73';
 }
 
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="25~29"] {
@@ -2442,19 +2442,19 @@ boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="1~4"] {
 }
 
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="5~9"] {
-    --astaps-loot-material_mark_of_the_binding_blessing: '1+1:42.89';
+    --genshin-material-mark_of_the_binding_blessing: '1+1:42.89';
 }
 
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="10~14"] {
-    --astaps-loot-material_mark_of_the_binding_blessing: '1+1:54.17';
+    --genshin-material-mark_of_the_binding_blessing: '1+1:54.17';
 }
 
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="15~19"] {
-    --astaps-loot-material_mark_of_the_binding_blessing: '1+1:65.45';
+    --genshin-material-mark_of_the_binding_blessing: '1+1:65.45';
 }
 
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="20~24"] {
-    --astaps-loot-material_mark_of_the_binding_blessing: '1+1:76.73';
+    --genshin-material-mark_of_the_binding_blessing: '1+1:76.73';
 }
 
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="25~29"] {
@@ -2527,19 +2527,19 @@ boss[type="world"][tag="secret_source_automaton_configuration_device"][level="1~
 }
 
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="5~9"] {
-    --astaps-loot-material_gold_inscribed_secret_source_core: '1+1:42.89';
+    --genshin-material-gold_inscribed_secret_source_core: '1+1:42.89';
 }
 
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="10~14"] {
-    --astaps-loot-material_gold_inscribed_secret_source_core: '1+1:54.17';
+    --genshin-material-gold_inscribed_secret_source_core: '1+1:54.17';
 }
 
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="15~19"] {
-    --astaps-loot-material_gold_inscribed_secret_source_core: '1+1:65.45';
+    --genshin-material-gold_inscribed_secret_source_core: '1+1:65.45';
 }
 
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="20~24"] {
-    --astaps-loot-material_gold_inscribed_secret_source_core: '1+1:76.73';
+    --genshin-material-gold_inscribed_secret_source_core: '1+1:76.73';
 }
 
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="25~29"] {
@@ -2612,19 +2612,19 @@ boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="1~4"] {
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="5~9"] {
-    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:42.89';
+    --genshin-material-remnant_of_the_dreadwing: '1+1:42.89';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="10~14"] {
-    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:54.17';
+    --genshin-material-remnant_of_the_dreadwing: '1+1:54.17';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="15~19"] {
-    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:65.45';
+    --genshin-material-remnant_of_the_dreadwing: '1+1:65.45';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="20~24"] {
-    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:76.73';
+    --genshin-material-remnant_of_the_dreadwing: '1+1:76.73';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="25~29"] {
@@ -2644,15 +2644,15 @@ boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="40~44"] {
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="45~49"] {
-    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:78.03';
+    --genshin-material-remnant_of_the_dreadwing: '1+1:78.03';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="50~54"] {
-    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:86.64';
+    --genshin-material-remnant_of_the_dreadwing: '1+1:86.64';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="55~59"] {
-    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:95.26';
+    --genshin-material-remnant_of_the_dreadwing: '1+1:95.26';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="60~64"] {
@@ -2697,19 +2697,19 @@ boss[type="world"][tag="holawaqa_ngoubou"][level="1~4"] {
 }
 
 boss[type="world"][tag="holawaqa_ngoubou"][level="5~9"] {
-    --astaps-loot-material_talisman_of_the_enigmatic_land: '1+1:42.89';
+    --genshin-material-talisman_of_the_enigmatic_land: '1+1:42.89';
 }
 
 boss[type="world"][tag="holawaqa_ngoubou"][level="10~14"] {
-    --astaps-loot-material_talisman_of_the_enigmatic_land: '1+1:54.17';
+    --genshin-material-talisman_of_the_enigmatic_land: '1+1:54.17';
 }
 
 boss[type="world"][tag="holawaqa_ngoubou"][level="15~19"] {
-    --astaps-loot-material_talisman_of_the_enigmatic_land: '1+1:65.45';
+    --genshin-material-talisman_of_the_enigmatic_land: '1+1:65.45';
 }
 
 boss[type="world"][tag="holawaqa_ngoubou"][level="20~24"] {
-    --astaps-loot-material_talisman_of_the_enigmatic_land: '1+1:76.73';
+    --genshin-material-talisman_of_the_enigmatic_land: '1+1:76.73';
 }
 
 boss[type="world"][tag="holawaqa_ngoubou"][level="25~29"] {
@@ -2782,19 +2782,19 @@ boss[type="world"][tag="lava_dragon_statue"][level="1~4"] {
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="5~9"] {
-    --astaps-loot-material_sparkless_statue_core: '1+1:42.89';
+    --genshin-material-sparkless_statue_core: '1+1:42.89';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="10~14"] {
-    --astaps-loot-material_sparkless_statue_core: '1+1:54.17';
+    --genshin-material-sparkless_statue_core: '1+1:54.17';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="15~19"] {
-    --astaps-loot-material_sparkless_statue_core: '1+1:65.45';
+    --genshin-material-sparkless_statue_core: '1+1:65.45';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="20~24"] {
-    --astaps-loot-material_sparkless_statue_core: '1+1:76.73';
+    --genshin-material-sparkless_statue_core: '1+1:76.73';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="25~29"] {
@@ -2814,15 +2814,15 @@ boss[type="world"][tag="lava_dragon_statue"][level="40~44"] {
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="45~49"] {
-    --astaps-loot-material_sparkless_statue_core: '1+1:78.03';
+    --genshin-material-sparkless_statue_core: '1+1:78.03';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="50~54"] {
-    --astaps-loot-material_sparkless_statue_core: '1+1:86.64';
+    --genshin-material-sparkless_statue_core: '1+1:86.64';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="55~59"] {
-    --astaps-loot-material_sparkless_statue_core: '1+1:95.26';
+    --genshin-material-sparkless_statue_core: '1+1:95.26';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="60~64"] {
@@ -2867,19 +2867,19 @@ boss[type="world"][tag="secret_source_automaton_overseer"][level="1~4"] {
 }
 
 boss[type="world"][tag="secret_source_automaton_overseer"][level="5~9"] {
-    --astaps-loot-material_secret_source_airflow_accumulator: '1+1:42.89';
+    --genshin-material-secret_source_airflow_accumulator: '1+1:42.89';
 }
 
 boss[type="world"][tag="secret_source_automaton_overseer"][level="10~14"] {
-    --astaps-loot-material_secret_source_airflow_accumulator: '1+1:54.17';
+    --genshin-material-secret_source_airflow_accumulator: '1+1:54.17';
 }
 
 boss[type="world"][tag="secret_source_automaton_overseer"][level="15~19"] {
-    --astaps-loot-material_secret_source_airflow_accumulator: '1+1:65.45';
+    --genshin-material-secret_source_airflow_accumulator: '1+1:65.45';
 }
 
 boss[type="world"][tag="secret_source_automaton_overseer"][level="20~24"] {
-    --astaps-loot-material_secret_source_airflow_accumulator: '1+1:76.73';
+    --genshin-material-secret_source_airflow_accumulator: '1+1:76.73';
 }
 
 boss[type="world"][tag="secret_source_automaton_overseer"][level="25~29"] {
@@ -3037,19 +3037,19 @@ boss[type="world"][tag="solitary_suanni"][level="1~4"] {
 }
 
 boss[type="world"][tag="solitary_suanni"][level="5~9"] {
-    --astaps-loot-material_cloudseam_scale: '1+1:42.89';
+    --genshin-material-cloudseam_scale: '1+1:42.89';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="10~14"] {
-    --astaps-loot-material_cloudseam_scale: '1+1:54.17';
+    --genshin-material-cloudseam_scale: '1+1:54.17';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="15~19"] {
-    --astaps-loot-material_cloudseam_scale: '1+1:65.45';
+    --genshin-material-cloudseam_scale: '1+1:65.45';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="20~24"] {
-    --astaps-loot-material_cloudseam_scale: '1+1:76.73';
+    --genshin-material-cloudseam_scale: '1+1:76.73';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="25~29"] {
@@ -3069,15 +3069,15 @@ boss[type="world"][tag="solitary_suanni"][level="40~44"] {
 }
 
 boss[type="world"][tag="solitary_suanni"][level="45~49"] {
-    --astaps-loot-material_cloudseam_scale: '1+1:78.03';
+    --genshin-material-cloudseam_scale: '1+1:78.03';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="50~54"] {
-    --astaps-loot-material_cloudseam_scale: '1+1:86.64';
+    --genshin-material-cloudseam_scale: '1+1:86.64';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="55~59"] {
-    --astaps-loot-material_cloudseam_scale: '1+1:95.26';
+    --genshin-material-cloudseam_scale: '1+1:95.26';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="60~64"] {
@@ -3122,19 +3122,19 @@ boss[type="world"][tag="tenebrous_papilla"][level="1~4"] {
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="5~9"] {
-    --astaps-loot-material_ensnaring_gaze: '1+1:42.89';
+    --genshin-material-ensnaring_gaze: '1+1:42.89';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="10~14"] {
-    --astaps-loot-material_ensnaring_gaze: '1+1:54.17';
+    --genshin-material-ensnaring_gaze: '1+1:54.17';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="15~19"] {
-    --astaps-loot-material_ensnaring_gaze: '1+1:65.45';
+    --genshin-material-ensnaring_gaze: '1+1:65.45';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="20~24"] {
-    --astaps-loot-material_ensnaring_gaze: '1+1:76.73';
+    --genshin-material-ensnaring_gaze: '1+1:76.73';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="25~29"] {
@@ -3154,15 +3154,15 @@ boss[type="world"][tag="tenebrous_papilla"][level="40~44"] {
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="45~49"] {
-    --astaps-loot-material_ensnaring_gaze: '1+1:78.03';
+    --genshin-material-ensnaring_gaze: '1+1:78.03';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="50~54"] {
-    --astaps-loot-material_ensnaring_gaze: '1+1:86.64';
+    --genshin-material-ensnaring_gaze: '1+1:86.64';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="55~59"] {
-    --astaps-loot-material_ensnaring_gaze: '1+1:95.26';
+    --genshin-material-ensnaring_gaze: '1+1:95.26';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="60~64"] {
@@ -3207,19 +3207,19 @@ boss[type="world"][tag="undying_replicant"][level="1~4"] {
 }
 
 boss[type="world"][tag="undying_replicant"][level="5~9"] {
-    --astaps-loot-material_unscorched_blossom_branch: '1+1:42.89';
+    --genshin-material-unscorched_blossom_branch: '1+1:42.89';
 }
 
 boss[type="world"][tag="undying_replicant"][level="10~14"] {
-    --astaps-loot-material_unscorched_blossom_branch: '1+1:54.17';
+    --genshin-material-unscorched_blossom_branch: '1+1:54.17';
 }
 
 boss[type="world"][tag="undying_replicant"][level="15~19"] {
-    --astaps-loot-material_unscorched_blossom_branch: '1+1:65.45';
+    --genshin-material-unscorched_blossom_branch: '1+1:65.45';
 }
 
 boss[type="world"][tag="undying_replicant"][level="20~24"] {
-    --astaps-loot-material_unscorched_blossom_branch: '1+1:76.73';
+    --genshin-material-unscorched_blossom_branch: '1+1:76.73';
 }
 
 boss[type="world"][tag="undying_replicant"][level="25~29"] {
@@ -3292,19 +3292,19 @@ boss[type="world"][tag="chimera_sky_roamer"][level="1~4"] {
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="5~9"] {
-    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:42.89';
+    --genshin-material-severed_tail_of_the_sky_roamer: '1+1:42.89';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="10~14"] {
-    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:54.17';
+    --genshin-material-severed_tail_of_the_sky_roamer: '1+1:54.17';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="15~19"] {
-    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:65.45';
+    --genshin-material-severed_tail_of_the_sky_roamer: '1+1:65.45';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="20~24"] {
-    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:76.73';
+    --genshin-material-severed_tail_of_the_sky_roamer: '1+1:76.73';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="25~29"] {
@@ -3324,15 +3324,15 @@ boss[type="world"][tag="chimera_sky_roamer"][level="40~44"] {
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="45~49"] {
-    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:78.03';
+    --genshin-material-severed_tail_of_the_sky_roamer: '1+1:78.03';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="50~54"] {
-    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:86.64';
+    --genshin-material-severed_tail_of_the_sky_roamer: '1+1:86.64';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="55~59"] {
-    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:95.26';
+    --genshin-material-severed_tail_of_the_sky_roamer: '1+1:95.26';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="60~64"] {

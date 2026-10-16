@@ -209,7 +209,11 @@ mapping:
 Slots 1–5 mean flower, plume, sands, goblet, circlet. A full five-slot
 weighted subtable can be inlined as a single artifact with
 `properties: {slot: "1~5", rarity: 4, substats: 2}`, preserving
-uniform slot probability and the parent's selection weight. Omitted slot and rarity
+uniform slot probability and the parent's selection weight. Likewise,
+two identical artifact-set choices weighted 33:17 for different initial
+substat counts can use `substats: "1:66, 2:34"` on each artifact
+entry. This preserves the joint artifact-set and substat probabilities
+without an extra weighted nesting level. Omitted slot and rarity
 choose uniformly from available ordinary variants. Missing `substats` chooses
 uniformly from the usual valid counts per rank (1★ 0, 2★ 0–1, 3★ 1–2,
 4★ 2–3, 5★ 3–4). This is a project policy, not a confirmed 7.1 drop-rate

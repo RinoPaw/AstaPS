@@ -328,6 +328,35 @@ class CssRewardsTest {
     }
 
     @Test
+    void numericRangesApplyToEveryAttributeAndKeepSpecificity() {
+        var css = CssRewards.parse("""
+                blossom[type="wealth"][world_level="6~9"] {
+                    --genshin-currency-mora: 60000;
+                }
+                blossom[type="wealth"][world_level="7"][city="1"] {
+                    --genshin-currency-mora: 30000;
+                }
+                chest[rank="2~"] {
+                    --genshin-currency-primogem: 5;
+                }
+                """, items, loot);
+        for (String value : new String[]{"6", "7", "8", "9"}) {
+            assertEquals(60000, css.resolve("blossom", Map.of(
+                    "type", "wealth", "world_level", value)).items().get(202));
+        }
+        assertEquals(30000, css.resolve("blossom", Map.of(
+                "type", "wealth", "world_level", "7", "city", "1")).items().get(202));
+        for (String value : new String[]{"5", "10", "unknown"}) {
+            assertTrue(css.resolve("blossom", Map.of(
+                    "type", "wealth", "world_level", value)).items().isEmpty());
+        }
+        assertTrue(css.resolve("blossom", Map.of("type", "wealth")).items().isEmpty());
+        assertTrue(css.resolve("chest", Map.of("rank", "1")).items().isEmpty());
+        assertEquals(5, css.resolve("chest", Map.of("rank", "2")).items().get(201));
+        assertEquals(5, css.resolve("chest", Map.of("rank", "999")).items().get(201));
+    }
+
+    @Test
     void levelRangesPreserveSpecificityAndExactEquality() {
         var css = CssRewards.parse("""
                 chest[level="6~10"] { --astaps-loot-surprise: 2; }
@@ -352,11 +381,13 @@ class CssRewardsTest {
 
     @Test
     void invalidLevelRangesAreRejected() {
-        for (String range : new String[]{"10~5", "a~5", "2~x", "~5"}) {
-            assertThrows(IllegalArgumentException.class, () ->
-                    CssRewards.parse(
-                            "chest[level=\"" + range + "\"] { --astaps-loot-currency: 1; }",
-                            items, loot), range);
+        for (String attribute : new String[]{"level", "world_level", "rank"}) {
+            for (String range : new String[]{"10~5", "a~5", "2~x", "~5"}) {
+                assertThrows(IllegalArgumentException.class, () ->
+                        CssRewards.parse("chest[" + attribute + "=\"" + range
+                                + "\"] { --astaps-loot-currency: 1; }",
+                                items, loot), attribute + "=" + range);
+            }
         }
     }
 

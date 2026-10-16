@@ -6493,7 +6493,6 @@ world_lightning_prism_roll_2plus1pct21p1:
   - {reward: *gems_electro_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_electro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3: &gems_electro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 6072}
@@ -6507,7 +6506,6 @@ world_lightning_prism_roll_2plus1pct29p71:
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_electro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3: &gems_electro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 6450}
@@ -6521,7 +6519,6 @@ world_lightning_prism_roll_2plus1pct38p33:
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_electro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3: &gems_electro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 6826}
@@ -6535,7 +6532,6 @@ world_lightning_prism_roll_2plus1pct46p94:
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_electro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3: &gems_electro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 7201}
@@ -6549,7 +6545,6 @@ world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subs
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.lightning_prism, count: "2+1:55.56"}
@@ -6557,7 +6552,6 @@ world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subs
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_cryo_sliver_counts_3: &gems_cryo_sliver_counts_3
   - {reward: genshin.material.shivada_jade_sliver, count: "3", weight: 1}
@@ -6698,7 +6692,6 @@ world_hurricane_seed_shivada_jade_chunk_weight_380:
     count: "2+1:50.668"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_hurricane_seed_shivada_jade_chunk_weight_405:
   - {reward: genshin.material.hurricane_seed, count: "2+1:29.71"}
@@ -6711,7 +6704,6 @@ world_hurricane_seed_shivada_jade_chunk_weight_405:
     count: "2+1:68.554"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_hurricane_seed_shivada_jade_chunk_weight_429:
   - {reward: genshin.material.hurricane_seed, count: "2+1:38.33"}
@@ -6724,7 +6716,6 @@ world_hurricane_seed_shivada_jade_chunk_weight_429:
     count: "2+1:85.219"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_hurricane_seed_shivada_jade_chunk_weight_455:
   - {reward: genshin.material.hurricane_seed, count: "2+1:46.94"}
@@ -6737,7 +6728,6 @@ world_hurricane_seed_shivada_jade_chunk_weight_455:
     count: "3+1:1.851"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_cryo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3: &gems_cryo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3
   - {reward: genshin.material.shivada_jade_sliver, count: "3", weight: 7201}
@@ -6751,7 +6741,6 @@ world_hurricane_seed_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subst
   - {reward: *gems_cryo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_hurricane_seed_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.hurricane_seed, count: "2+1:55.56"}
@@ -6759,7 +6748,6 @@ world_hurricane_seed_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subst
   - {reward: *gems_cryo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_geo_sliver_counts_3: &gems_geo_sliver_counts_3
   - {reward: genshin.material.prithiva_topaz_sliver, count: "3", weight: 1}
@@ -6901,7 +6889,6 @@ world_basalt_pillar_roll_2plus1pct21p1:
   - {reward: *gems_geo_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_geo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3: &gems_geo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3
   - {reward: genshin.material.prithiva_topaz_sliver, count: "3", weight: 6072}
@@ -6915,7 +6902,6 @@ world_basalt_pillar_roll_2plus1pct29p71:
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_geo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3: &gems_geo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3
   - {reward: genshin.material.prithiva_topaz_sliver, count: "3", weight: 6450}
@@ -6929,7 +6915,6 @@ world_basalt_pillar_roll_2plus1pct38p33:
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_geo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3: &gems_geo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3
   - {reward: genshin.material.prithiva_topaz_sliver, count: "3", weight: 6826}
@@ -6943,7 +6928,6 @@ world_basalt_pillar_roll_2plus1pct46p94:
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3: &gems_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3
   - {reward: genshin.material.prithiva_topaz_sliver, count: "3", weight: 7201}
@@ -6957,7 +6941,6 @@ world_basalt_pillar_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substa
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_basalt_pillar_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.basalt_pillar, count: "2+1:55.56"}
@@ -6965,7 +6948,6 @@ world_basalt_pillar_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substa
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_anemo_sliver_counts_3: &gems_anemo_sliver_counts_3
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 1}
@@ -7109,7 +7091,6 @@ world_hoarfrost_core_roll_2plus1pct21p1:
   - {reward: *gems_anemo_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_anemo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3: &gems_anemo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 6072}
@@ -7123,7 +7104,6 @@ world_hoarfrost_core_roll_2plus1pct29p71:
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_anemo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3: &gems_anemo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 6450}
@@ -7137,7 +7117,6 @@ world_hoarfrost_core_roll_2plus1pct38p33:
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_anemo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3: &gems_anemo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 6826}
@@ -7151,7 +7130,6 @@ world_hoarfrost_core_roll_2plus1pct46p94:
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_anemo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3: &gems_anemo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 7201}
@@ -7165,7 +7143,6 @@ world_hoarfrost_core_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subst
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_hoarfrost_core_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.hoarfrost_core, count: "2+1:55.56"}
@@ -7173,7 +7150,6 @@ world_hoarfrost_core_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subst
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_pyro_sliver_counts_3: &gems_pyro_sliver_counts_3
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 1}
@@ -7323,7 +7299,6 @@ world_gems_pyro_fragment_roll_2plus1pct43p21:
   - {reward: *gems_pyro_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_pyro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3: &gems_pyro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 6072}
@@ -7337,7 +7312,6 @@ world_gems_pyro_fragment_roll_2plus1pct52p681:
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_pyro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3: &gems_pyro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 6450}
@@ -7351,7 +7325,6 @@ world_gems_pyro_fragment_roll_2plus1pct62p163:
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_pyro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3: &gems_pyro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 6826}
@@ -7365,7 +7338,6 @@ world_gems_pyro_fragment_roll_2plus1pct71p634:
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_pyro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3: &gems_pyro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 7201}
@@ -7379,7 +7351,6 @@ world_gems_pyro_fragment_artifacts_gladiators_finale_wanderers_troupe_5star_3_4s
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_gems_pyro_fragment_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: *gems_pyro_fragment_counts_9, count: "2+1:81.116"}
@@ -7387,7 +7358,6 @@ world_gems_pyro_fragment_artifacts_gladiators_finale_wanderers_troupe_5star_3_4s
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_hydro_sliver_counts_3: &gems_hydro_sliver_counts_3
   - {reward: genshin.material.varunada_lazurite_sliver, count: "3", weight: 1}
@@ -7531,7 +7501,6 @@ world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct50p668:
   - {reward: *gems_hydro_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_hydro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3: &gems_hydro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3
   - {reward: genshin.material.varunada_lazurite_sliver, count: "3", weight: 6072}
@@ -7545,7 +7514,6 @@ world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct52p681:
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_hydro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3: &gems_hydro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3
   - {reward: genshin.material.varunada_lazurite_sliver, count: "3", weight: 6450}
@@ -7559,7 +7527,6 @@ world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct62p163:
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_hydro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3: &gems_hydro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3
   - {reward: genshin.material.varunada_lazurite_sliver, count: "3", weight: 6826}
@@ -7573,7 +7540,6 @@ world_gems_hydro_chunk_fragment_gemstone_sliver_roll_3plus1pct1p851:
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_hydro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3: &gems_hydro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3
   - {reward: genshin.material.varunada_lazurite_sliver, count: "3", weight: 7201}
@@ -7587,7 +7553,6 @@ world_gems_hydro_chunk_fragment_gemstone_sliver_artifacts_gladiators_finale_wand
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "2+1:81.116"}
@@ -7595,7 +7560,6 @@ world_gems_hydro_chunk_fragment_gemstone_sliver_artifacts_gladiators_finale_wand
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_electro_geo_sliver: &gems_electro_geo_sliver
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 1}
@@ -7738,7 +7702,6 @@ world_juvenile_jade_vajrada_amethyst_chunk_weight_380:
     count: "2+1:50.668"
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_juvenile_jade_vajrada_amethyst_chunk_weight_405:
   - {reward: genshin.material.juvenile_jade, count: "2+1:29.71"}
@@ -7755,7 +7718,6 @@ world_juvenile_jade_vajrada_amethyst_chunk_weight_405:
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_juvenile_jade_vajrada_amethyst_chunk_weight_429:
   - {reward: genshin.material.juvenile_jade, count: "2+1:38.33"}
@@ -7772,7 +7734,6 @@ world_juvenile_jade_vajrada_amethyst_chunk_weight_429:
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_juvenile_jade_vajrada_amethyst_chunk_weight_455:
   - {reward: genshin.material.juvenile_jade, count: "2+1:46.94"}
@@ -7789,7 +7750,6 @@ world_juvenile_jade_vajrada_amethyst_chunk_weight_455:
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_electro_geo_chunk_fragment_gemstone_sliver: &gems_electro_geo_chunk_fragment_gemstone_sliver
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 7201}
@@ -7807,7 +7767,6 @@ world_juvenile_jade_gems_electro_geo_chunk_fragment_gemstone_sliver_roll_3plus1p
   - {reward: *gems_electro_geo_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_juvenile_jade_gems_electro_geo_chunk_fragment_gemstone_sliver_roll_3plus1pct18p45_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.juvenile_jade, count: "2+1:55.56"}
@@ -7815,7 +7774,6 @@ world_juvenile_jade_gems_electro_geo_chunk_fragment_gemstone_sliver_roll_3plus1p
   - {reward: *gems_electro_geo_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_anemo_geo_sliver: &gems_anemo_geo_sliver
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 1}
@@ -7965,7 +7923,6 @@ world_juvenile_jade_gems_anemo_geo_chunk_fragment_sliver_roll_2plus1pct50p668:
   - {reward: *gems_anemo_geo_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3: &gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 6072}
@@ -7983,7 +7940,6 @@ world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_2plus1pct
   - {reward: *gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3: &gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 6450}
@@ -8001,7 +7957,6 @@ world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_2plus1pct
   - {reward: *gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3: &gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 6826}
@@ -8019,7 +7974,6 @@ world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_3plus1pct
   - {reward: *gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3: &gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 7201}
@@ -8037,7 +7991,6 @@ world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_3plus1pct
   - {reward: *gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_3plus1pct18p45_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.juvenile_jade, count: "2+1:55.56"}
@@ -8045,7 +7998,6 @@ world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_3plus1pct
   - {reward: *gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_geo_pyro_sliver: &gems_geo_pyro_sliver
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 1}
@@ -8188,7 +8140,6 @@ world_juvenile_jade_agnidus_agate_chunk_weight_380:
     count: "2+1:50.668"
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_juvenile_jade_agnidus_agate_chunk_weight_405:
   - {reward: genshin.material.juvenile_jade, count: "2+1:29.71"}
@@ -8205,7 +8156,6 @@ world_juvenile_jade_agnidus_agate_chunk_weight_405:
     count: "2+1:68.554"
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_juvenile_jade_agnidus_agate_chunk_weight_429:
   - {reward: genshin.material.juvenile_jade, count: "2+1:38.33"}
@@ -8222,7 +8172,6 @@ world_juvenile_jade_agnidus_agate_chunk_weight_429:
     count: "2+1:85.219"
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_juvenile_jade_agnidus_agate_chunk_weight_455:
   - {reward: genshin.material.juvenile_jade, count: "2+1:46.94"}
@@ -8239,7 +8188,6 @@ world_juvenile_jade_agnidus_agate_chunk_weight_455:
     count: "3+1:1.851"
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_geo_pyro_chunk_fragment_gemstone_sliver: &gems_geo_pyro_chunk_fragment_gemstone_sliver
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 7201}
@@ -8257,7 +8205,6 @@ world_juvenile_jade_gems_geo_pyro_chunk_fragment_gemstone_sliver_roll_3plus1pct1
   - {reward: *gems_geo_pyro_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_juvenile_jade_gems_geo_pyro_chunk_fragment_gemstone_sliver_roll_3plus1pct18p45_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.juvenile_jade, count: "2+1:55.56"}
@@ -8265,7 +8212,6 @@ world_juvenile_jade_gems_geo_pyro_chunk_fragment_gemstone_sliver_roll_3plus1pct1
   - {reward: *gems_geo_pyro_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_geo_hydro_sliver: &gems_geo_hydro_sliver
   - {reward: genshin.material.varunada_lazurite_sliver, count: "3", weight: 1}
@@ -8408,7 +8354,6 @@ world_juvenile_jade_varunada_lazurite_chunk_weight_380:
     count: "2+1:50.668"
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_juvenile_jade_varunada_lazurite_chunk_weight_405:
   - {reward: genshin.material.juvenile_jade, count: "2+1:29.71"}
@@ -8425,7 +8370,6 @@ world_juvenile_jade_varunada_lazurite_chunk_weight_405:
     count: "2+1:68.554"
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_juvenile_jade_varunada_lazurite_chunk_weight_429:
   - {reward: genshin.material.juvenile_jade, count: "2+1:38.33"}
@@ -8442,7 +8386,6 @@ world_juvenile_jade_varunada_lazurite_chunk_weight_429:
     count: "2+1:85.219"
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_juvenile_jade_varunada_lazurite_chunk_weight_455:
   - {reward: genshin.material.juvenile_jade, count: "2+1:46.94"}
@@ -8459,7 +8402,6 @@ world_juvenile_jade_varunada_lazurite_chunk_weight_455:
     count: "3+1:1.851"
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_geo_hydro_chunk_fragment_gemstone_sliver: &gems_geo_hydro_chunk_fragment_gemstone_sliver
   - {reward: genshin.material.varunada_lazurite_sliver, count: "3", weight: 7201}
@@ -8477,7 +8419,6 @@ world_juvenile_jade_gems_geo_hydro_chunk_fragment_gemstone_sliver_roll_3plus1pct
   - {reward: *gems_geo_hydro_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_juvenile_jade_gems_geo_hydro_chunk_fragment_gemstone_sliver_roll_3plus1pct18p45_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.juvenile_jade, count: "2+1:55.56"}
@@ -8485,7 +8426,6 @@ world_juvenile_jade_gems_geo_hydro_chunk_fragment_gemstone_sliver_roll_3plus1pct
   - {reward: *gems_geo_hydro_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 world_crystalline_bloom_roll_1plus1pct52p18:
   - {reward: genshin.material.crystalline_bloom, count: "1+1:52.18"}
@@ -8547,7 +8487,6 @@ world_crystalline_bloom_roll_2plus1pct21p1:
   - {reward: *gems_anemo_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_crystalline_bloom_roll_2plus1pct29p71:
   - {reward: genshin.material.crystalline_bloom, count: "2+1:29.71"}
@@ -8555,7 +8494,6 @@ world_crystalline_bloom_roll_2plus1pct29p71:
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_crystalline_bloom_roll_2plus1pct38p33:
   - {reward: genshin.material.crystalline_bloom, count: "2+1:38.33"}
@@ -8563,7 +8501,6 @@ world_crystalline_bloom_roll_2plus1pct38p33:
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_crystalline_bloom_roll_2plus1pct46p94:
   - {reward: genshin.material.crystalline_bloom, count: "2+1:46.94"}
@@ -8571,7 +8508,6 @@ world_crystalline_bloom_roll_2plus1pct46p94:
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_crystalline_bloom_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.material.crystalline_bloom, count: "2+1:55.56"}
@@ -8579,7 +8515,6 @@ world_crystalline_bloom_artifacts_gladiators_finale_wanderers_troupe_5star_3_4su
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_crystalline_bloom_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.crystalline_bloom, count: "2+1:55.56"}
@@ -8587,7 +8522,6 @@ world_crystalline_bloom_artifacts_gladiators_finale_wanderers_troupe_5star_3_4su
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_anemo_cryo_sliver: &gems_anemo_cryo_sliver
   - {reward: genshin.material.shivada_jade_sliver, count: "3", weight: 1}
@@ -8730,7 +8664,6 @@ world_marionette_core_shivada_jade_chunk_weight_380:
     count: "2+1:50.668"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_marionette_core_shivada_jade_chunk_weight_405:
   - {reward: genshin.material.marionette_core, count: "2+1:29.71"}
@@ -8747,7 +8680,6 @@ world_marionette_core_shivada_jade_chunk_weight_405:
     count: "2+1:68.554"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_marionette_core_shivada_jade_chunk_weight_429:
   - {reward: genshin.material.marionette_core, count: "2+1:38.33"}
@@ -8764,7 +8696,6 @@ world_marionette_core_shivada_jade_chunk_weight_429:
     count: "2+1:85.219"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_marionette_core_shivada_jade_chunk_weight_455:
   - {reward: genshin.material.marionette_core, count: "2+1:46.94"}
@@ -8781,7 +8712,6 @@ world_marionette_core_shivada_jade_chunk_weight_455:
     count: "3+1:1.851"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_anemo_cryo_chunk_fragment_gemstone_sliver: &gems_anemo_cryo_chunk_fragment_gemstone_sliver
   - {reward: genshin.material.shivada_jade_sliver, count: "3", weight: 7201}
@@ -8799,7 +8729,6 @@ world_marionette_core_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subs
   - {reward: *gems_anemo_cryo_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_marionette_core_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.marionette_core, count: "2+1:55.56"}
@@ -8807,7 +8736,6 @@ world_marionette_core_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subs
   - {reward: *gems_anemo_cryo_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 world_perpetual_heart_roll_1plus1pct52p18:
   - {reward: genshin.material.perpetual_heart, count: "1+1:52.18"}
@@ -8869,7 +8797,6 @@ world_perpetual_heart_roll_2plus1pct21p1:
   - {reward: *gems_anemo_geo_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_perpetual_heart_roll_2plus1pct29p71:
   - {reward: genshin.material.perpetual_heart, count: "2+1:29.71"}
@@ -8877,7 +8804,6 @@ world_perpetual_heart_roll_2plus1pct29p71:
   - {reward: *gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_perpetual_heart_roll_2plus1pct38p33:
   - {reward: genshin.material.perpetual_heart, count: "2+1:38.33"}
@@ -8885,7 +8811,6 @@ world_perpetual_heart_roll_2plus1pct38p33:
   - {reward: *gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_perpetual_heart_roll_2plus1pct46p94:
   - {reward: genshin.material.perpetual_heart, count: "2+1:46.94"}
@@ -8893,7 +8818,6 @@ world_perpetual_heart_roll_2plus1pct46p94:
   - {reward: *gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_perpetual_heart_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.material.perpetual_heart, count: "2+1:55.56"}
@@ -8901,7 +8825,6 @@ world_perpetual_heart_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subs
   - {reward: *gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_perpetual_heart_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.perpetual_heart, count: "2+1:55.56"}
@@ -8909,7 +8832,6 @@ world_perpetual_heart_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subs
   - {reward: *gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 world_smoldering_pearl_roll_1plus1pct52p18:
   - {reward: genshin.material.smoldering_pearl, count: "1+1:52.18"}
@@ -8971,7 +8893,6 @@ world_smoldering_pearl_roll_2plus1pct21p1:
   - {reward: *gems_pyro_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_smoldering_pearl_roll_2plus1pct29p71:
   - {reward: genshin.material.smoldering_pearl, count: "2+1:29.71"}
@@ -8979,7 +8900,6 @@ world_smoldering_pearl_roll_2plus1pct29p71:
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_smoldering_pearl_roll_2plus1pct38p33:
   - {reward: genshin.material.smoldering_pearl, count: "2+1:38.33"}
@@ -8987,7 +8907,6 @@ world_smoldering_pearl_roll_2plus1pct38p33:
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_smoldering_pearl_roll_2plus1pct46p94:
   - {reward: genshin.material.smoldering_pearl, count: "2+1:46.94"}
@@ -8995,7 +8914,6 @@ world_smoldering_pearl_roll_2plus1pct46p94:
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_smoldering_pearl_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.material.smoldering_pearl, count: "2+1:55.56"}
@@ -9003,7 +8921,6 @@ world_smoldering_pearl_artifacts_gladiators_finale_wanderers_troupe_5star_3_4sub
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_smoldering_pearl_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.smoldering_pearl, count: "2+1:55.56"}
@@ -9011,7 +8928,6 @@ world_smoldering_pearl_artifacts_gladiators_finale_wanderers_troupe_5star_3_4sub
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 world_dew_of_repudiation_roll_1plus1pct52p18:
   - {reward: genshin.material.dew_of_repudiation, count: "1+1:52.18"}
@@ -9073,7 +8989,6 @@ world_dew_of_repudiation_roll_2plus1pct21p1:
   - {reward: *gems_hydro_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_dew_of_repudiation_roll_2plus1pct29p71:
   - {reward: genshin.material.dew_of_repudiation, count: "2+1:29.71"}
@@ -9081,7 +8996,6 @@ world_dew_of_repudiation_roll_2plus1pct29p71:
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_dew_of_repudiation_roll_2plus1pct38p33:
   - {reward: genshin.material.dew_of_repudiation, count: "2+1:38.33"}
@@ -9089,7 +9003,6 @@ world_dew_of_repudiation_roll_2plus1pct38p33:
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_dew_of_repudiation_roll_2plus1pct46p94:
   - {reward: genshin.material.dew_of_repudiation, count: "2+1:46.94"}
@@ -9097,7 +9010,6 @@ world_dew_of_repudiation_roll_2plus1pct46p94:
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_dew_of_repudiation_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.material.dew_of_repudiation, count: "2+1:55.56"}
@@ -9105,7 +9017,6 @@ world_dew_of_repudiation_artifacts_gladiators_finale_wanderers_troupe_5star_3_4s
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_dew_of_repudiation_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.dew_of_repudiation, count: "2+1:55.56"}
@@ -9113,7 +9024,6 @@ world_dew_of_repudiation_artifacts_gladiators_finale_wanderers_troupe_5star_3_4s
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 world_storm_beads_roll_1plus1pct52p18:
   - {reward: genshin.material.storm_beads, count: "1+1:52.18"}
@@ -9175,7 +9085,6 @@ world_storm_beads_roll_2plus1pct21p1:
   - {reward: *gems_electro_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_storm_beads_roll_2plus1pct29p71:
   - {reward: genshin.material.storm_beads, count: "2+1:29.71"}
@@ -9183,7 +9092,6 @@ world_storm_beads_roll_2plus1pct29p71:
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_storm_beads_roll_2plus1pct38p33:
   - {reward: genshin.material.storm_beads, count: "2+1:38.33"}
@@ -9191,7 +9099,6 @@ world_storm_beads_roll_2plus1pct38p33:
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_storm_beads_roll_2plus1pct46p94:
   - {reward: genshin.material.storm_beads, count: "2+1:46.94"}
@@ -9199,7 +9106,6 @@ world_storm_beads_roll_2plus1pct46p94:
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_storm_beads_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.material.storm_beads, count: "2+1:55.56"}
@@ -9207,7 +9113,6 @@ world_storm_beads_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_storm_beads_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.storm_beads, count: "2+1:55.56"}
@@ -9215,7 +9120,6 @@ world_storm_beads_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 world_riftborn_regalia_roll_1plus1pct52p18:
   - {reward: genshin.material.riftborn_regalia, count: "1+1:52.18"}
@@ -9277,7 +9181,6 @@ world_riftborn_regalia_roll_2plus1pct21p1:
   - {reward: *gems_geo_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_riftborn_regalia_roll_2plus1pct29p71:
   - {reward: genshin.material.riftborn_regalia, count: "2+1:29.71"}
@@ -9285,7 +9188,6 @@ world_riftborn_regalia_roll_2plus1pct29p71:
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_riftborn_regalia_roll_2plus1pct38p33:
   - {reward: genshin.material.riftborn_regalia, count: "2+1:38.33"}
@@ -9293,7 +9195,6 @@ world_riftborn_regalia_roll_2plus1pct38p33:
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_riftborn_regalia_roll_2plus1pct46p94:
   - {reward: genshin.material.riftborn_regalia, count: "2+1:46.94"}
@@ -9301,7 +9202,6 @@ world_riftborn_regalia_roll_2plus1pct46p94:
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_riftborn_regalia_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.material.riftborn_regalia, count: "2+1:55.56"}
@@ -9309,7 +9209,6 @@ world_riftborn_regalia_artifacts_gladiators_finale_wanderers_troupe_5star_3_4sub
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_riftborn_regalia_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.riftborn_regalia, count: "2+1:55.56"}
@@ -9317,7 +9216,6 @@ world_riftborn_regalia_artifacts_gladiators_finale_wanderers_troupe_5star_3_4sub
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_anemo_electro_sliver: &gems_anemo_electro_sliver
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 1}
@@ -9460,7 +9358,6 @@ world_dragonheirs_false_fin_vayuda_turquoise_chunk_weight_380:
     count: "2+1:50.668"
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_dragonheirs_false_fin_vayuda_turquoise_chunk_weight_405:
   - {reward: genshin.material.dragonheirs_false_fin, count: "2+1:29.71"}
@@ -9477,7 +9374,6 @@ world_dragonheirs_false_fin_vayuda_turquoise_chunk_weight_405:
     count: "2+1:68.554"
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_dragonheirs_false_fin_vayuda_turquoise_chunk_weight_429:
   - {reward: genshin.material.dragonheirs_false_fin, count: "2+1:38.33"}
@@ -9494,7 +9390,6 @@ world_dragonheirs_false_fin_vayuda_turquoise_chunk_weight_429:
     count: "2+1:85.219"
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_dragonheirs_false_fin_vayuda_turquoise_chunk_weight_455:
   - {reward: genshin.material.dragonheirs_false_fin, count: "2+1:46.94"}
@@ -9511,7 +9406,6 @@ world_dragonheirs_false_fin_vayuda_turquoise_chunk_weight_455:
     count: "3+1:1.851"
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_anemo_electro_chunk_fragment_gemstone_sliver: &gems_anemo_electro_chunk_fragment_gemstone_sliver
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 7201}
@@ -9529,7 +9423,6 @@ world_dragonheirs_false_fin_artifacts_gladiators_finale_wanderers_troupe_5star_3
   - {reward: *gems_anemo_electro_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_dragonheirs_false_fin_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.dragonheirs_false_fin, count: "2+1:55.56"}
@@ -9537,7 +9430,6 @@ world_dragonheirs_false_fin_artifacts_gladiators_finale_wanderers_troupe_5star_3
   - {reward: *gems_anemo_electro_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 world_runic_fang_roll_1plus1pct52p18:
   - {reward: genshin.material.runic_fang, count: "1+1:52.18"}
@@ -9599,7 +9491,6 @@ world_runic_fang_roll_2plus1pct21p1:
   - {reward: *gems_geo_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_runic_fang_roll_2plus1pct29p71:
   - {reward: genshin.material.runic_fang, count: "2+1:29.71"}
@@ -9607,7 +9498,6 @@ world_runic_fang_roll_2plus1pct29p71:
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_runic_fang_roll_2plus1pct38p33:
   - {reward: genshin.material.runic_fang, count: "2+1:38.33"}
@@ -9615,7 +9505,6 @@ world_runic_fang_roll_2plus1pct38p33:
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_runic_fang_roll_2plus1pct46p94:
   - {reward: genshin.material.runic_fang, count: "2+1:46.94"}
@@ -9623,7 +9512,6 @@ world_runic_fang_roll_2plus1pct46p94:
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_runic_fang_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.material.runic_fang, count: "2+1:55.56"}
@@ -9631,7 +9519,6 @@ world_runic_fang_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_runic_fang_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.runic_fang, count: "2+1:55.56"}
@@ -9639,7 +9526,6 @@ world_runic_fang_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_dendro_sliver_counts_3: &gems_dendro_sliver_counts_3
   - {reward: genshin.material.nagadus_emerald_sliver, count: "3", weight: 1}
@@ -9775,7 +9661,6 @@ world_majestic_hooked_beak_roll_2plus1pct21p1:
   - {reward: *gems_dendro_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_adventurer_berserker_instructor_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_dendro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3: &gems_dendro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3
   - {reward: genshin.material.nagadus_emerald_sliver, count: "3", weight: 6072}
@@ -9789,7 +9674,6 @@ world_majestic_hooked_beak_roll_2plus1pct29p71:
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_adventurer_berserker_instructor_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 gems_dendro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3: &gems_dendro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3
   - {reward: genshin.material.nagadus_emerald_sliver, count: "3", weight: 6450}
@@ -9803,7 +9687,6 @@ world_majestic_hooked_beak_roll_2plus1pct38p33:
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_adventurer_berserker_instructor_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_dendro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3: &gems_dendro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3
   - {reward: genshin.material.nagadus_emerald_sliver, count: "3", weight: 6826}
@@ -9817,7 +9700,6 @@ world_majestic_hooked_beak_roll_2plus1pct46p94:
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_adventurer_berserker_instructor_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_dendro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3: &gems_dendro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3
   - {reward: genshin.material.nagadus_emerald_sliver, count: "3", weight: 7201}
@@ -9831,7 +9713,6 @@ world_majestic_hooked_beak_artifacts_gladiators_finale_wanderers_troupe_5star_3_
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_instructor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_majestic_hooked_beak_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.majestic_hooked_beak, count: "2+1:55.56"}
@@ -9839,7 +9720,6 @@ world_majestic_hooked_beak_artifacts_gladiators_finale_wanderers_troupe_5star_3_
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_instructor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 world_thunderclap_fruitcore_gems_electro_sliver_roll_2plus1pct19p219:
   - {reward: genshin.material.thunderclap_fruitcore, count: "1+1:52.18"}
@@ -9901,7 +9781,6 @@ world_thunderclap_fruitcore_roll_2plus1pct21p1:
   - {reward: *gems_electro_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_thunderclap_fruitcore_roll_2plus1pct29p71:
   - {reward: genshin.material.thunderclap_fruitcore, count: "2+1:29.71"}
@@ -9909,7 +9788,6 @@ world_thunderclap_fruitcore_roll_2plus1pct29p71:
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_thunderclap_fruitcore_roll_2plus1pct38p33:
   - {reward: genshin.material.thunderclap_fruitcore, count: "2+1:38.33"}
@@ -9917,7 +9795,6 @@ world_thunderclap_fruitcore_roll_2plus1pct38p33:
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_thunderclap_fruitcore_roll_2plus1pct46p94:
   - {reward: genshin.material.thunderclap_fruitcore, count: "2+1:46.94"}
@@ -9925,7 +9802,6 @@ world_thunderclap_fruitcore_roll_2plus1pct46p94:
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_thunderclap_fruitcore_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.material.thunderclap_fruitcore, count: "2+1:55.56"}
@@ -9933,7 +9809,6 @@ world_thunderclap_fruitcore_artifacts_gladiators_finale_wanderers_troupe_5star_3
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_thunderclap_fruitcore_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.thunderclap_fruitcore, count: "2+1:55.56"}
@@ -9941,7 +9816,6 @@ world_thunderclap_fruitcore_artifacts_gladiators_finale_wanderers_troupe_5star_3
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_anemo_hydro_sliver: &gems_anemo_hydro_sliver
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 1}
@@ -10084,7 +9958,6 @@ world_perpetual_caliber_vayuda_turquoise_chunk_weight_380:
     count: "2+1:50.668"
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_perpetual_caliber_vayuda_turquoise_chunk_weight_405:
   - {reward: genshin.material.perpetual_caliber, count: "2+1:29.71"}
@@ -10101,7 +9974,6 @@ world_perpetual_caliber_vayuda_turquoise_chunk_weight_405:
     count: "2+1:68.554"
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_perpetual_caliber_vayuda_turquoise_chunk_weight_429:
   - {reward: genshin.material.perpetual_caliber, count: "2+1:38.33"}
@@ -10118,7 +9990,6 @@ world_perpetual_caliber_vayuda_turquoise_chunk_weight_429:
     count: "2+1:85.219"
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_perpetual_caliber_vayuda_turquoise_chunk_weight_455:
   - {reward: genshin.material.perpetual_caliber, count: "2+1:46.94"}
@@ -10135,7 +10006,6 @@ world_perpetual_caliber_vayuda_turquoise_chunk_weight_455:
     count: "3+1:1.851"
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_anemo_hydro_chunk_fragment_gemstone_sliver: &gems_anemo_hydro_chunk_fragment_gemstone_sliver
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 7201}
@@ -10153,7 +10023,6 @@ world_perpetual_caliber_artifacts_gladiators_finale_wanderers_troupe_5star_3_4su
   - {reward: *gems_anemo_hydro_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_perpetual_caliber_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.perpetual_caliber, count: "2+1:55.56"}
@@ -10161,7 +10030,6 @@ world_perpetual_caliber_artifacts_gladiators_finale_wanderers_troupe_5star_3_4su
   - {reward: *gems_anemo_hydro_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 gems_cryo_pyro_sliver: &gems_cryo_pyro_sliver
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 1}
@@ -10304,7 +10172,6 @@ world_light_guiding_tetrahedron_shivada_jade_chunk_weight_380:
     count: "2+1:50.668"
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_light_guiding_tetrahedron_shivada_jade_chunk_weight_405:
   - {reward: genshin.material.light_guiding_tetrahedron, count: "2+1:29.71"}
@@ -10321,7 +10188,6 @@ world_light_guiding_tetrahedron_shivada_jade_chunk_weight_405:
     count: "2+1:68.554"
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_light_guiding_tetrahedron_shivada_jade_chunk_weight_429:
   - {reward: genshin.material.light_guiding_tetrahedron, count: "2+1:38.33"}
@@ -10338,7 +10204,6 @@ world_light_guiding_tetrahedron_shivada_jade_chunk_weight_429:
     count: "2+1:85.219"
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_light_guiding_tetrahedron_shivada_jade_chunk_weight_455:
   - {reward: genshin.material.light_guiding_tetrahedron, count: "2+1:46.94"}
@@ -10355,7 +10220,6 @@ world_light_guiding_tetrahedron_shivada_jade_chunk_weight_455:
     count: "3+1:1.851"
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 gems_cryo_pyro_chunk_fragment_gemstone_sliver: &gems_cryo_pyro_chunk_fragment_gemstone_sliver
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 7201}
@@ -10373,7 +10237,6 @@ world_light_guiding_tetrahedron_artifacts_gladiators_finale_wanderers_troupe_5st
   - {reward: *gems_cryo_pyro_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_light_guiding_tetrahedron_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.light_guiding_tetrahedron, count: "2+1:55.56"}
@@ -10381,7 +10244,6 @@ world_light_guiding_tetrahedron_artifacts_gladiators_finale_wanderers_troupe_5st
   - {reward: *gems_cryo_pyro_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 world_quelled_creeper_roll_1plus1pct52p18:
   - {reward: genshin.material.quelled_creeper, count: "1+1:52.18"}
@@ -10443,7 +10305,6 @@ world_quelled_creeper_roll_2plus1pct21p1:
   - {reward: *gems_dendro_chunk_fragment_sliver_odds_5697_1519_380_count_3, count: "2+1:50.668"}
   - {reward: *artifacts_adventurer_berserker_instructor_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_quelled_creeper_roll_2plus1pct29p71:
   - {reward: genshin.material.quelled_creeper, count: "2+1:29.71"}
@@ -10451,7 +10312,6 @@ world_quelled_creeper_roll_2plus1pct29p71:
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3, count: "2+1:68.554"}
   - {reward: *artifacts_adventurer_berserker_instructor_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
 
 world_quelled_creeper_roll_2plus1pct38p33:
   - {reward: genshin.material.quelled_creeper, count: "2+1:38.33"}
@@ -10459,7 +10319,6 @@ world_quelled_creeper_roll_2plus1pct38p33:
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3, count: "2+1:85.219"}
   - {reward: *artifacts_adventurer_berserker_instructor_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_quelled_creeper_roll_2plus1pct46p94:
   - {reward: genshin.material.quelled_creeper, count: "2+1:46.94"}
@@ -10467,7 +10326,6 @@ world_quelled_creeper_roll_2plus1pct46p94:
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3, count: "3+1:1.851"}
   - {reward: *artifacts_adventurer_berserker_instructor_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:26"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
 
 world_quelled_creeper_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.material.quelled_creeper, count: "2+1:55.56"}
@@ -10475,7 +10333,6 @@ world_quelled_creeper_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subs
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_instructor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
 
 world_quelled_creeper_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.material.quelled_creeper, count: "2+1:55.56"}
@@ -10483,7 +10340,6 @@ world_quelled_creeper_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subs
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3, count: "3+1:18.45"}
   - {reward: *artifacts_adventurer_berserker_instructor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
 # Shared weekly extras. Loot owns both item pools and drop chances.
 weekly_northlander_extras:
@@ -10527,3 +10383,16 @@ weekly_artifacts_rare:
   - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
+
+# Shared five-star Gladiator/Wanderer drops; chance remains in Loot.
+world_five_star_artifacts_low:
+  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:21"}
+
+world_five_star_artifacts_medium:
+  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:42"}
+
+world_five_star_artifacts_high:
+  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:63"}
+
+world_five_star_artifacts_guaranteed:
+  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}

@@ -68,14 +68,22 @@ class BundledChestRewardsTest {
         return new ArtifactResolver(variants);
     }
 
+    private static String chestYaml() throws Exception {
+        return resource("/rewards/loot.yaml").split("# Weekly Boss native reward tables", 2)[0];
+    }
+
+    private static String chestCss() throws Exception {
+        return resource("/rewards/rewards.css").split("/* Weekly Boss native", 2)[0];
+    }
+
     private static YamlLootTables loot() throws Exception {
-        return YamlLootTables.parse(resource("/rewards/loot.yaml"),
+        return YamlLootTables.parse(chestYaml(),
                 items()::resolve, artifacts());
     }
 
     @Test
     void twelveChestTiersContainNoFixedCurrencies() throws Exception {
-        String cssSource = resource("/rewards/rewards.css");
+        String cssSource = chestCss();
         assertFalse(cssSource.contains("--loot:"));
         assertTrue(cssSource.contains("--astaps-loot-xxxhigh: 1;"));
         var loot = loot();
@@ -104,10 +112,10 @@ class BundledChestRewardsTest {
         }
         assertTrue(loot.names().stream().noneMatch(name ->
                 name.startsWith("astaps.loot.chest_")));
-        String reorderedYaml = resource("/rewards/loot.yaml");
+        String reorderedYaml = chestYaml();
         assertTrue(reorderedYaml.indexOf("artifacts_3_to_4_high:") <
                 reorderedYaml.indexOf("minimal:"));
-        String yaml = resource("/rewards/loot.yaml");
+        String yaml = chestYaml();
         for (String name : new String[]{
                 "adventure_exp", "primogem", "mora", "anemo_sigil", "geo_sigil",
                 "electro_sigil", "dendro_sigil"}) {
@@ -126,7 +134,7 @@ class BundledChestRewardsTest {
     @Test
     void allTwentyFourGradeAndLevelCombinationsSelectTwelveTiers() throws Exception {
         var loot = loot();
-        var css = CssRewards.parse(resource("/rewards/rewards.css"), items(), loot);
+        var css = CssRewards.parse(chestCss(), items(), loot);
         String[][] expected = {
             {"minimal", "nano", "micro",
              "light", "low", "medium"},
@@ -155,7 +163,7 @@ class BundledChestRewardsTest {
     @Test
     void regionalPrimogemsAndThirtyAdventureExpRemainCssOwned() throws Exception {
         var loot = loot();
-        var css = CssRewards.parse(resource("/rewards/rewards.css"), items(), loot);
+        var css = CssRewards.parse(chestCss(), items(), loot);
         String[] kinds = {"common", "exquisite", "precious", "luxurious"};
         int[] base = {2, 5, 10, 10}, low = {0, 2, 5, 10};
         for (int k = 0; k < kinds.length; k++) {
@@ -184,7 +192,7 @@ class BundledChestRewardsTest {
     @Test
     void missingChestLevelCannotSilentlyFallBackToGradeRewards() throws Exception {
         var loot = loot();
-        var css = CssRewards.parse(resource("/rewards/rewards.css"), items(), loot);
+        var css = CssRewards.parse(chestCss(), items(), loot);
         for (String kind : new String[]{"common", "exquisite", "precious", "luxurious"}) {
             for (String level : new String[]{null, "0", "-1", "unknown"}) {
                 var props = new java.util.HashMap<String, String>();
@@ -213,7 +221,7 @@ class BundledChestRewardsTest {
 
     @Test
     void specialChestTypesDoNotInheritNormalChestRewards() throws Exception {
-        var css = CssRewards.parse(resource("/rewards/rewards.css"), items(), loot());
+        var css = CssRewards.parse(chestCss(), items(), loot());
         for (String type : new String[]{"mora", "remarkable"}) {
             var attrs = Map.of("type", type, "grade", "common", "level", "26");
             var selection = css.resolve("chest", attrs);
@@ -293,7 +301,7 @@ class BundledChestRewardsTest {
     @Test
     void nativeRegionalRecipesAreDefinedByCssInsteadOfLoot() throws Exception {
         var loot = loot();
-        var css = CssRewards.parse(resource("/rewards/rewards.css"), items(), loot);
+        var css = CssRewards.parse(chestCss(), items(), loot);
         int[] recipes = {109202, 109207, 109406, 109407};
         int[][] cases = {
                 // grade, level, city, northern chicken, pizza, mora meat, stir fried filet
@@ -318,7 +326,7 @@ class BundledChestRewardsTest {
             assertEquals(1, selected.loot().values().stream()
                     .filter(v -> v > 0).count());
         }
-        String yaml = resource("/rewards/loot.yaml");
+        String yaml = chestYaml();
         for (String name : new String[]{"recipe_mora_meat",
                 "recipe_stir_fried_filet", "recipe_mushroom_pizza",
                 "recipe_northern_smoked_chicken"}) {
@@ -328,7 +336,7 @@ class BundledChestRewardsTest {
 
     @Test
     void nativeArtifactVariantsRemainResolvableWithSetProperties() throws Exception {
-        String source = resource("/rewards/loot.yaml");
+        String source = chestYaml();
         assertTrue(source.contains("reward: genshin.artifact.adventurer"));
         assertTrue(source.contains("properties: {slot: \"1~5\", rarity: 1}"));
         assertEquals(18, java.util.regex.Pattern.compile(

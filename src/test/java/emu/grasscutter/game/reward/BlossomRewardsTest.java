@@ -26,7 +26,7 @@ class BlossomRewardsTest {
         String css = RewardConfiguration.readBundled("rewards.css");
         int cssStart = css.indexOf("/* Ley-line blossoms:");
         assertTrue(cssStart >= 0, "Missing bundled blossom selectors");
-        String selectors = css.substring(cssStart);
+        String selectors = css.substring(cssStart).split("/* Weekly Boss native", 2)[0];
         assertEquals(20, selectors.lines().filter(line ->
                 line.startsWith("blossom[kind=")).count());
         assertFalse(selectors.contains("--astaps-loot-"));

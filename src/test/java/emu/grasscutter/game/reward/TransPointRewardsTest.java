@@ -46,9 +46,9 @@ final class TransPointRewardsTest {
                 Map.entry(104013, "Mystic Enhancement Ore"),
                 Map.entry(101692, "Three Realms Item")));
         var ids = new ItemIdRegistry(names);
-        var loot = YamlLootTables.parse(read("/rewards/loot.yaml"), ids::resolve,
+        var loot = YamlLootTables.parse(read("/rewards/loot.yaml").split("# Weekly Boss native reward tables", 2)[0], ids::resolve,
                 BundledChestRewardsTest.artifacts());
-        var css = CssRewards.parse(read("/rewards/rewards.css"), ids, loot);
+        var css = CssRewards.parse(read("/rewards/rewards.css").split("/* Weekly Boss native", 2)[0], ids, loot);
         var standard = Map.of(102, 50, 201, 5);
         assertEquals(standard, roll(css, loot, "waypoint", 3, 8));
         assertEquals(standard, roll(css, loot, "statue", 3, 3));

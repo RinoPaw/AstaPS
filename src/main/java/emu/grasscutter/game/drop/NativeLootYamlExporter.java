@@ -103,7 +103,7 @@ public final class NativeLootYamlExporter {
             }
             yaml.append('\n');
             for (NativeEntry entry : valid) {
-                LootCount.parse(entry.countRange);
+                String count = LootCount.fromNativeCount(entry.countRange);
                 String target;
                 if (tables.containsKey(entry.id)) {
                     target = tableNames.get(entry.id);
@@ -145,10 +145,10 @@ public final class NativeLootYamlExporter {
                 }
 
                 if (table.randomType == 0) {
-                    appendEntry(yaml, "  ", target, entry.countRange,
+                    appendEntry(yaml, "  ", target, count,
                             entry.weight / divisor);
                 } else if (entry.weight == 10000) {
-                    appendEntry(yaml, "  ", target, entry.countRange, null);
+                    appendEntry(yaml, "  ", target, count, null);
                 } else {
                     if (entry.weight > 10000) {
                         throw new IllegalArgumentException("Invalid independent roll probability");
@@ -158,7 +158,7 @@ public final class NativeLootYamlExporter {
                     yaml.append("  - reward:\n");
                     appendEntry(yaml, "      ", "null", "1",
                             (10000 - entry.weight) / chanceDivisor);
-                    appendEntry(yaml, "      ", target, entry.countRange,
+                    appendEntry(yaml, "      ", target, count,
                             entry.weight / chanceDivisor);
                 }
             }

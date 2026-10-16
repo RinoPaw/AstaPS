@@ -94,6 +94,25 @@ class NativeLootYamlExporterTest {
     }
 
     @Test
+    void exporterConvertsNativeFractionalCountsWithoutChangingDistribution() {
+        var source = Map.of(100, new NativeLootYamlExporter.NativeTable(1, List.of(
+                new NativeLootYamlExporter.NativeEntry(104003, "2.5556", 10000))));
+        var yaml = NativeLootYamlExporter.export(source, List.of(100),
+                Map.of(100, "fractional_bonus"), NativeLootYamlExporterTest::itemName);
+        assertTrue(yaml.contains("count: \\"2+1:55.56\\""), yaml);
+        assertFalse(yaml.contains("count: \\"2.5556\\""), yaml);
+        var loot = YamlLootTables.parse(yaml, NativeLootYamlExporterTest::itemId);
+        int extra = 0;
+        var random = new Random(555);
+        for (int i = 0; i < 30_000; i++) {
+            int count = loot.roll("astaps.loot.fractional_bonus", random).get(104003);
+            assertTrue(count == 2 || count == 3);
+            if (count == 3) extra++;
+        }
+        assertEquals(0.5556, extra / 30_000.0, 0.015);
+    }
+
+    @Test
     void subPercentNativeChanceStillHasExactIntegerWeights() {
         var source = Map.of(100, new NativeLootYamlExporter.NativeTable(1, List.of(
                 new NativeLootYamlExporter.NativeEntry(202, "1", 1))));

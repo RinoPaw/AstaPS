@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.random.RandomGenerator;
 
-/** Supports integral counts, 1~3 ranges and percentages; unallocated probability means zero. */
+/** Integer reward counts, ranges, percentage distributions and independent bonus rolls. */
 public final class LootCount {
     private static final BigDecimal HUNDRED = new BigDecimal("100");
     public static final int MAX_COUNT = 100_000;
@@ -22,16 +22,8 @@ public final class LootCount {
             throw new IllegalArgumentException("Invalid count: " + raw);
         }
         String text = raw.toString().trim();
+        if (text.contains("+")) return bonus(text);
         if (text.contains(":") || text.contains(",")) return distribution(text);
-        if (text.contains(".")) {
-            // Native DropTable countRange decimals are expected values:
-            // floor(value) plus one with probability equal to the fractional part.
-            BigDecimal amount = decimal(text);
-            int floor = amount.intValue();
-            double fraction = amount.remainder(BigDecimal.ONE).doubleValue();
-            return fraction == 0 ? rng -> floor :
-                    rng -> floor + (rng.nextDouble() < fraction ? 1 : 0);
-        }
         if (text.contains("~") || text.contains(";")) {
             String[] parts = text.split("[~;]", -1);
             if (parts.length != 2) throw new IllegalArgumentException("Invalid range: " + text);
@@ -41,6 +33,59 @@ public final class LootCount {
         }
         int fixed = integer(text);
         return rng -> fixed;
+    }
+
+    /**
+     * N+K:P runs N times and independently adds K further executions with P% chance.
+     * In nested loot, each execution rolls the nested pool separately.
+     */
+    private static Spec bonus(String text) {
+        if (!text.matches("[0-9]+\\+[0-9]+:[0-9]+(?:\\.[0-9]+)?")) {
+            throw new IllegalArgumentException("Invalid bonus count: " + text);
+        }
+        String[] parts = text.split("[+:]");
+        int base = integer(parts[0]);
+        int extra = integer(parts[1]);
+        if (extra == 0 || (long) base + extra > MAX_COUNT) {
+            throw new IllegalArgumentException("Bonus count exceeds supported range: " + text);
+        }
+        BigDecimal percent = percentage(parts[2]);
+        int total = base + extra;
+        if (percent.signum() == 0) return rng -> base;
+        if (percent.compareTo(HUNDRED) == 0) return rng -> total;
+        double chance = percent.movePointLeft(2).doubleValue();
+        return rng -> rng.nextDouble() < chance ? total : base;
+    }
+
+    /** Convert native fractional expectations at the import boundary, never in user YAML. */
+    static String fromNativeCount(String value) {
+        if (value == null) throw new IllegalArgumentException("Missing native count");
+        String source = value.trim();
+        if (source.matches("[0-9]+\\.[0-9]+")) {
+            BigDecimal amount = decimal(source);
+            int base = amount.intValue();
+            BigDecimal fraction = amount.remainder(BigDecimal.ONE);
+            if (fraction.signum() == 0) return Integer.toString(base);
+            if (base >= MAX_COUNT) {
+                throw new IllegalArgumentException("Native bonus count exceeds limit: " + value);
+            }
+            return base + "+1:" + fraction.movePointRight(2)
+                    .stripTrailingZeros().toPlainString();
+        }
+        // Native integer and inclusive-range encodings remain intact.
+        parse(source);
+        return source;
+    }
+
+    private static BigDecimal percentage(String value) {
+        if (!value.matches("[0-9]+(?:\\.[0-9]+)?")) {
+            throw new IllegalArgumentException("Invalid percentage: " + value);
+        }
+        BigDecimal chance = decimal(value);
+        if (chance.compareTo(HUNDRED) > 0) {
+            throw new IllegalArgumentException("Probability above 100%: " + value);
+        }
+        return chance;
     }
 
     private static Spec distribution(String text) {
@@ -57,8 +102,7 @@ public final class LootCount {
                 missing = amount;
                 probabilities.put(amount, null);
             } else {
-                BigDecimal probability = BigDecimal.valueOf(integer(parts[1].trim()));
-                if (probability.compareTo(HUNDRED) > 0) throw new IllegalArgumentException("Probability above 100%");
+                BigDecimal probability = percentage(parts[1].trim());
                 total = total.add(probability);
                 probabilities.put(amount, probability);
             }

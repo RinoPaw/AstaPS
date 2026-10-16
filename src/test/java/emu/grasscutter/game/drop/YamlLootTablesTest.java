@@ -169,10 +169,10 @@ class YamlLootTablesTest {
     }
 
     @Test
-    void fractionalNativeCountsAreSupportedButDecimalWeightsAreRejected() {
-        assertDoesNotThrow(() -> LootCount.parse("0.7"));
-        assertDoesNotThrow(() -> LootCount.parse("2.2"));
-        assertThrows(IllegalArgumentException.class, () -> LootCount.parse("1:12.5,2:87.5"));
+    void fractionalPercentagesAreSupportedButDecimalWeightsAreRejected() {
+        assertDoesNotThrow(() -> LootCount.parse("2+1:55.56"));
+        assertDoesNotThrow(() -> LootCount.parse("1:12.5,2:87.5"));
+        assertThrows(IllegalArgumentException.class, () -> LootCount.parse("2.5556"));
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 bad:
                   - {reward: genshin.currency.mora, weight: 1.5}
@@ -226,6 +226,29 @@ class YamlLootTablesTest {
             if (r.containsKey(104003) && r.containsKey(104002)) mixed++;
         }
         assertTrue(mixed > 800 && mixed < 1200, "Must reroll the nested pool twice");
+    }
+
+    @Test
+    void bonusCountRerollsNestedWeightedPoolIndependently() {
+        var tables = parse("""
+                experience: &exp
+                  - {reward: genshin.avatar_exp.heros_wit, weight: 1}
+                  - {reward: genshin.avatar_exp.adventurers_experience, weight: 1}
+                chest:
+                  - {reward: *exp, count: "2+1:55.56"}
+                """);
+        Random random = new Random(71);
+        int third = 0;
+        int mixed = 0;
+        for (int i = 0; i < 30_000; i++) {
+            var reward = tables.roll("astaps.loot.chest", random);
+            int total = reward.values().stream().mapToInt(Integer::intValue).sum();
+            assertTrue(total == 2 || total == 3);
+            if (total == 3) third++;
+            if (reward.containsKey(104003) && reward.containsKey(104002)) mixed++;
+        }
+        assertEquals(0.5556, third / 30_000.0, 0.015);
+        assertTrue(mixed > 12_000, "Every execution must reroll the nested pool");
     }
 
     @Test

@@ -165,8 +165,11 @@ separate reward tables still need verified native source data.
 All unweighted entries in one list execute; a fully weighted list chooses
 one entry by relative weight. Mixed weighted and unweighted entries are
 invalid. `count` defaults to one and supports fixed values, ranges,
-integer percentage distributions. Fractional expected counts are forbidden. A nested
-list repeats the entire pool according to the outer count.
+decimal percentage distributions, and optional bonus executions (e.g.
+`count: "2+1:55.56"` means two executions plus one more with 55.56% chance).
+Bare fractional expected counts are forbidden in user YAML; native `2.5556`
+is converted to `2+1:55.56` at export time. A nested list is rolled
+independently for each execution specified by its outer count.
 
 Qualified `genshin.item.<name>` identities resolve other items to game
 item IDs. Artifacts use `genshin.artifact.<set>` plus an optional `properties`
@@ -185,7 +188,8 @@ uniformly from the usual valid counts per rank (1★ 0, 2★ 0–1, 3★ 1–2,
 4★ 2–3, 5★ 3–4). This is a project policy, not a confirmed 7.1 drop-rate
 distribution; specify `substats: "1:80,2:20"` to define exact odds.
 Each artifact gets an independent roll, even when `count` is greater than one.
-All counts and weighted-choice weights are integers. Use an explicit percentage
+All resulting counts and weighted-choice weights are integers, but
+probabilities may be decimal percentages. Use an explicit percentage
 distribution such as `count: "1:52"` instead of decimal count `0.52`.
 The remainder of an explicitly specified count distribution implicitly means zero:
 `count: "1:20"` means one item 20% of the time and none 80% of the time.

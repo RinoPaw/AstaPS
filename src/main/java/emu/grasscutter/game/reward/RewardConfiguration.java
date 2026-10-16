@@ -108,6 +108,20 @@ public final class RewardConfiguration {
         return Map.copyOf(total);
     }
 
+    /** Roll only a source-backed world Boss configured in rewards.css and loot.yaml.
+     * An unknown Boss tag has no YAML authority yet and retains its native path.
+     */
+    public Map<Integer, Integer> rollWorldBoss(
+            String tag, int nativeBossLevel, RandomGenerator random) {
+        var attributes = Map.of(
+                "type", "world", "tag", tag, "level", Integer.toString(nativeBossLevel));
+        var selection = css.resolve("boss", attributes);
+        if (selection.loot().isEmpty() && selection.rangedLoot().isEmpty()) {
+            return null;
+        }
+        return RewardRoller.roll(selection, loot, random);
+    }
+
     /** Qualified table IDs can be executed without CSS selection. */
     public Map<Integer, Integer> rollLoot(String resourceId, RandomGenerator random) {
         return RewardRoller.resolveRegionalItems(loot.roll(resourceId, random), RewardContext.NONE);

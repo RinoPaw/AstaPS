@@ -8,6 +8,7 @@ import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.inventory.*;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
+import emu.grasscutter.game.reward.RewardConfiguration;
 import emu.grasscutter.scripts.data.SceneMonster;
 import emu.grasscutter.server.game.*;
 import emu.grasscutter.server.packet.send.*;
@@ -347,6 +348,20 @@ public final class DropSystem extends BaseGameSystem {
                 || worldLevel < 0 || worldLevel >= bossLevel.length) {
             throw new IllegalArgumentException(
                     "Unidentified boss tag/world level: " + dropTag + "/" + worldLevel);
+        }
+        var configured = RewardConfiguration.current().rollWorldBoss(
+                dropTag, bossLevel[worldLevel], rand);
+        if (configured != null) {
+            List<GameItem> items = new ArrayList<>();
+            configured.forEach((id, amount) -> {
+                if (amount > 0) appendNativeDrop(id, amount, items);
+            });
+            if (items.isEmpty()) {
+                throw new IllegalStateException(
+                        "Empty configured world boss rewards: " + dropTag
+                                + " WL" + worldLevel);
+            }
+            return items;
         }
         int dropId = queryDropData(dropTag, bossLevel[worldLevel], chestReward);
         if (dropId <= 0 || !dropTable.containsKey(dropId)) {

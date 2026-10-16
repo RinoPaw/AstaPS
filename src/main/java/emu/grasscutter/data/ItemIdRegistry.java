@@ -213,9 +213,9 @@ public final class ItemIdRegistry {
 
     /** All inventory reward types have one canonical allowlist shared by callers. */
     private static final Set<String> INVENTORY_RESOURCE_TYPES = Set.of(
-            "currency", "experience", "avatar_level_up", "weapon_level_up",
-            "artifact_level_up", "avatar_ascension", "weapon_ascension",
-            "talent_level_up", "weapon_crafting", "monster_drop",
+            "currency", "experience", "avatar_up", "weapon_up",
+            "artifact_up", "avatar_ascension", "weapon_ascension",
+            "talent_up", "weapon_crafting", "monster_drop",
             "material", "food", "furnishing", "weapon");
 
     private static final Set<Integer> CHEST_WEAPON_IDS = Set.of(
@@ -379,15 +379,15 @@ public final class ItemIdRegistry {
                         || uses.contains(Usage.AVATAR_ASCENSION)) yield "avatar_ascension";
                 if (WEAPON_BILLET.matcher(name).matches()) yield "weapon_crafting";
                 if (TALENT_LEVEL_UP_ONLY.contains(name)
-                        || uses.contains(Usage.TALENT_LEVEL_UP)) yield "talent_level_up";
+                        || uses.contains(Usage.TALENT_LEVEL_UP)) yield "talent_up";
                 if (uses.contains(Usage.WEAPON_ASCENSION)) yield "weapon_ascension";
                 yield switch (category) {
                 case "Weapons" -> "weapon";
                 case "Food" -> "food";
                 case "Furnishings" -> "furnishing";
-                case "Character EXP Materials" -> "avatar_level_up";
-                case "Weapon Enhancement Materials" -> "weapon_level_up";
-                case "Artifact EXP Materials" -> "artifact_level_up";
+                case "Character EXP Materials" -> "avatar_up";
+                case "Weapon Enhancement Materials" -> "weapon_up";
+                case "Artifact EXP Materials" -> "artifact_up";
                 case "Artifacts", "Other Items", "Currencies and Virtual Items", "" ->
                         CHEST_DROP_NAMES.containsKey(id) || STABLE_NAMES.containsKey(id)
                                 ? "material" : null;
@@ -395,7 +395,7 @@ public final class ItemIdRegistry {
                         "Quest Items", "Furnishing Blueprints",
                         "Wood", "Bait", "Fishing Rods", "Wind Gliders", "Namecards",
                         "Outfits", "Seeds" -> "material";
-                case "Talent Level-Up Materials" -> "talent_level_up";
+                case "Talent Level-Up Materials" -> "talent_up";
                 default -> throw new IllegalArgumentException(
                         "Unknown native resource category for " + id + ": " + category);
                 };

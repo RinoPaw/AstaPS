@@ -26,6 +26,43 @@ class CssRewardsTest {
             """, items::resolve);
 
     @Test
+    void dottedResourcePropertiesCoexistWithNativeCssCascade() {
+        var css = CssRewards.parse("""
+                chest {
+                    genshin.currency.mora: 1000~1200;
+                    astaps.loot.currency: 1;
+                }
+                chest[grade="common"] {
+                    --genshin-currency-mora: 500;
+                    astaps.loot.currency: 2;
+                }
+                """, items, loot);
+        var base = css.resolve("chest", Map.of());
+        assertTrue(base.rangedItems().containsKey(202));
+        assertEquals(Map.of("astaps.loot.currency", 1), base.loot());
+        var common = css.resolve("chest", Map.of("grade", "common"));
+        assertEquals(Map.of(202, 500), common.items());
+        assertEquals(Map.of("astaps.loot.currency", 2), common.loot());
+        assertFalse(common.rangedItems().containsKey(202));
+        assertEquals(700, RewardRoller.roll(common, loot, new Random(7)).get(202));
+    }
+
+    @Test
+    void hierarchicalGemResourceAliasesWorkInCss() {
+        var registry = new ItemIdRegistry(Map.of(8001, "Vayuda Turquoise Sliver"));
+        var css = CssRewards.parse("""
+                boss {
+                    genshin.avatar_ascension.anemo.sliver: 3;
+                }
+                boss[tag="special"] {
+                    genshin.avatar_ascension.vayuda_turquoise.sliver: 5;
+                }
+                """, registry, loot);
+        assertEquals(3, css.resolve("boss", Map.of()).items().get(8001));
+        assertEquals(5, css.resolve("boss", Map.of("tag", "special")).items().get(8001));
+    }
+
+    @Test
     void inventoryRewardsSupportBonusCountsAndFixedCascades() {
         var css = CssRewards.parse("""
                 chest {

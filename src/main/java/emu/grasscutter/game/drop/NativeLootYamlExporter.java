@@ -1,6 +1,7 @@
 package emu.grasscutter.game.drop;
 
 import emu.grasscutter.data.ResourceId;
+import emu.grasscutter.data.ItemIdRegistry;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.inventory.ItemType;
 import emu.grasscutter.data.excels.DropTableData;
@@ -122,10 +123,8 @@ public final class NativeLootYamlExporter {
                     if (target == null) throw new IllegalArgumentException("Unknown item in chest source");
                     ResourceId resource = ResourceId.parse(target);
                     if (!"genshin".equals(resource.namespace())
-                            || !Set.of("currency", "experience", "avatar_exp", "weapon_exp",
-                                    "artifact_exp", "avatar_ascension", "weapon_ascension", "talent",
-                                    "weapon_crafting", "monster_drop", "material", "food", "furnishing",
-                                    "weapon", "artifact").contains(resource.type())
+                            || !(ItemIdRegistry.isInventoryResourceType(resource.type())
+                                    || "artifact".equals(resource.type()))
                             || resource.name().matches("id_[0-9]+")) {
                         throw new IllegalArgumentException("Expected semantic genshin resource name");
                     }

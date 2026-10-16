@@ -314,3 +314,2007 @@ blossom[kind="revelation"][world_level="9"] {
     --genshin-avatar_exp-heros_wit: 4~5;
     --genshin-experience-companionship: 20;
 }
+
+/* Weekly Boss native ChestDrop sourceType 35: 7.1 baseline by source tag and native level.
+   These selectors require a claim context with boss[type=weekly][tag][level].
+   Boss-exclusive material choices and artifacts live in loot.yaml. */
+boss[type="weekly"][tag="风魔龙"][level="1~4"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 3650;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 200;
+    --astaps-loot-weekly_stormterror_level_1: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="5~9"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4050;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 209;
+    --astaps-loot-weekly_stormterror_level_5: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="10~14"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4450;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 220;
+    --astaps-loot-weekly_stormterror_level_10: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="15~19"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4750;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 231;
+    --astaps-loot-weekly_stormterror_level_15: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="20~24"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5175;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 243;
+    --astaps-loot-weekly_stormterror_level_20: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="25~29"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5475;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 254;
+    --astaps-loot-weekly_stormterror_level_25: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="30~34"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5875;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 265;
+    --astaps-loot-weekly_stormterror_level_30: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="35~39"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6075;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 276;
+    --astaps-loot-weekly_stormterror_level_35: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="40~44"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6375;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 288;
+    --astaps-loot-weekly_stormterror_level_40: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="45~49"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6475;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 299;
+    --astaps-loot-weekly_stormterror_level_45: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="50~54"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6675;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 310;
+    --astaps-loot-weekly_stormterror_level_50: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="55~59"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6875;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 321;
+    --astaps-loot-weekly_stormterror_level_55: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="60~64"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7100;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 333;
+    --astaps-loot-weekly_stormterror_level_60: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="65~69"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7400;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 344;
+    --astaps-loot-weekly_stormterror_level_65: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="70~74"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7600;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 355;
+    --astaps-loot-weekly_stormterror_level_70: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="75~79"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7800;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 366;
+    --astaps-loot-weekly_stormterror_level_75: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="80~84"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 378;
+    --astaps-loot-weekly_stormterror_level_80: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="85~89"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 389;
+    --astaps-loot-weekly_stormterror_level_85: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="90~92"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_stormterror_level_90: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="93~99"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_stormterror_level_93: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="100~104"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_stormterror_level_100: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="105~109"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_stormterror_level_105: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="110~114"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_stormterror_level_110: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="115~119"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_stormterror_level_115: 1;
+}
+
+boss[type="weekly"][tag="风魔龙"][level="120~"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_stormterror_level_120: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="1~4"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 3650;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 200;
+    --astaps-loot-weekly_andrius_level_1: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="5~9"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4050;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 209;
+    --astaps-loot-weekly_andrius_level_5: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="10~14"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4450;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 220;
+    --astaps-loot-weekly_andrius_level_10: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="15~19"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4750;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 231;
+    --astaps-loot-weekly_andrius_level_15: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="20~24"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5175;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 243;
+    --astaps-loot-weekly_andrius_level_20: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="25~29"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5475;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 254;
+    --astaps-loot-weekly_andrius_level_25: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="30~34"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5875;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 265;
+    --astaps-loot-weekly_andrius_level_30: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="35~39"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6075;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 276;
+    --astaps-loot-weekly_andrius_level_35: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="40~44"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6375;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 288;
+    --astaps-loot-weekly_andrius_level_40: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="45~49"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6475;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 299;
+    --astaps-loot-weekly_andrius_level_45: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="50~54"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6675;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 310;
+    --astaps-loot-weekly_andrius_level_50: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="55~59"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6875;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 321;
+    --astaps-loot-weekly_andrius_level_55: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="60~64"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7100;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 333;
+    --astaps-loot-weekly_andrius_level_60: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="65~69"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7400;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 344;
+    --astaps-loot-weekly_andrius_level_65: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="70~74"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7600;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 355;
+    --astaps-loot-weekly_andrius_level_70: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="75~79"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7800;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 366;
+    --astaps-loot-weekly_andrius_level_75: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="80~84"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 378;
+    --astaps-loot-weekly_andrius_level_80: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="85~89"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 389;
+    --astaps-loot-weekly_andrius_level_85: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="90~92"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_andrius_level_90: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="93~99"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_andrius_level_93: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="100~104"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_andrius_level_100: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="105~109"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_andrius_level_105: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="110~114"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_andrius_level_110: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="115~119"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_andrius_level_115: 1;
+}
+
+boss[type="weekly"][tag="北风狼"][level="120~"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_andrius_level_120: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="1~4"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 3650;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 200;
+    --astaps-loot-weekly_tartaglia_level_1: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="5~9"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4050;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 209;
+    --astaps-loot-weekly_tartaglia_level_5: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="10~14"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4450;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 220;
+    --astaps-loot-weekly_tartaglia_level_10: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="15~19"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4750;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 231;
+    --astaps-loot-weekly_tartaglia_level_15: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="20~24"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5175;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 243;
+    --astaps-loot-weekly_tartaglia_level_20: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="25~29"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5475;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 254;
+    --astaps-loot-weekly_tartaglia_level_25: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="30~34"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5875;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 265;
+    --astaps-loot-weekly_tartaglia_level_30: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="35~39"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6075;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 276;
+    --astaps-loot-weekly_tartaglia_level_35: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="40~44"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6375;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 288;
+    --astaps-loot-weekly_tartaglia_level_40: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="45~49"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6475;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 299;
+    --astaps-loot-weekly_tartaglia_level_45: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="50~54"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6675;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 310;
+    --astaps-loot-weekly_tartaglia_level_50: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="55~59"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6875;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 321;
+    --astaps-loot-weekly_tartaglia_level_55: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="60~64"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7100;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 333;
+    --astaps-loot-weekly_tartaglia_level_60: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="65~69"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7400;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 344;
+    --astaps-loot-weekly_tartaglia_level_65: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="70~74"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7600;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 355;
+    --astaps-loot-weekly_tartaglia_level_70: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="75~79"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7800;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 366;
+    --astaps-loot-weekly_tartaglia_level_75: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="80~84"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 378;
+    --astaps-loot-weekly_tartaglia_level_80: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="85~89"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 389;
+    --astaps-loot-weekly_tartaglia_level_85: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="90~92"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_tartaglia_level_90: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="93~99"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_tartaglia_level_93: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="100~104"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_tartaglia_level_100: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="105~109"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_tartaglia_level_105: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="110~114"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_tartaglia_level_110: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="115~119"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_tartaglia_level_115: 1;
+}
+
+boss[type="weekly"][tag="公子"][level="120~"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_tartaglia_level_120: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="1~4"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 3650;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 200;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_1: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="5~9"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4050;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 209;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_5: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="10~14"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4450;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 220;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_10: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="15~19"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4750;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 231;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_15: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="20~24"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5175;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 243;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_20: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="25~29"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5475;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 254;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_25: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="30~34"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5875;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 265;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_30: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="35~39"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6075;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 276;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_35: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="40~44"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6375;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 288;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_40: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="45~49"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6475;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 299;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_45: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="50~54"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6675;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 310;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_50: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="55~59"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6875;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 321;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_55: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="60~64"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7100;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 333;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_60: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="65~69"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7400;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 344;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_65: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="70~74"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7600;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 355;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_70: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="75~79"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7800;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 366;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_75: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="80~84"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 378;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_80: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="85~89"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 389;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_85: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="90~92"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_90: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="93~99"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_93: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="100~104"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_100: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="105~109"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_105: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="110~114"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_110: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="115~119"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_115: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火电"][level="120~"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_electro_level_120: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="1~4"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 3650;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 200;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_1: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="5~9"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4050;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 209;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_5: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="10~14"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4450;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 220;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_10: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="15~19"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4750;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 231;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_15: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="20~24"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5175;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 243;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_20: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="25~29"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5475;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 254;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_25: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="30~34"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5875;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 265;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_30: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="35~39"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6075;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 276;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_35: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="40~44"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6375;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 288;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_40: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="45~49"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6475;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 299;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_45: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="50~54"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6675;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 310;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_50: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="55~59"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6875;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 321;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_55: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="60~64"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7100;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 333;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_60: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="65~69"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7400;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 344;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_65: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="70~74"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7600;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 355;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_70: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="75~79"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7800;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 366;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_75: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="80~84"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 378;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_80: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="85~89"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 389;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_85: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="90~92"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_90: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="93~99"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_93: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="100~104"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_100: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="105~109"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_105: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="110~114"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_110: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="115~119"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_115: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水电"][level="120~"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_electro_level_120: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="1~4"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 3650;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 200;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_1: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="5~9"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4050;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 209;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_5: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="10~14"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4450;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 220;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_10: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="15~19"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4750;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 231;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_15: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="20~24"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5175;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 243;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_20: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="25~29"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5475;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 254;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_25: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="30~34"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5875;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 265;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_30: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="35~39"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6075;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 276;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_35: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="40~44"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6375;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 288;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_40: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="45~49"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6475;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 299;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_45: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="50~54"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6675;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 310;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_50: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="55~59"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6875;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 321;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_55: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="60~64"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7100;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 333;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_60: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="65~69"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7400;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 344;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_65: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="70~74"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7600;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 355;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_70: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="75~79"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7800;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 366;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_75: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="80~84"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 378;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_80: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="85~89"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 389;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_85: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="90~92"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_90: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="93~99"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_93: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="100~104"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_100: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="105~109"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_105: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="110~114"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_110: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="115~119"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_115: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王火冰"][level="120~"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_pyro_cryo_level_120: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="1~4"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 3650;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 200;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_1: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="5~9"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4050;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 209;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_5: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="10~14"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4450;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 220;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_10: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="15~19"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4750;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 231;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_15: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="20~24"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5175;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 243;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_20: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="25~29"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5475;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 254;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_25: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="30~34"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5875;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 265;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_30: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="35~39"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6075;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 276;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_35: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="40~44"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6375;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 288;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_40: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="45~49"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6475;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 299;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_45: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="50~54"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6675;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 310;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_50: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="55~59"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6875;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 321;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_55: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="60~64"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7100;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 333;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_60: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="65~69"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7400;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 344;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_65: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="70~74"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7600;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 355;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_70: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="75~79"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7800;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 366;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_75: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="80~84"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 378;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_80: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="85~89"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 389;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_85: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="90~92"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_90: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="93~99"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_93: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="100~104"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_100: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="105~109"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_105: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="110~114"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_110: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="115~119"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_115: 1;
+}
+
+boss[type="weekly"][tag="若陀龙王水冰"][level="120~"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_azhdaha_hydro_cryo_level_120: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="1~4"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 3650;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 200;
+    --astaps-loot-weekly_signora_level_1: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="5~9"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4050;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 209;
+    --astaps-loot-weekly_signora_level_5: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="10~14"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4450;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 220;
+    --astaps-loot-weekly_signora_level_10: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="15~19"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4750;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 231;
+    --astaps-loot-weekly_signora_level_15: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="20~24"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5175;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 243;
+    --astaps-loot-weekly_signora_level_20: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="25~29"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5475;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 254;
+    --astaps-loot-weekly_signora_level_25: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="30~34"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5875;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 265;
+    --astaps-loot-weekly_signora_level_30: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="35~39"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6075;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 276;
+    --astaps-loot-weekly_signora_level_35: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="40~44"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6375;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 288;
+    --astaps-loot-weekly_signora_level_40: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="45~49"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6475;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 299;
+    --astaps-loot-weekly_signora_level_45: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="50~54"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6675;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 310;
+    --astaps-loot-weekly_signora_level_50: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="55~59"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6875;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 321;
+    --astaps-loot-weekly_signora_level_55: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="60~64"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7100;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 333;
+    --astaps-loot-weekly_signora_level_60: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="65~69"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7400;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 344;
+    --astaps-loot-weekly_signora_level_65: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="70~74"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7600;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 355;
+    --astaps-loot-weekly_signora_level_70: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="75~79"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7800;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 366;
+    --astaps-loot-weekly_signora_level_75: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="80~84"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 378;
+    --astaps-loot-weekly_signora_level_80: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="85~89"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 389;
+    --astaps-loot-weekly_signora_level_85: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="90~92"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_signora_level_90: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="93~99"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_signora_level_93: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="100~104"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_signora_level_100: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="105~109"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_signora_level_105: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="110~114"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_signora_level_110: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="115~119"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_signora_level_115: 1;
+}
+
+boss[type="weekly"][tag="女士"][level="120~"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_signora_level_120: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="1~4"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 3650;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 200;
+    --astaps-loot-weekly_raiden_shogun_level_1: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="5~9"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4050;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 209;
+    --astaps-loot-weekly_raiden_shogun_level_5: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="10~14"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4450;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 220;
+    --astaps-loot-weekly_raiden_shogun_level_10: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="15~19"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4750;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 231;
+    --astaps-loot-weekly_raiden_shogun_level_15: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="20~24"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5175;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 243;
+    --astaps-loot-weekly_raiden_shogun_level_20: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="25~29"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5475;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 254;
+    --astaps-loot-weekly_raiden_shogun_level_25: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="30~34"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5875;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 265;
+    --astaps-loot-weekly_raiden_shogun_level_30: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="35~39"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6075;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 276;
+    --astaps-loot-weekly_raiden_shogun_level_35: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="40~44"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6375;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 288;
+    --astaps-loot-weekly_raiden_shogun_level_40: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="45~49"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6475;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 299;
+    --astaps-loot-weekly_raiden_shogun_level_45: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="50~54"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6675;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 310;
+    --astaps-loot-weekly_raiden_shogun_level_50: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="55~59"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6875;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 321;
+    --astaps-loot-weekly_raiden_shogun_level_55: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="60~64"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7100;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 333;
+    --astaps-loot-weekly_raiden_shogun_level_60: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="65~69"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7400;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 344;
+    --astaps-loot-weekly_raiden_shogun_level_65: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="70~74"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7600;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 355;
+    --astaps-loot-weekly_raiden_shogun_level_70: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="75~79"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7800;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 366;
+    --astaps-loot-weekly_raiden_shogun_level_75: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="80~84"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 378;
+    --astaps-loot-weekly_raiden_shogun_level_80: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="85~89"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 389;
+    --astaps-loot-weekly_raiden_shogun_level_85: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="90~92"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_raiden_shogun_level_90: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="93~99"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_raiden_shogun_level_93: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="100~104"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_raiden_shogun_level_100: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="105~109"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_raiden_shogun_level_105: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="110~114"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_raiden_shogun_level_110: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="115~119"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_raiden_shogun_level_115: 1;
+}
+
+boss[type="weekly"][tag="雷电将军"][level="120~"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_raiden_shogun_level_120: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="1~4"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 3650;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 200;
+    --astaps-loot-weekly_shouki_no_kami_level_1: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="5~9"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4050;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 209;
+    --astaps-loot-weekly_shouki_no_kami_level_5: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="10~14"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4450;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 220;
+    --astaps-loot-weekly_shouki_no_kami_level_10: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="15~19"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 4750;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 231;
+    --astaps-loot-weekly_shouki_no_kami_level_15: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="20~24"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5175;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 243;
+    --astaps-loot-weekly_shouki_no_kami_level_20: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="25~29"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5475;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 254;
+    --astaps-loot-weekly_shouki_no_kami_level_25: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="30~34"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 5875;
+    --genshin-experience-companionship: 50;
+    --genshin-experience-character: 265;
+    --astaps-loot-weekly_shouki_no_kami_level_30: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="35~39"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6075;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 276;
+    --astaps-loot-weekly_shouki_no_kami_level_35: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="40~44"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6375;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 288;
+    --astaps-loot-weekly_shouki_no_kami_level_40: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="45~49"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6475;
+    --genshin-experience-companionship: 55;
+    --genshin-experience-character: 299;
+    --astaps-loot-weekly_shouki_no_kami_level_45: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="50~54"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6675;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 310;
+    --astaps-loot-weekly_shouki_no_kami_level_50: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="55~59"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 6875;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 321;
+    --astaps-loot-weekly_shouki_no_kami_level_55: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="60~64"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7100;
+    --genshin-experience-companionship: 60;
+    --genshin-experience-character: 333;
+    --astaps-loot-weekly_shouki_no_kami_level_60: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="65~69"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7400;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 344;
+    --astaps-loot-weekly_shouki_no_kami_level_65: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="70~74"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7600;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 355;
+    --astaps-loot-weekly_shouki_no_kami_level_70: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="75~79"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 7800;
+    --genshin-experience-companionship: 65;
+    --genshin-experience-character: 366;
+    --astaps-loot-weekly_shouki_no_kami_level_75: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="80~84"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 378;
+    --astaps-loot-weekly_shouki_no_kami_level_80: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="85~89"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 389;
+    --astaps-loot-weekly_shouki_no_kami_level_85: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="90~92"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 8100;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_shouki_no_kami_level_90: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="93~99"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_shouki_no_kami_level_93: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="100~104"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_shouki_no_kami_level_100: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="105~109"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_shouki_no_kami_level_105: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="110~114"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_shouki_no_kami_level_110: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="115~119"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_shouki_no_kami_level_115: 1;
+}
+
+boss[type="weekly"][tag="「正机之神」"][level="120~"] {
+    --genshin-experience-adventure: 300;
+    --genshin-currency-mora: 9000;
+    --genshin-experience-companionship: 70;
+    --genshin-experience-character: 400;
+    --astaps-loot-weekly_shouki_no_kami_level_120: 1;
+}
+

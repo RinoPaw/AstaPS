@@ -500,6 +500,11 @@ boss[type="world"][level="93~"] {
    Dungeon mapping and weekly Resin discounts remain unverified. */
 /* Stormterror (风魔龙) */
 /* Shared optional drops for supported weekly Boss identities. */
+/* Shared weekly high-rarity artifact package; native level selects it. */
+boss[type="weekly"][tag="stormterror,andrius,tartaglia,azhdaha_pyro_electro,azhdaha_hydro_electro,azhdaha_pyro_cryo,azhdaha_hydro_cryo,signora,raiden_shogun,shouki_no_kami"][level="70~"] {
+    --astaps-loot-weekly_high_artifacts: 1;
+}
+
 boss[type="weekly"][tag="stormterror,andrius,tartaglia,azhdaha_pyro_electro,azhdaha_hydro_electro,azhdaha_pyro_cryo,azhdaha_hydro_cryo,signora,raiden_shogun"] {
     --astaps-loot-weekly_northlander_extras: 1;
 }

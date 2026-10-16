@@ -20,7 +20,9 @@ public final class WorldChestLootHelper {
 
     public static void grant(Player player, EntityGadget entityGadget) {
         var props = new java.util.HashMap<String, String>();
-        props.put("kind", resolveTier(entityGadget).name().toLowerCase(java.util.Locale.ROOT));
+        props.put("grade", resolveTier(entityGadget).name().toLowerCase(java.util.Locale.ROOT));
+        String chestType = ChestTypeResolver.resolve(entityGadget);
+        if (chestType != null) props.put("type", chestType);
         props.put("scene", Integer.toString(entityGadget.getScene().getId()));
         props.put("gadget", Integer.toString(entityGadget.getGadgetId()));
         props.put("group", Integer.toString(entityGadget.getGroupId()));
@@ -64,8 +66,9 @@ public final class WorldChestLootHelper {
             }
         }
         Grasscutter.getLogger().info(
-                "World chest rewards uid={} gadget={} kind={} itemTypes={}",
-                player.getUid(), entityGadget.getGadgetId(), props.get("kind"), items.size());
+                "World chest rewards uid={} gadget={} type={} grade={} itemTypes={}",
+                player.getUid(), entityGadget.getGadgetId(), props.get("type"),
+                props.get("grade"), items.size());
     }
 
     // Same policy as DropSystem.dropItem: virtual currency without a gadget,

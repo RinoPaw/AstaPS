@@ -861,11 +861,13 @@ public final class NodKraiExploreSpawnHelper {
         if (ep.pointType > 0) {
             gadget.setPointType(ep.pointType);
         }
-        // Attach SceneGadget meta so chest content/tier resolve cleanly.
+        // Preserve the source chest type: several types share the same gadget ID.
         if (ep.kind != null && ep.kind.startsWith("chest")) {
             emu.grasscutter.scripts.data.SceneGadget meta = new emu.grasscutter.scripts.data.SceneGadget();
             meta.gadget_id = gadgetId;
             meta.config_id = ep.id;
+            meta.chestType = emu.grasscutter.game.entity.gadget.chest.ChestTypeResolver
+                    .fromExploreKind(ep.kind);
             meta.drop_tag = dropTagForKind(ep);
             meta.rewardRegion = ep.sourceRegion;
             meta.isOneoff = true;

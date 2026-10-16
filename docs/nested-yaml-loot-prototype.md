@@ -55,11 +55,11 @@ Since Luna I, ordinary Common, Exquisite, Precious and Luxurious chests
 all grant **30 Adventure EXP**. CSS assigns it once:
 
 ```css
-chest {
+chest[type="normal"] {
     --genshin-item-adventure_exp: 30;
 }
 
-chest[kind="common"][level="1~5"] {
+chest[type="normal"][grade="common"][level="1~5"] {
     --astaps-loot-minimal: 1;
     --genshin-item-mora: 240~360;
     --genshin-item-sigil: 1;
@@ -143,9 +143,16 @@ Scene 3 point 6 receives 10 Adventure EXP and no Primogems. In scene 7,
 5 Primogems and no Adventure EXP.
 
 Quest-created chests, boss flowers, and monster rewards remain separate
-routes. World chest metadata sent to the CSS engine includes `kind`,
-`scene`, `gadget`, `group`, `config`, and any verified native `level`,
-`area`, and `city`.
+routes. World chest metadata sent to the CSS engine includes `grade` (common,
+exquisite, precious, luxurious), `type` (normal, mora, remarkable, when
+the source identifies it), `scene`, `gadget`, `group`, `config`, and
+any verified native `level`, `area`, and `city`. Imported exploration
+points preserve their original chest identity in `SceneGadget.chestType`;
+the native ordinary chest prefabs are recognized by their JSON names.
+Unknown native chest types are not assigned an invented `normal` type.
+The bundled CSS currently configures only `type="normal"`:
+Mora and Remarkable chests cannot inherit ordinary tier rewards, and their
+separate reward tables still need verified native source data.
 
 ## YAML semantics
 

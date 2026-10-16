@@ -12,6 +12,8 @@ public class SceneGadget extends SceneObject {
     public String drop_tag;
     /** Source region for imported objects that have no native area_id. */
     public String rewardRegion;
+    /** Source-backed chest identity; separate from its reward grade. */
+    public String chestType;
     public boolean showcutscene;
     boolean persistence;
     public int state;

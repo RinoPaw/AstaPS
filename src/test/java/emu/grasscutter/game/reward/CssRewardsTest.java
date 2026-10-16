@@ -28,13 +28,13 @@ class CssRewardsTest {
     @Test
     void independentNamespacedLootPropertiesCanSelectSeveralTables() {
         var css = CssRewards.parse("""
-                chest[kind="common"] {
+                chest[grade="common"] {
                     --astaps-loot-currency: 1;
                     --astaps-loot-经验书: 2;
                     --genshin-item-primogem: 2;
                 }
                 """, items, loot);
-        var selected = css.resolve("chest", Map.of("kind", "common"));
+        var selected = css.resolve("chest", Map.of("grade", "common"));
         assertEquals(Map.of("astaps.loot.currency", 1, "astaps.loot.经验书", 2),
                 selected.loot());
         assertEquals(Map.of(201, 2), selected.items());
@@ -56,19 +56,19 @@ class CssRewardsTest {
     @Test
     void lootPropertiesCascadeIndependentlyRatherThanReplacingAList() {
         var css = CssRewards.parse("""
-                chest[kind="common"] {
+                chest[grade="common"] {
                     --astaps-loot-currency: 1;
                     --astaps-loot-经验书: 1;
                     --genshin-item-primogem: 2;
                 }
-                chest[kind="common"][level="6"] {
+                chest[grade="common"][level="6"] {
                     --astaps-loot-currency: 0;
                     --astaps-loot-surprise: 2;
                 }
                 """, items, loot);
         assertEquals(Map.of("astaps.loot.currency", 1, "astaps.loot.经验书", 1),
-                css.resolve("chest", Map.of("kind", "common", "level", "1")).loot());
-        var selected = css.resolve("chest", Map.of("kind", "common", "level", "6"));
+                css.resolve("chest", Map.of("grade", "common", "level", "1")).loot());
+        var selected = css.resolve("chest", Map.of("grade", "common", "level", "6"));
         assertEquals(Map.of(
                 "astaps.loot.currency", 0,
                 "astaps.loot.经验书", 1,
@@ -95,13 +95,13 @@ class CssRewardsTest {
     void tablesCanBeUsedByUnrelatedObjects() {
         var css = CssRewards.parse("""
                 monster[rank="elite"] { --astaps-loot-currency: 1; }
-                chest[kind="common"] { --astaps-loot-currency: 3; }
+                chest[grade="common"] { --astaps-loot-currency: 3; }
                 """, items, loot);
         assertEquals(Map.of(202, 100),
                 RewardRoller.roll(css.resolve("monster", Map.of("rank", "elite")),
                         loot, new Random(1)));
         assertEquals(Map.of(202, 300),
-                RewardRoller.roll(css.resolve("chest", Map.of("kind", "common")),
+                RewardRoller.roll(css.resolve("chest", Map.of("grade", "common")),
                         loot, new Random(1)));
     }
 
@@ -126,24 +126,39 @@ class CssRewardsTest {
     @Test
     void selectorSpecificityBeatsLaterSourceOrderForSameLootProperty() {
         var css = CssRewards.parse("""
-                chest[kind="common"][scene="3"] { --astaps-loot-surprise: 2; }
-                chest[kind="common"] {
+                chest[grade="common"][scene="3"] { --astaps-loot-surprise: 2; }
+                chest[grade="common"] {
                     --astaps-loot-surprise: 1;
                     --astaps-loot-currency: 1;
                 }
                 """, items, loot);
         assertEquals(Map.of("astaps.loot.surprise", 2, "astaps.loot.currency", 1),
-                css.resolve("chest", Map.of("kind", "common", "scene", "3")).loot());
+                css.resolve("chest", Map.of("grade", "common", "scene", "3")).loot());
     }
 
     @Test
     void elementSelectorOutranksEqualAttributeCountUniversalSelector() {
         var css = CssRewards.parse("""
-                chest[kind="common"] { --astaps-loot-currency: 1; }
-                *[kind="common"] { --astaps-loot-currency: 2; }
+                chest[grade="common"] { --astaps-loot-currency: 1; }
+                *[grade="common"] { --astaps-loot-currency: 2; }
                 """, items, loot);
         assertEquals(Map.of("astaps.loot.currency", 1),
-                css.resolve("chest", Map.of("kind", "common")).loot());
+                css.resolve("chest", Map.of("grade", "common")).loot());
+    }
+
+    @Test
+    void chestTypeAndGradeSelectIndependently() {
+        var css = CssRewards.parse("""
+                chest[type="normal"][grade="common"] { --astaps-loot-currency: 1; }
+                chest[type="mora"] { --astaps-loot-currency: 2; }
+                """, items, loot);
+        assertEquals(Map.of("astaps.loot.currency", 1), css.resolve("chest",
+                Map.of("type", "normal", "grade", "common")).loot());
+        assertEquals(Map.of("astaps.loot.currency", 2), css.resolve("chest",
+                Map.of("type", "mora", "grade", "common")).loot());
+        assertTrue(css.resolve("chest", Map.of("grade", "common")).loot().isEmpty());
+        assertTrue(css.resolve("chest", Map.of("type", "normal", "grade", "luxurious"))
+                .loot().isEmpty());
     }
 
     @Test
@@ -239,13 +254,13 @@ class CssRewardsTest {
     @Test
     void quotedLevelRangesCoverSixSourceIntervalsWithoutFallback() {
         var css = CssRewards.parse("""
-                chest[kind="common"] { --genshin-item-primogem: 2; }
-                chest[kind="common"][level="1~5"] { --astaps-loot-surprise: 1; }
-                chest[kind="common"][level="6~10"] { --astaps-loot-currency: 2; }
-                chest[kind="common"][level="11~15"] { --astaps-loot-surprise: 3; }
-                chest[kind="common"][level="16~20"] { --astaps-loot-currency: 4; }
-                chest[kind="common"][level="21~25"] { --astaps-loot-surprise: 5; }
-                chest[kind="common"][level="26~"] { --astaps-loot-currency: 6; }
+                chest[grade="common"] { --genshin-item-primogem: 2; }
+                chest[grade="common"][level="1~5"] { --astaps-loot-surprise: 1; }
+                chest[grade="common"][level="6~10"] { --astaps-loot-currency: 2; }
+                chest[grade="common"][level="11~15"] { --astaps-loot-surprise: 3; }
+                chest[grade="common"][level="16~20"] { --astaps-loot-currency: 4; }
+                chest[grade="common"][level="21~25"] { --astaps-loot-surprise: 5; }
+                chest[grade="common"][level="26~"] { --astaps-loot-currency: 6; }
                 """, items, loot);
         int[] levels = {1, 5, 6, 10, 11, 15, 16, 20, 21, 25, 26, 99};
         String[] names = {
@@ -256,19 +271,19 @@ class CssRewardsTest {
         int[] times = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6};
         for (int i = 0; i < levels.length; i++) {
             assertEquals(Map.of("astaps.loot." + names[i], times[i]),
-                    css.resolve("chest", Map.of("kind", "common",
+                    css.resolve("chest", Map.of("grade", "common",
                             "level", Integer.toString(levels[i]))).loot(),
                     "level " + levels[i]);
         }
         for (String level : new String[]{"0", "unknown"}) {
-            var attrs = Map.of("kind", "common", "level", level);
+            var attrs = Map.of("grade", "common", "level", level);
             var selection = css.resolve("chest", attrs);
             assertTrue(selection.loot().isEmpty());
             assertEquals(2, selection.items().get(201).intValue());
             assertThrows(IllegalStateException.class, () ->
                     RewardConfiguration.requireChestLoot("chest", selection, attrs));
         }
-        assertTrue(css.resolve("chest", Map.of("kind", "common")).loot().isEmpty());
+        assertTrue(css.resolve("chest", Map.of("grade", "common")).loot().isEmpty());
     }
 
     @Test
@@ -276,7 +291,7 @@ class CssRewardsTest {
         var css = CssRewards.parse("""
                 chest[level="6~10"] { --astaps-loot-surprise: 2; }
                 chest[level="11~16"] { --astaps-loot-currency: 3; }
-                chest[kind="common"][level="16~20"] { --astaps-loot-surprise: 4; }
+                chest[grade="common"][level="16~20"] { --astaps-loot-surprise: 4; }
                 chest[level="30"] { --astaps-loot-currency: 5; }
                 """, items, loot);
         assertTrue(css.resolve("chest", Map.of("level", "5")).loot().isEmpty());
@@ -287,8 +302,8 @@ class CssRewardsTest {
         assertEquals(Map.of("astaps.loot.currency", 3),
                 css.resolve("chest", Map.of("level", "11")).loot());
         assertEquals(Map.of("astaps.loot.currency", 3, "astaps.loot.surprise", 4),
-                css.resolve("chest", Map.of("kind", "common", "level", "16")).loot());
-        assertTrue(css.resolve("chest", Map.of("kind", "common", "level", "21"))
+                css.resolve("chest", Map.of("grade", "common", "level", "16")).loot());
+        assertTrue(css.resolve("chest", Map.of("grade", "common", "level", "21"))
                 .loot().isEmpty());
         assertEquals(Map.of("astaps.loot.currency", 5),
                 css.resolve("chest", Map.of("level", "30")).loot());

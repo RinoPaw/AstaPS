@@ -1,110 +1,110 @@
 /* Every ordinary world chest grants 30 Adventure EXP in Luna I and later. */
-chest {
+chest[type="normal"] {
     --genshin-item-adventure_exp: 30;
 }
 
 /* Fixed currencies and tier selection. Mora values are inclusive ranges. */
-chest[kind="common"] {
+chest[type="normal"][grade="common"] {
     --genshin-item-primogem: 2;
 }
 
-chest[kind="common"][level="1~5"] {
+chest[type="normal"][grade="common"][level="1~5"] {
     --astaps-loot-minimal: 1;
     --genshin-item-mora: 240~360;
     --genshin-item-sigil: 1;
 }
 
-chest[kind="common"][level="6~10"] {
+chest[type="normal"][grade="common"][level="6~10"] {
     --astaps-loot-nano: 1;
     --genshin-item-mora: 240~360;
     --genshin-item-sigil: 1;
 }
 
-chest[kind="common"][level="11~15"] {
+chest[type="normal"][grade="common"][level="11~15"] {
     --astaps-loot-micro: 1;
     --genshin-item-mora: 480~720;
     --genshin-item-sigil: 2;
 }
 
-chest[kind="common"][level="16~20"] {
+chest[type="normal"][grade="common"][level="16~20"] {
     --astaps-loot-light: 1;
     --genshin-item-mora: 480~720;
     --genshin-item-sigil: 2;
 }
 
-chest[kind="common"][level="21~25"] {
+chest[type="normal"][grade="common"][level="21~25"] {
     --astaps-loot-low: 1;
     --genshin-item-mora: 720~1080;
     --genshin-item-sigil: 3;
 }
 
-chest[kind="common"][level="26~"] {
+chest[type="normal"][grade="common"][level="26~"] {
     --astaps-loot-medium: 1;
     --genshin-item-mora: 720~1080;
     --genshin-item-sigil: 3;
 }
 
-chest[kind="exquisite"] {
+chest[type="normal"][grade="exquisite"] {
     --genshin-item-primogem: 5;
 }
 
-chest[kind="exquisite"][level="1~20"] {
+chest[type="normal"][grade="exquisite"][level="1~20"] {
     --astaps-loot-medium: 1;
     --genshin-item-mora: 720~1080;
     --genshin-item-sigil: 3;
 }
 
-chest[kind="exquisite"][level="21~25"] {
+chest[type="normal"][grade="exquisite"][level="21~25"] {
     --astaps-loot-high: 1;
     --genshin-item-mora: 960~1440;
     --genshin-item-sigil: 4;
 }
 
-chest[kind="exquisite"][level="26~"] {
+chest[type="normal"][grade="exquisite"][level="26~"] {
     --astaps-loot-xhigh: 1;
     --genshin-item-mora: 960~1440;
     --genshin-item-sigil: 4;
 }
 
-chest[kind="precious"] {
+chest[type="normal"][grade="precious"] {
     --genshin-item-primogem: 10;
 }
 
-chest[kind="precious"][level="1~20"] {
+chest[type="normal"][grade="precious"][level="1~20"] {
     --astaps-loot-xhigh: 1;
     --genshin-item-mora: 960~1440;
     --genshin-item-sigil: 4;
 }
 
-chest[kind="precious"][level="21~25"] {
+chest[type="normal"][grade="precious"][level="21~25"] {
     --astaps-loot-xxhigh: 1;
     --genshin-item-mora: 1200~1800;
     --genshin-item-sigil: 5;
 }
 
-chest[kind="precious"][level="26~"] {
+chest[type="normal"][grade="precious"][level="26~"] {
     --astaps-loot-xxxhigh: 1;
     --genshin-item-mora: 1200~1800;
     --genshin-item-sigil: 5;
 }
 
-chest[kind="luxurious"] {
+chest[type="normal"][grade="luxurious"] {
     --genshin-item-primogem: 10;
 }
 
-chest[kind="luxurious"][level="1~20"] {
+chest[type="normal"][grade="luxurious"][level="1~20"] {
     --astaps-loot-xxxhigh: 1;
     --genshin-item-mora: 1200~1800;
     --genshin-item-sigil: 5;
 }
 
-chest[kind="luxurious"][level="21~25"] {
+chest[type="normal"][grade="luxurious"][level="21~25"] {
     --astaps-loot-max: 1;
     --genshin-item-mora: 1440~2160;
     --genshin-item-sigil: 6;
 }
 
-chest[kind="luxurious"][level="26~"] {
+chest[type="normal"][grade="luxurious"][level="26~"] {
     --astaps-loot-ultra: 1;
     --genshin-item-mora: 1440~2160;
     --genshin-item-sigil: 6;
@@ -112,68 +112,68 @@ chest[kind="luxurious"][level="26~"] {
 
 /* Recipes from the native combat/puzzle source roots, merged by chest grade.
    No combat/puzzle metadata is required; only verified city and level match. */
-chest[kind="exquisite"][level="21~25"][city="1"] {
+chest[type="normal"][grade="exquisite"][level="21~25"][city="1"] {
     --genshin-item-recipe_northern_smoked_chicken: 1;
 }
 
-chest[kind="exquisite"][level="21~25"][city="2"] {
+chest[type="normal"][grade="exquisite"][level="21~25"][city="2"] {
     --genshin-item-recipe_mora_meat: 1;
     --genshin-item-recipe_stir_fried_filet: 1;
 }
 
-chest[kind="precious"][level="21~25"][city="1"] {
+chest[type="normal"][grade="precious"][level="21~25"][city="1"] {
     --genshin-item-recipe_mushroom_pizza: 1;
 }
 
 /* Older Mondstadt and Liyue chests use fewer Primogems. */
 
-chest[kind="common"][city="1"],
-chest[kind="common"][city="2"] {
+chest[type="normal"][grade="common"][city="1"],
+chest[type="normal"][grade="common"][city="2"] {
     --genshin-item-primogem: 0;
 }
 
-chest[kind="exquisite"][city="1"],
-chest[kind="exquisite"][city="2"] {
+chest[type="normal"][grade="exquisite"][city="1"],
+chest[type="normal"][grade="exquisite"][city="2"] {
     --genshin-item-primogem: 2;
 }
 
-chest[kind="precious"][city="1"],
-chest[kind="precious"][city="2"] {
+chest[type="normal"][grade="precious"][city="1"],
+chest[type="normal"][grade="precious"][city="2"] {
     --genshin-item-primogem: 5;
 }
 
 /* Higher-value areas in those nations; child-area exceptions need source data. */
 
-chest[kind="common"][area="10"],
-chest[kind="common"][area="77"],
-chest[kind="common"][area="8"],
-chest[kind="common"][area="19"],
-chest[kind="common"][area="40"],
-chest[kind="common"][area="41"],
-chest[kind="common"][area="47"],
-chest[kind="common"][area="300"] {
+chest[type="normal"][grade="common"][area="10"],
+chest[type="normal"][grade="common"][area="77"],
+chest[type="normal"][grade="common"][area="8"],
+chest[type="normal"][grade="common"][area="19"],
+chest[type="normal"][grade="common"][area="40"],
+chest[type="normal"][grade="common"][area="41"],
+chest[type="normal"][grade="common"][area="47"],
+chest[type="normal"][grade="common"][area="300"] {
     --genshin-item-primogem: 2;
 }
 
-chest[kind="exquisite"][area="10"],
-chest[kind="exquisite"][area="77"],
-chest[kind="exquisite"][area="8"],
-chest[kind="exquisite"][area="19"],
-chest[kind="exquisite"][area="40"],
-chest[kind="exquisite"][area="41"],
-chest[kind="exquisite"][area="47"],
-chest[kind="exquisite"][area="300"] {
+chest[type="normal"][grade="exquisite"][area="10"],
+chest[type="normal"][grade="exquisite"][area="77"],
+chest[type="normal"][grade="exquisite"][area="8"],
+chest[type="normal"][grade="exquisite"][area="19"],
+chest[type="normal"][grade="exquisite"][area="40"],
+chest[type="normal"][grade="exquisite"][area="41"],
+chest[type="normal"][grade="exquisite"][area="47"],
+chest[type="normal"][grade="exquisite"][area="300"] {
     --genshin-item-primogem: 5;
 }
 
-chest[kind="precious"][area="10"],
-chest[kind="precious"][area="77"],
-chest[kind="precious"][area="8"],
-chest[kind="precious"][area="19"],
-chest[kind="precious"][area="40"],
-chest[kind="precious"][area="41"],
-chest[kind="precious"][area="47"],
-chest[kind="precious"][area="300"] {
+chest[type="normal"][grade="precious"][area="10"],
+chest[type="normal"][grade="precious"][area="77"],
+chest[type="normal"][grade="precious"][area="8"],
+chest[type="normal"][grade="precious"][area="19"],
+chest[type="normal"][grade="precious"][area="40"],
+chest[type="normal"][grade="precious"][area="41"],
+chest[type="normal"][grade="precious"][area="47"],
+chest[type="normal"][grade="precious"][area="300"] {
     --genshin-item-primogem: 10;
 }
 

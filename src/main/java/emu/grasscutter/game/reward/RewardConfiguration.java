@@ -66,7 +66,7 @@ public final class RewardConfiguration {
                 && selected.loot().values().stream().noneMatch(count -> count > 0)
                 && selected.rangedLoot().isEmpty()) {
             throw new IllegalStateException(
-                    "No chest loot table matched (missing or invalid kind/level): " + properties);
+                    "No chest loot table matched (missing or invalid type/grade/level): " + properties);
         }
     }
 

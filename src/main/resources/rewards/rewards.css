@@ -178,9 +178,9 @@ chest[type="normal"][grade="precious"][area="300"] {
 }
 
 /* First-time activation of an eligible point. */
-transpoint[kind="waypoint"],
-transpoint[kind="statue"],
-transpoint[kind="domain"] {
+transpoint[type="waypoint"],
+transpoint[type="statue"],
+transpoint[type="domain"] {
     --genshin-experience-adventure: 50;
     --genshin-currency-primogem: 5;
 }
@@ -205,111 +205,111 @@ blossom {
 
 /* Blossoms of Wealth: fixed Mora amounts, lowest world level first. */
 
-blossom[kind="wealth"][world_level="0"] {
+blossom[type="wealth"][world_level="0"] {
     --genshin-currency-mora: 12000;
     --genshin-experience-companionship: 10;
 }
 
-blossom[kind="wealth"][world_level="1"] {
+blossom[type="wealth"][world_level="1"] {
     --genshin-currency-mora: 20000;
     --genshin-experience-companionship: 15;
 }
 
-blossom[kind="wealth"][world_level="2"] {
+blossom[type="wealth"][world_level="2"] {
     --genshin-currency-mora: 28000;
     --genshin-experience-companionship: 15;
 }
 
-blossom[kind="wealth"][world_level="3"] {
+blossom[type="wealth"][world_level="3"] {
     --genshin-currency-mora: 36000;
     --genshin-experience-companionship: 15;
 }
 
-blossom[kind="wealth"][world_level="4"] {
+blossom[type="wealth"][world_level="4"] {
     --genshin-currency-mora: 44000;
     --genshin-experience-companionship: 15;
 }
 
-blossom[kind="wealth"][world_level="5"] {
+blossom[type="wealth"][world_level="5"] {
     --genshin-currency-mora: 52000;
     --genshin-experience-companionship: 20;
 }
 
-blossom[kind="wealth"][world_level="6"] {
+blossom[type="wealth"][world_level="6"] {
     --genshin-currency-mora: 60000;
     --genshin-experience-companionship: 20;
 }
 
-blossom[kind="wealth"][world_level="7"] {
+blossom[type="wealth"][world_level="7"] {
     --genshin-currency-mora: 60000;
     --genshin-experience-companionship: 20;
 }
 
-blossom[kind="wealth"][world_level="8"] {
+blossom[type="wealth"][world_level="8"] {
     --genshin-currency-mora: 60000;
     --genshin-experience-companionship: 20;
 }
 
-blossom[kind="wealth"][world_level="9"] {
+blossom[type="wealth"][world_level="9"] {
     --genshin-currency-mora: 60000;
     --genshin-experience-companionship: 20;
 }
 
 /* Blossoms of Revelation: book counts are independent inclusive ranges. */
 
-blossom[kind="revelation"][world_level="0"] {
+blossom[type="revelation"][world_level="0"] {
     --genshin-avatar_exp-wanderers_advice: 7~8;
     --genshin-avatar_exp-adventurers_experience: 3~4;
     --genshin-experience-companionship: 10;
 }
 
-blossom[kind="revelation"][world_level="1"] {
+blossom[type="revelation"][world_level="1"] {
     --genshin-avatar_exp-wanderers_advice: 10~12;
     --genshin-avatar_exp-adventurers_experience: 5~6;
     --genshin-experience-companionship: 15;
 }
 
-blossom[kind="revelation"][world_level="2"] {
+blossom[type="revelation"][world_level="2"] {
     --genshin-avatar_exp-adventurers_experience: 10~11;
     --genshin-experience-companionship: 15;
 }
 
-blossom[kind="revelation"][world_level="3"] {
+blossom[type="revelation"][world_level="3"] {
     --genshin-avatar_exp-adventurers_experience: 13~14;
     --genshin-experience-companionship: 15;
 }
 
-blossom[kind="revelation"][world_level="4"] {
+blossom[type="revelation"][world_level="4"] {
     --genshin-avatar_exp-adventurers_experience: 6~7;
     --genshin-avatar_exp-heros_wit: 2~3;
     --genshin-experience-companionship: 15;
 }
 
-blossom[kind="revelation"][world_level="5"] {
+blossom[type="revelation"][world_level="5"] {
     --genshin-avatar_exp-adventurers_experience: 6~7;
     --genshin-avatar_exp-heros_wit: 3~4;
     --genshin-experience-companionship: 20;
 }
 
-blossom[kind="revelation"][world_level="6"] {
+blossom[type="revelation"][world_level="6"] {
     --genshin-avatar_exp-adventurers_experience: 6~7;
     --genshin-avatar_exp-heros_wit: 4~5;
     --genshin-experience-companionship: 20;
 }
 
-blossom[kind="revelation"][world_level="7"] {
+blossom[type="revelation"][world_level="7"] {
     --genshin-avatar_exp-adventurers_experience: 6~7;
     --genshin-avatar_exp-heros_wit: 4~5;
     --genshin-experience-companionship: 20;
 }
 
-blossom[kind="revelation"][world_level="8"] {
+blossom[type="revelation"][world_level="8"] {
     --genshin-avatar_exp-adventurers_experience: 6~7;
     --genshin-avatar_exp-heros_wit: 4~5;
     --genshin-experience-companionship: 20;
 }
 
-blossom[kind="revelation"][world_level="9"] {
+blossom[type="revelation"][world_level="9"] {
     --genshin-avatar_exp-adventurers_experience: 6~7;
     --genshin-avatar_exp-heros_wit: 4~5;
     --genshin-experience-companionship: 20;

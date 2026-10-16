@@ -4,6 +4,19 @@ The runtime reads two bundled files: `src/main/resources/rewards/loot.yaml`
 and `src/main/resources/rewards/rewards.css`. There is no editable
 `config/rewards` copy.
 
+## CSS selector semantics
+
+A selector element represents a game reward category: `chest` (opening a chest),
+`blossom` (claiming a ley-line blossom), `boss` (claiming a Boss reward), or
+`transpoint` (first activation of an eligible map point). The `type` attribute
+always selects a subtype inside that element: chest `normal`/`mora`/`remarkable`,
+blossom `wealth`/`revelation`, boss `world`/`weekly`, and transpoint
+`waypoint`/`statue`/`domain`. `grade` is reserved for ordinary chest quality.
+Game mechanisms and source identities still belong to their existing Java and
+native-data workflows; the CSS selector controls payout selection only. The
+CSS `kind` attribute is unsupported. In particular, a `weekly` Boss CSS rule
+does not imply the weekly dungeon payment path is already wired to CSS.
+
 ## Twelve ordinary chest tiers
 
 Ascending tier order: minimal → nano → micro → light → low → medium → high → xhigh → xxhigh → xxxhigh → max → ultra.

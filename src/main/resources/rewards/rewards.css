@@ -2325,7 +2325,8 @@ boss[type="weekly"][tag="「正机之神」"][level="120~"] {
 
 /* 7.1 normal Boss ChestDrop sourceType 34: exact tag and monster-level brackets.
    This configuration requires a boss[type=world][tag][level] claim context.
-   Unknown legacy 34 roots deliberately have no CSS selector. */
+   The native “精密发条机关” family is excluded: its artifact leaves lack a verified
+   semantic resource mapping. No partial reward selector is provided. */
 boss[type="world"][tag="霜夜灵嗣"][level="1~4"] {
     --genshin-experience-adventure: 200;
     --genshin-experience-companionship: 15;

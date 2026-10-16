@@ -302,8 +302,9 @@ match as 7.1 drop-rate verification or complete playable coverage.
 
 Boss candidate drop graphs are now bundled in `loot.yaml` and mapped in
 `rewards.css`. CSS declares shared fixed Boss amounts by type and native
-level bracket; individual tag/level selectors only choose their corresponding
-named loot pool. Matching configuration alone does not establish that a
+level bracket without requiring a `tag` attribute; individual tag/level
+selectors choose their corresponding named loot pool. Identifying a valid
+Boss tag and handling missing loot-table coverage remain Java-side concerns. Matching configuration alone does not establish that a
 payout path is authoritative or that all 7.1 reward probabilities are verified.
 World-boss and weekly-boss end-to-end gameplay validation is still required
 before upstream submission.

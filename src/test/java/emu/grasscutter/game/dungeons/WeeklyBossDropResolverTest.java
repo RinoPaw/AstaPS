@@ -23,15 +23,15 @@ final class WeeklyBossDropResolverTest {
         try {
             var roots = Map.of("weekly_a", 100, "weekly_b", 200);
             var leaves = Map.of(
-                    100, Set.of(102, 113013),
-                    200, Set.of(102, 113017));
+                    100, Set.of(113013),
+                    200, Set.of(113017));
             assertEquals(100, WeeklyBossDropResolver.matchRoot(
                     roots, leaves, Set.of(102, 113013)));
             assertEquals(0, WeeklyBossDropResolver.matchRoot(
                     roots, leaves, Set.of(102)));
             assertEquals(0, WeeklyBossDropResolver.matchRoot(
                     Map.of("a", 100, "b", 300),
-                    Map.of(100, Set.of(102, 113013), 300, Set.of(102, 113013)),
+                    Map.of(100, Set.of(113013), 300, Set.of(113013)),
                     Set.of(113013)));
             assertEquals(0, WeeklyBossDropResolver.matchRoot(
                     roots, leaves, Set.of(113014)));

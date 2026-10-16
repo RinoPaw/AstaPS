@@ -191,6 +191,12 @@ one entry by relative weight. Mixed weighted and unweighted entries are
 invalid. `count` defaults to one and supports fixed values, ranges,
 decimal percentage distributions, and optional bonus executions (e.g.
 `count: "2+1:55.56"` means two executions plus one more with 55.56% chance).
+A two-way selection between `null` and a single reward is an optional
+count: `{reward: genshin.material.dream_solvent, count: "1:33"}`
+grants one Dream Solvent with a 33% chance. It works with nested pools,
+too: `{reward: *midlander_weapon_billets, count: "1:12"}` selects
+one billet with a 12% chance, preserving the inner pool's distribution.
+
 Bare fractional expected counts are forbidden in user YAML; native `2.5556`
 is converted to `2+1:55.56` at export time. A nested list is rolled
 independently for each execution specified by its outer count.

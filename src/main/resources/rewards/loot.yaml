@@ -255,28 +255,23 @@ weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct14p32:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_electro, count: "2+1:14.32"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct31p24:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_electro, count: "2+1:31.24"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct74:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_electro, count: "2+1:48.16"}
   - {reward: *empty_reward_choices_odds_33_17, count: "5+1:74"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "2+1:46"}
 
 weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct65p08:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_electro, count: "2+1:65.08"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct82:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_electro, count: "2+1:82"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats: &artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats
   - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
@@ -287,13 +282,9 @@ artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4sta
 
 weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct98p92:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_electro, count: "2+1:98.92"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "7+1:38"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1:82"}
 
 weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_3plus1pct15p84:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_electro, count: "3+1:15.84"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 gems_cryo_electro_hydro_fragment_uniform_first_electro: &gems_cryo_electro_hydro_fragment_uniform_first_electro
   - {reward: genshin.material.vajrada_amethyst_fragment, weight: 1}
@@ -310,8 +301,6 @@ weekly_gems_cryo_electro_hydro_fragment_first_electro_shivada_jade_sliver_weight
       - {reward: genshin.material.varunada_lazurite_sliver, weight: 7139}
       - {reward: genshin.material.varunada_lazurite_fragment, weight: 1904}
     count: "2+1:71.29"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_cryo_electro_hydro_fragment_first_electro_shivada_jade_sliver_weight_7703:
   - {reward: *gems_cryo_electro_hydro_fragment_uniform_first_electro, count: "1+1:2"}
@@ -323,8 +312,6 @@ weekly_gems_cryo_electro_hydro_fragment_first_electro_shivada_jade_sliver_weight
       - {reward: genshin.material.varunada_lazurite_sliver, weight: 7703}
       - {reward: genshin.material.varunada_lazurite_fragment, weight: 2054}
     count: "2+1:92.71"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats: &artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats
   - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 5, substats: "3:66, 4:34"}, weight: 1}
@@ -340,9 +327,6 @@ weekly_gems_cryo_electro_hydro_fragment_first_electro_shivada_jade_sliver_weight
       - {reward: genshin.material.varunada_lazurite_sliver, weight: 1181}
       - {reward: genshin.material.varunada_lazurite_fragment, weight: 315}
     count: "3+1:14.16"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_cryo_electro_hydro_fragment_first_electro_shivada_jade_sliver_weight_8831:
   - {reward: *gems_cryo_electro_hydro_fragment_uniform_first_electro, count: "1+1:2"}
@@ -354,9 +338,6 @@ weekly_gems_cryo_electro_hydro_fragment_first_electro_shivada_jade_sliver_weight
       - {reward: genshin.material.varunada_lazurite_sliver, weight: 8831}
       - {reward: genshin.material.varunada_lazurite_fragment, weight: 2355}
     count: "3+1:35.58"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_cryo_electro_hydro_fragment_first_electro_shivada_jade_chunk_weight_626:
   - {reward: *gems_cryo_electro_hydro_fragment_uniform_first_electro, count: "1+1:2"}
@@ -371,9 +352,6 @@ weekly_gems_cryo_electro_hydro_fragment_first_electro_shivada_jade_chunk_weight_
       - {reward: genshin.material.varunada_lazurite_fragment, weight: 2505}
       - {reward: genshin.material.varunada_lazurite_chunk, weight: 626}
     count: "3+1:75.78"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_gems_cryo_electro_hydro_fragment_first_electro_shivada_jade_chunk_weight_664:
   - {reward: *gems_cryo_electro_hydro_fragment_uniform_first_electro, count: "1+1:2"}
@@ -388,9 +366,6 @@ weekly_gems_cryo_electro_hydro_fragment_first_electro_shivada_jade_chunk_weight_
       - {reward: genshin.material.varunada_lazurite_fragment, weight: 2656}
       - {reward: genshin.material.varunada_lazurite_chunk, weight: 664}
     count: "3+1:98.37"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 talent_materials_puppet_strings_mirror_of_mushin_dakas_bell: &talent_materials_puppet_strings_mirror_of_mushin_dakas_bell
   - {reward: genshin.material.puppet_strings, weight: 1}
@@ -511,38 +486,29 @@ weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct14p32:
   - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:14.32"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct31p24:
   - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:31.24"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_anemo_electro_hydro_sliver_empty_reward_choices_roll_5plus1pct74:
   - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:48.16"}
   - {reward: *empty_reward_choices_odds_33_17, count: "5+1:74"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "2+1:46"}
 
 weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct65p08:
   - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:65.08"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct82:
   - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:82"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct98p92:
   - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:98.92"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "7+1:38"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1:82"}
 
 weekly_gems_anemo_electro_hydro_sliver_roll_3plus1pct15p84:
   - {reward: *gems_anemo_electro_hydro_sliver, count: "3+1:15.84"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 gems_anemo_electro_hydro_fragment: &gems_anemo_electro_hydro_fragment
   - {reward: genshin.material.varunada_lazurite_fragment, weight: 1}
@@ -559,8 +525,6 @@ weekly_gems_anemo_electro_hydro_fragment_vajrada_amethyst_sliver_weight_7139:
       - {reward: genshin.material.vayuda_turquoise_sliver, weight: 7139}
       - {reward: genshin.material.vayuda_turquoise_fragment, weight: 1904}
     count: "2+1:71.29"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_anemo_electro_hydro_fragment_vajrada_amethyst_sliver_weight_7703:
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
@@ -572,8 +536,6 @@ weekly_gems_anemo_electro_hydro_fragment_vajrada_amethyst_sliver_weight_7703:
       - {reward: genshin.material.vayuda_turquoise_sliver, weight: 7703}
       - {reward: genshin.material.vayuda_turquoise_fragment, weight: 2054}
     count: "2+1:92.71"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_anemo_electro_hydro_fragment_vajrada_amethyst_sliver_weight_1181:
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
@@ -585,9 +547,6 @@ weekly_gems_anemo_electro_hydro_fragment_vajrada_amethyst_sliver_weight_1181:
       - {reward: genshin.material.vayuda_turquoise_sliver, weight: 1181}
       - {reward: genshin.material.vayuda_turquoise_fragment, weight: 315}
     count: "3+1:14.16"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_anemo_electro_hydro_fragment_vajrada_amethyst_sliver_weight_8831:
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
@@ -599,9 +558,6 @@ weekly_gems_anemo_electro_hydro_fragment_vajrada_amethyst_sliver_weight_8831:
       - {reward: genshin.material.vayuda_turquoise_sliver, weight: 8831}
       - {reward: genshin.material.vayuda_turquoise_fragment, weight: 2355}
     count: "3+1:35.58"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_anemo_electro_hydro_fragment_vajrada_amethyst_chunk_weight_626:
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
@@ -616,9 +572,6 @@ weekly_gems_anemo_electro_hydro_fragment_vajrada_amethyst_chunk_weight_626:
       - {reward: genshin.material.vayuda_turquoise_fragment, weight: 2505}
       - {reward: genshin.material.vayuda_turquoise_chunk, weight: 626}
     count: "3+1:75.78"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_gems_anemo_electro_hydro_fragment_vajrada_amethyst_chunk_weight_664:
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
@@ -633,9 +586,6 @@ weekly_gems_anemo_electro_hydro_fragment_vajrada_amethyst_chunk_weight_664:
       - {reward: genshin.material.vayuda_turquoise_fragment, weight: 2656}
       - {reward: genshin.material.vayuda_turquoise_chunk, weight: 664}
     count: "3+1:98.37"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior: &talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior
   - {reward: genshin.material.tusk_of_monoceros_caeli, weight: 1}
@@ -749,38 +699,29 @@ weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct14p32:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_anemo, count: "2+1:14.32"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct31p24:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_anemo, count: "2+1:31.24"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_anemo_geo_pyro_sliver_first_anemo_empty_reward_choices_roll_5plus1pct74:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_anemo, count: "2+1:48.16"}
   - {reward: *empty_reward_choices_odds_33_17, count: "5+1:74"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "2+1:46"}
 
 weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct65p08:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_anemo, count: "2+1:65.08"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct82:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_anemo, count: "2+1:82"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct98p92:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_anemo, count: "2+1:98.92"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "7+1:38"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1:82"}
 
 weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_3plus1pct15p84:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_anemo, count: "3+1:15.84"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 gems_anemo_geo_pyro_fragment_uniform_first_anemo: &gems_anemo_geo_pyro_fragment_uniform_first_anemo
   - {reward: genshin.material.vayuda_turquoise_fragment, weight: 1}
@@ -797,8 +738,6 @@ weekly_gems_anemo_geo_pyro_fragment_first_anemo_agnidus_agate_sliver_weight_7139
       - {reward: genshin.material.agnidus_agate_sliver, weight: 7139}
       - {reward: genshin.material.agnidus_agate_fragment, weight: 1904}
     count: "2+1:71.29"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_anemo_geo_pyro_fragment_first_anemo_agnidus_agate_sliver_weight_7703:
   - {reward: *gems_anemo_geo_pyro_fragment_uniform_first_anemo, count: "1+1:2"}
@@ -810,8 +749,6 @@ weekly_gems_anemo_geo_pyro_fragment_first_anemo_agnidus_agate_sliver_weight_7703
       - {reward: genshin.material.agnidus_agate_sliver, weight: 7703}
       - {reward: genshin.material.agnidus_agate_fragment, weight: 2054}
     count: "2+1:92.71"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_anemo_geo_pyro_fragment_first_anemo_agnidus_agate_sliver_weight_1181:
   - {reward: *gems_anemo_geo_pyro_fragment_uniform_first_anemo, count: "1+1:2"}
@@ -823,9 +760,6 @@ weekly_gems_anemo_geo_pyro_fragment_first_anemo_agnidus_agate_sliver_weight_1181
       - {reward: genshin.material.agnidus_agate_sliver, weight: 1181}
       - {reward: genshin.material.agnidus_agate_fragment, weight: 315}
     count: "3+1:14.16"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_anemo_geo_pyro_fragment_first_anemo_agnidus_agate_sliver_weight_8831:
   - {reward: *gems_anemo_geo_pyro_fragment_uniform_first_anemo, count: "1+1:2"}
@@ -837,9 +771,6 @@ weekly_gems_anemo_geo_pyro_fragment_first_anemo_agnidus_agate_sliver_weight_8831
       - {reward: genshin.material.agnidus_agate_sliver, weight: 8831}
       - {reward: genshin.material.agnidus_agate_fragment, weight: 2355}
     count: "3+1:35.58"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_anemo_geo_pyro_fragment_first_anemo_agnidus_agate_chunk_weight_626:
   - {reward: *gems_anemo_geo_pyro_fragment_uniform_first_anemo, count: "1+1:2"}
@@ -854,9 +785,6 @@ weekly_gems_anemo_geo_pyro_fragment_first_anemo_agnidus_agate_chunk_weight_626:
       - {reward: genshin.material.agnidus_agate_fragment, weight: 2505}
       - {reward: genshin.material.agnidus_agate_chunk, weight: 626}
     count: "3+1:75.78"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_gems_anemo_geo_pyro_fragment_first_anemo_agnidus_agate_chunk_weight_664:
   - {reward: *gems_anemo_geo_pyro_fragment_uniform_first_anemo, count: "1+1:2"}
@@ -871,9 +799,6 @@ weekly_gems_anemo_geo_pyro_fragment_first_anemo_agnidus_agate_chunk_weight_664:
       - {reward: genshin.material.agnidus_agate_fragment, weight: 2656}
       - {reward: genshin.material.agnidus_agate_chunk, weight: 664}
     count: "3+1:98.37"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: &talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas
   - {reward: genshin.material.tail_of_boreas, weight: 1}
@@ -986,38 +911,29 @@ weekly_gems_anemo_pyro_sliver_roll_2plus1pct14p32:
   - {reward: *gems_anemo_pyro_sliver, count: "2+1:14.32"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_anemo_pyro_sliver_roll_2plus1pct31p24:
   - {reward: *gems_anemo_pyro_sliver, count: "2+1:31.24"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_anemo_pyro_sliver_empty_reward_choices_roll_5plus1pct74:
   - {reward: *gems_anemo_pyro_sliver, count: "2+1:48.16"}
   - {reward: *empty_reward_choices_odds_33_17, count: "5+1:74"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "2+1:46"}
 
 weekly_gems_anemo_pyro_sliver_roll_2plus1pct65p08:
   - {reward: *gems_anemo_pyro_sliver, count: "2+1:65.08"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_anemo_pyro_sliver_roll_2plus1pct82:
   - {reward: *gems_anemo_pyro_sliver, count: "2+1:82"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_anemo_pyro_sliver_roll_2plus1pct98p92:
   - {reward: *gems_anemo_pyro_sliver, count: "2+1:98.92"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "7+1:38"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1:82"}
 
 weekly_gems_anemo_pyro_sliver_roll_3plus1pct15p84:
   - {reward: *gems_anemo_pyro_sliver, count: "3+1:15.84"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 gems_anemo_pyro_fragment: &gems_anemo_pyro_fragment
   - {reward: genshin.material.vayuda_turquoise_fragment, weight: 1}
@@ -1031,8 +947,6 @@ weekly_gems_anemo_pyro_fragment_agnidus_agate_sliver_weight_7139:
       - {reward: genshin.material.agnidus_agate_sliver, weight: 7139}
       - {reward: genshin.material.agnidus_agate_fragment, weight: 1904}
     count: "2+1:71.29"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_anemo_pyro_fragment_agnidus_agate_sliver_weight_7703:
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
@@ -1042,8 +956,6 @@ weekly_gems_anemo_pyro_fragment_agnidus_agate_sliver_weight_7703:
       - {reward: genshin.material.agnidus_agate_sliver, weight: 7703}
       - {reward: genshin.material.agnidus_agate_fragment, weight: 2054}
     count: "2+1:92.71"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_anemo_pyro_fragment_agnidus_agate_sliver_weight_1181:
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
@@ -1053,9 +965,6 @@ weekly_gems_anemo_pyro_fragment_agnidus_agate_sliver_weight_1181:
       - {reward: genshin.material.agnidus_agate_sliver, weight: 1181}
       - {reward: genshin.material.agnidus_agate_fragment, weight: 315}
     count: "3+1:14.16"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_anemo_pyro_fragment_agnidus_agate_sliver_weight_8831:
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
@@ -1065,9 +974,6 @@ weekly_gems_anemo_pyro_fragment_agnidus_agate_sliver_weight_8831:
       - {reward: genshin.material.agnidus_agate_sliver, weight: 8831}
       - {reward: genshin.material.agnidus_agate_fragment, weight: 2355}
     count: "3+1:35.58"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_anemo_pyro_fragment_agnidus_agate_chunk_weight_626:
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
@@ -1079,9 +985,6 @@ weekly_gems_anemo_pyro_fragment_agnidus_agate_chunk_weight_626:
       - {reward: genshin.material.agnidus_agate_fragment, weight: 2505}
       - {reward: genshin.material.agnidus_agate_chunk, weight: 626}
     count: "3+1:75.78"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_gems_anemo_pyro_fragment_agnidus_agate_chunk_weight_664:
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
@@ -1093,9 +996,6 @@ weekly_gems_anemo_pyro_fragment_agnidus_agate_chunk_weight_664:
       - {reward: genshin.material.agnidus_agate_fragment, weight: 2656}
       - {reward: genshin.material.agnidus_agate_chunk, weight: 664}
     count: "3+1:98.37"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 talent_materials_molten_moment_hellfire_butterfly_ashen_heart: &talent_materials_molten_moment_hellfire_butterfly_ashen_heart
   - {reward: genshin.material.molten_moment, weight: 1}
@@ -1190,38 +1090,29 @@ weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct14p32:
   - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:14.32"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct31p24:
   - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:31.24"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_anemo_geo_hydro_sliver_empty_reward_choices_roll_5plus1pct74:
   - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:48.16"}
   - {reward: *empty_reward_choices_odds_33_17, count: "5+1:74"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "2+1:46"}
 
 weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct65p08:
   - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:65.08"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct82:
   - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:82"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct98p92:
   - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:98.92"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "7+1:38"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1:82"}
 
 weekly_gems_anemo_geo_hydro_sliver_roll_3plus1pct15p84:
   - {reward: *gems_anemo_geo_hydro_sliver, count: "3+1:15.84"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 gems_anemo_geo_hydro_fragment: &gems_anemo_geo_hydro_fragment
   - {reward: genshin.material.varunada_lazurite_fragment, weight: 1}
@@ -1238,8 +1129,6 @@ weekly_gems_anemo_geo_hydro_fragment_prithiva_topaz_sliver_weight_7139:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 7139}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 1904}
     count: "2+1:71.29"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_anemo_geo_hydro_fragment_prithiva_topaz_sliver_weight_7703:
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
@@ -1251,8 +1140,6 @@ weekly_gems_anemo_geo_hydro_fragment_prithiva_topaz_sliver_weight_7703:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 7703}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2054}
     count: "2+1:92.71"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_anemo_geo_hydro_fragment_prithiva_topaz_sliver_weight_1181:
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
@@ -1264,9 +1151,6 @@ weekly_gems_anemo_geo_hydro_fragment_prithiva_topaz_sliver_weight_1181:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 1181}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 315}
     count: "3+1:14.16"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_anemo_geo_hydro_fragment_prithiva_topaz_sliver_weight_8831:
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
@@ -1278,9 +1162,6 @@ weekly_gems_anemo_geo_hydro_fragment_prithiva_topaz_sliver_weight_8831:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 8831}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2355}
     count: "3+1:35.58"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_anemo_geo_hydro_fragment_prithiva_topaz_chunk_weight_626:
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
@@ -1295,9 +1176,6 @@ weekly_gems_anemo_geo_hydro_fragment_prithiva_topaz_chunk_weight_626:
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2505}
       - {reward: genshin.material.prithiva_topaz_chunk, weight: 626}
     count: "3+1:75.78"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_gems_anemo_geo_hydro_fragment_prithiva_topaz_chunk_weight_664:
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
@@ -1312,9 +1190,6 @@ weekly_gems_anemo_geo_hydro_fragment_prithiva_topaz_chunk_weight_664:
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2656}
       - {reward: genshin.material.prithiva_topaz_chunk, weight: 664}
     count: "3+1:98.37"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: &talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale
   - {reward: genshin.material.dragon_lords_crown, weight: 1}
@@ -1428,38 +1303,29 @@ weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct14p32:
   - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:14.32"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct31p24:
   - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:31.24"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_electro_geo_hydro_sliver_empty_reward_choices_roll_5plus1pct74:
   - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:48.16"}
   - {reward: *empty_reward_choices_odds_33_17, count: "5+1:74"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "2+1:46"}
 
 weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct65p08:
   - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:65.08"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct82:
   - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:82"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct98p92:
   - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:98.92"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "7+1:38"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1:82"}
 
 weekly_gems_electro_geo_hydro_sliver_roll_3plus1pct15p84:
   - {reward: *gems_electro_geo_hydro_sliver, count: "3+1:15.84"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 gems_electro_geo_hydro_fragment: &gems_electro_geo_hydro_fragment
   - {reward: genshin.material.varunada_lazurite_fragment, weight: 1}
@@ -1476,8 +1342,6 @@ weekly_gems_electro_geo_hydro_fragment_prithiva_topaz_sliver_weight_7139:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 7139}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 1904}
     count: "2+1:71.29"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_electro_geo_hydro_fragment_prithiva_topaz_sliver_weight_7703:
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
@@ -1489,8 +1353,6 @@ weekly_gems_electro_geo_hydro_fragment_prithiva_topaz_sliver_weight_7703:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 7703}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2054}
     count: "2+1:92.71"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_electro_geo_hydro_fragment_prithiva_topaz_sliver_weight_1181:
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
@@ -1502,9 +1364,6 @@ weekly_gems_electro_geo_hydro_fragment_prithiva_topaz_sliver_weight_1181:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 1181}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 315}
     count: "3+1:14.16"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_electro_geo_hydro_fragment_prithiva_topaz_sliver_weight_8831:
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
@@ -1516,9 +1375,6 @@ weekly_gems_electro_geo_hydro_fragment_prithiva_topaz_sliver_weight_8831:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 8831}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2355}
     count: "3+1:35.58"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_electro_geo_hydro_fragment_prithiva_topaz_chunk_weight_626:
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
@@ -1533,9 +1389,6 @@ weekly_gems_electro_geo_hydro_fragment_prithiva_topaz_chunk_weight_626:
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2505}
       - {reward: genshin.material.prithiva_topaz_chunk, weight: 626}
     count: "3+1:75.78"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_gems_electro_geo_hydro_fragment_prithiva_topaz_chunk_weight_664:
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
@@ -1550,9 +1403,6 @@ weekly_gems_electro_geo_hydro_fragment_prithiva_topaz_chunk_weight_664:
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2656}
       - {reward: genshin.material.prithiva_topaz_chunk, weight: 664}
     count: "3+1:98.37"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_702_varunada_lazurite_chunk_roll_1:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale}
@@ -1661,38 +1511,29 @@ weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct14p32:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_pyro, count: "2+1:14.32"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct31p24:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_pyro, count: "2+1:31.24"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_anemo_geo_pyro_sliver_first_pyro_empty_reward_choices_roll_5plus1pct74:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_pyro, count: "2+1:48.16"}
   - {reward: *empty_reward_choices_odds_33_17, count: "5+1:74"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "2+1:46"}
 
 weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct65p08:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_pyro, count: "2+1:65.08"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct82:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_pyro, count: "2+1:82"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct98p92:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_pyro, count: "2+1:98.92"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "7+1:38"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1:82"}
 
 weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_3plus1pct15p84:
   - {reward: *gems_anemo_geo_pyro_sliver_uniform_first_pyro, count: "3+1:15.84"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 gems_anemo_geo_pyro_fragment_uniform_first_pyro: &gems_anemo_geo_pyro_fragment_uniform_first_pyro
   - {reward: genshin.material.agnidus_agate_fragment, weight: 1}
@@ -1709,8 +1550,6 @@ weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_sliver_weight_7139:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 7139}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 1904}
     count: "2+1:71.29"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_sliver_weight_7703:
   - {reward: *gems_anemo_geo_pyro_fragment_uniform_first_pyro, count: "1+1:2"}
@@ -1722,8 +1561,6 @@ weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_sliver_weight_7703:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 7703}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2054}
     count: "2+1:92.71"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_sliver_weight_1181:
   - {reward: *gems_anemo_geo_pyro_fragment_uniform_first_pyro, count: "1+1:2"}
@@ -1735,9 +1572,6 @@ weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_sliver_weight_1181:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 1181}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 315}
     count: "3+1:14.16"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_sliver_weight_8831:
   - {reward: *gems_anemo_geo_pyro_fragment_uniform_first_pyro, count: "1+1:2"}
@@ -1749,9 +1583,6 @@ weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_sliver_weight_8831:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 8831}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2355}
     count: "3+1:35.58"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_chunk_weight_626:
   - {reward: *gems_anemo_geo_pyro_fragment_uniform_first_pyro, count: "1+1:2"}
@@ -1766,9 +1597,6 @@ weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_chunk_weight_626:
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2505}
       - {reward: genshin.material.prithiva_topaz_chunk, weight: 626}
     count: "3+1:75.78"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_chunk_weight_664:
   - {reward: *gems_anemo_geo_pyro_fragment_uniform_first_pyro, count: "1+1:2"}
@@ -1783,9 +1611,6 @@ weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_chunk_weight_664:
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2656}
       - {reward: genshin.material.prithiva_topaz_chunk, weight: 664}
     count: "3+1:98.37"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_702_vayuda_turquoise_chunk_roll_1:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale}
@@ -1894,38 +1719,29 @@ weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct14p32:
   - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:14.32"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct31p24:
   - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:31.24"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_electro_geo_pyro_sliver_empty_reward_choices_roll_5plus1pct74:
   - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:48.16"}
   - {reward: *empty_reward_choices_odds_33_17, count: "5+1:74"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "2+1:46"}
 
 weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct65p08:
   - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:65.08"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct82:
   - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:82"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct98p92:
   - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:98.92"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "7+1:38"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1:82"}
 
 weekly_gems_electro_geo_pyro_sliver_roll_3plus1pct15p84:
   - {reward: *gems_electro_geo_pyro_sliver, count: "3+1:15.84"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 gems_electro_geo_pyro_fragment: &gems_electro_geo_pyro_fragment
   - {reward: genshin.material.agnidus_agate_fragment, weight: 1}
@@ -1942,8 +1758,6 @@ weekly_gems_electro_geo_pyro_fragment_agnidus_agate_sliver_weight_7139:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 7139}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 1904}
     count: "2+1:71.29"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_electro_geo_pyro_fragment_agnidus_agate_sliver_weight_7703:
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
@@ -1955,8 +1769,6 @@ weekly_gems_electro_geo_pyro_fragment_agnidus_agate_sliver_weight_7703:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 7703}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2054}
     count: "2+1:92.71"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_electro_geo_pyro_fragment_agnidus_agate_sliver_weight_1181:
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
@@ -1968,9 +1780,6 @@ weekly_gems_electro_geo_pyro_fragment_agnidus_agate_sliver_weight_1181:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 1181}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 315}
     count: "3+1:14.16"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_electro_geo_pyro_fragment_agnidus_agate_sliver_weight_8831:
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
@@ -1982,9 +1791,6 @@ weekly_gems_electro_geo_pyro_fragment_agnidus_agate_sliver_weight_8831:
       - {reward: genshin.material.prithiva_topaz_sliver, weight: 8831}
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2355}
     count: "3+1:35.58"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_electro_geo_pyro_fragment_agnidus_agate_chunk_weight_626:
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
@@ -1999,9 +1805,6 @@ weekly_gems_electro_geo_pyro_fragment_agnidus_agate_chunk_weight_626:
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2505}
       - {reward: genshin.material.prithiva_topaz_chunk, weight: 626}
     count: "3+1:75.78"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_gems_electro_geo_pyro_fragment_agnidus_agate_chunk_weight_664:
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
@@ -2016,9 +1819,6 @@ weekly_gems_electro_geo_pyro_fragment_agnidus_agate_chunk_weight_664:
       - {reward: genshin.material.prithiva_topaz_fragment, weight: 2656}
       - {reward: genshin.material.prithiva_topaz_chunk, weight: 664}
     count: "3+1:98.37"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_702_vajrada_amethyst_chunk_roll_1:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale}
@@ -2125,38 +1925,29 @@ weekly_gems_electro_sliver_roll_2plus1pct14p32:
   - {reward: *gems_electro_sliver, count: "2+1:14.32"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_electro_sliver_roll_2plus1pct31p24:
   - {reward: *gems_electro_sliver, count: "2+1:31.24"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_electro_sliver_empty_reward_choices_roll_5plus1pct74:
   - {reward: *gems_electro_sliver, count: "2+1:48.16"}
   - {reward: *empty_reward_choices_odds_33_17, count: "5+1:74"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "2+1:46"}
 
 weekly_gems_electro_sliver_roll_2plus1pct65p08:
   - {reward: *gems_electro_sliver, count: "2+1:65.08"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_electro_sliver_roll_2plus1pct82:
   - {reward: *gems_electro_sliver, count: "2+1:82"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_electro_sliver_roll_2plus1pct98p92:
   - {reward: *gems_electro_sliver, count: "2+1:98.92"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "7+1:38"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1:82"}
 
 weekly_gems_electro_sliver_roll_3plus1pct15p84:
   - {reward: *gems_electro_sliver, count: "3+1:15.84"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 gems_electro_fragment: &gems_electro_fragment
   - {reward: genshin.material.vajrada_amethyst_fragment, weight: 1}
@@ -2167,8 +1958,6 @@ weekly_gems_electro_fragment_vajrada_amethyst_sliver_weight_7139:
       - {reward: genshin.material.vajrada_amethyst_sliver, weight: 7139}
       - {reward: genshin.material.vajrada_amethyst_fragment, weight: 1904}
     count: "2+1:71.29"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_electro_fragment_vajrada_amethyst_sliver_weight_7703:
   - {reward: *gems_electro_fragment, count: "1+1:2"}
@@ -2176,8 +1965,6 @@ weekly_gems_electro_fragment_vajrada_amethyst_sliver_weight_7703:
       - {reward: genshin.material.vajrada_amethyst_sliver, weight: 7703}
       - {reward: genshin.material.vajrada_amethyst_fragment, weight: 2054}
     count: "2+1:92.71"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_electro_fragment_vajrada_amethyst_sliver_weight_1181:
   - {reward: *gems_electro_fragment, count: "1+1:2"}
@@ -2185,9 +1972,6 @@ weekly_gems_electro_fragment_vajrada_amethyst_sliver_weight_1181:
       - {reward: genshin.material.vajrada_amethyst_sliver, weight: 1181}
       - {reward: genshin.material.vajrada_amethyst_fragment, weight: 315}
     count: "3+1:14.16"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_electro_fragment_vajrada_amethyst_sliver_weight_8831:
   - {reward: *gems_electro_fragment, count: "1+1:2"}
@@ -2195,9 +1979,6 @@ weekly_gems_electro_fragment_vajrada_amethyst_sliver_weight_8831:
       - {reward: genshin.material.vajrada_amethyst_sliver, weight: 8831}
       - {reward: genshin.material.vajrada_amethyst_fragment, weight: 2355}
     count: "3+1:35.58"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_electro_fragment_vajrada_amethyst_chunk_weight_626:
   - {reward: *gems_electro_fragment, count: "1+1:2"}
@@ -2206,9 +1987,6 @@ weekly_gems_electro_fragment_vajrada_amethyst_chunk_weight_626:
       - {reward: genshin.material.vajrada_amethyst_fragment, weight: 2505}
       - {reward: genshin.material.vajrada_amethyst_chunk, weight: 626}
     count: "3+1:75.78"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_gems_electro_fragment_vajrada_amethyst_chunk_weight_664:
   - {reward: *gems_electro_fragment, count: "1+1:2"}
@@ -2217,9 +1995,6 @@ weekly_gems_electro_fragment_vajrada_amethyst_chunk_weight_664:
       - {reward: genshin.material.vajrada_amethyst_fragment, weight: 2656}
       - {reward: genshin.material.vajrada_amethyst_chunk, weight: 664}
     count: "3+1:98.37"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons: &talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons
   - {reward: genshin.material.mudra_of_the_malefic_general, weight: 1}
@@ -2295,38 +2070,29 @@ weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct14p32:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_cryo, count: "2+1:14.32"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct31p24:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_cryo, count: "2+1:31.24"}
   - {reward: *empty_reward_choices, count: "2+1:78.8"}
   - {reward: *empty_reward_choices_odds_33_17, count: "4+1:59.2"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
 
 weekly_gems_cryo_electro_hydro_sliver_first_cryo_empty_reward_choices_roll_5plus1pct74:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_cryo, count: "2+1:48.16"}
   - {reward: *empty_reward_choices_odds_33_17, count: "5+1:74"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "2+1:46"}
 
 weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct65p08:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_cryo, count: "2+1:65.08"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct82:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_cryo, count: "2+1:82"}
   - {reward: *empty_reward_choices_odds_33_17, count: "2+1:78.8"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
 
 weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct98p92:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_cryo, count: "2+1:98.92"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "7+1:38"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1:82"}
 
 weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_3plus1pct15p84:
   - {reward: *gems_cryo_electro_hydro_sliver_uniform_first_cryo, count: "3+1:15.84"}
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 gems_cryo_electro_hydro_fragment_uniform_first_cryo: &gems_cryo_electro_hydro_fragment_uniform_first_cryo
   - {reward: genshin.material.shivada_jade_fragment, weight: 1}
@@ -2343,8 +2109,6 @@ weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_sliver_weight_71
       - {reward: genshin.material.varunada_lazurite_sliver, weight: 7139}
       - {reward: genshin.material.varunada_lazurite_fragment, weight: 1904}
     count: "2+1:71.29"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_sliver_weight_7703:
   - {reward: *gems_cryo_electro_hydro_fragment_uniform_first_cryo, count: "1+1:2"}
@@ -2356,8 +2120,6 @@ weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_sliver_weight_77
       - {reward: genshin.material.varunada_lazurite_sliver, weight: 7703}
       - {reward: genshin.material.varunada_lazurite_fragment, weight: 2054}
     count: "2+1:92.71"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
 
 weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_sliver_weight_1181:
   - {reward: *gems_cryo_electro_hydro_fragment_uniform_first_cryo, count: "1+1:2"}
@@ -2369,9 +2131,6 @@ weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_sliver_weight_11
       - {reward: genshin.material.varunada_lazurite_sliver, weight: 1181}
       - {reward: genshin.material.varunada_lazurite_fragment, weight: 315}
     count: "3+1:14.16"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_sliver_weight_8831:
   - {reward: *gems_cryo_electro_hydro_fragment_uniform_first_cryo, count: "1+1:2"}
@@ -2383,9 +2142,6 @@ weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_sliver_weight_88
       - {reward: genshin.material.varunada_lazurite_sliver, weight: 8831}
       - {reward: genshin.material.varunada_lazurite_fragment, weight: 2355}
     count: "3+1:35.58"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
 
 weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_chunk_weight_626:
   - {reward: *gems_cryo_electro_hydro_fragment_uniform_first_cryo, count: "1+1:2"}
@@ -2400,9 +2156,6 @@ weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_chunk_weight_626
       - {reward: genshin.material.varunada_lazurite_fragment, weight: 2505}
       - {reward: genshin.material.varunada_lazurite_chunk, weight: 626}
     count: "3+1:75.78"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_chunk_weight_664:
   - {reward: *gems_cryo_electro_hydro_fragment_uniform_first_cryo, count: "1+1:2"}
@@ -2417,9 +2170,6 @@ weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_chunk_weight_664
       - {reward: genshin.material.varunada_lazurite_fragment, weight: 2656}
       - {reward: genshin.material.varunada_lazurite_chunk, weight: 664}
     count: "3+1:98.37"
-  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
-  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
-  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}
 
 talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh: &talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh
   - {reward: genshin.material.dvalins_plume, weight: 1}
@@ -10749,3 +10499,31 @@ weekly_high_artifacts:
   - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:87"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1+1:23"}
+
+# Shared weekly artifact distributions, named by the reward mix.
+weekly_artifacts_sparse:
+  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "1:82"}
+
+weekly_artifacts_light:
+  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "2+1:46"}
+
+weekly_artifacts_growing:
+  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:41.2"}
+
+weekly_artifacts_mixed:
+  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "7+1:38"}
+  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1:82"}
+
+weekly_artifacts_balanced:
+  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "6+1:56"}
+  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:64"}
+
+weekly_artifacts_rich:
+  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "5+1:74"}
+  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:5"}
+  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:41"}
+
+weekly_artifacts_rare:
+  - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:92"}
+  - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:46"}
+  - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1:82"}

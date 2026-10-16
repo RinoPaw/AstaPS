@@ -30,12 +30,7 @@ genshin.avatar_ascension.anemo.sliver
   -> genshin.avatar_ascension.vayuda_turquoise.sliver
 \`\`\`
 
-The historical flat gems are also aliases:
-
-\`\`\`text
-genshin.avatar_ascension.vayuda_turquoise_sliver
-  -> genshin.avatar_ascension.vayuda_turquoise.sliver
-\`\`\`
+Flattened gem names are invalid resource IDs after this breaking migration.
 
 This is an **identity** alias. The item registry resolves the final leaf to
 the existing native item ID. The family prefix on its own is not an item.

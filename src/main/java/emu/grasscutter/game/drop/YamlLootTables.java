@@ -28,16 +28,17 @@ public final class YamlLootTables {
                          GemSelector gem, Pool nested, LootCount.Spec count, BigDecimal weight) {}
 
     /**
-     * A gem family has one native item per rarity. Rarity figures are integer
-     * relative weights (not the percentages accepted by LootCount).
+     * A gem family resolves one native item per rarity. Rarity probabilities
+     * are percentages summing to 100; weights on outer entries are independent.
      */
-    private record GemSelector(int[] itemIds, long[] cumulative, long total) {
+    private record GemSelector(int[] itemIds, double[] cumulative) {
         int select(RandomGenerator random) {
-            long ticket = random.nextLong(total);
+            double ticket = random.nextDouble();
             for (int i = 0; i < itemIds.length; i++) {
                 if (ticket < cumulative[i]) return itemIds[i];
             }
-            throw new IllegalStateException("Gem rarity distribution has no outcome");
+            // The last boundary is exactly 1.0 for a valid distribution.
+            return itemIds[itemIds.length - 1];
         }
     }
 
@@ -51,56 +52,58 @@ public final class YamlLootTables {
         }
         if (!(rawProperties instanceof Map<?, ?> props)
                 || props.size() != 1 || !props.containsKey("rarity")
-                || !(props.get("rarity") instanceof String weights)) {
+                || !(props.get("rarity") instanceof String probabilities)) {
             throw new IllegalArgumentException(location
-                    + ": gem properties must contain a rarity weight distribution");
+                    + ": gem properties must contain a quoted rarity percentage distribution");
         }
         var ids = new ArrayList<Integer>();
-        var boundaries = new ArrayList<Long>();
+        var boundaries = new ArrayList<Double>();
         var seen = new java.util.HashSet<Integer>();
-        long total = 0;
-        for (String part : weights.split(",", -1)) {
+        BigDecimal total = BigDecimal.ZERO;
+        BigDecimal hundred = new BigDecimal("100");
+        for (String part : probabilities.split(",", -1)) {
             String[] pair = part.trim().split(":", -1);
             if (pair.length != 2 || !pair[0].trim().matches("[2-5]")
-                    || !pair[1].trim().matches("[0-9]+")) {
+                    || !pair[1].trim().matches("[0-9]+(?:\\.[0-9]+)?")) {
                 throw new IllegalArgumentException(location
-                        + ": invalid gem rarity weight: " + part);
+                        + ": invalid gem rarity percentage: " + part);
             }
             int grade = Integer.parseInt(pair[0].trim());
             if (!seen.add(grade)) {
                 throw new IllegalArgumentException(location + ": duplicate gem rarity: " + grade);
             }
-            final long weight;
-            try {
-                weight = Long.parseLong(pair[1].trim());
-            } catch (NumberFormatException ex) {
-                throw new IllegalArgumentException(location + ": invalid gem rarity weight: " + part, ex);
-            }
-            if (weight < 0 || weight > 1_000_000_000L) {
+            BigDecimal percentage = new BigDecimal(pair[1].trim());
+            if (percentage.compareTo(hundred) > 0) {
                 throw new IllegalArgumentException(location
-                        + ": gem rarity weight outside 0..1000000000: " + weight);
+                        + ": gem rarity probability above 100%: " + part);
             }
-            if (weight == 0) continue;
+            total = total.add(percentage);
+            if (total.compareTo(hundred) > 0) {
+                throw new IllegalArgumentException(location
+                        + ": gem rarity percentages exceed 100%");
+            }
+            if (percentage.signum() == 0) continue;
             int itemId = resolver.resolve(family + "." + grade);
             if (itemId <= 0) {
                 throw new IllegalArgumentException(location
                         + ": unknown gem family or rarity: " + family + "." + grade);
             }
-            total += weight;
             ids.add(itemId);
-            boundaries.add(total);
+            boundaries.add(total.movePointLeft(2).doubleValue());
         }
-        if (total == 0) {
-            throw new IllegalArgumentException(location + ": all gem rarity weights are zero");
+        if (total.compareTo(hundred) != 0) {
+            throw new IllegalArgumentException(location
+                    + ": gem rarity percentages must sum to 100: " + total);
         }
         var nativeIds = new int[ids.size()];
-        var cumulative = new long[ids.size()];
+        var cumulative = new double[ids.size()];
         for (int i = 0; i < ids.size(); i++) {
             nativeIds[i] = ids.get(i);
             cumulative[i] = boundaries.get(i);
         }
-        return new GemSelector(nativeIds, cumulative, total);
+        return new GemSelector(nativeIds, cumulative);
     }
+
     private record Pool(boolean weighted, List<Entry> entries, double totalWeight) {}
 
     private static final int MAX_DEPTH = 64;

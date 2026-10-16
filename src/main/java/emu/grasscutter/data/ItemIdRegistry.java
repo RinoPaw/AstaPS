@@ -258,7 +258,7 @@ public final class ItemIdRegistry {
                     : shortName(category, english);
             String type = resourceType(id, category, name, usage.getOrDefault(id, Set.of()));
             String key = name.isEmpty() || type == null ? null :
-                    new ResourceId("genshin", type, name).toString();
+                    ResourceAliases.GENSHIN.resolve(ResourceId.of("genshin", type, name)).toString();
             ids.put(id, new Info(id, english, key, category));
             if (key != null) putUnique(names, collisions, key, id);
             if (english != null && !english.isBlank()) {
@@ -431,20 +431,20 @@ public final class ItemIdRegistry {
         }
 
         if (input.matches("[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\..+")) {
-            ResourceId resource = ResourceId.parse(input);
-            if (!resource.namespace().equals("genshin")
-                    || !isInventoryResourceType(resource.type())) {
+            ResourceId resource = ResourceAliases.GENSHIN.resolve(ResourceId.parse(input));
+            if (!(resource.size() >= 3 && resource.segment(0).equals("genshin"))
+                    || !isInventoryResourceType(resource.segment(1))) {
                 throw new IllegalArgumentException("Unsupported inventory resource: " + input);
             }
         }
 
-        String name = input.toLowerCase(Locale.ROOT);
+        String name = (input.contains(".") ? ResourceAliases.GENSHIN.resolve(ResourceId.parse(input)).toString() : input).toLowerCase(Locale.ROOT);
         if (ambiguous.contains(name)) {
             throw new IllegalArgumentException("Ambiguous item name: " + input);
         }
         Integer id = byName.get(name);
         if (id == null) throw new IllegalArgumentException("Unknown item: " + input);
-        if (input.contains(".") && !input.equalsIgnoreCase(byId.get(id).key())) {
+        if (input.contains(".") && !name.equalsIgnoreCase(byId.get(id).key())) {
             throw new IllegalArgumentException("Wrong resource type for item: " + input
                     + " (expected " + byId.get(id).key() + ")");
         }

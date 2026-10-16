@@ -41,6 +41,42 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void inlinedSingleGemPoolPreservesTotalCountAndRarityDistribution() {
+        var items = new ItemIdRegistry(Map.of(
+                8001, "Vayuda Turquoise Sliver",
+                8002, "Vayuda Turquoise Fragment",
+                8003, "Vayuda Turquoise Chunk"));
+        var former = YamlLootTables.parse("""
+                gems: &gems
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3, weight: 1}
+                boss:
+                  - {reward: *gems, count: "2+1:17.602"}
+                """, items::resolve);
+        var inlined = YamlLootTables.parse("""
+                boss:
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: "6+3:17.602"}
+                """, items::resolve);
+
+        var oldRandom = new Random(81);
+        var newRandom = new Random(81);
+        long oldTotal = 0, newTotal = 0, newSlivers = 0;
+        for (int i = 0; i < 20_000; i++) {
+            var original = former.roll("astaps.loot.boss", oldRandom);
+            var compact = inlined.roll("astaps.loot.boss", newRandom);
+            int originalCount = original.values().stream().mapToInt(Integer::intValue).sum();
+            int compactCount = compact.values().stream().mapToInt(Integer::intValue).sum();
+            assertTrue(originalCount == 6 || originalCount == 9);
+            assertTrue(compactCount == 6 || compactCount == 9);
+            oldTotal += originalCount;
+            newTotal += compactCount;
+            newSlivers += compact.getOrDefault(8001, 0);
+        }
+        assertEquals(oldTotal / 20_000.0, newTotal / 20_000.0, 0.05);
+        assertEquals(6 + 3 * 0.17602, newTotal / 20_000.0, 0.06);
+        assertEquals(0.75, newSlivers / (double) newTotal, 0.015);
+    }
+
+    @Test
     void numericGradeAliasesWorkInsideLootYaml() {
         var registry = new ItemIdRegistry(Map.of(
                 8101, "Vayuda Turquoise Sliver",

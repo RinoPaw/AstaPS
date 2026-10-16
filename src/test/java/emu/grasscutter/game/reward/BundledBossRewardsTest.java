@@ -69,8 +69,7 @@ final class BundledBossRewardsTest {
         // The old per-grade weighted rows with count 3 or 9 must be gone
         // whenever multiple rarities could be combined.
         assertFalse(Pattern.compile(
-                "reward: genshin\\.avatar_ascension\\.[a-z_]+\\.[2-5],"
-                        + " count: \\"?[39]\\"?, weight: [1-9][0-9]+")
+                "reward: genshin\\.avatar_ascension\\.[a-z_]+\\.[2-5], count: \"[39]\", weight: [1-9][0-9]+")
                 .matcher(yaml).find());
         assertFalse(yaml.contains("genshin.talent_up.freedom.teachings, weight:"));
         assertFalse(yaml.contains("genshin.avatar_ascension.vajrada_amethyst.sliver, weight:"));

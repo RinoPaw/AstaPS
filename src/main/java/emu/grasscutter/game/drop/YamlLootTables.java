@@ -182,8 +182,7 @@ public final class YamlLootTables {
 
     /** Returns an immutable item-ID-to-count map. Each invocation rolls afresh. */
     public Map<Integer, Integer> roll(String name, RandomGenerator random) {
-        Pool root = pools.get(name);
-        if (root == null) throw new IllegalArgumentException("Unknown loot table: " + name);
+        Pool root = pools.get(resolveName(name));
         if (random == null) throw new IllegalArgumentException("Missing random generator");
         var reward = new TreeMap<Integer, Integer>();
         int[] remaining = {100_000};

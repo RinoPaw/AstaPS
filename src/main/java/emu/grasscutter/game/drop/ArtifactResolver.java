@@ -22,7 +22,9 @@ public final class ArtifactResolver {
             10009, "the_exile",
             10010, "adventurer",
             10011, "lucky_dog",
-            10013, "traveling_doctor");
+            10013, "traveling_doctor",
+            15001, "gladiators_finale",
+            15003, "wanderers_troupe");
 
     public record Variant(int id, String set, int slot, int rarity, int substats) {}
     public record Selector(List<Variant> variants, LootCount.Spec slot,

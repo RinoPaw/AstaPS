@@ -503,15 +503,15 @@ boss[type="world"][level="93~"] {
 /* Shared weekly high-rarity artifact package; native level selects it. */
 /* Shared weekly artifact distributions, selected by the native level. */
 boss[type="weekly"][tag="stormterror,andrius,tartaglia,azhdaha_pyro_electro,azhdaha_hydro_electro,azhdaha_pyro_cryo,azhdaha_hydro_cryo,signora,raiden_shogun,shouki_no_kami"][level="5~14"] {
-    --astaps-loot-weekly_artifacts_sparse: 1;
+    --astaps-loot-artifacts_berserker_instructor_exile_3star: '1:82';
 }
 
 boss[type="weekly"][tag="stormterror,andrius,tartaglia,azhdaha_pyro_electro,azhdaha_hydro_electro,azhdaha_pyro_cryo,azhdaha_hydro_cryo,signora,raiden_shogun,shouki_no_kami"][level="15~19"] {
-    --astaps-loot-weekly_artifacts_light: 1;
+    --astaps-loot-artifacts_berserker_instructor_exile_3star: '2+1:46';
 }
 
 boss[type="weekly"][tag="stormterror,andrius,tartaglia,azhdaha_pyro_electro,azhdaha_hydro_electro,azhdaha_pyro_cryo,azhdaha_hydro_cryo,signora,raiden_shogun,shouki_no_kami"][level="20~29"] {
-    --astaps-loot-weekly_artifacts_growing: 1;
+    --astaps-loot-artifacts_berserker_instructor_exile_3star: '5+1:41.2';
 }
 
 boss[type="weekly"][tag="stormterror,andrius,tartaglia,azhdaha_pyro_electro,azhdaha_hydro_electro,azhdaha_pyro_cryo,azhdaha_hydro_cryo,signora,raiden_shogun,shouki_no_kami"][level="30~34"] {
@@ -543,35 +543,35 @@ boss[type="weekly"][tag="shouki_no_kami"] {
 }
 
 boss[type="weekly"][tag="stormterror"][level="1~4"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct0p79: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:0.79';
 }
 
 boss[type="weekly"][tag="stormterror"][level="5~9"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct14p32: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:14.32';
 }
 
 boss[type="weekly"][tag="stormterror"][level="10~14"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct31p24: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:31.24';
 }
 
 boss[type="weekly"][tag="stormterror"][level="15~19"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct48p16: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:48.16';
 }
 
 boss[type="weekly"][tag="stormterror"][level="20~24"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct65p08: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:65.08';
 }
 
 boss[type="weekly"][tag="stormterror"][level="25~29"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct82: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:82';
 }
 
 boss[type="weekly"][tag="stormterror"][level="30~34"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct98p92: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:98.92';
 }
 
 boss[type="weekly"][tag="stormterror"][level="35~39"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_3plus1pct15p84: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '3+1:15.84';
 }
 
 boss[type="weekly"][tag="stormterror"][level="40~44"] {
@@ -628,35 +628,35 @@ boss[type="weekly"][tag="stormterror"][level="120~"] {
 
 /* Andrius (北风狼) */
 boss[type="weekly"][tag="andrius"][level="1~4"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct0p79: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:0.79';
 }
 
 boss[type="weekly"][tag="andrius"][level="5~9"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct14p32: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:14.32';
 }
 
 boss[type="weekly"][tag="andrius"][level="10~14"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct31p24: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:31.24';
 }
 
 boss[type="weekly"][tag="andrius"][level="15~19"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct48p16: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:48.16';
 }
 
 boss[type="weekly"][tag="andrius"][level="20~24"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct65p08: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:65.08';
 }
 
 boss[type="weekly"][tag="andrius"][level="25~29"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct82: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:82';
 }
 
 boss[type="weekly"][tag="andrius"][level="30~34"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct98p92: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:98.92';
 }
 
 boss[type="weekly"][tag="andrius"][level="35~39"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_3plus1pct15p84: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '3+1:15.84';
 }
 
 boss[type="weekly"][tag="andrius"][level="40~44"] {
@@ -709,35 +709,35 @@ boss[type="weekly"][tag="andrius"][level="93~"] {
 
 /* Tartaglia (公子) */
 boss[type="weekly"][tag="tartaglia"][level="1~4"] {
-    --astaps-loot-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct0p79: 1;
+    --astaps-loot-gems_anemo_electro_hydro_sliver: '2+1:0.79';
 }
 
 boss[type="weekly"][tag="tartaglia"][level="5~9"] {
-    --astaps-loot-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct14p32: 1;
+    --astaps-loot-gems_anemo_electro_hydro_sliver: '2+1:14.32';
 }
 
 boss[type="weekly"][tag="tartaglia"][level="10~14"] {
-    --astaps-loot-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct31p24: 1;
+    --astaps-loot-gems_anemo_electro_hydro_sliver: '2+1:31.24';
 }
 
 boss[type="weekly"][tag="tartaglia"][level="15~19"] {
-    --astaps-loot-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct48p16: 1;
+    --astaps-loot-gems_anemo_electro_hydro_sliver: '2+1:48.16';
 }
 
 boss[type="weekly"][tag="tartaglia"][level="20~24"] {
-    --astaps-loot-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct65p08: 1;
+    --astaps-loot-gems_anemo_electro_hydro_sliver: '2+1:65.08';
 }
 
 boss[type="weekly"][tag="tartaglia"][level="25~29"] {
-    --astaps-loot-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct82: 1;
+    --astaps-loot-gems_anemo_electro_hydro_sliver: '2+1:82';
 }
 
 boss[type="weekly"][tag="tartaglia"][level="30~34"] {
-    --astaps-loot-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct98p92: 1;
+    --astaps-loot-gems_anemo_electro_hydro_sliver: '2+1:98.92';
 }
 
 boss[type="weekly"][tag="tartaglia"][level="35~39"] {
-    --astaps-loot-weekly_gems_anemo_electro_hydro_sliver_roll_3plus1pct15p84: 1;
+    --astaps-loot-gems_anemo_electro_hydro_sliver: '3+1:15.84';
 }
 
 boss[type="weekly"][tag="tartaglia"][level="40~44"] {
@@ -790,35 +790,35 @@ boss[type="weekly"][tag="tartaglia"][level="93~"] {
 
 /* Azhdaha Pyro Electro (若陀龙王火电) */
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="1~4"] {
-    --astaps-loot-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct0p79: 1;
+    --astaps-loot-gems_electro_geo_pyro_sliver: '2+1:0.79';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="5~9"] {
-    --astaps-loot-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct14p32: 1;
+    --astaps-loot-gems_electro_geo_pyro_sliver: '2+1:14.32';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="10~14"] {
-    --astaps-loot-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct31p24: 1;
+    --astaps-loot-gems_electro_geo_pyro_sliver: '2+1:31.24';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="15~19"] {
-    --astaps-loot-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct48p16: 1;
+    --astaps-loot-gems_electro_geo_pyro_sliver: '2+1:48.16';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="20~24"] {
-    --astaps-loot-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct65p08: 1;
+    --astaps-loot-gems_electro_geo_pyro_sliver: '2+1:65.08';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="25~29"] {
-    --astaps-loot-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct82: 1;
+    --astaps-loot-gems_electro_geo_pyro_sliver: '2+1:82';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="30~34"] {
-    --astaps-loot-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct98p92: 1;
+    --astaps-loot-gems_electro_geo_pyro_sliver: '2+1:98.92';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="35~39"] {
-    --astaps-loot-weekly_gems_electro_geo_pyro_sliver_roll_3plus1pct15p84: 1;
+    --astaps-loot-gems_electro_geo_pyro_sliver: '3+1:15.84';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="40~44"] {
@@ -871,35 +871,35 @@ boss[type="weekly"][tag="azhdaha_pyro_electro"][level="93~"] {
 
 /* Azhdaha Hydro Electro (若陀龙王水电) */
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="1~4"] {
-    --astaps-loot-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct0p79: 1;
+    --astaps-loot-gems_electro_geo_hydro_sliver: '2+1:0.79';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="5~9"] {
-    --astaps-loot-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct14p32: 1;
+    --astaps-loot-gems_electro_geo_hydro_sliver: '2+1:14.32';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="10~14"] {
-    --astaps-loot-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct31p24: 1;
+    --astaps-loot-gems_electro_geo_hydro_sliver: '2+1:31.24';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="15~19"] {
-    --astaps-loot-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct48p16: 1;
+    --astaps-loot-gems_electro_geo_hydro_sliver: '2+1:48.16';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="20~24"] {
-    --astaps-loot-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct65p08: 1;
+    --astaps-loot-gems_electro_geo_hydro_sliver: '2+1:65.08';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="25~29"] {
-    --astaps-loot-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct82: 1;
+    --astaps-loot-gems_electro_geo_hydro_sliver: '2+1:82';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="30~34"] {
-    --astaps-loot-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct98p92: 1;
+    --astaps-loot-gems_electro_geo_hydro_sliver: '2+1:98.92';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="35~39"] {
-    --astaps-loot-weekly_gems_electro_geo_hydro_sliver_roll_3plus1pct15p84: 1;
+    --astaps-loot-gems_electro_geo_hydro_sliver: '3+1:15.84';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="40~44"] {
@@ -952,35 +952,35 @@ boss[type="weekly"][tag="azhdaha_hydro_electro"][level="93~"] {
 
 /* Azhdaha Pyro Cryo (若陀龙王火冰) */
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="1~4"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct0p79: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:0.79';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="5~9"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct14p32: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:14.32';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="10~14"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct31p24: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:31.24';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="15~19"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct48p16: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:48.16';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="20~24"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct65p08: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:65.08';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="25~29"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct82: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:82';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="30~34"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct98p92: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '2+1:98.92';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="35~39"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_3plus1pct15p84: 1;
+    --astaps-loot-gems_anemo_geo_pyro_sliver: '3+1:15.84';
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="40~44"] {
@@ -1033,35 +1033,35 @@ boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="93~"] {
 
 /* Azhdaha Hydro Cryo (若陀龙王水冰) */
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="1~4"] {
-    --astaps-loot-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct0p79: 1;
+    --astaps-loot-gems_anemo_geo_hydro_sliver: '2+1:0.79';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="5~9"] {
-    --astaps-loot-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct14p32: 1;
+    --astaps-loot-gems_anemo_geo_hydro_sliver: '2+1:14.32';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="10~14"] {
-    --astaps-loot-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct31p24: 1;
+    --astaps-loot-gems_anemo_geo_hydro_sliver: '2+1:31.24';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="15~19"] {
-    --astaps-loot-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct48p16: 1;
+    --astaps-loot-gems_anemo_geo_hydro_sliver: '2+1:48.16';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="20~24"] {
-    --astaps-loot-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct65p08: 1;
+    --astaps-loot-gems_anemo_geo_hydro_sliver: '2+1:65.08';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="25~29"] {
-    --astaps-loot-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct82: 1;
+    --astaps-loot-gems_anemo_geo_hydro_sliver: '2+1:82';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="30~34"] {
-    --astaps-loot-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct98p92: 1;
+    --astaps-loot-gems_anemo_geo_hydro_sliver: '2+1:98.92';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="35~39"] {
-    --astaps-loot-weekly_gems_anemo_geo_hydro_sliver_roll_3plus1pct15p84: 1;
+    --astaps-loot-gems_anemo_geo_hydro_sliver: '3+1:15.84';
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="40~44"] {
@@ -1114,35 +1114,35 @@ boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="93~"] {
 
 /* Signora (女士) */
 boss[type="weekly"][tag="signora"][level="1~4"] {
-    --astaps-loot-weekly_gems_anemo_pyro_sliver_roll_2plus1pct0p79: 1;
+    --astaps-loot-gems_anemo_pyro_sliver: '2+1:0.79';
 }
 
 boss[type="weekly"][tag="signora"][level="5~9"] {
-    --astaps-loot-weekly_gems_anemo_pyro_sliver_roll_2plus1pct14p32: 1;
+    --astaps-loot-gems_anemo_pyro_sliver: '2+1:14.32';
 }
 
 boss[type="weekly"][tag="signora"][level="10~14"] {
-    --astaps-loot-weekly_gems_anemo_pyro_sliver_roll_2plus1pct31p24: 1;
+    --astaps-loot-gems_anemo_pyro_sliver: '2+1:31.24';
 }
 
 boss[type="weekly"][tag="signora"][level="15~19"] {
-    --astaps-loot-weekly_gems_anemo_pyro_sliver_roll_2plus1pct48p16: 1;
+    --astaps-loot-gems_anemo_pyro_sliver: '2+1:48.16';
 }
 
 boss[type="weekly"][tag="signora"][level="20~24"] {
-    --astaps-loot-weekly_gems_anemo_pyro_sliver_roll_2plus1pct65p08: 1;
+    --astaps-loot-gems_anemo_pyro_sliver: '2+1:65.08';
 }
 
 boss[type="weekly"][tag="signora"][level="25~29"] {
-    --astaps-loot-weekly_gems_anemo_pyro_sliver_roll_2plus1pct82: 1;
+    --astaps-loot-gems_anemo_pyro_sliver: '2+1:82';
 }
 
 boss[type="weekly"][tag="signora"][level="30~34"] {
-    --astaps-loot-weekly_gems_anemo_pyro_sliver_roll_2plus1pct98p92: 1;
+    --astaps-loot-gems_anemo_pyro_sliver: '2+1:98.92';
 }
 
 boss[type="weekly"][tag="signora"][level="35~39"] {
-    --astaps-loot-weekly_gems_anemo_pyro_sliver_roll_3plus1pct15p84: 1;
+    --astaps-loot-gems_anemo_pyro_sliver: '3+1:15.84';
 }
 
 boss[type="weekly"][tag="signora"][level="40~44"] {
@@ -1195,35 +1195,35 @@ boss[type="weekly"][tag="signora"][level="93~"] {
 
 /* Raiden Shogun (雷电将军) */
 boss[type="weekly"][tag="raiden_shogun"][level="1~4"] {
-    --astaps-loot-weekly_gems_electro_sliver_roll_2plus1pct0p79: 1;
+    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:0.79';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="5~9"] {
-    --astaps-loot-weekly_gems_electro_sliver_roll_2plus1pct14p32: 1;
+    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:14.32';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="10~14"] {
-    --astaps-loot-weekly_gems_electro_sliver_roll_2plus1pct31p24: 1;
+    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:31.24';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="15~19"] {
-    --astaps-loot-weekly_gems_electro_sliver_roll_2plus1pct48p16: 1;
+    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:48.16';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="20~24"] {
-    --astaps-loot-weekly_gems_electro_sliver_roll_2plus1pct65p08: 1;
+    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:65.08';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="25~29"] {
-    --astaps-loot-weekly_gems_electro_sliver_roll_2plus1pct82: 1;
+    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:82';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="30~34"] {
-    --astaps-loot-weekly_gems_electro_sliver_roll_2plus1pct98p92: 1;
+    --astaps-loot-material_vajrada_amethyst_sliver: '2+1:98.92';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="35~39"] {
-    --astaps-loot-weekly_gems_electro_sliver_roll_3plus1pct15p84: 1;
+    --astaps-loot-material_vajrada_amethyst_sliver: '3+1:15.84';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="40~44"] {
@@ -1276,35 +1276,35 @@ boss[type="weekly"][tag="raiden_shogun"][level="93~"] {
 
 /* Shouki no Kami (「正机之神」) */
 boss[type="weekly"][tag="shouki_no_kami"][level="1~4"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct0p79: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:0.79';
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="5~9"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct14p32: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:14.32';
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="10~14"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct31p24: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:31.24';
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="15~19"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct48p16: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:48.16';
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="20~24"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct65p08: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:65.08';
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="25~29"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct82: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:82';
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="30~34"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct98p92: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:98.92';
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="35~39"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_3plus1pct15p84: 1;
+    --astaps-loot-gems_cryo_electro_hydro_sliver: '3+1:15.84';
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="40~44"] {
@@ -1402,19 +1402,19 @@ boss[type="world"][tag="tenebrous_papilla"][level="1~"] {
 }
 
 boss[type="world"][tag="electro_hypostasis,anemo_hypostasis,geo_hypostasis,cryo_regisvine,pyro_regisvine,oceanid,primo_geovishap_electro,primo_geovishap_cryo,primo_geovishap_pyro,primo_geovishap_hydro,cryo_hypostasis,maguu_kenki,perpetual_mechanical_array,pyro_hypostasis,hydro_hypostasis,thunder_manifestation,golden_wolflord,bathysmal_vishap_herd,ruin_serpent,jadeplume_terrorshroom,electro_regisvine,aeonblight_drake,algorithm_semi_intransient_matrix,dendro_hypostasis"][level="70~79"] {
-    --astaps-loot-world_five_star_artifacts_low: 1;
+    --astaps-loot-artifacts_gladiators_wanderers_5star: '1:21';
 }
 
 boss[type="world"][tag="electro_hypostasis,anemo_hypostasis,geo_hypostasis,cryo_regisvine,pyro_regisvine,oceanid,primo_geovishap_electro,primo_geovishap_cryo,primo_geovishap_pyro,primo_geovishap_hydro,cryo_hypostasis,maguu_kenki,perpetual_mechanical_array,pyro_hypostasis,hydro_hypostasis,thunder_manifestation,golden_wolflord,bathysmal_vishap_herd,ruin_serpent,jadeplume_terrorshroom,electro_regisvine,aeonblight_drake,algorithm_semi_intransient_matrix,dendro_hypostasis"][level="80~89"] {
-    --astaps-loot-world_five_star_artifacts_medium: 1;
+    --astaps-loot-artifacts_gladiators_wanderers_5star: '1:42';
 }
 
 boss[type="world"][tag="electro_hypostasis,anemo_hypostasis,geo_hypostasis,cryo_regisvine,pyro_regisvine,oceanid,primo_geovishap_electro,primo_geovishap_cryo,primo_geovishap_pyro,primo_geovishap_hydro,cryo_hypostasis,maguu_kenki,perpetual_mechanical_array,pyro_hypostasis,hydro_hypostasis,thunder_manifestation,golden_wolflord,bathysmal_vishap_herd,ruin_serpent,jadeplume_terrorshroom,electro_regisvine,aeonblight_drake,algorithm_semi_intransient_matrix,dendro_hypostasis"][level="90~92"] {
-    --astaps-loot-world_five_star_artifacts_high: 1;
+    --astaps-loot-artifacts_gladiators_wanderers_5star: '1:63';
 }
 
 boss[type="world"][tag="electro_hypostasis,anemo_hypostasis,geo_hypostasis,cryo_regisvine,pyro_regisvine,oceanid,primo_geovishap_electro,primo_geovishap_cryo,primo_geovishap_pyro,primo_geovishap_hydro,cryo_hypostasis,maguu_kenki,perpetual_mechanical_array,pyro_hypostasis,hydro_hypostasis,thunder_manifestation,golden_wolflord,bathysmal_vishap_herd,ruin_serpent,jadeplume_terrorshroom,electro_regisvine,aeonblight_drake,algorithm_semi_intransient_matrix,dendro_hypostasis"][level="93~"] {
-    --astaps-loot-world_five_star_artifacts_guaranteed: 1;
+    --astaps-loot-artifacts_gladiators_wanderers_5star: 1;
 }
 
 boss[type="world"][tag="frostnight_scion"][level="1~4"] {
@@ -1422,19 +1422,19 @@ boss[type="world"][tag="frostnight_scion"][level="1~4"] {
 }
 
 boss[type="world"][tag="frostnight_scion"][level="5~9"] {
-    --astaps-loot-world_frostnights_glory_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_frostnights_glory: '1+1:42.89';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="10~14"] {
-    --astaps-loot-world_frostnights_glory_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_frostnights_glory: '1+1:54.17';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="15~19"] {
-    --astaps-loot-world_frostnights_glory_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_frostnights_glory: '1+1:65.45';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="20~24"] {
-    --astaps-loot-world_frostnights_glory_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_frostnights_glory: '1+1:76.73';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="25~29"] {
@@ -1454,15 +1454,15 @@ boss[type="world"][tag="frostnight_scion"][level="40~44"] {
 }
 
 boss[type="world"][tag="frostnight_scion"][level="45~49"] {
-    --astaps-loot-world_frostnights_glory_roll_1plus1pct78p03: 1;
+    --astaps-loot-material_frostnights_glory: '1+1:78.03';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="50~54"] {
-    --astaps-loot-world_frostnights_glory_roll_1plus1pct86p64: 1;
+    --astaps-loot-material_frostnights_glory: '1+1:86.64';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="55~59"] {
-    --astaps-loot-world_frostnights_glory_roll_1plus1pct95p26: 1;
+    --astaps-loot-material_frostnights_glory: '1+1:95.26';
 }
 
 boss[type="world"][tag="frostnight_scion"][level="60~64"] {
@@ -1507,19 +1507,19 @@ boss[type="world"][tag="knuckle_duck"][level="1~4"] {
 }
 
 boss[type="world"][tag="knuckle_duck"][level="5~9"] {
-    --astaps-loot-world_precision_kuuvahki_stamping_die_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_precision_kuuvahki_stamping_die: '1+1:42.89';
 }
 
 boss[type="world"][tag="knuckle_duck"][level="10~14"] {
-    --astaps-loot-world_precision_kuuvahki_stamping_die_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_precision_kuuvahki_stamping_die: '1+1:54.17';
 }
 
 boss[type="world"][tag="knuckle_duck"][level="15~19"] {
-    --astaps-loot-world_precision_kuuvahki_stamping_die_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_precision_kuuvahki_stamping_die: '1+1:65.45';
 }
 
 boss[type="world"][tag="knuckle_duck"][level="20~24"] {
-    --astaps-loot-world_precision_kuuvahki_stamping_die_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_precision_kuuvahki_stamping_die: '1+1:76.73';
 }
 
 boss[type="world"][tag="knuckle_duck"][level="25~29"] {
@@ -1592,19 +1592,19 @@ boss[type="world"][tag="lightbearing_lunar_moth"][level="1~4"] {
 }
 
 boss[type="world"][tag="lightbearing_lunar_moth"][level="5~9"] {
-    --astaps-loot-world_lightbearing_scale_feather_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_lightbearing_scale_feather: '1+1:42.89';
 }
 
 boss[type="world"][tag="lightbearing_lunar_moth"][level="10~14"] {
-    --astaps-loot-world_lightbearing_scale_feather_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_lightbearing_scale_feather: '1+1:54.17';
 }
 
 boss[type="world"][tag="lightbearing_lunar_moth"][level="15~19"] {
-    --astaps-loot-world_lightbearing_scale_feather_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_lightbearing_scale_feather: '1+1:65.45';
 }
 
 boss[type="world"][tag="lightbearing_lunar_moth"][level="20~24"] {
-    --astaps-loot-world_lightbearing_scale_feather_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_lightbearing_scale_feather: '1+1:76.73';
 }
 
 boss[type="world"][tag="lightbearing_lunar_moth"][level="25~29"] {
@@ -1677,19 +1677,19 @@ boss[type="world"][tag="radiant_beast"][level="1~4"] {
 }
 
 boss[type="world"][tag="radiant_beast"][level="5~9"] {
-    --astaps-loot-world_prismatic_severed_tail_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_prismatic_severed_tail: '1+1:42.89';
 }
 
 boss[type="world"][tag="radiant_beast"][level="10~14"] {
-    --astaps-loot-world_prismatic_severed_tail_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_prismatic_severed_tail: '1+1:54.17';
 }
 
 boss[type="world"][tag="radiant_beast"][level="15~19"] {
-    --astaps-loot-world_prismatic_severed_tail_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_prismatic_severed_tail: '1+1:65.45';
 }
 
 boss[type="world"][tag="radiant_beast"][level="20~24"] {
-    --astaps-loot-world_prismatic_severed_tail_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_prismatic_severed_tail: '1+1:76.73';
 }
 
 boss[type="world"][tag="radiant_beast"][level="25~29"] {
@@ -1762,19 +1762,19 @@ boss[type="world"][tag="primal_watcher"][level="1~4"] {
 }
 
 boss[type="world"][tag="primal_watcher"][level="5~9"] {
-    --astaps-loot-world_plume_of_the_fallen_watcher_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_plume_of_the_fallen_watcher: '1+1:42.89';
 }
 
 boss[type="world"][tag="primal_watcher"][level="10~14"] {
-    --astaps-loot-world_plume_of_the_fallen_watcher_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_plume_of_the_fallen_watcher: '1+1:54.17';
 }
 
 boss[type="world"][tag="primal_watcher"][level="15~19"] {
-    --astaps-loot-world_plume_of_the_fallen_watcher_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_plume_of_the_fallen_watcher: '1+1:65.45';
 }
 
 boss[type="world"][tag="primal_watcher"][level="20~24"] {
-    --astaps-loot-world_plume_of_the_fallen_watcher_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_plume_of_the_fallen_watcher: '1+1:76.73';
 }
 
 boss[type="world"][tag="primal_watcher"][level="25~29"] {
@@ -1932,19 +1932,19 @@ boss[type="world"][tag="emperor_of_fire_and_iron"][level="1~4"] {
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="5~9"] {
-    --astaps-loot-world_emperors_resolution_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_emperors_resolution: '1+1:42.89';
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="10~14"] {
-    --astaps-loot-world_emperors_resolution_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_emperors_resolution: '1+1:54.17';
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="15~19"] {
-    --astaps-loot-world_emperors_resolution_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_emperors_resolution: '1+1:65.45';
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="20~24"] {
-    --astaps-loot-world_emperors_resolution_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_emperors_resolution: '1+1:76.73';
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="25~29"] {
@@ -2017,19 +2017,19 @@ boss[type="world"][tag="experimental_field_generator"][level="1~4"] {
 }
 
 boss[type="world"][tag="experimental_field_generator"][level="5~9"] {
-    --astaps-loot-world_tourbillon_device_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_tourbillon_device: '1+1:42.89';
 }
 
 boss[type="world"][tag="experimental_field_generator"][level="10~14"] {
-    --astaps-loot-world_tourbillon_device_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_tourbillon_device: '1+1:54.17';
 }
 
 boss[type="world"][tag="experimental_field_generator"][level="15~19"] {
-    --astaps-loot-world_tourbillon_device_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_tourbillon_device: '1+1:65.45';
 }
 
 boss[type="world"][tag="experimental_field_generator"][level="20~24"] {
-    --astaps-loot-world_tourbillon_device_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_tourbillon_device: '1+1:76.73';
 }
 
 boss[type="world"][tag="experimental_field_generator"][level="25~29"] {
@@ -2102,19 +2102,19 @@ boss[type="world"][tag="millennial_pearl_seahorse"][level="1~4"] {
 }
 
 boss[type="world"][tag="millennial_pearl_seahorse"][level="5~9"] {
-    --astaps-loot-world_fontemer_unihorn_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_fontemer_unihorn: '1+1:42.89';
 }
 
 boss[type="world"][tag="millennial_pearl_seahorse"][level="10~14"] {
-    --astaps-loot-world_fontemer_unihorn_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_fontemer_unihorn: '1+1:54.17';
 }
 
 boss[type="world"][tag="millennial_pearl_seahorse"][level="15~19"] {
-    --astaps-loot-world_fontemer_unihorn_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_fontemer_unihorn: '1+1:65.45';
 }
 
 boss[type="world"][tag="millennial_pearl_seahorse"][level="20~24"] {
-    --astaps-loot-world_fontemer_unihorn_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_fontemer_unihorn: '1+1:76.73';
 }
 
 boss[type="world"][tag="millennial_pearl_seahorse"][level="25~29"] {
@@ -2187,19 +2187,19 @@ boss[type="world"][tag="hydro_tulpa"][level="1~4"] {
 }
 
 boss[type="world"][tag="hydro_tulpa"][level="5~9"] {
-    --astaps-loot-world_water_that_failed_to_transcend_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_water_that_failed_to_transcend: '1+1:42.89';
 }
 
 boss[type="world"][tag="hydro_tulpa"][level="10~14"] {
-    --astaps-loot-world_water_that_failed_to_transcend_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_water_that_failed_to_transcend: '1+1:54.17';
 }
 
 boss[type="world"][tag="hydro_tulpa"][level="15~19"] {
-    --astaps-loot-world_water_that_failed_to_transcend_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_water_that_failed_to_transcend: '1+1:65.45';
 }
 
 boss[type="world"][tag="hydro_tulpa"][level="20~24"] {
-    --astaps-loot-world_water_that_failed_to_transcend_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_water_that_failed_to_transcend: '1+1:76.73';
 }
 
 boss[type="world"][tag="hydro_tulpa"][level="25~29"] {
@@ -2272,19 +2272,19 @@ boss[type="world"][tag="legatus_golem"][level="1~4"] {
 }
 
 boss[type="world"][tag="legatus_golem"][level="5~9"] {
-    --astaps-loot-world_fragment_of_a_golden_melody_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:42.89';
 }
 
 boss[type="world"][tag="legatus_golem"][level="10~14"] {
-    --astaps-loot-world_fragment_of_a_golden_melody_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:54.17';
 }
 
 boss[type="world"][tag="legatus_golem"][level="15~19"] {
-    --astaps-loot-world_fragment_of_a_golden_melody_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:65.45';
 }
 
 boss[type="world"][tag="legatus_golem"][level="20~24"] {
-    --astaps-loot-world_fragment_of_a_golden_melody_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:76.73';
 }
 
 boss[type="world"][tag="legatus_golem"][level="25~29"] {
@@ -2304,15 +2304,15 @@ boss[type="world"][tag="legatus_golem"][level="40~44"] {
 }
 
 boss[type="world"][tag="legatus_golem"][level="45~49"] {
-    --astaps-loot-world_fragment_of_a_golden_melody_roll_1plus1pct78p03: 1;
+    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:78.03';
 }
 
 boss[type="world"][tag="legatus_golem"][level="50~54"] {
-    --astaps-loot-world_fragment_of_a_golden_melody_roll_1plus1pct86p64: 1;
+    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:86.64';
 }
 
 boss[type="world"][tag="legatus_golem"][level="55~59"] {
-    --astaps-loot-world_fragment_of_a_golden_melody_roll_1plus1pct95p26: 1;
+    --astaps-loot-material_fragment_of_a_golden_melody: '1+1:95.26';
 }
 
 boss[type="world"][tag="legatus_golem"][level="60~64"] {
@@ -2357,19 +2357,19 @@ boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="1~4"] {
 }
 
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="5~9"] {
-    --astaps-loot-world_overripe_flamegranate_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_overripe_flamegranate: '1+1:42.89';
 }
 
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="10~14"] {
-    --astaps-loot-world_overripe_flamegranate_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_overripe_flamegranate: '1+1:54.17';
 }
 
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="15~19"] {
-    --astaps-loot-world_overripe_flamegranate_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_overripe_flamegranate: '1+1:65.45';
 }
 
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="20~24"] {
-    --astaps-loot-world_overripe_flamegranate_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_overripe_flamegranate: '1+1:76.73';
 }
 
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="25~29"] {
@@ -2442,19 +2442,19 @@ boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="1~4"] {
 }
 
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="5~9"] {
-    --astaps-loot-world_mark_of_the_binding_blessing_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_mark_of_the_binding_blessing: '1+1:42.89';
 }
 
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="10~14"] {
-    --astaps-loot-world_mark_of_the_binding_blessing_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_mark_of_the_binding_blessing: '1+1:54.17';
 }
 
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="15~19"] {
-    --astaps-loot-world_mark_of_the_binding_blessing_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_mark_of_the_binding_blessing: '1+1:65.45';
 }
 
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="20~24"] {
-    --astaps-loot-world_mark_of_the_binding_blessing_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_mark_of_the_binding_blessing: '1+1:76.73';
 }
 
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="25~29"] {
@@ -2527,19 +2527,19 @@ boss[type="world"][tag="secret_source_automaton_configuration_device"][level="1~
 }
 
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="5~9"] {
-    --astaps-loot-world_gold_inscribed_secret_source_core_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_gold_inscribed_secret_source_core: '1+1:42.89';
 }
 
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="10~14"] {
-    --astaps-loot-world_gold_inscribed_secret_source_core_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_gold_inscribed_secret_source_core: '1+1:54.17';
 }
 
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="15~19"] {
-    --astaps-loot-world_gold_inscribed_secret_source_core_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_gold_inscribed_secret_source_core: '1+1:65.45';
 }
 
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="20~24"] {
-    --astaps-loot-world_gold_inscribed_secret_source_core_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_gold_inscribed_secret_source_core: '1+1:76.73';
 }
 
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="25~29"] {
@@ -2612,19 +2612,19 @@ boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="1~4"] {
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="5~9"] {
-    --astaps-loot-world_remnant_of_the_dreadwing_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:42.89';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="10~14"] {
-    --astaps-loot-world_remnant_of_the_dreadwing_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:54.17';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="15~19"] {
-    --astaps-loot-world_remnant_of_the_dreadwing_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:65.45';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="20~24"] {
-    --astaps-loot-world_remnant_of_the_dreadwing_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:76.73';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="25~29"] {
@@ -2644,15 +2644,15 @@ boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="40~44"] {
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="45~49"] {
-    --astaps-loot-world_remnant_of_the_dreadwing_roll_1plus1pct78p03: 1;
+    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:78.03';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="50~54"] {
-    --astaps-loot-world_remnant_of_the_dreadwing_roll_1plus1pct86p64: 1;
+    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:86.64';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="55~59"] {
-    --astaps-loot-world_remnant_of_the_dreadwing_roll_1plus1pct95p26: 1;
+    --astaps-loot-material_remnant_of_the_dreadwing: '1+1:95.26';
 }
 
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="60~64"] {
@@ -2697,19 +2697,19 @@ boss[type="world"][tag="holawaqa_ngoubou"][level="1~4"] {
 }
 
 boss[type="world"][tag="holawaqa_ngoubou"][level="5~9"] {
-    --astaps-loot-world_talisman_of_the_enigmatic_land_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_talisman_of_the_enigmatic_land: '1+1:42.89';
 }
 
 boss[type="world"][tag="holawaqa_ngoubou"][level="10~14"] {
-    --astaps-loot-world_talisman_of_the_enigmatic_land_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_talisman_of_the_enigmatic_land: '1+1:54.17';
 }
 
 boss[type="world"][tag="holawaqa_ngoubou"][level="15~19"] {
-    --astaps-loot-world_talisman_of_the_enigmatic_land_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_talisman_of_the_enigmatic_land: '1+1:65.45';
 }
 
 boss[type="world"][tag="holawaqa_ngoubou"][level="20~24"] {
-    --astaps-loot-world_talisman_of_the_enigmatic_land_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_talisman_of_the_enigmatic_land: '1+1:76.73';
 }
 
 boss[type="world"][tag="holawaqa_ngoubou"][level="25~29"] {
@@ -2782,19 +2782,19 @@ boss[type="world"][tag="lava_dragon_statue"][level="1~4"] {
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="5~9"] {
-    --astaps-loot-world_sparkless_statue_core_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_sparkless_statue_core: '1+1:42.89';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="10~14"] {
-    --astaps-loot-world_sparkless_statue_core_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_sparkless_statue_core: '1+1:54.17';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="15~19"] {
-    --astaps-loot-world_sparkless_statue_core_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_sparkless_statue_core: '1+1:65.45';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="20~24"] {
-    --astaps-loot-world_sparkless_statue_core_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_sparkless_statue_core: '1+1:76.73';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="25~29"] {
@@ -2814,15 +2814,15 @@ boss[type="world"][tag="lava_dragon_statue"][level="40~44"] {
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="45~49"] {
-    --astaps-loot-world_sparkless_statue_core_roll_1plus1pct78p03: 1;
+    --astaps-loot-material_sparkless_statue_core: '1+1:78.03';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="50~54"] {
-    --astaps-loot-world_sparkless_statue_core_roll_1plus1pct86p64: 1;
+    --astaps-loot-material_sparkless_statue_core: '1+1:86.64';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="55~59"] {
-    --astaps-loot-world_sparkless_statue_core_roll_1plus1pct95p26: 1;
+    --astaps-loot-material_sparkless_statue_core: '1+1:95.26';
 }
 
 boss[type="world"][tag="lava_dragon_statue"][level="60~64"] {
@@ -2867,19 +2867,19 @@ boss[type="world"][tag="secret_source_automaton_overseer"][level="1~4"] {
 }
 
 boss[type="world"][tag="secret_source_automaton_overseer"][level="5~9"] {
-    --astaps-loot-world_secret_source_airflow_accumulator_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_secret_source_airflow_accumulator: '1+1:42.89';
 }
 
 boss[type="world"][tag="secret_source_automaton_overseer"][level="10~14"] {
-    --astaps-loot-world_secret_source_airflow_accumulator_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_secret_source_airflow_accumulator: '1+1:54.17';
 }
 
 boss[type="world"][tag="secret_source_automaton_overseer"][level="15~19"] {
-    --astaps-loot-world_secret_source_airflow_accumulator_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_secret_source_airflow_accumulator: '1+1:65.45';
 }
 
 boss[type="world"][tag="secret_source_automaton_overseer"][level="20~24"] {
-    --astaps-loot-world_secret_source_airflow_accumulator_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_secret_source_airflow_accumulator: '1+1:76.73';
 }
 
 boss[type="world"][tag="secret_source_automaton_overseer"][level="25~29"] {
@@ -3037,19 +3037,19 @@ boss[type="world"][tag="solitary_suanni"][level="1~4"] {
 }
 
 boss[type="world"][tag="solitary_suanni"][level="5~9"] {
-    --astaps-loot-world_cloudseam_scale_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_cloudseam_scale: '1+1:42.89';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="10~14"] {
-    --astaps-loot-world_cloudseam_scale_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_cloudseam_scale: '1+1:54.17';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="15~19"] {
-    --astaps-loot-world_cloudseam_scale_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_cloudseam_scale: '1+1:65.45';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="20~24"] {
-    --astaps-loot-world_cloudseam_scale_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_cloudseam_scale: '1+1:76.73';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="25~29"] {
@@ -3069,15 +3069,15 @@ boss[type="world"][tag="solitary_suanni"][level="40~44"] {
 }
 
 boss[type="world"][tag="solitary_suanni"][level="45~49"] {
-    --astaps-loot-world_cloudseam_scale_roll_1plus1pct78p03: 1;
+    --astaps-loot-material_cloudseam_scale: '1+1:78.03';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="50~54"] {
-    --astaps-loot-world_cloudseam_scale_roll_1plus1pct86p64: 1;
+    --astaps-loot-material_cloudseam_scale: '1+1:86.64';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="55~59"] {
-    --astaps-loot-world_cloudseam_scale_roll_1plus1pct95p26: 1;
+    --astaps-loot-material_cloudseam_scale: '1+1:95.26';
 }
 
 boss[type="world"][tag="solitary_suanni"][level="60~64"] {
@@ -3122,19 +3122,19 @@ boss[type="world"][tag="tenebrous_papilla"][level="1~4"] {
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="5~9"] {
-    --astaps-loot-world_ensnaring_gaze_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_ensnaring_gaze: '1+1:42.89';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="10~14"] {
-    --astaps-loot-world_ensnaring_gaze_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_ensnaring_gaze: '1+1:54.17';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="15~19"] {
-    --astaps-loot-world_ensnaring_gaze_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_ensnaring_gaze: '1+1:65.45';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="20~24"] {
-    --astaps-loot-world_ensnaring_gaze_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_ensnaring_gaze: '1+1:76.73';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="25~29"] {
@@ -3154,15 +3154,15 @@ boss[type="world"][tag="tenebrous_papilla"][level="40~44"] {
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="45~49"] {
-    --astaps-loot-world_ensnaring_gaze_roll_1plus1pct78p03: 1;
+    --astaps-loot-material_ensnaring_gaze: '1+1:78.03';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="50~54"] {
-    --astaps-loot-world_ensnaring_gaze_roll_1plus1pct86p64: 1;
+    --astaps-loot-material_ensnaring_gaze: '1+1:86.64';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="55~59"] {
-    --astaps-loot-world_ensnaring_gaze_roll_1plus1pct95p26: 1;
+    --astaps-loot-material_ensnaring_gaze: '1+1:95.26';
 }
 
 boss[type="world"][tag="tenebrous_papilla"][level="60~64"] {
@@ -3207,19 +3207,19 @@ boss[type="world"][tag="undying_replicant"][level="1~4"] {
 }
 
 boss[type="world"][tag="undying_replicant"][level="5~9"] {
-    --astaps-loot-world_unscorched_blossom_branch_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_unscorched_blossom_branch: '1+1:42.89';
 }
 
 boss[type="world"][tag="undying_replicant"][level="10~14"] {
-    --astaps-loot-world_unscorched_blossom_branch_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_unscorched_blossom_branch: '1+1:54.17';
 }
 
 boss[type="world"][tag="undying_replicant"][level="15~19"] {
-    --astaps-loot-world_unscorched_blossom_branch_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_unscorched_blossom_branch: '1+1:65.45';
 }
 
 boss[type="world"][tag="undying_replicant"][level="20~24"] {
-    --astaps-loot-world_unscorched_blossom_branch_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_unscorched_blossom_branch: '1+1:76.73';
 }
 
 boss[type="world"][tag="undying_replicant"][level="25~29"] {
@@ -3292,19 +3292,19 @@ boss[type="world"][tag="chimera_sky_roamer"][level="1~4"] {
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="5~9"] {
-    --astaps-loot-world_severed_tail_of_the_sky_roamer_roll_1plus1pct42p89: 1;
+    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:42.89';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="10~14"] {
-    --astaps-loot-world_severed_tail_of_the_sky_roamer_roll_1plus1pct54p17: 1;
+    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:54.17';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="15~19"] {
-    --astaps-loot-world_severed_tail_of_the_sky_roamer_roll_1plus1pct65p45: 1;
+    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:65.45';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="20~24"] {
-    --astaps-loot-world_severed_tail_of_the_sky_roamer_roll_1plus1pct76p73: 1;
+    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:76.73';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="25~29"] {
@@ -3324,15 +3324,15 @@ boss[type="world"][tag="chimera_sky_roamer"][level="40~44"] {
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="45~49"] {
-    --astaps-loot-world_severed_tail_of_the_sky_roamer_roll_1plus1pct78p03: 1;
+    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:78.03';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="50~54"] {
-    --astaps-loot-world_severed_tail_of_the_sky_roamer_roll_1plus1pct86p64: 1;
+    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:86.64';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="55~59"] {
-    --astaps-loot-world_severed_tail_of_the_sky_roamer_roll_1plus1pct95p26: 1;
+    --astaps-loot-material_severed_tail_of_the_sky_roamer: '1+1:95.26';
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="60~64"] {

@@ -217,6 +217,73 @@ ultra:
   - {reward: genshin.weapon_exp.mystic_ore, count: "3:80,4:20"}
   - {reward: *artifacts_3_to_4_high, count: "2:50,3:50"}
 
+# CSS-selected single-item pools. Execution counts live in rewards.css.
+material_cloudseam_scale:
+  - {reward: genshin.material.cloudseam_scale}
+
+material_emperors_resolution:
+  - {reward: genshin.material.emperors_resolution}
+
+material_ensnaring_gaze:
+  - {reward: genshin.material.ensnaring_gaze}
+
+material_fontemer_unihorn:
+  - {reward: genshin.material.fontemer_unihorn}
+
+material_fragment_of_a_golden_melody:
+  - {reward: genshin.material.fragment_of_a_golden_melody}
+
+material_frostnights_glory:
+  - {reward: genshin.material.frostnights_glory}
+
+material_gold_inscribed_secret_source_core:
+  - {reward: genshin.material.gold_inscribed_secret_source_core}
+
+material_lightbearing_scale_feather:
+  - {reward: genshin.material.lightbearing_scale_feather}
+
+material_mark_of_the_binding_blessing:
+  - {reward: genshin.material.mark_of_the_binding_blessing}
+
+material_overripe_flamegranate:
+  - {reward: genshin.material.overripe_flamegranate}
+
+material_plume_of_the_fallen_watcher:
+  - {reward: genshin.material.plume_of_the_fallen_watcher}
+
+material_precision_kuuvahki_stamping_die:
+  - {reward: genshin.material.precision_kuuvahki_stamping_die}
+
+material_prismatic_severed_tail:
+  - {reward: genshin.material.prismatic_severed_tail}
+
+material_remnant_of_the_dreadwing:
+  - {reward: genshin.material.remnant_of_the_dreadwing}
+
+material_secret_source_airflow_accumulator:
+  - {reward: genshin.material.secret_source_airflow_accumulator}
+
+material_severed_tail_of_the_sky_roamer:
+  - {reward: genshin.material.severed_tail_of_the_sky_roamer}
+
+material_sparkless_statue_core:
+  - {reward: genshin.material.sparkless_statue_core}
+
+material_talisman_of_the_enigmatic_land:
+  - {reward: genshin.material.talisman_of_the_enigmatic_land}
+
+material_tourbillon_device:
+  - {reward: genshin.material.tourbillon_device}
+
+material_unscorched_blossom_branch:
+  - {reward: genshin.material.unscorched_blossom_branch}
+
+material_vajrada_amethyst_sliver:
+  - {reward: genshin.material.vajrada_amethyst_sliver}
+
+material_water_that_failed_to_transcend:
+  - {reward: genshin.material.water_that_failed_to_transcend}
+
 # Weekly Boss drops (ChestDrop sourceType 35); staged only.
 # Dungeon mapping, 7.1 drop rates and weekly Resin discounts remain unverified.
 
@@ -232,28 +299,10 @@ gems_cryo_electro_hydro_sliver: &gems_cryo_electro_hydro_sliver
   - {reward: genshin.material.shivada_jade_sliver, weight: 1}
   - {reward: genshin.material.varunada_lazurite_sliver, weight: 1}
 
-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct0p79:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:0.79"}
-
 artifacts_berserker_instructor_exile_3star: &artifacts_berserker_instructor_exile_3star
   - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
   - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
   - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-
-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct14p32:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:14.32"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct31p24:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:31.24"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct48p16:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:48.16"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct65p08:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:65.08"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct82:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:82"}
 
 artifacts_berserker_instructor_exile_4star: &artifacts_berserker_instructor_exile_4star
   - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
@@ -261,12 +310,6 @@ artifacts_berserker_instructor_exile_4star: &artifacts_berserker_instructor_exil
   - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
   - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
   - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-
-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct98p92:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:98.92"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_3plus1pct15p84:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "3+1:15.84"}
 
 gems_cryo_electro_hydro_fragment: &gems_cryo_electro_hydro_fragment
   - {reward: genshin.material.vajrada_amethyst_fragment, weight: 1}
@@ -459,30 +502,6 @@ gems_anemo_electro_hydro_sliver: &gems_anemo_electro_hydro_sliver
   - {reward: genshin.material.vajrada_amethyst_sliver, weight: 1}
   - {reward: genshin.material.vayuda_turquoise_sliver, weight: 1}
 
-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct0p79:
-  - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:0.79"}
-
-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct14p32:
-  - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:14.32"}
-
-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct31p24:
-  - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:31.24"}
-
-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct48p16:
-  - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:48.16"}
-
-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct65p08:
-  - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:65.08"}
-
-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct82:
-  - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:82"}
-
-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct98p92:
-  - {reward: *gems_anemo_electro_hydro_sliver, count: "2+1:98.92"}
-
-weekly_gems_anemo_electro_hydro_sliver_roll_3plus1pct15p84:
-  - {reward: *gems_anemo_electro_hydro_sliver, count: "3+1:15.84"}
-
 gems_anemo_electro_hydro_fragment: &gems_anemo_electro_hydro_fragment
   - {reward: genshin.material.varunada_lazurite_fragment, weight: 1}
   - {reward: genshin.material.vajrada_amethyst_fragment, weight: 1}
@@ -663,30 +682,6 @@ gems_anemo_geo_pyro_sliver: &gems_anemo_geo_pyro_sliver
   - {reward: genshin.material.prithiva_topaz_sliver, weight: 1}
   - {reward: genshin.material.agnidus_agate_sliver, weight: 1}
 
-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct0p79:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:0.79"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct14p32:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:14.32"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct31p24:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:31.24"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct48p16:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:48.16"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct65p08:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:65.08"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct82:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:82"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct98p92:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:98.92"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_3plus1pct15p84:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "3+1:15.84"}
-
 gems_anemo_geo_pyro_fragment: &gems_anemo_geo_pyro_fragment
   - {reward: genshin.material.vayuda_turquoise_fragment, weight: 1}
   - {reward: genshin.material.prithiva_topaz_fragment, weight: 1}
@@ -866,30 +861,6 @@ gems_anemo_pyro_sliver: &gems_anemo_pyro_sliver
   - {reward: genshin.material.vayuda_turquoise_sliver, weight: 1}
   - {reward: genshin.material.agnidus_agate_sliver, weight: 1}
 
-weekly_gems_anemo_pyro_sliver_roll_2plus1pct0p79:
-  - {reward: *gems_anemo_pyro_sliver, count: "2+1:0.79"}
-
-weekly_gems_anemo_pyro_sliver_roll_2plus1pct14p32:
-  - {reward: *gems_anemo_pyro_sliver, count: "2+1:14.32"}
-
-weekly_gems_anemo_pyro_sliver_roll_2plus1pct31p24:
-  - {reward: *gems_anemo_pyro_sliver, count: "2+1:31.24"}
-
-weekly_gems_anemo_pyro_sliver_roll_2plus1pct48p16:
-  - {reward: *gems_anemo_pyro_sliver, count: "2+1:48.16"}
-
-weekly_gems_anemo_pyro_sliver_roll_2plus1pct65p08:
-  - {reward: *gems_anemo_pyro_sliver, count: "2+1:65.08"}
-
-weekly_gems_anemo_pyro_sliver_roll_2plus1pct82:
-  - {reward: *gems_anemo_pyro_sliver, count: "2+1:82"}
-
-weekly_gems_anemo_pyro_sliver_roll_2plus1pct98p92:
-  - {reward: *gems_anemo_pyro_sliver, count: "2+1:98.92"}
-
-weekly_gems_anemo_pyro_sliver_roll_3plus1pct15p84:
-  - {reward: *gems_anemo_pyro_sliver, count: "3+1:15.84"}
-
 gems_anemo_pyro_fragment: &gems_anemo_pyro_fragment
   - {reward: genshin.material.vayuda_turquoise_fragment, weight: 1}
   - {reward: genshin.material.agnidus_agate_fragment, weight: 1}
@@ -1035,30 +1006,6 @@ gems_anemo_geo_hydro_sliver: &gems_anemo_geo_hydro_sliver
   - {reward: genshin.material.varunada_lazurite_sliver, weight: 1}
   - {reward: genshin.material.vayuda_turquoise_sliver, weight: 1}
   - {reward: genshin.material.prithiva_topaz_sliver, weight: 1}
-
-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct0p79:
-  - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:0.79"}
-
-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct14p32:
-  - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:14.32"}
-
-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct31p24:
-  - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:31.24"}
-
-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct48p16:
-  - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:48.16"}
-
-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct65p08:
-  - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:65.08"}
-
-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct82:
-  - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:82"}
-
-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct98p92:
-  - {reward: *gems_anemo_geo_hydro_sliver, count: "2+1:98.92"}
-
-weekly_gems_anemo_geo_hydro_sliver_roll_3plus1pct15p84:
-  - {reward: *gems_anemo_geo_hydro_sliver, count: "3+1:15.84"}
 
 gems_anemo_geo_hydro_fragment: &gems_anemo_geo_hydro_fragment
   - {reward: genshin.material.varunada_lazurite_fragment, weight: 1}
@@ -1240,30 +1187,6 @@ gems_electro_geo_hydro_sliver: &gems_electro_geo_hydro_sliver
   - {reward: genshin.material.vajrada_amethyst_sliver, weight: 1}
   - {reward: genshin.material.prithiva_topaz_sliver, weight: 1}
 
-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct0p79:
-  - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:0.79"}
-
-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct14p32:
-  - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:14.32"}
-
-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct31p24:
-  - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:31.24"}
-
-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct48p16:
-  - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:48.16"}
-
-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct65p08:
-  - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:65.08"}
-
-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct82:
-  - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:82"}
-
-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct98p92:
-  - {reward: *gems_electro_geo_hydro_sliver, count: "2+1:98.92"}
-
-weekly_gems_electro_geo_hydro_sliver_roll_3plus1pct15p84:
-  - {reward: *gems_electro_geo_hydro_sliver, count: "3+1:15.84"}
-
 gems_electro_geo_hydro_fragment: &gems_electro_geo_hydro_fragment
   - {reward: genshin.material.varunada_lazurite_fragment, weight: 1}
   - {reward: genshin.material.vajrada_amethyst_fragment, weight: 1}
@@ -1434,30 +1357,6 @@ weekly_talent_materials_dragon_lords_gems_electro_geo_hydro_chunk_fragment_gemst
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
   - {reward: *gems_electro_geo_hydro_chunk_fragment_gemstone_sliver, count: "5+1:13.72"}
 
-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct0p79:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:0.79"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct14p32:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:14.32"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct31p24:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:31.24"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct48p16:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:48.16"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct65p08:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:65.08"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct82:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:82"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct98p92:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "2+1:98.92"}
-
-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_3plus1pct15p84:
-  - {reward: *gems_anemo_geo_pyro_sliver, count: "3+1:15.84"}
-
 weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_sliver_weight_7139:
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
@@ -1613,30 +1512,6 @@ gems_electro_geo_pyro_sliver: &gems_electro_geo_pyro_sliver
   - {reward: genshin.material.agnidus_agate_sliver, weight: 1}
   - {reward: genshin.material.vajrada_amethyst_sliver, weight: 1}
   - {reward: genshin.material.prithiva_topaz_sliver, weight: 1}
-
-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct0p79:
-  - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:0.79"}
-
-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct14p32:
-  - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:14.32"}
-
-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct31p24:
-  - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:31.24"}
-
-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct48p16:
-  - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:48.16"}
-
-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct65p08:
-  - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:65.08"}
-
-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct82:
-  - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:82"}
-
-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct98p92:
-  - {reward: *gems_electro_geo_pyro_sliver, count: "2+1:98.92"}
-
-weekly_gems_electro_geo_pyro_sliver_roll_3plus1pct15p84:
-  - {reward: *gems_electro_geo_pyro_sliver, count: "3+1:15.84"}
 
 gems_electro_geo_pyro_fragment: &gems_electro_geo_pyro_fragment
   - {reward: genshin.material.agnidus_agate_fragment, weight: 1}
@@ -1808,30 +1683,6 @@ weekly_talent_materials_dragon_lords_gems_electro_geo_pyro_chunk_fragment_gemsto
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
   - {reward: *gems_electro_geo_pyro_chunk_fragment_gemstone_sliver, count: "5+1:13.72"}
 
-weekly_gems_electro_sliver_roll_2plus1pct0p79:
-  - {reward: genshin.material.vajrada_amethyst_sliver, count: "2+1:0.79"}
-
-weekly_gems_electro_sliver_roll_2plus1pct14p32:
-  - {reward: genshin.material.vajrada_amethyst_sliver, count: "2+1:14.32"}
-
-weekly_gems_electro_sliver_roll_2plus1pct31p24:
-  - {reward: genshin.material.vajrada_amethyst_sliver, count: "2+1:31.24"}
-
-weekly_gems_electro_sliver_roll_2plus1pct48p16:
-  - {reward: genshin.material.vajrada_amethyst_sliver, count: "2+1:48.16"}
-
-weekly_gems_electro_sliver_roll_2plus1pct65p08:
-  - {reward: genshin.material.vajrada_amethyst_sliver, count: "2+1:65.08"}
-
-weekly_gems_electro_sliver_roll_2plus1pct82:
-  - {reward: genshin.material.vajrada_amethyst_sliver, count: "2+1:82"}
-
-weekly_gems_electro_sliver_roll_2plus1pct98p92:
-  - {reward: genshin.material.vajrada_amethyst_sliver, count: "2+1:98.92"}
-
-weekly_gems_electro_sliver_roll_3plus1pct15p84:
-  - {reward: genshin.material.vajrada_amethyst_sliver, count: "3+1:15.84"}
-
 weekly_gems_electro_fragment_vajrada_amethyst_sliver_weight_7139:
   - {reward: genshin.material.vajrada_amethyst_fragment, count: "1+1:2"}
   - reward:
@@ -1935,30 +1786,6 @@ weekly_talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god
   - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons, count: "2+1:40"}
   - {reward: genshin.material.vajrada_amethyst_fragment, count: "1+1:2"}
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_12779_3408_852_85, count: "5+1:13.72"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct0p79:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:0.79"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct14p32:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:14.32"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct31p24:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:31.24"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct48p16:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:48.16"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct65p08:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:65.08"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct82:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:82"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct98p92:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "2+1:98.92"}
-
-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_3plus1pct15p84:
-  - {reward: *gems_cryo_electro_hydro_sliver, count: "3+1:15.84"}
 
 weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_sliver_weight_7139:
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
@@ -2125,21 +1952,9 @@ world_frostnights_glory_roll_1plus1pct33p86:
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
 
-world_frostnights_glory_roll_1plus1pct42p89:
-  - {reward: genshin.material.frostnights_glory, count: "1+1:42.89"}
-
-world_frostnights_glory_roll_1plus1pct54p17:
-  - {reward: genshin.material.frostnights_glory, count: "1+1:54.17"}
-
 artifacts_instructor_5star_3_4substats_goblet_plume: &artifacts_instructor_5star_3_4substats_goblet_plume
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 3}, weight: 33}
   - {reward: genshin.artifact.instructor, properties: {slot: plume, rarity: 5, substats: 4}, weight: 17}
-
-world_frostnights_glory_roll_1plus1pct65p45:
-  - {reward: genshin.material.frostnights_glory, count: "1+1:65.45"}
-
-world_frostnights_glory_roll_1plus1pct76p73:
-  - {reward: genshin.material.frostnights_glory, count: "1+1:76.73"}
 
 world_frostnights_glory_roll_1plus1pct88p01:
   - {reward: genshin.material.frostnights_glory, count: "1+1:88.01"}
@@ -2164,15 +1979,6 @@ world_frostnights_glory_roll_1plus1pct69p41:
 artifacts_instructor_5star_0substats_goblet_plume: &artifacts_instructor_5star_0substats_goblet_plume
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 0}, weight: 33}
   - {reward: genshin.artifact.instructor, properties: {slot: plume, rarity: 5, substats: 0}, weight: 17}
-
-world_frostnights_glory_roll_1plus1pct78p03:
-  - {reward: genshin.material.frostnights_glory, count: "1+1:78.03"}
-
-world_frostnights_glory_roll_1plus1pct86p64:
-  - {reward: genshin.material.frostnights_glory, count: "1+1:86.64"}
-
-world_frostnights_glory_roll_1plus1pct95p26:
-  - {reward: genshin.material.frostnights_glory, count: "1+1:95.26"}
 
 world_frostnights_glory_roll_2plus1pct3p87:
   - {reward: genshin.material.frostnights_glory, count: "2+1:3.87"}
@@ -2228,18 +2034,6 @@ world_precision_kuuvahki_stamping_die_roll_1plus1pct33p86:
   - {reward: genshin.material.precision_kuuvahki_stamping_die, count: "1+1:33.86"}
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-
-world_precision_kuuvahki_stamping_die_roll_1plus1pct42p89:
-  - {reward: genshin.material.precision_kuuvahki_stamping_die, count: "1+1:42.89"}
-
-world_precision_kuuvahki_stamping_die_roll_1plus1pct54p17:
-  - {reward: genshin.material.precision_kuuvahki_stamping_die, count: "1+1:54.17"}
-
-world_precision_kuuvahki_stamping_die_roll_1plus1pct65p45:
-  - {reward: genshin.material.precision_kuuvahki_stamping_die, count: "1+1:65.45"}
-
-world_precision_kuuvahki_stamping_die_roll_1plus1pct76p73:
-  - {reward: genshin.material.precision_kuuvahki_stamping_die, count: "1+1:76.73"}
 
 world_precision_kuuvahki_stamping_die_roll_1plus1pct88p01:
   - {reward: genshin.material.precision_kuuvahki_stamping_die, count: "1+1:88.01"}
@@ -2408,18 +2202,6 @@ world_lightbearing_scale_feather_roll_1plus1pct33p86:
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
 
-world_lightbearing_scale_feather_roll_1plus1pct42p89:
-  - {reward: genshin.material.lightbearing_scale_feather, count: "1+1:42.89"}
-
-world_lightbearing_scale_feather_roll_1plus1pct54p17:
-  - {reward: genshin.material.lightbearing_scale_feather, count: "1+1:54.17"}
-
-world_lightbearing_scale_feather_roll_1plus1pct65p45:
-  - {reward: genshin.material.lightbearing_scale_feather, count: "1+1:65.45"}
-
-world_lightbearing_scale_feather_roll_1plus1pct76p73:
-  - {reward: genshin.material.lightbearing_scale_feather, count: "1+1:76.73"}
-
 world_lightbearing_scale_feather_roll_1plus1pct88p01:
   - {reward: genshin.material.lightbearing_scale_feather, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
@@ -2545,18 +2327,6 @@ world_prismatic_severed_tail_roll_1plus1pct33p86:
   - {reward: genshin.material.prismatic_severed_tail, count: "1+1:33.86"}
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-
-world_prismatic_severed_tail_roll_1plus1pct42p89:
-  - {reward: genshin.material.prismatic_severed_tail, count: "1+1:42.89"}
-
-world_prismatic_severed_tail_roll_1plus1pct54p17:
-  - {reward: genshin.material.prismatic_severed_tail, count: "1+1:54.17"}
-
-world_prismatic_severed_tail_roll_1plus1pct65p45:
-  - {reward: genshin.material.prismatic_severed_tail, count: "1+1:65.45"}
-
-world_prismatic_severed_tail_roll_1plus1pct76p73:
-  - {reward: genshin.material.prismatic_severed_tail, count: "1+1:76.73"}
 
 world_prismatic_severed_tail_roll_1plus1pct88p01:
   - {reward: genshin.material.prismatic_severed_tail, count: "1+1:88.01"}
@@ -2724,18 +2494,6 @@ world_plume_of_the_fallen_watcher_roll_1plus1pct33p86:
   - {reward: genshin.material.plume_of_the_fallen_watcher, count: "1+1:33.86"}
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-
-world_plume_of_the_fallen_watcher_roll_1plus1pct42p89:
-  - {reward: genshin.material.plume_of_the_fallen_watcher, count: "1+1:42.89"}
-
-world_plume_of_the_fallen_watcher_roll_1plus1pct54p17:
-  - {reward: genshin.material.plume_of_the_fallen_watcher, count: "1+1:54.17"}
-
-world_plume_of_the_fallen_watcher_roll_1plus1pct65p45:
-  - {reward: genshin.material.plume_of_the_fallen_watcher, count: "1+1:65.45"}
-
-world_plume_of_the_fallen_watcher_roll_1plus1pct76p73:
-  - {reward: genshin.material.plume_of_the_fallen_watcher, count: "1+1:76.73"}
 
 world_plume_of_the_fallen_watcher_roll_1plus1pct88p01:
   - {reward: genshin.material.plume_of_the_fallen_watcher, count: "1+1:88.01"}
@@ -2966,18 +2724,6 @@ world_emperors_resolution_roll_1plus1pct33p86:
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
 
-world_emperors_resolution_roll_1plus1pct42p89:
-  - {reward: genshin.material.emperors_resolution, count: "1+1:42.89"}
-
-world_emperors_resolution_roll_1plus1pct54p17:
-  - {reward: genshin.material.emperors_resolution, count: "1+1:54.17"}
-
-world_emperors_resolution_roll_1plus1pct65p45:
-  - {reward: genshin.material.emperors_resolution, count: "1+1:65.45"}
-
-world_emperors_resolution_roll_1plus1pct76p73:
-  - {reward: genshin.material.emperors_resolution, count: "1+1:76.73"}
-
 world_emperors_resolution_roll_1plus1pct88p01:
   - {reward: genshin.material.emperors_resolution, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
@@ -3145,18 +2891,6 @@ world_tourbillon_device_roll_1plus1pct33p86:
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
 
-world_tourbillon_device_roll_1plus1pct42p89:
-  - {reward: genshin.material.tourbillon_device, count: "1+1:42.89"}
-
-world_tourbillon_device_roll_1plus1pct54p17:
-  - {reward: genshin.material.tourbillon_device, count: "1+1:54.17"}
-
-world_tourbillon_device_roll_1plus1pct65p45:
-  - {reward: genshin.material.tourbillon_device, count: "1+1:65.45"}
-
-world_tourbillon_device_roll_1plus1pct76p73:
-  - {reward: genshin.material.tourbillon_device, count: "1+1:76.73"}
-
 world_tourbillon_device_roll_1plus1pct88p01:
   - {reward: genshin.material.tourbillon_device, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
@@ -3269,18 +3003,6 @@ world_fontemer_unihorn_roll_1plus1pct33p86:
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
 
-world_fontemer_unihorn_roll_1plus1pct42p89:
-  - {reward: genshin.material.fontemer_unihorn, count: "1+1:42.89"}
-
-world_fontemer_unihorn_roll_1plus1pct54p17:
-  - {reward: genshin.material.fontemer_unihorn, count: "1+1:54.17"}
-
-world_fontemer_unihorn_roll_1plus1pct65p45:
-  - {reward: genshin.material.fontemer_unihorn, count: "1+1:65.45"}
-
-world_fontemer_unihorn_roll_1plus1pct76p73:
-  - {reward: genshin.material.fontemer_unihorn, count: "1+1:76.73"}
-
 world_fontemer_unihorn_roll_1plus1pct88p01:
   - {reward: genshin.material.fontemer_unihorn, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
@@ -3392,18 +3114,6 @@ world_water_that_failed_to_transcend_roll_1plus1pct33p86:
   - {reward: genshin.material.water_that_failed_to_transcend, count: "1+1:33.86"}
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-
-world_water_that_failed_to_transcend_roll_1plus1pct42p89:
-  - {reward: genshin.material.water_that_failed_to_transcend, count: "1+1:42.89"}
-
-world_water_that_failed_to_transcend_roll_1plus1pct54p17:
-  - {reward: genshin.material.water_that_failed_to_transcend, count: "1+1:54.17"}
-
-world_water_that_failed_to_transcend_roll_1plus1pct65p45:
-  - {reward: genshin.material.water_that_failed_to_transcend, count: "1+1:65.45"}
-
-world_water_that_failed_to_transcend_roll_1plus1pct76p73:
-  - {reward: genshin.material.water_that_failed_to_transcend, count: "1+1:76.73"}
 
 world_water_that_failed_to_transcend_roll_1plus1pct88p01:
   - {reward: genshin.material.water_that_failed_to_transcend, count: "1+1:88.01"}
@@ -3572,18 +3282,6 @@ world_fragment_of_a_golden_melody_roll_1plus1pct33p86:
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
 
-world_fragment_of_a_golden_melody_roll_1plus1pct42p89:
-  - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:42.89"}
-
-world_fragment_of_a_golden_melody_roll_1plus1pct54p17:
-  - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:54.17"}
-
-world_fragment_of_a_golden_melody_roll_1plus1pct65p45:
-  - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:65.45"}
-
-world_fragment_of_a_golden_melody_roll_1plus1pct76p73:
-  - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:76.73"}
-
 world_fragment_of_a_golden_melody_roll_1plus1pct88p01:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
@@ -3603,15 +3301,6 @@ world_fragment_of_a_golden_melody_roll_1plus1pct69p41:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-
-world_fragment_of_a_golden_melody_roll_1plus1pct78p03:
-  - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:78.03"}
-
-world_fragment_of_a_golden_melody_roll_1plus1pct86p64:
-  - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:86.64"}
-
-world_fragment_of_a_golden_melody_roll_1plus1pct95p26:
-  - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:95.26"}
 
 world_fragment_of_a_golden_melody_roll_2plus1pct3p87:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "2+1:3.87"}
@@ -3667,18 +3356,6 @@ world_overripe_flamegranate_roll_1plus1pct33p86:
   - {reward: genshin.material.overripe_flamegranate, count: "1+1:33.86"}
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-
-world_overripe_flamegranate_roll_1plus1pct42p89:
-  - {reward: genshin.material.overripe_flamegranate, count: "1+1:42.89"}
-
-world_overripe_flamegranate_roll_1plus1pct54p17:
-  - {reward: genshin.material.overripe_flamegranate, count: "1+1:54.17"}
-
-world_overripe_flamegranate_roll_1plus1pct65p45:
-  - {reward: genshin.material.overripe_flamegranate, count: "1+1:65.45"}
-
-world_overripe_flamegranate_roll_1plus1pct76p73:
-  - {reward: genshin.material.overripe_flamegranate, count: "1+1:76.73"}
 
 world_overripe_flamegranate_roll_1plus1pct88p01:
   - {reward: genshin.material.overripe_flamegranate, count: "1+1:88.01"}
@@ -3837,18 +3514,6 @@ world_mark_of_the_binding_blessing_roll_1plus1pct33p86:
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
 
-world_mark_of_the_binding_blessing_roll_1plus1pct42p89:
-  - {reward: genshin.material.mark_of_the_binding_blessing, count: "1+1:42.89"}
-
-world_mark_of_the_binding_blessing_roll_1plus1pct54p17:
-  - {reward: genshin.material.mark_of_the_binding_blessing, count: "1+1:54.17"}
-
-world_mark_of_the_binding_blessing_roll_1plus1pct65p45:
-  - {reward: genshin.material.mark_of_the_binding_blessing, count: "1+1:65.45"}
-
-world_mark_of_the_binding_blessing_roll_1plus1pct76p73:
-  - {reward: genshin.material.mark_of_the_binding_blessing, count: "1+1:76.73"}
-
 world_mark_of_the_binding_blessing_roll_1plus1pct88p01:
   - {reward: genshin.material.mark_of_the_binding_blessing, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
@@ -3960,18 +3625,6 @@ world_gold_inscribed_secret_source_core_roll_1plus1pct33p86:
   - {reward: genshin.material.gold_inscribed_secret_source_core, count: "1+1:33.86"}
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-
-world_gold_inscribed_secret_source_core_roll_1plus1pct42p89:
-  - {reward: genshin.material.gold_inscribed_secret_source_core, count: "1+1:42.89"}
-
-world_gold_inscribed_secret_source_core_roll_1plus1pct54p17:
-  - {reward: genshin.material.gold_inscribed_secret_source_core, count: "1+1:54.17"}
-
-world_gold_inscribed_secret_source_core_roll_1plus1pct65p45:
-  - {reward: genshin.material.gold_inscribed_secret_source_core, count: "1+1:65.45"}
-
-world_gold_inscribed_secret_source_core_roll_1plus1pct76p73:
-  - {reward: genshin.material.gold_inscribed_secret_source_core, count: "1+1:76.73"}
 
 world_gold_inscribed_secret_source_core_roll_1plus1pct88p01:
   - {reward: genshin.material.gold_inscribed_secret_source_core, count: "1+1:88.01"}
@@ -4085,18 +3738,6 @@ world_remnant_of_the_dreadwing_roll_1plus1pct33p86:
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
 
-world_remnant_of_the_dreadwing_roll_1plus1pct42p89:
-  - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:42.89"}
-
-world_remnant_of_the_dreadwing_roll_1plus1pct54p17:
-  - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:54.17"}
-
-world_remnant_of_the_dreadwing_roll_1plus1pct65p45:
-  - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:65.45"}
-
-world_remnant_of_the_dreadwing_roll_1plus1pct76p73:
-  - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:76.73"}
-
 world_remnant_of_the_dreadwing_roll_1plus1pct88p01:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
@@ -4116,15 +3757,6 @@ world_remnant_of_the_dreadwing_roll_1plus1pct69p41:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-
-world_remnant_of_the_dreadwing_roll_1plus1pct78p03:
-  - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:78.03"}
-
-world_remnant_of_the_dreadwing_roll_1plus1pct86p64:
-  - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:86.64"}
-
-world_remnant_of_the_dreadwing_roll_1plus1pct95p26:
-  - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:95.26"}
 
 world_remnant_of_the_dreadwing_roll_2plus1pct3p87:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "2+1:3.87"}
@@ -4180,18 +3812,6 @@ world_talisman_of_the_enigmatic_land_roll_1plus1pct33p86:
   - {reward: genshin.material.talisman_of_the_enigmatic_land, count: "1+1:33.86"}
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-
-world_talisman_of_the_enigmatic_land_roll_1plus1pct42p89:
-  - {reward: genshin.material.talisman_of_the_enigmatic_land, count: "1+1:42.89"}
-
-world_talisman_of_the_enigmatic_land_roll_1plus1pct54p17:
-  - {reward: genshin.material.talisman_of_the_enigmatic_land, count: "1+1:54.17"}
-
-world_talisman_of_the_enigmatic_land_roll_1plus1pct65p45:
-  - {reward: genshin.material.talisman_of_the_enigmatic_land, count: "1+1:65.45"}
-
-world_talisman_of_the_enigmatic_land_roll_1plus1pct76p73:
-  - {reward: genshin.material.talisman_of_the_enigmatic_land, count: "1+1:76.73"}
 
 world_talisman_of_the_enigmatic_land_roll_1plus1pct88p01:
   - {reward: genshin.material.talisman_of_the_enigmatic_land, count: "1+1:88.01"}
@@ -4350,18 +3970,6 @@ world_sparkless_statue_core_roll_1plus1pct33p86:
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
 
-world_sparkless_statue_core_roll_1plus1pct42p89:
-  - {reward: genshin.material.sparkless_statue_core, count: "1+1:42.89"}
-
-world_sparkless_statue_core_roll_1plus1pct54p17:
-  - {reward: genshin.material.sparkless_statue_core, count: "1+1:54.17"}
-
-world_sparkless_statue_core_roll_1plus1pct65p45:
-  - {reward: genshin.material.sparkless_statue_core, count: "1+1:65.45"}
-
-world_sparkless_statue_core_roll_1plus1pct76p73:
-  - {reward: genshin.material.sparkless_statue_core, count: "1+1:76.73"}
-
 world_sparkless_statue_core_roll_1plus1pct88p01:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
@@ -4381,15 +3989,6 @@ world_sparkless_statue_core_roll_1plus1pct69p41:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-
-world_sparkless_statue_core_roll_1plus1pct78p03:
-  - {reward: genshin.material.sparkless_statue_core, count: "1+1:78.03"}
-
-world_sparkless_statue_core_roll_1plus1pct86p64:
-  - {reward: genshin.material.sparkless_statue_core, count: "1+1:86.64"}
-
-world_sparkless_statue_core_roll_1plus1pct95p26:
-  - {reward: genshin.material.sparkless_statue_core, count: "1+1:95.26"}
 
 world_sparkless_statue_core_roll_2plus1pct3p87:
   - {reward: genshin.material.sparkless_statue_core, count: "2+1:3.87"}
@@ -4445,18 +4044,6 @@ world_secret_source_airflow_accumulator_roll_1plus1pct33p86:
   - {reward: genshin.material.secret_source_airflow_accumulator, count: "1+1:33.86"}
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-
-world_secret_source_airflow_accumulator_roll_1plus1pct42p89:
-  - {reward: genshin.material.secret_source_airflow_accumulator, count: "1+1:42.89"}
-
-world_secret_source_airflow_accumulator_roll_1plus1pct54p17:
-  - {reward: genshin.material.secret_source_airflow_accumulator, count: "1+1:54.17"}
-
-world_secret_source_airflow_accumulator_roll_1plus1pct65p45:
-  - {reward: genshin.material.secret_source_airflow_accumulator, count: "1+1:65.45"}
-
-world_secret_source_airflow_accumulator_roll_1plus1pct76p73:
-  - {reward: genshin.material.secret_source_airflow_accumulator, count: "1+1:76.73"}
 
 world_secret_source_airflow_accumulator_roll_1plus1pct88p01:
   - {reward: genshin.material.secret_source_airflow_accumulator, count: "1+1:88.01"}
@@ -4755,18 +4342,6 @@ world_cloudseam_scale_roll_1plus1pct33p86:
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
 
-world_cloudseam_scale_roll_1plus1pct42p89:
-  - {reward: genshin.material.cloudseam_scale, count: "1+1:42.89"}
-
-world_cloudseam_scale_roll_1plus1pct54p17:
-  - {reward: genshin.material.cloudseam_scale, count: "1+1:54.17"}
-
-world_cloudseam_scale_roll_1plus1pct65p45:
-  - {reward: genshin.material.cloudseam_scale, count: "1+1:65.45"}
-
-world_cloudseam_scale_roll_1plus1pct76p73:
-  - {reward: genshin.material.cloudseam_scale, count: "1+1:76.73"}
-
 world_cloudseam_scale_roll_1plus1pct88p01:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
@@ -4786,15 +4361,6 @@ world_cloudseam_scale_roll_1plus1pct69p41:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-
-world_cloudseam_scale_roll_1plus1pct78p03:
-  - {reward: genshin.material.cloudseam_scale, count: "1+1:78.03"}
-
-world_cloudseam_scale_roll_1plus1pct86p64:
-  - {reward: genshin.material.cloudseam_scale, count: "1+1:86.64"}
-
-world_cloudseam_scale_roll_1plus1pct95p26:
-  - {reward: genshin.material.cloudseam_scale, count: "1+1:95.26"}
 
 world_cloudseam_scale_roll_2plus1pct3p87:
   - {reward: genshin.material.cloudseam_scale, count: "2+1:3.87"}
@@ -4851,18 +4417,6 @@ world_ensnaring_gaze_roll_1plus1pct33p86:
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
 
-world_ensnaring_gaze_roll_1plus1pct42p89:
-  - {reward: genshin.material.ensnaring_gaze, count: "1+1:42.89"}
-
-world_ensnaring_gaze_roll_1plus1pct54p17:
-  - {reward: genshin.material.ensnaring_gaze, count: "1+1:54.17"}
-
-world_ensnaring_gaze_roll_1plus1pct65p45:
-  - {reward: genshin.material.ensnaring_gaze, count: "1+1:65.45"}
-
-world_ensnaring_gaze_roll_1plus1pct76p73:
-  - {reward: genshin.material.ensnaring_gaze, count: "1+1:76.73"}
-
 world_ensnaring_gaze_roll_1plus1pct88p01:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
@@ -4882,15 +4436,6 @@ world_ensnaring_gaze_roll_1plus1pct69p41:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-
-world_ensnaring_gaze_roll_1plus1pct78p03:
-  - {reward: genshin.material.ensnaring_gaze, count: "1+1:78.03"}
-
-world_ensnaring_gaze_roll_1plus1pct86p64:
-  - {reward: genshin.material.ensnaring_gaze, count: "1+1:86.64"}
-
-world_ensnaring_gaze_roll_1plus1pct95p26:
-  - {reward: genshin.material.ensnaring_gaze, count: "1+1:95.26"}
 
 world_ensnaring_gaze_roll_2plus1pct3p87:
   - {reward: genshin.material.ensnaring_gaze, count: "2+1:3.87"}
@@ -4946,18 +4491,6 @@ world_unscorched_blossom_branch_roll_1plus1pct33p86:
   - {reward: genshin.material.unscorched_blossom_branch, count: "1+1:33.86"}
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-
-world_unscorched_blossom_branch_roll_1plus1pct42p89:
-  - {reward: genshin.material.unscorched_blossom_branch, count: "1+1:42.89"}
-
-world_unscorched_blossom_branch_roll_1plus1pct54p17:
-  - {reward: genshin.material.unscorched_blossom_branch, count: "1+1:54.17"}
-
-world_unscorched_blossom_branch_roll_1plus1pct65p45:
-  - {reward: genshin.material.unscorched_blossom_branch, count: "1+1:65.45"}
-
-world_unscorched_blossom_branch_roll_1plus1pct76p73:
-  - {reward: genshin.material.unscorched_blossom_branch, count: "1+1:76.73"}
 
 world_unscorched_blossom_branch_roll_1plus1pct88p01:
   - {reward: genshin.material.unscorched_blossom_branch, count: "1+1:88.01"}
@@ -5071,18 +4604,6 @@ world_severed_tail_of_the_sky_roamer_roll_1plus1pct33p86:
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
 
-world_severed_tail_of_the_sky_roamer_roll_1plus1pct42p89:
-  - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:42.89"}
-
-world_severed_tail_of_the_sky_roamer_roll_1plus1pct54p17:
-  - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:54.17"}
-
-world_severed_tail_of_the_sky_roamer_roll_1plus1pct65p45:
-  - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:65.45"}
-
-world_severed_tail_of_the_sky_roamer_roll_1plus1pct76p73:
-  - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:76.73"}
-
 world_severed_tail_of_the_sky_roamer_roll_1plus1pct88p01:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
@@ -5102,15 +4623,6 @@ world_severed_tail_of_the_sky_roamer_roll_1plus1pct69p41:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-
-world_severed_tail_of_the_sky_roamer_roll_1plus1pct78p03:
-  - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:78.03"}
-
-world_severed_tail_of_the_sky_roamer_roll_1plus1pct86p64:
-  - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:86.64"}
-
-world_severed_tail_of_the_sky_roamer_roll_1plus1pct95p26:
-  - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:95.26"}
 
 world_severed_tail_of_the_sky_roamer_roll_2plus1pct3p87:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "2+1:3.87"}
@@ -9114,15 +8626,6 @@ weekly_high_artifacts:
   - {reward: *artifacts_gladiators_wanderers_5star, count: "1+1:23"}
 
 # Shared weekly artifact distributions, named by the reward mix.
-weekly_artifacts_sparse:
-  - {reward: *artifacts_berserker_instructor_exile_3star, count: "1:82"}
-
-weekly_artifacts_light:
-  - {reward: *artifacts_berserker_instructor_exile_3star, count: "2+1:46"}
-
-weekly_artifacts_growing:
-  - {reward: *artifacts_berserker_instructor_exile_3star, count: "5+1:41.2"}
-
 weekly_artifacts_mixed:
   - {reward: *artifacts_berserker_instructor_exile_3star, count: "7+1:38"}
   - {reward: *artifacts_berserker_instructor_exile_4star, count: "1:82"}
@@ -9142,18 +8645,6 @@ weekly_artifacts_rare:
   - {reward: *artifacts_gladiators_wanderers_5star, count: "1:82"}
 
 # Shared five-star Gladiator/Wanderer drops; chance remains in Loot.
-world_five_star_artifacts_low:
-  - {reward: *artifacts_gladiators_wanderers_5star, count: "1:21"}
-
-world_five_star_artifacts_medium:
-  - {reward: *artifacts_gladiators_wanderers_5star, count: "1:42"}
-
-world_five_star_artifacts_high:
-  - {reward: *artifacts_gladiators_wanderers_5star, count: "1:63"}
-
-world_five_star_artifacts_guaranteed:
-  - {reward: *artifacts_gladiators_wanderers_5star}
-
 # Fixed sliver and fragment grants; the gemstone types describe their contents.
 gems_geo_hydro_basic:
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}

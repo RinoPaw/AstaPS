@@ -9738,8 +9738,6 @@ world_frostnight_scion_level_93: &world_frostnight_scion_level_93
 world_frostnight_scion_level_100: &world_frostnight_scion_level_100
   - {reward: genshin.material.frostnights_glory, count: "2+1:55.56"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
@@ -9748,8 +9746,6 @@ world_frostnight_scion_level_100: &world_frostnight_scion_level_100
 world_frostnight_scion_level_105: &world_frostnight_scion_level_105
   - {reward: genshin.material.frostnights_glory, count: "2+1:55.56"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
@@ -9758,8 +9754,6 @@ world_frostnight_scion_level_105: &world_frostnight_scion_level_105
 world_frostnight_scion_level_110: &world_frostnight_scion_level_110
   - {reward: genshin.material.frostnights_glory, count: "2+1:55.56"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
@@ -9768,8 +9762,6 @@ world_frostnight_scion_level_110: &world_frostnight_scion_level_110
 world_frostnight_scion_level_115: &world_frostnight_scion_level_115
   - {reward: genshin.material.frostnights_glory, count: "2+1:55.56"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
@@ -9778,8 +9770,6 @@ world_frostnight_scion_level_115: &world_frostnight_scion_level_115
 world_frostnight_scion_level_120: &world_frostnight_scion_level_120
   - {reward: genshin.material.frostnights_glory, count: "2+1:55.56"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
@@ -10014,40 +10004,30 @@ world_knuckle_duck_level_100: &world_knuckle_duck_level_100
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_knuckle_duck_level_105: &world_knuckle_duck_level_105
   - {reward: genshin.material.precision_kuuvahki_stamping_die, count: "3+1:25"}
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_knuckle_duck_level_110: &world_knuckle_duck_level_110
   - {reward: genshin.material.precision_kuuvahki_stamping_die, count: "3+1:25"}
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_knuckle_duck_level_115: &world_knuckle_duck_level_115
   - {reward: genshin.material.precision_kuuvahki_stamping_die, count: "3+1:25"}
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_knuckle_duck_level_120: &world_knuckle_duck_level_120
   - {reward: genshin.material.precision_kuuvahki_stamping_die, count: "3+1:25"}
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_lightbearing_lunar_moth_level_1: &world_lightbearing_lunar_moth_level_1
   - {reward: genshin.material.lightbearing_scale_feather, count: "1+1:33.86"}
@@ -10228,40 +10208,30 @@ world_lightbearing_lunar_moth_level_100: &world_lightbearing_lunar_moth_level_10
   - {reward: *world_lightbearing_lunar_moth_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_lightbearing_lunar_moth_level_30_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_lightbearing_lunar_moth_level_105: &world_lightbearing_lunar_moth_level_105
   - {reward: genshin.material.lightbearing_scale_feather, count: "3+1:25"}
   - {reward: *world_lightbearing_lunar_moth_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_lightbearing_lunar_moth_level_30_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_lightbearing_lunar_moth_level_110: &world_lightbearing_lunar_moth_level_110
   - {reward: genshin.material.lightbearing_scale_feather, count: "3+1:25"}
   - {reward: *world_lightbearing_lunar_moth_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_lightbearing_lunar_moth_level_30_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_lightbearing_lunar_moth_level_115: &world_lightbearing_lunar_moth_level_115
   - {reward: genshin.material.lightbearing_scale_feather, count: "3+1:25"}
   - {reward: *world_lightbearing_lunar_moth_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_lightbearing_lunar_moth_level_30_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_lightbearing_lunar_moth_level_120: &world_lightbearing_lunar_moth_level_120
   - {reward: genshin.material.lightbearing_scale_feather, count: "3+1:25"}
   - {reward: *world_lightbearing_lunar_moth_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_lightbearing_lunar_moth_level_30_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_radiant_beast_level_1: &world_radiant_beast_level_1
   - {reward: genshin.material.prismatic_severed_tail, count: "1+1:33.86"}
@@ -10492,40 +10462,30 @@ world_radiant_beast_level_100: &world_radiant_beast_level_100
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_radiant_beast_level_105: &world_radiant_beast_level_105
   - {reward: genshin.material.prismatic_severed_tail, count: "3+1:25"}
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_radiant_beast_level_110: &world_radiant_beast_level_110
   - {reward: genshin.material.prismatic_severed_tail, count: "3+1:25"}
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_radiant_beast_level_115: &world_radiant_beast_level_115
   - {reward: genshin.material.prismatic_severed_tail, count: "3+1:25"}
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_radiant_beast_level_120: &world_radiant_beast_level_120
   - {reward: genshin.material.prismatic_severed_tail, count: "3+1:25"}
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_primal_watcher_level_1: &world_primal_watcher_level_1
   - {reward: genshin.material.plume_of_the_fallen_watcher, count: "1+1:33.86"}
@@ -10692,40 +10652,30 @@ world_primal_watcher_level_100: &world_primal_watcher_level_100
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_primal_watcher_level_105: &world_primal_watcher_level_105
   - {reward: genshin.material.plume_of_the_fallen_watcher, count: "3+1:25"}
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_primal_watcher_level_110: &world_primal_watcher_level_110
   - {reward: genshin.material.plume_of_the_fallen_watcher, count: "3+1:25"}
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_primal_watcher_level_115: &world_primal_watcher_level_115
   - {reward: genshin.material.plume_of_the_fallen_watcher, count: "3+1:25"}
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_primal_watcher_level_120: &world_primal_watcher_level_120
   - {reward: genshin.material.plume_of_the_fallen_watcher, count: "3+1:25"}
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_icewind_suite_level_1: &world_icewind_suite_level_1
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:33.86"}
@@ -10965,8 +10915,6 @@ world_icewind_suite_level_100: &world_icewind_suite_level_100
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "3+1:25"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
   - {reward: genshin.material.shivada_jade_sliver, count: "9"}
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
@@ -10976,8 +10924,6 @@ world_icewind_suite_level_105: &world_icewind_suite_level_105
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "3+1:25"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
   - {reward: genshin.material.shivada_jade_sliver, count: "9"}
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
@@ -10987,8 +10933,6 @@ world_icewind_suite_level_110: &world_icewind_suite_level_110
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "3+1:25"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
   - {reward: genshin.material.shivada_jade_sliver, count: "9"}
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
@@ -10998,8 +10942,6 @@ world_icewind_suite_level_115: &world_icewind_suite_level_115
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "3+1:25"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
   - {reward: genshin.material.shivada_jade_sliver, count: "9"}
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
@@ -11009,8 +10951,6 @@ world_icewind_suite_level_120: &world_icewind_suite_level_120
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "3+1:25"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
   - {reward: genshin.material.shivada_jade_sliver, count: "9"}
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
@@ -11245,40 +11185,30 @@ world_emperor_of_fire_and_iron_level_100: &world_emperor_of_fire_and_iron_level_
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_emperor_of_fire_and_iron_level_105: &world_emperor_of_fire_and_iron_level_105
   - {reward: genshin.material.emperors_resolution, count: "3+1:25"}
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_emperor_of_fire_and_iron_level_110: &world_emperor_of_fire_and_iron_level_110
   - {reward: genshin.material.emperors_resolution, count: "3+1:25"}
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_emperor_of_fire_and_iron_level_115: &world_emperor_of_fire_and_iron_level_115
   - {reward: genshin.material.emperors_resolution, count: "3+1:25"}
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_emperor_of_fire_and_iron_level_120: &world_emperor_of_fire_and_iron_level_120
   - {reward: genshin.material.emperors_resolution, count: "3+1:25"}
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_experimental_field_generator_level_1: &world_experimental_field_generator_level_1
   - {reward: genshin.material.tourbillon_device, count: "1+1:33.86"}
@@ -11445,40 +11375,30 @@ world_experimental_field_generator_level_100: &world_experimental_field_generato
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_experimental_field_generator_level_105: &world_experimental_field_generator_level_105
   - {reward: genshin.material.tourbillon_device, count: "3+1:25"}
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_experimental_field_generator_level_110: &world_experimental_field_generator_level_110
   - {reward: genshin.material.tourbillon_device, count: "3+1:25"}
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_experimental_field_generator_level_115: &world_experimental_field_generator_level_115
   - {reward: genshin.material.tourbillon_device, count: "3+1:25"}
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_experimental_field_generator_level_120: &world_experimental_field_generator_level_120
   - {reward: genshin.material.tourbillon_device, count: "3+1:25"}
   - {reward: *world_radiant_beast_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_radiant_beast_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_millennial_pearl_seahorse_level_1: &world_millennial_pearl_seahorse_level_1
   - {reward: genshin.material.fontemer_unihorn, count: "1+1:33.86"}
@@ -11645,40 +11565,30 @@ world_millennial_pearl_seahorse_level_100: &world_millennial_pearl_seahorse_leve
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_millennial_pearl_seahorse_level_105: &world_millennial_pearl_seahorse_level_105
   - {reward: genshin.material.fontemer_unihorn, count: "3+1:25"}
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_millennial_pearl_seahorse_level_110: &world_millennial_pearl_seahorse_level_110
   - {reward: genshin.material.fontemer_unihorn, count: "3+1:25"}
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_millennial_pearl_seahorse_level_115: &world_millennial_pearl_seahorse_level_115
   - {reward: genshin.material.fontemer_unihorn, count: "3+1:25"}
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_millennial_pearl_seahorse_level_120: &world_millennial_pearl_seahorse_level_120
   - {reward: genshin.material.fontemer_unihorn, count: "3+1:25"}
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_hydro_tulpa_level_1: &world_hydro_tulpa_level_1
   - {reward: genshin.material.water_that_failed_to_transcend, count: "1+1:33.86"}
@@ -11909,40 +11819,30 @@ world_hydro_tulpa_level_100: &world_hydro_tulpa_level_100
   - {reward: *world_hydro_tulpa_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_hydro_tulpa_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_hydro_tulpa_level_105: &world_hydro_tulpa_level_105
   - {reward: genshin.material.water_that_failed_to_transcend, count: "3+1:25"}
   - {reward: *world_hydro_tulpa_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_hydro_tulpa_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_hydro_tulpa_level_110: &world_hydro_tulpa_level_110
   - {reward: genshin.material.water_that_failed_to_transcend, count: "3+1:25"}
   - {reward: *world_hydro_tulpa_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_hydro_tulpa_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_hydro_tulpa_level_115: &world_hydro_tulpa_level_115
   - {reward: genshin.material.water_that_failed_to_transcend, count: "3+1:25"}
   - {reward: *world_hydro_tulpa_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_hydro_tulpa_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_hydro_tulpa_level_120: &world_hydro_tulpa_level_120
   - {reward: genshin.material.water_that_failed_to_transcend, count: "3+1:25"}
   - {reward: *world_hydro_tulpa_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_hydro_tulpa_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_legatus_golem_level_1: &world_legatus_golem_level_1
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:33.86"}
@@ -12161,8 +12061,6 @@ world_legatus_golem_level_93: &world_legatus_golem_level_93
 world_legatus_golem_level_100: &world_legatus_golem_level_100
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
   - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
@@ -12171,8 +12069,6 @@ world_legatus_golem_level_100: &world_legatus_golem_level_100
 world_legatus_golem_level_105: &world_legatus_golem_level_105
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
   - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
@@ -12181,8 +12077,6 @@ world_legatus_golem_level_105: &world_legatus_golem_level_105
 world_legatus_golem_level_110: &world_legatus_golem_level_110
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
   - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
@@ -12191,8 +12085,6 @@ world_legatus_golem_level_110: &world_legatus_golem_level_110
 world_legatus_golem_level_115: &world_legatus_golem_level_115
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
   - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
@@ -12201,8 +12093,6 @@ world_legatus_golem_level_115: &world_legatus_golem_level_115
 world_legatus_golem_level_120: &world_legatus_golem_level_120
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
   - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
@@ -12437,40 +12327,30 @@ world_gluttonous_yumkasaur_mountain_king_level_100: &world_gluttonous_yumkasaur_
   - {reward: *world_gluttonous_yumkasaur_mountain_king_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_gluttonous_yumkasaur_mountain_king_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_gluttonous_yumkasaur_mountain_king_level_105: &world_gluttonous_yumkasaur_mountain_king_level_105
   - {reward: genshin.material.overripe_flamegranate, count: "3+1:25"}
   - {reward: *world_gluttonous_yumkasaur_mountain_king_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_gluttonous_yumkasaur_mountain_king_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_gluttonous_yumkasaur_mountain_king_level_110: &world_gluttonous_yumkasaur_mountain_king_level_110
   - {reward: genshin.material.overripe_flamegranate, count: "3+1:25"}
   - {reward: *world_gluttonous_yumkasaur_mountain_king_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_gluttonous_yumkasaur_mountain_king_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_gluttonous_yumkasaur_mountain_king_level_115: &world_gluttonous_yumkasaur_mountain_king_level_115
   - {reward: genshin.material.overripe_flamegranate, count: "3+1:25"}
   - {reward: *world_gluttonous_yumkasaur_mountain_king_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_gluttonous_yumkasaur_mountain_king_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_gluttonous_yumkasaur_mountain_king_level_120: &world_gluttonous_yumkasaur_mountain_king_level_120
   - {reward: genshin.material.overripe_flamegranate, count: "3+1:25"}
   - {reward: *world_gluttonous_yumkasaur_mountain_king_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_gluttonous_yumkasaur_mountain_king_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_goldflame_qucusaure_tyrant_level_1: &world_goldflame_qucusaure_tyrant_level_1
   - {reward: genshin.material.mark_of_the_binding_blessing, count: "1+1:33.86"}
@@ -12637,40 +12517,30 @@ world_goldflame_qucusaure_tyrant_level_100: &world_goldflame_qucusaure_tyrant_le
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_goldflame_qucusaure_tyrant_level_105: &world_goldflame_qucusaure_tyrant_level_105
   - {reward: genshin.material.mark_of_the_binding_blessing, count: "3+1:25"}
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_goldflame_qucusaure_tyrant_level_110: &world_goldflame_qucusaure_tyrant_level_110
   - {reward: genshin.material.mark_of_the_binding_blessing, count: "3+1:25"}
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_goldflame_qucusaure_tyrant_level_115: &world_goldflame_qucusaure_tyrant_level_115
   - {reward: genshin.material.mark_of_the_binding_blessing, count: "3+1:25"}
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_goldflame_qucusaure_tyrant_level_120: &world_goldflame_qucusaure_tyrant_level_120
   - {reward: genshin.material.mark_of_the_binding_blessing, count: "3+1:25"}
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_secret_source_automaton_configuration_device_level_1: &world_secret_source_automaton_configuration_device_level_1
   - {reward: genshin.material.gold_inscribed_secret_source_core, count: "1+1:33.86"}
@@ -12837,40 +12707,30 @@ world_secret_source_automaton_configuration_device_level_100: &world_secret_sour
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_secret_source_automaton_configuration_device_level_105: &world_secret_source_automaton_configuration_device_level_105
   - {reward: genshin.material.gold_inscribed_secret_source_core, count: "3+1:25"}
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_secret_source_automaton_configuration_device_level_110: &world_secret_source_automaton_configuration_device_level_110
   - {reward: genshin.material.gold_inscribed_secret_source_core, count: "3+1:25"}
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_secret_source_automaton_configuration_device_level_115: &world_secret_source_automaton_configuration_device_level_115
   - {reward: genshin.material.gold_inscribed_secret_source_core, count: "3+1:25"}
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_secret_source_automaton_configuration_device_level_120: &world_secret_source_automaton_configuration_device_level_120
   - {reward: genshin.material.gold_inscribed_secret_source_core, count: "3+1:25"}
   - {reward: *world_knuckle_duck_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_knuckle_duck_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_lord_of_the_deep_dreadwing_level_1: &world_lord_of_the_deep_dreadwing_level_1
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:33.86"}
@@ -13049,40 +12909,30 @@ world_lord_of_the_deep_dreadwing_level_93: &world_lord_of_the_deep_dreadwing_lev
 world_lord_of_the_deep_dreadwing_level_100: &world_lord_of_the_deep_dreadwing_level_100
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_lord_of_the_deep_dreadwing_level_105: &world_lord_of_the_deep_dreadwing_level_105
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_lord_of_the_deep_dreadwing_level_110: &world_lord_of_the_deep_dreadwing_level_110
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_lord_of_the_deep_dreadwing_level_115: &world_lord_of_the_deep_dreadwing_level_115
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_lord_of_the_deep_dreadwing_level_120: &world_lord_of_the_deep_dreadwing_level_120
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
@@ -13315,40 +13165,30 @@ world_holawaqa_ngoubou_level_100: &world_holawaqa_ngoubou_level_100
   - {reward: *world_holawaqa_ngoubou_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_holawaqa_ngoubou_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_holawaqa_ngoubou_level_105: &world_holawaqa_ngoubou_level_105
   - {reward: genshin.material.talisman_of_the_enigmatic_land, count: "3+1:25"}
   - {reward: *world_holawaqa_ngoubou_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_holawaqa_ngoubou_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_holawaqa_ngoubou_level_110: &world_holawaqa_ngoubou_level_110
   - {reward: genshin.material.talisman_of_the_enigmatic_land, count: "3+1:25"}
   - {reward: *world_holawaqa_ngoubou_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_holawaqa_ngoubou_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_holawaqa_ngoubou_level_115: &world_holawaqa_ngoubou_level_115
   - {reward: genshin.material.talisman_of_the_enigmatic_land, count: "3+1:25"}
   - {reward: *world_holawaqa_ngoubou_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_holawaqa_ngoubou_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_holawaqa_ngoubou_level_120: &world_holawaqa_ngoubou_level_120
   - {reward: genshin.material.talisman_of_the_enigmatic_land, count: "3+1:25"}
   - {reward: *world_holawaqa_ngoubou_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_holawaqa_ngoubou_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_lava_dragon_statue_level_1: &world_lava_dragon_statue_level_1
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:33.86"}
@@ -13527,40 +13367,30 @@ world_lava_dragon_statue_level_93: &world_lava_dragon_statue_level_93
 world_lava_dragon_statue_level_100: &world_lava_dragon_statue_level_100
   - {reward: genshin.material.sparkless_statue_core, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_lava_dragon_statue_level_105: &world_lava_dragon_statue_level_105
   - {reward: genshin.material.sparkless_statue_core, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_lava_dragon_statue_level_110: &world_lava_dragon_statue_level_110
   - {reward: genshin.material.sparkless_statue_core, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_lava_dragon_statue_level_115: &world_lava_dragon_statue_level_115
   - {reward: genshin.material.sparkless_statue_core, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_lava_dragon_statue_level_120: &world_lava_dragon_statue_level_120
   - {reward: genshin.material.sparkless_statue_core, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
@@ -13729,40 +13559,30 @@ world_secret_source_automaton_overseer_level_100: &world_secret_source_automaton
   - {reward: *world_hydro_tulpa_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_hydro_tulpa_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_secret_source_automaton_overseer_level_105: &world_secret_source_automaton_overseer_level_105
   - {reward: genshin.material.secret_source_airflow_accumulator, count: "3+1:25"}
   - {reward: *world_hydro_tulpa_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_hydro_tulpa_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_secret_source_automaton_overseer_level_110: &world_secret_source_automaton_overseer_level_110
   - {reward: genshin.material.secret_source_airflow_accumulator, count: "3+1:25"}
   - {reward: *world_hydro_tulpa_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_hydro_tulpa_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_secret_source_automaton_overseer_level_115: &world_secret_source_automaton_overseer_level_115
   - {reward: genshin.material.secret_source_airflow_accumulator, count: "3+1:25"}
   - {reward: *world_hydro_tulpa_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_hydro_tulpa_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_secret_source_automaton_overseer_level_120: &world_secret_source_automaton_overseer_level_120
   - {reward: genshin.material.secret_source_airflow_accumulator, count: "3+1:25"}
   - {reward: *world_hydro_tulpa_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_hydro_tulpa_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_setekh_wenut_level_1_ascension_gems: &world_setekh_wenut_level_1_ascension_gems
   - {reward: genshin.material.shivada_jade_sliver, count: "9", weight: 1}
@@ -14014,40 +13834,30 @@ world_setekh_wenut_level_100: &world_setekh_wenut_level_100
   - {reward: *world_setekh_wenut_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_setekh_wenut_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_1_artifacts_2, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_15_artifacts, count: "0"}
 
 world_setekh_wenut_level_105: &world_setekh_wenut_level_105
   - {reward: genshin.material.pseudo_stamens, count: "3+1:25"}
   - {reward: *world_setekh_wenut_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_setekh_wenut_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_1_artifacts_2, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_15_artifacts, count: "0"}
 
 world_setekh_wenut_level_110: &world_setekh_wenut_level_110
   - {reward: genshin.material.pseudo_stamens, count: "3+1:25"}
   - {reward: *world_setekh_wenut_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_setekh_wenut_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_1_artifacts_2, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_15_artifacts, count: "0"}
 
 world_setekh_wenut_level_115: &world_setekh_wenut_level_115
   - {reward: genshin.material.pseudo_stamens, count: "3+1:25"}
   - {reward: *world_setekh_wenut_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_setekh_wenut_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_1_artifacts_2, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_15_artifacts, count: "0"}
 
 world_setekh_wenut_level_120: &world_setekh_wenut_level_120
   - {reward: genshin.material.pseudo_stamens, count: "3+1:25"}
   - {reward: *world_setekh_wenut_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_setekh_wenut_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_1_artifacts_2, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_15_artifacts, count: "0"}
 
 world_solitary_suanni_level_1: &world_solitary_suanni_level_1
   - {reward: genshin.material.cloudseam_scale, count: "1+1:33.86"}
@@ -14266,8 +14076,6 @@ world_solitary_suanni_level_93: &world_solitary_suanni_level_93
 world_solitary_suanni_level_100: &world_solitary_suanni_level_100
   - {reward: genshin.material.cloudseam_scale, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
@@ -14276,8 +14084,6 @@ world_solitary_suanni_level_100: &world_solitary_suanni_level_100
 world_solitary_suanni_level_105: &world_solitary_suanni_level_105
   - {reward: genshin.material.cloudseam_scale, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
@@ -14286,8 +14092,6 @@ world_solitary_suanni_level_105: &world_solitary_suanni_level_105
 world_solitary_suanni_level_110: &world_solitary_suanni_level_110
   - {reward: genshin.material.cloudseam_scale, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
@@ -14296,8 +14100,6 @@ world_solitary_suanni_level_110: &world_solitary_suanni_level_110
 world_solitary_suanni_level_115: &world_solitary_suanni_level_115
   - {reward: genshin.material.cloudseam_scale, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
@@ -14306,8 +14108,6 @@ world_solitary_suanni_level_115: &world_solitary_suanni_level_115
 world_solitary_suanni_level_120: &world_solitary_suanni_level_120
   - {reward: genshin.material.cloudseam_scale, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
@@ -14570,8 +14370,6 @@ world_tenebrous_papilla_level_93: &world_tenebrous_papilla_level_93
 world_tenebrous_papilla_level_100: &world_tenebrous_papilla_level_100
   - {reward: genshin.material.ensnaring_gaze, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
   - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
@@ -14582,8 +14380,6 @@ world_tenebrous_papilla_level_100: &world_tenebrous_papilla_level_100
 world_tenebrous_papilla_level_105: &world_tenebrous_papilla_level_105
   - {reward: genshin.material.ensnaring_gaze, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
   - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
@@ -14594,8 +14390,6 @@ world_tenebrous_papilla_level_105: &world_tenebrous_papilla_level_105
 world_tenebrous_papilla_level_110: &world_tenebrous_papilla_level_110
   - {reward: genshin.material.ensnaring_gaze, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
   - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
@@ -14606,8 +14400,6 @@ world_tenebrous_papilla_level_110: &world_tenebrous_papilla_level_110
 world_tenebrous_papilla_level_115: &world_tenebrous_papilla_level_115
   - {reward: genshin.material.ensnaring_gaze, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
   - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
@@ -14618,8 +14410,6 @@ world_tenebrous_papilla_level_115: &world_tenebrous_papilla_level_115
 world_tenebrous_papilla_level_120: &world_tenebrous_papilla_level_120
   - {reward: genshin.material.ensnaring_gaze, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
   - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
@@ -14792,40 +14582,30 @@ world_undying_replicant_level_100: &world_undying_replicant_level_100
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_undying_replicant_level_105: &world_undying_replicant_level_105
   - {reward: genshin.material.unscorched_blossom_branch, count: "3+1:25"}
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_undying_replicant_level_110: &world_undying_replicant_level_110
   - {reward: genshin.material.unscorched_blossom_branch, count: "3+1:25"}
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_undying_replicant_level_115: &world_undying_replicant_level_115
   - {reward: genshin.material.unscorched_blossom_branch, count: "3+1:25"}
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_undying_replicant_level_120: &world_undying_replicant_level_120
   - {reward: genshin.material.unscorched_blossom_branch, count: "3+1:25"}
   - {reward: *world_emperor_of_fire_and_iron_level_40_ascension_gems, count: "1+1:12.2"}
   - {reward: *world_emperor_of_fire_and_iron_level_90_ascension_gems, count: "3+1:18.45"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
 
 world_chimera_sky_roamer_level_1: &world_chimera_sky_roamer_level_1
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:33.86"}
@@ -15044,8 +14824,6 @@ world_chimera_sky_roamer_level_93: &world_chimera_sky_roamer_level_93
 world_chimera_sky_roamer_level_100: &world_chimera_sky_roamer_level_100
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
@@ -15054,8 +14832,6 @@ world_chimera_sky_roamer_level_100: &world_chimera_sky_roamer_level_100
 world_chimera_sky_roamer_level_105: &world_chimera_sky_roamer_level_105
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
@@ -15064,8 +14840,6 @@ world_chimera_sky_roamer_level_105: &world_chimera_sky_roamer_level_105
 world_chimera_sky_roamer_level_110: &world_chimera_sky_roamer_level_110
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
@@ -15074,8 +14848,6 @@ world_chimera_sky_roamer_level_110: &world_chimera_sky_roamer_level_110
 world_chimera_sky_roamer_level_115: &world_chimera_sky_roamer_level_115
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
@@ -15084,8 +14856,6 @@ world_chimera_sky_roamer_level_115: &world_chimera_sky_roamer_level_115
 world_chimera_sky_roamer_level_120: &world_chimera_sky_roamer_level_120
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "3+1:25"}
   - {reward: *world_frostnight_scion_level_15_artifacts, count: "1+1:25"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
-  - {reward: *world_frostnight_scion_level_45_artifacts, count: "0"}
   - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}

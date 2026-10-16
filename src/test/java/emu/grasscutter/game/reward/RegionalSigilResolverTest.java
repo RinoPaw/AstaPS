@@ -84,7 +84,7 @@ class RegionalSigilResolverTest {
     void cssAndYamlUseTheSameDeferredRegionalItem() {
         var ids = new ItemIdRegistry(Map.of(
                 201, "Primogem", 202, "Mora", 305, "Anemo Sigil", 302, "Hydro Sigil"));
-        assertEquals(ItemIdRegistry.REGIONAL_SIGIL, ids.resolve("sigil"));
+        assertThrows(IllegalArgumentException.class, () -> ids.resolve("sigil"));
         assertEquals(ItemIdRegistry.REGIONAL_SIGIL, ids.resolve("genshin.currency.sigil"));
 
         var loot = YamlLootTables.parse("""

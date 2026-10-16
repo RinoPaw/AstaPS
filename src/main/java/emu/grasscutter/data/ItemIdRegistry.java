@@ -193,7 +193,13 @@ public final class ItemIdRegistry {
                 case "Artifacts", "Other Items", "Currencies and Virtual Items", "" ->
                         CHEST_DROP_NAMES.containsKey(id) || STABLE_NAMES.containsKey(id)
                                 ? "material" : null;
-                default -> "material";
+                case "Materials", "Character EXP Materials", "Weapon Enhancement Materials",
+                        "Artifact EXP Materials", "Character Development Items",
+                        "Talent Level-Up Materials", "Quest Items", "Furnishing Blueprints",
+                        "Wood", "Bait", "Fishing Rods", "Wind Gliders", "Namecards",
+                        "Outfits", "Seeds" -> "material";
+                default -> throw new IllegalArgumentException(
+                        "Unknown native resource category for " + id + ": " + category);
             };
         };
     }

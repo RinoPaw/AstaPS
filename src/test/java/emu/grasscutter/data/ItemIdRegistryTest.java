@@ -31,6 +31,8 @@ class ItemIdRegistryTest {
         var names = new ItemIdRegistry(Map.of(202, "Mora", 104003, "Hero's Wit"));
         assertEquals(202, names.resolve("genshin.currency.mora"));
         assertEquals(104003, names.resolve("genshin.material.heros_wit"));
+        assertThrows(IllegalArgumentException.class,
+                () -> names.resolve("genshin.item.mora"));
         assertEquals(202, names.resolve("202"));
         assertThrows(IllegalArgumentException.class,
                 () -> names.resolve("genshin.material.id_202"));

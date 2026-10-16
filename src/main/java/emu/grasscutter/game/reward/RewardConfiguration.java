@@ -122,6 +122,22 @@ public final class RewardConfiguration {
         return RewardRoller.roll(selection, loot, random);
     }
 
+    /** Trounce rewards must resolve through the same CSS/YAML authority as world Bosses. */
+    public Map<Integer, Integer> rollWeeklyBoss(
+            String tag, int nativeBossLevel, RandomGenerator random) {
+        if (tag == null || tag.isBlank() || nativeBossLevel <= 0) {
+            throw new IllegalArgumentException("Missing weekly Boss source identity");
+        }
+        var attributes = Map.of(
+                "type", "weekly", "tag", tag, "level", Integer.toString(nativeBossLevel));
+        var selection = css.resolve("boss", attributes);
+        if (selection.loot().isEmpty() && selection.rangedLoot().isEmpty()) {
+            throw new IllegalStateException(
+                    "No configured weekly Boss reward for " + tag + " level " + nativeBossLevel);
+        }
+        return RewardRoller.roll(selection, loot, random);
+    }
+
     /** Qualified table IDs can be executed without CSS selection. */
     public Map<Integer, Integer> rollLoot(String resourceId, RandomGenerator random) {
         return RewardRoller.resolveRegionalItems(loot.roll(resourceId, random), RewardContext.NONE);

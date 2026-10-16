@@ -80,7 +80,7 @@ public final class YamlLootTables {
             if (!(e.getKey() instanceof String name) || name.isBlank()) {
                 throw new IllegalArgumentException("Loot table name must be a nonempty string");
             }
-            String id = new ResourceId(namespace, "loot", name).toString();
+            String id = ResourceId.parse(namespace + ".loot." + name).toString();
             parsed.put(id, parseList(e.getValue(), resolver, artifacts, compiled, visiting, budget, name, 0));
         }
         return new YamlLootTables(namespace, parsed);
@@ -235,8 +235,8 @@ public final class YamlLootTables {
     public String resolveName(String reference) {
         ResourceId id = reference.contains(".")
                 ? ResourceId.parse(reference)
-                : new ResourceId(namespace, "loot", reference);
-        if (!id.type().equals("loot") || !contains(id.toString())) {
+                : ResourceId.parse(namespace + ".loot." + reference);
+        if (!(id.size() >= 3 && id.segment(1).equals("loot")) || !contains(id.toString())) {
             throw new IllegalArgumentException("Unknown loot table: " + reference);
         }
         return id.toString();

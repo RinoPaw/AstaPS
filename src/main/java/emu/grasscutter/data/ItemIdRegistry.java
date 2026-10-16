@@ -53,8 +53,8 @@ public final class ItemIdRegistry {
             Map.entry(104002, "adventurers_experience"),
             Map.entry(104003, "heros_wit"),
             Map.entry(104011, "enhancement_ore"),
-            Map.entry(104012, "fine_enhancement_ore"),
-            Map.entry(104013, "mystic_enhancement_ore"));
+            Map.entry(104012, "fine_ore"),
+            Map.entry(104013, "mystic_ore"));
 
     // Explicit item identities for the historic chest reward graph.
     // Artifact identities are generated from native set/slot/rarity data at runtime.
@@ -137,12 +137,14 @@ public final class ItemIdRegistry {
             if (english == null || english.isBlank()) english = VERIFIED_ENGLISH.get(id);
             String category = categories.getOrDefault(id, switch (id) {
                 case 104001, 104002, 104003 -> "Character EXP Materials";
+                case 104011, 104012, 104013 -> "Weapon Enhancement Materials";
                 case 201, 202 -> "Currencies";
                 default -> CHEST_WEAPON_IDS.contains(id) ? "Weapons" : "";
             });
             String name = "Artifacts".equals(category) ? "" :
                     STABLE_NAMES.containsKey(id) ? STABLE_NAMES.get(id)
-                    : CHEST_DROP_NAMES.getOrDefault(id, slug(english));
+                    : CHEST_DROP_NAMES.containsKey(id) ? CHEST_DROP_NAMES.get(id)
+                    : shortName(category, english);
             String type = resourceType(id, category);
             String key = name.isEmpty() || type == null ? null :
                     new ResourceId("genshin", type, name).toString();
@@ -176,6 +178,16 @@ public final class ItemIdRegistry {
         return new ItemIdRegistry(englishNames, categories);
     }
 
+    /** Short forms are scoped to their exact native material categories. */
+    static String shortName(String category, String english) {
+        String name = slug(english);
+        if ("Artifact EXP Materials".equals(category)) {
+            if ("sanctifying_unction".equals(name)) return "unction";
+            if ("sanctifying_essence".equals(name)) return "essence";
+        }
+        return name;
+    }
+
     /**
      * Map native resource identity, not a vague catch-all "item" category.
      * Virtual rewards are explicit because these IDs affect different player properties.
@@ -184,17 +196,19 @@ public final class ItemIdRegistry {
     static String resourceType(int id, String category) {
         return switch (id) {
             case 101, 102, 105, 121 -> "experience";
-            case 106, 107 -> "resource";
-            case 201, 202, 203, 204, 301, 302, 303, 304, 305, 306, 307, 308, 101692 -> "currency";
+            case 106, 107, 201, 202, 203, 204, 301, 302, 303, 304, 305, 306,
+                    307, 308, 101692 -> "currency";
             default -> switch (category) {
                 case "Weapons" -> "weapon";
                 case "Food" -> "food";
                 case "Furnishings" -> "furnishing";
+                case "Character EXP Materials" -> "avatar_exp";
+                case "Weapon Enhancement Materials" -> "weapon_exp";
+                case "Artifact EXP Materials" -> "artifact_exp";
                 case "Artifacts", "Other Items", "Currencies and Virtual Items", "" ->
                         CHEST_DROP_NAMES.containsKey(id) || STABLE_NAMES.containsKey(id)
                                 ? "material" : null;
-                case "Materials", "Character EXP Materials", "Weapon Enhancement Materials",
-                        "Artifact EXP Materials", "Character Development Items",
+                case "Materials", "Character Development Items",
                         "Talent Level-Up Materials", "Quest Items", "Furnishing Blueprints",
                         "Wood", "Bait", "Fishing Rods", "Wind Gliders", "Namecards",
                         "Outfits", "Seeds" -> "material";
@@ -231,8 +245,9 @@ public final class ItemIdRegistry {
         if (input.matches("[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\..+")) {
             ResourceId resource = ResourceId.parse(input);
             if (!resource.namespace().equals("genshin")
-                    || !Set.of("currency", "resource", "experience", "material", "food",
-                            "furnishing", "weapon").contains(resource.type())) {
+                    || !Set.of("currency", "experience", "avatar_exp", "weapon_exp",
+                            "artifact_exp", "material", "food", "furnishing", "weapon")
+                            .contains(resource.type())) {
                 throw new IllegalArgumentException("Unsupported inventory resource: " + input);
             }
         }

@@ -22,6 +22,8 @@ class GenshinResourceIdsTest {
         assertEquals(11101, ids.resolve("genshin.weapon.dull_blade"));
         assertEquals(202, ids.resolve("genshin.currency.mora"));
         assertEquals(10000021, ids.resolve("genshin.avatar.amber"));
+        assertThrows(IllegalArgumentException.class,
+                () -> ids.resolve("genshin.resource.resin"));
         assertEquals(100014, ids.resolve("genshin.recipe.mora_meat"));
         assertEquals(109406, ids.resolve("genshin.material.recipe_mora_meat"));
         assertNotEquals(ids.resolve("genshin.material.recipe_mora_meat"),

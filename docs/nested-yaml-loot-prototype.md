@@ -216,3 +216,18 @@ resources require their distinct grant paths.
 No numeric source IDs are used in the bundled loot configuration.
 
 Full 7.1 gameplay validation is still required before upstream submission.
+
+### Compact native material identities
+
+For `give` and `loot.yaml`, use exactly one qualified identity per native
+resource. Categories come from native `ItemType`/`MaterialType`, not a
+catch-all `item` prefix. The common experience items are:
+
+- `genshin.avatar_exp.heros_wit`, `genshin.avatar_exp.adventurers_experience`, `genshin.avatar_exp.wanderers_advice`
+- `genshin.weapon_exp.enhancement_ore`, `genshin.weapon_exp.fine_ore`, `genshin.weapon_exp.mystic_ore`
+- `genshin.artifact_exp.unction`, `genshin.artifact_exp.essence`
+- `genshin.currency.resin` is the Original Resin balance (native ID 106), not the consumable Fragile Resin.
+
+Previous `genshin.material.*` aliases for these items and the `genshin.resource`
+category are intentionally unsupported. Adventure EXP is
+`genshin.experience.adventure`, while Hero's Wit is an `avatar_exp` item.

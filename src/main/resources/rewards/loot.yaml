@@ -129,97 +129,97 @@ artifacts_3_to_4_high: &artifacts_3_to_4_high
 
 minimal:
   - {reward: *meat_ingredients, count: "1:50"}
-  - {reward: genshin.material.wanderers_advice, count: "1:40,2:60"}
-  - {reward: genshin.material.adventurers_experience, count: "1:15"}
+  - {reward: genshin.avatar_exp.wanderers_advice, count: "1:40,2:60"}
+  - {reward: genshin.avatar_exp.adventurers_experience, count: "1:15"}
   - {reward: *weapons_1_star, count: "1:40"}
-  - {reward: genshin.material.enhancement_ore, count: "2:90,3:10"}
-  - {reward: genshin.material.fine_enhancement_ore, count: "1:20"}
+  - {reward: genshin.weapon_exp.enhancement_ore, count: "2:90,3:10"}
+  - {reward: genshin.weapon_exp.fine_ore, count: "1:20"}
   - {reward: *artifacts_1_to_2_low, count: "1:52"}
 
 nano:
   - {reward: *meat_ingredients, count: "1:50"}
-  - {reward: genshin.material.wanderers_advice, count: "2:90,3:10"}
-  - {reward: genshin.material.adventurers_experience, count: "1:30"}
+  - {reward: genshin.avatar_exp.wanderers_advice, count: "2:90,3:10"}
+  - {reward: genshin.avatar_exp.adventurers_experience, count: "1:30"}
   - {reward: *weapons_1_to_2_low, count: "1:50"}
-  - {reward: genshin.material.enhancement_ore, count: "2:40,3:60"}
-  - {reward: genshin.material.fine_enhancement_ore, count: "1:40"}
+  - {reward: genshin.weapon_exp.enhancement_ore, count: "2:40,3:60"}
+  - {reward: genshin.weapon_exp.fine_ore, count: "1:40"}
   - {reward: *artifacts_1_to_2_low, count: "1:80"}
 
 micro:
-  - {reward: genshin.material.wanderers_advice, count: "2:40,3:60"}
-  - {reward: genshin.material.adventurers_experience, count: "1:40"}
+  - {reward: genshin.avatar_exp.wanderers_advice, count: "2:40,3:60"}
+  - {reward: genshin.avatar_exp.adventurers_experience, count: "1:40"}
   - {reward: *weapons_1_to_2_medium, count: "1:60"}
-  - {reward: genshin.material.enhancement_ore, count: "3:90,4:10"}
-  - {reward: genshin.material.fine_enhancement_ore, count: "1:60"}
+  - {reward: genshin.weapon_exp.enhancement_ore, count: "3:90,4:10"}
+  - {reward: genshin.weapon_exp.fine_ore, count: "1:60"}
   - {reward: *artifacts_1_to_2_low, count: "1:80,2:20"}
 
 light:
-  - {reward: genshin.material.wanderers_advice, count: "3:90,4:10"}
-  - {reward: genshin.material.adventurers_experience, count: "1:50"}
+  - {reward: genshin.avatar_exp.wanderers_advice, count: "3:90,4:10"}
+  - {reward: genshin.avatar_exp.adventurers_experience, count: "1:50"}
   - {reward: *weapons_1_to_2_medium, count: "1:70"}
-  - {reward: genshin.material.enhancement_ore, count: "4:90,5:10"}
-  - {reward: genshin.material.fine_enhancement_ore, count: "1:60"}
+  - {reward: genshin.weapon_exp.enhancement_ore, count: "4:90,5:10"}
+  - {reward: genshin.weapon_exp.fine_ore, count: "1:60"}
   - {reward: *artifacts_1_to_2_high, count: "1:50,2:50"}
 
 low:
-  - {reward: genshin.material.wanderers_advice, count: "3:40,4:60"}
-  - {reward: genshin.material.adventurers_experience, count: "1:60"}
+  - {reward: genshin.avatar_exp.wanderers_advice, count: "3:40,4:60"}
+  - {reward: genshin.avatar_exp.adventurers_experience, count: "1:60"}
   - {reward: *weapons_2_star, count: "1:80"}
-  - {reward: genshin.material.enhancement_ore, count: "5:90,6:10"}
-  - {reward: genshin.material.fine_enhancement_ore, count: "1:60"}
+  - {reward: genshin.weapon_exp.enhancement_ore, count: "5:90,6:10"}
+  - {reward: genshin.weapon_exp.fine_ore, count: "1:60"}
   - {reward: *artifacts_1_to_2_high, count: "1:25,2:75"}
 
 medium:
-  - {reward: genshin.material.adventurers_experience, count: "2:90,3:10"}
+  - {reward: genshin.avatar_exp.adventurers_experience, count: "2:90,3:10"}
   - {reward: *mondstadt_talent_teachings, count: "1:25"}
   - {reward: *weapons_2_star, count: "1:90"}
-  - {reward: genshin.material.fine_enhancement_ore, count: "3:90,4:10"}
+  - {reward: genshin.weapon_exp.fine_ore, count: "3:90,4:10"}
   - {reward: *artifacts_1_to_3, count: "1:25,2:75"}
 
 high:
-  - {reward: genshin.material.adventurers_experience, count: "2:40,3:60"}
+  - {reward: genshin.avatar_exp.adventurers_experience, count: "2:40,3:60"}
   - {reward: *mondstadt_talent_teachings, count: "1:25"}
   - {reward: *weapons_2_to_3_low}
-  - {reward: genshin.material.fine_enhancement_ore, count: "4:90,5:10"}
+  - {reward: genshin.weapon_exp.fine_ore, count: "4:90,5:10"}
   - {reward: *artifacts_1_to_3, count: "2"}
 
 xhigh:
-  - {reward: genshin.material.adventurers_experience, count: "1:90,2:10"}
-  - {reward: genshin.material.heros_wit}
+  - {reward: genshin.avatar_exp.adventurers_experience, count: "1:90,2:10"}
+  - {reward: genshin.avatar_exp.heros_wit}
   - {reward: *mondstadt_talent_teachings}
   - {reward: *weapons_2_to_3_low, count: "1:90,2:10"}
-  - {reward: genshin.material.fine_enhancement_ore, count: "2:90,3:10"}
-  - {reward: genshin.material.mystic_enhancement_ore}
+  - {reward: genshin.weapon_exp.fine_ore, count: "2:90,3:10"}
+  - {reward: genshin.weapon_exp.mystic_ore}
   - {reward: *artifacts_2_to_3, count: "2"}
 
 xxhigh:
-  - {reward: genshin.material.adventurers_experience, count: "1:40,2:60"}
-  - {reward: genshin.material.heros_wit}
+  - {reward: genshin.avatar_exp.adventurers_experience, count: "1:40,2:60"}
+  - {reward: genshin.avatar_exp.heros_wit}
   - {reward: *mondstadt_talent_teachings}
   - {reward: *weapons_2_to_3_high, count: "1:80,2:20"}
-  - {reward: genshin.material.fine_enhancement_ore, count: "3:90,4:10"}
-  - {reward: genshin.material.mystic_enhancement_ore}
+  - {reward: genshin.weapon_exp.fine_ore, count: "3:90,4:10"}
+  - {reward: genshin.weapon_exp.mystic_ore}
   - {reward: *artifacts_3_to_4_low, count: "2:75,3:25"}
 
 xxxhigh:
-  - {reward: genshin.material.heros_wit, count: "2"}
+  - {reward: genshin.avatar_exp.heros_wit, count: "2"}
   - {reward: *mondstadt_talent_guides}
   - {reward: *weapons_2_to_3_high, count: "1:70,2:30"}
-  - {reward: genshin.material.mystic_enhancement_ore, count: "3"}
+  - {reward: genshin.weapon_exp.mystic_ore, count: "3"}
   - {reward: *artifacts_3_to_4_low, count: "2:75,3:25"}
 
 max:
-  - {reward: genshin.material.heros_wit, count: "2:95,3:5"}
+  - {reward: genshin.avatar_exp.heros_wit, count: "2:95,3:5"}
   - {reward: *mondstadt_talent_guides}
   - {reward: *weapons_3_star, count: "1:60,2:40"}
-  - {reward: genshin.material.mystic_enhancement_ore, count: "3:90,4:10"}
+  - {reward: genshin.weapon_exp.mystic_ore, count: "3:90,4:10"}
   - {reward: *artifacts_3_to_4_high, count: "2:50,3:50"}
 
 ultra:
-  - {reward: genshin.material.heros_wit, count: "2:90,3:10"}
+  - {reward: genshin.avatar_exp.heros_wit, count: "2:90,3:10"}
   - {reward: *mondstadt_talent_guides}
   - {reward: *weapons_3_star, count: "1:50,2:50"}
-  - {reward: genshin.material.mystic_enhancement_ore, count: "3:80,4:20"}
+  - {reward: genshin.weapon_exp.mystic_ore, count: "3:80,4:20"}
   - {reward: *artifacts_3_to_4_high, count: "2:50,3:50"}
 
 # Other, non-chest rewards.

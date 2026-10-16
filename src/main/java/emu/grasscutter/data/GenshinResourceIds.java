@@ -103,7 +103,8 @@ public final class GenshinResourceIds {
             throw new IllegalArgumentException("Unsupported resource namespace: " + reference);
         }
         return switch (resource.type()) {
-            case "currency", "resource", "experience", "material", "food", "furnishing", "weapon" ->
+            case "currency", "experience", "avatar_exp", "weapon_exp", "artifact_exp",
+                    "material", "food", "furnishing", "weapon" ->
                     items.resolve(reference);
             case "avatar" -> lookup(avatars, ambiguousAvatars, resource);
             case "recipe" -> lookup(recipes, ambiguousRecipes, resource);

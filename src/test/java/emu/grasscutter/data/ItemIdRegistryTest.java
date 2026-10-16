@@ -30,7 +30,7 @@ class ItemIdRegistryTest {
     void itemIdsAreStrictlyTypedAndExistInLoadedResources() {
         var names = new ItemIdRegistry(Map.of(202, "Mora", 104003, "Hero's Wit"));
         assertEquals(202, names.resolve("genshin.currency.mora"));
-        assertEquals(104003, names.resolve("genshin.material.heros_wit"));
+        assertEquals(104003, names.resolve("genshin.avatar_exp.heros_wit"));
         assertThrows(IllegalArgumentException.class,
                 () -> names.resolve("genshin.item.mora"));
         assertEquals(202, names.resolve("202"));
@@ -45,6 +45,37 @@ class ItemIdRegistryTest {
         assertThrows(IllegalArgumentException.class, () -> names.resolve("genshin.currency.primogem"));
         assertThrows(IllegalArgumentException.class, () -> names.resolve("genshin:item:mora"));
         assertThrows(IllegalArgumentException.class, () -> names.resolve("123456"));
+    }
+
+    @Test
+    void nativeExperienceMaterialDomainsHaveDistinctShortIds() {
+        var registry = new ItemIdRegistry(Map.of(
+                104003, "Hero's Wit", 104011, "Enhancement Ore",
+                104012, "Fine Enhancement Ore", 104013, "Mystic Enhancement Ore",
+                105001, "Sanctifying Unction", 105002, "Sanctifying Essence",
+                106, "Original Resin"), Map.of(
+                104003, "Character EXP Materials",
+                104011, "Weapon Enhancement Materials",
+                104012, "Weapon Enhancement Materials",
+                104013, "Weapon Enhancement Materials",
+                105001, "Artifact EXP Materials",
+                105002, "Artifact EXP Materials",
+                106, "Currencies and Virtual Items"));
+        assertEquals(104003, registry.resolve("genshin.avatar_exp.heros_wit"));
+        assertEquals(104011, registry.resolve("genshin.weapon_exp.enhancement_ore"));
+        assertEquals(104012, registry.resolve("genshin.weapon_exp.fine_ore"));
+        assertEquals(104013, registry.resolve("genshin.weapon_exp.mystic_ore"));
+        assertEquals(105001, registry.resolve("genshin.artifact_exp.unction"));
+        assertEquals(105002, registry.resolve("genshin.artifact_exp.essence"));
+        assertEquals(106, registry.resolve("genshin.currency.resin"));
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.resolve("genshin.material.heros_wit"));
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.resolve("genshin.weapon_exp.mystic_enhancement_ore"));
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.resolve("genshin.resource.resin"));
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.resolve("genshin.artifact_exp.mystic_ore"));
     }
 
     @Test

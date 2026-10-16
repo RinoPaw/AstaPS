@@ -98,14 +98,14 @@ class RewardAreaResolverTest {
                 Map.of(201, "Primogem", 305, "Anemo Sigil", 302, "Hydro Sigil"));
         var loot = emu.grasscutter.game.drop.YamlLootTables.parse("""
                 seals:
-                  - {reward: genshin.item.sigil}
+                  - {reward: genshin.currency.sigil}
                 """, names::resolve);
         var css = CssRewards.parse("""
                 chest {
                     --astaps-loot-seals: 1;
-                    --genshin-item-primogem: 2;
+                    --genshin-currency-primogem: 2;
                 }
-                chest[city="1"] { --genshin-item-primogem: 0; }
+                chest[city="1"] { --genshin-currency-primogem: 0; }
                 """, names, loot);
         var context = new RewardContext(3, 0, "mondstadt");
         var attributes = new HashMap<String, String>();

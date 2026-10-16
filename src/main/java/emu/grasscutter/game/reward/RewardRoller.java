@@ -19,7 +19,10 @@ public final class RewardRoller {
             CssRewards.Selection selection, YamlLootTables loot, RandomGenerator random,
             RewardContext context) {
         var result = new TreeMap<Integer, Integer>();
-        new TreeMap<>(selection.loot()).forEach((table, repetitions) -> {
+        var executions = new TreeMap<>(selection.loot());
+        selection.rangedLoot().forEach((table, spec) ->
+                executions.put(table, spec.sample(random)));
+        executions.forEach((table, repetitions) -> {
             for (int i = 0; i < repetitions; i++) {
                 loot.roll(table, random).forEach((id, count) ->
                         result.merge(id, count, Math::addExact));

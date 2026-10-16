@@ -174,7 +174,6 @@ class CssRewardsTest {
                 "--loot: \"astaps.loot.currency\";",
                 "--astaps-loot-missing: 1;",
                 "--astaps-loot-currency: none;",
-                "--astaps-loot-currency: 1~3;",
                 "--astaps-loot-currency: -1;",
                 "--genshin-loot-currency: 1;",
                 "--genshin-avatar-amber: 1;",
@@ -184,6 +183,57 @@ class CssRewardsTest {
                     CssRewards.parse("chest { " + declaration + " }", items, loot),
                     declaration);
         }
+    }
+
+    @Test
+    void lootExecutionCountsSupportRangesAndPercentageDistributions() {
+        var css = CssRewards.parse("""
+                chest {
+                    --astaps-loot-currency: 1~3;
+                    --astaps-loot-经验书: 1:50,2:30;
+                }
+                """, items, loot);
+        var selection = css.resolve("chest", Map.of());
+        assertTrue(selection.loot().isEmpty());
+        assertEquals(2, selection.rangedLoot().size());
+
+        var currencyCounts = new java.util.HashSet<Integer>();
+        var bookCounts = new java.util.HashSet<Integer>();
+        var random = new Random(71);
+        for (int i = 0; i < 300; i++) {
+            var rewards = RewardRoller.roll(selection, loot, random);
+            currencyCounts.add(rewards.getOrDefault(202, 0) / 100);
+            bookCounts.add(rewards.getOrDefault(104003, 0));
+        }
+        assertEquals(java.util.Set.of(1, 2, 3), currencyCounts);
+        assertEquals(java.util.Set.of(0, 1, 2), bookCounts);
+    }
+
+    @Test
+    void fixedAndVariableLootCountsOverrideOneAnother() {
+        var css = CssRewards.parse("""
+                chest { --astaps-loot-currency: 1~3; }
+                chest[level="6"] { --astaps-loot-currency: 2; }
+                chest[level="6"][city="1"] { --astaps-loot-currency: 0:70,3:30; }
+                """, items, loot);
+        var original = css.resolve("chest", Map.of());
+        assertTrue(original.loot().isEmpty());
+        assertTrue(original.rangedLoot().containsKey("astaps.loot.currency"));
+
+        var fixed = css.resolve("chest", Map.of("level", "6"));
+        assertEquals(Map.of("astaps.loot.currency", 2), fixed.loot());
+        assertTrue(fixed.rangedLoot().isEmpty());
+        assertEquals(200, RewardRoller.roll(fixed, loot, new Random(2)).get(202));
+
+        var variable = css.resolve("chest", Map.of("level", "6", "city", "1"));
+        assertTrue(variable.loot().isEmpty());
+        assertEquals(1, variable.rangedLoot().size());
+        var outcomes = new java.util.HashSet<Integer>();
+        var random = new Random(72);
+        for (int i = 0; i < 100; i++) {
+            outcomes.add(RewardRoller.roll(variable, loot, random).getOrDefault(202, 0));
+        }
+        assertEquals(java.util.Set.of(0, 300), outcomes);
     }
 
     @Test

@@ -20,14 +20,19 @@ import org.jsoup.select.Selector;
 /** CSS custom properties reference typed items and named loot tables. */
 public final class CssRewards {
     public record Selection(Map<Integer, Integer> items, Map<String, Integer> loot,
-            Map<Integer, LootCount.Spec> rangedItems) {
+            Map<Integer, LootCount.Spec> rangedItems, Map<String, LootCount.Spec> rangedLoot) {
         public Selection(Map<Integer, Integer> items, Map<String, Integer> loot) {
-            this(items, loot, Map.of());
+            this(items, loot, Map.of(), Map.of());
+        }
+        public Selection(Map<Integer, Integer> items, Map<String, Integer> loot,
+                         Map<Integer, LootCount.Spec> rangedItems) {
+            this(items, loot, rangedItems, Map.of());
         }
         public Selection {
             items = Map.copyOf(items);
             loot = Map.copyOf(loot);
             rangedItems = Map.copyOf(rangedItems);
+            rangedLoot = Map.copyOf(rangedLoot);
         }
     }
 
@@ -58,7 +63,8 @@ public final class CssRewards {
     private record Rule(
             Evaluator selector, List<LevelRange> levelRanges,
             Map<Integer, Integer> items, Map<String, Integer> loot,
-            Map<Integer, LootCount.Spec> rangedItems, int specificity, int order) {}
+            Map<Integer, LootCount.Spec> rangedItems,
+            Map<String, LootCount.Spec> rangedLoot, int specificity, int order) {}
 
     private final List<Rule> rules;
 
@@ -67,10 +73,13 @@ public final class CssRewards {
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
-        // Quote bare quantity ranges before CSS tokenization to preserve both bounds.
+        // Preserve unquoted count ranges and distributions across CSS tokenization.
         String normalized = source.replaceAll(
-                "(--genshin-item-[a-zA-Z0-9_-]+\\s*:\\s*)([0-9]+)\\s*~\\s*([0-9]+)(\\s*;)",
+                "(--(?:genshin-item|astaps-loot)-[\\p{L}\\p{N}_-]+\\s*:\\s*)([0-9]+)\\s*~\\s*([0-9]+)(\\s*;)",
                 "$1'$2~$3'$4");
+        normalized = normalized.replaceAll(
+                "(--astaps-loot-[\\p{L}\\p{N}_-]+\\s*:\\s*)([0-9]+\\s*:[^;'\\\"{}]*)(\\s*;)",
+                "$1'$2'$3");
         var sheet = CSSReader.readFromString(normalized);
         if (sheet == null) throw new IllegalArgumentException("Invalid rewards.css");
 
@@ -84,6 +93,7 @@ public final class CssRewards {
             var fixed = new HashMap<Integer, Integer>();
             var ranged = new HashMap<Integer, LootCount.Spec>();
             var selectedLoot = new HashMap<String, Integer>();
+            var rangedLoot = new HashMap<String, LootCount.Spec>();
             for (var declaration : style.getAllDeclarations()) {
                 String property = declaration.getProperty();
                 String value = declaration.getExpressionAsCSSString().trim();
@@ -95,11 +105,13 @@ public final class CssRewards {
                 ResourceId resource = ResourceId.fromCssProperty(property);
                 if ("loot".equals(resource.type())) {
                     String name = loot.resolveName(resource.toString());
-                    if (!value.matches("[0-9]+")) {
-                        throw new IllegalArgumentException(
-                                "Invalid loot execution count for " + resource + ": " + value);
+                    if (value.matches("[0-9]+")) {
+                        selectedLoot.put(name, Integer.parseInt(value));
+                        rangedLoot.remove(name);
+                    } else {
+                        rangedLoot.put(name, LootCount.parse(value));
+                        selectedLoot.remove(name);
                     }
-                    selectedLoot.put(name, Integer.parseInt(value));
                 } else {
                     int id = items.resolve(resource.toString());
                     if (value.matches("[0-9]+\\s*~\\s*[0-9]+")) {
@@ -147,7 +159,8 @@ public final class CssRewards {
                         + (css.matches("^[a-zA-Z][a-zA-Z0-9_-]*.*") ? 1 : 0);
                 rules.add(new Rule(Selector.evaluatorOf(normalizedSelector),
                         List.copyOf(levelRanges), Map.copyOf(fixed),
-                        Map.copyOf(selectedLoot), Map.copyOf(ranged), specificity, order++));
+                        Map.copyOf(selectedLoot), Map.copyOf(ranged),
+                        Map.copyOf(rangedLoot), specificity, order++));
             }
         }
 
@@ -161,6 +174,7 @@ public final class CssRewards {
         var fixed = new HashMap<Integer, Integer>();
         var ranged = new HashMap<Integer, LootCount.Spec>();
         var selectedLoot = new HashMap<String, Integer>();
+        var rangedLoot = new HashMap<String, LootCount.Spec>();
         for (var rule : rules) {
             if (rule.selector.matches(element.root(), element)
                     && rule.levelRanges.stream().allMatch(range ->
@@ -169,9 +183,12 @@ public final class CssRewards {
                 rule.rangedItems.keySet().forEach(fixed::remove);
                 fixed.putAll(rule.items);
                 ranged.putAll(rule.rangedItems);
+                rule.loot.keySet().forEach(rangedLoot::remove);
+                rule.rangedLoot.keySet().forEach(selectedLoot::remove);
                 selectedLoot.putAll(rule.loot);
+                rangedLoot.putAll(rule.rangedLoot);
             }
         }
-        return new Selection(fixed, selectedLoot, ranged);
+        return new Selection(fixed, selectedLoot, ranged, rangedLoot);
     }
 }

@@ -76,7 +76,10 @@ exist in `loot.yaml`; unknown names and the obsolete `--loot` syntax
 are errors. Different loot properties cascade independently: several
 tables may be selected together, a more specific value replaces the
 execution count for the *same* table, and zero disables that table.
-Loot execution counts must be nonnegative integers, not ranges.
+Loot execution counts use the same nonnegative fixed, inclusive range and
+percentage-distribution syntax as YAML `count` (for example `1`, `1~3`,
+or `1:50,2:30`). Each CSS loot property's execution count is sampled once
+per reward grant; each execution then rolls the table independently.
 Fixed item quantities retain their own cascade rules: a later fixed
 amount overrides an earlier range and vice versa; zero removes an item.
 

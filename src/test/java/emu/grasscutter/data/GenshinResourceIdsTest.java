@@ -31,6 +31,32 @@ class GenshinResourceIdsTest {
     }
 
     @Test
+    void qualifiedInventoryResourcesResolveThroughAllDevelopmentKinds() {
+        var items = new ItemIdRegistry(Map.of(
+                701, "Frostnight's Glory", 702, "Weapon Ascension Crystal",
+                703, "Talent Upgrade Book", 704, "Slime Condensate",
+                705, "Northlander Sword Billet"),
+                Map.of(701, "Character Development Items", 702, "Materials",
+                        703, "Talent Level-Up Materials", 704, "Character Development Items",
+                        705, "Materials"),
+                Map.of(701, java.util.Set.of(ItemIdRegistry.Usage.AVATAR_ASCENSION),
+                        702, java.util.Set.of(ItemIdRegistry.Usage.WEAPON_ASCENSION),
+                        703, java.util.Set.of(ItemIdRegistry.Usage.TALENT_LEVEL_UP),
+                        704, java.util.Set.of(ItemIdRegistry.Usage.AVATAR_ASCENSION,
+                                ItemIdRegistry.Usage.TALENT_LEVEL_UP)));
+        var ids = new GenshinResourceIds(items, Map.of(), Map.of());
+        assertEquals(701, ids.resolve("genshin.avatar_ascension.frostnights_glory"));
+        assertEquals(702, ids.resolve("genshin.weapon_ascension.weapon_ascension_crystal"));
+        assertEquals(703, ids.resolve("genshin.talent_level_up.talent_upgrade_book"));
+        assertEquals(704, ids.resolve("genshin.monster_drop.slime_condensate"));
+        assertEquals(705, ids.resolve("genshin.weapon_crafting.northlander_sword_billet"));
+        assertThrows(IllegalArgumentException.class,
+                () -> ids.resolve("genshin.avatar_exp.frostnights_glory"));
+        assertThrows(IllegalArgumentException.class,
+                () -> ids.resolve("genshin.avatar_level_up.frostnights_glory"));
+    }
+
+    @Test
     void namesCannotCrossKindsOrSilentlyClaimAnotherObject() {
         var ids = registry();
         assertThrows(IllegalArgumentException.class, () -> ids.resolve("genshin.material.dull_blade"));

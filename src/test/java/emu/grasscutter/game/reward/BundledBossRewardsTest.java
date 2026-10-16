@@ -33,6 +33,33 @@ final class BundledBossRewardsTest {
     }
 
     @Test
+    void bundledGemAndTalentRarityDistributionsUseTwoDecimalPercentages() throws Exception {
+        String yaml = RewardConfiguration.readBundled("loot.yaml");
+        var matcher = Pattern.compile(
+                "reward: genshin\\.(avatar_ascension|talent_up)\\.[a-z_]+,"
+                        + " properties: \\{rarity: \"([^\"]+)\"\\}, weight: 1")
+                .matcher(yaml);
+        int gems = 0, talents = 0;
+        while (matcher.find()) {
+            if ("avatar_ascension".equals(matcher.group(1))) gems++;
+            else talents++;
+            var total = java.math.BigDecimal.ZERO;
+            for (String part : matcher.group(2).split(", ")) {
+                var pair = part.split(":");
+                assertEquals(2, pair.length);
+                assertTrue(pair[0].matches("[2-5]"));
+                assertTrue(pair[1].matches("[0-9]+\\.[0-9]{2}"), part);
+                total = total.add(new java.math.BigDecimal(pair[1]));
+            }
+            assertEquals(0, total.compareTo(new java.math.BigDecimal("100.00")));
+        }
+        assertEquals(291, gems);
+        assertEquals(6, talents);
+        assertFalse(yaml.contains("genshin.talent_up.freedom.teachings, weight:"));
+        assertFalse(yaml.contains("genshin.avatar_ascension.vajrada_amethyst.sliver, weight:"));
+    }
+
+    @Test
     void nativeBossSelectorsResolveToBundledSemanticLoot() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         String stylesheet = RewardConfiguration.readBundled("rewards.css");

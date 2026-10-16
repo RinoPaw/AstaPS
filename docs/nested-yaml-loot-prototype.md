@@ -40,7 +40,10 @@ including complete payout profiles, are named by reward content; optional
 `world` and `weekly` prefixes identify the reward type.
 Reusable subtables use names such as `midlander_weapon_billets`.
 Identical payout profiles are shared, and one-use subtables are inlined.
-The bundled YAML contains 1,391 top-level loot tables.
+The bundled YAML now contains 1,393 top-level loot tables. The two
+`weekly_northlander_extras` / `weekly_midlander_extras` pools define shared
+Dream Solvent and weapon-billet drop chances. CSS selects the appropriate
+pool by weekly Boss tag, while the probabilities stay in YAML.
 
 The artifact distributions are `artifacts_1_to_2_low`,
 `artifacts_1_to_2_high`, `artifacts_1_to_3`, `artifacts_2_to_3`,
@@ -326,7 +329,12 @@ all Boss Dungeon-to-native-source joins. Do not treat this candidate
 match as 7.1 drop-rate verification or complete playable coverage.
 
 Boss candidate drop graphs are now bundled in `loot.yaml` and mapped in
-`rewards.css`. CSS declares shared fixed Boss amounts by type and native
+`rewards.css`. The 200 weekly payout profiles no longer repeat their
+common Dream Solvent and billet entries; two shared pools cover those
+optional rewards. The remaining 1,109 world/weekly profile tables still
+contain many level-specific probabilities and overly long names. They
+require a separate content-based decomposition; this change does not
+claim that cleanup is complete. CSS declares shared fixed Boss amounts by type and native
 level bracket without requiring a `tag` attribute; individual tag/level
 selectors choose their corresponding named loot pool. CSS Boss tags use
 English semantic identifiers (for example `electro_hypostasis`) and

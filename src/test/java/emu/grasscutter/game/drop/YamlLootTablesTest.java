@@ -169,9 +169,9 @@ class YamlLootTablesTest {
     }
 
     @Test
-    void decimalCountsAndWeightsAreRejected() {
-        assertThrows(IllegalArgumentException.class, () -> LootCount.parse("0.7"));
-        assertThrows(IllegalArgumentException.class, () -> LootCount.parse("2.2"));
+    void fractionalNativeCountsAreSupportedButDecimalWeightsAreRejected() {
+        assertDoesNotThrow(() -> LootCount.parse("0.7"));
+        assertDoesNotThrow(() -> LootCount.parse("2.2"));
         assertThrows(IllegalArgumentException.class, () -> LootCount.parse("1:12.5,2:87.5"));
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 bad:

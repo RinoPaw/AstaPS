@@ -115,9 +115,18 @@ public class GadgetChest extends GadgetContent {
                 return false;
             }
             if (!granted) return false;
-            player.getBattlePassManager().triggerMission(
-                    WatcherTriggerType.TRIGGER_WORLD_BOSS_REWARD,
-                    bossMeta.boss_chest.monster_config_id, 1);
+            // Battle-pass bookkeeping must not turn an already-paid claim into a retry.
+            try {
+                var battlePass = player.getBattlePassManager();
+                if (battlePass != null) {
+                    battlePass.triggerMission(
+                            WatcherTriggerType.TRIGGER_WORLD_BOSS_REWARD,
+                            bossMeta.boss_chest.monster_config_id, 1);
+                }
+            } catch (RuntimeException e) {
+                Grasscutter.getLogger().warn(
+                        "World boss battle-pass bookkeeping failed uid={}", player.getUid(), e);
+            }
             finishBossClaim(player, bossMeta);
             return false;
         }

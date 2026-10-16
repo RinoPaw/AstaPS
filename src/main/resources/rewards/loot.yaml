@@ -58,7 +58,8 @@ mondstadt_talent_guides: &mondstadt_talent_guides
   - {reward: genshin.material.guide_to_resistance, weight: 1}
   - {reward: genshin.material.guide_to_ballad, weight: 1}
 
-# Artifact variants grouped by rarity and initial substat count.
+# Artifact slots: 1=flower, 2=plume, 3=sands, 4=goblet, 5=circlet.
+# Variants grouped by rarity and initial substat count.
 artifacts_1_star_0_substats: &artifacts_1_star_0_substats
   - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 1}, weight: 1}
   - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 1}, weight: 1}
@@ -222,11 +223,8 @@ ultra:
   - {reward: genshin.weapon_exp.mystic_ore, count: "3:80,4:20"}
   - {reward: *artifacts_3_to_4_high, count: "2:50,3:50"}
 
-# Historical Trounce Boss rewards (sourceType 35): complete main/subtable graphs.
-# Native IDs stay in source JSON; every payable item below has a semantic identity.
-# These ten historical Boss tags are staging data. Dungeon-to-Boss joins, current
-# 7.1 drop rates, and weekly Resin discount accounting still require verification.
-# Do not activate partial or inferred payouts from these tables.
+# Weekly Boss drops (ChestDrop sourceType 35); staged only.
+# Dungeon mapping, 7.1 drop rates and weekly Resin discounts remain unverified.
 
 weekly_shouki_no_kami_level_1_weapon_billets: &weekly_shouki_no_kami_level_1_weapon_billets
   - {reward: genshin.material.midlander_sword_billet, weight: 1}
@@ -4757,9 +4755,8 @@ weekly_stormterror_level_120:
   - {reward: *weekly_shouki_no_kami_level_50_artifacts, count: "1+1:23"}
 
 
-# Source-backed 7.1 normal-boss rewards, by native boss tag and monster level.
-# These 23 boss families have complete resolvable item leaves; unresolved legacy
-# source roots are excluded until their virtual artifact IDs can be identified.
+# World Boss drops (ChestDrop sourceType 34); source tag and level select the table.
+# Unresolved native artifact identities are excluded.
 world_frostnight_scion_level_1_artifacts: &world_frostnight_scion_level_1_artifacts
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, weight: 1}
 
@@ -9694,10 +9691,8 @@ world_chimera_sky_roamer_level_120:
   - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 
-# Historical world Boss main+subtable graphs; CSS selects only the boss tag and native level.
-# Only sources with resolvable semantic inventory resources are included.
-# The native precision-clockwork boss family remains excluded until its
-# artifact leaves can be identified; no partial boss loot is fabricated.
+# Historical World Boss drop tables (ChestDrop sourceType 34).
+# Precision Clockwork source omitted: artifact identities unresolved.
 world_electro_hypostasis_level_1_gems: &world_electro_hypostasis_level_1_gems
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 1}
 

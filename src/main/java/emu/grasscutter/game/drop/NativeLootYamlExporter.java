@@ -1,10 +1,10 @@
 package emu.grasscutter.game.drop;
 
-import emu.grasscutter.data.ResourceId;
-import emu.grasscutter.data.ItemIdRegistry;
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.game.inventory.ItemType;
+import emu.grasscutter.data.ItemIdRegistry;
+import emu.grasscutter.data.ResourceId;
 import emu.grasscutter.data.excels.DropTableData;
+import emu.grasscutter.game.inventory.ItemType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

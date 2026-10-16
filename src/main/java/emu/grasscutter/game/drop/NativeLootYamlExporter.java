@@ -124,7 +124,7 @@ public final class NativeLootYamlExporter {
                     if (!"genshin".equals(resource.namespace())
                             || !Set.of("currency", "experience", "avatar_exp", "weapon_exp",
                                     "artifact_exp", "avatar_ascension", "weapon_ascension", "talent",
-                                    "weapon_crafting", "material", "food", "furnishing",
+                                    "weapon_crafting", "monster_drop", "material", "food", "furnishing",
                                     "weapon", "artifact").contains(resource.type())
                             || resource.name().matches("id_[0-9]+")) {
                         throw new IllegalArgumentException("Expected semantic genshin resource name");

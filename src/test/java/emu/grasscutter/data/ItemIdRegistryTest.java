@@ -172,6 +172,43 @@ class ItemIdRegistryTest {
     }
 
     @Test
+    void talentBooksUseSubjectAndTierPathWithNoLegacyAliases() {
+        var names = new java.util.LinkedHashMap<Integer, String>();
+        var categories = new java.util.HashMap<Integer, String>();
+        String[] subjects = {"freedom", "resistance", "ballad", "prosperity",
+                "diligence", "gold", "transience", "elegance", "light",
+                "admonition", "ingenuity", "praxis", "justice"};
+        String[] grades = {"teachings", "guide", "philosophies"};
+        String[] nativePrefixes = {"teachings_of_", "guide_to_", "philosophies_of_"};
+        int next = 12000;
+        for (String subject : subjects) {
+            for (String nativePrefix : nativePrefixes) {
+                int id = ++next;
+                names.put(id, (nativePrefix + subject).replace('_', ' '));
+                categories.put(id, "Talent Level-Up Materials");
+            }
+        }
+        var items = new ItemIdRegistry(names, categories);
+        next = 12000;
+        for (String subject : subjects) {
+            for (int grade = 0; grade < grades.length; grade++) {
+                int id = ++next;
+                String canonical = "genshin.talent_up." + subject + "." + grades[grade];
+                String legacy = "genshin.talent_up." + nativePrefixes[grade] + subject;
+                assertEquals(canonical, items.describe(id).key());
+                assertEquals(id, items.resolve(canonical));
+                assertThrows(IllegalArgumentException.class, () -> items.resolve(legacy));
+                assertThrows(IllegalArgumentException.class, () ->
+                        items.resolve("genshin.material." + nativePrefixes[grade] + subject));
+            }
+        }
+        assertThrows(IllegalArgumentException.class,
+                () -> items.resolve("genshin.talent_up.freedom"));
+        assertThrows(IllegalArgumentException.class,
+                () -> items.resolve("genshin.talent_up.freedom.unknown"));
+    }
+
+    @Test
     void levelUpAndAscensionHaveDistinctTypesAcrossSystems() {
         var registry = new ItemIdRegistry(Map.of(
                 104003, "Hero's Wit", 104011, "Enhancement Ore",

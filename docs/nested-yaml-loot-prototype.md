@@ -36,7 +36,7 @@ These twelve names are registered under `astaps.loot`, for example
 first in `loot.yaml`, grouped by reward content (weapons, ingredients, talent
 books and artifacts) rather than by chest type or level. The twelve selectable
 tiers follow in ascending order. Boss source graphs add many more named
-pools; the bundled YAML currently contains 2,222 top-level loot tables.
+pools; the bundled YAML currently contains 2,167 top-level loot tables.
 
 The artifact distributions are `artifacts_1_to_2_low`,
 `artifacts_1_to_2_high`, `artifacts_1_to_3`, `artifacts_2_to_3`,
@@ -203,7 +203,10 @@ mapping:
   properties: {slot: "1~5", rarity: 1}
 ```
 
-Slots 1–5 mean flower, plume, sands, goblet, circlet. Omitted slot and rarity
+Slots 1–5 mean flower, plume, sands, goblet, circlet. A full five-slot
+weighted subtable can be inlined as a single artifact with
+`properties: {slot: "1~5", rarity: 4, substats: 2}`, preserving
+uniform slot probability and the parent's selection weight. Omitted slot and rarity
 choose uniformly from available ordinary variants. Missing `substats` chooses
 uniformly from the usual valid counts per rank (1★ 0, 2★ 0–1, 3★ 1–2,
 4★ 2–3, 5★ 3–4). This is a project policy, not a confirmed 7.1 drop-rate

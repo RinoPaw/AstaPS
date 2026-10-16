@@ -58,8 +58,8 @@ final class BundledBossRewardsTest {
                 .filter(line -> line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
 
         // Equal-weight five-slot artifact pools are inlined into their callers.
-        assertFalse(loot.contains("astaps.loot.weekly_shouki_no_kami_level_30_artifacts_variant_7"));
-        assertFalse(loot.contains("astaps.loot.world_electro_hypostasis_level_45_artifacts_variant_6"));
+        assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct98p92_artifacts_variant_7"));
+        assertFalse(loot.contains("astaps.loot.world_lightning_prism_roll_1plus1pct78p03_artifacts_variant_6"));
         assertTrue(yaml.contains("reward: genshin.artifact.the_exile, properties: {slot: \"1~5\", rarity: 4, substats: 2}, weight: 1"));
 
         // Shared Boss artifact pools encode equivalent 33:17 substat odds directly.
@@ -74,12 +74,20 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools have content-based names; Boss-level entry names are stable.
-        assertEquals(1393, loot.names().size());
+        assertEquals(1391, loot.names().size());
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));
-        assertFalse(loot.contains("astaps.loot.weekly_shouki_no_kami_level_1_weapon_billets"));
+        assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p2_weapon_billets"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+_[a-z0-9_]+:.*")));
+
+        // Only CSS knows Boss identity and native level; Loot knows reward content and type.
+        assertTrue(yaml.lines().noneMatch(line -> line.matches(
+                "^(world|weekly)_[a-z0-9_]+_level_[0-9]+:.*")));
+        assertTrue(loot.names().stream().anyMatch(name ->
+                name.startsWith("astaps.loot.weekly_")));
+        assertTrue(loot.names().stream().anyMatch(name ->
+                name.startsWith("astaps.loot.world_")));
 
         // Shared Boss rewards depend on type/level. Specific loot still needs a tag.
         var unidentified = css.resolve("boss", Map.of("type", "world", "level", "105"));
@@ -96,11 +104,11 @@ final class BundledBossRewardsTest {
                 "type", "world", "tag", "frostnight_scion", "level", "1"));
         assertEquals(1825, normal.items().get(202));
         assertEquals(200, normal.items().get(102));
-        assertEquals(1, normal.loot().get("astaps.loot.world_frostnight_scion_level_1"));
+        assertEquals(1, normal.loot().get("astaps.loot.world_frostnights_glory_roll_1plus1pct33p86"));
 
         var legacy = css.resolve("boss", Map.of(
                 "type", "world", "tag", "electro_hypostasis", "level", "36"));
-        assertEquals(1, legacy.loot().get("astaps.loot.world_electro_hypostasis_level_35"));
+        assertEquals(1, legacy.loot().get("astaps.loot.world_lightning_prism_roll_1plus1pct60p8"));
 
         // Native source text tags are translated only for CSS selection.
         // The original Chinese tag still belongs to the native fallback.
@@ -111,18 +119,18 @@ final class BundledBossRewardsTest {
                 "electro_hypostasis", 105, new java.util.Random(71)).get(202));
 
         // CSS references the canonical pool directly; no duplicate Boss-level aliases.
-        assertTrue(loot.contains("astaps.loot.world_frostnight_scion_level_100"));
-        assertFalse(loot.contains("astaps.loot.world_frostnight_scion_level_105"));
-        assertFalse(loot.contains("astaps.loot.weekly_shouki_no_kami_level_100"));
+        assertTrue(loot.contains("astaps.loot.world_frostnights_glory_roll_1plus1pct33p8600"));
+        assertFalse(loot.contains("astaps.loot.world_frostnights_glory_roll_1plus1pct33p8605"));
+        assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p200"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+: \\*[a-z0-9_]+$")));
-        assertEquals(Map.of("astaps.loot.world_frostnight_scion_level_100", 1),
+        assertEquals(Map.of("astaps.loot.world_frostnights_glory_roll_1plus1pct33p8600", 1),
                 css.resolve("boss", Map.of(
                         "type", "world", "tag", "frostnight_scion", "level", "105")).loot());
-        assertEquals(Map.of("astaps.loot.weekly_shouki_no_kami_level_93", 1),
+        assertEquals(Map.of("astaps.loot.weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct40", 1),
                 css.resolve("boss", Map.of(
                         "type", "weekly", "tag", "shouki_no_kami", "level", "120")).loot());
-        assertEquals(Map.of("astaps.loot.world_cryo_regisvine_level_1", 1),
+        assertEquals(Map.of("astaps.loot.world_gems_anemo_sliver_roll_1plus1pct47p246", 1),
                 css.resolve("boss", Map.of(
                         "type", "world", "tag", "cryo_hypostasis", "level", "1")).loot());
 
@@ -132,11 +140,11 @@ final class BundledBossRewardsTest {
         assertEquals(6000, highWorld.items().get(202));
         assertEquals(45, highWorld.items().get(105));
         assertEquals(200, highWorld.items().get(101));
-        assertEquals(1, highWorld.loot().get("astaps.loot.world_electro_hypostasis_level_93"));
+        assertEquals(1, highWorld.loot().get("astaps.loot.world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1"));
 
         var weekly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "stormterror", "level", "90"));
         assertEquals(300, weekly.items().get(102));
-        assertEquals(1, weekly.loot().get("astaps.loot.weekly_stormterror_level_90"));
+        assertEquals(1, weekly.loot().get("astaps.loot.weekly_talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh_roll_2plus1pct10"));
     }
 }

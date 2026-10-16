@@ -52,9 +52,9 @@ final class BundledBossRewardsTest {
                 Map.entry(305, "Anemo Sigil"),
                 Map.entry(307, "Geo Sigil")));
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known), loot);
-        assertEquals(1175, stylesheet.lines()
+        assertEquals(965, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
-        assertEquals(250, stylesheet.lines()
+        assertEquals(200, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
 
         // Equal-weight five-slot artifact pools are inlined into their callers.
@@ -74,7 +74,7 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools have content-based names; Boss-level entry names are stable.
-        assertEquals(1707, loot.names().size());
+        assertEquals(1393, loot.names().size());
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));
         assertFalse(loot.contains("astaps.loot.weekly_shouki_no_kami_level_1_weapon_billets"));
@@ -110,11 +110,21 @@ final class BundledBossRewardsTest {
         assertEquals(6000, rewardConfig.rollWorldBoss(
                 "electro_hypostasis", 105, new java.util.Random(71)).get(202));
 
-        // Reused YAML pools keep each externally addressable table name.
-        assertTrue(loot.contains("astaps.loot.world_frostnight_scion_level_105"));
-        assertEquals(
-                loot.roll("astaps.loot.world_frostnight_scion_level_100", new java.util.Random(71)),
-                loot.roll("astaps.loot.world_frostnight_scion_level_105", new java.util.Random(71)));
+        // CSS references the canonical pool directly; no duplicate Boss-level aliases.
+        assertTrue(loot.contains("astaps.loot.world_frostnight_scion_level_100"));
+        assertFalse(loot.contains("astaps.loot.world_frostnight_scion_level_105"));
+        assertFalse(loot.contains("astaps.loot.weekly_shouki_no_kami_level_100"));
+        assertTrue(yaml.lines().noneMatch(line -> line.matches(
+                "^(world|weekly)_.+_level_[0-9]+: \\*[a-z0-9_]+$")));
+        assertEquals(Map.of("astaps.loot.world_frostnight_scion_level_100", 1),
+                css.resolve("boss", Map.of(
+                        "type", "world", "tag", "frostnight_scion", "level", "105")).loot());
+        assertEquals(Map.of("astaps.loot.weekly_shouki_no_kami_level_93", 1),
+                css.resolve("boss", Map.of(
+                        "type", "weekly", "tag", "shouki_no_kami", "level", "120")).loot());
+        assertEquals(Map.of("astaps.loot.world_cryo_regisvine_level_1", 1),
+                css.resolve("boss", Map.of(
+                        "type", "world", "tag", "cryo_hypostasis", "level", "1")).loot());
 
         var highWorld = css.resolve("boss", Map.of(
                 "type", "world", "tag", "electro_hypostasis", "level", "105"));
@@ -122,7 +132,7 @@ final class BundledBossRewardsTest {
         assertEquals(6000, highWorld.items().get(202));
         assertEquals(45, highWorld.items().get(105));
         assertEquals(200, highWorld.items().get(101));
-        assertEquals(1, highWorld.loot().get("astaps.loot.world_electro_hypostasis_level_105"));
+        assertEquals(1, highWorld.loot().get("astaps.loot.world_electro_hypostasis_level_93"));
 
         var weekly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "stormterror", "level", "90"));

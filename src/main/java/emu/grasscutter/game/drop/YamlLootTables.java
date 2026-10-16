@@ -25,7 +25,7 @@ public final class YamlLootTables {
     }
 
     private record Entry(Integer rewardId, ArtifactResolver.Selector artifact,
-                         GradeSelector gem, Pool nested, LootCount.Spec count, BigDecimal weight) {}
+                         GradeSelector grade, Pool nested, LootCount.Spec count, BigDecimal weight) {}
 
     /**
      * An advancement family resolves one native item per rarity. Rarity probabilities

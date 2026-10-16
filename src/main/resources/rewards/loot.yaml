@@ -43,14 +43,14 @@ meat_ingredients: &meat_ingredients
 
 # Talent books by region and grade.
 mondstadt_talent_teachings: &mondstadt_talent_teachings
-  - {reward: genshin.talent_level_up.teachings_of_freedom, weight: 1}
-  - {reward: genshin.talent_level_up.teachings_of_resistance, weight: 1}
-  - {reward: genshin.talent_level_up.teachings_of_ballad, weight: 1}
+  - {reward: genshin.talent_up.teachings_of_freedom, weight: 1}
+  - {reward: genshin.talent_up.teachings_of_resistance, weight: 1}
+  - {reward: genshin.talent_up.teachings_of_ballad, weight: 1}
 
 mondstadt_talent_guides: &mondstadt_talent_guides
-  - {reward: genshin.talent_level_up.guide_to_freedom, weight: 1}
-  - {reward: genshin.talent_level_up.guide_to_resistance, weight: 1}
-  - {reward: genshin.talent_level_up.guide_to_ballad, weight: 1}
+  - {reward: genshin.talent_up.guide_to_freedom, weight: 1}
+  - {reward: genshin.talent_up.guide_to_resistance, weight: 1}
+  - {reward: genshin.talent_up.guide_to_ballad, weight: 1}
 
 # Artifact slots: 1=flower, 2=plume, 3=sands, 4=goblet, 5=circlet.
 # Variants grouped by rarity and initial substat count.
@@ -124,97 +124,97 @@ artifacts_3_to_4_high: &artifacts_3_to_4_high
 
 minimal:
   - {reward: *meat_ingredients, count: "1:50"}
-  - {reward: genshin.avatar_level_up.wanderers_advice, count: "1:40,2:60"}
-  - {reward: genshin.avatar_level_up.adventurers_experience, count: "1:15"}
+  - {reward: genshin.avatar_up.wanderers_advice, count: "1:40,2:60"}
+  - {reward: genshin.avatar_up.adventurers_experience, count: "1:15"}
   - {reward: *weapons_1_star, count: "1:40"}
-  - {reward: genshin.weapon_level_up.enhancement_ore, count: "2:90,3:10"}
-  - {reward: genshin.weapon_level_up.fine_ore, count: "1:20"}
+  - {reward: genshin.weapon_up.enhancement_ore, count: "2:90,3:10"}
+  - {reward: genshin.weapon_up.fine_ore, count: "1:20"}
   - {reward: *artifacts_1_to_2_low, count: "1:52"}
 
 nano:
   - {reward: *meat_ingredients, count: "1:50"}
-  - {reward: genshin.avatar_level_up.wanderers_advice, count: "2:90,3:10"}
-  - {reward: genshin.avatar_level_up.adventurers_experience, count: "1:30"}
+  - {reward: genshin.avatar_up.wanderers_advice, count: "2:90,3:10"}
+  - {reward: genshin.avatar_up.adventurers_experience, count: "1:30"}
   - {reward: *weapons_1_to_2_low, count: "1:50"}
-  - {reward: genshin.weapon_level_up.enhancement_ore, count: "2:40,3:60"}
-  - {reward: genshin.weapon_level_up.fine_ore, count: "1:40"}
+  - {reward: genshin.weapon_up.enhancement_ore, count: "2:40,3:60"}
+  - {reward: genshin.weapon_up.fine_ore, count: "1:40"}
   - {reward: *artifacts_1_to_2_low, count: "1:80"}
 
 micro:
-  - {reward: genshin.avatar_level_up.wanderers_advice, count: "2:40,3:60"}
-  - {reward: genshin.avatar_level_up.adventurers_experience, count: "1:40"}
+  - {reward: genshin.avatar_up.wanderers_advice, count: "2:40,3:60"}
+  - {reward: genshin.avatar_up.adventurers_experience, count: "1:40"}
   - {reward: *weapons_1_to_2_medium, count: "1:60"}
-  - {reward: genshin.weapon_level_up.enhancement_ore, count: "3:90,4:10"}
-  - {reward: genshin.weapon_level_up.fine_ore, count: "1:60"}
+  - {reward: genshin.weapon_up.enhancement_ore, count: "3:90,4:10"}
+  - {reward: genshin.weapon_up.fine_ore, count: "1:60"}
   - {reward: *artifacts_1_to_2_low, count: "1:80,2:20"}
 
 light:
-  - {reward: genshin.avatar_level_up.wanderers_advice, count: "3:90,4:10"}
-  - {reward: genshin.avatar_level_up.adventurers_experience, count: "1:50"}
+  - {reward: genshin.avatar_up.wanderers_advice, count: "3:90,4:10"}
+  - {reward: genshin.avatar_up.adventurers_experience, count: "1:50"}
   - {reward: *weapons_1_to_2_medium, count: "1:70"}
-  - {reward: genshin.weapon_level_up.enhancement_ore, count: "4:90,5:10"}
-  - {reward: genshin.weapon_level_up.fine_ore, count: "1:60"}
+  - {reward: genshin.weapon_up.enhancement_ore, count: "4:90,5:10"}
+  - {reward: genshin.weapon_up.fine_ore, count: "1:60"}
   - {reward: *artifacts_1_to_2_high, count: "1:50,2:50"}
 
 low:
-  - {reward: genshin.avatar_level_up.wanderers_advice, count: "3:40,4:60"}
-  - {reward: genshin.avatar_level_up.adventurers_experience, count: "1:60"}
+  - {reward: genshin.avatar_up.wanderers_advice, count: "3:40,4:60"}
+  - {reward: genshin.avatar_up.adventurers_experience, count: "1:60"}
   - {reward: *weapons_2_star, count: "1:80"}
-  - {reward: genshin.weapon_level_up.enhancement_ore, count: "5:90,6:10"}
-  - {reward: genshin.weapon_level_up.fine_ore, count: "1:60"}
+  - {reward: genshin.weapon_up.enhancement_ore, count: "5:90,6:10"}
+  - {reward: genshin.weapon_up.fine_ore, count: "1:60"}
   - {reward: *artifacts_1_to_2_high, count: "1:25,2:75"}
 
 medium:
-  - {reward: genshin.avatar_level_up.adventurers_experience, count: "2:90,3:10"}
+  - {reward: genshin.avatar_up.adventurers_experience, count: "2:90,3:10"}
   - {reward: *mondstadt_talent_teachings, count: "1:25"}
   - {reward: *weapons_2_star, count: "1:90"}
-  - {reward: genshin.weapon_level_up.fine_ore, count: "3:90,4:10"}
+  - {reward: genshin.weapon_up.fine_ore, count: "3:90,4:10"}
   - {reward: *artifacts_1_to_3, count: "1:25,2:75"}
 
 high:
-  - {reward: genshin.avatar_level_up.adventurers_experience, count: "2:40,3:60"}
+  - {reward: genshin.avatar_up.adventurers_experience, count: "2:40,3:60"}
   - {reward: *mondstadt_talent_teachings, count: "1:25"}
   - {reward: *weapons_2_to_3_low}
-  - {reward: genshin.weapon_level_up.fine_ore, count: "4:90,5:10"}
+  - {reward: genshin.weapon_up.fine_ore, count: "4:90,5:10"}
   - {reward: *artifacts_1_to_3, count: "2"}
 
 xhigh:
-  - {reward: genshin.avatar_level_up.adventurers_experience, count: "1:90,2:10"}
-  - {reward: genshin.avatar_level_up.heros_wit}
+  - {reward: genshin.avatar_up.adventurers_experience, count: "1:90,2:10"}
+  - {reward: genshin.avatar_up.heros_wit}
   - {reward: *mondstadt_talent_teachings}
   - {reward: *weapons_2_to_3_low, count: "1:90,2:10"}
-  - {reward: genshin.weapon_level_up.fine_ore, count: "2:90,3:10"}
-  - {reward: genshin.weapon_level_up.mystic_ore}
+  - {reward: genshin.weapon_up.fine_ore, count: "2:90,3:10"}
+  - {reward: genshin.weapon_up.mystic_ore}
   - {reward: *artifacts_2_to_3, count: "2"}
 
 xxhigh:
-  - {reward: genshin.avatar_level_up.adventurers_experience, count: "1:40,2:60"}
-  - {reward: genshin.avatar_level_up.heros_wit}
+  - {reward: genshin.avatar_up.adventurers_experience, count: "1:40,2:60"}
+  - {reward: genshin.avatar_up.heros_wit}
   - {reward: *mondstadt_talent_teachings}
   - {reward: *weapons_2_to_3_high, count: "1:80,2:20"}
-  - {reward: genshin.weapon_level_up.fine_ore, count: "3:90,4:10"}
-  - {reward: genshin.weapon_level_up.mystic_ore}
+  - {reward: genshin.weapon_up.fine_ore, count: "3:90,4:10"}
+  - {reward: genshin.weapon_up.mystic_ore}
   - {reward: *artifacts_3_to_4_low, count: "2:75,3:25"}
 
 xxxhigh:
-  - {reward: genshin.avatar_level_up.heros_wit, count: "2"}
+  - {reward: genshin.avatar_up.heros_wit, count: "2"}
   - {reward: *mondstadt_talent_guides}
   - {reward: *weapons_2_to_3_high, count: "1:70,2:30"}
-  - {reward: genshin.weapon_level_up.mystic_ore, count: "3"}
+  - {reward: genshin.weapon_up.mystic_ore, count: "3"}
   - {reward: *artifacts_3_to_4_low, count: "2:75,3:25"}
 
 max:
-  - {reward: genshin.avatar_level_up.heros_wit, count: "2:95,3:5"}
+  - {reward: genshin.avatar_up.heros_wit, count: "2:95,3:5"}
   - {reward: *mondstadt_talent_guides}
   - {reward: *weapons_3_star, count: "1:60,2:40"}
-  - {reward: genshin.weapon_level_up.mystic_ore, count: "3:90,4:10"}
+  - {reward: genshin.weapon_up.mystic_ore, count: "3:90,4:10"}
   - {reward: *artifacts_3_to_4_high, count: "2:50,3:50"}
 
 ultra:
-  - {reward: genshin.avatar_level_up.heros_wit, count: "2:90,3:10"}
+  - {reward: genshin.avatar_up.heros_wit, count: "2:90,3:10"}
   - {reward: *mondstadt_talent_guides}
   - {reward: *weapons_3_star, count: "1:50,2:50"}
-  - {reward: genshin.weapon_level_up.mystic_ore, count: "3:80,4:20"}
+  - {reward: genshin.weapon_up.mystic_ore, count: "3:80,4:20"}
   - {reward: *artifacts_3_to_4_high, count: "2:50,3:50"}
 
 # CSS-selected single-item pools. Execution counts live in rewards.css.
@@ -327,9 +327,9 @@ weekly_gems_cryo_electro_hydro_fragment_first_electro_shivada_jade_chunk_weight_
     count: "3+1:98.37"
 
 talent_materials_puppet_strings_mirror_of_mushin_dakas_bell: &talent_materials_puppet_strings_mirror_of_mushin_dakas_bell
-  - {reward: genshin.talent_level_up.puppet_strings, weight: 1}
-  - {reward: genshin.talent_level_up.mirror_of_mushin, weight: 1}
-  - {reward: genshin.talent_level_up.dakas_bell, weight: 1}
+  - {reward: genshin.talent_up.puppet_strings, weight: 1}
+  - {reward: genshin.talent_up.mirror_of_mushin, weight: 1}
+  - {reward: genshin.talent_up.dakas_bell, weight: 1}
 
 weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_702:
   - {reward: *talent_materials_puppet_strings_mirror_of_mushin_dakas_bell}
@@ -514,9 +514,9 @@ weekly_gems_anemo_electro_hydro_fragment_vajrada_amethyst_chunk_weight_664:
     count: "3+1:98.37"
 
 talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior: &talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior
-  - {reward: genshin.talent_level_up.tusk_of_monoceros_caeli, weight: 1}
-  - {reward: genshin.talent_level_up.shard_of_a_foul_legacy, weight: 1}
-  - {reward: genshin.talent_level_up.shadow_of_the_warrior, weight: 1}
+  - {reward: genshin.talent_up.tusk_of_monoceros_caeli, weight: 1}
+  - {reward: genshin.talent_up.shard_of_a_foul_legacy, weight: 1}
+  - {reward: genshin.talent_up.shadow_of_the_warrior, weight: 1}
 
 weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_702:
   - {reward: *talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior}
@@ -694,9 +694,9 @@ weekly_gems_anemo_geo_pyro_fragment_first_anemo_agnidus_agate_chunk_weight_664:
     count: "3+1:98.37"
 
 talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: &talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas
-  - {reward: genshin.talent_level_up.tail_of_boreas, weight: 1}
-  - {reward: genshin.talent_level_up.ring_of_boreas, weight: 1}
-  - {reward: genshin.talent_level_up.spirit_locket_of_boreas, weight: 1}
+  - {reward: genshin.talent_up.tail_of_boreas, weight: 1}
+  - {reward: genshin.talent_up.ring_of_boreas, weight: 1}
+  - {reward: genshin.talent_up.spirit_locket_of_boreas, weight: 1}
 
 weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_702:
   - {reward: *talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas}
@@ -858,9 +858,9 @@ weekly_gems_anemo_pyro_fragment_agnidus_agate_chunk_weight_664:
     count: "3+1:98.37"
 
 talent_materials_molten_moment_hellfire_butterfly_ashen_heart: &talent_materials_molten_moment_hellfire_butterfly_ashen_heart
-  - {reward: genshin.talent_level_up.molten_moment, weight: 1}
-  - {reward: genshin.talent_level_up.hellfire_butterfly, weight: 1}
-  - {reward: genshin.talent_level_up.ashen_heart, weight: 1}
+  - {reward: genshin.talent_up.molten_moment, weight: 1}
+  - {reward: genshin.talent_up.hellfire_butterfly, weight: 1}
+  - {reward: genshin.talent_up.ashen_heart, weight: 1}
 
 weekly_talent_materials_molten_moment_agnidus_agate_chunk_weight_702:
   - {reward: *talent_materials_molten_moment_hellfire_butterfly_ashen_heart}
@@ -1019,9 +1019,9 @@ weekly_gems_anemo_geo_hydro_fragment_prithiva_topaz_chunk_weight_664:
     count: "3+1:98.37"
 
 talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: &talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale
-  - {reward: genshin.talent_level_up.dragon_lords_crown, weight: 1}
-  - {reward: genshin.talent_level_up.bloodjade_branch, weight: 1}
-  - {reward: genshin.talent_level_up.gilded_scale, weight: 1}
+  - {reward: genshin.talent_up.dragon_lords_crown, weight: 1}
+  - {reward: genshin.talent_up.bloodjade_branch, weight: 1}
+  - {reward: genshin.talent_up.gilded_scale, weight: 1}
 
 weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_702_varunada_lazurite_chunk_roll_1:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale}
@@ -1662,9 +1662,9 @@ weekly_gems_electro_fragment_vajrada_amethyst_chunk_weight_664:
     count: "3+1:98.37"
 
 talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons: &talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons
-  - {reward: genshin.talent_level_up.mudra_of_the_malefic_general, weight: 1}
-  - {reward: genshin.talent_level_up.tears_of_the_calamitous_god, weight: 1}
-  - {reward: genshin.talent_level_up.the_meaning_of_aeons, weight: 1}
+  - {reward: genshin.talent_up.mudra_of_the_malefic_general, weight: 1}
+  - {reward: genshin.talent_up.tears_of_the_calamitous_god, weight: 1}
+  - {reward: genshin.talent_up.the_meaning_of_aeons, weight: 1}
 
 weekly_talent_materials_mudra_of_vajrada_amethyst_chunk_weight_702:
   - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons}
@@ -1794,9 +1794,9 @@ weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_chunk_weight_664
     count: "3+1:98.37"
 
 talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh: &talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh
-  - {reward: genshin.talent_level_up.dvalins_plume, weight: 1}
-  - {reward: genshin.talent_level_up.dvalins_claw, weight: 1}
-  - {reward: genshin.talent_level_up.dvalins_sigh, weight: 1}
+  - {reward: genshin.talent_up.dvalins_plume, weight: 1}
+  - {reward: genshin.talent_up.dvalins_claw, weight: 1}
+  - {reward: genshin.talent_up.dvalins_sigh, weight: 1}
 
 weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_702:
   - {reward: *talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh}

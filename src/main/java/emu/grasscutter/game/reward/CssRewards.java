@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Evaluator;
@@ -45,6 +46,12 @@ public final class CssRewards {
             "\\[\\s*([a-zA-Z_][a-zA-Z0-9_-]*)\\s*=\\s*([\"'])([0-9]+)~([0-9]*)\\2\\s*\\]");
     private static final Pattern MALFORMED_ATTRIBUTE_RANGE = Pattern.compile(
             "\\[\\s*([a-zA-Z_][a-zA-Z0-9_-]*)\\s*=\\s*([\"'])[^\"']*~[^\"']*\\2\\s*\\]");
+
+    // Dotted resource keys belong to the rewards dialect, while ph-css needs
+    // conventional CSS property identifiers. Encode declarations only; leave
+    // CSS selectors, values and the canonical resource IDs unchanged.
+    private static final Pattern RESOURCE_DECLARATION = Pattern.compile(
+            "(?m)^([ \\t]*)([a-z][a-z0-9_]*(?:\\.[\\p{L}\\p{N}_-]+){2,})\\s*:");
 
     private record AttributeRange(String name, long min, Long max) {
         boolean matches(Map<String, String> attributes) {
@@ -83,12 +90,25 @@ public final class CssRewards {
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
+        // Transform resource declarations into CSS-safe temporary properties.
+        // Every occurrence gets a distinct temporary key; the original key is
+        // recovered before resolving resource identities and cascade rules.
+        var originalProperties = new HashMap<String, String>();
+        var propertyMatcher = RESOURCE_DECLARATION.matcher(source);
+        var propertyBuffer = new StringBuffer();
+        while (propertyMatcher.find()) {
+            String surrogate = "--resource-path-" + originalProperties.size();
+            originalProperties.put(surrogate, propertyMatcher.group(2));
+            propertyMatcher.appendReplacement(propertyBuffer, Matcher.quoteReplacement(
+                    propertyMatcher.group(1) + surrogate + ":"));
+        }
+        propertyMatcher.appendTail(propertyBuffer);
         // Preserve unquoted count ranges and distributions across CSS tokenization.
-        String normalized = source.replaceAll(
-                "(--(?:genshin-(?:currency|experience|avatar_exp|avatar_ascension|weapon_exp|artifact_exp|monster_drop|material|food|furnishing|weapon)|astaps-loot)-[\\p{L}\\p{N}_-]+\\s*:\\s*)([0-9]+)\\s*~\\s*([0-9]+)(\\s*;)",
+        String normalized = propertyBuffer.toString().replaceAll(
+                "(--[\\\\p{L}\\\\p{N}_-]+\\\\s*:\\\\s*)([0-9]+)\\\\s*~\\\\s*([0-9]+)(\\\\s*;)",
                 "$1'$2~$3'$4");
         normalized = normalized.replaceAll(
-                "(--astaps-loot-[\\p{L}\\p{N}_-]+\\s*:\\s*)([0-9]+\\s*:[^;'\\\"{}]*)(\\s*;)",
+                "(--[\\\\p{L}\\\\p{N}_-]+\\\\s*:\\\\s*)([0-9]+\\\\s*:[^;'\\\\\"{}]*)(\\\\s*;)",
                 "$1'$2'$3");
         var sheet = CSSReader.readFromString(normalized);
         if (sheet == null) throw new IllegalArgumentException("Invalid rewards.css");
@@ -112,8 +132,9 @@ public final class CssRewards {
                         || (value.startsWith("'") && value.endsWith("'")))) {
                     value = value.substring(1, value.length() - 1);
                 }
-                ResourceId resource = ResourceId.fromCssProperty(property);
-                if ("loot".equals(resource.type())) {
+                ResourceId resource = ResourceId.fromCssProperty(
+                        originalProperties.getOrDefault(property, property));
+                if (resource.size() >= 3 && "loot".equals(resource.segment(1))) {
                     String name = loot.resolveName(resource.toString());
                     if (value.matches("[0-9]+")) {
                         selectedLoot.put(name, Integer.parseInt(value));

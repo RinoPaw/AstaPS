@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 
 class YamlLootTablesTest {
     private final YamlLootTables.ItemResolver resolver = name -> switch (name) {
-        case "genshin.currency.mora", "202" -> 202;
-        case "genshin.avatar_exp.heros_wit", "104003" -> 104003;
-        case "genshin.avatar_exp.adventurers_experience", "104002" -> 104002;
+        case "genshin.currency.mora" -> 202;
+        case "genshin.avatar_exp.heros_wit" -> 104003;
+        case "genshin.avatar_exp.adventurers_experience" -> 104002;
         default -> -2; // -1 is reserved for the regional-sigil placeholder.
     };
 
@@ -287,7 +287,7 @@ class YamlLootTablesTest {
     void quotedCountSupportsRangesAndPercentages() {
         var tables = parse("""
                 chest:
-                  - {reward: 202, count: "2~4"}
+                  - {reward: genshin.currency.mora, count: "2~4"}
                   - {reward: genshin.avatar_exp.heros_wit, count: "1:80"}
                   - {reward: genshin.avatar_exp.adventurers_experience, count: "2:80,3:20"}
                 """);
@@ -317,7 +317,7 @@ class YamlLootTablesTest {
                   - {reward: genshin.avatar_exp.heros_wit, weight: 1}
                   - {reward: genshin.avatar_exp.adventurers_experience, count: 2, weight: 3}
                 chest:
-                  - {reward: 202, count: 300}
+                  - {reward: genshin.currency.mora, count: 300}
                   - {reward: *exp, count: "1:70"}
                 """);
         int none = 0, big = 0, small = 0;
@@ -426,6 +426,14 @@ class YamlLootTablesTest {
 
     @Test
     void failsClosedOnBrokenContent() {
+        assertThrows(IllegalArgumentException.class, () -> parse("""
+                invalid:
+                  - {reward: 202}
+                """));
+        assertThrows(IllegalArgumentException.class, () -> parse("""
+                invalid:
+                  - {reward: "202"}
+                """));
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 invalid:
                   - {reward: missing_item}

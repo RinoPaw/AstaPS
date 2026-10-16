@@ -554,13 +554,13 @@ class YamlLootTablesTest {
         assertThrows(IllegalArgumentException.class, () -> colliding.resolve("genshin.material.same"));
     }
     @Test
-    void hierarchicalAndLegacyGemReferencesResolveToOneNativeItem() {
+    void hierarchicalGemFamilyAliasesResolveToOneNativeItem() {
         var inventory = new emu.grasscutter.data.ItemIdRegistry(
                 java.util.Map.of(8001, "Vayuda Turquoise Sliver"));
         var tables = YamlLootTables.parse("""
                 two_gems:
                   - {reward: genshin.avatar_ascension.anemo.sliver, count: 2}
-                  - {reward: genshin.avatar_ascension.vayuda_turquoise_sliver}
+                  - {reward: genshin.avatar_ascension.vayuda_turquoise.sliver}
                 """, inventory::resolve);
         var rewards = tables.roll("astaps.loot.two_gems", new java.util.Random(7));
         assertEquals(3, rewards.get(8001));

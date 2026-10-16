@@ -442,21 +442,23 @@ public final class ItemIdRegistry {
             throw new IllegalArgumentException("Unknown item ID: " + input);
         }
 
+        ResourceId qualified = null;
         if (input.matches("[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\..+")) {
-            ResourceId resource = ResourceAliases.GENSHIN.resolve(ResourceId.parse(input));
-            if (!(resource.size() >= 3 && resource.segment(0).equals("genshin"))
-                    || !isInventoryResourceType(resource.segment(1))) {
+            qualified = ResourceAliases.GENSHIN.resolve(ResourceId.parse(input));
+            if (qualified.size() < 3 || !qualified.segment(0).equals("genshin")
+                    || !isInventoryResourceType(qualified.segment(1))) {
                 throw new IllegalArgumentException("Unsupported inventory resource: " + input);
             }
         }
 
-        String name = (input.contains(".") ? ResourceAliases.GENSHIN.resolve(ResourceId.parse(input)).toString() : input).toLowerCase(Locale.ROOT);
+        String name = qualified == null ? input.toLowerCase(Locale.ROOT)
+                : qualified.toString();
         if (ambiguous.contains(name)) {
             throw new IllegalArgumentException("Ambiguous item name: " + input);
         }
         Integer id = byName.get(name);
         if (id == null) throw new IllegalArgumentException("Unknown item: " + input);
-        if (input.contains(".") && !name.equalsIgnoreCase(byId.get(id).key())) {
+        if (qualified != null && !name.equalsIgnoreCase(byId.get(id).key())) {
             throw new IllegalArgumentException("Wrong resource type for item: " + input
                     + " (expected " + byId.get(id).key() + ")");
         }

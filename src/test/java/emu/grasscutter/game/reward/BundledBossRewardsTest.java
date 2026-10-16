@@ -57,6 +57,13 @@ final class BundledBossRewardsTest {
         assertEquals(250, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
 
+        // Shared Boss rewards depend on type/level. Specific loot still needs a tag.
+        var unidentified = css.resolve("boss", Map.of("type", "world", "level", "105"));
+        assertEquals(200, unidentified.items().get(102));
+        assertEquals(6000, unidentified.items().get(202));
+        assertEquals(45, unidentified.items().get(105));
+        assertTrue(unidentified.loot().isEmpty());
+
         var normal = css.resolve("boss", Map.of(
                 "type", "world", "tag", "霜夜灵嗣", "level", "1"));
         assertEquals(1825, normal.items().get(202));

@@ -322,151 +322,151 @@ boss[type="weekly"][tag] {
 }
 
 boss[type="weekly"][tag][level="1~4"] {
-        --genshin-currency-mora: 3650;
+    --genshin-currency-mora: 3650;
     --genshin-experience-companionship: 35;
     --genshin-experience-character: 200;
 }
 
 boss[type="weekly"][tag][level="5~9"] {
-        --genshin-currency-mora: 4050;
+    --genshin-currency-mora: 4050;
     --genshin-experience-companionship: 35;
     --genshin-experience-character: 209;
 }
 
 boss[type="weekly"][tag][level="10~14"] {
-        --genshin-currency-mora: 4450;
+    --genshin-currency-mora: 4450;
     --genshin-experience-companionship: 40;
     --genshin-experience-character: 220;
 }
 
 boss[type="weekly"][tag][level="15~19"] {
-        --genshin-currency-mora: 4750;
+    --genshin-currency-mora: 4750;
     --genshin-experience-companionship: 45;
     --genshin-experience-character: 231;
 }
 
 boss[type="weekly"][tag][level="20~24"] {
-        --genshin-currency-mora: 5175;
+    --genshin-currency-mora: 5175;
     --genshin-experience-companionship: 45;
     --genshin-experience-character: 243;
 }
 
 boss[type="weekly"][tag][level="25~29"] {
-        --genshin-currency-mora: 5475;
+    --genshin-currency-mora: 5475;
     --genshin-experience-companionship: 50;
     --genshin-experience-character: 254;
 }
 
 boss[type="weekly"][tag][level="30~34"] {
-        --genshin-currency-mora: 5875;
+    --genshin-currency-mora: 5875;
     --genshin-experience-companionship: 50;
     --genshin-experience-character: 265;
 }
 
 boss[type="weekly"][tag][level="35~39"] {
-        --genshin-currency-mora: 6075;
+    --genshin-currency-mora: 6075;
     --genshin-experience-companionship: 55;
     --genshin-experience-character: 276;
 }
 
 boss[type="weekly"][tag][level="40~44"] {
-        --genshin-currency-mora: 6375;
+    --genshin-currency-mora: 6375;
     --genshin-experience-companionship: 55;
     --genshin-experience-character: 288;
 }
 
 boss[type="weekly"][tag][level="45~49"] {
-        --genshin-currency-mora: 6475;
+    --genshin-currency-mora: 6475;
     --genshin-experience-companionship: 55;
     --genshin-experience-character: 299;
 }
 
 boss[type="weekly"][tag][level="50~54"] {
-        --genshin-currency-mora: 6675;
+    --genshin-currency-mora: 6675;
     --genshin-experience-companionship: 60;
     --genshin-experience-character: 310;
 }
 
 boss[type="weekly"][tag][level="55~59"] {
-        --genshin-currency-mora: 6875;
+    --genshin-currency-mora: 6875;
     --genshin-experience-companionship: 60;
     --genshin-experience-character: 321;
 }
 
 boss[type="weekly"][tag][level="60~64"] {
-        --genshin-currency-mora: 7100;
+    --genshin-currency-mora: 7100;
     --genshin-experience-companionship: 60;
     --genshin-experience-character: 333;
 }
 
 boss[type="weekly"][tag][level="65~69"] {
-        --genshin-currency-mora: 7400;
+    --genshin-currency-mora: 7400;
     --genshin-experience-companionship: 65;
     --genshin-experience-character: 344;
 }
 
 boss[type="weekly"][tag][level="70~74"] {
-        --genshin-currency-mora: 7600;
+    --genshin-currency-mora: 7600;
     --genshin-experience-companionship: 65;
     --genshin-experience-character: 355;
 }
 
 boss[type="weekly"][tag][level="75~79"] {
-        --genshin-currency-mora: 7800;
+    --genshin-currency-mora: 7800;
     --genshin-experience-companionship: 65;
     --genshin-experience-character: 366;
 }
 
 boss[type="weekly"][tag][level="80~84"] {
-        --genshin-currency-mora: 8000;
+    --genshin-currency-mora: 8000;
     --genshin-experience-companionship: 70;
     --genshin-experience-character: 378;
 }
 
 boss[type="weekly"][tag][level="85~89"] {
-        --genshin-currency-mora: 8100;
+    --genshin-currency-mora: 8100;
     --genshin-experience-companionship: 70;
     --genshin-experience-character: 389;
 }
 
 boss[type="weekly"][tag][level="90~92"] {
-        --genshin-currency-mora: 8100;
+    --genshin-currency-mora: 8100;
     --genshin-experience-companionship: 70;
     --genshin-experience-character: 400;
 }
 
 boss[type="weekly"][tag][level="93~99"] {
-        --genshin-currency-mora: 9000;
+    --genshin-currency-mora: 9000;
     --genshin-experience-companionship: 70;
     --genshin-experience-character: 400;
 }
 
 boss[type="weekly"][tag][level="100~104"] {
-        --genshin-currency-mora: 9000;
+    --genshin-currency-mora: 9000;
     --genshin-experience-companionship: 70;
     --genshin-experience-character: 400;
 }
 
 boss[type="weekly"][tag][level="105~109"] {
-        --genshin-currency-mora: 9000;
+    --genshin-currency-mora: 9000;
     --genshin-experience-companionship: 70;
     --genshin-experience-character: 400;
 }
 
 boss[type="weekly"][tag][level="110~114"] {
-        --genshin-currency-mora: 9000;
+    --genshin-currency-mora: 9000;
     --genshin-experience-companionship: 70;
     --genshin-experience-character: 400;
 }
 
 boss[type="weekly"][tag][level="115~119"] {
-        --genshin-currency-mora: 9000;
+    --genshin-currency-mora: 9000;
     --genshin-experience-companionship: 70;
     --genshin-experience-character: 400;
 }
 
 boss[type="weekly"][tag][level="120~"] {
-        --genshin-currency-mora: 9000;
+    --genshin-currency-mora: 9000;
     --genshin-experience-companionship: 70;
     --genshin-experience-character: 400;
 }
@@ -476,151 +476,151 @@ boss[type="world"][tag] {
 }
 
 boss[type="world"][tag][level="1~4"] {
-        --genshin-currency-mora: 1825;
+    --genshin-currency-mora: 1825;
     --genshin-experience-companionship: 15;
     --genshin-experience-character: 100;
 }
 
 boss[type="world"][tag][level="5~9"] {
-        --genshin-currency-mora: 2100;
+    --genshin-currency-mora: 2100;
     --genshin-experience-companionship: 20;
     --genshin-experience-character: 104;
 }
 
 boss[type="world"][tag][level="10~14"] {
-        --genshin-currency-mora: 2375;
+    --genshin-currency-mora: 2375;
     --genshin-experience-companionship: 20;
     --genshin-experience-character: 110;
 }
 
 boss[type="world"][tag][level="15~19"] {
-        --genshin-currency-mora: 2575;
+    --genshin-currency-mora: 2575;
     --genshin-experience-companionship: 25;
     --genshin-experience-character: 116;
 }
 
 boss[type="world"][tag][level="20~24"] {
-        --genshin-currency-mora: 2825;
+    --genshin-currency-mora: 2825;
     --genshin-experience-companionship: 25;
     --genshin-experience-character: 121;
 }
 
 boss[type="world"][tag][level="25~29"] {
-        --genshin-currency-mora: 3050;
+    --genshin-currency-mora: 3050;
     --genshin-experience-companionship: 25;
     --genshin-experience-character: 127;
 }
 
 boss[type="world"][tag][level="30~34"] {
-        --genshin-currency-mora: 3300;
+    --genshin-currency-mora: 3300;
     --genshin-experience-companionship: 30;
     --genshin-experience-character: 133;
 }
 
 boss[type="world"][tag][level="35~39"] {
-        --genshin-currency-mora: 3450;
+    --genshin-currency-mora: 3450;
     --genshin-experience-companionship: 30;
     --genshin-experience-character: 138;
 }
 
 boss[type="world"][tag][level="40~44"] {
-        --genshin-currency-mora: 3650;
+    --genshin-currency-mora: 3650;
     --genshin-experience-companionship: 30;
     --genshin-experience-character: 144;
 }
 
 boss[type="world"][tag][level="45~49"] {
-        --genshin-currency-mora: 3725;
+    --genshin-currency-mora: 3725;
     --genshin-experience-companionship: 30;
     --genshin-experience-character: 149;
 }
 
 boss[type="world"][tag][level="50~54"] {
-        --genshin-currency-mora: 3850;
+    --genshin-currency-mora: 3850;
     --genshin-experience-companionship: 35;
     --genshin-experience-character: 155;
 }
 
 boss[type="world"][tag][level="55~59"] {
-        --genshin-currency-mora: 3975;
+    --genshin-currency-mora: 3975;
     --genshin-experience-companionship: 35;
     --genshin-experience-character: 161;
 }
 
 boss[type="world"][tag][level="60~64"] {
-        --genshin-currency-mora: 4125;
+    --genshin-currency-mora: 4125;
     --genshin-experience-companionship: 35;
     --genshin-experience-character: 166;
 }
 
 boss[type="world"][tag][level="65~69"] {
-        --genshin-currency-mora: 4325;
+    --genshin-currency-mora: 4325;
     --genshin-experience-companionship: 35;
     --genshin-experience-character: 172;
 }
 
 boss[type="world"][tag][level="70~74"] {
-        --genshin-currency-mora: 4450;
+    --genshin-currency-mora: 4450;
     --genshin-experience-companionship: 40;
     --genshin-experience-character: 178;
 }
 
 boss[type="world"][tag][level="75~79"] {
-        --genshin-currency-mora: 4600;
+    --genshin-currency-mora: 4600;
     --genshin-experience-companionship: 40;
     --genshin-experience-character: 183;
 }
 
 boss[type="world"][tag][level="80~84"] {
-        --genshin-currency-mora: 4725;
+    --genshin-currency-mora: 4725;
     --genshin-experience-companionship: 40;
     --genshin-experience-character: 189;
 }
 
 boss[type="world"][tag][level="85~89"] {
-        --genshin-currency-mora: 4850;
+    --genshin-currency-mora: 4850;
     --genshin-experience-companionship: 40;
     --genshin-experience-character: 194;
 }
 
 boss[type="world"][tag][level="90~92"] {
-        --genshin-currency-mora: 5200;
+    --genshin-currency-mora: 5200;
     --genshin-experience-companionship: 45;
     --genshin-experience-character: 200;
 }
 
 boss[type="world"][tag][level="93~99"] {
-        --genshin-currency-mora: 6000;
+    --genshin-currency-mora: 6000;
     --genshin-experience-companionship: 45;
     --genshin-experience-character: 200;
 }
 
 boss[type="world"][tag][level="100~104"] {
-        --genshin-currency-mora: 6000;
+    --genshin-currency-mora: 6000;
     --genshin-experience-companionship: 45;
     --genshin-experience-character: 200;
 }
 
 boss[type="world"][tag][level="105~109"] {
-        --genshin-currency-mora: 6000;
+    --genshin-currency-mora: 6000;
     --genshin-experience-companionship: 45;
     --genshin-experience-character: 200;
 }
 
 boss[type="world"][tag][level="110~114"] {
-        --genshin-currency-mora: 6000;
+    --genshin-currency-mora: 6000;
     --genshin-experience-companionship: 45;
     --genshin-experience-character: 200;
 }
 
 boss[type="world"][tag][level="115~119"] {
-        --genshin-currency-mora: 6000;
+    --genshin-currency-mora: 6000;
     --genshin-experience-companionship: 45;
     --genshin-experience-character: 200;
 }
 
 boss[type="world"][tag][level="120~"] {
-        --genshin-currency-mora: 6000;
+    --genshin-currency-mora: 6000;
     --genshin-experience-companionship: 45;
     --genshin-experience-character: 200;
 }

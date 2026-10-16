@@ -19,10 +19,10 @@ class CssRewardsTest {
             currency:
               - {reward: genshin.currency.mora, count: 100}
             经验书:
-              - {reward: genshin.avatar_level_up.heros_wit}
+              - {reward: genshin.avatar_up.heros_wit}
             surprise:
               - {reward: genshin.currency.mora, count: 30}
-              - {reward: genshin.avatar_level_up.heros_wit}
+              - {reward: genshin.avatar_up.heros_wit}
             """, items::resolve);
 
     @Test

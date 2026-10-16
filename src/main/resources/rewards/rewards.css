@@ -127,7 +127,7 @@ chest[type="normal"][grade="precious"][city="2"] {
     --genshin-currency-primogem: 5;
 }
 
-/* Mondstadt (蒙德): Dragonspine (龙脊雪山), Windrest Peak (风息山).
+/* Higher-Primogem area overrides — Mondstadt (蒙德): Dragonspine (龙脊雪山), Windrest Peak (风息山).
    Liyue (璃月): Lisha (璃沙郊), The Chasm (层岩巨渊), Chenyu Vale: Upper Vale (沉玉谷·上谷), Chenyu Vale: Southern Mountain (沉玉谷·南陵), Mt. Laixin (来歆山), The Chasm: Underground Mines (层岩巨渊·地下矿区). */
 
 chest[type="normal"][grade="common"][area="10,77,8,19,40,41,47,300"] {

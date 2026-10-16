@@ -8,7 +8,7 @@ class RewardConfigurationTest {
     @Test
     void rewardConfigurationReadsOnlyBundledResources() throws Exception {
         assertTrue(RewardConfiguration.readBundled("loot.yaml").contains("minimal:"));
-        assertTrue(RewardConfiguration.readBundled("rewards.css").contains("--astaps-loot-minimal: 1;"));
+        assertTrue(RewardConfiguration.readBundled("rewards.css").contains("astaps.loot.minimal: 1;"));
     }
 
     @Test

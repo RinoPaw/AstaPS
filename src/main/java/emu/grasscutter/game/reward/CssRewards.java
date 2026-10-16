@@ -59,8 +59,19 @@ public final class CssRewards {
         }
     }
 
+    // Match comma-separated alternatives by exact attribute value.
+    private static final Pattern ATTRIBUTE_OPTIONS = Pattern.compile(
+            "\\[\\s*([a-zA-Z_][a-zA-Z0-9_-]*)\\s*=\\s*([\"'])([^\"']*,[^\"']*)\\2\\s*\\]");
+
+    private record AttributeOptions(String name, java.util.Set<String> values) {
+        boolean matches(Map<String, String> attributes) {
+            return values.contains(attributes.get(name));
+        }
+    }
+
     private record Rule(
             Evaluator selector, List<AttributeRange> attributeRanges,
+            List<AttributeOptions> attributeOptions,
             Map<Integer, Integer> items, Map<String, Integer> loot,
             Map<Integer, LootCount.Spec> rangedItems,
             Map<String, LootCount.Spec> rangedLoot, int specificity, int order) {}
@@ -144,6 +155,21 @@ public final class CssRewards {
                     matcher.appendReplacement(selectorBuffer, "[" + name + "]");
                 }
                 matcher.appendTail(selectorBuffer);
+                var options = new ArrayList<AttributeOptions>();
+                String withRanges = selectorBuffer.toString();
+                selectorBuffer = new StringBuffer();
+                var optionsMatcher = ATTRIBUTE_OPTIONS.matcher(withRanges);
+                while (optionsMatcher.find()) {
+                    String name = optionsMatcher.group(1);
+                    var choices = java.util.Arrays.stream(optionsMatcher.group(3).split(",", -1))
+                            .map(String::trim).toList();
+                    if (choices.stream().anyMatch(String::isEmpty)) {
+                        throw new IllegalArgumentException("Empty reward attribute choice: " + css);
+                    }
+                    options.add(new AttributeOptions(name, java.util.Set.copyOf(choices)));
+                    optionsMatcher.appendReplacement(selectorBuffer, "[" + name + "]");
+                }
+                optionsMatcher.appendTail(selectorBuffer);
                 String normalizedSelector = selectorBuffer.toString();
                 if (MALFORMED_ATTRIBUTE_RANGE.matcher(normalizedSelector).find()) {
                     throw new IllegalArgumentException("Invalid reward attribute range: " + css);
@@ -158,7 +184,7 @@ public final class CssRewards {
                 int specificity = attributeCount * 100
                         + (css.matches("^[a-zA-Z][a-zA-Z0-9_-]*.*") ? 1 : 0);
                 rules.add(new Rule(Selector.evaluatorOf(normalizedSelector),
-                        List.copyOf(attributeRanges), Map.copyOf(fixed),
+                        List.copyOf(attributeRanges), List.copyOf(options), Map.copyOf(fixed),
                         Map.copyOf(selectedLoot), Map.copyOf(ranged),
                         Map.copyOf(rangedLoot), specificity, order++));
             }
@@ -178,7 +204,9 @@ public final class CssRewards {
         for (var rule : rules) {
             if (rule.selector.matches(element.root(), element)
                     && rule.attributeRanges.stream().allMatch(range ->
-                            range.matches(attributes))) {
+                            range.matches(attributes))
+                    && rule.attributeOptions.stream().allMatch(option ->
+                            option.matches(attributes))) {
                 rule.items.keySet().forEach(ranged::remove);
                 rule.rangedItems.keySet().forEach(fixed::remove);
                 fixed.putAll(rule.items);

@@ -15,6 +15,30 @@ import org.junit.jupiter.api.Test;
 /** Ensure the entire bundled CSS/YAML, including Boss tables, can load together. */
 final class BundledBossRewardsTest {
     @Test
+    void nonCssSelectedLootTablesContainAtLeastTwoEntries() throws Exception {
+        String yaml = RewardConfiguration.readBundled("loot.yaml");
+        String css = RewardConfiguration.readBundled("rewards.css");
+
+        var selected = new java.util.HashSet<String>();
+        var matcher = Pattern.compile("--astaps-loot-([a-z0-9_]+)\\s*:").matcher(css);
+        while (matcher.find()) selected.add(matcher.group(1));
+
+        var settings = org.snakeyaml.engine.v2.api.LoadSettings.builder()
+                .setAllowDuplicateKeys(false)
+                .setMaxAliasesForCollections(100_000)
+                .setCodePointLimit(3_000_000)
+                .build();
+        Object document = new org.snakeyaml.engine.v2.api.Load(settings).loadFromString(yaml);
+        assertInstanceOf(Map.class, document);
+        for (var entry : ((Map<?, ?>) document).entrySet()) {
+            if (entry.getValue() instanceof java.util.List<?> list && list.size() == 1) {
+                assertTrue(selected.contains(entry.getKey().toString()),
+                        "Single-entry loot table is not selected by CSS: " + entry.getKey());
+            }
+        }
+    }
+
+    @Test
     void nativeBossSelectorsResolveToBundledSemanticLoot() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         String stylesheet = RewardConfiguration.readBundled("rewards.css");
@@ -74,7 +98,7 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1406, loot.names().size());
+        assertEquals(1368, loot.names().size());
         assertFalse(yaml.contains("empty_reward_choices"));
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));

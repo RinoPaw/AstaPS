@@ -16,7 +16,9 @@ final class WeeklyBossDropResolverTest {
     @Test
     void requiresUniqueBossMaterialFamilyAndKnownNativeLeaves() {
         var items = GameData.getItemDataMap();
-        var old = items.put(113013, JsonUtils.decode(
+        var oldAdventureExp = items.put(102, JsonUtils.decode(
+                "{\"id\":102,\"itemType\":\"ITEM_VIRTUAL\"}", ItemData.class));
+        var oldBossMaterial = items.put(113013, JsonUtils.decode(
                 "{\"id\":113013,\"itemType\":\"ITEM_MATERIAL\"}", ItemData.class));
         try {
             var roots = Map.of("weekly_a", 100, "weekly_b", 200);
@@ -34,7 +36,10 @@ final class WeeklyBossDropResolverTest {
             assertEquals(0, WeeklyBossDropResolver.matchRoot(
                     roots, leaves, Set.of(113014)));
         } finally {
-            if (old == null) items.remove(113013); else items.put(113013, old);
+            if (oldBossMaterial == null) items.remove(113013);
+            else items.put(113013, oldBossMaterial);
+            if (oldAdventureExp == null) items.remove(102);
+            else items.put(102, oldAdventureExp);
         }
     }
 }

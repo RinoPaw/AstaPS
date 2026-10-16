@@ -221,6 +221,21 @@ mapping:
   properties: {slot: "1~5", rarity: 1}
 ```
 
+Gem and talent-book *families* may also use `properties.rarity` to choose
+one native 2–5★ gem or one native 2–4★ talent book. The values after `:`
+are percentages with two decimal places; they must add to exactly `100.00`.
+The family's grade is selected independently on every repeated award, while
+the top-level `weight` controls selection among sibling families:
+
+```yaml
+- {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.63, 3:19.90, 4:4.97, 5:0.50"}, weight: 1}
+- {reward: genshin.talent_up.freedom, properties: {rarity: "2:50.00, 3:30.00, 4:20.00"}, weight: 1}
+```
+
+The bundles use elemental aliases and canonical talent-book subject paths.
+A guaranteed tier uses `rarity: "2:100.00"`. Other talent advancement
+materials (such as weekly boss drops) are still ordinary items.
+
 Slots 1–5 mean flower, plume, sands, goblet, circlet. A full five-slot
 weighted subtable can be inlined as a single artifact with
 `properties: {slot: "1~5", rarity: 4, substats: 2}`, preserving

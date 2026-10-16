@@ -278,14 +278,27 @@ For `give` and `loot.yaml`, use exactly one qualified identity per native
 resource. Categories come from native `ItemType`/`MaterialType`, not a
 catch-all `item` prefix. The common experience items are:
 
-- `genshin.avatar_exp.heros_wit`, `genshin.avatar_exp.adventurers_experience`, `genshin.avatar_exp.wanderers_advice`
-- `genshin.weapon_exp.enhancement_ore`, `genshin.weapon_exp.fine_ore`, `genshin.weapon_exp.mystic_ore`
-- `genshin.artifact_exp.unction`, `genshin.artifact_exp.essence`
+- `genshin.avatar_level_up.heros_wit`, `genshin.avatar_level_up.adventurers_experience`, `genshin.avatar_level_up.wanderers_advice`
+- `genshin.weapon_level_up.enhancement_ore`, `genshin.weapon_level_up.fine_ore`, `genshin.weapon_level_up.mystic_ore`
+- `genshin.artifact_level_up.unction`, `genshin.artifact_level_up.essence`
 - `genshin.currency.resin` is the Original Resin balance (native ID 106), not the consumable Fragile Resin.
+
+The resource type identifies the item's role, independent of which boss or
+chest drops it. Level-up consumables use `avatar_level_up`,
+`weapon_level_up`, `artifact_level_up`, and `talent_level_up`.
+Promotion ingredients use `avatar_ascension` and `weapon_ascension`.
+These are six distinct reward types; the native gameplay cost tables decide
+exclusive use, while fixed native EXP-item types identify level-up materials.
+Items used by multiple advancement paths keep a single common identity
+(`genshin.material.*`), and verified enemy drops use
+`genshin.monster_drop.*` even if a particular drop is also consumed
+for character, weapon, or talent development. Weapon billets use
+`genshin.weapon_crafting.*`. Item IDs are never duplicated under
+separate use-specific aliases.
 
 Previous `genshin.material.*` aliases for these items and the `genshin.resource`
 category are intentionally unsupported. Adventure EXP is
-`genshin.experience.adventure`, while Hero's Wit is an `avatar_exp` item.
+`genshin.experience.adventure`, while Hero's Wit is an `avatar_level_up` item.
 
 ### Regional sigil IDs
 

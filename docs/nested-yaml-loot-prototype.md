@@ -39,7 +39,7 @@ tiers follow in ascending order. Boss-level tables remain named for CSS
 selection, while reusable subtables have content-based names such as
 `midlander_weapon_billets`. Identical subtables share a single anchor,
 and one-use subtables are inlined. The bundled YAML contains
-1,707 top-level loot tables.
+1,393 top-level loot tables.
 
 The artifact distributions are `artifacts_1_to_2_low`,
 `artifacts_1_to_2_high`, `artifacts_1_to_3`, `artifacts_2_to_3`,
@@ -232,11 +232,12 @@ The remainder of an explicitly specified count distribution implicitly means zer
 `count: "1:20"` means one item 20% of the time and none 80% of the time.
 An explicit `0:80` is therefore unnecessary.
 Relative probabilities in the original weighted loot lists are preserved.
-Identical top-level tables may share a YAML list via anchors and aliases:
-`world_frostnight_scion_level_105: *world_frostnight_scion_level_100`
-preserves the `105`
-resource name while reusing the exact same pool. A YAML alias shares a pool
-and does not change the number of independent reward rolls.
+Only distinct Boss-level payout tables have top-level names.
+When higher levels share an existing table, CSS selects that table directly,
+with contiguous matching levels combined into a single range. A Boss may
+also select an existing source table when its rewards are identical.
+YAML anchors remain for reusable reward-content pools, not redundant
+Boss-level aliases.
 
 ## Semantic Genshin resource namespaces
 

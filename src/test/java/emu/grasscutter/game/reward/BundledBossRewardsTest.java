@@ -52,7 +52,7 @@ final class BundledBossRewardsTest {
                 Map.entry(305, "Anemo Sigil"),
                 Map.entry(307, "Geo Sigil")));
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known), loot);
-        assertEquals(975, stylesheet.lines()
+        assertEquals(978, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertEquals(211, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
@@ -74,7 +74,7 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1412, loot.names().size());
+        assertEquals(1409, loot.names().size());
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.weekly_northlander_extras"));
@@ -86,6 +86,15 @@ final class BundledBossRewardsTest {
         assertTrue(loot.contains("astaps.loot.world_five_star_artifacts_guaranteed"));
         assertTrue(loot.contains("astaps.loot.gems_geo_hydro_basic"));
         assertTrue(loot.contains("astaps.loot.gems_cryo_hydro_basic"));
+        assertTrue(loot.contains("astaps.loot.instructor_goblet_plume_low_substats"));
+        assertTrue(loot.contains("astaps.loot.instructor_goblet_plume_mixed_substats"));
+        assertTrue(loot.contains("astaps.loot.instructor_goblet_plume_extreme_substats"));
+        assertTrue(loot.contains("astaps.loot.gems_cryo_electro_hydro_mixed"));
+        assertTrue(loot.contains("astaps.loot.gems_anemo_geo_pyro_mixed"));
+        assertFalse(yaml.contains("_first_electro"));
+        assertFalse(yaml.contains("_first_cryo"));
+        assertFalse(yaml.contains("_first_anemo"));
+        assertFalse(yaml.contains("_first_pyro"));
         assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p2_weapon_billets"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+_[a-z0-9_]+:.*")));
@@ -133,7 +142,9 @@ final class BundledBossRewardsTest {
         assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p200"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+: \\*[a-z0-9_]+$")));
-        assertEquals(Map.of("astaps.loot.world_frostnights_glory_roll_1plus1pct33p86", 1),
+        assertEquals(Map.of(
+                "astaps.loot.world_frostnights_glory_entries_6", 1,
+                "astaps.loot.gems_geo_hydro_basic", 1),
                 css.resolve("boss", Map.of(
                         "type", "world", "tag", "frostnight_scion", "level", "105")).loot());
         var shouki = css.resolve("boss", Map.of(
@@ -165,6 +176,18 @@ final class BundledBossRewardsTest {
         assertFalse(css.resolve("boss", Map.of(
                 "type", "world", "tag", "solitary_suanni", "level", "0"))
                 .loot().containsKey("astaps.loot.gems_cryo_hydro_basic"));
+
+        for (var caseData : new Object[][] {
+                { "7", "instructor_goblet_plume_low_substats" },
+                { "17", "instructor_goblet_plume_mixed_substats" },
+                { "52", "instructor_goblet_plume_extreme_substats" }}) {
+            String nativeLevel = (String) caseData[0];
+            String expectedPool = (String) caseData[1];
+            var selection = css.resolve("boss", Map.of(
+                    "type", "world", "tag", "frostnight_scion", "level", nativeLevel));
+            assertEquals(1, selection.loot().get("astaps.loot." + expectedPool));
+            assertEquals(1, selection.loot().get("astaps.loot.gems_geo_hydro_basic"));
+        }
 
         var mediumWorld = css.resolve("boss", Map.of(
                 "type", "world", "tag", "electro_hypostasis", "level", "82"));

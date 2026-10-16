@@ -83,7 +83,7 @@ public final class NativeLootYamlExporter {
         for (int id : ordered) {
             String tableName = tableNames.get(id);
             if (tableName == null) throw new IllegalArgumentException("Unidentified loot table");
-            new ResourceId("astaps", "loot", tableName);
+            ResourceId.of("astaps", "loot", tableName);
             if (!used.add(tableName)) throw new IllegalArgumentException("Duplicate loot name: " + tableName);
 
             var table = tables.get(id);
@@ -109,7 +109,7 @@ public final class NativeLootYamlExporter {
                 if (tables.containsKey(entry.id)) {
                     target = tableNames.get(entry.id);
                     if (target == null) throw new IllegalArgumentException("Unidentified nested loot table");
-                    new ResourceId("astaps", "loot", target);
+                    ResourceId.of("astaps", "loot", target);
                     target = "*" + target;
                 } else {
                     target = itemNames.apply(entry.id);
@@ -122,13 +122,13 @@ public final class NativeLootYamlExporter {
                     }
                     if (target == null) throw new IllegalArgumentException("Unknown item in chest source");
                     ResourceId resource = ResourceId.parse(target);
-                    if (!"genshin".equals(resource.namespace())
-                            || !(ItemIdRegistry.isInventoryResourceType(resource.type())
-                                    || "artifact".equals(resource.type()))
-                            || resource.name().matches("id_[0-9]+")) {
+                    if (!"genshin".equals(resource.segment(0))
+                            || !(ItemIdRegistry.isInventoryResourceType(resource.segment(1))
+                                    || "artifact".equals(resource.segment(1)))
+                            || resource.tail(2).matches("id_[0-9]+")) {
                         throw new IllegalArgumentException("Expected semantic genshin resource name");
                     }
-                    if ("artifact".equals(resource.type())) {
+                    if ("artifact".equals(resource.segment(1))) {
                         ArtifactProperties p = artifactProperties.apply(entry.id);
                         if (p == null || p.rarity() < 1 || p.rarity() > 5
                                 || p.substats() < 0 || p.substats() > 4) {

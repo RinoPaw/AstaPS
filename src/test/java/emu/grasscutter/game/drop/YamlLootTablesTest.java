@@ -566,4 +566,18 @@ class YamlLootTablesTest {
         assertEquals(3, rewards.get(8001));
     }
 
+    @Test
+    void nestedLocalLootPathsResolveWithinOwningNamespace() {
+        var tables = YamlLootTables.parse("""
+                boss.gem:
+                  - {reward: genshin.currency.mora, count: 3}
+                """, name -> {
+                    if (name.equals("genshin.currency.mora")) return 202;
+                    throw new IllegalArgumentException(name);
+                });
+        assertEquals("astaps.loot.boss.gem", tables.resolveName("boss.gem"));
+        assertEquals("astaps.loot.boss.gem", tables.resolveName("astaps.loot.boss.gem"));
+        assertEquals(3, tables.roll("boss.gem", new java.util.Random(7)).get(202));
+    }
+
 }

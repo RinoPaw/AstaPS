@@ -173,6 +173,44 @@ class ItemIdRegistryTest {
     }
 
     @Test
+    void monsterDropIdentityIsIndependentOfAdvancementUsage() {
+        var registry = new ItemIdRegistry(Map.of(
+                701, "Slime Condensate",
+                702, "Damaged Mask",
+                703, "Firm Arrowhead",
+                704, "Chaos Device",
+                705, "Treasure Hoarder Insignia"),
+                Map.of(701, "Character Development Items",
+                        702, "Character Development Items",
+                        703, "Materials",
+                        704, "Materials",
+                        705, "Character Development Items"),
+                Map.of(701, Set.of(ItemIdRegistry.Usage.AVATAR_ASCENSION,
+                        ItemIdRegistry.Usage.WEAPON_ASCENSION,
+                        ItemIdRegistry.Usage.TALENT_UPGRADE),
+                        702, Set.of(ItemIdRegistry.Usage.AVATAR_ASCENSION)));
+        for (var item : Map.of(
+                701, "slime_condensate",
+                702, "damaged_mask",
+                703, "firm_arrowhead",
+                704, "chaos_device",
+                705, "treasure_hoarder_insignia").entrySet()) {
+            String key = "genshin.monster_drop." + item.getValue();
+            assertEquals(key, registry.describe(item.getKey()).key());
+            assertEquals(item.getKey().intValue(), registry.resolve(key));
+            assertEquals(ResourceId.parse(key),
+                    ResourceId.fromCssProperty(ResourceId.parse(key).toCssProperty()));
+        }
+        assertEquals(Set.of(ItemIdRegistry.Usage.AVATAR_ASCENSION,
+                ItemIdRegistry.Usage.WEAPON_ASCENSION,
+                ItemIdRegistry.Usage.TALENT_UPGRADE), registry.usesOf(701));
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.resolve("genshin.avatar_ascension.slime_condensate"));
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.resolve("genshin.material.damaged_mask"));
+    }
+
+    @Test
     void weaponsHaveOneCanonicalTypeWithoutItemAliases() {
         var names = new ItemIdRegistry(Map.of(11101, "Dull Blade", 202, "Mora"));
         assertEquals(11101, names.resolve("genshin.weapon.dull_blade"));

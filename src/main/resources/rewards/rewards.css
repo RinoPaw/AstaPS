@@ -575,24 +575,8 @@ boss[type="weekly"][tag="stormterror"][level="90~92"] {
     --astaps-loot-weekly_stormterror_level_90: 1;
 }
 
-boss[type="weekly"][tag="stormterror"][level="93~99"] {
+boss[type="weekly"][tag="stormterror"][level="93~119"] {
     --astaps-loot-weekly_stormterror_level_93: 1;
-}
-
-boss[type="weekly"][tag="stormterror"][level="100~104"] {
-    --astaps-loot-weekly_stormterror_level_100: 1;
-}
-
-boss[type="weekly"][tag="stormterror"][level="105~109"] {
-    --astaps-loot-weekly_stormterror_level_105: 1;
-}
-
-boss[type="weekly"][tag="stormterror"][level="110~114"] {
-    --astaps-loot-weekly_stormterror_level_110: 1;
-}
-
-boss[type="weekly"][tag="stormterror"][level="115~119"] {
-    --astaps-loot-weekly_stormterror_level_115: 1;
 }
 
 boss[type="weekly"][tag="stormterror"][level="120~"] {
@@ -676,28 +660,8 @@ boss[type="weekly"][tag="andrius"][level="90~92"] {
     --astaps-loot-weekly_andrius_level_90: 1;
 }
 
-boss[type="weekly"][tag="andrius"][level="93~99"] {
+boss[type="weekly"][tag="andrius"][level="93~"] {
     --astaps-loot-weekly_andrius_level_93: 1;
-}
-
-boss[type="weekly"][tag="andrius"][level="100~104"] {
-    --astaps-loot-weekly_andrius_level_100: 1;
-}
-
-boss[type="weekly"][tag="andrius"][level="105~109"] {
-    --astaps-loot-weekly_andrius_level_105: 1;
-}
-
-boss[type="weekly"][tag="andrius"][level="110~114"] {
-    --astaps-loot-weekly_andrius_level_110: 1;
-}
-
-boss[type="weekly"][tag="andrius"][level="115~119"] {
-    --astaps-loot-weekly_andrius_level_115: 1;
-}
-
-boss[type="weekly"][tag="andrius"][level="120~"] {
-    --astaps-loot-weekly_andrius_level_120: 1;
 }
 
 /* Tartaglia (公子) */
@@ -777,28 +741,8 @@ boss[type="weekly"][tag="tartaglia"][level="90~92"] {
     --astaps-loot-weekly_tartaglia_level_90: 1;
 }
 
-boss[type="weekly"][tag="tartaglia"][level="93~99"] {
+boss[type="weekly"][tag="tartaglia"][level="93~"] {
     --astaps-loot-weekly_tartaglia_level_93: 1;
-}
-
-boss[type="weekly"][tag="tartaglia"][level="100~104"] {
-    --astaps-loot-weekly_tartaglia_level_100: 1;
-}
-
-boss[type="weekly"][tag="tartaglia"][level="105~109"] {
-    --astaps-loot-weekly_tartaglia_level_105: 1;
-}
-
-boss[type="weekly"][tag="tartaglia"][level="110~114"] {
-    --astaps-loot-weekly_tartaglia_level_110: 1;
-}
-
-boss[type="weekly"][tag="tartaglia"][level="115~119"] {
-    --astaps-loot-weekly_tartaglia_level_115: 1;
-}
-
-boss[type="weekly"][tag="tartaglia"][level="120~"] {
-    --astaps-loot-weekly_tartaglia_level_120: 1;
 }
 
 /* Azhdaha Pyro Electro (若陀龙王火电) */
@@ -878,28 +822,8 @@ boss[type="weekly"][tag="azhdaha_pyro_electro"][level="90~92"] {
     --astaps-loot-weekly_azhdaha_pyro_electro_level_90: 1;
 }
 
-boss[type="weekly"][tag="azhdaha_pyro_electro"][level="93~99"] {
+boss[type="weekly"][tag="azhdaha_pyro_electro"][level="93~"] {
     --astaps-loot-weekly_azhdaha_pyro_electro_level_93: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_pyro_electro"][level="100~104"] {
-    --astaps-loot-weekly_azhdaha_pyro_electro_level_100: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_pyro_electro"][level="105~109"] {
-    --astaps-loot-weekly_azhdaha_pyro_electro_level_105: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_pyro_electro"][level="110~114"] {
-    --astaps-loot-weekly_azhdaha_pyro_electro_level_110: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_pyro_electro"][level="115~119"] {
-    --astaps-loot-weekly_azhdaha_pyro_electro_level_115: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_pyro_electro"][level="120~"] {
-    --astaps-loot-weekly_azhdaha_pyro_electro_level_120: 1;
 }
 
 /* Azhdaha Hydro Electro (若陀龙王水电) */
@@ -979,28 +903,8 @@ boss[type="weekly"][tag="azhdaha_hydro_electro"][level="90~92"] {
     --astaps-loot-weekly_azhdaha_hydro_electro_level_90: 1;
 }
 
-boss[type="weekly"][tag="azhdaha_hydro_electro"][level="93~99"] {
+boss[type="weekly"][tag="azhdaha_hydro_electro"][level="93~"] {
     --astaps-loot-weekly_azhdaha_hydro_electro_level_93: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_hydro_electro"][level="100~104"] {
-    --astaps-loot-weekly_azhdaha_hydro_electro_level_100: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_hydro_electro"][level="105~109"] {
-    --astaps-loot-weekly_azhdaha_hydro_electro_level_105: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_hydro_electro"][level="110~114"] {
-    --astaps-loot-weekly_azhdaha_hydro_electro_level_110: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_hydro_electro"][level="115~119"] {
-    --astaps-loot-weekly_azhdaha_hydro_electro_level_115: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_hydro_electro"][level="120~"] {
-    --astaps-loot-weekly_azhdaha_hydro_electro_level_120: 1;
 }
 
 /* Azhdaha Pyro Cryo (若陀龙王火冰) */
@@ -1080,28 +984,8 @@ boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="90~92"] {
     --astaps-loot-weekly_azhdaha_pyro_cryo_level_90: 1;
 }
 
-boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="93~99"] {
+boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="93~"] {
     --astaps-loot-weekly_azhdaha_pyro_cryo_level_93: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="100~104"] {
-    --astaps-loot-weekly_azhdaha_pyro_cryo_level_100: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="105~109"] {
-    --astaps-loot-weekly_azhdaha_pyro_cryo_level_105: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="110~114"] {
-    --astaps-loot-weekly_azhdaha_pyro_cryo_level_110: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="115~119"] {
-    --astaps-loot-weekly_azhdaha_pyro_cryo_level_115: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="120~"] {
-    --astaps-loot-weekly_azhdaha_pyro_cryo_level_120: 1;
 }
 
 /* Azhdaha Hydro Cryo (若陀龙王水冰) */
@@ -1181,28 +1065,8 @@ boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="90~92"] {
     --astaps-loot-weekly_azhdaha_hydro_cryo_level_90: 1;
 }
 
-boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="93~99"] {
+boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="93~"] {
     --astaps-loot-weekly_azhdaha_hydro_cryo_level_93: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="100~104"] {
-    --astaps-loot-weekly_azhdaha_hydro_cryo_level_100: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="105~109"] {
-    --astaps-loot-weekly_azhdaha_hydro_cryo_level_105: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="110~114"] {
-    --astaps-loot-weekly_azhdaha_hydro_cryo_level_110: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="115~119"] {
-    --astaps-loot-weekly_azhdaha_hydro_cryo_level_115: 1;
-}
-
-boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="120~"] {
-    --astaps-loot-weekly_azhdaha_hydro_cryo_level_120: 1;
 }
 
 /* Signora (女士) */
@@ -1282,28 +1146,8 @@ boss[type="weekly"][tag="signora"][level="90~92"] {
     --astaps-loot-weekly_signora_level_90: 1;
 }
 
-boss[type="weekly"][tag="signora"][level="93~99"] {
+boss[type="weekly"][tag="signora"][level="93~"] {
     --astaps-loot-weekly_signora_level_93: 1;
-}
-
-boss[type="weekly"][tag="signora"][level="100~104"] {
-    --astaps-loot-weekly_signora_level_100: 1;
-}
-
-boss[type="weekly"][tag="signora"][level="105~109"] {
-    --astaps-loot-weekly_signora_level_105: 1;
-}
-
-boss[type="weekly"][tag="signora"][level="110~114"] {
-    --astaps-loot-weekly_signora_level_110: 1;
-}
-
-boss[type="weekly"][tag="signora"][level="115~119"] {
-    --astaps-loot-weekly_signora_level_115: 1;
-}
-
-boss[type="weekly"][tag="signora"][level="120~"] {
-    --astaps-loot-weekly_signora_level_120: 1;
 }
 
 /* Raiden Shogun (雷电将军) */
@@ -1383,28 +1227,8 @@ boss[type="weekly"][tag="raiden_shogun"][level="90~92"] {
     --astaps-loot-weekly_raiden_shogun_level_90: 1;
 }
 
-boss[type="weekly"][tag="raiden_shogun"][level="93~99"] {
+boss[type="weekly"][tag="raiden_shogun"][level="93~"] {
     --astaps-loot-weekly_raiden_shogun_level_93: 1;
-}
-
-boss[type="weekly"][tag="raiden_shogun"][level="100~104"] {
-    --astaps-loot-weekly_raiden_shogun_level_100: 1;
-}
-
-boss[type="weekly"][tag="raiden_shogun"][level="105~109"] {
-    --astaps-loot-weekly_raiden_shogun_level_105: 1;
-}
-
-boss[type="weekly"][tag="raiden_shogun"][level="110~114"] {
-    --astaps-loot-weekly_raiden_shogun_level_110: 1;
-}
-
-boss[type="weekly"][tag="raiden_shogun"][level="115~119"] {
-    --astaps-loot-weekly_raiden_shogun_level_115: 1;
-}
-
-boss[type="weekly"][tag="raiden_shogun"][level="120~"] {
-    --astaps-loot-weekly_raiden_shogun_level_120: 1;
 }
 
 /* Shouki no Kami (「正机之神」) */
@@ -1484,28 +1308,8 @@ boss[type="weekly"][tag="shouki_no_kami"][level="90~92"] {
     --astaps-loot-weekly_shouki_no_kami_level_90: 1;
 }
 
-boss[type="weekly"][tag="shouki_no_kami"][level="93~99"] {
+boss[type="weekly"][tag="shouki_no_kami"][level="93~"] {
     --astaps-loot-weekly_shouki_no_kami_level_93: 1;
-}
-
-boss[type="weekly"][tag="shouki_no_kami"][level="100~104"] {
-    --astaps-loot-weekly_shouki_no_kami_level_100: 1;
-}
-
-boss[type="weekly"][tag="shouki_no_kami"][level="105~109"] {
-    --astaps-loot-weekly_shouki_no_kami_level_105: 1;
-}
-
-boss[type="weekly"][tag="shouki_no_kami"][level="110~114"] {
-    --astaps-loot-weekly_shouki_no_kami_level_110: 1;
-}
-
-boss[type="weekly"][tag="shouki_no_kami"][level="115~119"] {
-    --astaps-loot-weekly_shouki_no_kami_level_115: 1;
-}
-
-boss[type="weekly"][tag="shouki_no_kami"][level="120~"] {
-    --astaps-loot-weekly_shouki_no_kami_level_120: 1;
 }
 
 
@@ -1592,24 +1396,8 @@ boss[type="world"][tag="frostnight_scion"][level="93~99"] {
     --astaps-loot-world_frostnight_scion_level_93: 1;
 }
 
-boss[type="world"][tag="frostnight_scion"][level="100~104"] {
+boss[type="world"][tag="frostnight_scion"][level="100~"] {
     --astaps-loot-world_frostnight_scion_level_100: 1;
-}
-
-boss[type="world"][tag="frostnight_scion"][level="105~109"] {
-    --astaps-loot-world_frostnight_scion_level_105: 1;
-}
-
-boss[type="world"][tag="frostnight_scion"][level="110~114"] {
-    --astaps-loot-world_frostnight_scion_level_110: 1;
-}
-
-boss[type="world"][tag="frostnight_scion"][level="115~119"] {
-    --astaps-loot-world_frostnight_scion_level_115: 1;
-}
-
-boss[type="world"][tag="frostnight_scion"][level="120~"] {
-    --astaps-loot-world_frostnight_scion_level_120: 1;
 }
 
 /* Knuckle Duck (重拳出击鸭) */
@@ -1693,24 +1481,8 @@ boss[type="world"][tag="knuckle_duck"][level="93~99"] {
     --astaps-loot-world_knuckle_duck_level_93: 1;
 }
 
-boss[type="world"][tag="knuckle_duck"][level="100~104"] {
+boss[type="world"][tag="knuckle_duck"][level="100~"] {
     --astaps-loot-world_knuckle_duck_level_100: 1;
-}
-
-boss[type="world"][tag="knuckle_duck"][level="105~109"] {
-    --astaps-loot-world_knuckle_duck_level_105: 1;
-}
-
-boss[type="world"][tag="knuckle_duck"][level="110~114"] {
-    --astaps-loot-world_knuckle_duck_level_110: 1;
-}
-
-boss[type="world"][tag="knuckle_duck"][level="115~119"] {
-    --astaps-loot-world_knuckle_duck_level_115: 1;
-}
-
-boss[type="world"][tag="knuckle_duck"][level="120~"] {
-    --astaps-loot-world_knuckle_duck_level_120: 1;
 }
 
 /* Lightbearing Lunar Moth (蕴光月幻蝶) */
@@ -1794,24 +1566,8 @@ boss[type="world"][tag="lightbearing_lunar_moth"][level="93~99"] {
     --astaps-loot-world_lightbearing_lunar_moth_level_93: 1;
 }
 
-boss[type="world"][tag="lightbearing_lunar_moth"][level="100~104"] {
+boss[type="world"][tag="lightbearing_lunar_moth"][level="100~"] {
     --astaps-loot-world_lightbearing_lunar_moth_level_100: 1;
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="105~109"] {
-    --astaps-loot-world_lightbearing_lunar_moth_level_105: 1;
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="110~114"] {
-    --astaps-loot-world_lightbearing_lunar_moth_level_110: 1;
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="115~119"] {
-    --astaps-loot-world_lightbearing_lunar_moth_level_115: 1;
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="120~"] {
-    --astaps-loot-world_lightbearing_lunar_moth_level_120: 1;
 }
 
 /* Radiant Beast (蕴光异兽) */
@@ -1895,24 +1651,8 @@ boss[type="world"][tag="radiant_beast"][level="93~99"] {
     --astaps-loot-world_radiant_beast_level_93: 1;
 }
 
-boss[type="world"][tag="radiant_beast"][level="100~104"] {
+boss[type="world"][tag="radiant_beast"][level="100~"] {
     --astaps-loot-world_radiant_beast_level_100: 1;
-}
-
-boss[type="world"][tag="radiant_beast"][level="105~109"] {
-    --astaps-loot-world_radiant_beast_level_105: 1;
-}
-
-boss[type="world"][tag="radiant_beast"][level="110~114"] {
-    --astaps-loot-world_radiant_beast_level_110: 1;
-}
-
-boss[type="world"][tag="radiant_beast"][level="115~119"] {
-    --astaps-loot-world_radiant_beast_level_115: 1;
-}
-
-boss[type="world"][tag="radiant_beast"][level="120~"] {
-    --astaps-loot-world_radiant_beast_level_120: 1;
 }
 
 /* Primal Watcher (原初监视者) */
@@ -1996,24 +1736,8 @@ boss[type="world"][tag="primal_watcher"][level="93~99"] {
     --astaps-loot-world_primal_watcher_level_93: 1;
 }
 
-boss[type="world"][tag="primal_watcher"][level="100~104"] {
+boss[type="world"][tag="primal_watcher"][level="100~"] {
     --astaps-loot-world_primal_watcher_level_100: 1;
-}
-
-boss[type="world"][tag="primal_watcher"][level="105~109"] {
-    --astaps-loot-world_primal_watcher_level_105: 1;
-}
-
-boss[type="world"][tag="primal_watcher"][level="110~114"] {
-    --astaps-loot-world_primal_watcher_level_110: 1;
-}
-
-boss[type="world"][tag="primal_watcher"][level="115~119"] {
-    --astaps-loot-world_primal_watcher_level_115: 1;
-}
-
-boss[type="world"][tag="primal_watcher"][level="120~"] {
-    --astaps-loot-world_primal_watcher_level_120: 1;
 }
 
 /* Icewind Suite (冰风组曲) */
@@ -2097,24 +1821,8 @@ boss[type="world"][tag="icewind_suite"][level="93~99"] {
     --astaps-loot-world_icewind_suite_level_93: 1;
 }
 
-boss[type="world"][tag="icewind_suite"][level="100~104"] {
+boss[type="world"][tag="icewind_suite"][level="100~"] {
     --astaps-loot-world_icewind_suite_level_100: 1;
-}
-
-boss[type="world"][tag="icewind_suite"][level="105~109"] {
-    --astaps-loot-world_icewind_suite_level_105: 1;
-}
-
-boss[type="world"][tag="icewind_suite"][level="110~114"] {
-    --astaps-loot-world_icewind_suite_level_110: 1;
-}
-
-boss[type="world"][tag="icewind_suite"][level="115~119"] {
-    --astaps-loot-world_icewind_suite_level_115: 1;
-}
-
-boss[type="world"][tag="icewind_suite"][level="120~"] {
-    --astaps-loot-world_icewind_suite_level_120: 1;
 }
 
 /* Emperor Of Fire And Iron (铁甲熔火帝皇) */
@@ -2198,24 +1906,8 @@ boss[type="world"][tag="emperor_of_fire_and_iron"][level="93~99"] {
     --astaps-loot-world_emperor_of_fire_and_iron_level_93: 1;
 }
 
-boss[type="world"][tag="emperor_of_fire_and_iron"][level="100~104"] {
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="100~"] {
     --astaps-loot-world_emperor_of_fire_and_iron_level_100: 1;
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron"][level="105~109"] {
-    --astaps-loot-world_emperor_of_fire_and_iron_level_105: 1;
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron"][level="110~114"] {
-    --astaps-loot-world_emperor_of_fire_and_iron_level_110: 1;
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron"][level="115~119"] {
-    --astaps-loot-world_emperor_of_fire_and_iron_level_115: 1;
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron"][level="120~"] {
-    --astaps-loot-world_emperor_of_fire_and_iron_level_120: 1;
 }
 
 /* Experimental Field Generator (实验性场力发生装置) */
@@ -2299,24 +1991,8 @@ boss[type="world"][tag="experimental_field_generator"][level="93~99"] {
     --astaps-loot-world_experimental_field_generator_level_93: 1;
 }
 
-boss[type="world"][tag="experimental_field_generator"][level="100~104"] {
+boss[type="world"][tag="experimental_field_generator"][level="100~"] {
     --astaps-loot-world_experimental_field_generator_level_100: 1;
-}
-
-boss[type="world"][tag="experimental_field_generator"][level="105~109"] {
-    --astaps-loot-world_experimental_field_generator_level_105: 1;
-}
-
-boss[type="world"][tag="experimental_field_generator"][level="110~114"] {
-    --astaps-loot-world_experimental_field_generator_level_110: 1;
-}
-
-boss[type="world"][tag="experimental_field_generator"][level="115~119"] {
-    --astaps-loot-world_experimental_field_generator_level_115: 1;
-}
-
-boss[type="world"][tag="experimental_field_generator"][level="120~"] {
-    --astaps-loot-world_experimental_field_generator_level_120: 1;
 }
 
 /* Millennial Pearl Seahorse (千年珍珠骏麟) */
@@ -2400,24 +2076,8 @@ boss[type="world"][tag="millennial_pearl_seahorse"][level="93~99"] {
     --astaps-loot-world_millennial_pearl_seahorse_level_93: 1;
 }
 
-boss[type="world"][tag="millennial_pearl_seahorse"][level="100~104"] {
+boss[type="world"][tag="millennial_pearl_seahorse"][level="100~"] {
     --astaps-loot-world_millennial_pearl_seahorse_level_100: 1;
-}
-
-boss[type="world"][tag="millennial_pearl_seahorse"][level="105~109"] {
-    --astaps-loot-world_millennial_pearl_seahorse_level_105: 1;
-}
-
-boss[type="world"][tag="millennial_pearl_seahorse"][level="110~114"] {
-    --astaps-loot-world_millennial_pearl_seahorse_level_110: 1;
-}
-
-boss[type="world"][tag="millennial_pearl_seahorse"][level="115~119"] {
-    --astaps-loot-world_millennial_pearl_seahorse_level_115: 1;
-}
-
-boss[type="world"][tag="millennial_pearl_seahorse"][level="120~"] {
-    --astaps-loot-world_millennial_pearl_seahorse_level_120: 1;
 }
 
 /* Hydro Tulpa (水形幻人) */
@@ -2501,24 +2161,8 @@ boss[type="world"][tag="hydro_tulpa"][level="93~99"] {
     --astaps-loot-world_hydro_tulpa_level_93: 1;
 }
 
-boss[type="world"][tag="hydro_tulpa"][level="100~104"] {
+boss[type="world"][tag="hydro_tulpa"][level="100~"] {
     --astaps-loot-world_hydro_tulpa_level_100: 1;
-}
-
-boss[type="world"][tag="hydro_tulpa"][level="105~109"] {
-    --astaps-loot-world_hydro_tulpa_level_105: 1;
-}
-
-boss[type="world"][tag="hydro_tulpa"][level="110~114"] {
-    --astaps-loot-world_hydro_tulpa_level_110: 1;
-}
-
-boss[type="world"][tag="hydro_tulpa"][level="115~119"] {
-    --astaps-loot-world_hydro_tulpa_level_115: 1;
-}
-
-boss[type="world"][tag="hydro_tulpa"][level="120~"] {
-    --astaps-loot-world_hydro_tulpa_level_120: 1;
 }
 
 /* Legatus Golem (魔像督军) */
@@ -2602,24 +2246,8 @@ boss[type="world"][tag="legatus_golem"][level="93~99"] {
     --astaps-loot-world_legatus_golem_level_93: 1;
 }
 
-boss[type="world"][tag="legatus_golem"][level="100~104"] {
+boss[type="world"][tag="legatus_golem"][level="100~"] {
     --astaps-loot-world_legatus_golem_level_100: 1;
-}
-
-boss[type="world"][tag="legatus_golem"][level="105~109"] {
-    --astaps-loot-world_legatus_golem_level_105: 1;
-}
-
-boss[type="world"][tag="legatus_golem"][level="110~114"] {
-    --astaps-loot-world_legatus_golem_level_110: 1;
-}
-
-boss[type="world"][tag="legatus_golem"][level="115~119"] {
-    --astaps-loot-world_legatus_golem_level_115: 1;
-}
-
-boss[type="world"][tag="legatus_golem"][level="120~"] {
-    --astaps-loot-world_legatus_golem_level_120: 1;
 }
 
 /* Gluttonous Yumkasaur Mountain King (贪食匿叶龙山王) */
@@ -2703,24 +2331,8 @@ boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="93~99"] {
     --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_93: 1;
 }
 
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="100~104"] {
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="100~"] {
     --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_100: 1;
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="105~109"] {
-    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_105: 1;
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="110~114"] {
-    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_110: 1;
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="115~119"] {
-    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_115: 1;
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="120~"] {
-    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_120: 1;
 }
 
 /* Goldflame Qucusaure Tyrant (金焰绒翼龙暴君) */
@@ -2804,24 +2416,8 @@ boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="93~99"] {
     --astaps-loot-world_goldflame_qucusaure_tyrant_level_93: 1;
 }
 
-boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="100~104"] {
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="100~"] {
     --astaps-loot-world_goldflame_qucusaure_tyrant_level_100: 1;
-}
-
-boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="105~109"] {
-    --astaps-loot-world_goldflame_qucusaure_tyrant_level_105: 1;
-}
-
-boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="110~114"] {
-    --astaps-loot-world_goldflame_qucusaure_tyrant_level_110: 1;
-}
-
-boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="115~119"] {
-    --astaps-loot-world_goldflame_qucusaure_tyrant_level_115: 1;
-}
-
-boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="120~"] {
-    --astaps-loot-world_goldflame_qucusaure_tyrant_level_120: 1;
 }
 
 /* Secret Source Automaton Configuration Device (秘源机兵·构型械) */
@@ -2905,24 +2501,8 @@ boss[type="world"][tag="secret_source_automaton_configuration_device"][level="93
     --astaps-loot-world_secret_source_automaton_configuration_device_level_93: 1;
 }
 
-boss[type="world"][tag="secret_source_automaton_configuration_device"][level="100~104"] {
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="100~"] {
     --astaps-loot-world_secret_source_automaton_configuration_device_level_100: 1;
-}
-
-boss[type="world"][tag="secret_source_automaton_configuration_device"][level="105~109"] {
-    --astaps-loot-world_secret_source_automaton_configuration_device_level_105: 1;
-}
-
-boss[type="world"][tag="secret_source_automaton_configuration_device"][level="110~114"] {
-    --astaps-loot-world_secret_source_automaton_configuration_device_level_110: 1;
-}
-
-boss[type="world"][tag="secret_source_automaton_configuration_device"][level="115~119"] {
-    --astaps-loot-world_secret_source_automaton_configuration_device_level_115: 1;
-}
-
-boss[type="world"][tag="secret_source_automaton_configuration_device"][level="120~"] {
-    --astaps-loot-world_secret_source_automaton_configuration_device_level_120: 1;
 }
 
 /* Lord Of The Deep Dreadwing (深邃魹语之主) */
@@ -3006,24 +2586,8 @@ boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="93~99"] {
     --astaps-loot-world_lord_of_the_deep_dreadwing_level_93: 1;
 }
 
-boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="100~104"] {
+boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="100~"] {
     --astaps-loot-world_lord_of_the_deep_dreadwing_level_100: 1;
-}
-
-boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="105~109"] {
-    --astaps-loot-world_lord_of_the_deep_dreadwing_level_105: 1;
-}
-
-boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="110~114"] {
-    --astaps-loot-world_lord_of_the_deep_dreadwing_level_110: 1;
-}
-
-boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="115~119"] {
-    --astaps-loot-world_lord_of_the_deep_dreadwing_level_115: 1;
-}
-
-boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="120~"] {
-    --astaps-loot-world_lord_of_the_deep_dreadwing_level_120: 1;
 }
 
 /* Holawaqa Ngoubou (灵觉隐修的迷者) */
@@ -3107,24 +2671,8 @@ boss[type="world"][tag="holawaqa_ngoubou"][level="93~99"] {
     --astaps-loot-world_holawaqa_ngoubou_level_93: 1;
 }
 
-boss[type="world"][tag="holawaqa_ngoubou"][level="100~104"] {
+boss[type="world"][tag="holawaqa_ngoubou"][level="100~"] {
     --astaps-loot-world_holawaqa_ngoubou_level_100: 1;
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="105~109"] {
-    --astaps-loot-world_holawaqa_ngoubou_level_105: 1;
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="110~114"] {
-    --astaps-loot-world_holawaqa_ngoubou_level_110: 1;
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="115~119"] {
-    --astaps-loot-world_holawaqa_ngoubou_level_115: 1;
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="120~"] {
-    --astaps-loot-world_holawaqa_ngoubou_level_120: 1;
 }
 
 /* Lava Dragon Statue (熔岩辉龙像) */
@@ -3208,24 +2756,8 @@ boss[type="world"][tag="lava_dragon_statue"][level="93~99"] {
     --astaps-loot-world_lava_dragon_statue_level_93: 1;
 }
 
-boss[type="world"][tag="lava_dragon_statue"][level="100~104"] {
+boss[type="world"][tag="lava_dragon_statue"][level="100~"] {
     --astaps-loot-world_lava_dragon_statue_level_100: 1;
-}
-
-boss[type="world"][tag="lava_dragon_statue"][level="105~109"] {
-    --astaps-loot-world_lava_dragon_statue_level_105: 1;
-}
-
-boss[type="world"][tag="lava_dragon_statue"][level="110~114"] {
-    --astaps-loot-world_lava_dragon_statue_level_110: 1;
-}
-
-boss[type="world"][tag="lava_dragon_statue"][level="115~119"] {
-    --astaps-loot-world_lava_dragon_statue_level_115: 1;
-}
-
-boss[type="world"][tag="lava_dragon_statue"][level="120~"] {
-    --astaps-loot-world_lava_dragon_statue_level_120: 1;
 }
 
 /* Secret Source Automaton Overseer (秘源机兵·统御械) */
@@ -3309,24 +2841,8 @@ boss[type="world"][tag="secret_source_automaton_overseer"][level="93~99"] {
     --astaps-loot-world_secret_source_automaton_overseer_level_93: 1;
 }
 
-boss[type="world"][tag="secret_source_automaton_overseer"][level="100~104"] {
+boss[type="world"][tag="secret_source_automaton_overseer"][level="100~"] {
     --astaps-loot-world_secret_source_automaton_overseer_level_100: 1;
-}
-
-boss[type="world"][tag="secret_source_automaton_overseer"][level="105~109"] {
-    --astaps-loot-world_secret_source_automaton_overseer_level_105: 1;
-}
-
-boss[type="world"][tag="secret_source_automaton_overseer"][level="110~114"] {
-    --astaps-loot-world_secret_source_automaton_overseer_level_110: 1;
-}
-
-boss[type="world"][tag="secret_source_automaton_overseer"][level="115~119"] {
-    --astaps-loot-world_secret_source_automaton_overseer_level_115: 1;
-}
-
-boss[type="world"][tag="secret_source_automaton_overseer"][level="120~"] {
-    --astaps-loot-world_secret_source_automaton_overseer_level_120: 1;
 }
 
 /* Setekh Wenut (风蚀沙虫) */
@@ -3410,24 +2926,8 @@ boss[type="world"][tag="setekh_wenut"][level="93~99"] {
     --astaps-loot-world_setekh_wenut_level_93: 1;
 }
 
-boss[type="world"][tag="setekh_wenut"][level="100~104"] {
+boss[type="world"][tag="setekh_wenut"][level="100~"] {
     --astaps-loot-world_setekh_wenut_level_100: 1;
-}
-
-boss[type="world"][tag="setekh_wenut"][level="105~109"] {
-    --astaps-loot-world_setekh_wenut_level_105: 1;
-}
-
-boss[type="world"][tag="setekh_wenut"][level="110~114"] {
-    --astaps-loot-world_setekh_wenut_level_110: 1;
-}
-
-boss[type="world"][tag="setekh_wenut"][level="115~119"] {
-    --astaps-loot-world_setekh_wenut_level_115: 1;
-}
-
-boss[type="world"][tag="setekh_wenut"][level="120~"] {
-    --astaps-loot-world_setekh_wenut_level_120: 1;
 }
 
 /* Solitary Suanni (隐山猊兽) */
@@ -3511,24 +3011,8 @@ boss[type="world"][tag="solitary_suanni"][level="93~99"] {
     --astaps-loot-world_solitary_suanni_level_93: 1;
 }
 
-boss[type="world"][tag="solitary_suanni"][level="100~104"] {
+boss[type="world"][tag="solitary_suanni"][level="100~"] {
     --astaps-loot-world_solitary_suanni_level_100: 1;
-}
-
-boss[type="world"][tag="solitary_suanni"][level="105~109"] {
-    --astaps-loot-world_solitary_suanni_level_105: 1;
-}
-
-boss[type="world"][tag="solitary_suanni"][level="110~114"] {
-    --astaps-loot-world_solitary_suanni_level_110: 1;
-}
-
-boss[type="world"][tag="solitary_suanni"][level="115~119"] {
-    --astaps-loot-world_solitary_suanni_level_115: 1;
-}
-
-boss[type="world"][tag="solitary_suanni"][level="120~"] {
-    --astaps-loot-world_solitary_suanni_level_120: 1;
 }
 
 /* Tenebrous Papilla (深邃摹结株) */
@@ -3612,24 +3096,8 @@ boss[type="world"][tag="tenebrous_papilla"][level="93~99"] {
     --astaps-loot-world_tenebrous_papilla_level_93: 1;
 }
 
-boss[type="world"][tag="tenebrous_papilla"][level="100~104"] {
+boss[type="world"][tag="tenebrous_papilla"][level="100~"] {
     --astaps-loot-world_tenebrous_papilla_level_100: 1;
-}
-
-boss[type="world"][tag="tenebrous_papilla"][level="105~109"] {
-    --astaps-loot-world_tenebrous_papilla_level_105: 1;
-}
-
-boss[type="world"][tag="tenebrous_papilla"][level="110~114"] {
-    --astaps-loot-world_tenebrous_papilla_level_110: 1;
-}
-
-boss[type="world"][tag="tenebrous_papilla"][level="115~119"] {
-    --astaps-loot-world_tenebrous_papilla_level_115: 1;
-}
-
-boss[type="world"][tag="tenebrous_papilla"][level="120~"] {
-    --astaps-loot-world_tenebrous_papilla_level_120: 1;
 }
 
 /* Undying Replicant (不灭衍生造物) */
@@ -3713,24 +3181,8 @@ boss[type="world"][tag="undying_replicant"][level="93~99"] {
     --astaps-loot-world_undying_replicant_level_93: 1;
 }
 
-boss[type="world"][tag="undying_replicant"][level="100~104"] {
+boss[type="world"][tag="undying_replicant"][level="100~"] {
     --astaps-loot-world_undying_replicant_level_100: 1;
-}
-
-boss[type="world"][tag="undying_replicant"][level="105~109"] {
-    --astaps-loot-world_undying_replicant_level_105: 1;
-}
-
-boss[type="world"][tag="undying_replicant"][level="110~114"] {
-    --astaps-loot-world_undying_replicant_level_110: 1;
-}
-
-boss[type="world"][tag="undying_replicant"][level="115~119"] {
-    --astaps-loot-world_undying_replicant_level_115: 1;
-}
-
-boss[type="world"][tag="undying_replicant"][level="120~"] {
-    --astaps-loot-world_undying_replicant_level_120: 1;
 }
 
 /* Chimera Sky Roamer (嵌合翼骏狮) */
@@ -3814,20 +3266,8 @@ boss[type="world"][tag="chimera_sky_roamer"][level="93~99"] {
     --astaps-loot-world_chimera_sky_roamer_level_93: 1;
 }
 
-boss[type="world"][tag="chimera_sky_roamer"][level="100~104"] {
+boss[type="world"][tag="chimera_sky_roamer"][level="100~119"] {
     --astaps-loot-world_chimera_sky_roamer_level_100: 1;
-}
-
-boss[type="world"][tag="chimera_sky_roamer"][level="105~109"] {
-    --astaps-loot-world_chimera_sky_roamer_level_105: 1;
-}
-
-boss[type="world"][tag="chimera_sky_roamer"][level="110~114"] {
-    --astaps-loot-world_chimera_sky_roamer_level_110: 1;
-}
-
-boss[type="world"][tag="chimera_sky_roamer"][level="115~119"] {
-    --astaps-loot-world_chimera_sky_roamer_level_115: 1;
 }
 
 boss[type="world"][tag="chimera_sky_roamer"][level="120~"] {
@@ -3913,28 +3353,8 @@ boss[type="world"][tag="electro_hypostasis"][level="90~92"] {
     --astaps-loot-world_electro_hypostasis_level_90: 1;
 }
 
-boss[type="world"][tag="electro_hypostasis"][level="93~99"] {
+boss[type="world"][tag="electro_hypostasis"][level="93~"] {
     --astaps-loot-world_electro_hypostasis_level_93: 1;
-}
-
-boss[type="world"][tag="electro_hypostasis"][level="100~104"] {
-    --astaps-loot-world_electro_hypostasis_level_100: 1;
-}
-
-boss[type="world"][tag="electro_hypostasis"][level="105~109"] {
-    --astaps-loot-world_electro_hypostasis_level_105: 1;
-}
-
-boss[type="world"][tag="electro_hypostasis"][level="110~114"] {
-    --astaps-loot-world_electro_hypostasis_level_110: 1;
-}
-
-boss[type="world"][tag="electro_hypostasis"][level="115~119"] {
-    --astaps-loot-world_electro_hypostasis_level_115: 1;
-}
-
-boss[type="world"][tag="electro_hypostasis"][level="120~"] {
-    --astaps-loot-world_electro_hypostasis_level_120: 1;
 }
 
 /* Anemo Hypostasis (无相之风) */
@@ -4014,28 +3434,8 @@ boss[type="world"][tag="anemo_hypostasis"][level="90~92"] {
     --astaps-loot-world_anemo_hypostasis_level_90: 1;
 }
 
-boss[type="world"][tag="anemo_hypostasis"][level="93~99"] {
+boss[type="world"][tag="anemo_hypostasis"][level="93~"] {
     --astaps-loot-world_anemo_hypostasis_level_93: 1;
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="100~104"] {
-    --astaps-loot-world_anemo_hypostasis_level_100: 1;
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="105~109"] {
-    --astaps-loot-world_anemo_hypostasis_level_105: 1;
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="110~114"] {
-    --astaps-loot-world_anemo_hypostasis_level_110: 1;
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="115~119"] {
-    --astaps-loot-world_anemo_hypostasis_level_115: 1;
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="120~"] {
-    --astaps-loot-world_anemo_hypostasis_level_120: 1;
 }
 
 /* Geo Hypostasis (无相之岩) */
@@ -4115,28 +3515,8 @@ boss[type="world"][tag="geo_hypostasis"][level="90~92"] {
     --astaps-loot-world_geo_hypostasis_level_90: 1;
 }
 
-boss[type="world"][tag="geo_hypostasis"][level="93~99"] {
+boss[type="world"][tag="geo_hypostasis"][level="93~"] {
     --astaps-loot-world_geo_hypostasis_level_93: 1;
-}
-
-boss[type="world"][tag="geo_hypostasis"][level="100~104"] {
-    --astaps-loot-world_geo_hypostasis_level_100: 1;
-}
-
-boss[type="world"][tag="geo_hypostasis"][level="105~109"] {
-    --astaps-loot-world_geo_hypostasis_level_105: 1;
-}
-
-boss[type="world"][tag="geo_hypostasis"][level="110~114"] {
-    --astaps-loot-world_geo_hypostasis_level_110: 1;
-}
-
-boss[type="world"][tag="geo_hypostasis"][level="115~119"] {
-    --astaps-loot-world_geo_hypostasis_level_115: 1;
-}
-
-boss[type="world"][tag="geo_hypostasis"][level="120~"] {
-    --astaps-loot-world_geo_hypostasis_level_120: 1;
 }
 
 /* Cryo Regisvine (急冻树) */
@@ -4216,28 +3596,8 @@ boss[type="world"][tag="cryo_regisvine"][level="90~92"] {
     --astaps-loot-world_cryo_regisvine_level_90: 1;
 }
 
-boss[type="world"][tag="cryo_regisvine"][level="93~99"] {
+boss[type="world"][tag="cryo_regisvine"][level="93~"] {
     --astaps-loot-world_cryo_regisvine_level_93: 1;
-}
-
-boss[type="world"][tag="cryo_regisvine"][level="100~104"] {
-    --astaps-loot-world_cryo_regisvine_level_100: 1;
-}
-
-boss[type="world"][tag="cryo_regisvine"][level="105~109"] {
-    --astaps-loot-world_cryo_regisvine_level_105: 1;
-}
-
-boss[type="world"][tag="cryo_regisvine"][level="110~114"] {
-    --astaps-loot-world_cryo_regisvine_level_110: 1;
-}
-
-boss[type="world"][tag="cryo_regisvine"][level="115~119"] {
-    --astaps-loot-world_cryo_regisvine_level_115: 1;
-}
-
-boss[type="world"][tag="cryo_regisvine"][level="120~"] {
-    --astaps-loot-world_cryo_regisvine_level_120: 1;
 }
 
 /* Pyro Regisvine (爆炎树) */
@@ -4317,28 +3677,8 @@ boss[type="world"][tag="pyro_regisvine"][level="90~92"] {
     --astaps-loot-world_pyro_regisvine_level_90: 1;
 }
 
-boss[type="world"][tag="pyro_regisvine"][level="93~99"] {
+boss[type="world"][tag="pyro_regisvine"][level="93~"] {
     --astaps-loot-world_pyro_regisvine_level_93: 1;
-}
-
-boss[type="world"][tag="pyro_regisvine"][level="100~104"] {
-    --astaps-loot-world_pyro_regisvine_level_100: 1;
-}
-
-boss[type="world"][tag="pyro_regisvine"][level="105~109"] {
-    --astaps-loot-world_pyro_regisvine_level_105: 1;
-}
-
-boss[type="world"][tag="pyro_regisvine"][level="110~114"] {
-    --astaps-loot-world_pyro_regisvine_level_110: 1;
-}
-
-boss[type="world"][tag="pyro_regisvine"][level="115~119"] {
-    --astaps-loot-world_pyro_regisvine_level_115: 1;
-}
-
-boss[type="world"][tag="pyro_regisvine"][level="120~"] {
-    --astaps-loot-world_pyro_regisvine_level_120: 1;
 }
 
 /* Oceanid (纯水精灵) */
@@ -4418,28 +3758,8 @@ boss[type="world"][tag="oceanid"][level="90~92"] {
     --astaps-loot-world_oceanid_level_90: 1;
 }
 
-boss[type="world"][tag="oceanid"][level="93~99"] {
+boss[type="world"][tag="oceanid"][level="93~"] {
     --astaps-loot-world_oceanid_level_93: 1;
-}
-
-boss[type="world"][tag="oceanid"][level="100~104"] {
-    --astaps-loot-world_oceanid_level_100: 1;
-}
-
-boss[type="world"][tag="oceanid"][level="105~109"] {
-    --astaps-loot-world_oceanid_level_105: 1;
-}
-
-boss[type="world"][tag="oceanid"][level="110~114"] {
-    --astaps-loot-world_oceanid_level_110: 1;
-}
-
-boss[type="world"][tag="oceanid"][level="115~119"] {
-    --astaps-loot-world_oceanid_level_115: 1;
-}
-
-boss[type="world"][tag="oceanid"][level="120~"] {
-    --astaps-loot-world_oceanid_level_120: 1;
 }
 
 /* Primo Geovishap Electro (古岩龙蜥电) */
@@ -4519,28 +3839,8 @@ boss[type="world"][tag="primo_geovishap_electro"][level="90~92"] {
     --astaps-loot-world_primo_geovishap_electro_level_90: 1;
 }
 
-boss[type="world"][tag="primo_geovishap_electro"][level="93~99"] {
+boss[type="world"][tag="primo_geovishap_electro"][level="93~"] {
     --astaps-loot-world_primo_geovishap_electro_level_93: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="100~104"] {
-    --astaps-loot-world_primo_geovishap_electro_level_100: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="105~109"] {
-    --astaps-loot-world_primo_geovishap_electro_level_105: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="110~114"] {
-    --astaps-loot-world_primo_geovishap_electro_level_110: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="115~119"] {
-    --astaps-loot-world_primo_geovishap_electro_level_115: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="120~"] {
-    --astaps-loot-world_primo_geovishap_electro_level_120: 1;
 }
 
 /* Primo Geovishap Cryo (古岩龙蜥冰) */
@@ -4620,28 +3920,8 @@ boss[type="world"][tag="primo_geovishap_cryo"][level="90~92"] {
     --astaps-loot-world_primo_geovishap_cryo_level_90: 1;
 }
 
-boss[type="world"][tag="primo_geovishap_cryo"][level="93~99"] {
+boss[type="world"][tag="primo_geovishap_cryo"][level="93~"] {
     --astaps-loot-world_primo_geovishap_cryo_level_93: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_cryo"][level="100~104"] {
-    --astaps-loot-world_primo_geovishap_cryo_level_100: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_cryo"][level="105~109"] {
-    --astaps-loot-world_primo_geovishap_cryo_level_105: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_cryo"][level="110~114"] {
-    --astaps-loot-world_primo_geovishap_cryo_level_110: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_cryo"][level="115~119"] {
-    --astaps-loot-world_primo_geovishap_cryo_level_115: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_cryo"][level="120~"] {
-    --astaps-loot-world_primo_geovishap_cryo_level_120: 1;
 }
 
 /* Primo Geovishap Pyro (古岩龙蜥火) */
@@ -4721,28 +4001,8 @@ boss[type="world"][tag="primo_geovishap_pyro"][level="90~92"] {
     --astaps-loot-world_primo_geovishap_pyro_level_90: 1;
 }
 
-boss[type="world"][tag="primo_geovishap_pyro"][level="93~99"] {
+boss[type="world"][tag="primo_geovishap_pyro"][level="93~"] {
     --astaps-loot-world_primo_geovishap_pyro_level_93: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="100~104"] {
-    --astaps-loot-world_primo_geovishap_pyro_level_100: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="105~109"] {
-    --astaps-loot-world_primo_geovishap_pyro_level_105: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="110~114"] {
-    --astaps-loot-world_primo_geovishap_pyro_level_110: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="115~119"] {
-    --astaps-loot-world_primo_geovishap_pyro_level_115: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="120~"] {
-    --astaps-loot-world_primo_geovishap_pyro_level_120: 1;
 }
 
 /* Primo Geovishap Hydro (古岩龙蜥水) */
@@ -4822,53 +4082,33 @@ boss[type="world"][tag="primo_geovishap_hydro"][level="90~92"] {
     --astaps-loot-world_primo_geovishap_hydro_level_90: 1;
 }
 
-boss[type="world"][tag="primo_geovishap_hydro"][level="93~99"] {
+boss[type="world"][tag="primo_geovishap_hydro"][level="93~"] {
     --astaps-loot-world_primo_geovishap_hydro_level_93: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="100~104"] {
-    --astaps-loot-world_primo_geovishap_hydro_level_100: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="105~109"] {
-    --astaps-loot-world_primo_geovishap_hydro_level_105: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="110~114"] {
-    --astaps-loot-world_primo_geovishap_hydro_level_110: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="115~119"] {
-    --astaps-loot-world_primo_geovishap_hydro_level_115: 1;
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="120~"] {
-    --astaps-loot-world_primo_geovishap_hydro_level_120: 1;
 }
 
 /* Cryo Hypostasis (无相之冰) */
 boss[type="world"][tag="cryo_hypostasis"][level="1~4"] {
-    --astaps-loot-world_cryo_hypostasis_level_1: 1;
+    --astaps-loot-world_cryo_regisvine_level_1: 1;
 }
 
 boss[type="world"][tag="cryo_hypostasis"][level="5~9"] {
-    --astaps-loot-world_cryo_hypostasis_level_5: 1;
+    --astaps-loot-world_cryo_regisvine_level_5: 1;
 }
 
 boss[type="world"][tag="cryo_hypostasis"][level="10~14"] {
-    --astaps-loot-world_cryo_hypostasis_level_10: 1;
+    --astaps-loot-world_cryo_regisvine_level_10: 1;
 }
 
 boss[type="world"][tag="cryo_hypostasis"][level="15~19"] {
-    --astaps-loot-world_cryo_hypostasis_level_15: 1;
+    --astaps-loot-world_cryo_regisvine_level_15: 1;
 }
 
 boss[type="world"][tag="cryo_hypostasis"][level="20~24"] {
-    --astaps-loot-world_cryo_hypostasis_level_20: 1;
+    --astaps-loot-world_cryo_regisvine_level_20: 1;
 }
 
 boss[type="world"][tag="cryo_hypostasis"][level="25~29"] {
-    --astaps-loot-world_cryo_hypostasis_level_25: 1;
+    --astaps-loot-world_cryo_regisvine_level_25: 1;
 }
 
 boss[type="world"][tag="cryo_hypostasis"][level="30~34"] {
@@ -4923,28 +4163,8 @@ boss[type="world"][tag="cryo_hypostasis"][level="90~92"] {
     --astaps-loot-world_cryo_hypostasis_level_90: 1;
 }
 
-boss[type="world"][tag="cryo_hypostasis"][level="93~99"] {
+boss[type="world"][tag="cryo_hypostasis"][level="93~"] {
     --astaps-loot-world_cryo_hypostasis_level_93: 1;
-}
-
-boss[type="world"][tag="cryo_hypostasis"][level="100~104"] {
-    --astaps-loot-world_cryo_hypostasis_level_100: 1;
-}
-
-boss[type="world"][tag="cryo_hypostasis"][level="105~109"] {
-    --astaps-loot-world_cryo_hypostasis_level_105: 1;
-}
-
-boss[type="world"][tag="cryo_hypostasis"][level="110~114"] {
-    --astaps-loot-world_cryo_hypostasis_level_110: 1;
-}
-
-boss[type="world"][tag="cryo_hypostasis"][level="115~119"] {
-    --astaps-loot-world_cryo_hypostasis_level_115: 1;
-}
-
-boss[type="world"][tag="cryo_hypostasis"][level="120~"] {
-    --astaps-loot-world_cryo_hypostasis_level_120: 1;
 }
 
 /* Maguu Kenki (魔偶剑鬼) */
@@ -5024,53 +4244,33 @@ boss[type="world"][tag="maguu_kenki"][level="90~92"] {
     --astaps-loot-world_maguu_kenki_level_90: 1;
 }
 
-boss[type="world"][tag="maguu_kenki"][level="93~99"] {
+boss[type="world"][tag="maguu_kenki"][level="93~"] {
     --astaps-loot-world_maguu_kenki_level_93: 1;
-}
-
-boss[type="world"][tag="maguu_kenki"][level="100~104"] {
-    --astaps-loot-world_maguu_kenki_level_100: 1;
-}
-
-boss[type="world"][tag="maguu_kenki"][level="105~109"] {
-    --astaps-loot-world_maguu_kenki_level_105: 1;
-}
-
-boss[type="world"][tag="maguu_kenki"][level="110~114"] {
-    --astaps-loot-world_maguu_kenki_level_110: 1;
-}
-
-boss[type="world"][tag="maguu_kenki"][level="115~119"] {
-    --astaps-loot-world_maguu_kenki_level_115: 1;
-}
-
-boss[type="world"][tag="maguu_kenki"][level="120~"] {
-    --astaps-loot-world_maguu_kenki_level_120: 1;
 }
 
 /* Perpetual Mechanical Array (恒常机关阵列) */
 boss[type="world"][tag="perpetual_mechanical_array"][level="1~4"] {
-    --astaps-loot-world_perpetual_mechanical_array_level_1: 1;
+    --astaps-loot-world_primo_geovishap_cryo_level_1: 1;
 }
 
 boss[type="world"][tag="perpetual_mechanical_array"][level="5~9"] {
-    --astaps-loot-world_perpetual_mechanical_array_level_5: 1;
+    --astaps-loot-world_primo_geovishap_cryo_level_5: 1;
 }
 
 boss[type="world"][tag="perpetual_mechanical_array"][level="10~14"] {
-    --astaps-loot-world_perpetual_mechanical_array_level_10: 1;
+    --astaps-loot-world_primo_geovishap_cryo_level_10: 1;
 }
 
 boss[type="world"][tag="perpetual_mechanical_array"][level="15~19"] {
-    --astaps-loot-world_perpetual_mechanical_array_level_15: 1;
+    --astaps-loot-world_primo_geovishap_cryo_level_15: 1;
 }
 
 boss[type="world"][tag="perpetual_mechanical_array"][level="20~24"] {
-    --astaps-loot-world_perpetual_mechanical_array_level_20: 1;
+    --astaps-loot-world_primo_geovishap_cryo_level_20: 1;
 }
 
 boss[type="world"][tag="perpetual_mechanical_array"][level="25~29"] {
-    --astaps-loot-world_perpetual_mechanical_array_level_25: 1;
+    --astaps-loot-world_primo_geovishap_cryo_level_25: 1;
 }
 
 boss[type="world"][tag="perpetual_mechanical_array"][level="30~34"] {
@@ -5125,53 +4325,33 @@ boss[type="world"][tag="perpetual_mechanical_array"][level="90~92"] {
     --astaps-loot-world_perpetual_mechanical_array_level_90: 1;
 }
 
-boss[type="world"][tag="perpetual_mechanical_array"][level="93~99"] {
+boss[type="world"][tag="perpetual_mechanical_array"][level="93~"] {
     --astaps-loot-world_perpetual_mechanical_array_level_93: 1;
-}
-
-boss[type="world"][tag="perpetual_mechanical_array"][level="100~104"] {
-    --astaps-loot-world_perpetual_mechanical_array_level_100: 1;
-}
-
-boss[type="world"][tag="perpetual_mechanical_array"][level="105~109"] {
-    --astaps-loot-world_perpetual_mechanical_array_level_105: 1;
-}
-
-boss[type="world"][tag="perpetual_mechanical_array"][level="110~114"] {
-    --astaps-loot-world_perpetual_mechanical_array_level_110: 1;
-}
-
-boss[type="world"][tag="perpetual_mechanical_array"][level="115~119"] {
-    --astaps-loot-world_perpetual_mechanical_array_level_115: 1;
-}
-
-boss[type="world"][tag="perpetual_mechanical_array"][level="120~"] {
-    --astaps-loot-world_perpetual_mechanical_array_level_120: 1;
 }
 
 /* Pyro Hypostasis (无相之火) */
 boss[type="world"][tag="pyro_hypostasis"][level="1~4"] {
-    --astaps-loot-world_pyro_hypostasis_level_1: 1;
+    --astaps-loot-world_pyro_regisvine_level_1: 1;
 }
 
 boss[type="world"][tag="pyro_hypostasis"][level="5~9"] {
-    --astaps-loot-world_pyro_hypostasis_level_5: 1;
+    --astaps-loot-world_pyro_regisvine_level_5: 1;
 }
 
 boss[type="world"][tag="pyro_hypostasis"][level="10~14"] {
-    --astaps-loot-world_pyro_hypostasis_level_10: 1;
+    --astaps-loot-world_pyro_regisvine_level_10: 1;
 }
 
 boss[type="world"][tag="pyro_hypostasis"][level="15~19"] {
-    --astaps-loot-world_pyro_hypostasis_level_15: 1;
+    --astaps-loot-world_pyro_regisvine_level_15: 1;
 }
 
 boss[type="world"][tag="pyro_hypostasis"][level="20~24"] {
-    --astaps-loot-world_pyro_hypostasis_level_20: 1;
+    --astaps-loot-world_pyro_regisvine_level_20: 1;
 }
 
 boss[type="world"][tag="pyro_hypostasis"][level="25~29"] {
-    --astaps-loot-world_pyro_hypostasis_level_25: 1;
+    --astaps-loot-world_pyro_regisvine_level_25: 1;
 }
 
 boss[type="world"][tag="pyro_hypostasis"][level="30~34"] {
@@ -5226,53 +4406,33 @@ boss[type="world"][tag="pyro_hypostasis"][level="90~92"] {
     --astaps-loot-world_pyro_hypostasis_level_90: 1;
 }
 
-boss[type="world"][tag="pyro_hypostasis"][level="93~99"] {
+boss[type="world"][tag="pyro_hypostasis"][level="93~"] {
     --astaps-loot-world_pyro_hypostasis_level_93: 1;
-}
-
-boss[type="world"][tag="pyro_hypostasis"][level="100~104"] {
-    --astaps-loot-world_pyro_hypostasis_level_100: 1;
-}
-
-boss[type="world"][tag="pyro_hypostasis"][level="105~109"] {
-    --astaps-loot-world_pyro_hypostasis_level_105: 1;
-}
-
-boss[type="world"][tag="pyro_hypostasis"][level="110~114"] {
-    --astaps-loot-world_pyro_hypostasis_level_110: 1;
-}
-
-boss[type="world"][tag="pyro_hypostasis"][level="115~119"] {
-    --astaps-loot-world_pyro_hypostasis_level_115: 1;
-}
-
-boss[type="world"][tag="pyro_hypostasis"][level="120~"] {
-    --astaps-loot-world_pyro_hypostasis_level_120: 1;
 }
 
 /* Hydro Hypostasis (无相之水) */
 boss[type="world"][tag="hydro_hypostasis"][level="1~4"] {
-    --astaps-loot-world_hydro_hypostasis_level_1: 1;
+    --astaps-loot-world_oceanid_level_1: 1;
 }
 
 boss[type="world"][tag="hydro_hypostasis"][level="5~9"] {
-    --astaps-loot-world_hydro_hypostasis_level_5: 1;
+    --astaps-loot-world_oceanid_level_5: 1;
 }
 
 boss[type="world"][tag="hydro_hypostasis"][level="10~14"] {
-    --astaps-loot-world_hydro_hypostasis_level_10: 1;
+    --astaps-loot-world_oceanid_level_10: 1;
 }
 
 boss[type="world"][tag="hydro_hypostasis"][level="15~19"] {
-    --astaps-loot-world_hydro_hypostasis_level_15: 1;
+    --astaps-loot-world_oceanid_level_15: 1;
 }
 
 boss[type="world"][tag="hydro_hypostasis"][level="20~24"] {
-    --astaps-loot-world_hydro_hypostasis_level_20: 1;
+    --astaps-loot-world_oceanid_level_20: 1;
 }
 
 boss[type="world"][tag="hydro_hypostasis"][level="25~29"] {
-    --astaps-loot-world_hydro_hypostasis_level_25: 1;
+    --astaps-loot-world_oceanid_level_25: 1;
 }
 
 boss[type="world"][tag="hydro_hypostasis"][level="30~34"] {
@@ -5327,53 +4487,33 @@ boss[type="world"][tag="hydro_hypostasis"][level="90~92"] {
     --astaps-loot-world_hydro_hypostasis_level_90: 1;
 }
 
-boss[type="world"][tag="hydro_hypostasis"][level="93~99"] {
+boss[type="world"][tag="hydro_hypostasis"][level="93~"] {
     --astaps-loot-world_hydro_hypostasis_level_93: 1;
-}
-
-boss[type="world"][tag="hydro_hypostasis"][level="100~104"] {
-    --astaps-loot-world_hydro_hypostasis_level_100: 1;
-}
-
-boss[type="world"][tag="hydro_hypostasis"][level="105~109"] {
-    --astaps-loot-world_hydro_hypostasis_level_105: 1;
-}
-
-boss[type="world"][tag="hydro_hypostasis"][level="110~114"] {
-    --astaps-loot-world_hydro_hypostasis_level_110: 1;
-}
-
-boss[type="world"][tag="hydro_hypostasis"][level="115~119"] {
-    --astaps-loot-world_hydro_hypostasis_level_115: 1;
-}
-
-boss[type="world"][tag="hydro_hypostasis"][level="120~"] {
-    --astaps-loot-world_hydro_hypostasis_level_120: 1;
 }
 
 /* Thunder Manifestation (雷音权现) */
 boss[type="world"][tag="thunder_manifestation"][level="1~4"] {
-    --astaps-loot-world_thunder_manifestation_level_1: 1;
+    --astaps-loot-world_electro_hypostasis_level_1: 1;
 }
 
 boss[type="world"][tag="thunder_manifestation"][level="5~9"] {
-    --astaps-loot-world_thunder_manifestation_level_5: 1;
+    --astaps-loot-world_electro_hypostasis_level_5: 1;
 }
 
 boss[type="world"][tag="thunder_manifestation"][level="10~14"] {
-    --astaps-loot-world_thunder_manifestation_level_10: 1;
+    --astaps-loot-world_electro_hypostasis_level_10: 1;
 }
 
 boss[type="world"][tag="thunder_manifestation"][level="15~19"] {
-    --astaps-loot-world_thunder_manifestation_level_15: 1;
+    --astaps-loot-world_electro_hypostasis_level_15: 1;
 }
 
 boss[type="world"][tag="thunder_manifestation"][level="20~24"] {
-    --astaps-loot-world_thunder_manifestation_level_20: 1;
+    --astaps-loot-world_electro_hypostasis_level_20: 1;
 }
 
 boss[type="world"][tag="thunder_manifestation"][level="25~29"] {
-    --astaps-loot-world_thunder_manifestation_level_25: 1;
+    --astaps-loot-world_electro_hypostasis_level_25: 1;
 }
 
 boss[type="world"][tag="thunder_manifestation"][level="30~34"] {
@@ -5428,53 +4568,33 @@ boss[type="world"][tag="thunder_manifestation"][level="90~92"] {
     --astaps-loot-world_thunder_manifestation_level_90: 1;
 }
 
-boss[type="world"][tag="thunder_manifestation"][level="93~99"] {
+boss[type="world"][tag="thunder_manifestation"][level="93~"] {
     --astaps-loot-world_thunder_manifestation_level_93: 1;
-}
-
-boss[type="world"][tag="thunder_manifestation"][level="100~104"] {
-    --astaps-loot-world_thunder_manifestation_level_100: 1;
-}
-
-boss[type="world"][tag="thunder_manifestation"][level="105~109"] {
-    --astaps-loot-world_thunder_manifestation_level_105: 1;
-}
-
-boss[type="world"][tag="thunder_manifestation"][level="110~114"] {
-    --astaps-loot-world_thunder_manifestation_level_110: 1;
-}
-
-boss[type="world"][tag="thunder_manifestation"][level="115~119"] {
-    --astaps-loot-world_thunder_manifestation_level_115: 1;
-}
-
-boss[type="world"][tag="thunder_manifestation"][level="120~"] {
-    --astaps-loot-world_thunder_manifestation_level_120: 1;
 }
 
 /* Golden Wolflord (黄金王兽) */
 boss[type="world"][tag="golden_wolflord"][level="1~4"] {
-    --astaps-loot-world_golden_wolflord_level_1: 1;
+    --astaps-loot-world_geo_hypostasis_level_1: 1;
 }
 
 boss[type="world"][tag="golden_wolflord"][level="5~9"] {
-    --astaps-loot-world_golden_wolflord_level_5: 1;
+    --astaps-loot-world_geo_hypostasis_level_5: 1;
 }
 
 boss[type="world"][tag="golden_wolflord"][level="10~14"] {
-    --astaps-loot-world_golden_wolflord_level_10: 1;
+    --astaps-loot-world_geo_hypostasis_level_10: 1;
 }
 
 boss[type="world"][tag="golden_wolflord"][level="15~19"] {
-    --astaps-loot-world_golden_wolflord_level_15: 1;
+    --astaps-loot-world_geo_hypostasis_level_15: 1;
 }
 
 boss[type="world"][tag="golden_wolflord"][level="20~24"] {
-    --astaps-loot-world_golden_wolflord_level_20: 1;
+    --astaps-loot-world_geo_hypostasis_level_20: 1;
 }
 
 boss[type="world"][tag="golden_wolflord"][level="25~29"] {
-    --astaps-loot-world_golden_wolflord_level_25: 1;
+    --astaps-loot-world_geo_hypostasis_level_25: 1;
 }
 
 boss[type="world"][tag="golden_wolflord"][level="30~34"] {
@@ -5529,28 +4649,8 @@ boss[type="world"][tag="golden_wolflord"][level="90~92"] {
     --astaps-loot-world_golden_wolflord_level_90: 1;
 }
 
-boss[type="world"][tag="golden_wolflord"][level="93~99"] {
+boss[type="world"][tag="golden_wolflord"][level="93~"] {
     --astaps-loot-world_golden_wolflord_level_93: 1;
-}
-
-boss[type="world"][tag="golden_wolflord"][level="100~104"] {
-    --astaps-loot-world_golden_wolflord_level_100: 1;
-}
-
-boss[type="world"][tag="golden_wolflord"][level="105~109"] {
-    --astaps-loot-world_golden_wolflord_level_105: 1;
-}
-
-boss[type="world"][tag="golden_wolflord"][level="110~114"] {
-    --astaps-loot-world_golden_wolflord_level_110: 1;
-}
-
-boss[type="world"][tag="golden_wolflord"][level="115~119"] {
-    --astaps-loot-world_golden_wolflord_level_115: 1;
-}
-
-boss[type="world"][tag="golden_wolflord"][level="120~"] {
-    --astaps-loot-world_golden_wolflord_level_120: 1;
 }
 
 /* Bathysmal Vishap Herd (深海龙蜥组合) */
@@ -5630,53 +4730,33 @@ boss[type="world"][tag="bathysmal_vishap_herd"][level="90~92"] {
     --astaps-loot-world_bathysmal_vishap_herd_level_90: 1;
 }
 
-boss[type="world"][tag="bathysmal_vishap_herd"][level="93~99"] {
+boss[type="world"][tag="bathysmal_vishap_herd"][level="93~"] {
     --astaps-loot-world_bathysmal_vishap_herd_level_93: 1;
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="100~104"] {
-    --astaps-loot-world_bathysmal_vishap_herd_level_100: 1;
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="105~109"] {
-    --astaps-loot-world_bathysmal_vishap_herd_level_105: 1;
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="110~114"] {
-    --astaps-loot-world_bathysmal_vishap_herd_level_110: 1;
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="115~119"] {
-    --astaps-loot-world_bathysmal_vishap_herd_level_115: 1;
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="120~"] {
-    --astaps-loot-world_bathysmal_vishap_herd_level_120: 1;
 }
 
 /* Ruin Serpent (遗迹巨蛇) */
 boss[type="world"][tag="ruin_serpent"][level="1~4"] {
-    --astaps-loot-world_ruin_serpent_level_1: 1;
+    --astaps-loot-world_geo_hypostasis_level_1: 1;
 }
 
 boss[type="world"][tag="ruin_serpent"][level="5~9"] {
-    --astaps-loot-world_ruin_serpent_level_5: 1;
+    --astaps-loot-world_geo_hypostasis_level_5: 1;
 }
 
 boss[type="world"][tag="ruin_serpent"][level="10~14"] {
-    --astaps-loot-world_ruin_serpent_level_10: 1;
+    --astaps-loot-world_geo_hypostasis_level_10: 1;
 }
 
 boss[type="world"][tag="ruin_serpent"][level="15~19"] {
-    --astaps-loot-world_ruin_serpent_level_15: 1;
+    --astaps-loot-world_geo_hypostasis_level_15: 1;
 }
 
 boss[type="world"][tag="ruin_serpent"][level="20~24"] {
-    --astaps-loot-world_ruin_serpent_level_20: 1;
+    --astaps-loot-world_geo_hypostasis_level_20: 1;
 }
 
 boss[type="world"][tag="ruin_serpent"][level="25~29"] {
-    --astaps-loot-world_ruin_serpent_level_25: 1;
+    --astaps-loot-world_geo_hypostasis_level_25: 1;
 }
 
 boss[type="world"][tag="ruin_serpent"][level="30~34"] {
@@ -5731,28 +4811,8 @@ boss[type="world"][tag="ruin_serpent"][level="90~92"] {
     --astaps-loot-world_ruin_serpent_level_90: 1;
 }
 
-boss[type="world"][tag="ruin_serpent"][level="93~99"] {
+boss[type="world"][tag="ruin_serpent"][level="93~"] {
     --astaps-loot-world_ruin_serpent_level_93: 1;
-}
-
-boss[type="world"][tag="ruin_serpent"][level="100~104"] {
-    --astaps-loot-world_ruin_serpent_level_100: 1;
-}
-
-boss[type="world"][tag="ruin_serpent"][level="105~109"] {
-    --astaps-loot-world_ruin_serpent_level_105: 1;
-}
-
-boss[type="world"][tag="ruin_serpent"][level="110~114"] {
-    --astaps-loot-world_ruin_serpent_level_110: 1;
-}
-
-boss[type="world"][tag="ruin_serpent"][level="115~119"] {
-    --astaps-loot-world_ruin_serpent_level_115: 1;
-}
-
-boss[type="world"][tag="ruin_serpent"][level="120~"] {
-    --astaps-loot-world_ruin_serpent_level_120: 1;
 }
 
 /* Jadeplume Terrorshroom (翠翎恐蕈) */
@@ -5832,53 +4892,33 @@ boss[type="world"][tag="jadeplume_terrorshroom"][level="90~92"] {
     --astaps-loot-world_jadeplume_terrorshroom_level_90: 1;
 }
 
-boss[type="world"][tag="jadeplume_terrorshroom"][level="93~99"] {
+boss[type="world"][tag="jadeplume_terrorshroom"][level="93~"] {
     --astaps-loot-world_jadeplume_terrorshroom_level_93: 1;
-}
-
-boss[type="world"][tag="jadeplume_terrorshroom"][level="100~104"] {
-    --astaps-loot-world_jadeplume_terrorshroom_level_100: 1;
-}
-
-boss[type="world"][tag="jadeplume_terrorshroom"][level="105~109"] {
-    --astaps-loot-world_jadeplume_terrorshroom_level_105: 1;
-}
-
-boss[type="world"][tag="jadeplume_terrorshroom"][level="110~114"] {
-    --astaps-loot-world_jadeplume_terrorshroom_level_110: 1;
-}
-
-boss[type="world"][tag="jadeplume_terrorshroom"][level="115~119"] {
-    --astaps-loot-world_jadeplume_terrorshroom_level_115: 1;
-}
-
-boss[type="world"][tag="jadeplume_terrorshroom"][level="120~"] {
-    --astaps-loot-world_jadeplume_terrorshroom_level_120: 1;
 }
 
 /* Electro Regisvine (掣电树) */
 boss[type="world"][tag="electro_regisvine"][level="1~4"] {
-    --astaps-loot-world_electro_regisvine_level_1: 1;
+    --astaps-loot-world_electro_hypostasis_level_1: 1;
 }
 
 boss[type="world"][tag="electro_regisvine"][level="5~9"] {
-    --astaps-loot-world_electro_regisvine_level_5: 1;
+    --astaps-loot-world_electro_hypostasis_level_5: 1;
 }
 
 boss[type="world"][tag="electro_regisvine"][level="10~14"] {
-    --astaps-loot-world_electro_regisvine_level_10: 1;
+    --astaps-loot-world_electro_hypostasis_level_10: 1;
 }
 
 boss[type="world"][tag="electro_regisvine"][level="15~19"] {
-    --astaps-loot-world_electro_regisvine_level_15: 1;
+    --astaps-loot-world_electro_hypostasis_level_15: 1;
 }
 
 boss[type="world"][tag="electro_regisvine"][level="20~24"] {
-    --astaps-loot-world_electro_regisvine_level_20: 1;
+    --astaps-loot-world_electro_hypostasis_level_20: 1;
 }
 
 boss[type="world"][tag="electro_regisvine"][level="25~29"] {
-    --astaps-loot-world_electro_regisvine_level_25: 1;
+    --astaps-loot-world_electro_hypostasis_level_25: 1;
 }
 
 boss[type="world"][tag="electro_regisvine"][level="30~34"] {
@@ -5933,28 +4973,8 @@ boss[type="world"][tag="electro_regisvine"][level="90~92"] {
     --astaps-loot-world_electro_regisvine_level_90: 1;
 }
 
-boss[type="world"][tag="electro_regisvine"][level="93~99"] {
+boss[type="world"][tag="electro_regisvine"][level="93~"] {
     --astaps-loot-world_electro_regisvine_level_93: 1;
-}
-
-boss[type="world"][tag="electro_regisvine"][level="100~104"] {
-    --astaps-loot-world_electro_regisvine_level_100: 1;
-}
-
-boss[type="world"][tag="electro_regisvine"][level="105~109"] {
-    --astaps-loot-world_electro_regisvine_level_105: 1;
-}
-
-boss[type="world"][tag="electro_regisvine"][level="110~114"] {
-    --astaps-loot-world_electro_regisvine_level_110: 1;
-}
-
-boss[type="world"][tag="electro_regisvine"][level="115~119"] {
-    --astaps-loot-world_electro_regisvine_level_115: 1;
-}
-
-boss[type="world"][tag="electro_regisvine"][level="120~"] {
-    --astaps-loot-world_electro_regisvine_level_120: 1;
 }
 
 /* Aeonblight Drake (兆载永劫龙兽) */
@@ -6034,28 +5054,8 @@ boss[type="world"][tag="aeonblight_drake"][level="90~92"] {
     --astaps-loot-world_aeonblight_drake_level_90: 1;
 }
 
-boss[type="world"][tag="aeonblight_drake"][level="93~99"] {
+boss[type="world"][tag="aeonblight_drake"][level="93~"] {
     --astaps-loot-world_aeonblight_drake_level_93: 1;
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="100~104"] {
-    --astaps-loot-world_aeonblight_drake_level_100: 1;
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="105~109"] {
-    --astaps-loot-world_aeonblight_drake_level_105: 1;
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="110~114"] {
-    --astaps-loot-world_aeonblight_drake_level_110: 1;
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="115~119"] {
-    --astaps-loot-world_aeonblight_drake_level_115: 1;
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="120~"] {
-    --astaps-loot-world_aeonblight_drake_level_120: 1;
 }
 
 /* Algorithm Semi Intransient Matrix (半永恒统辖矩阵) */
@@ -6135,53 +5135,33 @@ boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="90~92"] {
     --astaps-loot-world_algorithm_semi_intransient_matrix_level_90: 1;
 }
 
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="93~99"] {
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="93~"] {
     --astaps-loot-world_algorithm_semi_intransient_matrix_level_93: 1;
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="100~104"] {
-    --astaps-loot-world_algorithm_semi_intransient_matrix_level_100: 1;
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="105~109"] {
-    --astaps-loot-world_algorithm_semi_intransient_matrix_level_105: 1;
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="110~114"] {
-    --astaps-loot-world_algorithm_semi_intransient_matrix_level_110: 1;
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="115~119"] {
-    --astaps-loot-world_algorithm_semi_intransient_matrix_level_115: 1;
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="120~"] {
-    --astaps-loot-world_algorithm_semi_intransient_matrix_level_120: 1;
 }
 
 /* Dendro Hypostasis (无相之草) */
 boss[type="world"][tag="dendro_hypostasis"][level="1~4"] {
-    --astaps-loot-world_dendro_hypostasis_level_1: 1;
+    --astaps-loot-world_jadeplume_terrorshroom_level_1: 1;
 }
 
 boss[type="world"][tag="dendro_hypostasis"][level="5~9"] {
-    --astaps-loot-world_dendro_hypostasis_level_5: 1;
+    --astaps-loot-world_jadeplume_terrorshroom_level_5: 1;
 }
 
 boss[type="world"][tag="dendro_hypostasis"][level="10~14"] {
-    --astaps-loot-world_dendro_hypostasis_level_10: 1;
+    --astaps-loot-world_jadeplume_terrorshroom_level_10: 1;
 }
 
 boss[type="world"][tag="dendro_hypostasis"][level="15~19"] {
-    --astaps-loot-world_dendro_hypostasis_level_15: 1;
+    --astaps-loot-world_jadeplume_terrorshroom_level_15: 1;
 }
 
 boss[type="world"][tag="dendro_hypostasis"][level="20~24"] {
-    --astaps-loot-world_dendro_hypostasis_level_20: 1;
+    --astaps-loot-world_jadeplume_terrorshroom_level_20: 1;
 }
 
 boss[type="world"][tag="dendro_hypostasis"][level="25~29"] {
-    --astaps-loot-world_dendro_hypostasis_level_25: 1;
+    --astaps-loot-world_jadeplume_terrorshroom_level_25: 1;
 }
 
 boss[type="world"][tag="dendro_hypostasis"][level="30~34"] {
@@ -6236,27 +5216,7 @@ boss[type="world"][tag="dendro_hypostasis"][level="90~92"] {
     --astaps-loot-world_dendro_hypostasis_level_90: 1;
 }
 
-boss[type="world"][tag="dendro_hypostasis"][level="93~99"] {
+boss[type="world"][tag="dendro_hypostasis"][level="93~"] {
     --astaps-loot-world_dendro_hypostasis_level_93: 1;
-}
-
-boss[type="world"][tag="dendro_hypostasis"][level="100~104"] {
-    --astaps-loot-world_dendro_hypostasis_level_100: 1;
-}
-
-boss[type="world"][tag="dendro_hypostasis"][level="105~109"] {
-    --astaps-loot-world_dendro_hypostasis_level_105: 1;
-}
-
-boss[type="world"][tag="dendro_hypostasis"][level="110~114"] {
-    --astaps-loot-world_dendro_hypostasis_level_110: 1;
-}
-
-boss[type="world"][tag="dendro_hypostasis"][level="115~119"] {
-    --astaps-loot-world_dendro_hypostasis_level_115: 1;
-}
-
-boss[type="world"][tag="dendro_hypostasis"][level="120~"] {
-    --astaps-loot-world_dendro_hypostasis_level_120: 1;
 }
 

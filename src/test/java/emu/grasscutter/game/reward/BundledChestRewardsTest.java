@@ -21,6 +21,7 @@ class BundledChestRewardsTest {
     private static ItemIdRegistry items() {
         var names = new java.util.HashMap<Integer, String>(ItemIdRegistry.chestDropNames());
         names.put(102, "Adventure EXP");
+        names.put(105, "Companionship EXP");
         names.put(201, "Primogem");
         names.put(202, "Mora");
         names.put(104001, "Wanderer's Advice");
@@ -85,7 +86,7 @@ class BundledChestRewardsTest {
             "xxhigh", "xxxhigh",
             "max", "ultra"
         };
-        assertEquals(36, loot.names().size()); // 12 tiers, 23 supporting pools, one point
+        assertEquals(43, loot.names().size()); // 12 chest tiers, 23 shared pools, one point, seven ley-line tiers
         for (String tier : tiers) assertTrue(loot.contains("astaps.loot." + tier), tier);
         assertTrue(loot.contains("astaps.loot.three_realms_point"));
         for (String pool : new String[]{

@@ -35,6 +35,7 @@ final class TransPointRewardsTest {
         var names = new java.util.HashMap<Integer, String>(ItemIdRegistry.chestDropNames());
         names.putAll(Map.ofEntries(
                 Map.entry(102, "Adventure EXP"),
+                Map.entry(105, "Companionship EXP"),
                 Map.entry(201, "Primogem"),
                 Map.entry(202, "Mora"),
                 Map.entry(104001, "Wanderer's Advice"),

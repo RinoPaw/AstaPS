@@ -328,6 +328,36 @@ class CssRewardsTest {
     }
 
     @Test
+    void commaSeparatedAttributeValuesBehaveAsAlternatives() {
+        var css = CssRewards.parse("""
+                chest[type="normal"][grade="common"][city="1"] {
+                    --genshin-currency-primogem: 0;
+                }
+                chest[type="normal"][grade="common"][area="10,77, 8,19,40,41,47,300"] {
+                    --genshin-currency-primogem: 2;
+                }
+                boss[type="world"][tag="electro_hypostasis,anemo_hypostasis"] {
+                    --genshin-currency-mora: 100;
+                }
+                """, items, loot);
+        for (String area : new String[]{"10", "77", "8", "19", "40", "41", "47", "300"}) {
+            assertEquals(2, css.resolve("chest", Map.of("type", "normal",
+                    "grade", "common", "city", "1", "area", area)).items().get(201));
+        }
+        assertEquals(0, css.resolve("chest", Map.of("type", "normal",
+                "grade", "common", "city", "1", "area", "9")).items().get(201));
+        assertEquals(100, css.resolve("boss", Map.of(
+                "type", "world", "tag", "electro_hypostasis")).items().get(202));
+        assertEquals(100, css.resolve("boss", Map.of(
+                "type", "world", "tag", "anemo_hypostasis")).items().get(202));
+        assertTrue(css.resolve("boss", Map.of(
+                "type", "world", "tag", "geo_hypostasis")).items().isEmpty());
+        assertThrows(IllegalArgumentException.class, () ->
+                CssRewards.parse("chest[area=\"8,,10\"] { --genshin-currency-mora: 1; }",
+                        items, loot));
+    }
+
+    @Test
     void numericRangesApplyToEveryAttributeAndKeepSpecificity() {
         var css = CssRewards.parse("""
                 blossom[type="wealth"][world_level="6~9"] {

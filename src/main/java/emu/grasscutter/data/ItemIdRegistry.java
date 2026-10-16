@@ -371,6 +371,7 @@ public final class ItemIdRegistry {
             case 106, 107, 201, 202, 203, 204, 301, 302, 303, 304, 305, 306,
                     307, 308, 101692 -> "currency";
             default -> {
+                if (name.startsWith("recipe_") && name.length() > "recipe_".length()) yield "recipe";
                 if (MONSTER_DROPS.contains(name)) yield "monster_drop";
                 if (uses.size() > 1) yield "material";
                 if (ASCENSION_GEM.matcher(name).matches()
@@ -403,6 +404,9 @@ public final class ItemIdRegistry {
     }
 
     private static ResourceId canonicalResource(String category, String name) {
+        if ("recipe".equals(category)) {
+            return ResourceId.of("genshin", "recipe", name.substring("recipe_".length()), "item");
+        }
         if ("avatar_ascension".equals(category) && ASCENSION_GEM.matcher(name).matches()) {
             int lastSeparator = name.lastIndexOf('_');
             return ResourceId.of("genshin", category,
@@ -416,6 +420,16 @@ public final class ItemIdRegistry {
 
     public static boolean isInventoryResourceType(String type) {
         return INVENTORY_RESOURCE_TYPES.contains(type);
+    }
+
+    /** Recipes can own both cooking definitions and inventory items. Only the
+     * explicit .item child denotes an inventory recipe item. */
+    public static boolean isInventoryResourcePath(ResourceId resource) {
+        return resource.size() >= 3
+                && (isInventoryResourceType(resource.segment(1))
+                    || ("recipe".equals(resource.segment(1))
+                        && resource.size() == 4
+                        && "item".equals(resource.segment(3))));
     }
 
     /** Artifacts use the same dotted resource convention as other game items. */
@@ -446,7 +460,7 @@ public final class ItemIdRegistry {
         if (input.matches("[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\..+")) {
             qualified = ResourceAliases.GENSHIN.resolve(ResourceId.parse(input));
             if (qualified.size() < 3 || !qualified.segment(0).equals("genshin")
-                    || !isInventoryResourceType(qualified.segment(1))) {
+                    || !isInventoryResourcePath(qualified)) {
                 throw new IllegalArgumentException("Unsupported inventory resource: " + input);
             }
         }

@@ -43,7 +43,7 @@ final class BundledBossRewardsTest {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         var matcher = Pattern.compile(
                 "reward: genshin\\.(avatar_ascension|talent_up)\\.[a-z_]+,"
-                        + " properties: \\{rarity: \"([^\"]+)\"\\}, weight: 1")
+                        + " properties: \\{rarity: \"([^\"]+)\"\\}")
                 .matcher(yaml);
         int gems = 0, talents = 0;
         while (matcher.find()) {
@@ -59,7 +59,7 @@ final class BundledBossRewardsTest {
             }
             assertEquals(0, total.compareTo(new java.math.BigDecimal("100.00")));
         }
-        assertTrue(gems > 291, "Fixed-count gem tier pools should also use rarity");
+        assertEquals(846, gems, "All inlined gem-family rewards must be validated");
         assertEquals(6, talents);
         // The old per-grade weighted rows with count 3 or 9 must be gone
         // whenever multiple rarities could be combined.

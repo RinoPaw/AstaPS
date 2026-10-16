@@ -28,7 +28,7 @@ class BlossomRewardsTest {
         assertTrue(cssStart >= 0, "Missing bundled blossom selectors");
         String selectors = css.substring(cssStart).split(java.util.regex.Pattern.quote("/* Weekly Boss native"), 2)[0];
         assertEquals(20, selectors.lines().filter(line ->
-                line.startsWith("blossom[kind=")).count());
+                line.startsWith("blossom[type=")).count());
         assertFalse(selectors.contains("--astaps-loot-"));
         return new RewardConfiguration(loot, CssRewards.parse(
                 selectors, items, loot));
@@ -88,13 +88,14 @@ class BlossomRewardsTest {
     }
 
     @Test
-    void missingKindOrWorldLevelCannotGrantCommonExperienceOnly() throws IOException {
+    void missingTypeOrWorldLevelCannotGrantCommonExperienceOnly() throws IOException {
         var config = rewards();
         for (var attrs : java.util.List.of(
-                Map.of("kind", "wealth", "world_level", "10"),
-                Map.of("kind", "revelation", "world_level", "-1"),
-                Map.of("kind", "other", "world_level", "4"),
-                Map.of("world_level", "4"))) {
+                Map.of("type", "wealth", "world_level", "10"),
+                Map.of("type", "revelation", "world_level", "-1"),
+                Map.of("type", "other", "world_level", "4"),
+                Map.of("world_level", "4"),
+                Map.of("kind", "wealth", "world_level", "4"))) {
             assertThrows(RuntimeException.class,
                     () -> config.roll("blossom", attrs, new Random(1)), attrs.toString());
         }

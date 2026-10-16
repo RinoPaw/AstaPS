@@ -112,6 +112,14 @@ public final class ArtifactResolver {
         this.bySet = Map.copyOf(sets);
     }
 
+    /** Resolve the source-backed set identity, not an arbitrary item variant ID. */
+    public static int nativeSetId(String name) {
+        for (var entry : SET_NAMES.entrySet()) {
+            if (entry.getValue().equals(name)) return entry.getKey();
+        }
+        throw new IllegalArgumentException("Unknown native artifact set: " + name);
+    }
+
     /** Stable set identity for the first native chest-artifact families. */
     public static String setName(int nativeSetId) {
         return SET_NAMES.get(nativeSetId);

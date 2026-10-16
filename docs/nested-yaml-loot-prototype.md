@@ -192,6 +192,27 @@ The remainder of an explicitly specified count distribution implicitly means zer
 An explicit `0:80` is therefore unnecessary.
 Relative probabilities in the original weighted loot lists are preserved.
 
+## Semantic Genshin resource namespaces
+
+The semantic identifiers are typed, not interchangeable:
+- `genshin.item.mora` identifies an ordinary inventory item or virtual currency.
+- `genshin.weapon.dull_blade` identifies a native weapon ItemData row. Weapons
+  no longer have a second `genshin.item.dull_blade` identity.
+- `genshin.artifact.berserker` identifies a native artifact **set**, not one
+  random piece; `properties` selects the slot/rarity/substats for loot rolls.
+- `genshin.avatar.amber` identifies native AvatarData, which is not an item.
+- `genshin.recipe.mora_meat` identifies a CookRecipeData cooking recipe,
+  not the collectible recipe scroll `genshin.item.recipe_mora_meat`.
+
+The `give` command resolves these domains separately: items and weapons go
+through inventory, avatars through the avatar system, recipes unlock the
+cooking recipe, and artifact sets grant their native five piece slots. There
+are no fabricated aliases for names missing from the native source. Unnamed
+recipes and ambiguous names fail resolution; input is never silently
+converted into another kind. In loot.yaml and rewards.css only inventory
+items/weapons and artifact selectors are legal rewards; recipe and avatar
+resources require their distinct grant paths.
+
 No numeric source IDs are used in the bundled loot configuration.
 
 Full 7.1 gameplay validation is still required before upstream submission.

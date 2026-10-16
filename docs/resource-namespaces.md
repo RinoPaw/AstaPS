@@ -15,6 +15,18 @@ Examples:
 - `genshin.avatar_ascension.vayuda_turquoise.gemstone`
 - `astaps.loot.world_lightning_prism_roll_2plus1pct38p33`
 
+## Advancement resource paths
+
+All progression resource categories use short `up` suffixes. The historical
+`level_up` path segments are invalid (no compatibility aliases):
+
+- Character leveling: `genshin.avatar_up`
+- Character ascension: `genshin.avatar_ascension`
+- Weapon leveling: `genshin.weapon_up`
+- Weapon ascension: `genshin.weapon_ascension`
+- Artifact leveling: `genshin.artifact_up`
+- Talent leveling: `genshin.talent_up`
+
 ## Aliases
 
 `ResourceAliases` supports aliases at **any path depth**. Longest prefix

@@ -40,10 +40,12 @@ including complete payout profiles, are named by reward content; optional
 `world` and `weekly` prefixes identify the reward type.
 Reusable subtables use names such as `midlander_weapon_billets`.
 Identical payout profiles are shared, and one-use subtables are inlined.
-The bundled YAML now contains 1,393 top-level loot tables. The two
+The bundled YAML currently contains 1,401 top-level loot tables. The two
 `weekly_northlander_extras` / `weekly_midlander_extras` pools define shared
-Dream Solvent and weapon-billet drop chances. CSS selects the appropriate
-pool by weekly Boss tag, while the probabilities stay in YAML.
+Dream Solvent and weapon-billet drop chances. Eight further `weekly_*artifacts*`
+pools hold common artifact distributions across native level brackets. CSS
+selects each shared pool by Boss tag and level; reward chances and nested
+execution counts remain in YAML.
 
 The artifact distributions are `artifacts_1_to_2_low`,
 `artifacts_1_to_2_high`, `artifacts_1_to_3`, `artifacts_2_to_3`,
@@ -330,11 +332,12 @@ match as 7.1 drop-rate verification or complete playable coverage.
 
 Boss candidate drop graphs are now bundled in `loot.yaml` and mapped in
 `rewards.css`. The 200 weekly payout profiles no longer repeat their
-common Dream Solvent and billet entries; two shared pools cover those
-optional rewards. The remaining 1,109 world/weekly profile tables still
-contain many level-specific probabilities and overly long names. They
-require a separate content-based decomposition; this change does not
-claim that cleanup is complete. CSS declares shared fixed Boss amounts by type and native
+common Dream Solvent and billet entries; the 10 tagged weekly Boss families
+share two extras pools. Eight shared artifact packages factor identical
+distributions out of 190 weekly payout profiles across the level 5+ brackets.
+The remaining 1,109 complete world/weekly payout tables still contain
+level-dependent drop probabilities and overly long names; a more extensive
+content-based decomposition is outstanding. No new native drop rates are claimed. CSS declares shared fixed Boss amounts by type and native
 level bracket without requiring a `tag` attribute; individual tag/level
 selectors choose their corresponding named loot pool. CSS Boss tags use
 English semantic identifiers (for example `electro_hypostasis`) and

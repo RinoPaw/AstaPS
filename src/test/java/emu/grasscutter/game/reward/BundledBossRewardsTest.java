@@ -34,6 +34,12 @@ final class BundledBossRewardsTest {
             if (entry.getValue() instanceof java.util.List<?> list && list.size() == 1) {
                 assertTrue(selected.contains(entry.getKey().toString()),
                         "Single-entry loot table is not selected by CSS: " + entry.getKey());
+                assertInstanceOf(Map.class, list.get(0));
+                var definition = (Map<?, ?>) list.get(0);
+                assertInstanceOf(String.class, definition.get("reward"),
+                        "Single-entry loot table must contain an item: " + entry.getKey());
+                assertFalse(definition.containsKey("count"),
+                        "Single-entry loot count belongs in CSS: " + entry.getKey());
             }
         }
     }
@@ -98,17 +104,17 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1368, loot.names().size());
+        assertEquals(1198, loot.names().size());
         assertFalse(yaml.contains("empty_reward_choices"));
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.weekly_northlander_extras"));
         assertTrue(loot.contains("astaps.loot.weekly_midlander_extras"));
         assertTrue(loot.contains("astaps.loot.weekly_high_artifacts"));
-        assertTrue(loot.contains("astaps.loot.weekly_artifacts_sparse"));
+        assertTrue(loot.contains("astaps.loot.artifacts_berserker_instructor_exile_3star"));
         assertTrue(loot.contains("astaps.loot.weekly_artifacts_rare"));
-        assertTrue(loot.contains("astaps.loot.world_five_star_artifacts_low"));
-        assertTrue(loot.contains("astaps.loot.world_five_star_artifacts_guaranteed"));
+        assertTrue(loot.contains("astaps.loot.artifacts_gladiators_wanderers_5star"));
+        assertTrue(loot.contains("astaps.loot.material_frostnights_glory"));
         assertTrue(loot.contains("astaps.loot.gems_geo_hydro_basic"));
         assertTrue(loot.contains("astaps.loot.gems_cryo_hydro_basic"));
         assertTrue(loot.contains("astaps.loot.instructor_goblet_plume_low_substats"));
@@ -121,7 +127,8 @@ final class BundledBossRewardsTest {
         assertFalse(yaml.contains("gems_anemo_geo_pyro_sliver_uniform_first_anemo"));
         assertFalse(yaml.contains("gems_anemo_geo_pyro_sliver_uniform_first_pyro"));
         assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p2_weapon_billets"));
-        assertTrue(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct0p79"));
+        assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct0p79"));
+        assertTrue(loot.contains("astaps.loot.gems_cryo_electro_hydro_sliver"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+_[a-z0-9_]+:.*")));
 
@@ -173,6 +180,18 @@ final class BundledBossRewardsTest {
                 "astaps.loot.gems_geo_hydro_basic", 1),
                 css.resolve("boss", Map.of(
                         "type", "world", "tag", "frostnight_scion", "level", "105")).loot());
+        var shoukiEarly = css.resolve("boss", Map.of(
+                "type", "weekly", "tag", "shouki_no_kami", "level", "8"));
+        assertTrue(shoukiEarly.rangedLoot().containsKey(
+                "astaps.loot.gems_cryo_electro_hydro_sliver"));
+        assertFalse(shoukiEarly.loot().keySet().stream().anyMatch(name ->
+                name.contains("first_electro_roll_")));
+        assertTrue(stylesheet.contains(
+                "--astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:14.32';"));
+        var raidenEarly = css.resolve("boss", Map.of(
+                "type", "weekly", "tag", "raiden_shogun", "level", "8"));
+        assertTrue(raidenEarly.rangedLoot().containsKey(
+                "astaps.loot.material_vajrada_amethyst_sliver"));
         var shouki = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "shouki_no_kami", "level", "120"));
         assertEquals(1, shouki.loot().get("astaps.loot.weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct40"));
@@ -191,7 +210,7 @@ final class BundledBossRewardsTest {
         assertEquals(45, highWorld.items().get(105));
         assertEquals(200, highWorld.items().get(101));
         assertEquals(1, highWorld.loot().get("astaps.loot.world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1"));
-        assertEquals(1, highWorld.loot().get("astaps.loot.world_five_star_artifacts_guaranteed"));
+        assertEquals(1, highWorld.loot().get("astaps.loot.artifacts_gladiators_wanderers_5star"));
 
         var fixedGems = css.resolve("boss", Map.of(
                 "type", "world", "tag", "solitary_suanni", "level", "82"));
@@ -217,11 +236,11 @@ final class BundledBossRewardsTest {
 
         var mediumWorld = css.resolve("boss", Map.of(
                 "type", "world", "tag", "electro_hypostasis", "level", "82"));
-        assertEquals(1, mediumWorld.loot().get("astaps.loot.world_five_star_artifacts_medium"));
-        assertFalse(mediumWorld.loot().containsKey("astaps.loot.world_five_star_artifacts_guaranteed"));
+        assertTrue(mediumWorld.rangedLoot().containsKey("astaps.loot.artifacts_gladiators_wanderers_5star"));
+        assertFalse(mediumWorld.loot().containsKey("astaps.loot.artifacts_gladiators_wanderers_5star"));
         assertTrue(css.resolve("boss", Map.of(
                 "type", "world", "tag", "frostnight_scion", "level", "82"))
-                .loot().keySet().stream().noneMatch(name -> name.contains("world_five_star_artifacts")));
+                .rangedLoot().containsKey("astaps.loot.artifacts_gladiators_wanderers_5star"));
 
         var weekly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "stormterror", "level", "90"));
@@ -233,7 +252,7 @@ final class BundledBossRewardsTest {
 
         var sparse = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "stormterror", "level", "7"));
-        assertEquals(1, sparse.loot().get("astaps.loot.weekly_artifacts_sparse"));
+        assertTrue(sparse.rangedLoot().containsKey("astaps.loot.artifacts_berserker_instructor_exile_3star"));
         assertEquals(1, sparse.loot().get("astaps.loot.weekly_northlander_extras"));
         assertFalse(sparse.loot().containsKey("astaps.loot.weekly_high_artifacts"));
 

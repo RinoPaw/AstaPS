@@ -93,6 +93,37 @@ class RewardAreaResolverTest {
     }
 
     @Test
+    void importedRegionControlsBothCssPrimogemsAndRegionalSigils() {
+        var names = new emu.grasscutter.data.ItemIdRegistry(
+                Map.of(201, "Primogem", 305, "Anemo Sigil", 302, "Hydro Sigil"));
+        var loot = emu.grasscutter.game.drop.YamlLootTables.parse("""
+                seals:
+                  - {reward: genshin.item.sigil}
+                """, names::resolve);
+        var css = CssRewards.parse("""
+                chest {
+                    --loot: seals;
+                    --genshin-item-primogem: 2;
+                }
+                chest[city="1"] { --genshin-item-primogem: 0; }
+                """, names, loot);
+        var context = new RewardContext(3, 0, "mondstadt");
+        var attributes = new HashMap<String, String>();
+        attributes.put("kind", "common");
+        RewardAreaResolver.resolve(context).addAttributes(attributes);
+        assertEquals(Map.of(305, 1),
+                RewardRoller.roll(css.resolve("chest", attributes),
+                        loot, new java.util.Random(1), context));
+        var fontaine = new RewardContext(3, 0, "fontaine");
+        attributes.clear();
+        attributes.put("kind", "common");
+        RewardAreaResolver.resolve(fontaine).addAttributes(attributes);
+        assertEquals(Map.of(201, 2, 302, 1),
+                RewardRoller.roll(css.resolve("chest", attributes),
+                        loot, new java.util.Random(1), fontaine));
+    }
+
+    @Test
     void nativeAreaTakesPriorityOverConflictingImportedRegion() {
         var data = area(19, 0, 3);
         assertEquals(new RewardAreaResolver.Area(19, 2),

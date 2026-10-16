@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 class YamlLootTablesTest {
     private final YamlLootTables.ItemResolver resolver = name -> switch (name) {
         case "genshin.currency.mora" -> 202;
-        case "genshin.avatar_exp.heros_wit" -> 104003;
-        case "genshin.avatar_exp.adventurers_experience" -> 104002;
+        case "genshin.avatar_level_up.heros_wit" -> 104003;
+        case "genshin.avatar_level_up.adventurers_experience" -> 104002;
         default -> -2; // -1 is reserved for the regional-sigil placeholder.
     };
 
@@ -25,7 +25,7 @@ class YamlLootTablesTest {
                 surprise:
                   - {reward: genshin.currency.mora, count: 300}
                 经验书:
-                  - {reward: genshin.avatar_exp.heros_wit}
+                  - {reward: genshin.avatar_level_up.heros_wit}
                 """);
         assertEquals(java.util.List.of("astaps.loot.surprise", "astaps.loot.经验书"),
                 tables.names());
@@ -127,8 +127,8 @@ class YamlLootTablesTest {
     void optionalCountHasSameDropProbabilitiesAsWeightedNullSelection() {
         var tables = parse("""
                 billets: &billets
-                  - {reward: genshin.avatar_exp.heros_wit, weight: 1}
-                  - {reward: genshin.avatar_exp.adventurers_experience, weight: 1}
+                  - {reward: genshin.avatar_level_up.heros_wit, weight: 1}
+                  - {reward: genshin.avatar_level_up.adventurers_experience, weight: 1}
                 old_item:
                   - reward:
                       - {reward: null, weight: 67}
@@ -261,7 +261,7 @@ class YamlLootTablesTest {
         var tables = parse("""
                 common_chest:
                   - {reward: genshin.currency.mora, count: 300}
-                  - {reward: genshin.avatar_exp.heros_wit}
+                  - {reward: genshin.avatar_level_up.heros_wit}
                 """);
         assertEquals(Map.of(202, 300, 104003, 1), tables.roll("astaps.loot.common_chest", new Random(1)));
     }
@@ -271,7 +271,7 @@ class YamlLootTablesTest {
         var tables = parse("""
                 basic:
                   - {reward: genshin.currency.mora, count: 300}
-                  - {reward: genshin.avatar_exp.heros_wit}
+                  - {reward: genshin.avatar_level_up.heros_wit}
                 """);
         assertTrue(tables.contains("astaps.loot.basic"));
         assertFalse(tables.contains("astaps.loot.unknown"));
@@ -288,8 +288,8 @@ class YamlLootTablesTest {
         var tables = parse("""
                 chest:
                   - {reward: genshin.currency.mora, count: "2~4"}
-                  - {reward: genshin.avatar_exp.heros_wit, count: "1:80"}
-                  - {reward: genshin.avatar_exp.adventurers_experience, count: "2:80,3:20"}
+                  - {reward: genshin.avatar_level_up.heros_wit, count: "1:80"}
+                  - {reward: genshin.avatar_level_up.adventurers_experience, count: "2:80,3:20"}
                 """);
         for (int i = 0; i < 300; i++) {
             var rewards = tables.roll("astaps.loot.chest", new Random(i));
@@ -314,8 +314,8 @@ class YamlLootTablesTest {
     void mutuallyExclusiveWeightedChoiceAndAlias() {
         var tables = parse("""
                 experience: &exp
-                  - {reward: genshin.avatar_exp.heros_wit, weight: 1}
-                  - {reward: genshin.avatar_exp.adventurers_experience, count: 2, weight: 3}
+                  - {reward: genshin.avatar_level_up.heros_wit, weight: 1}
+                  - {reward: genshin.avatar_level_up.adventurers_experience, count: 2, weight: 3}
                 chest:
                   - {reward: genshin.currency.mora, count: 300}
                   - {reward: *exp, count: "1:70"}
@@ -344,8 +344,8 @@ class YamlLootTablesTest {
     void nestedCountRepeatsIndependentRolls() {
         var tables = parse("""
                 experience: &exp
-                  - {reward: genshin.avatar_exp.heros_wit, weight: 1}
-                  - {reward: genshin.avatar_exp.adventurers_experience, weight: 1}
+                  - {reward: genshin.avatar_level_up.heros_wit, weight: 1}
+                  - {reward: genshin.avatar_level_up.adventurers_experience, weight: 1}
                 chest:
                   - {reward: *exp, count: 2}
                 """);
@@ -363,8 +363,8 @@ class YamlLootTablesTest {
     void bonusCountRerollsNestedWeightedPoolIndependently() {
         var tables = parse("""
                 experience: &exp
-                  - {reward: genshin.avatar_exp.heros_wit, weight: 1}
-                  - {reward: genshin.avatar_exp.adventurers_experience, weight: 1}
+                  - {reward: genshin.avatar_level_up.heros_wit, weight: 1}
+                  - {reward: genshin.avatar_level_up.adventurers_experience, weight: 1}
                 chest:
                   - {reward: *exp, count: "2+1:55.56"}
                 """);
@@ -387,8 +387,8 @@ class YamlLootTablesTest {
         var tables = parse("""
                 chance:
                   - reward:
-                      - {reward: genshin.avatar_exp.heros_wit, weight: 5}
-                      - {reward: genshin.avatar_exp.adventurers_experience, weight: 3}
+                      - {reward: genshin.avatar_level_up.heros_wit, weight: 5}
+                      - {reward: genshin.avatar_level_up.adventurers_experience, weight: 3}
                     count: "1:80"
                 empty:
                   - {reward: null}
@@ -409,7 +409,7 @@ class YamlLootTablesTest {
         var error = assertThrows(IllegalArgumentException.class, () -> parse("""
                 invalid:
                   - {reward: genshin.currency.mora, weight: 0}
-                  - {reward: genshin.avatar_exp.heros_wit}
+                  - {reward: genshin.avatar_level_up.heros_wit}
                 """));
         assertTrue(error.getMessage().contains("cannot mix"));
     }
@@ -419,7 +419,7 @@ class YamlLootTablesTest {
         var tables = parse("""
                 pool:
                   - {reward: genshin.currency.mora, weight: 0}
-                  - {reward: genshin.avatar_exp.heros_wit, weight: 1}
+                  - {reward: genshin.avatar_level_up.heros_wit, weight: 1}
                 """);
         assertEquals(Map.of(104003, 1), tables.roll("astaps.loot.pool", new Random(0)));
     }
@@ -507,7 +507,7 @@ class YamlLootTablesTest {
         var tables = YamlLootTables.parse("""
                 chest:
                   - {reward: genshin.currency.mora, count: 300}
-                  - {reward: genshin.avatar_exp.heros_wit}
+                  - {reward: genshin.avatar_level_up.heros_wit}
                 """, registry::resolve);
         assertEquals(Map.of(202, 300, 104003, 1), tables.roll("astaps.loot.chest", new Random(1)));
 
@@ -535,7 +535,7 @@ class YamlLootTablesTest {
         assertEquals("Food", ItemIdRegistry.categoryOf(
                 emu.grasscutter.game.inventory.ItemType.ITEM_MATERIAL,
                 emu.grasscutter.game.inventory.MaterialType.MATERIAL_FOOD));
-        assertEquals(104003, new ItemIdRegistry(java.util.Collections.singletonMap(104003, null)).resolve("genshin.avatar_exp.heros_wit"));
+        assertEquals(104003, new ItemIdRegistry(java.util.Collections.singletonMap(104003, null)).resolve("genshin.avatar_level_up.heros_wit"));
     }
 
     @Test
@@ -544,10 +544,10 @@ class YamlLootTablesTest {
                 104003, "Hero's Wit",
                 104002, "Adventurer's Experience",
                 202, "Mora"));
-        assertEquals("genshin.avatar_exp.heros_wit", names.describe(104003).key());
+        assertEquals("genshin.avatar_level_up.heros_wit", names.describe(104003).key());
         assertEquals("Character EXP Materials", names.describe(104003).category());
         assertEquals(104003, names.resolve("Hero's Wit"));
-        assertEquals(104003, names.resolve("genshin.avatar_exp.heros_wit"));
+        assertEquals(104003, names.resolve("genshin.avatar_level_up.heros_wit"));
         assertEquals(202, names.resolve("202"));
         var colliding = new ItemIdRegistry(Map.of(1, "Same", 2, "Same"),
                 Map.of(1, "Materials", 2, "Materials"));

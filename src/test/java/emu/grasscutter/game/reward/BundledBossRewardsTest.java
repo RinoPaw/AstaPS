@@ -71,7 +71,7 @@ final class BundledBossRewardsTest {
                 Map.entry(307, "Geo Sigil")));
         // Use the same synthetic IDs for material entries now selected directly by CSS.
         var knownCategories = new HashMap<Integer, String>();
-        Pattern.compile("--genshin-(material|avatar_ascension)-([a-z0-9_]+)\\s*:")
+        Pattern.compile("--genshin-(material|avatar_ascension|weapon_ascension|talent|weapon_crafting)-([a-z0-9_]+)\\s*:")
                 .matcher(stylesheet).results()
                 .map(match -> Map.entry(match.group(1), match.group(2))).distinct()
                 .forEach(entry -> {
@@ -81,8 +81,11 @@ final class BundledBossRewardsTest {
                     int id = nativeIds.computeIfAbsent(reference,
                             ignored -> nextId.incrementAndGet());
                     known.put(id, name.replace('_', ' '));
-                    knownCategories.put(id, "avatar_ascension".equals(category)
-                            ? "Character Development Items" : "Materials");
+                    knownCategories.put(id, switch (category) {
+                        case "avatar_ascension", "weapon_crafting" -> "Character Development Items";
+                        case "talent" -> "Talent Level-Up Materials";
+                        default -> "Materials";
+                    });
                 });
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, knownCategories), loot);
         assertEquals(978, stylesheet.lines()

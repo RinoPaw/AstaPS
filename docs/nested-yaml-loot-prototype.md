@@ -311,8 +311,13 @@ match as 7.1 drop-rate verification or complete playable coverage.
 Boss candidate drop graphs are now bundled in `loot.yaml` and mapped in
 `rewards.css`. CSS declares shared fixed Boss amounts by type and native
 level bracket without requiring a `tag` attribute; individual tag/level
-selectors choose their corresponding named loot pool. Identifying a valid
-Boss tag and handling missing loot-table coverage remain Java-side concerns. Matching configuration alone does not establish that a
+selectors choose their corresponding named loot pool. CSS Boss tags use
+English semantic identifiers (for example `electro_hypostasis`) and
+each Boss family has a bilingual source-name comment. Original Chinese
+native `ChestDrop.json` tags are mapped to those CSS identifiers at
+the reward-selection boundary; the native drop lookup retains the source
+string for the existing fallback path. Identifying a valid Boss tag and
+handling missing loot-table coverage remain Java-side concerns. Matching configuration alone does not establish that a
 payout path is authoritative or that all 7.1 reward probabilities are verified.
 World-boss and weekly-boss end-to-end gameplay validation is still required
 before upstream submission.

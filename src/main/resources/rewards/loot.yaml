@@ -554,16 +554,6 @@ weekly_shouki_no_kami_level_93: &weekly_shouki_no_kami_level_93
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:87"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1+1:23"}
 
-weekly_shouki_no_kami_level_100: *weekly_shouki_no_kami_level_93
-
-weekly_shouki_no_kami_level_105: *weekly_shouki_no_kami_level_93
-
-weekly_shouki_no_kami_level_110: *weekly_shouki_no_kami_level_93
-
-weekly_shouki_no_kami_level_115: *weekly_shouki_no_kami_level_93
-
-weekly_shouki_no_kami_level_120: *weekly_shouki_no_kami_level_93
-
 northlander_weapon_billets: &northlander_weapon_billets
   - {reward: genshin.material.northlander_sword_billet, weight: 1}
   - {reward: genshin.material.northlander_bow_billet, weight: 1}
@@ -867,16 +857,6 @@ weekly_tartaglia_level_93: &weekly_tartaglia_level_93
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:87"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1+1:23"}
 
-weekly_tartaglia_level_100: *weekly_tartaglia_level_93
-
-weekly_tartaglia_level_105: *weekly_tartaglia_level_93
-
-weekly_tartaglia_level_110: *weekly_tartaglia_level_93
-
-weekly_tartaglia_level_115: *weekly_tartaglia_level_93
-
-weekly_tartaglia_level_120: *weekly_tartaglia_level_93
-
 gems_anemo_geo_pyro_sliver_uniform_first_anemo: &gems_anemo_geo_pyro_sliver_uniform_first_anemo
   - {reward: genshin.material.vayuda_turquoise_sliver, weight: 1}
   - {reward: genshin.material.prithiva_topaz_sliver, weight: 1}
@@ -1173,16 +1153,6 @@ weekly_andrius_level_93: &weekly_andrius_level_93
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:87"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1+1:23"}
 
-weekly_andrius_level_100: *weekly_andrius_level_93
-
-weekly_andrius_level_105: *weekly_andrius_level_93
-
-weekly_andrius_level_110: *weekly_andrius_level_93
-
-weekly_andrius_level_115: *weekly_andrius_level_93
-
-weekly_andrius_level_120: *weekly_andrius_level_93
-
 gems_anemo_pyro_sliver: &gems_anemo_pyro_sliver
   - {reward: genshin.material.vayuda_turquoise_sliver, weight: 1}
   - {reward: genshin.material.agnidus_agate_sliver, weight: 1}
@@ -1443,16 +1413,6 @@ weekly_signora_level_93: &weekly_signora_level_93
   - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:87"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1+1:23"}
-
-weekly_signora_level_100: *weekly_signora_level_93
-
-weekly_signora_level_105: *weekly_signora_level_93
-
-weekly_signora_level_110: *weekly_signora_level_93
-
-weekly_signora_level_115: *weekly_signora_level_93
-
-weekly_signora_level_120: *weekly_signora_level_93
 
 gems_anemo_geo_hydro_sliver: &gems_anemo_geo_hydro_sliver
   - {reward: genshin.material.varunada_lazurite_sliver, weight: 1}
@@ -1750,16 +1710,6 @@ weekly_azhdaha_hydro_cryo_level_93: &weekly_azhdaha_hydro_cryo_level_93
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:87"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1+1:23"}
 
-weekly_azhdaha_hydro_cryo_level_100: *weekly_azhdaha_hydro_cryo_level_93
-
-weekly_azhdaha_hydro_cryo_level_105: *weekly_azhdaha_hydro_cryo_level_93
-
-weekly_azhdaha_hydro_cryo_level_110: *weekly_azhdaha_hydro_cryo_level_93
-
-weekly_azhdaha_hydro_cryo_level_115: *weekly_azhdaha_hydro_cryo_level_93
-
-weekly_azhdaha_hydro_cryo_level_120: *weekly_azhdaha_hydro_cryo_level_93
-
 gems_electro_geo_hydro_sliver: &gems_electro_geo_hydro_sliver
   - {reward: genshin.material.varunada_lazurite_sliver, weight: 1}
   - {reward: genshin.material.vajrada_amethyst_sliver, weight: 1}
@@ -2050,16 +2000,6 @@ weekly_azhdaha_hydro_electro_level_93: &weekly_azhdaha_hydro_electro_level_93
   - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:87"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1+1:23"}
-
-weekly_azhdaha_hydro_electro_level_100: *weekly_azhdaha_hydro_electro_level_93
-
-weekly_azhdaha_hydro_electro_level_105: *weekly_azhdaha_hydro_electro_level_93
-
-weekly_azhdaha_hydro_electro_level_110: *weekly_azhdaha_hydro_electro_level_93
-
-weekly_azhdaha_hydro_electro_level_115: *weekly_azhdaha_hydro_electro_level_93
-
-weekly_azhdaha_hydro_electro_level_120: *weekly_azhdaha_hydro_electro_level_93
 
 gems_anemo_geo_pyro_sliver_uniform_first_pyro: &gems_anemo_geo_pyro_sliver_uniform_first_pyro
   - {reward: genshin.material.agnidus_agate_sliver, weight: 1}
@@ -2352,16 +2292,6 @@ weekly_azhdaha_pyro_cryo_level_93: &weekly_azhdaha_pyro_cryo_level_93
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:87"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1+1:23"}
 
-weekly_azhdaha_pyro_cryo_level_100: *weekly_azhdaha_pyro_cryo_level_93
-
-weekly_azhdaha_pyro_cryo_level_105: *weekly_azhdaha_pyro_cryo_level_93
-
-weekly_azhdaha_pyro_cryo_level_110: *weekly_azhdaha_pyro_cryo_level_93
-
-weekly_azhdaha_pyro_cryo_level_115: *weekly_azhdaha_pyro_cryo_level_93
-
-weekly_azhdaha_pyro_cryo_level_120: *weekly_azhdaha_pyro_cryo_level_93
-
 gems_electro_geo_pyro_sliver: &gems_electro_geo_pyro_sliver
   - {reward: genshin.material.agnidus_agate_sliver, weight: 1}
   - {reward: genshin.material.vajrada_amethyst_sliver, weight: 1}
@@ -2653,16 +2583,6 @@ weekly_azhdaha_pyro_electro_level_93: &weekly_azhdaha_pyro_electro_level_93
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:87"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1+1:23"}
 
-weekly_azhdaha_pyro_electro_level_100: *weekly_azhdaha_pyro_electro_level_93
-
-weekly_azhdaha_pyro_electro_level_105: *weekly_azhdaha_pyro_electro_level_93
-
-weekly_azhdaha_pyro_electro_level_110: *weekly_azhdaha_pyro_electro_level_93
-
-weekly_azhdaha_pyro_electro_level_115: *weekly_azhdaha_pyro_electro_level_93
-
-weekly_azhdaha_pyro_electro_level_120: *weekly_azhdaha_pyro_electro_level_93
-
 gems_electro_sliver: &gems_electro_sliver
   - {reward: genshin.material.vajrada_amethyst_sliver, weight: 1}
 
@@ -2888,16 +2808,6 @@ weekly_raiden_shogun_level_93: &weekly_raiden_shogun_level_93
   - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:87"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1+1:23"}
-
-weekly_raiden_shogun_level_100: *weekly_raiden_shogun_level_93
-
-weekly_raiden_shogun_level_105: *weekly_raiden_shogun_level_93
-
-weekly_raiden_shogun_level_110: *weekly_raiden_shogun_level_93
-
-weekly_raiden_shogun_level_115: *weekly_raiden_shogun_level_93
-
-weekly_raiden_shogun_level_120: *weekly_raiden_shogun_level_93
 
 gems_cryo_electro_hydro_sliver_uniform_first_cryo: &gems_cryo_electro_hydro_sliver_uniform_first_cryo
   - {reward: genshin.material.shivada_jade_sliver, weight: 1}
@@ -3195,14 +3105,6 @@ weekly_stormterror_level_93: &weekly_stormterror_level_93
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:87"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1+1:23"}
 
-weekly_stormterror_level_100: *weekly_stormterror_level_93
-
-weekly_stormterror_level_105: *weekly_stormterror_level_93
-
-weekly_stormterror_level_110: *weekly_stormterror_level_93
-
-weekly_stormterror_level_115: *weekly_stormterror_level_93
-
 weekly_stormterror_level_120:
   - {reward: *talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh, count: "2+1:40"}
   - {reward: genshin.material.dream_solvent, count: "1:33"}
@@ -3212,7 +3114,6 @@ weekly_stormterror_level_120:
   - {reward: *artifacts_berserker_instructor_the_exile_3star_1_2substats, count: "4+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "2+1:87"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats, count: "1+1:23"}
-
 
 # World Boss drops (ChestDrop sourceType 34); source tag and level select the table.
 # Unresolved native artifact identities are excluded.
@@ -3427,14 +3328,6 @@ world_frostnight_scion_level_100: &world_frostnight_scion_level_100
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
   - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
-world_frostnight_scion_level_105: *world_frostnight_scion_level_100
-
-world_frostnight_scion_level_110: *world_frostnight_scion_level_100
-
-world_frostnight_scion_level_115: *world_frostnight_scion_level_100
-
-world_frostnight_scion_level_120: *world_frostnight_scion_level_100
-
 world_knuckle_duck_level_1:
   - {reward: genshin.material.precision_kuuvahki_stamping_die, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -3636,14 +3529,6 @@ world_knuckle_duck_level_100: &world_knuckle_duck_level_100
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
-world_knuckle_duck_level_105: *world_knuckle_duck_level_100
-
-world_knuckle_duck_level_110: *world_knuckle_duck_level_100
-
-world_knuckle_duck_level_115: *world_knuckle_duck_level_100
-
-world_knuckle_duck_level_120: *world_knuckle_duck_level_100
-
 world_lightbearing_lunar_moth_level_1:
   - {reward: genshin.material.lightbearing_scale_feather, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -3797,14 +3682,6 @@ world_lightbearing_lunar_moth_level_100: &world_lightbearing_lunar_moth_level_10
   - {reward: *gems_electro_pyro_fragment, count: "1+1:12.2"}
   - {reward: *gems_electro_pyro_chunk_fragment_gemstone_sliver, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-
-world_lightbearing_lunar_moth_level_105: *world_lightbearing_lunar_moth_level_100
-
-world_lightbearing_lunar_moth_level_110: *world_lightbearing_lunar_moth_level_100
-
-world_lightbearing_lunar_moth_level_115: *world_lightbearing_lunar_moth_level_100
-
-world_lightbearing_lunar_moth_level_120: *world_lightbearing_lunar_moth_level_100
 
 world_radiant_beast_level_1:
   - {reward: genshin.material.prismatic_severed_tail, count: "1+1:33.86"}
@@ -4007,14 +3884,6 @@ world_radiant_beast_level_100: &world_radiant_beast_level_100
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
-world_radiant_beast_level_105: *world_radiant_beast_level_100
-
-world_radiant_beast_level_110: *world_radiant_beast_level_100
-
-world_radiant_beast_level_115: *world_radiant_beast_level_100
-
-world_radiant_beast_level_120: *world_radiant_beast_level_100
-
 world_primal_watcher_level_1:
   - {reward: genshin.material.plume_of_the_fallen_watcher, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -4154,14 +4023,6 @@ world_primal_watcher_level_100: &world_primal_watcher_level_100
   - {reward: *gems_dendro_fragment_counts_9, count: "1+1:12.2"}
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-
-world_primal_watcher_level_105: *world_primal_watcher_level_100
-
-world_primal_watcher_level_110: *world_primal_watcher_level_100
-
-world_primal_watcher_level_115: *world_primal_watcher_level_100
-
-world_primal_watcher_level_120: *world_primal_watcher_level_100
 
 world_icewind_suite_level_1:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:33.86"}
@@ -4380,14 +4241,6 @@ world_icewind_suite_level_100: &world_icewind_suite_level_100
   - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
   - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
-world_icewind_suite_level_105: *world_icewind_suite_level_100
-
-world_icewind_suite_level_110: *world_icewind_suite_level_100
-
-world_icewind_suite_level_115: *world_icewind_suite_level_100
-
-world_icewind_suite_level_120: *world_icewind_suite_level_100
-
 world_emperor_of_fire_and_iron_level_1:
   - {reward: genshin.material.emperors_resolution, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -4589,14 +4442,6 @@ world_emperor_of_fire_and_iron_level_100: &world_emperor_of_fire_and_iron_level_
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
-world_emperor_of_fire_and_iron_level_105: *world_emperor_of_fire_and_iron_level_100
-
-world_emperor_of_fire_and_iron_level_110: *world_emperor_of_fire_and_iron_level_100
-
-world_emperor_of_fire_and_iron_level_115: *world_emperor_of_fire_and_iron_level_100
-
-world_emperor_of_fire_and_iron_level_120: *world_emperor_of_fire_and_iron_level_100
-
 world_experimental_field_generator_level_1:
   - {reward: genshin.material.tourbillon_device, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -4737,14 +4582,6 @@ world_experimental_field_generator_level_100: &world_experimental_field_generato
   - {reward: *gems_dendro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
-world_experimental_field_generator_level_105: *world_experimental_field_generator_level_100
-
-world_experimental_field_generator_level_110: *world_experimental_field_generator_level_100
-
-world_experimental_field_generator_level_115: *world_experimental_field_generator_level_100
-
-world_experimental_field_generator_level_120: *world_experimental_field_generator_level_100
-
 world_millennial_pearl_seahorse_level_1:
   - {reward: genshin.material.fontemer_unihorn, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -4884,14 +4721,6 @@ world_millennial_pearl_seahorse_level_100: &world_millennial_pearl_seahorse_leve
   - {reward: *gems_anemo_fragment_counts_9, count: "1+1:12.2"}
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-
-world_millennial_pearl_seahorse_level_105: *world_millennial_pearl_seahorse_level_100
-
-world_millennial_pearl_seahorse_level_110: *world_millennial_pearl_seahorse_level_100
-
-world_millennial_pearl_seahorse_level_115: *world_millennial_pearl_seahorse_level_100
-
-world_millennial_pearl_seahorse_level_120: *world_millennial_pearl_seahorse_level_100
 
 world_hydro_tulpa_level_1:
   - {reward: genshin.material.water_that_failed_to_transcend, count: "1+1:33.86"}
@@ -5094,14 +4923,6 @@ world_hydro_tulpa_level_100: &world_hydro_tulpa_level_100
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
-world_hydro_tulpa_level_105: *world_hydro_tulpa_level_100
-
-world_hydro_tulpa_level_110: *world_hydro_tulpa_level_100
-
-world_hydro_tulpa_level_115: *world_hydro_tulpa_level_100
-
-world_hydro_tulpa_level_120: *world_hydro_tulpa_level_100
-
 world_legatus_golem_level_1:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -5298,14 +5119,6 @@ world_legatus_golem_level_100: &world_legatus_golem_level_100
   - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
   - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
-world_legatus_golem_level_105: *world_legatus_golem_level_100
-
-world_legatus_golem_level_110: *world_legatus_golem_level_100
-
-world_legatus_golem_level_115: *world_legatus_golem_level_100
-
-world_legatus_golem_level_120: *world_legatus_golem_level_100
-
 world_gluttonous_yumkasaur_mountain_king_level_1:
   - {reward: genshin.material.overripe_flamegranate, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -5497,14 +5310,6 @@ world_gluttonous_yumkasaur_mountain_king_level_100: &world_gluttonous_yumkasaur_
   - {reward: *gems_electro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
-world_gluttonous_yumkasaur_mountain_king_level_105: *world_gluttonous_yumkasaur_mountain_king_level_100
-
-world_gluttonous_yumkasaur_mountain_king_level_110: *world_gluttonous_yumkasaur_mountain_king_level_100
-
-world_gluttonous_yumkasaur_mountain_king_level_115: *world_gluttonous_yumkasaur_mountain_king_level_100
-
-world_gluttonous_yumkasaur_mountain_king_level_120: *world_gluttonous_yumkasaur_mountain_king_level_100
-
 world_goldflame_qucusaure_tyrant_level_1:
   - {reward: genshin.material.mark_of_the_binding_blessing, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -5645,14 +5450,6 @@ world_goldflame_qucusaure_tyrant_level_100: &world_goldflame_qucusaure_tyrant_le
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
-world_goldflame_qucusaure_tyrant_level_105: *world_goldflame_qucusaure_tyrant_level_100
-
-world_goldflame_qucusaure_tyrant_level_110: *world_goldflame_qucusaure_tyrant_level_100
-
-world_goldflame_qucusaure_tyrant_level_115: *world_goldflame_qucusaure_tyrant_level_100
-
-world_goldflame_qucusaure_tyrant_level_120: *world_goldflame_qucusaure_tyrant_level_100
-
 world_secret_source_automaton_configuration_device_level_1:
   - {reward: genshin.material.gold_inscribed_secret_source_core, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -5792,14 +5589,6 @@ world_secret_source_automaton_configuration_device_level_100: &world_secret_sour
   - {reward: *gems_anemo_fragment_counts_9, count: "1+1:12.2"}
   - {reward: *gems_anemo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-
-world_secret_source_automaton_configuration_device_level_105: *world_secret_source_automaton_configuration_device_level_100
-
-world_secret_source_automaton_configuration_device_level_110: *world_secret_source_automaton_configuration_device_level_100
-
-world_secret_source_automaton_configuration_device_level_115: *world_secret_source_automaton_configuration_device_level_100
-
-world_secret_source_automaton_configuration_device_level_120: *world_secret_source_automaton_configuration_device_level_100
 
 world_lord_of_the_deep_dreadwing_level_1:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:33.86"}
@@ -5954,14 +5743,6 @@ world_lord_of_the_deep_dreadwing_level_100: &world_lord_of_the_deep_dreadwing_le
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
   - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-
-world_lord_of_the_deep_dreadwing_level_105: *world_lord_of_the_deep_dreadwing_level_100
-
-world_lord_of_the_deep_dreadwing_level_110: *world_lord_of_the_deep_dreadwing_level_100
-
-world_lord_of_the_deep_dreadwing_level_115: *world_lord_of_the_deep_dreadwing_level_100
-
-world_lord_of_the_deep_dreadwing_level_120: *world_lord_of_the_deep_dreadwing_level_100
 
 world_holawaqa_ngoubou_level_1:
   - {reward: genshin.material.talisman_of_the_enigmatic_land, count: "1+1:33.86"}
@@ -6154,14 +5935,6 @@ world_holawaqa_ngoubou_level_100: &world_holawaqa_ngoubou_level_100
   - {reward: *gems_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
-world_holawaqa_ngoubou_level_105: *world_holawaqa_ngoubou_level_100
-
-world_holawaqa_ngoubou_level_110: *world_holawaqa_ngoubou_level_100
-
-world_holawaqa_ngoubou_level_115: *world_holawaqa_ngoubou_level_100
-
-world_holawaqa_ngoubou_level_120: *world_holawaqa_ngoubou_level_100
-
 world_lava_dragon_statue_level_1:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -6316,14 +6089,6 @@ world_lava_dragon_statue_level_100: &world_lava_dragon_statue_level_100
   - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
   - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
-world_lava_dragon_statue_level_105: *world_lava_dragon_statue_level_100
-
-world_lava_dragon_statue_level_110: *world_lava_dragon_statue_level_100
-
-world_lava_dragon_statue_level_115: *world_lava_dragon_statue_level_100
-
-world_lava_dragon_statue_level_120: *world_lava_dragon_statue_level_100
-
 world_secret_source_automaton_overseer_level_1:
   - {reward: genshin.material.secret_source_airflow_accumulator, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -6463,14 +6228,6 @@ world_secret_source_automaton_overseer_level_100: &world_secret_source_automaton
   - {reward: *gems_hydro_fragment_counts_9, count: "1+1:12.2"}
   - {reward: *gems_hydro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-
-world_secret_source_automaton_overseer_level_105: *world_secret_source_automaton_overseer_level_100
-
-world_secret_source_automaton_overseer_level_110: *world_secret_source_automaton_overseer_level_100
-
-world_secret_source_automaton_overseer_level_115: *world_secret_source_automaton_overseer_level_100
-
-world_secret_source_automaton_overseer_level_120: *world_secret_source_automaton_overseer_level_100
 
 gems_cryo_sliver_counts_9: &gems_cryo_sliver_counts_9
   - {reward: genshin.material.shivada_jade_sliver, count: "9", weight: 1}
@@ -6665,14 +6422,6 @@ world_setekh_wenut_level_100: &world_setekh_wenut_level_100
   - {reward: *gems_cryo_fragment_counts_9, count: "1+1:12.2"}
   - {reward: *gems_cryo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:25"}
-
-world_setekh_wenut_level_105: *world_setekh_wenut_level_100
-
-world_setekh_wenut_level_110: *world_setekh_wenut_level_100
-
-world_setekh_wenut_level_115: *world_setekh_wenut_level_100
-
-world_setekh_wenut_level_120: *world_setekh_wenut_level_100
 
 world_solitary_suanni_level_1:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:33.86"}
@@ -6869,14 +6618,6 @@ world_solitary_suanni_level_100: &world_solitary_suanni_level_100
   - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
   - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-
-world_solitary_suanni_level_105: *world_solitary_suanni_level_100
-
-world_solitary_suanni_level_110: *world_solitary_suanni_level_100
-
-world_solitary_suanni_level_115: *world_solitary_suanni_level_100
-
-world_solitary_suanni_level_120: *world_solitary_suanni_level_100
 
 world_tenebrous_papilla_level_1:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:33.86"}
@@ -7116,14 +6857,6 @@ world_tenebrous_papilla_level_100: &world_tenebrous_papilla_level_100
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
   - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
-world_tenebrous_papilla_level_105: *world_tenebrous_papilla_level_100
-
-world_tenebrous_papilla_level_110: *world_tenebrous_papilla_level_100
-
-world_tenebrous_papilla_level_115: *world_tenebrous_papilla_level_100
-
-world_tenebrous_papilla_level_120: *world_tenebrous_papilla_level_100
-
 world_undying_replicant_level_1:
   - {reward: genshin.material.unscorched_blossom_branch, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
@@ -7263,14 +6996,6 @@ world_undying_replicant_level_100: &world_undying_replicant_level_100
   - {reward: *gems_pyro_fragment_counts_9, count: "1+1:12.2"}
   - {reward: *gems_pyro_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_9, count: "3+1:18.45"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-
-world_undying_replicant_level_105: *world_undying_replicant_level_100
-
-world_undying_replicant_level_110: *world_undying_replicant_level_100
-
-world_undying_replicant_level_115: *world_undying_replicant_level_100
-
-world_undying_replicant_level_120: *world_undying_replicant_level_100
 
 world_chimera_sky_roamer_level_1:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:33.86"}
@@ -7468,12 +7193,6 @@ world_chimera_sky_roamer_level_100: &world_chimera_sky_roamer_level_100
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
   - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
-world_chimera_sky_roamer_level_105: *world_chimera_sky_roamer_level_100
-
-world_chimera_sky_roamer_level_110: *world_chimera_sky_roamer_level_100
-
-world_chimera_sky_roamer_level_115: *world_chimera_sky_roamer_level_100
-
 world_chimera_sky_roamer_level_120:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "3+1:25"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
@@ -7482,16 +7201,13 @@ world_chimera_sky_roamer_level_120:
   - {reward: genshin.material.shivada_jade_fragment, count: "9"}
   - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
-
 # Historical World Boss drop tables (ChestDrop sourceType 34).
 # Precision Clockwork source omitted: artifact identities unresolved.
 gems_electro_sliver_counts_3: &gems_electro_sliver_counts_3
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 1}
 
-
 artifacts_traveling_doctor_1star_0substats: &artifacts_traveling_doctor_1star_0substats
   - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1}
-
 
 artifacts_traveling_doctor_2star_0_1substats: &artifacts_traveling_doctor_2star_0_1substats
   - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 2, substats: "0:66, 1:34"}, weight: 1}
@@ -7701,23 +7417,11 @@ world_electro_hypostasis_level_93: &world_electro_hypostasis_level_93
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_electro_hypostasis_level_100: *world_electro_hypostasis_level_93
-
-world_electro_hypostasis_level_105: *world_electro_hypostasis_level_93
-
-world_electro_hypostasis_level_110: *world_electro_hypostasis_level_93
-
-world_electro_hypostasis_level_115: *world_electro_hypostasis_level_93
-
-world_electro_hypostasis_level_120: *world_electro_hypostasis_level_93
-
 gems_cryo_sliver_counts_3: &gems_cryo_sliver_counts_3
   - {reward: genshin.material.shivada_jade_sliver, count: "3", weight: 1}
 
-
 artifacts_lucky_dog_1star_0substats: &artifacts_lucky_dog_1star_0substats
   - {reward: genshin.artifact.lucky_dog, properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1}
-
 
 artifacts_lucky_dog_2star_0_1substats: &artifacts_lucky_dog_2star_0_1substats
   - {reward: genshin.artifact.lucky_dog, properties: {slot: "1~5", rarity: 2, substats: "0:66, 1:34"}, weight: 1}
@@ -7914,16 +7618,6 @@ world_anemo_hypostasis_level_93: &world_anemo_hypostasis_level_93
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
-
-world_anemo_hypostasis_level_100: *world_anemo_hypostasis_level_93
-
-world_anemo_hypostasis_level_105: *world_anemo_hypostasis_level_93
-
-world_anemo_hypostasis_level_110: *world_anemo_hypostasis_level_93
-
-world_anemo_hypostasis_level_115: *world_anemo_hypostasis_level_93
-
-world_anemo_hypostasis_level_120: *world_anemo_hypostasis_level_93
 
 gems_geo_sliver_counts_3: &gems_geo_sliver_counts_3
   - {reward: genshin.material.prithiva_topaz_sliver, count: "3", weight: 1}
@@ -8130,16 +7824,6 @@ world_geo_hypostasis_level_93: &world_geo_hypostasis_level_93
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
-
-world_geo_hypostasis_level_100: *world_geo_hypostasis_level_93
-
-world_geo_hypostasis_level_105: *world_geo_hypostasis_level_93
-
-world_geo_hypostasis_level_110: *world_geo_hypostasis_level_93
-
-world_geo_hypostasis_level_115: *world_geo_hypostasis_level_93
-
-world_geo_hypostasis_level_120: *world_geo_hypostasis_level_93
 
 gems_anemo_sliver_counts_3: &gems_anemo_sliver_counts_3
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 1}
@@ -8349,23 +8033,11 @@ world_cryo_regisvine_level_93: &world_cryo_regisvine_level_93
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_cryo_regisvine_level_100: *world_cryo_regisvine_level_93
-
-world_cryo_regisvine_level_105: *world_cryo_regisvine_level_93
-
-world_cryo_regisvine_level_110: *world_cryo_regisvine_level_93
-
-world_cryo_regisvine_level_115: *world_cryo_regisvine_level_93
-
-world_cryo_regisvine_level_120: *world_cryo_regisvine_level_93
-
 gems_pyro_sliver_counts_3: &gems_pyro_sliver_counts_3
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 1}
 
-
 artifacts_adventurer_1star_0substats: &artifacts_adventurer_1star_0substats
   - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1}
-
 
 artifacts_adventurer_2star_0_1substats: &artifacts_adventurer_2star_0_1substats
   - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 2, substats: "0:66, 1:34"}, weight: 1}
@@ -8575,16 +8247,6 @@ world_pyro_regisvine_level_93: &world_pyro_regisvine_level_93
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_pyro_regisvine_level_100: *world_pyro_regisvine_level_93
-
-world_pyro_regisvine_level_105: *world_pyro_regisvine_level_93
-
-world_pyro_regisvine_level_110: *world_pyro_regisvine_level_93
-
-world_pyro_regisvine_level_115: *world_pyro_regisvine_level_93
-
-world_pyro_regisvine_level_120: *world_pyro_regisvine_level_93
-
 gems_hydro_sliver_counts_3: &gems_hydro_sliver_counts_3
   - {reward: genshin.material.varunada_lazurite_sliver, count: "3", weight: 1}
 
@@ -8792,16 +8454,6 @@ world_oceanid_level_93: &world_oceanid_level_93
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
-
-world_oceanid_level_100: *world_oceanid_level_93
-
-world_oceanid_level_105: *world_oceanid_level_93
-
-world_oceanid_level_110: *world_oceanid_level_93
-
-world_oceanid_level_115: *world_oceanid_level_93
-
-world_oceanid_level_120: *world_oceanid_level_93
 
 gems_electro_geo_sliver: &gems_electro_geo_sliver
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 1}
@@ -9022,16 +8674,6 @@ world_primo_geovishap_electro_level_93: &world_primo_geovishap_electro_level_93
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
-
-world_primo_geovishap_electro_level_100: *world_primo_geovishap_electro_level_93
-
-world_primo_geovishap_electro_level_105: *world_primo_geovishap_electro_level_93
-
-world_primo_geovishap_electro_level_110: *world_primo_geovishap_electro_level_93
-
-world_primo_geovishap_electro_level_115: *world_primo_geovishap_electro_level_93
-
-world_primo_geovishap_electro_level_120: *world_primo_geovishap_electro_level_93
 
 gems_anemo_geo_sliver: &gems_anemo_geo_sliver
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 1}
@@ -9263,16 +8905,6 @@ world_primo_geovishap_cryo_level_93: &world_primo_geovishap_cryo_level_93
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_primo_geovishap_cryo_level_100: *world_primo_geovishap_cryo_level_93
-
-world_primo_geovishap_cryo_level_105: *world_primo_geovishap_cryo_level_93
-
-world_primo_geovishap_cryo_level_110: *world_primo_geovishap_cryo_level_93
-
-world_primo_geovishap_cryo_level_115: *world_primo_geovishap_cryo_level_93
-
-world_primo_geovishap_cryo_level_120: *world_primo_geovishap_cryo_level_93
-
 gems_geo_pyro_sliver: &gems_geo_pyro_sliver
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 1}
   - {reward: genshin.material.prithiva_topaz_sliver, count: "3", weight: 1}
@@ -9492,16 +9124,6 @@ world_primo_geovishap_pyro_level_93: &world_primo_geovishap_pyro_level_93
   - {reward: *artifacts_adventurer_berserker_instructor_prayers_for_illumination_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
-
-world_primo_geovishap_pyro_level_100: *world_primo_geovishap_pyro_level_93
-
-world_primo_geovishap_pyro_level_105: *world_primo_geovishap_pyro_level_93
-
-world_primo_geovishap_pyro_level_110: *world_primo_geovishap_pyro_level_93
-
-world_primo_geovishap_pyro_level_115: *world_primo_geovishap_pyro_level_93
-
-world_primo_geovishap_pyro_level_120: *world_primo_geovishap_pyro_level_93
 
 gems_geo_hydro_sliver: &gems_geo_hydro_sliver
   - {reward: genshin.material.varunada_lazurite_sliver, count: "3", weight: 1}
@@ -9723,28 +9345,6 @@ world_primo_geovishap_hydro_level_93: &world_primo_geovishap_hydro_level_93
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_primo_geovishap_hydro_level_100: *world_primo_geovishap_hydro_level_93
-
-world_primo_geovishap_hydro_level_105: *world_primo_geovishap_hydro_level_93
-
-world_primo_geovishap_hydro_level_110: *world_primo_geovishap_hydro_level_93
-
-world_primo_geovishap_hydro_level_115: *world_primo_geovishap_hydro_level_93
-
-world_primo_geovishap_hydro_level_120: *world_primo_geovishap_hydro_level_93
-
-world_cryo_hypostasis_level_1: *world_cryo_regisvine_level_1
-
-world_cryo_hypostasis_level_5: *world_cryo_regisvine_level_5
-
-world_cryo_hypostasis_level_10: *world_cryo_regisvine_level_10
-
-world_cryo_hypostasis_level_15: *world_cryo_regisvine_level_15
-
-world_cryo_hypostasis_level_20: *world_cryo_regisvine_level_20
-
-world_cryo_hypostasis_level_25: *world_cryo_regisvine_level_25
-
 world_cryo_hypostasis_level_30:
   - {reward: genshin.material.crystalline_bloom, count: "1+1:52.18"}
   - {reward: *gems_anemo_sliver_counts_3, count: "2+1:19.219"}
@@ -9846,16 +9446,6 @@ world_cryo_hypostasis_level_93: &world_cryo_hypostasis_level_93
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
-
-world_cryo_hypostasis_level_100: *world_cryo_hypostasis_level_93
-
-world_cryo_hypostasis_level_105: *world_cryo_hypostasis_level_93
-
-world_cryo_hypostasis_level_110: *world_cryo_hypostasis_level_93
-
-world_cryo_hypostasis_level_115: *world_cryo_hypostasis_level_93
-
-world_cryo_hypostasis_level_120: *world_cryo_hypostasis_level_93
 
 gems_anemo_cryo_sliver: &gems_anemo_cryo_sliver
   - {reward: genshin.material.shivada_jade_sliver, count: "3", weight: 1}
@@ -10077,28 +9667,6 @@ world_maguu_kenki_level_93: &world_maguu_kenki_level_93
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_maguu_kenki_level_100: *world_maguu_kenki_level_93
-
-world_maguu_kenki_level_105: *world_maguu_kenki_level_93
-
-world_maguu_kenki_level_110: *world_maguu_kenki_level_93
-
-world_maguu_kenki_level_115: *world_maguu_kenki_level_93
-
-world_maguu_kenki_level_120: *world_maguu_kenki_level_93
-
-world_perpetual_mechanical_array_level_1: *world_primo_geovishap_cryo_level_1
-
-world_perpetual_mechanical_array_level_5: *world_primo_geovishap_cryo_level_5
-
-world_perpetual_mechanical_array_level_10: *world_primo_geovishap_cryo_level_10
-
-world_perpetual_mechanical_array_level_15: *world_primo_geovishap_cryo_level_15
-
-world_perpetual_mechanical_array_level_20: *world_primo_geovishap_cryo_level_20
-
-world_perpetual_mechanical_array_level_25: *world_primo_geovishap_cryo_level_25
-
 world_perpetual_mechanical_array_level_30:
   - {reward: genshin.material.perpetual_heart, count: "1+1:52.18"}
   - {reward: *gems_anemo_geo_sliver, count: "2+1:19.219"}
@@ -10200,28 +9768,6 @@ world_perpetual_mechanical_array_level_93: &world_perpetual_mechanical_array_lev
   - {reward: *artifacts_berserker_lucky_dog_prayers_to_springtime_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
-
-world_perpetual_mechanical_array_level_100: *world_perpetual_mechanical_array_level_93
-
-world_perpetual_mechanical_array_level_105: *world_perpetual_mechanical_array_level_93
-
-world_perpetual_mechanical_array_level_110: *world_perpetual_mechanical_array_level_93
-
-world_perpetual_mechanical_array_level_115: *world_perpetual_mechanical_array_level_93
-
-world_perpetual_mechanical_array_level_120: *world_perpetual_mechanical_array_level_93
-
-world_pyro_hypostasis_level_1: *world_pyro_regisvine_level_1
-
-world_pyro_hypostasis_level_5: *world_pyro_regisvine_level_5
-
-world_pyro_hypostasis_level_10: *world_pyro_regisvine_level_10
-
-world_pyro_hypostasis_level_15: *world_pyro_regisvine_level_15
-
-world_pyro_hypostasis_level_20: *world_pyro_regisvine_level_20
-
-world_pyro_hypostasis_level_25: *world_pyro_regisvine_level_25
 
 world_pyro_hypostasis_level_30:
   - {reward: genshin.material.smoldering_pearl, count: "1+1:52.18"}
@@ -10325,28 +9871,6 @@ world_pyro_hypostasis_level_93: &world_pyro_hypostasis_level_93
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_pyro_hypostasis_level_100: *world_pyro_hypostasis_level_93
-
-world_pyro_hypostasis_level_105: *world_pyro_hypostasis_level_93
-
-world_pyro_hypostasis_level_110: *world_pyro_hypostasis_level_93
-
-world_pyro_hypostasis_level_115: *world_pyro_hypostasis_level_93
-
-world_pyro_hypostasis_level_120: *world_pyro_hypostasis_level_93
-
-world_hydro_hypostasis_level_1: *world_oceanid_level_1
-
-world_hydro_hypostasis_level_5: *world_oceanid_level_5
-
-world_hydro_hypostasis_level_10: *world_oceanid_level_10
-
-world_hydro_hypostasis_level_15: *world_oceanid_level_15
-
-world_hydro_hypostasis_level_20: *world_oceanid_level_20
-
-world_hydro_hypostasis_level_25: *world_oceanid_level_25
-
 world_hydro_hypostasis_level_30:
   - {reward: genshin.material.dew_of_repudiation, count: "1+1:52.18"}
   - {reward: *gems_hydro_sliver_counts_3, count: "2+1:19.219"}
@@ -10448,28 +9972,6 @@ world_hydro_hypostasis_level_93: &world_hydro_hypostasis_level_93
   - {reward: *artifacts_adventurer_berserker_prayers_for_destiny_the_exile_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_berserker_gladiators_finale_prayers_for_destiny_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
-
-world_hydro_hypostasis_level_100: *world_hydro_hypostasis_level_93
-
-world_hydro_hypostasis_level_105: *world_hydro_hypostasis_level_93
-
-world_hydro_hypostasis_level_110: *world_hydro_hypostasis_level_93
-
-world_hydro_hypostasis_level_115: *world_hydro_hypostasis_level_93
-
-world_hydro_hypostasis_level_120: *world_hydro_hypostasis_level_93
-
-world_thunder_manifestation_level_1: *world_electro_hypostasis_level_1
-
-world_thunder_manifestation_level_5: *world_electro_hypostasis_level_5
-
-world_thunder_manifestation_level_10: *world_electro_hypostasis_level_10
-
-world_thunder_manifestation_level_15: *world_electro_hypostasis_level_15
-
-world_thunder_manifestation_level_20: *world_electro_hypostasis_level_20
-
-world_thunder_manifestation_level_25: *world_electro_hypostasis_level_25
 
 world_thunder_manifestation_level_30:
   - {reward: genshin.material.storm_beads, count: "1+1:52.18"}
@@ -10573,28 +10075,6 @@ world_thunder_manifestation_level_93: &world_thunder_manifestation_level_93
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_thunder_manifestation_level_100: *world_thunder_manifestation_level_93
-
-world_thunder_manifestation_level_105: *world_thunder_manifestation_level_93
-
-world_thunder_manifestation_level_110: *world_thunder_manifestation_level_93
-
-world_thunder_manifestation_level_115: *world_thunder_manifestation_level_93
-
-world_thunder_manifestation_level_120: *world_thunder_manifestation_level_93
-
-world_golden_wolflord_level_1: *world_geo_hypostasis_level_1
-
-world_golden_wolflord_level_5: *world_geo_hypostasis_level_5
-
-world_golden_wolflord_level_10: *world_geo_hypostasis_level_10
-
-world_golden_wolflord_level_15: *world_geo_hypostasis_level_15
-
-world_golden_wolflord_level_20: *world_geo_hypostasis_level_20
-
-world_golden_wolflord_level_25: *world_geo_hypostasis_level_25
-
 world_golden_wolflord_level_30:
   - {reward: genshin.material.riftborn_regalia, count: "1+1:52.18"}
   - {reward: *gems_geo_sliver_counts_3, count: "2+1:19.219"}
@@ -10696,16 +10176,6 @@ world_golden_wolflord_level_93: &world_golden_wolflord_level_93
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
-
-world_golden_wolflord_level_100: *world_golden_wolflord_level_93
-
-world_golden_wolflord_level_105: *world_golden_wolflord_level_93
-
-world_golden_wolflord_level_110: *world_golden_wolflord_level_93
-
-world_golden_wolflord_level_115: *world_golden_wolflord_level_93
-
-world_golden_wolflord_level_120: *world_golden_wolflord_level_93
 
 gems_anemo_electro_sliver: &gems_anemo_electro_sliver
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 1}
@@ -10927,28 +10397,6 @@ world_bathysmal_vishap_herd_level_93: &world_bathysmal_vishap_herd_level_93
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_bathysmal_vishap_herd_level_100: *world_bathysmal_vishap_herd_level_93
-
-world_bathysmal_vishap_herd_level_105: *world_bathysmal_vishap_herd_level_93
-
-world_bathysmal_vishap_herd_level_110: *world_bathysmal_vishap_herd_level_93
-
-world_bathysmal_vishap_herd_level_115: *world_bathysmal_vishap_herd_level_93
-
-world_bathysmal_vishap_herd_level_120: *world_bathysmal_vishap_herd_level_93
-
-world_ruin_serpent_level_1: *world_geo_hypostasis_level_1
-
-world_ruin_serpent_level_5: *world_geo_hypostasis_level_5
-
-world_ruin_serpent_level_10: *world_geo_hypostasis_level_10
-
-world_ruin_serpent_level_15: *world_geo_hypostasis_level_15
-
-world_ruin_serpent_level_20: *world_geo_hypostasis_level_20
-
-world_ruin_serpent_level_25: *world_geo_hypostasis_level_25
-
 world_ruin_serpent_level_30:
   - {reward: genshin.material.runic_fang, count: "1+1:52.18"}
   - {reward: *gems_geo_sliver_counts_3, count: "2+1:19.219"}
@@ -11050,16 +10498,6 @@ world_ruin_serpent_level_93: &world_ruin_serpent_level_93
   - {reward: *artifacts_instructor_the_exile_traveling_doctor_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_the_exile_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
-
-world_ruin_serpent_level_100: *world_ruin_serpent_level_93
-
-world_ruin_serpent_level_105: *world_ruin_serpent_level_93
-
-world_ruin_serpent_level_110: *world_ruin_serpent_level_93
-
-world_ruin_serpent_level_115: *world_ruin_serpent_level_93
-
-world_ruin_serpent_level_120: *world_ruin_serpent_level_93
 
 gems_dendro_sliver_counts_3: &gems_dendro_sliver_counts_3
   - {reward: genshin.material.nagadus_emerald_sliver, count: "3", weight: 1}
@@ -11261,28 +10699,6 @@ world_jadeplume_terrorshroom_level_93: &world_jadeplume_terrorshroom_level_93
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_jadeplume_terrorshroom_level_100: *world_jadeplume_terrorshroom_level_93
-
-world_jadeplume_terrorshroom_level_105: *world_jadeplume_terrorshroom_level_93
-
-world_jadeplume_terrorshroom_level_110: *world_jadeplume_terrorshroom_level_93
-
-world_jadeplume_terrorshroom_level_115: *world_jadeplume_terrorshroom_level_93
-
-world_jadeplume_terrorshroom_level_120: *world_jadeplume_terrorshroom_level_93
-
-world_electro_regisvine_level_1: *world_electro_hypostasis_level_1
-
-world_electro_regisvine_level_5: *world_electro_hypostasis_level_5
-
-world_electro_regisvine_level_10: *world_electro_hypostasis_level_10
-
-world_electro_regisvine_level_15: *world_electro_hypostasis_level_15
-
-world_electro_regisvine_level_20: *world_electro_hypostasis_level_20
-
-world_electro_regisvine_level_25: *world_electro_hypostasis_level_25
-
 world_electro_regisvine_level_30:
   - {reward: genshin.material.thunderclap_fruitcore, count: "1+1:52.18"}
   - {reward: *gems_electro_sliver_counts_3, count: "2+1:19.219"}
@@ -11384,16 +10800,6 @@ world_electro_regisvine_level_93: &world_electro_regisvine_level_93
   - {reward: *artifacts_instructor_prayers_for_wisdom_the_exile_traveling_doctor_3star_1_2substats_circlet, count: "2+1:10"}
   - {reward: *artifacts_gladiators_finale_instructor_prayers_for_wisdom_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
-
-world_electro_regisvine_level_100: *world_electro_regisvine_level_93
-
-world_electro_regisvine_level_105: *world_electro_regisvine_level_93
-
-world_electro_regisvine_level_110: *world_electro_regisvine_level_93
-
-world_electro_regisvine_level_115: *world_electro_regisvine_level_93
-
-world_electro_regisvine_level_120: *world_electro_regisvine_level_93
 
 gems_anemo_hydro_sliver: &gems_anemo_hydro_sliver
   - {reward: genshin.material.vayuda_turquoise_sliver, count: "3", weight: 1}
@@ -11615,16 +11021,6 @@ world_aeonblight_drake_level_93: &world_aeonblight_drake_level_93
   - {reward: *artifacts_berserker_gladiators_finale_prayers_to_springtime_the_exile_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_aeonblight_drake_level_100: *world_aeonblight_drake_level_93
-
-world_aeonblight_drake_level_105: *world_aeonblight_drake_level_93
-
-world_aeonblight_drake_level_110: *world_aeonblight_drake_level_93
-
-world_aeonblight_drake_level_115: *world_aeonblight_drake_level_93
-
-world_aeonblight_drake_level_120: *world_aeonblight_drake_level_93
-
 gems_cryo_pyro_sliver: &gems_cryo_pyro_sliver
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 1}
   - {reward: genshin.material.shivada_jade_sliver, count: "3", weight: 1}
@@ -11845,28 +11241,6 @@ world_algorithm_semi_intransient_matrix_level_93: &world_algorithm_semi_intransi
   - {reward: *artifacts_berserker_gladiators_finale_instructor_prayers_for_illumination_wanderers_troupe_4star_2_3substats_circlet, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_algorithm_semi_intransient_matrix_level_100: *world_algorithm_semi_intransient_matrix_level_93
-
-world_algorithm_semi_intransient_matrix_level_105: *world_algorithm_semi_intransient_matrix_level_93
-
-world_algorithm_semi_intransient_matrix_level_110: *world_algorithm_semi_intransient_matrix_level_93
-
-world_algorithm_semi_intransient_matrix_level_115: *world_algorithm_semi_intransient_matrix_level_93
-
-world_algorithm_semi_intransient_matrix_level_120: *world_algorithm_semi_intransient_matrix_level_93
-
-world_dendro_hypostasis_level_1: *world_jadeplume_terrorshroom_level_1
-
-world_dendro_hypostasis_level_5: *world_jadeplume_terrorshroom_level_5
-
-world_dendro_hypostasis_level_10: *world_jadeplume_terrorshroom_level_10
-
-world_dendro_hypostasis_level_15: *world_jadeplume_terrorshroom_level_15
-
-world_dendro_hypostasis_level_20: *world_jadeplume_terrorshroom_level_20
-
-world_dendro_hypostasis_level_25: *world_jadeplume_terrorshroom_level_25
-
 world_dendro_hypostasis_level_30:
   - {reward: genshin.material.quelled_creeper, count: "1+1:52.18"}
   - {reward: *gems_dendro_sliver_counts_3, count: "2+1:19.219"}
@@ -11969,12 +11343,3 @@ world_dendro_hypostasis_level_93: &world_dendro_hypostasis_level_93
   - {reward: *artifacts_berserker_gladiators_finale_instructor_wanderers_troupe_4star_2_3substats, count: "1+1:47"}
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
 
-world_dendro_hypostasis_level_100: *world_dendro_hypostasis_level_93
-
-world_dendro_hypostasis_level_105: *world_dendro_hypostasis_level_93
-
-world_dendro_hypostasis_level_110: *world_dendro_hypostasis_level_93
-
-world_dendro_hypostasis_level_115: *world_dendro_hypostasis_level_93
-
-world_dendro_hypostasis_level_120: *world_dendro_hypostasis_level_93

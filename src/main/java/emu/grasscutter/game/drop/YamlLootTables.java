@@ -16,7 +16,7 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 /**
  * YAML loot lists: an all-null-weight list executes all entries; an all-numeric-weight
  * list chooses one. Mixed weights are rejected, even if the numeric weight is zero.
- * reward may be an item name, numeric ID, nested YAML list, or null (empty reward).
+ * reward may be a named item, nested YAML list, or null (empty reward).
  */
 public final class YamlLootTables {
     @FunctionalInterface
@@ -129,10 +129,9 @@ public final class YamlLootTables {
                 if (target instanceof List<?>) {
                     nested = parseList(target, resolver, artifacts, compiled, visiting, budget, at + ".reward", depth + 1);
                 } else if (target != null) {
-                    if (!(target instanceof String || target instanceof Number)) {
-                        throw new IllegalArgumentException(at + ": invalid reward: " + target);
+                    if (!(target instanceof String reference) || reference.matches("[0-9]+")) {
+                        throw new IllegalArgumentException(at + ": reward must be a named item: " + target);
                     }
-                    String reference = target.toString();
                     if (reference.startsWith("genshin.artifact.")) {
                         if (artifacts == null) {
                             throw new IllegalArgumentException(at + ": artifact resolver unavailable");

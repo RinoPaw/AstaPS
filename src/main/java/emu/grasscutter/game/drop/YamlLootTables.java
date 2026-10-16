@@ -233,9 +233,9 @@ public final class YamlLootTables {
 
     /** Local names resolve within the loader's namespace; qualified IDs stay unchanged. */
     public String resolveName(String reference) {
-        ResourceId id = reference.contains(".")
-                ? ResourceId.parse(reference)
-                : ResourceId.parse(namespace + ".loot." + reference);
+        String prefix = namespace + ".loot.";
+        ResourceId id = ResourceId.parse(reference.startsWith(prefix)
+                ? reference : prefix + reference);
         if (!(id.size() >= 3 && id.segment(1).equals("loot")) || !contains(id.toString())) {
             throw new IllegalArgumentException("Unknown loot table: " + reference);
         }

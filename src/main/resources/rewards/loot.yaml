@@ -263,57 +263,21 @@ weekly_shouki_no_kami_level_5_gems: &weekly_shouki_no_kami_level_5_gems
   - {reward: genshin.material.shivada_jade_sliver, weight: 1}
   - {reward: genshin.material.varunada_lazurite_sliver, weight: 1}
 
-weekly_shouki_no_kami_level_5_artifacts_variant_3: &weekly_shouki_no_kami_level_5_artifacts_variant_3
-  - {reward: genshin.artifact.berserker, properties: {slot: goblet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: plume, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: flower, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: sands, rarity: 3, substats: 1}, weight: 1}
 
-weekly_shouki_no_kami_level_5_artifacts_variant_4: &weekly_shouki_no_kami_level_5_artifacts_variant_4
-  - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: plume, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: flower, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: sands, rarity: 3, substats: 1}, weight: 1}
 
-weekly_shouki_no_kami_level_5_artifacts_variant_5: &weekly_shouki_no_kami_level_5_artifacts_variant_5
-  - {reward: genshin.artifact.the_exile, properties: {slot: goblet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: plume, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: flower, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: sands, rarity: 3, substats: 1}, weight: 1}
 
 weekly_shouki_no_kami_level_5_artifacts_variant_2: &weekly_shouki_no_kami_level_5_artifacts_variant_2
-  - {reward: *weekly_shouki_no_kami_level_5_artifacts_variant_3, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_5_artifacts_variant_4, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_5_artifacts_variant_5, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
 
-weekly_shouki_no_kami_level_5_artifacts_variant_7: &weekly_shouki_no_kami_level_5_artifacts_variant_7
-  - {reward: genshin.artifact.berserker, properties: {slot: goblet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: plume, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: flower, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: sands, rarity: 3, substats: 2}, weight: 1}
 
-weekly_shouki_no_kami_level_5_artifacts_variant_8: &weekly_shouki_no_kami_level_5_artifacts_variant_8
-  - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: plume, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: flower, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: sands, rarity: 3, substats: 2}, weight: 1}
 
-weekly_shouki_no_kami_level_5_artifacts_variant_9: &weekly_shouki_no_kami_level_5_artifacts_variant_9
-  - {reward: genshin.artifact.the_exile, properties: {slot: goblet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: plume, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: flower, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: sands, rarity: 3, substats: 2}, weight: 1}
 
 weekly_shouki_no_kami_level_5_artifacts_variant_6: &weekly_shouki_no_kami_level_5_artifacts_variant_6
-  - {reward: *weekly_shouki_no_kami_level_5_artifacts_variant_7, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_5_artifacts_variant_8, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_5_artifacts_variant_9, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
 
 weekly_shouki_no_kami_level_5_artifacts: &weekly_shouki_no_kami_level_5_artifacts
   - {reward: *weekly_shouki_no_kami_level_5_artifacts_variant_2, weight: 33}
@@ -405,89 +369,29 @@ weekly_shouki_no_kami_level_30_gems: &weekly_shouki_no_kami_level_30_gems
   - {reward: genshin.material.shivada_jade_sliver, weight: 1}
   - {reward: genshin.material.varunada_lazurite_sliver, weight: 1}
 
-weekly_shouki_no_kami_level_30_artifacts_variant_3: &weekly_shouki_no_kami_level_30_artifacts_variant_3
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
 
-weekly_shouki_no_kami_level_30_artifacts_variant_4: &weekly_shouki_no_kami_level_30_artifacts_variant_4
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
 
-weekly_shouki_no_kami_level_30_artifacts_variant_5: &weekly_shouki_no_kami_level_30_artifacts_variant_5
-  - {reward: genshin.artifact.berserker, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
 
-weekly_shouki_no_kami_level_30_artifacts_variant_6: &weekly_shouki_no_kami_level_30_artifacts_variant_6
-  - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
 
-weekly_shouki_no_kami_level_30_artifacts_variant_7: &weekly_shouki_no_kami_level_30_artifacts_variant_7
-  - {reward: genshin.artifact.the_exile, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
 
 weekly_shouki_no_kami_level_30_artifacts_variant_2: &weekly_shouki_no_kami_level_30_artifacts_variant_2
-  - {reward: *weekly_shouki_no_kami_level_30_artifacts_variant_3, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_30_artifacts_variant_4, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_30_artifacts_variant_5, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_30_artifacts_variant_6, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_30_artifacts_variant_7, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
 
-weekly_shouki_no_kami_level_30_artifacts_variant_9: &weekly_shouki_no_kami_level_30_artifacts_variant_9
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: goblet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: plume, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: flower, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: sands, rarity: 4, substats: 3}, weight: 1}
 
-weekly_shouki_no_kami_level_30_artifacts_variant_10: &weekly_shouki_no_kami_level_30_artifacts_variant_10
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: goblet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: plume, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: flower, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: sands, rarity: 4, substats: 3}, weight: 1}
 
-weekly_shouki_no_kami_level_30_artifacts_variant_11: &weekly_shouki_no_kami_level_30_artifacts_variant_11
-  - {reward: genshin.artifact.berserker, properties: {slot: goblet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: plume, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: flower, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: sands, rarity: 4, substats: 3}, weight: 1}
 
-weekly_shouki_no_kami_level_30_artifacts_variant_12: &weekly_shouki_no_kami_level_30_artifacts_variant_12
-  - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: plume, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: flower, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: sands, rarity: 4, substats: 3}, weight: 1}
 
-weekly_shouki_no_kami_level_30_artifacts_variant_13: &weekly_shouki_no_kami_level_30_artifacts_variant_13
-  - {reward: genshin.artifact.the_exile, properties: {slot: goblet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: plume, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: flower, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: sands, rarity: 4, substats: 3}, weight: 1}
 
 weekly_shouki_no_kami_level_30_artifacts_variant_8: &weekly_shouki_no_kami_level_30_artifacts_variant_8
-  - {reward: *weekly_shouki_no_kami_level_30_artifacts_variant_9, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_30_artifacts_variant_10, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_30_artifacts_variant_11, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_30_artifacts_variant_12, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_30_artifacts_variant_13, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
 
 weekly_shouki_no_kami_level_30_artifacts: &weekly_shouki_no_kami_level_30_artifacts
   - {reward: *weekly_shouki_no_kami_level_30_artifacts_variant_2, weight: 33}
@@ -575,41 +479,17 @@ weekly_shouki_no_kami_level_50_gems: &weekly_shouki_no_kami_level_50_gems
   - {reward: genshin.material.varunada_lazurite_sliver, weight: 1181}
   - {reward: genshin.material.varunada_lazurite_fragment, weight: 315}
 
-weekly_shouki_no_kami_level_50_artifacts_variant_3: &weekly_shouki_no_kami_level_50_artifacts_variant_3
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: goblet, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: plume, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: circlet, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: flower, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: sands, rarity: 5, substats: 3}, weight: 1}
 
-weekly_shouki_no_kami_level_50_artifacts_variant_4: &weekly_shouki_no_kami_level_50_artifacts_variant_4
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: goblet, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: plume, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: circlet, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: flower, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: sands, rarity: 5, substats: 3}, weight: 1}
 
 weekly_shouki_no_kami_level_50_artifacts_variant_2: &weekly_shouki_no_kami_level_50_artifacts_variant_2
-  - {reward: *weekly_shouki_no_kami_level_50_artifacts_variant_3, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_50_artifacts_variant_4, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 5, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 5, substats: 3}, weight: 1}
 
-weekly_shouki_no_kami_level_50_artifacts_variant_6: &weekly_shouki_no_kami_level_50_artifacts_variant_6
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: goblet, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: plume, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: circlet, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: flower, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: sands, rarity: 5, substats: 4}, weight: 1}
 
-weekly_shouki_no_kami_level_50_artifacts_variant_7: &weekly_shouki_no_kami_level_50_artifacts_variant_7
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: goblet, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: plume, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: circlet, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: flower, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: sands, rarity: 5, substats: 4}, weight: 1}
 
 weekly_shouki_no_kami_level_50_artifacts_variant_5: &weekly_shouki_no_kami_level_50_artifacts_variant_5
-  - {reward: *weekly_shouki_no_kami_level_50_artifacts_variant_6, weight: 1}
-  - {reward: *weekly_shouki_no_kami_level_50_artifacts_variant_7, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 5, substats: 4}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 5, substats: 4}, weight: 1}
 
 weekly_shouki_no_kami_level_50_artifacts: &weekly_shouki_no_kami_level_50_artifacts
   - {reward: *weekly_shouki_no_kami_level_50_artifacts_variant_2, weight: 33}
@@ -9696,38 +9576,20 @@ world_chimera_sky_roamer_level_120:
 world_electro_hypostasis_level_1_gems: &world_electro_hypostasis_level_1_gems
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 1}
 
-world_electro_hypostasis_level_1_artifacts_variant_3: &world_electro_hypostasis_level_1_artifacts_variant_3
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: goblet, rarity: 1, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: plume, rarity: 1, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: circlet, rarity: 1, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: flower, rarity: 1, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: sands, rarity: 1, substats: 0}, weight: 1}
 
 world_electro_hypostasis_level_1_artifacts_variant_2: &world_electro_hypostasis_level_1_artifacts_variant_2
-  - {reward: *world_electro_hypostasis_level_1_artifacts_variant_3, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1}
 
 world_electro_hypostasis_level_1_artifacts: &world_electro_hypostasis_level_1_artifacts
   - {reward: *world_electro_hypostasis_level_1_artifacts_variant_2, weight: 1}
 
-world_electro_hypostasis_level_1_artifacts_variant_6: &world_electro_hypostasis_level_1_artifacts_variant_6
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: goblet, rarity: 2, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: plume, rarity: 2, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: circlet, rarity: 2, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: flower, rarity: 2, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: sands, rarity: 2, substats: 0}, weight: 1}
 
 world_electro_hypostasis_level_1_artifacts_variant_5: &world_electro_hypostasis_level_1_artifacts_variant_5
-  - {reward: *world_electro_hypostasis_level_1_artifacts_variant_6, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 2, substats: 0}, weight: 1}
 
-world_electro_hypostasis_level_1_artifacts_variant_8: &world_electro_hypostasis_level_1_artifacts_variant_8
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: goblet, rarity: 2, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: plume, rarity: 2, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: circlet, rarity: 2, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: flower, rarity: 2, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: sands, rarity: 2, substats: 1}, weight: 1}
 
 world_electro_hypostasis_level_1_artifacts_variant_7: &world_electro_hypostasis_level_1_artifacts_variant_7
-  - {reward: *world_electro_hypostasis_level_1_artifacts_variant_8, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 2, substats: 1}, weight: 1}
 
 world_electro_hypostasis_level_1_artifacts_variant_4: &world_electro_hypostasis_level_1_artifacts_variant_4
   - {reward: *world_electro_hypostasis_level_1_artifacts_variant_5, weight: 33}
@@ -9759,65 +9621,29 @@ world_electro_hypostasis_level_10: &world_electro_hypostasis_level_10
 world_electro_hypostasis_level_15_gems: &world_electro_hypostasis_level_15_gems
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 1}
 
-world_electro_hypostasis_level_15_artifacts_variant_3: &world_electro_hypostasis_level_15_artifacts_variant_3
-  - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: plume, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: flower, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: sands, rarity: 3, substats: 1}, weight: 1}
 
-world_electro_hypostasis_level_15_artifacts_variant_4: &world_electro_hypostasis_level_15_artifacts_variant_4
-  - {reward: genshin.artifact.the_exile, properties: {slot: goblet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: plume, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: flower, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: sands, rarity: 3, substats: 1}, weight: 1}
 
 world_electro_hypostasis_level_15_artifacts_variant_5: &world_electro_hypostasis_level_15_artifacts_variant_5
   - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
 
-world_electro_hypostasis_level_15_artifacts_variant_6: &world_electro_hypostasis_level_15_artifacts_variant_6
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: goblet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: plume, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: flower, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: sands, rarity: 3, substats: 1}, weight: 1}
 
 world_electro_hypostasis_level_15_artifacts_variant_2: &world_electro_hypostasis_level_15_artifacts_variant_2
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_4, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
   - {reward: *world_electro_hypostasis_level_15_artifacts_variant_5, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_6, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
 
-world_electro_hypostasis_level_15_artifacts_variant_8: &world_electro_hypostasis_level_15_artifacts_variant_8
-  - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: plume, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: flower, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: sands, rarity: 3, substats: 2}, weight: 1}
 
-world_electro_hypostasis_level_15_artifacts_variant_9: &world_electro_hypostasis_level_15_artifacts_variant_9
-  - {reward: genshin.artifact.the_exile, properties: {slot: goblet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: plume, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: flower, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: sands, rarity: 3, substats: 2}, weight: 1}
 
 world_electro_hypostasis_level_15_artifacts_variant_10: &world_electro_hypostasis_level_15_artifacts_variant_10
   - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
 
-world_electro_hypostasis_level_15_artifacts_variant_11: &world_electro_hypostasis_level_15_artifacts_variant_11
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: goblet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: plume, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: flower, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: sands, rarity: 3, substats: 2}, weight: 1}
 
 world_electro_hypostasis_level_15_artifacts_variant_7: &world_electro_hypostasis_level_15_artifacts_variant_7
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_8, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_9, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
   - {reward: *world_electro_hypostasis_level_15_artifacts_variant_10, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_11, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
 
 world_electro_hypostasis_level_15_artifacts: &world_electro_hypostasis_level_15_artifacts
   - {reward: *world_electro_hypostasis_level_15_artifacts_variant_2, weight: 33}
@@ -9886,80 +9712,32 @@ world_electro_hypostasis_level_45_gems: &world_electro_hypostasis_level_45_gems
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 3817}
   - {reward: genshin.material.vajrada_amethyst_fragment, count: "3", weight: 1018}
 
-world_electro_hypostasis_level_45_artifacts_variant_3: &world_electro_hypostasis_level_45_artifacts_variant_3
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
 
-world_electro_hypostasis_level_45_artifacts_variant_4: &world_electro_hypostasis_level_45_artifacts_variant_4
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
 
-world_electro_hypostasis_level_45_artifacts_variant_5: &world_electro_hypostasis_level_45_artifacts_variant_5
-  - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
 
-world_electro_hypostasis_level_45_artifacts_variant_6: &world_electro_hypostasis_level_45_artifacts_variant_6
-  - {reward: genshin.artifact.the_exile, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
 
 world_electro_hypostasis_level_45_artifacts_variant_7: &world_electro_hypostasis_level_45_artifacts_variant_7
   - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
 
 world_electro_hypostasis_level_45_artifacts_variant_2: &world_electro_hypostasis_level_45_artifacts_variant_2
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_4, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_5, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_6, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
   - {reward: *world_electro_hypostasis_level_45_artifacts_variant_7, weight: 1}
 
-world_electro_hypostasis_level_45_artifacts_variant_9: &world_electro_hypostasis_level_45_artifacts_variant_9
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: goblet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: plume, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: flower, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: sands, rarity: 4, substats: 3}, weight: 1}
 
-world_electro_hypostasis_level_45_artifacts_variant_10: &world_electro_hypostasis_level_45_artifacts_variant_10
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: goblet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: plume, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: flower, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: sands, rarity: 4, substats: 3}, weight: 1}
 
-world_electro_hypostasis_level_45_artifacts_variant_11: &world_electro_hypostasis_level_45_artifacts_variant_11
-  - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: plume, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: flower, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: sands, rarity: 4, substats: 3}, weight: 1}
 
-world_electro_hypostasis_level_45_artifacts_variant_12: &world_electro_hypostasis_level_45_artifacts_variant_12
-  - {reward: genshin.artifact.the_exile, properties: {slot: goblet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: plume, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: flower, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: sands, rarity: 4, substats: 3}, weight: 1}
 
 world_electro_hypostasis_level_45_artifacts_variant_13: &world_electro_hypostasis_level_45_artifacts_variant_13
   - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
 
 world_electro_hypostasis_level_45_artifacts_variant_8: &world_electro_hypostasis_level_45_artifacts_variant_8
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_9, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_10, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_11, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_12, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
   - {reward: *world_electro_hypostasis_level_45_artifacts_variant_13, weight: 1}
 
 world_electro_hypostasis_level_45_artifacts: &world_electro_hypostasis_level_45_artifacts
@@ -10034,41 +9812,17 @@ world_electro_hypostasis_level_70_gems: &world_electro_hypostasis_level_70_gems
   - {reward: genshin.material.vajrada_amethyst_fragment, count: "3", weight: 1519}
   - {reward: genshin.material.vajrada_amethyst_chunk, count: "3", weight: 380}
 
-world_electro_hypostasis_level_70_artifacts_variant_3: &world_electro_hypostasis_level_70_artifacts_variant_3
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: goblet, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: plume, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: circlet, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: flower, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: sands, rarity: 5, substats: 3}, weight: 1}
 
-world_electro_hypostasis_level_70_artifacts_variant_4: &world_electro_hypostasis_level_70_artifacts_variant_4
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: goblet, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: plume, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: circlet, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: flower, rarity: 5, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: sands, rarity: 5, substats: 3}, weight: 1}
 
 world_electro_hypostasis_level_70_artifacts_variant_2: &world_electro_hypostasis_level_70_artifacts_variant_2
-  - {reward: *world_electro_hypostasis_level_70_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_70_artifacts_variant_4, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 5, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 5, substats: 3}, weight: 1}
 
-world_electro_hypostasis_level_70_artifacts_variant_6: &world_electro_hypostasis_level_70_artifacts_variant_6
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: goblet, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: plume, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: circlet, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: flower, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: sands, rarity: 5, substats: 4}, weight: 1}
 
-world_electro_hypostasis_level_70_artifacts_variant_7: &world_electro_hypostasis_level_70_artifacts_variant_7
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: goblet, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: plume, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: circlet, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: flower, rarity: 5, substats: 4}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: sands, rarity: 5, substats: 4}, weight: 1}
 
 world_electro_hypostasis_level_70_artifacts_variant_5: &world_electro_hypostasis_level_70_artifacts_variant_5
-  - {reward: *world_electro_hypostasis_level_70_artifacts_variant_6, weight: 1}
-  - {reward: *world_electro_hypostasis_level_70_artifacts_variant_7, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 5, substats: 4}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 5, substats: 4}, weight: 1}
 
 world_electro_hypostasis_level_70_artifacts: &world_electro_hypostasis_level_70_artifacts
   - {reward: *world_electro_hypostasis_level_70_artifacts_variant_2, weight: 33}
@@ -10169,38 +9923,20 @@ world_electro_hypostasis_level_120: *world_electro_hypostasis_level_93
 world_anemo_hypostasis_level_1_gems: &world_anemo_hypostasis_level_1_gems
   - {reward: genshin.material.shivada_jade_sliver, count: "3", weight: 1}
 
-world_anemo_hypostasis_level_1_artifacts_variant_3: &world_anemo_hypostasis_level_1_artifacts_variant_3
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: goblet, rarity: 1, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: plume, rarity: 1, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: circlet, rarity: 1, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: flower, rarity: 1, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: sands, rarity: 1, substats: 0}, weight: 1}
 
 world_anemo_hypostasis_level_1_artifacts_variant_2: &world_anemo_hypostasis_level_1_artifacts_variant_2
-  - {reward: *world_anemo_hypostasis_level_1_artifacts_variant_3, weight: 1}
+  - {reward: genshin.artifact.lucky_dog, properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1}
 
 world_anemo_hypostasis_level_1_artifacts: &world_anemo_hypostasis_level_1_artifacts
   - {reward: *world_anemo_hypostasis_level_1_artifacts_variant_2, weight: 1}
 
-world_anemo_hypostasis_level_1_artifacts_variant_6: &world_anemo_hypostasis_level_1_artifacts_variant_6
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: goblet, rarity: 2, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: plume, rarity: 2, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: circlet, rarity: 2, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: flower, rarity: 2, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: sands, rarity: 2, substats: 0}, weight: 1}
 
 world_anemo_hypostasis_level_1_artifacts_variant_5: &world_anemo_hypostasis_level_1_artifacts_variant_5
-  - {reward: *world_anemo_hypostasis_level_1_artifacts_variant_6, weight: 1}
+  - {reward: genshin.artifact.lucky_dog, properties: {slot: "1~5", rarity: 2, substats: 0}, weight: 1}
 
-world_anemo_hypostasis_level_1_artifacts_variant_8: &world_anemo_hypostasis_level_1_artifacts_variant_8
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: goblet, rarity: 2, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: plume, rarity: 2, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: circlet, rarity: 2, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: flower, rarity: 2, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: sands, rarity: 2, substats: 1}, weight: 1}
 
 world_anemo_hypostasis_level_1_artifacts_variant_7: &world_anemo_hypostasis_level_1_artifacts_variant_7
-  - {reward: *world_anemo_hypostasis_level_1_artifacts_variant_8, weight: 1}
+  - {reward: genshin.artifact.lucky_dog, properties: {slot: "1~5", rarity: 2, substats: 1}, weight: 1}
 
 world_anemo_hypostasis_level_1_artifacts_variant_4: &world_anemo_hypostasis_level_1_artifacts_variant_4
   - {reward: *world_anemo_hypostasis_level_1_artifacts_variant_5, weight: 33}
@@ -10232,43 +9968,19 @@ world_anemo_hypostasis_level_10:
 world_anemo_hypostasis_level_15_gems: &world_anemo_hypostasis_level_15_gems
   - {reward: genshin.material.shivada_jade_sliver, count: "3", weight: 1}
 
-world_anemo_hypostasis_level_15_artifacts_variant_3: &world_anemo_hypostasis_level_15_artifacts_variant_3
-  - {reward: genshin.artifact.berserker, properties: {slot: goblet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: plume, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: flower, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: sands, rarity: 3, substats: 1}, weight: 1}
 
-world_anemo_hypostasis_level_15_artifacts_variant_4: &world_anemo_hypostasis_level_15_artifacts_variant_4
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: goblet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: plume, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: flower, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: sands, rarity: 3, substats: 1}, weight: 1}
 
 world_anemo_hypostasis_level_15_artifacts_variant_2: &world_anemo_hypostasis_level_15_artifacts_variant_2
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_3, weight: 1}
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_4, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+  - {reward: genshin.artifact.lucky_dog, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
 
-world_anemo_hypostasis_level_15_artifacts_variant_6: &world_anemo_hypostasis_level_15_artifacts_variant_6
-  - {reward: genshin.artifact.berserker, properties: {slot: goblet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: plume, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: flower, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: sands, rarity: 3, substats: 2}, weight: 1}
 
-world_anemo_hypostasis_level_15_artifacts_variant_7: &world_anemo_hypostasis_level_15_artifacts_variant_7
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: goblet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: plume, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: flower, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: sands, rarity: 3, substats: 2}, weight: 1}
 
 world_anemo_hypostasis_level_15_artifacts_variant_5: &world_anemo_hypostasis_level_15_artifacts_variant_5
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_6, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_8, weight: 1}
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_7, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.lucky_dog, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
 
 world_anemo_hypostasis_level_15_artifacts: &world_anemo_hypostasis_level_15_artifacts
   - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_2, weight: 33}
@@ -10337,31 +10049,19 @@ world_anemo_hypostasis_level_45_gems: &world_anemo_hypostasis_level_45_gems
   - {reward: genshin.material.shivada_jade_sliver, count: "3", weight: 3817}
   - {reward: genshin.material.shivada_jade_fragment, count: "3", weight: 1018}
 
-world_anemo_hypostasis_level_45_artifacts_variant_3: &world_anemo_hypostasis_level_45_artifacts_variant_3
-  - {reward: genshin.artifact.berserker, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
 
 world_anemo_hypostasis_level_45_artifacts_variant_2: &world_anemo_hypostasis_level_45_artifacts_variant_2
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_4, weight: 1}
-  - {reward: *world_anemo_hypostasis_level_45_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_5, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
 
-world_anemo_hypostasis_level_45_artifacts_variant_5: &world_anemo_hypostasis_level_45_artifacts_variant_5
-  - {reward: genshin.artifact.berserker, properties: {slot: goblet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: plume, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: flower, rarity: 4, substats: 3}, weight: 1}
-  - {reward: genshin.artifact.berserker, properties: {slot: sands, rarity: 4, substats: 3}, weight: 1}
 
 world_anemo_hypostasis_level_45_artifacts_variant_4: &world_anemo_hypostasis_level_45_artifacts_variant_4
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_9, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_10, weight: 1}
-  - {reward: *world_anemo_hypostasis_level_45_artifacts_variant_5, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_11, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
 
 world_anemo_hypostasis_level_45_artifacts: &world_anemo_hypostasis_level_45_artifacts
   - {reward: *world_anemo_hypostasis_level_45_artifacts_variant_2, weight: 33}
@@ -10557,14 +10257,14 @@ world_geo_hypostasis_level_15_gems: &world_geo_hypostasis_level_15_gems
   - {reward: genshin.material.prithiva_topaz_sliver, count: "3", weight: 1}
 
 world_geo_hypostasis_level_15_artifacts_variant_2: &world_geo_hypostasis_level_15_artifacts_variant_2
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_4, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_6, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
 
 world_geo_hypostasis_level_15_artifacts_variant_3: &world_geo_hypostasis_level_15_artifacts_variant_3
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_8, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_9, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_11, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
 
 world_geo_hypostasis_level_15_artifacts: &world_geo_hypostasis_level_15_artifacts
   - {reward: *world_geo_hypostasis_level_15_artifacts_variant_2, weight: 33}
@@ -10634,16 +10334,16 @@ world_geo_hypostasis_level_45_gems: &world_geo_hypostasis_level_45_gems
   - {reward: genshin.material.prithiva_topaz_fragment, count: "3", weight: 1018}
 
 world_geo_hypostasis_level_45_artifacts_variant_2: &world_geo_hypostasis_level_45_artifacts_variant_2
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_4, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_5, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_6, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
 
 world_geo_hypostasis_level_45_artifacts_variant_3: &world_geo_hypostasis_level_45_artifacts_variant_3
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_9, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_10, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_11, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_12, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
 
 world_geo_hypostasis_level_45_artifacts: &world_geo_hypostasis_level_45_artifacts
   - {reward: *world_geo_hypostasis_level_45_artifacts_variant_2, weight: 33}
@@ -10842,19 +10542,19 @@ world_cryo_regisvine_level_15_artifacts_variant_3: &world_cryo_regisvine_level_1
   - {reward: genshin.artifact.prayers_to_springtime, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
 
 world_cryo_regisvine_level_15_artifacts_variant_2: &world_cryo_regisvine_level_15_artifacts_variant_2
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_4, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
   - {reward: *world_cryo_regisvine_level_15_artifacts_variant_3, weight: 1}
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_4, weight: 1}
+  - {reward: genshin.artifact.lucky_dog, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
 
 world_cryo_regisvine_level_15_artifacts_variant_5: &world_cryo_regisvine_level_15_artifacts_variant_5
   - {reward: genshin.artifact.prayers_to_springtime, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
 
 world_cryo_regisvine_level_15_artifacts_variant_4: &world_cryo_regisvine_level_15_artifacts_variant_4
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_6, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_9, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
   - {reward: *world_cryo_regisvine_level_15_artifacts_variant_5, weight: 1}
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_7, weight: 1}
+  - {reward: genshin.artifact.lucky_dog, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
 
 world_cryo_regisvine_level_15_artifacts: &world_cryo_regisvine_level_15_artifacts
   - {reward: *world_cryo_regisvine_level_15_artifacts_variant_2, weight: 33}
@@ -10927,20 +10627,20 @@ world_cryo_regisvine_level_45_artifacts_variant_3: &world_cryo_regisvine_level_4
   - {reward: genshin.artifact.prayers_to_springtime, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
 
 world_cryo_regisvine_level_45_artifacts_variant_2: &world_cryo_regisvine_level_45_artifacts_variant_2
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_4, weight: 1}
-  - {reward: *world_anemo_hypostasis_level_45_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_6, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
   - {reward: *world_cryo_regisvine_level_45_artifacts_variant_3, weight: 1}
 
 world_cryo_regisvine_level_45_artifacts_variant_5: &world_cryo_regisvine_level_45_artifacts_variant_5
   - {reward: genshin.artifact.prayers_to_springtime, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
 
 world_cryo_regisvine_level_45_artifacts_variant_4: &world_cryo_regisvine_level_45_artifacts_variant_4
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_9, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_10, weight: 1}
-  - {reward: *world_anemo_hypostasis_level_45_artifacts_variant_5, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_12, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
   - {reward: *world_cryo_regisvine_level_45_artifacts_variant_5, weight: 1}
 
 world_cryo_regisvine_level_45_artifacts: &world_cryo_regisvine_level_45_artifacts
@@ -11110,38 +10810,20 @@ world_cryo_regisvine_level_120: *world_cryo_regisvine_level_93
 world_pyro_regisvine_level_1_gems: &world_pyro_regisvine_level_1_gems
   - {reward: genshin.material.agnidus_agate_sliver, count: "3", weight: 1}
 
-world_pyro_regisvine_level_1_artifacts_variant_3: &world_pyro_regisvine_level_1_artifacts_variant_3
-  - {reward: genshin.artifact.adventurer, properties: {slot: goblet, rarity: 1, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: plume, rarity: 1, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: circlet, rarity: 1, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: flower, rarity: 1, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: sands, rarity: 1, substats: 0}, weight: 1}
 
 world_pyro_regisvine_level_1_artifacts_variant_2: &world_pyro_regisvine_level_1_artifacts_variant_2
-  - {reward: *world_pyro_regisvine_level_1_artifacts_variant_3, weight: 1}
+  - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1}
 
 world_pyro_regisvine_level_1_artifacts: &world_pyro_regisvine_level_1_artifacts
   - {reward: *world_pyro_regisvine_level_1_artifacts_variant_2, weight: 1}
 
-world_pyro_regisvine_level_1_artifacts_variant_6: &world_pyro_regisvine_level_1_artifacts_variant_6
-  - {reward: genshin.artifact.adventurer, properties: {slot: goblet, rarity: 2, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: plume, rarity: 2, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: circlet, rarity: 2, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: flower, rarity: 2, substats: 0}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: sands, rarity: 2, substats: 0}, weight: 1}
 
 world_pyro_regisvine_level_1_artifacts_variant_5: &world_pyro_regisvine_level_1_artifacts_variant_5
-  - {reward: *world_pyro_regisvine_level_1_artifacts_variant_6, weight: 1}
+  - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 2, substats: 0}, weight: 1}
 
-world_pyro_regisvine_level_1_artifacts_variant_8: &world_pyro_regisvine_level_1_artifacts_variant_8
-  - {reward: genshin.artifact.adventurer, properties: {slot: goblet, rarity: 2, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: plume, rarity: 2, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: circlet, rarity: 2, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: flower, rarity: 2, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: sands, rarity: 2, substats: 1}, weight: 1}
 
 world_pyro_regisvine_level_1_artifacts_variant_7: &world_pyro_regisvine_level_1_artifacts_variant_7
-  - {reward: *world_pyro_regisvine_level_1_artifacts_variant_8, weight: 1}
+  - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 2, substats: 1}, weight: 1}
 
 world_pyro_regisvine_level_1_artifacts_variant_4: &world_pyro_regisvine_level_1_artifacts_variant_4
   - {reward: *world_pyro_regisvine_level_1_artifacts_variant_5, weight: 33}
@@ -11176,34 +10858,22 @@ world_pyro_regisvine_level_15_gems: &world_pyro_regisvine_level_15_gems
 world_pyro_regisvine_level_15_artifacts_variant_3: &world_pyro_regisvine_level_15_artifacts_variant_3
   - {reward: genshin.artifact.prayers_for_illumination, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
 
-world_pyro_regisvine_level_15_artifacts_variant_4: &world_pyro_regisvine_level_15_artifacts_variant_4
-  - {reward: genshin.artifact.adventurer, properties: {slot: goblet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: plume, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: flower, rarity: 3, substats: 1}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: sands, rarity: 3, substats: 1}, weight: 1}
 
 world_pyro_regisvine_level_15_artifacts_variant_2: &world_pyro_regisvine_level_15_artifacts_variant_2
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_3, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
   - {reward: *world_pyro_regisvine_level_15_artifacts_variant_3, weight: 1}
-  - {reward: *world_pyro_regisvine_level_15_artifacts_variant_4, weight: 1}
+  - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
 
 world_pyro_regisvine_level_15_artifacts_variant_6: &world_pyro_regisvine_level_15_artifacts_variant_6
   - {reward: genshin.artifact.prayers_for_illumination, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
 
-world_pyro_regisvine_level_15_artifacts_variant_7: &world_pyro_regisvine_level_15_artifacts_variant_7
-  - {reward: genshin.artifact.adventurer, properties: {slot: goblet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: plume, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: flower, rarity: 3, substats: 2}, weight: 1}
-  - {reward: genshin.artifact.adventurer, properties: {slot: sands, rarity: 3, substats: 2}, weight: 1}
 
 world_pyro_regisvine_level_15_artifacts_variant_5: &world_pyro_regisvine_level_15_artifacts_variant_5
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_6, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_8, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
   - {reward: *world_pyro_regisvine_level_15_artifacts_variant_6, weight: 1}
-  - {reward: *world_pyro_regisvine_level_15_artifacts_variant_7, weight: 1}
+  - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
 
 world_pyro_regisvine_level_15_artifacts: &world_pyro_regisvine_level_15_artifacts
   - {reward: *world_pyro_regisvine_level_15_artifacts_variant_2, weight: 33}
@@ -11279,20 +10949,20 @@ world_pyro_regisvine_level_45_artifacts_variant_3: &world_pyro_regisvine_level_4
   - {reward: genshin.artifact.prayers_for_illumination, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
 
 world_pyro_regisvine_level_45_artifacts_variant_2: &world_pyro_regisvine_level_45_artifacts_variant_2
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_4, weight: 1}
-  - {reward: *world_anemo_hypostasis_level_45_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_5, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
   - {reward: *world_pyro_regisvine_level_45_artifacts_variant_3, weight: 1}
 
 world_pyro_regisvine_level_45_artifacts_variant_5: &world_pyro_regisvine_level_45_artifacts_variant_5
   - {reward: genshin.artifact.prayers_for_illumination, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
 
 world_pyro_regisvine_level_45_artifacts_variant_4: &world_pyro_regisvine_level_45_artifacts_variant_4
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_9, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_10, weight: 1}
-  - {reward: *world_anemo_hypostasis_level_45_artifacts_variant_5, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_11, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
   - {reward: *world_pyro_regisvine_level_45_artifacts_variant_5, weight: 1}
 
 world_pyro_regisvine_level_45_artifacts: &world_pyro_regisvine_level_45_artifacts
@@ -11492,19 +11162,19 @@ world_oceanid_level_15_artifacts_variant_3: &world_oceanid_level_15_artifacts_va
   - {reward: genshin.artifact.prayers_for_destiny, properties: {slot: circlet, rarity: 3, substats: 1}, weight: 1}
 
 world_oceanid_level_15_artifacts_variant_2: &world_oceanid_level_15_artifacts_variant_2
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_4, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
   - {reward: *world_oceanid_level_15_artifacts_variant_3, weight: 1}
-  - {reward: *world_pyro_regisvine_level_15_artifacts_variant_4, weight: 1}
+  - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
 
 world_oceanid_level_15_artifacts_variant_5: &world_oceanid_level_15_artifacts_variant_5
   - {reward: genshin.artifact.prayers_for_destiny, properties: {slot: circlet, rarity: 3, substats: 2}, weight: 1}
 
 world_oceanid_level_15_artifacts_variant_4: &world_oceanid_level_15_artifacts_variant_4
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_6, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_9, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
   - {reward: *world_oceanid_level_15_artifacts_variant_5, weight: 1}
-  - {reward: *world_pyro_regisvine_level_15_artifacts_variant_7, weight: 1}
+  - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
 
 world_oceanid_level_15_artifacts: &world_oceanid_level_15_artifacts
   - {reward: *world_oceanid_level_15_artifacts_variant_2, weight: 33}
@@ -11583,20 +11253,20 @@ world_oceanid_level_45_artifacts_variant_3: &world_oceanid_level_45_artifacts_va
   - {reward: genshin.artifact.prayers_for_destiny, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
 
 world_oceanid_level_45_artifacts_variant_2: &world_oceanid_level_45_artifacts_variant_2
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_4, weight: 1}
-  - {reward: *world_anemo_hypostasis_level_45_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_6, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1}
   - {reward: *world_oceanid_level_45_artifacts_variant_3, weight: 1}
 
 world_oceanid_level_45_artifacts_variant_5: &world_oceanid_level_45_artifacts_variant_5
   - {reward: genshin.artifact.prayers_for_destiny, properties: {slot: circlet, rarity: 4, substats: 3}, weight: 1}
 
 world_oceanid_level_45_artifacts_variant_4: &world_oceanid_level_45_artifacts_variant_4
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_9, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_10, weight: 1}
-  - {reward: *world_anemo_hypostasis_level_45_artifacts_variant_5, weight: 1}
-  - {reward: *world_electro_hypostasis_level_45_artifacts_variant_12, weight: 1}
+  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
+  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1}
   - {reward: *world_oceanid_level_45_artifacts_variant_5, weight: 1}
 
 world_oceanid_level_45_artifacts: &world_oceanid_level_45_artifacts
@@ -14565,14 +14235,14 @@ world_jadeplume_terrorshroom_level_15_gems: &world_jadeplume_terrorshroom_level_
   - {reward: genshin.material.nagadus_emerald_sliver, count: "3", weight: 1}
 
 world_jadeplume_terrorshroom_level_15_artifacts_variant_2: &world_jadeplume_terrorshroom_level_15_artifacts_variant_2
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_3, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_3, weight: 1}
-  - {reward: *world_pyro_regisvine_level_15_artifacts_variant_4, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+  - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
 
 world_jadeplume_terrorshroom_level_15_artifacts_variant_3: &world_jadeplume_terrorshroom_level_15_artifacts_variant_3
-  - {reward: *world_anemo_hypostasis_level_15_artifacts_variant_6, weight: 1}
-  - {reward: *world_electro_hypostasis_level_15_artifacts_variant_8, weight: 1}
-  - {reward: *world_pyro_regisvine_level_15_artifacts_variant_7, weight: 1}
+  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+  - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
 
 world_jadeplume_terrorshroom_level_15_artifacts: &world_jadeplume_terrorshroom_level_15_artifacts
   - {reward: *world_jadeplume_terrorshroom_level_15_artifacts_variant_2, weight: 33}

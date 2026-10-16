@@ -175,10 +175,10 @@ public final class ArtifactResolver {
 
     public Selector compile(String name, Object rawProperties) {
         ResourceId id = ResourceId.parse(name);
-        if (!"genshin".equals(id.namespace()) || !"artifact".equals(id.type())) {
+        if (id.size() != 3 || !"genshin".equals(id.segment(0)) || !"artifact".equals(id.segment(1))) {
             throw new IllegalArgumentException("Expected genshin.artifact.<set>: " + name);
         }
-        List<Variant> variants = bySet.get(id.name());
+        List<Variant> variants = bySet.get(id.segment(2));
         if (variants == null || variants.isEmpty()) {
             throw new IllegalArgumentException("Unknown native artifact set: " + name);
         }

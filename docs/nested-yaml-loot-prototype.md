@@ -108,8 +108,10 @@ area IDs are valid. When no native city can be resolved, a source-backed
 Verified native city ownership takes precedence over that source-region
 fallback; conflicting native ownership does not select a city.
 
-CSS supports `[level="1~5"]` through `[level="26~"]`, with the upper
-bound open in the final range. Grade-only rules define Primogems and
+CSS supports inclusive numeric ranges on any attribute, including
+`[level="1~5"]`, `[world_level="6~9"]`, and the open-ended
+`[level="93~"]`. Range matching uses integer values, without
+special-casing attribute names. Grade-only rules define Primogems and
 their city/area adjustments, but never loot, Mora, or regional sigils.
 Those three rewards require a matching native level. A world chest
 must select at least one loot table with a positive execution count;

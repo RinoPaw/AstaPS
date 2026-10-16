@@ -63,7 +63,7 @@ class YamlLootTablesTest {
     }
 
     @Test
-    void gemAndTalentFamilyRarityPropertiesUseTwoDecimalPercentages() {
+    void gemAndTalentFamilyRarityPropertiesAcceptMinimalTwoDecimalPercentages() {
         var inventory = new ItemIdRegistry(Map.of(
                 8101, "Vayuda Turquoise Sliver",
                 8102, "Vayuda Turquoise Fragment",
@@ -74,10 +74,10 @@ class YamlLootTablesTest {
                 8203, "Philosophies of Freedom"));
         var tables = YamlLootTables.parse("""
                 mixed:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.63, 3:19.90, 4:4.97, 5:0.50"}, weight: 1}
-                  - {reward: genshin.talent_up.freedom, properties: {rarity: "2:20.00, 3:30.00, 4:50.00"}, weight: 1}
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.63, 3:19.9, 4:4.97, 5:0.5"}, weight: 1}
+                  - {reward: genshin.talent_up.freedom, properties: {rarity: "2:20, 3:30, 4:50"}, weight: 1}
                 repeated:
-                  - {reward: genshin.talent_up.freedom, properties: {rarity: "2:50.00, 3:50.00"}, count: 4}
+                  - {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:50"}, count: 4}
                 """, inventory::resolve);
         var counts = new java.util.HashMap<Integer, Integer>();
         var random = new Random(71);
@@ -113,11 +113,11 @@ class YamlLootTablesTest {
                 8201, "Teachings of Freedom",
                 8202, "Guide to Freedom"));
         for (String spec : java.util.List.of(
-                "2:60.00, 3:30.00", // missing 10%
-                "2:70.00, 3:40.00", // exceeds 100%
-                "2:50.00, 2:50.00", // duplicate tier
-                "2:99.00, 5:1.00", // 5-star talent book does not exist
-                "2:foo, 3:100.00")) {
+                "2:60, 3:30", // missing 10%
+                "2:70, 3:40", // exceeds 100%
+                "2:50, 2:50", // duplicate tier
+                "2:99, 5:1", // 5-star talent book does not exist
+                "2:foo, 3:100")) {
             assertThrows(IllegalArgumentException.class, () ->
                     YamlLootTables.parse("""
                             invalid:
@@ -127,7 +127,7 @@ class YamlLootTablesTest {
         }
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 invalid:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:50.00, 3:50.00"}}
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:50, 3:50"}}
                 """, id -> {
                     if (id.equals("genshin.avatar_ascension.anemo.2")) return 8101;
                     return -2;
@@ -135,7 +135,7 @@ class YamlLootTablesTest {
         assertThrows(IllegalArgumentException.class, () ->
                 YamlLootTables.parse("""
                         invalid:
-                          - {reward: genshin.currency.mora, properties: {rarity: "2:100.00"}}
+                          - {reward: genshin.currency.mora, properties: {rarity: "2:100"}}
                         """, items::resolve));
     }
 

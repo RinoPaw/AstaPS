@@ -195,11 +195,12 @@ class ItemIdRegistryTest {
                 int id = ++next;
                 String canonical = "genshin.talent_up." + subject + "." + grades[grade];
                 String legacy = "genshin.talent_up." + nativePrefixes[grade] + subject;
+                String wrongCategory = "genshin.material." + nativePrefixes[grade] + subject;
                 assertEquals(canonical, items.describe(id).key());
                 assertEquals(id, items.resolve(canonical));
                 assertThrows(IllegalArgumentException.class, () -> items.resolve(legacy));
-                assertThrows(IllegalArgumentException.class, () ->
-                        items.resolve("genshin.material." + nativePrefixes[grade] + subject));
+                assertThrows(IllegalArgumentException.class,
+                        () -> items.resolve(wrongCategory));
             }
         }
         assertThrows(IllegalArgumentException.class,

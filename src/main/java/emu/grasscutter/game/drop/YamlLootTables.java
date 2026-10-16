@@ -25,7 +25,82 @@ public final class YamlLootTables {
     }
 
     private record Entry(Integer rewardId, ArtifactResolver.Selector artifact,
-                         Pool nested, LootCount.Spec count, BigDecimal weight) {}
+                         GemSelector gem, Pool nested, LootCount.Spec count, BigDecimal weight) {}
+
+    /**
+     * A gem family has one native item per rarity. Rarity figures are integer
+     * relative weights (not the percentages accepted by LootCount).
+     */
+    private record GemSelector(int[] itemIds, long[] cumulative, long total) {
+        int select(RandomGenerator random) {
+            long ticket = random.nextLong(total);
+            for (int i = 0; i < itemIds.length; i++) {
+                if (ticket < cumulative[i]) return itemIds[i];
+            }
+            throw new IllegalStateException("Gem rarity distribution has no outcome");
+        }
+    }
+
+    private static GemSelector compileGem(
+            String family, Object rawProperties, ItemResolver resolver, String location) {
+        var path = ResourceId.parse(family);
+        if (path.size() != 3 || !"genshin".equals(path.segment(0))
+                || !"avatar_ascension".equals(path.segment(1))) {
+            throw new IllegalArgumentException(location
+                    + ": rarity properties require genshin.avatar_ascension.<gem>");
+        }
+        if (!(rawProperties instanceof Map<?, ?> props)
+                || props.size() != 1 || !props.containsKey("rarity")
+                || !(props.get("rarity") instanceof String weights)) {
+            throw new IllegalArgumentException(location
+                    + ": gem properties must contain a rarity weight distribution");
+        }
+        var ids = new ArrayList<Integer>();
+        var boundaries = new ArrayList<Long>();
+        var seen = new java.util.HashSet<Integer>();
+        long total = 0;
+        for (String part : weights.split(",", -1)) {
+            String[] pair = part.trim().split(":", -1);
+            if (pair.length != 2 || !pair[0].trim().matches("[2-5]")
+                    || !pair[1].trim().matches("[0-9]+")) {
+                throw new IllegalArgumentException(location
+                        + ": invalid gem rarity weight: " + part);
+            }
+            int grade = Integer.parseInt(pair[0].trim());
+            if (!seen.add(grade)) {
+                throw new IllegalArgumentException(location + ": duplicate gem rarity: " + grade);
+            }
+            final long weight;
+            try {
+                weight = Long.parseLong(pair[1].trim());
+            } catch (NumberFormatException ex) {
+                throw new IllegalArgumentException(location + ": invalid gem rarity weight: " + part, ex);
+            }
+            if (weight < 0 || weight > 1_000_000_000L) {
+                throw new IllegalArgumentException(location
+                        + ": gem rarity weight outside 0..1000000000: " + weight);
+            }
+            if (weight == 0) continue;
+            int itemId = resolver.resolve(family + "." + grade);
+            if (itemId <= 0) {
+                throw new IllegalArgumentException(location
+                        + ": unknown gem family or rarity: " + family + "." + grade);
+            }
+            total += weight;
+            ids.add(itemId);
+            boundaries.add(total);
+        }
+        if (total == 0) {
+            throw new IllegalArgumentException(location + ": all gem rarity weights are zero");
+        }
+        var nativeIds = new int[ids.size()];
+        var cumulative = new long[ids.size()];
+        for (int i = 0; i < ids.size(); i++) {
+            nativeIds[i] = ids.get(i);
+            cumulative[i] = boundaries.get(i);
+        }
+        return new GemSelector(nativeIds, cumulative, total);
+    }
     private record Pool(boolean weighted, List<Entry> entries, double totalWeight) {}
 
     private static final int MAX_DEPTH = 64;
@@ -125,6 +200,7 @@ public final class YamlLootTables {
                 Object target = fields.get("reward");
                 Integer rewardId = null;
                 ArtifactResolver.Selector artifact = null;
+                GemSelector gem = null;
                 Pool nested = null;
                 if (target instanceof List<?>) {
                     nested = parseList(target, resolver, artifacts, compiled, visiting, budget, at + ".reward", depth + 1);
@@ -137,6 +213,9 @@ public final class YamlLootTables {
                             throw new IllegalArgumentException(at + ": artifact resolver unavailable");
                         }
                         artifact = artifacts.compile(reference, fields.get("properties"));
+                    } else if (fields.containsKey("properties")
+                            && reference.startsWith("genshin.avatar_ascension.")) {
+                        gem = compileGem(reference, fields.get("properties"), resolver, at);
                     } else {
                         int id = resolver.resolve(reference);
                         if (id <= 0 && id != emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL) {
@@ -145,8 +224,9 @@ public final class YamlLootTables {
                         rewardId = id;
                     }
                 }
-                if (fields.containsKey("properties") && artifact == null) {
-                    throw new IllegalArgumentException(at + ": properties require an artifact reward");
+                if (fields.containsKey("properties") && artifact == null && gem == null) {
+                    throw new IllegalArgumentException(at
+                            + ": properties require an artifact or gem-family reward");
                 }
                 LootCount.Spec count = LootCount.parse(fields.get("count"));
                 BigDecimal weight = null;
@@ -162,7 +242,7 @@ public final class YamlLootTables {
                     }
                     hasWeight = true;
                 } else hasNull = true;
-                entries.add(new Entry(rewardId, artifact, nested, count, weight));
+                entries.add(new Entry(rewardId, artifact, gem, nested, count, weight));
             }
             if (hasWeight && hasNull) {
                 throw new IllegalArgumentException(location + ": cannot mix null and numeric weights");
@@ -220,6 +300,11 @@ public final class YamlLootTables {
             // Distinct artifact instances are rolled independently, even for count > 1.
             for (int i = 0; i < count; i++) {
                 reward.merge(entry.artifact.select(random), 1, Math::addExact);
+            }
+        } else if (entry.gem != null) {
+            // Resolve rarity separately for every gem in this count.
+            for (int i = 0; i < count; i++) {
+                reward.merge(entry.gem.select(random), 1, Math::addExact);
             }
         } else if (entry.rewardId != null) {
             reward.merge(entry.rewardId, count, Math::addExact);

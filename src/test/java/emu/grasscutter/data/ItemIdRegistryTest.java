@@ -8,14 +8,13 @@ import org.junit.jupiter.api.Test;
 
 class ItemIdRegistryTest {
     @Test
-    void resourcePathsHaveArbitraryDepthAndCanonicalDottedCssNames() {
+    void resourcePathsHaveArbitraryDepthAndRequireDottedSegments() {
         var id = ResourceId.parse("genshin.currency.mora");
         assertEquals("genshin.currency.mora", id.toString());
-        assertEquals("genshin.currency.mora", id.toCssProperty());
-        assertEquals(id, ResourceId.fromCssProperty(id.toCssProperty()));
-        assertEquals(id, ResourceId.fromCssProperty("--genshin-currency-mora"));
+        assertEquals(ResourceId.of("genshin", "currency", "mora"), id);
         assertEquals(ResourceId.of("my_mod", "item", "my-item"),
-                ResourceId.fromCssProperty("--my_mod-item-my-item"));
+                ResourceId.parse("my_mod.item.my-item"));
+
         var nested = ResourceId.parse("genshin.artifact.berserker.goblet.3.1");
         assertEquals(6, nested.size());
         assertEquals("berserker.goblet.3.1", nested.tail(2));
@@ -27,8 +26,7 @@ class ItemIdRegistryTest {
         assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("Genshin.item.mora"));
         assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("genshin..mora"));
         assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("genshin:item:mora"));
-        assertThrows(IllegalArgumentException.class,
-                () -> ResourceId.fromCssProperty("--genshin--item--mora"));
+        assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("--genshin-currency-mora"));
     }
 
     @Test
@@ -44,8 +42,6 @@ class ItemIdRegistryTest {
             String qualified = "genshin.currency.sigil." + entry.getValue();
             var id = ResourceId.parse(qualified);
             assertEquals(qualified, id.toString());
-            assertEquals(qualified, id.toCssProperty());
-            assertEquals(id, ResourceId.fromCssProperty(id.toCssProperty()));
             assertEquals(entry.getKey().intValue(), registry.resolve(qualified));
             assertEquals(qualified, registry.describe(entry.getKey()).key());
             assertThrows(IllegalArgumentException.class,
@@ -228,8 +224,7 @@ class ItemIdRegistryTest {
             String key = "genshin.monster_drop." + item.getValue();
             assertEquals(key, registry.describe(item.getKey()).key());
             assertEquals(item.getKey().intValue(), registry.resolve(key));
-            assertEquals(ResourceId.parse(key),
-                    ResourceId.fromCssProperty(ResourceId.parse(key).toCssProperty()));
+            assertEquals(key, ResourceId.parse(key).toString());
         }
         assertEquals(Set.of(ItemIdRegistry.Usage.AVATAR_ASCENSION,
                 ItemIdRegistry.Usage.WEAPON_ASCENSION,

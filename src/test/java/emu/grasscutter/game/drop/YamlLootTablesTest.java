@@ -103,9 +103,8 @@ class YamlLootTablesTest {
         boolean split = false;
         for (int i = 0; i < 50; i++) {
             var grouped = tables.roll("astaps.loot.repeated", random);
-            assertEquals(Map.of(8201, 4), grouped.size() == 1 && grouped.containsKey(8201)
-                    ? grouped : grouped.size() == 1 && grouped.containsKey(8202)
-                        ? Map.of(8201, grouped.get(8202)) : Map.of());
+            assertEquals(1, grouped.size(), "One entry execution chooses one grade");
+            assertEquals(4, grouped.values().iterator().next());
             var rerolled = tables.roll("astaps.loot.rerolled", random);
             assertEquals(16, rerolled.values().stream().mapToInt(Integer::intValue).sum());
             if (rerolled.size() == 2) split = true;

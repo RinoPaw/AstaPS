@@ -346,23 +346,30 @@ public final class DropSystem extends BaseGameSystem {
             throw new IllegalStateException(
                     "Native boss drop rolled no rewards: " + dropTag + " WL" + worldLevel);
         }
-        return separateBossEquipment(items);
+        return items;
     }
 
-    /** Each equipment grant is a distinct instance, even for repeated native IDs. */
-    static List<GameItem> separateBossEquipment(List<GameItem> rolled) {
-        var batch = new ArrayList<GameItem>();
-        for (GameItem item : rolled) {
-            if (item.getItemType() == ItemType.ITEM_RELIQUARY
-                    || item.getItemType() == ItemType.ITEM_WEAPON) {
-                for (int n = 0; n < item.getCount(); n++) {
-                    batch.add(new GameItem(item.getItemId(), 1));
-                }
-            } else {
-                batch.add(item);
+    /**
+     * Equipment constructors represent one instance, even when passed count > 1.
+     * Expand each roll before constructing it, rather than merging distinct equipment.
+     */
+    static void appendNativeDrop(int id, int amount, List<GameItem> items) {
+        var data = GameData.getItemDataMap().get(id);
+        if (data == null) {
+            throw new IllegalStateException("Native drop references unknown item: " + id);
+        }
+        if (data.getItemType() == ItemType.ITEM_WEAPON
+                || data.getItemType() == ItemType.ITEM_RELIQUARY) {
+            for (int i = 0; i < amount; i++) items.add(new GameItem(data, 1));
+            return;
+        }
+        for (GameItem item : items) {
+            if (item.getItemId() == id) {
+                item.setCount(Math.addExact(item.getCount(), amount));
+                return;
             }
         }
-        return batch;
+        items.add(new GameItem(data, amount));
     }
 
     private void processDrop(DropTableData dropData, int count, List<GameItem> items) {
@@ -393,15 +400,7 @@ public final class DropSystem extends BaseGameSystem {
                     if (dropTable.containsKey(id)) {
                         processDrop(dropTable.get(id), amount, items);
                     } else {
-                        boolean flag = true;
-                        for (var j : items) {
-                            if (j.getItemId() == id) {
-                                j.setCount(j.getCount() + amount);
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (flag) items.add(new GameItem(id, amount));
+                        appendNativeDrop(id, amount, items);
                     }
                     break;
                 }
@@ -416,15 +415,7 @@ public final class DropSystem extends BaseGameSystem {
                     if (dropTable.containsKey(id)) {
                         processDrop(dropTable.get(id), amount, items);
                     } else {
-                        boolean flag = true;
-                        for (var j : items) {
-                            if (j.getItemId() == id) {
-                                j.setCount(j.getCount() + amount);
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if (flag) items.add(new GameItem(id, amount));
+                        appendNativeDrop(id, amount, items);
                     }
                 }
             }

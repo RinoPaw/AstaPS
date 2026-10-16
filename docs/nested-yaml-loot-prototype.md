@@ -74,8 +74,14 @@ overrides an earlier range, and vice versa. A count of zero removes an item.
 Ordinary Primogem baselines are 2/5/10/10 for Common/Exquisite/Precious/
 Luxurious. Older Mondstadt and Liyue areas give 0/2/5/10 except for the
 explicit higher-value area exceptions listed in CSS. The regional sigil
-placeholder is resolved using existing authoritative area and scene
-metadata at grant time, rather than a guessed translated tag.
+placeholder and CSS `area`/`city` selectors now use one
+`RewardAreaResolver`. It looks up the full native area ID in
+`WorldAreaConfigData`, uses `areaID1` to identify its parent area, and
+resolves the city from `CityConfigData.areaIdVec`. Signed negative native
+area IDs are valid. When no native city can be resolved, a source-backed
+`rewardRegion` can supply the city for both CSS and regional sigils.
+Verified native city ownership takes precedence over that source-region
+fallback; conflicting native ownership does not select a city.
 
 CSS supports `[level="1~5"]` through `[level="26~"]`, with the upper
 bound open in the final range. Missing or invalid levels fall back

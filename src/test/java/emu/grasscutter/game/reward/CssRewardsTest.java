@@ -63,6 +63,31 @@ class CssRewardsTest {
     }
 
     @Test
+    void numericGradeAliasesResolveThroughCssAndShareCascadeIdentity() {
+        var items = new ItemIdRegistry(Map.of(
+                8101, "Vayuda Turquoise Sliver",
+                8102, "Vayuda Turquoise Gemstone",
+                8201, "Guide to Freedom"));
+        var css = CssRewards.parse("""
+                boss {
+                    genshin.avatar_ascension.anemo.2: 1;
+                    genshin.avatar_ascension.anemo.5: 2;
+                    genshin.talent_up.freedom.3: 3;
+                }
+                boss[tag="override"] {
+                    genshin.avatar_ascension.vayuda_turquoise.sliver: 4;
+                    genshin.talent_up.freedom.guide: 5;
+                }
+                """, items, loot);
+        assertEquals(Map.of(8101, 1, 8102, 2, 8201, 3),
+                css.resolve("boss", Map.of()).items());
+        assertEquals(Map.of(8101, 4, 8102, 2, 8201, 5),
+                css.resolve("boss", Map.of("tag", "override")).items());
+        assertThrows(IllegalArgumentException.class, () -> CssRewards.parse(
+                "boss { genshin.talent_up.freedom.5: 1; }", items, loot));
+    }
+
+    @Test
     void obsoleteHyphenatedCssResourceNamesAreRejected() {
         assertThrows(IllegalArgumentException.class, () ->
                 CssRewards.parse("chest { --genshin-currency-mora: 1; }", items, loot));

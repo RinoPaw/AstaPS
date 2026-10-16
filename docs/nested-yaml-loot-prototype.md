@@ -35,8 +35,11 @@ These twelve names are registered under `astaps.loot`, for example
 `astaps.loot.nano` and `astaps.loot.ultra`. All 23 supporting tables come
 first in `loot.yaml`, grouped by reward content (weapons, ingredients, talent
 books and artifacts) rather than by chest type or level. The twelve selectable
-tiers follow in ascending order. Boss source graphs add many more named
-pools; the bundled YAML currently contains 2,167 top-level loot tables.
+tiers follow in ascending order. Boss-level tables remain named for CSS
+selection, while reusable subtables have content-based names such as
+`midlander_weapon_billets`. Identical subtables share a single anchor,
+and one-use subtables are inlined. The bundled YAML contains
+1,707 top-level loot tables.
 
 The artifact distributions are `artifacts_1_to_2_low`,
 `artifacts_1_to_2_high`, `artifacts_1_to_3`, `artifacts_2_to_3`,

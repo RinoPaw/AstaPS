@@ -99,8 +99,9 @@ public final class DomainStatueDropService {
                 costId = 106;
                 costCount = flowerCost;
             }
-            if (emu.grasscutter.config.Configuration.GAME_OPTIONS.resinOptions.resinUsage
-                    && !validWeeklyBossPayment(mode, costId, costCount)) {
+            if (mode != ClaimMode.NORMAL_1X
+                    || (emu.grasscutter.config.Configuration.GAME_OPTIONS.resinOptions.resinUsage
+                            && !validWeeklyBossPayment(mode, costId, costCount))) {
                 Grasscutter.getLogger().warn(
                         "StatueDrop abort: no source-backed weekly boss cost dungeon={} group={} cost={}/{} mode={}",
                         dungeonData.getId(), groupId, costId, costCount, mode);

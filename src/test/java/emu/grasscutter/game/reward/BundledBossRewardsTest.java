@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 /** Ensure the entire bundled CSS/YAML, including Boss tables, can load together. */
 final class BundledBossRewardsTest {
     @Test
-    void lootTablesNeverContainSingleEntryLists() throws Exception {
+    void singleEntryLootTablesOnlyRepresentRarityFamilies() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         var settings = org.snakeyaml.engine.v2.api.LoadSettings.builder()
                 .setAllowDuplicateKeys(false)
@@ -26,8 +26,19 @@ final class BundledBossRewardsTest {
         assertInstanceOf(Map.class, document);
         for (var entry : ((Map<?, ?>) document).entrySet()) {
             if (entry.getValue() instanceof java.util.List<?> list) {
-                assertNotEquals(1, list.size(),
-                        "Single-entry loot tables are forbidden: " + entry.getKey());
+                if (list.size() == 1) {
+                    // Collapsing a weighted gem-tier pool legitimately produces
+                    // a single entry with a scoped rarity distribution.
+                    assertInstanceOf(Map.class, list.get(0),
+                            "Single-entry loot table: " + entry.getKey());
+                    var only = (Map<?, ?>) list.get(0);
+                    assertTrue(only.get("reward") instanceof String name
+                                    && name.startsWith("genshin.avatar_ascension."),
+                            "Unexpected single-entry loot table: " + entry.getKey());
+                    assertTrue(only.get("properties") instanceof Map<?, ?> properties
+                                    && properties.get("rarity") instanceof String,
+                            "Single-entry pool lacks rarity: " + entry.getKey());
+                }
             }
         }
     }
@@ -53,8 +64,14 @@ final class BundledBossRewardsTest {
             }
             assertEquals(0, total.compareTo(new java.math.BigDecimal("100.00")));
         }
-        assertEquals(291, gems);
+        assertTrue(gems > 291, "Fixed-count gem tier pools should also use rarity");
         assertEquals(6, talents);
+        // The old per-grade weighted rows with count 3 or 9 must be gone
+        // whenever multiple rarities could be combined.
+        assertFalse(Pattern.compile(
+                "reward: genshin\\.avatar_ascension\\.[a-z_]+\\.[2-5],"
+                        + " count: \\"?[39]\\"?, weight: [1-9][0-9]+")
+                .matcher(yaml).find());
         assertFalse(yaml.contains("genshin.talent_up.freedom.teachings, weight:"));
         assertFalse(yaml.contains("genshin.avatar_ascension.vajrada_amethyst.sliver, weight:"));
     }

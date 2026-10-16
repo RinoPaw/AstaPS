@@ -104,7 +104,9 @@ public final class GenshinResourceIds {
         }
         return switch (resource.segment(1)) {
             case "avatar" -> lookup(avatars, ambiguousAvatars, resource);
-            case "recipe" -> lookup(recipes, ambiguousRecipes, resource);
+            case "recipe" -> ItemIdRegistry.isInventoryResourcePath(resource)
+                    ? items.resolve(resource.toString())
+                    : lookup(recipes, ambiguousRecipes, resource);
             case "artifact" -> {
                 int setId = ArtifactResolver.nativeSetId(resource.tail(2));
                 if (!GameData.getReliquarySetDataMap().containsKey(setId)) {

@@ -53,9 +53,9 @@ final class BundledBossRewardsTest {
                 Map.entry(307, "Geo Sigil")));
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known), loot);
         assertEquals(1175, stylesheet.lines()
-                .filter(line -> line.startsWith("boss[type=\"world\"]")).count());
+                .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertEquals(250, stylesheet.lines()
-                .filter(line -> line.startsWith("boss[type=\"weekly\"]")).count());
+                .filter(line -> line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
 
         var normal = css.resolve("boss", Map.of(
                 "type", "world", "tag", "霜夜灵嗣", "level", "1"));

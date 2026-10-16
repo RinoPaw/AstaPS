@@ -196,6 +196,16 @@ public final class ItemIdRegistry {
             java.util.regex.Pattern.compile(
                     "(?:northlander|midlander|borderland)_(?:sword|bow|claymore|catalyst|polearm)_billet");
 
+    // Common enemy drops keep one source-based identity across growth systems.
+    // The list is limited to explicitly identified monster materials.
+    private static final Set<String> MONSTER_DROPS = Set.of(
+            "slime_condensate", "slime_secretions", "slime_concentrate",
+            "damaged_mask", "stained_mask", "ominous_mask",
+            "firm_arrowhead", "sharp_arrowhead", "weathered_arrowhead",
+            "chaos_device", "chaos_circuit", "chaos_core",
+            "treasure_hoarder_insignia", "silver_raven_insignia",
+            "golden_raven_insignia");
+
     public enum Usage {
         AVATAR_LEVEL_UP, AVATAR_ASCENSION, WEAPON_LEVEL_UP, WEAPON_ASCENSION,
         ARTIFACT_LEVEL_UP, TALENT_UPGRADE
@@ -354,6 +364,7 @@ public final class ItemIdRegistry {
             case 106, 107, 201, 202, 203, 204, 301, 302, 303, 304, 305, 306,
                     307, 308, 101692 -> "currency";
             default -> {
+                if (MONSTER_DROPS.contains(name)) yield "monster_drop";
                 if (uses.size() > 1) yield "material";
                 if (ASCENSION_GEM.matcher(name).matches()
                         || AVATAR_ASCENSION_ONLY.contains(name)
@@ -413,7 +424,7 @@ public final class ItemIdRegistry {
             if (!resource.namespace().equals("genshin")
                     || !Set.of("currency", "experience", "avatar_exp", "weapon_exp",
                             "artifact_exp", "avatar_ascension", "weapon_ascension", "talent",
-                            "weapon_crafting", "material", "food", "furnishing", "weapon")
+                            "weapon_crafting", "monster_drop", "material", "food", "furnishing", "weapon")
                             .contains(resource.type())) {
                 throw new IllegalArgumentException("Unsupported inventory resource: " + input);
             }

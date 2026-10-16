@@ -16,15 +16,19 @@ import java.util.random.RandomGenerator;
  * Each roll selects slot, rarity, and then the initial append-prop count.
  */
 public final class ArtifactResolver {
-    private static final Map<Integer, String> SET_NAMES = Map.of(
-            10005, "berserker",
-            10007, "instructor",
-            10009, "the_exile",
-            10010, "adventurer",
-            10011, "lucky_dog",
-            10013, "traveling_doctor",
-            15001, "gladiators_finale",
-            15003, "wanderers_troupe");
+    private static final Map<Integer, String> SET_NAMES = Map.ofEntries(
+            Map.entry(10005, "berserker"),
+            Map.entry(10007, "instructor"),
+            Map.entry(10009, "the_exile"),
+            Map.entry(10010, "adventurer"),
+            Map.entry(10011, "lucky_dog"),
+            Map.entry(10013, "traveling_doctor"),
+            Map.entry(15001, "gladiators_finale"),
+            Map.entry(15003, "wanderers_troupe"),
+            Map.entry(15009, "prayers_for_illumination"),
+            Map.entry(15010, "prayers_for_destiny"),
+            Map.entry(15011, "prayers_for_wisdom"),
+            Map.entry(15013, "prayers_to_springtime"));
 
     public record Variant(int id, String set, int slot, int rarity, int substats) {}
     public record Selector(List<Variant> variants, LootCount.Spec slot,

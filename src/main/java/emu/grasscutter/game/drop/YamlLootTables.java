@@ -65,7 +65,7 @@ public final class YamlLootTables {
         var settings = LoadSettings.builder()
                 .setAllowDuplicateKeys(false)
                 .setMaxAliasesForCollections(100_000)
-                .setCodePointLimit(1_000_000)
+                .setCodePointLimit(3_000_000)
                 .build();
         Object document = new Load(settings).loadFromString(yaml);
         if (!(document instanceof Map<?, ?> raw)) {

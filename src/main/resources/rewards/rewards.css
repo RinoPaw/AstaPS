@@ -1195,35 +1195,35 @@ boss[type="weekly"][tag="signora"][level="93~"] {
 
 /* Raiden Shogun (雷电将军) */
 boss[type="weekly"][tag="raiden_shogun"][level="1~4"] {
-    --genshin-material-vajrada_amethyst_sliver: '2+1:0.79';
+    --genshin-avatar_ascension-vajrada_amethyst_sliver: '2+1:0.79';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="5~9"] {
-    --genshin-material-vajrada_amethyst_sliver: '2+1:14.32';
+    --genshin-avatar_ascension-vajrada_amethyst_sliver: '2+1:14.32';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="10~14"] {
-    --genshin-material-vajrada_amethyst_sliver: '2+1:31.24';
+    --genshin-avatar_ascension-vajrada_amethyst_sliver: '2+1:31.24';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="15~19"] {
-    --genshin-material-vajrada_amethyst_sliver: '2+1:48.16';
+    --genshin-avatar_ascension-vajrada_amethyst_sliver: '2+1:48.16';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="20~24"] {
-    --genshin-material-vajrada_amethyst_sliver: '2+1:65.08';
+    --genshin-avatar_ascension-vajrada_amethyst_sliver: '2+1:65.08';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="25~29"] {
-    --genshin-material-vajrada_amethyst_sliver: '2+1:82';
+    --genshin-avatar_ascension-vajrada_amethyst_sliver: '2+1:82';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="30~34"] {
-    --genshin-material-vajrada_amethyst_sliver: '2+1:98.92';
+    --genshin-avatar_ascension-vajrada_amethyst_sliver: '2+1:98.92';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="35~39"] {
-    --genshin-material-vajrada_amethyst_sliver: '3+1:15.84';
+    --genshin-avatar_ascension-vajrada_amethyst_sliver: '3+1:15.84';
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="40~44"] {

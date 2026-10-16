@@ -109,6 +109,43 @@ class ItemIdRegistryTest {
     }
 
     @Test
+    void elementalGemsHaveCharacterAscensionIdentity() {
+        String[] families = {
+                "agnidus_agate", "nagadus_emerald", "prithiva_topaz",
+                "shivada_jade", "vajrada_amethyst", "varunada_lazurite",
+                "vayuda_turquoise"
+        };
+        String[] grades = {"sliver", "fragment", "chunk", "gemstone"};
+        var names = new java.util.HashMap<Integer, String>();
+        var categories = new java.util.HashMap<Integer, String>();
+        int nextId = 7000;
+        for (String family : families) {
+            for (String grade : grades) {
+                int id = ++nextId;
+                names.put(id, (family + "_" + grade).replace('_', ' '));
+                categories.put(id, "Character Development Items");
+            }
+        }
+        names.put(8000, "Frostnight's Glory");
+        categories.put(8000, "Character Development Items");
+        var registry = new ItemIdRegistry(names, categories);
+        nextId = 7000;
+        for (String family : families) {
+            for (String grade : grades) {
+                int id = ++nextId;
+                String name = family + "_" + grade;
+                assertEquals(id, registry.resolve("genshin.avatar_ascension." + name));
+                assertEquals("genshin.avatar_ascension." + name, registry.describe(id).key());
+                assertThrows(IllegalArgumentException.class,
+                        () -> registry.resolve("genshin.material." + name));
+            }
+        }
+        assertEquals(8000, registry.resolve("genshin.material.frostnights_glory"));
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.resolve("genshin.avatar_ascension.frostnights_glory"));
+    }
+
+    @Test
     void weaponsHaveOneCanonicalTypeWithoutItemAliases() {
         var names = new ItemIdRegistry(Map.of(11101, "Dull Blade", 202, "Mora"));
         assertEquals(11101, names.resolve("genshin.weapon.dull_blade"));

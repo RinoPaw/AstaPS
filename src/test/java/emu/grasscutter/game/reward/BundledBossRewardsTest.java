@@ -15,14 +15,8 @@ import org.junit.jupiter.api.Test;
 /** Ensure the entire bundled CSS/YAML, including Boss tables, can load together. */
 final class BundledBossRewardsTest {
     @Test
-    void nonCssSelectedLootTablesContainAtLeastTwoEntries() throws Exception {
+    void lootTablesNeverContainSingleEntryLists() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
-        String css = RewardConfiguration.readBundled("rewards.css");
-
-        var selected = new java.util.HashSet<String>();
-        var matcher = Pattern.compile("--astaps-loot-([a-z0-9_]+)\\s*:").matcher(css);
-        while (matcher.find()) selected.add(matcher.group(1));
-
         var settings = org.snakeyaml.engine.v2.api.LoadSettings.builder()
                 .setAllowDuplicateKeys(false)
                 .setMaxAliasesForCollections(100_000)
@@ -31,15 +25,9 @@ final class BundledBossRewardsTest {
         Object document = new org.snakeyaml.engine.v2.api.Load(settings).loadFromString(yaml);
         assertInstanceOf(Map.class, document);
         for (var entry : ((Map<?, ?>) document).entrySet()) {
-            if (entry.getValue() instanceof java.util.List<?> list && list.size() == 1) {
-                assertTrue(selected.contains(entry.getKey().toString()),
-                        "Single-entry loot table is not selected by CSS: " + entry.getKey());
-                assertInstanceOf(Map.class, list.get(0));
-                var definition = (Map<?, ?>) list.get(0);
-                assertInstanceOf(String.class, definition.get("reward"),
-                        "Single-entry loot table must contain an item: " + entry.getKey());
-                assertFalse(definition.containsKey("count"),
-                        "Single-entry loot count belongs in CSS: " + entry.getKey());
+            if (entry.getValue() instanceof java.util.List<?> list) {
+                assertNotEquals(1, list.size(),
+                        "Single-entry loot tables are forbidden: " + entry.getKey());
             }
         }
     }
@@ -81,7 +69,19 @@ final class BundledBossRewardsTest {
                 Map.entry(304, "Electro Sigil"),
                 Map.entry(305, "Anemo Sigil"),
                 Map.entry(307, "Geo Sigil")));
-        var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known), loot);
+        // Use the same synthetic IDs for material entries now selected directly by CSS.
+        var knownCategories = new HashMap<Integer, String>();
+        Pattern.compile("--genshin-material-([a-z0-9_]+)\\s*:")
+                .matcher(stylesheet).results()
+                .map(match -> match.group(1)).distinct()
+                .forEach(name -> {
+                    String reference = "genshin.material." + name;
+                    int id = nativeIds.computeIfAbsent(reference,
+                            ignored -> nextId.incrementAndGet());
+                    known.put(id, name.replace('_', ' '));
+                    knownCategories.put(id, "Materials");
+                });
+        var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, knownCategories), loot);
         assertEquals(978, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertEquals(211, stylesheet.lines()
@@ -104,7 +104,7 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1198, loot.names().size());
+        assertEquals(1176, loot.names().size());
         assertFalse(yaml.contains("empty_reward_choices"));
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));
@@ -114,7 +114,7 @@ final class BundledBossRewardsTest {
         assertTrue(loot.contains("astaps.loot.artifacts_berserker_instructor_exile_3star"));
         assertTrue(loot.contains("astaps.loot.weekly_artifacts_rare"));
         assertTrue(loot.contains("astaps.loot.artifacts_gladiators_wanderers_5star"));
-        assertTrue(loot.contains("astaps.loot.material_frostnights_glory"));
+        assertFalse(loot.contains("astaps.loot.material_frostnights_glory"));
         assertTrue(loot.contains("astaps.loot.gems_geo_hydro_basic"));
         assertTrue(loot.contains("astaps.loot.gems_cryo_hydro_basic"));
         assertTrue(loot.contains("astaps.loot.instructor_goblet_plume_low_substats"));
@@ -190,8 +190,9 @@ final class BundledBossRewardsTest {
                 "--astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:14.32';"));
         var raidenEarly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "raiden_shogun", "level", "8"));
-        assertTrue(raidenEarly.rangedLoot().containsKey(
-                "astaps.loot.material_vajrada_amethyst_sliver"));
+        assertTrue(raidenEarly.rangedItems().size() > 0);
+        assertTrue(stylesheet.contains(
+                "--genshin-material-vajrada_amethyst_sliver: '2+1:14.32';"));
         var shouki = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "shouki_no_kami", "level", "120"));
         assertEquals(1, shouki.loot().get("astaps.loot.weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct40"));

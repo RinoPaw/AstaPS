@@ -74,6 +74,25 @@ public final class DropSystem extends BaseGameSystem {
         return dropData.getDropId();
     }
 
+    /**
+     * Weekly Boss sources live in native ChestDrop (sourceType 35), not in the
+     * DungeonExcel statueDrop column. Return candidate native roots for the
+     * dungeon enemy level; the caller must independently verify boss identity.
+     */
+    public Map<String, Integer> weeklyBossRewardRoots(int level) {
+        if (level <= 0) return Map.of();
+        var roots = new java.util.TreeMap<String, Integer>();
+        chestReward.forEach((tag, entries) -> {
+            if (entries.stream().noneMatch(entry ->
+                    entry instanceof ChestDropData chest && chest.getSourceType() == 35)) {
+                return;
+            }
+            int root = queryDropData(tag, level, chestReward);
+            if (hasUsableDungeonRewardRoot(root)) roots.put(tag, root);
+        });
+        return Map.copyOf(roots);
+    }
+
     /** Use native roots only when they contain at least one positive-weight entry. */
     public boolean hasUsableDungeonRewardRoot(int dropId) {
         return dropId > 0 && dropTable.containsKey(dropId)

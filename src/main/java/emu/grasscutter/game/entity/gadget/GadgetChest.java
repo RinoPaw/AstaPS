@@ -327,7 +327,7 @@ public class GadgetChest extends GadgetContent {
         var journal = new RewardGrantJournal();
         var receipt = new RewardGrantJournal.Key(
                 RewardGrantJournal.Source.WORLD_BOSS, player.getUid(),
-                "flower." + getGadget().getSceneId() + "." + getGadget().getGroupId()
+                "flower." + getGadget().getScene().getId() + "." + getGadget().getGroupId()
                         + "." + bossClaimOperationId);
         var intended = items.stream().map(item -> new RewardGrantJournal.Reward(
                 item.getItemId(), item.getCount(), item.getLevel())).toList();

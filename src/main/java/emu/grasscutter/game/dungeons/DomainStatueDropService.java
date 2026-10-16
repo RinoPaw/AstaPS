@@ -6,6 +6,8 @@ import emu.grasscutter.database.RewardGrantJournal;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.RewardPreviewData;
 import emu.grasscutter.data.excels.dungeon.DungeonData;
+import emu.grasscutter.game.dungeons.enums.DungeonSubType;
+import emu.grasscutter.game.dungeons.enums.DungeonType;
 import emu.grasscutter.game.dungeons.DomainStatueClaimHelper.ClaimMode;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.inventory.Inventory;
@@ -75,12 +77,28 @@ public final class DomainStatueDropService {
         boolean hasConfiguredDrops =
                 GameData.getDungeonDropDataMap() != null
                         && GameData.getDungeonDropDataMap().containsKey(dungeonData.getId());
-        if (!hasPreview && dungeonData.getStatueDrop() <= 0 && !hasConfiguredDrops) {
+        // Boss Dungeons have no statueDrop foreign key in the pinned 7.1 source.
+        // Their separate native ChestDrop (sourceType 35) is resolved below.
+        boolean weeklyBoss = dungeonData.getType() == DungeonType.DUNGEON_BOSS
+                && dungeonData.getSubType() == DungeonSubType.DUNGEON_SUB_BOSS;
+        if (!hasPreview && dungeonData.getStatueDrop() <= 0
+                && !hasConfiguredDrops && !weeklyBoss) {
             Grasscutter.getLogger()
                     .warn("StatueDrop abort: no reward source dungeon={}", dungeonData.getId());
             return false;
         }
 
+        // 7.1 Boss Dungeon rows do not provide the 20-Resin daily-Domain cost.
+        // Do not invent a 20-Resin price for a weekly Boss. Until the real
+        // discount and cost source is bound, payable claims must fail closed.
+        if (weeklyBoss && emu.grasscutter.config.Configuration.GAME_OPTIONS.resinOptions.resinUsage
+                && (dungeonData.getStatueCostID() != 106
+                        || dungeonData.getStatueCostCount() <= 0)) {
+            Grasscutter.getLogger().warn(
+                    "StatueDrop abort: missing native weekly boss resin cost dungeon={}",
+                    dungeonData.getId());
+            return false;
+        }
         final ClaimMode paymentMode = mode;
         int rollTimes = Math.max(1, rewardRollTimes);
         List<GameItem> rewards;
@@ -256,6 +274,12 @@ public final class DomainStatueDropService {
             int rollTimes) {
         int dungeonId = dungeonData.getId();
         int nativeRoot = dungeonData.getStatueDrop();
+        if (dungeonData.getType() == DungeonType.DUNGEON_BOSS
+                && dungeonData.getSubType() == DungeonSubType.DUNGEON_SUB_BOSS
+                && nativeRoot <= 0) {
+            int weeklyRoot = resolveWeeklyBossRoot(player, dungeonData, preview);
+            return weeklyRoot > 0 ? rollStatueDropTable(player, weeklyRoot, rollTimes) : null;
+        }
         var proxy = GameData.getDungeonDropDataMap() == null
                 ? null : GameData.getDungeonDropDataMap().get(dungeonId);
         var subType = dungeonData.getSubType();
@@ -345,6 +369,40 @@ public final class DomainStatueDropService {
                         dungeonId, nativeRoot, proxy != null, hasPreview);
                 return null;
         }
+    }
+
+    /**
+     * Match the sourceType-35 weekly-boss native root to the preview's exclusive
+     * weekly talent materials. A preview is never rolled as a source of rewards.
+     * Missing or ambiguous mappings leave the claim uncharged.
+     */
+    private static int resolveWeeklyBossRoot(
+            Player player, DungeonData dungeonData, RewardPreviewData preview) {
+        if (preview == null) return 0;
+        var roots = player.getServer().getDropSystem()
+                .weeklyBossRewardRoots(dungeonData.getShowLevel());
+        var graph = GameData.getDropTableDataMap();
+        var candidateLeaves = new java.util.HashMap<Integer, java.util.Set<Integer>>();
+        for (int root : roots.values()) {
+            candidateLeaves.put(root, DomainDropSafety.nativeLeafIds(root, id -> {
+                var table = graph.get(id);
+                if (table == null) return null;
+                if (table.getDropVec() == null) return List.of();
+                return table.getDropVec().stream()
+                        .filter(entry -> entry != null && entry.getId() > 0
+                                && entry.getWeight() > 0)
+                        .map(emu.grasscutter.data.common.DropItemData::getId)
+                        .toList();
+            }));
+        }
+        int root = WeeklyBossDropResolver.matchRoot(
+                roots, candidateLeaves, preview.getAdvertisedItemIds());
+        if (root <= 0) {
+            Grasscutter.getLogger().warn(
+                    "StatueDrop: no uniquely verified weekly boss root dungeon={} level={}",
+                    dungeonData.getId(), dungeonData.getShowLevel());
+        }
+        return root;
     }
 
     private static List<GameItem> rollStatueDropTable(Player player, int statueDrop, int rollTimes) {

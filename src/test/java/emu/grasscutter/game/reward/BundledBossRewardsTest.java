@@ -62,6 +62,14 @@ final class BundledBossRewardsTest {
         assertFalse(loot.contains("astaps.loot.world_electro_hypostasis_level_45_artifacts_variant_6"));
         assertTrue(yaml.contains("reward: genshin.artifact.the_exile, properties: {slot: \"1~5\", rarity: 4, substats: 2}, weight: 1"));
 
+        // Reusable pools have content-based names; Boss-level entry names are stable.
+        assertEquals(1707, loot.names().size());
+        assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
+        assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));
+        assertFalse(loot.contains("astaps.loot.weekly_shouki_no_kami_level_1_weapon_billets"));
+        assertTrue(yaml.lines().noneMatch(line -> line.matches(
+                "^(world|weekly)_.+_level_[0-9]+_[a-z0-9_]+:.*")));
+
         // Shared Boss rewards depend on type/level. Specific loot still needs a tag.
         var unidentified = css.resolve("boss", Map.of("type", "world", "level", "105"));
         assertEquals(200, unidentified.items().get(102));

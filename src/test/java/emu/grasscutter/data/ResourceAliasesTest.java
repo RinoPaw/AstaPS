@@ -26,13 +26,13 @@ class ResourceAliasesTest {
     @Test
     void longestPrefixWinsAndAliasesAreTransitive() {
         var aliases = new ResourceAliases(Map.of(
-                ResourceId.parse("mod.gems"), ResourceId.parse("mod.gems.other"),
-                ResourceId.parse("mod.gems.anemo"), ResourceId.parse("mod.gems.wind"),
-                ResourceId.parse("mod.gems.wind"), ResourceId.parse("mod.gems.vayuda")));
-        assertEquals("mod.gems.vayuda.sliver",
-                aliases.resolve("mod.gems.anemo.sliver").toString());
-        assertEquals("mod.gems.other.cryo",
-                aliases.resolve("mod.gems.cryo").toString());
+                ResourceId.parse("mod.element"), ResourceId.parse("mod.canonical"),
+                ResourceId.parse("mod.element.anemo"), ResourceId.parse("mod.wind"),
+                ResourceId.parse("mod.wind"), ResourceId.parse("mod.vayuda")));
+        assertEquals("mod.vayuda.sliver",
+                aliases.resolve("mod.element.anemo.sliver").toString());
+        assertEquals("mod.canonical.cryo",
+                aliases.resolve("mod.element.cryo").toString());
     }
 
     @Test

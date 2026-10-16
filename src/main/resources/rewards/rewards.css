@@ -38,7 +38,8 @@ chest[type="normal"][grade="common"][level="21~25"] {
     --genshin-currency-sigil: 3;
 }
 
-chest[type="normal"][grade="common"][level="26~"] {
+chest[type="normal"][grade="common"][level="26~"],
+chest[type="normal"][grade="exquisite"][level="1~20"] {
     --astaps-loot-medium: 1;
     --genshin-currency-mora: 720~1080;
     --genshin-currency-sigil: 3;
@@ -48,19 +49,14 @@ chest[type="normal"][grade="exquisite"] {
     --genshin-currency-primogem: 5;
 }
 
-chest[type="normal"][grade="exquisite"][level="1~20"] {
-    --astaps-loot-medium: 1;
-    --genshin-currency-mora: 720~1080;
-    --genshin-currency-sigil: 3;
-}
-
 chest[type="normal"][grade="exquisite"][level="21~25"] {
     --astaps-loot-high: 1;
     --genshin-currency-mora: 960~1440;
     --genshin-currency-sigil: 4;
 }
 
-chest[type="normal"][grade="exquisite"][level="26~"] {
+chest[type="normal"][grade="exquisite"][level="26~"],
+chest[type="normal"][grade="precious"][level="1~20"] {
     --astaps-loot-xhigh: 1;
     --genshin-currency-mora: 960~1440;
     --genshin-currency-sigil: 4;
@@ -70,19 +66,14 @@ chest[type="normal"][grade="precious"] {
     --genshin-currency-primogem: 10;
 }
 
-chest[type="normal"][grade="precious"][level="1~20"] {
-    --astaps-loot-xhigh: 1;
-    --genshin-currency-mora: 960~1440;
-    --genshin-currency-sigil: 4;
-}
-
 chest[type="normal"][grade="precious"][level="21~25"] {
     --astaps-loot-xxhigh: 1;
     --genshin-currency-mora: 1200~1800;
     --genshin-currency-sigil: 5;
 }
 
-chest[type="normal"][grade="precious"][level="26~"] {
+chest[type="normal"][grade="precious"][level="26~"],
+chest[type="normal"][grade="luxurious"][level="1~20"] {
     --astaps-loot-xxxhigh: 1;
     --genshin-currency-mora: 1200~1800;
     --genshin-currency-sigil: 5;
@@ -90,12 +81,6 @@ chest[type="normal"][grade="precious"][level="26~"] {
 
 chest[type="normal"][grade="luxurious"] {
     --genshin-currency-primogem: 10;
-}
-
-chest[type="normal"][grade="luxurious"][level="1~20"] {
-    --astaps-loot-xxxhigh: 1;
-    --genshin-currency-mora: 1200~1800;
-    --genshin-currency-sigil: 5;
 }
 
 chest[type="normal"][grade="luxurious"][level="21~25"] {

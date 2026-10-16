@@ -88,16 +88,13 @@ public final class WorldChestLootHelper {
         return autoPick || (type == ItemType.ITEM_VIRTUAL && gadgetId == 0);
     }
 
-    private static void drop(Scene scene, GameEntity gameEntity, int n, int n2) {
-        if (scene == null || gameEntity == null || n <= 0 || n2 <= 0) {
-            return;
+    private static void drop(Scene scene, GameEntity gameEntity, int itemId, int count) {
+        if (scene == null || gameEntity == null || itemId <= 0 || count <= 0) {
+            throw new IllegalArgumentException(
+                    "Invalid chest ground drop: item=" + itemId + " count=" + count);
         }
-        try {
-            scene.addItemEntity(n, n2, gameEntity);
-        }
-        catch (Throwable throwable) {
-            Grasscutter.getLogger().warn("WorldChestLoot drop failed item={} x{}: {}", n, n2, throwable.toString());
-        }
+        // A failed world drop is a failed grant, not a successful chest claim.
+        scene.addItemEntity(itemId, count, gameEntity);
     }
 
     public static Tier resolveTier(EntityGadget entityGadget) {

@@ -153,7 +153,9 @@ Unknown native chest types are not assigned an invented `normal` type.
 Imported ordinary chests also preserve their source-backed `grade` separately,
 rather than inferring it from a remapped gadget ID. An unknown native grade
 throws with the original gadget ID and JSON name; there is no implicit
-`common` grade. Reward failures must not pre-mark a chest as claimed.
+`common` grade. Reward failures must not pre-mark a chest as claimed. A missing regional sigil
+mapping now fails the entire reward roll instead of omitting the sigil with
+a warning, and a failed ground-drop creation is not swallowed as a success.
 The bundled CSS currently configures only `type="normal"`:
 Mora and Remarkable chests cannot inherit ordinary tier rewards, and their
 separate reward tables still need verified native source data.

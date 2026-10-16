@@ -94,8 +94,8 @@ class RegionalSigilResolverTest {
                   - {reward: genshin.item.mora, count: 50}
                 """, ids::resolve);
         var css = CssRewards.parse("""
-                chest[kind="common"] { --astaps-loot-seals: 1; --astaps-loot-currency: 1; }
-                chest[kind="exquisite"] {
+                chest[type="normal"][grade="common"] { --astaps-loot-seals: 1; --astaps-loot-currency: 1; }
+                chest[type="normal"][grade="exquisite"] {
                     --astaps-loot-seals: 1;
                     --genshin-item-sigil: 4;
                     --genshin-item-primogem: 5;
@@ -104,18 +104,20 @@ class RegionalSigilResolverTest {
         var mondstadt = new RewardContext(3, 0, "mondstadt");
         var fontaine = new RewardContext(3, 0, "fontaine");
         assertEquals(Map.of(305, 2, 202, 50), RewardRoller.roll(
-                css.resolve("chest", Map.of("kind", "common")),
+                css.resolve("chest", Map.of("type", "normal", "grade", "common")),
                 loot, new Random(1), mondstadt));
         assertEquals(Map.of(302, 2, 202, 50), RewardRoller.roll(
-                css.resolve("chest", Map.of("kind", "common")),
+                css.resolve("chest", Map.of("type", "normal", "grade", "common")),
                 loot, new Random(1), fontaine));
         assertEquals(Map.of(302, 4, 201, 5), RewardRoller.roll(
-                css.resolve("chest", Map.of("kind", "exquisite")),
+                css.resolve("chest", Map.of("type", "normal", "grade", "exquisite")),
                 loot, new Random(1), fontaine));
-        var unresolved = RewardRoller.roll(
-                css.resolve("chest", Map.of("kind", "common")),
-                loot, new Random(1));
-        assertEquals(Map.of(202, 50), unresolved);
+        // An unknown city must not silently drop the regional sigil.
+        var unresolved = assertThrows(IllegalStateException.class, () ->
+                RewardRoller.roll(
+                        css.resolve("chest", Map.of("type", "normal", "grade", "common")),
+                        loot, new Random(1)));
+        assertTrue(unresolved.getMessage().contains("regional sigil"));
         assertThrows(IllegalArgumentException.class, () ->
                 loot.rollItems("astaps.loot.seals", new Random(1)));
     }

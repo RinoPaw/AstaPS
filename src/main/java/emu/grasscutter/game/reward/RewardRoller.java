@@ -48,14 +48,14 @@ public final class RewardRoller {
         var resolved = new TreeMap<>(items);
         int count = resolved.remove(ItemIdRegistry.REGIONAL_SIGIL);
         if (count > 0) {
+            final int id;
             try {
-                int id = RegionalSigilResolver.resolve(context);
-                resolved.merge(id, count, Math::addExact);
+                id = RegionalSigilResolver.resolve(context);
             } catch (IllegalArgumentException e) {
-                emu.grasscutter.Grasscutter.getLogger().warn(
-                        "Regional sigil omitted: count={} context={} reason={}",
-                        count, context, e.getMessage());
+                throw new IllegalStateException(
+                        "Cannot resolve regional sigil: count=" + count + " context=" + context, e);
             }
+            resolved.merge(id, count, Math::addExact);
         }
         return Map.copyOf(resolved);
     }

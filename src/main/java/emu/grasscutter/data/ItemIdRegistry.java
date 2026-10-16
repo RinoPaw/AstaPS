@@ -31,9 +31,16 @@ public final class ItemIdRegistry {
             202, "Mora");
 
     private static final Map<Integer, String> STABLE_NAMES = Map.ofEntries(
-            Map.entry(102, "adventure_exp"),
+            Map.entry(101, "character"),
+            Map.entry(102, "adventure"),
+            Map.entry(105, "companionship"),
+            Map.entry(106, "resin"),
+            Map.entry(107, "legendary_key"),
+            Map.entry(121, "home"),
             Map.entry(201, "primogem"),
             Map.entry(202, "mora"),
+            Map.entry(203, "genesis_crystal"),
+            Map.entry(204, "realm_currency"),
             Map.entry(301, "pyro_sigil"),
             Map.entry(302, "hydro_sigil"),
             Map.entry(303, "dendro_sigil"),
@@ -136,8 +143,9 @@ public final class ItemIdRegistry {
             String name = "Artifacts".equals(category) ? "" :
                     STABLE_NAMES.containsKey(id) ? STABLE_NAMES.get(id)
                     : CHEST_DROP_NAMES.getOrDefault(id, slug(english));
-            String type = "Weapons".equals(category) ? "weapon" : "item";
-            String key = name.isEmpty() ? null : new ResourceId("genshin", type, name).toString();
+            String type = resourceType(id, category);
+            String key = name.isEmpty() || type == null ? null :
+                    new ResourceId("genshin", type, name).toString();
             ids.put(id, new Info(id, english, key, category));
             if (key != null) putUnique(names, collisions, key, id);
             if (english != null && !english.isBlank()) {
@@ -162,10 +170,32 @@ public final class ItemIdRegistry {
             categories.put(item.getId(), categoryOf(item.getItemType(), item.getMaterialType()));
         }
         // Adventure EXP (102) is settled by Player.earnExp, not dropped as
-        // a bag item. It can be absent from material/weapon Excel resources.
+        // a bag material. Its explicit native virtual ID can be absent from Excel.
         englishNames.putIfAbsent(102, "Adventure EXP");
         categories.putIfAbsent(102, "Currencies and Virtual Items");
         return new ItemIdRegistry(englishNames, categories);
+    }
+
+    /**
+     * Map native resource identity, not a vague catch-all "item" category.
+     * Virtual rewards are explicit because these IDs affect different player properties.
+     * A resource with unknown native classification has no guessed semantic ID.
+     */
+    static String resourceType(int id, String category) {
+        return switch (id) {
+            case 101, 102, 105, 121 -> "experience";
+            case 106, 107 -> "resource";
+            case 201, 202, 203, 204, 301, 302, 303, 304, 305, 306, 307, 308, 101692 -> "currency";
+            default -> switch (category) {
+                case "Weapons" -> "weapon";
+                case "Food" -> "food";
+                case "Furnishings" -> "furnishing";
+                case "Artifacts", "Other Items", "Currencies and Virtual Items", "" ->
+                        CHEST_DROP_NAMES.containsKey(id) || STABLE_NAMES.containsKey(id)
+                                ? "material" : null;
+                default -> "material";
+            };
+        };
     }
 
     /** Artifacts use the same dotted resource convention as other game items. */
@@ -179,8 +209,7 @@ public final class ItemIdRegistry {
             throw new IllegalArgumentException("Missing item reference");
         }
         String input = reference.trim();
-        if (input.equalsIgnoreCase("sigil")
-                || input.equalsIgnoreCase("genshin.item.sigil")) {
+        if (input.equalsIgnoreCase("genshin.currency.sigil")) {
             return REGIONAL_SIGIL;
         }
         if (input.matches("[0-9]+")) {
@@ -196,7 +225,8 @@ public final class ItemIdRegistry {
         if (input.matches("[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\..+")) {
             ResourceId resource = ResourceId.parse(input);
             if (!resource.namespace().equals("genshin")
-                    || !(resource.type().equals("item") || resource.type().equals("weapon"))) {
+                    || !Set.of("currency", "resource", "experience", "material", "food",
+                            "furnishing", "weapon").contains(resource.type())) {
                 throw new IllegalArgumentException("Unsupported inventory resource: " + input);
             }
         }

@@ -81,7 +81,7 @@ public final class GenshinResourceIds {
 
     private static String english(long hash) {
         var text = Language.getTextMapKey(hash);
-        if (text == null || text.isEmpty()) return null;
+        if (text == null) return null;
         String name = text.get(0);
         return name == null || name.isBlank() || name.startsWith("[") ? null : name;
     }
@@ -103,7 +103,8 @@ public final class GenshinResourceIds {
             throw new IllegalArgumentException("Unsupported resource namespace: " + reference);
         }
         return switch (resource.type()) {
-            case "item", "weapon" -> items.resolve(reference);
+            case "currency", "resource", "experience", "material", "food", "furnishing", "weapon" ->
+                    items.resolve(reference);
             case "avatar" -> lookup(avatars, ambiguousAvatars, resource);
             case "recipe" -> lookup(recipes, ambiguousRecipes, resource);
             case "artifact" -> {

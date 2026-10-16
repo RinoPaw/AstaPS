@@ -20,18 +20,18 @@ class GenshinResourceIdsTest {
     void nativeDomainsResolveWithoutPretendingEverythingIsAnItem() {
         var ids = registry();
         assertEquals(11101, ids.resolve("genshin.weapon.dull_blade"));
-        assertEquals(202, ids.resolve("genshin.item.mora"));
+        assertEquals(202, ids.resolve("genshin.currency.mora"));
         assertEquals(10000021, ids.resolve("genshin.avatar.amber"));
         assertEquals(100014, ids.resolve("genshin.recipe.mora_meat"));
-        assertEquals(109406, ids.resolve("genshin.item.recipe_mora_meat"));
-        assertNotEquals(ids.resolve("genshin.item.recipe_mora_meat"),
+        assertEquals(109406, ids.resolve("genshin.material.recipe_mora_meat"));
+        assertNotEquals(ids.resolve("genshin.material.recipe_mora_meat"),
                 ids.resolve("genshin.recipe.mora_meat"));
     }
 
     @Test
     void namesCannotCrossKindsOrSilentlyClaimAnotherObject() {
         var ids = registry();
-        assertThrows(IllegalArgumentException.class, () -> ids.resolve("genshin.item.dull_blade"));
+        assertThrows(IllegalArgumentException.class, () -> ids.resolve("genshin.material.dull_blade"));
         assertThrows(IllegalArgumentException.class, () -> ids.resolve("genshin.weapon.mora"));
         assertThrows(IllegalArgumentException.class, () -> ids.resolve("genshin.avatar.mora_meat"));
         assertThrows(IllegalArgumentException.class, () -> ids.resolve("genshin.recipe.amber"));

@@ -17,12 +17,12 @@ class CssRewardsTest {
 
     private final YamlLootTables loot = YamlLootTables.parse("""
             currency:
-              - {reward: genshin.item.mora, count: 100}
+              - {reward: genshin.currency.mora, count: 100}
             经验书:
-              - {reward: genshin.item.heros_wit}
+              - {reward: genshin.material.heros_wit}
             surprise:
-              - {reward: genshin.item.mora, count: 30}
-              - {reward: genshin.item.heros_wit}
+              - {reward: genshin.currency.mora, count: 30}
+              - {reward: genshin.material.heros_wit}
             """, items::resolve);
 
     @Test
@@ -33,7 +33,7 @@ class CssRewardsTest {
                 """, registry, loot);
         assertEquals(1, css.resolve("chest", Map.of()).items().get(11101));
         assertThrows(IllegalArgumentException.class, () ->
-                CssRewards.parse("chest { --genshin-item-dull_blade: 1; }", registry, loot));
+                CssRewards.parse("chest { --genshin-material-dull_blade: 1; }", registry, loot));
         assertThrows(IllegalArgumentException.class, () ->
                 CssRewards.parse("chest { --genshin-avatar-amber: 1; }", registry, loot));
         assertThrows(IllegalArgumentException.class, () ->
@@ -46,7 +46,7 @@ class CssRewardsTest {
                 chest[grade="common"] {
                     --astaps-loot-currency: 1;
                     --astaps-loot-经验书: 2;
-                    --genshin-item-primogem: 2;
+                    --genshin-currency-primogem: 2;
                 }
                 """, items, loot);
         var selected = css.resolve("chest", Map.of("grade", "common"));
@@ -74,7 +74,7 @@ class CssRewardsTest {
                 chest[grade="common"] {
                     --astaps-loot-currency: 1;
                     --astaps-loot-经验书: 1;
-                    --genshin-item-primogem: 2;
+                    --genshin-currency-primogem: 2;
                 }
                 chest[grade="common"][level="6"] {
                     --astaps-loot-currency: 0;
@@ -95,7 +95,7 @@ class CssRewardsTest {
     @Test
     void zeroDisablesOneLootPropertyWithoutClearingItems() {
         var css = CssRewards.parse("""
-                chest { --astaps-loot-currency: 1; --genshin-item-primogem: 2; }
+                chest { --astaps-loot-currency: 1; --genshin-currency-primogem: 2; }
                 chest[level="6"] { --astaps-loot-currency: 0; }
                 """, items, loot);
         var selected = css.resolve("chest", Map.of("level", "6"));
@@ -126,10 +126,10 @@ class CssRewardsTest {
                 chest {
                     --astaps-loot-currency: 1;
                     --astaps-loot-经验书: 1;
-                    --genshin-item-mora: 25;
-                    --genshin-item-primogem: 2;
+                    --genshin-currency-mora: 25;
+                    --genshin-currency-primogem: 2;
                 }
-                chest[scene="3"] { --genshin-item-mora: 0; }
+                chest[scene="3"] { --genshin-currency-mora: 0; }
                 """, items, loot);
         assertEquals(Map.of(202, 25, 104003, 1, 201, 2),
                 RewardRoller.roll(css.resolve("chest", Map.of()), loot, new Random(1)));
@@ -269,7 +269,7 @@ class CssRewardsTest {
     @Test
     void quotedLevelRangesCoverSixSourceIntervalsWithoutFallback() {
         var css = CssRewards.parse("""
-                chest[grade="common"] { --genshin-item-primogem: 2; }
+                chest[grade="common"] { --genshin-currency-primogem: 2; }
                 chest[grade="common"][level="1~5"] { --astaps-loot-surprise: 1; }
                 chest[grade="common"][level="6~10"] { --astaps-loot-currency: 2; }
                 chest[grade="common"][level="11~15"] { --astaps-loot-surprise: 3; }
@@ -339,7 +339,7 @@ class CssRewardsTest {
         var css = CssRewards.parse("""
                 chest {
                     --astaps-loot-currency: 1;
-                    --genshin-item-mora: 3~5;
+                    --genshin-currency-mora: 3~5;
                 }
                 """, items, loot);
         var selected = css.resolve("chest", Map.of());
@@ -356,9 +356,9 @@ class CssRewardsTest {
     @Test
     void fixedAndRangedCurrencyRespectCascadePrecedence() {
         var css = CssRewards.parse("""
-                chest { --genshin-item-mora: 3~5; }
-                chest[city="1"] { --genshin-item-mora: 9; }
-                chest[city="1"][area="2"] { --genshin-item-mora: 11~12; }
+                chest { --genshin-currency-mora: 3~5; }
+                chest[city="1"] { --genshin-currency-mora: 9; }
+                chest[city="1"][area="2"] { --genshin-currency-mora: 11~12; }
                 """, items, loot);
         assertEquals(9, RewardRoller.roll(
                 css.resolve("chest", Map.of("city", "1")), loot, new Random(1))

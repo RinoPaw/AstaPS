@@ -85,20 +85,20 @@ class RegionalSigilResolverTest {
         var ids = new ItemIdRegistry(Map.of(
                 201, "Primogem", 202, "Mora", 305, "Anemo Sigil", 302, "Hydro Sigil"));
         assertEquals(ItemIdRegistry.REGIONAL_SIGIL, ids.resolve("sigil"));
-        assertEquals(ItemIdRegistry.REGIONAL_SIGIL, ids.resolve("genshin.item.sigil"));
+        assertEquals(ItemIdRegistry.REGIONAL_SIGIL, ids.resolve("genshin.currency.sigil"));
 
         var loot = YamlLootTables.parse("""
                 seals:
-                  - {reward: genshin.item.sigil, count: 2}
+                  - {reward: genshin.currency.sigil, count: 2}
                 currency:
-                  - {reward: genshin.item.mora, count: 50}
+                  - {reward: genshin.currency.mora, count: 50}
                 """, ids::resolve);
         var css = CssRewards.parse("""
                 chest[type="normal"][grade="common"] { --astaps-loot-seals: 1; --astaps-loot-currency: 1; }
                 chest[type="normal"][grade="exquisite"] {
                     --astaps-loot-seals: 1;
-                    --genshin-item-sigil: 4;
-                    --genshin-item-primogem: 5;
+                    --genshin-currency-sigil: 4;
+                    --genshin-currency-primogem: 5;
                 }
                 """, ids, loot);
         var mondstadt = new RewardContext(3, 0, "mondstadt");

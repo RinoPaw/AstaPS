@@ -16,7 +16,7 @@ public record ResourceId(String namespace, String type, String name) {
         return new ResourceId(parts[0], parts[1], parts[2]);
     }
 
-    /** CSS custom property: genshin.item.mora -> --genshin-item-mora. */
+    /** CSS custom property: genshin.currency.mora -> --genshin-currency-mora. */
     public static ResourceId fromCssProperty(String property) {
         if (!property.startsWith("--")) {
             throw new IllegalArgumentException("Expected a CSS custom property: " + property);

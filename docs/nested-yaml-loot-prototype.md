@@ -56,13 +56,13 @@ all grant **30 Adventure EXP**. CSS assigns it once:
 
 ```css
 chest[type="normal"] {
-    --genshin-item-adventure_exp: 30;
+    --genshin-experience-adventure: 30;
 }
 
 chest[type="normal"][grade="common"][level="1~5"] {
     --astaps-loot-minimal: 1;
-    --genshin-item-mora: 240~360;
-    --genshin-item-sigil: 1;
+    --genshin-currency-mora: 240~360;
+    --genshin-currency-sigil: 1;
 }
 ```
 
@@ -195,14 +195,14 @@ Relative probabilities in the original weighted loot lists are preserved.
 ## Semantic Genshin resource namespaces
 
 The semantic identifiers are typed, not interchangeable:
-- `genshin.item.mora` identifies an ordinary inventory item or virtual currency.
+- `genshin.currency.mora` identifies an ordinary inventory item or virtual currency.
 - `genshin.weapon.dull_blade` identifies a native weapon ItemData row. Weapons
-  no longer have a second `genshin.item.dull_blade` identity.
+  no longer have a second `genshin.material.dull_blade` identity.
 - `genshin.artifact.berserker` identifies a native artifact **set**, not one
   random piece; `properties` selects the slot/rarity/substats for loot rolls.
 - `genshin.avatar.amber` identifies native AvatarData, which is not an item.
 - `genshin.recipe.mora_meat` identifies a CookRecipeData cooking recipe,
-  not the collectible recipe scroll `genshin.item.recipe_mora_meat`.
+  not the collectible recipe scroll `genshin.material.recipe_mora_meat`.
 
 The `give` command resolves these domains separately: items and weapons go
 through inventory, avatars through the avatar system, recipes unlock the

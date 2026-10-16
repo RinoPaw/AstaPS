@@ -46,6 +46,40 @@ Old flat resource IDs such as `genshin.talent_up.guide_to_freedom` are
 rejected. Other talent-advancement materials (for example, weekly boss drops)
 retain their existing non-book resource paths.
 
+## Numeric grade aliases
+
+Resource identity retains the descriptive canonical tier names. Numeric grade
+segments resolve through the same namespace alias service:
+
+| Path family | Numeric alias | Canonical suffix |
+|---|---|---|
+| `genshin.avatar_ascension.<gem>` | `2` | `sliver` |
+| `genshin.avatar_ascension.<gem>` | `3` | `fragment` |
+| `genshin.avatar_ascension.<gem>` | `4` | `chunk` |
+| `genshin.avatar_ascension.<gem>` | `5` | `gemstone` |
+| `genshin.talent_up.<subject>` | `2` | `teachings` |
+| `genshin.talent_up.<subject>` | `3` | `guide` |
+| `genshin.talent_up.<subject>` | `4` | `philosophies` |
+
+For example:
+
+```text
+genshin.avatar_ascension.anemo.2
+  -> genshin.avatar_ascension.vayuda_turquoise.sliver
+
+genshin.avatar_ascension.vayuda_turquoise.5
+  -> genshin.avatar_ascension.vayuda_turquoise.gemstone
+
+genshin.talent_up.freedom.3
+  -> genshin.talent_up.freedom.guide
+```
+
+Scoped grade aliases work for any family within their namespace category,
+without duplicating a mapping for each book subject or gem series. Invalid
+tiers cannot resolve to native item IDs, and the descriptive leaf names
+remain the canonical resource identities. Both CSS and Loot YAML can use
+numeric suffixes directly.
+
 ## Aliases
 
 `ResourceAliases` supports aliases at **any path depth**. Longest prefix

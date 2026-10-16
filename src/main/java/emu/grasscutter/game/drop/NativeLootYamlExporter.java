@@ -123,7 +123,7 @@ public final class NativeLootYamlExporter {
                     if (target == null) throw new IllegalArgumentException("Unknown item in chest source");
                     ResourceId resource = ResourceId.parse(target);
                     if (resource.size() < 3 || !"genshin".equals(resource.segment(0))
-                            || !(ItemIdRegistry.isInventoryResourceType(resource.segment(1))
+                            || !(ItemIdRegistry.isInventoryResourcePath(resource)
                                     || "artifact".equals(resource.segment(1)))
                             || resource.tail(2).matches("id_[0-9]+")) {
                         throw new IllegalArgumentException("Expected semantic genshin resource name");

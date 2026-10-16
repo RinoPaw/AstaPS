@@ -91,14 +91,24 @@ public final class DomainStatueDropService {
         // 7.1 Boss Dungeon rows do not provide the 20-Resin daily-Domain cost.
         // Do not invent a 20-Resin price for a weekly Boss. Until the real
         // discount and cost source is bound, payable claims must fail closed.
-        if (weeklyBoss && emu.grasscutter.config.Configuration.GAME_OPTIONS.resinOptions.resinUsage
-                && (dungeonData.getStatueCostID() != 106
-                        || dungeonData.getStatueCostCount() <= 0)) {
-            Grasscutter.getLogger().warn(
-                    "StatueDrop abort: missing native weekly boss resin cost dungeon={}",
-                    dungeonData.getId());
-            return false;
+        int costId = dungeonData.getStatueCostID();
+        int costCount = dungeonData.getStatueCostCount();
+        if (weeklyBoss) {
+            int flowerCost = nativeBossFlowerCost(dm, groupId);
+            if (flowerCost > 0) {
+                costId = 106;
+                costCount = flowerCost;
+            }
+            if (emu.grasscutter.config.Configuration.GAME_OPTIONS.resinOptions.resinUsage
+                    && !validWeeklyBossPayment(mode, costId, costCount)) {
+                Grasscutter.getLogger().warn(
+                        "StatueDrop abort: no source-backed weekly boss cost dungeon={} group={} cost={}/{} mode={}",
+                        dungeonData.getId(), groupId, costId, costCount, mode);
+                return false;
+            }
         }
+        final int payableCostId = costId;
+        final int payableCostCount = costCount;
         final ClaimMode paymentMode = mode;
         int rollTimes = Math.max(1, rewardRollTimes);
         List<GameItem> rewards;
@@ -138,8 +148,8 @@ public final class DomainStatueDropService {
                             item.getItemId(), item.getCount(), item.getLevel()))
                     .toList();
             debits = DomainClaimPaymentSnapshot.debits(
-                    paymentMode, dungeonData.getStatueCostID(),
-                    dungeonData.getStatueCostCount(),
+                    paymentMode, payableCostId,
+                    payableCostCount,
                     emu.grasscutter.config.Configuration.GAME_OPTIONS.resinOptions.resinUsage,
                     player.getResinBuyCount());
         } catch (RuntimeException invalid) {
@@ -172,11 +182,13 @@ public final class DomainStatueDropService {
                                         InventoryAddPolicy.ALL_OR_NOTHING,
                                         () -> {
                                             if (!DomainClaimPaymentPreflight.canPay(
-                                                    player, dungeonData, paymentMode)
+                                                    player, dungeonData, paymentMode,
+                                                    payableCostId, payableCostCount)
                                                     || !journal.prepare(receiptKey, intended, debits)) {
                                                 return false;
                                             }
-                                            if (payCost(player, dungeonData, paymentMode)) {
+                                            if (payCost(player, paymentMode,
+                                                    payableCostId, payableCostCount)) {
                                                 return true;
                                             }
                                             // A clean failure guarantees no payment. An
@@ -236,9 +248,36 @@ public final class DomainStatueDropService {
         return true;
     }
 
-    private static boolean payCost(Player player, DungeonData dungeonData, ClaimMode mode) {
-        int baseResinCost =
-                dungeonData.getStatueCostCount() != 0 ? dungeonData.getStatueCostCount() : 20;
+    /**
+     * Weekly Boss DungeonExcel rows omit their resin cost. If the claiming
+     * native boss flower has a 30/60 cost, use exactly that field instead
+     * of the daily-Domain 20-resin fallback.
+     */
+    private static int nativeBossFlowerCost(DungeonManager dm, int groupId) {
+        if (groupId <= 0 || dm.getScene() == null) return 0;
+        int cost = 0;
+        for (var entity : dm.getScene().getEntities().values()) {
+            if (!(entity instanceof emu.grasscutter.game.entity.EntityGadget gadget)
+                    || gadget.getGroupId() != groupId) continue;
+            var meta = gadget.getMetaGadget();
+            if (meta == null || meta.boss_chest == null) continue;
+            int candidate = meta.boss_chest.resin;
+            if (cost != 0 && cost != candidate) return 0; // contradictory source
+            cost = candidate;
+        }
+        return cost;
+    }
+
+    static boolean validWeeklyBossPayment(ClaimMode mode, int costId, int count) {
+        // A single Trounce claim is never 2x/3x. Other payment options need
+        // explicit native semantics before they can be admitted.
+        return mode == ClaimMode.NORMAL_1X && costId == 106
+                && (count == 30 || count == 60);
+    }
+
+    private static boolean payCost(
+            Player player, ClaimMode mode, int costId, int costCount) {
+        int baseResinCost = costCount != 0 ? costCount : 20;
         return switch (mode) {
             case CONDENSE -> {
                 if (baseResinCost != 0 && baseResinCost != 20) {
@@ -250,13 +289,13 @@ public final class DomainStatueDropService {
                     .payItem(DomainStatueClaimHelper.FRAGILE_RESIN_ITEM_ID, 1);
             case HCOIN -> player.getResinManager().payHcoinRewardClaim();
             case NORMAL_2X -> {
-                if (dungeonData.getStatueCostID() != 0 && dungeonData.getStatueCostID() != 106) {
+                if (costId != 0 && costId != 106) {
                     yield true;
                 }
                 yield player.getResinManager().useResin(40);
             }
             case NORMAL_1X -> {
-                if (dungeonData.getStatueCostID() != 0 && dungeonData.getStatueCostID() != 106) {
+                if (costId != 0 && costId != 106) {
                     yield true;
                 }
                 int cost = baseResinCost > 0 ? baseResinCost : 20;

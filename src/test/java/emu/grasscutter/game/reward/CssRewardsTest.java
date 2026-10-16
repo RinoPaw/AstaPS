@@ -26,6 +26,34 @@ class CssRewardsTest {
             """, items::resolve);
 
     @Test
+    void inventoryRewardsSupportBonusCountsAndFixedCascades() {
+        var css = CssRewards.parse("""
+                chest {
+                    --genshin-currency-mora: '1+1:42.89';
+                }
+                chest[grade="common"] {
+                    --genshin-currency-mora: 3;
+                }
+                """, items, loot);
+        var ranged = css.resolve("chest", Map.of());
+        assertTrue(ranged.items().isEmpty());
+        assertTrue(ranged.rangedItems().containsKey(202));
+        var random = new Random(71);
+        boolean one = false, two = false;
+        for (int i = 0; i < 300; i++) {
+            int count = RewardRoller.roll(ranged, loot, random).get(202);
+            assertTrue(count == 1 || count == 2);
+            one |= count == 1;
+            two |= count == 2;
+        }
+        assertTrue(one && two);
+        var fixed = css.resolve("chest", Map.of("grade", "common"));
+        assertEquals(3, fixed.items().get(202));
+        assertFalse(fixed.rangedItems().containsKey(202));
+        assertEquals(3, RewardRoller.roll(fixed, loot, new Random(71)).get(202));
+    }
+
+    @Test
     void weaponPropertiesResolveToNativeWeaponItems() {
         var registry = new ItemIdRegistry(Map.of(11101, "Dull Blade", 202, "Mora"));
         var css = CssRewards.parse("""

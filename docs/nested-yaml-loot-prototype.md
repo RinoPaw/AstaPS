@@ -108,6 +108,12 @@ area IDs are valid. When no native city can be resolved, a source-backed
 Verified native city ownership takes precedence over that source-region
 fallback; conflicting native ownership does not select a city.
 
+CSS supports comma-separated alternatives for any attribute, for example
+`[area="10,77,8,19"]` and `[type="waypoint,statue"]`.
+Each alternative matches the complete attribute value. Region IDs in bundled
+CSS retain the Mondstadt-then-Liyue order and are annotated with bilingual
+area names verified in the 7.1 reverse audit.
+
 CSS supports inclusive numeric ranges on any attribute, including
 `[level="1~5"]`, `[world_level="6~9"]`, and the open-ended
 `[level="93~"]`. Range matching uses integer values, without

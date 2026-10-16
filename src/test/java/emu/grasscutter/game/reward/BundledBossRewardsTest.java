@@ -52,7 +52,7 @@ final class BundledBossRewardsTest {
                 Map.entry(305, "Anemo Sigil"),
                 Map.entry(307, "Geo Sigil")));
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known), loot);
-        assertEquals(964, stylesheet.lines()
+        assertEquals(968, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertEquals(211, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
@@ -74,7 +74,7 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1401, loot.names().size());
+        assertEquals(1405, loot.names().size());
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.weekly_northlander_extras"));
@@ -82,6 +82,8 @@ final class BundledBossRewardsTest {
         assertTrue(loot.contains("astaps.loot.weekly_high_artifacts"));
         assertTrue(loot.contains("astaps.loot.weekly_artifacts_sparse"));
         assertTrue(loot.contains("astaps.loot.weekly_artifacts_rare"));
+        assertTrue(loot.contains("astaps.loot.world_five_star_artifacts_low"));
+        assertTrue(loot.contains("astaps.loot.world_five_star_artifacts_guaranteed"));
         assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p2_weapon_billets"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+_[a-z0-9_]+:.*")));
@@ -150,6 +152,15 @@ final class BundledBossRewardsTest {
         assertEquals(45, highWorld.items().get(105));
         assertEquals(200, highWorld.items().get(101));
         assertEquals(1, highWorld.loot().get("astaps.loot.world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1"));
+        assertEquals(1, highWorld.loot().get("astaps.loot.world_five_star_artifacts_guaranteed"));
+
+        var mediumWorld = css.resolve("boss", Map.of(
+                "type", "world", "tag", "electro_hypostasis", "level", "82"));
+        assertEquals(1, mediumWorld.loot().get("astaps.loot.world_five_star_artifacts_medium"));
+        assertFalse(mediumWorld.loot().containsKey("astaps.loot.world_five_star_artifacts_guaranteed"));
+        assertTrue(css.resolve("boss", Map.of(
+                "type", "world", "tag", "frostnight_scion", "level", "82"))
+                .loot().keySet().stream().noneMatch(name -> name.contains("world_five_star_artifacts")));
 
         var weekly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "stormterror", "level", "90"));

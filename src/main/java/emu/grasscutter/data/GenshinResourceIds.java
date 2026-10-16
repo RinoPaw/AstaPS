@@ -103,9 +103,6 @@ public final class GenshinResourceIds {
             throw new IllegalArgumentException("Unsupported resource namespace: " + reference);
         }
         return switch (resource.type()) {
-            case "currency", "experience", "avatar_exp", "weapon_exp", "artifact_exp",
-                    "material", "food", "furnishing", "weapon" ->
-                    items.resolve(reference);
             case "avatar" -> lookup(avatars, ambiguousAvatars, resource);
             case "recipe" -> lookup(recipes, ambiguousRecipes, resource);
             case "artifact" -> {
@@ -115,8 +112,13 @@ public final class GenshinResourceIds {
                 }
                 yield setId;
             }
-            default -> throw new IllegalArgumentException("Unsupported Genshin resource type: "
-                    + resource.type());
+            default -> {
+                if (ItemIdRegistry.isInventoryResourceType(resource.type())) {
+                    yield items.resolve(reference);
+                }
+                throw new IllegalArgumentException("Unsupported Genshin resource type: "
+                        + resource.type());
+            }
         };
     }
 

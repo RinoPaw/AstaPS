@@ -317,8 +317,22 @@ public final class DomainStatueDropService {
         if (dungeonData.getType() == DungeonType.DUNGEON_BOSS
                 && dungeonData.getSubType() == DungeonSubType.DUNGEON_SUB_BOSS
                 && nativeRoot <= 0) {
-            int weeklyRoot = resolveWeeklyBossRoot(player, dungeonData, preview);
-            return weeklyRoot > 0 ? rollStatueDropTable(player, weeklyRoot, rollTimes) : null;
+            // A Trounce claim is one reward roll. The selected boss/level table
+            // must exist in bundled rewards.css and loot.yaml.
+            if (rollTimes != 1) return null;
+            String weeklyTag = resolveWeeklyBossTag(player, dungeonData, preview);
+            if (weeklyTag == null) return null;
+            var rolled = emu.grasscutter.game.reward.RewardConfiguration.current()
+                    .rollWeeklyBoss(weeklyTag, dungeonData.getShowLevel(),
+                            java.util.concurrent.ThreadLocalRandom.current());
+            List<GameItem> configured = new ArrayList<>();
+            rolled.forEach((itemId, amount) -> {
+                if (amount > 0) {
+                    configured.addAll(InventoryGrantBuilder.create(
+                            GameData.getItemDataMap().get(itemId), amount, 1));
+                }
+            });
+            return configured;
         }
         var proxy = GameData.getDungeonDropDataMap() == null
                 ? null : GameData.getDungeonDropDataMap().get(dungeonId);
@@ -416,9 +430,9 @@ public final class DomainStatueDropService {
      * weekly talent materials. A preview is never rolled as a source of rewards.
      * Missing or ambiguous mappings leave the claim uncharged.
      */
-    private static int resolveWeeklyBossRoot(
+    private static String resolveWeeklyBossTag(
             Player player, DungeonData dungeonData, RewardPreviewData preview) {
-        if (preview == null) return 0;
+        if (preview == null) return null;
         var roots = player.getServer().getDropSystem()
                 .weeklyBossRewardRoots(dungeonData.getShowLevel());
         var graph = GameData.getDropTableDataMap();
@@ -442,7 +456,12 @@ public final class DomainStatueDropService {
                     "StatueDrop: no uniquely verified weekly boss root dungeon={} level={}",
                     dungeonData.getId(), dungeonData.getShowLevel());
         }
-        return root;
+        if (root <= 0) return null;
+        var tags = roots.entrySet().stream()
+                .filter(entry -> entry.getValue() == root)
+                .map(java.util.Map.Entry::getKey)
+                .toList();
+        return tags.size() == 1 ? tags.get(0) : null;
     }
 
     private static List<GameItem> rollStatueDropTable(Player player, int statueDrop, int rollTimes) {

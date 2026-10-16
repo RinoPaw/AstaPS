@@ -25,8 +25,11 @@ class BlossomRewardsTest {
         int start = yaml.indexOf(prefix);
         assertTrue(start >= 0, "Missing bundled ley-line pools");
         var loot = YamlLootTables.parse(yaml.substring(start), items::resolve);
+        String css = RewardConfiguration.readBundled("rewards.css");
+        int cssStart = css.indexOf("/* Ley-line blossoms:");
+        assertTrue(cssStart >= 0, "Missing bundled blossom selectors");
         return new RewardConfiguration(loot, CssRewards.parse(
-                RewardConfiguration.readBundled("rewards.css"), items, loot));
+                css.substring(cssStart), items, loot));
     }
 
     @Test

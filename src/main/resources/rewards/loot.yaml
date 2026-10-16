@@ -43,14 +43,14 @@ meat_ingredients: &meat_ingredients
 
 # Talent books by region and grade.
 mondstadt_talent_teachings: &mondstadt_talent_teachings
-  - {reward: genshin.talent_up.teachings_of_freedom, weight: 1}
-  - {reward: genshin.talent_up.teachings_of_resistance, weight: 1}
-  - {reward: genshin.talent_up.teachings_of_ballad, weight: 1}
+  - {reward: genshin.talent_up.freedom.teachings, weight: 1}
+  - {reward: genshin.talent_up.resistance.teachings, weight: 1}
+  - {reward: genshin.talent_up.ballad.teachings, weight: 1}
 
 mondstadt_talent_guides: &mondstadt_talent_guides
-  - {reward: genshin.talent_up.guide_to_freedom, weight: 1}
-  - {reward: genshin.talent_up.guide_to_resistance, weight: 1}
-  - {reward: genshin.talent_up.guide_to_ballad, weight: 1}
+  - {reward: genshin.talent_up.freedom.guide, weight: 1}
+  - {reward: genshin.talent_up.resistance.guide, weight: 1}
+  - {reward: genshin.talent_up.ballad.guide, weight: 1}
 
 # Artifact slots: 1=flower, 2=plume, 3=sands, 4=goblet, 5=circlet.
 # Variants grouped by rarity and initial substat count.

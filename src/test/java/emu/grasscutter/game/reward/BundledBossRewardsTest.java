@@ -67,6 +67,12 @@ final class BundledBossRewardsTest {
         assertTrue(yaml.contains("substats: \"2:66, 3:34\""));
         assertTrue(yaml.contains("substats: \"3:66, 4:34\""));
 
+        // Native null/item odds are represented by a single optional drop.
+        assertTrue(yaml.contains("reward: genshin.material.dream_solvent, count: \"1:33\""));
+        assertTrue(yaml.contains("reward: *midlander_weapon_billets, count: \"1:12\""));
+        assertFalse(Pattern.compile("(?m)^  - reward:\\n      - \\{reward: null, weight:")
+                .matcher(yaml).find());
+
         // Reusable pools have content-based names; Boss-level entry names are stable.
         assertEquals(1707, loot.names().size());
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));

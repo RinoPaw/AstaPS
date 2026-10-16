@@ -543,7 +543,7 @@ boss[type="weekly"][tag="shouki_no_kami"] {
 }
 
 boss[type="weekly"][tag="stormterror"][level="1~4"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_cryo_empty_reward_choices_roll_5plus1pct41p2: 1;
+    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct0p79: 1;
 }
 
 boss[type="weekly"][tag="stormterror"][level="5~9"] {
@@ -555,7 +555,7 @@ boss[type="weekly"][tag="stormterror"][level="10~14"] {
 }
 
 boss[type="weekly"][tag="stormterror"][level="15~19"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_cryo_empty_reward_choices_roll_5plus1pct74: 1;
+    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_cryo_roll_2plus1pct48p16: 1;
 }
 
 boss[type="weekly"][tag="stormterror"][level="20~24"] {
@@ -628,7 +628,7 @@ boss[type="weekly"][tag="stormterror"][level="120~"] {
 
 /* Andrius (北风狼) */
 boss[type="weekly"][tag="andrius"][level="1~4"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_anemo_empty_reward_choices_roll_5plus1pct41p2: 1;
+    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct0p79: 1;
 }
 
 boss[type="weekly"][tag="andrius"][level="5~9"] {
@@ -640,7 +640,7 @@ boss[type="weekly"][tag="andrius"][level="10~14"] {
 }
 
 boss[type="weekly"][tag="andrius"][level="15~19"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_anemo_empty_reward_choices_roll_5plus1pct74: 1;
+    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_anemo_roll_2plus1pct48p16: 1;
 }
 
 boss[type="weekly"][tag="andrius"][level="20~24"] {
@@ -709,7 +709,7 @@ boss[type="weekly"][tag="andrius"][level="93~"] {
 
 /* Tartaglia (公子) */
 boss[type="weekly"][tag="tartaglia"][level="1~4"] {
-    --astaps-loot-weekly_gems_anemo_electro_hydro_sliver_empty_reward_choices_roll_5plus1pct41p2: 1;
+    --astaps-loot-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct0p79: 1;
 }
 
 boss[type="weekly"][tag="tartaglia"][level="5~9"] {
@@ -721,7 +721,7 @@ boss[type="weekly"][tag="tartaglia"][level="10~14"] {
 }
 
 boss[type="weekly"][tag="tartaglia"][level="15~19"] {
-    --astaps-loot-weekly_gems_anemo_electro_hydro_sliver_empty_reward_choices_roll_5plus1pct74: 1;
+    --astaps-loot-weekly_gems_anemo_electro_hydro_sliver_roll_2plus1pct48p16: 1;
 }
 
 boss[type="weekly"][tag="tartaglia"][level="20~24"] {
@@ -790,7 +790,7 @@ boss[type="weekly"][tag="tartaglia"][level="93~"] {
 
 /* Azhdaha Pyro Electro (若陀龙王火电) */
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="1~4"] {
-    --astaps-loot-weekly_gems_electro_geo_pyro_sliver_empty_reward_choices_roll_5plus1pct41p2: 1;
+    --astaps-loot-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct0p79: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="5~9"] {
@@ -802,7 +802,7 @@ boss[type="weekly"][tag="azhdaha_pyro_electro"][level="10~14"] {
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="15~19"] {
-    --astaps-loot-weekly_gems_electro_geo_pyro_sliver_empty_reward_choices_roll_5plus1pct74: 1;
+    --astaps-loot-weekly_gems_electro_geo_pyro_sliver_roll_2plus1pct48p16: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="20~24"] {
@@ -871,7 +871,7 @@ boss[type="weekly"][tag="azhdaha_pyro_electro"][level="93~"] {
 
 /* Azhdaha Hydro Electro (若陀龙王水电) */
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="1~4"] {
-    --astaps-loot-weekly_gems_electro_geo_hydro_sliver_empty_reward_choices_roll_5plus1pct41p2: 1;
+    --astaps-loot-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct0p79: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="5~9"] {
@@ -883,7 +883,7 @@ boss[type="weekly"][tag="azhdaha_hydro_electro"][level="10~14"] {
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="15~19"] {
-    --astaps-loot-weekly_gems_electro_geo_hydro_sliver_empty_reward_choices_roll_5plus1pct74: 1;
+    --astaps-loot-weekly_gems_electro_geo_hydro_sliver_roll_2plus1pct48p16: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="20~24"] {
@@ -952,7 +952,7 @@ boss[type="weekly"][tag="azhdaha_hydro_electro"][level="93~"] {
 
 /* Azhdaha Pyro Cryo (若陀龙王火冰) */
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="1~4"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_pyro_empty_reward_choices_roll_5plus1pct41p2: 1;
+    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct0p79: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="5~9"] {
@@ -964,7 +964,7 @@ boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="10~14"] {
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="15~19"] {
-    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_pyro_empty_reward_choices_roll_5plus1pct74: 1;
+    --astaps-loot-weekly_gems_anemo_geo_pyro_sliver_first_pyro_roll_2plus1pct48p16: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="20~24"] {
@@ -1033,7 +1033,7 @@ boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="93~"] {
 
 /* Azhdaha Hydro Cryo (若陀龙王水冰) */
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="1~4"] {
-    --astaps-loot-weekly_gems_anemo_geo_hydro_sliver_empty_reward_choices_roll_5plus1pct41p2: 1;
+    --astaps-loot-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct0p79: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="5~9"] {
@@ -1045,7 +1045,7 @@ boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="10~14"] {
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="15~19"] {
-    --astaps-loot-weekly_gems_anemo_geo_hydro_sliver_empty_reward_choices_roll_5plus1pct74: 1;
+    --astaps-loot-weekly_gems_anemo_geo_hydro_sliver_roll_2plus1pct48p16: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="20~24"] {
@@ -1114,7 +1114,7 @@ boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="93~"] {
 
 /* Signora (女士) */
 boss[type="weekly"][tag="signora"][level="1~4"] {
-    --astaps-loot-weekly_gems_anemo_pyro_sliver_empty_reward_choices_roll_5plus1pct41p2: 1;
+    --astaps-loot-weekly_gems_anemo_pyro_sliver_roll_2plus1pct0p79: 1;
 }
 
 boss[type="weekly"][tag="signora"][level="5~9"] {
@@ -1126,7 +1126,7 @@ boss[type="weekly"][tag="signora"][level="10~14"] {
 }
 
 boss[type="weekly"][tag="signora"][level="15~19"] {
-    --astaps-loot-weekly_gems_anemo_pyro_sliver_empty_reward_choices_roll_5plus1pct74: 1;
+    --astaps-loot-weekly_gems_anemo_pyro_sliver_roll_2plus1pct48p16: 1;
 }
 
 boss[type="weekly"][tag="signora"][level="20~24"] {
@@ -1207,7 +1207,7 @@ boss[type="weekly"][tag="raiden_shogun"][level="10~14"] {
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="15~19"] {
-    --astaps-loot-weekly_gems_electro_sliver_empty_reward_choices_roll_5plus1pct74: 1;
+    --astaps-loot-weekly_gems_electro_sliver_roll_2plus1pct48p16: 1;
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="20~24"] {
@@ -1276,7 +1276,7 @@ boss[type="weekly"][tag="raiden_shogun"][level="93~"] {
 
 /* Shouki no Kami (「正机之神」) */
 boss[type="weekly"][tag="shouki_no_kami"][level="1~4"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p2: 1;
+    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct0p79: 1;
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="5~9"] {
@@ -1288,7 +1288,7 @@ boss[type="weekly"][tag="shouki_no_kami"][level="10~14"] {
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="15~19"] {
-    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct74: 1;
+    --astaps-loot-weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct48p16: 1;
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="20~24"] {

@@ -83,7 +83,7 @@ final class BundledBossRewardsTest {
                     known.put(id, name.replace('_', ' '));
                     knownCategories.put(id, switch (category) {
                         case "avatar_ascension", "weapon_crafting" -> "Character Development Items";
-                        case "talent" -> "Talent Level-Up Materials";
+                        case "talent_level_up" -> "Talent Level-Up Materials";
                         default -> "Materials";
                     });
                 });

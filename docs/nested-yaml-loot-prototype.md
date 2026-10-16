@@ -40,12 +40,14 @@ including complete payout profiles, are named by reward content; optional
 `world` and `weekly` prefixes identify the reward type.
 Reusable subtables use names such as `midlander_weapon_billets`.
 Identical payout profiles are shared, and one-use subtables are inlined.
-The bundled YAML currently contains 1,401 top-level loot tables. The two
+The bundled YAML currently contains 1,405 top-level loot tables. The two
 `weekly_northlander_extras` / `weekly_midlander_extras` pools define shared
 Dream Solvent and weapon-billet drop chances. Eight further `weekly_*artifacts*`
 pools hold common artifact distributions across native level brackets. CSS
 selects each shared pool by Boss tag and level; reward chances and nested
-execution counts remain in YAML.
+execution counts remain in YAML. Four `world_five_star_artifacts_*`
+pools share the level-dependent five-star Gladiator/Wanderer drops across
+24 older world Boss reward families.
 
 The artifact distributions are `artifacts_1_to_2_low`,
 `artifacts_1_to_2_high`, `artifacts_1_to_3`, `artifacts_2_to_3`,
@@ -337,7 +339,9 @@ share two extras pools. Eight shared artifact packages factor identical
 distributions out of 190 weekly payout profiles across the level 5+ brackets.
 The remaining 1,109 complete world/weekly payout tables still contain
 level-dependent drop probabilities and overly long names; a more extensive
-content-based decomposition is outstanding. No new native drop rates are claimed. CSS declares shared fixed Boss amounts by type and native
+content-based decomposition is outstanding. Four additional shared world
+five-star pools remove repeated rates from 144 world payout tables.
+No new native drop rates are claimed. CSS declares shared fixed Boss amounts by type and native
 level bracket without requiring a `tag` attribute; individual tag/level
 selectors choose their corresponding named loot pool. CSS Boss tags use
 English semantic identifiers (for example `electro_hypostasis`) and

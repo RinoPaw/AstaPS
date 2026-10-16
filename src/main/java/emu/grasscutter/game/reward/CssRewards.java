@@ -132,8 +132,11 @@ public final class CssRewards {
                         || (value.startsWith("'") && value.endsWith("'")))) {
                     value = value.substring(1, value.length() - 1);
                 }
-                ResourceId resource = ResourceId.fromCssProperty(
-                        originalProperties.getOrDefault(property, property));
+                String original = originalProperties.getOrDefault(property, property);
+                ResourceId resource = ResourceId.parse(original);
+                if (resource.size() < 3) {
+                    throw new IllegalArgumentException("Expected a qualified resource path: " + original);
+                }
                 if (resource.size() >= 3 && "loot".equals(resource.segment(1))) {
                     String name = loot.resolveName(resource.toString());
                     if (value.matches("[0-9]+")) {

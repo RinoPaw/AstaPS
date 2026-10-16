@@ -224,12 +224,21 @@ mapping:
 Gem and talent-book *families* may also use `properties.rarity` to choose
 one native 2–5★ gem or one native 2–4★ talent book. The values after `:`
 are percentages with at most two decimal places and no trailing zeros; they must add to `100`.
-The family's grade is selected independently on every repeated award, while
-the top-level `weight` controls selection among sibling families:
+A family's grade is sampled once per entry execution. An entry with
+`count: 3` gives three items of the selected grade; repeating a nested
+pool samples that grade afresh on each execution. The top-level
+`weight` controls selection among sibling families:
 
 ```yaml
 - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.63, 3:19.9, 4:4.97, 5:0.5"}, weight: 1}
 - {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:30, 4:20"}, weight: 1}
+```
+
+For example, a formerly weighted subpool of 2★/3★/4★ gems with
+weights 5697/1519/380 and fixed count 3 is written:
+
+```yaml
+- {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3, weight: 1}
 ```
 
 The bundles use elemental aliases and canonical talent-book subject paths.

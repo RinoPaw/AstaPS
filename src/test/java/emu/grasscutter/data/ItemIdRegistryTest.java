@@ -166,7 +166,8 @@ class ItemIdRegistryTest {
         assertEquals("genshin.talent.talent_only_book", registry.describe(703).key());
         assertEquals("genshin.avatar_ascension.avatar_only_fragment", registry.describe(704).key());
         assertEquals("genshin.weapon_crafting.northlander_sword_billet", registry.describe(705).key());
-        assertEquals(Set.of(701), registry.sharedDevelopmentMaterials().keySet());
+        assertEquals(Set.of("genshin.material.shared_monster_drop"),
+                registry.sharedDevelopmentMaterials().keySet());
         assertThrows(IllegalArgumentException.class,
                 () -> registry.resolve("genshin.avatar_ascension.shared_monster_drop"));
     }

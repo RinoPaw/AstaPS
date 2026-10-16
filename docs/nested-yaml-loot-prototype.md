@@ -231,3 +231,17 @@ catch-all `item` prefix. The common experience items are:
 Previous `genshin.material.*` aliases for these items and the `genshin.resource`
 category are intentionally unsupported. Adventure EXP is
 `genshin.experience.adventure`, while Hero's Wit is an `avatar_exp` item.
+
+### Regional sigil IDs
+
+All nine native sigil item identities use one hierarchical currency series:
+`genshin.currency.sigil.anemo`, `genshin.currency.sigil.geo`,
+`genshin.currency.sigil.electro`, `genshin.currency.sigil.dendro`,
+`genshin.currency.sigil.hydro`, `genshin.currency.sigil.pyro`,
+`genshin.currency.sigil.cryo`, `genshin.currency.sigil.lunar`, and
+`genshin.currency.sigil.light_realm`.
+
+CSS encodes the sigil qualifier with a hyphen, e.g.
+`--genshin-currency-sigil-anemo: 1;`. The unqualified
+`genshin.currency.sigil` still means the deferred region-derived sigil.
+Former `genshin.currency.anemo_sigil`-style names are not aliases.

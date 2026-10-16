@@ -27,6 +27,36 @@ class ItemIdRegistryTest {
     }
 
     @Test
+    void qualifiedSigilsRoundTripThroughCssAndOnlyHaveOneCanonicalIdentity() {
+        var sigils = Map.of(
+                301, "pyro", 302, "hydro", 303, "dendro",
+                304, "electro", 305, "anemo", 306, "cryo",
+                307, "geo", 308, "lunar", 101692, "light_realm");
+        var names = new java.util.HashMap<Integer, String>();
+        sigils.forEach((nativeId, region) -> names.put(nativeId, region + " Sigil"));
+        var registry = new ItemIdRegistry(names);
+        for (var entry : sigils.entrySet()) {
+            String qualified = "genshin.currency.sigil." + entry.getValue();
+            var id = ResourceId.parse(qualified);
+            assertEquals(qualified, id.toString());
+            assertEquals("--genshin-currency-sigil-" + entry.getValue(), id.toCssProperty());
+            assertEquals(id, ResourceId.fromCssProperty(id.toCssProperty()));
+            assertEquals(entry.getKey().intValue(), registry.resolve(qualified));
+            assertEquals(qualified, registry.describe(entry.getKey()).key());
+            assertThrows(IllegalArgumentException.class,
+                    () -> registry.resolve("genshin.currency."
+                            + entry.getValue() + "_sigil"));
+        }
+        assertEquals(ItemIdRegistry.REGIONAL_SIGIL, registry.resolve("genshin.currency.sigil"));
+        assertThrows(IllegalArgumentException.class,
+                () -> ResourceId.parse("genshin.currency.mora.extra"));
+        assertThrows(IllegalArgumentException.class,
+                () -> ResourceId.parse("genshin.currency.sigil:anemo"));
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.resolve("genshin.currency.sigil.unknown"));
+    }
+
+    @Test
     void itemIdsAreStrictlyTypedAndExistInLoadedResources() {
         var names = new ItemIdRegistry(Map.of(202, "Mora", 104003, "Hero's Wit"));
         assertEquals(202, names.resolve("genshin.currency.mora"));

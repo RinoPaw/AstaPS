@@ -86,10 +86,16 @@ class RegionalSigilResolverTest {
                 201, "Primogem", 202, "Mora", 305, "Anemo Sigil", 302, "Hydro Sigil"));
         assertThrows(IllegalArgumentException.class, () -> ids.resolve("sigil"));
         assertEquals(ItemIdRegistry.REGIONAL_SIGIL, ids.resolve("genshin.currency.sigil"));
+        assertEquals(305, ids.resolve("genshin.currency.sigil.anemo"));
+        assertEquals(302, ids.resolve("genshin.currency.sigil.hydro"));
+        assertThrows(IllegalArgumentException.class,
+                () -> ids.resolve("genshin.currency.anemo_sigil"));
 
         var loot = YamlLootTables.parse("""
                 seals:
                   - {reward: genshin.currency.sigil, count: 2}
+                specific:
+                  - {reward: genshin.currency.sigil.hydro}
                 currency:
                   - {reward: genshin.currency.mora, count: 50}
                 """, ids::resolve);
@@ -99,6 +105,9 @@ class RegionalSigilResolverTest {
                     --astaps-loot-seals: 1;
                     --genshin-currency-sigil: 4;
                     --genshin-currency-primogem: 5;
+                }
+                chest[type="normal"][grade="precious"] {
+                    --genshin-currency-sigil-anemo: 3;
                 }
                 """, ids, loot);
         var mondstadt = new RewardContext(3, 0, "mondstadt");
@@ -112,6 +121,11 @@ class RegionalSigilResolverTest {
         assertEquals(Map.of(302, 4, 201, 5), RewardRoller.roll(
                 css.resolve("chest", Map.of("type", "normal", "grade", "exquisite")),
                 loot, new Random(1), fontaine));
+        assertEquals(Map.of(305, 3), RewardRoller.roll(
+                css.resolve("chest", Map.of("type", "normal", "grade", "precious")),
+                loot, new Random(1), fontaine));
+        assertEquals(Map.of(302, 1), loot.roll(
+                "astaps.loot.specific", new Random(1)));
         // An unknown city must not silently drop the regional sigil.
         var unresolved = assertThrows(IllegalStateException.class, () ->
                 RewardRoller.roll(

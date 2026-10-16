@@ -81,22 +81,22 @@ all grant **30 Adventure EXP**. CSS assigns it once:
 
 ```css
 chest[type="normal"] {
-    --genshin-experience-adventure: 30;
+    genshin.experience.adventure: 30;
 }
 
 chest[type="normal"][grade="common"][level="1~5"] {
-    --astaps-loot-minimal: 1;
-    --genshin-currency-mora: 240~360;
-    --genshin-currency-sigil: 1;
+    astaps.loot.minimal: 1;
+    genshin.currency.mora: 240~360;
+    genshin.currency.sigil: 1;
 }
 ```
 
 Mora, Primogems, and regional sigils are likewise defined in CSS only.
 Integer counts or inclusive `low~high` ranges are supported for CSS item
 quantities; ranges are rolled at grant time. Loot tables use typed CSS
-properties instead of a special list field: `--astaps-loot-xxxhigh: 1;`
+properties instead of a special list field: `astaps.loot.xxxhigh: 1;`
 references `astaps.loot.xxxhigh` once, and
-`--astaps-loot-xxxhigh: 3;` executes it three times. These names must
+`astaps.loot.xxxhigh: 3;` executes it three times. These names must
 exist in `loot.yaml`; unknown names and the obsolete `--loot` syntax
 are errors. Different loot properties cascade independently: several
 tables may be selected together, a more specific value replaces the
@@ -310,7 +310,7 @@ All nine native sigil item identities use one hierarchical currency series:
 `genshin.currency.sigil.light_realm`.
 
 CSS encodes the sigil qualifier with a hyphen, e.g.
-`--genshin-currency-sigil-anemo: 1;`. The unqualified
+`genshin.currency.sigil.anemo: 1;`. The unqualified
 `genshin.currency.sigil` still means the deferred region-derived sigil.
 Former `genshin.currency.anemo_sigil`-style names are not aliases.
 

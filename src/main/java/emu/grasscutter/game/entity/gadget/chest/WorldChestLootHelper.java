@@ -28,18 +28,16 @@ public final class WorldChestLootHelper {
         SceneGadget meta = entityGadget.getMetaGadget();
         if (meta != null) {
             props.put("level", Integer.toString(meta.level));
-            if (meta.area_id > 0) {
-                emu.grasscutter.game.reward.RewardAreaAttributes.add(
-                        props, entityGadget.getScene().getId(), meta.area_id);
-            }
         }
+        var context = new emu.grasscutter.game.reward.RewardContext(
+                entityGadget.getScene().getId(),
+                meta != null ? meta.area_id : 0,
+                meta != null ? meta.rewardRegion : null);
+        emu.grasscutter.game.reward.RewardAreaResolver.resolve(context)
+                .addAttributes(props);
 
         var items = emu.grasscutter.game.reward.RewardConfiguration.current().roll(
-                "chest", props, java.util.concurrent.ThreadLocalRandom.current(),
-                new emu.grasscutter.game.reward.RewardContext(
-                        entityGadget.getScene().getId(),
-                        meta != null ? meta.area_id : 0,
-                        meta != null ? meta.rewardRegion : null));
+                "chest", props, java.util.concurrent.ThreadLocalRandom.current(), context);
         for (var entry : items.entrySet()) {
             int id = entry.getKey();
             int amount = entry.getValue();

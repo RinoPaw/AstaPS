@@ -1,53 +1,11 @@
 package emu.grasscutter.game.reward;
 
-import emu.grasscutter.data.GameData;
-import emu.grasscutter.data.excels.CityData;
-import emu.grasscutter.data.excels.world.WorldAreaData;
-import java.util.Collection;
-import java.util.Locale;
-
-/** Resolves a regional sigil using source-backed geographic identity. */
+/** Converts the shared native world-area identity into its regional sigil item. */
 public final class RegionalSigilResolver {
     private RegionalSigilResolver() {}
 
     public static int resolve(RewardContext context) {
-        if (context == null) {
-            throw new IllegalArgumentException("Regional sigil requires reward context");
-        }
-        if (context.sourceRegion() != null && !context.sourceRegion().isBlank()) {
-            return fromSourceRegion(context.sourceRegion());
-        }
-        if (context.sceneId() <= 0 || context.areaId() <= 0) {
-            throw new IllegalArgumentException(
-                    "Cannot resolve regional sigil: no source region or area ID");
-        }
-        return resolveArea(
-                context.sceneId(), context.areaId(),
-                GameData.getWorldAreaDataMap().get(context.areaId()),
-                GameData.getCityDataMap().values());
-    }
-
-    static int resolveArea(
-            int sceneId, int areaId, WorldAreaData worldArea,
-            Collection<CityData> cities) {
-        if (worldArea == null || worldArea.getSceneId() != sceneId) {
-            throw new IllegalArgumentException(
-                    "Cannot resolve regional sigil: scene " + sceneId
-                            + " area " + areaId + " has no matching world-area row");
-        }
-
-        int cityId = 0;
-        for (CityData city : cities) {
-            var areas = city.getAreaIdVec();
-            if (areas == null || !areas.contains(areaId)) continue;
-            if (cityId != 0) {
-                throw new IllegalArgumentException(
-                        "Ambiguous regional sigil: area " + areaId
-                                + " belongs to multiple cities");
-            }
-            cityId = city.getCityId();
-        }
-        return fromCityId(cityId);
+        return fromCityId(RewardAreaResolver.resolve(context).cityId());
     }
 
     static int fromCityId(int cityId) {
@@ -63,21 +21,6 @@ public final class RegionalSigilResolver {
             case 8, 9 -> 306;  // Snezhnaya
             default -> throw new IllegalArgumentException(
                     "No verified regional sigil mapping for city " + cityId);
-        };
-    }
-
-    static int fromSourceRegion(String region) {
-        return switch (region.toLowerCase(Locale.ROOT)) {
-            case "mondstadt" -> 305;
-            case "liyue" -> 307;
-            case "inazuma" -> 304;
-            case "sumeru", "sumeru36" -> 303;
-            case "fontaine" -> 302;
-            case "natlan" -> 301;
-            case "nodkrai", "nod-krai", "nod_krai" -> 308;
-            case "snezhnaya" -> 306;
-            default -> throw new IllegalArgumentException(
-                    "Unknown regional sigil source: " + region);
         };
     }
 }

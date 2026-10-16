@@ -28,29 +28,35 @@ class RegionalSigilResolverTest {
                 WorldAreaData.class);
     }
 
+    private static int resolveArea(
+            int scene, int id, WorldAreaData worldArea, List<CityData> cities) {
+        var area = RewardAreaResolver.resolve(scene, id, null, worldArea, cities);
+        return RegionalSigilResolver.fromCityId(area.cityId());
+    }
+
     @Test
     void ordinaryNativeAreasResolveThroughWorldAreaAndCityConfig() {
-        assertEquals(305, RegionalSigilResolver.resolveArea(
+        assertEquals(305, resolveArea(
                 3, 1, area(1, 3), List.of(city(1, 1))));
-        assertEquals(307, RegionalSigilResolver.resolveArea(
+        assertEquals(307, resolveArea(
                 3, 19, area(19, 3), List.of(city(2, 19))));
-        assertEquals(304, RegionalSigilResolver.resolveArea(
+        assertEquals(304, resolveArea(
                 5, 200, area(200, 5), List.of(city(3, 200))));
     }
 
     @Test
     void specialScenesAndAmbiguousAreaOwnershipDoNotGuessACurrency() {
         assertThrows(IllegalArgumentException.class, () ->
-                RegionalSigilResolver.resolveArea(
+                resolveArea(
                         7, 210, area(210, 7), List.of(city(101, 210))));
         assertThrows(IllegalArgumentException.class, () ->
-                RegionalSigilResolver.resolveArea(
+                resolveArea(
                         4, 103, area(103, 4), List.of(city(100, 103))));
         assertThrows(IllegalArgumentException.class, () ->
-                RegionalSigilResolver.resolveArea(
+                resolveArea(
                         3, 19, area(19, 4), List.of(city(2, 19))));
         assertThrows(IllegalArgumentException.class, () ->
-                RegionalSigilResolver.resolveArea(
+                resolveArea(
                         3, 1, area(1, 3), List.of(city(1, 1), city(2, 1))));
         assertThrows(IllegalArgumentException.class, () ->
                 RegionalSigilResolver.resolve(RewardContext.NONE));

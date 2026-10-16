@@ -113,6 +113,12 @@ public final class ItemIdRegistry {
             Map.entry(109407, "recipe_stir_fried_filet"));
 
     // Verified chest weapon IDs, also used when fixtures have no category metadata.
+    private static final java.util.regex.Pattern ASCENSION_GEM =
+            java.util.regex.Pattern.compile(
+                    "(?:agnidus_agate|nagadus_emerald|prithiva_topaz|shivada_jade"
+                    + "|vajrada_amethyst|varunada_lazurite|vayuda_turquoise)"
+                    + "_(?:sliver|fragment|chunk|gemstone)");
+
     private static final Set<Integer> CHEST_WEAPON_IDS = Set.of(
             11101, 11201, 11303, 11305, 12101, 12201, 12303, 12306,
             13101, 13201, 13301, 13302, 14101, 14201, 14303, 14305,
@@ -145,7 +151,7 @@ public final class ItemIdRegistry {
                     STABLE_NAMES.containsKey(id) ? STABLE_NAMES.get(id)
                     : CHEST_DROP_NAMES.containsKey(id) ? CHEST_DROP_NAMES.get(id)
                     : shortName(category, english);
-            String type = resourceType(id, category);
+            String type = resourceType(id, category, name);
             String key = name.isEmpty() || type == null ? null :
                     new ResourceId("genshin", type, name).toString();
             ids.put(id, new Info(id, english, key, category));
@@ -193,12 +199,13 @@ public final class ItemIdRegistry {
      * Virtual rewards are explicit because these IDs affect different player properties.
      * A resource with unknown native classification has no guessed semantic ID.
      */
-    static String resourceType(int id, String category) {
+    static String resourceType(int id, String category, String name) {
         return switch (id) {
             case 101, 102, 105, 121 -> "experience";
             case 106, 107, 201, 202, 203, 204, 301, 302, 303, 304, 305, 306,
                     307, 308, 101692 -> "currency";
-            default -> switch (category) {
+            default -> ASCENSION_GEM.matcher(name).matches()
+                    ? "avatar_ascension" : switch (category) {
                 case "Weapons" -> "weapon";
                 case "Food" -> "food";
                 case "Furnishings" -> "furnishing";
@@ -246,7 +253,7 @@ public final class ItemIdRegistry {
             ResourceId resource = ResourceId.parse(input);
             if (!resource.namespace().equals("genshin")
                     || !Set.of("currency", "experience", "avatar_exp", "weapon_exp",
-                            "artifact_exp", "material", "food", "furnishing", "weapon")
+                            "artifact_exp", "avatar_ascension", "material", "food", "furnishing", "weapon")
                             .contains(resource.type())) {
                 throw new IllegalArgumentException("Unsupported inventory resource: " + input);
             }

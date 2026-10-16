@@ -1,9 +1,6 @@
 package emu.grasscutter.game.entity.gadget;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.data.common.ItemParamData;
-import emu.grasscutter.data.excels.RewardPreviewData;
-import emu.grasscutter.game.drop.BossChestDropTagResolver;
 import emu.grasscutter.game.drop.DropSystem;
 import emu.grasscutter.game.entity.EntityBaseGadget;
 import emu.grasscutter.game.entity.EntityGadget;
@@ -30,13 +27,10 @@ import emu.grasscutter.scripts.SceneScriptManager;
 import emu.grasscutter.scripts.data.SceneBossChest;
 import emu.grasscutter.scripts.data.SceneGadget;
 import emu.grasscutter.scripts.data.SceneGroup;
-import emu.grasscutter.scripts.data.SceneMonster;
 import emu.grasscutter.server.packet.send.PacketGadgetAutoPickDropInfoNotify;
 import emu.grasscutter.server.packet.send.PacketGadgetInteractRsp;
 import emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify;
 import emu.grasscutter.server.packet.send.PacketWorldChestOpenNotify;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

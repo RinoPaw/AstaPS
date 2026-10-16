@@ -79,6 +79,13 @@ final class GadgetChestBossClaimTest {
     }
 
     @Test
+    void worldBossClaimDoesNotDependOnBigWorldScriptMode() {
+        Grasscutter.getConfig().server.game.enableScriptInBigWorld = false;
+        claim(a);
+        assertEquals(Map.of(100, 1), chest.grants);
+    }
+
+    @Test
     void failedBossRollDoesNotMarkTheFlowerClaimed() {
         chest.allowGrant = false;
         claim(a);

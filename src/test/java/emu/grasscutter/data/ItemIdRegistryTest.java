@@ -8,20 +8,24 @@ import org.junit.jupiter.api.Test;
 
 class ItemIdRegistryTest {
     @Test
-    void resourceIdUsesThreeDottedParts() {
+    void resourcePathsHaveArbitraryDepthAndCanonicalDottedCssNames() {
         var id = ResourceId.parse("genshin.currency.mora");
         assertEquals("genshin.currency.mora", id.toString());
-        assertEquals("--genshin-currency-mora", id.toCssProperty());
+        assertEquals("genshin.currency.mora", id.toCssProperty());
+        assertEquals(id, ResourceId.fromCssProperty(id.toCssProperty()));
         assertEquals(id, ResourceId.fromCssProperty("--genshin-currency-mora"));
-        assertEquals(new ResourceId("my_mod", "item", "my-item"),
+        assertEquals(ResourceId.of("my_mod", "item", "my-item"),
                 ResourceId.fromCssProperty("--my_mod-item-my-item"));
-        assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("genshin.item"));
+        var nested = ResourceId.parse("genshin.artifact.berserker.goblet.3.1");
+        assertEquals(6, nested.size());
+        assertEquals("berserker.goblet.3.1", nested.tail(2));
+        assertEquals(ResourceId.parse("genshin.artifact.berserker"),
+                ResourceId.parse("genshin.artifact").append("berserker"));
+        assertEquals(ResourceId.parse("genshin.artifact.berserker.goblet"),
+                nested.replacePrefix(ResourceId.parse("genshin.artifact.berserker.goblet.3.1"),
+                        ResourceId.parse("genshin.artifact.berserker.goblet")));
         assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("Genshin.item.mora"));
-        assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("genshin.currency.mora.more"));
-        assertEquals("genshin.artifact.berserker",
-                ResourceId.parse("genshin.artifact.berserker").toString());
-        assertThrows(IllegalArgumentException.class, () ->
-                ResourceId.parse("genshin.artifact.berserker.goblet.3.1"));
+        assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("genshin..mora"));
         assertThrows(IllegalArgumentException.class, () -> ResourceId.parse("genshin:item:mora"));
         assertThrows(IllegalArgumentException.class,
                 () -> ResourceId.fromCssProperty("--genshin--item--mora"));
@@ -40,7 +44,7 @@ class ItemIdRegistryTest {
             String qualified = "genshin.currency.sigil." + entry.getValue();
             var id = ResourceId.parse(qualified);
             assertEquals(qualified, id.toString());
-            assertEquals("--genshin-currency-sigil-" + entry.getValue(), id.toCssProperty());
+            assertEquals(qualified, id.toCssProperty());
             assertEquals(id, ResourceId.fromCssProperty(id.toCssProperty()));
             assertEquals(entry.getKey().intValue(), registry.resolve(qualified));
             assertEquals(qualified, registry.describe(entry.getKey()).key());
@@ -49,8 +53,7 @@ class ItemIdRegistryTest {
                             + entry.getValue() + "_sigil"));
         }
         assertEquals(ItemIdRegistry.REGIONAL_SIGIL, registry.resolve("genshin.currency.sigil"));
-        assertThrows(IllegalArgumentException.class,
-                () -> ResourceId.parse("genshin.currency.mora.extra"));
+        assertEquals(4, ResourceId.parse("genshin.currency.mora.extra").size());
         assertThrows(IllegalArgumentException.class,
                 () -> ResourceId.parse("genshin.currency.sigil:anemo"));
         assertThrows(IllegalArgumentException.class,

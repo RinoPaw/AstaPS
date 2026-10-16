@@ -17,7 +17,7 @@ final class WeeklyBossDropResolverTest {
     void requiresUniqueBossMaterialFamilyAndKnownNativeLeaves() {
         var items = GameData.getItemDataMap();
         var old = items.put(113013, JsonUtils.decode(
-                "{\\"id\\":113013,\\"itemType\\":\\"ITEM_MATERIAL\\"}", ItemData.class));
+                "{\"id\":113013,\"itemType\":\"ITEM_MATERIAL\"}", ItemData.class));
         try {
             var roots = Map.of("weekly_a", 100, "weekly_b", 200);
             var leaves = Map.of(

@@ -110,7 +110,9 @@ class BundledChestRewardsTest {
         for (String name : new String[]{
                 "adventure_exp", "primogem", "mora", "anemo_sigil", "geo_sigil",
                 "electro_sigil", "dendro_sigil"}) {
-            assertFalse(yaml.contains("reward: genshin.item." + name), name);
+            String prefix = "adventure_exp".equals(name) ? "genshin.experience.adventure"
+                    : "genshin.currency." + name;
+            assertFalse(yaml.contains("reward: " + prefix), name);
         }
         assertFalse(yaml.contains("historical_"));
         assertFalse(java.util.regex.Pattern.compile("\\breward:\\s*[0-9]")
@@ -319,7 +321,7 @@ class BundledChestRewardsTest {
         for (String name : new String[]{"recipe_mora_meat",
                 "recipe_stir_fried_filet", "recipe_mushroom_pizza",
                 "recipe_northern_smoked_chicken"}) {
-            assertFalse(yaml.contains("reward: genshin.item." + name));
+            assertFalse(yaml.contains("reward: genshin.material." + name));
         }
     }
 

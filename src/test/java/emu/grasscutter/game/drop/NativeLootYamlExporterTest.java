@@ -13,18 +13,18 @@ class NativeLootYamlExporterTest {
 
     private static String itemName(int id) {
         return switch (id) {
-            case 202 -> "genshin.item.mora";
-            case 104003 -> "genshin.item.heros_wit";
-            case 104002 -> "genshin.item.adventurers_experience";
+            case 202 -> "genshin.currency.mora";
+            case 104003 -> "genshin.material.heros_wit";
+            case 104002 -> "genshin.material.adventurers_experience";
             default -> throw new IllegalArgumentException("Unrecognized item");
         };
     }
 
     private static int itemId(String name) {
         return switch (name) {
-            case "genshin.item.mora" -> 202;
-            case "genshin.item.heros_wit" -> 104003;
-            case "genshin.item.adventurers_experience" -> 104002;
+            case "genshin.currency.mora" -> 202;
+            case "genshin.material.heros_wit" -> 104003;
+            case "genshin.material.adventurers_experience" -> 104002;
             default -> throw new IllegalArgumentException("Unrecognized qualified item");
         };
     }
@@ -41,7 +41,7 @@ class NativeLootYamlExporterTest {
         var yaml = NativeLootYamlExporter.export(source, List.of(100), TABLES,
                 NativeLootYamlExporterTest::itemName);
         assertTrue(yaml.indexOf("character_experience:") < yaml.indexOf("mondstadt_combat:"));
-        assertTrue(yaml.contains("reward: genshin.item.mora"));
+        assertTrue(yaml.contains("reward: genshin.currency.mora"));
         assertTrue(yaml.contains("reward: *character_experience"));
         assertTrue(yaml.contains("weight: 1"));
         assertFalse(yaml.contains("weight: 1000"));
@@ -74,7 +74,7 @@ class NativeLootYamlExporterTest {
         var yaml = NativeLootYamlExporter.export(source, List.of(100), TABLES,
                 NativeLootYamlExporterTest::itemName);
         assertTrue(yaml.contains("reward:\n      - {reward: null, weight: 1}\n"
-                + "      - {reward: genshin.item.heros_wit, count: \"2;3\", weight: 1}"));
+                + "      - {reward: genshin.material.heros_wit, count: \"2;3\", weight: 1}"));
         var loot = YamlLootTables.parse(yaml, NativeLootYamlExporterTest::itemId);
         int zero = 0, two = 0, three = 0;
         var random = new Random(9);
@@ -100,7 +100,7 @@ class NativeLootYamlExporterTest {
         var yaml = NativeLootYamlExporter.export(source, List.of(100),
                 Map.of(100, "rare"), NativeLootYamlExporterTest::itemName);
         assertTrue(yaml.contains("{reward: null, weight: 9999}"));
-        assertTrue(yaml.contains("{reward: genshin.item.mora, weight: 1}"));
+        assertTrue(yaml.contains("{reward: genshin.currency.mora, weight: 1}"));
         var loot = YamlLootTables.parse(yaml, NativeLootYamlExporterTest::itemId);
         assertTrue(loot.roll("astaps.loot.rare", new Random(4)).isEmpty());
     }
@@ -142,7 +142,7 @@ class NativeLootYamlExporterTest {
                         NativeLootYamlExporterTest::itemName));
         assertThrows(IllegalArgumentException.class, () ->
                 NativeLootYamlExporter.export(unknown, List.of(10),
-                        Map.of(10, "chest"), ignored -> "genshin.item.id_202"));
+                        Map.of(10, "chest"), ignored -> "genshin.currency.id_202"));
         var cyclic = Map.of(10, new NativeLootYamlExporter.NativeTable(0,
                 List.of(new NativeLootYamlExporter.NativeEntry(10, "1", 1))));
         assertThrows(IllegalArgumentException.class, () ->

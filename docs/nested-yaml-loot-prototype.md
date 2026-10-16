@@ -25,10 +25,10 @@ books and artifacts) rather than by chest type or level. The twelve selectable
 tiers follow in ascending order, then the separate `three_realms_point`
 table. There are 36 tables in total.
 
-The artifact distributions are `artifacts_1_to_2_1`,
-`artifacts_1_to_2_2`, `artifacts_1_to_3`, `artifacts_2_to_3`,
-`artifacts_3_to_4_1` and `artifacts_3_to_4_2`. The suffixes identify
-different weight ratios; neither chest grade nor level belongs in a subtable.
+The artifact distributions are `artifacts_1_to_2_low`,
+`artifacts_1_to_2_high`, `artifacts_1_to_3`, `artifacts_2_to_3`,
+`artifacts_3_to_4_low` and `artifacts_3_to_4_high`. The `low` and `high` suffixes indicate lower and higher odds of obtaining
+the higher-star rarity; neither chest grade nor level belongs in a subtable.
 The last two distributions include four-star artifacts, so calling them
 another `2_to_3` pool would misrepresent the source.
 

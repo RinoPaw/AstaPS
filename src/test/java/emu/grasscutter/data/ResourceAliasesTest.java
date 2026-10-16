@@ -15,7 +15,7 @@ class ResourceAliasesTest {
                 a.resolve("genshin.avatar_ascension.anemo.gemstone").toString());
         assertEquals("genshin.avatar_ascension.vajrada_amethyst.fragment",
                 a.resolve("genshin.avatar_ascension.electro.fragment").toString());
-        assertEquals("genshin.avatar_ascension.vayuda_turquoise.chunk",
+        assertEquals("genshin.avatar_ascension.vayuda_turquoise_chunk",
                 a.resolve("genshin.avatar_ascension.vayuda_turquoise_chunk").toString());
         assertEquals("genshin.avatar_ascension.vayuda_turquoise",
                 a.resolve("genshin.avatar_ascension.anemo").toString());
@@ -54,7 +54,8 @@ class ResourceAliasesTest {
         assertEquals("genshin.avatar_ascension.vayuda_turquoise.sliver",
                 items.describe(8001).key());
         assertEquals(8001, items.resolve("genshin.avatar_ascension.anemo.sliver"));
-        assertEquals(8001, items.resolve("genshin.avatar_ascension.vayuda_turquoise_sliver"));
+        assertThrows(IllegalArgumentException.class,
+                () -> items.resolve("genshin.avatar_ascension.vayuda_turquoise_sliver"));
         assertEquals(8001, items.resolve("genshin.avatar_ascension.vayuda_turquoise.sliver"));
         assertEquals(8002, items.resolve("genshin.avatar_ascension.electro.gemstone"));
         assertThrows(IllegalArgumentException.class,

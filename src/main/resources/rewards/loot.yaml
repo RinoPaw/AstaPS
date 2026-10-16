@@ -222,6 +222,3 @@ ultra:
   - {reward: genshin.weapon_exp.mystic_ore, count: "3:80,4:20"}
   - {reward: *artifacts_3_to_4_high, count: "2:50,3:50"}
 
-# Other, non-chest rewards.
-three_realms_point:
-  - {reward: genshin.currency.light_realm_sigil, count: 20}

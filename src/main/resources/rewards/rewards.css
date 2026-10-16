@@ -193,7 +193,7 @@ transpoint[scene="3"][point="6"] {
 
 /* Three Realms Gateway Offering, scene 7. */
 transpoint[scene="7"] {
-    --astaps-loot-three_realms_point: 1;
+    --genshin-currency-light_realm_sigil: 20;
     --genshin-experience-adventure: 0;
     --genshin-currency-primogem: 5;
 }

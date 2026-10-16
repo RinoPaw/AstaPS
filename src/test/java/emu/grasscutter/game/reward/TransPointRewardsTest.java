@@ -55,6 +55,11 @@ final class TransPointRewardsTest {
         assertEquals(standard, roll(css, loot, "domain", 3, 48));
         assertEquals(Map.of(102, 10), roll(css, loot, "waypoint", 3, 6));
         assertEquals(Map.of(201, 5, 101692, 20), roll(css, loot, "waypoint", 7, 2));
+        var gateway = css.resolve("transpoint",
+                Map.of("kind", "waypoint", "scene", "7", "point", "2"));
+        assertTrue(gateway.loot().isEmpty());
+        assertTrue(gateway.rangedLoot().isEmpty());
+        assertEquals(20, gateway.items().get(101692));
         assertEquals(Map.of(), roll(css, loot, "unknown", 3, 8));
     }
 

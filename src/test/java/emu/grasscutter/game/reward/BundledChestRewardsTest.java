@@ -171,7 +171,7 @@ class BundledChestRewardsTest {
                     .items().get(201).intValue());
             assertEquals(low[k], css.resolve("chest",
                     Map.of("type", "normal", "grade", kinds[k], "city", "1")).items().get(201).intValue());
-            for (String area : new String[]{"10", "77"}) {
+            for (String area : new String[]{"10", "77", "8", "19", "40", "41", "47", "300"}) {
                 assertEquals(base[k], css.resolve("chest", Map.of(
                         "type", "normal", "grade", kinds[k], "city", "1", "area", area))
                         .items().get(201).intValue());

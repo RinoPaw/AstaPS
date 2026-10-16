@@ -10705,7 +10705,9 @@ world_chimera_sky_roamer_level_120:
 
 
 # Historical world Boss main+subtable graphs; CSS selects only the boss tag and native level.
-# Subtable indirection (including the 540xxx nodes) resolves to real 7.1 inventory items.
+# Only sources with resolvable semantic inventory resources are included.
+# The native precision-clockwork boss family remains excluded until its
+# artifact leaves can be identified; no partial boss loot is fabricated.
 world_electro_hypostasis_level_1_gems: &world_electro_hypostasis_level_1_gems
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 1}
 

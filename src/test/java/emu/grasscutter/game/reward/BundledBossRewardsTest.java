@@ -67,6 +67,20 @@ final class BundledBossRewardsTest {
                 "type", "world", "tag", "无相之雷", "level", "36"));
         assertEquals(1, legacy.loot().get("astaps.loot.world_electro_hypostasis_level_35"));
 
+        // Reused YAML pools keep each externally addressable table name.
+        assertTrue(loot.contains("astaps.loot.world_frostnight_scion_level_105"));
+        assertEquals(
+                loot.roll("astaps.loot.world_frostnight_scion_level_100", new java.util.Random(71)),
+                loot.roll("astaps.loot.world_frostnight_scion_level_105", new java.util.Random(71)));
+
+        var highWorld = css.resolve("boss", Map.of(
+                "type", "world", "tag", "无相之雷", "level", "105"));
+        assertEquals(200, highWorld.items().get(102));
+        assertEquals(6000, highWorld.items().get(202));
+        assertEquals(45, highWorld.items().get(105));
+        assertEquals(200, highWorld.items().get(101));
+        assertEquals(1, highWorld.loot().get("astaps.loot.world_electro_hypostasis_level_105"));
+
         var weekly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "风魔龙", "level", "90"));
         assertEquals(300, weekly.items().get(102));

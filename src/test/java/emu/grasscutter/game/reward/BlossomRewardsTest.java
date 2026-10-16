@@ -74,6 +74,18 @@ class BlossomRewardsTest {
     }
 
     @Test
+    void worldLevelRangesPreserveFriendshipTierBoundaries() throws IOException {
+        var config = rewards();
+        for (int wl : new int[]{0, 1, 4, 5, 9}) {
+            int expected = wl == 0 ? 10 : wl <= 4 ? 15 : 20;
+            assertEquals(expected, config.rollBlossom(
+                    "wealth", wl, false, new Random(1)).get(105));
+            assertEquals(expected, config.rollBlossom(
+                    "revelation", wl, false, new Random(1)).get(105));
+        }
+    }
+
+    @Test
     void missingKindOrWorldLevelCannotGrantCommonExperienceOnly() throws IOException {
         var config = rewards();
         for (var attrs : java.util.List.of(

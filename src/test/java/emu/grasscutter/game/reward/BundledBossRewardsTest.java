@@ -71,7 +71,7 @@ final class BundledBossRewardsTest {
                 Map.entry(307, "Geo Sigil")));
         // Use the same synthetic IDs for material entries now selected directly by CSS.
         var knownCategories = new HashMap<Integer, String>();
-        Pattern.compile("--genshin-(material|avatar_ascension|weapon_ascension|talent_level_up|weapon_crafting)-([a-z0-9_]+)\\s*:")
+        Pattern.compile("genshin\\.(material|avatar_ascension|weapon_ascension|talent_level_up|weapon_crafting)\\.([a-z0-9_.]+)\\s*:")
                 .matcher(stylesheet).results()
                 .map(match -> Map.entry(match.group(1), match.group(2))).distinct()
                 .forEach(entry -> {
@@ -193,12 +193,12 @@ final class BundledBossRewardsTest {
         assertFalse(shoukiEarly.loot().keySet().stream().anyMatch(name ->
                 name.contains("first_electro_roll_")));
         assertTrue(stylesheet.contains(
-                "--astaps-loot-gems_cryo_electro_hydro_sliver: '2+1:14.32';"));
+                "astaps.loot.gems_cryo_electro_hydro_sliver: '2+1:14.32';"));
         var raidenEarly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "raiden_shogun", "level", "8"));
         assertTrue(raidenEarly.rangedItems().size() > 0);
         assertTrue(stylesheet.contains(
-                "--genshin-avatar_ascension-vajrada_amethyst_sliver: '2+1:14.32';"));
+                "genshin.avatar_ascension.vajrada_amethyst.sliver: '2+1:14.32';"));
         var shouki = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "shouki_no_kami", "level", "120"));
         assertEquals(1, shouki.loot().get("astaps.loot.weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct40"));

@@ -223,6 +223,12 @@ ultra:
   - {reward: *artifacts_3_to_4_high, count: "2:50,3:50"}
 
 # Weekly Boss native reward tables (ChestDrop sourceType 35, 7.1 source roots).
+# HISTORICAL SOURCE, NOT YET AUTHORIZED FOR LIVE WEEKLY CLAIMS.
+# Some 540xxx artifact-selector leaves are missing from the 7.1 server export;
+# empty nested aliases explicitly mark those unresolved leaves, not a zero drop rate.
+# The 500010/500011 billet selectors also lack a verified native item distribution;
+# their candidate pools are provisional. Do not infer official probabilities here.
+# Dungeon-to-boss mapping and 30/60 Resin discount rules remain unverified.
 # Loot defines independent and exclusive rolls; CSS owns boss/level selection and fixed balances.
 # Named native subtrees are shared through YAML aliases. IDs remain internal to source data.
 weekly_stormterror_level_1_weapon_billets: &weekly_stormterror_level_1_weapon_billets

@@ -181,11 +181,11 @@ public class GadgetChest extends GadgetContent {
         boolean success;
         if (handler instanceof BossChestInteractHandler bossHandler) {
             var gadgetMeta = getGadget().getMetaGadget();
-            boolean bossMeta = gadgetMeta != null && gadgetMeta.boss_chest != null;
-            if (bossMeta && finishIfAbandoned(player, gadgetMeta)) {
+            boolean bossChestPresent = gadgetMeta != null && gadgetMeta.boss_chest != null;
+            if (bossChestPresent && finishIfAbandoned(player, gadgetMeta)) {
                 return false;
             }
-            if (bossMeta && !canClaimBossFlower(player)) {
+            if (bossChestPresent && !canClaimBossFlower(player)) {
                 return false;
             }
             success =

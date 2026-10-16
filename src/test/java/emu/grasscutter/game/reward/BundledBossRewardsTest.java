@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 /** Ensure the entire bundled CSS/YAML, including Boss tables, can load together. */
 final class BundledBossRewardsTest {
     @Test
-    void singleEntryLootTablesOnlyRepresentRarityFamilies() throws Exception {
+    void bundledLootTablesNeverWrapASingleReward() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         var settings = org.snakeyaml.engine.v2.api.LoadSettings.builder()
                 .setAllowDuplicateKeys(false)
@@ -26,21 +26,16 @@ final class BundledBossRewardsTest {
         assertInstanceOf(Map.class, document);
         for (var entry : ((Map<?, ?>) document).entrySet()) {
             if (entry.getValue() instanceof java.util.List<?> list) {
-                if (list.size() == 1) {
-                    // Collapsing a weighted gem-tier pool legitimately produces
-                    // a single entry with a scoped rarity distribution.
-                    assertInstanceOf(Map.class, list.get(0),
-                            "Single-entry loot table: " + entry.getKey());
-                    var only = (Map<?, ?>) list.get(0);
-                    assertTrue(only.get("reward") instanceof String name
-                                    && name.startsWith("genshin.avatar_ascension."),
-                            "Unexpected single-entry loot table: " + entry.getKey());
-                    assertTrue(only.get("properties") instanceof Map<?, ?> properties
-                                    && properties.get("rarity") instanceof String,
-                            "Single-entry pool lacks rarity: " + entry.getKey());
-                }
+                assertNotEquals(1, list.size(),
+                        "Redundant single-entry loot table: " + entry.getKey());
             }
         }
+        // Former one-item aliases are inlined without losing the multiplied count.
+        assertFalse(yaml.contains("gems_electro_chunk_fragment_sliver_odds_4945_1319_330_count_3:"));
+        assertTrue(yaml.contains(
+                "genshin.avatar_ascension.electro, properties: {rarity: \"2:75, 3:20, 4:5\"}, count: \"6+3:17.602\""));
+        assertTrue(yaml.contains(
+                "genshin.avatar_ascension.hydro, properties: {rarity: \"2:74.6, 3:19.9, 4:5, 5:0.5\"}, count: \"18+9:24.257\""));
     }
 
     @Test
@@ -153,7 +148,7 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1176, loot.names().size());
+        assertEquals(1061, loot.names().size());
         assertFalse(yaml.contains("empty_reward_choices"));
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));

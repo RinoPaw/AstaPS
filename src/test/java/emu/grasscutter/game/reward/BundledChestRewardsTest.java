@@ -69,7 +69,7 @@ class BundledChestRewardsTest {
     }
 
     private static String chestYaml() throws Exception {
-        return resource("/rewards/loot.yaml").split("# Weekly Boss native reward tables", 2)[0];
+        return resource("/rewards/loot.yaml").split("# Historical Trounce Boss rewards", 2)[0];
     }
 
     private static String chestCss() throws Exception {

@@ -317,8 +317,9 @@ blossom[kind="revelation"][world_level="9"] {
 
 /* Weekly Boss native ChestDrop sourceType 35: 7.1 baseline by source tag and native level.
    AUDIT STATUS: staged only. These 10 historical source tags do not cover all
-   7.1 Trounce Dungeons. Unresolved artifact/billet leaves and Dungeon-to-tag
-   mappings prevent this section from being an authorized live payout source.
+   7.1 Trounce Dungeons. The native artifact and billet subtables are resolved;
+   missing Dungeon-to-tag joins and 7.1 Resin discount validation still block
+   this section from being an authorized live payout source.
    These selectors require a claim context with boss[type=weekly][tag][level].
    Boss-exclusive material choices and artifacts live in loot.yaml. */
 boss[type="weekly"][tag="风魔龙"][level="1~4"] {

@@ -63,6 +63,14 @@ class CssRewardsTest {
     }
 
     @Test
+    void obsoleteHyphenatedCssResourceNamesAreRejected() {
+        assertThrows(IllegalArgumentException.class, () ->
+                CssRewards.parse("chest { --genshin-currency-mora: 1; }", items, loot));
+        assertThrows(IllegalArgumentException.class, () ->
+                CssRewards.parse("chest { --astaps-loot-currency: 1; }", items, loot));
+    }
+
+    @Test
     void inventoryRewardsSupportBonusCountsAndFixedCascades() {
         var css = CssRewards.parse("""
                 chest {

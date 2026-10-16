@@ -63,6 +63,83 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void gemAndTalentFamilyRarityPropertiesUseTwoDecimalPercentages() {
+        var inventory = new ItemIdRegistry(Map.of(
+                8101, "Vayuda Turquoise Sliver",
+                8102, "Vayuda Turquoise Fragment",
+                8103, "Vayuda Turquoise Chunk",
+                8104, "Vayuda Turquoise Gemstone",
+                8201, "Teachings of Freedom",
+                8202, "Guide to Freedom",
+                8203, "Philosophies of Freedom"));
+        var tables = YamlLootTables.parse("""
+                mixed:
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.63, 3:19.90, 4:4.97, 5:0.50"}, weight: 1}
+                  - {reward: genshin.talent_up.freedom, properties: {rarity: "2:20.00, 3:30.00, 4:50.00"}, weight: 1}
+                repeated:
+                  - {reward: genshin.talent_up.freedom, properties: {rarity: "2:50.00, 3:50.00"}, count: 4}
+                """, inventory::resolve);
+        var counts = new java.util.HashMap<Integer, Integer>();
+        var random = new Random(71);
+        for (int i = 0; i < 60_000; i++) {
+            var chosen = tables.roll("astaps.loot.mixed", random);
+            assertEquals(1, chosen.values().stream().mapToInt(Integer::intValue).sum());
+            int id = chosen.keySet().iterator().next();
+            counts.merge(id, 1, Integer::sum);
+        }
+        int gems = 0, books = 0;
+        for (int id = 8101; id <= 8104; id++) gems += counts.getOrDefault(id, 0);
+        for (int id = 8201; id <= 8203; id++) books += counts.getOrDefault(id, 0);
+        assertEquals(0.50, gems / 60_000.0, 0.02);
+        assertEquals(0.50, books / 60_000.0, 0.02);
+        assertEquals(0.7463, counts.getOrDefault(8101, 0) / (double) gems, 0.015);
+        assertEquals(0.0050, counts.getOrDefault(8104, 0) / (double) gems, 0.003);
+        assertEquals(0.30, counts.getOrDefault(8202, 0) / (double) books, 0.015);
+
+        boolean split = false;
+        for (int i = 0; i < 50; i++) {
+            var chosen = tables.roll("astaps.loot.repeated", random);
+            assertEquals(4, chosen.values().stream().mapToInt(Integer::intValue).sum());
+            if (chosen.size() == 2) split = true;
+        }
+        assertTrue(split, "Each item must roll its grade independently");
+    }
+
+    @Test
+    void invalidAdvancementRarityDistributionsAreRejected() {
+        var items = new ItemIdRegistry(Map.of(
+                8101, "Vayuda Turquoise Sliver",
+                8102, "Vayuda Turquoise Fragment",
+                8201, "Teachings of Freedom",
+                8202, "Guide to Freedom"));
+        for (String spec : java.util.List.of(
+                "2:60.00, 3:30.00", // missing 10%
+                "2:70.00, 3:40.00", // exceeds 100%
+                "2:50.00, 2:50.00", // duplicate tier
+                "2:99.00, 5:1.00", // 5-star talent book does not exist
+                "2:foo, 3:100.00")) {
+            assertThrows(IllegalArgumentException.class, () ->
+                    YamlLootTables.parse("""
+                            invalid:
+                              - reward: genshin.talent_up.freedom
+                                properties: {rarity: "%s"}
+                            """.formatted(spec), items::resolve), spec);
+        }
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                invalid:
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:50.00, 3:50.00"}}
+                """, id -> {
+                    if (id.equals("genshin.avatar_ascension.anemo.2")) return 8101;
+                    return -2;
+                }));
+        assertThrows(IllegalArgumentException.class, () ->
+                YamlLootTables.parse("""
+                        invalid:
+                          - {reward: genshin.currency.mora, properties: {rarity: "2:100.00"}}
+                        """, items::resolve));
+    }
+
+    @Test
     void yamlShortKeysBecomeGlobalLootIds() {
         var tables = parse("""
                 surprise:

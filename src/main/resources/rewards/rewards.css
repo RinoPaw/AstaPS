@@ -220,10 +220,7 @@ blossom[type="wealth"][world_level="5"] {
     --genshin-experience-companionship: 20;
 }
 
-blossom[type="wealth"][world_level="6"],
-blossom[type="wealth"][world_level="7"],
-blossom[type="wealth"][world_level="8"],
-blossom[type="wealth"][world_level="9"] {
+blossom[type="wealth"][world_level="6~9"] {
     --genshin-currency-mora: 60000;
     --genshin-experience-companionship: 20;
 }
@@ -264,10 +261,7 @@ blossom[type="revelation"][world_level="5"] {
     --genshin-experience-companionship: 20;
 }
 
-blossom[type="revelation"][world_level="6"],
-blossom[type="revelation"][world_level="7"],
-blossom[type="revelation"][world_level="8"],
-blossom[type="revelation"][world_level="9"] {
+blossom[type="revelation"][world_level="6~9"] {
     --genshin-avatar_exp-adventurers_experience: 6~7;
     --genshin-avatar_exp-heros_wit: 4~5;
     --genshin-experience-companionship: 20;
@@ -392,12 +386,7 @@ boss[type="weekly"][level="90~92"] {
     --genshin-experience-character: 400;
 }
 
-boss[type="weekly"][level="93~99"],
-boss[type="weekly"][level="100~104"],
-boss[type="weekly"][level="105~109"],
-boss[type="weekly"][level="110~114"],
-boss[type="weekly"][level="115~119"],
-boss[type="weekly"][level="120~"] {
+boss[type="weekly"][level="93~"] {
     --genshin-currency-mora: 9000;
     --genshin-experience-companionship: 70;
     --genshin-experience-character: 400;
@@ -521,12 +510,7 @@ boss[type="world"][level="90~92"] {
     --genshin-experience-character: 200;
 }
 
-boss[type="world"][level="93~99"],
-boss[type="world"][level="100~104"],
-boss[type="world"][level="105~109"],
-boss[type="world"][level="110~114"],
-boss[type="world"][level="115~119"],
-boss[type="world"][level="120~"] {
+boss[type="world"][level="93~"] {
     --genshin-currency-mora: 6000;
     --genshin-experience-companionship: 45;
     --genshin-experience-character: 200;

@@ -114,6 +114,20 @@ class CssRewardsTest {
     }
 
     @Test
+    void recipeItemRewardsUseRecipeNamespaceButCannotGrantRecipeDefinitions() {
+        var registry = new ItemIdRegistry(Map.of(109406, "Recipe: Mora Meat"));
+        var css = CssRewards.parse("""
+                chest { genshin.recipe.mora_meat.item: 1; }
+                """, registry, loot);
+        assertEquals(1, css.resolve("chest", Map.of()).items().get(109406));
+        assertThrows(IllegalArgumentException.class, () ->
+                CssRewards.parse("chest { genshin.recipe.mora_meat: 1; }", registry, loot));
+        assertThrows(IllegalArgumentException.class, () ->
+                CssRewards.parse("chest { genshin.material.recipe_mora_meat: 1; }",
+                        registry, loot));
+    }
+
+    @Test
     void commaGroupedLevelRangesKeepIndependentSelectors() {
         var css = CssRewards.parse("""
                 boss[type="world"][level="93~99"],

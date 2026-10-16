@@ -119,6 +119,11 @@ public final class ItemIdRegistry {
                     + "|vajrada_amethyst|varunada_lazurite|vayuda_turquoise)"
                     + "_(?:sliver|fragment|chunk|gemstone)");
 
+    /** Three native talent-book tiers, grouped by their subject. */
+    private static final java.util.regex.Pattern TALENT_BOOK =
+            java.util.regex.Pattern.compile(
+                    "(teachings_of|guide_to|philosophies_of)_([a-z][a-z0-9_]*)");
+
     /** Exclusively consumed advancement materials in the bundled reward graph. */
     private static final Set<String> AVATAR_ASCENSION_ONLY = Set.of(
             "artificed_spare_clockwork_component_coppelia",
@@ -373,6 +378,7 @@ public final class ItemIdRegistry {
             default -> {
                 if (name.startsWith("recipe_") && name.length() > "recipe_".length()) yield "recipe";
                 if (MONSTER_DROPS.contains(name)) yield "monster_drop";
+                if (TALENT_BOOK.matcher(name).matches()) yield "talent_up";
                 if (uses.size() > 1) yield "material";
                 if (ASCENSION_GEM.matcher(name).matches()
                         || AVATAR_ASCENSION_ONLY.contains(name)
@@ -404,6 +410,18 @@ public final class ItemIdRegistry {
     }
 
     private static ResourceId canonicalResource(String category, String name) {
+        if ("talent_up".equals(category)) {
+            var tier = TALENT_BOOK.matcher(name);
+            if (tier.matches()) {
+                String grade = switch (tier.group(1)) {
+                    case "teachings_of" -> "teachings";
+                    case "guide_to" -> "guide";
+                    case "philosophies_of" -> "philosophies";
+                    default -> throw new IllegalStateException("Unknown talent book grade");
+                };
+                return ResourceId.of("genshin", category, tier.group(2), grade);
+            }
+        }
         if ("recipe".equals(category)) {
             return ResourceId.of("genshin", "recipe", name.substring("recipe_".length()), "item");
         }

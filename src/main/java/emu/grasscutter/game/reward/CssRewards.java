@@ -124,16 +124,12 @@ public final class CssRewards {
                     }
                 } else {
                     int id = items.resolve(resource.toString());
-                    if (value.matches("[0-9]+\\s*~\\s*[0-9]+")) {
-                        ranged.put(id, LootCount.parse(value.replaceAll("\\s+", "")));
-                        fixed.remove(id);
-                    } else {
-                        if (!value.matches("[0-9]+")) {
-                            throw new IllegalArgumentException("Invalid item count for "
-                                    + resource + ": " + value);
-                        }
+                    if (value.matches("[0-9]+")) {
                         fixed.put(id, Integer.parseInt(value));
                         ranged.remove(id);
+                    } else {
+                        ranged.put(id, LootCount.parse(value.replaceAll("\\s+", "")));
+                        fixed.remove(id);
                     }
                 }
             }

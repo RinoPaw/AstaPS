@@ -61,6 +61,10 @@ final class BundledBossRewardsTest {
         var unidentified = css.resolve("boss", Map.of("type", "world", "level", "105"));
         assertEquals(200, unidentified.items().get(102));
         assertEquals(6000, unidentified.items().get(202));
+        assertEquals(6000, css.resolve("boss", Map.of(
+                "type", "world", "level", "140")).items().get(202));
+        assertEquals(9000, css.resolve("boss", Map.of(
+                "type", "weekly", "level", "140")).items().get(202));
         assertEquals(45, unidentified.items().get(105));
         assertTrue(unidentified.loot().isEmpty());
 

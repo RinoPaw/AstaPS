@@ -313,15 +313,23 @@ public class GadgetChest extends GadgetContent {
 
     /** Roll first, validate the whole reward batch, then charge once and grant. */
     protected boolean grantWorldBossReward(Player player, SceneGadget meta, int resinCost) {
-        if (meta.drop_tag == null || meta.drop_tag.isBlank()) {
+        // Some spawned boss flowers omit drop_tag even though their native group
+        // has a verified mapping in boss-drop-tags.json.
+        String tag = meta.drop_tag;
+        if (tag == null || tag.isBlank()) {
+            tag = emu.grasscutter.game.drop.BossChestDropTagResolver.resolve(
+                    getGadget().getGroupId(),
+                    meta.boss_chest == null ? 0 : meta.boss_chest.monster_config_id);
+        }
+        if (tag == null || tag.isBlank()) {
             throw new IllegalStateException(
-                    "World boss chest lacks native drop tag: " + getGadget().getGroupId());
+                    "World boss chest has no source-backed drop identity: " + getGadget().getGroupId());
         }
         if (resinCost <= 0) {
             throw new IllegalArgumentException("World boss has no payable resin cost");
         }
         List<GameItem> items = player.getServer().getDropSystem()
-                .rollBossChestDrop(meta.drop_tag, player.getWorldLevel());
+                .rollBossChestDrop(tag, player.getWorldLevel());
         // Like dungeon claims, persist intent before charging. A paid but interrupted
         // grant is never retried blindly: the receipt remains for reconciliation.
         var journal = new RewardGrantJournal();

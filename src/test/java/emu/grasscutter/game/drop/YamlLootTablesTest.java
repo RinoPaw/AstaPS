@@ -124,6 +124,62 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void nestedSubstatWeightsCanBeMovedIntoArtifactProperties() {
+        var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
+        String[] sets = {"berserker", "instructor", "the_exile"};
+        for (int set = 0; set < sets.length; set++) {
+            for (int slot = 1; slot <= 5; slot++) {
+                for (int substats = 1; substats <= 2; substats++) {
+                    variants.add(new ArtifactResolver.Variant(
+                            65000 + set * 100 + slot * 10 + substats,
+                            sets[set], slot, 3, substats));
+                }
+            }
+        }
+        var artifacts = new ArtifactResolver(variants);
+        var nested = YamlLootTables.parse("""
+                choice:
+                  - reward:
+                      - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+                      - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+                      - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+                    weight: 33
+                  - reward:
+                      - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+                      - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+                      - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+                    weight: 17
+                """, resolver, artifacts);
+        var flat = YamlLootTables.parse("""
+                choice:
+                  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                """, resolver, artifacts);
+
+        for (var table : java.util.List.of(nested, flat)) {
+            int[][] counts = new int[3][2];
+            var random = new Random(2026);
+            for (int i = 0; i < 30_000; i++) {
+                var reward = table.roll("astaps.loot.choice", random);
+                assertEquals(1, reward.size());
+                int id = reward.keySet().iterator().next() - 65000;
+                int set = id / 100;
+                int slot = id % 100 / 10;
+                int substats = id % 10;
+                assertTrue(set >= 0 && set < 3);
+                assertTrue(slot >= 1 && slot <= 5);
+                assertTrue(substats == 1 || substats == 2);
+                counts[set][substats - 1]++;
+            }
+            for (int set = 0; set < 3; set++) {
+                assertEquals(0.66 / 3, counts[set][0] / 30_000.0, 0.02);
+                assertEquals(0.34 / 3, counts[set][1] / 30_000.0, 0.02);
+            }
+        }
+    }
+
+    @Test
     void missingArtifactPropertiesSelectOnlyAvailableNativeVariants() {
         var artifacts = new ArtifactResolver(java.util.List.of(
                 new ArtifactResolver.Variant(60140, "adventurer", 1, 1, 0),

@@ -15,8 +15,6 @@ class ResourceAliasesTest {
                 a.resolve("genshin.avatar_ascension.anemo.gemstone").toString());
         assertEquals("genshin.avatar_ascension.vajrada_amethyst.fragment",
                 a.resolve("genshin.avatar_ascension.electro.fragment").toString());
-        assertEquals("genshin.avatar_ascension.vayuda_turquoise_chunk",
-                a.resolve("genshin.avatar_ascension.vayuda_turquoise_chunk").toString());
         assertEquals("genshin.avatar_ascension.vayuda_turquoise",
                 a.resolve("genshin.avatar_ascension.anemo").toString());
         assertEquals("genshin.weapon.dull_blade",

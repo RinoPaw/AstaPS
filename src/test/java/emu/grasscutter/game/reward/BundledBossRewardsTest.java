@@ -33,7 +33,7 @@ final class BundledBossRewardsTest {
     }
 
     @Test
-    void bundledGemAndTalentRarityDistributionsUseTwoDecimalPercentages() throws Exception {
+    void bundledGemAndTalentRarityDistributionsUseMinimalPrecision() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         var matcher = Pattern.compile(
                 "reward: genshin\\.(avatar_ascension|talent_up)\\.[a-z_]+,"
@@ -48,7 +48,7 @@ final class BundledBossRewardsTest {
                 var pair = part.split(":");
                 assertEquals(2, pair.length);
                 assertTrue(pair[0].matches("[2-5]"));
-                assertTrue(pair[1].matches("[0-9]+\\.[0-9]{2}"), part);
+                assertTrue(pair[1].matches("[0-9]+(?:\\.[0-9]?[1-9])?"), part);
                 total = total.add(new java.math.BigDecimal(pair[1]));
             }
             assertEquals(0, total.compareTo(new java.math.BigDecimal("100.00")));

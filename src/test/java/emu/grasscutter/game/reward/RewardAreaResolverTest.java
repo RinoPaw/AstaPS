@@ -102,7 +102,7 @@ class RewardAreaResolverTest {
                 """, names::resolve);
         var css = CssRewards.parse("""
                 chest {
-                    --loot: seals;
+                    --astaps-loot-seals: 1;
                     --genshin-item-primogem: 2;
                 }
                 chest[city="1"] { --genshin-item-primogem: 0; }

@@ -59,7 +59,7 @@ chest {
 }
 
 chest[kind="common"][level="1~5"] {
-    --loot: minimal;
+    --astaps-loot-minimal: 1;
     --genshin-item-mora: 240~360;
     --genshin-item-sigil: 1;
 }
@@ -67,9 +67,17 @@ chest[kind="common"][level="1~5"] {
 
 Mora, Primogems, and regional sigils are likewise defined in CSS only.
 Integer counts or inclusive `low~high` ranges are supported for CSS item
-quantities; ranges are rolled at grant time. CSS item properties cascade
-independently of the complete `--loot` selection. A later fixed amount
-overrides an earlier range, and vice versa. A count of zero removes an item.
+quantities; ranges are rolled at grant time. Loot tables use typed CSS
+properties instead of a special list field: `--astaps-loot-xxxhigh: 1;`
+references `astaps.loot.xxxhigh` once, and
+`--astaps-loot-xxxhigh: 3;` executes it three times. These names must
+exist in `loot.yaml`; unknown names and the obsolete `--loot` syntax
+are errors. Different loot properties cascade independently: several
+tables may be selected together, a more specific value replaces the
+execution count for the *same* table, and zero disables that table.
+Loot execution counts must be nonnegative integers, not ranges.
+Fixed item quantities retain their own cascade rules: a later fixed
+amount overrides an earlier range and vice versa; zero removes an item.
 
 Ordinary Primogem baselines are 2/5/10/10 for Common/Exquisite/Precious/
 Luxurious. Older Mondstadt and Liyue areas give 0/2/5/10 except for the
@@ -86,9 +94,11 @@ fallback; conflicting native ownership does not select a city.
 CSS supports `[level="1~5"]` through `[level="26~"]`, with the upper
 bound open in the final range. Grade-only rules define Primogems and
 their city/area adjustments, but never loot, Mora, or regional sigils.
-Those three rewards require a matching native level. Missing, zero,
-invalid, or unmatched chest levels now fail with an explicit error before
-reward settlement; there is no highest-tier or lowest-tier fallback.
+Those three rewards require a matching native level. A world chest
+must select at least one loot table with a positive execution count;
+missing, zero, invalid, or unmatched chest levels fail explicitly
+before reward settlement, rather than granting only partial rewards.
+There is no highest-tier or lowest-tier fallback.
 CSS has no combat/puzzle selector; future selectors belong here, never
 in a YAML item table.
 

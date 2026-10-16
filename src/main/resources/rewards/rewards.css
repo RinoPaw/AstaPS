@@ -9,37 +9,37 @@ chest[kind="common"] {
 }
 
 chest[kind="common"][level="1~5"] {
-    --loot: minimal;
+    --astaps-loot-minimal: 1;
     --genshin-item-mora: 240~360;
     --genshin-item-sigil: 1;
 }
 
 chest[kind="common"][level="6~10"] {
-    --loot: nano;
+    --astaps-loot-nano: 1;
     --genshin-item-mora: 240~360;
     --genshin-item-sigil: 1;
 }
 
 chest[kind="common"][level="11~15"] {
-    --loot: micro;
+    --astaps-loot-micro: 1;
     --genshin-item-mora: 480~720;
     --genshin-item-sigil: 2;
 }
 
 chest[kind="common"][level="16~20"] {
-    --loot: light;
+    --astaps-loot-light: 1;
     --genshin-item-mora: 480~720;
     --genshin-item-sigil: 2;
 }
 
 chest[kind="common"][level="21~25"] {
-    --loot: low;
+    --astaps-loot-low: 1;
     --genshin-item-mora: 720~1080;
     --genshin-item-sigil: 3;
 }
 
 chest[kind="common"][level="26~"] {
-    --loot: medium;
+    --astaps-loot-medium: 1;
     --genshin-item-mora: 720~1080;
     --genshin-item-sigil: 3;
 }
@@ -49,19 +49,19 @@ chest[kind="exquisite"] {
 }
 
 chest[kind="exquisite"][level="1~20"] {
-    --loot: medium;
+    --astaps-loot-medium: 1;
     --genshin-item-mora: 720~1080;
     --genshin-item-sigil: 3;
 }
 
 chest[kind="exquisite"][level="21~25"] {
-    --loot: high;
+    --astaps-loot-high: 1;
     --genshin-item-mora: 960~1440;
     --genshin-item-sigil: 4;
 }
 
 chest[kind="exquisite"][level="26~"] {
-    --loot: xhigh;
+    --astaps-loot-xhigh: 1;
     --genshin-item-mora: 960~1440;
     --genshin-item-sigil: 4;
 }
@@ -71,19 +71,19 @@ chest[kind="precious"] {
 }
 
 chest[kind="precious"][level="1~20"] {
-    --loot: xhigh;
+    --astaps-loot-xhigh: 1;
     --genshin-item-mora: 960~1440;
     --genshin-item-sigil: 4;
 }
 
 chest[kind="precious"][level="21~25"] {
-    --loot: xxhigh;
+    --astaps-loot-xxhigh: 1;
     --genshin-item-mora: 1200~1800;
     --genshin-item-sigil: 5;
 }
 
 chest[kind="precious"][level="26~"] {
-    --loot: xxxhigh;
+    --astaps-loot-xxxhigh: 1;
     --genshin-item-mora: 1200~1800;
     --genshin-item-sigil: 5;
 }
@@ -93,19 +93,19 @@ chest[kind="luxurious"] {
 }
 
 chest[kind="luxurious"][level="1~20"] {
-    --loot: xxxhigh;
+    --astaps-loot-xxxhigh: 1;
     --genshin-item-mora: 1200~1800;
     --genshin-item-sigil: 5;
 }
 
 chest[kind="luxurious"][level="21~25"] {
-    --loot: max;
+    --astaps-loot-max: 1;
     --genshin-item-mora: 1440~2160;
     --genshin-item-sigil: 6;
 }
 
 chest[kind="luxurious"][level="26~"] {
-    --loot: ultra;
+    --astaps-loot-ultra: 1;
     --genshin-item-mora: 1440~2160;
     --genshin-item-sigil: 6;
 }
@@ -178,7 +178,7 @@ transpoint[scene="3"][point="6"] {
 
 /* Three Realms Gateway Offering, scene 7. */
 transpoint[scene="7"] {
-    --loot: three_realms_point;
+    --astaps-loot-three_realms_point: 1;
     --genshin-item-adventure_exp: 0;
     --genshin-item-primogem: 5;
 }

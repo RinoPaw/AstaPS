@@ -10,7 +10,6 @@ import emu.grasscutter.game.drop.LootCount;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -18,10 +17,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Evaluator;
 import org.jsoup.select.Selector;
 
-/**
- * CSS selects named loot tables and fixes item quantities.
- * Each --loot declaration is one complete list; item properties cascade independently.
- */
+/** CSS custom properties reference typed items and named loot tables. */
 public final class CssRewards {
     public record Selection(Map<Integer, Integer> items, Map<String, Integer> loot,
             Map<Integer, LootCount.Spec> rangedItems) {
@@ -35,7 +31,6 @@ public final class CssRewards {
         }
     }
 
-    private static final Pattern TABLE = Pattern.compile("^(.+?)(?:\\s+([0-9]+))?$");
     // A type (or *) followed by attribute filters is the only supported
     // selector syntax. Do not silently miscalculate priority for other CSS.
     private static final Pattern SIMPLE_SELECTOR = Pattern.compile(
@@ -88,19 +83,24 @@ public final class CssRewards {
 
             var fixed = new HashMap<Integer, Integer>();
             var ranged = new HashMap<Integer, LootCount.Spec>();
-            Map<String, Integer> selectedLoot = null;
+            var selectedLoot = new HashMap<String, Integer>();
             for (var declaration : style.getAllDeclarations()) {
                 String property = declaration.getProperty();
                 String value = declaration.getExpressionAsCSSString().trim();
-                if (!property.equals("--loot") && value.length() >= 2
+                if (value.length() >= 2
                         && ((value.startsWith("\"") && value.endsWith("\""))
                         || (value.startsWith("'") && value.endsWith("'")))) {
                     value = value.substring(1, value.length() - 1);
                 }
-                if (property.equals("--loot")) {
-                    selectedLoot = parseLoot(value, loot);
+                ResourceId resource = ResourceId.fromCssProperty(property);
+                if ("loot".equals(resource.type())) {
+                    String name = loot.resolveName(resource.toString());
+                    if (!value.matches("[0-9]+")) {
+                        throw new IllegalArgumentException(
+                                "Invalid loot execution count for " + resource + ": " + value);
+                    }
+                    selectedLoot.put(name, Integer.parseInt(value));
                 } else {
-                    ResourceId resource = ResourceId.fromCssProperty(property);
                     int id = items.resolve(resource.toString());
                     if (value.matches("[0-9]+\\s*~\\s*[0-9]+")) {
                         ranged.put(id, LootCount.parse(value.replaceAll("\\s+", "")));
@@ -147,7 +147,7 @@ public final class CssRewards {
                         + (css.matches("^[a-zA-Z][a-zA-Z0-9_-]*.*") ? 1 : 0);
                 rules.add(new Rule(Selector.evaluatorOf(normalizedSelector),
                         List.copyOf(levelRanges), Map.copyOf(fixed),
-                        selectedLoot, Map.copyOf(ranged), specificity, order++));
+                        Map.copyOf(selectedLoot), Map.copyOf(ranged), specificity, order++));
             }
         }
 
@@ -155,34 +155,12 @@ public final class CssRewards {
         return new CssRewards(rules);
     }
 
-    private static Map<String, Integer> parseLoot(String value, YamlLootTables loot) {
-        if (value.equals("none")) return Map.of();
-        var selected = new LinkedHashMap<String, Integer>();
-        for (String entry : value.split(",", -1)) {
-            // The CSS serializer may insert spaces around a qualified ID's dots.
-            // Resource IDs use those dots as separators, not CSS selector punctuation.
-            var match = TABLE.matcher(entry.trim().replaceAll("\\s*\\.\\s*", "."));
-            if (!match.matches()) {
-                throw new IllegalArgumentException("Invalid loot entry: " + entry);
-            }
-            String name = match.group(1).trim();
-            if ((name.startsWith("\"") && name.endsWith("\""))
-                    || (name.startsWith("'") && name.endsWith("'"))) {
-                name = name.substring(1, name.length() - 1);
-            }
-            String id = loot.resolveName(name);
-            int count = match.group(2) == null ? 1 : Integer.parseInt(match.group(2));
-            selected.merge(id, count, Math::addExact);
-        }
-        return Map.copyOf(selected);
-    }
-
     public Selection resolve(String type, Map<String, String> attributes) {
         var element = new Element(type);
         attributes.forEach(element::attr);
         var fixed = new HashMap<Integer, Integer>();
         var ranged = new HashMap<Integer, LootCount.Spec>();
-        Map<String, Integer> selectedLoot = Map.of();
+        var selectedLoot = new HashMap<String, Integer>();
         for (var rule : rules) {
             if (rule.selector.matches(element.root(), element)
                     && rule.levelRanges.stream().allMatch(range ->
@@ -191,7 +169,7 @@ public final class CssRewards {
                 rule.rangedItems.keySet().forEach(fixed::remove);
                 fixed.putAll(rule.items);
                 ranged.putAll(rule.rangedItems);
-                if (rule.loot != null) selectedLoot = rule.loot;
+                selectedLoot.putAll(rule.loot);
             }
         }
         return new Selection(fixed, selectedLoot, ranged);

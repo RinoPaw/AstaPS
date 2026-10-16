@@ -74,6 +74,9 @@ class BundledChestRewardsTest {
 
     @Test
     void twelveChestTiersContainNoFixedCurrencies() throws Exception {
+        String cssSource = resource("/rewards/rewards.css");
+        assertFalse(cssSource.contains("--loot:"));
+        assertTrue(cssSource.contains("--astaps-loot-xxxhigh: 1;"));
         var loot = loot();
         String[] tiers = {
             "minimal", "nano", "micro",

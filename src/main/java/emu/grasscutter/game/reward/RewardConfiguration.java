@@ -62,7 +62,8 @@ public final class RewardConfiguration {
 
     static void requireChestLoot(
             String targetType, CssRewards.Selection selected, Map<String, String> properties) {
-        if ("chest".equals(targetType) && selected.loot().isEmpty()) {
+        if ("chest".equals(targetType)
+                && selected.loot().values().stream().noneMatch(count -> count > 0)) {
             throw new IllegalStateException(
                     "No chest loot table matched (missing or invalid kind/level): " + properties);
         }

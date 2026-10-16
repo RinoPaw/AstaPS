@@ -258,7 +258,7 @@ public final class ItemIdRegistry {
                     : shortName(category, english);
             String type = resourceType(id, category, name, usage.getOrDefault(id, Set.of()));
             String key = name.isEmpty() || type == null ? null :
-                    ResourceAliases.GENSHIN.resolve(ResourceId.of("genshin", type, name)).toString();
+                    canonicalResource(type, name).toString();
             ids.put(id, new Info(id, english, key, category));
             if (key != null) putUnique(names, collisions, key, id);
             if (english != null && !english.isBlank()) {
@@ -400,6 +400,18 @@ public final class ItemIdRegistry {
                 };
             }
         };
+    }
+
+    private static ResourceId canonicalResource(String category, String name) {
+        if ("avatar_ascension".equals(category) && ASCENSION_GEM.matcher(name).matches()) {
+            int lastSeparator = name.lastIndexOf('_');
+            return ResourceId.of("genshin", category,
+                    name.substring(0, lastSeparator), name.substring(lastSeparator + 1));
+        }
+        if (name.startsWith("sigil.") && "currency".equals(category)) {
+            return ResourceId.parse("genshin.currency." + name);
+        }
+        return ResourceId.of("genshin", category, name);
     }
 
     public static boolean isInventoryResourceType(String type) {

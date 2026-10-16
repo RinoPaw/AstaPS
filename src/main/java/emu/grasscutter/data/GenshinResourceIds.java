@@ -98,35 +98,35 @@ public final class GenshinResourceIds {
     }
 
     public int resolve(String reference) {
-        ResourceId resource = ResourceId.parse(reference);
-        if (!resource.namespace().equals("genshin")) {
+        ResourceId resource = ResourceAliases.GENSHIN.resolve(ResourceId.parse(reference));
+        if (!(resource.size() >= 3 && resource.segment(0).equals("genshin"))) {
             throw new IllegalArgumentException("Unsupported resource namespace: " + reference);
         }
-        return switch (resource.type()) {
+        return switch (resource.segment(1)) {
             case "avatar" -> lookup(avatars, ambiguousAvatars, resource);
             case "recipe" -> lookup(recipes, ambiguousRecipes, resource);
             case "artifact" -> {
-                int setId = ArtifactResolver.nativeSetId(resource.name());
+                int setId = ArtifactResolver.nativeSetId(resource.tail(2));
                 if (!GameData.getReliquarySetDataMap().containsKey(setId)) {
                     throw new IllegalArgumentException("Missing native artifact set: " + reference);
                 }
                 yield setId;
             }
             default -> {
-                if (ItemIdRegistry.isInventoryResourceType(resource.type())) {
-                    yield items.resolve(reference);
+                if (ItemIdRegistry.isInventoryResourceType(resource.segment(1))) {
+                    yield items.resolve(resource.toString());
                 }
                 throw new IllegalArgumentException("Unsupported Genshin resource type: "
-                        + resource.type());
+                        + resource.segment(1));
             }
         };
     }
 
     private static int lookup(Map<String, Integer> index, Set<String> ambiguous, ResourceId resource) {
-        if (ambiguous.contains(resource.name())) {
+        if (ambiguous.contains(resource.tail(2))) {
             throw new IllegalArgumentException("Ambiguous native resource: " + resource);
         }
-        Integer id = index.get(resource.name());
+        Integer id = index.get(resource.tail(2));
         if (id == null) throw new IllegalArgumentException("Unknown native resource: " + resource);
         return id;
     }

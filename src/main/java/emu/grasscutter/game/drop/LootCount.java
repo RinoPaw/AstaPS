@@ -23,6 +23,15 @@ public final class LootCount {
         }
         String text = raw.toString().trim();
         if (text.contains(":") || text.contains(",")) return distribution(text);
+        if (text.contains(".")) {
+            // Native DropTable countRange decimals are expected values:
+            // floor(value) plus one with probability equal to the fractional part.
+            BigDecimal amount = decimal(text);
+            int floor = amount.intValue();
+            double fraction = amount.remainder(BigDecimal.ONE).doubleValue();
+            return fraction == 0 ? rng -> floor :
+                    rng -> floor + (rng.nextDouble() < fraction ? 1 : 0);
+        }
         if (text.contains("~") || text.contains(";")) {
             String[] parts = text.split("[~;]", -1);
             if (parts.length != 2) throw new IllegalArgumentException("Invalid range: " + text);

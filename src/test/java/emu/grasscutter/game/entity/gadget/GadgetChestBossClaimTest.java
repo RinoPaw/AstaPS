@@ -79,6 +79,17 @@ final class GadgetChestBossClaimTest {
     }
 
     @Test
+    void failedBossRollDoesNotMarkTheFlowerClaimed() {
+        chest.allowGrant = false;
+        claim(a);
+        assertTrue(chest.grants.isEmpty());
+        assertNotEquals(OPENED, flower.getState());
+        chest.allowGrant = true;
+        claim(a);
+        assertEquals(Map.of(100, 1), chest.grants);
+    }
+
+    @Test
     void playersFarFromTheFlowerDoNotQualify() {
         var far = new TestPlayer(TestPlayers.server(), 300);
         far.getPosition().set(new Position(a.getPosition().getX() + 500, a.getPosition().getY(), a.getPosition().getZ()));
@@ -141,13 +152,15 @@ final class GadgetChestBossClaimTest {
 
     private static final class TestChest extends GadgetChest {
         final Map<Integer, Integer> grants = new HashMap<>();
+        boolean allowGrant = true;
 
         TestChest(EntityGadget gadget) {
             super(gadget);
         }
 
         @Override
-        protected boolean grantBossChestFallback(Player player, SceneGadget meta) {
+        protected boolean grantWorldBossReward(Player player, SceneGadget meta, int resinCost) {
+            if (!allowGrant) return false;
             grants.merge(player.getUid(), 1, Integer::sum);
             return true;
         }

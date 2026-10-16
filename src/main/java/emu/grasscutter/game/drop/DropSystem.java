@@ -319,37 +319,34 @@ public final class DropSystem extends BaseGameSystem {
         return handleChestDrop(dropId, 1, bornFrom);
     }
 
-    public boolean handleBossChestDrop(String dropTag, Player player) {
-        int wl = player.getWorldLevel();
-        if (wl < 0) {
-            wl = 0;
+    /**
+     * Return native boss drops without granting, rewriting artifacts, or using preview data.
+     * The caller authorizes resin and inventory as one admission operation.
+     */
+    public List<GameItem> rollBossChestDrop(String dropTag, int worldLevel) {
+        if (dropTag == null || dropTag.isBlank()
+                || worldLevel < 0 || worldLevel >= bossLevel.length) {
+            throw new IllegalArgumentException(
+                    "Unidentified boss tag/world level: " + dropTag + "/" + worldLevel);
         }
-        if (wl >= bossLevel.length) {
-            wl = bossLevel.length - 1;
-        }
-        int dropId = queryDropData(dropTag, bossLevel[wl], chestReward);
-        if (dropId == 0 || !dropTable.containsKey(dropId)) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "handleBossChestDrop missing dropTable id={} tag={} wl={}",
-                            dropId,
-                            dropTag,
-                            wl);
-            return false;
+        int dropId = queryDropData(dropTag, bossLevel[worldLevel], chestReward);
+        if (dropId <= 0 || !dropTable.containsKey(dropId)) {
+            throw new IllegalStateException(
+                    "Missing native boss drop table: " + dropTag
+                            + " WL" + worldLevel + " root=" + dropId);
         }
         var dropData = dropTable.get(dropId);
+        if (isEmptyDropTable(dropData)) {
+            throw new IllegalStateException(
+                    "Empty native boss drop table: " + dropTag + " WL" + worldLevel);
+        }
         List<GameItem> items = new ArrayList<>();
         processDrop(dropData, 1, items);
         if (items.isEmpty()) {
-            return false;
+            throw new IllegalStateException(
+                    "Native boss drop rolled no rewards: " + dropTag + " WL" + worldLevel);
         }
-        try {
-            BossChestInstructorFilter.apply(items);
-        } catch (Throwable ignored) {
-        }
-        player.getInventory().addItems(items, ActionReason.OpenWorldBossChest);
-        player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(items));
-        return true;
+        return items;
     }
 
     private void processDrop(DropTableData dropData, int count, List<GameItem> items) {

@@ -249,3 +249,41 @@ CSS encodes the sigil qualifier with a hyphen, e.g.
 `--genshin-currency-sigil-anemo: 1;`. The unqualified
 `genshin.currency.sigil` still means the deferred region-derived sigil.
 Former `genshin.currency.anemo_sigil`-style names are not aliases.
+
+## Boss reward migration status (7.1)
+
+Normal open-world boss flowers still roll the native `ChestDrop.json` ->
+`Server/DropTableExcelConfigData.json` chain. They now use one
+`WORLD_BOSS` grant receipt per player and flower, recording the
+intended items and resin debit before payment. A confirmed payment
+cannot be retried blindly if inventory delivery fails. Missing
+`drop_tag` can use a source-backed `boss-drop-tags.json` mapping;
+unidentified flowers still refuse the claim. Battle Pass bookkeeping
+is not allowed to invalidate a completed resin payment.
+
+Weekly/Trounce Dungeons cannot be treated as ordinary 20-resin
+material Domains. The pinned 7.1 reverse audit reports 66
+`DUNGEON_BOSS` rows without a directly linked `statueDrop` root.
+There are separate `ChestDrop.json` entries with native
+`sourceType = 35`. The server now considers those roots only when
+the dungeon preview's 113xxx boss-exclusive talent material IDs
+identify **exactly one** candidate. Missing preview counts do not
+erase identity evidence; the preview never supplies granted counts.
+Level-60 rows with no exclusive talent materials, unmatched IDs,
+ambiguous sources and absent native nodes are not assigned a guessed
+reward table.
+
+Weekly boss cost is taken from the dungeon record or the
+claiming native flower's `boss_chest.resin`, if it is explicitly
+30 or 60. A Boss Dungeon may claim only once per run with a single
+ordinary-resin roll. Unidentified costs and unsupported payment
+multipliers fail before charging. The implementation has not yet
+verified the game's cross-boss three-discount weekly counter or
+all Boss Dungeon-to-native-source joins. Do not treat this candidate
+match as 7.1 drop-rate verification or complete playable coverage.
+
+Boss rewards have **not** been copied into `loot.yaml` or selected
+by `rewards.css` yet: doing so without verified source mappings
+would create competing authorities and possibly fabricate reward
+probabilities. World-boss and weekly-boss end-to-end gameplay
+validation is still required before upstream submission.

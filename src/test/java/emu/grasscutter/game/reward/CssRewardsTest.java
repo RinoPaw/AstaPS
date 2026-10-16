@@ -41,6 +41,32 @@ class CssRewardsTest {
     }
 
     @Test
+    void commaGroupedLevelRangesKeepIndependentSelectors() {
+        var css = CssRewards.parse("""
+                boss[type="world"][level="93~99"],
+                boss[type="world"][level="100~104"],
+                boss[type="weekly"][level="90~"] {
+                    --genshin-currency-mora: 6000;
+                }
+                boss[type="world"][tag="无相之雷"][level="93~99"] {
+                    --genshin-currency-primogem: 2;
+                }
+                """, items, loot);
+        assertEquals(6000, css.resolve("boss", Map.of(
+                "type", "world", "level", "93")).items().get(202));
+        assertEquals(6000, css.resolve("boss", Map.of(
+                "type", "world", "level", "104")).items().get(202));
+        assertEquals(6000, css.resolve("boss", Map.of(
+                "type", "weekly", "level", "105")).items().get(202));
+        assertTrue(css.resolve("boss", Map.of(
+                "type", "world", "level", "105")).items().isEmpty());
+        var tagged = css.resolve("boss", Map.of(
+                "type", "world", "tag", "无相之雷", "level", "95"));
+        assertEquals(6000, tagged.items().get(202));
+        assertEquals(2, tagged.items().get(201));
+    }
+
+    @Test
     void independentNamespacedLootPropertiesCanSelectSeveralTables() {
         var css = CssRewards.parse("""
                 chest[grade="common"] {

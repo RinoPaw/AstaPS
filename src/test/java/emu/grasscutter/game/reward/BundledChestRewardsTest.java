@@ -162,11 +162,11 @@ class BundledChestRewardsTest {
                     Map.of("type", "normal", "grade", kinds[k], "city", "1")).items().get(201).intValue());
             for (String area : new String[]{"10", "77"}) {
                 assertEquals(base[k], css.resolve("chest", Map.of(
-                        "grade", kinds[k], "city", "1", "area", area))
+                        "type", "normal", "grade", kinds[k], "city", "1", "area", area))
                         .items().get(201).intValue());
             }
             var selected = css.resolve("chest", Map.of(
-                    "grade", kinds[k], "city", "2", "level", "26"));
+                    "type", "normal", "grade", kinds[k], "city", "2", "level", "26"));
             for (int seed = 0; seed < 32; seed++) {
                 var rolled = RewardRoller.roll(selected, loot, new Random(seed),
                         new RewardContext(3, 0, "liyue"));

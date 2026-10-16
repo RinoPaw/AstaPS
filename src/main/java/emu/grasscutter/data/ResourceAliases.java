@@ -1,6 +1,5 @@
 package emu.grasscutter.data;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,7 +15,7 @@ public final class ResourceAliases {
     public ResourceAliases(Map<ResourceId, ResourceId> aliases) {
         this.aliases = Map.copyOf(aliases);
         for (var entry : aliases.entrySet()) {
-            if (entry.getKey().equals(entry.getValue())) {
+            if (entry.getValue().startsWith(entry.getKey())) {
                 throw new IllegalArgumentException("Self-referential resource alias: " + entry.getKey());
             }
             resolve(entry.getKey());
@@ -26,7 +25,7 @@ public final class ResourceAliases {
     public ResourceId resolve(ResourceId input) {
         var path = input;
         var seen = new HashSet<ResourceId>();
-        while (true) {
+        for (int steps = 0; steps <= aliases.size() * 4 + 4; steps++) {
             if (!seen.add(path)) {
                 throw new IllegalArgumentException("Cyclic resource alias: " + input);
             }
@@ -40,6 +39,7 @@ public final class ResourceAliases {
             if (best == null) return path;
             path = path.replacePrefix(best, aliases.get(best));
         }
+        throw new IllegalArgumentException("Unbounded resource alias expansion: " + input);
     }
 
     public ResourceId resolve(String input) {

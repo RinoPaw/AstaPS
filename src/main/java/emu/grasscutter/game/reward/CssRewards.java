@@ -51,7 +51,7 @@ public final class CssRewards {
     // conventional CSS property identifiers. Encode declarations only; leave
     // CSS selectors, values and the canonical resource IDs unchanged.
     private static final Pattern RESOURCE_DECLARATION = Pattern.compile(
-            "(?m)^([ \\t]*)([a-z][a-z0-9_]*(?:\\.[\\p{L}\\p{N}_-]+){2,})\\s*:");
+            "(?m)(^|[;{])(\\s*)([a-z][a-z0-9_]*(?:\\.[\\p{L}\\p{N}_-]+){2,})\\s*:");
 
     private record AttributeRange(String name, long min, Long max) {
         boolean matches(Map<String, String> attributes) {
@@ -98,9 +98,9 @@ public final class CssRewards {
         var propertyBuffer = new StringBuffer();
         while (propertyMatcher.find()) {
             String surrogate = "--resource-path-" + originalProperties.size();
-            originalProperties.put(surrogate, propertyMatcher.group(2));
+            originalProperties.put(surrogate, propertyMatcher.group(3));
             propertyMatcher.appendReplacement(propertyBuffer, Matcher.quoteReplacement(
-                    propertyMatcher.group(1) + surrogate + ":"));
+                    propertyMatcher.group(1) + propertyMatcher.group(2) + surrogate + ":"));
         }
         propertyMatcher.appendTail(propertyBuffer);
         // Preserve unquoted count ranges and distributions across CSS tokenization.

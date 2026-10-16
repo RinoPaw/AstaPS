@@ -208,42 +208,42 @@ blossom[type="wealth"][world_level="6~9"] {
 /* Blossoms of Revelation: book counts are independent inclusive ranges. */
 
 blossom[type="revelation"][world_level="0"] {
-    genshin.avatar_level_up.wanderers_advice: 7~8;
-    genshin.avatar_level_up.adventurers_experience: 3~4;
+    genshin.avatar_up.wanderers_advice: 7~8;
+    genshin.avatar_up.adventurers_experience: 3~4;
     genshin.experience.companionship: 10;
 }
 
 blossom[type="revelation"][world_level="1"] {
-    genshin.avatar_level_up.wanderers_advice: 10~12;
-    genshin.avatar_level_up.adventurers_experience: 5~6;
+    genshin.avatar_up.wanderers_advice: 10~12;
+    genshin.avatar_up.adventurers_experience: 5~6;
     genshin.experience.companionship: 15;
 }
 
 blossom[type="revelation"][world_level="2"] {
-    genshin.avatar_level_up.adventurers_experience: 10~11;
+    genshin.avatar_up.adventurers_experience: 10~11;
     genshin.experience.companionship: 15;
 }
 
 blossom[type="revelation"][world_level="3"] {
-    genshin.avatar_level_up.adventurers_experience: 13~14;
+    genshin.avatar_up.adventurers_experience: 13~14;
     genshin.experience.companionship: 15;
 }
 
 blossom[type="revelation"][world_level="4"] {
-    genshin.avatar_level_up.adventurers_experience: 6~7;
-    genshin.avatar_level_up.heros_wit: 2~3;
+    genshin.avatar_up.adventurers_experience: 6~7;
+    genshin.avatar_up.heros_wit: 2~3;
     genshin.experience.companionship: 15;
 }
 
 blossom[type="revelation"][world_level="5"] {
-    genshin.avatar_level_up.adventurers_experience: 6~7;
-    genshin.avatar_level_up.heros_wit: 3~4;
+    genshin.avatar_up.adventurers_experience: 6~7;
+    genshin.avatar_up.heros_wit: 3~4;
     genshin.experience.companionship: 20;
 }
 
 blossom[type="revelation"][world_level="6~9"] {
-    genshin.avatar_level_up.adventurers_experience: 6~7;
-    genshin.avatar_level_up.heros_wit: 4~5;
+    genshin.avatar_up.adventurers_experience: 6~7;
+    genshin.avatar_up.heros_wit: 4~5;
     genshin.experience.companionship: 20;
 }
 

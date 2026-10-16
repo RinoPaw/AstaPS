@@ -82,6 +82,48 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void fullFiveSlotArtifactSubtableCanBeInlinedWithoutChangingProbabilities() {
+        var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
+        for (int slot = 1; slot <= 5; slot++) {
+            variants.add(new ArtifactResolver.Variant(57000 + slot,
+                    "the_exile", slot, 4, 2));
+        }
+        var artifacts = new ArtifactResolver(variants);
+        var nested = YamlLootTables.parse("""
+                slots: &slots
+                  - {reward: genshin.artifact.the_exile, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
+                  - {reward: genshin.artifact.the_exile, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
+                  - {reward: genshin.artifact.the_exile, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
+                  - {reward: genshin.artifact.the_exile, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
+                  - {reward: genshin.artifact.the_exile, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
+                choice:
+                  - {reward: *slots, weight: 2}
+                  - {reward: genshin.currency.mora, weight: 3}
+                """, resolver, artifacts);
+        var flat = YamlLootTables.parse("""
+                choice:
+                  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 2}
+                  - {reward: genshin.currency.mora, weight: 3}
+                """, resolver, artifacts);
+        assertFalse(flat.contains("astaps.loot.slots"));
+        for (var pool : java.util.List.of(nested, flat)) {
+            var counts = new java.util.HashMap<Integer, Integer>();
+            var random = new Random(71);
+            for (int i = 0; i < 30_000; i++) {
+                var reward = pool.roll("astaps.loot.choice", random);
+                assertEquals(1, reward.values().stream().mapToInt(Integer::intValue).sum());
+                int id = reward.keySet().iterator().next();
+                counts.merge(id, 1, Integer::sum);
+            }
+            assertEquals(0.60, counts.getOrDefault(202, 0) / 30_000.0, 0.02);
+            for (int slot = 1; slot <= 5; slot++) {
+                assertEquals(0.08, counts.getOrDefault(57000 + slot, 0) / 30_000.0,
+                        0.02, "slot " + slot);
+            }
+        }
+    }
+
+    @Test
     void missingArtifactPropertiesSelectOnlyAvailableNativeVariants() {
         var artifacts = new ArtifactResolver(java.util.List.of(
                 new ArtifactResolver.Variant(60140, "adventurer", 1, 1, 0),

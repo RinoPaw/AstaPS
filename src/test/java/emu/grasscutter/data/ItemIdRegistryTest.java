@@ -134,8 +134,11 @@ class ItemIdRegistryTest {
             for (String grade : grades) {
                 int id = ++nextId;
                 String name = family + "_" + grade;
-                assertEquals(id, registry.resolve("genshin.avatar_ascension." + name));
-                assertEquals("genshin.avatar_ascension." + name, registry.describe(id).key());
+                String qualified = "genshin.avatar_ascension." + family + "." + grade;
+                assertEquals(id, registry.resolve(qualified));
+                assertEquals(qualified, registry.describe(id).key());
+                assertThrows(IllegalArgumentException.class,
+                        () -> registry.resolve("genshin.avatar_ascension." + name));
                 assertThrows(IllegalArgumentException.class,
                         () -> registry.resolve("genshin.material." + name));
             }

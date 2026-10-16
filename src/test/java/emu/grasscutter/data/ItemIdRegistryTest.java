@@ -79,7 +79,11 @@ class ItemIdRegistryTest {
     void itemIdsAreStrictlyTypedAndExistInLoadedResources() {
         var names = new ItemIdRegistry(Map.of(202, "Mora", 104003, "Hero's Wit"));
         assertEquals(202, names.resolve("genshin.currency.mora"));
-        assertEquals(104003, names.resolve("genshin.avatar_level_up.heros_wit"));
+        assertEquals(104003, names.resolve("genshin.avatar_up.heros_wit"));
+        assertThrows(IllegalArgumentException.class,
+                () -> names.resolve("genshin.avatar_level_up.heros_wit"));
+        assertThrows(IllegalArgumentException.class,
+                () -> names.resolve("genshin.weapon_level_up.enhancement_ore"));
         assertThrows(IllegalArgumentException.class,
                 () -> names.resolve("genshin.item.mora"));
         assertEquals(202, names.resolve("202"));
@@ -110,21 +114,21 @@ class ItemIdRegistryTest {
                 105001, "Artifact EXP Materials",
                 105002, "Artifact EXP Materials",
                 106, "Currencies and Virtual Items"));
-        assertEquals(104003, registry.resolve("genshin.avatar_level_up.heros_wit"));
-        assertEquals(104011, registry.resolve("genshin.weapon_level_up.enhancement_ore"));
-        assertEquals(104012, registry.resolve("genshin.weapon_level_up.fine_ore"));
-        assertEquals(104013, registry.resolve("genshin.weapon_level_up.mystic_ore"));
-        assertEquals(105001, registry.resolve("genshin.artifact_level_up.unction"));
-        assertEquals(105002, registry.resolve("genshin.artifact_level_up.essence"));
+        assertEquals(104003, registry.resolve("genshin.avatar_up.heros_wit"));
+        assertEquals(104011, registry.resolve("genshin.weapon_up.enhancement_ore"));
+        assertEquals(104012, registry.resolve("genshin.weapon_up.fine_ore"));
+        assertEquals(104013, registry.resolve("genshin.weapon_up.mystic_ore"));
+        assertEquals(105001, registry.resolve("genshin.artifact_up.unction"));
+        assertEquals(105002, registry.resolve("genshin.artifact_up.essence"));
         assertEquals(106, registry.resolve("genshin.currency.resin"));
         assertThrows(IllegalArgumentException.class,
                 () -> registry.resolve("genshin.material.heros_wit"));
         assertThrows(IllegalArgumentException.class,
-                () -> registry.resolve("genshin.weapon_level_up.mystic_enhancement_ore"));
+                () -> registry.resolve("genshin.weapon_up.mystic_enhancement_ore"));
         assertThrows(IllegalArgumentException.class,
                 () -> registry.resolve("genshin.resource.resin"));
         assertThrows(IllegalArgumentException.class,
-                () -> registry.resolve("genshin.artifact_level_up.mystic_ore"));
+                () -> registry.resolve("genshin.artifact_up.mystic_ore"));
     }
 
     @Test
@@ -180,14 +184,14 @@ class ItemIdRegistryTest {
                 Map.of(701, Set.of(ItemIdRegistry.Usage.AVATAR_ASCENSION),
                         702, Set.of(ItemIdRegistry.Usage.WEAPON_ASCENSION),
                         703, Set.of(ItemIdRegistry.Usage.TALENT_LEVEL_UP)));
-        assertEquals("genshin.avatar_level_up.heros_wit", registry.describe(104003).key());
-        assertEquals("genshin.weapon_level_up.enhancement_ore", registry.describe(104011).key());
-        assertEquals("genshin.artifact_level_up.unction", registry.describe(105001).key());
+        assertEquals("genshin.avatar_up.heros_wit", registry.describe(104003).key());
+        assertEquals("genshin.weapon_up.enhancement_ore", registry.describe(104011).key());
+        assertEquals("genshin.artifact_up.unction", registry.describe(105001).key());
         assertEquals("genshin.avatar_ascension.avatar_ascension_fragment",
                 registry.describe(701).key());
         assertEquals("genshin.weapon_ascension.weapon_ascension_crystal",
                 registry.describe(702).key());
-        assertEquals("genshin.talent_level_up.talent_upgrade_book", registry.describe(703).key());
+        assertEquals("genshin.talent_up.talent_upgrade_book", registry.describe(703).key());
         assertThrows(IllegalArgumentException.class,
                 () -> registry.resolve("genshin.avatar_exp.heros_wit"));
         assertThrows(IllegalArgumentException.class,
@@ -211,7 +215,7 @@ class ItemIdRegistryTest {
                 704, Set.of(ItemIdRegistry.Usage.AVATAR_ASCENSION)));
         assertEquals("genshin.material.shared_development_material", registry.describe(701).key());
         assertEquals("genshin.weapon_ascension.weapon_only_crystal", registry.describe(702).key());
-        assertEquals("genshin.talent_level_up.talent_only_book", registry.describe(703).key());
+        assertEquals("genshin.talent_up.talent_only_book", registry.describe(703).key());
         assertEquals("genshin.avatar_ascension.avatar_only_fragment", registry.describe(704).key());
         assertEquals("genshin.weapon_crafting.northlander_sword_billet", registry.describe(705).key());
         assertEquals(Set.of("genshin.material.shared_development_material"),

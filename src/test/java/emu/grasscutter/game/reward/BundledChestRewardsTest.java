@@ -86,7 +86,7 @@ class BundledChestRewardsTest {
             "xxhigh", "xxxhigh",
             "max", "ultra"
         };
-        assertEquals(43, loot.names().size()); // 12 chest tiers, 23 shared pools, one point, seven ley-line tiers
+        assertEquals(36, loot.names().size()); // 12 chest tiers, 23 shared pools, one point
         for (String tier : tiers) assertTrue(loot.contains("astaps.loot." + tier), tier);
         assertTrue(loot.contains("astaps.loot.three_realms_point"));
         for (String pool : new String[]{

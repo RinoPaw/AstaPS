@@ -21,15 +21,17 @@ class BlossomRewardsTest {
                 104002, "Adventurer's Experience",
                 104003, "Hero's Wit"));
         String yaml = RewardConfiguration.readBundled("loot.yaml");
-        String prefix = "# Ley-line Blossoms of Revelation";
-        int start = yaml.indexOf(prefix);
-        assertTrue(start >= 0, "Missing bundled ley-line pools");
-        var loot = YamlLootTables.parse(yaml.substring(start), items::resolve);
+        assertFalse(yaml.contains("revelation_"), "Blossom rewards must not use loot.yaml");
+        var loot = YamlLootTables.parse("{}", items::resolve);
         String css = RewardConfiguration.readBundled("rewards.css");
         int cssStart = css.indexOf("/* Ley-line blossoms:");
         assertTrue(cssStart >= 0, "Missing bundled blossom selectors");
+        String selectors = css.substring(cssStart);
+        assertEquals(20, selectors.lines().filter(line ->
+                line.startsWith("blossom[kind=")).count());
+        assertFalse(selectors.contains("--astaps-loot-"));
         return new RewardConfiguration(loot, CssRewards.parse(
-                css.substring(cssStart), items, loot));
+                selectors, items, loot));
     }
 
     @Test

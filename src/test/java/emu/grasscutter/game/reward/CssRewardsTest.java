@@ -325,36 +325,6 @@ class CssRewardsTest {
     }
 
     @Test
-    void worldLevelRangesSelectBlossomsWithoutMatchingChestLevels() {
-        var registry = new ItemIdRegistry(Map.of(105, "Companionship EXP"));
-        var css = CssRewards.parse("""
-                blossom[world_level="0"] { --genshin-experience-companionship: 10; }
-                blossom[world_level="1~4"] { --genshin-experience-companionship: 15; }
-                blossom[world_level="5~9"] { --genshin-experience-companionship: 20; }
-                """, registry, loot);
-        for (int wl = 0; wl <= 9; wl++) {
-            int expected = wl == 0 ? 10 : wl <= 4 ? 15 : 20;
-            assertEquals(Map.of(105, expected),
-                    css.resolve("blossom", Map.of("world_level", Integer.toString(wl))).items(),
-                    "WL" + wl);
-        }
-        assertTrue(css.resolve("blossom", Map.of("level", "3")).items().isEmpty());
-        assertTrue(css.resolve("blossom", Map.of("world_level", "10")).items().isEmpty());
-        assertTrue(css.resolve("blossom", Map.of("world_level", "unknown")).items().isEmpty());
-    }
-
-    @Test
-    void invalidWorldLevelRangesAreRejected() {
-        for (String range : new String[]{"5~1", "x~4", "1~x", "~4"}) {
-            assertThrows(IllegalArgumentException.class, () ->
-                    CssRewards.parse(
-                            "blossom[world_level=\\"" + range
-                                    + "\\"] { --genshin-currency-mora: 1; }",
-                            items, loot), range);
-        }
-    }
-
-    @Test
     void invalidLevelRangesAreRejected() {
         for (String range : new String[]{"10~5", "a~5", "2~x", "~5"}) {
             assertThrows(IllegalArgumentException.class, () ->

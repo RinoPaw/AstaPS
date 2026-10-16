@@ -80,10 +80,13 @@ public final class RewardConfiguration {
         boolean experience = selected.items().getOrDefault(102, 0) > 0;
         boolean companionship = selected.items().getOrDefault(105, 0) > 0;
         boolean wealth = selected.items().getOrDefault(202, 0) > 0;
-        boolean revelation = selected.loot().values().stream().anyMatch(n -> n > 0);
-        if (!experience || !companionship
-                || !("wealth".equals(kind) && wealth && !revelation
-                    || "revelation".equals(kind) && revelation && !wealth)) {
+        boolean books = java.util.Set.of(104001, 104002, 104003).stream()
+                .anyMatch(id -> selected.items().getOrDefault(id, 0) > 0
+                        || selected.rangedItems().containsKey(id));
+        boolean usesLoot = !selected.loot().isEmpty() || !selected.rangedLoot().isEmpty();
+        if (!experience || !companionship || usesLoot
+                || !("wealth".equals(kind) && wealth && !books
+                    || "revelation".equals(kind) && books && !wealth)) {
             throw new IllegalStateException("No complete blossom reward configured for " + properties);
         }
     }

@@ -40,16 +40,16 @@ public final class CssRewards {
     // selector syntax. Do not silently miscalculate priority for other CSS.
     private static final Pattern SIMPLE_SELECTOR = Pattern.compile(
             "^(?:\\*|[a-zA-Z][a-zA-Z0-9_-]*)(?:\\[[^\\[\\]]+\\])*$");
-    // Quoted numeric ranges apply to chest level and blossom world_level.
-    // A missing upper bound ("26~") is open ended.
+    // A quoted level value such as "1~5" selects an inclusive numeric range.
+    // A missing upper bound ("26~") means all levels from 26 onwards.
     private static final Pattern LEVEL_RANGE = Pattern.compile(
-            "\\[\\s*(level|world_level)\\s*=\\s*([\"'])([0-9]+)~([0-9]*)\\2\\s*\\]");
+            "\\[\\s*level\\s*=\\s*([\"'])([0-9]+)~([0-9]*)\\1\\s*\\]");
     private static final Pattern MALFORMED_LEVEL_RANGE = Pattern.compile(
-            "\\[\\s*(?:level|world_level)\\s*=\\s*([\"'])[^\"']*~[^\"']*\\1\\s*\\]");
+            "\\[\\s*level\\s*=\\s*([\"'])[^\"']*~[^\"']*\\1\\s*\\]");
 
-    private record LevelRange(String attribute, long min, Long max) {
+    private record LevelRange(long min, Long max) {
         boolean matches(Map<String, String> attributes) {
-            String value = attributes.get(attribute);
+            String value = attributes.get("level");
             if (value == null) return false;
             try {
                 long actual = Long.parseLong(value);
@@ -134,15 +134,14 @@ public final class CssRewards {
                 var selectorBuffer = new StringBuffer();
                 var matcher = LEVEL_RANGE.matcher(css);
                 while (matcher.find()) {
-                    long min = Long.parseLong(matcher.group(3));
-                    Long max = matcher.group(4).isEmpty()
-                            ? null : Long.parseLong(matcher.group(4));
+                    long min = Long.parseLong(matcher.group(2));
+                    Long max = matcher.group(3).isEmpty()
+                            ? null : Long.parseLong(matcher.group(3));
                     if (max != null && max < min) {
                         throw new IllegalArgumentException("Reversed reward level range: " + css);
                     }
-                    String attribute = matcher.group(1);
-                    levelRanges.add(new LevelRange(attribute, min, max));
-                    matcher.appendReplacement(selectorBuffer, "[" + attribute + "]");
+                    levelRanges.add(new LevelRange(min, max));
+                    matcher.appendReplacement(selectorBuffer, "[level]");
                 }
                 matcher.appendTail(selectorBuffer);
                 String normalizedSelector = selectorBuffer.toString();

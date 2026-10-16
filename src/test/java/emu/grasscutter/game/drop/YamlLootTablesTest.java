@@ -41,6 +41,28 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void numericGradeAliasesWorkInsideLootYaml() {
+        var registry = new ItemIdRegistry(Map.of(
+                8101, "Vayuda Turquoise Sliver",
+                8102, "Vayuda Turquoise Gemstone",
+                8201, "Teachings of Freedom",
+                8202, "Philosophies of Freedom"));
+        var tables = YamlLootTables.parse("""
+                numbered:
+                  - {reward: genshin.avatar_ascension.anemo.2}
+                  - {reward: genshin.avatar_ascension.vayuda_turquoise.5}
+                  - {reward: genshin.talent_up.freedom.2}
+                  - {reward: genshin.talent_up.freedom.4}
+                """, registry::resolve);
+        assertEquals(Map.of(8101, 1, 8102, 1, 8201, 1, 8202, 1),
+                tables.roll("astaps.loot.numbered", new Random(17)));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                invalid:
+                  - {reward: genshin.talent_up.freedom.5}
+                """, registry::resolve));
+    }
+
+    @Test
     void yamlShortKeysBecomeGlobalLootIds() {
         var tables = parse("""
                 surprise:

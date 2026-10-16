@@ -62,6 +62,11 @@ final class BundledBossRewardsTest {
         assertFalse(loot.contains("astaps.loot.world_electro_hypostasis_level_45_artifacts_variant_6"));
         assertTrue(yaml.contains("reward: genshin.artifact.the_exile, properties: {slot: \"1~5\", rarity: 4, substats: 2}, weight: 1"));
 
+        // Shared Boss artifact pools encode equivalent 33:17 substat odds directly.
+        assertTrue(yaml.contains("substats: \\"1:66, 2:34\\""));
+        assertTrue(yaml.contains("substats: \\"2:66, 3:34\\""));
+        assertTrue(yaml.contains("substats: \\"3:66, 4:34\\""));
+
         // Reusable pools have content-based names; Boss-level entry names are stable.
         assertEquals(1707, loot.names().size());
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));

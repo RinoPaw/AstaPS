@@ -52,7 +52,7 @@ final class BundledBossRewardsTest {
                 Map.entry(305, "Anemo Sigil"),
                 Map.entry(307, "Geo Sigil")));
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known), loot);
-        assertEquals(968, stylesheet.lines()
+        assertEquals(975, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertEquals(211, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
@@ -74,7 +74,7 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1405, loot.names().size());
+        assertEquals(1412, loot.names().size());
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.weekly_northlander_extras"));
@@ -84,6 +84,8 @@ final class BundledBossRewardsTest {
         assertTrue(loot.contains("astaps.loot.weekly_artifacts_rare"));
         assertTrue(loot.contains("astaps.loot.world_five_star_artifacts_low"));
         assertTrue(loot.contains("astaps.loot.world_five_star_artifacts_guaranteed"));
+        assertTrue(loot.contains("astaps.loot.gems_geo_hydro_basic"));
+        assertTrue(loot.contains("astaps.loot.gems_cryo_hydro_basic"));
         assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p2_weapon_billets"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+_[a-z0-9_]+:.*")));
@@ -153,6 +155,16 @@ final class BundledBossRewardsTest {
         assertEquals(200, highWorld.items().get(101));
         assertEquals(1, highWorld.loot().get("astaps.loot.world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1"));
         assertEquals(1, highWorld.loot().get("astaps.loot.world_five_star_artifacts_guaranteed"));
+
+        var fixedGems = css.resolve("boss", Map.of(
+                "type", "world", "tag", "solitary_suanni", "level", "82"));
+        assertEquals(1, fixedGems.loot().get("astaps.loot.gems_cryo_hydro_basic"));
+        assertEquals(1, css.resolve("boss", Map.of(
+                "type", "world", "tag", "chimera_sky_roamer", "level", "82"))
+                .loot().get("astaps.loot.gems_cryo_hydro_basic"));
+        assertFalse(css.resolve("boss", Map.of(
+                "type", "world", "tag", "solitary_suanni", "level", "0"))
+                .loot().containsKey("astaps.loot.gems_cryo_hydro_basic"));
 
         var mediumWorld = css.resolve("boss", Map.of(
                 "type", "world", "tag", "electro_hypostasis", "level", "82"));

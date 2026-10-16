@@ -1013,7 +1013,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
         var reward = emu.grasscutter.game.reward.RewardConfiguration.current().roll(
                 "transpoint",
                 java.util.Map.of(
-                        "kind", kind.name().toLowerCase(java.util.Locale.ROOT),
+                        "type", kind.name().toLowerCase(java.util.Locale.ROOT),
                         "scene", Integer.toString(sceneId),
                         "point", Integer.toString(pointId)),
                 java.util.concurrent.ThreadLocalRandom.current());

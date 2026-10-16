@@ -57,6 +57,11 @@ final class BundledBossRewardsTest {
         assertEquals(250, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
 
+        // Equal-weight five-slot artifact pools are inlined into their callers.
+        assertFalse(loot.contains("astaps.loot.weekly_shouki_no_kami_level_30_artifacts_variant_7"));
+        assertFalse(loot.contains("astaps.loot.world_electro_hypostasis_level_45_artifacts_variant_6"));
+        assertTrue(yaml.contains("reward: genshin.artifact.the_exile, properties: {slot: \"1~5\", rarity: 4, substats: 2}, weight: 1"));
+
         // Shared Boss rewards depend on type/level. Specific loot still needs a tag.
         var unidentified = css.resolve("boss", Map.of("type", "world", "level", "105"));
         assertEquals(200, unidentified.items().get(102));

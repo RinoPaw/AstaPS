@@ -496,13 +496,8 @@ boss[type="world"][level="93~"] {
     --genshin-experience-character: 200;
 }
 
-/* Weekly Boss native ChestDrop sourceType 35: 7.1 baseline by source tag and native level.
-   AUDIT STATUS: staged only. These 10 historical source tags do not cover all
-   7.1 Trounce Dungeons. The native artifact and billet subtables are resolved;
-   missing Dungeon-to-tag joins and 7.1 Resin discount validation still block
-   this section from being an authorized live payout source.
-   These selectors require a claim context with boss[type=weekly][level].
-   Boss-exclusive material choices and artifacts live in loot.yaml. */
+/* Weekly Boss drops (ChestDrop sourceType 35); staged only.
+   Dungeon mapping and weekly Resin discounts remain unverified. */
 /* Stormterror (风魔龙) */
 boss[type="weekly"][tag="stormterror"][level="1~4"] {
     --astaps-loot-weekly_stormterror_level_1: 1;
@@ -1514,10 +1509,8 @@ boss[type="weekly"][tag="shouki_no_kami"][level="120~"] {
 }
 
 
-/* 7.1 normal Boss ChestDrop sourceType 34: exact tag and monster-level brackets.
-   World Boss loot tables still require a verified source tag and level.
-   The native “精密发条机关” family is excluded: its artifact leaves lack a verified
-   semantic resource mapping. No partial reward selector is provided. */
+/* World Boss drops (ChestDrop sourceType 34); requires a source tag and level.
+   Precision Clockwork source omitted: artifact identities unresolved. */
 /* Frostnight Scion (霜夜灵嗣) */
 boss[type="world"][tag="frostnight_scion"][level="1~4"] {
     --astaps-loot-world_frostnight_scion_level_1: 1;

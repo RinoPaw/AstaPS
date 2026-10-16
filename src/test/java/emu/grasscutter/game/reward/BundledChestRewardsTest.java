@@ -229,6 +229,83 @@ class BundledChestRewardsTest {
     }
 
     @Test
+    void mergedBattleAndPuzzlePoolsUseNativePuzzleOreDistributions() throws Exception {
+        // Native Mondstadt puzzle roots 52010000 through 52011100,
+        // and their +14 ore sub-tables. Battle EXP/book pools remain intact.
+        var loot = loot();
+        String[] tiers = {
+                "minimal", "nano", "micro", "light", "low", "medium",
+                "high", "xhigh", "xxhigh", "xxxhigh", "max", "ultra"
+        };
+        double[][] expected = {
+                {2.1, 0.2, 0}, {2.6, 0.4, 0}, {3.1, 0.6, 0},
+                {4.1, 0.6, 0}, {5.1, 0.6, 0}, {0, 3.1, 0},
+                {0, 4.1, 0}, {0, 2.1, 1}, {0, 3.1, 1},
+                {0, 0, 3}, {0, 0, 3.1}, {0, 0, 3.2}
+        };
+        int[] ids = {104011, 104012, 104013};
+        var random = new Random(721);
+        final int trials = 3_000;
+        for (int i = 0; i < tiers.length; i++) {
+            double[] sums = new double[ids.length];
+            boolean hasExperience = false;
+            for (int trial = 0; trial < trials; trial++) {
+                Map<Integer, Integer> rolled = loot.roll("astaps.loot." + tiers[i], random);
+                for (int k = 0; k < ids.length; k++) {
+                    sums[k] += rolled.getOrDefault(ids[k], 0);
+                }
+                hasExperience |= rolled.containsKey(104001)
+                        || rolled.containsKey(104002) || rolled.containsKey(104003);
+                for (int recipe : new int[]{109202, 109207, 109406, 109407}) {
+                    assertFalse(rolled.containsKey(recipe),
+                            "Recipes belong to CSS, not YAML: " + tiers[i]);
+                }
+            }
+            for (int k = 0; k < ids.length; k++) {
+                assertEquals(expected[i][k], sums[k] / trials, 0.055,
+                        tiers[i] + " ore " + ids[k]);
+            }
+            assertTrue(hasExperience, tiers[i] + " has no experience book");
+        }
+    }
+
+    @Test
+    void nativeRegionalRecipesAreDefinedByCssInsteadOfLoot() throws Exception {
+        var loot = loot();
+        var css = CssRewards.parse(resource("/rewards/rewards.css"), items(), loot);
+        int[] recipes = {109202, 109207, 109406, 109407};
+        int[][] cases = {
+                // grade, level, city, northern chicken, pizza, mora meat, stir fried filet
+                {0, 21, 1, 1, 0, 0, 0},
+                {0, 21, 2, 0, 0, 1, 1},
+                {1, 21, 1, 0, 1, 0, 0},
+                {1, 21, 2, 0, 0, 0, 0},
+                {0, 26, 1, 0, 0, 0, 0},
+                {0, 21, 3, 0, 0, 0, 0},
+                {1, 20, 1, 0, 0, 0, 0}
+        };
+        for (int[] test : cases) {
+            String kind = test[0] == 0 ? "exquisite" : "precious";
+            var selected = css.resolve("chest", Map.of(
+                    "kind", kind,
+                    "level", Integer.toString(test[1]),
+                    "city", Integer.toString(test[2])));
+            assertEquals(test[3], selected.items().getOrDefault(recipes[0], 0));
+            assertEquals(test[4], selected.items().getOrDefault(recipes[1], 0));
+            assertEquals(test[5], selected.items().getOrDefault(recipes[2], 0));
+            assertEquals(test[6], selected.items().getOrDefault(recipes[3], 0));
+            assertEquals(1, selected.loot().values().stream()
+                    .filter(v -> v > 0).count());
+        }
+        String yaml = resource("/rewards/loot.yaml");
+        for (String name : new String[]{"recipe_mora_meat",
+                "recipe_stir_fried_filet", "recipe_mushroom_pizza",
+                "recipe_northern_smoked_chicken"}) {
+            assertFalse(yaml.contains("reward: genshin.item." + name));
+        }
+    }
+
+    @Test
     void nativeArtifactVariantsRemainResolvableWithSetProperties() throws Exception {
         String source = resource("/rewards/loot.yaml");
         assertTrue(source.contains("reward: genshin.artifact.adventurer"));

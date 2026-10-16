@@ -110,6 +110,21 @@ chest[kind="luxurious"][level="26~"] {
     --genshin-item-sigil: 6;
 }
 
+/* Recipes from the native combat/puzzle source roots, merged by chest grade.
+   No combat/puzzle metadata is required; only verified city and level match. */
+chest[kind="exquisite"][level="21~25"][city="1"] {
+    --genshin-item-recipe_northern_smoked_chicken: 1;
+}
+
+chest[kind="exquisite"][level="21~25"][city="2"] {
+    --genshin-item-recipe_mora_meat: 1;
+    --genshin-item-recipe_stir_fried_filet: 1;
+}
+
+chest[kind="precious"][level="21~25"][city="1"] {
+    --genshin-item-recipe_mushroom_pizza: 1;
+}
+
 /* Older Mondstadt and Liyue chests use fewer Primogems. */
 
 chest[kind="common"][city="1"],

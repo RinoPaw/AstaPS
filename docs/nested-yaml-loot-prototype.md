@@ -40,10 +40,11 @@ pool, not the chest tier.
 
 Loot tiers contain variable contents: character experience items,
 talent books, ingredients, recipe items, weapons, enhancement ores and
-artifacts. The 12 tables are based on one branch of the historical chest
-drop data without combat/puzzle selection. They do not yet reproduce
-location-specific book pools, special recipes, or Dragonspine Crimson
-Agate rewards correctly. Those variants require separately verified
+artifacts. The 12 tables now combine historic combat EXP/talent rewards with puzzle
+weapons and enhancement ores, without requiring a combat/puzzle selector.
+Location-specific talent pools and Dragonspine Crimson Agate rewards are
+not yet reproduced. Four source-backed recipe rewards are assigned in CSS
+by chest grade, level and city, rather than emitted from the loot tiers. Those variants require separately verified
 selection data. The native artifact item IDs are unchanged. The resource ID names a set
 (for example `genshin.artifact.berserker`); each artifact's `slot`, `rarity`
 and initial `substats` are separate properties.
@@ -102,21 +103,28 @@ There is no highest-tier or lowest-tier fallback.
 CSS has no combat/puzzle selector; future selectors belong here, never
 in a YAML item table.
 
-## Weapon and ore investigation
+## Combined battle and puzzle rewards
 
-The previous export of `DropTableExcelConfigData` and nested tables
-produced empty `weapons` and `enhancement_ore` lists for all twelve
-examined root tables. That does **not** mean Genshin 7.1 chests cannot
-drop those items. Both are confirmed chest reward categories in public
-gameplay documentation, and the repository's old bundled
-`src/main/resources/defaults/data/ChestReward.json` contains concrete
-examples.
+Native combat tables supply character experience items and talent books;
+native puzzle tables supply weapon candidates and enhancement ores. The
+twelve YAML tiers combine those categories. The ore quantity distributions
+are copied from the native Mondstadt puzzle tables 52010000–52011100
+(the +14 nested roots), including ordinary/fine/mystic ore chances.
+Those values are verified for those source rows, not all later regions.
 
-The new YAML weapon and ore entries are **provisional**. Known 1★/2★/3★
-weapons and ordinary/fine/mystic enhancement ores have been placed into
-sensible tiered pools. Their exact probabilities and counts are not
-validated against native Genshin 7.1 reward data. This uncertainty is
-intentional and must not be mistaken for confirmed reversed drop rates.
+The native `500000`/`500001`/`500002` weapon source references are
+not resolvable as actual nested tables in the checked 7.1 export; the
+named 1★/2★/3★ YAML weapon candidates and their probabilities remain
+**provisional** until a verified weapon source is available.
+
+Four recipes found as fixed native root entries are instead CSS-controlled:
+Mondstadt Exquisite at level 21–25 grants Northern Smoked Chicken; Liyue
+Exquisite at level 21–25 grants Mora Meat and Stir-Fried Filet; Mondstadt
+Precious at level 21–25 grants Mushroom Pizza. They were combined across
+battle/puzzle origin by design, so every matching chest receives the
+source-backed recipe even when its original group did not.
+These are scoped to native city IDs 1/2 rather than globally applying
+recipes to other regions.
 
 Source records remain at `data/ChestDrop.json` and
 `data/Server/DropTableExcelConfigData.json`. The artifact resolver uses native `setId`, `equipType`, `rankLevel` and

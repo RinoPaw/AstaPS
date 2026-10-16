@@ -2280,28 +2280,16 @@ world_frostnights_glory_roll_1plus1pct33p86:
   - {reward: genshin.material.frostnights_glory, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_1plus1pct42p89:
   - {reward: genshin.material.frostnights_glory, count: "1+1:42.89"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_1plus1pct54p17:
   - {reward: genshin.material.frostnights_glory, count: "1+1:54.17"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 artifacts_instructor_5star_3_4substats_goblet_plume: &artifacts_instructor_5star_3_4substats_goblet_plume
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 3}, weight: 33}
@@ -2312,56 +2300,32 @@ world_frostnights_glory_roll_1plus1pct65p45:
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_1plus1pct76p73:
   - {reward: genshin.material.frostnights_glory, count: "1+1:76.73"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_1plus1pct88p01:
   - {reward: genshin.material.frostnights_glory, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_1plus1pct52p18:
   - {reward: genshin.material.frostnights_glory, count: "1+1:52.18"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_1plus1pct60p8:
   - {reward: genshin.material.frostnights_glory, count: "1+1:60.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_1plus1pct69p41:
   - {reward: genshin.material.frostnights_glory, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 artifacts_instructor_5star_0substats_goblet_plume: &artifacts_instructor_5star_0substats_goblet_plume
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 0}, weight: 33}
@@ -2371,114 +2335,66 @@ world_frostnights_glory_roll_1plus1pct78p03:
   - {reward: genshin.material.frostnights_glory, count: "1+1:78.03"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_1plus1pct86p64:
   - {reward: genshin.material.frostnights_glory, count: "1+1:86.64"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_1plus1pct95p26:
   - {reward: genshin.material.frostnights_glory, count: "1+1:95.26"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_2plus1pct3p87:
   - {reward: genshin.material.frostnights_glory, count: "2+1:3.87"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_2plus1pct12p48:
   - {reward: genshin.material.frostnights_glory, count: "2+1:12.48"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_2plus1pct21p1:
   - {reward: genshin.material.frostnights_glory, count: "2+1:21.1"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_2plus1pct29p71:
   - {reward: genshin.material.frostnights_glory, count: "2+1:29.71"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_2plus1pct38p33:
   - {reward: genshin.material.frostnights_glory, count: "2+1:38.33"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_roll_2plus1pct46p94:
   - {reward: genshin.material.frostnights_glory, count: "2+1:46.94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.material.frostnights_glory, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:63"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.material.frostnights_glory, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_frostnights_glory_entries_6:
   - {reward: genshin.material.frostnights_glory, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_precision_kuuvahki_stamping_die_roll_1plus1pct33p86:
   - {reward: genshin.material.precision_kuuvahki_stamping_die, count: "1+1:33.86"}
@@ -3181,30 +3097,18 @@ world_artificed_spare_clockwork_component_coppelia_artifacts_instructor_5star_1s
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct42p89:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:42.89"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "1+1:42.89"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct54p17:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:54.17"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "1+1:54.17"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct65p45:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:65.45"}
@@ -3212,10 +3116,6 @@ world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct65p45:
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct76p73:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:76.73"}
@@ -3223,100 +3123,60 @@ world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct76p73:
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct88p01:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:88.01"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct52p18:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:52.18"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "1+1:52.18"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct60p8:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:60.8"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "1+1:60.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct69p41:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:69.41"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct78p03:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:78.03"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "1+1:78.03"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct86p64:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:86.64"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "1+1:86.64"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_1plus1pct95p26:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "1+1:95.26"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "1+1:95.26"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_2plus1pct3p87:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "2+1:3.87"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "2+1:3.87"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_2plus1pct12p48:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "2+1:12.48"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "2+1:12.48"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_2plus1pct21p1:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "2+1:21.1"}
@@ -3324,10 +3184,6 @@ world_artificed_spare_clockwork_component_coppelia_roll_2plus1pct21p1:
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_2plus1pct29p71:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "2+1:29.71"}
@@ -3335,10 +3191,6 @@ world_artificed_spare_clockwork_component_coppelia_roll_2plus1pct29p71:
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_2plus1pct38p33:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "2+1:38.33"}
@@ -3346,10 +3198,6 @@ world_artificed_spare_clockwork_component_coppelia_roll_2plus1pct38p33:
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_roll_2plus1pct46p94:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "2+1:46.94"}
@@ -3357,10 +3205,6 @@ world_artificed_spare_clockwork_component_coppelia_roll_2plus1pct46p94:
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "2+1:55.56"}
@@ -3368,10 +3212,6 @@ world_artificed_spare_clockwork_component_coppelia_artifacts_instructor_5star_0s
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:63"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "2+1:55.56"}
@@ -3379,19 +3219,11 @@ world_artificed_spare_clockwork_component_coppelia_artifacts_instructor_5star_0s
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_artificed_spare_clockwork_component_coppelia_entries_7:
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelia, count: "3+1:25"}
   - {reward: genshin.material.artificed_spare_clockwork_component_coppelius, count: "3+1:25"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
-  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
 
 world_emperors_resolution_roll_1plus1pct33p86:
   - {reward: genshin.material.emperors_resolution, count: "1+1:33.86"}
@@ -4079,197 +3911,113 @@ world_fragment_of_a_golden_melody_roll_1plus1pct33p86:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_1plus1pct42p89:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:42.89"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_1plus1pct54p17:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:54.17"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_1plus1pct65p45:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:65.45"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_1plus1pct76p73:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:76.73"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_1plus1pct88p01:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_1plus1pct52p18:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:52.18"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_1plus1pct60p8:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:60.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_1plus1pct69p41:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_1plus1pct78p03:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:78.03"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_1plus1pct86p64:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:86.64"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_1plus1pct95p26:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "1+1:95.26"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_2plus1pct3p87:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "2+1:3.87"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_2plus1pct12p48:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "2+1:12.48"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_2plus1pct21p1:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "2+1:21.1"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_2plus1pct29p71:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "2+1:29.71"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_2plus1pct38p33:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "2+1:38.33"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_roll_2plus1pct46p94:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "2+1:46.94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:63"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_fragment_of_a_golden_melody_entries_6:
   - {reward: genshin.material.fragment_of_a_golden_melody, count: "3+1:25"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
-  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
 
 world_overripe_flamegranate_roll_1plus1pct33p86:
   - {reward: genshin.material.overripe_flamegranate, count: "1+1:33.86"}
@@ -4746,155 +4494,113 @@ world_remnant_of_the_dreadwing_roll_1plus1pct33p86:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_1plus1pct42p89:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:42.89"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_1plus1pct54p17:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:54.17"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_1plus1pct65p45:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:65.45"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_1plus1pct76p73:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:76.73"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_1plus1pct88p01:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_1plus1pct52p18:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:52.18"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_1plus1pct60p8:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:60.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_1plus1pct69p41:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_1plus1pct78p03:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:78.03"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_1plus1pct86p64:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:86.64"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_1plus1pct95p26:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "1+1:95.26"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_2plus1pct3p87:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "2+1:3.87"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_2plus1pct12p48:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "2+1:12.48"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_2plus1pct21p1:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "2+1:21.1"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_2plus1pct29p71:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "2+1:29.71"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_2plus1pct38p33:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "2+1:38.33"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_roll_2plus1pct46p94:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "2+1:46.94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:63"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_remnant_of_the_dreadwing_entries_4:
   - {reward: genshin.material.remnant_of_the_dreadwing, count: "3+1:25"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
 
 world_talisman_of_the_enigmatic_land_roll_1plus1pct33p86:
   - {reward: genshin.material.talisman_of_the_enigmatic_land, count: "1+1:33.86"}
@@ -5091,155 +4797,113 @@ world_sparkless_statue_core_roll_1plus1pct33p86:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_1plus1pct42p89:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:42.89"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_1plus1pct54p17:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:54.17"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_1plus1pct65p45:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:65.45"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_1plus1pct76p73:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:76.73"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_1plus1pct88p01:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_1plus1pct52p18:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:52.18"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_1plus1pct60p8:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:60.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_1plus1pct69p41:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_1plus1pct78p03:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:78.03"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_1plus1pct86p64:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:86.64"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_1plus1pct95p26:
   - {reward: genshin.material.sparkless_statue_core, count: "1+1:95.26"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_2plus1pct3p87:
   - {reward: genshin.material.sparkless_statue_core, count: "2+1:3.87"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_2plus1pct12p48:
   - {reward: genshin.material.sparkless_statue_core, count: "2+1:12.48"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_2plus1pct21p1:
   - {reward: genshin.material.sparkless_statue_core, count: "2+1:21.1"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_2plus1pct29p71:
   - {reward: genshin.material.sparkless_statue_core, count: "2+1:29.71"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_2plus1pct38p33:
   - {reward: genshin.material.sparkless_statue_core, count: "2+1:38.33"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_roll_2plus1pct46p94:
   - {reward: genshin.material.sparkless_statue_core, count: "2+1:46.94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.material.sparkless_statue_core, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:63"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.material.sparkless_statue_core, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_sparkless_statue_core_entries_4:
   - {reward: genshin.material.sparkless_statue_core, count: "3+1:25"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
 
 world_secret_source_airflow_accumulator_roll_1plus1pct33p86:
   - {reward: genshin.material.secret_source_airflow_accumulator, count: "1+1:33.86"}
@@ -5579,435 +5243,225 @@ world_cloudseam_scale_roll_1plus1pct33p86:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_1plus1pct42p89:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:42.89"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_1plus1pct54p17:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:54.17"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_1plus1pct65p45:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:65.45"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_1plus1pct76p73:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:76.73"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_1plus1pct88p01:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_1plus1pct52p18:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:52.18"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_1plus1pct60p8:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:60.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_1plus1pct69p41:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_1plus1pct78p03:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:78.03"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_1plus1pct86p64:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:86.64"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_1plus1pct95p26:
   - {reward: genshin.material.cloudseam_scale, count: "1+1:95.26"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_2plus1pct3p87:
   - {reward: genshin.material.cloudseam_scale, count: "2+1:3.87"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_2plus1pct12p48:
   - {reward: genshin.material.cloudseam_scale, count: "2+1:12.48"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_2plus1pct21p1:
   - {reward: genshin.material.cloudseam_scale, count: "2+1:21.1"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_2plus1pct29p71:
   - {reward: genshin.material.cloudseam_scale, count: "2+1:29.71"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_2plus1pct38p33:
   - {reward: genshin.material.cloudseam_scale, count: "2+1:38.33"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_roll_2plus1pct46p94:
   - {reward: genshin.material.cloudseam_scale, count: "2+1:46.94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.material.cloudseam_scale, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:63"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.material.cloudseam_scale, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_cloudseam_scale_entries_6:
   - {reward: genshin.material.cloudseam_scale, count: "3+1:25"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_1plus1pct33p86:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_1plus1pct42p89:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:42.89"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_1plus1pct54p17:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:54.17"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_1plus1pct65p45:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:65.45"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_1plus1pct76p73:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:76.73"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_1plus1pct88p01:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_1plus1pct52p18:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:52.18"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_1plus1pct60p8:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:60.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_1plus1pct69p41:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_1plus1pct78p03:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:78.03"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_1plus1pct86p64:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:86.64"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_1plus1pct95p26:
   - {reward: genshin.material.ensnaring_gaze, count: "1+1:95.26"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_2plus1pct3p87:
   - {reward: genshin.material.ensnaring_gaze, count: "2+1:3.87"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_2plus1pct12p48:
   - {reward: genshin.material.ensnaring_gaze, count: "2+1:12.48"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_2plus1pct21p1:
   - {reward: genshin.material.ensnaring_gaze, count: "2+1:21.1"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_2plus1pct29p71:
   - {reward: genshin.material.ensnaring_gaze, count: "2+1:29.71"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_2plus1pct38p33:
   - {reward: genshin.material.ensnaring_gaze, count: "2+1:38.33"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_roll_2plus1pct46p94:
   - {reward: genshin.material.ensnaring_gaze, count: "2+1:46.94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.material.ensnaring_gaze, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:63"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.material.ensnaring_gaze, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_ensnaring_gaze_entries_8:
   - {reward: genshin.material.ensnaring_gaze, count: "3+1:25"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
-  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
-  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_unscorched_blossom_branch_roll_1plus1pct33p86:
   - {reward: genshin.material.unscorched_blossom_branch, count: "1+1:33.86"}
@@ -6153,197 +5607,113 @@ world_severed_tail_of_the_sky_roamer_roll_1plus1pct33p86:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:33.86"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_1plus1pct42p89:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:42.89"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_1plus1pct54p17:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:54.17"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "2+1:77.2"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_1plus1pct65p45:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:65.45"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_1plus1pct76p73:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:76.73"}
   - {reward: *artifacts_instructor_5star_1substats_goblet, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:35.2"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_1plus1pct88p01:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:88.01"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_1plus1pct52p18:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:52.18"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_1plus1pct60p8:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:60.8"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_1plus1pct69p41:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:69.41"}
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:42.8"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:77.2"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_1plus1pct78p03:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:78.03"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_1plus1pct86p64:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:86.64"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_1plus1pct95p26:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "1+1:95.26"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:78"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_2plus1pct3p87:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "2+1:3.87"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_2plus1pct12p48:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "2+1:12.48"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "3+1:36"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:84"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_2plus1pct21p1:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "2+1:21.1"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_2plus1pct29p71:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "2+1:29.71"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:21"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_2plus1pct38p33:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "2+1:38.33"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_roll_2plus1pct46p94:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "2+1:46.94"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:42"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1:63"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "2+1:55.56"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 world_severed_tail_of_the_sky_roamer_entries_6:
   - {reward: genshin.material.severed_tail_of_the_sky_roamer, count: "3+1:25"}
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
-  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
-  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
-  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
-  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
 
 gems_electro_sliver_counts_3: &gems_electro_sliver_counts_3
   - {reward: genshin.material.vajrada_amethyst_sliver, count: "3", weight: 1}
@@ -10396,3 +9766,44 @@ world_five_star_artifacts_high:
 
 world_five_star_artifacts_guaranteed:
   - {reward: *artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats}
+
+# Fixed sliver and fragment grants; the gemstone types describe their contents.
+gems_geo_hydro_basic:
+  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
+  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
+  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
+  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
+
+gems_cryo_geo_basic:
+  - {reward: genshin.material.prithiva_topaz_fragment, count: "9"}
+  - {reward: genshin.material.prithiva_topaz_sliver, count: "9"}
+  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
+  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
+
+gems_dendro_pyro_basic:
+  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
+  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
+  - {reward: genshin.material.nagadus_emerald_fragment, count: "9"}
+  - {reward: genshin.material.nagadus_emerald_sliver, count: "9"}
+
+gems_anemo_basic:
+  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
+  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}
+
+gems_pyro_basic:
+  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
+  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
+
+gems_cryo_hydro_basic:
+  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
+  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
+  - {reward: genshin.material.varunada_lazurite_fragment, count: "9"}
+  - {reward: genshin.material.varunada_lazurite_sliver, count: "9"}
+
+gems_anemo_cryo_pyro_basic:
+  - {reward: genshin.material.agnidus_agate_fragment, count: "9"}
+  - {reward: genshin.material.agnidus_agate_sliver, count: "9"}
+  - {reward: genshin.material.shivada_jade_fragment, count: "9"}
+  - {reward: genshin.material.shivada_jade_sliver, count: "9"}
+  - {reward: genshin.material.vayuda_turquoise_fragment, count: "9"}
+  - {reward: genshin.material.vayuda_turquoise_sliver, count: "9"}

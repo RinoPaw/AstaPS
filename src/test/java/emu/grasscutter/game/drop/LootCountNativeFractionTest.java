@@ -42,7 +42,8 @@ class LootCountNativeFractionTest {
         var roll = LootCount.parse("1:12.5,2:87.5");
         var random = new Random(12);
         for (int i = 0; i < 500; i++) {
-            assertTrue(roll.sample(random) == 1 || roll.sample(random) == 2);
+            int value = roll.sample(random);
+            assertTrue(value == 1 || value == 2);
         }
         for (String value : new String[]{"1.122", "3.0", "-1.25", "1.2.3",
                 "2+1:100.01", "2+1:-1", "2+1:abc", "2+1:55.56:5",

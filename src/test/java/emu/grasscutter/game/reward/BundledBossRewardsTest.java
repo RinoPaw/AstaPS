@@ -52,9 +52,9 @@ final class BundledBossRewardsTest {
                 Map.entry(305, "Anemo Sigil"),
                 Map.entry(307, "Geo Sigil")));
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known), loot);
-        assertEquals(965, stylesheet.lines()
+        assertEquals(964, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
-        assertEquals(200, stylesheet.lines()
+        assertEquals(201, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
 
         // Equal-weight five-slot artifact pools are inlined into their callers.

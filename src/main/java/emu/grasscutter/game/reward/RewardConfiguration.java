@@ -55,7 +55,17 @@ public final class RewardConfiguration {
     public Map<Integer, Integer> roll(
             String targetType, Map<String, String> properties, RandomGenerator random,
             RewardContext context) {
-        return RewardRoller.roll(css.resolve(targetType, properties), loot, random, context);
+        var selected = css.resolve(targetType, properties);
+        requireChestLoot(targetType, selected, properties);
+        return RewardRoller.roll(selected, loot, random, context);
+    }
+
+    static void requireChestLoot(
+            String targetType, CssRewards.Selection selected, Map<String, String> properties) {
+        if ("chest".equals(targetType) && selected.loot().isEmpty()) {
+            throw new IllegalStateException(
+                    "No chest loot table matched (missing or invalid kind/level): " + properties);
+        }
     }
 
     /** Qualified table IDs can be executed without CSS selection. */

@@ -5,9 +5,6 @@ chest {
 
 /* Fixed currencies and tier selection. Mora values are inclusive ranges. */
 chest[kind="common"] {
-    --loot: minimal;
-    --genshin-item-mora: 240~360;
-    --genshin-item-sigil: 1;
     --genshin-item-primogem: 2;
 }
 
@@ -48,9 +45,6 @@ chest[kind="common"][level="26~"] {
 }
 
 chest[kind="exquisite"] {
-    --loot: xhigh;
-    --genshin-item-mora: 960~1440;
-    --genshin-item-sigil: 4;
     --genshin-item-primogem: 5;
 }
 
@@ -73,9 +67,6 @@ chest[kind="exquisite"][level="26~"] {
 }
 
 chest[kind="precious"] {
-    --loot: xxxhigh;
-    --genshin-item-mora: 1200~1800;
-    --genshin-item-sigil: 5;
     --genshin-item-primogem: 10;
 }
 
@@ -98,9 +89,6 @@ chest[kind="precious"][level="26~"] {
 }
 
 chest[kind="luxurious"] {
-    --loot: ultra;
-    --genshin-item-mora: 1440~2160;
-    --genshin-item-sigil: 6;
     --genshin-item-primogem: 10;
 }
 

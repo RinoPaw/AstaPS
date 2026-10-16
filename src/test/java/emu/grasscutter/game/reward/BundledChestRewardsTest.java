@@ -175,6 +175,35 @@ class BundledChestRewardsTest {
     }
 
     @Test
+    void missingChestLevelCannotSilentlyFallBackToGradeRewards() throws Exception {
+        var loot = loot();
+        var css = CssRewards.parse(resource("/rewards/rewards.css"), items(), loot);
+        for (String kind : new String[]{"common", "exquisite", "precious", "luxurious"}) {
+            for (String level : new String[]{null, "0", "-1", "unknown"}) {
+                var props = new java.util.HashMap<String, String>();
+                props.put("kind", kind);
+                if (level != null) props.put("level", level);
+                var selection = css.resolve("chest", props);
+                assertTrue(selection.loot().isEmpty(), kind + " level=" + level);
+                assertFalse(selection.items().containsKey(202), "Mora must have no fallback");
+                assertFalse(selection.rangedItems().containsKey(202), "Mora range must have no fallback");
+                assertFalse(selection.items().containsKey(ItemIdRegistry.REGIONAL_SIGIL),
+                        "Sigil must have no fallback");
+                assertEquals(30, selection.items().get(102).intValue());
+                assertThrows(IllegalStateException.class,
+                        () -> RewardConfiguration.requireChestLoot("chest", selection, props));
+            }
+            var valid = Map.of("kind", kind, "level", "26");
+            assertDoesNotThrow(() -> RewardConfiguration.requireChestLoot(
+                    "chest", css.resolve("chest", valid), valid));
+        }
+        var unrecognized = Map.of("kind", "unknown", "level", "26");
+        assertThrows(IllegalStateException.class, () ->
+                RewardConfiguration.requireChestLoot(
+                        "chest", css.resolve("chest", unrecognized), unrecognized));
+    }
+
+    @Test
     void allTiersHaveWeaponAndEnhancementOreCandidates() throws Exception {
         var loot = loot();
         for (String tier : new String[]{

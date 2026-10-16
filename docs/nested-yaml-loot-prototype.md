@@ -84,9 +84,13 @@ Verified native city ownership takes precedence over that source-region
 fallback; conflicting native ownership does not select a city.
 
 CSS supports `[level="1~5"]` through `[level="26~"]`, with the upper
-bound open in the final range. Missing or invalid levels fall back
-to the general chest-kind rule. CSS has no combat/puzzle selector;
-future selectors belong here, never in a YAML item table.
+bound open in the final range. Grade-only rules define Primogems and
+their city/area adjustments, but never loot, Mora, or regional sigils.
+Those three rewards require a matching native level. Missing, zero,
+invalid, or unmatched chest levels now fail with an explicit error before
+reward settlement; there is no highest-tier or lowest-tier fallback.
+CSS has no combat/puzzle selector; future selectors belong here, never
+in a YAML item table.
 
 ## Weapon and ore investigation
 

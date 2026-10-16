@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * Shared namespace aliases. Prefix aliases preserve the remaining resource
  * path, while scoped grade aliases replace the final segment of a resource
- * family (<scope>.<family>.<grade>). Consumers always see canonical paths.
+ * family ({@code scope.family.grade}). Consumers always see canonical paths.
  */
 public final class ResourceAliases {
     private final Map<ResourceId, ResourceId> aliases;

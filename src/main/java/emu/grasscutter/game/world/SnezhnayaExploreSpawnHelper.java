@@ -619,6 +619,8 @@ public final class SnezhnayaExploreSpawnHelper {
             meta.config_id = ep.id;
             meta.chestType = emu.grasscutter.game.entity.gadget.chest.ChestTypeResolver
                     .fromExploreKind(ep.kind);
+            meta.chestGrade = emu.grasscutter.game.entity.gadget.chest.ChestTypeResolver
+                    .gradeFromExploreKind(ep.kind);
             meta.drop_tag = dropTagForKind(ep.kind);
             meta.rewardRegion = "snezhnaya"; // The point source is Snezhnaya-specific.
             meta.isOneoff = true;

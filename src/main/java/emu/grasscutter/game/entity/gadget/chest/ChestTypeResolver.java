@@ -21,6 +21,18 @@ public final class ChestTypeResolver {
         };
     }
 
+    /** A source kind names a grade only for the four ordinary chest grades. */
+    public static String gradeFromExploreKind(String kind) {
+        if (kind == null) return null;
+        return switch (kind) {
+            case "chest_common" -> "common";
+            case "chest_exquisite" -> "exquisite";
+            case "chest_precious" -> "precious";
+            case "chest_luxurious" -> "luxurious";
+            default -> null;
+        };
+    }
+
     public static String resolve(EntityGadget gadget) {
         var meta = gadget.getMetaGadget();
         if (meta != null && meta.chestType != null && !meta.chestType.isBlank()) {

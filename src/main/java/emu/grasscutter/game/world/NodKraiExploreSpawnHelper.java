@@ -868,6 +868,8 @@ public final class NodKraiExploreSpawnHelper {
             meta.config_id = ep.id;
             meta.chestType = emu.grasscutter.game.entity.gadget.chest.ChestTypeResolver
                     .fromExploreKind(ep.kind);
+            meta.chestGrade = emu.grasscutter.game.entity.gadget.chest.ChestTypeResolver
+                    .gradeFromExploreKind(ep.kind);
             meta.drop_tag = dropTagForKind(ep);
             meta.rewardRegion = ep.sourceRegion;
             meta.isOneoff = true;

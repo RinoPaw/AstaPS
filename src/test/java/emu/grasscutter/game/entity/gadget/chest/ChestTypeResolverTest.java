@@ -16,6 +16,13 @@ class ChestTypeResolverTest {
         assertEquals("remarkable", ChestTypeResolver.fromExploreKind("chest_remarkable"));
         assertNull(ChestTypeResolver.fromExploreKind(null));
         assertNull(ChestTypeResolver.fromExploreKind("unknown_chest"));
+        assertEquals("common", ChestTypeResolver.gradeFromExploreKind("chest_common"));
+        assertEquals("exquisite", ChestTypeResolver.gradeFromExploreKind("chest_exquisite"));
+        assertEquals("precious", ChestTypeResolver.gradeFromExploreKind("chest_precious"));
+        assertEquals("luxurious", ChestTypeResolver.gradeFromExploreKind("chest_luxurious"));
+        assertNull(ChestTypeResolver.gradeFromExploreKind("chest_mora"));
+        assertNull(ChestTypeResolver.gradeFromExploreKind("chest_remarkable"));
+        assertNull(ChestTypeResolver.gradeFromExploreKind("chest_puzzle"));
     }
 
     @Test

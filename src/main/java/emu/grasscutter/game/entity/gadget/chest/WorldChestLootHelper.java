@@ -20,9 +20,20 @@ public final class WorldChestLootHelper {
 
     public static void grant(Player player, EntityGadget entityGadget) {
         var props = new java.util.HashMap<String, String>();
-        props.put("grade", resolveTier(entityGadget).name().toLowerCase(java.util.Locale.ROOT));
         String chestType = ChestTypeResolver.resolve(entityGadget);
-        if (chestType != null) props.put("type", chestType);
+        if (chestType == null) {
+            throw new IllegalStateException(
+                    "Unrecognized world chest type: gadgetId=" + entityGadget.getGadgetId()
+                    + " jsonName=" + (entityGadget.getGadgetData() == null
+                            ? null : entityGadget.getGadgetData().getJsonName())
+                    + " group=" + entityGadget.getGroupId()
+                    + " config=" + entityGadget.getConfigId());
+        }
+        props.put("type", chestType);
+        // Special chest types have no implicit common/luxurious grade.
+        if ("normal".equals(chestType)) {
+            props.put("grade", resolveTier(entityGadget).name().toLowerCase(java.util.Locale.ROOT));
+        }
         props.put("scene", Integer.toString(entityGadget.getScene().getId()));
         props.put("gadget", Integer.toString(entityGadget.getGadgetId()));
         props.put("group", Integer.toString(entityGadget.getGroupId()));
@@ -90,7 +101,21 @@ public final class WorldChestLootHelper {
     }
 
     public static Tier resolveTier(EntityGadget entityGadget) {
-        int n = entityGadget.getGadgetId();
+        SceneGadget meta = entityGadget.getMetaGadget();
+        if (meta != null && meta.chestGrade != null) {
+            try {
+                return Tier.valueOf(meta.chestGrade.toUpperCase(java.util.Locale.ROOT));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalStateException("Invalid source chest grade: " + meta.chestGrade
+                        + " gadgetId=" + entityGadget.getGadgetId(), e);
+            }
+        }
+        String jsonName = entityGadget.getGadgetData() == null
+                ? null : entityGadget.getGadgetData().getJsonName();
+        return resolveTier(entityGadget.getGadgetId(), jsonName);
+    }
+
+    static Tier resolveTier(int n, String jsonName) {
         switch (n) {
             case 70210001: {
                 return Tier.COMMON;
@@ -107,10 +132,7 @@ public final class WorldChestLootHelper {
                 return Tier.LUXURIOUS;
             }
         }
-        String string = "";
-        if (entityGadget.getGadgetData() != null && entityGadget.getGadgetData().getJsonName() != null) {
-            string = entityGadget.getGadgetData().getJsonName();
-        }
+        String string = jsonName == null ? "" : jsonName;
         if (WorldChestLootHelper.containsLv(string, 5) || string.contains("Drop_Chest_Lv3")) {
             return Tier.LUXURIOUS;
         }
@@ -123,7 +145,8 @@ public final class WorldChestLootHelper {
         if (WorldChestLootHelper.containsLv(string, 1) || string.contains("NormalChest") || string.contains("Rock_Lv1")) {
             return Tier.COMMON;
         }
-        return Tier.COMMON;
+        throw new IllegalStateException("Unrecognized world chest grade: gadgetId=" + n
+                + " jsonName=" + jsonName);
     }
 
     private static boolean containsLv(String string, int n) {

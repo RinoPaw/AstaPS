@@ -150,6 +150,10 @@ any verified native `level`, `area`, and `city`. Imported exploration
 points preserve their original chest identity in `SceneGadget.chestType`;
 the native ordinary chest prefabs are recognized by their JSON names.
 Unknown native chest types are not assigned an invented `normal` type.
+Imported ordinary chests also preserve their source-backed `grade` separately,
+rather than inferring it from a remapped gadget ID. An unknown native grade
+throws with the original gadget ID and JSON name; there is no implicit
+`common` grade. Reward failures must not pre-mark a chest as claimed.
 The bundled CSS currently configures only `type="normal"`:
 Mora and Remarkable chests cannot inherit ordinary tier rewards, and their
 separate reward tables still need verified native source data.

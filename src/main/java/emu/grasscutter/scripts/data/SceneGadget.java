@@ -14,6 +14,8 @@ public class SceneGadget extends SceneObject {
     public String rewardRegion;
     /** Source-backed chest identity; separate from its reward grade. */
     public String chestType;
+    /** Source-backed grade, when the imported marker actually identifies one. */
+    public String chestGrade;
     public boolean showcutscene;
     boolean persistence;
     public int state;

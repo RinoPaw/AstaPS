@@ -291,7 +291,6 @@ public class GadgetChest extends GadgetContent {
     }
 
     private void grantOrdinaryChestLoot(Player player) {
-        ordinaryClaimed = true;
         EntityGadget gadget = getGadget();
         SceneGadget meta = resolveChestMeta();
         if (meta != null && meta.chest_drop_id > 0) {
@@ -302,10 +301,13 @@ public class GadgetChest extends GadgetContent {
                             || dropSystem.hasQuestItemDrop(meta.chest_drop_id))
                     && dropSystem.handleChestDrop(
                             meta.chest_drop_id, Math.max(1, meta.drop_count), gadget)) {
+                ordinaryClaimed = true;
                 return;
             }
         }
         WorldChestLootHelper.grant(player, gadget);
+        // Invalid reward metadata must not mark a chest as already claimed.
+        ordinaryClaimed = true;
     }
 
     protected boolean grantBossChestFallback(Player player, SceneGadget meta) {

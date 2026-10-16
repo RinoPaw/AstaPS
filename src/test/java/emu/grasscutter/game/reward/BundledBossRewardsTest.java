@@ -69,14 +69,22 @@ final class BundledBossRewardsTest {
         assertTrue(unidentified.loot().isEmpty());
 
         var normal = css.resolve("boss", Map.of(
-                "type", "world", "tag", "霜夜灵嗣", "level", "1"));
+                "type", "world", "tag", "frostnight_scion", "level", "1"));
         assertEquals(1825, normal.items().get(202));
         assertEquals(200, normal.items().get(102));
         assertEquals(1, normal.loot().get("astaps.loot.world_frostnight_scion_level_1"));
 
         var legacy = css.resolve("boss", Map.of(
-                "type", "world", "tag", "无相之雷", "level", "36"));
+                "type", "world", "tag", "electro_hypostasis", "level", "36"));
         assertEquals(1, legacy.loot().get("astaps.loot.world_electro_hypostasis_level_35"));
+
+        // Native source text tags are translated only for CSS selection.
+        // The original Chinese tag still belongs to the native fallback.
+        var rewardConfig = new RewardConfiguration(loot, css);
+        assertEquals(6000, rewardConfig.rollWorldBoss(
+                "无相之雷", 105, new java.util.Random(71)).get(202));
+        assertEquals(6000, rewardConfig.rollWorldBoss(
+                "electro_hypostasis", 105, new java.util.Random(71)).get(202));
 
         // Reused YAML pools keep each externally addressable table name.
         assertTrue(loot.contains("astaps.loot.world_frostnight_scion_level_105"));
@@ -85,7 +93,7 @@ final class BundledBossRewardsTest {
                 loot.roll("astaps.loot.world_frostnight_scion_level_105", new java.util.Random(71)));
 
         var highWorld = css.resolve("boss", Map.of(
-                "type", "world", "tag", "无相之雷", "level", "105"));
+                "type", "world", "tag", "electro_hypostasis", "level", "105"));
         assertEquals(200, highWorld.items().get(102));
         assertEquals(6000, highWorld.items().get(202));
         assertEquals(45, highWorld.items().get(105));
@@ -93,7 +101,7 @@ final class BundledBossRewardsTest {
         assertEquals(1, highWorld.loot().get("astaps.loot.world_electro_hypostasis_level_105"));
 
         var weekly = css.resolve("boss", Map.of(
-                "type", "weekly", "tag", "风魔龙", "level", "90"));
+                "type", "weekly", "tag", "stormterror", "level", "90"));
         assertEquals(300, weekly.items().get(102));
         assertEquals(1, weekly.loot().get("astaps.loot.weekly_stormterror_level_90"));
     }

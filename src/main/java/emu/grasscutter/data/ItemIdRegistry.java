@@ -317,11 +317,14 @@ public final class ItemIdRegistry {
         return usageById.getOrDefault(id, Set.of());
     }
 
-    /** Items used by two or more native advancement systems, with no duplicate resource IDs. */
-    public Map<Integer, Set<Usage>> sharedDevelopmentMaterials() {
-        var result = new LinkedHashMap<Integer, Set<Usage>>();
+    /** Named resources consumed by multiple advancement systems. */
+    public Map<String, Set<Usage>> sharedDevelopmentMaterials() {
+        var result = new LinkedHashMap<String, Set<Usage>>();
         usageById.forEach((id, domains) -> {
-            if (domains.size() > 1 && byId.containsKey(id)) result.put(id, domains);
+            Info item = byId.get(id);
+            if (domains.size() > 1 && item != null && item.key() != null) {
+                result.put(item.key(), domains);
+            }
         });
         return Map.copyOf(result);
     }

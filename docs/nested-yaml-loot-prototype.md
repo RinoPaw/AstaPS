@@ -278,14 +278,14 @@ For `give` and `loot.yaml`, use exactly one qualified identity per native
 resource. Categories come from native `ItemType`/`MaterialType`, not a
 catch-all `item` prefix. The common experience items are:
 
-- `genshin.avatar_level_up.heros_wit`, `genshin.avatar_level_up.adventurers_experience`, `genshin.avatar_level_up.wanderers_advice`
-- `genshin.weapon_level_up.enhancement_ore`, `genshin.weapon_level_up.fine_ore`, `genshin.weapon_level_up.mystic_ore`
-- `genshin.artifact_level_up.unction`, `genshin.artifact_level_up.essence`
+- `genshin.avatar_up.heros_wit`, `genshin.avatar_up.adventurers_experience`, `genshin.avatar_up.wanderers_advice`
+- `genshin.weapon_up.enhancement_ore`, `genshin.weapon_up.fine_ore`, `genshin.weapon_up.mystic_ore`
+- `genshin.artifact_up.unction`, `genshin.artifact_up.essence`
 - `genshin.currency.resin` is the Original Resin balance (native ID 106), not the consumable Fragile Resin.
 
 The resource type identifies the item's role, independent of which boss or
-chest drops it. Level-up consumables use `avatar_level_up`,
-`weapon_level_up`, `artifact_level_up`, and `talent_level_up`.
+chest drops it. Level-up consumables use `avatar_up`,
+`weapon_up`, `artifact_up`, and `talent_up`.
 Promotion ingredients use `avatar_ascension` and `weapon_ascension`.
 These are six distinct reward types; the native gameplay cost tables decide
 exclusive use, while fixed native EXP-item types identify level-up materials.
@@ -298,7 +298,7 @@ separate use-specific aliases.
 
 Previous `genshin.material.*` aliases for these items and the `genshin.resource`
 category are intentionally unsupported. Adventure EXP is
-`genshin.experience.adventure`, while Hero's Wit is an `avatar_level_up` item.
+`genshin.experience.adventure`, while Hero's Wit is an `avatar_up` item.
 
 ### Regional sigil IDs
 

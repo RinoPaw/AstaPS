@@ -3,6 +3,7 @@ package emu.grasscutter.data;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class ItemIdRegistryTest {
@@ -140,9 +141,34 @@ class ItemIdRegistryTest {
                         () -> registry.resolve("genshin.material." + name));
             }
         }
-        assertEquals(8000, registry.resolve("genshin.material.frostnights_glory"));
+        assertEquals(8000, registry.resolve("genshin.avatar_ascension.frostnights_glory"));
         assertThrows(IllegalArgumentException.class,
-                () -> registry.resolve("genshin.avatar_ascension.frostnights_glory"));
+                () -> registry.resolve("genshin.material.frostnights_glory"));
+    }
+
+    @Test
+    void nativeConsumptionDeterminesExclusiveAndSharedResourceTypes() {
+        var registry = new ItemIdRegistry(Map.of(
+                701, "Shared Monster Drop", 702, "Weapon Only Crystal",
+                703, "Talent Only Book", 704, "Avatar Only Fragment",
+                705, "Northlander Sword Billet"), Map.of(
+                701, "Character Development Items", 702, "Materials",
+                703, "Talent Level-Up Materials", 704, "Character Development Items",
+                705, "Character Development Items"), Map.of(
+                701, Set.of(ItemIdRegistry.Usage.AVATAR_ASCENSION,
+                        ItemIdRegistry.Usage.WEAPON_ASCENSION,
+                        ItemIdRegistry.Usage.TALENT_UPGRADE),
+                702, Set.of(ItemIdRegistry.Usage.WEAPON_ASCENSION),
+                703, Set.of(ItemIdRegistry.Usage.TALENT_UPGRADE),
+                704, Set.of(ItemIdRegistry.Usage.AVATAR_ASCENSION)));
+        assertEquals("genshin.material.shared_monster_drop", registry.describe(701).key());
+        assertEquals("genshin.weapon_ascension.weapon_only_crystal", registry.describe(702).key());
+        assertEquals("genshin.talent.talent_only_book", registry.describe(703).key());
+        assertEquals("genshin.avatar_ascension.avatar_only_fragment", registry.describe(704).key());
+        assertEquals("genshin.weapon_crafting.northlander_sword_billet", registry.describe(705).key());
+        assertEquals(Set.of(701), registry.sharedDevelopmentMaterials().keySet());
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.resolve("genshin.avatar_ascension.shared_monster_drop"));
     }
 
     @Test

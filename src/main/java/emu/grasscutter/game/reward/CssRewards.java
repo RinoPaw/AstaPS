@@ -105,10 +105,10 @@ public final class CssRewards {
         propertyMatcher.appendTail(propertyBuffer);
         // Preserve unquoted count ranges and distributions across CSS tokenization.
         String normalized = propertyBuffer.toString().replaceAll(
-                "(--[\\\\p{L}\\\\p{N}_-]+\\\\s*:\\\\s*)([0-9]+)\\\\s*~\\\\s*([0-9]+)(\\\\s*;)",
+                "(--[\\p{L}\\p{N}_-]+\\s*:\\s*)([0-9]+)\\s*~\\s*([0-9]+)(\\s*;)",
                 "$1'$2~$3'$4");
         normalized = normalized.replaceAll(
-                "(--[\\\\p{L}\\\\p{N}_-]+\\\\s*:\\\\s*)([0-9]+\\\\s*:[^;'\\\\\"{}]*)(\\\\s*;)",
+                "(--[\\p{L}\\p{N}_-]+\\s*:\\s*)([0-9]+\\s*:[^;'\"{}]*)(\\s*;)",
                 "$1'$2'$3");
         var sheet = CSSReader.readFromString(normalized);
         if (sheet == null) throw new IllegalArgumentException("Invalid rewards.css");

@@ -52,7 +52,7 @@ final class BundledBossRewardsTest {
                 Map.entry(305, "Anemo Sigil"),
                 Map.entry(307, "Geo Sigil")));
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known), loot);
-        assertEquals(575, stylesheet.lines()
+        assertEquals(1175, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"]")).count());
         assertEquals(250, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"weekly\"]")).count());
@@ -62,6 +62,10 @@ final class BundledBossRewardsTest {
         assertEquals(1825, normal.items().get(202));
         assertEquals(200, normal.items().get(102));
         assertEquals(1, normal.loot().get("astaps.loot.world_frostnight_scion_level_1"));
+
+        var legacy = css.resolve("boss", Map.of(
+                "type", "world", "tag", "无相之雷", "level", "36"));
+        assertEquals(1, legacy.loot().get("astaps.loot.world_electro_hypostasis_level_35"));
 
         var weekly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "风魔龙", "level", "90"));

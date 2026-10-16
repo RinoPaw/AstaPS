@@ -29,8 +29,8 @@ public final class YamlLootTables {
     private record Pool(boolean weighted, List<Entry> entries, double totalWeight) {}
 
     private static final int MAX_DEPTH = 64;
-    private static final int MAX_TABLES = 4096;
-    private static final int MAX_ENTRIES = 20_000;
+    private static final int MAX_TABLES = 12_000;
+    private static final int MAX_ENTRIES = 40_000;
 
     private static final class CompileBudget {
         int tables;

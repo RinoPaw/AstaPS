@@ -196,7 +196,10 @@ public final class ItemIdRegistry {
             java.util.regex.Pattern.compile(
                     "(?:northlander|midlander|borderland)_(?:sword|bow|claymore|catalyst|polearm)_billet");
 
-    public enum Usage { AVATAR_ASCENSION, WEAPON_ASCENSION, TALENT_UPGRADE }
+    public enum Usage {
+        AVATAR_LEVEL_UP, AVATAR_ASCENSION, WEAPON_LEVEL_UP, WEAPON_ASCENSION,
+        ARTIFACT_LEVEL_UP, TALENT_UPGRADE
+    }
 
     private static final Set<Integer> CHEST_WEAPON_IDS = Set.of(
             11101, 11201, 11303, 11305, 12101, 12201, 12303, 12306,
@@ -267,12 +270,25 @@ public final class ItemIdRegistry {
         // a bag material. Its explicit native virtual ID can be absent from Excel.
         englishNames.putIfAbsent(102, "Adventure EXP");
         categories.putIfAbsent(102, "Currencies and Virtual Items");
-        return new ItemIdRegistry(englishNames, categories, nativeDevelopmentUses());
+        return new ItemIdRegistry(englishNames, categories, nativeDevelopmentUses(categories));
     }
 
     /** Determine how each material is consumed from the native advancement cost data. */
-    private static Map<Integer, Set<Usage>> nativeDevelopmentUses() {
+    private static Map<Integer, Set<Usage>> nativeDevelopmentUses(
+            Map<Integer, String> categories) {
         var uses = new HashMap<Integer, java.util.EnumSet<Usage>>();
+        categories.forEach((id, category) -> {
+            Usage type = switch (category) {
+                case "Character EXP Materials" -> Usage.AVATAR_LEVEL_UP;
+                case "Weapon Enhancement Materials" -> Usage.WEAPON_LEVEL_UP;
+                case "Artifact EXP Materials" -> Usage.ARTIFACT_LEVEL_UP;
+                default -> null;
+            };
+            if (type != null) uses.computeIfAbsent(id, ignored ->
+                    java.util.EnumSet.noneOf(Usage.class)).add(type);
+        });
+        // Mora is consumed across every advancement path, including level-up.
+        uses.put(202, java.util.EnumSet.allOf(Usage.class));
         for (var data : GameData.getAvatarPromoteDataMap().values()) {
             for (var cost : data.getCostItems()) {
                 uses.computeIfAbsent(cost.getId(), ignored ->

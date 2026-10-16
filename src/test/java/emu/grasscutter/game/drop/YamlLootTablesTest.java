@@ -78,6 +78,10 @@ class YamlLootTablesTest {
                   - {reward: genshin.talent_up.freedom, properties: {rarity: "2:20, 3:30, 4:50"}, weight: 1}
                 repeated:
                   - {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:50"}, count: 4}
+                rerolled:
+                  - reward:
+                      - {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:50"}, count: 4}
+                    count: 4
                 """, inventory::resolve);
         var counts = new java.util.HashMap<Integer, Integer>();
         var random = new Random(71);
@@ -98,11 +102,49 @@ class YamlLootTablesTest {
 
         boolean split = false;
         for (int i = 0; i < 50; i++) {
-            var chosen = tables.roll("astaps.loot.repeated", random);
-            assertEquals(4, chosen.values().stream().mapToInt(Integer::intValue).sum());
-            if (chosen.size() == 2) split = true;
+            var grouped = tables.roll("astaps.loot.repeated", random);
+            assertEquals(Map.of(8201, 4), grouped.size() == 1 && grouped.containsKey(8201)
+                    ? grouped : grouped.size() == 1 && grouped.containsKey(8202)
+                        ? Map.of(8201, grouped.get(8202)) : Map.of());
+            var rerolled = tables.roll("astaps.loot.rerolled", random);
+            assertEquals(16, rerolled.values().stream().mapToInt(Integer::intValue).sum());
+            if (rerolled.size() == 2) split = true;
         }
-        assertTrue(split, "Each item must roll its grade independently");
+        assertTrue(split, "Separate nested executions must select their grades independently");
+    }
+
+    @Test
+    void compressedFixedCountGemPoolPreservesOriginalWeightedDistribution() {
+        var gems = new ItemIdRegistry(Map.of(
+                8101, "Vayuda Turquoise Sliver",
+                8102, "Vayuda Turquoise Fragment",
+                8103, "Vayuda Turquoise Chunk",
+                8104, "Vayuda Turquoise Gemstone"));
+        var pools = YamlLootTables.parse("""
+                original:
+                  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 5697}
+                  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1519}
+                  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 380}
+                compact:
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3, weight: 1}
+                nines:
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 9, weight: 1}
+                """, gems::resolve);
+        for (String name : java.util.List.of("original", "compact", "nines")) {
+            var counts = new int[3];
+            var random = new Random(35601);
+            int amount = "nines".equals(name) ? 9 : 3;
+            for (int i = 0; i < 20_000; i++) {
+                var reward = pools.roll("astaps.loot." + name, random);
+                assertEquals(1, reward.size(), "Every fixed-count roll uses one gem tier");
+                assertEquals(amount, reward.values().iterator().next());
+                int id = reward.keySet().iterator().next();
+                counts[id - 8101]++;
+            }
+            assertEquals(0.75, counts[0] / 20_000.0, 0.02, name);
+            assertEquals(0.20, counts[1] / 20_000.0, 0.02, name);
+            assertEquals(0.05, counts[2] / 20_000.0, 0.01, name);
+        }
     }
 
     @Test

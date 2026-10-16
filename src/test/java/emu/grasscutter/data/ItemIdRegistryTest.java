@@ -57,6 +57,25 @@ class ItemIdRegistryTest {
     }
 
     @Test
+    void recipeInventoryItemsBelongToRecipeFamilies() {
+        var items = new ItemIdRegistry(Map.of(
+                109406, "Recipe: Mora Meat",
+                109202, "Recipe: Northern Smoked Chicken"));
+        assertEquals("genshin.recipe.mora_meat.item", items.describe(109406).key());
+        assertEquals("genshin.recipe.northern_smoked_chicken.item",
+                items.describe(109202).key());
+        assertEquals(109406, items.resolve("genshin.recipe.mora_meat.item"));
+        assertEquals(109202,
+                items.resolve("genshin.recipe.northern_smoked_chicken.item"));
+        assertThrows(IllegalArgumentException.class,
+                () -> items.resolve("genshin.recipe.mora_meat"));
+        assertThrows(IllegalArgumentException.class,
+                () -> items.resolve("genshin.material.recipe_mora_meat"));
+        assertThrows(IllegalArgumentException.class,
+                () -> items.resolve("genshin.recipe.mora_meat.unknown"));
+    }
+
+    @Test
     void itemIdsAreStrictlyTypedAndExistInLoadedResources() {
         var names = new ItemIdRegistry(Map.of(202, "Mora", 104003, "Hero's Wit"));
         assertEquals(202, names.resolve("genshin.currency.mora"));

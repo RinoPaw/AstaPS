@@ -124,6 +124,39 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void optionalCountHasSameDropProbabilitiesAsWeightedNullSelection() {
+        var tables = parse("""
+                billets: &billets
+                  - {reward: genshin.avatar_exp.heros_wit, weight: 1}
+                  - {reward: genshin.avatar_exp.adventurers_experience, weight: 1}
+                old_item:
+                  - reward:
+                      - {reward: null, weight: 67}
+                      - {reward: genshin.currency.mora, weight: 33}
+                new_item:
+                  - {reward: genshin.currency.mora, count: "1:33"}
+                old_pool:
+                  - reward:
+                      - {reward: null, weight: 22}
+                      - {reward: *billets, weight: 3}
+                new_pool:
+                  - {reward: *billets, count: "1:12"}
+                """);
+        for (String name : new String[]{"old_item", "new_item", "old_pool", "new_pool"}) {
+            var random = new Random(71);
+            int received = 0;
+            for (int i = 0; i < 30_000; i++) {
+                var result = tables.roll("astaps.loot." + name, random);
+                int total = result.values().stream().mapToInt(Integer::intValue).sum();
+                assertTrue(total == 0 || total == 1);
+                if (total > 0) received++;
+            }
+            double expected = name.endsWith("item") ? 0.33 : 0.12;
+            assertEquals(expected, received / 30_000.0, 0.015, name);
+        }
+    }
+
+    @Test
     void nestedSubstatWeightsCanBeMovedIntoArtifactProperties() {
         var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
         String[] sets = {"berserker", "instructor", "the_exile"};

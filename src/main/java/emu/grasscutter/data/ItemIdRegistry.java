@@ -164,7 +164,7 @@ public final class ItemIdRegistry {
             "tourbillon_device",
             "unscorched_blossom_branch",
             "water_that_failed_to_transcend");
-    private static final Set<String> TALENT_UPGRADE_ONLY = Set.of(
+    private static final Set<String> TALENT_LEVEL_UP_ONLY = Set.of(
             "ashen_heart",
             "bloodjade_branch",
             "dakas_bell",
@@ -208,8 +208,15 @@ public final class ItemIdRegistry {
 
     public enum Usage {
         AVATAR_LEVEL_UP, AVATAR_ASCENSION, WEAPON_LEVEL_UP, WEAPON_ASCENSION,
-        ARTIFACT_LEVEL_UP, TALENT_UPGRADE
+        ARTIFACT_LEVEL_UP, TALENT_LEVEL_UP
     }
+
+    /** All inventory reward types have one canonical allowlist shared by callers. */
+    private static final Set<String> INVENTORY_RESOURCE_TYPES = Set.of(
+            "currency", "experience", "avatar_level_up", "weapon_level_up",
+            "artifact_level_up", "avatar_ascension", "weapon_ascension",
+            "talent_level_up", "weapon_crafting", "monster_drop",
+            "material", "food", "furnishing", "weapon");
 
     private static final Set<Integer> CHEST_WEAPON_IDS = Set.of(
             11101, 11201, 11303, 11305, 12101, 12201, 12303, 12306,
@@ -315,7 +322,7 @@ public final class ItemIdRegistry {
             if (data.getCostItems() == null) continue;
             for (var cost : data.getCostItems()) {
                 uses.computeIfAbsent(cost.getId(), ignored ->
-                        java.util.EnumSet.noneOf(Usage.class)).add(Usage.TALENT_UPGRADE);
+                        java.util.EnumSet.noneOf(Usage.class)).add(Usage.TALENT_LEVEL_UP);
             }
         }
         var result = new HashMap<Integer, Set<Usage>>();
@@ -370,16 +377,16 @@ public final class ItemIdRegistry {
                         || AVATAR_ASCENSION_ONLY.contains(name)
                         || uses.contains(Usage.AVATAR_ASCENSION)) yield "avatar_ascension";
                 if (WEAPON_BILLET.matcher(name).matches()) yield "weapon_crafting";
-                if (TALENT_UPGRADE_ONLY.contains(name)
-                        || uses.contains(Usage.TALENT_UPGRADE)) yield "talent";
+                if (TALENT_LEVEL_UP_ONLY.contains(name)
+                        || uses.contains(Usage.TALENT_LEVEL_UP)) yield "talent_level_up";
                 if (uses.contains(Usage.WEAPON_ASCENSION)) yield "weapon_ascension";
                 yield switch (category) {
                 case "Weapons" -> "weapon";
                 case "Food" -> "food";
                 case "Furnishings" -> "furnishing";
-                case "Character EXP Materials" -> "avatar_exp";
-                case "Weapon Enhancement Materials" -> "weapon_exp";
-                case "Artifact EXP Materials" -> "artifact_exp";
+                case "Character EXP Materials" -> "avatar_level_up";
+                case "Weapon Enhancement Materials" -> "weapon_level_up";
+                case "Artifact EXP Materials" -> "artifact_level_up";
                 case "Artifacts", "Other Items", "Currencies and Virtual Items", "" ->
                         CHEST_DROP_NAMES.containsKey(id) || STABLE_NAMES.containsKey(id)
                                 ? "material" : null;
@@ -387,12 +394,16 @@ public final class ItemIdRegistry {
                         "Quest Items", "Furnishing Blueprints",
                         "Wood", "Bait", "Fishing Rods", "Wind Gliders", "Namecards",
                         "Outfits", "Seeds" -> "material";
-                case "Talent Level-Up Materials" -> "talent";
+                case "Talent Level-Up Materials" -> "talent_level_up";
                 default -> throw new IllegalArgumentException(
                         "Unknown native resource category for " + id + ": " + category);
                 };
             }
         };
+    }
+
+    public static boolean isInventoryResourceType(String type) {
+        return INVENTORY_RESOURCE_TYPES.contains(type);
     }
 
     /** Artifacts use the same dotted resource convention as other game items. */
@@ -422,10 +433,7 @@ public final class ItemIdRegistry {
         if (input.matches("[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\..+")) {
             ResourceId resource = ResourceId.parse(input);
             if (!resource.namespace().equals("genshin")
-                    || !Set.of("currency", "experience", "avatar_exp", "weapon_exp",
-                            "artifact_exp", "avatar_ascension", "weapon_ascension", "talent",
-                            "weapon_crafting", "monster_drop", "material", "food", "furnishing", "weapon")
-                            .contains(resource.type())) {
+                    || !isInventoryResourceType(resource.type())) {
                 throw new IllegalArgumentException("Unsupported inventory resource: " + input);
             }
         }

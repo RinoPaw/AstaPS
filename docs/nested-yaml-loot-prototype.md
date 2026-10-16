@@ -35,11 +35,12 @@ These twelve names are registered under `astaps.loot`, for example
 `astaps.loot.nano` and `astaps.loot.ultra`. All 23 supporting tables come
 first in `loot.yaml`, grouped by reward content (weapons, ingredients, talent
 books and artifacts) rather than by chest type or level. The twelve selectable
-tiers follow in ascending order. Boss-level tables remain named for CSS
-selection, while reusable subtables have content-based names such as
-`midlander_weapon_billets`. Identical subtables share a single anchor,
-and one-use subtables are inlined. The bundled YAML contains
-1,393 top-level loot tables.
+tiers follow in ascending order. CSS alone selects Boss identity and native level. All loot tables,
+including complete payout profiles, are named by reward content; optional
+`world` and `weekly` prefixes identify the reward type.
+Reusable subtables use names such as `midlander_weapon_billets`.
+Identical payout profiles are shared, and one-use subtables are inlined.
+The bundled YAML contains 1,391 top-level loot tables.
 
 The artifact distributions are `artifacts_1_to_2_low`,
 `artifacts_1_to_2_high`, `artifacts_1_to_3`, `artifacts_2_to_3`,
@@ -232,12 +233,11 @@ The remainder of an explicitly specified count distribution implicitly means zer
 `count: "1:20"` means one item 20% of the time and none 80% of the time.
 An explicit `0:80` is therefore unnecessary.
 Relative probabilities in the original weighted loot lists are preserved.
-Only distinct Boss-level payout tables have top-level names.
-When higher levels share an existing table, CSS selects that table directly,
-with contiguous matching levels combined into a single range. A Boss may
-also select an existing source table when its rewards are identical.
-YAML anchors remain for reusable reward-content pools, not redundant
-Boss-level aliases.
+Loot table names describe only reward content and may identify reward
+type (`world` or `weekly`); they do not contain Boss tags or native
+levels. CSS holds those selectors and references the appropriate payout
+profile. Identical payout profiles share one table even when selected by
+different Bosses or levels. YAML anchors remain for reusable content pools.
 
 ## Semantic Genshin resource namespaces
 

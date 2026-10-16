@@ -14,8 +14,8 @@ class NativeLootYamlExporterTest {
     private static String itemName(int id) {
         return switch (id) {
             case 202 -> "genshin.currency.mora";
-            case 104003 -> "genshin.avatar_exp.heros_wit";
-            case 104002 -> "genshin.avatar_exp.adventurers_experience";
+            case 104003 -> "genshin.avatar_level_up.heros_wit";
+            case 104002 -> "genshin.avatar_level_up.adventurers_experience";
             default -> throw new IllegalArgumentException("Unrecognized item");
         };
     }
@@ -23,8 +23,8 @@ class NativeLootYamlExporterTest {
     private static int itemId(String name) {
         return switch (name) {
             case "genshin.currency.mora" -> 202;
-            case "genshin.avatar_exp.heros_wit" -> 104003;
-            case "genshin.avatar_exp.adventurers_experience" -> 104002;
+            case "genshin.avatar_level_up.heros_wit" -> 104003;
+            case "genshin.avatar_level_up.adventurers_experience" -> 104002;
             default -> throw new IllegalArgumentException("Unrecognized qualified item");
         };
     }
@@ -74,7 +74,7 @@ class NativeLootYamlExporterTest {
         var yaml = NativeLootYamlExporter.export(source, List.of(100), TABLES,
                 NativeLootYamlExporterTest::itemName);
         assertTrue(yaml.contains("reward:\n      - {reward: null, weight: 1}\n"
-                + "      - {reward: genshin.avatar_exp.heros_wit, count: \"2;3\", weight: 1}"));
+                + "      - {reward: genshin.avatar_level_up.heros_wit, count: \"2;3\", weight: 1}"));
         var loot = YamlLootTables.parse(yaml, NativeLootYamlExporterTest::itemId);
         int zero = 0, two = 0, three = 0;
         var random = new Random(9);

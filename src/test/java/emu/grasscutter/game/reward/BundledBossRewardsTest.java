@@ -54,7 +54,7 @@ final class BundledBossRewardsTest {
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known), loot);
         assertEquals(964, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
-        assertEquals(201, stylesheet.lines()
+        assertEquals(203, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
 
         // Equal-weight five-slot artifact pools are inlined into their callers.
@@ -73,10 +73,12 @@ final class BundledBossRewardsTest {
         assertFalse(Pattern.compile("(?m)^  - reward:\\n      - \\{reward: null, weight:")
                 .matcher(yaml).find());
 
-        // Reusable pools have content-based names; Boss-level entry names are stable.
-        assertEquals(1391, loot.names().size());
+        // Reusable pools retain their content-based identities.
+        assertEquals(1393, loot.names().size());
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));
+        assertTrue(loot.contains("astaps.loot.weekly_northlander_extras"));
+        assertTrue(loot.contains("astaps.loot.weekly_midlander_extras"));
         assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p2_weapon_billets"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+_[a-z0-9_]+:.*")));
@@ -119,17 +121,19 @@ final class BundledBossRewardsTest {
                 "electro_hypostasis", 105, new java.util.Random(71)).get(202));
 
         // CSS references the canonical pool directly; no duplicate Boss-level aliases.
-        assertTrue(loot.contains("astaps.loot.world_frostnights_glory_roll_1plus1pct33p8600"));
+        assertTrue(loot.contains("astaps.loot.world_frostnights_glory_roll_1plus1pct33p86"));
         assertFalse(loot.contains("astaps.loot.world_frostnights_glory_roll_1plus1pct33p8605"));
         assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p200"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+: \\*[a-z0-9_]+$")));
-        assertEquals(Map.of("astaps.loot.world_frostnights_glory_roll_1plus1pct33p8600", 1),
+        assertEquals(Map.of("astaps.loot.world_frostnights_glory_roll_1plus1pct33p86", 1),
                 css.resolve("boss", Map.of(
                         "type", "world", "tag", "frostnight_scion", "level", "105")).loot());
-        assertEquals(Map.of("astaps.loot.weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct40", 1),
-                css.resolve("boss", Map.of(
-                        "type", "weekly", "tag", "shouki_no_kami", "level", "120")).loot());
+        var shouki = css.resolve("boss", Map.of(
+                "type", "weekly", "tag", "shouki_no_kami", "level", "120"));
+        assertEquals(1, shouki.loot().get("astaps.loot.weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct40"));
+        assertEquals(1, shouki.loot().get("astaps.loot.weekly_midlander_extras"));
+        assertFalse(shouki.loot().containsKey("astaps.loot.weekly_northlander_extras"));
         assertEquals(Map.of("astaps.loot.world_gems_anemo_sliver_roll_1plus1pct47p246", 1),
                 css.resolve("boss", Map.of(
                         "type", "world", "tag", "cryo_hypostasis", "level", "1")).loot());
@@ -146,5 +150,7 @@ final class BundledBossRewardsTest {
                 "type", "weekly", "tag", "stormterror", "level", "90"));
         assertEquals(300, weekly.items().get(102));
         assertEquals(1, weekly.loot().get("astaps.loot.weekly_talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh_roll_2plus1pct10"));
+        assertEquals(1, weekly.loot().get("astaps.loot.weekly_northlander_extras"));
+        assertFalse(weekly.loot().containsKey("astaps.loot.weekly_midlander_extras"));
     }
 }

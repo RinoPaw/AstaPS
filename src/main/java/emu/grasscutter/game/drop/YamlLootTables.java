@@ -30,6 +30,7 @@ public final class YamlLootTables {
     /**
      * An advancement family resolves one native item per rarity. Rarity probabilities
      * are percentages summing to 100; weights on outer entries are independent.
+     * A chosen grade applies to the entire count of that entry execution.
      */
     private record GradeSelector(int[] itemIds, double[] cumulative) {
         int select(RandomGenerator random) {
@@ -308,10 +309,10 @@ public final class YamlLootTables {
                 reward.merge(entry.artifact.select(random), 1, Math::addExact);
             }
         } else if (entry.grade != null) {
-            // Resolve rarity separately for every family item in this count.
-            for (int i = 0; i < count; i++) {
-                reward.merge(entry.grade.select(random), 1, Math::addExact);
-            }
+            // A weighted rarity choice is made once per entry execution.
+            // A count of N then awards N copies of the selected tier, matching
+            // the original weighted pool of fixed-grade, fixed-count entries.
+            reward.merge(entry.grade.select(random), count, Math::addExact);
         } else if (entry.rewardId != null) {
             reward.merge(entry.rewardId, count, Math::addExact);
         }

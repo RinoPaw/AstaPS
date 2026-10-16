@@ -32,6 +32,12 @@ the higher-star rarity; neither chest grade nor level belongs in a subtable.
 The last two distributions include four-star artifacts, so calling them
 another `2_to_3` pool would misrepresent the source.
 
+Weapon pools follow the same convention: `weapons_1_to_2_low` (20% two-star)
+and `weapons_1_to_2_medium` (50% two-star);
+`weapons_2_to_3_low` (40% three-star) and `weapons_2_to_3_high`
+(75% three-star). These labels describe only the odds within each
+pool, not the chest tier.
+
 Loot tiers contain variable contents: character experience items,
 talent books, ingredients, recipe items, weapons, enhancement ores and
 artifacts. The 12 tables are based on one branch of the historical chest

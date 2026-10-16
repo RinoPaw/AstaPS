@@ -86,6 +86,13 @@ class BundledChestRewardsTest {
         for (String tier : tiers) assertTrue(loot.contains("astaps.loot." + tier), tier);
         assertTrue(loot.contains("astaps.loot.three_realms_point"));
         for (String pool : new String[]{
+                "weapons_1_star", "weapons_2_star", "weapons_3_star",
+                "weapons_1_to_2_low", "weapons_1_to_2_medium",
+                "weapons_2_to_3_low", "weapons_2_to_3_high"}) {
+            assertTrue(loot.contains("astaps.loot." + pool));
+        }
+
+        for (String pool : new String[]{
                 "artifacts_1_to_2_low", "artifacts_1_to_2_high",
                 "artifacts_1_to_3", "artifacts_2_to_3",
                 "artifacts_3_to_4_low", "artifacts_3_to_4_high"}) {

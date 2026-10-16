@@ -24,8 +24,8 @@ weapons_3_star: &weapons_3_star
   - {reward: genshin.item.otherworldly_story, weight: 1}
   - {reward: genshin.item.messenger, weight: 1}
 
-# Mixed weapon pools (suffixes describe weight ratios).
-weapons_1_to_2_4_1: &weapons_1_to_2_4_1
+# Mixed weapon pools; low/medium/high indicate increasing chances of higher-star weapons.
+weapons_1_to_2_low: &weapons_1_to_2_low
   - {reward: *weapons_1_star, weight: 4}
   - {reward: *weapons_2_star, weight: 1}
 
@@ -33,11 +33,11 @@ weapons_1_to_2_medium: &weapons_1_to_2_medium
   - {reward: *weapons_1_star, weight: 1}
   - {reward: *weapons_2_star, weight: 1}
 
-weapons_2_to_3_3_2: &weapons_2_to_3_3_2
+weapons_2_to_3_low: &weapons_2_to_3_low
   - {reward: *weapons_2_star, weight: 3}
   - {reward: *weapons_3_star, weight: 2}
 
-weapons_2_to_3_1_3: &weapons_2_to_3_1_3
+weapons_2_to_3_high: &weapons_2_to_3_high
   - {reward: *weapons_2_star, weight: 1}
   - {reward: *weapons_3_star, weight: 3}
 
@@ -138,7 +138,7 @@ nano:
   - {reward: *meat_ingredients, count: "1:50"}
   - {reward: genshin.item.wanderers_advice, count: "2:90,3:10"}
   - {reward: genshin.item.adventurers_experience, count: "1:30"}
-  - {reward: *weapons_1_to_2_4_1, count: "1:50"}
+  - {reward: *weapons_1_to_2_low, count: "1:50"}
   - {reward: genshin.item.enhancement_ore, count: "1~3"}
   - {reward: *artifacts_1_to_2_low, count: "1:80"}
 
@@ -173,7 +173,7 @@ medium:
 high:
   - {reward: genshin.item.adventurers_experience, count: "2:40,3:60"}
   - {reward: *mondstadt_talent_teachings, count: "1:25"}
-  - {reward: *weapons_2_to_3_3_2}
+  - {reward: *weapons_2_to_3_low}
   - {reward: genshin.item.fine_enhancement_ore, count: "1~3"}
   - {reward: *artifacts_1_to_3, count: "2"}
 
@@ -181,7 +181,7 @@ xhigh:
   - {reward: genshin.item.adventurers_experience, count: "1:90,2:10"}
   - {reward: genshin.item.heros_wit}
   - {reward: *mondstadt_talent_teachings}
-  - {reward: *weapons_2_to_3_3_2, count: "1:90,2:10"}
+  - {reward: *weapons_2_to_3_low, count: "1:90,2:10"}
   - {reward: genshin.item.fine_enhancement_ore, count: "1~3"}
   - {reward: *artifacts_2_to_3, count: "2"}
 
@@ -190,14 +190,14 @@ xxhigh:
   - {reward: genshin.item.adventurers_experience, count: "1:40,2:60"}
   - {reward: genshin.item.heros_wit}
   - {reward: *mondstadt_talent_teachings}
-  - {reward: *weapons_2_to_3_1_3, count: "1:80,2:20"}
+  - {reward: *weapons_2_to_3_high, count: "1:80,2:20"}
   - {reward: genshin.item.fine_enhancement_ore, count: "1~3"}
   - {reward: *artifacts_3_to_4_low, count: "2:75,3:25"}
 
 xxxhigh:
   - {reward: genshin.item.heros_wit, count: "2"}
   - {reward: *mondstadt_talent_guides}
-  - {reward: *weapons_2_to_3_1_3, count: "1:70,2:30"}
+  - {reward: *weapons_2_to_3_high, count: "1:70,2:30"}
   - {reward: genshin.item.fine_enhancement_ore, count: "1~3"}
   - {reward: *artifacts_3_to_4_low, count: "2:75,3:25"}
 

@@ -346,7 +346,23 @@ public final class DropSystem extends BaseGameSystem {
             throw new IllegalStateException(
                     "Native boss drop rolled no rewards: " + dropTag + " WL" + worldLevel);
         }
-        return items;
+        return separateBossEquipment(items);
+    }
+
+    /** Each equipment grant is a distinct instance, even for repeated native IDs. */
+    static List<GameItem> separateBossEquipment(List<GameItem> rolled) {
+        var batch = new ArrayList<GameItem>();
+        for (GameItem item : rolled) {
+            if (item.getItemType() == ItemType.ITEM_RELIQUARY
+                    || item.getItemType() == ItemType.ITEM_WEAPON) {
+                for (int n = 0; n < item.getCount(); n++) {
+                    batch.add(new GameItem(item.getItemId(), 1));
+                }
+            } else {
+                batch.add(item);
+            }
+        }
+        return batch;
     }
 
     private void processDrop(DropTableData dropData, int count, List<GameItem> items) {

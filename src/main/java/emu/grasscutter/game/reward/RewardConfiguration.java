@@ -76,7 +76,7 @@ public final class RewardConfiguration {
     /** Refuse unconfigured or partially configured ley-line rewards. */
     static void requireBlossomReward(
             CssRewards.Selection selected, Map<String, String> properties) {
-        String kind = properties.get("kind");
+        String type = properties.get("type");
         boolean experience = selected.items().getOrDefault(102, 0) > 0;
         boolean companionship = selected.items().getOrDefault(105, 0) > 0;
         boolean wealth = selected.items().getOrDefault(202, 0) > 0;
@@ -85,21 +85,21 @@ public final class RewardConfiguration {
                         || selected.rangedItems().containsKey(id));
         boolean usesLoot = !selected.loot().isEmpty() || !selected.rangedLoot().isEmpty();
         if (!experience || !companionship || usesLoot
-                || !("wealth".equals(kind) && wealth && !books
-                    || "revelation".equals(kind) && books && !wealth)) {
+                || !("wealth".equals(type) && wealth && !books
+                    || "revelation".equals(type) && books && !wealth)) {
             throw new IllegalStateException("No complete blossom reward configured for " + properties);
         }
     }
 
     /** One independent roll per 20 resin; condensed resin executes two rolls. */
     public Map<Integer, Integer> rollBlossom(
-            String kind, int worldLevel, boolean condensed, RandomGenerator random) {
-        if (!("wealth".equals(kind) || "revelation".equals(kind))
+            String type, int worldLevel, boolean condensed, RandomGenerator random) {
+        if (!("wealth".equals(type) || "revelation".equals(type))
                 || worldLevel < 0 || worldLevel > 9) {
             throw new IllegalArgumentException(
-                    "Unknown blossom kind/world level: " + kind + "/" + worldLevel);
+                    "Unknown blossom type/world level: " + type + "/" + worldLevel);
         }
-        var attrs = Map.of("kind", kind, "world_level", Integer.toString(worldLevel));
+        var attrs = Map.of("type", type, "world_level", Integer.toString(worldLevel));
         var total = new java.util.TreeMap<Integer, Integer>();
         for (int i = 0; i < (condensed ? 2 : 1); i++) {
             roll("blossom", attrs, random).forEach(

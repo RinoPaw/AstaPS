@@ -74,7 +74,8 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1409, loot.names().size());
+        assertEquals(1406, loot.names().size());
+        assertFalse(yaml.contains("empty_reward_choices"));
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.weekly_northlander_extras"));
@@ -96,6 +97,7 @@ final class BundledBossRewardsTest {
         assertFalse(yaml.contains("gems_anemo_geo_pyro_sliver_uniform_first_anemo"));
         assertFalse(yaml.contains("gems_anemo_geo_pyro_sliver_uniform_first_pyro"));
         assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p2_weapon_billets"));
+        assertTrue(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_roll_2plus1pct0p79"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+_[a-z0-9_]+:.*")));
 

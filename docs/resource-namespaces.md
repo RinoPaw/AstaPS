@@ -39,6 +39,20 @@ The namespace service can be instantiated with a map of arbitrary resource
 path aliases. New consumers should reuse it instead of defining their own
 element-to-name lookup in Loot, CSS or YAML.
 
+## Recipes
+
+Cookable recipe definitions and inventory unlock items share one recipe family:
+
+```text
+genshin.recipe.mora_meat          -> CookRecipeData ID (for example 100014)
+genshin.recipe.mora_meat.item     -> inventory item ID (for example 109406)
+```
+
+Reward CSS and YAML can award the inventory `.item` child, but cannot grant
+the recipe definition as though it were an inventory item. The old
+`genshin.material.recipe_mora_meat` path is rejected. The native item registry
+classifies names with the `recipe_` prefix as recipe inventory resources.
+
 ## Rewards CSS
 
 The rewards stylesheet accepts resource IDs as declaration keys:

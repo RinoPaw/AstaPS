@@ -195,6 +195,19 @@ separate reward tables still need verified native source data.
 
 ## YAML semantics
 
+Named Loot tables must contain at least two entries. A table containing
+only one family reward is redundant: inline that reward into its caller.
+When the removed table has a fixed `count`, multiply the parent execution
+count by that fixed count. For example, an inner `count: 3` and an outer
+`count: "2+1:17.602"` become `count: "6+3:17.602"`.
+This preserves the original quantity distribution while avoiding extra
+nested rolls.
+
+Near-identical native gem rarity proportions are normalized by profile:
+`2:79, 3:21`, `2:75, 3:20, 4:5`, or
+`2:74.6, 3:19.9, 4:5, 5:0.5`. These intentionally round the
+per-rarity probabilities by small amounts; all percentages still total 100.
+
 All unweighted entries in one list execute; a fully weighted list chooses
 one entry by relative weight. Mixed weighted and unweighted entries are
 invalid. `count` defaults to one and supports fixed values, ranges,

@@ -27,8 +27,10 @@ class BlossomRewardsTest {
         int cssStart = css.indexOf("/* Ley-line blossoms:");
         assertTrue(cssStart >= 0, "Missing bundled blossom selectors");
         String selectors = css.substring(cssStart).split(java.util.regex.Pattern.quote("/* Weekly Boss native"), 2)[0];
-        assertEquals(20, selectors.lines().filter(line ->
+        assertEquals(14, selectors.lines().filter(line ->
                 line.startsWith("blossom[type=")).count());
+        assertTrue(selectors.contains("blossom[type=\"wealth\"][world_level=\"6~9\"]"));
+        assertTrue(selectors.contains("blossom[type=\"revelation\"][world_level=\"6~9\"]"));
         assertFalse(selectors.contains("--astaps-loot-"));
         return new RewardConfiguration(loot, CssRewards.parse(
                 selectors, items, loot));

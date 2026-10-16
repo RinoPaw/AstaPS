@@ -46,6 +46,20 @@ class ItemIdRegistryTest {
     }
 
     @Test
+    void weaponsHaveOneCanonicalTypeWithoutItemAliases() {
+        var names = new ItemIdRegistry(Map.of(11101, "Dull Blade", 202, "Mora"));
+        assertEquals(11101, names.resolve("genshin.weapon.dull_blade"));
+        assertEquals("genshin.weapon.dull_blade", names.describe(11101).key());
+        assertThrows(IllegalArgumentException.class, () -> names.resolve("genshin.item.dull_blade"));
+        assertThrows(IllegalArgumentException.class, () -> names.resolve("genshin.weapon.mora"));
+        assertEquals(202, names.resolve("genshin.item.mora"));
+        var typed = new ItemIdRegistry(Map.of(7777, "Test Blade"),
+                Map.of(7777, "Weapons"));
+        assertEquals(7777, typed.resolve("genshin.weapon.test_blade"));
+        assertThrows(IllegalArgumentException.class, () -> typed.resolve("genshin.item.test_blade"));
+    }
+
+    @Test
     void artifactReferenceNamesOnlyTheirSets() {
         assertTrue(ItemIdRegistry.isArtifactReference("genshin.artifact.berserker"));
         assertFalse(ItemIdRegistry.isArtifactReference("genshin.artifact.berserker.goblet.3.1"));

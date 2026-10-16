@@ -5,25 +5,25 @@
 
 # Weapon candidates by star rarity.
 weapons_1_star: &weapons_1_star
-  - {reward: genshin.item.dull_blade, weight: 1}
-  - {reward: genshin.item.waster_greatsword, weight: 1}
-  - {reward: genshin.item.beginners_protector, weight: 1}
-  - {reward: genshin.item.apprentices_notes, weight: 1}
-  - {reward: genshin.item.hunters_bow, weight: 1}
+  - {reward: genshin.weapon.dull_blade, weight: 1}
+  - {reward: genshin.weapon.waster_greatsword, weight: 1}
+  - {reward: genshin.weapon.beginners_protector, weight: 1}
+  - {reward: genshin.weapon.apprentices_notes, weight: 1}
+  - {reward: genshin.weapon.hunters_bow, weight: 1}
 
 weapons_2_star: &weapons_2_star
-  - {reward: genshin.item.silver_sword, weight: 1}
-  - {reward: genshin.item.old_mercs_pal, weight: 1}
-  - {reward: genshin.item.iron_point, weight: 1}
-  - {reward: genshin.item.pocket_grimoire, weight: 1}
-  - {reward: genshin.item.seasoned_hunters_bow, weight: 1}
+  - {reward: genshin.weapon.silver_sword, weight: 1}
+  - {reward: genshin.weapon.old_mercs_pal, weight: 1}
+  - {reward: genshin.weapon.iron_point, weight: 1}
+  - {reward: genshin.weapon.pocket_grimoire, weight: 1}
+  - {reward: genshin.weapon.seasoned_hunters_bow, weight: 1}
 
 weapons_3_star: &weapons_3_star
-  - {reward: genshin.item.travelers_handy_sword, weight: 1}
-  - {reward: genshin.item.ferrous_shadow, weight: 1}
-  - {reward: genshin.item.recurve_bow, weight: 1}
-  - {reward: genshin.item.otherworldly_story, weight: 1}
-  - {reward: genshin.item.messenger, weight: 1}
+  - {reward: genshin.weapon.travelers_handy_sword, weight: 1}
+  - {reward: genshin.weapon.ferrous_shadow, weight: 1}
+  - {reward: genshin.weapon.recurve_bow, weight: 1}
+  - {reward: genshin.weapon.otherworldly_story, weight: 1}
+  - {reward: genshin.weapon.messenger, weight: 1}
 
 # Mixed weapon pools; low/medium/high indicate increasing chances of higher-star weapons.
 weapons_1_to_2_low: &weapons_1_to_2_low

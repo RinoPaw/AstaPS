@@ -105,6 +105,12 @@ public final class ItemIdRegistry {
             Map.entry(109406, "recipe_mora_meat"),
             Map.entry(109407, "recipe_stir_fried_filet"));
 
+    // Verified chest weapon IDs, also used when fixtures have no category metadata.
+    private static final Set<Integer> CHEST_WEAPON_IDS = Set.of(
+            11101, 11201, 11303, 11305, 12101, 12201, 12303, 12306,
+            13101, 13201, 13301, 13302, 14101, 14201, 14303, 14305,
+            15101, 15201, 15303, 15305);
+
     private final Map<Integer, Info> byId;
     private final Map<String, Integer> byName;
     private final Set<String> ambiguous;
@@ -122,16 +128,16 @@ public final class ItemIdRegistry {
             if (id <= 0) throw new IllegalArgumentException("Invalid item ID: " + id);
             String english = entry.getValue();
             if (english == null || english.isBlank()) english = VERIFIED_ENGLISH.get(id);
-            String name = "Artifacts".equals(categories.get(id)) ? "" :
-                    STABLE_NAMES.containsKey(id) ? STABLE_NAMES.get(id)
-                    : CHEST_DROP_NAMES.getOrDefault(id, slug(english));
-            String key = name.isEmpty() ? null : isArtifactReference(name)
-                    ? name : new ResourceId("genshin", "item", name).toString();
             String category = categories.getOrDefault(id, switch (id) {
                 case 104001, 104002, 104003 -> "Character EXP Materials";
                 case 201, 202 -> "Currencies";
-                default -> "";
+                default -> CHEST_WEAPON_IDS.contains(id) ? "Weapons" : "";
             });
+            String name = "Artifacts".equals(category) ? "" :
+                    STABLE_NAMES.containsKey(id) ? STABLE_NAMES.get(id)
+                    : CHEST_DROP_NAMES.getOrDefault(id, slug(english));
+            String type = "Weapons".equals(category) ? "weapon" : "item";
+            String key = name.isEmpty() ? null : new ResourceId("genshin", type, name).toString();
             ids.put(id, new Info(id, english, key, category));
             if (key != null) putUnique(names, collisions, key, id);
             if (english != null && !english.isBlank()) {
@@ -190,8 +196,8 @@ public final class ItemIdRegistry {
         if (input.matches("[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*\\..+")) {
             ResourceId resource = ResourceId.parse(input);
             if (!resource.namespace().equals("genshin")
-                    || !(resource.type().equals("item") || resource.type().equals("artifact"))) {
-                throw new IllegalArgumentException("Unsupported item resource: " + input);
+                    || !(resource.type().equals("item") || resource.type().equals("weapon"))) {
+                throw new IllegalArgumentException("Unsupported inventory resource: " + input);
             }
         }
 
@@ -201,6 +207,10 @@ public final class ItemIdRegistry {
         }
         Integer id = byName.get(name);
         if (id == null) throw new IllegalArgumentException("Unknown item: " + input);
+        if (input.contains(".") && !input.equalsIgnoreCase(byId.get(id).key())) {
+            throw new IllegalArgumentException("Wrong resource type for item: " + input
+                    + " (expected " + byId.get(id).key() + ")");
+        }
         return id;
     }
 

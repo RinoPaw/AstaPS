@@ -26,6 +26,21 @@ class CssRewardsTest {
             """, items::resolve);
 
     @Test
+    void weaponPropertiesResolveToNativeWeaponItems() {
+        var registry = new ItemIdRegistry(Map.of(11101, "Dull Blade", 202, "Mora"));
+        var css = CssRewards.parse("""
+                chest { --genshin-weapon-dull_blade: 1; }
+                """, registry, loot);
+        assertEquals(1, css.resolve("chest", Map.of()).items().get(11101));
+        assertThrows(IllegalArgumentException.class, () ->
+                CssRewards.parse("chest { --genshin-item-dull_blade: 1; }", registry, loot));
+        assertThrows(IllegalArgumentException.class, () ->
+                CssRewards.parse("chest { --genshin-avatar-amber: 1; }", registry, loot));
+        assertThrows(IllegalArgumentException.class, () ->
+                CssRewards.parse("chest { --genshin-recipe-mora_meat: 1; }", registry, loot));
+    }
+
+    @Test
     void independentNamespacedLootPropertiesCanSelectSeveralTables() {
         var css = CssRewards.parse("""
                 chest[grade="common"] {

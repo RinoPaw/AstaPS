@@ -54,7 +54,7 @@ final class BundledBossRewardsTest {
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known), loot);
         assertEquals(964, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
-        assertEquals(203, stylesheet.lines()
+        assertEquals(211, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
 
         // Equal-weight five-slot artifact pools are inlined into their callers.
@@ -74,11 +74,14 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1393, loot.names().size());
+        assertEquals(1401, loot.names().size());
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.weekly_northlander_extras"));
         assertTrue(loot.contains("astaps.loot.weekly_midlander_extras"));
+        assertTrue(loot.contains("astaps.loot.weekly_high_artifacts"));
+        assertTrue(loot.contains("astaps.loot.weekly_artifacts_sparse"));
+        assertTrue(loot.contains("astaps.loot.weekly_artifacts_rare"));
         assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p2_weapon_billets"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+_[a-z0-9_]+:.*")));
@@ -134,6 +137,8 @@ final class BundledBossRewardsTest {
         assertEquals(1, shouki.loot().get("astaps.loot.weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct40"));
         assertEquals(1, shouki.loot().get("astaps.loot.weekly_midlander_extras"));
         assertFalse(shouki.loot().containsKey("astaps.loot.weekly_northlander_extras"));
+        assertEquals(1, shouki.loot().get("astaps.loot.weekly_high_artifacts"));
+        assertFalse(shouki.loot().containsKey("astaps.loot.weekly_artifacts_rare"));
         assertEquals(Map.of("astaps.loot.world_gems_anemo_sliver_roll_1plus1pct47p246", 1),
                 css.resolve("boss", Map.of(
                         "type", "world", "tag", "cryo_hypostasis", "level", "1")).loot());
@@ -152,5 +157,17 @@ final class BundledBossRewardsTest {
         assertEquals(1, weekly.loot().get("astaps.loot.weekly_talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh_roll_2plus1pct10"));
         assertEquals(1, weekly.loot().get("astaps.loot.weekly_northlander_extras"));
         assertFalse(weekly.loot().containsKey("astaps.loot.weekly_midlander_extras"));
+        assertEquals(1, weekly.loot().get("astaps.loot.weekly_high_artifacts"));
+
+        var sparse = css.resolve("boss", Map.of(
+                "type", "weekly", "tag", "stormterror", "level", "7"));
+        assertEquals(1, sparse.loot().get("astaps.loot.weekly_artifacts_sparse"));
+        assertEquals(1, sparse.loot().get("astaps.loot.weekly_northlander_extras"));
+        assertFalse(sparse.loot().containsKey("astaps.loot.weekly_high_artifacts"));
+
+        var rare = css.resolve("boss", Map.of(
+                "type", "weekly", "tag", "stormterror", "level", "67"));
+        assertEquals(1, rare.loot().get("astaps.loot.weekly_artifacts_rare"));
+        assertFalse(rare.loot().containsKey("astaps.loot.weekly_high_artifacts"));
     }
 }

@@ -71,15 +71,18 @@ final class BundledBossRewardsTest {
                 Map.entry(307, "Geo Sigil")));
         // Use the same synthetic IDs for material entries now selected directly by CSS.
         var knownCategories = new HashMap<Integer, String>();
-        Pattern.compile("--genshin-material-([a-z0-9_]+)\\s*:")
+        Pattern.compile("--genshin-(material|avatar_ascension)-([a-z0-9_]+)\\s*:")
                 .matcher(stylesheet).results()
-                .map(match -> match.group(1)).distinct()
-                .forEach(name -> {
-                    String reference = "genshin.material." + name;
+                .map(match -> Map.entry(match.group(1), match.group(2))).distinct()
+                .forEach(entry -> {
+                    String category = entry.getKey();
+                    String name = entry.getValue();
+                    String reference = "genshin." + category + "." + name;
                     int id = nativeIds.computeIfAbsent(reference,
                             ignored -> nextId.incrementAndGet());
                     known.put(id, name.replace('_', ' '));
-                    knownCategories.put(id, "Materials");
+                    knownCategories.put(id, "avatar_ascension".equals(category)
+                            ? "Character Development Items" : "Materials");
                 });
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, knownCategories), loot);
         assertEquals(978, stylesheet.lines()
@@ -192,7 +195,7 @@ final class BundledBossRewardsTest {
                 "type", "weekly", "tag", "raiden_shogun", "level", "8"));
         assertTrue(raidenEarly.rangedItems().size() > 0);
         assertTrue(stylesheet.contains(
-                "--genshin-material-vajrada_amethyst_sliver: '2+1:14.32';"));
+                "--genshin-avatar_ascension-vajrada_amethyst_sliver: '2+1:14.32';"));
         var shouki = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "shouki_no_kami", "level", "120"));
         assertEquals(1, shouki.loot().get("astaps.loot.weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct40"));

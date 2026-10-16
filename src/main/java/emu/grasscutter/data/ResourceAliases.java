@@ -47,8 +47,8 @@ public final class ResourceAliases {
     }
 
     /**
-     * Genshin's seven elemental ascension gem families and the historical
-     * flat item slugs are registered in the same namespace alias service.
+     * Genshin's seven elemental ascension gem families are registered in
+     * the shared namespace alias service.
      */
     public static final ResourceAliases GENSHIN = genshin();
 
@@ -66,10 +66,6 @@ public final class ResourceAliases {
         for (String[] family : families) {
             var canonical = ResourceId.of("genshin", "avatar_ascension", family[1]);
             entries.put(ResourceId.of("genshin", "avatar_ascension", family[0]), canonical);
-            for (String grade : new String[]{"sliver", "fragment", "chunk", "gemstone"}) {
-                entries.put(ResourceId.of("genshin", "avatar_ascension",
-                        family[1] + "_" + grade), canonical.append(grade));
-            }
         }
         return new ResourceAliases(entries);
     }

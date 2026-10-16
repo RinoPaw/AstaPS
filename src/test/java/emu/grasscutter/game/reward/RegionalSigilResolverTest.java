@@ -94,9 +94,9 @@ class RegionalSigilResolverTest {
                   - {reward: genshin.item.mora, count: 50}
                 """, ids::resolve);
         var css = CssRewards.parse("""
-                chest[kind="common"] { --loot: seals, currency; }
+                chest[kind="common"] { --astaps-loot-seals: 1; --astaps-loot-currency: 1; }
                 chest[kind="exquisite"] {
-                    --loot: seals;
+                    --astaps-loot-seals: 1;
                     --genshin-item-sigil: 4;
                     --genshin-item-primogem: 5;
                 }

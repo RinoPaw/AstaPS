@@ -290,10 +290,10 @@ class BundledChestRewardsTest {
                     "kind", kind,
                     "level", Integer.toString(test[1]),
                     "city", Integer.toString(test[2])));
-            assertEquals(test[3], selected.items().getOrDefault(recipes[0], 0));
-            assertEquals(test[4], selected.items().getOrDefault(recipes[1], 0));
-            assertEquals(test[5], selected.items().getOrDefault(recipes[2], 0));
-            assertEquals(test[6], selected.items().getOrDefault(recipes[3], 0));
+            assertEquals(test[3], selected.items().getOrDefault(recipes[0], 0).intValue());
+            assertEquals(test[4], selected.items().getOrDefault(recipes[1], 0).intValue());
+            assertEquals(test[5], selected.items().getOrDefault(recipes[2], 0).intValue());
+            assertEquals(test[6], selected.items().getOrDefault(recipes[3], 0).intValue());
             assertEquals(1, selected.loot().values().stream()
                     .filter(v -> v > 0).count());
         }

@@ -196,7 +196,8 @@ The remainder of an explicitly specified count distribution implicitly means zer
 An explicit `0:80` is therefore unnecessary.
 Relative probabilities in the original weighted loot lists are preserved.
 Identical top-level tables may share a YAML list via anchors and aliases:
-`world_example_level_105: *world_example_level_100` preserves the `105`
+`world_frostnight_scion_level_105: *world_frostnight_scion_level_100`
+preserves the `105`
 resource name while reusing the exact same pool. A YAML alias shares a pool
 and does not change the number of independent reward rolls.
 

@@ -1312,7 +1312,6 @@ boss[type="weekly"][tag="shouki_no_kami"][level="93~"] {
     --astaps-loot-weekly_shouki_no_kami_level_93: 1;
 }
 
-
 /* World Boss drops (ChestDrop sourceType 34); requires a source tag and level.
    Precision Clockwork source omitted: artifact identities unresolved. */
 /* Frostnight Scion (霜夜灵嗣) */
@@ -3273,7 +3272,6 @@ boss[type="world"][tag="chimera_sky_roamer"][level="100~119"] {
 boss[type="world"][tag="chimera_sky_roamer"][level="120~"] {
     --astaps-loot-world_chimera_sky_roamer_level_120: 1;
 }
-
 
 /* Additional historical world Boss tables, sourceType 34. Original IDs remain in the native data. */
 /* Electro Hypostasis (无相之雷) */

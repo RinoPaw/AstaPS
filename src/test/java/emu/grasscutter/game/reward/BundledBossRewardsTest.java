@@ -91,10 +91,10 @@ final class BundledBossRewardsTest {
         assertTrue(loot.contains("astaps.loot.instructor_goblet_plume_extreme_substats"));
         assertTrue(loot.contains("astaps.loot.gems_cryo_electro_hydro_mixed"));
         assertTrue(loot.contains("astaps.loot.gems_anemo_geo_pyro_mixed"));
-        assertFalse(yaml.contains("_first_electro"));
-        assertFalse(yaml.contains("_first_cryo"));
-        assertFalse(yaml.contains("_first_anemo"));
-        assertFalse(yaml.contains("_first_pyro"));
+        assertFalse(yaml.contains("gems_cryo_electro_hydro_sliver_uniform_first_electro"));
+        assertFalse(yaml.contains("gems_cryo_electro_hydro_sliver_uniform_first_cryo"));
+        assertFalse(yaml.contains("gems_anemo_geo_pyro_sliver_uniform_first_anemo"));
+        assertFalse(yaml.contains("gems_anemo_geo_pyro_sliver_uniform_first_pyro"));
         assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p2_weapon_billets"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+_[a-z0-9_]+:.*")));

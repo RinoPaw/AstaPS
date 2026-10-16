@@ -27,6 +27,25 @@ All progression resource categories use short `up` suffixes. The historical
 - Artifact leveling: `genshin.artifact_up`
 - Talent leveling: `genshin.talent_up`
 
+## Talent book families
+
+The three talent book tiers live under the shared subject path, analogous to
+elemental ascension gem families:
+
+```text
+genshin.talent_up.freedom.teachings     # 2-star
+genshin.talent_up.freedom.guide         # 3-star
+genshin.talent_up.freedom.philosophies  # 4-star
+```
+
+The same tier names apply to every native talent-book subject.
+The inventory registry converts the native source names
+`teachings_of_<subject>`, `guide_to_<subject>` and
+`philosophies_of_<subject>` into canonical resource paths.
+Old flat resource IDs such as `genshin.talent_up.guide_to_freedom` are
+rejected. Other talent-advancement materials (for example, weekly boss drops)
+retain their existing non-book resource paths.
+
 ## Aliases
 
 `ResourceAliases` supports aliases at **any path depth**. Longest prefix

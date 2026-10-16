@@ -2318,3 +2318,4607 @@ boss[type="weekly"][tag="「正机之神」"][level="120~"] {
     --astaps-loot-weekly_shouki_no_kami_level_120: 1;
 }
 
+
+/* 7.1 normal Boss ChestDrop sourceType 34: exact tag and monster-level brackets.
+   This configuration requires a boss[type=world][tag][level] claim context.
+   Unknown legacy 34 roots deliberately have no CSS selector. */
+boss[type="world"][tag="霜夜灵嗣"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_frostnight_scion_level_1: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_frostnight_scion_level_5: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_frostnight_scion_level_10: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_frostnight_scion_level_15: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_frostnight_scion_level_20: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_frostnight_scion_level_25: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_frostnight_scion_level_30: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_frostnight_scion_level_35: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_frostnight_scion_level_40: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_frostnight_scion_level_45: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_frostnight_scion_level_50: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_frostnight_scion_level_55: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_frostnight_scion_level_60: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_frostnight_scion_level_65: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_frostnight_scion_level_70: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_frostnight_scion_level_75: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_frostnight_scion_level_80: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_frostnight_scion_level_85: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_frostnight_scion_level_90: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_frostnight_scion_level_93: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_frostnight_scion_level_100: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_frostnight_scion_level_105: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_frostnight_scion_level_110: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_frostnight_scion_level_115: 1;
+}
+
+boss[type="world"][tag="霜夜灵嗣"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_frostnight_scion_level_120: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_knuckle_duck_level_1: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_knuckle_duck_level_5: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_knuckle_duck_level_10: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_knuckle_duck_level_15: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_knuckle_duck_level_20: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_knuckle_duck_level_25: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_knuckle_duck_level_30: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_knuckle_duck_level_35: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_knuckle_duck_level_40: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_knuckle_duck_level_45: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_knuckle_duck_level_50: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_knuckle_duck_level_55: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_knuckle_duck_level_60: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_knuckle_duck_level_65: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_knuckle_duck_level_70: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_knuckle_duck_level_75: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_knuckle_duck_level_80: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_knuckle_duck_level_85: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_knuckle_duck_level_90: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_knuckle_duck_level_93: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_knuckle_duck_level_100: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_knuckle_duck_level_105: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_knuckle_duck_level_110: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_knuckle_duck_level_115: 1;
+}
+
+boss[type="world"][tag="重拳出击鸭"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_knuckle_duck_level_120: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_lightbearing_lunar_moth_level_1: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_lightbearing_lunar_moth_level_5: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_lightbearing_lunar_moth_level_10: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_lightbearing_lunar_moth_level_15: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_lightbearing_lunar_moth_level_20: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_lightbearing_lunar_moth_level_25: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_lightbearing_lunar_moth_level_30: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_lightbearing_lunar_moth_level_35: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_lightbearing_lunar_moth_level_40: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_lightbearing_lunar_moth_level_45: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_lightbearing_lunar_moth_level_50: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_lightbearing_lunar_moth_level_55: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_lightbearing_lunar_moth_level_60: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_lightbearing_lunar_moth_level_65: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_lightbearing_lunar_moth_level_70: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_lightbearing_lunar_moth_level_75: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_lightbearing_lunar_moth_level_80: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_lightbearing_lunar_moth_level_85: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_lightbearing_lunar_moth_level_90: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lightbearing_lunar_moth_level_93: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lightbearing_lunar_moth_level_100: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lightbearing_lunar_moth_level_105: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lightbearing_lunar_moth_level_110: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lightbearing_lunar_moth_level_115: 1;
+}
+
+boss[type="world"][tag="蕴光月幻蝶"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lightbearing_lunar_moth_level_120: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_radiant_beast_level_1: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_radiant_beast_level_5: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_radiant_beast_level_10: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_radiant_beast_level_15: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_radiant_beast_level_20: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_radiant_beast_level_25: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_radiant_beast_level_30: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_radiant_beast_level_35: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_radiant_beast_level_40: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_radiant_beast_level_45: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_radiant_beast_level_50: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_radiant_beast_level_55: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_radiant_beast_level_60: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_radiant_beast_level_65: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_radiant_beast_level_70: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_radiant_beast_level_75: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_radiant_beast_level_80: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_radiant_beast_level_85: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_radiant_beast_level_90: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_radiant_beast_level_93: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_radiant_beast_level_100: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_radiant_beast_level_105: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_radiant_beast_level_110: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_radiant_beast_level_115: 1;
+}
+
+boss[type="world"][tag="蕴光异兽"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_radiant_beast_level_120: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_primal_watcher_level_1: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_primal_watcher_level_5: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_primal_watcher_level_10: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_primal_watcher_level_15: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_primal_watcher_level_20: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_primal_watcher_level_25: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_primal_watcher_level_30: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_primal_watcher_level_35: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_primal_watcher_level_40: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_primal_watcher_level_45: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_primal_watcher_level_50: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_primal_watcher_level_55: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_primal_watcher_level_60: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_primal_watcher_level_65: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_primal_watcher_level_70: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_primal_watcher_level_75: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_primal_watcher_level_80: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_primal_watcher_level_85: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_primal_watcher_level_90: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_primal_watcher_level_93: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_primal_watcher_level_100: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_primal_watcher_level_105: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_primal_watcher_level_110: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_primal_watcher_level_115: 1;
+}
+
+boss[type="world"][tag="原初监视者"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_primal_watcher_level_120: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_icewind_suite_level_1: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_icewind_suite_level_5: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_icewind_suite_level_10: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_icewind_suite_level_15: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_icewind_suite_level_20: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_icewind_suite_level_25: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_icewind_suite_level_30: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_icewind_suite_level_35: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_icewind_suite_level_40: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_icewind_suite_level_45: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_icewind_suite_level_50: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_icewind_suite_level_55: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_icewind_suite_level_60: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_icewind_suite_level_65: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_icewind_suite_level_70: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_icewind_suite_level_75: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_icewind_suite_level_80: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_icewind_suite_level_85: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_icewind_suite_level_90: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_icewind_suite_level_93: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_icewind_suite_level_100: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_icewind_suite_level_105: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_icewind_suite_level_110: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_icewind_suite_level_115: 1;
+}
+
+boss[type="world"][tag="冰风组曲"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_icewind_suite_level_120: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_1: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_5: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_10: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_15: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_20: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_25: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_30: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_35: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_40: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_45: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_50: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_55: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_60: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_65: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_70: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_75: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_80: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_85: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_90: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_93: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_100: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_105: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_110: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_115: 1;
+}
+
+boss[type="world"][tag="铁甲熔火帝皇"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_emperor_of_fire_and_iron_level_120: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_experimental_field_generator_level_1: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_experimental_field_generator_level_5: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_experimental_field_generator_level_10: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_experimental_field_generator_level_15: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_experimental_field_generator_level_20: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_experimental_field_generator_level_25: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_experimental_field_generator_level_30: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_experimental_field_generator_level_35: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_experimental_field_generator_level_40: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_experimental_field_generator_level_45: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_experimental_field_generator_level_50: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_experimental_field_generator_level_55: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_experimental_field_generator_level_60: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_experimental_field_generator_level_65: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_experimental_field_generator_level_70: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_experimental_field_generator_level_75: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_experimental_field_generator_level_80: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_experimental_field_generator_level_85: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_experimental_field_generator_level_90: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_experimental_field_generator_level_93: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_experimental_field_generator_level_100: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_experimental_field_generator_level_105: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_experimental_field_generator_level_110: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_experimental_field_generator_level_115: 1;
+}
+
+boss[type="world"][tag="实验性场力发生装置"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_experimental_field_generator_level_120: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_millennial_pearl_seahorse_level_1: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_millennial_pearl_seahorse_level_5: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_millennial_pearl_seahorse_level_10: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_millennial_pearl_seahorse_level_15: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_millennial_pearl_seahorse_level_20: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_millennial_pearl_seahorse_level_25: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_millennial_pearl_seahorse_level_30: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_millennial_pearl_seahorse_level_35: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_millennial_pearl_seahorse_level_40: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_millennial_pearl_seahorse_level_45: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_millennial_pearl_seahorse_level_50: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_millennial_pearl_seahorse_level_55: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_millennial_pearl_seahorse_level_60: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_millennial_pearl_seahorse_level_65: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_millennial_pearl_seahorse_level_70: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_millennial_pearl_seahorse_level_75: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_millennial_pearl_seahorse_level_80: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_millennial_pearl_seahorse_level_85: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_millennial_pearl_seahorse_level_90: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_millennial_pearl_seahorse_level_93: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_millennial_pearl_seahorse_level_100: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_millennial_pearl_seahorse_level_105: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_millennial_pearl_seahorse_level_110: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_millennial_pearl_seahorse_level_115: 1;
+}
+
+boss[type="world"][tag="千年珍珠骏麟"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_millennial_pearl_seahorse_level_120: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_hydro_tulpa_level_1: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_hydro_tulpa_level_5: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_hydro_tulpa_level_10: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_hydro_tulpa_level_15: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_hydro_tulpa_level_20: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_hydro_tulpa_level_25: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_hydro_tulpa_level_30: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_hydro_tulpa_level_35: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_hydro_tulpa_level_40: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_hydro_tulpa_level_45: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_hydro_tulpa_level_50: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_hydro_tulpa_level_55: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_hydro_tulpa_level_60: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_hydro_tulpa_level_65: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_hydro_tulpa_level_70: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_hydro_tulpa_level_75: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_hydro_tulpa_level_80: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_hydro_tulpa_level_85: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_hydro_tulpa_level_90: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_hydro_tulpa_level_93: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_hydro_tulpa_level_100: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_hydro_tulpa_level_105: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_hydro_tulpa_level_110: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_hydro_tulpa_level_115: 1;
+}
+
+boss[type="world"][tag="水形幻人"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_hydro_tulpa_level_120: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_legatus_golem_level_1: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_legatus_golem_level_5: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_legatus_golem_level_10: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_legatus_golem_level_15: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_legatus_golem_level_20: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_legatus_golem_level_25: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_legatus_golem_level_30: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_legatus_golem_level_35: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_legatus_golem_level_40: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_legatus_golem_level_45: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_legatus_golem_level_50: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_legatus_golem_level_55: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_legatus_golem_level_60: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_legatus_golem_level_65: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_legatus_golem_level_70: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_legatus_golem_level_75: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_legatus_golem_level_80: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_legatus_golem_level_85: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_legatus_golem_level_90: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_legatus_golem_level_93: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_legatus_golem_level_100: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_legatus_golem_level_105: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_legatus_golem_level_110: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_legatus_golem_level_115: 1;
+}
+
+boss[type="world"][tag="魔像督军"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_legatus_golem_level_120: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_1: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_5: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_10: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_15: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_20: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_25: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_30: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_35: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_40: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_45: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_50: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_55: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_60: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_65: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_70: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_75: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_80: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_85: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_90: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_93: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_100: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_105: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_110: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_115: 1;
+}
+
+boss[type="world"][tag="贪食匿叶龙山王"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_gluttonous_yumkasaur_mountain_king_level_120: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_1: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_5: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_10: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_15: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_20: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_25: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_30: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_35: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_40: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_45: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_50: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_55: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_60: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_65: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_70: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_75: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_80: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_85: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_90: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_93: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_100: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_105: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_110: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_115: 1;
+}
+
+boss[type="world"][tag="金焰绒翼龙暴君"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_goldflame_qucusaure_tyrant_level_120: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_1: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_5: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_10: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_15: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_20: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_25: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_30: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_35: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_40: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_45: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_50: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_55: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_60: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_65: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_70: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_75: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_80: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_85: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_90: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_93: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_100: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_105: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_110: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_115: 1;
+}
+
+boss[type="world"][tag="秘源机兵·构型械"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_secret_source_automaton_configuration_device_level_120: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_1: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_5: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_10: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_15: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_20: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_25: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_30: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_35: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_40: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_45: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_50: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_55: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_60: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_65: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_70: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_75: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_80: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_85: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_90: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_93: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_100: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_105: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_110: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_115: 1;
+}
+
+boss[type="world"][tag="深邃魹语之主"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lord_of_the_deep_dreadwing_level_120: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_holawaqa_ngoubou_level_1: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_holawaqa_ngoubou_level_5: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_holawaqa_ngoubou_level_10: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_holawaqa_ngoubou_level_15: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_holawaqa_ngoubou_level_20: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_holawaqa_ngoubou_level_25: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_holawaqa_ngoubou_level_30: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_holawaqa_ngoubou_level_35: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_holawaqa_ngoubou_level_40: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_holawaqa_ngoubou_level_45: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_holawaqa_ngoubou_level_50: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_holawaqa_ngoubou_level_55: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_holawaqa_ngoubou_level_60: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_holawaqa_ngoubou_level_65: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_holawaqa_ngoubou_level_70: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_holawaqa_ngoubou_level_75: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_holawaqa_ngoubou_level_80: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_holawaqa_ngoubou_level_85: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_holawaqa_ngoubou_level_90: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_holawaqa_ngoubou_level_93: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_holawaqa_ngoubou_level_100: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_holawaqa_ngoubou_level_105: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_holawaqa_ngoubou_level_110: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_holawaqa_ngoubou_level_115: 1;
+}
+
+boss[type="world"][tag="灵觉隐修的迷者"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_holawaqa_ngoubou_level_120: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_lava_dragon_statue_level_1: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_lava_dragon_statue_level_5: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_lava_dragon_statue_level_10: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_lava_dragon_statue_level_15: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_lava_dragon_statue_level_20: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_lava_dragon_statue_level_25: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_lava_dragon_statue_level_30: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_lava_dragon_statue_level_35: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_lava_dragon_statue_level_40: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_lava_dragon_statue_level_45: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_lava_dragon_statue_level_50: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_lava_dragon_statue_level_55: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_lava_dragon_statue_level_60: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_lava_dragon_statue_level_65: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_lava_dragon_statue_level_70: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_lava_dragon_statue_level_75: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_lava_dragon_statue_level_80: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_lava_dragon_statue_level_85: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_lava_dragon_statue_level_90: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lava_dragon_statue_level_93: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lava_dragon_statue_level_100: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lava_dragon_statue_level_105: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lava_dragon_statue_level_110: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lava_dragon_statue_level_115: 1;
+}
+
+boss[type="world"][tag="熔岩辉龙像"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_lava_dragon_statue_level_120: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_secret_source_automaton_overseer_level_1: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_secret_source_automaton_overseer_level_5: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_secret_source_automaton_overseer_level_10: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_secret_source_automaton_overseer_level_15: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_secret_source_automaton_overseer_level_20: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_secret_source_automaton_overseer_level_25: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_secret_source_automaton_overseer_level_30: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_secret_source_automaton_overseer_level_35: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_secret_source_automaton_overseer_level_40: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_secret_source_automaton_overseer_level_45: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_secret_source_automaton_overseer_level_50: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_secret_source_automaton_overseer_level_55: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_secret_source_automaton_overseer_level_60: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_secret_source_automaton_overseer_level_65: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_secret_source_automaton_overseer_level_70: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_secret_source_automaton_overseer_level_75: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_secret_source_automaton_overseer_level_80: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_secret_source_automaton_overseer_level_85: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_secret_source_automaton_overseer_level_90: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_secret_source_automaton_overseer_level_93: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_secret_source_automaton_overseer_level_100: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_secret_source_automaton_overseer_level_105: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_secret_source_automaton_overseer_level_110: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_secret_source_automaton_overseer_level_115: 1;
+}
+
+boss[type="world"][tag="秘源机兵·统御械"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_secret_source_automaton_overseer_level_120: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_setekh_wenut_level_1: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_setekh_wenut_level_5: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_setekh_wenut_level_10: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_setekh_wenut_level_15: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_setekh_wenut_level_20: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_setekh_wenut_level_25: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_setekh_wenut_level_30: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_setekh_wenut_level_35: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_setekh_wenut_level_40: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_setekh_wenut_level_45: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_setekh_wenut_level_50: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_setekh_wenut_level_55: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_setekh_wenut_level_60: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_setekh_wenut_level_65: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_setekh_wenut_level_70: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_setekh_wenut_level_75: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_setekh_wenut_level_80: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_setekh_wenut_level_85: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_setekh_wenut_level_90: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_setekh_wenut_level_93: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_setekh_wenut_level_100: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_setekh_wenut_level_105: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_setekh_wenut_level_110: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_setekh_wenut_level_115: 1;
+}
+
+boss[type="world"][tag="风蚀沙虫"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_setekh_wenut_level_120: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_solitary_suanni_level_1: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_solitary_suanni_level_5: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_solitary_suanni_level_10: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_solitary_suanni_level_15: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_solitary_suanni_level_20: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_solitary_suanni_level_25: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_solitary_suanni_level_30: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_solitary_suanni_level_35: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_solitary_suanni_level_40: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_solitary_suanni_level_45: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_solitary_suanni_level_50: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_solitary_suanni_level_55: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_solitary_suanni_level_60: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_solitary_suanni_level_65: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_solitary_suanni_level_70: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_solitary_suanni_level_75: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_solitary_suanni_level_80: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_solitary_suanni_level_85: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_solitary_suanni_level_90: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_solitary_suanni_level_93: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_solitary_suanni_level_100: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_solitary_suanni_level_105: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_solitary_suanni_level_110: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_solitary_suanni_level_115: 1;
+}
+
+boss[type="world"][tag="隐山猊兽"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_solitary_suanni_level_120: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_tenebrous_papilla_level_1: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_tenebrous_papilla_level_5: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_tenebrous_papilla_level_10: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_tenebrous_papilla_level_15: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_tenebrous_papilla_level_20: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_tenebrous_papilla_level_25: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_tenebrous_papilla_level_30: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_tenebrous_papilla_level_35: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_tenebrous_papilla_level_40: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_tenebrous_papilla_level_45: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_tenebrous_papilla_level_50: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_tenebrous_papilla_level_55: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_tenebrous_papilla_level_60: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_tenebrous_papilla_level_65: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_tenebrous_papilla_level_70: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_tenebrous_papilla_level_75: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_tenebrous_papilla_level_80: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_tenebrous_papilla_level_85: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_tenebrous_papilla_level_90: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_tenebrous_papilla_level_93: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_tenebrous_papilla_level_100: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_tenebrous_papilla_level_105: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_tenebrous_papilla_level_110: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_tenebrous_papilla_level_115: 1;
+}
+
+boss[type="world"][tag="深邃摹结株"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_tenebrous_papilla_level_120: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_undying_replicant_level_1: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_undying_replicant_level_5: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_undying_replicant_level_10: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_undying_replicant_level_15: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_undying_replicant_level_20: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_undying_replicant_level_25: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_undying_replicant_level_30: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_undying_replicant_level_35: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_undying_replicant_level_40: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_undying_replicant_level_45: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_undying_replicant_level_50: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_undying_replicant_level_55: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_undying_replicant_level_60: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_undying_replicant_level_65: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_undying_replicant_level_70: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_undying_replicant_level_75: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_undying_replicant_level_80: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_undying_replicant_level_85: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_undying_replicant_level_90: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_undying_replicant_level_93: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_undying_replicant_level_100: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_undying_replicant_level_105: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_undying_replicant_level_110: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_undying_replicant_level_115: 1;
+}
+
+boss[type="world"][tag="不灭衍生造物"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_undying_replicant_level_120: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="1~4"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 15;
+    --genshin-experience-character: 100;
+    --genshin-currency-mora: 1825;
+    --astaps-loot-world_chimera_sky_roamer_level_1: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="5~9"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 104;
+    --genshin-currency-mora: 2100;
+    --astaps-loot-world_chimera_sky_roamer_level_5: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="10~14"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 20;
+    --genshin-experience-character: 110;
+    --genshin-currency-mora: 2375;
+    --astaps-loot-world_chimera_sky_roamer_level_10: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="15~19"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 116;
+    --genshin-currency-mora: 2575;
+    --astaps-loot-world_chimera_sky_roamer_level_15: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="20~24"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 121;
+    --genshin-currency-mora: 2825;
+    --astaps-loot-world_chimera_sky_roamer_level_20: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="25~29"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 25;
+    --genshin-experience-character: 127;
+    --genshin-currency-mora: 3050;
+    --astaps-loot-world_chimera_sky_roamer_level_25: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="30~34"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 133;
+    --genshin-currency-mora: 3300;
+    --astaps-loot-world_chimera_sky_roamer_level_30: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="35~39"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 138;
+    --genshin-currency-mora: 3450;
+    --astaps-loot-world_chimera_sky_roamer_level_35: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="40~44"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 144;
+    --genshin-currency-mora: 3650;
+    --astaps-loot-world_chimera_sky_roamer_level_40: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="45~49"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 30;
+    --genshin-experience-character: 149;
+    --genshin-currency-mora: 3725;
+    --astaps-loot-world_chimera_sky_roamer_level_45: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="50~54"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 155;
+    --genshin-currency-mora: 3850;
+    --astaps-loot-world_chimera_sky_roamer_level_50: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="55~59"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 161;
+    --genshin-currency-mora: 3975;
+    --astaps-loot-world_chimera_sky_roamer_level_55: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="60~64"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 166;
+    --genshin-currency-mora: 4125;
+    --astaps-loot-world_chimera_sky_roamer_level_60: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="65~69"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 35;
+    --genshin-experience-character: 172;
+    --genshin-currency-mora: 4325;
+    --astaps-loot-world_chimera_sky_roamer_level_65: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="70~74"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 178;
+    --genshin-currency-mora: 4450;
+    --astaps-loot-world_chimera_sky_roamer_level_70: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="75~79"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 183;
+    --genshin-currency-mora: 4600;
+    --astaps-loot-world_chimera_sky_roamer_level_75: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="80~84"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 189;
+    --genshin-currency-mora: 4725;
+    --astaps-loot-world_chimera_sky_roamer_level_80: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="85~89"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 40;
+    --genshin-experience-character: 194;
+    --genshin-currency-mora: 4850;
+    --astaps-loot-world_chimera_sky_roamer_level_85: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="90~92"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 5200;
+    --astaps-loot-world_chimera_sky_roamer_level_90: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="93~99"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_chimera_sky_roamer_level_93: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="100~104"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_chimera_sky_roamer_level_100: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="105~109"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_chimera_sky_roamer_level_105: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="110~114"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_chimera_sky_roamer_level_110: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="115~119"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_chimera_sky_roamer_level_115: 1;
+}
+
+boss[type="world"][tag="嵌合翼骏狮"][level="120~"] {
+    --genshin-experience-adventure: 200;
+    --genshin-experience-companionship: 45;
+    --genshin-experience-character: 200;
+    --genshin-currency-mora: 6000;
+    --astaps-loot-world_chimera_sky_roamer_level_120: 1;
+}
+

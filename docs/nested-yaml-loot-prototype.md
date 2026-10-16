@@ -22,8 +22,8 @@ These twelve names are registered under `astaps.loot`, for example
 `astaps.loot.nano` and `astaps.loot.ultra`. All 23 supporting tables come
 first in `loot.yaml`, grouped by reward content (weapons, ingredients, talent
 books and artifacts) rather than by chest type or level. The twelve selectable
-tiers follow in ascending order, then the separate `three_realms_point`
-table. There are 36 tables in total.
+tiers follow in ascending order. Boss source graphs add many more named
+pools; the bundled YAML currently contains 2,222 top-level loot tables.
 
 The artifact distributions are `artifacts_1_to_2_low`,
 `artifacts_1_to_2_high`, `artifacts_1_to_3`, `artifacts_2_to_3`,
@@ -195,6 +195,10 @@ The remainder of an explicitly specified count distribution implicitly means zer
 `count: "1:20"` means one item 20% of the time and none 80% of the time.
 An explicit `0:80` is therefore unnecessary.
 Relative probabilities in the original weighted loot lists are preserved.
+Identical top-level tables may share a YAML list via anchors and aliases:
+`world_example_level_105: *world_example_level_100` preserves the `105`
+resource name while reusing the exact same pool. A YAML alias shares a pool
+and does not change the number of independent reward rolls.
 
 ## Semantic Genshin resource namespaces
 
@@ -282,8 +286,10 @@ verified the game's cross-boss three-discount weekly counter or
 all Boss Dungeon-to-native-source joins. Do not treat this candidate
 match as 7.1 drop-rate verification or complete playable coverage.
 
-Boss rewards have **not** been copied into `loot.yaml` or selected
-by `rewards.css` yet: doing so without verified source mappings
-would create competing authorities and possibly fabricate reward
-probabilities. World-boss and weekly-boss end-to-end gameplay
-validation is still required before upstream submission.
+Boss candidate drop graphs are now bundled in `loot.yaml` and mapped in
+`rewards.css`. CSS declares shared fixed Boss amounts by type and native
+level bracket; individual tag/level selectors only choose their corresponding
+named loot pool. Matching configuration alone does not establish that a
+payout path is authoritative or that all 7.1 reward probabilities are verified.
+World-boss and weekly-boss end-to-end gameplay validation is still required
+before upstream submission.

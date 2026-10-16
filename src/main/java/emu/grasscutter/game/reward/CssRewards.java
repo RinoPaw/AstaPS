@@ -40,16 +40,15 @@ public final class CssRewards {
     // selector syntax. Do not silently miscalculate priority for other CSS.
     private static final Pattern SIMPLE_SELECTOR = Pattern.compile(
             "^(?:\\*|[a-zA-Z][a-zA-Z0-9_-]*)(?:\\[[^\\[\\]]+\\])*$");
-    // A quoted level value such as "1~5" selects an inclusive numeric range.
-    // A missing upper bound ("26~") means all levels from 26 onwards.
-    private static final Pattern LEVEL_RANGE = Pattern.compile(
-            "\\[\\s*level\\s*=\\s*([\"'])([0-9]+)~([0-9]*)\\1\\s*\\]");
-    private static final Pattern MALFORMED_LEVEL_RANGE = Pattern.compile(
-            "\\[\\s*level\\s*=\\s*([\"'])[^\"']*~[^\"']*\\1\\s*\\]");
+    // Inclusive numeric ranges work on any attribute; "93~" has no upper bound.
+    private static final Pattern ATTRIBUTE_RANGE = Pattern.compile(
+            "\\[\\s*([a-zA-Z_][a-zA-Z0-9_-]*)\\s*=\\s*([\"'])([0-9]+)~([0-9]*)\\2\\s*\\]");
+    private static final Pattern MALFORMED_ATTRIBUTE_RANGE = Pattern.compile(
+            "\\[\\s*([a-zA-Z_][a-zA-Z0-9_-]*)\\s*=\\s*([\"'])[^\"']*~[^\"']*\\2\\s*\\]");
 
-    private record LevelRange(long min, Long max) {
+    private record AttributeRange(String name, long min, Long max) {
         boolean matches(Map<String, String> attributes) {
-            String value = attributes.get("level");
+            String value = attributes.get(name);
             if (value == null) return false;
             try {
                 long actual = Long.parseLong(value);
@@ -61,7 +60,7 @@ public final class CssRewards {
     }
 
     private record Rule(
-            Evaluator selector, List<LevelRange> levelRanges,
+            Evaluator selector, List<AttributeRange> attributeRanges,
             Map<Integer, Integer> items, Map<String, Integer> loot,
             Map<Integer, LootCount.Spec> rangedItems,
             Map<String, LootCount.Spec> rangedLoot, int specificity, int order) {}
@@ -130,23 +129,24 @@ public final class CssRewards {
 
             for (var selector : style.getAllSelectors()) {
                 String css = selector.getAsCSSString(CSSWriterSettings.DEFAULT_SETTINGS, 0).trim();
-                var levelRanges = new ArrayList<LevelRange>();
+                var attributeRanges = new ArrayList<AttributeRange>();
                 var selectorBuffer = new StringBuffer();
-                var matcher = LEVEL_RANGE.matcher(css);
+                var matcher = ATTRIBUTE_RANGE.matcher(css);
                 while (matcher.find()) {
-                    long min = Long.parseLong(matcher.group(2));
-                    Long max = matcher.group(3).isEmpty()
-                            ? null : Long.parseLong(matcher.group(3));
+                    String name = matcher.group(1);
+                    long min = Long.parseLong(matcher.group(3));
+                    Long max = matcher.group(4).isEmpty()
+                            ? null : Long.parseLong(matcher.group(4));
                     if (max != null && max < min) {
-                        throw new IllegalArgumentException("Reversed reward level range: " + css);
+                        throw new IllegalArgumentException("Reversed reward attribute range: " + css);
                     }
-                    levelRanges.add(new LevelRange(min, max));
-                    matcher.appendReplacement(selectorBuffer, "[level]");
+                    attributeRanges.add(new AttributeRange(name, min, max));
+                    matcher.appendReplacement(selectorBuffer, "[" + name + "]");
                 }
                 matcher.appendTail(selectorBuffer);
                 String normalizedSelector = selectorBuffer.toString();
-                if (MALFORMED_LEVEL_RANGE.matcher(normalizedSelector).find()) {
-                    throw new IllegalArgumentException("Invalid reward level range: " + css);
+                if (MALFORMED_ATTRIBUTE_RANGE.matcher(normalizedSelector).find()) {
+                    throw new IllegalArgumentException("Invalid reward attribute range: " + css);
                 }
                 if (!SIMPLE_SELECTOR.matcher(normalizedSelector).matches()) {
                     throw new IllegalArgumentException("Unsupported reward selector: " + css);
@@ -158,7 +158,7 @@ public final class CssRewards {
                 int specificity = attributeCount * 100
                         + (css.matches("^[a-zA-Z][a-zA-Z0-9_-]*.*") ? 1 : 0);
                 rules.add(new Rule(Selector.evaluatorOf(normalizedSelector),
-                        List.copyOf(levelRanges), Map.copyOf(fixed),
+                        List.copyOf(attributeRanges), Map.copyOf(fixed),
                         Map.copyOf(selectedLoot), Map.copyOf(ranged),
                         Map.copyOf(rangedLoot), specificity, order++));
             }
@@ -177,7 +177,7 @@ public final class CssRewards {
         var rangedLoot = new HashMap<String, LootCount.Spec>();
         for (var rule : rules) {
             if (rule.selector.matches(element.root(), element)
-                    && rule.levelRanges.stream().allMatch(range ->
+                    && rule.attributeRanges.stream().allMatch(range ->
                             range.matches(attributes))) {
                 rule.items.keySet().forEach(ranged::remove);
                 rule.rangedItems.keySet().forEach(fixed::remove);

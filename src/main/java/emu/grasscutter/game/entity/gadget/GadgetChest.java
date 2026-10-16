@@ -1,6 +1,8 @@
 package emu.grasscutter.game.entity.gadget;
 
 import emu.grasscutter.Grasscutter;
+import emu.grasscutter.database.RewardGrantJournal;
+import emu.grasscutter.config.Configuration;
 import emu.grasscutter.game.drop.DropSystem;
 import emu.grasscutter.game.entity.EntityBaseGadget;
 import emu.grasscutter.game.entity.EntityGadget;
@@ -11,6 +13,7 @@ import emu.grasscutter.game.entity.gadget.chest.WorldChestLootHelper;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
+import emu.grasscutter.game.props.PlayerProperty;
 import emu.grasscutter.game.props.SceneType;
 import emu.grasscutter.game.props.WatcherTriggerType;
 import emu.grasscutter.game.world.NodKraiExploreSpawnHelper;
@@ -34,6 +37,7 @@ import emu.grasscutter.server.packet.send.PacketWorldChestOpenNotify;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -52,6 +56,8 @@ public class GadgetChest extends GadgetContent {
      */
     private static final double BOSS_CLAIM_RANGE = 100;
     private final Set<Integer> claimedBossUids = ConcurrentHashMap.newKeySet();
+    // One durable receipt identity per flower spawn; rotate only after proven unpaid attempts.
+    private String bossClaimOperationId = UUID.randomUUID().toString();
 
     public GadgetChest(EntityGadget gadget) {
         super(gadget);
@@ -311,18 +317,58 @@ public class GadgetChest extends GadgetContent {
             throw new IllegalStateException(
                     "World boss chest lacks native drop tag: " + getGadget().getGroupId());
         }
+        if (resinCost <= 0) {
+            throw new IllegalArgumentException("World boss has no payable resin cost");
+        }
         List<GameItem> items = player.getServer().getDropSystem()
                 .rollBossChestDrop(meta.drop_tag, player.getWorldLevel());
+        // Like dungeon claims, persist intent before charging. A paid but interrupted
+        // grant is never retried blindly: the receipt remains for reconciliation.
+        var journal = new RewardGrantJournal();
+        var receipt = new RewardGrantJournal.Key(
+                RewardGrantJournal.Source.WORLD_BOSS, player.getUid(),
+                "flower." + getGadget().getSceneId() + "." + getGadget().getGroupId()
+                        + "." + bossClaimOperationId);
+        var intended = items.stream().map(item -> new RewardGrantJournal.Reward(
+                item.getItemId(), item.getCount(), item.getLevel())).toList();
+        var debits = Configuration.GAME_OPTIONS.resinOptions.resinUsage
+                ? List.of(new RewardGrantJournal.Debit(106, resinCost)) : List.<RewardGrantJournal.Debit>of();
         var result = player.getInventory().addItems(
                 items, ActionReason.OpenWorldBossChest,
                 emu.grasscutter.game.inventory.InventoryAddPolicy.ALL_OR_NOTHING,
-                () -> player.getResinManager().useResin(resinCost), () -> {});
+                () -> {
+                    if (!canClaimBossFlower(player)
+                            || (Configuration.GAME_OPTIONS.resinOptions.resinUsage
+                                    && player.getProperty(PlayerProperty.PROP_PLAYER_RESIN) < resinCost)
+                            || !journal.prepare(receipt, intended, debits)) {
+                        return false;
+                    }
+                    if (player.getResinManager().useResin(resinCost)) {
+                        return true;
+                    }
+                    // useResin returning false proves that no charge took place.
+                    journal.abortUnpaid(receipt);
+                    bossClaimOperationId = UUID.randomUUID().toString();
+                    return false;
+                },
+                () -> {
+                    // This is before inventory writes, and cannot be undone safely.
+                    claimedBossUids.add(player.getUid());
+                    journal.confirm(receipt);
+                });
         if (!result.allAccepted()) {
             Grasscutter.getLogger().warn(
                     "World boss reward refused group={} tag={} uid={} statuses={}",
                     getGadget().getGroupId(), meta.drop_tag, player.getUid(),
                     result.entries().stream().map(entry -> entry.status()).toList());
             return false;
+        }
+        try {
+            journal.complete(receipt);
+        } catch (RuntimeException e) {
+            Grasscutter.getLogger().error(
+                    "World boss delivered but receipt remains unresolved uid={} receipt={}",
+                    player.getUid(), receipt.storageId(), e);
         }
         player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(items));
         return true;

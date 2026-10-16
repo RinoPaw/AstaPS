@@ -1360,6 +1360,19 @@ boss[type="weekly"][tag="shouki_no_kami"][level="93~"] {
 /* Frostnight Scion (霜夜灵嗣) */
 /* Shared five-star artifact payouts; CSS selects which Bosses and levels. */
 /* Content-based fixed gem packages for the corresponding source tags. */
+/* Common Instructor artifact pools; Boss tags and levels are CSS selectors. */
+boss[type="world"][tag="frostnight_scion,knuckle_duck,lightbearing_lunar_moth,radiant_beast,primal_watcher,icewind_suite,emperor_of_fire_and_iron,experimental_field_generator,millennial_pearl_seahorse,hydro_tulpa,legatus_golem,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,secret_source_automaton_configuration_device,lord_of_the_deep_dreadwing,holawaqa_ngoubou,lava_dragon_statue,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant,chimera_sky_roamer"][level="5~14"] {
+    --astaps-loot-instructor_goblet_plume_low_substats: 1;
+}
+
+boss[type="world"][tag="frostnight_scion,knuckle_duck,lightbearing_lunar_moth,radiant_beast,primal_watcher,icewind_suite,emperor_of_fire_and_iron,experimental_field_generator,millennial_pearl_seahorse,hydro_tulpa,legatus_golem,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,secret_source_automaton_configuration_device,lord_of_the_deep_dreadwing,holawaqa_ngoubou,lava_dragon_statue,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant,chimera_sky_roamer"][level="15~24"] {
+    --astaps-loot-instructor_goblet_plume_mixed_substats: 1;
+}
+
+boss[type="world"][tag="frostnight_scion,knuckle_duck,lightbearing_lunar_moth,radiant_beast,primal_watcher,icewind_suite,emperor_of_fire_and_iron,experimental_field_generator,millennial_pearl_seahorse,hydro_tulpa,legatus_golem,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,secret_source_automaton_configuration_device,lord_of_the_deep_dreadwing,holawaqa_ngoubou,lava_dragon_statue,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant,chimera_sky_roamer"][level="45~59"] {
+    --astaps-loot-instructor_goblet_plume_extreme_substats: 1;
+}
+
 boss[type="world"][tag="frostnight_scion"][level="1~"] {
     --astaps-loot-gems_geo_hydro_basic: 1;
 }

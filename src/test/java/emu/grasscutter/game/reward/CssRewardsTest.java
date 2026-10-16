@@ -71,6 +71,26 @@ class CssRewardsTest {
     }
 
     @Test
+    void talentBookFamiliesAreIndependentCssRewards() {
+        var bookItems = new ItemIdRegistry(Map.of(
+                7201, "Teachings of Freedom",
+                7202, "Guide to Freedom",
+                7203, "Philosophies of Freedom"));
+        var css = CssRewards.parse("""
+                chest {
+                    genshin.talent_up.freedom.teachings: 1;
+                    genshin.talent_up.freedom.guide: 2;
+                    genshin.talent_up.freedom.philosophies: 3;
+                }
+                """, bookItems, loot);
+        assertEquals(Map.of(7201, 1, 7202, 2, 7203, 3),
+                css.resolve("chest", Map.of()).items());
+        assertThrows(IllegalArgumentException.class, () -> CssRewards.parse(
+                "chest { genshin.talent_up.teachings_of_freedom: 1; }",
+                bookItems, loot));
+    }
+
+    @Test
     void inventoryRewardsSupportBonusCountsAndFixedCascades() {
         var css = CssRewards.parse("""
                 chest {

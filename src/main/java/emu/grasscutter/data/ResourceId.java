@@ -70,29 +70,6 @@ public record ResourceId(List<String> segments) {
         return String.join(".", segments.subList(start, size()));
     }
 
-    /**
-     * Dotted names are the preferred reward CSS dialect. The historical
-     * --namespace-category-name spelling remains readable during migration.
-     */
-    public static ResourceId fromCssProperty(String property) {
-        if (!property.startsWith("--")) return parse(property);
-        String[] parts = property.substring(2).split("-", 3);
-        if (parts.length != 3 || parts[0].isEmpty() || parts[1].isEmpty()
-                || parts[2].isEmpty()) {
-            throw new IllegalArgumentException("Invalid legacy CSS resource: " + property);
-        }
-        if ("genshin".equals(parts[0]) && "currency".equals(parts[1])
-                && parts[2].matches("sigil-[a-z][a-z0-9_]*")) {
-            return of("genshin", "currency", "sigil", parts[2].substring(6));
-        }
-        return of(parts[0], parts[1], parts[2]);
-    }
-
-    /** Emit the unambiguous dotted spelling for new CSS resource declarations. */
-    public String toCssProperty() {
-        return toString();
-    }
-
     @Override
     public String toString() {
         return String.join(".", segments);

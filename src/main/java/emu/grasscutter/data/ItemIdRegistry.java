@@ -119,6 +119,85 @@ public final class ItemIdRegistry {
                     + "|vajrada_amethyst|varunada_lazurite|vayuda_turquoise)"
                     + "_(?:sliver|fragment|chunk|gemstone)");
 
+    /** Exclusively consumed advancement materials in the bundled reward graph. */
+    private static final Set<String> AVATAR_ASCENSION_ONLY = Set.of(
+            "artificed_spare_clockwork_component_coppelia",
+            "artificed_spare_clockwork_component_coppelius",
+            "basalt_pillar",
+            "cloudseam_scale",
+            "crystalline_bloom",
+            "dew_of_repudiation",
+            "dragonheirs_false_fin",
+            "emperors_resolution",
+            "ensnaring_gaze",
+            "fontemer_unihorn",
+            "fragment_of_a_golden_melody",
+            "frostnights_glory",
+            "gold_inscribed_secret_source_core",
+            "hoarfrost_core",
+            "hurricane_seed",
+            "juvenile_jade",
+            "light_guiding_tetrahedron",
+            "lightbearing_scale_feather",
+            "lightning_prism",
+            "majestic_hooked_beak",
+            "marionette_core",
+            "mark_of_the_binding_blessing",
+            "overripe_flamegranate",
+            "perpetual_caliber",
+            "perpetual_heart",
+            "plume_of_the_fallen_watcher",
+            "precision_kuuvahki_stamping_die",
+            "prismatic_severed_tail",
+            "pseudo_stamens",
+            "quelled_creeper",
+            "remnant_of_the_dreadwing",
+            "riftborn_regalia",
+            "runic_fang",
+            "secret_source_airflow_accumulator",
+            "severed_tail_of_the_sky_roamer",
+            "smoldering_pearl",
+            "sparkless_statue_core",
+            "storm_beads",
+            "talisman_of_the_enigmatic_land",
+            "thunderclap_fruitcore",
+            "tourbillon_device",
+            "unscorched_blossom_branch",
+            "water_that_failed_to_transcend");
+    private static final Set<String> TALENT_UPGRADE_ONLY = Set.of(
+            "ashen_heart",
+            "bloodjade_branch",
+            "dakas_bell",
+            "dragon_lords_crown",
+            "dvalins_claw",
+            "dvalins_plume",
+            "dvalins_sigh",
+            "gilded_scale",
+            "guide_to_ballad",
+            "guide_to_freedom",
+            "guide_to_resistance",
+            "hellfire_butterfly",
+            "mirror_of_mushin",
+            "molten_moment",
+            "mudra_of_the_malefic_general",
+            "puppet_strings",
+            "ring_of_boreas",
+            "shadow_of_the_warrior",
+            "shard_of_a_foul_legacy",
+            "spirit_locket_of_boreas",
+            "tail_of_boreas",
+            "teachings_of_ballad",
+            "teachings_of_freedom",
+            "teachings_of_resistance",
+            "tears_of_the_calamitous_god",
+            "the_meaning_of_aeons",
+            "tusk_of_monoceros_caeli");
+    private static final java.util.regex.Pattern WEAPON_BILLET =
+            java.util.regex.Pattern.compile(
+                    "(?:northlander|midlander|borderland)_(?:sword|bow|claymore|catalyst|polearm)_billet");
+
+    public enum Usage { AVATAR_ASCENSION, WEAPON_ASCENSION, TALENT_UPGRADE }
+
     private static final Set<Integer> CHEST_WEAPON_IDS = Set.of(
             11101, 11201, 11303, 11305, 12101, 12201, 12303, 12306,
             13101, 13201, 13301, 13302, 14101, 14201, 14303, 14305,
@@ -127,12 +206,18 @@ public final class ItemIdRegistry {
     private final Map<Integer, Info> byId;
     private final Map<String, Integer> byName;
     private final Set<String> ambiguous;
+    private final Map<Integer, Set<Usage>> usageById;
 
     public ItemIdRegistry(Map<Integer, String> englishNames) {
         this(englishNames, Map.of());
     }
 
     public ItemIdRegistry(Map<Integer, String> englishNames, Map<Integer, String> categories) {
+        this(englishNames, categories, Map.of());
+    }
+
+    public ItemIdRegistry(Map<Integer, String> englishNames, Map<Integer, String> categories,
+            Map<Integer, Set<Usage>> usage) {
         var ids = new LinkedHashMap<Integer, Info>();
         var names = new HashMap<String, Integer>();
         var collisions = new HashSet<String>();
@@ -151,7 +236,7 @@ public final class ItemIdRegistry {
                     STABLE_NAMES.containsKey(id) ? STABLE_NAMES.get(id)
                     : CHEST_DROP_NAMES.containsKey(id) ? CHEST_DROP_NAMES.get(id)
                     : shortName(category, english);
-            String type = resourceType(id, category, name);
+            String type = resourceType(id, category, name, usage.getOrDefault(id, Set.of()));
             String key = name.isEmpty() || type == null ? null :
                     new ResourceId("genshin", type, name).toString();
             ids.put(id, new Info(id, english, key, category));
@@ -163,6 +248,7 @@ public final class ItemIdRegistry {
         this.byId = Map.copyOf(ids);
         this.byName = Map.copyOf(names);
         this.ambiguous = Set.copyOf(collisions);
+        this.usageById = Map.copyOf(usage);
     }
 
     public static ItemIdRegistry fromGameResources() {
@@ -181,7 +267,47 @@ public final class ItemIdRegistry {
         // a bag material. Its explicit native virtual ID can be absent from Excel.
         englishNames.putIfAbsent(102, "Adventure EXP");
         categories.putIfAbsent(102, "Currencies and Virtual Items");
-        return new ItemIdRegistry(englishNames, categories);
+        return new ItemIdRegistry(englishNames, categories, nativeDevelopmentUses());
+    }
+
+    /** Determine how each material is consumed from the native advancement cost data. */
+    private static Map<Integer, Set<Usage>> nativeDevelopmentUses() {
+        var uses = new HashMap<Integer, java.util.EnumSet<Usage>>();
+        for (var data : GameData.getAvatarPromoteDataMap().values()) {
+            for (var cost : data.getCostItems()) {
+                uses.computeIfAbsent(cost.getId(), ignored ->
+                        java.util.EnumSet.noneOf(Usage.class)).add(Usage.AVATAR_ASCENSION);
+            }
+        }
+        for (var data : GameData.getWeaponPromoteDataMap().values()) {
+            for (var cost : data.getCostItems()) {
+                uses.computeIfAbsent(cost.getId(), ignored ->
+                        java.util.EnumSet.noneOf(Usage.class)).add(Usage.WEAPON_ASCENSION);
+            }
+        }
+        for (var data : GameData.getProudSkillDataMap().values()) {
+            if (data.getCostItems() == null) continue;
+            for (var cost : data.getCostItems()) {
+                uses.computeIfAbsent(cost.getId(), ignored ->
+                        java.util.EnumSet.noneOf(Usage.class)).add(Usage.TALENT_UPGRADE);
+            }
+        }
+        var result = new HashMap<Integer, Set<Usage>>();
+        uses.forEach((id, domains) -> result.put(id, Set.copyOf(domains)));
+        return Map.copyOf(result);
+    }
+
+    public Set<Usage> usesOf(int id) {
+        return usageById.getOrDefault(id, Set.of());
+    }
+
+    /** Items used by two or more native advancement systems, with no duplicate resource IDs. */
+    public Map<Integer, Set<Usage>> sharedDevelopmentMaterials() {
+        var result = new LinkedHashMap<Integer, Set<Usage>>();
+        usageById.forEach((id, domains) -> {
+            if (domains.size() > 1 && byId.containsKey(id)) result.put(id, domains);
+        });
+        return Map.copyOf(result);
     }
 
     /** Short forms are scoped to their exact native material categories. */
@@ -200,12 +326,24 @@ public final class ItemIdRegistry {
      * A resource with unknown native classification has no guessed semantic ID.
      */
     static String resourceType(int id, String category, String name) {
+        return resourceType(id, category, name, Set.of());
+    }
+
+    private static String resourceType(int id, String category, String name, Set<Usage> uses) {
         return switch (id) {
             case 101, 102, 105, 121 -> "experience";
             case 106, 107, 201, 202, 203, 204, 301, 302, 303, 304, 305, 306,
                     307, 308, 101692 -> "currency";
-            default -> ASCENSION_GEM.matcher(name).matches()
-                    ? "avatar_ascension" : switch (category) {
+            default -> {
+                if (uses.size() > 1) yield "material";
+                if (ASCENSION_GEM.matcher(name).matches()
+                        || AVATAR_ASCENSION_ONLY.contains(name)
+                        || uses.contains(Usage.AVATAR_ASCENSION)) yield "avatar_ascension";
+                if (WEAPON_BILLET.matcher(name).matches()) yield "weapon_crafting";
+                if (TALENT_UPGRADE_ONLY.contains(name)
+                        || uses.contains(Usage.TALENT_UPGRADE)) yield "talent";
+                if (uses.contains(Usage.WEAPON_ASCENSION)) yield "weapon_ascension";
+                yield switch (category) {
                 case "Weapons" -> "weapon";
                 case "Food" -> "food";
                 case "Furnishings" -> "furnishing";
@@ -216,12 +354,14 @@ public final class ItemIdRegistry {
                         CHEST_DROP_NAMES.containsKey(id) || STABLE_NAMES.containsKey(id)
                                 ? "material" : null;
                 case "Materials", "Character Development Items",
-                        "Talent Level-Up Materials", "Quest Items", "Furnishing Blueprints",
+                        "Quest Items", "Furnishing Blueprints",
                         "Wood", "Bait", "Fishing Rods", "Wind Gliders", "Namecards",
                         "Outfits", "Seeds" -> "material";
+                case "Talent Level-Up Materials" -> "talent";
                 default -> throw new IllegalArgumentException(
                         "Unknown native resource category for " + id + ": " + category);
-            };
+                };
+            }
         };
     }
 
@@ -253,7 +393,8 @@ public final class ItemIdRegistry {
             ResourceId resource = ResourceId.parse(input);
             if (!resource.namespace().equals("genshin")
                     || !Set.of("currency", "experience", "avatar_exp", "weapon_exp",
-                            "artifact_exp", "avatar_ascension", "material", "food", "furnishing", "weapon")
+                            "artifact_exp", "avatar_ascension", "weapon_ascension", "talent",
+                            "weapon_crafting", "material", "food", "furnishing", "weapon")
                             .contains(resource.type())) {
                 throw new IllegalArgumentException("Unsupported inventory resource: " + input);
             }

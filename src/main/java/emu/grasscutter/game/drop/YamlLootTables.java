@@ -153,6 +153,9 @@ public final class YamlLootTables {
         if (!(document instanceof Map<?, ?> raw)) {
             throw new IllegalArgumentException("Loot YAML root must be a mapping of named lists");
         }
+        // Expand parameterized templates before compiling ordinary loot pools.
+        // Template references become nested lists, retaining independent rolls.
+        raw = LootTemplates.expand(raw, namespace);
         if (raw.size() > MAX_TABLES) throw new IllegalArgumentException("Too many loot tables");
         var budget = new CompileBudget();
         var parsed = new LinkedHashMap<String, Pool>();

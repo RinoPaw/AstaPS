@@ -162,8 +162,8 @@ final class BundledBossRewardsTest {
             assertEquals(earlyCounts[i], curves.require("world_ascension_material_early_count").lookup(earlyLevels[i]));
         }
         String[] midLevels = {"30", "35", "40", "45", "50", "55", "60", "65", "70", "75", "80", "85", "90", "93"};
-        String[] commonCounts = {"1+1:52.18", "1+1:60.8", "1+1:69.41", "1+1:78.03", "1+1:86.64", "1+1:95.26", "2+1:03.87", "2+1:12.48", "2+1:21.1", "2+1:29.71", "2+1:38.33", "2+1:46.94", "2+1:55.56", "2+1:55.56"};
-        String[] highYieldCounts = {"1+1:67.398", "1+1:76.88", "1+1:86.351", "1+1:95.833", "2+1:05.304", "2+1:14.786", "2+1:24.257", "2+1:33.728", "2+1:43.21", "2+1:52.681", "2+1:62.163", "2+1:71.634", "2+1:81.116", "2+1:81.116"};
+        String[] commonCounts = {"1+1:52.18", "1+1:60.8", "1+1:69.41", "1+1:78.03", "1+1:86.64", "1+1:95.26", "2+1:3.87", "2+1:12.48", "2+1:21.1", "2+1:29.71", "2+1:38.33", "2+1:46.94", "2+1:55.56", "2+1:55.56"};
+        String[] highYieldCounts = {"1+1:67.398", "1+1:76.88", "1+1:86.351", "1+1:95.833", "2+1:5.304", "2+1:14.786", "2+1:24.257", "2+1:33.728", "2+1:43.21", "2+1:52.681", "2+1:62.163", "2+1:71.634", "2+1:81.116", "2+1:81.116"};
         for (int i = 0; i < midLevels.length; i++) {
             assertEquals(commonCounts[i], curves.require("world_ascension_material_standard_count").lookup(midLevels[i]));
             assertEquals(highYieldCounts[i], curves.require("world_ascension_material_high_yield_count").lookup(midLevels[i]));

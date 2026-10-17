@@ -437,8 +437,7 @@ weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_702:
       - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "4+1:20.93"
 
-weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_738:
-  - {reward: *talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior, count: "1+1:27.5"}
+weekly_gems_anemo_electro_hydro_vajrada_amethyst_chunk_weight_738:
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}

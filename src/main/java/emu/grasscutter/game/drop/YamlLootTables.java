@@ -56,10 +56,26 @@ public final class YamlLootTables {
         }
         int maxGrade = "talent_up".equals(path.segment(1)) ? 4 : 5;
         if (!(rawProperties instanceof Map<?, ?> props)
-                || props.size() != 1 || !props.containsKey("rarity")
-                || !(props.get("rarity") instanceof String probabilities)) {
+                || props.size() != 1 || !props.containsKey("rarity")) {
             throw new IllegalArgumentException(location
-                    + ": advancement properties must contain a quoted rarity percentage distribution");
+                    + ": advancement properties require a rarity or a rarity distribution");
+        }
+        Object rarity = props.get("rarity");
+        if (rarity instanceof Integer fixedGrade) {
+            if (fixedGrade < 2 || fixedGrade > maxGrade) {
+                throw new IllegalArgumentException(location
+                        + ": invalid fixed advancement rarity: " + fixedGrade);
+            }
+            int itemId = resolver.resolve(family + "." + fixedGrade);
+            if (itemId <= 0) {
+                throw new IllegalArgumentException(location
+                        + ": unknown advancement family or rarity: " + family + "." + fixedGrade);
+            }
+            return new WeightedItemSelector(new int[] {itemId}, new double[] {1.0});
+        }
+        if (!(rarity instanceof String probabilities)) {
+            throw new IllegalArgumentException(location
+                    + ": advancement rarity must be an integer or quoted percentage distribution");
         }
         var ids = new ArrayList<Integer>();
         var boundaries = new ArrayList<Double>();

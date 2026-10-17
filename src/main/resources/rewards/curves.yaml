@@ -44,7 +44,7 @@ world_artifacts_pool_2_roll_count:
 # Source: ChestDrop.json sourceType=34 -> DropTableExcelConfigData.json.
 # The early profile is present on newer world Boss families only.
 world_ascension_material_early_count:
-  "1~5": "1+1:33.86"
+  "1~4": "1+1:33.86"
   "5~9": "1+1:42.89"
   "10~14": "1+1:54.17"
   "15~19": "1+1:65.45"
@@ -65,7 +65,7 @@ world_ascension_material_standard_count:
   "75~79": "2+1:29.71"
   "80~84": "2+1:38.33"
   "85~89": "2+1:46.94"
-  "90~94": "2+1:55.56"
+  "90~92": "2+1:55.56"
   "93~99": "2+1:55.56"
 
 world_ascension_material_high_yield_count:
@@ -81,5 +81,5 @@ world_ascension_material_high_yield_count:
   "75~79": "2+1:52.681"
   "80~84": "2+1:62.163"
   "85~89": "2+1:71.634"
-  "90~94": "2+1:81.116"
+  "90~92": "2+1:81.116"
   "93~99": "2+1:81.116"

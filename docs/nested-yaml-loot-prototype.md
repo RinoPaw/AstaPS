@@ -61,7 +61,7 @@ it is rolled. For Maguu Kenki at native level 50–54:
 
 ```css
 boss[type="world"][tag="maguu_kenki"][level="50~54"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.world_gems_cryo_anemo_rarity_2to3_copies3: "${world_gems_roll(level)}";
     astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
@@ -253,24 +253,29 @@ because the available artifact sets differ by rarity.
 Reward counts that follow an irregular discrete curve belong in
 `src/main/resources/rewards/curves.yaml`. The keys are exact levels or
 inclusive level ranges. The value is an ordinary quoted loot-count expression.
-Ranges may end in `~` to cover all higher levels. The `marionette_core`
-and `weekly_gems_4plus1` curves use curated integer percentages. All newly
-extracted curves retain source-accurate decimal odds. Lookup never interpolates.
+Ranges may end in `~` to cover all higher levels. The shared
+`world_ascension_material_count` curve uses curated integer percentages at
+levels 30+ and retains the original values for levels 1–29. The
+`weekly_gems_4plus1` curve also uses curated integers. Other shared curves
+retain source-accurate decimal odds. Lookup never interpolates.
 
 ```yaml
-marionette_core:
+world_ascension_material_count:
+  "1~4": "1+1:33.86"
+  "25~29": "1+1:88.01"
+  "30~34": "1+1:52"
   "50~54": "1+1:86"
-  "55~59": "1+1:95"
   "60~64": "2+1:3"
   "90~": "2+1:55"
 ```
 
-The full bundled curve has thirteen curated intervals starting at 30–34 and
-ending at 90+. A CSS property selects its value by the native Boss level:
+The full shared curve has nineteen intervals, from level 1 to 90+, with
+curated integer odds for levels 30+. A CSS property selects its value by
+the native Boss level:
 
 ```css
 boss[type="world"][tag="maguu_kenki"][level="50~54"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
 }
 ```
 
@@ -311,20 +316,21 @@ The weighted pool contains no Boss level or bonus count. Twenty-seven redundant
 unchanged: they cannot be lifted into a CSS item declaration without losing
 their element selection properties.
 
-Five additional curves now represent shared, source-accurate Boss counts:
+Four additional curves represent shared, source-accurate Boss counts:
 
 - `weekly_gems_early`: level 40–69 weighted gem-roll counts.
 - `world_gems_roll`: level 40+ weighted gem-roll counts.
 - `world_artifacts_pool_1` and `world_artifacts_pool_2`: independent
   counts for the first and second artifact pools. Their suffixes identify
   execution order, **not** artifact rarity; some Bosses use five-star pools.
-- `world_ascension_material_count`: level 1+ ascension-material counts for
-  eligible world Bosses, retaining the source's decimal probabilities.
-  The optional 100+ `3+1:25` alternative remains a separate fixed CSS value.
+The shared `world_ascension_material_count` curve also covers Maguu Kenki,
+replacing the duplicate `marionette_core` definition. Its level-30+ odds
+follow the user-specified integer values; earlier source values remain as-is.
+The optional 100+ `3+1:25` alternative remains a separate fixed CSS value.
 
 Together these changes replace 178 repeated world/weekly loot tables with 21
 weighted choice pools, migrate 523 Boss CSS loot references to independent
-curved selections, and apply the shared material curve to 729 item declarations.
+curved selections, and apply the single shared material curve to 743 item declarations.
 Each independent pool receives its own `count` evaluation. Tables containing
 single-family inner rarity rolls or inline elemental selectors remain in YAML
 until an exact equivalent can be expressed without changing copy-versus-roll

@@ -187,44 +187,48 @@ final class BundledBossRewardsTest {
         };
         for (int i = 0; i < weeklyLevels.length; i++) {
             assertEquals(weeklyCounts[i],
-                    curves.require("weekly_gems_roll").lookup(weeklyLevels[i]));
+                    curves.require("weekly_gems_roll_count").lookup(weeklyLevels[i]));
         }
         assertThrows(IllegalArgumentException.class,
-                () -> curves.require("weekly_gems_roll").lookup("39"));
+                () -> curves.require("weekly_gems_roll_count").lookup("39"));
         assertThrows(IllegalArgumentException.class,
-                () -> curves.require("weekly_gems_roll").lookup("90"));
+                () -> curves.require("weekly_gems_roll_count").lookup("90"));
         assertThrows(IllegalArgumentException.class,
                 () -> curves.require("weekly_gems_early"));
         assertThrows(IllegalArgumentException.class,
                 () -> curves.require("weekly_gems_4plus1"));
         assertEquals(69, stylesheet.lines().filter(line ->
-                line.contains("weekly_gems_roll(level)")).count());
-        assertEquals("1+1:43.847", curves.require("world_gems_roll").lookup("40"));
-        assertEquals("2+1:68.554", curves.require("world_gems_roll").lookup("77"));
-        assertEquals("3+1:18.45", curves.require("world_gems_roll").lookup("140"));
+                line.contains("weekly_gems_roll_count(level)")).count());
+        assertEquals("1+1:43.847", curves.require("world_gems_roll_count").lookup("40"));
+        assertEquals("2+1:68.554", curves.require("world_gems_roll_count").lookup("77"));
+        assertEquals("3+1:18.45", curves.require("world_gems_roll_count").lookup("140"));
         assertThrows(IllegalArgumentException.class,
-                () -> curves.require("world_gems_roll").lookup("39"));
-        assertEquals("2+1:94", curves.require("world_artifacts_pool_1").lookup("30"));
-        assertEquals("3+1:78", curves.require("world_artifacts_pool_1").lookup("52"));
-        assertEquals("2+1:10", curves.require("world_artifacts_pool_1").lookup("94"));
-        assertEquals("1+1:26", curves.require("world_artifacts_pool_2").lookup("30"));
-        assertEquals("1:42", curves.require("world_artifacts_pool_2").lookup("52"));
-        assertEquals("1+1:47", curves.require("world_artifacts_pool_2").lookup("140"));
+                () -> curves.require("world_gems_roll_count").lookup("39"));
+        assertEquals("2+1:94", curves.require("world_artifacts_pool_1_roll_count").lookup("30"));
+        assertEquals("3+1:78", curves.require("world_artifacts_pool_1_roll_count").lookup("52"));
+        assertEquals("2+1:10", curves.require("world_artifacts_pool_1_roll_count").lookup("94"));
+        assertEquals("1+1:26", curves.require("world_artifacts_pool_2_roll_count").lookup("30"));
+        assertEquals("1:42", curves.require("world_artifacts_pool_2_roll_count").lookup("52"));
+        assertEquals("1+1:47", curves.require("world_artifacts_pool_2_roll_count").lookup("140"));
         assertThrows(IllegalArgumentException.class,
                 () -> curves.require("marionette_core"));
         assertEquals(5, RewardConfiguration.readBundled("curves.yaml").lines()
                 .filter(line -> line.matches("^[a-z][a-z0-9_]+:$")).count());
+        assertTrue(RewardConfiguration.readBundled("curves.yaml").lines()
+                .filter(line -> line.matches("^[a-z][a-z0-9_]+:$"))
+                .allMatch(line -> line.endsWith("_count:")),
+                "All count curves must use the _count suffix");
         assertEquals("1+1:33.86", curves.require("world_ascension_material_count").lookup("1"));
         assertEquals("1+1:52", curves.require("world_ascension_material_count").lookup("34"));
         assertEquals("2+1:55", curves.require("world_ascension_material_count").lookup("95"));
         assertThrows(IllegalArgumentException.class,
                 () -> curves.require("world_ascension_material_count").lookup("0"));
         assertEquals(121, stylesheet.lines().filter(line ->
-                line.contains("world_gems_roll(level)")).count());
+                line.contains("world_gems_roll_count(level)")).count());
         assertEquals(360, stylesheet.lines().filter(line ->
-                line.contains("world_artifacts_pool_1(level)")).count());
+                line.contains("world_artifacts_pool_1_roll_count(level)")).count());
         assertEquals(360, stylesheet.lines().filter(line ->
-                line.contains("world_artifacts_pool_2(level)")).count());
+                line.contains("world_artifacts_pool_2_roll_count(level)")).count());
         assertEquals(743, stylesheet.lines().filter(line ->
                 line.contains("world_ascension_material_count(level)")).count());
         assertEquals(14, yaml.lines().filter(line ->

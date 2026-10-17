@@ -63,9 +63,9 @@ it is rolled. For Maguu Kenki at native level 50–54:
 boss[type="world"][tag="maguu_kenki"][level="50~54"] {
     genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
-    astaps.loot.world_gems_cryo_anemo_rarity_2to3_copies3: "${world_gems_roll(level)}";
-    astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
-    astaps.loot.artifacts_berserker_instructor_4star: "${world_artifacts_pool_2(level)}";
+    astaps.loot.world_gems_cryo_anemo_rarity_2to3_copies3: "${world_gems_roll_count(level)}";
+    astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1_roll_count(level)}";
+    astaps.loot.artifacts_berserker_instructor_4star: "${world_artifacts_pool_2_roll_count(level)}";
 }
 ```
 
@@ -256,8 +256,16 @@ inclusive level ranges. The value is an ordinary quoted loot-count expression.
 Ranges may end in `~` to cover all higher levels. The shared
 `world_ascension_material_count` curve uses curated integer percentages at
 levels 30+ and retains the original values for levels 1–29. The
-`weekly_gems_roll` curve uses curated integers from level 70 onward. Other shared curves
+`weekly_gems_roll_count` curve uses curated integers from level 70 onward. Other shared curves
 retain source-accurate decimal odds. Lookup never interpolates.
+
+Curve keys follow `<scope>_<reward>[_pool_n]_<measure>`. The final
+`_count` suffix means the value is a complete `LootCount` expression.
+Direct item quantities use `_count` (for example,
+`world_ascension_material_count`); independent draws from weighted loot
+pools use `_roll_count` (for example, `weekly_gems_roll_count`). The
+numbered world artifact pools retain separate roll counts because each
+pool is evaluated independently. Numbering does not indicate rarity.
 
 ```yaml
 world_ascension_material_count:
@@ -291,7 +299,7 @@ The same lookup controls the complete level 40–89 weekly Boss gem-roll
 curve, combining the former early and 4+1 stages:
 
 ```yaml
-weekly_gems_roll:
+weekly_gems_roll_count:
   "40~44": "2+1:71.29"
   "45~49": "2+1:92.71"
   "50~54": "3+1:14.16"
@@ -310,7 +318,7 @@ For Andrius at level 75–79:
 boss[type="weekly"][tag="andrius"][level="75~79"] {
     astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1+1:27.5";
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_roll(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_roll_count(level)}";
 }
 ```
 
@@ -325,8 +333,8 @@ their element selection properties.
 
 The remaining shared curves cover world Boss gems and artifact counts:
 
-- `world_gems_roll`: level 40+ weighted gem-roll counts.
-- `world_artifacts_pool_1` and `world_artifacts_pool_2`: independent
+- `world_gems_roll_count`: level 40+ weighted gem-roll counts.
+- `world_artifacts_pool_1_roll_count` and `world_artifacts_pool_2_roll_count`: independent
   counts for the first and second artifact pools. Their suffixes identify
   execution order, **not** artifact rarity; some Bosses use five-star pools.
 The shared `world_ascension_material_count` curve also covers Maguu Kenki,

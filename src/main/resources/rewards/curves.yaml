@@ -1,4 +1,4 @@
-weekly_gems_roll:
+weekly_gems_roll_count:
   "40~44": "2+1:71.29"
   "45~49": "2+1:92.71"
   "50~54": "3+1:14.16"
@@ -10,7 +10,7 @@ weekly_gems_roll:
   "80~84": "4+1:69"
   "85~89": "4+1:91"
 
-world_gems_roll:
+world_gems_roll_count:
   "40~44": "1+1:43.847"
   "45~49": "1+1:59.555"
   "50~54": "1+1:75.263"
@@ -23,7 +23,7 @@ world_gems_roll:
   "85~89": "3+1:1.851"
   "90~": "3+1:18.45"
 
-world_artifacts_pool_1:
+world_artifacts_pool_1_roll_count:
   "25~34": "2+1:94"
   "35~44": "1+1:42.8"
   "45~59": "3+1:78"
@@ -32,7 +32,7 @@ world_artifacts_pool_1:
   "80~89": "2+1:52"
   "90~": "2+1:10"
 
-world_artifacts_pool_2:
+world_artifacts_pool_2_roll_count:
   "25~34": "1+1:26"
   "35~44": "2+1:77.2"
   "45~59": "1:42"

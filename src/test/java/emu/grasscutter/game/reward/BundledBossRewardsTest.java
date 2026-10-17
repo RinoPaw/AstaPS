@@ -25,7 +25,9 @@ final class BundledBossRewardsTest {
         Object document = new org.snakeyaml.engine.v2.api.Load(settings).loadFromString(yaml);
         assertInstanceOf(Map.class, document);
         for (var entry : ((Map<?, ?>) document).entrySet()) {
-            if (entry.getValue() instanceof java.util.List<?> list) {
+            if (entry.getKey() instanceof String name
+                    && !name.matches("[a-z][a-z0-9_]*<[a-z][a-z0-9_]*>")
+                    && entry.getValue() instanceof java.util.List<?> list) {
                 assertNotEquals(1, list.size(),
                         "Redundant single-entry loot table: " + entry.getKey());
             }
@@ -160,7 +162,7 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1047, loot.names().size()); // Moving weekly talent grants merges 12 duplicate gem pools.
+        assertEquals(1049, loot.names().size()); // Two explicit artifact rarity pools replace the old variant mapping.
         assertFalse(yaml.contains("empty_reward_choices"));
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));

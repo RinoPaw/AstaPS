@@ -174,23 +174,31 @@ final class BundledBossRewardsTest {
         }
         assertEquals("2+1:55", curves.require("world_ascension_material_count").lookup("130"));
         assertEquals("1+1:88.01", curves.require("world_ascension_material_count").lookup("29"));
-        String[] weeklyLevels = {"70", "74", "75", "79", "80", "84", "85", "89"};
+        String[] weeklyLevels = {
+                "40", "44", "45", "49", "50", "54", "55", "59", "60", "64",
+                "65", "69", "70", "74", "75", "79", "80", "84", "85", "89"
+        };
         String[] weeklyCounts = {
+                "2+1:71.29", "2+1:71.29", "2+1:92.71", "2+1:92.71",
+                "3+1:14.16", "3+1:14.16", "3+1:35.58", "3+1:35.58",
+                "3+1:75.78", "3+1:75.78", "3+1:98.37", "3+1:98.37",
                 "4+1:21", "4+1:21", "4+1:45", "4+1:45",
                 "4+1:69", "4+1:69", "4+1:91", "4+1:91"
         };
         for (int i = 0; i < weeklyLevels.length; i++) {
             assertEquals(weeklyCounts[i],
-                    curves.require("weekly_gems_4plus1").lookup(weeklyLevels[i]));
+                    curves.require("weekly_gems_roll").lookup(weeklyLevels[i]));
         }
         assertThrows(IllegalArgumentException.class,
-                () -> curves.require("weekly_gems_4plus1").lookup("90"));
-        assertEquals(27, stylesheet.lines().filter(line ->
-                line.contains("weekly_gems_4plus1(level)")).count());
-        assertEquals("2+1:71.29", curves.require("weekly_gems_early").lookup("40"));
-        assertEquals("3+1:98.37", curves.require("weekly_gems_early").lookup("69"));
+                () -> curves.require("weekly_gems_roll").lookup("39"));
         assertThrows(IllegalArgumentException.class,
-                () -> curves.require("weekly_gems_early").lookup("70"));
+                () -> curves.require("weekly_gems_roll").lookup("90"));
+        assertThrows(IllegalArgumentException.class,
+                () -> curves.require("weekly_gems_early"));
+        assertThrows(IllegalArgumentException.class,
+                () -> curves.require("weekly_gems_4plus1"));
+        assertEquals(69, stylesheet.lines().filter(line ->
+                line.contains("weekly_gems_roll(level)")).count());
         assertEquals("1+1:43.847", curves.require("world_gems_roll").lookup("40"));
         assertEquals("2+1:68.554", curves.require("world_gems_roll").lookup("77"));
         assertEquals("3+1:18.45", curves.require("world_gems_roll").lookup("140"));
@@ -204,15 +212,13 @@ final class BundledBossRewardsTest {
         assertEquals("1+1:47", curves.require("world_artifacts_pool_2").lookup("140"));
         assertThrows(IllegalArgumentException.class,
                 () -> curves.require("marionette_core"));
-        assertEquals(6, RewardConfiguration.readBundled("curves.yaml").lines()
+        assertEquals(5, RewardConfiguration.readBundled("curves.yaml").lines()
                 .filter(line -> line.matches("^[a-z][a-z0-9_]+:$")).count());
         assertEquals("1+1:33.86", curves.require("world_ascension_material_count").lookup("1"));
         assertEquals("1+1:52", curves.require("world_ascension_material_count").lookup("34"));
         assertEquals("2+1:55", curves.require("world_ascension_material_count").lookup("95"));
         assertThrows(IllegalArgumentException.class,
                 () -> curves.require("world_ascension_material_count").lookup("0"));
-        assertEquals(42, stylesheet.lines().filter(line ->
-                line.contains("weekly_gems_early(level)")).count());
         assertEquals(121, stylesheet.lines().filter(line ->
                 line.contains("world_gems_roll(level)")).count());
         assertEquals(360, stylesheet.lines().filter(line ->

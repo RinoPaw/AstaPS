@@ -30,12 +30,13 @@ final class BundledBossRewardsTest {
                         "Redundant single-entry loot table: " + entry.getKey());
             }
         }
-        // Former one-item aliases are inlined without losing the multiplied count.
+        // Former one-item aliases are inlined as nested mappings.
+        // The inner count is the number of copies per independent roll.
         assertFalse(yaml.contains("gems_electro_chunk_fragment_sliver_odds_4945_1319_330_count_3:"));
         assertTrue(yaml.contains(
-                "genshin.avatar_ascension.electro, properties: {rarity: \"2:75, 3:20, 4:5\"}, count: \"6+3:17.602\""));
+                "- reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: \"2:75, 3:20, 4:5\"}, count: 3}\\n    count: \"2+1:17.602\""));
         assertTrue(yaml.contains(
-                "genshin.avatar_ascension.hydro, properties: {rarity: \"2:74.6, 3:19.9, 4:5, 5:0.5\"}, count: \"18+9:24.257\""));
+                "- reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: \"2:74.6, 3:19.9, 4:5, 5:0.5\"}, count: 9}\\n    count: \"2+1:24.257\""));
     }
 
     @Test

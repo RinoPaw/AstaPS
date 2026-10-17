@@ -20,7 +20,7 @@ class YamlLootTablesTest {
     }
 
     @Test
-    void templatedArtifactRaritiesPreserveMembersAndComputeSubstats() {
+    void artifactRarityPoolsPreserveMembersAndComputeSubstats() {
         var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
         String[] sets = {
                 "instructor", "the_exile", "prayers_for_wisdom",
@@ -40,24 +40,24 @@ class YamlLootTablesTest {
             }
         }
         var yaml = """
-                artifacts_prayers_wisdom<rarity>:
-                  common:
-                    - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
-                    - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
-                    - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
-                  variants:
-                    3:
-                      - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
-                    4:
-                      - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
-                      - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+                artifacts_prayers_wisdom_3star:
+                  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                  - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                  - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                artifacts_prayers_wisdom_4star:
+                  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+                  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+                  - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+                  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+                  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
                 boss3:
-                  - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: 2}
+                  - {reward: astaps.loot.artifacts_prayers_wisdom_3star, count: 2}
                 boss4:
-                  - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: 2}
+                  - {reward: astaps.loot.artifacts_prayers_wisdom_4star, count: 2}
                 """;
         var loot = YamlLootTables.parse(yaml, resolver, new ArtifactResolver(variants));
-        assertEquals(2, loot.names().size());
+        assertEquals(4, loot.names().size());
         for (int grade = 3; grade <= 4; grade++) {
             int[] chosenSets = new int[sets.length];
             int low = 0;
@@ -91,9 +91,7 @@ class YamlLootTablesTest {
     void lootTemplateExpressionsRejectUnsupportedSyntaxAndCycles() {
         String template = """
                 item<rarity>:
-                  common:
-                    - {reward: genshin.currency.mora, count: "%s"}
-                  variants: {3: []}
+                  - {reward: genshin.currency.mora, count: "%s"}
                 boss:
                   - {reward: astaps.loot.item<3>}
                 """;
@@ -102,14 +100,21 @@ class YamlLootTablesTest {
             assertThrows(IllegalArgumentException.class, () -> parse(template.formatted(bad)), bad);
         }
         assertThrows(IllegalArgumentException.class,
-                () -> parse(template.formatted("${rarity + 1}").replace("item<3>", "item<5>")));
+                () -> parse(template.formatted("${rarity + 1}").replace("item<3>", "item<2147483648>")));
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 recursive<grade>:
-                  common:
-                    - {reward: astaps.loot.recursive<3>}
-                  variants: {3: []}
+                  - {reward: astaps.loot.recursive<3>}
                 boss:
                   - {reward: astaps.loot.recursive<3>}
+                """));
+        // Template bodies must be lists, not special common/variants mappings.
+        assertThrows(IllegalArgumentException.class, () -> parse("""
+                invalid<chance>:
+                  common:
+                    - {reward: genshin.currency.mora, count: "${chance}"}
+                  variants: {21: []}
+                boss:
+                  - {reward: astaps.loot.invalid<21>}
                 """));
     }
 
@@ -120,9 +125,7 @@ class YamlLootTablesTest {
                   - {reward: genshin.avatar_up.heros_wit, weight: 1}
                   - {reward: genshin.avatar_up.adventurers_experience, weight: 1}
                 award<rarity>:
-                  common:
-                    - {reward: *choices, count: "${rarity - 2}"}
-                  variants: {3: []}
+                  - {reward: *choices, count: "${rarity - 2}"}
                 boss_a:
                   - {reward: astaps.loot.award<3>}
                 boss_b:

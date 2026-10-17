@@ -162,7 +162,10 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1049, loot.names().size()); // Two explicit artifact rarity pools replace the old variant mapping.
+        assertEquals(1048, loot.names().size()); // The former fragment alias is now an elemental-family entry.
+        assertEquals(21, yaml.lines().filter(line -> line.contains(
+                "reward: genshin.avatar_ascension, properties: {element: \"electro:33.33, cryo:33.33, hydro:33.34\", rarity: 3}")).count());
+        assertFalse(yaml.contains("gems_cryo_electro_hydro_fragment: &gems_cryo_electro_hydro_fragment"));
         assertFalse(yaml.contains("empty_reward_choices"));
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));

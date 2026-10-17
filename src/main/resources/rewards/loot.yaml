@@ -320,33 +320,33 @@ weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_738:
   - {reward: *talent_materials_puppet_strings_mirror_of_mushin_dakas_bell, count: "1+1:27.5"}
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
 weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_777:
   - {reward: *talent_materials_puppet_strings_mirror_of_mushin_dakas_bell, count: "1+1:55"}
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
 weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_814:
   - {reward: *talent_materials_puppet_strings_mirror_of_mushin_dakas_bell, count: "1+1:82.5"}
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
 
 gems_cryo_electro_hydro_mixed: &gems_cryo_electro_hydro_mixed
-  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
 weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct10:
   - {reward: *talent_materials_puppet_strings_mirror_of_mushin_dakas_bell, count: "2+1:10"}
@@ -441,33 +441,33 @@ weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_738:
   - {reward: *talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior, count: "1+1:27.5"}
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
 weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_777:
   - {reward: *talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior, count: "1+1:55"}
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
 weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_814:
   - {reward: *talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior, count: "1+1:82.5"}
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
 
 gems_anemo_electro_hydro_chunk_fragment_gemstone_sliver: &gems_anemo_electro_hydro_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
 weekly_talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior_roll_2plus1pct10:
   - {reward: *talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior, count: "2+1:10"}
@@ -555,33 +555,33 @@ weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_738:
   - {reward: *talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas, count: "1+1:27.5"}
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
 weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_777:
   - {reward: *talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas, count: "1+1:55"}
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
 weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_814:
   - {reward: *talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas, count: "1+1:82.5"}
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
 
 gems_anemo_geo_pyro_mixed: &gems_anemo_geo_pyro_mixed
-  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
 weekly_talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas_roll_2plus1pct10:
   - {reward: *talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas, count: "2+1:10"}
@@ -660,29 +660,29 @@ weekly_talent_materials_molten_moment_agnidus_agate_chunk_weight_738:
   - {reward: *talent_materials_molten_moment_hellfire_butterfly_ashen_heart, count: "1+1:27.5"}
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
 weekly_talent_materials_molten_moment_agnidus_agate_chunk_weight_777:
   - {reward: *talent_materials_molten_moment_hellfire_butterfly_ashen_heart, count: "1+1:55"}
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
 weekly_talent_materials_molten_moment_agnidus_agate_chunk_weight_814:
   - {reward: *talent_materials_molten_moment_hellfire_butterfly_ashen_heart, count: "1+1:82.5"}
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
 
 gems_anemo_pyro_chunk_fragment_gemstone_sliver: &gems_anemo_pyro_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
 weekly_talent_materials_molten_moment_hellfire_butterfly_ashen_heart_roll_2plus1pct10:
   - {reward: *talent_materials_molten_moment_hellfire_butterfly_ashen_heart, count: "2+1:10"}
@@ -770,33 +770,33 @@ weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_738_varunada_
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:27.5"}
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
 weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_777_varunada_lazurite_chunk_roll_1:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:55"}
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
 weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_814_varunada_lazurite_chunk_roll_1:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:82.5"}
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
 
 gems_anemo_geo_hydro_chunk_fragment_gemstone_sliver: &gems_anemo_geo_hydro_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
 weekly_talent_materials_dragon_lords_gems_anemo_geo_hydro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct10:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "2+1:10"}
@@ -879,33 +879,33 @@ weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_738_varunada_
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:27.5"}
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
 weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_777_varunada_lazurite_chunk_roll_1:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:55"}
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
 weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_814_varunada_lazurite_chunk_roll_1:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:82.5"}
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
 
 gems_electro_geo_hydro_chunk_fragment_gemstone_sliver: &gems_electro_geo_hydro_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
 weekly_talent_materials_dragon_lords_gems_electro_geo_hydro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct10:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "2+1:10"}
@@ -978,27 +978,27 @@ weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_738_vayuda_turqu
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:27.5"}
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
 weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_777_vayuda_turquoise_chunk_roll_1:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:55"}
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
 weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_814_vayuda_turquoise_chunk_roll_1:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:82.5"}
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
 
 weekly_talent_materials_dragon_lords_gems_anemo_geo_pyro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct10:
@@ -1082,33 +1082,33 @@ weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_738_vajrada_amet
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:27.5"}
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
 weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_777_vajrada_amethyst_chunk_roll_1:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:55"}
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
 weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_814_vajrada_amethyst_chunk_roll_1:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:82.5"}
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
 
 gems_electro_geo_pyro_chunk_fragment_gemstone_sliver: &gems_electro_geo_pyro_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
 weekly_talent_materials_dragon_lords_gems_electro_geo_pyro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct10:
   - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "2+1:10"}
@@ -1172,33 +1172,33 @@ weekly_talent_materials_mudra_of_vajrada_amethyst_chunk_weight_738:
   - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons, count: "1+1:27.5"}
   - {reward: genshin.avatar_ascension.electro.3, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
 weekly_talent_materials_mudra_of_vajrada_amethyst_chunk_weight_777:
   - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons, count: "1+1:55"}
   - {reward: genshin.avatar_ascension.electro.3, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
 weekly_talent_materials_mudra_of_vajrada_amethyst_chunk_weight_814:
   - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons, count: "1+1:82.5"}
   - {reward: genshin.avatar_ascension.electro.3, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
 
 weekly_talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons_roll_2plus1pct10:
   - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons, count: "2+1:10"}
   - {reward: genshin.avatar_ascension.electro.3, count: "1+1:2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}}
     count: "5+1:13.72"
 
 weekly_talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons_roll_2plus1pct40:
   - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons, count: "2+1:40"}
   - {reward: genshin.avatar_ascension.electro.3, count: "1+1:2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}}
     count: "5+1:13.72"
 
 weekly_gems_cryo_electro_hydro_fragment_first_cryo_shivada_jade_sliver_weight_7139:
@@ -1267,27 +1267,27 @@ weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_738:
   - {reward: *talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh, count: "1+1:27.5"}
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
 weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_777:
   - {reward: *talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh, count: "1+1:55"}
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
 weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_814:
   - {reward: *talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh, count: "1+1:82.5"}
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
 
 weekly_talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh_roll_2plus1pct10:
@@ -1463,7 +1463,7 @@ world_precision_kuuvahki_stamping_die_roll_2plus1pct21p1:
 world_precision_kuuvahki_stamping_die_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.precision_kuuvahki_stamping_die, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -1472,7 +1472,7 @@ world_precision_kuuvahki_stamping_die_roll_2plus1pct29p71:
 world_precision_kuuvahki_stamping_die_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.precision_kuuvahki_stamping_die, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -1481,7 +1481,7 @@ world_precision_kuuvahki_stamping_die_roll_2plus1pct38p33:
 world_precision_kuuvahki_stamping_die_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.precision_kuuvahki_stamping_die, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -1490,7 +1490,7 @@ world_precision_kuuvahki_stamping_die_roll_2plus1pct46p94:
 world_precision_kuuvahki_stamping_die_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.precision_kuuvahki_stamping_die, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -1499,7 +1499,7 @@ world_precision_kuuvahki_stamping_die_artifacts_instructor_5star_0substats_goble
 world_precision_kuuvahki_stamping_die_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.precision_kuuvahki_stamping_die, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -1508,7 +1508,7 @@ world_precision_kuuvahki_stamping_die_artifacts_instructor_5star_0substats_goble
 world_precision_kuuvahki_stamping_die_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.precision_kuuvahki_stamping_die, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -1523,8 +1523,8 @@ world_lightbearing_scale_feather_roll_1plus1pct88p01:
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:26"}
 
 gems_electro_pyro_chunk_fragment_gemstone_sliver: &gems_electro_pyro_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9, weight: 1}
-  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9, weight: 1}
+  - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9, weight: 1}
+  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9, weight: 1}
 
 world_lightbearing_scale_feather_roll_1plus1pct52p18:
   - {reward: genshin.avatar_ascension.lightbearing_scale_feather, count: "1+1:52.18"}
@@ -1708,7 +1708,7 @@ world_prismatic_severed_tail_roll_2plus1pct21p1:
 world_prismatic_severed_tail_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.prismatic_severed_tail, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -1717,7 +1717,7 @@ world_prismatic_severed_tail_roll_2plus1pct29p71:
 world_prismatic_severed_tail_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.prismatic_severed_tail, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -1726,7 +1726,7 @@ world_prismatic_severed_tail_roll_2plus1pct38p33:
 world_prismatic_severed_tail_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.prismatic_severed_tail, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -1735,7 +1735,7 @@ world_prismatic_severed_tail_roll_2plus1pct46p94:
 world_prismatic_severed_tail_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.prismatic_severed_tail, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -1744,7 +1744,7 @@ world_prismatic_severed_tail_artifacts_instructor_5star_0substats_goblet_plume_r
 world_prismatic_severed_tail_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.prismatic_severed_tail, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -1753,7 +1753,7 @@ world_prismatic_severed_tail_artifacts_instructor_5star_0substats_goblet_plume_r
 world_prismatic_severed_tail_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.prismatic_severed_tail, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -1833,7 +1833,7 @@ world_plume_of_the_fallen_watcher_roll_2plus1pct21p1:
 world_plume_of_the_fallen_watcher_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.plume_of_the_fallen_watcher, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -1842,7 +1842,7 @@ world_plume_of_the_fallen_watcher_roll_2plus1pct29p71:
 world_plume_of_the_fallen_watcher_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.plume_of_the_fallen_watcher, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -1851,7 +1851,7 @@ world_plume_of_the_fallen_watcher_roll_2plus1pct38p33:
 world_plume_of_the_fallen_watcher_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.plume_of_the_fallen_watcher, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -1860,7 +1860,7 @@ world_plume_of_the_fallen_watcher_roll_2plus1pct46p94:
 world_plume_of_the_fallen_watcher_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.plume_of_the_fallen_watcher, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -1869,7 +1869,7 @@ world_plume_of_the_fallen_watcher_artifacts_instructor_5star_0substats_goblet_pl
 world_plume_of_the_fallen_watcher_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.plume_of_the_fallen_watcher, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -1878,7 +1878,7 @@ world_plume_of_the_fallen_watcher_artifacts_instructor_5star_0substats_goblet_pl
 world_plume_of_the_fallen_watcher_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.plume_of_the_fallen_watcher, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -2075,7 +2075,7 @@ world_emperors_resolution_roll_2plus1pct21p1:
 world_emperors_resolution_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.emperors_resolution, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -2084,7 +2084,7 @@ world_emperors_resolution_roll_2plus1pct29p71:
 world_emperors_resolution_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.emperors_resolution, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2093,7 +2093,7 @@ world_emperors_resolution_roll_2plus1pct38p33:
 world_emperors_resolution_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.emperors_resolution, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2102,7 +2102,7 @@ world_emperors_resolution_roll_2plus1pct46p94:
 world_emperors_resolution_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.emperors_resolution, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2111,7 +2111,7 @@ world_emperors_resolution_artifacts_instructor_5star_0substats_goblet_plume_roll
 world_emperors_resolution_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.emperors_resolution, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2120,7 +2120,7 @@ world_emperors_resolution_artifacts_instructor_5star_0substats_goblet_plume_roll
 world_emperors_resolution_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.emperors_resolution, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -2200,7 +2200,7 @@ world_tourbillon_device_roll_2plus1pct21p1:
 world_tourbillon_device_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.tourbillon_device, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -2209,7 +2209,7 @@ world_tourbillon_device_roll_2plus1pct29p71:
 world_tourbillon_device_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.tourbillon_device, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2218,7 +2218,7 @@ world_tourbillon_device_roll_2plus1pct38p33:
 world_tourbillon_device_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.tourbillon_device, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2227,7 +2227,7 @@ world_tourbillon_device_roll_2plus1pct46p94:
 world_tourbillon_device_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.tourbillon_device, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2236,7 +2236,7 @@ world_tourbillon_device_artifacts_instructor_5star_0substats_goblet_plume_roll_1
 world_tourbillon_device_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.tourbillon_device, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2245,7 +2245,7 @@ world_tourbillon_device_artifacts_instructor_5star_0substats_goblet_plume_roll_1
 world_tourbillon_device_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.tourbillon_device, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -2325,7 +2325,7 @@ world_fontemer_unihorn_roll_2plus1pct21p1:
 world_fontemer_unihorn_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.fontemer_unihorn, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -2334,7 +2334,7 @@ world_fontemer_unihorn_roll_2plus1pct29p71:
 world_fontemer_unihorn_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.fontemer_unihorn, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2343,7 +2343,7 @@ world_fontemer_unihorn_roll_2plus1pct38p33:
 world_fontemer_unihorn_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.fontemer_unihorn, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2352,7 +2352,7 @@ world_fontemer_unihorn_roll_2plus1pct46p94:
 world_fontemer_unihorn_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.fontemer_unihorn, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2361,7 +2361,7 @@ world_fontemer_unihorn_artifacts_instructor_5star_0substats_goblet_plume_roll_1p
 world_fontemer_unihorn_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.fontemer_unihorn, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2370,7 +2370,7 @@ world_fontemer_unihorn_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
 world_fontemer_unihorn_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.fontemer_unihorn, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -2450,7 +2450,7 @@ world_water_that_failed_to_transcend_roll_2plus1pct21p1:
 world_water_that_failed_to_transcend_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.water_that_failed_to_transcend, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -2459,7 +2459,7 @@ world_water_that_failed_to_transcend_roll_2plus1pct29p71:
 world_water_that_failed_to_transcend_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.water_that_failed_to_transcend, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2468,7 +2468,7 @@ world_water_that_failed_to_transcend_roll_2plus1pct38p33:
 world_water_that_failed_to_transcend_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.water_that_failed_to_transcend, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2477,7 +2477,7 @@ world_water_that_failed_to_transcend_roll_2plus1pct46p94:
 world_water_that_failed_to_transcend_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.water_that_failed_to_transcend, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2486,7 +2486,7 @@ world_water_that_failed_to_transcend_artifacts_instructor_5star_0substats_goblet
 world_water_that_failed_to_transcend_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.water_that_failed_to_transcend, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2495,7 +2495,7 @@ world_water_that_failed_to_transcend_artifacts_instructor_5star_0substats_goblet
 world_water_that_failed_to_transcend_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.water_that_failed_to_transcend, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -2658,7 +2658,7 @@ world_overripe_flamegranate_vajrada_amethyst_chunk_weight_405:
   - {reward: genshin.avatar_ascension.overripe_flamegranate, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.electro.3, count: "9+9:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9, weight: 1}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -2668,7 +2668,7 @@ world_overripe_flamegranate_vajrada_amethyst_chunk_weight_429:
   - {reward: genshin.avatar_ascension.overripe_flamegranate, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.electro.3, count: "9+9:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9, weight: 1}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2678,7 +2678,7 @@ world_overripe_flamegranate_vajrada_amethyst_chunk_weight_455:
   - {reward: genshin.avatar_ascension.overripe_flamegranate, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.electro.3, count: "9+9:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9, weight: 1}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2687,7 +2687,7 @@ world_overripe_flamegranate_vajrada_amethyst_chunk_weight_455:
 world_overripe_flamegranate_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.overripe_flamegranate, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.electro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2696,7 +2696,7 @@ world_overripe_flamegranate_artifacts_instructor_5star_0substats_goblet_plume_ro
 world_overripe_flamegranate_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.overripe_flamegranate, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.electro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2705,7 +2705,7 @@ world_overripe_flamegranate_artifacts_instructor_5star_0substats_goblet_plume_ro
 world_overripe_flamegranate_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.overripe_flamegranate, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.electro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -2785,7 +2785,7 @@ world_mark_of_the_binding_blessing_roll_2plus1pct21p1:
 world_mark_of_the_binding_blessing_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.mark_of_the_binding_blessing, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -2794,7 +2794,7 @@ world_mark_of_the_binding_blessing_roll_2plus1pct29p71:
 world_mark_of_the_binding_blessing_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.mark_of_the_binding_blessing, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2803,7 +2803,7 @@ world_mark_of_the_binding_blessing_roll_2plus1pct38p33:
 world_mark_of_the_binding_blessing_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.mark_of_the_binding_blessing, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2812,7 +2812,7 @@ world_mark_of_the_binding_blessing_roll_2plus1pct46p94:
 world_mark_of_the_binding_blessing_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.mark_of_the_binding_blessing, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2821,7 +2821,7 @@ world_mark_of_the_binding_blessing_artifacts_instructor_5star_0substats_goblet_p
 world_mark_of_the_binding_blessing_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.mark_of_the_binding_blessing, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2830,7 +2830,7 @@ world_mark_of_the_binding_blessing_artifacts_instructor_5star_0substats_goblet_p
 world_mark_of_the_binding_blessing_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.mark_of_the_binding_blessing, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -2910,7 +2910,7 @@ world_gold_inscribed_secret_source_core_roll_2plus1pct21p1:
 world_gold_inscribed_secret_source_core_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.gold_inscribed_secret_source_core, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -2919,7 +2919,7 @@ world_gold_inscribed_secret_source_core_roll_2plus1pct29p71:
 world_gold_inscribed_secret_source_core_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.gold_inscribed_secret_source_core, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2928,7 +2928,7 @@ world_gold_inscribed_secret_source_core_roll_2plus1pct38p33:
 world_gold_inscribed_secret_source_core_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.gold_inscribed_secret_source_core, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -2937,7 +2937,7 @@ world_gold_inscribed_secret_source_core_roll_2plus1pct46p94:
 world_gold_inscribed_secret_source_core_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.gold_inscribed_secret_source_core, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2946,7 +2946,7 @@ world_gold_inscribed_secret_source_core_artifacts_instructor_5star_0substats_gob
 world_gold_inscribed_secret_source_core_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.gold_inscribed_secret_source_core, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -2955,7 +2955,7 @@ world_gold_inscribed_secret_source_core_artifacts_instructor_5star_0substats_gob
 world_gold_inscribed_secret_source_core_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.gold_inscribed_secret_source_core, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -3118,7 +3118,7 @@ world_talisman_of_the_enigmatic_land_prithiva_topaz_chunk_weight_405:
   - {reward: genshin.avatar_ascension.talisman_of_the_enigmatic_land, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.geo.3, count: "9+9:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9, weight: 1}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -3128,7 +3128,7 @@ world_talisman_of_the_enigmatic_land_prithiva_topaz_chunk_weight_429:
   - {reward: genshin.avatar_ascension.talisman_of_the_enigmatic_land, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.geo.3, count: "9+9:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9, weight: 1}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -3138,7 +3138,7 @@ world_talisman_of_the_enigmatic_land_prithiva_topaz_chunk_weight_455:
   - {reward: genshin.avatar_ascension.talisman_of_the_enigmatic_land, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.geo.3, count: "9+9:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9, weight: 1}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -3147,7 +3147,7 @@ world_talisman_of_the_enigmatic_land_prithiva_topaz_chunk_weight_455:
 world_talisman_of_the_enigmatic_land_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.talisman_of_the_enigmatic_land, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.geo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -3156,7 +3156,7 @@ world_talisman_of_the_enigmatic_land_artifacts_instructor_5star_0substats_goblet
 world_talisman_of_the_enigmatic_land_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.talisman_of_the_enigmatic_land, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.geo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -3165,7 +3165,7 @@ world_talisman_of_the_enigmatic_land_artifacts_instructor_5star_0substats_goblet
 world_talisman_of_the_enigmatic_land_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.talisman_of_the_enigmatic_land, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.geo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -3320,7 +3320,7 @@ world_secret_source_airflow_accumulator_roll_2plus1pct21p1:
 world_secret_source_airflow_accumulator_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.secret_source_airflow_accumulator, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -3329,7 +3329,7 @@ world_secret_source_airflow_accumulator_roll_2plus1pct29p71:
 world_secret_source_airflow_accumulator_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.secret_source_airflow_accumulator, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -3338,7 +3338,7 @@ world_secret_source_airflow_accumulator_roll_2plus1pct38p33:
 world_secret_source_airflow_accumulator_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.secret_source_airflow_accumulator, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -3347,7 +3347,7 @@ world_secret_source_airflow_accumulator_roll_2plus1pct46p94:
 world_secret_source_airflow_accumulator_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.secret_source_airflow_accumulator, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -3356,7 +3356,7 @@ world_secret_source_airflow_accumulator_artifacts_instructor_5star_0substats_gob
 world_secret_source_airflow_accumulator_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.secret_source_airflow_accumulator, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -3365,7 +3365,7 @@ world_secret_source_airflow_accumulator_artifacts_instructor_5star_0substats_gob
 world_secret_source_airflow_accumulator_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.secret_source_airflow_accumulator, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -3481,7 +3481,7 @@ world_pseudo_stamens_shivada_jade_chunk_weight_405:
   - {reward: genshin.avatar_ascension.pseudo_stamens, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.cryo.3, count: "9+9:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9, weight: 1}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -3491,7 +3491,7 @@ world_pseudo_stamens_shivada_jade_chunk_weight_429:
   - {reward: genshin.avatar_ascension.pseudo_stamens, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.cryo.3, count: "9+9:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9, weight: 1}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -3501,7 +3501,7 @@ world_pseudo_stamens_shivada_jade_chunk_weight_455:
   - {reward: genshin.avatar_ascension.pseudo_stamens, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.cryo.3, count: "9+9:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9, weight: 1}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -3510,7 +3510,7 @@ world_pseudo_stamens_shivada_jade_chunk_weight_455:
 world_pseudo_stamens_artifacts_instructor_5star_3_4substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.pseudo_stamens, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.cryo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -3519,7 +3519,7 @@ world_pseudo_stamens_artifacts_instructor_5star_3_4substats_goblet_plume_roll_1p
 world_pseudo_stamens_artifacts_instructor_5star_3_4substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.pseudo_stamens, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.cryo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -3528,7 +3528,7 @@ world_pseudo_stamens_artifacts_instructor_5star_3_4substats_goblet_plume_roll_1:
 world_pseudo_stamens_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.pseudo_stamens, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.cryo.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_1_2substats_goblet_plume, count: "1+1:25"}
 
@@ -3758,7 +3758,7 @@ world_unscorched_blossom_branch_roll_2plus1pct21p1:
 world_unscorched_blossom_branch_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.unscorched_blossom_branch, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:94"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:5"}
@@ -3767,7 +3767,7 @@ world_unscorched_blossom_branch_roll_2plus1pct29p71:
 world_unscorched_blossom_branch_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.unscorched_blossom_branch, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -3776,7 +3776,7 @@ world_unscorched_blossom_branch_roll_2plus1pct38p33:
 world_unscorched_blossom_branch_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.unscorched_blossom_branch, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:52"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:26"}
@@ -3785,7 +3785,7 @@ world_unscorched_blossom_branch_roll_2plus1pct46p94:
 world_unscorched_blossom_branch_artifacts_instructor_5star_0substats_goblet_plume_roll_1pct63:
   - {reward: genshin.avatar_ascension.unscorched_blossom_branch, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -3794,7 +3794,7 @@ world_unscorched_blossom_branch_artifacts_instructor_5star_0substats_goblet_plum
 world_unscorched_blossom_branch_artifacts_instructor_5star_0substats_goblet_plume_roll_1:
   - {reward: genshin.avatar_ascension.unscorched_blossom_branch, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "2+1:10"}
   - {reward: *artifacts_instructor_5star_0substats_goblet_plume, count: "1+1:47"}
@@ -3803,7 +3803,7 @@ world_unscorched_blossom_branch_artifacts_instructor_5star_0substats_goblet_plum
 world_unscorched_blossom_branch_roll_3plus1pct25:
   - {reward: genshin.avatar_ascension.unscorched_blossom_branch, count: "3+1:25"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "9+9:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_5star_3_4substats_goblet_plume, count: "1+1:25"}
 
@@ -3999,7 +3999,7 @@ world_lightning_prism_roll_2plus1pct21p1:
 world_lightning_prism_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.lightning_prism, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:94"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:5"}
@@ -4007,7 +4007,7 @@ world_lightning_prism_roll_2plus1pct29p71:
 world_lightning_prism_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.lightning_prism, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:52"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:26"}
@@ -4015,7 +4015,7 @@ world_lightning_prism_roll_2plus1pct38p33:
 world_lightning_prism_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.lightning_prism, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:52"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:26"}
@@ -4023,7 +4023,7 @@ world_lightning_prism_roll_2plus1pct46p94:
 world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.lightning_prism, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:10"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:47"}
@@ -4031,7 +4031,7 @@ world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subs
 world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.lightning_prism, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:10"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:47"}
@@ -4158,7 +4158,7 @@ world_hurricane_seed_shivada_jade_chunk_weight_405:
   - {reward: genshin.avatar_ascension.hurricane_seed, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.cryo.3, count: "3+3:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:68.554"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:5"}
@@ -4167,7 +4167,7 @@ world_hurricane_seed_shivada_jade_chunk_weight_429:
   - {reward: genshin.avatar_ascension.hurricane_seed, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.cryo.3, count: "3+3:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:85.219"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:26"}
@@ -4176,7 +4176,7 @@ world_hurricane_seed_shivada_jade_chunk_weight_455:
   - {reward: genshin.avatar_ascension.hurricane_seed, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.cryo.3, count: "3+3:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "3+1:1.851"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:26"}
@@ -4184,7 +4184,7 @@ world_hurricane_seed_shivada_jade_chunk_weight_455:
 world_hurricane_seed_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.hurricane_seed, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.cryo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:47"}
@@ -4192,7 +4192,7 @@ world_hurricane_seed_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subst
 world_hurricane_seed_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.hurricane_seed, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.cryo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:10"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:47"}
@@ -4311,7 +4311,7 @@ world_basalt_pillar_roll_2plus1pct21p1:
 world_basalt_pillar_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.basalt_pillar, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:94"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:5"}
@@ -4319,7 +4319,7 @@ world_basalt_pillar_roll_2plus1pct29p71:
 world_basalt_pillar_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.basalt_pillar, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:52"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:26"}
@@ -4327,7 +4327,7 @@ world_basalt_pillar_roll_2plus1pct38p33:
 world_basalt_pillar_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.basalt_pillar, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:52"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:26"}
@@ -4335,7 +4335,7 @@ world_basalt_pillar_roll_2plus1pct46p94:
 world_basalt_pillar_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.basalt_pillar, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:10"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:47"}
@@ -4343,7 +4343,7 @@ world_basalt_pillar_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substa
 world_basalt_pillar_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.basalt_pillar, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:10"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:47"}
@@ -4464,7 +4464,7 @@ world_hoarfrost_core_roll_2plus1pct21p1:
 world_hoarfrost_core_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.hoarfrost_core, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:94"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:5"}
@@ -4472,7 +4472,7 @@ world_hoarfrost_core_roll_2plus1pct29p71:
 world_hoarfrost_core_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.hoarfrost_core, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:26"}
@@ -4480,7 +4480,7 @@ world_hoarfrost_core_roll_2plus1pct38p33:
 world_hoarfrost_core_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.hoarfrost_core, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:26"}
@@ -4488,7 +4488,7 @@ world_hoarfrost_core_roll_2plus1pct46p94:
 world_hoarfrost_core_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.hoarfrost_core, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:10"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:47"}
@@ -4496,7 +4496,7 @@ world_hoarfrost_core_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subst
 world_hoarfrost_core_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.hoarfrost_core, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:10"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:47"}
@@ -4617,7 +4617,7 @@ world_gems_pyro_fragment_roll_2plus1pct43p21:
 world_gems_pyro_fragment_roll_2plus1pct52p681:
   - {reward: genshin.avatar_ascension.pyro.3, count: "18+9:52.681"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:94"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:5"}
@@ -4625,7 +4625,7 @@ world_gems_pyro_fragment_roll_2plus1pct52p681:
 world_gems_pyro_fragment_roll_2plus1pct62p163:
   - {reward: genshin.avatar_ascension.pyro.3, count: "18+9:62.163"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:26"}
@@ -4633,7 +4633,7 @@ world_gems_pyro_fragment_roll_2plus1pct62p163:
 world_gems_pyro_fragment_roll_2plus1pct71p634:
   - {reward: genshin.avatar_ascension.pyro.3, count: "18+9:71.634"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:26"}
@@ -4641,7 +4641,7 @@ world_gems_pyro_fragment_roll_2plus1pct71p634:
 world_gems_pyro_fragment_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.pyro.3, count: "18+9:81.116"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:10"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:47"}
@@ -4649,7 +4649,7 @@ world_gems_pyro_fragment_artifacts_gladiators_finale_wanderers_troupe_5star_3_4s
 world_gems_pyro_fragment_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.pyro.3, count: "18+9:81.116"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:10"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:47"}
@@ -4693,21 +4693,21 @@ world_gems_hydro_sliver_roll_2plus1pct6p811:
   - {reward: *artifacts_prayers_destiny_3star, count: "1+1:26"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct19p219:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "1+1:67.398"
   - {reward: genshin.avatar_ascension.hydro.2, count: "6+3:19.219"}
   - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 2, substats: "0:66, 1:34"}, count: "2+1:94"}
   - {reward: *artifacts_prayers_destiny_3star, count: "1+1:26"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct31p627:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "1+1:76.88"
   - {reward: genshin.avatar_ascension.hydro.2, count: "6+3:31.627"}
   - {reward: genshin.artifact.adventurer, properties: {slot: "1~5", rarity: 2, substats: "0:66, 1:34"}, count: "1+1:42.8"}
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:77.2"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_roll_1plus1pct43p847:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "1+1:86.351"
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
   - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:79, 3:21"}, count: 3}
@@ -4723,7 +4723,7 @@ artifacts_prayers_destiny_4star: &artifacts_prayers_destiny_4star
   - {reward: genshin.artifact.prayers_for_destiny, properties: {slot: circlet, rarity: 4, substats: "2:66, 3:34"}, weight: 1}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_roll_1plus1pct59p555:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "1+1:95.833"
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
   - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:79, 3:21"}, count: 3}
@@ -4732,7 +4732,7 @@ world_gems_hydro_chunk_fragment_gemstone_sliver_roll_1plus1pct59p555:
   - {reward: *artifacts_prayers_destiny_4star, count: "1:42"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_roll_1plus1pct75p263:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:5.304"
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
   - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:79, 3:21"}, count: 3}
@@ -4741,7 +4741,7 @@ world_gems_hydro_chunk_fragment_gemstone_sliver_roll_1plus1pct75p263:
   - {reward: *artifacts_prayers_destiny_4star, count: "1:42"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_roll_1plus1pct91p004:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:14.786"
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
   - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:79, 3:21"}, count: 3}
@@ -4750,7 +4750,7 @@ world_gems_hydro_chunk_fragment_gemstone_sliver_roll_1plus1pct91p004:
   - {reward: *artifacts_prayers_destiny_4star, count: "1:42"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct17p602:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:24.257"
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
   - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3}
@@ -4759,7 +4759,7 @@ world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct17p602:
   - {reward: *artifacts_prayers_destiny_4star, count: "1:84"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct34p135:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:33.728"
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
   - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3}
@@ -4768,7 +4768,7 @@ world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct34p135:
   - {reward: *artifacts_prayers_destiny_4star, count: "1:84"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct50p668:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:43.21"
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
   - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3}
@@ -4777,46 +4777,46 @@ world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct50p668:
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:5"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct52p681:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:52.681"
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:94"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:5"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_roll_2plus1pct62p163:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:62.163"
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:26"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_roll_3plus1pct1p851:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:71.634"
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:26"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:81.116"
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:10"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:47"}
 
 world_gems_hydro_chunk_fragment_gemstone_sliver_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 9}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 9}
     count: "2+1:81.116"
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:10"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:47"}
@@ -4947,8 +4947,8 @@ world_juvenile_jade_vajrada_amethyst_chunk_weight_405:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:29.71"}
   - {reward: *gems_electro_geo_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:68.554"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:94"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:5"}
@@ -4957,8 +4957,8 @@ world_juvenile_jade_vajrada_amethyst_chunk_weight_429:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:38.33"}
   - {reward: *gems_electro_geo_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:85.219"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:52"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:26"}
@@ -4967,15 +4967,15 @@ world_juvenile_jade_vajrada_amethyst_chunk_weight_455:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:46.94"}
   - {reward: *gems_electro_geo_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "3+1:1.851"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:52"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:26"}
 
 gems_electro_geo_chunk_fragment_gemstone_sliver: &gems_electro_geo_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
 
 world_juvenile_jade_gems_electro_geo_chunk_fragment_gemstone_sliver_roll_3plus1pct18p45_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:55.56"}
@@ -5121,8 +5121,8 @@ world_juvenile_jade_gems_anemo_geo_chunk_fragment_sliver_roll_2plus1pct50p668:
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:5"}
 
 gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3: &gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6072_1620_405_40_count_3
-  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
 
 world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_2plus1pct68p554:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:29.71"}
@@ -5132,8 +5132,8 @@ world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_2plus1pct
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:5"}
 
 gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3: &gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6450_1719_429_43_count_3
-  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
 
 world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_2plus1pct85p219:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:38.33"}
@@ -5143,8 +5143,8 @@ world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_2plus1pct
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:26"}
 
 gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3: &gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_6826_1820_455_46_count_3
-  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
 
 world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_3plus1pct1p851:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:46.94"}
@@ -5154,8 +5154,8 @@ world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_3plus1pct
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:26"}
 
 gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3: &gems_anemo_geo_chunk_fragment_gemstone_sliver_odds_7201_1920_480_47_count_3
-  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
 
 world_juvenile_jade_gems_anemo_geo_chunk_fragment_gemstone_sliver_roll_3plus1pct18p45_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:55.56"}
@@ -5297,8 +5297,8 @@ world_juvenile_jade_agnidus_agate_chunk_weight_405:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:29.71"}
   - {reward: *gems_geo_pyro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:68.554"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:94"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:5"}
@@ -5307,8 +5307,8 @@ world_juvenile_jade_agnidus_agate_chunk_weight_429:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:38.33"}
   - {reward: *gems_geo_pyro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:85.219"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:26"}
@@ -5317,15 +5317,15 @@ world_juvenile_jade_agnidus_agate_chunk_weight_455:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:46.94"}
   - {reward: *gems_geo_pyro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "3+1:1.851"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:26"}
 
 gems_geo_pyro_chunk_fragment_gemstone_sliver: &gems_geo_pyro_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
 
 world_juvenile_jade_gems_geo_pyro_chunk_fragment_gemstone_sliver_roll_3plus1pct18p45_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:55.56"}
@@ -5467,8 +5467,8 @@ world_juvenile_jade_varunada_lazurite_chunk_weight_405:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:29.71"}
   - {reward: *gems_geo_hydro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:68.554"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:94"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:5"}
@@ -5477,8 +5477,8 @@ world_juvenile_jade_varunada_lazurite_chunk_weight_429:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:38.33"}
   - {reward: *gems_geo_hydro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:85.219"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:26"}
@@ -5487,15 +5487,15 @@ world_juvenile_jade_varunada_lazurite_chunk_weight_455:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:46.94"}
   - {reward: *gems_geo_hydro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "3+1:1.851"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:26"}
 
 gems_geo_hydro_chunk_fragment_gemstone_sliver: &gems_geo_hydro_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
 
 world_juvenile_jade_gems_geo_hydro_chunk_fragment_gemstone_sliver_roll_3plus1pct18p45_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.juvenile_jade, count: "2+1:55.56"}
@@ -5582,7 +5582,7 @@ world_crystalline_bloom_roll_2plus1pct21p1:
 world_crystalline_bloom_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.crystalline_bloom, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:94"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:5"}
@@ -5590,7 +5590,7 @@ world_crystalline_bloom_roll_2plus1pct29p71:
 world_crystalline_bloom_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.crystalline_bloom, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:26"}
@@ -5598,7 +5598,7 @@ world_crystalline_bloom_roll_2plus1pct38p33:
 world_crystalline_bloom_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.crystalline_bloom, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:26"}
@@ -5606,7 +5606,7 @@ world_crystalline_bloom_roll_2plus1pct46p94:
 world_crystalline_bloom_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.crystalline_bloom, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:10"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:47"}
@@ -5614,7 +5614,7 @@ world_crystalline_bloom_artifacts_gladiators_finale_wanderers_troupe_5star_3_4su
 world_crystalline_bloom_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.crystalline_bloom, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.anemo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:10"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:47"}
@@ -5745,8 +5745,8 @@ world_marionette_core_shivada_jade_chunk_weight_405:
   - {reward: genshin.avatar_ascension.marionette_core, count: "2+1:29.71"}
   - {reward: *gems_anemo_cryo_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:68.554"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:94"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:5"}
@@ -5755,8 +5755,8 @@ world_marionette_core_shivada_jade_chunk_weight_429:
   - {reward: genshin.avatar_ascension.marionette_core, count: "2+1:38.33"}
   - {reward: *gems_anemo_cryo_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:85.219"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:26"}
@@ -5765,15 +5765,15 @@ world_marionette_core_shivada_jade_chunk_weight_455:
   - {reward: genshin.avatar_ascension.marionette_core, count: "2+1:46.94"}
   - {reward: *gems_anemo_cryo_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "3+1:1.851"
   - {reward: *artifacts_berserker_instructor_lucky_dog_3star_1_2substats, count: "2+1:52"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:26"}
 
 gems_anemo_cryo_chunk_fragment_gemstone_sliver: &gems_anemo_cryo_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
 
 world_marionette_core_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.marionette_core, count: "2+1:55.56"}
@@ -5956,7 +5956,7 @@ world_smoldering_pearl_roll_2plus1pct21p1:
 world_smoldering_pearl_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.smoldering_pearl, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:94"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:5"}
@@ -5964,7 +5964,7 @@ world_smoldering_pearl_roll_2plus1pct29p71:
 world_smoldering_pearl_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.smoldering_pearl, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:26"}
@@ -5972,7 +5972,7 @@ world_smoldering_pearl_roll_2plus1pct38p33:
 world_smoldering_pearl_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.smoldering_pearl, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:26"}
@@ -5980,7 +5980,7 @@ world_smoldering_pearl_roll_2plus1pct46p94:
 world_smoldering_pearl_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.smoldering_pearl, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:10"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:47"}
@@ -5988,7 +5988,7 @@ world_smoldering_pearl_artifacts_gladiators_finale_wanderers_troupe_5star_3_4sub
 world_smoldering_pearl_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.smoldering_pearl, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.pyro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:10"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:47"}
@@ -6064,7 +6064,7 @@ world_dew_of_repudiation_roll_2plus1pct21p1:
 world_dew_of_repudiation_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.dew_of_repudiation, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:94"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:5"}
@@ -6072,7 +6072,7 @@ world_dew_of_repudiation_roll_2plus1pct29p71:
 world_dew_of_repudiation_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.dew_of_repudiation, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:26"}
@@ -6080,7 +6080,7 @@ world_dew_of_repudiation_roll_2plus1pct38p33:
 world_dew_of_repudiation_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.dew_of_repudiation, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:26"}
@@ -6088,7 +6088,7 @@ world_dew_of_repudiation_roll_2plus1pct46p94:
 world_dew_of_repudiation_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.dew_of_repudiation, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:10"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:47"}
@@ -6096,7 +6096,7 @@ world_dew_of_repudiation_artifacts_gladiators_finale_wanderers_troupe_5star_3_4s
 world_dew_of_repudiation_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.dew_of_repudiation, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.hydro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_prayers_destiny_3star, count: "2+1:10"}
   - {reward: *artifacts_prayers_destiny_4star, count: "1+1:47"}
@@ -6172,7 +6172,7 @@ world_storm_beads_roll_2plus1pct21p1:
 world_storm_beads_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.storm_beads, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:94"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:5"}
@@ -6180,7 +6180,7 @@ world_storm_beads_roll_2plus1pct29p71:
 world_storm_beads_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.storm_beads, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:52"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:26"}
@@ -6188,7 +6188,7 @@ world_storm_beads_roll_2plus1pct38p33:
 world_storm_beads_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.storm_beads, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:52"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:26"}
@@ -6196,7 +6196,7 @@ world_storm_beads_roll_2plus1pct46p94:
 world_storm_beads_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.storm_beads, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:10"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:47"}
@@ -6204,7 +6204,7 @@ world_storm_beads_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats
 world_storm_beads_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.storm_beads, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:10"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:47"}
@@ -6280,7 +6280,7 @@ world_riftborn_regalia_roll_2plus1pct21p1:
 world_riftborn_regalia_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.riftborn_regalia, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:94"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:5"}
@@ -6288,7 +6288,7 @@ world_riftborn_regalia_roll_2plus1pct29p71:
 world_riftborn_regalia_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.riftborn_regalia, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:52"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:26"}
@@ -6296,7 +6296,7 @@ world_riftborn_regalia_roll_2plus1pct38p33:
 world_riftborn_regalia_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.riftborn_regalia, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:52"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:26"}
@@ -6304,7 +6304,7 @@ world_riftborn_regalia_roll_2plus1pct46p94:
 world_riftborn_regalia_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.riftborn_regalia, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:10"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:47"}
@@ -6312,7 +6312,7 @@ world_riftborn_regalia_artifacts_gladiators_finale_wanderers_troupe_5star_3_4sub
 world_riftborn_regalia_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.riftborn_regalia, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:10"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:47"}
@@ -6443,8 +6443,8 @@ world_dragonheirs_false_fin_vayuda_turquoise_chunk_weight_405:
   - {reward: genshin.avatar_ascension.dragonheirs_false_fin, count: "2+1:29.71"}
   - {reward: *gems_anemo_electro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:68.554"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:94"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:5"}
@@ -6453,8 +6453,8 @@ world_dragonheirs_false_fin_vayuda_turquoise_chunk_weight_429:
   - {reward: genshin.avatar_ascension.dragonheirs_false_fin, count: "2+1:38.33"}
   - {reward: *gems_anemo_electro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:85.219"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:26"}
@@ -6463,15 +6463,15 @@ world_dragonheirs_false_fin_vayuda_turquoise_chunk_weight_455:
   - {reward: genshin.avatar_ascension.dragonheirs_false_fin, count: "2+1:46.94"}
   - {reward: *gems_anemo_electro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "3+1:1.851"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:26"}
 
 gems_anemo_electro_chunk_fragment_gemstone_sliver: &gems_anemo_electro_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
 
 world_dragonheirs_false_fin_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.dragonheirs_false_fin, count: "2+1:55.56"}
@@ -6558,7 +6558,7 @@ world_runic_fang_roll_2plus1pct21p1:
 world_runic_fang_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.runic_fang, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:94"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:5"}
@@ -6566,7 +6566,7 @@ world_runic_fang_roll_2plus1pct29p71:
 world_runic_fang_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.runic_fang, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:52"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:26"}
@@ -6574,7 +6574,7 @@ world_runic_fang_roll_2plus1pct38p33:
 world_runic_fang_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.runic_fang, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:52"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:26"}
@@ -6582,7 +6582,7 @@ world_runic_fang_roll_2plus1pct46p94:
 world_runic_fang_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.runic_fang, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:10"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:47"}
@@ -6590,7 +6590,7 @@ world_runic_fang_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_
 world_runic_fang_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.runic_fang, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.geo.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_instructor_exile_doctor_3star, count: "2+1:10"}
   - {reward: *artifacts_instructor_exile_4star, count: "1+1:47"}
@@ -6703,7 +6703,7 @@ world_majestic_hooked_beak_roll_2plus1pct21p1:
 world_majestic_hooked_beak_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.majestic_hooked_beak, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: *artifacts_adventurer_berserker_instructor_3star, count: "2+1:94"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:5"}
@@ -6711,7 +6711,7 @@ world_majestic_hooked_beak_roll_2plus1pct29p71:
 world_majestic_hooked_beak_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.majestic_hooked_beak, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: *artifacts_adventurer_berserker_instructor_3star, count: "2+1:52"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:26"}
@@ -6719,7 +6719,7 @@ world_majestic_hooked_beak_roll_2plus1pct38p33:
 world_majestic_hooked_beak_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.majestic_hooked_beak, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: *artifacts_adventurer_berserker_instructor_3star, count: "2+1:52"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:26"}
@@ -6727,7 +6727,7 @@ world_majestic_hooked_beak_roll_2plus1pct46p94:
 world_majestic_hooked_beak_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.majestic_hooked_beak, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_adventurer_berserker_instructor_3star, count: "2+1:10"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:47"}
@@ -6735,7 +6735,7 @@ world_majestic_hooked_beak_artifacts_gladiators_finale_wanderers_troupe_5star_3_
 world_majestic_hooked_beak_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.majestic_hooked_beak, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_adventurer_berserker_instructor_3star, count: "2+1:10"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:47"}
@@ -6811,7 +6811,7 @@ world_thunderclap_fruitcore_roll_2plus1pct21p1:
 world_thunderclap_fruitcore_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.thunderclap_fruitcore, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:94"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:5"}
@@ -6819,7 +6819,7 @@ world_thunderclap_fruitcore_roll_2plus1pct29p71:
 world_thunderclap_fruitcore_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.thunderclap_fruitcore, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:52"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:26"}
@@ -6827,7 +6827,7 @@ world_thunderclap_fruitcore_roll_2plus1pct38p33:
 world_thunderclap_fruitcore_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.thunderclap_fruitcore, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:52"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:26"}
@@ -6835,7 +6835,7 @@ world_thunderclap_fruitcore_roll_2plus1pct46p94:
 world_thunderclap_fruitcore_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.thunderclap_fruitcore, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:10"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:47"}
@@ -6843,7 +6843,7 @@ world_thunderclap_fruitcore_artifacts_gladiators_finale_wanderers_troupe_5star_3
 world_thunderclap_fruitcore_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.thunderclap_fruitcore, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.electro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: "2+1:10"}
   - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1+1:47"}
@@ -6974,8 +6974,8 @@ world_perpetual_caliber_vayuda_turquoise_chunk_weight_405:
   - {reward: genshin.avatar_ascension.perpetual_caliber, count: "2+1:29.71"}
   - {reward: *gems_anemo_hydro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:68.554"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:94"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:5"}
@@ -6984,8 +6984,8 @@ world_perpetual_caliber_vayuda_turquoise_chunk_weight_429:
   - {reward: genshin.avatar_ascension.perpetual_caliber, count: "2+1:38.33"}
   - {reward: *gems_anemo_hydro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:85.219"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:26"}
@@ -6994,15 +6994,15 @@ world_perpetual_caliber_vayuda_turquoise_chunk_weight_455:
   - {reward: genshin.avatar_ascension.perpetual_caliber, count: "2+1:46.94"}
   - {reward: *gems_anemo_hydro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "3+1:1.851"
   - {reward: *artifacts_prayers_springtime_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_springtime_4star, count: "1+1:26"}
 
 gems_anemo_hydro_chunk_fragment_gemstone_sliver: &gems_anemo_hydro_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-  - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
 
 world_perpetual_caliber_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.perpetual_caliber, count: "2+1:55.56"}
@@ -7144,8 +7144,8 @@ world_light_guiding_tetrahedron_shivada_jade_chunk_weight_405:
   - {reward: genshin.avatar_ascension.light_guiding_tetrahedron, count: "2+1:29.71"}
   - {reward: *gems_cryo_pyro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:68.554"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:94"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:5"}
@@ -7154,8 +7154,8 @@ world_light_guiding_tetrahedron_shivada_jade_chunk_weight_429:
   - {reward: genshin.avatar_ascension.light_guiding_tetrahedron, count: "2+1:38.33"}
   - {reward: *gems_cryo_pyro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "2+1:85.219"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:26"}
@@ -7164,15 +7164,15 @@ world_light_guiding_tetrahedron_shivada_jade_chunk_weight_455:
   - {reward: genshin.avatar_ascension.light_guiding_tetrahedron, count: "2+1:46.94"}
   - {reward: *gems_cryo_pyro_fragment, count: "1+1:12.2"}
   - reward:
-      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
     count: "3+1:1.851"
   - {reward: *artifacts_prayers_illumination_3star, count: "2+1:52"}
   - {reward: *artifacts_prayers_illumination_4star, count: "1+1:26"}
 
 gems_cryo_pyro_chunk_fragment_gemstone_sliver: &gems_cryo_pyro_chunk_fragment_gemstone_sliver
-  - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
-  - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
+  - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3, weight: 1}
 
 world_light_guiding_tetrahedron_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.light_guiding_tetrahedron, count: "2+1:55.56"}
@@ -7259,7 +7259,7 @@ world_quelled_creeper_roll_2plus1pct21p1:
 world_quelled_creeper_roll_2plus1pct29p71:
   - {reward: genshin.avatar_ascension.quelled_creeper, count: "2+1:29.71"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:68.554"
   - {reward: *artifacts_adventurer_berserker_instructor_3star, count: "2+1:94"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:5"}
@@ -7267,7 +7267,7 @@ world_quelled_creeper_roll_2plus1pct29p71:
 world_quelled_creeper_roll_2plus1pct38p33:
   - {reward: genshin.avatar_ascension.quelled_creeper, count: "2+1:38.33"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "2+1:85.219"
   - {reward: *artifacts_adventurer_berserker_instructor_3star, count: "2+1:52"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:26"}
@@ -7275,7 +7275,7 @@ world_quelled_creeper_roll_2plus1pct38p33:
 world_quelled_creeper_roll_2plus1pct46p94:
   - {reward: genshin.avatar_ascension.quelled_creeper, count: "2+1:46.94"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:1.851"
   - {reward: *artifacts_adventurer_berserker_instructor_3star, count: "2+1:52"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:26"}
@@ -7283,7 +7283,7 @@ world_quelled_creeper_roll_2plus1pct46p94:
 world_quelled_creeper_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63:
   - {reward: genshin.avatar_ascension.quelled_creeper, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_adventurer_berserker_instructor_3star, count: "2+1:10"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:47"}
@@ -7291,7 +7291,7 @@ world_quelled_creeper_artifacts_gladiators_finale_wanderers_troupe_5star_3_4subs
 world_quelled_creeper_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1:
   - {reward: genshin.avatar_ascension.quelled_creeper, count: "2+1:55.56"}
   - {reward: genshin.avatar_ascension.dendro.3, count: "3+3:12.2"}
-  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.6, 3:19.9, 4:5, 5:0.5"}, count: 3}
+  - reward: {reward: genshin.avatar_ascension.dendro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, count: 3}
     count: "3+1:18.45"
   - {reward: *artifacts_adventurer_berserker_instructor_3star, count: "2+1:10"}
   - {reward: *artifacts_berserker_instructor_4star, count: "1+1:47"}

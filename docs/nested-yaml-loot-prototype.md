@@ -40,15 +40,34 @@ including complete payout profiles, are named by reward content; optional
 `world` and `weekly` prefixes identify the reward type.
 Reusable subtables use names such as `midlander_weapon_billets`.
 Identical payout profiles are shared, and one-use subtables are inlined.
-The bundled YAML currently contains 1,412 top-level loot tables. The two
-`weekly_northlander_extras` / `weekly_midlander_extras` pools define shared
-Dream Solvent and weapon-billet drop chances. Eight further `weekly_*artifacts*`
-pools hold common artifact distributions across native level brackets. CSS
-selects each shared pool by Boss tag and level; reward chances and nested
-execution counts remain in YAML. Four `world_five_star_artifacts_*`
-pools share the level-dependent five-star Gladiator/Wanderer drops across
-24 older world Boss reward families. Seven `gems_*_basic` tables hold
-identical fixed sliver and fragment grants for eight world Boss identities.
+The bundled YAML currently has 626 top-level definitions, including one
+list template. The two `weekly_northlander_extras` /
+`weekly_midlander_extras` pools define shared Dream Solvent and weapon-billet
+drop chances. Eight further `weekly_*artifacts*` pools hold shared artifact
+distributions across level brackets. CSS selects Boss identities and levels.
+Direct single-item rewards and independent loot-pool execution counts live in
+CSS; nested weighted item/rarity choices remain in YAML. Four
+`world_five_star_artifacts_*` pools share five-star Gladiator/Wanderer
+drops across 24 older world Boss reward families. Seven `gems_*_basic` tables
+hold identical fixed sliver and fragment grants for eight world Boss identities.
+
+World Boss reward categories are independent: 797 previous mixed
+`world_*` tables were split into direct CSS material/item declarations and
+374 reusable category-specific tables (`_material`, `_gem`, `_artifact`).
+Identical pools are shared across Boss identities; CSS owns which one applies.
+For Maguu Kenki at native level 50–54:
+
+```css
+boss[type="world"][tag="maguu_kenki"][level="50~54"] {
+    genshin.avatar_ascension.marionette_core: "1+1:86.64";
+    astaps.loot.world_marionette_core_shivada_jade_sliver_weight_4193_gem: 1;
+    astaps.loot.world_hurricane_seed_shivada_jade_sliver_weight_3817_artifact: 1;
+}
+```
+
+Each category is selected independently, including any inner weighted draws and
+additional rolls. A shared pool may retain an earlier reward-profile-derived
+name even when referenced by another Boss; the CSS selector identifies the Boss.
 
 The artifact distributions are `artifacts_1_to_2_low`,
 `artifacts_1_to_2_high`, `artifacts_1_to_3`, `artifacts_2_to_3`,

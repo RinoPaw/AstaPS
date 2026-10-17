@@ -155,25 +155,33 @@ final class BundledBossRewardsTest {
         var curves = RewardCurves.parse(RewardConfiguration.readBundled("curves.yaml"));
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, knownCategories),
                 loot, curves);
-        // The shared world material curve uses the curated values at level 30 and above.
-        String[] materialRanges = {
-                "30~34", "35~39", "40~44", "45~49", "50~54", "55~59",
-                "60~64", "65~69", "70~74", "75~79", "80~84", "85~89", "90~"
-        };
-        String[] materialCounts = {
-                "1+1:52", "1+1:61", "1+1:69", "1+1:78", "1+1:86",
-                "1+1:95", "2+1:3", "2+1:12", "2+1:21", "2+1:29",
-                "2+1:38", "2+1:47", "2+1:55"
-        };
-        for (int i = 0; i < materialRanges.length; i++) {
-            String[] bounds = materialRanges[i].split("~", -1);
-            assertEquals(materialCounts[i], curves.require("world_ascension_material_count").lookup(bounds[0]));
-            if (!bounds[1].isEmpty()) {
-                assertEquals(materialCounts[i], curves.require("world_ascension_material_count").lookup(bounds[1]));
-            }
+        // Three native sourceType=34 Boss material profiles (Lv.100+ is CSS-only).
+        String[] earlyLevels = {"1", "5", "10", "15", "20", "25"};
+        String[] earlyCounts = {"1+1:33.86", "1+1:42.89", "1+1:54.17", "1+1:65.45", "1+1:76.73", "1+1:88.01"};
+        for (int i = 0; i < earlyLevels.length; i++) {
+            assertEquals(earlyCounts[i], curves.require("world_ascension_material_early_count").lookup(earlyLevels[i]));
         }
-        assertEquals("2+1:55", curves.require("world_ascension_material_count").lookup("130"));
-        assertEquals("1+1:88.01", curves.require("world_ascension_material_count").lookup("29"));
+        String[] midLevels = {"30", "35", "40", "45", "50", "55", "60", "65", "70", "75", "80", "85", "90", "93"};
+        String[] commonCounts = {"1+1:52.18", "1+1:60.8", "1+1:69.41", "1+1:78.03", "1+1:86.64", "1+1:95.26", "2+1:03.87", "2+1:12.48", "2+1:21.1", "2+1:29.71", "2+1:38.33", "2+1:46.94", "2+1:55.56", "2+1:55.56"};
+        String[] highYieldCounts = {"1+1:67.398", "1+1:76.88", "1+1:86.351", "1+1:95.833", "2+1:05.304", "2+1:14.786", "2+1:24.257", "2+1:33.728", "2+1:43.21", "2+1:52.681", "2+1:62.163", "2+1:71.634", "2+1:81.116", "2+1:81.116"};
+        for (int i = 0; i < midLevels.length; i++) {
+            assertEquals(commonCounts[i], curves.require("world_ascension_material_standard_count").lookup(midLevels[i]));
+            assertEquals(highYieldCounts[i], curves.require("world_ascension_material_high_yield_count").lookup(midLevels[i]));
+        }
+        assertEquals("1+1:88.01", curves.require("world_ascension_material_early_count").lookup("29"));
+        assertEquals("2+1:55.56", curves.require("world_ascension_material_standard_count").lookup("99"));
+        assertEquals("2+1:81.116", curves.require("world_ascension_material_high_yield_count").lookup("99"));
+        assertThrows(IllegalArgumentException.class, () -> curves.require("world_ascension_material_early_count").lookup("30"));
+        assertThrows(IllegalArgumentException.class, () -> curves.require("world_ascension_material_standard_count").lookup("29"));
+        assertThrows(IllegalArgumentException.class, () -> curves.require("world_ascension_material_standard_count").lookup("100"));
+        assertThrows(IllegalArgumentException.class, () -> curves.require("world_ascension_material_high_yield_count").lookup("100"));
+        assertThrows(IllegalArgumentException.class, () -> curves.require("world_ascension_material_count"));
+        assertTrue(stylesheet.contains("genshin.avatar_ascension.everflame_seed: \"${world_ascension_material_high_yield_count(level)}\";"));
+        assertTrue(stylesheet.contains("genshin.avatar_ascension.cleansing_heart: \"${world_ascension_material_high_yield_count(level)}\";"));
+        assertTrue(stylesheet.contains("genshin.avatar_ascension.artificed_spare_clockwork_component_coppelia: \"${world_ascension_material_early_count(level)}\";"));
+        assertTrue(stylesheet.contains("genshin.avatar_ascension.everflame_seed: \"2+1:81.116\";"));
+        assertTrue(stylesheet.contains("genshin.avatar_ascension.lightning_prism: \"2+1:55.56\";"));
+        assertTrue(stylesheet.contains("genshin.avatar_ascension.frostnights_glory: \"3+1:25\";"));
         String[] weeklyLevels = {
                 "40", "44", "45", "49", "50", "54", "55", "59", "60", "64",
                 "65", "69", "70", "74", "75", "79", "80", "84", "85", "89"
@@ -212,30 +220,29 @@ final class BundledBossRewardsTest {
         assertEquals("1+1:47", curves.require("world_artifacts_pool_2_roll_count").lookup("140"));
         assertThrows(IllegalArgumentException.class,
                 () -> curves.require("marionette_core"));
-        assertEquals(5, RewardConfiguration.readBundled("curves.yaml").lines()
+        assertEquals(7, RewardConfiguration.readBundled("curves.yaml").lines()
                 .filter(line -> line.matches("^[a-z][a-z0-9_]+:$")).count());
         assertTrue(RewardConfiguration.readBundled("curves.yaml").lines()
                 .filter(line -> line.matches("^[a-z][a-z0-9_]+:$"))
                 .allMatch(line -> line.endsWith("_count:")),
                 "All count curves must use the _count suffix");
-        assertEquals("1+1:33.86", curves.require("world_ascension_material_count").lookup("1"));
-        assertEquals("1+1:52", curves.require("world_ascension_material_count").lookup("34"));
-        assertEquals("2+1:55", curves.require("world_ascension_material_count").lookup("95"));
-        assertThrows(IllegalArgumentException.class,
-                () -> curves.require("world_ascension_material_count").lookup("0"));
         assertEquals(121, stylesheet.lines().filter(line ->
                 line.contains("world_gems_roll_count(level)")).count());
         assertEquals(360, stylesheet.lines().filter(line ->
                 line.contains("world_artifacts_pool_1_roll_count(level)")).count());
         assertEquals(360, stylesheet.lines().filter(line ->
                 line.contains("world_artifacts_pool_2_roll_count(level)")).count());
-        assertEquals(743, stylesheet.lines().filter(line ->
-                line.contains("world_ascension_material_count(level)")).count());
+        assertEquals(138, stylesheet.lines().filter(line ->
+                line.contains("world_ascension_material_early_count(level)")).count());
+        assertEquals(644, stylesheet.lines().filter(line ->
+                line.contains("world_ascension_material_standard_count(level)")).count());
+        assertEquals(28, stylesheet.lines().filter(line ->
+                line.contains("world_ascension_material_high_yield_count(level)")).count());
         assertEquals(14, yaml.lines().filter(line ->
                 line.matches("^weekly_gems_[a-z0-9_]+_rarity_2to[45]_first_[a-z]+:$")).count());
         assertFalse(loot.contains(
                 "astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct45p71_first_anemo"));
-        assertEquals(978, stylesheet.lines()
+        assertEquals(1002, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertEquals(211, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
@@ -257,14 +264,14 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(455, loot.names().size()); // Reused weighted pools replace level-specific YAML tables.
-        assertEquals(238, yaml.lines().filter(line -> line.matches(
+        assertEquals(435, loot.names().size()); // Reused weighted pools replace level-specific YAML tables.
+        assertEquals(225, yaml.lines().filter(line -> line.matches(
                 "^world_[a-z0-9_]+_(material|gem|artifact):$")).count(),
                 "Shared world pools must contain only one reward category");
         assertTrue(yaml.lines().noneMatch(line ->
                 line.matches("^world_marionette_core_shivada_jade_sliver_weight_4193:$")));
         assertTrue(stylesheet.contains(
-                "genshin.avatar_ascension.marionette_core: \"${world_ascension_material_count(level)}\";"));
+                "genshin.avatar_ascension.marionette_core: \"${world_ascension_material_standard_count(level)}\";"));
         assertEquals(21, yaml.lines().filter(line -> line.contains(
                 "reward: genshin.avatar_ascension, properties: {element: \"electro:33.33, cryo:33.33, hydro:33.34\", rarity: 3}")).count());
         assertFalse(yaml.contains("gems_cryo_electro_hydro_fragment: &gems_cryo_electro_hydro_fragment"));

@@ -542,6 +542,16 @@ Former `genshin.currency.anemo_sigil`-style names are not aliases.
 
 ## Boss reward migration status (7.1)
 
+World Boss-exclusive ascension materials are grouped by native `sourceType = 34`
+counts: a shared Lv.1–29 early profile on newer Boss families, the
+common Lv.30–99 profile, and a distinct higher-yield Lv.30–99 profile for
+Pyro Regisvine and Oceanid. Lv.100+ material quantities stay explicit in
+`rewards.css` (`2+1:55.56`, `2+1:81.116`, or `3+1:25`).
+Icewind Suite's two independently granted material identities now use CSS
+as well. Material quantities retain the fractional precision of native
+`DropTableExcelConfigData.json`; the old single approximated curve is gone.
+
+
 Normal open-world boss flowers still roll the native `ChestDrop.json` ->
 `Server/DropTableExcelConfigData.json` chain. They now use one
 `WORLD_BOSS` grant receipt per player and flower, recording the

@@ -1,8 +1,9 @@
 # Reward configuration
 
-The runtime reads two bundled files: `src/main/resources/rewards/loot.yaml`
-and `src/main/resources/rewards/rewards.css`. There is no editable
-`config/rewards` copy.
+The runtime reads three bundled files: `src/main/resources/rewards/loot.yaml`,
+`src/main/resources/rewards/rewards.css`, and
+`src/main/resources/rewards/curves.yaml`. There is no editable `config/rewards`
+copy.
 
 ## CSS selector semantics
 
@@ -243,6 +244,38 @@ loot pool; an outer `count` rerolls it independently.
 The former artifact rarity template is split into two ordinary tables,
 `artifacts_prayers_wisdom_3star` and `artifacts_prayers_wisdom_4star`,
 because the available artifact sets differ by rarity.
+
+## Exact level lookup curves
+
+Reward counts that follow an irregular discrete curve belong in
+\`src/main/resources/rewards/curves.yaml\`. The keys are exact levels or
+inclusive level ranges. The value is an ordinary quoted loot-count expression.
+Ranges may end in \`~\` to cover all higher levels. The source data is not
+interpolated or approximated.
+
+\`\`\`yaml
+marionette_core:
+  "50~54": "1+1:86.64"
+  "55~59": "1+1:95.26"
+  "60~64": "2+1:3.87"
+\`\`\`
+
+The full bundled curve includes all 14 source-backed intervals from 30–34
+through 93+. A CSS property selects its value by the native Boss level:
+
+\`\`\`css
+boss[type="world"][tag="maguu_kenki"][level="50~54"] {
+    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+}
+\`\`\`
+
+The \`${name(level)}\` expression is evaluated when CSS selects the reward,
+before the existing count parser rolls it. Both inventory-item declarations and
+named loot-pool declarations support this lookup. Unknown curve names, invalid
+range definitions, overlaps, and invalid count expressions fail while loading.
+If no interval contains the requested level, lookup fails explicitly.
+These lookups are separate from the integer substitution performed by
+parameterized loot lists in \`loot.yaml\`; no scripting language is involved.
 
 ## YAML semantics
 

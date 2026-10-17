@@ -307,8 +307,7 @@ talent_materials_puppet_strings_mirror_of_mushin_dakas_bell: &talent_materials_p
   - {reward: genshin.talent_up.mirror_of_mushin, weight: 1}
   - {reward: genshin.talent_up.dakas_bell, weight: 1}
 
-weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_702:
-  - {reward: *talent_materials_puppet_strings_mirror_of_mushin_dakas_bell}
+weekly_gems_cryo_electro_hydro_fragment_4plus1pct20p93_first_electro:
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
@@ -316,8 +315,7 @@ weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_702:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "4+1:20.93"
 
-weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_738:
-  - {reward: *talent_materials_puppet_strings_mirror_of_mushin_dakas_bell, count: "1+1:27.5"}
+weekly_gems_cryo_electro_hydro_fragment_4plus1pct45p71_first_electro:
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -325,8 +323,7 @@ weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_738:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
-weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_777:
-  - {reward: *talent_materials_puppet_strings_mirror_of_mushin_dakas_bell, count: "1+1:55"}
+weekly_gems_cryo_electro_hydro_fragment_4plus1pct68p39_first_electro:
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -334,8 +331,7 @@ weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_777:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
-weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_814:
-  - {reward: *talent_materials_puppet_strings_mirror_of_mushin_dakas_bell, count: "1+1:82.5"}
+weekly_gems_cryo_electro_hydro_fragment_4plus1pct91p01_first_electro:
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -348,13 +344,7 @@ gems_cryo_electro_hydro_mixed: &gems_cryo_electro_hydro_mixed
   - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
   - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
-weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct10:
-  - {reward: *talent_materials_puppet_strings_mirror_of_mushin_dakas_bell, count: "2+1:10"}
-  - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
-  - {reward: *gems_cryo_electro_hydro_mixed, count: "5+1:13.72"}
-
-weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct40:
-  - {reward: *talent_materials_puppet_strings_mirror_of_mushin_dakas_bell, count: "2+1:40"}
+weekly_gems_cryo_electro_hydro_fragment_5plus1pct13p72:
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - {reward: *gems_cryo_electro_hydro_mixed, count: "5+1:13.72"}
 
@@ -428,8 +418,7 @@ talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_wa
   - {reward: genshin.talent_up.shard_of_a_foul_legacy, weight: 1}
   - {reward: genshin.talent_up.shadow_of_the_warrior, weight: 1}
 
-weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_702:
-  - {reward: *talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior}
+weekly_gems_anemo_electro_hydro_fragment_4plus1pct20p93:
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
@@ -445,8 +434,7 @@ weekly_gems_anemo_electro_hydro_vajrada_amethyst_chunk_weight_738:
       - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
-weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_777:
-  - {reward: *talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior, count: "1+1:55"}
+weekly_gems_anemo_electro_hydro_fragment_4plus1pct68p39:
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -454,8 +442,7 @@ weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_777:
       - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
-weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_814:
-  - {reward: *talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior, count: "1+1:82.5"}
+weekly_gems_anemo_electro_hydro_fragment_4plus1pct91p01:
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -468,13 +455,7 @@ gems_anemo_electro_hydro_chunk_fragment_gemstone_sliver: &gems_anemo_electro_hyd
   - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
   - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
-weekly_talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior_roll_2plus1pct10:
-  - {reward: *talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior, count: "2+1:10"}
-  - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
-  - {reward: *gems_anemo_electro_hydro_chunk_fragment_gemstone_sliver, count: "5+1:13.72"}
-
-weekly_talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior_roll_2plus1pct40:
-  - {reward: *talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior, count: "2+1:40"}
+weekly_gems_anemo_electro_hydro_fragment_5plus1pct13p72:
   - {reward: *gems_anemo_electro_hydro_fragment, count: "1+1:2"}
   - {reward: *gems_anemo_electro_hydro_chunk_fragment_gemstone_sliver, count: "5+1:13.72"}
 
@@ -541,8 +522,7 @@ talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: &talent_
   - {reward: genshin.talent_up.ring_of_boreas, weight: 1}
   - {reward: genshin.talent_up.spirit_locket_of_boreas, weight: 1}
 
-weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_702:
-  - {reward: *talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas}
+weekly_gems_anemo_geo_pyro_fragment_4plus1pct20p93_first_anemo:
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
@@ -550,8 +530,7 @@ weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_702:
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "4+1:20.93"
 
-weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_738:
-  - {reward: *talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas, count: "1+1:27.5"}
+weekly_gems_anemo_geo_pyro_fragment_4plus1pct45p71_first_anemo:
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -559,8 +538,7 @@ weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_738:
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
-weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_777:
-  - {reward: *talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas, count: "1+1:55"}
+weekly_gems_anemo_geo_pyro_fragment_4plus1pct68p39_first_anemo:
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -568,8 +546,7 @@ weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_777:
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
-weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_814:
-  - {reward: *talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas, count: "1+1:82.5"}
+weekly_gems_anemo_geo_pyro_fragment_4plus1pct91p01_first_anemo:
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -582,13 +559,7 @@ gems_anemo_geo_pyro_mixed: &gems_anemo_geo_pyro_mixed
   - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
   - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
-weekly_talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas_roll_2plus1pct10:
-  - {reward: *talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas, count: "2+1:10"}
-  - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
-  - {reward: *gems_anemo_geo_pyro_mixed, count: "5+1:13.72"}
-
-weekly_talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas_roll_2plus1pct40:
-  - {reward: *talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas, count: "2+1:40"}
+weekly_gems_anemo_geo_pyro_fragment_5plus1pct13p72:
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - {reward: *gems_anemo_geo_pyro_mixed, count: "5+1:13.72"}
 
@@ -647,32 +618,28 @@ talent_materials_molten_moment_hellfire_butterfly_ashen_heart: &talent_materials
   - {reward: genshin.talent_up.hellfire_butterfly, weight: 1}
   - {reward: genshin.talent_up.ashen_heart, weight: 1}
 
-weekly_talent_materials_molten_moment_agnidus_agate_chunk_weight_702:
-  - {reward: *talent_materials_molten_moment_hellfire_butterfly_ashen_heart}
+weekly_gems_anemo_pyro_fragment_4plus1pct20p93:
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "4+1:20.93"
 
-weekly_talent_materials_molten_moment_agnidus_agate_chunk_weight_738:
-  - {reward: *talent_materials_molten_moment_hellfire_butterfly_ashen_heart, count: "1+1:27.5"}
+weekly_gems_anemo_pyro_fragment_4plus1pct45p71:
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
-weekly_talent_materials_molten_moment_agnidus_agate_chunk_weight_777:
-  - {reward: *talent_materials_molten_moment_hellfire_butterfly_ashen_heart, count: "1+1:55"}
+weekly_gems_anemo_pyro_fragment_4plus1pct68p39:
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
-weekly_talent_materials_molten_moment_agnidus_agate_chunk_weight_814:
-  - {reward: *talent_materials_molten_moment_hellfire_butterfly_ashen_heart, count: "1+1:82.5"}
+weekly_gems_anemo_pyro_fragment_4plus1pct91p01:
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -683,13 +650,7 @@ gems_anemo_pyro_chunk_fragment_gemstone_sliver: &gems_anemo_pyro_chunk_fragment_
   - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
   - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
-weekly_talent_materials_molten_moment_hellfire_butterfly_ashen_heart_roll_2plus1pct10:
-  - {reward: *talent_materials_molten_moment_hellfire_butterfly_ashen_heart, count: "2+1:10"}
-  - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
-  - {reward: *gems_anemo_pyro_chunk_fragment_gemstone_sliver, count: "5+1:13.72"}
-
-weekly_talent_materials_molten_moment_hellfire_butterfly_ashen_heart_roll_2plus1pct40:
-  - {reward: *talent_materials_molten_moment_hellfire_butterfly_ashen_heart, count: "2+1:40"}
+weekly_gems_anemo_pyro_fragment_5plus1pct13p72:
   - {reward: *gems_anemo_pyro_fragment, count: "1+1:2"}
   - {reward: *gems_anemo_pyro_chunk_fragment_gemstone_sliver, count: "5+1:13.72"}
 
@@ -756,8 +717,7 @@ talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: &talent_mater
   - {reward: genshin.talent_up.bloodjade_branch, weight: 1}
   - {reward: genshin.talent_up.gilded_scale, weight: 1}
 
-weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_702_varunada_lazurite_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale}
+weekly_gems_anemo_geo_hydro_fragment_4plus1pct20p93:
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
@@ -765,8 +725,7 @@ weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_702_varunada_
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "4+1:20.93"
 
-weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_738_varunada_lazurite_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:27.5"}
+weekly_gems_anemo_geo_hydro_fragment_4plus1pct45p71:
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -774,8 +733,7 @@ weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_738_varunada_
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
-weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_777_varunada_lazurite_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:55"}
+weekly_gems_anemo_geo_hydro_fragment_4plus1pct68p39:
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -783,8 +741,7 @@ weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_777_varunada_
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
-weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_814_varunada_lazurite_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:82.5"}
+weekly_gems_anemo_geo_hydro_fragment_4plus1pct91p01:
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -797,13 +754,7 @@ gems_anemo_geo_hydro_chunk_fragment_gemstone_sliver: &gems_anemo_geo_hydro_chunk
   - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
   - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
-weekly_talent_materials_dragon_lords_gems_anemo_geo_hydro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct10:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "2+1:10"}
-  - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
-  - {reward: *gems_anemo_geo_hydro_chunk_fragment_gemstone_sliver, count: "5+1:13.72"}
-
-weekly_talent_materials_dragon_lords_gems_anemo_geo_hydro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct40:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "2+1:40"}
+weekly_gems_anemo_geo_hydro_fragment_5plus1pct13p72:
   - {reward: *gems_anemo_geo_hydro_fragment, count: "1+1:2"}
   - {reward: *gems_anemo_geo_hydro_chunk_fragment_gemstone_sliver, count: "5+1:13.72"}
 
@@ -865,8 +816,7 @@ weekly_gems_electro_geo_hydro_fragment_prithiva_topaz_chunk_weight_664:
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "3+1:98.37"
 
-weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_702_varunada_lazurite_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale}
+weekly_gems_electro_geo_hydro_fragment_4plus1pct20p93:
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
@@ -874,8 +824,7 @@ weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_702_varunada_
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "4+1:20.93"
 
-weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_738_varunada_lazurite_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:27.5"}
+weekly_gems_electro_geo_hydro_fragment_4plus1pct45p71:
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -883,8 +832,7 @@ weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_738_varunada_
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
-weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_777_varunada_lazurite_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:55"}
+weekly_gems_electro_geo_hydro_fragment_4plus1pct68p39:
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -892,8 +840,7 @@ weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_777_varunada_
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
-weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_814_varunada_lazurite_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:82.5"}
+weekly_gems_electro_geo_hydro_fragment_4plus1pct91p01:
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -906,13 +853,7 @@ gems_electro_geo_hydro_chunk_fragment_gemstone_sliver: &gems_electro_geo_hydro_c
   - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
   - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
-weekly_talent_materials_dragon_lords_gems_electro_geo_hydro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct10:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "2+1:10"}
-  - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
-  - {reward: *gems_electro_geo_hydro_chunk_fragment_gemstone_sliver, count: "5+1:13.72"}
-
-weekly_talent_materials_dragon_lords_gems_electro_geo_hydro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct40:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "2+1:40"}
+weekly_gems_electro_geo_hydro_fragment_5plus1pct13p72:
   - {reward: *gems_electro_geo_hydro_fragment, count: "1+1:2"}
   - {reward: *gems_electro_geo_hydro_chunk_fragment_gemstone_sliver, count: "5+1:13.72"}
 
@@ -964,8 +905,7 @@ weekly_gems_anemo_geo_pyro_fragment_first_pyro_agnidus_agate_chunk_weight_664:
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "3+1:98.37"
 
-weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_702_vayuda_turquoise_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale}
+weekly_gems_anemo_geo_pyro_fragment_4plus1pct20p93_first_pyro:
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
@@ -973,8 +913,7 @@ weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_702_vayuda_turqu
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "4+1:20.93"
 
-weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_738_vayuda_turquoise_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:27.5"}
+weekly_gems_anemo_geo_pyro_fragment_4plus1pct45p71_first_pyro:
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -982,8 +921,7 @@ weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_738_vayuda_turqu
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
-weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_777_vayuda_turquoise_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:55"}
+weekly_gems_anemo_geo_pyro_fragment_4plus1pct68p39_first_pyro:
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -991,24 +929,13 @@ weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_777_vayuda_turqu
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
-weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_814_vayuda_turquoise_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:82.5"}
+weekly_gems_anemo_geo_pyro_fragment_4plus1pct91p01_first_pyro:
   - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
       - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
-
-weekly_talent_materials_dragon_lords_gems_anemo_geo_pyro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct10:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "2+1:10"}
-  - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
-  - {reward: *gems_anemo_geo_pyro_mixed, count: "5+1:13.72"}
-
-weekly_talent_materials_dragon_lords_gems_anemo_geo_pyro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct40:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "2+1:40"}
-  - {reward: *gems_anemo_geo_pyro_fragment, count: "1+1:2"}
-  - {reward: *gems_anemo_geo_pyro_mixed, count: "5+1:13.72"}
 
 gems_electro_geo_pyro_sliver: &gems_electro_geo_pyro_sliver
   - {reward: genshin.avatar_ascension.pyro.2, weight: 1}
@@ -1068,8 +995,7 @@ weekly_gems_electro_geo_pyro_fragment_agnidus_agate_chunk_weight_664:
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "3+1:98.37"
 
-weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_702_vajrada_amethyst_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale}
+weekly_gems_electro_geo_pyro_fragment_4plus1pct20p93:
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
@@ -1077,8 +1003,7 @@ weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_702_vajrada_amet
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "4+1:20.93"
 
-weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_738_vajrada_amethyst_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:27.5"}
+weekly_gems_electro_geo_pyro_fragment_4plus1pct45p71:
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -1086,8 +1011,7 @@ weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_738_vajrada_amet
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
-weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_777_vajrada_amethyst_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:55"}
+weekly_gems_electro_geo_pyro_fragment_4plus1pct68p39:
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -1095,8 +1019,7 @@ weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_777_vajrada_amet
       - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
-weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_814_vajrada_amethyst_chunk_roll_1:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "1+1:82.5"}
+weekly_gems_electro_geo_pyro_fragment_4plus1pct91p01:
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.pyro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -1109,13 +1032,7 @@ gems_electro_geo_pyro_chunk_fragment_gemstone_sliver: &gems_electro_geo_pyro_chu
   - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
   - {reward: genshin.avatar_ascension.geo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
 
-weekly_talent_materials_dragon_lords_gems_electro_geo_pyro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct10:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "2+1:10"}
-  - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
-  - {reward: *gems_electro_geo_pyro_chunk_fragment_gemstone_sliver, count: "5+1:13.72"}
-
-weekly_talent_materials_dragon_lords_gems_electro_geo_pyro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct40:
-  - {reward: *talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale, count: "2+1:40"}
+weekly_gems_electro_geo_pyro_fragment_5plus1pct13p72:
   - {reward: *gems_electro_geo_pyro_fragment, count: "1+1:2"}
   - {reward: *gems_electro_geo_pyro_chunk_fragment_gemstone_sliver, count: "5+1:13.72"}
 
@@ -1160,42 +1077,31 @@ talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_me
   - {reward: genshin.talent_up.tears_of_the_calamitous_god, weight: 1}
   - {reward: genshin.talent_up.the_meaning_of_aeons, weight: 1}
 
-weekly_talent_materials_mudra_of_vajrada_amethyst_chunk_weight_702:
-  - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons}
+weekly_gems_electro_fragment_4plus1pct20p93:
   - {reward: genshin.avatar_ascension.electro.3, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "4+1:20.93"
 
-weekly_talent_materials_mudra_of_vajrada_amethyst_chunk_weight_738:
-  - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons, count: "1+1:27.5"}
+weekly_gems_electro_fragment_4plus1pct45p71:
   - {reward: genshin.avatar_ascension.electro.3, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
-weekly_talent_materials_mudra_of_vajrada_amethyst_chunk_weight_777:
-  - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons, count: "1+1:55"}
+weekly_gems_electro_fragment_4plus1pct68p39:
   - {reward: genshin.avatar_ascension.electro.3, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
-weekly_talent_materials_mudra_of_vajrada_amethyst_chunk_weight_814:
-  - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons, count: "1+1:82.5"}
+weekly_gems_electro_fragment_4plus1pct91p01:
   - {reward: genshin.avatar_ascension.electro.3, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
 
-weekly_talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons_roll_2plus1pct10:
-  - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons, count: "2+1:10"}
-  - {reward: genshin.avatar_ascension.electro.3, count: "1+1:2"}
-  - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}}
-    count: "5+1:13.72"
-
-weekly_talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons_roll_2plus1pct40:
-  - {reward: *talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons, count: "2+1:40"}
+weekly_gems_electro_fragment_5plus1pct13p72:
   - {reward: genshin.avatar_ascension.electro.3, count: "1+1:2"}
   - reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}}
     count: "5+1:13.72"
@@ -1253,8 +1159,7 @@ talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh: &talent_materials_dval
   - {reward: genshin.talent_up.dvalins_claw, weight: 1}
   - {reward: genshin.talent_up.dvalins_sigh, weight: 1}
 
-weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_702:
-  - {reward: *talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh}
+weekly_gems_cryo_electro_hydro_fragment_4plus1pct20p93_first_cryo:
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
@@ -1262,8 +1167,7 @@ weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_702:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
     count: "4+1:20.93"
 
-weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_738:
-  - {reward: *talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh, count: "1+1:27.5"}
+weekly_gems_cryo_electro_hydro_fragment_4plus1pct45p71_first_cryo:
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -1271,8 +1175,7 @@ weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_738:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:45.71"
 
-weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_777:
-  - {reward: *talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh, count: "1+1:55"}
+weekly_gems_cryo_electro_hydro_fragment_4plus1pct68p39_first_cryo:
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
@@ -1280,24 +1183,13 @@ weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_777:
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:68.39"
 
-weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_814:
-  - {reward: *talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh, count: "1+1:82.5"}
+weekly_gems_cryo_electro_hydro_fragment_4plus1pct91p01_first_cryo:
   - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
   - reward:
       - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
       - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
       - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:74.5, 3:20, 4:5, 5:0.5"}, weight: 1}
     count: "4+1:91.01"
-
-weekly_talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh_roll_2plus1pct10:
-  - {reward: *talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh, count: "2+1:10"}
-  - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
-  - {reward: *gems_cryo_electro_hydro_mixed, count: "5+1:13.72"}
-
-weekly_talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh_roll_2plus1pct40:
-  - {reward: *talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh, count: "2+1:40"}
-  - {reward: *gems_cryo_electro_hydro_fragment, count: "1+1:2"}
-  - {reward: *gems_cryo_electro_hydro_mixed, count: "5+1:13.72"}
 
 artifacts_instructor_5star_1_2substats_goblet_plume: &artifacts_instructor_5star_1_2substats_goblet_plume
   - {reward: genshin.artifact.instructor, properties: {slot: goblet, rarity: 5, substats: 1}, weight: 33}

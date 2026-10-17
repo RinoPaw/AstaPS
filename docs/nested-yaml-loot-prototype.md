@@ -41,7 +41,7 @@ including complete payout profiles, are named by reward content; optional
 `world` and `weekly` prefixes identify the reward type.
 Reusable subtables use names such as `midlander_weapon_billets`.
 Identical payout profiles are shared, and one-use subtables are inlined.
-The bundled YAML currently has 613 top-level definitions, including one
+The bundled YAML currently has 456 top-level definitions, including one
 list template. The two `weekly_northlander_extras` /
 `weekly_midlander_extras` pools define shared Dream Solvent and weapon-billet
 drop chances. Eight further `weekly_*artifacts*` pools hold shared artifact
@@ -53,16 +53,19 @@ drops across 24 older world Boss reward families. Seven `gems_*_basic` tables
 hold identical fixed sliver and fragment grants for eight world Boss identities.
 
 World Boss reward categories are independent: 797 previous mixed
-`world_*` tables were split into direct CSS material/item declarations and
-374 reusable category-specific tables (`_material`, `_gem`, `_artifact`).
-Identical pools are shared across Boss identities; CSS owns which one applies.
-For Maguu Kenki at native level 50–54:
+`world_*` tables were originally split into direct CSS declarations and
+374 category-specific tables. Subsequent exact-curve extraction reduced the
+remaining category-specific tables to 238, with weighted choice pools reused
+across Boss identities. CSS determines which pool applies and how many times
+it is rolled. For Maguu Kenki at native level 50–54:
 
 ```css
 boss[type="world"][tag="maguu_kenki"][level="50~54"] {
     genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
-    astaps.loot.world_marionette_core_shivada_jade_sliver_weight_4193_gem: 1;
-    astaps.loot.world_hurricane_seed_shivada_jade_sliver_weight_3817_artifact: 1;
+    astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
+    astaps.loot.world_gems_cryo_anemo_rarity_2to3_copies3: "${world_gems_roll(level)}";
+    astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
+    astaps.loot.artifacts_berserker_instructor_4star: "${world_artifacts_pool_2(level)}";
 }
 ```
 
@@ -306,6 +309,25 @@ The weighted pool contains no Boss level or bonus count. Twenty-seven redundant
 4+1 tables whose first reward uses an inline elemental-family selector remain
 unchanged: they cannot be lifted into a CSS item declaration without losing
 their element selection properties.
+
+Four additional curves now represent shared, source-accurate Boss counts:
+
+- `weekly_gems_early`: level 40–69 weighted gem-roll counts.
+- `world_gems_roll`: level 40+ weighted gem-roll counts.
+- `world_artifacts_pool_1` and `world_artifacts_pool_2`: independent
+  counts for the first and second artifact pools. Their suffixes identify
+  execution order, **not** artifact rarity; some Bosses use five-star pools.
+- `world_ascension_material_count`: level 1+ ascension-material counts for
+  eligible world Bosses, retaining the source's decimal probabilities.
+  The optional 100+ `3+1:25` alternative remains a separate fixed CSS value.
+
+Together these changes replace 178 repeated world/weekly loot tables with 21
+weighted choice pools, migrate 523 Boss CSS loot references to independent
+curved selections, and apply the shared material curve to 729 item declarations.
+Each independent pool receives its own `count` evaluation. Tables containing
+single-family inner rarity rolls or inline elemental selectors remain in YAML
+until an exact equivalent can be expressed without changing copy-versus-roll
+semantics.
 
 ## YAML semantics
 

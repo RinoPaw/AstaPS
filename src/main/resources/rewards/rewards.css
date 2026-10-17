@@ -668,56 +668,56 @@ boss[type="weekly"][tag="andrius"][level="35~39"] {
 
 boss[type="weekly"][tag="andrius"][level="40~44"] {
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="andrius"][level="45~49"] {
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="andrius"][level="50~54"] {
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="andrius"][level="55~59"] {
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="andrius"][level="60~64"] {
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to4_first_anemo: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to4_first_anemo: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="andrius"][level="65~69"] {
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to4_first_anemo: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to4_first_anemo: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="andrius"][level="70~74"] {
     astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1";
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to4_first_anemo: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to4_first_anemo: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="andrius"][level="75~79"] {
     astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1+1:27.5";
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="andrius"][level="80~84"] {
     astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1+1:55";
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="andrius"][level="85~89"] {
     astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1+1:82.5";
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="andrius"][level="90~92"] {
@@ -765,38 +765,38 @@ boss[type="weekly"][tag="tartaglia"][level="35~39"] {
 
 boss[type="weekly"][tag="tartaglia"][level="40~44"] {
     astaps.loot.gems_anemo_electro_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_hydro_electro_anemo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_hydro_electro_anemo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="tartaglia"][level="45~49"] {
     astaps.loot.gems_anemo_electro_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_hydro_electro_anemo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_hydro_electro_anemo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="tartaglia"][level="50~54"] {
     astaps.loot.gems_anemo_electro_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_hydro_electro_anemo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_hydro_electro_anemo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="tartaglia"][level="55~59"] {
     astaps.loot.gems_anemo_electro_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_hydro_electro_anemo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_hydro_electro_anemo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="tartaglia"][level="60~64"] {
     astaps.loot.gems_anemo_electro_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="tartaglia"][level="65~69"] {
     astaps.loot.gems_anemo_electro_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="tartaglia"][level="70~74"] {
     astaps.loot.talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior: "1";
     astaps.loot.gems_anemo_electro_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="tartaglia"][level="75~79"] {
@@ -807,13 +807,13 @@ boss[type="weekly"][tag="tartaglia"][level="75~79"] {
 boss[type="weekly"][tag="tartaglia"][level="80~84"] {
     astaps.loot.talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior: "1+1:55";
     astaps.loot.gems_anemo_electro_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="tartaglia"][level="85~89"] {
     astaps.loot.talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior: "1+1:82.5";
     astaps.loot.gems_anemo_electro_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="tartaglia"][level="90~92"] {
@@ -861,56 +861,56 @@ boss[type="weekly"][tag="azhdaha_pyro_electro"][level="35~39"] {
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="40~44"] {
     astaps.loot.gems_electro_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_pyro_electro_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_pyro_electro_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="45~49"] {
     astaps.loot.gems_electro_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_pyro_electro_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_pyro_electro_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="50~54"] {
     astaps.loot.gems_electro_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_pyro_electro_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_pyro_electro_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="55~59"] {
     astaps.loot.gems_electro_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_pyro_electro_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_pyro_electro_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="60~64"] {
     astaps.loot.gems_electro_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_electro_geo_pyro_fragment_rarity_2to4_first_pyro: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_rarity_2to4_first_pyro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="65~69"] {
     astaps.loot.gems_electro_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_electro_geo_pyro_fragment_rarity_2to4_first_pyro: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_rarity_2to4_first_pyro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="70~74"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1";
     astaps.loot.gems_electro_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_electro_geo_pyro_fragment_rarity_2to4_first_pyro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_rarity_2to4_first_pyro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="75~79"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:27.5";
     astaps.loot.gems_electro_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_electro_geo_pyro_fragment_rarity_2to5_first_pyro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_rarity_2to5_first_pyro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="80~84"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:55";
     astaps.loot.gems_electro_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_electro_geo_pyro_fragment_rarity_2to5_first_pyro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_rarity_2to5_first_pyro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="85~89"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:82.5";
     astaps.loot.gems_electro_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_electro_geo_pyro_fragment_rarity_2to5_first_pyro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_rarity_2to5_first_pyro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="90~92"] {
@@ -958,56 +958,56 @@ boss[type="weekly"][tag="azhdaha_hydro_electro"][level="35~39"] {
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="40~44"] {
     astaps.loot.gems_electro_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_hydro_electro_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_hydro_electro_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="45~49"] {
     astaps.loot.gems_electro_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_hydro_electro_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_hydro_electro_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="50~54"] {
     astaps.loot.gems_electro_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_hydro_electro_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_hydro_electro_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="55~59"] {
     astaps.loot.gems_electro_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_hydro_electro_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_hydro_electro_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="60~64"] {
     astaps.loot.gems_electro_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_electro_geo_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="65~69"] {
     astaps.loot.gems_electro_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_electro_geo_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="70~74"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1";
     astaps.loot.gems_electro_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_electro_geo_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="75~79"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:27.5";
     astaps.loot.gems_electro_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_electro_geo_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="80~84"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:55";
     astaps.loot.gems_electro_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_electro_geo_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="85~89"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:82.5";
     astaps.loot.gems_electro_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_electro_geo_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="90~92"] {
@@ -1055,56 +1055,56 @@ boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="35~39"] {
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="40~44"] {
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_pyro_anemo_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_pyro_anemo_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="45~49"] {
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_pyro_anemo_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_pyro_anemo_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="50~54"] {
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_pyro_anemo_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_pyro_anemo_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="55~59"] {
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_pyro_anemo_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_pyro_anemo_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="60~64"] {
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to4_first_pyro: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to4_first_pyro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="65~69"] {
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to4_first_pyro: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to4_first_pyro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="70~74"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1";
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to4_first_pyro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to4_first_pyro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="75~79"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:27.5";
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_pyro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_pyro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="80~84"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:55";
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_pyro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_pyro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="85~89"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:82.5";
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_pyro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_pyro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="90~92"] {
@@ -1152,56 +1152,56 @@ boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="35~39"] {
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="40~44"] {
     astaps.loot.gems_anemo_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_hydro_anemo_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_hydro_anemo_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="45~49"] {
     astaps.loot.gems_anemo_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_hydro_anemo_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_hydro_anemo_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="50~54"] {
     astaps.loot.gems_anemo_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_hydro_anemo_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_hydro_anemo_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="55~59"] {
     astaps.loot.gems_anemo_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_hydro_anemo_geo_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_hydro_anemo_geo_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="60~64"] {
     astaps.loot.gems_anemo_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="65~69"] {
     astaps.loot.gems_anemo_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="70~74"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1";
     astaps.loot.gems_anemo_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_rarity_2to4_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="75~79"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:27.5";
     astaps.loot.gems_anemo_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="80~84"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:55";
     astaps.loot.gems_anemo_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="85~89"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:82.5";
     astaps.loot.gems_anemo_geo_hydro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_rarity_2to5_first_hydro: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="90~92"] {
@@ -1249,56 +1249,56 @@ boss[type="weekly"][tag="signora"][level="35~39"] {
 
 boss[type="weekly"][tag="signora"][level="40~44"] {
     astaps.loot.gems_anemo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_pyro_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_pyro_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="signora"][level="45~49"] {
     astaps.loot.gems_anemo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_pyro_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_pyro_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="signora"][level="50~54"] {
     astaps.loot.gems_anemo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_pyro_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_pyro_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="signora"][level="55~59"] {
     astaps.loot.gems_anemo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_pyro_rarity_2to3: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_pyro_rarity_2to3: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="signora"][level="60~64"] {
     astaps.loot.gems_anemo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_pyro_fragment_rarity_2to4_first_anemo: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_pyro_fragment_rarity_2to4_first_anemo: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="signora"][level="65~69"] {
     astaps.loot.gems_anemo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_pyro_fragment_rarity_2to4_first_anemo: "${weekly_gems_early(level)}";
+    astaps.loot.weekly_gems_anemo_pyro_fragment_rarity_2to4_first_anemo: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="signora"][level="70~74"] {
     astaps.loot.talent_materials_molten_moment_hellfire_butterfly_ashen_heart: "1";
     astaps.loot.gems_anemo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_pyro_fragment_rarity_2to4_first_anemo: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_pyro_fragment_rarity_2to4_first_anemo: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="signora"][level="75~79"] {
     astaps.loot.talent_materials_molten_moment_hellfire_butterfly_ashen_heart: "1+1:27.5";
     astaps.loot.gems_anemo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="signora"][level="80~84"] {
     astaps.loot.talent_materials_molten_moment_hellfire_butterfly_ashen_heart: "1+1:55";
     astaps.loot.gems_anemo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="signora"][level="85~89"] {
     astaps.loot.talent_materials_molten_moment_hellfire_butterfly_ashen_heart: "1+1:82.5";
     astaps.loot.gems_anemo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_roll(level)}";
 }
 
 boss[type="weekly"][tag="signora"][level="90~92"] {

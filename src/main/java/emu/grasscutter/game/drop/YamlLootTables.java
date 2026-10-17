@@ -16,7 +16,8 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 /**
  * YAML loot lists: an all-null-weight list executes all entries; an all-numeric-weight
  * list chooses one. Mixed weights are rejected, even if the numeric weight is zero.
- * reward may be a named item, nested YAML list, or null (empty reward).
+ * reward may be a named item, nested YAML list, nested entry mapping,
+ * or null (empty reward).
  */
 public final class YamlLootTables {
     @FunctionalInterface
@@ -210,6 +211,11 @@ public final class YamlLootTables {
                 Pool nested = null;
                 if (target instanceof List<?>) {
                     nested = parseList(target, resolver, artifacts, compiled, visiting, budget, at + ".reward", depth + 1);
+                } else if (target instanceof Map<?, ?> single) {
+                    // A nested mapping rerolls its reward once for every outer
+                    // execution. Its own count controls the quantity per roll.
+                    nested = parseList(List.of(single), resolver, artifacts,
+                            compiled, visiting, budget, at + ".reward", depth + 1);
                 } else if (target != null) {
                     if (!(target instanceof String reference) || reference.matches("[0-9]+")) {
                         throw new IllegalArgumentException(at + ": reward must be a named item: " + target);

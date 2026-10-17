@@ -41,7 +41,7 @@ class YamlLootTablesTest {
     }
 
     @Test
-    void inlinedSingleGemPoolPreservesTotalCountAndRarityDistribution() {
+    void nestedMappingPreservesIndependentGemRollsFromRemovedSingletonTable() {
         var items = new ItemIdRegistry(Map.of(
                 8001, "Vayuda Turquoise Sliver",
                 8002, "Vayuda Turquoise Fragment",
@@ -54,26 +54,63 @@ class YamlLootTablesTest {
                 """, items::resolve);
         var inlined = YamlLootTables.parse("""
                 boss:
+                  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3}
+                    count: "2+1:17.602"
+                """, items::resolve);
+        var flattened = YamlLootTables.parse("""
+                boss:
                   - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: "6+3:17.602"}
                 """, items::resolve);
 
-        var oldRandom = new Random(81);
-        var newRandom = new Random(81);
-        long oldTotal = 0, newTotal = 0, newSlivers = 0;
+        var originalRandom = new Random(81);
+        var inlinedRandom = new Random(91);
+        var flatRandom = new Random(101);
+        long originalTotal = 0, inlinedTotal = 0;
+        int originalMixed = 0, inlinedMixed = 0;
         for (int i = 0; i < 20_000; i++) {
-            var original = former.roll("astaps.loot.boss", oldRandom);
-            var compact = inlined.roll("astaps.loot.boss", newRandom);
+            var original = former.roll("astaps.loot.boss", originalRandom);
+            var compact = inlined.roll("astaps.loot.boss", inlinedRandom);
+            var flat = flattened.roll("astaps.loot.boss", flatRandom);
             int originalCount = original.values().stream().mapToInt(Integer::intValue).sum();
             int compactCount = compact.values().stream().mapToInt(Integer::intValue).sum();
             assertTrue(originalCount == 6 || originalCount == 9);
             assertTrue(compactCount == 6 || compactCount == 9);
-            oldTotal += originalCount;
-            newTotal += compactCount;
-            newSlivers += compact.getOrDefault(8001, 0);
+            assertEquals(1, flat.size(), "A direct count makes copies of one chosen grade");
+            originalTotal += originalCount;
+            inlinedTotal += compactCount;
+            if (original.size() > 1) originalMixed++;
+            if (compact.size() > 1) inlinedMixed++;
         }
-        assertEquals(oldTotal / 20_000.0, newTotal / 20_000.0, 0.05);
-        assertEquals(6 + 3 * 0.17602, newTotal / 20_000.0, 0.06);
-        assertEquals(0.75, newSlivers / (double) newTotal, 0.015);
+        assertEquals(originalTotal / 20_000.0, inlinedTotal / 20_000.0, 0.05);
+        assertEquals(6 + 3 * 0.17602, inlinedTotal / 20_000.0, 0.06);
+        assertTrue(originalMixed > 5000, "Former nested pool chooses multiple grades");
+        assertTrue(inlinedMixed > 5000, "Nested mapping must reroll each execution");
+        assertEquals(originalMixed / 20_000.0, inlinedMixed / 20_000.0, 0.02);
+    }
+
+    @Test
+    void directCountAwardsCopiesWhileNestedCountRerollsItemIdentity() {
+        var books = new ItemIdRegistry(Map.of(
+                8101, "Teachings of Freedom", 8102, "Guide to Freedom"));
+        var loot = YamlLootTables.parse("""
+                copies:
+                  - {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:50"}, count: 2}
+                rerolls:
+                  - reward: {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:50"}}
+                    count: 2
+                """, books::resolve);
+
+        var random = new Random(82);
+        boolean split = false;
+        for (int i = 0; i < 100; i++) {
+            var copies = loot.roll("astaps.loot.copies", random);
+            assertEquals(1, copies.size());
+            assertEquals(2, copies.values().iterator().next());
+            var rerolls = loot.roll("astaps.loot.rerolls", random);
+            assertEquals(2, rerolls.values().stream().mapToInt(Integer::intValue).sum());
+            if (rerolls.size() == 2) split = true;
+        }
+        assertTrue(split, "Rerolled entries must allow different rarities");
     }
 
     @Test
@@ -115,8 +152,7 @@ class YamlLootTablesTest {
                 repeated:
                   - {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:50"}, count: 4}
                 rerolled:
-                  - reward:
-                      - {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:50"}, count: 4}
+                  - reward: {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:50"}, count: 4}
                     count: 4
                 """, inventory::resolve);
         var counts = new java.util.HashMap<Integer, Integer>();

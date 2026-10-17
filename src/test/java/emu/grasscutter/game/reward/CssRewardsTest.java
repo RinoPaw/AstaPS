@@ -26,6 +26,52 @@ class CssRewardsTest {
             """, items::resolve);
 
     @Test
+    void discreteCurvesSelectExactValuesAndRespectCssOverrides() {
+        var curves = RewardCurves.parse("""
+                mora:
+                  "0~4": "1+1:20"
+                  "5~": "2+1:30"
+                copies:
+                  "0~4": "1"
+                  "5~": "1+1:100"
+                """);
+        var css = CssRewards.parse("""
+                boss[type="world"] {
+                    genshin.currency.mora: "${mora(level)}";
+                    astaps.loot.currency: "${copies(level)}";
+                }
+                boss[type="world"][tag="override"] {
+                    genshin.currency.mora: 3;
+                    astaps.loot.currency: 2;
+                }
+                """, items, loot, curves);
+        var early = css.resolve("boss", Map.of("type", "world", "level", "3"));
+        assertTrue(early.rangedItems().containsKey(202));
+        assertEquals(1, early.loot().get("astaps.loot.currency"));
+        var later = css.resolve("boss", Map.of("type", "world", "level", "5"));
+        assertEquals(2, later.rangedLoot().get("astaps.loot.currency").sample(new Random(3)));
+        assertFalse(later.loot().containsKey("astaps.loot.currency"));
+        assertTrue(later.rangedItems().containsKey(202));
+
+        var overridden = css.resolve("boss", Map.of(
+                "type", "world", "tag", "override", "level", "6"));
+        assertEquals(3, overridden.items().get(202));
+        assertEquals(2, overridden.loot().get("astaps.loot.currency"));
+        assertFalse(overridden.rangedItems().containsKey(202));
+        assertFalse(overridden.rangedLoot().containsKey("astaps.loot.currency"));
+        assertThrows(IllegalArgumentException.class, () ->
+                css.resolve("boss", Map.of("type", "world")));
+        assertThrows(IllegalArgumentException.class, () ->
+                CssRewards.parse("""
+                        boss { genshin.currency.mora: "${unknown(level)}"; }
+                        """, items, loot, curves));
+        assertThrows(IllegalArgumentException.class, () ->
+                CssRewards.parse("""
+                        boss { genshin.currency.mora: "${mora(level+1)}"; }
+                        """, items, loot, curves));
+    }
+
+    @Test
     void dottedResourcePropertiesCoexistWithNativeCssCascade() {
         var css = CssRewards.parse("""
                 chest {

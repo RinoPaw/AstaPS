@@ -251,35 +251,36 @@ because the available artifact sets differ by rarity.
 ## Exact level lookup curves
 
 Reward counts that follow an irregular discrete curve belong in
-\`src/main/resources/rewards/curves.yaml\`. The keys are exact levels or
+`src/main/resources/rewards/curves.yaml`. The keys are exact levels or
 inclusive level ranges. The value is an ordinary quoted loot-count expression.
-Ranges may end in \`~\` to cover all higher levels. Stored probabilities are
-curated integer percentages; lookup never interpolates between the given values.
+Ranges may end in `~` to cover all higher levels. The `marionette_core`
+and `weekly_gems_4plus1` curves use curated integer percentages. All newly
+extracted curves retain source-accurate decimal odds. Lookup never interpolates.
 
-\`\`\`yaml
+```yaml
 marionette_core:
   "50~54": "1+1:86"
   "55~59": "1+1:95"
   "60~64": "2+1:3"
   "90~": "2+1:55"
-\`\`\`
+```
 
 The full bundled curve has thirteen curated intervals starting at 30–34 and
 ending at 90+. A CSS property selects its value by the native Boss level:
 
-\`\`\`css
+```css
 boss[type="world"][tag="maguu_kenki"][level="50~54"] {
     genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
 }
-\`\`\`
+```
 
-The \`${name(level)}\` expression is evaluated when CSS selects the reward,
+The `${name(level)}` expression is evaluated when CSS selects the reward,
 before the existing count parser rolls it. Both inventory-item declarations and
 named loot-pool declarations support this lookup. Unknown curve names, invalid
 range definitions, overlaps, and invalid count expressions fail while loading.
 If no interval contains the requested level, lookup fails explicitly.
 These lookups are separate from the integer substitution performed by
-parameterized loot lists in \`loot.yaml\`; no scripting language is involved.
+parameterized loot lists in `loot.yaml`; no scripting language is involved.
 
 The same lookup also controls the 4+1 gem-roll count of weekly Bosses:
 
@@ -310,7 +311,7 @@ The weighted pool contains no Boss level or bonus count. Twenty-seven redundant
 unchanged: they cannot be lifted into a CSS item declaration without losing
 their element selection properties.
 
-Four additional curves now represent shared, source-accurate Boss counts:
+Five additional curves now represent shared, source-accurate Boss counts:
 
 - `weekly_gems_early`: level 40–69 weighted gem-roll counts.
 - `world_gems_roll`: level 40+ weighted gem-roll counts.

@@ -147,7 +147,14 @@ final class BundledBossRewardsTest {
                         default -> "Materials";
                     });
                 });
-        var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, knownCategories), loot);
+        var curves = RewardCurves.parse(RewardConfiguration.readBundled("curves.yaml"));
+        var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, knownCategories),
+                loot, curves);
+        assertEquals("1+1:86.64", curves.require("marionette_core").lookup("52"));
+        assertEquals("2+1:3.87", curves.require("marionette_core").lookup("63"));
+        assertEquals("2+1:55.56", curves.require("marionette_core").lookup("130"));
+        assertThrows(IllegalArgumentException.class,
+                () -> curves.require("marionette_core").lookup("29"));
         assertEquals(978, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertEquals(211, stylesheet.lines()

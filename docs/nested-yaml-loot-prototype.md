@@ -255,7 +255,7 @@ reward count: that would merge independent random choices.
 
 Near-identical native gem rarity proportions are normalized by profile:
 `2:79, 3:21`, `2:75, 3:20, 4:5`, or
-`2:74.6, 3:19.9, 4:5, 5:0.5`. These intentionally round the
+`2:74.5, 3:20, 4:5, 5:0.5`. These intentionally round the
 per-rarity probabilities by small amounts; all percentages still total 100.
 
 All unweighted entries in one list execute; a fully weighted list chooses

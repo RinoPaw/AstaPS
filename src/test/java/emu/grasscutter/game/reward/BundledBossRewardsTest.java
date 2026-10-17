@@ -36,7 +36,7 @@ final class BundledBossRewardsTest {
         assertTrue(yaml.contains(
                 "- reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: \"2:75, 3:20, 4:5\"}, count: 3}\n    count: \"2+1:17.602\""));
         assertTrue(yaml.contains(
-                "- reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: \"2:74.6, 3:19.9, 4:5, 5:0.5\"}, count: 9}\n    count: \"2+1:24.257\""));
+                "- reward: {reward: genshin.avatar_ascension.hydro, properties: {rarity: \"2:74.5, 3:20, 4:5, 5:0.5\"}, count: 9}\n    count: \"2+1:24.257\""));
         var nestedGems = Pattern.compile(
                 "(?m)^  - reward: \\{reward: genshin\\.avatar_ascension\\.[a-z_]+,"
                         + " properties: \\{rarity: \"[^\"]+\"\\}(?:, count: (?:3|9))?\\}$"

@@ -195,38 +195,35 @@ separate reward tables still need verified native source data.
 
 ## Parameterized loot templates
 
-Parameterized definitions use a single integer parameter in angle brackets.
-A template is expanded when an ordinary loot entry refers to it; it does not
-register its own stand-alone table. The shared `common` choices are combined
-with the choices under the selected `variants` key. They retain their weights
-and are rolled by the existing YAML loot engine.
+A template is an ordinary YAML list with one integer parameter in its name.
+A reference such as `astaps.loot.weekly_gems_cryo_electro_hydro_rarity_roll<21>`
+expands the list at load time. Template definitions do not register as
+stand-alone loot tables.
 
 ```yaml
-artifacts_prayers_wisdom<rarity>:
-  common:
-    - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
-    - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
-    - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
-  variants:
-    3:
-      - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
-    4:
-      - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
-      - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+weekly_gems_cryo_electro_hydro_rarity_roll<chance>:
+  - reward:
+      - {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.cryo, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
+      - {reward: genshin.avatar_ascension.hydro, properties: {rarity: "2:75, 3:20, 4:5"}, weight: 1}
+    count: "4+1:${chance}"
 
 example:
-  - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: 2}
-  - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1:42"}
+  - {reward: astaps.loot.weekly_gems_cryo_electro_hydro_rarity_roll<21>}
+  - {reward: genshin.currency.mora, count: 100}
 ```
 
-`"${rarity}"` substitutes the bound integer. Embedded expressions use
-`"${rarity - 2}:66, ${rarity - 1}:34"`, producing
-`"1:66, 2:34"` for rarity 3 and `"2:66, 3:34"` for rarity 4.
-Only integer variables, integer literals and `+`/`-` operations are
-supported. Unknown variables, unsupported operators, overflow, absent
-variants and recursive template calls are errors. No dynamic script engine
-or runtime expression evaluation is used. A template invocation expands
-to a nested loot pool; its outer `count` rerolls the pool independently.
+The argument `21` substitutes `${chance}`, yielding `4+1:21`.
+Integer expressions within `${...}` support integer variables/literals
+and `+`/`-` (for example `${rarity - 2}`). Unknown variables,
+unsupported operators, integer overflow, empty template lists, and
+recursive calls are rejected. No `common`/`variants` mapping or
+argument whitelist exists. A template invocation expands to a nested
+loot pool; an outer `count` rerolls it independently.
+
+The former artifact rarity template is split into two ordinary tables,
+`artifacts_prayers_wisdom_3star` and `artifacts_prayers_wisdom_4star`,
+because the available artifact sets differ by rarity.
 
 ## YAML semantics
 

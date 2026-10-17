@@ -338,6 +338,68 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void elementalGemFamilySamplesEveryCopyWithFixedRarity() {
+        var gems = new ItemIdRegistry(Map.of(
+                8101, "Vajrada Amethyst Fragment",
+                8102, "Shivada Jade Fragment",
+                8103, "Varunada Lazurite Fragment"));
+        var tables = YamlLootTables.parse("""
+                weekly:
+                  - {reward: genshin.avatar_ascension, properties: {element: "electro:33.33, cryo:33.33, hydro:33.34", rarity: 3}, count: "1+1:2"}
+                pair:
+                  - {reward: genshin.avatar_ascension, properties: {element: "electro:33.33, cryo:33.33, hydro:33.34", rarity: 3}, count: 2}
+                """, gems::resolve);
+        int[] items = new int[3];
+        int extraRolls = 0;
+        var random = new Random(35601);
+        for (int i = 0; i < 90_000; i++) {
+            var rewards = tables.roll("weekly", random);
+            int total = rewards.values().stream().mapToInt(Integer::intValue).sum();
+            assertTrue(total == 1 || total == 2);
+            extraRolls += total - 1;
+            for (var entry : rewards.entrySet()) {
+                assertTrue(entry.getKey() >= 8101 && entry.getKey() <= 8103);
+                items[entry.getKey() - 8101] += entry.getValue();
+            }
+        }
+        int all = java.util.Arrays.stream(items).sum();
+        assertEquals(0.3333, items[0] / (double) all, 0.012);
+        assertEquals(0.3333, items[1] / (double) all, 0.012);
+        assertEquals(0.3334, items[2] / (double) all, 0.012);
+        assertEquals(0.02, extraRolls / 90_000.0, 0.004);
+
+        int mixed = 0;
+        for (int i = 0; i < 1_000; i++) {
+            var rewards = tables.roll("pair", random);
+            assertEquals(2, rewards.values().stream().mapToInt(Integer::intValue).sum());
+            if (rewards.size() > 1) mixed++;
+        }
+        assertTrue(mixed > 550, "An element is selected afresh for every awarded gem");
+    }
+
+    @Test
+    void invalidElementalGemDistributionsAreRejected() {
+        var gems = new ItemIdRegistry(Map.of(
+                8101, "Vajrada Amethyst Fragment",
+                8102, "Shivada Jade Fragment",
+                8103, "Varunada Lazurite Fragment"));
+        for (String properties : java.util.List.of(
+                "{element: \"electro:50, cryo:40\", rarity: 3}",
+                "{element: \"electro:70, electro:30\", rarity: 3}",
+                "{element: \"electro:101\", rarity: 3}",
+                "{element: \"invalid:100\", rarity: 3}",
+                "{element: \"pyro:100\", rarity: 3}",
+                "{element: \"electro:100\", rarity: 6}",
+                "{element: \"electro:100\", rarity: \"3\"}",
+                "{element: \"electro:100\", rarity: 3, extra: true}")) {
+            assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                    invalid:
+                      - {reward: genshin.avatar_ascension, properties: %s}
+                    """.formatted(properties), gems::resolve), properties);
+        }
+    }
+
+    @Test
     void invalidAdvancementRarityDistributionsAreRejected() {
         var items = new ItemIdRegistry(Map.of(
                 8101, "Vayuda Turquoise Sliver",

@@ -152,7 +152,7 @@ public final class CssRewards {
                     throw new IllegalArgumentException("Expected a qualified resource path: " + original);
                 }
                 var curveCall = CURVE_CALL.matcher(value);
-                if (value.contains("$"+"{") && !curveCall.matches()) {
+                if (value.contains("${") && !curveCall.matches()) {
                     throw new IllegalArgumentException("Unsupported reward-curve expression: " + value);
                 }
                 if (resource.size() >= 3 && "loot".equals(resource.segment(1))) {

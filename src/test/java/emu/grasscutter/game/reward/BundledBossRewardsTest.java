@@ -74,7 +74,7 @@ final class BundledBossRewardsTest {
             }
             assertEquals(0, total.compareTo(new java.math.BigDecimal("100.00")));
         }
-        assertEquals(621, gems, "All non-duplicated gem-family rewards must be validated");
+        assertEquals(409, gems, "All non-duplicated gem-family rewards must be validated");
         assertEquals(0, talents, "Guaranteed rarity selections use integer grades");
         assertEquals(6, Pattern.compile(
                 "reward: genshin\\.talent_up\\.[a-z_]+, properties: \\{rarity: [234]\\}")
@@ -188,6 +188,36 @@ final class BundledBossRewardsTest {
                 () -> curves.require("weekly_gems_4plus1").lookup("90"));
         assertEquals(27, stylesheet.lines().filter(line ->
                 line.contains("weekly_gems_4plus1(level)")).count());
+        assertEquals("2+1:71.29", curves.require("weekly_gems_early").lookup("40"));
+        assertEquals("3+1:98.37", curves.require("weekly_gems_early").lookup("69"));
+        assertThrows(IllegalArgumentException.class,
+                () -> curves.require("weekly_gems_early").lookup("70"));
+        assertEquals("1+1:43.847", curves.require("world_gems_roll").lookup("40"));
+        assertEquals("2+1:68.554", curves.require("world_gems_roll").lookup("77"));
+        assertEquals("3+1:18.45", curves.require("world_gems_roll").lookup("140"));
+        assertThrows(IllegalArgumentException.class,
+                () -> curves.require("world_gems_roll").lookup("39"));
+        assertEquals("2+1:94", curves.require("world_artifacts_pool_1").lookup("30"));
+        assertEquals("3+1:78", curves.require("world_artifacts_pool_1").lookup("52"));
+        assertEquals("2+1:10", curves.require("world_artifacts_pool_1").lookup("94"));
+        assertEquals("1+1:26", curves.require("world_artifacts_pool_2").lookup("30"));
+        assertEquals("1:42", curves.require("world_artifacts_pool_2").lookup("52"));
+        assertEquals("1+1:47", curves.require("world_artifacts_pool_2").lookup("140"));
+        assertEquals("1+1:33.86", curves.require("world_ascension_material_count").lookup("1"));
+        assertEquals("1+1:52.18", curves.require("world_ascension_material_count").lookup("34"));
+        assertEquals("2+1:55.56", curves.require("world_ascension_material_count").lookup("95"));
+        assertThrows(IllegalArgumentException.class,
+                () -> curves.require("world_ascension_material_count").lookup("22"));
+        assertEquals(42, stylesheet.lines().filter(line ->
+                line.contains("weekly_gems_early(level)")).count());
+        assertEquals(121, stylesheet.lines().filter(line ->
+                line.contains("world_gems_roll(level)")).count());
+        assertEquals(360, stylesheet.lines().filter(line ->
+                line.contains("world_artifacts_pool_1(level)")).count());
+        assertEquals(360, stylesheet.lines().filter(line ->
+                line.contains("world_artifacts_pool_2(level)")).count());
+        assertEquals(624, stylesheet.lines().filter(line ->
+                line.contains("world_ascension_material_count(level)")).count());
         assertEquals(14, yaml.lines().filter(line ->
                 line.matches("^weekly_gems_[a-z0-9_]+_rarity_2to[45]_first_[a-z]+:$")).count());
         assertFalse(loot.contains(
@@ -214,8 +244,8 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(612, loot.names().size()); // Weekly 4+1 groups also share weighted rarity pools.
-        assertEquals(374, yaml.lines().filter(line -> line.matches(
+        assertEquals(455, loot.names().size()); // Reused weighted pools replace level-specific YAML tables.
+        assertEquals(238, yaml.lines().filter(line -> line.matches(
                 "^world_[a-z0-9_]+_(material|gem|artifact):$")).count(),
                 "Shared world pools must contain only one reward category");
         assertTrue(yaml.lines().noneMatch(line ->
@@ -310,14 +340,39 @@ final class BundledBossRewardsTest {
                 nativeIds.get("genshin.avatar_ascension.frostnights_glory")));
         assertTrue(frostnight105.rangedLoot().containsKey(
                 "astaps.loot.artifacts_instructor_5star_3_4substats_goblet_plume"));
+        var anemoWeekly = css.resolve("boss", Map.of(
+                "type", "weekly", "tag", "andrius", "level", "44"));
+        var electroWorld = css.resolve("boss", Map.of(
+                "type", "world", "tag", "electro_hypostasis", "level", "76"));
+        var frostnight30 = css.resolve("boss", Map.of(
+                "type", "world", "tag", "frostnight_scion", "level", "30"));
+        assertTrue(anemoWeekly.rangedLoot().containsKey(
+                "astaps.loot.weekly_gems_anemo_geo_pyro_rarity_2to3"));
+        assertTrue(anemoWeekly.rangedLoot().containsKey("astaps.loot.gems_anemo_geo_pyro_fragment"));
+        assertEquals(2, anemoWeekly.rangedLoot().get(
+                "astaps.loot.weekly_gems_anemo_geo_pyro_rarity_2to3").sample(
+                        new java.util.Random() { @Override public double nextDouble() { return 0.99; } }));
+        assertTrue(electroWorld.rangedItems().containsKey(
+                nativeIds.get("genshin.avatar_ascension.lightning_prism")));
+        assertTrue(frostnight30.rangedItems().containsKey(
+                nativeIds.get("genshin.avatar_ascension.frostnights_glory")));
+
         // Maguu Kenki 50–54 has three separately selected reward categories.
         var maguu = css.resolve("boss", Map.of(
                 "type", "world", "tag", "maguu_kenki", "level", "52"));
         assertTrue(maguu.rangedItems().containsKey(
                 nativeIds.get("genshin.avatar_ascension.marionette_core")));
-        assertEquals(1, maguu.loot().get(
+        assertTrue(maguu.rangedLoot().containsKey(
+                "astaps.loot.gems_anemo_cryo_fragment"));
+        assertTrue(maguu.rangedLoot().containsKey(
+                "astaps.loot.world_gems_cryo_anemo_rarity_2to3_copies3"));
+        assertTrue(maguu.rangedLoot().containsKey(
+                "astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats"));
+        assertTrue(maguu.rangedLoot().containsKey(
+                "astaps.loot.artifacts_berserker_instructor_4star"));
+        assertFalse(loot.contains(
                 "astaps.loot.world_marionette_core_shivada_jade_sliver_weight_4193_gem"));
-        assertEquals(1, maguu.loot().get(
+        assertFalse(loot.contains(
                 "astaps.loot.world_hurricane_seed_shivada_jade_sliver_weight_3817_artifact"));
         assertFalse(loot.contains(
                 "astaps.loot.world_marionette_core_shivada_jade_sliver_weight_4193"));
@@ -387,7 +442,7 @@ final class BundledBossRewardsTest {
         }
         assertEquals(825, extraTalents, 45);
         assertEquals(0, yaml.lines().filter(line -> line.startsWith("weekly_talent_materials_")).count());
-        assertEquals(108, yaml.lines().filter(line -> line.startsWith("weekly_gems_")
+        assertEquals(61, yaml.lines().filter(line -> line.startsWith("weekly_gems_")
                 && line.endsWith(":")).count());
         assertEquals(61, stylesheet.lines().filter(line ->
                 line.trim().startsWith("astaps.loot.talent_materials_")).count());

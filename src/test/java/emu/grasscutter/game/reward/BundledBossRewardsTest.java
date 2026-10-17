@@ -44,7 +44,7 @@ final class BundledBossRewardsTest {
                         + " properties: \\{rarity: \"[^\"]+\"\\}(?:, count: (?:3|9))?\\}$"
                         + "\\n    count: \"[1-5]\\+1:[0-9.]+\"")
                 .matcher(yaml);
-        assertEquals(338, nestedGems.results().count(),
+        assertEquals(150, nestedGems.results().count(),
                 "Nested gem groups must keep their independent rarity rolls");
         assertFalse(Pattern.compile(
                 "reward: genshin\\.avatar_ascension\\.[a-z_]+,"
@@ -73,7 +73,7 @@ final class BundledBossRewardsTest {
             }
             assertEquals(0, total.compareTo(new java.math.BigDecimal("100.00")));
         }
-        assertEquals(846, gems, "All inlined gem-family rewards must be validated");
+        assertEquals(658, gems, "All non-duplicated gem-family rewards must be validated");
         assertEquals(6, talents);
         // The old per-grade weighted rows with count 3 or 9 must be gone
         // whenever multiple rarities could be combined.
@@ -162,7 +162,14 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1048, loot.names().size()); // The former fragment alias is now an elemental-family entry.
+        assertEquals(625, loot.names().size()); // World reward groups are deduplicated per reward category.
+        assertEquals(374, yaml.lines().filter(line -> line.matches(
+                "^world_[a-z0-9_]+_(material|gem|artifact):$")).count(),
+                "Shared world pools must contain only one reward category");
+        assertTrue(yaml.lines().noneMatch(line ->
+                line.matches("^world_marionette_core_shivada_jade_sliver_weight_4193:$")));
+        assertTrue(stylesheet.contains(
+                "genshin.avatar_ascension.marionette_core: \"1+1:86.64\";"));
         assertEquals(21, yaml.lines().filter(line -> line.contains(
                 "reward: genshin.avatar_ascension, properties: {element: \"electro:33.33, cryo:33.33, hydro:33.34\", rarity: 3}")).count());
         assertFalse(yaml.contains("gems_cryo_electro_hydro_fragment: &gems_cryo_electro_hydro_fragment"));
@@ -216,11 +223,19 @@ final class BundledBossRewardsTest {
                 "type", "world", "tag", "frostnight_scion", "level", "1"));
         assertEquals(1825, normal.items().get(202));
         assertEquals(200, normal.items().get(102));
-        assertEquals(1, normal.loot().get("astaps.loot.world_frostnights_glory_roll_1plus1pct33p86"));
+        assertTrue(normal.rangedItems().containsKey(
+                nativeIds.get("genshin.avatar_ascension.frostnights_glory")));
+        assertEquals(1, normal.loot().get(
+                "astaps.loot.world_frostnights_glory_roll_1plus1pct33p86_artifact"));
 
         var legacy = css.resolve("boss", Map.of(
                 "type", "world", "tag", "electro_hypostasis", "level", "36"));
-        assertEquals(1, legacy.loot().get("astaps.loot.world_lightning_prism_roll_1plus1pct60p8"));
+        assertTrue(legacy.rangedItems().containsKey(
+                nativeIds.get("genshin.avatar_ascension.lightning_prism")));
+        assertTrue(legacy.rangedItems().containsKey(
+                nativeIds.get("genshin.avatar_ascension.electro.2")));
+        assertEquals(1, legacy.loot().get(
+                "astaps.loot.world_lightning_prism_roll_1plus1pct60p8_artifact"));
 
         // Native source text tags are translated only for CSS selection.
         // The original Chinese tag still belongs to the native fallback.
@@ -230,17 +245,34 @@ final class BundledBossRewardsTest {
         assertEquals(6000, rewardConfig.rollWorldBoss(
                 "electro_hypostasis", 105, new java.util.Random(71)).get(202));
 
-        // CSS references the canonical pool directly; no duplicate Boss-level aliases.
-        assertTrue(loot.contains("astaps.loot.world_frostnights_glory_roll_1plus1pct33p86"));
-        assertFalse(loot.contains("astaps.loot.world_frostnights_glory_roll_1plus1pct33p8605"));
+        // CSS owns the boss material and selects reusable, category-only pools.
+        assertTrue(loot.contains("astaps.loot.world_frostnights_glory_roll_1plus1pct33p86_artifact"));
+        assertFalse(loot.contains("astaps.loot.world_frostnights_glory_roll_1plus1pct33p86"));
         assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_sliver_first_electro_empty_reward_choices_roll_5plus1pct41p200"));
         assertTrue(yaml.lines().noneMatch(line -> line.matches(
                 "^(world|weekly)_.+_level_[0-9]+: \\*[a-z0-9_]+$")));
-        assertEquals(Map.of(
-                "astaps.loot.world_frostnights_glory_entries_6", 1,
-                "astaps.loot.gems_geo_hydro_basic", 1),
-                css.resolve("boss", Map.of(
-                        "type", "world", "tag", "frostnight_scion", "level", "105")).loot());
+        var frostnight105 = css.resolve("boss", Map.of(
+                "type", "world", "tag", "frostnight_scion", "level", "105"));
+        assertEquals(Map.of("astaps.loot.gems_geo_hydro_basic", 1), frostnight105.loot());
+        assertTrue(frostnight105.rangedItems().containsKey(
+                nativeIds.get("genshin.avatar_ascension.frostnights_glory")));
+        assertTrue(frostnight105.rangedLoot().containsKey(
+                "astaps.loot.artifacts_instructor_5star_3_4substats_goblet_plume"));
+        // Maguu Kenki 50–54 has three separately selected reward categories.
+        var maguu = css.resolve("boss", Map.of(
+                "type", "world", "tag", "maguu_kenki", "level", "52"));
+        assertTrue(maguu.rangedItems().containsKey(
+                nativeIds.get("genshin.avatar_ascension.marionette_core")));
+        assertEquals(1, maguu.loot().get(
+                "astaps.loot.world_marionette_core_shivada_jade_sliver_weight_4193_gem"));
+        assertEquals(1, maguu.loot().get(
+                "astaps.loot.world_hurricane_seed_shivada_jade_sliver_weight_3817_artifact"));
+        assertFalse(loot.contains(
+                "astaps.loot.world_marionette_core_shivada_jade_sliver_weight_4193"));
+        var maguuMaterials = RewardRoller.roll(maguu, loot, new java.util.Random(4193));
+        assertTrue(maguuMaterials.getOrDefault(
+                nativeIds.get("genshin.avatar_ascension.marionette_core"), 0) >= 1);
+
         // Tartaglia 75–79 selects talent materials independently of gem rolls.
         var tartaglia75 = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "tartaglia", "level", "76"));
@@ -324,9 +356,12 @@ final class BundledBossRewardsTest {
         assertFalse(shouki.loot().containsKey("astaps.loot.weekly_northlander_extras"));
         assertEquals(1, shouki.loot().get("astaps.loot.weekly_high_artifacts"));
         assertFalse(shouki.loot().containsKey("astaps.loot.weekly_artifacts_rare"));
-        assertEquals(Map.of("astaps.loot.world_gems_anemo_sliver_roll_1plus1pct47p246", 1),
-                css.resolve("boss", Map.of(
-                        "type", "world", "tag", "cryo_hypostasis", "level", "1")).loot());
+        var cryoHypostasis = css.resolve("boss", Map.of(
+                "type", "world", "tag", "cryo_hypostasis", "level", "1"));
+        assertTrue(cryoHypostasis.rangedItems().containsKey(
+                nativeIds.get("genshin.avatar_ascension.anemo.2")));
+        assertEquals(1, cryoHypostasis.loot().get(
+                "astaps.loot.world_gems_cryo_sliver_artifacts_lucky_dog_2star_0_1substats_roll_1pct42_artifact"));
 
         var highWorld = css.resolve("boss", Map.of(
                 "type", "world", "tag", "electro_hypostasis", "level", "105"));
@@ -334,7 +369,12 @@ final class BundledBossRewardsTest {
         assertEquals(6000, highWorld.items().get(202));
         assertEquals(45, highWorld.items().get(105));
         assertEquals(200, highWorld.items().get(101));
-        assertEquals(1, highWorld.loot().get("astaps.loot.world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1"));
+        assertTrue(highWorld.rangedItems().containsKey(
+                nativeIds.get("genshin.avatar_ascension.lightning_prism")));
+        assertEquals(1, highWorld.loot().get(
+                "astaps.loot.world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63_gem"));
+        assertEquals(1, highWorld.loot().get(
+                "astaps.loot.world_lightning_prism_artifacts_gladiators_finale_wanderers_troupe_5star_3_4substats_roll_1pct63_artifact"));
         assertEquals(1, highWorld.loot().get("astaps.loot.artifacts_gladiators_wanderers_5star"));
 
         var fixedGems = css.resolve("boss", Map.of(

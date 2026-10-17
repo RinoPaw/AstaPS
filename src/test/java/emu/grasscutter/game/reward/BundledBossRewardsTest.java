@@ -160,7 +160,7 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1061, loot.names().size());
+        assertEquals(1059, loot.names().size()); // Two former star-specific pools are one template.
         assertFalse(yaml.contains("empty_reward_choices"));
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));

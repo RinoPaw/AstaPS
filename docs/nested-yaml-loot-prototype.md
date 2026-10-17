@@ -347,8 +347,11 @@ copies. This preserves the independent rolls of the former
 elements, missing native items, and invalid percentages are rejected.
 
 Gem and talent-book *families* may also use `properties.rarity` to choose
-one native 2–5★ gem or one native 2–4★ talent book. The values after `:`
-are percentages with at most two decimal places and no trailing zeros; they must add to `100`.
+one native 2–5★ gem or one native 2–4★ talent book. For a guaranteed tier,
+write an integer such as `properties: {rarity: 2}`. For a random tier,
+use a quoted probability distribution such as `rarity: "2:75, 3:20, 4:5"`.
+The values after each `:` are percentages with at most two decimal places
+and no trailing zeros; they must add to `100`.
 A family's grade is sampled once per entry execution. An entry with
 `count: 3` gives three items of the selected grade; repeating a nested
 reward mapping or pool samples that grade afresh on each execution. The top-level
@@ -367,8 +370,9 @@ weights 5697/1519/380 and fixed count 3 is written:
 ```
 
 The bundles use elemental aliases and canonical talent-book subject paths.
-A guaranteed tier uses `rarity: "2:100"`. Other talent advancement
-materials (such as weekly boss drops) are still ordinary items.
+A guaranteed tier uses `rarity: 2`, `rarity: 3`, etc., with no probability
+string. The older `rarity: "2:100"` form remains accepted for compatibility.
+Other talent advancement materials (such as weekly boss drops) are ordinary items.
 
 Slots 1–5 mean flower, plume, sands, goblet, circlet. A full five-slot
 weighted subtable can be inlined as a single artifact with

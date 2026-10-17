@@ -26,14 +26,15 @@ public final class YamlLootTables {
     }
 
     private record Entry(Integer rewardId, ArtifactResolver.Selector artifact,
-                         GradeSelector grade, Pool nested, LootCount.Spec count, BigDecimal weight) {}
+                         WeightedItemSelector grade, WeightedItemSelector element,
+                         Pool nested, LootCount.Spec count, BigDecimal weight) {}
 
     /**
      * An advancement family resolves one native item per rarity. Rarity probabilities
      * are percentages summing to 100; weights on outer entries are independent.
      * A chosen grade applies to the entire count of that entry execution.
      */
-    private record GradeSelector(int[] itemIds, double[] cumulative) {
+    private record WeightedItemSelector(int[] itemIds, double[] cumulative) {
         int select(RandomGenerator random) {
             double ticket = random.nextDouble();
             for (int i = 0; i < itemIds.length; i++) {
@@ -44,7 +45,7 @@ public final class YamlLootTables {
         }
     }
 
-    private static GradeSelector compileGrade(
+    private static WeightedItemSelector compileGrade(
             String family, Object rawProperties, ItemResolver resolver, String location) {
         var path = ResourceId.parse(family);
         if (path.size() != 3 || !"genshin".equals(path.segment(0))
@@ -105,7 +106,69 @@ public final class YamlLootTables {
             nativeIds[i] = ids.get(i);
             cumulative[i] = boundaries.get(i);
         }
-        return new GradeSelector(nativeIds, cumulative);
+        return new WeightedItemSelector(nativeIds, cumulative);
+    }
+
+    /**
+     * An elemental gem roll resolves one native item per emitted copy.
+     * Each copy rerolls its element, like the original nested weighted pool.
+     */
+    private static WeightedItemSelector compileElements(
+            Object rawProperties, ItemResolver resolver, String location) {
+        if (!(rawProperties instanceof Map<?, ?> props)
+                || props.size() != 2
+                || !(props.get("element") instanceof String probabilities)
+                || !(props.get("rarity") instanceof Integer rarity)
+                || rarity < 2 || rarity > 5) {
+            throw new IllegalArgumentException(location
+                    + ": elemental ascension gems require quoted element odds and integer rarity 2..5");
+        }
+        var ids = new ArrayList<Integer>();
+        var boundaries = new ArrayList<Double>();
+        var seen = new java.util.HashSet<String>();
+        var total = BigDecimal.ZERO;
+        var hundred = new BigDecimal("100");
+        for (String part : probabilities.split(",", -1)) {
+            String[] pair = part.trim().split(":", -1);
+            String element = pair[0].trim();
+            if (pair.length != 2
+                    || !List.of("anemo", "geo", "electro", "dendro",
+                                    "hydro", "pyro", "cryo").contains(element)
+                    || !pair[1].trim().matches("[0-9]+(?:\\.[0-9]+)?")) {
+                throw new IllegalArgumentException(location
+                        + ": invalid ascension gem element percentage: " + part);
+            }
+            if (!seen.add(element)) {
+                throw new IllegalArgumentException(location
+                        + ": duplicate ascension gem element: " + element);
+            }
+            var percentage = new BigDecimal(pair[1].trim());
+            total = total.add(percentage);
+            if (total.compareTo(hundred) > 0) {
+                throw new IllegalArgumentException(location
+                        + ": ascension gem element percentages exceed 100%");
+            }
+            if (percentage.signum() == 0) continue;
+            String reference = "genshin.avatar_ascension." + element + "." + rarity;
+            int itemId = resolver.resolve(reference);
+            if (itemId <= 0) {
+                throw new IllegalArgumentException(location
+                        + ": unknown ascension gem: " + reference);
+            }
+            ids.add(itemId);
+            boundaries.add(total.movePointLeft(2).doubleValue());
+        }
+        if (total.compareTo(hundred) != 0) {
+            throw new IllegalArgumentException(location
+                    + ": ascension gem element percentages must sum to 100: " + total);
+        }
+        var itemIds = new int[ids.size()];
+        var cumulative = new double[ids.size()];
+        for (int i = 0; i < ids.size(); i++) {
+            itemIds[i] = ids.get(i);
+            cumulative[i] = boundaries.get(i);
+        }
+        return new WeightedItemSelector(itemIds, cumulative);
     }
 
     private record Pool(boolean weighted, List<Entry> entries, double totalWeight) {}
@@ -210,7 +273,8 @@ public final class YamlLootTables {
                 Object target = fields.get("reward");
                 Integer rewardId = null;
                 ArtifactResolver.Selector artifact = null;
-                GradeSelector grade = null;
+                WeightedItemSelector grade = null;
+                WeightedItemSelector element = null;
                 Pool nested = null;
                 if (target instanceof List<?>) {
                     nested = parseList(target, resolver, artifacts, compiled, visiting, budget, at + ".reward", depth + 1);
@@ -223,7 +287,10 @@ public final class YamlLootTables {
                     if (!(target instanceof String reference) || reference.matches("[0-9]+")) {
                         throw new IllegalArgumentException(at + ": reward must be a named item: " + target);
                     }
-                    if (reference.startsWith("genshin.artifact.")) {
+                    if (reference.equals("genshin.avatar_ascension")
+                            && fields.containsKey("properties")) {
+                        element = compileElements(fields.get("properties"), resolver, at);
+                    } else if (reference.startsWith("genshin.artifact.")) {
                         if (artifacts == null) {
                             throw new IllegalArgumentException(at + ": artifact resolver unavailable");
                         }
@@ -240,7 +307,8 @@ public final class YamlLootTables {
                         rewardId = id;
                     }
                 }
-                if (fields.containsKey("properties") && artifact == null && grade == null) {
+                if (fields.containsKey("properties")
+                        && artifact == null && grade == null && element == null) {
                     throw new IllegalArgumentException(at
                             + ": properties require an artifact or advancement-family reward");
                 }
@@ -258,7 +326,7 @@ public final class YamlLootTables {
                     }
                     hasWeight = true;
                 } else hasNull = true;
-                entries.add(new Entry(rewardId, artifact, grade, nested, count, weight));
+                entries.add(new Entry(rewardId, artifact, grade, element, nested, count, weight));
             }
             if (hasWeight && hasNull) {
                 throw new IllegalArgumentException(location + ": cannot mix null and numeric weights");
@@ -322,6 +390,10 @@ public final class YamlLootTables {
             // A count of N then awards N copies of the selected tier, matching
             // the original weighted pool of fixed-grade, fixed-count entries.
             reward.merge(entry.grade.select(random), count, Math::addExact);
+        } else if (entry.element != null) {
+            for (int i = 0; i < count; i++) {
+                reward.merge(entry.element.select(random), 1, Math::addExact);
+            }
         } else if (entry.rewardId != null) {
             reward.merge(entry.rewardId, count, Math::addExact);
         }

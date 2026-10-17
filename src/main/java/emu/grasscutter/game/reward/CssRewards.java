@@ -76,12 +76,18 @@ public final class CssRewards {
         }
     }
 
+    private static final Pattern CURVE_CALL =
+            Pattern.compile("[$][{]([a-z][a-z0-9_]*)[(]level[)][}]");
+
     private record Rule(
             Evaluator selector, List<AttributeRange> attributeRanges,
             List<AttributeOptions> attributeOptions,
             Map<Integer, Integer> items, Map<String, Integer> loot,
             Map<Integer, LootCount.Spec> rangedItems,
-            Map<String, LootCount.Spec> rangedLoot, int specificity, int order) {}
+            Map<String, LootCount.Spec> rangedLoot,
+            Map<Integer, RewardCurves.Curve> curvedItems,
+            Map<String, RewardCurves.Curve> curvedLoot,
+            int specificity, int order) {}
 
     private final List<Rule> rules;
 
@@ -90,6 +96,12 @@ public final class CssRewards {
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
+        return parse(source, items, loot, RewardCurves.empty());
+    }
+
+    public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot,
+                                   RewardCurves curves) {
+        if (curves == null) throw new IllegalArgumentException("Missing reward curves");
         // Transform resource declarations into CSS-safe temporary properties.
         // Every occurrence gets a distinct temporary key; the original key is
         // recovered before resolving resource identities and cascade rules.
@@ -124,6 +136,8 @@ public final class CssRewards {
             var ranged = new HashMap<Integer, LootCount.Spec>();
             var selectedLoot = new HashMap<String, Integer>();
             var rangedLoot = new HashMap<String, LootCount.Spec>();
+            var curvedItems = new HashMap<Integer, RewardCurves.Curve>();
+            var curvedLoot = new HashMap<String, RewardCurves.Curve>();
             for (var declaration : style.getAllDeclarations()) {
                 String property = declaration.getProperty();
                 String value = declaration.getExpressionAsCSSString().trim();
@@ -137,8 +151,19 @@ public final class CssRewards {
                 if (resource.size() < 3) {
                     throw new IllegalArgumentException("Expected a qualified resource path: " + original);
                 }
+                var curveCall = CURVE_CALL.matcher(value);
+                if (value.contains("$"+"{") && !curveCall.matches()) {
+                    throw new IllegalArgumentException("Unsupported reward-curve expression: " + value);
+                }
                 if (resource.size() >= 3 && "loot".equals(resource.segment(1))) {
                     String name = loot.resolveName(resource.toString());
+                    if (curveCall.matches()) {
+                        curvedLoot.put(name, curves.require(curveCall.group(1)));
+                        selectedLoot.remove(name);
+                        rangedLoot.remove(name);
+                        continue;
+                    }
+                    curvedLoot.remove(name);
                     if (value.matches("[0-9]+")) {
                         selectedLoot.put(name, Integer.parseInt(value));
                         rangedLoot.remove(name);
@@ -148,6 +173,13 @@ public final class CssRewards {
                     }
                 } else {
                     int id = items.resolve(resource.toString());
+                    if (curveCall.matches()) {
+                        curvedItems.put(id, curves.require(curveCall.group(1)));
+                        fixed.remove(id);
+                        ranged.remove(id);
+                        continue;
+                    }
+                    curvedItems.remove(id);
                     if (value.matches("[0-9]+")) {
                         fixed.put(id, Integer.parseInt(value));
                         ranged.remove(id);
@@ -206,7 +238,8 @@ public final class CssRewards {
                 rules.add(new Rule(Selector.evaluatorOf(normalizedSelector),
                         List.copyOf(attributeRanges), List.copyOf(options), Map.copyOf(fixed),
                         Map.copyOf(selectedLoot), Map.copyOf(ranged),
-                        Map.copyOf(rangedLoot), specificity, order++));
+                        Map.copyOf(rangedLoot), Map.copyOf(curvedItems),
+                         Map.copyOf(curvedLoot), specificity, order++));
             }
         }
 
@@ -229,12 +262,30 @@ public final class CssRewards {
                             option.matches(attributes))) {
                 rule.items.keySet().forEach(ranged::remove);
                 rule.rangedItems.keySet().forEach(fixed::remove);
+                rule.curvedItems.keySet().forEach(id -> {
+                    fixed.remove(id);
+                    ranged.remove(id);
+                });
                 fixed.putAll(rule.items);
                 ranged.putAll(rule.rangedItems);
+                rule.curvedItems.forEach((id, curve) -> {
+                    String value = curve.lookup(attributes.get("level"));
+                    if (value.matches("[0-9]+")) fixed.put(id, Integer.parseInt(value));
+                    else ranged.put(id, LootCount.parse(value));
+                });
                 rule.loot.keySet().forEach(rangedLoot::remove);
                 rule.rangedLoot.keySet().forEach(selectedLoot::remove);
+                rule.curvedLoot.keySet().forEach(name -> {
+                    selectedLoot.remove(name);
+                    rangedLoot.remove(name);
+                });
                 selectedLoot.putAll(rule.loot);
                 rangedLoot.putAll(rule.rangedLoot);
+                rule.curvedLoot.forEach((name, curve) -> {
+                    String value = curve.lookup(attributes.get("level"));
+                    if (value.matches("[0-9]+")) selectedLoot.put(name, Integer.parseInt(value));
+                    else rangedLoot.put(name, LootCount.parse(value));
+                });
             }
         }
         return new Selection(fixed, selectedLoot, ranged, rangedLoot);

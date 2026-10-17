@@ -160,7 +160,7 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(1059, loot.names().size()); // Two former star-specific pools are one template.
+        assertEquals(1047, loot.names().size()); // Moving weekly talent grants merges 12 duplicate gem pools.
         assertFalse(yaml.contains("empty_reward_choices"));
         assertTrue(loot.contains("astaps.loot.midlander_weapon_billets"));
         assertTrue(loot.contains("astaps.loot.northlander_weapon_billets"));
@@ -262,6 +262,26 @@ final class BundledBossRewardsTest {
         }
         assertEquals(275, bonusTalents, 55);
 
+        // Weekly talent rewards are independently rolled from CSS; gems remain in YAML.
+        var shoukiLate = css.resolve("boss", Map.of(
+                "type", "weekly", "tag", "shouki_no_kami", "level", "87"));
+        assertEquals(1, shoukiLate.loot().get("astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct91p01_first_electro"));
+        var lateTalent = shoukiLate.rangedLoot().get("astaps.loot.talent_materials_puppet_strings_mirror_of_mushin_dakas_bell");
+        assertNotNull(lateTalent);
+        var lateRandom = new java.util.Random(814);
+        int extraTalents = 0;
+        for (int i = 0; i < 1000; i++) {
+            int count = lateTalent.sample(lateRandom);
+            assertTrue(count == 1 || count == 2);
+            extraTalents += count - 1;
+        }
+        assertEquals(825, extraTalents, 45);
+        assertEquals(0, yaml.lines().filter(line -> line.startsWith("weekly_talent_materials_")).count());
+        assertEquals(108, yaml.lines().filter(line -> line.startsWith("weekly_gems_")
+                && line.endsWith(":")).count());
+        assertEquals(61, stylesheet.lines().filter(line ->
+                line.trim().startsWith("astaps.loot.talent_materials_")).count());
+
         var shoukiEarly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "shouki_no_kami", "level", "8"));
         assertTrue(shoukiEarly.rangedLoot().containsKey(
@@ -277,7 +297,7 @@ final class BundledBossRewardsTest {
                 "genshin.avatar_ascension.vajrada_amethyst.sliver: '2+1:14.32';"));
         var shouki = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "shouki_no_kami", "level", "120"));
-        assertEquals(1, shouki.loot().get("astaps.loot.weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct40"));
+        assertEquals(1, shouki.loot().get("astaps.loot.weekly_gems_cryo_electro_hydro_fragment_5plus1pct13p72"));
         assertEquals(1, shouki.loot().get("astaps.loot.weekly_midlander_extras"));
         assertFalse(shouki.loot().containsKey("astaps.loot.weekly_northlander_extras"));
         assertEquals(1, shouki.loot().get("astaps.loot.weekly_high_artifacts"));
@@ -328,7 +348,7 @@ final class BundledBossRewardsTest {
         var weekly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "stormterror", "level", "90"));
         assertEquals(300, weekly.items().get(102));
-        assertEquals(1, weekly.loot().get("astaps.loot.weekly_talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh_roll_2plus1pct10"));
+        assertEquals(1, weekly.loot().get("astaps.loot.weekly_gems_cryo_electro_hydro_fragment_5plus1pct13p72"));
         assertEquals(1, weekly.loot().get("astaps.loot.weekly_northlander_extras"));
         assertFalse(weekly.loot().containsKey("astaps.loot.weekly_midlander_extras"));
         assertEquals(1, weekly.loot().get("astaps.loot.weekly_high_artifacts"));

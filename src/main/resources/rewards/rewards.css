@@ -600,7 +600,7 @@ boss[type="weekly"][tag="stormterror"][level="65~69"] {
 
 boss[type="weekly"][tag="stormterror"][level="70~74"] {
     astaps.loot.talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh: "1";
-    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct20p93_first_cryo: 1;
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct21_first_cryo: 1;
 }
 
 boss[type="weekly"][tag="stormterror"][level="75~79"] {
@@ -692,7 +692,7 @@ boss[type="weekly"][tag="andrius"][level="65~69"] {
 
 boss[type="weekly"][tag="andrius"][level="70~74"] {
     astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct20p93_first_anemo: 1;
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct21_first_anemo: 1;
 }
 
 boss[type="weekly"][tag="andrius"][level="75~79"] {
@@ -779,7 +779,7 @@ boss[type="weekly"][tag="tartaglia"][level="65~69"] {
 
 boss[type="weekly"][tag="tartaglia"][level="70~74"] {
     astaps.loot.talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior: "1";
-    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_4plus1pct20p93: 1;
+    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_4plus1pct21: 1;
 }
 
 boss[type="weekly"][tag="tartaglia"][level="75~79"] {
@@ -866,7 +866,7 @@ boss[type="weekly"][tag="azhdaha_pyro_electro"][level="65~69"] {
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="70~74"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1";
-    astaps.loot.weekly_gems_electro_geo_pyro_fragment_4plus1pct20p93: 1;
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_4plus1pct21: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="75~79"] {
@@ -953,7 +953,7 @@ boss[type="weekly"][tag="azhdaha_hydro_electro"][level="65~69"] {
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="70~74"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1";
-    astaps.loot.weekly_gems_electro_geo_hydro_fragment_4plus1pct20p93: 1;
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_4plus1pct21: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="75~79"] {
@@ -1040,7 +1040,7 @@ boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="65~69"] {
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="70~74"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct20p93_first_pyro: 1;
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct21_first_pyro: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="75~79"] {
@@ -1127,7 +1127,7 @@ boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="65~69"] {
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="70~74"] {
     astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1";
-    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_4plus1pct20p93: 1;
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_4plus1pct21: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="75~79"] {
@@ -1214,7 +1214,7 @@ boss[type="weekly"][tag="signora"][level="65~69"] {
 
 boss[type="weekly"][tag="signora"][level="70~74"] {
     astaps.loot.talent_materials_molten_moment_hellfire_butterfly_ashen_heart: "1";
-    astaps.loot.weekly_gems_anemo_pyro_fragment_4plus1pct20p93: 1;
+    astaps.loot.weekly_gems_anemo_pyro_fragment_4plus1pct21: 1;
 }
 
 boss[type="weekly"][tag="signora"][level="75~79"] {
@@ -1301,7 +1301,7 @@ boss[type="weekly"][tag="raiden_shogun"][level="65~69"] {
 
 boss[type="weekly"][tag="raiden_shogun"][level="70~74"] {
     astaps.loot.talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons: "1";
-    astaps.loot.weekly_gems_electro_fragment_4plus1pct20p93: 1;
+    astaps.loot.weekly_gems_electro_fragment_4plus1pct21: 1;
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="75~79"] {
@@ -1388,7 +1388,7 @@ boss[type="weekly"][tag="shouki_no_kami"][level="65~69"] {
 
 boss[type="weekly"][tag="shouki_no_kami"][level="70~74"] {
     astaps.loot.talent_materials_puppet_strings_mirror_of_mushin_dakas_bell: "1";
-    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct20p93_first_electro: 1;
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct21_first_electro: 1;
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="75~79"] {

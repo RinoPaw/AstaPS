@@ -5631,26 +5631,26 @@ boss[type="world"][tag="maguu_kenki"][level="25~29"] {
 }
 
 boss[type="world"][tag="maguu_kenki"][level="30~34"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_sliver: "2+1:19.219";
     astaps.loot.world_gems_cryo_sliver_artifacts_lucky_dog_2star_0_1substats_roll_2plus1pct94_artifact: 1;
 }
 
 boss[type="world"][tag="maguu_kenki"][level="35~39"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_sliver: "2+1:31.627";
     astaps.loot.world_hurricane_seed_roll_1plus1pct60p8_artifact: 1;
 }
 
 boss[type="world"][tag="maguu_kenki"][level="40~44"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.world_gems_cryo_anemo_rarity_2to3_copies3: "${world_gems_roll(level)}";
     astaps.loot.world_hurricane_seed_roll_1plus1pct60p8_artifact: 1;
 }
 
 boss[type="world"][tag="maguu_kenki"][level="45~49"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.world_gems_cryo_anemo_rarity_2to3_copies3: "${world_gems_roll(level)}";
     astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
@@ -5658,7 +5658,7 @@ boss[type="world"][tag="maguu_kenki"][level="45~49"] {
 }
 
 boss[type="world"][tag="maguu_kenki"][level="50~54"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.world_gems_cryo_anemo_rarity_2to3_copies3: "${world_gems_roll(level)}";
     astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
@@ -5666,7 +5666,7 @@ boss[type="world"][tag="maguu_kenki"][level="50~54"] {
 }
 
 boss[type="world"][tag="maguu_kenki"][level="55~59"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.world_gems_cryo_anemo_rarity_2to3_copies3: "${world_gems_roll(level)}";
     astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
@@ -5674,7 +5674,7 @@ boss[type="world"][tag="maguu_kenki"][level="55~59"] {
 }
 
 boss[type="world"][tag="maguu_kenki"][level="60~64"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.world_gems_cryo_anemo_rarity_2to4_copies3: "${world_gems_roll(level)}";
     astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
@@ -5682,7 +5682,7 @@ boss[type="world"][tag="maguu_kenki"][level="60~64"] {
 }
 
 boss[type="world"][tag="maguu_kenki"][level="65~69"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.world_gems_cryo_anemo_rarity_2to4_copies3: "${world_gems_roll(level)}";
     astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
@@ -5690,7 +5690,7 @@ boss[type="world"][tag="maguu_kenki"][level="65~69"] {
 }
 
 boss[type="world"][tag="maguu_kenki"][level="70~74"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.world_gems_cryo_anemo_rarity_2to4_copies3: "${world_gems_roll(level)}";
     astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
@@ -5698,7 +5698,7 @@ boss[type="world"][tag="maguu_kenki"][level="70~74"] {
 }
 
 boss[type="world"][tag="maguu_kenki"][level="75~79"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.gems_anemo_cryo_chunk_fragment_gemstone_sliver: "${world_gems_roll(level)}";
     astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
@@ -5706,7 +5706,7 @@ boss[type="world"][tag="maguu_kenki"][level="75~79"] {
 }
 
 boss[type="world"][tag="maguu_kenki"][level="80~84"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.gems_anemo_cryo_chunk_fragment_gemstone_sliver: "${world_gems_roll(level)}";
     astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
@@ -5714,7 +5714,7 @@ boss[type="world"][tag="maguu_kenki"][level="80~84"] {
 }
 
 boss[type="world"][tag="maguu_kenki"][level="85~89"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.gems_anemo_cryo_chunk_fragment_gemstone_sliver: "${world_gems_roll(level)}";
     astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
@@ -5722,7 +5722,7 @@ boss[type="world"][tag="maguu_kenki"][level="85~89"] {
 }
 
 boss[type="world"][tag="maguu_kenki"][level="90~92"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.gems_anemo_cryo_chunk_fragment_gemstone_sliver: "${world_gems_roll(level)}";
     astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";
@@ -5730,7 +5730,7 @@ boss[type="world"][tag="maguu_kenki"][level="90~92"] {
 }
 
 boss[type="world"][tag="maguu_kenki"][level="93~"] {
-    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
     astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
     astaps.loot.gems_anemo_cryo_chunk_fragment_gemstone_sliver: "${world_gems_roll(level)}";
     astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1(level)}";

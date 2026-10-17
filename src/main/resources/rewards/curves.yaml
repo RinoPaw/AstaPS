@@ -23,6 +23,47 @@ world_gems_roll_count:
   "85~89": "3+1:1.851"
   "90~": "3+1:18.45"
 
+# Early world-Boss gem profiles: ChestDrop.json (sourceType=34), Lv.1-29.
+# 48 native Boss identities x 6 level brackets = 288 source roots.
+# 15 Bosses have no gem entries; do not award an artificial zero-count item.
+# 15 single-element Bosses use the direct item-count curve below.
+# 9 dual-element Bosses use the same source curve as independent pool rolls:
+# each weighted choice awards 3 gems of the selected element.
+# Setekh Wenut has 3x the standard per-item quantity (9 gems per roll).
+# 2 / 5 / 1 Bosses grant fixed totals of 18 / 36 / 54 gems, respectively;
+# the native roots contain 2 / 4 / 6 distinct gem items, each with count 9.
+# The fixed-total groups must retain their separate item identities in CSS;
+# NEVER apply the aggregate totals as a count for one item or one pool.
+# Values preserve native countRange (1.47246, 1.57179, 1.69587,
+# 1.81995, 1.94403, 2.06811), expressed as integer bonus rolls.
+world_gems_early_standard_item_count:
+  "1~4": "3+3:47.246"
+  "5~9": "3+3:57.179"
+  "10~14": "3+3:69.587"
+  "15~19": "3+3:81.995"
+  "20~24": "3+3:94.403"
+  "25~29": "6+3:6.811"
+
+world_gems_early_standard_pool_roll_count:
+  "1~4": "1+1:47.246"
+  "5~9": "1+1:57.179"
+  "10~14": "1+1:69.587"
+  "15~19": "1+1:81.995"
+  "20~24": "1+1:94.403"
+  "25~29": "2+1:6.811"
+
+world_gems_early_triple_item_count:
+  "1~4": "9+9:47.246"
+  "5~9": "9+9:57.179"
+  "10~14": "9+9:69.587"
+  "15~19": "9+9:81.995"
+  "20~24": "9+9:94.403"
+  "25~29": "18+9:6.811"
+
+# Shared per-item count for the three fixed-total gem profiles (18/36/54).
+world_gems_early_fixed_item_count:
+  "1~29": "9"
+
 world_artifacts_pool_1_roll_count:
   "25~34": "2+1:94"
   "35~44": "1+1:42.8"
@@ -42,7 +83,9 @@ world_artifacts_pool_2_roll_count:
   "90~": "1+1:47"
 
 # Source: ChestDrop.json sourceType=34 -> DropTableExcelConfigData.json.
-# The early profile is present on newer world Boss families only.
+# Before Lv.30, 25 Bosses have no exclusive-material entry, 22 Bosses
+# grant one exclusive material, and Icewind Suite grants two distinct materials.
+# The latter must roll this curve once per material, not multiply one item.
 world_ascension_material_early_count:
   "1~4": "1+1:33.86"
   "5~9": "1+1:42.89"

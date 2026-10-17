@@ -196,12 +196,27 @@ separate reward tables still need verified native source data.
 ## YAML semantics
 
 Named Loot tables must contain at least two entries. A table containing
-only one family reward is redundant: inline that reward into its caller.
-When the removed table has a fixed `count`, multiply the parent execution
-count by that fixed count. For example, an inner `count: 3` and an outer
-`count: "2+1:17.602"` become `count: "6+3:17.602"`.
-This preserves the original quantity distribution while avoiding extra
-nested rolls.
+only one family reward is redundant: inline its entry as a nested reward
+mapping, preserving the boundary between quantity and independent rolls:
+
+```yaml
+# Two copies of the same randomly selected gem grade.
+- {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:75, 3:20, 4:5"}, count: 2}
+
+# Independently select a gem grade twice.
+- reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:75, 3:20, 4:5"}}
+  count: 2
+
+# Two independent grade selections, three copies per selection,
+# plus one more grade selection with 17.602% probability.
+- reward: {reward: genshin.avatar_ascension.electro, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3}
+  count: "2+1:17.602"
+```
+
+A direct `count` sets the quantity of the chosen item (or gem grade).
+The `count` outside a nested `reward` mapping repeats the whole
+selection process. Do not multiply these counts together into a direct
+reward count: that would merge independent random choices.
 
 Near-identical native gem rarity proportions are normalized by profile:
 `2:79, 3:21`, `2:75, 3:20, 4:5`, or
@@ -239,7 +254,7 @@ one native 2–5★ gem or one native 2–4★ talent book. The values after `:`
 are percentages with at most two decimal places and no trailing zeros; they must add to `100`.
 A family's grade is sampled once per entry execution. An entry with
 `count: 3` gives three items of the selected grade; repeating a nested
-pool samples that grade afresh on each execution. The top-level
+reward mapping or pool samples that grade afresh on each execution. The top-level
 `weight` controls selection among sibling families:
 
 ```yaml

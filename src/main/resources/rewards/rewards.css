@@ -769,7 +769,8 @@ boss[type="weekly"][tag="tartaglia"][level="70~74"] {
 }
 
 boss[type="weekly"][tag="tartaglia"][level="75~79"] {
-    astaps.loot.weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_738: 1;
+    astaps.loot.talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior: "1+1:27.5";
+    astaps.loot.weekly_gems_anemo_electro_hydro_vajrada_amethyst_chunk_weight_738: 1;
 }
 
 boss[type="weekly"][tag="tartaglia"][level="80~84"] {

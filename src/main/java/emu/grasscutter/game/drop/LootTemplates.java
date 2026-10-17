@@ -24,7 +24,7 @@ final class LootTemplates {
     private static final int MAX_DEPTH = 64;
     private static final int MAX_INSTANCES = 1_000;
 
-    private record Definition(String parameter, Map<?, ?> content) {}
+    private record Definition(String parameter, List<?> entries) {}
 
     private final String namespace;
     private final Map<String, Definition> definitions = new LinkedHashMap<>();
@@ -42,11 +42,11 @@ final class LootTemplates {
             if (entry.getKey() instanceof String key) {
                 Matcher definition = DEFINITION.matcher(key);
                 if (definition.matches()) {
-                    if (!(entry.getValue() instanceof Map<?, ?> content)) {
-                        throw new IllegalArgumentException("Loot template must be a mapping: " + key);
+                    if (!(entry.getValue() instanceof List<?> entries)) {
+                        throw new IllegalArgumentException("Loot template must be a YAML list: " + key);
                     }
                     if (templates.definitions.putIfAbsent(definition.group(1),
-                            new Definition(definition.group(2), content)) != null) {
+                            new Definition(definition.group(2), entries)) != null) {
                         throw new IllegalArgumentException("Duplicate loot template: " + key);
                     }
                     continue;
@@ -142,33 +142,11 @@ final class LootTemplates {
             } catch (NumberFormatException ex) {
                 throw new IllegalArgumentException("Invalid loot template argument: " + key, ex);
             }
-            Map<?, ?> body = definition.content();
-            for (Object field : body.keySet()) {
-                if (!"common".equals(field) && !"variants".equals(field)) {
-                    throw new IllegalArgumentException("Unknown loot template field: " + field);
-                }
+            List<?> body = definition.entries();
+            if (body.isEmpty()) {
+                throw new IllegalArgumentException("Empty loot template: " + name);
             }
-            if (!(body.get("common") instanceof List<?> common)
-                    || !(body.get("variants") instanceof Map<?, ?> variants)) {
-                throw new IllegalArgumentException("Loot template requires common list and variants map: " + name);
-            }
-            Object extra = null;
-            for (var entry : variants.entrySet()) {
-                if (argument.equals(String.valueOf(entry.getKey()))) {
-                    extra = entry.getValue();
-                    break;
-                }
-            }
-            if (!(extra instanceof List<?> selected)) {
-                throw new IllegalArgumentException("Unsupported loot template argument: " + key);
-            }
-            var combined = new ArrayList<Object>(common.size() + selected.size());
-            combined.addAll(common);
-            combined.addAll(selected);
-            if (combined.isEmpty()) {
-                throw new IllegalArgumentException("Empty loot template expansion: " + key);
-            }
-            List<?> expanded = (List<?>) substitute(combined,
+            List<?> expanded = (List<?>) substitute(body,
                     Map.of(definition.parameter(), value), depth + 1,
                     new IdentityHashMap<>());
             instances.put(key, expanded);

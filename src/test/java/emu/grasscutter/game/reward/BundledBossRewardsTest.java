@@ -282,6 +282,23 @@ final class BundledBossRewardsTest {
         assertEquals(61, stylesheet.lines().filter(line ->
                 line.trim().startsWith("astaps.loot.talent_materials_")).count());
 
+        // The integer template parameter controls the independent fifth gem roll.
+        assertTrue(yaml.contains("weekly_gems_cryo_electro_hydro_rarity_roll<chance>:"));
+        assertTrue(yaml.contains("reward: astaps.loot.weekly_gems_cryo_electro_hydro_rarity_roll<21>"));
+        assertFalse(yaml.contains("20.93"));
+        assertFalse(stylesheet.contains("20p93"));
+        assertFalse(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_rarity_roll<chance>"));
+        assertTrue(loot.contains("astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct21_first_electro"));
+        var gemRandom = new java.util.Random(21);
+        int totalGems = 0;
+        for (int i = 0; i < 10_000; i++) {
+            var bundle = loot.roll("astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct21_first_electro", gemRandom);
+            int count = bundle.values().stream().mapToInt(Integer::intValue).sum();
+            assertTrue(count >= 5 && count <= 7);
+            totalGems += count;
+        }
+        assertEquals(5.23, totalGems / 10_000.0, 0.035);
+
         var shoukiEarly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "shouki_no_kami", "level", "8"));
         assertTrue(shoukiEarly.rangedLoot().containsKey(

@@ -256,7 +256,7 @@ inclusive level ranges. The value is an ordinary quoted loot-count expression.
 Ranges may end in `~` to cover all higher levels. The shared
 `world_ascension_material_count` curve uses curated integer percentages at
 levels 30+ and retains the original values for levels 1–29. The
-`weekly_gems_4plus1` curve also uses curated integers. Other shared curves
+`weekly_gems_roll` curve uses curated integers from level 70 onward. Other shared curves
 retain source-accurate decimal odds. Lookup never interpolates.
 
 ```yaml
@@ -287,10 +287,17 @@ If no interval contains the requested level, lookup fails explicitly.
 These lookups are separate from the integer substitution performed by
 parameterized loot lists in `loot.yaml`; no scripting language is involved.
 
-The same lookup also controls the 4+1 gem-roll count of weekly Bosses:
+The same lookup controls the complete level 40–89 weekly Boss gem-roll
+curve, combining the former early and 4+1 stages:
 
 ```yaml
-weekly_gems_4plus1:
+weekly_gems_roll:
+  "40~44": "2+1:71.29"
+  "45~49": "2+1:92.71"
+  "50~54": "3+1:14.16"
+  "55~59": "3+1:35.58"
+  "60~64": "3+1:75.78"
+  "65~69": "3+1:98.37"
   "70~74": "4+1:21"
   "75~79": "4+1:45"
   "80~84": "4+1:69"
@@ -303,7 +310,7 @@ For Andrius at level 75–79:
 boss[type="weekly"][tag="andrius"][level="75~79"] {
     astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1+1:27.5";
     astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_4plus1(level)}";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_roll(level)}";
 }
 ```
 
@@ -316,9 +323,8 @@ The weighted pool contains no Boss level or bonus count. Twenty-seven redundant
 unchanged: they cannot be lifted into a CSS item declaration without losing
 their element selection properties.
 
-Four additional curves represent shared, source-accurate Boss counts:
+The remaining shared curves cover world Boss gems and artifact counts:
 
-- `weekly_gems_early`: level 40–69 weighted gem-roll counts.
 - `world_gems_roll`: level 40+ weighted gem-roll counts.
 - `world_artifacts_pool_1` and `world_artifacts_pool_2`: independent
   counts for the first and second artifact pools. Their suffixes identify

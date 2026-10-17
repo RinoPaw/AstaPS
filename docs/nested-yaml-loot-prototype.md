@@ -41,7 +41,7 @@ including complete payout profiles, are named by reward content; optional
 `world` and `weekly` prefixes identify the reward type.
 Reusable subtables use names such as `midlander_weapon_billets`.
 Identical payout profiles are shared, and one-use subtables are inlined.
-The bundled YAML currently has 626 top-level definitions, including one
+The bundled YAML currently has 613 top-level definitions, including one
 list template. The two `weekly_northlander_extras` /
 `weekly_midlander_extras` pools define shared Dream Solvent and weapon-billet
 drop chances. Eight further `weekly_*artifacts*` pools hold shared artifact

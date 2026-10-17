@@ -277,6 +277,35 @@ If no interval contains the requested level, lookup fails explicitly.
 These lookups are separate from the integer substitution performed by
 parameterized loot lists in \`loot.yaml\`; no scripting language is involved.
 
+The same lookup also controls the 4+1 gem-roll count of weekly Bosses:
+
+```yaml
+weekly_gems_4plus1:
+  "70~74": "4+1:21"
+  "75~79": "4+1:45.71"
+  "80~84": "4+1:68.39"
+  "85~89": "4+1:91.01"
+```
+
+For Andrius at level 75–79:
+
+```css
+boss[type="weekly"][tag="andrius"][level="75~79"] {
+    astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1+1:27.5";
+    astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_4plus1(level)}";
+}
+```
+
+The first loot declaration independently rerolls a three-star fragment pool.
+The second declaration independently rerolls a weighted element/rarity pool
+four times, with a fifth roll at the exact probability returned by the curve.
+The weighted pool contains no Boss level or bonus count. Twenty-seven redundant
+4+1 tables were replaced by fourteen shared weighted pools. The twelve
+4+1 tables whose first reward uses an inline elemental-family selector remain
+unchanged: they cannot be lifted into a CSS item declaration without losing
+their element selection properties.
+
 ## YAML semantics
 
 Named Loot tables must contain at least two entries. A table containing

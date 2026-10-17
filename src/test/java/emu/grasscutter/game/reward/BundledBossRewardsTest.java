@@ -75,7 +75,12 @@ final class BundledBossRewardsTest {
             assertEquals(0, total.compareTo(new java.math.BigDecimal("100.00")));
         }
         assertEquals(658, gems, "All non-duplicated gem-family rewards must be validated");
-        assertEquals(6, talents);
+        assertEquals(0, talents, "Guaranteed rarity selections use integer grades");
+        assertEquals(6, Pattern.compile(
+                "reward: genshin\\.talent_up\\.[a-z_]+, properties: \\{rarity: [234]\\}")
+                .matcher(yaml).results().count());
+        assertFalse(yaml.contains("rarity: \"2:100\""));
+        assertFalse(yaml.contains("rarity: \"3:100\""));
         // The old per-grade weighted rows with count 3 or 9 must be gone
         // whenever multiple rarities could be combined.
         assertFalse(Pattern.compile(

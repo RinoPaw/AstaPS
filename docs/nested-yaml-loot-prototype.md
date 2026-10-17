@@ -193,6 +193,41 @@ The bundled CSS currently configures only `type="normal"`:
 Mora and Remarkable chests cannot inherit ordinary tier rewards, and their
 separate reward tables still need verified native source data.
 
+## Parameterized loot templates
+
+Parameterized definitions use a single integer parameter in angle brackets.
+A template is expanded when an ordinary loot entry refers to it; it does not
+register its own stand-alone table. The shared `common` choices are combined
+with the choices under the selected `variants` key. They retain their weights
+and are rolled by the existing YAML loot engine.
+
+```yaml
+artifacts_prayers_wisdom<rarity>:
+  common:
+    - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+    - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+    - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+  variants:
+    3:
+      - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+    4:
+      - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+      - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+
+example:
+  - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: 2}
+  - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: "1:42"}
+```
+
+`"${rarity}"` substitutes the bound integer. Embedded expressions use
+`"${rarity - 2}:66, ${rarity - 1}:34"`, producing
+`"1:66, 2:34"` for rarity 3 and `"2:66, 3:34"` for rarity 4.
+Only integer variables, integer literals and `+`/`-` operations are
+supported. Unknown variables, unsupported operators, overflow, absent
+variants and recursive template calls are errors. No dynamic script engine
+or runtime expression evaluation is used. A template invocation expands
+to a nested loot pool; its outer `count` rerolls the pool independently.
+
 ## YAML semantics
 
 Named Loot tables must contain at least two entries. A table containing

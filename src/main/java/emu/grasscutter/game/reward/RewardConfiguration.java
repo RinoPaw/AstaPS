@@ -21,13 +21,14 @@ public final class RewardConfiguration {
         this.css = css;
     }
 
-    /** Load the two authoritative classpath resources; no config/rewards directory. */
+    /** Load the authoritative classpath rewards; no editable config/rewards copy. */
     public static void load() {
         try {
             var registry = ItemIdRegistry.fromGameResources();
             var loot = YamlLootTables.parse(readBundled("loot.yaml"), registry::resolve,
                     ArtifactResolver.fromGameResources());
-            var css = CssRewards.parse(readBundled("rewards.css"), registry, loot);
+            var curves = RewardCurves.parse(readBundled("curves.yaml"));
+            var css = CssRewards.parse(readBundled("rewards.css"), registry, loot, curves);
             active = new RewardConfiguration(loot, css);
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Cannot load bundled reward configuration", e);

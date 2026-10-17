@@ -400,6 +400,67 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void fixedAdvancementRarityNumbersPreserveGuaranteedTiers() {
+        var items = new ItemIdRegistry(Map.of(
+                8101, "Vayuda Turquoise Sliver",
+                8102, "Vayuda Turquoise Fragment",
+                8103, "Vayuda Turquoise Gemstone",
+                8201, "Teachings of Freedom",
+                8202, "Guide to Freedom",
+                8203, "Philosophies of Freedom"));
+        var tables = YamlLootTables.parse("""
+                guaranteed:
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: 2}, count: 3}
+                  - {reward: genshin.avatar_ascension.vayuda_turquoise, properties: {rarity: 3}}
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: 5}}
+                  - {reward: genshin.talent_up.freedom, properties: {rarity: 2}, count: 2}
+                  - {reward: genshin.talent_up.freedom, properties: {rarity: 3}}
+                  - {reward: genshin.talent_up.freedom, properties: {rarity: 4}}
+                legacy:
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:100"}, count: 3}
+                  - {reward: genshin.talent_up.freedom, properties: {rarity: "3:100"}}
+                """, items::resolve);
+        var expected = Map.of(8101, 3, 8102, 1, 8103, 1, 8201, 2, 8202, 1, 8203, 1);
+        for (int i = 0; i < 100; i++) {
+            assertEquals(expected, tables.roll("guaranteed", new Random(i)));
+        }
+        assertEquals(Map.of(8101, 3, 8202, 1),
+                tables.roll("legacy", new Random(71)));
+    }
+
+    @Test
+    void invalidFixedAdvancementRarityNumbersAreRejected() {
+        var items = new ItemIdRegistry(Map.of(
+                8101, "Vayuda Turquoise Sliver",
+                8102, "Vayuda Turquoise Fragment",
+                8201, "Teachings of Freedom"));
+        for (String spec : java.util.List.of(
+                "1", "0", "6", "-1", "2.5", "\"2\"", "true", "null",
+                "[2]", "{grade: 2}")) {
+            assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                    invalid:
+                      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: %s}}
+                    """.formatted(spec), items::resolve), spec);
+        }
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                invalid:
+                  - {reward: genshin.talent_up.freedom, properties: {rarity: 5}}
+                """, items::resolve));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                invalid:
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: 4}}
+                """, items::resolve));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                invalid:
+                  - {reward: genshin.currency.mora, properties: {rarity: 2}}
+                """, items::resolve));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                invalid:
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: 2, extra: 1}}
+                """, items::resolve));
+    }
+
+    @Test
     void invalidAdvancementRarityDistributionsAreRejected() {
         var items = new ItemIdRegistry(Map.of(
                 8101, "Vayuda Turquoise Sliver",

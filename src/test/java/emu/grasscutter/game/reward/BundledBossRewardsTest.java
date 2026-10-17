@@ -3,6 +3,7 @@ package emu.grasscutter.game.reward;
 import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.data.ItemIdRegistry;
+import emu.grasscutter.data.ResourceAliases;
 import emu.grasscutter.game.drop.ArtifactResolver;
 import emu.grasscutter.game.drop.YamlLootTables;
 import java.util.ArrayList;
@@ -101,7 +102,9 @@ final class BundledBossRewardsTest {
                 .forEach(name -> variants.add(new ArtifactResolver.Variant(
                         nextArtifactId.incrementAndGet(), name, 1, 5, 3)));
         var loot = YamlLootTables.parse(yaml,
-                id -> nativeIds.computeIfAbsent(id, ignored -> nextId.incrementAndGet()),
+                id -> nativeIds.computeIfAbsent(
+                        ResourceAliases.GENSHIN.resolve(id).toString(),
+                        ignored -> nextId.incrementAndGet()),
                 new ArtifactResolver(variants));
 
         var known = new HashMap<Integer, String>(ItemIdRegistry.chestDropNames());
@@ -130,9 +133,14 @@ final class BundledBossRewardsTest {
                     String category = entry.getKey();
                     String name = entry.getValue();
                     String reference = "genshin." + category + "." + name;
-                    int id = nativeIds.computeIfAbsent(reference,
+                    var canonical = ResourceAliases.GENSHIN.resolve(reference).toString();
+                    int id = nativeIds.computeIfAbsent(canonical,
                             ignored -> nextId.incrementAndGet());
-                    known.put(id, name.replace('_', ' '));
+                    var displayName = category.equals("avatar_ascension")
+                            ? canonical.substring("genshin.avatar_ascension.".length())
+                                    .replace('.', ' ').replace('_', ' ')
+                            : name.replace('_', ' ');
+                    known.put(id, displayName);
                     knownCategories.put(id, switch (category) {
                         case "avatar_ascension", "weapon_crafting" -> "Character Development Items";
                         case "talent_up" -> "Talent Level-Up Materials";
@@ -233,7 +241,7 @@ final class BundledBossRewardsTest {
         assertTrue(legacy.rangedItems().containsKey(
                 nativeIds.get("genshin.avatar_ascension.lightning_prism")));
         assertTrue(legacy.rangedItems().containsKey(
-                nativeIds.get("genshin.avatar_ascension.electro.2")));
+                nativeIds.get("genshin.avatar_ascension.vajrada_amethyst.sliver")));
         assertEquals(1, legacy.loot().get(
                 "astaps.loot.world_lightning_prism_roll_1plus1pct60p8_artifact"));
 
@@ -359,7 +367,7 @@ final class BundledBossRewardsTest {
         var cryoHypostasis = css.resolve("boss", Map.of(
                 "type", "world", "tag", "cryo_hypostasis", "level", "1"));
         assertTrue(cryoHypostasis.rangedItems().containsKey(
-                nativeIds.get("genshin.avatar_ascension.anemo.2")));
+                nativeIds.get("genshin.avatar_ascension.vayuda_turquoise.sliver")));
         assertEquals(1, cryoHypostasis.loot().get(
                 "astaps.loot.world_gems_cryo_sliver_artifacts_lucky_dog_2star_0_1substats_roll_1pct42_artifact"));
 

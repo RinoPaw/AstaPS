@@ -20,6 +20,122 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void templatedArtifactRaritiesPreserveMembersAndComputeSubstats() {
+        var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
+        String[] sets = {
+                "instructor", "the_exile", "prayers_for_wisdom",
+                "traveling_doctor", "gladiators_finale", "wanderers_troupe"
+        };
+        for (int set = 0; set < sets.length; set++) {
+            for (int grade = 3; grade <= 4; grade++) {
+                if ((grade == 3 && set >= 4) || (grade == 4 && set == 3)) continue;
+                for (int slot = 1; slot <= 5; slot++) {
+                    if (set == 2 && slot != 5) continue;
+                    for (int sub = grade - 2; sub <= grade - 1; sub++) {
+                        variants.add(new ArtifactResolver.Variant(
+                                1000000 + set * 10000 + grade * 1000 + slot * 10 + sub,
+                                sets[set], slot, grade, sub));
+                    }
+                }
+            }
+        }
+        var yaml = """
+                artifacts_prayers_wisdom<rarity>:
+                  common:
+                    - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+                    - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+                    - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+                  variants:
+                    3:
+                      - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+                    4:
+                      - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+                      - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: "${rarity}", substats: "${rarity - 2}:66, ${rarity - 1}:34"}, weight: 1}
+                boss3:
+                  - {reward: astaps.loot.artifacts_prayers_wisdom<3>, count: 2}
+                boss4:
+                  - {reward: astaps.loot.artifacts_prayers_wisdom<4>, count: 2}
+                """;
+        var loot = YamlLootTables.parse(yaml, resolver, new ArtifactResolver(variants));
+        assertEquals(2, loot.names().size());
+        for (int grade = 3; grade <= 4; grade++) {
+            int[] chosenSets = new int[sets.length];
+            int low = 0;
+            var random = new Random(grade);
+            for (int n = 0; n < 8_000; n++) {
+                var output = loot.roll("astaps.loot.boss" + grade, random);
+                assertEquals(2, output.values().stream().mapToInt(Integer::intValue).sum());
+                for (var entry : output.entrySet()) {
+                    int id = entry.getKey() - 1000000;
+                    int set = id / 10000;
+                    int rarity = (id % 10000) / 1000;
+                    int slot = (id % 1000) / 10;
+                    int sub = id % 10;
+                    assertEquals(grade, rarity);
+                    if (set == 2) assertEquals(5, slot);
+                    assertTrue(sub == grade - 2 || sub == grade - 1);
+                    chosenSets[set] += entry.getValue();
+                    if (sub == grade - 2) low += entry.getValue();
+                }
+            }
+            assertEquals(0.66, low / 16_000.0, 0.025);
+            for (int set = 0; set < sets.length; set++) {
+                boolean included = set <= 2 || (grade == 3 ? set == 3 : set >= 4);
+                assertEquals(included ? 1.0 / (grade == 3 ? 4 : 5) : 0,
+                        chosenSets[set] / 16_000.0, 0.025);
+            }
+        }
+    }
+
+    @Test
+    void lootTemplateExpressionsRejectUnsupportedSyntaxAndCycles() {
+        String template = """
+                item<rarity>:
+                  common:
+                    - {reward: genshin.currency.mora, count: "%s"}
+                  variants: {3: []}
+                boss:
+                  - {reward: astaps.loot.item<3>}
+                """;
+        for (String bad : java.util.List.of("${unknown}", "${rarity * 2}",
+                "${rarity - }", "${rarity + 2147483647}", "${rarity")) {
+            assertThrows(IllegalArgumentException.class, () -> parse(template.formatted(bad)), bad);
+        }
+        assertThrows(IllegalArgumentException.class,
+                () -> parse(template.formatted("${rarity + 1}").replace("item<3>", "item<5>")));
+        assertThrows(IllegalArgumentException.class, () -> parse("""
+                recursive<grade>:
+                  common:
+                    - {reward: astaps.loot.recursive<3>}
+                  variants: {3: []}
+                boss:
+                  - {reward: astaps.loot.recursive<3>}
+                """));
+    }
+
+    @Test
+    void lootTemplateExpansionPreservesYamlAnchorIdentity() {
+        var loot = parse("""
+                choices: &choices
+                  - {reward: genshin.avatar_up.heros_wit, weight: 1}
+                  - {reward: genshin.avatar_up.adventurers_experience, weight: 1}
+                award<rarity>:
+                  common:
+                    - {reward: *choices, count: "${rarity - 2}"}
+                  variants: {3: []}
+                boss_a:
+                  - {reward: astaps.loot.award<3>}
+                boss_b:
+                  - {reward: astaps.loot.award<3>}
+                """);
+        assertEquals(3, loot.names().size());
+        assertEquals(1, loot.roll("astaps.loot.boss_a", new Random(1))
+                .values().stream().mapToInt(Integer::intValue).sum());
+        assertEquals(1, loot.roll("astaps.loot.boss_b", new Random(2))
+                .values().stream().mapToInt(Integer::intValue).sum());
+    }
+
+    @Test
     void canonicalTalentBookPathsAwardMatchingNativeItems() {
         var books = new ItemIdRegistry(Map.of(
                 7201, "Teachings of Freedom",

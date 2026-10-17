@@ -236,6 +236,32 @@ final class BundledBossRewardsTest {
                 "astaps.loot.gems_geo_hydro_basic", 1),
                 css.resolve("boss", Map.of(
                         "type", "world", "tag", "frostnight_scion", "level", "105")).loot());
+        // Tartaglia 75–79 selects talent materials independently of gem rolls.
+        var tartaglia75 = css.resolve("boss", Map.of(
+                "type", "weekly", "tag", "tartaglia", "level", "76"));
+        assertEquals(1, tartaglia75.loot().get("astaps.loot.weekly_gems_anemo_electro_hydro_vajrada_amethyst_chunk_weight_738"));
+        assertTrue(tartaglia75.rangedLoot().containsKey("astaps.loot.talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior"));
+        assertFalse(loot.contains("astaps.loot.weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_738"));
+        int tartagliaPoolStart = yaml.indexOf("weekly_gems_anemo_electro_hydro_vajrada_amethyst_chunk_weight_738:");
+        int tartagliaPoolEnd = yaml.indexOf("\nweekly_", tartagliaPoolStart + 1);
+        assertTrue(tartagliaPoolStart >= 0 && tartagliaPoolEnd > tartagliaPoolStart);
+        assertFalse(yaml.substring(tartagliaPoolStart, tartagliaPoolEnd)
+                .contains("talent_materials_tusk_of_monoceros_caeli"));
+        int tuskId = nativeIds.get("genshin.talent_up.tusk_of_monoceros_caeli");
+        int shardId = nativeIds.get("genshin.talent_up.shard_of_a_foul_legacy");
+        int shadowId = nativeIds.get("genshin.talent_up.shadow_of_the_warrior");
+        var tartagliaRandom = new java.util.Random(76);
+        int bonusTalents = 0;
+        for (int i = 0; i < 1_000; i++) {
+            var rolled = RewardRoller.roll(tartaglia75, loot, tartagliaRandom);
+            int talentCount = rolled.getOrDefault(tuskId, 0)
+                    + rolled.getOrDefault(shardId, 0)
+                    + rolled.getOrDefault(shadowId, 0);
+            assertTrue(talentCount == 1 || talentCount == 2);
+            if (talentCount == 2) bonusTalents++;
+        }
+        assertEquals(275, bonusTalents, 55);
+
         var shoukiEarly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "shouki_no_kami", "level", "8"));
         assertTrue(shoukiEarly.rangedLoot().containsKey(

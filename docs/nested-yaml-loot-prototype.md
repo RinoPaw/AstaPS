@@ -281,6 +281,19 @@ mapping:
   properties: {slot: "1~5", rarity: 1}
 ```
 
+A generic elemental ascension-gem reward can specify the element distribution and a fixed
+native rarity together. For example:
+
+```yaml
+- {reward: genshin.avatar_ascension, properties: {element: "electro:33.33, cryo:33.33, hydro:33.34", rarity: 3}, count: "1+1:2"}
+```
+
+`element` lists exact percentages summing to 100; `rarity` is an integer from
+2 to 5. Each awarded copy independently selects its element, including bonus
+copies. This preserves the independent rolls of the former
+`gems_cryo_electro_hydro_fragment` weighted pool. Invalid elements, duplicate
+elements, missing native items, and invalid percentages are rejected.
+
 Gem and talent-book *families* may also use `properties.rarity` to choose
 one native 2–5★ gem or one native 2–4★ talent book. The values after `:`
 are percentages with at most two decimal places and no trailing zeros; they must add to `100`.

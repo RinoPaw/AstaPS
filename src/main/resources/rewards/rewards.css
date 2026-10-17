@@ -599,31 +599,38 @@ boss[type="weekly"][tag="stormterror"][level="65~69"] {
 }
 
 boss[type="weekly"][tag="stormterror"][level="70~74"] {
-    astaps.loot.weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_702: 1;
+    astaps.loot.talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh: "1";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct20p93_first_cryo: 1;
 }
 
 boss[type="weekly"][tag="stormterror"][level="75~79"] {
-    astaps.loot.weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_738: 1;
+    astaps.loot.talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh: "1+1:27.5";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct45p71_first_cryo: 1;
 }
 
 boss[type="weekly"][tag="stormterror"][level="80~84"] {
-    astaps.loot.weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_777: 1;
+    astaps.loot.talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh: "1+1:55";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct68p39_first_cryo: 1;
 }
 
 boss[type="weekly"][tag="stormterror"][level="85~89"] {
-    astaps.loot.weekly_talent_materials_dvalins_plume_shivada_jade_chunk_weight_814: 1;
+    astaps.loot.talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh: "1+1:82.5";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct91p01_first_cryo: 1;
 }
 
 boss[type="weekly"][tag="stormterror"][level="90~92"] {
-    astaps.loot.weekly_talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh_roll_2plus1pct10: 1;
+    astaps.loot.talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh: "2+1:10";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_5plus1pct13p72: 1;
 }
 
 boss[type="weekly"][tag="stormterror"][level="93~119"] {
-    astaps.loot.weekly_talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh_roll_2plus1pct40: 1;
+    astaps.loot.talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh: "2+1:40";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_5plus1pct13p72: 1;
 }
 
 boss[type="weekly"][tag="stormterror"][level="120~"] {
-    astaps.loot.weekly_talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh_roll_2plus1pct40: 1;
+    astaps.loot.talent_materials_dvalins_plume_dvalins_claw_dvalins_sigh: "2+1:40";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_5plus1pct13p72: 1;
 }
 
 /* Andrius (北风狼) */
@@ -684,27 +691,33 @@ boss[type="weekly"][tag="andrius"][level="65~69"] {
 }
 
 boss[type="weekly"][tag="andrius"][level="70~74"] {
-    astaps.loot.weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_702: 1;
+    astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct20p93_first_anemo: 1;
 }
 
 boss[type="weekly"][tag="andrius"][level="75~79"] {
-    astaps.loot.weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_738: 1;
+    astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1+1:27.5";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct45p71_first_anemo: 1;
 }
 
 boss[type="weekly"][tag="andrius"][level="80~84"] {
-    astaps.loot.weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_777: 1;
+    astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1+1:55";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct68p39_first_anemo: 1;
 }
 
 boss[type="weekly"][tag="andrius"][level="85~89"] {
-    astaps.loot.weekly_talent_materials_tail_of_agnidus_agate_chunk_weight_814: 1;
+    astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1+1:82.5";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct91p01_first_anemo: 1;
 }
 
 boss[type="weekly"][tag="andrius"][level="90~92"] {
-    astaps.loot.weekly_talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas_roll_2plus1pct10: 1;
+    astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "2+1:10";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_5plus1pct13p72: 1;
 }
 
 boss[type="weekly"][tag="andrius"][level="93~"] {
-    astaps.loot.weekly_talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas_roll_2plus1pct40: 1;
+    astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "2+1:40";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_5plus1pct13p72: 1;
 }
 
 /* Tartaglia (公子) */
@@ -765,7 +778,8 @@ boss[type="weekly"][tag="tartaglia"][level="65~69"] {
 }
 
 boss[type="weekly"][tag="tartaglia"][level="70~74"] {
-    astaps.loot.weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_702: 1;
+    astaps.loot.talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior: "1";
+    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_4plus1pct20p93: 1;
 }
 
 boss[type="weekly"][tag="tartaglia"][level="75~79"] {
@@ -774,19 +788,23 @@ boss[type="weekly"][tag="tartaglia"][level="75~79"] {
 }
 
 boss[type="weekly"][tag="tartaglia"][level="80~84"] {
-    astaps.loot.weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_777: 1;
+    astaps.loot.talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior: "1+1:55";
+    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_4plus1pct68p39: 1;
 }
 
 boss[type="weekly"][tag="tartaglia"][level="85~89"] {
-    astaps.loot.weekly_talent_materials_tusk_of_vajrada_amethyst_chunk_weight_814: 1;
+    astaps.loot.talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior: "1+1:82.5";
+    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_4plus1pct91p01: 1;
 }
 
 boss[type="weekly"][tag="tartaglia"][level="90~92"] {
-    astaps.loot.weekly_talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior_roll_2plus1pct10: 1;
+    astaps.loot.talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior: "2+1:10";
+    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_5plus1pct13p72: 1;
 }
 
 boss[type="weekly"][tag="tartaglia"][level="93~"] {
-    astaps.loot.weekly_talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior_roll_2plus1pct40: 1;
+    astaps.loot.talent_materials_tusk_of_monoceros_caeli_shard_of_a_foul_legacy_shadow_of_the_warrior: "2+1:40";
+    astaps.loot.weekly_gems_anemo_electro_hydro_fragment_5plus1pct13p72: 1;
 }
 
 /* Azhdaha Pyro Electro (若陀龙王火电) */
@@ -847,27 +865,33 @@ boss[type="weekly"][tag="azhdaha_pyro_electro"][level="65~69"] {
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="70~74"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_702_vajrada_amethyst_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1";
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_4plus1pct20p93: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="75~79"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_738_vajrada_amethyst_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:27.5";
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_4plus1pct45p71: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="80~84"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_777_vajrada_amethyst_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:55";
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_4plus1pct68p39: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="85~89"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_814_vajrada_amethyst_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:82.5";
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_4plus1pct91p01: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="90~92"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_gems_electro_geo_pyro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct10: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "2+1:10";
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_5plus1pct13p72: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_electro"][level="93~"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_gems_electro_geo_pyro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct40: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "2+1:40";
+    astaps.loot.weekly_gems_electro_geo_pyro_fragment_5plus1pct13p72: 1;
 }
 
 /* Azhdaha Hydro Electro (若陀龙王水电) */
@@ -928,27 +952,33 @@ boss[type="weekly"][tag="azhdaha_hydro_electro"][level="65~69"] {
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="70~74"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_702_varunada_lazurite_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1";
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_4plus1pct20p93: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="75~79"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_738_varunada_lazurite_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:27.5";
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_4plus1pct45p71: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="80~84"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_777_varunada_lazurite_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:55";
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_4plus1pct68p39: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="85~89"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_vajrada_amethyst_chunk_weight_814_varunada_lazurite_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:82.5";
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_4plus1pct91p01: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="90~92"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_gems_electro_geo_hydro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct10: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "2+1:10";
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_5plus1pct13p72: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_electro"][level="93~"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_gems_electro_geo_hydro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct40: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "2+1:40";
+    astaps.loot.weekly_gems_electro_geo_hydro_fragment_5plus1pct13p72: 1;
 }
 
 /* Azhdaha Pyro Cryo (若陀龙王火冰) */
@@ -1009,27 +1039,33 @@ boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="65~69"] {
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="70~74"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_702_vayuda_turquoise_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct20p93_first_pyro: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="75~79"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_738_vayuda_turquoise_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:27.5";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct45p71_first_pyro: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="80~84"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_777_vayuda_turquoise_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:55";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct68p39_first_pyro: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="85~89"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_agnidus_agate_chunk_weight_814_vayuda_turquoise_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:82.5";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct91p01_first_pyro: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="90~92"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_gems_anemo_geo_pyro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct10: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "2+1:10";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_5plus1pct13p72: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_pyro_cryo"][level="93~"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_gems_anemo_geo_pyro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct40: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "2+1:40";
+    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_5plus1pct13p72: 1;
 }
 
 /* Azhdaha Hydro Cryo (若陀龙王水冰) */
@@ -1090,27 +1126,33 @@ boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="65~69"] {
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="70~74"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_702_varunada_lazurite_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1";
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_4plus1pct20p93: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="75~79"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_738_varunada_lazurite_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:27.5";
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_4plus1pct45p71: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="80~84"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_777_varunada_lazurite_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:55";
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_4plus1pct68p39: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="85~89"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_vayuda_turquoise_chunk_weight_814_varunada_lazurite_chunk_roll_1: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "1+1:82.5";
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_4plus1pct91p01: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="90~92"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_gems_anemo_geo_hydro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct10: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "2+1:10";
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_5plus1pct13p72: 1;
 }
 
 boss[type="weekly"][tag="azhdaha_hydro_cryo"][level="93~"] {
-    astaps.loot.weekly_talent_materials_dragon_lords_gems_anemo_geo_hydro_chunk_fragment_gemstone_sliver_roll_5plus1pct13p72_crown_bloodjade_branch_gilded_scale_roll_2plus1pct40: 1;
+    astaps.loot.talent_materials_dragon_lords_crown_bloodjade_branch_gilded_scale: "2+1:40";
+    astaps.loot.weekly_gems_anemo_geo_hydro_fragment_5plus1pct13p72: 1;
 }
 
 /* Signora (女士) */
@@ -1171,27 +1213,33 @@ boss[type="weekly"][tag="signora"][level="65~69"] {
 }
 
 boss[type="weekly"][tag="signora"][level="70~74"] {
-    astaps.loot.weekly_talent_materials_molten_moment_agnidus_agate_chunk_weight_702: 1;
+    astaps.loot.talent_materials_molten_moment_hellfire_butterfly_ashen_heart: "1";
+    astaps.loot.weekly_gems_anemo_pyro_fragment_4plus1pct20p93: 1;
 }
 
 boss[type="weekly"][tag="signora"][level="75~79"] {
-    astaps.loot.weekly_talent_materials_molten_moment_agnidus_agate_chunk_weight_738: 1;
+    astaps.loot.talent_materials_molten_moment_hellfire_butterfly_ashen_heart: "1+1:27.5";
+    astaps.loot.weekly_gems_anemo_pyro_fragment_4plus1pct45p71: 1;
 }
 
 boss[type="weekly"][tag="signora"][level="80~84"] {
-    astaps.loot.weekly_talent_materials_molten_moment_agnidus_agate_chunk_weight_777: 1;
+    astaps.loot.talent_materials_molten_moment_hellfire_butterfly_ashen_heart: "1+1:55";
+    astaps.loot.weekly_gems_anemo_pyro_fragment_4plus1pct68p39: 1;
 }
 
 boss[type="weekly"][tag="signora"][level="85~89"] {
-    astaps.loot.weekly_talent_materials_molten_moment_agnidus_agate_chunk_weight_814: 1;
+    astaps.loot.talent_materials_molten_moment_hellfire_butterfly_ashen_heart: "1+1:82.5";
+    astaps.loot.weekly_gems_anemo_pyro_fragment_4plus1pct91p01: 1;
 }
 
 boss[type="weekly"][tag="signora"][level="90~92"] {
-    astaps.loot.weekly_talent_materials_molten_moment_hellfire_butterfly_ashen_heart_roll_2plus1pct10: 1;
+    astaps.loot.talent_materials_molten_moment_hellfire_butterfly_ashen_heart: "2+1:10";
+    astaps.loot.weekly_gems_anemo_pyro_fragment_5plus1pct13p72: 1;
 }
 
 boss[type="weekly"][tag="signora"][level="93~"] {
-    astaps.loot.weekly_talent_materials_molten_moment_hellfire_butterfly_ashen_heart_roll_2plus1pct40: 1;
+    astaps.loot.talent_materials_molten_moment_hellfire_butterfly_ashen_heart: "2+1:40";
+    astaps.loot.weekly_gems_anemo_pyro_fragment_5plus1pct13p72: 1;
 }
 
 /* Raiden Shogun (雷电将军) */
@@ -1252,27 +1300,33 @@ boss[type="weekly"][tag="raiden_shogun"][level="65~69"] {
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="70~74"] {
-    astaps.loot.weekly_talent_materials_mudra_of_vajrada_amethyst_chunk_weight_702: 1;
+    astaps.loot.talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons: "1";
+    astaps.loot.weekly_gems_electro_fragment_4plus1pct20p93: 1;
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="75~79"] {
-    astaps.loot.weekly_talent_materials_mudra_of_vajrada_amethyst_chunk_weight_738: 1;
+    astaps.loot.talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons: "1+1:27.5";
+    astaps.loot.weekly_gems_electro_fragment_4plus1pct45p71: 1;
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="80~84"] {
-    astaps.loot.weekly_talent_materials_mudra_of_vajrada_amethyst_chunk_weight_777: 1;
+    astaps.loot.talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons: "1+1:55";
+    astaps.loot.weekly_gems_electro_fragment_4plus1pct68p39: 1;
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="85~89"] {
-    astaps.loot.weekly_talent_materials_mudra_of_vajrada_amethyst_chunk_weight_814: 1;
+    astaps.loot.talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons: "1+1:82.5";
+    astaps.loot.weekly_gems_electro_fragment_4plus1pct91p01: 1;
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="90~92"] {
-    astaps.loot.weekly_talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons_roll_2plus1pct10: 1;
+    astaps.loot.talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons: "2+1:10";
+    astaps.loot.weekly_gems_electro_fragment_5plus1pct13p72: 1;
 }
 
 boss[type="weekly"][tag="raiden_shogun"][level="93~"] {
-    astaps.loot.weekly_talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons_roll_2plus1pct40: 1;
+    astaps.loot.talent_materials_mudra_of_the_malefic_general_tears_of_the_calamitous_god_the_meaning_of_aeons: "2+1:40";
+    astaps.loot.weekly_gems_electro_fragment_5plus1pct13p72: 1;
 }
 
 /* Shouki no Kami (「正机之神」) */
@@ -1333,27 +1387,33 @@ boss[type="weekly"][tag="shouki_no_kami"][level="65~69"] {
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="70~74"] {
-    astaps.loot.weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_702: 1;
+    astaps.loot.talent_materials_puppet_strings_mirror_of_mushin_dakas_bell: "1";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct20p93_first_electro: 1;
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="75~79"] {
-    astaps.loot.weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_738: 1;
+    astaps.loot.talent_materials_puppet_strings_mirror_of_mushin_dakas_bell: "1+1:27.5";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct45p71_first_electro: 1;
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="80~84"] {
-    astaps.loot.weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_777: 1;
+    astaps.loot.talent_materials_puppet_strings_mirror_of_mushin_dakas_bell: "1+1:55";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct68p39_first_electro: 1;
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="85~89"] {
-    astaps.loot.weekly_talent_materials_puppet_strings_shivada_jade_chunk_weight_814: 1;
+    astaps.loot.talent_materials_puppet_strings_mirror_of_mushin_dakas_bell: "1+1:82.5";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_4plus1pct91p01_first_electro: 1;
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="90~92"] {
-    astaps.loot.weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct10: 1;
+    astaps.loot.talent_materials_puppet_strings_mirror_of_mushin_dakas_bell: "2+1:10";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_5plus1pct13p72: 1;
 }
 
 boss[type="weekly"][tag="shouki_no_kami"][level="93~"] {
-    astaps.loot.weekly_talent_materials_puppet_strings_mirror_of_mushin_dakas_bell_roll_2plus1pct40: 1;
+    astaps.loot.talent_materials_puppet_strings_mirror_of_mushin_dakas_bell: "2+1:40";
+    astaps.loot.weekly_gems_cryo_electro_hydro_fragment_5plus1pct13p72: 1;
 }
 
 /* World Boss drops (ChestDrop sourceType 34); requires a source tag and level.

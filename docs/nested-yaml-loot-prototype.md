@@ -60,7 +60,7 @@ For Maguu Kenki at native level 50–54:
 
 ```css
 boss[type="world"][tag="maguu_kenki"][level="50~54"] {
-    genshin.avatar_ascension.marionette_core: "1+1:86.64";
+    genshin.avatar_ascension.marionette_core: "${marionette_core(level)}";
     astaps.loot.world_marionette_core_shivada_jade_sliver_weight_4193_gem: 1;
     astaps.loot.world_hurricane_seed_shivada_jade_sliver_weight_3817_artifact: 1;
 }
@@ -250,18 +250,19 @@ because the available artifact sets differ by rarity.
 Reward counts that follow an irregular discrete curve belong in
 \`src/main/resources/rewards/curves.yaml\`. The keys are exact levels or
 inclusive level ranges. The value is an ordinary quoted loot-count expression.
-Ranges may end in \`~\` to cover all higher levels. The source data is not
-interpolated or approximated.
+Ranges may end in \`~\` to cover all higher levels. Stored probabilities are
+curated integer percentages; lookup never interpolates between the given values.
 
 \`\`\`yaml
 marionette_core:
-  "50~54": "1+1:86.64"
-  "55~59": "1+1:95.26"
-  "60~64": "2+1:3.87"
+  "50~54": "1+1:86"
+  "55~59": "1+1:95"
+  "60~64": "2+1:3"
+  "90~": "2+1:55"
 \`\`\`
 
-The full bundled curve includes all 14 source-backed intervals from 30–34
-through 93+. A CSS property selects its value by the native Boss level:
+The full bundled curve has thirteen curated intervals starting at 30–34 and
+ending at 90+. A CSS property selects its value by the native Boss level:
 
 \`\`\`css
 boss[type="world"][tag="maguu_kenki"][level="50~54"] {
@@ -282,9 +283,9 @@ The same lookup also controls the 4+1 gem-roll count of weekly Bosses:
 ```yaml
 weekly_gems_4plus1:
   "70~74": "4+1:21"
-  "75~79": "4+1:45.71"
-  "80~84": "4+1:68.39"
-  "85~89": "4+1:91.01"
+  "75~79": "4+1:45"
+  "80~84": "4+1:69"
+  "85~89": "4+1:91"
 ```
 
 For Andrius at level 75–79:

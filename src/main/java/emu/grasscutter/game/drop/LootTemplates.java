@@ -3,6 +3,7 @@ package emu.grasscutter.game.drop;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,23 +59,33 @@ final class LootTemplates {
                 throw new IllegalArgumentException("Loot template shadows table: " + name);
             }
         }
-        result.replaceAll((key, value) -> templates.substitute(value, Map.of(), 0));
+        var shared = new IdentityHashMap<Object, Object>();
+        result.replaceAll((key, value) -> templates.substitute(value, Map.of(), 0, shared));
         return result;
     }
 
-    private Object substitute(Object raw, Map<String, Integer> parameters, int depth) {
+    private Object substitute(Object raw, Map<String, Integer> parameters, int depth,
+                              IdentityHashMap<Object, Object> shared) {
         if (depth > MAX_DEPTH) {
             throw new IllegalArgumentException("Loot template nesting exceeds " + MAX_DEPTH);
         }
         if (raw instanceof List<?> list) {
+            Object existing = shared.get(raw);
+            if (existing != null) return existing;
             var output = new ArrayList<Object>(list.size());
-            for (Object value : list) output.add(substitute(value, parameters, depth + 1));
+            shared.put(raw, output);
+            for (Object value : list) {
+                output.add(substitute(value, parameters, depth + 1, shared));
+            }
             return output;
         }
         if (raw instanceof Map<?, ?> map) {
+            Object existing = shared.get(raw);
+            if (existing != null) return existing;
             var output = new LinkedHashMap<Object, Object>();
+            shared.put(raw, output);
             for (var entry : map.entrySet()) {
-                Object value = substitute(entry.getValue(), parameters, depth + 1);
+                Object value = substitute(entry.getValue(), parameters, depth + 1, shared);
                 if ("reward".equals(entry.getKey()) && value instanceof String reward) {
                     value = expandReward(reward, depth + 1);
                 }
@@ -158,7 +169,8 @@ final class LootTemplates {
                 throw new IllegalArgumentException("Empty loot template expansion: " + key);
             }
             List<?> expanded = (List<?>) substitute(combined,
-                    Map.of(definition.parameter(), value), depth + 1);
+                    Map.of(definition.parameter(), value), depth + 1,
+                    new IdentityHashMap<>());
             instances.put(key, expanded);
             return expanded;
         } finally {

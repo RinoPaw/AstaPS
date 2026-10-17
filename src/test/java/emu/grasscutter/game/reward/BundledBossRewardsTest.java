@@ -216,7 +216,7 @@ final class BundledBossRewardsTest {
                 line.contains("world_artifacts_pool_1(level)")).count());
         assertEquals(360, stylesheet.lines().filter(line ->
                 line.contains("world_artifacts_pool_2(level)")).count());
-        assertEquals(624, stylesheet.lines().filter(line ->
+        assertEquals(729, stylesheet.lines().filter(line ->
                 line.contains("world_ascension_material_count(level)")).count());
         assertEquals(14, yaml.lines().filter(line ->
                 line.matches("^weekly_gems_[a-z0-9_]+_rarity_2to[45]_first_[a-z]+:$")).count());

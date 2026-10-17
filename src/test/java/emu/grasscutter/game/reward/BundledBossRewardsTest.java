@@ -74,7 +74,7 @@ final class BundledBossRewardsTest {
             }
             assertEquals(0, total.compareTo(new java.math.BigDecimal("100.00")));
         }
-        assertEquals(658, gems, "All non-duplicated gem-family rewards must be validated");
+        assertEquals(621, gems, "All non-duplicated gem-family rewards must be validated");
         assertEquals(0, talents, "Guaranteed rarity selections use integer grades");
         assertEquals(6, Pattern.compile(
                 "reward: genshin\\.talent_up\\.[a-z_]+, properties: \\{rarity: [234]\\}")
@@ -160,6 +160,18 @@ final class BundledBossRewardsTest {
         assertEquals("2+1:55.56", curves.require("marionette_core").lookup("130"));
         assertThrows(IllegalArgumentException.class,
                 () -> curves.require("marionette_core").lookup("29"));
+        assertEquals("4+1:21", curves.require("weekly_gems_4plus1").lookup("70"));
+        assertEquals("4+1:45.71", curves.require("weekly_gems_4plus1").lookup("77"));
+        assertEquals("4+1:68.39", curves.require("weekly_gems_4plus1").lookup("82"));
+        assertEquals("4+1:91.01", curves.require("weekly_gems_4plus1").lookup("89"));
+        assertThrows(IllegalArgumentException.class,
+                () -> curves.require("weekly_gems_4plus1").lookup("90"));
+        assertEquals(27, stylesheet.lines().filter(line ->
+                line.contains("weekly_gems_4plus1(level)")).count());
+        assertEquals(14, yaml.lines().filter(line ->
+                line.matches("^weekly_gems_[a-z0-9_]+_rarity_2to[45]_first_[a-z]+:$")).count());
+        assertFalse(loot.contains(
+                "astaps.loot.weekly_gems_anemo_geo_pyro_fragment_4plus1pct45p71_first_anemo"));
         assertEquals(978, stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertEquals(211, stylesheet.lines()
@@ -182,7 +194,7 @@ final class BundledBossRewardsTest {
                 .matcher(yaml).find());
 
         // Reusable pools retain their content-based identities.
-        assertEquals(625, loot.names().size()); // World reward groups are deduplicated per reward category.
+        assertEquals(612, loot.names().size()); // Weekly 4+1 groups also share weighted rarity pools.
         assertEquals(374, yaml.lines().filter(line -> line.matches(
                 "^world_[a-z0-9_]+_(material|gem|artifact):$")).count(),
                 "Shared world pools must contain only one reward category");
@@ -292,6 +304,27 @@ final class BundledBossRewardsTest {
         var maguuMaterials = RewardRoller.roll(maguu, loot, new java.util.Random(4193));
         assertTrue(maguuMaterials.getOrDefault(
                 nativeIds.get("genshin.avatar_ascension.marionette_core"), 0) >= 1);
+
+        // Andrius 75–84 uses the same weighted rarity pool with an exact level curve.
+        var andrius75 = css.resolve("boss", Map.of(
+                "type", "weekly", "tag", "andrius", "level", "77"));
+        var andrius80 = css.resolve("boss", Map.of(
+                "type", "weekly", "tag", "andrius", "level", "82"));
+        String anemoGeoPyro = "astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo";
+        String fragmentPool = "astaps.loot.gems_anemo_geo_pyro_fragment";
+        assertTrue(andrius75.rangedLoot().containsKey(anemoGeoPyro));
+        assertTrue(andrius80.rangedLoot().containsKey(anemoGeoPyro));
+        assertTrue(andrius75.rangedLoot().containsKey(fragmentPool));
+        assertEquals(4, andrius75.rangedLoot().get(anemoGeoPyro).sample(
+                new java.util.Random() { @Override public double nextDouble() { return 0.99; } }));
+        assertEquals(5, andrius75.rangedLoot().get(anemoGeoPyro).sample(
+                new java.util.Random() { @Override public double nextDouble() { return 0.0; } }));
+        assertEquals(5, andrius80.rangedLoot().get(anemoGeoPyro).sample(
+                new java.util.Random() { @Override public double nextDouble() { return 0.5; } }));
+        assertEquals(4, andrius75.rangedLoot().get(anemoGeoPyro).sample(
+                new java.util.Random() { @Override public double nextDouble() { return 0.7; } }));
+        assertFalse(andrius75.loot().containsKey(anemoGeoPyro));
+        assertFalse(andrius80.loot().containsKey(anemoGeoPyro));
 
         // Tartaglia 75–79 selects talent materials independently of gem rolls.
         var tartaglia75 = css.resolve("boss", Map.of(

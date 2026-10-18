@@ -2,12 +2,15 @@
 # Late-game (100+) profiles are deferred; no extrapolation.
 # Source: ChestDrop.json -> DropTableExcelConfigData.json.
 # Constants belong in rewards.css, not in level curves.
+# World curve names: <object>_<item>_<stage>_<field>_<index>.
+# Indices restart at 1 for each object/item/stage/field group.
 
 # Early game: gem item quantities and independent pool rolls stay distinct.
 # The three profiles share probabilities but award 3, 1 pool roll, or 9 per unit.
 # Keep the native copy-versus-roll semantics without adding expression syntax.
 
-world_gems_early_item_count:
+# Direct item count: 3 gems per unit.
+world_gems_early_count_1:
   "1~4": "3+3:47.246"
   "5~9": "3+3:57.179"
   "10~14": "3+3:69.587"
@@ -15,7 +18,8 @@ world_gems_early_item_count:
   "20~24": "3+3:94.403"
   "25~29": "6+3:6.811"
 
-world_gems_early_roll_count:
+# Independent weighted pool executions: 3 gems per selected element.
+world_gems_early_count_2:
   "1~4": "1+1:47.246"
   "5~9": "1+1:57.179"
   "10~14": "1+1:69.587"
@@ -23,7 +27,8 @@ world_gems_early_roll_count:
   "20~24": "1+1:94.403"
   "25~29": "2+1:6.811"
 
-world_gems_early_triple_item_count:
+# Setekh Wenut direct item count: 9 gems per unit.
+world_gems_early_count_3:
   "1~4": "9+9:47.246"
   "5~9": "9+9:57.179"
   "10~14": "9+9:69.587"
@@ -34,7 +39,7 @@ world_gems_early_triple_item_count:
 # Early exclusive materials: evaluate independently for each material.
 # Missing native material entries stay absent; Icewind Suite has two identities.
 
-world_ascension_material_early_count:
+world_ascension_material_early_count_1:
   "1~4": "1+1:33.86"
   "5~9": "1+1:42.89"
   "10~14": "1+1:54.17"
@@ -44,7 +49,7 @@ world_ascension_material_early_count:
 
 # Mid game: main gem pool rolls. The Lv.40+ fragment bonus is a CSS constant.
 
-world_gems_mid_roll_count:
+world_gems_mid_count_1:
   "30~34": "2+1:19.219"
   "35~39": "2+1:31.627"
   "40~44": "1+1:43.847"
@@ -61,7 +66,7 @@ world_gems_mid_roll_count:
 
 # Mid game: one standard material curve for both older and modern Bosses.
 
-world_ascension_material_mid_count:
+world_ascension_material_mid_count_1:
   "30~34": "1+1:52.18"
   "35~39": "1+1:60.8"
   "40~44": "1+1:69.41"
@@ -78,7 +83,7 @@ world_ascension_material_mid_count:
 
 # Pyro Regisvine and Oceanid retain their distinct native material odds.
 
-world_ascension_material_mid_high_yield_count:
+world_ascension_material_mid_count_2:
   "30~34": "1+1:67.398"
   "35~39": "1+1:76.88"
   "40~44": "1+1:86.351"

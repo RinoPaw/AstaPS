@@ -157,6 +157,18 @@ The source is `data/ChestDrop.json` followed by
 root rows. Level 90+ uses the last identical gem distribution, including
 native rows at 93, 100, 105, 110, 115, and 120; the final CSS range is open-ended.
 
+## World Boss artifacts
+
+Electro Hypostasis and Maguu Kenki now have artifact rules appended to the
+bundled `rewards.css`, backed by nine pools in the bundled `loot.yaml`.
+The rules cover all positive levels and share the five-star pool. Each
+active rarity pool rolls independently. Explicit slot and initial-substat
+properties preserve the native probabilities, including prayer circlets and
+66%/34% substat counts. No new syntax or loader is added.
+
+See [the artifact configuration notes](examples/world-boss-artifacts.md)
+for the original-source comparison and remaining source gaps.
+
 ## Count expressions
 
 CSS accepts fixed counts, inclusive integer ranges (`2~3`), and quoted
@@ -175,7 +187,8 @@ executing a loot table N times independently evaluates the table N times.
 
 World Boss material, Mora, and experience rules remain in CSS. Gemstone
 contents and candidate weights live in parameterized YAML lists selected by
-CSS. Artifact and weekly-Boss configuration remain absent during this work.
+CSS. Artifact configuration currently covers Electro Hypostasis and Maguu
+Kenki only. Other Boss artifacts and weekly-Boss configuration remain absent.
 Chest contents retain weapons, experience items, ore, food, and talent books;
 chest artifact entries are removed. Blossoms and scene-point rewards remain.
 This is an intermediate world-Boss configuration, not a complete game

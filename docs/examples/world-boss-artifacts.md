@@ -1,9 +1,12 @@
-# World Boss artifact examples
+# World Boss artifact configuration
 
-`world-boss-artifacts.yaml` and `world-boss-artifacts.css` describe Electro
-Hypostasis and Maguu Kenki at every positive level using the existing reward
-syntax. These review examples are separate from the bundled reward loader.
-They do not restore artifacts for other Bosses, chests, or weekly sources.
+Electro Hypostasis and Maguu Kenki artifact rules are now included in
+`src/main/resources/rewards/rewards.css` (at the end of the file), with their
+candidate pools in `src/main/resources/rewards/loot.yaml`.
+
+`world-boss-artifacts.yaml` and `world-boss-artifacts.css` remain standalone
+review copies of those artifact rules. The runtime loads the bundled files.
+Other Bosses, chests, and weekly sources still have no artifact configuration.
 
 The two Bosses share quantity rules and a five-star pool. Their lower-rarity
 candidate sets differ. Nine YAML pools contain 22 weighted set entries; CSS
@@ -35,7 +38,7 @@ subtables and artifact attributes come from `RinoPaw/AstaPS-Resource` at
 - `Server/DropSubTableExcelConfigData.json`
 - `ExcelBinOutput/ReliquaryExcelConfigData.json`
 
-The generated files were read back and compared with all native candidate
+The bundled artifact rules were read back and compared with all native candidate
 item IDs and their complete probabilities using exact rational arithmetic.
 The comparison covers both Bosses at levels 1–200, 1000, and 2147483647:
 404 Boss/level combinations. It preserves quantity distributions, independent

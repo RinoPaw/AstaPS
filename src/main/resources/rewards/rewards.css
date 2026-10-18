@@ -1,5 +1,6 @@
-/* World Boss material and gem working configuration.
- * Artifact and weekly-Boss reward configuration remains absent.
+/* World Boss material, gem, and artifact working configuration.
+ * World Boss artifacts cover Electro Hypostasis and Maguu Kenki.
+ * Chest artifact and weekly-Boss reward configuration remains absent.
  * World Boss currencies/EXP and non-artifact chest contents are retained.
  * BOSS_MATERIAL and ELEMENT bind identities; shared rules declare count rolls.
  */
@@ -1166,4 +1167,130 @@ boss[type="world"][tag="lava_dragon_statue,lord_of_the_deep_dreadwing"][level="1
 
 boss[type="world"][tag="tenebrous_papilla"][level="1~"] {
     astaps.loot.world_1-plus_gem_7<ELEMENT>: 1;
+}
+
+/* World Boss artifacts: Electro Hypostasis and Maguu Kenki.
+ * Each rarity pool rolls independently; zero outcomes are explicit.
+ */
+
+/* 无相之雷: levels in ascending order. */
+boss[type="world"][tag="electro_hypostasis"][level="1~4"] {
+    astaps.loot.world_artifact_1star_1: "3:11, 4:39";
+    astaps.loot.world_artifact_2star_1: "0:29, 1:21";
+}
+
+boss[type="world"][tag="electro_hypostasis"][level="5~14"] {
+    astaps.loot.world_artifact_1star_1: "2:57, 3:193";
+    astaps.loot.world_artifact_2star_1: "1:143, 2:107";
+}
+
+boss[type="world"][tag="electro_hypostasis"][level="15~24"] {
+    astaps.loot.world_artifact_1star_1: "1:143, 2:107";
+    astaps.loot.world_artifact_2star_1: "2:81, 3:44";
+    astaps.loot.world_artifact_3star_1: "0:29, 1:21";
+}
+
+boss[type="world"][tag="electro_hypostasis"][level="25~34"] {
+    astaps.loot.world_artifact_2star_1: "2:3, 3:47";
+    astaps.loot.world_artifact_3star_1: "1:37, 2:13";
+}
+
+boss[type="world"][tag="electro_hypostasis"][level="35~44"] {
+    astaps.loot.world_artifact_2star_1: "1:143, 2:107";
+    astaps.loot.world_artifact_3star_1: "2:57, 3:193";
+}
+
+boss[type="world"][tag="electro_hypostasis"][level="45~59"] {
+    astaps.loot.world_artifact_3star_1: "3:11, 4:39";
+    astaps.loot.world_artifact_4star_1: "0:29, 1:21";
+}
+
+boss[type="world"][tag="electro_hypostasis"][level="60~69"] {
+    astaps.loot.world_artifact_3star_1: "3:16, 4:9";
+    astaps.loot.world_artifact_4star_1: "0:4, 1:21";
+}
+
+boss[type="world"][tag="electro_hypostasis"][level="70~79"] {
+    astaps.loot.world_artifact_3star_1: "2:3, 3:47";
+    astaps.loot.world_artifact_4star_1: "1:19, 2:1";
+    astaps.loot.world_artifact_5star_1: "0:79, 1:21";
+}
+
+boss[type="world"][tag="electro_hypostasis"][level="80~89"] {
+    astaps.loot.world_artifact_3star_1: "2:12, 3:13";
+    astaps.loot.world_artifact_4star_1: "1:37, 2:13";
+    astaps.loot.world_artifact_5star_1: "0:29, 1:21";
+}
+
+boss[type="world"][tag="electro_hypostasis"][level="90~92"] {
+    astaps.loot.world_artifact_3star_1: "2:9, 3:1";
+    astaps.loot.world_artifact_4star_1: "1:53, 2:47";
+    astaps.loot.world_artifact_5star_1: "0:37, 1:63";
+}
+
+boss[type="world"][tag="electro_hypostasis"][level="93~"] {
+    astaps.loot.world_artifact_3star_1: "2:9, 3:1";
+    astaps.loot.world_artifact_4star_1: "1:53, 2:47";
+    astaps.loot.world_artifact_5star_1: 1;
+}
+
+/* 魔偶剑鬼: levels in ascending order. */
+boss[type="world"][tag="maguu_kenki"][level="1~4"] {
+    astaps.loot.world_artifact_1star_2: "3:11, 4:39";
+    astaps.loot.world_artifact_2star_2: "0:29, 1:21";
+}
+
+boss[type="world"][tag="maguu_kenki"][level="5~14"] {
+    astaps.loot.world_artifact_1star_2: "2:57, 3:193";
+    astaps.loot.world_artifact_2star_2: "1:143, 2:107";
+}
+
+boss[type="world"][tag="maguu_kenki"][level="15~24"] {
+    astaps.loot.world_artifact_1star_2: "1:143, 2:107";
+    astaps.loot.world_artifact_2star_2: "2:81, 3:44";
+    astaps.loot.world_artifact_3star_2: "0:29, 1:21";
+}
+
+boss[type="world"][tag="maguu_kenki"][level="25~34"] {
+    astaps.loot.world_artifact_2star_2: "2:3, 3:47";
+    astaps.loot.world_artifact_3star_2: "1:37, 2:13";
+}
+
+boss[type="world"][tag="maguu_kenki"][level="35~44"] {
+    astaps.loot.world_artifact_2star_2: "1:143, 2:107";
+    astaps.loot.world_artifact_3star_2: "2:57, 3:193";
+}
+
+boss[type="world"][tag="maguu_kenki"][level="45~59"] {
+    astaps.loot.world_artifact_3star_2: "3:11, 4:39";
+    astaps.loot.world_artifact_4star_2: "0:29, 1:21";
+}
+
+boss[type="world"][tag="maguu_kenki"][level="60~69"] {
+    astaps.loot.world_artifact_3star_2: "3:16, 4:9";
+    astaps.loot.world_artifact_4star_2: "0:4, 1:21";
+}
+
+boss[type="world"][tag="maguu_kenki"][level="70~79"] {
+    astaps.loot.world_artifact_3star_2: "2:3, 3:47";
+    astaps.loot.world_artifact_4star_2: "1:19, 2:1";
+    astaps.loot.world_artifact_5star_1: "0:79, 1:21";
+}
+
+boss[type="world"][tag="maguu_kenki"][level="80~89"] {
+    astaps.loot.world_artifact_3star_2: "2:12, 3:13";
+    astaps.loot.world_artifact_4star_2: "1:37, 2:13";
+    astaps.loot.world_artifact_5star_1: "0:29, 1:21";
+}
+
+boss[type="world"][tag="maguu_kenki"][level="90~92"] {
+    astaps.loot.world_artifact_3star_2: "2:9, 3:1";
+    astaps.loot.world_artifact_4star_2: "1:53, 2:47";
+    astaps.loot.world_artifact_5star_1: "0:37, 1:63";
+}
+
+boss[type="world"][tag="maguu_kenki"][level="93~"] {
+    astaps.loot.world_artifact_3star_2: "2:9, 3:1";
+    astaps.loot.world_artifact_4star_2: "1:53, 2:47";
+    astaps.loot.world_artifact_5star_1: 1;
 }

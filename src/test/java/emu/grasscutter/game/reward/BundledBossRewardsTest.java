@@ -119,11 +119,13 @@ final class BundledBossRewardsTest {
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, categories),
                 loot, curves);
         var config = new RewardConfiguration(loot, css);
-        for (var boss : new String[] {
-                "electro_hypostasis", "primo_geovishap_cryo", "maguu_kenki",
-                "setekh_wenut", "frostnight_scion", "icewind_suite",
-                "knuckle_duck", "precision_clockwork", "tenebrous_papilla"
-        }) {
+        var bosses = stylesheet.lines()
+                .filter(line -> line.startsWith("boss[type=\\"world\\"][tag=\\""))
+                .map(line -> line.substring(
+                        line.indexOf("[tag=\\"") + 6, line.indexOf("\\"][level=\\"")))
+                .toList();
+        assertEquals(48, new java.util.HashSet<>(bosses).size());
+        for (var boss : bosses) {
             for (int level : new int[] {1, 5, 10, 15, 20, 25, 29}) {
                 var attributes = Map.of(
                         "type", "world", "tag", boss, "level", Integer.toString(level));

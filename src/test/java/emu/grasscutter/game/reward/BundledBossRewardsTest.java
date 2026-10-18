@@ -96,13 +96,24 @@ final class BundledBossRewardsTest {
         var categories = new HashMap<Integer, String>();
         Pattern.compile("genshin\\.(material|avatar_ascension|weapon_ascension|talent_up|weapon_crafting)\\.([a-z0-9_.]+)\\s*:")
                 .matcher(stylesheet).results()
-                .map(match -> "genshin." + match.group(1) + "." + match.group(2))
+                .map(match -> Map.entry(match.group(1), match.group(2)))
                 .distinct()
-                .forEach(reference -> {
-                    String canonical = ResourceAliases.GENSHIN.resolve(reference).toString();
+                .forEach(entry -> {
+                    String category = entry.getKey();
+                    String name = entry.getValue();
+                    String canonical = ResourceAliases.GENSHIN.resolve(
+                            "genshin." + category + "." + name).toString();
                     int id = ids.computeIfAbsent(canonical, ignored -> nextId.incrementAndGet());
-                    known.put(id, canonical.replace('.', ' ').replace('_', ' '));
-                    categories.put(id, "Character Development Items");
+                    String displayName = category.equals("avatar_ascension")
+                            ? canonical.substring("genshin.avatar_ascension.".length())
+                                    .replace('.', ' ').replace('_', ' ')
+                            : name.replace('_', ' ');
+                    known.put(id, displayName);
+                    categories.put(id, switch (category) {
+                        case "avatar_ascension", "weapon_crafting" -> "Character Development Items";
+                        case "talent_up" -> "Talent Level-Up Materials";
+                        default -> "Materials";
+                    });
                 });
         var curves = RewardCurves.parse(RewardConfiguration.readBundled("curves.yaml"));
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, categories),

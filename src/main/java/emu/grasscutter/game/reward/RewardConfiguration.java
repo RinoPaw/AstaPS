@@ -151,6 +151,7 @@ public final class RewardConfiguration {
             Map.entry("蕴光月幻蝶", "lightbearing_lunar_moth"),
             Map.entry("深邃魹语之主", "lord_of_the_deep_dreadwing"),
             Map.entry("魔偶剑鬼", "maguu_kenki"),
+            Map.entry("精密发条机关", "precision_clockwork"),
             Map.entry("千年珍珠骏麟", "millennial_pearl_seahorse"),
             Map.entry("纯水精灵", "oceanid"),
             Map.entry("恒常机关阵列", "perpetual_mechanical_array"),
@@ -181,7 +182,8 @@ public final class RewardConfiguration {
                 "tag", CSS_BOSS_TAGS.getOrDefault(tag, tag),
                 "level", Integer.toString(nativeBossLevel));
         var selection = css.resolve("boss", attributes);
-        if (selection.loot().isEmpty() && selection.rangedLoot().isEmpty()) {
+        if (selection.loot().isEmpty() && selection.rangedLoot().isEmpty()
+                && selection.rangedItems().isEmpty()) {
             return null;
         }
         return RewardRoller.roll(selection, loot, random);

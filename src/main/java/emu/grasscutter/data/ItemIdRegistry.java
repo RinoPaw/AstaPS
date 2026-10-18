@@ -54,7 +54,9 @@ public final class ItemIdRegistry {
             Map.entry(104003, "heros_wit"),
             Map.entry(104011, "enhancement_ore"),
             Map.entry(104012, "fine_ore"),
-            Map.entry(104013, "mystic_ore"));
+            Map.entry(104013, "mystic_ore"),
+            // Stable internal resource path for native Boss material 113080.
+            Map.entry(113080, "precision_clockwork_core"));
 
     // Explicit item identities for the historic chest reward graph.
     // Artifact identities are generated from native set/slot/rarity data at runtime.
@@ -152,6 +154,7 @@ public final class ItemIdRegistry {
             "perpetual_caliber",
             "perpetual_heart",
             "plume_of_the_fallen_watcher",
+            "precision_clockwork_core",
             "precision_kuuvahki_stamping_die",
             "prismatic_severed_tail",
             "pseudo_stamens",

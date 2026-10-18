@@ -1,5 +1,21 @@
 # Reward configuration
 
+## World Boss migration status
+
+All 48 sourceType=34 native world Boss identities use explicit CSS rules for
+native levels 1–29. Their gems use shared count curves and eight independent
+dual-element choice pools; exclusive ascension materials use the native early
+curve (Icewind Suite rolls both distinct items). Fifteen Bosses have no gems
+and 25 have no exclusive materials at these levels. No world Boss artifact
+payout is configured in CSS at this stage. Native world Boss rewards remain
+authoritative for levels 30 and above until those brackets are migrated.
+The previous 239 `world_*` loot tables were removed from `loot.yaml`.
+The synthetic internal resource alias `precision_clockwork_core` maps to
+native material ID 113080 for the Precision Clockwork source tag.
+The weekly Boss and chest reward tables are unchanged.
+
+## Historical prototype notes (before the world Boss cleanup)
+
 The runtime reads three bundled files: `src/main/resources/rewards/loot.yaml`,
 `src/main/resources/rewards/rewards.css`, and
 `src/main/resources/rewards/curves.yaml`. There is no editable `config/rewards`

@@ -1,20 +1,22 @@
 # Reward configuration
 
-## World Boss migration status
+## Material-focused working state
 
-All 48 native sourceType=34 world Boss identities have explicit CSS gem and
-exclusive-material rules for early game (native level 1-29) and mid game
-(level 30-99). Late-game (level 100+) profiles are deferred and use the native
-fallback. Mid-game older and modern Bosses share one material curve;
-Pyro Regisvine and Oceanid retain their higher-yield material curve.
-Icewind Suite rolls its two material identities independently. Fixed 9-count
-per-item gems and the fixed fragment bonus live directly in CSS.
+The bundled `rewards.css` and `loot.yaml` no longer contain gemstone,
+artifact, or weekly-Boss reward configuration. Chest artifact subpools and
+entries are removed as well; weapon, experience-item, ore, food, and book
+contents remain. World Boss Mora/EXP, blossoms, and scene-point rewards remain.
 
-`curves.yaml` now contains eight level-dependent definitions. The two unused
-world artifact curves and both constant-only curves have been removed.
-World Boss artifacts are still not configured in CSS. A configured world
-Boss payout replaces the native payout; it does not append native artifacts.
-Artifact reward composition still needs completion before upstream submission.
+Existing world Boss material declarations retain their original quantities.
+Only their three material curves remain as temporary runtime compatibility;
+all gem and weekly curves are removed. This is an intermediate configuration
+for material-rule work, not a complete gameplay reward configuration.
+
+The complete replacement syntax is in
+[`examples/world-boss-materials.css`](examples/world-boss-materials.css):
+48 Boss identities, levels 1-99, material binding plus shared count rules.
+That draft has no curve dependency. Its proposed `BOSS_MATERIAL` and
+`getBossMaterial` properties are not loaded by the current parser yet.
 
 ## Historical prototype notes (before the world Boss cleanup)
 

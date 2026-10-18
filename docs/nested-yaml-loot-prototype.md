@@ -66,67 +66,75 @@ and 200 Character EXP at level 100+.
 
 ## World Boss gems
 
-Seven item-parameterized templates in `loot.yaml` reproduce the native gem
-amounts and probabilities. Bosses share a template only when their full gem
-reward distribution at the same level is identical after renaming items.
-A batch of 3 and a batch of 9 never share a template.
-
-| Template | Bosses at levels 1-29 | Bosses at levels 30+ |
-| --- | ---: | ---: |
-| `world_gems_1` | 15 | 15 |
-| `world_gems_2` | 9 | 9 |
-| `world_gems_3` | 1 (Setekh Wenut) | 14 |
-| `world_gems_4` | 0 | 2 |
-| `world_gems_5` | 5 | 5 |
-| `world_gems_6` | 2 | 2 |
-| `world_gems_7` | 1 | 1 |
-
-The other 15 Bosses have no gem entry at levels 1-29. Templates 5-7 grant
-four, two, and six distinct items respectively, each with count 9.
-Template 4 binds Lightbearing Lunar Moth and Precision Clockwork. Different
-element pairs are separate bindings; no candidate probabilities are changed.
-
-A template has `parameters` and `levels`; every level value is an ordinary
-loot list containing only `reward`, `count`, and `weight`. Parameters replace
-item-family names, and do not affect the meaning of count or weight:
+The gem lists use item parameters in their names, with exactly the same
+`reward`, `count`, and `weight` entries as ordinary YAML loot tables:
 
 ```yaml
-templates:
-  example_gems:
-    parameters: [gem1]
-    levels:
-      "50~54":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 4193}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1118}
-          count: "1:24.737, 2:75.263"
+world_50-54_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 4193}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1118}
 
-example_electro:
-  template: example_gems
-  parameters:
-    gem1: genshin.avatar_ascension.electro
+world_50-54_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 4193}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1118}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 4193}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1118}
 ```
 
-CSS selects a binding with a normal loot declaration:
+CSS invokes a definition directly:
 
 ```css
 boss[type="world"][tag="electro_hypostasis"][level="50~54"] {
-    astaps.loot.example_electro: 1;
+    astaps.loot.world_50-54_gem_1<electro>: "1:24737, 2:75263";
+    astaps.loot.world_40-plus_gem_fragment_1<electro>: "1:439, 2:61";
+}
+
+boss[type="world"][tag="maguu_kenki"][level="50~54"] {
+    astaps.loot.world_50-54_gem_2<anemo, cryo>: "1:24737, 2:75263";
+    astaps.loot.world_40-plus_gem_fragment_2<anemo, cryo>: "1:439, 2:61";
 }
 ```
 
-The examples above are syntax illustrations; the loaded templates contain
-all native ranges and independent gem groups. At load time, bindings expand
-to ordinary loot pools. CSS chooses the correct pool using its native
-`level` attribute before settlement. Missing levels, overlapping ranges,
-unknown parameters, and generated-name collisions are errors. Existing
-integer loot templates continue to work. No external curves are loaded.
+A value of `1` executes the referenced list exactly once. A count distribution
+controls independent executions, with each execution choosing a new item.
+The selected item's own count still gives an intact batch of 3 or 9 copies.
+Separate table outputs are added, including repeated copies of the same item.
+Arguments only substitute element names; they do not change amounts or odds.
+Whitespace between arguments is accepted. The quoted interpolation strings
+above use ordinary YAML string quoting. The item name is `sliver`.
 
-The runtime has seven templates and 31 item bindings for 48 native Boss
-identities. Their source is `data/ChestDrop.json` followed by
-`data/Server/DropTableExcelConfigData.json`, covering 1200 native root rows.
-Level 90+ uses the last identical gem distribution, including native rows
-at 93, 100, 105, 110, 115, and 120; the final range remains open-ended.
+A generic call may also appear in an ordinary YAML `reward` field; its list
+is expanded before compiling ordinary loot entries. Existing integer loot
+parameters and their safe arithmetic continue to work. Missing definitions,
+duplicate parameters, wrong argument counts, and cyclic calls are errors.
+
+There is no `templates`, `parameters`, or `levels` mapping. The range in a
+definition's name is just part of its name; CSS owns level matching. No
+external curve file or level-template loader is used.
+
+The native data produces these seven groups. Group numbers in the names
+identify equal counts and complete probabilities after replacing item names;
+a batch of 3 and a batch of 9 stay in separate groups.
+
+| Group | Bosses at levels 1-29 | Bosses at levels 30+ |
+| --- | ---: | ---: |
+| 1 | 15 | 15 |
+| 2 | 9 | 9 |
+| 3 | 1 (Setekh Wenut) | 14 |
+| 4 | 0 | 2 |
+| 5 | 5 | 5 |
+| 6 | 2 | 2 |
+| 7 | 1 | 1 |
+
+The other 15 Bosses have no gem entry at levels 1-29. Different level ranges
+have separate definitions when their candidate weights change. Independent
+fragment lists use the same parameter syntax. Group 7 is a concrete list for
+Tenebrous Papilla, with no generic parameters.
+
+The source is `data/ChestDrop.json` followed by
+`data/Server/DropTableExcelConfigData.json`: 48 identities and 1200 native
+root rows. Level 90+ uses the last identical gem distribution, including
+native rows at 93, 100, 105, 110, 115, and 120; the final CSS range is open-ended.
 
 ## Count expressions
 
@@ -145,15 +153,16 @@ executing a loot table N times independently evaluates the table N times.
 ## Current scope
 
 World Boss material, Mora, and experience rules remain in CSS. Gemstone
-contents and probabilities live in YAML templates selected by CSS. Artifact
-and weekly-Boss configuration remain absent during this work.
+contents and candidate weights live in parameterized YAML lists selected by
+CSS. Artifact and weekly-Boss configuration remain absent during this work.
 Chest contents retain weapons, experience items, ore, food, and talent books;
 chest artifact entries are removed. Blossoms and scene-point rewards remain.
 This is an intermediate world-Boss configuration, not a complete game
 reward configuration.
 
 `loot.yaml` retains its existing `count` percentage-distribution syntax
-for chest contents and gem-template execution counts; it has not been migrated to a new `roll` field.
+for chest contents; it has not been migrated to a new `roll` field. Gem
+execution counts use CSS count-to-weight distributions.
 The CSS count-to-weight syntax does not reinterpret those YAML quantities.
 Existing typed `genshin.*` inventory identities and `astaps.loot.*` table
 identities retain their namespace resolution. A CSS direct item declaration

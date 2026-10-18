@@ -138,860 +138,263 @@ ultra:
   - {reward: *weapons_3_star, count: "1:50,2:50"}
   - {reward: genshin.weapon_up.mystic_ore, count: "3:80,4:20"}
 
-# World Boss gems: seven exact templates from the native ChestDrop / DropTable graph.
-# Only item families are substituted. Quantities and normalized probabilities must match.
-# Count distributions below are YAML percentages (sum 100), not CSS relative weights.
-# A list-valued reward is rerolled once per outer execution; each selected batch stays together.
-templates:
-  # 15 Bosses, one element, batches of 3
-  world_gems_1:
-    parameters: [gem1]
-    levels:
-      "1~4":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-          count: "1:52.754, 2:47.246"
-      "5~9":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-          count: "1:42.821, 2:57.179"
-      "10~14":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-          count: "1:30.413, 2:69.587"
-      "15~19":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-          count: "1:18.005, 2:81.995"
-      "20~24":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-          count: "1:5.597, 2:94.403"
-      "25~29":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-          count: "2:93.189, 3:6.811"
-      "30~34":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-          count: "2:80.781, 3:19.219"
-      "35~39":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-          count: "2:68.373, 3:31.627"
-      "40~44":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1147}
-            - {reward: "${gem1}.fragment", count: 3, weight: 306}
-          count: "1:56.153, 2:43.847"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "45~49":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 3817}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1018}
-          count: "1:40.445, 2:59.555"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "50~54":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 4193}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1118}
-          count: "1:24.737, 2:75.263"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "55~59":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 4569}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1219}
-          count: "1:8.996, 2:91.004"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "60~64":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 4945}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1319}
-            - {reward: "${gem1}.chunk", count: 3, weight: 330}
-          count: "2:82.398, 3:17.602"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "65~69":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 5321}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1419}
-            - {reward: "${gem1}.chunk", count: 3, weight: 354}
-          count: "2:65.865, 3:34.135"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "70~74":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 5697}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1519}
-            - {reward: "${gem1}.chunk", count: 3, weight: 380}
-          count: "2:49.332, 3:50.668"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "75~79":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 6072}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1620}
-            - {reward: "${gem1}.chunk", count: 3, weight: 405}
-            - {reward: "${gem1}.gemstone", count: 3, weight: 40}
-          count: "2:31.446, 3:68.554"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "80~84":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 6450}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1719}
-            - {reward: "${gem1}.chunk", count: 3, weight: 429}
-            - {reward: "${gem1}.gemstone", count: 3, weight: 43}
-          count: "2:14.781, 3:85.219"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "85~89":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 6826}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1820}
-            - {reward: "${gem1}.chunk", count: 3, weight: 455}
-            - {reward: "${gem1}.gemstone", count: 3, weight: 46}
-          count: "3:98.149, 4:1.851"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "90~":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 3, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 3, weight: 47}
-          count: "3:81.55, 4:18.45"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
+# World Boss gems: seven quantity/probability groups, with explicit level-range names.
+# Arguments replace element names only; count and weight retain primitive loot semantics.
+# CSS chooses the named range and supplies the independent execution count.
 
-  # 9 Bosses, two elements, batches of 3
-  world_gems_2:
-    parameters: [gem1, gem2]
-    levels:
-      "1~4":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-            - {reward: "${gem2}.sliver", count: 3, weight: 1}
-          count: "1:52.754, 2:47.246"
-      "5~9":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-            - {reward: "${gem2}.sliver", count: 3, weight: 1}
-          count: "1:42.821, 2:57.179"
-      "10~14":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-            - {reward: "${gem2}.sliver", count: 3, weight: 1}
-          count: "1:30.413, 2:69.587"
-      "15~19":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-            - {reward: "${gem2}.sliver", count: 3, weight: 1}
-          count: "1:18.005, 2:81.995"
-      "20~24":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-            - {reward: "${gem2}.sliver", count: 3, weight: 1}
-          count: "1:5.597, 2:94.403"
-      "25~29":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-            - {reward: "${gem2}.sliver", count: 3, weight: 1}
-          count: "2:93.189, 3:6.811"
-      "30~34":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-            - {reward: "${gem2}.sliver", count: 3, weight: 1}
-          count: "2:80.781, 3:19.219"
-      "35~39":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1}
-            - {reward: "${gem2}.sliver", count: 3, weight: 1}
-          count: "2:68.373, 3:31.627"
-      "40~44":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 1147}
-            - {reward: "${gem1}.fragment", count: 3, weight: 306}
-            - {reward: "${gem2}.sliver", count: 3, weight: 1147}
-            - {reward: "${gem2}.fragment", count: 3, weight: 306}
-          count: "1:56.153, 2:43.847"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "45~49":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 3817}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1018}
-            - {reward: "${gem2}.sliver", count: 3, weight: 3817}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1018}
-          count: "1:40.445, 2:59.555"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "50~54":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 4193}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1118}
-            - {reward: "${gem2}.sliver", count: 3, weight: 4193}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1118}
-          count: "1:24.737, 2:75.263"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "55~59":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 4569}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1219}
-            - {reward: "${gem2}.sliver", count: 3, weight: 4569}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1219}
-          count: "1:8.996, 2:91.004"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "60~64":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 4945}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1319}
-            - {reward: "${gem1}.chunk", count: 3, weight: 330}
-            - {reward: "${gem2}.sliver", count: 3, weight: 4945}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1319}
-            - {reward: "${gem2}.chunk", count: 3, weight: 330}
-          count: "2:82.398, 3:17.602"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "65~69":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 5321}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1419}
-            - {reward: "${gem1}.chunk", count: 3, weight: 354}
-            - {reward: "${gem2}.sliver", count: 3, weight: 5321}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1419}
-            - {reward: "${gem2}.chunk", count: 3, weight: 354}
-          count: "2:65.865, 3:34.135"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "70~74":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 5697}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1519}
-            - {reward: "${gem1}.chunk", count: 3, weight: 380}
-            - {reward: "${gem2}.sliver", count: 3, weight: 5697}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1519}
-            - {reward: "${gem2}.chunk", count: 3, weight: 380}
-          count: "2:49.332, 3:50.668"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "75~79":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 6072}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1620}
-            - {reward: "${gem1}.chunk", count: 3, weight: 405}
-            - {reward: "${gem1}.gemstone", count: 3, weight: 40}
-            - {reward: "${gem2}.sliver", count: 3, weight: 6072}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1620}
-            - {reward: "${gem2}.chunk", count: 3, weight: 405}
-            - {reward: "${gem2}.gemstone", count: 3, weight: 40}
-          count: "2:31.446, 3:68.554"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "80~84":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 6450}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1719}
-            - {reward: "${gem1}.chunk", count: 3, weight: 429}
-            - {reward: "${gem1}.gemstone", count: 3, weight: 43}
-            - {reward: "${gem2}.sliver", count: 3, weight: 6450}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1719}
-            - {reward: "${gem2}.chunk", count: 3, weight: 429}
-            - {reward: "${gem2}.gemstone", count: 3, weight: 43}
-          count: "2:14.781, 3:85.219"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "85~89":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 6826}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1820}
-            - {reward: "${gem1}.chunk", count: 3, weight: 455}
-            - {reward: "${gem1}.gemstone", count: 3, weight: 46}
-            - {reward: "${gem2}.sliver", count: 3, weight: 6826}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1820}
-            - {reward: "${gem2}.chunk", count: 3, weight: 455}
-            - {reward: "${gem2}.gemstone", count: 3, weight: 46}
-          count: "3:98.149, 4:1.851"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "90~":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 3, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 3, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 3, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 3, weight: 47}
-            - {reward: "${gem2}.sliver", count: 3, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 3, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 3, weight: 47}
-          count: "3:81.55, 4:18.45"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 3, weight: 1}
-            - {reward: "${gem2}.fragment", count: 3, weight: 1}
-          count: "1:87.8, 2:12.2"
+# Group 1
+world_1-39_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 1}
 
-  # Wind Wenut from level 1; 13 other Bosses from level 30; batches of 9
-  world_gems_3:
-    parameters: [gem1]
-    levels:
-      "1~4":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 1}
-          count: "1:52.754, 2:47.246"
-      "5~9":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 1}
-          count: "1:42.821, 2:57.179"
-      "10~14":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 1}
-          count: "1:30.413, 2:69.587"
-      "15~19":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 1}
-          count: "1:18.005, 2:81.995"
-      "20~24":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 1}
-          count: "1:5.597, 2:94.403"
-      "25~29":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 1}
-          count: "2:93.189, 3:6.811"
-      "30~34":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 1}
-          count: "2:80.781, 3:19.219"
-      "35~39":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 1}
-          count: "2:68.373, 3:31.627"
-      "40~44":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 1147}
-            - {reward: "${gem1}.fragment", count: 9, weight: 306}
-          count: "1:56.153, 2:43.847"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "45~49":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 3817}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1018}
-          count: "1:40.445, 2:59.555"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "50~54":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 4193}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1118}
-          count: "1:24.737, 2:75.263"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "55~59":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 4569}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1219}
-          count: "1:8.996, 2:91.004"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "60~64":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 4945}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1319}
-            - {reward: "${gem1}.chunk", count: 9, weight: 330}
-          count: "2:82.398, 3:17.602"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "65~69":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 5321}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1419}
-            - {reward: "${gem1}.chunk", count: 9, weight: 354}
-          count: "2:65.865, 3:34.135"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "70~74":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 5697}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1519}
-            - {reward: "${gem1}.chunk", count: 9, weight: 380}
-          count: "2:49.332, 3:50.668"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "75~79":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 6072}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1620}
-            - {reward: "${gem1}.chunk", count: 9, weight: 405}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 40}
-          count: "2:31.446, 3:68.554"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "80~84":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 6450}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1719}
-            - {reward: "${gem1}.chunk", count: 9, weight: 429}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 43}
-          count: "2:14.781, 3:85.219"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "85~89":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 6826}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1820}
-            - {reward: "${gem1}.chunk", count: 9, weight: 455}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 46}
-          count: "3:98.149, 4:1.851"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "90~":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-          count: "3:81.55, 4:18.45"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
+world_40-44_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 1147}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 306}
 
-  # Lightbearing Lunar Moth / Precision Clockwork, level 30+, batches of 9
-  world_gems_4:
-    parameters: [gem1, gem2]
-    levels:
-      "30~34":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "2:80.781, 3:19.219"
-      "35~39":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "2:68.373, 3:31.627"
-      "40~44":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "1:56.153, 2:43.847"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "45~49":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "1:40.445, 2:59.555"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "50~54":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "1:24.737, 2:75.263"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "55~59":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "1:8.996, 2:91.004"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "60~64":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "2:82.398, 3:17.602"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "65~69":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "2:65.865, 3:34.135"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "70~74":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "2:49.332, 3:50.668"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "75~79":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "2:31.446, 3:68.554"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "80~84":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "2:14.781, 3:85.219"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "85~89":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "3:98.149, 4:1.851"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
-      "90~":
-        - reward:
-            - {reward: "${gem1}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem1}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem1}.chunk", count: 9, weight: 480}
-            - {reward: "${gem1}.gemstone", count: 9, weight: 47}
-            - {reward: "${gem2}.sliver", count: 9, weight: 7201}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1920}
-            - {reward: "${gem2}.chunk", count: 9, weight: 480}
-            - {reward: "${gem2}.gemstone", count: 9, weight: 47}
-          count: "3:81.55, 4:18.45"
-        - reward:
-            - {reward: "${gem1}.fragment", count: 9, weight: 1}
-            - {reward: "${gem2}.fragment", count: 9, weight: 1}
-          count: "1:87.8, 2:12.2"
+world_45-49_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 3817}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1018}
 
-  # 5 Bosses, four separate items of 9
-  world_gems_5:
-    parameters: [gem1, gem2]
-    levels:
-      "1~":
-        - {reward: "${gem1}.fragment", count: 9}
-        - {reward: "${gem1}.sliver", count: 9}
-        - {reward: "${gem2}.fragment", count: 9}
-        - {reward: "${gem2}.sliver", count: 9}
+world_50-54_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 4193}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1118}
 
-  # 2 Bosses, two separate items of 9
-  world_gems_6:
-    parameters: [gem1]
-    levels:
-      "1~":
-        - {reward: "${gem1}.fragment", count: 9}
-        - {reward: "${gem1}.sliver", count: 9}
+world_55-59_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 4569}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1219}
 
-  # Tenebrous Papilla, six separate items of 9
-  world_gems_7:
-    parameters: [gem1, gem2, gem3]
-    levels:
-      "1~":
-        - {reward: "${gem1}.fragment", count: 9}
-        - {reward: "${gem1}.sliver", count: 9}
-        - {reward: "${gem2}.fragment", count: 9}
-        - {reward: "${gem2}.sliver", count: 9}
-        - {reward: "${gem3}.fragment", count: 9}
-        - {reward: "${gem3}.sliver", count: 9}
+world_60-64_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 4945}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1319}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 3, weight: 330}
 
-gems_world_1_pyro:
-  template: world_gems_1
-  parameters:
-    gem1: genshin.avatar_ascension.pyro
+world_65-69_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 5321}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1419}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 3, weight: 354}
 
-gems_world_1_hydro:
-  template: world_gems_1
-  parameters:
-    gem1: genshin.avatar_ascension.hydro
+world_70-74_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 5697}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1519}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 3, weight: 380}
 
-gems_world_1_dendro:
-  template: world_gems_1
-  parameters:
-    gem1: genshin.avatar_ascension.dendro
+world_75-79_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 6072}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1620}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 3, weight: 405}
+  - {reward: "genshin.avatar_ascension.${element}.gemstone", count: 3, weight: 40}
 
-gems_world_1_electro:
-  template: world_gems_1
-  parameters:
-    gem1: genshin.avatar_ascension.electro
+world_80-84_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 6450}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1719}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 3, weight: 429}
+  - {reward: "genshin.avatar_ascension.${element}.gemstone", count: 3, weight: 43}
 
-gems_world_1_anemo:
-  template: world_gems_1
-  parameters:
-    gem1: genshin.avatar_ascension.anemo
+world_85-89_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 6826}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1820}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 3, weight: 455}
+  - {reward: "genshin.avatar_ascension.${element}.gemstone", count: 3, weight: 46}
 
-gems_world_1_cryo:
-  template: world_gems_1
-  parameters:
-    gem1: genshin.avatar_ascension.cryo
+world_90-plus_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 7201}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1920}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 3, weight: 480}
+  - {reward: "genshin.avatar_ascension.${element}.gemstone", count: 3, weight: 47}
 
-gems_world_1_geo:
-  template: world_gems_1
-  parameters:
-    gem1: genshin.avatar_ascension.geo
+world_40-plus_gem_fragment_1<element>:
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1}
 
-gems_world_2_pyro_anemo:
-  template: world_gems_2
-  parameters:
-    gem1: genshin.avatar_ascension.pyro
-    gem2: genshin.avatar_ascension.anemo
+# Group 2
+world_1-39_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 1}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 1}
 
-gems_world_2_pyro_geo:
-  template: world_gems_2
-  parameters:
-    gem1: genshin.avatar_ascension.pyro
-    gem2: genshin.avatar_ascension.geo
+world_40-44_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 1147}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 306}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 1147}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 306}
 
-gems_world_2_hydro_cryo:
-  template: world_gems_2
-  parameters:
-    gem1: genshin.avatar_ascension.hydro
-    gem2: genshin.avatar_ascension.cryo
+world_45-49_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 3817}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1018}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 3817}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1018}
 
-gems_world_2_hydro_geo:
-  template: world_gems_2
-  parameters:
-    gem1: genshin.avatar_ascension.hydro
-    gem2: genshin.avatar_ascension.geo
+world_50-54_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 4193}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1118}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 4193}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1118}
 
-gems_world_2_electro_cryo:
-  template: world_gems_2
-  parameters:
-    gem1: genshin.avatar_ascension.electro
-    gem2: genshin.avatar_ascension.cryo
+world_55-59_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 4569}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1219}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 4569}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1219}
 
-gems_world_2_electro_geo:
-  template: world_gems_2
-  parameters:
-    gem1: genshin.avatar_ascension.electro
-    gem2: genshin.avatar_ascension.geo
+world_60-64_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 4945}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1319}
+  - {reward: "genshin.avatar_ascension.${element1}.chunk", count: 3, weight: 330}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 4945}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1319}
+  - {reward: "genshin.avatar_ascension.${element2}.chunk", count: 3, weight: 330}
 
-gems_world_2_anemo_cryo:
-  template: world_gems_2
-  parameters:
-    gem1: genshin.avatar_ascension.anemo
-    gem2: genshin.avatar_ascension.cryo
+world_65-69_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 5321}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1419}
+  - {reward: "genshin.avatar_ascension.${element1}.chunk", count: 3, weight: 354}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 5321}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1419}
+  - {reward: "genshin.avatar_ascension.${element2}.chunk", count: 3, weight: 354}
 
-gems_world_2_cryo_geo:
-  template: world_gems_2
-  parameters:
-    gem1: genshin.avatar_ascension.cryo
-    gem2: genshin.avatar_ascension.geo
+world_70-74_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 5697}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1519}
+  - {reward: "genshin.avatar_ascension.${element1}.chunk", count: 3, weight: 380}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 5697}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1519}
+  - {reward: "genshin.avatar_ascension.${element2}.chunk", count: 3, weight: 380}
 
-gems_world_3_pyro:
-  template: world_gems_3
-  parameters:
-    gem1: genshin.avatar_ascension.pyro
+world_75-79_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 6072}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1620}
+  - {reward: "genshin.avatar_ascension.${element1}.chunk", count: 3, weight: 405}
+  - {reward: "genshin.avatar_ascension.${element1}.gemstone", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 6072}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1620}
+  - {reward: "genshin.avatar_ascension.${element2}.chunk", count: 3, weight: 405}
+  - {reward: "genshin.avatar_ascension.${element2}.gemstone", count: 3, weight: 40}
 
-gems_world_3_hydro:
-  template: world_gems_3
-  parameters:
-    gem1: genshin.avatar_ascension.hydro
+world_80-84_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 6450}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1719}
+  - {reward: "genshin.avatar_ascension.${element1}.chunk", count: 3, weight: 429}
+  - {reward: "genshin.avatar_ascension.${element1}.gemstone", count: 3, weight: 43}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 6450}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1719}
+  - {reward: "genshin.avatar_ascension.${element2}.chunk", count: 3, weight: 429}
+  - {reward: "genshin.avatar_ascension.${element2}.gemstone", count: 3, weight: 43}
 
-gems_world_3_dendro:
-  template: world_gems_3
-  parameters:
-    gem1: genshin.avatar_ascension.dendro
+world_85-89_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 6826}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1820}
+  - {reward: "genshin.avatar_ascension.${element1}.chunk", count: 3, weight: 455}
+  - {reward: "genshin.avatar_ascension.${element1}.gemstone", count: 3, weight: 46}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 6826}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1820}
+  - {reward: "genshin.avatar_ascension.${element2}.chunk", count: 3, weight: 455}
+  - {reward: "genshin.avatar_ascension.${element2}.gemstone", count: 3, weight: 46}
 
-gems_world_3_electro:
-  template: world_gems_3
-  parameters:
-    gem1: genshin.avatar_ascension.electro
+world_90-plus_gem_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 7201}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1920}
+  - {reward: "genshin.avatar_ascension.${element1}.chunk", count: 3, weight: 480}
+  - {reward: "genshin.avatar_ascension.${element1}.gemstone", count: 3, weight: 47}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 7201}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1920}
+  - {reward: "genshin.avatar_ascension.${element2}.chunk", count: 3, weight: 480}
+  - {reward: "genshin.avatar_ascension.${element2}.gemstone", count: 3, weight: 47}
 
-gems_world_3_anemo:
-  template: world_gems_3
-  parameters:
-    gem1: genshin.avatar_ascension.anemo
+world_40-plus_gem_fragment_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1}
 
-gems_world_3_cryo:
-  template: world_gems_3
-  parameters:
-    gem1: genshin.avatar_ascension.cryo
+# Group 3
+world_1-39_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9, weight: 1}
 
-gems_world_3_geo:
-  template: world_gems_3
-  parameters:
-    gem1: genshin.avatar_ascension.geo
+world_40-44_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9, weight: 1147}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9, weight: 306}
 
-gems_world_4_pyro_dendro:
-  template: world_gems_4
-  parameters:
-    gem1: genshin.avatar_ascension.pyro
-    gem2: genshin.avatar_ascension.dendro
+world_45-49_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9, weight: 3817}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9, weight: 1018}
 
-gems_world_4_pyro_cryo:
-  template: world_gems_4
-  parameters:
-    gem1: genshin.avatar_ascension.pyro
-    gem2: genshin.avatar_ascension.cryo
+world_50-54_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9, weight: 4193}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9, weight: 1118}
 
-gems_world_5_pyro_geo:
-  template: world_gems_5
-  parameters:
-    gem1: genshin.avatar_ascension.pyro
-    gem2: genshin.avatar_ascension.geo
+world_55-59_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9, weight: 4569}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9, weight: 1219}
 
-gems_world_5_hydro_anemo:
-  template: world_gems_5
-  parameters:
-    gem1: genshin.avatar_ascension.hydro
-    gem2: genshin.avatar_ascension.anemo
+world_60-64_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9, weight: 4945}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9, weight: 1319}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 9, weight: 330}
 
-gems_world_5_hydro_cryo:
-  template: world_gems_5
-  parameters:
-    gem1: genshin.avatar_ascension.hydro
-    gem2: genshin.avatar_ascension.cryo
+world_65-69_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9, weight: 5321}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9, weight: 1419}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 9, weight: 354}
 
-gems_world_5_anemo_cryo:
-  template: world_gems_5
-  parameters:
-    gem1: genshin.avatar_ascension.anemo
-    gem2: genshin.avatar_ascension.cryo
+world_70-74_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9, weight: 5697}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9, weight: 1519}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 9, weight: 380}
 
-gems_world_6_pyro:
-  template: world_gems_6
-  parameters:
-    gem1: genshin.avatar_ascension.pyro
+world_75-79_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9, weight: 6072}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9, weight: 1620}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 9, weight: 405}
+  - {reward: "genshin.avatar_ascension.${element}.gemstone", count: 9, weight: 40}
 
-gems_world_6_electro:
-  template: world_gems_6
-  parameters:
-    gem1: genshin.avatar_ascension.electro
+world_80-84_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9, weight: 6450}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9, weight: 1719}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 9, weight: 429}
+  - {reward: "genshin.avatar_ascension.${element}.gemstone", count: 9, weight: 43}
 
-gems_world_7_pyro_electro_anemo:
-  template: world_gems_7
-  parameters:
-    gem1: genshin.avatar_ascension.pyro
-    gem2: genshin.avatar_ascension.electro
-    gem3: genshin.avatar_ascension.anemo
+world_85-89_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9, weight: 6826}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9, weight: 1820}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 9, weight: 455}
+  - {reward: "genshin.avatar_ascension.${element}.gemstone", count: 9, weight: 46}
+
+world_90-plus_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9, weight: 7201}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9, weight: 1920}
+  - {reward: "genshin.avatar_ascension.${element}.chunk", count: 9, weight: 480}
+  - {reward: "genshin.avatar_ascension.${element}.gemstone", count: 9, weight: 47}
+
+world_40-plus_gem_fragment_3<element>:
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9, weight: 1}
+
+# Group 4
+world_30-plus_gem_4<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 9, weight: 7201}
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 9, weight: 1920}
+  - {reward: "genshin.avatar_ascension.${element1}.chunk", count: 9, weight: 480}
+  - {reward: "genshin.avatar_ascension.${element1}.gemstone", count: 9, weight: 47}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 9, weight: 7201}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 9, weight: 1920}
+  - {reward: "genshin.avatar_ascension.${element2}.chunk", count: 9, weight: 480}
+  - {reward: "genshin.avatar_ascension.${element2}.gemstone", count: 9, weight: 47}
+
+world_40-plus_gem_fragment_4<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 9, weight: 1}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 9, weight: 1}
+
+# Group 5
+world_1-plus_gem_5<element1, element2>:
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 9}
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 9}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 9}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 9}
+
+# Group 6
+world_1-plus_gem_6<element>:
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 9}
+  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9}
+
+# Group 7
+world_1-plus_gem_7:
+  - {reward: "genshin.avatar_ascension.pyro.fragment", count: 9}
+  - {reward: "genshin.avatar_ascension.pyro.sliver", count: 9}
+  - {reward: "genshin.avatar_ascension.electro.fragment", count: 9}
+  - {reward: "genshin.avatar_ascension.electro.sliver", count: 9}
+  - {reward: "genshin.avatar_ascension.anemo.fragment", count: 9}
+  - {reward: "genshin.avatar_ascension.anemo.sliver", count: 9}

@@ -51,7 +51,7 @@ public final class CssRewards {
     // conventional CSS property identifiers. Encode declarations only; leave
     // CSS selectors, values and the canonical resource IDs unchanged.
     private static final Pattern RESOURCE_DECLARATION = Pattern.compile(
-            "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|getBossMaterial|[a-z][a-z0-9_]*(?:\\.[\\p{L}\\p{N}_-]+){2,})\\s*:");
+            "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|getBossMaterial|[a-z][a-z0-9_]*(?:\\.[\\p{L}\\p{N}_-]+){2,}(?:\\s*<\\s*(?:[a-z][a-z0-9_]*|[0-9]+)(?:\\s*,\\s*(?:[a-z][a-z0-9_]*|[0-9]+))*\\s*>)?)\\s*:");
 
     private record AttributeRange(String name, long min, Long max) {
         boolean matches(Map<String, String> attributes) {
@@ -86,11 +86,9 @@ public final class CssRewards {
             int specificity, int order) {}
 
     private final List<Rule> rules;
-    private final YamlLootTables loot;
 
-    private CssRewards(List<Rule> rules, YamlLootTables loot) {
+    private CssRewards(List<Rule> rules) {
         this.rules = List.copyOf(rules);
-        this.loot = loot;
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
@@ -150,12 +148,14 @@ public final class CssRewards {
                     bossMaterialCount = LootCount.parseRoll(value);
                     continue;
                 }
-                ResourceId resource = ResourceId.parse(original);
+                int argumentStart = original.indexOf('<');
+                ResourceId resource = ResourceId.parse(argumentStart < 0
+                        ? original : original.substring(0, argumentStart).trim());
                 if (resource.size() < 3) {
                     throw new IllegalArgumentException("Expected a qualified resource path: " + original);
                 }
                 if ("loot".equals(resource.segment(1))) {
-                    String name = loot.resolveName(resource.toString());
+                    String name = loot.resolveName(original);
                     if (value.matches("[0-9]+")) {
                         selectedLoot.put(name, Integer.parseInt(value));
                         rangedLoot.remove(name);
@@ -164,6 +164,9 @@ public final class CssRewards {
                         selectedLoot.remove(name);
                     }
                 } else {
+                    if (argumentStart >= 0) {
+                        throw new IllegalArgumentException("Template arguments require a loot resource: " + original);
+                    }
                     int id = items.resolve(resource.toString());
                     if (value.matches("[0-9]+")) {
                         fixed.put(id, Integer.parseInt(value));
@@ -229,7 +232,7 @@ public final class CssRewards {
         }
 
         rules.sort(Comparator.comparingInt(Rule::specificity).thenComparingInt(Rule::order));
-        return new CssRewards(rules, loot);
+        return new CssRewards(rules);
     }
 
     /** Quote dotted resource lists before passing them through the CSS value parser. */
@@ -311,10 +314,6 @@ public final class CssRewards {
                 }
             }
         }
-        var resolvedLoot = new HashMap<String, Integer>();
-        selectedLoot.forEach((name, count) -> resolvedLoot.put(loot.resolveName(name, attributes), count));
-        var resolvedRangedLoot = new HashMap<String, LootCount.Spec>();
-        rangedLoot.forEach((name, count) -> resolvedRangedLoot.put(loot.resolveName(name, attributes), count));
-        return new Selection(fixed, resolvedLoot, ranged, resolvedRangedLoot);
+        return new Selection(fixed, selectedLoot, ranged, rangedLoot);
     }
 }

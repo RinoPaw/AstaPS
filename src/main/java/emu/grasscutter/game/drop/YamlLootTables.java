@@ -198,14 +198,17 @@ public final class YamlLootTables {
         int entries;
     }
 
-    private final String namespace;
     private final Map<String, Pool> pools;
-    private final Map<String, List<LevelledLootTemplates.Variant>> levelBindings;
-    private YamlLootTables(String namespace, Map<String, Pool> pools,
-            Map<String, List<LevelledLootTemplates.Variant>> levelBindings) {
-        this.namespace = namespace;
+    private final Map<String, Pool> instances = new java.util.concurrent.ConcurrentHashMap<>();
+    private final LootTemplates templates;
+    private final ItemResolver resolver;
+    private final ArtifactResolver artifacts;
+    private YamlLootTables(Map<String, Pool> pools,
+            LootTemplates templates, ItemResolver resolver, ArtifactResolver artifacts) {
+        this.templates = templates;
+        this.resolver = resolver;
+        this.artifacts = artifacts;
         this.pools = java.util.Collections.unmodifiableMap(new LinkedHashMap<>(pools));
-        this.levelBindings = java.util.Collections.unmodifiableMap(new LinkedHashMap<>(levelBindings));
     }
 
     /** Short keys in loot.yaml are registered under astaps.loot by default. */
@@ -237,8 +240,8 @@ public final class YamlLootTables {
         }
         // Expand parameterized templates before compiling ordinary loot pools.
         // Template references become nested lists, retaining independent rolls.
-        var levelled = LevelledLootTemplates.expand(raw, namespace);
-        raw = LootTemplates.expand(levelled.tables(), namespace);
+        var prepared = LootTemplates.prepare(raw, namespace);
+        raw = prepared.tables();
         if (raw.size() > MAX_TABLES) throw new IllegalArgumentException("Too many loot tables");
         var budget = new CompileBudget();
         var parsed = new LinkedHashMap<String, Pool>();
@@ -251,7 +254,7 @@ public final class YamlLootTables {
             String id = ResourceId.parse(namespace + ".loot." + name).toString();
             parsed.put(id, parseList(e.getValue(), resolver, artifacts, compiled, visiting, budget, name, 0));
         }
-        return new YamlLootTables(namespace, parsed, levelled.bindings());
+        return new YamlLootTables(parsed, prepared.templates(), resolver, artifacts);
     }
 
     private static Pool parseList(Object raw, ItemResolver resolver, ArtifactResolver artifacts,
@@ -366,8 +369,8 @@ public final class YamlLootTables {
 
     /** Returns an immutable item-ID-to-count map. Each invocation rolls afresh. */
     public Map<Integer, Integer> roll(String name, RandomGenerator random) {
-        Pool root = pools.get(resolveName(name));
-        if (root == null) throw new IllegalArgumentException("Resolve the loot table level before rolling: " + name);
+        String resolved = resolveName(name);
+        Pool root = pools.containsKey(resolved) ? pools.get(resolved) : instances.get(resolved);
         if (random == null) throw new IllegalArgumentException("Missing random generator");
         var reward = new TreeMap<Integer, Integer>();
         int[] remaining = {100_000};
@@ -421,35 +424,26 @@ public final class YamlLootTables {
     }
 
     public boolean contains(String id) {
-        return pools.containsKey(id) || levelBindings.containsKey(id);
+        return pools.containsKey(id) || instances.containsKey(id);
     }
 
     /** Local names resolve within the loader's namespace; qualified IDs stay unchanged. */
     public String resolveName(String reference) {
-        String prefix = namespace + ".loot.";
-        ResourceId id = ResourceId.parse(reference.startsWith(prefix)
-                ? reference : prefix + reference);
-        if (!(id.size() >= 3 && id.segment(1).equals("loot")) || !contains(id.toString())) {
-            throw new IllegalArgumentException("Unknown loot table: " + reference);
-        }
-        return id.toString();
+        String name = templates.qualify(reference);
+        if (contains(name)) return name;
+        if (name.contains("<")) return instantiate(name);
+        throw new IllegalArgumentException("Unknown loot table: " + reference);
     }
 
-    /** Resolve a bound template using the same native level matched by reward CSS. */
-    public String resolveName(String reference, Map<String, String> attributes) {
-        String name = resolveName(reference);
-        var variants = levelBindings.get(name);
-        if (variants == null) return name;
-        int level;
-        try {
-            level = Integer.parseInt(attributes.get("level"));
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Loot template requires an integer level: " + name, e);
+    /** CSS references instantiate item-parameterized tables while loading configuration. */
+    private synchronized String instantiate(String name) {
+        if (!instances.containsKey(name)) {
+            var entries = templates.instantiateReference(name);
+            var pool = parseList(entries, resolver, artifacts, new IdentityHashMap<>(),
+                    new IdentityHashMap<>(), new CompileBudget(), name, 0);
+            instances.put(name, pool);
         }
-        for (var variant : variants) {
-            if (level >= variant.min() && level <= variant.max()) return variant.table();
-        }
-        throw new IllegalArgumentException("No loot template range for " + name + " at level " + level);
+        return name;
     }
 
     /**
@@ -469,11 +463,8 @@ public final class YamlLootTables {
     }
 
     public List<String> names() {
-        var generated = new java.util.HashSet<String>();
-        levelBindings.values().forEach(variants -> variants.forEach(v -> generated.add(v.table())));
-        var names = new ArrayList<String>();
-        pools.keySet().stream().filter(name -> !generated.contains(name)).forEach(names::add);
-        names.addAll(levelBindings.keySet());
+        var names = new ArrayList<>(pools.keySet());
+        instances.keySet().stream().sorted().forEach(names::add);
         return List.copyOf(names);
     }
 }

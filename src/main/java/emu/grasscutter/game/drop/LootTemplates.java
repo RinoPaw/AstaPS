@@ -1,5 +1,6 @@
 package emu.grasscutter.game.drop;
 
+import emu.grasscutter.data.ResourceId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,12 +12,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** Expand parameterized loot tables at load time, with safe integer expressions. */
+/** Expand named item parameters; retain existing safe integer-template expressions. */
 final class LootTemplates {
     private static final Pattern DEFINITION =
-            Pattern.compile("([a-z][a-z0-9_]*)<([a-z][a-z0-9_]*)>");
+            Pattern.compile("([a-z][a-z0-9_-]*)\\s*<\\s*([a-z][a-z0-9_]*(?:\\s*,\\s*[a-z][a-z0-9_]*)*)\\s*>");
     private static final Pattern INVOCATION =
-            Pattern.compile("([a-z][a-z0-9_]*)<([0-9]+)>");
+            Pattern.compile("([a-z][a-z0-9_-]*)\\s*<\\s*((?:[a-z][a-z0-9_]*|[0-9]+)(?:\\s*,\\s*(?:[a-z][a-z0-9_]*|[0-9]+))*)\\s*>");
     private static final Pattern EXPRESSION = Pattern.compile("\\$\\{([^{}]*)}");
     private static final Pattern INTEGER_EXPRESSION =
             Pattern.compile("([a-z][a-z0-9_]*|[0-9]+)((?:[+-][0-9]+)*)");
@@ -24,7 +25,8 @@ final class LootTemplates {
     private static final int MAX_DEPTH = 64;
     private static final int MAX_INSTANCES = 1_000;
 
-    private record Definition(String parameter, List<?> entries) {}
+    private record Definition(List<String> parameters, List<?> entries) {}
+    record Prepared(LootTemplates templates, Map<?, ?> tables) {}
 
     private final String namespace;
     private final Map<String, Definition> definitions = new LinkedHashMap<>();
@@ -35,7 +37,7 @@ final class LootTemplates {
         this.namespace = namespace;
     }
 
-    static Map<?, ?> expand(Map<?, ?> document, String namespace) {
+    static Prepared prepare(Map<?, ?> document, String namespace) {
         var templates = new LootTemplates(namespace);
         var result = new LinkedHashMap<Object, Object>();
         for (var entry : document.entrySet()) {
@@ -45,8 +47,12 @@ final class LootTemplates {
                     if (!(entry.getValue() instanceof List<?> entries)) {
                         throw new IllegalArgumentException("Loot template must be a YAML list: " + key);
                     }
+                    var parameters = List.of(definition.group(2).split("\\s*,\\s*"));
+                    if (new HashSet<>(parameters).size() != parameters.size()) {
+                        throw new IllegalArgumentException("Duplicate loot template parameter: " + key);
+                    }
                     if (templates.definitions.putIfAbsent(definition.group(1),
-                            new Definition(definition.group(2), entries)) != null) {
+                            new Definition(parameters, entries)) != null) {
                         throw new IllegalArgumentException("Duplicate loot template: " + key);
                     }
                     continue;
@@ -61,10 +67,10 @@ final class LootTemplates {
         }
         var shared = new IdentityHashMap<Object, Object>();
         result.replaceAll((key, value) -> templates.substitute(value, Map.of(), 0, shared));
-        return result;
+        return new Prepared(templates, result);
     }
 
-    private Object substitute(Object raw, Map<String, Integer> parameters, int depth,
+    private Object substitute(Object raw, Map<String, Object> parameters, int depth,
                               IdentityHashMap<Object, Object> shared) {
         if (depth > MAX_DEPTH) {
             throw new IllegalArgumentException("Loot template nesting exceeds " + MAX_DEPTH);
@@ -97,8 +103,10 @@ final class LootTemplates {
             Matcher matcher = EXPRESSION.matcher(value);
             StringBuffer expanded = new StringBuffer();
             while (matcher.find()) {
-                int number = evaluate(matcher.group(1), parameters);
-                matcher.appendReplacement(expanded, Matcher.quoteReplacement(Integer.toString(number)));
+                String expression = matcher.group(1).trim();
+                Object replacement = parameters.containsKey(expression)
+                        ? parameters.get(expression) : evaluate(expression, parameters);
+                matcher.appendReplacement(expanded, Matcher.quoteReplacement(replacement.toString()));
             }
             matcher.appendTail(expanded);
             String result = expanded.toString();
@@ -106,7 +114,7 @@ final class LootTemplates {
                 throw new IllegalArgumentException("Unclosed or invalid loot expression: " + value);
             }
             if (value.trim().matches("\\$\\{[^{}]+}")) {
-                return Integer.parseInt(result);
+                return result.matches("[0-9]+") ? Integer.parseInt(result) : result;
             }
             return result;
         }
@@ -125,29 +133,55 @@ final class LootTemplates {
         return instantiate(invocation.group(1), invocation.group(2), definition, depth);
     }
 
-    private List<?> instantiate(String name, String argument, Definition definition, int depth) {
-        String key = name + "<" + argument + ">";
+    /** Canonical resource spelling, including the user's angle-bracket arguments. */
+    String qualify(String reference) {
+        if (reference == null || reference.isBlank()) {
+            throw new IllegalArgumentException("Missing loot table reference");
+        }
+        reference = reference.trim();
+        String prefix = namespace + ".loot.";
+        String local = reference.startsWith(prefix) ? reference.substring(prefix.length()) : reference;
+        Matcher invocation = INVOCATION.matcher(local);
+        if (invocation.matches()) {
+            ResourceId.parse(prefix + invocation.group(1));
+            return prefix + invocation.group(1) + "<" + invocation.group(2).replaceAll("\\s+", "") + ">";
+        }
+        return ResourceId.parse(prefix + local).toString();
+    }
+
+    synchronized List<?> instantiateReference(String reference) {
+        Object expanded = expandReward(reference, 0);
+        if (!(expanded instanceof List<?> entries)) {
+            throw new IllegalArgumentException("Unknown loot table: " + reference);
+        }
+        return entries;
+    }
+
+    private List<?> instantiate(String name, String arguments, Definition definition, int depth) {
+        String[] values = arguments.replaceAll("\\s+", "").split(",", -1);
+        if (values.length != definition.parameters.size()) {
+            throw new IllegalArgumentException("Wrong number of loot template arguments: " + name);
+        }
+        String key = name + "<" + String.join(",", values) + ">";
         List<?> cached = instances.get(key);
         if (cached != null) return cached;
         if (instances.size() >= MAX_INSTANCES || depth > MAX_DEPTH) {
             throw new IllegalArgumentException("Too many or too deeply nested loot template expansions");
         }
-        if (!expanding.add(key)) {
-            throw new IllegalArgumentException("Cyclic loot template invocation: " + key);
-        }
+        if (!expanding.add(key)) throw new IllegalArgumentException("Cyclic loot template invocation: " + key);
         try {
-            int value;
-            try {
-                value = Integer.parseInt(argument);
-            } catch (NumberFormatException ex) {
-                throw new IllegalArgumentException("Invalid loot template argument: " + key, ex);
+            var parameters = new LinkedHashMap<String, Object>();
+            for (int i = 0; i < values.length; i++) {
+                Object value;
+                try {
+                    value = values[i].matches("[0-9]+") ? Integer.valueOf(values[i]) : values[i];
+                } catch (NumberFormatException ex) {
+                    throw new IllegalArgumentException("Invalid loot template argument: " + key, ex);
+                }
+                parameters.put(definition.parameters.get(i), value);
             }
-            List<?> body = definition.entries();
-            if (body.isEmpty()) {
-                throw new IllegalArgumentException("Empty loot template: " + name);
-            }
-            List<?> expanded = (List<?>) substitute(body,
-                    Map.of(definition.parameter(), value), depth + 1,
+            if (definition.entries.isEmpty()) throw new IllegalArgumentException("Empty loot template: " + name);
+            List<?> expanded = (List<?>) substitute(definition.entries, parameters, depth + 1,
                     new IdentityHashMap<>());
             instances.put(key, expanded);
             return expanded;
@@ -156,7 +190,7 @@ final class LootTemplates {
         }
     }
 
-    private static int evaluate(String expression, Map<String, Integer> parameters) {
+    private static int evaluate(String expression, Map<String, Object> parameters) {
         String normalized = expression.replaceAll("\\s+", "");
         Matcher parsed = INTEGER_EXPRESSION.matcher(normalized);
         if (!parsed.matches()) {
@@ -168,11 +202,11 @@ final class LootTemplates {
             if (base.matches("[0-9]+")) {
                 result = Integer.parseInt(base);
             } else {
-                Integer bound = parameters.get(base);
-                if (bound == null) {
-                    throw new IllegalArgumentException("Unknown loot template parameter: " + base);
+                Object bound = parameters.get(base);
+                if (!(bound instanceof Integer number)) {
+                    throw new IllegalArgumentException("Expected integer loot template parameter: " + base);
                 }
-                result = bound;
+                result = number;
             }
             Matcher operations = OPERATION.matcher(parsed.group(2));
             while (operations.find()) {

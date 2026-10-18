@@ -27,8 +27,7 @@ public final class RewardConfiguration {
             var registry = ItemIdRegistry.fromGameResources();
             var loot = YamlLootTables.parse(readBundled("loot.yaml"), registry::resolve,
                     ArtifactResolver.fromGameResources());
-            var curves = RewardCurves.parse(readBundled("curves.yaml"));
-            var css = CssRewards.parse(readBundled("rewards.css"), registry, loot, curves);
+            var css = CssRewards.parse(readBundled("rewards.css"), registry, loot);
             active = new RewardConfiguration(loot, css);
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Cannot load bundled reward configuration", e);
@@ -172,8 +171,8 @@ public final class RewardConfiguration {
             Map.entry("雷音权现", "thunder_manifestation"),
             Map.entry("不灭衍生造物", "undying_replicant"));
 
-    /** Roll only a source-backed world Boss configured in rewards.css and loot.yaml.
-     * An unknown Boss tag has no YAML authority yet and retains its native path.
+    /** Roll configured world Boss materials and shared rewards from CSS.
+     * Unknown Boss identities and uncovered levels retain their native path.
      */
     public Map<Integer, Integer> rollWorldBoss(
             String tag, int nativeBossLevel, RandomGenerator random) {

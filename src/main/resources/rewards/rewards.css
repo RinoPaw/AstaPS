@@ -1,7 +1,7 @@
 /* Material-focused working configuration.
  * Gem, artifact, and weekly-Boss reward configuration has been removed.
  * World Boss currencies/EXP and non-artifact chest contents are retained.
- * Binding-based material CSS is drafted in docs/examples/world-boss-materials.css.
+ * BOSS_MATERIAL binds identities; getBossMaterial declares shared count rolls.
  */
 
 /* Every ordinary world chest grants 30 Adventure EXP in Luna I and later. */
@@ -377,363 +377,285 @@ boss[type="world"][level="93~99"] {
     genshin.experience.character: 200;
 }
 
-/* 霜夜灵嗣 */
-boss[type="world"][tag="frostnight_scion"][level="1~29"] {
-    genshin.avatar_ascension.frostnights_glory: "${world_material_early_count_1(level)}";
-}
-
-/* 重拳出击鸭 */
-boss[type="world"][tag="knuckle_duck"][level="1~29"] {
-    genshin.avatar_ascension.precision_kuuvahki_stamping_die: "${world_material_early_count_1(level)}";
-}
-
-/* 蕴光月幻蝶 */
-boss[type="world"][tag="lightbearing_lunar_moth"][level="1~29"] {
-    genshin.avatar_ascension.lightbearing_scale_feather: "${world_material_early_count_1(level)}";
-}
-
-/* 精密发条机关 */
-boss[type="world"][tag="precision_clockwork"][level="1~29"] {
-    genshin.avatar_ascension.precision_clockwork_core: "${world_material_early_count_1(level)}";
-}
-
-/* 蕴光异兽 */
-boss[type="world"][tag="radiant_beast"][level="1~29"] {
-    genshin.avatar_ascension.prismatic_severed_tail: "${world_material_early_count_1(level)}";
-}
-
-/* 原初监视者 */
-boss[type="world"][tag="primal_watcher"][level="1~29"] {
-    genshin.avatar_ascension.plume_of_the_fallen_watcher: "${world_material_early_count_1(level)}";
-}
-
-/* 冰风组曲 */
-boss[type="world"][tag="icewind_suite"][level="1~29"] {
-    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelia: "${world_material_early_count_1(level)}";
-    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelius: "${world_material_early_count_1(level)}";
-}
-
-/* 铁甲熔火帝皇 */
-boss[type="world"][tag="emperor_of_fire_and_iron"][level="1~29"] {
-    genshin.avatar_ascension.emperors_resolution: "${world_material_early_count_1(level)}";
-}
-
-/* 实验性场力发生装置 */
-boss[type="world"][tag="experimental_field_generator"][level="1~29"] {
-    genshin.avatar_ascension.tourbillon_device: "${world_material_early_count_1(level)}";
-}
-
-/* 千年珍珠骏麟 */
-boss[type="world"][tag="millennial_pearl_seahorse"][level="1~29"] {
-    genshin.avatar_ascension.fontemer_unihorn: "${world_material_early_count_1(level)}";
-}
-
-/* 水形幻人 */
-boss[type="world"][tag="hydro_tulpa"][level="1~29"] {
-    genshin.avatar_ascension.water_that_failed_to_transcend: "${world_material_early_count_1(level)}";
-}
-
-/* 魔像督军 */
-boss[type="world"][tag="legatus_golem"][level="1~29"] {
-    genshin.avatar_ascension.fragment_of_a_golden_melody: "${world_material_early_count_1(level)}";
-}
-
-/* 贪食匿叶龙山王 */
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="1~29"] {
-    genshin.avatar_ascension.overripe_flamegranate: "${world_material_early_count_1(level)}";
-}
-
-/* 金焰绒翼龙暴君 */
-boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="1~29"] {
-    genshin.avatar_ascension.mark_of_the_binding_blessing: "${world_material_early_count_1(level)}";
-}
-
-/* 秘源机兵·构型械 */
-boss[type="world"][tag="secret_source_automaton_configuration_device"][level="1~29"] {
-    genshin.avatar_ascension.gold_inscribed_secret_source_core: "${world_material_early_count_1(level)}";
-}
-
-/* 深邃魹语之主 */
-boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="1~29"] {
-    genshin.avatar_ascension.remnant_of_the_dreadwing: "${world_material_early_count_1(level)}";
-}
-
-/* 灵觉隐修的迷者 */
-boss[type="world"][tag="holawaqa_ngoubou"][level="1~29"] {
-    genshin.avatar_ascension.talisman_of_the_enigmatic_land: "${world_material_early_count_1(level)}";
-}
-
-/* 熔岩辉龙像 */
-boss[type="world"][tag="lava_dragon_statue"][level="1~29"] {
-    genshin.avatar_ascension.sparkless_statue_core: "${world_material_early_count_1(level)}";
-}
-
-/* 秘源机兵·统御械 */
-boss[type="world"][tag="secret_source_automaton_overseer"][level="1~29"] {
-    genshin.avatar_ascension.secret_source_airflow_accumulator: "${world_material_early_count_1(level)}";
-}
-
-/* 隐山猊兽 */
-boss[type="world"][tag="solitary_suanni"][level="1~29"] {
-    genshin.avatar_ascension.cloudseam_scale: "${world_material_early_count_1(level)}";
-}
-
-/* 深邃摹结株 */
-boss[type="world"][tag="tenebrous_papilla"][level="1~29"] {
-    genshin.avatar_ascension.ensnaring_gaze: "${world_material_early_count_1(level)}";
-}
-
-/* 不灭衍生造物 */
-boss[type="world"][tag="undying_replicant"][level="1~29"] {
-    genshin.avatar_ascension.unscorched_blossom_branch: "${world_material_early_count_1(level)}";
-}
-
-/* 嵌合翼骏狮 */
-boss[type="world"][tag="chimera_sky_roamer"][level="1~29"] {
-    genshin.avatar_ascension.severed_tail_of_the_sky_roamer: "${world_material_early_count_1(level)}";
-}
-
-/* Mid-game World Boss exclusive materials: Lv.30-99 (sourceType 34).
- * The binding-based replacement is drafted in docs/examples/world-boss-materials.css.
- */
+/* Material identities: 48 native Boss identities, 45 shared bindings. */
 
 /* 无相之雷 */
-boss[type="world"][tag="electro_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.lightning_prism: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="electro_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.lightning_prism; }
 
 /* 无相之风 */
-boss[type="world"][tag="anemo_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.hurricane_seed: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="anemo_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.hurricane_seed; }
 
 /* 无相之岩 */
-boss[type="world"][tag="geo_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.basalt_pillar: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="geo_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.basalt_pillar; }
 
 /* 急冻树 */
-boss[type="world"][tag="cryo_regisvine"][level="30~99"] {
-    genshin.avatar_ascension.hoarfrost_core: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="cryo_regisvine"] { BOSS_MATERIAL: genshin.avatar_ascension.hoarfrost_core; }
 
 /* 爆炎树 */
-boss[type="world"][tag="pyro_regisvine"][level="30~99"] {
-    genshin.avatar_ascension.everflame_seed: "${world_material_mid_count_2(level)}";
-}
+boss[type="world"][tag="pyro_regisvine"] { BOSS_MATERIAL: genshin.avatar_ascension.everflame_seed; }
 
 /* 纯水精灵 */
-boss[type="world"][tag="oceanid"][level="30~99"] {
-    genshin.avatar_ascension.cleansing_heart: "${world_material_mid_count_2(level)}";
-}
+boss[type="world"][tag="oceanid"] { BOSS_MATERIAL: genshin.avatar_ascension.cleansing_heart; }
 
-/* 古岩龙蜥电 */
-boss[type="world"][tag="primo_geovishap_electro"][level="30~99"] {
-    genshin.avatar_ascension.juvenile_jade: "${world_material_mid_count_1(level)}";
-}
-
-/* 古岩龙蜥冰 */
-boss[type="world"][tag="primo_geovishap_cryo"][level="30~99"] {
-    genshin.avatar_ascension.juvenile_jade: "${world_material_mid_count_1(level)}";
-}
-
-/* 古岩龙蜥火 */
-boss[type="world"][tag="primo_geovishap_pyro"][level="30~99"] {
-    genshin.avatar_ascension.juvenile_jade: "${world_material_mid_count_1(level)}";
-}
-
-/* 古岩龙蜥水 */
-boss[type="world"][tag="primo_geovishap_hydro"][level="30~99"] {
-    genshin.avatar_ascension.juvenile_jade: "${world_material_mid_count_1(level)}";
-}
+/* 古岩龙蜥电 / 古岩龙蜥冰 / 古岩龙蜥火 / 古岩龙蜥水 */
+boss[type="world"][tag="primo_geovishap_electro,primo_geovishap_cryo,primo_geovishap_pyro,primo_geovishap_hydro"] { BOSS_MATERIAL: genshin.avatar_ascension.juvenile_jade; }
 
 /* 无相之冰 */
-boss[type="world"][tag="cryo_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.crystalline_bloom: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="cryo_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.crystalline_bloom; }
 
 /* 魔偶剑鬼 */
-boss[type="world"][tag="maguu_kenki"][level="30~99"] {
-    genshin.avatar_ascension.marionette_core: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="maguu_kenki"] { BOSS_MATERIAL: genshin.avatar_ascension.marionette_core; }
 
 /* 恒常机关阵列 */
-boss[type="world"][tag="perpetual_mechanical_array"][level="30~99"] {
-    genshin.avatar_ascension.perpetual_heart: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="perpetual_mechanical_array"] { BOSS_MATERIAL: genshin.avatar_ascension.perpetual_heart; }
 
 /* 无相之火 */
-boss[type="world"][tag="pyro_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.smoldering_pearl: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="pyro_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.smoldering_pearl; }
 
 /* 无相之水 */
-boss[type="world"][tag="hydro_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.dew_of_repudiation: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="hydro_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.dew_of_repudiation; }
 
 /* 雷音权现 */
-boss[type="world"][tag="thunder_manifestation"][level="30~99"] {
-    genshin.avatar_ascension.storm_beads: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="thunder_manifestation"] { BOSS_MATERIAL: genshin.avatar_ascension.storm_beads; }
 
 /* 黄金王兽 */
-boss[type="world"][tag="golden_wolflord"][level="30~99"] {
-    genshin.avatar_ascension.riftborn_regalia: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="golden_wolflord"] { BOSS_MATERIAL: genshin.avatar_ascension.riftborn_regalia; }
 
 /* 深海龙蜥组合 */
-boss[type="world"][tag="bathysmal_vishap_herd"][level="30~99"] {
-    genshin.avatar_ascension.dragonheirs_false_fin: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="bathysmal_vishap_herd"] { BOSS_MATERIAL: genshin.avatar_ascension.dragonheirs_false_fin; }
 
 /* 遗迹巨蛇 */
-boss[type="world"][tag="ruin_serpent"][level="30~99"] {
-    genshin.avatar_ascension.runic_fang: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="ruin_serpent"] { BOSS_MATERIAL: genshin.avatar_ascension.runic_fang; }
 
 /* 翠翎恐蕈 */
-boss[type="world"][tag="jadeplume_terrorshroom"][level="30~99"] {
-    genshin.avatar_ascension.majestic_hooked_beak: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="jadeplume_terrorshroom"] { BOSS_MATERIAL: genshin.avatar_ascension.majestic_hooked_beak; }
 
 /* 掣电树 */
-boss[type="world"][tag="electro_regisvine"][level="30~99"] {
-    genshin.avatar_ascension.thunderclap_fruitcore: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="electro_regisvine"] { BOSS_MATERIAL: genshin.avatar_ascension.thunderclap_fruitcore; }
 
 /* 兆载永劫龙兽 */
-boss[type="world"][tag="aeonblight_drake"][level="30~99"] {
-    genshin.avatar_ascension.perpetual_caliber: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="aeonblight_drake"] { BOSS_MATERIAL: genshin.avatar_ascension.perpetual_caliber; }
 
 /* 半永恒统辖矩阵 */
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="30~99"] {
-    genshin.avatar_ascension.light_guiding_tetrahedron: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"] { BOSS_MATERIAL: genshin.avatar_ascension.light_guiding_tetrahedron; }
 
 /* 无相之草 */
-boss[type="world"][tag="dendro_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.quelled_creeper: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="dendro_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.quelled_creeper; }
 
 /* 霜夜灵嗣 */
-boss[type="world"][tag="frostnight_scion"][level="30~99"] {
-    genshin.avatar_ascension.frostnights_glory: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="frostnight_scion"] { BOSS_MATERIAL: genshin.avatar_ascension.frostnights_glory; }
 
 /* 重拳出击鸭 */
-boss[type="world"][tag="knuckle_duck"][level="30~99"] {
-    genshin.avatar_ascension.precision_kuuvahki_stamping_die: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="knuckle_duck"] { BOSS_MATERIAL: genshin.avatar_ascension.precision_kuuvahki_stamping_die; }
 
 /* 蕴光月幻蝶 */
-boss[type="world"][tag="lightbearing_lunar_moth"][level="30~99"] {
-    genshin.avatar_ascension.lightbearing_scale_feather: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="lightbearing_lunar_moth"] { BOSS_MATERIAL: genshin.avatar_ascension.lightbearing_scale_feather; }
 
 /* 精密发条机关 */
-boss[type="world"][tag="precision_clockwork"][level="30~99"] {
-    genshin.avatar_ascension.precision_clockwork_core: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="precision_clockwork"] { BOSS_MATERIAL: genshin.avatar_ascension.precision_clockwork_core; }
 
 /* 蕴光异兽 */
-boss[type="world"][tag="radiant_beast"][level="30~99"] {
-    genshin.avatar_ascension.prismatic_severed_tail: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="radiant_beast"] { BOSS_MATERIAL: genshin.avatar_ascension.prismatic_severed_tail; }
 
 /* 原初监视者 */
-boss[type="world"][tag="primal_watcher"][level="30~99"] {
-    genshin.avatar_ascension.plume_of_the_fallen_watcher: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="primal_watcher"] { BOSS_MATERIAL: genshin.avatar_ascension.plume_of_the_fallen_watcher; }
 
 /* 冰风组曲 */
-boss[type="world"][tag="icewind_suite"][level="30~99"] {
-    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelia: "${world_material_mid_count_1(level)}";
-    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelius: "${world_material_mid_count_1(level)}";
+boss[type="world"][tag="icewind_suite"] {
+    BOSS_MATERIAL: [
+        genshin.avatar_ascension.artificed_spare_clockwork_component_coppelia,
+        genshin.avatar_ascension.artificed_spare_clockwork_component_coppelius
+    ];
 }
 
 /* 铁甲熔火帝皇 */
-boss[type="world"][tag="emperor_of_fire_and_iron"][level="30~99"] {
-    genshin.avatar_ascension.emperors_resolution: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="emperor_of_fire_and_iron"] { BOSS_MATERIAL: genshin.avatar_ascension.emperors_resolution; }
 
 /* 实验性场力发生装置 */
-boss[type="world"][tag="experimental_field_generator"][level="30~99"] {
-    genshin.avatar_ascension.tourbillon_device: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="experimental_field_generator"] { BOSS_MATERIAL: genshin.avatar_ascension.tourbillon_device; }
 
 /* 千年珍珠骏麟 */
-boss[type="world"][tag="millennial_pearl_seahorse"][level="30~99"] {
-    genshin.avatar_ascension.fontemer_unihorn: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="millennial_pearl_seahorse"] { BOSS_MATERIAL: genshin.avatar_ascension.fontemer_unihorn; }
 
 /* 水形幻人 */
-boss[type="world"][tag="hydro_tulpa"][level="30~99"] {
-    genshin.avatar_ascension.water_that_failed_to_transcend: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="hydro_tulpa"] { BOSS_MATERIAL: genshin.avatar_ascension.water_that_failed_to_transcend; }
 
 /* 魔像督军 */
-boss[type="world"][tag="legatus_golem"][level="30~99"] {
-    genshin.avatar_ascension.fragment_of_a_golden_melody: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="legatus_golem"] { BOSS_MATERIAL: genshin.avatar_ascension.fragment_of_a_golden_melody; }
 
 /* 贪食匿叶龙山王 */
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="30~99"] {
-    genshin.avatar_ascension.overripe_flamegranate: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"] { BOSS_MATERIAL: genshin.avatar_ascension.overripe_flamegranate; }
 
 /* 金焰绒翼龙暴君 */
-boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="30~99"] {
-    genshin.avatar_ascension.mark_of_the_binding_blessing: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"] { BOSS_MATERIAL: genshin.avatar_ascension.mark_of_the_binding_blessing; }
 
 /* 秘源机兵·构型械 */
-boss[type="world"][tag="secret_source_automaton_configuration_device"][level="30~99"] {
-    genshin.avatar_ascension.gold_inscribed_secret_source_core: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="secret_source_automaton_configuration_device"] { BOSS_MATERIAL: genshin.avatar_ascension.gold_inscribed_secret_source_core; }
 
 /* 深邃魹语之主 */
-boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="30~99"] {
-    genshin.avatar_ascension.remnant_of_the_dreadwing: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="lord_of_the_deep_dreadwing"] { BOSS_MATERIAL: genshin.avatar_ascension.remnant_of_the_dreadwing; }
 
 /* 灵觉隐修的迷者 */
-boss[type="world"][tag="holawaqa_ngoubou"][level="30~99"] {
-    genshin.avatar_ascension.talisman_of_the_enigmatic_land: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="holawaqa_ngoubou"] { BOSS_MATERIAL: genshin.avatar_ascension.talisman_of_the_enigmatic_land; }
 
 /* 熔岩辉龙像 */
-boss[type="world"][tag="lava_dragon_statue"][level="30~99"] {
-    genshin.avatar_ascension.sparkless_statue_core: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="lava_dragon_statue"] { BOSS_MATERIAL: genshin.avatar_ascension.sparkless_statue_core; }
 
 /* 秘源机兵·统御械 */
-boss[type="world"][tag="secret_source_automaton_overseer"][level="30~99"] {
-    genshin.avatar_ascension.secret_source_airflow_accumulator: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="secret_source_automaton_overseer"] { BOSS_MATERIAL: genshin.avatar_ascension.secret_source_airflow_accumulator; }
 
 /* 风蚀沙虫 */
-boss[type="world"][tag="setekh_wenut"][level="30~99"] {
-    genshin.avatar_ascension.pseudo_stamens: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="setekh_wenut"] { BOSS_MATERIAL: genshin.avatar_ascension.pseudo_stamens; }
 
 /* 隐山猊兽 */
-boss[type="world"][tag="solitary_suanni"][level="30~99"] {
-    genshin.avatar_ascension.cloudseam_scale: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="solitary_suanni"] { BOSS_MATERIAL: genshin.avatar_ascension.cloudseam_scale; }
 
 /* 深邃摹结株 */
-boss[type="world"][tag="tenebrous_papilla"][level="30~99"] {
-    genshin.avatar_ascension.ensnaring_gaze: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="tenebrous_papilla"] { BOSS_MATERIAL: genshin.avatar_ascension.ensnaring_gaze; }
 
 /* 不灭衍生造物 */
-boss[type="world"][tag="undying_replicant"][level="30~99"] {
-    genshin.avatar_ascension.unscorched_blossom_branch: "${world_material_mid_count_1(level)}";
-}
+boss[type="world"][tag="undying_replicant"] { BOSS_MATERIAL: genshin.avatar_ascension.unscorched_blossom_branch; }
 
 /* 嵌合翼骏狮 */
-boss[type="world"][tag="chimera_sky_roamer"][level="30~99"] {
-    genshin.avatar_ascension.severed_tail_of_the_sky_roamer: "${world_material_mid_count_1(level)}";
+boss[type="world"][tag="chimera_sky_roamer"] { BOSS_MATERIAL: genshin.avatar_ascension.severed_tail_of_the_sky_roamer; }
+
+/* Early game: levels 1-29. The no-material exception follows below. */
+
+boss[type="world"][level="1~4"] {
+    getBossMaterial: "1:6614, 2:3386";
+}
+
+boss[type="world"][level="5~9"] {
+    getBossMaterial: "1:5711, 2:4289";
+}
+
+boss[type="world"][level="10~14"] {
+    getBossMaterial: "1:4583, 2:5417";
+}
+
+boss[type="world"][level="15~19"] {
+    getBossMaterial: "1:3455, 2:6545";
+}
+
+boss[type="world"][level="20~24"] {
+    getBossMaterial: "1:2327, 2:7673";
+}
+
+boss[type="world"][level="25~29"] {
+    getBossMaterial: "1:1199, 2:8801";
+}
+
+/* Mid game: levels 30-99. Shared standard quantities. */
+
+boss[type="world"][level="30~34"] {
+    getBossMaterial: "1:4782, 2:5218";
+}
+
+boss[type="world"][level="35~39"] {
+    getBossMaterial: "1:392, 2:608";
+}
+
+boss[type="world"][level="40~44"] {
+    getBossMaterial: "1:3059, 2:6941";
+}
+
+boss[type="world"][level="45~49"] {
+    getBossMaterial: "1:2197, 2:7803";
+}
+
+boss[type="world"][level="50~54"] {
+    getBossMaterial: "1:1336, 2:8664";
+}
+
+boss[type="world"][level="55~59"] {
+    getBossMaterial: "1:474, 2:9526";
+}
+
+boss[type="world"][level="60~64"] {
+    getBossMaterial: "2:9613, 3:387";
+}
+
+boss[type="world"][level="65~69"] {
+    getBossMaterial: "2:8752, 3:1248";
+}
+
+boss[type="world"][level="70~74"] {
+    getBossMaterial: "2:789, 3:211";
+}
+
+boss[type="world"][level="75~79"] {
+    getBossMaterial: "2:7029, 3:2971";
+}
+
+boss[type="world"][level="80~84"] {
+    getBossMaterial: "2:6167, 3:3833";
+}
+
+boss[type="world"][level="85~89"] {
+    getBossMaterial: "2:5306, 3:4694";
+}
+
+boss[type="world"][level="90~99"] {
+    getBossMaterial: "2:4444, 3:5556";
+}
+
+/* Mid-game exception: Pyro Regisvine and Oceanid. */
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="30~34"] {
+    getBossMaterial: "1:32602, 2:67398";
+}
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="35~39"] {
+    getBossMaterial: "1:2312, 2:7688";
+}
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="40~44"] {
+    getBossMaterial: "1:13649, 2:86351";
+}
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="45~49"] {
+    getBossMaterial: "1:4167, 2:95833";
+}
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="50~54"] {
+    getBossMaterial: "2:94696, 3:5304";
+}
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="55~59"] {
+    getBossMaterial: "2:85214, 3:14786";
+}
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="60~64"] {
+    getBossMaterial: "2:75743, 3:24257";
+}
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="65~69"] {
+    getBossMaterial: "2:66272, 3:33728";
+}
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="70~74"] {
+    getBossMaterial: "2:5679, 3:4321";
+}
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="75~79"] {
+    getBossMaterial: "2:47319, 3:52681";
+}
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="80~84"] {
+    getBossMaterial: "2:37837, 3:62163";
+}
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="85~89"] {
+    getBossMaterial: "2:28366, 3:71634";
+}
+
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="90~99"] {
+    getBossMaterial: "2:18884, 3:81116";
+}
+
+/* These 25 Boss identities have no material entry at levels 1-29.
+ * Override the shared early-game quantity with zero; do not invent drops.
+ */
+boss[type="world"][tag="electro_hypostasis,anemo_hypostasis,geo_hypostasis,cryo_regisvine,pyro_regisvine,oceanid,primo_geovishap_electro,primo_geovishap_cryo,primo_geovishap_pyro,primo_geovishap_hydro,cryo_hypostasis,maguu_kenki,perpetual_mechanical_array,pyro_hypostasis,hydro_hypostasis,thunder_manifestation,golden_wolflord,bathysmal_vishap_herd,ruin_serpent,jadeplume_terrorshroom,electro_regisvine,aeonblight_drake,algorithm_semi_intransient_matrix,dendro_hypostasis,setekh_wenut"][level="1~29"] {
+    getBossMaterial: 0;
 }

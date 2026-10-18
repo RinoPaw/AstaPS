@@ -41,35 +41,6 @@ final class BundledBossRewardsTest {
     }
 
     @Test
-    void allEarlyCurvesCoverSourceBracketsWithoutInterpolation() throws Exception {
-        var curves = RewardCurves.parse(RewardConfiguration.readBundled("curves.yaml"));
-        String[] levels = {"1", "5", "10", "15", "20", "25"};
-        String[] gemCounts = {
-                "3+3:47.246", "3+3:57.179", "3+3:69.587",
-                "3+3:81.995", "3+3:94.403", "6+3:6.811"
-        };
-        String[] materialCounts = {
-                "1+1:33.86", "1+1:42.89", "1+1:54.17",
-                "1+1:65.45", "1+1:76.73", "1+1:88.01"
-        };
-        for (int i = 0; i < levels.length; i++) {
-            assertEquals(gemCounts[i],
-                    curves.require("world_gems_early_standard_item_count").lookup(levels[i]));
-            assertEquals(materialCounts[i],
-                    curves.require("world_ascension_material_early_count").lookup(levels[i]));
-        }
-        assertEquals("9", curves.require("world_gems_early_fixed_item_count").lookup("29"));
-        assertEquals("2+1:19.219", curves.require("world_gems_roll_count").lookup("30"));
-        assertEquals("3+1:18.45", curves.require("world_gems_roll_count").lookup("100"));
-        assertEquals("1+1:12.2", curves.require("world_gems_fragment_extra_count").lookup("100"));
-        assertEquals("2+1:55.56", curves.require("world_ascension_material_standard_count").lookup("100"));
-        assertEquals("2+1:81.116", curves.require("world_ascension_material_high_yield_count").lookup("100"));
-        assertEquals("3+1:25", curves.require("world_ascension_material_modern_count").lookup("100"));
-        assertThrows(IllegalArgumentException.class, () ->
-                curves.require("world_ascension_material_early_count").lookup("30"));
-    }
-
-    @Test
     void bundledWorldAndWeeklyRulesLoadAndNativeFallbackIsPreserved() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         String stylesheet = RewardConfiguration.readBundled("rewards.css");
@@ -124,9 +95,8 @@ final class BundledBossRewardsTest {
                         default -> "Materials";
                     });
                 });
-        var curves = RewardCurves.parse(RewardConfiguration.readBundled("curves.yaml"));
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, categories),
-                loot, curves);
+                loot);
         var config = new RewardConfiguration(loot, css);
         var bosses = stylesheet.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\""))

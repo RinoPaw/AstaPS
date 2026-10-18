@@ -51,7 +51,7 @@ public final class CssRewards {
     // conventional CSS property identifiers. Encode declarations only; leave
     // CSS selectors, values and the canonical resource IDs unchanged.
     private static final Pattern RESOURCE_DECLARATION = Pattern.compile(
-            "(?m)(^|[;{])(\\s*)([a-z][a-z0-9_]*(?:\\.[\\p{L}\\p{N}_-]+){2,})\\s*:");
+            "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|getBossMaterial|[a-z][a-z0-9_]*(?:\\.[\\p{L}\\p{N}_-]+){2,})\\s*:");
 
     private record AttributeRange(String name, long min, Long max) {
         boolean matches(Map<String, String> attributes) {
@@ -76,17 +76,13 @@ public final class CssRewards {
         }
     }
 
-    private static final Pattern CURVE_CALL =
-            Pattern.compile("[$][{]([a-z][a-z0-9_]*)[(]level[)][}]");
-
     private record Rule(
             Evaluator selector, List<AttributeRange> attributeRanges,
             List<AttributeOptions> attributeOptions,
             Map<Integer, Integer> items, Map<String, Integer> loot,
             Map<Integer, LootCount.Spec> rangedItems,
             Map<String, LootCount.Spec> rangedLoot,
-            Map<Integer, RewardCurves.Curve> curvedItems,
-            Map<String, RewardCurves.Curve> curvedLoot,
+            List<Integer> bossMaterials, LootCount.Spec bossMaterialCount,
             int specificity, int order) {}
 
     private final List<Rule> rules;
@@ -96,17 +92,14 @@ public final class CssRewards {
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
-        return parse(source, items, loot, RewardCurves.empty());
-    }
-
-    public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot,
-                                   RewardCurves curves) {
-        if (curves == null) throw new IllegalArgumentException("Missing reward curves");
+        if (source.contains("${")) {
+            throw new IllegalArgumentException("Reward curves are no longer supported");
+        }
         // Transform resource declarations into CSS-safe temporary properties.
         // Every occurrence gets a distinct temporary key; the original key is
         // recovered before resolving resource identities and cascade rules.
         var originalProperties = new HashMap<String, String>();
-        var propertyMatcher = RESOURCE_DECLARATION.matcher(source);
+        var propertyMatcher = RESOURCE_DECLARATION.matcher(quoteMaterialBindings(source));
         var propertyBuffer = new StringBuffer();
         while (propertyMatcher.find()) {
             String surrogate = "--resource-path-" + originalProperties.size();
@@ -136,8 +129,8 @@ public final class CssRewards {
             var ranged = new HashMap<Integer, LootCount.Spec>();
             var selectedLoot = new HashMap<String, Integer>();
             var rangedLoot = new HashMap<String, LootCount.Spec>();
-            var curvedItems = new HashMap<Integer, RewardCurves.Curve>();
-            var curvedLoot = new HashMap<String, RewardCurves.Curve>();
+            List<Integer> bossMaterials = null;
+            LootCount.Spec bossMaterialCount = null;
             for (var declaration : style.getAllDeclarations()) {
                 String property = declaration.getProperty();
                 String value = declaration.getExpressionAsCSSString().trim();
@@ -147,44 +140,34 @@ public final class CssRewards {
                     value = value.substring(1, value.length() - 1);
                 }
                 String original = originalProperties.getOrDefault(property, property);
+                if ("BOSS_MATERIAL".equals(original)) {
+                    bossMaterials = parseMaterialBinding(value, items);
+                    continue;
+                }
+                if ("getBossMaterial".equals(original)) {
+                    bossMaterialCount = LootCount.parseRoll(value);
+                    continue;
+                }
                 ResourceId resource = ResourceId.parse(original);
                 if (resource.size() < 3) {
                     throw new IllegalArgumentException("Expected a qualified resource path: " + original);
                 }
-                var curveCall = CURVE_CALL.matcher(value);
-                if (value.contains("${") && !curveCall.matches()) {
-                    throw new IllegalArgumentException("Unsupported reward-curve expression: " + value);
-                }
-                if (resource.size() >= 3 && "loot".equals(resource.segment(1))) {
+                if ("loot".equals(resource.segment(1))) {
                     String name = loot.resolveName(resource.toString());
-                    if (curveCall.matches()) {
-                        curvedLoot.put(name, curves.require(curveCall.group(1)));
-                        selectedLoot.remove(name);
-                        rangedLoot.remove(name);
-                        continue;
-                    }
-                    curvedLoot.remove(name);
                     if (value.matches("[0-9]+")) {
                         selectedLoot.put(name, Integer.parseInt(value));
                         rangedLoot.remove(name);
                     } else {
-                        rangedLoot.put(name, LootCount.parse(value));
+                        rangedLoot.put(name, LootCount.parseRoll(value));
                         selectedLoot.remove(name);
                     }
                 } else {
                     int id = items.resolve(resource.toString());
-                    if (curveCall.matches()) {
-                        curvedItems.put(id, curves.require(curveCall.group(1)));
-                        fixed.remove(id);
-                        ranged.remove(id);
-                        continue;
-                    }
-                    curvedItems.remove(id);
                     if (value.matches("[0-9]+")) {
                         fixed.put(id, Integer.parseInt(value));
                         ranged.remove(id);
                     } else {
-                        ranged.put(id, LootCount.parse(value.replaceAll("\\s+", "")));
+                        ranged.put(id, LootCount.parseRoll(value));
                         fixed.remove(id);
                     }
                 }
@@ -238,8 +221,8 @@ public final class CssRewards {
                 rules.add(new Rule(Selector.evaluatorOf(normalizedSelector),
                         List.copyOf(attributeRanges), List.copyOf(options), Map.copyOf(fixed),
                         Map.copyOf(selectedLoot), Map.copyOf(ranged),
-                        Map.copyOf(rangedLoot), Map.copyOf(curvedItems),
-                         Map.copyOf(curvedLoot), specificity, order++));
+                        Map.copyOf(rangedLoot), bossMaterials, bossMaterialCount,
+                        specificity, order++));
             }
         }
 
@@ -247,45 +230,83 @@ public final class CssRewards {
         return new CssRewards(rules);
     }
 
+    /** Quote dotted resource lists before passing them through the CSS value parser. */
+    private static String quoteMaterialBindings(String source) {
+        var matcher = Pattern.compile(
+                "(?m)(^|[;{])(\\s*)BOSS_MATERIAL\\s*:\\s*([^;{}]+)").matcher(source);
+        var buffer = new StringBuffer();
+        while (matcher.find()) {
+            String value = matcher.group(3).trim();
+            if (value.length() >= 2
+                    && (value.startsWith("\"") && value.endsWith("\"")
+                        || value.startsWith("'") && value.endsWith("'"))) {
+                value = value.substring(1, value.length() - 1);
+            }
+            // Resource names contain no whitespace, quotes, or backslashes.
+            value = value.replaceAll("\\s+", "");
+            if (value.contains("\"") || value.contains("'") || value.contains("\\")) {
+                throw new IllegalArgumentException("Invalid Boss material binding: " + value);
+            }
+            matcher.appendReplacement(buffer, Matcher.quoteReplacement(
+                    matcher.group(1) + matcher.group(2) + "BOSS_MATERIAL: \"" + value + "\""));
+        }
+        matcher.appendTail(buffer);
+        return buffer.toString();
+    }
+
+    private static List<Integer> parseMaterialBinding(String value, ItemIdRegistry items) {
+        String names = value.replaceAll("\\s+", "");
+        if (names.startsWith("[")) {
+            if (!names.endsWith("]")) {
+                throw new IllegalArgumentException("Invalid Boss material list: " + value);
+            }
+            names = names.substring(1, names.length() - 1);
+        } else if (names.contains(",") || names.contains("]")) {
+            throw new IllegalArgumentException("Boss material lists require brackets: " + value);
+        }
+        var ids = new ArrayList<Integer>();
+        for (String name : names.split(",", -1)) {
+            if (name.isEmpty()) throw new IllegalArgumentException("Empty Boss material binding");
+            int id = items.resolve(name);
+            if (ids.contains(id)) throw new IllegalArgumentException("Duplicate Boss material: " + name);
+            ids.add(id);
+        }
+        return List.copyOf(ids);
+    }
+
     public Selection resolve(String type, Map<String, String> attributes) {
         var element = new Element(type);
         attributes.forEach(element::attr);
+        var matched = new ArrayList<Rule>();
+        List<Integer> bossMaterials = null;
+        // Resolve the binding independently of the count rule's position/specificity.
+        for (var rule : rules) {
+            if (rule.selector.matches(element.root(), element)
+                    && rule.attributeRanges.stream().allMatch(range -> range.matches(attributes))
+                    && rule.attributeOptions.stream().allMatch(option -> option.matches(attributes))) {
+                matched.add(rule);
+                if (rule.bossMaterials != null) bossMaterials = rule.bossMaterials;
+            }
+        }
         var fixed = new HashMap<Integer, Integer>();
         var ranged = new HashMap<Integer, LootCount.Spec>();
         var selectedLoot = new HashMap<String, Integer>();
         var rangedLoot = new HashMap<String, LootCount.Spec>();
-        for (var rule : rules) {
-            if (rule.selector.matches(element.root(), element)
-                    && rule.attributeRanges.stream().allMatch(range ->
-                            range.matches(attributes))
-                    && rule.attributeOptions.stream().allMatch(option ->
-                            option.matches(attributes))) {
-                rule.items.keySet().forEach(ranged::remove);
-                rule.rangedItems.keySet().forEach(fixed::remove);
-                rule.curvedItems.keySet().forEach(id -> {
+        for (var rule : matched) {
+            rule.items.keySet().forEach(ranged::remove);
+            rule.rangedItems.keySet().forEach(fixed::remove);
+            fixed.putAll(rule.items);
+            ranged.putAll(rule.rangedItems);
+            rule.loot.keySet().forEach(rangedLoot::remove);
+            rule.rangedLoot.keySet().forEach(selectedLoot::remove);
+            selectedLoot.putAll(rule.loot);
+            rangedLoot.putAll(rule.rangedLoot);
+            if (rule.bossMaterialCount != null && bossMaterials != null) {
+                for (int id : bossMaterials) {
                     fixed.remove(id);
-                    ranged.remove(id);
-                });
-                fixed.putAll(rule.items);
-                ranged.putAll(rule.rangedItems);
-                rule.curvedItems.forEach((id, curve) -> {
-                    String value = curve.lookup(attributes.get("level"));
-                    if (value.matches("[0-9]+")) fixed.put(id, Integer.parseInt(value));
-                    else ranged.put(id, LootCount.parse(value));
-                });
-                rule.loot.keySet().forEach(rangedLoot::remove);
-                rule.rangedLoot.keySet().forEach(selectedLoot::remove);
-                rule.curvedLoot.keySet().forEach(name -> {
-                    selectedLoot.remove(name);
-                    rangedLoot.remove(name);
-                });
-                selectedLoot.putAll(rule.loot);
-                rangedLoot.putAll(rule.rangedLoot);
-                rule.curvedLoot.forEach((name, curve) -> {
-                    String value = curve.lookup(attributes.get("level"));
-                    if (value.matches("[0-9]+")) selectedLoot.put(name, Integer.parseInt(value));
-                    else rangedLoot.put(name, LootCount.parse(value));
-                });
+                    // Each item samples separately in RewardRoller, including an explicit zero.
+                    ranged.put(id, rule.bossMaterialCount);
+                }
             }
         }
         return new Selection(fixed, selectedLoot, ranged, rangedLoot);

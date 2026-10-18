@@ -35,6 +35,51 @@ public final class LootCount {
         return rng -> fixed;
     }
 
+    /** CSS roll expressions use count:relative-weight, with no implicit empty result. */
+    public static Spec parseRoll(Object raw) {
+        if (raw == null) return rng -> 1;
+        String text = raw.toString().trim().replaceAll("\\s+", "");
+        if (text.contains("+")) {
+            throw new IllegalArgumentException("Bonus '+' syntax is not supported in CSS rolls");
+        }
+        if (!text.contains(":") && !text.contains(",")) return parse(text);
+        var amounts = new java.util.ArrayList<Integer>();
+        var weights = new java.util.ArrayList<BigDecimal>();
+        BigDecimal total = BigDecimal.ZERO;
+        var seen = new java.util.HashSet<Integer>();
+        for (String part : text.split(",", -1)) {
+            String[] pair = part.split(":", -1);
+            if (pair.length != 2 || !pair[1].matches("[0-9]+(?:\\.[0-9]+)?")) {
+                throw new IllegalArgumentException("Expected count:weight in CSS roll: " + part);
+            }
+            int amount = integer(pair[0]);
+            if (!seen.add(amount)) throw new IllegalArgumentException("Duplicate roll count: " + amount);
+            BigDecimal weight = new BigDecimal(pair[1]);
+            if (weight.signum() == 0) continue;
+            amounts.add(amount);
+            weights.add(weight);
+            total = total.add(weight);
+        }
+        if (amounts.isEmpty()) throw new IllegalArgumentException("CSS roll has no positive weight");
+        if (amounts.size() == 1) {
+            int amount = amounts.getFirst();
+            return rng -> amount;
+        }
+        double[] boundaries = new double[weights.size()];
+        BigDecimal cumulative = BigDecimal.ZERO;
+        for (int i = 0; i < weights.size(); i++) {
+            cumulative = cumulative.add(weights.get(i));
+            boundaries[i] = cumulative.divide(total, java.math.MathContext.DECIMAL128).doubleValue();
+        }
+        return rng -> {
+            double ticket = rng.nextDouble();
+            for (int i = 0; i < boundaries.length - 1; i++) {
+                if (ticket < boundaries[i]) return amounts.get(i);
+            }
+            return amounts.getLast();
+        };
+    }
+
     /**
      * N+K:P runs N times and independently adds K further executions with P% chance.
      * In nested loot, each execution rolls the nested pool separately.

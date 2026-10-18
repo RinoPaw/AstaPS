@@ -216,10 +216,11 @@ public final class GiveCommand implements CommandHandler {
             try {
                 ResourceId resource = ResourceId.parse(input);
                 int nativeId = GenshinResourceIds.current().resolve(input);
-                if ("artifact".equals(resource.type())) {
+                String resourceType = resource.size() > 1 ? resource.segment(1) : "";
+                if ("artifact".equals(resourceType)) {
                     param.setPieces = NameIndex.bestPiecesForSet(nativeId);
                     param.id = param.setPieces.get(0);
-                } else if ("recipe".equals(resource.type())) {
+                } else if ("recipe".equals(resourceType)) {
                     param.recipeId = nativeId;
                     return true;
                 } else {

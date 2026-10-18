@@ -79,7 +79,7 @@ it is rolled. For Maguu Kenki at native level 50–54:
 
 ```css
 boss[type="world"][tag="maguu_kenki"][level="50~54"] {
-    genshin.avatar_ascension.marionette_core: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_material_mid_count_1(level)}";
     astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "1+1:12.2";
     astaps.loot.gems_world_mid_anemo_cryo_3x_main_50: "${world_gems_mid_count_1(level)}";
 }
@@ -283,10 +283,10 @@ execution count according to its CSS declaration. Weekly naming is unchanged.
 | Early | `world_gems_early_count_1` | Direct gem quantity |
 | Early | `world_gems_early_count_2` | Independent weighted gem-pool executions |
 | Early | `world_gems_early_count_3` | Setekh Wenut's larger direct quantity |
-| Early | `world_ascension_material_early_count_1` | Per-material quantity |
+| Early | `world_material_early_count_1` | Per-material quantity |
 | Mid | `world_gems_mid_count_1` | Main gem-pool executions |
-| Mid | `world_ascension_material_mid_count_1` | Standard materials, older and modern Bosses |
-| Mid | `world_ascension_material_mid_count_2` | Pyro Regisvine and Oceanid materials |
+| Mid | `world_material_mid_count_1` | Standard materials, older and modern Bosses |
+| Mid | `world_material_mid_count_2` | Pyro Regisvine and Oceanid materials |
 | Mid | `weekly_gems_mid_roll_count` | Existing shared weekly gem coverage, level 40-89 |
 
 The early gem profiles share probabilities, but distinguish direct copies
@@ -302,7 +302,7 @@ For example, the native-level material declaration is:
 
 ```css
 boss[type="world"][tag="maguu_kenki"][level="30~99"] {
-    genshin.avatar_ascension.marionette_core: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_material_mid_count_1(level)}";
 }
 ```
 

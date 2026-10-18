@@ -39,7 +39,7 @@ world_gems_early_count_3:
 # Early exclusive materials: evaluate independently for each material.
 # Missing native material entries stay absent; Icewind Suite has two identities.
 
-world_ascension_material_early_count_1:
+world_material_early_count_1:
   "1~4": "1+1:33.86"
   "5~9": "1+1:42.89"
   "10~14": "1+1:54.17"
@@ -66,7 +66,7 @@ world_gems_mid_count_1:
 
 # Mid game: one standard material curve for both older and modern Bosses.
 
-world_ascension_material_mid_count_1:
+world_material_mid_count_1:
   "30~34": "1+1:52.18"
   "35~39": "1+1:60.8"
   "40~44": "1+1:69.41"
@@ -83,7 +83,7 @@ world_ascension_material_mid_count_1:
 
 # Pyro Regisvine and Oceanid retain their distinct native material odds.
 
-world_ascension_material_mid_count_2:
+world_material_mid_count_2:
   "30~34": "1+1:67.398"
   "35~39": "1+1:76.88"
   "40~44": "1+1:86.351"

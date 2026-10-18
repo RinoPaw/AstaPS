@@ -1616,32 +1616,32 @@ boss[type="world"][tag="frostnight_scion"][level="1~29"] {
     genshin.avatar_ascension.hydro.2: 9;
     genshin.avatar_ascension.cryo.3: 9;
     genshin.avatar_ascension.cryo.2: 9;
-    genshin.avatar_ascension.frostnights_glory: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.frostnights_glory: "${world_material_early_count_1(level)}";
 }
 
 /* 重拳出击鸭 */
 boss[type="world"][tag="knuckle_duck"][level="1~29"] {
-    genshin.avatar_ascension.precision_kuuvahki_stamping_die: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.precision_kuuvahki_stamping_die: "${world_material_early_count_1(level)}";
 }
 
 /* 蕴光月幻蝶 */
 boss[type="world"][tag="lightbearing_lunar_moth"][level="1~29"] {
-    genshin.avatar_ascension.lightbearing_scale_feather: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.lightbearing_scale_feather: "${world_material_early_count_1(level)}";
 }
 
 /* 精密发条机关 */
 boss[type="world"][tag="precision_clockwork"][level="1~29"] {
-    genshin.avatar_ascension.precision_clockwork_core: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.precision_clockwork_core: "${world_material_early_count_1(level)}";
 }
 
 /* 蕴光异兽 */
 boss[type="world"][tag="radiant_beast"][level="1~29"] {
-    genshin.avatar_ascension.prismatic_severed_tail: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.prismatic_severed_tail: "${world_material_early_count_1(level)}";
 }
 
 /* 原初监视者 */
 boss[type="world"][tag="primal_watcher"][level="1~29"] {
-    genshin.avatar_ascension.plume_of_the_fallen_watcher: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.plume_of_the_fallen_watcher: "${world_material_early_count_1(level)}";
 }
 
 /* 冰风组曲 */
@@ -1650,28 +1650,28 @@ boss[type="world"][tag="icewind_suite"][level="1~29"] {
     genshin.avatar_ascension.anemo.2: 9;
     genshin.avatar_ascension.cryo.3: 9;
     genshin.avatar_ascension.cryo.2: 9;
-    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelia: "${world_ascension_material_early_count_1(level)}";
-    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelius: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelia: "${world_material_early_count_1(level)}";
+    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelius: "${world_material_early_count_1(level)}";
 }
 
 /* 铁甲熔火帝皇 */
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="1~29"] {
-    genshin.avatar_ascension.emperors_resolution: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.emperors_resolution: "${world_material_early_count_1(level)}";
 }
 
 /* 实验性场力发生装置 */
 boss[type="world"][tag="experimental_field_generator"][level="1~29"] {
-    genshin.avatar_ascension.tourbillon_device: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.tourbillon_device: "${world_material_early_count_1(level)}";
 }
 
 /* 千年珍珠骏麟 */
 boss[type="world"][tag="millennial_pearl_seahorse"][level="1~29"] {
-    genshin.avatar_ascension.fontemer_unihorn: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.fontemer_unihorn: "${world_material_early_count_1(level)}";
 }
 
 /* 水形幻人 */
 boss[type="world"][tag="hydro_tulpa"][level="1~29"] {
-    genshin.avatar_ascension.water_that_failed_to_transcend: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.water_that_failed_to_transcend: "${world_material_early_count_1(level)}";
 }
 
 /* 魔像督军 */
@@ -1680,46 +1680,46 @@ boss[type="world"][tag="legatus_golem"][level="1~29"] {
     genshin.avatar_ascension.pyro.2: 9;
     genshin.avatar_ascension.geo.3: 9;
     genshin.avatar_ascension.geo.2: 9;
-    genshin.avatar_ascension.fragment_of_a_golden_melody: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.fragment_of_a_golden_melody: "${world_material_early_count_1(level)}";
 }
 
 /* 贪食匿叶龙山王 */
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="1~29"] {
-    genshin.avatar_ascension.overripe_flamegranate: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.overripe_flamegranate: "${world_material_early_count_1(level)}";
 }
 
 /* 金焰绒翼龙暴君 */
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="1~29"] {
-    genshin.avatar_ascension.mark_of_the_binding_blessing: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.mark_of_the_binding_blessing: "${world_material_early_count_1(level)}";
 }
 
 /* 秘源机兵·构型械 */
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="1~29"] {
-    genshin.avatar_ascension.gold_inscribed_secret_source_core: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.gold_inscribed_secret_source_core: "${world_material_early_count_1(level)}";
 }
 
 /* 深邃魹语之主 */
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="1~29"] {
     genshin.avatar_ascension.electro.3: 9;
     genshin.avatar_ascension.electro.2: 9;
-    genshin.avatar_ascension.remnant_of_the_dreadwing: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.remnant_of_the_dreadwing: "${world_material_early_count_1(level)}";
 }
 
 /* 灵觉隐修的迷者 */
 boss[type="world"][tag="holawaqa_ngoubou"][level="1~29"] {
-    genshin.avatar_ascension.talisman_of_the_enigmatic_land: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.talisman_of_the_enigmatic_land: "${world_material_early_count_1(level)}";
 }
 
 /* 熔岩辉龙像 */
 boss[type="world"][tag="lava_dragon_statue"][level="1~29"] {
     genshin.avatar_ascension.pyro.3: 9;
     genshin.avatar_ascension.pyro.2: 9;
-    genshin.avatar_ascension.sparkless_statue_core: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.sparkless_statue_core: "${world_material_early_count_1(level)}";
 }
 
 /* 秘源机兵·统御械 */
 boss[type="world"][tag="secret_source_automaton_overseer"][level="1~29"] {
-    genshin.avatar_ascension.secret_source_airflow_accumulator: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.secret_source_airflow_accumulator: "${world_material_early_count_1(level)}";
 }
 
 /* 风蚀沙虫 */
@@ -1733,7 +1733,7 @@ boss[type="world"][tag="solitary_suanni"][level="1~29"] {
     genshin.avatar_ascension.hydro.2: 9;
     genshin.avatar_ascension.anemo.3: 9;
     genshin.avatar_ascension.anemo.2: 9;
-    genshin.avatar_ascension.cloudseam_scale: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.cloudseam_scale: "${world_material_early_count_1(level)}";
 }
 
 /* 深邃摹结株 */
@@ -1744,12 +1744,12 @@ boss[type="world"][tag="tenebrous_papilla"][level="1~29"] {
     genshin.avatar_ascension.electro.2: 9;
     genshin.avatar_ascension.anemo.3: 9;
     genshin.avatar_ascension.anemo.2: 9;
-    genshin.avatar_ascension.ensnaring_gaze: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.ensnaring_gaze: "${world_material_early_count_1(level)}";
 }
 
 /* 不灭衍生造物 */
 boss[type="world"][tag="undying_replicant"][level="1~29"] {
-    genshin.avatar_ascension.unscorched_blossom_branch: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.unscorched_blossom_branch: "${world_material_early_count_1(level)}";
 }
 
 /* 嵌合翼骏狮 */
@@ -1758,7 +1758,7 @@ boss[type="world"][tag="chimera_sky_roamer"][level="1~29"] {
     genshin.avatar_ascension.hydro.2: 9;
     genshin.avatar_ascension.anemo.3: 9;
     genshin.avatar_ascension.anemo.2: 9;
-    genshin.avatar_ascension.severed_tail_of_the_sky_roamer: "${world_ascension_material_early_count_1(level)}";
+    genshin.avatar_ascension.severed_tail_of_the_sky_roamer: "${world_material_early_count_1(level)}";
 }
 
 /* Mid-game World Boss gems and ascension materials: Lv.30-99 (sourceType 34).
@@ -1768,7 +1768,7 @@ boss[type="world"][tag="chimera_sky_roamer"][level="1~29"] {
 
 /* 无相之雷 */
 boss[type="world"][tag="electro_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.lightning_prism: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.lightning_prism: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="electro_hypostasis"][level="30~34"] {
     astaps.loot.gems_world_mid_electro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -1823,7 +1823,7 @@ boss[type="world"][tag="electro_hypostasis"][level="90~99"] {
 
 /* 无相之风 */
 boss[type="world"][tag="anemo_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.hurricane_seed: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.hurricane_seed: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="anemo_hypostasis"][level="30~34"] {
     astaps.loot.gems_world_mid_anemo_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -1878,7 +1878,7 @@ boss[type="world"][tag="anemo_hypostasis"][level="90~99"] {
 
 /* 无相之岩 */
 boss[type="world"][tag="geo_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.basalt_pillar: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.basalt_pillar: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="geo_hypostasis"][level="30~34"] {
     astaps.loot.gems_world_mid_geo_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -1933,7 +1933,7 @@ boss[type="world"][tag="geo_hypostasis"][level="90~99"] {
 
 /* 急冻树 */
 boss[type="world"][tag="cryo_regisvine"][level="30~99"] {
-    genshin.avatar_ascension.hoarfrost_core: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.hoarfrost_core: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="cryo_regisvine"][level="30~34"] {
     astaps.loot.gems_world_mid_cryo_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -1988,7 +1988,7 @@ boss[type="world"][tag="cryo_regisvine"][level="90~99"] {
 
 /* 爆炎树 */
 boss[type="world"][tag="pyro_regisvine"][level="30~99"] {
-    genshin.avatar_ascension.everflame_seed: "${world_ascension_material_mid_count_2(level)}";
+    genshin.avatar_ascension.everflame_seed: "${world_material_mid_count_2(level)}";
 }
 boss[type="world"][tag="pyro_regisvine"][level="30~34"] {
     astaps.loot.gems_world_mid_pyro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2043,7 +2043,7 @@ boss[type="world"][tag="pyro_regisvine"][level="90~99"] {
 
 /* 纯水精灵 */
 boss[type="world"][tag="oceanid"][level="30~99"] {
-    genshin.avatar_ascension.cleansing_heart: "${world_ascension_material_mid_count_2(level)}";
+    genshin.avatar_ascension.cleansing_heart: "${world_material_mid_count_2(level)}";
 }
 boss[type="world"][tag="oceanid"][level="30~34"] {
     astaps.loot.gems_world_mid_hydro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2098,7 +2098,7 @@ boss[type="world"][tag="oceanid"][level="90~99"] {
 
 /* 古岩龙蜥电 */
 boss[type="world"][tag="primo_geovishap_electro"][level="30~99"] {
-    genshin.avatar_ascension.juvenile_jade: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.juvenile_jade: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="primo_geovishap_electro"][level="30~34"] {
     astaps.loot.gems_world_mid_electro_geo_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2153,7 +2153,7 @@ boss[type="world"][tag="primo_geovishap_electro"][level="90~99"] {
 
 /* 古岩龙蜥冰 */
 boss[type="world"][tag="primo_geovishap_cryo"][level="30~99"] {
-    genshin.avatar_ascension.juvenile_jade: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.juvenile_jade: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="primo_geovishap_cryo"][level="30~34"] {
     astaps.loot.gems_world_mid_cryo_geo_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2208,7 +2208,7 @@ boss[type="world"][tag="primo_geovishap_cryo"][level="90~99"] {
 
 /* 古岩龙蜥火 */
 boss[type="world"][tag="primo_geovishap_pyro"][level="30~99"] {
-    genshin.avatar_ascension.juvenile_jade: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.juvenile_jade: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="primo_geovishap_pyro"][level="30~34"] {
     astaps.loot.gems_world_mid_geo_pyro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2263,7 +2263,7 @@ boss[type="world"][tag="primo_geovishap_pyro"][level="90~99"] {
 
 /* 古岩龙蜥水 */
 boss[type="world"][tag="primo_geovishap_hydro"][level="30~99"] {
-    genshin.avatar_ascension.juvenile_jade: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.juvenile_jade: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="primo_geovishap_hydro"][level="30~34"] {
     astaps.loot.gems_world_mid_geo_hydro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2318,7 +2318,7 @@ boss[type="world"][tag="primo_geovishap_hydro"][level="90~99"] {
 
 /* 无相之冰 */
 boss[type="world"][tag="cryo_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.crystalline_bloom: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.crystalline_bloom: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="cryo_hypostasis"][level="30~34"] {
     astaps.loot.gems_world_mid_cryo_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2373,7 +2373,7 @@ boss[type="world"][tag="cryo_hypostasis"][level="90~99"] {
 
 /* 魔偶剑鬼 */
 boss[type="world"][tag="maguu_kenki"][level="30~99"] {
-    genshin.avatar_ascension.marionette_core: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="maguu_kenki"][level="30~34"] {
     astaps.loot.gems_world_mid_anemo_cryo_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2428,7 +2428,7 @@ boss[type="world"][tag="maguu_kenki"][level="90~99"] {
 
 /* 恒常机关阵列 */
 boss[type="world"][tag="perpetual_mechanical_array"][level="30~99"] {
-    genshin.avatar_ascension.perpetual_heart: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.perpetual_heart: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="perpetual_mechanical_array"][level="30~34"] {
     astaps.loot.gems_world_mid_cryo_geo_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2483,7 +2483,7 @@ boss[type="world"][tag="perpetual_mechanical_array"][level="90~99"] {
 
 /* 无相之火 */
 boss[type="world"][tag="pyro_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.smoldering_pearl: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.smoldering_pearl: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="pyro_hypostasis"][level="30~34"] {
     astaps.loot.gems_world_mid_pyro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2538,7 +2538,7 @@ boss[type="world"][tag="pyro_hypostasis"][level="90~99"] {
 
 /* 无相之水 */
 boss[type="world"][tag="hydro_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.dew_of_repudiation: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.dew_of_repudiation: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="hydro_hypostasis"][level="30~34"] {
     astaps.loot.gems_world_mid_hydro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2593,7 +2593,7 @@ boss[type="world"][tag="hydro_hypostasis"][level="90~99"] {
 
 /* 雷音权现 */
 boss[type="world"][tag="thunder_manifestation"][level="30~99"] {
-    genshin.avatar_ascension.storm_beads: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.storm_beads: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="thunder_manifestation"][level="30~34"] {
     astaps.loot.gems_world_mid_electro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2648,7 +2648,7 @@ boss[type="world"][tag="thunder_manifestation"][level="90~99"] {
 
 /* 黄金王兽 */
 boss[type="world"][tag="golden_wolflord"][level="30~99"] {
-    genshin.avatar_ascension.riftborn_regalia: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.riftborn_regalia: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="golden_wolflord"][level="30~34"] {
     astaps.loot.gems_world_mid_geo_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2703,7 +2703,7 @@ boss[type="world"][tag="golden_wolflord"][level="90~99"] {
 
 /* 深海龙蜥组合 */
 boss[type="world"][tag="bathysmal_vishap_herd"][level="30~99"] {
-    genshin.avatar_ascension.dragonheirs_false_fin: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.dragonheirs_false_fin: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="bathysmal_vishap_herd"][level="30~34"] {
     astaps.loot.gems_world_mid_cryo_electro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2758,7 +2758,7 @@ boss[type="world"][tag="bathysmal_vishap_herd"][level="90~99"] {
 
 /* 遗迹巨蛇 */
 boss[type="world"][tag="ruin_serpent"][level="30~99"] {
-    genshin.avatar_ascension.runic_fang: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.runic_fang: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="ruin_serpent"][level="30~34"] {
     astaps.loot.gems_world_mid_geo_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2813,7 +2813,7 @@ boss[type="world"][tag="ruin_serpent"][level="90~99"] {
 
 /* 翠翎恐蕈 */
 boss[type="world"][tag="jadeplume_terrorshroom"][level="30~99"] {
-    genshin.avatar_ascension.majestic_hooked_beak: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.majestic_hooked_beak: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="jadeplume_terrorshroom"][level="30~34"] {
     astaps.loot.gems_world_mid_dendro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2868,7 +2868,7 @@ boss[type="world"][tag="jadeplume_terrorshroom"][level="90~99"] {
 
 /* 掣电树 */
 boss[type="world"][tag="electro_regisvine"][level="30~99"] {
-    genshin.avatar_ascension.thunderclap_fruitcore: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.thunderclap_fruitcore: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="electro_regisvine"][level="30~34"] {
     astaps.loot.gems_world_mid_electro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2923,7 +2923,7 @@ boss[type="world"][tag="electro_regisvine"][level="90~99"] {
 
 /* 兆载永劫龙兽 */
 boss[type="world"][tag="aeonblight_drake"][level="30~99"] {
-    genshin.avatar_ascension.perpetual_caliber: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.perpetual_caliber: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="aeonblight_drake"][level="30~34"] {
     astaps.loot.gems_world_mid_cryo_hydro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -2978,7 +2978,7 @@ boss[type="world"][tag="aeonblight_drake"][level="90~99"] {
 
 /* 半永恒统辖矩阵 */
 boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="30~99"] {
-    genshin.avatar_ascension.light_guiding_tetrahedron: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.light_guiding_tetrahedron: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="30~34"] {
     astaps.loot.gems_world_mid_anemo_pyro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3033,7 +3033,7 @@ boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="90~99"] {
 
 /* 无相之草 */
 boss[type="world"][tag="dendro_hypostasis"][level="30~99"] {
-    genshin.avatar_ascension.quelled_creeper: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.quelled_creeper: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="dendro_hypostasis"][level="30~34"] {
     astaps.loot.gems_world_mid_dendro_3x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3088,7 +3088,7 @@ boss[type="world"][tag="dendro_hypostasis"][level="90~99"] {
 
 /* 霜夜灵嗣 */
 boss[type="world"][tag="frostnight_scion"][level="30~99"] {
-    genshin.avatar_ascension.frostnights_glory: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.frostnights_glory: "${world_material_mid_count_1(level)}";
     genshin.avatar_ascension.hydro.3: 9;
     genshin.avatar_ascension.hydro.2: 9;
     genshin.avatar_ascension.cryo.3: 9;
@@ -3097,7 +3097,7 @@ boss[type="world"][tag="frostnight_scion"][level="30~99"] {
 
 /* 重拳出击鸭 */
 boss[type="world"][tag="knuckle_duck"][level="30~99"] {
-    genshin.avatar_ascension.precision_kuuvahki_stamping_die: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.precision_kuuvahki_stamping_die: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="knuckle_duck"][level="30~34"] {
     astaps.loot.gems_world_mid_electro_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3152,7 +3152,7 @@ boss[type="world"][tag="knuckle_duck"][level="90~99"] {
 
 /* 蕴光月幻蝶 */
 boss[type="world"][tag="lightbearing_lunar_moth"][level="30~99"] {
-    genshin.avatar_ascension.lightbearing_scale_feather: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.lightbearing_scale_feather: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="lightbearing_lunar_moth"][level="30~34"] {
     astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3207,7 +3207,7 @@ boss[type="world"][tag="lightbearing_lunar_moth"][level="90~99"] {
 
 /* 精密发条机关 */
 boss[type="world"][tag="precision_clockwork"][level="30~99"] {
-    genshin.avatar_ascension.precision_clockwork_core: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.precision_clockwork_core: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="precision_clockwork"][level="30~34"] {
     astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3262,7 +3262,7 @@ boss[type="world"][tag="precision_clockwork"][level="90~99"] {
 
 /* 蕴光异兽 */
 boss[type="world"][tag="radiant_beast"][level="30~99"] {
-    genshin.avatar_ascension.prismatic_severed_tail: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.prismatic_severed_tail: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="radiant_beast"][level="30~34"] {
     astaps.loot.gems_world_mid_geo_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3317,7 +3317,7 @@ boss[type="world"][tag="radiant_beast"][level="90~99"] {
 
 /* 原初监视者 */
 boss[type="world"][tag="primal_watcher"][level="30~99"] {
-    genshin.avatar_ascension.plume_of_the_fallen_watcher: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.plume_of_the_fallen_watcher: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="primal_watcher"][level="30~34"] {
     astaps.loot.gems_world_mid_geo_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3372,8 +3372,8 @@ boss[type="world"][tag="primal_watcher"][level="90~99"] {
 
 /* 冰风组曲 */
 boss[type="world"][tag="icewind_suite"][level="30~99"] {
-    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelia: "${world_ascension_material_mid_count_1(level)}";
-    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelius: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelia: "${world_material_mid_count_1(level)}";
+    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelius: "${world_material_mid_count_1(level)}";
     genshin.avatar_ascension.anemo.3: 9;
     genshin.avatar_ascension.anemo.2: 9;
     genshin.avatar_ascension.cryo.3: 9;
@@ -3382,7 +3382,7 @@ boss[type="world"][tag="icewind_suite"][level="30~99"] {
 
 /* 铁甲熔火帝皇 */
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="30~99"] {
-    genshin.avatar_ascension.emperors_resolution: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.emperors_resolution: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="emperor_of_fire_and_iron"][level="30~34"] {
     astaps.loot.gems_world_mid_pyro_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3437,7 +3437,7 @@ boss[type="world"][tag="emperor_of_fire_and_iron"][level="90~99"] {
 
 /* 实验性场力发生装置 */
 boss[type="world"][tag="experimental_field_generator"][level="30~99"] {
-    genshin.avatar_ascension.tourbillon_device: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.tourbillon_device: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="experimental_field_generator"][level="30~34"] {
     astaps.loot.gems_world_mid_geo_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3492,7 +3492,7 @@ boss[type="world"][tag="experimental_field_generator"][level="90~99"] {
 
 /* 千年珍珠骏麟 */
 boss[type="world"][tag="millennial_pearl_seahorse"][level="30~99"] {
-    genshin.avatar_ascension.fontemer_unihorn: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.fontemer_unihorn: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="millennial_pearl_seahorse"][level="30~34"] {
     astaps.loot.gems_world_mid_electro_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3547,7 +3547,7 @@ boss[type="world"][tag="millennial_pearl_seahorse"][level="90~99"] {
 
 /* 水形幻人 */
 boss[type="world"][tag="hydro_tulpa"][level="30~99"] {
-    genshin.avatar_ascension.water_that_failed_to_transcend: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.water_that_failed_to_transcend: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="hydro_tulpa"][level="30~34"] {
     astaps.loot.gems_world_mid_hydro_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3602,7 +3602,7 @@ boss[type="world"][tag="hydro_tulpa"][level="90~99"] {
 
 /* 魔像督军 */
 boss[type="world"][tag="legatus_golem"][level="30~99"] {
-    genshin.avatar_ascension.fragment_of_a_golden_melody: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.fragment_of_a_golden_melody: "${world_material_mid_count_1(level)}";
     genshin.avatar_ascension.pyro.3: 9;
     genshin.avatar_ascension.pyro.2: 9;
     genshin.avatar_ascension.geo.3: 9;
@@ -3611,7 +3611,7 @@ boss[type="world"][tag="legatus_golem"][level="30~99"] {
 
 /* 贪食匿叶龙山王 */
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="30~99"] {
-    genshin.avatar_ascension.overripe_flamegranate: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.overripe_flamegranate: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="30~34"] {
     astaps.loot.gems_world_mid_dendro_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3666,7 +3666,7 @@ boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="90~99"] {
 
 /* 金焰绒翼龙暴君 */
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="30~99"] {
-    genshin.avatar_ascension.mark_of_the_binding_blessing: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.mark_of_the_binding_blessing: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="30~34"] {
     astaps.loot.gems_world_mid_pyro_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3721,7 +3721,7 @@ boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="90~99"] {
 
 /* 秘源机兵·构型械 */
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="30~99"] {
-    genshin.avatar_ascension.gold_inscribed_secret_source_core: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.gold_inscribed_secret_source_core: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="secret_source_automaton_configuration_device"][level="30~34"] {
     astaps.loot.gems_world_mid_electro_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3776,14 +3776,14 @@ boss[type="world"][tag="secret_source_automaton_configuration_device"][level="90
 
 /* 深邃魹语之主 */
 boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="30~99"] {
-    genshin.avatar_ascension.remnant_of_the_dreadwing: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.remnant_of_the_dreadwing: "${world_material_mid_count_1(level)}";
     genshin.avatar_ascension.electro.3: 9;
     genshin.avatar_ascension.electro.2: 9;
 }
 
 /* 灵觉隐修的迷者 */
 boss[type="world"][tag="holawaqa_ngoubou"][level="30~99"] {
-    genshin.avatar_ascension.talisman_of_the_enigmatic_land: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.talisman_of_the_enigmatic_land: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="holawaqa_ngoubou"][level="30~34"] {
     astaps.loot.gems_world_mid_cryo_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3838,14 +3838,14 @@ boss[type="world"][tag="holawaqa_ngoubou"][level="90~99"] {
 
 /* 熔岩辉龙像 */
 boss[type="world"][tag="lava_dragon_statue"][level="30~99"] {
-    genshin.avatar_ascension.sparkless_statue_core: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.sparkless_statue_core: "${world_material_mid_count_1(level)}";
     genshin.avatar_ascension.pyro.3: 9;
     genshin.avatar_ascension.pyro.2: 9;
 }
 
 /* 秘源机兵·统御械 */
 boss[type="world"][tag="secret_source_automaton_overseer"][level="30~99"] {
-    genshin.avatar_ascension.secret_source_airflow_accumulator: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.secret_source_airflow_accumulator: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="secret_source_automaton_overseer"][level="30~34"] {
     astaps.loot.gems_world_mid_hydro_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3900,7 +3900,7 @@ boss[type="world"][tag="secret_source_automaton_overseer"][level="90~99"] {
 
 /* 风蚀沙虫 */
 boss[type="world"][tag="setekh_wenut"][level="30~99"] {
-    genshin.avatar_ascension.pseudo_stamens: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.pseudo_stamens: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="setekh_wenut"][level="30~34"] {
     astaps.loot.gems_world_mid_anemo_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -3955,7 +3955,7 @@ boss[type="world"][tag="setekh_wenut"][level="90~99"] {
 
 /* 隐山猊兽 */
 boss[type="world"][tag="solitary_suanni"][level="30~99"] {
-    genshin.avatar_ascension.cloudseam_scale: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.cloudseam_scale: "${world_material_mid_count_1(level)}";
     genshin.avatar_ascension.hydro.3: 9;
     genshin.avatar_ascension.hydro.2: 9;
     genshin.avatar_ascension.anemo.3: 9;
@@ -3964,7 +3964,7 @@ boss[type="world"][tag="solitary_suanni"][level="30~99"] {
 
 /* 深邃摹结株 */
 boss[type="world"][tag="tenebrous_papilla"][level="30~99"] {
-    genshin.avatar_ascension.ensnaring_gaze: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.ensnaring_gaze: "${world_material_mid_count_1(level)}";
     genshin.avatar_ascension.pyro.3: 9;
     genshin.avatar_ascension.pyro.2: 9;
     genshin.avatar_ascension.electro.3: 9;
@@ -3975,7 +3975,7 @@ boss[type="world"][tag="tenebrous_papilla"][level="30~99"] {
 
 /* 不灭衍生造物 */
 boss[type="world"][tag="undying_replicant"][level="30~99"] {
-    genshin.avatar_ascension.unscorched_blossom_branch: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.unscorched_blossom_branch: "${world_material_mid_count_1(level)}";
 }
 boss[type="world"][tag="undying_replicant"][level="30~34"] {
     astaps.loot.gems_world_mid_pyro_9x_main_30: "${world_gems_mid_count_1(level)}";
@@ -4030,7 +4030,7 @@ boss[type="world"][tag="undying_replicant"][level="90~99"] {
 
 /* 嵌合翼骏狮 */
 boss[type="world"][tag="chimera_sky_roamer"][level="30~99"] {
-    genshin.avatar_ascension.severed_tail_of_the_sky_roamer: "${world_ascension_material_mid_count_1(level)}";
+    genshin.avatar_ascension.severed_tail_of_the_sky_roamer: "${world_material_mid_count_1(level)}";
     genshin.avatar_ascension.hydro.3: 9;
     genshin.avatar_ascension.hydro.2: 9;
     genshin.avatar_ascension.anemo.3: 9;

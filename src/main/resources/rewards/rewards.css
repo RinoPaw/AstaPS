@@ -1760,3 +1760,2278 @@ boss[type="world"][tag="chimera_sky_roamer"][level="1~29"] {
     genshin.avatar_ascension.anemo.2: "${world_gems_early_fixed_item_count(level)}";
     genshin.avatar_ascension.severed_tail_of_the_sky_roamer: "${world_ascension_material_early_count(level)}";
 }
+
+/* Lv.30–104 World Boss gems and ascension materials (native sourceType 34).
+ * Lv.105+ continues to use the native reward graph. Artifacts remain unmigrated.
+ */
+
+/* 无相之雷 */
+boss[type="world"][tag="electro_hypostasis"][level="30~104"] {
+    genshin.avatar_ascension.lightning_prism: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="30~34"] {
+    astaps.loot.gems_world_mid_electro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="35~39"] {
+    astaps.loot.gems_world_mid_electro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="40~44"] {
+    astaps.loot.gems_world_mid_electro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="45~49"] {
+    astaps.loot.gems_world_mid_electro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="50~54"] {
+    astaps.loot.gems_world_mid_electro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="55~59"] {
+    astaps.loot.gems_world_mid_electro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="60~64"] {
+    astaps.loot.gems_world_mid_electro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="65~69"] {
+    astaps.loot.gems_world_mid_electro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="70~74"] {
+    astaps.loot.gems_world_mid_electro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="75~79"] {
+    astaps.loot.gems_world_mid_electro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="80~84"] {
+    astaps.loot.gems_world_mid_electro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="85~89"] {
+    astaps.loot.gems_world_mid_electro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_hypostasis"][level="90~104"] {
+    astaps.loot.gems_world_mid_electro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 无相之风 */
+boss[type="world"][tag="anemo_hypostasis"][level="30~104"] {
+    genshin.avatar_ascension.hurricane_seed: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="30~34"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="35~39"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="40~44"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="45~49"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="50~54"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="55~59"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="60~64"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="65~69"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="70~74"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="75~79"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="80~84"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="85~89"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="anemo_hypostasis"][level="90~104"] {
+    astaps.loot.gems_world_mid_anemo_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 无相之岩 */
+boss[type="world"][tag="geo_hypostasis"][level="30~104"] {
+    genshin.avatar_ascension.basalt_pillar: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="30~34"] {
+    astaps.loot.gems_world_mid_geo_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="35~39"] {
+    astaps.loot.gems_world_mid_geo_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="40~44"] {
+    astaps.loot.gems_world_mid_geo_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="45~49"] {
+    astaps.loot.gems_world_mid_geo_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="50~54"] {
+    astaps.loot.gems_world_mid_geo_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="55~59"] {
+    astaps.loot.gems_world_mid_geo_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="60~64"] {
+    astaps.loot.gems_world_mid_geo_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="65~69"] {
+    astaps.loot.gems_world_mid_geo_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="70~74"] {
+    astaps.loot.gems_world_mid_geo_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="75~79"] {
+    astaps.loot.gems_world_mid_geo_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="80~84"] {
+    astaps.loot.gems_world_mid_geo_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="85~89"] {
+    astaps.loot.gems_world_mid_geo_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="geo_hypostasis"][level="90~104"] {
+    astaps.loot.gems_world_mid_geo_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 急冻树 */
+boss[type="world"][tag="cryo_regisvine"][level="30~104"] {
+    genshin.avatar_ascension.hoarfrost_core: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="30~34"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="35~39"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="40~44"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="45~49"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="50~54"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="55~59"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="60~64"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="65~69"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="70~74"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="75~79"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="80~84"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="85~89"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_regisvine"][level="90~104"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 爆炎树 */
+boss[type="world"][tag="pyro_regisvine"][level="30~104"] {
+    genshin.avatar_ascension.everflame_seed: "${world_ascension_material_high_yield_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="30~34"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="35~39"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="40~44"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="45~49"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="50~54"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="55~59"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="60~64"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="65~69"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="70~74"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="75~79"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="80~84"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="85~89"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_regisvine"][level="90~104"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 纯水精灵 */
+boss[type="world"][tag="oceanid"][level="30~104"] {
+    genshin.avatar_ascension.cleansing_heart: "${world_ascension_material_high_yield_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="30~34"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="35~39"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="40~44"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="45~49"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="50~54"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="55~59"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="60~64"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="65~69"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="70~74"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="75~79"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="80~84"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="85~89"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="oceanid"][level="90~104"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 古岩龙蜥电 */
+boss[type="world"][tag="primo_geovishap_electro"][level="30~104"] {
+    genshin.avatar_ascension.juvenile_jade: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="30~34"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="35~39"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="40~44"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="45~49"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="50~54"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="55~59"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="60~64"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="65~69"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="70~74"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="75~79"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="80~84"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="85~89"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_electro"][level="90~104"] {
+    astaps.loot.gems_world_mid_electro_geo_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 古岩龙蜥冰 */
+boss[type="world"][tag="primo_geovishap_cryo"][level="30~104"] {
+    genshin.avatar_ascension.juvenile_jade: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="30~34"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="35~39"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="40~44"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="45~49"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="50~54"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="55~59"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="60~64"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="65~69"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="70~74"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="75~79"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="80~84"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="85~89"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_cryo"][level="90~104"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 古岩龙蜥火 */
+boss[type="world"][tag="primo_geovishap_pyro"][level="30~104"] {
+    genshin.avatar_ascension.juvenile_jade: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="30~34"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="35~39"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="40~44"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="45~49"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="50~54"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="55~59"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="60~64"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="65~69"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="70~74"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="75~79"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="80~84"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="85~89"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_pyro"][level="90~104"] {
+    astaps.loot.gems_world_mid_geo_pyro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 古岩龙蜥水 */
+boss[type="world"][tag="primo_geovishap_hydro"][level="30~104"] {
+    genshin.avatar_ascension.juvenile_jade: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="30~34"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="35~39"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="40~44"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="45~49"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="50~54"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="55~59"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="60~64"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="65~69"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="70~74"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="75~79"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="80~84"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="85~89"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primo_geovishap_hydro"][level="90~104"] {
+    astaps.loot.gems_world_mid_geo_hydro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 无相之冰 */
+boss[type="world"][tag="cryo_hypostasis"][level="30~104"] {
+    genshin.avatar_ascension.crystalline_bloom: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="30~34"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="35~39"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="40~44"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="45~49"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="50~54"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="55~59"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="60~64"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="65~69"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="70~74"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="75~79"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="80~84"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="85~89"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="cryo_hypostasis"][level="90~104"] {
+    astaps.loot.gems_world_mid_cryo_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 魔偶剑鬼 */
+boss[type="world"][tag="maguu_kenki"][level="30~104"] {
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="30~34"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="35~39"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="40~44"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="45~49"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="50~54"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="55~59"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="60~64"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="65~69"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="70~74"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="75~79"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="80~84"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="85~89"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="maguu_kenki"][level="90~104"] {
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 恒常机关阵列 */
+boss[type="world"][tag="perpetual_mechanical_array"][level="30~104"] {
+    genshin.avatar_ascension.perpetual_heart: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="30~34"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="35~39"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="40~44"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="45~49"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="50~54"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="55~59"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="60~64"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="65~69"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="70~74"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="75~79"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="80~84"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="85~89"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="perpetual_mechanical_array"][level="90~104"] {
+    astaps.loot.gems_world_mid_cryo_geo_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 无相之火 */
+boss[type="world"][tag="pyro_hypostasis"][level="30~104"] {
+    genshin.avatar_ascension.smoldering_pearl: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="30~34"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="35~39"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="40~44"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="45~49"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="50~54"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="55~59"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="60~64"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="65~69"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="70~74"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="75~79"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="80~84"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="85~89"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="pyro_hypostasis"][level="90~104"] {
+    astaps.loot.gems_world_mid_pyro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 无相之水 */
+boss[type="world"][tag="hydro_hypostasis"][level="30~104"] {
+    genshin.avatar_ascension.dew_of_repudiation: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="30~34"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="35~39"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="40~44"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="45~49"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="50~54"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="55~59"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="60~64"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="65~69"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="70~74"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="75~79"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="80~84"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="85~89"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_hypostasis"][level="90~104"] {
+    astaps.loot.gems_world_mid_hydro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 雷音权现 */
+boss[type="world"][tag="thunder_manifestation"][level="30~104"] {
+    genshin.avatar_ascension.storm_beads: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="30~34"] {
+    astaps.loot.gems_world_mid_electro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="35~39"] {
+    astaps.loot.gems_world_mid_electro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="40~44"] {
+    astaps.loot.gems_world_mid_electro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="45~49"] {
+    astaps.loot.gems_world_mid_electro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="50~54"] {
+    astaps.loot.gems_world_mid_electro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="55~59"] {
+    astaps.loot.gems_world_mid_electro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="60~64"] {
+    astaps.loot.gems_world_mid_electro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="65~69"] {
+    astaps.loot.gems_world_mid_electro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="70~74"] {
+    astaps.loot.gems_world_mid_electro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="75~79"] {
+    astaps.loot.gems_world_mid_electro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="80~84"] {
+    astaps.loot.gems_world_mid_electro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="85~89"] {
+    astaps.loot.gems_world_mid_electro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="thunder_manifestation"][level="90~104"] {
+    astaps.loot.gems_world_mid_electro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 黄金王兽 */
+boss[type="world"][tag="golden_wolflord"][level="30~104"] {
+    genshin.avatar_ascension.riftborn_regalia: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="30~34"] {
+    astaps.loot.gems_world_mid_geo_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="35~39"] {
+    astaps.loot.gems_world_mid_geo_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="40~44"] {
+    astaps.loot.gems_world_mid_geo_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="45~49"] {
+    astaps.loot.gems_world_mid_geo_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="50~54"] {
+    astaps.loot.gems_world_mid_geo_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="55~59"] {
+    astaps.loot.gems_world_mid_geo_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="60~64"] {
+    astaps.loot.gems_world_mid_geo_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="65~69"] {
+    astaps.loot.gems_world_mid_geo_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="70~74"] {
+    astaps.loot.gems_world_mid_geo_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="75~79"] {
+    astaps.loot.gems_world_mid_geo_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="80~84"] {
+    astaps.loot.gems_world_mid_geo_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="85~89"] {
+    astaps.loot.gems_world_mid_geo_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="golden_wolflord"][level="90~104"] {
+    astaps.loot.gems_world_mid_geo_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 深海龙蜥组合 */
+boss[type="world"][tag="bathysmal_vishap_herd"][level="30~104"] {
+    genshin.avatar_ascension.dragonheirs_false_fin: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="30~34"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="35~39"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="40~44"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="45~49"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="50~54"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="55~59"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="60~64"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="65~69"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="70~74"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="75~79"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="80~84"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="85~89"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="bathysmal_vishap_herd"][level="90~104"] {
+    astaps.loot.gems_world_mid_cryo_electro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 遗迹巨蛇 */
+boss[type="world"][tag="ruin_serpent"][level="30~104"] {
+    genshin.avatar_ascension.runic_fang: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="30~34"] {
+    astaps.loot.gems_world_mid_geo_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="35~39"] {
+    astaps.loot.gems_world_mid_geo_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="40~44"] {
+    astaps.loot.gems_world_mid_geo_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="45~49"] {
+    astaps.loot.gems_world_mid_geo_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="50~54"] {
+    astaps.loot.gems_world_mid_geo_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="55~59"] {
+    astaps.loot.gems_world_mid_geo_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="60~64"] {
+    astaps.loot.gems_world_mid_geo_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="65~69"] {
+    astaps.loot.gems_world_mid_geo_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="70~74"] {
+    astaps.loot.gems_world_mid_geo_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="75~79"] {
+    astaps.loot.gems_world_mid_geo_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="80~84"] {
+    astaps.loot.gems_world_mid_geo_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="85~89"] {
+    astaps.loot.gems_world_mid_geo_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="ruin_serpent"][level="90~104"] {
+    astaps.loot.gems_world_mid_geo_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 翠翎恐蕈 */
+boss[type="world"][tag="jadeplume_terrorshroom"][level="30~104"] {
+    genshin.avatar_ascension.majestic_hooked_beak: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="30~34"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="35~39"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="40~44"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="45~49"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="50~54"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="55~59"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="60~64"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="65~69"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="70~74"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="75~79"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="80~84"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="85~89"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="jadeplume_terrorshroom"][level="90~104"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 掣电树 */
+boss[type="world"][tag="electro_regisvine"][level="30~104"] {
+    genshin.avatar_ascension.thunderclap_fruitcore: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="30~34"] {
+    astaps.loot.gems_world_mid_electro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="35~39"] {
+    astaps.loot.gems_world_mid_electro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="40~44"] {
+    astaps.loot.gems_world_mid_electro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="45~49"] {
+    astaps.loot.gems_world_mid_electro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="50~54"] {
+    astaps.loot.gems_world_mid_electro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="55~59"] {
+    astaps.loot.gems_world_mid_electro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="60~64"] {
+    astaps.loot.gems_world_mid_electro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="65~69"] {
+    astaps.loot.gems_world_mid_electro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="70~74"] {
+    astaps.loot.gems_world_mid_electro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="75~79"] {
+    astaps.loot.gems_world_mid_electro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="80~84"] {
+    astaps.loot.gems_world_mid_electro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="85~89"] {
+    astaps.loot.gems_world_mid_electro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="electro_regisvine"][level="90~104"] {
+    astaps.loot.gems_world_mid_electro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 兆载永劫龙兽 */
+boss[type="world"][tag="aeonblight_drake"][level="30~104"] {
+    genshin.avatar_ascension.perpetual_caliber: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="30~34"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="35~39"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="40~44"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="45~49"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="50~54"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="55~59"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="60~64"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="65~69"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="70~74"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="75~79"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="80~84"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="85~89"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="aeonblight_drake"][level="90~104"] {
+    astaps.loot.gems_world_mid_cryo_hydro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_hydro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 半永恒统辖矩阵 */
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="30~104"] {
+    genshin.avatar_ascension.light_guiding_tetrahedron: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="30~34"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="35~39"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="40~44"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="45~49"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="50~54"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="55~59"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="60~64"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="65~69"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="70~74"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="75~79"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="80~84"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="85~89"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="90~104"] {
+    astaps.loot.gems_world_mid_anemo_pyro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_pyro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 无相之草 */
+boss[type="world"][tag="dendro_hypostasis"][level="30~104"] {
+    genshin.avatar_ascension.quelled_creeper: "${world_ascension_material_standard_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="30~34"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="35~39"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="40~44"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="45~49"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="50~54"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="55~59"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="60~64"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="65~69"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="70~74"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="75~79"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="80~84"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="85~89"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="dendro_hypostasis"][level="90~104"] {
+    astaps.loot.gems_world_mid_dendro_3x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_3x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 霜夜灵嗣 */
+boss[type="world"][tag="frostnight_scion"][level="30~104"] {
+    genshin.avatar_ascension.frostnights_glory: "${world_ascension_material_standard_count(level)}";
+    genshin.avatar_ascension.hydro.3: 9;
+    genshin.avatar_ascension.hydro.2: 9;
+    genshin.avatar_ascension.cryo.3: 9;
+    genshin.avatar_ascension.cryo.2: 9;
+}
+
+/* 重拳出击鸭 */
+boss[type="world"][tag="knuckle_duck"][level="30~104"] {
+    genshin.avatar_ascension.precision_kuuvahki_stamping_die: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="30~34"] {
+    astaps.loot.gems_world_mid_electro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="35~39"] {
+    astaps.loot.gems_world_mid_electro_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="40~44"] {
+    astaps.loot.gems_world_mid_electro_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="45~49"] {
+    astaps.loot.gems_world_mid_electro_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="50~54"] {
+    astaps.loot.gems_world_mid_electro_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="55~59"] {
+    astaps.loot.gems_world_mid_electro_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="60~64"] {
+    astaps.loot.gems_world_mid_electro_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="65~69"] {
+    astaps.loot.gems_world_mid_electro_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="70~74"] {
+    astaps.loot.gems_world_mid_electro_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="75~79"] {
+    astaps.loot.gems_world_mid_electro_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="80~84"] {
+    astaps.loot.gems_world_mid_electro_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="85~89"] {
+    astaps.loot.gems_world_mid_electro_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="knuckle_duck"][level="90~104"] {
+    astaps.loot.gems_world_mid_electro_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 蕴光月幻蝶 */
+boss[type="world"][tag="lightbearing_lunar_moth"][level="30~104"] {
+    genshin.avatar_ascension.lightbearing_scale_feather: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="30~34"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="35~39"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="40~44"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="45~49"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="50~54"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="55~59"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="60~64"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="65~69"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="70~74"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="75~79"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="80~84"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="85~89"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="lightbearing_lunar_moth"][level="90~104"] {
+    astaps.loot.gems_world_mid_dendro_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 精密发条机关 */
+boss[type="world"][tag="precision_clockwork"][level="30~104"] {
+    genshin.avatar_ascension.precision_clockwork_core: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="30~34"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="35~39"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="40~44"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="45~49"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="50~54"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="55~59"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="60~64"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="65~69"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="70~74"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="75~79"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="80~84"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="85~89"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="precision_clockwork"][level="90~104"] {
+    astaps.loot.gems_world_mid_cryo_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 蕴光异兽 */
+boss[type="world"][tag="radiant_beast"][level="30~104"] {
+    genshin.avatar_ascension.prismatic_severed_tail: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="30~34"] {
+    astaps.loot.gems_world_mid_geo_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="35~39"] {
+    astaps.loot.gems_world_mid_geo_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="40~44"] {
+    astaps.loot.gems_world_mid_geo_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="45~49"] {
+    astaps.loot.gems_world_mid_geo_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="50~54"] {
+    astaps.loot.gems_world_mid_geo_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="55~59"] {
+    astaps.loot.gems_world_mid_geo_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="60~64"] {
+    astaps.loot.gems_world_mid_geo_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="65~69"] {
+    astaps.loot.gems_world_mid_geo_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="70~74"] {
+    astaps.loot.gems_world_mid_geo_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="75~79"] {
+    astaps.loot.gems_world_mid_geo_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="80~84"] {
+    astaps.loot.gems_world_mid_geo_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="85~89"] {
+    astaps.loot.gems_world_mid_geo_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="radiant_beast"][level="90~104"] {
+    astaps.loot.gems_world_mid_geo_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 原初监视者 */
+boss[type="world"][tag="primal_watcher"][level="30~104"] {
+    genshin.avatar_ascension.plume_of_the_fallen_watcher: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="30~34"] {
+    astaps.loot.gems_world_mid_geo_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="35~39"] {
+    astaps.loot.gems_world_mid_geo_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="40~44"] {
+    astaps.loot.gems_world_mid_geo_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="45~49"] {
+    astaps.loot.gems_world_mid_geo_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="50~54"] {
+    astaps.loot.gems_world_mid_geo_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="55~59"] {
+    astaps.loot.gems_world_mid_geo_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="60~64"] {
+    astaps.loot.gems_world_mid_geo_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="65~69"] {
+    astaps.loot.gems_world_mid_geo_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="70~74"] {
+    astaps.loot.gems_world_mid_geo_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="75~79"] {
+    astaps.loot.gems_world_mid_geo_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="80~84"] {
+    astaps.loot.gems_world_mid_geo_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="85~89"] {
+    astaps.loot.gems_world_mid_geo_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="primal_watcher"][level="90~104"] {
+    astaps.loot.gems_world_mid_geo_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 冰风组曲 */
+boss[type="world"][tag="icewind_suite"][level="30~104"] {
+    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelia: "${world_ascension_material_modern_count(level)}";
+    genshin.avatar_ascension.artificed_spare_clockwork_component_coppelius: "${world_ascension_material_modern_count(level)}";
+    genshin.avatar_ascension.anemo.3: 9;
+    genshin.avatar_ascension.anemo.2: 9;
+    genshin.avatar_ascension.cryo.3: 9;
+    genshin.avatar_ascension.cryo.2: 9;
+}
+
+/* 铁甲熔火帝皇 */
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="30~104"] {
+    genshin.avatar_ascension.emperors_resolution: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="30~34"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="35~39"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="40~44"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="45~49"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="50~54"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="55~59"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="60~64"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="65~69"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="70~74"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="75~79"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="80~84"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="85~89"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="emperor_of_fire_and_iron"][level="90~104"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 实验性场力发生装置 */
+boss[type="world"][tag="experimental_field_generator"][level="30~104"] {
+    genshin.avatar_ascension.tourbillon_device: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="30~34"] {
+    astaps.loot.gems_world_mid_geo_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="35~39"] {
+    astaps.loot.gems_world_mid_geo_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="40~44"] {
+    astaps.loot.gems_world_mid_geo_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="45~49"] {
+    astaps.loot.gems_world_mid_geo_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="50~54"] {
+    astaps.loot.gems_world_mid_geo_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="55~59"] {
+    astaps.loot.gems_world_mid_geo_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="60~64"] {
+    astaps.loot.gems_world_mid_geo_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="65~69"] {
+    astaps.loot.gems_world_mid_geo_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="70~74"] {
+    astaps.loot.gems_world_mid_geo_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="75~79"] {
+    astaps.loot.gems_world_mid_geo_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="80~84"] {
+    astaps.loot.gems_world_mid_geo_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="85~89"] {
+    astaps.loot.gems_world_mid_geo_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="experimental_field_generator"][level="90~104"] {
+    astaps.loot.gems_world_mid_geo_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_geo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 千年珍珠骏麟 */
+boss[type="world"][tag="millennial_pearl_seahorse"][level="30~104"] {
+    genshin.avatar_ascension.fontemer_unihorn: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="30~34"] {
+    astaps.loot.gems_world_mid_electro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="35~39"] {
+    astaps.loot.gems_world_mid_electro_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="40~44"] {
+    astaps.loot.gems_world_mid_electro_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="45~49"] {
+    astaps.loot.gems_world_mid_electro_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="50~54"] {
+    astaps.loot.gems_world_mid_electro_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="55~59"] {
+    astaps.loot.gems_world_mid_electro_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="60~64"] {
+    astaps.loot.gems_world_mid_electro_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="65~69"] {
+    astaps.loot.gems_world_mid_electro_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="70~74"] {
+    astaps.loot.gems_world_mid_electro_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="75~79"] {
+    astaps.loot.gems_world_mid_electro_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="80~84"] {
+    astaps.loot.gems_world_mid_electro_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="85~89"] {
+    astaps.loot.gems_world_mid_electro_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="millennial_pearl_seahorse"][level="90~104"] {
+    astaps.loot.gems_world_mid_electro_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 水形幻人 */
+boss[type="world"][tag="hydro_tulpa"][level="30~104"] {
+    genshin.avatar_ascension.water_that_failed_to_transcend: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="30~34"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="35~39"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="40~44"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="45~49"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="50~54"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="55~59"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="60~64"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="65~69"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="70~74"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="75~79"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="80~84"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="85~89"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="hydro_tulpa"][level="90~104"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 魔像督军 */
+boss[type="world"][tag="legatus_golem"][level="30~104"] {
+    genshin.avatar_ascension.fragment_of_a_golden_melody: "${world_ascension_material_modern_count(level)}";
+    genshin.avatar_ascension.pyro.3: 9;
+    genshin.avatar_ascension.pyro.2: 9;
+    genshin.avatar_ascension.geo.3: 9;
+    genshin.avatar_ascension.geo.2: 9;
+}
+
+/* 贪食匿叶龙山王 */
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="30~104"] {
+    genshin.avatar_ascension.overripe_flamegranate: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="30~34"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="35~39"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="40~44"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="45~49"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="50~54"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="55~59"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="60~64"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="65~69"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="70~74"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="75~79"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="80~84"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="85~89"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="90~104"] {
+    astaps.loot.gems_world_mid_dendro_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_dendro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 金焰绒翼龙暴君 */
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="30~104"] {
+    genshin.avatar_ascension.mark_of_the_binding_blessing: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="30~34"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="35~39"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="40~44"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="45~49"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="50~54"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="55~59"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="60~64"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="65~69"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="70~74"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="75~79"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="80~84"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="85~89"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="goldflame_qucusaure_tyrant"][level="90~104"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 秘源机兵·构型械 */
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="30~104"] {
+    genshin.avatar_ascension.gold_inscribed_secret_source_core: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="30~34"] {
+    astaps.loot.gems_world_mid_electro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="35~39"] {
+    astaps.loot.gems_world_mid_electro_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="40~44"] {
+    astaps.loot.gems_world_mid_electro_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="45~49"] {
+    astaps.loot.gems_world_mid_electro_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="50~54"] {
+    astaps.loot.gems_world_mid_electro_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="55~59"] {
+    astaps.loot.gems_world_mid_electro_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="60~64"] {
+    astaps.loot.gems_world_mid_electro_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="65~69"] {
+    astaps.loot.gems_world_mid_electro_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="70~74"] {
+    astaps.loot.gems_world_mid_electro_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="75~79"] {
+    astaps.loot.gems_world_mid_electro_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="80~84"] {
+    astaps.loot.gems_world_mid_electro_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="85~89"] {
+    astaps.loot.gems_world_mid_electro_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_configuration_device"][level="90~104"] {
+    astaps.loot.gems_world_mid_electro_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_electro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 深邃魹语之主 */
+boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="30~104"] {
+    genshin.avatar_ascension.remnant_of_the_dreadwing: "${world_ascension_material_modern_count(level)}";
+    genshin.avatar_ascension.electro.3: 9;
+    genshin.avatar_ascension.electro.2: 9;
+}
+
+/* 灵觉隐修的迷者 */
+boss[type="world"][tag="holawaqa_ngoubou"][level="30~104"] {
+    genshin.avatar_ascension.talisman_of_the_enigmatic_land: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="30~34"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="35~39"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="40~44"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="45~49"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="50~54"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="55~59"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="60~64"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="65~69"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="70~74"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="75~79"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="80~84"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="85~89"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="holawaqa_ngoubou"][level="90~104"] {
+    astaps.loot.gems_world_mid_cryo_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_cryo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 熔岩辉龙像 */
+boss[type="world"][tag="lava_dragon_statue"][level="30~104"] {
+    genshin.avatar_ascension.sparkless_statue_core: "${world_ascension_material_modern_count(level)}";
+    genshin.avatar_ascension.pyro.3: 9;
+    genshin.avatar_ascension.pyro.2: 9;
+}
+
+/* 秘源机兵·统御械 */
+boss[type="world"][tag="secret_source_automaton_overseer"][level="30~104"] {
+    genshin.avatar_ascension.secret_source_airflow_accumulator: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="30~34"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="35~39"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="40~44"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="45~49"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="50~54"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="55~59"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="60~64"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="65~69"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="70~74"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="75~79"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="80~84"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="85~89"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="secret_source_automaton_overseer"][level="90~104"] {
+    astaps.loot.gems_world_mid_hydro_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_hydro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 风蚀沙虫 */
+boss[type="world"][tag="setekh_wenut"][level="30~104"] {
+    genshin.avatar_ascension.pseudo_stamens: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="30~34"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="35~39"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="40~44"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="45~49"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="50~54"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="55~59"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="60~64"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="65~69"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="70~74"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="75~79"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="80~84"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="85~89"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="setekh_wenut"][level="90~104"] {
+    astaps.loot.gems_world_mid_anemo_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_anemo_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 隐山猊兽 */
+boss[type="world"][tag="solitary_suanni"][level="30~104"] {
+    genshin.avatar_ascension.cloudseam_scale: "${world_ascension_material_modern_count(level)}";
+    genshin.avatar_ascension.hydro.3: 9;
+    genshin.avatar_ascension.hydro.2: 9;
+    genshin.avatar_ascension.anemo.3: 9;
+    genshin.avatar_ascension.anemo.2: 9;
+}
+
+/* 深邃摹结株 */
+boss[type="world"][tag="tenebrous_papilla"][level="30~104"] {
+    genshin.avatar_ascension.ensnaring_gaze: "${world_ascension_material_modern_count(level)}";
+    genshin.avatar_ascension.pyro.3: 9;
+    genshin.avatar_ascension.pyro.2: 9;
+    genshin.avatar_ascension.electro.3: 9;
+    genshin.avatar_ascension.electro.2: 9;
+    genshin.avatar_ascension.anemo.3: 9;
+    genshin.avatar_ascension.anemo.2: 9;
+}
+
+/* 不灭衍生造物 */
+boss[type="world"][tag="undying_replicant"][level="30~104"] {
+    genshin.avatar_ascension.unscorched_blossom_branch: "${world_ascension_material_modern_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="30~34"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_30: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="35~39"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_35: "${world_gems_roll_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="40~44"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_40: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="45~49"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_45: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="50~54"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_50: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="55~59"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_55: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="60~64"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_60: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="65~69"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_65: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="70~74"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_70: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="75~79"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_75: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="80~84"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_80: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="85~89"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_85: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+boss[type="world"][tag="undying_replicant"][level="90~104"] {
+    astaps.loot.gems_world_mid_pyro_9x_main_90: "${world_gems_roll_count(level)}";
+    astaps.loot.gems_world_mid_pyro_9x_fragment_40: "${world_gems_fragment_extra_count(level)}";
+}
+
+/* 嵌合翼骏狮 */
+boss[type="world"][tag="chimera_sky_roamer"][level="30~104"] {
+    genshin.avatar_ascension.severed_tail_of_the_sky_roamer: "${world_ascension_material_modern_count(level)}";
+    genshin.avatar_ascension.hydro.3: 9;
+    genshin.avatar_ascension.hydro.2: 9;
+    genshin.avatar_ascension.anemo.3: 9;
+    genshin.avatar_ascension.anemo.2: 9;
+}

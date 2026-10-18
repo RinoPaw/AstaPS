@@ -60,10 +60,9 @@ final class TransPointRewardsTest {
         assertTrue(gateway.loot().isEmpty());
         assertTrue(gateway.rangedLoot().isEmpty());
         assertEquals(20, gateway.items().get(101692));
-        assertEquals(new emu.grasscutter.data.ResourceId(
-                "genshin", "currency", "sigil.light_realm"),
-                emu.grasscutter.data.ResourceId.fromCssProperty(
-                        "genshin.currency.sigil.light_realm"));
+        assertEquals(emu.grasscutter.data.ResourceId.of(
+                "genshin", "currency", "sigil", "light_realm"),
+                emu.grasscutter.data.ResourceId.parse("genshin.currency.sigil.light_realm"));
         assertEquals(Map.of(), roll(css, loot, "unknown", 3, 8));
         assertTrue(css.resolve("transpoint", Map.of(
                 "kind", "waypoint", "scene", "3", "point", "8")).items().isEmpty());

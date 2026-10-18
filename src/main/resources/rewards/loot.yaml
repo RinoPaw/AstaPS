@@ -815,3 +815,1731 @@ gems_world_early_geo_hydro_sliver:
 gems_world_early_geo_pyro_sliver:
   - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 1}
   - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 1}
+
+# Lv.30–104 sourceType=34 weighted gem-grade pools; generated from native dropVec.
+# Each table makes one native randomType=0 weighted choice per execution.
+# Its weights are relative to the native sum, including single-entry pools.
+
+gems_world_mid_electro_3x_main_30:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 6643}
+
+gems_world_mid_electro_3x_main_35:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 7019}
+
+gems_world_mid_electro_3x_main_40:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 918}
+
+gems_world_mid_electro_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 3333}
+
+gems_world_mid_electro_3x_main_45:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1018}
+
+gems_world_mid_electro_3x_main_50:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1118}
+
+gems_world_mid_electro_3x_main_55:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1219}
+
+gems_world_mid_electro_3x_main_60:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 330}
+
+gems_world_mid_electro_3x_main_65:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 354}
+
+gems_world_mid_electro_3x_main_70:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 380}
+
+gems_world_mid_electro_3x_main_75:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.electro.5, count: 3, weight: 40}
+
+gems_world_mid_electro_3x_main_80:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.electro.5, count: 3, weight: 43}
+
+gems_world_mid_electro_3x_main_85:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.electro.5, count: 3, weight: 46}
+
+gems_world_mid_electro_3x_main_90:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.electro.5, count: 3, weight: 47}
+
+gems_world_mid_anemo_3x_main_30:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 6643}
+
+gems_world_mid_anemo_3x_main_35:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 7019}
+
+gems_world_mid_anemo_3x_main_40:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 918}
+
+gems_world_mid_anemo_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 3333}
+
+gems_world_mid_anemo_3x_main_45:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1018}
+
+gems_world_mid_anemo_3x_main_50:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1118}
+
+gems_world_mid_anemo_3x_main_55:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1219}
+
+gems_world_mid_anemo_3x_main_60:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 330}
+
+gems_world_mid_anemo_3x_main_65:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 354}
+
+gems_world_mid_anemo_3x_main_70:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 380}
+
+gems_world_mid_anemo_3x_main_75:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 3, weight: 40}
+
+gems_world_mid_anemo_3x_main_80:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 3, weight: 43}
+
+gems_world_mid_anemo_3x_main_85:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 3, weight: 46}
+
+gems_world_mid_anemo_3x_main_90:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 3, weight: 47}
+
+gems_world_mid_geo_3x_main_30:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6643}
+
+gems_world_mid_geo_3x_main_35:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 7019}
+
+gems_world_mid_geo_3x_main_40:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 918}
+
+gems_world_mid_geo_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 3333}
+
+gems_world_mid_geo_3x_main_45:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1018}
+
+gems_world_mid_geo_3x_main_50:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1118}
+
+gems_world_mid_geo_3x_main_55:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1219}
+
+gems_world_mid_geo_3x_main_60:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 330}
+
+gems_world_mid_geo_3x_main_65:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 354}
+
+gems_world_mid_geo_3x_main_70:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 380}
+
+gems_world_mid_geo_3x_main_75:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 40}
+
+gems_world_mid_geo_3x_main_80:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 43}
+
+gems_world_mid_geo_3x_main_85:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 46}
+
+gems_world_mid_geo_3x_main_90:
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 47}
+
+gems_world_mid_cryo_3x_main_30:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6643}
+
+gems_world_mid_cryo_3x_main_35:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 7019}
+
+gems_world_mid_cryo_3x_main_40:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 918}
+
+gems_world_mid_cryo_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 3333}
+
+gems_world_mid_cryo_3x_main_45:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1018}
+
+gems_world_mid_cryo_3x_main_50:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1118}
+
+gems_world_mid_cryo_3x_main_55:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1219}
+
+gems_world_mid_cryo_3x_main_60:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 330}
+
+gems_world_mid_cryo_3x_main_65:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 354}
+
+gems_world_mid_cryo_3x_main_70:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 380}
+
+gems_world_mid_cryo_3x_main_75:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 40}
+
+gems_world_mid_cryo_3x_main_80:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 43}
+
+gems_world_mid_cryo_3x_main_85:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 46}
+
+gems_world_mid_cryo_3x_main_90:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 47}
+
+gems_world_mid_pyro_3x_main_30:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 6643}
+
+gems_world_mid_pyro_3x_main_35:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 7019}
+
+gems_world_mid_pyro_3x_main_40:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 918}
+
+gems_world_mid_pyro_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 3333}
+
+gems_world_mid_pyro_3x_main_45:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1018}
+
+gems_world_mid_pyro_3x_main_50:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1118}
+
+gems_world_mid_pyro_3x_main_55:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1219}
+
+gems_world_mid_pyro_3x_main_60:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 330}
+
+gems_world_mid_pyro_3x_main_65:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 354}
+
+gems_world_mid_pyro_3x_main_70:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 380}
+
+gems_world_mid_pyro_3x_main_75:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 3, weight: 40}
+
+gems_world_mid_pyro_3x_main_80:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 3, weight: 43}
+
+gems_world_mid_pyro_3x_main_85:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 3, weight: 46}
+
+gems_world_mid_pyro_3x_main_90:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 3, weight: 47}
+
+gems_world_mid_hydro_3x_main_30:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 6643}
+
+gems_world_mid_hydro_3x_main_35:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 7019}
+
+gems_world_mid_hydro_3x_main_40:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 918}
+
+gems_world_mid_hydro_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 3333}
+
+gems_world_mid_hydro_3x_main_45:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1018}
+
+gems_world_mid_hydro_3x_main_50:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1118}
+
+gems_world_mid_hydro_3x_main_55:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1219}
+
+gems_world_mid_hydro_3x_main_60:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 330}
+
+gems_world_mid_hydro_3x_main_65:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 354}
+
+gems_world_mid_hydro_3x_main_70:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 380}
+
+gems_world_mid_hydro_3x_main_75:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 3, weight: 40}
+
+gems_world_mid_hydro_3x_main_80:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 3, weight: 43}
+
+gems_world_mid_hydro_3x_main_85:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 3, weight: 46}
+
+gems_world_mid_hydro_3x_main_90:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 3, weight: 47}
+
+gems_world_mid_electro_geo_3x_main_30:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 6643}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6643}
+
+gems_world_mid_electro_geo_3x_main_35:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 7019}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 7019}
+
+gems_world_mid_electro_geo_3x_main_40:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 918}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 918}
+
+gems_world_mid_electro_geo_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 3333}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 3333}
+
+gems_world_mid_electro_geo_3x_main_45:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1018}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1018}
+
+gems_world_mid_electro_geo_3x_main_50:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1118}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1118}
+
+gems_world_mid_electro_geo_3x_main_55:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1219}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1219}
+
+gems_world_mid_electro_geo_3x_main_60:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 330}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 330}
+
+gems_world_mid_electro_geo_3x_main_65:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 354}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 354}
+
+gems_world_mid_electro_geo_3x_main_70:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 380}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 380}
+
+gems_world_mid_electro_geo_3x_main_75:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.electro.5, count: 3, weight: 40}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 40}
+
+gems_world_mid_electro_geo_3x_main_80:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.electro.5, count: 3, weight: 43}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 43}
+
+gems_world_mid_electro_geo_3x_main_85:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.electro.5, count: 3, weight: 46}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 46}
+
+gems_world_mid_electro_geo_3x_main_90:
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.electro.5, count: 3, weight: 47}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 47}
+
+gems_world_mid_cryo_geo_3x_main_30:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6643}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6643}
+
+gems_world_mid_cryo_geo_3x_main_35:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 7019}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 7019}
+
+gems_world_mid_cryo_geo_3x_main_40:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 918}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 918}
+
+gems_world_mid_cryo_geo_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 3333}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 3333}
+
+gems_world_mid_cryo_geo_3x_main_45:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1018}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1018}
+
+gems_world_mid_cryo_geo_3x_main_50:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1118}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1118}
+
+gems_world_mid_cryo_geo_3x_main_55:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1219}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1219}
+
+gems_world_mid_cryo_geo_3x_main_60:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 330}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 330}
+
+gems_world_mid_cryo_geo_3x_main_65:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 354}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 354}
+
+gems_world_mid_cryo_geo_3x_main_70:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 380}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 380}
+
+gems_world_mid_cryo_geo_3x_main_75:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 40}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 40}
+
+gems_world_mid_cryo_geo_3x_main_80:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 43}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 43}
+
+gems_world_mid_cryo_geo_3x_main_85:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 46}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 46}
+
+gems_world_mid_cryo_geo_3x_main_90:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 47}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 47}
+
+gems_world_mid_geo_pyro_3x_main_30:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 6643}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6643}
+
+gems_world_mid_geo_pyro_3x_main_35:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 7019}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 7019}
+
+gems_world_mid_geo_pyro_3x_main_40:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 918}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 918}
+
+gems_world_mid_geo_pyro_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 3333}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 3333}
+
+gems_world_mid_geo_pyro_3x_main_45:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1018}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1018}
+
+gems_world_mid_geo_pyro_3x_main_50:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1118}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1118}
+
+gems_world_mid_geo_pyro_3x_main_55:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1219}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1219}
+
+gems_world_mid_geo_pyro_3x_main_60:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 330}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 330}
+
+gems_world_mid_geo_pyro_3x_main_65:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 354}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 354}
+
+gems_world_mid_geo_pyro_3x_main_70:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 380}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 380}
+
+gems_world_mid_geo_pyro_3x_main_75:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 3, weight: 40}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 40}
+
+gems_world_mid_geo_pyro_3x_main_80:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 3, weight: 43}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 43}
+
+gems_world_mid_geo_pyro_3x_main_85:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 3, weight: 46}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 46}
+
+gems_world_mid_geo_pyro_3x_main_90:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 3, weight: 47}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 47}
+
+gems_world_mid_geo_hydro_3x_main_30:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 6643}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6643}
+
+gems_world_mid_geo_hydro_3x_main_35:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 7019}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 7019}
+
+gems_world_mid_geo_hydro_3x_main_40:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 918}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 918}
+
+gems_world_mid_geo_hydro_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 3333}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 3333}
+
+gems_world_mid_geo_hydro_3x_main_45:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1018}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1018}
+
+gems_world_mid_geo_hydro_3x_main_50:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1118}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1118}
+
+gems_world_mid_geo_hydro_3x_main_55:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1219}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1219}
+
+gems_world_mid_geo_hydro_3x_main_60:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 330}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 330}
+
+gems_world_mid_geo_hydro_3x_main_65:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 354}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 354}
+
+gems_world_mid_geo_hydro_3x_main_70:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 380}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 380}
+
+gems_world_mid_geo_hydro_3x_main_75:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 3, weight: 40}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 40}
+
+gems_world_mid_geo_hydro_3x_main_80:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 3, weight: 43}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 43}
+
+gems_world_mid_geo_hydro_3x_main_85:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 3, weight: 46}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 46}
+
+gems_world_mid_geo_hydro_3x_main_90:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 3, weight: 47}
+  - {reward: genshin.avatar_ascension.geo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.geo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.geo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.geo.5, count: 3, weight: 47}
+
+gems_world_mid_anemo_cryo_3x_main_30:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 6643}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6643}
+
+gems_world_mid_anemo_cryo_3x_main_35:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 7019}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 7019}
+
+gems_world_mid_anemo_cryo_3x_main_40:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 918}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 918}
+
+gems_world_mid_anemo_cryo_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 3333}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 3333}
+
+gems_world_mid_anemo_cryo_3x_main_45:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1018}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1018}
+
+gems_world_mid_anemo_cryo_3x_main_50:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1118}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1118}
+
+gems_world_mid_anemo_cryo_3x_main_55:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1219}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1219}
+
+gems_world_mid_anemo_cryo_3x_main_60:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 330}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 330}
+
+gems_world_mid_anemo_cryo_3x_main_65:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 354}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 354}
+
+gems_world_mid_anemo_cryo_3x_main_70:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 380}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 380}
+
+gems_world_mid_anemo_cryo_3x_main_75:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 3, weight: 40}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 40}
+
+gems_world_mid_anemo_cryo_3x_main_80:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 3, weight: 43}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 43}
+
+gems_world_mid_anemo_cryo_3x_main_85:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 3, weight: 46}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 46}
+
+gems_world_mid_anemo_cryo_3x_main_90:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 3, weight: 47}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 47}
+
+gems_world_mid_cryo_electro_3x_main_30:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6643}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 6643}
+
+gems_world_mid_cryo_electro_3x_main_35:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 7019}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 7019}
+
+gems_world_mid_cryo_electro_3x_main_40:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 918}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 918}
+
+gems_world_mid_cryo_electro_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 3333}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 3333}
+
+gems_world_mid_cryo_electro_3x_main_45:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1018}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1018}
+
+gems_world_mid_cryo_electro_3x_main_50:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1118}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1118}
+
+gems_world_mid_cryo_electro_3x_main_55:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1219}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1219}
+
+gems_world_mid_cryo_electro_3x_main_60:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 330}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 330}
+
+gems_world_mid_cryo_electro_3x_main_65:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 354}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 354}
+
+gems_world_mid_cryo_electro_3x_main_70:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 380}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 380}
+
+gems_world_mid_cryo_electro_3x_main_75:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 40}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.electro.5, count: 3, weight: 40}
+
+gems_world_mid_cryo_electro_3x_main_80:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 43}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.electro.5, count: 3, weight: 43}
+
+gems_world_mid_cryo_electro_3x_main_85:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 46}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.electro.5, count: 3, weight: 46}
+
+gems_world_mid_cryo_electro_3x_main_90:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 47}
+  - {reward: genshin.avatar_ascension.electro.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.electro.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.electro.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.electro.5, count: 3, weight: 47}
+
+gems_world_mid_dendro_3x_main_30:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 6643}
+
+gems_world_mid_dendro_3x_main_35:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 7019}
+
+gems_world_mid_dendro_3x_main_40:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 3, weight: 918}
+
+gems_world_mid_dendro_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.dendro.3, count: 3, weight: 3333}
+
+gems_world_mid_dendro_3x_main_45:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 3, weight: 1018}
+
+gems_world_mid_dendro_3x_main_50:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 3, weight: 1118}
+
+gems_world_mid_dendro_3x_main_55:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 3, weight: 1219}
+
+gems_world_mid_dendro_3x_main_60:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 3, weight: 330}
+
+gems_world_mid_dendro_3x_main_65:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 3, weight: 354}
+
+gems_world_mid_dendro_3x_main_70:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 3, weight: 380}
+
+gems_world_mid_dendro_3x_main_75:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.dendro.5, count: 3, weight: 40}
+
+gems_world_mid_dendro_3x_main_80:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.dendro.5, count: 3, weight: 43}
+
+gems_world_mid_dendro_3x_main_85:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.dendro.5, count: 3, weight: 46}
+
+gems_world_mid_dendro_3x_main_90:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.dendro.5, count: 3, weight: 47}
+
+gems_world_mid_cryo_hydro_3x_main_30:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6643}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 6643}
+
+gems_world_mid_cryo_hydro_3x_main_35:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 7019}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 7019}
+
+gems_world_mid_cryo_hydro_3x_main_40:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 918}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 918}
+
+gems_world_mid_cryo_hydro_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 3333}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 3333}
+
+gems_world_mid_cryo_hydro_3x_main_45:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1018}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1018}
+
+gems_world_mid_cryo_hydro_3x_main_50:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1118}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1118}
+
+gems_world_mid_cryo_hydro_3x_main_55:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1219}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1219}
+
+gems_world_mid_cryo_hydro_3x_main_60:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 330}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 330}
+
+gems_world_mid_cryo_hydro_3x_main_65:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 354}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 354}
+
+gems_world_mid_cryo_hydro_3x_main_70:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 380}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 380}
+
+gems_world_mid_cryo_hydro_3x_main_75:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 40}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 3, weight: 40}
+
+gems_world_mid_cryo_hydro_3x_main_80:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 43}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 3, weight: 43}
+
+gems_world_mid_cryo_hydro_3x_main_85:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 46}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 3, weight: 46}
+
+gems_world_mid_cryo_hydro_3x_main_90:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 3, weight: 47}
+  - {reward: genshin.avatar_ascension.hydro.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 3, weight: 47}
+
+gems_world_mid_anemo_pyro_3x_main_30:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 6643}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 6643}
+
+gems_world_mid_anemo_pyro_3x_main_35:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 7019}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 7019}
+
+gems_world_mid_anemo_pyro_3x_main_40:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 918}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 3441}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 918}
+
+gems_world_mid_anemo_pyro_3x_fragment_40:
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 3333}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 3333}
+
+gems_world_mid_anemo_pyro_3x_main_45:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1018}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 3817}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1018}
+
+gems_world_mid_anemo_pyro_3x_main_50:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1118}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 4193}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1118}
+
+gems_world_mid_anemo_pyro_3x_main_55:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1219}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 4569}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1219}
+
+gems_world_mid_anemo_pyro_3x_main_60:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 330}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 4945}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1319}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 330}
+
+gems_world_mid_anemo_pyro_3x_main_65:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 354}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 5321}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1419}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 354}
+
+gems_world_mid_anemo_pyro_3x_main_70:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 380}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 5697}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1519}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 380}
+
+gems_world_mid_anemo_pyro_3x_main_75:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 3, weight: 40}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 6072}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1620}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 405}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 3, weight: 40}
+
+gems_world_mid_anemo_pyro_3x_main_80:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 3, weight: 43}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 6450}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1719}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 429}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 3, weight: 43}
+
+gems_world_mid_anemo_pyro_3x_main_85:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 3, weight: 46}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 6826}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1820}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 455}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 3, weight: 46}
+
+gems_world_mid_anemo_pyro_3x_main_90:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 3, weight: 47}
+  - {reward: genshin.avatar_ascension.anemo.2, count: 3, weight: 7201}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1920}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 480}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 3, weight: 47}
+
+gems_world_mid_electro_9x_main_30:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 6643}
+
+gems_world_mid_electro_9x_main_35:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 7019}
+
+gems_world_mid_electro_9x_main_40:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 3441}
+  - {reward: genshin.avatar_ascension.electro.3, count: 9, weight: 918}
+
+gems_world_mid_electro_9x_fragment_40:
+  - {reward: genshin.avatar_ascension.electro.3, count: 9, weight: 3333}
+
+gems_world_mid_electro_9x_main_45:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 3817}
+  - {reward: genshin.avatar_ascension.electro.3, count: 9, weight: 1018}
+
+gems_world_mid_electro_9x_main_50:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 4193}
+  - {reward: genshin.avatar_ascension.electro.3, count: 9, weight: 1118}
+
+gems_world_mid_electro_9x_main_55:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 4569}
+  - {reward: genshin.avatar_ascension.electro.3, count: 9, weight: 1219}
+
+gems_world_mid_electro_9x_main_60:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 4945}
+  - {reward: genshin.avatar_ascension.electro.3, count: 9, weight: 1319}
+  - {reward: genshin.avatar_ascension.electro.4, count: 9, weight: 330}
+
+gems_world_mid_electro_9x_main_65:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 5321}
+  - {reward: genshin.avatar_ascension.electro.3, count: 9, weight: 1419}
+  - {reward: genshin.avatar_ascension.electro.4, count: 9, weight: 354}
+
+gems_world_mid_electro_9x_main_70:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 5697}
+  - {reward: genshin.avatar_ascension.electro.3, count: 9, weight: 1519}
+  - {reward: genshin.avatar_ascension.electro.4, count: 9, weight: 380}
+
+gems_world_mid_electro_9x_main_75:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 6072}
+  - {reward: genshin.avatar_ascension.electro.3, count: 9, weight: 1620}
+  - {reward: genshin.avatar_ascension.electro.4, count: 9, weight: 405}
+  - {reward: genshin.avatar_ascension.electro.5, count: 9, weight: 40}
+
+gems_world_mid_electro_9x_main_80:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 6450}
+  - {reward: genshin.avatar_ascension.electro.3, count: 9, weight: 1719}
+  - {reward: genshin.avatar_ascension.electro.4, count: 9, weight: 429}
+  - {reward: genshin.avatar_ascension.electro.5, count: 9, weight: 43}
+
+gems_world_mid_electro_9x_main_85:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 6826}
+  - {reward: genshin.avatar_ascension.electro.3, count: 9, weight: 1820}
+  - {reward: genshin.avatar_ascension.electro.4, count: 9, weight: 455}
+  - {reward: genshin.avatar_ascension.electro.5, count: 9, weight: 46}
+
+gems_world_mid_electro_9x_main_90:
+  - {reward: genshin.avatar_ascension.electro.2, count: 9, weight: 7201}
+  - {reward: genshin.avatar_ascension.electro.3, count: 9, weight: 1920}
+  - {reward: genshin.avatar_ascension.electro.4, count: 9, weight: 480}
+  - {reward: genshin.avatar_ascension.electro.5, count: 9, weight: 47}
+
+gems_world_mid_dendro_pyro_9x_main_30:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 7201}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 1920}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 9, weight: 480}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 9, weight: 47}
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 7201}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 1920}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 9, weight: 480}
+  - {reward: genshin.avatar_ascension.dendro.5, count: 9, weight: 47}
+
+gems_world_mid_dendro_pyro_9x_fragment_40:
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 5000}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 5000}
+
+gems_world_mid_cryo_pyro_9x_main_30:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 7201}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 1920}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 9, weight: 480}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 9, weight: 47}
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 7201}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 1920}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 9, weight: 480}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 9, weight: 47}
+
+gems_world_mid_cryo_pyro_9x_fragment_40:
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 5000}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 5000}
+
+gems_world_mid_geo_9x_main_30:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 6643}
+
+gems_world_mid_geo_9x_main_35:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 7019}
+
+gems_world_mid_geo_9x_main_40:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 3441}
+  - {reward: genshin.avatar_ascension.geo.3, count: 9, weight: 918}
+
+gems_world_mid_geo_9x_fragment_40:
+  - {reward: genshin.avatar_ascension.geo.3, count: 9, weight: 3333}
+
+gems_world_mid_geo_9x_main_45:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 3817}
+  - {reward: genshin.avatar_ascension.geo.3, count: 9, weight: 1018}
+
+gems_world_mid_geo_9x_main_50:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 4193}
+  - {reward: genshin.avatar_ascension.geo.3, count: 9, weight: 1118}
+
+gems_world_mid_geo_9x_main_55:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 4569}
+  - {reward: genshin.avatar_ascension.geo.3, count: 9, weight: 1219}
+
+gems_world_mid_geo_9x_main_60:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 4945}
+  - {reward: genshin.avatar_ascension.geo.3, count: 9, weight: 1319}
+  - {reward: genshin.avatar_ascension.geo.4, count: 9, weight: 330}
+
+gems_world_mid_geo_9x_main_65:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 5321}
+  - {reward: genshin.avatar_ascension.geo.3, count: 9, weight: 1419}
+  - {reward: genshin.avatar_ascension.geo.4, count: 9, weight: 354}
+
+gems_world_mid_geo_9x_main_70:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 5697}
+  - {reward: genshin.avatar_ascension.geo.3, count: 9, weight: 1519}
+  - {reward: genshin.avatar_ascension.geo.4, count: 9, weight: 380}
+
+gems_world_mid_geo_9x_main_75:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 6072}
+  - {reward: genshin.avatar_ascension.geo.3, count: 9, weight: 1620}
+  - {reward: genshin.avatar_ascension.geo.4, count: 9, weight: 405}
+  - {reward: genshin.avatar_ascension.geo.5, count: 9, weight: 40}
+
+gems_world_mid_geo_9x_main_80:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 6450}
+  - {reward: genshin.avatar_ascension.geo.3, count: 9, weight: 1719}
+  - {reward: genshin.avatar_ascension.geo.4, count: 9, weight: 429}
+  - {reward: genshin.avatar_ascension.geo.5, count: 9, weight: 43}
+
+gems_world_mid_geo_9x_main_85:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 6826}
+  - {reward: genshin.avatar_ascension.geo.3, count: 9, weight: 1820}
+  - {reward: genshin.avatar_ascension.geo.4, count: 9, weight: 455}
+  - {reward: genshin.avatar_ascension.geo.5, count: 9, weight: 46}
+
+gems_world_mid_geo_9x_main_90:
+  - {reward: genshin.avatar_ascension.geo.2, count: 9, weight: 7201}
+  - {reward: genshin.avatar_ascension.geo.3, count: 9, weight: 1920}
+  - {reward: genshin.avatar_ascension.geo.4, count: 9, weight: 480}
+  - {reward: genshin.avatar_ascension.geo.5, count: 9, weight: 47}
+
+gems_world_mid_pyro_9x_main_30:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 6643}
+
+gems_world_mid_pyro_9x_main_35:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 7019}
+
+gems_world_mid_pyro_9x_main_40:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 3441}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 918}
+
+gems_world_mid_pyro_9x_fragment_40:
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 3333}
+
+gems_world_mid_pyro_9x_main_45:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 3817}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 1018}
+
+gems_world_mid_pyro_9x_main_50:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 4193}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 1118}
+
+gems_world_mid_pyro_9x_main_55:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 4569}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 1219}
+
+gems_world_mid_pyro_9x_main_60:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 4945}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 1319}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 9, weight: 330}
+
+gems_world_mid_pyro_9x_main_65:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 5321}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 1419}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 9, weight: 354}
+
+gems_world_mid_pyro_9x_main_70:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 5697}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 1519}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 9, weight: 380}
+
+gems_world_mid_pyro_9x_main_75:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 6072}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 1620}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 9, weight: 405}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 9, weight: 40}
+
+gems_world_mid_pyro_9x_main_80:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 6450}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 1719}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 9, weight: 429}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 9, weight: 43}
+
+gems_world_mid_pyro_9x_main_85:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 6826}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 1820}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 9, weight: 455}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 9, weight: 46}
+
+gems_world_mid_pyro_9x_main_90:
+  - {reward: genshin.avatar_ascension.pyro.2, count: 9, weight: 7201}
+  - {reward: genshin.avatar_ascension.pyro.3, count: 9, weight: 1920}
+  - {reward: genshin.avatar_ascension.pyro.4, count: 9, weight: 480}
+  - {reward: genshin.avatar_ascension.pyro.5, count: 9, weight: 47}
+
+gems_world_mid_hydro_9x_main_30:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 6643}
+
+gems_world_mid_hydro_9x_main_35:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 7019}
+
+gems_world_mid_hydro_9x_main_40:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 3441}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 9, weight: 918}
+
+gems_world_mid_hydro_9x_fragment_40:
+  - {reward: genshin.avatar_ascension.hydro.3, count: 9, weight: 3333}
+
+gems_world_mid_hydro_9x_main_45:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 3817}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 9, weight: 1018}
+
+gems_world_mid_hydro_9x_main_50:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 4193}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 9, weight: 1118}
+
+gems_world_mid_hydro_9x_main_55:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 4569}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 9, weight: 1219}
+
+gems_world_mid_hydro_9x_main_60:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 4945}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 9, weight: 1319}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 9, weight: 330}
+
+gems_world_mid_hydro_9x_main_65:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 5321}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 9, weight: 1419}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 9, weight: 354}
+
+gems_world_mid_hydro_9x_main_70:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 5697}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 9, weight: 1519}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 9, weight: 380}
+
+gems_world_mid_hydro_9x_main_75:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 6072}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 9, weight: 1620}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 9, weight: 405}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 9, weight: 40}
+
+gems_world_mid_hydro_9x_main_80:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 6450}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 9, weight: 1719}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 9, weight: 429}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 9, weight: 43}
+
+gems_world_mid_hydro_9x_main_85:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 6826}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 9, weight: 1820}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 9, weight: 455}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 9, weight: 46}
+
+gems_world_mid_hydro_9x_main_90:
+  - {reward: genshin.avatar_ascension.hydro.2, count: 9, weight: 7201}
+  - {reward: genshin.avatar_ascension.hydro.3, count: 9, weight: 1920}
+  - {reward: genshin.avatar_ascension.hydro.4, count: 9, weight: 480}
+  - {reward: genshin.avatar_ascension.hydro.5, count: 9, weight: 47}
+
+gems_world_mid_dendro_9x_main_30:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 6643}
+
+gems_world_mid_dendro_9x_main_35:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 7019}
+
+gems_world_mid_dendro_9x_main_40:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 3441}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 918}
+
+gems_world_mid_dendro_9x_fragment_40:
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 3333}
+
+gems_world_mid_dendro_9x_main_45:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 3817}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 1018}
+
+gems_world_mid_dendro_9x_main_50:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 4193}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 1118}
+
+gems_world_mid_dendro_9x_main_55:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 4569}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 1219}
+
+gems_world_mid_dendro_9x_main_60:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 4945}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 1319}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 9, weight: 330}
+
+gems_world_mid_dendro_9x_main_65:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 5321}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 1419}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 9, weight: 354}
+
+gems_world_mid_dendro_9x_main_70:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 5697}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 1519}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 9, weight: 380}
+
+gems_world_mid_dendro_9x_main_75:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 6072}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 1620}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 9, weight: 405}
+  - {reward: genshin.avatar_ascension.dendro.5, count: 9, weight: 40}
+
+gems_world_mid_dendro_9x_main_80:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 6450}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 1719}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 9, weight: 429}
+  - {reward: genshin.avatar_ascension.dendro.5, count: 9, weight: 43}
+
+gems_world_mid_dendro_9x_main_85:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 6826}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 1820}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 9, weight: 455}
+  - {reward: genshin.avatar_ascension.dendro.5, count: 9, weight: 46}
+
+gems_world_mid_dendro_9x_main_90:
+  - {reward: genshin.avatar_ascension.dendro.2, count: 9, weight: 7201}
+  - {reward: genshin.avatar_ascension.dendro.3, count: 9, weight: 1920}
+  - {reward: genshin.avatar_ascension.dendro.4, count: 9, weight: 480}
+  - {reward: genshin.avatar_ascension.dendro.5, count: 9, weight: 47}
+
+gems_world_mid_cryo_9x_main_30:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 6643}
+
+gems_world_mid_cryo_9x_main_35:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 7019}
+
+gems_world_mid_cryo_9x_main_40:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 3441}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 918}
+
+gems_world_mid_cryo_9x_fragment_40:
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 3333}
+
+gems_world_mid_cryo_9x_main_45:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 3817}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 1018}
+
+gems_world_mid_cryo_9x_main_50:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 4193}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 1118}
+
+gems_world_mid_cryo_9x_main_55:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 4569}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 1219}
+
+gems_world_mid_cryo_9x_main_60:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 4945}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 1319}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 9, weight: 330}
+
+gems_world_mid_cryo_9x_main_65:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 5321}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 1419}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 9, weight: 354}
+
+gems_world_mid_cryo_9x_main_70:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 5697}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 1519}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 9, weight: 380}
+
+gems_world_mid_cryo_9x_main_75:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 6072}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 1620}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 9, weight: 405}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 9, weight: 40}
+
+gems_world_mid_cryo_9x_main_80:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 6450}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 1719}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 9, weight: 429}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 9, weight: 43}
+
+gems_world_mid_cryo_9x_main_85:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 6826}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 1820}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 9, weight: 455}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 9, weight: 46}
+
+gems_world_mid_cryo_9x_main_90:
+  - {reward: genshin.avatar_ascension.cryo.2, count: 9, weight: 7201}
+  - {reward: genshin.avatar_ascension.cryo.3, count: 9, weight: 1920}
+  - {reward: genshin.avatar_ascension.cryo.4, count: 9, weight: 480}
+  - {reward: genshin.avatar_ascension.cryo.5, count: 9, weight: 47}
+
+gems_world_mid_anemo_9x_main_30:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 6643}
+
+gems_world_mid_anemo_9x_main_35:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 7019}
+
+gems_world_mid_anemo_9x_main_40:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 3441}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 9, weight: 918}
+
+gems_world_mid_anemo_9x_fragment_40:
+  - {reward: genshin.avatar_ascension.anemo.3, count: 9, weight: 3333}
+
+gems_world_mid_anemo_9x_main_45:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 3817}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 9, weight: 1018}
+
+gems_world_mid_anemo_9x_main_50:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 4193}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 9, weight: 1118}
+
+gems_world_mid_anemo_9x_main_55:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 4569}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 9, weight: 1219}
+
+gems_world_mid_anemo_9x_main_60:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 4945}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 9, weight: 1319}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 9, weight: 330}
+
+gems_world_mid_anemo_9x_main_65:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 5321}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 9, weight: 1419}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 9, weight: 354}
+
+gems_world_mid_anemo_9x_main_70:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 5697}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 9, weight: 1519}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 9, weight: 380}
+
+gems_world_mid_anemo_9x_main_75:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 6072}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 9, weight: 1620}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 9, weight: 405}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 9, weight: 40}
+
+gems_world_mid_anemo_9x_main_80:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 6450}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 9, weight: 1719}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 9, weight: 429}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 9, weight: 43}
+
+gems_world_mid_anemo_9x_main_85:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 6826}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 9, weight: 1820}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 9, weight: 455}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 9, weight: 46}
+
+gems_world_mid_anemo_9x_main_90:
+  - {reward: genshin.avatar_ascension.anemo.2, count: 9, weight: 7201}
+  - {reward: genshin.avatar_ascension.anemo.3, count: 9, weight: 1920}
+  - {reward: genshin.avatar_ascension.anemo.4, count: 9, weight: 480}
+  - {reward: genshin.avatar_ascension.anemo.5, count: 9, weight: 47}

@@ -25,7 +25,11 @@ final class BundledBossRewardsTest {
         assertFalse(yaml.contains("gems_anemo_cryo_sliver:"));
         assertTrue(yaml.contains("gems_world_early_anemo_cryo_sliver:"));
         assertEquals(48, css.lines().filter(line ->
-                line.startsWith("boss[type=\"world\"][tag=\"")).count());
+                line.startsWith("boss[type=\"world\"][tag=\"")
+                        && line.contains("[level=\"1~29\"]")).count());
+        assertEquals(48, css.lines().filter(line ->
+                line.startsWith("boss[type=\"world\"][tag=\"")
+                        && line.contains("[level=\"30~104\"]")).count());
         assertEquals(211, css.lines().filter(line ->
                 line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
         int start = css.indexOf("/* World Boss drops (ChestDrop sourceType 34)");
@@ -33,8 +37,7 @@ final class BundledBossRewardsTest {
         String world = css.substring(start);
         assertFalse(world.contains("astaps.loot.artifacts_"));
         assertFalse(world.contains("genshin.artifact."));
-        assertTrue(world.lines().filter(line -> line.startsWith("boss[type=\"world\"]"))
-                .allMatch(line -> line.contains("[level=\"1~29\"]")));
+        assertTrue(world.contains("gems_world_mid_"));
     }
 
     @Test
@@ -56,6 +59,12 @@ final class BundledBossRewardsTest {
                     curves.require("world_ascension_material_early_count").lookup(levels[i]));
         }
         assertEquals("9", curves.require("world_gems_early_fixed_item_count").lookup("29"));
+        assertEquals("2+1:19.219", curves.require("world_gems_roll_count").lookup("30"));
+        assertEquals("3+1:18.45", curves.require("world_gems_roll_count").lookup("100"));
+        assertEquals("1+1:12.2", curves.require("world_gems_fragment_extra_count").lookup("100"));
+        assertEquals("2+1:55.56", curves.require("world_ascension_material_standard_count").lookup("100"));
+        assertEquals("2+1:81.116", curves.require("world_ascension_material_high_yield_count").lookup("100"));
+        assertEquals("3+1:25", curves.require("world_ascension_material_modern_count").lookup("100"));
         assertThrows(IllegalArgumentException.class, () ->
                 curves.require("world_ascension_material_early_count").lookup("30"));
     }
@@ -123,8 +132,8 @@ final class BundledBossRewardsTest {
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\""))
                 .map(line -> line.substring(
                         line.indexOf("[tag=\"") + 6, line.indexOf("\"][level=\"")))
-                .toList();
-        assertEquals(48, new java.util.HashSet<>(bosses).size());
+                .distinct().toList();
+        assertEquals(48, bosses.size());
         for (var boss : bosses) {
             for (int level : new int[] {1, 5, 10, 15, 20, 25, 29}) {
                 var attributes = Map.of(
@@ -136,8 +145,13 @@ final class BundledBossRewardsTest {
                 assertNotNull(config.rollWorldBoss(boss, level, new java.util.Random(71)),
                         boss + "@" + level);
             }
-            assertNull(config.rollWorldBoss(boss, 36, new java.util.Random(71)),
-                    "Lv.30+ must use native fallback: " + boss);
+            for (int level : new int[] {30, 35, 40, 45, 50, 55, 60, 65, 70, 75,
+                    80, 85, 90, 93, 99, 100, 104}) {
+                assertNotNull(config.rollWorldBoss(boss, level, new java.util.Random(71)),
+                        "Unconfigured middle world Boss: " + boss + "@" + level);
+            }
+            assertNull(config.rollWorldBoss(boss, 105, new java.util.Random(71)),
+                    "Lv.105+ must retain the native fallback: " + boss);
         }
         var pureMaterial = css.resolve("boss", Map.of(
                 "type", "world", "tag", "precision_clockwork", "level", "1"));

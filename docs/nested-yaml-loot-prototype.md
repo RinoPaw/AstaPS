@@ -2,18 +2,22 @@
 
 ## World Boss migration status
 
-All 48 sourceType=34 native world Boss identities use explicit CSS rules for
-native levels 1–29. Their gems use shared count curves and eight independent
-dual-element choice pools; exclusive ascension materials use the native early
-curve (Icewind Suite rolls both distinct items). Fifteen Bosses have no gems
-and 25 have no exclusive materials at these levels. No world Boss artifact
-payout is configured in CSS at this stage. Native world Boss rewards remain
-authoritative for levels 30 and above until those brackets are migrated.
-The previous 239 `world_*` loot tables and 62 now-unreferenced,
-world-Boss-only helper pools were removed from `loot.yaml`.
-The synthetic internal resource alias `precision_clockwork_core` maps to
-native material ID 113080 for the Precision Clockwork source tag.
-The weekly Boss and chest reward tables are unchanged.
+All 48 native sourceType=34 world Boss identities have explicit CSS gem and
+exclusive-material rules through native level 104. Levels 1–29 retain their
+previous early brackets. Levels 30–99 use one shared gem-main count curve,
+with a separate Lv.40+ fragment count, and two material curves. At level
+100–104 the 23 modern Bosses use the native 3.25 material profile, 23 older
+Bosses remain at 2.5556, and Pyro Regisvine/Oceanid remain at 2.81116.
+Icewind Suite rolls its two materials independently. Eight Bosses award
+multiple fixed 9-count gems; their identities are preserved. The other
+40 Bosses use independent weighted gem-grade pools extracted from native
+sourceType=34 child nodes. Each weighted choice uses the source weights;
+there is no inferred missing-weight "empty" outcome.
+
+World Boss artifacts are not yet migrated to CSS. The configuration is
+currently bundled in `loot.yaml`, `curves.yaml`, and `rewards.css`, with native
+fallback retained for Lv.105 and above. Full gameplay validation, including
+artifact reward composition, is required before upstream submission.
 
 ## Historical prototype notes (before the world Boss cleanup)
 
@@ -561,9 +565,9 @@ Former `genshin.currency.anemo_sigil`-style names are not aliases.
 
 World Boss-exclusive ascension materials are grouped by native `sourceType = 34`
 counts: a shared Lv.1–29 early profile on newer Boss families, the
-common Lv.30–99 profile, and a distinct higher-yield Lv.30–99 profile for
-Pyro Regisvine and Oceanid. Lv.100+ material quantities stay explicit in
-`rewards.css` (`2+1:55.56`, `2+1:81.116`, or `3+1:25`).
+shared Lv.30–99 profile, and a distinct higher-yield Lv.30–99 profile for
+Pyro Regisvine and Oceanid. The Lv.100–104 exception is stored in
+`curves.yaml` (`2+1:55.56`, `2+1:81.116`, or `3+1:25`).
 Icewind Suite's two independently granted material identities now use CSS
 as well. Material quantities retain the fractional precision of native
 `DropTableExcelConfigData.json`; the old single approximated curve is gone.

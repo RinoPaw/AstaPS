@@ -159,15 +159,21 @@ native rows at 93, 100, 105, 110, 115, and 120; the final CSS range is open-ende
 
 ## World Boss artifacts
 
-Electro Hypostasis and Maguu Kenki now have artifact rules appended to the
-bundled `rewards.css`, backed by nine pools in the bundled `loot.yaml`.
-The rules cover all positive levels and share the five-star pool. Each
-active rarity pool rolls independently. Explicit slot and initial-substat
-properties preserve the native probabilities, including prayer circlets and
-66%/34% substat counts. No new syntax or loader is added.
+The final CSS section covers 47 native world Boss identities at all positive
+levels. Twelve generic definitions in the bundled `loot.yaml` instantiate
+25 source-backed candidate pools. They replace set names only, using the same
+angle-bracket parameter syntax as gems. No new syntax or loader is added.
 
-See [the artifact configuration notes](examples/world-boss-artifacts.md)
-for the original-source comparison and remaining source gaps.
+Slot, rarity, and initial-substat properties are explicit. Ordinary prayer
+circlets, 66%/34% substat counts, and unusual source rows with linked slot
+and substat outcomes retain their native probabilities. When independent
+source branches select the same candidate pool, CSS uses the exact summed
+execution-count distribution so duplicate properties cannot overwrite a roll.
+
+Precision Clockwork is excluded from artifact configuration because eight
+referenced source IDs are unresolved. Its material, gem, Mora, and EXP rules
+remain as before. See [the artifact configuration notes](examples/world-boss-artifacts.md)
+for the original-source comparison and detailed scope.
 
 ## Count expressions
 
@@ -187,8 +193,8 @@ executing a loot table N times independently evaluates the table N times.
 
 World Boss material, Mora, and experience rules remain in CSS. Gemstone
 contents and candidate weights live in parameterized YAML lists selected by
-CSS. Artifact configuration currently covers Electro Hypostasis and Maguu
-Kenki only. Other Boss artifacts and weekly-Boss configuration remain absent.
+CSS. Artifact configuration covers 47 world Boss identities; Precision
+Clockwork artifacts and weekly-Boss configuration remain absent.
 Chest contents retain weapons, experience items, ore, food, and talent books;
 chest artifact entries are removed. Blossoms and scene-point rewards remain.
 This is an intermediate world-Boss configuration, not a complete game

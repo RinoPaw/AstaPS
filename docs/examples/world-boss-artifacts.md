@@ -1,60 +1,82 @@
 # World Boss artifact configuration
 
-Electro Hypostasis and Maguu Kenki artifact rules are now included in
-`src/main/resources/rewards/rewards.css` (at the end of the file), with their
-candidate pools in `src/main/resources/rewards/loot.yaml`.
+The final section of `src/main/resources/rewards/rewards.css` now configures
+artifacts for 47 world Boss identities, using twelve generic definitions in
+`src/main/resources/rewards/loot.yaml`. The obsolete two-Boss example files
+have been removed; the bundled resources are the configuration to inspect.
 
-`world-boss-artifacts.yaml` and `world-boss-artifacts.css` remain standalone
-review copies of those artifact rules. The runtime loads the bundled files.
-Other Bosses, chests, and weekly sources still have no artifact configuration.
+## Shared definitions
 
-The two Bosses share quantity rules and a five-star pool. Their lower-rarity
-candidate sets differ. Nine YAML pools contain 22 weighted set entries; CSS
-has eleven consecutive level ranges per Boss. Every active rarity pool rolls
-independently. CSS explicitly includes zero outcomes for conditional drops.
-YAML `properties.substats` uses the existing percentage syntax.
+| Native rarity | Generic definitions | Actual candidate pools |
+| --- | ---: | ---: |
+| 1 star | 1 | 3 |
+| 2 stars | 1 | 3 |
+| 3 stars | 2 | 7 |
+| 4 stars | 2 | 6 |
+| 5 stars, including special native rows | 6 | 6 |
+| Total | 12 | 25 |
 
-At levels 45–59, including level 50:
+Definitions use the existing `name<set1, set2>` grammar and quoted
+`genshin.artifact.${set1}` interpolation. Parameters replace set identities
+only. Candidate probabilities, slot choices, rarities, and initial substat
+counts are preserved. Every artifact explicitly specifies its properties;
+no uniform default replaces a native 66%/34% distribution.
 
-| Boss | Three-star pool, one set chosen per artifact | Four-star pool, one set chosen per artifact |
-| --- | --- | --- |
-| Electro Hypostasis | Instructor, The Exile, Prayers for Wisdom, Traveling Doctor: 1/4 each | Gladiator's Finale, Wanderer's Troupe, Instructor, The Exile, Prayers for Wisdom: 1/5 each |
-| Maguu Kenki | Berserker, Instructor, Lucky Dog: 1/3 each | Gladiator's Finale, Wanderer's Troupe, Berserker, Instructor: 1/4 each |
+The 47 complete Boss programs form nine groups. CSS has 101 rules, with
+Boss tags grouped when their complete declarations agree and level ranges
+in ascending order within each group. Open-ended ranges continue the last
+native row beyond level 120. Other rewards are unchanged.
 
-Both Bosses award three three-star artifacts with probability 22%, or four
-with probability 78%. Independently, they award one four-star artifact with
-probability 42%, or none with probability 58%. Prayers for Wisdom always
-selects a circlet; the other sets select each of their five slots uniformly.
-Three-star artifacts start with one or two substats at 66%/34%; four-star
-artifacts start with two or three at 66%/34%.
+## Independent rolls and linked properties
 
-## Source comparison
+Each source artifact branch rolls independently. When two branches resolve
+to the same candidate pool, repeating its CSS property would overwrite one
+branch. Instead, the complete independent execution-count distributions are
+convolved, then each resulting execution rolls that candidate pool afresh.
+This preserves the entire resulting item-count distribution.
 
-Native roots are selected from the repository's `data/ChestDrop.json`, then
-expanded through `data/Server/DropTableExcelConfigData.json`. Referenced
-subtables and artifact attributes come from `RinoPaw/AstaPS-Resource` at
+For example, one source branch executing 1/2 times at 95%/5% and another
+executing 0/1 times at 79%/21% become 1/2/3 executions at
+75.05%/23.9%/1.05%. No expected-value approximation is used.
+
+The unusual native rows for Frostnight Scion and similar Bosses are retained
+literally. A fixed slot remains fixed. Where slot and initial-substat count
+are linked, weighted entries keep them together. Zero-substat five-star
+variants are selected explicitly when the source requires them. These rows
+are not replaced with ordinary five-slot artifact drops.
+
+## Original-source comparison
+
+Native roots come from this repository's `data/ChestDrop.json`, expanded
+through `data/Server/DropTableExcelConfigData.json`. Referenced subtables and
+native artifact attributes come from `RinoPaw/AstaPS-Resource` at
 `c0213668889ed05cbeb86660f424c3daf18bfacd`:
 
 - `Server/DropSubTableExcelConfigData.json`
 - `ExcelBinOutput/ReliquaryExcelConfigData.json`
 
-The bundled artifact rules were read back and compared with all native candidate
-item IDs and their complete probabilities using exact rational arithmetic.
-The comparison covers both Bosses at levels 1–200, 1000, and 2147483647:
-404 Boss/level combinations. It preserves quantity distributions, independent
-rarity rolls, set weights, slots, and initial substat counts. Levels above
-120 continue the final native row. No test suite or full server was run.
+The bundled CSS and YAML were read back and compared using exact rational
+arithmetic against native item IDs, candidate probabilities, and complete
+execution-count distributions. Coverage is levels 1–200, 1000, and
+2147483647 for every configured Boss: 9494 Boss/level combinations. The
+comparison includes all 25 candidate pools and 197 native artifact variants.
 
-## Remaining decisions and source gaps
+A separate manual parser inspection used the actual `ArtifactResolver`,
+`YamlLootTables`, generic expansion, and `CssRewards` implementations, backed
+by 4352 native artifact metadata rows. All 9494 configured combinations
+matched native probabilities within 1e-11, including slot/substat correlations
+and merged execution counts. The 202 Precision Clockwork combinations were
+confirmed to have no artifact declarations. Non-artifact item services were
+isolated for this inspection; it does not verify full server startup or real
+inventory delivery. No test suite or CI was run.
 
-The unusual Frostnight Scion and similar Boss distributions are not inferred
-from these examples. Their fixed slots and linked substat counts require
-separate weighted entries if preserved. The earlier question about retaining
-those source distributions remains unresolved.
+## Unresolved source and loading issues
 
 Precision Clockwork references 542901, 542902, 542903, 542904, 542905,
-542906, 542908, and 542909. They are absent from the examined native primary
-tables, subtables, and item resources. No replacement is guessed here.
+542906, 542908, and 542909. They are absent from the examined primary tables,
+subtables, and item resources. Its five unresolved candidate pools are not
+configured. No replacement item or probability is guessed.
 
 The separately identified material/gem name-resolution failure remains a
-bundled configuration loading issue; these artifact examples do not repair it.
+bundled configuration loading issue; these artifact changes do not repair it.
+Artifacts for chests and weekly Bosses remain outside this configuration.

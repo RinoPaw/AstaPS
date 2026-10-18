@@ -399,44 +399,57 @@ world_1-plus_gem_7<element1, element2, element3>:
   - {reward: "genshin.avatar_ascension.${element3}.fragment", count: 9}
   - {reward: "genshin.avatar_ascension.${element3}.sliver", count: 9}
 
-# World Boss artifacts: Electro Hypostasis and Maguu Kenki.
-# Properties use existing slot/range, rarity, and substat-percentage semantics.
-world_artifact_1star_1:
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1}
+# World Boss artifacts: 47 source-backed identities; Precision Clockwork is unresolved.
+# Generic parameters replace set names only. Counts and probabilities are unchanged.
+# Existing properties: slot names/ranges/percentages, rarity, and substats percentages.
 
-world_artifact_2star_1:
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 2, substats: "0:66, 1:34"}, weight: 1}
+world_artifact_1star_1<set1>:
+  - {reward: "genshin.artifact.${set1}", properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1}
 
-world_artifact_3star_1:
-  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-  - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-  - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+world_artifact_2star_1<set1>:
+  - {reward: "genshin.artifact.${set1}", properties: {slot: "1~5", rarity: 2, substats: "0:66, 1:34"}, weight: 1}
 
-world_artifact_4star_1:
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+world_artifact_3star_1<set1, set2, set3, set4>:
+  - {reward: "genshin.artifact.${set1}", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set2}", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set3}", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set4}", properties: {slot: circlet, rarity: 3, substats: "1:66, 2:34"}, weight: 1}
 
-world_artifact_5star_1:
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 5, substats: "3:66, 4:34"}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 5, substats: "3:66, 4:34"}, weight: 1}
+world_artifact_3star_2<set1, set2, set3>:
+  - {reward: "genshin.artifact.${set1}", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set2}", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set3}", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
 
-world_artifact_1star_2:
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1}
+world_artifact_4star_1<set1, set2, set3, set4, set5>:
+  - {reward: "genshin.artifact.${set1}", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set2}", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set3}", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set4}", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set5}", properties: {slot: circlet, rarity: 4, substats: "2:66, 3:34"}, weight: 1}
 
-world_artifact_2star_2:
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: "1~5", rarity: 2, substats: "0:66, 1:34"}, weight: 1}
+world_artifact_4star_2<set1, set2, set3, set4>:
+  - {reward: "genshin.artifact.${set1}", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set2}", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set3}", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set4}", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
 
-world_artifact_3star_2:
-  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-  - {reward: genshin.artifact.lucky_dog, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+world_artifact_5star_1<set1, set2>:
+  - {reward: "genshin.artifact.${set1}", properties: {slot: "1~5", rarity: 5, substats: "3:66, 4:34"}, weight: 1}
+  - {reward: "genshin.artifact.${set2}", properties: {slot: "1~5", rarity: 5, substats: "3:66, 4:34"}, weight: 1}
 
-world_artifact_4star_2:
-  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+world_artifact_5star_2<set1>:
+  - {reward: "genshin.artifact.${set1}", properties: {slot: "2:34, 4:66", rarity: 5, substats: 0}, weight: 1}
+
+world_artifact_5star_3<set1>:
+  - {reward: "genshin.artifact.${set1}", properties: {slot: plume, rarity: 5, substats: 2}, weight: 17}
+  - {reward: "genshin.artifact.${set1}", properties: {slot: goblet, rarity: 5, substats: 1}, weight: 33}
+
+world_artifact_5star_4<set1>:
+  - {reward: "genshin.artifact.${set1}", properties: {slot: plume, rarity: 5, substats: 4}, weight: 17}
+  - {reward: "genshin.artifact.${set1}", properties: {slot: goblet, rarity: 5, substats: 3}, weight: 33}
+
+world_artifact_5star_5<set1>:
+  - {reward: "genshin.artifact.${set1}", properties: {slot: goblet, rarity: 5, substats: 0}, weight: 1}
+
+world_artifact_5star_6<set1>:
+  - {reward: "genshin.artifact.${set1}", properties: {slot: goblet, rarity: 5, substats: 1}, weight: 1}

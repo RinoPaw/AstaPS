@@ -82,35 +82,35 @@ world_50-54_gem_2<element1, element2>:
 ```
 
 CSS binds each Boss's elements beside its material identity, then invokes
-shared definitions with `<GEM>`:
+shared definitions with `<ELEMENT>`:
 
 ```css
 boss[type="world"][tag="maguu_kenki"] {
     BOSS_MATERIAL: genshin.avatar_ascension.marionette_core;
-    GEM: [anemo, cryo];
+    ELEMENT: [anemo, cryo];
 }
 
 boss[type="world"][tag="aeonblight_drake"] {
     BOSS_MATERIAL: genshin.avatar_ascension.perpetual_caliber;
-    GEM: [hydro, cryo];
+    ELEMENT: [hydro, cryo];
 }
 
 boss[type="world"][tag="aeonblight_drake,maguu_kenki"][level="50~54"] {
-    astaps.loot.world_50-54_gem_2<GEM>: "1:24737, 2:75263";
-    astaps.loot.world_40-plus_gem_fragment_2<GEM>: "1:439, 2:61";
+    astaps.loot.world_50-54_gem_2<ELEMENT>: "1:24737, 2:75263";
+    astaps.loot.world_40-plus_gem_fragment_2<ELEMENT>: "1:439, 2:61";
 }
 ```
 
-`GEM: electro` binds one argument; `GEM: [anemo, cryo]` binds two ordered
-arguments. `<GEM>` becomes `<electro>` or `<anemo, cryo>` before resolving
+`ELEMENT: electro` binds one argument; `ELEMENT: [anemo, cryo]` binds two ordered
+arguments. `<ELEMENT>` becomes `<electro>` or `<anemo, cryo>` before resolving
 an ordinary loot definition. The binding itself grants nothing and performs
 no random choice. The YAML body retains all item selection and count semantics.
 Explicit calls such as `<electro>` and `<anemo, cryo>` continue to work.
 
 Bindings follow selector specificity and source order, independently of where
-the count rules appear. Missing GEM bindings skip GEM-dependent declarations.
+the count rules appear. Missing ELEMENT bindings skip ELEMENT-dependent declarations.
 Unknown, empty, and duplicate element bindings are rejected. If explicit and
-GEM-bound calls resolve to the same table, normal CSS declaration order and
+ELEMENT-bound calls resolve to the same table, normal CSS declaration order and
 specificity determine the final count.
 
 A value of `1` executes the referenced list exactly once. A count distribution

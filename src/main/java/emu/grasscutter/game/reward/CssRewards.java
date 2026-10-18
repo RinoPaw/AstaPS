@@ -51,7 +51,7 @@ public final class CssRewards {
     // conventional CSS property identifiers. Encode declarations only; leave
     // CSS selectors, values and the canonical resource IDs unchanged.
     private static final Pattern RESOURCE_DECLARATION = Pattern.compile(
-            "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|GEM|getBossMaterial|[a-z][a-z0-9_]*(?:\\.[\\p{L}\\p{N}_-]+){2,}(?:\\s*<\\s*(?:GEM|[a-z][a-z0-9_]*|[0-9]+)(?:\\s*,\\s*(?:GEM|[a-z][a-z0-9_]*|[0-9]+))*\\s*>)?)\\s*:");
+            "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT|getBossMaterial|[a-z][a-z0-9_]*(?:\\.[\\p{L}\\p{N}_-]+){2,}(?:\\s*<\\s*(?:ELEMENT|[a-z][a-z0-9_]*|[0-9]+)(?:\\s*,\\s*(?:ELEMENT|[a-z][a-z0-9_]*|[0-9]+))*\\s*>)?)\\s*:");
 
     private record AttributeRange(String name, long min, Long max) {
         boolean matches(Map<String, String> attributes) {
@@ -83,7 +83,7 @@ public final class CssRewards {
             List<AttributeOptions> attributeOptions,
             Map<Integer, Integer> items, List<LootDeclaration> loot,
             Map<Integer, LootCount.Spec> rangedItems,
-            List<Integer> bossMaterials, LootCount.Spec bossMaterialCount, List<String> gems,
+            List<Integer> bossMaterials, LootCount.Spec bossMaterialCount, List<String> elements,
             int specificity, int order) {}
 
     private final List<Rule> rules;
@@ -133,7 +133,7 @@ public final class CssRewards {
             var lootDeclarations = new ArrayList<LootDeclaration>();
             List<Integer> bossMaterials = null;
             LootCount.Spec bossMaterialCount = null;
-            List<String> gems = null;
+            List<String> elements = null;
             for (var declaration : style.getAllDeclarations()) {
                 String property = declaration.getProperty();
                 String value = declaration.getExpressionAsCSSString().trim();
@@ -147,8 +147,8 @@ public final class CssRewards {
                     bossMaterials = parseMaterialBinding(value, items);
                     continue;
                 }
-                if ("GEM".equals(original)) {
-                    gems = parseGemBinding(value);
+                if ("ELEMENT".equals(original)) {
+                    elements = parseElementBinding(value);
                     continue;
                 }
                 if ("getBossMaterial".equals(original)) {
@@ -163,7 +163,7 @@ public final class CssRewards {
                 }
                 if ("loot".equals(resource.segment(1))) {
                     String compact = original.replaceAll("\\s+", "");
-                    String name = compact.endsWith("<GEM>") ? compact : loot.resolveName(original);
+                    String name = compact.endsWith("<ELEMENT>") ? compact : loot.resolveName(original);
                     if (value.matches("[0-9]+")) {
                         lootDeclarations.add(new LootDeclaration(name, Integer.parseInt(value), null));
                     } else {
@@ -232,7 +232,7 @@ public final class CssRewards {
                 rules.add(new Rule(Selector.evaluatorOf(normalizedSelector),
                         List.copyOf(attributeRanges), List.copyOf(options), Map.copyOf(fixed),
                         List.copyOf(lootDeclarations), Map.copyOf(ranged),
-                        bossMaterials, bossMaterialCount, gems,
+                        bossMaterials, bossMaterialCount, elements,
                         specificity, order++));
             }
         }
@@ -244,7 +244,7 @@ public final class CssRewards {
     /** Preserve resource and element bindings across CSS tokenization. */
     private static String quoteBindings(String source) {
         var matcher = Pattern.compile(
-                "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|GEM)\\s*:\\s*([^;{}]+)").matcher(source);
+                "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT)\\s*:\\s*([^;{}]+)").matcher(source);
         var buffer = new StringBuffer();
         while (matcher.find()) {
             String value = matcher.group(4).trim();
@@ -285,29 +285,29 @@ public final class CssRewards {
         return List.copyOf(ids);
     }
 
-    private static List<String> parseGemBinding(String value) {
+    private static List<String> parseElementBinding(String value) {
         String names = value.replaceAll("\\s+", "");
         if (names.startsWith("[")) {
-            if (!names.endsWith("]")) throw new IllegalArgumentException("Invalid GEM list: " + value);
+            if (!names.endsWith("]")) throw new IllegalArgumentException("Invalid ELEMENT list: " + value);
             names = names.substring(1, names.length() - 1);
         } else if (names.contains(",") || names.contains("]")) {
-            throw new IllegalArgumentException("GEM lists require brackets: " + value);
+            throw new IllegalArgumentException("ELEMENT lists require brackets: " + value);
         }
-        var gems = new ArrayList<String>();
+        var elements = new ArrayList<String>();
         for (String name : names.split(",", -1)) {
             if (!List.of("anemo", "geo", "electro", "dendro", "hydro", "pyro", "cryo").contains(name)
-                    || gems.contains(name)) {
-                throw new IllegalArgumentException("Unknown or duplicate GEM element: " + name);
+                    || elements.contains(name)) {
+                throw new IllegalArgumentException("Unknown or duplicate ELEMENT binding: " + name);
             }
-            gems.add(name);
+            elements.add(name);
         }
-        return List.copyOf(gems);
+        return List.copyOf(elements);
     }
 
-    private String resolveLootName(String name, List<String> gems) {
-        if (!name.endsWith("<GEM>")) return name;
-        if (gems == null) return null;
-        return loot.resolveName(name.substring(0, name.length() - 5) + "<" + String.join(",", gems) + ">");
+    private String resolveLootName(String name, List<String> elements) {
+        if (!name.endsWith("<ELEMENT>")) return name;
+        if (elements == null) return null;
+        return loot.resolveName(name.substring(0, name.length() - "<ELEMENT>".length()) + "<" + String.join(",", elements) + ">");
     }
 
     public Selection resolve(String type, Map<String, String> attributes) {
@@ -315,7 +315,7 @@ public final class CssRewards {
         attributes.forEach(element::attr);
         var matched = new ArrayList<Rule>();
         List<Integer> bossMaterials = null;
-        List<String> gems = null;
+        List<String> elements = null;
         // Resolve bindings independently of the count rules' position/specificity.
         for (var rule : rules) {
             if (rule.selector.matches(element.root(), element)
@@ -323,7 +323,7 @@ public final class CssRewards {
                     && rule.attributeOptions.stream().allMatch(option -> option.matches(attributes))) {
                 matched.add(rule);
                 if (rule.bossMaterials != null) bossMaterials = rule.bossMaterials;
-                if (rule.gems != null) gems = rule.gems;
+                if (rule.elements != null) elements = rule.elements;
             }
         }
         var fixed = new HashMap<Integer, Integer>();
@@ -336,7 +336,7 @@ public final class CssRewards {
             fixed.putAll(rule.items);
             ranged.putAll(rule.rangedItems);
             for (var declaration : rule.loot) {
-                String name = resolveLootName(declaration.name, gems);
+                String name = resolveLootName(declaration.name, elements);
                 if (name == null) continue;
                 if (declaration.fixed != null) {
                     rangedLoot.remove(name);

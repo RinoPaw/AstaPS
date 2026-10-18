@@ -86,9 +86,11 @@ public final class CssRewards {
             int specificity, int order) {}
 
     private final List<Rule> rules;
+    private final YamlLootTables loot;
 
-    private CssRewards(List<Rule> rules) {
+    private CssRewards(List<Rule> rules, YamlLootTables loot) {
         this.rules = List.copyOf(rules);
+        this.loot = loot;
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
@@ -227,7 +229,7 @@ public final class CssRewards {
         }
 
         rules.sort(Comparator.comparingInt(Rule::specificity).thenComparingInt(Rule::order));
-        return new CssRewards(rules);
+        return new CssRewards(rules, loot);
     }
 
     /** Quote dotted resource lists before passing them through the CSS value parser. */
@@ -309,6 +311,10 @@ public final class CssRewards {
                 }
             }
         }
-        return new Selection(fixed, selectedLoot, ranged, rangedLoot);
+        var resolvedLoot = new HashMap<String, Integer>();
+        selectedLoot.forEach((name, count) -> resolvedLoot.put(loot.resolveName(name, attributes), count));
+        var resolvedRangedLoot = new HashMap<String, LootCount.Spec>();
+        rangedLoot.forEach((name, count) -> resolvedRangedLoot.put(loot.resolveName(name, attributes), count));
+        return new Selection(fixed, resolvedLoot, ranged, resolvedRangedLoot);
     }
 }

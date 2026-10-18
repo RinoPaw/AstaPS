@@ -200,9 +200,12 @@ public final class YamlLootTables {
 
     private final String namespace;
     private final Map<String, Pool> pools;
-    private YamlLootTables(String namespace, Map<String, Pool> pools) {
+    private final Map<String, List<LevelledLootTemplates.Variant>> levelBindings;
+    private YamlLootTables(String namespace, Map<String, Pool> pools,
+            Map<String, List<LevelledLootTemplates.Variant>> levelBindings) {
         this.namespace = namespace;
         this.pools = java.util.Collections.unmodifiableMap(new LinkedHashMap<>(pools));
+        this.levelBindings = java.util.Collections.unmodifiableMap(new LinkedHashMap<>(levelBindings));
     }
 
     /** Short keys in loot.yaml are registered under astaps.loot by default. */
@@ -234,7 +237,8 @@ public final class YamlLootTables {
         }
         // Expand parameterized templates before compiling ordinary loot pools.
         // Template references become nested lists, retaining independent rolls.
-        raw = LootTemplates.expand(raw, namespace);
+        var levelled = LevelledLootTemplates.expand(raw, namespace);
+        raw = LootTemplates.expand(levelled.tables(), namespace);
         if (raw.size() > MAX_TABLES) throw new IllegalArgumentException("Too many loot tables");
         var budget = new CompileBudget();
         var parsed = new LinkedHashMap<String, Pool>();
@@ -247,7 +251,7 @@ public final class YamlLootTables {
             String id = ResourceId.parse(namespace + ".loot." + name).toString();
             parsed.put(id, parseList(e.getValue(), resolver, artifacts, compiled, visiting, budget, name, 0));
         }
-        return new YamlLootTables(namespace, parsed);
+        return new YamlLootTables(namespace, parsed, levelled.bindings());
     }
 
     private static Pool parseList(Object raw, ItemResolver resolver, ArtifactResolver artifacts,
@@ -363,6 +367,7 @@ public final class YamlLootTables {
     /** Returns an immutable item-ID-to-count map. Each invocation rolls afresh. */
     public Map<Integer, Integer> roll(String name, RandomGenerator random) {
         Pool root = pools.get(resolveName(name));
+        if (root == null) throw new IllegalArgumentException("Resolve the loot table level before rolling: " + name);
         if (random == null) throw new IllegalArgumentException("Missing random generator");
         var reward = new TreeMap<Integer, Integer>();
         int[] remaining = {100_000};
@@ -416,7 +421,7 @@ public final class YamlLootTables {
     }
 
     public boolean contains(String id) {
-        return pools.containsKey(id);
+        return pools.containsKey(id) || levelBindings.containsKey(id);
     }
 
     /** Local names resolve within the loader's namespace; qualified IDs stay unchanged. */
@@ -428,6 +433,23 @@ public final class YamlLootTables {
             throw new IllegalArgumentException("Unknown loot table: " + reference);
         }
         return id.toString();
+    }
+
+    /** Resolve a bound template using the same native level matched by reward CSS. */
+    public String resolveName(String reference, Map<String, String> attributes) {
+        String name = resolveName(reference);
+        var variants = levelBindings.get(name);
+        if (variants == null) return name;
+        int level;
+        try {
+            level = Integer.parseInt(attributes.get("level"));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Loot template requires an integer level: " + name, e);
+        }
+        for (var variant : variants) {
+            if (level >= variant.min() && level <= variant.max()) return variant.table();
+        }
+        throw new IllegalArgumentException("No loot template range for " + name + " at level " + level);
     }
 
     /**
@@ -446,5 +468,12 @@ public final class YamlLootTables {
                 .toList();
     }
 
-    public List<String> names() { return List.copyOf(pools.keySet()); }
+    public List<String> names() {
+        var generated = new java.util.HashSet<String>();
+        levelBindings.values().forEach(variants -> variants.forEach(v -> generated.add(v.table())));
+        var names = new ArrayList<String>();
+        pools.keySet().stream().filter(name -> !generated.contains(name)).forEach(names::add);
+        names.addAll(levelBindings.keySet());
+        return List.copyOf(names);
+    }
 }

@@ -3,21 +3,18 @@
 ## World Boss migration status
 
 All 48 native sourceType=34 world Boss identities have explicit CSS gem and
-exclusive-material rules through native level 104. Levels 1–29 retain their
-previous early brackets. Levels 30–99 use one shared gem-main count curve,
-with a separate Lv.40+ fragment count, and two material curves. At level
-100–104 the 23 modern Bosses use the native 3.25 material profile, 23 older
-Bosses remain at 2.5556, and Pyro Regisvine/Oceanid remain at 2.81116.
-Icewind Suite rolls its two materials independently. Eight Bosses award
-multiple fixed 9-count gems; their identities are preserved. The other
-40 Bosses use independent weighted gem-grade pools extracted from native
-sourceType=34 child nodes. Each weighted choice uses the source weights;
-there is no inferred missing-weight "empty" outcome.
+exclusive-material rules for early game (native level 1-29) and mid game
+(level 30-99). Late-game (level 100+) profiles are deferred and use the native
+fallback. Mid-game older and modern Bosses share one material curve;
+Pyro Regisvine and Oceanid retain their higher-yield material curve.
+Icewind Suite rolls its two material identities independently. Fixed 9-count
+per-item gems and the fixed fragment bonus live directly in CSS.
 
-World Boss artifacts are not yet migrated to CSS. The configuration is
-currently bundled in `loot.yaml`, `curves.yaml`, and `rewards.css`, with native
-fallback retained for Lv.105 and above. Full gameplay validation, including
-artifact reward composition, is required before upstream submission.
+`curves.yaml` now contains eight level-dependent definitions. The two unused
+world artifact curves and both constant-only curves have been removed.
+World Boss artifacts are still not configured in CSS. A configured world
+Boss payout replaces the native payout; it does not append native artifacts.
+Artifact reward composition still needs completion before upstream submission.
 
 ## Historical prototype notes (before the world Boss cleanup)
 
@@ -82,11 +79,9 @@ it is rolled. For Maguu Kenki at native level 50–54:
 
 ```css
 boss[type="world"][tag="maguu_kenki"][level="50~54"] {
-    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
-    astaps.loot.gems_anemo_cryo_fragment: "1+1:12.2";
-    astaps.loot.world_gems_cryo_anemo_rarity_2to3_copies3: "${world_gems_roll_count(level)}";
-    astaps.loot.artifacts_berserker_instructor_lucky_dog_3star_1_2substats: "${world_artifacts_pool_1_roll_count(level)}";
-    astaps.loot.artifacts_berserker_instructor_4star: "${world_artifacts_pool_2_roll_count(level)}";
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_mid_count(level)}";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_fragment_40: "1+1:12.2";
+    astaps.loot.gems_world_mid_anemo_cryo_3x_main_50: "${world_gems_mid_roll_count(level)}";
 }
 ```
 
@@ -271,105 +266,44 @@ because the available artifact sets differ by rarity.
 
 ## Exact level lookup curves
 
-Reward counts that follow an irregular discrete curve belong in
-`src/main/resources/rewards/curves.yaml`. The keys are exact levels or
-inclusive level ranges. The value is an ordinary quoted loot-count expression.
-Ranges may end in `~` to cover all higher levels. The shared
-`world_ascension_material_count` curve uses curated integer percentages at
-levels 30+ and retains the original values for levels 1–29. The
-`weekly_gems_roll_count` curve uses curated integers from level 70 onward. Other shared curves
-retain source-accurate decimal odds. Lookup never interpolates.
+`curves.yaml` stores exact, discrete level-dependent counts. Early game is
+native Boss level 1-29; mid game is 30-99. World Boss selectors stop at 99,
+and level 100+ retains the native fallback. No late-game curve or guessed
+extension is included. Within each stage, preserve every native level bracket
+and probability; the stage names do not flatten the drop rates.
 
-Curve keys follow `<scope>_<reward>[_pool_n]_<measure>`. The final
-`_count` suffix means the value is a complete `LootCount` expression.
-Direct item quantities use `_count` (for example,
-`world_ascension_material_count`); independent draws from weighted loot
-pools use `_roll_count` (for example, `weekly_gems_roll_count`). The
-numbered world artifact pools retain separate roll counts because each
-pool is evaluated independently. Numbering does not indicate rarity.
+| Stage | Curve | Meaning |
+|---|---|---|
+| Early | `world_gems_early_item_count` | Direct gem quantity |
+| Early | `world_gems_early_roll_count` | Independent weighted gem-pool executions |
+| Early | `world_gems_early_triple_item_count` | Setekh Wenut's larger direct quantity |
+| Early | `world_ascension_material_early_count` | Per-material quantity |
+| Mid | `world_gems_mid_roll_count` | Main gem-pool executions |
+| Mid | `world_ascension_material_mid_count` | Standard materials, older and modern Bosses |
+| Mid | `world_ascension_material_mid_high_yield_count` | Pyro Regisvine and Oceanid materials |
+| Mid | `weekly_gems_mid_roll_count` | Existing shared weekly gem coverage, level 40-89 |
 
-```yaml
-world_ascension_material_count:
-  "1~4": "1+1:33.86"
-  "25~29": "1+1:88.01"
-  "30~34": "1+1:52"
-  "50~54": "1+1:86"
-  "60~64": "2+1:3"
-  "90~": "2+1:55"
-```
+The early gem profiles share probabilities, but distinguish direct copies
+from independent weighted draws. They remain explicit count definitions;
+no multiplication or additional expression syntax is introduced.
+Constant quantities do not need curves: fixed gem items use `9`, and the
+independent level-40+ fragment pool count uses `"1+1:12.2"` in CSS.
+The two unreferenced world artifact curves are removed until that migration.
+The standard and modern material profiles are identical through 99 and are
+merged. Equal 90-92 and 93-99 rows are combined into 90-99.
 
-The full shared curve has nineteen intervals, from level 1 to 90+, with
-curated integer odds for levels 30+. A CSS property selects its value by
-the native Boss level:
+For example, the native-level material declaration is:
 
 ```css
-boss[type="world"][tag="maguu_kenki"][level="50~54"] {
-    genshin.avatar_ascension.marionette_core: "${world_ascension_material_count(level)}";
+boss[type="world"][tag="maguu_kenki"][level="30~99"] {
+    genshin.avatar_ascension.marionette_core: "${world_ascension_material_mid_count(level)}";
 }
 ```
 
-The `${name(level)}` expression is evaluated when CSS selects the reward,
-before the existing count parser rolls it. Both inventory-item declarations and
-named loot-pool declarations support this lookup. Unknown curve names, invalid
-range definitions, overlaps, and invalid count expressions fail while loading.
-If no interval contains the requested level, lookup fails explicitly.
-These lookups are separate from the integer substitution performed by
-parameterized loot lists in `loot.yaml`; no scripting language is involved.
-
-The same lookup controls the complete level 40–89 weekly Boss gem-roll
-curve, combining the former early and 4+1 stages:
-
-```yaml
-weekly_gems_roll_count:
-  "40~44": "2+1:71.29"
-  "45~49": "2+1:92.71"
-  "50~54": "3+1:14.16"
-  "55~59": "3+1:35.58"
-  "60~64": "3+1:75.78"
-  "65~69": "3+1:98.37"
-  "70~74": "4+1:21"
-  "75~79": "4+1:45"
-  "80~84": "4+1:69"
-  "85~89": "4+1:91"
-```
-
-For Andrius at level 75–79:
-
-```css
-boss[type="weekly"][tag="andrius"][level="75~79"] {
-    astaps.loot.talent_materials_tail_of_boreas_ring_of_boreas_spirit_locket_of_boreas: "1+1:27.5";
-    astaps.loot.gems_anemo_geo_pyro_fragment: "1+1:2";
-    astaps.loot.weekly_gems_anemo_geo_pyro_fragment_rarity_2to5_first_anemo: "${weekly_gems_roll_count(level)}";
-}
-```
-
-The first loot declaration independently rerolls a three-star fragment pool.
-The second declaration independently rerolls a weighted element/rarity pool
-four times, with a fifth roll at the exact probability returned by the curve.
-The weighted pool contains no Boss level or bonus count. Twenty-seven redundant
-4+1 tables were replaced by fourteen shared weighted pools. The twelve
-4+1 tables whose first reward uses an inline elemental-family selector remain
-unchanged: they cannot be lifted into a CSS item declaration without losing
-their element selection properties.
-
-The remaining shared curves cover world Boss gems and artifact counts:
-
-- `world_gems_roll_count`: level 40+ weighted gem-roll counts.
-- `world_artifacts_pool_1_roll_count` and `world_artifacts_pool_2_roll_count`: independent
-  counts for the first and second artifact pools. Their suffixes identify
-  execution order, **not** artifact rarity; some Bosses use five-star pools.
-The shared `world_ascension_material_count` curve also covers Maguu Kenki,
-replacing the duplicate `marionette_core` definition. Its level-30+ odds
-follow the user-specified integer values; earlier source values remain as-is.
-The optional 100+ `3+1:25` alternative remains a separate fixed CSS value.
-
-Together these changes replace 178 repeated world/weekly loot tables with 21
-weighted choice pools, migrate 523 Boss CSS loot references to independent
-curved selections, and apply the single shared material curve to 743 item declarations.
-Each independent pool receives its own `count` evaluation. Tables containing
-single-family inner rarity rolls or inline elemental selectors remain in YAML
-until an exact equivalent can be expressed without changing copy-versus-roll
-semantics.
+`${name(level)}` selects a quoted `LootCount` expression before rolling.
+Both direct item quantities and independent pool counts support this lookup.
+Lookup never interpolates. Unknown curves, invalid ranges, overlaps, and
+invalid count expressions fail while loading; uncovered levels fail explicitly.
 
 ## YAML semantics
 
@@ -566,8 +500,8 @@ Former `genshin.currency.anemo_sigil`-style names are not aliases.
 World Boss-exclusive ascension materials are grouped by native `sourceType = 34`
 counts: a shared Lv.1–29 early profile on newer Boss families, the
 shared Lv.30–99 profile, and a distinct higher-yield Lv.30–99 profile for
-Pyro Regisvine and Oceanid. The Lv.100–104 exception is stored in
-`curves.yaml` (`2+1:55.56`, `2+1:81.116`, or `3+1:25`).
+Pyro Regisvine and Oceanid. Older and modern Bosses share the same
+mid-game curve. Level 100+ is deferred to the native fallback.
 Icewind Suite's two independently granted material identities now use CSS
 as well. Material quantities retain the fractional precision of native
 `DropTableExcelConfigData.json`; the old single approximated curve is gone.

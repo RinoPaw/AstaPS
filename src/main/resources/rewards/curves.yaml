@@ -1,44 +1,13 @@
-weekly_gems_roll_count:
-  "40~44": "2+1:71.29"
-  "45~49": "2+1:92.71"
-  "50~54": "3+1:14.16"
-  "55~59": "3+1:35.58"
-  "60~64": "3+1:75.78"
-  "65~69": "3+1:98.37"
-  "70~74": "4+1:21"
-  "75~79": "4+1:45"
-  "80~84": "4+1:69"
-  "85~89": "4+1:91"
+# Early game: native Boss level 1-29. Mid game: level 30-99.
+# Late-game (100+) profiles are deferred; no extrapolation.
+# Source: ChestDrop.json -> DropTableExcelConfigData.json.
+# Constants belong in rewards.css, not in level curves.
 
-world_gems_roll_count:
-  "30~34": "2+1:19.219"
-  "35~39": "2+1:31.627"
-  "40~44": "1+1:43.847"
-  "45~49": "1+1:59.555"
-  "50~54": "1+1:75.263"
-  "55~59": "1+1:91.004"
-  "60~64": "2+1:17.602"
-  "65~69": "2+1:34.135"
-  "70~74": "2+1:50.668"
-  "75~79": "2+1:68.554"
-  "80~84": "2+1:85.219"
-  "85~89": "3+1:1.851"
-  "90~104": "3+1:18.45"
+# Early game: gem item quantities and independent pool rolls stay distinct.
+# The three profiles share probabilities but award 3, 1 pool roll, or 9 per unit.
+# Keep the native copy-versus-roll semantics without adding expression syntax.
 
-# Early world-Boss gem profiles: ChestDrop.json (sourceType=34), Lv.1-29.
-# 48 native Boss identities x 6 level brackets = 288 source roots.
-# 15 Bosses have no gem entries; do not award an artificial zero-count item.
-# 15 single-element Bosses use the direct item-count curve below.
-# 9 dual-element Bosses use the same source curve as independent pool rolls:
-# each weighted choice awards 3 gems of the selected element.
-# Setekh Wenut has 3x the standard per-item quantity (9 gems per roll).
-# 2 / 5 / 1 Bosses grant fixed totals of 18 / 36 / 54 gems, respectively;
-# the native roots contain 2 / 4 / 6 distinct gem items, each with count 9.
-# The fixed-total groups must retain their separate item identities in CSS;
-# NEVER apply the aggregate totals as a count for one item or one pool.
-# Values preserve native countRange (1.47246, 1.57179, 1.69587,
-# 1.81995, 1.94403, 2.06811), expressed as integer bonus rolls.
-world_gems_early_standard_item_count:
+world_gems_early_item_count:
   "1~4": "3+3:47.246"
   "5~9": "3+3:57.179"
   "10~14": "3+3:69.587"
@@ -46,7 +15,7 @@ world_gems_early_standard_item_count:
   "20~24": "3+3:94.403"
   "25~29": "6+3:6.811"
 
-world_gems_early_standard_pool_roll_count:
+world_gems_early_roll_count:
   "1~4": "1+1:47.246"
   "5~9": "1+1:57.179"
   "10~14": "1+1:69.587"
@@ -62,32 +31,9 @@ world_gems_early_triple_item_count:
   "20~24": "9+9:94.403"
   "25~29": "18+9:6.811"
 
-# Shared per-item count for the three fixed-total gem profiles (18/36/54).
-world_gems_early_fixed_item_count:
-  "1~29": "9"
+# Early exclusive materials: evaluate independently for each material.
+# Missing native material entries stay absent; Icewind Suite has two identities.
 
-world_artifacts_pool_1_roll_count:
-  "25~34": "2+1:94"
-  "35~44": "1+1:42.8"
-  "45~59": "3+1:78"
-  "60~69": "3+1:36"
-  "70~79": "2+1:94"
-  "80~89": "2+1:52"
-  "90~": "2+1:10"
-
-world_artifacts_pool_2_roll_count:
-  "25~34": "1+1:26"
-  "35~44": "2+1:77.2"
-  "45~59": "1:42"
-  "60~69": "1:84"
-  "70~79": "1+1:5"
-  "80~89": "1+1:26"
-  "90~": "1+1:47"
-
-# Source: ChestDrop.json sourceType=34 -> DropTableExcelConfigData.json.
-# Before Lv.30, 25 Bosses have no exclusive-material entry, 22 Bosses
-# grant one exclusive material, and Icewind Suite grants two distinct materials.
-# The latter must roll this curve once per material, not multiply one item.
 world_ascension_material_early_count:
   "1~4": "1+1:33.86"
   "5~9": "1+1:42.89"
@@ -96,8 +42,26 @@ world_ascension_material_early_count:
   "20~24": "1+1:76.73"
   "25~29": "1+1:88.01"
 
-# Two independent material profiles at Lv.30-99.
-world_ascension_material_standard_count:
+# Mid game: main gem pool rolls. The Lv.40+ fragment bonus is a CSS constant.
+
+world_gems_mid_roll_count:
+  "30~34": "2+1:19.219"
+  "35~39": "2+1:31.627"
+  "40~44": "1+1:43.847"
+  "45~49": "1+1:59.555"
+  "50~54": "1+1:75.263"
+  "55~59": "1+1:91.004"
+  "60~64": "2+1:17.602"
+  "65~69": "2+1:34.135"
+  "70~74": "2+1:50.668"
+  "75~79": "2+1:68.554"
+  "80~84": "2+1:85.219"
+  "85~89": "3+1:1.851"
+  "90~99": "3+1:18.45"
+
+# Mid game: one standard material curve for both older and modern Bosses.
+
+world_ascension_material_mid_count:
   "30~34": "1+1:52.18"
   "35~39": "1+1:60.8"
   "40~44": "1+1:69.41"
@@ -110,11 +74,11 @@ world_ascension_material_standard_count:
   "75~79": "2+1:29.71"
   "80~84": "2+1:38.33"
   "85~89": "2+1:46.94"
-  "90~92": "2+1:55.56"
-  "93~99": "2+1:55.56"
-  "100~104": "2+1:55.56"
+  "90~99": "2+1:55.56"
 
-world_ascension_material_high_yield_count:
+# Pyro Regisvine and Oceanid retain their distinct native material odds.
+
+world_ascension_material_mid_high_yield_count:
   "30~34": "1+1:67.398"
   "35~39": "1+1:76.88"
   "40~44": "1+1:86.351"
@@ -127,28 +91,18 @@ world_ascension_material_high_yield_count:
   "75~79": "2+1:52.681"
   "80~84": "2+1:62.163"
   "85~89": "2+1:71.634"
-  "90~92": "2+1:81.116"
-  "93~99": "2+1:81.116"
-  "100~104": "2+1:81.116"
+  "90~99": "2+1:81.116"
 
-# Shared 40+ independent fragment bonus (native expected count 1.122).
-world_gems_fragment_extra_count:
-  "40~104": "1+1:12.2"
+# Weekly gem pool rolls: only the existing Lv.40-89 source coverage is shared.
 
-# 23 newer Bosses use standard material odds until Lv.99, then 3.25 at Lv.100.
-world_ascension_material_modern_count:
-  "30~34": "1+1:52.18"
-  "35~39": "1+1:60.8"
-  "40~44": "1+1:69.41"
-  "45~49": "1+1:78.03"
-  "50~54": "1+1:86.64"
-  "55~59": "1+1:95.26"
-  "60~64": "2+1:3.87"
-  "65~69": "2+1:12.48"
-  "70~74": "2+1:21.1"
-  "75~79": "2+1:29.71"
-  "80~84": "2+1:38.33"
-  "85~89": "2+1:46.94"
-  "90~92": "2+1:55.56"
-  "93~99": "2+1:55.56"
-  "100~104": "3+1:25"
+weekly_gems_mid_roll_count:
+  "40~44": "2+1:71.29"
+  "45~49": "2+1:92.71"
+  "50~54": "3+1:14.16"
+  "55~59": "3+1:35.58"
+  "60~64": "3+1:75.78"
+  "65~69": "3+1:98.37"
+  "70~74": "4+1:21"
+  "75~79": "4+1:45"
+  "80~84": "4+1:69"
+  "85~89": "4+1:91"

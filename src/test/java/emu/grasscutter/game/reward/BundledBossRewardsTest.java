@@ -120,9 +120,9 @@ final class BundledBossRewardsTest {
                 loot, curves);
         var config = new RewardConfiguration(loot, css);
         var bosses = stylesheet.lines()
-                .filter(line -> line.startsWith("boss[type=\\"world\\"][tag=\\""))
+                .filter(line -> line.startsWith("boss[type=\"world\"][tag=\""))
                 .map(line -> line.substring(
-                        line.indexOf("[tag=\\"") + 6, line.indexOf("\\"][level=\\"")))
+                        line.indexOf("[tag=\"") + 6, line.indexOf("\"][level=\"")))
                 .toList();
         assertEquals(48, new java.util.HashSet<>(bosses).size());
         for (var boss : bosses) {

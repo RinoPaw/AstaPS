@@ -391,10 +391,10 @@ world_1-plus_gem_6<element>:
   - {reward: "genshin.avatar_ascension.${element}.sliver", count: 9}
 
 # Group 7
-world_1-plus_gem_7:
-  - {reward: "genshin.avatar_ascension.pyro.fragment", count: 9}
-  - {reward: "genshin.avatar_ascension.pyro.sliver", count: 9}
-  - {reward: "genshin.avatar_ascension.electro.fragment", count: 9}
-  - {reward: "genshin.avatar_ascension.electro.sliver", count: 9}
-  - {reward: "genshin.avatar_ascension.anemo.fragment", count: 9}
-  - {reward: "genshin.avatar_ascension.anemo.sliver", count: 9}
+world_1-plus_gem_7<element1, element2, element3>:
+  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 9}
+  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 9}
+  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 9}
+  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 9}
+  - {reward: "genshin.avatar_ascension.${element3}.fragment", count: 9}
+  - {reward: "genshin.avatar_ascension.${element3}.sliver", count: 9}

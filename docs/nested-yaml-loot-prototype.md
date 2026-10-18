@@ -81,19 +81,37 @@ world_50-54_gem_2<element1, element2>:
   - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1118}
 ```
 
-CSS invokes a definition directly:
+CSS binds each Boss's elements beside its material identity, then invokes
+shared definitions with `<GEM>`:
 
 ```css
-boss[type="world"][tag="electro_hypostasis"][level="50~54"] {
-    astaps.loot.world_50-54_gem_1<electro>: "1:24737, 2:75263";
-    astaps.loot.world_40-plus_gem_fragment_1<electro>: "1:439, 2:61";
+boss[type="world"][tag="maguu_kenki"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.marionette_core;
+    GEM: [anemo, cryo];
 }
 
-boss[type="world"][tag="maguu_kenki"][level="50~54"] {
-    astaps.loot.world_50-54_gem_2<anemo, cryo>: "1:24737, 2:75263";
-    astaps.loot.world_40-plus_gem_fragment_2<anemo, cryo>: "1:439, 2:61";
+boss[type="world"][tag="aeonblight_drake"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.perpetual_caliber;
+    GEM: [hydro, cryo];
+}
+
+boss[type="world"][tag="aeonblight_drake,maguu_kenki"][level="50~54"] {
+    astaps.loot.world_50-54_gem_2<GEM>: "1:24737, 2:75263";
+    astaps.loot.world_40-plus_gem_fragment_2<GEM>: "1:439, 2:61";
 }
 ```
+
+`GEM: electro` binds one argument; `GEM: [anemo, cryo]` binds two ordered
+arguments. `<GEM>` becomes `<electro>` or `<anemo, cryo>` before resolving
+an ordinary loot definition. The binding itself grants nothing and performs
+no random choice. The YAML body retains all item selection and count semantics.
+Explicit calls such as `<electro>` and `<anemo, cryo>` continue to work.
+
+Bindings follow selector specificity and source order, independently of where
+the count rules appear. Missing GEM bindings skip GEM-dependent declarations.
+Unknown, empty, and duplicate element bindings are rejected. If explicit and
+GEM-bound calls resolve to the same table, normal CSS declaration order and
+specificity determine the final count.
 
 A value of `1` executes the referenced list exactly once. A count distribution
 controls independent executions, with each execution choosing a new item.
@@ -126,10 +144,13 @@ a batch of 3 and a batch of 9 stay in separate groups.
 | 6 | 2 | 2 |
 | 7 | 1 | 1 |
 
+The 48 Boss identity rules each bind both materials and elements. The gem
+selection rules share 77 declarations instead of 439 repeated rules.
+
 The other 15 Bosses have no gem entry at levels 1-29. Different level ranges
 have separate definitions when their candidate weights change. Independent
-fragment lists use the same parameter syntax. Group 7 is a concrete list for
-Tenebrous Papilla, with no generic parameters.
+fragment lists use the same parameter syntax. Group 7 binds the three
+elements of Tenebrous Papilla using the same argument mechanism.
 
 The source is `data/ChestDrop.json` followed by
 `data/Server/DropTableExcelConfigData.json`: 48 identities and 1200 native

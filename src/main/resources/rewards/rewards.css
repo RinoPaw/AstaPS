@@ -1,7 +1,7 @@
 /* World Boss material and gem working configuration.
  * Artifact and weekly-Boss reward configuration remains absent.
  * World Boss currencies/EXP and non-artifact chest contents are retained.
- * BOSS_MATERIAL binds identities; getBossMaterial declares shared count rolls.
+ * BOSS_MATERIAL and GEM bind identities; shared rules declare count rolls.
  */
 
 /* Every ordinary world chest grants 30 Adventure EXP in Luna I and later. */
@@ -253,69 +253,129 @@ blossom[type="revelation"][world_level="6~9"] {
     genshin.experience.companionship: 20;
 }
 
-/* World Boss materials: identities, shared rewards, then level-based counts. */
+/* World Boss identities, shared rewards, then level-based counts. */
 
-/* Material identities: 48 native Boss identities, 45 bindings in tag order. */
+/* Boss identities: 48 native identities, with material and gem bindings in tag order. */
 
 /* 兆载永劫龙兽 */
-boss[type="world"][tag="aeonblight_drake"] { BOSS_MATERIAL: genshin.avatar_ascension.perpetual_caliber; }
+boss[type="world"][tag="aeonblight_drake"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.perpetual_caliber;
+    GEM: [hydro, cryo];
+}
 
 /* 半永恒统辖矩阵 */
-boss[type="world"][tag="algorithm_semi_intransient_matrix"] { BOSS_MATERIAL: genshin.avatar_ascension.light_guiding_tetrahedron; }
+boss[type="world"][tag="algorithm_semi_intransient_matrix"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.light_guiding_tetrahedron;
+    GEM: [pyro, anemo];
+}
 
 /* 无相之风 */
-boss[type="world"][tag="anemo_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.hurricane_seed; }
+boss[type="world"][tag="anemo_hypostasis"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.hurricane_seed;
+    GEM: anemo;
+}
 
 /* 深海龙蜥组合 */
-boss[type="world"][tag="bathysmal_vishap_herd"] { BOSS_MATERIAL: genshin.avatar_ascension.dragonheirs_false_fin; }
+boss[type="world"][tag="bathysmal_vishap_herd"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.dragonheirs_false_fin;
+    GEM: [electro, cryo];
+}
 
 /* 嵌合翼骏狮 */
-boss[type="world"][tag="chimera_sky_roamer"] { BOSS_MATERIAL: genshin.avatar_ascension.severed_tail_of_the_sky_roamer; }
+boss[type="world"][tag="chimera_sky_roamer"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.severed_tail_of_the_sky_roamer;
+    GEM: [hydro, anemo];
+}
 
 /* 无相之冰 */
-boss[type="world"][tag="cryo_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.crystalline_bloom; }
+boss[type="world"][tag="cryo_hypostasis"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.crystalline_bloom;
+    GEM: cryo;
+}
 
 /* 急冻树 */
-boss[type="world"][tag="cryo_regisvine"] { BOSS_MATERIAL: genshin.avatar_ascension.hoarfrost_core; }
+boss[type="world"][tag="cryo_regisvine"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.hoarfrost_core;
+    GEM: cryo;
+}
 
 /* 无相之草 */
-boss[type="world"][tag="dendro_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.quelled_creeper; }
+boss[type="world"][tag="dendro_hypostasis"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.quelled_creeper;
+    GEM: dendro;
+}
 
 /* 无相之雷 */
-boss[type="world"][tag="electro_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.lightning_prism; }
+boss[type="world"][tag="electro_hypostasis"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.lightning_prism;
+    GEM: electro;
+}
 
 /* 掣电树 */
-boss[type="world"][tag="electro_regisvine"] { BOSS_MATERIAL: genshin.avatar_ascension.thunderclap_fruitcore; }
+boss[type="world"][tag="electro_regisvine"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.thunderclap_fruitcore;
+    GEM: electro;
+}
 
 /* 铁甲熔火帝皇 */
-boss[type="world"][tag="emperor_of_fire_and_iron"] { BOSS_MATERIAL: genshin.avatar_ascension.emperors_resolution; }
+boss[type="world"][tag="emperor_of_fire_and_iron"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.emperors_resolution;
+    GEM: pyro;
+}
 
 /* 实验性场力发生装置 */
-boss[type="world"][tag="experimental_field_generator"] { BOSS_MATERIAL: genshin.avatar_ascension.tourbillon_device; }
+boss[type="world"][tag="experimental_field_generator"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.tourbillon_device;
+    GEM: geo;
+}
 
 /* 霜夜灵嗣 */
-boss[type="world"][tag="frostnight_scion"] { BOSS_MATERIAL: genshin.avatar_ascension.frostnights_glory; }
+boss[type="world"][tag="frostnight_scion"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.frostnights_glory;
+    GEM: [hydro, cryo];
+}
 
 /* 无相之岩 */
-boss[type="world"][tag="geo_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.basalt_pillar; }
+boss[type="world"][tag="geo_hypostasis"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.basalt_pillar;
+    GEM: geo;
+}
 
 /* 贪食匿叶龙山王 */
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"] { BOSS_MATERIAL: genshin.avatar_ascension.overripe_flamegranate; }
+boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.overripe_flamegranate;
+    GEM: dendro;
+}
 
 /* 黄金王兽 */
-boss[type="world"][tag="golden_wolflord"] { BOSS_MATERIAL: genshin.avatar_ascension.riftborn_regalia; }
+boss[type="world"][tag="golden_wolflord"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.riftborn_regalia;
+    GEM: geo;
+}
 
 /* 金焰绒翼龙暴君 */
-boss[type="world"][tag="goldflame_qucusaure_tyrant"] { BOSS_MATERIAL: genshin.avatar_ascension.mark_of_the_binding_blessing; }
+boss[type="world"][tag="goldflame_qucusaure_tyrant"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.mark_of_the_binding_blessing;
+    GEM: pyro;
+}
 
 /* 灵觉隐修的迷者 */
-boss[type="world"][tag="holawaqa_ngoubou"] { BOSS_MATERIAL: genshin.avatar_ascension.talisman_of_the_enigmatic_land; }
+boss[type="world"][tag="holawaqa_ngoubou"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.talisman_of_the_enigmatic_land;
+    GEM: cryo;
+}
 
 /* 无相之水 */
-boss[type="world"][tag="hydro_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.dew_of_repudiation; }
+boss[type="world"][tag="hydro_hypostasis"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.dew_of_repudiation;
+    GEM: hydro;
+}
 
 /* 水形幻人 */
-boss[type="world"][tag="hydro_tulpa"] { BOSS_MATERIAL: genshin.avatar_ascension.water_that_failed_to_transcend; }
+boss[type="world"][tag="hydro_tulpa"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.water_that_failed_to_transcend;
+    GEM: hydro;
+}
 
 /* 冰风组曲 */
 boss[type="world"][tag="icewind_suite"] {
@@ -323,1867 +383,479 @@ boss[type="world"][tag="icewind_suite"] {
         genshin.avatar_ascension.artificed_spare_clockwork_component_coppelia,
         genshin.avatar_ascension.artificed_spare_clockwork_component_coppelius
     ];
+    GEM: [anemo, cryo];
 }
 
 /* 翠翎恐蕈 */
-boss[type="world"][tag="jadeplume_terrorshroom"] { BOSS_MATERIAL: genshin.avatar_ascension.majestic_hooked_beak; }
+boss[type="world"][tag="jadeplume_terrorshroom"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.majestic_hooked_beak;
+    GEM: dendro;
+}
 
 /* 重拳出击鸭 */
-boss[type="world"][tag="knuckle_duck"] { BOSS_MATERIAL: genshin.avatar_ascension.precision_kuuvahki_stamping_die; }
+boss[type="world"][tag="knuckle_duck"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.precision_kuuvahki_stamping_die;
+    GEM: electro;
+}
 
 /* 熔岩辉龙像 */
-boss[type="world"][tag="lava_dragon_statue"] { BOSS_MATERIAL: genshin.avatar_ascension.sparkless_statue_core; }
+boss[type="world"][tag="lava_dragon_statue"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.sparkless_statue_core;
+    GEM: pyro;
+}
 
 /* 魔像督军 */
-boss[type="world"][tag="legatus_golem"] { BOSS_MATERIAL: genshin.avatar_ascension.fragment_of_a_golden_melody; }
+boss[type="world"][tag="legatus_golem"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.fragment_of_a_golden_melody;
+    GEM: [pyro, geo];
+}
 
 /* 蕴光月幻蝶 */
-boss[type="world"][tag="lightbearing_lunar_moth"] { BOSS_MATERIAL: genshin.avatar_ascension.lightbearing_scale_feather; }
+boss[type="world"][tag="lightbearing_lunar_moth"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.lightbearing_scale_feather;
+    GEM: [pyro, dendro];
+}
 
 /* 深邃魹语之主 */
-boss[type="world"][tag="lord_of_the_deep_dreadwing"] { BOSS_MATERIAL: genshin.avatar_ascension.remnant_of_the_dreadwing; }
+boss[type="world"][tag="lord_of_the_deep_dreadwing"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.remnant_of_the_dreadwing;
+    GEM: electro;
+}
 
 /* 魔偶剑鬼 */
-boss[type="world"][tag="maguu_kenki"] { BOSS_MATERIAL: genshin.avatar_ascension.marionette_core; }
+boss[type="world"][tag="maguu_kenki"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.marionette_core;
+    GEM: [anemo, cryo];
+}
 
 /* 千年珍珠骏麟 */
-boss[type="world"][tag="millennial_pearl_seahorse"] { BOSS_MATERIAL: genshin.avatar_ascension.fontemer_unihorn; }
+boss[type="world"][tag="millennial_pearl_seahorse"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.fontemer_unihorn;
+    GEM: electro;
+}
 
 /* 纯水精灵 */
-boss[type="world"][tag="oceanid"] { BOSS_MATERIAL: genshin.avatar_ascension.cleansing_heart; }
+boss[type="world"][tag="oceanid"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.cleansing_heart;
+    GEM: hydro;
+}
 
 /* 恒常机关阵列 */
-boss[type="world"][tag="perpetual_mechanical_array"] { BOSS_MATERIAL: genshin.avatar_ascension.perpetual_heart; }
+boss[type="world"][tag="perpetual_mechanical_array"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.perpetual_heart;
+    GEM: [cryo, geo];
+}
 
 /* 精密发条机关 */
-boss[type="world"][tag="precision_clockwork"] { BOSS_MATERIAL: genshin.avatar_ascension.precision_clockwork_core; }
+boss[type="world"][tag="precision_clockwork"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.precision_clockwork_core;
+    GEM: [pyro, cryo];
+}
 
 /* 原初监视者 */
-boss[type="world"][tag="primal_watcher"] { BOSS_MATERIAL: genshin.avatar_ascension.plume_of_the_fallen_watcher; }
-
-/* 古岩龙蜥冰 / 古岩龙蜥电 / 古岩龙蜥水 / 古岩龙蜥火 */
-boss[type="world"][tag="primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"] { BOSS_MATERIAL: genshin.avatar_ascension.juvenile_jade; }
-
-/* 无相之火 */
-boss[type="world"][tag="pyro_hypostasis"] { BOSS_MATERIAL: genshin.avatar_ascension.smoldering_pearl; }
-
-/* 爆炎树 */
-boss[type="world"][tag="pyro_regisvine"] { BOSS_MATERIAL: genshin.avatar_ascension.everflame_seed; }
-
-/* 蕴光异兽 */
-boss[type="world"][tag="radiant_beast"] { BOSS_MATERIAL: genshin.avatar_ascension.prismatic_severed_tail; }
-
-/* 遗迹巨蛇 */
-boss[type="world"][tag="ruin_serpent"] { BOSS_MATERIAL: genshin.avatar_ascension.runic_fang; }
-
-/* 秘源机兵·构型械 */
-boss[type="world"][tag="secret_source_automaton_configuration_device"] { BOSS_MATERIAL: genshin.avatar_ascension.gold_inscribed_secret_source_core; }
-
-/* 秘源机兵·统御械 */
-boss[type="world"][tag="secret_source_automaton_overseer"] { BOSS_MATERIAL: genshin.avatar_ascension.secret_source_airflow_accumulator; }
-
-/* 风蚀沙虫 */
-boss[type="world"][tag="setekh_wenut"] { BOSS_MATERIAL: genshin.avatar_ascension.pseudo_stamens; }
-
-/* 隐山猊兽 */
-boss[type="world"][tag="solitary_suanni"] { BOSS_MATERIAL: genshin.avatar_ascension.cloudseam_scale; }
-
-/* 深邃摹结株 */
-boss[type="world"][tag="tenebrous_papilla"] { BOSS_MATERIAL: genshin.avatar_ascension.ensnaring_gaze; }
-
-/* 雷音权现 */
-boss[type="world"][tag="thunder_manifestation"] { BOSS_MATERIAL: genshin.avatar_ascension.storm_beads; }
-
-/* 不灭衍生造物 */
-boss[type="world"][tag="undying_replicant"] { BOSS_MATERIAL: genshin.avatar_ascension.unscorched_blossom_branch; }
-
-/* World Boss gems: element arguments in YAML; native level and count selection in CSS. */
-
-/* 无相之火 / 爆炎树 */
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="1~4"] {
-    astaps.loot.world_1-39_gem_1<pyro>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="5~9"] {
-    astaps.loot.world_1-39_gem_1<pyro>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="10~14"] {
-    astaps.loot.world_1-39_gem_1<pyro>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="15~19"] {
-    astaps.loot.world_1-39_gem_1<pyro>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="20~24"] {
-    astaps.loot.world_1-39_gem_1<pyro>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="25~29"] {
-    astaps.loot.world_1-39_gem_1<pyro>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="30~34"] {
-    astaps.loot.world_1-39_gem_1<pyro>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="35~39"] {
-    astaps.loot.world_1-39_gem_1<pyro>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="40~44"] {
-    astaps.loot.world_40-44_gem_1<pyro>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="45~49"] {
-    astaps.loot.world_45-49_gem_1<pyro>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="50~54"] {
-    astaps.loot.world_50-54_gem_1<pyro>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="55~59"] {
-    astaps.loot.world_55-59_gem_1<pyro>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="60~64"] {
-    astaps.loot.world_60-64_gem_1<pyro>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="65~69"] {
-    astaps.loot.world_65-69_gem_1<pyro>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="70~74"] {
-    astaps.loot.world_70-74_gem_1<pyro>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="75~79"] {
-    astaps.loot.world_75-79_gem_1<pyro>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="80~84"] {
-    astaps.loot.world_80-84_gem_1<pyro>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="85~89"] {
-    astaps.loot.world_85-89_gem_1<pyro>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="90~"] {
-    astaps.loot.world_90-plus_gem_1<pyro>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="pyro_hypostasis,pyro_regisvine"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_1<pyro>: "1:439, 2:61";
-}
-
-/* 无相之水 / 纯水精灵 */
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="1~4"] {
-    astaps.loot.world_1-39_gem_1<hydro>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="5~9"] {
-    astaps.loot.world_1-39_gem_1<hydro>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="10~14"] {
-    astaps.loot.world_1-39_gem_1<hydro>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="15~19"] {
-    astaps.loot.world_1-39_gem_1<hydro>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="20~24"] {
-    astaps.loot.world_1-39_gem_1<hydro>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="25~29"] {
-    astaps.loot.world_1-39_gem_1<hydro>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="30~34"] {
-    astaps.loot.world_1-39_gem_1<hydro>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="35~39"] {
-    astaps.loot.world_1-39_gem_1<hydro>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="40~44"] {
-    astaps.loot.world_40-44_gem_1<hydro>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="45~49"] {
-    astaps.loot.world_45-49_gem_1<hydro>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="50~54"] {
-    astaps.loot.world_50-54_gem_1<hydro>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="55~59"] {
-    astaps.loot.world_55-59_gem_1<hydro>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="60~64"] {
-    astaps.loot.world_60-64_gem_1<hydro>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="65~69"] {
-    astaps.loot.world_65-69_gem_1<hydro>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="70~74"] {
-    astaps.loot.world_70-74_gem_1<hydro>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="75~79"] {
-    astaps.loot.world_75-79_gem_1<hydro>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="80~84"] {
-    astaps.loot.world_80-84_gem_1<hydro>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="85~89"] {
-    astaps.loot.world_85-89_gem_1<hydro>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="90~"] {
-    astaps.loot.world_90-plus_gem_1<hydro>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="hydro_hypostasis,oceanid"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_1<hydro>: "1:439, 2:61";
-}
-
-/* 无相之草 / 翠翎恐蕈 */
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="1~4"] {
-    astaps.loot.world_1-39_gem_1<dendro>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="5~9"] {
-    astaps.loot.world_1-39_gem_1<dendro>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="10~14"] {
-    astaps.loot.world_1-39_gem_1<dendro>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="15~19"] {
-    astaps.loot.world_1-39_gem_1<dendro>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="20~24"] {
-    astaps.loot.world_1-39_gem_1<dendro>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="25~29"] {
-    astaps.loot.world_1-39_gem_1<dendro>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="30~34"] {
-    astaps.loot.world_1-39_gem_1<dendro>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="35~39"] {
-    astaps.loot.world_1-39_gem_1<dendro>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="40~44"] {
-    astaps.loot.world_40-44_gem_1<dendro>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="45~49"] {
-    astaps.loot.world_45-49_gem_1<dendro>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="50~54"] {
-    astaps.loot.world_50-54_gem_1<dendro>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="55~59"] {
-    astaps.loot.world_55-59_gem_1<dendro>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="60~64"] {
-    astaps.loot.world_60-64_gem_1<dendro>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="65~69"] {
-    astaps.loot.world_65-69_gem_1<dendro>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="70~74"] {
-    astaps.loot.world_70-74_gem_1<dendro>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="75~79"] {
-    astaps.loot.world_75-79_gem_1<dendro>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="80~84"] {
-    astaps.loot.world_80-84_gem_1<dendro>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="85~89"] {
-    astaps.loot.world_85-89_gem_1<dendro>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="90~"] {
-    astaps.loot.world_90-plus_gem_1<dendro>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_1<dendro>: "1:439, 2:61";
-}
-
-/* 无相之雷 / 掣电树 / 雷音权现 */
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="1~4"] {
-    astaps.loot.world_1-39_gem_1<electro>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="5~9"] {
-    astaps.loot.world_1-39_gem_1<electro>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="10~14"] {
-    astaps.loot.world_1-39_gem_1<electro>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="15~19"] {
-    astaps.loot.world_1-39_gem_1<electro>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="20~24"] {
-    astaps.loot.world_1-39_gem_1<electro>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="25~29"] {
-    astaps.loot.world_1-39_gem_1<electro>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="30~34"] {
-    astaps.loot.world_1-39_gem_1<electro>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="35~39"] {
-    astaps.loot.world_1-39_gem_1<electro>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="40~44"] {
-    astaps.loot.world_40-44_gem_1<electro>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="45~49"] {
-    astaps.loot.world_45-49_gem_1<electro>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="50~54"] {
-    astaps.loot.world_50-54_gem_1<electro>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="55~59"] {
-    astaps.loot.world_55-59_gem_1<electro>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="60~64"] {
-    astaps.loot.world_60-64_gem_1<electro>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="65~69"] {
-    astaps.loot.world_65-69_gem_1<electro>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="70~74"] {
-    astaps.loot.world_70-74_gem_1<electro>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="75~79"] {
-    astaps.loot.world_75-79_gem_1<electro>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="80~84"] {
-    astaps.loot.world_80-84_gem_1<electro>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="85~89"] {
-    astaps.loot.world_85-89_gem_1<electro>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="90~"] {
-    astaps.loot.world_90-plus_gem_1<electro>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="electro_hypostasis,electro_regisvine,thunder_manifestation"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_1<electro>: "1:439, 2:61";
-}
-
-/* 无相之风 */
-boss[type="world"][tag="anemo_hypostasis"][level="1~4"] {
-    astaps.loot.world_1-39_gem_1<anemo>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="5~9"] {
-    astaps.loot.world_1-39_gem_1<anemo>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="10~14"] {
-    astaps.loot.world_1-39_gem_1<anemo>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="15~19"] {
-    astaps.loot.world_1-39_gem_1<anemo>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="20~24"] {
-    astaps.loot.world_1-39_gem_1<anemo>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="25~29"] {
-    astaps.loot.world_1-39_gem_1<anemo>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="30~34"] {
-    astaps.loot.world_1-39_gem_1<anemo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="35~39"] {
-    astaps.loot.world_1-39_gem_1<anemo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="40~44"] {
-    astaps.loot.world_40-44_gem_1<anemo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="45~49"] {
-    astaps.loot.world_45-49_gem_1<anemo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="50~54"] {
-    astaps.loot.world_50-54_gem_1<anemo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="55~59"] {
-    astaps.loot.world_55-59_gem_1<anemo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="60~64"] {
-    astaps.loot.world_60-64_gem_1<anemo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="65~69"] {
-    astaps.loot.world_65-69_gem_1<anemo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="70~74"] {
-    astaps.loot.world_70-74_gem_1<anemo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="75~79"] {
-    astaps.loot.world_75-79_gem_1<anemo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="80~84"] {
-    astaps.loot.world_80-84_gem_1<anemo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="85~89"] {
-    astaps.loot.world_85-89_gem_1<anemo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="90~"] {
-    astaps.loot.world_90-plus_gem_1<anemo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="anemo_hypostasis"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_1<anemo>: "1:439, 2:61";
-}
-
-/* 无相之冰 / 急冻树 */
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="1~4"] {
-    astaps.loot.world_1-39_gem_1<cryo>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="5~9"] {
-    astaps.loot.world_1-39_gem_1<cryo>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="10~14"] {
-    astaps.loot.world_1-39_gem_1<cryo>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="15~19"] {
-    astaps.loot.world_1-39_gem_1<cryo>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="20~24"] {
-    astaps.loot.world_1-39_gem_1<cryo>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="25~29"] {
-    astaps.loot.world_1-39_gem_1<cryo>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="30~34"] {
-    astaps.loot.world_1-39_gem_1<cryo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="35~39"] {
-    astaps.loot.world_1-39_gem_1<cryo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="40~44"] {
-    astaps.loot.world_40-44_gem_1<cryo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="45~49"] {
-    astaps.loot.world_45-49_gem_1<cryo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="50~54"] {
-    astaps.loot.world_50-54_gem_1<cryo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="55~59"] {
-    astaps.loot.world_55-59_gem_1<cryo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="60~64"] {
-    astaps.loot.world_60-64_gem_1<cryo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="65~69"] {
-    astaps.loot.world_65-69_gem_1<cryo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="70~74"] {
-    astaps.loot.world_70-74_gem_1<cryo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="75~79"] {
-    astaps.loot.world_75-79_gem_1<cryo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="80~84"] {
-    astaps.loot.world_80-84_gem_1<cryo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="85~89"] {
-    astaps.loot.world_85-89_gem_1<cryo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="90~"] {
-    astaps.loot.world_90-plus_gem_1<cryo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="cryo_hypostasis,cryo_regisvine"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_1<cryo>: "1:439, 2:61";
-}
-
-/* 无相之岩 / 黄金王兽 / 遗迹巨蛇 */
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="1~4"] {
-    astaps.loot.world_1-39_gem_1<geo>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="5~9"] {
-    astaps.loot.world_1-39_gem_1<geo>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="10~14"] {
-    astaps.loot.world_1-39_gem_1<geo>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="15~19"] {
-    astaps.loot.world_1-39_gem_1<geo>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="20~24"] {
-    astaps.loot.world_1-39_gem_1<geo>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="25~29"] {
-    astaps.loot.world_1-39_gem_1<geo>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="30~34"] {
-    astaps.loot.world_1-39_gem_1<geo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="35~39"] {
-    astaps.loot.world_1-39_gem_1<geo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="40~44"] {
-    astaps.loot.world_40-44_gem_1<geo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="45~49"] {
-    astaps.loot.world_45-49_gem_1<geo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="50~54"] {
-    astaps.loot.world_50-54_gem_1<geo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="55~59"] {
-    astaps.loot.world_55-59_gem_1<geo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="60~64"] {
-    astaps.loot.world_60-64_gem_1<geo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="65~69"] {
-    astaps.loot.world_65-69_gem_1<geo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="70~74"] {
-    astaps.loot.world_70-74_gem_1<geo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="75~79"] {
-    astaps.loot.world_75-79_gem_1<geo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="80~84"] {
-    astaps.loot.world_80-84_gem_1<geo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="85~89"] {
-    astaps.loot.world_85-89_gem_1<geo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="90~"] {
-    astaps.loot.world_90-plus_gem_1<geo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_1<geo>: "1:439, 2:61";
-}
-
-/* 半永恒统辖矩阵 */
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="1~4"] {
-    astaps.loot.world_1-39_gem_2<pyro, anemo>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="5~9"] {
-    astaps.loot.world_1-39_gem_2<pyro, anemo>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="10~14"] {
-    astaps.loot.world_1-39_gem_2<pyro, anemo>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="15~19"] {
-    astaps.loot.world_1-39_gem_2<pyro, anemo>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="20~24"] {
-    astaps.loot.world_1-39_gem_2<pyro, anemo>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="25~29"] {
-    astaps.loot.world_1-39_gem_2<pyro, anemo>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="30~34"] {
-    astaps.loot.world_1-39_gem_2<pyro, anemo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="35~39"] {
-    astaps.loot.world_1-39_gem_2<pyro, anemo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="40~44"] {
-    astaps.loot.world_40-44_gem_2<pyro, anemo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="45~49"] {
-    astaps.loot.world_45-49_gem_2<pyro, anemo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="50~54"] {
-    astaps.loot.world_50-54_gem_2<pyro, anemo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="55~59"] {
-    astaps.loot.world_55-59_gem_2<pyro, anemo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="60~64"] {
-    astaps.loot.world_60-64_gem_2<pyro, anemo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="65~69"] {
-    astaps.loot.world_65-69_gem_2<pyro, anemo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="70~74"] {
-    astaps.loot.world_70-74_gem_2<pyro, anemo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="75~79"] {
-    astaps.loot.world_75-79_gem_2<pyro, anemo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="80~84"] {
-    astaps.loot.world_80-84_gem_2<pyro, anemo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="85~89"] {
-    astaps.loot.world_85-89_gem_2<pyro, anemo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="90~"] {
-    astaps.loot.world_90-plus_gem_2<pyro, anemo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="algorithm_semi_intransient_matrix"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_2<pyro, anemo>: "1:439, 2:61";
-}
-
-/* 古岩龙蜥火 */
-boss[type="world"][tag="primo_geovishap_pyro"][level="1~4"] {
-    astaps.loot.world_1-39_gem_2<pyro, geo>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="5~9"] {
-    astaps.loot.world_1-39_gem_2<pyro, geo>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="10~14"] {
-    astaps.loot.world_1-39_gem_2<pyro, geo>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="15~19"] {
-    astaps.loot.world_1-39_gem_2<pyro, geo>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="20~24"] {
-    astaps.loot.world_1-39_gem_2<pyro, geo>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="25~29"] {
-    astaps.loot.world_1-39_gem_2<pyro, geo>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="30~34"] {
-    astaps.loot.world_1-39_gem_2<pyro, geo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="35~39"] {
-    astaps.loot.world_1-39_gem_2<pyro, geo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="40~44"] {
-    astaps.loot.world_40-44_gem_2<pyro, geo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="45~49"] {
-    astaps.loot.world_45-49_gem_2<pyro, geo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="50~54"] {
-    astaps.loot.world_50-54_gem_2<pyro, geo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="55~59"] {
-    astaps.loot.world_55-59_gem_2<pyro, geo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="60~64"] {
-    astaps.loot.world_60-64_gem_2<pyro, geo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="65~69"] {
-    astaps.loot.world_65-69_gem_2<pyro, geo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="70~74"] {
-    astaps.loot.world_70-74_gem_2<pyro, geo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="75~79"] {
-    astaps.loot.world_75-79_gem_2<pyro, geo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="80~84"] {
-    astaps.loot.world_80-84_gem_2<pyro, geo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="85~89"] {
-    astaps.loot.world_85-89_gem_2<pyro, geo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="90~"] {
-    astaps.loot.world_90-plus_gem_2<pyro, geo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="primo_geovishap_pyro"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_2<pyro, geo>: "1:439, 2:61";
-}
-
-/* 兆载永劫龙兽 */
-boss[type="world"][tag="aeonblight_drake"][level="1~4"] {
-    astaps.loot.world_1-39_gem_2<hydro, cryo>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="5~9"] {
-    astaps.loot.world_1-39_gem_2<hydro, cryo>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="10~14"] {
-    astaps.loot.world_1-39_gem_2<hydro, cryo>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="15~19"] {
-    astaps.loot.world_1-39_gem_2<hydro, cryo>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="20~24"] {
-    astaps.loot.world_1-39_gem_2<hydro, cryo>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="25~29"] {
-    astaps.loot.world_1-39_gem_2<hydro, cryo>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="30~34"] {
-    astaps.loot.world_1-39_gem_2<hydro, cryo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="35~39"] {
-    astaps.loot.world_1-39_gem_2<hydro, cryo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="40~44"] {
-    astaps.loot.world_40-44_gem_2<hydro, cryo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="45~49"] {
-    astaps.loot.world_45-49_gem_2<hydro, cryo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="50~54"] {
-    astaps.loot.world_50-54_gem_2<hydro, cryo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="55~59"] {
-    astaps.loot.world_55-59_gem_2<hydro, cryo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="60~64"] {
-    astaps.loot.world_60-64_gem_2<hydro, cryo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="65~69"] {
-    astaps.loot.world_65-69_gem_2<hydro, cryo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="70~74"] {
-    astaps.loot.world_70-74_gem_2<hydro, cryo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="75~79"] {
-    astaps.loot.world_75-79_gem_2<hydro, cryo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="80~84"] {
-    astaps.loot.world_80-84_gem_2<hydro, cryo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="85~89"] {
-    astaps.loot.world_85-89_gem_2<hydro, cryo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="90~"] {
-    astaps.loot.world_90-plus_gem_2<hydro, cryo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="aeonblight_drake"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_2<hydro, cryo>: "1:439, 2:61";
-}
-
-/* 古岩龙蜥水 */
-boss[type="world"][tag="primo_geovishap_hydro"][level="1~4"] {
-    astaps.loot.world_1-39_gem_2<hydro, geo>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="5~9"] {
-    astaps.loot.world_1-39_gem_2<hydro, geo>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="10~14"] {
-    astaps.loot.world_1-39_gem_2<hydro, geo>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="15~19"] {
-    astaps.loot.world_1-39_gem_2<hydro, geo>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="20~24"] {
-    astaps.loot.world_1-39_gem_2<hydro, geo>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="25~29"] {
-    astaps.loot.world_1-39_gem_2<hydro, geo>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="30~34"] {
-    astaps.loot.world_1-39_gem_2<hydro, geo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="35~39"] {
-    astaps.loot.world_1-39_gem_2<hydro, geo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="40~44"] {
-    astaps.loot.world_40-44_gem_2<hydro, geo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="45~49"] {
-    astaps.loot.world_45-49_gem_2<hydro, geo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="50~54"] {
-    astaps.loot.world_50-54_gem_2<hydro, geo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="55~59"] {
-    astaps.loot.world_55-59_gem_2<hydro, geo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="60~64"] {
-    astaps.loot.world_60-64_gem_2<hydro, geo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="65~69"] {
-    astaps.loot.world_65-69_gem_2<hydro, geo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="70~74"] {
-    astaps.loot.world_70-74_gem_2<hydro, geo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="75~79"] {
-    astaps.loot.world_75-79_gem_2<hydro, geo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="80~84"] {
-    astaps.loot.world_80-84_gem_2<hydro, geo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="85~89"] {
-    astaps.loot.world_85-89_gem_2<hydro, geo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="90~"] {
-    astaps.loot.world_90-plus_gem_2<hydro, geo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="primo_geovishap_hydro"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_2<hydro, geo>: "1:439, 2:61";
-}
-
-/* 深海龙蜥组合 */
-boss[type="world"][tag="bathysmal_vishap_herd"][level="1~4"] {
-    astaps.loot.world_1-39_gem_2<electro, cryo>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="5~9"] {
-    astaps.loot.world_1-39_gem_2<electro, cryo>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="10~14"] {
-    astaps.loot.world_1-39_gem_2<electro, cryo>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="15~19"] {
-    astaps.loot.world_1-39_gem_2<electro, cryo>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="20~24"] {
-    astaps.loot.world_1-39_gem_2<electro, cryo>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="25~29"] {
-    astaps.loot.world_1-39_gem_2<electro, cryo>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="30~34"] {
-    astaps.loot.world_1-39_gem_2<electro, cryo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="35~39"] {
-    astaps.loot.world_1-39_gem_2<electro, cryo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="40~44"] {
-    astaps.loot.world_40-44_gem_2<electro, cryo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="45~49"] {
-    astaps.loot.world_45-49_gem_2<electro, cryo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="50~54"] {
-    astaps.loot.world_50-54_gem_2<electro, cryo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="55~59"] {
-    astaps.loot.world_55-59_gem_2<electro, cryo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="60~64"] {
-    astaps.loot.world_60-64_gem_2<electro, cryo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="65~69"] {
-    astaps.loot.world_65-69_gem_2<electro, cryo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="70~74"] {
-    astaps.loot.world_70-74_gem_2<electro, cryo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="75~79"] {
-    astaps.loot.world_75-79_gem_2<electro, cryo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="80~84"] {
-    astaps.loot.world_80-84_gem_2<electro, cryo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="85~89"] {
-    astaps.loot.world_85-89_gem_2<electro, cryo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="90~"] {
-    astaps.loot.world_90-plus_gem_2<electro, cryo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="bathysmal_vishap_herd"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_2<electro, cryo>: "1:439, 2:61";
+boss[type="world"][tag="primal_watcher"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.plume_of_the_fallen_watcher;
+    GEM: geo;
+}
+
+/* 古岩龙蜥冰 */
+boss[type="world"][tag="primo_geovishap_cryo"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.juvenile_jade;
+    GEM: [cryo, geo];
 }
 
 /* 古岩龙蜥电 */
-boss[type="world"][tag="primo_geovishap_electro"][level="1~4"] {
-    astaps.loot.world_1-39_gem_2<electro, geo>: "1:26377, 2:23623";
+boss[type="world"][tag="primo_geovishap_electro"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.juvenile_jade;
+    GEM: [electro, geo];
 }
 
-boss[type="world"][tag="primo_geovishap_electro"][level="5~9"] {
-    astaps.loot.world_1-39_gem_2<electro, geo>: "1:42821, 2:57179";
+/* 古岩龙蜥水 */
+boss[type="world"][tag="primo_geovishap_hydro"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.juvenile_jade;
+    GEM: [hydro, geo];
 }
 
-boss[type="world"][tag="primo_geovishap_electro"][level="10~14"] {
-    astaps.loot.world_1-39_gem_2<electro, geo>: "1:30413, 2:69587";
+/* 古岩龙蜥火 */
+boss[type="world"][tag="primo_geovishap_pyro"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.juvenile_jade;
+    GEM: [pyro, geo];
 }
 
-boss[type="world"][tag="primo_geovishap_electro"][level="15~19"] {
-    astaps.loot.world_1-39_gem_2<electro, geo>: "1:3601, 2:16399";
+/* 无相之火 */
+boss[type="world"][tag="pyro_hypostasis"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.smoldering_pearl;
+    GEM: pyro;
 }
 
-boss[type="world"][tag="primo_geovishap_electro"][level="20~24"] {
-    astaps.loot.world_1-39_gem_2<electro, geo>: "1:5597, 2:94403";
+/* 爆炎树 */
+boss[type="world"][tag="pyro_regisvine"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.everflame_seed;
+    GEM: pyro;
 }
 
-boss[type="world"][tag="primo_geovishap_electro"][level="25~29"] {
-    astaps.loot.world_1-39_gem_2<electro, geo>: "2:93189, 3:6811";
+/* 蕴光异兽 */
+boss[type="world"][tag="radiant_beast"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.prismatic_severed_tail;
+    GEM: geo;
 }
 
-boss[type="world"][tag="primo_geovishap_electro"][level="30~34"] {
-    astaps.loot.world_1-39_gem_2<electro, geo>: "2:80781, 3:19219";
+/* 遗迹巨蛇 */
+boss[type="world"][tag="ruin_serpent"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.runic_fang;
+    GEM: geo;
 }
 
-boss[type="world"][tag="primo_geovishap_electro"][level="35~39"] {
-    astaps.loot.world_1-39_gem_2<electro, geo>: "2:68373, 3:31627";
+/* 秘源机兵·构型械 */
+boss[type="world"][tag="secret_source_automaton_configuration_device"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.gold_inscribed_secret_source_core;
+    GEM: electro;
 }
 
-boss[type="world"][tag="primo_geovishap_electro"][level="40~44"] {
-    astaps.loot.world_40-44_gem_2<electro, geo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="45~49"] {
-    astaps.loot.world_45-49_gem_2<electro, geo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="50~54"] {
-    astaps.loot.world_50-54_gem_2<electro, geo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="55~59"] {
-    astaps.loot.world_55-59_gem_2<electro, geo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="60~64"] {
-    astaps.loot.world_60-64_gem_2<electro, geo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="65~69"] {
-    astaps.loot.world_65-69_gem_2<electro, geo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="70~74"] {
-    astaps.loot.world_70-74_gem_2<electro, geo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="75~79"] {
-    astaps.loot.world_75-79_gem_2<electro, geo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="80~84"] {
-    astaps.loot.world_80-84_gem_2<electro, geo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="85~89"] {
-    astaps.loot.world_85-89_gem_2<electro, geo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="90~"] {
-    astaps.loot.world_90-plus_gem_2<electro, geo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="primo_geovishap_electro"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_2<electro, geo>: "1:439, 2:61";
-}
-
-/* 魔偶剑鬼 */
-boss[type="world"][tag="maguu_kenki"][level="1~4"] {
-    astaps.loot.world_1-39_gem_2<anemo, cryo>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="5~9"] {
-    astaps.loot.world_1-39_gem_2<anemo, cryo>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="10~14"] {
-    astaps.loot.world_1-39_gem_2<anemo, cryo>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="15~19"] {
-    astaps.loot.world_1-39_gem_2<anemo, cryo>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="20~24"] {
-    astaps.loot.world_1-39_gem_2<anemo, cryo>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="25~29"] {
-    astaps.loot.world_1-39_gem_2<anemo, cryo>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="30~34"] {
-    astaps.loot.world_1-39_gem_2<anemo, cryo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="35~39"] {
-    astaps.loot.world_1-39_gem_2<anemo, cryo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="40~44"] {
-    astaps.loot.world_40-44_gem_2<anemo, cryo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="45~49"] {
-    astaps.loot.world_45-49_gem_2<anemo, cryo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="50~54"] {
-    astaps.loot.world_50-54_gem_2<anemo, cryo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="55~59"] {
-    astaps.loot.world_55-59_gem_2<anemo, cryo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="60~64"] {
-    astaps.loot.world_60-64_gem_2<anemo, cryo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="65~69"] {
-    astaps.loot.world_65-69_gem_2<anemo, cryo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="70~74"] {
-    astaps.loot.world_70-74_gem_2<anemo, cryo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="75~79"] {
-    astaps.loot.world_75-79_gem_2<anemo, cryo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="80~84"] {
-    astaps.loot.world_80-84_gem_2<anemo, cryo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="85~89"] {
-    astaps.loot.world_85-89_gem_2<anemo, cryo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="90~"] {
-    astaps.loot.world_90-plus_gem_2<anemo, cryo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="maguu_kenki"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_2<anemo, cryo>: "1:439, 2:61";
-}
-
-/* 恒常机关阵列 / 古岩龙蜥冰 */
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="1~4"] {
-    astaps.loot.world_1-39_gem_2<cryo, geo>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="5~9"] {
-    astaps.loot.world_1-39_gem_2<cryo, geo>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="10~14"] {
-    astaps.loot.world_1-39_gem_2<cryo, geo>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="15~19"] {
-    astaps.loot.world_1-39_gem_2<cryo, geo>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="20~24"] {
-    astaps.loot.world_1-39_gem_2<cryo, geo>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="25~29"] {
-    astaps.loot.world_1-39_gem_2<cryo, geo>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="30~34"] {
-    astaps.loot.world_1-39_gem_2<cryo, geo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="35~39"] {
-    astaps.loot.world_1-39_gem_2<cryo, geo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="40~44"] {
-    astaps.loot.world_40-44_gem_2<cryo, geo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="45~49"] {
-    astaps.loot.world_45-49_gem_2<cryo, geo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="50~54"] {
-    astaps.loot.world_50-54_gem_2<cryo, geo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="55~59"] {
-    astaps.loot.world_55-59_gem_2<cryo, geo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="60~64"] {
-    astaps.loot.world_60-64_gem_2<cryo, geo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="65~69"] {
-    astaps.loot.world_65-69_gem_2<cryo, geo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="70~74"] {
-    astaps.loot.world_70-74_gem_2<cryo, geo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="75~79"] {
-    astaps.loot.world_75-79_gem_2<cryo, geo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="80~84"] {
-    astaps.loot.world_80-84_gem_2<cryo, geo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="85~89"] {
-    astaps.loot.world_85-89_gem_2<cryo, geo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="90~"] {
-    astaps.loot.world_90-plus_gem_2<cryo, geo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="perpetual_mechanical_array,primo_geovishap_cryo"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_2<cryo, geo>: "1:439, 2:61";
-}
-
-/* 铁甲熔火帝皇 / 金焰绒翼龙暴君 / 不灭衍生造物 */
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="30~34"] {
-    astaps.loot.world_1-39_gem_3<pyro>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="35~39"] {
-    astaps.loot.world_1-39_gem_3<pyro>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="40~44"] {
-    astaps.loot.world_40-44_gem_3<pyro>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="45~49"] {
-    astaps.loot.world_45-49_gem_3<pyro>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="50~54"] {
-    astaps.loot.world_50-54_gem_3<pyro>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="55~59"] {
-    astaps.loot.world_55-59_gem_3<pyro>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="60~64"] {
-    astaps.loot.world_60-64_gem_3<pyro>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="65~69"] {
-    astaps.loot.world_65-69_gem_3<pyro>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="70~74"] {
-    astaps.loot.world_70-74_gem_3<pyro>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="75~79"] {
-    astaps.loot.world_75-79_gem_3<pyro>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="80~84"] {
-    astaps.loot.world_80-84_gem_3<pyro>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="85~89"] {
-    astaps.loot.world_85-89_gem_3<pyro>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="90~"] {
-    astaps.loot.world_90-plus_gem_3<pyro>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="emperor_of_fire_and_iron,goldflame_qucusaure_tyrant,undying_replicant"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_3<pyro>: "1:439, 2:61";
-}
-
-/* 水形幻人 / 秘源机兵·统御械 */
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="30~34"] {
-    astaps.loot.world_1-39_gem_3<hydro>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="35~39"] {
-    astaps.loot.world_1-39_gem_3<hydro>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="40~44"] {
-    astaps.loot.world_40-44_gem_3<hydro>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="45~49"] {
-    astaps.loot.world_45-49_gem_3<hydro>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="50~54"] {
-    astaps.loot.world_50-54_gem_3<hydro>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="55~59"] {
-    astaps.loot.world_55-59_gem_3<hydro>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="60~64"] {
-    astaps.loot.world_60-64_gem_3<hydro>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="65~69"] {
-    astaps.loot.world_65-69_gem_3<hydro>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="70~74"] {
-    astaps.loot.world_70-74_gem_3<hydro>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="75~79"] {
-    astaps.loot.world_75-79_gem_3<hydro>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="80~84"] {
-    astaps.loot.world_80-84_gem_3<hydro>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="85~89"] {
-    astaps.loot.world_85-89_gem_3<hydro>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="90~"] {
-    astaps.loot.world_90-plus_gem_3<hydro>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="hydro_tulpa,secret_source_automaton_overseer"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_3<hydro>: "1:439, 2:61";
-}
-
-/* 贪食匿叶龙山王 */
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="30~34"] {
-    astaps.loot.world_1-39_gem_3<dendro>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="35~39"] {
-    astaps.loot.world_1-39_gem_3<dendro>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="40~44"] {
-    astaps.loot.world_40-44_gem_3<dendro>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="45~49"] {
-    astaps.loot.world_45-49_gem_3<dendro>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="50~54"] {
-    astaps.loot.world_50-54_gem_3<dendro>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="55~59"] {
-    astaps.loot.world_55-59_gem_3<dendro>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="60~64"] {
-    astaps.loot.world_60-64_gem_3<dendro>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="65~69"] {
-    astaps.loot.world_65-69_gem_3<dendro>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="70~74"] {
-    astaps.loot.world_70-74_gem_3<dendro>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="75~79"] {
-    astaps.loot.world_75-79_gem_3<dendro>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="80~84"] {
-    astaps.loot.world_80-84_gem_3<dendro>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="85~89"] {
-    astaps.loot.world_85-89_gem_3<dendro>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="90~"] {
-    astaps.loot.world_90-plus_gem_3<dendro>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_3<dendro>: "1:439, 2:61";
-}
-
-/* 重拳出击鸭 / 千年珍珠骏麟 / 秘源机兵·构型械 */
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="30~34"] {
-    astaps.loot.world_1-39_gem_3<electro>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="35~39"] {
-    astaps.loot.world_1-39_gem_3<electro>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="40~44"] {
-    astaps.loot.world_40-44_gem_3<electro>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="45~49"] {
-    astaps.loot.world_45-49_gem_3<electro>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="50~54"] {
-    astaps.loot.world_50-54_gem_3<electro>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="55~59"] {
-    astaps.loot.world_55-59_gem_3<electro>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="60~64"] {
-    astaps.loot.world_60-64_gem_3<electro>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="65~69"] {
-    astaps.loot.world_65-69_gem_3<electro>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="70~74"] {
-    astaps.loot.world_70-74_gem_3<electro>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="75~79"] {
-    astaps.loot.world_75-79_gem_3<electro>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="80~84"] {
-    astaps.loot.world_80-84_gem_3<electro>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="85~89"] {
-    astaps.loot.world_85-89_gem_3<electro>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="90~"] {
-    astaps.loot.world_90-plus_gem_3<electro>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="knuckle_duck,millennial_pearl_seahorse,secret_source_automaton_configuration_device"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_3<electro>: "1:439, 2:61";
+/* 秘源机兵·统御械 */
+boss[type="world"][tag="secret_source_automaton_overseer"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.secret_source_airflow_accumulator;
+    GEM: hydro;
 }
 
 /* 风蚀沙虫 */
-boss[type="world"][tag="setekh_wenut"][level="1~4"] {
-    astaps.loot.world_1-39_gem_3<anemo>: "1:26377, 2:23623";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="5~9"] {
-    astaps.loot.world_1-39_gem_3<anemo>: "1:42821, 2:57179";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="10~14"] {
-    astaps.loot.world_1-39_gem_3<anemo>: "1:30413, 2:69587";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="15~19"] {
-    astaps.loot.world_1-39_gem_3<anemo>: "1:3601, 2:16399";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="20~24"] {
-    astaps.loot.world_1-39_gem_3<anemo>: "1:5597, 2:94403";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="25~29"] {
-    astaps.loot.world_1-39_gem_3<anemo>: "2:93189, 3:6811";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="30~34"] {
-    astaps.loot.world_1-39_gem_3<anemo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="35~39"] {
-    astaps.loot.world_1-39_gem_3<anemo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="40~44"] {
-    astaps.loot.world_40-44_gem_3<anemo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="45~49"] {
-    astaps.loot.world_45-49_gem_3<anemo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="50~54"] {
-    astaps.loot.world_50-54_gem_3<anemo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="55~59"] {
-    astaps.loot.world_55-59_gem_3<anemo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="60~64"] {
-    astaps.loot.world_60-64_gem_3<anemo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="65~69"] {
-    astaps.loot.world_65-69_gem_3<anemo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="70~74"] {
-    astaps.loot.world_70-74_gem_3<anemo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="75~79"] {
-    astaps.loot.world_75-79_gem_3<anemo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="80~84"] {
-    astaps.loot.world_80-84_gem_3<anemo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="85~89"] {
-    astaps.loot.world_85-89_gem_3<anemo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="90~"] {
-    astaps.loot.world_90-plus_gem_3<anemo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="setekh_wenut"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_3<anemo>: "1:439, 2:61";
-}
-
-/* 灵觉隐修的迷者 */
-boss[type="world"][tag="holawaqa_ngoubou"][level="30~34"] {
-    astaps.loot.world_1-39_gem_3<cryo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="35~39"] {
-    astaps.loot.world_1-39_gem_3<cryo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="40~44"] {
-    astaps.loot.world_40-44_gem_3<cryo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="45~49"] {
-    astaps.loot.world_45-49_gem_3<cryo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="50~54"] {
-    astaps.loot.world_50-54_gem_3<cryo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="55~59"] {
-    astaps.loot.world_55-59_gem_3<cryo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="60~64"] {
-    astaps.loot.world_60-64_gem_3<cryo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="65~69"] {
-    astaps.loot.world_65-69_gem_3<cryo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="70~74"] {
-    astaps.loot.world_70-74_gem_3<cryo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="75~79"] {
-    astaps.loot.world_75-79_gem_3<cryo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="80~84"] {
-    astaps.loot.world_80-84_gem_3<cryo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="85~89"] {
-    astaps.loot.world_85-89_gem_3<cryo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="90~"] {
-    astaps.loot.world_90-plus_gem_3<cryo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="holawaqa_ngoubou"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_3<cryo>: "1:439, 2:61";
-}
-
-/* 实验性场力发生装置 / 原初监视者 / 蕴光异兽 */
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="30~34"] {
-    astaps.loot.world_1-39_gem_3<geo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="35~39"] {
-    astaps.loot.world_1-39_gem_3<geo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="40~44"] {
-    astaps.loot.world_40-44_gem_3<geo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="45~49"] {
-    astaps.loot.world_45-49_gem_3<geo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="50~54"] {
-    astaps.loot.world_50-54_gem_3<geo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="55~59"] {
-    astaps.loot.world_55-59_gem_3<geo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="60~64"] {
-    astaps.loot.world_60-64_gem_3<geo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="65~69"] {
-    astaps.loot.world_65-69_gem_3<geo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="70~74"] {
-    astaps.loot.world_70-74_gem_3<geo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="75~79"] {
-    astaps.loot.world_75-79_gem_3<geo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="80~84"] {
-    astaps.loot.world_80-84_gem_3<geo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="85~89"] {
-    astaps.loot.world_85-89_gem_3<geo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="90~"] {
-    astaps.loot.world_90-plus_gem_3<geo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="experimental_field_generator,primal_watcher,radiant_beast"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_3<geo>: "1:439, 2:61";
-}
-
-/* 蕴光月幻蝶 */
-boss[type="world"][tag="lightbearing_lunar_moth"][level="30~34"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="35~39"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="40~44"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="45~49"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="50~54"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="55~59"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="60~64"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="65~69"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="70~74"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="75~79"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="80~84"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="85~89"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="90~"] {
-    astaps.loot.world_30-plus_gem_4<pyro, dendro>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="lightbearing_lunar_moth"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_4<pyro, dendro>: "1:439, 2:61";
-}
-
-/* 精密发条机关 */
-boss[type="world"][tag="precision_clockwork"][level="30~34"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "2:80781, 3:19219";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="35~39"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "2:68373, 3:31627";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="40~44"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "1:56153, 2:43847";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="45~49"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "1:8089, 2:11911";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="50~54"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "1:24737, 2:75263";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="55~59"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "1:2249, 2:22751";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="60~64"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "2:41199, 3:8801";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="65~69"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "2:13173, 3:6827";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="70~74"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "2:12333, 3:12667";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="75~79"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "2:15723, 3:34277";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="80~84"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "2:14781, 3:85219";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="85~89"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "3:98149, 4:1851";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="90~"] {
-    astaps.loot.world_30-plus_gem_4<pyro, cryo>: "3:1631, 4:369";
-}
-
-boss[type="world"][tag="precision_clockwork"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_4<pyro, cryo>: "1:439, 2:61";
-}
-
-/* 魔像督军 */
-boss[type="world"][tag="legatus_golem"][level="1~"] {
-    astaps.loot.world_1-plus_gem_5<pyro, geo>: 1;
-}
-
-/* 嵌合翼骏狮 / 隐山猊兽 */
-boss[type="world"][tag="chimera_sky_roamer,solitary_suanni"][level="1~"] {
-    astaps.loot.world_1-plus_gem_5<hydro, anemo>: 1;
-}
-
-/* 霜夜灵嗣 */
-boss[type="world"][tag="frostnight_scion"][level="1~"] {
-    astaps.loot.world_1-plus_gem_5<hydro, cryo>: 1;
-}
-
-/* 冰风组曲 */
-boss[type="world"][tag="icewind_suite"][level="1~"] {
-    astaps.loot.world_1-plus_gem_5<anemo, cryo>: 1;
-}
-
-/* 熔岩辉龙像 */
-boss[type="world"][tag="lava_dragon_statue"][level="1~"] {
-    astaps.loot.world_1-plus_gem_6<pyro>: 1;
-}
-
-/* 深邃魹语之主 */
-boss[type="world"][tag="lord_of_the_deep_dreadwing"][level="1~"] {
-    astaps.loot.world_1-plus_gem_6<electro>: 1;
+boss[type="world"][tag="setekh_wenut"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.pseudo_stamens;
+    GEM: anemo;
+}
+
+/* 隐山猊兽 */
+boss[type="world"][tag="solitary_suanni"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.cloudseam_scale;
+    GEM: [hydro, anemo];
 }
 
 /* 深邃摹结株 */
+boss[type="world"][tag="tenebrous_papilla"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.ensnaring_gaze;
+    GEM: [pyro, electro, anemo];
+}
+
+/* 雷音权现 */
+boss[type="world"][tag="thunder_manifestation"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.storm_beads;
+    GEM: electro;
+}
+
+/* 不灭衍生造物 */
+boss[type="world"][tag="undying_replicant"] {
+    BOSS_MATERIAL: genshin.avatar_ascension.unscorched_blossom_branch;
+    GEM: pyro;
+}
+
+/* World Boss gems: shared counts and templates; GEM supplies each Boss's elements. */
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="1~4"] {
+    astaps.loot.world_1-39_gem_1<GEM>: "1:26377, 2:23623";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="5~9"] {
+    astaps.loot.world_1-39_gem_1<GEM>: "1:42821, 2:57179";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="10~14"] {
+    astaps.loot.world_1-39_gem_1<GEM>: "1:30413, 2:69587";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="15~19"] {
+    astaps.loot.world_1-39_gem_1<GEM>: "1:3601, 2:16399";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="20~24"] {
+    astaps.loot.world_1-39_gem_1<GEM>: "1:5597, 2:94403";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="25~29"] {
+    astaps.loot.world_1-39_gem_1<GEM>: "2:93189, 3:6811";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="30~34"] {
+    astaps.loot.world_1-39_gem_1<GEM>: "2:80781, 3:19219";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="35~39"] {
+    astaps.loot.world_1-39_gem_1<GEM>: "2:68373, 3:31627";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="40~44"] {
+    astaps.loot.world_40-44_gem_1<GEM>: "1:56153, 2:43847";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="45~49"] {
+    astaps.loot.world_45-49_gem_1<GEM>: "1:8089, 2:11911";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="50~54"] {
+    astaps.loot.world_50-54_gem_1<GEM>: "1:24737, 2:75263";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="55~59"] {
+    astaps.loot.world_55-59_gem_1<GEM>: "1:2249, 2:22751";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="60~64"] {
+    astaps.loot.world_60-64_gem_1<GEM>: "2:41199, 3:8801";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="65~69"] {
+    astaps.loot.world_65-69_gem_1<GEM>: "2:13173, 3:6827";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="70~74"] {
+    astaps.loot.world_70-74_gem_1<GEM>: "2:12333, 3:12667";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="75~79"] {
+    astaps.loot.world_75-79_gem_1<GEM>: "2:15723, 3:34277";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="80~84"] {
+    astaps.loot.world_80-84_gem_1<GEM>: "2:14781, 3:85219";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="85~89"] {
+    astaps.loot.world_85-89_gem_1<GEM>: "3:98149, 4:1851";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="90~"] {
+    astaps.loot.world_90-plus_gem_1<GEM>: "3:1631, 4:369";
+}
+
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="40~"] {
+    astaps.loot.world_40-plus_gem_fragment_1<GEM>: "1:439, 2:61";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="1~4"] {
+    astaps.loot.world_1-39_gem_2<GEM>: "1:26377, 2:23623";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="5~9"] {
+    astaps.loot.world_1-39_gem_2<GEM>: "1:42821, 2:57179";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="10~14"] {
+    astaps.loot.world_1-39_gem_2<GEM>: "1:30413, 2:69587";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="15~19"] {
+    astaps.loot.world_1-39_gem_2<GEM>: "1:3601, 2:16399";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="20~24"] {
+    astaps.loot.world_1-39_gem_2<GEM>: "1:5597, 2:94403";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="25~29"] {
+    astaps.loot.world_1-39_gem_2<GEM>: "2:93189, 3:6811";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="30~34"] {
+    astaps.loot.world_1-39_gem_2<GEM>: "2:80781, 3:19219";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="35~39"] {
+    astaps.loot.world_1-39_gem_2<GEM>: "2:68373, 3:31627";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="40~44"] {
+    astaps.loot.world_40-44_gem_2<GEM>: "1:56153, 2:43847";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="45~49"] {
+    astaps.loot.world_45-49_gem_2<GEM>: "1:8089, 2:11911";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="50~54"] {
+    astaps.loot.world_50-54_gem_2<GEM>: "1:24737, 2:75263";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="55~59"] {
+    astaps.loot.world_55-59_gem_2<GEM>: "1:2249, 2:22751";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="60~64"] {
+    astaps.loot.world_60-64_gem_2<GEM>: "2:41199, 3:8801";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="65~69"] {
+    astaps.loot.world_65-69_gem_2<GEM>: "2:13173, 3:6827";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="70~74"] {
+    astaps.loot.world_70-74_gem_2<GEM>: "2:12333, 3:12667";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="75~79"] {
+    astaps.loot.world_75-79_gem_2<GEM>: "2:15723, 3:34277";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="80~84"] {
+    astaps.loot.world_80-84_gem_2<GEM>: "2:14781, 3:85219";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="85~89"] {
+    astaps.loot.world_85-89_gem_2<GEM>: "3:98149, 4:1851";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="90~"] {
+    astaps.loot.world_90-plus_gem_2<GEM>: "3:1631, 4:369";
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"][level="40~"] {
+    astaps.loot.world_40-plus_gem_fragment_2<GEM>: "1:439, 2:61";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="30~34"] {
+    astaps.loot.world_1-39_gem_3<GEM>: "2:80781, 3:19219";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="35~39"] {
+    astaps.loot.world_1-39_gem_3<GEM>: "2:68373, 3:31627";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="40~44"] {
+    astaps.loot.world_40-44_gem_3<GEM>: "1:56153, 2:43847";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="45~49"] {
+    astaps.loot.world_45-49_gem_3<GEM>: "1:8089, 2:11911";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="50~54"] {
+    astaps.loot.world_50-54_gem_3<GEM>: "1:24737, 2:75263";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="55~59"] {
+    astaps.loot.world_55-59_gem_3<GEM>: "1:2249, 2:22751";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="60~64"] {
+    astaps.loot.world_60-64_gem_3<GEM>: "2:41199, 3:8801";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="65~69"] {
+    astaps.loot.world_65-69_gem_3<GEM>: "2:13173, 3:6827";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="70~74"] {
+    astaps.loot.world_70-74_gem_3<GEM>: "2:12333, 3:12667";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="75~79"] {
+    astaps.loot.world_75-79_gem_3<GEM>: "2:15723, 3:34277";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="80~84"] {
+    astaps.loot.world_80-84_gem_3<GEM>: "2:14781, 3:85219";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="85~89"] {
+    astaps.loot.world_85-89_gem_3<GEM>: "3:98149, 4:1851";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="90~"] {
+    astaps.loot.world_90-plus_gem_3<GEM>: "3:1631, 4:369";
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="40~"] {
+    astaps.loot.world_40-plus_gem_fragment_3<GEM>: "1:439, 2:61";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="1~4"] {
+    astaps.loot.world_1-39_gem_3<GEM>: "1:26377, 2:23623";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="5~9"] {
+    astaps.loot.world_1-39_gem_3<GEM>: "1:42821, 2:57179";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="10~14"] {
+    astaps.loot.world_1-39_gem_3<GEM>: "1:30413, 2:69587";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="15~19"] {
+    astaps.loot.world_1-39_gem_3<GEM>: "1:3601, 2:16399";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="20~24"] {
+    astaps.loot.world_1-39_gem_3<GEM>: "1:5597, 2:94403";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="25~29"] {
+    astaps.loot.world_1-39_gem_3<GEM>: "2:93189, 3:6811";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="30~34"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "2:80781, 3:19219";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="35~39"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "2:68373, 3:31627";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="40~44"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "1:56153, 2:43847";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="45~49"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "1:8089, 2:11911";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="50~54"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "1:24737, 2:75263";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="55~59"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "1:2249, 2:22751";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="60~64"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "2:41199, 3:8801";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="65~69"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "2:13173, 3:6827";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="70~74"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "2:12333, 3:12667";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="75~79"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "2:15723, 3:34277";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="80~84"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "2:14781, 3:85219";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="85~89"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "3:98149, 4:1851";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="90~"] {
+    astaps.loot.world_30-plus_gem_4<GEM>: "3:1631, 4:369";
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="40~"] {
+    astaps.loot.world_40-plus_gem_fragment_4<GEM>: "1:439, 2:61";
+}
+
+boss[type="world"][tag="chimera_sky_roamer,frostnight_scion,icewind_suite,legatus_golem,solitary_suanni"][level="1~"] {
+    astaps.loot.world_1-plus_gem_5<GEM>: 1;
+}
+
+boss[type="world"][tag="lava_dragon_statue,lord_of_the_deep_dreadwing"][level="1~"] {
+    astaps.loot.world_1-plus_gem_6<GEM>: 1;
+}
+
 boss[type="world"][tag="tenebrous_papilla"][level="1~"] {
-    astaps.loot.world_1-plus_gem_7: 1;
+    astaps.loot.world_1-plus_gem_7<GEM>: 1;
 }
 
 /* Shared world Boss currencies and experience, in ascending level order. */

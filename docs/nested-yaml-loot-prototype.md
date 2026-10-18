@@ -9,7 +9,7 @@ curve (Icewind Suite rolls both distinct items). Fifteen Bosses have no gems
 and 25 have no exclusive materials at these levels. No world Boss artifact
 payout is configured in CSS at this stage. Native world Boss rewards remain
 authoritative for levels 30 and above until those brackets are migrated.
-The previous 239 `world_*` loot tables were removed from `loot.yaml`.
+The previous 239 `world_*` loot tables and 62 now-unreferenced,\nworld-Boss-only helper pools were removed from `loot.yaml`.
 The synthetic internal resource alias `precision_clockwork_core` maps to
 native material ID 113080 for the Precision Clockwork source tag.
 The weekly Boss and chest reward tables are unchanged.

@@ -22,7 +22,7 @@ final class BundledBossRewardsTest {
         assertFalse(Pattern.compile("(?m)^world_[a-z0-9_]+:").matcher(yaml).find());
         assertFalse(css.contains("astaps.loot.world_"));
         assertTrue(yaml.contains("weekly_northlander_extras:"));
-        assertTrue(yaml.contains("gems_anemo_cryo_sliver:"));
+        assertFalse(yaml.contains("gems_anemo_cryo_sliver:"));
         assertTrue(yaml.contains("gems_world_early_anemo_cryo_sliver:"));
         assertEquals(48, css.lines().filter(line ->
                 line.startsWith("boss[type=\"world\"][tag=\"")).count());

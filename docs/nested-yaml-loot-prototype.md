@@ -42,10 +42,27 @@ awards three. A binding without a matching count does not grant anything.
 A generic count without a known Boss binding grants no configured material.
 An explicit `getBossMaterial: 0` suppresses materials for that matching rule.
 
-The bundled material rules cover 48 native Boss identities at levels 1-99.
-Early game is 1-29; mid game is 30-99. The 25 identities with no early native
-material entry use a more-specific zero-count rule. Pyro Regisvine and Oceanid
-use their higher-yield mid-game rule. Level 100+ is deferred to native fallback.
+The bundled material rules cover all positive levels for 48 native Boss
+identities: early game is 1-29, mid game is 30-99, and late game is 100+.
+The 25 identities with no early native material entry use a more-specific
+zero-count rule. Pyro Regisvine and Oceanid use their higher-yield mid-game
+rule.
+
+At level 100+, material quantities come directly from the bundled native
+`data/ChestDrop.json` and `data/Server/DropTableExcelConfigData.json`:
+
+| Boss group | Material count distribution |
+| --- | --- |
+| 23 identities retaining standard quantities, including Frostnight Scion | 2: 44.44%, 3: 55.56% |
+| Pyro Regisvine and Oceanid | 2: 18.884%, 3: 81.116% |
+| 23 identities with increased quantities, including Icewind Suite | 3: 75%, 4: 25% |
+
+Icewind Suite grants both bound materials and rolls their counts separately
+at every level. The native rows at levels 100, 105, 110, 115, and 120 have
+identical material, Mora, and experience quantities. Open-ended CSS selectors
+continue the last row above 120, matching native minimum-level selection.
+Mora remains 6000 from level 93, with 200 Adventure EXP, 45 Companionship EXP,
+and 200 Character EXP at level 100+.
 
 ## Count expressions
 

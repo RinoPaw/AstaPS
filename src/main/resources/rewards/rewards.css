@@ -371,7 +371,7 @@ boss[type="world"][level="90~92"] {
     genshin.experience.character: 200;
 }
 
-boss[type="world"][level="93~99"] {
+boss[type="world"][level="93~"] {
     genshin.currency.mora: 6000;
     genshin.experience.companionship: 45;
     genshin.experience.character: 200;
@@ -658,4 +658,23 @@ boss[type="world"][tag="pyro_regisvine,oceanid"][level="90~99"] {
  */
 boss[type="world"][tag="electro_hypostasis,anemo_hypostasis,geo_hypostasis,cryo_regisvine,pyro_regisvine,oceanid,primo_geovishap_electro,primo_geovishap_cryo,primo_geovishap_pyro,primo_geovishap_hydro,cryo_hypostasis,maguu_kenki,perpetual_mechanical_array,pyro_hypostasis,hydro_hypostasis,thunder_manifestation,golden_wolflord,bathysmal_vishap_herd,ruin_serpent,jadeplume_terrorshroom,electro_regisvine,aeonblight_drake,algorithm_semi_intransient_matrix,dendro_hypostasis,setekh_wenut"][level="1~29"] {
     getBossMaterial: 0;
+}
+
+/* Late game: levels 100+. Native rows at 100/105/110/115/120 share
+ * these quantities; the last row continues above 120, as in ChestDrop.
+ */
+boss[type="world"][level="100~"] {
+    getBossMaterial: "2:4444, 3:5556";
+}
+
+/* Pyro Regisvine and Oceanid retain their higher-yield quantities. */
+boss[type="world"][tag="pyro_regisvine,oceanid"][level="100~"] {
+    getBossMaterial: "2:18884, 3:81116";
+}
+
+/* These 23 Boss identities award 3 or 4 materials from level 100.
+ * Icewind Suite rolls this quantity independently for each bound material.
+ */
+boss[type="world"][tag="knuckle_duck,lightbearing_lunar_moth,precision_clockwork,radiant_beast,primal_watcher,icewind_suite,emperor_of_fire_and_iron,experimental_field_generator,millennial_pearl_seahorse,hydro_tulpa,legatus_golem,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,secret_source_automaton_configuration_device,lord_of_the_deep_dreadwing,holawaqa_ngoubou,lava_dragon_statue,secret_source_automaton_overseer,setekh_wenut,solitary_suanni,tenebrous_papilla,undying_replicant,chimera_sky_roamer"][level="100~"] {
+    getBossMaterial: "3:75, 4:25";
 }

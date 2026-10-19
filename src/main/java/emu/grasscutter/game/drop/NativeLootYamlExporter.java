@@ -129,6 +129,9 @@ public final class NativeLootYamlExporter {
                         throw new IllegalArgumentException("Expected semantic genshin resource name");
                     }
                     if ("artifact".equals(resource.segment(1))) {
+                        if (resource.size() != 3) {
+                            throw new IllegalArgumentException("Artifact name must identify a set only");
+                        }
                         ArtifactProperties p = artifactProperties.apply(entry.id);
                         if (p == null || p.rarity() < 1 || p.rarity() > 5
                                 || p.substats() < 0 || p.substats() > 4) {

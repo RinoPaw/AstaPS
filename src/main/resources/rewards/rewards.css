@@ -228,64 +228,64 @@ chest[type="normal"][grade="common"][city="1"][level="21~25"] {
 chest[type="normal"][grade="common"][city="1"][level="26~"] {
     genshin.currency.mora: 720~1080;
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
-    astaps.loot.mondstadt_talent_teachings: "0:75, 1:25";
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,2>: "0:75, 1:25";
 }
 
 chest[type="normal"][grade="exquisite"][city="1"][level="1~20"] {
     genshin.currency.mora: 720~1080;
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
-    astaps.loot.mondstadt_talent_teachings: "0:75, 1:25";
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,2>: "0:75, 1:25";
 }
 
 chest[type="normal"][grade="exquisite"][city="1"][level="21~25"] {
     genshin.currency.mora: 960~1440;
     genshin.avatar_up.adventurers_experience: "2:40, 3:60";
-    astaps.loot.mondstadt_talent_teachings: "0:75, 1:25";
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,2>: "0:75, 1:25";
 }
 
 chest[type="normal"][grade="exquisite"][city="1"][level="26~"] {
     genshin.currency.mora: 960~1440;
     genshin.avatar_up.adventurers_experience: "1:90, 2:10";
     genshin.avatar_up.heros_wit: 1;
-    astaps.loot.mondstadt_talent_teachings: 1;
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,2>: 1;
 }
 
 chest[type="normal"][grade="luxurious"][city="1"][level="1~20"] {
     genshin.currency.mora: 1200~1800;
     genshin.avatar_up.heros_wit: 2;
-    astaps.loot.mondstadt_talent_guides: 1;
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,3>: 1;
 }
 
 chest[type="normal"][grade="luxurious"][city="1"][level="21~25"] {
     genshin.currency.mora: 1440~2160;
     genshin.avatar_up.heros_wit: "2:95, 3:5";
-    astaps.loot.mondstadt_talent_guides: 1;
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,3>: 1;
 }
 
 chest[type="normal"][grade="luxurious"][city="1"][level="26~"] {
     genshin.currency.mora: 1440~2160;
     genshin.avatar_up.heros_wit: "2:90, 3:10";
-    astaps.loot.mondstadt_talent_guides: 1;
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,3>: 1;
 }
 
 chest[type="normal"][grade="precious"][city="1"][level="1~20"] {
     genshin.currency.mora: 960~1440;
     genshin.avatar_up.adventurers_experience: "1:90, 2:10";
     genshin.avatar_up.heros_wit: 1;
-    astaps.loot.mondstadt_talent_teachings: 1;
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,2>: 1;
 }
 
 chest[type="normal"][grade="precious"][city="1"][level="21~25"] {
     genshin.currency.mora: 1200~1800;
     genshin.avatar_up.adventurers_experience: "1:40, 2:60";
     genshin.avatar_up.heros_wit: 1;
-    astaps.loot.mondstadt_talent_teachings: 1;
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,2>: 1;
 }
 
 chest[type="normal"][grade="precious"][city="1"][level="26~"] {
     genshin.currency.mora: 1200~1800;
     genshin.avatar_up.heros_wit: 2;
-    astaps.loot.mondstadt_talent_guides: 1;
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,3>: 1;
 }
 
 chest[type="normal"][grade="common"][city="2"][level="1~5"] {
@@ -321,114 +321,114 @@ chest[type="normal"][grade="common"][city="2"][level="21~25"] {
 chest[type="normal"][grade="common"][city="2"][level="26~"] {
     genshin.currency.mora: 720~1080;
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
-    astaps.loot.liyue_talent_teachings: "0:75, 1:25";
+    astaps.loot.regional_talent_books<prosperity,diligence,gold,2>: "0:75, 1:25";
 }
 
 chest[type="normal"][grade="exquisite"][city="2"][level="1~20"] {
     genshin.currency.mora: 720~1080;
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
-    astaps.loot.liyue_talent_teachings: "0:75, 1:25";
+    astaps.loot.regional_talent_books<prosperity,diligence,gold,2>: "0:75, 1:25";
 }
 
 chest[type="normal"][grade="exquisite"][city="2"][level="21~25"] {
     genshin.currency.mora: 960~1440;
     genshin.avatar_up.adventurers_experience: "2:40, 3:60";
-    astaps.loot.liyue_talent_teachings: "0:75, 1:25";
+    astaps.loot.regional_talent_books<prosperity,diligence,gold,2>: "0:75, 1:25";
 }
 
 chest[type="normal"][grade="exquisite"][city="2"][level="26~"] {
     genshin.currency.mora: 960~1440;
     genshin.avatar_up.adventurers_experience: "1:90, 2:10";
     genshin.avatar_up.heros_wit: 1;
-    astaps.loot.liyue_talent_teachings: 1;
+    astaps.loot.regional_talent_books<prosperity,diligence,gold,2>: 1;
 }
 
 chest[type="normal"][grade="luxurious"][city="2"][level="1~20"] {
     genshin.currency.mora: 1200~1800;
     genshin.avatar_up.heros_wit: 2;
-    astaps.loot.liyue_talent_guides: 1;
+    astaps.loot.regional_talent_books<prosperity,diligence,gold,3>: 1;
 }
 
 chest[type="normal"][grade="luxurious"][city="2"][level="21~25"] {
     genshin.currency.mora: 1440~2160;
     genshin.avatar_up.heros_wit: "2:95, 3:5";
-    astaps.loot.liyue_talent_guides: 1;
+    astaps.loot.regional_talent_books<prosperity,diligence,gold,3>: 1;
 }
 
 chest[type="normal"][grade="luxurious"][city="2"][level="26~"] {
     genshin.currency.mora: 1440~2160;
     genshin.avatar_up.heros_wit: "2:90, 3:10";
-    astaps.loot.liyue_talent_guides: 1;
+    astaps.loot.regional_talent_books<prosperity,diligence,gold,3>: 1;
 }
 
 chest[type="normal"][grade="precious"][city="2"][level="1~20"] {
     genshin.currency.mora: 960~1440;
     genshin.avatar_up.adventurers_experience: "1:90, 2:10";
     genshin.avatar_up.heros_wit: 1;
-    astaps.loot.liyue_talent_teachings: 1;
+    astaps.loot.regional_talent_books<prosperity,diligence,gold,2>: 1;
 }
 
 chest[type="normal"][grade="precious"][city="2"][level="21~25"] {
     genshin.currency.mora: 1200~1800;
     genshin.avatar_up.adventurers_experience: "1:40, 2:60";
     genshin.avatar_up.heros_wit: 1;
-    astaps.loot.liyue_talent_teachings: 1;
+    astaps.loot.regional_talent_books<prosperity,diligence,gold,2>: 1;
 }
 
 chest[type="normal"][grade="precious"][city="2"][level="26~"] {
     genshin.currency.mora: 1200~1800;
     genshin.avatar_up.heros_wit: 2;
-    astaps.loot.liyue_talent_guides: 1;
+    astaps.loot.regional_talent_books<prosperity,diligence,gold,3>: 1;
 }
 
 chest[type="normal"][grade="common"][city="3"] {
     genshin.currency.mora: 800~1000;
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
-    astaps.loot.inazuma_talent_guides: "0:75, 1:25";
+    astaps.loot.regional_talent_books<transience,elegance,light,3>: "0:75, 1:25";
 }
 
 chest[type="normal"][grade="exquisite"][city="3"] {
     genshin.currency.mora: 1100~1300;
     genshin.avatar_up.heros_wit: 1;
-    astaps.loot.inazuma_talent_guides: "0:50, 1:50";
+    astaps.loot.regional_talent_books<transience,elegance,light,3>: "0:50, 1:50";
 }
 
 chest[type="normal"][grade="luxurious"][city="3"] {
     genshin.currency.mora: 1700~1900;
     genshin.avatar_up.heros_wit: "2:90, 3:10";
-    astaps.loot.inazuma_talent_philosophies: 1;
+    astaps.loot.regional_talent_books<transience,elegance,light,4>: 1;
 }
 
 chest[type="normal"][grade="precious"][city="3"] {
     genshin.currency.mora: 1400~1600;
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     genshin.avatar_up.heros_wit: 1;
-    astaps.loot.inazuma_talent_guides: "1:80, 2:20";
+    astaps.loot.regional_talent_books<transience,elegance,light,3>: "1:80, 2:20";
 }
 
 chest[type="normal"][grade="common"][city="4"] {
     genshin.currency.mora: 800~1000;
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
-    astaps.loot.sumeru_talent_guides: "0:75, 1:25";
+    astaps.loot.regional_talent_books<admonition,ingenuity,praxis,3>: "0:75, 1:25";
 }
 
 chest[type="normal"][grade="exquisite"][city="4"] {
     genshin.currency.mora: 1100~1300;
     genshin.avatar_up.heros_wit: 1;
-    astaps.loot.sumeru_talent_guides: "0:50, 1:50";
+    astaps.loot.regional_talent_books<admonition,ingenuity,praxis,3>: "0:50, 1:50";
 }
 
 chest[type="normal"][grade="luxurious"][city="4"] {
     genshin.currency.mora: 1700~1900;
     genshin.avatar_up.heros_wit: "2:90, 3:10";
-    astaps.loot.sumeru_talent_philosophies: 1;
+    astaps.loot.regional_talent_books<admonition,ingenuity,praxis,4>: 1;
 }
 
 chest[type="normal"][grade="precious"][city="4"] {
     genshin.currency.mora: 1400~1600;
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     genshin.avatar_up.heros_wit: 1;
-    astaps.loot.sumeru_talent_guides: "1:80, 2:20";
+    astaps.loot.regional_talent_books<admonition,ingenuity,praxis,3>: "1:80, 2:20";
 }
 
 /* No matching native roots exist for cities 5-9 in this source dataset.
@@ -466,27 +466,27 @@ chest[type="normal"][grade="common"][level="21~25"][city="5,6,7,8,9"] {
 
 chest[type="normal"][grade="common"][level="26~"][city="5,6,7,8,9"],
 chest[type="normal"][grade="exquisite"][level="1~20"][city="5,6,7,8,9"] {
-    astaps.loot.mondstadt_talent_teachings: "0:75, 1:25";
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,2>: "0:75, 1:25";
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     genshin.currency.mora: 720~1080;
 }
 
 chest[type="normal"][grade="exquisite"][level="21~25"][city="5,6,7,8,9"] {
-    astaps.loot.mondstadt_talent_teachings: "0:75, 1:25";
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,2>: "0:75, 1:25";
     genshin.avatar_up.adventurers_experience: "2:40, 3:60";
     genshin.currency.mora: 960~1440;
 }
 
 chest[type="normal"][grade="exquisite"][level="26~"][city="5,6,7,8,9"],
 chest[type="normal"][grade="precious"][level="1~20"][city="5,6,7,8,9"] {
-    astaps.loot.mondstadt_talent_teachings: 1;
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,2>: 1;
     genshin.avatar_up.adventurers_experience: "1:90, 2:10";
     genshin.avatar_up.heros_wit: 1;
     genshin.currency.mora: 960~1440;
 }
 
 chest[type="normal"][grade="precious"][level="21~25"][city="5,6,7,8,9"] {
-    astaps.loot.mondstadt_talent_teachings: 1;
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,2>: 1;
     genshin.avatar_up.adventurers_experience: "1:40, 2:60";
     genshin.avatar_up.heros_wit: 1;
     genshin.currency.mora: 1200~1800;
@@ -494,19 +494,19 @@ chest[type="normal"][grade="precious"][level="21~25"][city="5,6,7,8,9"] {
 
 chest[type="normal"][grade="precious"][level="26~"][city="5,6,7,8,9"],
 chest[type="normal"][grade="luxurious"][level="1~20"][city="5,6,7,8,9"] {
-    astaps.loot.mondstadt_talent_guides: 1;
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,3>: 1;
     genshin.avatar_up.heros_wit: 2;
     genshin.currency.mora: 1200~1800;
 }
 
 chest[type="normal"][grade="luxurious"][level="21~25"][city="5,6,7,8,9"] {
-    astaps.loot.mondstadt_talent_guides: 1;
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,3>: 1;
     genshin.avatar_up.heros_wit: "2:95, 3:5";
     genshin.currency.mora: 1440~2160;
 }
 
 chest[type="normal"][grade="luxurious"][level="26~"][city="5,6,7,8,9"] {
-    astaps.loot.mondstadt_talent_guides: 1;
+    astaps.loot.regional_talent_books<freedom,resistance,ballad,3>: 1;
     genshin.avatar_up.heros_wit: "2:90, 3:10";
     genshin.currency.mora: 1440~2160;
 }

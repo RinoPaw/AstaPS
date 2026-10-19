@@ -98,7 +98,8 @@ final class PacketGetSceneAreaRspTest {
         player.getUnlockedSceneAreas(3).add(1);
         GAME_OPTIONS.mapFogEnabled = false;
         var areas = GetSceneAreaRsp.parseFrom(new PacketGetSceneAreaRsp(player, 3).getData());
-        assertEquals(1000, areas.getAreaIdListCount());
+        assertEquals(emu.grasscutter.game.world.SceneAreaCatalog.forScene(3),
+                Set.copyOf(areas.getAreaIdListList()));
         assertFalse(player.getUnlockedScenePoints(3).contains(7));
         assertEquals(Set.of(1), player.getUnlockedSceneAreas(3));
     }
@@ -121,10 +122,9 @@ final class PacketGetSceneAreaRspTest {
                 assertEquals(Set.of(1, 3), Set.copyOf(areas.getAreaIdListList()));
                 assertEquals(Set.of(1, 3), Set.copyOf(points.getUnlockAreaListList()));
             } else {
-                assertEquals(1000, areas.getAreaIdListCount());
-                assertEquals(1000, points.getUnlockAreaListCount());
-                assertEquals(1, areas.getAreaIdList(0));
-                assertEquals(1000, areas.getAreaIdList(999));
+                var valid = emu.grasscutter.game.world.SceneAreaCatalog.forScene(3);
+                assertEquals(valid, Set.copyOf(areas.getAreaIdListList()));
+                assertEquals(valid, Set.copyOf(points.getUnlockAreaListList()));
             }
             assertEquals(Set.of(1, 3), player.getUnlockedSceneAreas(3));
         }

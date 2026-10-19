@@ -22,6 +22,7 @@ public class PacketQuestListNotify extends BasePacket {
                 .getQuestManager()
                 .forEachQuest(
                         quest -> {
+                            if (player.getForcedFinishedQuests().contains(quest.getMainQuestId())) return;
                             var state = quest.getState();
                             if (state == QuestState.QUEST_STATE_UNSTARTED) return;
                             // Statue activation (main quest 303) must remain visible even with questing off.

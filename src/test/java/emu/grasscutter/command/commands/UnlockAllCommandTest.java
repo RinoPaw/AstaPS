@@ -50,6 +50,7 @@ public final class UnlockAllCommandTest {
         assertEquals(0, UnlockAllCommand.unlockValidAreas(actual, valid));
         assertEquals(0, UnlockAllCommand.unlockValidAreas(actual, java.util.Set.of()));
         assertEquals(valid, actual, "Absent resource data must not delete known progress");
+        // Reproduces the 999 flags inserted into every scene by the old command.
         var fabricated = new java.util.HashSet<Integer>();
         for (int id = 1; id <= 999; id++) fabricated.add(id);
         assertEquals(0, UnlockAllCommand.unlockValidAreas(fabricated, java.util.Set.of()));

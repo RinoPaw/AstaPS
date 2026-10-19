@@ -108,6 +108,17 @@ final class BundledBossRewardsTest {
                     known.put(id, name.replace('_', ' '));
                     categories.put(id, "Character Development Items");
                 });
+        // Some Bosses expose several material variants in an array binding.
+        Pattern.compile("BOSS_MATERIAL:\\s*\\[([^]]+)\\]")
+                .matcher(stylesheet).results()
+                .flatMap(match -> java.util.Arrays.stream(match.group(1).split(",")))
+                .map(String::trim)
+                .forEach(name -> {
+                    String canonical = "genshin.avatar_ascension." + name;
+                    int id = ids.computeIfAbsent(canonical, ignored -> nextId.incrementAndGet());
+                    known.put(id, name.replace('_', ' '));
+                    categories.put(id, "Character Development Items");
+                });
         // CSS uses elemental gem aliases; register all seven canonical gem families.
         for (String family : new String[]{"vayuda_turquoise", "prithiva_topaz",
                 "vajrada_amethyst", "nagadus_emerald", "varunada_lazurite",

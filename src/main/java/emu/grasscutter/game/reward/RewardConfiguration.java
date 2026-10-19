@@ -99,7 +99,7 @@ public final class RewardConfiguration {
             throw new IllegalArgumentException(
                     "Unknown blossom type/world level: " + type + "/" + worldLevel);
         }
-        var attrs = Map.of("type", type, "world_level", Integer.toString(worldLevel));
+        var attrs = Map.of("type", type, "WR", Integer.toString(worldLevel));
         var total = new java.util.TreeMap<Integer, Integer>();
         for (int i = 0; i < (condensed ? 2 : 1); i++) {
             roll("blossom", attrs, random).forEach(

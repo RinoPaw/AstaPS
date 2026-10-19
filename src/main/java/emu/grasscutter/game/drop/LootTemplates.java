@@ -18,7 +18,7 @@ final class LootTemplates {
             Pattern.compile("([a-z][a-z0-9_-]*)\\s*<\\s*([a-z][a-z0-9_]*(?:\\s*,\\s*[a-z][a-z0-9_]*)*)\\s*>");
     private static final Pattern INVOCATION =
             Pattern.compile("([a-z][a-z0-9_-]*)\\s*<\\s*((?:[a-z][a-z0-9_]*|[0-9]+)(?:\\s*,\\s*(?:[a-z][a-z0-9_]*|[0-9]+))*)\\s*>");
-    private static final Pattern EXPRESSION = Pattern.compile("\\$\\{([^{}]*)}");
+    private static final Pattern EXPRESSION = Pattern.compile("\\$\\{([^{}]*)}|<([a-z][a-z0-9_]*)>");
     private static final Pattern INTEGER_EXPRESSION =
             Pattern.compile("([a-z][a-z0-9_]*|[0-9]+)((?:[+-][0-9]+)*)");
     private static final Pattern OPERATION = Pattern.compile("([+-])([0-9]+)");
@@ -99,11 +99,14 @@ final class LootTemplates {
             }
             return output;
         }
-        if (raw instanceof String value && value.contains("${")) {
+        if (raw instanceof String value && (value.contains("${") || value.contains("<"))) {
             Matcher matcher = EXPRESSION.matcher(value);
             StringBuffer expanded = new StringBuffer();
             while (matcher.find()) {
-                String expression = matcher.group(1).trim();
+                boolean legacy = matcher.group(1) != null;
+                String expression = legacy ? matcher.group(1).trim() : matcher.group(2);
+                // Literal generic arguments are not parameter references.
+                if (!legacy && !parameters.containsKey(expression)) continue;
                 Object replacement = parameters.containsKey(expression)
                         ? parameters.get(expression) : evaluate(expression, parameters);
                 matcher.appendReplacement(expanded, Matcher.quoteReplacement(replacement.toString()));
@@ -113,7 +116,7 @@ final class LootTemplates {
             if (result.contains("${")) {
                 throw new IllegalArgumentException("Unclosed or invalid loot expression: " + value);
             }
-            if (value.trim().matches("\\$\\{[^{}]+}")) {
+            if (value.trim().matches("\\$\\{[^{}]+}|<[a-z][a-z0-9_]*>")) {
                 return result.matches("[0-9]+") ? Integer.parseInt(result) : result;
             }
             return result;

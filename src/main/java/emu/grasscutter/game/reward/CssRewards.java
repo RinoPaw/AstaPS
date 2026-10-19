@@ -51,7 +51,9 @@ public final class CssRewards {
     // conventional CSS property identifiers. Encode declarations only; leave
     // CSS selectors, values and the canonical resource IDs unchanged.
     private static final Pattern RESOURCE_DECLARATION = Pattern.compile(
-            "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT|getBossMaterial|[a-z][a-z0-9_]*(?:\\.[\\p{L}\\p{N}_-]+){2,}(?:\\s*<\\s*(?:ELEMENT|[a-z][a-z0-9_]*|[0-9]+)(?:\\s*,\\s*(?:ELEMENT|[a-z][a-z0-9_]*|[0-9]+))*\\s*>)?)\\s*:");
+            "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT|getBossMaterial|[a-z][\\p{L}\\p{N}_.,<>\\[\\]\\s-]*)\\s*:");
+    private static final Pattern BINDING = Pattern.compile(
+            "<(BOSS_MATERIAL|ELEMENT)>(?:\\[([0-9]+)])?");
 
     private record AttributeRange(String name, long min, Long max) {
         boolean matches(Map<String, String> attributes) {
@@ -77,21 +79,23 @@ public final class CssRewards {
     }
 
     private record LootDeclaration(String name, Integer fixed, LootCount.Spec ranged) {}
+    private record ItemDeclaration(String name, Integer fixed, LootCount.Spec ranged) {}
 
     private record Rule(
             Evaluator selector, List<AttributeRange> attributeRanges,
             List<AttributeOptions> attributeOptions,
-            Map<Integer, Integer> items, List<LootDeclaration> loot,
-            Map<Integer, LootCount.Spec> rangedItems,
-            List<Integer> bossMaterials, LootCount.Spec bossMaterialCount, List<String> elements,
+            List<ItemDeclaration> items, List<LootDeclaration> loot,
+            List<String> bossMaterials, LootCount.Spec bossMaterialCount, List<String> elements,
             int specificity, int order) {}
 
     private final List<Rule> rules;
     private final YamlLootTables loot;
+    private final ItemIdRegistry itemRegistry;
 
-    private CssRewards(List<Rule> rules, YamlLootTables loot) {
+    private CssRewards(List<Rule> rules, YamlLootTables loot, ItemIdRegistry itemRegistry) {
         this.rules = List.copyOf(rules);
         this.loot = loot;
+        this.itemRegistry = itemRegistry;
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
@@ -102,7 +106,8 @@ public final class CssRewards {
         // Every occurrence gets a distinct temporary key; the original key is
         // recovered before resolving resource identities and cascade rules.
         var originalProperties = new HashMap<String, String>();
-        var propertyMatcher = RESOURCE_DECLARATION.matcher(quoteBindings(source));
+        var propertyMatcher = RESOURCE_DECLARATION.matcher(quoteBindings(
+                source.replaceAll("(?s)/\\*.*?\\*/", "")));
         var propertyBuffer = new StringBuffer();
         while (propertyMatcher.find()) {
             String surrogate = "--resource-path-" + originalProperties.size();
@@ -128,10 +133,9 @@ public final class CssRewards {
                 throw new IllegalArgumentException("Expected CSS style rules");
             }
 
-            var fixed = new HashMap<Integer, Integer>();
-            var ranged = new HashMap<Integer, LootCount.Spec>();
+            var itemDeclarations = new ArrayList<ItemDeclaration>();
             var lootDeclarations = new ArrayList<LootDeclaration>();
-            List<Integer> bossMaterials = null;
+            List<String> bossMaterials = null;
             LootCount.Spec bossMaterialCount = null;
             List<String> elements = null;
             for (var declaration : style.getAllDeclarations()) {
@@ -144,7 +148,7 @@ public final class CssRewards {
                 }
                 String original = originalProperties.getOrDefault(property, property);
                 if ("BOSS_MATERIAL".equals(original)) {
-                    bossMaterials = parseMaterialBinding(value, items);
+                    bossMaterials = parseMaterialBinding(value);
                     continue;
                 }
                 if ("ELEMENT".equals(original)) {
@@ -155,32 +159,15 @@ public final class CssRewards {
                     bossMaterialCount = LootCount.parseRoll(value);
                     continue;
                 }
-                int argumentStart = original.indexOf('<');
-                ResourceId resource = ResourceId.parse(argumentStart < 0
-                        ? original : original.substring(0, argumentStart).trim());
-                if (resource.size() < 3) {
-                    throw new IllegalArgumentException("Expected a qualified resource path: " + original);
-                }
-                if ("loot".equals(resource.segment(1))) {
-                    String compact = original.replaceAll("\\s+", "");
-                    String name = compact.endsWith("<ELEMENT>") ? compact : loot.resolveName(original);
-                    if (value.matches("[0-9]+")) {
-                        lootDeclarations.add(new LootDeclaration(name, Integer.parseInt(value), null));
-                    } else {
-                        lootDeclarations.add(new LootDeclaration(name, null, LootCount.parseRoll(value)));
-                    }
+                String compact = original.replaceAll("\\s+", "");
+                Integer fixedCount = value.matches("[0-9]+") ? Integer.valueOf(value) : null;
+                LootCount.Spec rangedCount = fixedCount == null ? LootCount.parseRoll(value) : null;
+                if (compact.matches("[a-z][a-z0-9_]*\\.loot\\..*")) {
+                    String name = BINDING.matcher(compact).find() ? compact : loot.resolveName(compact);
+                    lootDeclarations.add(new LootDeclaration(name, fixedCount, rangedCount));
                 } else {
-                    if (argumentStart >= 0) {
-                        throw new IllegalArgumentException("Template arguments require a loot resource: " + original);
-                    }
-                    int id = items.resolve(resource.toString());
-                    if (value.matches("[0-9]+")) {
-                        fixed.put(id, Integer.parseInt(value));
-                        ranged.remove(id);
-                    } else {
-                        ranged.put(id, LootCount.parseRoll(value));
-                        fixed.remove(id);
-                    }
+                    if (!BINDING.matcher(compact).find()) items.resolve(compact);
+                    itemDeclarations.add(new ItemDeclaration(compact, fixedCount, rangedCount));
                 }
             }
 
@@ -230,15 +217,15 @@ public final class CssRewards {
                 int specificity = attributeCount * 100
                         + (css.matches("^[a-zA-Z][a-zA-Z0-9_-]*.*") ? 1 : 0);
                 rules.add(new Rule(Selector.evaluatorOf(normalizedSelector),
-                        List.copyOf(attributeRanges), List.copyOf(options), Map.copyOf(fixed),
-                        List.copyOf(lootDeclarations), Map.copyOf(ranged),
+                        List.copyOf(attributeRanges), List.copyOf(options), List.copyOf(itemDeclarations),
+                        List.copyOf(lootDeclarations),
                         bossMaterials, bossMaterialCount, elements,
                         specificity, order++));
             }
         }
 
         rules.sort(Comparator.comparingInt(Rule::specificity).thenComparingInt(Rule::order));
-        return new CssRewards(rules, loot);
+        return new CssRewards(rules, loot, items);
     }
 
     /** Preserve resource and element bindings across CSS tokenization. */
@@ -265,24 +252,21 @@ public final class CssRewards {
         return buffer.toString();
     }
 
-    private static List<Integer> parseMaterialBinding(String value, ItemIdRegistry items) {
+    private static List<String> parseMaterialBinding(String value) {
         String names = value.replaceAll("\\s+", "");
-        if (names.startsWith("[")) {
-            if (!names.endsWith("]")) {
-                throw new IllegalArgumentException("Invalid Boss material list: " + value);
-            }
-            names = names.substring(1, names.length() - 1);
-        } else if (names.contains(",") || names.contains("]")) {
+        if (names.startsWith("[") && names.endsWith("]")) names = names.substring(1, names.length() - 1);
+        else if (names.contains(",") || names.contains("[") || names.contains("]")) {
             throw new IllegalArgumentException("Boss material lists require brackets: " + value);
         }
-        var ids = new ArrayList<Integer>();
+        var bindings = new ArrayList<String>();
         for (String name : names.split(",", -1)) {
-            if (name.isEmpty()) throw new IllegalArgumentException("Empty Boss material binding");
-            int id = items.resolve(name);
-            if (ids.contains(id)) throw new IllegalArgumentException("Duplicate Boss material: " + name);
-            ids.add(id);
+            String prefix = "genshin.avatar_ascension.";
+            if (name.startsWith(prefix)) name = name.substring(prefix.length());
+            ResourceId.parse(prefix + name);
+            if (bindings.contains(name)) throw new IllegalArgumentException("Duplicate Boss material: " + name);
+            bindings.add(name);
         }
-        return List.copyOf(ids);
+        return List.copyOf(bindings);
     }
 
     private static List<String> parseElementBinding(String value) {
@@ -295,7 +279,7 @@ public final class CssRewards {
         }
         var elements = new ArrayList<String>();
         for (String name : names.split(",", -1)) {
-            if (!List.of("anemo", "geo", "electro", "dendro", "hydro", "pyro", "cryo").contains(name)
+            if (!List.of("anemo", "geo", "electro", "dendro", "hydro", "pyro", "cryo", "lunar").contains(name)
                     || elements.contains(name)) {
                 throw new IllegalArgumentException("Unknown or duplicate ELEMENT binding: " + name);
             }
@@ -304,17 +288,41 @@ public final class CssRewards {
         return List.copyOf(elements);
     }
 
-    private String resolveLootName(String name, List<String> elements) {
-        if (!name.endsWith("<ELEMENT>")) return name;
-        if (elements == null) return null;
-        return loot.resolveName(name.substring(0, name.length() - "<ELEMENT>".length()) + "<" + String.join(",", elements) + ">");
+    private static List<String> expandBindings(
+            String name, List<String> materials, List<String> elements, boolean table) {
+        // Retain the previous variadic spelling for existing configurations.
+        if (table && name.endsWith("<ELEMENT>") && !name.endsWith("<<ELEMENT>>")) {
+            if (elements == null) return List.of();
+            return List.of(name.substring(0, name.length() - 9) + "<" + String.join(",", elements) + ">");
+        }
+        var matcher = BINDING.matcher(name);
+        if (!matcher.find()) return List.of(name);
+        List<String> bound = "BOSS_MATERIAL".equals(matcher.group(1)) ? materials : elements;
+        if (bound == null) return List.of();
+        List<String> choices;
+        if (matcher.group(2) != null) {
+            int index = Integer.parseInt(matcher.group(2));
+            if (index >= bound.size()) throw new IllegalArgumentException("Reward binding index out of range: " + name);
+            choices = List.of(bound.get(index));
+        } else {
+            if ((table || "ELEMENT".equals(matcher.group(1))) && bound.size() != 1) {
+                throw new IllegalArgumentException("List binding requires an explicit index: " + name);
+            }
+            choices = bound;
+        }
+        var expanded = new ArrayList<String>();
+        for (String choice : choices) {
+            String next = name.substring(0, matcher.start()) + choice + name.substring(matcher.end());
+            expanded.addAll(expandBindings(next, materials, elements, table));
+        }
+        return expanded;
     }
 
     public Selection resolve(String type, Map<String, String> attributes) {
         var element = new Element(type);
         attributes.forEach(element::attr);
         var matched = new ArrayList<Rule>();
-        List<Integer> bossMaterials = null;
+        List<String> bossMaterials = null;
         List<String> elements = null;
         // Resolve bindings independently of the count rules' position/specificity.
         for (var rule : rules) {
@@ -331,23 +339,33 @@ public final class CssRewards {
         var selectedLoot = new HashMap<String, Integer>();
         var rangedLoot = new HashMap<String, LootCount.Spec>();
         for (var rule : matched) {
-            rule.items.keySet().forEach(ranged::remove);
-            rule.rangedItems.keySet().forEach(fixed::remove);
-            fixed.putAll(rule.items);
-            ranged.putAll(rule.rangedItems);
+            for (var declaration : rule.items) {
+                for (String name : expandBindings(declaration.name, bossMaterials, elements, false)) {
+                    int id = itemRegistry.resolve(name);
+                    if (declaration.fixed != null) {
+                        ranged.remove(id);
+                        fixed.put(id, declaration.fixed);
+                    } else {
+                        fixed.remove(id);
+                        ranged.put(id, declaration.ranged);
+                    }
+                }
+            }
             for (var declaration : rule.loot) {
-                String name = resolveLootName(declaration.name, elements);
-                if (name == null) continue;
-                if (declaration.fixed != null) {
-                    rangedLoot.remove(name);
-                    selectedLoot.put(name, declaration.fixed);
-                } else {
-                    selectedLoot.remove(name);
-                    rangedLoot.put(name, declaration.ranged);
+                for (String expanded : expandBindings(declaration.name, bossMaterials, elements, true)) {
+                    String name = loot.resolveName(expanded);
+                    if (declaration.fixed != null) {
+                        rangedLoot.remove(name);
+                        selectedLoot.put(name, declaration.fixed);
+                    } else {
+                        selectedLoot.remove(name);
+                        rangedLoot.put(name, declaration.ranged);
+                    }
                 }
             }
             if (rule.bossMaterialCount != null && bossMaterials != null) {
-                for (int id : bossMaterials) {
+                for (String material : bossMaterials) {
+                    int id = itemRegistry.resolve("genshin.avatar_ascension." + material);
                     fixed.remove(id);
                     // Each item samples separately in RewardRoller, including an explicit zero.
                     ranged.put(id, rule.bossMaterialCount);

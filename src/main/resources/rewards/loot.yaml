@@ -1,5 +1,11 @@
-# Chest loot and world Boss gems.
-# Artifact and weekly-Boss pools are intentionally absent.
+# 当前奖励表的局限见 rewards.css 开头；这里保留同一范围说明：
+# 精密发条机关圣遗物借用爆炎树；解谜空表使用同地区战斗表补齐。
+# 仅城市 1-4 的摩拉、经验书、天赋书按历史战斗表恢复；城市 5-9 沿用旧通用配置。
+# 宝箱武器、矿石多缺少原始子表，仍用旧配置；宝箱圣遗物、周本不在当前表内。
+# Boss 概率有整数近似；当前数据不代表官服实测，资源名称映射和完整发奖仍待验证。
+
+# Chest random pools, world Boss gems, and world Boss artifacts.
+# Chest artifact and weekly-Boss pools are intentionally absent.
 
 weapons_1_star: &weapons_1_star
   - {reward: genshin.weapon.dull_blade, weight: 1}
@@ -54,6 +60,37 @@ mondstadt_talent_guides: &mondstadt_talent_guides
   - {reward: genshin.talent_up.freedom, properties: {rarity: 3}, weight: 1}
   - {reward: genshin.talent_up.resistance, properties: {rarity: 3}, weight: 1}
   - {reward: genshin.talent_up.ballad, properties: {rarity: 3}, weight: 1}
+
+# Regional talent-book candidates from the native chest roots.
+liyue_talent_teachings:
+  - {reward: genshin.talent_up.prosperity, properties: {rarity: 2}, weight: 1}
+  - {reward: genshin.talent_up.diligence, properties: {rarity: 2}, weight: 1}
+  - {reward: genshin.talent_up.gold, properties: {rarity: 2}, weight: 1}
+
+liyue_talent_guides:
+  - {reward: genshin.talent_up.prosperity, properties: {rarity: 3}, weight: 1}
+  - {reward: genshin.talent_up.diligence, properties: {rarity: 3}, weight: 1}
+  - {reward: genshin.talent_up.gold, properties: {rarity: 3}, weight: 1}
+
+inazuma_talent_guides:
+  - {reward: genshin.talent_up.transience, properties: {rarity: 3}, weight: 1}
+  - {reward: genshin.talent_up.elegance, properties: {rarity: 3}, weight: 1}
+  - {reward: genshin.talent_up.light, properties: {rarity: 3}, weight: 1}
+
+inazuma_talent_philosophies:
+  - {reward: genshin.talent_up.transience, properties: {rarity: 4}, weight: 1}
+  - {reward: genshin.talent_up.elegance, properties: {rarity: 4}, weight: 1}
+  - {reward: genshin.talent_up.light, properties: {rarity: 4}, weight: 1}
+
+sumeru_talent_guides:
+  - {reward: genshin.talent_up.admonition, properties: {rarity: 3}, weight: 1}
+  - {reward: genshin.talent_up.ingenuity, properties: {rarity: 3}, weight: 1}
+  - {reward: genshin.talent_up.praxis, properties: {rarity: 3}, weight: 1}
+
+sumeru_talent_philosophies:
+  - {reward: genshin.talent_up.admonition, properties: {rarity: 4}, weight: 1}
+  - {reward: genshin.talent_up.ingenuity, properties: {rarity: 4}, weight: 1}
+  - {reward: genshin.talent_up.praxis, properties: {rarity: 4}, weight: 1}
 
 # World Boss gems: weighted candidate pools; fixed single-item and multi-item rewards live in CSS.
 # Arguments replace element names only; count and weight retain primitive loot semantics.
@@ -282,6 +319,10 @@ world_30-plus_gem_4<element1, element2>:
 world_40-plus_gem_fragment_4<element1, element2>:
   - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 9, weight: 1}
   - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 9, weight: 1}
+
+# Independent single-element bonus fragments; CSS controls the total quantity.
+world_gem_fragment<element>:
+  - {reward: "genshin.avatar_ascension.<element>.fragment"}
 
 # World Boss artifacts: 48 identities; Precision Clockwork borrows Pyro Regisvine pools.
 # Generic parameters replace set names only. Counts and probabilities are unchanged.

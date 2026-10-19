@@ -1,212 +1,127 @@
 # Reward configuration
 
-The runtime loads only `src/main/resources/rewards/rewards.css` and
-`src/main/resources/rewards/loot.yaml`. There is no separate curve file,
-curve lookup, or editable `config/rewards` copy.
+Only `src/main/resources/rewards/rewards.css` and `loot.yaml` define bundled
+rewards. There are no curves or editable `config/rewards` copies.
 
-## World Boss materials
-
-Material identities and quantities are separate CSS properties:
-
-```css
-boss[type="world"][tag="frostnight_scion"] {
-    BOSS_MATERIAL: genshin.avatar_ascension.frostnights_glory;
-}
-
-boss[type="world"][level="1~4"] {
-    getBossMaterial: "1:6614, 2:3386";
-}
-```
-
-`BOSS_MATERIAL` binds an inventory item; it does not grant a reward.
-It also accepts a bracketed list. Each bound item independently executes
-the `getBossMaterial` count distribution. The binding and count are resolved
-by selector specificity and source order before rewards are rolled.
-Different Bosses may share the same count rule while binding different items.
-
-```css
-boss[type="world"][tag="icewind_suite"] {
-    BOSS_MATERIAL: [
-        genshin.avatar_ascension.artificed_spare_clockwork_component_coppelia,
-        genshin.avatar_ascension.artificed_spare_clockwork_component_coppelius
-    ];
-}
-
-boss[type="world"][level="90~99"] {
-    getBossMaterial: "2:4444, 3:5556";
-}
-```
-
-The two materials roll independently: one may award two while the other
-awards three. A binding without a matching count does not grant anything.
-A generic count without a known Boss binding grants no configured material.
-An explicit `getBossMaterial: 0` suppresses materials for that matching rule.
-
-The bundled material rules cover all positive levels for 48 native Boss
-identities: early game is 1-29, mid game is 30-99, and late game is 100+.
-The 25 identities with no early native material entry use a more-specific
-zero-count rule. Pyro Regisvine and Oceanid use their higher-yield mid-game
-rule.
-
-At level 100+, material quantities come directly from the bundled native
-`data/ChestDrop.json` and `data/Server/DropTableExcelConfigData.json`:
-
-| Boss group | Material count distribution |
-| --- | --- |
-| 23 identities retaining standard quantities, including Frostnight Scion | 2: 44.44%, 3: 55.56% |
-| Pyro Regisvine and Oceanid | 2: 18.884%, 3: 81.116% |
-| 23 identities with increased quantities, including Icewind Suite | 3: 75%, 4: 25% |
-
-Icewind Suite grants both bound materials and rolls their counts separately
-at every level. The native rows at levels 100, 105, 110, 115, and 120 have
-identical material, Mora, and experience quantities. Open-ended CSS selectors
-continue the last row above 120, matching native minimum-level selection.
-Mora remains 6000 from level 93, with 200 Adventure EXP, 45 Companionship EXP,
-and 200 Character EXP at level 100+.
-
-## World Boss gems
-
-The gem lists use item parameters in their names, with exactly the same
-`reward`, `count`, and `weight` entries as ordinary YAML loot tables:
-
-```yaml
-world_50-54_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.${element}.sliver", count: 3, weight: 4193}
-  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1118}
-
-world_50-54_gem_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.${element1}.sliver", count: 3, weight: 4193}
-  - {reward: "genshin.avatar_ascension.${element1}.fragment", count: 3, weight: 1118}
-  - {reward: "genshin.avatar_ascension.${element2}.sliver", count: 3, weight: 4193}
-  - {reward: "genshin.avatar_ascension.${element2}.fragment", count: 3, weight: 1118}
-```
-
-CSS binds each Boss's elements beside its material identity, then invokes
-shared definitions with `<ELEMENT>`:
+## Bindings and generic calls
 
 ```css
 boss[type="world"][tag="maguu_kenki"] {
-    BOSS_MATERIAL: genshin.avatar_ascension.marionette_core;
+    BOSS_MATERIAL: marionette_core;
     ELEMENT: [anemo, cryo];
 }
 
-boss[type="world"][tag="aeonblight_drake"] {
-    BOSS_MATERIAL: genshin.avatar_ascension.perpetual_caliber;
-    ELEMENT: [hydro, cryo];
+boss[type="world"][level="90~92"] {
+    genshin.currency.mora: 5200;
+    genshin.experience.companionship: 45;
+    genshin.experience.character: 200;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:44, 3:56";
 }
 
-boss[type="world"][tag="aeonblight_drake,maguu_kenki"][level="50~54"] {
-    astaps.loot.world_50-54_gem_2<ELEMENT>: "1:24737, 2:75263";
-    astaps.loot.world_40-plus_gem_fragment_2<ELEMENT>: "1:439, 2:61";
+boss[type="world"][tag="maguu_kenki"][level="50~54"] {
+    astaps.loot.world_50-54_gem_2<<ELEMENT>[0], <ELEMENT>[1]>: "1:25, 2:75";
 }
 ```
 
-`ELEMENT: electro` binds one argument; `ELEMENT: [anemo, cryo]` binds two ordered
-arguments. `<ELEMENT>` becomes `<electro>` or `<anemo, cryo>` before resolving
-an ordinary loot definition. The binding itself grants nothing and performs
-no random choice. The YAML body retains all item selection and count semantics.
-Explicit calls such as `<electro>` and `<anemo, cryo>` continue to work.
+`<ELEMENT>` is a scalar binding; lists use explicit zero-based indexes.
+`<BOSS_MATERIAL>` expands a material list into independent per-item grants.
+Bindings are resolved from all matching rules before count declarations, so
+identity declarations may follow shared level rules. Selector specificity and
+source order determine overrides. A missing binding awards no bound reward;
+an out-of-range index is rejected.
 
-Bindings follow selector specificity and source order, independently of where
-the count rules appear. Missing ELEMENT bindings skip ELEMENT-dependent declarations.
-Unknown, empty, and duplicate element bindings are rejected. If explicit and
-ELEMENT-bound calls resolve to the same table, normal CSS declaration order and
-specificity determine the final count.
+```yaml
+world_50-54_gem_1<element>:
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 21}
+```
 
-A value of `1` executes the referenced list exactly once. A count distribution
-controls independent executions, with each execution choosing a new item.
-The selected item's own count still gives an intact batch of 3 or 9 copies.
-Separate table outputs are added, including repeated copies of the same item.
-Arguments only substitute element names; they do not change amounts or odds.
-Whitespace between arguments is accepted. The quoted interpolation strings
-above use ordinary YAML string quoting. The item name is `sliver`.
+A single argument call is `astaps.loot.world_50-54_gem_1<<ELEMENT>>`.
+Literal arguments such as `<electro>` remain valid. YAML generic parameters use
+`<element>` or `<set1>` inside strings. The previous `${parameter}` spelling
+and CSS variadic `<ELEMENT>` call remain accepted for compatibility; bundled
+configuration uses the new explicit forms.
 
-A generic call may also appear in an ordinary YAML `reward` field; its list
-is expanded before compiling ordinary loot entries. Existing integer loot
-parameters and their safe arithmetic continue to work. Missing definitions,
-duplicate parameters, wrong argument counts, and cyclic calls are errors.
+`ELEMENT` also selects regional chest sigils, including `lunar`. Ley-line
+blossom selectors use `WR`, supplied by `rollBlossom` for world ranks 0–9.
 
-There is no `templates`, `parameters`, or `levels` mapping. The range in a
-definition's name is just part of its name; CSS owns level matching. No
-external curve file or level-template loader is used.
+## Counts and independent grants
 
-The native data produces these seven groups. Group numbers in the names
-identify equal counts and complete probabilities after replacing item names;
-a batch of 3 and a batch of 9 stay in separate groups.
+CSS counts accept integers, inclusive ranges (`2~3`), or quoted relative
+weights (`"2:4, 3:5"`). The latter awards two with probability 4/9 and three
+with probability 5/9; there is no implicit zero. Explicit zero outcomes are
+allowed. `+` and curve expressions are not supported in CSS.
 
-| Group | Bosses at levels 1-29 | Bosses at levels 30+ |
-| --- | ---: | ---: |
-| 1 | 15 | 15 |
-| 2 | 9 | 9 |
-| 3 | 1 (Setekh Wenut) | 14 |
-| 4 | 0 | 2 |
-| 5 | 5 | 5 |
-| 6 | 2 | 2 |
-| 7 | 1 | 1 |
+YAML primitives remain `reward`, `count`, and optional `weight`. Numeric
+weights select one sibling; omitted/null weights execute independently.
+An item's count gives copies; a nested table's count gives independent
+executions. Existing YAML count percentage expressions retain their legacy
+implicit-zero semantics; CSS expressions do not reinterpret them.
 
-The 48 Boss identity rules each bind both materials and elements. The gem
-selection rules share 77 declarations instead of 439 repeated rules.
+Direct CSS item declarations override that item's total from loot tables.
+Additional grants of an item also present in a random pool must therefore use
+an independent table call. The single-element Boss bonus fragment table is:
 
-The other 15 Bosses have no gem entry at levels 1-29. Different level ranges
-have separate definitions when their candidate weights change. Independent
-fragment lists use the same parameter syntax. Group 7 binds the three
-elements of Tenebrous Papilla using the same argument mechanism.
+```yaml
+world_gem_fragment<element>:
+  - {reward: "genshin.avatar_ascension.<element>.fragment"}
+```
 
-The source is `data/ChestDrop.json` followed by
-`data/Server/DropTableExcelConfigData.json`: 48 identities and 1200 native
-root rows. Level 90+ uses the last identical gem distribution, including
-native rows at 93, 100, 105, 110, 115, and 120; the final CSS range is open-ended.
+```css
+boss[type="world"][tag="anemo_hypostasis"][level="40~"] {
+    astaps.loot.world_gem_fragment<<ELEMENT>>: "3:88, 6:12";
+}
+```
 
-## World Boss artifacts
+This adds to main-pool fragments instead of replacing them. Boss gem groups
+1 and 3 share this deterministic candidate table, supplying their own total
+fragment quantities in CSS.
 
-The final CSS section covers 48 world Boss identities at all positive
-levels. Twelve generic definitions in the bundled `loot.yaml` instantiate
-25 source-backed candidate pools. They replace set names only, using the same
-angle-bracket parameter syntax as gems. No new syntax or loader is added.
+## World Bosses
 
-Slot, rarity, and initial-substat properties are explicit. Ordinary prayer
-circlets, 66%/34% substat counts, and unusual source rows with linked slot
-and substat outcomes retain their native probabilities. When independent
-source branches select the same candidate pool, CSS uses the exact summed
-execution-count distribution so duplicate properties cannot overwrite a roll.
+All 48 native identities have material, gem, Mora, experience, and artifact
+configuration. Materials preserve early-game absence for 25 identities,
+Pyro Regisvine/Oceanid exceptions, and increased level-100 quantities for
+23 identities. Icewind Suite's two materials roll independently.
 
-Precision Clockwork shares the Pyro Regisvine artifact group by explicit user
-choice. Its native branch counts and weights agree at all 25 source levels,
-and client reward previews list the same artifact sets and rarities. Missing
-candidate pools and their internal weights borrow Pyro Regisvine's configuration;
-this is a fallback, not a recovered original subtable. Its material, gem, Mora,
-and EXP rules remain as before. See [the artifact configuration notes](examples/world-boss-artifacts.md)
-for the original-source comparison and detailed scope.
+Gem identities and batch sizes retain their seven original groups. Weighted
+candidates use 38 generic definitions; simple grants remain in CSS. Some
+probabilities have been rounded to integer weights rather than preserved
+bit-for-bit. Native rows continue through level 120; open-ended CSS ranges
+continue the last row above that level.
 
-## Count expressions
+Artifacts use twelve generic definitions and 25 candidate pools, grouped
+into nine Boss programs. Slot, rarity, initial substat count, and unusual
+native slot/substat correlations remain explicit. Independent branches with
+the same candidate pool use an exact convolution of execution counts to avoid
+CSS-property overwrites. See [the artifact notes](examples/world-boss-artifacts.md).
+Precision Clockwork's missing pools use the explicitly approved Pyro Regisvine
+fallback; its internal probabilities have not been recovered from original data.
 
-CSS accepts fixed counts, inclusive integer ranges (`2~3`), and quoted
-count-to-relative-weight distributions. `"2:4, 3:5"` selects two with
-probability 4/9 or three with probability 5/9; it has no implicit zero outcome.
-Explicit zero outcomes are allowed, as are zero-weight alternatives.
-Weights may be decimal; counts must be integers. Duplicate count outcomes,
-negative weights, and a distribution without positive weight are rejected.
-The `+` bonus syntax and external curve expressions are not supported in CSS.
+## Regional chest payouts and limits
 
-CSS direct item declarations and named loot-table execution counts use the
-same count expression syntax. Executing an item N times awards N copies;
-executing a loot table N times independently evaluates the table N times.
+Mora, character EXP books, and talent books for cities 1–4 follow the native
+combat roots in `data/ChestDrop.json` and `data/Server/DropTableExcelConfigData.json`,
+expanded with `RinoPaw/AstaPS-Resource` at
+`c0213668889ed05cbeb86660f424c3daf18bfacd`.
+Mondstadt and Liyue retain level tiers. Inazuma and Sumeru use their own
+quality-based Mora, EXP books, regional talent families, and talent-book rarities.
+Talent candidates live in YAML; execution counts live in CSS.
 
-## Current scope
+Several puzzle reward subtables are empty. By explicit user choice, the
+same-region combat payouts fill those gaps without adding a source attribute.
+This is a fallback, not an exact reconstruction of those puzzle subtables.
+The existing combat/puzzle recipe union is retained.
 
-World Boss material, Mora, and experience rules remain in CSS. Gemstone
-contents and candidate weights live in parameterized YAML lists selected by
-CSS. Artifact configuration covers 48 world Boss identities, including the
-approved Precision Clockwork fallback. Weekly-Boss configuration remains absent.
-Chest contents retain weapons, experience items, ore, food, and talent books;
-chest artifact entries are removed. Blossoms and scene-point rewards remain.
-This is an intermediate world-Boss configuration, not a complete game
-reward configuration.
+Cities 5–9 lack matching native chest roots in this dataset and retain their
+previous generic payouts. Weapon/ore chest subtables are also often empty;
+existing weapon candidates and ore amounts remain provisional. Chest artifacts
+and weekly Bosses are absent. The 30 Adventure EXP chest policy and regional
+Primogem overrides are intentional configuration rules, not a literal copy of
+historical data. The source is historical server configuration, not a verified
+current official-server drop study.
 
-`loot.yaml` retains its existing `count` percentage-distribution syntax
-for chest contents; it has not been migrated to a new `roll` field. Gem
-execution counts use CSS count-to-weight distributions.
-The CSS count-to-weight syntax does not reinterpret those YAML quantities.
-Existing typed `genshin.*` inventory identities and `astaps.loot.*` table
-identities retain their namespace resolution. A CSS direct item declaration
-overrides the same item's total rolled from ordinary loot, as before.
+Both configuration files begin with these limitations. Native item names
+still depend on resource mappings; the known material/gem name-map gaps and
+full server inventory delivery are outside this change's validation scope.
+No test suite or CI is run for this work.

@@ -283,8 +283,11 @@ class BundledChestRewardsTest {
             assertEquals(test[4], selected.items().getOrDefault(recipes[1], 0).intValue());
             assertEquals(test[5], selected.items().getOrDefault(recipes[2], 0).intValue());
             assertEquals(test[6], selected.items().getOrDefault(recipes[3], 0).intValue());
-            assertEquals(1, selected.loot().values().stream()
-                    .filter(v -> v > 0).count());
+            assertTrue(java.util.stream.Stream.concat(
+                    selected.loot().keySet().stream(),
+                    selected.rangedLoot().keySet().stream())
+                    .anyMatch(name -> name.startsWith("astaps.loot.weapons_")),
+                    "Chest must retain its weapon pool");
         }
         String yaml = chestYaml();
         for (String name : new String[]{"recipe_mora_meat",

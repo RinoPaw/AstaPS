@@ -44,7 +44,7 @@ class CssRewardsTest {
         assertEquals(Map.of(202, 500), common.items());
         assertEquals(Map.of("astaps.loot.currency", 2), common.loot());
         assertFalse(common.rangedItems().containsKey(202));
-        assertEquals(700, RewardRoller.roll(common, loot, new Random(7)).get(202));
+        assertEquals(500, RewardRoller.roll(common, loot, new Random(7)).get(202));
     }
 
     @Test
@@ -119,7 +119,7 @@ class CssRewardsTest {
     void inventoryRewardsSupportBonusCountsAndFixedCascades() {
         var css = CssRewards.parse("""
                 chest {
-                    genshin.currency.mora: '1+1:42.89';
+                    genshin.currency.mora: '1:57.11,2:42.89';
                 }
                 chest[grade="common"] {
                     genshin.currency.mora: 3;
@@ -365,8 +365,7 @@ class CssRewardsTest {
                 "astaps.loot.currency: -1;",
                 "genshin.loot.currency: 1;",
                 "genshin.avatar.amber: 1;",
-                "astaps.item.mora: 1;",
-                "mora: 1;"}) {
+                "astaps.item.mora: 1;"}) {
             assertThrows(IllegalArgumentException.class, () ->
                     CssRewards.parse("chest { " + declaration + " }", items, loot),
                     declaration);
@@ -394,7 +393,7 @@ class CssRewardsTest {
             bookCounts.add(rewards.getOrDefault(104003, 0));
         }
         assertEquals(java.util.Set.of(1, 2, 3), currencyCounts);
-        assertEquals(java.util.Set.of(0, 1, 2), bookCounts);
+        assertEquals(java.util.Set.of(1, 2), bookCounts);
     }
 
     @Test

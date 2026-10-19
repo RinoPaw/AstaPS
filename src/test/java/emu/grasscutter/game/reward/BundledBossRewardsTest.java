@@ -16,28 +16,21 @@ import org.junit.jupiter.api.Test;
 /** Regression checks for the staged native world Boss migration. */
 final class BundledBossRewardsTest {
     @Test
-    void originalWorldTablesAreRemovedButSharedAndWeeklyLootRemain() throws Exception {
+    void worldBossTemplatesCoverAllMappedIdentitiesWithoutInventingWeeklyDrops() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         String css = RewardConfiguration.readBundled("rewards.css");
-        assertFalse(Pattern.compile("(?m)^world_[a-z0-9_]+:").matcher(yaml).find());
-        assertFalse(css.contains("astaps.loot.world_"));
-        assertTrue(yaml.contains("weekly_northlander_extras:"));
-        assertFalse(yaml.contains("gems_anemo_cryo_sliver:"));
-        assertTrue(yaml.contains("gems_world_early_anemo_cryo_sliver:"));
+        assertTrue(yaml.contains("world_40-44_gem_1<element>:"));
+        assertTrue(yaml.contains("world_40-44_gem_2<element1, element2>:"));
+        assertTrue(yaml.contains("world_artifact_5star_special<set1, plume_substats, goblet_substats>:"));
+        assertTrue(css.contains("astaps.loot.world_"));
+        assertFalse(css.contains("boss[type=\"weekly\"]"));
         assertEquals(48, css.lines().filter(line ->
                 line.startsWith("boss[type=\"world\"][tag=\"")
                         && line.contains("[level=\"1~29\"]")).count());
         assertEquals(48, css.lines().filter(line ->
                 line.startsWith("boss[type=\"world\"][tag=\"")
                         && line.contains("[level=\"30~104\"]")).count());
-        assertEquals(211, css.lines().filter(line ->
-                line.startsWith("boss[type=\"weekly\"][tag=\"")).count());
-        int start = css.indexOf("/* World Boss drops (ChestDrop sourceType 34)");
-        assertTrue(start >= 0);
-        String world = css.substring(start);
-        assertFalse(world.contains("astaps.loot.artifacts_"));
-        assertFalse(world.contains("genshin.artifact."));
-        assertTrue(world.contains("gems_world_mid_"));
+        assertTrue(css.contains("world_artifact_5star_1<"));
     }
 
     @Test
@@ -48,10 +41,24 @@ final class BundledBossRewardsTest {
         var nextId = new AtomicInteger(3000000);
         var artifacts = new ArrayList<ArtifactResolver.Variant>();
         var nextArtifactId = new AtomicInteger(4000000);
-        Pattern.compile("reward: genshin\\.artifact\\.([a-z0-9_]+)")
-                .matcher(yaml).results().map(match -> match.group(1)).distinct()
-                .forEach(name -> artifacts.add(new ArtifactResolver.Variant(
-                        nextArtifactId.incrementAndGet(), name, 1, 5, 3)));
+        // Artifact template definitions carry set placeholders. Resolve actual set names
+        // from the CSS invocations and cover every possible native slot/rarity/substat.
+        Pattern.compile("world_artifact_[a-z0-9_-]+<([^>]+)>")
+                .matcher(stylesheet).results()
+                .flatMap(match -> java.util.Arrays.stream(match.group(1).split(",")))
+                .map(String::trim)
+                .filter(name -> !name.matches("[0-9]+"))
+                .distinct().forEach(name -> {
+                    for (int rarity = 1; rarity <= 5; rarity++) {
+                        for (int slot = 1; slot <= 5; slot++) {
+                            for (int substats = 0; substats <= 4; substats++) {
+                                artifacts.add(new ArtifactResolver.Variant(
+                                        nextArtifactId.incrementAndGet(),
+                                        name, slot, rarity, substats));
+                            }
+                        }
+                    }
+                });
         var loot = YamlLootTables.parse(yaml,
                 id -> ids.computeIfAbsent(ResourceAliases.GENSHIN.resolve(id).toString(),
                         ignored -> nextId.incrementAndGet()),
@@ -131,12 +138,12 @@ final class BundledBossRewardsTest {
         assertNotNull(config.rollWorldBoss("精密发条机关", 1, new java.util.Random(71)));
 
         var dual = css.resolve("boss", Map.of(
-                "type", "world", "tag", "maguu_kenki", "level", "5"));
-        assertTrue(dual.rangedLoot().containsKey(
-                "astaps.loot.gems_world_early_anemo_cryo_sliver"));
+                "type", "world", "tag", "maguu_kenki", "level", "45"));
+        assertTrue(dual.rangedLoot().keySet().stream()
+                .anyMatch(key -> key.startsWith("astaps.loot.world_")));
         var weekly = css.resolve("boss", Map.of(
                 "type", "weekly", "tag", "stormterror", "level", "90"));
-        assertTrue(weekly.loot().containsKey("astaps.loot.weekly_northlander_extras"));
-        assertTrue(loot.contains("astaps.loot.weekly_midlander_extras"));
+        assertTrue(weekly.loot().isEmpty());
+        assertTrue(weekly.rangedLoot().isEmpty());
     }
 }

@@ -138,14 +138,11 @@ ultra:
   - {reward: *weapons_3_star, count: "1:50,2:50"}
   - {reward: genshin.weapon_up.mystic_ore, count: "3:80,4:20"}
 
-# World Boss gems: seven quantity/probability groups, with explicit level-range names.
+# World Boss gems: weighted candidate pools; fixed single-item and multi-item rewards live in CSS.
 # Arguments replace element names only; count and weight retain primitive loot semantics.
 # CSS chooses the named range and supplies the independent execution count.
 
 # Group 1
-world_1-39_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 1}
-
 world_40-44_gem_1<element>:
   - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 1147}
   - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 306}
@@ -299,9 +296,6 @@ world_40-plus_gem_fragment_2<element1, element2>:
   - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1}
 
 # Group 3
-world_1-39_gem_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 1}
-
 world_40-44_gem_3<element>:
   - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 1147}
   - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 306}
@@ -357,9 +351,6 @@ world_90-plus_gem_3<element>:
   - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 480}
   - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 9, weight: 47}
 
-world_40-plus_gem_fragment_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1}
-
 # Group 4
 world_30-plus_gem_4<element1, element2>:
   - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 9, weight: 7201}
@@ -374,27 +365,6 @@ world_30-plus_gem_4<element1, element2>:
 world_40-plus_gem_fragment_4<element1, element2>:
   - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 9, weight: 1}
   - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 9, weight: 1}
-
-# Group 5
-world_1-plus_gem_5<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 9}
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 9}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 9}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 9}
-
-# Group 6
-world_1-plus_gem_6<element>:
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9}
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9}
-
-# Group 7
-world_1-plus_gem_7<element1, element2, element3>:
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 9}
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 9}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 9}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 9}
-  - {reward: "genshin.avatar_ascension.<element3>.fragment", count: 9}
-  - {reward: "genshin.avatar_ascension.<element3>.sliver", count: 9}
 
 # World Boss artifacts: 48 identities; Precision Clockwork borrows Pyro Regisvine pools.
 # Generic parameters replace set names only. Counts and probabilities are unchanged.

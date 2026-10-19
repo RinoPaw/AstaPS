@@ -202,7 +202,7 @@ world_90-plus_gem_1<element>:
   - {reward: "genshin.avatar_ascension.${element}.gemstone", count: 3, weight: 47}
 
 world_40-plus_gem_fragment_1<element>:
-  - {reward: "genshin.avatar_ascension.${element}.fragment", count: 3, weight: 1}
+  - {reward: "genshin.avatar_ascension.${element}.fragment", count: "3:87.8, 6:12.2"}
 
 # Group 2
 world_1-39_gem_2<element1, element2>:

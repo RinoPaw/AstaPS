@@ -65,6 +65,27 @@ final class GadgetChestBossClaimTest {
     }
 
     @Test
+    void genericGadgetWithBossChestMetadataBecomesClaimableFlower() {
+        var generic = new EntityGadget(scene, FLOWER_ID, new Position(a.getPosition()));
+        var meta = new SceneGadget();
+        meta.boss_chest = new SceneBossChest();
+        meta.boss_chest.resin = 40;
+        meta.boss_chest.monster_config_id = 543001;
+        generic.setMetaGadget(meta);
+
+        // World boss flowers can use generic GadgetData, with their real function
+        // supplied by the scene script's boss_chest field.
+        generic.buildContent();
+        assertInstanceOf(GadgetChest.class, generic.getContent());
+
+        var builder = SceneGadgetInfo.newBuilder();
+        generic.getContent().onBuildProto(builder);
+        assertTrue(builder.hasBossChest());
+        assertEquals(40, builder.getBossChest().getResin());
+        assertTrue(builder.getBossChest().getRemainUidListList().contains(a.getUid()));
+    }
+
+    @Test
     void eachEligiblePlayerClaimsOnceAndTheFlowerOpensAfterTheLast() {
         claim(a);
         claim(a);

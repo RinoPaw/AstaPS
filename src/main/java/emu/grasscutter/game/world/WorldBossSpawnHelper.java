@@ -463,8 +463,24 @@ public final class WorldBossSpawnHelper {
         if (var4 != null) {
             WorldBossSpawnHelper.resolveBossGroup(var3, var4, var2);
         }
+        boolean existingFlower = WorldBossSpawnHelper.hasUnclaimedBossChest(var3, var2);
         WorldBossSpawnHelper.spawnTrounceFlowerIfMissing(var3, var2, var0.getConfigId());
         if (WorldBossSpawnHelper.hasUnclaimedBossChest(var3, var2)) {
+            // A pre-existing script flower may have been sent before its boss_chest
+            // metadata was attached. Refresh its proto so the client sees the claim action.
+            if (existingFlower) {
+                for (GameEntity entity : var3.getEntities().values()) {
+                    if (!(entity instanceof EntityGadget flower)
+                            || flower.getGroupId() != var1 || flower.getState() == 102
+                            || flower.getMetaGadget() == null
+                            || flower.getMetaGadget().boss_chest == null) continue;
+                    flower.buildContent();
+                    var3.broadcastPacket(new emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify(
+                            flower,
+                            emu.grasscutter.net.proto.VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH,
+                            0));
+                }
+            }
             Grasscutter.getLogger().info("WorldBossSpawnHelper boss killed group {} cfg {} monster {} - claimable flower ready", var1, var0.getConfigId(), var0.getEntityTypeId());
         } else {
             Grasscutter.getLogger().warn("WorldBossSpawnHelper boss killed group {} cfg {} monster {} - no claimable flower spawned", var1, var0.getConfigId(), var0.getEntityTypeId());

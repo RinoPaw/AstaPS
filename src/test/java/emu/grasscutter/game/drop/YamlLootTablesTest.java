@@ -514,10 +514,10 @@ class YamlLootTablesTest {
         assertThrows(IllegalArgumentException.class,
                 () -> tables.resolveName("genshin.currency.mora"));
         assertEquals(Map.of(202, 300), tables.roll("surprise", new Random(0)));
-        assertThrows(IllegalArgumentException.class, () -> parse("""
+        assertEquals(Map.of(202, 1), parse("""
                 astaps.loot.surprise:
                   - {reward: genshin.currency.mora}
-                """));
+                """).roll("astaps.loot.surprise", new Random(0)));
     }
 
     @Test

@@ -46,6 +46,7 @@ public final class UnlockAllCommandTest {
         var valid = java.util.Set.of(1, 17, 2001);
         assertEquals(1, UnlockAllCommand.unlockValidAreas(unlocked, valid));
         assertEquals(valid, unlocked);
+        assertFalse(unlocked.contains(999), "Unknown area IDs must not be fabricated");
         assertEquals(0, UnlockAllCommand.unlockValidAreas(unlocked, valid));
         assertEquals(0, UnlockAllCommand.unlockValidAreas(unlocked, java.util.Set.of()));
         assertEquals(valid, unlocked);

@@ -41,6 +41,17 @@ public final class UnlockAllCommandTest {
     }
 
     @Test
+    void removesFabricatedSceneAreasAndKeepsOnlyResourceBackedIds() {
+        var actual = new java.util.HashSet<Integer>(java.util.List.of(1, 2, 17, 999));
+        var valid = java.util.Set.of(1, 17, 2001);
+        assertEquals(1, UnlockAllCommand.unlockValidAreas(actual, valid));
+        assertEquals(valid, actual);
+        assertEquals(0, UnlockAllCommand.unlockValidAreas(actual, valid));
+        assertEquals(0, UnlockAllCommand.unlockValidAreas(actual, java.util.Set.of()));
+        assertEquals(valid, actual, "Missing resource data must not delete known progress");
+    }
+
+    @Test
     void preservesMapAndForceSyntax() {
         var command = new UnlockAllCommand().createCommandLine(null, null);
         assertDoesNotThrow(() -> command.parseArgs("map"));

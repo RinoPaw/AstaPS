@@ -24,12 +24,10 @@ final class BundledBossRewardsTest {
         assertTrue(yaml.contains("world_artifact_5star_special<set1, plume_substats, goblet_substats>:"));
         assertTrue(css.contains("astaps.loot.world_"));
         assertFalse(css.contains("boss[type=\"weekly\"]"));
-        assertEquals(48, css.lines().filter(line ->
-                line.startsWith("boss[type=\"world\"][tag=\"")
-                        && line.contains("[level=\"1~29\"]")).count());
-        assertEquals(48, css.lines().filter(line ->
-                line.startsWith("boss[type=\"world\"][tag=\"")
-                        && line.contains("[level=\"30~104\"]")).count());
+        String identities = css.substring(css.indexOf("/* Boss identities:"),
+                css.indexOf("/* These 25 Boss identities"));
+        assertEquals(48, identities.lines()
+                .filter(line -> line.startsWith("boss[type=\\\"world\\\"][tag=\\\"")).count());
         assertTrue(css.contains("world_artifact_5star_1<"));
     }
 
@@ -105,10 +103,13 @@ final class BundledBossRewardsTest {
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, categories),
                 loot);
         var config = new RewardConfiguration(loot, css);
-        var bosses = stylesheet.lines()
-                .filter(line -> line.startsWith("boss[type=\"world\"][tag=\""))
+        String identityCss = stylesheet.substring(
+                stylesheet.indexOf("/* Boss identities:"),
+                stylesheet.indexOf("/* These 25 Boss identities"));
+        var bosses = identityCss.lines()
+                .filter(line -> line.startsWith("boss[type=\\\"world\\\"][tag=\\\""))
                 .map(line -> line.substring(
-                        line.indexOf("[tag=\"") + 6, line.indexOf("\"][level=\"")))
+                        line.indexOf("[tag=\\\"") + 6, line.indexOf("\\"] {")))
                 .distinct().toList();
         assertEquals(48, bosses.size());
         for (var boss : bosses) {

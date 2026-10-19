@@ -100,6 +100,14 @@ final class BundledBossRewardsTest {
                         default -> "Materials";
                     });
                 });
+        Pattern.compile("BOSS_MATERIAL: ([a-z0-9_]+);")
+                .matcher(stylesheet).results().map(match -> match.group(1)).distinct()
+                .forEach(name -> {
+                    String canonical = "genshin.avatar_ascension." + name;
+                    int id = ids.computeIfAbsent(canonical, ignored -> nextId.incrementAndGet());
+                    known.put(id, name.replace('_', ' '));
+                    categories.put(id, "Character Development Items");
+                });
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, categories),
                 loot);
         var config = new RewardConfiguration(loot, css);

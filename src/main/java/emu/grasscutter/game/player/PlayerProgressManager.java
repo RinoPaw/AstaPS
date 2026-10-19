@@ -105,23 +105,6 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
      * Handler for player login.
      **********/
     public void onPlayerLogin() {
-        // Old /unlock map stored areas 1..999 in every scene. Repair only
-        // recognizable bulk-unlock records, leaving normal exploration intact.
-        int removedLegacyAreas = 0;
-        if (player.getUnlockedSceneAreas() != null) {
-            for (var entry : player.getUnlockedSceneAreas().entrySet()) {
-                removedLegacyAreas +=
-                        emu.grasscutter.game.world.SceneAreaCatalog.repairLegacyFlags(
-                                entry.getValue(),
-                                emu.grasscutter.game.world.SceneAreaCatalog.forScene(entry.getKey()));
-            }
-        }
-        if (removedLegacyAreas > 0) {
-            player.save();
-            emu.grasscutter.Grasscutter.getLogger().info(
-                    "Repaired {} fabricated map area flags for uid={}",
-                    removedLegacyAreas, player.getUid());
-        }
         // Try unlocking open states on player login. This handles accounts where unlock conditions were
         // already met before certain open state unlocks were implemented.
         this.tryUnlockOpenStates(false);

@@ -8,6 +8,20 @@ import java.util.TreeSet;
 public final class SceneAreaCatalog {
     private SceneAreaCatalog() {}
 
+    /**
+     * Legacy /unlock map inserted every ID from 1 through 999 into every scene.
+     * Recognize that exact signature before touching saved exploration progress.
+     */
+    public static int repairLegacyFlags(Set<Integer> unlocked, Set<Integer> valid) {
+        if (unlocked == null || unlocked.size() < 999) return 0;
+        for (int id = 1; id <= 999; id++) {
+            if (!unlocked.contains(id)) return 0;
+        }
+        int before = unlocked.size();
+        unlocked.retainAll(valid);
+        return before - unlocked.size();
+    }
+
     public static Set<Integer> forScene(int sceneId) {
         var ids = new TreeSet<Integer>();
         if (sceneId <= 0) return ids;

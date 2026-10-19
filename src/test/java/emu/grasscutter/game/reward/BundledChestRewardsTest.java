@@ -20,6 +20,7 @@ class BundledChestRewardsTest {
 
     private static ItemIdRegistry items() {
         var names = new java.util.HashMap<Integer, String>(ItemIdRegistry.chestDropNames());
+        names.put(101, "Character EXP");
         names.put(102, "Adventure EXP");
         names.put(105, "Companionship EXP");
         names.put(201, "Primogem");
@@ -99,7 +100,7 @@ class BundledChestRewardsTest {
         assertFalse(loot.contains("astaps.loot.three_realms_point"));
         for (String pool : new String[]{
                 "weapons_1_star", "weapons_2_star", "weapons_3_star",
-                "weapons_1_to_2_low", "weapons_1_to_2_medium",
+                "weapons_1_to_2_low", "weapons_1_to_2_high",
                 "weapons_2_to_3_low", "weapons_2_to_3_high"}) {
             assertTrue(loot.contains("astaps.loot." + pool));
         }
@@ -337,10 +338,9 @@ class BundledChestRewardsTest {
     @Test
     void nativeArtifactVariantsRemainResolvableWithSetProperties() throws Exception {
         String source = chestYaml();
-        assertTrue(source.contains("reward: genshin.artifact.adventurer"));
-        assertTrue(source.contains("properties: {slot: \"1~5\", rarity: 1}"));
-        assertEquals(18, java.util.regex.Pattern.compile(
-                "reward: genshin\\.artifact\\.[a-z0-9_]+")
+        assertTrue(source.contains("reward: \"genshin.artifact.<set1>\""));
+        assertTrue(source.contains("chest_artifact_pair<set1, set2, rarity, substats>:"));
+        assertEquals(20, java.util.regex.Pattern.compile("(?m)^chest_artifact_mix_[0-9]+:")
                 .matcher(source).results().count());
         var chosen = artifacts().compile("genshin.artifact.berserker",
                 Map.of("slot", "goblet", "rarity", 3, "substats", 1));

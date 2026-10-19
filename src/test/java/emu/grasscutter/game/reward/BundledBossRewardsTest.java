@@ -108,6 +108,17 @@ final class BundledBossRewardsTest {
                     known.put(id, name.replace('_', ' '));
                     categories.put(id, "Character Development Items");
                 });
+        // CSS references element aliases. Give the isolated registry canonical gem items.
+        for (String family : new String[]{"vayuda_turquoise", "prithiva_topaz",
+                "vajrada_amethyst", "nagadus_emerald", "varunada_lazurite",
+                "agnidus_agate", "shivada_jade"}) {
+            for (String grade : new String[]{"sliver", "fragment", "chunk", "gemstone"}) {
+                String canonical = "genshin.avatar_ascension." + family + "." + grade;
+                int id = ids.computeIfAbsent(canonical, ignored -> nextId.incrementAndGet());
+                known.put(id, family.replace('_', ' ') + " " + grade);
+                categories.put(id, "Character Development Items");
+            }
+        }
         var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, categories),
                 loot);
         var config = new RewardConfiguration(loot, css);

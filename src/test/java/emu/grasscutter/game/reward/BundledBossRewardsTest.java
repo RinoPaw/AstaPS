@@ -27,7 +27,7 @@ final class BundledBossRewardsTest {
         String identities = css.substring(css.indexOf("/* Boss identities:"),
                 css.indexOf("/* These 25 Boss identities"));
         assertEquals(48, identities.lines()
-                .filter(line -> line.startsWith("boss[type=\\\"world\\\"][tag=\\\"")).count());
+                .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertTrue(css.contains("world_artifact_5star_1<"));
     }
 
@@ -107,9 +107,9 @@ final class BundledBossRewardsTest {
                 stylesheet.indexOf("/* Boss identities:"),
                 stylesheet.indexOf("/* These 25 Boss identities"));
         var bosses = identityCss.lines()
-                .filter(line -> line.startsWith("boss[type=\\\"world\\\"][tag=\\\""))
+                .filter(line -> line.startsWith("boss[type=\"world\"][tag=\""))
                 .map(line -> line.substring(
-                        line.indexOf("[tag=\\\"") + 6, line.indexOf("\\"] {")))
+                        line.indexOf("[tag=\"") + 6, line.indexOf("\\"] {")))
                 .distinct().toList();
         assertEquals(48, bosses.size());
         for (var boss : bosses) {

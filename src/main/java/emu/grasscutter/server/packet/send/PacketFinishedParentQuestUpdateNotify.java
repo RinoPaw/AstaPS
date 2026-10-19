@@ -66,6 +66,11 @@ public class PacketFinishedParentQuestUpdateNotify extends BasePacket {
      * the quest log is empty, since its sub-quests are held back too.
      */
     private static boolean shouldShow(GameMainQuest quest) {
+        // A stale unfinished-parent update must not undo a forced-finished snapshot.
+        if (quest.getOwner() != null
+                && quest.getOwner().getForcedFinishedQuests().contains(quest.getParentQuestId())) {
+            return false;
+        }
         return QuestManager.isQuestingActive()
                 || quest.isAddedByCommand()
                 || quest.getState() == ParentQuestState.PARENT_QUEST_STATE_FINISHED;

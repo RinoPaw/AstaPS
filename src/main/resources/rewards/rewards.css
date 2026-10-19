@@ -10,6 +10,56 @@ chest[type="normal"] {
     genshin.experience.adventure: 30;
 }
 
+/* Base Primogem rewards by chest grade. */
+
+chest[type="normal"][grade="common"] {
+    genshin.currency.primogem: 2;
+}
+
+chest[type="normal"][grade="exquisite"] {
+    genshin.currency.primogem: 5;
+}
+
+chest[type="normal"][grade="precious"] {
+    genshin.currency.primogem: 10;
+}
+
+chest[type="normal"][grade="luxurious"] {
+    genshin.currency.primogem: 10;
+}
+
+/* Older Mondstadt and Liyue chests use fewer Primogems. */
+
+chest[type="normal"][grade="common"][city="1"],
+chest[type="normal"][grade="common"][city="2"] {
+    genshin.currency.primogem: 0;
+}
+
+chest[type="normal"][grade="exquisite"][city="1"],
+chest[type="normal"][grade="exquisite"][city="2"] {
+    genshin.currency.primogem: 2;
+}
+
+chest[type="normal"][grade="precious"][city="1"],
+chest[type="normal"][grade="precious"][city="2"] {
+    genshin.currency.primogem: 5;
+}
+
+/* Higher-Primogem area overrides — Mondstadt (蒙德): Dragonspine (龙脊雪山), Windrest Peak (风息山).
+   Liyue (璃月): Lisha (璃沙郊), The Chasm (层岩巨渊), Chenyu Vale: Upper Vale (沉玉谷·上谷), Chenyu Vale: Southern Mountain (沉玉谷·南陵), Mt. Laixin (来歆山), The Chasm: Underground Mines (层岩巨渊·地下矿区). */
+
+chest[type="normal"][grade="common"][area="10,77,8,19,40,41,47,300"] {
+    genshin.currency.primogem: 2;
+}
+
+chest[type="normal"][grade="exquisite"][area="10,77,8,19,40,41,47,300"] {
+    genshin.currency.primogem: 5;
+}
+
+chest[type="normal"][grade="precious"][area="10,77,8,19,40,41,47,300"] {
+    genshin.currency.primogem: 10;
+}
+
 /* Regional ELEMENT bindings for chest sigils; city 8/9 share Cryo. */
 chest[type="normal"][city="1"] {
     ELEMENT: anemo;
@@ -44,11 +94,7 @@ chest[type="normal"][city="9"] {
     ELEMENT: cryo;
 }
 
-/* Fixed currencies and tier selection. Mora values are inclusive ranges. */
-chest[type="normal"][grade="common"] {
-    genshin.currency.primogem: 2;
-}
-
+/* Level-scaled chest loot and currencies; Mora ranges are inclusive. */
 chest[type="normal"][grade="common"][level="1~5"] {
     astaps.loot.meat_ingredients: "0:50, 1:50";
     astaps.loot.weapons_1_star: "0:60, 1:40";
@@ -111,10 +157,6 @@ chest[type="normal"][grade="exquisite"][level="1~20"] {
     genshin.currency.sigil.<ELEMENT>: 3;
 }
 
-chest[type="normal"][grade="exquisite"] {
-    genshin.currency.primogem: 5;
-}
-
 chest[type="normal"][grade="exquisite"][level="21~25"] {
     astaps.loot.mondstadt_talent_teachings: "0:75, 1:25";
     astaps.loot.weapons_2_to_3_low: 1;
@@ -136,10 +178,6 @@ chest[type="normal"][grade="precious"][level="1~20"] {
     genshin.currency.sigil.<ELEMENT>: 4;
 }
 
-chest[type="normal"][grade="precious"] {
-    genshin.currency.primogem: 10;
-}
-
 chest[type="normal"][grade="precious"][level="21~25"] {
     astaps.loot.mondstadt_talent_teachings: 1;
     astaps.loot.weapons_2_to_3_high: "1:80, 2:20";
@@ -159,10 +197,6 @@ chest[type="normal"][grade="luxurious"][level="1~20"] {
     genshin.weapon_up.mystic_ore: 3;
     genshin.currency.mora: 1200~1800;
     genshin.currency.sigil.<ELEMENT>: 5;
-}
-
-chest[type="normal"][grade="luxurious"] {
-    genshin.currency.primogem: 10;
 }
 
 chest[type="normal"][grade="luxurious"][level="21~25"] {
@@ -196,38 +230,6 @@ chest[type="normal"][grade="exquisite"][level="21~25"][city="2"] {
 
 chest[type="normal"][grade="precious"][level="21~25"][city="1"] {
     genshin.recipe.mushroom_pizza.item: 1;
-}
-
-/* Older Mondstadt and Liyue chests use fewer Primogems. */
-
-chest[type="normal"][grade="common"][city="1"],
-chest[type="normal"][grade="common"][city="2"] {
-    genshin.currency.primogem: 0;
-}
-
-chest[type="normal"][grade="exquisite"][city="1"],
-chest[type="normal"][grade="exquisite"][city="2"] {
-    genshin.currency.primogem: 2;
-}
-
-chest[type="normal"][grade="precious"][city="1"],
-chest[type="normal"][grade="precious"][city="2"] {
-    genshin.currency.primogem: 5;
-}
-
-/* Higher-Primogem area overrides — Mondstadt (蒙德): Dragonspine (龙脊雪山), Windrest Peak (风息山).
-   Liyue (璃月): Lisha (璃沙郊), The Chasm (层岩巨渊), Chenyu Vale: Upper Vale (沉玉谷·上谷), Chenyu Vale: Southern Mountain (沉玉谷·南陵), Mt. Laixin (来歆山), The Chasm: Underground Mines (层岩巨渊·地下矿区). */
-
-chest[type="normal"][grade="common"][area="10,77,8,19,40,41,47,300"] {
-    genshin.currency.primogem: 2;
-}
-
-chest[type="normal"][grade="exquisite"][area="10,77,8,19,40,41,47,300"] {
-    genshin.currency.primogem: 5;
-}
-
-chest[type="normal"][grade="precious"][area="10,77,8,19,40,41,47,300"] {
-    genshin.currency.primogem: 10;
 }
 
 /* First-time activation of an eligible point. */

@@ -144,59 +144,59 @@ ultra:
 
 # Group 1
 world_40-44_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 1147}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 306}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 21}
 
 world_45-49_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 3817}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 1018}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 21}
 
 world_50-54_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 4193}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 1118}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 21}
 
 world_55-59_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 4569}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 1219}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 21}
 
 world_60-64_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 4945}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 1319}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 330}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 75}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 20}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 5}
 
 world_65-69_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 5321}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 1419}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 354}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 75}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 20}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 5}
 
 world_70-74_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 5697}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 1519}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 380}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 75}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 20}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 5}
 
 world_75-79_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 6072}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 1620}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 405}
-  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 3, weight: 1}
 
 world_80-84_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 6450}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 1719}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 429}
-  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 3, weight: 43}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 3, weight: 1}
 
 world_85-89_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 6826}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 1820}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 455}
-  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 3, weight: 46}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 3, weight: 1}
 
 world_90-plus_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 7201}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 1920}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 480}
-  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 3, weight: 47}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 3, weight: 1}
 
 # Group 2
 world_1-39_gem_2<element1, element2>:
@@ -204,92 +204,92 @@ world_1-39_gem_2<element1, element2>:
   - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 1}
 
 world_40-44_gem_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 1147}
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 306}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 1147}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 306}
+  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 21}
+  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 21}
 
 world_45-49_gem_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 3817}
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1018}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 3817}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1018}
+  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 21}
+  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 21}
 
 world_50-54_gem_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 4193}
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1118}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 4193}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1118}
+  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 21}
+  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 21}
 
 world_55-59_gem_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 4569}
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1219}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 4569}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1219}
+  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 21}
+  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 21}
 
 world_60-64_gem_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 4945}
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1319}
-  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 330}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 4945}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1319}
-  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 330}
+  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 75}
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 20}
+  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 5}
+  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 75}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 20}
+  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 5}
 
 world_65-69_gem_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 5321}
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1419}
-  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 354}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 5321}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1419}
-  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 354}
+  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 75}
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 20}
+  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 5}
+  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 75}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 20}
+  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 5}
 
 world_70-74_gem_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 5697}
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1519}
-  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 380}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 5697}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1519}
-  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 380}
+  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 75}
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 20}
+  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 5}
+  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 75}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 20}
+  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 5}
 
 world_75-79_gem_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 6072}
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1620}
-  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 405}
-  - {reward: "genshin.avatar_ascension.<element1>.gemstone", count: 3, weight: 40}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 6072}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1620}
-  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 405}
-  - {reward: "genshin.avatar_ascension.<element2>.gemstone", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element1>.gemstone", count: 3, weight: 1}
+  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element2>.gemstone", count: 3, weight: 1}
 
 world_80-84_gem_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 6450}
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1719}
-  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 429}
-  - {reward: "genshin.avatar_ascension.<element1>.gemstone", count: 3, weight: 43}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 6450}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1719}
-  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 429}
-  - {reward: "genshin.avatar_ascension.<element2>.gemstone", count: 3, weight: 43}
+  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element1>.gemstone", count: 3, weight: 1}
+  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element2>.gemstone", count: 3, weight: 1}
 
 world_85-89_gem_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 6826}
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1820}
-  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 455}
-  - {reward: "genshin.avatar_ascension.<element1>.gemstone", count: 3, weight: 46}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 6826}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1820}
-  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 455}
-  - {reward: "genshin.avatar_ascension.<element2>.gemstone", count: 3, weight: 46}
+  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element1>.gemstone", count: 3, weight: 1}
+  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element2>.gemstone", count: 3, weight: 1}
 
 world_90-plus_gem_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 7201}
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1920}
-  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 480}
-  - {reward: "genshin.avatar_ascension.<element1>.gemstone", count: 3, weight: 47}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 7201}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1920}
-  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 480}
-  - {reward: "genshin.avatar_ascension.<element2>.gemstone", count: 3, weight: 47}
+  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 3, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element1>.gemstone", count: 3, weight: 1}
+  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element2>.gemstone", count: 3, weight: 1}
 
 world_40-plus_gem_fragment_2<element1, element2>:
   - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1}
@@ -297,66 +297,70 @@ world_40-plus_gem_fragment_2<element1, element2>:
 
 # Group 3
 world_40-44_gem_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 1147}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 306}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 21}
 
 world_45-49_gem_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 3817}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1018}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 21}
+
+world_50-54_gem_3<element>:
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 21}
 
 world_55-59_gem_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 4569}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1219}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 79}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 21}
 
 world_60-64_gem_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 4945}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1319}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 330}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 75}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 20}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 5}
 
 world_65-69_gem_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 5321}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1419}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 354}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 75}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 20}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 5}
 
 world_70-74_gem_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 5697}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1519}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 380}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 75}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 20}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 5}
 
 world_75-79_gem_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 6072}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1620}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 405}
-  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 9, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 9, weight: 1}
 
 world_80-84_gem_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 6450}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1719}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 429}
-  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 9, weight: 43}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 9, weight: 1}
 
 world_85-89_gem_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 6826}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1820}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 455}
-  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 9, weight: 46}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 9, weight: 1}
 
 world_90-plus_gem_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 7201}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1920}
-  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 480}
-  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 9, weight: 47}
+  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 9, weight: 1}
 
 # Group 4
 world_30-plus_gem_4<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 9, weight: 7201}
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 9, weight: 1920}
-  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 9, weight: 480}
-  - {reward: "genshin.avatar_ascension.<element1>.gemstone", count: 9, weight: 47}
-  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 9, weight: 7201}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 9, weight: 1920}
-  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 9, weight: 480}
-  - {reward: "genshin.avatar_ascension.<element2>.gemstone", count: 9, weight: 47}
+  - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 9, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 9, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element1>.chunk", count: 9, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element1>.gemstone", count: 9, weight: 1}
+  - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 9, weight: 150}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 9, weight: 40}
+  - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 9, weight: 10}
+  - {reward: "genshin.avatar_ascension.<element2>.gemstone", count: 9, weight: 1}
 
 world_40-plus_gem_fragment_4<element1, element2>:
   - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 9, weight: 1}

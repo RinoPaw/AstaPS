@@ -69,7 +69,20 @@ public final class ForcedQuests {
         var forced = player.getForcedFinishedQuests();
         int before = forced.size();
         forced.addAll(questIds);
+        // Drop existing tracked subquest markers before issuing the completed-parent
+        // snapshot. Fabricating a finished parent alone leaves stale map question marks.
+        for (var parent : player.getQuestManager().getMainQuests().values()) {
+            if (!forced.contains(parent.getParentQuestId())) continue;
+            for (var quest : parent.getChildQuests().values()) {
+                if (quest.getState() == emu.grasscutter.game.quest.enums.QuestState.QUEST_STATE_UNFINISHED) {
+                    player.sendPacket(new emu.grasscutter.server.packet.send.PacketDelQuestNotify(
+                            quest.getSubQuestId()));
+                }
+            }
+        }
         player.save();
+        player.sendPacket(new emu.grasscutter.server.packet.send.PacketQuestListNotify(player));
+        player.sendPacket(new emu.grasscutter.server.packet.send.PacketFinishedParentQuestNotify(player));
         notify(player, questIds);
         return forced.size() - before;
     }

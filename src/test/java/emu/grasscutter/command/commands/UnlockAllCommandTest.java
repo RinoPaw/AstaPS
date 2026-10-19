@@ -43,6 +43,7 @@ public final class UnlockAllCommandTest {
     @Test
     void removesFabricatedSceneAreasAndKeepsOnlyResourceBackedIds() {
         var actual = new java.util.HashSet<Integer>(java.util.List.of(1, 2, 17, 999));
+        // Real area IDs are sparse and can exceed the old artificial 999 limit.
         var valid = java.util.Set.of(1, 17, 2001);
         assertEquals(1, UnlockAllCommand.unlockValidAreas(actual, valid));
         assertEquals(valid, actual);

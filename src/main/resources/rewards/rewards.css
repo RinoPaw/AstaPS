@@ -16,7 +16,8 @@ chest[type="normal"][grade="common"] {
 }
 
 chest[type="normal"][grade="common"][level="1~5"] {
-    astaps.loot.minimal: 1;
+    astaps.loot.meat_ingredients: "0:50, 1:50";
+    astaps.loot.weapons_1_star: "0:60, 1:40";
     genshin.avatar_up.wanderers_advice: "1:40, 2:60";
     genshin.avatar_up.adventurers_experience: "0:85, 1:15";
     genshin.weapon_up.enhancement_ore: "2:90, 3:10";
@@ -26,7 +27,8 @@ chest[type="normal"][grade="common"][level="1~5"] {
 }
 
 chest[type="normal"][grade="common"][level="6~10"] {
-    astaps.loot.nano: 1;
+    astaps.loot.meat_ingredients: "0:50, 1:50";
+    astaps.loot.weapons_1_to_2_low: "0:50, 1:50";
     genshin.avatar_up.wanderers_advice: "2:90, 3:10";
     genshin.avatar_up.adventurers_experience: "0:70, 1:30";
     genshin.weapon_up.enhancement_ore: "2:40, 3:60";
@@ -36,7 +38,7 @@ chest[type="normal"][grade="common"][level="6~10"] {
 }
 
 chest[type="normal"][grade="common"][level="11~15"] {
-    astaps.loot.micro: 1;
+    astaps.loot.weapons_1_to_2_medium: "0:40, 1:60";
     genshin.avatar_up.wanderers_advice: "2:40, 3:60";
     genshin.avatar_up.adventurers_experience: "0:60, 1:40";
     genshin.weapon_up.enhancement_ore: "3:90, 4:10";
@@ -46,7 +48,7 @@ chest[type="normal"][grade="common"][level="11~15"] {
 }
 
 chest[type="normal"][grade="common"][level="16~20"] {
-    astaps.loot.light: 1;
+    astaps.loot.weapons_1_to_2_medium: "0:30, 1:70";
     genshin.avatar_up.wanderers_advice: "3:90, 4:10";
     genshin.avatar_up.adventurers_experience: "0:50, 1:50";
     genshin.weapon_up.enhancement_ore: "4:90, 5:10";
@@ -56,7 +58,7 @@ chest[type="normal"][grade="common"][level="16~20"] {
 }
 
 chest[type="normal"][grade="common"][level="21~25"] {
-    astaps.loot.low: 1;
+    astaps.loot.weapons_2_star: "0:20, 1:80";
     genshin.avatar_up.wanderers_advice: "3:40, 4:60";
     genshin.avatar_up.adventurers_experience: "0:40, 1:60";
     genshin.weapon_up.enhancement_ore: "5:90, 6:10";
@@ -67,7 +69,8 @@ chest[type="normal"][grade="common"][level="21~25"] {
 
 chest[type="normal"][grade="common"][level="26~"],
 chest[type="normal"][grade="exquisite"][level="1~20"] {
-    astaps.loot.medium: 1;
+    astaps.loot.mondstadt_talent_teachings: "0:75, 1:25";
+    astaps.loot.weapons_2_star: "0:10, 1:90";
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     genshin.weapon_up.fine_ore: "3:90, 4:10";
     genshin.currency.mora: 720~1080;
@@ -79,7 +82,8 @@ chest[type="normal"][grade="exquisite"] {
 }
 
 chest[type="normal"][grade="exquisite"][level="21~25"] {
-    astaps.loot.high: 1;
+    astaps.loot.mondstadt_talent_teachings: "0:75, 1:25";
+    astaps.loot.weapons_2_to_3_low: 1;
     genshin.avatar_up.adventurers_experience: "2:40, 3:60";
     genshin.weapon_up.fine_ore: "4:90, 5:10";
     genshin.currency.mora: 960~1440;
@@ -88,7 +92,8 @@ chest[type="normal"][grade="exquisite"][level="21~25"] {
 
 chest[type="normal"][grade="exquisite"][level="26~"],
 chest[type="normal"][grade="precious"][level="1~20"] {
-    astaps.loot.xhigh: 1;
+    astaps.loot.mondstadt_talent_teachings: 1;
+    astaps.loot.weapons_2_to_3_low: "1:90, 2:10";
     genshin.avatar_up.adventurers_experience: "1:90, 2:10";
     genshin.avatar_up.heros_wit: 1;
     genshin.weapon_up.fine_ore: "2:90, 3:10";
@@ -102,7 +107,8 @@ chest[type="normal"][grade="precious"] {
 }
 
 chest[type="normal"][grade="precious"][level="21~25"] {
-    astaps.loot.xxhigh: 1;
+    astaps.loot.mondstadt_talent_teachings: 1;
+    astaps.loot.weapons_2_to_3_high: "1:80, 2:20";
     genshin.avatar_up.adventurers_experience: "1:40, 2:60";
     genshin.avatar_up.heros_wit: 1;
     genshin.weapon_up.fine_ore: "3:90, 4:10";
@@ -113,7 +119,8 @@ chest[type="normal"][grade="precious"][level="21~25"] {
 
 chest[type="normal"][grade="precious"][level="26~"],
 chest[type="normal"][grade="luxurious"][level="1~20"] {
-    astaps.loot.xxxhigh: 1;
+    astaps.loot.mondstadt_talent_guides: 1;
+    astaps.loot.weapons_2_to_3_high: "1:70, 2:30";
     genshin.avatar_up.heros_wit: 2;
     genshin.weapon_up.mystic_ore: 3;
     genshin.currency.mora: 1200~1800;
@@ -125,7 +132,8 @@ chest[type="normal"][grade="luxurious"] {
 }
 
 chest[type="normal"][grade="luxurious"][level="21~25"] {
-    astaps.loot.max: 1;
+    astaps.loot.mondstadt_talent_guides: 1;
+    astaps.loot.weapons_3_star: "1:60, 2:40";
     genshin.avatar_up.heros_wit: "2:95, 3:5";
     genshin.weapon_up.mystic_ore: "3:90, 4:10";
     genshin.currency.mora: 1440~2160;
@@ -133,7 +141,8 @@ chest[type="normal"][grade="luxurious"][level="21~25"] {
 }
 
 chest[type="normal"][grade="luxurious"][level="26~"] {
-    astaps.loot.ultra: 1;
+    astaps.loot.mondstadt_talent_guides: 1;
+    astaps.loot.weapons_3_star: "1:50, 2:50";
     genshin.avatar_up.heros_wit: "2:90, 3:10";
     genshin.weapon_up.mystic_ore: "3:80, 4:20";
     genshin.currency.mora: 1440~2160;

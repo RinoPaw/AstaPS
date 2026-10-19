@@ -109,7 +109,7 @@ final class BundledBossRewardsTest {
         var bosses = identityCss.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\""))
                 .map(line -> line.substring(
-                        line.indexOf("[tag=\"") + 6, line.indexOf("\\"] {")))
+                        line.indexOf("[tag=\"") + 6, line.indexOf("\"] {")))
                 .distinct().toList();
         assertEquals(48, bosses.size());
         for (var boss : bosses) {

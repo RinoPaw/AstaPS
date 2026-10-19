@@ -337,7 +337,133 @@ blossom[type="revelation"][WR="6~9"] {
     genshin.experience.companionship: 20;
 }
 
-/* World Boss identities, shared rewards, then level-based counts. */
+/* World Boss rewards: shared currencies/EXP, identity bindings, then level-based drops. */
+
+/* Shared world Boss currencies and experience, in ascending level order. */
+
+boss[type="world"] {
+    genshin.experience.adventure: 200;
+}
+
+boss[type="world"][level="1~4"] {
+    genshin.currency.mora: 1825;
+    genshin.experience.companionship: 15;
+    genshin.experience.character: 100;
+}
+
+boss[type="world"][level="5~9"] {
+    genshin.currency.mora: 2100;
+    genshin.experience.companionship: 20;
+    genshin.experience.character: 104;
+}
+
+boss[type="world"][level="10~14"] {
+    genshin.currency.mora: 2375;
+    genshin.experience.companionship: 20;
+    genshin.experience.character: 110;
+}
+
+boss[type="world"][level="15~19"] {
+    genshin.currency.mora: 2575;
+    genshin.experience.companionship: 25;
+    genshin.experience.character: 116;
+}
+
+boss[type="world"][level="20~24"] {
+    genshin.currency.mora: 2825;
+    genshin.experience.companionship: 25;
+    genshin.experience.character: 121;
+}
+
+boss[type="world"][level="25~29"] {
+    genshin.currency.mora: 3050;
+    genshin.experience.companionship: 25;
+    genshin.experience.character: 127;
+}
+
+boss[type="world"][level="30~34"] {
+    genshin.currency.mora: 3300;
+    genshin.experience.companionship: 30;
+    genshin.experience.character: 133;
+}
+
+boss[type="world"][level="35~39"] {
+    genshin.currency.mora: 3450;
+    genshin.experience.companionship: 30;
+    genshin.experience.character: 138;
+}
+
+boss[type="world"][level="40~44"] {
+    genshin.currency.mora: 3650;
+    genshin.experience.companionship: 30;
+    genshin.experience.character: 144;
+}
+
+boss[type="world"][level="45~49"] {
+    genshin.currency.mora: 3725;
+    genshin.experience.companionship: 30;
+    genshin.experience.character: 149;
+}
+
+boss[type="world"][level="50~54"] {
+    genshin.currency.mora: 3850;
+    genshin.experience.companionship: 35;
+    genshin.experience.character: 155;
+}
+
+boss[type="world"][level="55~59"] {
+    genshin.currency.mora: 3975;
+    genshin.experience.companionship: 35;
+    genshin.experience.character: 161;
+}
+
+boss[type="world"][level="60~64"] {
+    genshin.currency.mora: 4125;
+    genshin.experience.companionship: 35;
+    genshin.experience.character: 166;
+}
+
+boss[type="world"][level="65~69"] {
+    genshin.currency.mora: 4325;
+    genshin.experience.companionship: 35;
+    genshin.experience.character: 172;
+}
+
+boss[type="world"][level="70~74"] {
+    genshin.currency.mora: 4450;
+    genshin.experience.companionship: 40;
+    genshin.experience.character: 178;
+}
+
+boss[type="world"][level="75~79"] {
+    genshin.currency.mora: 4600;
+    genshin.experience.companionship: 40;
+    genshin.experience.character: 183;
+}
+
+boss[type="world"][level="80~84"] {
+    genshin.currency.mora: 4725;
+    genshin.experience.companionship: 40;
+    genshin.experience.character: 189;
+}
+
+boss[type="world"][level="85~89"] {
+    genshin.currency.mora: 4850;
+    genshin.experience.companionship: 40;
+    genshin.experience.character: 194;
+}
+
+boss[type="world"][level="90~92"] {
+    genshin.currency.mora: 5200;
+    genshin.experience.companionship: 45;
+    genshin.experience.character: 200;
+}
+
+boss[type="world"][level="93~"] {
+    genshin.currency.mora: 6000;
+    genshin.experience.companionship: 45;
+    genshin.experience.character: 200;
+}
 
 /* Boss identities: 48 native identities, with material and gem bindings in tag order. */
 
@@ -630,132 +756,6 @@ boss[type="world"][tag="thunder_manifestation"] {
 boss[type="world"][tag="undying_replicant"] {
     BOSS_MATERIAL: genshin.avatar_ascension.unscorched_blossom_branch;
     ELEMENT: pyro;
-}
-
-/* Shared world Boss currencies and experience, in ascending level order. */
-
-boss[type="world"] {
-    genshin.experience.adventure: 200;
-}
-
-boss[type="world"][level="1~4"] {
-    genshin.currency.mora: 1825;
-    genshin.experience.companionship: 15;
-    genshin.experience.character: 100;
-}
-
-boss[type="world"][level="5~9"] {
-    genshin.currency.mora: 2100;
-    genshin.experience.companionship: 20;
-    genshin.experience.character: 104;
-}
-
-boss[type="world"][level="10~14"] {
-    genshin.currency.mora: 2375;
-    genshin.experience.companionship: 20;
-    genshin.experience.character: 110;
-}
-
-boss[type="world"][level="15~19"] {
-    genshin.currency.mora: 2575;
-    genshin.experience.companionship: 25;
-    genshin.experience.character: 116;
-}
-
-boss[type="world"][level="20~24"] {
-    genshin.currency.mora: 2825;
-    genshin.experience.companionship: 25;
-    genshin.experience.character: 121;
-}
-
-boss[type="world"][level="25~29"] {
-    genshin.currency.mora: 3050;
-    genshin.experience.companionship: 25;
-    genshin.experience.character: 127;
-}
-
-boss[type="world"][level="30~34"] {
-    genshin.currency.mora: 3300;
-    genshin.experience.companionship: 30;
-    genshin.experience.character: 133;
-}
-
-boss[type="world"][level="35~39"] {
-    genshin.currency.mora: 3450;
-    genshin.experience.companionship: 30;
-    genshin.experience.character: 138;
-}
-
-boss[type="world"][level="40~44"] {
-    genshin.currency.mora: 3650;
-    genshin.experience.companionship: 30;
-    genshin.experience.character: 144;
-}
-
-boss[type="world"][level="45~49"] {
-    genshin.currency.mora: 3725;
-    genshin.experience.companionship: 30;
-    genshin.experience.character: 149;
-}
-
-boss[type="world"][level="50~54"] {
-    genshin.currency.mora: 3850;
-    genshin.experience.companionship: 35;
-    genshin.experience.character: 155;
-}
-
-boss[type="world"][level="55~59"] {
-    genshin.currency.mora: 3975;
-    genshin.experience.companionship: 35;
-    genshin.experience.character: 161;
-}
-
-boss[type="world"][level="60~64"] {
-    genshin.currency.mora: 4125;
-    genshin.experience.companionship: 35;
-    genshin.experience.character: 166;
-}
-
-boss[type="world"][level="65~69"] {
-    genshin.currency.mora: 4325;
-    genshin.experience.companionship: 35;
-    genshin.experience.character: 172;
-}
-
-boss[type="world"][level="70~74"] {
-    genshin.currency.mora: 4450;
-    genshin.experience.companionship: 40;
-    genshin.experience.character: 178;
-}
-
-boss[type="world"][level="75~79"] {
-    genshin.currency.mora: 4600;
-    genshin.experience.companionship: 40;
-    genshin.experience.character: 183;
-}
-
-boss[type="world"][level="80~84"] {
-    genshin.currency.mora: 4725;
-    genshin.experience.companionship: 40;
-    genshin.experience.character: 189;
-}
-
-boss[type="world"][level="85~89"] {
-    genshin.currency.mora: 4850;
-    genshin.experience.companionship: 40;
-    genshin.experience.character: 194;
-}
-
-boss[type="world"][level="90~92"] {
-    genshin.currency.mora: 5200;
-    genshin.experience.companionship: 45;
-    genshin.experience.character: 200;
-}
-
-boss[type="world"][level="93~"] {
-    genshin.currency.mora: 6000;
-    genshin.experience.companionship: 45;
-    genshin.experience.character: 200;
 }
 
 /* World Boss materials: early, mid, then late game; shared quantities before exceptions. */

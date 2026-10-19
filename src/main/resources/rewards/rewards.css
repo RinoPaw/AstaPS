@@ -1169,7 +1169,7 @@ boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="40~
 
 /* Group 5: 5 Bosses; two elements, each fragment and sliver independently grants 9, from level 1. */
 
-boss[type="world"][tag="chimera_sky_roamer,frostnight_scion,icewind_suite,legatus_golem,solitary_suanni"][level="1~"] {
+boss[type="world"][tag="chimera_sky_roamer,frostnight_scion,icewind_suite,legatus_golem,solitary_suanni"] {
     genshin.avatar_ascension.<ELEMENT>[0].fragment: 9;
     genshin.avatar_ascension.<ELEMENT>[0].sliver: 9;
     genshin.avatar_ascension.<ELEMENT>[1].fragment: 9;
@@ -1178,14 +1178,14 @@ boss[type="world"][tag="chimera_sky_roamer,frostnight_scion,icewind_suite,legatu
 
 /* Group 6: 2 Bosses; one element, fragment and sliver independently grant 9 each, from level 1. */
 
-boss[type="world"][tag="lava_dragon_statue,lord_of_the_deep_dreadwing"][level="1~"] {
+boss[type="world"][tag="lava_dragon_statue,lord_of_the_deep_dreadwing"] {
     genshin.avatar_ascension.<ELEMENT>.fragment: 9;
     genshin.avatar_ascension.<ELEMENT>.sliver: 9;
 }
 
 /* Group 7: Tenebrous Papilla; three elements, each fragment and sliver independently grants 9, from level 1. */
 
-boss[type="world"][tag="tenebrous_papilla"][level="1~"] {
+boss[type="world"][tag="tenebrous_papilla"] {
     genshin.avatar_ascension.<ELEMENT>[0].fragment: 9;
     genshin.avatar_ascension.<ELEMENT>[0].sliver: 9;
     genshin.avatar_ascension.<ELEMENT>[1].fragment: 9;

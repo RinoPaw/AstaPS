@@ -43,8 +43,8 @@ public final class ArlecchinoBurstBoL {
     private static final long COMPLETED_CAST_GUARD_MS = 2000L;
 
     private static final ConcurrentHashMap<Integer, PendingBurst> PENDING = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Integer, DeferredHeal> DEFERRED_HEAL =
-            new ConcurrentHashMap<>();
+    /** Burst healing already applied for the pending cast, so a repeated heal adds no more. */
+    private static final ConcurrentHashMap<Integer, Float> BURST_HEALED = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, CompletedBurst> COMPLETED_BURSTS =
             new ConcurrentHashMap<>();
 
@@ -63,8 +63,6 @@ public final class ArlecchinoBurstBoL {
             float bolSnapshot,
             float castSnapshot,
             long slashAtMs) {}
-
-    private record DeferredHeal(float amount, boolean mute) {}
 
     private record CompletedBurst(EntityAvatar avatar, long completedAtMs) {}
 
@@ -88,7 +86,7 @@ public final class ArlecchinoBurstBoL {
                 return;
             }
             float curDebt = caster.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP_DEBTS);
-            DEFERRED_HEAL.remove(caster.getId());
+            BURST_HEALED.remove(caster.getId());
             PENDING.put(caster.getId(), new PendingBurst(caster, now, 0L, -1f, curDebt, 0L));
             Grasscutter.getLogger()
                     .info(
@@ -310,12 +308,13 @@ public final class ArlecchinoBurstBoL {
                 COMPLETED_BURSTS.put(
                         entry.getKey(), new CompletedBurst(avatar, System.currentTimeMillis()));
                 PENDING.remove(entry.getKey(), pending);
+                BURST_HEALED.remove(entry.getKey());
             }
         }
     }
 
     /**
-     * @return {@code true} if deferred (caller must skip immediate heal)
+     * @return {@code true} if a pending burst took the heal (caller must skip its own heal)
      */
     public static boolean prepareBurstHeal(EntityAvatar avatar, float amount, boolean mute) {
         if (avatar == null) {
@@ -326,6 +325,17 @@ public final class ArlecchinoBurstBoL {
             if (pending == null || pending.avatar() != avatar) {
                 return false;
             }
+            // Apply the heal right away. The Bond itself stays held (PENDING) so the client can
+            // still scale the burst by it - only the CLEAR waits for the slash / lock end. Deferring
+            // the heal too made Q heal land ~0.5-1s late. One cast heals once: a repeated heal
+            // only adds what exceeds the amount already applied.
+            if (amount > 0f) {
+                float applied = BURST_HEALED.getOrDefault(avatar.getId(), 0f);
+                if (amount > applied) {
+                    ArlecchinoBoLUtil.applyBurstHeal(avatar, amount - applied, mute);
+                    BURST_HEALED.put(avatar.getId(), amount);
+                }
+            }
             long now = System.currentTimeMillis();
             long lockEnd = pending.castAtMs() + LOCK_MS;
             boolean hold =
@@ -333,36 +343,14 @@ public final class ArlecchinoBurstBoL {
                             || (pending.clearAtMs() > 0L && now < pending.clearAtMs())
                             || (pending.clearAtMs() == 0L
                                     && now - pending.castAtMs() < MISS_TIMEOUT_MS);
-            if (hold) {
-                if (amount > 0f) {
-                    DEFERRED_HEAL.merge(
-                            avatar.getId(),
-                            new DeferredHeal(amount, mute),
-                            (a, b) ->
-                                    new DeferredHeal(
-                                            Math.max(a.amount(), b.amount()), a.mute() && b.mute()));
-                }
-                Grasscutter.getLogger()
-                        .info(
-                                "[BoL] Arlecchino burst: defer heal amount={} (lockLeft={} clearAt={})",
-                                amount,
-                                Math.max(0L, lockEnd - now),
-                                pending.clearAtMs());
-                return true;
+            if (!hold) {
+                // Past hold - settle the clear now.
+                applyClear(pending.avatar(), pending.bolSnapshot(), pending.castSnapshot(), "burst-heal");
+                COMPLETED_BURSTS.put(
+                        avatar.getId(), new CompletedBurst(avatar, System.currentTimeMillis()));
+                PENDING.remove(avatar.getId(), pending);
+                BURST_HEALED.remove(avatar.getId());
             }
-            // Past hold - settle clear first, then flush this heal (do not fall through to heal()).
-            if (amount > 0f) {
-                DEFERRED_HEAL.merge(
-                        avatar.getId(),
-                        new DeferredHeal(amount, mute),
-                        (a, b) ->
-                                new DeferredHeal(
-                                        Math.max(a.amount(), b.amount()), a.mute() && b.mute()));
-            }
-            applyClear(pending.avatar(), pending.bolSnapshot(), pending.castSnapshot(), "burst-heal");
-            COMPLETED_BURSTS.put(
-                    avatar.getId(), new CompletedBurst(avatar, System.currentTimeMillis()));
-            PENDING.remove(avatar.getId(), pending);
             return true;
         }
     }
@@ -375,7 +363,7 @@ public final class ArlecchinoBurstBoL {
         while (true) {
             EntityAvatar avatar = stateAvatar(entityId);
             if (avatar == null) {
-                DEFERRED_HEAL.remove(entityId);
+                BURST_HEALED.remove(entityId);
                 return;
             }
             synchronized (avatar) {
@@ -417,12 +405,12 @@ public final class ArlecchinoBurstBoL {
             PendingBurst pending = PENDING.get(avatar.getId());
             if (pending != null && pending.avatar() == avatar) {
                 PENDING.remove(avatar.getId(), pending);
-                DEFERRED_HEAL.remove(avatar.getId());
+                BURST_HEALED.remove(avatar.getId());
             }
             CompletedBurst completed = COMPLETED_BURSTS.get(avatar.getId());
             if (completed != null && completed.avatar() == avatar) {
                 COMPLETED_BURSTS.remove(avatar.getId(), completed);
-                if (pending == null) DEFERRED_HEAL.remove(avatar.getId());
+                if (pending == null) BURST_HEALED.remove(avatar.getId());
             }
         }
     }
@@ -567,7 +555,6 @@ public final class ArlecchinoBurstBoL {
                             0f,
                             _ChangeHpDebtsReason._ChangeHpDebtsReason_CHANGE_HP_DEBTS_PAY_FINISH);
                 }
-                flushDeferredHeal(avatar);
                 return;
             }
 
@@ -586,23 +573,8 @@ public final class ArlecchinoBurstBoL {
                             newDebt,
                             bolSnapshot,
                             reason);
-            flushDeferredHeal(avatar);
         } finally {
             CLEAR_BYPASS.remove(avatar.getId());
         }
-    }
-
-    private static void flushDeferredHeal(EntityAvatar avatar) {
-        DeferredHeal deferred = DEFERRED_HEAL.remove(avatar.getId());
-        if (deferred == null || deferred.amount() <= 0f) {
-            return;
-        }
-        // Ordinary heal() returns 0 at full HP / convertToHpDebt; use BoLUtil burst HP path.
-        float real = ArlecchinoBoLUtil.applyBurstHeal(avatar, deferred.amount(), deferred.mute());
-        Grasscutter.getLogger()
-                .info(
-                        "[BoL] Arlecchino burst: flushed deferred heal amount={} real={}",
-                        deferred.amount(),
-                        real);
     }
 }

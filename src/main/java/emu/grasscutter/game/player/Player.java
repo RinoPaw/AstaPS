@@ -135,7 +135,11 @@ public class Player implements PlayerHook, FieldFetch {
     private List<Integer> tpsLoadout;
     // Snezhnaya Ice Creatures this player built.
     private List<emu.grasscutter.game.icecreature.IceCreatureRecord> iceCreatures;
+    /** The look the Ice Creature build wheel uses per creature type, as the client last chose. */
+    private Map<Integer, Integer> iceCreatureTypeGadgets;
     @Getter @Setter private Map<Integer, Set<Integer>> unlockedSceneAreas;
+    /** Map area states a quest changed with QUEST_EXEC_CHANGE_MAP_AREA_STATE, by map area id. */
+    private Map<Integer, Boolean> mapAreaStates;
     @Getter @Setter private Map<Integer, Set<Integer>> unlockedScenePoints;
     /** Separate first-entry reward receipts; handbook unlocks do not establish discovery. */
     private Map<Integer, Set<Integer>> rewardedDungeonEntries;
@@ -596,6 +600,11 @@ public class Player implements PlayerHook, FieldFetch {
         return this.unlockedSceneAreas.computeIfAbsent(sceneId, i -> new CopyOnWriteArraySet<>());
     }
 
+    public Map<Integer, Boolean> getMapAreaStates() {
+        if (this.mapAreaStates == null) this.mapAreaStates = new HashMap<>();
+        return this.mapAreaStates;
+    }
+
     public Set<Integer> getUnlockedScenePoints(int sceneId) {
         return this.unlockedScenePoints.computeIfAbsent(sceneId, i -> new CopyOnWriteArraySet<>());
     }
@@ -639,6 +648,10 @@ public class Player implements PlayerHook, FieldFetch {
             this.getProgressManager().tryUnlockOpenStates();
             this.getQuestManager().queueEvent(QuestContent.QUEST_CONTENT_PLAYER_LEVEL_UP, level);
             this.getQuestManager().queueEvent(QuestCond.QUEST_COND_PLAYER_LEVEL_EQUAL_GREATER, level);
+            if (level >= emu.grasscutter.game.dailytask.DailyTaskManager.UNLOCK_LEVEL
+                    && this.getDailyTaskManager() != null) {
+                this.getDailyTaskManager().ensureDailyTasksForToday();
+            }
 
             return true;
         }
@@ -1509,6 +1522,13 @@ public class Player implements PlayerHook, FieldFetch {
             this.iceCreatures = new ArrayList<>();
         }
         return this.iceCreatures;
+    }
+
+    public Map<Integer, Integer> getIceCreatureTypeGadgets() {
+        if (this.iceCreatureTypeGadgets == null) {
+            this.iceCreatureTypeGadgets = new HashMap<>();
+        }
+        return this.iceCreatureTypeGadgets;
     }
 
     public Map<Integer, Integer> getTpsAmmunition() {

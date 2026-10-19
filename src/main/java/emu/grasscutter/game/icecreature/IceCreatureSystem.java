@@ -2,9 +2,11 @@ package emu.grasscutter.game.icecreature;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import emu.grasscutter.Grasscutter;
+import emu.grasscutter.config.Configuration;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.player.SnezhnayaFrigid;
+import emu.grasscutter.game.props.LifeState;
 import emu.grasscutter.game.world.Position;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.game.world.WorldAreaIndex;
@@ -14,6 +16,9 @@ import emu.grasscutter.net.proto.BPAEPJHBOFMOuterClass.BPAEPJHBOFM;
 import emu.grasscutter.net.proto.IceCreatureAllGadgetInfoNotifyOuterClass.IceCreatureAllGadgetInfoNotify;
 import emu.grasscutter.net.proto.IceCreatureBuildReqOuterClass.IceCreatureBuildReq;
 import emu.grasscutter.net.proto.IceCreatureBuildRspOuterClass.IceCreatureBuildRsp;
+import emu.grasscutter.net.proto.IceCreatureDataNotifyOuterClass.IceCreatureDataNotify;
+import emu.grasscutter.net.proto.IceCreatureDataNotifyOuterClass.IceCreatureTypeGadget;
+import emu.grasscutter.net.proto.IceCreatureSetTypeGadgetReqOuterClass.IceCreatureSetTypeGadgetReq;
 import emu.grasscutter.net.proto.IceCreatureGadgetDisappearNotifyOuterClass.IceCreatureGadgetDisappearNotify;
 import emu.grasscutter.net.proto.IceCreatureGadgetInfoOuterClass.IceCreatureGadgetDetail;
 import emu.grasscutter.net.proto.IceCreatureGadgetInfoOuterClass.IceCreatureGadgetInfo;
@@ -25,6 +30,8 @@ import emu.grasscutter.net.proto.IceCreatureLikeRspOuterClass.IceCreatureLikeRsp
 import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
 import emu.grasscutter.net.proto.VisionTypeOuterClass.VisionType;
 import emu.grasscutter.server.packet.send.PacketIceCreature;
+import emu.grasscutter.server.packet.send.PacketLifeStateChangeNotify;
+import emu.grasscutter.server.packet.send.PacketSceneEntityDisappearNotify;
 import emu.grasscutter.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +59,7 @@ public final class IceCreatureSystem {
             build(player, req, rsp);
         }
         player.sendPacket(new PacketIceCreature(PacketOpcodes.IceCreatureBuildRsp, rsp.build()));
+        sendData(player);
     }
 
     private static void build(Player player, IceCreatureBuildReq req, IceCreatureBuildRsp.Builder rsp) {
@@ -140,6 +148,7 @@ public final class IceCreatureSystem {
                 new PacketIceCreature(
                         PacketOpcodes.IceCreatureGadgetRemoveRsp,
                         IceCreatureGadgetRemoveRsp.newBuilder().setRetcode(retcode).setEntityId(entityId).build()));
+        sendData(player);
     }
 
     public static void onLike(Player player, IceCreatureLikeReq req) {
@@ -170,6 +179,7 @@ public final class IceCreatureSystem {
     public static void onEnterSceneDone(Player player) {
         Scene scene = player.getScene();
         if (scene == null) return;
+        sendData(player);
         var notify = IceCreatureAllGadgetInfoNotify.newBuilder().setUid(player.getUid());
         synchronized (player) {
             for (var record : player.getIceCreatures()) {
@@ -185,6 +195,51 @@ public final class IceCreatureSystem {
         log("restored {} creatures in scene {} for {}",
                 notify.getIceCreatureGadgetInfoListCount(), scene.getId(), player.getUid());
         player.sendPacket(new PacketIceCreature(PacketOpcodes.IceCreatureAllGadgetInfoNotify, notify.build()));
+    }
+
+    /**
+     * The player's Ice Creature state (cmd 25312): which creatures the build wheel unlocks, the look
+     * each type uses, the creatures they have built and their total likes. Without it the wheel only
+     * offers the default creature. Every wheel type is unlocked here.
+     */
+    public static void sendData(Player player) {
+        var config = IceCreatureConfig.get();
+        var notify = IceCreatureDataNotify.newBuilder();
+        var unlocked = new java.util.TreeSet<Integer>();
+        var chosen = player.getIceCreatureTypeGadgets();
+        config.getBuildableGadgetsByType().forEach((type, gadgets) -> {
+            unlocked.addAll(gadgets);
+            int look = chosen.getOrDefault(type, gadgets.get(0));
+            notify.addTypeGadgetList(IceCreatureTypeGadget.newBuilder()
+                    .setType(type)
+                    .setGadgetId(gadgets.contains(look) ? look : gadgets.get(0)));
+        });
+        notify.addAllUnlockedGadgetIdList(unlocked);
+        synchronized (player) {
+            for (var record : player.getIceCreatures()) notify.addBuiltGuidList(record.getGuid());
+            notify.setTotalLikeNum(totalLikes(player));
+        }
+        player.sendPacket(new PacketIceCreature(PacketOpcodes.IceCreatureDataNotify, notify.build()));
+    }
+
+    /** cmd 29885: the player picked another look for one creature type on the build wheel. */
+    public static void onSetTypeGadget(Player player, IceCreatureSetTypeGadgetReq req) {
+        var gadgets = IceCreatureConfig.get().getBuildableGadgetsByType().get(req.getType());
+        if (gadgets == null || !gadgets.contains(req.getGadgetId())) {
+            log("refused look {} for type {}: not one of its gadgets", req.getGadgetId(), req.getType());
+        } else {
+            synchronized (player) {
+                player.getIceCreatureTypeGadgets().put(req.getType(), req.getGadgetId());
+            }
+            log("type {} now builds as gadget {}", req.getType(), req.getGadgetId());
+        }
+        sendData(player);
+    }
+
+    static int totalLikes(Player player) {
+        int likes = 0;
+        for (var record : player.getIceCreatures()) likes += record.getLikeNum();
+        return likes;
     }
 
     /**
@@ -235,11 +290,30 @@ public final class IceCreatureSystem {
         Scene scene = player.getScene();
         if (scene != null && record.getSceneId() == scene.getId()) {
             var entity = scene.getEntityById(record.getEntityId());
-            // REMOVE, not the default DIE: the creatures are invincible true-ice gadgets with no death
-            // to play, and a client given DIE left every removed one standing.
-            if (entity != null) scene.removeEntity(entity, VisionType.VisionType_VISION_REMOVE);
+            if (entity instanceof EntityGadget gadget) {
+                // LIFE_DEAD runs the true-ice onKill dissolve. The client keeps these invincible gadgets
+                // standing on a DIE disappear alone, so REMOVE follows once the die time has played.
+                scene.broadcastPacket(new PacketLifeStateChangeNotify(gadget, LifeState.LIFE_DEAD));
+                scene.removeEntity(gadget, VisionType.VisionType_VISION_DIE);
+                int ticks = (int) Math.ceil(dieSeconds(gadget) * 1000d
+                        / Math.max(1, Configuration.GAME_INFO.tickRateMs));
+                scene.getScheduler().scheduleDelayedTask(
+                        () -> scene.broadcastPacket(
+                                new PacketSceneEntityDisappearNotify(gadget, VisionType.VisionType_VISION_REMOVE)),
+                        Math.max(1, ticks));
+            } else if (entity != null) {
+                scene.removeEntity(entity, VisionType.VisionType_VISION_REMOVE);
+            }
         }
         record.setEntityId(0);
+    }
+
+    /** The gadget's {@code combat.die.dieEndTime}, 1s for the 7.1 Ice Creatures. */
+    private static double dieSeconds(EntityGadget gadget) {
+        var config = gadget.getConfigGadget();
+        var combat = config == null ? null : config.getCombat();
+        var die = combat == null ? null : combat.getDie();
+        return die == null || die.getDieEndTime() <= 0 ? 1d : die.getDieEndTime();
     }
 
     static IceCreatureGadgetInfo info(Player owner, IceCreatureRecord record) {
@@ -263,6 +337,7 @@ public final class IceCreatureSystem {
                 .setLikeNum(record.getLikeNum())
                 .setCreatorUid(owner.getUid())
                 .setCreatorNickname(owner.getNickname() == null ? "" : owner.getNickname())
+                .setUnk9(totalLikes(owner))
                 .setUnk1401(record.isFlag())
                 .setDetail(detail)
                 .build();

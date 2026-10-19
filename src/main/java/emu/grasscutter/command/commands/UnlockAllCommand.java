@@ -9,13 +9,13 @@ import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.PointData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.player.PlayerProgressManager;
+import emu.grasscutter.game.world.SceneAreaCatalog;
 import emu.grasscutter.server.packet.send.PacketAvatarDataNotify;
 import emu.grasscutter.server.packet.send.PacketOpenStateUpdateNotify;
 import emu.grasscutter.server.packet.send.PacketSceneAreaUnlockNotify;
 import emu.grasscutter.server.packet.send.PacketScenePointUnlockNotify;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
@@ -24,8 +24,6 @@ import picocli.CommandLine.Option;
         permission = "player.unlockall",
         permissionTargeted = "player.unlockall.others")
 public final class UnlockAllCommand implements CommandHandler {
-    private static final List<Integer> SCENE_AREAS = IntStream.range(1, 1000).boxed().toList();
-
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
         var commandLine = new CommandLine(new Root(sender));
@@ -156,6 +154,8 @@ public final class UnlockAllCommand implements CommandHandler {
                     if (data == null || data.isForbidSimpleUnlock()) continue;
                     if ("SceneBuildingPoint".equals(data.getType()) && !data.isUnlocked()) continue;
                 }
+                // A force-unlock must also release an earlier quest-owned point lock.
+                if (force) player.getForceLockedScenePoints(sceneId).remove(pointId);
                 if (!unlocked.add(pointId)) continue;
                 switch (classifyPoint(data)) {
                     case WAYPOINT -> waypoints++;
@@ -164,8 +164,13 @@ public final class UnlockAllCommand implements CommandHandler {
                 }
             }
             var unlockedAreas = player.getUnlockedSceneAreas(sceneId);
-            for (int area : SCENE_AREAS) {
-                if (unlockedAreas.add(area)) areaFlags++;
+            var validAreas = SceneAreaCatalog.forScene(sceneId);
+            if (!validAreas.isEmpty()) {
+                // Repair saves polluted by the old 1..999-per-scene implementation.
+                unlockedAreas.retainAll(validAreas);
+                for (int area : validAreas) {
+                    if (unlockedAreas.add(area)) areaFlags++;
+                }
             }
         }
         return new MapUnlockResult(waypoints, statues, otherPoints, areaFlags);
@@ -187,12 +192,13 @@ public final class UnlockAllCommand implements CommandHandler {
         @Override
         public void run() {
             MapUnlockResult result = unlockMap(targetPlayer, force);
-            for (int sceneId : GameData.getScenePointsPerScene().keySet()) {
-                targetPlayer.sendPacket(new PacketScenePointUnlockNotify(
-                        sceneId, targetPlayer.getUnlockedScenePoints(sceneId)));
-                targetPlayer.sendPacket(new PacketSceneAreaUnlockNotify(
-                        sceneId, targetPlayer.getUnlockedSceneAreas(sceneId)));
-            }
+            // Push the active scene now. Other scenes return their authoritative
+            // state through GetScenePointRsp / GetSceneAreaRsp when visited.
+            int currentScene = targetPlayer.getSceneId();
+            targetPlayer.sendPacket(new PacketScenePointUnlockNotify(
+                    currentScene, targetPlayer.getUnlockedScenePoints(currentScene)));
+            targetPlayer.sendPacket(new PacketSceneAreaUnlockNotify(
+                    currentScene, targetPlayer.getUnlockedSceneAreas(currentScene)));
             targetPlayer.save();
             CommandOutput.sendMessage(sender,
                     "Unlocked " + result.totalPoints() + " new map point(s): "

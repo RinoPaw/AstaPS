@@ -17,7 +17,11 @@ class MondstadtChestYamlFixtureTest {
             assertNotNull(stream, "Missing checked-in 7.1 native chest fixture");
             yaml = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
         }
-        var loot = YamlLootTables.parse(yaml, Integer::parseInt);
+        // The historical fixture retains numeric native IDs. Give them qualified
+        // fixture names before passing them to the modern YAML parser.
+        yaml = yaml.replaceAll("reward: ([0-9]+)", "reward: genshin.material.fixture_$1");
+        var loot = YamlLootTables.parse(yaml,
+                name -> Integer.parseInt(name.substring(name.lastIndexOf('_') + 1)));
         var lower = sample(loot, "astaps.loot.native_52010000", 13);
         var higher = sample(loot, "astaps.loot.native_52010100", 29);
 

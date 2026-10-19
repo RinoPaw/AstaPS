@@ -87,22 +87,6 @@ public final class ForcedQuests {
         return forced.size() - before;
     }
 
-    /** Reconcile legacy forced completions on relog, including stale map trackers. */
-    public static void synchronize(Player player) {
-        var forced = player.getForcedFinishedQuests();
-        if (forced.isEmpty()) return;
-        for (var parent : player.getQuestManager().getMainQuests().values()) {
-            if (!forced.contains(parent.getParentQuestId())) continue;
-            for (var quest : parent.getChildQuests().values()) {
-                if (quest.getState() == emu.grasscutter.game.quest.enums.QuestState.QUEST_STATE_UNFINISHED) {
-                    player.sendPacket(new emu.grasscutter.server.packet.send.PacketDelQuestNotify(
-                            quest.getSubQuestId()));
-                }
-            }
-        }
-        notify(player, forced);
-    }
-
     private static void send(Player player, List<Integer> ids) {
         var arr = new int[ids.size()];
         for (int i = 0; i < ids.size(); i++) arr[i] = ids.get(i);

@@ -58,6 +58,23 @@ public final class UnlockAllCommandTest {
     }
 
     @Test
+    void repairsOnlyLegacyBulkUnlockedSaves() {
+        var normal = new java.util.HashSet<Integer>(java.util.List.of(1, 7, 250));
+        assertEquals(0, emu.grasscutter.game.world.SceneAreaCatalog.repairLegacyFlags(
+                normal, java.util.Set.of(1, 7)));
+        assertEquals(java.util.Set.of(1, 7, 250), normal);
+
+        var legacy = new java.util.HashSet<Integer>();
+        for (int id = 1; id <= 999; id++) legacy.add(id);
+        legacy.add(2001);
+        assertEquals(997, emu.grasscutter.game.world.SceneAreaCatalog.repairLegacyFlags(
+                legacy, java.util.Set.of(1, 7, 2001)));
+        assertEquals(java.util.Set.of(1, 7, 2001), legacy);
+        assertEquals(0, emu.grasscutter.game.world.SceneAreaCatalog.repairLegacyFlags(
+                legacy, java.util.Set.of(1, 7, 2001)));
+    }
+
+    @Test
     void preservesMapAndForceSyntax() {
         var command = new UnlockAllCommand().createCommandLine(null, null);
         assertDoesNotThrow(() -> command.parseArgs("map"));

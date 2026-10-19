@@ -48,7 +48,7 @@ public final class UnlockAllCommandTest {
         assertEquals(valid, actual);
         assertEquals(0, UnlockAllCommand.unlockValidAreas(actual, valid));
         assertEquals(0, UnlockAllCommand.unlockValidAreas(actual, java.util.Set.of()));
-        assertEquals(valid, actual, "Missing resource data must not delete known progress");
+        assertEquals(valid, actual, "Absent resource data must not delete known progress");
     }
 
     @Test

@@ -41,24 +41,24 @@ weapons_3_star: &weapons_3_star
   - {reward: genshin.weapon.messenger, weight: 1}
 
 # Mixed weapon tiers. Low/medium/high indicate the relative higher-rarity chance.
-weapons_1_to_2_low: &weapons_1_to_2_low
+weapons_1_to_2_low:
   - {reward: *weapons_1_star, weight: 4}
   - {reward: *weapons_2_star, weight: 1}
 
-weapons_1_to_2_high: &weapons_1_to_2_high
+weapons_1_to_2_high:
   - {reward: *weapons_1_star, weight: 1}
   - {reward: *weapons_2_star, weight: 1}
 
-weapons_2_to_3_low: &weapons_2_to_3_low
+weapons_2_to_3_low:
   - {reward: *weapons_2_star, weight: 3}
   - {reward: *weapons_3_star, weight: 2}
 
-weapons_2_to_3_high: &weapons_2_to_3_high
+weapons_2_to_3_high:
   - {reward: *weapons_2_star, weight: 1}
   - {reward: *weapons_3_star, weight: 3}
 
 ## 1.2 Food ingredients
-meat_ingredients: &meat_ingredients
+meat_ingredients:
   - {reward: genshin.material.raw_meat, weight: 1}
   - {reward: genshin.material.fowl, weight: 1}
 

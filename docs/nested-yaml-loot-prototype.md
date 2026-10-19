@@ -159,7 +159,7 @@ native rows at 93, 100, 105, 110, 115, and 120; the final CSS range is open-ende
 
 ## World Boss artifacts
 
-The final CSS section covers 47 native world Boss identities at all positive
+The final CSS section covers 48 world Boss identities at all positive
 levels. Twelve generic definitions in the bundled `loot.yaml` instantiate
 25 source-backed candidate pools. They replace set names only, using the same
 angle-bracket parameter syntax as gems. No new syntax or loader is added.
@@ -170,9 +170,12 @@ and substat outcomes retain their native probabilities. When independent
 source branches select the same candidate pool, CSS uses the exact summed
 execution-count distribution so duplicate properties cannot overwrite a roll.
 
-Precision Clockwork is excluded from artifact configuration because eight
-referenced source IDs are unresolved. Its material, gem, Mora, and EXP rules
-remain as before. See [the artifact configuration notes](examples/world-boss-artifacts.md)
+Precision Clockwork shares the Pyro Regisvine artifact group by explicit user
+choice. Its native branch counts and weights agree at all 25 source levels,
+and client reward previews list the same artifact sets and rarities. Missing
+candidate pools and their internal weights borrow Pyro Regisvine's configuration;
+this is a fallback, not a recovered original subtable. Its material, gem, Mora,
+and EXP rules remain as before. See [the artifact configuration notes](examples/world-boss-artifacts.md)
 for the original-source comparison and detailed scope.
 
 ## Count expressions
@@ -193,8 +196,8 @@ executing a loot table N times independently evaluates the table N times.
 
 World Boss material, Mora, and experience rules remain in CSS. Gemstone
 contents and candidate weights live in parameterized YAML lists selected by
-CSS. Artifact configuration covers 47 world Boss identities; Precision
-Clockwork artifacts and weekly-Boss configuration remain absent.
+CSS. Artifact configuration covers 48 world Boss identities, including the
+approved Precision Clockwork fallback. Weekly-Boss configuration remains absent.
 Chest contents retain weapons, experience items, ore, food, and talent books;
 chest artifact entries are removed. Blossoms and scene-point rewards remain.
 This is an intermediate world-Boss configuration, not a complete game

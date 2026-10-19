@@ -399,7 +399,7 @@ world_1-plus_gem_7<element1, element2, element3>:
   - {reward: "genshin.avatar_ascension.${element3}.fragment", count: 9}
   - {reward: "genshin.avatar_ascension.${element3}.sliver", count: 9}
 
-# World Boss artifacts: 47 source-backed identities; Precision Clockwork is unresolved.
+# World Boss artifacts: 48 identities; Precision Clockwork borrows Pyro Regisvine pools.
 # Generic parameters replace set names only. Counts and probabilities are unchanged.
 # Existing properties: slot names/ranges/percentages, rarity, and substats percentages.
 

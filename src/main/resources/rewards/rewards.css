@@ -1,5 +1,5 @@
 /* World Boss material, gem, and artifact working configuration.
- * World Boss artifacts cover 47 identities; Precision Clockwork remains unresolved.
+ * World Boss artifacts cover 48 identities; Precision Clockwork borrows Pyro Regisvine pools.
  * Chest artifact and weekly-Boss reward configuration remains absent.
  * World Boss currencies/EXP and non-artifact chest contents are retained.
  * BOSS_MATERIAL and ELEMENT bind identities; shared rules declare count rolls.
@@ -1169,7 +1169,7 @@ boss[type="world"][tag="tenebrous_papilla"][level="1~"] {
     astaps.loot.world_1-plus_gem_7<ELEMENT>: 1;
 }
 
-/* World Boss artifacts: 47 identities; Precision Clockwork has unresolved source IDs.
+/* World Boss artifacts: 48 identities; Precision Clockwork uses approved fallback pools.
  * Tables parameterize set names only. Each emitted artifact is generated independently.
  * Independent branches selecting the same table are combined by exact convolution
  * of their execution counts, avoiding duplicate CSS-property overrides.
@@ -1236,62 +1236,67 @@ boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,c
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: 1;
 }
 
-/* Artifact group 2: 4 Boss identities, levels in ascending order. */
-boss[type="world"][tag="algorithm_semi_intransient_matrix,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="1~4"] {
+/* Artifact group 2: 5 Boss identities, levels in ascending order.
+ * Precision Clockwork: native branch counts and weights match this group at all
+ * 25 source levels; client preview 15209 matches Pyro Regisvine preview 15140.
+ * Missing candidate pools and their internal weights borrow Pyro Regisvine's
+ * configuration by explicit user choice; this is not a recovered native subtable.
+ */
+boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="1~4"] {
     astaps.loot.world_artifact_1star_1<adventurer>: "3:11, 4:39";
     astaps.loot.world_artifact_2star_1<adventurer>: "0:29, 1:21";
 }
 
-boss[type="world"][tag="algorithm_semi_intransient_matrix,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="5~14"] {
+boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="5~14"] {
     astaps.loot.world_artifact_1star_1<adventurer>: "2:57, 3:193";
     astaps.loot.world_artifact_2star_1<adventurer>: "1:143, 2:107";
 }
 
-boss[type="world"][tag="algorithm_semi_intransient_matrix,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="15~24"] {
+boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="15~24"] {
     astaps.loot.world_artifact_1star_1<adventurer>: "1:143, 2:107";
     astaps.loot.world_artifact_2star_1<adventurer>: "2:81, 3:44";
     astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "0:29, 1:21";
 }
 
-boss[type="world"][tag="algorithm_semi_intransient_matrix,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="25~34"] {
+boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="25~34"] {
     astaps.loot.world_artifact_2star_1<adventurer>: "2:3, 3:47";
     astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "1:37, 2:13";
 }
 
-boss[type="world"][tag="algorithm_semi_intransient_matrix,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="35~44"] {
+boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="35~44"] {
     astaps.loot.world_artifact_2star_1<adventurer>: "1:143, 2:107";
     astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "2:57, 3:193";
 }
 
-boss[type="world"][tag="algorithm_semi_intransient_matrix,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="45~59"] {
+boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="45~59"] {
     astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "3:11, 4:39";
     astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "0:29, 1:21";
 }
 
-boss[type="world"][tag="algorithm_semi_intransient_matrix,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="60~69"] {
+boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="60~69"] {
     astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "3:16, 4:9";
     astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "0:4, 1:21";
 }
 
-boss[type="world"][tag="algorithm_semi_intransient_matrix,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="70~79"] {
+boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="70~79"] {
     astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "2:3, 3:47";
     astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "1:19, 2:1";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:79, 1:21";
 }
 
-boss[type="world"][tag="algorithm_semi_intransient_matrix,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="80~89"] {
+boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="80~89"] {
     astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "2:12, 3:13";
     astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "1:37, 2:13";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:29, 1:21";
 }
 
-boss[type="world"][tag="algorithm_semi_intransient_matrix,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="90~92"] {
+boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="90~92"] {
     astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "2:9, 3:1";
     astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:37, 1:63";
 }
 
-boss[type="world"][tag="algorithm_semi_intransient_matrix,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="93~"] {
+boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="93~"] {
     astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "2:9, 3:1";
     astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: 1;

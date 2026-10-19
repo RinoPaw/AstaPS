@@ -140,7 +140,14 @@ public final class UnlockAllCommand implements CommandHandler {
 
     /** Return newly unlocked areas after dropping the old fabricated scene flags. */
     static int unlockValidAreas(java.util.Set<Integer> areas, java.util.Set<Integer> valid) {
-        if (valid.isEmpty()) return 0;
+        if (valid.isEmpty()) {
+            // Old /unlock map wrote all 999 flags to even resource-less scenes.
+            // Remove only that recognizable synthetic signature.
+            if (areas.size() == 999 && areas.contains(1) && areas.contains(999)) {
+                areas.clear();
+            }
+            return 0;
+        }
         areas.retainAll(valid);
         int added = 0;
         for (int id : valid) {

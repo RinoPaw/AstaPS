@@ -74,7 +74,7 @@ final class GadgetChestBossClaimTest {
         generic.setMetaGadget(meta);
 
         // World boss flowers can use generic GadgetData, with their real function
-        // supplied by the scene script's boss_chest field.
+        // supplied by the scene script's boss_chest field, even for generic gadgets.
         generic.buildContent();
         assertInstanceOf(GadgetChest.class, generic.getContent());
 

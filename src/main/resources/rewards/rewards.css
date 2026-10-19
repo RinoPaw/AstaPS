@@ -10,6 +10,40 @@ chest[type="normal"] {
     genshin.experience.adventure: 30;
 }
 
+/* Regional ELEMENT bindings for chest sigils; city 8/9 share Cryo. */
+chest[type="normal"][city="1"] {
+    ELEMENT: anemo;
+}
+
+chest[type="normal"][city="2"] {
+    ELEMENT: geo;
+}
+
+chest[type="normal"][city="3"] {
+    ELEMENT: electro;
+}
+
+chest[type="normal"][city="4"] {
+    ELEMENT: dendro;
+}
+
+chest[type="normal"][city="5"] {
+    ELEMENT: hydro;
+}
+
+chest[type="normal"][city="6"] {
+    ELEMENT: pyro;
+}
+
+chest[type="normal"][city="7"] {
+    ELEMENT: lunar;
+}
+
+chest[type="normal"][city="8"],
+chest[type="normal"][city="9"] {
+    ELEMENT: cryo;
+}
+
 /* Fixed currencies and tier selection. Mora values are inclusive ranges. */
 chest[type="normal"][grade="common"] {
     genshin.currency.primogem: 2;
@@ -23,7 +57,7 @@ chest[type="normal"][grade="common"][level="1~5"] {
     genshin.weapon_up.enhancement_ore: "2:90, 3:10";
     genshin.weapon_up.fine_ore: "0:80, 1:20";
     genshin.currency.mora: 240~360;
-    genshin.currency.sigil: 1;
+    genshin.currency.sigil.<ELEMENT>: 1;
 }
 
 chest[type="normal"][grade="common"][level="6~10"] {
@@ -34,7 +68,7 @@ chest[type="normal"][grade="common"][level="6~10"] {
     genshin.weapon_up.enhancement_ore: "2:40, 3:60";
     genshin.weapon_up.fine_ore: "0:60, 1:40";
     genshin.currency.mora: 240~360;
-    genshin.currency.sigil: 1;
+    genshin.currency.sigil.<ELEMENT>: 1;
 }
 
 chest[type="normal"][grade="common"][level="11~15"] {
@@ -44,7 +78,7 @@ chest[type="normal"][grade="common"][level="11~15"] {
     genshin.weapon_up.enhancement_ore: "3:90, 4:10";
     genshin.weapon_up.fine_ore: "0:40, 1:60";
     genshin.currency.mora: 480~720;
-    genshin.currency.sigil: 2;
+    genshin.currency.sigil.<ELEMENT>: 2;
 }
 
 chest[type="normal"][grade="common"][level="16~20"] {
@@ -54,7 +88,7 @@ chest[type="normal"][grade="common"][level="16~20"] {
     genshin.weapon_up.enhancement_ore: "4:90, 5:10";
     genshin.weapon_up.fine_ore: "0:40, 1:60";
     genshin.currency.mora: 480~720;
-    genshin.currency.sigil: 2;
+    genshin.currency.sigil.<ELEMENT>: 2;
 }
 
 chest[type="normal"][grade="common"][level="21~25"] {
@@ -64,7 +98,7 @@ chest[type="normal"][grade="common"][level="21~25"] {
     genshin.weapon_up.enhancement_ore: "5:90, 6:10";
     genshin.weapon_up.fine_ore: "0:40, 1:60";
     genshin.currency.mora: 720~1080;
-    genshin.currency.sigil: 3;
+    genshin.currency.sigil.<ELEMENT>: 3;
 }
 
 chest[type="normal"][grade="common"][level="26~"],
@@ -74,7 +108,7 @@ chest[type="normal"][grade="exquisite"][level="1~20"] {
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     genshin.weapon_up.fine_ore: "3:90, 4:10";
     genshin.currency.mora: 720~1080;
-    genshin.currency.sigil: 3;
+    genshin.currency.sigil.<ELEMENT>: 3;
 }
 
 chest[type="normal"][grade="exquisite"] {
@@ -87,7 +121,7 @@ chest[type="normal"][grade="exquisite"][level="21~25"] {
     genshin.avatar_up.adventurers_experience: "2:40, 3:60";
     genshin.weapon_up.fine_ore: "4:90, 5:10";
     genshin.currency.mora: 960~1440;
-    genshin.currency.sigil: 4;
+    genshin.currency.sigil.<ELEMENT>: 4;
 }
 
 chest[type="normal"][grade="exquisite"][level="26~"],
@@ -99,7 +133,7 @@ chest[type="normal"][grade="precious"][level="1~20"] {
     genshin.weapon_up.fine_ore: "2:90, 3:10";
     genshin.weapon_up.mystic_ore: 1;
     genshin.currency.mora: 960~1440;
-    genshin.currency.sigil: 4;
+    genshin.currency.sigil.<ELEMENT>: 4;
 }
 
 chest[type="normal"][grade="precious"] {
@@ -114,7 +148,7 @@ chest[type="normal"][grade="precious"][level="21~25"] {
     genshin.weapon_up.fine_ore: "3:90, 4:10";
     genshin.weapon_up.mystic_ore: 1;
     genshin.currency.mora: 1200~1800;
-    genshin.currency.sigil: 5;
+    genshin.currency.sigil.<ELEMENT>: 5;
 }
 
 chest[type="normal"][grade="precious"][level="26~"],
@@ -124,7 +158,7 @@ chest[type="normal"][grade="luxurious"][level="1~20"] {
     genshin.avatar_up.heros_wit: 2;
     genshin.weapon_up.mystic_ore: 3;
     genshin.currency.mora: 1200~1800;
-    genshin.currency.sigil: 5;
+    genshin.currency.sigil.<ELEMENT>: 5;
 }
 
 chest[type="normal"][grade="luxurious"] {
@@ -137,7 +171,7 @@ chest[type="normal"][grade="luxurious"][level="21~25"] {
     genshin.avatar_up.heros_wit: "2:95, 3:5";
     genshin.weapon_up.mystic_ore: "3:90, 4:10";
     genshin.currency.mora: 1440~2160;
-    genshin.currency.sigil: 6;
+    genshin.currency.sigil.<ELEMENT>: 6;
 }
 
 chest[type="normal"][grade="luxurious"][level="26~"] {
@@ -146,7 +180,7 @@ chest[type="normal"][grade="luxurious"][level="26~"] {
     genshin.avatar_up.heros_wit: "2:90, 3:10";
     genshin.weapon_up.mystic_ore: "3:80, 4:20";
     genshin.currency.mora: 1440~2160;
-    genshin.currency.sigil: 6;
+    genshin.currency.sigil.<ELEMENT>: 6;
 }
 
 /* Recipes from the native combat/puzzle source roots, merged by chest grade.

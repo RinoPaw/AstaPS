@@ -12,10 +12,14 @@ public class PacketGetActivityInfoRsp extends BasePacket {
 
         var proto = GetActivityInfoRsp.newBuilder();
 
-        activityIdList.stream()
-                .map(activityManager::getInfoProtoByActivityId)
-                .filter(Objects::nonNull)
-                .forEach(proto::addActivityInfoList);
+        // New accounts can request activity data before their manager is initialized.
+        // Reply with an empty list; subsequent requests will receive initialized data.
+        if (activityIdList != null && activityManager != null) {
+            activityIdList.stream()
+                    .map(activityManager::getInfoProtoByActivityId)
+                    .filter(Objects::nonNull)
+                    .forEach(proto::addActivityInfoList);
+        }
 
         this.setData(proto);
     }

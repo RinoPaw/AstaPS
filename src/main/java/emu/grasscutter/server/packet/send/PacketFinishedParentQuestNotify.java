@@ -20,6 +20,9 @@ public class PacketFinishedParentQuestNotify extends BasePacket {
         var questingEnabled = emu.grasscutter.game.quest.QuestManager.isQuestingActive();
 
         for (GameMainQuest mainQuest : player.getQuestManager().getMainQuests().values()) {
+            // Forced parents have a separate finished snapshot. Never overwrite it
+            // with an older saved parent still marked unfinished.
+            if (player.getForcedFinishedQuests().contains(mainQuest.getParentQuestId())) continue;
             // Canceled Quests do not appear in this packet
             if (mainQuest.getState() == ParentQuestState.PARENT_QUEST_STATE_CANCELED) continue;
             if (!questingEnabled && mainQuest.getState() != ParentQuestState.PARENT_QUEST_STATE_FINISHED

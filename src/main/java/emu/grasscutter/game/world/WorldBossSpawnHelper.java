@@ -464,7 +464,11 @@ public final class WorldBossSpawnHelper {
             WorldBossSpawnHelper.resolveBossGroup(var3, var4, var2);
         }
         WorldBossSpawnHelper.spawnTrounceFlowerIfMissing(var3, var2, var0.getConfigId());
-        Grasscutter.getLogger().info("WorldBossSpawnHelper boss killed group {} cfg {} monster {} \u2014 awaiting trounce flower", (Object)var1, (Object)var0.getConfigId(), (Object)var0.getEntityTypeId());
+        if (WorldBossSpawnHelper.hasUnclaimedBossChest(var3, var2)) {
+            Grasscutter.getLogger().info("WorldBossSpawnHelper boss killed group {} cfg {} monster {} - claimable flower ready", var1, var0.getConfigId(), var0.getEntityTypeId());
+        } else {
+            Grasscutter.getLogger().warn("WorldBossSpawnHelper boss killed group {} cfg {} monster {} - no claimable flower spawned", var1, var0.getConfigId(), var0.getEntityTypeId());
+        }
     }
 
     private static boolean isMatchingBossMonsterId(int expected, int actual) {
@@ -1117,7 +1121,21 @@ public final class WorldBossSpawnHelper {
                     if (var4.block_id <= 0) {
                         var4.block_id = var1.blockId;
                     }
-                    if (!((var6 = var0.getEntityByConfigId(var5.config_id, var1.groupId)) instanceof EntityGadget)) {
+                    var6 = var0.getEntityByConfigId(var5.config_id, var1.groupId);
+                    if (var6 instanceof EntityGadget existing) {
+                        if (existing.getMetaGadget() == null
+                                || existing.getMetaGadget().boss_chest == null) {
+                            WorldBossSpawnHelper.ensureBossChestGadgetMeta(existing);
+                        }
+                        if (existing.getMetaGadget() != null
+                                && existing.getMetaGadget().boss_chest != null) {
+                            existing.buildContent();
+                        }
+                    }
+                    if (!(var6 instanceof EntityGadget existing
+                            && existing.getContent() instanceof emu.grasscutter.game.entity.gadget.GadgetChest
+                            && existing.getMetaGadget() != null
+                            && existing.getMetaGadget().boss_chest != null)) {
                         if (var6 != null) {
                             var0.removeEntity(var6);
                         }

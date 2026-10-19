@@ -136,6 +136,7 @@ final class BundledBossRewardsTest {
                 assertNotNull(config.rollWorldBoss(boss, level, new java.util.Random(71)),
                         "Unconfigured middle world Boss: " + boss + "@" + level);
             }
+            // The last CSS level interval is open-ended (93~).
             assertNotNull(config.rollWorldBoss(boss, 105, new java.util.Random(71)),
                     "Lv.105+ retains the level-93-plus configured range: " + boss);
         }

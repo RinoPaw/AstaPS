@@ -11,6 +11,14 @@ public class PacketQuestListUpdateNotify extends BasePacket {
         super(PacketOpcodes.QuestListUpdateNotify);
 
         var builder = QuestListUpdateNotify.newBuilder();
+        // This update must not resurrect a forced-finished parent on the client.
+        if (quest.getMainQuest() != null
+                && quest.getMainQuest().getOwner() != null
+                && quest.getMainQuest().getOwner().getForcedFinishedQuests()
+                        .contains(quest.getMainQuestId())) {
+            this.setData(builder.build());
+            return;
+        }
         // Statue activation quest 303 is processed even when general questing is disabled.
         if (QuestManager.isQuestVisible(quest)
                 || quest.getState() == QuestState.QUEST_STATE_FINISHED

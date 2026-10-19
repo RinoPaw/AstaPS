@@ -17,8 +17,8 @@ final class ChestArtifactRewardsTest {
 
     private static Fixture fixture() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
-        int y0 = yaml.indexOf("# Native chest artifacts (sourceType 19");
-        int y1 = yaml.indexOf("# World Boss gems:", y0);
+        int y0 = yaml.indexOf("chest_artifact_pair<");
+        int y1 = yaml.indexOf("# 2. World Boss artifacts", y0);
         assertTrue(y0 >= 0 && y1 > y0);
         String css = RewardConfiguration.readBundled("rewards.css");
         int c0 = css.indexOf("/* Native chest artifacts (historical");

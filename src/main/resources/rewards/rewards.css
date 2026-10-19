@@ -1050,7 +1050,7 @@ boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gl
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="50~54"] {
-    astaps.loot.world_50-54_gem_3<ELEMENT>: "1:24737, 2:75263";
+    genshin.avatar_ascension.<ELEMENT>: "sliver*9:4193, fragment*9:1118" repeat "1:24737, 2:75263";
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="55~59"] {

@@ -124,14 +124,14 @@ chest[type="normal"][grade="common"][level="6~10"] {
 }
 
 chest[type="normal"][grade="common"][level="11~15"] {
-    astaps.loot.weapons_1_to_2_medium: "0:40, 1:60";
+    astaps.loot.weapons_1_to_2_high: "0:40, 1:60";
     genshin.weapon_up.enhancement_ore: "3:90, 4:10";
     genshin.weapon_up.fine_ore: "0:40, 1:60";
     genshin.currency.sigil.<ELEMENT>: 2;
 }
 
 chest[type="normal"][grade="common"][level="16~20"] {
-    astaps.loot.weapons_1_to_2_medium: "0:30, 1:70";
+    astaps.loot.weapons_1_to_2_high: "0:30, 1:70";
     genshin.weapon_up.enhancement_ore: "4:90, 5:10";
     genshin.weapon_up.fine_ore: "0:40, 1:60";
     genshin.currency.sigil.<ELEMENT>: 2;

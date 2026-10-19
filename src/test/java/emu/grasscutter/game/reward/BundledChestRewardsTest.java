@@ -74,7 +74,7 @@ class BundledChestRewardsTest {
     }
 
     private static String chestCss() throws Exception {
-        return resource("/rewards/rewards.css").split(java.util.regex.Pattern.quote("/* Weekly Boss native"), 2)[0];
+        return resource("/rewards/rewards.css").split(java.util.regex.Pattern.quote("/* World Boss rewards:"), 2)[0];
     }
 
     private static YamlLootTables loot() throws Exception {

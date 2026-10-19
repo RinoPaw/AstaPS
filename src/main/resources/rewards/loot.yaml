@@ -50,47 +50,12 @@ meat_ingredients: &meat_ingredients
   - {reward: genshin.material.raw_meat, weight: 1}
   - {reward: genshin.material.fowl, weight: 1}
 
-# Talent books by region and grade.
-mondstadt_talent_teachings: &mondstadt_talent_teachings
-  - {reward: genshin.talent_up.freedom, properties: {rarity: 2}, weight: 1}
-  - {reward: genshin.talent_up.resistance, properties: {rarity: 2}, weight: 1}
-  - {reward: genshin.talent_up.ballad, properties: {rarity: 2}, weight: 1}
-
-mondstadt_talent_guides: &mondstadt_talent_guides
-  - {reward: genshin.talent_up.freedom, properties: {rarity: 3}, weight: 1}
-  - {reward: genshin.talent_up.resistance, properties: {rarity: 3}, weight: 1}
-  - {reward: genshin.talent_up.ballad, properties: {rarity: 3}, weight: 1}
-
-# Regional talent-book candidates from the native chest roots.
-liyue_talent_teachings:
-  - {reward: genshin.talent_up.prosperity, properties: {rarity: 2}, weight: 1}
-  - {reward: genshin.talent_up.diligence, properties: {rarity: 2}, weight: 1}
-  - {reward: genshin.talent_up.gold, properties: {rarity: 2}, weight: 1}
-
-liyue_talent_guides:
-  - {reward: genshin.talent_up.prosperity, properties: {rarity: 3}, weight: 1}
-  - {reward: genshin.talent_up.diligence, properties: {rarity: 3}, weight: 1}
-  - {reward: genshin.talent_up.gold, properties: {rarity: 3}, weight: 1}
-
-inazuma_talent_guides:
-  - {reward: genshin.talent_up.transience, properties: {rarity: 3}, weight: 1}
-  - {reward: genshin.talent_up.elegance, properties: {rarity: 3}, weight: 1}
-  - {reward: genshin.talent_up.light, properties: {rarity: 3}, weight: 1}
-
-inazuma_talent_philosophies:
-  - {reward: genshin.talent_up.transience, properties: {rarity: 4}, weight: 1}
-  - {reward: genshin.talent_up.elegance, properties: {rarity: 4}, weight: 1}
-  - {reward: genshin.talent_up.light, properties: {rarity: 4}, weight: 1}
-
-sumeru_talent_guides:
-  - {reward: genshin.talent_up.admonition, properties: {rarity: 3}, weight: 1}
-  - {reward: genshin.talent_up.ingenuity, properties: {rarity: 3}, weight: 1}
-  - {reward: genshin.talent_up.praxis, properties: {rarity: 3}, weight: 1}
-
-sumeru_talent_philosophies:
-  - {reward: genshin.talent_up.admonition, properties: {rarity: 4}, weight: 1}
-  - {reward: genshin.talent_up.ingenuity, properties: {rarity: 4}, weight: 1}
-  - {reward: genshin.talent_up.praxis, properties: {rarity: 4}, weight: 1}
+# Native regional talent-book candidate pools. One uniformly weighted choice per roll.
+# The three families and rarity are explicitly bound at each CSS reward call.
+regional_talent_books<set1, set2, set3, rarity>:
+  - {reward: genshin.talent_up.<set1>, properties: {rarity: <rarity>}, weight: 1}
+  - {reward: genshin.talent_up.<set2>, properties: {rarity: <rarity>}, weight: 1}
+  - {reward: genshin.talent_up.<set3>, properties: {rarity: <rarity>}, weight: 1}
 
 # Native chest artifacts (sourceType 19, regions 1-4).
 # Candidate sets and original weighted mixtures remain separate.

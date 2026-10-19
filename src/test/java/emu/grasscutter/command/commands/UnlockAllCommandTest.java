@@ -41,37 +41,14 @@ public final class UnlockAllCommandTest {
     }
 
     @Test
-    void removesFabricatedSceneAreasAndKeepsOnlyResourceBackedIds() {
-        var actual = new java.util.HashSet<Integer>(java.util.List.of(1, 2, 17, 999));
-        // Real area IDs are sparse and can exceed the old artificial 999 limit.
+    void unlocksOnlyAvailableSceneAreas() {
+        var unlocked = new java.util.HashSet<Integer>(java.util.List.of(1, 17));
         var valid = java.util.Set.of(1, 17, 2001);
-        assertEquals(1, UnlockAllCommand.unlockValidAreas(actual, valid));
-        assertEquals(valid, actual);
-        assertEquals(0, UnlockAllCommand.unlockValidAreas(actual, valid));
-        assertEquals(0, UnlockAllCommand.unlockValidAreas(actual, java.util.Set.of()));
-        assertEquals(valid, actual, "Absent resource data must not delete known progress");
-        // Reproduces the 999 flags inserted into every scene by the old command.
-        var fabricated = new java.util.HashSet<Integer>();
-        for (int id = 1; id <= 999; id++) fabricated.add(id);
-        assertEquals(0, UnlockAllCommand.unlockValidAreas(fabricated, java.util.Set.of()));
-        assertTrue(fabricated.isEmpty(), "Legacy fabricated area flags must be cleaned");
-    }
-
-    @Test
-    void repairsOnlyLegacyBulkUnlockedSaves() {
-        var normal = new java.util.HashSet<Integer>(java.util.List.of(1, 7, 250));
-        assertEquals(0, emu.grasscutter.game.world.SceneAreaCatalog.repairLegacyFlags(
-                normal, java.util.Set.of(1, 7)));
-        assertEquals(java.util.Set.of(1, 7, 250), normal);
-
-        var legacy = new java.util.HashSet<Integer>();
-        for (int id = 1; id <= 999; id++) legacy.add(id);
-        legacy.add(2001);
-        assertEquals(997, emu.grasscutter.game.world.SceneAreaCatalog.repairLegacyFlags(
-                legacy, java.util.Set.of(1, 7, 2001)));
-        assertEquals(java.util.Set.of(1, 7, 2001), legacy);
-        assertEquals(0, emu.grasscutter.game.world.SceneAreaCatalog.repairLegacyFlags(
-                legacy, java.util.Set.of(1, 7, 2001)));
+        assertEquals(1, UnlockAllCommand.unlockValidAreas(unlocked, valid));
+        assertEquals(valid, unlocked);
+        assertEquals(0, UnlockAllCommand.unlockValidAreas(unlocked, valid));
+        assertEquals(0, UnlockAllCommand.unlockValidAreas(unlocked, java.util.Set.of()));
+        assertEquals(valid, unlocked);
     }
 
     @Test

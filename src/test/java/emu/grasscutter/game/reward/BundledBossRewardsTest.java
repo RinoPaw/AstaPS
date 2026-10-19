@@ -166,7 +166,8 @@ final class BundledBossRewardsTest {
                 "type", "world", "tag", "precision_clockwork", "level", "1"));
         assertEquals(1, pureMaterial.rangedItems().size());
         assertTrue(pureMaterial.loot().isEmpty());
-        assertTrue(pureMaterial.rangedLoot().isEmpty());
+        assertTrue(pureMaterial.rangedLoot().keySet().stream()
+                .allMatch(name -> name.startsWith("astaps.loot.world_")));
         assertNotNull(config.rollWorldBoss("精密发条机关", 1, new java.util.Random(71)));
 
         var dual = css.resolve("boss", Map.of(

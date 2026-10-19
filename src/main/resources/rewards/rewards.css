@@ -920,7 +920,7 @@ boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_h
 /* Additional fragment rolls from level 40; independent of the main gem pool. */
 
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_1<ELEMENT>: "1:439, 2:61";
+    astaps.loot.world_40-plus_gem_fragment_1<ELEMENT>: 1;
 }
 
 /* Group 2: 9 Bosses; two elements, batches of 3, from level 1. */

@@ -108,7 +108,7 @@ final class BundledBossRewardsTest {
                     known.put(id, name.replace('_', ' '));
                     categories.put(id, "Character Development Items");
                 });
-        // CSS references element aliases. Give the isolated registry canonical gem items.
+        // CSS uses elemental gem aliases; register all seven canonical gem families.
         for (String family : new String[]{"vayuda_turquoise", "prithiva_topaz",
                 "vajrada_amethyst", "nagadus_emerald", "varunada_lazurite",
                 "agnidus_agate", "shivada_jade"}) {

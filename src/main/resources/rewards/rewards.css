@@ -1830,63 +1830,63 @@ boss[type="world"][tag="anemo_hypostasis,maguu_kenki"][level="93~"] {
 
 /* Artifact group 4: 22 Boss identities, levels in ascending order. */
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"][level="1~4"] {
-    astaps.loot.world_artifact_5star_3<instructor>: "0:29, 1:21";
-    astaps.loot.world_artifact_5star_6<instructor>: "3:11, 4:39";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "0:29, 1:21";
+    astaps.loot.world_artifact_5star_goblet<instructor,1>: "3:11, 4:39";
 }
 
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"][level="5~14"] {
-    astaps.loot.world_artifact_5star_3<instructor>: "1:143, 2:107";
-    astaps.loot.world_artifact_5star_6<instructor>: "2:57, 3:193";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "1:143, 2:107";
+    astaps.loot.world_artifact_5star_goblet<instructor,1>: "2:57, 3:193";
 }
 
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"][level="15~24"] {
-    astaps.loot.world_artifact_5star_3<instructor>: "2:81, 3:44";
-    astaps.loot.world_artifact_5star_4<instructor>: "0:29, 1:21";
-    astaps.loot.world_artifact_5star_6<instructor>: "1:143, 2:107";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "2:81, 3:44";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "0:29, 1:21";
+    astaps.loot.world_artifact_5star_goblet<instructor,1>: "1:143, 2:107";
 }
 
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"][level="25~34"] {
-    astaps.loot.world_artifact_5star_3<instructor>: "2:3, 3:47";
-    astaps.loot.world_artifact_5star_4<instructor>: "1:37, 2:13";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "2:3, 3:47";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "1:37, 2:13";
 }
 
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"][level="35~44"] {
-    astaps.loot.world_artifact_5star_3<instructor>: "1:143, 2:107";
-    astaps.loot.world_artifact_5star_4<instructor>: "2:57, 3:193";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "1:143, 2:107";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "2:57, 3:193";
 }
 
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"][level="45~59"] {
     astaps.loot.world_artifact_5star_2<instructor>: "0:29, 1:21";
-    astaps.loot.world_artifact_5star_4<instructor>: "3:11, 4:39";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "3:11, 4:39";
 }
 
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"][level="60~69"] {
     astaps.loot.world_artifact_5star_2<instructor>: "0:4, 1:21";
-    astaps.loot.world_artifact_5star_4<instructor>: "3:16, 4:9";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "3:16, 4:9";
 }
 
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"][level="70~79"] {
     astaps.loot.world_artifact_5star_2<instructor>: "1:1501, 2:478, 3:21";
-    astaps.loot.world_artifact_5star_4<instructor>: "2:3, 3:47";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "2:3, 3:47";
 }
 
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"][level="80~89"] {
     astaps.loot.world_artifact_5star_2<instructor>: "1:1073, 2:1154, 3:273";
-    astaps.loot.world_artifact_5star_4<instructor>: "2:12, 3:13";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "2:12, 3:13";
 }
 
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"][level="90~92"] {
     astaps.loot.world_artifact_5star_2<instructor>: "1:1961, 2:5078, 3:2961";
-    astaps.loot.world_artifact_5star_4<instructor>: "2:9, 3:1";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "2:9, 3:1";
 }
 
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"][level="93~99"] {
     astaps.loot.world_artifact_5star_2<instructor>: "2:53, 3:47";
-    astaps.loot.world_artifact_5star_4<instructor>: "2:9, 3:1";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "2:9, 3:1";
 }
 
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"][level="100~"] {
-    astaps.loot.world_artifact_5star_4<instructor>: "1:3, 2:1";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "1:3, 2:1";
 }
 
 /* Artifact group 5: 2 Boss identities, levels in ascending order. */
@@ -2136,64 +2136,64 @@ boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"][level="
 /* Artifact group 9: 1 Boss identities, levels in ascending order. */
 boss[type="world"][tag="setekh_wenut"][level="1~4"] {
     astaps.loot.world_artifact_5star_2<instructor>: "0:29, 1:21";
-    astaps.loot.world_artifact_5star_5<instructor>: "3:11, 4:39";
+    astaps.loot.world_artifact_5star_goblet<instructor,0>: "3:11, 4:39";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="5~14"] {
     astaps.loot.world_artifact_5star_2<instructor>: "1:143, 2:107";
-    astaps.loot.world_artifact_5star_5<instructor>: "2:57, 3:193";
+    astaps.loot.world_artifact_5star_goblet<instructor,0>: "2:57, 3:193";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="15~24"] {
     astaps.loot.world_artifact_5star_2<instructor>: "2:81, 3:44";
-    astaps.loot.world_artifact_5star_3<instructor>: "0:29, 1:21";
-    astaps.loot.world_artifact_5star_5<instructor>: "1:143, 2:107";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "0:29, 1:21";
+    astaps.loot.world_artifact_5star_goblet<instructor,0>: "1:143, 2:107";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="25~34"] {
     astaps.loot.world_artifact_5star_2<instructor>: "2:3, 3:47";
-    astaps.loot.world_artifact_5star_3<instructor>: "1:37, 2:13";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "1:37, 2:13";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="35~44"] {
     astaps.loot.world_artifact_5star_2<instructor>: "1:143, 2:107";
-    astaps.loot.world_artifact_5star_3<instructor>: "2:57, 3:193";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "2:57, 3:193";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="45~59"] {
     astaps.loot.world_artifact_5star_2<instructor>: "0:29, 1:21";
-    astaps.loot.world_artifact_5star_3<instructor>: "3:11, 4:39";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "3:11, 4:39";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="60~69"] {
     astaps.loot.world_artifact_5star_2<instructor>: "0:4, 1:21";
-    astaps.loot.world_artifact_5star_3<instructor>: "3:16, 4:9";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "3:16, 4:9";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="70~79"] {
     astaps.loot.world_artifact_5star_2<instructor>: "1:19, 2:1";
-    astaps.loot.world_artifact_5star_3<instructor>: "2:3, 3:47";
-    astaps.loot.world_artifact_5star_4<instructor>: "0:79, 1:21";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "2:3, 3:47";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "0:79, 1:21";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="80~89"] {
     astaps.loot.world_artifact_5star_2<instructor>: "1:37, 2:13";
-    astaps.loot.world_artifact_5star_3<instructor>: "2:12, 3:13";
-    astaps.loot.world_artifact_5star_4<instructor>: "0:29, 1:21";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "2:12, 3:13";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="90~92"] {
     astaps.loot.world_artifact_5star_2<instructor>: "1:53, 2:47";
-    astaps.loot.world_artifact_5star_3<instructor>: "2:9, 3:1";
-    astaps.loot.world_artifact_5star_4<instructor>: "0:37, 1:63";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "2:9, 3:1";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: "0:37, 1:63";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="93~99"] {
     astaps.loot.world_artifact_5star_2<instructor>: "1:53, 2:47";
-    astaps.loot.world_artifact_5star_3<instructor>: "2:9, 3:1";
-    astaps.loot.world_artifact_5star_4<instructor>: 1;
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "2:9, 3:1";
+    astaps.loot.world_artifact_5star_special<instructor,4,3>: 1;
 }
 
 boss[type="world"][tag="setekh_wenut"][level="100~"] {
-    astaps.loot.world_artifact_5star_3<instructor>: "1:3, 2:1";
+    astaps.loot.world_artifact_5star_special<instructor,2,1>: "1:3, 2:1";
 }

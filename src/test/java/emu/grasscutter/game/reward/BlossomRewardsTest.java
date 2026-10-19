@@ -24,13 +24,13 @@ class BlossomRewardsTest {
         assertFalse(yaml.contains("revelation_"), "Blossom rewards must not use loot.yaml");
         var loot = YamlLootTables.parse("{}", items::resolve);
         String css = RewardConfiguration.readBundled("rewards.css");
-        int cssStart = css.indexOf("/* Ley-line blossoms:");
+        int cssStart = css.indexOf("/* Blossoms of Wealth:");
         assertTrue(cssStart >= 0, "Missing bundled blossom selectors");
-        String selectors = css.substring(cssStart).split(java.util.regex.Pattern.quote("/* Weekly Boss native"), 2)[0];
+        String selectors = "blossom { genshin.experience.adventure: 100; }\n" +\n                css.substring(cssStart).split(java.util.regex.Pattern.quote("/* World Boss rewards:"), 2)[0];
         assertEquals(14, selectors.lines().filter(line ->
                 line.startsWith("blossom[type=")).count());
-        assertTrue(selectors.contains("blossom[type=\"wealth\"][world_level=\"6~9\"]"));
-        assertTrue(selectors.contains("blossom[type=\"revelation\"][world_level=\"6~9\"]"));
+        assertTrue(selectors.contains("blossom[type=\"wealth\"][WR=\"6~9\"]"));
+        assertTrue(selectors.contains("blossom[type=\"revelation\"][WR=\"6~9\"]"));
         assertFalse(selectors.contains("astaps.loot."));
         return new RewardConfiguration(loot, CssRewards.parse(
                 selectors, items, loot));
@@ -93,11 +93,11 @@ class BlossomRewardsTest {
     void missingTypeOrWorldLevelCannotGrantCommonExperienceOnly() throws IOException {
         var config = rewards();
         for (var attrs : java.util.List.of(
-                Map.of("type", "wealth", "world_level", "10"),
-                Map.of("type", "revelation", "world_level", "-1"),
-                Map.of("type", "other", "world_level", "4"),
-                Map.of("world_level", "4"),
-                Map.of("kind", "wealth", "world_level", "4"))) {
+                Map.of("type", "wealth", "WR", "10"),
+                Map.of("type", "revelation", "WR", "-1"),
+                Map.of("type", "other", "WR", "4"),
+                Map.of("WR", "4"),
+                Map.of("kind", "wealth", "WR", "4"))) {
             assertThrows(RuntimeException.class,
                     () -> config.roll("blossom", attrs, new Random(1)), attrs.toString());
         }

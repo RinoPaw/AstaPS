@@ -57,86 +57,48 @@ mondstadt_talent_guides: &mondstadt_talent_guides
 
 minimal:
   - {reward: *meat_ingredients, count: "1:50"}
-  - {reward: genshin.avatar_up.wanderers_advice, count: "1:40,2:60"}
-  - {reward: genshin.avatar_up.adventurers_experience, count: "1:15"}
   - {reward: *weapons_1_star, count: "1:40"}
-  - {reward: genshin.weapon_up.enhancement_ore, count: "2:90,3:10"}
-  - {reward: genshin.weapon_up.fine_ore, count: "1:20"}
 
 nano:
   - {reward: *meat_ingredients, count: "1:50"}
-  - {reward: genshin.avatar_up.wanderers_advice, count: "2:90,3:10"}
-  - {reward: genshin.avatar_up.adventurers_experience, count: "1:30"}
   - {reward: *weapons_1_to_2_low, count: "1:50"}
-  - {reward: genshin.weapon_up.enhancement_ore, count: "2:40,3:60"}
-  - {reward: genshin.weapon_up.fine_ore, count: "1:40"}
 
 micro:
-  - {reward: genshin.avatar_up.wanderers_advice, count: "2:40,3:60"}
-  - {reward: genshin.avatar_up.adventurers_experience, count: "1:40"}
   - {reward: *weapons_1_to_2_medium, count: "1:60"}
-  - {reward: genshin.weapon_up.enhancement_ore, count: "3:90,4:10"}
-  - {reward: genshin.weapon_up.fine_ore, count: "1:60"}
 
 light:
-  - {reward: genshin.avatar_up.wanderers_advice, count: "3:90,4:10"}
-  - {reward: genshin.avatar_up.adventurers_experience, count: "1:50"}
   - {reward: *weapons_1_to_2_medium, count: "1:70"}
-  - {reward: genshin.weapon_up.enhancement_ore, count: "4:90,5:10"}
-  - {reward: genshin.weapon_up.fine_ore, count: "1:60"}
 
 low:
-  - {reward: genshin.avatar_up.wanderers_advice, count: "3:40,4:60"}
-  - {reward: genshin.avatar_up.adventurers_experience, count: "1:60"}
   - {reward: *weapons_2_star, count: "1:80"}
-  - {reward: genshin.weapon_up.enhancement_ore, count: "5:90,6:10"}
-  - {reward: genshin.weapon_up.fine_ore, count: "1:60"}
 
 medium:
-  - {reward: genshin.avatar_up.adventurers_experience, count: "2:90,3:10"}
   - {reward: *mondstadt_talent_teachings, count: "1:25"}
   - {reward: *weapons_2_star, count: "1:90"}
-  - {reward: genshin.weapon_up.fine_ore, count: "3:90,4:10"}
 
 high:
-  - {reward: genshin.avatar_up.adventurers_experience, count: "2:40,3:60"}
   - {reward: *mondstadt_talent_teachings, count: "1:25"}
   - {reward: *weapons_2_to_3_low}
-  - {reward: genshin.weapon_up.fine_ore, count: "4:90,5:10"}
 
 xhigh:
-  - {reward: genshin.avatar_up.adventurers_experience, count: "1:90,2:10"}
-  - {reward: genshin.avatar_up.heros_wit}
   - {reward: *mondstadt_talent_teachings}
   - {reward: *weapons_2_to_3_low, count: "1:90,2:10"}
-  - {reward: genshin.weapon_up.fine_ore, count: "2:90,3:10"}
-  - {reward: genshin.weapon_up.mystic_ore}
 
 xxhigh:
-  - {reward: genshin.avatar_up.adventurers_experience, count: "1:40,2:60"}
-  - {reward: genshin.avatar_up.heros_wit}
   - {reward: *mondstadt_talent_teachings}
   - {reward: *weapons_2_to_3_high, count: "1:80,2:20"}
-  - {reward: genshin.weapon_up.fine_ore, count: "3:90,4:10"}
-  - {reward: genshin.weapon_up.mystic_ore}
 
 xxxhigh:
-  - {reward: genshin.avatar_up.heros_wit, count: "2"}
   - {reward: *mondstadt_talent_guides}
   - {reward: *weapons_2_to_3_high, count: "1:70,2:30"}
-  - {reward: genshin.weapon_up.mystic_ore, count: "3"}
 
 max:
-  - {reward: genshin.avatar_up.heros_wit, count: "2:95,3:5"}
   - {reward: *mondstadt_talent_guides}
   - {reward: *weapons_3_star, count: "1:60,2:40"}
-  - {reward: genshin.weapon_up.mystic_ore, count: "3:90,4:10"}
 
 ultra:
-  - {reward: genshin.avatar_up.heros_wit, count: "2:90,3:10"}
   - {reward: *mondstadt_talent_guides}
   - {reward: *weapons_3_star, count: "1:50,2:50"}
-  - {reward: genshin.weapon_up.mystic_ore, count: "3:80,4:20"}
 
 # World Boss gems: weighted candidate pools; fixed single-item and multi-item rewards live in CSS.
 # Arguments replace element names only; count and weight retain primitive loot semantics.

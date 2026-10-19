@@ -112,4 +112,5 @@ unchanged. No test suite or CI was run for this fallback.
 
 The separately identified material/gem name-resolution failure remains a
 bundled configuration loading issue; these artifact changes do not repair it.
-Artifacts for chests and weekly Bosses remain outside this configuration.
+Ordinary chest artifacts for cities 1-4 are now configured in the chest section;
+weekly Bosses remain outside this configuration.

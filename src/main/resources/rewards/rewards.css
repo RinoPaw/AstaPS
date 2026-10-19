@@ -5,13 +5,14 @@
  * 3. 城市 5-9 缺少对应原始宝箱根表，继续使用旧通用配置，尚未完成地区复原。
  * 4. 宝箱武器和矿石原始子表多为空，暂沿用旧配置；每箱 30 冒险阅历、
  *    区域原石覆盖和战斗/解谜食谱合并属于现有配置规则，并非历史表逐项照搬。
- * 5. 宝箱圣遗物、周本奖励仍未配置；部分 Boss 概率保留整数近似。
+ * 5. 城市 1-4 宝箱圣遗物已按历史表恢复；城市 5-9、群岛和地灵龛未按普通宝箱推定；
+ *    周本奖励仍未配置；部分 Boss 概率保留整数近似。
  * 6. 材料/宝石物品名依赖资源映射，现有资源曾缺少必要名称；未验证完整服务器发奖。
  */
 
 /* World Boss material, gem, and artifact working configuration.
  * World Boss artifacts cover 48 identities; Precision Clockwork borrows Pyro Regisvine pools.
- * Chest artifact and weekly-Boss reward configuration remains absent.
+ * Native chest artifacts for regions 1-4 are configured; weekly Bosses remain absent.
  * World Boss currencies/EXP and non-artifact chest contents are retained.
  * BOSS_MATERIAL and ELEMENT bind identities; shared rules declare count rolls.
  */
@@ -549,6 +550,152 @@ transpoint[scene="7"] {
 /* Ley-line blossoms: every claim awards 100 Adventure EXP. */
 blossom {
     genshin.experience.adventure: 100;
+}
+
+/* Native chest artifacts (historical sourceType 19, cities 1-4).
+ * Each count combines the independent branch chance and fractional execution count.
+ * Combat, puzzle and Dragonspine artifact paths share the same source distributions.
+ * Cities 5-9, shrine chests and island-only roots are not guessed.
+ */
+
+chest[type="normal"][city="1"][grade="common"][level="1~5"] {
+    astaps.loot.chest_artifact_mix_01: "0:12, 1:13";
+}
+
+chest[type="normal"][city="1"][grade="common"][level="6~10"] {
+    astaps.loot.chest_artifact_mix_01: "0:1, 1:4";
+}
+
+chest[type="normal"][city="1"][grade="common"][level="11~15"] {
+    astaps.loot.chest_artifact_mix_01: "1:4, 2:1";
+}
+
+chest[type="normal"][city="1"][grade="common"][level="16~20"] {
+    astaps.loot.chest_artifact_mix_02: "1:1, 2:1";
+}
+
+chest[type="normal"][city="1"][grade="common"][level="21~25"] {
+    astaps.loot.chest_artifact_mix_02: "1:1, 2:3";
+}
+
+chest[type="normal"][city="1"][grade="common"][level="26~"],
+chest[type="normal"][city="1"][grade="exquisite"][level="1~5"],
+chest[type="normal"][city="1"][grade="exquisite"][level="6~10"],
+chest[type="normal"][city="1"][grade="exquisite"][level="11~15"],
+chest[type="normal"][city="1"][grade="exquisite"][level="16~20"] {
+    astaps.loot.chest_artifact_mix_03: "1:1, 2:3";
+}
+
+chest[type="normal"][city="1"][grade="exquisite"][level="21~25"] {
+    astaps.loot.chest_artifact_mix_03: 2;
+}
+
+chest[type="normal"][city="1"][grade="exquisite"][level="26~"],
+chest[type="normal"][city="1"][grade="precious"][level="1~5"],
+chest[type="normal"][city="1"][grade="precious"][level="6~10"],
+chest[type="normal"][city="1"][grade="precious"][level="11~15"],
+chest[type="normal"][city="1"][grade="precious"][level="16~20"] {
+    astaps.loot.chest_artifact_mix_04: 2;
+}
+
+chest[type="normal"][city="1"][grade="precious"][level="21~25"],
+chest[type="normal"][city="1"][grade="precious"][level="26~"],
+chest[type="normal"][city="1"][grade="luxurious"][level="1~5"],
+chest[type="normal"][city="1"][grade="luxurious"][level="6~10"],
+chest[type="normal"][city="1"][grade="luxurious"][level="11~15"],
+chest[type="normal"][city="1"][grade="luxurious"][level="16~20"] {
+    astaps.loot.chest_artifact_mix_05: "2:3, 3:1";
+}
+
+chest[type="normal"][city="1"][grade="luxurious"][level="21~25"],
+chest[type="normal"][city="1"][grade="luxurious"][level="26~"] {
+    astaps.loot.chest_artifact_mix_06: "2:1, 3:1";
+}
+
+chest[type="normal"][city="2"][grade="common"][level="1~5"] {
+    astaps.loot.chest_artifact_mix_07: "0:12, 1:13";
+}
+
+chest[type="normal"][city="2"][grade="common"][level="6~10"] {
+    astaps.loot.chest_artifact_mix_07: "0:1, 1:4";
+}
+
+chest[type="normal"][city="2"][grade="common"][level="11~15"] {
+    astaps.loot.chest_artifact_mix_07: "1:4, 2:1";
+}
+
+chest[type="normal"][city="2"][grade="common"][level="16~20"] {
+    astaps.loot.chest_artifact_mix_08: "1:1, 2:1";
+}
+
+chest[type="normal"][city="2"][grade="common"][level="21~25"] {
+    astaps.loot.chest_artifact_mix_08: "1:1, 2:3";
+}
+
+chest[type="normal"][city="2"][grade="common"][level="26~"],
+chest[type="normal"][city="2"][grade="exquisite"][level="1~5"],
+chest[type="normal"][city="2"][grade="exquisite"][level="6~10"],
+chest[type="normal"][city="2"][grade="exquisite"][level="11~15"],
+chest[type="normal"][city="2"][grade="exquisite"][level="16~20"] {
+    astaps.loot.chest_artifact_mix_09: "1:1, 2:3";
+}
+
+chest[type="normal"][city="2"][grade="exquisite"][level="21~25"] {
+    astaps.loot.chest_artifact_mix_09: 2;
+}
+
+chest[type="normal"][city="2"][grade="exquisite"][level="26~"],
+chest[type="normal"][city="2"][grade="precious"][level="1~5"],
+chest[type="normal"][city="2"][grade="precious"][level="6~10"],
+chest[type="normal"][city="2"][grade="precious"][level="11~15"],
+chest[type="normal"][city="2"][grade="precious"][level="16~20"] {
+    astaps.loot.chest_artifact_mix_10: 2;
+}
+
+chest[type="normal"][city="2"][grade="precious"][level="21~25"],
+chest[type="normal"][city="2"][grade="precious"][level="26~"],
+chest[type="normal"][city="2"][grade="luxurious"][level="1~5"],
+chest[type="normal"][city="2"][grade="luxurious"][level="6~10"],
+chest[type="normal"][city="2"][grade="luxurious"][level="11~15"],
+chest[type="normal"][city="2"][grade="luxurious"][level="16~20"] {
+    astaps.loot.chest_artifact_mix_11: "2:3, 3:1";
+}
+
+chest[type="normal"][city="2"][grade="luxurious"][level="21~25"],
+chest[type="normal"][city="2"][grade="luxurious"][level="26~"] {
+    astaps.loot.chest_artifact_mix_12: "2:1, 3:1";
+}
+
+chest[type="normal"][city="3"][grade="common"] {
+    astaps.loot.chest_artifact_mix_13: "1:1, 2:1";
+}
+
+chest[type="normal"][city="3"][grade="exquisite"] {
+    astaps.loot.chest_artifact_mix_14: 2;
+}
+
+chest[type="normal"][city="3"][grade="precious"] {
+    astaps.loot.chest_artifact_mix_15: "2:1, 3:1";
+}
+
+chest[type="normal"][city="3"][grade="luxurious"] {
+    astaps.loot.chest_artifact_mix_16: "3:1, 4:1";
+}
+
+chest[type="normal"][city="4"][grade="common"] {
+    astaps.loot.chest_artifact_mix_17: "1:1, 2:1";
+}
+
+chest[type="normal"][city="4"][grade="exquisite"] {
+    astaps.loot.chest_artifact_mix_18: 2;
+}
+
+chest[type="normal"][city="4"][grade="precious"] {
+    astaps.loot.chest_artifact_mix_19: "2:1, 3:1";
+}
+
+chest[type="normal"][city="4"][grade="luxurious"] {
+    astaps.loot.chest_artifact_mix_20: "3:1, 4:1";
 }
 
 /* Blossoms of Wealth: fixed Mora amounts, lowest world level first. */

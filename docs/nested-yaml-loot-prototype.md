@@ -98,6 +98,22 @@ CSS-property overwrites. See [the artifact notes](examples/world-boss-artifacts.
 Precision Clockwork's missing pools use the explicitly approved Pyro Regisvine
 fallback; its internal probabilities have not been recovered from original data.
 
+## Regional chest artifacts
+
+The native chest-artifact migration covers cities 1-4, including 184 combat,
+puzzle and Dragonspine source rows, collapsed to 56 city/grade/level selectors.
+There are 26 native candidate pools, 20 nested weighted mixtures, and 135
+unique source artifact item IDs. Each roll retains the original set, rarity,
+slot and initial-substat distribution; the count rules combine independent
+branch probability with native fractional execution counts. Combat/puzzle and
+Dragonspine sources agree for these artifact branches.
+
+Archipelago source roots are not mapped to the city selector, while shrine
+roots are a separate reward type; neither is silently treated as an ordinary
+regional chest. Cities 5-9 have no matching native chest roots in the dataset.
+Source: AstaPS ChestDrop/DropTableExcelConfigData and AstaPS-Resource
+DropSubTable/ReliquaryExcelConfigData at `c0213668889ed05cbeb86660f424c3daf18bfacd`.
+
 ## Regional chest payouts and limits
 
 Mora, character EXP books, and talent books for cities 1–4 follow the native
@@ -115,8 +131,9 @@ The existing combat/puzzle recipe union is retained.
 
 Cities 5–9 lack matching native chest roots in this dataset and retain their
 previous generic payouts. Weapon/ore chest subtables are also often empty;
-existing weapon candidates and ore amounts remain provisional. Chest artifacts
-and weekly Bosses are absent. The 30 Adventure EXP chest policy and regional
+existing weapon candidates and ore amounts remain provisional. Chest artifacts for cities 1-4 have been restored from the historical native
+source; weekly Bosses remain absent. Cities 5-9 and island/shrine sources are
+not inferred. The 30 Adventure EXP chest policy and regional
 Primogem overrides are intentional configuration rules, not a literal copy of
 historical data. The source is historical server configuration, not a verified
 current official-server drop study.

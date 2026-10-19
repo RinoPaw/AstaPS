@@ -1,11 +1,11 @@
 # 当前奖励表的局限见 rewards.css 开头；这里保留同一范围说明：
 # 精密发条机关圣遗物借用爆炎树；解谜空表使用同地区战斗表补齐。
 # 仅城市 1-4 的摩拉、经验书、天赋书按历史战斗表恢复；城市 5-9 沿用旧通用配置。
-# 宝箱武器、矿石多缺少原始子表，仍用旧配置；宝箱圣遗物、周本不在当前表内。
+# 宝箱武器、矿石多缺少原始子表，仍用旧配置；城市 1-4 宝箱圣遗物已恢复，周本未配置。
 # Boss 概率有整数近似；当前数据不代表官服实测，资源名称映射和完整发奖仍待验证。
 
 # Chest random pools, world Boss gems, and world Boss artifacts.
-# Chest artifact and weekly-Boss pools are intentionally absent.
+# Native chest artifacts for cities 1-4 are included; weekly-Boss pools are absent.
 
 weapons_1_star: &weapons_1_star
   - {reward: genshin.weapon.dull_blade, weight: 1}
@@ -91,6 +91,269 @@ sumeru_talent_philosophies:
   - {reward: genshin.talent_up.admonition, properties: {rarity: 4}, weight: 1}
   - {reward: genshin.talent_up.ingenuity, properties: {rarity: 4}, weight: 1}
   - {reward: genshin.talent_up.praxis, properties: {rarity: 4}, weight: 1}
+
+# Native chest artifacts (sourceType 19, regions 1-4).
+# Candidate pools preserve native set, star, initial substat and five equiprobable slots.
+
+chest_artifact_pool_541150: &chest_artifact_pool_541150
+  - {reward: "genshin.artifact.adventurer", properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1000}
+
+chest_artifact_pool_541155: &chest_artifact_pool_541155
+  - {reward: "genshin.artifact.adventurer", properties: {slot: "1~5", rarity: 2, substats: 0}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 2, substats: 0}, weight: 1000}
+
+chest_artifact_pool_541156: &chest_artifact_pool_541156
+  - {reward: "genshin.artifact.adventurer", properties: {slot: "1~5", rarity: 2, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 2, substats: 1}, weight: 1000}
+
+chest_artifact_pool_541161: &chest_artifact_pool_541161
+  - {reward: "genshin.artifact.berserker", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.instructor", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.adventurer", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+
+chest_artifact_pool_541162: &chest_artifact_pool_541162
+  - {reward: "genshin.artifact.berserker", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.instructor", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.adventurer", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+
+chest_artifact_pool_541167: &chest_artifact_pool_541167
+  - {reward: "genshin.artifact.berserker", properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.instructor", properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1000}
+
+chest_artifact_pool_541168: &chest_artifact_pool_541168
+  - {reward: "genshin.artifact.berserker", properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1000}
+  - {reward: "genshin.artifact.instructor", properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1000}
+
+chest_artifact_pool_541700: &chest_artifact_pool_541700
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1000}
+
+chest_artifact_pool_541705: &chest_artifact_pool_541705
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 2, substats: 0}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 2, substats: 0}, weight: 1000}
+
+chest_artifact_pool_541706: &chest_artifact_pool_541706
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 2, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 2, substats: 1}, weight: 1000}
+
+chest_artifact_pool_541711: &chest_artifact_pool_541711
+  - {reward: "genshin.artifact.berserker", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.the_exile", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+
+chest_artifact_pool_541712: &chest_artifact_pool_541712
+  - {reward: "genshin.artifact.berserker", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.the_exile", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+
+chest_artifact_pool_541717: &chest_artifact_pool_541717
+  - {reward: "genshin.artifact.berserker", properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.the_exile", properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1000}
+
+chest_artifact_pool_541718: &chest_artifact_pool_541718
+  - {reward: "genshin.artifact.berserker", properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1000}
+  - {reward: "genshin.artifact.the_exile", properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1000}
+
+chest_artifact_pool_542205: &chest_artifact_pool_542205
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 2, substats: 0}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 2, substats: 0}, weight: 1000}
+
+chest_artifact_pool_542206: &chest_artifact_pool_542206
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 2, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 2, substats: 1}, weight: 1000}
+
+chest_artifact_pool_542211: &chest_artifact_pool_542211
+  - {reward: "genshin.artifact.berserker", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.the_exile", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+
+chest_artifact_pool_542212: &chest_artifact_pool_542212
+  - {reward: "genshin.artifact.berserker", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.the_exile", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.traveling_doctor", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+
+chest_artifact_pool_542217: &chest_artifact_pool_542217
+  - {reward: "genshin.artifact.berserker", properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.the_exile", properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1000}
+
+chest_artifact_pool_542218: &chest_artifact_pool_542218
+  - {reward: "genshin.artifact.berserker", properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1000}
+  - {reward: "genshin.artifact.the_exile", properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1000}
+
+chest_artifact_pool_542705: &chest_artifact_pool_542705
+  - {reward: "genshin.artifact.adventurer", properties: {slot: "1~5", rarity: 2, substats: 0}, weight: 1000}
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 2, substats: 0}, weight: 1000}
+
+chest_artifact_pool_542706: &chest_artifact_pool_542706
+  - {reward: "genshin.artifact.adventurer", properties: {slot: "1~5", rarity: 2, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 2, substats: 1}, weight: 1000}
+
+chest_artifact_pool_542711: &chest_artifact_pool_542711
+  - {reward: "genshin.artifact.instructor", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.the_exile", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.adventurer", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1000}
+
+chest_artifact_pool_542712: &chest_artifact_pool_542712
+  - {reward: "genshin.artifact.instructor", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.the_exile", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.adventurer", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.lucky_dog", properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1000}
+
+chest_artifact_pool_542717: &chest_artifact_pool_542717
+  - {reward: "genshin.artifact.instructor", properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1000}
+  - {reward: "genshin.artifact.the_exile", properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 1000}
+
+chest_artifact_pool_542718: &chest_artifact_pool_542718
+  - {reward: "genshin.artifact.instructor", properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1000}
+  - {reward: "genshin.artifact.the_exile", properties: {slot: "1~5", rarity: 4, substats: 3}, weight: 1000}
+
+# Nested candidate selection; relative weights are the original source integers.
+
+# Original parent tables include 51010015, 51010115, 51010215, 52010015, 52010115.
+chest_artifact_mix_01:
+  - {reward: *chest_artifact_pool_541150, weight: 9000}
+  - {reward: *chest_artifact_pool_541155, weight: 900}
+  - {reward: *chest_artifact_pool_541156, weight: 100}
+
+# Original parent tables include 51010315, 51010415, 52010315, 52010415, 53010315.
+chest_artifact_mix_02:
+  - {reward: *chest_artifact_pool_541150, weight: 6600}
+  - {reward: *chest_artifact_pool_541155, weight: 3060}
+  - {reward: *chest_artifact_pool_541156, weight: 340}
+
+# Original parent tables include 51010515, 51010615, 52010515, 52010615, 53010515.
+chest_artifact_mix_03:
+  - {reward: *chest_artifact_pool_541150, weight: 3400}
+  - {reward: *chest_artifact_pool_541155, weight: 5040}
+  - {reward: *chest_artifact_pool_541156, weight: 560}
+  - {reward: *chest_artifact_pool_541161, weight: 900}
+  - {reward: *chest_artifact_pool_541162, weight: 100}
+
+# Original parent tables include 51010715, 52010715, 53010715, 54010715, 55010715.
+chest_artifact_mix_04:
+  - {reward: *chest_artifact_pool_541155, weight: 6300}
+  - {reward: *chest_artifact_pool_541156, weight: 699}
+  - {reward: *chest_artifact_pool_541161, weight: 2700}
+  - {reward: *chest_artifact_pool_541162, weight: 300}
+
+# Original parent tables include 51010815, 51010915, 52010815, 52010915, 53010815.
+chest_artifact_mix_05:
+  - {reward: *chest_artifact_pool_541161, weight: 8100}
+  - {reward: *chest_artifact_pool_541162, weight: 900}
+  - {reward: *chest_artifact_pool_541167, weight: 900}
+  - {reward: *chest_artifact_pool_541168, weight: 100}
+
+# Original parent tables include 51011015, 51011115, 52011015, 52011115, 53011015.
+chest_artifact_mix_06:
+  - {reward: *chest_artifact_pool_541161, weight: 7200}
+  - {reward: *chest_artifact_pool_541162, weight: 800}
+  - {reward: *chest_artifact_pool_541167, weight: 1800}
+  - {reward: *chest_artifact_pool_541168, weight: 200}
+
+# Original parent tables include 51020015, 51020115, 51020215, 52020015, 52020115.
+chest_artifact_mix_07:
+  - {reward: *chest_artifact_pool_541700, weight: 9000}
+  - {reward: *chest_artifact_pool_541705, weight: 900}
+  - {reward: *chest_artifact_pool_541706, weight: 100}
+
+# Original parent tables include 51020315, 51020415, 52020315, 52020415.
+chest_artifact_mix_08:
+  - {reward: *chest_artifact_pool_541700, weight: 6600}
+  - {reward: *chest_artifact_pool_541705, weight: 3060}
+  - {reward: *chest_artifact_pool_541706, weight: 340}
+
+# Original parent tables include 51020515, 51020615, 52020515, 52020615.
+chest_artifact_mix_09:
+  - {reward: *chest_artifact_pool_541700, weight: 3400}
+  - {reward: *chest_artifact_pool_541705, weight: 5040}
+  - {reward: *chest_artifact_pool_541706, weight: 560}
+  - {reward: *chest_artifact_pool_541711, weight: 900}
+  - {reward: *chest_artifact_pool_541712, weight: 100}
+
+# Original parent tables include 51020715, 52020715.
+chest_artifact_mix_10:
+  - {reward: *chest_artifact_pool_541705, weight: 6300}
+  - {reward: *chest_artifact_pool_541706, weight: 699}
+  - {reward: *chest_artifact_pool_541711, weight: 2700}
+  - {reward: *chest_artifact_pool_541712, weight: 300}
+
+# Original parent tables include 51020815, 51020915, 52020815, 52020915.
+chest_artifact_mix_11:
+  - {reward: *chest_artifact_pool_541711, weight: 8100}
+  - {reward: *chest_artifact_pool_541712, weight: 900}
+  - {reward: *chest_artifact_pool_541717, weight: 900}
+  - {reward: *chest_artifact_pool_541718, weight: 100}
+
+# Original parent tables include 51021015, 51021115, 52021015, 52021115.
+chest_artifact_mix_12:
+  - {reward: *chest_artifact_pool_541711, weight: 7200}
+  - {reward: *chest_artifact_pool_541712, weight: 800}
+  - {reward: *chest_artifact_pool_541717, weight: 1800}
+  - {reward: *chest_artifact_pool_541718, weight: 200}
+
+# Original parent tables include 51030015, 52030015.
+chest_artifact_mix_13:
+  - {reward: *chest_artifact_pool_542205, weight: 6300}
+  - {reward: *chest_artifact_pool_542206, weight: 699}
+  - {reward: *chest_artifact_pool_542211, weight: 2700}
+  - {reward: *chest_artifact_pool_542212, weight: 300}
+
+# Original parent tables include 51032015, 52032015.
+chest_artifact_mix_14:
+  - {reward: *chest_artifact_pool_542205, weight: 3060}
+  - {reward: *chest_artifact_pool_542206, weight: 340}
+  - {reward: *chest_artifact_pool_542211, weight: 5940}
+  - {reward: *chest_artifact_pool_542212, weight: 660}
+
+# Original parent tables include 51033015, 52033015.
+chest_artifact_mix_15:
+  - {reward: *chest_artifact_pool_542211, weight: 8100}
+  - {reward: *chest_artifact_pool_542212, weight: 900}
+  - {reward: *chest_artifact_pool_542217, weight: 900}
+  - {reward: *chest_artifact_pool_542218, weight: 100}
+
+# Original parent tables include 51034015, 52034015.
+chest_artifact_mix_16:
+  - {reward: *chest_artifact_pool_542211, weight: 7200}
+  - {reward: *chest_artifact_pool_542212, weight: 800}
+  - {reward: *chest_artifact_pool_542217, weight: 1800}
+  - {reward: *chest_artifact_pool_542218, weight: 200}
+
+# Original parent tables include 51040015, 52040015.
+chest_artifact_mix_17:
+  - {reward: *chest_artifact_pool_542705, weight: 6300}
+  - {reward: *chest_artifact_pool_542706, weight: 699}
+  - {reward: *chest_artifact_pool_542711, weight: 2700}
+  - {reward: *chest_artifact_pool_542712, weight: 300}
+
+# Original parent tables include 51042015, 52042015.
+chest_artifact_mix_18:
+  - {reward: *chest_artifact_pool_542705, weight: 3060}
+  - {reward: *chest_artifact_pool_542706, weight: 340}
+  - {reward: *chest_artifact_pool_542711, weight: 5940}
+  - {reward: *chest_artifact_pool_542712, weight: 660}
+
+# Original parent tables include 51043015, 52043015.
+chest_artifact_mix_19:
+  - {reward: *chest_artifact_pool_542711, weight: 8100}
+  - {reward: *chest_artifact_pool_542712, weight: 900}
+  - {reward: *chest_artifact_pool_542717, weight: 900}
+  - {reward: *chest_artifact_pool_542718, weight: 100}
+
+# Original parent tables include 51044015, 52044015.
+chest_artifact_mix_20:
+  - {reward: *chest_artifact_pool_542711, weight: 7200}
+  - {reward: *chest_artifact_pool_542712, weight: 800}
+  - {reward: *chest_artifact_pool_542717, weight: 1800}
+  - {reward: *chest_artifact_pool_542718, weight: 200}
 
 # World Boss gems: weighted candidate pools; fixed single-item and multi-item rewards live in CSS.
 # Arguments replace element names only; count and weight retain primitive loot semantics.

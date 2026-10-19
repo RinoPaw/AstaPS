@@ -519,16 +519,9 @@ world_artifact_5star_1<set1, set2>:
 world_artifact_5star_2<set1>:
   - {reward: "genshin.artifact.<set1>", properties: {slot: "2:34, 4:66", rarity: 5, substats: 0}, weight: 1}
 
-world_artifact_5star_3<set1>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: plume, rarity: 5, substats: 2}, weight: 17}
-  - {reward: "genshin.artifact.<set1>", properties: {slot: goblet, rarity: 5, substats: 1}, weight: 33}
+world_artifact_5star_special<set1, plume_substats, goblet_substats>:
+  - {reward: "genshin.artifact.<set1>", properties: {slot: plume, rarity: 5, substats: <plume_substats>}, weight: 17}
+  - {reward: "genshin.artifact.<set1>", properties: {slot: goblet, rarity: 5, substats: <goblet_substats>}, weight: 33}
 
-world_artifact_5star_4<set1>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: plume, rarity: 5, substats: 4}, weight: 17}
-  - {reward: "genshin.artifact.<set1>", properties: {slot: goblet, rarity: 5, substats: 3}, weight: 33}
-
-world_artifact_5star_5<set1>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: goblet, rarity: 5, substats: 0}, weight: 1}
-
-world_artifact_5star_6<set1>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: goblet, rarity: 5, substats: 1}, weight: 1}
+world_artifact_5star_goblet<set1, substats>:
+  - {reward: "genshin.artifact.<set1>", properties: {slot: goblet, rarity: 5, substats: <substats>}, weight: 1}

@@ -727,7 +727,7 @@ public final class QuestManager extends BasePlayerManager {
         List<GameMainQuest> checkMainQuests =
                 this.getMainQuests().values().stream()
                         .filter(i -> i.getState() != ParentQuestState.PARENT_QUEST_STATE_FINISHED
-                                && !player.getForcedFinishedQuests().contains(i.getParentQuestId()))
+                                && (player == null || !player.getForcedFinishedQuests().contains(i.getParentQuestId())))
                         .toList();
         for (GameMainQuest mainQuest : checkMainQuests) {
             mainQuest.tryFailSubQuests(condType, paramStr, params);
@@ -800,7 +800,7 @@ public final class QuestManager extends BasePlayerManager {
     public List<QuestGroupSuite> getSceneGroupSuite(int sceneId) {
         return getMainQuests().values().stream()
                 .filter(i -> i.getState() != ParentQuestState.PARENT_QUEST_STATE_FINISHED
-                        && !player.getForcedFinishedQuests().contains(i.getParentQuestId()))
+                        && (player == null || !player.getForcedFinishedQuests().contains(i.getParentQuestId())))
                 .map(GameMainQuest::getQuestGroupSuites)
                 .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
@@ -837,7 +837,7 @@ public final class QuestManager extends BasePlayerManager {
     public List<GameMainQuest> getActiveMainQuests() {
         return getMainQuests().values().stream()
                 .filter(p -> !p.isFinished()
-                        && !player.getForcedFinishedQuests().contains(p.getParentQuestId()))
+                        && (player == null || !player.getForcedFinishedQuests().contains(p.getParentQuestId())))
                 .toList();
     }
 

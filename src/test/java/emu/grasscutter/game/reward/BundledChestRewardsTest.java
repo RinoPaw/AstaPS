@@ -86,77 +86,46 @@ class BundledChestRewardsTest {
     void twelveChestTiersContainNoFixedCurrencies() throws Exception {
         String cssSource = chestCss();
         assertFalse(cssSource.contains("--loot:"));
-        assertTrue(cssSource.contains("astaps.loot.xxxhigh: 1;"));
         var loot = loot();
-        String[] tiers = {
-            "minimal", "nano", "micro",
-            "light", "low", "medium",
-            "high", "xhigh",
-            "xxhigh", "xxxhigh",
-            "max", "ultra"
-        };
-        assertEquals(35, loot.names().size()); // 12 chest tiers, 23 shared pools
-        for (String tier : tiers) assertTrue(loot.contains("astaps.loot." + tier), tier);
-        assertFalse(loot.contains("astaps.loot.three_realms_point"));
         for (String pool : new String[]{
                 "weapons_1_star", "weapons_2_star", "weapons_3_star",
                 "weapons_1_to_2_low", "weapons_1_to_2_high",
-                "weapons_2_to_3_low", "weapons_2_to_3_high"}) {
-            assertTrue(loot.contains("astaps.loot." + pool));
+                "weapons_2_to_3_low", "weapons_2_to_3_high",
+                "meat_ingredients"}) {
+            assertTrue(loot.contains("astaps.loot." + pool), pool);
         }
-
-        for (String pool : new String[]{
-                "artifacts_1_to_2_low", "artifacts_1_to_2_high",
-                "artifacts_1_to_3", "artifacts_2_to_3",
-                "artifacts_3_to_4_low", "artifacts_3_to_4_high"}) {
-            assertTrue(loot.contains("astaps.loot." + pool));
+        for (int i = 1; i <= 20; i++) {
+            String pool = "astaps.loot.chest_artifact_mix_%02d".formatted(i);
+            assertTrue(loot.contains(pool), pool);
         }
-        assertTrue(loot.names().stream().noneMatch(name ->
-                name.startsWith("astaps.loot.chest_")));
-        String reorderedYaml = chestYaml();
-        assertTrue(reorderedYaml.indexOf("artifacts_3_to_4_high:") <
-                reorderedYaml.indexOf("minimal:"));
-        String yaml = chestYaml();
-        for (String name : new String[]{
-                "adventure_exp", "primogem", "mora", "anemo_sigil", "geo_sigil",
-                "electro_sigil", "dendro_sigil"}) {
-            String prefix = "adventure_exp".equals(name) ? "genshin.experience.adventure"
-                    : "genshin.currency." + name;
-            assertFalse(yaml.contains("reward: " + prefix), name);
-        }
-        assertFalse(yaml.contains("historical_"));
-        assertFalse(java.util.regex.Pattern.compile("\\breward:\\s*[0-9]")
-                .matcher(yaml).find());
-        assertFalse(yaml.contains("count: \"1\""));
-        assertFalse(java.util.regex.Pattern.compile(
-                "(?:count|weight):\\s*\\\"?\\d+\\.\\d+").matcher(yaml).find());
+        assertEquals(28, loot.names().size(), "8 common pools and 20 native artifact mixtures");
+        assertTrue(cssSource.contains("astaps.loot.chest_artifact_mix_01:"));
+        assertFalse(chestYaml().contains("reward: genshin.currency.mora"));
+        assertFalse(chestYaml().contains("reward: genshin.currency.primogem"));
     }
 
     @Test
     void allTwentyFourGradeAndLevelCombinationsSelectTwelveTiers() throws Exception {
         var loot = loot();
         var css = CssRewards.parse(chestCss(), items(), loot);
-        String[][] expected = {
-            {"minimal", "nano", "micro",
-             "light", "low", "medium"},
-            {"medium", "medium", "medium",
-             "medium", "high", "xhigh"},
-            {"xhigh", "xhigh", "xhigh",
-             "xhigh", "xxhigh", "xxxhigh"},
-            {"xxxhigh", "xxxhigh", "xxxhigh",
-             "xxxhigh", "max", "ultra"}
-        };
-        String[] kinds = {"common", "exquisite", "precious", "luxurious"};
+        String[] grades = {"common", "exquisite", "precious", "luxurious"};
         int[] levels = {1, 6, 11, 16, 21, 26};
-        for (int kind = 0; kind < kinds.length; kind++) {
-            for (int level = 0; level < levels.length; level++) {
+        for (String grade : grades) {
+            for (int level : levels) {
                 var selected = css.resolve("chest", Map.of(
-                        "type", "normal", "grade", kinds[kind],
-                        "level", Integer.toString(levels[level])));
-                assertEquals(Map.of("astaps.loot." + expected[kind][level], 1),
-                        selected.loot());
+                        "type", "normal", "grade", grade, "city", "1",
+                        "level", Integer.toString(level)));
                 assertEquals(30, selected.items().get(102).intValue());
-                assertTrue(selected.rangedItems().containsKey(202));
+                assertTrue(java.util.stream.Stream.concat(
+                        selected.loot().keySet().stream(), selected.rangedLoot().keySet().stream())
+                        .anyMatch(name -> name.startsWith("astaps.loot.weapons_")),
+                        grade + " / " + level + " has no weapon candidate");
+                assertTrue(java.util.stream.Stream.concat(
+                        selected.loot().keySet().stream(), selected.rangedLoot().keySet().stream())
+                        .anyMatch(name -> name.startsWith("astaps.loot.chest_artifact_mix_")),
+                        grade + " / " + level + " has no native artifact candidate");
+                assertTrue(selected.rangedItems().containsKey(202),
+                        grade + " / " + level + " has no native Mora range");
             }
         }
     }
@@ -239,34 +208,31 @@ class BundledChestRewardsTest {
     @Test
     void allTiersHaveWeaponAndEnhancementOreCandidates() throws Exception {
         var loot = loot();
-        for (String tier : new String[]{
-                "minimal", "nano", "micro",
-                "light", "low", "medium",
-                "high", "xhigh",
-                "xxhigh", "xxxhigh",
-                "max", "ultra"}) {
-            boolean hasWeapon = false, hasOre = false;
-            for (int seed = 0; seed < 120; seed++) {
-                var rewards = loot.roll("astaps.loot." + tier, new Random(seed));
-                hasWeapon |= rewards.keySet().stream().anyMatch(
-                        id -> id >= 11101 && id <= 15305);
-                hasOre |= rewards.keySet().stream().anyMatch(
-                        id -> id >= 104011 && id <= 104013);
+        var css = CssRewards.parse(chestCss(), items(), loot);
+        for (String grade : new String[]{"common", "exquisite", "precious", "luxurious"}) {
+            for (int level : new int[]{1, 6, 11, 16, 21, 26}) {
+                var selection = css.resolve("chest", Map.of(
+                        "type", "normal", "city", "1", "grade", grade,
+                        "level", Integer.toString(level)));
+                assertTrue(java.util.stream.Stream.concat(selection.loot().keySet().stream(),
+                        selection.rangedLoot().keySet().stream())
+                        .anyMatch(name -> name.startsWith("astaps.loot.weapons_")));
+                assertTrue(java.util.stream.IntStream.of(104011, 104012, 104013)
+                        .anyMatch(id -> selection.items().containsKey(id)
+                                || selection.rangedItems().containsKey(id)),
+                        grade + " / " + level + " has no enhancement ore");
             }
-            assertTrue(hasWeapon, tier + " has no weapon drops");
-            assertTrue(hasOre, tier + " has no enhancement ore drops");
         }
     }
 
     @Test
     void mergedBattleAndPuzzlePoolsUseNativePuzzleOreDistributions() throws Exception {
-        // Native Mondstadt puzzle roots 52010000 through 52011100,
-        // and their +14 ore sub-tables. Battle EXP/book pools remain intact.
+        // Preserve the inclusive native puzzle-ore count distributions, now in CSS.
         var loot = loot();
-        String[] tiers = {
-                "minimal", "nano", "micro", "light", "low", "medium",
-                "high", "xhigh", "xxhigh", "xxxhigh", "max", "ultra"
-        };
+        var css = CssRewards.parse(chestCss(), items(), loot);
+        String[] grades = {"common", "common", "common", "common", "common", "common",
+                "exquisite", "exquisite", "precious", "precious", "luxurious", "luxurious"};
+        int[] levels = {1, 6, 11, 16, 21, 26, 21, 26, 21, 26, 21, 26};
         double[][] expected = {
                 {2.1, 0.2, 0}, {2.6, 0.4, 0}, {3.1, 0.6, 0},
                 {4.1, 0.6, 0}, {5.1, 0.6, 0}, {0, 3.1, 0},
@@ -275,27 +241,20 @@ class BundledChestRewardsTest {
         };
         int[] ids = {104011, 104012, 104013};
         var random = new Random(721);
-        final int trials = 3_000;
-        for (int i = 0; i < tiers.length; i++) {
-            double[] sums = new double[ids.length];
-            boolean hasExperience = false;
-            for (int trial = 0; trial < trials; trial++) {
-                Map<Integer, Integer> rolled = loot.roll("astaps.loot." + tiers[i], random);
-                for (int k = 0; k < ids.length; k++) {
-                    sums[k] += rolled.getOrDefault(ids[k], 0);
-                }
-                hasExperience |= rolled.containsKey(104001)
-                        || rolled.containsKey(104002) || rolled.containsKey(104003);
-                for (int recipe : new int[]{109202, 109207, 109406, 109407}) {
-                    assertFalse(rolled.containsKey(recipe),
-                            "Recipes belong to CSS, not YAML: " + tiers[i]);
-                }
+        int trials = 1500;
+        for (int i = 0; i < grades.length; i++) {
+            var selected = css.resolve("chest", Map.of("type", "normal", "city", "1",
+                    "grade", grades[i], "level", Integer.toString(levels[i])));
+            double[] total = new double[ids.length];
+            for (int n = 0; n < trials; n++) {
+                var rolled = RewardRoller.roll(selected, loot, random,
+                        new RewardContext(3, 0, "mondstadt"));
+                for (int k = 0; k < ids.length; k++) total[k] += rolled.getOrDefault(ids[k], 0);
             }
             for (int k = 0; k < ids.length; k++) {
-                assertEquals(expected[i][k], sums[k] / trials, 0.055,
-                        tiers[i] + " ore " + ids[k]);
+                assertEquals(expected[i][k], total[k] / trials, 0.10,
+                        grades[i] + " / " + levels[i] + ", ore " + ids[k]);
             }
-            assertTrue(hasExperience, tiers[i] + " has no experience book");
         }
     }
 

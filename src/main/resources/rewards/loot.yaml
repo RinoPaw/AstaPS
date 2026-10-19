@@ -304,10 +304,6 @@ world_45-49_gem_3<element>:
   - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 3817}
   - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1018}
 
-world_50-54_gem_3<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 4193}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1118}
-
 world_55-59_gem_3<element>:
   - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 4569}
   - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 1219}

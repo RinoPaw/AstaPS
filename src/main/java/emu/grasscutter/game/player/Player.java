@@ -1694,7 +1694,7 @@ public class Player implements PlayerHook, FieldFetch {
         // The client is told nothing about these on its own - they exist only as a forged notify,
         // so a relog has to re-assert them or the quests come back unfinished.
         if (this.forcedFinishedQuests != null && !this.forcedFinishedQuests.isEmpty()) {
-            ForcedQuests.notify(this, this.forcedFinishedQuests);
+            ForcedQuests.synchronize(this);
         }
 
         getTodayMoonCard();

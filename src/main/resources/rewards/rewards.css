@@ -837,40 +837,40 @@ boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental
     getBossMaterial: "3:75, 4:25";
 }
 
-/* World Boss gems: shared counts and templates; ELEMENT supplies each Boss's elements. */
+/* World Boss gems: CSS handles single-item counts and fixed grants; YAML selects weighted candidates. */
 
 /* Group 1: 15 Bosses; one element, batches of 3, from level 1. */
 
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="1~4"] {
-    astaps.loot.world_1-39_gem_1<ELEMENT>: "1:26377, 2:23623";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3:26377, 3*2:23623";
 }
 
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="5~9"] {
-    astaps.loot.world_1-39_gem_1<ELEMENT>: "1:42821, 2:57179";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3:42821, 3*2:57179";
 }
 
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="10~14"] {
-    astaps.loot.world_1-39_gem_1<ELEMENT>: "1:30413, 2:69587";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3:30413, 3*2:69587";
 }
 
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="15~19"] {
-    astaps.loot.world_1-39_gem_1<ELEMENT>: "1:3601, 2:16399";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3:3601, 3*2:16399";
 }
 
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="20~24"] {
-    astaps.loot.world_1-39_gem_1<ELEMENT>: "1:5597, 2:94403";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3:5597, 3*2:94403";
 }
 
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="25~29"] {
-    astaps.loot.world_1-39_gem_1<ELEMENT>: "2:93189, 3:6811";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3*2:93189, 3*3:6811";
 }
 
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="30~34"] {
-    astaps.loot.world_1-39_gem_1<ELEMENT>: "2:80781, 3:19219";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3*2:80781, 3*3:19219";
 }
 
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="35~39"] {
-    astaps.loot.world_1-39_gem_1<ELEMENT>: "2:68373, 3:31627";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3*2:68373, 3*3:31627";
 }
 
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"][level="40~44"] {
@@ -1010,35 +1010,35 @@ boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathy
 /* Group 3: one element, batches of 9. Setekh Wenut starts at level 1; the other 13 Bosses start at level 30. */
 
 boss[type="world"][tag="setekh_wenut"][level="1~4"] {
-    astaps.loot.world_1-39_gem_3<ELEMENT>: "1:26377, 2:23623";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9:26377, 9*2:23623";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="5~9"] {
-    astaps.loot.world_1-39_gem_3<ELEMENT>: "1:42821, 2:57179";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9:42821, 9*2:57179";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="10~14"] {
-    astaps.loot.world_1-39_gem_3<ELEMENT>: "1:30413, 2:69587";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9:30413, 9*2:69587";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="15~19"] {
-    astaps.loot.world_1-39_gem_3<ELEMENT>: "1:3601, 2:16399";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9:3601, 9*2:16399";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="20~24"] {
-    astaps.loot.world_1-39_gem_3<ELEMENT>: "1:5597, 2:94403";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9:5597, 9*2:94403";
 }
 
 boss[type="world"][tag="setekh_wenut"][level="25~29"] {
-    astaps.loot.world_1-39_gem_3<ELEMENT>: "2:93189, 3:6811";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9*2:93189, 9*3:6811";
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="30~34"] {
-    astaps.loot.world_1-39_gem_3<ELEMENT>: "2:80781, 3:19219";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9*2:80781, 9*3:19219";
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="35~39"] {
-    astaps.loot.world_1-39_gem_3<ELEMENT>: "2:68373, 3:31627";
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9*2:68373, 9*3:31627";
 }
 
 boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="40~44"] {
@@ -1088,7 +1088,7 @@ boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gl
 /* Additional fragment rolls from level 40; independent of the main gem pool. */
 
 boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"][level="40~"] {
-    astaps.loot.world_40-plus_gem_fragment_3<ELEMENT>: "1:439, 2:61";
+    genshin.avatar_ascension.<ELEMENT>.fragment: "9:439, 9*2:61";
 }
 
 /* Group 4: 2 Bosses; two elements, batches of 9, from level 30. */
@@ -1154,19 +1154,28 @@ boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"][level="40~
 /* Group 5: 5 Bosses; two elements, each fragment and sliver independently grants 9, from level 1. */
 
 boss[type="world"][tag="chimera_sky_roamer,frostnight_scion,icewind_suite,legatus_golem,solitary_suanni"][level="1~"] {
-    astaps.loot.world_1-plus_gem_5<ELEMENT>: 1;
+    genshin.avatar_ascension.<ELEMENT1>.fragment: 9;
+    genshin.avatar_ascension.<ELEMENT1>.sliver: 9;
+    genshin.avatar_ascension.<ELEMENT2>.fragment: 9;
+    genshin.avatar_ascension.<ELEMENT2>.sliver: 9;
 }
 
 /* Group 6: 2 Bosses; one element, fragment and sliver independently grant 9 each, from level 1. */
 
 boss[type="world"][tag="lava_dragon_statue,lord_of_the_deep_dreadwing"][level="1~"] {
-    astaps.loot.world_1-plus_gem_6<ELEMENT>: 1;
+    genshin.avatar_ascension.<ELEMENT>.fragment: 9;
+    genshin.avatar_ascension.<ELEMENT>.sliver: 9;
 }
 
 /* Group 7: Tenebrous Papilla; three elements, each fragment and sliver independently grants 9, from level 1. */
 
 boss[type="world"][tag="tenebrous_papilla"][level="1~"] {
-    astaps.loot.world_1-plus_gem_7<ELEMENT>: 1;
+    genshin.avatar_ascension.<ELEMENT1>.fragment: 9;
+    genshin.avatar_ascension.<ELEMENT1>.sliver: 9;
+    genshin.avatar_ascension.<ELEMENT2>.fragment: 9;
+    genshin.avatar_ascension.<ELEMENT2>.sliver: 9;
+    genshin.avatar_ascension.<ELEMENT3>.fragment: 9;
+    genshin.avatar_ascension.<ELEMENT3>.sliver: 9;
 }
 
 /* World Boss artifacts: 48 identities; Precision Clockwork uses approved fallback pools.

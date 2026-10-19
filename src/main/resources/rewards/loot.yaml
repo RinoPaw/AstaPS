@@ -45,7 +45,7 @@ weapons_1_to_2_low: &weapons_1_to_2_low
   - {reward: *weapons_1_star, weight: 4}
   - {reward: *weapons_2_star, weight: 1}
 
-weapons_1_to_2_medium: &weapons_1_to_2_medium
+weapons_1_to_2_high: &weapons_1_to_2_high
   - {reward: *weapons_1_star, weight: 1}
   - {reward: *weapons_2_star, weight: 1}
 

@@ -34,6 +34,7 @@ final class TransPointRewardsTest {
     void bundledPointRulesPreserveAllFormerTomlPayouts() throws Exception {
         var names = new java.util.HashMap<Integer, String>(ItemIdRegistry.chestDropNames());
         names.putAll(Map.ofEntries(
+                Map.entry(101, "Character EXP"),
                 Map.entry(102, "Adventure EXP"),
                 Map.entry(105, "Companionship EXP"),
                 Map.entry(201, "Primogem"),

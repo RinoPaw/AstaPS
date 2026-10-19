@@ -138,6 +138,17 @@ public final class UnlockAllCommand implements CommandHandler {
         }
     }
 
+    /** Return newly unlocked areas after dropping the old fabricated scene flags. */
+    static int unlockValidAreas(java.util.Set<Integer> areas, java.util.Set<Integer> valid) {
+        if (valid.isEmpty()) return 0;
+        areas.retainAll(valid);
+        int added = 0;
+        for (int id : valid) {
+            if (areas.add(id)) added++;
+        }
+        return added;
+    }
+
     /** Add all map points, skipping story-protected ones unless explicitly forced. */
     static MapUnlockResult unlockMap(Player player, boolean force) {
         int waypoints = 0;
@@ -165,13 +176,8 @@ public final class UnlockAllCommand implements CommandHandler {
             }
             var unlockedAreas = player.getUnlockedSceneAreas(sceneId);
             var validAreas = SceneAreaCatalog.forScene(sceneId);
-            if (!validAreas.isEmpty()) {
-                // Repair saves polluted by the old 1..999-per-scene implementation.
-                unlockedAreas.retainAll(validAreas);
-                for (int area : validAreas) {
-                    if (unlockedAreas.add(area)) areaFlags++;
-                }
-            }
+            // Repair saves polluted by the old 1..999-per-scene implementation.
+            areaFlags += unlockValidAreas(unlockedAreas, validAreas);
         }
         return new MapUnlockResult(waypoints, statues, otherPoints, areaFlags);
     }

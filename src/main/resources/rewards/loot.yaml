@@ -1,12 +1,24 @@
-# 当前奖励表的局限见 rewards.css 开头；这里保留同一范围说明：
-# 精密发条机关圣遗物借用爆炎树；解谜空表使用同地区战斗表补齐。
-# 仅城市 1-4 的摩拉、经验书、天赋书按历史战斗表恢复；城市 5-9 沿用旧通用配置。
-# 宝箱武器、矿石多缺少原始子表，仍用旧配置；城市 1-4 宝箱圣遗物已恢复，周本未配置。
-# Boss 概率有整数近似；当前数据不代表官服实测，资源名称映射和完整发奖仍待验证。
+# Reward candidate pools used by rewards.css.
+# Entries select items and properties; CSS controls when and how often pools run.
+#
+# Known limitations (details and authoritative notes in rewards.css):
+# - Clockwork Mek artifacts reuse Pyro Regisvine pools.
+# - Some regional puzzle-chest pools fall back to combat-chest sources.
+# - Native regional Mora, EXP, and talent-book data covers cities 1-4 only.
+# - Some chest weapon/ore pools remain legacy; weekly Boss rewards are not included.
+# - Boss probabilities include integer approximations; names and payouts need validation.
+#
+# Contents
+# 1. Chest pools: weapons, ingredients, talent books, artifacts
+# 2. World Boss artifacts
+# 3. World Boss ascension gems
 
-# Chest random pools, world Boss gems, and world Boss artifacts.
-# Native chest artifacts for cities 1-4 are included; weekly-Boss pools are absent.
+# =============================================================================
+# 1. Chest candidate pools
+# =============================================================================
 
+## 1.1 Weapons
+# Individual star tiers use equal candidate weights.
 weapons_1_star: &weapons_1_star
   - {reward: genshin.weapon.dull_blade, weight: 1}
   - {reward: genshin.weapon.waster_greatsword, weight: 1}
@@ -28,7 +40,7 @@ weapons_3_star: &weapons_3_star
   - {reward: genshin.weapon.otherworldly_story, weight: 1}
   - {reward: genshin.weapon.messenger, weight: 1}
 
-# Mixed weapon pools; low/medium/high indicate increasing chances of higher-star weapons.
+# Mixed weapon tiers. Low/medium/high indicate the relative higher-rarity chance.
 weapons_1_to_2_low: &weapons_1_to_2_low
   - {reward: *weapons_1_star, weight: 4}
   - {reward: *weapons_2_star, weight: 1}
@@ -45,21 +57,21 @@ weapons_2_to_3_high: &weapons_2_to_3_high
   - {reward: *weapons_2_star, weight: 1}
   - {reward: *weapons_3_star, weight: 3}
 
-# Food ingredients.
+## 1.2 Food ingredients
 meat_ingredients: &meat_ingredients
   - {reward: genshin.material.raw_meat, weight: 1}
   - {reward: genshin.material.fowl, weight: 1}
 
-# Native regional talent-book candidate pools. One uniformly weighted choice per roll.
-# The three families and rarity are explicitly bound at each CSS reward call.
+## 1.3 Regional talent books
+# Three equal-weight candidates per roll; CSS specifies each region's families and rarity.
 regional_talent_books<set1, set2, set3, rarity>:
   - {reward: genshin.talent_up.<set1>, properties: {rarity: <rarity>}, weight: 1}
   - {reward: genshin.talent_up.<set2>, properties: {rarity: <rarity>}, weight: 1}
   - {reward: genshin.talent_up.<set3>, properties: {rarity: <rarity>}, weight: 1}
 
-# Native chest artifacts (sourceType 19, regions 1-4).
-# Candidate sets and original weighted mixtures remain separate.
-# Slot 1~5 is uniform; rarity and initial substat count come from the native pool.
+## 1.4 Native chest artifacts (sourceType 19, cities 1-4)
+# Parameterized candidate sets preserve native rarity and initial substat counts.
+# Slot 1~5 selects uniformly; each mixture retains its source relative weights.
 
 chest_artifact_pair<set1, set2, rarity, substats>:
   - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: <rarity>, substats: <substats>}, weight: 1000}
@@ -71,21 +83,22 @@ chest_artifact_quad<set1, set2, set3, set4, rarity, substats>:
   - {reward: "genshin.artifact.<set3>", properties: {slot: "1~5", rarity: <rarity>, substats: <substats>}, weight: 1000}
   - {reward: "genshin.artifact.<set4>", properties: {slot: "1~5", rarity: <rarity>, substats: <substats>}, weight: 1000}
 
-# Nested candidate selection; relative weights are the original source integers.
+# Source-backed mixtures. IDs below identify the original parent drop tables.
+# Uneven weights (including 699) are intentional and must remain unchanged.
 
-# Original parent tables include 51010015, 51010115, 51010215, 52010015, 52010115.
+# Source parent tables: 51010015, 51010115, 51010215, 52010015, 52010115.
 chest_artifact_mix_01:
   - {reward: "chest_artifact_pair<adventurer,traveling_doctor,1,0>", weight: 9000}
   - {reward: "chest_artifact_pair<adventurer,traveling_doctor,2,0>", weight: 900}
   - {reward: "chest_artifact_pair<adventurer,traveling_doctor,2,1>", weight: 100}
 
-# Original parent tables include 51010315, 51010415, 52010315, 52010415, 53010315.
+# Source parent tables: 51010315, 51010415, 52010315, 52010415, 53010315.
 chest_artifact_mix_02:
   - {reward: "chest_artifact_pair<adventurer,traveling_doctor,1,0>", weight: 6600}
   - {reward: "chest_artifact_pair<adventurer,traveling_doctor,2,0>", weight: 3060}
   - {reward: "chest_artifact_pair<adventurer,traveling_doctor,2,1>", weight: 340}
 
-# Original parent tables include 51010515, 51010615, 52010515, 52010615, 53010515.
+# Source parent tables: 51010515, 51010615, 52010515, 52010615, 53010515.
 chest_artifact_mix_03:
   - {reward: "chest_artifact_pair<adventurer,traveling_doctor,1,0>", weight: 3400}
   - {reward: "chest_artifact_pair<adventurer,traveling_doctor,2,0>", weight: 5040}
@@ -93,40 +106,40 @@ chest_artifact_mix_03:
   - {reward: "chest_artifact_quad<berserker,instructor,adventurer,traveling_doctor,3,1>", weight: 900}
   - {reward: "chest_artifact_quad<berserker,instructor,adventurer,traveling_doctor,3,2>", weight: 100}
 
-# Original parent tables include 51010715, 52010715, 53010715, 54010715, 55010715.
+# Source parent tables: 51010715, 52010715, 53010715, 54010715, 55010715.
 chest_artifact_mix_04:
   - {reward: "chest_artifact_pair<adventurer,traveling_doctor,2,0>", weight: 6300}
   - {reward: "chest_artifact_pair<adventurer,traveling_doctor,2,1>", weight: 699}
   - {reward: "chest_artifact_quad<berserker,instructor,adventurer,traveling_doctor,3,1>", weight: 2700}
   - {reward: "chest_artifact_quad<berserker,instructor,adventurer,traveling_doctor,3,2>", weight: 300}
 
-# Original parent tables include 51010815, 51010915, 52010815, 52010915, 53010815.
+# Source parent tables: 51010815, 51010915, 52010815, 52010915, 53010815.
 chest_artifact_mix_05:
   - {reward: "chest_artifact_quad<berserker,instructor,adventurer,traveling_doctor,3,1>", weight: 8100}
   - {reward: "chest_artifact_quad<berserker,instructor,adventurer,traveling_doctor,3,2>", weight: 900}
   - {reward: "chest_artifact_pair<berserker,instructor,4,2>", weight: 900}
   - {reward: "chest_artifact_pair<berserker,instructor,4,3>", weight: 100}
 
-# Original parent tables include 51011015, 51011115, 52011015, 52011115, 53011015.
+# Source parent tables: 51011015, 51011115, 52011015, 52011115, 53011015.
 chest_artifact_mix_06:
   - {reward: "chest_artifact_quad<berserker,instructor,adventurer,traveling_doctor,3,1>", weight: 7200}
   - {reward: "chest_artifact_quad<berserker,instructor,adventurer,traveling_doctor,3,2>", weight: 800}
   - {reward: "chest_artifact_pair<berserker,instructor,4,2>", weight: 1800}
   - {reward: "chest_artifact_pair<berserker,instructor,4,3>", weight: 200}
 
-# Original parent tables include 51020015, 51020115, 51020215, 52020015, 52020115.
+# Source parent tables: 51020015, 51020115, 51020215, 52020015, 52020115.
 chest_artifact_mix_07:
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,1,0>", weight: 9000}
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,2,0>", weight: 900}
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,2,1>", weight: 100}
 
-# Original parent tables include 51020315, 51020415, 52020315, 52020415.
+# Source parent tables: 51020315, 51020415, 52020315, 52020415.
 chest_artifact_mix_08:
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,1,0>", weight: 6600}
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,2,0>", weight: 3060}
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,2,1>", weight: 340}
 
-# Original parent tables include 51020515, 51020615, 52020515, 52020615.
+# Source parent tables: 51020515, 51020615, 52020515, 52020615.
 chest_artifact_mix_09:
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,1,0>", weight: 3400}
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,2,0>", weight: 5040}
@@ -134,88 +147,143 @@ chest_artifact_mix_09:
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,1>", weight: 900}
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,2>", weight: 100}
 
-# Original parent tables include 51020715, 52020715.
+# Source parent tables: 51020715, 52020715.
 chest_artifact_mix_10:
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,2,0>", weight: 6300}
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,2,1>", weight: 699}
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,1>", weight: 2700}
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,2>", weight: 300}
 
-# Original parent tables include 51020815, 51020915, 52020815, 52020915.
+# Source parent tables: 51020815, 51020915, 52020815, 52020915.
 chest_artifact_mix_11:
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,1>", weight: 8100}
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,2>", weight: 900}
   - {reward: "chest_artifact_pair<berserker,the_exile,4,2>", weight: 900}
   - {reward: "chest_artifact_pair<berserker,the_exile,4,3>", weight: 100}
 
-# Original parent tables include 51021015, 51021115, 52021015, 52021115.
+# Source parent tables: 51021015, 51021115, 52021015, 52021115.
 chest_artifact_mix_12:
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,1>", weight: 7200}
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,2>", weight: 800}
   - {reward: "chest_artifact_pair<berserker,the_exile,4,2>", weight: 1800}
   - {reward: "chest_artifact_pair<berserker,the_exile,4,3>", weight: 200}
 
-# Original parent tables include 51030015, 52030015.
+# Source parent tables: 51030015, 52030015.
 chest_artifact_mix_13:
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,2,0>", weight: 6300}
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,2,1>", weight: 699}
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,1>", weight: 2700}
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,2>", weight: 300}
 
-# Original parent tables include 51032015, 52032015.
+# Source parent tables: 51032015, 52032015.
 chest_artifact_mix_14:
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,2,0>", weight: 3060}
   - {reward: "chest_artifact_pair<lucky_dog,traveling_doctor,2,1>", weight: 340}
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,1>", weight: 5940}
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,2>", weight: 660}
 
-# Original parent tables include 51033015, 52033015.
+# Source parent tables: 51033015, 52033015.
 chest_artifact_mix_15:
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,1>", weight: 8100}
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,2>", weight: 900}
   - {reward: "chest_artifact_pair<berserker,the_exile,4,2>", weight: 900}
   - {reward: "chest_artifact_pair<berserker,the_exile,4,3>", weight: 100}
 
-# Original parent tables include 51034015, 52034015.
+# Source parent tables: 51034015, 52034015.
 chest_artifact_mix_16:
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,1>", weight: 7200}
   - {reward: "chest_artifact_quad<berserker,the_exile,lucky_dog,traveling_doctor,3,2>", weight: 800}
   - {reward: "chest_artifact_pair<berserker,the_exile,4,2>", weight: 1800}
   - {reward: "chest_artifact_pair<berserker,the_exile,4,3>", weight: 200}
 
-# Original parent tables include 51040015, 52040015.
+# Source parent tables: 51040015, 52040015.
 chest_artifact_mix_17:
   - {reward: "chest_artifact_pair<adventurer,lucky_dog,2,0>", weight: 6300}
   - {reward: "chest_artifact_pair<adventurer,lucky_dog,2,1>", weight: 699}
   - {reward: "chest_artifact_quad<instructor,the_exile,adventurer,lucky_dog,3,1>", weight: 2700}
   - {reward: "chest_artifact_quad<instructor,the_exile,adventurer,lucky_dog,3,2>", weight: 300}
 
-# Original parent tables include 51042015, 52042015.
+# Source parent tables: 51042015, 52042015.
 chest_artifact_mix_18:
   - {reward: "chest_artifact_pair<adventurer,lucky_dog,2,0>", weight: 3060}
   - {reward: "chest_artifact_pair<adventurer,lucky_dog,2,1>", weight: 340}
   - {reward: "chest_artifact_quad<instructor,the_exile,adventurer,lucky_dog,3,1>", weight: 5940}
   - {reward: "chest_artifact_quad<instructor,the_exile,adventurer,lucky_dog,3,2>", weight: 660}
 
-# Original parent tables include 51043015, 52043015.
+# Source parent tables: 51043015, 52043015.
 chest_artifact_mix_19:
   - {reward: "chest_artifact_quad<instructor,the_exile,adventurer,lucky_dog,3,1>", weight: 8100}
   - {reward: "chest_artifact_quad<instructor,the_exile,adventurer,lucky_dog,3,2>", weight: 900}
   - {reward: "chest_artifact_pair<instructor,the_exile,4,2>", weight: 900}
   - {reward: "chest_artifact_pair<instructor,the_exile,4,3>", weight: 100}
 
-# Original parent tables include 51044015, 52044015.
+# Source parent tables: 51044015, 52044015.
 chest_artifact_mix_20:
   - {reward: "chest_artifact_quad<instructor,the_exile,adventurer,lucky_dog,3,1>", weight: 7200}
   - {reward: "chest_artifact_quad<instructor,the_exile,adventurer,lucky_dog,3,2>", weight: 800}
   - {reward: "chest_artifact_pair<instructor,the_exile,4,2>", weight: 1800}
   - {reward: "chest_artifact_pair<instructor,the_exile,4,3>", weight: 200}
 
-# World Boss gems: weighted candidate pools; fixed single-item and multi-item rewards live in CSS.
-# Arguments replace element names only; count and weight retain primitive loot semantics.
-# CSS chooses the named range and supplies the independent execution count.
+# =============================================================================
+# 2. World Boss artifacts
+# =============================================================================
+# CSS maps 48 Boss identities to these templates. Clockwork Mek borrows
+# Pyro Regisvine artifact pools until its native data is available.
+# Set names are parameters; slots, rarity, substats, and weights stay explicit.
+# Special 5-star templates preserve fixed-slot variants.
 
-# Group 1
+world_artifact_1star_1<set1>:
+  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1}
+
+world_artifact_2star_1<set1>:
+  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 2, substats: "0:66, 1:34"}, weight: 1}
+
+world_artifact_3star_1<set1, set2, set3, set4>:
+  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set2>", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set3>", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set4>", properties: {slot: circlet, rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+
+world_artifact_3star_2<set1, set2, set3>:
+  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set2>", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set3>", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+
+world_artifact_4star_1<set1, set2, set3, set4, set5>:
+  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set2>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set3>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set4>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set5>", properties: {slot: circlet, rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+
+world_artifact_4star_2<set1, set2, set3, set4>:
+  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set2>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set3>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set4>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+
+world_artifact_5star_1<set1, set2>:
+  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 5, substats: "3:66, 4:34"}, weight: 1}
+  - {reward: "genshin.artifact.<set2>", properties: {slot: "1~5", rarity: 5, substats: "3:66, 4:34"}, weight: 1}
+
+world_artifact_5star_2<set1>:
+  - {reward: "genshin.artifact.<set1>", properties: {slot: "2:34, 4:66", rarity: 5, substats: 0}, weight: 1}
+
+world_artifact_5star_special<set1, plume_substats, goblet_substats>:
+  - {reward: "genshin.artifact.<set1>", properties: {slot: plume, rarity: 5, substats: <plume_substats>}, weight: 17}
+  - {reward: "genshin.artifact.<set1>", properties: {slot: goblet, rarity: 5, substats: <goblet_substats>}, weight: 33}
+
+world_artifact_5star_goblet<set1, substats>:
+  - {reward: "genshin.artifact.<set1>", properties: {slot: goblet, rarity: 5, substats: <substats>}, weight: 1}
+
+# =============================================================================
+# 3. World Boss ascension gems
+# =============================================================================
+# Weighted gem candidates by level range and element count.
+# CSS controls pool execution counts and fixed rewards independently.
+# Template arguments select elements; item counts and candidate weights are unchanged.
+
+# 3.1 Single-element gem pools
 world_40-44_gem_1<element>:
   - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 79}
   - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 21}
@@ -271,7 +339,7 @@ world_90-plus_gem_1<element>:
   - {reward: "genshin.avatar_ascension.<element>.chunk", count: 3, weight: 10}
   - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 3, weight: 1}
 
-# Group 2
+# 3.2 Dual-element gem pools
 world_1-39_gem_2<element1, element2>:
   - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 3, weight: 1}
   - {reward: "genshin.avatar_ascension.<element2>.sliver", count: 3, weight: 1}
@@ -364,11 +432,7 @@ world_90-plus_gem_2<element1, element2>:
   - {reward: "genshin.avatar_ascension.<element2>.chunk", count: 3, weight: 10}
   - {reward: "genshin.avatar_ascension.<element2>.gemstone", count: 3, weight: 1}
 
-world_40-plus_gem_fragment_2<element1, element2>:
-  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1}
-  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1}
-
-# Group 3
+# 3.3 Additional single-element gem pools
 world_40-44_gem_3<element>:
   - {reward: "genshin.avatar_ascension.<element>.sliver", count: 9, weight: 79}
   - {reward: "genshin.avatar_ascension.<element>.fragment", count: 9, weight: 21}
@@ -424,7 +488,7 @@ world_90-plus_gem_3<element>:
   - {reward: "genshin.avatar_ascension.<element>.chunk", count: 9, weight: 10}
   - {reward: "genshin.avatar_ascension.<element>.gemstone", count: 9, weight: 1}
 
-# Group 4
+# 3.4 Additional dual-element gem pools
 world_30-plus_gem_4<element1, element2>:
   - {reward: "genshin.avatar_ascension.<element1>.sliver", count: 9, weight: 150}
   - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 9, weight: 40}
@@ -439,54 +503,11 @@ world_40-plus_gem_fragment_4<element1, element2>:
   - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 9, weight: 1}
   - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 9, weight: 1}
 
-# Independent single-element bonus fragments; CSS controls the total quantity.
+# 3.5 Bonus fragments
+# Separate fragment pools. CSS controls the total reward quantity.
+world_40-plus_gem_fragment_2<element1, element2>:
+  - {reward: "genshin.avatar_ascension.<element1>.fragment", count: 3, weight: 1}
+  - {reward: "genshin.avatar_ascension.<element2>.fragment", count: 3, weight: 1}
+
 world_gem_fragment<element>:
   - {reward: "genshin.avatar_ascension.<element>.fragment"}
-
-# World Boss artifacts: 48 identities; Precision Clockwork borrows Pyro Regisvine pools.
-# Generic parameters replace set names only. Counts and probabilities are unchanged.
-# Existing properties: slot names/ranges/percentages, rarity, and substats percentages.
-
-world_artifact_1star_1<set1>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 1, substats: 0}, weight: 1}
-
-world_artifact_2star_1<set1>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 2, substats: "0:66, 1:34"}, weight: 1}
-
-world_artifact_3star_1<set1, set2, set3, set4>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set2>", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set3>", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set4>", properties: {slot: circlet, rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-
-world_artifact_3star_2<set1, set2, set3>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set2>", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set3>", properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-
-world_artifact_4star_1<set1, set2, set3, set4, set5>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set2>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set3>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set4>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set5>", properties: {slot: circlet, rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-
-world_artifact_4star_2<set1, set2, set3, set4>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set2>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set3>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set4>", properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-
-world_artifact_5star_1<set1, set2>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: "1~5", rarity: 5, substats: "3:66, 4:34"}, weight: 1}
-  - {reward: "genshin.artifact.<set2>", properties: {slot: "1~5", rarity: 5, substats: "3:66, 4:34"}, weight: 1}
-
-world_artifact_5star_2<set1>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: "2:34, 4:66", rarity: 5, substats: 0}, weight: 1}
-
-world_artifact_5star_special<set1, plume_substats, goblet_substats>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: plume, rarity: 5, substats: <plume_substats>}, weight: 17}
-  - {reward: "genshin.artifact.<set1>", properties: {slot: goblet, rarity: 5, substats: <goblet_substats>}, weight: 33}
-
-world_artifact_5star_goblet<set1, substats>:
-  - {reward: "genshin.artifact.<set1>", properties: {slot: goblet, rarity: 5, substats: <substats>}, weight: 1}

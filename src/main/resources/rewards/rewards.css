@@ -339,7 +339,7 @@ blossom[type="revelation"][WR="6~9"] {
 
 /* World Boss rewards: shared currencies/EXP, identity bindings, then level-based drops. */
 
-/* Shared world Boss currencies and experience, in ascending level order. */
+/* Shared world Boss currencies, experience, and material counts by level. */
 
 boss[type="world"] {
     genshin.experience.adventure: 200;
@@ -349,120 +349,140 @@ boss[type="world"][level="1~4"] {
     genshin.currency.mora: 1825;
     genshin.experience.companionship: 15;
     genshin.experience.character: 100;
+    getBossMaterial: "1:66, 2:34";
 }
 
 boss[type="world"][level="5~9"] {
     genshin.currency.mora: 2100;
     genshin.experience.companionship: 20;
     genshin.experience.character: 104;
+    getBossMaterial: "1:57, 2:43";
 }
 
 boss[type="world"][level="10~14"] {
     genshin.currency.mora: 2375;
     genshin.experience.companionship: 20;
     genshin.experience.character: 110;
+    getBossMaterial: "1:46, 2:54";
 }
 
 boss[type="world"][level="15~19"] {
     genshin.currency.mora: 2575;
     genshin.experience.companionship: 25;
     genshin.experience.character: 116;
+    getBossMaterial: "1:35, 2:65";
 }
 
 boss[type="world"][level="20~24"] {
     genshin.currency.mora: 2825;
     genshin.experience.companionship: 25;
     genshin.experience.character: 121;
+    getBossMaterial: "1:23, 2:77";
 }
 
 boss[type="world"][level="25~29"] {
     genshin.currency.mora: 3050;
     genshin.experience.companionship: 25;
     genshin.experience.character: 127;
+    getBossMaterial: "1:12, 2:88";
 }
 
 boss[type="world"][level="30~34"] {
     genshin.currency.mora: 3300;
     genshin.experience.companionship: 30;
     genshin.experience.character: 133;
+    getBossMaterial: "1:48, 2:52";
 }
 
 boss[type="world"][level="35~39"] {
     genshin.currency.mora: 3450;
     genshin.experience.companionship: 30;
     genshin.experience.character: 138;
+    getBossMaterial: "1:39, 2:61";
 }
 
 boss[type="world"][level="40~44"] {
     genshin.currency.mora: 3650;
     genshin.experience.companionship: 30;
     genshin.experience.character: 144;
+    getBossMaterial: "1:31, 2:69";
 }
 
 boss[type="world"][level="45~49"] {
     genshin.currency.mora: 3725;
     genshin.experience.companionship: 30;
     genshin.experience.character: 149;
+    getBossMaterial: "1:22, 2:78";
 }
 
 boss[type="world"][level="50~54"] {
     genshin.currency.mora: 3850;
     genshin.experience.companionship: 35;
     genshin.experience.character: 155;
+    getBossMaterial: "1:13, 2:87";
 }
 
 boss[type="world"][level="55~59"] {
     genshin.currency.mora: 3975;
     genshin.experience.companionship: 35;
     genshin.experience.character: 161;
+    getBossMaterial: "1:5, 2:95";
 }
 
 boss[type="world"][level="60~64"] {
     genshin.currency.mora: 4125;
     genshin.experience.companionship: 35;
     genshin.experience.character: 166;
+    getBossMaterial: "2:96, 3:4";
 }
 
 boss[type="world"][level="65~69"] {
     genshin.currency.mora: 4325;
     genshin.experience.companionship: 35;
     genshin.experience.character: 172;
+    getBossMaterial: "2:88, 3:12";
 }
 
 boss[type="world"][level="70~74"] {
     genshin.currency.mora: 4450;
     genshin.experience.companionship: 40;
     genshin.experience.character: 178;
+    getBossMaterial: "2:79, 3:21";
 }
 
 boss[type="world"][level="75~79"] {
     genshin.currency.mora: 4600;
     genshin.experience.companionship: 40;
     genshin.experience.character: 183;
+    getBossMaterial: "2:70, 3:30";
 }
 
 boss[type="world"][level="80~84"] {
     genshin.currency.mora: 4725;
     genshin.experience.companionship: 40;
     genshin.experience.character: 189;
+    getBossMaterial: "2:62, 3:38";
 }
 
 boss[type="world"][level="85~89"] {
     genshin.currency.mora: 4850;
     genshin.experience.companionship: 40;
     genshin.experience.character: 194;
+    getBossMaterial: "2:53, 3:47";
 }
 
 boss[type="world"][level="90~92"] {
     genshin.currency.mora: 5200;
     genshin.experience.companionship: 45;
     genshin.experience.character: 200;
+    getBossMaterial: "2:44, 3:56";
 }
 
 boss[type="world"][level="93~"] {
     genshin.currency.mora: 6000;
     genshin.experience.companionship: 45;
     genshin.experience.character: 200;
+    getBossMaterial: "2:44, 3:56";
 }
 
 /* Boss identities: 48 native identities, with material and gem bindings in tag order. */
@@ -758,93 +778,13 @@ boss[type="world"][tag="undying_replicant"] {
     ELEMENT: pyro;
 }
 
-/* World Boss materials: early, mid, then late game; shared quantities before exceptions. */
-
-/* Early game: levels 1-29. Shared quantities, then the no-material exception. */
-
-boss[type="world"][level="1~4"] {
-    getBossMaterial: "1:66, 2:34";
-}
-
-boss[type="world"][level="5~9"] {
-    getBossMaterial: "1:57, 2:43";
-}
-
-boss[type="world"][level="10~14"] {
-    getBossMaterial: "1:46, 2:54";
-}
-
-boss[type="world"][level="15~19"] {
-    getBossMaterial: "1:35, 2:65";
-}
-
-boss[type="world"][level="20~24"] {
-    getBossMaterial: "1:23, 2:77";
-}
-
-boss[type="world"][level="25~29"] {
-    getBossMaterial: "1:12, 2:88";
-}
+/* Boss material exceptions: override the shared level-based quantities. */
 
 /* These 25 Boss identities have no material entry at levels 1-29.
  * Override the shared early-game quantity with zero; do not invent drops.
  */
 boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,anemo_hypostasis,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,maguu_kenki,oceanid,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine,ruin_serpent,setekh_wenut,thunder_manifestation"][level="1~29"] {
     getBossMaterial: 0;
-}
-
-/* Mid game: levels 30-99. Shared standard quantities. */
-
-boss[type="world"][level="30~34"] {
-    getBossMaterial: "1:48, 2:52";
-}
-
-boss[type="world"][level="35~39"] {
-    getBossMaterial: "1:39, 2:61";
-}
-
-boss[type="world"][level="40~44"] {
-    getBossMaterial: "1:31, 2:69";
-}
-
-boss[type="world"][level="45~49"] {
-    getBossMaterial: "1:22, 2:78";
-}
-
-boss[type="world"][level="50~54"] {
-    getBossMaterial: "1:13, 2:87";
-}
-
-boss[type="world"][level="55~59"] {
-    getBossMaterial: "1:5, 2:95";
-}
-
-boss[type="world"][level="60~64"] {
-    getBossMaterial: "2:96, 3:4";
-}
-
-boss[type="world"][level="65~69"] {
-    getBossMaterial: "2:88, 3:12";
-}
-
-boss[type="world"][level="70~74"] {
-    getBossMaterial: "2:79, 3:21";
-}
-
-boss[type="world"][level="75~79"] {
-    getBossMaterial: "2:70, 3:30";
-}
-
-boss[type="world"][level="80~84"] {
-    getBossMaterial: "2:62, 3:38";
-}
-
-boss[type="world"][level="85~89"] {
-    getBossMaterial: "2:53, 3:47";
-}
-
-boss[type="world"][level="90~99"] {
-    getBossMaterial: "2:44, 3:56";
 }
 
 /* Mid-game exception: Pyro Regisvine and Oceanid. */
@@ -899,13 +839,6 @@ boss[type="world"][tag="oceanid,pyro_regisvine"][level="85~89"] {
 
 boss[type="world"][tag="oceanid,pyro_regisvine"][level="90~99"] {
     getBossMaterial: "2:19, 3:81";
-}
-
-/* Late game: levels 100+. Native rows at 100/105/110/115/120 share
- * these quantities; the last row continues above 120, as in ChestDrop.
- */
-boss[type="world"][level="100~"] {
-    getBossMaterial: "2:44, 3:56";
 }
 
 /* Pyro Regisvine and Oceanid retain their higher-yield quantities. */

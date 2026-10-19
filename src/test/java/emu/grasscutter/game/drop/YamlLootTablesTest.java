@@ -40,21 +40,21 @@ class YamlLootTablesTest {
             }
         }
         var yaml = """
-                artifacts_prayers_wisdom_3star:
+                artifacts_prayers_wisdom_3star: &artifacts_prayers_wisdom_3star
                   - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
                   - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
                   - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: 3, substats: "1:66, 2:34"}, weight: 1}
                   - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-                artifacts_prayers_wisdom_4star:
+                artifacts_prayers_wisdom_4star: &artifacts_prayers_wisdom_4star
                   - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
                   - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
                   - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: 4, substats: "2:66, 3:34"}, weight: 1}
                   - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
                   - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
                 boss3:
-                  - {reward: astaps.loot.artifacts_prayers_wisdom_3star, count: 2}
+                  - {reward: *artifacts_prayers_wisdom_3star, count: 2}
                 boss4:
-                  - {reward: astaps.loot.artifacts_prayers_wisdom_4star, count: 2}
+                  - {reward: *artifacts_prayers_wisdom_4star, count: 2}
                 """;
         var loot = YamlLootTables.parse(yaml, resolver, new ArtifactResolver(variants));
         assertEquals(4, loot.names().size());
@@ -513,8 +513,7 @@ class YamlLootTablesTest {
         assertThrows(IllegalArgumentException.class, () -> tables.resolveName("missing"));
         assertThrows(IllegalArgumentException.class,
                 () -> tables.resolveName("genshin.currency.mora"));
-        assertThrows(IllegalArgumentException.class,
-                () -> tables.roll("surprise", new Random(0)));
+        assertEquals(Map.of(202, 300), tables.roll("surprise", new Random(0)));
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 astaps.loot.surprise:
                   - {reward: genshin.currency.mora}

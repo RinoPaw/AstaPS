@@ -138,17 +138,8 @@ public final class UnlockAllCommand implements CommandHandler {
         }
     }
 
-    /** Return newly unlocked areas after dropping the old fabricated scene flags. */
+    /** Unlock only area IDs defined by the loaded scene resources. */
     static int unlockValidAreas(java.util.Set<Integer> areas, java.util.Set<Integer> valid) {
-        if (valid.isEmpty()) {
-            // Old /unlock map wrote all 999 flags to even resource-less scenes.
-            // Remove only that recognizable synthetic signature.
-            if (areas.size() == 999 && areas.contains(1) && areas.contains(999)) {
-                areas.clear();
-            }
-            return 0;
-        }
-        areas.retainAll(valid);
         int added = 0;
         for (int id : valid) {
             if (areas.add(id)) added++;
@@ -183,7 +174,6 @@ public final class UnlockAllCommand implements CommandHandler {
             }
             var unlockedAreas = player.getUnlockedSceneAreas(sceneId);
             var validAreas = SceneAreaCatalog.forScene(sceneId);
-            // Repair saves polluted by the old 1..999-per-scene implementation.
             areaFlags += unlockValidAreas(unlockedAreas, validAreas);
         }
         return new MapUnlockResult(waypoints, statues, otherPoints, areaFlags);

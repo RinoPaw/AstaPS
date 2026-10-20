@@ -165,6 +165,7 @@ final class BundledBossRewardsTest {
         var css = CssRewards.parse(originalCss, new ItemIdRegistry(known, categories),
                 loot);
         var config = new RewardConfiguration(loot, css);
+        verifyNativeWorldBossFixedRewards(css);
         String identityCss = stylesheet.substring(
                 stylesheet.indexOf("/* 身份绑定"),
                 stylesheet.indexOf("/* 通用等级奖励"));
@@ -237,4 +238,102 @@ final class BundledBossRewardsTest {
         assertTrue(weekly.loot().isEmpty());
         assertTrue(weekly.rangedLoot().isEmpty());
     }
+    /**
+     * Independently check all 1,200 source rows (48 identities x 25 tiers)
+     * against the canonical 7.1 ChestDrop and DropTable source. The source
+     * evaluator does not call the CSS engine or YAML reward code.
+     *
+     * Native artifact, gem and material distributions are checked separately;
+     * these four fixed payouts are exact and must never drift.
+     */
+    private static void verifyNativeWorldBossFixedRewards(CssRewards css) throws Exception {
+        var chestSource = java.nio.file.Path.of("data/ChestDrop.json");
+        var tableSource = java.nio.file.Path.of("data/Server/DropTableExcelConfigData.json");
+        var tableMap = new HashMap<Integer, com.google.gson.JsonObject>();
+        try (var reader = java.nio.file.Files.newBufferedReader(tableSource)) {
+            for (var row : com.google.gson.JsonParser.parseReader(reader).getAsJsonArray()) {
+                var table = row.getAsJsonObject();
+                tableMap.put(table.get("id").getAsInt(), table);
+            }
+        }
+        var cache = new HashMap<Integer, double[]>();
+        int checked = 0;
+        var seen = new java.util.HashSet<String>();
+        try (var reader = java.nio.file.Files.newBufferedReader(chestSource)) {
+            for (var raw : com.google.gson.JsonParser.parseReader(reader).getAsJsonArray()) {
+                var entry = raw.getAsJsonObject();
+                if (!entry.has("sourceType") || entry.get("sourceType").getAsInt() != 34) continue;
+                String nativeTag = entry.get("index").getAsString();
+                int level = entry.get("minLevel").getAsInt();
+                String label = nativeTag + " level=" + level;
+                assertTrue(seen.add(label), "Duplicate native Boss source: " + label);
+                var selected = css.resolve("boss", Map.of(
+                        "type", "world", "tag", RewardConfiguration.cssBossTag(nativeTag),
+                        "level", Integer.toString(level)));
+                double[] expected = expectedNativePayout(entry.get("dropId").getAsInt(),
+                        tableMap, cache, new java.util.HashSet<>());
+                int[] ids = {101, 102, 105, 202};
+                for (int i = 0; i < ids.length; i++) {
+                    int id = ids[i];
+                    assertFalse(selected.rangedItems().containsKey(id),
+                            "Native fixed payout became random: " + label + " item=" + id);
+                    assertEquals(expected[i], selected.items().getOrDefault(id, 0).doubleValue(),
+                            0.000001, "Source mismatch: " + label + " item=" + id);
+                }
+                checked++;
+            }
+        }
+        assertEquals(1200, checked, "The authoritative world Boss source changed");
+    }
+
+    private static double[] expectedNativePayout(int id,
+            Map<Integer, com.google.gson.JsonObject> tables,
+            Map<Integer, double[]> memo, java.util.Set<Integer> active) {
+        if (memo.containsKey(id)) return memo.get(id);
+        var table = tables.get(id);
+        double[] totals = new double[4];
+        if (table == null) {
+            int[] fixedIds = {101, 102, 105, 202};
+            for (int i = 0; i < fixedIds.length; i++) {
+                if (fixedIds[i] == id) totals[i] = 1;
+            }
+            return totals;
+        }
+        if (!active.add(id)) throw new IllegalStateException("Native drop table cycle: " + id);
+        int mode = table.get("randomType").getAsInt();
+        assertTrue(mode == 0 || mode == 1, "Unrecognized native randomType: " + id);
+        var items = table.has("dropVec") && table.get("dropVec").isJsonArray()
+                ? table.getAsJsonArray("dropVec") : new com.google.gson.JsonArray();
+        double sum = 0;
+        for (var value : items) {
+            var item = value.getAsJsonObject();
+            if (item.get("itemId").getAsInt() > 0 && item.get("weight").getAsInt() > 0) {
+                sum += item.get("weight").getAsInt();
+            }
+        }
+        for (var value : items) {
+            var item = value.getAsJsonObject();
+            int child = item.get("itemId").getAsInt();
+            int weight = item.get("weight").getAsInt();
+            if (child <= 0 || weight <= 0) continue;
+            double probability = mode == 1 ? weight / 10000.0 : weight / sum;
+            String quantity = item.get("countRange").getAsString();
+            double expectedCount;
+            if (quantity.contains(";")) {
+                String[] parts = quantity.split(";", -1);
+                assertEquals(2, parts.length, "Malformed source count: " + id);
+                expectedCount = (Double.parseDouble(parts[0]) + Double.parseDouble(parts[1])) / 2.0;
+            } else {
+                expectedCount = Double.parseDouble(quantity);
+            }
+            double[] sub = expectedNativePayout(child, tables, memo, active);
+            for (int i = 0; i < totals.length; i++) {
+                totals[i] += probability * expectedCount * sub[i];
+            }
+        }
+        active.remove(id);
+        memo.put(id, totals);
+        return totals;
+    }
+
 }

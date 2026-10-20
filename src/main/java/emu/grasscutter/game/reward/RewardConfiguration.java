@@ -238,6 +238,10 @@ public final class RewardConfiguration {
             Map.entry("雷音权现", "thunder_manifestation"),
             Map.entry("不灭衍生造物", "undying_replicant"));
 
+    static String cssBossTag(String nativeTag) {
+        return CSS_BOSS_TAGS.getOrDefault(nativeTag, nativeTag);
+    }
+
     /** Roll configured world Boss materials and shared rewards from CSS.
      * Unknown Boss identities and uncovered levels retain their native path.
      */
@@ -245,7 +249,7 @@ public final class RewardConfiguration {
             String tag, int nativeBossLevel, RandomGenerator random) {
         var attributes = Map.of(
                 "type", "world",
-                "tag", CSS_BOSS_TAGS.getOrDefault(tag, tag),
+                "tag", cssBossTag(tag),
                 "level", Integer.toString(nativeBossLevel));
         var selection = css.resolve("boss", attributes);
         if (selection.loot().isEmpty() && selection.rangedLoot().isEmpty()

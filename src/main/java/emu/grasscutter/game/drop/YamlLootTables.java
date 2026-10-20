@@ -440,14 +440,7 @@ public final class YamlLootTables {
                 BigDecimal weight = null;
                 Object value = fields.get("weight");
                 if (value != null) {
-                    if (!(value instanceof Number)
-                            || !value.toString().matches("[0-9]+")) {
-                        throw new IllegalArgumentException(at + ": weight must be an integer");
-                    }
-                    weight = new BigDecimal(value.toString());
-                    if (weight.signum() < 0 || weight.compareTo(new BigDecimal("1000000000")) > 0) {
-                        throw new IllegalArgumentException(at + ": weight outside 0..1000000000");
-                    }
+                    weight = WeightedChoice.weight(value, at);
                     hasWeight = true;
                 } else hasNull = true;
                 entries.add(new Entry(rewardId, artifact, grade, element, typeChoice,

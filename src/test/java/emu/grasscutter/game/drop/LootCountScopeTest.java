@@ -553,11 +553,11 @@ class LootCountScopeTest {
     void artifactParameterPacksInferAvailableSlotsWithoutChangingSetWeights() {
         var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
         String[] sets = {"berserker", "instructor", "the_exile",
-                "gladiators_finale", "prayers_for_wisdom"};
+                "prayers_for_wisdom", "gladiators_finale"};
         for (int rarity : new int[]{3, 4}) {
             for (int set = 0; set < sets.length; set++) {
                 for (int slot = 1; slot <= 5; slot++) {
-                    if (set == 4 && slot != 5) continue;
+                    if (set == 3 && slot != 5) continue;
                     for (int substats = rarity - 2; substats <= rarity - 1; substats++) {
                         variants.add(new ArtifactResolver.Variant(
                                 rarity * 100_000 + (set + 1) * 1_000 + slot * 10 + substats,
@@ -593,7 +593,7 @@ class LootCountScopeTest {
                 assertTrue(set >= 0 && set < kinds);
                 assertTrue(slot >= 1 && slot <= 5);
                 assertTrue(substats == rarity - 2 || substats == rarity - 1);
-                if (set == 4 || (rarity == 3 && set == 3)) {
+                if (set == 3) {
                     assertEquals(5, slot, "Prayers sets only contain circlets");
                 }
                 selectedSets[set]++;
@@ -601,7 +601,7 @@ class LootCountScopeTest {
             }
             for (int set = 0; set < kinds; set++) {
                 assertEquals(1.0 / kinds, selectedSets[set] / 20_000.0, 0.02);
-                if (set == 4 || (rarity == 3 && set == 3)) continue;
+                if (set == 3) continue;
                 for (int slotCount : selectedSlots[set]) {
                     assertEquals(0.2, slotCount / (double) selectedSets[set], 0.03);
                 }

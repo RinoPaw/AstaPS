@@ -17,6 +17,50 @@ class LootCountScopeTest {
     };
 
     @Test
+    void typeAndPoolShareRelativeWeightSampling() {
+        var tables = YamlLootTables.parse("""
+                weapon: {type: "genshin.currency.mora:3, genshin.avatar_up.heros_wit:1"}
+                same: {type: "genshin.currency.mora:3, genshin.avatar_up.heros_wit:1", count: 2}
+                repeated: {type: weapon, count: 2}
+                """, ITEMS);
+        var random = new Random(165);
+        int sameMora = 0, mixed = 0;
+        for (int i = 0; i < 12_000; i++) {
+            var same = tables.roll("same", random);
+            assertEquals(2, same.values().stream().mapToInt(Integer::intValue).sum());
+            assertTrue(same.equals(Map.of(MORA, 2)) || same.equals(Map.of(WIT, 2)));
+            if (same.containsKey(MORA)) sameMora++;
+            var repeated = tables.roll("repeated", random);
+            assertEquals(2, repeated.values().stream().mapToInt(Integer::intValue).sum());
+            if (repeated.size() == 2) mixed++;
+        }
+        assertEquals(0.75, sameMora / 12_000.0, 0.03);
+        assertEquals(0.375, mixed / 12_000.0, 0.03);
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                bad: {type: "genshin.currency.mora:3, genshin.avatar_up.heros_wit"}
+                """, ITEMS));
+    }
+
+    @Test
+    void artifactSlotUsesTheSameWeightedExpression() {
+        var artifacts = new ArtifactResolver(java.util.List.of(
+                new ArtifactResolver.Variant(900001, "berserker", 1, 3, 1),
+                new ArtifactResolver.Variant(900002, "berserker", 2, 3, 1)));
+        var tables = YamlLootTables.parse("""
+                artifacts:
+                  - {type: genshin.artifact.berserker, properties: {slot: "flower:3, plume:1", rarity: 3, substats: 1}}
+                """, ITEMS, artifacts);
+        int flowers = 0;
+        var random = new Random(166);
+        for (int i = 0; i < 12_000; i++) {
+            var reward = tables.roll("artifacts", random);
+            assertEquals(1, reward.values().stream().mapToInt(Integer::intValue).sum());
+            if (reward.containsKey(900001)) flowers++;
+        }
+        assertEquals(0.75, flowers / 12_000.0, 0.03);
+    }
+
+    @Test
     void countsUseExplicitRelativeWeights() {
         var distribution = LootCount.parse("2:586, 3:414");
         var random = new Random(71);

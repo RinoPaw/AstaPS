@@ -3,7 +3,6 @@ package emu.grasscutter.game.drop;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -54,7 +53,6 @@ final class WeightedChoice<T> {
         }
         var candidates = new ArrayList<T>();
         var weights = new ArrayList<BigDecimal>();
-        var names = new HashSet<String>();
         for (String segment : expression.split(",", -1)) {
             String[] pair = segment.trim().split(":", -1);
             if (pair.length != 2 || pair[0].isBlank()) {
@@ -62,9 +60,6 @@ final class WeightedChoice<T> {
                         location + ": expected candidate:weight: " + segment);
             }
             String name = pair[0].trim();
-            if (!names.add(name)) {
-                throw new IllegalArgumentException(location + ": duplicate candidate: " + name);
-            }
             var weight = weight(pair[1], location);
             if (weight.signum() == 0) continue;
             candidates.add(Objects.requireNonNull(resolve.apply(name),

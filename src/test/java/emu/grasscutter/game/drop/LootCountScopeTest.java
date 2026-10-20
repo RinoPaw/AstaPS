@@ -410,4 +410,61 @@ class LootCountScopeTest {
         }
         assertEquals(0.414, threeExecutions / 20_000.0, 0.025);
     }
+
+    @Test
+    void variadicArtifactSetPackSharesTheSameWeightedTypeCompiler() {
+        var variants = new ArtifactResolver(java.util.List.of(
+                new ArtifactResolver.Variant(9101, "berserker", 1, 3, 1),
+                new ArtifactResolver.Variant(9102, "instructor", 1, 3, 1),
+                new ArtifactResolver.Variant(9103, "adventurer", 1, 3, 1),
+                new ArtifactResolver.Variant(9104, "traveling_doctor", 1, 3, 1)));
+        var loot = YamlLootTables.parse("""
+                chest<RARITY, SUBSTATS, SETS...>:
+                  - type: "genshin.artifact.<SETS...>:1"
+                    slot: flower
+                    rarity: <RARITY>
+                    substats: <SUBSTATS>
+                two: {type: "chest<3, 1, berserker, instructor>"}
+                four: {type: "chest<3, 1, berserker, instructor, adventurer, traveling_doctor>"}
+                repeated: {type: "chest<3, 1, berserker, berserker>"}
+                """, ITEMS, variants);
+        assertEquals(Map.of(9101, 1), loot.roll("repeated", new Random(60)));
+
+        int[] counts = new int[4];
+        var rng = new Random(61);
+        for (int i = 0; i < 12_000; i++) {
+            int item = loot.roll("four", rng).keySet().iterator().next();
+            counts[item - 9101]++;
+            assertTrue(loot.roll("two", rng).keySet().stream()
+                    .allMatch(id -> id == 9101 || id == 9102));
+        }
+        for (int count : counts) assertEquals(0.25, count / 12_000.0, 0.03);
+    }
+
+    @Test
+    void parameterPacksCanBeForwardedAndExpandedInOtherFields() {
+        var loot = YamlLootTables.parse("""
+                counts<COUNTS...>:
+                  - {type: genshin.currency.mora, count: "<COUNTS...>:1"}
+                forward<VALUES...>:
+                  - {type: "counts<<VALUES...>>"}
+                values: {type: "forward<2, 3>"}
+                empty<VALUES...>:
+                  - {type: genshin.currency.mora}
+                zero: {type: "empty<>"}
+                """, ITEMS);
+        assertEquals(Map.of(MORA, 1), loot.roll("zero", new Random(62)));
+        var rng = new Random(63);
+        int threes = 0;
+        for (int i = 0; i < 12_000; i++) {
+            int count = loot.roll("values", rng).get(MORA);
+            assertTrue(count == 2 || count == 3);
+            if (count == 3) threes++;
+        }
+        assertEquals(0.5, threes / 12_000.0, 0.03);
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                invalid<PACK..., FIXED>:
+                  - {type: genshin.currency.mora}
+                """, ITEMS));
+    }
 }

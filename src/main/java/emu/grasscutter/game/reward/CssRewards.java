@@ -1,10 +1,10 @@
 package emu.grasscutter.game.reward;
 
-import com.helger.css.decl.CSSStyleRule;
-import com.helger.css.decl.CSSDeclaration;
-import com.helger.css.decl.CSSNestedDeclarations;
-import com.helger.css.reader.CSSReader;
-import com.helger.css.writer.CSSWriterSettings;
+import io.sf.carte.doc.style.css.CSSNestedDeclarations;
+import io.sf.carte.doc.style.css.CSSStyleSheet;
+import io.sf.carte.doc.style.css.om.StyleRule;
+import java.io.IOException;
+import java.io.StringReader;
 import emu.grasscutter.data.ItemIdRegistry;
 import emu.grasscutter.data.ResourceId;
 import emu.grasscutter.game.drop.YamlLootTables;
@@ -22,7 +22,6 @@ import io.sf.carte.doc.style.css.SelectorMatcher;
 import io.sf.carte.doc.style.css.nsac.Selector;
 import io.sf.carte.doc.style.css.nsac.SelectorList;
 import io.sf.carte.doc.style.css.om.Specificity;
-import io.sf.carte.doc.style.css.parser.CSSParser;
 
 /** CSS custom properties reference typed items and named loot tables. */
 public final class CssRewards {
@@ -119,14 +118,21 @@ public final class CssRewards {
         normalized = normalized.replaceAll(
                 "(--[\\p{L}\\p{N}_-]+\\s*:\\s*)([0-9]+\\s*:[^;'\"{}]*)(\\s*;)",
                 "$1'$2'$3");
-        var sheet = CSSReader.readFromString(normalized);
-        if (sheet == null) throw new IllegalArgumentException("Invalid rewards.css");
+        var sheet = new CSSDOMImplementation().createStyleSheet(null, null);
+        try {
+            if (!sheet.parseStyleSheet(new StringReader(normalized),
+                    CSSStyleSheet.COMMENTS_IGNORE)) {
+                throw new IllegalArgumentException("Invalid reward CSS");
+            }
+        } catch (IOException ex) {
+            throw new IllegalArgumentException("Failed to parse reward CSS", ex);
+        }
 
         var rules = new ArrayList<Rule>();
         var intervals = new java.util.LinkedHashMap<String, RangeMembership>();
         int[] sourceOrder = {0};
-        for (var top : sheet.getAllRules()) {
-            if (!(top instanceof CSSStyleRule style)) {
+        for (var top : sheet.getCssRules()) {
+            if (!(top instanceof StyleRule style)) {
                 throw new IllegalArgumentException("Unsupported top-level reward rule: " + top);
             }
             collectStyle(style, null, rules, intervals, sourceOrder,
@@ -135,45 +141,46 @@ public final class CssRewards {
         return new CssRewards(rules, List.copyOf(intervals.values()), loot, items);
     }
 
-    private static void collectStyle(CSSStyleRule style, SelectorList parent,
+    private static void collectStyle(StyleRule style, SelectorList parent,
             List<Rule> rules, Map<String, RangeMembership> intervals, int[] sourceOrder,
             Map<String, String> originalProperties, ItemIdRegistry items, YamlLootTables loot) {
-        var parser = new CSSParser();
-        var selectors = parser.parseSelectors(
-                style.getSelectorsAsCSSString(CSSWriterSettings.DEFAULT_SETTINGS, 0));
+        // Use css4j's CSSOM selector tree directly, without serializing/reparsing it.
+        SelectorList selectors = style.getSelectorList();
         if (parent != null) {
-            // css4j performs the standard nesting substitution, including '&'.
             selectors = selectors.replaceNested(parent);
         }
-        collectDeclarations(style.getAllDeclarations(), selectors, rules, intervals,
+        collectDeclarations(style.getStyle(), selectors, rules, intervals,
                 sourceOrder, originalProperties, items, loot);
-        for (var nested : style.getAllRules()) {
-            if (nested instanceof CSSStyleRule child) {
-                collectStyle(child, selectors, rules, intervals, sourceOrder,
-                        originalProperties, items, loot);
-            } else if (nested instanceof CSSNestedDeclarations continuation) {
-                collectDeclarations(continuation.getAllDeclarations(), selectors, rules,
-                        intervals, sourceOrder, originalProperties, items, loot);
-            } else {
-                throw new IllegalArgumentException("Unsupported conditional reward rule: " + nested);
+        var nestedRules = style.getCssRules();
+        if (nestedRules != null) {
+            for (var nested : nestedRules) {
+                if (nested instanceof StyleRule child) {
+                    collectStyle(child, selectors, rules, intervals, sourceOrder,
+                            originalProperties, items, loot);
+                } else if (nested instanceof CSSNestedDeclarations continuation) {
+                    collectDeclarations(continuation.getStyle(), selectors, rules,
+                            intervals, sourceOrder, originalProperties, items, loot);
+                } else {
+                    throw new IllegalArgumentException("Unsupported conditional reward rule: " + nested);
+                }
             }
         }
     }
 
-    private static void collectDeclarations(List<CSSDeclaration> declarations,
+    private static void collectDeclarations(org.w3c.dom.css.CSSStyleDeclaration declarations,
             SelectorList selectors, List<Rule> rules,
             Map<String, RangeMembership> intervals, int[] sourceOrder,
             Map<String, String> originalProperties,
             ItemIdRegistry items, YamlLootTables loot) {
-        if (declarations.isEmpty()) return;
+        if (declarations.getLength() == 0) return;
         var itemDeclarations = new ArrayList<ItemDeclaration>();
         var lootDeclarations = new ArrayList<LootDeclaration>();
         List<String> bossMaterials = null;
         LootCount.Spec bossMaterialCount = null;
         List<String> elements = null;
-        for (var declaration : declarations) {
-            String property = declaration.getProperty();
-            String value = declaration.getExpressionAsCSSString().trim();
+        for (int index = 0; index < declarations.getLength(); index++) {
+            String property = declarations.item(index);
+            String value = declarations.getPropertyValue(property).trim();
             if (value.length() >= 2
                     && ((value.startsWith("\"") && value.endsWith("\""))
                     || (value.startsWith("'") && value.endsWith("'")))) {

@@ -51,7 +51,7 @@ public final class CssRewards {
     // conventional CSS property identifiers. Encode declarations only; leave
     // CSS selectors, values and the canonical resource IDs unchanged.
     private static final Pattern RESOURCE_DECLARATION = Pattern.compile(
-            "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT|ARTIFACT_GROUP|ARTIFACT_[1-4]STAR|getBossMaterial|[a-z][\\p{L}\\p{N}_.,<>\\[\\]\\s-]*)\\s*:");
+            "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT|ARTIFACT_GROUP|GEM_GROUP|ARTIFACT_[1-4]STAR|getBossMaterial|[a-z][\\p{L}\\p{N}_.,<>\\[\\]\\s-]*)\\s*:");
     private static final Pattern BINDING = Pattern.compile(
             "<(BOSS_MATERIAL|ELEMENT|ARTIFACT_[1-4]STAR)>(?:\\[([0-9]+)])?");
 
@@ -86,7 +86,7 @@ public final class CssRewards {
             List<AttributeOptions> attributeOptions,
             List<ItemDeclaration> items, List<LootDeclaration> loot,
             List<String> bossMaterials, LootCount.Spec bossMaterialCount, List<String> elements,
-            Map<String, List<String>> artifactSets, String artifactGroup,
+            Map<String, List<String>> artifactSets, String artifactGroup, String gemGroup,
             int specificity, int order) {}
 
     private final List<Rule> rules;
@@ -141,6 +141,7 @@ public final class CssRewards {
             List<String> elements = null;
             var artifactSets = new HashMap<String, List<String>>();
             String artifactGroup = null;
+            String gemGroup = null;
             for (var declaration : style.getAllDeclarations()) {
                 String property = declaration.getProperty();
                 String value = declaration.getExpressionAsCSSString().trim();
@@ -163,6 +164,13 @@ public final class CssRewards {
                         throw new IllegalArgumentException("Invalid artifact group: " + value);
                     }
                     artifactGroup = value;
+                    continue;
+                }
+                if ("GEM_GROUP".equals(original)) {
+                    if (!value.matches("[a-z][a-z0-9_]*")) {
+                        throw new IllegalArgumentException("Invalid gem group: " + value);
+                    }
+                    gemGroup = value;
                     continue;
                 }
                 if (original.matches("ARTIFACT_[1-4]STAR")) {
@@ -234,7 +242,7 @@ public final class CssRewards {
                         List.copyOf(attributeRanges), List.copyOf(options), List.copyOf(itemDeclarations),
                         List.copyOf(lootDeclarations),
                         bossMaterials, bossMaterialCount, elements,
-                        Map.copyOf(artifactSets), artifactGroup, specificity, order++));
+                        Map.copyOf(artifactSets), artifactGroup, gemGroup, specificity, order++));
             }
         }
 
@@ -245,7 +253,7 @@ public final class CssRewards {
     /** Preserve resource and element bindings across CSS tokenization. */
     private static String quoteBindings(String source) {
         var matcher = Pattern.compile(
-                "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT|ARTIFACT_GROUP|ARTIFACT_[1-4]STAR)\\s*:\\s*([^;{}]+)").matcher(source);
+                "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT|ARTIFACT_GROUP|GEM_GROUP|ARTIFACT_[1-4]STAR)\\s*:\\s*([^;{}]+)").matcher(source);
         var buffer = new StringBuffer();
         while (matcher.find()) {
             String value = matcher.group(4).trim();
@@ -370,18 +378,24 @@ public final class CssRewards {
     public Selection resolve(String type, Map<String, String> attributes) {
         var element = new Element(type);
         attributes.forEach(element::attr);
-        // Tag-based rules assign the artifact program before any level rules are matched.
+        // Tag-based rules assign native program groups before level rules are matched.
         // The synthetic attribute is local to this resolution; callers supply only native attrs.
         var effective = new HashMap<>(attributes);
         String artifactGroup = null;
+        String gemGroup = null;
         for (var rule : rules) {
-            if (rule.artifactGroup != null && matches(rule, element, effective)) {
-                artifactGroup = rule.artifactGroup;
+            if (matches(rule, element, effective)) {
+                if (rule.artifactGroup != null) artifactGroup = rule.artifactGroup;
+                if (rule.gemGroup != null) gemGroup = rule.gemGroup;
             }
         }
         if (artifactGroup != null) {
             effective.put("artifact_group", artifactGroup);
             element.attr("artifact_group", artifactGroup);
+        }
+        if (gemGroup != null) {
+            effective.put("gem_group", gemGroup);
+            element.attr("gem_group", gemGroup);
         }
         var matched = new ArrayList<Rule>();
         List<String> bossMaterials = null;

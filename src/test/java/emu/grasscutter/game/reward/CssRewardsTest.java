@@ -624,4 +624,29 @@ class CssRewardsTest {
         assertTrue(stylesheet.resolve("boss", Map.of(
                 "type", "world", "tag", "other", "level", "25")).items().isEmpty());
     }
+
+    @Test
+    void namedGemGroupsAreResolvedFromIdentityBeforeLevelRules() {
+        var css = CssRewards.parse("""
+                boss[type="world"][tag="alpha,beta"] { GEM_GROUP: shared; }
+                boss[type="world"][tag="gamma"] { GEM_GROUP: other; }
+                boss[type="world"][gem_group="shared"][level="1~9"] {
+                    genshin.currency.mora: 100;
+                }
+                boss[type="world"][gem_group="shared"][level="10~"] {
+                    genshin.currency.mora: 200;
+                }
+                boss[type="world"][gem_group="other"][level="1~"] {
+                    genshin.currency.mora: 300;
+                }
+                """, items, loot);
+        assertEquals(Map.of(202, 100), css.resolve("boss", Map.of(
+                "type", "world", "tag", "alpha", "level", "1")).items());
+        assertEquals(Map.of(202, 200), css.resolve("boss", Map.of(
+                "type", "world", "tag", "beta", "level", "18")).items());
+        assertEquals(Map.of(202, 300), css.resolve("boss", Map.of(
+                "type", "world", "tag", "gamma", "level", "18")).items());
+        assertTrue(css.resolve("boss", Map.of(
+                "type", "world", "tag", "missing", "level", "18")).items().isEmpty());
+    }
 }

@@ -585,4 +585,43 @@ class CssRewardsTest {
                 Map.of("city", "1", "area", "2")), loot, new Random(2)).get(202);
         assertTrue(value == 11 || value == 12);
     }
+
+    @Test
+    void artifactIdentityBindingsSelectSharedLevelProgramWithoutCrossGroupLeaks() {
+        var entries = YamlLootTables.parse("""
+                gift<SETS...>:
+                  - type: "genshin.currency.<SETS...>:1"
+                """, items::resolve);
+        var stylesheet = CssRewards.parse("""
+                boss[type="world"][tag="alpha,beta"] {
+                    ARTIFACT_GROUP: ordinary;
+                    ARTIFACT_3STAR: [mora, primogem];
+                }
+                boss[type="world"][tag="gamma"] {
+                    ARTIFACT_GROUP: unusual;
+                }
+                boss[type="world"][artifact_group="ordinary"][level="1~9"] {
+                    astaps.loot.gift<<ARTIFACT_3STAR>>: 2;
+                }
+                boss[type="world"][artifact_group="ordinary"][level="10~"] {
+                    astaps.loot.gift<<ARTIFACT_3STAR>>: 3;
+                }
+                boss[type="world"][artifact_group="unusual"][level="1~"] {
+                    genshin.currency.mora: 77;
+                }
+                """, items, entries);
+        assertEquals(Map.of("astaps.loot.gift<mora,primogem>", 2),
+                stylesheet.resolve("boss", Map.of(
+                        "type", "world", "tag", "alpha", "level", "1")).loot());
+        assertEquals(Map.of("astaps.loot.gift<mora,primogem>", 3),
+                stylesheet.resolve("boss", Map.of(
+                        "type", "world", "tag", "beta", "level", "10")).loot());
+        assertEquals(Map.of(202, 77),
+                stylesheet.resolve("boss", Map.of(
+                        "type", "world", "tag", "gamma", "level", "25")).items());
+        assertTrue(stylesheet.resolve("boss", Map.of(
+                "type", "world", "tag", "other", "level", "25")).loot().isEmpty());
+        assertTrue(stylesheet.resolve("boss", Map.of(
+                "type", "world", "tag", "other", "level", "25")).items().isEmpty());
+    }
 }

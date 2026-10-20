@@ -26,9 +26,11 @@ accepts the initial substat count. The single-quality gem pool retains dynamic
 element arguments while fixing its copy count at 3. Candidate probabilities, rarities and initial substat
 counts remain unchanged.
 
-The 48 complete Boss programs form nine groups. CSS has 101 rules, with
-Boss tags grouped when their complete declarations agree and level ranges
-in ascending order within each group. Open-ended ranges continue the last
+The 48 complete Boss programs form nine source groups. Seven share one
+artifact execution-count program (11 level rules) and bind their individual
+artifact set candidates once. The 22-Boss native Instructor program uses its
+own group binding, while Setekh Wenut keeps a distinct fixed-slot program.
+The CSS parser resolves group and set bindings before applying level rules. Open-ended ranges continue the last
 native row beyond level 120. Other rewards are unchanged.
 
 ## Independent rolls and linked properties

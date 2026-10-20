@@ -88,6 +88,28 @@ class CssRewardsTest {
     }
 
     @Test
+    void importantOverridesMoreSpecificAndLaterNormalDeclarations() {
+        var css = CssRewards.parse("""
+                chest {
+                    --grant-genshin\\.currency\\.mora: 8 !important;
+                    --grant-astaps\\.loot\\.currency: 1 !important;
+                }
+                chest[city="1"][grade="common"] {
+                    --grant-genshin\\.currency\\.mora: 42;
+                    --grant-astaps\\.loot\\.currency: 3;
+                    --grant-genshin\\.currency\\.primogem: 5 !important;
+                }
+                chest[city="1"] {
+                    --grant-genshin\\.currency\\.primogem: 2 !important;
+                }
+                """, items, loot);
+        var rewards = css.resolve("chest", Map.of("city", "1", "grade", "common"));
+        assertEquals(8, rewards.items().get(202));
+        assertEquals(5, rewards.items().get(201));
+        assertEquals(1, rewards.loot().get("astaps.loot.currency"));
+    }
+
+    @Test
     void hexEscapedCssIdentifiersResolveWithLibraryParser() {
         var css = CssRewards.parse(
                 "chest { --grant-genshin\\\\2e currency\\\\2e mora: 4; }", items, loot);

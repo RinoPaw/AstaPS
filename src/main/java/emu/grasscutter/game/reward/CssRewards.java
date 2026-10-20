@@ -85,7 +85,7 @@ public final class CssRewards {
             Selector selector,
             List<ItemDeclaration> items, List<LootDeclaration> loot,
             List<String> bossMaterials, LootCount.Spec bossMaterialCount, List<String> elements,
-            int order) {}
+            boolean important, int order) {}
 
     private final List<Rule> rules;
     private final List<RangeMembership> rangeMemberships;
@@ -156,13 +156,29 @@ public final class CssRewards {
             Map<String, RangeMembership> intervals, int[] sourceOrder,
             ItemIdRegistry items, YamlLootTables loot) {
         if (declarations.getLength() == 0) return;
+        collectDeclarationsForPriority(declarations, selectors, rules, intervals,
+                sourceOrder, items, loot, false);
+        collectDeclarationsForPriority(declarations, selectors, rules, intervals,
+                sourceOrder, items, loot, true);
+    }
+
+    private static void collectDeclarationsForPriority(
+            io.sf.carte.doc.style.css.CSSStyleDeclaration declarations,
+            SelectorList selectors, List<Rule> rules,
+            Map<String, RangeMembership> intervals, int[] sourceOrder,
+            ItemIdRegistry items, YamlLootTables loot, boolean important) {
         var itemDeclarations = new ArrayList<ItemDeclaration>();
         var lootDeclarations = new ArrayList<LootDeclaration>();
         List<String> bossMaterials = null;
         LootCount.Spec bossMaterialCount = null;
         List<String> elements = null;
+        boolean hasDeclarations = false;
         for (int index = 0; index < declarations.getLength(); index++) {
             String property = declarations.item(index);
+            if ("important".equalsIgnoreCase(declarations.getPropertyPriority(property)) != important) {
+                continue;
+            }
+            hasDeclarations = true;
             String value = declarations.getPropertyValue(property).trim();
             if (value.length() >= 2
                     && ((value.startsWith("\"") && value.endsWith("\""))
@@ -188,6 +204,7 @@ public final class CssRewards {
                 }
             }
         }
+        if (!hasDeclarations) return;
         for (var selector : selectors) {
             String css = selector.toString();
             var range = RANGE_MEMBERSHIP_ATTRIBUTE.matcher(css);
@@ -204,7 +221,7 @@ public final class CssRewards {
             }
             rules.add(new Rule(selector, List.copyOf(itemDeclarations),
                     List.copyOf(lootDeclarations), bossMaterials,
-                    bossMaterialCount, elements, sourceOrder[0]++));
+                    bossMaterialCount, elements, important, sourceOrder[0]++));
         }
     }
 
@@ -288,7 +305,8 @@ public final class CssRewards {
                 matched.add(new Match(rule, new Specificity(rule.selector(), matcher)));
             }
         }
-        matched.sort(Comparator.comparing(Match::specificity, Specificity::selectorCompare)
+        matched.sort(Comparator.comparing((Match match) -> match.rule().important())
+                .thenComparing(Match::specificity, Specificity::selectorCompare)
                 .thenComparingInt(match -> match.rule().order()));
         List<String> bossMaterials = null;
         List<String> elements = null;

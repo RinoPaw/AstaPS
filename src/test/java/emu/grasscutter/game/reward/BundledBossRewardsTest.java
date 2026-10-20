@@ -174,6 +174,32 @@ final class BundledBossRewardsTest {
                         line.indexOf("[tag=\"") + 6, line.indexOf("\"] {")))
                 .distinct().toList();
         assertEquals(48, bosses.size());
+        // Compare CSS coverage to the historical native world-Boss roots.
+        var nativeRoots = new java.util.HashMap<String, java.util.List<Integer>>();
+        var source = com.google.gson.JsonParser.parseString(
+                java.nio.file.Files.readString(java.nio.file.Path.of("data/ChestDrop.json")))
+                .getAsJsonArray();
+        for (var row : source) {
+            var entry = row.getAsJsonObject();
+            if (!entry.has("sourceType") || entry.get("sourceType").getAsInt() != 34) continue;
+            nativeRoots.computeIfAbsent(entry.get("index").getAsString(),
+                    ignored -> new java.util.ArrayList<>())
+                    .add(entry.get("minLevel").getAsInt());
+        }
+        assertEquals(48, nativeRoots.size(), "Native world-Boss identity count changed");
+        for (var nativeBoss : nativeRoots.entrySet()) {
+            var nativeLevels = nativeBoss.getValue();
+            assertEquals(25, nativeLevels.size(), "Native rows: " + nativeBoss.getKey());
+            assertEquals(25, nativeLevels.stream().distinct().count(), nativeBoss.getKey());
+            assertEquals(1, nativeLevels.getFirst(), nativeBoss.getKey());
+            assertEquals(120, nativeLevels.getLast(), nativeBoss.getKey());
+            for (int level : nativeLevels) {
+                assertNotNull(config.rollWorldBoss(nativeBoss.getKey(), level,
+                        new java.util.Random(71)),
+                        "CSS missed native Boss/level: " + nativeBoss.getKey() + "@" + level);
+            }
+        }
+
         for (var boss : bosses) {
             for (int level : new int[] {1, 5, 10, 15, 20, 25, 29}) {
                 var attributes = Map.of(

@@ -114,6 +114,9 @@ public final class YamlLootTables {
     }
 
     /** Metadata is compiled by its owning reward type; all fields use WeightedChoice. */
+    private static final Set<String> CORE_FIELDS =
+            Set.of("reward", "type", "count", "weight", "properties");
+
     private static Map<?, ?> entryProperties(Map<?, ?> fields, String location) {
         Object nested = fields.get("properties");
         if (nested != null && !(nested instanceof Map<?, ?>)) {
@@ -128,12 +131,15 @@ public final class YamlLootTables {
                 merged.put(name, prop.getValue());
             }
         }
-        for (String key : List.of("rarity", "element", "slot", "substats")) {
-            if (!fields.containsKey(key)) continue;
+        for (var field : fields.entrySet()) {
+            if (!(field.getKey() instanceof String key)) {
+                throw new IllegalArgumentException(location + ": field name must be a string");
+            }
+            if (CORE_FIELDS.contains(key)) continue;
             if (merged.containsKey(key)) {
                 throw new IllegalArgumentException(location + ": duplicate property: " + key);
             }
-            merged.put(key, fields.get(key));
+            merged.put(key, field.getValue());
         }
         return merged.isEmpty() ? null : merged;
     }
@@ -315,14 +321,8 @@ public final class YamlLootTables {
                 if (!(list.get(i) instanceof Map<?, ?> fields)) {
                     throw new IllegalArgumentException(at + ": expected {type, count?}");
                 }
-                for (Object key : fields.keySet()) {
-                    if (!"reward".equals(key) && !"type".equals(key) && !"count".equals(key)
-                            && !"weight".equals(key) && !"properties".equals(key)
-                            && !"rarity".equals(key) && !"element".equals(key)
-                            && !"slot".equals(key) && !"substats".equals(key)) {
-                        throw new IllegalArgumentException(at + ": unknown field: " + key);
-                    }
-                }
+                // Unknown non-core fields are typed attributes. Their owning
+                // item compiler validates the names and candidate values.
                 if (fields.containsKey("reward") == fields.containsKey("type")) {
                     throw new IllegalArgumentException(at + ": exactly one of type or reward is required");
                 }

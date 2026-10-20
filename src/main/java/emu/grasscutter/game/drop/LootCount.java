@@ -3,7 +3,7 @@ package emu.grasscutter.game.drop;
 import java.math.BigDecimal;
 import java.util.random.RandomGenerator;
 
-/** Integer reward counts, ranges and explicit relative-weight distributions. */
+/** Native nonnegative counts: integers, fractional stochastic rounding, ranges and weighted outcomes. */
 public final class LootCount {
     private LootCount() {}
 
@@ -26,8 +26,23 @@ public final class LootCount {
             if (high < low) throw new IllegalArgumentException("Reversed range: " + text);
             return rng -> low == high ? low : (int) rng.nextLong(low, (long) high + 1);
         }
-        int fixed = integer(text);
-        return rng -> fixed;
+        if (!text.matches("[0-9]+(?:\\.[0-9]+)?")) {
+            throw new IllegalArgumentException("Expected nonnegative decimal count: " + text);
+        }
+        BigDecimal value = decimal(text);
+        final int base;
+        try {
+            base = value.toBigInteger().intValueExact();
+        } catch (ArithmeticException failure) {
+            throw new IllegalArgumentException("Count cannot fit an integer: " + text, failure);
+        }
+        BigDecimal fraction = value.subtract(BigDecimal.valueOf(base));
+        if (fraction.signum() == 0) return rng -> base;
+        if (base == Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Fractional count exceeds integer capacity: " + text);
+        }
+        double probability = fraction.doubleValue();
+        return rng -> base + (rng.nextDouble() < probability ? 1 : 0);
     }
 
     /** All count candidates use the same relative-weight syntax as type and rarity. */

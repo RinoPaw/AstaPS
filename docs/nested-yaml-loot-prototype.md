@@ -132,7 +132,7 @@ properties carry reward-domain bindings. Resource punctuation is CSS-escaped
 within property names, following CSS identifier rules. Legacy dotted CSS
 property declarations are invalid and have no compatibility parser.
 
-CSS counts accept integers, inclusive ranges (`2~3`), or quoted relative
+CSS counts accept integers, exact native decimal counts with randomized fractional rounding, inclusive ranges (`2~3`), or quoted relative
 weights (`"2:4, 3:5"`). The latter awards two with probability 4/9 and three
 with probability 5/9; there is no implicit zero. Explicit zero outcomes are
 allowed. `+` and curve expressions are not supported in CSS.

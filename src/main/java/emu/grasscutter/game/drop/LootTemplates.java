@@ -92,7 +92,8 @@ final class LootTemplates {
             shared.put(raw, output);
             for (var entry : map.entrySet()) {
                 Object value = substitute(entry.getValue(), parameters, depth + 1, shared);
-                if ("reward".equals(entry.getKey()) && value instanceof String reward) {
+                if (("reward".equals(entry.getKey()) || "type".equals(entry.getKey()))
+                        && value instanceof String reward) {
                     value = expandReward(reward, depth + 1);
                 }
                 output.put(entry.getKey(), value);

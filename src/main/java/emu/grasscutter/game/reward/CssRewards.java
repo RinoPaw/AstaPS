@@ -202,7 +202,11 @@ public final class CssRewards {
                 // outranks a universal selector when attribute counts are equal.
                 int specificity = attributeCount * 100
                         + (css.matches("^[a-zA-Z][a-zA-Z0-9_-]*.*") ? 1 : 0);
-                rules.add(new Rule(Selector.evaluatorOf(css),
+                // jsoup 1.23.2 supports :is() but not :where(); both have
+                // identical matching semantics. Specificity was computed above
+                // using the original :where() expression (zero contribution).
+                String matcherCss = css.replace(":where(", ":is(");
+                rules.add(new Rule(Selector.evaluatorOf(matcherCss),
                         List.copyOf(itemDeclarations),
                         List.copyOf(lootDeclarations),
                         bossMaterials, bossMaterialCount, elements,

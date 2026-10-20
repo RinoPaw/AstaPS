@@ -23,11 +23,7 @@ class BlossomRewardsTest {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         assertFalse(yaml.contains("revelation_"), "Blossom rewards must not use loot.yaml");
         var loot = YamlLootTables.parse("{}", items::resolve);
-        String css = RewardConfiguration.readBundled("rewards.css");
-        int cssStart = css.indexOf("/* Blossoms of Wealth:");
-        assertTrue(cssStart >= 0, "Missing bundled blossom selectors");
-        String selectors = "blossom { genshin.experience.adventure: 100; }\n" +
-                css.substring(cssStart).split(java.util.regex.Pattern.quote("/* World Boss rewards:"), 2)[0];
+        String selectors = RewardConfiguration.readBundled("03-blossoms.css");
         assertEquals(14, selectors.lines().filter(line ->
                 line.startsWith("blossom[type=")).count());
         assertTrue(selectors.contains("blossom[type=\"wealth\"][WR=\"6~9\"]"));

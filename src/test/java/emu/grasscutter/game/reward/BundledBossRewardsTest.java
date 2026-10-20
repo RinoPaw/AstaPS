@@ -18,7 +18,7 @@ final class BundledBossRewardsTest {
     @Test
     void worldBossTemplatesCoverAllMappedIdentitiesWithoutInventingWeeklyDrops() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
-        String css = RewardConfiguration.readBundled("rewards.css");
+        String css = RewardConfiguration.readBundledCss();
         assertTrue(yaml.contains("world_gem_two<COUNT, ELEMENTS...>:"));
         assertTrue(yaml.contains("type: genshin.avatar_ascension"));
         assertTrue(yaml.contains("world_gem_four<COUNT, ELEMENTS...>:"));
@@ -35,8 +35,8 @@ final class BundledBossRewardsTest {
         assertTrue(yaml.contains("world_artifact_5star_goblet<SUBSTATS>:"));
         assertTrue(css.contains("astaps.loot.world_"));
         assertFalse(css.contains("boss[type=\"weekly\"]"));
-        String identities = css.substring(css.indexOf("/* Boss identities:"),
-                css.indexOf("/* These 25 Boss identities"));
+        String identities = css.substring(css.indexOf("/* 4.1 身份绑定"),
+                css.indexOf("/* 4.2 通用等级奖励"));
         assertEquals(48, identities.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertTrue(css.contains("astaps.loot.world_artifact_5star:"));
@@ -53,7 +53,7 @@ final class BundledBossRewardsTest {
     @Test
     void bundledWorldAndWeeklyRulesLoadAndNativeFallbackIsPreserved() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
-        String stylesheet = RewardConfiguration.readBundled("rewards.css");
+        String stylesheet = RewardConfiguration.readBundledCss();
         var ids = new HashMap<String, Integer>();
         var nextId = new AtomicInteger(3000000);
         var artifacts = new ArrayList<ArtifactResolver.Variant>();
@@ -164,8 +164,8 @@ final class BundledBossRewardsTest {
                 loot);
         var config = new RewardConfiguration(loot, css);
         String identityCss = stylesheet.substring(
-                stylesheet.indexOf("/* Boss identities:"),
-                stylesheet.indexOf("/* These 25 Boss identities"));
+                stylesheet.indexOf("/* 4.1 身份绑定"),
+                stylesheet.indexOf("/* 4.2 通用等级奖励"));
         var bosses = identityCss.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\""))
                 .map(line -> line.substring(

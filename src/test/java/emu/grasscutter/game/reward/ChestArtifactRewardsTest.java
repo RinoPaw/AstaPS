@@ -20,10 +20,9 @@ final class ChestArtifactRewardsTest {
         int y0 = yaml.indexOf("chest_artifact<RARITY, SUBSTATS, SETS...>:");
         int y1 = yaml.indexOf("# 2. World Boss artifacts", y0);
         assertTrue(y0 >= 0 && y1 > y0);
-        String css = RewardConfiguration.readBundled("rewards.css");
-        int c0 = css.indexOf("/* Native chest artifacts (historical");
-        int c1 = css.indexOf("/* Blossoms of Wealth:", c0);
-        assertTrue(c0 >= 0 && c1 > c0);
+        String css = RewardConfiguration.readBundled("01-chests.css");
+        int c0 = css.indexOf("/* 1.8 宝箱圣遗物");
+        assertTrue(c0 >= 0);
 
         var variants = new ArrayList<ArtifactResolver.Variant>();
         var ranks = new HashMap<Integer, Integer>();
@@ -53,7 +52,7 @@ final class ChestArtifactRewardsTest {
         var loot = YamlLootTables.parse(yaml.substring(y0, y1),
                 name -> { throw new IllegalArgumentException(name); },
                 new ArtifactResolver(variants));
-        var rules = CssRewards.parse(css.substring(c0, c1),
+        var rules = CssRewards.parse(css.substring(c0),
                 new ItemIdRegistry(Map.of(202, "Mora")), loot);
         return new Fixture(rules, loot, Map.copyOf(ranks));
     }

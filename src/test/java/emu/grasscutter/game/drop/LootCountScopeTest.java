@@ -538,7 +538,7 @@ class LootCountScopeTest {
                 """, ITEMS));
         var safe = YamlLootTables.parse("""
                 recursive<N>:
-                  - {type: "recursive<1>", count: "0:1, 1:9"}
+                  - {type: "recursive<1>", count: "0:2, 1:8"}
                 root: {type: "recursive<1>"}
                 """, ITEMS);
         assertTrue(safe.contains("astaps.loot.recursive<1>"));

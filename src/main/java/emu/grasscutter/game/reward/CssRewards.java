@@ -45,6 +45,10 @@ public final class CssRewards {
     // to specificity. Jsoup receives the original selector for matching.
     private static final Pattern IS_ATTRIBUTE_GROUP = Pattern.compile(
             ":is\\(\\s*\\[[^\\[\\]]+\\](?:\\s*,\\s*\\[[^\\[\\]]+\\])*\\s*\\)");
+    // :where() uses the same native jsoup matcher as :is(), but always
+    // contributes zero specificity, per the CSS Selectors specification.
+    private static final Pattern WHERE_ATTRIBUTE_GROUP = Pattern.compile(
+            ":where\\(\\s*\\[[^\\[\\]]+\\](?:\\s*,\\s*\\[[^\\[\\]]+\\])*\\s*\\)");
     // Server-provided numeric range membership is represented by ordinary
     // CSS presence selectors, e.g. [data-range-level-70-79] or
     // [data-range-level-93-up]. The stylesheet supplies the intervals.
@@ -185,7 +189,9 @@ public final class CssRewards {
                     intervalAttributes.putIfAbsent(attribute, new RangeMembership(
                             attribute, intervalMatcher.group(2), min, max));
                 }
-                String selectorShape = IS_ATTRIBUTE_GROUP.matcher(css)
+                String withoutWhere = WHERE_ATTRIBUTE_GROUP.matcher(css)
+                        .replaceAll("");
+                String selectorShape = IS_ATTRIBUTE_GROUP.matcher(withoutWhere)
                         .replaceAll("[is]");
                 if (!SIMPLE_SELECTOR.matcher(selectorShape).matches()) {
                     throw new IllegalArgumentException("Unsupported reward selector: " + css);

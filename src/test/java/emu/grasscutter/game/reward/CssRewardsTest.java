@@ -586,6 +586,26 @@ class CssRewardsTest {
     }
 
     @Test
+    void whereSelectorsHaveZeroSpecificityAndMatchNatively() {
+        var css = CssRewards.parse("""
+                boss[type="world"][tag="a"] {
+                    genshin.currency.mora: 20;
+                }
+                boss[type="world"]:where([tag="a"], [tag="b"]) {
+                    genshin.currency.mora: 10;
+                }
+                boss[type="world"]:is([tag="a"], [tag="b"]) {
+                    genshin.currency.primogem: 3;
+                }
+                """, items, loot);
+        assertEquals(Map.of(202, 20, 201, 3), css.resolve("boss",
+                Map.of("type", "world", "tag", "a")).items());
+        assertEquals(Map.of(202, 10, 201, 3), css.resolve("boss",
+                Map.of("type", "world", "tag", "b")).items());
+        assertTrue(css.resolve("boss", Map.of("type", "world", "tag", "c")).items().isEmpty());
+    }
+
+    @Test
     void numericMembershipSupportsOverlappingOpenRangesAndLargeValues() {
         var css = CssRewards.parse("""
                 boss[type="world"][data-range-level-70-79] {

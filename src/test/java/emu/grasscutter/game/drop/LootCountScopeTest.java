@@ -554,11 +554,13 @@ class LootCountScopeTest {
         var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
         String[] sets = {"berserker", "instructor", "the_exile",
                 "prayers_for_wisdom", "gladiators_finale"};
-        for (int rarity : new int[]{3, 4}) {
+        for (int rarity : new int[]{1, 2, 3, 4}) {
             for (int set = 0; set < sets.length; set++) {
                 for (int slot = 1; slot <= 5; slot++) {
                     if (set == 3 && slot != 5) continue;
-                    for (int substats = rarity - 2; substats <= rarity - 1; substats++) {
+                    int firstSubstat = Math.max(0, rarity - 2);
+                    int lastSubstat = rarity == 1 ? 0 : rarity - 1;
+                    for (int substats = firstSubstat; substats <= lastSubstat; substats++) {
                         variants.add(new ArtifactResolver.Variant(
                                 rarity * 100_000 + (set + 1) * 1_000 + slot * 10 + substats,
                                 sets[set], slot, rarity, substats));
@@ -567,32 +569,52 @@ class LootCountScopeTest {
             }
         }
         var loot = YamlLootTables.parse("""
+                world_artifact_1star<SETS...>:
+                  - type: genshin.artifact
+                    set: "<SETS...>:1"
+                    rarity: 1
+                    substats: 0
+                world_artifact_2star<SETS...>:
+                  - type: genshin.artifact
+                    set: "<SETS...>:1"
+                    rarity: 2
+                    substats: "0:66, 1:34"
                 world_artifact_3star<SETS...>:
-                  - type: "genshin.artifact.<SETS...>:1"
+                  - type: genshin.artifact
+                    set: "<SETS...>:1"
                     rarity: 3
                     substats: "1:66, 2:34"
                 world_artifact_4star<SETS...>:
-                  - type: "genshin.artifact.<SETS...>:1"
+                  - type: genshin.artifact
+                    set: "<SETS...>:1"
                     rarity: 4
                     substats: "2:66, 3:34"
+                one: {type: "world_artifact_1star<berserker,instructor>"}
+                two: {type: "world_artifact_2star<berserker,instructor>"}
                 three: {type: "world_artifact_3star<berserker,instructor,the_exile,prayers_for_wisdom>"}
-                four: {type: "world_artifact_4star<berserker,instructor,the_exile,gladiators_finale,prayers_for_wisdom>"}
+                four: {type: "world_artifact_4star<berserker,instructor,the_exile,prayers_for_wisdom,gladiators_finale>"}
                 """, ITEMS, new ArtifactResolver(variants));
         var random = new Random(77);
-        for (int rarity : new int[]{3, 4}) {
-            int kinds = rarity == 3 ? 4 : 5;
+        for (int rarity : new int[]{1, 2, 3, 4}) {
+            int kinds = rarity <= 2 ? 2 : rarity == 3 ? 4 : 5;
             int[] selectedSets = new int[kinds];
             int[][] selectedSlots = new int[kinds][5];
             for (int i = 0; i < 20_000; i++) {
-                int id = loot.roll(rarity == 3 ? "three" : "four", random)
-                        .keySet().iterator().next();
+                String table = switch (rarity) {
+                    case 1 -> "one";
+                    case 2 -> "two";
+                    case 3 -> "three";
+                    default -> "four";
+                };
+                int id = loot.roll(table, random).keySet().iterator().next();
                 assertEquals(rarity, id / 100_000);
                 int set = (id % 100_000) / 1_000 - 1;
                 int slot = (id % 1_000) / 10;
                 int substats = id % 10;
                 assertTrue(set >= 0 && set < kinds);
                 assertTrue(slot >= 1 && slot <= 5);
-                assertTrue(substats == rarity - 2 || substats == rarity - 1);
+                assertTrue(substats == Math.max(0, rarity - 2)
+                        || substats == (rarity == 1 ? 0 : rarity - 1));
                 if (set == 3) {
                     assertEquals(5, slot, "Prayers sets only contain circlets");
                 }

@@ -232,11 +232,17 @@ chest_artifact_mix_20:
 # for each set (the Prayers circlets have no other pieces).
 # Rarity, substats, and weights remain explicit; special 5-star slots stay fixed.
 
-world_artifact_1star_1<set1>:
-  - {type: genshin.artifact, set: <set1>, slot: "1~5", rarity: 1, substats: 0}
+world_artifact_1star<SETS...>:
+  - type: genshin.artifact
+    set: "<SETS...>:1"
+    rarity: 1
+    substats: 0
 
-world_artifact_2star_1<set1>:
-  - {type: genshin.artifact, set: <set1>, slot: "1~5", rarity: 2, substats: "0:66, 1:34"}
+world_artifact_2star<SETS...>:
+  - type: genshin.artifact
+    set: "<SETS...>:1"
+    rarity: 2
+    substats: "0:66, 1:34"
 
 world_artifact_3star<SETS...>:
   - type: genshin.artifact

@@ -8,7 +8,11 @@ class RewardConfigurationTest {
     @Test
     void rewardConfigurationReadsOnlyBundledResources() throws Exception {
         assertTrue(RewardConfiguration.readBundled("loot.yaml").contains("chest_artifact_mix_01:"));
-        assertTrue(RewardConfiguration.readBundledCss().contains("astaps.loot.chest_artifact_mix_01:"));
+        String css = RewardConfiguration.readBundledCss();
+        assertTrue(css.contains("astaps.loot.chest_artifact_mix_01:"));
+        assertTrue(css.contains("transpoint[type=\"waypoint\""));
+        assertTrue(css.contains("blossom[type=\"wealth\""));
+        assertTrue(css.contains("ARTIFACT_GROUP: standard;"));
     }
 
     @Test

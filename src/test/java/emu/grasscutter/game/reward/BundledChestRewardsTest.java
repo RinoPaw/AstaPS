@@ -76,7 +76,7 @@ class BundledChestRewardsTest {
     }
 
     private static String chestCss() throws Exception {
-        return RewardConfiguration.readBundled("01-chests.css");
+        return RewardConfiguration.readBundled("chests.css");
     }
 
     private static YamlLootTables loot() throws Exception {

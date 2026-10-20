@@ -1,7 +1,8 @@
 # Reward configuration
 
 Bundled rewards live in `src/main/resources/rewards/`: the `loot.yaml` pool
-definitions and every `.css` file directly in the same directory. The loader
+definitions and all `.css` files directly in that directory. The current CSS files
+are `chests.css`, `transpoints.css`, `blossoms.css`, and `world-boss.css`. The loader
 discovers all CSS files automatically from the classpath, including packaged
 JAR resources, and combines them in filename order before parsing. Adding a
 new CSS file needs no registration or changes to a file-count constant.

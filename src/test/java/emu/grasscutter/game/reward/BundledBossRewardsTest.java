@@ -35,8 +35,8 @@ final class BundledBossRewardsTest {
         assertTrue(yaml.contains("world_artifact_5star_goblet<SUBSTATS>:"));
         assertTrue(css.contains("astaps.loot.world_"));
         assertFalse(css.contains("boss[type=\"weekly\"]"));
-        String identities = css.substring(css.indexOf("/* 4.1 身份绑定"),
-                css.indexOf("/* 4.2 通用等级奖励"));
+        String identities = css.substring(css.indexOf("/* 身份绑定"),
+                css.indexOf("/* 通用等级奖励"));
         assertEquals(48, identities.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertTrue(css.contains("astaps.loot.world_artifact_5star:"));
@@ -164,8 +164,8 @@ final class BundledBossRewardsTest {
                 loot);
         var config = new RewardConfiguration(loot, css);
         String identityCss = stylesheet.substring(
-                stylesheet.indexOf("/* 4.1 身份绑定"),
-                stylesheet.indexOf("/* 4.2 通用等级奖励"));
+                stylesheet.indexOf("/* 身份绑定"),
+                stylesheet.indexOf("/* 通用等级奖励"));
         var bosses = identityCss.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\""))
                 .map(line -> line.substring(

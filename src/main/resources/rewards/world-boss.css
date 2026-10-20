@@ -128,10 +128,7 @@ boss[type="world"][tag="hydro_tulpa"] {
 
 /* 冰风组曲 */
 boss[type="world"][tag="icewind_suite"] {
-    BOSS_MATERIAL: [
-        artificed_spare_clockwork_component_coppelia,
-        artificed_spare_clockwork_component_coppelius
-    ];
+    --boss-material: "[artificed_spare_clockwork_component_coppelia, artificed_spare_clockwork_component_coppelius]";
     --element: "[anemo, cryo]";
 }
 

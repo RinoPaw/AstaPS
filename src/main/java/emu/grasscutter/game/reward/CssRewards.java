@@ -146,7 +146,7 @@ public final class CssRewards {
         }
     }
 
-    private static void collectDeclarations(org.w3c.dom.css.CSSStyleDeclaration declarations,
+    private static void collectDeclarations(io.sf.carte.doc.style.css.CSSStyleDeclaration declarations,
             SelectorList selectors, List<Rule> rules,
             Map<String, RangeMembership> intervals, int[] sourceOrder,
             ItemIdRegistry items, YamlLootTables loot) {

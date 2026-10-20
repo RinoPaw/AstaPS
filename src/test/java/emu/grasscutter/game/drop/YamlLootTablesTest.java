@@ -378,7 +378,6 @@ class YamlLootTablesTest {
                 8102, "Shivada Jade Fragment",
                 8103, "Varunada Lazurite Fragment"));
         for (String properties : java.util.List.of(
-                "{element: \"electro:70, electro:30\", rarity: 3}",
                 "{element: \"invalid:100\", rarity: 3}",
                 "{element: \"pyro:100\", rarity: 3}",
                 "{element: \"electro:100\", rarity: 6}",
@@ -388,6 +387,10 @@ class YamlLootTablesTest {
                       - {reward: genshin.avatar_ascension, properties: %s}
                     """.formatted(properties), gems::resolve), properties);
         }
+        var repeated = YamlLootTables.parse("""
+                repeated: {type: genshin.avatar_ascension, element: "electro:70, electro:30", rarity: 3}
+                """, gems::resolve);
+        assertEquals(Map.of(8101, 1), repeated.roll("repeated", new Random(1)));
     }
 
     @Test
@@ -459,7 +462,6 @@ class YamlLootTablesTest {
                 8201, "Teachings of Freedom",
                 8202, "Guide to Freedom"));
         for (String spec : java.util.List.of(
-                "2:50, 2:50", // duplicate tier
                 "2:99, 5:1", // 5-star talent book does not exist
                 "2:foo, 3:100")) {
             assertThrows(IllegalArgumentException.class, () ->
@@ -469,6 +471,10 @@ class YamlLootTablesTest {
                                 properties: {rarity: "%s"}
                             """.formatted(spec), items::resolve), spec);
         }
+        var repeated = YamlLootTables.parse("""
+                repeated: {type: genshin.talent_up.freedom, rarity: "2:50, 2:50"}
+                """, items::resolve);
+        assertEquals(Map.of(8201, 1), repeated.roll("repeated", new Random(2)));
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 invalid:
                   - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:50, 3:50"}}

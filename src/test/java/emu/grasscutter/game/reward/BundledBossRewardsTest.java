@@ -58,11 +58,10 @@ final class BundledBossRewardsTest {
         var nextId = new AtomicInteger(3000000);
         var artifacts = new ArrayList<ArtifactResolver.Variant>();
         var nextArtifactId = new AtomicInteger(4000000);
-        // Collect all native set candidates from the identity bindings and
-        // fixed-set YAML entries. Shared CSS level rules no longer repeat set names.
-        // Prayers sets contain circlets only; other sets expose every native slot.
+        // Collect native sets from the artifact template arguments and the
+        // fixed-set YAML entries. Prayers sets contain circlets only.
         var sets = new java.util.LinkedHashSet<String>();
-        Pattern.compile("ARTIFACT_[1-4]STAR:\\s*\\[([^]]+)]")
+        Pattern.compile("world_artifact_[1-4]star<([^>]+)>")
                 .matcher(stylesheet).results()
                 .flatMap(match -> java.util.Arrays.stream(match.group(1).split(",")))
                 .map(String::trim)
@@ -86,7 +85,7 @@ final class BundledBossRewardsTest {
                     }
                 }
             }
-                });
+        });
         var loot = YamlLootTables.parse(yaml,
                 id -> ids.computeIfAbsent(ResourceAliases.GENSHIN.resolve(id).toString(),
                         ignored -> nextId.incrementAndGet()),

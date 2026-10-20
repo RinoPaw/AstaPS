@@ -12,7 +12,7 @@
 
 /* 奖励按对象分别放在宝箱、传送点、地脉花和世界 Boss 的 CSS 中。
  * 加载器按文件名排序后合并解析；相同选择器优先级按声明顺序覆盖。
- * BOSS_MATERIAL、ELEMENT、GEM_GROUP 和 ARTIFACT_*STAR 绑定对象身份，
+ * 世界 Boss 的 BOSS_MATERIAL 和 ELEMENT 分别绑定材料与元素，
  * 相应等级规则再引用这些绑定值。
  */
 

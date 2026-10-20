@@ -51,9 +51,9 @@ public final class CssRewards {
     // conventional CSS property identifiers. Encode declarations only; leave
     // CSS selectors, values and the canonical resource IDs unchanged.
     private static final Pattern RESOURCE_DECLARATION = Pattern.compile(
-            "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT|ARTIFACT_GROUP|GEM_GROUP|ARTIFACT_[1-4]STAR|getBossMaterial|[a-z][\\p{L}\\p{N}_.,<>\\[\\]\\s-]*)\\s*:");
+            "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT|getBossMaterial|[a-z][\\p{L}\\p{N}_.,<>\\[\\]\\s-]*)\\s*:");
     private static final Pattern BINDING = Pattern.compile(
-            "<(BOSS_MATERIAL|ELEMENT|ARTIFACT_[1-4]STAR)>(?:\\[([0-9]+)])?");
+            "<(BOSS_MATERIAL|ELEMENT)>(?:\\[([0-9]+)])?");
 
     private record AttributeRange(String name, long min, Long max) {
         boolean matches(Map<String, String> attributes) {
@@ -86,7 +86,6 @@ public final class CssRewards {
             List<AttributeOptions> attributeOptions,
             List<ItemDeclaration> items, List<LootDeclaration> loot,
             List<String> bossMaterials, LootCount.Spec bossMaterialCount, List<String> elements,
-            Map<String, List<String>> artifactSets, String artifactGroup, String gemGroup,
             int specificity, int order) {}
 
     private final List<Rule> rules;
@@ -139,9 +138,6 @@ public final class CssRewards {
             List<String> bossMaterials = null;
             LootCount.Spec bossMaterialCount = null;
             List<String> elements = null;
-            var artifactSets = new HashMap<String, List<String>>();
-            String artifactGroup = null;
-            String gemGroup = null;
             for (var declaration : style.getAllDeclarations()) {
                 String property = declaration.getProperty();
                 String value = declaration.getExpressionAsCSSString().trim();
@@ -157,24 +153,6 @@ public final class CssRewards {
                 }
                 if ("ELEMENT".equals(original)) {
                     elements = parseElementBinding(value);
-                    continue;
-                }
-                if ("ARTIFACT_GROUP".equals(original)) {
-                    if (!value.matches("[a-z][a-z0-9_]*")) {
-                        throw new IllegalArgumentException("Invalid artifact group: " + value);
-                    }
-                    artifactGroup = value;
-                    continue;
-                }
-                if ("GEM_GROUP".equals(original)) {
-                    if (!value.matches("[a-z][a-z0-9_]*")) {
-                        throw new IllegalArgumentException("Invalid gem group: " + value);
-                    }
-                    gemGroup = value;
-                    continue;
-                }
-                if (original.matches("ARTIFACT_[1-4]STAR")) {
-                    artifactSets.put(original, parseArtifactSetBinding(value));
                     continue;
                 }
                 if ("getBossMaterial".equals(original)) {
@@ -242,7 +220,7 @@ public final class CssRewards {
                         List.copyOf(attributeRanges), List.copyOf(options), List.copyOf(itemDeclarations),
                         List.copyOf(lootDeclarations),
                         bossMaterials, bossMaterialCount, elements,
-                        Map.copyOf(artifactSets), artifactGroup, gemGroup, specificity, order++));
+                        specificity, order++));
             }
         }
 
@@ -253,7 +231,7 @@ public final class CssRewards {
     /** Preserve resource and element bindings across CSS tokenization. */
     private static String quoteBindings(String source) {
         var matcher = Pattern.compile(
-                "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT|ARTIFACT_GROUP|GEM_GROUP|ARTIFACT_[1-4]STAR)\\s*:\\s*([^;{}]+)").matcher(source);
+                "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT)\\s*:\\s*([^;{}]+)").matcher(source);
         var buffer = new StringBuffer();
         while (matcher.find()) {
             String value = matcher.group(4).trim();
@@ -310,26 +288,8 @@ public final class CssRewards {
         return List.copyOf(elements);
     }
 
-
-    private static List<String> parseArtifactSetBinding(String value) {
-        String names = value.replaceAll("\\s+", "");
-        if (!names.startsWith("[") || !names.endsWith("]")) {
-            throw new IllegalArgumentException("Artifact set bindings require brackets: " + value);
-        }
-        var sets = new ArrayList<String>();
-        for (String name : names.substring(1, names.length() - 1).split(",", -1)) {
-            ResourceId.parse("genshin.artifact." + name);
-            if (sets.contains(name)) {
-                throw new IllegalArgumentException("Duplicate artifact set: " + name);
-            }
-            sets.add(name);
-        }
-        return List.copyOf(sets);
-    }
-
     private static List<String> expandBindings(
-            String name, List<String> materials, List<String> elements,
-            Map<String, List<String>> artifactSets, boolean table) {
+            String name, List<String> materials, List<String> elements, boolean table) {
         // Retain the previous variadic spelling for existing configurations.
         if (table && name.endsWith("<ELEMENT>") && !name.endsWith("<<ELEMENT>>")) {
             if (elements == null) return List.of();
@@ -337,77 +297,41 @@ public final class CssRewards {
         }
         var matcher = BINDING.matcher(name);
         if (!matcher.find()) return List.of(name);
-        String key = matcher.group(1);
-        List<String> bound = "BOSS_MATERIAL".equals(key) ? materials
-                : "ELEMENT".equals(key) ? elements : artifactSets.get(key);
-        if (bound == null) {
-            if (key.startsWith("ARTIFACT_")) {
-                throw new IllegalArgumentException("Missing artifact set binding: " + key);
-            }
-            return List.of();
-        }
+        List<String> bound = "BOSS_MATERIAL".equals(matcher.group(1)) ? materials : elements;
+        if (bound == null) return List.of();
         List<String> choices;
         if (matcher.group(2) != null) {
             int index = Integer.parseInt(matcher.group(2));
             if (index >= bound.size()) throw new IllegalArgumentException("Reward binding index out of range: " + name);
             choices = List.of(bound.get(index));
         } else {
-            if (table && key.startsWith("ARTIFACT_")) {
-                choices = List.of(String.join(",", bound));
-            } else {
-                if ((table || "ELEMENT".equals(key)) && bound.size() != 1) {
-                    throw new IllegalArgumentException("List binding requires an explicit index: " + name);
-                }
-                choices = bound;
+            if ((table || "ELEMENT".equals(matcher.group(1))) && bound.size() != 1) {
+                throw new IllegalArgumentException("List binding requires an explicit index: " + name);
             }
+            choices = bound;
         }
         var expanded = new ArrayList<String>();
         for (String choice : choices) {
             String next = name.substring(0, matcher.start()) + choice + name.substring(matcher.end());
-            expanded.addAll(expandBindings(next, materials, elements, artifactSets, table));
+            expanded.addAll(expandBindings(next, materials, elements, table));
         }
         return expanded;
-    }
-
-    private static boolean matches(Rule rule, Element element, Map<String, String> attributes) {
-        return rule.selector.matches(element.root(), element)
-                && rule.attributeRanges.stream().allMatch(range -> range.matches(attributes))
-                && rule.attributeOptions.stream().allMatch(option -> option.matches(attributes));
     }
 
     public Selection resolve(String type, Map<String, String> attributes) {
         var element = new Element(type);
         attributes.forEach(element::attr);
-        // Tag-based rules assign native program groups before level rules are matched.
-        // The synthetic attribute is local to this resolution; callers supply only native attrs.
-        var effective = new HashMap<>(attributes);
-        String artifactGroup = null;
-        String gemGroup = null;
-        for (var rule : rules) {
-            if (matches(rule, element, effective)) {
-                if (rule.artifactGroup != null) artifactGroup = rule.artifactGroup;
-                if (rule.gemGroup != null) gemGroup = rule.gemGroup;
-            }
-        }
-        if (artifactGroup != null) {
-            effective.put("artifact_group", artifactGroup);
-            element.attr("artifact_group", artifactGroup);
-        }
-        if (gemGroup != null) {
-            effective.put("gem_group", gemGroup);
-            element.attr("gem_group", gemGroup);
-        }
         var matched = new ArrayList<Rule>();
         List<String> bossMaterials = null;
         List<String> elements = null;
-        var artifactSets = new HashMap<String, List<String>>();
         // Resolve bindings independently of the count rules' position/specificity.
         for (var rule : rules) {
-            if (matches(rule, element, effective)) {
+            if (rule.selector.matches(element.root(), element)
+                    && rule.attributeRanges.stream().allMatch(range -> range.matches(attributes))
+                    && rule.attributeOptions.stream().allMatch(option -> option.matches(attributes))) {
                 matched.add(rule);
                 if (rule.bossMaterials != null) bossMaterials = rule.bossMaterials;
                 if (rule.elements != null) elements = rule.elements;
-                artifactSets.putAll(rule.artifactSets);
             }
         }
         var fixed = new HashMap<Integer, Integer>();
@@ -416,7 +340,7 @@ public final class CssRewards {
         var rangedLoot = new HashMap<String, LootCount.Spec>();
         for (var rule : matched) {
             for (var declaration : rule.items) {
-                for (String name : expandBindings(declaration.name, bossMaterials, elements, artifactSets, false)) {
+                for (String name : expandBindings(declaration.name, bossMaterials, elements, false)) {
                     int id = itemRegistry.resolve(name);
                     if (declaration.fixed != null) {
                         ranged.remove(id);
@@ -428,7 +352,7 @@ public final class CssRewards {
                 }
             }
             for (var declaration : rule.loot) {
-                for (String expanded : expandBindings(declaration.name, bossMaterials, elements, artifactSets, true)) {
+                for (String expanded : expandBindings(declaration.name, bossMaterials, elements, true)) {
                     String name = loot.resolveName(expanded);
                     if (declaration.fixed != null) {
                         rangedLoot.remove(name);

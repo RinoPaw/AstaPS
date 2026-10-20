@@ -22,8 +22,6 @@ final class LootTemplates {
     private static final Pattern INTEGER_EXPRESSION =
             Pattern.compile("([A-Za-z_][A-Za-z0-9_]*|[0-9]+)((?:[+-][0-9]+)*)");
     private static final Pattern OPERATION = Pattern.compile("([+-])([0-9]+)");
-    private static final int MAX_DEPTH = 64;
-    private static final int MAX_INSTANCES = 1_000;
 
     private record Definition(List<String> parameters, List<?> entries) {}
     record Prepared(LootTemplates templates, Map<?, ?> tables) {}
@@ -72,9 +70,6 @@ final class LootTemplates {
 
     private Object substitute(Object raw, Map<String, Object> parameters, int depth,
                               IdentityHashMap<Object, Object> shared) {
-        if (depth > MAX_DEPTH) {
-            throw new IllegalArgumentException("Loot template nesting exceeds " + MAX_DEPTH);
-        }
         if (raw instanceof List<?> list) {
             Object existing = shared.get(raw);
             if (existing != null) return existing;
@@ -138,7 +133,20 @@ final class LootTemplates {
         if (definition == null) {
             throw new IllegalArgumentException("Unknown loot template: " + reward);
         }
+        String invocationKey = invocation.group(1) + "<"
+                + invocation.group(2).replaceAll("\\s+", "") + ">";
+        // Resolve recursive calls lazily after the current instance is compiled.
+        if (expanding.contains(invocationKey)) return prefix + invocationKey;
         return instantiate(invocation.group(1), invocation.group(2), definition, depth);
+    }
+
+    /** True if a qualified or local invocation names a declared template. */
+    boolean isTemplateReference(String reference) {
+        String prefix = namespace + ".loot.";
+        String local = reference.startsWith(prefix)
+                ? reference.substring(prefix.length()) : reference;
+        Matcher match = INVOCATION.matcher(local);
+        return match.matches() && definitions.containsKey(match.group(1));
     }
 
     /** Canonical resource spelling, including the user's angle-bracket arguments. */
@@ -173,10 +181,9 @@ final class LootTemplates {
         String key = name + "<" + String.join(",", values) + ">";
         List<?> cached = instances.get(key);
         if (cached != null) return cached;
-        if (instances.size() >= MAX_INSTANCES || depth > MAX_DEPTH) {
-            throw new IllegalArgumentException("Too many or too deeply nested loot template expansions");
+        if (!expanding.add(key)) {
+            throw new IllegalStateException("Template recursion must be represented as a lazy reference: " + key);
         }
-        if (!expanding.add(key)) throw new IllegalArgumentException("Cyclic loot template invocation: " + key);
         try {
             var parameters = new LinkedHashMap<String, Object>();
             for (int i = 0; i < values.length; i++) {

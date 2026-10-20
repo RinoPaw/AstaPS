@@ -268,275 +268,37 @@ world_artifact_5star_goblet<set1, substats>:
 # CSS controls pool execution counts and fixed rewards independently.
 # Template arguments select elements; item counts and candidate weights are unchanged.
 
-# 3.1 Single-element gem pools
-world_40-44_gem_1<element>:
+# 3.1 Common gem profiles
+# Type is sampled once per pool execution; count gives copies of that selected type.
+# Each provided element contributes the same candidate weights. CSS controls
+# the independent pool execution count and chooses the element arguments.
+
+world_gem_one<COUNT, ELEMENTS...>:
+  - type: "genshin.avatar_ascension.<ELEMENTS...>.sliver:1"
+    count: <COUNT>
+
+world_gem_two<COUNT, ELEMENTS...>:
   - type: >-
-      genshin.avatar_ascension.<element>.sliver:79,
-      genshin.avatar_ascension.<element>.fragment:21
-    count: 3
+      genshin.avatar_ascension.<ELEMENTS...>.sliver:79,
+      genshin.avatar_ascension.<ELEMENTS...>.fragment:21
+    count: <COUNT>
 
-world_45-49_gem_1<element>:
+world_gem_three<COUNT, ELEMENTS...>:
   - type: >-
-      genshin.avatar_ascension.<element>.sliver:79,
-      genshin.avatar_ascension.<element>.fragment:21
-    count: 3
+      genshin.avatar_ascension.<ELEMENTS...>.sliver:75,
+      genshin.avatar_ascension.<ELEMENTS...>.fragment:20,
+      genshin.avatar_ascension.<ELEMENTS...>.chunk:5
+    count: <COUNT>
 
-world_50-54_gem_1<element>:
+world_gem_four<COUNT, ELEMENTS...>:
   - type: >-
-      genshin.avatar_ascension.<element>.sliver:79,
-      genshin.avatar_ascension.<element>.fragment:21
-    count: 3
+      genshin.avatar_ascension.<ELEMENTS...>.sliver:150,
+      genshin.avatar_ascension.<ELEMENTS...>.fragment:40,
+      genshin.avatar_ascension.<ELEMENTS...>.chunk:10,
+      genshin.avatar_ascension.<ELEMENTS...>.gemstone:1
+    count: <COUNT>
 
-world_55-59_gem_1<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:79,
-      genshin.avatar_ascension.<element>.fragment:21
-    count: 3
-
-world_60-64_gem_1<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:75,
-      genshin.avatar_ascension.<element>.fragment:20,
-      genshin.avatar_ascension.<element>.chunk:5
-    count: 3
-
-world_65-69_gem_1<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:75,
-      genshin.avatar_ascension.<element>.fragment:20,
-      genshin.avatar_ascension.<element>.chunk:5
-    count: 3
-
-world_70-74_gem_1<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:75,
-      genshin.avatar_ascension.<element>.fragment:20,
-      genshin.avatar_ascension.<element>.chunk:5
-    count: 3
-
-world_75-79_gem_1<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:150,
-      genshin.avatar_ascension.<element>.fragment:40,
-      genshin.avatar_ascension.<element>.chunk:10,
-      genshin.avatar_ascension.<element>.gemstone:1
-    count: 3
-
-world_80-84_gem_1<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:150,
-      genshin.avatar_ascension.<element>.fragment:40,
-      genshin.avatar_ascension.<element>.chunk:10,
-      genshin.avatar_ascension.<element>.gemstone:1
-    count: 3
-
-world_85-89_gem_1<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:150,
-      genshin.avatar_ascension.<element>.fragment:40,
-      genshin.avatar_ascension.<element>.chunk:10,
-      genshin.avatar_ascension.<element>.gemstone:1
-    count: 3
-
-world_90-plus_gem_1<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:150,
-      genshin.avatar_ascension.<element>.fragment:40,
-      genshin.avatar_ascension.<element>.chunk:10,
-      genshin.avatar_ascension.<element>.gemstone:1
-    count: 3
-
-# 3.2 Dual-element gem pools
-world_1-39_gem_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 3}: 1
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 3}: 1
-
-world_40-44_gem_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 3}: 79
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 3}: 21
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 3}: 79
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 3}: 21
-
-world_45-49_gem_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 3}: 79
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 3}: 21
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 3}: 79
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 3}: 21
-
-world_50-54_gem_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 3}: 79
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 3}: 21
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 3}: 79
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 3}: 21
-
-world_55-59_gem_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 3}: 79
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 3}: 21
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 3}: 79
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 3}: 21
-
-world_60-64_gem_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 3}: 75
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 3}: 20
-  - {type: "genshin.avatar_ascension.<element1>.chunk", count: 3}: 5
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 3}: 75
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 3}: 20
-  - {type: "genshin.avatar_ascension.<element2>.chunk", count: 3}: 5
-
-world_65-69_gem_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 3}: 75
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 3}: 20
-  - {type: "genshin.avatar_ascension.<element1>.chunk", count: 3}: 5
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 3}: 75
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 3}: 20
-  - {type: "genshin.avatar_ascension.<element2>.chunk", count: 3}: 5
-
-world_70-74_gem_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 3}: 75
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 3}: 20
-  - {type: "genshin.avatar_ascension.<element1>.chunk", count: 3}: 5
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 3}: 75
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 3}: 20
-  - {type: "genshin.avatar_ascension.<element2>.chunk", count: 3}: 5
-
-world_75-79_gem_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 3}: 150
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 3}: 40
-  - {type: "genshin.avatar_ascension.<element1>.chunk", count: 3}: 10
-  - {type: "genshin.avatar_ascension.<element1>.gemstone", count: 3}: 1
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 3}: 150
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 3}: 40
-  - {type: "genshin.avatar_ascension.<element2>.chunk", count: 3}: 10
-  - {type: "genshin.avatar_ascension.<element2>.gemstone", count: 3}: 1
-
-world_80-84_gem_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 3}: 150
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 3}: 40
-  - {type: "genshin.avatar_ascension.<element1>.chunk", count: 3}: 10
-  - {type: "genshin.avatar_ascension.<element1>.gemstone", count: 3}: 1
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 3}: 150
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 3}: 40
-  - {type: "genshin.avatar_ascension.<element2>.chunk", count: 3}: 10
-  - {type: "genshin.avatar_ascension.<element2>.gemstone", count: 3}: 1
-
-world_85-89_gem_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 3}: 150
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 3}: 40
-  - {type: "genshin.avatar_ascension.<element1>.chunk", count: 3}: 10
-  - {type: "genshin.avatar_ascension.<element1>.gemstone", count: 3}: 1
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 3}: 150
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 3}: 40
-  - {type: "genshin.avatar_ascension.<element2>.chunk", count: 3}: 10
-  - {type: "genshin.avatar_ascension.<element2>.gemstone", count: 3}: 1
-
-world_90-plus_gem_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 3}: 150
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 3}: 40
-  - {type: "genshin.avatar_ascension.<element1>.chunk", count: 3}: 10
-  - {type: "genshin.avatar_ascension.<element1>.gemstone", count: 3}: 1
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 3}: 150
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 3}: 40
-  - {type: "genshin.avatar_ascension.<element2>.chunk", count: 3}: 10
-  - {type: "genshin.avatar_ascension.<element2>.gemstone", count: 3}: 1
-
-# 3.3 Additional single-element gem pools
-world_40-44_gem_3<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:79,
-      genshin.avatar_ascension.<element>.fragment:21
-    count: 9
-
-world_45-49_gem_3<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:79,
-      genshin.avatar_ascension.<element>.fragment:21
-    count: 9
-
-world_50-54_gem_3<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:79,
-      genshin.avatar_ascension.<element>.fragment:21
-    count: 9
-
-world_55-59_gem_3<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:79,
-      genshin.avatar_ascension.<element>.fragment:21
-    count: 9
-
-world_60-64_gem_3<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:75,
-      genshin.avatar_ascension.<element>.fragment:20,
-      genshin.avatar_ascension.<element>.chunk:5
-    count: 9
-
-world_65-69_gem_3<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:75,
-      genshin.avatar_ascension.<element>.fragment:20,
-      genshin.avatar_ascension.<element>.chunk:5
-    count: 9
-
-world_70-74_gem_3<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:75,
-      genshin.avatar_ascension.<element>.fragment:20,
-      genshin.avatar_ascension.<element>.chunk:5
-    count: 9
-
-world_75-79_gem_3<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:150,
-      genshin.avatar_ascension.<element>.fragment:40,
-      genshin.avatar_ascension.<element>.chunk:10,
-      genshin.avatar_ascension.<element>.gemstone:1
-    count: 9
-
-world_80-84_gem_3<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:150,
-      genshin.avatar_ascension.<element>.fragment:40,
-      genshin.avatar_ascension.<element>.chunk:10,
-      genshin.avatar_ascension.<element>.gemstone:1
-    count: 9
-
-world_85-89_gem_3<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:150,
-      genshin.avatar_ascension.<element>.fragment:40,
-      genshin.avatar_ascension.<element>.chunk:10,
-      genshin.avatar_ascension.<element>.gemstone:1
-    count: 9
-
-world_90-plus_gem_3<element>:
-  - type: >-
-      genshin.avatar_ascension.<element>.sliver:150,
-      genshin.avatar_ascension.<element>.fragment:40,
-      genshin.avatar_ascension.<element>.chunk:10,
-      genshin.avatar_ascension.<element>.gemstone:1
-    count: 9
-
-# 3.4 Additional dual-element gem pools
-world_30-plus_gem_4<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.sliver", count: 9}: 150
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 9}: 40
-  - {type: "genshin.avatar_ascension.<element1>.chunk", count: 9}: 10
-  - {type: "genshin.avatar_ascension.<element1>.gemstone", count: 9}: 1
-  - {type: "genshin.avatar_ascension.<element2>.sliver", count: 9}: 150
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 9}: 40
-  - {type: "genshin.avatar_ascension.<element2>.chunk", count: 9}: 10
-  - {type: "genshin.avatar_ascension.<element2>.gemstone", count: 9}: 1
-
-world_40-plus_gem_fragment_4<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 9}: 1
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 9}: 1
-
-# 3.5 Bonus fragments
-# Separate fragment pools. CSS controls the total reward quantity.
-world_40-plus_gem_fragment_2<element1, element2>:
-  - {type: "genshin.avatar_ascension.<element1>.fragment", count: 3}: 1
-  - {type: "genshin.avatar_ascension.<element2>.fragment", count: 3}: 1
-
-world_gem_fragment<element>:
-  - {type: "genshin.avatar_ascension.<element>.fragment"}
+# 3.2 Additional independent fragment rolls
+world_gem_fragment<COUNT, ELEMENTS...>:
+  - type: "genshin.avatar_ascension.<ELEMENTS...>.fragment:1"
+    count: <COUNT>

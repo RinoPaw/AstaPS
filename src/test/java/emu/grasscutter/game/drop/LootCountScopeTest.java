@@ -608,4 +608,80 @@ class LootCountScopeTest {
             }
         }
     }
+
+    @Test
+    void genericGemPacksPreserveTypeProbabilitiesAndCopyCounts() {
+        var ids = java.util.Map.ofEntries(
+                Map.entry("genshin.avatar_ascension.anemo.sliver", 8101),
+                Map.entry("genshin.avatar_ascension.anemo.fragment", 8102),
+                Map.entry("genshin.avatar_ascension.anemo.chunk", 8103),
+                Map.entry("genshin.avatar_ascension.anemo.gemstone", 8104),
+                Map.entry("genshin.avatar_ascension.cryo.sliver", 8201),
+                Map.entry("genshin.avatar_ascension.cryo.fragment", 8202),
+                Map.entry("genshin.avatar_ascension.cryo.chunk", 8203),
+                Map.entry("genshin.avatar_ascension.cryo.gemstone", 8204));
+        var loot = YamlLootTables.parse("""
+                one<COUNT, ELEMENTS...>:
+                  - {type: "genshin.avatar_ascension.<ELEMENTS...>.sliver:1", count: <COUNT>}
+                two<COUNT, ELEMENTS...>:
+                  - type: >-
+                      genshin.avatar_ascension.<ELEMENTS...>.sliver:79,
+                      genshin.avatar_ascension.<ELEMENTS...>.fragment:21
+                    count: <COUNT>
+                three<COUNT, ELEMENTS...>:
+                  - type: >-
+                      genshin.avatar_ascension.<ELEMENTS...>.sliver:75,
+                      genshin.avatar_ascension.<ELEMENTS...>.fragment:20,
+                      genshin.avatar_ascension.<ELEMENTS...>.chunk:5
+                    count: <COUNT>
+                four<COUNT, ELEMENTS...>:
+                  - type: >-
+                      genshin.avatar_ascension.<ELEMENTS...>.sliver:150,
+                      genshin.avatar_ascension.<ELEMENTS...>.fragment:40,
+                      genshin.avatar_ascension.<ELEMENTS...>.chunk:10,
+                      genshin.avatar_ascension.<ELEMENTS...>.gemstone:1
+                    count: <COUNT>
+                fragment<COUNT, ELEMENTS...>:
+                  - {type: "genshin.avatar_ascension.<ELEMENTS...>.fragment:1", count: <COUNT>}
+                early: {type: "one<3,anemo,cryo>"}
+                medium: {type: "two<3,anemo,cryo>"}
+                higher: {type: "three<9,anemo>"}
+                late: {type: "four<9,anemo,cryo>"}
+                fragments: {type: "fragment<3,anemo,cryo>"}
+                """, name -> ids.getOrDefault(name, -2));
+        var random = new Random(121);
+        var mediumCounts = new java.util.HashMap<Integer, Integer>();
+        var lateCounts = new java.util.HashMap<Integer, Integer>();
+        for (int i = 0; i < 20_000; i++) {
+            var early = loot.roll("early", random);
+            assertEquals(3, early.values().iterator().next());
+            assertTrue(early.containsKey(8101) || early.containsKey(8201));
+            var medium = loot.roll("medium", random);
+            assertEquals(3, medium.values().iterator().next());
+            mediumCounts.merge(medium.keySet().iterator().next(), 1, Integer::sum);
+            var higher = loot.roll("higher", random);
+            assertEquals(9, higher.values().iterator().next());
+            assertTrue(higher.keySet().stream().allMatch(id -> id >= 8101 && id <= 8103));
+            var late = loot.roll("late", random);
+            assertEquals(9, late.values().iterator().next());
+            lateCounts.merge(late.keySet().iterator().next(), 1, Integer::sum);
+            var fragments = loot.roll("fragments", random);
+            assertEquals(3, fragments.values().iterator().next());
+            assertTrue(fragments.containsKey(8102) || fragments.containsKey(8202));
+        }
+        for (int id : new int[]{8101, 8201}) {
+            assertEquals(0.395, mediumCounts.getOrDefault(id, 0) / 20_000.0, 0.018);
+            assertEquals(150 / 402.0, lateCounts.getOrDefault(id, 0) / 20_000.0, 0.018);
+        }
+        for (int id : new int[]{8102, 8202}) {
+            assertEquals(0.105, mediumCounts.getOrDefault(id, 0) / 20_000.0, 0.018);
+            assertEquals(40 / 402.0, lateCounts.getOrDefault(id, 0) / 20_000.0, 0.018);
+        }
+        for (int id : new int[]{8103, 8203}) {
+            assertEquals(10 / 402.0, lateCounts.getOrDefault(id, 0) / 20_000.0, 0.012);
+        }
+        for (int id : new int[]{8104, 8204}) {
+            assertEquals(1 / 402.0, lateCounts.getOrDefault(id, 0) / 20_000.0, 0.005);
+        }
+    }
 }

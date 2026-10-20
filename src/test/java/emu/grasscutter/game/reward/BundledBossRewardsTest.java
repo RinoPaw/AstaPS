@@ -19,8 +19,8 @@ final class BundledBossRewardsTest {
     void worldBossTemplatesCoverAllMappedIdentitiesWithoutInventingWeeklyDrops() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         String css = RewardConfiguration.readBundled("rewards.css");
-        assertTrue(yaml.contains("world_40-44_gem_1<element>:"));
-        assertTrue(yaml.contains("world_40-44_gem_2<element1, element2>:"));
+        assertTrue(yaml.contains("world_gem_two<COUNT, ELEMENTS...>:"));
+        assertTrue(yaml.contains("world_gem_four<COUNT, ELEMENTS...>:"));
         assertTrue(yaml.contains("world_artifact_5star_special<set1, plume_substats, goblet_substats>:"));
         assertTrue(css.contains("astaps.loot.world_"));
         assertFalse(css.contains("boss[type=\"weekly\"]"));

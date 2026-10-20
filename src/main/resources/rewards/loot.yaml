@@ -1,10 +1,12 @@
-# Reward candidate pools used by rewards.css.
+# Reward candidate pools used by the bundled reward CSS.
+# Source authenticity is unresolved; see docs/rewards/source-provenance.md.
+# Historical-reference agreement does not certify original-game reward values.
 # Entries select items and properties; CSS controls when and how often pools run.
 #
-# Known limitations (details and authoritative notes in rewards.css):
+# Known limitations (details in the bundled CSS and source-provenance.md):
 # - Clockwork Mek artifacts reuse Pyro Regisvine pools.
 # - Some regional puzzle-chest pools fall back to combat-chest sources.
-# - Native regional Mora, EXP, and talent-book data covers cities 1-4 only.
+# - Historical-reference regional Mora, EXP and talent-book values cover cities 1-4 only.
 # - Some chest weapon/ore pools remain legacy; weekly Boss rewards are not included.
 # - Boss probabilities include integer approximations; names and payouts need validation.
 #

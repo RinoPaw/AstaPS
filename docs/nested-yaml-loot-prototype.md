@@ -1,5 +1,10 @@
 # Reward configuration
 
+The current default reward values have unresolved provenance. Their historical
+reference tables came from a squashed private-server import, not an authenticated
+original-data baseline. See [source provenance](rewards/source-provenance.md).
+Representation and regression checks below do not certify official accuracy.
+
 Bundled rewards live in `src/main/resources/rewards/`: the `loot.yaml` pool
 definitions and all `.css` files directly in that directory. The current CSS files
 are `chests.css`, `transpoints.css`, `blossoms.css`, and `world-boss.css`. The loader
@@ -221,23 +226,23 @@ fallback; its internal probabilities have not been recovered from original data.
 
 ## Regional chest artifacts
 
-The native chest-artifact migration covers cities 1-4, including 184 combat,
+The historical-reference chest-artifact migration covers cities 1-4, including 184 combat,
 puzzle and Dragonspine source rows, collapsed to 56 city/grade/level selectors.
-There are 26 native candidate pools, 20 nested weighted mixtures, and 135
-unique source artifact item IDs. Each roll retains the original set, rarity,
+There are 26 reference candidate pools, 20 nested weighted mixtures, and 135
+unique source artifact item IDs. Each roll retains the reference set, rarity,
 slot and initial-substat distribution; the count rules combine independent
 branch probability with native fractional execution counts. Combat/puzzle and
 Dragonspine sources agree for these artifact branches.
 
 Archipelago source roots are not mapped to the city selector, while shrine
 roots are a separate reward type; neither is silently treated as an ordinary
-regional chest. Cities 5-9 have no matching native chest roots in the dataset.
+regional chest. Cities 5-9 have no matching historical chest roots in the dataset.
 Source: AstaPS ChestDrop/DropTableExcelConfigData and AstaPS-Resource
 DropSubTable/ReliquaryExcelConfigData at `c0213668889ed05cbeb86660f424c3daf18bfacd`.
 
 ## Regional chest payouts and limits
 
-Mora, character EXP books, and talent books for cities 1–4 follow the native
+Mora, character EXP books, and talent books for cities 1–4 follow the historical
 combat roots in `data/ChestDrop.json` and `data/Server/DropTableExcelConfigData.json`,
 expanded with `RinoPaw/AstaPS-Resource` at
 `c0213668889ed05cbeb86660f424c3daf18bfacd`.
@@ -250,10 +255,10 @@ same-region combat payouts fill those gaps without adding a source attribute.
 This is a fallback, not an exact reconstruction of those puzzle subtables.
 The existing combat/puzzle recipe union is retained.
 
-Cities 5–9 lack matching native chest roots in this dataset and retain their
+Cities 5–9 lack matching historical chest roots in this dataset and retain their
 previous generic payouts. Weapon/ore chest subtables are also often empty;
-existing weapon candidates and ore amounts remain provisional. Chest artifacts for cities 1-4 have been restored from the historical native
-source; weekly Bosses remain absent. Cities 5-9 and island/shrine sources are
+existing weapon candidates and ore amounts remain provisional. Chest artifacts for cities 1-4 have been restored from the inherited historical
+reference; weekly Bosses remain absent. Cities 5-9 and island/shrine sources are
 not inferred. The 30 Adventure EXP chest policy and regional
 Primogem overrides are intentional configuration rules, not a literal copy of
 historical data. The source is historical server configuration, not a verified

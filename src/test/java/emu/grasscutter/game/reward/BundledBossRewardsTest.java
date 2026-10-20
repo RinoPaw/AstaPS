@@ -165,7 +165,7 @@ final class BundledBossRewardsTest {
         var css = CssRewards.parse(originalCss, new ItemIdRegistry(known, categories),
                 loot);
         var config = new RewardConfiguration(loot, css);
-        verifyNativeWorldBossFixedRewards(css);
+        verifyHistoricalWorldBossFixedRewards(css);
         String identityCss = stylesheet.substring(
                 stylesheet.indexOf("/* 身份绑定"),
                 stylesheet.indexOf("/* 通用等级奖励"));
@@ -246,7 +246,7 @@ final class BundledBossRewardsTest {
      * Native artifact, gem and material distributions are checked separately;
      * these four fixed payouts are exact and must never drift.
      */
-    private static void verifyNativeWorldBossFixedRewards(CssRewards css) throws Exception {
+    private static void verifyHistoricalWorldBossFixedRewards(CssRewards css) throws Exception {
         var chestSource = java.nio.file.Path.of("data/ChestDrop.json");
         var tableSource = java.nio.file.Path.of("data/Server/DropTableExcelConfigData.json");
         var tableMap = new HashMap<Integer, com.google.gson.JsonObject>();
@@ -266,7 +266,7 @@ final class BundledBossRewardsTest {
                 String nativeTag = entry.get("index").getAsString();
                 int level = entry.get("minLevel").getAsInt();
                 String label = nativeTag + " level=" + level;
-                assertTrue(seen.add(label), "Duplicate native Boss source: " + label);
+                assertTrue(seen.add(label), "Duplicate historical Boss reference: " + label);
                 var selected = css.resolve("boss", Map.of(
                         "type", "world", "tag", RewardConfiguration.cssBossTag(nativeTag),
                         "level", Integer.toString(level)));
@@ -283,7 +283,7 @@ final class BundledBossRewardsTest {
                 checked++;
             }
         }
-        assertEquals(1200, checked, "The authoritative world Boss source changed");
+        assertEquals(1200, checked, "The inherited historical world Boss reference changed");
     }
 
     private static double[] expectedNativePayout(int id,

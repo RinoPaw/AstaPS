@@ -1,5 +1,13 @@
 # Configured reward review (2026-10-20)
 
+## Provenance correction (2026-10-21)
+
+The inherited reward values are not an authenticated original-game baseline.
+Their history ends at a squashed private-server import. See
+[source-provenance.md](source-provenance.md) for the inspected evidence and
+rule families that still require source verification. The technical checks below
+verify the implementation and agreement with historical references only.
+
 ## Scope
 
 The independent reward system owns `src/main/resources/rewards/{loot.yaml,*.css}`
@@ -11,8 +19,11 @@ remain separate; this review does not migrate those systems.
 
 ## Configuration and representation
 
-css4j parses standard custom properties, escaped resource identifiers, selector
-specificity, source order, nesting, selector alternatives and `!important`.
+A lexical adapter converts dotted resource declaration names into internal CSS
+custom properties. css4j parses declarations, nesting and selectors; the reward
+engine applies selector specificity, source order and `!important`. Named
+bindings use exact names, and resource expressions distinguish template argument
+lists from explicit variable references.
 Focused regression tests cover those semantics. Numeric range attributes are
 server metadata. Counts and weighted choices are reward-domain declaration values.
 Browser layout, media environments and browser CSS-variable evaluation are not

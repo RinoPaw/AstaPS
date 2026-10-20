@@ -1,3 +1,6 @@
+/* 来源待核验：数值对照的是继承的历史服务端表，不构成官方原始奖励证据。
+ * 来源边界详见 docs/rewards/source-provenance.md。 */
+
 /* ========================================================================== */
 /* 世界 Boss：身份、通用奖励、材料例外、宝石、圣遗物 */
 /* ========================================================================== */
@@ -294,7 +297,7 @@ boss[type="world"][tag="undying_replicant"] {
     --element: "pyro";
 }
 
-/* 通用等级奖励：摩拉、经验、材料数量。突破材料权重保留原始小数精度。 */
+/* 通用等级奖励：摩拉、经验、材料数量。突破材料权重保留参考表的小数精度。 */
 
 boss[type="world"] {
     genshin.experience.adventure: 200;
@@ -442,7 +445,7 @@ boss[type="world"][data-range-level-93-up] {
 
 /* 材料例外：覆盖通用等级数量。 */
 
-/* 以下 25 种 Boss 在 1-29 级缺少原生材料子表，显式置零。 */
+/* 以下 25 种 Boss 在 1-29 级缺少历史材料子表，显式置零。 */
 boss[type="world"]:is([tag="aeonblight_drake"], [tag="algorithm_semi_intransient_matrix"], [tag="anemo_hypostasis"], [tag="bathysmal_vishap_herd"], [tag="cryo_hypostasis"], [tag="cryo_regisvine"], [tag="dendro_hypostasis"], [tag="electro_hypostasis"], [tag="electro_regisvine"], [tag="geo_hypostasis"], [tag="golden_wolflord"], [tag="hydro_hypostasis"], [tag="jadeplume_terrorshroom"], [tag="maguu_kenki"], [tag="oceanid"], [tag="perpetual_mechanical_array"], [tag="primo_geovishap_cryo"], [tag="primo_geovishap_electro"], [tag="primo_geovishap_hydro"], [tag="primo_geovishap_pyro"], [tag="pyro_hypostasis"], [tag="pyro_regisvine"], [tag="ruin_serpent"], [tag="setekh_wenut"], [tag="thunder_manifestation"])[data-range-level-1-29] {
     genshin.avatar_ascension.<material>: 0;
 }
@@ -921,10 +924,10 @@ boss[type="world"]:is([tag="aeonblight_drake"], [tag="bathysmal_vishap_herd"], [
 }
 
 /* Artifact group 2: 5 Boss identities, levels in ascending order.
- * Precision Clockwork: native branch counts and weights match this group at all
+ * Precision Clockwork: historical reference branch counts and weights match this group at all
  * 25 source levels; client preview 15209 matches Pyro Regisvine preview 15140.
  * Missing candidate pools and their internal weights borrow Pyro Regisvine's
- * configuration by explicit user choice; this is not a recovered native subtable.
+ * configuration by explicit user choice; this is not a recovered original subtable.
  */
 boss[type="world"]:is([tag="algorithm_semi_intransient_matrix"], [tag="precision_clockwork"], [tag="primo_geovishap_pyro"], [tag="pyro_hypostasis"], [tag="pyro_regisvine"])[data-range-level-1-4] {
     astaps.loot.world_artifact_1star<adventurer>: "3:11, 4:39";

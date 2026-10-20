@@ -9,6 +9,12 @@ new CSS file needs no registration or changes to a file-count constant.
 Rule specificity and source order still decide overrides. There are no
 editable `config/rewards` copies.
 
+CSS selector alternatives use native `:is()`, for example
+`boss[type="world"]:is([tag="anemo_hypostasis"], [tag="cryo_hypostasis"])`.
+Quoted attribute commas are literal under CSS semantics. The existing
+`[level="70~79"]` numeric interval is still a reward-specific extension:
+CSS itself has no general numeric attribute-range selector.
+
 ## No implicit implementation ceilings
 
 The DSL has no arbitrary runtime depth limit, count limit, pool-count limit,

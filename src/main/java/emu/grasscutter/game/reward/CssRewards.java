@@ -37,10 +37,14 @@ public final class CssRewards {
         }
     }
 
-    // A type (or *) followed by attribute filters is the only supported
-    // selector syntax. Do not silently miscalculate priority for other CSS.
+    // Support native :is() attribute alternatives with simple type/attribute selectors.
+    // Keep specificity accurate for every selector shape accepted here.
     private static final Pattern SIMPLE_SELECTOR = Pattern.compile(
             "^(?:\\*|[a-zA-Z][a-zA-Z0-9_-]*)(?:\\[[^\\[\\]]+\\])*$");
+    // An :is() list of attribute selectors contributes one attribute
+    // to specificity. Jsoup receives the original selector for matching.
+    private static final Pattern IS_ATTRIBUTE_GROUP = Pattern.compile(
+            ":is\\(\\s*\\[[^\\[\\]]+\\](?:\\s*,\\s*\\[[^\\[\\]]+\\])*\\s*\\)");
     // Inclusive numeric ranges work on any attribute; "93~" has no upper bound.
     private static final Pattern ATTRIBUTE_RANGE = Pattern.compile(
             "\\[\\s*([a-zA-Z_][a-zA-Z0-9_-]*)\\s*=\\s*([\"'])([0-9]+)~([0-9]*)\\2\\s*\\]");
@@ -68,22 +72,11 @@ public final class CssRewards {
         }
     }
 
-    // Match comma-separated alternatives by exact attribute value.
-    private static final Pattern ATTRIBUTE_OPTIONS = Pattern.compile(
-            "\\[\\s*([a-zA-Z_][a-zA-Z0-9_-]*)\\s*=\\s*([\"'])([^\"']*,[^\"']*)\\2\\s*\\]");
-
-    private record AttributeOptions(String name, java.util.Set<String> values) {
-        boolean matches(Map<String, String> attributes) {
-            return values.contains(attributes.get(name));
-        }
-    }
-
     private record LootDeclaration(String name, Integer fixed, LootCount.Spec ranged) {}
     private record ItemDeclaration(String name, Integer fixed, LootCount.Spec ranged) {}
 
     private record Rule(
             Evaluator selector, List<AttributeRange> attributeRanges,
-            List<AttributeOptions> attributeOptions,
             List<ItemDeclaration> items, List<LootDeclaration> loot,
             List<String> bossMaterials, LootCount.Spec bossMaterialCount, List<String> elements,
             int specificity, int order) {}
@@ -188,36 +181,23 @@ public final class CssRewards {
                     matcher.appendReplacement(selectorBuffer, "[" + name + "]");
                 }
                 matcher.appendTail(selectorBuffer);
-                var options = new ArrayList<AttributeOptions>();
-                String withRanges = selectorBuffer.toString();
-                selectorBuffer = new StringBuffer();
-                var optionsMatcher = ATTRIBUTE_OPTIONS.matcher(withRanges);
-                while (optionsMatcher.find()) {
-                    String name = optionsMatcher.group(1);
-                    var choices = java.util.Arrays.stream(optionsMatcher.group(3).split(",", -1))
-                            .map(String::trim).toList();
-                    if (choices.stream().anyMatch(String::isEmpty)) {
-                        throw new IllegalArgumentException("Empty reward attribute choice: " + css);
-                    }
-                    options.add(new AttributeOptions(name, java.util.Set.copyOf(choices)));
-                    optionsMatcher.appendReplacement(selectorBuffer, "[" + name + "]");
-                }
-                optionsMatcher.appendTail(selectorBuffer);
                 String normalizedSelector = selectorBuffer.toString();
                 if (MALFORMED_ATTRIBUTE_RANGE.matcher(normalizedSelector).find()) {
                     throw new IllegalArgumentException("Invalid reward attribute range: " + css);
                 }
-                if (!SIMPLE_SELECTOR.matcher(normalizedSelector).matches()) {
+                String selectorShape = IS_ATTRIBUTE_GROUP.matcher(normalizedSelector)
+                        .replaceAll("[is]");
+                if (!SIMPLE_SELECTOR.matcher(selectorShape).matches()) {
                     throw new IllegalArgumentException("Unsupported reward selector: " + css);
                 }
-                int attributeCount = (int) normalizedSelector.chars()
+                int attributeCount = (int) selectorShape.chars()
                         .filter(ch -> ch == '[').count();
                 // Within our supported type-and-attribute subset, a type selector
                 // outranks a universal selector when attribute counts are equal.
                 int specificity = attributeCount * 100
                         + (css.matches("^[a-zA-Z][a-zA-Z0-9_-]*.*") ? 1 : 0);
                 rules.add(new Rule(Selector.evaluatorOf(normalizedSelector),
-                        List.copyOf(attributeRanges), List.copyOf(options), List.copyOf(itemDeclarations),
+                        List.copyOf(attributeRanges), List.copyOf(itemDeclarations),
                         List.copyOf(lootDeclarations),
                         bossMaterials, bossMaterialCount, elements,
                         specificity, order++));
@@ -327,8 +307,7 @@ public final class CssRewards {
         // Resolve bindings independently of the count rules' position/specificity.
         for (var rule : rules) {
             if (rule.selector.matches(element.root(), element)
-                    && rule.attributeRanges.stream().allMatch(range -> range.matches(attributes))
-                    && rule.attributeOptions.stream().allMatch(option -> option.matches(attributes))) {
+                    && rule.attributeRanges.stream().allMatch(range -> range.matches(attributes))) {
                 matched.add(rule);
                 if (rule.bossMaterials != null) bossMaterials = rule.bossMaterials;
                 if (rule.elements != null) elements = rule.elements;

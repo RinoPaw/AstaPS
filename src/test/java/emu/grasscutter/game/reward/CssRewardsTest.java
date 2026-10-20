@@ -459,15 +459,15 @@ class CssRewardsTest {
     }
 
     @Test
-    void commaSeparatedAttributeValuesBehaveAsAlternatives() {
+    void standardIsSelectorsMatchAttributeAlternatives() {
         var css = CssRewards.parse("""
                 chest[type="normal"][grade="common"][city="1"] {
                     genshin.currency.primogem: 0;
                 }
-                chest[type="normal"][grade="common"][area="10,77, 8,19,40,41,47,300"] {
+                chest[type="normal"][grade="common"]:is([area="10"], [area="77"], [area="8"], [area="19"], [area="40"], [area="41"], [area="47"], [area="300"]) {
                     genshin.currency.primogem: 2;
                 }
-                boss[type="world"][tag="electro_hypostasis,anemo_hypostasis"] {
+                boss[type="world"]:is([tag="electro_hypostasis"], [tag="anemo_hypostasis"]) {
                     genshin.currency.mora: 100;
                 }
                 """, items, loot);
@@ -483,9 +483,37 @@ class CssRewardsTest {
                 "type", "world", "tag", "anemo_hypostasis")).items().get(202));
         assertTrue(css.resolve("boss", Map.of(
                 "type", "world", "tag", "geo_hypostasis")).items().isEmpty());
-        assertThrows(IllegalArgumentException.class, () ->
-                CssRewards.parse("chest[area=\"8,,10\"] { genshin.currency.mora: 1; }",
-                        items, loot));
+        // Quoted commas are literal attribute values in standard CSS.
+        var literal = CssRewards.parse("""
+                chest[area="8,10"] { genshin.currency.mora: 1; }
+                """, items, loot);
+        assertEquals(1, literal.resolve("chest", Map.of("area", "8,10"))
+                .items().get(202));
+        assertTrue(literal.resolve("chest", Map.of("area", "8")).items().isEmpty());
+        assertTrue(literal.resolve("chest", Map.of("area", "10")).items().isEmpty());
+    }
+
+    @Test
+    void isSelectorKeepsCssSpecificityAndLevelRanges() {
+        var css = CssRewards.parse("""
+                boss[type="world"]:is([tag="a"], [tag="b"])[level="70~79"] {
+                    genshin.currency.mora: 10;
+                }
+                boss[type="world"][level="70~79"] {
+                    genshin.currency.mora: 20;
+                }
+                boss[type="world"][tag="b"][level="70~79"] {
+                    genshin.currency.mora: 30;
+                }
+                """, items, loot);
+        assertEquals(10, css.resolve("boss", Map.of(
+                "type", "world", "tag", "a", "level", "75")).items().get(202));
+        assertEquals(30, css.resolve("boss", Map.of(
+                "type", "world", "tag", "b", "level", "75")).items().get(202));
+        assertEquals(20, css.resolve("boss", Map.of(
+                "type", "world", "tag", "c", "level", "75")).items().get(202));
+        assertTrue(css.resolve("boss", Map.of(
+                "type", "world", "tag", "a", "level", "80")).items().isEmpty());
     }
 
     @Test

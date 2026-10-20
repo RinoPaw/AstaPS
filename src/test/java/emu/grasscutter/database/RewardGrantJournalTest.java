@@ -54,8 +54,11 @@ final class RewardGrantJournalTest {
     @Test
     void confirmedGrantIsVisibleForReconciliationUntilCompleted() {
         var journal = new RewardGrantJournal(new FakeStore());
+        assertFalse(journal.completed(CLAIM));
         journal.prepare(CLAIM, REWARDS);
+        assertFalse(journal.completed(CLAIM));
         journal.confirm(CLAIM);
+        assertFalse(journal.completed(CLAIM));
         assertEquals(Stage.CONFIRMED, journal.unresolved().getFirst().stage());
         journal.complete(CLAIM);
         assertTrue(journal.unresolved().isEmpty());
@@ -122,7 +125,7 @@ final class RewardGrantJournalTest {
         assertTrue(journal.prepare(CLAIM, REWARDS));
         journal.abortUnpaid(CLAIM);
         assertTrue(journal.unresolved().isEmpty());
-        assertTrue(journal.completed(CLAIM));
+        assertFalse(journal.completed(CLAIM));
         assertFalse(journal.prepare(CLAIM, REWARDS));
         assertThrows(IllegalStateException.class, () -> journal.confirm(CLAIM));
         assertThrows(IllegalStateException.class, () -> journal.abortUnpaid(CLAIM));

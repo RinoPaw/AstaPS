@@ -5,7 +5,6 @@ import java.util.random.RandomGenerator;
 
 /** Integer reward counts, ranges and explicit relative-weight distributions. */
 public final class LootCount {
-    private static final BigDecimal HUNDRED = new BigDecimal("100");
     private LootCount() {}
 
     @FunctionalInterface
@@ -38,34 +37,6 @@ public final class LootCount {
         if (!text.contains(":") && !text.contains(",")) return parse(text);
         WeightedChoice<Integer> choice = WeightedChoice.parse(text, "count", LootCount::integer);
         return choice::sample;
-    }
-
-    /** Convert native fractional expectations at the import boundary, never in user YAML. */
-    static String fromNativeCount(String value) {
-        if (value == null) throw new IllegalArgumentException("Missing native count");
-        String source = value.trim();
-        if (source.matches("[0-9]+\\.[0-9]+")) {
-            BigDecimal amount = decimal(source);
-            int base;
-            try {
-                base = amount.toBigInteger().intValueExact();
-            } catch (ArithmeticException failure) {
-                throw new IllegalArgumentException("Native count cannot fit an integer: " + value, failure);
-            }
-            BigDecimal fraction = amount.remainder(BigDecimal.ONE);
-            if (fraction.signum() == 0) return Integer.toString(base);
-            if (base == Integer.MAX_VALUE) {
-                throw new IllegalArgumentException("Native count cannot round up within integer range: " + value);
-            }
-            BigDecimal upperWeight = fraction.movePointRight(2);
-            BigDecimal lowerWeight = HUNDRED.subtract(upperWeight);
-            return base + ":" + lowerWeight.stripTrailingZeros().toPlainString()
-                    + ", " + (base + 1) + ":"
-                    + upperWeight.stripTrailingZeros().toPlainString();
-        }
-        // Native integer and inclusive-range encodings remain intact.
-        parse(source);
-        return source;
     }
 
     private static BigDecimal decimal(String value) {

@@ -286,14 +286,6 @@ public final class YamlLootTables {
         }
     }
 
-    private static final int MAX_TABLES = 12_000;
-    private static final int MAX_ENTRIES = 40_000;
-
-    private static final class CompileBudget {
-        int tables;
-        int entries;
-    }
-
     private final Map<String, Pool> pools;
     private final Map<String, Pool> instances = new java.util.concurrent.ConcurrentHashMap<>();
     private final LootTemplates templates;
@@ -327,11 +319,11 @@ public final class YamlLootTables {
         if (resolver == null) throw new IllegalArgumentException("Missing item resolver");
         var settings = LoadSettings.builder()
                 // Weighted branches allow sequence and mapping keys.
-                // Recursive keys remain forbidden.
                 .setAllowNonScalarKeys(true)
                 .setAllowDuplicateKeys(false)
-                .setMaxAliasesForCollections(100_000)
-                .setCodePointLimit(3_000_000)
+                // API values are integers. Avoid imposing lower application limits.
+                .setMaxAliasesForCollections(Integer.MAX_VALUE)
+                .setCodePointLimit(Integer.MAX_VALUE)
                 .build();
         Object document = LootYamlSyntax.parse(yaml, settings);
         if (!(document instanceof Map<?, ?> raw)) {
@@ -341,11 +333,8 @@ public final class YamlLootTables {
         // Template references become nested lists, retaining independent rolls.
         var prepared = LootTemplates.prepare(raw, namespace);
         raw = prepared.tables();
-        if (raw.size() > MAX_TABLES) throw new IllegalArgumentException("Too many loot tables");
-        var budget = new CompileBudget();
         var parsed = new LinkedHashMap<String, Pool>();
         var compiled = new IdentityHashMap<Object, Pool>();
-        var visiting = new IdentityHashMap<Object, Boolean>();
         var names = new java.util.HashSet<String>();
         for (var key : raw.keySet()) {
             if (!(key instanceof String name) || name.isBlank()) {
@@ -356,17 +345,16 @@ public final class YamlLootTables {
         for (var e : raw.entrySet()) {
             String name = (String) e.getKey();
             String id = ResourceId.parse(namespace + ".loot." + name).toString();
-            parsed.put(id, parseList(e.getValue(), resolver, artifacts, compiled, visiting,
-                    budget, name, 0, names, namespace, prepared.templates()));
+            parsed.put(id, parseList(e.getValue(), resolver, artifacts, compiled,
+                    name, names, namespace, prepared.templates()));
         }
         validateReferences(parsed);
         return new YamlLootTables(parsed, prepared.templates(), resolver, artifacts);
     }
 
     private static Pool parseList(Object raw, ItemResolver resolver, ArtifactResolver artifacts,
-            IdentityHashMap<Object, Pool> compiled,
-            IdentityHashMap<Object, Boolean> visiting, CompileBudget budget,
-            String location, int depth, Set<String> tableNames, String namespace, LootTemplates templates) {
+            IdentityHashMap<Object, Pool> compiled, String location,
+            Set<String> tableNames, String namespace, LootTemplates templates) {
         Pool cached = compiled.get(raw);
         if (cached != null) return cached;
         if (!(raw instanceof Map<?, ?> || raw instanceof List<?>)) {
@@ -377,11 +365,6 @@ public final class YamlLootTables {
         Object source = raw;
         if (raw instanceof Map<?, ?> single) raw = List.of(single);
         List<?> list = (List<?>) raw;
-        if (++budget.tables > MAX_TABLES) throw new IllegalArgumentException("Too many unique nested loot lists");
-        if (list.size() > MAX_ENTRIES - budget.entries) {
-            throw new IllegalArgumentException(location + ": too many loot entries");
-        }
-        budget.entries += list.size();
         try {
             var entries = new ArrayList<Entry>();
             boolean hasWeight = false, hasNull = false;
@@ -406,13 +389,13 @@ public final class YamlLootTables {
                 WeightedChoice<TypeTarget> typeChoice = null;
                 Pool nested = null;
                 if (target instanceof List<?>) {
-                    nested = parseList(target, resolver, artifacts, compiled, visiting, budget,
-                            at + ".type", depth + 1, tableNames, namespace, templates);
+                    nested = parseList(target, resolver, artifacts, compiled,
+                            at + ".type", tableNames, namespace, templates);
                 } else if (target instanceof Map<?, ?> single) {
                     // A nested mapping rerolls its reward once for every outer
                     // execution. Its own count controls the quantity per roll.
                     nested = parseList(single, resolver, artifacts,
-                            compiled, visiting, budget, at + ".type", depth + 1, tableNames, namespace, templates);
+                            compiled, at + ".type", tableNames, namespace, templates);
                 } else if (target != null) {
                     if (!(target instanceof String reference) || reference.matches("[0-9]+")) {
                         throw new IllegalArgumentException(at + ": type must be a named item: " + target);
@@ -535,8 +518,7 @@ public final class YamlLootTables {
         if (!instances.containsKey(name)) {
             var entries = templates.instantiateReference(name);
             var pool = parseList(entries, resolver, artifacts, new IdentityHashMap<>(),
-                    new IdentityHashMap<>(), new CompileBudget(), name, 0, pools.keySet(),
-                    namespaceOf(name), templates);
+                    name, pools.keySet(), namespaceOf(name), templates);
             instances.put(name, pool);
         }
         return name;

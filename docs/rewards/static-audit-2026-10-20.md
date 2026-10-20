@@ -40,6 +40,39 @@ offline source study, not a CI test. The current CI checks concrete configured
 reward selection and source-root coverage, but **does not prove exact probability
 equivalence for every original material, gem, and artifact subtable**.
 
+## Probability-budget and representation review
+
+The per-root limits are now: nontermination probability zero, expected total pool
+executions <=100, P(N>100)<=1e-6, and P(H>64)<=1e-6. The root counts as a node
+at depth 1. These checks retain the joint offspring law, and use downward-rounded
+PGF coefficients so reported tails are conservative upper bounds. YAML execution
+uses an explicit continuation stack; no reward is cut off at the analysis bounds.
+The budgets are per YAML root, not the sum of all CSS grants in one settlement.
+
+An independent static traversal of the checked-in
+`data/Server/DropTableExcelConfigData.json` found 16,895 tables, 51,144 entries,
+11,862 exclusive tables, 5,033 independent tables, and no table-reference cycles.
+Entry counts comprise 42,650 integer, 7,639 fractional, and 855 interval values.
+Within this file's table-reference graph, maximum expected executions are 22,
+maximum possible executions are 25, and maximum depth is 3. All 1,771 ChestDrop
+rows reference an existing root. `NativeDropGraphSafetyTest` reconstructs the
+native offspring laws and checks all 16,895 roots against the four budgets.
+External DropSubTable candidates are not included in these structural totals.
+
+The DSL represents the source's two random modes, relative exclusive weights,
+independent basis-point chances, nested table references, integer counts,
+inclusive integer intervals, and fractional stochastic rounding. Existing exporter
+and reward tests cover these operations and concrete artifact variant properties.
+This establishes representation of reward distributions, not complete migration
+of every native root into the bundled CSS.
+
+Whole-table behavior has additional fields. The native dataset contains nonzero
+`everydayLimit`, `historyLimit`, and `activityLimit` values; these are not modeled
+by the reward DSL or enforced by `DropSystem.processDrop`. Among the 7,930 tables
+reachable from ChestDrop roots, 13 have a history limit: four shrine roots and
+nine Inazuma/Sumeru page roots. The graph checks do not validate those quotas,
+`dropLevel`, or delivery placement. They must not be counted as covered behavior.
+
 ## Claim path review
 
 - Open-world Boss: `GadgetChest` → `DropSystem.rollBossChestDrop` →
@@ -59,6 +92,23 @@ equivalence for every original material, gem, and artifact subtable**.
   requires a durable transaction receipt.
 - Weekly dungeon Boss: `DomainStatueDropService` pays and grants via the
   native dungeon reward service with its own admission and journal.
+
+## Remaining blockers before declaring the entire claim flow sound
+
+Ordinary chest rewards are delivered item by item. A failed write after the first
+successful item leaves a retryable chest with partial delivery. Ground delivery
+also calls `Scene.addItemEntity`, which silently returns for an unknown item;
+`WorldChestLootHelper` currently validates neither the full item batch nor that
+return outcome before marking the chest claimed. A rejected automatic virtual
+currency grant may fall back to an unusable ground item. These are delivery-path
+issues, separate from CSS/YAML probability representation.
+
+Ley-line payment has no durable receipt and marks the player claimed only after
+its reward notification returns. An interrupted grant or notification can therefore
+leave a retryable flower after charging. Transpoint rewards also retain a crash
+window between inventory writes and saving activation state. Boss/domain journals
+retain unresolved receipts for reconciliation; they do not make all writes atomic.
+A successful compilation and unit suite do not resolve these interruption cases.
 
 ## Verdict
 

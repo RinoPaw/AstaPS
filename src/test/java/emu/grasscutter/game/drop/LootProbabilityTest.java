@@ -83,6 +83,14 @@ class LootProbabilityTest {
         assertEquals(Map.of(), tables.roll("a", new Random(1)));
     }
 
+    @Test void failedTemplateValidationCannotBeBypassedByRetry() {
+        var tables = parse("leaf: {type: coin}\nwide<N>:\n  - {type: leaf, count: <N>}");
+        for (int i = 0; i < 2; i++) {
+            assertThrows(IllegalArgumentException.class, () -> tables.resolveName("wide<101>"));
+            assertFalse(tables.contains("astaps.loot.wide<101>"));
+        }
+    }
+
     @Test void acceptedRareLongDrawUsesExplicitStackWithoutTruncatingRewards() {
         var tables = parse("""
                 a:

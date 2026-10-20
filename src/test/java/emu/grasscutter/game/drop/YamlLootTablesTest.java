@@ -169,16 +169,16 @@ class YamlLootTablesTest {
                 gems: &gems
                   - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3, weight: 1}
                 boss:
-                  - {reward: *gems, count: "2+1:17.602"}
+                  - {reward: *gems, count: "2:82.398, 3:17.602"}
                 """, items::resolve);
         var inlined = YamlLootTables.parse("""
                 boss:
                   - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3}
-                    count: "2+1:17.602"
+                    count: "2:82.398, 3:17.602"
                 """, items::resolve);
         var flattened = YamlLootTables.parse("""
                 boss:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: "6+3:17.602"}
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: "6:82.398, 9:17.602"}
                 """, items::resolve);
 
         var originalRandom = new Random(81);
@@ -345,7 +345,7 @@ class YamlLootTablesTest {
                 8103, "Varunada Lazurite Fragment"));
         var tables = YamlLootTables.parse("""
                 weekly:
-                  - {reward: genshin.avatar_ascension, properties: {element: "electro:33.33, cryo:33.33, hydro:33.34", rarity: 3}, count: "1+1:2"}
+                  - {reward: genshin.avatar_ascension, properties: {element: "electro:33.33, cryo:33.33, hydro:33.34", rarity: 3}, count: "1:98, 2:2"}
                 pair:
                   - {reward: genshin.avatar_ascension, properties: {element: "electro:33.33, cryo:33.33, hydro:33.34", rarity: 3}, count: 2}
                 """, gems::resolve);
@@ -775,7 +775,7 @@ class YamlLootTablesTest {
 
     @Test
     void fractionalPercentagesAreSupportedButDecimalWeightsAreRejected() {
-        assertDoesNotThrow(() -> LootCount.parse("2+1:55.56"));
+        assertDoesNotThrow(() -> LootCount.parse("2:44.44, 3:55.56"));
         assertDoesNotThrow(() -> LootCount.parse("1:12.5,2:87.5"));
         assertDoesNotThrow(() -> LootCount.parse("1:60,2:60"));
         assertThrows(IllegalArgumentException.class, () -> LootCount.parse("2.5556"));
@@ -835,13 +835,13 @@ class YamlLootTablesTest {
     }
 
     @Test
-    void bonusCountRerollsNestedWeightedPoolIndependently() {
+    void weightedCountRerollsNestedWeightedPoolIndependently() {
         var tables = parse("""
                 experience: &exp
                   - {reward: genshin.avatar_up.heros_wit, weight: 1}
                   - {reward: genshin.avatar_up.adventurers_experience, weight: 1}
                 chest:
-                  - {reward: *exp, count: "2+1:55.56"}
+                  - {reward: *exp, count: "2:44.44, 3:55.56"}
                 """);
         Random random = new Random(71);
         int third = 0;

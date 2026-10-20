@@ -154,7 +154,7 @@ public final class YamlLootTables {
 
     /** Metadata is compiled by its owning reward type; all fields use WeightedChoice. */
     private static final Set<String> CORE_FIELDS =
-            Set.of("reward", "type", "count", "weight", "properties");
+            Set.of("value", "reward", "type", "count", "weight", "properties");
 
     private static Map<?, ?> entryProperties(Map<?, ?> fields, String location) {
         Object nested = fields.get("properties");
@@ -188,13 +188,14 @@ public final class YamlLootTables {
      * entire entry or sequence. Convert it to the same pool entry model.
      */
     private static Map<?, ?> weightedBranch(Map<?, ?> value) {
-        if (value.size() != 1 || value.containsKey("type") || value.containsKey("reward")) {
+        if (value.size() != 1 || value.containsKey("value")
+                || value.containsKey("type") || value.containsKey("reward")) {
             return value;
         }
         var only = value.entrySet().iterator().next();
         if (!(only.getValue() instanceof Number)) return value;
         var result = new LinkedHashMap<String, Object>();
-        result.put("type", only.getKey());
+        result.put("value", only.getKey());
         result.put("weight", only.getValue());
         return result;
     }
@@ -428,11 +429,18 @@ public final class YamlLootTables {
                 Map<?, ?> fields = weightedBranch(mapping);
                 // Unknown non-core fields are typed attributes. Their owning
                 // item compiler validates the names and candidate values.
-                if (fields.containsKey("reward") == fields.containsKey("type")) {
-                    throw new IllegalArgumentException(at + ": exactly one of type or reward is required");
+                int valueFields = (fields.containsKey("value") ? 1 : 0)
+                        + (fields.containsKey("type") ? 1 : 0)
+                        + (fields.containsKey("reward") ? 1 : 0);
+                if (valueFields != 1) {
+                    throw new IllegalArgumentException(at
+                            + ": exactly one of value, type or reward is required");
                 }
-                boolean useType = fields.containsKey("type");
-                Object target = fields.get(useType ? "type" : "reward");
+                // 'value' is generic weighted-choice syntax. Domain-specific entries
+                // may still carry an ordinary 'type' property inside that value.
+                boolean useType = fields.containsKey("value") || fields.containsKey("type");
+                Object target = fields.get(fields.containsKey("value") ? "value"
+                        : useType ? "type" : "reward");
                 Map<?, ?> properties = entryProperties(fields, at);
                 Integer rewardId = null;
                 ArtifactResolver.Selector artifact = null;

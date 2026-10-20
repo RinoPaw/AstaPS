@@ -28,6 +28,9 @@ final class WeightedChoice<T> {
     static <T> WeightedChoice<T> compile(
             Object raw, String location, Function<Object, T> resolve) {
         Objects.requireNonNull(resolve, "resolve");
+        if (raw == null) {
+            throw new IllegalArgumentException(location + ": missing value");
+        }
         if (raw instanceof String text && (text.contains(":") || text.contains(","))) {
             return parse(text, location, name -> resolve.apply(name));
         }

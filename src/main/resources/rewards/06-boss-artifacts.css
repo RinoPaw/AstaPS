@@ -1,0 +1,266 @@
+/* 4.5 圣遗物：48 种 Boss，分普通等级程序和特殊部位程序。
+ * ARTIFACT_*STAR 绑定候选套装，等级规则声明执行次数。
+ * 同名独立分支已合并为准确的数量分布，避免 CSS 重名覆盖。
+ * 精密发条机关缺失的候选池暂借用爆炎树配置。
+ */
+
+/* 4.5.1 套装与组别绑定：普通 Boss 共用同一等级程序。 */
+/* 圣遗物组 1：6 种 Boss，仅声明候选套装。 */
+boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,perpetual_mechanical_array,primo_geovishap_cryo"] {
+    ARTIFACT_GROUP: standard;
+    ARTIFACT_1STAR: [lucky_dog];
+    ARTIFACT_2STAR: [lucky_dog];
+    ARTIFACT_3STAR: [berserker, lucky_dog, the_exile, prayers_to_springtime];
+    ARTIFACT_4STAR: [berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime];
+}
+
+/* 圣遗物组 2：5 种 Boss，包含精密发条机关。
+ * 精密发条机关 25 个源等级的分支数量及权重与本组相同；
+ * 客户端预览 15209 与爆炎树预览 15140 相同。
+ * 缺失的候选池及内部权重借用爆炎树，这部分尚未复原。
+ */
+boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"] {
+    ARTIFACT_GROUP: standard;
+    ARTIFACT_1STAR: [adventurer];
+    ARTIFACT_2STAR: [adventurer];
+    ARTIFACT_3STAR: [adventurer, berserker, instructor, prayers_for_illumination];
+    ARTIFACT_4STAR: [berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination];
+}
+
+/* 圣遗物组 3：2 种 Boss，仅声明候选套装。 */
+boss[type="world"][tag="anemo_hypostasis,maguu_kenki"] {
+    ARTIFACT_GROUP: standard;
+    ARTIFACT_1STAR: [lucky_dog];
+    ARTIFACT_2STAR: [lucky_dog];
+    ARTIFACT_3STAR: [berserker, instructor, lucky_dog];
+    ARTIFACT_4STAR: [berserker, gladiators_finale, instructor, wanderers_troupe];
+}
+
+/* 圣遗物组 4：22 种 Boss，使用 Instructor 限定的特殊部位程序。 */
+boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"] {
+    ARTIFACT_GROUP: instructor_native;
+}
+
+/* 圣遗物组 5：2 种 Boss，仅声明候选套装。 */
+boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"] {
+    ARTIFACT_GROUP: standard;
+    ARTIFACT_1STAR: [adventurer];
+    ARTIFACT_2STAR: [adventurer];
+    ARTIFACT_3STAR: [adventurer, berserker, instructor];
+    ARTIFACT_4STAR: [berserker, gladiators_finale, instructor, wanderers_troupe];
+}
+
+/* 圣遗物组 6：4 种 Boss，仅声明候选套装。 */
+boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_electro,thunder_manifestation"] {
+    ARTIFACT_GROUP: standard;
+    ARTIFACT_1STAR: [traveling_doctor];
+    ARTIFACT_2STAR: [traveling_doctor];
+    ARTIFACT_3STAR: [instructor, the_exile, traveling_doctor, prayers_for_wisdom];
+    ARTIFACT_4STAR: [gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom];
+}
+
+/* 圣遗物组 7：3 种 Boss，仅声明候选套装。 */
+boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"] {
+    ARTIFACT_GROUP: standard;
+    ARTIFACT_1STAR: [traveling_doctor];
+    ARTIFACT_2STAR: [traveling_doctor];
+    ARTIFACT_3STAR: [instructor, the_exile, traveling_doctor];
+    ARTIFACT_4STAR: [gladiators_finale, instructor, the_exile, wanderers_troupe];
+}
+
+/* 圣遗物组 8：3 种 Boss，仅声明候选套装。 */
+boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"] {
+    ARTIFACT_GROUP: standard;
+    ARTIFACT_1STAR: [adventurer];
+    ARTIFACT_2STAR: [adventurer];
+    ARTIFACT_3STAR: [adventurer, berserker, the_exile, prayers_for_destiny];
+    ARTIFACT_4STAR: [berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny];
+}
+
+/* 4.5.2 普通程序：7 组 Boss 共用 11 档等级数量分布。 */
+boss[type="world"][artifact_group="standard"][level="1~4"] {
+    astaps.loot.world_artifact_1star<<ARTIFACT_1STAR>>: "3:11, 4:39";
+    astaps.loot.world_artifact_2star<<ARTIFACT_2STAR>>: "0:29, 1:21";
+}
+
+boss[type="world"][artifact_group="standard"][level="5~14"] {
+    astaps.loot.world_artifact_1star<<ARTIFACT_1STAR>>: "2:57, 3:193";
+    astaps.loot.world_artifact_2star<<ARTIFACT_2STAR>>: "1:143, 2:107";
+}
+
+boss[type="world"][artifact_group="standard"][level="15~24"] {
+    astaps.loot.world_artifact_1star<<ARTIFACT_1STAR>>: "1:143, 2:107";
+    astaps.loot.world_artifact_2star<<ARTIFACT_2STAR>>: "2:81, 3:44";
+    astaps.loot.world_artifact_3star<<ARTIFACT_3STAR>>: "0:29, 1:21";
+}
+
+boss[type="world"][artifact_group="standard"][level="25~34"] {
+    astaps.loot.world_artifact_2star<<ARTIFACT_2STAR>>: "2:3, 3:47";
+    astaps.loot.world_artifact_3star<<ARTIFACT_3STAR>>: "1:37, 2:13";
+}
+
+boss[type="world"][artifact_group="standard"][level="35~44"] {
+    astaps.loot.world_artifact_2star<<ARTIFACT_2STAR>>: "1:143, 2:107";
+    astaps.loot.world_artifact_3star<<ARTIFACT_3STAR>>: "2:57, 3:193";
+}
+
+boss[type="world"][artifact_group="standard"][level="45~59"] {
+    astaps.loot.world_artifact_3star<<ARTIFACT_3STAR>>: "3:11, 4:39";
+    astaps.loot.world_artifact_4star<<ARTIFACT_4STAR>>: "0:29, 1:21";
+}
+
+boss[type="world"][artifact_group="standard"][level="60~69"] {
+    astaps.loot.world_artifact_3star<<ARTIFACT_3STAR>>: "3:16, 4:9";
+    astaps.loot.world_artifact_4star<<ARTIFACT_4STAR>>: "0:4, 1:21";
+}
+
+boss[type="world"][artifact_group="standard"][level="70~79"] {
+    astaps.loot.world_artifact_3star<<ARTIFACT_3STAR>>: "2:3, 3:47";
+    astaps.loot.world_artifact_4star<<ARTIFACT_4STAR>>: "1:19, 2:1";
+    astaps.loot.world_artifact_5star: "0:79, 1:21";
+}
+
+boss[type="world"][artifact_group="standard"][level="80~89"] {
+    astaps.loot.world_artifact_3star<<ARTIFACT_3STAR>>: "2:12, 3:13";
+    astaps.loot.world_artifact_4star<<ARTIFACT_4STAR>>: "1:37, 2:13";
+    astaps.loot.world_artifact_5star: "0:29, 1:21";
+}
+
+boss[type="world"][artifact_group="standard"][level="90~92"] {
+    astaps.loot.world_artifact_3star<<ARTIFACT_3STAR>>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<<ARTIFACT_4STAR>>: "1:53, 2:47";
+    astaps.loot.world_artifact_5star: "0:37, 1:63";
+}
+
+boss[type="world"][artifact_group="standard"][level="93~"] {
+    astaps.loot.world_artifact_3star<<ARTIFACT_3STAR>>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<<ARTIFACT_4STAR>>: "1:53, 2:47";
+    astaps.loot.world_artifact_5star: 1;
+}
+
+/* 4.5.3 特殊程序：羽毛/杯子与初始副词条保持关联。 */
+/* 圣遗物组 4：22 种 Boss 的独立等级程序。 */
+boss[type="world"][artifact_group="instructor_native"][level="1~4"] {
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "0:29, 1:21";
+    astaps.loot.world_artifact_5star_goblet<1>: "3:11, 4:39";
+}
+
+boss[type="world"][artifact_group="instructor_native"][level="5~14"] {
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "1:143, 2:107";
+    astaps.loot.world_artifact_5star_goblet<1>: "2:57, 3:193";
+}
+
+boss[type="world"][artifact_group="instructor_native"][level="15~24"] {
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "2:81, 3:44";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "0:29, 1:21";
+    astaps.loot.world_artifact_5star_goblet<1>: "1:143, 2:107";
+}
+
+boss[type="world"][artifact_group="instructor_native"][level="25~34"] {
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "2:3, 3:47";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "1:37, 2:13";
+}
+
+boss[type="world"][artifact_group="instructor_native"][level="35~44"] {
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "1:143, 2:107";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "2:57, 3:193";
+}
+
+boss[type="world"][artifact_group="instructor_native"][level="45~59"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "0:29, 1:21";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "3:11, 4:39";
+}
+
+boss[type="world"][artifact_group="instructor_native"][level="60~69"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "0:4, 1:21";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "3:16, 4:9";
+}
+
+boss[type="world"][artifact_group="instructor_native"][level="70~79"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "1:1501, 2:478, 3:21";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "2:3, 3:47";
+}
+
+boss[type="world"][artifact_group="instructor_native"][level="80~89"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "1:1073, 2:1154, 3:273";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "2:12, 3:13";
+}
+
+boss[type="world"][artifact_group="instructor_native"][level="90~92"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "1:1961, 2:5078, 3:2961";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "2:9, 3:1";
+}
+
+boss[type="world"][artifact_group="instructor_native"][level="93~99"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "2:53, 3:47";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "2:9, 3:1";
+}
+
+boss[type="world"][artifact_group="instructor_native"][level="100~"] {
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "1:3, 2:1";
+}
+
+/* 圣遗物组 9：风蚀沙虫的独立等级程序。 */
+boss[type="world"][tag="setekh_wenut"][level="1~4"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "0:29, 1:21";
+    astaps.loot.world_artifact_5star_goblet<0>: "3:11, 4:39";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="5~14"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "1:143, 2:107";
+    astaps.loot.world_artifact_5star_goblet<0>: "2:57, 3:193";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="15~24"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "2:81, 3:44";
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "0:29, 1:21";
+    astaps.loot.world_artifact_5star_goblet<0>: "1:143, 2:107";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="25~34"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "2:3, 3:47";
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "1:37, 2:13";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="35~44"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "1:143, 2:107";
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "2:57, 3:193";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="45~59"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "0:29, 1:21";
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "3:11, 4:39";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="60~69"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "0:4, 1:21";
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "3:16, 4:9";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="70~79"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "1:19, 2:1";
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "2:3, 3:47";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "0:79, 1:21";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="80~89"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "1:37, 2:13";
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "2:12, 3:13";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "0:29, 1:21";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="90~92"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "1:53, 2:47";
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "2:9, 3:1";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: "0:37, 1:63";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="93~99"] {
+    astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "1:53, 2:47";
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "2:9, 3:1";
+    astaps.loot.world_artifact_5star_plume_goblet<4,3>: 1;
+}
+
+boss[type="world"][tag="setekh_wenut"][level="100~"] {
+    astaps.loot.world_artifact_5star_plume_goblet<2,1>: "1:3, 2:1";
+}

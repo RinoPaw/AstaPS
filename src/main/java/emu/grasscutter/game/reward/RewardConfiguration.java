@@ -5,8 +5,16 @@ import emu.grasscutter.game.drop.YamlLootTables;
 import emu.grasscutter.game.drop.ArtifactResolver;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Enumeration;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.jar.JarFile;
 import java.util.random.RandomGenerator;
 
 /** Loaded after the game item resources; CSS owns chest and scene-point rewards. */
@@ -27,7 +35,7 @@ public final class RewardConfiguration {
             var registry = ItemIdRegistry.fromGameResources();
             var loot = YamlLootTables.parse(readBundled("loot.yaml"), registry::resolve,
                     ArtifactResolver.fromGameResources());
-            var css = CssRewards.parse(readBundled("rewards.css"), registry, loot);
+            var css = CssRewards.parse(readBundledCss(), registry, loot);
             active = new RewardConfiguration(loot, css);
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Cannot load bundled reward configuration", e);
@@ -39,6 +47,65 @@ public final class RewardConfiguration {
             if (stream == null) throw new IOException("Missing bundled reward resource " + filename);
             return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
         }
+    }
+
+    /** Discover every direct .css file in bundled rewards, in filename order. */
+    static String readBundledCss() throws IOException {
+        URL marker = RewardConfiguration.class.getResource("/rewards/loot.yaml");
+        if (marker == null) throw new IOException("Missing bundled rewards directory");
+        return readCssDirectory(marker);
+    }
+
+    /**
+     * The loot.yaml URL identifies the resource directory in both an expanded
+     * classpath and a packaged JAR; no stylesheet filenames are hardcoded.
+     */
+    static String readCssDirectory(URL marker) throws IOException {
+        var stylesheets = new TreeMap<String, String>();
+        if ("file".equals(marker.getProtocol())) {
+            Path directory;
+            try {
+                directory = Path.of(marker.toURI()).getParent();
+            } catch (URISyntaxException e) {
+                throw new IOException("Invalid reward resource directory: " + marker, e);
+            }
+            try (var files = Files.list(directory)) {
+                for (Path file : files.filter(Files::isRegularFile)
+                        .filter(path -> path.getFileName().toString().endsWith(".css"))
+                        .toList()) {
+                    stylesheets.put(file.getFileName().toString(),
+                            Files.readString(file, StandardCharsets.UTF_8));
+                }
+            }
+        } else if ("jar".equals(marker.getProtocol())) {
+            var connection = (JarURLConnection) marker.openConnection();
+            connection.setUseCaches(false);
+            String entry = connection.getEntryName();
+            if (entry == null || !entry.contains("/")) {
+                throw new IOException("Invalid reward resource location: " + marker);
+            }
+            String prefix = entry.substring(0, entry.lastIndexOf('/') + 1);
+            try (JarFile archive = connection.getJarFile()) {
+                Enumeration<java.util.jar.JarEntry> entries = archive.entries();
+                while (entries.hasMoreElements()) {
+                    var candidate = entries.nextElement();
+                    String name = candidate.getName();
+                    if (candidate.isDirectory() || !name.startsWith(prefix)
+                            || !name.endsWith(".css")
+                            || name.substring(prefix.length()).contains("/")) continue;
+                    try (InputStream stream = archive.getInputStream(candidate)) {
+                        stylesheets.put(name.substring(prefix.length()),
+                                new String(stream.readAllBytes(), StandardCharsets.UTF_8));
+                    }
+                }
+            }
+        } else {
+            throw new IOException("Unsupported rewards resource URL: " + marker);
+        }
+        if (stylesheets.isEmpty()) {
+            throw new IOException("No CSS files found in bundled rewards directory");
+        }
+        return String.join("\n", stylesheets.values());
     }
 
     public static RewardConfiguration current() {

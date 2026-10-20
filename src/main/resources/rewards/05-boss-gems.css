@@ -1,0 +1,357 @@
+/* 4.4 宝石：CSS 决定执行次数/固定掉落，YAML 决定加权候选。 */
+
+/* 分组绑定（GEM_GROUP）：下方等级规则复用这些身份列表。 */
+boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"] {
+    GEM_GROUP: gem_1;
+}
+
+boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,bathysmal_vishap_herd,maguu_kenki,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro"] {
+    GEM_GROUP: gem_2;
+}
+
+boss[type="world"][tag="emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,knuckle_duck,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,undying_replicant"] {
+    GEM_GROUP: gem_3;
+}
+
+boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"] {
+    GEM_GROUP: gem_4;
+}
+
+/* 组 1：15 种 Boss；单元素、每批 3 个，自 1 级起。 */
+
+boss[type="world"][gem_group="gem_1"][level="1~4"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3:53, 6:47";
+}
+
+boss[type="world"][gem_group="gem_1"][level="5~9"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3:43, 6:57";
+}
+
+boss[type="world"][gem_group="gem_1"][level="10~14"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3:30, 6:70";
+}
+
+boss[type="world"][gem_group="gem_1"][level="15~19"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3:18, 6:82";
+}
+
+boss[type="world"][gem_group="gem_1"][level="20~24"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "3:6, 6:94";
+}
+
+boss[type="world"][gem_group="gem_1"][level="25~29"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "6:93, 9:7";
+}
+
+boss[type="world"][gem_group="gem_1"][level="30~34"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "6:81, 9:19";
+}
+
+boss[type="world"][gem_group="gem_1"][level="35~39"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "6:68, 9:32";
+}
+
+boss[type="world"][gem_group="gem_1"][level="40~44"] {
+    astaps.loot.world_gem_two<3,<ELEMENT>>: "1:56, 2:44";
+}
+
+boss[type="world"][gem_group="gem_1"][level="45~49"] {
+    astaps.loot.world_gem_two<3,<ELEMENT>>: "1:40, 2:60";
+}
+
+boss[type="world"][gem_group="gem_1"][level="50~54"] {
+    astaps.loot.world_gem_two<3,<ELEMENT>>: "1:25, 2:75";
+}
+
+boss[type="world"][gem_group="gem_1"][level="55~59"] {
+    astaps.loot.world_gem_two<3,<ELEMENT>>: "1:9, 2:91";
+}
+
+boss[type="world"][gem_group="gem_1"][level="60~64"] {
+    astaps.loot.world_gem_three<3,<ELEMENT>>: "2:82, 3:18";
+}
+
+boss[type="world"][gem_group="gem_1"][level="65~69"] {
+    astaps.loot.world_gem_three<3,<ELEMENT>>: "2:66, 3:34";
+}
+
+boss[type="world"][gem_group="gem_1"][level="70~74"] {
+    astaps.loot.world_gem_three<3,<ELEMENT>>: "2:49, 3:51";
+}
+
+boss[type="world"][gem_group="gem_1"][level="75~79"] {
+    astaps.loot.world_gem_four<3,<ELEMENT>>: "2:31, 3:69";
+}
+
+boss[type="world"][gem_group="gem_1"][level="80~84"] {
+    astaps.loot.world_gem_four<3,<ELEMENT>>: "2:15, 3:85";
+}
+
+boss[type="world"][gem_group="gem_1"][level="85~89"] {
+    astaps.loot.world_gem_four<3,<ELEMENT>>: "3:98, 4:2";
+}
+
+boss[type="world"][gem_group="gem_1"][level="90~"] {
+    astaps.loot.world_gem_four<3,<ELEMENT>>: "3:82, 4:18";
+}
+
+/* 40 级起独立抽取的额外断片池。 */
+
+boss[type="world"][gem_group="gem_1"][level="40~"] {
+    astaps.loot.world_gem_fragment<1,<ELEMENT>>: "3:88, 6:12";
+}
+
+/* 组 2：9 种 Boss；双元素、每批 3 个，自 1 级起。 */
+
+boss[type="world"][gem_group="gem_2"][level="1~4"] {
+    astaps.loot.world_gem_one<<ELEMENT>[0], <ELEMENT>[1]>: "1:53, 2:47";
+}
+
+boss[type="world"][gem_group="gem_2"][level="5~9"] {
+    astaps.loot.world_gem_one<<ELEMENT>[0], <ELEMENT>[1]>: "1:43, 2:57";
+}
+
+boss[type="world"][gem_group="gem_2"][level="10~14"] {
+    astaps.loot.world_gem_one<<ELEMENT>[0], <ELEMENT>[1]>: "1:30, 2:70";
+}
+
+boss[type="world"][gem_group="gem_2"][level="15~19"] {
+    astaps.loot.world_gem_one<<ELEMENT>[0], <ELEMENT>[1]>: "1:18, 2:82";
+}
+
+boss[type="world"][gem_group="gem_2"][level="20~24"] {
+    astaps.loot.world_gem_one<<ELEMENT>[0], <ELEMENT>[1]>: "1:6, 2:94";
+}
+
+boss[type="world"][gem_group="gem_2"][level="25~29"] {
+    astaps.loot.world_gem_one<<ELEMENT>[0], <ELEMENT>[1]>: "2:93, 3:7";
+}
+
+boss[type="world"][gem_group="gem_2"][level="30~34"] {
+    astaps.loot.world_gem_one<<ELEMENT>[0], <ELEMENT>[1]>: "2:81, 3:19";
+}
+
+boss[type="world"][gem_group="gem_2"][level="35~39"] {
+    astaps.loot.world_gem_one<<ELEMENT>[0], <ELEMENT>[1]>: "2:68, 3:32";
+}
+
+boss[type="world"][gem_group="gem_2"][level="40~44"] {
+    astaps.loot.world_gem_two<3,<ELEMENT>[0], <ELEMENT>[1]>: "1:56, 2:44";
+}
+
+boss[type="world"][gem_group="gem_2"][level="45~49"] {
+    astaps.loot.world_gem_two<3,<ELEMENT>[0], <ELEMENT>[1]>: "1:40, 2:60";
+}
+
+boss[type="world"][gem_group="gem_2"][level="50~54"] {
+    astaps.loot.world_gem_two<3,<ELEMENT>[0], <ELEMENT>[1]>: "1:25, 2:75";
+}
+
+boss[type="world"][gem_group="gem_2"][level="55~59"] {
+    astaps.loot.world_gem_two<3,<ELEMENT>[0], <ELEMENT>[1]>: "1:9, 2:91";
+}
+
+boss[type="world"][gem_group="gem_2"][level="60~64"] {
+    astaps.loot.world_gem_three<3,<ELEMENT>[0], <ELEMENT>[1]>: "2:82, 3:18";
+}
+
+boss[type="world"][gem_group="gem_2"][level="65~69"] {
+    astaps.loot.world_gem_three<3,<ELEMENT>[0], <ELEMENT>[1]>: "2:66, 3:34";
+}
+
+boss[type="world"][gem_group="gem_2"][level="70~74"] {
+    astaps.loot.world_gem_three<3,<ELEMENT>[0], <ELEMENT>[1]>: "2:49, 3:51";
+}
+
+boss[type="world"][gem_group="gem_2"][level="75~79"] {
+    astaps.loot.world_gem_four<3,<ELEMENT>[0], <ELEMENT>[1]>: "2:31, 3:69";
+}
+
+boss[type="world"][gem_group="gem_2"][level="80~84"] {
+    astaps.loot.world_gem_four<3,<ELEMENT>[0], <ELEMENT>[1]>: "2:15, 3:85";
+}
+
+boss[type="world"][gem_group="gem_2"][level="85~89"] {
+    astaps.loot.world_gem_four<3,<ELEMENT>[0], <ELEMENT>[1]>: "3:98, 4:2";
+}
+
+boss[type="world"][gem_group="gem_2"][level="90~"] {
+    astaps.loot.world_gem_four<3,<ELEMENT>[0], <ELEMENT>[1]>: "3:82, 4:18";
+}
+
+/* 40 级起独立抽取的额外断片池。 */
+
+boss[type="world"][gem_group="gem_2"][level="40~"] {
+    astaps.loot.world_gem_fragment<3,<ELEMENT>[0], <ELEMENT>[1]>: "1:88, 2:12";
+}
+
+/* 组 3：单元素、每批 9 个；风蚀沙虫自 1 级起，其余 13 种自 30 级起。 */
+
+boss[type="world"][tag="setekh_wenut"][level="1~4"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9:53, 18:47";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="5~9"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9:43, 18:57";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="10~14"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9:30, 18:70";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="15~19"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9:18, 18:82";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="20~24"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "9:6, 18:94";
+}
+
+boss[type="world"][tag="setekh_wenut"][level="25~29"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "18:93, 27:7";
+}
+
+boss[type="world"][gem_group="gem_3"][level="30~34"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "18:81, 27:19";
+}
+
+boss[type="world"][gem_group="gem_3"][level="35~39"] {
+    genshin.avatar_ascension.<ELEMENT>.sliver: "18:68, 27:32";
+}
+
+boss[type="world"][gem_group="gem_3"][level="40~44"] {
+    astaps.loot.world_gem_two<9,<ELEMENT>>: "1:56, 2:44";
+}
+
+boss[type="world"][gem_group="gem_3"][level="45~49"] {
+    astaps.loot.world_gem_two<9,<ELEMENT>>: "1:40, 2:60";
+}
+
+boss[type="world"][gem_group="gem_3"][level="50~54"] {
+    astaps.loot.world_gem_two<9,<ELEMENT>>: "1:25, 2:75";
+}
+
+boss[type="world"][gem_group="gem_3"][level="55~59"] {
+    astaps.loot.world_gem_two<9,<ELEMENT>>: "1:9, 2:91";
+}
+
+boss[type="world"][gem_group="gem_3"][level="60~64"] {
+    astaps.loot.world_gem_three<9,<ELEMENT>>: "2:82, 3:18";
+}
+
+boss[type="world"][gem_group="gem_3"][level="65~69"] {
+    astaps.loot.world_gem_three<9,<ELEMENT>>: "2:66, 3:34";
+}
+
+boss[type="world"][gem_group="gem_3"][level="70~74"] {
+    astaps.loot.world_gem_three<9,<ELEMENT>>: "2:49, 3:51";
+}
+
+boss[type="world"][gem_group="gem_3"][level="75~79"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>>: "2:31, 3:69";
+}
+
+boss[type="world"][gem_group="gem_3"][level="80~84"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>>: "2:15, 3:85";
+}
+
+boss[type="world"][gem_group="gem_3"][level="85~89"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>>: "3:98, 4:2";
+}
+
+boss[type="world"][gem_group="gem_3"][level="90~"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>>: "3:82, 4:18";
+}
+
+/* 40 级起独立抽取的额外断片池。 */
+
+boss[type="world"][gem_group="gem_3"][level="40~"] {
+    astaps.loot.world_gem_fragment<1,<ELEMENT>>: "9:88, 18:12";
+}
+
+/* 组 4：2 种 Boss；双元素、每批 9 个，自 30 级起。 */
+
+boss[type="world"][gem_group="gem_4"][level="30~34"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "2:81, 3:19";
+}
+
+boss[type="world"][gem_group="gem_4"][level="35~39"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "2:68, 3:32";
+}
+
+boss[type="world"][gem_group="gem_4"][level="40~44"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "1:56, 2:44";
+}
+
+boss[type="world"][gem_group="gem_4"][level="45~49"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "1:40, 2:60";
+}
+
+boss[type="world"][gem_group="gem_4"][level="50~54"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "1:25, 2:75";
+}
+
+boss[type="world"][gem_group="gem_4"][level="55~59"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "1:9, 2:91";
+}
+
+boss[type="world"][gem_group="gem_4"][level="60~64"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "2:82, 3:18";
+}
+
+boss[type="world"][gem_group="gem_4"][level="65~69"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "2:66, 3:34";
+}
+
+boss[type="world"][gem_group="gem_4"][level="70~74"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "2:49, 3:51";
+}
+
+boss[type="world"][gem_group="gem_4"][level="75~79"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "2:31, 3:69";
+}
+
+boss[type="world"][gem_group="gem_4"][level="80~84"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "2:15, 3:85";
+}
+
+boss[type="world"][gem_group="gem_4"][level="85~89"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "3:98, 4:2";
+}
+
+boss[type="world"][gem_group="gem_4"][level="90~"] {
+    astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "3:82, 4:18";
+}
+
+/* 40 级起独立抽取的额外断片池。 */
+
+boss[type="world"][gem_group="gem_4"][level="40~"] {
+    astaps.loot.world_gem_fragment<9,<ELEMENT>[0], <ELEMENT>[1]>: "1:88, 2:12";
+}
+
+/* 组 5：5 种 Boss；双元素碎屑、断片各独立固定发放 9 个。 */
+
+boss[type="world"][tag="chimera_sky_roamer,frostnight_scion,icewind_suite,legatus_golem,solitary_suanni"] {
+    genshin.avatar_ascension.<ELEMENT>[0].fragment: 9;
+    genshin.avatar_ascension.<ELEMENT>[0].sliver: 9;
+    genshin.avatar_ascension.<ELEMENT>[1].fragment: 9;
+    genshin.avatar_ascension.<ELEMENT>[1].sliver: 9;
+}
+
+/* 组 6：2 种 Boss；单元素碎屑、断片各独立固定发放 9 个。 */
+
+boss[type="world"][tag="lava_dragon_statue,lord_of_the_deep_dreadwing"] {
+    genshin.avatar_ascension.<ELEMENT>.fragment: 9;
+    genshin.avatar_ascension.<ELEMENT>.sliver: 9;
+}
+
+/* 组 7：深邃摹结株；三种元素碎屑、断片各独立固定发放 9 个。 */
+
+boss[type="world"][tag="tenebrous_papilla"] {
+    genshin.avatar_ascension.<ELEMENT>[0].fragment: 9;
+    genshin.avatar_ascension.<ELEMENT>[0].sliver: 9;
+    genshin.avatar_ascension.<ELEMENT>[1].fragment: 9;
+    genshin.avatar_ascension.<ELEMENT>[1].sliver: 9;
+    genshin.avatar_ascension.<ELEMENT>[2].fragment: 9;
+    genshin.avatar_ascension.<ELEMENT>[2].sliver: 9;
+}

@@ -85,21 +85,25 @@ public final class CssRewards {
     private final List<Rule> rules;
     private final List<String> bindingNames;
     private final List<RangeMembership> rangeMemberships;
+    private final Map<String, RewardSelectorConditions.Condition> selectorConditions;
     private final YamlLootTables loot;
     private final ItemIdRegistry itemRegistry;
 
     private CssRewards(List<Rule> rules, List<RangeMembership> rangeMemberships,
-                       YamlLootTables loot, ItemIdRegistry itemRegistry, Map<String, String> names) {
+                       YamlLootTables loot, ItemIdRegistry itemRegistry, Map<String, String> names,
+                       Map<String, RewardSelectorConditions.Condition> selectorConditions) {
         this.rules = List.copyOf(rules);
         this.bindingNames = names.values().stream().filter(name -> name.startsWith("--"))
                 .map(name -> name.substring(2)).toList();
         this.rangeMemberships = List.copyOf(rangeMemberships);
+        this.selectorConditions = Map.copyOf(selectorConditions);
         this.loot = loot;
         this.itemRegistry = itemRegistry;
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
-        var translated = RewardCssSource.translate(source);
+        var extended = RewardSelectorConditions.rewrite(source);
+        var translated = RewardCssSource.translate(extended.css());
         var sheet = new CSSDOMImplementation().createStyleSheet(null, null);
         try {
             if (!sheet.parseStyleSheet(new StringReader(translated.css()), CSSStyleSheet.COMMENTS_IGNORE)) {
@@ -131,7 +135,8 @@ public final class CssRewards {
             }
             collectStyle(style, null, rules, intervals, order, items, loot, translated.names());
         }
-        return new CssRewards(rules, List.copyOf(intervals.values()), loot, items, translated.names());
+        return new CssRewards(rules, List.copyOf(intervals.values()), loot, items,
+                translated.names(), extended.conditions());
     }
 
     private static void collectStyle(StyleRule style, SelectorList parent,
@@ -259,6 +264,12 @@ public final class CssRewards {
             element.removeAttribute(interval.syntheticAttribute());
             if (interval.matches(attributes)) {
                 element.setAttribute(interval.syntheticAttribute(), "");
+            }
+        }
+        for (var predicate : selectorConditions.entrySet()) {
+            element.removeAttribute(predicate.getKey());
+            if (predicate.getValue().matches(attributes)) {
+                element.setAttribute(predicate.getKey(), "");
             }
         }
         SelectorMatcher matcher = element.getSelectorMatcher();

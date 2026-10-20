@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 class LootCountNativeFractionTest {
     @Test
     void nativeFractionalExpectationsBecomeExplicitBonusRolls() {
-        assertEquals("1, 2:12.2", LootCount.fromNativeCount("1.122"));
-        assertEquals("2, 3:55.56", LootCount.fromNativeCount("2.5556"));
-        assertEquals("3, 4:18.45", LootCount.fromNativeCount("3.1845"));
+        assertEquals("1:87.8, 2:12.2", LootCount.fromNativeCount("1.122"));
+        assertEquals("2:44.44, 3:55.56", LootCount.fromNativeCount("2.5556"));
+        assertEquals("3:81.55, 4:18.45", LootCount.fromNativeCount("3.1845"));
         assertEquals("3", LootCount.fromNativeCount("3.000"));
-        assertEquals("0, 1:0.1", LootCount.fromNativeCount("0.001"));
+        assertEquals("0:99.9, 1:0.1", LootCount.fromNativeCount("0.001"));
         assertEquals("2;3", LootCount.fromNativeCount("2;3"));
 
         var sample = LootCount.parse(LootCount.fromNativeCount("2.5556"));
@@ -39,11 +39,17 @@ class LootCountNativeFractionTest {
 
     @Test
     void decimalProbabilitiesAreAcceptedButDecimalCountsAreNot() {
-        var roll = LootCount.parse("1:12.5,2:87.5");
+        var roll = LootCount.parse("1:1, 2:7");
         var random = new Random(12);
         for (int i = 0; i < 500; i++) {
             int value = roll.sample(random);
             assertTrue(value == 1 || value == 2);
+        }
+        assertEquals(2, LootCount.parse("2:7").sample(random));
+        for (String invalid : new String[] {
+                "2, 3:41.4", "2:58.6, 3", "2:0, 3:0", "2:1, 2:2"
+        }) {
+            assertThrows(IllegalArgumentException.class, () -> LootCount.parse(invalid), invalid);
         }
         for (String value : new String[]{"1.122", "3.0", "-1.25", "1.2.3",
                 "2+1:100.01", "2+1:-1", "2+1:abc", "2+1:55.56:5",

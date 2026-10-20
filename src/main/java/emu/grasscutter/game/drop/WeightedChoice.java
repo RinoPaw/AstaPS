@@ -57,8 +57,7 @@ final class WeightedChoice<T> {
         var names = new HashSet<String>();
         for (String segment : expression.split(",", -1)) {
             String[] pair = segment.trim().split(":", -1);
-            if (pair.length != 2 || pair[0].isBlank()
-                    || !pair[1].trim().matches("[0-9]+(?:\\.[0-9]+)?")) {
+            if (pair.length != 2 || pair[0].isBlank()) {
                 throw new IllegalArgumentException(
                         location + ": expected candidate:weight: " + segment);
             }
@@ -66,13 +65,21 @@ final class WeightedChoice<T> {
             if (!names.add(name)) {
                 throw new IllegalArgumentException(location + ": duplicate candidate: " + name);
             }
-            var weight = new BigDecimal(pair[1].trim());
+            var weight = weight(pair[1], location);
             if (weight.signum() == 0) continue;
             candidates.add(Objects.requireNonNull(resolve.apply(name),
                     location + ": invalid candidate " + name));
             weights.add(weight);
         }
         return of(candidates, weights, location);
+    }
+
+    static BigDecimal weight(Object raw, String location) {
+        if (!(raw instanceof Number || raw instanceof String)
+                || !raw.toString().trim().matches("[0-9]+(?:\\.[0-9]+)?")) {
+            throw new IllegalArgumentException(location + ": weight must be nonnegative decimal");
+        }
+        return new BigDecimal(raw.toString().trim());
     }
 
     /** A weighted pool is the same expression, with entries as its candidates. */

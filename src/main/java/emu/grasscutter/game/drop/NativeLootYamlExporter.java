@@ -104,7 +104,9 @@ public final class NativeLootYamlExporter {
             }
             yaml.append('\n');
             for (NativeEntry entry : valid) {
-                String count = LootCount.fromNativeCount(entry.countRange);
+                String count = entry.countRange;
+                if (count == null) throw new IllegalArgumentException("Missing native count");
+                LootCount.parse(count);
                 String target;
                 if (tables.containsKey(entry.id)) {
                     target = tableNames.get(entry.id);

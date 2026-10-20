@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 class LootCountNativeFractionTest {
     @Test
     void nativeFractionalExpectationsBecomeExplicitBonusRolls() {
-        assertEquals("1+1:12.2", LootCount.fromNativeCount("1.122"));
-        assertEquals("2+1:55.56", LootCount.fromNativeCount("2.5556"));
-        assertEquals("3+1:18.45", LootCount.fromNativeCount("3.1845"));
+        assertEquals("1, 2:12.2", LootCount.fromNativeCount("1.122"));
+        assertEquals("2, 3:55.56", LootCount.fromNativeCount("2.5556"));
+        assertEquals("3, 4:18.45", LootCount.fromNativeCount("3.1845"));
         assertEquals("3", LootCount.fromNativeCount("3.000"));
-        assertEquals("0+1:0.1", LootCount.fromNativeCount("0.001"));
+        assertEquals("0, 1:0.1", LootCount.fromNativeCount("0.001"));
         assertEquals("2;3", LootCount.fromNativeCount("2;3"));
 
         var sample = LootCount.parse(LootCount.fromNativeCount("2.5556"));

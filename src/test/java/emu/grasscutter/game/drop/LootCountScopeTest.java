@@ -175,6 +175,67 @@ class LootCountScopeTest {
     }
 
     @Test
+    void weightedTypeAndWeightedRarityEvaluateIndependently() {
+        var ids = (YamlLootTables.ItemResolver) name -> switch (name) {
+            case "genshin.avatar_ascension.anemo.2" -> 3102;
+            case "genshin.avatar_ascension.anemo.3" -> 3103;
+            case "genshin.avatar_ascension.pyro.2" -> 3202;
+            case "genshin.avatar_ascension.pyro.3" -> 3203;
+            default -> -2;
+        };
+        var tables = YamlLootTables.parse("""
+                gems:
+                  type: "genshin.avatar_ascension.anemo:3, genshin.avatar_ascension.pyro:1"
+                  rarity: "2:3, 3:1"
+                """, ids);
+        var counts = new int[4];
+        var rng = new Random(148);
+        for (int i = 0; i < 20_000; i++) {
+            var reward = tables.roll("gems", rng);
+            assertEquals(1, reward.values().stream().mapToInt(Integer::intValue).sum());
+            int item = reward.keySet().iterator().next();
+            counts[switch (item) {
+                case 3102 -> 0;
+                case 3103 -> 1;
+                case 3202 -> 2;
+                case 3203 -> 3;
+                default -> throw new AssertionError("Unexpected reward: " + item);
+            }]++;
+        }
+        assertEquals(0.5625, counts[0] / 20_000.0, 0.025);
+        assertEquals(0.1875, counts[1] / 20_000.0, 0.025);
+        assertEquals(0.1875, counts[2] / 20_000.0, 0.025);
+        assertEquals(0.0625, counts[3] / 20_000.0, 0.025);
+    }
+
+    @Test
+    void weightedArtifactTypesAcceptTheSameWeightedSlotField() {
+        var artifacts = new ArtifactResolver(java.util.List.of(
+                new ArtifactResolver.Variant(4101, "berserker", 1, 3, 1),
+                new ArtifactResolver.Variant(4102, "berserker", 2, 3, 1),
+                new ArtifactResolver.Variant(4201, "instructor", 1, 3, 1),
+                new ArtifactResolver.Variant(4202, "instructor", 2, 3, 1)));
+        var tables = YamlLootTables.parse("""
+                artifacts:
+                  type: "genshin.artifact.berserker:3, genshin.artifact.instructor:1"
+                  slot: "flower:3, plume:1"
+                  rarity: 3
+                  substats: 1
+                """, ITEMS, artifacts);
+        var counts = new java.util.HashMap<Integer, Integer>();
+        var rng = new Random(167);
+        for (int i = 0; i < 20_000; i++) {
+            var reward = tables.roll("artifacts", rng);
+            assertEquals(1, reward.values().stream().mapToInt(Integer::intValue).sum());
+            counts.merge(reward.keySet().iterator().next(), 1, Integer::sum);
+        }
+        assertEquals(0.5625, counts.getOrDefault(4101, 0) / 20_000.0, 0.025);
+        assertEquals(0.1875, counts.getOrDefault(4102, 0) / 20_000.0, 0.025);
+        assertEquals(0.1875, counts.getOrDefault(4201, 0) / 20_000.0, 0.025);
+        assertEquals(0.0625, counts.getOrDefault(4202, 0) / 20_000.0, 0.025);
+    }
+
+    @Test
     void countsUseExplicitRelativeWeights() {
         var distribution = LootCount.parse("2:586, 3:414");
         var random = new Random(71);

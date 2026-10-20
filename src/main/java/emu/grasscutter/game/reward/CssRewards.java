@@ -14,8 +14,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import io.sf.carte.doc.dom.CSSDOMImplementation;
 import io.sf.carte.doc.style.css.CSSElement;
 import io.sf.carte.doc.style.css.SelectorMatcher;
@@ -42,10 +40,6 @@ public final class CssRewards {
         }
     }
 
-    // Range membership is domain data represented by ordinary CSS attributes.
-    private static final Pattern RANGE_MEMBERSHIP_ATTRIBUTE = Pattern.compile(
-            "\\[\\s*(data-range-([a-zA-Z_][a-zA-Z0-9_-]*)-([0-9]+)-(up|[0-9]+))\\s*\\]");
-
     private static String resourceName(String property, Map<String, String> names) {
         String name = names.get(io.sf.carte.doc.style.css.parser.ParseHelper.unescapeStringValue(property));
         if (name == null) {
@@ -55,22 +49,6 @@ public final class CssRewards {
             throw new IllegalArgumentException("Invalid reward resource property: " + name);
         }
         return name;
-    }
-
-    private record RangeMembership(
-            String syntheticAttribute, String sourceAttribute,
-            java.math.BigInteger min, java.math.BigInteger max) {
-        boolean matches(Map<String, String> attributes) {
-            String sourceValue = attributes.get(sourceAttribute);
-            if (sourceValue == null) return false;
-            try {
-                var actual = new java.math.BigInteger(sourceValue);
-                return actual.compareTo(min) >= 0
-                        && (max == null || actual.compareTo(max) <= 0);
-            } catch (NumberFormatException ignored) {
-                return false;
-            }
-        }
     }
 
     private record LootDeclaration(RewardResourceExpression resource, Integer fixed, LootCount.Spec ranged) {}
@@ -84,18 +62,16 @@ public final class CssRewards {
 
     private final List<Rule> rules;
     private final List<String> bindingNames;
-    private final List<RangeMembership> rangeMemberships;
     private final Map<String, RewardSelectorConditions.Condition> selectorConditions;
     private final YamlLootTables loot;
     private final ItemIdRegistry itemRegistry;
 
-    private CssRewards(List<Rule> rules, List<RangeMembership> rangeMemberships,
+    private CssRewards(List<Rule> rules,
                        YamlLootTables loot, ItemIdRegistry itemRegistry, Map<String, String> names,
                        Map<String, RewardSelectorConditions.Condition> selectorConditions) {
         this.rules = List.copyOf(rules);
         this.bindingNames = names.values().stream().filter(name -> name.startsWith("--"))
                 .map(name -> name.substring(2)).toList();
-        this.rangeMemberships = List.copyOf(rangeMemberships);
         this.selectorConditions = Map.copyOf(selectorConditions);
         this.loot = loot;
         this.itemRegistry = itemRegistry;
@@ -127,37 +103,36 @@ public final class CssRewards {
             throw new IllegalArgumentException("Cannot parse reward CSS", ex);
         }
         var rules = new ArrayList<Rule>();
-        var intervals = new java.util.LinkedHashMap<String, RangeMembership>();
         int[] order = {0};
         for (var top : sheet.getCssRules()) {
             if (!(top instanceof StyleRule style)) {
                 throw new IllegalArgumentException("Unsupported conditional CSS rule: " + top);
             }
-            collectStyle(style, null, rules, intervals, order, items, loot, translated.names());
+            collectStyle(style, null, rules, order, items, loot, translated.names());
         }
-        return new CssRewards(rules, List.copyOf(intervals.values()), loot, items,
+        return new CssRewards(rules, loot, items,
                 translated.names(), extended.conditions());
     }
 
     private static void collectStyle(StyleRule style, SelectorList parent,
-            List<Rule> rules, Map<String, RangeMembership> intervals, int[] sourceOrder,
+            List<Rule> rules, int[] sourceOrder,
             ItemIdRegistry items, YamlLootTables loot, Map<String, String> names) {
         // Use css4j's CSSOM selector tree directly, without serializing/reparsing it.
         SelectorList selectors = style.getSelectorList();
         if (parent != null) {
             selectors = selectors.replaceNested(parent);
         }
-        collectDeclarations(style.getStyle(), selectors, rules, intervals,
+        collectDeclarations(style.getStyle(), selectors, rules,
                 sourceOrder, items, loot, names);
         var nestedRules = style.getCssRules();
         if (nestedRules != null) {
             for (var nested : nestedRules) {
                 if (nested instanceof StyleRule child) {
-                    collectStyle(child, selectors, rules, intervals, sourceOrder,
+                    collectStyle(child, selectors, rules, sourceOrder,
                             items, loot, names);
                 } else if (nested instanceof CSSNestedDeclarations continuation) {
                     collectDeclarations(continuation.getStyle(), selectors, rules,
-                            intervals, sourceOrder, items, loot, names);
+                             sourceOrder, items, loot, names);
                 } else {
                     throw new IllegalArgumentException("Unsupported conditional reward rule: " + nested);
                 }
@@ -167,19 +142,19 @@ public final class CssRewards {
 
     private static void collectDeclarations(io.sf.carte.doc.style.css.CSSStyleDeclaration declarations,
             SelectorList selectors, List<Rule> rules,
-            Map<String, RangeMembership> intervals, int[] sourceOrder,
+            int[] sourceOrder,
             ItemIdRegistry items, YamlLootTables loot, Map<String, String> names) {
         if (declarations.getLength() == 0) return;
-        collectDeclarationsForPriority(declarations, selectors, rules, intervals,
+        collectDeclarationsForPriority(declarations, selectors, rules,
                 sourceOrder, items, loot, names, false);
-        collectDeclarationsForPriority(declarations, selectors, rules, intervals,
+        collectDeclarationsForPriority(declarations, selectors, rules,
                 sourceOrder, items, loot, names, true);
     }
 
     private static void collectDeclarationsForPriority(
             io.sf.carte.doc.style.css.CSSStyleDeclaration declarations,
             SelectorList selectors, List<Rule> rules,
-            Map<String, RangeMembership> intervals, int[] sourceOrder,
+            int[] sourceOrder,
             ItemIdRegistry items, YamlLootTables loot, Map<String, String> names, boolean important) {
         var itemDeclarations = new ArrayList<ItemDeclaration>();
         var lootDeclarations = new ArrayList<LootDeclaration>();
@@ -220,19 +195,6 @@ public final class CssRewards {
         }
         if (!hasDeclarations) return;
         for (var selector : selectors) {
-            String css = selector.toString();
-            var range = RANGE_MEMBERSHIP_ATTRIBUTE.matcher(css);
-            while (range.find()) {
-                String attribute = range.group(1);
-                var min = new java.math.BigInteger(range.group(3));
-                var max = "up".equals(range.group(4))
-                        ? null : new java.math.BigInteger(range.group(4));
-                if (max != null && max.compareTo(min) < 0) {
-                    throw new IllegalArgumentException("Reversed reward range attribute: " + css);
-                }
-                intervals.putIfAbsent(attribute, new RangeMembership(
-                        attribute, range.group(2), min, max));
-            }
             rules.add(new Rule(selector, List.copyOf(itemDeclarations),
                     List.copyOf(lootDeclarations), Map.copyOf(bindings),
                     important, sourceOrder[0]++));
@@ -260,12 +222,6 @@ public final class CssRewards {
         var element = (CSSElement) doc.createElement(type);
         doc.getDocumentElement().appendChild(element);
         attributes.forEach(element::setAttribute);
-        for (var interval : rangeMemberships) {
-            element.removeAttribute(interval.syntheticAttribute());
-            if (interval.matches(attributes)) {
-                element.setAttribute(interval.syntheticAttribute(), "");
-            }
-        }
         for (var predicate : selectorConditions.entrySet()) {
             element.removeAttribute(predicate.getKey());
             if (predicate.getValue().matches(attributes)) {

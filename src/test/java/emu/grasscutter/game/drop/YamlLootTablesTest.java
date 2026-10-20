@@ -769,14 +769,15 @@ class YamlLootTablesTest {
     }
 
     @Test
-    void fractionalPercentagesAreSupportedButDecimalWeightsAreRejected() {
+    void relativeWeightsAcceptDecimalsAcrossFieldsAndPools() {
         assertDoesNotThrow(() -> LootCount.parse("2:44.44, 3:55.56"));
         assertDoesNotThrow(() -> LootCount.parse("1:12.5,2:87.5"));
         assertDoesNotThrow(() -> LootCount.parse("1:60,2:60"));
         assertThrows(IllegalArgumentException.class, () -> LootCount.parse("2.5556"));
-        assertThrows(IllegalArgumentException.class, () -> parse("""
-                bad:
+        assertDoesNotThrow(() -> parse("""
+                weighted:
                   - {reward: genshin.currency.mora, weight: 1.5}
+                  - {reward: genshin.avatar_up.heros_wit, weight: 0.5}
                 """));
     }
 

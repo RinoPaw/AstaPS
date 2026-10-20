@@ -1050,4 +1050,45 @@ class YamlLootTablesTest {
         assertEquals(3, tables.roll("boss.gem", new java.util.Random(7)).get(202));
     }
 
+
+    @Test
+    void genericWeightedValueSyntaxMatchesScalarKeyShorthand() {
+        var tables = parse("""
+                compact:
+                  - genshin.currency.mora: 3
+                  - genshin.avatar_up.heros_wit: 1
+                explicit:
+                  - {value: genshin.currency.mora, weight: 3}
+                  - {value: genshin.avatar_up.heros_wit, weight: 1}
+                """);
+        for (int seed = 0; seed < 100; seed++) {
+            assertEquals(tables.roll("compact", new Random(seed)),
+                    tables.roll("explicit", new Random(seed)));
+        }
+    }
+
+    @Test
+    void genericWeightedValueCanBeNestedRewardExpression() {
+        var tables = parse("""
+                nested:
+                  - [{type: genshin.currency.mora, count: 2},
+                     {type: genshin.avatar_up.heros_wit, count: 3}]: 1
+                explicit:
+                  - value:
+                      - {type: genshin.currency.mora, count: 2}
+                      - {type: genshin.avatar_up.heros_wit, count: 3}
+                    weight: 1
+                """);
+        var result = Map.of(202, 2, 104003, 3);
+        assertEquals(result, tables.roll("nested", new Random(1)));
+        assertEquals(result, tables.roll("explicit", new Random(1)));
+    }
+
+    @Test
+    void weightedBranchesRejectAmbiguousValueAndType() {
+        assertThrows(IllegalArgumentException.class, () -> parse("""
+                invalid:
+                  - {value: genshin.currency.mora, type: genshin.avatar_up.heros_wit, weight: 1}
+                """));
+    }
 }

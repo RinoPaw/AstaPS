@@ -24,7 +24,7 @@ final class BundledBossRewardsTest {
         assertTrue(yaml.contains("type: genshin.avatar_ascension"));
         assertTrue(yaml.contains("world_gem_four<COUNT, ELEMENTS...>:"));
         assertTrue(yaml.contains("world_gem_one<ELEMENTS...>:"));
-        assertTrue(css.contains("astaps.loot.world_gem_one<<ELEMENT>[0], <ELEMENT>[1]>:"));
+        assertTrue(css.contains("astaps.loot.world_gem_one<<ELEMENT>[0],<ELEMENT>[1]>:"));
         for (int rarity = 1; rarity <= 4; rarity++) {
             String template = "world_artifact_" + rarity + "star<SETS...>:";
             assertTrue(yaml.contains(template), template);

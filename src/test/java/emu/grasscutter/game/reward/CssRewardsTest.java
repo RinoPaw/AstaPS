@@ -29,7 +29,7 @@ class CssRewardsTest {
     void dottedResourcePropertiesCoexistWithNativeCssCascade() {
         var css = CssRewards.parse("""
                 chest {
-                    --grant-genshin\\.currency\\.mora: 1000~1200;
+                    --grant-genshin\\.currency\\.mora: "1000~1200";
                     --grant-astaps\\.loot\\.currency: 1;
                 }
                 chest[grade="common"] {
@@ -203,7 +203,7 @@ class CssRewardsTest {
         var css = CssRewards.parse("""
                 chest[grade="common"] {
                     --grant-astaps\\.loot\\.currency: 1;
-                    astaps.loot.经验书: 2;
+                    --grant-astaps\\.loot\\.经验书: 2;
                     --grant-genshin\\.currency\\.primogem: 2;
                 }
                 """, items, loot);
@@ -231,7 +231,7 @@ class CssRewardsTest {
         var css = CssRewards.parse("""
                 chest[grade="common"] {
                     --grant-astaps\\.loot\\.currency: 1;
-                    astaps.loot.经验书: 1;
+                    --grant-astaps\\.loot\\.经验书: 1;
                     --grant-genshin\\.currency\\.primogem: 2;
                 }
                 chest[grade="common"][level="6"] {
@@ -283,7 +283,7 @@ class CssRewardsTest {
         var css = CssRewards.parse("""
                 chest {
                     --grant-astaps\\.loot\\.currency: 1;
-                    astaps.loot.经验书: 1;
+                    --grant-astaps\\.loot\\.经验书: 1;
                     --grant-genshin\\.currency\\.mora: 25;
                     --grant-genshin\\.currency\\.primogem: 2;
                 }
@@ -414,8 +414,8 @@ class CssRewardsTest {
     void lootExecutionCountsSupportRangesAndPercentageDistributions() {
         var css = CssRewards.parse("""
                 chest {
-                    --grant-astaps\\.loot\\.currency: 1~3;
-                    astaps.loot.经验书: 1:50,2:30;
+                    --grant-astaps\\.loot\\.currency: "1~3";
+                    --grant-astaps\\.loot\\.经验书: "1:50,2:30";
                 }
                 """, items, loot);
         var selection = css.resolve("chest", Map.of());
@@ -437,9 +437,9 @@ class CssRewardsTest {
     @Test
     void fixedAndVariableLootCountsOverrideOneAnother() {
         var css = CssRewards.parse("""
-                chest { --grant-astaps\\.loot\\.currency: 1~3; }
+                chest { --grant-astaps\\.loot\\.currency: "1~3"; }
                 chest[level="6"] { --grant-astaps\\.loot\\.currency: 2; }
-                chest[level="6"][city="1"] { --grant-astaps\\.loot\\.currency: 0:70,3:30; }
+                chest[level="6"][city="1"] { --grant-astaps\\.loot\\.currency: "0:70,3:30"; }
                 """, items, loot);
         var original = css.resolve("chest", Map.of());
         assertTrue(original.loot().isEmpty());
@@ -676,7 +676,7 @@ class CssRewardsTest {
         var css = CssRewards.parse("""
                 chest {
                     --grant-astaps\\.loot\\.currency: 1;
-                    --grant-genshin\\.currency\\.mora: 3~5;
+                    --grant-genshin\\.currency\\.mora: "3~5";
                 }
                 """, items, loot);
         var selected = css.resolve("chest", Map.of());
@@ -693,9 +693,9 @@ class CssRewardsTest {
     @Test
     void fixedAndRangedCurrencyRespectCascadePrecedence() {
         var css = CssRewards.parse("""
-                chest { --grant-genshin\\.currency\\.mora: 3~5; }
+                chest { --grant-genshin\\.currency\\.mora: "3~5"; }
                 chest[city="1"] { --grant-genshin\\.currency\\.mora: 9; }
-                chest[city="1"][area="2"] { --grant-genshin\\.currency\\.mora: 11~12; }
+                chest[city="1"][area="2"] { --grant-genshin\\.currency\\.mora: "11~12"; }
                 """, items, loot);
         assertEquals(9, RewardRoller.roll(
                 css.resolve("chest", Map.of("city", "1")), loot, new Random(1))

@@ -103,7 +103,11 @@ public final class CssRewards {
         var sheet = new CSSDOMImplementation().createStyleSheet(null, null);
         try {
             if (!sheet.parseStyleSheet(new StringReader(source), CSSStyleSheet.COMMENTS_IGNORE)) {
-                throw new IllegalArgumentException("Invalid reward CSS");
+                var handler = sheet.getErrorHandler();
+                var details = handler instanceof io.sf.carte.doc.style.css.om.DefaultSheetErrorHandler errors
+                        ? errors.getSacErrors() + "; rules=" + errors.getRuleParseErrors()
+                        : handler;
+                throw new IllegalArgumentException("Invalid reward CSS: " + details);
             }
         } catch (IOException ex) {
             throw new IllegalArgumentException("Cannot parse reward CSS", ex);

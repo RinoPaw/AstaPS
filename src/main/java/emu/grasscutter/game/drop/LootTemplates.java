@@ -15,12 +15,12 @@ import java.util.regex.Pattern;
 /** Expand named item parameters; retain existing safe integer-template expressions. */
 final class LootTemplates {
     private static final Pattern DEFINITION =
-            Pattern.compile("([a-z][a-z0-9_-]*)\\s*<\\s*([a-z][a-z0-9_]*(?:\\s*,\\s*[a-z][a-z0-9_]*)*)\\s*>");
+            Pattern.compile("([a-z][a-z0-9_-]*)\\s*<\\s*([A-Za-z_][A-Za-z0-9_]*(?:\\s*,\\s*[A-Za-z_][A-Za-z0-9_]*)*)\\s*>");
     private static final Pattern INVOCATION =
-            Pattern.compile("([a-z][a-z0-9_-]*)\\s*<\\s*((?:[a-z][a-z0-9_]*|[0-9]+)(?:\\s*,\\s*(?:[a-z][a-z0-9_]*|[0-9]+))*)\\s*>");
-    private static final Pattern EXPRESSION = Pattern.compile("\\$\\{([^{}]*)}|<([a-z][a-z0-9_]*)>");
+            Pattern.compile("([a-z][a-z0-9_-]*)\\s*<\\s*((?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+)(?:\\s*,\\s*(?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+))*)\\s*>");
+    private static final Pattern EXPRESSION = Pattern.compile("\\$\\{([^{}]*)}|<([A-Za-z_][A-Za-z0-9_]*)>");
     private static final Pattern INTEGER_EXPRESSION =
-            Pattern.compile("([a-z][a-z0-9_]*|[0-9]+)((?:[+-][0-9]+)*)");
+            Pattern.compile("([A-Za-z_][A-Za-z0-9_]*|[0-9]+)((?:[+-][0-9]+)*)");
     private static final Pattern OPERATION = Pattern.compile("([+-])([0-9]+)");
     private static final int MAX_DEPTH = 64;
     private static final int MAX_INSTANCES = 1_000;
@@ -91,12 +91,16 @@ final class LootTemplates {
             var output = new LinkedHashMap<Object, Object>();
             shared.put(raw, output);
             for (var entry : map.entrySet()) {
+                Object key = substitute(entry.getKey(), parameters, depth + 1, shared);
                 Object value = substitute(entry.getValue(), parameters, depth + 1, shared);
-                if (("reward".equals(entry.getKey()) || "type".equals(entry.getKey()))
+                if (("reward".equals(key) || "type".equals(key))
                         && value instanceof String reward) {
                     value = expandReward(reward, depth + 1);
                 }
-                output.put(entry.getKey(), value);
+                if (output.containsKey(key)) {
+                    throw new IllegalArgumentException("Duplicate expanded loot key: " + key);
+                }
+                output.put(key, value);
             }
             return output;
         }
@@ -117,7 +121,7 @@ final class LootTemplates {
             if (result.contains("${")) {
                 throw new IllegalArgumentException("Unclosed or invalid loot expression: " + value);
             }
-            if (value.trim().matches("\\$\\{[^{}]+}|<[a-z][a-z0-9_]*>")) {
+            if (value.trim().matches("\\$\\{[^{}]+}|<[A-Za-z_][A-Za-z0-9_]*>")) {
                 return result.matches("[0-9]+") ? Integer.parseInt(result) : result;
             }
             return result;

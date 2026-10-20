@@ -47,20 +47,20 @@ weapons_3_star: &weapons_3_star
 
 # Mixed weapon tiers. Low/medium/high indicate the relative higher-rarity chance.
 weapons_1_to_2_low:
-  - {type: *weapons_1_star}: 4
-  - {type: *weapons_2_star}: 1
+  - {value: *weapons_1_star}: 4
+  - {value: *weapons_2_star}: 1
 
 weapons_1_to_2_high:
-  - {type: *weapons_1_star}: 1
-  - {type: *weapons_2_star}: 1
+  - {value: *weapons_1_star}: 1
+  - {value: *weapons_2_star}: 1
 
 weapons_2_to_3_low:
-  - {type: *weapons_2_star}: 3
-  - {type: *weapons_3_star}: 2
+  - {value: *weapons_2_star}: 3
+  - {value: *weapons_3_star}: 2
 
 weapons_2_to_3_high:
-  - {type: *weapons_2_star}: 1
-  - {type: *weapons_3_star}: 3
+  - {value: *weapons_2_star}: 1
+  - {value: *weapons_3_star}: 3
 
 ## 1.2 Food ingredients
 meat_ingredients:
@@ -89,141 +89,141 @@ chest_artifact<RARITY, SUBSTATS, SETS...>:
 
 # Source parent tables: 51010015, 51010115, 51010215, 52010015, 52010115.
 chest_artifact_mix_01:
-  - {type: "chest_artifact<1,0,adventurer,traveling_doctor>"}: 9000
-  - {type: "chest_artifact<2,0,adventurer,traveling_doctor>"}: 900
-  - {type: "chest_artifact<2,1,adventurer,traveling_doctor>"}: 100
+  - "chest_artifact<1,0,adventurer,traveling_doctor>": 9000
+  - "chest_artifact<2,0,adventurer,traveling_doctor>": 900
+  - "chest_artifact<2,1,adventurer,traveling_doctor>": 100
 
 # Source parent tables: 51010315, 51010415, 52010315, 52010415, 53010315.
 chest_artifact_mix_02:
-  - {type: "chest_artifact<1,0,adventurer,traveling_doctor>"}: 6600
-  - {type: "chest_artifact<2,0,adventurer,traveling_doctor>"}: 3060
-  - {type: "chest_artifact<2,1,adventurer,traveling_doctor>"}: 340
+  - "chest_artifact<1,0,adventurer,traveling_doctor>": 6600
+  - "chest_artifact<2,0,adventurer,traveling_doctor>": 3060
+  - "chest_artifact<2,1,adventurer,traveling_doctor>": 340
 
 # Source parent tables: 51010515, 51010615, 52010515, 52010615, 53010515.
 chest_artifact_mix_03:
-  - {type: "chest_artifact<1,0,adventurer,traveling_doctor>"}: 3400
-  - {type: "chest_artifact<2,0,adventurer,traveling_doctor>"}: 5040
-  - {type: "chest_artifact<2,1,adventurer,traveling_doctor>"}: 560
-  - {type: "chest_artifact<3,1,berserker,instructor,adventurer,traveling_doctor>"}: 900
-  - {type: "chest_artifact<3,2,berserker,instructor,adventurer,traveling_doctor>"}: 100
+  - "chest_artifact<1,0,adventurer,traveling_doctor>": 3400
+  - "chest_artifact<2,0,adventurer,traveling_doctor>": 5040
+  - "chest_artifact<2,1,adventurer,traveling_doctor>": 560
+  - "chest_artifact<3,1,berserker,instructor,adventurer,traveling_doctor>": 900
+  - "chest_artifact<3,2,berserker,instructor,adventurer,traveling_doctor>": 100
 
 # Source parent tables: 51010715, 52010715, 53010715, 54010715, 55010715.
 chest_artifact_mix_04:
-  - {type: "chest_artifact<2,0,adventurer,traveling_doctor>"}: 6300
-  - {type: "chest_artifact<2,1,adventurer,traveling_doctor>"}: 699
-  - {type: "chest_artifact<3,1,berserker,instructor,adventurer,traveling_doctor>"}: 2700
-  - {type: "chest_artifact<3,2,berserker,instructor,adventurer,traveling_doctor>"}: 300
+  - "chest_artifact<2,0,adventurer,traveling_doctor>": 6300
+  - "chest_artifact<2,1,adventurer,traveling_doctor>": 699
+  - "chest_artifact<3,1,berserker,instructor,adventurer,traveling_doctor>": 2700
+  - "chest_artifact<3,2,berserker,instructor,adventurer,traveling_doctor>": 300
 
 # Source parent tables: 51010815, 51010915, 52010815, 52010915, 53010815.
 chest_artifact_mix_05:
-  - {type: "chest_artifact<3,1,berserker,instructor,adventurer,traveling_doctor>"}: 8100
-  - {type: "chest_artifact<3,2,berserker,instructor,adventurer,traveling_doctor>"}: 900
-  - {type: "chest_artifact<4,2,berserker,instructor>"}: 900
-  - {type: "chest_artifact<4,3,berserker,instructor>"}: 100
+  - "chest_artifact<3,1,berserker,instructor,adventurer,traveling_doctor>": 8100
+  - "chest_artifact<3,2,berserker,instructor,adventurer,traveling_doctor>": 900
+  - "chest_artifact<4,2,berserker,instructor>": 900
+  - "chest_artifact<4,3,berserker,instructor>": 100
 
 # Source parent tables: 51011015, 51011115, 52011015, 52011115, 53011015.
 chest_artifact_mix_06:
-  - {type: "chest_artifact<3,1,berserker,instructor,adventurer,traveling_doctor>"}: 7200
-  - {type: "chest_artifact<3,2,berserker,instructor,adventurer,traveling_doctor>"}: 800
-  - {type: "chest_artifact<4,2,berserker,instructor>"}: 1800
-  - {type: "chest_artifact<4,3,berserker,instructor>"}: 200
+  - "chest_artifact<3,1,berserker,instructor,adventurer,traveling_doctor>": 7200
+  - "chest_artifact<3,2,berserker,instructor,adventurer,traveling_doctor>": 800
+  - "chest_artifact<4,2,berserker,instructor>": 1800
+  - "chest_artifact<4,3,berserker,instructor>": 200
 
 # Source parent tables: 51020015, 51020115, 51020215, 52020015, 52020115.
 chest_artifact_mix_07:
-  - {type: "chest_artifact<1,0,lucky_dog,traveling_doctor>"}: 9000
-  - {type: "chest_artifact<2,0,lucky_dog,traveling_doctor>"}: 900
-  - {type: "chest_artifact<2,1,lucky_dog,traveling_doctor>"}: 100
+  - "chest_artifact<1,0,lucky_dog,traveling_doctor>": 9000
+  - "chest_artifact<2,0,lucky_dog,traveling_doctor>": 900
+  - "chest_artifact<2,1,lucky_dog,traveling_doctor>": 100
 
 # Source parent tables: 51020315, 51020415, 52020315, 52020415.
 chest_artifact_mix_08:
-  - {type: "chest_artifact<1,0,lucky_dog,traveling_doctor>"}: 6600
-  - {type: "chest_artifact<2,0,lucky_dog,traveling_doctor>"}: 3060
-  - {type: "chest_artifact<2,1,lucky_dog,traveling_doctor>"}: 340
+  - "chest_artifact<1,0,lucky_dog,traveling_doctor>": 6600
+  - "chest_artifact<2,0,lucky_dog,traveling_doctor>": 3060
+  - "chest_artifact<2,1,lucky_dog,traveling_doctor>": 340
 
 # Source parent tables: 51020515, 51020615, 52020515, 52020615.
 chest_artifact_mix_09:
-  - {type: "chest_artifact<1,0,lucky_dog,traveling_doctor>"}: 3400
-  - {type: "chest_artifact<2,0,lucky_dog,traveling_doctor>"}: 5040
-  - {type: "chest_artifact<2,1,lucky_dog,traveling_doctor>"}: 560
-  - {type: "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>"}: 900
-  - {type: "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>"}: 100
+  - "chest_artifact<1,0,lucky_dog,traveling_doctor>": 3400
+  - "chest_artifact<2,0,lucky_dog,traveling_doctor>": 5040
+  - "chest_artifact<2,1,lucky_dog,traveling_doctor>": 560
+  - "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>": 900
+  - "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>": 100
 
 # Source parent tables: 51020715, 52020715.
 chest_artifact_mix_10:
-  - {type: "chest_artifact<2,0,lucky_dog,traveling_doctor>"}: 6300
-  - {type: "chest_artifact<2,1,lucky_dog,traveling_doctor>"}: 699
-  - {type: "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>"}: 2700
-  - {type: "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>"}: 300
+  - "chest_artifact<2,0,lucky_dog,traveling_doctor>": 6300
+  - "chest_artifact<2,1,lucky_dog,traveling_doctor>": 699
+  - "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>": 2700
+  - "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>": 300
 
 # Source parent tables: 51020815, 51020915, 52020815, 52020915.
 chest_artifact_mix_11:
-  - {type: "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>"}: 8100
-  - {type: "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>"}: 900
-  - {type: "chest_artifact<4,2,berserker,the_exile>"}: 900
-  - {type: "chest_artifact<4,3,berserker,the_exile>"}: 100
+  - "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>": 8100
+  - "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>": 900
+  - "chest_artifact<4,2,berserker,the_exile>": 900
+  - "chest_artifact<4,3,berserker,the_exile>": 100
 
 # Source parent tables: 51021015, 51021115, 52021015, 52021115.
 chest_artifact_mix_12:
-  - {type: "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>"}: 7200
-  - {type: "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>"}: 800
-  - {type: "chest_artifact<4,2,berserker,the_exile>"}: 1800
-  - {type: "chest_artifact<4,3,berserker,the_exile>"}: 200
+  - "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>": 7200
+  - "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>": 800
+  - "chest_artifact<4,2,berserker,the_exile>": 1800
+  - "chest_artifact<4,3,berserker,the_exile>": 200
 
 # Source parent tables: 51030015, 52030015.
 chest_artifact_mix_13:
-  - {type: "chest_artifact<2,0,lucky_dog,traveling_doctor>"}: 6300
-  - {type: "chest_artifact<2,1,lucky_dog,traveling_doctor>"}: 699
-  - {type: "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>"}: 2700
-  - {type: "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>"}: 300
+  - "chest_artifact<2,0,lucky_dog,traveling_doctor>": 6300
+  - "chest_artifact<2,1,lucky_dog,traveling_doctor>": 699
+  - "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>": 2700
+  - "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>": 300
 
 # Source parent tables: 51032015, 52032015.
 chest_artifact_mix_14:
-  - {type: "chest_artifact<2,0,lucky_dog,traveling_doctor>"}: 3060
-  - {type: "chest_artifact<2,1,lucky_dog,traveling_doctor>"}: 340
-  - {type: "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>"}: 5940
-  - {type: "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>"}: 660
+  - "chest_artifact<2,0,lucky_dog,traveling_doctor>": 3060
+  - "chest_artifact<2,1,lucky_dog,traveling_doctor>": 340
+  - "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>": 5940
+  - "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>": 660
 
 # Source parent tables: 51033015, 52033015.
 chest_artifact_mix_15:
-  - {type: "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>"}: 8100
-  - {type: "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>"}: 900
-  - {type: "chest_artifact<4,2,berserker,the_exile>"}: 900
-  - {type: "chest_artifact<4,3,berserker,the_exile>"}: 100
+  - "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>": 8100
+  - "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>": 900
+  - "chest_artifact<4,2,berserker,the_exile>": 900
+  - "chest_artifact<4,3,berserker,the_exile>": 100
 
 # Source parent tables: 51034015, 52034015.
 chest_artifact_mix_16:
-  - {type: "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>"}: 7200
-  - {type: "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>"}: 800
-  - {type: "chest_artifact<4,2,berserker,the_exile>"}: 1800
-  - {type: "chest_artifact<4,3,berserker,the_exile>"}: 200
+  - "chest_artifact<3,1,berserker,the_exile,lucky_dog,traveling_doctor>": 7200
+  - "chest_artifact<3,2,berserker,the_exile,lucky_dog,traveling_doctor>": 800
+  - "chest_artifact<4,2,berserker,the_exile>": 1800
+  - "chest_artifact<4,3,berserker,the_exile>": 200
 
 # Source parent tables: 51040015, 52040015.
 chest_artifact_mix_17:
-  - {type: "chest_artifact<2,0,adventurer,lucky_dog>"}: 6300
-  - {type: "chest_artifact<2,1,adventurer,lucky_dog>"}: 699
-  - {type: "chest_artifact<3,1,instructor,the_exile,adventurer,lucky_dog>"}: 2700
-  - {type: "chest_artifact<3,2,instructor,the_exile,adventurer,lucky_dog>"}: 300
+  - "chest_artifact<2,0,adventurer,lucky_dog>": 6300
+  - "chest_artifact<2,1,adventurer,lucky_dog>": 699
+  - "chest_artifact<3,1,instructor,the_exile,adventurer,lucky_dog>": 2700
+  - "chest_artifact<3,2,instructor,the_exile,adventurer,lucky_dog>": 300
 
 # Source parent tables: 51042015, 52042015.
 chest_artifact_mix_18:
-  - {type: "chest_artifact<2,0,adventurer,lucky_dog>"}: 3060
-  - {type: "chest_artifact<2,1,adventurer,lucky_dog>"}: 340
-  - {type: "chest_artifact<3,1,instructor,the_exile,adventurer,lucky_dog>"}: 5940
-  - {type: "chest_artifact<3,2,instructor,the_exile,adventurer,lucky_dog>"}: 660
+  - "chest_artifact<2,0,adventurer,lucky_dog>": 3060
+  - "chest_artifact<2,1,adventurer,lucky_dog>": 340
+  - "chest_artifact<3,1,instructor,the_exile,adventurer,lucky_dog>": 5940
+  - "chest_artifact<3,2,instructor,the_exile,adventurer,lucky_dog>": 660
 
 # Source parent tables: 51043015, 52043015.
 chest_artifact_mix_19:
-  - {type: "chest_artifact<3,1,instructor,the_exile,adventurer,lucky_dog>"}: 8100
-  - {type: "chest_artifact<3,2,instructor,the_exile,adventurer,lucky_dog>"}: 900
-  - {type: "chest_artifact<4,2,instructor,the_exile>"}: 900
-  - {type: "chest_artifact<4,3,instructor,the_exile>"}: 100
+  - "chest_artifact<3,1,instructor,the_exile,adventurer,lucky_dog>": 8100
+  - "chest_artifact<3,2,instructor,the_exile,adventurer,lucky_dog>": 900
+  - "chest_artifact<4,2,instructor,the_exile>": 900
+  - "chest_artifact<4,3,instructor,the_exile>": 100
 
 # Source parent tables: 51044015, 52044015.
 chest_artifact_mix_20:
-  - {type: "chest_artifact<3,1,instructor,the_exile,adventurer,lucky_dog>"}: 7200
-  - {type: "chest_artifact<3,2,instructor,the_exile,adventurer,lucky_dog>"}: 800
-  - {type: "chest_artifact<4,2,instructor,the_exile>"}: 1800
-  - {type: "chest_artifact<4,3,instructor,the_exile>"}: 200
+  - "chest_artifact<3,1,instructor,the_exile,adventurer,lucky_dog>": 7200
+  - "chest_artifact<3,2,instructor,the_exile,adventurer,lucky_dog>": 800
+  - "chest_artifact<4,2,instructor,the_exile>": 1800
+  - "chest_artifact<4,3,instructor,the_exile>": 200
 
 # =============================================================================
 # 2. World Boss artifacts

@@ -72,29 +72,70 @@ public final class YamlLootTables {
         });
     }
 
-    /** Native elemental gem families reroll the element for each awarded copy. */
+    /** Each gem copy independently evaluates both the element and rarity fields. */
     private static WeightedChoice<Integer> compileElements(
             Object rawProperties, ItemResolver resolver, String location) {
         if (!(rawProperties instanceof Map<?, ?> props)
-                || props.size() != 2
-                || !(props.get("element") instanceof String choice)
-                || !(props.get("rarity") instanceof Integer rarity)
-                || rarity < 2 || rarity > 5) {
+                || props.size() != 2 || !props.containsKey("element") || !props.containsKey("rarity")) {
             throw new IllegalArgumentException(location
-                    + ": elemental ascension gems require quoted element odds and integer rarity 2..5");
+                    + ": elemental ascension gems require element and rarity fields");
         }
-        return WeightedChoice.compile(choice, location + ".element", raw -> {
-            String element = raw.toString();
+        var elements = WeightedChoice.compile(props.get("element"), location + ".element", raw -> {
+            String name = raw.toString();
             if (!List.of("anemo", "geo", "electro", "dendro",
-                    "hydro", "pyro", "cryo").contains(element)) {
-                throw new IllegalArgumentException(location + ": invalid element: " + element);
+                    "hydro", "pyro", "cryo").contains(name)) {
+                throw new IllegalArgumentException(location + ": invalid element: " + name);
             }
-            int itemId = resolver.resolve("genshin.avatar_ascension." + element + "." + rarity);
-            if (itemId <= 0) {
-                throw new IllegalArgumentException(location + ": unknown ascension gem: " + element);
-            }
-            return itemId;
+            return name;
         });
+        var rarities = WeightedChoice.compile(props.get("rarity"), location + ".rarity", raw -> {
+            String name = raw.toString();
+            if (!name.matches("[2-5]")) {
+                throw new IllegalArgumentException(location + ": invalid gem rarity: " + name);
+            }
+            return Integer.parseInt(name);
+        });
+        var items = new ArrayList<Integer>();
+        var weights = new ArrayList<BigDecimal>();
+        for (int i = 0; i < elements.candidates().size(); i++) {
+            String element = elements.candidates().get(i);
+            for (int j = 0; j < rarities.candidates().size(); j++) {
+                int rarity = rarities.candidates().get(j);
+                int id = resolver.resolve("genshin.avatar_ascension." + element + "." + rarity);
+                if (id <= 0) {
+                    throw new IllegalArgumentException(location
+                            + ": unknown ascension gem: " + element + "." + rarity);
+                }
+                items.add(id);
+                weights.add(elements.weights().get(i).multiply(rarities.weights().get(j)));
+            }
+        }
+        return WeightedChoice.of(items, weights, location + ".element/rarity");
+    }
+
+    /** Metadata is compiled by its owning reward type; all fields use WeightedChoice. */
+    private static Map<?, ?> entryProperties(Map<?, ?> fields, String location) {
+        Object nested = fields.get("properties");
+        if (nested != null && !(nested instanceof Map<?, ?>)) {
+            throw new IllegalArgumentException(location + ": properties must be a mapping");
+        }
+        var merged = new LinkedHashMap<String, Object>();
+        if (nested instanceof Map<?, ?> props) {
+            for (var prop : props.entrySet()) {
+                if (!(prop.getKey() instanceof String name)) {
+                    throw new IllegalArgumentException(location + ": property name must be a string");
+                }
+                merged.put(name, prop.getValue());
+            }
+        }
+        for (String key : List.of("rarity", "element", "slot", "substats")) {
+            if (!fields.containsKey(key)) continue;
+            if (merged.containsKey(key)) {
+                throw new IllegalArgumentException(location + ": duplicate property: " + key);
+            }
+            merged.put(key, fields.get(key));
+        }
+        return merged.isEmpty() ? null : merged;
     }
 
     private static String qualifiedTable(String name, String namespace) {
@@ -276,7 +317,9 @@ public final class YamlLootTables {
                 }
                 for (Object key : fields.keySet()) {
                     if (!"reward".equals(key) && !"type".equals(key) && !"count".equals(key)
-                            && !"weight".equals(key) && !"properties".equals(key)) {
+                            && !"weight".equals(key) && !"properties".equals(key)
+                            && !"rarity".equals(key) && !"element".equals(key)
+                            && !"slot".equals(key) && !"substats".equals(key)) {
                         throw new IllegalArgumentException(at + ": unknown field: " + key);
                     }
                 }
@@ -285,6 +328,7 @@ public final class YamlLootTables {
                 }
                 boolean useType = fields.containsKey("type");
                 Object target = fields.get(useType ? "type" : "reward");
+                Map<?, ?> properties = entryProperties(fields, at);
                 Integer rewardId = null;
                 ArtifactResolver.Selector artifact = null;
                 WeightedChoice<Integer> grade = null;
@@ -304,17 +348,17 @@ public final class YamlLootTables {
                         throw new IllegalArgumentException(at + ": reward must be a named item: " + target);
                     }
 if (reference.equals("genshin.avatar_ascension")
-                            && fields.containsKey("properties")) {
-                        element = compileElements(fields.get("properties"), resolver, at);
+                            && properties != null) {
+                        element = compileElements(properties, resolver, at);
                     } else if (reference.startsWith("genshin.artifact.")) {
                         if (artifacts == null) {
                             throw new IllegalArgumentException(at + ": artifact resolver unavailable");
                         }
-                        artifact = artifacts.compile(reference, fields.get("properties"));
-                    } else if (fields.containsKey("properties")
+                        artifact = artifacts.compile(reference, properties);
+                    } else if (properties != null
                             && (reference.startsWith("genshin.avatar_ascension.")
                                 || reference.startsWith("genshin.talent_up."))) {
-                        grade = compileGrade(reference, fields.get("properties"), resolver, at);
+                        grade = compileGrade(reference, properties, resolver, at);
                     } else if (useType) {
                         typeChoice = WeightedChoice.compile(reference, at + ".type",
                                 candidate -> typeTarget(candidate.toString(), resolver,
@@ -327,7 +371,7 @@ if (reference.equals("genshin.avatar_ascension")
                         rewardId = id;
                     }
                 }
-                if (fields.containsKey("properties")
+                if (properties != null
                         && artifact == null && grade == null && element == null) {
                     throw new IllegalArgumentException(at
                             + ": properties require an artifact or advancement-family reward");

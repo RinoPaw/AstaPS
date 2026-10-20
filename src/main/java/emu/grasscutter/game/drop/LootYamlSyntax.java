@@ -15,22 +15,17 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 /**
  * Reads YAML syntax nodes without discarding complex mapping keys.
  * Weighted branches may use a list or entry mapping as the key. Reusing
- * composed nodes preserves YAML anchor identity for cycle detection.
+ * composed nodes preserves YAML anchor identity for recursive references.
  */
 final class LootYamlSyntax {
-    private static final int MAX_DEPTH = 128;
-
     private LootYamlSyntax() {}
 
     static Object parse(String source, LoadSettings settings) {
         var root = new Compose(settings).composeString(source);
-        return root.map(node -> value(node, new IdentityHashMap<>(), 0)).orElse(null);
+        return root.map(node -> value(node, new IdentityHashMap<>())).orElse(null);
     }
 
-    private static Object value(Node node, IdentityHashMap<Node, Object> shared, int depth) {
-        if (depth > MAX_DEPTH) {
-            throw new IllegalArgumentException("Loot YAML nesting exceeds " + MAX_DEPTH);
-        }
+    private static Object value(Node node, IdentityHashMap<Node, Object> shared) {
         if (node instanceof ScalarNode scalar) return scalar(scalar);
         Object cached = shared.get(node);
         if (cached != null) return cached;
@@ -38,7 +33,7 @@ final class LootYamlSyntax {
             var result = new ArrayList<Object>();
             shared.put(node, result);
             for (Node child : sequence.getValue()) {
-                result.add(value(child, shared, depth + 1));
+                result.add(value(child, shared));
             }
             return result;
         }
@@ -46,8 +41,8 @@ final class LootYamlSyntax {
             var result = new LinkedHashMap<Object, Object>();
             shared.put(node, result);
             for (var tuple : mapping.getValue()) {
-                Object key = value(tuple.getKeyNode(), shared, depth + 1);
-                Object entry = value(tuple.getValueNode(), shared, depth + 1);
+                Object key = value(tuple.getKeyNode(), shared);
+                Object entry = value(tuple.getValueNode(), shared);
                 if (key == null) {
                     throw new IllegalArgumentException("Loot YAML mapping key is null");
                 }

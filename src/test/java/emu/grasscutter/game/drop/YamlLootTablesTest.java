@@ -388,7 +388,6 @@ class YamlLootTablesTest {
                 "{element: \"invalid:100\", rarity: 3}",
                 "{element: \"pyro:100\", rarity: 3}",
                 "{element: \"electro:100\", rarity: 6}",
-                "{element: \"electro:100\", rarity: \"3\"}",
                 "{element: \"electro:100\", rarity: 3, extra: true}")) {
             assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                     invalid:

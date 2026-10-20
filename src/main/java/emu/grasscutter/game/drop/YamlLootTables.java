@@ -215,33 +215,25 @@ public final class YamlLootTables {
         return new TypeTarget(id, null, null, null, null);
     }
 
+    /** Validate table names without rejecting recursive reference graphs. */
     private static void validateReferences(Map<String, Pool> pools) {
-        var active = new IdentityHashMap<Pool, Boolean>();
         var visited = new IdentityHashMap<Pool, Boolean>();
-        for (Pool pool : pools.values()) checkPool(pool, pools, active, visited);
+        for (Pool pool : pools.values()) checkPool(pool, pools, visited);
     }
 
     private static void checkPool(Pool pool, Map<String, Pool> pools,
-            IdentityHashMap<Pool, Boolean> active, IdentityHashMap<Pool, Boolean> visited) {
-        if (active.putIfAbsent(pool, true) != null) {
-            throw new IllegalArgumentException("Cyclic named loot table reference");
-        }
-        if (visited.containsKey(pool)) {
-            active.remove(pool);
-            return;
-        }
+            IdentityHashMap<Pool, Boolean> visited) {
+        if (visited.putIfAbsent(pool, true) != null) return;
         for (Entry entry : pool.entries) {
-            if (entry.nested != null) checkPool(entry.nested, pools, active, visited);
+            if (entry.nested != null) checkPool(entry.nested, pools, visited);
             if (entry.typeChoice != null) {
                 for (TypeTarget candidate : entry.typeChoice.candidates()) {
-                    if (candidate.table != null) {
-                        checkPool(requireTable(pools, candidate.table), pools, active, visited);
+                    if (candidate.table != null && !candidate.table.contains("<")) {
+                        checkPool(requireTable(pools, candidate.table), pools, visited);
                     }
                 }
             }
         }
-        active.remove(pool);
-        visited.put(pool, true);
     }
 
     private static Pool requireTable(Map<String, Pool> pools, String name) {
@@ -251,12 +243,12 @@ public final class YamlLootTables {
     }
 
     private void emitType(TypeTarget selected, int count, RandomGenerator random,
-            Map<Integer, Integer> reward, int[] remaining, int depth) {
+            Map<Integer, Integer> reward) {
         if (selected.table != null) {
             Pool table = pools.get(selected.table);
             if (table == null) table = instances.get(selected.table);
             if (table == null) throw new IllegalStateException("Unknown named loot table: " + selected.table);
-            rollPool(table, count, random, reward, remaining, depth + 1);
+            rollPool(table, count, random, reward);
         } else if (selected.artifact != null) {
             for (int i = 0; i < count; i++) {
                 reward.merge(selected.artifact.select(random), 1, Math::addExact);
@@ -272,9 +264,17 @@ public final class YamlLootTables {
         }
     }
 
-    private record Pool(List<Entry> entries, WeightedChoice<Entry> weightedChoice) {}
+    /** A placeholder allows recursive YAML aliases to refer to a pool while it compiles. */
+    private static final class Pool {
+        List<Entry> entries;
+        WeightedChoice<Entry> weightedChoice;
 
-    private static final int MAX_DEPTH = 64;
+        void initialize(List<Entry> entries, WeightedChoice<Entry> weightedChoice) {
+            this.entries = entries;
+            this.weightedChoice = weightedChoice;
+        }
+    }
+
     private static final int MAX_TABLES = 12_000;
     private static final int MAX_ENTRIES = 40_000;
 
@@ -356,22 +356,21 @@ public final class YamlLootTables {
             IdentityHashMap<Object, Pool> compiled,
             IdentityHashMap<Object, Boolean> visiting, CompileBudget budget,
             String location, int depth, Set<String> tableNames, String namespace) {
-        if (depth > MAX_DEPTH) throw new IllegalArgumentException(location + ": loot nesting too deep");
-        if (raw instanceof Map<?, ?> single) raw = List.of(single);
-        if (!(raw instanceof List<?> list)) {
-            throw new IllegalArgumentException(location + ": expected a YAML list or expression");
-        }
-        if (visiting.containsKey(raw)) {
-            throw new IllegalArgumentException(location + ": cyclic YAML loot alias");
-        }
         Pool cached = compiled.get(raw);
         if (cached != null) return cached;
+        if (!(raw instanceof Map<?, ?> || raw instanceof List<?>)) {
+            throw new IllegalArgumentException(location + ": expected a YAML list or expression");
+        }
+        var pending = new Pool();
+        compiled.put(raw, pending);
+        Object source = raw;
+        if (raw instanceof Map<?, ?> single) raw = List.of(single);
+        List<?> list = (List<?>) raw;
         if (++budget.tables > MAX_TABLES) throw new IllegalArgumentException("Too many unique nested loot lists");
         if (list.size() > MAX_ENTRIES - budget.entries) {
             throw new IllegalArgumentException(location + ": too many loot entries");
         }
         budget.entries += list.size();
-        visiting.put(raw, true);
         try {
             var entries = new ArrayList<Entry>();
             boolean hasWeight = false, hasNull = false;
@@ -452,11 +451,11 @@ public final class YamlLootTables {
             WeightedChoice<Entry> choice = hasWeight
                     ? WeightedChoice.of(entries, entries.stream().map(Entry::weight).toList(), location)
                     : null;
-            Pool pool = new Pool(List.copyOf(entries), choice);
-            compiled.put(raw, pool);
-            return pool;
-        } finally {
-            visiting.remove(raw);
+            pending.initialize(List.copyOf(entries), choice);
+            return pending;
+        } catch (RuntimeException | Error failure) {
+            compiled.remove(source);
+            throw failure;
         }
     }
 
@@ -466,31 +465,27 @@ public final class YamlLootTables {
         Pool root = pools.containsKey(resolved) ? pools.get(resolved) : instances.get(resolved);
         if (random == null) throw new IllegalArgumentException("Missing random generator");
         var reward = new TreeMap<Integer, Integer>();
-        int[] remaining = {100_000};
-        rollPool(root, 1, random, reward, remaining, 0);
+        rollPool(root, 1, random, reward);
         return Map.copyOf(reward);
     }
 
     private void rollPool(Pool pool, int times, RandomGenerator random,
-            Map<Integer, Integer> reward, int[] remaining, int depth) {
-        if (depth > MAX_DEPTH) throw new IllegalStateException("Loot nesting exceeds " + MAX_DEPTH + " levels");
+            Map<Integer, Integer> reward) {
         for (int n = 0; n < times; n++) {
-            if (--remaining[0] < 0) throw new IllegalStateException("Loot evaluation budget exceeded");
             if (pool.weightedChoice != null) {
-                rollEntry(pool.weightedChoice.sample(random), random, reward, remaining, depth);
+                rollEntry(pool.weightedChoice.sample(random), random, reward);
             } else {
-                for (Entry e : pool.entries) rollEntry(e, random, reward, remaining, depth);
+                for (Entry e : pool.entries) rollEntry(e, random, reward);
             }
         }
     }
 
     private void rollEntry(Entry entry, RandomGenerator random,
-            Map<Integer, Integer> reward, int[] remaining, int depth) {
-        if (--remaining[0] < 0) throw new IllegalStateException("Loot evaluation budget exceeded");
+            Map<Integer, Integer> reward) {
         int count = entry.count.sample(random);
         if (count == 0) return;
         if (entry.nested != null) {
-            rollPool(entry.nested, count, random, reward, remaining, depth + 1);
+            rollPool(entry.nested, count, random, reward);
         } else if (entry.artifact != null) {
             // Distinct artifact instances are rolled independently, even for count > 1.
             for (int i = 0; i < count; i++) {
@@ -506,7 +501,7 @@ public final class YamlLootTables {
                 reward.merge(entry.element.sample(random), 1, Math::addExact);
             }
         } else if (entry.typeChoice != null) {
-            emitType(entry.typeChoice.sample(random), count, random, reward, remaining, depth);
+            emitType(entry.typeChoice.sample(random), count, random, reward);
         } else if (entry.rewardId != null) {
             reward.merge(entry.rewardId, count, Math::addExact);
         }

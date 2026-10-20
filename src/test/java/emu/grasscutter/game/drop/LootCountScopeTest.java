@@ -643,8 +643,8 @@ class LootCountScopeTest {
                 Map.entry("genshin.avatar_ascension.cryo.chunk", 8203),
                 Map.entry("genshin.avatar_ascension.cryo.gemstone", 8204));
         var loot = YamlLootTables.parse("""
-                one<COUNT, ELEMENTS...>:
-                  - {type: "genshin.avatar_ascension.<ELEMENTS...>.sliver:1", count: <COUNT>}
+                one<ELEMENTS...>:
+                  - {type: "genshin.avatar_ascension.<ELEMENTS...>.sliver:1", count: 3}
                 two<COUNT, ELEMENTS...>:
                   - type: >-
                       genshin.avatar_ascension.<ELEMENTS...>.sliver:79,
@@ -665,7 +665,7 @@ class LootCountScopeTest {
                     count: <COUNT>
                 fragment<COUNT, ELEMENTS...>:
                   - {type: "genshin.avatar_ascension.<ELEMENTS...>.fragment:1", count: <COUNT>}
-                early: {type: "one<3,anemo,cryo>"}
+                early: {type: "one<anemo,cryo>"}
                 medium: {type: "two<3,anemo,cryo>"}
                 higher: {type: "three<9,anemo>"}
                 late: {type: "four<9,anemo,cryo>"}
@@ -812,34 +812,35 @@ class LootCountScopeTest {
                     300040 + substats, "instructor", 4, 5, substats));
         }
         var tables = YamlLootTables.parse("""
-                standard<SETS...>:
+                standard:
                   - type: genshin.artifact
-                    set: "<SETS...>:1"
+                    set: "gladiators_finale:1, wanderers_troupe:1"
                     rarity: 5
                     substats: "3:66, 4:34"
-                plume_goblet<SET, PLUME_SUBSTATS, GOBLET_SUBSTATS>:
+                plume_goblet<PLUME_SUBSTATS, GOBLET_SUBSTATS>:
                   - type: genshin.artifact
-                    set: <SET>
+                    set: instructor
                     slot: plume
                     rarity: 5
                     substats: <PLUME_SUBSTATS>
                     weight: 17
                   - type: genshin.artifact
-                    set: <SET>
+                    set: instructor
                     slot: goblet
                     rarity: 5
                     substats: <GOBLET_SUBSTATS>
                     weight: 33
-                piece<SET, SLOT, SUBSTATS>:
+                goblet<SUBSTATS>:
                   - type: genshin.artifact
-                    set: <SET>
-                    slot: <SLOT>
+                    set: instructor
+                    slot: goblet
                     rarity: 5
                     substats: <SUBSTATS>
-                normal: {type: "standard<gladiators_finale,wanderers_troupe>"}
-                zero: {type: "plume_goblet<instructor,0,0>"}
-                special: {type: "plume_goblet<instructor,4,3>"}
-                goblet: {type: "piece<instructor,goblet,1>"}
+                normal: {type: standard}
+                zero: {type: "plume_goblet<0,0>"}
+                special: {type: "plume_goblet<4,3>"}
+                fixed_goblet: {type: "goblet<1>"}
+                empty_goblet: {type: "goblet<0>"}
                 """, ITEMS, new ArtifactResolver(variants));
         var random = new Random(538);
         int[] selectedSets = new int[2];
@@ -861,7 +862,8 @@ class LootCountScopeTest {
             int special = tables.roll("special", random).keySet().iterator().next();
             assertTrue(special == 300024 || special == 300043);
             if (special == 300024) specialPlumes++;
-            assertEquals(Map.of(300041, 1), tables.roll("goblet", random));
+            assertEquals(Map.of(300041, 1), tables.roll("fixed_goblet", random));
+            assertEquals(Map.of(300040, 1), tables.roll("empty_goblet", random));
         }
         for (int set = 0; set < 2; set++) {
             assertEquals(0.5, selectedSets[set] / 20_000.0, 0.025);

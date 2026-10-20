@@ -257,33 +257,33 @@ world_artifact_4star<SETS...>:
     substats: "2:66, 3:34"
 
 # Ordinary five-star sets choose a set and an available native slot.
-world_artifact_5star<SETS...>:
+world_artifact_5star:
   - type: genshin.artifact
-    set: "<SETS...>:1"
+    set: "gladiators_finale:1, wanderers_troupe:1"
     rarity: 5
     substats: "3:66, 4:34"
 
 # Special native rows link plume/goblet choice with initial substats.
 # 17:33 is equivalent to the 34:66 zero-substat variant.
-world_artifact_5star_plume_goblet<SET, PLUME_SUBSTATS, GOBLET_SUBSTATS>:
+world_artifact_5star_plume_goblet<PLUME_SUBSTATS, GOBLET_SUBSTATS>:
   - type: genshin.artifact
-    set: <SET>
+    set: instructor
     slot: plume
     rarity: 5
     substats: <PLUME_SUBSTATS>
     weight: 17
   - type: genshin.artifact
-    set: <SET>
+    set: instructor
     slot: goblet
     rarity: 5
     substats: <GOBLET_SUBSTATS>
     weight: 33
 
 # One explicitly fixed native piece.
-world_artifact_5star_piece<SET, SLOT, SUBSTATS>:
+world_artifact_5star_goblet<SUBSTATS>:
   - type: genshin.artifact
-    set: <SET>
-    slot: <SLOT>
+    set: instructor
+    slot: goblet
     rarity: 5
     substats: <SUBSTATS>
 
@@ -298,11 +298,11 @@ world_artifact_5star_piece<SET, SLOT, SUBSTATS>:
 # The element and rarity fields select one native gem before count is applied.
 # Each element carries equal weight. CSS controls independent pool executions.
 
-world_gem_one<COUNT, ELEMENTS...>:
+world_gem_one<ELEMENTS...>:
   - type: genshin.avatar_ascension
     element: "<ELEMENTS...>:1"
     rarity: 2
-    count: <COUNT>
+    count: 3
 
 world_gem_two<COUNT, ELEMENTS...>:
   - type: genshin.avatar_ascension

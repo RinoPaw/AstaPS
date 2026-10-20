@@ -1,13 +1,13 @@
 # World Boss artifact configuration
 
 The final section of `src/main/resources/rewards/rewards.css` now configures
-artifacts for 48 world Boss identities, using seven generic definitions in
+artifacts for 48 world Boss identities, using six parameterized templates and one fixed pool in
 `src/main/resources/rewards/loot.yaml`. The obsolete two-Boss example files
 have been removed; the bundled resources are the configuration to inspect.
 
 ## Shared definitions
 
-| Native rarity | Generic definitions | Actual candidate pools |
+| Native rarity | Pool definitions | Actual candidate pools |
 | --- | ---: | ---: |
 | 1 star | 1 | 3 |
 | 2 stars | 1 | 3 |
@@ -17,10 +17,13 @@ have been removed; the bundled resources are the configuration to inspect.
 | Total | 7 | 25 |
 
 Definitions use structured `genshin.artifact` entries. Ordinary one- to
-five-star pools select from `<SETS...>`, inferring available native slots.
-Special five-star rows use a plume/goblet weighted pool (17:33, also 34:66),
-with substat counts attached to each slot; a separate single-piece template
-covers fixed-slot rows. Candidate probabilities, rarities and initial substat
+four-star pools select from `<SETS...>`, inferring available native slots.
+The ordinary five-star pool fixes Gladiator's Finale / Wanderer's Troupe as
+its two equally weighted sets. Special five-star rows use an Instructor-only
+plume/goblet weighted pool (17:33, also 34:66),
+with substat counts attached to each slot; an Instructor-only goblet template
+accepts the initial substat count. The single-quality gem pool retains dynamic
+element arguments while fixing its copy count at 3. Candidate probabilities, rarities and initial substat
 counts remain unchanged.
 
 The 48 complete Boss programs form nine groups. CSS has 101 rules, with

@@ -147,7 +147,7 @@ probabilities have been rounded to integer weights rather than preserved
 bit-for-bit. Native rows continue through level 120; open-ended CSS ranges
 continue the last row above that level.
 
-Artifacts use seven generic definitions and 25 candidate pools, grouped
+Artifacts use six parameterized templates, one fixed five-star pool, and 25 candidate pools, grouped
 into nine Boss programs. Slot, rarity, initial substat count, and unusual
 native slot/substat correlations remain explicit. Independent branches with
 the same candidate pool use an exact convolution of execution counts to avoid

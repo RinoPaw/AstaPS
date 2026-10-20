@@ -17,8 +17,8 @@ class LootCountScopeTest {
     };
 
     @Test
-    void omittedProbabilityReceivesTheRemainder() {
-        var distribution = LootCount.parse("2, 3:41.4");
+    void countsUseExplicitRelativeWeights() {
+        var distribution = LootCount.parse("2:586, 3:414");
         var random = new Random(71);
         int threes = 0;
         for (int i = 0; i < 20_000; i++) {
@@ -28,7 +28,7 @@ class LootCountScopeTest {
         }
         assertEquals(0.414, threes / 20_000.0, 0.02);
         assertThrows(IllegalArgumentException.class, () -> LootCount.parse("2, 3:101"));
-        assertThrows(IllegalArgumentException.class, () -> LootCount.parse("2, 3:41.4, 4"));
+        assertThrows(IllegalArgumentException.class, () -> LootCount.parse("2:586, 3"));
     }
 
     @Test
@@ -44,7 +44,7 @@ class LootCountScopeTest {
                 independent:
                   - {reward: *weapon, count: 2}
                 ranged_independent:
-                  - {reward: *weapon, count: "2, 3:41.4"}
+                  - {reward: *weapon, count: "2:58.6, 3:41.4"}
                 """, ITEMS);
 
         int both = 0, sameMora = 0, independentMora = 0, independentWit = 0;
@@ -72,13 +72,13 @@ class LootCountScopeTest {
     }
 
     @Test
-    void remainderDistributionControlsIndependentPoolExecutions() {
+    void explicitDistributionControlsIndependentPoolExecutions() {
         var tables = YamlLootTables.parse("""
                 weapon: &weapon
                   - {reward: genshin.currency.mora, weight: 60}
                   - {reward: genshin.avatar_up.heros_wit, weight: 40}
                 ranged_independent:
-                  - {reward: *weapon, count: "2, 3:41.4"}
+                  - {reward: *weapon, count: "2:58.6, 3:41.4"}
                 """, ITEMS);
         var random = new Random(41);
         int threeExecutions = 0;

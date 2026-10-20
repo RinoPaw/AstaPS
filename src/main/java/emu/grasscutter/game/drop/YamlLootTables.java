@@ -4,6 +4,7 @@ import emu.grasscutter.data.ResourceId;
 import emu.grasscutter.data.common.ItemParamData;
 import java.math.BigDecimal;
 import java.util.Set;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -33,7 +34,8 @@ public final class YamlLootTables {
     private record Entry(Integer rewardId, ArtifactResolver.Selector artifact,
                          WeightedChoice<Integer> grade, WeightedChoice<Integer> element,
                          WeightedChoice<TypeTarget> typeChoice,
-                         Pool nested, LootCount.Spec count, BigDecimal weight) {}
+                         Pool nested, LootCount.Spec count,
+                         LootRecursionSafety.Fraction expectedCount, BigDecimal weight) {}
 
     /**
      * An advancement family resolves one native item per rarity. Rarity choices
@@ -349,7 +351,9 @@ public final class YamlLootTables {
                     name, names, namespace, prepared.templates()));
         }
         validateReferences(parsed);
-        return new YamlLootTables(parsed, prepared.templates(), resolver, artifacts);
+        var result = new YamlLootTables(parsed, prepared.templates(), resolver, artifacts);
+        result.validateExpectedNodes();
+        return result;
     }
 
     private static Pool parseList(Object raw, ItemResolver resolver, ArtifactResolver artifacts,
@@ -437,7 +441,7 @@ public final class YamlLootTables {
                     hasWeight = true;
                 } else hasNull = true;
                 entries.add(new Entry(rewardId, artifact, grade, element, typeChoice,
-                        nested, count, weight));
+                        nested, count, LootRecursionSafety.expectedCount(fields.get("count")), weight));
             }
             if (hasWeight && hasNull) {
                 throw new IllegalArgumentException(location + ": cannot mix null and numeric weights");
@@ -450,6 +454,82 @@ public final class YamlLootTables {
         } catch (RuntimeException | Error failure) {
             compiled.remove(source);
             throw failure;
+        }
+    }
+
+    /**
+     * Build the full pool-invocation graph, including aliases and instantiated
+     * templates. Item count contributes only when the target is another pool.
+     */
+    private void validateExpectedNodes() {
+        var graph = new LootRecursionSafety.Graph();
+        var pending = new ArrayDeque<Pool>();
+        var seen = new IdentityHashMap<Pool, Boolean>();
+        for (var table : pools.entrySet()) {
+            graph.root(table.getKey(), table.getValue());
+            pending.add(table.getValue());
+        }
+        for (var table : instances.entrySet()) {
+            graph.root(table.getKey(), table.getValue());
+            pending.add(table.getValue());
+        }
+        while (!pending.isEmpty()) {
+            Pool pool = pending.removeFirst();
+            if (seen.putIfAbsent(pool, true) != null) continue;
+            var from = graph.node(pool, "nested loot pool");
+            if (pool.weightedChoice == null) {
+                for (Entry entry : pool.entries) {
+                    includePoolCalls(graph, from, entry,
+                            LootRecursionSafety.Fraction.ONE, pending);
+                }
+            } else {
+                var choice = pool.weightedChoice;
+                LootRecursionSafety.Fraction total = LootRecursionSafety.Fraction.ZERO;
+                for (BigDecimal weight : choice.weights()) {
+                    total = total.add(LootRecursionSafety.Fraction.decimal(weight));
+                }
+                for (int i = 0; i < choice.candidates().size(); i++) {
+                    var weight = LootRecursionSafety.Fraction.decimal(choice.weights().get(i));
+                    includePoolCalls(graph, from, choice.candidates().get(i),
+                            weight.divide(total), pending);
+                }
+            }
+        }
+        graph.verify();
+    }
+
+    private void includePoolCalls(LootRecursionSafety.Graph graph,
+            LootRecursionSafety.Graph.Node from, Entry entry,
+            LootRecursionSafety.Fraction probability, ArrayDeque<Pool> pending) {
+        var count = probability.multiply(entry.expectedCount);
+        if (count.isZero()) return;
+        if (entry.nested != null) {
+            graph.edge(from, graph.node(entry.nested, "nested loot pool"), count);
+            pending.add(entry.nested);
+        }
+        if (entry.typeChoice == null) return;
+        var choice = entry.typeChoice;
+        LootRecursionSafety.Fraction total = LootRecursionSafety.Fraction.ZERO;
+        for (BigDecimal weight : choice.weights()) {
+            total = total.add(LootRecursionSafety.Fraction.decimal(weight));
+        }
+        for (int i = 0; i < choice.candidates().size(); i++) {
+            String tableName = choice.candidates().get(i).table;
+            if (tableName == null) continue;
+            Pool child = pools.get(tableName);
+            if (child == null) child = instances.get(tableName);
+            if (child == null && templates.isTemplateReference(tableName)) {
+                instantiateUnchecked(tableName);
+                child = instances.get(tableName);
+                graph.root(tableName, child);
+            }
+            if (child == null) {
+                throw new IllegalArgumentException("Unknown named loot table: " + tableName);
+            }
+            graph.edge(from, graph.node(child, tableName),
+                    count.multiply(LootRecursionSafety.Fraction.decimal(
+                            choice.weights().get(i))).divide(total));
+            pending.add(child);
         }
     }
 
@@ -516,12 +596,19 @@ public final class YamlLootTables {
     /** CSS references instantiate item-parameterized tables while loading configuration. */
     private synchronized String instantiate(String name) {
         if (!instances.containsKey(name)) {
-            var entries = templates.instantiateReference(name);
-            var pool = parseList(entries, resolver, artifacts, new IdentityHashMap<>(),
-                    name, pools.keySet(), namespaceOf(name), templates);
-            instances.put(name, pool);
+            instantiateUnchecked(name);
+            validateExpectedNodes();
         }
         return name;
+    }
+
+    /** Used by graph construction; validation runs after all references materialize. */
+    private void instantiateUnchecked(String name) {
+        if (instances.containsKey(name)) return;
+        var entries = templates.instantiateReference(name);
+        var pool = parseList(entries, resolver, artifacts, new IdentityHashMap<>(),
+                name, pools.keySet(), namespaceOf(name), templates);
+        instances.put(name, pool);
     }
 
     /**

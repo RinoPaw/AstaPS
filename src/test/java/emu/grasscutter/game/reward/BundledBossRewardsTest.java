@@ -42,7 +42,7 @@ final class BundledBossRewardsTest {
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertTrue(css.contains("astaps.loot.world_artifact_5star:"));
         assertFalse(css.contains("world_artifact_5star<"));
-        assertTrue(css.contains("world_artifact_5star_plume_goblet<0, 0>"));
+        assertTrue(css.contains("world_artifact_5star_plume_goblet<0,0>"));
         assertTrue(css.contains("world_artifact_5star_goblet<1>"));
         assertTrue(css.contains("world_artifact_5star_goblet<0>"));
         assertFalse(css.contains("world_artifact_5star_2<"));

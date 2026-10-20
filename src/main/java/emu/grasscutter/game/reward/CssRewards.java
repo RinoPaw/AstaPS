@@ -105,7 +105,7 @@ public final class CssRewards {
             if (!sheet.parseStyleSheet(new StringReader(source), CSSStyleSheet.COMMENTS_IGNORE)) {
                 var handler = sheet.getErrorHandler();
                 var details = handler instanceof io.sf.carte.doc.style.css.om.DefaultSheetErrorHandler errors
-                        ? errors.getSacErrors() + "; rules=" + errors.getRuleParseErrors()
+                        ? errors.getSacErrors().stream().limit(8).map(e -> e.getLineNumber() + ":" + e.getColumnNumber() + " " + e.getMessage()).toList() + "; rules=" + errors.getRuleParseErrors()
                         : handler;
                 throw new IllegalArgumentException("Invalid reward CSS: " + details);
             }

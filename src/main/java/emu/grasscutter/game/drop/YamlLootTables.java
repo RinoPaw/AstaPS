@@ -30,8 +30,8 @@ public final class YamlLootTables {
                          Pool nested, LootCount.Spec count, BigDecimal weight) {}
 
     /**
-     * An advancement family resolves one native item per rarity. Rarity probabilities
-     * are percentages summing to 100; weights on outer entries are independent.
+     * An advancement family resolves one native item per rarity. Rarity choices
+     * use relative weights; weights on outer entries are independent.
      * A chosen grade applies to the entire count of that entry execution.
      */
     private record WeightedItemSelector(int[] itemIds, double[] cumulative) {
@@ -75,52 +75,43 @@ public final class YamlLootTables {
         }
         if (!(rarity instanceof String probabilities)) {
             throw new IllegalArgumentException(location
-                    + ": advancement rarity must be an integer or quoted percentage distribution");
+                    + ": advancement rarity must be an integer or quoted relative-weight distribution");
         }
         var ids = new ArrayList<Integer>();
-        var boundaries = new ArrayList<Double>();
+        var boundaries = new ArrayList<BigDecimal>();
         var seen = new java.util.HashSet<Integer>();
         BigDecimal total = BigDecimal.ZERO;
-        BigDecimal hundred = new BigDecimal("100");
         for (String part : probabilities.split(",", -1)) {
             String[] pair = part.trim().split(":", -1);
             if (pair.length != 2 || !pair[0].trim().matches("[2-" + maxGrade + "]")
                     || !pair[1].trim().matches("[0-9]+(?:\\.[0-9]+)?")) {
                 throw new IllegalArgumentException(location
-                        + ": invalid advancement rarity percentage: " + part);
+                        + ": invalid advancement rarity weight: " + part);
             }
             int grade = Integer.parseInt(pair[0].trim());
             if (!seen.add(grade)) {
                 throw new IllegalArgumentException(location + ": duplicate advancement rarity: " + grade);
             }
-            BigDecimal percentage = new BigDecimal(pair[1].trim());
-            if (percentage.compareTo(hundred) > 0) {
-                throw new IllegalArgumentException(location
-                        + ": advancement rarity probability above 100%: " + part);
-            }
-            total = total.add(percentage);
-            if (total.compareTo(hundred) > 0) {
-                throw new IllegalArgumentException(location
-                        + ": advancement rarity percentages exceed 100%");
-            }
-            if (percentage.signum() == 0) continue;
+            BigDecimal weight = new BigDecimal(pair[1].trim());
+            total = total.add(weight);
+            if (weight.signum() == 0) continue;
             int itemId = resolver.resolve(family + "." + grade);
             if (itemId <= 0) {
                 throw new IllegalArgumentException(location
                         + ": unknown advancement family or rarity: " + family + "." + grade);
             }
             ids.add(itemId);
-            boundaries.add(total.movePointLeft(2).doubleValue());
+            boundaries.add(total);
         }
-        if (total.compareTo(hundred) != 0) {
-            throw new IllegalArgumentException(location
-                    + ": advancement rarity percentages must sum to 100: " + total);
+        if (total.signum() == 0) {
+            throw new IllegalArgumentException(location + ": advancement rarity weights must be positive");
         }
         var nativeIds = new int[ids.size()];
         var cumulative = new double[ids.size()];
         for (int i = 0; i < ids.size(); i++) {
             nativeIds[i] = ids.get(i);
-            cumulative[i] = boundaries.get(i);
+            cumulative[i] = boundaries.get(i)
+                    .divide(total, java.math.MathContext.DECIMAL128).doubleValue();
         }
         return new WeightedItemSelector(nativeIds, cumulative);
     }
@@ -140,10 +131,9 @@ public final class YamlLootTables {
                     + ": elemental ascension gems require quoted element odds and integer rarity 2..5");
         }
         var ids = new ArrayList<Integer>();
-        var boundaries = new ArrayList<Double>();
+        var boundaries = new ArrayList<BigDecimal>();
         var seen = new java.util.HashSet<String>();
         var total = BigDecimal.ZERO;
-        var hundred = new BigDecimal("100");
         for (String part : probabilities.split(",", -1)) {
             String[] pair = part.trim().split(":", -1);
             String element = pair[0].trim();
@@ -152,19 +142,15 @@ public final class YamlLootTables {
                                     "hydro", "pyro", "cryo").contains(element)
                     || !pair[1].trim().matches("[0-9]+(?:\\.[0-9]+)?")) {
                 throw new IllegalArgumentException(location
-                        + ": invalid ascension gem element percentage: " + part);
+                        + ": invalid ascension gem element weight: " + part);
             }
             if (!seen.add(element)) {
                 throw new IllegalArgumentException(location
                         + ": duplicate ascension gem element: " + element);
             }
-            var percentage = new BigDecimal(pair[1].trim());
-            total = total.add(percentage);
-            if (total.compareTo(hundred) > 0) {
-                throw new IllegalArgumentException(location
-                        + ": ascension gem element percentages exceed 100%");
-            }
-            if (percentage.signum() == 0) continue;
+            var weight = new BigDecimal(pair[1].trim());
+            total = total.add(weight);
+            if (weight.signum() == 0) continue;
             String reference = "genshin.avatar_ascension." + element + "." + rarity;
             int itemId = resolver.resolve(reference);
             if (itemId <= 0) {
@@ -172,17 +158,17 @@ public final class YamlLootTables {
                         + ": unknown ascension gem: " + reference);
             }
             ids.add(itemId);
-            boundaries.add(total.movePointLeft(2).doubleValue());
+            boundaries.add(total);
         }
-        if (total.compareTo(hundred) != 0) {
-            throw new IllegalArgumentException(location
-                    + ": ascension gem element percentages must sum to 100: " + total);
+        if (total.signum() == 0) {
+            throw new IllegalArgumentException(location + ": ascension gem element weights must be positive");
         }
         var itemIds = new int[ids.size()];
         var cumulative = new double[ids.size()];
         for (int i = 0; i < ids.size(); i++) {
             itemIds[i] = ids.get(i);
-            cumulative[i] = boundaries.get(i);
+            cumulative[i] = boundaries.get(i)
+                    .divide(total, java.math.MathContext.DECIMAL128).doubleValue();
         }
         return new WeightedItemSelector(itemIds, cumulative);
     }

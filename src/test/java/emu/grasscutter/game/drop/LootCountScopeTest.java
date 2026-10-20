@@ -72,6 +72,31 @@ class LootCountScopeTest {
     }
 
     @Test
+    void rarityAndElementDistributionsUseRelativeWeights() {
+        var itemIds = (YamlLootTables.ItemResolver) name -> switch (name) {
+            case "genshin.avatar_ascension.anemo.2" -> 1202;
+            case "genshin.avatar_ascension.anemo.3" -> 1203;
+            case "genshin.avatar_ascension.pyro.2" -> 1204;
+            case "genshin.avatar_ascension.hydro.2" -> 1205;
+            default -> -2;
+        };
+        var tables = YamlLootTables.parse("""
+                rarity:
+                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:3, 3:1"}}
+                element:
+                  - {reward: genshin.avatar_ascension, properties: {element: "pyro:3, hydro:1", rarity: 2}}
+                """, itemIds);
+        var random = new Random(74);
+        int rarityFirst = 0, elementFirst = 0;
+        for (int i = 0; i < 10_000; i++) {
+            if (tables.roll("rarity", random).containsKey(1202)) rarityFirst++;
+            if (tables.roll("element", random).containsKey(1204)) elementFirst++;
+        }
+        assertEquals(0.75, rarityFirst / 10_000.0, 0.025);
+        assertEquals(0.75, elementFirst / 10_000.0, 0.025);
+    }
+
+    @Test
     void explicitDistributionControlsIndependentPoolExecutions() {
         var tables = YamlLootTables.parse("""
                 weapon: &weapon

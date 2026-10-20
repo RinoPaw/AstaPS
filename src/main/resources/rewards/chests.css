@@ -12,7 +12,7 @@
 
 /* 奖励按对象分别放在宝箱、传送点、地脉花和世界 Boss 的 CSS 中。
  * 加载器按文件名排序后合并解析；相同选择器优先级按声明顺序覆盖。
- * 世界 Boss 的 BOSS_MATERIAL 和 ELEMENT 分别绑定材料与元素，
+ * 世界 Boss 的 --material 和 --element 分别绑定材料与元素，
  * 相应等级规则再引用这些绑定值。
  */
 
@@ -75,36 +75,36 @@ chest[type="normal"][grade="precious"]:is([area="10"], [area="77"], [area="8"], 
 
 /* 印记元素绑定：city 8/9 共用冰元素。 */
 chest[type="normal"][city="1"] {
-    element: "anemo";
+    --element: "anemo";
 }
 
 chest[type="normal"][city="2"] {
-    element: "geo";
+    --element: "geo";
 }
 
 chest[type="normal"][city="3"] {
-    element: "electro";
+    --element: "electro";
 }
 
 chest[type="normal"][city="4"] {
-    element: "dendro";
+    --element: "dendro";
 }
 
 chest[type="normal"][city="5"] {
-    element: "hydro";
+    --element: "hydro";
 }
 
 chest[type="normal"][city="6"] {
-    element: "pyro";
+    --element: "pyro";
 }
 
 chest[type="normal"][city="7"] {
-    element: "lunar";
+    --element: "lunar";
 }
 
 chest[type="normal"][city="8"],
 chest[type="normal"][city="9"] {
-    element: "cryo";
+    --element: "cryo";
 }
 
 /* 品级与等级奖励：武器、矿石、印记。范围含两端。 */
@@ -113,7 +113,7 @@ chest[type="normal"][grade="common"][data-range-level-1-5] {
     astaps.loot.weapons_1_star: "0:60, 1:40";
     genshin.weapon_up.enhancement_ore: "2:90, 3:10";
     genshin.weapon_up.fine_ore: "0:80, 1:20";
-    genshin.currency.sigil.<ELEMENT>: 1;
+    genshin.currency.sigil.<element>: 1;
 }
 
 chest[type="normal"][grade="common"][data-range-level-6-10] {
@@ -121,41 +121,41 @@ chest[type="normal"][grade="common"][data-range-level-6-10] {
     astaps.loot.weapons_1_to_2_low: "0:50, 1:50";
     genshin.weapon_up.enhancement_ore: "2:40, 3:60";
     genshin.weapon_up.fine_ore: "0:60, 1:40";
-    genshin.currency.sigil.<ELEMENT>: 1;
+    genshin.currency.sigil.<element>: 1;
 }
 
 chest[type="normal"][grade="common"][data-range-level-11-15] {
     astaps.loot.weapons_1_to_2_high: "0:40, 1:60";
     genshin.weapon_up.enhancement_ore: "3:90, 4:10";
     genshin.weapon_up.fine_ore: "0:40, 1:60";
-    genshin.currency.sigil.<ELEMENT>: 2;
+    genshin.currency.sigil.<element>: 2;
 }
 
 chest[type="normal"][grade="common"][data-range-level-16-20] {
     astaps.loot.weapons_1_to_2_high: "0:30, 1:70";
     genshin.weapon_up.enhancement_ore: "4:90, 5:10";
     genshin.weapon_up.fine_ore: "0:40, 1:60";
-    genshin.currency.sigil.<ELEMENT>: 2;
+    genshin.currency.sigil.<element>: 2;
 }
 
 chest[type="normal"][grade="common"][data-range-level-21-25] {
     astaps.loot.weapons_2_star: "0:20, 1:80";
     genshin.weapon_up.enhancement_ore: "5:90, 6:10";
     genshin.weapon_up.fine_ore: "0:40, 1:60";
-    genshin.currency.sigil.<ELEMENT>: 3;
+    genshin.currency.sigil.<element>: 3;
 }
 
 chest[type="normal"][grade="common"][data-range-level-26-up],
 chest[type="normal"][grade="exquisite"][data-range-level-1-20] {
     astaps.loot.weapons_2_star: "0:10, 1:90";
     genshin.weapon_up.fine_ore: "3:90, 4:10";
-    genshin.currency.sigil.<ELEMENT>: 3;
+    genshin.currency.sigil.<element>: 3;
 }
 
 chest[type="normal"][grade="exquisite"][data-range-level-21-25] {
     astaps.loot.weapons_2_to_3_low: 1;
     genshin.weapon_up.fine_ore: "4:90, 5:10";
-    genshin.currency.sigil.<ELEMENT>: 4;
+    genshin.currency.sigil.<element>: 4;
 }
 
 chest[type="normal"][grade="exquisite"][data-range-level-26-up],
@@ -163,33 +163,33 @@ chest[type="normal"][grade="precious"][data-range-level-1-20] {
     astaps.loot.weapons_2_to_3_low: "1:90, 2:10";
     genshin.weapon_up.fine_ore: "2:90, 3:10";
     genshin.weapon_up.mystic_ore: 1;
-    genshin.currency.sigil.<ELEMENT>: 4;
+    genshin.currency.sigil.<element>: 4;
 }
 
 chest[type="normal"][grade="precious"][data-range-level-21-25] {
     astaps.loot.weapons_2_to_3_high: "1:80, 2:20";
     genshin.weapon_up.fine_ore: "3:90, 4:10";
     genshin.weapon_up.mystic_ore: 1;
-    genshin.currency.sigil.<ELEMENT>: 5;
+    genshin.currency.sigil.<element>: 5;
 }
 
 chest[type="normal"][grade="precious"][data-range-level-26-up],
 chest[type="normal"][grade="luxurious"][data-range-level-1-20] {
     astaps.loot.weapons_2_to_3_high: "1:70, 2:30";
     genshin.weapon_up.mystic_ore: 3;
-    genshin.currency.sigil.<ELEMENT>: 5;
+    genshin.currency.sigil.<element>: 5;
 }
 
 chest[type="normal"][grade="luxurious"][data-range-level-21-25] {
     astaps.loot.weapons_3_star: "1:60, 2:40";
     genshin.weapon_up.mystic_ore: "3:90, 4:10";
-    genshin.currency.sigil.<ELEMENT>: 6;
+    genshin.currency.sigil.<element>: 6;
 }
 
 chest[type="normal"][grade="luxurious"][data-range-level-26-up] {
     astaps.loot.weapons_3_star: "1:50, 2:50";
     genshin.weapon_up.mystic_ore: "3:80, 4:20";
-    genshin.currency.sigil.<ELEMENT>: 6;
+    genshin.currency.sigil.<element>: 6;
 }
 
 /* 地区奖励（city 1-4）：摩拉、角色经验书、天赋书。

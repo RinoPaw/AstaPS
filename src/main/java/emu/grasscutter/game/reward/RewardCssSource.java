@@ -37,31 +37,40 @@ final class RewardCssSource {
                 continue;
             }
             if (start && depth > 0 && brackets == 0 && parentheses == 0 && !Character.isWhitespace(c)) {
-                int end = i;
-                while (end < source.length() && !Character.isWhitespace(source.charAt(end))
-                        && ":;{}()\"'/".indexOf(source.charAt(end)) < 0) end++;
+                int end = i, angles = 0;
+                while (end < source.length()) {
+                    char candidate = source.charAt(end);
+                    if ((Character.isWhitespace(candidate) && angles == 0)
+                            || ":;{}()\"'/".indexOf(candidate) >= 0) break;
+                    if (candidate == '<') angles++;
+                    else if (candidate == '>') angles--;
+                    end++;
+                }
                 String name = source.substring(i, end);
                 int colon = skipTrivia(source, end);
                 if (colon < source.length() && source.charAt(colon) == ':'
                         && nextDelimiter(source, colon + 1) != '{' && name.startsWith("--")) {
-                    throw new IllegalArgumentException("Use a dotted resource name or bare binding name: " + name);
+                    if (!name.matches("--[a-zA-Z_][a-zA-Z0-9_-]*")) {
+                        throw new IllegalArgumentException("Invalid reward binding name: " + name);
+                    }
+                    register(names, name, name);
                 }
                 if (isDeclarationName(name) && colon < source.length() && source.charAt(colon) == ':'
                         && nextDelimiter(source, colon + 1) != '{') {
                     String internal = "--" + name.replace('.', '-');
-                    String previous = names.putIfAbsent(internal, name);
-                    if (previous != null && !previous.equals(name)) {
-                        throw new IllegalArgumentException("Reward CSS property collision: "
-                                + previous + " and " + name + " map to " + internal);
-                    }
+                    register(names, internal, name);
                     // Template punctuation needs escaping only inside the library's input.
                     append(output, offsets, "--", i, i + 1);
                     for (int k = 0; k < name.length(); k++) {
                         char ch = name.charAt(k) == '.' ? '-' : name.charAt(k);
-                        if (!(Character.isLetterOrDigit(ch) || ch == '-' || ch == '_' || ch >= 128)) {
-                            append(output, offsets, "\\", i + k, i + k + 1);
+                        if (Character.isISOControl(ch)) {
+                            append(output, offsets, "\\" + Integer.toHexString(ch) + " ", i + k, i + k + 1);
+                        } else {
+                            if (!(Character.isLetterOrDigit(ch) || ch == '-' || ch == '_' || ch >= 128)) {
+                                append(output, offsets, "\\", i + k, i + k + 1);
+                            }
+                            append(output, offsets, String.valueOf(ch), i + k, i + k + 1);
                         }
-                        append(output, offsets, String.valueOf(ch), i + k, i + k + 1);
                     }
                     i = end;
                     start = false;
@@ -91,8 +100,15 @@ final class RewardCssSource {
     }
 
     private static boolean isDeclarationName(String name) {
-        return name.startsWith("genshin.") || name.matches("[a-z][a-z0-9_]*\\.loot\\..+")
-                || name.equals("element") || name.equals("boss-material") || name.equals("boss-material-count");
+        return name.startsWith("genshin.") || name.matches("[a-z][a-z0-9_]*\\.loot\\..+");
+    }
+
+    private static void register(Map<String, String> names, String internal, String name) {
+        String previous = names.putIfAbsent(internal, name);
+        if (previous != null && !previous.equals(name)) {
+            throw new IllegalArgumentException("Reward CSS property collision: "
+                    + previous + " and " + name + " map to " + internal);
+        }
     }
 
     private static void append(StringBuilder output, ArrayList<Integer> offsets,

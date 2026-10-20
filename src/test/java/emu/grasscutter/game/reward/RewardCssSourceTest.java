@@ -11,15 +11,15 @@ class RewardCssSourceTest {
         var translated = RewardCssSource.translate("""
                 boss {
                     genshin.avatar_ascension.anemo.sliver: 1;
-                    astaps.loot.gem<3,<ELEMENT>[0],<ELEMENT>[1]>: 2;
-                    element: "[anemo, cryo]";
+                    astaps.loot.gem<3,<element>[0],<element>[1]>: 2;
+                    --element: "[anemo, cryo]";
                 }
                 """);
         assertTrue(translated.css().contains("--genshin-avatar_ascension-anemo-sliver: 1;"));
-        assertEquals("astaps.loot.gem<3,<ELEMENT>[0],<ELEMENT>[1]>",
-                translated.names().get("--astaps-loot-gem<3,<ELEMENT>[0],<ELEMENT>[1]>"));
-        assertTrue(translated.css().contains("--astaps-loot-gem\\<3\\,\\<ELEMENT\\>\\[0\\]\\,\\<ELEMENT\\>\\[1\\]\\>: 2;"));
-        assertEquals("element", translated.names().get("--element"));
+        assertEquals("astaps.loot.gem<3,<element>[0],<element>[1]>",
+                translated.names().get("--astaps-loot-gem<3,<element>[0],<element>[1]>"));
+        assertTrue(translated.css().contains("--astaps-loot-gem\\<3\\,\\<element\\>\\[0\\]\\,\\<element\\>\\[1\\]\\>: 2;"));
+        assertEquals("--element", translated.names().get("--element"));
     }
 
     @Test

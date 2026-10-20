@@ -95,24 +95,24 @@ Each attribute uses the common weighted-expression parser.
 
 ```css
 boss[type="world"][tag="maguu_kenki"] {
-    boss-material: "marionette_core";
-    element: "[anemo, cryo]";
+    --material: "marionette_core";
+    --element: "[anemo, cryo]";
 }
 
 boss[type="world"][data-range-level-90-92] {
     genshin.currency.mora: 5200;
     genshin.experience.companionship: 45;
     genshin.experience.character: 200;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:44, 3:56";
+    genshin.avatar_ascension.<material>: "2:44, 3:56";
 }
 
 boss[type="world"][tag="maguu_kenki"][data-range-level-50-54] {
-    astaps.loot.world_gem_two<3,<ELEMENT>[0],<ELEMENT>[1]>: "1:25, 2:75";
+    astaps.loot.world_gem_two<3,<element>[0],<element>[1]>: "1:25, 2:75";
 }
 ```
 
-`<ELEMENT>` is a scalar binding; lists use explicit zero-based indexes.
-`<BOSS_MATERIAL>` expands a material list into independent per-item grants.
+`<element>` is a scalar binding; lists use explicit zero-based indexes.
+`<material>` expands a material list into independent per-item grants.
 Bindings are resolved from all matching rules before count declarations, so
 identity declarations may follow shared level rules. Selector specificity and
 source order determine overrides. A missing material or element binding
@@ -131,12 +131,16 @@ world_gem_two<COUNT, ELEMENTS...>:
     count: <COUNT>
 ```
 
-An ordinary one-element call is `astaps.loot.world_gem_two<3, <ELEMENT>>`.
-Literal arguments such as `<electro>` remain valid. YAML template parameters use
+An ordinary one-element call is `astaps.loot.world_gem_two<3, <element>>`.
+In `gem<anemo>`, `anemo` is a literal template argument. In `gem<<element>>`,
+`<element>` is a variable inside the argument list. In a resource path,
+`.anemo` is a literal segment and `.<anemo>` references a variable named `anemo`.
+A same-named variable never changes a literal argument. Undeclared variables
+are rejected while loading configuration. YAML template parameters use
 `<element>` or `<set1>` inside strings. The obsolete `${parameter}` expression
-and the implicit CSS `<ELEMENT>` pack call are rejected.
+and the implicit CSS `<element>` pack call are rejected.
 
-`ELEMENT` also selects regional chest sigils, including `lunar`. Ley-line
+`--element` also selects regional chest sigils, including `lunar`. Ley-line
 blossom selectors use `WR`, supplied by `rollBlossom` for world ranks 0–9.
 
 ## Counts and independent grants
@@ -144,8 +148,9 @@ blossom selectors use `WR`, supplied by `rollBlossom` for world ranks 0–9.
 Reward declarations use bare, dotted resource names:
 `genshin.currency.mora: 240;` grants 240 Mora;
 `astaps.loot.currency: 1;` executes a named loot pool.
-The bare `element`, `boss-material`, and `boss-material-count` properties carry
-reward-domain bindings. No CSS escaping is required, including in template calls.
+CSS custom properties declare bindings: `--material` and `--element` are used
+by the bundled rules. Any `--name` declares `<name>` with exactly the same spelling
+and case after the CSS prefix. There is no domain-specific name mapping. No CSS escaping is required, including in template calls.
 This is an extension of CSS declaration-name syntax: a lexical adapter translates
 only declaration names into internal custom properties before css4j parses the sheet.
 For example, `genshin.avatar_ascension.anemo.sliver` becomes
@@ -185,7 +190,7 @@ world_gem_fragment<COUNT, ELEMENTS...>:
 
 ```css
 boss[type="world"][tag="anemo_hypostasis"][data-range-level-40-up] {
-    astaps.loot.world_gem_fragment<1,<ELEMENT>>: "3:88, 6:12";
+    astaps.loot.world_gem_fragment<1,<element>>: "3:88, 6:12";
 }
 ```
 

@@ -24,7 +24,7 @@ final class BundledBossRewardsTest {
         assertTrue(yaml.contains("type: genshin.avatar_ascension"));
         assertTrue(yaml.contains("world_gem_four<COUNT, ELEMENTS...>:"));
         assertTrue(yaml.contains("world_gem_one<ELEMENTS...>:"));
-        assertTrue(css.contains("astaps.loot.world_gem_one<<ELEMENT>[0],<ELEMENT>[1]>:"));
+        assertTrue(css.contains("astaps.loot.world_gem_one<<element>[0],<element>[1]>:"));
         for (int rarity = 1; rarity <= 4; rarity++) {
             String template = "world_artifact_" + rarity + "star<SETS...>:";
             assertTrue(yaml.contains(template), template);
@@ -132,7 +132,7 @@ final class BundledBossRewardsTest {
                         default -> "Materials";
                     });
                 });
-        Pattern.compile("boss-material: \"([a-z0-9_]+)\";")
+        Pattern.compile("--material: \"([a-z0-9_]+)\";")
                 .matcher(stylesheet).results().map(match -> match.group(1)).distinct()
                 .forEach(name -> {
                     String canonical = "genshin.avatar_ascension." + name;
@@ -141,7 +141,7 @@ final class BundledBossRewardsTest {
                     categories.put(id, "Character Development Items");
                 });
         // Some Bosses expose several material variants in an array binding.
-        Pattern.compile("boss-material:\\s*\"\\[([^]]+)\\]\"")
+        Pattern.compile("--material:\\s*\"\\[([^]]+)\\]\"")
                 .matcher(stylesheet).results()
                 .flatMap(match -> java.util.Arrays.stream(match.group(1).split(",")))
                 .map(String::trim)

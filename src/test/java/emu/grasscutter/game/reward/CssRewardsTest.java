@@ -134,11 +134,63 @@ class CssRewardsTest {
     }
 
     @Test
-    void obsoleteHyphenatedCssResourceNamesAreRejected() {
-        assertThrows(IllegalArgumentException.class, () ->
-                CssRewards.parse("chest { --genshin-currency-mora: 1; }", items, loot));
-        assertThrows(IllegalArgumentException.class, () ->
-                CssRewards.parse("chest { --astaps-loot-currency: 1; }", items, loot));
+    void bindingsUseExactNamesWithoutDomainSpecificMappings() {
+        var css = CssRewards.parse("""
+                chest {
+                    --Reward_Name: mora;
+                    --material: "[mora, primogem]";
+                    genshin.currency.<material>: 2;
+                    genshin.currency.<Reward_Name>: 5;
+                }
+                """, items, loot);
+        assertEquals(Map.of(202, 5, 201, 2), css.resolve("chest", Map.of()).items());
+        assertThrows(IllegalArgumentException.class, () -> CssRewards.parse("""
+                chest { --Reward_Name: mora; genshin.currency.<reward_name>: 1; }
+                """, items, loot));
+    }
+
+    @Test
+    void templateLiteralsCannotBeShadowedByVariablesWithTheSameName() {
+        var templates = YamlLootTables.parse("""
+                pick<KIND>:
+                  - {reward: "genshin.currency.<KIND>"}
+                """, items::resolve);
+        var css = CssRewards.parse("""
+                chest {
+                    --mora: primogem;
+                    --element: mora;
+                    astaps.loot.pick<mora>: 1;
+                }
+                chest[mode="variable"] { astaps.loot.pick<<mora>>: 2; }
+                chest[mode="element"] { astaps.loot.pick<<element>>: 3; }
+                chest[mode="element"][grade="common"] { --element: primogem; }
+                """, items, templates);
+        assertEquals(Map.of(202, 1), RewardRoller.roll(css.resolve("chest", Map.of()), templates, new Random(1)));
+        assertEquals(Map.of(202, 1, 201, 2), RewardRoller.roll(
+                css.resolve("chest", Map.of("mode", "variable")), templates, new Random(1)));
+        assertEquals(Map.of(202, 3), RewardRoller.roll(
+                css.resolve("chest", Map.of("mode", "element")), templates, new Random(1)));
+        assertEquals(Map.of(202, 1, 201, 3), RewardRoller.roll(
+                css.resolve("chest", Map.of("mode", "element", "grade", "common")), templates, new Random(1)));
+    }
+
+    @Test
+    void bindingNamesHaveNoImplicitRewardMeaning() {
+        var unused = CssRewards.parse("chest { --loot: currency; }", items, loot);
+        assertTrue(unused.resolve("chest", Map.of()).loot().isEmpty());
+        var referenced = CssRewards.parse(
+                "chest { --loot: currency; astaps.loot.<loot>: 2; }", items, loot);
+        assertEquals(Map.of("astaps.loot.currency", 2), referenced.resolve("chest", Map.of()).loot());
+    }
+
+    @Test
+    void undeclaredVariablesFailWhileLoadingConfiguration() {
+        var error = assertThrows(IllegalArgumentException.class, () -> CssRewards.parse(
+                "chest { genshin.currency.<anemo>: 1; }", items, loot));
+        assertTrue(error.getMessage().contains("Undeclared reward variable <anemo>"));
+        var tableError = assertThrows(IllegalArgumentException.class, () -> CssRewards.parse(
+                "chest { astaps.loot.pick<<missing>>: 1; }", items, loot));
+        assertTrue(tableError.getMessage().contains("Undeclared reward variable <missing>"));
     }
 
     @Test
@@ -440,10 +492,8 @@ class CssRewardsTest {
     }
 
     @Test
-    void malformedAndLegacyLootPropertiesAreRejected() {
+    void malformedRewardDeclarationsAreRejected() {
         for (String declaration : new String[]{
-                "--loot: currency;",
-                "--loot: \"astaps.loot.currency\";",
                 "astaps.loot.missing: 1;",
                 "astaps.loot.currency: none;",
                 "astaps.loot.currency: -1;",

@@ -45,8 +45,6 @@ public final class CssRewards {
     // Range membership is domain data represented by ordinary CSS attributes.
     private static final Pattern RANGE_MEMBERSHIP_ATTRIBUTE = Pattern.compile(
             "\\[\\s*(data-range-([a-zA-Z_][a-zA-Z0-9_-]*)-([0-9]+)-(up|[0-9]+))\\s*\\]");
-    private static final Pattern BINDING = Pattern.compile(
-            "<(BOSS_MATERIAL|ELEMENT)>(?:\\[([0-9]+)])?");
 
     private static String resourceName(String property, Map<String, String> names) {
         String name = names.get(io.sf.carte.doc.style.css.parser.ParseHelper.unescapeStringValue(property));
@@ -75,23 +73,26 @@ public final class CssRewards {
         }
     }
 
-    private record LootDeclaration(String name, Integer fixed, LootCount.Spec ranged) {}
-    private record ItemDeclaration(String name, Integer fixed, LootCount.Spec ranged) {}
+    private record LootDeclaration(RewardResourceExpression resource, Integer fixed, LootCount.Spec ranged) {}
+    private record ItemDeclaration(RewardResourceExpression resource, Integer fixed, LootCount.Spec ranged) {}
 
     private record Rule(
             Selector selector,
             List<ItemDeclaration> items, List<LootDeclaration> loot,
-            List<String> bossMaterials, LootCount.Spec bossMaterialCount, List<String> elements,
+            Map<String, List<String>> bindings,
             boolean important, int order) {}
 
     private final List<Rule> rules;
+    private final List<String> bindingNames;
     private final List<RangeMembership> rangeMemberships;
     private final YamlLootTables loot;
     private final ItemIdRegistry itemRegistry;
 
     private CssRewards(List<Rule> rules, List<RangeMembership> rangeMemberships,
-                       YamlLootTables loot, ItemIdRegistry itemRegistry) {
+                       YamlLootTables loot, ItemIdRegistry itemRegistry, Map<String, String> names) {
         this.rules = List.copyOf(rules);
+        this.bindingNames = names.values().stream().filter(name -> name.startsWith("--"))
+                .map(name -> name.substring(2)).toList();
         this.rangeMemberships = List.copyOf(rangeMemberships);
         this.loot = loot;
         this.itemRegistry = itemRegistry;
@@ -130,7 +131,7 @@ public final class CssRewards {
             }
             collectStyle(style, null, rules, intervals, order, items, loot, translated.names());
         }
-        return new CssRewards(rules, List.copyOf(intervals.values()), loot, items);
+        return new CssRewards(rules, List.copyOf(intervals.values()), loot, items, translated.names());
     }
 
     private static void collectStyle(StyleRule style, SelectorList parent,
@@ -177,9 +178,7 @@ public final class CssRewards {
             ItemIdRegistry items, YamlLootTables loot, Map<String, String> names, boolean important) {
         var itemDeclarations = new ArrayList<ItemDeclaration>();
         var lootDeclarations = new ArrayList<LootDeclaration>();
-        List<String> bossMaterials = null;
-        LootCount.Spec bossMaterialCount = null;
-        List<String> elements = null;
+        var bindings = new HashMap<String, List<String>>();
         boolean hasDeclarations = false;
         for (int index = 0; index < declarations.getLength(); index++) {
             String property = declarations.item(index);
@@ -194,22 +193,23 @@ public final class CssRewards {
                 value = value.substring(1, value.length() - 1);
             }
             String declaredName = names.get(io.sf.carte.doc.style.css.parser.ParseHelper.unescapeStringValue(property));
-            if ("boss-material".equals(declaredName)) {
-                bossMaterials = parseMaterialBinding(value);
-            } else if ("element".equals(declaredName)) {
-                elements = parseElementBinding(value);
-            } else if ("boss-material-count".equals(declaredName)) {
-                bossMaterialCount = LootCount.parseRoll(value);
+            if (declaredName != null && declaredName.startsWith("--")) {
+                bindings.put(declaredName.substring(2), parseBinding(value));
             } else {
                 String name = resourceName(property, names);
                 Integer fixed = value.matches("[0-9]+") ? Integer.valueOf(value) : null;
                 LootCount.Spec rolled = fixed == null ? LootCount.parseRoll(value) : null;
-                if (name.matches("[a-z][a-z0-9_]*\\.loot\\..*")) {
-                    String resource = BINDING.matcher(name).find() ? name : loot.resolveName(name);
+                boolean table = name.matches("[a-z][a-z0-9_]*\\.loot\\..*");
+                var resource = RewardResourceExpression.parse(name, table);
+                var declaredBindings = names.values().stream().filter(key -> key.startsWith("--"))
+                        .map(key -> key.substring(2)).collect(java.util.stream.Collectors.toSet());
+                resource.requireDeclared(declaredBindings);
+                if (table) {
+                    if (!resource.hasVariables()) loot.resolveName(name);
                     lootDeclarations.add(new LootDeclaration(resource, fixed, rolled));
                 } else {
-                    if (!BINDING.matcher(name).find()) items.resolve(name);
-                    itemDeclarations.add(new ItemDeclaration(name, fixed, rolled));
+                    if (!resource.hasVariables()) items.resolve(name);
+                    itemDeclarations.add(new ItemDeclaration(resource, fixed, rolled));
                 }
             }
         }
@@ -229,70 +229,25 @@ public final class CssRewards {
                         attribute, range.group(2), min, max));
             }
             rules.add(new Rule(selector, List.copyOf(itemDeclarations),
-                    List.copyOf(lootDeclarations), bossMaterials,
-                    bossMaterialCount, elements, important, sourceOrder[0]++));
+                    List.copyOf(lootDeclarations), Map.copyOf(bindings),
+                    important, sourceOrder[0]++));
         }
     }
 
-    private static List<String> parseMaterialBinding(String value) {
+    private static List<String> parseBinding(String value) {
         String names = value.replaceAll("\\s+", "");
         if (names.startsWith("[") && names.endsWith("]")) names = names.substring(1, names.length() - 1);
         else if (names.contains(",") || names.contains("[") || names.contains("]")) {
-            throw new IllegalArgumentException("Boss material lists require brackets: " + value);
+            throw new IllegalArgumentException("Binding lists require brackets: " + value);
         }
         var bindings = new ArrayList<String>();
         for (String name : names.split(",", -1)) {
-            String prefix = "genshin.avatar_ascension.";
-            if (name.startsWith(prefix)) name = name.substring(prefix.length());
-            ResourceId.parse(prefix + name);
-            if (bindings.contains(name)) throw new IllegalArgumentException("Duplicate Boss material: " + name);
+            // Bindings contain literal resource paths or template arguments, never more bindings.
+            ResourceId.parse("binding." + name);
+            if (bindings.contains(name)) throw new IllegalArgumentException("Duplicate binding value: " + name);
             bindings.add(name);
         }
         return List.copyOf(bindings);
-    }
-
-    private static List<String> parseElementBinding(String value) {
-        String names = value.replaceAll("\\s+", "");
-        if (names.startsWith("[")) {
-            if (!names.endsWith("]")) throw new IllegalArgumentException("Invalid ELEMENT list: " + value);
-            names = names.substring(1, names.length() - 1);
-        } else if (names.contains(",") || names.contains("]")) {
-            throw new IllegalArgumentException("ELEMENT lists require brackets: " + value);
-        }
-        var elements = new ArrayList<String>();
-        for (String name : names.split(",", -1)) {
-            if (!List.of("anemo", "geo", "electro", "dendro", "hydro", "pyro", "cryo", "lunar").contains(name)
-                    || elements.contains(name)) {
-                throw new IllegalArgumentException("Unknown or duplicate ELEMENT binding: " + name);
-            }
-            elements.add(name);
-        }
-        return List.copyOf(elements);
-    }
-
-    private static List<String> expandBindings(
-            String name, List<String> materials, List<String> elements, boolean table) {
-        var matcher = BINDING.matcher(name);
-        if (!matcher.find()) return List.of(name);
-        List<String> bound = "BOSS_MATERIAL".equals(matcher.group(1)) ? materials : elements;
-        if (bound == null) return List.of();
-        List<String> choices;
-        if (matcher.group(2) != null) {
-            int index = Integer.parseInt(matcher.group(2));
-            if (index >= bound.size()) throw new IllegalArgumentException("Reward binding index out of range: " + name);
-            choices = List.of(bound.get(index));
-        } else {
-            if ((table || "ELEMENT".equals(matcher.group(1))) && bound.size() != 1) {
-                throw new IllegalArgumentException("List binding requires an explicit index: " + name);
-            }
-            choices = bound;
-        }
-        var expanded = new ArrayList<String>();
-        for (String choice : choices) {
-            String next = name.substring(0, matcher.start()) + choice + name.substring(matcher.end());
-            expanded.addAll(expandBindings(next, materials, elements, table));
-        }
-        return expanded;
     }
 
     public Selection resolve(String type, Map<String, String> attributes) {
@@ -317,13 +272,9 @@ public final class CssRewards {
         matched.sort(Comparator.comparing((Match match) -> match.rule().important())
                 .thenComparing(Match::specificity, Specificity::selectorCompare)
                 .thenComparingInt(match -> match.rule().order()));
-        List<String> bossMaterials = null;
-        List<String> elements = null;
-        for (var match : matched) {
-            var rule = match.rule();
-            if (rule.bossMaterials != null) bossMaterials = rule.bossMaterials;
-            if (rule.elements != null) elements = rule.elements;
-        }
+        var bindings = new HashMap<String, List<String>>();
+        bindingNames.forEach(name -> bindings.put(name, List.of()));
+        for (var match : matched) bindings.putAll(match.rule().bindings);
         var fixed = new HashMap<Integer, Integer>();
         var ranged = new HashMap<Integer, LootCount.Spec>();
         var selectedLoot = new HashMap<String, Integer>();
@@ -331,7 +282,7 @@ public final class CssRewards {
         for (var match : matched) {
             var rule = match.rule();
             for (var declaration : rule.items) {
-                for (String name : expandBindings(declaration.name, bossMaterials, elements, false)) {
+                for (String name : declaration.resource.expand(bindings)) {
                     int id = itemRegistry.resolve(name);
                     if (declaration.fixed != null) {
                         ranged.remove(id);
@@ -343,7 +294,7 @@ public final class CssRewards {
                 }
             }
             for (var declaration : rule.loot) {
-                for (String expanded : expandBindings(declaration.name, bossMaterials, elements, true)) {
+                for (String expanded : declaration.resource.expand(bindings)) {
                     String name = loot.resolveName(expanded);
                     if (declaration.fixed != null) {
                         rangedLoot.remove(name);
@@ -352,14 +303,6 @@ public final class CssRewards {
                         selectedLoot.remove(name);
                         rangedLoot.put(name, declaration.ranged);
                     }
-                }
-            }
-            if (rule.bossMaterialCount != null && bossMaterials != null) {
-                for (String material : bossMaterials) {
-                    int id = itemRegistry.resolve("genshin.avatar_ascension." + material);
-                    fixed.remove(id);
-                    // Each item samples separately in RewardRoller, including an explicit zero.
-                    ranged.put(id, rule.bossMaterialCount);
                 }
             }
         }

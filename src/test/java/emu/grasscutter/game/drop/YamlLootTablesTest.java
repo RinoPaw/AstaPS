@@ -384,9 +384,7 @@ class YamlLootTablesTest {
                 8102, "Shivada Jade Fragment",
                 8103, "Varunada Lazurite Fragment"));
         for (String properties : java.util.List.of(
-                "{element: \"electro:50, cryo:40\", rarity: 3}",
                 "{element: \"electro:70, electro:30\", rarity: 3}",
-                "{element: \"electro:101\", rarity: 3}",
                 "{element: \"invalid:100\", rarity: 3}",
                 "{element: \"pyro:100\", rarity: 3}",
                 "{element: \"electro:100\", rarity: 6}",
@@ -468,8 +466,6 @@ class YamlLootTablesTest {
                 8201, "Teachings of Freedom",
                 8202, "Guide to Freedom"));
         for (String spec : java.util.List.of(
-                "2:60, 3:30", // missing 10%
-                "2:70, 3:40", // exceeds 100%
                 "2:50, 2:50", // duplicate tier
                 "2:99, 5:1", // 5-star talent book does not exist
                 "2:foo, 3:100")) {

@@ -69,8 +69,10 @@ class BundledChestRewardsTest {
         return new ArtifactResolver(variants);
     }
 
-    private static String chestYaml() throws Exception {
-        return resource("/rewards/loot.yaml").split("# 2. World Boss artifacts", 2)[0];
+    static String chestYaml() throws Exception {
+        String source = resource("/rewards/loot.yaml");
+        // The contents list names this section too. Use its final heading.
+        return source.substring(0, source.lastIndexOf("\n# 2. World Boss artifacts\n"));
     }
 
     private static String chestCss() throws Exception {

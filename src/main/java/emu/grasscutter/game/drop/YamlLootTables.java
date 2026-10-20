@@ -172,7 +172,8 @@ public final class YamlLootTables {
 
     private static TypeTarget typeTarget(String name, ItemResolver resolver,
             Set<String> tableNames, String namespace, String location,
-            Map<?, ?> properties, ArtifactResolver artifacts) {
+            Map<?, ?> properties, ArtifactResolver artifacts,
+            LootTemplates templates) {
         if ("null".equals(name)) {
             if (properties != null) {
                 throw new IllegalArgumentException(location + ": null reward cannot have attributes");
@@ -189,6 +190,12 @@ public final class YamlLootTables {
                 throw new IllegalArgumentException(location + ": ambiguous item/table name: " + name);
             }
             return new TypeTarget(null, qualified, null, null, null);
+        }
+        if (templates.isTemplateReference(name)) {
+            if (properties != null) {
+                throw new IllegalArgumentException(location + ": template invocation cannot have item attributes");
+            }
+            return new TypeTarget(null, templates.qualify(name), null, null, null);
         }
         if (name.equals("genshin.avatar_ascension") && properties != null) {
             return new TypeTarget(null, null, null, null,
@@ -247,6 +254,10 @@ public final class YamlLootTables {
         if (selected.table != null) {
             Pool table = pools.get(selected.table);
             if (table == null) table = instances.get(selected.table);
+            if (table == null && templates.isTemplateReference(selected.table)) {
+                String key = instantiate(selected.table);
+                table = instances.get(key);
+            }
             if (table == null) throw new IllegalStateException("Unknown named loot table: " + selected.table);
             rollPool(table, count, random, reward);
         } else if (selected.artifact != null) {
@@ -346,7 +357,7 @@ public final class YamlLootTables {
             String name = (String) e.getKey();
             String id = ResourceId.parse(namespace + ".loot." + name).toString();
             parsed.put(id, parseList(e.getValue(), resolver, artifacts, compiled, visiting,
-                    budget, name, 0, names, namespace));
+                    budget, name, 0, names, namespace, prepared.templates()));
         }
         validateReferences(parsed);
         return new YamlLootTables(parsed, prepared.templates(), resolver, artifacts);
@@ -355,7 +366,7 @@ public final class YamlLootTables {
     private static Pool parseList(Object raw, ItemResolver resolver, ArtifactResolver artifacts,
             IdentityHashMap<Object, Pool> compiled,
             IdentityHashMap<Object, Boolean> visiting, CompileBudget budget,
-            String location, int depth, Set<String> tableNames, String namespace) {
+            String location, int depth, Set<String> tableNames, String namespace, LootTemplates templates) {
         Pool cached = compiled.get(raw);
         if (cached != null) return cached;
         if (!(raw instanceof Map<?, ?> || raw instanceof List<?>)) {
@@ -396,12 +407,12 @@ public final class YamlLootTables {
                 Pool nested = null;
                 if (target instanceof List<?>) {
                     nested = parseList(target, resolver, artifacts, compiled, visiting, budget,
-                            at + ".type", depth + 1, tableNames, namespace);
+                            at + ".type", depth + 1, tableNames, namespace, templates);
                 } else if (target instanceof Map<?, ?> single) {
                     // A nested mapping rerolls its reward once for every outer
                     // execution. Its own count controls the quantity per roll.
                     nested = parseList(single, resolver, artifacts,
-                            compiled, visiting, budget, at + ".type", depth + 1, tableNames, namespace);
+                            compiled, visiting, budget, at + ".type", depth + 1, tableNames, namespace, templates);
                 } else if (target != null) {
                     if (!(target instanceof String reference) || reference.matches("[0-9]+")) {
                         throw new IllegalArgumentException(at + ": type must be a named item: " + target);
@@ -409,7 +420,7 @@ public final class YamlLootTables {
                     if (useType) {
                         typeChoice = WeightedChoice.compile(reference, at + ".type",
                                 candidate -> typeTarget(candidate.toString(), resolver,
-                                        tableNames, namespace, at, properties, artifacts));
+                                        tableNames, namespace, at, properties, artifacts, templates));
                     } else if (reference.equals("genshin.avatar_ascension")
                             && properties != null) {
                         element = compileElements(properties, resolver, at);
@@ -525,7 +536,7 @@ public final class YamlLootTables {
             var entries = templates.instantiateReference(name);
             var pool = parseList(entries, resolver, artifacts, new IdentityHashMap<>(),
                     new IdentityHashMap<>(), new CompileBudget(), name, 0, pools.keySet(),
-                    namespaceOf(name));
+                    namespaceOf(name), templates);
             instances.put(name, pool);
         }
         return name;

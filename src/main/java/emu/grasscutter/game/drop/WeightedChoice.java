@@ -16,11 +16,14 @@ import java.util.random.RandomGenerator;
  */
 final class WeightedChoice<T> {
     private final List<T> candidates;
+    private final List<BigDecimal> weights;
     private final double[] boundaries;
     private final boolean constant;
 
-    private WeightedChoice(List<T> candidates, double[] boundaries, boolean constant) {
+    private WeightedChoice(List<T> candidates, List<BigDecimal> weights,
+            double[] boundaries, boolean constant) {
         this.candidates = List.copyOf(candidates);
+        this.weights = List.copyOf(weights);
         this.boundaries = boundaries;
         this.constant = constant;
     }
@@ -39,7 +42,8 @@ final class WeightedChoice<T> {
     }
 
     private static <T> WeightedChoice<T> constant(T candidate) {
-        return new WeightedChoice<>(List.of(candidate), new double[] {1.0}, true);
+        return new WeightedChoice<>(List.of(candidate), List.of(BigDecimal.ONE),
+                new double[] {1.0}, true);
     }
 
     static <T> WeightedChoice<T> parse(
@@ -100,7 +104,7 @@ final class WeightedChoice<T> {
             cumulative[i] = sum.divide(total, MathContext.DECIMAL128).doubleValue();
         }
         cumulative[cumulative.length - 1] = 1.0;
-        return new WeightedChoice<>(selected, cumulative, false);
+        return new WeightedChoice<>(selected, selectedWeights, cumulative, false);
     }
 
     T sample(RandomGenerator random) {
@@ -114,5 +118,9 @@ final class WeightedChoice<T> {
 
     List<T> candidates() {
         return candidates;
+    }
+
+    List<BigDecimal> weights() {
+        return weights;
     }
 }

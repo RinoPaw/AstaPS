@@ -3,7 +3,7 @@ package emu.grasscutter.game.drop;
 import java.math.BigDecimal;
 import java.util.random.RandomGenerator;
 
-/** Integer reward counts, ranges, relative-weight distributions and bonus rolls. */
+/** Integer reward counts, ranges, relative-weight distributions and explicit distributions. */
 public final class LootCount {
     private static final BigDecimal HUNDRED = new BigDecimal("100");
     public static final int MAX_COUNT = 100_000;
@@ -20,7 +20,6 @@ public final class LootCount {
             throw new IllegalArgumentException("Invalid count: " + raw);
         }
         String text = raw.toString().trim();
-        if (text.contains("+")) return bonus(text);
         if (text.contains(":") || text.contains(",")) return parseRoll(text);
         if (text.contains("~") || text.contains(";")) {
             String[] parts = text.split("[~;]", -1);
@@ -78,28 +77,6 @@ public final class LootCount {
         };
     }
 
-    /**
-     * N+K:P runs N times and independently adds K further executions with P% chance.
-     * In nested loot, each execution rolls the nested pool separately.
-     */
-    private static Spec bonus(String text) {
-        if (!text.matches("[0-9]+\\+[0-9]+:[0-9]+(?:\\.[0-9]+)?")) {
-            throw new IllegalArgumentException("Invalid bonus count: " + text);
-        }
-        String[] parts = text.split("[+:]");
-        int base = integer(parts[0]);
-        int extra = integer(parts[1]);
-        if (extra == 0 || (long) base + extra > MAX_COUNT) {
-            throw new IllegalArgumentException("Bonus count exceeds supported range: " + text);
-        }
-        BigDecimal percent = percentage(parts[2]);
-        int total = base + extra;
-        if (percent.signum() == 0) return rng -> base;
-        if (percent.compareTo(HUNDRED) == 0) return rng -> total;
-        double chance = percent.movePointLeft(2).doubleValue();
-        return rng -> rng.nextDouble() < chance ? total : base;
-    }
-
     /** Convert native fractional expectations at the import boundary, never in user YAML. */
     static String fromNativeCount(String value) {
         if (value == null) throw new IllegalArgumentException("Missing native count");
@@ -121,17 +98,6 @@ public final class LootCount {
         // Native integer and inclusive-range encodings remain intact.
         parse(source);
         return source;
-    }
-
-    private static BigDecimal percentage(String value) {
-        if (!value.matches("[0-9]+(?:\\.[0-9]+)?")) {
-            throw new IllegalArgumentException("Invalid percentage: " + value);
-        }
-        BigDecimal chance = decimal(value);
-        if (chance.compareTo(HUNDRED) > 0) {
-            throw new IllegalArgumentException("Probability above 100%: " + value);
-        }
-        return chance;
     }
 
     private static BigDecimal decimal(String value) {

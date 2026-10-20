@@ -116,6 +116,65 @@ class LootCountScopeTest {
     }
 
     @Test
+    void complexWeightedBranchesUseTheSamePoolChooser() {
+        var tables = YamlLootTables.parse("""
+                grouped:
+                  - [{type: genshin.currency.mora, count: 2}, {type: genshin.avatar_up.heros_wit, count: 3}]: 3
+                  - {type: genshin.currency.mora, count: 7}: 1
+                """, ITEMS);
+        var random = new Random(85);
+        int grouped = 0;
+        for (int i = 0; i < 12_000; i++) {
+            var result = tables.roll("grouped", random);
+            if (result.equals(Map.of(MORA, 2, WIT, 3))) grouped++;
+            else assertEquals(Map.of(MORA, 7), result);
+        }
+        assertEquals(0.75, grouped / 12_000.0, 0.03);
+    }
+
+    @Test
+    void complexWeightedBranchesCannotMixWithUnweightedSiblings() {
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                invalid:
+                  - [{type: genshin.currency.mora}]: 3
+                  - {type: genshin.avatar_up.heros_wit}
+                """, ITEMS));
+    }
+
+    @Test
+    void uppercaseTemplateFieldsShareWeightedSemantics() {
+        var itemNames = (YamlLootTables.ItemResolver) name -> switch (name) {
+            case "A" -> MORA;
+            case "B" -> WIT;
+            case "genshin.currency.mora" -> MORA;
+            default -> -2;
+        };
+        var tables = YamlLootTables.parse("""
+                boss<MORA, FIRST, SECOND, N>:
+                  - {type: genshin.currency.mora, count: "<MORA>"}
+                  - {type: "<FIRST>:3, <SECOND>:1", count: "<N>"}
+                boss_a: {type: "boss<1000, A, B, 2>"}
+                """, itemNames);
+        var rng = new Random(33);
+        int bothMora = 0;
+        int bothWit = 0;
+        for (int i = 0; i < 12_000; i++) {
+            var result = tables.roll("boss_a", rng);
+            int mora = result.getOrDefault(MORA, 0);
+            int wit = result.getOrDefault(WIT, 0);
+            assertEquals(1002, mora + wit);
+            if (mora == 1002) bothMora++;
+            else {
+                assertEquals(1000, mora);
+                assertEquals(2, wit);
+                bothWit++;
+            }
+        }
+        assertEquals(0.75, bothMora / 12_000.0, 0.03);
+        assertEquals(0.25, bothWit / 12_000.0, 0.03);
+    }
+
+    @Test
     void countsUseExplicitRelativeWeights() {
         var distribution = LootCount.parse("2:586, 3:414");
         var random = new Random(71);

@@ -77,8 +77,10 @@ final class LootYamlSyntax {
                     return Long.parseLong(normalized.replaceFirst("(?i)0x", ""), 16);
                 }
                 long parsed = Long.parseLong(normalized);
-                return parsed >= Integer.MIN_VALUE && parsed <= Integer.MAX_VALUE
-                        ? (int) parsed : parsed;
+                if (parsed >= Integer.MIN_VALUE && parsed <= Integer.MAX_VALUE) {
+                    return Integer.valueOf((int) parsed);
+                }
+                return Long.valueOf(parsed);
             } catch (NumberFormatException ex) {
                 throw new IllegalArgumentException("Invalid YAML integer: " + text, ex);
             }

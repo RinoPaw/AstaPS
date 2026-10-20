@@ -99,7 +99,7 @@ class NativeLootYamlExporterTest {
                 new NativeLootYamlExporter.NativeEntry(104003, "2.5556", 10000))));
         var yaml = NativeLootYamlExporter.export(source, List.of(100),
                 Map.of(100, "fractional_bonus"), NativeLootYamlExporterTest::itemName);
-        assertTrue(yaml.contains("count: \"2, 3:55.56\""), yaml);
+        assertTrue(yaml.contains("count: \"2:44.44, 3:55.56\""), yaml);
         assertFalse(yaml.contains("count: \"2.5556\""), yaml);
         var loot = YamlLootTables.parse(yaml, NativeLootYamlExporterTest::itemId);
         int extra = 0;

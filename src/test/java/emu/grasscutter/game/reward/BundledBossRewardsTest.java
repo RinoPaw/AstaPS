@@ -54,8 +54,9 @@ final class BundledBossRewardsTest {
     @Test
     void bundledWorldAndWeeklyRulesLoadAndNativeFallbackIsPreserved() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
-        String stylesheet = RewardConfiguration.readBundledCss();
-        stylesheet = stylesheet.replace("\\", "");
+        String originalCss = RewardConfiguration.readBundledCss();
+        // Unescape only the text scanned for fixture IDs; pass original CSS to css4j.
+        String stylesheet = originalCss.replace("\\", "");
         var ids = new HashMap<String, Integer>();
         var nextId = new AtomicInteger(3000000);
         var artifacts = new ArrayList<ArtifactResolver.Variant>();
@@ -161,7 +162,7 @@ final class BundledBossRewardsTest {
                 categories.put(id, "Character Development Items");
             }
         }
-        var css = CssRewards.parse(stylesheet, new ItemIdRegistry(known, categories),
+        var css = CssRewards.parse(originalCss, new ItemIdRegistry(known, categories),
                 loot);
         var config = new RewardConfiguration(loot, css);
         String identityCss = stylesheet.substring(

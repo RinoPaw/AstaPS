@@ -39,8 +39,8 @@ final class BundledBossRewardsTest {
         var nextId = new AtomicInteger(3000000);
         var artifacts = new ArrayList<ArtifactResolver.Variant>();
         var nextArtifactId = new AtomicInteger(4000000);
-        // Artifact template definitions carry set placeholders. Resolve actual set names
-        // from the CSS invocations and cover every possible native slot/rarity/substat.
+        // Collect artifact sets from CSS invocations. Prayers sets only have
+        // circlets; other sets provide every slot in this synthetic resource data.
         Pattern.compile("world_artifact_[a-z0-9_-]+<([^>]+)>")
                 .matcher(stylesheet).results()
                 .flatMap(match -> java.util.Arrays.stream(match.group(1).split(",")))
@@ -49,6 +49,7 @@ final class BundledBossRewardsTest {
                 .distinct().forEach(name -> {
                     for (int rarity = 1; rarity <= 5; rarity++) {
                         for (int slot = 1; slot <= 5; slot++) {
+                            if (name.startsWith("prayers_") && slot != 5) continue;
                             for (int substats = 0; substats <= 4; substats++) {
                                 artifacts.add(new ArtifactResolver.Variant(
                                         nextArtifactId.incrementAndGet(),

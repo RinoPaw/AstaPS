@@ -1654,50 +1654,50 @@ boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,c
 boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,perpetual_mechanical_array,primo_geovishap_cryo"][level="15~24"] {
     astaps.loot.world_artifact_1star_1<lucky_dog>: "1:143, 2:107";
     astaps.loot.world_artifact_2star_1<lucky_dog>: "2:81, 3:44";
-    astaps.loot.world_artifact_3star_1<berserker, lucky_dog, the_exile, prayers_to_springtime>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<berserker, lucky_dog, the_exile, prayers_to_springtime>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,perpetual_mechanical_array,primo_geovishap_cryo"][level="25~34"] {
     astaps.loot.world_artifact_2star_1<lucky_dog>: "2:3, 3:47";
-    astaps.loot.world_artifact_3star_1<berserker, lucky_dog, the_exile, prayers_to_springtime>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<berserker, lucky_dog, the_exile, prayers_to_springtime>: "1:37, 2:13";
 }
 
 boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,perpetual_mechanical_array,primo_geovishap_cryo"][level="35~44"] {
     astaps.loot.world_artifact_2star_1<lucky_dog>: "1:143, 2:107";
-    astaps.loot.world_artifact_3star_1<berserker, lucky_dog, the_exile, prayers_to_springtime>: "2:57, 3:193";
+    astaps.loot.world_artifact_3star<berserker, lucky_dog, the_exile, prayers_to_springtime>: "2:57, 3:193";
 }
 
 boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,perpetual_mechanical_array,primo_geovishap_cryo"][level="45~59"] {
-    astaps.loot.world_artifact_3star_1<berserker, lucky_dog, the_exile, prayers_to_springtime>: "3:11, 4:39";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<berserker, lucky_dog, the_exile, prayers_to_springtime>: "3:11, 4:39";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,perpetual_mechanical_array,primo_geovishap_cryo"][level="60~69"] {
-    astaps.loot.world_artifact_3star_1<berserker, lucky_dog, the_exile, prayers_to_springtime>: "3:16, 4:9";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime>: "0:4, 1:21";
+    astaps.loot.world_artifact_3star<berserker, lucky_dog, the_exile, prayers_to_springtime>: "3:16, 4:9";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime>: "0:4, 1:21";
 }
 
 boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,perpetual_mechanical_array,primo_geovishap_cryo"][level="70~79"] {
-    astaps.loot.world_artifact_3star_1<berserker, lucky_dog, the_exile, prayers_to_springtime>: "2:3, 3:47";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime>: "1:19, 2:1";
+    astaps.loot.world_artifact_3star<berserker, lucky_dog, the_exile, prayers_to_springtime>: "2:3, 3:47";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime>: "1:19, 2:1";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:79, 1:21";
 }
 
 boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,perpetual_mechanical_array,primo_geovishap_cryo"][level="80~89"] {
-    astaps.loot.world_artifact_3star_1<berserker, lucky_dog, the_exile, prayers_to_springtime>: "2:12, 3:13";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<berserker, lucky_dog, the_exile, prayers_to_springtime>: "2:12, 3:13";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime>: "1:37, 2:13";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,perpetual_mechanical_array,primo_geovishap_cryo"][level="90~92"] {
-    astaps.loot.world_artifact_3star_1<berserker, lucky_dog, the_exile, prayers_to_springtime>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<berserker, lucky_dog, the_exile, prayers_to_springtime>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:37, 1:63";
 }
 
 boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,perpetual_mechanical_array,primo_geovishap_cryo"][level="93~"] {
-    astaps.loot.world_artifact_3star_1<berserker, lucky_dog, the_exile, prayers_to_springtime>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<berserker, lucky_dog, the_exile, prayers_to_springtime>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: 1;
 }
 
@@ -1720,50 +1720,50 @@ boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,pr
 boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="15~24"] {
     astaps.loot.world_artifact_1star_1<adventurer>: "1:143, 2:107";
     astaps.loot.world_artifact_2star_1<adventurer>: "2:81, 3:44";
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor, prayers_for_illumination>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="25~34"] {
     astaps.loot.world_artifact_2star_1<adventurer>: "2:3, 3:47";
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor, prayers_for_illumination>: "1:37, 2:13";
 }
 
 boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="35~44"] {
     astaps.loot.world_artifact_2star_1<adventurer>: "1:143, 2:107";
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "2:57, 3:193";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor, prayers_for_illumination>: "2:57, 3:193";
 }
 
 boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="45~59"] {
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "3:11, 4:39";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor, prayers_for_illumination>: "3:11, 4:39";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="60~69"] {
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "3:16, 4:9";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "0:4, 1:21";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor, prayers_for_illumination>: "3:16, 4:9";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "0:4, 1:21";
 }
 
 boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="70~79"] {
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "2:3, 3:47";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "1:19, 2:1";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor, prayers_for_illumination>: "2:3, 3:47";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "1:19, 2:1";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:79, 1:21";
 }
 
 boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="80~89"] {
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "2:12, 3:13";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor, prayers_for_illumination>: "2:12, 3:13";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "1:37, 2:13";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="90~92"] {
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor, prayers_for_illumination>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:37, 1:63";
 }
 
 boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"][level="93~"] {
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, instructor, prayers_for_illumination>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor, prayers_for_illumination>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: 1;
 }
 
@@ -1781,50 +1781,50 @@ boss[type="world"][tag="anemo_hypostasis,maguu_kenki"][level="5~14"] {
 boss[type="world"][tag="anemo_hypostasis,maguu_kenki"][level="15~24"] {
     astaps.loot.world_artifact_1star_1<lucky_dog>: "1:143, 2:107";
     astaps.loot.world_artifact_2star_1<lucky_dog>: "2:81, 3:44";
-    astaps.loot.world_artifact_3star_2<berserker, instructor, lucky_dog>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<berserker, instructor, lucky_dog>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="anemo_hypostasis,maguu_kenki"][level="25~34"] {
     astaps.loot.world_artifact_2star_1<lucky_dog>: "2:3, 3:47";
-    astaps.loot.world_artifact_3star_2<berserker, instructor, lucky_dog>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<berserker, instructor, lucky_dog>: "1:37, 2:13";
 }
 
 boss[type="world"][tag="anemo_hypostasis,maguu_kenki"][level="35~44"] {
     astaps.loot.world_artifact_2star_1<lucky_dog>: "1:143, 2:107";
-    astaps.loot.world_artifact_3star_2<berserker, instructor, lucky_dog>: "2:57, 3:193";
+    astaps.loot.world_artifact_3star<berserker, instructor, lucky_dog>: "2:57, 3:193";
 }
 
 boss[type="world"][tag="anemo_hypostasis,maguu_kenki"][level="45~59"] {
-    astaps.loot.world_artifact_3star_2<berserker, instructor, lucky_dog>: "3:11, 4:39";
-    astaps.loot.world_artifact_4star_2<berserker, gladiators_finale, instructor, wanderers_troupe>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<berserker, instructor, lucky_dog>: "3:11, 4:39";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="anemo_hypostasis,maguu_kenki"][level="60~69"] {
-    astaps.loot.world_artifact_3star_2<berserker, instructor, lucky_dog>: "3:16, 4:9";
-    astaps.loot.world_artifact_4star_2<berserker, gladiators_finale, instructor, wanderers_troupe>: "0:4, 1:21";
+    astaps.loot.world_artifact_3star<berserker, instructor, lucky_dog>: "3:16, 4:9";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe>: "0:4, 1:21";
 }
 
 boss[type="world"][tag="anemo_hypostasis,maguu_kenki"][level="70~79"] {
-    astaps.loot.world_artifact_3star_2<berserker, instructor, lucky_dog>: "2:3, 3:47";
-    astaps.loot.world_artifact_4star_2<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:19, 2:1";
+    astaps.loot.world_artifact_3star<berserker, instructor, lucky_dog>: "2:3, 3:47";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:19, 2:1";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:79, 1:21";
 }
 
 boss[type="world"][tag="anemo_hypostasis,maguu_kenki"][level="80~89"] {
-    astaps.loot.world_artifact_3star_2<berserker, instructor, lucky_dog>: "2:12, 3:13";
-    astaps.loot.world_artifact_4star_2<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<berserker, instructor, lucky_dog>: "2:12, 3:13";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:37, 2:13";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="anemo_hypostasis,maguu_kenki"][level="90~92"] {
-    astaps.loot.world_artifact_3star_2<berserker, instructor, lucky_dog>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_2<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<berserker, instructor, lucky_dog>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:37, 1:63";
 }
 
 boss[type="world"][tag="anemo_hypostasis,maguu_kenki"][level="93~"] {
-    astaps.loot.world_artifact_3star_2<berserker, instructor, lucky_dog>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_2<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<berserker, instructor, lucky_dog>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: 1;
 }
 
@@ -1903,50 +1903,50 @@ boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="5~14"]
 boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="15~24"] {
     astaps.loot.world_artifact_1star_1<adventurer>: "1:143, 2:107";
     astaps.loot.world_artifact_2star_1<adventurer>: "2:81, 3:44";
-    astaps.loot.world_artifact_3star_2<adventurer, berserker, instructor>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="25~34"] {
     astaps.loot.world_artifact_2star_1<adventurer>: "2:3, 3:47";
-    astaps.loot.world_artifact_3star_2<adventurer, berserker, instructor>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor>: "1:37, 2:13";
 }
 
 boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="35~44"] {
     astaps.loot.world_artifact_2star_1<adventurer>: "1:143, 2:107";
-    astaps.loot.world_artifact_3star_2<adventurer, berserker, instructor>: "2:57, 3:193";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor>: "2:57, 3:193";
 }
 
 boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="45~59"] {
-    astaps.loot.world_artifact_3star_2<adventurer, berserker, instructor>: "3:11, 4:39";
-    astaps.loot.world_artifact_4star_2<berserker, gladiators_finale, instructor, wanderers_troupe>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor>: "3:11, 4:39";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="60~69"] {
-    astaps.loot.world_artifact_3star_2<adventurer, berserker, instructor>: "3:16, 4:9";
-    astaps.loot.world_artifact_4star_2<berserker, gladiators_finale, instructor, wanderers_troupe>: "0:4, 1:21";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor>: "3:16, 4:9";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe>: "0:4, 1:21";
 }
 
 boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="70~79"] {
-    astaps.loot.world_artifact_3star_2<adventurer, berserker, instructor>: "2:3, 3:47";
-    astaps.loot.world_artifact_4star_2<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:19, 2:1";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor>: "2:3, 3:47";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:19, 2:1";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:79, 1:21";
 }
 
 boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="80~89"] {
-    astaps.loot.world_artifact_3star_2<adventurer, berserker, instructor>: "2:12, 3:13";
-    astaps.loot.world_artifact_4star_2<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor>: "2:12, 3:13";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:37, 2:13";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="90~92"] {
-    astaps.loot.world_artifact_3star_2<adventurer, berserker, instructor>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_2<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:37, 1:63";
 }
 
 boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"][level="93~"] {
-    astaps.loot.world_artifact_3star_2<adventurer, berserker, instructor>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_2<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<adventurer, berserker, instructor>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, instructor, wanderers_troupe>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: 1;
 }
 
@@ -1964,50 +1964,50 @@ boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_ele
 boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_electro,thunder_manifestation"][level="15~24"] {
     astaps.loot.world_artifact_1star_1<traveling_doctor>: "1:143, 2:107";
     astaps.loot.world_artifact_2star_1<traveling_doctor>: "2:81, 3:44";
-    astaps.loot.world_artifact_3star_1<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_electro,thunder_manifestation"][level="25~34"] {
     astaps.loot.world_artifact_2star_1<traveling_doctor>: "2:3, 3:47";
-    astaps.loot.world_artifact_3star_1<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "1:37, 2:13";
 }
 
 boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_electro,thunder_manifestation"][level="35~44"] {
     astaps.loot.world_artifact_2star_1<traveling_doctor>: "1:143, 2:107";
-    astaps.loot.world_artifact_3star_1<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "2:57, 3:193";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "2:57, 3:193";
 }
 
 boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_electro,thunder_manifestation"][level="45~59"] {
-    astaps.loot.world_artifact_3star_1<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "3:11, 4:39";
-    astaps.loot.world_artifact_4star_1<gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "3:11, 4:39";
+    astaps.loot.world_artifact_4star<gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_electro,thunder_manifestation"][level="60~69"] {
-    astaps.loot.world_artifact_3star_1<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "3:16, 4:9";
-    astaps.loot.world_artifact_4star_1<gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom>: "0:4, 1:21";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "3:16, 4:9";
+    astaps.loot.world_artifact_4star<gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom>: "0:4, 1:21";
 }
 
 boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_electro,thunder_manifestation"][level="70~79"] {
-    astaps.loot.world_artifact_3star_1<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "2:3, 3:47";
-    astaps.loot.world_artifact_4star_1<gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom>: "1:19, 2:1";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "2:3, 3:47";
+    astaps.loot.world_artifact_4star<gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom>: "1:19, 2:1";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:79, 1:21";
 }
 
 boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_electro,thunder_manifestation"][level="80~89"] {
-    astaps.loot.world_artifact_3star_1<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "2:12, 3:13";
-    astaps.loot.world_artifact_4star_1<gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "2:12, 3:13";
+    astaps.loot.world_artifact_4star<gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom>: "1:37, 2:13";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_electro,thunder_manifestation"][level="90~92"] {
-    astaps.loot.world_artifact_3star_1<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_1<gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:37, 1:63";
 }
 
 boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_electro,thunder_manifestation"][level="93~"] {
-    astaps.loot.world_artifact_3star_1<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_1<gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor, prayers_for_wisdom>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: 1;
 }
 
@@ -2025,50 +2025,50 @@ boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="5~1
 boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="15~24"] {
     astaps.loot.world_artifact_1star_1<traveling_doctor>: "1:143, 2:107";
     astaps.loot.world_artifact_2star_1<traveling_doctor>: "2:81, 3:44";
-    astaps.loot.world_artifact_3star_2<instructor, the_exile, traveling_doctor>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="25~34"] {
     astaps.loot.world_artifact_2star_1<traveling_doctor>: "2:3, 3:47";
-    astaps.loot.world_artifact_3star_2<instructor, the_exile, traveling_doctor>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor>: "1:37, 2:13";
 }
 
 boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="35~44"] {
     astaps.loot.world_artifact_2star_1<traveling_doctor>: "1:143, 2:107";
-    astaps.loot.world_artifact_3star_2<instructor, the_exile, traveling_doctor>: "2:57, 3:193";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor>: "2:57, 3:193";
 }
 
 boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="45~59"] {
-    astaps.loot.world_artifact_3star_2<instructor, the_exile, traveling_doctor>: "3:11, 4:39";
-    astaps.loot.world_artifact_4star_2<gladiators_finale, instructor, the_exile, wanderers_troupe>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor>: "3:11, 4:39";
+    astaps.loot.world_artifact_4star<gladiators_finale, instructor, the_exile, wanderers_troupe>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="60~69"] {
-    astaps.loot.world_artifact_3star_2<instructor, the_exile, traveling_doctor>: "3:16, 4:9";
-    astaps.loot.world_artifact_4star_2<gladiators_finale, instructor, the_exile, wanderers_troupe>: "0:4, 1:21";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor>: "3:16, 4:9";
+    astaps.loot.world_artifact_4star<gladiators_finale, instructor, the_exile, wanderers_troupe>: "0:4, 1:21";
 }
 
 boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="70~79"] {
-    astaps.loot.world_artifact_3star_2<instructor, the_exile, traveling_doctor>: "2:3, 3:47";
-    astaps.loot.world_artifact_4star_2<gladiators_finale, instructor, the_exile, wanderers_troupe>: "1:19, 2:1";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor>: "2:3, 3:47";
+    astaps.loot.world_artifact_4star<gladiators_finale, instructor, the_exile, wanderers_troupe>: "1:19, 2:1";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:79, 1:21";
 }
 
 boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="80~89"] {
-    astaps.loot.world_artifact_3star_2<instructor, the_exile, traveling_doctor>: "2:12, 3:13";
-    astaps.loot.world_artifact_4star_2<gladiators_finale, instructor, the_exile, wanderers_troupe>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor>: "2:12, 3:13";
+    astaps.loot.world_artifact_4star<gladiators_finale, instructor, the_exile, wanderers_troupe>: "1:37, 2:13";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="90~92"] {
-    astaps.loot.world_artifact_3star_2<instructor, the_exile, traveling_doctor>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_2<gladiators_finale, instructor, the_exile, wanderers_troupe>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<gladiators_finale, instructor, the_exile, wanderers_troupe>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:37, 1:63";
 }
 
 boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"][level="93~"] {
-    astaps.loot.world_artifact_3star_2<instructor, the_exile, traveling_doctor>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_2<gladiators_finale, instructor, the_exile, wanderers_troupe>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<instructor, the_exile, traveling_doctor>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<gladiators_finale, instructor, the_exile, wanderers_troupe>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: 1;
 }
 
@@ -2086,50 +2086,50 @@ boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"][level="
 boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"][level="15~24"] {
     astaps.loot.world_artifact_1star_1<adventurer>: "1:143, 2:107";
     astaps.loot.world_artifact_2star_1<adventurer>: "2:81, 3:44";
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, the_exile, prayers_for_destiny>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<adventurer, berserker, the_exile, prayers_for_destiny>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"][level="25~34"] {
     astaps.loot.world_artifact_2star_1<adventurer>: "2:3, 3:47";
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, the_exile, prayers_for_destiny>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<adventurer, berserker, the_exile, prayers_for_destiny>: "1:37, 2:13";
 }
 
 boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"][level="35~44"] {
     astaps.loot.world_artifact_2star_1<adventurer>: "1:143, 2:107";
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, the_exile, prayers_for_destiny>: "2:57, 3:193";
+    astaps.loot.world_artifact_3star<adventurer, berserker, the_exile, prayers_for_destiny>: "2:57, 3:193";
 }
 
 boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"][level="45~59"] {
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, the_exile, prayers_for_destiny>: "3:11, 4:39";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny>: "0:29, 1:21";
+    astaps.loot.world_artifact_3star<adventurer, berserker, the_exile, prayers_for_destiny>: "3:11, 4:39";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"][level="60~69"] {
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, the_exile, prayers_for_destiny>: "3:16, 4:9";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny>: "0:4, 1:21";
+    astaps.loot.world_artifact_3star<adventurer, berserker, the_exile, prayers_for_destiny>: "3:16, 4:9";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny>: "0:4, 1:21";
 }
 
 boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"][level="70~79"] {
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, the_exile, prayers_for_destiny>: "2:3, 3:47";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny>: "1:19, 2:1";
+    astaps.loot.world_artifact_3star<adventurer, berserker, the_exile, prayers_for_destiny>: "2:3, 3:47";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny>: "1:19, 2:1";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:79, 1:21";
 }
 
 boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"][level="80~89"] {
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, the_exile, prayers_for_destiny>: "2:12, 3:13";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny>: "1:37, 2:13";
+    astaps.loot.world_artifact_3star<adventurer, berserker, the_exile, prayers_for_destiny>: "2:12, 3:13";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny>: "1:37, 2:13";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:29, 1:21";
 }
 
 boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"][level="90~92"] {
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, the_exile, prayers_for_destiny>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<adventurer, berserker, the_exile, prayers_for_destiny>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: "0:37, 1:63";
 }
 
 boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"][level="93~"] {
-    astaps.loot.world_artifact_3star_1<adventurer, berserker, the_exile, prayers_for_destiny>: "2:9, 3:1";
-    astaps.loot.world_artifact_4star_1<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny>: "1:53, 2:47";
+    astaps.loot.world_artifact_3star<adventurer, berserker, the_exile, prayers_for_destiny>: "2:9, 3:1";
+    astaps.loot.world_artifact_4star<berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny>: "1:53, 2:47";
     astaps.loot.world_artifact_5star_1<gladiators_finale, wanderers_troupe>: 1;
 }
 

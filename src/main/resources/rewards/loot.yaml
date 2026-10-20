@@ -227,8 +227,9 @@ chest_artifact_mix_20:
 # =============================================================================
 # CSS maps 48 Boss identities to these templates. Clockwork Mek borrows
 # Pyro Regisvine artifact pools until its native data is available.
-# Set names are parameters; slots, rarity, substats, and weights stay explicit.
-# Special 5-star templates preserve fixed-slot variants.
+# Set names are parameters; omitted slots sample the native pieces available
+# for each set (the Prayers circlets have no other pieces).
+# Rarity, substats, and weights remain explicit; special 5-star slots stay fixed.
 
 world_artifact_1star_1<set1>:
   - {type: "genshin.artifact.<set1>", slot: "1~5", rarity: 1, substats: 0}
@@ -236,29 +237,15 @@ world_artifact_1star_1<set1>:
 world_artifact_2star_1<set1>:
   - {type: "genshin.artifact.<set1>", slot: "1~5", rarity: 2, substats: "0:66, 1:34"}
 
-world_artifact_3star_1<set1, set2, set3, set4>:
-  - {type: "genshin.artifact.<set1>", slot: "1~5", rarity: 3, substats: "1:66, 2:34"}: 1
-  - {type: "genshin.artifact.<set2>", slot: "1~5", rarity: 3, substats: "1:66, 2:34"}: 1
-  - {type: "genshin.artifact.<set3>", slot: "1~5", rarity: 3, substats: "1:66, 2:34"}: 1
-  - {type: "genshin.artifact.<set4>", slot: circlet, rarity: 3, substats: "1:66, 2:34"}: 1
+world_artifact_3star<SETS...>:
+  - type: "genshin.artifact.<SETS...>:1"
+    rarity: 3
+    substats: "1:66, 2:34"
 
-world_artifact_3star_2<set1, set2, set3>:
-  - {type: "genshin.artifact.<set1>", slot: "1~5", rarity: 3, substats: "1:66, 2:34"}: 1
-  - {type: "genshin.artifact.<set2>", slot: "1~5", rarity: 3, substats: "1:66, 2:34"}: 1
-  - {type: "genshin.artifact.<set3>", slot: "1~5", rarity: 3, substats: "1:66, 2:34"}: 1
-
-world_artifact_4star_1<set1, set2, set3, set4, set5>:
-  - {type: "genshin.artifact.<set1>", slot: "1~5", rarity: 4, substats: "2:66, 3:34"}: 1
-  - {type: "genshin.artifact.<set2>", slot: "1~5", rarity: 4, substats: "2:66, 3:34"}: 1
-  - {type: "genshin.artifact.<set3>", slot: "1~5", rarity: 4, substats: "2:66, 3:34"}: 1
-  - {type: "genshin.artifact.<set4>", slot: "1~5", rarity: 4, substats: "2:66, 3:34"}: 1
-  - {type: "genshin.artifact.<set5>", slot: circlet, rarity: 4, substats: "2:66, 3:34"}: 1
-
-world_artifact_4star_2<set1, set2, set3, set4>:
-  - {type: "genshin.artifact.<set1>", slot: "1~5", rarity: 4, substats: "2:66, 3:34"}: 1
-  - {type: "genshin.artifact.<set2>", slot: "1~5", rarity: 4, substats: "2:66, 3:34"}: 1
-  - {type: "genshin.artifact.<set3>", slot: "1~5", rarity: 4, substats: "2:66, 3:34"}: 1
-  - {type: "genshin.artifact.<set4>", slot: "1~5", rarity: 4, substats: "2:66, 3:34"}: 1
+world_artifact_4star<SETS...>:
+  - type: "genshin.artifact.<SETS...>:1"
+    rarity: 4
+    substats: "2:66, 3:34"
 
 world_artifact_5star_1<set1, set2>:
   - {type: "genshin.artifact.<set1>", slot: "1~5", rarity: 5, substats: "3:66, 4:34"}: 1

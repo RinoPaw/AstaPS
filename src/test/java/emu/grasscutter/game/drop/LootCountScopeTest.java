@@ -548,4 +548,64 @@ class LootCountScopeTest {
                 root: {type: "recursive<1>"}
                 """, ITEMS));
     }
+
+    @Test
+    void artifactParameterPacksInferAvailableSlotsWithoutChangingSetWeights() {
+        var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
+        String[] sets = {"berserker", "instructor", "the_exile",
+                "gladiators_finale", "prayers_for_wisdom"};
+        for (int rarity : new int[]{3, 4}) {
+            for (int set = 0; set < sets.length; set++) {
+                for (int slot = 1; slot <= 5; slot++) {
+                    if (set == 4 && slot != 5) continue;
+                    for (int substats = rarity - 2; substats <= rarity - 1; substats++) {
+                        variants.add(new ArtifactResolver.Variant(
+                                rarity * 100_000 + (set + 1) * 1_000 + slot * 10 + substats,
+                                sets[set], slot, rarity, substats));
+                    }
+                }
+            }
+        }
+        var loot = YamlLootTables.parse("""
+                world_artifact_3star<SETS...>:
+                  - type: "genshin.artifact.<SETS...>:1"
+                    rarity: 3
+                    substats: "1:66, 2:34"
+                world_artifact_4star<SETS...>:
+                  - type: "genshin.artifact.<SETS...>:1"
+                    rarity: 4
+                    substats: "2:66, 3:34"
+                three: {type: "world_artifact_3star<berserker,instructor,the_exile,prayers_for_wisdom>"}
+                four: {type: "world_artifact_4star<berserker,instructor,the_exile,gladiators_finale,prayers_for_wisdom>"}
+                """, ITEMS, new ArtifactResolver(variants));
+        var random = new Random(77);
+        for (int rarity : new int[]{3, 4}) {
+            int kinds = rarity == 3 ? 4 : 5;
+            int[] selectedSets = new int[kinds];
+            int[][] selectedSlots = new int[kinds][5];
+            for (int i = 0; i < 20_000; i++) {
+                int id = loot.roll(rarity == 3 ? "three" : "four", random)
+                        .keySet().iterator().next();
+                assertEquals(rarity, id / 100_000);
+                int set = (id % 100_000) / 1_000 - 1;
+                int slot = (id % 1_000) / 10;
+                int substats = id % 10;
+                assertTrue(set >= 0 && set < kinds);
+                assertTrue(slot >= 1 && slot <= 5);
+                assertTrue(substats == rarity - 2 || substats == rarity - 1);
+                if (set == 4 || (rarity == 3 && set == 3)) {
+                    assertEquals(5, slot, "Prayers sets only contain circlets");
+                }
+                selectedSets[set]++;
+                selectedSlots[set][slot - 1]++;
+            }
+            for (int set = 0; set < kinds; set++) {
+                assertEquals(1.0 / kinds, selectedSets[set] / 20_000.0, 0.02);
+                if (set == 4 || (rarity == 3 && set == 3)) continue;
+                for (int slotCount : selectedSlots[set]) {
+                    assertEquals(0.2, slotCount / (double) selectedSets[set], 0.03);
+                }
+            }
+        }
+    }
 }

@@ -800,4 +800,55 @@ class CssRewardsTest {
                 Map.of("city", "1", "area", "2")), loot, new Random(2)).get(202);
         assertTrue(value == 11 || value == 12);
     }
+
+    @Test
+    void typedPredicatesRespectMissingAttributesAndNumericTypes() {
+        var css = CssRewards.parse("""
+                boss[level >= 90] {
+                    genshin.currency.mora: 100;
+                }
+                boss[level != 90] {
+                    genshin.currency.primogem: 5;
+                }
+                boss[!level] {
+                    genshin.experience.adventure: 10;
+                }
+                boss[70 <= level <= 79] {
+                    genshin.currency.mora: 200;
+                }
+                """, items, loot);
+        assertEquals(Map.of(202, 100), css.resolve("boss", Map.of("level", "90")).items());
+        assertEquals(Map.of(202, 100, 201, 5),
+                css.resolve("boss", Map.of("level", "93")).items());
+        assertEquals(Map.of(202, 200, 201, 5),
+                css.resolve("boss", Map.of("level", "79")).items());
+        assertEquals(Map.of(102, 10), css.resolve("boss", Map.of()).items());
+        assertTrue(css.resolve("boss", Map.of("level", "invalid")).items().isEmpty());
+    }
+
+    @Test
+    void inPredicateHasNormalAttributeSpecificity() {
+        var css = CssRewards.parse("""
+                chest[city in (1, 2)] { genshin.currency.mora: 1; }
+                chest[city = 2][grade="precious"] { genshin.currency.mora: 3; }
+                chest[city in (1, 2)][grade="common"] { genshin.currency.mora: 4; }
+                """, items, loot);
+        assertEquals(1, css.resolve("chest", Map.of("city", "1")).items().get(202));
+        assertEquals(3, css.resolve("chest", Map.of("city", "2", "grade", "precious")).items().get(202));
+        assertEquals(4, css.resolve("chest", Map.of("city", "2", "grade", "common")).items().get(202));
+        assertTrue(css.resolve("chest", Map.of("city", "3")).items().isEmpty());
+        assertTrue(css.resolve("chest", Map.of()).items().isEmpty());
+    }
+
+    @Test
+    void typedPredicatesRejectInvalidExpressions() {
+        for (String selector : new String[] {
+                "boss[90 <= level <= 70]",
+                "boss[level >= \"high\"]",
+                "boss[city in (1, \"2\")]"
+        }) {
+            assertThrows(IllegalArgumentException.class,
+                    () -> CssRewards.parse(selector + " { genshin.currency.mora: 1; }", items, loot));
+        }
+    }
 }

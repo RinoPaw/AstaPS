@@ -10,19 +10,27 @@
  * 6. 材料/宝石物品名依赖资源映射，现有资源曾缺少必要名称；未验证完整服务器发奖。
  */
 
-/* World Boss material, gem, and artifact working configuration.
- * World Boss artifacts cover 48 identities; Precision Clockwork borrows Pyro Regisvine pools.
- * Native chest artifacts for regions 1-4 are configured; weekly Bosses remain absent.
- * World Boss currencies/EXP and non-artifact chest contents are retained.
- * BOSS_MATERIAL and ELEMENT bind identities; shared rules declare count rolls.
+/* 阅读顺序：
+ * 1. 宝箱：基础奖励、地区奖励、食谱、圣遗物
+ * 2. 传送点：首次激活及活动例外
+ * 3. 地脉：基础经验、藏金之花、启示之花
+ * 4. 世界 Boss：身份绑定、通用奖励、材料例外、宝石、圣遗物
+ *
+ * 按选择器优先级和声明顺序覆盖。只修改数据前先确认覆盖关系。
+ * BOSS_MATERIAL、ELEMENT、GEM_GROUP、ARTIFACT_*STAR 由身份规则绑定，
+ * 等级规则引用这些绑定值。
  */
 
-/* Every ordinary world chest grants 30 Adventure EXP in Luna I and later. */
+/* ========================================================================== */
+/* 1. 宝箱：基础奖励、地区奖励、食谱、圣遗物 */
+/* ========================================================================== */
+
+/* 1.1 普通宝箱：固定 30 冒险阅历。 */
 chest[type="normal"] {
     genshin.experience.adventure: 30;
 }
 
-/* Base Primogem rewards by chest grade. */
+/* 1.2 原石：先按品级，再按旧地区及特定区域覆盖。 */
 
 chest[type="normal"][grade="common"] {
     genshin.currency.primogem: 2;
@@ -37,7 +45,7 @@ chest[type="normal"][grade="luxurious"] {
     genshin.currency.primogem: 10;
 }
 
-/* Older Mondstadt and Liyue chests use fewer Primogems. */
+/* 蒙德、璃月旧区域使用较低原石奖励。 */
 
 chest[type="normal"][grade="common"][city="1"],
 chest[type="normal"][grade="common"][city="2"] {
@@ -54,8 +62,9 @@ chest[type="normal"][grade="precious"][city="2"] {
     genshin.currency.primogem: 5;
 }
 
-/* Higher-Primogem area overrides — Mondstadt (蒙德): Dragonspine (龙脊雪山), Windrest Peak (风息山).
-   Liyue (璃月): Lisha (璃沙郊), The Chasm (层岩巨渊), Chenyu Vale: Upper Vale (沉玉谷·上谷), Chenyu Vale: Southern Mountain (沉玉谷·南陵), Mt. Laixin (来歆山), The Chasm: Underground Mines (层岩巨渊·地下矿区). */
+/* 高原石区域：龙脊雪山、风息山、璃沙郊、层岩巨渊、沉玉谷·上谷、
+ * 沉玉谷·南陵、来歆山、层岩巨渊·地下矿区；按 area 单独覆盖。
+ */
 
 chest[type="normal"][grade="common"][area="10,77,8,19,40,41,47,300"] {
     genshin.currency.primogem: 2;
@@ -69,7 +78,7 @@ chest[type="normal"][grade="precious"][area="10,77,8,19,40,41,47,300"] {
     genshin.currency.primogem: 10;
 }
 
-/* Regional ELEMENT bindings for chest sigils; city 8/9 share Cryo. */
+/* 1.3 印记元素绑定：city 8/9 共用冰元素。 */
 chest[type="normal"][city="1"] {
     ELEMENT: anemo;
 }
@@ -103,7 +112,7 @@ chest[type="normal"][city="9"] {
     ELEMENT: cryo;
 }
 
-/* Level-scaled chest loot and currencies; Mora ranges are inclusive. */
+/* 1.4 品级与等级奖励：武器、矿石、印记。范围含两端。 */
 chest[type="normal"][grade="common"][level="1~5"] {
     astaps.loot.meat_ingredients: "0:50, 1:50";
     astaps.loot.weapons_1_star: "0:60, 1:40";
@@ -188,9 +197,8 @@ chest[type="normal"][grade="luxurious"][level="26~"] {
     genshin.currency.sigil.<ELEMENT>: 6;
 }
 
-/* Native regional Mora, character EXP books, and talent books.
- * Regions 1-4 follow combat roots; puzzle empty pools use the same payouts
- * by explicit user choice.
+/* 1.5 地区奖励（city 1-4）：摩拉、角色经验书、天赋书。
+ * 数据来自历史战斗表；解谜空子表沿用同地区战斗奖励。
  */
 chest[type="normal"][grade="common"][city="1,2"][level="1~5"] {
     genshin.currency.mora: 240~360;
@@ -408,8 +416,8 @@ chest[type="normal"][grade="precious"][city="4"] {
     astaps.loot.regional_talent_books<3, admonition, ingenuity, praxis>: "1:80, 2:20";
 }
 
-/* No matching native roots exist for cities 5-9 in this source dataset.
- * Retain the previous generic payouts until those regional tables are available.
+/* 1.6 未复原地区（city 5-9）：缺少原始宝箱根表。
+ * 暂留旧通用配置，包括占位天赋书；不代表当地实测掉落。
  */
 chest[type="normal"][grade="common"][level="1~5"][city="5,6,7,8,9"] {
     genshin.avatar_up.wanderers_advice: "1:40, 2:60";
@@ -488,8 +496,7 @@ chest[type="normal"][grade="luxurious"][level="26~"][city="5,6,7,8,9"] {
     genshin.currency.mora: 1440~2160;
 }
 
-/* Recipes from the native combat/puzzle source roots, merged by chest grade.
-   No combat/puzzle metadata is required; only verified city and level match. */
+/* 1.7 食谱：合并历史战斗/解谜奖励，按城市、品级、等级匹配。 */
 chest[type="normal"][grade="exquisite"][level="21~25"][city="1"] {
     genshin.recipe.northern_smoked_chicken.item: 1;
 }
@@ -503,36 +510,10 @@ chest[type="normal"][grade="precious"][level="21~25"][city="1"] {
     genshin.recipe.mushroom_pizza.item: 1;
 }
 
-/* First-time activation of an eligible point. */
-transpoint[type="waypoint"],
-transpoint[type="statue"],
-transpoint[type="domain"] {
-    genshin.experience.adventure: 50;
-    genshin.currency.primogem: 5;
-}
-
-/* Tutorial waypoint, scene 3, point 6. */
-transpoint[scene="3"][point="6"] {
-    genshin.experience.adventure: 10;
-    genshin.currency.primogem: 0;
-}
-
-/* Three Realms Gateway Offering, scene 7. */
-transpoint[scene="7"] {
-    genshin.currency.sigil.light_realm: 20;
-    genshin.experience.adventure: 0;
-    genshin.currency.primogem: 5;
-}
-
-/* Ley-line blossoms: every claim awards 100 Adventure EXP. */
-blossom {
-    genshin.experience.adventure: 100;
-}
-
-/* Native chest artifacts (historical sourceType 19, cities 1-4).
- * Each count combines the independent branch chance and fractional execution count.
- * Combat, puzzle and Dragonspine artifact paths share the same source distributions.
- * Cities 5-9, shrine chests and island-only roots are not guessed.
+/* 1.8 宝箱圣遗物（历史 sourceType 19；city 1-4）。
+ * 数量概率合并了独立分支的命中率与执行次数。
+ * 战斗、解谜、龙脊雪山共用来源分布；未推定 city 5-9、
+ * 地灵龛及群岛专有宝箱。
  */
 
 chest[type="normal"][city="1"][grade="common"][level="1~5"] {
@@ -669,7 +650,41 @@ chest[type="normal"][city="4"][grade="luxurious"] {
     astaps.loot.chest_artifact_mix_20: "3:1, 4:1";
 }
 
-/* Blossoms of Wealth: fixed Mora amounts, lowest world level first. */
+/* ========================================================================== */
+/* 2. 传送点：首次激活与活动例外 */
+/* ========================================================================== */
+
+/* 首次激活：锚点、七天神像、秘境入口。 */
+transpoint[type="waypoint"],
+transpoint[type="statue"],
+transpoint[type="domain"] {
+    genshin.experience.adventure: 50;
+    genshin.currency.primogem: 5;
+}
+
+/* 教学锚点：scene 3 / point 6，覆盖普通首次激活奖励。 */
+transpoint[scene="3"][point="6"] {
+    genshin.experience.adventure: 10;
+    genshin.currency.primogem: 0;
+}
+
+/* 三界路飨祭：scene 7 的专用奖励。 */
+transpoint[scene="7"] {
+    genshin.currency.sigil.light_realm: 20;
+    genshin.experience.adventure: 0;
+    genshin.currency.primogem: 5;
+}
+
+/* ========================================================================== */
+/* 3. 地脉：基础经验、藏金之花、启示之花 */
+/* ========================================================================== */
+
+/* 每次领取地脉之花固定获得 100 冒险阅历。 */
+blossom {
+    genshin.experience.adventure: 100;
+}
+
+/* 藏金之花：世界等级 WR 决定摩拉和好感经验。 */
 
 blossom[type="wealth"][WR="0"] {
     genshin.currency.mora: 12000;
@@ -706,7 +721,7 @@ blossom[type="wealth"][WR="6~9"] {
     genshin.experience.companionship: 20;
 }
 
-/* Blossoms of Revelation: book counts are independent inclusive ranges. */
+/* 启示之花：经验书数量独立抽样，范围含两端。 */
 
 blossom[type="revelation"][WR="0"] {
     genshin.avatar_up.wanderers_advice: 7~8;
@@ -748,155 +763,13 @@ blossom[type="revelation"][WR="6~9"] {
     genshin.experience.companionship: 20;
 }
 
-/* World Boss rewards: shared currencies/EXP, identity bindings, then level-based drops. */
+/* ========================================================================== */
+/* 4. 世界 Boss：身份、通用奖励、材料例外、宝石、圣遗物 */
+/* ========================================================================== */
 
-/* Shared world Boss currencies, experience, and material counts by level. */
+/* 身份规则先绑定材料与元素；通用规则再按等级确定数量。 */
 
-boss[type="world"] {
-    genshin.experience.adventure: 200;
-}
-
-boss[type="world"][level="1~4"] {
-    genshin.currency.mora: 1825;
-    genshin.experience.companionship: 15;
-    genshin.experience.character: 100;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:66, 2:34";
-}
-
-boss[type="world"][level="5~9"] {
-    genshin.currency.mora: 2100;
-    genshin.experience.companionship: 20;
-    genshin.experience.character: 104;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:57, 2:43";
-}
-
-boss[type="world"][level="10~14"] {
-    genshin.currency.mora: 2375;
-    genshin.experience.companionship: 20;
-    genshin.experience.character: 110;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:46, 2:54";
-}
-
-boss[type="world"][level="15~19"] {
-    genshin.currency.mora: 2575;
-    genshin.experience.companionship: 25;
-    genshin.experience.character: 116;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:35, 2:65";
-}
-
-boss[type="world"][level="20~24"] {
-    genshin.currency.mora: 2825;
-    genshin.experience.companionship: 25;
-    genshin.experience.character: 121;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:23, 2:77";
-}
-
-boss[type="world"][level="25~29"] {
-    genshin.currency.mora: 3050;
-    genshin.experience.companionship: 25;
-    genshin.experience.character: 127;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:12, 2:88";
-}
-
-boss[type="world"][level="30~34"] {
-    genshin.currency.mora: 3300;
-    genshin.experience.companionship: 30;
-    genshin.experience.character: 133;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:48, 2:52";
-}
-
-boss[type="world"][level="35~39"] {
-    genshin.currency.mora: 3450;
-    genshin.experience.companionship: 30;
-    genshin.experience.character: 138;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:39, 2:61";
-}
-
-boss[type="world"][level="40~44"] {
-    genshin.currency.mora: 3650;
-    genshin.experience.companionship: 30;
-    genshin.experience.character: 144;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:31, 2:69";
-}
-
-boss[type="world"][level="45~49"] {
-    genshin.currency.mora: 3725;
-    genshin.experience.companionship: 30;
-    genshin.experience.character: 149;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:22, 2:78";
-}
-
-boss[type="world"][level="50~54"] {
-    genshin.currency.mora: 3850;
-    genshin.experience.companionship: 35;
-    genshin.experience.character: 155;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:13, 2:87";
-}
-
-boss[type="world"][level="55~59"] {
-    genshin.currency.mora: 3975;
-    genshin.experience.companionship: 35;
-    genshin.experience.character: 161;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:5, 2:95";
-}
-
-boss[type="world"][level="60~64"] {
-    genshin.currency.mora: 4125;
-    genshin.experience.companionship: 35;
-    genshin.experience.character: 166;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:96, 3:4";
-}
-
-boss[type="world"][level="65~69"] {
-    genshin.currency.mora: 4325;
-    genshin.experience.companionship: 35;
-    genshin.experience.character: 172;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:88, 3:12";
-}
-
-boss[type="world"][level="70~74"] {
-    genshin.currency.mora: 4450;
-    genshin.experience.companionship: 40;
-    genshin.experience.character: 178;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:79, 3:21";
-}
-
-boss[type="world"][level="75~79"] {
-    genshin.currency.mora: 4600;
-    genshin.experience.companionship: 40;
-    genshin.experience.character: 183;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:70, 3:30";
-}
-
-boss[type="world"][level="80~84"] {
-    genshin.currency.mora: 4725;
-    genshin.experience.companionship: 40;
-    genshin.experience.character: 189;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:62, 3:38";
-}
-
-boss[type="world"][level="85~89"] {
-    genshin.currency.mora: 4850;
-    genshin.experience.companionship: 40;
-    genshin.experience.character: 194;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:53, 3:47";
-}
-
-boss[type="world"][level="90~92"] {
-    genshin.currency.mora: 5200;
-    genshin.experience.companionship: 45;
-    genshin.experience.character: 200;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:44, 3:56";
-}
-
-boss[type="world"][level="93~"] {
-    genshin.currency.mora: 6000;
-    genshin.experience.companionship: 45;
-    genshin.experience.character: 200;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:44, 3:56";
-}
-
-/* Boss identities: 48 native identities, with material and gem bindings in tag order. */
+/* 4.1 身份绑定：48 种 Boss，按 tag 排序。 */
 
 /* 兆载永劫龙兽 */
 boss[type="world"][tag="aeonblight_drake"] {
@@ -1189,16 +1062,160 @@ boss[type="world"][tag="undying_replicant"] {
     ELEMENT: pyro;
 }
 
-/* Boss material exceptions: override the shared level-based quantities. */
+/* 4.2 通用等级奖励：摩拉、经验、材料数量。 */
 
-/* These 25 Boss identities have no material entry at levels 1-29.
- * Override the shared early-game quantity with zero; do not invent drops.
- */
+boss[type="world"] {
+    genshin.experience.adventure: 200;
+}
+
+boss[type="world"][level="1~4"] {
+    genshin.currency.mora: 1825;
+    genshin.experience.companionship: 15;
+    genshin.experience.character: 100;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:66, 2:34";
+}
+
+boss[type="world"][level="5~9"] {
+    genshin.currency.mora: 2100;
+    genshin.experience.companionship: 20;
+    genshin.experience.character: 104;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:57, 2:43";
+}
+
+boss[type="world"][level="10~14"] {
+    genshin.currency.mora: 2375;
+    genshin.experience.companionship: 20;
+    genshin.experience.character: 110;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:46, 2:54";
+}
+
+boss[type="world"][level="15~19"] {
+    genshin.currency.mora: 2575;
+    genshin.experience.companionship: 25;
+    genshin.experience.character: 116;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:35, 2:65";
+}
+
+boss[type="world"][level="20~24"] {
+    genshin.currency.mora: 2825;
+    genshin.experience.companionship: 25;
+    genshin.experience.character: 121;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:23, 2:77";
+}
+
+boss[type="world"][level="25~29"] {
+    genshin.currency.mora: 3050;
+    genshin.experience.companionship: 25;
+    genshin.experience.character: 127;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:12, 2:88";
+}
+
+boss[type="world"][level="30~34"] {
+    genshin.currency.mora: 3300;
+    genshin.experience.companionship: 30;
+    genshin.experience.character: 133;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:48, 2:52";
+}
+
+boss[type="world"][level="35~39"] {
+    genshin.currency.mora: 3450;
+    genshin.experience.companionship: 30;
+    genshin.experience.character: 138;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:39, 2:61";
+}
+
+boss[type="world"][level="40~44"] {
+    genshin.currency.mora: 3650;
+    genshin.experience.companionship: 30;
+    genshin.experience.character: 144;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:31, 2:69";
+}
+
+boss[type="world"][level="45~49"] {
+    genshin.currency.mora: 3725;
+    genshin.experience.companionship: 30;
+    genshin.experience.character: 149;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:22, 2:78";
+}
+
+boss[type="world"][level="50~54"] {
+    genshin.currency.mora: 3850;
+    genshin.experience.companionship: 35;
+    genshin.experience.character: 155;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:13, 2:87";
+}
+
+boss[type="world"][level="55~59"] {
+    genshin.currency.mora: 3975;
+    genshin.experience.companionship: 35;
+    genshin.experience.character: 161;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "1:5, 2:95";
+}
+
+boss[type="world"][level="60~64"] {
+    genshin.currency.mora: 4125;
+    genshin.experience.companionship: 35;
+    genshin.experience.character: 166;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:96, 3:4";
+}
+
+boss[type="world"][level="65~69"] {
+    genshin.currency.mora: 4325;
+    genshin.experience.companionship: 35;
+    genshin.experience.character: 172;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:88, 3:12";
+}
+
+boss[type="world"][level="70~74"] {
+    genshin.currency.mora: 4450;
+    genshin.experience.companionship: 40;
+    genshin.experience.character: 178;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:79, 3:21";
+}
+
+boss[type="world"][level="75~79"] {
+    genshin.currency.mora: 4600;
+    genshin.experience.companionship: 40;
+    genshin.experience.character: 183;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:70, 3:30";
+}
+
+boss[type="world"][level="80~84"] {
+    genshin.currency.mora: 4725;
+    genshin.experience.companionship: 40;
+    genshin.experience.character: 189;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:62, 3:38";
+}
+
+boss[type="world"][level="85~89"] {
+    genshin.currency.mora: 4850;
+    genshin.experience.companionship: 40;
+    genshin.experience.character: 194;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:53, 3:47";
+}
+
+boss[type="world"][level="90~92"] {
+    genshin.currency.mora: 5200;
+    genshin.experience.companionship: 45;
+    genshin.experience.character: 200;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:44, 3:56";
+}
+
+boss[type="world"][level="93~"] {
+    genshin.currency.mora: 6000;
+    genshin.experience.companionship: 45;
+    genshin.experience.character: 200;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:44, 3:56";
+}
+
+/* 4.3 材料例外：覆盖通用等级数量。 */
+
+/* 以下 25 种 Boss 在 1-29 级缺少原生材料子表，显式置零。 */
 boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,anemo_hypostasis,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,maguu_kenki,oceanid,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine,ruin_serpent,setekh_wenut,thunder_manifestation"][level="1~29"] {
     genshin.avatar_ascension.<BOSS_MATERIAL>: 0;
 }
 
-/* Mid-game exception: Pyro Regisvine and Oceanid. */
+/* 爆炎树、纯水精灵：30-99 级的专用分布。 */
 
 boss[type="world"][tag="oceanid,pyro_regisvine"][level="30~34"] {
     genshin.avatar_ascension.<BOSS_MATERIAL>: "1:33, 2:67";
@@ -1252,21 +1269,21 @@ boss[type="world"][tag="oceanid,pyro_regisvine"][level="90~99"] {
     genshin.avatar_ascension.<BOSS_MATERIAL>: "2:19, 3:81";
 }
 
-/* Pyro Regisvine and Oceanid retain their higher-yield quantities. */
+/* 100 级起仍使用上述两种 Boss 在 90-99 级的分布。 */
 boss[type="world"][tag="oceanid,pyro_regisvine"][level="100~"] {
     genshin.avatar_ascension.<BOSS_MATERIAL>: "2:19, 3:81";
 }
 
-/* These 23 Boss identities award 3 or 4 materials from level 100.
- * Icewind Suite rolls this quantity independently for each bound material.
+/* 这 23 种 Boss 从 100 级起抽取 3 或 4 份材料。
+ * 冰风组曲的每种绑定材料分别独立抽取。
  */
 boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,precision_clockwork,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,setekh_wenut,solitary_suanni,tenebrous_papilla,undying_replicant"][level="100~"] {
     genshin.avatar_ascension.<BOSS_MATERIAL>: "3:75, 4:25";
 }
 
-/* World Boss gems: CSS handles single-item counts and fixed grants; YAML selects weighted candidates. */
+/* 4.4 宝石：CSS 决定执行次数/固定掉落，YAML 决定加权候选。 */
 
-/* GEM_GROUP binds long Boss identity lists once; level rules reference the group. */
+/* 分组绑定（GEM_GROUP）：下方等级规则复用这些身份列表。 */
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"] {
     GEM_GROUP: gem_1;
 }
@@ -1283,7 +1300,7 @@ boss[type="world"][tag="lightbearing_lunar_moth,precision_clockwork"] {
     GEM_GROUP: gem_4;
 }
 
-/* Group 1: 15 Bosses; one element, batches of 3, from level 1. */
+/* 组 1：15 种 Boss；单元素、每批 3 个，自 1 级起。 */
 
 boss[type="world"][gem_group="gem_1"][level="1~4"] {
     genshin.avatar_ascension.<ELEMENT>.sliver: "3:53, 6:47";
@@ -1361,13 +1378,13 @@ boss[type="world"][gem_group="gem_1"][level="90~"] {
     astaps.loot.world_gem_four<3,<ELEMENT>>: "3:82, 4:18";
 }
 
-/* Additional fragment rolls from level 40; independent of the main gem pool. */
+/* 40 级起独立抽取的额外断片池。 */
 
 boss[type="world"][gem_group="gem_1"][level="40~"] {
     astaps.loot.world_gem_fragment<1,<ELEMENT>>: "3:88, 6:12";
 }
 
-/* Group 2: 9 Bosses; two elements, batches of 3, from level 1. */
+/* 组 2：9 种 Boss；双元素、每批 3 个，自 1 级起。 */
 
 boss[type="world"][gem_group="gem_2"][level="1~4"] {
     astaps.loot.world_gem_one<<ELEMENT>[0], <ELEMENT>[1]>: "1:53, 2:47";
@@ -1445,13 +1462,13 @@ boss[type="world"][gem_group="gem_2"][level="90~"] {
     astaps.loot.world_gem_four<3,<ELEMENT>[0], <ELEMENT>[1]>: "3:82, 4:18";
 }
 
-/* Additional fragment rolls from level 40; independent of the main gem pool. */
+/* 40 级起独立抽取的额外断片池。 */
 
 boss[type="world"][gem_group="gem_2"][level="40~"] {
     astaps.loot.world_gem_fragment<3,<ELEMENT>[0], <ELEMENT>[1]>: "1:88, 2:12";
 }
 
-/* Group 3: one element, batches of 9. Setekh Wenut starts at level 1; the other 13 Bosses start at level 30. */
+/* 组 3：单元素、每批 9 个；风蚀沙虫自 1 级起，其余 13 种自 30 级起。 */
 
 boss[type="world"][tag="setekh_wenut"][level="1~4"] {
     genshin.avatar_ascension.<ELEMENT>.sliver: "9:53, 18:47";
@@ -1529,13 +1546,13 @@ boss[type="world"][gem_group="gem_3"][level="90~"] {
     astaps.loot.world_gem_four<9,<ELEMENT>>: "3:82, 4:18";
 }
 
-/* Additional fragment rolls from level 40; independent of the main gem pool. */
+/* 40 级起独立抽取的额外断片池。 */
 
 boss[type="world"][gem_group="gem_3"][level="40~"] {
     astaps.loot.world_gem_fragment<1,<ELEMENT>>: "9:88, 18:12";
 }
 
-/* Group 4: 2 Bosses; two elements, batches of 9, from level 30. */
+/* 组 4：2 种 Boss；双元素、每批 9 个，自 30 级起。 */
 
 boss[type="world"][gem_group="gem_4"][level="30~34"] {
     astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "2:81, 3:19";
@@ -1589,13 +1606,13 @@ boss[type="world"][gem_group="gem_4"][level="90~"] {
     astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "3:82, 4:18";
 }
 
-/* Additional fragment rolls from level 40; independent of the main gem pool. */
+/* 40 级起独立抽取的额外断片池。 */
 
 boss[type="world"][gem_group="gem_4"][level="40~"] {
     astaps.loot.world_gem_fragment<9,<ELEMENT>[0], <ELEMENT>[1]>: "1:88, 2:12";
 }
 
-/* Group 5: 5 Bosses; two elements, each fragment and sliver independently grants 9, from level 1. */
+/* 组 5：5 种 Boss；双元素碎屑、断片各独立固定发放 9 个。 */
 
 boss[type="world"][tag="chimera_sky_roamer,frostnight_scion,icewind_suite,legatus_golem,solitary_suanni"] {
     genshin.avatar_ascension.<ELEMENT>[0].fragment: 9;
@@ -1604,14 +1621,14 @@ boss[type="world"][tag="chimera_sky_roamer,frostnight_scion,icewind_suite,legatu
     genshin.avatar_ascension.<ELEMENT>[1].sliver: 9;
 }
 
-/* Group 6: 2 Bosses; one element, fragment and sliver independently grant 9 each, from level 1. */
+/* 组 6：2 种 Boss；单元素碎屑、断片各独立固定发放 9 个。 */
 
 boss[type="world"][tag="lava_dragon_statue,lord_of_the_deep_dreadwing"] {
     genshin.avatar_ascension.<ELEMENT>.fragment: 9;
     genshin.avatar_ascension.<ELEMENT>.sliver: 9;
 }
 
-/* Group 7: Tenebrous Papilla; three elements, each fragment and sliver independently grants 9, from level 1. */
+/* 组 7：深邃摹结株；三种元素碎屑、断片各独立固定发放 9 个。 */
 
 boss[type="world"][tag="tenebrous_papilla"] {
     genshin.avatar_ascension.<ELEMENT>[0].fragment: 9;
@@ -1622,14 +1639,14 @@ boss[type="world"][tag="tenebrous_papilla"] {
     genshin.avatar_ascension.<ELEMENT>[2].sliver: 9;
 }
 
-/* World Boss artifacts: 48 identities; Precision Clockwork uses approved fallback pools.
- * Native set identities are bound by ARTIFACT_*STAR; all emitted pieces roll independently.
- * Independent branches selecting the same table are combined by exact convolution
- * of their execution counts, avoiding duplicate CSS-property overrides.
+/* 4.5 圣遗物：48 种 Boss，分普通等级程序和特殊部位程序。
+ * ARTIFACT_*STAR 绑定候选套装，等级规则声明执行次数。
+ * 同名独立分支已合并为准确的数量分布，避免 CSS 重名覆盖。
+ * 精密发条机关缺失的候选池暂借用爆炎树配置。
  */
 
-/* Artifact identities: bind set candidates once for each native program. */
-/* Artifact group 1: 6 Boss identities, levels in ascending order. */
+/* 4.5.1 套装与组别绑定：普通 Boss 共用同一等级程序。 */
+/* 圣遗物组 1：6 种 Boss，仅声明候选套装。 */
 boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,perpetual_mechanical_array,primo_geovishap_cryo"] {
     ARTIFACT_GROUP: standard;
     ARTIFACT_1STAR: [lucky_dog];
@@ -1638,11 +1655,10 @@ boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,c
     ARTIFACT_4STAR: [berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_to_springtime];
 }
 
-/* Artifact group 2: 5 Boss identities, levels in ascending order.
- * Precision Clockwork: native branch counts and weights match this group at all
- * 25 source levels; client preview 15209 matches Pyro Regisvine preview 15140.
- * Missing candidate pools and their internal weights borrow Pyro Regisvine's
- * configuration by explicit user choice; this is not a recovered native subtable.
+/* 圣遗物组 2：5 种 Boss，包含精密发条机关。
+ * 精密发条机关 25 个源等级的分支数量及权重与本组相同；
+ * 客户端预览 15209 与爆炎树预览 15140 相同。
+ * 缺失的候选池及内部权重借用爆炎树，这部分尚未复原。
  */
 boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine"] {
     ARTIFACT_GROUP: standard;
@@ -1652,7 +1668,7 @@ boss[type="world"][tag="algorithm_semi_intransient_matrix,precision_clockwork,pr
     ARTIFACT_4STAR: [berserker, gladiators_finale, instructor, wanderers_troupe, prayers_for_illumination];
 }
 
-/* Artifact group 3: 2 Boss identities, levels in ascending order. */
+/* 圣遗物组 3：2 种 Boss，仅声明候选套装。 */
 boss[type="world"][tag="anemo_hypostasis,maguu_kenki"] {
     ARTIFACT_GROUP: standard;
     ARTIFACT_1STAR: [lucky_dog];
@@ -1661,7 +1677,12 @@ boss[type="world"][tag="anemo_hypostasis,maguu_kenki"] {
     ARTIFACT_4STAR: [berserker, gladiators_finale, instructor, wanderers_troupe];
 }
 
-/* Artifact group 5: 2 Boss identities, levels in ascending order. */
+/* 圣遗物组 4：22 种 Boss，使用 Instructor 限定的特殊部位程序。 */
+boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"] {
+    ARTIFACT_GROUP: instructor_native;
+}
+
+/* 圣遗物组 5：2 种 Boss，仅声明候选套装。 */
 boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"] {
     ARTIFACT_GROUP: standard;
     ARTIFACT_1STAR: [adventurer];
@@ -1670,7 +1691,7 @@ boss[type="world"][tag="dendro_hypostasis,jadeplume_terrorshroom"] {
     ARTIFACT_4STAR: [berserker, gladiators_finale, instructor, wanderers_troupe];
 }
 
-/* Artifact group 6: 4 Boss identities, levels in ascending order. */
+/* 圣遗物组 6：4 种 Boss，仅声明候选套装。 */
 boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_electro,thunder_manifestation"] {
     ARTIFACT_GROUP: standard;
     ARTIFACT_1STAR: [traveling_doctor];
@@ -1679,7 +1700,7 @@ boss[type="world"][tag="electro_hypostasis,electro_regisvine,primo_geovishap_ele
     ARTIFACT_4STAR: [gladiators_finale, instructor, the_exile, wanderers_troupe, prayers_for_wisdom];
 }
 
-/* Artifact group 7: 3 Boss identities, levels in ascending order. */
+/* 圣遗物组 7：3 种 Boss，仅声明候选套装。 */
 boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"] {
     ARTIFACT_GROUP: standard;
     ARTIFACT_1STAR: [traveling_doctor];
@@ -1688,7 +1709,7 @@ boss[type="world"][tag="geo_hypostasis,golden_wolflord,ruin_serpent"] {
     ARTIFACT_4STAR: [gladiators_finale, instructor, the_exile, wanderers_troupe];
 }
 
-/* Artifact group 8: 3 Boss identities, levels in ascending order. */
+/* 圣遗物组 8：3 种 Boss，仅声明候选套装。 */
 boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"] {
     ARTIFACT_GROUP: standard;
     ARTIFACT_1STAR: [adventurer];
@@ -1697,12 +1718,7 @@ boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"] {
     ARTIFACT_4STAR: [berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny];
 }
 
-/* Native special Instructor program; the set and slot/substat links stay fixed. */
-boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental_field_generator,frostnight_scion,gluttonous_yumkasaur_mountain_king,goldflame_qucusaure_tyrant,holawaqa_ngoubou,hydro_tulpa,icewind_suite,knuckle_duck,lava_dragon_statue,legatus_golem,lightbearing_lunar_moth,lord_of_the_deep_dreadwing,millennial_pearl_seahorse,primal_watcher,radiant_beast,secret_source_automaton_configuration_device,secret_source_automaton_overseer,solitary_suanni,tenebrous_papilla,undying_replicant"] {
-    ARTIFACT_GROUP: instructor_native;
-}
-
-/* Shared artifact execution counts for the seven ordinary native programs. */
+/* 4.5.2 普通程序：7 组 Boss 共用 11 档等级数量分布。 */
 boss[type="world"][artifact_group="standard"][level="1~4"] {
     astaps.loot.world_artifact_1star<<ARTIFACT_1STAR>>: "3:11, 4:39";
     astaps.loot.world_artifact_2star<<ARTIFACT_2STAR>>: "0:29, 1:21";
@@ -1763,8 +1779,8 @@ boss[type="world"][artifact_group="standard"][level="93~"] {
     astaps.loot.world_artifact_5star: 1;
 }
 
-/* Native special-slot programs remain separate. */
-/* Artifact group 4: 22 Boss identities, levels in ascending order. */
+/* 4.5.3 特殊程序：羽毛/杯子与初始副词条保持关联。 */
+/* 圣遗物组 4：22 种 Boss 的独立等级程序。 */
 boss[type="world"][artifact_group="instructor_native"][level="1~4"] {
     astaps.loot.world_artifact_5star_plume_goblet<2,1>: "0:29, 1:21";
     astaps.loot.world_artifact_5star_goblet<1>: "3:11, 4:39";
@@ -1825,7 +1841,7 @@ boss[type="world"][artifact_group="instructor_native"][level="100~"] {
     astaps.loot.world_artifact_5star_plume_goblet<4,3>: "1:3, 2:1";
 }
 
-/* Artifact group 9: 1 Boss identities, levels in ascending order. */
+/* 圣遗物组 9：风蚀沙虫的独立等级程序。 */
 boss[type="world"][tag="setekh_wenut"][level="1~4"] {
     astaps.loot.world_artifact_5star_plume_goblet<0, 0>: "0:29, 1:21";
     astaps.loot.world_artifact_5star_goblet<0>: "3:11, 4:39";

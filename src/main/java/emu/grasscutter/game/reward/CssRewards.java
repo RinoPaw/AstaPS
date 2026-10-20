@@ -45,11 +45,11 @@ public final class CssRewards {
     // to specificity. Jsoup receives the original selector for matching.
     private static final Pattern IS_ATTRIBUTE_GROUP = Pattern.compile(
             ":is\\(\\s*\\[[^\\[\\]]+\\](?:\\s*,\\s*\\[[^\\[\\]]+\\])*\\s*\\)");
-    // Inclusive numeric ranges work on any attribute; "93~" has no upper bound.
-    private static final Pattern ATTRIBUTE_RANGE = Pattern.compile(
-            "\\[\\s*([a-zA-Z_][a-zA-Z0-9_-]*)\\s*=\\s*([\"'])([0-9]+)~([0-9]*)\\2\\s*\\]");
-    private static final Pattern MALFORMED_ATTRIBUTE_RANGE = Pattern.compile(
-            "\\[\\s*([a-zA-Z_][a-zA-Z0-9_-]*)\\s*=\\s*([\"'])[^\"']*~[^\"']*\\2\\s*\\]");
+    // Server-provided numeric range membership is represented by ordinary
+    // CSS presence selectors, e.g. [data-range-level-70-79] or
+    // [data-range-level-93-up]. The stylesheet supplies the intervals.
+    private static final Pattern RANGE_MEMBERSHIP_ATTRIBUTE = Pattern.compile(
+            "\\[\\s*(data-range-([a-zA-Z_][a-zA-Z0-9_-]*)-([0-9]+)-(up|[0-9]+))\\s*\\]");
 
     // Dotted resource keys belong to the rewards dialect, while ph-css needs
     // conventional CSS property identifiers. Encode declarations only; leave
@@ -59,14 +59,17 @@ public final class CssRewards {
     private static final Pattern BINDING = Pattern.compile(
             "<(BOSS_MATERIAL|ELEMENT)>(?:\\[([0-9]+)])?");
 
-    private record AttributeRange(String name, long min, Long max) {
+    private record RangeMembership(
+            String syntheticAttribute, String sourceAttribute,
+            java.math.BigInteger min, java.math.BigInteger max) {
         boolean matches(Map<String, String> attributes) {
-            String value = attributes.get(name);
-            if (value == null) return false;
+            String sourceValue = attributes.get(sourceAttribute);
+            if (sourceValue == null) return false;
             try {
-                long actual = Long.parseLong(value);
-                return actual >= min && (max == null || actual <= max);
-            } catch (NumberFormatException e) {
+                var actual = new java.math.BigInteger(sourceValue);
+                return actual.compareTo(min) >= 0
+                        && (max == null || actual.compareTo(max) <= 0);
+            } catch (NumberFormatException ignored) {
                 return false;
             }
         }
@@ -76,17 +79,20 @@ public final class CssRewards {
     private record ItemDeclaration(String name, Integer fixed, LootCount.Spec ranged) {}
 
     private record Rule(
-            Evaluator selector, List<AttributeRange> attributeRanges,
+            Evaluator selector,
             List<ItemDeclaration> items, List<LootDeclaration> loot,
             List<String> bossMaterials, LootCount.Spec bossMaterialCount, List<String> elements,
             int specificity, int order) {}
 
     private final List<Rule> rules;
+    private final List<RangeMembership> rangeMemberships;
     private final YamlLootTables loot;
     private final ItemIdRegistry itemRegistry;
 
-    private CssRewards(List<Rule> rules, YamlLootTables loot, ItemIdRegistry itemRegistry) {
+    private CssRewards(List<Rule> rules, List<RangeMembership> rangeMemberships,
+                       YamlLootTables loot, ItemIdRegistry itemRegistry) {
         this.rules = List.copyOf(rules);
+        this.rangeMemberships = List.copyOf(rangeMemberships);
         this.loot = loot;
         this.itemRegistry = itemRegistry;
     }
@@ -120,6 +126,7 @@ public final class CssRewards {
         if (sheet == null) throw new IllegalArgumentException("Invalid rewards.css");
 
         var rules = new ArrayList<Rule>();
+        var intervalAttributes = new java.util.LinkedHashMap<String, RangeMembership>();
         int order = 0;
         for (var top : sheet.getAllRules()) {
             if (!(top instanceof CSSStyleRule style) || !style.getAllRules().isEmpty()) {
@@ -166,26 +173,19 @@ public final class CssRewards {
 
             for (var selector : style.getAllSelectors()) {
                 String css = selector.getAsCSSString(CSSWriterSettings.DEFAULT_SETTINGS, 0).trim();
-                var attributeRanges = new ArrayList<AttributeRange>();
-                var selectorBuffer = new StringBuffer();
-                var matcher = ATTRIBUTE_RANGE.matcher(css);
-                while (matcher.find()) {
-                    String name = matcher.group(1);
-                    long min = Long.parseLong(matcher.group(3));
-                    Long max = matcher.group(4).isEmpty()
-                            ? null : Long.parseLong(matcher.group(4));
-                    if (max != null && max < min) {
-                        throw new IllegalArgumentException("Reversed reward attribute range: " + css);
+                var intervalMatcher = RANGE_MEMBERSHIP_ATTRIBUTE.matcher(css);
+                while (intervalMatcher.find()) {
+                    String attribute = intervalMatcher.group(1);
+                    var min = new java.math.BigInteger(intervalMatcher.group(3));
+                    var max = "up".equals(intervalMatcher.group(4))
+                            ? null : new java.math.BigInteger(intervalMatcher.group(4));
+                    if (max != null && max.compareTo(min) < 0) {
+                        throw new IllegalArgumentException("Reversed reward range attribute: " + css);
                     }
-                    attributeRanges.add(new AttributeRange(name, min, max));
-                    matcher.appendReplacement(selectorBuffer, "[" + name + "]");
+                    intervalAttributes.putIfAbsent(attribute, new RangeMembership(
+                            attribute, intervalMatcher.group(2), min, max));
                 }
-                matcher.appendTail(selectorBuffer);
-                String normalizedSelector = selectorBuffer.toString();
-                if (MALFORMED_ATTRIBUTE_RANGE.matcher(normalizedSelector).find()) {
-                    throw new IllegalArgumentException("Invalid reward attribute range: " + css);
-                }
-                String selectorShape = IS_ATTRIBUTE_GROUP.matcher(normalizedSelector)
+                String selectorShape = IS_ATTRIBUTE_GROUP.matcher(css)
                         .replaceAll("[is]");
                 if (!SIMPLE_SELECTOR.matcher(selectorShape).matches()) {
                     throw new IllegalArgumentException("Unsupported reward selector: " + css);
@@ -196,8 +196,8 @@ public final class CssRewards {
                 // outranks a universal selector when attribute counts are equal.
                 int specificity = attributeCount * 100
                         + (css.matches("^[a-zA-Z][a-zA-Z0-9_-]*.*") ? 1 : 0);
-                rules.add(new Rule(Selector.evaluatorOf(normalizedSelector),
-                        List.copyOf(attributeRanges), List.copyOf(itemDeclarations),
+                rules.add(new Rule(Selector.evaluatorOf(css),
+                        List.copyOf(itemDeclarations),
                         List.copyOf(lootDeclarations),
                         bossMaterials, bossMaterialCount, elements,
                         specificity, order++));
@@ -205,7 +205,7 @@ public final class CssRewards {
         }
 
         rules.sort(Comparator.comparingInt(Rule::specificity).thenComparingInt(Rule::order));
-        return new CssRewards(rules, loot, items);
+        return new CssRewards(rules, List.copyOf(intervalAttributes.values()), loot, items);
     }
 
     /** Preserve resource and element bindings across CSS tokenization. */
@@ -301,13 +301,20 @@ public final class CssRewards {
     public Selection resolve(String type, Map<String, String> attributes) {
         var element = new Element(type);
         attributes.forEach(element::attr);
+        // Compute interval memberships from the numeric source attributes.
+        // No level cap: open-ended ranges match arbitrarily large integers.
+        for (var interval : rangeMemberships) {
+            element.removeAttr(interval.syntheticAttribute());
+            if (interval.matches(attributes)) {
+                element.attr(interval.syntheticAttribute(), "");
+            }
+        }
         var matched = new ArrayList<Rule>();
         List<String> bossMaterials = null;
         List<String> elements = null;
         // Resolve bindings independently of the count rules' position/specificity.
         for (var rule : rules) {
-            if (rule.selector.matches(element.root(), element)
-                    && rule.attributeRanges.stream().allMatch(range -> range.matches(attributes))) {
+            if (rule.selector.matches(element.root(), element)) {
                 matched.add(rule);
                 if (rule.bossMaterials != null) bossMaterials = rule.bossMaterials;
                 if (rule.elements != null) elements = rule.elements;

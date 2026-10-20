@@ -39,7 +39,7 @@ blossom[type="wealth"][WR="5"] {
     genshin.experience.companionship: 20;
 }
 
-blossom[type="wealth"][WR="6~9"] {
+blossom[type="wealth"][data-range-WR-6-9] {
     genshin.currency.mora: 60000;
     genshin.experience.companionship: 20;
 }
@@ -80,7 +80,7 @@ blossom[type="revelation"][WR="5"] {
     genshin.experience.companionship: 20;
 }
 
-blossom[type="revelation"][WR="6~9"] {
+blossom[type="revelation"][data-range-WR-6-9] {
     genshin.avatar_up.adventurers_experience: 6~7;
     genshin.avatar_up.heros_wit: 4~5;
     genshin.experience.companionship: 20;

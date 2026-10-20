@@ -26,8 +26,8 @@ class BlossomRewardsTest {
         String selectors = RewardConfiguration.readBundled("blossoms.css");
         assertEquals(14, selectors.lines().filter(line ->
                 line.startsWith("blossom[type=")).count());
-        assertTrue(selectors.contains("blossom[type=\"wealth\"][WR=\"6~9\"]"));
-        assertTrue(selectors.contains("blossom[type=\"revelation\"][WR=\"6~9\"]"));
+        assertTrue(selectors.contains("blossom[type=\"wealth\"][data-range-WR-6-9]"));
+        assertTrue(selectors.contains("blossom[type=\"revelation\"][data-range-WR-6-9]"));
         assertFalse(selectors.contains("astaps.loot."));
         return new RewardConfiguration(loot, CssRewards.parse(
                 selectors, items, loot));

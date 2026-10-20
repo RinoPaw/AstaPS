@@ -11,9 +11,15 @@ editable `config/rewards` copies.
 
 CSS selector alternatives use native `:is()`, for example
 `boss[type="world"]:is([tag="anemo_hypostasis"], [tag="cryo_hypostasis"])`.
-Quoted attribute commas are literal under CSS semantics. The existing
-`[level="70~79"]` numeric interval is still a reward-specific extension:
-CSS itself has no general numeric attribute-range selector.
+Quoted attribute commas are literal under CSS semantics. Numeric intervals
+use ordinary CSS attribute-presence selectors over server-generated metadata:
+`[data-range-level-70-79]` matches source `level` values from 70 through 79,
+and `[data-range-level-93-up]` matches every integer level at least 93,
+without a fixed maximum. `[data-range-WR-6-9]` works the same way for world
+rank. The loader discovers the range attributes used in the stylesheet and
+computes their membership from the corresponding numeric source attributes.
+No numeric-range syntax is added to CSS itself. The original `level` and
+`WR` attributes remain available for exact-value selectors.
 
 ## No implicit implementation ceilings
 
@@ -71,14 +77,14 @@ boss[type="world"][tag="maguu_kenki"] {
     ELEMENT: [anemo, cryo];
 }
 
-boss[type="world"][level="90~92"] {
+boss[type="world"][data-range-level-90-92] {
     genshin.currency.mora: 5200;
     genshin.experience.companionship: 45;
     genshin.experience.character: 200;
     genshin.avatar_ascension.<BOSS_MATERIAL>: "2:44, 3:56";
 }
 
-boss[type="world"][tag="maguu_kenki"][level="50~54"] {
+boss[type="world"][tag="maguu_kenki"][data-range-level-50-54] {
     astaps.loot.world_gem_two<3, <ELEMENT>[0], <ELEMENT>[1]>: "1:25, 2:75";
 }
 ```
@@ -142,7 +148,7 @@ world_gem_fragment<COUNT, ELEMENTS...>:
 ```
 
 ```css
-boss[type="world"][tag="anemo_hypostasis"][level="40~"] {
+boss[type="world"][tag="anemo_hypostasis"][data-range-level-40-up] {
     astaps.loot.world_gem_fragment<1, <ELEMENT>>: "3:88, 6:12";
 }
 ```

@@ -175,12 +175,12 @@ class CssRewardsTest {
     @Test
     void commaGroupedLevelRangesKeepIndependentSelectors() {
         var css = CssRewards.parse("""
-                boss[type="world"][level="93~99"],
-                boss[type="world"][level="100~104"],
-                boss[type="weekly"][level="90~"] {
+                boss[type="world"][data-range-level-93-99],
+                boss[type="world"][data-range-level-100-104],
+                boss[type="weekly"][data-range-level-90-up] {
                     genshin.currency.mora: 6000;
                 }
-                boss[type="world"][tag="无相之雷"][level="93~99"] {
+                boss[type="world"][tag="无相之雷"][data-range-level-93-99] {
                     genshin.currency.primogem: 2;
                 }
                 """, items, loot);
@@ -427,12 +427,12 @@ class CssRewardsTest {
     void quotedLevelRangesCoverSixSourceIntervalsWithoutFallback() {
         var css = CssRewards.parse("""
                 chest[grade="common"] { genshin.currency.primogem: 2; }
-                chest[grade="common"][level="1~5"] { astaps.loot.surprise: 1; }
-                chest[grade="common"][level="6~10"] { astaps.loot.currency: 2; }
-                chest[grade="common"][level="11~15"] { astaps.loot.surprise: 3; }
-                chest[grade="common"][level="16~20"] { astaps.loot.currency: 4; }
-                chest[grade="common"][level="21~25"] { astaps.loot.surprise: 5; }
-                chest[grade="common"][level="26~"] { astaps.loot.currency: 6; }
+                chest[grade="common"][data-range-level-1-5] { astaps.loot.surprise: 1; }
+                chest[grade="common"][data-range-level-6-10] { astaps.loot.currency: 2; }
+                chest[grade="common"][data-range-level-11-15] { astaps.loot.surprise: 3; }
+                chest[grade="common"][data-range-level-16-20] { astaps.loot.currency: 4; }
+                chest[grade="common"][data-range-level-21-25] { astaps.loot.surprise: 5; }
+                chest[grade="common"][data-range-level-26-up] { astaps.loot.currency: 6; }
                 """, items, loot);
         int[] levels = {1, 5, 6, 10, 11, 15, 16, 20, 21, 25, 26, 99};
         String[] names = {
@@ -496,13 +496,13 @@ class CssRewardsTest {
     @Test
     void isSelectorKeepsCssSpecificityAndLevelRanges() {
         var css = CssRewards.parse("""
-                boss[type="world"]:is([tag="a"], [tag="b"])[level="70~79"] {
+                boss[type="world"]:is([tag="a"], [tag="b"])[data-range-level-70-79] {
                     genshin.currency.mora: 10;
                 }
-                boss[type="world"][level="70~79"] {
+                boss[type="world"][data-range-level-70-79] {
                     genshin.currency.mora: 20;
                 }
-                boss[type="world"][tag="b"][level="70~79"] {
+                boss[type="world"][tag="b"][data-range-level-70-79] {
                     genshin.currency.mora: 30;
                 }
                 """, items, loot);
@@ -519,13 +519,13 @@ class CssRewardsTest {
     @Test
     void numericRangesApplyToEveryAttributeAndKeepSpecificity() {
         var css = CssRewards.parse("""
-                blossom[type="wealth"][world_level="6~9"] {
+                blossom[type="wealth"][data-range-world_level-6-9] {
                     genshin.currency.mora: 60000;
                 }
                 blossom[type="wealth"][world_level="7"][city="1"] {
                     genshin.currency.mora: 30000;
                 }
-                chest[rank="2~"] {
+                chest[data-range-rank-2-up] {
                     genshin.currency.primogem: 5;
                 }
                 """, items, loot);
@@ -548,9 +548,9 @@ class CssRewardsTest {
     @Test
     void levelRangesPreserveSpecificityAndExactEquality() {
         var css = CssRewards.parse("""
-                chest[level="6~10"] { astaps.loot.surprise: 2; }
-                chest[level="11~16"] { astaps.loot.currency: 3; }
-                chest[grade="common"][level="16~20"] { astaps.loot.surprise: 4; }
+                chest[data-range-level-6-10] { astaps.loot.surprise: 2; }
+                chest[data-range-level-11-16] { astaps.loot.currency: 3; }
+                chest[grade="common"][data-range-level-16-20] { astaps.loot.surprise: 4; }
                 chest[level="30"] { astaps.loot.currency: 5; }
                 """, items, loot);
         assertTrue(css.resolve("chest", Map.of("level", "5")).loot().isEmpty());
@@ -569,15 +569,48 @@ class CssRewardsTest {
     }
 
     @Test
-    void invalidLevelRangesAreRejected() {
-        for (String attribute : new String[]{"level", "world_level", "rank"}) {
-            for (String range : new String[]{"10~5", "a~5", "2~x", "~5"}) {
-                assertThrows(IllegalArgumentException.class, () ->
-                        CssRewards.parse("chest[" + attribute + "=\"" + range
-                                + "\"] { astaps.loot.currency: 1; }",
-                                items, loot), attribute + "=" + range);
-            }
+    void rangeMembershipAttributesValidateBoundsAndPreserveLiteralEquality() {
+        for (String attr : new String[]{"level", "WR", "world_level", "rank"}) {
+            assertThrows(IllegalArgumentException.class, () ->
+                    CssRewards.parse("chest[data-range-" + attr
+                            + "-10-5] { astaps.loot.currency: 1; }", items, loot));
         }
+        var css = CssRewards.parse("""
+                chest[level="6~10"] { genshin.currency.mora: 9; }
+                chest[data-range-level-6-10] { genshin.currency.primogem: 2; }
+                """, items, loot);
+        assertEquals(Map.of(202, 9), css.resolve("chest", Map.of("level", "6~10")).items());
+        assertEquals(Map.of(201, 2), css.resolve("chest", Map.of("level", "7")).items());
+        assertTrue(css.resolve("chest", Map.of("level", "11")).items().isEmpty());
+        assertTrue(css.resolve("chest", Map.of()).items().isEmpty());
+    }
+
+    @Test
+    void numericMembershipSupportsOverlappingOpenRangesAndLargeValues() {
+        var css = CssRewards.parse("""
+                boss[type="world"][data-range-level-70-79] {
+                    genshin.currency.mora: 70;
+                }
+                boss[type="world"][data-range-level-79-up] {
+                    genshin.currency.primogem: 79;
+                }
+                boss[type="world"][data-range-level-93-up] {
+                    genshin.currency.mora: 93;
+                }
+                """, items, loot);
+        assertEquals(Map.of(202, 70), css.resolve("boss",
+                Map.of("type", "world", "level", "70")).items());
+        assertEquals(Map.of(202, 70, 201, 79), css.resolve("boss",
+                Map.of("type", "world", "level", "79")).items());
+        assertEquals(Map.of(201, 79), css.resolve("boss",
+                Map.of("type", "world", "level", "80")).items());
+        assertEquals(Map.of(202, 93, 201, 79), css.resolve("boss",
+                Map.of("type", "world", "level", "93")).items());
+        assertEquals(Map.of(202, 93, 201, 79), css.resolve("boss",
+                Map.of("type", "world", "level", "999999999999999999999999999")).items());
+        assertTrue(css.resolve("boss", Map.of("type", "world", "level", "unknown")).items().isEmpty());
+        assertTrue(css.resolve("boss", Map.of("type", "world")).items().isEmpty());
+        assertTrue(css.resolve("boss", Map.of("type", "world", "level", "-1")).items().isEmpty());
     }
 
     @Test

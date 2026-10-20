@@ -1,11 +1,9 @@
 package emu.grasscutter.game.drop;
 
 import java.math.BigDecimal;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.random.RandomGenerator;
 
-/** Integer reward counts, ranges, percentage distributions and independent bonus rolls. */
+/** Integer reward counts, ranges, relative-weight distributions and bonus rolls. */
 public final class LootCount {
     private static final BigDecimal HUNDRED = new BigDecimal("100");
     public static final int MAX_COUNT = 100_000;
@@ -23,7 +21,7 @@ public final class LootCount {
         }
         String text = raw.toString().trim();
         if (text.contains("+")) return bonus(text);
-        if (text.contains(":") || text.contains(",")) return distribution(text);
+        if (text.contains(":") || text.contains(",")) return parseRoll(text);
         if (text.contains("~") || text.contains(";")) {
             String[] parts = text.split("[~;]", -1);
             if (parts.length != 2) throw new IllegalArgumentException("Invalid range: " + text);
@@ -35,12 +33,12 @@ public final class LootCount {
         return rng -> fixed;
     }
 
-    /** CSS roll expressions use count:relative-weight, with no implicit empty result. */
+    /** Count:relative-weight expressions require a weight for every outcome. */
     public static Spec parseRoll(Object raw) {
         if (raw == null) return rng -> 1;
         String text = raw.toString().trim().replaceAll("\\s+", "");
         if (text.contains("+")) {
-            throw new IllegalArgumentException("Bonus '+' syntax is not supported in CSS rolls");
+            throw new IllegalArgumentException("Bonus '+' syntax is not supported in rolls");
         }
         if (!text.contains(":") && !text.contains(",")) return parse(text);
         var amounts = new java.util.ArrayList<Integer>();
@@ -50,7 +48,7 @@ public final class LootCount {
         for (String part : text.split(",", -1)) {
             String[] pair = part.split(":", -1);
             if (pair.length != 2 || !pair[1].matches("[0-9]+(?:\\.[0-9]+)?")) {
-                throw new IllegalArgumentException("Expected count:weight in CSS roll: " + part);
+                throw new IllegalArgumentException("Expected count:weight in roll: " + part);
             }
             int amount = integer(pair[0]);
             if (!seen.add(amount)) throw new IllegalArgumentException("Duplicate roll count: " + amount);
@@ -60,7 +58,7 @@ public final class LootCount {
             weights.add(weight);
             total = total.add(weight);
         }
-        if (amounts.isEmpty()) throw new IllegalArgumentException("CSS roll has no positive weight");
+        if (amounts.isEmpty()) throw new IllegalArgumentException("Roll has no positive weight");
         if (amounts.size() == 1) {
             int amount = amounts.getFirst();
             return rng -> amount;
@@ -114,9 +112,11 @@ public final class LootCount {
             if (base >= MAX_COUNT) {
                 throw new IllegalArgumentException("Native bonus count exceeds limit: " + value);
             }
-            // The first outcome receives the remaining probability.
-            return base + ", " + (base + 1) + ":"
-                    + fraction.movePointRight(2).stripTrailingZeros().toPlainString();
+            BigDecimal upperWeight = fraction.movePointRight(2);
+            BigDecimal lowerWeight = HUNDRED.subtract(upperWeight);
+            return base + ":" + lowerWeight.stripTrailingZeros().toPlainString()
+                    + ", " + (base + 1) + ":"
+                    + upperWeight.stripTrailingZeros().toPlainString();
         }
         // Native integer and inclusive-range encodings remain intact.
         parse(source);
@@ -132,49 +132,6 @@ public final class LootCount {
             throw new IllegalArgumentException("Probability above 100%: " + value);
         }
         return chance;
-    }
-
-    private static Spec distribution(String text) {
-        Map<Integer, BigDecimal> probabilities = new LinkedHashMap<>();
-        Integer missing = null;
-        BigDecimal total = BigDecimal.ZERO;
-        for (String part : text.split(",", -1)) {
-            String[] parts = part.trim().split(":", -1);
-            if (parts.length < 1 || parts.length > 2) throw new IllegalArgumentException("Invalid outcome: " + part);
-            int amount = integer(parts[0].trim());
-            if (probabilities.containsKey(amount)) throw new IllegalArgumentException("Duplicate count: " + amount);
-            if (parts.length == 1) {
-                if (missing != null) throw new IllegalArgumentException("Multiple missing probabilities: " + text);
-                missing = amount;
-                probabilities.put(amount, null);
-            } else {
-                BigDecimal probability = percentage(parts[1].trim());
-                total = total.add(probability);
-                probabilities.put(amount, probability);
-            }
-        }
-        if (total.compareTo(HUNDRED) > 0) throw new IllegalArgumentException("Probability total above 100%");
-        BigDecimal rest = HUNDRED.subtract(total);
-        if (missing != null) probabilities.put(missing, rest);
-        else if (rest.signum() > 0) probabilities.merge(0, rest, BigDecimal::add);
-
-        var amounts = new java.util.ArrayList<Integer>();
-        var boundaries = new java.util.ArrayList<Double>();
-        double cumulative = 0;
-        for (var entry : probabilities.entrySet()) {
-            if (entry.getValue().signum() <= 0) continue;
-            cumulative += entry.getValue().divide(HUNDRED).doubleValue();
-            amounts.add(entry.getKey());
-            boundaries.add(cumulative);
-        }
-        if (amounts.isEmpty()) throw new IllegalArgumentException("No possible count: " + text);
-        return rng -> {
-            double roll = rng.nextDouble();
-            for (int i = 0; i < amounts.size() - 1; i++) {
-                if (roll < boundaries.get(i)) return amounts.get(i);
-            }
-            return amounts.getLast();
-        };
     }
 
     private static BigDecimal decimal(String value) {

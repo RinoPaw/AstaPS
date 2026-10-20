@@ -467,4 +467,85 @@ class LootCountScopeTest {
                   - {type: genshin.currency.mora}
                 """, ITEMS));
     }
+
+    @Test
+    void expectedPoolNodesIncludeRootAndApplyInclusiveTenBoundary() {
+        assertDoesNotThrow(() -> YamlLootTables.parse("""
+                safe:
+                  - {type: safe, count: "0:1, 1:9"}
+                """, ITEMS));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                too_many:
+                  - {type: too_many, count: "0:99, 1:901"}
+                """, ITEMS));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                critical:
+                  - {type: critical, count: "0:1, 2:1"}
+                """, ITEMS));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                always:
+                  - {type: always}
+                """, ITEMS));
+    }
+
+    @Test
+    void expectedNodeCheckUsesPoolExecutionCountsButNotLeafItemQuantity() {
+        assertDoesNotThrow(() -> YamlLootTables.parse("""
+                leaf: {type: genshin.currency.mora, count: 2147483647}
+                nine_children: {type: leaf, count: 9}
+                """, ITEMS));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                leaf: {type: genshin.currency.mora, count: 2147483647}
+                ten_children: {type: leaf, count: 10}
+                """, ITEMS));
+        assertDoesNotThrow(() -> YamlLootTables.parse("""
+                tiny:
+                  - {type: tiny, count: "0:999, 100:1"}
+                """, ITEMS));
+    }
+
+    @Test
+    void recursiveSafetyAccountsForMutualCallsAndWeightedBranches() {
+        assertDoesNotThrow(() -> YamlLootTables.parse("""
+                a: {type: b, count: 2}
+                b: {type: a, count: "0:9, 1:1"}
+                """, ITEMS));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                a: {type: b, count: 2}
+                b: {type: a, count: "0:3, 1:2"}
+                """, ITEMS));
+        assertDoesNotThrow(() -> YamlLootTables.parse("""
+                safe:
+                  - {type: safe}: 9
+                  - {type: genshin.currency.mora}: 91
+                """, ITEMS));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                critical:
+                  - {type: critical}: 1
+                  - {type: genshin.currency.mora}: 0
+                """, ITEMS));
+    }
+
+    @Test
+    void recursiveSafetyChecksYamlAliasesAndParameterizedInstances() {
+        assertDoesNotThrow(() -> YamlLootTables.parse("""
+                root: &loop
+                  - {type: *loop, count: "0:1, 1:9"}
+                """, ITEMS));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                root: &loop
+                  - {type: *loop, count: "0:99, 1:901"}
+                """, ITEMS));
+        var safe = YamlLootTables.parse("""
+                recursive<N>:
+                  - {type: "recursive<1>", count: "0:1, 1:9"}
+                root: {type: "recursive<1>"}
+                """, ITEMS);
+        assertTrue(safe.contains("astaps.loot.recursive<1>"));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                recursive<N>:
+                  - {type: "recursive<1>", count: "0:99, 1:901"}
+                root: {type: "recursive<1>"}
+                """, ITEMS));
+    }
 }

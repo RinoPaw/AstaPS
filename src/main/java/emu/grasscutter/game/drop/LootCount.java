@@ -114,8 +114,9 @@ public final class LootCount {
             if (base >= MAX_COUNT) {
                 throw new IllegalArgumentException("Native bonus count exceeds limit: " + value);
             }
-            return base + "+1:" + fraction.movePointRight(2)
-                    .stripTrailingZeros().toPlainString();
+            // The first outcome receives the remaining probability.
+            return base + ", " + (base + 1) + ":"
+                    + fraction.movePointRight(2).stripTrailingZeros().toPlainString();
         }
         // Native integer and inclusive-range encodings remain intact.
         parse(source);

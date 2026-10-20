@@ -57,7 +57,12 @@ class LootCountNativeFractionTest {
             assertThrows(IllegalArgumentException.class,
                     () -> LootCount.parse(value), value);
         }
-        for (String value : new String[]{"-1.25", "1.2.3", "100000.5"}) {
+        assertEquals("100000:50, 100001:50", LootCount.fromNativeCount("100000.5"));
+        assertEquals("100001", LootCount.fromNativeCount("100001"));
+        assertEquals("2147483646:50, 2147483647:50",
+                LootCount.fromNativeCount("2147483646.5"));
+        assertEquals("2147483647", LootCount.fromNativeCount("2147483647.0"));
+        for (String value : new String[]{"-1.25", "1.2.3", "2147483647.5", "2147483648"}) {
             assertThrows(IllegalArgumentException.class,
                     () -> LootCount.fromNativeCount(value), value);
         }

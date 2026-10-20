@@ -9,7 +9,7 @@ new CSS file needs no registration or changes to a file-count constant.
 Rule specificity and source order still decide overrides. There are no
 editable `config/rewards` copies.
 
-CSS selector alternatives use native `:is()`, for example
+CSS selector alternatives use native `:is()`, `:where()`, and `:not()`, for example
 `boss[type="world"]:is([tag="anemo_hypostasis"], [tag="cryo_hypostasis"])`.
 Quoted attribute commas are literal under CSS semantics. Numeric intervals
 use ordinary CSS attribute-presence selectors over server-generated metadata:
@@ -18,7 +18,7 @@ and `[data-range-level-93-up]` matches every integer level at least 93,
 without a fixed maximum. `[data-range-WR-6-9]` works the same way for world
 rank. The loader discovers the range attributes used in the stylesheet and
 computes their membership from the corresponding numeric source attributes.
-No numeric-range syntax is added to CSS itself. The original `level` and
+No numeric-range syntax is added to CSS itself. Selector matching and Level 4 specificity use css4j; ph-css parses declarations. The original `level` and
 `WR` attributes remain available for exact-value selectors.
 
 ## No implicit implementation ceilings
@@ -110,10 +110,9 @@ world_gem_two<COUNT, ELEMENTS...>:
 ```
 
 An ordinary one-element call is `astaps.loot.world_gem_two<3, <ELEMENT>>`.
-Literal arguments such as `<electro>` remain valid. YAML generic parameters use
-`<element>` or `<set1>` inside strings. The previous `${parameter}` spelling
-and CSS variadic `<ELEMENT>` call remain accepted for compatibility; bundled
-configuration uses the new explicit forms.
+Literal arguments such as `<electro>` remain valid. YAML template parameters use
+`<element>` or `<set1>` inside strings. The obsolete `${parameter}` expression
+and the implicit CSS `<ELEMENT>` pack call are rejected.
 
 `ELEMENT` also selects regional chest sigils, including `lunar`. Ley-line
 blossom selectors use `WR`, supplied by `rollBlossom` for world ranks 0–9.

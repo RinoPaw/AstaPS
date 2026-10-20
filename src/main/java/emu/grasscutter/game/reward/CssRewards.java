@@ -14,9 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Evaluator;
-import org.jsoup.select.Selector;
+import io.sf.carte.doc.dom.CSSDOMImplementation;
+import io.sf.carte.doc.style.css.CSSElement;
+import io.sf.carte.doc.style.css.SelectorMatcher;
+import io.sf.carte.doc.style.css.nsac.Selector;
+import io.sf.carte.doc.style.css.om.Specificity;
+import io.sf.carte.doc.style.css.parser.CSSParser;
 
 /** CSS custom properties reference typed items and named loot tables. */
 public final class CssRewards {
@@ -37,19 +40,6 @@ public final class CssRewards {
         }
     }
 
-    // Support native :is() attribute alternatives with simple type/attribute selectors.
-    // Keep specificity accurate for every selector shape accepted here.
-    private static final Pattern SIMPLE_SELECTOR = Pattern.compile(
-            "^(?:\\*|[a-zA-Z][a-zA-Z0-9_-]*)(?:\\[[^\\[\\]]+\\])*$");
-    // An :is() list of attribute selectors contributes one attribute
-    // to specificity. Jsoup receives the original selector for matching.
-    private static final Pattern IS_ATTRIBUTE_GROUP = Pattern.compile(
-            ":is\\(\\s*\\[[^\\[\\]]+\\](?:\\s*,\\s*\\[[^\\[\\]]+\\])*\\s*\\)");
-    // :where() uses the same native jsoup matcher as :is(), but always
-    // contributes zero specificity, per the CSS Selectors specification.
-    private static final Pattern WHERE_ATTRIBUTE_GROUP = Pattern.compile(
-            ":where\\(\\s*\\[[^\\[\\]]+\\](?:\\s*,\\s*\\[[^\\[\\]]+\\])*\\s*\\)");
-    // Server-provided numeric range membership is represented by ordinary
     // CSS presence selectors, e.g. [data-range-level-70-79] or
     // [data-range-level-93-up]. The stylesheet supplies the intervals.
     private static final Pattern RANGE_MEMBERSHIP_ATTRIBUTE = Pattern.compile(
@@ -83,10 +73,10 @@ public final class CssRewards {
     private record ItemDeclaration(String name, Integer fixed, LootCount.Spec ranged) {}
 
     private record Rule(
-            Evaluator selector,
+            Selector selector,
             List<ItemDeclaration> items, List<LootDeclaration> loot,
             List<String> bossMaterials, LootCount.Spec bossMaterialCount, List<String> elements,
-            int specificity, int order) {}
+            int order) {}
 
     private final List<Rule> rules;
     private final List<RangeMembership> rangeMemberships;
@@ -189,32 +179,15 @@ public final class CssRewards {
                     intervalAttributes.putIfAbsent(attribute, new RangeMembership(
                             attribute, intervalMatcher.group(2), min, max));
                 }
-                String withoutWhere = WHERE_ATTRIBUTE_GROUP.matcher(css)
-                        .replaceAll("");
-                String selectorShape = IS_ATTRIBUTE_GROUP.matcher(withoutWhere)
-                        .replaceAll("[is]");
-                if (!SIMPLE_SELECTOR.matcher(selectorShape).matches()) {
-                    throw new IllegalArgumentException("Unsupported reward selector: " + css);
+                var selectors = new CSSParser().parseSelectors(css);
+                for (var parsed : selectors) {
+                    rules.add(new Rule(parsed, List.copyOf(itemDeclarations),
+                            List.copyOf(lootDeclarations), bossMaterials,
+                            bossMaterialCount, elements, order++));
                 }
-                int attributeCount = (int) selectorShape.chars()
-                        .filter(ch -> ch == '[').count();
-                // Within our supported type-and-attribute subset, a type selector
-                // outranks a universal selector when attribute counts are equal.
-                int specificity = attributeCount * 100
-                        + (css.matches("^[a-zA-Z][a-zA-Z0-9_-]*.*") ? 1 : 0);
-                // jsoup 1.23.2 supports :is() but not :where(); both have
-                // identical matching semantics. Specificity was computed above
-                // using the original :where() expression (zero contribution).
-                String matcherCss = css.replace(":where(", ":is(");
-                rules.add(new Rule(Selector.evaluatorOf(matcherCss),
-                        List.copyOf(itemDeclarations),
-                        List.copyOf(lootDeclarations),
-                        bossMaterials, bossMaterialCount, elements,
-                        specificity, order++));
             }
         }
 
-        rules.sort(Comparator.comparingInt(Rule::specificity).thenComparingInt(Rule::order));
         return new CssRewards(rules, List.copyOf(intervalAttributes.values()), loot, items);
     }
 
@@ -280,11 +253,6 @@ public final class CssRewards {
 
     private static List<String> expandBindings(
             String name, List<String> materials, List<String> elements, boolean table) {
-        // Retain the previous variadic spelling for existing configurations.
-        if (table && name.endsWith("<ELEMENT>") && !name.endsWith("<<ELEMENT>>")) {
-            if (elements == null) return List.of();
-            return List.of(name.substring(0, name.length() - 9) + "<" + String.join(",", elements) + ">");
-        }
         var matcher = BINDING.matcher(name);
         if (!matcher.find()) return List.of(name);
         List<String> bound = "BOSS_MATERIAL".equals(matcher.group(1)) ? materials : elements;
@@ -309,32 +277,39 @@ public final class CssRewards {
     }
 
     public Selection resolve(String type, Map<String, String> attributes) {
-        var element = new Element(type);
-        attributes.forEach(element::attr);
-        // Compute interval memberships from the numeric source attributes.
-        // No level cap: open-ended ranges match arbitrarily large integers.
+        var doc = new CSSDOMImplementation().createDocument(null, "rewards", null);
+        var element = (CSSElement) doc.createElement(type);
+        doc.getDocumentElement().appendChild(element);
+        attributes.forEach(element::setAttribute);
         for (var interval : rangeMemberships) {
-            element.removeAttr(interval.syntheticAttribute());
+            element.removeAttribute(interval.syntheticAttribute());
             if (interval.matches(attributes)) {
-                element.attr(interval.syntheticAttribute(), "");
+                element.setAttribute(interval.syntheticAttribute(), "");
             }
         }
-        var matched = new ArrayList<Rule>();
+        SelectorMatcher matcher = element.getSelectorMatcher();
+        record Match(Rule rule, Specificity specificity) {}
+        var matched = new ArrayList<Match>();
+        for (var rule : rules) {
+            if (matcher.matches(rule.selector())) {
+                matched.add(new Match(rule, new Specificity(rule.selector(), matcher)));
+            }
+        }
+        matched.sort(Comparator.comparing(Match::specificity, Specificity::selectorCompare)
+                .thenComparingInt(match -> match.rule().order()));
         List<String> bossMaterials = null;
         List<String> elements = null;
-        // Resolve bindings independently of the count rules' position/specificity.
-        for (var rule : rules) {
-            if (rule.selector.matches(element.root(), element)) {
-                matched.add(rule);
-                if (rule.bossMaterials != null) bossMaterials = rule.bossMaterials;
-                if (rule.elements != null) elements = rule.elements;
-            }
+        for (var match : matched) {
+            var rule = match.rule();
+            if (rule.bossMaterials != null) bossMaterials = rule.bossMaterials;
+            if (rule.elements != null) elements = rule.elements;
         }
         var fixed = new HashMap<Integer, Integer>();
         var ranged = new HashMap<Integer, LootCount.Spec>();
         var selectedLoot = new HashMap<String, Integer>();
         var rangedLoot = new HashMap<String, LootCount.Spec>();
-        for (var rule : matched) {
+        for (var match : matched) {
+            var rule = match.rule();
             for (var declaration : rule.items) {
                 for (String name : expandBindings(declaration.name, bossMaterials, elements, false)) {
                     int id = itemRegistry.resolve(name);

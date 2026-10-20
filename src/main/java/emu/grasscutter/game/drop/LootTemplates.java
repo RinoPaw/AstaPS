@@ -18,11 +18,7 @@ final class LootTemplates {
             Pattern.compile("([a-z][a-z0-9_-]*)\\s*<\\s*([^<>]+)\\s*>");
     private static final Pattern INVOCATION =
             Pattern.compile("([a-z][a-z0-9_-]*)\\s*<\\s*((?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+)(?:\\s*,\\s*(?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+))*)?\\s*>");
-    private static final Pattern EXPRESSION = Pattern.compile("\\$\\{([^{}]*)}|<([A-Za-z_][A-Za-z0-9_]*)>");
-    private static final Pattern INTEGER_EXPRESSION =
-            Pattern.compile("([A-Za-z_][A-Za-z0-9_]*|[0-9]+)((?:[+-][0-9]+)*)");
-    private static final Pattern OPERATION = Pattern.compile("([+-])([0-9]+)");
-
+    private static final Pattern EXPRESSION = Pattern.compile("<([A-Za-z_][A-Za-z0-9_]*)>");
     private static final Pattern PARAMETER = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
     private static final Pattern SPREAD = Pattern.compile("<([A-Za-z_][A-Za-z0-9_]*)\\.\\.\\.>");
 
@@ -121,25 +117,23 @@ final class LootTemplates {
             }
             return output;
         }
-        if (raw instanceof String value && (value.contains("${") || value.contains("<"))) {
+        if (raw instanceof String value && value.contains("${")) {
+            throw new IllegalArgumentException("Obsolete loot template expression: " + value);
+        }
+        if (raw instanceof String value && value.contains("<")) {
             String source = expandPacks(value, parameters);
             Matcher matcher = EXPRESSION.matcher(source);
             StringBuffer expanded = new StringBuffer();
             while (matcher.find()) {
-                boolean legacy = matcher.group(1) != null;
-                String expression = legacy ? matcher.group(1).trim() : matcher.group(2);
-                // Literal generic arguments are not parameter references.
-                if (!legacy && !parameters.containsKey(expression)) continue;
-                Object replacement = parameters.containsKey(expression)
-                        ? parameters.get(expression) : evaluate(expression, parameters);
-                matcher.appendReplacement(expanded, Matcher.quoteReplacement(replacement.toString()));
+                String name = matcher.group(1);
+                // Literal generic arguments have no matching template parameter.
+                if (!parameters.containsKey(name)) continue;
+                matcher.appendReplacement(expanded,
+                        Matcher.quoteReplacement(parameters.get(name).toString()));
             }
             matcher.appendTail(expanded);
             String result = expanded.toString();
-            if (result.contains("${")) {
-                throw new IllegalArgumentException("Unclosed or invalid loot expression: " + value);
-            }
-            if (value.trim().matches("\\$\\{[^{}]+}|<[A-Za-z_][A-Za-z0-9_]*>")) {
+            if (value.trim().matches("<[A-Za-z_][A-Za-z0-9_]*>")) {
                 return result.matches("[0-9]+") ? Integer.parseInt(result) : result;
             }
             return result;
@@ -285,33 +279,4 @@ final class LootTemplates {
         }
     }
 
-    private static int evaluate(String expression, Map<String, Object> parameters) {
-        String normalized = expression.replaceAll("\\s+", "");
-        Matcher parsed = INTEGER_EXPRESSION.matcher(normalized);
-        if (!parsed.matches()) {
-            throw new IllegalArgumentException("Unsupported loot expression: ${" + expression + "}");
-        }
-        String base = parsed.group(1);
-        int result;
-        try {
-            if (base.matches("[0-9]+")) {
-                result = Integer.parseInt(base);
-            } else {
-                Object bound = parameters.get(base);
-                if (!(bound instanceof Integer number)) {
-                    throw new IllegalArgumentException("Expected integer loot template parameter: " + base);
-                }
-                result = number;
-            }
-            Matcher operations = OPERATION.matcher(parsed.group(2));
-            while (operations.find()) {
-                int operand = Integer.parseInt(operations.group(2));
-                result = "+".equals(operations.group(1))
-                        ? Math.addExact(result, operand) : Math.subtractExact(result, operand);
-            }
-        } catch (ArithmeticException ex) {
-            throw new IllegalArgumentException("Loot expression overflows: ${" + expression + "}", ex);
-        }
-        return result;
-    }
 }

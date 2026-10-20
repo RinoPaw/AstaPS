@@ -100,7 +100,7 @@ class YamlLootTablesTest {
             assertThrows(IllegalArgumentException.class, () -> parse(template.formatted(bad)), bad);
         }
         assertThrows(IllegalArgumentException.class,
-                () -> parse(template.formatted("${rarity + 1}").replace("item<3>", "item<2147483648>")));
+                () -> parse(template.formatted("<rarity>").replace("item<3>", "item<2147483648>")));
         // Template bodies must be lists, not special common/variants mappings.
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 invalid<chance>:
@@ -119,11 +119,11 @@ class YamlLootTablesTest {
                   - {reward: genshin.avatar_up.heros_wit, weight: 1}
                   - {reward: genshin.avatar_up.adventurers_experience, weight: 1}
                 award<rarity>:
-                  - {reward: *choices, count: "${rarity - 2}"}
+                  - {reward: *choices, count: "<rarity>"}
                 boss_a:
-                  - {reward: astaps.loot.award<3>}
+                  - {reward: astaps.loot.award<1>}
                 boss_b:
-                  - {reward: astaps.loot.award<3>}
+                  - {reward: astaps.loot.award<1>}
                 """);
         assertEquals(3, loot.names().size());
         assertEquals(1, loot.roll("astaps.loot.boss_a", new Random(1))

@@ -61,6 +61,61 @@ class LootCountScopeTest {
     }
 
     @Test
+    void directEntryFieldsShareTheSameWeightedCompiler() {
+        var names = (YamlLootTables.ItemResolver) item -> switch (item) {
+            case "genshin.avatar_ascension.anemo.2" -> 2102;
+            case "genshin.avatar_ascension.anemo.3" -> 2103;
+            case "genshin.avatar_ascension.pyro.2" -> 2202;
+            case "genshin.avatar_ascension.pyro.3" -> 2203;
+            case "genshin.avatar_ascension.hydro.2" -> 2302;
+            case "genshin.avatar_ascension.hydro.3" -> 2303;
+            default -> -2;
+        };
+        var tables = YamlLootTables.parse("""
+                ascension: {type: genshin.avatar_ascension.anemo, rarity: "2:3, 3:1"}
+                mixed:
+                  type: genshin.avatar_ascension
+                  element: "pyro:3, hydro:1"
+                  rarity: "2:3, 3:1"
+                  count: "2:1, 3:1"
+                """, names);
+        var random = new Random(77);
+        int slivers = 0, pyro = 0, rarity2 = 0, doubles = 0;
+        for (int i = 0; i < 20_000; i++) {
+            var first = tables.roll("ascension", random);
+            assertEquals(1, first.values().stream().mapToInt(Integer::intValue).sum());
+            if (first.containsKey(2102)) slivers++;
+            var second = tables.roll("mixed", random);
+            int total = second.values().stream().mapToInt(Integer::intValue).sum();
+            assertTrue(total == 2 || total == 3);
+            if (total == 2) doubles++;
+            pyro += second.entrySet().stream().filter(e -> e.getKey() / 100 == 22)
+                    .mapToInt(Map.Entry::getValue).sum();
+            rarity2 += second.entrySet().stream().filter(e -> e.getKey() % 10 == 2)
+                    .mapToInt(Map.Entry::getValue).sum();
+        }
+        assertEquals(0.75, slivers / 20_000.0, 0.025);
+        assertEquals(0.5, doubles / 20_000.0, 0.025);
+        assertEquals(0.75, pyro / 50_000.0, 0.025);
+        assertEquals(0.75, rarity2 / 50_000.0, 0.025);
+    }
+
+    @Test
+    void invalidDirectAttributesFailWithoutNullPointerExceptions() {
+        for (String expression : java.util.List.of("null", "true", "\"4\"", "0")) {
+            assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                    bad: {type: genshin.avatar_ascension.anemo, rarity: %s}
+                    """.formatted(expression), name -> 2102));
+        }
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                bad: {type: genshin.currency.mora, newField: "1:2, 2:3"}
+                """, ITEMS));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                bad: {type: genshin.avatar_ascension.anemo, rarity: 2, properties: {rarity: 3}}
+                """, name -> 2102));
+    }
+
+    @Test
     void countsUseExplicitRelativeWeights() {
         var distribution = LootCount.parse("2:586, 3:414");
         var random = new Random(71);

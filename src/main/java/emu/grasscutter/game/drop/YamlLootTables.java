@@ -35,7 +35,7 @@ public final class YamlLootTables {
                          WeightedChoice<Integer> grade, WeightedChoice<Integer> element,
                          WeightedChoice<TypeTarget> typeChoice,
                          Pool nested, LootCount.Spec count,
-                         LootRecursionSafety.Fraction expectedCount, BigDecimal weight) {}
+                         LootRecursionSafety.Fraction expectedCount, Object rawCount, BigDecimal weight) {}
 
     /**
      * An advancement family resolves one native item per rarity. Rarity choices
@@ -292,7 +292,7 @@ public final class YamlLootTables {
     }
 
     private void emitType(TypeTarget selected, int count, RandomGenerator random,
-            Map<Integer, Integer> reward) {
+            Map<Integer, Integer> reward, ArrayDeque<RollFrame> stack) {
         if (selected.table != null) {
             Pool table = pools.get(selected.table);
             if (table == null) table = instances.get(selected.table);
@@ -301,7 +301,7 @@ public final class YamlLootTables {
                 table = instances.get(key);
             }
             if (table == null) throw new IllegalStateException("Unknown named loot table: " + selected.table);
-            rollPool(table, count, random, reward);
+            stack.push(new RollFrame(table, count));
         } else if (selected.artifact != null) {
             var artifact = selected.artifact.bindSet(random);
             for (int i = 0; i < count; i++) {
@@ -328,6 +328,13 @@ public final class YamlLootTables {
             this.weightedChoice = weightedChoice;
         }
     }
+
+    public record SafetyReport(String expectedNodes, BigDecimal nodeTailUpperBound,
+                               BigDecimal depthTailUpperBound) {}
+
+    private volatile Map<String, SafetyReport> safetyReports = Map.of();
+
+    public Map<String, SafetyReport> safetyReports() { return safetyReports; }
 
     private final Map<String, Pool> pools;
     private final Map<String, Pool> instances = new java.util.concurrent.ConcurrentHashMap<>();
@@ -482,7 +489,7 @@ public final class YamlLootTables {
                     hasWeight = true;
                 } else hasNull = true;
                 entries.add(new Entry(rewardId, artifact, grade, element, typeChoice,
-                        nested, count, LootRecursionSafety.expectedCount(fields.get("count")), weight));
+                        nested, count, LootRecursionSafety.expectedCount(fields.get("count")), fields.get("count"), weight));
             }
             if (hasWeight && hasNull) {
                 throw new IllegalArgumentException(location + ": cannot mix null and numeric weights");
@@ -535,8 +542,13 @@ public final class YamlLootTables {
                             weight.divide(total), pending);
                 }
             }
+            var laws = new ArrayList<LootProbability.Law>();
+            for (Entry entry : pool.entries) laws.add(poolCallLaw(graph, entry));
+            from.law = pool.weightedChoice == null
+                    ? LootProbability.all(laws)
+                    : LootProbability.choice(laws, pool.entries.stream().map(Entry::weight).toList());
         }
-        graph.verify();
+        safetyReports = graph.verify();
     }
 
     private void includePoolCalls(LootRecursionSafety.Graph graph,
@@ -574,6 +586,23 @@ public final class YamlLootTables {
         }
     }
 
+    /** Preserve the joint offspring law: choose a type once, then repeat that pool. */
+    private LootProbability.Law poolCallLaw(LootRecursionSafety.Graph graph, Entry entry) {
+        if (entry.expectedCount.isZero() || (entry.weight != null && entry.weight.signum() == 0)) return LootProbability.empty();
+        if (entry.nested != null) {
+            return LootProbability.repeat(graph.node(entry.nested, "nested loot pool"), entry.rawCount);
+        }
+        if (entry.typeChoice == null) return LootProbability.empty();
+        var laws = new ArrayList<LootProbability.Law>();
+        for (TypeTarget target : entry.typeChoice.candidates()) {
+            Pool child = target.table == null ? null : pools.get(target.table);
+            if (child == null && target.table != null) child = instances.get(target.table);
+            laws.add(child == null ? LootProbability.empty()
+                    : LootProbability.repeat(graph.node(child, target.table), entry.rawCount));
+        }
+        return LootProbability.choice(laws, entry.typeChoice.weights());
+    }
+
     /** Returns an immutable item-ID-to-count map. Each invocation rolls afresh. */
     public Map<Integer, Integer> roll(String name, RandomGenerator random) {
         String resolved = resolveName(name);
@@ -584,23 +613,38 @@ public final class YamlLootTables {
         return Map.copyOf(reward);
     }
 
+    /** Explicit continuation stack: long accepted recursive draws do not consume the Java stack. */
+    private static final class RollFrame {
+        final Pool pool;
+        int remaining;
+        int index;
+        List<Entry> selected;
+        RollFrame(Pool pool, int remaining) { this.pool = pool; this.remaining = remaining; }
+    }
+
     private void rollPool(Pool pool, int times, RandomGenerator random,
             Map<Integer, Integer> reward) {
-        for (int n = 0; n < times; n++) {
-            if (pool.weightedChoice != null) {
-                rollEntry(pool.weightedChoice.sample(random), random, reward);
-            } else {
-                for (Entry e : pool.entries) rollEntry(e, random, reward);
+        var stack = new ArrayDeque<RollFrame>();
+        stack.push(new RollFrame(pool, times));
+        while (!stack.isEmpty()) {
+            RollFrame frame = stack.peek();
+            if (frame.selected == null) {
+                if (frame.remaining-- == 0) { stack.pop(); continue; }
+                frame.selected = frame.pool.weightedChoice == null ? frame.pool.entries
+                        : List.of(frame.pool.weightedChoice.sample(random));
+                frame.index = 0;
             }
+            if (frame.index == frame.selected.size()) { frame.selected = null; continue; }
+            rollEntry(frame.selected.get(frame.index++), random, reward, stack);
         }
     }
 
     private void rollEntry(Entry entry, RandomGenerator random,
-            Map<Integer, Integer> reward) {
+            Map<Integer, Integer> reward, ArrayDeque<RollFrame> stack) {
         int count = entry.count.sample(random);
         if (count == 0) return;
         if (entry.nested != null) {
-            rollPool(entry.nested, count, random, reward);
+            stack.push(new RollFrame(entry.nested, count));
         } else if (entry.artifact != null) {
             // Select a set once; roll native pieces independently for each copy.
             var artifact = entry.artifact.bindSet(random);
@@ -617,7 +661,7 @@ public final class YamlLootTables {
                 reward.merge(entry.element.sample(random), 1, Math::addExact);
             }
         } else if (entry.typeChoice != null) {
-            emitType(entry.typeChoice.sample(random), count, random, reward);
+            emitType(entry.typeChoice.sample(random), count, random, reward, stack);
         } else if (entry.rewardId != null) {
             reward.merge(entry.rewardId, count, Math::addExact);
         }
@@ -638,8 +682,14 @@ public final class YamlLootTables {
     /** CSS references instantiate item-parameterized tables while loading configuration. */
     private synchronized String instantiate(String name) {
         if (!instances.containsKey(name)) {
-            instantiateUnchecked(name);
-            validateExpectedNodes();
+            var previous = Set.copyOf(instances.keySet());
+            try {
+                instantiateUnchecked(name);
+                validateExpectedNodes();
+            } catch (RuntimeException | Error failure) {
+                instances.keySet().removeIf(key -> !previous.contains(key));
+                throw failure;
+            }
         }
         return name;
     }

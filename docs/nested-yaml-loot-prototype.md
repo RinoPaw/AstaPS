@@ -28,13 +28,30 @@ and explicit weighted outcomes. The original `level` and
 
 ## No implicit implementation ceilings
 
-The DSL has no arbitrary runtime depth limit, count limit, pool-count limit,
-entry-count limit, or template-instance limit. Recursive named pools, parameterized
-templates, and YAML aliases are valid. The compiler checks the full recursive
-pool graph and requires an **expected total of at most 10 pool executions** from
-each root, including the root. Infinite expectations are rejected. Item copy
-counts do not contribute pool nodes. Native protocol and Java numeric bounds
-still apply. Finite expectation does not imply a bounded worst-case call stack.
+The compiler models each named or anonymous pool execution as a node, with
+root depth 1. Item copies do not add pool nodes. Each root, including instantiated
+templates, must meet all four requirements:
+
+- Nontermination probability is zero, proved by a finite nonnegative exact
+  solution for expected total executions on each reachable recursive component.
+- Expected total executions, including the root, are at most **100**.
+- `P(total executions > 100) <= 0.000001`.
+- `P(maximum depth > 64) <= 0.000001`.
+
+The joint offspring law retains exclusive branches, independent entries, type
+choices shared by a batch, and independent repetitions. Truncated probability
+generating functions calculate the two tails. All nonnegative coefficient
+arithmetic rounds downward at 40 significant digits; missing mass is therefore a
+conservative upper bound, including numerical uncertainty. Boundary configurations
+may be conservatively rejected when rounding prevents proof. No sampling is used.
+Reports are available through `YamlLootTables.safetyReports()`.
+
+These are configuration admission requirements, not runtime truncation limits.
+Accepted rare long draws finish in full using an explicit continuation stack,
+without consuming the Java call stack. Invalid template instantiation rolls back
+all newly created instances. Native protocol and Java numeric bounds still apply.
+Limits apply per YAML root execution; multiple CSS grants and CSS repetition counts
+are separate calls and are not a combined settlement-work or item-quantity budget.
 
 ## Unified weighted expressions
 

@@ -16,7 +16,7 @@ import java.util.Map;
  * do not contribute nodes unless they execute another pool.
  */
 final class LootRecursionSafety {
-    static final Fraction MAX_EXPECTED_NODES = Fraction.integer(10);
+    static final Fraction MAX_EXPECTED_NODES = Fraction.integer(100);
 
     private LootRecursionSafety() {}
 
@@ -127,6 +127,7 @@ final class LootRecursionSafety {
     static final class Graph {
         static final class Node {
             final String label;
+            LootProbability.Law law = LootProbability.empty();
             final Map<Node, Fraction> children = new LinkedHashMap<>();
 
             Node(String label) {
@@ -151,7 +152,7 @@ final class LootRecursionSafety {
             }
         }
 
-        void verify() {
+        Map<String, YamlLootTables.SafetyReport> verify() {
             var components = new ArrayList<List<Node>>();
             var indices = new IdentityHashMap<Node, Integer>();
             var lowlinks = new IdentityHashMap<Node, Integer>();
@@ -219,6 +220,11 @@ final class LootRecursionSafety {
                             + MAX_EXPECTED_NODES);
                 }
             }
+            var tails = LootProbability.verify(components, roots);
+            var report = new LinkedHashMap<String, YamlLootTables.SafetyReport>();
+            roots.forEach((name, node) -> report.put(name, new YamlLootTables.SafetyReport(
+                    totals.get(node).toString(), tails.get(name).nodes(), tails.get(name).depth())));
+            return Map.copyOf(report);
         }
 
         private static void visit(Node node, Map<Node, Integer> index,

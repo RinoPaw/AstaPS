@@ -469,10 +469,10 @@ class LootCountScopeTest {
     }
 
     @Test
-    void expectedPoolNodesIncludeRootAndApplyInclusiveTenBoundary() {
+    void expectedPoolNodesIncludeRootAndApplyInclusiveHundredBoundary() {
         assertDoesNotThrow(() -> YamlLootTables.parse("""
                 safe:
-                  - {type: safe, count: "0:1, 1:9"}
+                  - {type: safe, count: "0:1, 1:1"}
                 """, ITEMS));
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 too_many:
@@ -492,15 +492,15 @@ class LootCountScopeTest {
     void expectedNodeCheckUsesPoolExecutionCountsButNotLeafItemQuantity() {
         assertDoesNotThrow(() -> YamlLootTables.parse("""
                 leaf: {type: genshin.currency.mora, count: 2147483647}
-                nine_children: {type: leaf, count: 9}
+                ninety_nine_children: {type: leaf, count: 99}
                 """, ITEMS));
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 leaf: {type: genshin.currency.mora, count: 2147483647}
-                ten_children: {type: leaf, count: 10}
+                hundred_children: {type: leaf, count: 100}
                 """, ITEMS));
         assertDoesNotThrow(() -> YamlLootTables.parse("""
                 tiny:
-                  - {type: tiny, count: "0:999, 100:1"}
+                  - {type: tiny, count: "0:999999999, 100:1"}
                 """, ITEMS));
     }
 
@@ -530,7 +530,7 @@ class LootCountScopeTest {
     void recursiveSafetyChecksYamlAliasesAndParameterizedInstances() {
         assertDoesNotThrow(() -> YamlLootTables.parse("""
                 root: &loop
-                  - {type: *loop, count: "0:1, 1:9"}
+                  - {type: *loop, count: "0:1, 1:1"}
                 """, ITEMS));
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 root: &loop

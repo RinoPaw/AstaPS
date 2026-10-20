@@ -43,6 +43,8 @@ class LootCountScopeTest {
                       - {reward: genshin.avatar_up.heros_wit, count: 2, weight: 40}
                 independent:
                   - {reward: *weapon, count: 2}
+                ranged_independent:
+                  - {reward: *weapon, count: "2, 3:41.4"}
                 """, ITEMS);
 
         int both = 0, sameMora = 0, independentMora = 0, independentWit = 0;
@@ -67,5 +69,25 @@ class LootCountScopeTest {
         assertEquals(0.48, both / 20_000.0, 0.025);
         assertEquals(0.36, independentMora / 20_000.0, 0.025);
         assertEquals(0.16, independentWit / 20_000.0, 0.025);
+    }
+
+    @Test
+    void remainderDistributionControlsIndependentPoolExecutions() {
+        var tables = YamlLootTables.parse("""
+                weapon: &weapon
+                  - {reward: genshin.currency.mora, weight: 60}
+                  - {reward: genshin.avatar_up.heros_wit, weight: 40}
+                ranged_independent:
+                  - {reward: *weapon, count: "2, 3:41.4"}
+                """, ITEMS);
+        var random = new Random(41);
+        int threeExecutions = 0;
+        for (int i = 0; i < 20_000; i++) {
+            Map<Integer, Integer> output = tables.roll("ranged_independent", random);
+            int total = output.values().stream().mapToInt(Integer::intValue).sum();
+            assertTrue(total == 2 || total == 3);
+            if (total == 3) threeExecutions++;
+        }
+        assertEquals(0.414, threeExecutions / 20_000.0, 0.025);
     }
 }

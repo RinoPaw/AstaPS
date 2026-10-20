@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class LootCountNativeFractionTest {
     @Test
-    void nativeFractionalExpectationsBecomeExplicitBonusRolls() {
+    void nativeFractionalExpectationsBecomeExplicitDistributions() {
         assertEquals("1:87.8, 2:12.2", LootCount.fromNativeCount("1.122"));
         assertEquals("2:44.44, 3:55.56", LootCount.fromNativeCount("2.5556"));
         assertEquals("3:81.55, 4:18.45", LootCount.fromNativeCount("3.1845"));
@@ -27,14 +27,14 @@ class LootCountNativeFractionTest {
     }
 
     @Test
-    void optionalAdditionalExecutionsHaveExactBoundaries() {
+    void explicitOutcomesHaveExactBoundaries() {
         var random = new Random(1);
-        assertEquals(2, LootCount.parse("2+1:0").sample(random));
-        assertEquals(3, LootCount.parse("2+1:100").sample(random));
-        assertEquals(4, LootCount.parse("2+2:100").sample(random));
+        assertEquals(2, LootCount.parse("2:1,3:0").sample(random));
+        assertEquals(3, LootCount.parse("2:0,3:1").sample(random));
+        assertEquals(4, LootCount.parse("2:0,4:1").sample(random));
         assertEquals(0, LootCount.parse("0").sample(random));
-        assertEquals(0, LootCount.parse("0+1:0").sample(random));
-        assertEquals(1, LootCount.parse("0+1:100").sample(random));
+        assertEquals(0, LootCount.parse("0:1,1:0").sample(random));
+        assertEquals(1, LootCount.parse("0:0,1:1").sample(random));
     }
 
     @Test

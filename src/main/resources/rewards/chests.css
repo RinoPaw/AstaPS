@@ -10,27 +10,22 @@
  * 6. 材料/宝石物品名依赖资源映射，现有资源曾缺少必要名称；未验证完整服务器发奖。
  */
 
-/* 阅读顺序：
- * 1. 宝箱：基础奖励、地区奖励、食谱、圣遗物
- * 2. 传送点：首次激活及活动例外
- * 3. 地脉：基础经验、藏金之花、启示之花
- * 4. 世界 Boss：身份绑定、通用奖励、材料例外、宝石、圣遗物
- *
- * 按选择器优先级和声明顺序覆盖。只修改数据前先确认覆盖关系。
- * BOSS_MATERIAL、ELEMENT、GEM_GROUP、ARTIFACT_*STAR 由身份规则绑定，
- * 等级规则引用这些绑定值。
+/* 奖励按对象分别放在宝箱、传送点、地脉花和世界 Boss 的 CSS 中。
+ * 加载器按文件名排序后合并解析；相同选择器优先级按声明顺序覆盖。
+ * BOSS_MATERIAL、ELEMENT、GEM_GROUP 和 ARTIFACT_*STAR 绑定对象身份，
+ * 相应等级规则再引用这些绑定值。
  */
 
 /* ========================================================================== */
 /* 宝箱：基础奖励、地区奖励、食谱、圣遗物 */
 /* ========================================================================== */
 
-/* 1.1 普通宝箱：固定 30 冒险阅历。 */
+/* 普通宝箱：固定 30 冒险阅历。 */
 chest[type="normal"] {
     genshin.experience.adventure: 30;
 }
 
-/* 1.2 原石：先按品级，再按旧地区及特定区域覆盖。 */
+/* 原石：先按品级，再按旧地区及特定区域覆盖。 */
 
 chest[type="normal"][grade="common"] {
     genshin.currency.primogem: 2;
@@ -78,7 +73,7 @@ chest[type="normal"][grade="precious"][area="10,77,8,19,40,41,47,300"] {
     genshin.currency.primogem: 10;
 }
 
-/* 1.3 印记元素绑定：city 8/9 共用冰元素。 */
+/* 印记元素绑定：city 8/9 共用冰元素。 */
 chest[type="normal"][city="1"] {
     ELEMENT: anemo;
 }
@@ -112,7 +107,7 @@ chest[type="normal"][city="9"] {
     ELEMENT: cryo;
 }
 
-/* 1.4 品级与等级奖励：武器、矿石、印记。范围含两端。 */
+/* 品级与等级奖励：武器、矿石、印记。范围含两端。 */
 chest[type="normal"][grade="common"][level="1~5"] {
     astaps.loot.meat_ingredients: "0:50, 1:50";
     astaps.loot.weapons_1_star: "0:60, 1:40";
@@ -197,7 +192,7 @@ chest[type="normal"][grade="luxurious"][level="26~"] {
     genshin.currency.sigil.<ELEMENT>: 6;
 }
 
-/* 1.5 地区奖励（city 1-4）：摩拉、角色经验书、天赋书。
+/* 地区奖励（city 1-4）：摩拉、角色经验书、天赋书。
  * 数据来自历史战斗表；解谜空子表沿用同地区战斗奖励。
  */
 chest[type="normal"][grade="common"][city="1,2"][level="1~5"] {
@@ -416,7 +411,7 @@ chest[type="normal"][grade="precious"][city="4"] {
     astaps.loot.regional_talent_books<3, admonition, ingenuity, praxis>: "1:80, 2:20";
 }
 
-/* 1.6 未复原地区（city 5-9）：缺少原始宝箱根表。
+/* 未复原地区（city 5-9）：缺少原始宝箱根表。
  * 暂留旧通用配置，包括占位天赋书；不代表当地实测掉落。
  */
 chest[type="normal"][grade="common"][level="1~5"][city="5,6,7,8,9"] {
@@ -496,7 +491,7 @@ chest[type="normal"][grade="luxurious"][level="26~"][city="5,6,7,8,9"] {
     genshin.currency.mora: 1440~2160;
 }
 
-/* 1.7 食谱：合并历史战斗/解谜奖励，按城市、品级、等级匹配。 */
+/* 食谱：合并历史战斗/解谜奖励，按城市、品级、等级匹配。 */
 chest[type="normal"][grade="exquisite"][level="21~25"][city="1"] {
     genshin.recipe.northern_smoked_chicken.item: 1;
 }
@@ -510,7 +505,7 @@ chest[type="normal"][grade="precious"][level="21~25"][city="1"] {
     genshin.recipe.mushroom_pizza.item: 1;
 }
 
-/* 1.8 宝箱圣遗物（历史 sourceType 19；city 1-4）。
+/* 宝箱圣遗物（历史 sourceType 19；city 1-4）。
  * 数量概率合并了独立分支的命中率与执行次数。
  * 战斗、解谜、龙脊雪山共用来源分布；未推定 city 5-9、
  * 地灵龛及群岛专有宝箱。

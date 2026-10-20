@@ -4,7 +4,7 @@
 
 /* World Boss rewards: 身份绑定材料及元素，通用等级规则决定数量。 */
 
-/* 4.1 身份绑定：48 种 Boss，按 tag 排序。 */
+/* 身份绑定：48 种 Boss，按 tag 排序。 */
 
 /* 兆载永劫龙兽 */
 boss[type="world"][tag="aeonblight_drake"] {
@@ -297,7 +297,7 @@ boss[type="world"][tag="undying_replicant"] {
     ELEMENT: pyro;
 }
 
-/* 4.2 通用等级奖励：摩拉、经验、材料数量。 */
+/* 通用等级奖励：摩拉、经验、材料数量。 */
 
 boss[type="world"] {
     genshin.experience.adventure: 200;
@@ -443,7 +443,7 @@ boss[type="world"][level="93~"] {
     genshin.avatar_ascension.<BOSS_MATERIAL>: "2:44, 3:56";
 }
 
-/* 4.3 材料例外：覆盖通用等级数量。 */
+/* 材料例外：覆盖通用等级数量。 */
 
 /* 以下 25 种 Boss 在 1-29 级缺少原生材料子表，显式置零。 */
 boss[type="world"][tag="aeonblight_drake,algorithm_semi_intransient_matrix,anemo_hypostasis,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,maguu_kenki,oceanid,perpetual_mechanical_array,primo_geovishap_cryo,primo_geovishap_electro,primo_geovishap_hydro,primo_geovishap_pyro,pyro_hypostasis,pyro_regisvine,ruin_serpent,setekh_wenut,thunder_manifestation"][level="1~29"] {
@@ -504,7 +504,7 @@ boss[type="world"][tag="oceanid,pyro_regisvine"][level="90~99"] {
     genshin.avatar_ascension.<BOSS_MATERIAL>: "2:19, 3:81";
 }
 
-/* 100 级起仍使用上述两种 Boss 在 90-99 级的分布。 */
+/* 级起仍使用上述两种 Boss 在 90-99 级的分布。 */
 boss[type="world"][tag="oceanid,pyro_regisvine"][level="100~"] {
     genshin.avatar_ascension.<BOSS_MATERIAL>: "2:19, 3:81";
 }
@@ -516,7 +516,7 @@ boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental
     genshin.avatar_ascension.<BOSS_MATERIAL>: "3:75, 4:25";
 }
 
-/* 4.4 宝石：CSS 决定执行次数/固定掉落，YAML 决定加权候选。 */
+/* 宝石：CSS 决定执行次数/固定掉落，YAML 决定加权候选。 */
 
 /* 分组绑定（GEM_GROUP）：下方等级规则复用这些身份列表。 */
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"] {
@@ -613,7 +613,7 @@ boss[type="world"][gem_group="gem_1"][level="90~"] {
     astaps.loot.world_gem_four<3,<ELEMENT>>: "3:82, 4:18";
 }
 
-/* 40 级起独立抽取的额外断片池。 */
+/* 级起独立抽取的额外断片池。 */
 
 boss[type="world"][gem_group="gem_1"][level="40~"] {
     astaps.loot.world_gem_fragment<1,<ELEMENT>>: "3:88, 6:12";
@@ -697,7 +697,7 @@ boss[type="world"][gem_group="gem_2"][level="90~"] {
     astaps.loot.world_gem_four<3,<ELEMENT>[0], <ELEMENT>[1]>: "3:82, 4:18";
 }
 
-/* 40 级起独立抽取的额外断片池。 */
+/* 级起独立抽取的额外断片池。 */
 
 boss[type="world"][gem_group="gem_2"][level="40~"] {
     astaps.loot.world_gem_fragment<3,<ELEMENT>[0], <ELEMENT>[1]>: "1:88, 2:12";
@@ -781,7 +781,7 @@ boss[type="world"][gem_group="gem_3"][level="90~"] {
     astaps.loot.world_gem_four<9,<ELEMENT>>: "3:82, 4:18";
 }
 
-/* 40 级起独立抽取的额外断片池。 */
+/* 级起独立抽取的额外断片池。 */
 
 boss[type="world"][gem_group="gem_3"][level="40~"] {
     astaps.loot.world_gem_fragment<1,<ELEMENT>>: "9:88, 18:12";
@@ -841,7 +841,7 @@ boss[type="world"][gem_group="gem_4"][level="90~"] {
     astaps.loot.world_gem_four<9,<ELEMENT>[0], <ELEMENT>[1]>: "3:82, 4:18";
 }
 
-/* 40 级起独立抽取的额外断片池。 */
+/* 级起独立抽取的额外断片池。 */
 
 boss[type="world"][gem_group="gem_4"][level="40~"] {
     astaps.loot.world_gem_fragment<9,<ELEMENT>[0], <ELEMENT>[1]>: "1:88, 2:12";
@@ -874,13 +874,13 @@ boss[type="world"][tag="tenebrous_papilla"] {
     genshin.avatar_ascension.<ELEMENT>[2].sliver: 9;
 }
 
-/* 4.5 圣遗物：48 种 Boss，分普通等级程序和特殊部位程序。
+/* 圣遗物：48 种 Boss，分普通等级程序和特殊部位程序。
  * ARTIFACT_*STAR 绑定候选套装，等级规则声明执行次数。
  * 同名独立分支已合并为准确的数量分布，避免 CSS 重名覆盖。
  * 精密发条机关缺失的候选池暂借用爆炎树配置。
  */
 
-/* 4.5.1 套装与组别绑定：普通 Boss 共用同一等级程序。 */
+/* 套装与组别绑定：普通 Boss 共用同一等级程序。 */
 /* 圣遗物组 1：6 种 Boss，仅声明候选套装。 */
 boss[type="world"][tag="aeonblight_drake,bathysmal_vishap_herd,cryo_hypostasis,cryo_regisvine,perpetual_mechanical_array,primo_geovishap_cryo"] {
     ARTIFACT_GROUP: standard;
@@ -953,7 +953,7 @@ boss[type="world"][tag="hydro_hypostasis,oceanid,primo_geovishap_hydro"] {
     ARTIFACT_4STAR: [berserker, gladiators_finale, the_exile, wanderers_troupe, prayers_for_destiny];
 }
 
-/* 4.5.2 普通程序：7 组 Boss 共用 11 档等级数量分布。 */
+/* 普通程序：7 组 Boss 共用 11 档等级数量分布。 */
 boss[type="world"][artifact_group="standard"][level="1~4"] {
     astaps.loot.world_artifact_1star<<ARTIFACT_1STAR>>: "3:11, 4:39";
     astaps.loot.world_artifact_2star<<ARTIFACT_2STAR>>: "0:29, 1:21";
@@ -1014,7 +1014,7 @@ boss[type="world"][artifact_group="standard"][level="93~"] {
     astaps.loot.world_artifact_5star: 1;
 }
 
-/* 4.5.3 特殊程序：羽毛/杯子与初始副词条保持关联。 */
+/* 特殊程序：羽毛/杯子与初始副词条保持关联。 */
 /* 圣遗物组 4：22 种 Boss 的独立等级程序。 */
 boss[type="world"][artifact_group="instructor_native"][level="1~4"] {
     astaps.loot.world_artifact_5star_plume_goblet<2,1>: "0:29, 1:21";

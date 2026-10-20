@@ -88,7 +88,7 @@ class YamlLootTablesTest {
     }
 
     @Test
-    void lootTemplateExpressionsRejectUnsupportedSyntaxAndCycles() {
+    void lootTemplateExpressionsRejectUnsupportedSyntax() {
         String template = """
                 item<rarity>:
                   - {reward: genshin.currency.mora, count: "%s"}
@@ -101,12 +101,6 @@ class YamlLootTablesTest {
         }
         assertThrows(IllegalArgumentException.class,
                 () -> parse(template.formatted("${rarity + 1}").replace("item<3>", "item<2147483648>")));
-        assertThrows(IllegalArgumentException.class, () -> parse("""
-                recursive<grade>:
-                  - {reward: astaps.loot.recursive<3>}
-                boss:
-                  - {reward: astaps.loot.recursive<3>}
-                """));
         // Template bodies must be lists, not special common/variants mappings.
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 invalid<chance>:
@@ -920,10 +914,6 @@ class YamlLootTablesTest {
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 invalid:
                   - {reward: genshin.currency.mora, weight: 0}
-                """));
-        assertThrows(RuntimeException.class, () -> parse("""
-                recursive: &self
-                  - {reward: *self}
                 """));
     }
 

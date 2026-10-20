@@ -95,19 +95,19 @@ Each attribute uses the common weighted-expression parser.
 
 ```css
 boss[type="world"][tag="maguu_kenki"] {
-    --boss-material: "marionette_core";
-    --element: "[anemo, cryo]";
+    boss-material: "marionette_core";
+    element: "[anemo, cryo]";
 }
 
 boss[type="world"][data-range-level-90-92] {
-    --grant-genshin\.currency\.mora: 5200;
-    --grant-genshin\.experience\.companionship: 45;
-    --grant-genshin\.experience\.character: 200;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:44, 3:56";
+    genshin.currency.mora: 5200;
+    genshin.experience.companionship: 45;
+    genshin.experience.character: 200;
+    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:44, 3:56";
 }
 
 boss[type="world"][tag="maguu_kenki"][data-range-level-50-54] {
-    --grant-astaps\.loot\.world_gem_two\<3\,\<ELEMENT\>\[0\]\,\<ELEMENT\>\[1\]\>: "1:25, 2:75";
+    astaps.loot.world_gem_two<3,<ELEMENT>[0],<ELEMENT>[1]>: "1:25, 2:75";
 }
 ```
 
@@ -141,13 +141,20 @@ blossom selectors use `WR`, supplied by `rollBlossom` for world ranks 0–9.
 
 ## Counts and independent grants
 
-All reward declarations use standard CSS custom-property identifiers.
-`--grant-genshin\\.currency\\.mora: 240;` grants 240 Mora;
-`--grant-astaps\\.loot\\.currency: 1;` executes a named loot pool.
-The `--element`, `--boss-material`, and `--boss-material-count`
-properties carry reward-domain bindings. Resource punctuation is CSS-escaped
-within property names, following CSS identifier rules. Legacy dotted CSS
-property declarations are invalid and have no compatibility parser.
+Reward declarations use bare, dotted resource names:
+`genshin.currency.mora: 240;` grants 240 Mora;
+`astaps.loot.currency: 1;` executes a named loot pool.
+The bare `element`, `boss-material`, and `boss-material-count` properties carry
+reward-domain bindings. No CSS escaping is required, including in template calls.
+This is an extension of CSS declaration-name syntax: a lexical adapter translates
+only declaration names into internal custom properties before css4j parses the sheet.
+For example, `genshin.avatar_ascension.anemo.sliver` becomes
+`--genshin-avatar_ascension-anemo-sliver`; underscores remain unchanged. A source-name
+map restores resource identities, rejects internal-name collisions, and maps parser
+error positions back to the input. Selectors, comments and quoted values are preserved.
+css4j still handles nesting, declaration parsing and duplicate-property semantics;
+the reward engine applies selector specificity, source order and `!important`.
+The former `--grant-` and escaped resource-property syntax is unsupported.
 
 CSS counts accept integers, exact native decimal counts with randomized fractional rounding, inclusive ranges (`2~3`), or quoted relative
 weights (`"2:4, 3:5"`). The latter awards two with probability 4/9 and three
@@ -178,7 +185,7 @@ world_gem_fragment<COUNT, ELEMENTS...>:
 
 ```css
 boss[type="world"][tag="anemo_hypostasis"][data-range-level-40-up] {
-    --grant-astaps\.loot\.world_gem_fragment\<1\,\<ELEMENT\>\>: "3:88, 6:12";
+    astaps.loot.world_gem_fragment<1,<ELEMENT>>: "3:88, 6:12";
 }
 ```
 

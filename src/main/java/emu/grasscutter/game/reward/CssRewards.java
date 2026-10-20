@@ -23,7 +23,7 @@ import io.sf.carte.doc.style.css.nsac.Selector;
 import io.sf.carte.doc.style.css.nsac.SelectorList;
 import io.sf.carte.doc.style.css.om.Specificity;
 
-/** CSS custom properties reference typed items and named loot tables. */
+/** Dotted reward declarations use css4j for selectors, nesting and CSS declaration semantics. */
 public final class CssRewards {
     public record Selection(Map<Integer, Integer> items, Map<String, Integer> loot,
             Map<Integer, LootCount.Spec> rangedItems, Map<String, LootCount.Spec> rangedLoot) {
@@ -48,16 +48,13 @@ public final class CssRewards {
     private static final Pattern BINDING = Pattern.compile(
             "<(BOSS_MATERIAL|ELEMENT)>(?:\\[([0-9]+)])?");
 
-    // The resource name is a CSS-escaped custom-property suffix.
-    // CSSOM handles the CSS grammar; removing identifier escapes recovers the domain path.
-    private static String resourceName(String property) {
-        if (!property.startsWith("--grant-")) {
+    private static String resourceName(String property, Map<String, String> names) {
+        String name = names.get(io.sf.carte.doc.style.css.parser.ParseHelper.unescapeStringValue(property));
+        if (name == null) {
             throw new IllegalArgumentException("Unknown reward property: " + property);
         }
-        String name = io.sf.carte.doc.style.css.parser.ParseHelper.unescapeStringValue(
-                property.substring("--grant-".length()));
         if (!name.startsWith("genshin.") && !name.contains(".loot.")) {
-            throw new IllegalArgumentException("Invalid reward resource property: " + property);
+            throw new IllegalArgumentException("Invalid reward resource property: " + name);
         }
         return name;
     }
@@ -101,12 +98,13 @@ public final class CssRewards {
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
+        var translated = RewardCssSource.translate(source);
         var sheet = new CSSDOMImplementation().createStyleSheet(null, null);
         try {
-            if (!sheet.parseStyleSheet(new StringReader(source), CSSStyleSheet.COMMENTS_IGNORE)) {
+            if (!sheet.parseStyleSheet(new StringReader(translated.css()), CSSStyleSheet.COMMENTS_IGNORE)) {
                 var handler = sheet.getErrorHandler();
                 var details = handler instanceof io.sf.carte.doc.style.css.om.DefaultSheetErrorHandler errors
-                        ? errors.getSacErrors().stream().limit(8).map(e -> e.getLineNumber() + ":" + e.getColumnNumber() + " " + e.getMessage()).toList() + "; rules=" + errors.getRuleParseErrors()
+                        ? errors.getSacErrors().stream().limit(8).map(e -> translated.location(e.getLineNumber(), e.getColumnNumber()) + " " + translated.display(e.getMessage())).toList()
                         : handler;
                 throw new IllegalArgumentException("Invalid reward CSS: " + details);
             }
@@ -120,30 +118,30 @@ public final class CssRewards {
             if (!(top instanceof StyleRule style)) {
                 throw new IllegalArgumentException("Unsupported conditional CSS rule: " + top);
             }
-            collectStyle(style, null, rules, intervals, order, items, loot);
+            collectStyle(style, null, rules, intervals, order, items, loot, translated.names());
         }
         return new CssRewards(rules, List.copyOf(intervals.values()), loot, items);
     }
 
     private static void collectStyle(StyleRule style, SelectorList parent,
             List<Rule> rules, Map<String, RangeMembership> intervals, int[] sourceOrder,
-            ItemIdRegistry items, YamlLootTables loot) {
+            ItemIdRegistry items, YamlLootTables loot, Map<String, String> names) {
         // Use css4j's CSSOM selector tree directly, without serializing/reparsing it.
         SelectorList selectors = style.getSelectorList();
         if (parent != null) {
             selectors = selectors.replaceNested(parent);
         }
         collectDeclarations(style.getStyle(), selectors, rules, intervals,
-                sourceOrder, items, loot);
+                sourceOrder, items, loot, names);
         var nestedRules = style.getCssRules();
         if (nestedRules != null) {
             for (var nested : nestedRules) {
                 if (nested instanceof StyleRule child) {
                     collectStyle(child, selectors, rules, intervals, sourceOrder,
-                            items, loot);
+                            items, loot, names);
                 } else if (nested instanceof CSSNestedDeclarations continuation) {
                     collectDeclarations(continuation.getStyle(), selectors, rules,
-                            intervals, sourceOrder, items, loot);
+                            intervals, sourceOrder, items, loot, names);
                 } else {
                     throw new IllegalArgumentException("Unsupported conditional reward rule: " + nested);
                 }
@@ -154,19 +152,19 @@ public final class CssRewards {
     private static void collectDeclarations(io.sf.carte.doc.style.css.CSSStyleDeclaration declarations,
             SelectorList selectors, List<Rule> rules,
             Map<String, RangeMembership> intervals, int[] sourceOrder,
-            ItemIdRegistry items, YamlLootTables loot) {
+            ItemIdRegistry items, YamlLootTables loot, Map<String, String> names) {
         if (declarations.getLength() == 0) return;
         collectDeclarationsForPriority(declarations, selectors, rules, intervals,
-                sourceOrder, items, loot, false);
+                sourceOrder, items, loot, names, false);
         collectDeclarationsForPriority(declarations, selectors, rules, intervals,
-                sourceOrder, items, loot, true);
+                sourceOrder, items, loot, names, true);
     }
 
     private static void collectDeclarationsForPriority(
             io.sf.carte.doc.style.css.CSSStyleDeclaration declarations,
             SelectorList selectors, List<Rule> rules,
             Map<String, RangeMembership> intervals, int[] sourceOrder,
-            ItemIdRegistry items, YamlLootTables loot, boolean important) {
+            ItemIdRegistry items, YamlLootTables loot, Map<String, String> names, boolean important) {
         var itemDeclarations = new ArrayList<ItemDeclaration>();
         var lootDeclarations = new ArrayList<LootDeclaration>();
         List<String> bossMaterials = null;
@@ -185,14 +183,15 @@ public final class CssRewards {
                     || (value.startsWith("'") && value.endsWith("'")))) {
                 value = value.substring(1, value.length() - 1);
             }
-            if ("--boss-material".equals(property)) {
+            String declaredName = names.get(io.sf.carte.doc.style.css.parser.ParseHelper.unescapeStringValue(property));
+            if ("boss-material".equals(declaredName)) {
                 bossMaterials = parseMaterialBinding(value);
-            } else if ("--element".equals(property)) {
+            } else if ("element".equals(declaredName)) {
                 elements = parseElementBinding(value);
-            } else if ("--boss-material-count".equals(property)) {
+            } else if ("boss-material-count".equals(declaredName)) {
                 bossMaterialCount = LootCount.parseRoll(value);
             } else {
-                String name = resourceName(property);
+                String name = resourceName(property, names);
                 Integer fixed = value.matches("[0-9]+") ? Integer.valueOf(value) : null;
                 LootCount.Spec rolled = fixed == null ? LootCount.parseRoll(value) : null;
                 if (name.matches("[a-z][a-z0-9_]*\\.loot\\..*")) {

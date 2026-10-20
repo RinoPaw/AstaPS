@@ -100,7 +100,7 @@ class BundledChestRewardsTest {
             assertTrue(loot.contains(pool), pool);
         }
         assertEquals(28, loot.names().size(), "8 common pools and 20 native artifact mixtures");
-        assertTrue(cssSource.replace("\\", "").contains("--grant-astaps.loot.chest_artifact_mix_01:"));
+        assertTrue(cssSource.replace("\\", "").contains("astaps.loot.chest_artifact_mix_01:"));
         assertFalse(chestYaml().contains("type: genshin.currency.mora"));
         assertFalse(chestYaml().contains("type: genshin.currency.primogem"));
     }

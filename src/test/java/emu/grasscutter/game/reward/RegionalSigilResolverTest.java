@@ -100,14 +100,14 @@ class RegionalSigilResolverTest {
                   - {reward: genshin.currency.mora, count: 50}
                 """, ids::resolve);
         var css = CssRewards.parse("""
-                chest[type="normal"][grade="common"] { --grant-astaps\\.loot\\.seals: 1; --grant-astaps\\.loot\\.currency: 1; }
+                chest[type="normal"][grade="common"] { astaps.loot.seals: 1; astaps.loot.currency: 1; }
                 chest[type="normal"][grade="exquisite"] {
-                    --grant-astaps\\.loot\\.seals: 1;
-                    --grant-genshin\\.currency\\.sigil: 4;
-                    --grant-genshin\\.currency\\.primogem: 5;
+                    astaps.loot.seals: 1;
+                    genshin.currency.sigil: 4;
+                    genshin.currency.primogem: 5;
                 }
                 chest[type="normal"][grade="precious"] {
-                    --grant-genshin\\.currency\\.sigil\\.anemo: 3;
+                    genshin.currency.sigil.anemo: 3;
                 }
                 """, ids, loot);
         var mondstadt = new RewardContext(3, 0, "mondstadt");

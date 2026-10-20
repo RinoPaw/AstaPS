@@ -3,6 +3,7 @@ package emu.grasscutter.game.drop;
 import emu.grasscutter.data.ResourceId;
 import emu.grasscutter.data.common.ItemParamData;
 import java.math.BigDecimal;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -25,8 +26,11 @@ public final class YamlLootTables {
         int resolve(String itemName);
     }
 
+    private record TypeTarget(Integer itemId, String table) {}
+
     private record Entry(Integer rewardId, ArtifactResolver.Selector artifact,
-                         WeightedItemSelector grade, WeightedItemSelector element,
+                         WeightedChoice<Integer> grade, WeightedChoice<Integer> element,
+                         WeightedChoice<TypeTarget> typeChoice, String tableReference,
                          Pool nested, LootCount.Spec count, BigDecimal weight) {}
 
     /**
@@ -34,18 +38,7 @@ public final class YamlLootTables {
      * use relative weights; weights on outer entries are independent.
      * A chosen grade applies to the entire count of that entry execution.
      */
-    private record WeightedItemSelector(int[] itemIds, double[] cumulative) {
-        int select(RandomGenerator random) {
-            double ticket = random.nextDouble();
-            for (int i = 0; i < itemIds.length; i++) {
-                if (ticket < cumulative[i]) return itemIds[i];
-            }
-            // The last boundary is exactly 1.0 for a valid distribution.
-            return itemIds[itemIds.length - 1];
-        }
-    }
-
-    private static WeightedItemSelector compileGrade(
+    private static WeightedChoice<Integer> compileGrade(
             String family, Object rawProperties, ItemResolver resolver, String location) {
         var path = ResourceId.parse(family);
         if (path.size() != 3 || !"genshin".equals(path.segment(0))
@@ -61,116 +54,53 @@ public final class YamlLootTables {
                     + ": advancement properties require a rarity or a rarity distribution");
         }
         Object rarity = props.get("rarity");
+        String choice;
         if (rarity instanceof Integer fixedGrade) {
-            if (fixedGrade < 2 || fixedGrade > maxGrade) {
-                throw new IllegalArgumentException(location
-                        + ": invalid fixed advancement rarity: " + fixedGrade);
-            }
-            int itemId = resolver.resolve(family + "." + fixedGrade);
-            if (itemId <= 0) {
-                throw new IllegalArgumentException(location
-                        + ": unknown advancement family or rarity: " + family + "." + fixedGrade);
-            }
-            return new WeightedItemSelector(new int[] {itemId}, new double[] {1.0});
+            choice = fixedGrade + ":1";
+        } else if (rarity instanceof String expression) {
+            choice = expression;
+        } else {
+            throw new IllegalArgumentException(location + ": invalid rarity: " + rarity);
         }
-        if (!(rarity instanceof String probabilities)) {
-            throw new IllegalArgumentException(location
-                    + ": advancement rarity must be an integer or quoted relative-weight distribution");
-        }
-        var ids = new ArrayList<Integer>();
-        var boundaries = new ArrayList<BigDecimal>();
-        var seen = new java.util.HashSet<Integer>();
-        BigDecimal total = BigDecimal.ZERO;
-        for (String part : probabilities.split(",", -1)) {
-            String[] pair = part.trim().split(":", -1);
-            if (pair.length != 2 || !pair[0].trim().matches("[2-" + maxGrade + "]")
-                    || !pair[1].trim().matches("[0-9]+(?:\\.[0-9]+)?")) {
-                throw new IllegalArgumentException(location
-                        + ": invalid advancement rarity weight: " + part);
+        return WeightedChoice.parse(choice, location + ".rarity", name -> {
+            if (!name.matches("[0-9]+")) {
+                throw new IllegalArgumentException(location + ": invalid rarity: " + name);
             }
-            int grade = Integer.parseInt(pair[0].trim());
-            if (!seen.add(grade)) {
-                throw new IllegalArgumentException(location + ": duplicate advancement rarity: " + grade);
+            int grade = Integer.parseInt(name);
+            if (grade < 2 || grade > maxGrade) {
+                throw new IllegalArgumentException(location + ": invalid rarity: " + grade);
             }
-            BigDecimal weight = new BigDecimal(pair[1].trim());
-            total = total.add(weight);
-            if (weight.signum() == 0) continue;
             int itemId = resolver.resolve(family + "." + grade);
             if (itemId <= 0) {
                 throw new IllegalArgumentException(location
                         + ": unknown advancement family or rarity: " + family + "." + grade);
             }
-            ids.add(itemId);
-            boundaries.add(total);
-        }
-        if (total.signum() == 0) {
-            throw new IllegalArgumentException(location + ": advancement rarity weights must be positive");
-        }
-        var nativeIds = new int[ids.size()];
-        var cumulative = new double[ids.size()];
-        for (int i = 0; i < ids.size(); i++) {
-            nativeIds[i] = ids.get(i);
-            cumulative[i] = boundaries.get(i)
-                    .divide(total, java.math.MathContext.DECIMAL128).doubleValue();
-        }
-        return new WeightedItemSelector(nativeIds, cumulative);
+            return itemId;
+        });
     }
 
-    /**
-     * An elemental gem roll resolves one native item per emitted copy.
-     * Each copy rerolls its element, like the original nested weighted pool.
-     */
-    private static WeightedItemSelector compileElements(
+    /** Native elemental gem families reroll the element for each awarded copy. */
+    private static WeightedChoice<Integer> compileElements(
             Object rawProperties, ItemResolver resolver, String location) {
         if (!(rawProperties instanceof Map<?, ?> props)
                 || props.size() != 2
-                || !(props.get("element") instanceof String probabilities)
+                || !(props.get("element") instanceof String choice)
                 || !(props.get("rarity") instanceof Integer rarity)
                 || rarity < 2 || rarity > 5) {
             throw new IllegalArgumentException(location
                     + ": elemental ascension gems require quoted element odds and integer rarity 2..5");
         }
-        var ids = new ArrayList<Integer>();
-        var boundaries = new ArrayList<BigDecimal>();
-        var seen = new java.util.HashSet<String>();
-        var total = BigDecimal.ZERO;
-        for (String part : probabilities.split(",", -1)) {
-            String[] pair = part.trim().split(":", -1);
-            String element = pair[0].trim();
-            if (pair.length != 2
-                    || !List.of("anemo", "geo", "electro", "dendro",
-                                    "hydro", "pyro", "cryo").contains(element)
-                    || !pair[1].trim().matches("[0-9]+(?:\\.[0-9]+)?")) {
-                throw new IllegalArgumentException(location
-                        + ": invalid ascension gem element weight: " + part);
+        return WeightedChoice.parse(choice, location + ".element", element -> {
+            if (!List.of("anemo", "geo", "electro", "dendro",
+                    "hydro", "pyro", "cryo").contains(element)) {
+                throw new IllegalArgumentException(location + ": invalid element: " + element);
             }
-            if (!seen.add(element)) {
-                throw new IllegalArgumentException(location
-                        + ": duplicate ascension gem element: " + element);
-            }
-            var weight = new BigDecimal(pair[1].trim());
-            total = total.add(weight);
-            if (weight.signum() == 0) continue;
-            String reference = "genshin.avatar_ascension." + element + "." + rarity;
-            int itemId = resolver.resolve(reference);
+            int itemId = resolver.resolve("genshin.avatar_ascension." + element + "." + rarity);
             if (itemId <= 0) {
-                throw new IllegalArgumentException(location
-                        + ": unknown ascension gem: " + reference);
+                throw new IllegalArgumentException(location + ": unknown ascension gem: " + element);
             }
-            ids.add(itemId);
-            boundaries.add(total);
-        }
-        if (total.signum() == 0) {
-            throw new IllegalArgumentException(location + ": ascension gem element weights must be positive");
-        }
-        var itemIds = new int[ids.size()];
-        var cumulative = new double[ids.size()];
-        for (int i = 0; i < ids.size(); i++) {
-            itemIds[i] = ids.get(i);
-            cumulative[i] = boundaries.get(i)
-                    .divide(total, java.math.MathContext.DECIMAL128).doubleValue();
-        }
-        return new WeightedItemSelector(itemIds, cumulative);
+            return itemId;
+        });
     }
 
     private record Pool(boolean weighted, List<Entry> entries, double totalWeight) {}

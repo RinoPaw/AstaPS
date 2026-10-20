@@ -6,7 +6,6 @@ import java.util.random.RandomGenerator;
 /** Integer reward counts, ranges and explicit relative-weight distributions. */
 public final class LootCount {
     private static final BigDecimal HUNDRED = new BigDecimal("100");
-    public static final int MAX_COUNT = 100_000;
     private LootCount() {}
 
     @FunctionalInterface
@@ -26,7 +25,7 @@ public final class LootCount {
             if (parts.length != 2) throw new IllegalArgumentException("Invalid range: " + text);
             int low = integer(parts[0]), high = integer(parts[1]);
             if (high < low) throw new IllegalArgumentException("Reversed range: " + text);
-            return rng -> low == high ? low : rng.nextInt(low, high + 1);
+            return rng -> low == high ? low : (int) rng.nextLong(low, (long) high + 1);
         }
         int fixed = integer(text);
         return rng -> fixed;
@@ -47,11 +46,16 @@ public final class LootCount {
         String source = value.trim();
         if (source.matches("[0-9]+\\.[0-9]+")) {
             BigDecimal amount = decimal(source);
-            int base = amount.intValue();
+            int base;
+            try {
+                base = amount.toBigInteger().intValueExact();
+            } catch (ArithmeticException failure) {
+                throw new IllegalArgumentException("Native count cannot fit an integer: " + value, failure);
+            }
             BigDecimal fraction = amount.remainder(BigDecimal.ONE);
             if (fraction.signum() == 0) return Integer.toString(base);
-            if (base >= MAX_COUNT) {
-                throw new IllegalArgumentException("Native bonus count exceeds limit: " + value);
+            if (base == Integer.MAX_VALUE) {
+                throw new IllegalArgumentException("Native count cannot round up within integer range: " + value);
             }
             BigDecimal upperWeight = fraction.movePointRight(2);
             BigDecimal lowerWeight = HUNDRED.subtract(upperWeight);
@@ -67,8 +71,8 @@ public final class LootCount {
     private static BigDecimal decimal(String value) {
         try {
             BigDecimal parsed = new BigDecimal(value);
-            if (parsed.signum() < 0 || parsed.compareTo(BigDecimal.valueOf(MAX_COUNT)) > 0) {
-                throw new IllegalArgumentException("Count/probability outside supported range: " + value);
+            if (parsed.signum() < 0) {
+                throw new IllegalArgumentException("Negative count is invalid: " + value);
             }
             return parsed;
         } catch (NumberFormatException e) {
@@ -78,6 +82,10 @@ public final class LootCount {
 
     private static int integer(String value) {
         if (!value.matches("[0-9]+")) throw new IllegalArgumentException("Expected integer: " + value);
-        return decimal(value).intValueExact();
+        try {
+            return decimal(value).intValueExact();
+        } catch (ArithmeticException failure) {
+            throw new IllegalArgumentException("Count cannot fit an integer: " + value, failure);
+        }
     }
 }

@@ -5,13 +5,13 @@ rewards. There are no curves or editable `config/rewards` copies.
 
 ## No implicit implementation ceilings
 
-The DSL does not impose arbitrary limits on recursion depth, repeated reward
-execution, the number of loot tables or entries, template instances, or integer
-reward counts. Recursive named pools, parameterized templates, and YAML aliases
-are valid. Native protocol and Java numeric representations remain governing
-constraints where applicable. The underlying runtime can still exhaust memory
-or its call stack for nonterminating configurations; these risks do not silently
-change the DSL rules.
+The DSL has no arbitrary runtime depth limit, count limit, pool-count limit,
+entry-count limit, or template-instance limit. Recursive named pools, parameterized
+templates, and YAML aliases are valid. The compiler checks the full recursive
+pool graph and requires an **expected total of at most 10 pool executions** from
+each root, including the root. Infinite expectations are rejected. Item copy
+counts do not contribute pool nodes. Native protocol and Java numeric bounds
+still apply. Finite expectation does not imply a bounded worst-case call stack.
 
 ## Unified weighted expressions
 
@@ -23,7 +23,7 @@ an implicit weight, and weights do not need to total 100.
 weapon: {type: "A:3, B:1"}
 same: {type: "A:3, B:1", count: 2}
 independent: {type: weapon, count: 2}
-gem: {type: "genshin.avatar_ascension.anemo:3, genshin.avatar_ascension.pyro:1", rarity: "2:3, 3:1"}
+gem: {type: genshin.avatar_ascension, element: "anemo:3, pyro:1", rarity: "2:3, 3:1"}
 ```
 
 A weighted item choice selects its type once, then applies `count`. A named
@@ -67,7 +67,7 @@ boss[type="world"][level="90~92"] {
 }
 
 boss[type="world"][tag="maguu_kenki"][level="50~54"] {
-    astaps.loot.world_50-54_gem_2<<ELEMENT>[0], <ELEMENT>[1]>: "1:25, 2:75";
+    astaps.loot.world_gem_two<3, <ELEMENT>[0], <ELEMENT>[1]>: "1:25, 2:75";
 }
 ```
 
@@ -79,12 +79,14 @@ source order determine overrides. A missing binding awards no bound reward;
 an out-of-range index is rejected.
 
 ```yaml
-world_50-54_gem_1<element>:
-  - {reward: "genshin.avatar_ascension.<element>.sliver", count: 3, weight: 79}
-  - {reward: "genshin.avatar_ascension.<element>.fragment", count: 3, weight: 21}
+world_gem_two<COUNT, ELEMENTS...>:
+  - type: genshin.avatar_ascension
+    element: "<ELEMENTS...>:1"
+    rarity: "2:79, 3:21"
+    count: <COUNT>
 ```
 
-A single argument call is `astaps.loot.world_50-54_gem_1<<ELEMENT>>`.
+An ordinary one-element call is `astaps.loot.world_gem_two<3, <ELEMENT>>`.
 Literal arguments such as `<electro>` remain valid. YAML generic parameters use
 `<element>` or `<set1>` inside strings. The previous `${parameter}` spelling
 and CSS variadic `<ELEMENT>` call remain accepted for compatibility; bundled
@@ -100,8 +102,9 @@ weights (`"2:4, 3:5"`). The latter awards two with probability 4/9 and three
 with probability 5/9; there is no implicit zero. Explicit zero outcomes are
 allowed. `+` and curve expressions are not supported in CSS.
 
-YAML primitives remain `reward`, `count`, and optional `weight`. Numeric
-weights select one sibling; omitted/null weights execute independently.
+YAML entries use `type`, optional `count` and `weight`, and item-specific
+attributes. Numeric weights select one sibling; omitted/null weights execute
+independently.
 An item's count gives copies; a nested table's count gives independent
 executions. All count distributions use explicit relative weights: `"2:3, 3:1"`
 means 75% two and 25% three. The total weight has no required value.
@@ -114,13 +117,16 @@ Additional grants of an item also present in a random pool must therefore use
 an independent table call. The single-element Boss bonus fragment table is:
 
 ```yaml
-world_gem_fragment<element>:
-  - {reward: "genshin.avatar_ascension.<element>.fragment"}
+world_gem_fragment<COUNT, ELEMENTS...>:
+  - type: genshin.avatar_ascension
+    element: "<ELEMENTS...>:1"
+    rarity: 3
+    count: <COUNT>
 ```
 
 ```css
 boss[type="world"][tag="anemo_hypostasis"][level="40~"] {
-    astaps.loot.world_gem_fragment<<ELEMENT>>: "3:88, 6:12";
+    astaps.loot.world_gem_fragment<1, <ELEMENT>>: "3:88, 6:12";
 }
 ```
 
@@ -135,13 +141,13 @@ configuration. Materials preserve early-game absence for 25 identities,
 Pyro Regisvine/Oceanid exceptions, and increased level-100 quantities for
 23 identities. Icewind Suite's two materials roll independently.
 
-Gem identities and batch sizes retain their seven original groups. Weighted
-candidates use 38 generic definitions; simple grants remain in CSS. Some
+Gem identities and batch sizes retain their seven original groups. Five shared
+profiles cover the original 38 gem definitions; simple grants remain in CSS. Some
 probabilities have been rounded to integer weights rather than preserved
 bit-for-bit. Native rows continue through level 120; open-ended CSS ranges
 continue the last row above that level.
 
-Artifacts use twelve generic definitions and 25 candidate pools, grouped
+Artifacts use eight generic definitions and 25 candidate pools, grouped
 into nine Boss programs. Slot, rarity, initial substat count, and unusual
 native slot/substat correlations remain explicit. Independent branches with
 the same candidate pool use an exact convolution of execution counts to avoid
@@ -192,4 +198,5 @@ current official-server drop study.
 Both configuration files begin with these limitations. Native item names
 still depend on resource mappings; the known material/gem name-map gaps and
 full server inventory delivery are outside this change's validation scope.
-No test suite or CI is run for this work.
+The CI builds the jar and runs the automated test suite. Full live-server
+inventory delivery remains unverified.

@@ -315,6 +315,9 @@ public final class YamlLootTables {
                                         ArtifactResolver artifacts) {
         if (resolver == null) throw new IllegalArgumentException("Missing item resolver");
         var settings = LoadSettings.builder()
+                // SnakeYAML uses this flag for non-scalar mapping keys as well.
+                // LootYamlSyntax still rejects cyclic keys and duplicate mappings.
+                .setAllowRecursiveKeys(true)
                 .setAllowDuplicateKeys(false)
                 .setMaxAliasesForCollections(100_000)
                 .setCodePointLimit(3_000_000)

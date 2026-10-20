@@ -103,6 +103,81 @@ public final class YamlLootTables {
         });
     }
 
+    private static String qualifiedTable(String name, String namespace) {
+        return name.startsWith(namespace + ".loot.") ? name : namespace + ".loot." + name;
+    }
+
+    private static String namespaceOf(String qualifiedName) {
+        return qualifiedName.substring(0, qualifiedName.indexOf(".loot."));
+    }
+
+    private static TypeTarget typeTarget(String name, ItemResolver resolver,
+            Set<String> tableNames, String namespace, String location) {
+        if ("null".equals(name)) return new TypeTarget(null, null);
+        String qualified = qualifiedTable(name, namespace);
+        if (tableNames.contains(qualified)) {
+            if (resolver.resolve(name) > 0) {
+                throw new IllegalArgumentException(location + ": ambiguous item/table name: " + name);
+            }
+            return new TypeTarget(null, qualified);
+        }
+        int id = resolver.resolve(name);
+        if (id <= 0 && id != emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL) {
+            throw new IllegalArgumentException(location + ": unknown type: " + name);
+        }
+        return new TypeTarget(id, null);
+    }
+
+    private static void validateReferences(Map<String, Pool> pools) {
+        var active = new IdentityHashMap<Pool, Boolean>();
+        var visited = new IdentityHashMap<Pool, Boolean>();
+        for (Pool pool : pools.values()) checkPool(pool, pools, active, visited);
+    }
+
+    private static void checkPool(Pool pool, Map<String, Pool> pools,
+            IdentityHashMap<Pool, Boolean> active, IdentityHashMap<Pool, Boolean> visited) {
+        if (active.putIfAbsent(pool, true) != null) {
+            throw new IllegalArgumentException("Cyclic named loot table reference");
+        }
+        if (visited.containsKey(pool)) {
+            active.remove(pool);
+            return;
+        }
+        for (Entry entry : pool.entries) {
+            if (entry.nested != null) checkPool(entry.nested, pools, active, visited);
+            if (entry.tableReference != null) {
+                checkPool(requireTable(pools, entry.tableReference), pools, active, visited);
+            }
+            if (entry.typeChoice != null) {
+                for (TypeTarget candidate : entry.typeChoice.candidates()) {
+                    if (candidate.table != null) {
+                        checkPool(requireTable(pools, candidate.table), pools, active, visited);
+                    }
+                }
+            }
+        }
+        active.remove(pool);
+        visited.put(pool, true);
+    }
+
+    private static Pool requireTable(Map<String, Pool> pools, String name) {
+        Pool pool = pools.get(name);
+        if (pool == null) throw new IllegalArgumentException("Unknown named loot table: " + name);
+        return pool;
+    }
+
+    private void emitType(TypeTarget selected, int count, RandomGenerator random,
+            Map<Integer, Integer> reward, int[] remaining, int depth) {
+        if (selected.table != null) {
+            Pool table = pools.get(selected.table);
+            if (table == null) table = instances.get(selected.table);
+            if (table == null) throw new IllegalStateException("Unknown named loot table: " + selected.table);
+            rollPool(table, count, random, reward, remaining, depth + 1);
+        } else if (selected.itemId != null) {
+            reward.merge(selected.itemId, count, Math::addExact);
+        }
+    }
+
     private record Pool(boolean weighted, List<Entry> entries, double totalWeight) {}
 
     private static final int MAX_DEPTH = 64;
@@ -163,23 +238,31 @@ public final class YamlLootTables {
         var parsed = new LinkedHashMap<String, Pool>();
         var compiled = new IdentityHashMap<Object, Pool>();
         var visiting = new IdentityHashMap<Object, Boolean>();
-        for (var e : raw.entrySet()) {
-            if (!(e.getKey() instanceof String name) || name.isBlank()) {
+        var names = new java.util.HashSet<String>();
+        for (var key : raw.keySet()) {
+            if (!(key instanceof String name) || name.isBlank()) {
                 throw new IllegalArgumentException("Loot table name must be a nonempty string");
             }
-            String id = ResourceId.parse(namespace + ".loot." + name).toString();
-            parsed.put(id, parseList(e.getValue(), resolver, artifacts, compiled, visiting, budget, name, 0));
+            names.add(ResourceId.parse(namespace + ".loot." + name).toString());
         }
+        for (var e : raw.entrySet()) {
+            String name = (String) e.getKey();
+            String id = ResourceId.parse(namespace + ".loot." + name).toString();
+            parsed.put(id, parseList(e.getValue(), resolver, artifacts, compiled, visiting,
+                    budget, name, 0, names, namespace));
+        }
+        validateReferences(parsed);
         return new YamlLootTables(parsed, prepared.templates(), resolver, artifacts);
     }
 
     private static Pool parseList(Object raw, ItemResolver resolver, ArtifactResolver artifacts,
             IdentityHashMap<Object, Pool> compiled,
             IdentityHashMap<Object, Boolean> visiting, CompileBudget budget,
-            String location, int depth) {
+            String location, int depth, Set<String> tableNames, String namespace) {
         if (depth > MAX_DEPTH) throw new IllegalArgumentException(location + ": loot nesting too deep");
+        if (raw instanceof Map<?, ?> single) raw = List.of(single);
         if (!(raw instanceof List<?> list)) {
-            throw new IllegalArgumentException(location + ": expected a YAML list");
+            throw new IllegalArgumentException(location + ": expected a YAML list or expression");
         }
         if (visiting.containsKey(raw)) {
             throw new IllegalArgumentException(location + ": cyclic YAML loot alias");
@@ -198,35 +281,44 @@ public final class YamlLootTables {
             for (int i = 0; i < list.size(); i++) {
                 String at = location + "[" + i + "]";
                 if (!(list.get(i) instanceof Map<?, ?> fields)) {
-                    throw new IllegalArgumentException(at + ": expected {reward, count?, weight?}");
+                    throw new IllegalArgumentException(at + ": expected {type, count?}");
                 }
                 for (Object key : fields.keySet()) {
-                    if (!"reward".equals(key) && !"count".equals(key) && !"weight".equals(key)
-                            && !"properties".equals(key)) {
+                    if (!"reward".equals(key) && !"type".equals(key) && !"count".equals(key)
+                            && !"weight".equals(key) && !"properties".equals(key)) {
                         throw new IllegalArgumentException(at + ": unknown field: " + key);
                     }
                 }
-                if (!fields.containsKey("reward")) {
-                    throw new IllegalArgumentException(at + ": missing reward field");
+                if (fields.containsKey("reward") == fields.containsKey("type")) {
+                    throw new IllegalArgumentException(at + ": exactly one of type or reward is required");
                 }
-                Object target = fields.get("reward");
+                boolean useType = fields.containsKey("type");
+                Object target = fields.get(useType ? "type" : "reward");
                 Integer rewardId = null;
                 ArtifactResolver.Selector artifact = null;
-                WeightedItemSelector grade = null;
-                WeightedItemSelector element = null;
+                WeightedChoice<Integer> grade = null;
+                WeightedChoice<Integer> element = null;
+                WeightedChoice<TypeTarget> typeChoice = null;
+                String tableReference = null;
                 Pool nested = null;
                 if (target instanceof List<?>) {
-                    nested = parseList(target, resolver, artifacts, compiled, visiting, budget, at + ".reward", depth + 1);
+                    nested = parseList(target, resolver, artifacts, compiled, visiting, budget,
+                            at + ".type", depth + 1, tableNames, namespace);
                 } else if (target instanceof Map<?, ?> single) {
                     // A nested mapping rerolls its reward once for every outer
                     // execution. Its own count controls the quantity per roll.
-                    nested = parseList(List.of(single), resolver, artifacts,
-                            compiled, visiting, budget, at + ".reward", depth + 1);
+                    nested = parseList(single, resolver, artifacts,
+                            compiled, visiting, budget, at + ".type", depth + 1, tableNames, namespace);
                 } else if (target != null) {
                     if (!(target instanceof String reference) || reference.matches("[0-9]+")) {
                         throw new IllegalArgumentException(at + ": reward must be a named item: " + target);
                     }
-                    if (reference.equals("genshin.avatar_ascension")
+                    if (useType && reference.contains(":")) {
+                        typeChoice = WeightedChoice.parse(reference, at + ".type",
+                                candidate -> typeTarget(candidate, resolver, tableNames, namespace, at));
+                    } else if (useType && tableNames.contains(qualifiedTable(reference, namespace))) {
+                        tableReference = qualifiedTable(reference, namespace);
+                    } else if (reference.equals("genshin.avatar_ascension")
                             && fields.containsKey("properties")) {
                         element = compileElements(fields.get("properties"), resolver, at);
                     } else if (reference.startsWith("genshin.artifact.")) {
@@ -265,7 +357,8 @@ public final class YamlLootTables {
                     }
                     hasWeight = true;
                 } else hasNull = true;
-                entries.add(new Entry(rewardId, artifact, grade, element, nested, count, weight));
+                entries.add(new Entry(rewardId, artifact, grade, element, typeChoice,
+                        tableReference, nested, count, weight));
             }
             if (hasWeight && hasNull) {
                 throw new IllegalArgumentException(location + ": cannot mix null and numeric weights");
@@ -294,7 +387,7 @@ public final class YamlLootTables {
         return Map.copyOf(reward);
     }
 
-    private static void rollPool(Pool pool, int times, RandomGenerator random,
+    private void rollPool(Pool pool, int times, RandomGenerator random,
             Map<Integer, Integer> reward, int[] remaining, int depth) {
         if (depth > MAX_DEPTH) throw new IllegalStateException("Loot nesting exceeds " + MAX_DEPTH + " levels");
         for (int n = 0; n < times; n++) {
@@ -313,7 +406,7 @@ public final class YamlLootTables {
         }
     }
 
-    private static void rollEntry(Entry entry, RandomGenerator random,
+    private void rollEntry(Entry entry, RandomGenerator random,
             Map<Integer, Integer> reward, int[] remaining, int depth) {
         if (--remaining[0] < 0) throw new IllegalStateException("Loot evaluation budget exceeded");
         int count = entry.count.sample(random);
@@ -329,11 +422,16 @@ public final class YamlLootTables {
             // A weighted rarity choice is made once per entry execution.
             // A count of N then awards N copies of the selected tier, matching
             // the original weighted pool of fixed-grade, fixed-count entries.
-            reward.merge(entry.grade.select(random), count, Math::addExact);
+            reward.merge(entry.grade.sample(random), count, Math::addExact);
         } else if (entry.element != null) {
             for (int i = 0; i < count; i++) {
-                reward.merge(entry.element.select(random), 1, Math::addExact);
+                reward.merge(entry.element.sample(random), 1, Math::addExact);
             }
+        } else if (entry.typeChoice != null) {
+            emitType(entry.typeChoice.sample(random), count, random, reward, remaining, depth);
+        } else if (entry.tableReference != null) {
+            emitType(new TypeTarget(null, entry.tableReference),
+                    count, random, reward, remaining, depth);
         } else if (entry.rewardId != null) {
             reward.merge(entry.rewardId, count, Math::addExact);
         }
@@ -356,7 +454,8 @@ public final class YamlLootTables {
         if (!instances.containsKey(name)) {
             var entries = templates.instantiateReference(name);
             var pool = parseList(entries, resolver, artifacts, new IdentityHashMap<>(),
-                    new IdentityHashMap<>(), new CompileBudget(), name, 0);
+                    new IdentityHashMap<>(), new CompileBudget(), name, 0, pools.keySet(),
+                    namespaceOf(name));
             instances.put(name, pool);
         }
         return name;

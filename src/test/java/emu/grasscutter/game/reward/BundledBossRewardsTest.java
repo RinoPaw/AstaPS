@@ -58,14 +58,24 @@ final class BundledBossRewardsTest {
         var nextId = new AtomicInteger(3000000);
         var artifacts = new ArrayList<ArtifactResolver.Variant>();
         var nextArtifactId = new AtomicInteger(4000000);
-        // Collect artifact sets from CSS invocations. Prayers sets only have
-        // circlets; other sets provide every slot in this synthetic resource data.
-        Pattern.compile("world_artifact_[a-z0-9_-]+<([^>]+)>")
+        // Collect all native set candidates from the identity bindings and
+        // fixed-set YAML entries. Shared CSS level rules no longer repeat set names.
+        // Prayers sets contain circlets only; other sets expose every native slot.
+        var sets = new java.util.LinkedHashSet<String>();
+        Pattern.compile("ARTIFACT_[1-4]STAR:\\s*\\[([^]]+)]")
                 .matcher(stylesheet).results()
                 .flatMap(match -> java.util.Arrays.stream(match.group(1).split(",")))
                 .map(String::trim)
-                .filter(name -> !name.matches("[0-9]+"))
-                .distinct().forEach(name -> {
+                .forEach(sets::add);
+        Pattern.compile("(?m)^\\s*set:\\s*(.+)$")
+                .matcher(yaml).results()
+                .flatMap(match -> java.util.Arrays.stream(match.group(1)
+                        .replace("\\"", "").split(",")))
+                .map(String::trim)
+                .map(value -> value.split(":", 2)[0])
+                .filter(name -> name.matches("[a-z0-9_]+"))
+                .forEach(sets::add);
+        sets.forEach(name -> {
                     for (int rarity = 1; rarity <= 5; rarity++) {
                         for (int slot = 1; slot <= 5; slot++) {
                             if (name.startsWith("prayers_") && slot != 5) continue;

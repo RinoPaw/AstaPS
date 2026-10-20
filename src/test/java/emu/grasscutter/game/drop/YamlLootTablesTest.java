@@ -608,13 +608,13 @@ class YamlLootTablesTest {
                       - {reward: null, weight: 67}
                       - {reward: genshin.currency.mora, weight: 33}
                 new_item:
-                  - {reward: genshin.currency.mora, count: "1:33"}
+                  - {reward: genshin.currency.mora, count: "0:67, 1:33"}
                 old_pool:
                   - reward:
                       - {reward: null, weight: 22}
                       - {reward: *billets, weight: 3}
                 new_pool:
-                  - {reward: *billets, count: "1:12"}
+                  - {reward: *billets, count: "0:22, 1:3"}
                 """);
         for (String name : new String[]{"old_item", "new_item", "old_pool", "new_pool"}) {
             var random = new Random(71);
@@ -758,11 +758,11 @@ class YamlLootTablesTest {
     }
 
     @Test
-    void quotedCountSupportsRangesAndPercentages() {
+    void quotedCountSupportsRangesAndRelativeWeights() {
         var tables = parse("""
                 chest:
                   - {reward: genshin.currency.mora, count: "2~4"}
-                  - {reward: genshin.avatar_up.heros_wit, count: "1:80"}
+                  - {reward: genshin.avatar_up.heros_wit, count: "0:20, 1:80"}
                   - {reward: genshin.avatar_up.adventurers_experience, count: "2:80,3:20"}
                 """);
         for (int i = 0; i < 300; i++) {
@@ -777,6 +777,7 @@ class YamlLootTablesTest {
     void fractionalPercentagesAreSupportedButDecimalWeightsAreRejected() {
         assertDoesNotThrow(() -> LootCount.parse("2+1:55.56"));
         assertDoesNotThrow(() -> LootCount.parse("1:12.5,2:87.5"));
+        assertDoesNotThrow(() -> LootCount.parse("1:60,2:60"));
         assertThrows(IllegalArgumentException.class, () -> LootCount.parse("2.5556"));
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 bad:
@@ -792,7 +793,7 @@ class YamlLootTablesTest {
                   - {reward: genshin.avatar_up.adventurers_experience, count: 2, weight: 3}
                 chest:
                   - {reward: genshin.currency.mora, count: 300}
-                  - {reward: *exp, count: "1:70"}
+                  - {reward: *exp, count: "0:30, 1:70"}
                 """);
         int none = 0, big = 0, small = 0;
         Random random = new Random(42);
@@ -863,7 +864,7 @@ class YamlLootTablesTest {
                   - reward:
                       - {reward: genshin.avatar_up.heros_wit, weight: 5}
                       - {reward: genshin.avatar_up.adventurers_experience, weight: 3}
-                    count: "1:80"
+                    count: "0:20, 1:80"
                 empty:
                   - {reward: null}
                   - {reward: []}
@@ -914,7 +915,7 @@ class YamlLootTablesTest {
                 """));
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 invalid:
-                  - {reward: genshin.currency.mora, count: "1:60,2:60"}
+                  - {reward: genshin.currency.mora, count: "1:60,2"}
                 """));
         assertThrows(IllegalArgumentException.class, () -> parse("""
                 invalid:
@@ -931,8 +932,8 @@ class YamlLootTablesTest {
     }
 
     @Test
-    void aSingleSpecifiedPercentageImpliesZeroForTheRemainder() {
-        var distribution = LootCount.parse("1:20");
+    void omittedZeroCountMustBeExplicit() {
+        var distribution = LootCount.parse("0:80, 1:20");
         int[] outcomes = new int[2];
         var random = new Random(2026);
         for (int i = 0; i < 20_000; i++) {
@@ -945,7 +946,7 @@ class YamlLootTablesTest {
 
         var table = parse("""
                 chance:
-                  - {reward: genshin.currency.mora, count: "1:20"}
+                  - {reward: genshin.currency.mora, count: "0:80, 1:20"}
                 """);
         int awarded = 0;
         for (int i = 0; i < 2_000; i++) {
@@ -955,8 +956,11 @@ class YamlLootTablesTest {
     }
 
     @Test
-    void missingCountProbabilityIsFilledAndCanBeZero() {
-        var distribution = LootCount.parse("0:40,1,2:18");
+    void countDistributionUsesExplicitRelativeWeights() {
+        assertThrows(IllegalArgumentException.class,
+                () -> LootCount.parse("0:40,1,2:18"));
+        assertEquals(1, LootCount.parse("1:20").sample(new Random(71)));
+        var distribution = LootCount.parse("0:40,1:42,2:18");
         int[] outcome = new int[3];
         var rng = new Random(9876);
         for (int i = 0; i < 50_000; i++) outcome[distribution.sample(rng)]++;

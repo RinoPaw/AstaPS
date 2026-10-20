@@ -55,8 +55,11 @@ allowed. `+` and curve expressions are not supported in CSS.
 YAML primitives remain `reward`, `count`, and optional `weight`. Numeric
 weights select one sibling; omitted/null weights execute independently.
 An item's count gives copies; a nested table's count gives independent
-executions. Existing YAML count percentage expressions retain their legacy
-implicit-zero semantics; CSS expressions do not reinterpret them.
+executions. All count distributions use explicit relative weights: `"2:3, 3:1"`
+means 75% two and 25% three. The total weight has no required value.
+An empty outcome requires `0` explicitly, such as `"0:7, 1:3"`.
+Every outcome requires a weight; `"2, 3:41.4"` is invalid. Native fractional
+counts are exported as two explicitly weighted outcomes.
 
 Direct CSS item declarations override that item's total from loot tables.
 Additional grants of an item also present in a random pool must therefore use

@@ -684,4 +684,77 @@ class LootCountScopeTest {
             assertEquals(1 / 402.0, lateCounts.getOrDefault(id, 0) / 20_000.0, 0.005);
         }
     }
+
+    @Test
+    void canonicalItemTypesCompileWeightedIdentityAttributes() {
+        var nativeArtifacts = new ArtifactResolver(java.util.List.of(
+                new ArtifactResolver.Variant(9101, "berserker", 1, 3, 1),
+                new ArtifactResolver.Variant(9102, "berserker", 2, 3, 1),
+                new ArtifactResolver.Variant(9205, "prayers_for_wisdom", 5, 3, 1)));
+        var nativeItems = (YamlLootTables.ItemResolver) name -> switch (name) {
+            case "genshin.avatar_ascension.anemo.2" -> 1102;
+            case "genshin.avatar_ascension.anemo.3" -> 1103;
+            case "genshin.avatar_ascension.pyro.2" -> 1202;
+            case "genshin.avatar_ascension.pyro.3" -> 1203;
+            case "genshin.talent_up.freedom.2" -> 2102;
+            case "genshin.talent_up.freedom.3" -> 2103;
+            case "genshin.talent_up.resistance.2" -> 2202;
+            case "genshin.talent_up.resistance.3" -> 2203;
+            default -> -2;
+        };
+        var loot = YamlLootTables.parse("""
+                artifact:
+                  type: genshin.artifact
+                  set: "berserker:3, prayers_for_wisdom:1"
+                  rarity: 3
+                  substats: 1
+                gem:
+                  type: genshin.avatar_ascension
+                  element: "anemo:3, pyro:1"
+                  rarity: "2:3, 3:1"
+                  count: 3
+                talent:
+                  type: genshin.talent_up
+                  series: "freedom:3, resistance:1"
+                  rarity: "2:3, 3:1"
+                  count: 2
+                """, nativeItems, nativeArtifacts);
+        int[] artifacts = new int[3], gems = new int[4], talents = new int[4];
+        var random = new Random(2026);
+        for (int i = 0; i < 20_000; i++) {
+            int artifact = loot.roll("artifact", random).keySet().iterator().next();
+            artifacts[switch (artifact) { case 9101 -> 0; case 9102 -> 1; case 9205 -> 2;
+                default -> throw new AssertionError(artifact); }]++;
+            var gem = loot.roll("gem", random);
+            assertEquals(1, gem.size());
+            assertEquals(3, gem.values().iterator().next());
+            gems[switch (gem.keySet().iterator().next()) {
+                case 1102 -> 0; case 1103 -> 1; case 1202 -> 2; case 1203 -> 3;
+                default -> throw new AssertionError(gem); }]++;
+            var talent = loot.roll("talent", random);
+            assertEquals(1, talent.size());
+            assertEquals(2, talent.values().iterator().next());
+            talents[switch (talent.keySet().iterator().next()) {
+                case 2102 -> 0; case 2103 -> 1; case 2202 -> 2; case 2203 -> 3;
+                default -> throw new AssertionError(talent); }]++;
+        }
+        assertEquals(0.375, artifacts[0] / 20_000.0, 0.025);
+        assertEquals(0.375, artifacts[1] / 20_000.0, 0.025);
+        assertEquals(0.25, artifacts[2] / 20_000.0, 0.025);
+        for (int[] results : new int[][]{gems, talents}) {
+            assertEquals(0.5625, results[0] / 20_000.0, 0.025);
+            assertEquals(0.1875, results[1] / 20_000.0, 0.025);
+            assertEquals(0.1875, results[2] / 20_000.0, 0.025);
+            assertEquals(0.0625, results[3] / 20_000.0, 0.025);
+        }
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                bad: {type: genshin.artifact, rarity: 3}
+                """, nativeItems, nativeArtifacts));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                bad: {type: genshin.talent_up, series: unknown, rarity: 2}
+                """, nativeItems, nativeArtifacts));
+        assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
+                bad: {type: genshin.avatar_ascension, element: anemo, rarity: 1}
+                """, nativeItems, nativeArtifacts));
+    }
 }

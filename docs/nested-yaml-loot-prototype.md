@@ -45,8 +45,11 @@ per execution. Mixing weighted and unweighted branches at the same level is
 rejected. Parameterized templates accept uppercase names such as
 `boss<MORA, FIRST, SECOND, N>`.
 
-The bundled reward configuration still includes legacy `reward` and
-`properties` entries pending conversion to the unified syntax.
+Bundled candidate pools use structured `type` attributes. Artifacts use
+`type: genshin.artifact` with `set`, `slot`, `rarity`, `substats`;
+gems use `type: genshin.avatar_ascension` with `element` and `rarity`;
+talent books use `type: genshin.talent_up` with `series` and `rarity`.
+Each attribute uses the common weighted-expression parser.
 
 ## Bindings and generic calls
 

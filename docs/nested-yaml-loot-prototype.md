@@ -3,6 +3,41 @@
 Only `src/main/resources/rewards/rewards.css` and `loot.yaml` define bundled
 rewards. There are no curves or editable `config/rewards` copies.
 
+## Unified weighted expressions
+
+Every entry attribute can use an explicit relative-weight expression. The
+shared evaluator also selects weighted pool branches. No candidate receives
+an implicit weight, and weights do not need to total 100.
+
+```yaml
+weapon: {type: "A:3, B:1"}
+same: {type: "A:3, B:1", count: 2}
+independent: {type: weapon, count: 2}
+gem: {type: "genshin.avatar_ascension.anemo:3, genshin.avatar_ascension.pyro:1", rarity: "2:3, 3:1"}
+```
+
+A weighted item choice selects its type once, then applies `count`. A named
+pool reference with `count: 2` executes the pool twice independently.
+Both use the same weighted evaluator; the target determines the count scope.
+New item attributes are passed to the owning item compiler, without adding
+another weight parser to the entry grammar.
+
+YAML complex mapping keys are valid weighted pool candidates:
+
+```yaml
+group:
+  - [{type: A, count: 2}, {type: B, count: 3}]: 3
+  - {type: C}: 1
+```
+
+A plain sequence evaluates every entry. A weighted sequence selects one branch
+per execution. Mixing weighted and unweighted branches at the same level is
+rejected. Parameterized templates accept uppercase names such as
+`boss<MORA, FIRST, SECOND, N>`.
+
+The bundled reward configuration still includes legacy `reward` and
+`properties` entries pending conversion to the unified syntax.
+
 ## Bindings and generic calls
 
 ```css

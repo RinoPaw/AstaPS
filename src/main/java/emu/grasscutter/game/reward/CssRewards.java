@@ -1,6 +1,8 @@
 package emu.grasscutter.game.reward;
 
 import com.helger.css.decl.CSSStyleRule;
+import com.helger.css.decl.CSSDeclaration;
+import com.helger.css.decl.CSSNestedDeclarations;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.writer.CSSWriterSettings;
 import emu.grasscutter.data.ItemIdRegistry;
@@ -18,6 +20,7 @@ import io.sf.carte.doc.dom.CSSDOMImplementation;
 import io.sf.carte.doc.style.css.CSSElement;
 import io.sf.carte.doc.style.css.SelectorMatcher;
 import io.sf.carte.doc.style.css.nsac.Selector;
+import io.sf.carte.doc.style.css.nsac.SelectorList;
 import io.sf.carte.doc.style.css.om.Specificity;
 import io.sf.carte.doc.style.css.parser.CSSParser;
 
@@ -49,7 +52,7 @@ public final class CssRewards {
     // conventional CSS property identifiers. Encode declarations only; leave
     // CSS selectors, values and the canonical resource IDs unchanged.
     private static final Pattern RESOURCE_DECLARATION = Pattern.compile(
-            "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT|getBossMaterial|[a-z][\\p{L}\\p{N}_.,<>\\[\\]\\s-]*)\\s*:");
+            "(?m)(^|[;{}])(\\s*)(BOSS_MATERIAL|ELEMENT|getBossMaterial|[a-z][\\p{L}\\p{N}_.,<>\\[\\]\\s-]*)\\s*:");
     private static final Pattern BINDING = Pattern.compile(
             "<(BOSS_MATERIAL|ELEMENT)>(?:\\[([0-9]+)])?");
 
@@ -120,81 +123,109 @@ public final class CssRewards {
         if (sheet == null) throw new IllegalArgumentException("Invalid rewards.css");
 
         var rules = new ArrayList<Rule>();
-        var intervalAttributes = new java.util.LinkedHashMap<String, RangeMembership>();
-        int order = 0;
+        var intervals = new java.util.LinkedHashMap<String, RangeMembership>();
+        int[] sourceOrder = {0};
         for (var top : sheet.getAllRules()) {
-            if (!(top instanceof CSSStyleRule style) || !style.getAllRules().isEmpty()) {
-                throw new IllegalArgumentException("Expected CSS style rules");
+            if (!(top instanceof CSSStyleRule style)) {
+                throw new IllegalArgumentException("Unsupported top-level reward rule: " + top);
             }
-
-            var itemDeclarations = new ArrayList<ItemDeclaration>();
-            var lootDeclarations = new ArrayList<LootDeclaration>();
-            List<String> bossMaterials = null;
-            LootCount.Spec bossMaterialCount = null;
-            List<String> elements = null;
-            for (var declaration : style.getAllDeclarations()) {
-                String property = declaration.getProperty();
-                String value = declaration.getExpressionAsCSSString().trim();
-                if (value.length() >= 2
-                        && ((value.startsWith("\"") && value.endsWith("\""))
-                        || (value.startsWith("'") && value.endsWith("'")))) {
-                    value = value.substring(1, value.length() - 1);
-                }
-                String original = originalProperties.getOrDefault(property, property);
-                if ("BOSS_MATERIAL".equals(original)) {
-                    bossMaterials = parseMaterialBinding(value);
-                    continue;
-                }
-                if ("ELEMENT".equals(original)) {
-                    elements = parseElementBinding(value);
-                    continue;
-                }
-                if ("getBossMaterial".equals(original)) {
-                    bossMaterialCount = LootCount.parseRoll(value);
-                    continue;
-                }
-                String compact = original.replaceAll("\\s+", "");
-                Integer fixedCount = value.matches("[0-9]+") ? Integer.valueOf(value) : null;
-                LootCount.Spec rangedCount = fixedCount == null ? LootCount.parseRoll(value) : null;
-                if (compact.matches("[a-z][a-z0-9_]*\\.loot\\..*")) {
-                    String name = BINDING.matcher(compact).find() ? compact : loot.resolveName(compact);
-                    lootDeclarations.add(new LootDeclaration(name, fixedCount, rangedCount));
-                } else {
-                    if (!BINDING.matcher(compact).find()) items.resolve(compact);
-                    itemDeclarations.add(new ItemDeclaration(compact, fixedCount, rangedCount));
-                }
-            }
-
-            for (var selector : style.getAllSelectors()) {
-                String css = selector.getAsCSSString(CSSWriterSettings.DEFAULT_SETTINGS, 0).trim();
-                var intervalMatcher = RANGE_MEMBERSHIP_ATTRIBUTE.matcher(css);
-                while (intervalMatcher.find()) {
-                    String attribute = intervalMatcher.group(1);
-                    var min = new java.math.BigInteger(intervalMatcher.group(3));
-                    var max = "up".equals(intervalMatcher.group(4))
-                            ? null : new java.math.BigInteger(intervalMatcher.group(4));
-                    if (max != null && max.compareTo(min) < 0) {
-                        throw new IllegalArgumentException("Reversed reward range attribute: " + css);
-                    }
-                    intervalAttributes.putIfAbsent(attribute, new RangeMembership(
-                            attribute, intervalMatcher.group(2), min, max));
-                }
-                var selectors = new CSSParser().parseSelectors(css);
-                for (var parsed : selectors) {
-                    rules.add(new Rule(parsed, List.copyOf(itemDeclarations),
-                            List.copyOf(lootDeclarations), bossMaterials,
-                            bossMaterialCount, elements, order++));
-                }
-            }
+            collectStyle(style, null, rules, intervals, sourceOrder,
+                    originalProperties, items, loot);
         }
-
-        return new CssRewards(rules, List.copyOf(intervalAttributes.values()), loot, items);
+        return new CssRewards(rules, List.copyOf(intervals.values()), loot, items);
     }
 
-    /** Preserve resource and element bindings across CSS tokenization. */
+    private static void collectStyle(CSSStyleRule style, SelectorList parent,
+            List<Rule> rules, Map<String, RangeMembership> intervals, int[] sourceOrder,
+            Map<String, String> originalProperties, ItemIdRegistry items, YamlLootTables loot) {
+        var parser = new CSSParser();
+        var selectors = parser.parseSelectors(
+                style.getSelectorsAsCSSString(CSSWriterSettings.DEFAULT_SETTINGS, 0));
+        if (parent != null) {
+            // css4j performs the standard nesting substitution, including '&'.
+            selectors = selectors.replaceNested(parent);
+        }
+        collectDeclarations(style.getAllDeclarations(), selectors, rules, intervals,
+                sourceOrder, originalProperties, items, loot);
+        for (var nested : style.getAllRules()) {
+            if (nested instanceof CSSStyleRule child) {
+                collectStyle(child, selectors, rules, intervals, sourceOrder,
+                        originalProperties, items, loot);
+            } else if (nested instanceof CSSNestedDeclarations continuation) {
+                collectDeclarations(continuation.getAllDeclarations(), selectors, rules,
+                        intervals, sourceOrder, originalProperties, items, loot);
+            } else {
+                throw new IllegalArgumentException("Unsupported conditional reward rule: " + nested);
+            }
+        }
+    }
+
+    private static void collectDeclarations(List<CSSDeclaration> declarations,
+            SelectorList selectors, List<Rule> rules,
+            Map<String, RangeMembership> intervals, int[] sourceOrder,
+            Map<String, String> originalProperties,
+            ItemIdRegistry items, YamlLootTables loot) {
+        if (declarations.isEmpty()) return;
+        var itemDeclarations = new ArrayList<ItemDeclaration>();
+        var lootDeclarations = new ArrayList<LootDeclaration>();
+        List<String> bossMaterials = null;
+        LootCount.Spec bossMaterialCount = null;
+        List<String> elements = null;
+        for (var declaration : declarations) {
+            String property = declaration.getProperty();
+            String value = declaration.getExpressionAsCSSString().trim();
+            if (value.length() >= 2
+                    && ((value.startsWith("\"") && value.endsWith("\""))
+                    || (value.startsWith("'") && value.endsWith("'")))) {
+                value = value.substring(1, value.length() - 1);
+            }
+            String original = originalProperties.getOrDefault(property, property);
+            if ("BOSS_MATERIAL".equals(original)) {
+                bossMaterials = parseMaterialBinding(value);
+                continue;
+            }
+            if ("ELEMENT".equals(original)) {
+                elements = parseElementBinding(value);
+                continue;
+            }
+            if ("getBossMaterial".equals(original)) {
+                bossMaterialCount = LootCount.parseRoll(value);
+                continue;
+            }
+            String compact = original.replaceAll("\\s+", "");
+            Integer fixedCount = value.matches("[0-9]+") ? Integer.valueOf(value) : null;
+            LootCount.Spec rangedCount = fixedCount == null ? LootCount.parseRoll(value) : null;
+            if (compact.matches("[a-z][a-z0-9_]*\\.loot\\..*")) {
+                String name = BINDING.matcher(compact).find() ? compact : loot.resolveName(compact);
+                lootDeclarations.add(new LootDeclaration(name, fixedCount, rangedCount));
+            } else {
+                if (!BINDING.matcher(compact).find()) items.resolve(compact);
+                itemDeclarations.add(new ItemDeclaration(compact, fixedCount, rangedCount));
+            }
+        }
+        for (var selector : selectors) {
+            String css = selector.toString();
+            var range = RANGE_MEMBERSHIP_ATTRIBUTE.matcher(css);
+            while (range.find()) {
+                String attribute = range.group(1);
+                var min = new java.math.BigInteger(range.group(3));
+                var max = "up".equals(range.group(4))
+                        ? null : new java.math.BigInteger(range.group(4));
+                if (max != null && max.compareTo(min) < 0) {
+                    throw new IllegalArgumentException("Reversed reward range attribute: " + css);
+                }
+                intervals.putIfAbsent(attribute, new RangeMembership(
+                        attribute, range.group(2), min, max));
+            }
+            rules.add(new Rule(selector, List.copyOf(itemDeclarations),
+                    List.copyOf(lootDeclarations), bossMaterials,
+                    bossMaterialCount, elements, sourceOrder[0]++));
+        }
+    }
+
     private static String quoteBindings(String source) {
         var matcher = Pattern.compile(
-                "(?m)(^|[;{])(\\s*)(BOSS_MATERIAL|ELEMENT)\\s*:\\s*([^;{}]+)").matcher(source);
+                "(?m)(^|[;{}])(\\s*)(BOSS_MATERIAL|ELEMENT)\\s*:\\s*([^;{}]+)").matcher(source);
         var buffer = new StringBuffer();
         while (matcher.find()) {
             String value = matcher.group(4).trim();

@@ -18,7 +18,12 @@ and `[data-range-level-93-up]` matches every integer level at least 93,
 without a fixed maximum. `[data-range-WR-6-9]` works the same way for world
 rank. The loader discovers the range attributes used in the stylesheet and
 computes their membership from the corresponding numeric source attributes.
-No numeric-range syntax is added to CSS itself. Selector matching and Level 4 specificity use css4j; ph-css parses declarations. The original `level` and
+No numeric-range syntax is added to CSS itself. Selector matching and Level 4 specificity use css4j; ph-css parses declarations.
+CSS Nesting is supported, including the standard `&` nesting selector. The
+ph-css parser preserves nested blocks and css4j expands nested selectors;
+matching and specificity are handled by css4j rather than by a CSS regex.
+The reward language still interprets declaration values as item counts, ranges,
+and explicit weighted outcomes. The original `level` and
 `WR` attributes remain available for exact-value selectors.
 
 ## No implicit implementation ceilings

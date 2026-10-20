@@ -362,6 +362,26 @@ class CssRewardsTest {
     }
 
     @Test
+    void cssNestingUsesLibrarySelectorExpansionAndCascade() {
+        var css = CssRewards.parse("""
+                boss[type="world"] {
+                    genshin.currency.mora: 1;
+                    &[tag="a"] { genshin.currency.mora: 5; }
+                    &:is([tag="a"], [tag="b"]) {
+                        genshin.currency.primogem: 3;
+                    }
+                    genshin.currency.mora: 2;
+                }
+                """, items, loot);
+        assertEquals(Map.of(202, 5, 201, 3), css.resolve("boss",
+                Map.of("type", "world", "tag", "a")).items());
+        assertEquals(Map.of(202, 2, 201, 3), css.resolve("boss",
+                Map.of("type", "world", "tag", "b")).items());
+        assertEquals(Map.of(202, 2), css.resolve("boss",
+                Map.of("type", "world", "tag", "c")).items());
+    }
+
+    @Test
     void repeatedLootPropertyUsesLastDeclaration() {
         var css = CssRewards.parse("""
                 chest {

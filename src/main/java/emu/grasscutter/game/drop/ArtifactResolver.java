@@ -32,12 +32,21 @@ public final class ArtifactResolver {
 
     public record Variant(int id, String set, int slot, int rarity, int substats) {}
     public record Selector(List<Variant> variants, LootCount.Spec slot,
-                           LootCount.Spec rarity, LootCount.Spec substats) {
+                           LootCount.Spec rarity, LootCount.Spec substats,
+                           WeightedChoice<List<Variant>> sets) {
+        public Selector(List<Variant> variants, LootCount.Spec slot,
+                        LootCount.Spec rarity, LootCount.Spec substats) {
+            this(variants, slot, rarity, substats, null);
+        }
+
         public int select(RandomGenerator random) {
+            // The set is chosen before its native slot/rarity/substat variants.
+            // A circlet-only set therefore never offers unavailable slots.
+            List<Variant> available = sets == null ? variants : sets.sample(random);
             int selectedSlot = slot == null
-                    ? randomDistinct(variants, Variant::slot, random)
+                    ? randomDistinct(available, Variant::slot, random)
                     : slot.sample(random);
-            List<Variant> matchingSlot = variants.stream()
+            List<Variant> matchingSlot = available.stream()
                     .filter(v -> v.slot == selectedSlot).toList();
             if (matchingSlot.isEmpty()) {
                 throw new IllegalArgumentException("Artifact slot not available: " + selectedSlot);
@@ -189,24 +198,41 @@ public final class ArtifactResolver {
 
     public Selector compile(String name, Object rawProperties) {
         ResourceId id = ResourceId.parse(name);
-        if (id.size() != 3 || !"genshin".equals(id.segment(0)) || !"artifact".equals(id.segment(1))) {
-            throw new IllegalArgumentException("Expected genshin.artifact.<set>: " + name);
-        }
-        List<Variant> variants = bySet.get(id.segment(2));
-        if (variants == null || variants.isEmpty()) {
-            throw new IllegalArgumentException("Unknown native artifact set: " + name);
+        if ((id.size() != 2 && id.size() != 3)
+                || !"genshin".equals(id.segment(0)) || !"artifact".equals(id.segment(1))) {
+            throw new IllegalArgumentException("Expected genshin.artifact with set attribute: " + name);
         }
         Map<?, ?> props = rawProperties == null ? Map.of() :
                 rawProperties instanceof Map<?, ?> m ? m :
                 throwInvalidProperties();
+        boolean generic = id.size() == 2;
         for (Object key : props.keySet()) {
-            if (!"slot".equals(key) && !"rarity".equals(key) && !"substats".equals(key)) {
+            if (!"slot".equals(key) && !"rarity".equals(key) && !"substats".equals(key)
+                    && !(generic && "set".equals(key))) {
                 throw new IllegalArgumentException("Unknown artifact property: " + key);
+            }
+        }
+        WeightedChoice<List<Variant>> sets = null;
+        List<Variant> variants;
+        if (generic) {
+            sets = WeightedChoice.compile(props.get("set"), "artifact.set", candidate -> {
+                String set = candidate.toString();
+                List<Variant> nativeVariants = bySet.get(set);
+                if (nativeVariants == null || nativeVariants.isEmpty()) {
+                    throw new IllegalArgumentException("Unknown native artifact set: " + set);
+                }
+                return nativeVariants;
+            });
+            variants = List.of();
+        } else {
+            variants = bySet.get(id.segment(2));
+            if (variants == null || variants.isEmpty()) {
+                throw new IllegalArgumentException("Unknown native artifact set: " + name);
             }
         }
         return new Selector(variants, property("slot", props.get("slot")),
                 property("rarity", props.get("rarity")),
-                property("substats", props.get("substats")));
+                property("substats", props.get("substats")), sets);
     }
 
     private static Map<?, ?> throwInvalidProperties() {

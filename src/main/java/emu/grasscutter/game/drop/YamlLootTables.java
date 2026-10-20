@@ -117,6 +117,41 @@ public final class YamlLootTables {
         return WeightedChoice.of(items, weights, location + ".element/rarity");
     }
 
+    /** Resolve a talent subject and its grade into a native item once per entry roll. */
+    private static WeightedChoice<Integer> compileTalentSeries(
+            Map<?, ?> properties, ItemResolver resolver, String location) {
+        if (properties == null || properties.size() != 2
+                || !properties.containsKey("series") || !properties.containsKey("rarity")) {
+            throw new IllegalArgumentException(location
+                    + ": talent books require series and rarity attributes");
+        }
+        var series = WeightedChoice.compile(properties.get("series"),
+                location + ".series", raw -> raw.toString());
+        var rarities = WeightedChoice.compile(properties.get("rarity"),
+                location + ".rarity", raw -> {
+                    String value = raw.toString();
+                    if (!value.matches("[234]")) {
+                        throw new IllegalArgumentException(location + ": invalid talent rarity: " + value);
+                    }
+                    return Integer.parseInt(value);
+                });
+        var items = new ArrayList<Integer>();
+        var weights = new ArrayList<BigDecimal>();
+        for (int i = 0; i < series.candidates().size(); i++) {
+            for (int j = 0; j < rarities.candidates().size(); j++) {
+                String name = "genshin.talent_up." + series.candidates().get(i)
+                        + "." + rarities.candidates().get(j);
+                int id = resolver.resolve(name);
+                if (id <= 0) {
+                    throw new IllegalArgumentException(location + ": unknown talent book: " + name);
+                }
+                items.add(id);
+                weights.add(series.weights().get(i).multiply(rarities.weights().get(j)));
+            }
+        }
+        return WeightedChoice.of(items, weights, location + ".series/rarity");
+    }
+
     /** Metadata is compiled by its owning reward type; all fields use WeightedChoice. */
     private static final Set<String> CORE_FIELDS =
             Set.of("reward", "type", "count", "weight", "properties");
@@ -200,10 +235,15 @@ public final class YamlLootTables {
             return new TypeTarget(null, templates.qualify(name), null, null, null);
         }
         if (name.equals("genshin.avatar_ascension") && properties != null) {
-            return new TypeTarget(null, null, null, null,
-                    compileElements(properties, resolver, location));
+            // One material variant is chosen, then count awards copies of it.
+            return new TypeTarget(null, null, null,
+                    compileElements(properties, resolver, location), null);
         }
-        if (name.startsWith("genshin.artifact.")) {
+        if (name.equals("genshin.talent_up") && properties != null) {
+            return new TypeTarget(null, null, null,
+                    compileTalentSeries(properties, resolver, location), null);
+        }
+        if (name.equals("genshin.artifact") || name.startsWith("genshin.artifact.")) {
             if (artifacts == null) {
                 throw new IllegalArgumentException(location + ": artifact resolver unavailable");
             }

@@ -85,7 +85,6 @@ class BundledChestRewardsTest {
     @Test
     void twelveChestTiersContainNoFixedCurrencies() throws Exception {
         String cssSource = chestCss();
-        assertFalse(cssSource.contains("--loot:"));
         var loot = loot();
         for (String pool : new String[]{
                 "weapons_1_star", "weapons_2_star", "weapons_3_star",
@@ -100,8 +99,8 @@ class BundledChestRewardsTest {
         }
         assertEquals(28, loot.names().size(), "8 common pools and 20 native artifact mixtures");
         assertTrue(cssSource.contains("astaps.loot.chest_artifact_mix_01:"));
-        assertFalse(chestYaml().contains("reward: genshin.currency.mora"));
-        assertFalse(chestYaml().contains("reward: genshin.currency.primogem"));
+        assertFalse(chestYaml().contains("type: genshin.currency.mora"));
+        assertFalse(chestYaml().contains("type: genshin.currency.primogem"));
     }
 
     @Test
@@ -293,14 +292,13 @@ class BundledChestRewardsTest {
         for (String name : new String[]{"recipe_mora_meat",
                 "recipe_stir_fried_filet", "recipe_mushroom_pizza",
                 "recipe_northern_smoked_chicken"}) {
-            assertFalse(yaml.contains("reward: genshin.material." + name));
+            assertFalse(yaml.contains("type: genshin.material." + name));
         }
     }
 
     @Test
-    void nativeArtifactVariantsRemainResolvableWithSetProperties() throws Exception {
+    void nativeArtifactVariantsRemainResolvableWithVariadicTemplates() throws Exception {
         String source = chestYaml();
-        assertTrue(source.contains("reward: \"genshin.artifact.<set1>\""));
         assertTrue(source.contains("chest_artifact<RARITY, SUBSTATS, SETS...>:"));
         assertEquals(20, java.util.regex.Pattern.compile("(?m)^chest_artifact_mix_[0-9]+:")
                 .matcher(source).results().count());

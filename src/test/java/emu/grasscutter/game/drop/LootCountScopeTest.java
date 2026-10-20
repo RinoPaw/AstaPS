@@ -236,6 +236,82 @@ class LootCountScopeTest {
     }
 
     @Test
+    void namedPoolsMayCallThemselves() {
+        var tables = YamlLootTables.parse("""
+                echo:
+                  - {type: genshin.currency.mora}
+                  - {type: echo, count: "0:9, 1:1"}
+                """, ITEMS);
+        var random = new Random(918);
+        int sum = 0;
+        for (int i = 0; i < 10_000; i++) {
+            var result = tables.roll("echo", random);
+            int count = result.getOrDefault(MORA, 0);
+            assertTrue(count >= 1);
+            sum += count;
+        }
+        assertEquals(1.0 / 0.9, sum / 10_000.0, 0.035);
+    }
+
+    @Test
+    void mutuallyRecursivePoolsMayCallEachOther() {
+        var tables = YamlLootTables.parse("""
+                left:
+                  - {type: genshin.currency.mora}
+                  - {type: right, count: "0:9, 1:1"}
+                right:
+                  - {type: genshin.avatar_up.heros_wit}
+                  - {type: left, count: "0:9, 1:1"}
+                """, ITEMS);
+        var random = new Random(919);
+        for (int i = 0; i < 1_000; i++) {
+            var result = tables.roll("left", random);
+            assertTrue(result.getOrDefault(MORA, 0) >= 1);
+            assertTrue(result.getOrDefault(MORA, 0) >= result.getOrDefault(WIT, 0));
+        }
+    }
+
+    @Test
+    void recursiveYamlAliasesAreAccepted() {
+        var tables = YamlLootTables.parse("""
+                echo: &self
+                  - {type: genshin.currency.mora}
+                  - {type: *self, count: "0:9, 1:1"}
+                """, ITEMS);
+        var random = new Random(920);
+        for (int i = 0; i < 1_000; i++) {
+            assertTrue(tables.roll("echo", random).getOrDefault(MORA, 0) >= 1);
+        }
+    }
+
+    @Test
+    void recursiveParameterizedPoolsAreAccepted() {
+        var tables = YamlLootTables.parse("""
+                echo<N>:
+                  - {type: genshin.currency.mora, count: "<N>"}
+                  - {type: "echo<1>", count: "0:9, 1:1"}
+                root: {type: "echo<2>"}
+                """, ITEMS);
+        var random = new Random(921);
+        for (int i = 0; i < 1_000; i++) {
+            assertTrue(tables.roll("root", random).getOrDefault(MORA, 0) >= 2);
+        }
+    }
+
+    @Test
+    void countHasNoArtificialHundredThousandCeiling() {
+        var tables = YamlLootTables.parse("""
+                plenty: {type: genshin.currency.mora, count: 100001}
+                """, ITEMS);
+        assertEquals(Map.of(MORA, 100001), tables.roll("plenty", new Random(922)));
+        var random = new Random(923);
+        assertEquals(Integer.MAX_VALUE,
+                LootCount.parse("2147483647").sample(random));
+        int value = LootCount.parse("2147483646;2147483647").sample(random);
+        assertTrue(value == 2147483646 || value == 2147483647);
+    }
+
+    @Test
     void countsUseExplicitRelativeWeights() {
         var distribution = LootCount.parse("2:586, 3:414");
         var random = new Random(71);

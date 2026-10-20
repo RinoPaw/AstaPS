@@ -160,15 +160,29 @@ public final class ArtifactResolver {
 
     private static LootCount.Spec property(String field, Object raw) {
         if (raw == null) return null;
-        if ("slot".equals(field) && raw instanceof String text) {
-            raw = switch (text) {
-                case "flower" -> 1;
-                case "plume" -> 2;
-                case "sands" -> 3;
-                case "goblet" -> 4;
-                case "circlet" -> 5;
-                default -> raw;
-            };
+        if ("slot".equals(field)) {
+            // Keep inclusive numeric ranges; individual slot names and weighted
+            // slot choices follow the same scalar/choice compiler as other fields.
+            if (raw instanceof String text && text.matches("[0-9]+[~;][0-9]+")) {
+                return LootCount.parse(text);
+            }
+            var choice = WeightedChoice.compile(raw, "artifact.slot", value -> {
+                String name = value.toString();
+                return switch (name) {
+                    case "flower" -> 1;
+                    case "plume" -> 2;
+                    case "sands" -> 3;
+                    case "goblet" -> 4;
+                    case "circlet" -> 5;
+                    default -> {
+                        if (!name.matches("[1-5]")) {
+                            throw new IllegalArgumentException("Unknown artifact slot: " + name);
+                        }
+                        yield Integer.parseInt(name);
+                    }
+                };
+            });
+            return choice::sample;
         }
         return LootCount.parse(raw);
     }

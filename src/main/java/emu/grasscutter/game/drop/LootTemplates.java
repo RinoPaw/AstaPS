@@ -205,11 +205,12 @@ final class LootTemplates {
         if (definition == null) {
             throw new IllegalArgumentException("Unknown loot template: " + reward);
         }
+        String arguments = invocation.group(2) == null ? "" : invocation.group(2);
         String invocationKey = invocation.group(1) + "<"
-                + invocation.group(2).replaceAll("\\s+", "") + ">";
+                + arguments.replaceAll("\\s+", "") + ">";
         // Resolve recursive calls lazily after the current instance is compiled.
         if (expanding.contains(invocationKey)) return prefix + invocationKey;
-        return instantiate(invocation.group(1), invocation.group(2), definition, depth);
+        return instantiate(invocation.group(1), arguments, definition, depth);
     }
 
     /** True if a qualified or local invocation names a declared template. */
@@ -232,7 +233,8 @@ final class LootTemplates {
         Matcher invocation = INVOCATION.matcher(local);
         if (invocation.matches()) {
             ResourceId.parse(prefix + invocation.group(1));
-            return prefix + invocation.group(1) + "<" + invocation.group(2).replaceAll("\\s+", "") + ">";
+            String arguments = invocation.group(2) == null ? "" : invocation.group(2);
+            return prefix + invocation.group(1) + "<" + arguments.replaceAll("\\s+", "") + ">";
         }
         return ResourceId.parse(prefix + local).toString();
     }

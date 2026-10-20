@@ -54,7 +54,8 @@ public final class CssRewards {
         if (!property.startsWith("--grant-")) {
             throw new IllegalArgumentException("Unknown reward property: " + property);
         }
-        String name = property.substring("--grant-".length()).replace("\\", "");
+        String name = io.sf.carte.doc.style.css.parser.ParseHelper.unescapeStringValue(
+                property.substring("--grant-".length()));
         if (!name.startsWith("genshin.") && !name.contains(".loot.")) {
             throw new IllegalArgumentException("Invalid reward resource property: " + property);
         }

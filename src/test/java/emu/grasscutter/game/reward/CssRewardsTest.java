@@ -88,6 +88,13 @@ class CssRewardsTest {
     }
 
     @Test
+    void hexEscapedCssIdentifiersResolveWithLibraryParser() {
+        var css = CssRewards.parse(
+                "chest { --grant-genshin\\\\2e currency\\\\2e mora: 4; }", items, loot);
+        assertEquals(Map.of(202, 4), css.resolve("chest", Map.of()).items());
+    }
+
+    @Test
     void obsoleteHyphenatedCssResourceNamesAreRejected() {
         assertThrows(IllegalArgumentException.class, () ->
                 CssRewards.parse("chest { --genshin-currency-mora: 1; }", items, loot));

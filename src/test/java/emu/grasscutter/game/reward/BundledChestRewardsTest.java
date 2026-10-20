@@ -301,7 +301,7 @@ class BundledChestRewardsTest {
     void nativeArtifactVariantsRemainResolvableWithSetProperties() throws Exception {
         String source = chestYaml();
         assertTrue(source.contains("reward: \"genshin.artifact.<set1>\""));
-        assertTrue(source.contains("chest_artifact_pair<set1, set2, rarity, substats>:"));
+        assertTrue(source.contains("chest_artifact<RARITY, SUBSTATS, SETS...>:"));
         assertEquals(20, java.util.regex.Pattern.compile("(?m)^chest_artifact_mix_[0-9]+:")
                 .matcher(source).results().count());
         var chosen = artifacts().compile("genshin.artifact.berserker",

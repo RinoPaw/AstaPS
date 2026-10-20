@@ -3,6 +3,16 @@
 Only `src/main/resources/rewards/rewards.css` and `loot.yaml` define bundled
 rewards. There are no curves or editable `config/rewards` copies.
 
+## No implicit implementation ceilings
+
+The DSL does not impose arbitrary limits on recursion depth, repeated reward
+execution, the number of loot tables or entries, template instances, or integer
+reward counts. Recursive named pools, parameterized templates, and YAML aliases
+are valid. Native protocol and Java numeric representations remain governing
+constraints where applicable. The underlying runtime can still exhaust memory
+or its call stack for nonterminating configurations; these risks do not silently
+change the DSL rules.
+
 ## Unified weighted expressions
 
 Every entry attribute can use an explicit relative-weight expression. The

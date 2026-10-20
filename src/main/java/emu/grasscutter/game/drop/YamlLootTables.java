@@ -25,7 +25,10 @@ public final class YamlLootTables {
         int resolve(String itemName);
     }
 
-    private record TypeTarget(Integer itemId, String table) {}
+    private record TypeTarget(Integer itemId, String table,
+                              ArtifactResolver.Selector artifact,
+                              WeightedChoice<Integer> grade,
+                              WeightedChoice<Integer> element) {}
 
     private record Entry(Integer rewardId, ArtifactResolver.Selector artifact,
                          WeightedChoice<Integer> grade, WeightedChoice<Integer> element,
@@ -168,20 +171,48 @@ public final class YamlLootTables {
     }
 
     private static TypeTarget typeTarget(String name, ItemResolver resolver,
-            Set<String> tableNames, String namespace, String location) {
-        if ("null".equals(name)) return new TypeTarget(null, null);
+            Set<String> tableNames, String namespace, String location,
+            Map<?, ?> properties, ArtifactResolver artifacts) {
+        if ("null".equals(name)) {
+            if (properties != null) {
+                throw new IllegalArgumentException(location + ": null reward cannot have attributes");
+            }
+            return new TypeTarget(null, null, null, null, null);
+        }
         String qualified = qualifiedTable(name, namespace);
         if (tableNames.contains(qualified)) {
+            if (properties != null) {
+                throw new IllegalArgumentException(location
+                        + ": reward table does not accept item attributes: " + name);
+            }
             if (resolver.resolve(name) > 0) {
                 throw new IllegalArgumentException(location + ": ambiguous item/table name: " + name);
             }
-            return new TypeTarget(null, qualified);
+            return new TypeTarget(null, qualified, null, null, null);
+        }
+        if (name.equals("genshin.avatar_ascension") && properties != null) {
+            return new TypeTarget(null, null, null, null,
+                    compileElements(properties, resolver, location));
+        }
+        if (name.startsWith("genshin.artifact.")) {
+            if (artifacts == null) {
+                throw new IllegalArgumentException(location + ": artifact resolver unavailable");
+            }
+            return new TypeTarget(null, null, artifacts.compile(name, properties), null, null);
+        }
+        if (properties != null && (name.startsWith("genshin.avatar_ascension.")
+                || name.startsWith("genshin.talent_up."))) {
+            return new TypeTarget(null, null, null,
+                    compileGrade(name, properties, resolver, location), null);
+        }
+        if (properties != null) {
+            throw new IllegalArgumentException(location + ": unsupported type attributes: " + name);
         }
         int id = resolver.resolve(name);
         if (id <= 0 && id != emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL) {
             throw new IllegalArgumentException(location + ": unknown type: " + name);
         }
-        return new TypeTarget(id, null);
+        return new TypeTarget(id, null, null, null, null);
     }
 
     private static void validateReferences(Map<String, Pool> pools) {
@@ -226,6 +257,16 @@ public final class YamlLootTables {
             if (table == null) table = instances.get(selected.table);
             if (table == null) throw new IllegalStateException("Unknown named loot table: " + selected.table);
             rollPool(table, count, random, reward, remaining, depth + 1);
+        } else if (selected.artifact != null) {
+            for (int i = 0; i < count; i++) {
+                reward.merge(selected.artifact.select(random), 1, Math::addExact);
+            }
+        } else if (selected.grade != null) {
+            reward.merge(selected.grade.sample(random), count, Math::addExact);
+        } else if (selected.element != null) {
+            for (int i = 0; i < count; i++) {
+                reward.merge(selected.element.sample(random), 1, Math::addExact);
+            }
         } else if (selected.itemId != null) {
             reward.merge(selected.itemId, count, Math::addExact);
         }
@@ -361,9 +402,13 @@ public final class YamlLootTables {
                             compiled, visiting, budget, at + ".type", depth + 1, tableNames, namespace);
                 } else if (target != null) {
                     if (!(target instanceof String reference) || reference.matches("[0-9]+")) {
-                        throw new IllegalArgumentException(at + ": reward must be a named item: " + target);
+                        throw new IllegalArgumentException(at + ": type must be a named item: " + target);
                     }
-if (reference.equals("genshin.avatar_ascension")
+                    if (useType) {
+                        typeChoice = WeightedChoice.compile(reference, at + ".type",
+                                candidate -> typeTarget(candidate.toString(), resolver,
+                                        tableNames, namespace, at, properties, artifacts));
+                    } else if (reference.equals("genshin.avatar_ascension")
                             && properties != null) {
                         element = compileElements(properties, resolver, at);
                     } else if (reference.startsWith("genshin.artifact.")) {
@@ -375,10 +420,6 @@ if (reference.equals("genshin.avatar_ascension")
                             && (reference.startsWith("genshin.avatar_ascension.")
                                 || reference.startsWith("genshin.talent_up."))) {
                         grade = compileGrade(reference, properties, resolver, at);
-                    } else if (useType) {
-                        typeChoice = WeightedChoice.compile(reference, at + ".type",
-                                candidate -> typeTarget(candidate.toString(), resolver,
-                                        tableNames, namespace, at));
                     } else {
                         int id = resolver.resolve(reference);
                         if (id <= 0 && id != emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL) {
@@ -387,7 +428,7 @@ if (reference.equals("genshin.avatar_ascension")
                         rewardId = id;
                     }
                 }
-                if (properties != null
+                if (properties != null && typeChoice == null
                         && artifact == null && grade == null && element == null) {
                     throw new IllegalArgumentException(at
                             + ": properties require an artifact or advancement-family reward");

@@ -708,6 +708,12 @@ class LootCountScopeTest {
                   set: "berserker:3, prayers_for_wisdom:1"
                   rarity: 3
                   substats: 1
+                artifact_copies:
+                  type: genshin.artifact
+                  set: "berserker:3, prayers_for_wisdom:1"
+                  rarity: 3
+                  substats: 1
+                  count: 2
                 gem:
                   type: genshin.avatar_ascension
                   element: "anemo:3, pyro:1"
@@ -725,6 +731,11 @@ class LootCountScopeTest {
             int artifact = loot.roll("artifact", random).keySet().iterator().next();
             artifacts[switch (artifact) { case 9101 -> 0; case 9102 -> 1; case 9205 -> 2;
                 default -> throw new AssertionError(artifact); }]++;
+            var repeated = loot.roll("artifact_copies", random);
+            assertEquals(2, repeated.values().stream().mapToInt(Integer::intValue).sum());
+            // All copies share one weighted set choice. Native slots reroll.
+            assertFalse(repeated.containsKey(9205)
+                    && (repeated.containsKey(9101) || repeated.containsKey(9102)));
             var gem = loot.roll("gem", random);
             assertEquals(1, gem.size());
             assertEquals(3, gem.values().iterator().next());

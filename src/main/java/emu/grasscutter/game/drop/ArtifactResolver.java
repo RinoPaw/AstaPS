@@ -39,6 +39,12 @@ public final class ArtifactResolver {
             this(variants, slot, rarity, substats, null);
         }
 
+        /** Hold the selected set fixed while rolling several artifact copies. */
+        public Selector bindSet(RandomGenerator random) {
+            return sets == null ? this
+                    : new Selector(sets.sample(random), slot, rarity, substats);
+        }
+
         public int select(RandomGenerator random) {
             // The set is chosen before its native slot/rarity/substat variants.
             // A circlet-only set therefore never offers unavailable slots.

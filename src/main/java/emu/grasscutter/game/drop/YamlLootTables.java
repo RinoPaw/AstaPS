@@ -303,8 +303,9 @@ public final class YamlLootTables {
             if (table == null) throw new IllegalStateException("Unknown named loot table: " + selected.table);
             rollPool(table, count, random, reward);
         } else if (selected.artifact != null) {
+            var artifact = selected.artifact.bindSet(random);
             for (int i = 0; i < count; i++) {
-                reward.merge(selected.artifact.select(random), 1, Math::addExact);
+                reward.merge(artifact.select(random), 1, Math::addExact);
             }
         } else if (selected.grade != null) {
             reward.merge(selected.grade.sample(random), count, Math::addExact);
@@ -601,9 +602,10 @@ public final class YamlLootTables {
         if (entry.nested != null) {
             rollPool(entry.nested, count, random, reward);
         } else if (entry.artifact != null) {
-            // Distinct artifact instances are rolled independently, even for count > 1.
+            // Select a set once; roll native pieces independently for each copy.
+            var artifact = entry.artifact.bindSet(random);
             for (int i = 0; i < count; i++) {
-                reward.merge(entry.artifact.select(random), 1, Math::addExact);
+                reward.merge(artifact.select(random), 1, Math::addExact);
             }
         } else if (entry.grade != null) {
             // A weighted rarity choice is made once per entry execution.

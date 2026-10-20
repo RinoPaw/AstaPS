@@ -123,6 +123,17 @@ class CssRewardsTest {
     }
 
     @Test
+    void malformedSelectorsReportOriginalSourceLocations() {
+        var error = assertThrows(IllegalArgumentException.class, () -> CssRewards.parse("""
+                chest { genshin.currency.mora: 1; }
+                chest[ { genshin.currency.primogem: 2; }
+                """, items, loot));
+        assertTrue(error.getMessage().contains("Invalid reward CSS:"));
+        assertTrue(error.getMessage().contains("2:"));
+        assertFalse(error.getMessage().contains("--genshin"));
+    }
+
+    @Test
     void obsoleteHyphenatedCssResourceNamesAreRejected() {
         assertThrows(IllegalArgumentException.class, () ->
                 CssRewards.parse("chest { --genshin-currency-mora: 1; }", items, loot));

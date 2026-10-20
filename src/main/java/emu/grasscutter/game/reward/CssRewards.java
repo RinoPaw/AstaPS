@@ -103,9 +103,19 @@ public final class CssRewards {
         try {
             if (!sheet.parseStyleSheet(new StringReader(translated.css()), CSSStyleSheet.COMMENTS_IGNORE)) {
                 var handler = sheet.getErrorHandler();
-                var details = handler instanceof io.sf.carte.doc.style.css.om.DefaultSheetErrorHandler errors
-                        ? errors.getSacErrors().stream().limit(8).map(e -> translated.location(e.getLineNumber(), e.getColumnNumber()) + " " + translated.display(e.getMessage())).toList()
-                        : handler;
+                String details;
+                if (handler instanceof io.sf.carte.doc.style.css.om.DefaultSheetErrorHandler errors) {
+                    var causes = new ArrayList<io.sf.carte.doc.style.css.nsac.CSSParseException>();
+                    if (errors.getSacErrors() != null) causes.addAll(errors.getSacErrors());
+                    if (errors.getRuleParseErrors() != null) {
+                        errors.getRuleParseErrors().forEach(error -> causes.add(error.getCause()));
+                    }
+                    details = causes.stream().limit(8).map(error ->
+                            translated.location(error.getLineNumber(), error.getColumnNumber())
+                                    + " " + translated.display(error.getMessage())).toList().toString();
+                } else {
+                    details = translated.display(String.valueOf(handler));
+                }
                 throw new IllegalArgumentException("Invalid reward CSS: " + details);
             }
         } catch (IOException ex) {

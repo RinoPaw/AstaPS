@@ -23,7 +23,9 @@ The source is historical server configuration, not a verified official-server lo
 
 | Source | What static checks can establish | Exact original parity |
 | --- | --- | --- |
-| World Boss | 48 `sourceType=34` identities × 25 source level roots (1–120). A test resolves and rolls all 1,200 mapped source entries. | **Partial.** Some gem probabilities are integer-rounded. Precision Clockwork's missing artifact subpools borrow Pyro Regisvine candidate weights. |
+| World Boss | 48 `sourceType=34` identities × 25 source level roots (1–120). Tests resolve and roll all 1,200 mapped source entries and independently expand
+  the historical native DropTable graph for fixed item IDs 101, 102, 105 and 202;
+  any CSS/source mismatch fails CI. | **Partial.** Some gem probabilities are integer-rounded. Precision Clockwork's missing artifact subpools borrow Pyro Regisvine candidate weights. |
 | Weekly Boss | 10 `sourceType=35` identities × 25 level roots. Uses dungeon/native reward flow, outside this CSS. | Outside CSS audit. |
 | Deep Abyss Baptist | 25 historical roots without a `sourceType`; deliberately left to the native fallback. | Outside configured CSS; inspect native fallback separately. |
 | Chest, cities 1–4 | Native combat, puzzle, Dragonspine and artifact roots; city/grade/level selector coverage and representative probabilities tested. | **Partial.** Empty puzzle tables use regional combat substitutes; original weapon/ore child tables may be empty. |

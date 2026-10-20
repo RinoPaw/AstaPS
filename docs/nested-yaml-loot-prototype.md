@@ -78,19 +78,19 @@ Each attribute uses the common weighted-expression parser.
 
 ```css
 boss[type="world"][tag="maguu_kenki"] {
-    BOSS_MATERIAL: marionette_core;
-    ELEMENT: [anemo, cryo];
+    --boss-material: "marionette_core";
+    --element: "[anemo, cryo]";
 }
 
 boss[type="world"][data-range-level-90-92] {
-    genshin.currency.mora: 5200;
-    genshin.experience.companionship: 45;
-    genshin.experience.character: 200;
-    genshin.avatar_ascension.<BOSS_MATERIAL>: "2:44, 3:56";
+    --grant-genshin\.currency\.mora: 5200;
+    --grant-genshin\.experience\.companionship: 45;
+    --grant-genshin\.experience\.character: 200;
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:44, 3:56";
 }
 
 boss[type="world"][tag="maguu_kenki"][data-range-level-50-54] {
-    astaps.loot.world_gem_two<3, <ELEMENT>[0], <ELEMENT>[1]>: "1:25, 2:75";
+    --grant-astaps\.loot\.world_gem_two\<3\,\<ELEMENT\>\[0\]\,\<ELEMENT\>\[1\]\>: "1:25, 2:75";
 }
 ```
 
@@ -161,7 +161,7 @@ world_gem_fragment<COUNT, ELEMENTS...>:
 
 ```css
 boss[type="world"][tag="anemo_hypostasis"][data-range-level-40-up] {
-    astaps.loot.world_gem_fragment<1, <ELEMENT>>: "3:88, 6:12";
+    --grant-astaps\.loot\.world_gem_fragment\<1\,\<ELEMENT\>\>: "3:88, 6:12";
 }
 ```
 

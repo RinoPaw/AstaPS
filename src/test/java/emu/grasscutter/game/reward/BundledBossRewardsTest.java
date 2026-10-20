@@ -19,6 +19,7 @@ final class BundledBossRewardsTest {
     void worldBossTemplatesCoverAllMappedIdentitiesWithoutInventingWeeklyDrops() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         String css = RewardConfiguration.readBundledCss();
+        css = css.replace("\\", "");
         assertTrue(yaml.contains("world_gem_two<COUNT, ELEMENTS...>:"));
         assertTrue(yaml.contains("type: genshin.avatar_ascension"));
         assertTrue(yaml.contains("world_gem_four<COUNT, ELEMENTS...>:"));
@@ -54,6 +55,7 @@ final class BundledBossRewardsTest {
     void bundledWorldAndWeeklyRulesLoadAndNativeFallbackIsPreserved() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         String stylesheet = RewardConfiguration.readBundledCss();
+        stylesheet = stylesheet.replace("\\", "");
         var ids = new HashMap<String, Integer>();
         var nextId = new AtomicInteger(3000000);
         var artifacts = new ArrayList<ArtifactResolver.Variant>();
@@ -129,7 +131,7 @@ final class BundledBossRewardsTest {
                         default -> "Materials";
                     });
                 });
-        Pattern.compile("BOSS_MATERIAL: ([a-z0-9_]+);")
+        Pattern.compile("--boss-material: \"([a-z0-9_]+)\";")
                 .matcher(stylesheet).results().map(match -> match.group(1)).distinct()
                 .forEach(name -> {
                     String canonical = "genshin.avatar_ascension." + name;
@@ -138,7 +140,7 @@ final class BundledBossRewardsTest {
                     categories.put(id, "Character Development Items");
                 });
         // Some Bosses expose several material variants in an array binding.
-        Pattern.compile("BOSS_MATERIAL:\\s*\\[([^]]+)\\]")
+        Pattern.compile("--boss-material:\\s*\"\\[([^]]+)\\]\"")
                 .matcher(stylesheet).results()
                 .flatMap(match -> java.util.Arrays.stream(match.group(1).split(",")))
                 .map(String::trim)

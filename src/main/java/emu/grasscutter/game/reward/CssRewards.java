@@ -42,18 +42,24 @@ public final class CssRewards {
         }
     }
 
-    // CSS presence selectors, e.g. [data-range-level-70-79] or
-    // [data-range-level-93-up]. The stylesheet supplies the intervals.
+    // Range membership is domain data represented by ordinary CSS attributes.
     private static final Pattern RANGE_MEMBERSHIP_ATTRIBUTE = Pattern.compile(
             "\\[\\s*(data-range-([a-zA-Z_][a-zA-Z0-9_-]*)-([0-9]+)-(up|[0-9]+))\\s*\\]");
-
-    // Dotted resource keys belong to the rewards dialect, while ph-css needs
-    // conventional CSS property identifiers. Encode declarations only; leave
-    // CSS selectors, values and the canonical resource IDs unchanged.
-    private static final Pattern RESOURCE_DECLARATION = Pattern.compile(
-            "(?m)(^|[;{}])(\\s*)(BOSS_MATERIAL|ELEMENT|getBossMaterial|[a-z][\\p{L}\\p{N}_.,<>\\[\\]\\s-]*)\\s*:");
     private static final Pattern BINDING = Pattern.compile(
             "<(BOSS_MATERIAL|ELEMENT)>(?:\\[([0-9]+)])?");
+
+    // The resource name is a CSS-escaped custom-property suffix.
+    // CSSOM handles the CSS grammar; removing identifier escapes recovers the domain path.
+    private static String resourceName(String property) {
+        if (!property.startsWith("--grant-")) {
+            throw new IllegalArgumentException("Unknown reward property: " + property);
+        }
+        String name = property.substring("--grant-".length()).replace("\\", "");
+        if (!name.startsWith("genshin.") && !name.contains(".loot.")) {
+            throw new IllegalArgumentException("Invalid reward resource property: " + property);
+        }
+        return name;
+    }
 
     private record RangeMembership(
             String syntheticAttribute, String sourceAttribute,
@@ -94,72 +100,45 @@ public final class CssRewards {
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
-        if (source.contains("${")) {
-            throw new IllegalArgumentException("Reward curves are no longer supported");
-        }
-        // Transform resource declarations into CSS-safe temporary properties.
-        // Every occurrence gets a distinct temporary key; the original key is
-        // recovered before resolving resource identities and cascade rules.
-        var originalProperties = new HashMap<String, String>();
-        var propertyMatcher = RESOURCE_DECLARATION.matcher(quoteBindings(
-                source.replaceAll("(?s)/\\*.*?\\*/", "")));
-        var propertyBuffer = new StringBuffer();
-        while (propertyMatcher.find()) {
-            String surrogate = "--resource-path-" + originalProperties.size();
-            originalProperties.put(surrogate, propertyMatcher.group(3));
-            propertyMatcher.appendReplacement(propertyBuffer, Matcher.quoteReplacement(
-                    propertyMatcher.group(1) + propertyMatcher.group(2) + surrogate + ":"));
-        }
-        propertyMatcher.appendTail(propertyBuffer);
-        // Preserve unquoted count ranges and distributions across CSS tokenization.
-        String normalized = propertyBuffer.toString().replaceAll(
-                "(--[\\p{L}\\p{N}_-]+\\s*:\\s*)([0-9]+)\\s*~\\s*([0-9]+)(\\s*;)",
-                "$1'$2~$3'$4");
-        normalized = normalized.replaceAll(
-                "(--[\\p{L}\\p{N}_-]+\\s*:\\s*)([0-9]+\\s*:[^;'\"{}]*)(\\s*;)",
-                "$1'$2'$3");
         var sheet = new CSSDOMImplementation().createStyleSheet(null, null);
         try {
-            if (!sheet.parseStyleSheet(new StringReader(normalized),
-                    CSSStyleSheet.COMMENTS_IGNORE)) {
+            if (!sheet.parseStyleSheet(new StringReader(source), CSSStyleSheet.COMMENTS_IGNORE)) {
                 throw new IllegalArgumentException("Invalid reward CSS");
             }
         } catch (IOException ex) {
-            throw new IllegalArgumentException("Failed to parse reward CSS", ex);
+            throw new IllegalArgumentException("Cannot parse reward CSS", ex);
         }
-
         var rules = new ArrayList<Rule>();
         var intervals = new java.util.LinkedHashMap<String, RangeMembership>();
-        int[] sourceOrder = {0};
+        int[] order = {0};
         for (var top : sheet.getCssRules()) {
             if (!(top instanceof StyleRule style)) {
-                throw new IllegalArgumentException("Unsupported top-level reward rule: " + top);
+                throw new IllegalArgumentException("Unsupported conditional CSS rule: " + top);
             }
-            collectStyle(style, null, rules, intervals, sourceOrder,
-                    originalProperties, items, loot);
+            collectStyle(style, null, rules, intervals, order, items, loot);
         }
         return new CssRewards(rules, List.copyOf(intervals.values()), loot, items);
     }
 
     private static void collectStyle(StyleRule style, SelectorList parent,
             List<Rule> rules, Map<String, RangeMembership> intervals, int[] sourceOrder,
-            Map<String, String> originalProperties, ItemIdRegistry items, YamlLootTables loot) {
+            ItemIdRegistry items, YamlLootTables loot) {
         // Use css4j's CSSOM selector tree directly, without serializing/reparsing it.
         SelectorList selectors = style.getSelectorList();
         if (parent != null) {
             selectors = selectors.replaceNested(parent);
         }
         collectDeclarations(style.getStyle(), selectors, rules, intervals,
-                sourceOrder, originalProperties, items, loot);
+                sourceOrder, items, loot);
         var nestedRules = style.getCssRules();
         if (nestedRules != null) {
             for (var nested : nestedRules) {
                 if (nested instanceof StyleRule child) {
                     collectStyle(child, selectors, rules, intervals, sourceOrder,
-                            originalProperties, items, loot);
+                            items, loot);
                 } else if (nested instanceof CSSNestedDeclarations continuation) {
                     collectDeclarations(continuation.getStyle(), selectors, rules,
-                            intervals, sourceOrder, originalProperties, items, loot);
+                            intervals, sourceOrder, items, loot);
                 } else {
                     throw new IllegalArgumentException("Unsupported conditional reward rule: " + nested);
                 }
@@ -170,7 +149,6 @@ public final class CssRewards {
     private static void collectDeclarations(org.w3c.dom.css.CSSStyleDeclaration declarations,
             SelectorList selectors, List<Rule> rules,
             Map<String, RangeMembership> intervals, int[] sourceOrder,
-            Map<String, String> originalProperties,
             ItemIdRegistry items, YamlLootTables loot) {
         if (declarations.getLength() == 0) return;
         var itemDeclarations = new ArrayList<ItemDeclaration>();
@@ -186,28 +164,23 @@ public final class CssRewards {
                     || (value.startsWith("'") && value.endsWith("'")))) {
                 value = value.substring(1, value.length() - 1);
             }
-            String original = originalProperties.getOrDefault(property, property);
-            if ("BOSS_MATERIAL".equals(original)) {
+            if ("--boss-material".equals(property)) {
                 bossMaterials = parseMaterialBinding(value);
-                continue;
-            }
-            if ("ELEMENT".equals(original)) {
+            } else if ("--element".equals(property)) {
                 elements = parseElementBinding(value);
-                continue;
-            }
-            if ("getBossMaterial".equals(original)) {
+            } else if ("--boss-material-count".equals(property)) {
                 bossMaterialCount = LootCount.parseRoll(value);
-                continue;
-            }
-            String compact = original.replaceAll("\\s+", "");
-            Integer fixedCount = value.matches("[0-9]+") ? Integer.valueOf(value) : null;
-            LootCount.Spec rangedCount = fixedCount == null ? LootCount.parseRoll(value) : null;
-            if (compact.matches("[a-z][a-z0-9_]*\\.loot\\..*")) {
-                String name = BINDING.matcher(compact).find() ? compact : loot.resolveName(compact);
-                lootDeclarations.add(new LootDeclaration(name, fixedCount, rangedCount));
             } else {
-                if (!BINDING.matcher(compact).find()) items.resolve(compact);
-                itemDeclarations.add(new ItemDeclaration(compact, fixedCount, rangedCount));
+                String name = resourceName(property);
+                Integer fixed = value.matches("[0-9]+") ? Integer.valueOf(value) : null;
+                LootCount.Spec rolled = fixed == null ? LootCount.parseRoll(value) : null;
+                if (name.matches("[a-z][a-z0-9_]*\\.loot\\..*")) {
+                    String resource = BINDING.matcher(name).find() ? name : loot.resolveName(name);
+                    lootDeclarations.add(new LootDeclaration(resource, fixed, rolled));
+                } else {
+                    if (!BINDING.matcher(name).find()) items.resolve(name);
+                    itemDeclarations.add(new ItemDeclaration(name, fixed, rolled));
+                }
             }
         }
         for (var selector : selectors) {
@@ -228,29 +201,6 @@ public final class CssRewards {
                     List.copyOf(lootDeclarations), bossMaterials,
                     bossMaterialCount, elements, sourceOrder[0]++));
         }
-    }
-
-    private static String quoteBindings(String source) {
-        var matcher = Pattern.compile(
-                "(?m)(^|[;{}])(\\s*)(BOSS_MATERIAL|ELEMENT)\\s*:\\s*([^;{}]+)").matcher(source);
-        var buffer = new StringBuffer();
-        while (matcher.find()) {
-            String value = matcher.group(4).trim();
-            if (value.length() >= 2
-                    && (value.startsWith("\"") && value.endsWith("\"")
-                        || value.startsWith("'") && value.endsWith("'"))) {
-                value = value.substring(1, value.length() - 1);
-            }
-            // Resource names contain no whitespace, quotes, or backslashes.
-            value = value.replaceAll("\\s+", "");
-            if (value.contains("\"") || value.contains("'") || value.contains("\\")) {
-                throw new IllegalArgumentException("Invalid reward binding: " + value);
-            }
-            matcher.appendReplacement(buffer, Matcher.quoteReplacement(
-                    matcher.group(1) + matcher.group(2) + matcher.group(3) + ": \"" + value + "\""));
-        }
-        matcher.appendTail(buffer);
-        return buffer.toString();
     }
 
     private static List<String> parseMaterialBinding(String value) {

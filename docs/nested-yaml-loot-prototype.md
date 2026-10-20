@@ -18,10 +18,10 @@ and `[data-range-level-93-up]` matches every integer level at least 93,
 without a fixed maximum. `[data-range-WR-6-9]` works the same way for world
 rank. The loader discovers the range attributes used in the stylesheet and
 computes their membership from the corresponding numeric source attributes.
-No numeric-range syntax is added to CSS itself. Selector matching and Level 4 specificity use css4j; ph-css parses declarations.
-CSS Nesting is supported, including the standard `&` nesting selector. The
-ph-css parser preserves nested blocks and css4j expands nested selectors;
-matching and specificity are handled by css4j rather than by a CSS regex.
+No numeric-range syntax is added to CSS itself. css4j parses declarations, nesting, selectors, and Selectors Level 4 specificity.
+CSS Nesting is supported, including the standard `&` nesting selector. css4j
+parses nested blocks and expands nested selectors. No separate CSS parser or
+selector whitelist is used.
 The reward language still interprets declaration values as item counts, ranges,
 and explicit weighted outcomes. The original `level` and
 `WR` attributes remain available for exact-value selectors.
@@ -123,6 +123,14 @@ and the implicit CSS `<ELEMENT>` pack call are rejected.
 blossom selectors use `WR`, supplied by `rollBlossom` for world ranks 0–9.
 
 ## Counts and independent grants
+
+All reward declarations use standard CSS custom-property identifiers.
+`--grant-genshin\\.currency\\.mora: 240;` grants 240 Mora;
+`--grant-astaps\\.loot\\.currency: 1;` executes a named loot pool.
+The `--element`, `--boss-material`, and `--boss-material-count`
+properties carry reward-domain bindings. Resource punctuation is CSS-escaped
+within property names, following CSS identifier rules. Legacy dotted CSS
+property declarations are invalid and have no compatibility parser.
 
 CSS counts accept integers, inclusive ranges (`2~3`), or quoted relative
 weights (`"2:4, 3:5"`). The latter awards two with probability 4/9 and three

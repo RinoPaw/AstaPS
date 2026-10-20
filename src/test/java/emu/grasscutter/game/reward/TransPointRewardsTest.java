@@ -47,7 +47,7 @@ final class TransPointRewardsTest {
                 Map.entry(104013, "Mystic Enhancement Ore"),
                 Map.entry(101692, "Three Realms Item")));
         var ids = new ItemIdRegistry(names);
-        var loot = YamlLootTables.parse(read("/rewards/loot.yaml").split("# Historical Trounce Boss rewards", 2)[0], ids::resolve,
+        var loot = YamlLootTables.parse(read("/rewards/loot.yaml").split("# 2. World Boss artifacts", 2)[0], ids::resolve,
                 BundledChestRewardsTest.artifacts());
         var css = CssRewards.parse(read("/rewards/rewards.css").split(java.util.regex.Pattern.quote("/* World Boss rewards:"), 2)[0], ids, loot);
         var standard = Map.of(102, 50, 201, 5);

@@ -70,7 +70,7 @@ class BundledChestRewardsTest {
     }
 
     private static String chestYaml() throws Exception {
-        return resource("/rewards/loot.yaml").split("# Historical Trounce Boss rewards", 2)[0];
+        return resource("/rewards/loot.yaml").split("# 2. World Boss artifacts", 2)[0];
     }
 
     private static String chestCss() throws Exception {

@@ -30,7 +30,7 @@ public final class YamlLootTables {
 
     private record Entry(Integer rewardId, ArtifactResolver.Selector artifact,
                          WeightedChoice<Integer> grade, WeightedChoice<Integer> element,
-                         WeightedChoice<TypeTarget> typeChoice, String tableReference,
+                         WeightedChoice<TypeTarget> typeChoice,
                          Pool nested, LootCount.Spec count, BigDecimal weight) {}
 
     /**
@@ -54,15 +54,8 @@ public final class YamlLootTables {
                     + ": advancement properties require a rarity or a rarity distribution");
         }
         Object rarity = props.get("rarity");
-        String choice;
-        if (rarity instanceof Integer fixedGrade) {
-            choice = fixedGrade + ":1";
-        } else if (rarity instanceof String expression) {
-            choice = expression;
-        } else {
-            throw new IllegalArgumentException(location + ": invalid rarity: " + rarity);
-        }
-        return WeightedChoice.parse(choice, location + ".rarity", name -> {
+        return WeightedChoice.compile(rarity, location + ".rarity", raw -> {
+            String name = raw.toString();
             if (!name.matches("[0-9]+")) {
                 throw new IllegalArgumentException(location + ": invalid rarity: " + name);
             }
@@ -90,7 +83,8 @@ public final class YamlLootTables {
             throw new IllegalArgumentException(location
                     + ": elemental ascension gems require quoted element odds and integer rarity 2..5");
         }
-        return WeightedChoice.parse(choice, location + ".element", element -> {
+        return WeightedChoice.compile(choice, location + ".element", raw -> {
+            String element = raw.toString();
             if (!List.of("anemo", "geo", "electro", "dendro",
                     "hydro", "pyro", "cryo").contains(element)) {
                 throw new IllegalArgumentException(location + ": invalid element: " + element);
@@ -145,9 +139,6 @@ public final class YamlLootTables {
         }
         for (Entry entry : pool.entries) {
             if (entry.nested != null) checkPool(entry.nested, pools, active, visited);
-            if (entry.tableReference != null) {
-                checkPool(requireTable(pools, entry.tableReference), pools, active, visited);
-            }
             if (entry.typeChoice != null) {
                 for (TypeTarget candidate : entry.typeChoice.candidates()) {
                     if (candidate.table != null) {
@@ -178,7 +169,7 @@ public final class YamlLootTables {
         }
     }
 
-    private record Pool(boolean weighted, List<Entry> entries, double totalWeight) {}
+    private record Pool(List<Entry> entries, WeightedChoice<Entry> weightedChoice) {}
 
     private static final int MAX_DEPTH = 64;
     private static final int MAX_TABLES = 12_000;
@@ -299,7 +290,6 @@ public final class YamlLootTables {
                 WeightedChoice<Integer> grade = null;
                 WeightedChoice<Integer> element = null;
                 WeightedChoice<TypeTarget> typeChoice = null;
-                String tableReference = null;
                 Pool nested = null;
                 if (target instanceof List<?>) {
                     nested = parseList(target, resolver, artifacts, compiled, visiting, budget,
@@ -313,12 +303,7 @@ public final class YamlLootTables {
                     if (!(target instanceof String reference) || reference.matches("[0-9]+")) {
                         throw new IllegalArgumentException(at + ": reward must be a named item: " + target);
                     }
-                    if (useType && reference.contains(":")) {
-                        typeChoice = WeightedChoice.parse(reference, at + ".type",
-                                candidate -> typeTarget(candidate, resolver, tableNames, namespace, at));
-                    } else if (useType && tableNames.contains(qualifiedTable(reference, namespace))) {
-                        tableReference = qualifiedTable(reference, namespace);
-                    } else if (reference.equals("genshin.avatar_ascension")
+if (reference.equals("genshin.avatar_ascension")
                             && fields.containsKey("properties")) {
                         element = compileElements(fields.get("properties"), resolver, at);
                     } else if (reference.startsWith("genshin.artifact.")) {
@@ -330,6 +315,10 @@ public final class YamlLootTables {
                             && (reference.startsWith("genshin.avatar_ascension.")
                                 || reference.startsWith("genshin.talent_up."))) {
                         grade = compileGrade(reference, fields.get("properties"), resolver, at);
+                    } else if (useType) {
+                        typeChoice = WeightedChoice.compile(reference, at + ".type",
+                                candidate -> typeTarget(candidate.toString(), resolver,
+                                        tableNames, namespace, at));
                     } else {
                         int id = resolver.resolve(reference);
                         if (id <= 0 && id != emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL) {
@@ -358,17 +347,15 @@ public final class YamlLootTables {
                     hasWeight = true;
                 } else hasNull = true;
                 entries.add(new Entry(rewardId, artifact, grade, element, typeChoice,
-                        tableReference, nested, count, weight));
+                        nested, count, weight));
             }
             if (hasWeight && hasNull) {
                 throw new IllegalArgumentException(location + ": cannot mix null and numeric weights");
             }
-            double total = 0;
-            if (hasWeight) {
-                for (Entry e : entries) total += e.weight.doubleValue();
-                if (total <= 0) throw new IllegalArgumentException(location + ": all weights are zero");
-            }
-            Pool pool = new Pool(hasWeight, List.copyOf(entries), total);
+            WeightedChoice<Entry> choice = hasWeight
+                    ? WeightedChoice.of(entries, entries.stream().map(Entry::weight).toList(), location)
+                    : null;
+            Pool pool = new Pool(List.copyOf(entries), choice);
             compiled.put(raw, pool);
             return pool;
         } finally {
@@ -392,14 +379,8 @@ public final class YamlLootTables {
         if (depth > MAX_DEPTH) throw new IllegalStateException("Loot nesting exceeds " + MAX_DEPTH + " levels");
         for (int n = 0; n < times; n++) {
             if (--remaining[0] < 0) throw new IllegalStateException("Loot evaluation budget exceeded");
-            if (pool.weighted) {
-                double ticket = random.nextDouble(pool.totalWeight);
-                Entry selected = null;
-                for (Entry e : pool.entries) {
-                    ticket -= e.weight.doubleValue();
-                    if (ticket < 0) { selected = e; break; }
-                }
-                if (selected != null) rollEntry(selected, random, reward, remaining, depth);
+            if (pool.weightedChoice != null) {
+                rollEntry(pool.weightedChoice.sample(random), random, reward, remaining, depth);
             } else {
                 for (Entry e : pool.entries) rollEntry(e, random, reward, remaining, depth);
             }
@@ -429,9 +410,6 @@ public final class YamlLootTables {
             }
         } else if (entry.typeChoice != null) {
             emitType(entry.typeChoice.sample(random), count, random, reward, remaining, depth);
-        } else if (entry.tableReference != null) {
-            emitType(new TypeTarget(null, entry.tableReference),
-                    count, random, reward, remaining, depth);
         } else if (entry.rewardId != null) {
             reward.merge(entry.rewardId, count, Math::addExact);
         }

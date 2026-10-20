@@ -21,7 +21,7 @@ class RewardConfigurationTest {
         java.nio.file.Files.writeString(directory.resolve("b-not-css.txt"), "ignored");
         var subdirectory = java.nio.file.Files.createDirectory(directory.resolve("nested"));
         java.nio.file.Files.writeString(subdirectory.resolve("inner.css"), "ignored");
-        assertEquals("/* first */\\n/* last */",
+        assertEquals("/* first */\n/* last */",
                 RewardConfiguration.readCssDirectory(marker.toUri().toURL()));
     }
 
@@ -42,7 +42,7 @@ class RewardConfigurationTest {
             }
         }
         var marker = new java.net.URL("jar:" + jar.toUri().toURL() + "!/rewards/loot.yaml");
-        assertEquals("/* first */\\n/* last */",
+        assertEquals("/* first */\n/* last */",
                 RewardConfiguration.readCssDirectory(marker));
     }
 

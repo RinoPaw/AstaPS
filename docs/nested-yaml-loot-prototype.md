@@ -1,7 +1,12 @@
 # Reward configuration
 
-Only `src/main/resources/rewards/rewards.css` and `loot.yaml` define bundled
-rewards. There are no curves or editable `config/rewards` copies.
+Bundled rewards live in `src/main/resources/rewards/`: the `loot.yaml` pool
+definitions and every `.css` file directly in the same directory. The loader
+discovers all CSS files automatically from the classpath, including packaged
+JAR resources, and combines them in filename order before parsing. Adding a
+new CSS file needs no registration or changes to a file-count constant.
+Rule specificity and source order still decide overrides. There are no
+editable `config/rewards` copies.
 
 ## No implicit implementation ceilings
 

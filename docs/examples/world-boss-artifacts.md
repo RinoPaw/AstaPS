@@ -1,6 +1,6 @@
 # World Boss artifact configuration
 
-The final section of `src/main/resources/rewards/rewards.css` now configures
+The bundled `src/main/resources/rewards/06-boss-artifacts.css` configures
 artifacts for 48 world Boss identities, using six parameterized templates and one fixed pool in
 `src/main/resources/rewards/loot.yaml`. The obsolete two-Boss example files
 have been removed; the bundled resources are the configuration to inspect.

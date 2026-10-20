@@ -790,4 +790,86 @@ class LootCountScopeTest {
                 bad: {type: genshin.avatar_ascension, element: anemo, rarity: 1}
                 """, nativeItems, nativeArtifacts));
     }
+
+    @Test
+    void fiveStarArtifactTemplatesPreserveNormalAndSpecialNativeDistributions() {
+        var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
+        for (int set = 1; set <= 2; set++) {
+            String name = set == 1 ? "gladiators_finale" : "wanderers_troupe";
+            for (int slot = 1; slot <= 5; slot++) {
+                for (int substats : new int[]{3, 4}) {
+                    variants.add(new ArtifactResolver.Variant(
+                            set * 100000 + slot * 10 + substats, name, slot, 5, substats));
+                }
+            }
+        }
+        for (int substats : new int[]{0, 2, 4}) {
+            variants.add(new ArtifactResolver.Variant(
+                    300020 + substats, "instructor", 2, 5, substats));
+        }
+        for (int substats : new int[]{0, 1, 3}) {
+            variants.add(new ArtifactResolver.Variant(
+                    300040 + substats, "instructor", 4, 5, substats));
+        }
+        var tables = YamlLootTables.parse("""
+                standard<SETS...>:
+                  - type: genshin.artifact
+                    set: "<SETS...>:1"
+                    rarity: 5
+                    substats: "3:66, 4:34"
+                plume_goblet<SET, PLUME_SUBSTATS, GOBLET_SUBSTATS>:
+                  - type: genshin.artifact
+                    set: <SET>
+                    slot: plume
+                    rarity: 5
+                    substats: <PLUME_SUBSTATS>
+                    weight: 17
+                  - type: genshin.artifact
+                    set: <SET>
+                    slot: goblet
+                    rarity: 5
+                    substats: <GOBLET_SUBSTATS>
+                    weight: 33
+                piece<SET, SLOT, SUBSTATS>:
+                  - type: genshin.artifact
+                    set: <SET>
+                    slot: <SLOT>
+                    rarity: 5
+                    substats: <SUBSTATS>
+                normal: {type: "standard<gladiators_finale,wanderers_troupe>"}
+                zero: {type: "plume_goblet<instructor,0,0>"}
+                special: {type: "plume_goblet<instructor,4,3>"}
+                goblet: {type: "piece<instructor,goblet,1>"}
+                """, ITEMS, new ArtifactResolver(variants));
+        var random = new Random(538);
+        int[] selectedSets = new int[2];
+        int[][] slots = new int[2][5];
+        int zeroPlumes = 0, specialPlumes = 0;
+        for (int i = 0; i < 20_000; i++) {
+            int ordinary = tables.roll("normal", random).keySet().iterator().next();
+            int set = ordinary / 100000 - 1;
+            assertTrue(set == 0 || set == 1);
+            int slot = (ordinary % 100000) / 10;
+            int substats = ordinary % 10;
+            assertTrue(slot >= 1 && slot <= 5);
+            assertTrue(substats == 3 || substats == 4);
+            selectedSets[set]++;
+            slots[set][slot - 1]++;
+            int zero = tables.roll("zero", random).keySet().iterator().next();
+            assertTrue(zero == 300020 || zero == 300040);
+            if (zero == 300020) zeroPlumes++;
+            int special = tables.roll("special", random).keySet().iterator().next();
+            assertTrue(special == 300024 || special == 300043);
+            if (special == 300024) specialPlumes++;
+            assertEquals(Map.of(300041, 1), tables.roll("goblet", random));
+        }
+        for (int set = 0; set < 2; set++) {
+            assertEquals(0.5, selectedSets[set] / 20_000.0, 0.025);
+            for (int slot : slots[set]) {
+                assertEquals(0.2, slot / (double) selectedSets[set], 0.03);
+            }
+        }
+        assertEquals(0.34, zeroPlumes / 20_000.0, 0.025);
+        assertEquals(0.34, specialPlumes / 20_000.0, 0.025);
+    }
 }

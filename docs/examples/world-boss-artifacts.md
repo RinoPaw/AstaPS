@@ -1,7 +1,7 @@
 # World Boss artifact configuration
 
 The final section of `src/main/resources/rewards/rewards.css` now configures
-artifacts for 48 world Boss identities, using twelve generic definitions in
+artifacts for 48 world Boss identities, using seven generic definitions in
 `src/main/resources/rewards/loot.yaml`. The obsolete two-Boss example files
 have been removed; the bundled resources are the configuration to inspect.
 
@@ -11,16 +11,17 @@ have been removed; the bundled resources are the configuration to inspect.
 | --- | ---: | ---: |
 | 1 star | 1 | 3 |
 | 2 stars | 1 | 3 |
-| 3 stars | 2 | 7 |
-| 4 stars | 2 | 6 |
-| 5 stars, including special native rows | 6 | 6 |
-| Total | 12 | 25 |
+| 3 stars | 1 | 7 |
+| 4 stars | 1 | 6 |
+| 5 stars, including special native rows | 3 | 6 |
+| Total | 7 | 25 |
 
-Definitions use the existing `name<set1, set2>` grammar and quoted
-`genshin.artifact.${set1}` interpolation. Parameters replace set identities
-only. Candidate probabilities, slot choices, rarities, and initial substat
-counts are preserved. Every artifact explicitly specifies its properties;
-no uniform default replaces a native 66%/34% distribution.
+Definitions use structured `genshin.artifact` entries. Ordinary one- to
+five-star pools select from `<SETS...>`, inferring available native slots.
+Special five-star rows use a plume/goblet weighted pool (17:33, also 34:66),
+with substat counts attached to each slot; a separate single-piece template
+covers fixed-slot rows. Candidate probabilities, rarities and initial substat
+counts remain unchanged.
 
 The 48 complete Boss programs form nine groups. CSS has 101 rules, with
 Boss tags grouped when their complete declarations agree and level ranges

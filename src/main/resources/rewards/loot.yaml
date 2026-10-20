@@ -256,19 +256,36 @@ world_artifact_4star<SETS...>:
     rarity: 4
     substats: "2:66, 3:34"
 
-world_artifact_5star_1<set1, set2>:
-  - {type: genshin.artifact, set: <set1>, slot: "1~5", rarity: 5, substats: "3:66, 4:34"}: 1
-  - {type: genshin.artifact, set: <set2>, slot: "1~5", rarity: 5, substats: "3:66, 4:34"}: 1
+# Ordinary five-star sets choose a set and an available native slot.
+world_artifact_5star<SETS...>:
+  - type: genshin.artifact
+    set: "<SETS...>:1"
+    rarity: 5
+    substats: "3:66, 4:34"
 
-world_artifact_5star_2<set1>:
-  - {type: genshin.artifact, set: <set1>, slot: "2:34, 4:66", rarity: 5, substats: 0}
+# Special native rows link plume/goblet choice with initial substats.
+# 17:33 is equivalent to the 34:66 zero-substat variant.
+world_artifact_5star_plume_goblet<SET, PLUME_SUBSTATS, GOBLET_SUBSTATS>:
+  - type: genshin.artifact
+    set: <SET>
+    slot: plume
+    rarity: 5
+    substats: <PLUME_SUBSTATS>
+    weight: 17
+  - type: genshin.artifact
+    set: <SET>
+    slot: goblet
+    rarity: 5
+    substats: <GOBLET_SUBSTATS>
+    weight: 33
 
-world_artifact_5star_special<set1, plume_substats, goblet_substats>:
-  - {type: genshin.artifact, set: <set1>, slot: plume, rarity: 5, substats: <plume_substats>}: 17
-  - {type: genshin.artifact, set: <set1>, slot: goblet, rarity: 5, substats: <goblet_substats>}: 33
-
-world_artifact_5star_goblet<set1, substats>:
-  - {type: genshin.artifact, set: <set1>, slot: goblet, rarity: 5, substats: <substats>}
+# One explicitly fixed native piece.
+world_artifact_5star_piece<SET, SLOT, SUBSTATS>:
+  - type: genshin.artifact
+    set: <SET>
+    slot: <SLOT>
+    rarity: 5
+    substats: <SUBSTATS>
 
 # =============================================================================
 # 3. World Boss ascension gems

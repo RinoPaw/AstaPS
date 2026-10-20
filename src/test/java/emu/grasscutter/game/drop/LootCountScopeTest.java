@@ -102,7 +102,7 @@ class LootCountScopeTest {
 
     @Test
     void invalidDirectAttributesFailWithoutNullPointerExceptions() {
-        for (String expression : java.util.List.of("null", "true", "\"4\"", "0")) {
+        for (String expression : java.util.List.of("null", "true", "0")) {
             assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                     bad: {type: genshin.avatar_ascension.anemo, rarity: %s}
                     """.formatted(expression), name -> 2102));

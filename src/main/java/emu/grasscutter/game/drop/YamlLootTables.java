@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.random.RandomGenerator;
-import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
 /**
@@ -144,6 +143,22 @@ public final class YamlLootTables {
         return merged.isEmpty() ? null : merged;
     }
 
+    /**
+     * A YAML single-key mapping may be a weighted branch whose key is an
+     * entire entry or sequence. Convert it to the same pool entry model.
+     */
+    private static Map<?, ?> weightedBranch(Map<?, ?> value) {
+        if (value.size() != 1 || value.containsKey("type") || value.containsKey("reward")) {
+            return value;
+        }
+        var only = value.entrySet().iterator().next();
+        if (!(only.getValue() instanceof Number)) return value;
+        var result = new LinkedHashMap<String, Object>();
+        result.put("type", only.getKey());
+        result.put("weight", only.getValue());
+        return result;
+    }
+
     private static String qualifiedTable(String name, String namespace) {
         return name.startsWith(namespace + ".loot.") ? name : namespace + ".loot." + name;
     }
@@ -263,7 +278,7 @@ public final class YamlLootTables {
                 .setMaxAliasesForCollections(100_000)
                 .setCodePointLimit(3_000_000)
                 .build();
-        Object document = new Load(settings).loadFromString(yaml);
+        Object document = LootYamlSyntax.parse(yaml, settings);
         if (!(document instanceof Map<?, ?> raw)) {
             throw new IllegalArgumentException("Loot YAML root must be a mapping of named lists");
         }
@@ -318,9 +333,10 @@ public final class YamlLootTables {
             boolean hasWeight = false, hasNull = false;
             for (int i = 0; i < list.size(); i++) {
                 String at = location + "[" + i + "]";
-                if (!(list.get(i) instanceof Map<?, ?> fields)) {
-                    throw new IllegalArgumentException(at + ": expected {type, count?}");
+                if (!(list.get(i) instanceof Map<?, ?> mapping)) {
+                    throw new IllegalArgumentException(at + ": expected {type, count?} or weighted branch");
                 }
+                Map<?, ?> fields = weightedBranch(mapping);
                 // Unknown non-core fields are typed attributes. Their owning
                 // item compiler validates the names and candidate values.
                 if (fields.containsKey("reward") == fields.containsKey("type")) {

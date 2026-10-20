@@ -54,12 +54,14 @@ final class LootProbability {
         if (text.contains(":") || text.contains(",")) {
             var counts = WeightedChoice.parse(text, "count", Integer::parseInt);
             var branches = counts.candidates().stream()
-                    .map(count -> (Law) (children, bound) -> children.apply(child).power(count)).toList();
+                    .map(count -> count == 0 ? empty()
+                            : (Law) (children, bound) -> children.apply(child).power(count)).toList();
             return choice(branches, counts.weights());
         }
         if (text.contains("~") || text.contains(";")) {
             String[] range = text.split("[~;]", -1);
             int low = Integer.parseInt(range[0]), high = Integer.parseInt(range[1]);
+            if (high == 0) return empty();
             return (children, bound) -> {
                 Poly p = children.apply(child);
                 return p.power(low).multiply(p.powerSum((long) high - low + 1))
@@ -69,6 +71,7 @@ final class LootProbability {
         BigDecimal value = new BigDecimal(text);
         int low = value.intValue();
         BigDecimal fraction = value.subtract(BigDecimal.valueOf(low));
+        if (value.signum() == 0) return empty();
         return (children, bound) -> {
             Poly p = children.apply(child);
             Poly base = p.power(low);

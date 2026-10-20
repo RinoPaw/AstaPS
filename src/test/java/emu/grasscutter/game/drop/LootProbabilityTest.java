@@ -78,6 +78,18 @@ class LootProbabilityTest {
                 () -> parse("leaf: {type: coin}\nroot: {type: leaf, count: '0;100'}"));
     }
 
+    @Test void zeroCountLawsNeverReadAnUnreachableChild() {
+        var child = new LootRecursionSafety.Graph.Node("unreachable");
+        for (String count : List.of("0", "0.0", "0;0", "0:1")) {
+            var result = LootProbability.repeat(child, count).evaluate(ignored -> {
+                fail("Zero executions must not evaluate a child: " + count);
+                return null;
+            }, 100);
+            assertEquals(0, result.tail().signum());
+            assertEquals(0, BigDecimal.ONE.compareTo(result.coefficients[0]));
+        }
+    }
+
     @Test void zeroCallsAndItemQuantitiesDoNotCreatePoolNodes() {
         var tables = parse("a: {type: a, count: 0}\ncoin: {reward: coin, count: 2147483647}");
         assertEquals(Map.of(), tables.roll("a", new Random(1)));

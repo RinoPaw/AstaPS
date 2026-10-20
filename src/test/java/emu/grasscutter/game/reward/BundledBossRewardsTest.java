@@ -70,7 +70,7 @@ final class BundledBossRewardsTest {
         Pattern.compile("(?m)^\\s*set:\\s*(.+)$")
                 .matcher(yaml).results()
                 .flatMap(match -> java.util.Arrays.stream(match.group(1)
-                        .replace("\\"", "").split(",")))
+                        .replace(Character.toString(34), "").split(",")))
                 .map(String::trim)
                 .map(value -> value.split(":", 2)[0])
                 .filter(name -> name.matches("[a-z0-9_]+"))

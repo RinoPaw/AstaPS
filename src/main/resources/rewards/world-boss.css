@@ -294,7 +294,7 @@ boss[type="world"][tag="undying_replicant"] {
     --element: "pyro";
 }
 
-/* 通用等级奖励：摩拉、经验、材料数量。 */
+/* 通用等级奖励：摩拉、经验、材料数量。突破材料权重保留原始小数精度。 */
 
 boss[type="world"] {
     --grant-genshin\.experience\.adventure: 200;
@@ -304,140 +304,140 @@ boss[type="world"][data-range-level-1-4] {
     --grant-genshin\.currency\.mora: 1825;
     --grant-genshin\.experience\.companionship: 15;
     --grant-genshin\.experience\.character: 100;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:66, 2:34";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:6614, 2:3386";
 }
 
 boss[type="world"][data-range-level-5-9] {
     --grant-genshin\.currency\.mora: 2100;
     --grant-genshin\.experience\.companionship: 20;
     --grant-genshin\.experience\.character: 104;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:57, 2:43";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:5711, 2:4289";
 }
 
 boss[type="world"][data-range-level-10-14] {
     --grant-genshin\.currency\.mora: 2375;
     --grant-genshin\.experience\.companionship: 20;
     --grant-genshin\.experience\.character: 110;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:46, 2:54";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:4583, 2:5417";
 }
 
 boss[type="world"][data-range-level-15-19] {
     --grant-genshin\.currency\.mora: 2575;
     --grant-genshin\.experience\.companionship: 25;
     --grant-genshin\.experience\.character: 116;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:35, 2:65";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:3455, 2:6545";
 }
 
 boss[type="world"][data-range-level-20-24] {
     --grant-genshin\.currency\.mora: 2825;
     --grant-genshin\.experience\.companionship: 25;
     --grant-genshin\.experience\.character: 121;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:23, 2:77";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:2327, 2:7673";
 }
 
 boss[type="world"][data-range-level-25-29] {
     --grant-genshin\.currency\.mora: 3050;
     --grant-genshin\.experience\.companionship: 25;
     --grant-genshin\.experience\.character: 127;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:12, 2:88";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:1199, 2:8801";
 }
 
 boss[type="world"][data-range-level-30-34] {
     --grant-genshin\.currency\.mora: 3300;
     --grant-genshin\.experience\.companionship: 30;
     --grant-genshin\.experience\.character: 133;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:48, 2:52";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:4782, 2:5218";
 }
 
 boss[type="world"][data-range-level-35-39] {
     --grant-genshin\.currency\.mora: 3450;
     --grant-genshin\.experience\.companionship: 30;
     --grant-genshin\.experience\.character: 138;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:39, 2:61";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:392, 2:608";
 }
 
 boss[type="world"][data-range-level-40-44] {
     --grant-genshin\.currency\.mora: 3650;
     --grant-genshin\.experience\.companionship: 30;
     --grant-genshin\.experience\.character: 144;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:31, 2:69";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:3059, 2:6941";
 }
 
 boss[type="world"][data-range-level-45-49] {
     --grant-genshin\.currency\.mora: 3725;
     --grant-genshin\.experience\.companionship: 30;
     --grant-genshin\.experience\.character: 149;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:22, 2:78";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:2197, 2:7803";
 }
 
 boss[type="world"][data-range-level-50-54] {
     --grant-genshin\.currency\.mora: 3850;
     --grant-genshin\.experience\.companionship: 35;
     --grant-genshin\.experience\.character: 155;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:13, 2:87";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:1336, 2:8664";
 }
 
 boss[type="world"][data-range-level-55-59] {
     --grant-genshin\.currency\.mora: 3975;
     --grant-genshin\.experience\.companionship: 35;
     --grant-genshin\.experience\.character: 161;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:5, 2:95";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:474, 2:9526";
 }
 
 boss[type="world"][data-range-level-60-64] {
     --grant-genshin\.currency\.mora: 4125;
     --grant-genshin\.experience\.companionship: 35;
     --grant-genshin\.experience\.character: 166;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:96, 3:4";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:9613, 3:387";
 }
 
 boss[type="world"][data-range-level-65-69] {
     --grant-genshin\.currency\.mora: 4325;
     --grant-genshin\.experience\.companionship: 35;
     --grant-genshin\.experience\.character: 172;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:88, 3:12";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:8752, 3:1248";
 }
 
 boss[type="world"][data-range-level-70-74] {
     --grant-genshin\.currency\.mora: 4450;
     --grant-genshin\.experience\.companionship: 40;
     --grant-genshin\.experience\.character: 178;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:79, 3:21";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:789, 3:211";
 }
 
 boss[type="world"][data-range-level-75-79] {
     --grant-genshin\.currency\.mora: 4600;
     --grant-genshin\.experience\.companionship: 40;
     --grant-genshin\.experience\.character: 183;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:70, 3:30";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:7029, 3:2971";
 }
 
 boss[type="world"][data-range-level-80-84] {
     --grant-genshin\.currency\.mora: 4725;
     --grant-genshin\.experience\.companionship: 40;
     --grant-genshin\.experience\.character: 189;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:62, 3:38";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:6167, 3:3833";
 }
 
 boss[type="world"][data-range-level-85-89] {
     --grant-genshin\.currency\.mora: 4850;
     --grant-genshin\.experience\.companionship: 40;
     --grant-genshin\.experience\.character: 194;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:53, 3:47";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:5306, 3:4694";
 }
 
 boss[type="world"][data-range-level-90-92] {
     --grant-genshin\.currency\.mora: 5200;
     --grant-genshin\.experience\.companionship: 45;
     --grant-genshin\.experience\.character: 200;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:44, 3:56";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:4444, 3:5556";
 }
 
 boss[type="world"][data-range-level-93-up] {
     --grant-genshin\.currency\.mora: 6000;
     --grant-genshin\.experience\.companionship: 45;
     --grant-genshin\.experience\.character: 200;
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:44, 3:56";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:4444, 3:5556";
 }
 
 /* 材料例外：覆盖通用等级数量。 */
@@ -450,60 +450,60 @@ boss[type="world"]:is([tag="aeonblight_drake"], [tag="algorithm_semi_intransient
 /* 爆炎树、纯水精灵：30-99 级的专用分布。 */
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-30-34] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:33, 2:67";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:32602, 2:67398";
 }
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-35-39] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:23, 2:77";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:2312, 2:7688";
 }
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-40-44] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:14, 2:86";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:13649, 2:86351";
 }
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-45-49] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:4, 2:96";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "1:4167, 2:95833";
 }
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-50-54] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:95, 3:5";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:94696, 3:5304";
 }
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-55-59] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:85, 3:15";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:85214, 3:14786";
 }
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-60-64] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:76, 3:24";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:75743, 3:24257";
 }
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-65-69] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:66, 3:34";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:66272, 3:33728";
 }
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-70-74] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:57, 3:43";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:5679, 3:4321";
 }
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-75-79] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:47, 3:53";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:47319, 3:52681";
 }
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-80-84] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:38, 3:62";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:37837, 3:62163";
 }
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-85-89] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:28, 3:72";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:28366, 3:71634";
 }
 
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-90-99] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:19, 3:81";
+        --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:18884, 3:81116";
 }
 
 /* 级起仍使用上述两种 Boss 在 90-99 级的分布。 */
 boss[type="world"]:is([tag="oceanid"], [tag="pyro_regisvine"])[data-range-level-100-up] {
-    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:19, 3:81";
+    --grant-genshin\.avatar_ascension\.\<BOSS_MATERIAL\>: "2:18884, 3:81116";
 }
 
 /* 这 23 种 Boss 从 100 级起抽取 3 或 4 份材料。

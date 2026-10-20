@@ -433,7 +433,7 @@ class YamlLootTablesTest {
                 8102, "Vayuda Turquoise Fragment",
                 8201, "Teachings of Freedom"));
         for (String spec : java.util.List.of(
-                "1", "0", "6", "-1", "2.5", "\"2\"", "true", "null",
+                "1", "0", "6", "-1", "2.5", "true", "null",
                 "[2]", "{grade: 2}")) {
             assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                     invalid:

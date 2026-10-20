@@ -76,16 +76,16 @@ final class BundledBossRewardsTest {
                 .filter(name -> name.matches("[a-z0-9_]+"))
                 .forEach(sets::add);
         sets.forEach(name -> {
-                    for (int rarity = 1; rarity <= 5; rarity++) {
-                        for (int slot = 1; slot <= 5; slot++) {
-                            if (name.startsWith("prayers_") && slot != 5) continue;
-                            for (int substats = 0; substats <= 4; substats++) {
-                                artifacts.add(new ArtifactResolver.Variant(
-                                        nextArtifactId.incrementAndGet(),
-                                        name, slot, rarity, substats));
-                            }
-                        }
+            for (int rarity = 1; rarity <= 5; rarity++) {
+                for (int slot = 1; slot <= 5; slot++) {
+                    if (name.startsWith("prayers_") && slot != 5) continue;
+                    for (int substats = 0; substats <= 4; substats++) {
+                        artifacts.add(new ArtifactResolver.Variant(
+                                nextArtifactId.incrementAndGet(),
+                                name, slot, rarity, substats));
                     }
+                }
+            }
                 });
         var loot = YamlLootTables.parse(yaml,
                 id -> ids.computeIfAbsent(ResourceAliases.GENSHIN.resolve(id).toString(),

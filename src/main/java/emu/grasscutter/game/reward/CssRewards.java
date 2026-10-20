@@ -355,10 +355,10 @@ public final class CssRewards {
             if (table && key.startsWith("ARTIFACT_")) {
                 choices = List.of(String.join(",", bound));
             } else {
-            if ((table || "ELEMENT".equals(key)) && bound.size() != 1) {
-                throw new IllegalArgumentException("List binding requires an explicit index: " + name);
-            }
-            choices = bound;
+                if ((table || "ELEMENT".equals(key)) && bound.size() != 1) {
+                    throw new IllegalArgumentException("List binding requires an explicit index: " + name);
+                }
+                choices = bound;
             }
         }
         var expanded = new ArrayList<String>();

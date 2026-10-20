@@ -75,8 +75,18 @@ boss[type="world"][tag="maguu_kenki"][level="50~54"] {
 `<BOSS_MATERIAL>` expands a material list into independent per-item grants.
 Bindings are resolved from all matching rules before count declarations, so
 identity declarations may follow shared level rules. Selector specificity and
-source order determine overrides. A missing binding awards no bound reward;
-an out-of-range index is rejected.
+source order determine overrides. Missing material/element bindings award no
+bound reward; missing artifact-set bindings and out-of-range indexes are errors.
+
+World Boss identity rules can also assign `ARTIFACT_GROUP` and `GEM_GROUP`.
+These set synthetic `artifact_group` / `gem_group` selector attributes before
+level rules are matched. Regular Bosses share 11 artifact level rules; each
+identity group supplies `ARTIFACT_1STAR` through `ARTIFACT_4STAR` as set
+lists, then `world_artifact_3star<<ARTIFACT_3STAR>>` expands the list as one
+variadic template argument pack. Special Instructor artifacts keep their
+own program, with linked slot and substat weights intact. Gem programs share
+long Boss tag lists through `GEM_GROUP` bindings and retain their existing
+individual level distributions.
 
 ```yaml
 world_gem_two<COUNT, ELEMENTS...>:

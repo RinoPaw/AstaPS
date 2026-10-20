@@ -1266,7 +1266,7 @@ boss[type="world"][tag="chimera_sky_roamer,emperor_of_fire_and_iron,experimental
 
 /* World Boss gems: CSS handles single-item counts and fixed grants; YAML selects weighted candidates. */
 
-/* Named gem programs keep long Boss identity lists in one location. */
+/* GEM_GROUP binds long Boss identity lists once; level rules reference the group. */
 boss[type="world"][tag="anemo_hypostasis,cryo_hypostasis,cryo_regisvine,dendro_hypostasis,electro_hypostasis,electro_regisvine,geo_hypostasis,golden_wolflord,hydro_hypostasis,jadeplume_terrorshroom,oceanid,pyro_hypostasis,pyro_regisvine,ruin_serpent,thunder_manifestation"] {
     GEM_GROUP: gem_1;
 }
@@ -1623,7 +1623,7 @@ boss[type="world"][tag="tenebrous_papilla"] {
 }
 
 /* World Boss artifacts: 48 identities; Precision Clockwork uses approved fallback pools.
- * Tables parameterize set names only. Each emitted artifact is generated independently.
+ * Native set identities are bound by ARTIFACT_*STAR; all emitted pieces roll independently.
  * Independent branches selecting the same table are combined by exact convolution
  * of their execution counts, avoiding duplicate CSS-property overrides.
  */

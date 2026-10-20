@@ -47,6 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GadgetChest extends GadgetContent {
     private static final int CHEST_OPENED_STATE = 102;
     private boolean ordinaryClaimed;
+    private final String ordinarySpawnId = UUID.randomUUID().toString();
     // Boss flowers: every player near the flower when it first appears claims once.
     private volatile List<Integer> bossUids;
     /**
@@ -83,10 +84,11 @@ public class GadgetChest extends GadgetContent {
             }
             var rewards = blossomManager.claimReward(player, getGadget(),
                     req.getResinCostType()
-                            == ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE);
+                            == ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE,
+                    () -> claimedBossUids.add(player.getUid()));
             if (rewards != null) {
-                player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(rewards));
                 finishBossClaim(player, meta);
+                player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(rewards));
             }
             return false;
         }
@@ -150,7 +152,7 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            grantOrdinaryChestLoot(player);
+            if (!grantOrdinaryChestLoot(player)) return false;
             finishOpen(player, meta);
             return false;
         }
@@ -175,7 +177,7 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
-            grantOrdinaryChestLoot(player);
+            if (!grantOrdinaryChestLoot(player)) return false;
             finishOpen(player, null);
             return false;
         }
@@ -210,8 +212,7 @@ public class GadgetChest extends GadgetContent {
                             req.getResinCostType()
                                     == ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE);
         } else {
-            grantOrdinaryChestLoot(player);
-            success = true;
+            success = grantOrdinaryChestLoot(player);
         }
         if (!success) {
             return false;
@@ -291,7 +292,7 @@ public class GadgetChest extends GadgetContent {
         return allClaimed;
     }
 
-    private void grantOrdinaryChestLoot(Player player) {
+    private boolean grantOrdinaryChestLoot(Player player) {
         EntityGadget gadget = getGadget();
         SceneGadget meta = resolveChestMeta();
         if (meta != null && meta.chest_drop_id > 0) {
@@ -303,12 +304,14 @@ public class GadgetChest extends GadgetContent {
                     && dropSystem.handleChestDrop(
                             meta.chest_drop_id, Math.max(1, meta.drop_count), gadget)) {
                 ordinaryClaimed = true;
-                return;
+                return true;
             }
         }
-        WorldChestLootHelper.grant(player, gadget);
-        // Invalid reward metadata must not mark a chest as already claimed.
-        ordinaryClaimed = true;
+        String identity = gadget.getGroupId() > 0 && gadget.getConfigId() > 0
+                ? gadget.getScene().getId() + "." + gadget.getGroupId() + "." + gadget.getConfigId()
+                : "spawn." + ordinarySpawnId;
+        return WorldChestLootHelper.grant(player, gadget, "chest." + identity,
+                () -> ordinaryClaimed = true);
     }
 
     /** Roll first, validate the whole reward batch, then charge once and grant. */

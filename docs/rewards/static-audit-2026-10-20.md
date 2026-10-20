@@ -1,120 +1,84 @@
-# Static reward audit (2026-10-20)
+# Configured reward review (2026-10-20)
 
-## Scope and source
+## Scope
 
-Configuration: `src/main/resources/rewards/{loot.yaml,*.css}`.
-Source snapshots: `data/ChestDrop.json`, `data/Server/DropTableExcelConfigData.json`,
-and `RinoPaw/AstaPS-Resource` at `c0213668889ed05cbeb86660f424c3daf18bfacd`.
-The source is historical server configuration, not a verified official-server loot study.
+The independent reward system owns `src/main/resources/rewards/{loot.yaml,*.css}`
+and its configured claim paths. Historical tables are reference data for reward
+values and distribution structure. Their quota fields and business policies are
+not requirements of this system. There is no unpublished-format compatibility layer.
+Native quest/dungeon chest routes and the existing native dungeon reward service
+remain separate; this review does not migrate those systems.
 
-## CSS correctness
+## Configuration and representation
 
-- The stylesheet is parsed once with css4j 6.2. Resource declarations use CSS custom properties,
-  including CSS-escaped punctuation, instead of a custom pre-parser.
-- Selector matching, Selectors Level 4 specificity, nesting, source ordering, and
-  `!important` priority have focused regression tests.
-- Numeric `data-range-*` attributes are reward-domain metadata supplied to the DOM matcher.
-  Probability and execution-count strings are parsed by the loot engine, not by the CSS parser.
-- No browser layout tree, media environment, or CSS-variable evaluation is supplied by reward
-  entities. The bundled files do not depend on those facilities; they must not silently be
-  advertised as implemented reward features.
+css4j parses standard custom properties, escaped resource identifiers, selector
+specificity, source order, nesting, selector alternatives and `!important`.
+Focused regression tests cover those semantics. Numeric range attributes are
+server metadata. Counts and weighted choices are reward-domain declaration values.
+Browser layout, media environments and browser CSS-variable evaluation are not
+part of this configuration environment.
 
-## Native root coverage and parity boundaries
+The loot language represents exclusive weighted branches, independent grants,
+nested calls, integer quantities, inclusive integer ranges, fractional stochastic
+rounding and concrete artifact variant properties. Templates and bindings provide
+shared recipes. The configured 48 world Boss identities cover 25 source levels
+apiece; fixed currencies/experience are independently checked against all 1,200
+reference rows. Chest regional/tier, blossom world-rank and transpoint selectors
+have their own tests. This verifies distribution expressiveness and configured
+coverage, without requiring literal duplication of every historical policy.
 
-| Source | What static checks can establish | Exact original parity |
-| --- | --- | --- |
-| World Boss | 48 `sourceType=34` identities × 25 source level roots (1–120). Tests resolve and roll all 1,200 mapped source entries and independently expand
-  the historical native DropTable graph for fixed item IDs 101, 102, 105 and 202;
-  any CSS/source mismatch fails CI. | **Partial.** Some gem probabilities are integer-rounded. Precision Clockwork's missing artifact subpools borrow Pyro Regisvine candidate weights. |
-| Weekly Boss | 10 `sourceType=35` identities × 25 level roots. Uses dungeon/native reward flow, outside this CSS. | Outside CSS audit. |
-| Deep Abyss Baptist | 25 historical roots without a `sourceType`; deliberately left to the native fallback. | Outside configured CSS; inspect native fallback separately. |
-| Chest, cities 1–4 | Native combat, puzzle, Dragonspine and artifact roots; city/grade/level selector coverage and representative probabilities tested. | **Partial.** Empty puzzle tables use regional combat substitutes; original weapon/ore child tables may be empty. |
-| Chest, cities 5–9 | Existing generic chest configuration. | Historical regional source roots are unavailable. |
-| Chest adventure EXP and regional Primogems | Explicit CSS-owned policies. | Policy, not literal source-table reconstruction. |
-| Ley-line flower and scene points | Type/world-rank, scene/point rules and fixed payout tests. | Separate from the chest and boss historical table comparison. |
+Current choices remain explicit: some gem weights are rounded; Precision Clockwork
+borrows artifact candidates; empty historical puzzle tables use regional combat
+payouts; later regions use configured generic rewards. Adventure EXP and regional
+Primogems are system-owned policies. These choices do not indicate a language gap.
 
-World Boss artifact comparison documented in
-`docs/examples/world-boss-artifacts.md` previously checked 9,494 Boss/level combinations
-and 25 artifact candidate pools using rational arithmetic. This comparison was an
-offline source study, not a CI test. The current CI checks concrete configured
-reward selection and source-root coverage, but **does not prove exact probability
-equivalence for every original material, gem, and artifact subtable**.
+## Unified recursive safety
 
-## Probability-budget and representation review
+Every named pool, anonymous nested pool and instantiated template is analyzed
+automatically. Each root includes its own execution at depth 1 and must satisfy:
 
-The per-root limits are now: nontermination probability zero, expected total pool
-executions <=100, P(N>100)<=1e-6, and P(H>64)<=1e-6. The root counts as a node
-at depth 1. These checks retain the joint offspring law, and use downward-rounded
-PGF coefficients so reported tails are conservative upper bounds. YAML execution
-uses an explicit continuation stack; no reward is cut off at the analysis bounds.
-The budgets are per YAML root, not the sum of all CSS grants in one settlement.
+- Probability of infinite execution: zero, established by finite positive exact
+  expected-node solutions on the reachable invocation graph.
+- Expected total nodes <=100.
+- P(total nodes >100) <=1e-6.
+- P(depth >64) <=1e-6.
 
-An independent static traversal of the checked-in
-`data/Server/DropTableExcelConfigData.json` found 16,895 tables, 51,144 entries,
-11,862 exclusive tables, 5,033 independent tables, and no table-reference cycles.
-Entry counts comprise 42,650 integer, 7,639 fractional, and 855 interval values.
-Within this file's table-reference graph, maximum expected executions are 22,
-maximum possible executions are 25, and maximum depth is 3. All 1,771 ChestDrop
-rows reference an existing root. `NativeDropGraphSafetyTest` reconstructs the
-native offspring laws and checks all 16,895 roots against the four budgets.
-External DropSubTable candidates are not included in these structural totals.
+The joint offspring PGF preserves correlations from exclusive choices and repeated
+calls. Downward-rounded nonnegative coefficients give conservative tail upper
+bounds. No Monte Carlo acceptance or runtime reward truncation is used. Runtime
+execution uses an explicit continuation stack. Failed template instances are
+removed, so retrying cannot bypass admission. Reports are available from
+`YamlLootTables.safetyReports()`. Limits are per YAML root; multiple CSS grants
+are separate invocations, not a combined settlement budget.
 
-The DSL represents the source's two random modes, relative exclusive weights,
-independent basis-point chances, nested table references, integer counts,
-inclusive integer intervals, and fractional stochastic rounding. Existing exporter
-and reward tests cover these operations and concrete artifact variant properties.
-This establishes representation of reward distributions, not complete migration
-of every native root into the bundled CSS.
+As a reference benchmark, all 16,895 checked-in server-table invocation laws pass
+the new budgets. Their maximum mean is 22, maximum possible nodes 25, maximum
+depth 3. These statistics exclude external DropSubTable candidates. The benchmark
+checks language/model support; it does not connect historical business logic to
+our system or require manual registration of each reward table.
 
-Whole-table behavior has additional fields. The native dataset contains nonzero
-`everydayLimit`, `historyLimit`, and `activityLimit` values; these are not modeled
-by the reward DSL or enforced by `DropSystem.processDrop`. Among the 7,930 tables
-reachable from ChestDrop roots, 13 have a history limit: four shrine roots and
-nine Inazuma/Sumeru page roots. The graph checks do not validate those quotas,
-`dropLevel`, or delivery placement. They must not be counted as covered behavior.
+## Claim ordering
 
-## Claim path review
+Configured ordinary chests, ley-line flowers and scene-point rewards use the
+shared `RewardClaimFlow`: complete preparation and inventory preflight, durable
+intent, payment (when required), claim confirmation, reward writes, publication,
+then durable completion. Automatic chest items are admitted as one batch. Ground
+pickups are constructed and serialized before admission and published afterward.
+An invalid pickup cannot silently disappear while closing the chest. Rejected
+automatic currency grants do not fall back to an unusable ground pickup.
 
-- Open-world Boss: `GadgetChest` → `DropSystem.rollBossChestDrop` →
-  `RewardConfiguration.rollWorldBoss` (or native fallback) → inventory admission,
-  resin debit and `RewardGrantJournal` receipt → client reward notification.
-- Ordinary chest: `GadgetChest` → native quest/dungeon chest drop, otherwise
-  `WorldChestLootHelper` → CSS/YAML roll → inventory or ground drops →
-  chest-open state. A mid-delivery failure after the first item may leave part of
-  the reward granted while the chest is still open; this route is **not crash-atomic**.
-- Ley-line flower: `BlossomManager.claimReward` → `rollBlossom` →
-  all-or-nothing inventory preflight and resin payment → chest claim.
-  The operation lacks a durable receipt for a crash after charging resin.
-- Teleport waypoint/statue and domain entrance: `PlayerProgressManager` →
-  `RewardConfiguration.roll("transpoint")` → all-or-nothing inventory admission.
-  Rejected grants no longer silently consume the initial activation; domain
-  receipt updates only after successful grant. Crash-window atomicity still
-  requires a durable transaction receipt.
-- Weekly dungeon Boss: `DomainStatueDropService` pays and grants via the
-  native dungeon reward service with its own admission and journal.
+Ordinary placed chests use a stable scene/group/config receipt identity, so a
+recreated entity cannot replay a completed or unresolved claim. Spawn-only chests
+without stable placement metadata use a per-spawn identity. A completed receipt
+allows chest state to finish without granting again. Ley-line flowers track each
+player independently and retain one receipt identity per attempt; only a proven
+unpaid refusal rotates that identity. Confirmation precedes inventory writes and
+client notifications. Waypoint/statue/domain entrance claims have stable scene/point
+receipts, so a lost activation save does not permit another reward batch.
 
-## Remaining blockers before declaring the entire claim flow sound
-
-Ordinary chest rewards are delivered item by item. A failed write after the first
-successful item leaves a retryable chest with partial delivery. Ground delivery
-also calls `Scene.addItemEntity`, which silently returns for an unknown item;
-`WorldChestLootHelper` currently validates neither the full item batch nor that
-return outcome before marking the chest claimed. A rejected automatic virtual
-currency grant may fall back to an unusable ground item. These are delivery-path
-issues, separate from CSS/YAML probability representation.
-
-Ley-line payment has no durable receipt and marks the player claimed only after
-its reward notification returns. An interrupted grant or notification can therefore
-leave a retryable flower after charging. Transpoint rewards also retain a crash
-window between inventory writes and saving activation state. Boss/domain journals
-retain unresolved receipts for reconciliation; they do not make all writes atomic.
-A successful compilation and unit suite do not resolve these interruption cases.
-
-## Verdict
-
-The **representation and major configured source roots can be checked**, but
-the currently bundled rewards **cannot be called a perfect reconstruction**
-of the historical native tables. Known approximations, inferred fallbacks,
-missing original subpools, and unverified interruption behavior remain explicit.
-A successful CI run permits functional testing of covered paths; it must not
-be confused with proof of exact native distributions or transactional recovery.
+The existing Boss/domain journal paths are unchanged. A receipt is not an atomic
+transaction spanning inventory, player state and scene entities. Ambiguous payment
+or partial persistence/publication failures retain unresolved receipts and block
+blind replay. They require reconciliation; there is no automatic compensation.
+Ground items remain transient scene entities. These boundaries also mean that
+live client rendering, pickup and resource-name resolution still require testing.

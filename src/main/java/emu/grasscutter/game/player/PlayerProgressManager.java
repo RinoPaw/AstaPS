@@ -1029,17 +1029,22 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                 .map(entry -> new emu.grasscutter.game.inventory.GameItem(
                         entry.getKey(), entry.getValue()))
                 .toList();
-        var result = this.player.getInventory().addItems(
-                items, ActionReason.UnlockPointReward,
-                emu.grasscutter.game.inventory.InventoryAddPolicy.ALL_OR_NOTHING);
-        if (!result.allAccepted()) {
-            emu.grasscutter.Grasscutter.getLogger().warn(
-                    "Transpoint reward refused uid={} scene={} point={} kind={} statuses={}",
-                    this.player.getUid(), sceneId, pointId, kind,
-                    result.entries().stream().map(entry -> entry.status()).toList());
-            return false;
-        }
-        return true;
+        var journal = new emu.grasscutter.database.RewardGrantJournal();
+        var key = new emu.grasscutter.database.RewardGrantJournal.Key(
+                emu.grasscutter.database.RewardGrantJournal.Source.TRANSPOINT,
+                player.getUid(), "point." + sceneId + "." + pointId);
+        var snapshot = items.stream().map(item -> new emu.grasscutter.database.RewardGrantJournal.Reward(
+                item.getItemId(), item.getCount(), item.getLevel())).toList();
+        return emu.grasscutter.game.reward.RewardClaimFlow.grant(
+                emu.grasscutter.game.reward.RewardClaimFlow.receipt(journal, key, snapshot, java.util.List.of()),
+                new emu.grasscutter.game.reward.RewardClaimFlow.Delivery() {
+                    public boolean admit(java.util.function.BooleanSupplier authorize, Runnable confirmed) {
+                        return player.getInventory().addItems(items, ActionReason.UnlockPointReward,
+                                emu.grasscutter.game.inventory.InventoryAddPolicy.ALL_OR_NOTHING,
+                                authorize, confirmed).allAccepted();
+                    }
+                    public void publish() {}
+                }, () -> true, () -> {}, () -> {});
     }
 
     /**

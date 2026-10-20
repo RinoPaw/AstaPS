@@ -6,19 +6,29 @@ package emu.grasscutter.game.entity.gadget.chest;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.inventory.ItemType;
+import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.InventoryGrantBuilder;
+import emu.grasscutter.game.inventory.InventoryAddPolicy;
+import emu.grasscutter.game.entity.EntityItem;
+import emu.grasscutter.database.RewardGrantJournal;
+import emu.grasscutter.game.reward.RewardClaimFlow;
+import java.util.ArrayList;
+import java.util.List;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.entity.EntityGadget;
-import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.scripts.data.SceneGadget;
-import emu.grasscutter.server.packet.send.PacketDropHintNotify;
 
 public final class WorldChestLootHelper {
     private WorldChestLootHelper() {
     }
 
-    public static void grant(Player player, EntityGadget entityGadget) {
+    public static boolean grant(Player player, EntityGadget entityGadget,
+            String operationId, Runnable confirmed) {
+        var journal = new RewardGrantJournal();
+        var key = new RewardGrantJournal.Key(RewardGrantJournal.Source.WORLD_CHEST,
+                player.getUid(), operationId);
+        if (journal.completed(key)) { confirmed.run(); return true; }
         var props = new java.util.HashMap<String, String>();
         String chestType = ChestTypeResolver.resolve(entityGadget);
         if (chestType == null) {
@@ -51,50 +61,56 @@ public final class WorldChestLootHelper {
 
         var items = emu.grasscutter.game.reward.RewardConfiguration.current().roll(
                 "chest", props, java.util.concurrent.ThreadLocalRandom.current(), context);
+        var automatic = new ArrayList<GameItem>();
+        var ground = new ArrayList<EntityItem>();
         for (var entry : items.entrySet()) {
-            int id = entry.getKey();
-            int amount = entry.getValue();
-            if (amount <= 0) continue;
-            if (id == 102) {
-                player.earnExp(amount);
+            int id = entry.getKey(), amount = entry.getValue();
+            var item = GameData.getItemDataMap().get(id);
+            if (item == null || item.getItemType() == null || amount <= 0) {
+                throw new IllegalStateException("Invalid configured chest item: " + id + " x" + amount);
+            }
+            var dropRule = GameData.getDropMaterialDataMap().get(id);
+            if (shouldAutoCollect(item.getItemType(), item.getGadgetId(),
+                    dropRule != null && dropRule.isAutoPick())) {
+                automatic.addAll(InventoryGrantBuilder.create(item, amount, 1));
             } else {
-                var item = GameData.getItemDataMap().get(id);
-                var dropRule = GameData.getDropMaterialDataMap().get(id);
-                if (shouldAutoCollect(
-                        item == null ? null : item.getItemType(),
-                        item == null ? -1 : item.getGadgetId(),
-                        dropRule != null && dropRule.isAutoPick())) {
-                    if (player.getInventory().addItem(id, amount, ActionReason.OpenChest)) {
-                        player.sendPacket(new PacketDropHintNotify(
-                                id, entityGadget.getPosition().toProto()));
-                        continue;
-                    }
-                    Grasscutter.getLogger().warn(
-                            "World chest auto-pick failed uid={} item={} x{}; dropping to ground",
-                            player.getUid(), id, amount);
-                }
-                drop(entityGadget.getScene(), entityGadget, id, amount);
+                ground.addAll(entityGadget.getScene().prepareItemEntities(id, amount, entityGadget));
             }
         }
-        Grasscutter.getLogger().info(
-                "World chest rewards uid={} gadget={} type={} grade={} itemTypes={}",
-                player.getUid(), entityGadget.getGadgetId(), props.get("type"),
-                props.get("grade"), items.size());
+        if (automatic.isEmpty() && ground.isEmpty()) {
+            throw new IllegalStateException("Empty configured chest reward");
+        }
+        var snapshot = new ArrayList<RewardGrantJournal.Reward>();
+        automatic.forEach(item -> snapshot.add(new RewardGrantJournal.Reward(
+                item.getItemId(), item.getCount(), item.getLevel())));
+        ground.forEach(entity -> snapshot.add(new RewardGrantJournal.Reward(
+                entity.getItem().getItemId(), entity.getCount(), entity.getItem().getLevel())));
+        boolean accepted = RewardClaimFlow.grant(
+                RewardClaimFlow.receipt(journal, key, snapshot, List.of()),
+                new RewardClaimFlow.Delivery() {
+                    public boolean admit(java.util.function.BooleanSupplier authorize, Runnable claim) {
+                        if (automatic.isEmpty()) {
+                            if (!authorize.getAsBoolean()) return false;
+                            claim.run();
+                            return true;
+                        }
+                        return player.getInventory().addItems(automatic, ActionReason.OpenChest,
+                                InventoryAddPolicy.ALL_OR_NOTHING, authorize, claim).allAccepted();
+                    }
+                    public void publish() { entityGadget.getScene().addEntities(ground); }
+                }, () -> true, confirmed, () -> {});
+        if (!accepted) {
+            Grasscutter.getLogger().warn("World chest reward refused uid={} receipt={}",
+                    player.getUid(), key.storageId());
+            return false;
+        }
+        Grasscutter.getLogger().info("World chest rewards uid={} gadget={} type={} itemTypes={}",
+                player.getUid(), entityGadget.getGadgetId(), props.get("type"), items.size());
+        return true;
     }
 
-    // Same policy as DropSystem.dropItem: virtual currency without a gadget,
-    // or a native DropMaterial entry explicitly marked for automatic pickup.
     static boolean shouldAutoCollect(ItemType type, int gadgetId, boolean autoPick) {
         return autoPick || (type == ItemType.ITEM_VIRTUAL && gadgetId == 0);
-    }
-
-    private static void drop(Scene scene, GameEntity gameEntity, int itemId, int count) {
-        if (scene == null || gameEntity == null || itemId <= 0 || count <= 0) {
-            throw new IllegalArgumentException(
-                    "Invalid chest ground drop: item=" + itemId + " count=" + count);
-        }
-        // A failed world drop is a failed grant, not a successful chest claim.
-        scene.addItemEntity(itemId, count, gameEntity);
     }
 
     public static Tier resolveTier(EntityGadget entityGadget) {

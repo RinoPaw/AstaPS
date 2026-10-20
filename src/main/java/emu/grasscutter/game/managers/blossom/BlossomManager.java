@@ -1,6 +1,9 @@
 package emu.grasscutter.game.managers.blossom;
 
 import emu.grasscutter.Grasscutter;
+import emu.grasscutter.database.RewardGrantJournal;
+import emu.grasscutter.game.reward.RewardClaimFlow;
+import emu.grasscutter.config.Configuration;
 import emu.grasscutter.data.*;
 import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.props.ActionReason;
@@ -227,14 +230,15 @@ public class BlossomManager {
     /**
      * Claim a completed ley-line flower. Roll the two rewards independently for
      * condensed resin, preflight the complete inventory batch, then charge once.
-     * Failure leaves the chest available for retry and never falls back to boss loot.
+     * Admission/payment refusal permits retry. Ambiguous delivery failures retain a receipt.
      */
-    public List<GameItem> claimReward(Player player, EntityGadget chest, boolean condensed) {
+    public List<GameItem> claimReward(Player player, EntityGadget chest, boolean condensed,
+            Runnable confirmed) {
         synchronized (activeChests) {
             BlossomActivity active = activeChests.stream()
                     .filter(candidate -> candidate.getChest() == chest)
                     .findFirst().orElse(null);
-            if (active == null) return null;
+            if (active == null || active.rewardClaimed(player.getUid())) return null;
 
             BlossomType type = BlossomType.valueOf(active.getGadget().getGadgetId());
             if (type == null) throw new IllegalStateException("Unknown claimed blossom type");
@@ -246,15 +250,31 @@ public class BlossomManager {
                     .map(entry -> new GameItem(entry.getKey(), entry.getValue()))
                     .toList();
             var resin = player.getResinManager();
-            var result = player.getInventory().addItems(
-                    items, ActionReason.OpenWorldBossChest, InventoryAddPolicy.ALL_OR_NOTHING,
-                    () -> condensed ? resin.useCondensedResin(1) : resin.useResin(20),
-                    () -> {});
-            if (!result.allAccepted()) {
-                Grasscutter.getLogger().warn(
-                        "Ley-line claim refused uid={} kind={} WL{} condensed={} statuses={}",
-                        player.getUid(), type, worldLevel, condensed,
-                        result.entries().stream().map(entry -> entry.status()).toList());
+            var journal = new RewardGrantJournal();
+            var key = new RewardGrantJournal.Key(RewardGrantJournal.Source.BLOSSOM, player.getUid(),
+                    "flower." + scene.getId() + "." + active.getGadget().getGroupId() + "."
+                            + active.getGadget().getConfigId() + "." + active.rewardOperation(player.getUid()));
+            var snapshot = items.stream().map(item -> new RewardGrantJournal.Reward(
+                    item.getItemId(), item.getCount(), item.getLevel())).toList();
+            var debits = Configuration.GAME_OPTIONS.resinOptions.resinUsage
+                    ? List.of(new RewardGrantJournal.Debit(condensed ? 220007 : 106, condensed ? 1 : 20))
+                    : List.<RewardGrantJournal.Debit>of();
+            boolean accepted = RewardClaimFlow.grant(
+                    RewardClaimFlow.receipt(journal, key, snapshot, debits),
+                    new RewardClaimFlow.Delivery() {
+                        public boolean admit(java.util.function.BooleanSupplier authorize, Runnable claim) {
+                            return player.getInventory().addItems(items, ActionReason.OpenWorldBossChest,
+                                    InventoryAddPolicy.ALL_OR_NOTHING, authorize, claim).allAccepted();
+                        }
+                        public void publish() {}
+                    }, () -> condensed ? resin.useCondensedResin(1) : resin.useResin(20),
+                    () -> {
+                        active.confirmReward(player.getUid());
+                        confirmed.run();
+                    }, () -> active.resetUnpaidReward(player.getUid()));
+            if (!accepted) {
+                Grasscutter.getLogger().warn("Ley-line claim refused uid={} kind={} receipt={}",
+                        player.getUid(), type, key.storageId());
                 return null;
             }
             return items;

@@ -40,6 +40,40 @@ public final class RewardRoller {
         return resolveRegionalItems(result, context);
     }
 
+    /** Execute every Lua/CSS/YAML choice as a fully qualified resource name. */
+    public static Map<String, Integer> rollKeys(
+            CssRewards.KeySelection selection, YamlLootTables loot, RandomGenerator random) {
+        var result = new TreeMap<String, Integer>();
+        var executions = new TreeMap<>(selection.loot());
+        selection.rangedLoot().forEach((table, spec) ->
+                executions.put(table, spec.sample(random)));
+        executions.forEach((table, repetitions) -> {
+            for (int i = 0; i < repetitions; i++) {
+                loot.rollKeys(table, random).forEach((key, count) ->
+                        result.merge(key, count, Math::addExact));
+            }
+        });
+        selection.items().forEach((key, count) -> {
+            if (count == 0) result.remove(key);
+            else result.put(key, count);
+        });
+        selection.rangedItems().forEach((key, spec) -> {
+            int count = spec.sample(random);
+            if (count == 0) result.remove(key);
+            else result.put(key, count);
+        });
+        return Map.copyOf(result);
+    }
+
+    /** One name lookup stage for all generated reward keys. */
+    public static Map<Integer, Integer> resolveKeys(
+            Map<String, Integer> keys, YamlLootTables loot, RewardContext context) {
+        var result = new TreeMap<Integer, Integer>();
+        keys.forEach((key, count) ->
+                result.merge(loot.resolveKey(key), count, Math::addExact));
+        return resolveRegionalItems(result, context);
+    }
+
     static Map<Integer, Integer> resolveRegionalItems(
             Map<Integer, Integer> items, RewardContext context) {
         if (!items.containsKey(ItemIdRegistry.REGIONAL_SIGIL)) {

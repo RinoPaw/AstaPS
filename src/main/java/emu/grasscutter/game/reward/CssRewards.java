@@ -31,6 +31,17 @@ public final class CssRewards {
         }
     }
 
+    /** The result of evaluating LootCSS, before any native ID lookup. */
+    public record KeySelection(Map<String, Integer> items, Map<String, Integer> loot,
+            Map<String, LootCount.Spec> rangedItems, Map<String, LootCount.Spec> rangedLoot) {
+        public KeySelection {
+            items = Map.copyOf(items);
+            loot = Map.copyOf(loot);
+            rangedItems = Map.copyOf(rangedItems);
+            rangedLoot = Map.copyOf(rangedLoot);
+        }
+    }
+
     private record LootDeclaration(RewardResourceExpression resource,
                                    Integer fixed, LootCount.Spec ranged) {}
     private record ItemDeclaration(RewardResourceExpression resource,
@@ -118,7 +129,8 @@ public final class CssRewards {
         return List.copyOf(bindings);
     }
 
-    public Selection resolve(String type, Map<String, ?> attributes) {
+    /** Resolve CSS selectors, variables and cascade to exact resource names. */
+    public KeySelection resolveKeys(String type, Map<String, ?> attributes) {
         RewardCssAttributes.validate(attributes);
         var matched = new ArrayList<Rule>();
         for (var rule : rules) {
@@ -132,20 +144,20 @@ public final class CssRewards {
         bindingNames.forEach(name -> bindings.put(name, List.of()));
         for (var rule : matched) bindings.putAll(rule.bindings);
 
-        var fixed = new HashMap<Integer, Integer>();
-        var ranged = new HashMap<Integer, LootCount.Spec>();
+        var fixed = new HashMap<String, Integer>();
+        var ranged = new HashMap<String, LootCount.Spec>();
         var selectedLoot = new HashMap<String, Integer>();
         var rangedLoot = new HashMap<String, LootCount.Spec>();
         for (var rule : matched) {
             for (var declaration : rule.items) {
                 for (String name : declaration.resource.expand(bindings)) {
-                    int id = itemRegistry.resolve(name);
+                    ResourceId.parse(name);
                     if (declaration.fixed != null) {
-                        ranged.remove(id);
-                        fixed.put(id, declaration.fixed);
+                        ranged.remove(name);
+                        fixed.put(name, declaration.fixed);
                     } else {
-                        fixed.remove(id);
-                        ranged.put(id, declaration.ranged);
+                        fixed.remove(name);
+                        ranged.put(name, declaration.ranged);
                     }
                 }
             }
@@ -162,6 +174,16 @@ public final class CssRewards {
                 }
             }
         }
-        return new Selection(fixed, selectedLoot, ranged, rangedLoot);
+        return new KeySelection(fixed, selectedLoot, ranged, rangedLoot);
+    }
+
+    /** Convert keys only at the legacy numerical settlement boundary. */
+    public Selection resolve(String type, Map<String, ?> attributes) {
+        var keys = resolveKeys(type, attributes);
+        var fixed = new HashMap<Integer, Integer>();
+        var ranged = new HashMap<Integer, LootCount.Spec>();
+        keys.items().forEach((key, count) -> fixed.put(itemRegistry.resolve(key), count));
+        keys.rangedItems().forEach((key, count) -> ranged.put(itemRegistry.resolve(key), count));
+        return new Selection(fixed, keys.loot(), ranged, keys.rangedLoot());
     }
 }

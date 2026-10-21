@@ -122,12 +122,43 @@ public final class RewardConfiguration {
     public Map<Integer, Integer> roll(
             String targetType, Map<String, ?> properties, RandomGenerator random,
             RewardContext context) {
-        var selected = css.resolve(targetType, properties);
-        requireChestLoot(targetType, selected, properties);
+        var selected = css.resolveKeys(targetType, properties);
+        requireChestLootKeys(targetType, selected, properties);
         if ("blossom".equals(targetType)) {
-            requireBlossomReward(selected, properties);
+            requireBlossomRewardKeys(selected, properties);
         }
-        return RewardRoller.roll(selected, loot, random, context);
+        return RewardRoller.resolveKeys(RewardRoller.rollKeys(selected, loot, random),
+                loot, context);
+    }
+
+    static void requireChestLootKeys(
+            String targetType, CssRewards.KeySelection selected, Map<String, ?> properties) {
+        if ("chest".equals(targetType)
+                && selected.loot().values().stream().noneMatch(count -> count > 0)
+                && selected.rangedLoot().isEmpty()) {
+            throw new IllegalStateException(
+                    "No chest loot table matched (missing or invalid type/grade/level): " + properties);
+        }
+    }
+
+    static void requireBlossomRewardKeys(
+            CssRewards.KeySelection selected, Map<String, ?> properties) {
+        Object type = properties.get("type");
+        boolean experience = selected.items().getOrDefault("genshin.experience.adventure", 0) > 0;
+        boolean companionship = selected.items().getOrDefault("genshin.experience.companionship", 0) > 0;
+        boolean wealth = selected.items().getOrDefault("genshin.currency.mora", 0) > 0;
+        boolean books = java.util.Set.of(
+                "genshin.avatar_up.wanderers_advice",
+                "genshin.avatar_up.adventurers_experience",
+                "genshin.avatar_up.heros_wit").stream()
+                .anyMatch(key -> selected.items().getOrDefault(key, 0) > 0
+                        || selected.rangedItems().containsKey(key));
+        boolean usesLoot = !selected.loot().isEmpty() || !selected.rangedLoot().isEmpty();
+        if (!experience || !companionship || usesLoot
+                || !("wealth".equals(type) && wealth && !books
+                    || "revelation".equals(type) && books && !wealth)) {
+            throw new IllegalStateException("No complete blossom reward configured for " + properties);
+        }
     }
 
     static void requireChestLoot(
@@ -251,16 +282,17 @@ public final class RewardConfiguration {
                 "type", "world",
                 "tag", cssBossTag(tag),
                 "level", nativeBossLevel);
-        var selection = css.resolve("boss", attributes);
+        var selection = css.resolveKeys("boss", attributes);
         if (selection.loot().isEmpty() && selection.rangedLoot().isEmpty()
-                && selection.rangedItems().isEmpty()) {
+                && selection.rangedItems().isEmpty() && selection.items().isEmpty()) {
             return null;
         }
-        return RewardRoller.roll(selection, loot, random);
+        return RewardRoller.resolveKeys(RewardRoller.rollKeys(selection, loot, random),
+                loot, RewardContext.NONE);
     }
 
     /** Qualified table IDs can be executed without CSS selection. */
     public Map<Integer, Integer> rollLoot(String resourceId, RandomGenerator random) {
-        return RewardRoller.resolveRegionalItems(loot.roll(resourceId, random), RewardContext.NONE);
+        return RewardRoller.resolveKeys(loot.rollKeys(resourceId, random), loot, RewardContext.NONE);
     }
 }

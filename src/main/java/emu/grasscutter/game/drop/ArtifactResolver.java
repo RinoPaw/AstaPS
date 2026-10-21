@@ -45,7 +45,7 @@ public final class ArtifactResolver {
                     : new Selector(sets.sample(random), slot, rarity, substats);
         }
 
-        public int select(RandomGenerator random) {
+        public Variant selectVariant(RandomGenerator random) {
             // The set is chosen before its native slot/rarity/substat variants.
             // A circlet-only set therefore never offers unavailable slots.
             List<Variant> available = sets == null ? variants : sets.sample(random);
@@ -93,8 +93,21 @@ public final class ArtifactResolver {
                     .orElseThrow(() -> new IllegalArgumentException(
                             "No native artifact variant for slot " + selectedSlot
                             + ", rarity " + selectedRarity + ", substats " + selectedSubstats))
-                    .id;
+                    ;
         }
+
+        public int select(RandomGenerator random) {
+            return selectVariant(random).id();
+        }
+
+        public String selectKey(RandomGenerator random) {
+            return variantKey(selectVariant(random));
+        }
+    }
+
+    public static String variantKey(Variant variant) {
+        return "genshin.artifact." + variant.set() + "." + slotName(variant.slot())
+                + "." + variant.rarity() + "." + variant.substats();
     }
 
     private interface NumberOf {
@@ -131,6 +144,27 @@ public final class ArtifactResolver {
             }
         }
         this.bySet = Map.copyOf(sets);
+    }
+
+    /** Fully specified Loot artifact names correspond to one native item each. */
+    public Map<String, Integer> resourceIds() {
+        var result = new LinkedHashMap<String, Integer>();
+        for (var variants : bySet.values()) {
+            for (Variant variant : variants) {
+                String key = variantKey(variant);
+                Integer previous = result.putIfAbsent(key, variant.id());
+                if (previous != null && previous != variant.id()) {
+                    throw new IllegalArgumentException("Ambiguous artifact resource: " + key);
+                }
+            }
+        }
+        return Map.copyOf(result);
+    }
+
+    public int resolveKey(String resource) {
+        Integer id = resourceIds().get(resource);
+        if (id == null) throw new IllegalArgumentException("Unknown artifact resource: " + resource);
+        return id;
     }
 
     /** Resolve the source-backed set identity, not an arbitrary item variant ID. */

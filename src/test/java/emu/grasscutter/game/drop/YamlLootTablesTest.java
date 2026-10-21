@@ -20,6 +20,38 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void lootYamlRollProducesOneCompleteKeyPerExpandedArtifactCandidate() {
+        var artifacts = new ArtifactResolver(java.util.List.of(
+                new ArtifactResolver.Variant(60311, "instructor", 1, 3, 1),
+                new ArtifactResolver.Variant(60312, "instructor", 1, 3, 2),
+                new ArtifactResolver.Variant(60411, "instructor", 1, 4, 1),
+                new ArtifactResolver.Variant(60412, "instructor", 1, 4, 2)));
+        var tables = YamlLootTables.parse("""
+                items:
+                  - type: Artifact
+                    set: instructor
+                    slot: flower
+                    rarity: "3:1,4:1"
+                    substats: "1:1,2:1"
+                """, resolver, artifacts);
+        var possible = new java.util.HashSet<String>();
+        for (int i = 0; i < 200; i++) {
+            var keys = tables.rollKeys("astaps.loot.items", new Random(i));
+            assertEquals(1, keys.size());
+            assertEquals(1, keys.values().iterator().next());
+            String key = keys.keySet().iterator().next();
+            possible.add(key);
+            assertTrue(artifacts.resourceIds().containsKey(key));
+            assertEquals(1, tables.rollKeys("astaps.loot.items", new Random(i)).size());
+        }
+        assertEquals(java.util.Set.of(
+                "genshin.artifact.instructor.flower.3.1",
+                "genshin.artifact.instructor.flower.3.2",
+                "genshin.artifact.instructor.flower.4.1",
+                "genshin.artifact.instructor.flower.4.2"), possible);
+    }
+
+    @Test
     void artifactRarityPoolsPreserveMembersAndComputeSubstats() {
         var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
         String[] sets = {

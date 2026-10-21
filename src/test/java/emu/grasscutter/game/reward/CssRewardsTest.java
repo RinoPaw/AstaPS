@@ -26,6 +26,22 @@ class CssRewardsTest {
             """, items::resolve);
 
     @Test
+    void lootCssProducesFullyQualifiedNamesBeforeItemSettlement() {
+        var css = CssRewards.parse("""
+                boss[type="world"] {
+                    --material: hoarfrost_core;
+                    genshin.avatar_ascension.$material: 2;
+                    genshin.currency.mora: 300;
+                }
+                """, new ItemIdRegistry(Map.of(
+                        113010, "Hoarfrost Core", 202, "Mora")), loot);
+        var keys = css.resolveKeys("boss", Map.of("type", "world"));
+        assertEquals(Map.of(
+                "genshin.avatar_ascension.hoarfrost_core", 2,
+                "genshin.currency.mora", 300), keys.items());
+    }
+
+    @Test
     void dottedResourcePropertiesCoexistWithNativeCssCascade() {
         var css = CssRewards.parse("""
                 chest {

@@ -26,13 +26,13 @@ public final class YamlLootTables {
         int resolve(String itemName);
     }
 
-    private record TypeTarget(Integer itemId, String table,
+    private record TypeTarget(String resource, String table,
                               ArtifactResolver.Selector artifact,
-                              WeightedChoice<Integer> grade,
-                              WeightedChoice<Integer> element) {}
+                              WeightedChoice<String> grade,
+                              WeightedChoice<String> element) {}
 
-    private record Entry(Integer rewardId, ArtifactResolver.Selector artifact,
-                         WeightedChoice<Integer> grade, WeightedChoice<Integer> element,
+    private record Entry(String resource, ArtifactResolver.Selector artifact,
+                         WeightedChoice<String> grade, WeightedChoice<String> element,
                          WeightedChoice<TypeTarget> typeChoice,
                          Pool nested, LootCount.Spec count,
                          LootRecursionSafety.Fraction expectedCount, Object rawCount, BigDecimal weight) {}
@@ -42,7 +42,7 @@ public final class YamlLootTables {
      * use relative weights; weights on outer entries are independent.
      * A chosen grade applies to the entire count of that entry execution.
      */
-    private static WeightedChoice<Integer> compileGemRarity(
+    private static WeightedChoice<String> compileGemRarity(
             String element, Object raritySpec, ItemResolver resolver, String location) {
         return WeightedChoice.compile(raritySpec, location + ".rarity", raw -> {
             String name = raw.toString();
@@ -58,7 +58,7 @@ public final class YamlLootTables {
             if (id <= 0) {
                 throw new IllegalArgumentException(location + ": unknown gem: " + resource);
             }
-            return id;
+            return resource;
         });
     }
 
@@ -99,7 +99,7 @@ public final class YamlLootTables {
     }
 
         /** Each gem copy independently evaluates both the element and rarity fields. */
-    private static WeightedChoice<Integer> compileElements(
+    private static WeightedChoice<String> compileElements(
             Object rawProperties, ItemResolver resolver, String location) {
         if (!(rawProperties instanceof Map<?, ?> props)
                 || props.size() != 2 || !props.containsKey("element") || !props.containsKey("rarity")) {
@@ -121,7 +121,7 @@ public final class YamlLootTables {
             }
             return Integer.parseInt(name);
         });
-        var items = new ArrayList<Integer>();
+        var items = new ArrayList<String>();
         var weights = new ArrayList<BigDecimal>();
         for (int i = 0; i < elements.candidates().size(); i++) {
             String element = elements.candidates().get(i);
@@ -132,7 +132,7 @@ public final class YamlLootTables {
                     throw new IllegalArgumentException(location
                             + ": unknown ascension gem: " + element + "." + rarity);
                 }
-                items.add(id);
+                items.add("genshin.avatar_ascension." + element + "." + rarity);
                 weights.add(elements.weights().get(i).multiply(rarities.weights().get(j)));
             }
         }
@@ -140,7 +140,7 @@ public final class YamlLootTables {
     }
 
     /** Resolve a talent subject and its grade into a native item once per entry roll. */
-    private static WeightedChoice<Integer> compileTalentSeries(
+    private static WeightedChoice<String> compileTalentSeries(
             Map<?, ?> properties, ItemResolver resolver, String location) {
         if (properties == null || properties.size() != 2
                 || !properties.containsKey("series") || !properties.containsKey("rarity")) {
@@ -157,7 +157,7 @@ public final class YamlLootTables {
                     }
                     return Integer.parseInt(value);
                 });
-        var items = new ArrayList<Integer>();
+        var items = new ArrayList<String>();
         var weights = new ArrayList<BigDecimal>();
         for (int i = 0; i < series.candidates().size(); i++) {
             for (int j = 0; j < rarities.candidates().size(); j++) {
@@ -167,7 +167,7 @@ public final class YamlLootTables {
                 if (id <= 0) {
                     throw new IllegalArgumentException(location + ": unknown talent book: " + name);
                 }
-                items.add(id);
+                items.add(name);
                 weights.add(series.weights().get(i).multiply(rarities.weights().get(j)));
             }
         }
@@ -233,7 +233,7 @@ public final class YamlLootTables {
                 throw new IllegalArgumentException(location
                         + ": reward table does not accept item attributes: " + name);
             }
-            if (resolver.resolve(name) > 0) {
+            if (name.startsWith("genshin.")) {
                 throw new IllegalArgumentException(location + ": ambiguous item/table name: " + name);
             }
             return new TypeTarget(null, qualified, null, null, null);
@@ -254,7 +254,7 @@ public final class YamlLootTables {
         if (id <= 0 && id != emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL) {
             throw new IllegalArgumentException(location + ": unknown type: " + name);
         }
-        return new TypeTarget(id, null, null, null, null);
+        return new TypeTarget(name, null, null, null, null);
     }
 
     /** Validate table names without rejecting recursive reference graphs. */
@@ -285,7 +285,7 @@ public final class YamlLootTables {
     }
 
     private void emitType(TypeTarget selected, int count, RandomGenerator random,
-            Map<Integer, Integer> reward, ArrayDeque<RollFrame> stack) {
+            Map<String, Integer> reward, ArrayDeque<RollFrame> stack) {
         if (selected.table != null) {
             Pool table = pools.get(selected.table);
             if (table == null) table = instances.get(selected.table);
@@ -298,7 +298,7 @@ public final class YamlLootTables {
         } else if (selected.artifact != null) {
             var artifact = selected.artifact.bindSet(random);
             for (int i = 0; i < count; i++) {
-                reward.merge(artifact.select(random), 1, Math::addExact);
+                reward.merge(artifact.selectKey(random), 1, Math::addExact);
             }
         } else if (selected.grade != null) {
             reward.merge(selected.grade.sample(random), count, Math::addExact);
@@ -306,8 +306,8 @@ public final class YamlLootTables {
             for (int i = 0; i < count; i++) {
                 reward.merge(selected.element.sample(random), 1, Math::addExact);
             }
-        } else if (selected.itemId != null) {
-            reward.merge(selected.itemId, count, Math::addExact);
+        } else if (selected.resource != null) {
+            reward.merge(selected.resource, count, Math::addExact);
         }
     }
 
@@ -434,10 +434,10 @@ public final class YamlLootTables {
                 Object target = fields.get(fields.containsKey("value") ? "value"
                         : useType ? "type" : "reward");
                 Map<?, ?> properties = entryProperties(fields, at);
-                Integer rewardId = null;
+                String rewardId = null;
                 ArtifactResolver.Selector artifact = null;
-                WeightedChoice<Integer> grade = null;
-                WeightedChoice<Integer> element = null;
+                WeightedChoice<String> grade = null;
+                WeightedChoice<String> element = null;
                 WeightedChoice<TypeTarget> typeChoice = null;
                 Pool nested = null;
                 if (target instanceof List<?>) {
@@ -461,7 +461,7 @@ public final class YamlLootTables {
                         if (id <= 0 && id != emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL) {
                             throw new IllegalArgumentException(at + ": unknown reward: " + target);
                         }
-                        rewardId = id;
+                        rewardId = reference;
                     }
                 }
                 if (properties != null && typeChoice == null
@@ -591,14 +591,31 @@ public final class YamlLootTables {
         return LootProbability.choice(laws, entry.typeChoice.weights());
     }
 
-    /** Returns an immutable item-ID-to-count map. Each invocation rolls afresh. */
-    public Map<Integer, Integer> roll(String name, RandomGenerator random) {
+    /** Loot syntax produces qualified resource keys. It does not settle native IDs. */
+    public Map<String, Integer> rollKeys(String name, RandomGenerator random) {
         String resolved = resolveName(name);
         Pool root = pools.containsKey(resolved) ? pools.get(resolved) : instances.get(resolved);
         if (random == null) throw new IllegalArgumentException("Missing random generator");
-        var reward = new TreeMap<Integer, Integer>();
+        var reward = new TreeMap<String, Integer>();
         rollPool(root, 1, random, reward);
         return Map.copyOf(reward);
+    }
+
+    /** Resolve keys only at the consumer boundary. */
+    public Map<Integer, Integer> roll(String name, RandomGenerator random) {
+        var result = new TreeMap<Integer, Integer>();
+        rollKeys(name, random).forEach((resource, count) ->
+                result.merge(resolveKey(resource), count, Math::addExact));
+        return Map.copyOf(result);
+    }
+
+    /** The sole key-to-ID boundary used by reward settlement. */
+    public int resolveKey(String resource) {
+        if (resource.startsWith("genshin.artifact.")) {
+            if (artifacts == null) throw new IllegalArgumentException("Artifact resolver unavailable");
+            return artifacts.resolveKey(resource);
+        }
+        return resolver.resolve(resource);
     }
 
     /** Explicit continuation stack: long accepted recursive draws do not consume the Java stack. */
@@ -611,7 +628,7 @@ public final class YamlLootTables {
     }
 
     private void rollPool(Pool pool, int times, RandomGenerator random,
-            Map<Integer, Integer> reward) {
+            Map<String, Integer> reward) {
         var stack = new ArrayDeque<RollFrame>();
         stack.push(new RollFrame(pool, times));
         while (!stack.isEmpty()) {
@@ -628,7 +645,7 @@ public final class YamlLootTables {
     }
 
     private void rollEntry(Entry entry, RandomGenerator random,
-            Map<Integer, Integer> reward, ArrayDeque<RollFrame> stack) {
+            Map<String, Integer> reward, ArrayDeque<RollFrame> stack) {
         int count = entry.count.sample(random);
         if (count == 0) return;
         if (entry.nested != null) {
@@ -637,7 +654,7 @@ public final class YamlLootTables {
             // Select a set once; roll native pieces independently for each copy.
             var artifact = entry.artifact.bindSet(random);
             for (int i = 0; i < count; i++) {
-                reward.merge(artifact.select(random), 1, Math::addExact);
+                reward.merge(artifact.selectKey(random), 1, Math::addExact);
             }
         } else if (entry.grade != null) {
             // A weighted rarity choice is made once per entry execution.
@@ -650,8 +667,8 @@ public final class YamlLootTables {
             }
         } else if (entry.typeChoice != null) {
             emitType(entry.typeChoice.sample(random), count, random, reward, stack);
-        } else if (entry.rewardId != null) {
-            reward.merge(entry.rewardId, count, Math::addExact);
+        } else if (entry.resource != null) {
+            reward.merge(entry.resource, count, Math::addExact);
         }
     }
 

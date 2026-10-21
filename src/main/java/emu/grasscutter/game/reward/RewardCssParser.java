@@ -111,27 +111,61 @@ final class RewardCssParser {
         var result = new ArrayList<Rule>();
         parser.trivia();
         while (!parser.end()) {
-            List<Selector> selectors = parser.selectors();
+            List<Selector> selectors = parser.selectors(false);
             parser.trivia();
             parser.expect('{');
-            var declarations = new ArrayList<Declaration>();
-            parser.trivia();
-            while (!parser.take('}')) {
-                if (parser.end()) throw parser.error("Missing '}'");
-                declarations.add(parser.declaration());
-                parser.trivia();
-            }
-            result.add(new Rule(selectors, List.copyOf(declarations)));
+            parser.block(selectors, result);
             parser.trivia();
         }
         return List.copyOf(result);
     }
 
-    private List<Selector> selectors() {
+    // Flatten nested rules in source order. Each '&[condition]' appends predicates
+    // to every parent selector, preserving the existing cascade and specificity.
+    private void block(List<Selector> parents, List<Rule> result) {
+        var declarations = new ArrayList<Declaration>();
+        trivia();
+        while (!take('}')) {
+            if (end()) throw error("Missing '}'");
+            if (peek('&')) {
+                if (!declarations.isEmpty()) {
+                    result.add(new Rule(parents, List.copyOf(declarations)));
+                    declarations.clear();
+                }
+                var children = selectors(true);
+                var expanded = new ArrayList<Selector>();
+                for (Selector parent : parents) {
+                    for (Selector child : children) {
+                        var predicates = new ArrayList<>(parent.predicates());
+                        predicates.addAll(child.predicates());
+                        expanded.add(new Selector(parent.type(), predicates));
+                    }
+                }
+                trivia();
+                expect('{');
+                block(List.copyOf(expanded), result);
+            } else {
+                declarations.add(declaration());
+            }
+            trivia();
+        }
+        if (!declarations.isEmpty()) {
+            result.add(new Rule(parents, List.copyOf(declarations)));
+        }
+    }
+
+    private List<Selector> selectors(boolean nested) {
         var result = new ArrayList<Selector>();
         do {
             trivia();
-            String type = identifier();
+            String type;
+            if (nested) {
+                expect('&');
+                type = "";
+            } else {
+                if (peek('&')) throw error("'&' requires a parent selector");
+                type = identifier();
+            }
             var predicates = new ArrayList<Condition>();
             trivia();
             while (take('[')) {
@@ -140,6 +174,9 @@ final class RewardCssParser {
                 trivia();
                 expect(']');
                 trivia();
+            }
+            if (nested && predicates.isEmpty()) {
+                throw error("Nested '&' must append at least one attribute predicate");
             }
             result.add(new Selector(type, predicates));
             if (!take(',')) break;

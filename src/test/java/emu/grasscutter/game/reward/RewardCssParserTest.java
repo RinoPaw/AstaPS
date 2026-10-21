@@ -70,6 +70,59 @@ class RewardCssParserTest {
     }
 
     @Test
+    void nestedSelectorsExpandParentGroupsAndMultipleLevels() {
+        var rules = RewardCssParser.parse("""
+                boss[type="world"][tag="anemo_hypostasis"],
+                boss[type="world"][tag="cryo_hypostasis"] {
+                    --element: anemo;
+                    &[1 <= level <= 4], &[5 <= level <= 9] {
+                        genshin.currency.mora: 1;
+                        &[city=1] {
+                            genshin.currency.primogem: 2;
+                        }
+                    }
+                    genshin.currency.mora: 3;
+                }
+                """);
+        assertEquals(4, rules.size());
+        assertEquals(2, rules.get(0).selectors().size());
+        assertEquals(4, rules.get(1).selectors().size());
+        assertEquals(4, rules.get(2).selectors().size());
+        assertEquals(2, rules.get(3).selectors().size());
+        assertEquals("--element", rules.get(0).declarations().getFirst().name());
+        assertEquals("genshin.currency.mora", rules.get(1).declarations().getFirst().name());
+        assertEquals("genshin.currency.primogem", rules.get(2).declarations().getFirst().name());
+        assertEquals("genshin.currency.mora", rules.get(3).declarations().getFirst().name());
+        assertEquals(3, rules.get(1).selectors().getFirst().specificity());
+        assertEquals(4, rules.get(2).selectors().getFirst().specificity());
+        assertTrue(rules.get(1).selectors().getFirst().matches("boss",
+                Map.of("type", "world", "tag", "anemo_hypostasis", "level", 1)));
+        assertTrue(rules.get(1).selectors().get(3).matches("boss",
+                Map.of("type", "world", "tag", "cryo_hypostasis", "level", 8)));
+        assertFalse(rules.get(1).selectors().getFirst().matches("boss",
+                Map.of("type", "world", "tag", "anemo_hypostasis", "level", 10)));
+        assertTrue(rules.get(2).selectors().getFirst().matches("boss",
+                Map.of("type", "world", "tag", "anemo_hypostasis", "level", 1, "city", 1)));
+    }
+
+    @Test
+    void invalidNestedFormsReportSourceLocation() {
+        for (String source : new String[] {
+                "&[level=1] { genshin.currency.mora: 1; }",
+                "boss { & { genshin.currency.mora: 1; } }",
+                "boss { &[level=1] > &[city=1] { genshin.currency.mora: 1; } }",
+                "boss { &:is([level=1]) { genshin.currency.mora: 1; } }",
+                "boss { &[level=1], chest[level=2] { genshin.currency.mora: 1; } }",
+                "boss { &[level=\"1\"] { genshin.currency.mora: 1; } }"
+        }) {
+            var failure = assertThrows(IllegalArgumentException.class,
+                    () -> RewardCssParser.parse(source), source);
+            assertTrue(failure.getMessage().startsWith("Invalid reward CSS: 1:"),
+                    failure.getMessage());
+        }
+    }
+
+    @Test
     void invalidOrExcludedSyntaxFailsAtLoadTime() {
         for (String selector : new String[] {
                 "chest:is([city=1], [city=2])", "chest:not([grade=\"common\"])",

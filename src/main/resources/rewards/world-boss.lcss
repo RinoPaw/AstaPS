@@ -544,182 +544,89 @@ boss[type="world"][tag in (
     "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
     "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
     "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][1 <= level <= 4] {
-    genshin.avatar_ascension.$element.sliver: "3:53, 6:47";
+)] {
+    &[1 <= level <= 4] {
+        genshin.avatar_ascension.$element.sliver: "3:53, 6:47";
+    }
+
+    &[5 <= level <= 9] {
+        genshin.avatar_ascension.$element.sliver: "3:43, 6:57";
+    }
+
+    &[10 <= level <= 14] {
+        genshin.avatar_ascension.$element.sliver: "3:30, 6:70";
+    }
+
+    &[15 <= level <= 19] {
+        genshin.avatar_ascension.$element.sliver: "3:18, 6:82";
+    }
+
+    &[20 <= level <= 24] {
+        genshin.avatar_ascension.$element.sliver: "3:6, 6:94";
+    }
+
+    &[25 <= level <= 29] {
+        genshin.avatar_ascension.$element.sliver: "6:93, 9:7";
+    }
+
+    &[30 <= level <= 34] {
+        genshin.avatar_ascension.$element.sliver: "6:81, 9:19";
+    }
+
+    &[35 <= level <= 39] {
+        genshin.avatar_ascension.$element.sliver: "6:68, 9:32";
+    }
+
+    &[40 <= level <= 44] {
+        astaps.loot.world_gem_two<3,$element>: "1:56, 2:44";
+    }
+
+    &[45 <= level <= 49] {
+        astaps.loot.world_gem_two<3,$element>: "1:40, 2:60";
+    }
+
+    &[50 <= level <= 54] {
+        astaps.loot.world_gem_two<3,$element>: "1:25, 2:75";
+    }
+
+    &[55 <= level <= 59] {
+        astaps.loot.world_gem_two<3,$element>: "1:9, 2:91";
+    }
+
+    &[60 <= level <= 64] {
+        astaps.loot.world_gem_three<3,$element>: "2:82, 3:18";
+    }
+
+    &[65 <= level <= 69] {
+        astaps.loot.world_gem_three<3,$element>: "2:66, 3:34";
+    }
+
+    &[70 <= level <= 74] {
+        astaps.loot.world_gem_three<3,$element>: "2:49, 3:51";
+    }
+
+    &[75 <= level <= 79] {
+        astaps.loot.world_gem_four<3,$element>: "2:31, 3:69";
+    }
+
+    &[80 <= level <= 84] {
+        astaps.loot.world_gem_four<3,$element>: "2:15, 3:85";
+    }
+
+    &[85 <= level <= 89] {
+        astaps.loot.world_gem_four<3,$element>: "3:98, 4:2";
+    }
+
+    &[level >= 90] {
+        astaps.loot.world_gem_four<3,$element>: "3:82, 4:18";
+    }
+
+    /* 40 级起额外断片池，独立于主宝石池。 */
+    &[level >= 40] {
+        astaps.loot.world_gem_fragment<1,$element>: "3:88, 6:12";
+    }
 }
 
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][5 <= level <= 9] {
-    genshin.avatar_ascension.$element.sliver: "3:43, 6:57";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][10 <= level <= 14] {
-    genshin.avatar_ascension.$element.sliver: "3:30, 6:70";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][15 <= level <= 19] {
-    genshin.avatar_ascension.$element.sliver: "3:18, 6:82";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][20 <= level <= 24] {
-    genshin.avatar_ascension.$element.sliver: "3:6, 6:94";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][25 <= level <= 29] {
-    genshin.avatar_ascension.$element.sliver: "6:93, 9:7";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][30 <= level <= 34] {
-    genshin.avatar_ascension.$element.sliver: "6:81, 9:19";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][35 <= level <= 39] {
-    genshin.avatar_ascension.$element.sliver: "6:68, 9:32";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][40 <= level <= 44] {
-    astaps.loot.world_gem_two<3,$element>: "1:56, 2:44";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][45 <= level <= 49] {
-    astaps.loot.world_gem_two<3,$element>: "1:40, 2:60";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][50 <= level <= 54] {
-    astaps.loot.world_gem_two<3,$element>: "1:25, 2:75";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][55 <= level <= 59] {
-    astaps.loot.world_gem_two<3,$element>: "1:9, 2:91";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][60 <= level <= 64] {
-    astaps.loot.world_gem_three<3,$element>: "2:82, 3:18";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][65 <= level <= 69] {
-    astaps.loot.world_gem_three<3,$element>: "2:66, 3:34";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][70 <= level <= 74] {
-    astaps.loot.world_gem_three<3,$element>: "2:49, 3:51";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][75 <= level <= 79] {
-    astaps.loot.world_gem_four<3,$element>: "2:31, 3:69";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][80 <= level <= 84] {
-    astaps.loot.world_gem_four<3,$element>: "2:15, 3:85";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][85 <= level <= 89] {
-    astaps.loot.world_gem_four<3,$element>: "3:98, 4:2";
-}
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][level >= 90] {
-    astaps.loot.world_gem_four<3,$element>: "3:82, 4:18";
-}
-
-/* 40 级起额外断片池，独立于主宝石池。 */
-
-boss[type="world"][tag in (
-    "anemo_hypostasis", "cryo_hypostasis", "cryo_regisvine", "dendro_hypostasis",
-    "electro_hypostasis", "electro_regisvine", "geo_hypostasis", "golden_wolflord",
-    "hydro_hypostasis", "jadeplume_terrorshroom", "oceanid", "pyro_hypostasis",
-    "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
-)][level >= 40] {
-    astaps.loot.world_gem_fragment<1,$element>: "3:88, 6:12";
-}
 
 /* 宝石组 2：9 种 Boss，双元素，每批 3 个，自 1 级起。 */
 

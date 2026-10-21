@@ -437,12 +437,59 @@ class CssRewardsTest {
     }
 
     @Test
-    void cssNestingUsesLibrarySelectorExpansionAndCascade() {
-        assertThrows(IllegalArgumentException.class, () -> CssRewards.parse("""
-                boss[type="world"] {
-                    &[tag="a"] { genshin.currency.mora: 5; }
+    void nestingExpandsInSourceOrderWithInheritedBindingsAndSpecificity() {
+        var css = CssRewards.parse("""
+                boss[type="world"][tag in ("anemo_hypostasis", "cryo_hypostasis")] {
+                    --material: mora;
+                    genshin.currency.$material: 1;
+
+                    &[1 <= level <= 4] {
+                        genshin.currency.$material: 53;
+                        &[city=1] {
+                            genshin.currency.primogem: 2;
+                        }
+                    }
+                    &[5 <= level <= 9] {
+                        genshin.currency.$material: 43;
+                    }
+                    genshin.currency.$material: 3;
                 }
-                """, items, loot));
+                boss[type="world"][tag="anemo_hypostasis"][level=6] {
+                    genshin.currency.mora: 57;
+                }
+                """, items, loot);
+        assertEquals(Map.of(202, 53), css.resolve("boss", Map.of(
+                "type", "world", "tag", "anemo_hypostasis", "level", 2)).items());
+        assertEquals(Map.of(202, 53, 201, 2), css.resolve("boss", Map.of(
+                "type", "world", "tag", "cryo_hypostasis", "level", 2, "city", 1)).items());
+        assertEquals(Map.of(202, 57), css.resolve("boss", Map.of(
+                "type", "world", "tag", "anemo_hypostasis", "level", 6)).items());
+        assertEquals(Map.of(202, 43), css.resolve("boss", Map.of(
+                "type", "world", "tag", "cryo_hypostasis", "level", 6)).items());
+        assertEquals(Map.of(202, 3), css.resolve("boss", Map.of(
+                "type", "world", "tag", "cryo_hypostasis", "level", 10)).items());
+        assertTrue(css.resolve("boss", Map.of(
+                "type", "weekly", "tag", "anemo_hypostasis", "level", 2)).items().isEmpty());
+    }
+
+    @Test
+    void nestedSelectorAlternativesKeepTheirOwnMatchingAndOrder() {
+        var css = CssRewards.parse("""
+                chest[grade="common"], chest[grade="precious"] {
+                    &[level=2], &[level=3] {
+                        genshin.currency.mora: 10;
+                    }
+                    &[level=3] {
+                        genshin.currency.mora: 20;
+                    }
+                }
+                """, items, loot);
+        assertEquals(10, css.resolve("chest", Map.of(
+                "grade", "common", "level", 2)).items().get(202));
+        assertEquals(20, css.resolve("chest", Map.of(
+                "grade", "precious", "level", 3)).items().get(202));
+        assertTrue(css.resolve("chest", Map.of(
+                "grade", "precious", "level", 4)).items().isEmpty());
     }
 
     @Test

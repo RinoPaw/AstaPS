@@ -54,7 +54,35 @@ An extended predicate contributes the specificity of an ordinary attribute selec
 Supported cascading rules use selector specificity and source order; `!important` is excluded.
 We are **not** adding `:where()` to the new language; its zero-specificity behavior is not needed for current reward rules.
 
-The **LootCSS** `.lcss` parser and selector matcher are implemented independently of css4j. Supported selectors use object types, attribute predicates, numeric ranges, membership lists and comma-separated alternatives. Unsupported syntax includes `:is()`, `:not()`, `:where()`, `&` and `!important`. Selector attribute types are declared in `RewardCssAttributes`; selector object-type validation remains future work.
+The **LootCSS** `.lcss` parser and selector matcher are implemented independently of css4j. Supported selectors use object types, attribute predicates, numeric ranges, membership lists, comma-separated alternatives and restricted `&` nesting. Unsupported syntax includes `:is()`, `:not()`, `:where()` and `!important`. Selector attribute types are declared in `RewardCssAttributes`; selector object-type validation remains future work.
+
+### Nested selectors
+
+A nested selector starts with `&` and appends at least one attribute predicate. Comma-separated alternatives and additional nesting levels are supported:
+
+```css
+boss[type="world"][tag in ("anemo_hypostasis", "cryo_hypostasis")] {
+    --element: anemo;
+
+    &[1 <= level <= 4] {
+        genshin.avatar_ascension.$element.sliver: "3:53, 6:47";
+    }
+
+    &[5 <= level <= 9] {
+        genshin.avatar_ascension.$element.sliver: "3:43, 6:57";
+    }
+}
+```
+
+Nested selectors are expanded by appending predicates to each parent selector.
+A parent selector list and a nested selector list form their Cartesian product.
+The specificity is the total number of predicates in the expanded selector.
+Declarations and nested rules preserve their original source order; declarations
+before and after a nested block retain their position in the cascade.
+Parent bindings are regular cascading declarations and remain available to nested
+reward expressions. A bare `&`, top-level `&`, implicit nesting without `&`,
+combinators and nested pseudo-classes are not supported. This is a deliberately
+limited grammar and does not implement browser-style CSS nesting specificity.
 
 ## YAML choices
 
@@ -108,6 +136,7 @@ LootCSS and YAML accept only the template spelling `name<args>`, including inter
 - [x] Dollar parameters and function-style template definitions accepted by YAML.
 - [x] Migrate bundled YAML and LootCSS template uses and remove the legacy angle-bracket parsers.
 - [x] Implement the standalone selector parser and AST. A typed object attribute schema remains pending.
+- [x] Implement restricted `&[condition]` nesting with selector flattening and source-order preservation.
 - [x] Implement domain-independent typed `Value<T>` expressions and generic weighted YAML compilation.
 - [x] Verify the language changes with the branch Build CI (successful at `8b667d7`). Repeat CI after further changes and before server testing or an upstream submission.
 

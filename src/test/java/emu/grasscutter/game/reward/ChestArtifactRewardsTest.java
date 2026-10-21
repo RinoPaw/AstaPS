@@ -20,7 +20,7 @@ final class ChestArtifactRewardsTest {
         int y0 = yaml.indexOf("chest_artifact<RARITY, SUBSTATS, SETS...>:");
         int y1 = yaml.indexOf("# 2. World Boss artifacts", y0);
         assertTrue(y0 >= 0 && y1 > y0);
-        String css = RewardConfiguration.readBundled("chests.css");
+        String css = RewardConfiguration.readBundled("chests.lw");
         int c0 = css.indexOf("/* 宝箱圣遗物");
         assertTrue(c0 >= 0);
 
@@ -70,13 +70,13 @@ final class ChestArtifactRewardsTest {
         for (int city = 1; city <= 4; city++) {
             for (String grade : new String[] {"common", "exquisite", "precious", "luxurious"}) {
                 for (int level = 1; level <= 120; level++) {
-                    var selected = f.css.resolve("chest", attrs(city, grade, level));
+                    var selected = f.lw.resolve("chest", attrs(city, grade, level));
                     assertEquals(1, selected.loot().size() + selected.rangedLoot().size(),
                             city + "/" + grade + "/" + level);
                 }
             }
         }
-        var absent = f.css.resolve("chest", attrs(5, "common", 1));
+        var absent = f.lw.resolve("chest", attrs(5, "common", 1));
         assertTrue(absent.loot().isEmpty());
         assertTrue(absent.rangedLoot().isEmpty());
     }
@@ -84,7 +84,7 @@ final class ChestArtifactRewardsTest {
     @Test
     void earlyMondstadtChestPreservesTriggerAndRarityProbabilities() throws Exception {
         var f = fixture();
-        var selected = f.css.resolve("chest", attrs(1, "common", 1));
+        var selected = f.lw.resolve("chest", attrs(1, "common", 1));
         var rng = new Random(71);
         int trials = 20000, oneStar = 0, twoStar = 0, total = 0;
         for (int i = 0; i < trials; i++) {
@@ -103,7 +103,7 @@ final class ChestArtifactRewardsTest {
     @Test
     void sumeruLuxuriousChestRerollsThreeToFourArtifacts() throws Exception {
         var f = fixture();
-        var selected = f.css.resolve("chest", attrs(4, "luxurious", 5));
+        var selected = f.lw.resolve("chest", attrs(4, "luxurious", 5));
         var rng = new Random(72);
         int trials = 10000, total = 0, threeStar = 0, fourStar = 0;
         for (int i = 0; i < trials; i++) {

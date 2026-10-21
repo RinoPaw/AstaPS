@@ -1,4 +1,4 @@
-# Reward language: core semantics (working draft)
+# Lootweave (.lw + .yaml): language semantics
 
 This document records the intended language independently of its implementation.
 The code is being migrated incrementally. Syntax marked **planned** is not yet accepted by the runtime.
@@ -13,7 +13,7 @@ The code is being migrated incrementally. Syntax marked **planned** is not yet a
 A weighted choice is a generic operation over values. It does not intrinsically know about an item `type`.
 A domain object may still have its own `type` attribute.
 
-## Selector language (implemented by the condition adapter)
+## Selector language (standalone parser)
 
 ```css
 chest[grade="luxurious"][70 <= level <= 79] {
@@ -55,9 +55,7 @@ Existing cascading rules, `!important`, and source order still apply.
 We are **not** adding `:where()` to the new language; its zero-specificity behavior is not needed for current reward rules.
 Existing css4j support during transition does not constitute a promise of a future custom implementation.
 
-The current implementation uses an adapter to feed conditions to css4j.
-A fully independent selector parser and typed object schema are **planned**.
-The adapter's injected attributes are internal implementation details, never configuration syntax.
+The `.lw` parser and selector matcher are implemented independently of css4j. Supported selectors use object types, attribute predicates, numeric ranges, membership lists and comma-separated alternatives. Unsupported syntax includes `:is()`, `:not()`, `:where()`, `&` and `!important`. A typed object attribute schema remains future work.
 
 ## YAML choices (partially implemented)
 
@@ -110,6 +108,12 @@ The CSS declarations and YAML template definitions now accept the new syntax. Th
 - [x] Dollar references and function-style template calls accepted by CSS declarations.
 - [x] Dollar parameters and function-style template definitions accepted by YAML.
 - [ ] Migrate all bundled YAML and CSS template uses from angle brackets.
-- [ ] Replace the css4j adapter with a proper selector AST and typed object attribute schema.
+- [x] Implement the standalone selector parser and AST. A typed object attribute schema remains pending.
 - [ ] Implement domain-independent typed value-expression compilation and execution.
 - [ ] Run full Gradle tests and CI before server testing or an upstream submission.
+
+## Files
+
+- `*.lw`: Lootweave selectors, variables and reward declarations, loaded in filename order.
+- `loot.yaml`: structured reward pools and weighted choices.
+- `.css` reward files are no longer loaded.

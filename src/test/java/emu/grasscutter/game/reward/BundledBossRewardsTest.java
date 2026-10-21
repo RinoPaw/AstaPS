@@ -89,10 +89,13 @@ final class BundledBossRewardsTest {
                 }
             }
         });
+        var artifactResolver = new ArtifactResolver(artifacts);
         var loot = YamlLootTables.parse(yaml,
-                id -> ids.computeIfAbsent(ResourceAliases.GENSHIN.resolve(id).toString(),
-                        ignored -> nextId.incrementAndGet()),
-                new ArtifactResolver(artifacts));
+                id -> id.startsWith("genshin.artifact.")
+                        ? artifactResolver.resolveKey(id)
+                        : ids.computeIfAbsent(ResourceAliases.GENSHIN.resolve(id).toString(),
+                                ignored -> nextId.incrementAndGet()),
+                artifactResolver);
         var known = new HashMap<Integer, String>(ItemIdRegistry.chestDropNames());
         known.putAll(Map.ofEntries(
                 Map.entry(101, "Character EXP"),

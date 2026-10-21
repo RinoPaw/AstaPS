@@ -611,10 +611,8 @@ public final class YamlLootTables {
 
     /** The sole key-to-ID boundary used by reward settlement. */
     public int resolveKey(String resource) {
-        if (resource.startsWith("genshin.artifact.")) {
-            if (artifacts == null) throw new IllegalArgumentException("Artifact resolver unavailable");
-            return artifacts.resolveKey(resource);
-        }
+        // Every resource type, including a fully identified artifact, uses
+        // the same authoritative registry at the native-ID boundary.
         return resolver.resolve(resource);
     }
 

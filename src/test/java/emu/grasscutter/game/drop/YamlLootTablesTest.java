@@ -19,6 +19,15 @@ class YamlLootTablesTest {
         return YamlLootTables.parse(yaml, resolver);
     }
 
+    private static YamlLootTables parseWithArtifacts(String yaml,
+            YamlLootTables.ItemResolver resolver, ArtifactResolver artifacts) {
+        // The fixture dictionary includes native artifact variants, just like
+        // the production ResourceRegistry.
+        return YamlLootTables.parse(yaml, key ->
+                key.startsWith("genshin.artifact.")
+                        ? artifacts.resolveKey(key) : resolver.resolve(key), artifacts);
+    }
+
     @Test
     void lootYamlRollProducesOneCompleteKeyPerExpandedArtifactCandidate() {
         var artifacts = new ArtifactResolver(java.util.List.of(
@@ -26,7 +35,7 @@ class YamlLootTablesTest {
                 new ArtifactResolver.Variant(60312, "instructor", 1, 3, 2),
                 new ArtifactResolver.Variant(60411, "instructor", 1, 4, 1),
                 new ArtifactResolver.Variant(60412, "instructor", 1, 4, 2)));
-        var tables = YamlLootTables.parse("""
+        var tables = parseWithArtifacts("""
                 items:
                   - type: Artifact
                     set: instructor
@@ -88,7 +97,7 @@ class YamlLootTablesTest {
                 boss4:
                   - {reward: *artifacts_prayers_wisdom_4star, count: 2}
                 """;
-        var loot = YamlLootTables.parse(yaml, resolver, new ArtifactResolver(variants));
+        var loot = parseWithArtifacts(yaml, resolver, new ArtifactResolver(variants));
         assertEquals(4, loot.names().size());
         for (int grade = 3; grade <= 4; grade++) {
             int[] chosenSets = new int[sets.length];
@@ -578,7 +587,7 @@ class YamlLootTablesTest {
             }
         }
         var artifactResolver = new ArtifactResolver(variants);
-        var loot = YamlLootTables.parse("""
+        var loot = parseWithArtifacts("""
                 chest:
                   - type: Artifact
                     set: berserker
@@ -612,7 +621,7 @@ class YamlLootTablesTest {
                     "the_exile", slot, 4, 2));
         }
         var artifacts = new ArtifactResolver(variants);
-        var nested = YamlLootTables.parse("""
+        var nested = parseWithArtifacts("""
                 slots: &slots
                   - {type: Artifact, set: the_exile, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
                   - {type: Artifact, set: the_exile, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
@@ -623,7 +632,7 @@ class YamlLootTablesTest {
                   - {reward: *slots, weight: 2}
                   - {reward: genshin.currency.mora, weight: 3}
                 """, resolver, artifacts);
-        var flat = YamlLootTables.parse("""
+        var flat = parseWithArtifacts("""
                 choice:
                   - {type: Artifact, set: the_exile, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 2}
                   - {reward: genshin.currency.mora, weight: 3}
@@ -693,7 +702,7 @@ class YamlLootTablesTest {
             }
         }
         var artifacts = new ArtifactResolver(variants);
-        var nested = YamlLootTables.parse("""
+        var nested = parseWithArtifacts("""
                 choice:
                   - reward:
                       - {type: Artifact, set: berserker, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
@@ -706,7 +715,7 @@ class YamlLootTablesTest {
                       - {type: Artifact, set: the_exile, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
                     weight: 17
                 """, resolver, artifacts);
-        var flat = YamlLootTables.parse("""
+        var flat = parseWithArtifacts("""
                 choice:
                   - {type: Artifact, set: berserker, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
                   - {type: Artifact, set: instructor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
@@ -740,7 +749,7 @@ class YamlLootTablesTest {
         var artifacts = new ArtifactResolver(java.util.List.of(
                 new ArtifactResolver.Variant(60140, "adventurer", 1, 1, 0),
                 new ArtifactResolver.Variant(60110, "adventurer", 4, 1, 0)));
-        var loot = YamlLootTables.parse("""
+        var loot = parseWithArtifacts("""
                 chest:
                   - type: Artifact
                     set: adventurer
@@ -753,14 +762,14 @@ class YamlLootTablesTest {
             assertTrue(reward.containsKey(60140) || reward.containsKey(60110));
         }
         assertThrows(IllegalArgumentException.class, () ->
-                YamlLootTables.parse("""
+                parseWithArtifacts("""
                         bad:
                           - type: Artifact
                             set: adventurer
                             properties: {invalid: 1}
                         """, resolver, artifacts));
         assertThrows(IllegalArgumentException.class, () ->
-                YamlLootTables.parse("""
+                parseWithArtifacts("""
                         bad:
                           - reward: genshin.currency.mora
                             properties: {rarity: 1}

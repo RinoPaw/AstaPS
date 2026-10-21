@@ -49,9 +49,9 @@ final class ChestArtifactRewardsTest {
                 }
             }
         }
+        var artifacts = new ArtifactResolver(variants);
         var loot = YamlLootTables.parse(yaml.substring(y0, y1),
-                name -> { throw new IllegalArgumentException(name); },
-                new ArtifactResolver(variants));
+                artifacts::resolveKey, artifacts);
         var rules = CssRewards.parse(css.substring(c0),
                 new ItemIdRegistry(Map.of(202, "Mora")), loot);
         return new Fixture(rules, loot, Map.copyOf(ranks));

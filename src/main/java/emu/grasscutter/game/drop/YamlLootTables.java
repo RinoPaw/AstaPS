@@ -187,19 +187,6 @@ public final class YamlLootTables {
      * A YAML single-key mapping may be a weighted branch whose key is an
      * entire entry or sequence. Convert it to the same pool entry model.
      */
-    private static Map<?, ?> weightedBranch(Map<?, ?> value) {
-        if (value.size() != 1 || value.containsKey("value")
-                || value.containsKey("type") || value.containsKey("reward")) {
-            return value;
-        }
-        var only = value.entrySet().iterator().next();
-        if (!(only.getValue() instanceof Number)) return value;
-        var result = new LinkedHashMap<String, Object>();
-        result.put("value", only.getKey());
-        result.put("weight", only.getValue());
-        return result;
-    }
-
     private static String qualifiedTable(String name, String namespace) {
         return name.startsWith(namespace + ".loot.") ? name : namespace + ".loot." + name;
     }
@@ -426,7 +413,7 @@ public final class YamlLootTables {
                 if (!(list.get(i) instanceof Map<?, ?> mapping)) {
                     throw new IllegalArgumentException(at + ": expected {type, count?} or weighted branch");
                 }
-                Map<?, ?> fields = weightedBranch(mapping);
+                Map<?, ?> fields = YamlWeightedValues.normalize(mapping);
                 // Unknown non-core fields are typed attributes. Their owning
                 // item compiler validates the names and candidate values.
                 int valueFields = (fields.containsKey("value") ? 1 : 0)

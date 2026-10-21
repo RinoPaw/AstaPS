@@ -49,4 +49,24 @@ class YamlWeightedValuesTest {
                 List.of(Map.of("value", "A", "weight", -1)),
                 value -> value, "negative"));
     }
+
+
+    @Test
+    void genericExpressionsCanComposeWithoutMaterializingGameItems() {
+        var element = YamlWeightedValues.compile(
+                List.of(Map.of("anemo", 1), Map.of("cryo", 1)),
+                Object::toString, "element");
+        var rank = YamlWeightedValues.compile(
+                List.of(Map.of(2, 3), Map.of(3, 1)),
+                value -> ((Number) value).intValue(), "rarity");
+        Value<String> combined = element.flatMap(
+                name -> rank.map(rarity -> name + ":" + rarity));
+        var seen = new java.util.HashSet<String>();
+        var rng = new Random(71);
+        for (int i = 0; i < 1_000; i++) seen.add(combined.sample(rng));
+        assertEquals(java.util.Set.of("anemo:2", "anemo:3", "cryo:2", "cryo:3"), seen);
+
+        Value<Map<String, Integer>> plain = Value.constant(Map.of("value", 42));
+        assertEquals(Map.of("value", 42), plain.sample(new Random(1)));
+    }
 }

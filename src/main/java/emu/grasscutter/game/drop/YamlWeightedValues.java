@@ -30,7 +30,7 @@ final class YamlWeightedValues {
     }
 
     /** Decode any YAML value through its owning consumer, preserving its type. */
-    static <T> WeightedChoice<T> compile(
+    static <T> Value<T> compile(
             List<?> alternatives, Function<Object, T> decode, String location) {
         var values = new ArrayList<T>();
         var weights = new ArrayList<BigDecimal>();
@@ -47,6 +47,6 @@ final class YamlWeightedValues {
             values.add(decode.apply(normalized.get("value")));
             weights.add(WeightedChoice.weight(normalized.get("weight"), at));
         }
-        return WeightedChoice.of(values, weights, location);
+        return Value.choose(values, weights, location);
     }
 }

@@ -51,9 +51,8 @@ Mixed numeric/string set literals are rejected.
 Numeric comparison uses arbitrary-precision decimals; no floating-point rounding is needed.
 
 An extended predicate contributes the specificity of an ordinary attribute selector.
-Existing cascading rules, `!important`, and source order still apply.
+Supported cascading rules use selector specificity and source order; `!important` is excluded.
 We are **not** adding `:where()` to the new language; its zero-specificity behavior is not needed for current reward rules.
-Existing css4j support during transition does not constitute a promise of a future custom implementation.
 
 The **LootCSS** `.lcss` parser and selector matcher are implemented independently of css4j. Supported selectors use object types, attribute predicates, numeric ranges, membership lists and comma-separated alternatives. Unsupported syntax includes `:is()`, `:not()`, `:where()`, `&` and `!important`. A typed object attribute schema remains future work.
 
@@ -74,7 +73,7 @@ explicit:
 A choice samples one value using relative weights. Neither `value` nor `weight` implies that the sampled value is an item.
 A choice can contain a scalar or a structured value; the *consumer* determines what those values mean.
 At present, `YamlLootTables` is a reward-materializing consumer and consequently still validates eventual item/pool outputs.
-A first-class typed `Value<T>` evaluation layer usable by other consumers is **planned**. The current YAML runtime already understands the generic `value` / `weight` branch structure, but it still materializes rewards at the output boundary.
+The generic `Value<T>` expression interface supports constant values, weighted selection, mapping, and dependent composition. `YamlWeightedValues` compiles weighted YAML values without requiring item types. The reward executor remains the consumer of these typed expressions when rewards are granted.
 
 An unweighted YAML sequence executes each entry independently.
 A weighted sequence samples exactly one entry. Mixing weighted and unweighted entries at one level is rejected.
@@ -84,7 +83,7 @@ The distinction between `choose(A, B)` repeated N times and choosing once then g
 YAML anchors preserve shared graph identity. Probability and recursion safety checks remain mandatory.
 All historical loot amounts and probabilities remain unchanged while source provenance is investigated.
 
-## Variables and template calls (new syntax under migration)
+## Variables and template calls
 
 ```css
 boss[tag="maguu_kenki"] {
@@ -98,7 +97,7 @@ boss[tag="maguu_kenki"] {
 `$element` is a variable reference, `element` is a literal identifier.
 `$element[0]` indexes a list and `...$element` expands arguments.
 `name(...)` is a template call.
-The CSS declarations and YAML template definitions now accept the new syntax. The bundled tables and older tests still contain angle-bracket expressions during migration; the normalizer converts function calls to existing internal table keys. End-to-end Gradle validation is required before release.
+LootCSS and YAML accept only the function-call spelling `name(args)`, including internal instance keys. Dollar references and explicit `...$pack` expansion use the same syntax throughout. Legacy angle-bracket templates and variables are rejected.
 
 ## Implementation checklist
 
@@ -107,9 +106,9 @@ The CSS declarations and YAML template definitions now accept the new syntax. Th
 - [x] YAML weighted shorthand and explicit `{value, weight}` branch forms.
 - [x] Dollar references and function-style template calls accepted by CSS declarations.
 - [x] Dollar parameters and function-style template definitions accepted by YAML.
-- [ ] Migrate all bundled YAML and CSS template uses from angle brackets.
+- [x] Migrate bundled YAML and LootCSS template uses and remove the legacy angle-bracket parsers.
 - [x] Implement the standalone selector parser and AST. A typed object attribute schema remains pending.
-- [ ] Implement domain-independent typed value-expression compilation and execution.
+- [x] Implement domain-independent typed `Value<T>` expressions and generic weighted YAML compilation.
 - [ ] Run full Gradle tests and CI before server testing or an upstream submission.
 
 ## Files

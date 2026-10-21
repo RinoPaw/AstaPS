@@ -13,7 +13,7 @@ import java.util.random.RandomGenerator;
  * Every candidate has an explicit relative weight, with no implicit outcome.
  * A scalar compiles to a constant expression.
  */
-final class WeightedChoice<T> {
+final class WeightedChoice<T> implements Value<T> {
     private final List<T> candidates;
     private final List<BigDecimal> weights;
     private final double[] boundaries;
@@ -172,7 +172,8 @@ final class WeightedChoice<T> {
         return new WeightedChoice<>(selected, selectedWeights, cumulative, false);
     }
 
-    T sample(RandomGenerator random) {
+    @Override
+    public T sample(RandomGenerator random) {
         if (constant) return candidates.getFirst();
         double ticket = random.nextDouble();
         for (int i = 0; i < boundaries.length - 1; i++) {

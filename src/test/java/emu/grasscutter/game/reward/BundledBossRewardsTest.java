@@ -20,7 +20,7 @@ final class BundledBossRewardsTest {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         String css = RewardConfiguration.readBundledCss();
         css = css.replace("\\", "");
-        assertTrue(yaml.contains("world_gem_two<COUNT, ELEMENTS...>:"));
+        assertTrue(yaml.contains("world_gem_two(COUNT, ...ELEMENTS):"));
         assertTrue(yaml.contains("type: genshin.avatar_ascension"));
         assertTrue(yaml.contains("world_gem_four<COUNT, ELEMENTS...>:"));
         assertTrue(yaml.contains("world_gem_one<ELEMENTS...>:"));

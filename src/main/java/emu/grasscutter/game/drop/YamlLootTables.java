@@ -71,7 +71,23 @@ public final class YamlLootTables {
                 if (artifacts == null) {
                     throw new IllegalArgumentException(location + ": artifact resolver unavailable");
                 }
-                return new TypeTarget(null, null, artifacts.compileType(properties), null, null);
+                var selector = artifacts.compileType(properties);
+                // Validate every selectable artifact identity while compiling.
+                // Native variants carry the canonical key, but only the
+                // injected Registry may translate that key to a native ID.
+                for (int i = 0; i < selector.sets().candidates().size(); i++) {
+                    if (selector.sets().weights().get(i).signum() <= 0) continue;
+                    for (var variant : selector.sets().candidates().get(i)) {
+                        String key = ArtifactResolver.variantKey(variant);
+                        int resolved = resolver.resolve(key);
+                        if (resolved != variant.id()) {
+                            throw new IllegalArgumentException(location
+                                    + ": artifact key/ID mismatch: " + key
+                                    + " expected " + variant.id() + " got " + resolved);
+                        }
+                    }
+                }
+                return new TypeTarget(null, null, selector, null, null);
             }
             case "Gem" -> {
                 if (properties == null || properties.size() != 2

@@ -29,6 +29,27 @@ class YamlLootTablesTest {
     }
 
     @Test
+    void artifactCandidateIdentityIsValidatedAtCompileTime() {
+        var variants = new ArtifactResolver(java.util.List.of(
+                new ArtifactResolver.Variant(60311, "instructor", 1, 3, 1),
+                new ArtifactResolver.Variant(60312, "instructor", 1, 3, 2)));
+        String yaml = """
+                artifacts:
+                  - {type: Artifact, set: instructor, slot: flower, rarity: 3, substats: "1:1,2:1"}
+                """;
+        var incomplete = new java.util.HashMap<>(variants.resourceIds());
+        incomplete.remove("genshin.artifact.instructor.flower.3.2");
+        assertThrows(IllegalArgumentException.class, () ->
+                YamlLootTables.parse(yaml, name -> incomplete.getOrDefault(name, -2), variants));
+        var mismatched = new java.util.HashMap<>(variants.resourceIds());
+        mismatched.put("genshin.artifact.instructor.flower.3.2", 999999);
+        assertThrows(IllegalArgumentException.class, () ->
+                YamlLootTables.parse(yaml, name -> mismatched.getOrDefault(name, -2), variants));
+        assertDoesNotThrow(() ->
+                YamlLootTables.parse(yaml, name -> variants.resolveKey(name), variants));
+    }
+
+    @Test
     void lootYamlRollProducesOneCompleteKeyPerExpandedArtifactCandidate() {
         var artifacts = new ArtifactResolver(java.util.List.of(
                 new ArtifactResolver.Variant(60311, "instructor", 1, 3, 1),

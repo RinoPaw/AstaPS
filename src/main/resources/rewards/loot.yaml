@@ -68,10 +68,10 @@ meat_ingredients:
 
 ## 1.3 Regional talent books
 # Three equal-weight candidates per roll; CSS specifies each region's families and rarity.
-regional_talent_books<RARITY, SERIES...>:
+regional_talent_books(RARITY, ...SERIES):
   - type: genshin.talent_up
-    series: "<SERIES...>:1"
-    rarity: <RARITY>
+    series: "...$SERIES:1"
+    rarity: $RARITY
 
 ## 1.4 Native chest artifacts (sourceType 19, cities 1-4)
 # Parameterized candidate sets preserve native rarity and initial substat counts.
@@ -306,11 +306,11 @@ world_gem_one<ELEMENTS...>:
     rarity: 2
     count: 3
 
-world_gem_two<COUNT, ELEMENTS...>:
+world_gem_two(COUNT, ...ELEMENTS):
   - type: genshin.avatar_ascension
-    element: "<ELEMENTS...>:1"
+    element: "...$ELEMENTS:1"
     rarity: "2:79, 3:21"
-    count: <COUNT>
+    count: $COUNT
 
 world_gem_three<COUNT, ELEMENTS...>:
   - type: genshin.avatar_ascension

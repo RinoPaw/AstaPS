@@ -240,7 +240,8 @@ final class RewardCssParser {
         }
         if (end() || round != 0 || square != 0 || angle != 0) throw error("Invalid resource declaration");
         String property = source.substring(start, position).replaceAll("/\\*.*?\\*/", "").trim();
-        if (!PROPERTY.matcher(property).matches() || property.startsWith("--grant-")) {
+        if (!PROPERTY.matcher(property).matches() || property.startsWith("--grant-")
+                || property.indexOf('<') >= 0 || property.indexOf('>') >= 0) {
             throw error("Invalid reward property: " + property);
         }
         expect(':');

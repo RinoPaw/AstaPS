@@ -851,4 +851,39 @@ class CssRewardsTest {
                     () -> CssRewards.parse(selector + " { genshin.currency.mora: 1; }", items, loot));
         }
     }
+
+    @Test
+    void functionStylePoolCallsResolveThroughCssWithDollarBindings() {
+        var templated = YamlLootTables.parse("""
+                reward<KIND>:
+                  - {reward: "genshin.currency.<KIND>"}
+                """, items::resolve);
+        var css = CssRewards.parse("""
+                chest {
+                    --kind: mora;
+                    astaps.loot.reward($kind): 2;
+                }
+                chest[tag="bonus"] {
+                    --kind: primogem;
+                }
+                """, items, templated);
+        assertEquals(Map.of(202, 2),
+                RewardRoller.roll(css.resolve("chest", Map.of()), templated, new Random(2)));
+        assertEquals(Map.of(201, 2),
+                RewardRoller.roll(css.resolve("chest", Map.of("tag", "bonus")),
+                        templated, new Random(2)));
+    }
+
+    @Test
+    void literalFunctionCallsValidateAgainstExistingTables() {
+        var templated = YamlLootTables.parse("""
+                reward<KIND>:
+                  - {reward: "genshin.currency.<KIND>"}
+                """, items::resolve);
+        var css = CssRewards.parse("""
+                chest { astaps.loot.reward(mora): 2; }
+                """, items, templated);
+        assertEquals(Map.of(202, 2),
+                RewardRoller.roll(css.resolve("chest", Map.of()), templated, new Random(3)));
+    }
 }

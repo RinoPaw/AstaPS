@@ -451,7 +451,7 @@ class LootCountScopeTest {
                 values: {type: "forward(2,3)"}
                 empty(...VALUES):
                   - {type: genshin.currency.mora}
-                zero: {type: "empty<>"}
+                zero: {type: "empty()"}
                 """, ITEMS);
         assertEquals(Map.of(MORA, 1), loot.roll("zero", new Random(62)));
         var rng = new Random(63);

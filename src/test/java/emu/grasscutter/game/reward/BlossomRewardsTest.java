@@ -26,15 +26,16 @@ class BlossomRewardsTest {
         String selectors = RewardConfiguration.readBundled("blossoms.lcss");
         assertEquals(1, selectors.lines().filter(line ->
                 line.equals("blossom {")).count());
-        assertEquals(2, selectors.lines().filter(line ->
-                line.stripLeading().startsWith("&[type=")).count());
-        assertEquals(14, selectors.lines().filter(line ->
-                line.stripLeading().matches("&\\[(?:WR=.*|6 <= WR <= 9)\\] \\{")).count());
-        assertTrue(selectors.contains("&[type=\"wealth\"] {"));
-        assertTrue(selectors.contains("&[type=\"revelation\"] {"));
-        assertEquals(2, selectors.lines().filter(line ->
-                line.stripLeading().startsWith("&[6 <= WR <= 9]")).count());
-        assertEquals(15, RewardCssParser.parse(selectors).size());
+        assertEquals(7, selectors.lines().filter(line ->
+                line.stripLeading().startsWith("&[WR=")
+                        || line.stripLeading().startsWith("&[6 <= WR <= 9]")).count());
+        assertEquals(7, selectors.lines().filter(line ->
+                line.stripLeading().startsWith("&[type=\"wealth\"]")).count());
+        assertEquals(7, selectors.lines().filter(line ->
+                line.stripLeading().startsWith("&[type=\"revelation\"]")).count());
+        var warnings = new java.util.ArrayList<String>();
+        assertEquals(22, RewardCssParser.parse(selectors, warnings::add).size());
+        assertTrue(warnings.isEmpty(), warnings.toString());
         assertFalse(selectors.contains("astaps.loot."));
         return new RewardConfiguration(loot, CssRewards.parse(
                 selectors, items, loot));

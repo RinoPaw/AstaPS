@@ -1,9 +1,11 @@
 package emu.grasscutter.game.reward;
 
+import emu.grasscutter.Grasscutter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**
@@ -102,19 +104,27 @@ final class RewardCssParser {
     private static final Pattern PROPERTY = Pattern.compile(
             "(?:--[A-Za-z_][A-Za-z0-9_-]*|genshin\\.[A-Za-z0-9_.$\\[\\]-]+(?:\\.[A-Za-z0-9_.$\\[\\]-]+)*|[a-z][a-z0-9_]*\\.loot\\..+)");
     private final String source;
+    private final Consumer<String> warnings;
     private int position;
 
-    private RewardCssParser(String source) { this.source = Objects.requireNonNull(source); }
+    private RewardCssParser(String source, Consumer<String> warnings) {
+        this.source = Objects.requireNonNull(source);
+        this.warnings = Objects.requireNonNull(warnings);
+    }
 
     static List<Rule> parse(String source) {
-        var parser = new RewardCssParser(source);
+        return parse(source, message -> Grasscutter.getLogger().warn(message));
+    }
+
+    static List<Rule> parse(String source, Consumer<String> warnings) {
+        var parser = new RewardCssParser(source, warnings);
         var result = new ArrayList<Rule>();
         parser.trivia();
         while (!parser.end()) {
             List<Selector> selectors = parser.selectors(false);
             parser.trivia();
             parser.expect('{');
-            parser.block(selectors, result);
+            parser.block(selectors, result, false, -1);
             parser.trivia();
         }
         return List.copyOf(result);
@@ -122,16 +132,20 @@ final class RewardCssParser {
 
     // Flatten nested rules in source order. Each '&[condition]' appends predicates
     // to every parent selector, preserving the existing cascade and specificity.
-    private void block(List<Selector> parents, List<Rule> result) {
+    private void block(List<Selector> parents, List<Rule> result,
+                       boolean nested, int selectorPosition) {
         var declarations = new ArrayList<Declaration>();
+        boolean hasOwnDeclarations = false, hasNestedRules = false;
         trivia();
         while (!take('}')) {
             if (end()) throw error("Missing '}'");
             if (peek('&')) {
+                hasNestedRules = true;
                 if (!declarations.isEmpty()) {
                     result.add(new Rule(parents, List.copyOf(declarations)));
                     declarations.clear();
                 }
+                int childPosition = position;
                 var children = selectors(true);
                 var expanded = new ArrayList<Selector>();
                 for (Selector parent : parents) {
@@ -143,14 +157,19 @@ final class RewardCssParser {
                 }
                 trivia();
                 expect('{');
-                block(List.copyOf(expanded), result);
+                block(List.copyOf(expanded), result, true, childPosition);
             } else {
                 declarations.add(declaration());
+                hasOwnDeclarations = true;
             }
             trivia();
         }
         if (!declarations.isEmpty()) {
             result.add(new Rule(parents, List.copyOf(declarations)));
+        }
+        if (nested && hasNestedRules && !hasOwnDeclarations) {
+            warnings.accept("LootCSS: " + location(selectorPosition)
+                    + " nested selector has no direct declarations");
         }
     }
 
@@ -421,12 +440,16 @@ final class RewardCssParser {
     private boolean end() { return position >= source.length(); }
     private void expect(char c) { if (!take(c)) throw error("Expected '" + c + "'"); }
 
-    private IllegalArgumentException error(String message) {
+    private String location(int offset) {
         int line = 1, column = 1;
-        for (int i = 0; i < position; i++) {
+        for (int i = 0; i < offset; i++) {
             if (source.charAt(i) == '\n') { line++; column = 1; }
             else column++;
         }
-        return new IllegalArgumentException("Invalid reward CSS: " + line + ":" + column + " " + message);
+        return line + ":" + column;
+    }
+
+    private IllegalArgumentException error(String message) {
+        return new IllegalArgumentException("Invalid reward CSS: " + location(position) + " " + message);
     }
 }

@@ -80,8 +80,10 @@ The specificity is the total number of predicates in the expanded selector.
 Declarations and nested rules preserve their original source order; declarations
 before and after a nested block retain their position in the cascade.
 Parent bindings are regular cascading declarations and remain available to nested
-reward expressions. A bare `&`, top-level `&`, implicit nesting without `&`,
-combinators and nested pseudo-classes are not supported. This is a deliberately
+reward expressions. A nested intermediate `&` block with child rules but no
+declarations of its own is valid, but produces a source-location warning. Top-level
+blocks may group nested rules without declarations. A bare `&`, top-level `&`,
+implicit nesting without `&`, combinators and nested pseudo-classes are not supported. This is a deliberately
 limited grammar and does not implement browser-style CSS nesting specificity.
 
 ## YAML choices

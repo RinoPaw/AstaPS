@@ -2,6 +2,7 @@ package emu.grasscutter.game.reward;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -103,6 +104,47 @@ class RewardCssParserTest {
                 Map.of("type", "world", "tag", "anemo_hypostasis", "level", 10)));
         assertTrue(rules.get(2).selectors().getFirst().matches("boss",
                 Map.of("type", "world", "tag", "anemo_hypostasis", "level", 1, "city", 1)));
+    }
+
+    @Test
+    void emptyIntermediateNestingWarnsButStillParses() {
+        var warnings = new ArrayList<String>();
+        var rules = RewardCssParser.parse("""
+                blossom {
+                    &[type="wealth"] {
+                        &[WR=0] {
+                            genshin.currency.mora: 12000;
+                        }
+                    }
+                }
+                """, warnings::add);
+        assertEquals(1, rules.size());
+        assertEquals(1, warnings.size());
+        assertTrue(warnings.getFirst().contains("2:5"), warnings.toString());
+        assertTrue(warnings.getFirst().contains("no direct declarations"));
+        assertTrue(rules.getFirst().selectors().getFirst().matches("blossom",
+                Map.of("type", "wealth", "WR", 0)));
+    }
+
+    @Test
+    void nestingWithSharedDeclarationsDoesNotWarn() {
+        var warnings = new ArrayList<String>();
+        var rules = RewardCssParser.parse("""
+                blossom {
+                    genshin.experience.adventure: 100;
+                    &[WR=0] {
+                        genshin.experience.companionship: 10;
+                        &[type="wealth"] {
+                            genshin.currency.mora: 12000;
+                        }
+                        &[type="revelation"] {
+                            genshin.avatar_up.wanderers_advice: "7~8";
+                        }
+                    }
+                }
+                """, warnings::add);
+        assertEquals(4, rules.size());
+        assertTrue(warnings.isEmpty(), warnings.toString());
     }
 
     @Test

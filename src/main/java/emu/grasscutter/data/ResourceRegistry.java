@@ -14,7 +14,35 @@ import java.util.Objects;
  * category, usage metadata, aliases or implicit naming rules participate.
  */
 public final class ResourceRegistry {
+    private static volatile ResourceRegistry active;
     private final Map<String, Integer> ids;
+
+    /**
+     * Command resolution and bundled rewards share exactly one registered dictionary.
+     * Loading it uses the native item table, without relying on localization text.
+     */
+    public static ResourceRegistry current() {
+        var registry = active;
+        if (registry != null) return registry;
+        synchronized (ResourceRegistry.class) {
+            if (active == null) {
+                try {
+                    active = fromGameResources(ArtifactResolver.fromGameResources());
+                } catch (IOException e) {
+                    throw new IllegalStateException("Cannot load resource registry", e);
+                }
+            }
+            return active;
+        }
+    }
+
+    /** Install the dictionary together with the artifact variants used by reward compilation. */
+    public static ResourceRegistry current(ArtifactResolver artifacts) throws IOException {
+        synchronized (ResourceRegistry.class) {
+            if (active == null) active = fromGameResources(artifacts);
+            return active;
+        }
+    }
 
     public ResourceRegistry(Map<String, Integer> entries) {
         Objects.requireNonNull(entries, "entries");

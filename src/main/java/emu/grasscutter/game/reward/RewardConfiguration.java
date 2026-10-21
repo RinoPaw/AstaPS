@@ -33,7 +33,7 @@ public final class RewardConfiguration {
     public static void load() {
         try {
             var artifacts = ArtifactResolver.fromGameResources();
-            var registry = ResourceRegistry.fromGameResources(artifacts);
+            var registry = ResourceRegistry.current(artifacts);
             var loot = YamlLootTables.parse(readBundled("loot.yaml"), registry::resolve, artifacts);
             var css = CssRewards.parse(readBundledLootCss(), registry, loot);
             active = new RewardConfiguration(loot, css);

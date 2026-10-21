@@ -12,6 +12,7 @@ import emu.grasscutter.data.GameDepot;
 import emu.grasscutter.data.NameIndex;
 import emu.grasscutter.data.GenshinResourceIds;
 import emu.grasscutter.data.ResourceId;
+import emu.grasscutter.data.ResourceRegistry;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.data.excels.avatar.AvatarData;
 import emu.grasscutter.data.excels.reliquary.ReliquaryAffixData;
@@ -215,12 +216,20 @@ public final class GiveCommand implements CommandHandler {
         if (input.startsWith("genshin.")) {
             try {
                 ResourceId resource = ResourceId.parse(input);
-                int nativeId = GenshinResourceIds.current().resolve(input);
                 String resourceType = resource.size() > 1 ? resource.segment(1) : "";
-                if ("artifact".equals(resourceType)) {
+                // Artifact-set, avatar and cooking-definition identifiers are separate
+                // command domains. A fully specified inventory item always uses the
+                // exact same dictionary as LootCSS and loot.yaml.
+                boolean artifactSet = "artifact".equals(resourceType) && resource.size() == 3;
+                boolean cookingDefinition = "recipe".equals(resourceType)
+                        && resource.size() == 3;
+                int nativeId = artifactSet || cookingDefinition || "avatar".equals(resourceType)
+                        ? GenshinResourceIds.current().resolve(input)
+                        : ResourceRegistry.current().resolve(input);
+                if (artifactSet) {
                     param.setPieces = NameIndex.bestPiecesForSet(nativeId);
                     param.id = param.setPieces.get(0);
-                } else if ("recipe".equals(resourceType)) {
+                } else if (cookingDefinition) {
                     param.recipeId = nativeId;
                     return true;
                 } else {

@@ -33,7 +33,7 @@ final class WeightedChoice<T> {
         if (raw == null) {
             throw new IllegalArgumentException(location + ": missing value");
         }
-        if (raw instanceof String text && (text.contains(":") || text.contains(","))) {
+        if (raw instanceof String text && hasTopLevelDelimiter(text)) {
             return parse(text, location, name -> resolve.apply(name));
         }
         return constant(Objects.requireNonNull(resolve.apply(raw),
@@ -53,20 +53,85 @@ final class WeightedChoice<T> {
         }
         var candidates = new ArrayList<T>();
         var weights = new ArrayList<BigDecimal>();
-        for (String segment : expression.split(",", -1)) {
-            String[] pair = segment.trim().split(":", -1);
-            if (pair.length != 2 || pair[0].isBlank()) {
+        for (String segment : splitTopLevel(expression, ',')) {
+            int separator = topLevelIndex(segment, ':');
+            if (separator < 1 || topLevelIndex(segment.substring(separator + 1), ':') >= 0) {
                 throw new IllegalArgumentException(
                         location + ": expected candidate:weight: " + segment);
             }
-            String name = pair[0].trim();
-            var weight = weight(pair[1], location);
+            String name = segment.substring(0, separator).trim();
+            if (name.isEmpty()) {
+                throw new IllegalArgumentException(location + ": empty weighted candidate");
+            }
+            var weight = weight(segment.substring(separator + 1), location);
             if (weight.signum() == 0) continue;
             candidates.add(Objects.requireNonNull(resolve.apply(name),
                     location + ": invalid candidate " + name));
             weights.add(weight);
         }
         return of(candidates, weights, location);
+    }
+
+
+    /**
+     * Count separators only outside function arguments, template arguments,
+     * brackets and quoted strings. A call such as chest_artifact(3,1,set)
+     * is a single candidate, even though its argument list contains commas.
+     */
+    private static int topLevelIndex(String source, char delimiter) {
+        int angle = 0, round = 0, square = 0, curly = 0;
+        char quote = 0;
+        for (int i = 0; i < source.length(); i++) {
+            char c = source.charAt(i);
+            if (quote != 0) {
+                if (c == '\\') {
+                    i++;
+                } else if (c == quote) {
+                    quote = 0;
+                }
+                continue;
+            }
+            if (c == '\'' || c == '"') { quote = c; continue; }
+            if (c == delimiter && angle == 0 && round == 0 && square == 0 && curly == 0) {
+                return i;
+            }
+            switch (c) {
+                case '<' -> angle++;
+                case '>' -> angle--;
+                case '(' -> round++;
+                case ')' -> round--;
+                case '[' -> square++;
+                case ']' -> square--;
+                case '{' -> curly++;
+                case '}' -> curly--;
+                default -> {}
+            }
+            if (angle < 0 || round < 0 || square < 0 || curly < 0) {
+                throw new IllegalArgumentException("Unbalanced weighted expression: " + source);
+            }
+        }
+        if (quote != 0 || angle != 0 || round != 0 || square != 0 || curly != 0) {
+            throw new IllegalArgumentException("Unbalanced weighted expression: " + source);
+        }
+        return -1;
+    }
+
+    private static boolean hasTopLevelDelimiter(String text) {
+        return topLevelIndex(text, ':') >= 0 || topLevelIndex(text, ',') >= 0;
+    }
+
+    private static List<String> splitTopLevel(String expression, char delimiter) {
+        var result = new ArrayList<String>();
+        String remaining = expression;
+        for (;;) {
+            int index = topLevelIndex(remaining, delimiter);
+            if (index < 0) {
+                result.add(remaining);
+                return result;
+            }
+            result.add(remaining.substring(0, index));
+            remaining = remaining.substring(index + 1);
+        }
     }
 
     static BigDecimal weight(Object raw, String location) {

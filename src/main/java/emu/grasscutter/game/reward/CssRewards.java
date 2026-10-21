@@ -16,20 +16,19 @@ import java.util.Set;
 
 /** Rewards resolved with the dedicated reward stylesheet parser and cascade. */
 public final class CssRewards {
+    /**
+     * ID-oriented inspection adapter for existing internal diagnostics.
+     * Rolling always delegates to the canonical string-key selection below.
+     */
     public record Selection(Map<Integer, Integer> items, Map<String, Integer> loot,
-            Map<Integer, LootCount.Spec> rangedItems, Map<String, LootCount.Spec> rangedLoot) {
-        public Selection(Map<Integer, Integer> items, Map<String, Integer> loot) {
-            this(items, loot, Map.of(), Map.of());
-        }
-        public Selection(Map<Integer, Integer> items, Map<String, Integer> loot,
-                         Map<Integer, LootCount.Spec> rangedItems) {
-            this(items, loot, rangedItems, Map.of());
-        }
+            Map<Integer, LootCount.Spec> rangedItems, Map<String, LootCount.Spec> rangedLoot,
+            KeySelection keys) {
         public Selection {
             items = Map.copyOf(items);
             loot = Map.copyOf(loot);
             rangedItems = Map.copyOf(rangedItems);
             rangedLoot = Map.copyOf(rangedLoot);
+            java.util.Objects.requireNonNull(keys, "keys");
         }
     }
 
@@ -198,6 +197,6 @@ public final class CssRewards {
         var ranged = new HashMap<Integer, LootCount.Spec>();
         keys.items().forEach((key, count) -> fixed.put(itemRegistry.applyAsInt(key), count));
         keys.rangedItems().forEach((key, count) -> ranged.put(itemRegistry.applyAsInt(key), count));
-        return new Selection(fixed, keys.loot(), ranged, keys.rangedLoot());
+        return new Selection(fixed, keys.loot(), ranged, keys.rangedLoot(), keys);
     }
 }

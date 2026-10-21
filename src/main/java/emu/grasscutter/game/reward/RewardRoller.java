@@ -10,6 +10,7 @@ import java.util.random.RandomGenerator;
 public final class RewardRoller {
     private RewardRoller() {}
 
+    /** ID adapter for diagnostics; executes the same name-first path as live rewards. */
     public static Map<Integer, Integer> rollIds(
             CssRewards.Selection selection, YamlLootTables loot, RandomGenerator random) {
         return rollIds(selection, loot, random, RewardContext.NONE);
@@ -18,26 +19,7 @@ public final class RewardRoller {
     public static Map<Integer, Integer> rollIds(
             CssRewards.Selection selection, YamlLootTables loot, RandomGenerator random,
             RewardContext context) {
-        var result = new TreeMap<Integer, Integer>();
-        var executions = new TreeMap<>(selection.loot());
-        selection.rangedLoot().forEach((table, spec) ->
-                executions.put(table, spec.sample(random)));
-        executions.forEach((table, repetitions) -> {
-            for (int i = 0; i < repetitions; i++) {
-                loot.rollIds(table, random).forEach((id, count) ->
-                        result.merge(id, count, Math::addExact));
-            }
-        });
-        selection.items().forEach((id, count) -> {
-            if (count == 0) result.remove(id);
-            else result.put(id, count);
-        });
-        selection.rangedItems().forEach((id, spec) -> {
-            int count = spec.sample(random);
-            if (count == 0) result.remove(id);
-            else result.put(id, count);
-        });
-        return resolveRegionalItems(result, context);
+        return resolveKeys(roll(selection.keys(), loot, random), loot, context);
     }
 
     /** Execute every Lua/CSS/YAML choice as a fully qualified resource name. */

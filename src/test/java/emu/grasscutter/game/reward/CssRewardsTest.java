@@ -544,7 +544,7 @@ class CssRewardsTest {
         for (int i = 0; i < levels.length; i++) {
             assertEquals(Map.of("astaps.loot." + names[i], times[i]),
                     css.resolve("chest", Map.of("grade", "common",
-                            "level", Integer.toString(levels[i]))).loot(),
+                            "level", levels[i])).loot(),
                     "level " + levels[i]);
         }
         for (Integer level : new Integer[]{0, -1}) {

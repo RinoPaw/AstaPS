@@ -269,7 +269,7 @@ final class BundledBossRewardsTest {
                 assertTrue(seen.add(label), "Duplicate historical Boss reference: " + label);
                 var selected = css.resolve("boss", Map.of(
                         "type", "world", "tag", RewardConfiguration.cssBossTag(nativeTag),
-                        "level", Integer.toString(level)));
+                        "level", level));
                 double[] expected = expectedNativePayout(entry.get("dropId").getAsInt(),
                         tableMap, cache, new java.util.HashSet<>());
                 int[] ids = {101, 102, 105, 202};

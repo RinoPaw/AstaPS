@@ -116,7 +116,7 @@ class BundledChestRewardsTest {
             for (int level : levels) {
                 var selected = css.resolve("chest", Map.of(
                         "type", "normal", "grade", grade, "city", 1,
-                        "level", Integer.toString(level)));
+                        "level", level));
                 assertEquals(30, selected.items().get(102).intValue());
                 assertTrue(java.util.stream.Stream.concat(
                         selected.loot().keySet().stream(), selected.rangedLoot().keySet().stream())
@@ -143,7 +143,7 @@ class BundledChestRewardsTest {
                     .items().get(201).intValue());
             assertEquals(low[k], css.resolve("chest",
                     Map.of("type", "normal", "grade", kinds[k], "city", 1)).items().get(201).intValue());
-            for (String area : new String[]{"10", "77", "8", "19", "40", "41", "47", "300"}) {
+            for (int area : new int[]{10, 77, 8, 19, 40, 41, 47, 300}) {
                 assertEquals(base[k], css.resolve("chest", Map.of(
                         "type", "normal", "grade", kinds[k], "city", 1, "area", area))
                         .items().get(201).intValue());
@@ -215,7 +215,7 @@ class BundledChestRewardsTest {
             for (int level : new int[]{1, 6, 11, 16, 21, 26}) {
                 var selection = css.resolve("chest", Map.of(
                         "type", "normal", "city", 1, "grade", grade,
-                        "level", Integer.toString(level)));
+                        "level", level));
                 assertTrue(java.util.stream.Stream.concat(selection.loot().keySet().stream(),
                         selection.rangedLoot().keySet().stream())
                         .anyMatch(name -> name.startsWith("astaps.loot.weapons_")));
@@ -246,7 +246,7 @@ class BundledChestRewardsTest {
         int trials = 1500;
         for (int i = 0; i < grades.length; i++) {
             var selected = css.resolve("chest", Map.of("type", "normal", "city", 1,
-                    "grade", grades[i], "level", Integer.toString(levels[i])));
+                    "grade", grades[i], "level", levels[i]));
             double[] total = new double[ids.length];
             for (int n = 0; n < trials; n++) {
                 var rolled = RewardRoller.roll(selected, loot, random,
@@ -279,8 +279,8 @@ class BundledChestRewardsTest {
             String kind = test[0] == 0 ? "exquisite" : "precious";
             var selected = css.resolve("chest", Map.of(
                     "type", "normal", "grade", kind,
-                    "level", Integer.toString(test[1]),
-                    "city", Integer.toString(test[2])));
+                    "level", test[1],
+                    "city", test[2]));
             assertEquals(test[3], selected.items().getOrDefault(recipes[0], 0).intValue());
             assertEquals(test[4], selected.items().getOrDefault(recipes[1], 0).intValue());
             assertEquals(test[5], selected.items().getOrDefault(recipes[2], 0).intValue());

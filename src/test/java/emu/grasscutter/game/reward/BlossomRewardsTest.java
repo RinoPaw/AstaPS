@@ -90,11 +90,11 @@ class BlossomRewardsTest {
     void missingTypeOrWorldLevelCannotGrantCommonExperienceOnly() throws IOException {
         var config = rewards();
         for (var attrs : java.util.List.of(
-                Map.of("type", "wealth", "WR", "10"),
-                Map.of("type", "revelation", "WR", "-1"),
-                Map.of("type", "other", "WR", "4"),
-                Map.of("WR", "4"),
-                Map.of("kind", "wealth", "WR", "4"))) {
+                Map.of("type", "wealth", "WR", 10),
+                Map.of("type", "revelation", "WR", -1),
+                Map.of("type", "other", "WR", 4),
+                Map.of("WR", 4),
+                Map.of("kind", "wealth", "WR", 4))) {
             assertThrows(RuntimeException.class,
                     () -> config.roll("blossom", attrs, new Random(1)), attrs.toString());
         }

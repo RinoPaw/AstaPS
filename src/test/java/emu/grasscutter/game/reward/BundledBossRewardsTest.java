@@ -204,7 +204,7 @@ final class BundledBossRewardsTest {
         for (var boss : bosses) {
             for (int level : new int[] {1, 5, 10, 15, 20, 25, 29}) {
                 var attributes = Map.of(
-                        "type", "world", "tag", boss, "level", Integer.toString(level));
+                        "type", "world", "tag", boss, "level", level);
                 var selection = css.resolve("boss", attributes);
                 assertTrue(!selection.rangedItems().isEmpty()
                         || !selection.rangedLoot().isEmpty(), boss + "@" + level);
@@ -222,7 +222,7 @@ final class BundledBossRewardsTest {
                     "Lv.105+ retains the level-93-plus configured range: " + boss);
         }
         var pureMaterial = css.resolve("boss", Map.of(
-                "type", "world", "tag", "precision_clockwork", "level", "1"));
+                "type", "world", "tag", "precision_clockwork", "level", 1));
         assertEquals(1, pureMaterial.rangedItems().size());
         assertTrue(pureMaterial.loot().isEmpty());
         assertTrue(pureMaterial.rangedLoot().keySet().stream()
@@ -230,11 +230,11 @@ final class BundledBossRewardsTest {
         assertNotNull(config.rollWorldBoss("精密发条机关", 1, new java.util.Random(71)));
 
         var dual = css.resolve("boss", Map.of(
-                "type", "world", "tag", "maguu_kenki", "level", "45"));
+                "type", "world", "tag", "maguu_kenki", "level", 45));
         assertTrue(dual.rangedLoot().keySet().stream()
                 .anyMatch(key -> key.startsWith("astaps.loot.world_")));
         var weekly = css.resolve("boss", Map.of(
-                "type", "weekly", "tag", "stormterror", "level", "90"));
+                "type", "weekly", "tag", "stormterror", "level", 90));
         assertTrue(weekly.loot().isEmpty());
         assertTrue(weekly.rangedLoot().isEmpty());
     }

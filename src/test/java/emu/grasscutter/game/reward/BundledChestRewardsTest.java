@@ -115,7 +115,7 @@ class BundledChestRewardsTest {
         for (String grade : grades) {
             for (int level : levels) {
                 var selected = css.resolve("chest", Map.of(
-                        "type", "normal", "grade", grade, "city", "1",
+                        "type", "normal", "grade", grade, "city", 1,
                         "level", Integer.toString(level)));
                 assertEquals(30, selected.items().get(102).intValue());
                 assertTrue(java.util.stream.Stream.concat(
@@ -142,14 +142,14 @@ class BundledChestRewardsTest {
             assertEquals(base[k], css.resolve("chest", Map.of("type", "normal", "grade", kinds[k]))
                     .items().get(201).intValue());
             assertEquals(low[k], css.resolve("chest",
-                    Map.of("type", "normal", "grade", kinds[k], "city", "1")).items().get(201).intValue());
+                    Map.of("type", "normal", "grade", kinds[k], "city", 1)).items().get(201).intValue());
             for (String area : new String[]{"10", "77", "8", "19", "40", "41", "47", "300"}) {
                 assertEquals(base[k], css.resolve("chest", Map.of(
-                        "type", "normal", "grade", kinds[k], "city", "1", "area", area))
+                        "type", "normal", "grade", kinds[k], "city", 1, "area", area))
                         .items().get(201).intValue());
             }
             var selected = css.resolve("chest", Map.of(
-                    "type", "normal", "grade", kinds[k], "city", "2", "level", "26"));
+                    "type", "normal", "grade", kinds[k], "city", 2, "level", 26));
             for (int seed = 0; seed < 32; seed++) {
                 var rolled = RewardRoller.roll(selected, loot, new Random(seed),
                         new RewardContext(3, 0, "liyue"));
@@ -166,8 +166,8 @@ class BundledChestRewardsTest {
         var loot = loot();
         var css = CssRewards.parse(chestCss(), items(), loot);
         for (String kind : new String[]{"common", "exquisite", "precious", "luxurious"}) {
-            for (String level : new String[]{null, "0", "-1", "unknown"}) {
-                var props = new java.util.HashMap<String, String>();
+            for (Integer level : new Integer[]{null, 0, -1}) {
+                var props = new java.util.HashMap<String, Object>();
                 props.put("type", "normal");
                 props.put("grade", kind);
                 if (level != null) props.put("level", level);
@@ -181,11 +181,11 @@ class BundledChestRewardsTest {
                 assertThrows(IllegalStateException.class,
                         () -> RewardConfiguration.requireChestLoot("chest", selection, props));
             }
-            var valid = Map.of("type", "normal", "grade", kind, "level", "26");
+            var valid = Map.of("type", "normal", "grade", kind, "level", 26);
             assertDoesNotThrow(() -> RewardConfiguration.requireChestLoot(
                     "chest", css.resolve("chest", valid), valid));
         }
-        var unrecognized = Map.of("type", "normal", "grade", "unknown", "level", "26");
+        var unrecognized = Map.of("type", "normal", "grade", "unknown", "level", 26);
         assertThrows(IllegalStateException.class, () ->
                 RewardConfiguration.requireChestLoot(
                         "chest", css.resolve("chest", unrecognized), unrecognized));
@@ -195,7 +195,7 @@ class BundledChestRewardsTest {
     void specialChestTypesDoNotInheritNormalChestRewards() throws Exception {
         var css = CssRewards.parse(chestCss(), items(), loot());
         for (String type : new String[]{"mora", "remarkable"}) {
-            var attrs = Map.of("type", type, "grade", "common", "level", "26");
+            var attrs = Map.of("type", type, "grade", "common", "level", 26);
             var selection = css.resolve("chest", attrs);
             assertTrue(selection.items().isEmpty(), type);
             assertTrue(selection.loot().isEmpty(), type);
@@ -203,7 +203,7 @@ class BundledChestRewardsTest {
             assertThrows(IllegalStateException.class, () ->
                     RewardConfiguration.requireChestLoot("chest", selection, attrs));
         }
-        var missingType = Map.of("grade", "common", "level", "26");
+        var missingType = Map.of("grade", "common", "level", 26);
         assertTrue(css.resolve("chest", missingType).loot().isEmpty());
     }
 
@@ -214,7 +214,7 @@ class BundledChestRewardsTest {
         for (String grade : new String[]{"common", "exquisite", "precious", "luxurious"}) {
             for (int level : new int[]{1, 6, 11, 16, 21, 26}) {
                 var selection = css.resolve("chest", Map.of(
-                        "type", "normal", "city", "1", "grade", grade,
+                        "type", "normal", "city", 1, "grade", grade,
                         "level", Integer.toString(level)));
                 assertTrue(java.util.stream.Stream.concat(selection.loot().keySet().stream(),
                         selection.rangedLoot().keySet().stream())
@@ -245,7 +245,7 @@ class BundledChestRewardsTest {
         var random = new Random(721);
         int trials = 1500;
         for (int i = 0; i < grades.length; i++) {
-            var selected = css.resolve("chest", Map.of("type", "normal", "city", "1",
+            var selected = css.resolve("chest", Map.of("type", "normal", "city", 1,
                     "grade", grades[i], "level", Integer.toString(levels[i])));
             double[] total = new double[ids.length];
             for (int n = 0; n < trials; n++) {

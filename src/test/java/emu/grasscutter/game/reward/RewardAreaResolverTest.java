@@ -30,17 +30,17 @@ class RewardAreaResolverTest {
 
     @Test
     void nativeParentAreaAndCityAreSharedWithCssAndSigils() {
-        var attrs = new HashMap<String, String>();
+        var attrs = new HashMap<String, Object>();
         var parent = area(10, 0, 3);
         var location = resolve(3, parent, List.of(city(1, 1, 10), city(2, 5, 8)));
         location.addAttributes(attrs);
-        assertEquals(Map.of("area", "10", "city", "1"), attrs);
+        assertEquals(Map.of("area", 10, "city", 1), attrs);
         assertEquals(305, RegionalSigilResolver.fromCityId(location.cityId()));
 
         attrs.clear();
         resolve(3, area(8, 0, 3), List.of(city(1, 1), city(2, 8)))
                 .addAttributes(attrs);
-        assertEquals(Map.of("area", "8", "city", "2"), attrs);
+        assertEquals(Map.of("area", 8, "city", 2), attrs);
     }
 
     @Test
@@ -49,9 +49,9 @@ class RewardAreaResolverTest {
         assertEquals(504692813, child.getId());
         var location = resolve(3, child, List.of(city(1, 1, 77), city(2, 8)));
         assertEquals(new RewardAreaResolver.Area(77, 1), location);
-        var attributes = new HashMap<String, String>();
+        var attributes = new HashMap<String, Object>();
         location.addAttributes(attributes);
-        assertEquals(Map.of("area", "77", "city", "1"), attributes);
+        assertEquals(Map.of("area", 77, "city", 1), attributes);
         assertEquals(305, RegionalSigilResolver.fromCityId(location.cityId()));
     }
 
@@ -81,9 +81,9 @@ class RewardAreaResolverTest {
     @Test
     void sourceRegionFillsMissingCityForBothCssAndSigils() {
         var location = RewardAreaResolver.resolve(3, 0, "mondstadt", null, List.of());
-        var attrs = new HashMap<String, String>();
+        var attrs = new HashMap<String, Object>();
         location.addAttributes(attrs);
-        assertEquals(Map.of("city", "1"), attrs);
+        assertEquals(Map.of("city", 1), attrs);
         assertEquals(305, RegionalSigilResolver.fromCityId(location.cityId()));
 
         assertEquals(new RewardAreaResolver.Area(0, 4),
@@ -105,10 +105,10 @@ class RewardAreaResolverTest {
                     astaps.loot.seals: 1;
                     genshin.currency.primogem: 2;
                 }
-                chest[city="1"] { genshin.currency.primogem: 0; }
+                chest[city=1] { genshin.currency.primogem: 0; }
                 """, names, loot);
         var context = new RewardContext(3, 0, "mondstadt");
-        var attributes = new HashMap<String, String>();
+        var attributes = new HashMap<String, Object>();
         attributes.put("kind", "common");
         RewardAreaResolver.resolve(context).addAttributes(attributes);
         assertEquals(Map.of(305, 1),

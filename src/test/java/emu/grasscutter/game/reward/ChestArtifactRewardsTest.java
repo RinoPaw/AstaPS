@@ -57,9 +57,9 @@ final class ChestArtifactRewardsTest {
         return new Fixture(rules, loot, Map.copyOf(ranks));
     }
 
-    private static Map<String, String> attrs(int city, String grade, int level) {
-        return Map.of("type", "normal", "city", Integer.toString(city),
-                "grade", grade, "level", Integer.toString(level));
+    private static Map<String, Object> attrs(int city, String grade, int level) {
+        return Map.of("type", "normal", "city", city,
+                "grade", grade, "level", level);
     }
 
     @Test

@@ -1071,8 +1071,9 @@ class YamlLootTablesTest {
     void genericWeightedValueCanBeNestedRewardExpression() {
         var tables = parse("""
                 nested:
-                  - [{type: genshin.currency.mora, count: 2},
-                     {type: genshin.avatar_up.heros_wit, count: 3}]: 1
+                  - ? [{type: genshin.currency.mora, count: 2},
+                       {type: genshin.avatar_up.heros_wit, count: 3}]
+                    : 1
                 explicit:
                   - value:
                       - {type: genshin.currency.mora, count: 2}
@@ -1110,7 +1111,7 @@ class YamlLootTablesTest {
                 choose(...KINDS):
                   - value: "genshin.currency....$KINDS:1"
                 chosen:
-                  - {value: choose(mora,mora), count: 2}
+                  - {value: "choose(mora,mora)", count: 2}
                 """);
         assertEquals(Map.of(202, 2), tables.roll("chosen", new Random(7)));
     }

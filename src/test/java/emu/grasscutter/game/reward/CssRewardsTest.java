@@ -3,6 +3,7 @@ package emu.grasscutter.game.reward;
 import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.data.ItemIdRegistry;
+import emu.grasscutter.data.ResourceRegistry;
 import emu.grasscutter.game.drop.YamlLootTables;
 import java.util.Map;
 import java.util.Random;
@@ -44,10 +45,13 @@ class CssRewardsTest {
     @Test
     void cssAndYamlCombineByFinalNamesBeforeOneIdLookup() {
         var items = new ItemIdRegistry(Map.of(202, "Mora", 104003, "Hero's Wit"));
+        var registry = new ResourceRegistry(Map.of(
+                "genshin.currency.mora", 202,
+                "genshin.avatar_up.heros_wit", 104003));
         var pool = YamlLootTables.parse("""
                 books:
                   - {type: genshin.avatar_up.heros_wit, count: 2}
-                """, items::resolve);
+                """, registry::resolve);
         var css = CssRewards.parse("""
                 chest[type="normal"] {
                     astaps.loot.books: 1;

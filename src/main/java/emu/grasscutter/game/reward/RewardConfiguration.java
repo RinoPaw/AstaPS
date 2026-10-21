@@ -284,7 +284,7 @@ public final class RewardConfiguration {
                 "level", nativeBossLevel);
         var selection = css.resolveKeys("boss", attributes);
         if (selection.loot().isEmpty() && selection.rangedLoot().isEmpty()
-                && selection.rangedItems().isEmpty() && selection.items().isEmpty()) {
+                && selection.rangedItems().isEmpty()) {
             return null;
         }
         return RewardRoller.resolveKeys(RewardRoller.rollKeys(selection, loot, random),

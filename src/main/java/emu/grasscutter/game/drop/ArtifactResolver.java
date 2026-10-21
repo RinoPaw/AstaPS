@@ -121,6 +121,7 @@ public final class ArtifactResolver {
     }
 
     private final Map<String, List<Variant>> bySet;
+    private final Map<String, Integer> resourceIds;
 
     public ArtifactResolver(List<Variant> variants) {
         var sets = new LinkedHashMap<String, List<Variant>>();
@@ -144,25 +145,26 @@ public final class ArtifactResolver {
             }
         }
         this.bySet = Map.copyOf(sets);
-    }
-
-    /** Fully specified Loot artifact names correspond to one native item each. */
-    public Map<String, Integer> resourceIds() {
-        var result = new LinkedHashMap<String, Integer>();
-        for (var variants : bySet.values()) {
-            for (Variant variant : variants) {
+        var resourceIndex = new LinkedHashMap<String, Integer>();
+        for (var variantsInSet : sets.values()) {
+            for (Variant variant : variantsInSet) {
                 String key = variantKey(variant);
-                Integer previous = result.putIfAbsent(key, variant.id());
+                Integer previous = resourceIndex.putIfAbsent(key, variant.id());
                 if (previous != null && previous != variant.id()) {
                     throw new IllegalArgumentException("Ambiguous artifact resource: " + key);
                 }
             }
         }
-        return Map.copyOf(result);
+        this.resourceIds = Map.copyOf(resourceIndex);
+    }
+
+    /** Fully specified Loot artifact names correspond to one native item each. */
+    public Map<String, Integer> resourceIds() {
+        return resourceIds;
     }
 
     public int resolveKey(String resource) {
-        Integer id = resourceIds().get(resource);
+        Integer id = resourceIds.get(resource);
         if (id == null) throw new IllegalArgumentException("Unknown artifact resource: " + resource);
         return id;
     }

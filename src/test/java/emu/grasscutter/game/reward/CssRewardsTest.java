@@ -123,11 +123,12 @@ class CssRewardsTest {
     }
 
     @Test
-    void numericGradeAliasesResolveThroughCssAndShareCascadeIdentity() {
-        var items = new ItemIdRegistry(Map.of(
-                8101, "Vayuda Turquoise Sliver",
-                8102, "Vayuda Turquoise Gemstone",
-                8201, "Guide to Freedom"));
+    void canonicalNamesCascadeBeforeTheSingleRegistryLookup() {
+        var registry = new ResourceRegistry(Map.of(
+                "genshin.avatar_ascension.anemo.2", 8101,
+                "genshin.avatar_ascension.anemo.5", 8102,
+                "genshin.talent_up.freedom.3", 8201));
+        var pool = YamlLootTables.parse("{}", registry::resolve);
         var css = CssRewards.parse("""
                 boss {
                     genshin.avatar_ascension.anemo.2: 1;
@@ -136,15 +137,24 @@ class CssRewardsTest {
                 }
                 boss[tag="override"] {
                     genshin.avatar_ascension.anemo.2: 4;
-                    genshin.talent_up.freedom.guide: 5;
+                    genshin.talent_up.freedom.3: 5;
                 }
-                """, items, loot);
-        assertEquals(Map.of(8101, 1, 8102, 2, 8201, 3),
-                css.resolveIds("boss", Map.of()).items());
+                """, registry, pool);
+        assertEquals(Map.of(
+                "genshin.avatar_ascension.anemo.2", 1,
+                "genshin.avatar_ascension.anemo.5", 2,
+                "genshin.talent_up.freedom.3", 3),
+                css.resolve("boss", Map.of()).items());
+        var keys = css.resolve("boss", Map.of("tag", "override"));
+        assertEquals(Map.of(
+                "genshin.avatar_ascension.anemo.2", 4,
+                "genshin.avatar_ascension.anemo.5", 2,
+                "genshin.talent_up.freedom.3", 5), keys.items());
         assertEquals(Map.of(8101, 4, 8102, 2, 8201, 5),
-                css.resolveIds("boss", Map.of("tag", "override")).items());
+                RewardRoller.resolveKeys(RewardRoller.roll(keys, pool, new Random(1)),
+                        pool, RewardContext.NONE));
         assertThrows(IllegalArgumentException.class, () -> CssRewards.parse(
-                "boss { genshin.talent_up.freedom.5: 1; }", items, loot));
+                "boss { genshin.talent_up.freedom.guide: 1; }", registry, pool));
     }
 
     @Test

@@ -26,7 +26,7 @@ public final class RewardConfiguration {
 
     RewardConfiguration(YamlLootTables loot, CssRewards css) {
         this.loot = loot;
-        this.lw = css;
+        this.css = css;
     }
 
     /** Load the authoritative classpath rewards; no editable config/rewards copy. */

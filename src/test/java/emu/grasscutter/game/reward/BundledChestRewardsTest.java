@@ -302,9 +302,9 @@ class BundledChestRewardsTest {
     @Test
     void nativeArtifactVariantsRemainResolvableWithVariadicTemplates() throws Exception {
         String source = chestYaml();
-        assertTrue(source.contains("chest_artifact<RARITY, SUBSTATS, SETS...>:"));
+        assertTrue(source.contains("chest_artifact(RARITY, SUBSTATS, ...SETS):"));
         assertTrue(source.contains("type: genshin.artifact"));
-        assertTrue(source.contains("set: \"<SETS...>:1\""));
+        assertTrue(source.contains("set: \"...$SETS:1\""));
         assertEquals(20, java.util.regex.Pattern.compile("(?m)^chest_artifact_mix_[0-9]+:")
                 .matcher(source).results().count());
         var chosen = artifacts().compile("genshin.artifact.berserker",

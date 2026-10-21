@@ -22,18 +22,18 @@ final class BundledBossRewardsTest {
         css = css.replace("\\", "");
         assertTrue(yaml.contains("world_gem_two(COUNT, ...ELEMENTS):"));
         assertTrue(yaml.contains("type: genshin.avatar_ascension"));
-        assertTrue(yaml.contains("world_gem_four<COUNT, ELEMENTS...>:"));
-        assertTrue(yaml.contains("world_gem_one<ELEMENTS...>:"));
+        assertTrue(yaml.contains("world_gem_four(COUNT, ...ELEMENTS):"));
+        assertTrue(yaml.contains("world_gem_one(...ELEMENTS):"));
         assertTrue(css.contains("astaps.loot.world_gem_one($element[0],$element[1]):"));
         for (int rarity = 1; rarity <= 4; rarity++) {
-            String template = "world_artifact_" + rarity + "star<SETS...>:";
+            String template = "world_artifact_" + rarity + "star(...SETS):";
             assertTrue(yaml.contains(template), template);
             assertFalse(yaml.contains("world_artifact_" + rarity + "star_1<"));
             assertFalse(css.contains("world_artifact_" + rarity + "star_1<"));
         }
         assertTrue(yaml.contains("world_artifact_5star:"));
-        assertTrue(yaml.contains("world_artifact_5star_plume_goblet<PLUME_SUBSTATS, GOBLET_SUBSTATS>:"));
-        assertTrue(yaml.contains("world_artifact_5star_goblet<SUBSTATS>:"));
+        assertTrue(yaml.contains("world_artifact_5star_plume_goblet(PLUME_SUBSTATS, GOBLET_SUBSTATS):"));
+        assertTrue(yaml.contains("world_artifact_5star_goblet(SUBSTATS):"));
         assertTrue(css.contains("astaps.loot.world_"));
         assertFalse(css.contains("boss[type=\"weekly\"]"));
         String identities = css.substring(css.indexOf("/* 身份绑定"),
@@ -268,7 +268,7 @@ final class BundledBossRewardsTest {
                 String label = nativeTag + " level=" + level;
                 assertTrue(seen.add(label), "Duplicate historical Boss reference: " + label);
                 var selected = css.resolve("boss", Map.of(
-                        "type", "world", "tag", RewardConfiguration.lwBossTag(nativeTag),
+                        "type", "world", "tag", RewardConfiguration.cssBossTag(nativeTag),
                         "level", Integer.toString(level)));
                 double[] expected = expectedNativePayout(entry.get("dropId").getAsInt(),
                         tableMap, cache, new java.util.HashSet<>());

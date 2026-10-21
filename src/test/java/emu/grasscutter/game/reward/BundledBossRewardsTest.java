@@ -20,20 +20,20 @@ final class BundledBossRewardsTest {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         String css = RewardConfiguration.readBundledLootCss();
         css = css.replace("\\", "");
-        assertTrue(yaml.contains("world_gem_two(COUNT, ...ELEMENTS):"));
+        assertTrue(yaml.contains("world_gem_two<COUNT, ...ELEMENTS>:"));
         assertTrue(yaml.contains("type: genshin.avatar_ascension"));
-        assertTrue(yaml.contains("world_gem_four(COUNT, ...ELEMENTS):"));
-        assertTrue(yaml.contains("world_gem_one(...ELEMENTS):"));
-        assertTrue(css.contains("astaps.loot.world_gem_one($element[0],$element[1]):"));
+        assertTrue(yaml.contains("world_gem_four<COUNT, ...ELEMENTS>:"));
+        assertTrue(yaml.contains("world_gem_one<...ELEMENTS>:"));
+        assertTrue(css.contains("astaps.loot.world_gem_one<$element[0],$element[1]>:"));
         for (int rarity = 1; rarity <= 4; rarity++) {
-            String template = "world_artifact_" + rarity + "star(...SETS):";
+            String template = "world_artifact_" + rarity + "star<...SETS>:";
             assertTrue(yaml.contains(template), template);
-            assertFalse(yaml.contains("world_artifact_" + rarity + "star_1("));
-            assertFalse(css.contains("world_artifact_" + rarity + "star_1("));
+            assertFalse(yaml.contains("world_artifact_" + rarity + "star_1<"));
+            assertFalse(css.contains("world_artifact_" + rarity + "star_1<"));
         }
         assertTrue(yaml.contains("world_artifact_5star:"));
-        assertTrue(yaml.contains("world_artifact_5star_plume_goblet(PLUME_SUBSTATS, GOBLET_SUBSTATS):"));
-        assertTrue(yaml.contains("world_artifact_5star_goblet(SUBSTATS):"));
+        assertTrue(yaml.contains("world_artifact_5star_plume_goblet<PLUME_SUBSTATS, GOBLET_SUBSTATS>:"));
+        assertTrue(yaml.contains("world_artifact_5star_goblet<SUBSTATS>:"));
         assertTrue(css.contains("astaps.loot.world_"));
         assertFalse(css.contains("boss[type=\"weekly\"]"));
         String identities = css.substring(css.indexOf("/* 身份绑定"),
@@ -41,14 +41,14 @@ final class BundledBossRewardsTest {
         assertEquals(48, identities.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertTrue(css.contains("astaps.loot.world_artifact_5star:"));
-        assertFalse(css.contains("world_artifact_5star("));
-        assertTrue(css.contains("world_artifact_5star_plume_goblet(0,0)"));
-        assertTrue(css.contains("world_artifact_5star_goblet(1)"));
-        assertTrue(css.contains("world_artifact_5star_goblet(0)"));
-        assertFalse(css.contains("world_artifact_5star_2("));
-        assertFalse(css.contains("world_artifact_5star_special("));
-        assertFalse(css.contains("world_artifact_5star_piece("));
-        assertFalse(css.contains("world_artifact_5star_plume_goblet(instructor,"));
+        assertFalse(css.contains("world_artifact_5star<"));
+        assertTrue(css.contains("world_artifact_5star_plume_goblet<0,0>"));
+        assertTrue(css.contains("world_artifact_5star_goblet<1>"));
+        assertTrue(css.contains("world_artifact_5star_goblet<0>"));
+        assertFalse(css.contains("world_artifact_5star_2<"));
+        assertFalse(css.contains("world_artifact_5star_special<"));
+        assertFalse(css.contains("world_artifact_5star_piece<"));
+        assertFalse(css.contains("world_artifact_5star_plume_goblet<instructor,">);
     }
 
     @Test
@@ -64,7 +64,7 @@ final class BundledBossRewardsTest {
         // Collect native sets from the artifact template arguments and the
         // fixed-set YAML entries. Prayers sets contain circlets only.
         var sets = new java.util.LinkedHashSet<String>();
-        Pattern.compile("world_artifact_[1-4]star\\(([^)]+)\\)")
+        Pattern.compile("world_artifact_[1-4]star<([^>]+)>")
                 .matcher(stylesheet).results()
                 .flatMap(match -> java.util.Arrays.stream(match.group(1).split(",")))
                 .map(String::trim)

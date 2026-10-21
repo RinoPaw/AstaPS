@@ -9,17 +9,17 @@ import org.junit.jupiter.api.Test;
 
 class RewardResourceExpressionTest {
     @Test
-    void functionArgumentsDistinguishLiteralsAndVariables() {
-        var literal = RewardResourceExpression.parse("astaps.loot.gem(anemo)", true);
+    void templateArgumentsDistinguishLiteralsAndVariables() {
+        var literal = RewardResourceExpression.parse("astaps.loot.gem<anemo>", true);
         assertFalse(literal.hasVariables());
         literal.requireDeclared(Set.of());
-        assertEquals(List.of("astaps.loot.gem(anemo)"),
+        assertEquals(List.of("astaps.loot.gem<anemo>"),
                 literal.expand(Map.of("anemo", List.of("geo"))));
 
-        var variable = RewardResourceExpression.parse("astaps.loot.gem($element)", true);
+        var variable = RewardResourceExpression.parse("astaps.loot.gem<$element>", true);
         assertTrue(variable.hasVariables());
         variable.requireDeclared(Set.of("element"));
-        assertEquals(List.of("astaps.loot.gem(anemo)"),
+        assertEquals(List.of("astaps.loot.gem<anemo>"),
                 variable.expand(Map.of("element", List.of("anemo"))));
         assertThrows(IllegalArgumentException.class,
                 () -> variable.expand(Map.of("element", List.of("anemo", "cryo"))));
@@ -42,27 +42,27 @@ class RewardResourceExpressionTest {
     }
 
     @Test
-    void spreadAndIndexYieldTheSameCanonicalInvocation() {
+    void spreadAndIndexYieldTheSameCanonicalTemplate() {
         var spread = RewardResourceExpression.parse(
-                "astaps.loot.world_gem_two(3, ...$element)", true);
+                "astaps.loot.world_gem_two<3, ...$element>", true);
         var indexed = RewardResourceExpression.parse(
-                "astaps.loot.world_gem_two(3, $element[0], $element[1])", true);
+                "astaps.loot.world_gem_two<3, $element[0], $element[1]>", true);
         var bindings = Map.of("element", List.of("anemo", "cryo"));
-        assertEquals(List.of("astaps.loot.world_gem_two(3,anemo,cryo)"),
+        assertEquals(List.of("astaps.loot.world_gem_two<3,anemo,cryo>"),
                 spread.expand(bindings));
         assertEquals(spread.expand(bindings), indexed.expand(bindings));
     }
 
     @Test
-    void rejectedLegacyAndMalformedSyntax() {
+    void rejectsParenthesesAndMalformedTemplateSyntax() {
         for (String source : List.of(
-                "astaps.loot.gem<anemo>",
+                "astaps.loot.gem(anemo)",
                 "astaps.loot.gem<<element>>",
                 "genshin.avatar_ascension.<element>",
-                "astaps.loot.gem(...$element[0])",
-                "astaps.loot.gem(3,)",
-                "astaps.loot.gem($element[-1])",
-                "astaps.loot.gem($element[2147483648])")) {
+                "astaps.loot.gem<...$element[0]>",
+                "astaps.loot.gem<3,>",
+                "astaps.loot.gem<$element[-1]>",
+                "astaps.loot.gem<$element[2147483648]>")) {
             assertThrows(IllegalArgumentException.class,
                     () -> RewardResourceExpression.parse(source, true), source);
         }

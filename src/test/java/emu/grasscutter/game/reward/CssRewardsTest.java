@@ -137,17 +137,17 @@ class CssRewardsTest {
     @Test
     void templateLiteralsCannotBeShadowedByVariablesWithTheSameName() {
         var templates = YamlLootTables.parse("""
-                pick(KIND):
+                pick<KIND>:
                   - {reward: "genshin.currency.$KIND"}
                 """, items::resolve);
         var css = CssRewards.parse("""
                 chest {
                     --mora: primogem;
                     --element: mora;
-                    astaps.loot.pick(mora): 1;
+                    astaps.loot.pick<mora>: 1;
                 }
-                chest[mode="variable"] { astaps.loot.pick($mora): 2; }
-                chest[mode="element"] { astaps.loot.pick($element): 3; }
+                chest[mode="variable"] { astaps.loot.pick<$mora>: 2; }
+                chest[mode="element"] { astaps.loot.pick<$element>: 3; }
                 chest[mode="element"][grade="common"] { --element: primogem; }
                 """, items, templates);
         assertEquals(Map.of(202, 1), RewardRoller.roll(css.resolve("chest", Map.of()), templates, new Random(1)));
@@ -174,7 +174,7 @@ class CssRewardsTest {
                 "chest { genshin.currency.$anemo: 1; }", items, loot));
         assertTrue(error.getMessage().contains("Undeclared reward variable $anemo"));
         var tableError = assertThrows(IllegalArgumentException.class, () -> CssRewards.parse(
-                "chest { astaps.loot.pick($missing): 1; }", items, loot));
+                "chest { astaps.loot.pick<$missing>: 1; }", items, loot));
         assertTrue(tableError.getMessage().contains("Undeclared reward variable $missing"));
     }
 
@@ -815,13 +815,13 @@ class CssRewardsTest {
     @Test
     void functionStylePoolCallsResolveThroughCssWithDollarBindings() {
         var templated = YamlLootTables.parse("""
-                reward(KIND):
+                reward<KIND>:
                   - {value: "genshin.currency.$KIND"}
                 """, items::resolve);
         var css = CssRewards.parse("""
                 chest {
                     --kind: mora;
-                    astaps.loot.reward($kind): 2;
+                    astaps.loot.reward<$kind>: 2;
                 }
                 chest[tag="bonus"] {
                     --kind: primogem;
@@ -837,13 +837,26 @@ class CssRewardsTest {
     @Test
     void literalFunctionCallsValidateAgainstExistingTables() {
         var templated = YamlLootTables.parse("""
-                reward(KIND):
+                reward<KIND>:
                   - {value: "genshin.currency.$KIND"}
                 """, items::resolve);
         var css = CssRewards.parse("""
-                chest { astaps.loot.reward(mora): 2; }
+                chest { astaps.loot.reward<mora>: 2; }
                 """, items, templated);
         assertEquals(Map.of(202, 2),
                 RewardRoller.roll(css.resolve("chest", Map.of()), templated, new Random(3)));
+    }
+
+    @Test
+    void decimalCountsAreOutsideTheQuantityGrammar() {
+        assertThrows(IllegalArgumentException.class, () -> CssRewards.parse(
+                "chest { genshin.currency.mora: 3.25; }", items, loot));
+        var css = CssRewards.parse(
+                "chest { genshin.currency.mora: \"3:3, 4:1\"; }", items, loot);
+        var rng = new Random(51);
+        for (int i = 0; i < 100; i++) {
+            int value = RewardRoller.roll(css.resolve("chest", Map.of()), loot, rng).get(202);
+            assertTrue(value == 3 || value == 4);
+        }
     }
 }

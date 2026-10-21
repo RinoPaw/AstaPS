@@ -17,7 +17,7 @@ final class ChestArtifactRewardsTest {
 
     private static Fixture fixture() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
-        int y0 = yaml.indexOf("chest_artifact(RARITY, SUBSTATS, ...SETS):");
+        int y0 = yaml.indexOf("chest_artifact<RARITY, SUBSTATS, ...SETS>:");
         int y1 = yaml.indexOf("# 2. World Boss artifacts", y0);
         assertTrue(y0 >= 0 && y1 > y0);
         String css = RewardConfiguration.readBundled("chests.lcss");
@@ -66,7 +66,7 @@ final class ChestArtifactRewardsTest {
     void allNativeCityGradeLevelRulesSelectOneArtifactProfile() throws Exception {
         var f = fixture();
         // The 26 source candidate pools are parameterized; only 20 weighted mixtures are named tables.
-        assertEquals(20, f.loot.names().stream().filter(name -> !name.contains("(")).count());
+        assertEquals(20, f.loot.names().stream().filter(name -> !name.contains("<")).count());
         for (int city = 1; city <= 4; city++) {
             for (String grade : new String[] {"common", "exquisite", "precious", "luxurious"}) {
                 for (int level = 1; level <= 120; level++) {

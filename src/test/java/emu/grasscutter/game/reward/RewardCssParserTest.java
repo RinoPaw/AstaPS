@@ -55,7 +55,7 @@ class RewardCssParserTest {
                 chest[!grade], chest[grade in ("common", "exquisite")] {
                     --element: "[anemo, cryo]";
                     genshin.currency.sigil.$element: "0:50, 1:50";
-                    astaps.loot.world_gem_two(3, ...$element): 1;
+                    astaps.loot.world_gem_two<3, ...$element>: 1;
                 }
                 """);
         assertEquals(1, rules.size());
@@ -65,7 +65,7 @@ class RewardCssParserTest {
                 rules.getFirst().declarations().get(1).name());
         assertEquals("0:50, 1:50",
                 rules.getFirst().declarations().get(1).value());
-        assertEquals("astaps.loot.world_gem_two(3, ...$element)",
+        assertEquals("astaps.loot.world_gem_two<3, ...$element>",
                 rules.getFirst().declarations().get(2).name());
     }
 

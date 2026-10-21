@@ -76,7 +76,7 @@ class BundledChestRewardsTest {
     }
 
     private static String chestCss() throws Exception {
-        return RewardConfiguration.readBundled("chests.lw");
+        return RewardConfiguration.readBundled("chests.lcss");
     }
 
     private static YamlLootTables loot() throws Exception {

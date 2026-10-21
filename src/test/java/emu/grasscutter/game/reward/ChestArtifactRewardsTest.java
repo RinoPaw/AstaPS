@@ -20,7 +20,7 @@ final class ChestArtifactRewardsTest {
         int y0 = yaml.indexOf("chest_artifact(RARITY, SUBSTATS, ...SETS):");
         int y1 = yaml.indexOf("# 2. World Boss artifacts", y0);
         assertTrue(y0 >= 0 && y1 > y0);
-        String css = RewardConfiguration.readBundled("chests.lw");
+        String css = RewardConfiguration.readBundled("chests.lcss");
         int c0 = css.indexOf("/* 宝箱圣遗物");
         assertTrue(c0 >= 0);
 

@@ -18,7 +18,7 @@ final class BundledBossRewardsTest {
     @Test
     void worldBossTemplatesCoverAllMappedIdentitiesWithoutInventingWeeklyDrops() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
-        String css = RewardConfiguration.readBundledLootweave();
+        String css = RewardConfiguration.readBundledLootCss();
         css = css.replace("\\", "");
         assertTrue(yaml.contains("world_gem_two(COUNT, ...ELEMENTS):"));
         assertTrue(yaml.contains("type: genshin.avatar_ascension"));
@@ -54,7 +54,7 @@ final class BundledBossRewardsTest {
     @Test
     void bundledWorldAndWeeklyRulesLoadAndNativeFallbackIsPreserved() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
-        String originalCss = RewardConfiguration.readBundledLootweave();
+        String originalCss = RewardConfiguration.readBundledLootCss();
         // Keep fixture-name extraction independent from the stylesheet parser.
         String stylesheet = originalCss.replace("\\", "");
         var ids = new HashMap<String, Integer>();

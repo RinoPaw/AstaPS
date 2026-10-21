@@ -1,4 +1,4 @@
-# Lootweave (.lw + .yaml): language semantics
+# Lootweave: LootCSS (.lcss) and YAML reward tables
 
 This document records the intended language independently of its implementation.
 The code is being migrated incrementally. Syntax marked **planned** is not yet accepted by the runtime.
@@ -55,7 +55,7 @@ Existing cascading rules, `!important`, and source order still apply.
 We are **not** adding `:where()` to the new language; its zero-specificity behavior is not needed for current reward rules.
 Existing css4j support during transition does not constitute a promise of a future custom implementation.
 
-The `.lw` parser and selector matcher are implemented independently of css4j. Supported selectors use object types, attribute predicates, numeric ranges, membership lists and comma-separated alternatives. Unsupported syntax includes `:is()`, `:not()`, `:where()`, `&` and `!important`. A typed object attribute schema remains future work.
+The **LootCSS** `.lcss` parser and selector matcher are implemented independently of css4j. Supported selectors use object types, attribute predicates, numeric ranges, membership lists and comma-separated alternatives. Unsupported syntax includes `:is()`, `:not()`, `:where()`, `&` and `!important`. A typed object attribute schema remains future work.
 
 ## YAML choices (partially implemented)
 
@@ -114,6 +114,6 @@ The CSS declarations and YAML template definitions now accept the new syntax. Th
 
 ## Files
 
-- `*.lw`: Lootweave selectors, variables and reward declarations, loaded in filename order.
+- `*.lcss`: **LootCSS**, the Lootweave selector, variable and cascading declaration language. Loaded in filename order.
 - `loot.yaml`: structured reward pools and weighted choices.
-- `.css` reward files are no longer loaded.
+- `.lw` and `.css` reward files are not loaded.

@@ -49,7 +49,7 @@ final class TransPointRewardsTest {
         var ids = new ItemIdRegistry(names);
         var loot = YamlLootTables.parse(BundledChestRewardsTest.chestYaml(), ids::resolve,
                 BundledChestRewardsTest.artifacts());
-        var css = CssRewards.parse(RewardConfiguration.readBundled("transpoints.lw"), ids, loot);
+        var css = CssRewards.parse(RewardConfiguration.readBundled("transpoints.lcss"), ids, loot);
         var standard = Map.of(102, 50, 201, 5);
         assertEquals(standard, roll(css, loot, "waypoint", 3, 8));
         assertEquals(standard, roll(css, loot, "statue", 3, 3));

@@ -21,9 +21,12 @@ import sun.misc.Unsafe;
 
 import java.util.*;
 import java.util.concurrent.Future;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /** Real manager and scene lifecycle with in-memory entity, persistence and transport boundaries. */
 @org.junit.jupiter.api.extension.ExtendWith(emu.grasscutter.ServerResourceFixture.class)
+@ResourceLock(value = "grasscutter-global-state", mode = ResourceAccessMode.READ_WRITE)
 public final class DailyTaskGroupLifecycleTest {
     @org.junit.jupiter.api.Test
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -43,7 +46,6 @@ public final class DailyTaskGroupLifecycleTest {
         serverField.setAccessible(true);
         var oldServer = serverField.get(null);
         try {
-            nextId = 500;
             runLifecycleScenario();
         } finally {
             for (int i = 0; i < maps.size(); i++) {
@@ -89,8 +91,6 @@ public final class DailyTaskGroupLifecycleTest {
                 owner.manager.polls,
                 "a new host manager does not inherit the previous lifecycle's throttle");
     }
-
-    static int nextId = 500;
 
     static void set(Class<?> c, Object target, String name, Object value) throws Exception {
         var f = c.getDeclaredField(name);
@@ -798,6 +798,7 @@ public final class DailyTaskGroupLifecycleTest {
         Map<Integer, SceneBlock> blocks;
         Map<Integer, Set<SceneGroup>> perBlock;
         int refreshes, unloads, groupLoadEvents;
+        int nextEntityId = 500;
         RuntimeException refreshFailure;
 
         C() {
@@ -867,7 +868,7 @@ public final class DailyTaskGroupLifecycleTest {
             try {
                 var e = alloc(E.class);
                 e.scene = scene;
-                e.id = nextId++;
+                e.id = nextEntityId++;
                 e.position = meta.pos.clone();
                 e.rotation = new Position();
                 e.props = new Int2FloatOpenHashMap();

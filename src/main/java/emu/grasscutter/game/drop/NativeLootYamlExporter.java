@@ -146,7 +146,8 @@ public final class NativeLootYamlExporter {
                                 .contains(slot)) {
                             throw new IllegalArgumentException("Invalid native artifact slot");
                         }
-                        target += ", properties: {slot: " + slot
+                        target = "type: Artifact, set: " + resource.tail(2)
+                                + ", properties: {slot: " + slot
                                 + ", rarity: " + p.rarity() + ", substats: " + p.substats() + "}";
                     }
                 }
@@ -203,7 +204,9 @@ public final class NativeLootYamlExporter {
 
     private static void appendEntry(StringBuilder yaml, String indent,
             String target, String count, Integer weight) {
-        yaml.append(indent).append("- {reward: ").append(target);
+        yaml.append(indent).append("- {");
+        if (target.startsWith("type: ")) yaml.append(target);
+        else yaml.append("reward: ").append(target);
         if (!"1".equals(count)) {
             yaml.append(", count: \"").append(count).append('"');
         }

@@ -21,7 +21,7 @@ final class BundledBossRewardsTest {
         String css = RewardConfiguration.readBundledLootCss();
         css = css.replace("\\", "");
         assertTrue(yaml.contains("world_gem_two<COUNT, ...ELEMENTS>:"));
-        assertTrue(yaml.contains("type: genshin.avatar_ascension"));
+        assertTrue(yaml.contains("type: Gem"));
         assertTrue(yaml.contains("world_gem_four<COUNT, ...ELEMENTS>:"));
         assertTrue(yaml.contains("world_gem_one<...ELEMENTS>:"));
         assertTrue(css.contains("astaps.loot.world_gem_one<$element[0],$element[1]>:"));

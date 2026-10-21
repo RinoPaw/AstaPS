@@ -16,6 +16,13 @@ class LootCountScopeTest {
         default -> -2;
     };
 
+    private static YamlLootTables parseWithArtifacts(String yaml,
+            YamlLootTables.ItemResolver itemIds, ArtifactResolver artifacts) {
+        return YamlLootTables.parse(yaml, name ->
+                name.startsWith("genshin.artifact.")
+                        ? artifacts.resolveKey(name) : itemIds.resolve(name), artifacts);
+    }
+
     @Test
     void typeAndPoolShareRelativeWeightSampling() {
         var tables = YamlLootTables.parse("""
@@ -46,9 +53,9 @@ class LootCountScopeTest {
         var artifacts = new ArtifactResolver(java.util.List.of(
                 new ArtifactResolver.Variant(900001, "berserker", 1, 3, 1),
                 new ArtifactResolver.Variant(900002, "berserker", 2, 3, 1)));
-        var tables = YamlLootTables.parse("""
+        var tables = parseWithArtifacts("""
                 artifacts:
-                  - {type: genshin.artifact.berserker, properties: {slot: "flower:3, plume:1", rarity: 3, substats: 1}}
+                  - {type: Artifact, set: berserker, properties: {slot: "flower:3, plume:1", rarity: 3, substats: 1}}
                 """, ITEMS, artifacts);
         int flowers = 0;
         var random = new Random(166);
@@ -72,9 +79,9 @@ class LootCountScopeTest {
             default -> -2;
         };
         var tables = YamlLootTables.parse("""
-                ascension: {type: genshin.avatar_ascension.anemo, rarity: "2:3, 3:1"}
+                ascension: {type: Gem, element: anemo, rarity: "2:3, 3:1"}
                 mixed:
-                  type: genshin.avatar_ascension
+                  type: Gem
                   element: "pyro:3, hydro:1"
                   rarity: "2:3, 3:1"
                   count: "2:1, 3:1"
@@ -104,14 +111,14 @@ class LootCountScopeTest {
     void invalidDirectAttributesFailWithoutNullPointerExceptions() {
         for (String expression : java.util.List.of("null", "true", "0")) {
             assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
-                    bad: {type: genshin.avatar_ascension.anemo, rarity: %s}
+                    bad: {type: Gem, element: anemo, rarity: %s}
                     """.formatted(expression), name -> 2102));
         }
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 bad: {type: genshin.currency.mora, newField: "1:2, 2:3"}
                 """, ITEMS));
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
-                bad: {type: genshin.avatar_ascension.anemo, rarity: 2, properties: {rarity: 3}}
+                bad: {type: Gem, element: anemo, rarity: 2, properties: {rarity: 3}}
                 """, name -> 2102));
     }
 
@@ -185,7 +192,8 @@ class LootCountScopeTest {
         };
         var tables = YamlLootTables.parse("""
                 gems:
-                  type: "genshin.avatar_ascension.anemo:3, genshin.avatar_ascension.pyro:1"
+                  type: Gem
+                  element: "anemo:3, pyro:1"
                   rarity: "2:3, 3:1"
                 """, ids);
         var counts = new int[4];
@@ -215,9 +223,10 @@ class LootCountScopeTest {
                 new ArtifactResolver.Variant(4102, "berserker", 2, 3, 1),
                 new ArtifactResolver.Variant(4201, "instructor", 1, 3, 1),
                 new ArtifactResolver.Variant(4202, "instructor", 2, 3, 1)));
-        var tables = YamlLootTables.parse("""
+        var tables = parseWithArtifacts("""
                 artifacts:
-                  type: "genshin.artifact.berserker:3, genshin.artifact.instructor:1"
+                  type: Artifact
+                  set: "berserker:3, instructor:1"
                   slot: "flower:3, plume:1"
                   rarity: 3
                   substats: 1
@@ -377,9 +386,9 @@ class LootCountScopeTest {
         };
         var tables = YamlLootTables.parse("""
                 rarity:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:3, 3:1"}}
+                  - {type: Gem, element: anemo, properties: {rarity: "2:3, 3:1"}}
                 element:
-                  - {reward: genshin.avatar_ascension, properties: {element: "pyro:3, hydro:1", rarity: 2}}
+                  - {type: Gem, properties: {element: "pyro:3, hydro:1", rarity: 2}}
                 """, itemIds);
         var random = new Random(74);
         int rarityFirst = 0, elementFirst = 0;
@@ -418,9 +427,10 @@ class LootCountScopeTest {
                 new ArtifactResolver.Variant(9102, "instructor", 1, 3, 1),
                 new ArtifactResolver.Variant(9103, "adventurer", 1, 3, 1),
                 new ArtifactResolver.Variant(9104, "traveling_doctor", 1, 3, 1)));
-        var loot = YamlLootTables.parse("""
+        var loot = parseWithArtifacts("""
                 chest<RARITY,SUBSTATS,...SETS>:
-                  - type: "genshin.artifact....$SETS:1"
+                  - type: Artifact
+                    set: "...$SETS:1"
                     slot: flower
                     rarity: $RARITY
                     substats: $SUBSTATS
@@ -568,24 +578,24 @@ class LootCountScopeTest {
                 }
             }
         }
-        var loot = YamlLootTables.parse("""
+        var loot = parseWithArtifacts("""
                 world_artifact_1star<...SETS>:
-                  - type: genshin.artifact
+                  - type: Artifact
                     set: "...$SETS:1"
                     rarity: 1
                     substats: 0
                 world_artifact_2star<...SETS>:
-                  - type: genshin.artifact
+                  - type: Artifact
                     set: "...$SETS:1"
                     rarity: 2
                     substats: "0:66, 1:34"
                 world_artifact_3star<...SETS>:
-                  - type: genshin.artifact
+                  - type: Artifact
                     set: "...$SETS:1"
                     rarity: 3
                     substats: "1:66, 2:34"
                 world_artifact_4star<...SETS>:
-                  - type: genshin.artifact
+                  - type: Artifact
                     set: "...$SETS:1"
                     rarity: 4
                     substats: "2:66, 3:34"
@@ -724,25 +734,25 @@ class LootCountScopeTest {
             case "genshin.talent_up.resistance.3" -> 2203;
             default -> -2;
         };
-        var loot = YamlLootTables.parse("""
+        var loot = parseWithArtifacts("""
                 artifact:
-                  type: genshin.artifact
+                  type: Artifact
                   set: "berserker:3, prayers_for_wisdom:1"
                   rarity: 3
                   substats: 1
                 artifact_copies:
-                  type: genshin.artifact
+                  type: Artifact
                   set: "berserker:3, prayers_for_wisdom:1"
                   rarity: 3
                   substats: 1
                   count: 2
                 gem:
-                  type: genshin.avatar_ascension
+                  type: Gem
                   element: "anemo:3, pyro:1"
                   rarity: "2:3, 3:1"
                   count: 3
                 talent:
-                  type: genshin.talent_up
+                  type: TalentBook
                   series: "freedom:3, resistance:1"
                   rarity: "2:3, 3:1"
                   count: 2
@@ -781,13 +791,13 @@ class LootCountScopeTest {
             assertEquals(0.0625, results[3] / 20_000.0, 0.025);
         }
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
-                bad: {type: genshin.artifact, rarity: 3}
+                bad: {type: Artifact, rarity: 3}
                 """, nativeItems, nativeArtifacts));
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
-                bad: {type: genshin.talent_up, series: unknown, rarity: 2}
+                bad: {type: TalentBook, series: unknown, rarity: 2}
                 """, nativeItems, nativeArtifacts));
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
-                bad: {type: genshin.avatar_ascension, element: anemo, rarity: 1}
+                bad: {type: Gem, element: anemo, rarity: 1}
                 """, nativeItems, nativeArtifacts));
     }
 
@@ -811,27 +821,27 @@ class LootCountScopeTest {
             variants.add(new ArtifactResolver.Variant(
                     300040 + substats, "instructor", 4, 5, substats));
         }
-        var tables = YamlLootTables.parse("""
+        var tables = parseWithArtifacts("""
                 standard:
-                  - type: genshin.artifact
+                  - type: Artifact
                     set: "gladiators_finale:1, wanderers_troupe:1"
                     rarity: 5
                     substats: "3:66, 4:34"
                 plume_goblet<PLUME_SUBSTATS,GOBLET_SUBSTATS>:
-                  - type: genshin.artifact
+                  - type: Artifact
                     set: instructor
                     slot: plume
                     rarity: 5
                     substats: $PLUME_SUBSTATS
                     weight: 17
-                  - type: genshin.artifact
+                  - type: Artifact
                     set: instructor
                     slot: goblet
                     rarity: 5
                     substats: $GOBLET_SUBSTATS
                     weight: 33
                 goblet<SUBSTATS>:
-                  - type: genshin.artifact
+                  - type: Artifact
                     set: instructor
                     slot: goblet
                     rarity: 5

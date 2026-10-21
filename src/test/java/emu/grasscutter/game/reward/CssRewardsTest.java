@@ -117,7 +117,7 @@ class CssRewardsTest {
                     genshin.talent_up.freedom.3: 3;
                 }
                 boss[tag="override"] {
-                    genshin.avatar_ascension.vayuda_turquoise.sliver: 4;
+                    genshin.avatar_ascension.anemo.2: 4;
                     genshin.talent_up.freedom.guide: 5;
                 }
                 """, items, loot);

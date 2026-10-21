@@ -12,9 +12,9 @@ public final class RewardAreaResolver {
     private RewardAreaResolver() {}
 
     public record Area(int parentAreaId, int cityId) {
-        public void addAttributes(Map<String, String> attributes) {
-            if (parentAreaId > 0) attributes.put("area", Integer.toString(parentAreaId));
-            if (cityId > 0) attributes.put("city", Integer.toString(cityId));
+        public void addAttributes(Map<String, Object> attributes) {
+            if (parentAreaId > 0) attributes.put("area", parentAreaId);
+            if (cityId > 0) attributes.put("city", cityId);
         }
     }
 

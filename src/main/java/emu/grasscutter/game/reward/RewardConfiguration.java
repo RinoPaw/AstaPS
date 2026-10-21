@@ -115,12 +115,12 @@ public final class RewardConfiguration {
     }
 
     public Map<Integer, Integer> roll(
-            String targetType, Map<String, String> properties, RandomGenerator random) {
+            String targetType, Map<String, ?> properties, RandomGenerator random) {
         return roll(targetType, properties, random, RewardContext.NONE);
     }
 
     public Map<Integer, Integer> roll(
-            String targetType, Map<String, String> properties, RandomGenerator random,
+            String targetType, Map<String, ?> properties, RandomGenerator random,
             RewardContext context) {
         var selected = css.resolve(targetType, properties);
         requireChestLoot(targetType, selected, properties);
@@ -131,7 +131,7 @@ public final class RewardConfiguration {
     }
 
     static void requireChestLoot(
-            String targetType, CssRewards.Selection selected, Map<String, String> properties) {
+            String targetType, CssRewards.Selection selected, Map<String, ?> properties) {
         if ("chest".equals(targetType)
                 && selected.loot().values().stream().noneMatch(count -> count > 0)
                 && selected.rangedLoot().isEmpty()) {
@@ -142,8 +142,8 @@ public final class RewardConfiguration {
 
     /** Refuse unconfigured or partially configured ley-line rewards. */
     static void requireBlossomReward(
-            CssRewards.Selection selected, Map<String, String> properties) {
-        String type = properties.get("type");
+            CssRewards.Selection selected, Map<String, ?> properties) {
+        Object type = properties.get("type");
         boolean experience = selected.items().getOrDefault(102, 0) > 0;
         boolean companionship = selected.items().getOrDefault(105, 0) > 0;
         boolean wealth = selected.items().getOrDefault(202, 0) > 0;
@@ -166,7 +166,7 @@ public final class RewardConfiguration {
             throw new IllegalArgumentException(
                     "Unknown blossom type/world level: " + type + "/" + worldLevel);
         }
-        var attrs = Map.of("type", type, "WR", Integer.toString(worldLevel));
+        var attrs = Map.of("type", (Object) type, "WR", (Object) worldLevel);
         var total = new java.util.TreeMap<Integer, Integer>();
         for (int i = 0; i < (condensed ? 2 : 1); i++) {
             roll("blossom", attrs, random).forEach(
@@ -250,7 +250,7 @@ public final class RewardConfiguration {
         var attributes = Map.of(
                 "type", "world",
                 "tag", cssBossTag(tag),
-                "level", Integer.toString(nativeBossLevel));
+                "level", nativeBossLevel);
         var selection = css.resolve("boss", attributes);
         if (selection.loot().isEmpty() && selection.rangedLoot().isEmpty()
                 && selection.rangedItems().isEmpty()) {

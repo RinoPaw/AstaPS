@@ -29,7 +29,7 @@ public final class WorldChestLootHelper {
         var key = new RewardGrantJournal.Key(RewardGrantJournal.Source.WORLD_CHEST,
                 player.getUid(), operationId);
         if (journal.completed(key)) { confirmed.run(); return true; }
-        var props = new java.util.HashMap<String, String>();
+        var props = new java.util.HashMap<String, Object>();
         String chestType = ChestTypeResolver.resolve(entityGadget);
         if (chestType == null) {
             throw new IllegalStateException(
@@ -44,13 +44,13 @@ public final class WorldChestLootHelper {
         if ("normal".equals(chestType)) {
             props.put("grade", resolveTier(entityGadget).name().toLowerCase(java.util.Locale.ROOT));
         }
-        props.put("scene", Integer.toString(entityGadget.getScene().getId()));
-        props.put("gadget", Integer.toString(entityGadget.getGadgetId()));
-        props.put("group", Integer.toString(entityGadget.getGroupId()));
-        props.put("config", Integer.toString(entityGadget.getConfigId()));
+        props.put("scene", entityGadget.getScene().getId());
+        props.put("gadget", entityGadget.getGadgetId());
+        props.put("group", entityGadget.getGroupId());
+        props.put("config", entityGadget.getConfigId());
         SceneGadget meta = entityGadget.getMetaGadget();
         if (meta != null) {
-            props.put("level", Integer.toString(meta.level));
+            props.put("level", meta.level);
         }
         var context = new emu.grasscutter.game.reward.RewardContext(
                 entityGadget.getScene().getId(),

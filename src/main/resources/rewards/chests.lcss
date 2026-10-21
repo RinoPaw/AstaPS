@@ -44,18 +44,18 @@ chest[type="normal"][grade="luxurious"] {
 
 /* 蒙德、璃月旧区域使用较低原石奖励。 */
 
-chest[type="normal"][grade="common"][city="1"],
-chest[type="normal"][grade="common"][city="2"] {
+chest[type="normal"][grade="common"][city=1],
+chest[type="normal"][grade="common"][city=2] {
     genshin.currency.primogem: 0;
 }
 
-chest[type="normal"][grade="exquisite"][city="1"],
-chest[type="normal"][grade="exquisite"][city="2"] {
+chest[type="normal"][grade="exquisite"][city=1],
+chest[type="normal"][grade="exquisite"][city=2] {
     genshin.currency.primogem: 2;
 }
 
-chest[type="normal"][grade="precious"][city="1"],
-chest[type="normal"][grade="precious"][city="2"] {
+chest[type="normal"][grade="precious"][city=1],
+chest[type="normal"][grade="precious"][city=2] {
     genshin.currency.primogem: 5;
 }
 
@@ -63,49 +63,49 @@ chest[type="normal"][grade="precious"][city="2"] {
  * 沉玉谷·南陵、来歆山、层岩巨渊·地下矿区；按 area 单独覆盖。
  */
 
-chest[type="normal"][grade="common"][area in ("10", "77", "8", "19", "40", "41", "47", "300")] {
+chest[type="normal"][grade="common"][area in (10, 77, 8, 19, 40, 41, 47, 300)] {
     genshin.currency.primogem: 2;
 }
 
-chest[type="normal"][grade="exquisite"][area in ("10", "77", "8", "19", "40", "41", "47", "300")] {
+chest[type="normal"][grade="exquisite"][area in (10, 77, 8, 19, 40, 41, 47, 300)] {
     genshin.currency.primogem: 5;
 }
 
-chest[type="normal"][grade="precious"][area in ("10", "77", "8", "19", "40", "41", "47", "300")] {
+chest[type="normal"][grade="precious"][area in (10, 77, 8, 19, 40, 41, 47, 300)] {
     genshin.currency.primogem: 10;
 }
 
 /* 印记元素绑定：city 8/9 共用冰元素。 */
-chest[type="normal"][city="1"] {
+chest[type="normal"][city=1] {
     --element: anemo;
 }
 
-chest[type="normal"][city="2"] {
+chest[type="normal"][city=2] {
     --element: geo;
 }
 
-chest[type="normal"][city="3"] {
+chest[type="normal"][city=3] {
     --element: electro;
 }
 
-chest[type="normal"][city="4"] {
+chest[type="normal"][city=4] {
     --element: dendro;
 }
 
-chest[type="normal"][city="5"] {
+chest[type="normal"][city=5] {
     --element: hydro;
 }
 
-chest[type="normal"][city="6"] {
+chest[type="normal"][city=6] {
     --element: pyro;
 }
 
-chest[type="normal"][city="7"] {
+chest[type="normal"][city=7] {
     --element: lunar;
 }
 
-chest[type="normal"][city="8"],
-chest[type="normal"][city="9"] {
+chest[type="normal"][city=8],
+chest[type="normal"][city=9] {
     --element: cryo;
 }
 
@@ -197,94 +197,94 @@ chest[type="normal"][grade="luxurious"][level >= 26] {
 /* 地区奖励（city 1-4）：摩拉、角色经验书、天赋书。
  * 数据来自历史战斗表；解谜空子表沿用同地区战斗奖励。
  */
-chest[type="normal"][grade="common"][city in ("1", "2")][1 <= level <= 5] {
+chest[type="normal"][grade="common"][city in (1, 2)][1 <= level <= 5] {
     genshin.currency.mora: "240~360";
     genshin.avatar_up.wanderers_advice: "1:40, 2:60";
     genshin.avatar_up.adventurers_experience: "0:85, 1:15";
 }
 
-chest[type="normal"][grade="common"][city in ("1", "2")][6 <= level <= 10] {
+chest[type="normal"][grade="common"][city in (1, 2)][6 <= level <= 10] {
     genshin.currency.mora: "240~360";
     genshin.avatar_up.wanderers_advice: "2:90, 3:10";
     genshin.avatar_up.adventurers_experience: "0:70, 1:30";
 }
 
-chest[type="normal"][grade="common"][city in ("1", "2")][11 <= level <= 15] {
+chest[type="normal"][grade="common"][city in (1, 2)][11 <= level <= 15] {
     genshin.currency.mora: "480~720";
     genshin.avatar_up.wanderers_advice: "2:40, 3:60";
     genshin.avatar_up.adventurers_experience: "0:60, 1:40";
 }
 
-chest[type="normal"][grade="common"][city in ("1", "2")][16 <= level <= 20] {
+chest[type="normal"][grade="common"][city in (1, 2)][16 <= level <= 20] {
     genshin.currency.mora: "480~720";
     genshin.avatar_up.wanderers_advice: "3:90, 4:10";
     genshin.avatar_up.adventurers_experience: "0:50, 1:50";
 }
 
-chest[type="normal"][grade="common"][city in ("1", "2")][21 <= level <= 25] {
+chest[type="normal"][grade="common"][city in (1, 2)][21 <= level <= 25] {
     genshin.currency.mora: "720~1080";
     genshin.avatar_up.wanderers_advice: "3:40, 4:60";
     genshin.avatar_up.adventurers_experience: "0:40, 1:60";
 }
 
-chest[type="normal"][grade="common"][city="1"][level >= 26] {
+chest[type="normal"][grade="common"][city=1][level >= 26] {
     genshin.currency.mora: "720~1080";
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     astaps.loot.regional_talent_books<2,freedom,resistance,ballad>: "0:75, 1:25";
 }
 
-chest[type="normal"][grade="exquisite"][city="1"][1 <= level <= 20] {
+chest[type="normal"][grade="exquisite"][city=1][1 <= level <= 20] {
     genshin.currency.mora: "720~1080";
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     astaps.loot.regional_talent_books<2,freedom,resistance,ballad>: "0:75, 1:25";
 }
 
-chest[type="normal"][grade="exquisite"][city="1"][21 <= level <= 25] {
+chest[type="normal"][grade="exquisite"][city=1][21 <= level <= 25] {
     genshin.currency.mora: "960~1440";
     genshin.avatar_up.adventurers_experience: "2:40, 3:60";
     astaps.loot.regional_talent_books<2,freedom,resistance,ballad>: "0:75, 1:25";
 }
 
-chest[type="normal"][grade="exquisite"][city="1"][level >= 26] {
+chest[type="normal"][grade="exquisite"][city=1][level >= 26] {
     genshin.currency.mora: "960~1440";
     genshin.avatar_up.adventurers_experience: "1:90, 2:10";
     genshin.avatar_up.heros_wit: 1;
     astaps.loot.regional_talent_books<2,freedom,resistance,ballad>: 1;
 }
 
-chest[type="normal"][grade="luxurious"][city="1"][1 <= level <= 20] {
+chest[type="normal"][grade="luxurious"][city=1][1 <= level <= 20] {
     genshin.currency.mora: "1200~1800";
     genshin.avatar_up.heros_wit: 2;
     astaps.loot.regional_talent_books<3,freedom,resistance,ballad>: 1;
 }
 
-chest[type="normal"][grade="luxurious"][city="1"][21 <= level <= 25] {
+chest[type="normal"][grade="luxurious"][city=1][21 <= level <= 25] {
     genshin.currency.mora: "1440~2160";
     genshin.avatar_up.heros_wit: "2:95, 3:5";
     astaps.loot.regional_talent_books<3,freedom,resistance,ballad>: 1;
 }
 
-chest[type="normal"][grade="luxurious"][city="1"][level >= 26] {
+chest[type="normal"][grade="luxurious"][city=1][level >= 26] {
     genshin.currency.mora: "1440~2160";
     genshin.avatar_up.heros_wit: "2:90, 3:10";
     astaps.loot.regional_talent_books<3,freedom,resistance,ballad>: 1;
 }
 
-chest[type="normal"][grade="precious"][city="1"][1 <= level <= 20] {
+chest[type="normal"][grade="precious"][city=1][1 <= level <= 20] {
     genshin.currency.mora: "960~1440";
     genshin.avatar_up.adventurers_experience: "1:90, 2:10";
     genshin.avatar_up.heros_wit: 1;
     astaps.loot.regional_talent_books<2,freedom,resistance,ballad>: 1;
 }
 
-chest[type="normal"][grade="precious"][city="1"][21 <= level <= 25] {
+chest[type="normal"][grade="precious"][city=1][21 <= level <= 25] {
     genshin.currency.mora: "1200~1800";
     genshin.avatar_up.adventurers_experience: "1:40, 2:60";
     genshin.avatar_up.heros_wit: 1;
     astaps.loot.regional_talent_books<2,freedom,resistance,ballad>: 1;
 }
 
-chest[type="normal"][grade="precious"][city="1"][level >= 26] {
+chest[type="normal"][grade="precious"][city=1][level >= 26] {
     genshin.currency.mora: "1200~1800";
     genshin.avatar_up.heros_wit: 2;
     astaps.loot.regional_talent_books<3,freedom,resistance,ballad>: 1;
@@ -300,113 +300,113 @@ chest[type="normal"][grade="precious"][city="1"][level >= 26] {
 
 
 
-chest[type="normal"][grade="common"][city="2"][level >= 26] {
+chest[type="normal"][grade="common"][city=2][level >= 26] {
     genshin.currency.mora: "720~1080";
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     astaps.loot.regional_talent_books<2,prosperity,diligence,gold>: "0:75, 1:25";
 }
 
-chest[type="normal"][grade="exquisite"][city="2"][1 <= level <= 20] {
+chest[type="normal"][grade="exquisite"][city=2][1 <= level <= 20] {
     genshin.currency.mora: "720~1080";
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     astaps.loot.regional_talent_books<2,prosperity,diligence,gold>: "0:75, 1:25";
 }
 
-chest[type="normal"][grade="exquisite"][city="2"][21 <= level <= 25] {
+chest[type="normal"][grade="exquisite"][city=2][21 <= level <= 25] {
     genshin.currency.mora: "960~1440";
     genshin.avatar_up.adventurers_experience: "2:40, 3:60";
     astaps.loot.regional_talent_books<2,prosperity,diligence,gold>: "0:75, 1:25";
 }
 
-chest[type="normal"][grade="exquisite"][city="2"][level >= 26] {
+chest[type="normal"][grade="exquisite"][city=2][level >= 26] {
     genshin.currency.mora: "960~1440";
     genshin.avatar_up.adventurers_experience: "1:90, 2:10";
     genshin.avatar_up.heros_wit: 1;
     astaps.loot.regional_talent_books<2,prosperity,diligence,gold>: 1;
 }
 
-chest[type="normal"][grade="luxurious"][city="2"][1 <= level <= 20] {
+chest[type="normal"][grade="luxurious"][city=2][1 <= level <= 20] {
     genshin.currency.mora: "1200~1800";
     genshin.avatar_up.heros_wit: 2;
     astaps.loot.regional_talent_books<3,prosperity,diligence,gold>: 1;
 }
 
-chest[type="normal"][grade="luxurious"][city="2"][21 <= level <= 25] {
+chest[type="normal"][grade="luxurious"][city=2][21 <= level <= 25] {
     genshin.currency.mora: "1440~2160";
     genshin.avatar_up.heros_wit: "2:95, 3:5";
     astaps.loot.regional_talent_books<3,prosperity,diligence,gold>: 1;
 }
 
-chest[type="normal"][grade="luxurious"][city="2"][level >= 26] {
+chest[type="normal"][grade="luxurious"][city=2][level >= 26] {
     genshin.currency.mora: "1440~2160";
     genshin.avatar_up.heros_wit: "2:90, 3:10";
     astaps.loot.regional_talent_books<3,prosperity,diligence,gold>: 1;
 }
 
-chest[type="normal"][grade="precious"][city="2"][1 <= level <= 20] {
+chest[type="normal"][grade="precious"][city=2][1 <= level <= 20] {
     genshin.currency.mora: "960~1440";
     genshin.avatar_up.adventurers_experience: "1:90, 2:10";
     genshin.avatar_up.heros_wit: 1;
     astaps.loot.regional_talent_books<2,prosperity,diligence,gold>: 1;
 }
 
-chest[type="normal"][grade="precious"][city="2"][21 <= level <= 25] {
+chest[type="normal"][grade="precious"][city=2][21 <= level <= 25] {
     genshin.currency.mora: "1200~1800";
     genshin.avatar_up.adventurers_experience: "1:40, 2:60";
     genshin.avatar_up.heros_wit: 1;
     astaps.loot.regional_talent_books<2,prosperity,diligence,gold>: 1;
 }
 
-chest[type="normal"][grade="precious"][city="2"][level >= 26] {
+chest[type="normal"][grade="precious"][city=2][level >= 26] {
     genshin.currency.mora: "1200~1800";
     genshin.avatar_up.heros_wit: 2;
     astaps.loot.regional_talent_books<3,prosperity,diligence,gold>: 1;
 }
 
-chest[type="normal"][grade="common"][city="3"] {
+chest[type="normal"][grade="common"][city=3] {
     genshin.currency.mora: "800~1000";
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     astaps.loot.regional_talent_books<3,transience,elegance,light>: "0:75, 1:25";
 }
 
-chest[type="normal"][grade="exquisite"][city="3"] {
+chest[type="normal"][grade="exquisite"][city=3] {
     genshin.currency.mora: "1100~1300";
     genshin.avatar_up.heros_wit: 1;
     astaps.loot.regional_talent_books<3,transience,elegance,light>: "0:50, 1:50";
 }
 
-chest[type="normal"][grade="luxurious"][city="3"] {
+chest[type="normal"][grade="luxurious"][city=3] {
     genshin.currency.mora: "1700~1900";
     genshin.avatar_up.heros_wit: "2:90, 3:10";
     astaps.loot.regional_talent_books<4,transience,elegance,light>: 1;
 }
 
-chest[type="normal"][grade="precious"][city="3"] {
+chest[type="normal"][grade="precious"][city=3] {
     genshin.currency.mora: "1400~1600";
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     genshin.avatar_up.heros_wit: 1;
     astaps.loot.regional_talent_books<3,transience,elegance,light>: "1:80, 2:20";
 }
 
-chest[type="normal"][grade="common"][city="4"] {
+chest[type="normal"][grade="common"][city=4] {
     genshin.currency.mora: "800~1000";
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     astaps.loot.regional_talent_books<3,admonition,ingenuity,praxis>: "0:75, 1:25";
 }
 
-chest[type="normal"][grade="exquisite"][city="4"] {
+chest[type="normal"][grade="exquisite"][city=4] {
     genshin.currency.mora: "1100~1300";
     genshin.avatar_up.heros_wit: 1;
     astaps.loot.regional_talent_books<3,admonition,ingenuity,praxis>: "0:50, 1:50";
 }
 
-chest[type="normal"][grade="luxurious"][city="4"] {
+chest[type="normal"][grade="luxurious"][city=4] {
     genshin.currency.mora: "1700~1900";
     genshin.avatar_up.heros_wit: "2:90, 3:10";
     astaps.loot.regional_talent_books<4,admonition,ingenuity,praxis>: 1;
 }
 
-chest[type="normal"][grade="precious"][city="4"] {
+chest[type="normal"][grade="precious"][city=4] {
     genshin.currency.mora: "1400~1600";
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     genshin.avatar_up.heros_wit: 1;
@@ -416,94 +416,94 @@ chest[type="normal"][grade="precious"][city="4"] {
 /* 未复原地区（city 5-9）：缺少历史宝箱根表。
  * 暂留旧通用配置，包括占位天赋书；不代表当地实测掉落。
  */
-chest[type="normal"][grade="common"][1 <= level <= 5][city in ("5", "6", "7", "8", "9")] {
+chest[type="normal"][grade="common"][1 <= level <= 5][city in (5, 6, 7, 8, 9)] {
     genshin.avatar_up.wanderers_advice: "1:40, 2:60";
     genshin.avatar_up.adventurers_experience: "0:85, 1:15";
     genshin.currency.mora: "240~360";
 }
 
-chest[type="normal"][grade="common"][6 <= level <= 10][city in ("5", "6", "7", "8", "9")] {
+chest[type="normal"][grade="common"][6 <= level <= 10][city in (5, 6, 7, 8, 9)] {
     genshin.avatar_up.wanderers_advice: "2:90, 3:10";
     genshin.avatar_up.adventurers_experience: "0:70, 1:30";
     genshin.currency.mora: "240~360";
 }
 
-chest[type="normal"][grade="common"][11 <= level <= 15][city in ("5", "6", "7", "8", "9")] {
+chest[type="normal"][grade="common"][11 <= level <= 15][city in (5, 6, 7, 8, 9)] {
     genshin.avatar_up.wanderers_advice: "2:40, 3:60";
     genshin.avatar_up.adventurers_experience: "0:60, 1:40";
     genshin.currency.mora: "480~720";
 }
 
-chest[type="normal"][grade="common"][16 <= level <= 20][city in ("5", "6", "7", "8", "9")] {
+chest[type="normal"][grade="common"][16 <= level <= 20][city in (5, 6, 7, 8, 9)] {
     genshin.avatar_up.wanderers_advice: "3:90, 4:10";
     genshin.avatar_up.adventurers_experience: "0:50, 1:50";
     genshin.currency.mora: "480~720";
 }
 
-chest[type="normal"][grade="common"][21 <= level <= 25][city in ("5", "6", "7", "8", "9")] {
+chest[type="normal"][grade="common"][21 <= level <= 25][city in (5, 6, 7, 8, 9)] {
     genshin.avatar_up.wanderers_advice: "3:40, 4:60";
     genshin.avatar_up.adventurers_experience: "0:40, 1:60";
     genshin.currency.mora: "720~1080";
 }
 
-chest[type="normal"][grade="common"][level >= 26][city in ("5", "6", "7", "8", "9")],
-chest[type="normal"][grade="exquisite"][1 <= level <= 20][city in ("5", "6", "7", "8", "9")] {
+chest[type="normal"][grade="common"][level >= 26][city in (5, 6, 7, 8, 9)],
+chest[type="normal"][grade="exquisite"][1 <= level <= 20][city in (5, 6, 7, 8, 9)] {
     astaps.loot.regional_talent_books<2,freedom,resistance,ballad>: "0:75, 1:25";
     genshin.avatar_up.adventurers_experience: "2:90, 3:10";
     genshin.currency.mora: "720~1080";
 }
 
-chest[type="normal"][grade="exquisite"][21 <= level <= 25][city in ("5", "6", "7", "8", "9")] {
+chest[type="normal"][grade="exquisite"][21 <= level <= 25][city in (5, 6, 7, 8, 9)] {
     astaps.loot.regional_talent_books<2,freedom,resistance,ballad>: "0:75, 1:25";
     genshin.avatar_up.adventurers_experience: "2:40, 3:60";
     genshin.currency.mora: "960~1440";
 }
 
-chest[type="normal"][grade="exquisite"][level >= 26][city in ("5", "6", "7", "8", "9")],
-chest[type="normal"][grade="precious"][1 <= level <= 20][city in ("5", "6", "7", "8", "9")] {
+chest[type="normal"][grade="exquisite"][level >= 26][city in (5, 6, 7, 8, 9)],
+chest[type="normal"][grade="precious"][1 <= level <= 20][city in (5, 6, 7, 8, 9)] {
     astaps.loot.regional_talent_books<2,freedom,resistance,ballad>: 1;
     genshin.avatar_up.adventurers_experience: "1:90, 2:10";
     genshin.avatar_up.heros_wit: 1;
     genshin.currency.mora: "960~1440";
 }
 
-chest[type="normal"][grade="precious"][21 <= level <= 25][city in ("5", "6", "7", "8", "9")] {
+chest[type="normal"][grade="precious"][21 <= level <= 25][city in (5, 6, 7, 8, 9)] {
     astaps.loot.regional_talent_books<2,freedom,resistance,ballad>: 1;
     genshin.avatar_up.adventurers_experience: "1:40, 2:60";
     genshin.avatar_up.heros_wit: 1;
     genshin.currency.mora: "1200~1800";
 }
 
-chest[type="normal"][grade="precious"][level >= 26][city in ("5", "6", "7", "8", "9")],
-chest[type="normal"][grade="luxurious"][1 <= level <= 20][city in ("5", "6", "7", "8", "9")] {
+chest[type="normal"][grade="precious"][level >= 26][city in (5, 6, 7, 8, 9)],
+chest[type="normal"][grade="luxurious"][1 <= level <= 20][city in (5, 6, 7, 8, 9)] {
     astaps.loot.regional_talent_books<3,freedom,resistance,ballad>: 1;
     genshin.avatar_up.heros_wit: 2;
     genshin.currency.mora: "1200~1800";
 }
 
-chest[type="normal"][grade="luxurious"][21 <= level <= 25][city in ("5", "6", "7", "8", "9")] {
+chest[type="normal"][grade="luxurious"][21 <= level <= 25][city in (5, 6, 7, 8, 9)] {
     astaps.loot.regional_talent_books<3,freedom,resistance,ballad>: 1;
     genshin.avatar_up.heros_wit: "2:95, 3:5";
     genshin.currency.mora: "1440~2160";
 }
 
-chest[type="normal"][grade="luxurious"][level >= 26][city in ("5", "6", "7", "8", "9")] {
+chest[type="normal"][grade="luxurious"][level >= 26][city in (5, 6, 7, 8, 9)] {
     astaps.loot.regional_talent_books<3,freedom,resistance,ballad>: 1;
     genshin.avatar_up.heros_wit: "2:90, 3:10";
     genshin.currency.mora: "1440~2160";
 }
 
 /* 食谱：合并历史战斗/解谜奖励，按城市、品级、等级匹配。 */
-chest[type="normal"][grade="exquisite"][21 <= level <= 25][city="1"] {
+chest[type="normal"][grade="exquisite"][21 <= level <= 25][city=1] {
     genshin.recipe.northern_smoked_chicken.item: 1;
 }
 
-chest[type="normal"][grade="exquisite"][21 <= level <= 25][city="2"] {
+chest[type="normal"][grade="exquisite"][21 <= level <= 25][city=2] {
     genshin.recipe.mora_meat.item: 1;
     genshin.recipe.stir_fried_filet.item: 1;
 }
 
-chest[type="normal"][grade="precious"][21 <= level <= 25][city="1"] {
+chest[type="normal"][grade="precious"][21 <= level <= 25][city=1] {
     genshin.recipe.mushroom_pizza.item: 1;
 }
 
@@ -513,136 +513,136 @@ chest[type="normal"][grade="precious"][21 <= level <= 25][city="1"] {
  * 地灵龛及群岛专有宝箱。
  */
 
-chest[type="normal"][city="1"][grade="common"][1 <= level <= 5] {
+chest[type="normal"][city=1][grade="common"][1 <= level <= 5] {
     astaps.loot.chest_artifact_mix_01: "0:12, 1:13";
 }
 
-chest[type="normal"][city="1"][grade="common"][6 <= level <= 10] {
+chest[type="normal"][city=1][grade="common"][6 <= level <= 10] {
     astaps.loot.chest_artifact_mix_01: "0:1, 1:4";
 }
 
-chest[type="normal"][city="1"][grade="common"][11 <= level <= 15] {
+chest[type="normal"][city=1][grade="common"][11 <= level <= 15] {
     astaps.loot.chest_artifact_mix_01: "1:4, 2:1";
 }
 
-chest[type="normal"][city="1"][grade="common"][16 <= level <= 20] {
+chest[type="normal"][city=1][grade="common"][16 <= level <= 20] {
     astaps.loot.chest_artifact_mix_02: "1:1, 2:1";
 }
 
-chest[type="normal"][city="1"][grade="common"][21 <= level <= 25] {
+chest[type="normal"][city=1][grade="common"][21 <= level <= 25] {
     astaps.loot.chest_artifact_mix_02: "1:1, 2:3";
 }
 
-chest[type="normal"][city="1"][grade="common"][level >= 26],
-chest[type="normal"][city="1"][grade="exquisite"][1 <= level <= 20] {
+chest[type="normal"][city=1][grade="common"][level >= 26],
+chest[type="normal"][city=1][grade="exquisite"][1 <= level <= 20] {
     astaps.loot.chest_artifact_mix_03: "1:1, 2:3";
 }
 
-chest[type="normal"][city="1"][grade="exquisite"][21 <= level <= 25] {
+chest[type="normal"][city=1][grade="exquisite"][21 <= level <= 25] {
     astaps.loot.chest_artifact_mix_03: 2;
 }
 
-chest[type="normal"][city="1"][grade="exquisite"][level >= 26],
-chest[type="normal"][city="1"][grade="precious"][1 <= level <= 5],
-chest[type="normal"][city="1"][grade="precious"][6 <= level <= 10],
-chest[type="normal"][city="1"][grade="precious"][11 <= level <= 15],
-chest[type="normal"][city="1"][grade="precious"][16 <= level <= 20] {
+chest[type="normal"][city=1][grade="exquisite"][level >= 26],
+chest[type="normal"][city=1][grade="precious"][1 <= level <= 5],
+chest[type="normal"][city=1][grade="precious"][6 <= level <= 10],
+chest[type="normal"][city=1][grade="precious"][11 <= level <= 15],
+chest[type="normal"][city=1][grade="precious"][16 <= level <= 20] {
     astaps.loot.chest_artifact_mix_04: 2;
 }
 
-chest[type="normal"][city="1"][grade="precious"][21 <= level <= 25],
-chest[type="normal"][city="1"][grade="precious"][level >= 26],
-chest[type="normal"][city="1"][grade="luxurious"][1 <= level <= 5],
-chest[type="normal"][city="1"][grade="luxurious"][6 <= level <= 10],
-chest[type="normal"][city="1"][grade="luxurious"][11 <= level <= 15],
-chest[type="normal"][city="1"][grade="luxurious"][16 <= level <= 20] {
+chest[type="normal"][city=1][grade="precious"][21 <= level <= 25],
+chest[type="normal"][city=1][grade="precious"][level >= 26],
+chest[type="normal"][city=1][grade="luxurious"][1 <= level <= 5],
+chest[type="normal"][city=1][grade="luxurious"][6 <= level <= 10],
+chest[type="normal"][city=1][grade="luxurious"][11 <= level <= 15],
+chest[type="normal"][city=1][grade="luxurious"][16 <= level <= 20] {
     astaps.loot.chest_artifact_mix_05: "2:3, 3:1";
 }
 
-chest[type="normal"][city="1"][grade="luxurious"][21 <= level <= 25],
-chest[type="normal"][city="1"][grade="luxurious"][level >= 26] {
+chest[type="normal"][city=1][grade="luxurious"][21 <= level <= 25],
+chest[type="normal"][city=1][grade="luxurious"][level >= 26] {
     astaps.loot.chest_artifact_mix_06: "2:1, 3:1";
 }
 
-chest[type="normal"][city="2"][grade="common"][1 <= level <= 5] {
+chest[type="normal"][city=2][grade="common"][1 <= level <= 5] {
     astaps.loot.chest_artifact_mix_07: "0:12, 1:13";
 }
 
-chest[type="normal"][city="2"][grade="common"][6 <= level <= 10] {
+chest[type="normal"][city=2][grade="common"][6 <= level <= 10] {
     astaps.loot.chest_artifact_mix_07: "0:1, 1:4";
 }
 
-chest[type="normal"][city="2"][grade="common"][11 <= level <= 15] {
+chest[type="normal"][city=2][grade="common"][11 <= level <= 15] {
     astaps.loot.chest_artifact_mix_07: "1:4, 2:1";
 }
 
-chest[type="normal"][city="2"][grade="common"][16 <= level <= 20] {
+chest[type="normal"][city=2][grade="common"][16 <= level <= 20] {
     astaps.loot.chest_artifact_mix_08: "1:1, 2:1";
 }
 
-chest[type="normal"][city="2"][grade="common"][21 <= level <= 25] {
+chest[type="normal"][city=2][grade="common"][21 <= level <= 25] {
     astaps.loot.chest_artifact_mix_08: "1:1, 2:3";
 }
 
-chest[type="normal"][city="2"][grade="common"][level >= 26],
-chest[type="normal"][city="2"][grade="exquisite"][1 <= level <= 20] {
+chest[type="normal"][city=2][grade="common"][level >= 26],
+chest[type="normal"][city=2][grade="exquisite"][1 <= level <= 20] {
     astaps.loot.chest_artifact_mix_09: "1:1, 2:3";
 }
 
-chest[type="normal"][city="2"][grade="exquisite"][21 <= level <= 25] {
+chest[type="normal"][city=2][grade="exquisite"][21 <= level <= 25] {
     astaps.loot.chest_artifact_mix_09: 2;
 }
 
-chest[type="normal"][city="2"][grade="exquisite"][level >= 26],
-chest[type="normal"][city="2"][grade="precious"][1 <= level <= 5],
-chest[type="normal"][city="2"][grade="precious"][6 <= level <= 10],
-chest[type="normal"][city="2"][grade="precious"][11 <= level <= 15],
-chest[type="normal"][city="2"][grade="precious"][16 <= level <= 20] {
+chest[type="normal"][city=2][grade="exquisite"][level >= 26],
+chest[type="normal"][city=2][grade="precious"][1 <= level <= 5],
+chest[type="normal"][city=2][grade="precious"][6 <= level <= 10],
+chest[type="normal"][city=2][grade="precious"][11 <= level <= 15],
+chest[type="normal"][city=2][grade="precious"][16 <= level <= 20] {
     astaps.loot.chest_artifact_mix_10: 2;
 }
 
-chest[type="normal"][city="2"][grade="precious"][21 <= level <= 25],
-chest[type="normal"][city="2"][grade="precious"][level >= 26],
-chest[type="normal"][city="2"][grade="luxurious"][1 <= level <= 5],
-chest[type="normal"][city="2"][grade="luxurious"][6 <= level <= 10],
-chest[type="normal"][city="2"][grade="luxurious"][11 <= level <= 15],
-chest[type="normal"][city="2"][grade="luxurious"][16 <= level <= 20] {
+chest[type="normal"][city=2][grade="precious"][21 <= level <= 25],
+chest[type="normal"][city=2][grade="precious"][level >= 26],
+chest[type="normal"][city=2][grade="luxurious"][1 <= level <= 5],
+chest[type="normal"][city=2][grade="luxurious"][6 <= level <= 10],
+chest[type="normal"][city=2][grade="luxurious"][11 <= level <= 15],
+chest[type="normal"][city=2][grade="luxurious"][16 <= level <= 20] {
     astaps.loot.chest_artifact_mix_11: "2:3, 3:1";
 }
 
-chest[type="normal"][city="2"][grade="luxurious"][21 <= level <= 25],
-chest[type="normal"][city="2"][grade="luxurious"][level >= 26] {
+chest[type="normal"][city=2][grade="luxurious"][21 <= level <= 25],
+chest[type="normal"][city=2][grade="luxurious"][level >= 26] {
     astaps.loot.chest_artifact_mix_12: "2:1, 3:1";
 }
 
-chest[type="normal"][city="3"][grade="common"] {
+chest[type="normal"][city=3][grade="common"] {
     astaps.loot.chest_artifact_mix_13: "1:1, 2:1";
 }
 
-chest[type="normal"][city="3"][grade="exquisite"] {
+chest[type="normal"][city=3][grade="exquisite"] {
     astaps.loot.chest_artifact_mix_14: 2;
 }
 
-chest[type="normal"][city="3"][grade="precious"] {
+chest[type="normal"][city=3][grade="precious"] {
     astaps.loot.chest_artifact_mix_15: "2:1, 3:1";
 }
 
-chest[type="normal"][city="3"][grade="luxurious"] {
+chest[type="normal"][city=3][grade="luxurious"] {
     astaps.loot.chest_artifact_mix_16: "3:1, 4:1";
 }
 
-chest[type="normal"][city="4"][grade="common"] {
+chest[type="normal"][city=4][grade="common"] {
     astaps.loot.chest_artifact_mix_17: "1:1, 2:1";
 }
 
-chest[type="normal"][city="4"][grade="exquisite"] {
+chest[type="normal"][city=4][grade="exquisite"] {
     astaps.loot.chest_artifact_mix_18: 2;
 }
 
-chest[type="normal"][city="4"][grade="precious"] {
+chest[type="normal"][city=4][grade="precious"] {
     astaps.loot.chest_artifact_mix_19: "2:1, 3:1";
 }
 
-chest[type="normal"][city="4"][grade="luxurious"] {
+chest[type="normal"][city=4][grade="luxurious"] {
     astaps.loot.chest_artifact_mix_20: "3:1, 4:1";
 }

@@ -118,7 +118,8 @@ public final class CssRewards {
         return List.copyOf(bindings);
     }
 
-    public Selection resolve(String type, Map<String, String> attributes) {
+    public Selection resolve(String type, Map<String, ?> attributes) {
+        RewardCssAttributes.validate(attributes);
         var matched = new ArrayList<Rule>();
         for (var rule : rules) {
             if (rule.selector.matches(type, attributes)) matched.add(rule);

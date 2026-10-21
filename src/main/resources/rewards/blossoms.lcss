@@ -12,32 +12,32 @@ blossom {
 
 /* 藏金之花：世界等级 WR 决定摩拉和好感经验。 */
 
-blossom[type="wealth"][WR="0"] {
+blossom[type="wealth"][WR=0] {
     genshin.currency.mora: 12000;
     genshin.experience.companionship: 10;
 }
 
-blossom[type="wealth"][WR="1"] {
+blossom[type="wealth"][WR=1] {
     genshin.currency.mora: 20000;
     genshin.experience.companionship: 15;
 }
 
-blossom[type="wealth"][WR="2"] {
+blossom[type="wealth"][WR=2] {
     genshin.currency.mora: 28000;
     genshin.experience.companionship: 15;
 }
 
-blossom[type="wealth"][WR="3"] {
+blossom[type="wealth"][WR=3] {
     genshin.currency.mora: 36000;
     genshin.experience.companionship: 15;
 }
 
-blossom[type="wealth"][WR="4"] {
+blossom[type="wealth"][WR=4] {
     genshin.currency.mora: 44000;
     genshin.experience.companionship: 15;
 }
 
-blossom[type="wealth"][WR="5"] {
+blossom[type="wealth"][WR=5] {
     genshin.currency.mora: 52000;
     genshin.experience.companionship: 20;
 }
@@ -49,35 +49,35 @@ blossom[type="wealth"][6 <= WR <= 9] {
 
 /* 启示之花：经验书数量独立抽样，范围含两端。 */
 
-blossom[type="revelation"][WR="0"] {
+blossom[type="revelation"][WR=0] {
     genshin.avatar_up.wanderers_advice: "7~8";
     genshin.avatar_up.adventurers_experience: "3~4";
     genshin.experience.companionship: 10;
 }
 
-blossom[type="revelation"][WR="1"] {
+blossom[type="revelation"][WR=1] {
     genshin.avatar_up.wanderers_advice: "10~12";
     genshin.avatar_up.adventurers_experience: "5~6";
     genshin.experience.companionship: 15;
 }
 
-blossom[type="revelation"][WR="2"] {
+blossom[type="revelation"][WR=2] {
     genshin.avatar_up.adventurers_experience: "10~11";
     genshin.experience.companionship: 15;
 }
 
-blossom[type="revelation"][WR="3"] {
+blossom[type="revelation"][WR=3] {
     genshin.avatar_up.adventurers_experience: "13~14";
     genshin.experience.companionship: 15;
 }
 
-blossom[type="revelation"][WR="4"] {
+blossom[type="revelation"][WR=4] {
     genshin.avatar_up.adventurers_experience: "6~7";
     genshin.avatar_up.heros_wit: "2~3";
     genshin.experience.companionship: 15;
 }
 
-blossom[type="revelation"][WR="5"] {
+blossom[type="revelation"][WR=5] {
     genshin.avatar_up.adventurers_experience: "6~7";
     genshin.avatar_up.heros_wit: "3~4";
     genshin.experience.companionship: 20;

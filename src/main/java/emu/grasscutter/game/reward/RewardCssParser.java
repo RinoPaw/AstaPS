@@ -1,6 +1,5 @@
 package emu.grasscutter.game.reward;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,7 @@ final class RewardCssParser {
             predicates = List.copyOf(predicates);
         }
 
-        boolean matches(String objectType, Map<String, String> attributes) {
+        boolean matches(String objectType, Map<String, ?> attributes) {
             if (!type.equals(objectType)) return false;
             for (Condition predicate : predicates) {
                 if (!predicate.matches(attributes)) return false;
@@ -33,54 +32,38 @@ final class RewardCssParser {
     }
 
     sealed interface Condition permits Exists, Missing, Compare, Between, In {
-        boolean matches(Map<String, String> attributes);
+        boolean matches(Map<String, ?> attributes);
     }
 
     record Exists(String name) implements Condition {
-        public boolean matches(Map<String, String> values) {
+        public boolean matches(Map<String, ?> values) {
             return values.containsKey(name);
         }
     }
 
     record Missing(String name) implements Condition {
-        public boolean matches(Map<String, String> values) {
+        public boolean matches(Map<String, ?> values) {
             return !values.containsKey(name);
         }
     }
 
-    record Literal(String string, BigDecimal numeric) {
-        static Literal of(String text, boolean quoted) {
-            if (!quoted && NUMBER.matcher(text).matches()) {
-                return new Literal(null, new BigDecimal(text));
-            }
-            return new Literal(text, null);
-        }
+    record Literal(Object value) {
+        boolean isNumber() { return value instanceof Integer; }
 
-        boolean matches(String actual) {
-            if (actual == null) return false;
-            if (numeric == null) return string.equals(actual);
-            try { return numeric.compareTo(new BigDecimal(actual)) == 0; }
-            catch (NumberFormatException ex) { return false; }
-        }
+        boolean matches(Object actual) { return value.equals(actual); }
 
-        Integer compare(String actual) {
-            if (numeric == null || actual == null) return null;
-            try { return new BigDecimal(actual).compareTo(numeric); }
-            catch (NumberFormatException ex) { return null; }
+        Integer compare(Object actual) {
+            return isNumber() && actual instanceof Integer number
+                    ? Integer.compare(number, (Integer) value) : null;
         }
-
-        boolean isNumber() { return numeric != null; }
     }
 
     record Compare(String name, String operator, Literal value) implements Condition {
-        public boolean matches(Map<String, String> attributes) {
-            String actual = attributes.get(name);
+        public boolean matches(Map<String, ?> attributes) {
+            Object actual = attributes.get(name);
             if (actual == null) return false;
             if (operator.equals("=")) return value.matches(actual);
-            if (operator.equals("!=")) {
-                // Numeric comparisons require a numeric actual value.
-                return !value.matches(actual) && (!value.isNumber() || value.compare(actual) != null);
-            }
+            if (operator.equals("!=")) return !value.matches(actual);
             Integer comparison = value.compare(actual);
             if (comparison == null) return false;
             return switch (operator) {
@@ -95,8 +78,8 @@ final class RewardCssParser {
 
     record Between(String name, Literal low, boolean lowInclusive,
                    Literal high, boolean highInclusive) implements Condition {
-        public boolean matches(Map<String, String> attributes) {
-            String actual = attributes.get(name);
+        public boolean matches(Map<String, ?> attributes) {
+            Object actual = attributes.get(name);
             Integer lower = low.compare(actual), upper = high.compare(actual);
             return lower != null && upper != null
                     && (lower > 0 || lower == 0 && lowInclusive)
@@ -106,15 +89,15 @@ final class RewardCssParser {
 
     record In(String name, List<Literal> values) implements Condition {
         In { values = List.copyOf(values); }
-        public boolean matches(Map<String, String> attributes) {
-            String actual = attributes.get(name);
+        public boolean matches(Map<String, ?> attributes) {
+            Object actual = attributes.get(name);
             if (actual == null) return false;
             for (Literal value : values) if (value.matches(actual)) return true;
             return false;
         }
     }
 
-    private static final Pattern NUMBER = Pattern.compile("[+-]?[0-9]+(?:\\.[0-9]+)?");
+    private static final Pattern NUMBER = Pattern.compile("-?[0-9]+");
     private static final Pattern NAME = Pattern.compile("[A-Za-z_][A-Za-z0-9_-]*");
     private static final Pattern PROPERTY = Pattern.compile(
             "(?:--[A-Za-z_][A-Za-z0-9_-]*|genshin\\.[A-Za-z0-9_.$\\[\\]-]+(?:\\.[A-Za-z0-9_.$\\[\\]-]+)*|[a-z][a-z0-9_]*\\.loot\\..+)");
@@ -167,58 +150,92 @@ final class RewardCssParser {
     private Condition condition() {
         if (take('!')) {
             trivia();
-            return new Missing(identifier());
+            String name = identifier();
+            RewardCssAttributes.typeOf(name);
+            return new Missing(name);
         }
         String left = atom();
         boolean leftNumber = NUMBER.matcher(left).matches();
         trivia();
         if (peek(']')) {
             if (leftNumber) throw error("Expected an attribute name");
+            checkAttribute(left);
             return new Exists(left);
         }
         if (word("in")) {
             if (leftNumber) throw error("Set membership requires an attribute name");
+            checkAttribute(left);
             trivia();
             expect('(');
             var values = new ArrayList<Literal>();
             do {
                 trivia();
-                values.add(literal());
+                Literal value = literal();
+                checkLiteral(left, value);
+                values.add(value);
                 trivia();
                 if (!take(',')) break;
             } while (true);
             expect(')');
-            if (values.isEmpty()) throw error("Membership list cannot be empty");
-            boolean numeric = values.getFirst().isNumber();
-            if (values.stream().anyMatch(v -> v.isNumber() != numeric)) {
-                throw error("Membership list has mixed value types");
-            }
             return new In(left, values);
         }
-        String operator = operator();
+        String comparison = operator();
         trivia();
         if (leftNumber) {
-            if (!operator.equals("<") && !operator.equals("<=")) {
+            if (!comparison.equals("<") && !comparison.equals("<=")) {
                 throw error("Range lower bound must use '<' or '<='");
             }
             String name = identifier();
+            checkAttribute(name);
+            if (RewardCssAttributes.typeOf(name) != RewardCssAttributes.Type.INTEGER) {
+                throw error("Numeric range requires an integer attribute: " + name);
+            }
             trivia();
-            String next = operator();
-            if (!next.equals("<") && !next.equals("<=")) {
+            String upperOperator = operator();
+            if (!upperOperator.equals("<") && !upperOperator.equals("<=")) {
                 throw error("Range upper bound must use '<' or '<='");
             }
             trivia();
             Literal high = literal();
-            if (!high.isNumber()) throw error("Range upper bound must be numeric");
-            Literal low = Literal.of(left, false);
-            if (low.numeric.compareTo(high.numeric) > 0) throw error("Reversed numeric range");
-            return new Between(name, low, operator.equals("<="), high, next.equals("<="));
+            checkLiteral(name, high);
+            Literal low = numeric(left);
+            if ((Integer) low.value > (Integer) high.value) {
+                throw error("Reversed numeric range");
+            }
+            return new Between(name, low, comparison.equals("<="),
+                    high, upperOperator.equals("<="));
         }
+        checkAttribute(left);
         Literal value = literal();
-        if (!operator.equals("=") && !operator.equals("!=") && !value.isNumber()) {
-            throw error("Numeric comparison requires a number");
+        checkLiteral(left, value);
+        if (!comparison.equals("=") && !comparison.equals("!=") && !value.isNumber()) {
+            throw error("Numeric comparison requires an integer attribute");
         }
-        return new Compare(left, operator, value);
+        return new Compare(left, comparison, value);
+    }
+
+    private void checkAttribute(String name) {
+        try {
+            RewardCssAttributes.typeOf(name);
+        } catch (IllegalArgumentException failure) {
+            throw error(failure.getMessage());
+        }
+    }
+
+    private void checkLiteral(String name, Literal value) {
+        if ((RewardCssAttributes.typeOf(name) == RewardCssAttributes.Type.INTEGER)
+                != value.isNumber()) {
+            throw error("LootCSS attribute " + name + " requires "
+                    + RewardCssAttributes.typeOf(name) + " literal");
+        }
+    }
+
+    private Literal numeric(String raw) {
+        try {
+            return new Literal(Integer.valueOf(raw));
+        } catch (NumberFormatException failure) {
+            throw error("Integer literal is out of range: " + raw);
+        }
     }
 
     private Declaration declaration() {
@@ -284,13 +301,12 @@ final class RewardCssParser {
 
     private Literal literal() {
         trivia();
-        if (take('"')) return new Literal(quoted('"'), null);
-        if (take('\'')) return new Literal(quoted('\''), null);
+        if (take('"')) return new Literal(quoted('"'));
+        if (take('\'')) return new Literal(quoted('\''));
         String word = atom();
-        if (!NUMBER.matcher(word).matches() && !NAME.matcher(word).matches()) {
-            throw error("Invalid literal: " + word);
-        }
-        return Literal.of(word, false);
+        if (NUMBER.matcher(word).matches()) return numeric(word);
+        if (!NAME.matcher(word).matches()) throw error("Invalid literal: " + word);
+        return new Literal(word);
     }
 
     private String quoted(char quote) {

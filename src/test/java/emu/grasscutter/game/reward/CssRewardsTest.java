@@ -42,6 +42,28 @@ class CssRewardsTest {
     }
 
     @Test
+    void cssAndYamlCombineByFinalNamesBeforeOneIdLookup() {
+        var items = new ItemIdRegistry(Map.of(202, "Mora", 104003, "Hero's Wit"));
+        var pool = YamlLootTables.parse("""
+                books:
+                  - {type: genshin.avatar_up.heros_wit, count: 2}
+                """, items::resolve);
+        var css = CssRewards.parse("""
+                chest[type="normal"] {
+                    astaps.loot.books: 1;
+                    genshin.currency.mora: 10;
+                }
+                """, items, pool);
+        var keys = RewardRoller.rollKeys(
+                css.resolveKeys("chest", Map.of("type", "normal")), pool, new Random(1));
+        assertEquals(Map.of(
+                "genshin.avatar_up.heros_wit", 2,
+                "genshin.currency.mora", 10), keys);
+        assertEquals(Map.of(104003, 2, 202, 10),
+                RewardRoller.resolveKeys(keys, pool, RewardContext.NONE));
+    }
+
+    @Test
     void dottedResourcePropertiesCoexistWithNativeCssCascade() {
         var css = CssRewards.parse("""
                 chest {

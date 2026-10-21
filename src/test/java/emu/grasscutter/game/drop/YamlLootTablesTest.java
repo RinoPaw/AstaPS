@@ -35,14 +35,14 @@ class YamlLootTablesTest {
                     substats: "1:1,2:1"
                 """, resolver, artifacts);
         var possible = new java.util.HashSet<String>();
+        var random = new Random(91);
         for (int i = 0; i < 200; i++) {
-            var keys = tables.rollKeys("astaps.loot.items", new Random(i));
+            var keys = tables.rollKeys("astaps.loot.items", random);
             assertEquals(1, keys.size());
             assertEquals(1, keys.values().iterator().next());
             String key = keys.keySet().iterator().next();
             possible.add(key);
             assertTrue(artifacts.resourceIds().containsKey(key));
-            assertEquals(1, tables.rollKeys("astaps.loot.items", new Random(i)).size());
         }
         assertEquals(java.util.Set.of(
                 "genshin.artifact.instructor.flower.3.1",

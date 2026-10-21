@@ -132,7 +132,7 @@ final class BundledBossRewardsTest {
                         default -> "Materials";
                     });
                 });
-        Pattern.compile("--material: \"([a-z0-9_]+)\";")
+        Pattern.compile("--material: ([a-z0-9_]+);")
                 .matcher(stylesheet).results().map(match -> match.group(1)).distinct()
                 .forEach(name -> {
                     String canonical = "genshin.avatar_ascension." + name;
@@ -141,7 +141,7 @@ final class BundledBossRewardsTest {
                     categories.put(id, "Character Development Items");
                 });
         // Some Bosses expose several material variants in an array binding.
-        Pattern.compile("--material:\\s*\"\\[([^]]+)\\]\"")
+        Pattern.compile("--material:\\s*\\[([^]]+)\\]")
                 .matcher(stylesheet).results()
                 .flatMap(match -> java.util.Arrays.stream(match.group(1).split(",")))
                 .map(String::trim)

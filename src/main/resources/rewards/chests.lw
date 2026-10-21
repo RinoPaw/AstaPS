@@ -77,36 +77,36 @@ chest[type="normal"][grade="precious"][area in ("10", "77", "8", "19", "40", "41
 
 /* 印记元素绑定：city 8/9 共用冰元素。 */
 chest[type="normal"][city="1"] {
-    --element: "anemo";
+    --element: anemo;
 }
 
 chest[type="normal"][city="2"] {
-    --element: "geo";
+    --element: geo;
 }
 
 chest[type="normal"][city="3"] {
-    --element: "electro";
+    --element: electro;
 }
 
 chest[type="normal"][city="4"] {
-    --element: "dendro";
+    --element: dendro;
 }
 
 chest[type="normal"][city="5"] {
-    --element: "hydro";
+    --element: hydro;
 }
 
 chest[type="normal"][city="6"] {
-    --element: "pyro";
+    --element: pyro;
 }
 
 chest[type="normal"][city="7"] {
-    --element: "lunar";
+    --element: lunar;
 }
 
 chest[type="normal"][city="8"],
 chest[type="normal"][city="9"] {
-    --element: "cryo";
+    --element: cryo;
 }
 
 /* 品级与等级奖励：武器、矿石、印记。范围含两端。 */

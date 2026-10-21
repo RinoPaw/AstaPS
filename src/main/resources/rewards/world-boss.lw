@@ -11,290 +11,290 @@
 
 /* 兆载永劫龙兽 */
 boss[type="world"][tag="aeonblight_drake"] {
-    --material: "perpetual_caliber";
-    --element: "[hydro, cryo]";
+    --material: perpetual_caliber;
+    --element: [hydro, cryo];
 }
 
 /* 半永恒统辖矩阵 */
 boss[type="world"][tag="algorithm_semi_intransient_matrix"] {
-    --material: "light_guiding_tetrahedron";
-    --element: "[pyro, anemo]";
+    --material: light_guiding_tetrahedron;
+    --element: [pyro, anemo];
 }
 
 /* 无相之风 */
 boss[type="world"][tag="anemo_hypostasis"] {
-    --material: "hurricane_seed";
-    --element: "anemo";
+    --material: hurricane_seed;
+    --element: anemo;
 }
 
 /* 深海龙蜥组合 */
 boss[type="world"][tag="bathysmal_vishap_herd"] {
-    --material: "dragonheirs_false_fin";
-    --element: "[electro, cryo]";
+    --material: dragonheirs_false_fin;
+    --element: [electro, cryo];
 }
 
 /* 嵌合翼骏狮 */
 boss[type="world"][tag="chimera_sky_roamer"] {
-    --material: "severed_tail_of_the_sky_roamer";
-    --element: "[hydro, anemo]";
+    --material: severed_tail_of_the_sky_roamer;
+    --element: [hydro, anemo];
 }
 
 /* 无相之冰 */
 boss[type="world"][tag="cryo_hypostasis"] {
-    --material: "crystalline_bloom";
-    --element: "cryo";
+    --material: crystalline_bloom;
+    --element: cryo;
 }
 
 /* 急冻树 */
 boss[type="world"][tag="cryo_regisvine"] {
-    --material: "hoarfrost_core";
-    --element: "cryo";
+    --material: hoarfrost_core;
+    --element: cryo;
 }
 
 /* 无相之草 */
 boss[type="world"][tag="dendro_hypostasis"] {
-    --material: "quelled_creeper";
-    --element: "dendro";
+    --material: quelled_creeper;
+    --element: dendro;
 }
 
 /* 无相之雷 */
 boss[type="world"][tag="electro_hypostasis"] {
-    --material: "lightning_prism";
-    --element: "electro";
+    --material: lightning_prism;
+    --element: electro;
 }
 
 /* 掣电树 */
 boss[type="world"][tag="electro_regisvine"] {
-    --material: "thunderclap_fruitcore";
-    --element: "electro";
+    --material: thunderclap_fruitcore;
+    --element: electro;
 }
 
 /* 铁甲熔火帝皇 */
 boss[type="world"][tag="emperor_of_fire_and_iron"] {
-    --material: "emperors_resolution";
-    --element: "pyro";
+    --material: emperors_resolution;
+    --element: pyro;
 }
 
 /* 实验性场力发生装置 */
 boss[type="world"][tag="experimental_field_generator"] {
-    --material: "tourbillon_device";
-    --element: "geo";
+    --material: tourbillon_device;
+    --element: geo;
 }
 
 /* 霜夜灵嗣 */
 boss[type="world"][tag="frostnight_scion"] {
-    --material: "frostnights_glory";
-    --element: "[hydro, cryo]";
+    --material: frostnights_glory;
+    --element: [hydro, cryo];
 }
 
 /* 无相之岩 */
 boss[type="world"][tag="geo_hypostasis"] {
-    --material: "basalt_pillar";
-    --element: "geo";
+    --material: basalt_pillar;
+    --element: geo;
 }
 
 /* 贪食匿叶龙山王 */
 boss[type="world"][tag="gluttonous_yumkasaur_mountain_king"] {
-    --material: "overripe_flamegranate";
-    --element: "dendro";
+    --material: overripe_flamegranate;
+    --element: dendro;
 }
 
 /* 黄金王兽 */
 boss[type="world"][tag="golden_wolflord"] {
-    --material: "riftborn_regalia";
-    --element: "geo";
+    --material: riftborn_regalia;
+    --element: geo;
 }
 
 /* 金焰绒翼龙暴君 */
 boss[type="world"][tag="goldflame_qucusaure_tyrant"] {
-    --material: "mark_of_the_binding_blessing";
-    --element: "pyro";
+    --material: mark_of_the_binding_blessing;
+    --element: pyro;
 }
 
 /* 灵觉隐修的迷者 */
 boss[type="world"][tag="holawaqa_ngoubou"] {
-    --material: "talisman_of_the_enigmatic_land";
-    --element: "cryo";
+    --material: talisman_of_the_enigmatic_land;
+    --element: cryo;
 }
 
 /* 无相之水 */
 boss[type="world"][tag="hydro_hypostasis"] {
-    --material: "dew_of_repudiation";
-    --element: "hydro";
+    --material: dew_of_repudiation;
+    --element: hydro;
 }
 
 /* 水形幻人 */
 boss[type="world"][tag="hydro_tulpa"] {
-    --material: "water_that_failed_to_transcend";
-    --element: "hydro";
+    --material: water_that_failed_to_transcend;
+    --element: hydro;
 }
 
 /* 冰风组曲 */
 boss[type="world"][tag="icewind_suite"] {
-    --material: "[artificed_spare_clockwork_component_coppelia, artificed_spare_clockwork_component_coppelius]";
-    --element: "[anemo, cryo]";
+    --material: [artificed_spare_clockwork_component_coppelia, artificed_spare_clockwork_component_coppelius];
+    --element: [anemo, cryo];
 }
 
 /* 翠翎恐蕈 */
 boss[type="world"][tag="jadeplume_terrorshroom"] {
-    --material: "majestic_hooked_beak";
-    --element: "dendro";
+    --material: majestic_hooked_beak;
+    --element: dendro;
 }
 
 /* 重拳出击鸭 */
 boss[type="world"][tag="knuckle_duck"] {
-    --material: "precision_kuuvahki_stamping_die";
-    --element: "electro";
+    --material: precision_kuuvahki_stamping_die;
+    --element: electro;
 }
 
 /* 熔岩辉龙像 */
 boss[type="world"][tag="lava_dragon_statue"] {
-    --material: "sparkless_statue_core";
-    --element: "pyro";
+    --material: sparkless_statue_core;
+    --element: pyro;
 }
 
 /* 魔像督军 */
 boss[type="world"][tag="legatus_golem"] {
-    --material: "fragment_of_a_golden_melody";
-    --element: "[pyro, geo]";
+    --material: fragment_of_a_golden_melody;
+    --element: [pyro, geo];
 }
 
 /* 蕴光月幻蝶 */
 boss[type="world"][tag="lightbearing_lunar_moth"] {
-    --material: "lightbearing_scale_feather";
-    --element: "[pyro, dendro]";
+    --material: lightbearing_scale_feather;
+    --element: [pyro, dendro];
 }
 
 /* 深邃魹语之主 */
 boss[type="world"][tag="lord_of_the_deep_dreadwing"] {
-    --material: "remnant_of_the_dreadwing";
-    --element: "electro";
+    --material: remnant_of_the_dreadwing;
+    --element: electro;
 }
 
 /* 魔偶剑鬼 */
 boss[type="world"][tag="maguu_kenki"] {
-    --material: "marionette_core";
-    --element: "[anemo, cryo]";
+    --material: marionette_core;
+    --element: [anemo, cryo];
 }
 
 /* 千年珍珠骏麟 */
 boss[type="world"][tag="millennial_pearl_seahorse"] {
-    --material: "fontemer_unihorn";
-    --element: "electro";
+    --material: fontemer_unihorn;
+    --element: electro;
 }
 
 /* 纯水精灵 */
 boss[type="world"][tag="oceanid"] {
-    --material: "cleansing_heart";
-    --element: "hydro";
+    --material: cleansing_heart;
+    --element: hydro;
 }
 
 /* 恒常机关阵列 */
 boss[type="world"][tag="perpetual_mechanical_array"] {
-    --material: "perpetual_heart";
-    --element: "[cryo, geo]";
+    --material: perpetual_heart;
+    --element: [cryo, geo];
 }
 
 /* 精密发条机关 */
 boss[type="world"][tag="precision_clockwork"] {
-    --material: "precision_clockwork_core";
-    --element: "[pyro, cryo]";
+    --material: precision_clockwork_core;
+    --element: [pyro, cryo];
 }
 
 /* 原初监视者 */
 boss[type="world"][tag="primal_watcher"] {
-    --material: "plume_of_the_fallen_watcher";
-    --element: "geo";
+    --material: plume_of_the_fallen_watcher;
+    --element: geo;
 }
 
 /* 古岩龙蜥冰 */
 boss[type="world"][tag="primo_geovishap_cryo"] {
-    --material: "juvenile_jade";
-    --element: "[cryo, geo]";
+    --material: juvenile_jade;
+    --element: [cryo, geo];
 }
 
 /* 古岩龙蜥电 */
 boss[type="world"][tag="primo_geovishap_electro"] {
-    --material: "juvenile_jade";
-    --element: "[electro, geo]";
+    --material: juvenile_jade;
+    --element: [electro, geo];
 }
 
 /* 古岩龙蜥水 */
 boss[type="world"][tag="primo_geovishap_hydro"] {
-    --material: "juvenile_jade";
-    --element: "[hydro, geo]";
+    --material: juvenile_jade;
+    --element: [hydro, geo];
 }
 
 /* 古岩龙蜥火 */
 boss[type="world"][tag="primo_geovishap_pyro"] {
-    --material: "juvenile_jade";
-    --element: "[pyro, geo]";
+    --material: juvenile_jade;
+    --element: [pyro, geo];
 }
 
 /* 无相之火 */
 boss[type="world"][tag="pyro_hypostasis"] {
-    --material: "smoldering_pearl";
-    --element: "pyro";
+    --material: smoldering_pearl;
+    --element: pyro;
 }
 
 /* 爆炎树 */
 boss[type="world"][tag="pyro_regisvine"] {
-    --material: "everflame_seed";
-    --element: "pyro";
+    --material: everflame_seed;
+    --element: pyro;
 }
 
 /* 蕴光异兽 */
 boss[type="world"][tag="radiant_beast"] {
-    --material: "prismatic_severed_tail";
-    --element: "geo";
+    --material: prismatic_severed_tail;
+    --element: geo;
 }
 
 /* 遗迹巨蛇 */
 boss[type="world"][tag="ruin_serpent"] {
-    --material: "runic_fang";
-    --element: "geo";
+    --material: runic_fang;
+    --element: geo;
 }
 
 /* 秘源机兵·构型械 */
 boss[type="world"][tag="secret_source_automaton_configuration_device"] {
-    --material: "gold_inscribed_secret_source_core";
-    --element: "electro";
+    --material: gold_inscribed_secret_source_core;
+    --element: electro;
 }
 
 /* 秘源机兵·统御械 */
 boss[type="world"][tag="secret_source_automaton_overseer"] {
-    --material: "secret_source_airflow_accumulator";
-    --element: "hydro";
+    --material: secret_source_airflow_accumulator;
+    --element: hydro;
 }
 
 /* 风蚀沙虫 */
 boss[type="world"][tag="setekh_wenut"] {
-    --material: "pseudo_stamens";
-    --element: "anemo";
+    --material: pseudo_stamens;
+    --element: anemo;
 }
 
 /* 隐山猊兽 */
 boss[type="world"][tag="solitary_suanni"] {
-    --material: "cloudseam_scale";
-    --element: "[hydro, anemo]";
+    --material: cloudseam_scale;
+    --element: [hydro, anemo];
 }
 
 /* 深邃摹结株 */
 boss[type="world"][tag="tenebrous_papilla"] {
-    --material: "ensnaring_gaze";
-    --element: "[pyro, electro, anemo]";
+    --material: ensnaring_gaze;
+    --element: [pyro, electro, anemo];
 }
 
 /* 雷音权现 */
 boss[type="world"][tag="thunder_manifestation"] {
-    --material: "storm_beads";
-    --element: "electro";
+    --material: storm_beads;
+    --element: electro;
 }
 
 /* 不灭衍生造物 */
 boss[type="world"][tag="undying_replicant"] {
-    --material: "unscorched_blossom_branch";
-    --element: "pyro";
+    --material: unscorched_blossom_branch;
+    --element: pyro;
 }
 
 /* 通用等级奖励：摩拉、经验、材料数量。突破材料权重保留参考表的小数精度。 */

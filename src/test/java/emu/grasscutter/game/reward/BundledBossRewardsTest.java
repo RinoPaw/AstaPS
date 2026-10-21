@@ -24,7 +24,7 @@ final class BundledBossRewardsTest {
         assertTrue(yaml.contains("type: genshin.avatar_ascension"));
         assertTrue(yaml.contains("world_gem_four<COUNT, ELEMENTS...>:"));
         assertTrue(yaml.contains("world_gem_one<ELEMENTS...>:"));
-        assertTrue(css.contains("astaps.loot.world_gem_one<<element>[0],<element>[1]>:"));
+        assertTrue(css.contains("astaps.loot.world_gem_one($element[0],$element[1]):"));
         for (int rarity = 1; rarity <= 4; rarity++) {
             String template = "world_artifact_" + rarity + "star<SETS...>:";
             assertTrue(yaml.contains(template), template);
@@ -42,9 +42,9 @@ final class BundledBossRewardsTest {
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertTrue(css.contains("astaps.loot.world_artifact_5star:"));
         assertFalse(css.contains("world_artifact_5star<"));
-        assertTrue(css.contains("world_artifact_5star_plume_goblet<0,0>"));
-        assertTrue(css.contains("world_artifact_5star_goblet<1>"));
-        assertTrue(css.contains("world_artifact_5star_goblet<0>"));
+        assertTrue(css.contains("world_artifact_5star_plume_goblet(0,0)"));
+        assertTrue(css.contains("world_artifact_5star_goblet(1)"));
+        assertTrue(css.contains("world_artifact_5star_goblet(0)"));
         assertFalse(css.contains("world_artifact_5star_2<"));
         assertFalse(css.contains("world_artifact_5star_special<"));
         assertFalse(css.contains("world_artifact_5star_piece<"));
@@ -55,7 +55,7 @@ final class BundledBossRewardsTest {
     void bundledWorldAndWeeklyRulesLoadAndNativeFallbackIsPreserved() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
         String originalCss = RewardConfiguration.readBundledCss();
-        // Unescape only the text scanned for fixture IDs; pass original CSS to css4j.
+        // Keep fixture-name extraction independent from the stylesheet parser.
         String stylesheet = originalCss.replace("\\", "");
         var ids = new HashMap<String, Integer>();
         var nextId = new AtomicInteger(3000000);
@@ -64,7 +64,7 @@ final class BundledBossRewardsTest {
         // Collect native sets from the artifact template arguments and the
         // fixed-set YAML entries. Prayers sets contain circlets only.
         var sets = new java.util.LinkedHashSet<String>();
-        Pattern.compile("world_artifact_[1-4]star<([^>]+)>")
+        Pattern.compile("world_artifact_[1-4]star\\(([^)]+)\\)")
                 .matcher(stylesheet).results()
                 .flatMap(match -> java.util.Arrays.stream(match.group(1).split(",")))
                 .map(String::trim)

@@ -55,4 +55,49 @@ class RewardResourceExpressionTest {
             assertThrows(IllegalArgumentException.class, () -> RewardResourceExpression.parse(source, true));
         }
     }
+
+    @Test
+    void dollarBindingsExpandResourcePathsAndIndexedLists() {
+        var material = RewardResourceExpression.parse(
+                "genshin.avatar_ascension.$material", false);
+        material.requireDeclared(Set.of("material"));
+        assertEquals(List.of("genshin.avatar_ascension.hurricane_seed",
+                "genshin.avatar_ascension.marionette_core"),
+                material.expand(Map.of("material", List.of("hurricane_seed", "marionette_core"))));
+        var indexed = RewardResourceExpression.parse(
+                "genshin.avatar_ascension.$element[1].sliver", false);
+        assertEquals(List.of("genshin.avatar_ascension.cryo.sliver"),
+                indexed.expand(Map.of("element", List.of("anemo", "cryo"))));
+    }
+
+    @Test
+    void functionCallsDistinguishLiteralScalarAndSpreadArguments() {
+        var literal = RewardResourceExpression.parse("astaps.loot.gem(anemo)", true);
+        assertFalse(literal.hasVariables());
+        assertEquals(List.of("astaps.loot.gem<anemo>"), literal.expand(Map.of()));
+        var bound = RewardResourceExpression.parse(
+                "astaps.loot.world_gem_two(3, ...$element)", true);
+        assertEquals(List.of("astaps.loot.world_gem_two<3,anemo,cryo>"),
+                bound.expand(Map.of("element", List.of("anemo", "cryo"))));
+        var indexed = RewardResourceExpression.parse(
+                "astaps.loot.world_gem_two(3, $element[0], $element[1])", true);
+        assertEquals(bound.expand(Map.of("element", List.of("anemo", "cryo"))),
+                indexed.expand(Map.of("element", List.of("anemo", "cryo"))));
+    }
+
+    @Test
+    void functionCallArgumentPacksMustBeExplicit() {
+        var unindexed = RewardResourceExpression.parse("astaps.loot.gem($element)", true);
+        assertThrows(IllegalArgumentException.class,
+                () -> unindexed.expand(Map.of("element", List.of("anemo", "cryo"))));
+        assertThrows(IllegalArgumentException.class,
+                () -> RewardResourceExpression.parse("astaps.loot.gem(...$element[0])", true));
+        assertThrows(IllegalArgumentException.class,
+                () -> RewardResourceExpression.parse("astaps.loot.gem(3,)", true));
+        assertThrows(IllegalArgumentException.class,
+                () -> RewardResourceExpression.parse("astaps.loot.gem($element[-1])", true));
+        assertThrows(IllegalArgumentException.class,
+                () -> RewardResourceExpression.parse("genshin.currency.$missing", false)
+                    .requireDeclared(Set.of("element")));
+    }
 }

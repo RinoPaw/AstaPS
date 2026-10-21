@@ -30,7 +30,6 @@ final class RewardResourceExpression {
 
     static RewardResourceExpression parse(String source, boolean table) {
         if (source.indexOf('
-        var references = new ArrayList<Reference>();
         boolean arguments = false, closed = false;
         for (int i = 0; i < source.length(); i++) {
             char ch = source.charAt(i);
@@ -172,9 +171,10 @@ final class RewardResourceExpression {
         return new IllegalArgumentException("Invalid reward resource expression: " + source);
     }
 
-    boolean hasVariables() { return !references.isEmpty(); }
+    boolean hasVariables() { return modern != null ? modern.hasVariables() : !references.isEmpty(); }
 
     void requireDeclared(Set<String> declarations) {
+        if (modern != null) { modern.requireDeclared(declarations); return; }
         for (var reference : references) {
             if (!declarations.contains(reference.name)) {
                 throw new IllegalArgumentException("Undeclared reward variable <" + reference.name + "> in " + source);
@@ -183,6 +183,7 @@ final class RewardResourceExpression {
     }
 
     List<String> expand(Map<String, List<String>> bindings) {
+        if (modern != null) return modern.expand(bindings);
         List<String> expanded = List.of("");
         int cursor = 0;
         for (var reference : references) {

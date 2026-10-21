@@ -42,41 +42,63 @@ public final class YamlLootTables {
      * use relative weights; weights on outer entries are independent.
      * A chosen grade applies to the entire count of that entry execution.
      */
-    private static WeightedChoice<Integer> compileGrade(
-            String family, Object rawProperties, ItemResolver resolver, String location) {
-        var path = ResourceId.parse(family);
-        if (path.size() != 3 || !"genshin".equals(path.segment(0))
-                || (!"avatar_ascension".equals(path.segment(1))
-                    && !"talent_up".equals(path.segment(1)))) {
-            throw new IllegalArgumentException(location
-                    + ": rarity properties require an ascension gem or talent-book family");
-        }
-        int maxGrade = "talent_up".equals(path.segment(1)) ? 4 : 5;
-        if (!(rawProperties instanceof Map<?, ?> props)
-                || props.size() != 1 || !props.containsKey("rarity")) {
-            throw new IllegalArgumentException(location
-                    + ": advancement properties require a rarity or a rarity distribution");
-        }
-        Object rarity = props.get("rarity");
-        return WeightedChoice.compile(rarity, location + ".rarity", raw -> {
+    private static WeightedChoice<Integer> compileGemRarity(
+            String element, Object raritySpec, ItemResolver resolver, String location) {
+        return WeightedChoice.compile(raritySpec, location + ".rarity", raw -> {
             String name = raw.toString();
             if (!name.matches("[0-9]+")) {
-                throw new IllegalArgumentException(location + ": invalid rarity: " + name);
+                throw new IllegalArgumentException(location + ": invalid gem rarity: " + name);
             }
-            int grade = Integer.parseInt(name);
-            if (grade < 2 || grade > maxGrade) {
-                throw new IllegalArgumentException(location + ": invalid rarity: " + grade);
+            int rarity = Integer.parseInt(name);
+            if (rarity < 2 || rarity > 5) {
+                throw new IllegalArgumentException(location + ": invalid gem rarity: " + rarity);
             }
-            int itemId = resolver.resolve(family + "." + grade);
-            if (itemId <= 0) {
-                throw new IllegalArgumentException(location
-                        + ": unknown advancement family or rarity: " + family + "." + grade);
+            String resource = "genshin.avatar_ascension." + element + "." + rarity;
+            int id = resolver.resolve(resource);
+            if (id <= 0) {
+                throw new IllegalArgumentException(location + ": unknown gem: " + resource);
             }
-            return itemId;
+            return id;
         });
     }
 
-    /** Each gem copy independently evaluates both the element and rarity fields. */
+    /** Loot-only types select item candidates; a namespaced resource resolves one ID. */
+    private static TypeTarget lootDomainType(String name, Map<?, ?> properties,
+                                             ItemResolver resolver, ArtifactResolver artifacts,
+                                             String location) {
+        switch (name) {
+            case "Artifact" -> {
+                if (artifacts == null) {
+                    throw new IllegalArgumentException(location + ": artifact resolver unavailable");
+                }
+                return new TypeTarget(null, null, artifacts.compileType(properties), null, null);
+            }
+            case "Gem" -> {
+                if (properties == null || properties.size() != 2
+                        || !properties.containsKey("element") || !properties.containsKey("rarity")) {
+                    throw new IllegalArgumentException(location + ": Gem requires element and rarity");
+                }
+                Object element = properties.get("element");
+                if (element instanceof String fixed && fixed.matches("[A-Za-z_][A-Za-z0-9_]*")) {
+                    return new TypeTarget(null, null, null,
+                            compileGemRarity(fixed, properties.get("rarity"), resolver, location), null);
+                }
+                return new TypeTarget(null, null, null, null,
+                        compileElements(properties, resolver, location));
+            }
+            case "TalentBook" -> {
+                if (properties == null) {
+                    throw new IllegalArgumentException(location
+                            + ": TalentBook requires series and rarity");
+                }
+                return new TypeTarget(null, null, null,
+                        compileTalentSeries(properties, resolver, location), null);
+            }
+            default -> throw new IllegalArgumentException(location + ": unknown loot type: " + name);
+        }
+    }
+
+        /** Each gem copy independently evaluates both the element and rarity fields. */
     private static WeightedChoice<Integer> compileElements(
             Object rawProperties, ItemResolver resolver, String location) {
         if (!(rawProperties instanceof Map<?, ?> props)
@@ -222,25 +244,8 @@ public final class YamlLootTables {
             }
             return new TypeTarget(null, templates.qualify(name), null, null, null);
         }
-        if (name.equals("genshin.avatar_ascension") && properties != null) {
-            // One material variant is chosen, then count awards copies of it.
-            return new TypeTarget(null, null, null,
-                    compileElements(properties, resolver, location), null);
-        }
-        if (name.equals("genshin.talent_up") && properties != null) {
-            return new TypeTarget(null, null, null,
-                    compileTalentSeries(properties, resolver, location), null);
-        }
-        if (name.equals("genshin.artifact") || name.startsWith("genshin.artifact.")) {
-            if (artifacts == null) {
-                throw new IllegalArgumentException(location + ": artifact resolver unavailable");
-            }
-            return new TypeTarget(null, null, artifacts.compile(name, properties), null, null);
-        }
-        if (properties != null && (name.startsWith("genshin.avatar_ascension.")
-                || name.startsWith("genshin.talent_up."))) {
-            return new TypeTarget(null, null, null,
-                    compileGrade(name, properties, resolver, location), null);
+        if (name.equals("Artifact") || name.equals("Gem") || name.equals("TalentBook")) {
+            return lootDomainType(name, properties, resolver, artifacts, location);
         }
         if (properties != null) {
             throw new IllegalArgumentException(location + ": unsupported type attributes: " + name);
@@ -451,18 +456,6 @@ public final class YamlLootTables {
                         typeChoice = WeightedChoice.compile(reference, at + ".type",
                                 candidate -> typeTarget(candidate.toString(), resolver,
                                         tableNames, namespace, at, properties, artifacts, templates));
-                    } else if (reference.equals("genshin.avatar_ascension")
-                            && properties != null) {
-                        element = compileElements(properties, resolver, at);
-                    } else if (reference.startsWith("genshin.artifact.")) {
-                        if (artifacts == null) {
-                            throw new IllegalArgumentException(at + ": artifact resolver unavailable");
-                        }
-                        artifact = artifacts.compile(reference, properties);
-                    } else if (properties != null
-                            && (reference.startsWith("genshin.avatar_ascension.")
-                                || reference.startsWith("genshin.talent_up."))) {
-                        grade = compileGrade(reference, properties, resolver, at);
                     } else {
                         int id = resolver.resolve(reference);
                         if (id <= 0 && id != emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL) {
@@ -474,7 +467,7 @@ public final class YamlLootTables {
                 if (properties != null && typeChoice == null
                         && artifact == null && grade == null && element == null) {
                     throw new IllegalArgumentException(at
-                            + ": properties require an artifact or advancement-family reward");
+                            + ": properties require a Loot-domain type");
                 }
                 LootCount.Spec count = LootCount.parse(fields.get("count"));
                 BigDecimal weight = null;

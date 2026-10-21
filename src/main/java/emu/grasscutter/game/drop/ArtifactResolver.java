@@ -202,41 +202,28 @@ public final class ArtifactResolver {
         return LootCount.parse(raw);
     }
 
-    public Selector compile(String name, Object rawProperties) {
-        ResourceId id = ResourceId.parse(name);
-        if ((id.size() != 2 && id.size() != 3)
-                || !"genshin".equals(id.segment(0)) || !"artifact".equals(id.segment(1))) {
-            throw new IllegalArgumentException("Expected genshin.artifact with set attribute: " + name);
-        }
-        Map<?, ?> props = rawProperties == null ? Map.of() :
-                rawProperties instanceof Map<?, ?> m ? m :
-                throwInvalidProperties();
-        boolean generic = id.size() == 2;
+    /** A Loot-domain Artifact selector chooses native pieces from a named set. */
+    public Selector compileType(Object rawProperties) {
+        Map<?, ?> props = rawProperties instanceof Map<?, ?> m ? m : throwInvalidProperties();
         for (Object key : props.keySet()) {
-            if (!"slot".equals(key) && !"rarity".equals(key) && !"substats".equals(key)
-                    && !(generic && "set".equals(key))) {
+            if (!"set".equals(key) && !"slot".equals(key)
+                    && !"rarity".equals(key) && !"substats".equals(key)) {
                 throw new IllegalArgumentException("Unknown artifact property: " + key);
             }
         }
-        WeightedChoice<List<Variant>> sets = null;
-        List<Variant> variants;
-        if (generic) {
-            sets = WeightedChoice.compile(props.get("set"), "artifact.set", candidate -> {
-                String set = candidate.toString();
-                List<Variant> nativeVariants = bySet.get(set);
-                if (nativeVariants == null || nativeVariants.isEmpty()) {
-                    throw new IllegalArgumentException("Unknown native artifact set: " + set);
-                }
-                return nativeVariants;
-            });
-            variants = List.of();
-        } else {
-            variants = bySet.get(id.segment(2));
-            if (variants == null || variants.isEmpty()) {
-                throw new IllegalArgumentException("Unknown native artifact set: " + name);
-            }
+        if (!props.containsKey("set")) {
+            throw new IllegalArgumentException("Artifact requires a set");
         }
-        return new Selector(variants, property("slot", props.get("slot")),
+        WeightedChoice<List<Variant>> sets =
+                WeightedChoice.compile(props.get("set"), "artifact.set", candidate -> {
+                    String set = candidate.toString();
+                    List<Variant> nativeVariants = bySet.get(set);
+                    if (nativeVariants == null || nativeVariants.isEmpty()) {
+                        throw new IllegalArgumentException("Unknown native artifact set: " + set);
+                    }
+                    return nativeVariants;
+                });
+        return new Selector(List.of(), property("slot", props.get("slot")),
                 property("rarity", props.get("rarity")),
                 property("substats", props.get("substats")), sets);
     }

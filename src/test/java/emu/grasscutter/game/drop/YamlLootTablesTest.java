@@ -41,16 +41,16 @@ class YamlLootTablesTest {
         }
         var yaml = """
                 artifacts_prayers_wisdom_3star: &artifacts_prayers_wisdom_3star
-                  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-                  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-                  - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-                  - {reward: genshin.artifact.traveling_doctor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                  - {type: Artifact, set: instructor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                  - {type: Artifact, set: the_exile, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                  - {type: Artifact, set: prayers_for_wisdom, properties: {slot: circlet, rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                  - {type: Artifact, set: traveling_doctor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
                 artifacts_prayers_wisdom_4star: &artifacts_prayers_wisdom_4star
-                  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-                  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-                  - {reward: genshin.artifact.prayers_for_wisdom, properties: {slot: circlet, rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-                  - {reward: genshin.artifact.gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
-                  - {reward: genshin.artifact.wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+                  - {type: Artifact, set: instructor, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+                  - {type: Artifact, set: the_exile, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+                  - {type: Artifact, set: prayers_for_wisdom, properties: {slot: circlet, rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+                  - {type: Artifact, set: gladiators_finale, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
+                  - {type: Artifact, set: wanderers_troupe, properties: {slot: "1~5", rarity: 4, substats: "2:66, 3:34"}, weight: 1}
                 boss3:
                   - {reward: *artifacts_prayers_wisdom_3star, count: 2}
                 boss4:
@@ -149,7 +149,7 @@ class YamlLootTablesTest {
         assertThrows(IllegalArgumentException.class, () ->
                 YamlLootTables.parse("""
                         legacy:
-                          - {reward: genshin.talent_up.guide_to_freedom}
+                          - {type: TalentBook, series: guide_to_freedom}
                         """, books::resolve));
     }
 
@@ -161,18 +161,18 @@ class YamlLootTablesTest {
                 8003, "Vayuda Turquoise Chunk"));
         var former = YamlLootTables.parse("""
                 gems: &gems
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3, weight: 1}
+                  - {type: Gem, element: anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3, weight: 1}
                 boss:
                   - {reward: *gems, count: "2:82.398, 3:17.602"}
                 """, items::resolve);
         var inlined = YamlLootTables.parse("""
                 boss:
-                  - reward: {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3}
+                  - reward: {type: Gem, element: anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3}
                     count: "2:82.398, 3:17.602"
                 """, items::resolve);
         var flattened = YamlLootTables.parse("""
                 boss:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: "6:82.398, 9:17.602"}
+                  - {type: Gem, element: anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: "6:82.398, 9:17.602"}
                 """, items::resolve);
 
         var originalRandom = new Random(81);
@@ -207,9 +207,9 @@ class YamlLootTablesTest {
                 8101, "Teachings of Freedom", 8102, "Guide to Freedom"));
         var loot = YamlLootTables.parse("""
                 copies:
-                  - {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:50"}, count: 2}
+                  - {type: TalentBook, series: freedom, properties: {rarity: "2:50, 3:50"}, count: 2}
                 rerolls:
-                  - reward: {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:50"}}
+                  - reward: {type: TalentBook, series: freedom, properties: {rarity: "2:50, 3:50"}}
                     count: 2
                 """, books::resolve);
 
@@ -260,12 +260,12 @@ class YamlLootTablesTest {
                 8203, "Philosophies of Freedom"));
         var tables = YamlLootTables.parse("""
                 mixed:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:74.63, 3:19.9, 4:4.97, 5:0.5"}, weight: 1}
-                  - {reward: genshin.talent_up.freedom, properties: {rarity: "2:20, 3:30, 4:50"}, weight: 1}
+                  - {type: Gem, element: anemo, properties: {rarity: "2:74.63, 3:19.9, 4:4.97, 5:0.5"}, weight: 1}
+                  - {type: TalentBook, series: freedom, properties: {rarity: "2:20, 3:30, 4:50"}, weight: 1}
                 repeated:
-                  - {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:50"}, count: 4}
+                  - {type: TalentBook, series: freedom, properties: {rarity: "2:50, 3:50"}, count: 4}
                 rerolled:
-                  - reward: {reward: genshin.talent_up.freedom, properties: {rarity: "2:50, 3:50"}, count: 4}
+                  - reward: {type: TalentBook, series: freedom, properties: {rarity: "2:50, 3:50"}, count: 4}
                     count: 4
                 """, inventory::resolve);
         var counts = new java.util.HashMap<Integer, Integer>();
@@ -310,9 +310,9 @@ class YamlLootTablesTest {
                   - {reward: genshin.avatar_ascension.anemo.3, count: 3, weight: 1519}
                   - {reward: genshin.avatar_ascension.anemo.4, count: 3, weight: 380}
                 compact:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3, weight: 1}
+                  - {type: Gem, element: anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 3, weight: 1}
                 nines:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 9, weight: 1}
+                  - {type: Gem, element: anemo, properties: {rarity: "2:75, 3:20, 4:5"}, count: 9, weight: 1}
                 """, gems::resolve);
         for (String name : java.util.List.of("original", "compact", "nines")) {
             var counts = new int[3];
@@ -339,9 +339,9 @@ class YamlLootTablesTest {
                 8103, "Varunada Lazurite Fragment"));
         var tables = YamlLootTables.parse("""
                 weekly:
-                  - {reward: genshin.avatar_ascension, properties: {element: "electro:33.33, cryo:33.33, hydro:33.34", rarity: 3}, count: "1:98, 2:2"}
+                  - {type: Gem, properties: {element: "electro:33.33, cryo:33.33, hydro:33.34", rarity: 3}, count: "1:98, 2:2"}
                 pair:
-                  - {reward: genshin.avatar_ascension, properties: {element: "electro:33.33, cryo:33.33, hydro:33.34", rarity: 3}, count: 2}
+                  - {type: Gem, properties: {element: "electro:33.33, cryo:33.33, hydro:33.34", rarity: 3}, count: 2}
                 """, gems::resolve);
         int[] items = new int[3];
         int extraRolls = 0;
@@ -384,11 +384,11 @@ class YamlLootTablesTest {
                 "{element: \"electro:100\", rarity: 3, extra: true}")) {
             assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                     invalid:
-                      - {reward: genshin.avatar_ascension, properties: %s}
+                      - {type: Gem, properties: %s}
                     """.formatted(properties), gems::resolve), properties);
         }
         var repeated = YamlLootTables.parse("""
-                repeated: {type: genshin.avatar_ascension, element: "electro:70, electro:30", rarity: 3}
+                repeated: {type: Gem, element: "electro:70, electro:30", rarity: 3}
                 """, gems::resolve);
         assertEquals(Map.of(8101, 1), repeated.roll("repeated", new Random(1)));
     }
@@ -404,15 +404,15 @@ class YamlLootTablesTest {
                 8203, "Philosophies of Freedom"));
         var tables = YamlLootTables.parse("""
                 guaranteed:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: 2}, count: 3}
-                  - {reward: genshin.avatar_ascension.vayuda_turquoise, properties: {rarity: 3}}
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: 5}}
-                  - {reward: genshin.talent_up.freedom, properties: {rarity: 2}, count: 2}
-                  - {reward: genshin.talent_up.freedom, properties: {rarity: 3}}
-                  - {reward: genshin.talent_up.freedom, properties: {rarity: 4}}
+                  - {type: Gem, element: anemo, properties: {rarity: 2}, count: 3}
+                  - {type: Gem, element: vayuda_turquoise, properties: {rarity: 3}}
+                  - {type: Gem, element: anemo, properties: {rarity: 5}}
+                  - {type: TalentBook, series: freedom, properties: {rarity: 2}, count: 2}
+                  - {type: TalentBook, series: freedom, properties: {rarity: 3}}
+                  - {type: TalentBook, series: freedom, properties: {rarity: 4}}
                 legacy:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:100"}, count: 3}
-                  - {reward: genshin.talent_up.freedom, properties: {rarity: "3:100"}}
+                  - {type: Gem, element: anemo, properties: {rarity: "2:100"}, count: 3}
+                  - {type: TalentBook, series: freedom, properties: {rarity: "3:100"}}
                 """, items::resolve);
         var expected = Map.of(8101, 3, 8102, 1, 8103, 1, 8201, 2, 8202, 1, 8203, 1);
         for (int i = 0; i < 100; i++) {
@@ -433,16 +433,16 @@ class YamlLootTablesTest {
                 "[2]", "{grade: 2}")) {
             assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                     invalid:
-                      - {reward: genshin.avatar_ascension.anemo, properties: {rarity: %s}}
+                      - {type: Gem, element: anemo, properties: {rarity: %s}}
                     """.formatted(spec), items::resolve), spec);
         }
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 invalid:
-                  - {reward: genshin.talent_up.freedom, properties: {rarity: 5}}
+                  - {type: TalentBook, series: freedom, properties: {rarity: 5}}
                 """, items::resolve));
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 invalid:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: 4}}
+                  - {type: Gem, element: anemo, properties: {rarity: 4}}
                 """, items::resolve));
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 invalid:
@@ -450,7 +450,7 @@ class YamlLootTablesTest {
                 """, items::resolve));
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 invalid:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: 2, extra: 1}}
+                  - {type: Gem, element: anemo, properties: {rarity: 2, extra: 1}}
                 """, items::resolve));
     }
 
@@ -467,17 +467,18 @@ class YamlLootTablesTest {
             assertThrows(IllegalArgumentException.class, () ->
                     YamlLootTables.parse("""
                             invalid:
-                              - reward: genshin.talent_up.freedom
+                              - type: TalentBook
+                                series: freedom
                                 properties: {rarity: "%s"}
                             """.formatted(spec), items::resolve), spec);
         }
         var repeated = YamlLootTables.parse("""
-                repeated: {type: genshin.talent_up.freedom, rarity: "2:50, 2:50"}
+                repeated: {type: TalentBook, series: freedom, rarity: "2:50, 2:50"}
                 """, items::resolve);
         assertEquals(Map.of(8201, 1), repeated.roll("repeated", new Random(2)));
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 invalid:
-                  - {reward: genshin.avatar_ascension.anemo, properties: {rarity: "2:50, 3:50"}}
+                  - {type: Gem, element: anemo, properties: {rarity: "2:50, 3:50"}}
                 """, id -> {
                     if (id.equals("genshin.avatar_ascension.anemo.2")) return 8101;
                     return -2;
@@ -487,6 +488,26 @@ class YamlLootTablesTest {
                         invalid:
                           - {reward: genshin.currency.mora, properties: {rarity: "2:100"}}
                         """, items::resolve));
+    }
+
+    @Test
+    void namespacedFamiliesAreNotLootTypeSelectors() {
+        var items = new ItemIdRegistry(Map.of(
+                8101, "Vayuda Turquoise Sliver",
+                8201, "Teachings of Freedom"));
+        for (String family : java.util.List.of(
+                "genshin.avatar_ascension",
+                "genshin.avatar_ascension.anemo",
+                "genshin.talent_up",
+                "genshin.talent_up.freedom",
+                "genshin.artifact")) {
+            assertThrows(IllegalArgumentException.class,
+                    () -> YamlLootTables.parse("invalid:\n  - {type: " + family + "}\n",
+                            items::resolve), family);
+            assertThrows(IllegalArgumentException.class,
+                    () -> YamlLootTables.parse("invalid:\n  - {reward: " + family + "}\n",
+                            items::resolve), family);
+        }
     }
 
     @Test
@@ -527,7 +548,8 @@ class YamlLootTablesTest {
         var artifactResolver = new ArtifactResolver(variants);
         var loot = YamlLootTables.parse("""
                 chest:
-                  - reward: genshin.artifact.berserker
+                  - type: Artifact
+                    set: berserker
                     properties: {slot: "1~5", rarity: 3, substats: "1:80,2:20"}
                     count: 2
                 """, resolver, artifactResolver);
@@ -560,18 +582,18 @@ class YamlLootTablesTest {
         var artifacts = new ArtifactResolver(variants);
         var nested = YamlLootTables.parse("""
                 slots: &slots
-                  - {reward: genshin.artifact.the_exile, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
-                  - {reward: genshin.artifact.the_exile, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
-                  - {reward: genshin.artifact.the_exile, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
-                  - {reward: genshin.artifact.the_exile, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
-                  - {reward: genshin.artifact.the_exile, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
+                  - {type: Artifact, set: the_exile, properties: {slot: goblet, rarity: 4, substats: 2}, weight: 1}
+                  - {type: Artifact, set: the_exile, properties: {slot: plume, rarity: 4, substats: 2}, weight: 1}
+                  - {type: Artifact, set: the_exile, properties: {slot: circlet, rarity: 4, substats: 2}, weight: 1}
+                  - {type: Artifact, set: the_exile, properties: {slot: flower, rarity: 4, substats: 2}, weight: 1}
+                  - {type: Artifact, set: the_exile, properties: {slot: sands, rarity: 4, substats: 2}, weight: 1}
                 choice:
                   - {reward: *slots, weight: 2}
                   - {reward: genshin.currency.mora, weight: 3}
                 """, resolver, artifacts);
         var flat = YamlLootTables.parse("""
                 choice:
-                  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 2}
+                  - {type: Artifact, set: the_exile, properties: {slot: "1~5", rarity: 4, substats: 2}, weight: 2}
                   - {reward: genshin.currency.mora, weight: 3}
                 """, resolver, artifacts);
         assertFalse(flat.contains("astaps.loot.slots"));
@@ -642,21 +664,21 @@ class YamlLootTablesTest {
         var nested = YamlLootTables.parse("""
                 choice:
                   - reward:
-                      - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
-                      - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
-                      - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+                      - {type: Artifact, set: berserker, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+                      - {type: Artifact, set: instructor, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
+                      - {type: Artifact, set: the_exile, properties: {slot: "1~5", rarity: 3, substats: 1}, weight: 1}
                     weight: 33
                   - reward:
-                      - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
-                      - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
-                      - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+                      - {type: Artifact, set: berserker, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+                      - {type: Artifact, set: instructor, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
+                      - {type: Artifact, set: the_exile, properties: {slot: "1~5", rarity: 3, substats: 2}, weight: 1}
                     weight: 17
                 """, resolver, artifacts);
         var flat = YamlLootTables.parse("""
                 choice:
-                  - {reward: genshin.artifact.berserker, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-                  - {reward: genshin.artifact.instructor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
-                  - {reward: genshin.artifact.the_exile, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                  - {type: Artifact, set: berserker, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                  - {type: Artifact, set: instructor, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
+                  - {type: Artifact, set: the_exile, properties: {slot: "1~5", rarity: 3, substats: "1:66, 2:34"}, weight: 1}
                 """, resolver, artifacts);
 
         for (var table : java.util.List.of(nested, flat)) {
@@ -688,7 +710,8 @@ class YamlLootTablesTest {
                 new ArtifactResolver.Variant(60110, "adventurer", 4, 1, 0)));
         var loot = YamlLootTables.parse("""
                 chest:
-                  - reward: genshin.artifact.adventurer
+                  - type: Artifact
+                    set: adventurer
                     properties: {rarity: 1}
                 """, resolver, artifacts);
         for (int i = 0; i < 100; i++) {
@@ -700,7 +723,8 @@ class YamlLootTablesTest {
         assertThrows(IllegalArgumentException.class, () ->
                 YamlLootTables.parse("""
                         bad:
-                          - reward: genshin.artifact.adventurer
+                          - type: Artifact
+                            set: adventurer
                             properties: {invalid: 1}
                         """, resolver, artifacts));
         assertThrows(IllegalArgumentException.class, () ->

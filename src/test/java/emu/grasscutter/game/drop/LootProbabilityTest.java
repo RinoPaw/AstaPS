@@ -15,9 +15,9 @@ class LootProbabilityTest {
 
     @Test void geometricDepthBoundaryAndAlmostSureTermination() {
         // Both terminate almost surely with mean <=100; only 0.8 meets the depth tail.
-        assertDoesNotThrow(() -> parse("a: {type: a, count: 0.8}"));
+        assertDoesNotThrow(() -> parse("a: {type: a, count: '0:2, 1:8'}"));
         var rejected = assertThrows(IllegalArgumentException.class,
-                () -> parse("a: {type: a, count: 0.81}"));
+                () -> parse("a: {type: a, count: '0:19, 1:81'}"));
         assertTrue(rejected.getMessage().contains("P(H > 64)"));
         assertThrows(IllegalArgumentException.class, () -> parse("a: {type: a}"));
         assertThrows(IllegalArgumentException.class, () -> parse("a: {type: a, count: '0:1, 2:1'}"));
@@ -67,7 +67,7 @@ class LootProbabilityTest {
     @Test void uniformAndFractionalCountsKeepNativeDistributions() {
         var node = new LootRecursionSafety.Graph.Node("child");
         var p = LootProbability.Poly.one(100).shift();
-        var fraction = LootProbability.repeat(node, "2.3").evaluate(ignored -> p, 100);
+        var fraction = LootProbability.repeat(node, "2:7, 3:3").evaluate(ignored -> p, 100);
         assertEquals(0, new BigDecimal("0.7").compareTo(fraction.coefficients[2]));
         assertEquals(0, new BigDecimal("0.3").compareTo(fraction.coefficients[3]));
         var uniform = LootProbability.repeat(node, "0;2147483647").evaluate(ignored -> p, 100);
@@ -80,7 +80,7 @@ class LootProbabilityTest {
 
     @Test void zeroCountLawsNeverReadAnUnreachableChild() {
         var child = new LootRecursionSafety.Graph.Node("unreachable");
-        for (String count : List.of("0", "0.0", "0;0", "0:1")) {
+        for (String count : List.of("0", "0;0", "0:1")) {
             var result = LootProbability.repeat(child, count).evaluate(ignored -> {
                 fail("Zero executions must not evaluate a child: " + count);
                 return null;
@@ -96,10 +96,10 @@ class LootProbabilityTest {
     }
 
     @Test void failedTemplateValidationCannotBeBypassedByRetry() {
-        var tables = parse("leaf: {type: coin}\nwide(N):\n  - {type: leaf, count: $N}");
+        var tables = parse("leaf: {type: coin}\nwide<N>:\n  - {type: leaf, count: $N}");
         for (int i = 0; i < 2; i++) {
-            assertThrows(IllegalArgumentException.class, () -> tables.resolveName("wide(101)"));
-            assertFalse(tables.contains("astaps.loot.wide(101)"));
+            assertThrows(IllegalArgumentException.class, () -> tables.resolveName("wide<101>"));
+            assertFalse(tables.contains("astaps.loot.wide<101>"));
         }
     }
 

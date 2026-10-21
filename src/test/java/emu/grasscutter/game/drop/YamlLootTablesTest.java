@@ -90,25 +90,25 @@ class YamlLootTablesTest {
     @Test
     void lootTemplateExpressionsRejectUnsupportedSyntax() {
         String template = """
-                item(rarity):
+                item<rarity>:
                   - {reward: genshin.currency.mora, count: "%s"}
                 boss:
-                  - {reward: astaps.loot.item(3)}
+                  - {reward: astaps.loot.item<3>}
                 """;
         for (String bad : java.util.List.of("${unknown}", "${rarity * 2}",
                 "${rarity - }", "${rarity + 2147483647}", "${rarity")) {
             assertThrows(IllegalArgumentException.class, () -> parse(template.formatted(bad)), bad);
         }
         assertThrows(IllegalArgumentException.class,
-                () -> parse(template.formatted("$rarity").replace("item(3)", "item(2147483648)")));
+                () -> parse(template.formatted("$rarity").replace("item<3>", "item<2147483648>")));
         // Template bodies must be lists, not special common/variants mappings.
         assertThrows(IllegalArgumentException.class, () -> parse("""
-                invalid(chance):
+                invalid<chance>:
                   common:
                     - {reward: genshin.currency.mora, count: "${chance}"}
                   variants: {21: []}
                 boss:
-                  - {reward: astaps.loot.invalid(21)}
+                  - {reward: astaps.loot.invalid<21>}
                 """));
     }
 
@@ -118,12 +118,12 @@ class YamlLootTablesTest {
                 choices: &choices
                   - {reward: genshin.avatar_up.heros_wit, weight: 1}
                   - {reward: genshin.avatar_up.adventurers_experience, weight: 1}
-                award(rarity):
+                award<rarity>:
                   - {reward: *choices, count: "$rarity"}
                 boss_a:
-                  - {reward: astaps.loot.award(1)}
+                  - {reward: astaps.loot.award<1>}
                 boss_b:
-                  - {reward: astaps.loot.award(1)}
+                  - {reward: astaps.loot.award<1>}
                 """);
         assertEquals(3, loot.names().size());
         assertEquals(1, loot.roll("astaps.loot.boss_a", new Random(1))
@@ -773,7 +773,7 @@ class YamlLootTablesTest {
         assertDoesNotThrow(() -> LootCount.parse("2:44.44, 3:55.56"));
         assertDoesNotThrow(() -> LootCount.parse("1:12.5,2:87.5"));
         assertDoesNotThrow(() -> LootCount.parse("1:60,2:60"));
-        assertDoesNotThrow(() -> LootCount.parse("2.5556"));
+        assertThrows(IllegalArgumentException.class, () -> LootCount.parse("2.5556"));
         assertDoesNotThrow(() -> parse("""
                 weighted:
                   - {reward: genshin.currency.mora, weight: 1.5}
@@ -1096,11 +1096,11 @@ class YamlLootTablesTest {
     @Test
     void modernYamlTemplatesSupportDollarVariablesAndFunctionCalls() {
         var tables = parse("""
-                grant(KIND):
+                grant<KIND>:
                   - {value: "genshin.currency.$KIND", count: 2}
                 chosen:
-                  - {value: grant(mora), weight: 3}
-                  - {value: grant(mora), weight: 1}
+                  - {value: grant<mora>, weight: 3}
+                  - {value: grant<mora>, weight: 1}
                 """);
         assertEquals(Map.of(202, 2), tables.roll("chosen", new Random(7)));
     }
@@ -1108,10 +1108,10 @@ class YamlLootTablesTest {
     @Test
     void modernYamlTemplatesSupportSpreadParameterPacks() {
         var tables = parse("""
-                choose(...KINDS):
+                choose<...KINDS>:
                   - value: "genshin.currency....$KINDS:1"
                 chosen:
-                  - {value: "choose(mora,mora)", count: 2}
+                  - {value: "choose<mora,mora>", count: 2}
                 """);
         assertEquals(Map.of(202, 2), tables.roll("chosen", new Random(7)));
     }

@@ -150,10 +150,10 @@ class LootCountScopeTest {
             default -> -2;
         };
         var tables = YamlLootTables.parse("""
-                boss(MORA,FIRST,SECOND,N):
+                boss<MORA,FIRST,SECOND,N>:
                   - {type: genshin.currency.mora, count: "$MORA"}
                   - {type: "$FIRST:3, $SECOND:1", count: "$N"}
-                boss_a: {type: "boss(1000,A,B,2)"}
+                boss_a: {type: "boss<1000,A,B,2>"}
                 """, itemNames);
         var rng = new Random(33);
         int bothMora = 0;
@@ -287,10 +287,10 @@ class LootCountScopeTest {
     @Test
     void recursiveParameterizedPoolsAreAccepted() {
         var tables = YamlLootTables.parse("""
-                echo(N):
+                echo<N>:
                   - {type: genshin.currency.mora, count: "$N"}
-                  - {type: "echo(1)", count: "0:9, 1:1"}
-                root: {type: "echo(2)"}
+                  - {type: "echo<1>", count: "0:9, 1:1"}
+                root: {type: "echo<2>"}
                 """, ITEMS);
         var random = new Random(921);
         for (int i = 0; i < 1_000; i++) {
@@ -419,14 +419,14 @@ class LootCountScopeTest {
                 new ArtifactResolver.Variant(9103, "adventurer", 1, 3, 1),
                 new ArtifactResolver.Variant(9104, "traveling_doctor", 1, 3, 1)));
         var loot = YamlLootTables.parse("""
-                chest(RARITY,SUBSTATS,...SETS):
+                chest<RARITY,SUBSTATS,...SETS>:
                   - type: "genshin.artifact....$SETS:1"
                     slot: flower
                     rarity: $RARITY
                     substats: $SUBSTATS
-                two: {type: "chest(3,1,berserker,instructor)"}
-                four: {type: "chest(3,1,berserker,instructor,adventurer,traveling_doctor)"}
-                repeated: {type: "chest(3,1,berserker,berserker)"}
+                two: {type: "chest<3,1,berserker,instructor>"}
+                four: {type: "chest<3,1,berserker,instructor,adventurer,traveling_doctor>"}
+                repeated: {type: "chest<3,1,berserker,berserker>"}
                 """, ITEMS, variants);
         assertEquals(Map.of(9101, 1), loot.roll("repeated", new Random(60)));
 
@@ -444,14 +444,14 @@ class LootCountScopeTest {
     @Test
     void parameterPacksCanBeForwardedAndExpandedInOtherFields() {
         var loot = YamlLootTables.parse("""
-                counts(...COUNTS):
+                counts<...COUNTS>:
                   - {type: genshin.currency.mora, count: "...$COUNTS:1"}
-                forward(...VALUES):
-                  - {type: "counts(...$VALUES)"}
-                values: {type: "forward(2,3)"}
-                empty(...VALUES):
+                forward<...VALUES>:
+                  - {type: "counts<...$VALUES>"}
+                values: {type: "forward<2,3>"}
+                empty<...VALUES>:
                   - {type: genshin.currency.mora}
-                zero: {type: "empty()"}
+                zero: {type: "empty<>"}
                 """, ITEMS);
         assertEquals(Map.of(MORA, 1), loot.roll("zero", new Random(62)));
         var rng = new Random(63);
@@ -463,7 +463,7 @@ class LootCountScopeTest {
         }
         assertEquals(0.5, threes / 12_000.0, 0.03);
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
-                invalid(...PACK,FIXED):
+                invalid<...PACK,FIXED>:
                   - {type: genshin.currency.mora}
                 """, ITEMS));
     }
@@ -537,15 +537,15 @@ class LootCountScopeTest {
                   - {type: *loop, count: "0:99, 1:901"}
                 """, ITEMS));
         var safe = YamlLootTables.parse("""
-                recursive(N):
-                  - {type: "recursive(1)", count: "0:2, 1:8"}
-                root: {type: "recursive(1)"}
+                recursive<N>:
+                  - {type: "recursive<1>", count: "0:2, 1:8"}
+                root: {type: "recursive<1>"}
                 """, ITEMS);
-        assertTrue(safe.contains("astaps.loot.recursive(1)"));
+        assertTrue(safe.contains("astaps.loot.recursive<1>"));
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
-                recursive(N):
-                  - {type: "recursive(1)", count: "0:99, 1:901"}
-                root: {type: "recursive(1)"}
+                recursive<N>:
+                  - {type: "recursive<1>", count: "0:99, 1:901"}
+                root: {type: "recursive<1>"}
                 """, ITEMS));
     }
 
@@ -569,30 +569,30 @@ class LootCountScopeTest {
             }
         }
         var loot = YamlLootTables.parse("""
-                world_artifact_1star(...SETS):
+                world_artifact_1star<...SETS>:
                   - type: genshin.artifact
                     set: "...$SETS:1"
                     rarity: 1
                     substats: 0
-                world_artifact_2star(...SETS):
+                world_artifact_2star<...SETS>:
                   - type: genshin.artifact
                     set: "...$SETS:1"
                     rarity: 2
                     substats: "0:66, 1:34"
-                world_artifact_3star(...SETS):
+                world_artifact_3star<...SETS>:
                   - type: genshin.artifact
                     set: "...$SETS:1"
                     rarity: 3
                     substats: "1:66, 2:34"
-                world_artifact_4star(...SETS):
+                world_artifact_4star<...SETS>:
                   - type: genshin.artifact
                     set: "...$SETS:1"
                     rarity: 4
                     substats: "2:66, 3:34"
-                one: {type: "world_artifact_1star(berserker,instructor)"}
-                two: {type: "world_artifact_2star(berserker,instructor)"}
-                three: {type: "world_artifact_3star(berserker,instructor,the_exile,prayers_for_wisdom)"}
-                four: {type: "world_artifact_4star(berserker,instructor,the_exile,prayers_for_wisdom,gladiators_finale)"}
+                one: {type: "world_artifact_1star<berserker,instructor>"}
+                two: {type: "world_artifact_2star<berserker,instructor>"}
+                three: {type: "world_artifact_3star<berserker,instructor,the_exile,prayers_for_wisdom>"}
+                four: {type: "world_artifact_4star<berserker,instructor,the_exile,prayers_for_wisdom,gladiators_finale>"}
                 """, ITEMS, new ArtifactResolver(variants));
         var random = new Random(77);
         for (int rarity : new int[]{1, 2, 3, 4}) {
@@ -643,33 +643,33 @@ class LootCountScopeTest {
                 Map.entry("genshin.avatar_ascension.cryo.chunk", 8203),
                 Map.entry("genshin.avatar_ascension.cryo.gemstone", 8204));
         var loot = YamlLootTables.parse("""
-                one(...ELEMENTS):
+                one<...ELEMENTS>:
                   - {type: "genshin.avatar_ascension....$ELEMENTS.sliver:1", count: 3}
-                two(COUNT,...ELEMENTS):
+                two<COUNT,...ELEMENTS>:
                   - type: >-
                       genshin.avatar_ascension....$ELEMENTS.sliver:79,
                       genshin.avatar_ascension....$ELEMENTS.fragment:21
                     count: $COUNT
-                three(COUNT,...ELEMENTS):
+                three<COUNT,...ELEMENTS>:
                   - type: >-
                       genshin.avatar_ascension....$ELEMENTS.sliver:75,
                       genshin.avatar_ascension....$ELEMENTS.fragment:20,
                       genshin.avatar_ascension....$ELEMENTS.chunk:5
                     count: $COUNT
-                four(COUNT,...ELEMENTS):
+                four<COUNT,...ELEMENTS>:
                   - type: >-
                       genshin.avatar_ascension....$ELEMENTS.sliver:150,
                       genshin.avatar_ascension....$ELEMENTS.fragment:40,
                       genshin.avatar_ascension....$ELEMENTS.chunk:10,
                       genshin.avatar_ascension....$ELEMENTS.gemstone:1
                     count: $COUNT
-                fragment(COUNT,...ELEMENTS):
+                fragment<COUNT,...ELEMENTS>:
                   - {type: "genshin.avatar_ascension....$ELEMENTS.fragment:1", count: $COUNT}
-                early: {type: "one(anemo,cryo)"}
-                medium: {type: "two(3,anemo,cryo)"}
-                higher: {type: "three(9,anemo)"}
-                late: {type: "four(9,anemo,cryo)"}
-                fragments: {type: "fragment(3,anemo,cryo)"}
+                early: {type: "one<anemo,cryo>"}
+                medium: {type: "two<3,anemo,cryo>"}
+                higher: {type: "three<9,anemo>"}
+                late: {type: "four<9,anemo,cryo>"}
+                fragments: {type: "fragment<3,anemo,cryo>"}
                 """, name -> ids.getOrDefault(name, -2));
         var random = new Random(121);
         var mediumCounts = new java.util.HashMap<Integer, Integer>();
@@ -817,7 +817,7 @@ class LootCountScopeTest {
                     set: "gladiators_finale:1, wanderers_troupe:1"
                     rarity: 5
                     substats: "3:66, 4:34"
-                plume_goblet(PLUME_SUBSTATS,GOBLET_SUBSTATS):
+                plume_goblet<PLUME_SUBSTATS,GOBLET_SUBSTATS>:
                   - type: genshin.artifact
                     set: instructor
                     slot: plume
@@ -830,17 +830,17 @@ class LootCountScopeTest {
                     rarity: 5
                     substats: $GOBLET_SUBSTATS
                     weight: 33
-                goblet(SUBSTATS):
+                goblet<SUBSTATS>:
                   - type: genshin.artifact
                     set: instructor
                     slot: goblet
                     rarity: 5
                     substats: $SUBSTATS
                 normal: {type: standard}
-                zero: {type: "plume_goblet(0,0)"}
-                special: {type: "plume_goblet(4,3)"}
-                fixed_goblet: {type: "goblet(1)"}
-                empty_goblet: {type: "goblet(0)"}
+                zero: {type: "plume_goblet<0,0>"}
+                special: {type: "plume_goblet<4,3>"}
+                fixed_goblet: {type: "goblet<1>"}
+                empty_goblet: {type: "goblet<0>"}
                 """, ITEMS, new ArtifactResolver(variants));
         var random = new Random(538);
         int[] selectedSets = new int[2];

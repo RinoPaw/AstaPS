@@ -9,20 +9,21 @@ import org.junit.jupiter.api.Test;
 class WeightedChoiceTest {
     @Test
     void parameterCommasDoNotTurnOneCandidateIntoAWeightedDistribution() {
-        assertThrows(IllegalArgumentException.class, () -> WeightedChoice.compile(
+        var angled = WeightedChoice.compile(
                 "chest_artifact<3,1,berserker,instructor>",
-                "obsolete", Object::toString));
+                "template", Object::toString);
+        assertEquals(List.of("chest_artifact<3,1,berserker,instructor>"), angled.candidates());
         var modern = WeightedChoice.compile(
-                "chest_artifact(3,1,berserker,instructor)",
+                "chest_artifact<3,1,berserker,instructor>",
                 "modern", value -> value.toString());
-        assertEquals(List.of("chest_artifact(3,1,berserker,instructor)"),
+        assertEquals(List.of("chest_artifact<3,1,berserker,instructor>"),
                 modern.candidates());
     }
 
     @Test
     void weightedExpressionsCanSelectParameterizedPoolCalls() {
-        String first = "chest_artifact(3,1,berserker,instructor)";
-        String second = "chest_artifact(4,2,berserker,instructor)";
+        String first = "chest_artifact<3,1,berserker,instructor>";
+        String second = "chest_artifact<4,2,berserker,instructor>";
         var weighted = WeightedChoice.compile(
                 first + ":3, " + second + ":1", "parameterized", Object::toString);
         assertEquals(List.of(first, second), weighted.candidates());
@@ -36,7 +37,7 @@ class WeightedChoiceTest {
     @Test
     void malformedTopLevelWeightExpressionsAreRejected() {
         assertThrows(IllegalArgumentException.class,
-                () -> WeightedChoice.compile("choice(A,B):2, other",
+                () -> WeightedChoice.compile("choice<A,B>:2, other",
                         "bad", Object::toString));
         assertThrows(IllegalArgumentException.class,
                 () -> WeightedChoice.compile("choice(A,B", "bad", Object::toString));

@@ -18,7 +18,7 @@ class LootCountNativeFractionTest {
     }
 
     @Test
-    void decimalProbabilitiesAndNativeFractionalCountsAreSupported() {
+    void decimalWeightsRemainSupportedButCountsAreIntegers() {
         var roll = LootCount.parse("1:1, 2:7");
         var random = new Random(12);
         for (int i = 0; i < 500; i++) {
@@ -38,11 +38,11 @@ class LootCountNativeFractionTest {
             assertThrows(IllegalArgumentException.class,
                     () -> LootCount.parse(value), value);
         }
-        assertEquals(3, LootCount.parse("3.0").sample(random));
-        assertThrows(IllegalArgumentException.class,
-                () -> LootCount.parse("2147483647.0001"));
+        for (String invalid : new String[] {"3.0", "1.122", "2147483647.0001"}) {
+            assertThrows(IllegalArgumentException.class, () -> LootCount.parse(invalid), invalid);
+        }
         int upper = 0;
-        var fractional = LootCount.parse("1.122");
+        var fractional = LootCount.parse("1:878, 2:122");
         for (int i = 0; i < 10000; i++) {
             int result = fractional.sample(random);
             assertTrue(result == 1 || result == 2);

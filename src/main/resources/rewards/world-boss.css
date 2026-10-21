@@ -605,35 +605,35 @@ boss[type="world"][tag in ("anemo_hypostasis", "cryo_hypostasis", "cryo_regisvin
 /* 宝石组 2：9 种 Boss，双元素，每批 3 个，自 1 级起。 */
 
 boss[type="world"][tag in ("aeonblight_drake", "algorithm_semi_intransient_matrix", "bathysmal_vishap_herd", "maguu_kenki", "perpetual_mechanical_array", "primo_geovishap_cryo", "primo_geovishap_electro", "primo_geovishap_hydro", "primo_geovishap_pyro")][1 <= level <= 4] {
-    astaps.loot.world_gem_one((element)[0],$element[1]): "1:53, 2:47";
+    astaps.loot.world_gem_one($element[0],$element[1]): "1:53, 2:47";
 }
 
 boss[type="world"][tag in ("aeonblight_drake", "algorithm_semi_intransient_matrix", "bathysmal_vishap_herd", "maguu_kenki", "perpetual_mechanical_array", "primo_geovishap_cryo", "primo_geovishap_electro", "primo_geovishap_hydro", "primo_geovishap_pyro")][5 <= level <= 9] {
-    astaps.loot.world_gem_one((element)[0],$element[1]): "1:43, 2:57";
+    astaps.loot.world_gem_one($element[0],$element[1]): "1:43, 2:57";
 }
 
 boss[type="world"][tag in ("aeonblight_drake", "algorithm_semi_intransient_matrix", "bathysmal_vishap_herd", "maguu_kenki", "perpetual_mechanical_array", "primo_geovishap_cryo", "primo_geovishap_electro", "primo_geovishap_hydro", "primo_geovishap_pyro")][10 <= level <= 14] {
-    astaps.loot.world_gem_one((element)[0],$element[1]): "1:30, 2:70";
+    astaps.loot.world_gem_one($element[0],$element[1]): "1:30, 2:70";
 }
 
 boss[type="world"][tag in ("aeonblight_drake", "algorithm_semi_intransient_matrix", "bathysmal_vishap_herd", "maguu_kenki", "perpetual_mechanical_array", "primo_geovishap_cryo", "primo_geovishap_electro", "primo_geovishap_hydro", "primo_geovishap_pyro")][15 <= level <= 19] {
-    astaps.loot.world_gem_one((element)[0],$element[1]): "1:18, 2:82";
+    astaps.loot.world_gem_one($element[0],$element[1]): "1:18, 2:82";
 }
 
 boss[type="world"][tag in ("aeonblight_drake", "algorithm_semi_intransient_matrix", "bathysmal_vishap_herd", "maguu_kenki", "perpetual_mechanical_array", "primo_geovishap_cryo", "primo_geovishap_electro", "primo_geovishap_hydro", "primo_geovishap_pyro")][20 <= level <= 24] {
-    astaps.loot.world_gem_one((element)[0],$element[1]): "1:6, 2:94";
+    astaps.loot.world_gem_one($element[0],$element[1]): "1:6, 2:94";
 }
 
 boss[type="world"][tag in ("aeonblight_drake", "algorithm_semi_intransient_matrix", "bathysmal_vishap_herd", "maguu_kenki", "perpetual_mechanical_array", "primo_geovishap_cryo", "primo_geovishap_electro", "primo_geovishap_hydro", "primo_geovishap_pyro")][25 <= level <= 29] {
-    astaps.loot.world_gem_one((element)[0],$element[1]): "2:93, 3:7";
+    astaps.loot.world_gem_one($element[0],$element[1]): "2:93, 3:7";
 }
 
 boss[type="world"][tag in ("aeonblight_drake", "algorithm_semi_intransient_matrix", "bathysmal_vishap_herd", "maguu_kenki", "perpetual_mechanical_array", "primo_geovishap_cryo", "primo_geovishap_electro", "primo_geovishap_hydro", "primo_geovishap_pyro")][30 <= level <= 34] {
-    astaps.loot.world_gem_one((element)[0],$element[1]): "2:81, 3:19";
+    astaps.loot.world_gem_one($element[0],$element[1]): "2:81, 3:19";
 }
 
 boss[type="world"][tag in ("aeonblight_drake", "algorithm_semi_intransient_matrix", "bathysmal_vishap_herd", "maguu_kenki", "perpetual_mechanical_array", "primo_geovishap_cryo", "primo_geovishap_electro", "primo_geovishap_hydro", "primo_geovishap_pyro")][35 <= level <= 39] {
-    astaps.loot.world_gem_one((element)[0],$element[1]): "2:68, 3:32";
+    astaps.loot.world_gem_one($element[0],$element[1]): "2:68, 3:32";
 }
 
 boss[type="world"][tag in ("aeonblight_drake", "algorithm_semi_intransient_matrix", "bathysmal_vishap_herd", "maguu_kenki", "perpetual_mechanical_array", "primo_geovishap_cryo", "primo_geovishap_electro", "primo_geovishap_hydro", "primo_geovishap_pyro")][40 <= level <= 44] {

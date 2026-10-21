@@ -222,7 +222,7 @@ class LootCountScopeTest {
                   rarity: 3
                   substats: 1
                 """, ITEMS, artifacts);
-        var counts = new java.util.HashMap(Integer,Integer)();
+        var counts = new java.util.HashMap<Integer, Integer>();
         var rng = new Random(167);
         for (int i = 0; i < 20_000; i++) {
             var reward = tables.roll("artifacts", rng);
@@ -345,13 +345,13 @@ class LootCountScopeTest {
         int both = 0, sameMora = 0, independentMora = 0, independentWit = 0;
         var random = new Random(5);
         for (int i = 0; i < 20_000; i++) {
-            Map(Integer,Integer) fixedChoice = tables.roll("same", random);
+            Map<Integer, Integer> fixedChoice = tables.roll("same", random);
             assertEquals(2, fixedChoice.values().stream().mapToInt(Integer::intValue).sum());
             assertTrue(fixedChoice.equals(Map.of(MORA, 2))
                     || fixedChoice.equals(Map.of(WIT, 2)));
             if (fixedChoice.containsKey(MORA)) sameMora++;
 
-            Map(Integer,Integer) repeated = tables.roll("independent", random);
+            Map<Integer, Integer> repeated = tables.roll("independent", random);
             assertEquals(2, repeated.values().stream().mapToInt(Integer::intValue).sum());
             if (repeated.size() == 2) {
                 assertEquals(Map.of(MORA, 1, WIT, 1), repeated);
@@ -403,7 +403,7 @@ class LootCountScopeTest {
         var random = new Random(41);
         int threeExecutions = 0;
         for (int i = 0; i < 20_000; i++) {
-            Map(Integer,Integer) output = tables.roll("ranged_independent", random);
+            Map<Integer, Integer> output = tables.roll("ranged_independent", random);
             int total = output.values().stream().mapToInt(Integer::intValue).sum();
             assertTrue(total == 2 || total == 3);
             if (total == 3) threeExecutions++;
@@ -551,7 +551,7 @@ class LootCountScopeTest {
 
     @Test
     void artifactParameterPacksInferAvailableSlotsWithoutChangingSetWeights() {
-        var variants = new java.util.ArrayList(ArtifactResolver.Variant)();
+        var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
         String[] sets = {"berserker", "instructor", "the_exile",
                 "prayers_for_wisdom", "gladiators_finale"};
         for (int rarity : new int[]{1, 2, 3, 4}) {
@@ -672,8 +672,8 @@ class LootCountScopeTest {
                 fragments: {type: "fragment(3,anemo,cryo)"}
                 """, name -> ids.getOrDefault(name, -2));
         var random = new Random(121);
-        var mediumCounts = new java.util.HashMap(Integer,Integer)();
-        var lateCounts = new java.util.HashMap(Integer,Integer)();
+        var mediumCounts = new java.util.HashMap<Integer, Integer>();
+        var lateCounts = new java.util.HashMap<Integer, Integer>();
         for (int i = 0; i < 20_000; i++) {
             var early = loot.roll("early", random);
             assertEquals(3, early.values().iterator().next());
@@ -793,7 +793,7 @@ class LootCountScopeTest {
 
     @Test
     void fiveStarArtifactTemplatesPreserveNormalAndSpecialNativeDistributions() {
-        var variants = new java.util.ArrayList(ArtifactResolver.Variant)();
+        var variants = new java.util.ArrayList<ArtifactResolver.Variant>();
         for (int set = 1; set <= 2; set++) {
             String name = set == 1 ? "gladiators_finale" : "wanderers_troupe";
             for (int slot = 1; slot <= 5; slot++) {

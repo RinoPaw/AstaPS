@@ -132,6 +132,35 @@ class ItemIdRegistryTest {
     }
 
     @Test
+    void nativeHoarfrostCoreResolvesWithoutEnglishTextMapName() {
+        // The real native ID must be recognized even if the resource pack
+        // supplies only a localized name or no English text at all.
+        var names = new java.util.HashMap<Integer, String>();
+        names.put(113010, "极寒之核");
+        names.put(113011, "Everflame Seed");
+        var categories = Map.of(
+                113010, "Character Development Items",
+                113011, "Character Development Items");
+        var usage = Map.of(
+                113010, Set.of(ItemIdRegistry.Usage.AVATAR_ASCENSION),
+                113011, Set.of(ItemIdRegistry.Usage.AVATAR_ASCENSION));
+        var registry = new ItemIdRegistry(names, categories, usage);
+        assertEquals("genshin.avatar_ascension.hoarfrost_core",
+                registry.describe(113010).key());
+        assertEquals(113010, registry.resolve("genshin.avatar_ascension.hoarfrost_core"));
+        assertEquals(113011, registry.resolve("genshin.avatar_ascension.everflame_seed"));
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.resolve("genshin.material.hoarfrost_core"));
+        assertThrows(IllegalArgumentException.class,
+                () -> registry.resolve("genshin.avatar_ascension.unknown_material"));
+
+        names.put(113010, null);
+        var missingEnglish = new ItemIdRegistry(names, categories, usage);
+        assertEquals(113010,
+                missingEnglish.resolve("genshin.avatar_ascension.hoarfrost_core"));
+    }
+
+    @Test
     void elementalGemsHaveCharacterAscensionIdentity() {
         String[] families = {
                 "agnidus_agate", "nagadus_emerald", "prithiva_topaz",

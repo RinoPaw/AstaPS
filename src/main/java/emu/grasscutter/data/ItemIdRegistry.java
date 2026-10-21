@@ -55,6 +55,9 @@ public final class ItemIdRegistry {
             Map.entry(104011, "enhancement_ore"),
             Map.entry(104012, "fine_ore"),
             Map.entry(104013, "mystic_ore"),
+            // Native Cryo Regisvine ascension drop. TextMapEN can be incomplete in
+            // installed resources, so keep its identity independent of display names.
+            Map.entry(113010, "hoarfrost_core"),
             // Stable internal resource path for native Boss material 113080.
             Map.entry(113080, "precision_clockwork_core"));
 

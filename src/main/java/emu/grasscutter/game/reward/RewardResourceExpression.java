@@ -4,124 +4,176 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-/** Resource paths and template arguments have explicit, structurally distinct variable references. */
+/**
+ * Typed structure for dollar-variable reward paths and function-style pool calls.
+ * Pool-call names use the same function-call syntax in every layer.
+ */
 final class RewardResourceExpression {
-    private record Reference(int start, int end, String name, Integer index) {}
+    private static final Pattern VARIABLE =
+            Pattern.compile("\\$([A-Za-z_][A-Za-z0-9_-]*)(?:\\[([0-9]+)\\])?");
+    private static final Pattern ARG_LITERAL = Pattern.compile("[A-Za-z_][A-Za-z0-9_-]*|[0-9]+");
+    private static final Pattern PATH = Pattern.compile("[A-Za-z_][A-Za-z0-9_.-]*");
 
-    private final RewardModernResource modern;
-    private final String source;
-    private final boolean table;
-    private final List<Reference> references;
+    private sealed interface Part permits Text, Reference {}
+    private record Text(String value) implements Part {}
+    private record Reference(String name, Integer index, boolean spread) implements Part {}
+    private record Argument(Part value) {}
 
-    private RewardResourceExpression(String source, boolean table, List<Reference> references) {
-        this.modern = null;
-        this.source = source;
-        this.table = table;
-        this.references = List.copyOf(references);
-    }
+    private final String original;
+    private final List<Part> path;
+    private final List<Argument> arguments;
+    private final boolean call;
 
-    private RewardResourceExpression(RewardModernResource modern) {
-        this.modern = modern;
-        this.source = null;
-        this.table = false;
-        this.references = List.of();
+    private RewardResourceExpression(
+            String original, List<Part> path, List<Argument> arguments, boolean call) {
+        this.original = original;
+        this.path = List.copyOf(path);
+        this.arguments = List.copyOf(arguments);
+        this.call = call;
     }
 
     static RewardResourceExpression parse(String source, boolean table) {
-        if (source.indexOf('$') >= 0 || source.indexOf('(') >= 0) {
-            return new RewardResourceExpression(RewardModernResource.parse(source, table));
+        int open = source.indexOf('(');
+        boolean call = open >= 0;
+        if (call && (!table || !source.endsWith(")") || source.indexOf('(', open + 1) >= 0)) {
+            throw invalid(source);
         }
-        var references = new ArrayList<Reference>();
-        boolean arguments = false, closed = false;
-        for (int i = 0; i < source.length(); i++) {
-            char ch = source.charAt(i);
-            if (closed) throw invalid(source);
-            if (ch == '<') {
-                // At path level, '<' after a name opens a template's argument list.
-                // Inside that list, '<name>' is always a variable reference.
-                if (table && !arguments && i > 0 && source.charAt(i - 1) != '.') {
-                    arguments = true;
-                    continue;
-                }
-                int end = source.indexOf('>', i + 1);
-                if (end < 0) throw invalid(source);
-                String name = source.substring(i + 1, end);
-                if (!name.matches("[a-zA-Z_][a-zA-Z0-9_-]*")) throw invalid(source);
-                Integer index = null;
-                int next = end + 1;
-                if (next < source.length() && source.charAt(next) == '[') {
-                    int close = source.indexOf(']', next + 1);
-                    if (close < 0 || !source.substring(next + 1, close).matches("[0-9]+")) throw invalid(source);
-                    try {
-                        index = Integer.valueOf(source.substring(next + 1, close));
-                    } catch (NumberFormatException ex) {
+        int close = call ? source.length() - 1 : source.length();
+        String pathText = source.substring(0, call ? open : close);
+        List<Part> path = splitPath(pathText, source);
+        List<Argument> args = new ArrayList<>();
+        if (call) {
+            String rawArgs = source.substring(open + 1, close);
+            if (!rawArgs.isBlank()) {
+                for (String raw : rawArgs.split(",", -1)) {
+                    String text = raw.trim();
+                    if (text.startsWith("...")) {
+                        Reference ref = reference(text.substring(3), true, source);
+                        if (ref.index != null) throw invalid(source);
+                        args.add(new Argument(ref));
+                    } else if (text.startsWith("$")) {
+                        args.add(new Argument(reference(text, false, source)));
+                    } else if (ARG_LITERAL.matcher(text).matches()) {
+                        args.add(new Argument(new Text(text)));
+                    } else {
                         throw invalid(source);
                     }
-                    next = close + 1;
                 }
-                references.add(new Reference(i, next, name, index));
-                i = next - 1;
-            } else if (ch == '>') {
-                if (!arguments) throw invalid(source);
-                arguments = false;
-                closed = true;
-            } else if ((ch == ',' && !arguments) || ch == '[' || ch == ']') {
-                throw invalid(source);
             }
         }
-        if (arguments) throw invalid(source);
-        return new RewardResourceExpression(source, table, references);
+        if (path.isEmpty()) throw invalid(source);
+        return new RewardResourceExpression(source, path, args, call);
+    }
+
+    private static Reference reference(String text, boolean spread, String source) {
+        Matcher match = VARIABLE.matcher(text);
+        if (!match.matches()) throw invalid(source);
+        Integer index = null;
+        if (match.group(2) != null) {
+            try { index = Integer.valueOf(match.group(2)); }
+            catch (NumberFormatException ex) { throw invalid(source); }
+        }
+        return new Reference(match.group(1), index, spread);
+    }
+
+    private static List<Part> splitPath(String text, String source) {
+        Matcher matcher = VARIABLE.matcher(text);
+        var parts = new ArrayList<Part>();
+        var check = new StringBuilder();
+        int cursor = 0;
+        while (matcher.find()) {
+            String before = text.substring(cursor, matcher.start());
+            if (!before.isEmpty()) parts.add(new Text(before));
+            check.append(before).append("placeholder");
+            parts.add(reference(matcher.group(), false, source));
+            cursor = matcher.end();
+        }
+        String after = text.substring(cursor);
+        if (!after.isEmpty()) parts.add(new Text(after));
+        check.append(after);
+        if (!PATH.matcher(check.toString()).matches() || text.indexOf('<') >= 0
+                || text.indexOf('>') >= 0 || text.indexOf(')') >= 0) {
+            throw invalid(source);
+        }
+        return parts;
     }
 
     private static IllegalArgumentException invalid(String source) {
         return new IllegalArgumentException("Invalid reward resource expression: " + source);
     }
 
-    boolean hasVariables() { return modern != null ? modern.hasVariables() : !references.isEmpty(); }
+    boolean hasVariables() {
+        for (Part part : path) if (part instanceof Reference) return true;
+        for (Argument arg : arguments) if (arg.value instanceof Reference) return true;
+        return false;
+    }
 
     void requireDeclared(Set<String> declarations) {
-        if (modern != null) { modern.requireDeclared(declarations); return; }
-        for (var reference : references) {
-            if (!declarations.contains(reference.name)) {
-                throw new IllegalArgumentException("Undeclared reward variable <" + reference.name + "> in " + source);
-            }
+        for (Part part : path) check(part, declarations);
+        for (Argument arg : arguments) check(arg.value, declarations);
+    }
+
+    private void check(Part part, Set<String> declarations) {
+        if (part instanceof Reference ref && !declarations.contains(ref.name)) {
+            throw new IllegalArgumentException(
+                    "Undeclared reward variable $" + ref.name + " in " + original);
         }
     }
 
-    List<String> expand(Map<String, List<String>> bindings) {
-        if (modern != null) return modern.expand(bindings);
-        List<String> expanded = List.of("");
-        int cursor = 0;
-        for (var reference : references) {
-            List<String> bound = bindings.get(reference.name);
-            if (bound == null) {
-                throw new IllegalArgumentException("Undeclared reward variable <" + reference.name + "> in " + source);
-            }
-            // A declaration in another selector provides no value for this object.
-            if (bound.isEmpty()) return List.of();
-            List<String> choices;
-            if (reference.index != null) {
-                if (reference.index >= bound.size()) {
-                    throw new IllegalArgumentException("Reward binding index out of range: " + source);
-                }
-                choices = List.of(bound.get(reference.index));
-            } else {
-                if (table && bound.size() != 1) {
-                    throw new IllegalArgumentException("List binding requires an explicit index: " + source);
-                }
-                choices = bound;
-            }
-            var next = new ArrayList<String>();
-            for (String prefix : expanded) {
-                for (String choice : choices) {
-                    next.add(prefix + source.substring(cursor, reference.start) + choice);
-                }
-            }
-            expanded = next;
-            cursor = reference.end;
+    private List<String> values(Reference reference, Map<String, List<String>> bindings,
+                                boolean pathReference) {
+        List<String> bound = bindings.get(reference.name);
+        if (bound == null) {
+            throw new IllegalArgumentException(
+                    "Undeclared reward variable $" + reference.name + " in " + original);
         }
-        String suffix = source.substring(cursor);
-        return expanded.stream().map(prefix -> prefix + suffix).toList();
+        if (bound.isEmpty()) return List.of();
+        if (reference.index != null) {
+            if (reference.index >= bound.size()) {
+                throw new IllegalArgumentException("Reward binding index out of range: " + original);
+            }
+            return List.of(bound.get(reference.index));
+        }
+        if (!pathReference && !reference.spread && bound.size() != 1) {
+            throw new IllegalArgumentException(
+                    "List argument needs ...$name or an explicit index: " + original);
+        }
+        return bound;
+    }
+
+    List<String> expand(Map<String, List<String>> bindings) {
+        List<String> names = List.of("");
+        for (Part part : path) {
+            List<String> fragments = part instanceof Text literal
+                    ? List.of(literal.value)
+                    : values((Reference) part, bindings, true);
+            names = append(names, fragments);
+            if (names.isEmpty()) return names;
+        }
+        if (!call) return names;
+
+        var expanded = new ArrayList<String>();
+        for (Argument arg : arguments) {
+            if (arg.value instanceof Text literal) {
+                expanded.add(literal.value);
+            } else {
+                Reference ref = (Reference) arg.value;
+                List<String> bound = values(ref, bindings, false);
+                if (bound.isEmpty()) return List.of();
+                // An explicit spread splices the entire argument pack into this call.
+                expanded.addAll(bound);
+            }
+        }
+        String suffix = "(" + String.join(",", expanded) + ")";
+        return names.stream().map(name -> name + suffix).toList();
+    }
+
+    private static List<String> append(List<String> prefix, List<String> values) {
+        var result = new ArrayList<String>();
+        for (String part : prefix) for (String value : values) result.add(part + value);
+        return result;
     }
 }

@@ -265,7 +265,7 @@ public final class YamlLootTables {
             if (entry.nested != null) checkPool(entry.nested, pools, visited);
             if (entry.typeChoice != null) {
                 for (TypeTarget candidate : entry.typeChoice.candidates()) {
-                    if (candidate.table != null && !candidate.table.contains("<")) {
+                    if (candidate.table != null && !candidate.table.contains("(")) {
                         checkPool(requireTable(pools, candidate.table), pools, visited);
                     }
                 }
@@ -670,7 +670,7 @@ public final class YamlLootTables {
     public String resolveName(String reference) {
         String name = templates.qualify(reference);
         if (contains(name)) return name;
-        if (name.contains("<")) return instantiate(name);
+        if (templates.isTemplateReference(name)) return instantiate(name);
         throw new IllegalArgumentException("Unknown loot table: " + reference);
     }
 

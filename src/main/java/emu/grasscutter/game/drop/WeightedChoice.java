@@ -74,12 +74,12 @@ final class WeightedChoice<T> {
 
 
     /**
-     * Count separators only outside function arguments, template arguments,
+     * Count separators only outside function arguments,
      * brackets and quoted strings. A call such as chest_artifact(3,1,set)
      * is a single candidate, even though its argument list contains commas.
      */
     private static int topLevelIndex(String source, char delimiter) {
-        int angle = 0, round = 0, square = 0, curly = 0;
+        int round = 0, square = 0, curly = 0;
         char quote = 0;
         for (int i = 0; i < source.length(); i++) {
             char c = source.charAt(i);
@@ -92,12 +92,10 @@ final class WeightedChoice<T> {
                 continue;
             }
             if (c == '\'' || c == '"') { quote = c; continue; }
-            if (c == delimiter && angle == 0 && round == 0 && square == 0 && curly == 0) {
+            if (c == delimiter && round == 0 && square == 0 && curly == 0) {
                 return i;
             }
             switch (c) {
-                case '<' -> angle++;
-                case '>' -> angle--;
                 case '(' -> round++;
                 case ')' -> round--;
                 case '[' -> square++;
@@ -106,11 +104,11 @@ final class WeightedChoice<T> {
                 case '}' -> curly--;
                 default -> {}
             }
-            if (angle < 0 || round < 0 || square < 0 || curly < 0) {
+            if (round < 0 || square < 0 || curly < 0) {
                 throw new IllegalArgumentException("Unbalanced weighted expression: " + source);
             }
         }
-        if (quote != 0 || angle != 0 || round != 0 || square != 0 || curly != 0) {
+        if (quote != 0 || round != 0 || square != 0 || curly != 0) {
             throw new IllegalArgumentException("Unbalanced weighted expression: " + source);
         }
         return -1;

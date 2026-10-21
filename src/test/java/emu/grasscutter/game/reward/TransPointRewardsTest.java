@@ -47,8 +47,12 @@ final class TransPointRewardsTest {
                 Map.entry(104013, "Mystic Enhancement Ore"),
                 Map.entry(101692, "Three Realms Item")));
         var ids = new ItemIdRegistry(names);
-        var loot = YamlLootTables.parse(BundledChestRewardsTest.chestYaml(), ids::resolve,
-                BundledChestRewardsTest.artifacts());
+        var artifacts = BundledChestRewardsTest.artifacts();
+        var artifactKeys = artifacts.resourceIds();
+        var loot = YamlLootTables.parse(BundledChestRewardsTest.chestYaml(),
+                name -> name.startsWith("genshin.artifact.")
+                        ? artifactKeys.getOrDefault(name, -2) : ids.resolve(name),
+                artifacts);
         var css = CssRewards.parse(RewardConfiguration.readBundled("transpoints.lcss"), ids, loot);
         var standard = Map.of(102, 50, 201, 5);
         assertEquals(standard, roll(css, loot, "waypoint", 3, 8));

@@ -62,31 +62,40 @@ public final class ResourceRegistry {
 
     /** Build the authoritative dictionary from explicit source entries and native artifact variants. */
     public static ResourceRegistry fromGameResources(ArtifactResolver artifacts) throws IOException {
-        var names = new LinkedHashMap<String, Integer>();
         try (var stream = ResourceRegistry.class.getResourceAsStream("/rewards/registry.tsv")) {
             if (stream == null) throw new IOException("Missing bundled rewards/registry.tsv");
-            String[] lines = new String(stream.readAllBytes(), StandardCharsets.UTF_8).split("\\R");
-            for (int i = 0; i < lines.length; i++) {
-                String line = lines[i];
-                if (line.isEmpty() || line.startsWith("#")) continue;
-                String[] columns = line.split("\\t", -1);
-                if (columns.length != 2 || !columns[1].matches("[1-9][0-9]*")) {
-                    throw new IllegalArgumentException("Malformed registry.tsv line " + (i + 1));
-                }
-                int id = Integer.parseInt(columns[1]);
-                // Native virtual rewards are handled by Player, not inventory ItemData.
-                if (id != 101 && id != 102 && id != 105
-                        && !GameData.getItemDataMap().containsKey(id)) {
-                    throw new IllegalArgumentException("Unknown native ID at registry.tsv:"
-                            + (i + 1) + ": " + id);
-                }
-                if (names.putIfAbsent(columns[0], id) != null) {
-                    throw new IllegalArgumentException("Duplicate registry resource at line "
-                            + (i + 1) + ": " + columns[0]);
-                }
+            return compile(new String(stream.readAllBytes(), StandardCharsets.UTF_8),
+                    GameData.getItemDataMap().keySet(), artifacts.resourceIds());
+        }
+    }
+
+    /** Validate and combine the authored dictionary without needing a running game server. */
+    static ResourceRegistry compile(String definitions, java.util.Set<Integer> nativeItemIds,
+            Map<String, Integer> artifactIds) {
+        var names = new LinkedHashMap<String, Integer>();
+        String[] lines = definitions.split("\\R");
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if (line.isEmpty() || line.startsWith("#")) continue;
+            String[] columns = line.split("\\t", -1);
+            if (columns.length != 2 || !columns[1].matches("[1-9][0-9]*")) {
+                throw new IllegalArgumentException("Malformed registry.tsv line " + (i + 1));
+            }
+            int id = Integer.parseInt(columns[1]);
+            // Native virtual rewards are handled by Player, not inventory ItemData.
+            if (id != 101 && id != 102 && id != 105 && !nativeItemIds.contains(id)) {
+                throw new IllegalArgumentException("Unknown native ID at registry.tsv:"
+                        + (i + 1) + ": " + id);
+            }
+            if (names.putIfAbsent(columns[0], id) != null) {
+                throw new IllegalArgumentException("Duplicate registry resource at line "
+                        + (i + 1) + ": " + columns[0]);
             }
         }
-        for (var entry : artifacts.resourceIds().entrySet()) {
+        for (var entry : artifactIds.entrySet()) {
+            if (!nativeItemIds.contains(entry.getValue())) {
+                throw new IllegalArgumentException("Unknown native artifact ID: " + entry.getValue());
+            }
             if (names.putIfAbsent(entry.getKey(), entry.getValue()) != null) {
                 throw new IllegalArgumentException("Duplicate artifact resource: " + entry.getKey());
             }

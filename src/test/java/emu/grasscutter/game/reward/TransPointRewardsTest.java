@@ -3,7 +3,7 @@ package emu.grasscutter.game.reward;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.gson.Gson;
-import emu.grasscutter.data.ItemIdRegistry;
+import emu.grasscutter.data.ResourceRegistry;
 import emu.grasscutter.data.common.PointData;
 import emu.grasscutter.data.excels.dungeon.DungeonEntryData;
 import emu.grasscutter.game.drop.YamlLootTables;
@@ -24,52 +24,39 @@ final class TransPointRewardsTest {
 
     private static Map<Integer, Integer> roll(
             CssRewards css, YamlLootTables loot, String type, int scene, int point) {
-        return RewardRoller.rollIds(css.resolveIds("transpoint", Map.of(
-                "type", type,
-                "scene", scene,
-                "point", point)), loot, new Random(1));
+        return RewardRoller.resolveKeys(RewardRoller.roll(
+                css.resolve("transpoint", Map.of(
+                        "type", type, "scene", scene, "point", point)),
+                loot, new Random(1)), loot, RewardContext.NONE);
     }
 
     @Test
     void bundledPointRulesPreserveAllFormerTomlPayouts() throws Exception {
-        var names = new java.util.HashMap<Integer, String>(ItemIdRegistry.chestDropNames());
-        names.putAll(Map.ofEntries(
-                Map.entry(101, "Character EXP"),
-                Map.entry(102, "Adventure EXP"),
-                Map.entry(105, "Companionship EXP"),
-                Map.entry(201, "Primogem"),
-                Map.entry(202, "Mora"),
-                Map.entry(104001, "Wanderer's Advice"),
-                Map.entry(104002, "Adventurer's Experience"),
-                Map.entry(104003, "Hero's Wit"),
-                Map.entry(104011, "Enhancement Ore"),
-                Map.entry(104012, "Fine Enhancement Ore"),
-                Map.entry(104013, "Mystic Enhancement Ore"),
-                Map.entry(101692, "Three Realms Item")));
-        var ids = new ItemIdRegistry(names);
-        var artifacts = BundledChestRewardsTest.artifacts();
-        var artifactKeys = artifacts.resourceIds();
-        var loot = YamlLootTables.parse(BundledChestRewardsTest.chestYaml(),
-                name -> name.startsWith("genshin.artifact.")
-                        ? artifactKeys.getOrDefault(name, -2) : ids.resolve(name),
-                artifacts);
-        var css = CssRewards.parse(RewardConfiguration.readBundled("transpoints.lcss"), ids, loot);
+        var registry = new ResourceRegistry(Map.of(
+                "genshin.experience.adventure", 102,
+                "genshin.currency.primogem", 201,
+                "genshin.currency.sigil.light_realm", 101692));
+        // This stylesheet does not reference loot tables. Test its complete
+        // resource-key settlement without loading unrelated chest artifacts.
+        var loot = YamlLootTables.parse("{}", registry::resolve);
+        var css = CssRewards.parse(RewardConfiguration.readBundled("transpoints.lcss"),
+                registry, loot);
         var standard = Map.of(102, 50, 201, 5);
         assertEquals(standard, roll(css, loot, "waypoint", 3, 8));
         assertEquals(standard, roll(css, loot, "statue", 3, 3));
         assertEquals(standard, roll(css, loot, "domain", 3, 48));
         assertEquals(Map.of(102, 10), roll(css, loot, "waypoint", 3, 6));
         assertEquals(Map.of(201, 5, 101692, 20), roll(css, loot, "waypoint", 7, 2));
-        var gateway = css.resolveIds("transpoint",
+        var gateway = css.resolve("transpoint",
                 Map.of("type", "waypoint", "scene", 7, "point", 2));
         assertTrue(gateway.loot().isEmpty());
         assertTrue(gateway.rangedLoot().isEmpty());
-        assertEquals(20, gateway.items().get(101692));
+        assertEquals(20, gateway.items().get("genshin.currency.sigil.light_realm"));
         assertEquals(emu.grasscutter.data.ResourceId.of(
                 "genshin", "currency", "sigil", "light_realm"),
                 emu.grasscutter.data.ResourceId.parse("genshin.currency.sigil.light_realm"));
         assertEquals(Map.of(), roll(css, loot, "unknown", 3, 8));
-        assertTrue(css.resolveIds("transpoint", Map.of(
+        assertTrue(css.resolve("transpoint", Map.of(
                 "kind", "waypoint", "scene", 3, "point", 8)).items().isEmpty());
     }
 

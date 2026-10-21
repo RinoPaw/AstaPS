@@ -5,6 +5,8 @@ import emu.grasscutter.data.ItemIdRegistry;
 import emu.grasscutter.data.ResourceId;
 import emu.grasscutter.data.excels.DropTableData;
 import emu.grasscutter.game.inventory.ItemType;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -106,7 +108,7 @@ public final class NativeLootYamlExporter {
             for (NativeEntry entry : valid) {
                 String count = entry.countRange;
                 if (count == null) throw new IllegalArgumentException("Missing native count");
-                LootCount.parse(count);
+                count = normalizeNativeCount(count);
                 String target;
                 if (tables.containsKey(entry.id)) {
                     target = tableNames.get(entry.id);
@@ -170,6 +172,33 @@ public final class NativeLootYamlExporter {
             yaml.append('\n');
         }
         return yaml.toString();
+    }
+
+    /**
+     * Translate native source decimals at the data-import boundary.
+     * LootCSS and YAML quantities use integers only; fractional source
+     * expectations become exact weighted integer outcomes.
+     */
+    static String normalizeNativeCount(String raw) {
+        if (raw == null) throw new IllegalArgumentException("Missing native count");
+        String value = raw.trim();
+        if (value.matches("[0-9]+\\.[0-9]+")) {
+            BigDecimal decimal = new BigDecimal(value);
+            BigInteger lower = decimal.toBigInteger();
+            BigInteger fractional = decimal.remainder(BigDecimal.ONE)
+                    .movePointRight(decimal.scale()).toBigIntegerExact();
+            if (fractional.signum() == 0) {
+                value = lower.toString();
+            } else {
+                BigInteger scale = BigInteger.TEN.pow(decimal.scale());
+                BigInteger remaining = scale.subtract(fractional);
+                BigInteger gcd = remaining.gcd(fractional);
+                value = lower + ":" + remaining.divide(gcd)
+                        + ", " + lower.add(BigInteger.ONE) + ":" + fractional.divide(gcd);
+            }
+        }
+        LootCount.parse(value);
+        return value;
     }
 
     private static void appendEntry(StringBuilder yaml, String indent,

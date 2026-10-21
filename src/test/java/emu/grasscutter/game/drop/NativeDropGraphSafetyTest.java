@@ -48,8 +48,8 @@ class NativeDropGraphSafetyTest {
                 int id = entry.get("itemId").getAsInt();
                 BigDecimal weight = entry.get("weight").getAsBigDecimal();
                 if (id <= 0 || weight.signum() == 0) continue;
-                String count = entry.get("countRange").getAsString();
-                LootCount.parse(count);
+                String count = NativeLootYamlExporter.normalizeNativeCount(
+                        entry.get("countRange").getAsString());
                 var child = nodes.get(id);
                 LootProbability.Law law = child == null ? LootProbability.empty()
                         : LootProbability.repeat(child, count);

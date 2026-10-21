@@ -38,7 +38,8 @@ final class RewardResourceExpression {
     static RewardResourceExpression parse(String source, boolean table) {
         int open = source.indexOf('<');
         boolean call = open >= 0;
-        if (call && (!table || !source.endsWith(">") || source.indexOf('<', open + 1) >= 0)) {
+        if (call && (!table || !source.substring(0, open).contains(".loot.")
+                || !source.endsWith(">") || source.indexOf('<', open + 1) >= 0)) {
             throw invalid(source);
         }
         int close = call ? source.length() - 1 : source.length();

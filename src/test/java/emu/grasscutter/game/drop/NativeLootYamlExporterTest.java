@@ -94,12 +94,12 @@ class NativeLootYamlExporterTest {
     }
 
     @Test
-    void exporterPreservesNativeFractionalCountsExactly() {
+    void exporterNormalizesNativeFractionalExpectationsExactly() {
         var source = Map.of(100, new NativeLootYamlExporter.NativeTable(1, List.of(
                 new NativeLootYamlExporter.NativeEntry(104003, "2.5556", 10000))));
         String yaml = NativeLootYamlExporter.export(source, List.of(100),
                 Map.of(100, "fractional_bonus"), NativeLootYamlExporterTest::itemName);
-        assertTrue(yaml.contains("count: \"2.5556\""));
+        assertTrue(yaml.contains("count: \"2:1111, 3:1389\""));
         var loot = YamlLootTables.parse(yaml, NativeLootYamlExporterTest::itemId);
         var rng = new Random(107);
         int threes = 0;

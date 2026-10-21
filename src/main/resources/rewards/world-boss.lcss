@@ -550,35 +550,35 @@ boss[type="world"][tag in (
     "pyro_regisvine", "ruin_serpent", "thunder_manifestation"
 )] {
     &[1 <= level <= 4] {
-        genshin.avatar_ascension.$element.sliver: "3:53, 6:47";
+        genshin.avatar_ascension.$element.2: "3:53, 6:47";
     }
 
     &[5 <= level <= 9] {
-        genshin.avatar_ascension.$element.sliver: "3:43, 6:57";
+        genshin.avatar_ascension.$element.2: "3:43, 6:57";
     }
 
     &[10 <= level <= 14] {
-        genshin.avatar_ascension.$element.sliver: "3:30, 6:70";
+        genshin.avatar_ascension.$element.2: "3:30, 6:70";
     }
 
     &[15 <= level <= 19] {
-        genshin.avatar_ascension.$element.sliver: "3:18, 6:82";
+        genshin.avatar_ascension.$element.2: "3:18, 6:82";
     }
 
     &[20 <= level <= 24] {
-        genshin.avatar_ascension.$element.sliver: "3:6, 6:94";
+        genshin.avatar_ascension.$element.2: "3:6, 6:94";
     }
 
     &[25 <= level <= 29] {
-        genshin.avatar_ascension.$element.sliver: "6:93, 9:7";
+        genshin.avatar_ascension.$element.2: "6:93, 9:7";
     }
 
     &[30 <= level <= 34] {
-        genshin.avatar_ascension.$element.sliver: "6:81, 9:19";
+        genshin.avatar_ascension.$element.2: "6:81, 9:19";
     }
 
     &[35 <= level <= 39] {
-        genshin.avatar_ascension.$element.sliver: "6:68, 9:32";
+        genshin.avatar_ascension.$element.2: "6:68, 9:32";
     }
 
     &[40 <= level <= 44] {
@@ -725,27 +725,27 @@ boss[type="world"][tag in (
 
 boss[type="world"][tag="setekh_wenut"] {
     &[1 <= level <= 4] {
-        genshin.avatar_ascension.$element.sliver: "9:53, 18:47";
+        genshin.avatar_ascension.$element.2: "9:53, 18:47";
     }
 
     &[5 <= level <= 9] {
-        genshin.avatar_ascension.$element.sliver: "9:43, 18:57";
+        genshin.avatar_ascension.$element.2: "9:43, 18:57";
     }
 
     &[10 <= level <= 14] {
-        genshin.avatar_ascension.$element.sliver: "9:30, 18:70";
+        genshin.avatar_ascension.$element.2: "9:30, 18:70";
     }
 
     &[15 <= level <= 19] {
-        genshin.avatar_ascension.$element.sliver: "9:18, 18:82";
+        genshin.avatar_ascension.$element.2: "9:18, 18:82";
     }
 
     &[20 <= level <= 24] {
-        genshin.avatar_ascension.$element.sliver: "9:6, 18:94";
+        genshin.avatar_ascension.$element.2: "9:6, 18:94";
     }
 
     &[25 <= level <= 29] {
-        genshin.avatar_ascension.$element.sliver: "18:93, 27:7";
+        genshin.avatar_ascension.$element.2: "18:93, 27:7";
     }
 }
 
@@ -757,11 +757,11 @@ boss[type="world"][tag in (
     "secret_source_automaton_overseer", "setekh_wenut", "undying_replicant"
 )] {
     &[30 <= level <= 34] {
-        genshin.avatar_ascension.$element.sliver: "18:81, 27:19";
+        genshin.avatar_ascension.$element.2: "18:81, 27:19";
     }
 
     &[35 <= level <= 39] {
-        genshin.avatar_ascension.$element.sliver: "18:68, 27:32";
+        genshin.avatar_ascension.$element.2: "18:68, 27:32";
     }
 
     &[40 <= level <= 44] {
@@ -890,8 +890,8 @@ boss[type="world"][tag in (
 /* 宝石组 6：2 种 Boss，单元素碎屑与断片各固定发放 9 个。 */
 
 boss[type="world"][tag in ("lava_dragon_statue", "lord_of_the_deep_dreadwing")] {
-    genshin.avatar_ascension.$element.fragment: 9;
-    genshin.avatar_ascension.$element.sliver: 9;
+    genshin.avatar_ascension.$element.3: 9;
+    genshin.avatar_ascension.$element.2: 9;
 }
 
 /* 宝石组 7：深邃摹结株，三元素碎屑与断片各固定发放 9 个。 */

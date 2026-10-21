@@ -1,6 +1,8 @@
 package emu.grasscutter.game.reward;
 
 import emu.grasscutter.data.ItemIdRegistry;
+import emu.grasscutter.data.ResourceRegistry;
+import java.util.function.ToIntFunction;
 import emu.grasscutter.data.ResourceId;
 import emu.grasscutter.game.drop.LootCount;
 import emu.grasscutter.game.drop.YamlLootTables;
@@ -54,10 +56,10 @@ public final class CssRewards {
     private final List<Rule> rules;
     private final Set<String> bindingNames;
     private final YamlLootTables loot;
-    private final ItemIdRegistry itemRegistry;
+    private final ToIntFunction<String> itemRegistry;
 
     private CssRewards(List<Rule> rules, Set<String> bindingNames,
-                       YamlLootTables loot, ItemIdRegistry itemRegistry) {
+                       YamlLootTables loot, ToIntFunction<String> itemRegistry) {
         this.rules = List.copyOf(rules);
         this.bindingNames = Set.copyOf(bindingNames);
         this.loot = loot;
@@ -65,6 +67,15 @@ public final class CssRewards {
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
+        return parse(source, items::resolve, loot, true);
+    }
+
+    public static CssRewards parse(String source, ResourceRegistry items, YamlLootTables loot) {
+        return parse(source, items::resolve, loot, false);
+    }
+
+    private static CssRewards parse(String source, ToIntFunction<String> items,
+            YamlLootTables loot, boolean validateLegacyNames) {
         List<RewardCssParser.Rule> parsed = RewardCssParser.parse(source);
         var variables = new HashSet<String>();
         for (var rule : parsed) {
@@ -100,7 +111,10 @@ public final class CssRewards {
                     lootDeclarations.add(new LootDeclaration(resource, fixed, rolled));
                 } else {
                     if (!resource.hasVariables()) {
-                        for (String expanded : resource.expand(Map.of())) items.resolve(expanded);
+                        for (String expanded : resource.expand(Map.of())) {
+                            ResourceId.parse(expanded);
+                            if (validateLegacyNames) items.applyAsInt(expanded);
+                        }
                     }
                     itemDeclarations.add(new ItemDeclaration(resource, fixed, rolled));
                 }
@@ -182,8 +196,8 @@ public final class CssRewards {
         var keys = resolveKeys(type, attributes);
         var fixed = new HashMap<Integer, Integer>();
         var ranged = new HashMap<Integer, LootCount.Spec>();
-        keys.items().forEach((key, count) -> fixed.put(itemRegistry.resolve(key), count));
-        keys.rangedItems().forEach((key, count) -> ranged.put(itemRegistry.resolve(key), count));
+        keys.items().forEach((key, count) -> fixed.put(itemRegistry.applyAsInt(key), count));
+        keys.rangedItems().forEach((key, count) -> ranged.put(itemRegistry.applyAsInt(key), count));
         return new Selection(fixed, keys.loot(), ranged, keys.rangedLoot());
     }
 }

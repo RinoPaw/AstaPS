@@ -1,6 +1,6 @@
 package emu.grasscutter.game.reward;
 
-import emu.grasscutter.data.ItemIdRegistry;
+import emu.grasscutter.data.ResourceRegistry;
 import emu.grasscutter.game.drop.YamlLootTables;
 import emu.grasscutter.game.drop.ArtifactResolver;
 import java.io.IOException;
@@ -32,9 +32,9 @@ public final class RewardConfiguration {
     /** Load the authoritative classpath rewards; no editable config/rewards copy. */
     public static void load() {
         try {
-            var registry = ItemIdRegistry.fromGameResources();
-            var loot = YamlLootTables.parse(readBundled("loot.yaml"), registry::resolve,
-                    ArtifactResolver.fromGameResources());
+            var artifacts = ArtifactResolver.fromGameResources();
+            var registry = ResourceRegistry.fromGameResources(artifacts);
+            var loot = YamlLootTables.parse(readBundled("loot.yaml"), registry::resolve, artifacts);
             var css = CssRewards.parse(readBundledLootCss(), registry, loot);
             active = new RewardConfiguration(loot, css);
         } catch (IOException | RuntimeException e) {

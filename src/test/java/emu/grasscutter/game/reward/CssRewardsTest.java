@@ -36,7 +36,7 @@ class CssRewardsTest {
                 }
                 """, new ItemIdRegistry(Map.of(
                         113010, "Hoarfrost Core", 202, "Mora")), loot);
-        var keys = css.resolveKeys("boss", Map.of("type", "world"));
+        var keys = css.resolve("boss", Map.of("type", "world"));
         assertEquals(Map.of(
                 "genshin.avatar_ascension.hoarfrost_core", 2,
                 "genshin.currency.mora", 300), keys.items());
@@ -58,13 +58,13 @@ class CssRewardsTest {
                     genshin.currency.mora: 10;
                 }
                 """, items, pool);
-        var keys = RewardRoller.rollKeys(
-                css.resolveKeys("chest", Map.of("type", "normal")), pool, new Random(1));
+        var keys = RewardRoller.roll(
+                css.resolve("chest", Map.of("type", "normal")), pool, new Random(1));
         assertEquals(Map.of(
                 "genshin.avatar_up.heros_wit", 2,
                 "genshin.currency.mora", 10), keys);
         assertEquals(Map.of(104003, 2, 202, 10),
-                RewardRoller.resolveKeys(keys, pool, RewardContext.NONE));
+                RewardRoller.resolve(keys, pool, RewardContext.NONE));
     }
 
     @Test
@@ -76,7 +76,7 @@ class CssRewardsTest {
         var css = CssRewards.parse("chest { genshin.currency.mora: 1; }",
                 registry, loot);
         assertEquals(Map.of("genshin.currency.mora", 1),
-                css.resolveKeys("chest", Map.of()).items());
+                css.resolve("chest", Map.of()).items());
     }
 
     @Test
@@ -91,14 +91,14 @@ class CssRewardsTest {
                     astaps.loot.currency: 2;
                 }
                 """, items, loot);
-        var base = css.resolve("chest", Map.of());
+        var base = css.resolveIds("chest", Map.of());
         assertTrue(base.rangedItems().containsKey(202));
         assertEquals(Map.of("astaps.loot.currency", 1), base.loot());
-        var common = css.resolve("chest", Map.of("grade", "common"));
+        var common = css.resolveIds("chest", Map.of("grade", "common"));
         assertEquals(Map.of(202, 500), common.items());
         assertEquals(Map.of("astaps.loot.currency", 2), common.loot());
         assertFalse(common.rangedItems().containsKey(202));
-        assertEquals(500, RewardRoller.roll(common, loot, new Random(7)).get(202));
+        assertEquals(500, RewardRoller.rollIds(common, loot, new Random(7)).get(202));
     }
 
     @Test
@@ -114,9 +114,9 @@ class CssRewardsTest {
                 }
                 """, registry, loot);
         assertEquals(Map.of("genshin.avatar_ascension.anemo.2", 3),
-                css.resolveKeys("boss", Map.of()).items());
+                css.resolve("boss", Map.of()).items());
         assertEquals(Map.of("genshin.avatar_ascension.anemo.2", 5),
-                css.resolveKeys("boss", Map.of("tag", "special")).items());
+                css.resolve("boss", Map.of("tag", "special")).items());
         assertThrows(IllegalArgumentException.class, () ->
                 CssRewards.parse("boss { genshin.avatar_ascension.vayuda_turquoise.sliver: 3; }",
                         registry, loot));
@@ -140,9 +140,9 @@ class CssRewardsTest {
                 }
                 """, items, loot);
         assertEquals(Map.of(8101, 1, 8102, 2, 8201, 3),
-                css.resolve("boss", Map.of()).items());
+                css.resolveIds("boss", Map.of()).items());
         assertEquals(Map.of(8101, 4, 8102, 2, 8201, 5),
-                css.resolve("boss", Map.of("tag", "override")).items());
+                css.resolveIds("boss", Map.of("tag", "override")).items());
         assertThrows(IllegalArgumentException.class, () -> CssRewards.parse(
                 "boss { genshin.talent_up.freedom.5: 1; }", items, loot));
     }
@@ -164,7 +164,7 @@ class CssRewardsTest {
                     genshin.currency.primogem: 8;
                 }
                 """, items, loot);
-        assertEquals(Map.of(202, 4, 201, 8), css.resolve("chest", Map.of()).items());
+        assertEquals(Map.of(202, 4, 201, 8), css.resolveIds("chest", Map.of()).items());
     }
 
     @Test
@@ -188,7 +188,7 @@ class CssRewardsTest {
                     genshin.currency.$Reward_Name: 5;
                 }
                 """, items, loot);
-        assertEquals(Map.of(202, 5, 201, 2), css.resolve("chest", Map.of()).items());
+        assertEquals(Map.of(202, 5, 201, 2), css.resolveIds("chest", Map.of()).items());
         assertThrows(IllegalArgumentException.class, () -> CssRewards.parse("""
                 chest { --Reward_Name: mora; genshin.currency.$reward_name: 1; }
                 """, items, loot));
@@ -210,22 +210,22 @@ class CssRewardsTest {
                 chest[mode="element"] { astaps.loot.pick<$element>: 3; }
                 chest[mode="element"][grade="common"] { --element: primogem; }
                 """, items, templates);
-        assertEquals(Map.of(202, 1), RewardRoller.roll(css.resolve("chest", Map.of()), templates, new Random(1)));
-        assertEquals(Map.of(202, 1, 201, 2), RewardRoller.roll(
-                css.resolve("chest", Map.of("mode", "variable")), templates, new Random(1)));
-        assertEquals(Map.of(202, 3), RewardRoller.roll(
-                css.resolve("chest", Map.of("mode", "element")), templates, new Random(1)));
-        assertEquals(Map.of(202, 1, 201, 3), RewardRoller.roll(
-                css.resolve("chest", Map.of("mode", "element", "grade", "common")), templates, new Random(1)));
+        assertEquals(Map.of(202, 1), RewardRoller.rollIds(css.resolveIds("chest", Map.of()), templates, new Random(1)));
+        assertEquals(Map.of(202, 1, 201, 2), RewardRoller.rollIds(
+                css.resolveIds("chest", Map.of("mode", "variable")), templates, new Random(1)));
+        assertEquals(Map.of(202, 3), RewardRoller.rollIds(
+                css.resolveIds("chest", Map.of("mode", "element")), templates, new Random(1)));
+        assertEquals(Map.of(202, 1, 201, 3), RewardRoller.rollIds(
+                css.resolveIds("chest", Map.of("mode", "element", "grade", "common")), templates, new Random(1)));
     }
 
     @Test
     void bindingNamesHaveNoImplicitRewardMeaning() {
         var unused = CssRewards.parse("chest { --loot: currency; }", items, loot);
-        assertTrue(unused.resolve("chest", Map.of()).loot().isEmpty());
+        assertTrue(unused.resolveIds("chest", Map.of()).loot().isEmpty());
         var referenced = CssRewards.parse(
                 "chest { --loot: currency; astaps.loot.$loot: 2; }", items, loot);
-        assertEquals(Map.of("astaps.loot.currency", 2), referenced.resolve("chest", Map.of()).loot());
+        assertEquals(Map.of("astaps.loot.currency", 2), referenced.resolveIds("chest", Map.of()).loot());
     }
 
     @Test
@@ -252,7 +252,7 @@ class CssRewardsTest {
                 }
                 """, bookItems, loot);
         assertEquals(Map.of(7201, 1, 7202, 2, 7203, 3),
-                css.resolve("chest", Map.of()).items());
+                css.resolveIds("chest", Map.of()).items());
         assertThrows(IllegalArgumentException.class, () -> CssRewards.parse(
                 "chest { genshin.talent_up.teachings_of_freedom: 1; }",
                 bookItems, loot));
@@ -268,22 +268,22 @@ class CssRewardsTest {
                     genshin.currency.mora: 3;
                 }
                 """, items, loot);
-        var ranged = css.resolve("chest", Map.of());
+        var ranged = css.resolveIds("chest", Map.of());
         assertTrue(ranged.items().isEmpty());
         assertTrue(ranged.rangedItems().containsKey(202));
         var random = new Random(71);
         boolean one = false, two = false;
         for (int i = 0; i < 300; i++) {
-            int count = RewardRoller.roll(ranged, loot, random).get(202);
+            int count = RewardRoller.rollIds(ranged, loot, random).get(202);
             assertTrue(count == 1 || count == 2);
             one |= count == 1;
             two |= count == 2;
         }
         assertTrue(one && two);
-        var fixed = css.resolve("chest", Map.of("grade", "common"));
+        var fixed = css.resolveIds("chest", Map.of("grade", "common"));
         assertEquals(3, fixed.items().get(202));
         assertFalse(fixed.rangedItems().containsKey(202));
-        assertEquals(3, RewardRoller.roll(fixed, loot, new Random(71)).get(202));
+        assertEquals(3, RewardRoller.rollIds(fixed, loot, new Random(71)).get(202));
     }
 
     @Test
@@ -292,7 +292,7 @@ class CssRewardsTest {
         var css = CssRewards.parse("""
                 chest { genshin.weapon.dull_blade: 1; }
                 """, registry, loot);
-        assertEquals(1, css.resolve("chest", Map.of()).items().get(11101));
+        assertEquals(1, css.resolveIds("chest", Map.of()).items().get(11101));
         assertThrows(IllegalArgumentException.class, () ->
                 CssRewards.parse("chest { genshin.material.dull_blade: 1; }", registry, loot));
         assertThrows(IllegalArgumentException.class, () ->
@@ -307,7 +307,7 @@ class CssRewardsTest {
         var css = CssRewards.parse("""
                 chest { genshin.recipe.mora_meat.item: 1; }
                 """, registry, loot);
-        assertEquals(1, css.resolve("chest", Map.of()).items().get(109406));
+        assertEquals(1, css.resolveIds("chest", Map.of()).items().get(109406));
         assertThrows(IllegalArgumentException.class, () ->
                 CssRewards.parse("chest { genshin.recipe.mora_meat: 1; }", registry, loot));
         assertThrows(IllegalArgumentException.class, () ->
@@ -327,15 +327,15 @@ class CssRewardsTest {
                     genshin.currency.primogem: 2;
                 }
                 """, items, loot);
-        assertEquals(6000, css.resolve("boss", Map.of(
+        assertEquals(6000, css.resolveIds("boss", Map.of(
                 "type", "world", "level", 93)).items().get(202));
-        assertEquals(6000, css.resolve("boss", Map.of(
+        assertEquals(6000, css.resolveIds("boss", Map.of(
                 "type", "world", "level", 104)).items().get(202));
-        assertEquals(6000, css.resolve("boss", Map.of(
+        assertEquals(6000, css.resolveIds("boss", Map.of(
                 "type", "weekly", "level", 105)).items().get(202));
-        assertTrue(css.resolve("boss", Map.of(
+        assertTrue(css.resolveIds("boss", Map.of(
                 "type", "world", "level", 105)).items().isEmpty());
-        var tagged = css.resolve("boss", Map.of(
+        var tagged = css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "无相之雷", "level", 95));
         assertEquals(6000, tagged.items().get(202));
         assertEquals(2, tagged.items().get(201));
@@ -350,12 +350,12 @@ class CssRewardsTest {
                     genshin.currency.primogem: 2;
                 }
                 """, items, loot);
-        var selected = css.resolve("chest", Map.of("grade", "common"));
+        var selected = css.resolveIds("chest", Map.of("grade", "common"));
         assertEquals(Map.of("astaps.loot.currency", 1, "astaps.loot.经验书", 2),
                 selected.loot());
         assertEquals(Map.of(201, 2), selected.items());
         assertEquals(Map.of(202, 100, 104003, 2, 201, 2),
-                RewardRoller.roll(selected, loot, new Random(1)));
+                RewardRoller.rollIds(selected, loot, new Random(1)));
     }
 
     @Test
@@ -364,9 +364,9 @@ class CssRewardsTest {
                 chest { astaps.loot.surprise: 3; }
                 """, items, loot);
         assertEquals(Map.of("astaps.loot.surprise", 3),
-                css.resolve("chest", Map.of()).loot());
+                css.resolveIds("chest", Map.of()).loot());
         assertEquals(Map.of(202, 90, 104003, 3),
-                RewardRoller.roll(css.resolve("chest", Map.of()), loot, new Random(1)));
+                RewardRoller.rollIds(css.resolveIds("chest", Map.of()), loot, new Random(1)));
     }
 
     @Test
@@ -383,14 +383,14 @@ class CssRewardsTest {
                 }
                 """, items, loot);
         assertEquals(Map.of("astaps.loot.currency", 1, "astaps.loot.经验书", 1),
-                css.resolve("chest", Map.of("grade", "common", "level", 1)).loot());
-        var selected = css.resolve("chest", Map.of("grade", "common", "level", 6));
+                css.resolveIds("chest", Map.of("grade", "common", "level", 1)).loot());
+        var selected = css.resolveIds("chest", Map.of("grade", "common", "level", 6));
         assertEquals(Map.of(
                 "astaps.loot.currency", 0,
                 "astaps.loot.经验书", 1,
                 "astaps.loot.surprise", 2), selected.loot());
         assertEquals(Map.of(202, 60, 104003, 3, 201, 2),
-                RewardRoller.roll(selected, loot, new Random(1)));
+                RewardRoller.rollIds(selected, loot, new Random(1)));
     }
 
     @Test
@@ -399,9 +399,9 @@ class CssRewardsTest {
                 chest { astaps.loot.currency: 1; genshin.currency.primogem: 2; }
                 chest[level=6] { astaps.loot.currency: 0; }
                 """, items, loot);
-        var selected = css.resolve("chest", Map.of("level", 6));
+        var selected = css.resolveIds("chest", Map.of("level", 6));
         assertEquals(Map.of("astaps.loot.currency", 0), selected.loot());
-        assertEquals(Map.of(201, 2), RewardRoller.roll(selected, loot, new Random(1)));
+        assertEquals(Map.of(201, 2), RewardRoller.rollIds(selected, loot, new Random(1)));
         assertThrows(IllegalStateException.class, () ->
                 RewardConfiguration.requireChestLoot("chest", selected,
                         Map.of("level", 6)));
@@ -414,10 +414,10 @@ class CssRewardsTest {
                 chest[grade="common"] { astaps.loot.currency: 3; }
                 """, items, loot);
         assertEquals(Map.of(202, 100),
-                RewardRoller.roll(css.resolve("monster", Map.of("tag", "elite")),
+                RewardRoller.rollIds(css.resolveIds("monster", Map.of("tag", "elite")),
                         loot, new Random(1)));
         assertEquals(Map.of(202, 300),
-                RewardRoller.roll(css.resolve("chest", Map.of("grade", "common")),
+                RewardRoller.rollIds(css.resolveIds("chest", Map.of("grade", "common")),
                         loot, new Random(1)));
     }
 
@@ -433,9 +433,9 @@ class CssRewardsTest {
                 chest[scene=3] { genshin.currency.mora: 0; }
                 """, items, loot);
         assertEquals(Map.of(202, 25, 104003, 1, 201, 2),
-                RewardRoller.roll(css.resolve("chest", Map.of()), loot, new Random(1)));
+                RewardRoller.rollIds(css.resolveIds("chest", Map.of()), loot, new Random(1)));
         assertEquals(Map.of(104003, 1, 201, 2),
-                RewardRoller.roll(css.resolve("chest", Map.of("scene", 3)),
+                RewardRoller.rollIds(css.resolveIds("chest", Map.of("scene", 3)),
                         loot, new Random(1)));
     }
 
@@ -449,7 +449,7 @@ class CssRewardsTest {
                 }
                 """, items, loot);
         assertEquals(Map.of("astaps.loot.surprise", 2, "astaps.loot.currency", 1),
-                css.resolve("chest", Map.of("grade", "common", "scene", 3)).loot());
+                css.resolveIds("chest", Map.of("grade", "common", "scene", 3)).loot());
     }
 
     @Test
@@ -465,12 +465,12 @@ class CssRewardsTest {
                 chest[type="normal"][grade="common"] { astaps.loot.currency: 1; }
                 chest[type="mora"] { astaps.loot.currency: 2; }
                 """, items, loot);
-        assertEquals(Map.of("astaps.loot.currency", 1), css.resolve("chest",
+        assertEquals(Map.of("astaps.loot.currency", 1), css.resolveIds("chest",
                 Map.of("type", "normal", "grade", "common")).loot());
-        assertEquals(Map.of("astaps.loot.currency", 2), css.resolve("chest",
+        assertEquals(Map.of("astaps.loot.currency", 2), css.resolveIds("chest",
                 Map.of("type", "mora", "grade", "common")).loot());
-        assertTrue(css.resolve("chest", Map.of("grade", "common")).loot().isEmpty());
-        assertTrue(css.resolve("chest", Map.of("type", "normal", "grade", "luxurious"))
+        assertTrue(css.resolveIds("chest", Map.of("grade", "common")).loot().isEmpty());
+        assertTrue(css.resolveIds("chest", Map.of("type", "normal", "grade", "luxurious"))
                 .loot().isEmpty());
     }
 
@@ -518,17 +518,17 @@ class CssRewardsTest {
                     genshin.currency.mora: 57;
                 }
                 """, items, loot);
-        assertEquals(Map.of(202, 53), css.resolve("boss", Map.of(
+        assertEquals(Map.of(202, 53), css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "anemo_hypostasis", "level", 2)).items());
-        assertEquals(Map.of(202, 53, 201, 2), css.resolve("boss", Map.of(
+        assertEquals(Map.of(202, 53, 201, 2), css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "cryo_hypostasis", "level", 2, "city", 1)).items());
-        assertEquals(Map.of(202, 57), css.resolve("boss", Map.of(
+        assertEquals(Map.of(202, 57), css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "anemo_hypostasis", "level", 6)).items());
-        assertEquals(Map.of(202, 43), css.resolve("boss", Map.of(
+        assertEquals(Map.of(202, 43), css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "cryo_hypostasis", "level", 6)).items());
-        assertEquals(Map.of(202, 3), css.resolve("boss", Map.of(
+        assertEquals(Map.of(202, 3), css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "cryo_hypostasis", "level", 10)).items());
-        assertTrue(css.resolve("boss", Map.of(
+        assertTrue(css.resolveIds("boss", Map.of(
                 "type", "weekly", "tag", "anemo_hypostasis", "level", 2)).items().isEmpty());
     }
 
@@ -544,11 +544,11 @@ class CssRewardsTest {
                     }
                 }
                 """, items, loot);
-        assertEquals(10, css.resolve("chest", Map.of(
+        assertEquals(10, css.resolveIds("chest", Map.of(
                 "grade", "common", "level", 2)).items().get(202));
-        assertEquals(20, css.resolve("chest", Map.of(
+        assertEquals(20, css.resolveIds("chest", Map.of(
                 "grade", "precious", "level", 3)).items().get(202));
-        assertTrue(css.resolve("chest", Map.of(
+        assertTrue(css.resolveIds("chest", Map.of(
                 "grade", "precious", "level", 4)).items().isEmpty());
     }
 
@@ -561,7 +561,7 @@ class CssRewardsTest {
                 }
                 """, items, loot);
         assertEquals(Map.of("astaps.loot.currency", 2),
-                css.resolve("chest", Map.of()).loot());
+                css.resolveIds("chest", Map.of()).loot());
     }
 
     @Test
@@ -587,7 +587,7 @@ class CssRewardsTest {
                     astaps.loot.经验书: "1:50,2:30";
                 }
                 """, items, loot);
-        var selection = css.resolve("chest", Map.of());
+        var selection = css.resolveIds("chest", Map.of());
         assertTrue(selection.loot().isEmpty());
         assertEquals(2, selection.rangedLoot().size());
 
@@ -595,7 +595,7 @@ class CssRewardsTest {
         var bookCounts = new java.util.HashSet<Integer>();
         var random = new Random(71);
         for (int i = 0; i < 300; i++) {
-            var rewards = RewardRoller.roll(selection, loot, random);
+            var rewards = RewardRoller.rollIds(selection, loot, random);
             currencyCounts.add(rewards.getOrDefault(202, 0) / 100);
             bookCounts.add(rewards.getOrDefault(104003, 0));
         }
@@ -610,22 +610,22 @@ class CssRewardsTest {
                 chest[level=6] { astaps.loot.currency: 2; }
                 chest[level=6][city=1] { astaps.loot.currency: "0:70,3:30"; }
                 """, items, loot);
-        var original = css.resolve("chest", Map.of());
+        var original = css.resolveIds("chest", Map.of());
         assertTrue(original.loot().isEmpty());
         assertTrue(original.rangedLoot().containsKey("astaps.loot.currency"));
 
-        var fixed = css.resolve("chest", Map.of("level", 6));
+        var fixed = css.resolveIds("chest", Map.of("level", 6));
         assertEquals(Map.of("astaps.loot.currency", 2), fixed.loot());
         assertTrue(fixed.rangedLoot().isEmpty());
-        assertEquals(200, RewardRoller.roll(fixed, loot, new Random(2)).get(202));
+        assertEquals(200, RewardRoller.rollIds(fixed, loot, new Random(2)).get(202));
 
-        var variable = css.resolve("chest", Map.of("level", 6, "city", 1));
+        var variable = css.resolveIds("chest", Map.of("level", 6, "city", 1));
         assertTrue(variable.loot().isEmpty());
         assertEquals(1, variable.rangedLoot().size());
         var outcomes = new java.util.HashSet<Integer>();
         var random = new Random(72);
         for (int i = 0; i < 100; i++) {
-            outcomes.add(RewardRoller.roll(variable, loot, random).getOrDefault(202, 0));
+            outcomes.add(RewardRoller.rollIds(variable, loot, random).getOrDefault(202, 0));
         }
         assertEquals(java.util.Set.of(0, 300), outcomes);
     }
@@ -650,19 +650,19 @@ class CssRewardsTest {
         int[] times = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6};
         for (int i = 0; i < levels.length; i++) {
             assertEquals(Map.of("astaps.loot." + names[i], times[i]),
-                    css.resolve("chest", Map.of("grade", "common",
+                    css.resolveIds("chest", Map.of("grade", "common",
                             "level", levels[i])).loot(),
                     "level " + levels[i]);
         }
         for (Integer level : new Integer[]{0, -1}) {
             var attrs = Map.of("grade", "common", "level", level);
-            var selection = css.resolve("chest", attrs);
+            var selection = css.resolveIds("chest", attrs);
             assertTrue(selection.loot().isEmpty());
             assertEquals(2, selection.items().get(201).intValue());
             assertThrows(IllegalStateException.class, () ->
                     RewardConfiguration.requireChestLoot("chest", selection, attrs));
         }
-        assertTrue(css.resolve("chest", Map.of("grade", "common")).loot().isEmpty());
+        assertTrue(css.resolveIds("chest", Map.of("grade", "common")).loot().isEmpty());
     }
 
     @Test
@@ -679,25 +679,25 @@ class CssRewardsTest {
                 }
                 """, items, loot);
         for (int area : new int[]{10, 77, 8, 19, 40, 41, 47, 300}) {
-            assertEquals(2, css.resolve("chest", Map.of("type", "normal",
+            assertEquals(2, css.resolveIds("chest", Map.of("type", "normal",
                     "grade", "common", "city", 1, "area", area)).items().get(201));
         }
-        assertEquals(0, css.resolve("chest", Map.of("type", "normal",
+        assertEquals(0, css.resolveIds("chest", Map.of("type", "normal",
                 "grade", "common", "city", 1, "area", 9)).items().get(201));
-        assertEquals(100, css.resolve("boss", Map.of(
+        assertEquals(100, css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "electro_hypostasis")).items().get(202));
-        assertEquals(100, css.resolve("boss", Map.of(
+        assertEquals(100, css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "anemo_hypostasis")).items().get(202));
-        assertTrue(css.resolve("boss", Map.of(
+        assertTrue(css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "geo_hypostasis")).items().isEmpty());
         // Quoted commas are literal attribute values in standard CSS.
         var literal = CssRewards.parse("""
                 chest[tag="8,10"] { genshin.currency.mora: 1; }
                 """, items, loot);
-        assertEquals(1, literal.resolve("chest", Map.of("tag", "8,10"))
+        assertEquals(1, literal.resolveIds("chest", Map.of("tag", "8,10"))
                 .items().get(202));
-        assertTrue(literal.resolve("chest", Map.of("area", 8)).items().isEmpty());
-        assertTrue(literal.resolve("chest", Map.of("area", 10)).items().isEmpty());
+        assertTrue(literal.resolveIds("chest", Map.of("area", 8)).items().isEmpty());
+        assertTrue(literal.resolveIds("chest", Map.of("area", 10)).items().isEmpty());
     }
 
     @Test
@@ -713,13 +713,13 @@ class CssRewardsTest {
                     genshin.currency.mora: 30;
                 }
                 """, items, loot);
-        assertEquals(10, css.resolve("boss", Map.of(
+        assertEquals(10, css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "a", "level", 75)).items().get(202));
-        assertEquals(30, css.resolve("boss", Map.of(
+        assertEquals(30, css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "b", "level", 75)).items().get(202));
-        assertEquals(20, css.resolve("boss", Map.of(
+        assertEquals(20, css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "c", "level", 75)).items().get(202));
-        assertTrue(css.resolve("boss", Map.of(
+        assertTrue(css.resolveIds("boss", Map.of(
                 "type", "world", "tag", "a", "level", 80)).items().isEmpty());
     }
 
@@ -737,19 +737,19 @@ class CssRewardsTest {
                 }
                 """, items, loot);
         for (int value : new int[]{6, 7, 8, 9}) {
-            assertEquals(60000, css.resolve("blossom", Map.of(
+            assertEquals(60000, css.resolveIds("blossom", Map.of(
                     "type", "wealth", "world_level", value)).items().get(202));
         }
-        assertEquals(30000, css.resolve("blossom", Map.of(
+        assertEquals(30000, css.resolveIds("blossom", Map.of(
                 "type", "wealth", "world_level", 7, "city", 1)).items().get(202));
         for (int value : new int[]{5, 10}) {
-            assertTrue(css.resolve("blossom", Map.of(
+            assertTrue(css.resolveIds("blossom", Map.of(
                     "type", "wealth", "world_level", value)).items().isEmpty());
         }
-        assertTrue(css.resolve("blossom", Map.of("type", "wealth")).items().isEmpty());
-        assertTrue(css.resolve("chest", Map.of("rank", 1)).items().isEmpty());
-        assertEquals(5, css.resolve("chest", Map.of("rank", 2)).items().get(201));
-        assertEquals(5, css.resolve("chest", Map.of("rank", 999)).items().get(201));
+        assertTrue(css.resolveIds("blossom", Map.of("type", "wealth")).items().isEmpty());
+        assertTrue(css.resolveIds("chest", Map.of("rank", 1)).items().isEmpty());
+        assertEquals(5, css.resolveIds("chest", Map.of("rank", 2)).items().get(201));
+        assertEquals(5, css.resolveIds("chest", Map.of("rank", 999)).items().get(201));
     }
 
     @Test
@@ -760,19 +760,19 @@ class CssRewardsTest {
                 chest[grade="common"][16 <= level <= 20] { astaps.loot.surprise: 4; }
                 chest[level=30] { astaps.loot.currency: 5; }
                 """, items, loot);
-        assertTrue(css.resolve("chest", Map.of("level", 5)).loot().isEmpty());
+        assertTrue(css.resolveIds("chest", Map.of("level", 5)).loot().isEmpty());
         assertEquals(Map.of("astaps.loot.surprise", 2),
-                css.resolve("chest", Map.of("level", 6)).loot());
+                css.resolveIds("chest", Map.of("level", 6)).loot());
         assertEquals(Map.of("astaps.loot.surprise", 2),
-                css.resolve("chest", Map.of("level", 10)).loot());
+                css.resolveIds("chest", Map.of("level", 10)).loot());
         assertEquals(Map.of("astaps.loot.currency", 3),
-                css.resolve("chest", Map.of("level", 11)).loot());
+                css.resolveIds("chest", Map.of("level", 11)).loot());
         assertEquals(Map.of("astaps.loot.currency", 3, "astaps.loot.surprise", 4),
-                css.resolve("chest", Map.of("grade", "common", "level", 16)).loot());
-        assertTrue(css.resolve("chest", Map.of("grade", "common", "level", 21))
+                css.resolveIds("chest", Map.of("grade", "common", "level", 16)).loot());
+        assertTrue(css.resolveIds("chest", Map.of("grade", "common", "level", 21))
                 .loot().isEmpty());
         assertEquals(Map.of("astaps.loot.currency", 5),
-                css.resolve("chest", Map.of("level", 30)).loot());
+                css.resolveIds("chest", Map.of("level", 30)).loot());
     }
 
     @Test
@@ -786,10 +786,10 @@ class CssRewardsTest {
                 chest[tag="6~10"] { genshin.currency.mora: 9; }
                 chest[6 <= level <= 10] { genshin.currency.primogem: 2; }
                 """, items, loot);
-        assertEquals(Map.of(202, 9), css.resolve("chest", Map.of("tag", "6~10")).items());
-        assertEquals(Map.of(201, 2), css.resolve("chest", Map.of("level", 7)).items());
-        assertTrue(css.resolve("chest", Map.of("level", 11)).items().isEmpty());
-        assertTrue(css.resolve("chest", Map.of()).items().isEmpty());
+        assertEquals(Map.of(202, 9), css.resolveIds("chest", Map.of("tag", "6~10")).items());
+        assertEquals(Map.of(201, 2), css.resolveIds("chest", Map.of("level", 7)).items());
+        assertTrue(css.resolveIds("chest", Map.of("level", 11)).items().isEmpty());
+        assertTrue(css.resolveIds("chest", Map.of()).items().isEmpty());
     }
 
     @Test
@@ -802,8 +802,8 @@ class CssRewardsTest {
                     genshin.currency.mora: 20;
                 }
                 """, items, loot);
-        assertEquals(20, css.resolve("boss", Map.of("type", "world", "tag", "a")).items().get(202));
-        assertEquals(10, css.resolve("boss", Map.of("type", "world", "tag", "b")).items().get(202));
+        assertEquals(20, css.resolveIds("boss", Map.of("type", "world", "tag", "a")).items().get(202));
+        assertEquals(10, css.resolveIds("boss", Map.of("type", "world", "tag", "b")).items().get(202));
     }
 
     @Test
@@ -819,20 +819,20 @@ class CssRewardsTest {
                     genshin.currency.mora: 93;
                 }
                 """, items, loot);
-        assertEquals(Map.of(202, 70), css.resolve("boss",
+        assertEquals(Map.of(202, 70), css.resolveIds("boss",
                 Map.of("type", "world", "level", 70)).items());
-        assertEquals(Map.of(202, 70, 201, 79), css.resolve("boss",
+        assertEquals(Map.of(202, 70, 201, 79), css.resolveIds("boss",
                 Map.of("type", "world", "level", 79)).items());
-        assertEquals(Map.of(201, 79), css.resolve("boss",
+        assertEquals(Map.of(201, 79), css.resolveIds("boss",
                 Map.of("type", "world", "level", 80)).items());
-        assertEquals(Map.of(202, 93, 201, 79), css.resolve("boss",
+        assertEquals(Map.of(202, 93, 201, 79), css.resolveIds("boss",
                 Map.of("type", "world", "level", 93)).items());
-        assertThrows(IllegalArgumentException.class, () -> css.resolve("boss",
+        assertThrows(IllegalArgumentException.class, () -> css.resolveIds("boss",
                 Map.of("type", "world", "level", "999999999999999999999999999")));
-        assertThrows(IllegalArgumentException.class, () -> css.resolve("boss",
+        assertThrows(IllegalArgumentException.class, () -> css.resolveIds("boss",
                 Map.of("type", "world", "level", "unknown")));
-        assertTrue(css.resolve("boss", Map.of("type", "world")).items().isEmpty());
-        assertTrue(css.resolve("boss", Map.of("type", "world", "level", -1)).items().isEmpty());
+        assertTrue(css.resolveIds("boss", Map.of("type", "world")).items().isEmpty());
+        assertTrue(css.resolveIds("boss", Map.of("type", "world", "level", -1)).items().isEmpty());
     }
 
     @Test
@@ -843,11 +843,11 @@ class CssRewardsTest {
                     genshin.currency.mora: "3~5";
                 }
                 """, items, loot);
-        var selected = css.resolve("chest", Map.of());
+        var selected = css.resolveIds("chest", Map.of());
         var observed = new java.util.HashSet<Integer>();
         var random = new Random(214);
         for (int i = 0; i < 100; i++) {
-            int mora = RewardRoller.roll(selected, loot, random).get(202);
+            int mora = RewardRoller.rollIds(selected, loot, random).get(202);
             assertTrue(mora >= 3 && mora <= 5);
             observed.add(mora);
         }
@@ -861,10 +861,10 @@ class CssRewardsTest {
                 chest[city=1] { genshin.currency.mora: 9; }
                 chest[city=1][area=2] { genshin.currency.mora: "11~12"; }
                 """, items, loot);
-        assertEquals(9, RewardRoller.roll(
-                css.resolve("chest", Map.of("city", 1)), loot, new Random(1))
+        assertEquals(9, RewardRoller.rollIds(
+                css.resolveIds("chest", Map.of("city", 1)), loot, new Random(1))
                 .get(202).intValue());
-        int value = RewardRoller.roll(css.resolve("chest",
+        int value = RewardRoller.rollIds(css.resolveIds("chest",
                 Map.of("city", 1, "area", 2)), loot, new Random(2)).get(202);
         assertTrue(value == 11 || value == 12);
     }
@@ -885,13 +885,13 @@ class CssRewardsTest {
                     genshin.currency.mora: 200;
                 }
                 """, items, loot);
-        assertEquals(Map.of(202, 100), css.resolve("boss", Map.of("level", 90)).items());
+        assertEquals(Map.of(202, 100), css.resolveIds("boss", Map.of("level", 90)).items());
         assertEquals(Map.of(202, 100, 201, 5),
-                css.resolve("boss", Map.of("level", 93)).items());
+                css.resolveIds("boss", Map.of("level", 93)).items());
         assertEquals(Map.of(202, 200, 201, 5),
-                css.resolve("boss", Map.of("level", 79)).items());
-        assertEquals(Map.of(102, 10), css.resolve("boss", Map.of()).items());
-        assertThrows(IllegalArgumentException.class, () -> css.resolve("boss", Map.of("level", "invalid")));
+                css.resolveIds("boss", Map.of("level", 79)).items());
+        assertEquals(Map.of(102, 10), css.resolveIds("boss", Map.of()).items());
+        assertThrows(IllegalArgumentException.class, () -> css.resolveIds("boss", Map.of("level", "invalid")));
     }
 
     @Test
@@ -901,11 +901,11 @@ class CssRewardsTest {
                 chest[city = 2][grade="precious"] { genshin.currency.mora: 3; }
                 chest[city in (1, 2)][grade="common"] { genshin.currency.mora: 4; }
                 """, items, loot);
-        assertEquals(1, css.resolve("chest", Map.of("city", 1)).items().get(202));
-        assertEquals(3, css.resolve("chest", Map.of("city", 2, "grade", "precious")).items().get(202));
-        assertEquals(4, css.resolve("chest", Map.of("city", 2, "grade", "common")).items().get(202));
-        assertTrue(css.resolve("chest", Map.of("city", 3)).items().isEmpty());
-        assertTrue(css.resolve("chest", Map.of()).items().isEmpty());
+        assertEquals(1, css.resolveIds("chest", Map.of("city", 1)).items().get(202));
+        assertEquals(3, css.resolveIds("chest", Map.of("city", 2, "grade", "precious")).items().get(202));
+        assertEquals(4, css.resolveIds("chest", Map.of("city", 2, "grade", "common")).items().get(202));
+        assertTrue(css.resolveIds("chest", Map.of("city", 3)).items().isEmpty());
+        assertTrue(css.resolveIds("chest", Map.of()).items().isEmpty());
     }
 
     @Test
@@ -936,9 +936,9 @@ class CssRewardsTest {
                 }
                 """, items, templated);
         assertEquals(Map.of(202, 2),
-                RewardRoller.roll(css.resolve("chest", Map.of()), templated, new Random(2)));
+                RewardRoller.rollIds(css.resolveIds("chest", Map.of()), templated, new Random(2)));
         assertEquals(Map.of(201, 2),
-                RewardRoller.roll(css.resolve("chest", Map.of("tag", "bonus")),
+                RewardRoller.rollIds(css.resolveIds("chest", Map.of("tag", "bonus")),
                         templated, new Random(2)));
     }
 
@@ -952,7 +952,7 @@ class CssRewardsTest {
                 chest { astaps.loot.reward<mora>: 2; }
                 """, items, templated);
         assertEquals(Map.of(202, 2),
-                RewardRoller.roll(css.resolve("chest", Map.of()), templated, new Random(3)));
+                RewardRoller.rollIds(css.resolveIds("chest", Map.of()), templated, new Random(3)));
     }
 
     @Test
@@ -963,7 +963,7 @@ class CssRewardsTest {
                 "chest { genshin.currency.mora: \"3:3, 4:1\"; }", items, loot);
         var rng = new Random(51);
         for (int i = 0; i < 100; i++) {
-            int value = RewardRoller.roll(css.resolve("chest", Map.of()), loot, rng).get(202);
+            int value = RewardRoller.rollIds(css.resolveIds("chest", Map.of()), loot, rng).get(202);
             assertTrue(value == 3 || value == 4);
         }
     }

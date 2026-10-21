@@ -51,7 +51,7 @@ class NativeLootYamlExporterTest {
         int none = 0, big = 0, small = 0;
         var random = new Random(42);
         for (int n = 0; n < 30_000; n++) {
-            var reward = loot.roll("astaps.loot.mondstadt_combat", random);
+            var reward = loot.rollIds("astaps.loot.mondstadt_combat", random);
             assertEquals(300, reward.get(202).intValue());
             if (!reward.containsKey(104003) && !reward.containsKey(104002)) none++;
             else if (reward.containsKey(104003)) {
@@ -79,7 +79,7 @@ class NativeLootYamlExporterTest {
         int zero = 0, two = 0, three = 0;
         var random = new Random(9);
         for (int n = 0; n < 30_000; n++) {
-            int count = loot.roll("astaps.loot.mondstadt_combat", random)
+            int count = loot.rollIds("astaps.loot.mondstadt_combat", random)
                     .getOrDefault(104003, 0);
             switch (count) {
                 case 0 -> zero++;
@@ -104,7 +104,7 @@ class NativeLootYamlExporterTest {
         var rng = new Random(107);
         int threes = 0;
         for (int n = 0; n < 10000; n++) {
-            int amount = loot.roll("astaps.loot.fractional_bonus", rng).get(104003);
+            int amount = loot.rollIds("astaps.loot.fractional_bonus", rng).get(104003);
             assertTrue(amount == 2 || amount == 3);
             if (amount == 3) threes++;
         }
@@ -120,7 +120,7 @@ class NativeLootYamlExporterTest {
         assertTrue(yaml.contains("{reward: null, weight: 9999}"));
         assertTrue(yaml.contains("{reward: genshin.currency.mora, weight: 1}"));
         var loot = YamlLootTables.parse(yaml, NativeLootYamlExporterTest::itemId);
-        assertTrue(loot.roll("astaps.loot.rare", new Random(4)).isEmpty());
+        assertTrue(loot.rollIds("astaps.loot.rare", new Random(4)).isEmpty());
     }
 
     @Test
@@ -137,7 +137,7 @@ class NativeLootYamlExporterTest {
                 new ArtifactResolver.Variant(55311, "berserker", 4, 3, 1)));
         var loot = YamlLootTables.parse(yaml, artifacts::resolveKey, artifacts);
         assertEquals(Map.of(55311, 1),
-                loot.roll("astaps.loot.artifact_chest", new Random(1)));
+                loot.rollIds("astaps.loot.artifact_chest", new Random(1)));
         assertThrows(IllegalArgumentException.class, () ->
                 NativeLootYamlExporter.export(source, List.of(100),
                         Map.of(100, "artifact_chest"),
@@ -151,7 +151,7 @@ class NativeLootYamlExporterTest {
         String yaml = NativeLootYamlExporter.export(empty, List.of(10),
                 Map.of(10, "empty_reward"), NativeLootYamlExporterTest::itemName);
         assertEquals(Map.of(), YamlLootTables.parse(yaml, NativeLootYamlExporterTest::itemId)
-                .roll("astaps.loot.empty_reward", new Random(0)));
+                .rollIds("astaps.loot.empty_reward", new Random(0)));
 
         var unknown = Map.of(10, new NativeLootYamlExporter.NativeTable(1,
                 List.of(new NativeLootYamlExporter.NativeEntry(202, "1", 10000))));

@@ -24,7 +24,7 @@ final class TransPointRewardsTest {
 
     private static Map<Integer, Integer> roll(
             CssRewards css, YamlLootTables loot, String type, int scene, int point) {
-        return RewardRoller.roll(css.resolve("transpoint", Map.of(
+        return RewardRoller.rollIds(css.resolveIds("transpoint", Map.of(
                 "type", type,
                 "scene", scene,
                 "point", point)), loot, new Random(1));
@@ -56,7 +56,7 @@ final class TransPointRewardsTest {
         assertEquals(standard, roll(css, loot, "domain", 3, 48));
         assertEquals(Map.of(102, 10), roll(css, loot, "waypoint", 3, 6));
         assertEquals(Map.of(201, 5, 101692, 20), roll(css, loot, "waypoint", 7, 2));
-        var gateway = css.resolve("transpoint",
+        var gateway = css.resolveIds("transpoint",
                 Map.of("type", "waypoint", "scene", 7, "point", 2));
         assertTrue(gateway.loot().isEmpty());
         assertTrue(gateway.rangedLoot().isEmpty());
@@ -65,7 +65,7 @@ final class TransPointRewardsTest {
                 "genshin", "currency", "sigil", "light_realm"),
                 emu.grasscutter.data.ResourceId.parse("genshin.currency.sigil.light_realm"));
         assertEquals(Map.of(), roll(css, loot, "unknown", 3, 8));
-        assertTrue(css.resolve("transpoint", Map.of(
+        assertTrue(css.resolveIds("transpoint", Map.of(
                 "kind", "waypoint", "scene", 3, "point", 8)).items().isEmpty());
     }
 

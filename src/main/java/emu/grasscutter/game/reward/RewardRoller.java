@@ -10,12 +10,12 @@ import java.util.random.RandomGenerator;
 public final class RewardRoller {
     private RewardRoller() {}
 
-    public static Map<Integer, Integer> roll(
+    public static Map<Integer, Integer> rollIds(
             CssRewards.Selection selection, YamlLootTables loot, RandomGenerator random) {
-        return roll(selection, loot, random, RewardContext.NONE);
+        return rollIds(selection, loot, random, RewardContext.NONE);
     }
 
-    public static Map<Integer, Integer> roll(
+    public static Map<Integer, Integer> rollIds(
             CssRewards.Selection selection, YamlLootTables loot, RandomGenerator random,
             RewardContext context) {
         var result = new TreeMap<Integer, Integer>();
@@ -24,7 +24,7 @@ public final class RewardRoller {
                 executions.put(table, spec.sample(random)));
         executions.forEach((table, repetitions) -> {
             for (int i = 0; i < repetitions; i++) {
-                loot.roll(table, random).forEach((id, count) ->
+                loot.rollIds(table, random).forEach((id, count) ->
                         result.merge(id, count, Math::addExact));
             }
         });
@@ -41,7 +41,7 @@ public final class RewardRoller {
     }
 
     /** Execute every Lua/CSS/YAML choice as a fully qualified resource name. */
-    public static Map<String, Integer> rollKeys(
+    public static Map<String, Integer> roll(
             CssRewards.KeySelection selection, YamlLootTables loot, RandomGenerator random) {
         var result = new TreeMap<String, Integer>();
         var executions = new TreeMap<>(selection.loot());
@@ -49,7 +49,7 @@ public final class RewardRoller {
                 executions.put(table, spec.sample(random)));
         executions.forEach((table, repetitions) -> {
             for (int i = 0; i < repetitions; i++) {
-                loot.rollKeys(table, random).forEach((key, count) ->
+                loot.roll(table, random).forEach((key, count) ->
                         result.merge(key, count, Math::addExact));
             }
         });

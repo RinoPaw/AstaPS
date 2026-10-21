@@ -122,12 +122,12 @@ public final class RewardConfiguration {
     public Map<Integer, Integer> roll(
             String targetType, Map<String, ?> properties, RandomGenerator random,
             RewardContext context) {
-        var selected = css.resolveKeys(targetType, properties);
+        var selected = css.resolve(targetType, properties);
         requireChestLootKeys(targetType, selected, properties);
         if ("blossom".equals(targetType)) {
             requireBlossomRewardKeys(selected, properties);
         }
-        return RewardRoller.resolveKeys(RewardRoller.rollKeys(selected, loot, random),
+        return RewardRoller.resolveKeys(RewardRoller.roll(selected, loot, random),
                 loot, context);
     }
 
@@ -282,17 +282,17 @@ public final class RewardConfiguration {
                 "type", "world",
                 "tag", cssBossTag(tag),
                 "level", nativeBossLevel);
-        var selection = css.resolveKeys("boss", attributes);
+        var selection = css.resolve("boss", attributes);
         if (selection.loot().isEmpty() && selection.rangedLoot().isEmpty()
                 && selection.rangedItems().isEmpty()) {
             return null;
         }
-        return RewardRoller.resolveKeys(RewardRoller.rollKeys(selection, loot, random),
+        return RewardRoller.resolveKeys(RewardRoller.roll(selection, loot, random),
                 loot, RewardContext.NONE);
     }
 
     /** Qualified table IDs can be executed without CSS selection. */
     public Map<Integer, Integer> rollLoot(String resourceId, RandomGenerator random) {
-        return RewardRoller.resolveKeys(loot.rollKeys(resourceId, random), loot, RewardContext.NONE);
+        return RewardRoller.resolveKeys(loot.roll(resourceId, random), loot, RewardContext.NONE);
     }
 }

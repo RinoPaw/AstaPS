@@ -70,13 +70,13 @@ final class ChestArtifactRewardsTest {
         for (int city = 1; city <= 4; city++) {
             for (String grade : new String[] {"common", "exquisite", "precious", "luxurious"}) {
                 for (int level = 1; level <= 120; level++) {
-                    var selected = f.css.resolve("chest", attrs(city, grade, level));
+                    var selected = f.css.resolveIds("chest", attrs(city, grade, level));
                     assertEquals(1, selected.loot().size() + selected.rangedLoot().size(),
                             city + "/" + grade + "/" + level);
                 }
             }
         }
-        var absent = f.css.resolve("chest", attrs(5, "common", 1));
+        var absent = f.css.resolveIds("chest", attrs(5, "common", 1));
         assertTrue(absent.loot().isEmpty());
         assertTrue(absent.rangedLoot().isEmpty());
     }
@@ -84,11 +84,11 @@ final class ChestArtifactRewardsTest {
     @Test
     void earlyMondstadtChestPreservesTriggerAndRarityProbabilities() throws Exception {
         var f = fixture();
-        var selected = f.css.resolve("chest", attrs(1, "common", 1));
+        var selected = f.css.resolveIds("chest", attrs(1, "common", 1));
         var rng = new Random(71);
         int trials = 20000, oneStar = 0, twoStar = 0, total = 0;
         for (int i = 0; i < trials; i++) {
-            for (var entry : RewardRoller.roll(selected, f.loot, rng).entrySet()) {
+            for (var entry : RewardRoller.rollIds(selected, f.loot, rng).entrySet()) {
                 total += entry.getValue();
                 int rarity = f.ranks.get(entry.getKey());
                 if (rarity == 1) oneStar += entry.getValue();
@@ -103,11 +103,11 @@ final class ChestArtifactRewardsTest {
     @Test
     void sumeruLuxuriousChestRerollsThreeToFourArtifacts() throws Exception {
         var f = fixture();
-        var selected = f.css.resolve("chest", attrs(4, "luxurious", 5));
+        var selected = f.css.resolveIds("chest", attrs(4, "luxurious", 5));
         var rng = new Random(72);
         int trials = 10000, total = 0, threeStar = 0, fourStar = 0;
         for (int i = 0; i < trials; i++) {
-            for (var entry : RewardRoller.roll(selected, f.loot, rng).entrySet()) {
+            for (var entry : RewardRoller.rollIds(selected, f.loot, rng).entrySet()) {
                 total += entry.getValue();
                 if (f.ranks.get(entry.getKey()) == 3) threeStar += entry.getValue();
                 else fourStar += entry.getValue();

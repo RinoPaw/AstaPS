@@ -33,11 +33,11 @@ class LootCountScopeTest {
         var random = new Random(165);
         int sameMora = 0, mixed = 0;
         for (int i = 0; i < 12_000; i++) {
-            var same = tables.roll("same", random);
+            var same = tables.rollIds("same", random);
             assertEquals(2, same.values().stream().mapToInt(Integer::intValue).sum());
             assertTrue(same.equals(Map.of(MORA, 2)) || same.equals(Map.of(WIT, 2)));
             if (same.containsKey(MORA)) sameMora++;
-            var repeated = tables.roll("repeated", random);
+            var repeated = tables.rollIds("repeated", random);
             assertEquals(2, repeated.values().stream().mapToInt(Integer::intValue).sum());
             if (repeated.size() == 2) mixed++;
         }
@@ -60,7 +60,7 @@ class LootCountScopeTest {
         int flowers = 0;
         var random = new Random(166);
         for (int i = 0; i < 12_000; i++) {
-            var reward = tables.roll("artifacts", random);
+            var reward = tables.rollIds("artifacts", random);
             assertEquals(1, reward.values().stream().mapToInt(Integer::intValue).sum());
             if (reward.containsKey(900001)) flowers++;
         }
@@ -89,10 +89,10 @@ class LootCountScopeTest {
         var random = new Random(77);
         int slivers = 0, pyro = 0, rarity2 = 0, doubles = 0;
         for (int i = 0; i < 20_000; i++) {
-            var first = tables.roll("ascension", random);
+            var first = tables.rollIds("ascension", random);
             assertEquals(1, first.values().stream().mapToInt(Integer::intValue).sum());
             if (first.containsKey(2102)) slivers++;
-            var second = tables.roll("mixed", random);
+            var second = tables.rollIds("mixed", random);
             int total = second.values().stream().mapToInt(Integer::intValue).sum();
             assertTrue(total == 2 || total == 3);
             if (total == 2) doubles++;
@@ -132,7 +132,7 @@ class LootCountScopeTest {
         var random = new Random(85);
         int grouped = 0;
         for (int i = 0; i < 12_000; i++) {
-            var result = tables.roll("grouped", random);
+            var result = tables.rollIds("grouped", random);
             if (result.equals(Map.of(MORA, 2, WIT, 3))) grouped++;
             else assertEquals(Map.of(MORA, 7), result);
         }
@@ -166,7 +166,7 @@ class LootCountScopeTest {
         int bothMora = 0;
         int bothWit = 0;
         for (int i = 0; i < 12_000; i++) {
-            var result = tables.roll("boss_a", rng);
+            var result = tables.rollIds("boss_a", rng);
             int mora = result.getOrDefault(MORA, 0);
             int wit = result.getOrDefault(WIT, 0);
             assertEquals(1002, mora + wit);
@@ -199,7 +199,7 @@ class LootCountScopeTest {
         var counts = new int[4];
         var rng = new Random(148);
         for (int i = 0; i < 20_000; i++) {
-            var reward = tables.roll("gems", rng);
+            var reward = tables.rollIds("gems", rng);
             assertEquals(1, reward.values().stream().mapToInt(Integer::intValue).sum());
             int item = reward.keySet().iterator().next();
             counts[switch (item) {
@@ -234,7 +234,7 @@ class LootCountScopeTest {
         var counts = new java.util.HashMap<Integer, Integer>();
         var rng = new Random(167);
         for (int i = 0; i < 20_000; i++) {
-            var reward = tables.roll("artifacts", rng);
+            var reward = tables.rollIds("artifacts", rng);
             assertEquals(1, reward.values().stream().mapToInt(Integer::intValue).sum());
             counts.merge(reward.keySet().iterator().next(), 1, Integer::sum);
         }
@@ -254,7 +254,7 @@ class LootCountScopeTest {
         var random = new Random(918);
         int sum = 0;
         for (int i = 0; i < 10_000; i++) {
-            var result = tables.roll("echo", random);
+            var result = tables.rollIds("echo", random);
             int count = result.getOrDefault(MORA, 0);
             assertTrue(count >= 1);
             sum += count;
@@ -274,7 +274,7 @@ class LootCountScopeTest {
                 """, ITEMS);
         var random = new Random(919);
         for (int i = 0; i < 1_000; i++) {
-            var result = tables.roll("left", random);
+            var result = tables.rollIds("left", random);
             assertTrue(result.getOrDefault(MORA, 0) >= 1);
             assertTrue(result.getOrDefault(MORA, 0) >= result.getOrDefault(WIT, 0));
         }
@@ -289,7 +289,7 @@ class LootCountScopeTest {
                 """, ITEMS);
         var random = new Random(920);
         for (int i = 0; i < 1_000; i++) {
-            assertTrue(tables.roll("echo", random).getOrDefault(MORA, 0) >= 1);
+            assertTrue(tables.rollIds("echo", random).getOrDefault(MORA, 0) >= 1);
         }
     }
 
@@ -303,7 +303,7 @@ class LootCountScopeTest {
                 """, ITEMS);
         var random = new Random(921);
         for (int i = 0; i < 1_000; i++) {
-            assertTrue(tables.roll("root", random).getOrDefault(MORA, 0) >= 2);
+            assertTrue(tables.rollIds("root", random).getOrDefault(MORA, 0) >= 2);
         }
     }
 
@@ -312,7 +312,7 @@ class LootCountScopeTest {
         var tables = YamlLootTables.parse("""
                 plenty: {type: genshin.currency.mora, count: 100001}
                 """, ITEMS);
-        assertEquals(Map.of(MORA, 100001), tables.roll("plenty", new Random(922)));
+        assertEquals(Map.of(MORA, 100001), tables.rollIds("plenty", new Random(922)));
         var random = new Random(923);
         assertEquals(Integer.MAX_VALUE,
                 LootCount.parse("2147483647").sample(random));
@@ -354,13 +354,13 @@ class LootCountScopeTest {
         int both = 0, sameMora = 0, independentMora = 0, independentWit = 0;
         var random = new Random(5);
         for (int i = 0; i < 20_000; i++) {
-            Map<Integer, Integer> fixedChoice = tables.roll("same", random);
+            Map<Integer, Integer> fixedChoice = tables.rollIds("same", random);
             assertEquals(2, fixedChoice.values().stream().mapToInt(Integer::intValue).sum());
             assertTrue(fixedChoice.equals(Map.of(MORA, 2))
                     || fixedChoice.equals(Map.of(WIT, 2)));
             if (fixedChoice.containsKey(MORA)) sameMora++;
 
-            Map<Integer, Integer> repeated = tables.roll("independent", random);
+            Map<Integer, Integer> repeated = tables.rollIds("independent", random);
             assertEquals(2, repeated.values().stream().mapToInt(Integer::intValue).sum());
             if (repeated.size() == 2) {
                 assertEquals(Map.of(MORA, 1, WIT, 1), repeated);
@@ -393,8 +393,8 @@ class LootCountScopeTest {
         var random = new Random(74);
         int rarityFirst = 0, elementFirst = 0;
         for (int i = 0; i < 10_000; i++) {
-            if (tables.roll("rarity", random).containsKey(1202)) rarityFirst++;
-            if (tables.roll("element", random).containsKey(1204)) elementFirst++;
+            if (tables.rollIds("rarity", random).containsKey(1202)) rarityFirst++;
+            if (tables.rollIds("element", random).containsKey(1204)) elementFirst++;
         }
         assertEquals(0.75, rarityFirst / 10_000.0, 0.025);
         assertEquals(0.75, elementFirst / 10_000.0, 0.025);
@@ -412,7 +412,7 @@ class LootCountScopeTest {
         var random = new Random(41);
         int threeExecutions = 0;
         for (int i = 0; i < 20_000; i++) {
-            Map<Integer, Integer> output = tables.roll("ranged_independent", random);
+            Map<Integer, Integer> output = tables.rollIds("ranged_independent", random);
             int total = output.values().stream().mapToInt(Integer::intValue).sum();
             assertTrue(total == 2 || total == 3);
             if (total == 3) threeExecutions++;
@@ -438,14 +438,14 @@ class LootCountScopeTest {
                 four: {type: "chest<3,1,berserker,instructor,adventurer,traveling_doctor>"}
                 repeated: {type: "chest<3,1,berserker,berserker>"}
                 """, ITEMS, variants);
-        assertEquals(Map.of(9101, 1), loot.roll("repeated", new Random(60)));
+        assertEquals(Map.of(9101, 1), loot.rollIds("repeated", new Random(60)));
 
         int[] counts = new int[4];
         var rng = new Random(61);
         for (int i = 0; i < 12_000; i++) {
-            int item = loot.roll("four", rng).keySet().iterator().next();
+            int item = loot.rollIds("four", rng).keySet().iterator().next();
             counts[item - 9101]++;
-            assertTrue(loot.roll("two", rng).keySet().stream()
+            assertTrue(loot.rollIds("two", rng).keySet().stream()
                     .allMatch(id -> id == 9101 || id == 9102));
         }
         for (int count : counts) assertEquals(0.25, count / 12_000.0, 0.03);
@@ -463,11 +463,11 @@ class LootCountScopeTest {
                   - {type: genshin.currency.mora}
                 zero: {type: "empty<>"}
                 """, ITEMS);
-        assertEquals(Map.of(MORA, 1), loot.roll("zero", new Random(62)));
+        assertEquals(Map.of(MORA, 1), loot.rollIds("zero", new Random(62)));
         var rng = new Random(63);
         int threes = 0;
         for (int i = 0; i < 12_000; i++) {
-            int count = loot.roll("values", rng).get(MORA);
+            int count = loot.rollIds("values", rng).get(MORA);
             assertTrue(count == 2 || count == 3);
             if (count == 3) threes++;
         }
@@ -616,7 +616,7 @@ class LootCountScopeTest {
                     case 3 -> "three";
                     default -> "four";
                 };
-                int id = loot.roll(table, random).keySet().iterator().next();
+                int id = loot.rollIds(table, random).keySet().iterator().next();
                 assertEquals(rarity, id / 100_000);
                 int set = (id % 100_000) / 1_000 - 1;
                 int slot = (id % 1_000) / 10;
@@ -685,19 +685,19 @@ class LootCountScopeTest {
         var mediumCounts = new java.util.HashMap<Integer, Integer>();
         var lateCounts = new java.util.HashMap<Integer, Integer>();
         for (int i = 0; i < 20_000; i++) {
-            var early = loot.roll("early", random);
+            var early = loot.rollIds("early", random);
             assertEquals(3, early.values().iterator().next());
             assertTrue(early.containsKey(8101) || early.containsKey(8201));
-            var medium = loot.roll("medium", random);
+            var medium = loot.rollIds("medium", random);
             assertEquals(3, medium.values().iterator().next());
             mediumCounts.merge(medium.keySet().iterator().next(), 1, Integer::sum);
-            var higher = loot.roll("higher", random);
+            var higher = loot.rollIds("higher", random);
             assertEquals(9, higher.values().iterator().next());
             assertTrue(higher.keySet().stream().allMatch(id -> id >= 8101 && id <= 8103));
-            var late = loot.roll("late", random);
+            var late = loot.rollIds("late", random);
             assertEquals(9, late.values().iterator().next());
             lateCounts.merge(late.keySet().iterator().next(), 1, Integer::sum);
-            var fragments = loot.roll("fragments", random);
+            var fragments = loot.rollIds("fragments", random);
             assertEquals(3, fragments.values().iterator().next());
             assertTrue(fragments.containsKey(8102) || fragments.containsKey(8202));
         }
@@ -760,15 +760,15 @@ class LootCountScopeTest {
         int[] artifacts = new int[3], gems = new int[4], talents = new int[4];
         var random = new Random(2026);
         for (int i = 0; i < 20_000; i++) {
-            int artifact = loot.roll("artifact", random).keySet().iterator().next();
+            int artifact = loot.rollIds("artifact", random).keySet().iterator().next();
             artifacts[switch (artifact) { case 9101 -> 0; case 9102 -> 1; case 9205 -> 2;
                 default -> throw new AssertionError(artifact); }]++;
-            var repeated = loot.roll("artifact_copies", random);
+            var repeated = loot.rollIds("artifact_copies", random);
             assertEquals(2, repeated.values().stream().mapToInt(Integer::intValue).sum());
             // All copies share one weighted set choice. Native slots reroll.
             assertFalse(repeated.containsKey(9205)
                     && (repeated.containsKey(9101) || repeated.containsKey(9102)));
-            var gem = loot.roll("gem", random);
+            var gem = loot.rollIds("gem", random);
             // Gem's weighted elements are rerolled for each copy, as specified
             // by the current domain type. Counts must conserve all three copies.
             assertEquals(3, gem.values().stream().mapToInt(Integer::intValue).sum());
@@ -779,7 +779,7 @@ class LootCountScopeTest {
                 };
                 gems[index] += count;
             });
-            var talent = loot.roll("talent", random);
+            var talent = loot.rollIds("talent", random);
             assertEquals(1, talent.size());
             assertEquals(2, talent.values().iterator().next());
             talents[switch (talent.keySet().iterator().next()) {
@@ -863,7 +863,7 @@ class LootCountScopeTest {
         int[][] slots = new int[2][5];
         int zeroPlumes = 0, specialPlumes = 0;
         for (int i = 0; i < 20_000; i++) {
-            int ordinary = tables.roll("normal", random).keySet().iterator().next();
+            int ordinary = tables.rollIds("normal", random).keySet().iterator().next();
             int set = ordinary / 100000 - 1;
             assertTrue(set == 0 || set == 1);
             int slot = (ordinary % 100000) / 10;
@@ -872,14 +872,14 @@ class LootCountScopeTest {
             assertTrue(substats == 3 || substats == 4);
             selectedSets[set]++;
             slots[set][slot - 1]++;
-            int zero = tables.roll("zero", random).keySet().iterator().next();
+            int zero = tables.rollIds("zero", random).keySet().iterator().next();
             assertTrue(zero == 300020 || zero == 300040);
             if (zero == 300020) zeroPlumes++;
-            int special = tables.roll("special", random).keySet().iterator().next();
+            int special = tables.rollIds("special", random).keySet().iterator().next();
             assertTrue(special == 300024 || special == 300043);
             if (special == 300024) specialPlumes++;
-            assertEquals(Map.of(300041, 1), tables.roll("fixed_goblet", random));
-            assertEquals(Map.of(300040, 1), tables.roll("empty_goblet", random));
+            assertEquals(Map.of(300041, 1), tables.rollIds("fixed_goblet", random));
+            assertEquals(Map.of(300040, 1), tables.rollIds("empty_goblet", random));
         }
         for (int set = 0; set < 2; set++) {
             assertEquals(0.5, selectedSets[set] / 20_000.0, 0.025);

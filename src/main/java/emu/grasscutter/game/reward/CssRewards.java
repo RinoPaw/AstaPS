@@ -144,7 +144,7 @@ public final class CssRewards {
     }
 
     /** Resolve CSS selectors, variables and cascade to exact resource names. */
-    public KeySelection resolveKeys(String type, Map<String, ?> attributes) {
+    public KeySelection resolve(String type, Map<String, ?> attributes) {
         RewardCssAttributes.validate(attributes);
         var matched = new ArrayList<Rule>();
         for (var rule : rules) {
@@ -191,9 +191,9 @@ public final class CssRewards {
         return new KeySelection(fixed, selectedLoot, ranged, rangedLoot);
     }
 
-    /** Convert keys only at the legacy numerical settlement boundary. */
-    public Selection resolve(String type, Map<String, ?> attributes) {
-        var keys = resolveKeys(type, attributes);
+    /** Explicitly convert to native IDs at an integer consumer boundary. */
+    public Selection resolveIds(String type, Map<String, ?> attributes) {
+        var keys = resolve(type, attributes);
         var fixed = new HashMap<Integer, Integer>();
         var ranged = new HashMap<Integer, LootCount.Spec>();
         keys.items().forEach((key, count) -> fixed.put(itemRegistry.applyAsInt(key), count));

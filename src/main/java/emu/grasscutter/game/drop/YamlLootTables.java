@@ -608,7 +608,7 @@ public final class YamlLootTables {
     }
 
     /** Loot syntax produces qualified resource keys. It does not settle native IDs. */
-    public Map<String, Integer> rollKeys(String name, RandomGenerator random) {
+    public Map<String, Integer> roll(String name, RandomGenerator random) {
         String resolved = resolveName(name);
         Pool root = pools.containsKey(resolved) ? pools.get(resolved) : instances.get(resolved);
         if (random == null) throw new IllegalArgumentException("Missing random generator");
@@ -617,10 +617,10 @@ public final class YamlLootTables {
         return Map.copyOf(reward);
     }
 
-    /** Resolve keys only at the consumer boundary. */
-    public Map<Integer, Integer> roll(String name, RandomGenerator random) {
+    /** Explicitly convert resource keys to native IDs at a consumer boundary. */
+    public Map<Integer, Integer> rollIds(String name, RandomGenerator random) {
         var result = new TreeMap<Integer, Integer>();
-        rollKeys(name, random).forEach((resource, count) ->
+        roll(name, random).forEach((resource, count) ->
                 result.merge(resolveKey(resource), count, Math::addExact));
         return Map.copyOf(result);
     }
@@ -727,7 +727,7 @@ public final class YamlLootTables {
      * only; it never grants items or modifies chest claim state.
      */
     public List<ItemParamData> rollItems(String name, RandomGenerator random) {
-        var reward = roll(name, random);
+        var reward = rollIds(name, random);
         if (reward.containsKey(emu.grasscutter.data.ItemIdRegistry.REGIONAL_SIGIL)) {
             throw new IllegalArgumentException(
                     "Regional sigil in " + name + " requires reward context");

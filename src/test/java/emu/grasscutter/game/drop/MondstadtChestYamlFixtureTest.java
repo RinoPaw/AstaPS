@@ -43,7 +43,7 @@ class MondstadtChestYamlFixtureTest {
         long baseOre = 0;
         var random = new Random(seed);
         for (int i = 0; i < trials; i++) {
-            Map<Integer, Integer> reward = loot.roll(name, random);
+            Map<Integer, Integer> reward = loot.rollIds(name, random);
             assertEquals(10, reward.get(102).intValue());
             assertEquals(1, reward.get(305).intValue());
             assertTrue(reward.get(202) >= 240 && reward.get(202) <= 360);

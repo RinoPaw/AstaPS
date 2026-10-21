@@ -92,7 +92,7 @@ class LootProbabilityTest {
 
     @Test void zeroCallsAndItemQuantitiesDoNotCreatePoolNodes() {
         var tables = parse("a: {type: a, count: 0}\ncoin: {reward: coin, count: 2147483647}");
-        assertEquals(Map.of(), tables.roll("a", new Random(1)));
+        assertEquals(Map.of(), tables.rollIds("a", new Random(1)));
     }
 
     @Test void failedTemplateValidationCannotBeBypassedByRetry() {
@@ -113,6 +113,6 @@ class LootProbabilityTest {
             int draws;
             @Override public double nextDouble() { return draws++ < 20000 ? 0.75 : 0.25; }
         };
-        assertEquals(Map.of(202, 20001), tables.roll("a", longDraw));
+        assertEquals(Map.of(202, 20001), tables.rollIds("a", longDraw));
     }
 }

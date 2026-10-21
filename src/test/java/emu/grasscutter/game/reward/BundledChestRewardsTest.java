@@ -117,7 +117,7 @@ class BundledChestRewardsTest {
         int[] levels = {1, 6, 11, 16, 21, 26};
         for (String grade : grades) {
             for (int level : levels) {
-                var selected = css.resolve("chest", Map.of(
+                var selected = css.resolveIds("chest", Map.of(
                         "type", "normal", "grade", grade, "city", 1,
                         "level", level));
                 assertEquals(30, selected.items().get(102).intValue());
@@ -142,19 +142,19 @@ class BundledChestRewardsTest {
         String[] kinds = {"common", "exquisite", "precious", "luxurious"};
         int[] base = {2, 5, 10, 10}, low = {0, 2, 5, 10};
         for (int k = 0; k < kinds.length; k++) {
-            assertEquals(base[k], css.resolve("chest", Map.of("type", "normal", "grade", kinds[k]))
+            assertEquals(base[k], css.resolveIds("chest", Map.of("type", "normal", "grade", kinds[k]))
                     .items().get(201).intValue());
-            assertEquals(low[k], css.resolve("chest",
+            assertEquals(low[k], css.resolveIds("chest",
                     Map.of("type", "normal", "grade", kinds[k], "city", 1)).items().get(201).intValue());
             for (int area : new int[]{10, 77, 8, 19, 40, 41, 47, 300}) {
-                assertEquals(base[k], css.resolve("chest", Map.of(
+                assertEquals(base[k], css.resolveIds("chest", Map.of(
                         "type", "normal", "grade", kinds[k], "city", 1, "area", area))
                         .items().get(201).intValue());
             }
-            var selected = css.resolve("chest", Map.of(
+            var selected = css.resolveIds("chest", Map.of(
                     "type", "normal", "grade", kinds[k], "city", 2, "level", 26));
             for (int seed = 0; seed < 32; seed++) {
-                var rolled = RewardRoller.roll(selected, loot, new Random(seed),
+                var rolled = RewardRoller.rollIds(selected, loot, new Random(seed),
                         new RewardContext(3, 0, "liyue"));
                 assertEquals(30, rolled.get(102).intValue());
                 assertEquals(low[k], rolled.getOrDefault(201, 0).intValue());
@@ -174,7 +174,7 @@ class BundledChestRewardsTest {
                 props.put("type", "normal");
                 props.put("grade", kind);
                 if (level != null) props.put("level", level);
-                var selection = css.resolve("chest", props);
+                var selection = css.resolveIds("chest", props);
                 assertTrue(selection.loot().isEmpty(), kind + " level=" + level);
                 assertFalse(selection.items().containsKey(202), "Mora must have no fallback");
                 assertFalse(selection.rangedItems().containsKey(202), "Mora range must have no fallback");
@@ -186,12 +186,12 @@ class BundledChestRewardsTest {
             }
             var valid = Map.of("type", "normal", "grade", kind, "level", 26);
             assertDoesNotThrow(() -> RewardConfiguration.requireChestLoot(
-                    "chest", css.resolve("chest", valid), valid));
+                    "chest", css.resolveIds("chest", valid), valid));
         }
         var unrecognized = Map.of("type", "normal", "grade", "unknown", "level", 26);
         assertThrows(IllegalStateException.class, () ->
                 RewardConfiguration.requireChestLoot(
-                        "chest", css.resolve("chest", unrecognized), unrecognized));
+                        "chest", css.resolveIds("chest", unrecognized), unrecognized));
     }
 
     @Test
@@ -199,7 +199,7 @@ class BundledChestRewardsTest {
         var css = CssRewards.parse(chestCss(), items(), loot());
         for (String type : new String[]{"mora", "remarkable"}) {
             var attrs = Map.of("type", type, "grade", "common", "level", 26);
-            var selection = css.resolve("chest", attrs);
+            var selection = css.resolveIds("chest", attrs);
             assertTrue(selection.items().isEmpty(), type);
             assertTrue(selection.loot().isEmpty(), type);
             assertTrue(selection.rangedItems().isEmpty(), type);
@@ -207,7 +207,7 @@ class BundledChestRewardsTest {
                     RewardConfiguration.requireChestLoot("chest", selection, attrs));
         }
         var missingType = Map.of("grade", "common", "level", 26);
-        assertTrue(css.resolve("chest", missingType).loot().isEmpty());
+        assertTrue(css.resolveIds("chest", missingType).loot().isEmpty());
     }
 
     @Test
@@ -216,7 +216,7 @@ class BundledChestRewardsTest {
         var css = CssRewards.parse(chestCss(), items(), loot);
         for (String grade : new String[]{"common", "exquisite", "precious", "luxurious"}) {
             for (int level : new int[]{1, 6, 11, 16, 21, 26}) {
-                var selection = css.resolve("chest", Map.of(
+                var selection = css.resolveIds("chest", Map.of(
                         "type", "normal", "city", 1, "grade", grade,
                         "level", level));
                 assertTrue(java.util.stream.Stream.concat(selection.loot().keySet().stream(),
@@ -248,11 +248,11 @@ class BundledChestRewardsTest {
         var random = new Random(721);
         int trials = 1500;
         for (int i = 0; i < grades.length; i++) {
-            var selected = css.resolve("chest", Map.of("type", "normal", "city", 1,
+            var selected = css.resolveIds("chest", Map.of("type", "normal", "city", 1,
                     "grade", grades[i], "level", levels[i]));
             double[] total = new double[ids.length];
             for (int n = 0; n < trials; n++) {
-                var rolled = RewardRoller.roll(selected, loot, random,
+                var rolled = RewardRoller.rollIds(selected, loot, random,
                         new RewardContext(3, 0, "mondstadt"));
                 for (int k = 0; k < ids.length; k++) total[k] += rolled.getOrDefault(ids[k], 0);
             }
@@ -280,7 +280,7 @@ class BundledChestRewardsTest {
         };
         for (int[] test : cases) {
             String kind = test[0] == 0 ? "exquisite" : "precious";
-            var selected = css.resolve("chest", Map.of(
+            var selected = css.resolveIds("chest", Map.of(
                     "type", "normal", "grade", kind,
                     "level", test[1],
                     "city", test[2]));

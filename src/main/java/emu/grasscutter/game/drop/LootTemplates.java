@@ -18,9 +18,29 @@ final class LootTemplates {
             Pattern.compile("([a-z][a-z0-9_-]*)\\s*<\\s*([^<>]+)\\s*>");
     private static final Pattern INVOCATION =
             Pattern.compile("([a-z][a-z0-9_-]*)\\s*<\\s*((?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+)(?:\\s*,\\s*(?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+))*)?\\s*>");
-    private static final Pattern EXPRESSION = Pattern.compile("<([A-Za-z_][A-Za-z0-9_]*)>");
+    private static final Pattern MODERN_DEFINITION =
+            Pattern.compile("([a-z][a-z0-9_-]*)\\s*\\(\\s*([^()]*)\\s*\\)");
+    private static final Pattern MODERN_INVOCATION =
+            Pattern.compile("([a-z][a-z0-9_-]*)\\s*\\(\\s*((?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+)(?:\\s*,\\s*(?:[A-Za-z_][A-Za-z0-9_]*|[0-9]+))*)?\\s*\\)");
+    private static final Pattern EXPRESSION =
+            Pattern.compile("<([A-Za-z_][A-Za-z0-9_]*)>|\\$([A-Za-z_][A-Za-z0-9_]*)");
     private static final Pattern PARAMETER = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
-    private static final Pattern SPREAD = Pattern.compile("<([A-Za-z_][A-Za-z0-9_]*)\\.\\.\\.>");
+    private static final Pattern SPREAD =
+            Pattern.compile("<([A-Za-z_][A-Za-z0-9_]*)\\.\\.\\.>|\\.\\.\\.\\$([A-Za-z_][A-Za-z0-9_]*)");
+
+    private static Matcher definition(String name) {
+        Matcher legacy = DEFINITION.matcher(name);
+        return legacy.matches() ? legacy : MODERN_DEFINITION.matcher(name);
+    }
+
+    private static Matcher invocation(String name) {
+        Matcher legacy = INVOCATION.matcher(name);
+        return legacy.matches() ? legacy : MODERN_INVOCATION.matcher(name);
+    }
+
+    private static String groupName(Matcher match) {
+        return match.group(1) != null ? match.group(1) : match.group(2);
+    }
 
     private record Definition(List<String> parameters, String varargs, List<?> entries) {}
     record Prepared(LootTemplates templates, Map<?, ?> tables) {}
@@ -39,7 +59,7 @@ final class LootTemplates {
         var result = new LinkedHashMap<Object, Object>();
         for (var entry : document.entrySet()) {
             if (entry.getKey() instanceof String key) {
-                Matcher definition = DEFINITION.matcher(key);
+                Matcher definition = definition(key);
                 if (definition.matches()) {
                     if (!(entry.getValue() instanceof List<?> entries)) {
                         throw new IllegalArgumentException("Loot template must be a YAML list: " + key);
@@ -50,8 +70,9 @@ final class LootTemplates {
                     String varargs = null;
                     for (int i = 0; i < declared.length; i++) {
                         String parameter = declared[i].trim();
-                        boolean pack = parameter.endsWith("...");
-                        String name = pack ? parameter.substring(0, parameter.length() - 3) : parameter;
+                        boolean pack = parameter.endsWith("...") || parameter.startsWith("...");
+                        String name = !pack ? parameter : parameter.startsWith("...")
+                                ? parameter.substring(3) : parameter.substring(0, parameter.length() - 3);
                         if (!PARAMETER.matcher(name).matches()) {
                             throw new IllegalArgumentException("Invalid loot template parameter: " + parameter);
                         }
@@ -106,7 +127,7 @@ final class LootTemplates {
             for (var entry : map.entrySet()) {
                 Object key = substitute(entry.getKey(), parameters, depth + 1, shared);
                 Object value = substitute(entry.getValue(), parameters, depth + 1, shared);
-                if (("reward".equals(key) || "type".equals(key))
+                if (("reward".equals(key) || "type".equals(key) || "value".equals(key))
                         && value instanceof String reward) {
                     value = expandReward(reward, depth + 1);
                 }
@@ -120,20 +141,20 @@ final class LootTemplates {
         if (raw instanceof String value && value.contains("${")) {
             throw new IllegalArgumentException("Obsolete loot template expression: " + value);
         }
-        if (raw instanceof String value && value.contains("<")) {
+        if (raw instanceof String value && (value.contains("<") || value.contains("$"))) {
             String source = expandPacks(value, parameters);
             Matcher matcher = EXPRESSION.matcher(source);
             StringBuffer expanded = new StringBuffer();
             while (matcher.find()) {
-                String name = matcher.group(1);
-                // Literal generic arguments have no matching template parameter.
+                String name = groupName(matcher);
+                // Literal arguments are not implicitly resolved as parameters.
                 if (!parameters.containsKey(name)) continue;
                 matcher.appendReplacement(expanded,
                         Matcher.quoteReplacement(parameters.get(name).toString()));
             }
             matcher.appendTail(expanded);
             String result = expanded.toString();
-            if (value.trim().matches("<[A-Za-z_][A-Za-z0-9_]*>")) {
+            if (value.trim().matches("<[A-Za-z_][A-Za-z0-9_]*>|\\$[A-Za-z_][A-Za-z0-9_]*")) {
                 return result.matches("[0-9]+") ? Integer.parseInt(result) : result;
             }
             return result;
@@ -152,8 +173,8 @@ final class LootTemplates {
         int start = 0, depth = 0;
         for (int i = 0; i < value.length(); i++) {
             char c = value.charAt(i);
-            if (c == '<') depth++;
-            else if (c == '>') depth--;
+            if (c == '<' || c == '(') depth++;
+            else if (c == '>' || c == ')') depth--;
             else if (c == ',' && depth == 0) {
                 segments.add(value.substring(start, i).trim());
                 start = i + 1;
@@ -168,16 +189,17 @@ final class LootTemplates {
     private static List<String> expandPackSegment(String segment, Map<String, Object> parameters) {
         Matcher match = SPREAD.matcher(segment);
         if (!match.find()) return List.of(segment);
-        if (!(parameters.get(match.group(1)) instanceof List<?> pack)) {
-            throw new IllegalArgumentException("Unknown loot template parameter pack: " + match.group(1));
+        String name = groupName(match);
+        if (!(parameters.get(name) instanceof List<?> pack)) {
+            throw new IllegalArgumentException("Unknown loot template parameter pack: " + name);
         }
         String before = segment.substring(0, match.start());
         String after = segment.substring(match.end());
         int depth = 0;
         for (int i = 0; i < match.start(); i++) {
             char c = segment.charAt(i);
-            if (c == '<') depth++;
-            else if (c == '>') depth--;
+            if (c == '<' || c == '(') depth++;
+            else if (c == '>' || c == ')') depth--;
         }
         if (depth > 0) {
             return expandPackSegment(before + String.join(", ",
@@ -193,7 +215,7 @@ final class LootTemplates {
     private Object expandReward(String reward, int depth) {
         String prefix = namespace + ".loot.";
         String local = reward.startsWith(prefix) ? reward.substring(prefix.length()) : reward;
-        Matcher invocation = INVOCATION.matcher(local);
+        Matcher invocation = invocation(local);
         if (!invocation.matches()) return reward;
         Definition definition = definitions.get(invocation.group(1));
         if (definition == null) {
@@ -212,7 +234,7 @@ final class LootTemplates {
         String prefix = namespace + ".loot.";
         String local = reference.startsWith(prefix)
                 ? reference.substring(prefix.length()) : reference;
-        Matcher match = INVOCATION.matcher(local);
+        Matcher match = invocation(local);
         return match.matches() && definitions.containsKey(match.group(1));
     }
 
@@ -224,7 +246,7 @@ final class LootTemplates {
         reference = reference.trim();
         String prefix = namespace + ".loot.";
         String local = reference.startsWith(prefix) ? reference.substring(prefix.length()) : reference;
-        Matcher invocation = INVOCATION.matcher(local);
+        Matcher invocation = invocation(local);
         if (invocation.matches()) {
             ResourceId.parse(prefix + invocation.group(1));
             String arguments = invocation.group(2) == null ? "" : invocation.group(2);

@@ -18,9 +18,10 @@ class LootCountScopeTest {
 
     private static YamlLootTables parseWithArtifacts(String yaml,
             YamlLootTables.ItemResolver itemIds, ArtifactResolver artifacts) {
+        var artifactKeys = artifacts.resourceIds();
         return YamlLootTables.parse(yaml, name ->
                 name.startsWith("genshin.artifact.")
-                        ? artifacts.resolveKey(name) : itemIds.resolve(name), artifacts);
+                        ? artifactKeys.getOrDefault(name, -2) : itemIds.resolve(name), artifacts);
     }
 
     @Test

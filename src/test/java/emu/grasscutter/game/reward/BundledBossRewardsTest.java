@@ -90,9 +90,10 @@ final class BundledBossRewardsTest {
             }
         });
         var artifactResolver = new ArtifactResolver(artifacts);
+        var artifactKeys = artifactResolver.resourceIds();
         var loot = YamlLootTables.parse(yaml,
                 id -> id.startsWith("genshin.artifact.")
-                        ? artifactResolver.resolveKey(id)
+                        ? artifactKeys.getOrDefault(id, -2)
                         : ids.computeIfAbsent(ResourceAliases.GENSHIN.resolve(id).toString(),
                                 ignored -> nextId.incrementAndGet()),
                 artifactResolver);

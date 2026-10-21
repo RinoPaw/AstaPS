@@ -81,10 +81,11 @@ class BundledChestRewardsTest {
 
     private static YamlLootTables loot() throws Exception {
         var artifacts = artifacts();
+        var artifactKeys = artifacts.resourceIds();
         var registry = items();
         return YamlLootTables.parse(chestYaml(),
                 key -> key.startsWith("genshin.artifact.")
-                        ? artifacts.resolveKey(key) : registry.resolve(key), artifacts);
+                        ? artifactKeys.getOrDefault(key, -2) : registry.resolve(key), artifacts);
     }
 
     @Test

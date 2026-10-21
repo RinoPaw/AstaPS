@@ -50,8 +50,9 @@ final class ChestArtifactRewardsTest {
             }
         }
         var artifacts = new ArtifactResolver(variants);
+        var artifactKeys = artifacts.resourceIds();
         var loot = YamlLootTables.parse(yaml.substring(y0, y1),
-                artifacts::resolveKey, artifacts);
+                key -> artifactKeys.getOrDefault(key, -2), artifacts);
         var rules = CssRewards.parse(css.substring(c0),
                 new ItemIdRegistry(Map.of(202, "Mora")), loot);
         return new Fixture(rules, loot, Map.copyOf(ranks));

@@ -23,9 +23,10 @@ class YamlLootTablesTest {
             YamlLootTables.ItemResolver resolver, ArtifactResolver artifacts) {
         // The fixture dictionary includes native artifact variants, just like
         // the production ResourceRegistry.
+        var artifactKeys = artifacts.resourceIds();
         return YamlLootTables.parse(yaml, key ->
                 key.startsWith("genshin.artifact.")
-                        ? artifacts.resolveKey(key) : resolver.resolve(key), artifacts);
+                        ? artifactKeys.getOrDefault(key, -2) : resolver.resolve(key), artifacts);
     }
 
     @Test
@@ -46,7 +47,7 @@ class YamlLootTablesTest {
         assertThrows(IllegalArgumentException.class, () ->
                 YamlLootTables.parse(yaml, name -> mismatched.getOrDefault(name, -2), variants));
         assertDoesNotThrow(() ->
-                YamlLootTables.parse(yaml, name -> variants.resolveKey(name), variants));
+                YamlLootTables.parse(yaml, name -> variants.resourceIds().getOrDefault(name, -2), variants));
     }
 
     @Test

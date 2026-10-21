@@ -135,7 +135,8 @@ class NativeLootYamlExporterTest {
                 "type: Artifact, set: berserker, properties: {slot: goblet, rarity: 3, substats: 1}"));
         var artifacts = new ArtifactResolver(List.of(
                 new ArtifactResolver.Variant(55311, "berserker", 4, 3, 1)));
-        var loot = YamlLootTables.parse(yaml, artifacts::resolveKey, artifacts);
+        var loot = YamlLootTables.parse(yaml,
+                key -> artifacts.resourceIds().getOrDefault(key, -2), artifacts);
         assertEquals(Map.of(55311, 1),
                 loot.rollIds("astaps.loot.artifact_chest", new Random(1)));
         assertThrows(IllegalArgumentException.class, () ->

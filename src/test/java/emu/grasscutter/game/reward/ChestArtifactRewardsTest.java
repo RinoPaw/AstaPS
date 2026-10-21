@@ -66,7 +66,7 @@ final class ChestArtifactRewardsTest {
     void allNativeCityGradeLevelRulesSelectOneArtifactProfile() throws Exception {
         var f = fixture();
         // The 26 source candidate pools are parameterized; only 20 weighted mixtures are named tables.
-        assertEquals(20, f.loot.names().stream().filter(name -> !name.contains("<")).count());
+        assertEquals(20, f.loot.names().stream().filter(name -> !name.contains("(")).count());
         for (int city = 1; city <= 4; city++) {
             for (String grade : new String[] {"common", "exquisite", "precious", "luxurious"}) {
                 for (int level = 1; level <= 120; level++) {

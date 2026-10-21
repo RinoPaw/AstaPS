@@ -28,8 +28,8 @@ final class BundledBossRewardsTest {
         for (int rarity = 1; rarity <= 4; rarity++) {
             String template = "world_artifact_" + rarity + "star(...SETS):";
             assertTrue(yaml.contains(template), template);
-            assertFalse(yaml.contains("world_artifact_" + rarity + "star_1<"));
-            assertFalse(css.contains("world_artifact_" + rarity + "star_1<"));
+            assertFalse(yaml.contains("world_artifact_" + rarity + "star_1("));
+            assertFalse(css.contains("world_artifact_" + rarity + "star_1("));
         }
         assertTrue(yaml.contains("world_artifact_5star:"));
         assertTrue(yaml.contains("world_artifact_5star_plume_goblet(PLUME_SUBSTATS, GOBLET_SUBSTATS):"));
@@ -41,14 +41,14 @@ final class BundledBossRewardsTest {
         assertEquals(48, identities.lines()
                 .filter(line -> line.startsWith("boss[type=\"world\"][tag=\"")).count());
         assertTrue(css.contains("astaps.loot.world_artifact_5star:"));
-        assertFalse(css.contains("world_artifact_5star<"));
+        assertFalse(css.contains("world_artifact_5star("));
         assertTrue(css.contains("world_artifact_5star_plume_goblet(0,0)"));
         assertTrue(css.contains("world_artifact_5star_goblet(1)"));
         assertTrue(css.contains("world_artifact_5star_goblet(0)"));
-        assertFalse(css.contains("world_artifact_5star_2<"));
-        assertFalse(css.contains("world_artifact_5star_special<"));
-        assertFalse(css.contains("world_artifact_5star_piece<"));
-        assertFalse(css.contains("world_artifact_5star_plume_goblet<instructor,"));
+        assertFalse(css.contains("world_artifact_5star_2("));
+        assertFalse(css.contains("world_artifact_5star_special("));
+        assertFalse(css.contains("world_artifact_5star_piece("));
+        assertFalse(css.contains("world_artifact_5star_plume_goblet(instructor,"));
     }
 
     @Test

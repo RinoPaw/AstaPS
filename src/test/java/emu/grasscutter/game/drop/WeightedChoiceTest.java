@@ -9,11 +9,9 @@ import org.junit.jupiter.api.Test;
 class WeightedChoiceTest {
     @Test
     void parameterCommasDoNotTurnOneCandidateIntoAWeightedDistribution() {
-        var legacy = WeightedChoice.compile(
+        assertThrows(IllegalArgumentException.class, () -> WeightedChoice.compile(
                 "chest_artifact<3,1,berserker,instructor>",
-                "legacy", value -> value.toString());
-        assertEquals(List.of("chest_artifact<3,1,berserker,instructor>"),
-                legacy.candidates());
+                "obsolete", Object::toString));
         var modern = WeightedChoice.compile(
                 "chest_artifact(3,1,berserker,instructor)",
                 "modern", value -> value.toString());

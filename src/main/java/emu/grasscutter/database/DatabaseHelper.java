@@ -666,6 +666,14 @@ public final class DatabaseHelper {
         DatabaseHelper.saveAccountAsync(account);
     }
 
+    /** Credentials must be stored before the login response exposes them. */
+    public static void saveAccountSynchronously(Account account) {
+        databaseWriters.runOrderedAndWait(
+                eventExecutorAccount,
+                new AccountKey(account.getId()),
+                () -> DatabaseManager.getAccountDatastore().save(account));
+    }
+
     public static Account getAccountByName(String username) {
         return DatabaseManager.getAccountDatastore()
                 .find(Account.class)

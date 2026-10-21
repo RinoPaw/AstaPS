@@ -218,6 +218,21 @@ class DatabaseWriterManagerTest {
         }
     }
 
+    @Test
+    void orderedWaiterPropagatesDatabaseFailure() {
+        var fixture = new Fixture();
+        try {
+            var failure = new IllegalStateException("Database unavailable");
+            var actual = assertThrows(
+                    IllegalStateException.class,
+                    () -> fixture.manager.runOrderedAndWait(
+                            fixture.pools.get("account"), "account-1", () -> { throw failure; }));
+            assertSame(failure, actual);
+        } finally {
+            fixture.close();
+        }
+    }
+
     private static final class Fixture implements AutoCloseable {
         final LinkedHashMap<String, ExecutorService> pools = new LinkedHashMap<>();
         final DatabaseWriterManager manager;

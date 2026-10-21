@@ -139,13 +139,13 @@ public class Account {
 
     public String generateSessionKey() {
         this.sessionKey = Utils.bytesToHex(Crypto.createSessionKey(32));
-        this.save();
+        DatabaseHelper.saveAccountSynchronously(this);
         return this.sessionKey;
     }
 
     public String generateV2SessionKey() {
         this.sessionKey = "v2_" + Utils.bytesToHex(Crypto.createSessionKey(32));
-        this.save();
+        DatabaseHelper.saveAccountSynchronously(this);
         return this.sessionKey;
     }
     
@@ -309,7 +309,7 @@ public class Account {
     // TODO make unique
     public String generateLoginToken() {
         this.token = Utils.bytesToHex(Crypto.createSessionKey(32));
-        this.save();
+        DatabaseHelper.saveAccountSynchronously(this);
         return this.token;
     }
 

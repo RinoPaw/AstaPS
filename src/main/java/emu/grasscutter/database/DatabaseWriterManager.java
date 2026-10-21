@@ -9,6 +9,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -87,8 +89,37 @@ public final class DatabaseWriterManager {
         submit(executor, Objects.requireNonNull(entityKey, "entityKey"), false, task);
     }
 
+    /**
+     * Waits for a write without overtaking earlier writes for the same entity. Credential writes
+     * use this so the caller cannot return a token that has not reached the database.
+     */
+    void runOrderedAndWait(ExecutorService executor, Object entityKey, Runnable operation) {
+        if (writeDepth.get() > 0) {
+            throw new IllegalStateException("An admitted database writer cannot wait for itself");
+        }
+        var completed = new CompletableFuture<Void>();
+        submit(executor, Objects.requireNonNull(entityKey, "entityKey"), false, operation, completed);
+        try {
+            completed.join();
+        } catch (CompletionException e) {
+            var cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) throw runtime;
+            if (cause instanceof Error error) throw error;
+            throw new IllegalStateException("Database write failed", cause);
+        }
+    }
+
     private void submit(
             ExecutorService executor, Object entityKey, boolean capped, Runnable runnable) {
+        submit(executor, entityKey, capped, runnable, null);
+    }
+
+    private void submit(
+            ExecutorService executor,
+            Object entityKey,
+            boolean capped,
+            Runnable runnable,
+            CompletableFuture<Void> completion) {
         Objects.requireNonNull(runnable, "task");
         WriteTask task;
         boolean dispatch;
@@ -101,7 +132,7 @@ public final class DatabaseWriterManager {
             if (capped && entityKey != null && ordered.containsKey(entityKey) && orderedOutstanding >= orderedCapacity) {
                 throw new RejectedExecutionException("Ordered database write capacity is full");
             }
-            task = new WriteTask(executor, entityKey, runnable);
+            task = new WriteTask(executor, entityKey, runnable, completion);
             outstanding.add(task);
             if (entityKey == null) {
                 dispatch = true;
@@ -319,13 +350,19 @@ public final class DatabaseWriterManager {
         private final ExecutorService executor;
         private final Object entityKey;
         private final Runnable operation;
+        private final CompletableFuture<Void> completion;
         private boolean running;
         private boolean cancelled;
 
-        private WriteTask(ExecutorService executor, Object entityKey, Runnable operation) {
+        private WriteTask(
+                ExecutorService executor,
+                Object entityKey,
+                Runnable operation,
+                CompletableFuture<Void> completion) {
             this.executor = executor;
             this.entityKey = entityKey;
             this.operation = operation;
+            this.completion = completion;
         }
 
         @Override
@@ -361,6 +398,10 @@ public final class DatabaseWriterManager {
                 } finally {
                     lifecycle.unlock();
                 }
+                if (completion != null) {
+                    if (failure == null) completion.complete(null);
+                    else completion.completeExceptionally(failure);
+                }
                 if (next != null) {
                     try {
                         dispatch(next);
@@ -378,6 +419,10 @@ public final class DatabaseWriterManager {
         if (task.running || task.cancelled) return null;
         WriteTask next = null;
         task.cancelled = true;
+        if (task.completion != null) {
+            task.completion.completeExceptionally(
+                    new RejectedExecutionException("Database write cancelled during shutdown"));
+        }
         outstanding.remove(task);
         if (task.entityKey != null) {
             var queue = ordered.get(task.entityKey);

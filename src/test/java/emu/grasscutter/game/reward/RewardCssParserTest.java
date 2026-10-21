@@ -6,7 +6,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class RewardCssParserTest {
-    private static boolean matches(String selector, Map<String, String> attributes) {
+    private static boolean matches(String selector, Map<String, ?> attributes) {
         var rules = RewardCssParser.parse(
                 selector + " { genshin.currency.mora: 1; }");
         assertEquals(1, rules.size());
@@ -26,26 +26,26 @@ class RewardCssParserTest {
 
     @Test
     void numericConditionsHaveExactInclusiveBounds() {
-        assertTrue(matches("chest[70 <= level <= 79]", Map.of("level", "70")));
-        assertTrue(matches("chest[70 <= level <= 79]", Map.of("level", "79")));
-        assertFalse(matches("chest[70 <= level <= 79]", Map.of("level", "80")));
-        assertFalse(matches("chest[70 < level < 79]", Map.of("level", "70")));
-        assertTrue(matches("chest[level >= 90]", Map.of("level", "90")));
-        assertTrue(matches("chest[power = 1.50]", Map.of("power", "1.5")));
-        assertFalse(matches("chest[level != 90]", Map.of("level", "bad")));
-        assertFalse(matches("chest[level >= 90]", Map.of("level", "bad")));
+        assertTrue(matches("chest[70 <= level <= 79]", Map.of("level", 70)));
+        assertTrue(matches("chest[70 <= level <= 79]", Map.of("level", 79)));
+        assertFalse(matches("chest[70 <= level <= 79]", Map.of("level", 80)));
+        assertFalse(matches("chest[70 < level < 79]", Map.of("level", 70)));
+        assertTrue(matches("chest[level >= 90]", Map.of("level", 90)));
+        assertThrows(IllegalArgumentException.class, () -> matches("chest[power = 1.50]", Map.of("power", 1)));
+        assertThrows(IllegalArgumentException.class, () -> RewardCssAttributes.validate(Map.of("level", "bad")));
+        assertThrows(IllegalArgumentException.class, () -> RewardCssAttributes.validate(Map.of("level", "bad")));
         assertFalse(matches("chest[level >= 90]", Map.of()));
     }
 
     @Test
     void membershipSupportsStringsAndNumericValues() {
-        assertTrue(matches("chest[city in (1, 2, 3)]", Map.of("city", "2")));
-        assertFalse(matches("chest[city in (1, 2, 3)]", Map.of("city", "4")));
+        assertTrue(matches("chest[city in (1, 2, 3)]", Map.of("city", 2)));
+        assertFalse(matches("chest[city in (1, 2, 3)]", Map.of("city", 4)));
         assertTrue(matches("chest[grade in (\"common\", \"precious\")]",
                 Map.of("grade", "precious")));
         assertFalse(matches("chest[grade in (\"common\", \"precious\")]",
                 Map.of("grade", "luxurious")));
-        assertTrue(matches("chest[area=\"8,10\"]", Map.of("area", "8,10")));
+        assertTrue(matches("chest[tag=\"8,10\"]", Map.of("tag", "8,10")));
     }
 
     @Test

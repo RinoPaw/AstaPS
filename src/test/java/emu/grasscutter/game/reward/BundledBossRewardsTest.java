@@ -48,7 +48,7 @@ final class BundledBossRewardsTest {
         assertFalse(css.contains("world_artifact_5star_2<"));
         assertFalse(css.contains("world_artifact_5star_special<"));
         assertFalse(css.contains("world_artifact_5star_piece<"));
-        assertFalse(css.contains("world_artifact_5star_plume_goblet<instructor,">);
+        assertFalse(css.contains("world_artifact_5star_plume_goblet<instructor,"));
     }
 
     @Test

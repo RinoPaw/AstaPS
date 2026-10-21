@@ -79,11 +79,6 @@ tasks.withType(org.gradle.api.tasks.compile.JavaCompile).configureEach {
 
 repositories {
     mavenCentral()
-    maven {
-        url = 'https://css4j.github.io/maven/'
-        mavenContent { releasesOnly() }
-        content { includeGroupByRegex 'io\\.sf\\..*' }
-    }
 }
 
 dependencies {
@@ -117,7 +112,6 @@ dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
     implementation 'org.tomlj:tomlj:1.1.1'
     implementation 'org.snakeyaml:snakeyaml-engine:3.2'
-    implementation 'io.sf.carte:css4j:6.2'
     implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '4.36.2'
     implementation group: 'com.github.os72', name: 'protobuf-dynamic', version: '1.0.1'
 

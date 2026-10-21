@@ -137,8 +137,8 @@ class CssRewardsTest {
     @Test
     void templateLiteralsCannotBeShadowedByVariablesWithTheSameName() {
         var templates = YamlLootTables.parse("""
-                pick<KIND>:
-                  - {reward: "genshin.currency.<KIND>"}
+                pick(KIND):
+                  - {reward: "genshin.currency.$KIND"}
                 """, items::resolve);
         var css = CssRewards.parse("""
                 chest {

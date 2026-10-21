@@ -15,7 +15,7 @@ final class RewardResourceExpression {
     private static final Pattern VARIABLE =
             Pattern.compile("\\$([A-Za-z_][A-Za-z0-9_-]*)(?:\\[([0-9]+)\\])?");
     private static final Pattern ARG_LITERAL = Pattern.compile("[A-Za-z_][A-Za-z0-9_-]*|[0-9]+");
-    private static final Pattern PATH = Pattern.compile("[A-Za-z_][A-Za-z0-9_.-]*");
+    private static final Pattern PATH = Pattern.compile("[\\p{L}_][\\p{L}\\p{N}_.-]*");
 
     private sealed interface Part permits Text, Reference {}
     private record Text(String value) implements Part {}

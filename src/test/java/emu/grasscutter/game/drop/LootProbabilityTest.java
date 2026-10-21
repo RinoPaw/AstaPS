@@ -96,10 +96,10 @@ class LootProbabilityTest {
     }
 
     @Test void failedTemplateValidationCannotBeBypassedByRetry() {
-        var tables = parse("leaf: {type: coin}\nwide<N>:\n  - {type: leaf, count: <N>}");
+        var tables = parse("leaf: {type: coin}\nwide(N):\n  - {type: leaf, count: $N}");
         for (int i = 0; i < 2; i++) {
-            assertThrows(IllegalArgumentException.class, () -> tables.resolveName("wide<101>"));
-            assertFalse(tables.contains("astaps.loot.wide<101>"));
+            assertThrows(IllegalArgumentException.class, () -> tables.resolveName("wide(101)"));
+            assertFalse(tables.contains("astaps.loot.wide(101)"));
         }
     }
 

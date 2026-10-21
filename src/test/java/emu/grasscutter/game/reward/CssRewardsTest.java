@@ -68,6 +68,18 @@ class CssRewardsTest {
     }
 
     @Test
+    void explicitRegistryRejectsMissingStaticKeysWhenCompilingCss() {
+        var registry = new ResourceRegistry(Map.of("genshin.currency.mora", 202));
+        assertThrows(IllegalArgumentException.class,
+                () -> CssRewards.parse("chest { genshin.currency.unknown: 1; }",
+                        registry, loot));
+        var css = CssRewards.parse("chest { genshin.currency.mora: 1; }",
+                registry, loot);
+        assertEquals(Map.of("genshin.currency.mora", 1),
+                css.resolveKeys("chest", Map.of()).items());
+    }
+
+    @Test
     void dottedResourcePropertiesCoexistWithNativeCssCascade() {
         var css = CssRewards.parse("""
                 chest {

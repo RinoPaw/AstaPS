@@ -67,15 +67,15 @@ public final class CssRewards {
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
-        return parse(source, items::resolve, loot, true);
+        return parse(source, items::resolve, loot);
     }
 
     public static CssRewards parse(String source, ResourceRegistry items, YamlLootTables loot) {
-        return parse(source, items::resolve, loot, false);
+        return parse(source, items::resolve, loot);
     }
 
     private static CssRewards parse(String source, ToIntFunction<String> items,
-            YamlLootTables loot, boolean validateLegacyNames) {
+            YamlLootTables loot) {
         List<RewardCssParser.Rule> parsed = RewardCssParser.parse(source);
         var variables = new HashSet<String>();
         for (var rule : parsed) {
@@ -113,7 +113,7 @@ public final class CssRewards {
                     if (!resource.hasVariables()) {
                         for (String expanded : resource.expand(Map.of())) {
                             ResourceId.parse(expanded);
-                            if (validateLegacyNames) items.applyAsInt(expanded);
+                            items.applyAsInt(expanded);
                         }
                     }
                     itemDeclarations.add(new ItemDeclaration(resource, fixed, rolled));

@@ -18,7 +18,7 @@ final class BundledBossRewardsTest {
     @Test
     void worldBossTemplatesCoverAllMappedIdentitiesWithoutInventingWeeklyDrops() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
-        String css = RewardConfiguration.readBundledCss();
+        String css = RewardConfiguration.readBundledLootweave();
         css = css.replace("\\", "");
         assertTrue(yaml.contains("world_gem_two(COUNT, ...ELEMENTS):"));
         assertTrue(yaml.contains("type: genshin.avatar_ascension"));
@@ -54,7 +54,7 @@ final class BundledBossRewardsTest {
     @Test
     void bundledWorldAndWeeklyRulesLoadAndNativeFallbackIsPreserved() throws Exception {
         String yaml = RewardConfiguration.readBundled("loot.yaml");
-        String originalCss = RewardConfiguration.readBundledCss();
+        String originalCss = RewardConfiguration.readBundledLootweave();
         // Keep fixture-name extraction independent from the stylesheet parser.
         String stylesheet = originalCss.replace("\\", "");
         var ids = new HashMap<String, Integer>();
@@ -268,7 +268,7 @@ final class BundledBossRewardsTest {
                 String label = nativeTag + " level=" + level;
                 assertTrue(seen.add(label), "Duplicate historical Boss reference: " + label);
                 var selected = css.resolve("boss", Map.of(
-                        "type", "world", "tag", RewardConfiguration.cssBossTag(nativeTag),
+                        "type", "world", "tag", RewardConfiguration.lwBossTag(nativeTag),
                         "level", Integer.toString(level)));
                 double[] expected = expectedNativePayout(entry.get("dropId").getAsInt(),
                         tableMap, cache, new java.util.HashSet<>());

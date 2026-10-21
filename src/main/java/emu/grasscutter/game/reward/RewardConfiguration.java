@@ -26,7 +26,7 @@ public final class RewardConfiguration {
 
     RewardConfiguration(YamlLootTables loot, CssRewards css) {
         this.loot = loot;
-        this.css = css;
+        this.lw = css;
     }
 
     /** Load the authoritative classpath rewards; no editable config/rewards copy. */
@@ -35,7 +35,7 @@ public final class RewardConfiguration {
             var registry = ItemIdRegistry.fromGameResources();
             var loot = YamlLootTables.parse(readBundled("loot.yaml"), registry::resolve,
                     ArtifactResolver.fromGameResources());
-            var css = CssRewards.parse(readBundledCss(), registry, loot);
+            var css = CssRewards.parse(readBundledLootweave(), registry, loot);
             active = new RewardConfiguration(loot, css);
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Cannot load bundled reward configuration", e);
@@ -49,18 +49,18 @@ public final class RewardConfiguration {
         }
     }
 
-    /** Discover every direct .css file in bundled rewards, in filename order. */
-    static String readBundledCss() throws IOException {
+    /** Discover every direct .lw file in bundled rewards, in filename order. */
+    static String readBundledLootweave() throws IOException {
         URL marker = RewardConfiguration.class.getResource("/rewards/loot.yaml");
         if (marker == null) throw new IOException("Missing bundled rewards directory");
-        return readCssDirectory(marker);
+        return readLootweaveDirectory(marker);
     }
 
     /**
      * The loot.yaml URL identifies the resource directory in both an expanded
      * classpath and a packaged JAR; no stylesheet filenames are hardcoded.
      */
-    static String readCssDirectory(URL marker) throws IOException {
+    static String readLootweaveDirectory(URL marker) throws IOException {
         var stylesheets = new TreeMap<String, String>();
         if ("file".equals(marker.getProtocol())) {
             Path directory;
@@ -71,7 +71,7 @@ public final class RewardConfiguration {
             }
             try (var files = Files.list(directory)) {
                 for (Path file : files.filter(Files::isRegularFile)
-                        .filter(path -> path.getFileName().toString().endsWith(".css"))
+                        .filter(path -> path.getFileName().toString().endsWith(".lw"))
                         .toList()) {
                     stylesheets.put(file.getFileName().toString(),
                             Files.readString(file, StandardCharsets.UTF_8));
@@ -91,7 +91,7 @@ public final class RewardConfiguration {
                     var candidate = entries.nextElement();
                     String name = candidate.getName();
                     if (candidate.isDirectory() || !name.startsWith(prefix)
-                            || !name.endsWith(".css")
+                            || !name.endsWith(".lw")
                             || name.substring(prefix.length()).contains("/")) continue;
                     try (InputStream stream = archive.getInputStream(candidate)) {
                         stylesheets.put(name.substring(prefix.length()),
@@ -103,7 +103,7 @@ public final class RewardConfiguration {
             throw new IOException("Unsupported rewards resource URL: " + marker);
         }
         if (stylesheets.isEmpty()) {
-            throw new IOException("No CSS files found in bundled rewards directory");
+            throw new IOException("No Lootweave files found in bundled rewards directory");
         }
         return String.join("\n", stylesheets.values());
     }
@@ -176,7 +176,7 @@ public final class RewardConfiguration {
     }
 
     // The original 7.1 ChestDrop source uses Chinese drop tags.
-    // rewards.css uses the English semantic tags shared with loot.yaml.
+    // Lootweave rules use the English semantic tags shared with loot.yaml.
     // Keep the native input unchanged for DropSystem's native-table fallback.
     private static final Map<String, String> CSS_BOSS_TAGS = Map.ofEntries(
             Map.entry("北风狼", "andrius"),

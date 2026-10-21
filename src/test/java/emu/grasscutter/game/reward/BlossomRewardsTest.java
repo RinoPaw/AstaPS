@@ -24,10 +24,14 @@ class BlossomRewardsTest {
         assertFalse(yaml.contains("revelation_"), "Blossom rewards must not use loot.yaml");
         var loot = YamlLootTables.parse("{}", items::resolve);
         String selectors = RewardConfiguration.readBundled("blossoms.lcss");
-        assertEquals(14, selectors.lines().filter(line ->
+        assertEquals(2, selectors.lines().filter(line ->
                 line.startsWith("blossom[type=")).count());
-        assertTrue(selectors.contains("blossom[type=\"wealth\"][6 <= WR <= 9]"));
-        assertTrue(selectors.contains("blossom[type=\"revelation\"][6 <= WR <= 9]"));
+        assertEquals(14, selectors.lines().filter(line ->
+                line.stripLeading().startsWith("&[")).count());
+        assertTrue(selectors.contains("blossom[type=\"wealth\"] {"));
+        assertTrue(selectors.contains("blossom[type=\"revelation\"] {"));
+        assertEquals(2, selectors.lines().filter(line ->
+                line.stripLeading().startsWith("&[6 <= WR <= 9]")).count());
         assertFalse(selectors.contains("astaps.loot."));
         return new RewardConfiguration(loot, CssRewards.parse(
                 selectors, items, loot));

@@ -102,18 +102,24 @@ class CssRewardsTest {
     }
 
     @Test
-    void hierarchicalGemResourceAliasesWorkInCss() {
-        var registry = new ItemIdRegistry(Map.of(8001, "Vayuda Turquoise Sliver"));
+    void canonicalGemKeysOverrideOneAnotherInCss() {
+        var registry = new ResourceRegistry(Map.of(
+                "genshin.avatar_ascension.anemo.2", 8001));
         var css = CssRewards.parse("""
                 boss {
-                    genshin.avatar_ascension.anemo.sliver: 3;
+                    genshin.avatar_ascension.anemo.2: 3;
                 }
                 boss[tag="special"] {
-                    genshin.avatar_ascension.vayuda_turquoise.sliver: 5;
+                    genshin.avatar_ascension.anemo.2: 5;
                 }
                 """, registry, loot);
-        assertEquals(3, css.resolve("boss", Map.of()).items().get(8001));
-        assertEquals(5, css.resolve("boss", Map.of("tag", "special")).items().get(8001));
+        assertEquals(Map.of("genshin.avatar_ascension.anemo.2", 3),
+                css.resolveKeys("boss", Map.of()).items());
+        assertEquals(Map.of("genshin.avatar_ascension.anemo.2", 5),
+                css.resolveKeys("boss", Map.of("tag", "special")).items());
+        assertThrows(IllegalArgumentException.class, () ->
+                CssRewards.parse("boss { genshin.avatar_ascension.vayuda_turquoise.sliver: 3; }",
+                        registry, loot));
     }
 
     @Test

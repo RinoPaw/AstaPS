@@ -769,11 +769,16 @@ class LootCountScopeTest {
             assertFalse(repeated.containsKey(9205)
                     && (repeated.containsKey(9101) || repeated.containsKey(9102)));
             var gem = loot.roll("gem", random);
-            assertEquals(1, gem.size());
-            assertEquals(3, gem.values().iterator().next());
-            gems[switch (gem.keySet().iterator().next()) {
-                case 1102 -> 0; case 1103 -> 1; case 1202 -> 2; case 1203 -> 3;
-                default -> throw new AssertionError(gem); }]++;
+            // Gem's weighted elements are rerolled for each copy, as specified
+            // by the current domain type. Counts must conserve all three copies.
+            assertEquals(3, gem.values().stream().mapToInt(Integer::intValue).sum());
+            gem.forEach((nativeId, count) -> {
+                int index = switch (nativeId) {
+                    case 1102 -> 0; case 1103 -> 1; case 1202 -> 2; case 1203 -> 3;
+                    default -> throw new AssertionError(nativeId);
+                };
+                gems[index] += count;
+            });
             var talent = loot.roll("talent", random);
             assertEquals(1, talent.size());
             assertEquals(2, talent.values().iterator().next());
@@ -785,10 +790,11 @@ class LootCountScopeTest {
         assertEquals(0.375, artifacts[1] / 20_000.0, 0.025);
         assertEquals(0.25, artifacts[2] / 20_000.0, 0.025);
         for (int[] results : new int[][]{gems, talents}) {
-            assertEquals(0.5625, results[0] / 20_000.0, 0.025);
-            assertEquals(0.1875, results[1] / 20_000.0, 0.025);
-            assertEquals(0.1875, results[2] / 20_000.0, 0.025);
-            assertEquals(0.0625, results[3] / 20_000.0, 0.025);
+            int total = java.util.Arrays.stream(results).sum();
+            assertEquals(0.5625, results[0] / (double) total, 0.025);
+            assertEquals(0.1875, results[1] / (double) total, 0.025);
+            assertEquals(0.1875, results[2] / (double) total, 0.025);
+            assertEquals(0.0625, results[3] / (double) total, 0.025);
         }
         assertThrows(IllegalArgumentException.class, () -> YamlLootTables.parse("""
                 bad: {type: Artifact, rarity: 3}

@@ -350,7 +350,7 @@ class CssRewardsTest {
     @Test
     void tablesCanBeUsedByUnrelatedObjects() {
         var css = CssRewards.parse("""
-                monster[rank="elite"] { astaps.loot.currency: 1; }
+                monster[tag="elite"] { astaps.loot.currency: 1; }
                 chest[grade="common"] { astaps.loot.currency: 3; }
                 """, items, loot);
         assertEquals(Map.of(202, 100),
@@ -585,7 +585,7 @@ class CssRewardsTest {
                 "type", "world", "tag", "geo_hypostasis")).items().isEmpty());
         // Quoted commas are literal attribute values in standard CSS.
         var literal = CssRewards.parse("""
-                chest[area="8,10"] { genshin.currency.mora: 1; }
+                chest[tag="8,10"] { genshin.currency.mora: 1; }
                 """, items, loot);
         assertEquals(1, literal.resolve("chest", Map.of("tag", "8,10"))
                 .items().get(202));
@@ -676,7 +676,7 @@ class CssRewardsTest {
                             + " <= 5] { astaps.loot.currency: 1; }", items, loot));
         }
         var css = CssRewards.parse("""
-                chest[level="6~10"] { genshin.currency.mora: 9; }
+                chest[tag="6~10"] { genshin.currency.mora: 9; }
                 chest[6 <= level <= 10] { genshin.currency.primogem: 2; }
                 """, items, loot);
         assertEquals(Map.of(202, 9), css.resolve("chest", Map.of("tag", "6~10")).items());

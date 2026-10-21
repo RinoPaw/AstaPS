@@ -33,7 +33,7 @@ class RewardCssParserTest {
         assertTrue(matches("chest[level >= 90]", Map.of("level", 90)));
         assertThrows(IllegalArgumentException.class, () -> matches("chest[power = 1.50]", Map.of("power", 1)));
         assertThrows(IllegalArgumentException.class, () -> RewardCssAttributes.validate(Map.of("level", "bad")));
-        assertThrows(IllegalArgumentException.class, () -> RewardCssAttributes.validate(Map.of("level", "bad")));
+        assertThrows(IllegalArgumentException.class, () -> RewardCssAttributes.validate(Map.of("level", "90")));
         assertFalse(matches("chest[level >= 90]", Map.of()));
     }
 
@@ -95,5 +95,27 @@ class RewardCssParserTest {
                         chest[ { genshin.currency.mora: 2; }
                         """));
         assertTrue(error.getMessage().contains("2:"), error.getMessage());
+    }
+
+    @Test
+    void typedAttributesRejectImplicitConversionsAtCompileAndRuntime() {
+        for (String selector : new String[] {
+                "chest[city=\"1\"]", "chest[WR in (\"1\", \"2\")]",
+                "chest[grade=1]", "chest[1 <= tag <= 2]",
+                "chest[level=1.5]", "chest[unknown=1]"
+        }) {
+            assertThrows(IllegalArgumentException.class,
+                    () -> RewardCssParser.parse(selector + " { genshin.currency.mora: 1; }"),
+                    selector);
+        }
+        for (Map<String, ?> values : java.util.List.<Map<String, ?>>of(
+                Map.of("city", "1"), Map.of("WR", "4"),
+                Map.of("grade", 3), Map.of("level", "90"))) {
+            assertThrows(IllegalArgumentException.class,
+                    () -> RewardCssAttributes.validate(values), values.toString());
+        }
+        assertDoesNotThrow(() -> RewardCssAttributes.validate(
+                Map.of("city", 1, "area", 77, "WR", 4, "level", 90,
+                        "grade", "common", "tag", "anemo_hypostasis")));
     }
 }

@@ -123,3 +123,20 @@ Counts are nonnegative integers, inclusive integer ranges (`1~5` or `1;5`),
 or relative-weight choices of integer outcomes (`"3:75, 4:25"`).
 There is no fractional-count syntax or stochastic rounding of a decimal quantity.
 Decimal numbers are still valid as *weights*, such as `{value: A, weight: 1.5}`.
+
+
+## Typed selector attributes
+
+LootCSS selector attributes have fixed types. Numeric IDs and levels use Java
+`Integer` values, without conversion to strings:
+
+- **Integer:** `city`, `area`, `WR`, `level`, `scene`, `point`,
+  `gadget`, `group`, `config`, `rank`, `world_level`, `wl`, `tier`, `power`.
+- **String:** `type`, `grade`, `tag`, `mode`, `kind`.
+
+Use `[city=1]`, `[WR >= 4]`, and `[area in (10, 77)]`.
+Quoted literals remain strings: `[city="1"]` and `[grade=1]` are
+configuration errors. Equality, membership, and ordered comparisons all
+check the attribute's declared type at parse time. Runtime callers supply
+typed values directly; unexpected types fail without implicit conversion.
+Integer attribute literals must fit within signed 32-bit bounds.

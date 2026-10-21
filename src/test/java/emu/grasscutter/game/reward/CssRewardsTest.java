@@ -855,8 +855,8 @@ class CssRewardsTest {
     @Test
     void functionStylePoolCallsResolveThroughCssWithDollarBindings() {
         var templated = YamlLootTables.parse("""
-                reward<KIND>:
-                  - {reward: "genshin.currency.<KIND>"}
+                reward(KIND):
+                  - {value: "genshin.currency.$KIND"}
                 """, items::resolve);
         var css = CssRewards.parse("""
                 chest {
@@ -877,8 +877,8 @@ class CssRewardsTest {
     @Test
     void literalFunctionCallsValidateAgainstExistingTables() {
         var templated = YamlLootTables.parse("""
-                reward<KIND>:
-                  - {reward: "genshin.currency.<KIND>"}
+                reward(KIND):
+                  - {value: "genshin.currency.$KIND"}
                 """, items::resolve);
         var css = CssRewards.parse("""
                 chest { astaps.loot.reward(mora): 2; }

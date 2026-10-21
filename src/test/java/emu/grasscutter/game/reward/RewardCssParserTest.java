@@ -88,6 +88,30 @@ class RewardCssParserTest {
     }
 
     @Test
+    void multilineCommentsInsideResourcePropertiesAreIgnored() {
+        var rules = RewardCssParser.parse("""
+                chest {
+                    genshin.currency./* a comment
+                            over two lines */mora: 1;
+                }
+                """);
+        assertEquals("genshin.currency.mora",
+                rules.getFirst().declarations().getFirst().name());
+    }
+
+    @Test
+    void unknownNegatedAttributesReportSourceLocation() {
+        var error = assertThrows(IllegalArgumentException.class, () ->
+                RewardCssParser.parse("""
+                        chest { genshin.currency.mora: 1; }
+                        chest[!unknown] { genshin.currency.mora: 2; }
+                        """));
+        assertTrue(error.getMessage().contains("2:"), error.getMessage());
+        assertTrue(error.getMessage().contains("Unknown LootCSS selector attribute"),
+                error.getMessage());
+    }
+
+    @Test
     void errorsIncludeOriginalLineAndColumn() {
         var error = assertThrows(IllegalArgumentException.class, () ->
                 RewardCssParser.parse("""

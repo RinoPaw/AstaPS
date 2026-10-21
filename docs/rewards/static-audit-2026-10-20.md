@@ -10,38 +10,46 @@ verify the implementation and agreement with historical references only.
 
 ## Scope
 
-The independent reward system owns `src/main/resources/rewards/{loot.yaml,*.css}`
-and its configured claim paths. Historical tables are reference data for reward
-values and distribution structure. Their quota fields and business policies are
-not requirements of this system. There is no unpublished-format compatibility layer.
-Native quest/dungeon chest routes and the existing native dungeon reward service
-remain separate; this review does not migrate those systems.
+The independent reward system loads bundled `src/main/resources/rewards/{loot.yaml,*.lcss}`
+and owns its configured claim paths. Historical tables remain reference data
+for reward values and distribution structure. Their quotas and business
+policies are not requirements of this system. There is no unpublished-format
+compatibility layer. Native quest/dungeon chest routes and the existing native
+dungeon reward service remain separate; this review does not migrate them.
 
 ## Configuration and representation
 
-A lexical adapter converts dotted resource declaration names into internal CSS
-custom properties. css4j parses declarations, nesting and selectors; the reward
-engine applies selector specificity, source order and `!important`. Named
-bindings use exact names, and resource expressions distinguish template argument
-lists from explicit variable references.
-Focused regression tests cover those semantics. Numeric range attributes are
-server metadata. Counts and weighted choices are reward-domain declaration values.
-Browser layout, media environments and browser CSS-variable evaluation are not
-part of this configuration environment.
+A standalone `RewardCssParser` parses LootCSS selectors and declarations;
+css4j is not used for reward rules. Selector predicates support equality,
+absence, numeric comparisons and ranges, and typed membership. Selector
+attributes have declared `Integer` or `String` types. Integer selector
+literals must fit within 32-bit signed bounds. Cascading uses selector
+specificity and source order. `!important`, browser selectors and nesting
+are excluded.
 
-The loot language represents exclusive weighted branches, independent grants,
-nested calls, integer quantities, inclusive integer ranges, fractional stochastic
-rounding and concrete artifact variant properties. Templates and bindings provide
-shared recipes. The configured 48 world Boss identities cover 25 source levels
-apiece; fixed currencies/experience are independently checked against all 1,200
-reference rows. Chest regional/tier, blossom world-rank and transpoint selectors
-have their own tests. This verifies distribution expressiveness and configured
-coverage, without requiring literal duplication of every historical policy.
+Resource declarations use dotted property names, exact `--name` bindings,
+`$name` references and `name<args>` template calls. A literal such as
+`<anemo>` cannot be shadowed by a variable named `anemo`; only `<$anemo>`
+is a variable reference.
 
-Current choices remain explicit: some gem weights are rounded; Precision Clockwork
-borrows artifact candidates; empty historical puzzle tables use regional combat
-payouts; later regions use configured generic rewards. Adventure EXP and regional
-Primogems are system-owned policies. These choices do not indicate a language gap.
+YAML supports independent entries, exclusive relative-weighted choices,
+nested pools, dependent compositions, template expansion and artifact
+properties. Reward counts are nonnegative integers, inclusive integer
+ranges or weighted integer outcomes. Decimal weights are allowed; fractional
+counts and stochastic rounding are not. A generic `Value<T>` layer represents
+weighted choices independently of item materialization.
+
+The configured 48 world Boss identities cover 25 source levels apiece;
+fixed currencies/experience are independently checked against all 1,200
+historical reference rows. Chest regional/tier, blossom world-rank and
+transpoint selectors have their own tests. These checks establish technical
+coverage and historical-reference consistency, not original-game authenticity.
+
+Current choices remain explicit: some gem weights are rounded; Precision
+Clockwork borrows artifact candidates; empty historical puzzle tables use
+regional combat payouts; later regions use configured generic rewards.
+Adventure EXP and regional Primogems are system-owned policies. These choices
+do not indicate a language gap.
 
 ## Unified recursive safety
 

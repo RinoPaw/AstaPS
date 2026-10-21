@@ -48,15 +48,15 @@ Predicates:
 A missing attribute **never** satisfies a comparison, including `!=`.
 Malformed numeric attribute values do not satisfy numeric comparisons.
 Mixed numeric/string set literals are rejected.
-Numeric comparison uses arbitrary-precision decimals; no floating-point rounding is needed.
+Numeric comparison uses signed 32-bit integers. Decimal selector literals and integer overflow are rejected.
 
 An extended predicate contributes the specificity of an ordinary attribute selector.
 Supported cascading rules use selector specificity and source order; `!important` is excluded.
 We are **not** adding `:where()` to the new language; its zero-specificity behavior is not needed for current reward rules.
 
-The **LootCSS** `.lcss` parser and selector matcher are implemented independently of css4j. Supported selectors use object types, attribute predicates, numeric ranges, membership lists and comma-separated alternatives. Unsupported syntax includes `:is()`, `:not()`, `:where()`, `&` and `!important`. A typed object attribute schema remains future work.
+The **LootCSS** `.lcss` parser and selector matcher are implemented independently of css4j. Supported selectors use object types, attribute predicates, numeric ranges, membership lists and comma-separated alternatives. Unsupported syntax includes `:is()`, `:not()`, `:where()`, `&` and `!important`. Selector attribute types are declared in `RewardCssAttributes`; selector object-type validation remains future work.
 
-## YAML choices (partially implemented)
+## YAML choices
 
 Two supported representations of the **same weighted choice**:
 
@@ -109,7 +109,7 @@ LootCSS and YAML accept only the template spelling `name<args>`, including inter
 - [x] Migrate bundled YAML and LootCSS template uses and remove the legacy angle-bracket parsers.
 - [x] Implement the standalone selector parser and AST. A typed object attribute schema remains pending.
 - [x] Implement domain-independent typed `Value<T>` expressions and generic weighted YAML compilation.
-- [ ] Run full Gradle tests and CI before server testing or an upstream submission.
+- [x] Verify the language changes with the branch Build CI (successful at `8b667d7`). Repeat CI after further changes and before server testing or an upstream submission.
 
 ## Files
 

@@ -151,7 +151,7 @@ final class RewardCssParser {
         if (take('!')) {
             trivia();
             String name = identifier();
-            RewardCssAttributes.typeOf(name);
+            checkAttribute(name);
             return new Missing(name);
         }
         String left = atom();
@@ -256,7 +256,7 @@ final class RewardCssParser {
             position++;
         }
         if (end() || round != 0 || square != 0 || angle != 0) throw error("Invalid resource declaration");
-        String property = source.substring(start, position).replaceAll("/\\*.*?\\*/", "").trim();
+        String property = source.substring(start, position).replaceAll("(?s)/\\*.*?\\*/", "").trim();
         if (!PROPERTY.matcher(property).matches() || property.startsWith("--grant-")
                 || property.indexOf('(') >= 0 || property.indexOf(')') >= 0) {
             throw error("Invalid reward property: " + property);

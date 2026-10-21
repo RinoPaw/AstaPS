@@ -69,7 +69,7 @@ final class RewardCssParser {
             catch (NumberFormatException ex) { return null; }
         }
 
-        boolean numeric() { return numeric != null; }
+        boolean isNumber() { return numeric != null; }
     }
 
     record Compare(String name, String operator, Literal value) implements Condition {
@@ -79,7 +79,7 @@ final class RewardCssParser {
             if (operator.equals("=")) return value.matches(actual);
             if (operator.equals("!=")) {
                 // Numeric comparisons require a numeric actual value.
-                return !value.matches(actual) && (!value.numeric() || value.compare(actual) != null);
+                return !value.matches(actual) && (!value.isNumber() || value.compare(actual) != null);
             }
             Integer comparison = value.compare(actual);
             if (comparison == null) return false;
@@ -189,8 +189,8 @@ final class RewardCssParser {
             } while (true);
             expect(')');
             if (values.isEmpty()) throw error("Membership list cannot be empty");
-            boolean numeric = values.getFirst().numeric();
-            if (values.stream().anyMatch(v -> v.numeric() != numeric)) {
+            boolean numeric = values.getFirst().isNumber();
+            if (values.stream().anyMatch(v -> v.isNumber() != numeric)) {
                 throw error("Membership list has mixed value types");
             }
             return new In(left, values);
@@ -209,13 +209,13 @@ final class RewardCssParser {
             }
             trivia();
             Literal high = literal();
-            if (!high.numeric()) throw error("Range upper bound must be numeric");
+            if (!high.isNumber()) throw error("Range upper bound must be numeric");
             Literal low = Literal.of(left, false);
             if (low.numeric.compareTo(high.numeric) > 0) throw error("Reversed numeric range");
             return new Between(name, low, operator.equals("<="), high, next.equals("<="));
         }
         Literal value = literal();
-        if (!operator.equals("=") && !operator.equals("!=") && !value.numeric()) {
+        if (!operator.equals("=") && !operator.equals("!=") && !value.isNumber()) {
             throw error("Numeric comparison requires a number");
         }
         return new Compare(left, operator, value);

@@ -112,24 +112,24 @@ class RegionalSigilResolverTest {
                 """, ids, loot);
         var mondstadt = new RewardContext(3, 0, "mondstadt");
         var fontaine = new RewardContext(3, 0, "fontaine");
-        assertEquals(Map.of(305, 2, 202, 50), RewardRoller.roll(
-                css.resolve("chest", Map.of("type", "normal", "grade", "common")),
+        assertEquals(Map.of(305, 2, 202, 50), RewardRoller.rollIds(
+                css.resolveIds("chest", Map.of("type", "normal", "grade", "common")),
                 loot, new Random(1), mondstadt));
-        assertEquals(Map.of(302, 2, 202, 50), RewardRoller.roll(
-                css.resolve("chest", Map.of("type", "normal", "grade", "common")),
+        assertEquals(Map.of(302, 2, 202, 50), RewardRoller.rollIds(
+                css.resolveIds("chest", Map.of("type", "normal", "grade", "common")),
                 loot, new Random(1), fontaine));
-        assertEquals(Map.of(302, 4, 201, 5), RewardRoller.roll(
-                css.resolve("chest", Map.of("type", "normal", "grade", "exquisite")),
+        assertEquals(Map.of(302, 4, 201, 5), RewardRoller.rollIds(
+                css.resolveIds("chest", Map.of("type", "normal", "grade", "exquisite")),
                 loot, new Random(1), fontaine));
-        assertEquals(Map.of(305, 3), RewardRoller.roll(
-                css.resolve("chest", Map.of("type", "normal", "grade", "precious")),
+        assertEquals(Map.of(305, 3), RewardRoller.rollIds(
+                css.resolveIds("chest", Map.of("type", "normal", "grade", "precious")),
                 loot, new Random(1), fontaine));
-        assertEquals(Map.of(302, 1), loot.roll(
+        assertEquals(Map.of(302, 1), loot.rollIds(
                 "astaps.loot.specific", new Random(1)));
         // An unknown city must not silently drop the regional sigil.
         var unresolved = assertThrows(IllegalStateException.class, () ->
-                RewardRoller.roll(
-                        css.resolve("chest", Map.of("type", "normal", "grade", "common")),
+                RewardRoller.rollIds(
+                        css.resolveIds("chest", Map.of("type", "normal", "grade", "common")),
                         loot, new Random(1)));
         assertTrue(unresolved.getMessage().contains("regional sigil"));
         assertThrows(IllegalArgumentException.class, () ->

@@ -112,14 +112,14 @@ class RewardAreaResolverTest {
         attributes.put("kind", "common");
         RewardAreaResolver.resolve(context).addAttributes(attributes);
         assertEquals(Map.of(305, 1),
-                RewardRoller.roll(css.resolve("chest", attributes),
+                RewardRoller.rollIds(css.resolveIds("chest", attributes),
                         loot, new java.util.Random(1), context));
         var fontaine = new RewardContext(3, 0, "fontaine");
         attributes.clear();
         attributes.put("kind", "common");
         RewardAreaResolver.resolve(fontaine).addAttributes(attributes);
         assertEquals(Map.of(201, 2, 302, 1),
-                RewardRoller.roll(css.resolve("chest", attributes),
+                RewardRoller.rollIds(css.resolveIds("chest", attributes),
                         loot, new java.util.Random(1), fontaine));
     }
 

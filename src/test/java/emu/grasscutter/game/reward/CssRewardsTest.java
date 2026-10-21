@@ -64,7 +64,7 @@ class CssRewardsTest {
                 "genshin.avatar_up.heros_wit", 2,
                 "genshin.currency.mora", 10), keys);
         assertEquals(Map.of(104003, 2, 202, 10),
-                RewardRoller.resolve(keys, pool, RewardContext.NONE));
+                RewardRoller.resolveKeys(keys, pool, RewardContext.NONE));
     }
 
     @Test

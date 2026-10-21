@@ -117,7 +117,7 @@ final class RewardCssParser {
     private static final Pattern NUMBER = Pattern.compile("[+-]?[0-9]+(?:\\.[0-9]+)?");
     private static final Pattern NAME = Pattern.compile("[A-Za-z_][A-Za-z0-9_-]*");
     private static final Pattern PROPERTY = Pattern.compile(
-            "(?:--[A-Za-z_][A-Za-z0-9_-]*|genshin\\.[A-Za-z0-9_.$<>\\[\\]-]+(?:\\.[A-Za-z0-9_.$<>\\[\\]-]+)*|[a-z][a-z0-9_]*\\.loot\\..+)");
+            "(?:--[A-Za-z_][A-Za-z0-9_-]*|genshin\\.[A-Za-z0-9_.$\\[\\]-]+(?:\\.[A-Za-z0-9_.$<>\\[\\]-]+)*|[a-z][a-z0-9_]*\\.loot\\..+)");
     private final String source;
     private int position;
 

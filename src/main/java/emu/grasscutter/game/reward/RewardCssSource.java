@@ -37,11 +37,23 @@ final class RewardCssSource {
                 continue;
             }
             if (start && depth > 0 && brackets == 0 && parentheses == 0 && !Character.isWhitespace(c)) {
-                int end = i, angles = 0;
+                int end = i, angles = 0, callDepth = 0, listDepth = 0;
                 while (end < source.length()) {
                     char candidate = source.charAt(end);
-                    if ((Character.isWhitespace(candidate) && angles == 0)
-                            || ":;{}()\"'/".indexOf(candidate) >= 0) break;
+                    if (candidate == '(') callDepth++;
+                    else if (candidate == ')') {
+                        if (callDepth == 0) break;
+                        callDepth--;
+                    } else if (candidate == '[') listDepth++;
+                    else if (candidate == ']') {
+                        if (listDepth == 0) break;
+                        listDepth--;
+                    }
+                    if ((Character.isWhitespace(candidate)
+                            && angles == 0 && callDepth == 0 && listDepth == 0)
+                            || ((candidate == ':' || candidate == ';' || candidate == '{'
+                            || candidate == '}' || candidate == '"' || candidate == '\'')
+                            && angles == 0 && callDepth == 0 && listDepth == 0)) break;
                     if (candidate == '<') angles++;
                     else if (candidate == '>') angles--;
                     end++;

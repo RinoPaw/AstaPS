@@ -1,9 +1,8 @@
 package emu.grasscutter.game.drop;
 
-import java.math.BigDecimal;
 import java.util.random.RandomGenerator;
 
-/** Native nonnegative counts: integers, fractional stochastic rounding, ranges and weighted outcomes. */
+/** Nonnegative integer counts, inclusive ranges, and weighted integer outcomes. */
 public final class LootCount {
     private LootCount() {}
 
@@ -26,23 +25,8 @@ public final class LootCount {
             if (high < low) throw new IllegalArgumentException("Reversed range: " + text);
             return rng -> low == high ? low : (int) rng.nextLong(low, (long) high + 1);
         }
-        if (!text.matches("[0-9]+(?:\\.[0-9]+)?")) {
-            throw new IllegalArgumentException("Expected nonnegative decimal count: " + text);
-        }
-        BigDecimal value = decimal(text);
-        final int base;
-        try {
-            base = value.toBigInteger().intValueExact();
-        } catch (ArithmeticException failure) {
-            throw new IllegalArgumentException("Count cannot fit an integer: " + text, failure);
-        }
-        BigDecimal fraction = value.subtract(BigDecimal.valueOf(base));
-        if (fraction.signum() == 0) return rng -> base;
-        if (base == Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("Fractional count exceeds integer capacity: " + text);
-        }
-        double probability = fraction.doubleValue();
-        return rng -> base + (rng.nextDouble() < probability ? 1 : 0);
+        int count = integer(text);
+        return rng -> count;
     }
 
     /** All count candidates use the same relative-weight syntax as type and rarity. */
@@ -54,23 +38,13 @@ public final class LootCount {
         return choice::sample;
     }
 
-    private static BigDecimal decimal(String value) {
-        try {
-            BigDecimal parsed = new BigDecimal(value);
-            if (parsed.signum() < 0) {
-                throw new IllegalArgumentException("Negative count is invalid: " + value);
-            }
-            return parsed;
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid number: " + value, e);
-        }
-    }
-
     private static int integer(String value) {
-        if (!value.matches("[0-9]+")) throw new IllegalArgumentException("Expected integer: " + value);
+        if (!value.matches("[0-9]+")) {
+            throw new IllegalArgumentException("Expected nonnegative integer count: " + value);
+        }
         try {
-            return decimal(value).intValueExact();
-        } catch (ArithmeticException failure) {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException failure) {
             throw new IllegalArgumentException("Count cannot fit an integer: " + value, failure);
         }
     }

@@ -78,7 +78,7 @@ The generic `Value<T>` expression interface supports constant values, weighted s
 An unweighted YAML sequence executes each entry independently.
 A weighted sequence samples exactly one entry. Mixing weighted and unweighted entries at one level is rejected.
 Weights do not need to sum to 100 and zero weights are ignored.
-The distinction between `choose(A, B)` repeated N times and choosing once then granting N copies is part of the semantic model.
+The distinction between `choose<A, B>` repeated N times and choosing once then granting N copies is part of the semantic model.
 
 YAML anchors preserve shared graph identity. Probability and recursion safety checks remain mandatory.
 All historical loot amounts and probabilities remain unchanged while source provenance is investigated.
@@ -90,14 +90,14 @@ boss[tag="maguu_kenki"] {
     --element: [anemo, cryo];
     --material: marionette_core;
     genshin.avatar_ascension.$material: 2;
-    astaps.loot.world_gem_two(3, ...$element): 1;
+    astaps.loot.world_gem_two<3, ...$element>: 1;
 }
 ```
 
 `$element` is a variable reference, `element` is a literal identifier.
 `$element[0]` indexes a list and `...$element` expands arguments.
-`name(...)` is a template call.
-LootCSS and YAML accept only the function-call spelling `name(args)`, including internal instance keys. Dollar references and explicit `...$pack` expansion use the same syntax throughout. Legacy angle-bracket templates and variables are rejected.
+`name<...>` is a template call.
+LootCSS and YAML accept only the template spelling `name<args>`, including internal instance keys. Dollar references and explicit `...$pack` expansion use the same syntax throughout. Angle brackets delimit template arguments; variables retain `$name` syntax. Parenthesis-style template calls are not supported.
 
 ## Implementation checklist
 
@@ -116,3 +116,10 @@ LootCSS and YAML accept only the function-call spelling `name(args)`, including 
 - `*.lcss`: **LootCSS**, the Lootweave selector, variable and cascading declaration language. Loaded in filename order.
 - `loot.yaml`: structured reward pools and weighted choices.
 - `.lw` and `.css` reward files are not loaded.
+
+## Count syntax
+
+Counts are nonnegative integers, inclusive integer ranges (`1~5` or `1;5`),
+or relative-weight choices of integer outcomes (`"3:75, 4:25"`).
+There is no fractional-count syntax or stochastic rounding of a decimal quantity.
+Decimal numbers are still valid as *weights*, such as `{value: A, weight: 1.5}`.

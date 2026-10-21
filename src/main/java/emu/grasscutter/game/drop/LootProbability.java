@@ -68,16 +68,9 @@ final class LootProbability {
                         .scale(ONE.divide(BigDecimal.valueOf((long) high - low + 1), LOWER));
             };
         }
-        BigDecimal value = new BigDecimal(text);
-        int low = value.intValue();
-        BigDecimal fraction = value.subtract(BigDecimal.valueOf(low));
-        if (value.signum() == 0) return empty();
-        return (children, bound) -> {
-            Poly p = children.apply(child);
-            Poly base = p.power(low);
-            return fraction.signum() == 0 ? base : base.scale(ONE.subtract(fraction))
-                    .add(base.multiply(p).scale(fraction));
-        };
+        int count = Integer.parseInt(text);
+        if (count == 0) return empty();
+        return (children, bound) -> children.apply(child).power(count);
     }
 
     record Tails(BigDecimal nodes, BigDecimal depth) {}

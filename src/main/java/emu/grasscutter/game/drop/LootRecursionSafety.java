@@ -121,7 +121,7 @@ final class LootRecursionSafety {
             return Fraction.ratio(BigInteger.valueOf(low).add(BigInteger.valueOf(high)),
                     BigInteger.TWO);
         }
-        return Fraction.decimal(new BigDecimal(text));
+        return Fraction.integer(Integer.parseInt(text));
     }
 
     static final class Graph {

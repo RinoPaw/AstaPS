@@ -8,8 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Typed structure for dollar-variable reward paths and function-style pool calls.
- * Pool-call names use the same function-call syntax in every layer.
+ * Typed structure for dollar-variable reward paths and angle-bracket template calls.
+ * Pool-call names use the same angle-bracket syntax in every layer.
  */
 final class RewardResourceExpression {
     private static final Pattern VARIABLE =
@@ -36,9 +36,9 @@ final class RewardResourceExpression {
     }
 
     static RewardResourceExpression parse(String source, boolean table) {
-        int open = source.indexOf('(');
+        int open = source.indexOf('<');
         boolean call = open >= 0;
-        if (call && (!table || !source.endsWith(")") || source.indexOf('(', open + 1) >= 0)) {
+        if (call && (!table || !source.endsWith(">") || source.indexOf('<', open + 1) >= 0)) {
             throw invalid(source);
         }
         int close = call ? source.length() - 1 : source.length();
@@ -95,7 +95,7 @@ final class RewardResourceExpression {
         if (!after.isEmpty()) parts.add(new Text(after));
         check.append(after);
         if (!PATH.matcher(check.toString()).matches() || text.indexOf('<') >= 0
-                || text.indexOf('>') >= 0 || text.indexOf(')') >= 0) {
+                || text.indexOf('>') >= 0 || text.indexOf('(') >= 0 || text.indexOf(')') >= 0) {
             throw invalid(source);
         }
         return parts;
@@ -167,7 +167,7 @@ final class RewardResourceExpression {
                 expanded.addAll(bound);
             }
         }
-        String suffix = "(" + String.join(",", expanded) + ")";
+        String suffix = "<" + String.join(",", expanded) + ">";
         return names.stream().map(name -> name + suffix).toList();
     }
 

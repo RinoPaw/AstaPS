@@ -185,10 +185,14 @@ public final class CssRewards {
                         .map(key -> key.substring(2)).collect(java.util.stream.Collectors.toSet());
                 resource.requireDeclared(declaredBindings);
                 if (table) {
-                    if (!resource.hasVariables()) loot.resolveName(name);
+                    if (!resource.hasVariables()) {
+                        for (String expanded : resource.expand(Map.of())) loot.resolveName(expanded);
+                    }
                     lootDeclarations.add(new LootDeclaration(resource, fixed, rolled));
                 } else {
-                    if (!resource.hasVariables()) items.resolve(name);
+                    if (!resource.hasVariables()) {
+                        for (String expanded : resource.expand(Map.of())) items.resolve(expanded);
+                    }
                     itemDeclarations.add(new ItemDeclaration(resource, fixed, rolled));
                 }
             }

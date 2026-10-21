@@ -720,9 +720,10 @@ class CssRewardsTest {
                 Map.of("type", "world", "level", 80)).items());
         assertEquals(Map.of(202, 93, 201, 79), css.resolve("boss",
                 Map.of("type", "world", "level", 93)).items());
-        assertEquals(Map.of(202, 93, 201, 79), css.resolve("boss",
-                Map.of("type", "world", "level", 999999999999999999999999999)).items());
-        assertTrue(css.resolve("boss", Map.of("type", "world", "level", "unknown")).items().isEmpty());
+        assertThrows(IllegalArgumentException.class, () -> css.resolve("boss",
+                Map.of("type", "world", "level", "999999999999999999999999999")));
+        assertThrows(IllegalArgumentException.class, () -> css.resolve("boss",
+                Map.of("type", "world", "level", "unknown")));
         assertTrue(css.resolve("boss", Map.of("type", "world")).items().isEmpty());
         assertTrue(css.resolve("boss", Map.of("type", "world", "level", -1)).items().isEmpty());
     }

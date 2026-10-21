@@ -1,27 +1,18 @@
 package emu.grasscutter.game.reward;
 
-import io.sf.carte.doc.style.css.CSSNestedDeclarations;
-import io.sf.carte.doc.style.css.CSSStyleSheet;
-import io.sf.carte.doc.style.css.om.StyleRule;
-import java.io.IOException;
-import java.io.StringReader;
 import emu.grasscutter.data.ItemIdRegistry;
 import emu.grasscutter.data.ResourceId;
-import emu.grasscutter.game.drop.YamlLootTables;
 import emu.grasscutter.game.drop.LootCount;
+import emu.grasscutter.game.drop.YamlLootTables;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import io.sf.carte.doc.dom.CSSDOMImplementation;
-import io.sf.carte.doc.style.css.CSSElement;
-import io.sf.carte.doc.style.css.SelectorMatcher;
-import io.sf.carte.doc.style.css.nsac.Selector;
-import io.sf.carte.doc.style.css.nsac.SelectorList;
-import io.sf.carte.doc.style.css.om.Specificity;
+import java.util.Set;
 
-/** Dotted reward declarations use css4j for selectors, nesting and CSS declaration semantics. */
+/** Rewards resolved with the dedicated reward stylesheet parser and cascade. */
 public final class CssRewards {
     public record Selection(Map<Integer, Integer> items, Map<String, Integer> loot,
             Map<Integer, LootCount.Spec> rangedItems, Map<String, LootCount.Spec> rangedLoot) {
@@ -40,150 +31,57 @@ public final class CssRewards {
         }
     }
 
-    private static String resourceName(String property, Map<String, String> names) {
-        String name = names.get(io.sf.carte.doc.style.css.parser.ParseHelper.unescapeStringValue(property));
-        if (name == null) {
-            throw new IllegalArgumentException("Unknown reward property: " + property);
-        }
-        if (!name.startsWith("genshin.") && !name.contains(".loot.")) {
-            throw new IllegalArgumentException("Invalid reward resource property: " + name);
-        }
-        return name;
-    }
+    private record LootDeclaration(RewardResourceExpression resource,
+                                   Integer fixed, LootCount.Spec ranged) {}
+    private record ItemDeclaration(RewardResourceExpression resource,
+                                   Integer fixed, LootCount.Spec ranged) {}
 
-    private record LootDeclaration(RewardResourceExpression resource, Integer fixed, LootCount.Spec ranged) {}
-    private record ItemDeclaration(RewardResourceExpression resource, Integer fixed, LootCount.Spec ranged) {}
-
-    private record Rule(
-            Selector selector,
-            List<ItemDeclaration> items, List<LootDeclaration> loot,
-            Map<String, List<String>> bindings,
-            boolean important, int order) {}
+    private record Rule(RewardCssParser.Selector selector,
+                        List<ItemDeclaration> items, List<LootDeclaration> loot,
+                        Map<String, List<String>> bindings, int order) {}
 
     private final List<Rule> rules;
-    private final List<String> bindingNames;
-    private final Map<String, RewardSelectorConditions.Condition> selectorConditions;
+    private final Set<String> bindingNames;
     private final YamlLootTables loot;
     private final ItemIdRegistry itemRegistry;
 
-    private CssRewards(List<Rule> rules,
-                       YamlLootTables loot, ItemIdRegistry itemRegistry, Map<String, String> names,
-                       Map<String, RewardSelectorConditions.Condition> selectorConditions) {
+    private CssRewards(List<Rule> rules, Set<String> bindingNames,
+                       YamlLootTables loot, ItemIdRegistry itemRegistry) {
         this.rules = List.copyOf(rules);
-        this.bindingNames = names.values().stream().filter(name -> name.startsWith("--"))
-                .map(name -> name.substring(2)).toList();
-        this.selectorConditions = Map.copyOf(selectorConditions);
+        this.bindingNames = Set.copyOf(bindingNames);
         this.loot = loot;
         this.itemRegistry = itemRegistry;
     }
 
     public static CssRewards parse(String source, ItemIdRegistry items, YamlLootTables loot) {
-        var extended = RewardSelectorConditions.rewrite(source);
-        var translated = RewardCssSource.translate(extended.css());
-        var sheet = new CSSDOMImplementation().createStyleSheet(null, null);
-        try {
-            if (!sheet.parseStyleSheet(new StringReader(translated.css()), CSSStyleSheet.COMMENTS_IGNORE)) {
-                var handler = sheet.getErrorHandler();
-                String details;
-                if (handler instanceof io.sf.carte.doc.style.css.om.DefaultSheetErrorHandler errors) {
-                    var causes = new ArrayList<io.sf.carte.doc.style.css.nsac.CSSParseException>();
-                    if (errors.getSacErrors() != null) causes.addAll(errors.getSacErrors());
-                    if (errors.getRuleParseErrors() != null) {
-                        errors.getRuleParseErrors().forEach(error -> causes.add(error.getCause()));
-                    }
-                    details = causes.stream().limit(8).map(error ->
-                            translated.location(error.getLineNumber(), error.getColumnNumber())
-                                    + " " + translated.display(error.getMessage())).toList().toString();
-                } else {
-                    details = translated.display(String.valueOf(handler));
+        List<RewardCssParser.Rule> parsed = RewardCssParser.parse(source);
+        var variables = new HashSet<String>();
+        for (var rule : parsed) {
+            for (var declaration : rule.declarations()) {
+                if (declaration.name().startsWith("--")) {
+                    variables.add(declaration.name().substring(2));
                 }
-                throw new IllegalArgumentException("Invalid reward CSS: " + details);
             }
-        } catch (IOException ex) {
-            throw new IllegalArgumentException("Cannot parse reward CSS", ex);
         }
         var rules = new ArrayList<Rule>();
-        int[] order = {0};
-        for (var top : sheet.getCssRules()) {
-            if (!(top instanceof StyleRule style)) {
-                throw new IllegalArgumentException("Unsupported conditional CSS rule: " + top);
-            }
-            collectStyle(style, null, rules, order, items, loot, translated.names());
-        }
-        return new CssRewards(rules, loot, items,
-                translated.names(), extended.conditions());
-    }
-
-    private static void collectStyle(StyleRule style, SelectorList parent,
-            List<Rule> rules, int[] sourceOrder,
-            ItemIdRegistry items, YamlLootTables loot, Map<String, String> names) {
-        // Use css4j's CSSOM selector tree directly, without serializing/reparsing it.
-        SelectorList selectors = style.getSelectorList();
-        if (parent != null) {
-            selectors = selectors.replaceNested(parent);
-        }
-        collectDeclarations(style.getStyle(), selectors, rules,
-                sourceOrder, items, loot, names);
-        var nestedRules = style.getCssRules();
-        if (nestedRules != null) {
-            for (var nested : nestedRules) {
-                if (nested instanceof StyleRule child) {
-                    collectStyle(child, selectors, rules, sourceOrder,
-                            items, loot, names);
-                } else if (nested instanceof CSSNestedDeclarations continuation) {
-                    collectDeclarations(continuation.getStyle(), selectors, rules,
-                             sourceOrder, items, loot, names);
-                } else {
-                    throw new IllegalArgumentException("Unsupported conditional reward rule: " + nested);
+        for (var rule : parsed) {
+            var itemDeclarations = new ArrayList<ItemDeclaration>();
+            var lootDeclarations = new ArrayList<LootDeclaration>();
+            var bindings = new HashMap<String, List<String>>();
+            for (var declaration : rule.declarations()) {
+                String name = declaration.name(), value = declaration.value();
+                if (name.startsWith("--")) {
+                    bindings.put(name.substring(2), parseBinding(value));
+                    continue;
                 }
-            }
-        }
-    }
-
-    private static void collectDeclarations(io.sf.carte.doc.style.css.CSSStyleDeclaration declarations,
-            SelectorList selectors, List<Rule> rules,
-            int[] sourceOrder,
-            ItemIdRegistry items, YamlLootTables loot, Map<String, String> names) {
-        if (declarations.getLength() == 0) return;
-        collectDeclarationsForPriority(declarations, selectors, rules,
-                sourceOrder, items, loot, names, false);
-        collectDeclarationsForPriority(declarations, selectors, rules,
-                sourceOrder, items, loot, names, true);
-    }
-
-    private static void collectDeclarationsForPriority(
-            io.sf.carte.doc.style.css.CSSStyleDeclaration declarations,
-            SelectorList selectors, List<Rule> rules,
-            int[] sourceOrder,
-            ItemIdRegistry items, YamlLootTables loot, Map<String, String> names, boolean important) {
-        var itemDeclarations = new ArrayList<ItemDeclaration>();
-        var lootDeclarations = new ArrayList<LootDeclaration>();
-        var bindings = new HashMap<String, List<String>>();
-        boolean hasDeclarations = false;
-        for (int index = 0; index < declarations.getLength(); index++) {
-            String property = declarations.item(index);
-            if ("important".equalsIgnoreCase(declarations.getPropertyPriority(property)) != important) {
-                continue;
-            }
-            hasDeclarations = true;
-            String value = declarations.getPropertyValue(property).trim();
-            if (value.length() >= 2
-                    && ((value.startsWith("\"") && value.endsWith("\""))
-                    || (value.startsWith("'") && value.endsWith("'")))) {
-                value = value.substring(1, value.length() - 1);
-            }
-            String declaredName = names.get(io.sf.carte.doc.style.css.parser.ParseHelper.unescapeStringValue(property));
-            if (declaredName != null && declaredName.startsWith("--")) {
-                bindings.put(declaredName.substring(2), parseBinding(value));
-            } else {
-                String name = resourceName(property, names);
                 Integer fixed = value.matches("[0-9]+") ? Integer.valueOf(value) : null;
                 LootCount.Spec rolled = fixed == null ? LootCount.parseRoll(value) : null;
-                boolean table = name.matches("[a-z][a-z0-9_]*\\.loot\\..*");
+                if (!name.startsWith("genshin.") && !name.matches("[a-z][a-z0-9_]*\\.loot\\..+")) {
+                    throw new IllegalArgumentException("Invalid reward resource property: " + name);
+                }
+                boolean table = name.matches("[a-z][a-z0-9_]*\\.loot\\..+");
                 var resource = RewardResourceExpression.parse(name, table);
-                var declaredBindings = names.values().stream().filter(key -> key.startsWith("--"))
-                        .map(key -> key.substring(2)).collect(java.util.stream.Collectors.toSet());
-                resource.requireDeclared(declaredBindings);
+                resource.requireDeclared(variables);
                 if (table) {
                     if (!resource.hasVariables()) {
                         for (String expanded : resource.expand(Map.of())) loot.resolveName(expanded);
@@ -196,13 +94,13 @@ public final class CssRewards {
                     itemDeclarations.add(new ItemDeclaration(resource, fixed, rolled));
                 }
             }
+            // Every selector in a comma group creates an independent rule in source order.
+            for (var selector : rule.selectors()) {
+                rules.add(new Rule(selector, List.copyOf(itemDeclarations),
+                        List.copyOf(lootDeclarations), Map.copyOf(bindings), rules.size()));
+            }
         }
-        if (!hasDeclarations) return;
-        for (var selector : selectors) {
-            rules.add(new Rule(selector, List.copyOf(itemDeclarations),
-                    List.copyOf(lootDeclarations), Map.copyOf(bindings),
-                    important, sourceOrder[0]++));
-        }
+        return new CssRewards(rules, variables, loot, items);
     }
 
     private static List<String> parseBinding(String value) {
@@ -213,7 +111,6 @@ public final class CssRewards {
         }
         var bindings = new ArrayList<String>();
         for (String name : names.split(",", -1)) {
-            // Bindings contain literal resource paths or template arguments, never more bindings.
             ResourceId.parse("binding." + name);
             if (bindings.contains(name)) throw new IllegalArgumentException("Duplicate binding value: " + name);
             bindings.add(name);
@@ -222,36 +119,23 @@ public final class CssRewards {
     }
 
     public Selection resolve(String type, Map<String, String> attributes) {
-        var doc = new CSSDOMImplementation().createDocument(null, "rewards", null);
-        var element = (CSSElement) doc.createElement(type);
-        doc.getDocumentElement().appendChild(element);
-        attributes.forEach(element::setAttribute);
-        for (var predicate : selectorConditions.entrySet()) {
-            element.removeAttribute(predicate.getKey());
-            if (predicate.getValue().matches(attributes)) {
-                element.setAttribute(predicate.getKey(), "");
-            }
-        }
-        SelectorMatcher matcher = element.getSelectorMatcher();
-        record Match(Rule rule, Specificity specificity) {}
-        var matched = new ArrayList<Match>();
+        var matched = new ArrayList<Rule>();
         for (var rule : rules) {
-            if (matcher.matches(rule.selector())) {
-                matched.add(new Match(rule, new Specificity(rule.selector(), matcher)));
-            }
+            if (rule.selector.matches(type, attributes)) matched.add(rule);
         }
-        matched.sort(Comparator.comparing((Match match) -> match.rule().important())
-                .thenComparing(Match::specificity, Specificity::selectorCompare)
-                .thenComparingInt(match -> match.rule().order()));
+        // With only type and attribute selectors, specificity is the attribute count.
+        // The type-selector component is equal for every rule matching this object.
+        matched.sort(Comparator.comparingInt((Rule rule) -> rule.selector.specificity())
+                .thenComparingInt(Rule::order));
         var bindings = new HashMap<String, List<String>>();
         bindingNames.forEach(name -> bindings.put(name, List.of()));
-        for (var match : matched) bindings.putAll(match.rule().bindings);
+        for (var rule : matched) bindings.putAll(rule.bindings);
+
         var fixed = new HashMap<Integer, Integer>();
         var ranged = new HashMap<Integer, LootCount.Spec>();
         var selectedLoot = new HashMap<String, Integer>();
         var rangedLoot = new HashMap<String, LootCount.Spec>();
-        for (var match : matched) {
-            var rule = match.rule();
+        for (var rule : matched) {
             for (var declaration : rule.items) {
                 for (String name : declaration.resource.expand(bindings)) {
                     int id = itemRegistry.resolve(name);

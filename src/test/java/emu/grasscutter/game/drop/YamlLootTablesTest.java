@@ -1091,4 +1091,27 @@ class YamlLootTablesTest {
                   - {value: genshin.currency.mora, type: genshin.avatar_up.heros_wit, weight: 1}
                 """));
     }
+
+    @Test
+    void modernYamlTemplatesSupportDollarVariablesAndFunctionCalls() {
+        var tables = parse("""
+                grant(KIND):
+                  - {value: "genshin.currency.$KIND", count: 2}
+                chosen:
+                  - {value: grant(mora), weight: 3}
+                  - {value: grant(mora), weight: 1}
+                """);
+        assertEquals(Map.of(202, 2), tables.roll("chosen", new Random(7)));
+    }
+
+    @Test
+    void modernYamlTemplatesSupportSpreadParameterPacks() {
+        var tables = parse("""
+                choose(...KINDS):
+                  - value: "genshin.currency....$KINDS:1"
+                chosen:
+                  - {value: choose(mora,mora), count: 2}
+                """);
+        assertEquals(Map.of(202, 2), tables.roll("chosen", new Random(7)));
+    }
 }

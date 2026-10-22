@@ -1065,6 +1065,12 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
             int sceneId,
             int pointId,
             emu.grasscutter.game.reward.TransPointRewardEligibility.Kind kind) {
+        // The settled receipt is authoritative, including after a LootCSS edit.
+        var journal = new emu.grasscutter.database.RewardGrantJournal();
+        var key = new emu.grasscutter.database.RewardGrantJournal.Key(
+                emu.grasscutter.database.RewardGrantJournal.Source.TRANSPOINT,
+                player.getUid(), "point." + sceneId + "." + pointId);
+        if (journal.completed(key)) return true;
         var reward = emu.grasscutter.game.reward.RewardConfiguration.current().roll(
                 "transpoint",
                 java.util.Map.of(
@@ -1079,10 +1085,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                 .toList();
         // Even a zero-payout activation receives a durable receipt, so changing
         // LootCSS later cannot pay this event retroactively.
-        var journal = new emu.grasscutter.database.RewardGrantJournal();
-        var key = new emu.grasscutter.database.RewardGrantJournal.Key(
-                emu.grasscutter.database.RewardGrantJournal.Source.TRANSPOINT,
-                player.getUid(), "point." + sceneId + "." + pointId);
+
         var snapshot = items.stream().map(item -> new emu.grasscutter.database.RewardGrantJournal.Reward(
                 item.getItemId(), item.getCount(), item.getLevel())).toList();
         return emu.grasscutter.game.reward.RewardClaimFlow.grant(

@@ -188,13 +188,24 @@ public class BlossomManager {
         notifyIcon();
     }
 
+    /**
+     * Suppress automatic experimental map packet delivery. The original Global 7.1
+     * opcode 6743 is structurally verified, but its UI semantics are not yet known.
+     * Sending it during EnterSceneDone or script gadget initialization may interrupt
+     * the client's scene handshake; test it explicitly after gameplay is available.
+     */
     public void notifyIcon() {
-        scene.broadcastPacket(new PacketBlossomBriefInfoNotify(buildBriefInfos()));
+        // Intentionally disabled on this diagnostic branch.
     }
 
-    /** Sync map markers after EnterSceneDone, including when no outcrop is nearby. */
+    /** Controlled packet delivery via the debug blossomicon command. */
     public void notifyIcon(Player player) {
-        player.sendPacket(new PacketBlossomBriefInfoNotify(buildBriefInfos()));
+        var infos = buildBriefInfos();
+        var packet = new PacketBlossomBriefInfoNotify(infos);
+        Grasscutter.getLogger().info(
+                "Blossom native marker experiment uid={} opcode={} entries={} bytes={} scene={}",
+                player.getUid(), packet.getOpcode(), infos.size(), packet.getData().length, scene.getId());
+        player.sendPacket(packet);
     }
 
     private List<BlossomBriefInfoOuterClass.BlossomBriefInfo> buildBriefInfos() {

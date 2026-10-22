@@ -2,6 +2,7 @@ package emu.grasscutter.server.packet.recv;
 
 import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.ability.EscoffierSkillCookHelper;
 import emu.grasscutter.game.player.EntryNotice;
 import emu.grasscutter.game.quest.enums.QuestContent;
@@ -24,6 +25,9 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
         var scene = player.getScene();
         var questManager = player.getQuestManager();
         boolean freshPlayerBootstrap = BornIntroGate.isFreshPlayerBootstrap(session);
+        Grasscutter.getLogger().info(
+                "Scene handshake PostEnterSceneReq uid={} scene={} freshPlayerBootstrap={}",
+                player.getUid(), scene.getId(), freshPlayerBootstrap);
 
         // Native-selection and automatic births converge here. Let PostEnterSceneRsp reach the
         // client before Quest 351 starts so its actors see a ready playable scene.
@@ -47,6 +51,9 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
         questManager.queueEvent(QuestContent.QUEST_CONTENT_LEAVE_SCENE, scene.getPrevScene());
 
         if (!freshPlayerBootstrap) session.send(new PacketPostEnterSceneRsp(player));
+        Grasscutter.getLogger().info(
+                "Scene handshake PostEnterSceneRsp uid={} scene={}",
+                player.getUid(), scene.getId());
 
         EscoffierSkillCookHelper.syncToClient(player);
         EntryNotice.sendOnce(player);

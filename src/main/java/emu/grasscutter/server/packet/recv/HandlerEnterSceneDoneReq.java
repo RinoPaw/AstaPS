@@ -151,11 +151,12 @@ public class HandlerEnterSceneDoneReq extends PacketHandler {
         // TPS ammunition reserves, which the client expects before the Rsp.
         emu.grasscutter.game.tps.TpsWeaponSystem.sendSceneAmmunition(player);
 
-        // Rsp
+        // The experimental native blossom-map message must not be sent during
+        // scene loading. Issue "debug blossomicon" after entering the world.
         session.send(new PacketEnterSceneDoneRsp(player));
-        if (player.getSceneId() == 3) {
-            player.getScene().getBlossomManager().notifyIcon(player);
-        }
+        Grasscutter.getLogger().info(
+                "Scene handshake EnterSceneDoneRsp uid={} scene={} nativeBlossomAutoSend=false",
+                player.getUid(), player.getSceneId());
         emu.grasscutter.game.quest.AmberFlightExamSupport.onSceneLoaded(player);
         emu.grasscutter.game.quest.MondstadtStoryQuestSupport.onSceneLoaded(player);
     }

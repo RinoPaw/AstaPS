@@ -35,6 +35,7 @@ public final class DebugCommand implements CommandHandler {
         commandLine.addSubcommand("entity", new CurrentEntity(sender, targetPlayer));
         commandLine.addSubcommand("setvar", new SetVar(sender, targetPlayer));
         commandLine.addSubcommand("dynamicmap", new DynamicMap(sender, targetPlayer));
+        commandLine.addSubcommand("blossomicon", new BlossomIcon(sender, targetPlayer));
         return commandLine;
     }
 
@@ -49,6 +50,36 @@ public final class DebugCommand implements CommandHandler {
         @Override
         public void run() {
             if (sender != null) DebugCommand.this.sendUsageMessage(sender);
+        }
+    }
+
+    /**
+     * Opt-in native packet experiment. Login does not send the experimental
+     * packet: this command allows an A/B test after a normal scene handshake.
+     */
+    @CommandLine.Command(name = "blossomicon")
+    private static final class BlossomIcon implements Runnable {
+        private final Player sender;
+        private final Player targetPlayer;
+
+        private BlossomIcon(Player sender, Player targetPlayer) {
+            this.sender = sender;
+            this.targetPlayer = targetPlayer;
+        }
+
+        @Override
+        public void run() {
+            if (targetPlayer == null || !targetPlayer.isOnline()) {
+                CommandOutput.sendMessage(sender, "Select an online target player first.");
+                return;
+            }
+            var scene = targetPlayer.getScene();
+            if (scene == null || scene.getId() != 3) {
+                CommandOutput.sendMessage(sender, "Native blossom-marker experiment requires scene 3.");
+                return;
+            }
+            scene.getBlossomManager().notifyIcon(targetPlayer);
+            CommandOutput.sendMessage(sender, "Sent experimental 7.1 blossom marker opcode 6743.");
         }
     }
 

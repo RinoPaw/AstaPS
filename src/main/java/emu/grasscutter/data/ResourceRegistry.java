@@ -60,13 +60,23 @@ public final class ResourceRegistry {
         ids = Map.copyOf(entries);
     }
 
-    /** Build the authoritative dictionary from explicit source entries and native artifact variants. */
+    /** Build the packaged fallback dictionary used before rewards are initialized. */
     public static ResourceRegistry fromGameResources(ArtifactResolver artifacts) throws IOException {
         try (var stream = ResourceRegistry.class.getResourceAsStream("/rewards/registry.tsv")) {
             if (stream == null) throw new IOException("Missing bundled rewards/registry.tsv");
-            return compile(new String(stream.readAllBytes(), StandardCharsets.UTF_8),
-                    GameData.getItemDataMap().keySet(), artifacts.resourceIds());
+            return fromDefinitions(new String(stream.readAllBytes(), StandardCharsets.UTF_8),
+                    artifacts);
         }
+    }
+
+    /** Compile an external registry against native game item IDs. */
+    public static ResourceRegistry fromDefinitions(String definitions, ArtifactResolver artifacts) {
+        return compile(definitions, GameData.getItemDataMap().keySet(), artifacts.resourceIds());
+    }
+
+    /** Publish only after the matching reward CSS and YAML have compiled successfully. */
+    public static synchronized void install(ResourceRegistry registry) {
+        active = Objects.requireNonNull(registry);
     }
 
     /** Validate and combine the authored dictionary without needing a running game server. */

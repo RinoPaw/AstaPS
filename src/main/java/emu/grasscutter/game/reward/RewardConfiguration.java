@@ -29,16 +29,52 @@ public final class RewardConfiguration {
         this.css = css;
     }
 
-    /** Load the authoritative classpath rewards; no editable config/rewards copy. */
-    public static void load() {
+    private static final Path REWARD_DIRECTORY = Path.of("rewards");
+
+    /**
+     * Compile every reward source before publishing the new configuration.
+     * A failed /reload rewards leaves the previous compiled rules and registry active.
+     */
+    public static synchronized void load() {
         try {
+            initializeExternalDirectory(REWARD_DIRECTORY);
             var artifacts = ArtifactResolver.fromGameResources();
-            var registry = ResourceRegistry.current(artifacts);
-            var loot = YamlLootTables.parse(readBundled("loot.yaml"), registry::resolve, artifacts);
-            var css = CssRewards.parse(readBundledLootCss(), registry, loot);
-            active = new RewardConfiguration(loot, css);
+            var registry = ResourceRegistry.fromDefinitions(
+                    Files.readString(REWARD_DIRECTORY.resolve("registry.tsv"), StandardCharsets.UTF_8),
+                    artifacts);
+            var loot = YamlLootTables.parse(
+                    Files.readString(REWARD_DIRECTORY.resolve("loot.yaml"), StandardCharsets.UTF_8),
+                    registry::resolve, artifacts);
+            var css = CssRewards.parse(
+                    readLootCssDirectory(REWARD_DIRECTORY.resolve("loot.yaml").toUri().toURL()),
+                    registry, loot);
+            var compiled = new RewardConfiguration(loot, css);
+            ResourceRegistry.install(registry);
+            active = compiled;
         } catch (IOException | RuntimeException e) {
-            throw new IllegalStateException("Cannot load bundled reward configuration", e);
+            throw new IllegalStateException(
+                    "Cannot load reward configuration from " + REWARD_DIRECTORY.toAbsolutePath(), e);
+        }
+    }
+
+    /** Copy packaged defaults once. Subsequent loads never overwrite operator edits. */
+    static void initializeExternalDirectory(Path directory) throws IOException {
+        if (Files.exists(directory)) {
+            if (!Files.isDirectory(directory)) {
+                throw new IOException("Reward path is not a directory: " + directory);
+            }
+            return;
+        }
+        Files.createDirectories(directory);
+        Files.writeString(directory.resolve("loot.yaml"), readBundled("loot.yaml"),
+                StandardCharsets.UTF_8);
+        Files.writeString(directory.resolve("registry.tsv"), readBundled("registry.tsv"),
+                StandardCharsets.UTF_8);
+        URL marker = RewardConfiguration.class.getResource("/rewards/loot.yaml");
+        if (marker == null) throw new IOException("Missing packaged rewards/loot.yaml");
+        for (var entry : readLootCssFiles(marker).entrySet()) {
+            Files.writeString(directory.resolve(entry.getKey()), entry.getValue(),
+                    StandardCharsets.UTF_8);
         }
     }
 
@@ -61,6 +97,10 @@ public final class RewardConfiguration {
      * classpath and a packaged JAR; no stylesheet filenames are hardcoded.
      */
     static String readLootCssDirectory(URL marker) throws IOException {
+        return String.join("\n", readLootCssFiles(marker).values());
+    }
+
+    private static Map<String, String> readLootCssFiles(URL marker) throws IOException {
         var stylesheets = new TreeMap<String, String>();
         if ("file".equals(marker.getProtocol())) {
             Path directory;
@@ -105,7 +145,7 @@ public final class RewardConfiguration {
         if (stylesheets.isEmpty()) {
             throw new IOException("No LootCSS files found in bundled rewards directory");
         }
-        return String.join("\n", stylesheets.values());
+        return stylesheets;
     }
 
     public static RewardConfiguration current() {

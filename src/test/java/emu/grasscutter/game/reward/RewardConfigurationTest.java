@@ -60,6 +60,43 @@ class RewardConfigurationTest {
     }
 
     @Test
+    void initialRunSeedsEditableRewardsWithoutOverwritingChanges(
+            @org.junit.jupiter.api.io.TempDir java.nio.file.Path temp) throws Exception {
+        var directory = temp.resolve("rewards");
+        RewardConfiguration.initializeExternalDirectory(directory);
+
+        assertEquals(RewardConfiguration.readBundled("loot.yaml"),
+                java.nio.file.Files.readString(directory.resolve("loot.yaml")));
+        assertEquals(RewardConfiguration.readBundled("registry.tsv"),
+                java.nio.file.Files.readString(directory.resolve("registry.tsv")));
+        assertTrue(java.nio.file.Files.readString(directory.resolve("world-boss.lcss"))
+                .contains("boss[type=\"world\"]"));
+
+        java.nio.file.Files.writeString(directory.resolve("world-boss.lcss"),
+                "boss[type=\"world\"] { genshin.currency.primogem: 999; }");
+        RewardConfiguration.initializeExternalDirectory(directory);
+        assertEquals("boss[type=\"world\"] { genshin.currency.primogem: 999; }",
+                java.nio.file.Files.readString(directory.resolve("world-boss.lcss")));
+    }
+
+    @Test
+    void externalRewardStylesheetChangesAreReadWithoutRepackingJar(
+            @org.junit.jupiter.api.io.TempDir java.nio.file.Path temp) throws Exception {
+        var directory = temp.resolve("rewards");
+        RewardConfiguration.initializeExternalDirectory(directory);
+        java.nio.file.Files.writeString(directory.resolve("zz-local.lcss"),
+                "boss[type=\"world\"] { genshin.currency.primogem: 999; }");
+
+        var marker = directory.resolve("loot.yaml").toUri().toURL();
+        assertTrue(RewardConfiguration.readLootCssDirectory(marker)
+                .contains("genshin.currency.primogem: 999;"));
+        java.nio.file.Files.writeString(directory.resolve("zz-local.lcss"),
+                "boss[type=\"world\"] { genshin.currency.primogem: 250; }");
+        assertTrue(RewardConfiguration.readLootCssDirectory(marker)
+                .contains("genshin.currency.primogem: 250;"));
+    }
+
+    @Test
     void missingBundledResourcesAreReported() {
         assertThrows(java.io.IOException.class, () ->
                 RewardConfiguration.readBundled("missing.yaml"));

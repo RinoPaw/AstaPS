@@ -20,7 +20,7 @@ public class BlossomRefreshExcelConfigData extends GameResource {
     private String refreshType; // Leyline blossoms, magical ore outcrops
     private int refreshCount; // Number of entries to spawn at refresh (1 for each leyline type for each city,
     // 4 for magical ore for each city)
-    private String refreshTime; // Server time-of-day to refresh at
+    private String refreshTime; // Local server day boundary from native refresh table
     @SerializedName(value = "RefreshCondVec", alternate = "refreshCondVec")
     private RefreshCond[] refreshCondVec; // AR requirements etc.
 

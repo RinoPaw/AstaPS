@@ -50,6 +50,7 @@ public class BlossomManager {
                     scene.getId(), gold, blue);
         }
         int adventureRank = scene.getWorld().getHost().getLevel();
+        removeOverlappingAuthoredOutcrops(adventureRank);
         for (SpawnDataEntry spawn : scriptedSpawnCandidates) {
             if (scriptedSpawned.contains(spawn) || blossomConsumed.contains(spawn)
                     || !unlockedAtRank(BlossomType.valueOf(spawn.getGadgetId()), adventureRank)) continue;
@@ -87,6 +88,42 @@ public class BlossomManager {
                 scene.addEntity(gadget);
             }
             scriptedSpawned.add(spawn);
+        }
+    }
+
+    /** Lua groups may already have loaded both authored outcrops at one location. */
+    private void removeOverlappingAuthoredOutcrops(int adventureRank) {
+        var loaded = scene.getEntities().values().stream()
+                .filter(entity -> entity instanceof EntityGadget)
+                .map(entity -> (EntityGadget) entity)
+                // A /spawn gadget has group 0 and must remain under operator control.
+                .filter(entity -> entity.getGroupId() != 0)
+                .filter(entity -> BlossomType.valueOf(entity.getGadgetId()) != null)
+                .sorted(java.util.Comparator
+                        .comparingInt((EntityGadget entity) ->
+                                entity.getGadgetId() == BlossomType.BLUE.getGadgetId() ? 0 : 1)
+                        .thenComparingInt(EntityGadget::getGroupId)
+                        .thenComparingInt(EntityGadget::getConfigId))
+                .toList();
+        var kept = new ArrayList<EntityGadget>();
+        for (var gadget : loaded) {
+            var type = BlossomType.valueOf(gadget.getGadgetId());
+            boolean locked = !unlockedAtRank(type, adventureRank);
+            boolean duplicate = kept.stream().anyMatch(other ->
+                    other.getPosition().computeDistance(gadget.getPosition()) <= OVERLAP_RANGE);
+            if (locked || duplicate) {
+                Grasscutter.getLogger().info(
+                        "Ley-line authored outcrop suppressed group={} config={} gadget={} "
+                                + "reason={} adventureRank={}",
+                        gadget.getGroupId(), gadget.getConfigId(), gadget.getGadgetId(),
+                        locked ? "locked" : "overlap", adventureRank);
+                scene.removeEntity(gadget,
+                        VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE);
+                createdEntity.remove(gadget);
+                if (gadget.getSpawnEntry() != null) scriptedSpawned.add(gadget.getSpawnEntry());
+            } else {
+                kept.add(gadget);
+            }
         }
     }
 

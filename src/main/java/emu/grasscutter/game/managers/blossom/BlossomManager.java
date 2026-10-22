@@ -313,7 +313,9 @@ public class BlossomManager {
                 if (cityId != 0 && cityId != city.getCityId()) return 0;
                 cityId = city.getCityId();
             }
-            return cityId;
+            return BlossomSelection.cityForGroup(
+                    entry.getGroup().getGroupId(), cityId,
+                    GameData.getBlossomGroupsExcelConfigDataMap().values());
         });
     }
 

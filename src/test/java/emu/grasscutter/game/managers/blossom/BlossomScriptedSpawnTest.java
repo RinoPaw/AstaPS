@@ -51,6 +51,20 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void nativeGroupOwnershipKeepsOneOfEachFlowerInEachUnlockedCity() {
+        var selections = select(18, 100, testSources(), new BlossomRotationState());
+        assertEquals(4, selections.size());
+        for (int cityId : List.of(1, 2)) {
+            var city = selections.stream().filter(s -> s.cityId() == cityId).toList();
+            assertEquals(2, city.size());
+            assertEquals(Set.of(BlossomType.GOLD, BlossomType.BLUE),
+                    Set.of(city.get(0).type(), city.get(1).type()));
+        }
+        assertEquals(4, selections.stream().map(x -> x.spawn().getPos())
+                .distinct().count());
+    }
+
+    @Test
     void paidClaimAdvancesUsingAuthoredNextCampEdge() {
         var state = new BlossomRotationState();
         var sources = testSources();
@@ -77,6 +91,7 @@ final class BlossomScriptedSpawnTest {
                 r -> switch (r.getId()) {
                     case 1 -> rank >= 12;
                     case 2 -> rank >= 8;
+                    case 3, 4 -> rank >= 18;
                     default -> false;
                 });
     }
@@ -88,8 +103,13 @@ final class BlossomScriptedSpawnTest {
                 "{\"gadgetId\":70360056,\"configId\":369004,\"pos\":{\"x\":61,\"y\":3,\"z\":2}}");
         var third = group(3, 133001374,
                 "{\"gadgetId\":70360056,\"configId\":374004,\"pos\":{\"x\":121,\"y\":3,\"z\":2}}");
+        var liyue1 = group(3, 133102733,
+                "{\"gadgetId\":70360056,\"configId\":733001,\"pos\":{\"x\":301,\"y\":3,\"z\":202}}");
+        var liyue2 = group(3, 133102742,
+                "{\"gadgetId\":70360056,\"configId\":742001,\"pos\":{\"x\":361,\"y\":3,\"z\":202}}");
         return List.of(first.getSpawns().get(0), second.getSpawns().get(0),
-                third.getSpawns().get(0));
+                third.getSpawns().get(0), liyue1.getSpawns().get(0),
+                liyue2.getSpawns().get(0));
     }
 
     private static List<BlossomGroupsExcelConfigData> groupRows() {
@@ -108,6 +128,16 @@ final class BlossomScriptedSpawnTest {
                         {"id":101001001,"cityId":1,"sectionId":1001,"limit_level":12,
                          "refreshTypeVec":[1,3],"newGroupVec":[133001374],
                          "nextCampIdVec":[101002001]}
+                        """),
+                json(BlossomGroupsExcelConfigData.class, """
+                        {"id":202001001,"cityId":2,"sectionId":2001,"limit_level":18,
+                         "refreshTypeVec":[1,3],"newGroupVec":[133102733],
+                         "nextCampIdVec":[202001002]}
+                        """),
+                json(BlossomGroupsExcelConfigData.class, """
+                        {"id":202001002,"cityId":2,"sectionId":2001,"limit_level":18,
+                         "refreshTypeVec":[1,3],"newGroupVec":[133102742],
+                         "nextCampIdVec":[202001001]}
                         """));
     }
 
@@ -116,7 +146,9 @@ final class BlossomScriptedSpawnTest {
                 json(BlossomSectionOrderExcelConfigData.class,
                         "{\"id\":1,\"cityId\":1,\"sectionId\":1001,\"order\":1}"),
                 json(BlossomSectionOrderExcelConfigData.class,
-                        "{\"id\":2,\"cityId\":1,\"sectionId\":1002,\"order\":2}"));
+                        "{\"id\":2,\"cityId\":1,\"sectionId\":1002,\"order\":2}"),
+                json(BlossomSectionOrderExcelConfigData.class,
+                        "{\"id\":3,\"cityId\":2,\"sectionId\":2001,\"order\":1}"));
     }
 
     private static List<BlossomRefreshExcelConfigData> refreshRows() {
@@ -124,7 +156,11 @@ final class BlossomScriptedSpawnTest {
                 json(BlossomRefreshExcelConfigData.class,
                         "{\"id\":1,\"cityId\":1,\"refreshType\":\"BLOSSOM_REFRESH_SCOIN\",\"refreshCount\":1}"),
                 json(BlossomRefreshExcelConfigData.class,
-                        "{\"id\":2,\"cityId\":1,\"refreshType\":\"BLOSSOM_REFRESH_EXP\",\"refreshCount\":1}"));
+                        "{\"id\":2,\"cityId\":1,\"refreshType\":\"BLOSSOM_REFRESH_EXP\",\"refreshCount\":1}"),
+                json(BlossomRefreshExcelConfigData.class,
+                        "{\"id\":3,\"cityId\":2,\"refreshType\":\"BLOSSOM_REFRESH_SCOIN\",\"refreshCount\":1}"),
+                json(BlossomRefreshExcelConfigData.class,
+                        "{\"id\":4,\"cityId\":2,\"refreshType\":\"BLOSSOM_REFRESH_EXP\",\"refreshCount\":1}"));
     }
 
     private static <T> T json(Class<T> type, String value) {

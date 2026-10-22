@@ -95,9 +95,9 @@ public final class BlossomActiveSelection {
                     }
                 }
                 if (selected == null) {
-                    int offset = Math.floorMod(
+                    int offset = (int) Math.floorMod(
                             (long) playerUid + refreshDay + refresh.getId() + slot,
-                            options.size());
+                            (long) options.size());
                     for (int i = 0; i < options.size(); i++) {
                         var option = options.get((offset + i) % options.size());
                         if (!occupied.contains(option.spawn())) {

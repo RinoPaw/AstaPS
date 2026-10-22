@@ -35,28 +35,47 @@ final class PlayerProgressManagerTransPointStateTest {
     }
 
     @Test
-    void rejectedFirstActivationRestoresPointAndQuestLock() {
+    void failedRewardDoesNotRevokeFirstUnlockAndCanRetry() {
         var unlocked = new HashSet<Integer>();
         var locked = new HashSet<Integer>();
         locked.add(7);
         var change = PlayerProgressManager.applyTransPointUnlock(unlocked, locked, 7);
         assertTrue(change.newlyUnlocked());
+        var pending = new HashSet<Integer>();
+        pending.add(7);
+
+        assertFalse(PlayerProgressManager.settlePendingTransPointReward(pending, 7, () -> false));
+        assertTrue(unlocked.contains(7));
         assertFalse(locked.contains(7));
-        PlayerProgressManager.revertUnrewardedTransPointUnlock(unlocked, locked, 7, change);
-        assertFalse(unlocked.contains(7));
-        assertTrue(locked.contains(7));
-        var retry = PlayerProgressManager.applyTransPointUnlock(unlocked, locked, 7);
-        assertTrue(retry.newlyUnlocked());
+        assertTrue(pending.contains(7));
+
+        assertTrue(PlayerProgressManager.settlePendingTransPointReward(pending, 7, () -> true));
+        assertTrue(unlocked.contains(7));
+        assertFalse(pending.contains(7));
     }
 
     @Test
-    void rejectedFirstActivationWithoutQuestLockDoesNotCreateALock() {
-        var unlocked = new HashSet<Integer>();
-        var locked = new HashSet<Integer>();
-        var change = PlayerProgressManager.applyTransPointUnlock(unlocked, locked, 42);
-        PlayerProgressManager.revertUnrewardedTransPointUnlock(unlocked, locked, 42, change);
-        assertFalse(unlocked.contains(42));
-        assertFalse(locked.contains(42));
+    void ambiguousRewardExceptionLeavesPendingForJournalInspection() {
+        var pending = new HashSet<Integer>();
+        pending.add(42);
+        assertThrows(IllegalStateException.class,
+                () -> PlayerProgressManager.settlePendingTransPointReward(
+                        pending, 42, () -> { throw new IllegalStateException("delivery uncertain"); }));
+        assertTrue(pending.contains(42));
+    }
+
+    @Test
+    void successfulClaimCannotBeReissuedWithoutPendingState() {
+        var pending = new HashSet<Integer>();
+        pending.add(9);
+        var deliveryCount = new java.util.concurrent.atomic.AtomicInteger();
+        assertTrue(PlayerProgressManager.settlePendingTransPointReward(
+                pending, 9, () -> { deliveryCount.incrementAndGet(); return true; }));
+        assertFalse(PlayerProgressManager.settlePendingTransPointReward(
+                pending, 9, () -> { deliveryCount.incrementAndGet(); return true; }));
+        assertFalse(PlayerProgressManager.settlePendingTransPointReward(
+                pending, 99, () -> { deliveryCount.incrementAndGet(); return true; }));
+        assertEquals(1, deliveryCount.get());
     }
 
     @Test

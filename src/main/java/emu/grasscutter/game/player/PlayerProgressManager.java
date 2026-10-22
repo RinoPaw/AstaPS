@@ -1050,7 +1050,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                 if (kind == emu.grasscutter.game.reward.TransPointRewardEligibility.Kind.DOMAIN) {
                     player.getRewardedDungeonEntries(sceneId).add(pointId);
                 }
-                player.getTransPointRewardSnapshots().remove(sceneId + "." + pointId);
+                player.getTransPointRewardSnapshots().remove(transPointSnapshotKey(sceneId, pointId));
                 player.save();
                 return true;
             } catch (RuntimeException error) {
@@ -1061,6 +1061,11 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                 return false;
             }
         }
+    }
+
+    /** MongoDB/Morphia map field names cannot contain dots. */
+    static String transPointSnapshotKey(int sceneId, int pointId) {
+        return sceneId + ":" + pointId;
     }
 
     /** A frozen zero payout is a value, not an absent snapshot. */
@@ -1074,7 +1079,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
     /** A successful first roll is immutable across config reloads and admission retries. */
     private void freezeTransPointReward(int sceneId, int pointId,
             emu.grasscutter.game.reward.TransPointRewardEligibility.Kind kind) {
-        String id = sceneId + "." + pointId;
+        String id = transPointSnapshotKey(sceneId, pointId);
         var frozen = player.getTransPointRewardSnapshots();
         if (frozen.containsKey(id)) return;
         try {
@@ -1101,10 +1106,10 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
         var journal = new emu.grasscutter.database.RewardGrantJournal();
         var key = new emu.grasscutter.database.RewardGrantJournal.Key(
                 emu.grasscutter.database.RewardGrantJournal.Source.TRANSPOINT,
-                player.getUid(), "point." + sceneId + "." + pointId);
+                player.getUid(), "point." + transPointSnapshotKey(sceneId, pointId));
         if (journal.completed(key)) return true;
         freezeTransPointReward(sceneId, pointId, kind);
-        var reward = player.getTransPointRewardSnapshots().get(sceneId + "." + pointId);
+        var reward = player.getTransPointRewardSnapshots().get(transPointSnapshotKey(sceneId, pointId));
         if (reward == null) return false;
         var items = reward.entrySet().stream()
                 .filter(entry -> entry.getValue() > 0)

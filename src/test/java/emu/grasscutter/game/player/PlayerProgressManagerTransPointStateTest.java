@@ -79,15 +79,24 @@ final class PlayerProgressManagerTransPointStateTest {
     }
 
     @Test
+    void frozenSnapshotKeysAreSafeBsonFieldNames() {
+        assertEquals("3:7", PlayerProgressManager.transPointSnapshotKey(3, 7));
+        assertEquals("3:20", PlayerProgressManager.transPointSnapshotKey(3, 20));
+        assertFalse(PlayerProgressManager.transPointSnapshotKey(3, 7).contains("."));
+        assertNotEquals(PlayerProgressManager.transPointSnapshotKey(3, 7),
+                PlayerProgressManager.transPointSnapshotKey(3, 20));
+    }
+
+    @Test
     void firstActivationSnapshotSurvivesConfigChangesAndFailedAdmission() {
         var snapshots = new java.util.HashMap<String, java.util.Map<Integer, Integer>>();
         var rolls = new java.util.concurrent.atomic.AtomicInteger();
-        var original = PlayerProgressManager.freezeRewardSnapshot(snapshots, "3.6", () -> {
+        var original = PlayerProgressManager.freezeRewardSnapshot(snapshots, PlayerProgressManager.transPointSnapshotKey(3, 6), () -> {
             rolls.incrementAndGet();
             return java.util.Map.of(102, 10);
         });
         assertEquals(java.util.Map.of(102, 10), original);
-        assertEquals(original, PlayerProgressManager.freezeRewardSnapshot(snapshots, "3.6", () -> {
+        assertEquals(original, PlayerProgressManager.freezeRewardSnapshot(snapshots, PlayerProgressManager.transPointSnapshotKey(3, 6), () -> {
             rolls.incrementAndGet();
             return java.util.Map.of(201, 999);
         }));
@@ -99,11 +108,11 @@ final class PlayerProgressManagerTransPointStateTest {
     void intentionalZeroPayoutIsFrozenAndNotRerolled() {
         var snapshots = new java.util.HashMap<String, java.util.Map<Integer, Integer>>();
         var rolls = new java.util.concurrent.atomic.AtomicInteger();
-        assertTrue(PlayerProgressManager.freezeRewardSnapshot(snapshots, "3.7", () -> {
+        assertTrue(PlayerProgressManager.freezeRewardSnapshot(snapshots, PlayerProgressManager.transPointSnapshotKey(3, 7), () -> {
             rolls.incrementAndGet();
             return java.util.Map.of();
         }).isEmpty());
-        assertTrue(PlayerProgressManager.freezeRewardSnapshot(snapshots, "3.7", () -> {
+        assertTrue(PlayerProgressManager.freezeRewardSnapshot(snapshots, PlayerProgressManager.transPointSnapshotKey(3, 7), () -> {
             rolls.incrementAndGet();
             return java.util.Map.of(201, 5);
         }).isEmpty());
@@ -114,12 +123,12 @@ final class PlayerProgressManagerTransPointStateTest {
     void failedRollLeavesSnapshotAbsentForLaterValidConfiguration() {
         var snapshots = new java.util.HashMap<String, java.util.Map<Integer, Integer>>();
         assertThrows(IllegalStateException.class, () ->
-                PlayerProgressManager.freezeRewardSnapshot(snapshots, "3.8", () -> {
+                PlayerProgressManager.freezeRewardSnapshot(snapshots, PlayerProgressManager.transPointSnapshotKey(3, 8), () -> {
                     throw new IllegalStateException("configuration unavailable");
                 }));
-        assertFalse(snapshots.containsKey("3.8"));
+        assertFalse(snapshots.containsKey(PlayerProgressManager.transPointSnapshotKey(3, 8)));
         assertEquals(java.util.Map.of(201, 5), PlayerProgressManager.freezeRewardSnapshot(
-                snapshots, "3.8", () -> java.util.Map.of(201, 5)));
+                snapshots, PlayerProgressManager.transPointSnapshotKey(3, 8), () -> java.util.Map.of(201, 5)));
     }
 
     @Test

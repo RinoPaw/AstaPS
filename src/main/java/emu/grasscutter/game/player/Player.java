@@ -118,6 +118,8 @@ public class Player implements PlayerHook, FieldFetch {
     @Getter @Setter private Set<Integer> rewardedLevels;
     /** Native blossom refresh-row ID to completed rotation count. New saves only. */
     @Getter private Map<Integer, Integer> blossomRefreshRotations = new HashMap<>();
+    /** Preferred authored group per refresh row after following a native nextCampIdVec edge. */
+    @Getter private Map<Integer, Integer> blossomPreferredGroups = new HashMap<>();
     @Getter @Setter private Set<Integer> homeRewardedLevels;
     @Getter @Setter private Set<Integer> realmList;
     @Getter @Setter private Set<Integer> seenRealmList;

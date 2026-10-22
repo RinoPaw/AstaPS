@@ -1,5 +1,6 @@
 package emu.grasscutter.game.managers.blossom;
 
+import emu.grasscutter.data.excels.BlossomGroupsExcelConfigData;
 import emu.grasscutter.data.excels.BlossomRefreshExcelConfigData;
 import emu.grasscutter.game.world.SpawnDataEntry;
 import java.util.*;
@@ -12,6 +13,19 @@ final class BlossomSelection {
     record Active(int refreshId, SpawnDataEntry spawn) {}
 
     private BlossomSelection() {}
+
+    /** Original group IDs and original area outlines must agree on a city. */
+    static int cityForGroup(
+            int groupId, int areaCity, Collection<BlossomGroupsExcelConfigData> groups) {
+        if (areaCity == 0) return 0;
+        int city = 0;
+        for (var group : groups) {
+            if (group.getNewGroupVec() == null || !group.getNewGroupVec().contains(groupId)) continue;
+            if (city != 0 && city != group.getCityId()) return 0;
+            city = group.getCityId();
+        }
+        return city == areaCity ? city : 0;
+    }
 
     static List<Active> select(
             List<SpawnDataEntry> sources,

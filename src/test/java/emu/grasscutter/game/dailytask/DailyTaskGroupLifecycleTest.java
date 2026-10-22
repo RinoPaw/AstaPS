@@ -531,7 +531,7 @@ public final class DailyTaskGroupLifecycleTest {
                         + " transition");
         owner.setWorld(world);
         // Actual QuestManager scene-suite lookup, without constructors/database.
-        var q = alloc(emu.grasscutter.game.quest.QuestManager.class);
+        var q = new emu.grasscutter.game.quest.QuestManager(owner);
         var main = alloc(emu.grasscutter.game.quest.GameMainQuest.class);
         set(
                 emu.grasscutter.game.quest.GameMainQuest.class,
@@ -549,9 +549,7 @@ public final class DailyTaskGroupLifecycleTest {
                                         .group(group.id)
                                         .suite(1)
                                         .build())));
-        var mains = new Int2ObjectOpenHashMap<emu.grasscutter.game.quest.GameMainQuest>();
-        mains.put(99, main);
-        set(emu.grasscutter.game.quest.QuestManager.class, q, "mainQuests", mains);
+        q.getMainQuests().put(99, main);
         owner.quests = q;
         owner.position = center.clone().addX(61);
         int beforeQuest = scripts.unloads;

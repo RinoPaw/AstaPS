@@ -116,6 +116,8 @@ public class Player implements PlayerHook, FieldFetch {
     @Getter private Set<Integer> weaponSkinList;
     @Getter private Set<Integer> personalLineList;
     @Getter @Setter private Set<Integer> rewardedLevels;
+    /** Native blossom refresh-row ID to completed rotation count. New saves only. */
+    @Getter private Map<Integer, Integer> blossomRefreshRotations = new HashMap<>();
     @Getter @Setter private Set<Integer> homeRewardedLevels;
     @Getter @Setter private Set<Integer> realmList;
     @Getter @Setter private Set<Integer> seenRealmList;
@@ -670,8 +672,8 @@ public class Player implements PlayerHook, FieldFetch {
             this.getProgressManager().tryUnlockOpenStates();
             this.getQuestManager().queueEvent(QuestContent.QUEST_CONTENT_PLAYER_LEVEL_UP, level);
             this.getQuestManager().queueEvent(QuestCond.QUEST_COND_PLAYER_LEVEL_EQUAL_GREATER, level);
-            // Refresh ley-line map markers when AR8/AR12 progression enables them.
-            if ((level == 8 || level == 12) && this.scene != null) {
+            // Refresh native blossom conditions at every Adventure Rank change.
+            if (this.scene != null) {
                 this.scene.getBlossomManager().notifyIcon(this);
             }
             if (level >= emu.grasscutter.game.dailytask.DailyTaskManager.UNLOCK_LEVEL

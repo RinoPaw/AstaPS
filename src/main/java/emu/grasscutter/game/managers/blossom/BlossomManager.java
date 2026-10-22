@@ -103,7 +103,9 @@ public class BlossomManager {
     /** Native group ownership and the selected camp determine the only available interactables. */
     public void ensureScriptedSpawns() {
         if (scene.getDungeonManager() != null || scene.getPlayers().isEmpty()) return;
+        var previous = selectedOutcrops;
         var active = activeOutcrops();
+        if (!previous.equals(active)) notifyIcon();
         var loaded = scene.getEntities().values().stream()
                 .filter(entity -> entity instanceof EntityGadget)
                 .map(entity -> (EntityGadget) entity)

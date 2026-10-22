@@ -1106,7 +1106,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
         var journal = new emu.grasscutter.database.RewardGrantJournal();
         var key = new emu.grasscutter.database.RewardGrantJournal.Key(
                 emu.grasscutter.database.RewardGrantJournal.Source.TRANSPOINT,
-                player.getUid(), "point." + transPointSnapshotKey(sceneId, pointId));
+                player.getUid(), "point." + sceneId + "." + pointId);
         if (journal.completed(key)) return true;
         freezeTransPointReward(sceneId, pointId, kind);
         var reward = player.getTransPointRewardSnapshots().get(transPointSnapshotKey(sceneId, pointId));

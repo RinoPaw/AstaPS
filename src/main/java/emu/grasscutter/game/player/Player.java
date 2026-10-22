@@ -141,6 +141,10 @@ public class Player implements PlayerHook, FieldFetch {
     /** Map area states a quest changed with QUEST_EXEC_CHANGE_MAP_AREA_STATE, by map area id. */
     private Map<Integer, Boolean> mapAreaStates;
     @Getter @Setter private Map<Integer, Set<Integer>> unlockedScenePoints;
+    /** New 7.1 ley-line state. Only the current day's per-city/type rotation is persisted. */
+    private String blossomRefreshDay;
+    private Map<String, Integer> blossomRotationCounts;
+
     /** Separate first-entry reward receipts; handbook unlocks do not establish discovery. */
     private Map<Integer, Set<Integer>> rewardedDungeonEntries;
     /** First activations whose independent LootCSS reward has not been settled. */
@@ -311,6 +315,9 @@ public class Player implements PlayerHook, FieldFetch {
         this.sceneTags = new HashMap<>();
         this.unlockedSceneAreas = new HashMap<>();
         this.unlockedScenePoints = new HashMap<>();
+        this.blossomRefreshDay = "";
+        this.blossomRotationCounts = new HashMap<>();
+
         this.rewardedDungeonEntries = new HashMap<>();
         this.pendingTransPointRewards = new HashMap<>();
         this.transPointRewardSnapshots = new HashMap<>();
@@ -602,6 +609,22 @@ public class Player implements PlayerHook, FieldFetch {
         return expeditionLimit;
     }
 
+    /** New state only: no legacy blossom save migration or retired schema handling. */
+    public synchronized int blossomRotationOffset(
+            String refreshDay, int cityId, String refreshType) {
+        if (!refreshDay.equals(blossomRefreshDay)) {
+            blossomRefreshDay = refreshDay;
+            blossomRotationCounts.clear();
+        }
+        return blossomRotationCounts.getOrDefault(cityId + ":" + refreshType, 0);
+    }
+
+    public synchronized void advanceBlossomRotation(
+            String refreshDay, int cityId, String refreshType) {
+        blossomRotationOffset(refreshDay, cityId, refreshType);
+        blossomRotationCounts.merge(cityId + ":" + refreshType, 1, Integer::sum);
+    }
+
     public Set<Integer> getUnlockedSceneAreas(int sceneId) {
         return this.unlockedSceneAreas.computeIfAbsent(sceneId, i -> new CopyOnWriteArraySet<>());
     }
@@ -670,6 +693,9 @@ public class Player implements PlayerHook, FieldFetch {
             this.getProgressManager().tryUnlockOpenStates();
             this.getQuestManager().queueEvent(QuestContent.QUEST_CONTENT_PLAYER_LEVEL_UP, level);
             this.getQuestManager().queueEvent(QuestCond.QUEST_COND_PLAYER_LEVEL_EQUAL_GREATER, level);
+            if (this.scene != null) {
+                this.scene.getBlossomManager().notifyIcon(this);
+            }
             if (level >= emu.grasscutter.game.dailytask.DailyTaskManager.UNLOCK_LEVEL
                     && this.getDailyTaskManager() != null) {
                 this.getDailyTaskManager().ensureDailyTasksForToday();

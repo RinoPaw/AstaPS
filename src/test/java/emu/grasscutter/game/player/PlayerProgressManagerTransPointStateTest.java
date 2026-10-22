@@ -79,6 +79,50 @@ final class PlayerProgressManagerTransPointStateTest {
     }
 
     @Test
+    void firstActivationSnapshotSurvivesConfigChangesAndFailedAdmission() {
+        var snapshots = new java.util.HashMap<String, java.util.Map<Integer, Integer>>();
+        var rolls = new java.util.concurrent.atomic.AtomicInteger();
+        var original = PlayerProgressManager.freezeRewardSnapshot(snapshots, "3.6", () -> {
+            rolls.incrementAndGet();
+            return java.util.Map.of(102, 10);
+        });
+        assertEquals(java.util.Map.of(102, 10), original);
+        assertEquals(original, PlayerProgressManager.freezeRewardSnapshot(snapshots, "3.6", () -> {
+            rolls.incrementAndGet();
+            return java.util.Map.of(201, 999);
+        }));
+        assertEquals(1, rolls.get());
+        assertThrows(UnsupportedOperationException.class, () -> original.put(201, 999));
+    }
+
+    @Test
+    void intentionalZeroPayoutIsFrozenAndNotRerolled() {
+        var snapshots = new java.util.HashMap<String, java.util.Map<Integer, Integer>>();
+        var rolls = new java.util.concurrent.atomic.AtomicInteger();
+        assertTrue(PlayerProgressManager.freezeRewardSnapshot(snapshots, "3.7", () -> {
+            rolls.incrementAndGet();
+            return java.util.Map.of();
+        }).isEmpty());
+        assertTrue(PlayerProgressManager.freezeRewardSnapshot(snapshots, "3.7", () -> {
+            rolls.incrementAndGet();
+            return java.util.Map.of(201, 5);
+        }).isEmpty());
+        assertEquals(1, rolls.get());
+    }
+
+    @Test
+    void failedRollLeavesSnapshotAbsentForLaterValidConfiguration() {
+        var snapshots = new java.util.HashMap<String, java.util.Map<Integer, Integer>>();
+        assertThrows(IllegalStateException.class, () ->
+                PlayerProgressManager.freezeRewardSnapshot(snapshots, "3.8", () -> {
+                    throw new IllegalStateException("configuration unavailable");
+                }));
+        assertFalse(snapshots.containsKey("3.8"));
+        assertEquals(java.util.Map.of(201, 5), PlayerProgressManager.freezeRewardSnapshot(
+                snapshots, "3.8", () -> java.util.Map.of(201, 5)));
+    }
+
+    @Test
     void genuineFirstUnlockIsStillReportedAsNew() {
         var unlocked = new HashSet<Integer>();
         var forceLocked = new HashSet<Integer>();

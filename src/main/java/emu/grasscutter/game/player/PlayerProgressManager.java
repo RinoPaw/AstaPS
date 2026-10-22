@@ -1063,6 +1063,14 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
         }
     }
 
+    /** A frozen zero payout is a value, not an absent snapshot. */
+    static java.util.Map<Integer, Integer> freezeRewardSnapshot(
+            java.util.Map<String, java.util.Map<Integer, Integer>> snapshots,
+            String identity,
+            java.util.function.Supplier<java.util.Map<Integer, Integer>> roll) {
+        return snapshots.computeIfAbsent(identity, unused -> java.util.Map.copyOf(roll.get()));
+    }
+
     /** A successful first roll is immutable across config reloads and admission retries. */
     private void freezeTransPointReward(int sceneId, int pointId,
             emu.grasscutter.game.reward.TransPointRewardEligibility.Kind kind) {
@@ -1070,12 +1078,12 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
         var frozen = player.getTransPointRewardSnapshots();
         if (frozen.containsKey(id)) return;
         try {
-            var rolled = emu.grasscutter.game.reward.RewardConfiguration.current().roll(
-                    "transpoint", java.util.Map.of(
-                            "type", kind.name().toLowerCase(java.util.Locale.ROOT),
-                            "scene", sceneId, "point", pointId),
-                    java.util.concurrent.ThreadLocalRandom.current());
-            frozen.put(id, java.util.Map.copyOf(rolled));
+            freezeRewardSnapshot(frozen, id, () ->
+                    emu.grasscutter.game.reward.RewardConfiguration.current().roll(
+                            "transpoint", java.util.Map.of(
+                                    "type", kind.name().toLowerCase(java.util.Locale.ROOT),
+                                    "scene", sceneId, "point", pointId),
+                            java.util.concurrent.ThreadLocalRandom.current()));
         } catch (RuntimeException error) {
             // Keep progress and pending entitlement. A roll cannot be frozen until
             // the configuration works; retries must not invent a payout.

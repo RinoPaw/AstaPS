@@ -182,7 +182,12 @@ public class BlossomManager {
         if (scene.getDungeonManager() != null || scene.getPlayers().isEmpty()) return;
         var before = activeOutcrops;
         var selected = selectedOutcrops();
-        if (before != selected && !before.isEmpty()) notifyIcon();
+        if (before != selected) {
+            Set<SpawnDataEntry> activeSources = new HashSet<>();
+            selected.forEach(row -> activeSources.add(row.spawn()));
+            scriptedSpawned.retainAll(activeSources);
+            if (!before.isEmpty()) notifyIcon();
+        }
         removeInactiveAuthoredOutcrops(selected);
         for (var active : selected) {
             var spawn = active.spawn();
@@ -437,6 +442,8 @@ public class BlossomManager {
                                 <= OVERLAP_RANGE)
                         .findFirst().orElse(null);
                 if (selected != null) {
+                    scriptedSpawned.remove(selected.spawn());
+                    scene.getSpawnedEntities().remove(selected.spawn());
                     var host = scene.getWorld().getHost();
                     host.advanceBlossomRotation(
                             currentRefreshDay(), selected.cityId(), selected.type().refreshType());

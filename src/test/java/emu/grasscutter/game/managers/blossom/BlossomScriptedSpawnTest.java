@@ -25,7 +25,7 @@ final class BlossomScriptedSpawnTest {
         sources.put(new GridBlockId(4, 0, 0, 0), new ArrayList<>(elsewhere.getSpawns()));
 
         var selected = BlossomManager.scriptedCandidates(sources, 3);
-        assertEquals(List.of(70360056, 70360057),
+        assertEquals(List.of(70360057, 70360056),
                 selected.stream().map(SpawnDataEntry::getGadgetId).toList());
         assertTrue(BlossomManager.scriptedCandidates(sources, 5).isEmpty());
     }

@@ -100,6 +100,28 @@ public class Player implements PlayerHook, FieldFetch {
     @Getter @Setter private List<Integer> showAvatarList;
     @Getter @Setter private List<Integer> showNameCardList;
     @Getter private Map<Integer, Integer> properties;
+    /** Current native blossom refresh cycle; a new schema with no legacy-save migration. */
+    private long blossomRefreshDay = Long.MIN_VALUE;
+    private Map<Integer, Integer> blossomRefreshOffsets = new HashMap<>();
+
+    public synchronized int getBlossomRefreshOffset(int refreshId, long cycleDay) {
+        ensureBlossomDay(cycleDay);
+        return blossomRefreshOffsets.getOrDefault(refreshId, 0);
+    }
+
+    public synchronized void advanceBlossomRefresh(int refreshId, long cycleDay) {
+        ensureBlossomDay(cycleDay);
+        blossomRefreshOffsets.merge(refreshId, 1, Integer::sum);
+        this.save();
+    }
+
+    private void ensureBlossomDay(long cycleDay) {
+        if (blossomRefreshDay == cycleDay) return;
+        blossomRefreshDay = cycleDay;
+        blossomRefreshOffsets.clear();
+        this.save();
+    }
+
     @Getter @Setter private int currentRealmId;
     @Getter @Setter private transient boolean isInEditMode;
     @Getter @Setter private int widgetId;
@@ -282,6 +304,7 @@ public class Player implements PlayerHook, FieldFetch {
         this.sceneId = 3;
         this.regionId = 1;
         this.properties = new HashMap<>();
+        this.blossomRefreshOffsets = new HashMap<>();
         for (PlayerProperty prop : PlayerProperty.values()) {
             if (prop.getId() < 10000) {
                 continue;
@@ -670,6 +693,9 @@ public class Player implements PlayerHook, FieldFetch {
             this.getProgressManager().tryUnlockOpenStates();
             this.getQuestManager().queueEvent(QuestContent.QUEST_CONTENT_PLAYER_LEVEL_UP, level);
             this.getQuestManager().queueEvent(QuestCond.QUEST_COND_PLAYER_LEVEL_EQUAL_GREATER, level);
+            if (this.scene != null) {
+                this.scene.getBlossomManager().notifyIcon(this);
+            }
             if (level >= emu.grasscutter.game.dailytask.DailyTaskManager.UNLOCK_LEVEL
                     && this.getDailyTaskManager() != null) {
                 this.getDailyTaskManager().ensureDailyTasksForToday();

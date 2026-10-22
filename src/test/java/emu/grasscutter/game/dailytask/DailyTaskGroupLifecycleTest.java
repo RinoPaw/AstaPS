@@ -38,10 +38,8 @@ public final class DailyTaskGroupLifecycleTest {
                         GameData.getMonsterDataMap(),
                         GameData.getRewardPreviewDataMap());
         var backups = maps.stream().map(HashMap::new).toList();
-        var cacheField = DailyTaskManager.class.getDeclaredField("GROUP_RESOURCE_SUPPORT_CACHE");
-        cacheField.setAccessible(true);
-        var cache = (Map) cacheField.get(null);
-        var oldCache = new HashMap(cache);
+        var cache = groupResourceSupportCache();
+        var oldCache = new HashMap<>(cache);
         var serverField = emu.grasscutter.Grasscutter.class.getDeclaredField("gameServer");
         serverField.setAccessible(true);
         var oldServer = serverField.get(null);
@@ -90,6 +88,13 @@ public final class DailyTaskGroupLifecycleTest {
                 1,
                 owner.manager.polls,
                 "a new host manager does not inherit the previous lifecycle's throttle");
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<Integer, Boolean> groupResourceSupportCache() throws Exception {
+        var field = DailyTaskManager.class.getDeclaredField("GROUP_RESOURCE_SUPPORT_CACHE");
+        field.setAccessible(true);
+        return (Map<Integer, Boolean>) field.get(null);
     }
 
     static void set(Class<?> c, Object target, String name, Object value) throws Exception {
@@ -147,9 +152,7 @@ public final class DailyTaskGroupLifecycleTest {
         GameData.getDailyTaskDataMap().put(10102, row);
         manager.getDailyTasks()
                 .add(gson.fromJson("{\"taskId\":10102,\"finishProgress\":8}", DailyTask.class));
-        var f = DailyTaskManager.class.getDeclaredField("GROUP_RESOURCE_SUPPORT_CACHE");
-        f.setAccessible(true);
-        ((Map<Integer, Boolean>) f.get(null)).put(133001306, true);
+        groupResourceSupportCache().put(133001306, true);
         GameData.getScriptSceneDataMap()
                 .put(
                         "flat.luas.scenes.full_globals.lua.json",

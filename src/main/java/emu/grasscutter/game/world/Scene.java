@@ -1120,6 +1120,7 @@ public class Scene {
 
                     entity = monster;
                 } else if (entry.getGadgetId() > 0) {
+                    if (!blossomManager.shouldSpawn(entry)) continue;
                     EntityGadget gadget =
                             new EntityGadget(this, entry.getGadgetId(), entry.getPos(), entry.getRot());
                     gadget.setGroupId(entry.getGroup().getGroupId());

@@ -141,6 +141,8 @@ public class Player implements PlayerHook, FieldFetch {
     /** Map area states a quest changed with QUEST_EXEC_CHANGE_MAP_AREA_STATE, by map area id. */
     private Map<Integer, Boolean> mapAreaStates;
     @Getter @Setter private Map<Integer, Set<Integer>> unlockedScenePoints;
+    @Getter private Map<String, Integer> blossomRotations = new HashMap<>();
+    @Getter @Setter private String blossomRefreshDay = "";
     /** Separate first-entry reward receipts; handbook unlocks do not establish discovery. */
     private Map<Integer, Set<Integer>> rewardedDungeonEntries;
     /** First activations whose independent LootCSS reward has not been settled. */
@@ -670,6 +672,9 @@ public class Player implements PlayerHook, FieldFetch {
             this.getProgressManager().tryUnlockOpenStates();
             this.getQuestManager().queueEvent(QuestContent.QUEST_CONTENT_PLAYER_LEVEL_UP, level);
             this.getQuestManager().queueEvent(QuestCond.QUEST_COND_PLAYER_LEVEL_EQUAL_GREATER, level);
+            if (this.scene != null) {
+                this.scene.getBlossomManager().notifyIcon(this);
+            }
             if (level >= emu.grasscutter.game.dailytask.DailyTaskManager.UNLOCK_LEVEL
                     && this.getDailyTaskManager() != null) {
                 this.getDailyTaskManager().ensureDailyTasksForToday();

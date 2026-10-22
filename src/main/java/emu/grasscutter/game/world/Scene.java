@@ -828,6 +828,8 @@ public class Scene {
 
             this.checkSpawns();
         }
+        // One authority for native-camp outcrops in Lua and grid-spawn modes.
+        blossomManager.ensureScriptedSpawns();
 
         this.scriptManager.checkRegions();
         this.scriptManager.getSealBattleManager().onTick();
@@ -1120,6 +1122,9 @@ public class Scene {
 
                     entity = monster;
                 } else if (entry.getGadgetId() > 0) {
+                    // Native blossom selection owns the map and the one active entity.
+                    if (emu.grasscutter.game.managers.blossom.BlossomType.valueOf(
+                            entry.getGadgetId()) != null) continue;
                     EntityGadget gadget =
                             new EntityGadget(this, entry.getGadgetId(), entry.getPos(), entry.getRot());
                     gadget.setGroupId(entry.getGroup().getGroupId());
@@ -1257,7 +1262,6 @@ public class Scene {
             emu.grasscutter.Grasscutter.getLogger()
                     .error("OfferingSpawnHelper nearby check failed", __t);
         }
-        blossomManager.ensureScriptedSpawns();
         emu.grasscutter.game.dailytask.DailyTaskGroupLifecycle.tick(this);
     }
 

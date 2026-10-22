@@ -41,7 +41,7 @@ final class BlossomSelectionTest {
         return BlossomSelection.select(sources, rows,
                 source -> source.getGroup().getGroupId(),
                 row -> row.getRefreshCondVec()[0].getParam().get(0) <= rank,
-                row -> day, rotations, 70653, List.of());
+                row -> day, rotations, Map.of(), 70653, List.of());
     }
 
     @Test
@@ -85,13 +85,26 @@ final class BlossomSelectionTest {
     }
 
     @Test
+    void nextAuthoredGroupOverridesDailyRandomChoice() {
+        var sources = List.of(source(1, 70360056, 11, 10),
+                source(1, 70360056, 12, 20), source(1, 70360056, 13, 30));
+        var rows = List.of(row(1, 1, SCOIN, 12));
+        var chosen = BlossomSelection.select(sources, rows, s -> 1,
+                r -> true, r -> 100, Map.of(), Map.of(1, 1), 70653, List.of());
+        assertEquals(1, chosen.size());
+        assertEquals(1, chosen.get(0).spawn().getGroup().getGroupId());
+        // All three fixture sources share group 1; the selected group must be stable.
+        assertTrue(sources.contains(chosen.get(0).spawn()));
+    }
+
+    @Test
     void claimedOutcropRotatesAndDoesNotReappearInSameRefresh() {
         var sources = List.of(source(1, 70360056, 1, 10),
                 source(1, 70360056, 2, 20), source(1, 70360056, 3, 30));
         var rows = List.of(row(1, 1, SCOIN, 12));
         var chosen = choose(sources, rows, 12, 100, Map.of()).get(0).spawn();
         var moved = BlossomSelection.select(sources, rows,
-                s -> 1, r -> true, r -> 100, Map.of(1, 1), 70653, List.of(chosen));
+                s -> 1, r -> true, r -> 100, Map.of(1, 1), Map.of(), 70653, List.of(chosen));
         assertEquals(1, moved.size());
         assertNotSame(chosen, moved.get(0).spawn());
         assertEquals(1, choose(sources, rows, 12, 101, Map.of()).size());

@@ -346,7 +346,7 @@ public class EntityMonster extends GameEntity {
         try {
             emu.grasscutter.game.world.WorldBossSpawnHelper.onWorldBossKilled(this);
         } catch (Throwable t) {
-            Grasscutter.getLogger().error(
+            emu.grasscutter.Grasscutter.getLogger().error(
                     "World boss death handling failed scene={} group={} cfg={} monster={}",
                     scene.getId(), getGroupId(), getConfigId(), getEntityTypeId(), t);
         }

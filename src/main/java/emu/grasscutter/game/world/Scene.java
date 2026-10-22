@@ -73,6 +73,7 @@ public class Scene {
     @Getter @Setter DungeonManager dungeonManager;
     @Getter Int2ObjectMap<Route> sceneRoutes;
     private Set<SpawnDataEntry.GridBlockId> loadedGridBlocks;
+    private Set<SpawnDataEntry> lastActiveLeyLineSources = Set.of();
     @Getter @Setter private boolean dontDestroyWhenEmpty;
     @Getter private final SceneScriptManager scriptManager;
     @Getter @Setter private WorldChallenge challenge;
@@ -1060,10 +1061,12 @@ public class Scene {
         if (!leavingBlocks.isEmpty()) {
             this.getDeadSpawnedEntities().removeIf(entry -> leavingBlocks.contains(entry.getBlockId()));
         }
-        if (this.loadedGridBlocks.containsAll(
-                loadedGridBlocks)) {
+        Set<SpawnDataEntry> activeLeyLines = blossomManager.activeSourceSet();
+        if (this.loadedGridBlocks.containsAll(loadedGridBlocks)
+                && activeLeyLines.equals(lastActiveLeyLineSources)) {
             return;
         }
+        lastActiveLeyLineSources = activeLeyLines;
         this.loadedGridBlocks = loadedGridBlocks;
         var spawnLists = GameDepot.getSpawnLists();
         Set<SpawnDataEntry> visible = new HashSet<>();
@@ -1084,7 +1087,6 @@ public class Scene {
         List<GameEntity> toAdd = new ArrayList<>();
         List<GameEntity> toRemove = new ArrayList<>();
         var spawnedEntities = this.getSpawnedEntities();
-        var activeLeyLines = blossomManager.activeSourceSet();
         for (SpawnDataEntry entry : visible) {
             // Non-active authored outcrops never enter the regular grid spawn path.
             if (emu.grasscutter.game.managers.blossom.BlossomType.valueOf(entry.getGadgetId()) != null

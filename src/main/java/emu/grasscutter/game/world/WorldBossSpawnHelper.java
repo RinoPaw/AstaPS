@@ -441,13 +441,25 @@ public final class WorldBossSpawnHelper {
 
     public static void onWorldBossKilled(EntityMonster var0) {
         int var1;
-        if (var0 == null || var0.getScene() == null || !WorldBossSpawnHelper.isWorldBossGroup(var1 = var0.getGroupId())) {
+        if (var0 == null || var0.getScene() == null) return;
+        var1 = var0.getGroupId();
+        if (!WorldBossSpawnHelper.isWorldBossGroup(var1)) {
+            if (var0.getMonsterData() != null
+                    && var0.getMonsterData().getType() == emu.grasscutter.game.props.MonsterType.MONSTER_BOSS) {
+                Grasscutter.getLogger().info(
+                        "World boss death not indexed scene={} group={} cfg={} monster={} - no reward flower rule",
+                        var0.getScene().getId(), var1, var0.getConfigId(), var0.getEntityTypeId());
+            }
             return;
         }
         WorldBossSpawnHelper.ensureIndexBuilt();
         BossSpawnEntry var2 = (BossSpawnEntry)bossByGroupId.get(var1);
         // Accept form variants (e.g. 26230301/02/03) - an exact id mismatch previously skipped flower tracking.
         if (var2 == null || !WorldBossSpawnHelper.isMatchingBossMonsterId(var2.monsterId, var0.getEntityTypeId())) {
+            Grasscutter.getLogger().warn(
+                    "World boss death ID mismatch scene={} group={} cfg={} actualMonster={} expectedMonster={}",
+                    var0.getScene().getId(), var1, var0.getConfigId(), var0.getEntityTypeId(),
+                    var2 != null ? var2.monsterId : 0);
             return;
         }
         // Real combat kill must always drop a flower. Claim/forceRespawn suppress only blocks

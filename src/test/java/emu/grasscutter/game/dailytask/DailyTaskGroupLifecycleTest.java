@@ -66,7 +66,7 @@ public final class DailyTaskGroupLifecycleTest {
         var scene = alloc(S.class);
         scene.world = world;
         scene.scripts =
-                alloc(C.class); // Not initialized: this test measures polling, not resources.
+                newScriptsFixture(); // Resources are irrelevant to this polling-only test.
         var manager = new M(owner);
         owner.manager = manager;
         DailyTaskGroupLifecycle.tick(scene, 0);
@@ -103,6 +103,13 @@ public final class DailyTaskGroupLifecycleTest {
         f.set(target, value);
     }
 
+    private static C newScriptsFixture() throws Exception {
+        // Unsafe skips C field initializers, so initialize fixture-owned entity IDs explicitly.
+        var scripts = alloc(C.class);
+        scripts.nextEntityId = 500;
+        return scripts;
+    }
+
     static <T> T alloc(Class<T> c) throws Exception {
         var f = Unsafe.class.getDeclaredField("theUnsafe");
         f.setAccessible(true);
@@ -127,7 +134,7 @@ public final class DailyTaskGroupLifecycleTest {
         scene.world = world;
         owner.scene = scene;
         owner.setWorld(world);
-        var scripts = alloc(C.class);
+        var scripts = newScriptsFixture();
         set(SceneScriptManager.class, scripts, "monsterTides", new ArrayList<>());
         scripts.initialized = true;
         scripts.scene = scene;
@@ -213,6 +220,9 @@ public final class DailyTaskGroupLifecycleTest {
                         && scene.entities.size() == 2,
                 "entry at local-policy inclusive40 loads once through real scene loader");
         manager.loadActiveGroups(scene);
+        assertTrue(
+                scene.entities.keySet().stream().allMatch(id -> id >= 500),
+                "fixture monster IDs must not start at zero when constructors are bypassed");
         assertTrue(
                 scripts.refreshes == 1 && scene.entities.size() == 2,
                 "repeated nearby calls do not duplicate group/suite");
@@ -801,7 +811,7 @@ public final class DailyTaskGroupLifecycleTest {
         Map<Integer, SceneBlock> blocks;
         Map<Integer, Set<SceneGroup>> perBlock;
         int refreshes, unloads, groupLoadEvents;
-        int nextEntityId = 500;
+        int nextEntityId;
         RuntimeException refreshFailure;
 
         C() {

@@ -2,6 +2,7 @@ package emu.grasscutter.game.managers.blossom;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import emu.grasscutter.data.excels.BlossomGroupsExcelConfigData;
 import emu.grasscutter.data.excels.BlossomRefreshExcelConfigData;
 import emu.grasscutter.game.world.SpawnDataEntry;
 import emu.grasscutter.game.world.SpawnDataEntry.SpawnGroupEntry;
@@ -41,6 +42,17 @@ final class BlossomSelectionTest {
                 source -> source.getGroup().getGroupId(),
                 row -> row.getRefreshCondVec()[0].getParam().get(0) <= rank,
                 row -> day, rotations, 70653, List.of());
+    }
+
+    @Test
+    void candidateCityNeedsAgreementBetweenNativeGroupAndNativeArea() {
+        var nativeGroup = JsonUtils.decode(
+                "{\"id\":101002003,\"cityId\":1,\"newGroupVec\":[133002369]}",
+                BlossomGroupsExcelConfigData.class);
+        assertEquals(1, BlossomSelection.cityForGroup(133002369, 1, List.of(nativeGroup)));
+        assertEquals(0, BlossomSelection.cityForGroup(133002369, 2, List.of(nativeGroup)));
+        assertEquals(0, BlossomSelection.cityForGroup(133099999, 1, List.of(nativeGroup)));
+        assertEquals(0, BlossomSelection.cityForGroup(133002369, 0, List.of(nativeGroup)));
     }
 
     @Test

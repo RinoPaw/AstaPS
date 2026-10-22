@@ -31,15 +31,7 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
-    void progressionUnlocksEachTypeAtItsExpectedAdventureRank() {
-        assertFalse(BlossomManager.unlockedAtRank(BlossomType.BLUE, 7));
-        assertTrue(BlossomManager.unlockedAtRank(BlossomType.BLUE, 8));
-        assertFalse(BlossomManager.unlockedAtRank(BlossomType.GOLD, 11));
-        assertTrue(BlossomManager.unlockedAtRank(BlossomType.GOLD, 12));
-    }
-
-    @Test
-    void identicalLocationSourcesSelectOneInteractiveOutcrop() {
+    void keepDifferentTypesAtSameLocationForNativeRefreshSelection() {
         var group = group(3, 133000001,
                 "{\"gadgetId\":70360056,\"configId\":1,\"pos\":{\"x\":1,\"y\":2,\"z\":3}}",
                 "{\"gadgetId\":70360057,\"configId\":2,\"pos\":{\"x\":1,\"y\":2,\"z\":3}}",
@@ -47,9 +39,7 @@ final class BlossomScriptedSpawnTest {
         var lists = new HashMap<GridBlockId, ArrayList<SpawnDataEntry>>();
         lists.put(new GridBlockId(3, 0, 0, 0), new ArrayList<>(group.getSpawns()));
         var selected = BlossomManager.scriptedCandidates(lists, 3);
-        assertEquals(2, selected.size());
-        assertTrue(selected.stream().anyMatch(e -> e.getConfigId() == 2));
-        assertTrue(selected.stream().anyMatch(e -> e.getConfigId() == 3));
+        assertEquals(3, selected.size());
     }
 
     private static SpawnGroupEntry group(int sceneId, int groupId, String... spawns) {

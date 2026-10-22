@@ -1085,6 +1085,7 @@ public class Scene {
         List<GameEntity> toRemove = new ArrayList<>();
         var spawnedEntities = this.getSpawnedEntities();
         for (SpawnDataEntry entry : visible) {
+            if (!blossomManager.canSpawn(entry)) continue;
 
             if (!spawnedEntities.contains(entry) && !this.getDeadSpawnedEntities().contains(entry)) {
                 // The dead set is per scene instance and forgets a collected oculus on relog.

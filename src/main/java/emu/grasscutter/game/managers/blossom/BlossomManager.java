@@ -32,7 +32,10 @@ public class BlossomManager {
     private List<SpawnDataEntry> scriptedSpawnCandidates;
     private final Set<SpawnDataEntry> scriptedSpawned = new HashSet<>();
     private static final double SCRIPTED_SPAWN_RANGE = 400;
-    private static final float OVERLAP_RANGE = 2.5f;
+    private long lastSelectionCheck;
+    private long lastRefreshDay = Long.MIN_VALUE;
+    private List<BlossomSelection.Active> lastActive = List.of();
+    private final Map<SpawnDataEntry, Integer> sourceCities = new IdentityHashMap<>();
 
     /** The regular spawn grid is bypassed while Lua scene groups are active.
      * Populate the legacy ley-line outcrops from their authored spawn records in both modes.
@@ -49,11 +52,10 @@ public class BlossomManager {
                     "Ley-line outcrop sources scene={} wealth={} revelation={}",
                     scene.getId(), gold, blue);
         }
-        int adventureRank = scene.getWorld().getHost().getLevel();
-        removeOverlappingAuthoredOutcrops(adventureRank);
-        for (SpawnDataEntry spawn : scriptedSpawnCandidates) {
-            if (scriptedSpawned.contains(spawn) || blossomConsumed.contains(spawn)
-                    || !unlockedAtRank(BlossomType.valueOf(spawn.getGadgetId()), adventureRank)) continue;
+        reconcileActiveSources();
+        for (var active : activeSources()) {
+            SpawnDataEntry spawn = active.spawn();
+            if (scriptedSpawned.contains(spawn)) continue;
             boolean nearby = scene.getPlayers().stream()
                     .anyMatch(player -> player.getPosition().computeDistance(spawn.getPos())
                             <= SCRIPTED_SPAWN_RANGE);
@@ -64,7 +66,7 @@ public class BlossomManager {
                     .map(entity -> (EntityGadget) entity)
                     .filter(entity -> BlossomType.valueOf(entity.getGadgetId()) != null)
                     .filter(entity -> entity.getPosition().computeDistance(spawn.getPos())
-                            <= OVERLAP_RANGE)
+                            <= BlossomSelection.OVERLAP_RANGE)
                     .findFirst().orElse(null);
             if (existing != null) {
                 // An already-loaded script gadget at the same position owns this outcrop.
@@ -91,40 +93,44 @@ public class BlossomManager {
         }
     }
 
-    /** Lua groups may already have loaded both authored outcrops at one location. */
-    private void removeOverlappingAuthoredOutcrops(int adventureRank) {
+    /** Remove authored outcrops outside the current native refresh selection, including Lua spawns. */
+    private void reconcileActiveSources() {
+        var active = activeSources();
         var loaded = scene.getEntities().values().stream()
                 .filter(entity -> entity instanceof EntityGadget)
                 .map(entity -> (EntityGadget) entity)
-                // A /spawn gadget has group 0 and must remain under operator control.
                 .filter(entity -> entity.getGroupId() != 0)
                 .filter(entity -> BlossomType.valueOf(entity.getGadgetId()) != null)
-                .sorted(java.util.Comparator
-                        .comparingInt((EntityGadget entity) ->
-                                entity.getGadgetId() == BlossomType.BLUE.getGadgetId() ? 0 : 1)
-                        .thenComparingInt(EntityGadget::getGroupId)
-                        .thenComparingInt(EntityGadget::getConfigId))
                 .toList();
-        var kept = new ArrayList<EntityGadget>();
         for (var gadget : loaded) {
-            var type = BlossomType.valueOf(gadget.getGadgetId());
-            boolean locked = !unlockedAtRank(type, adventureRank);
-            boolean duplicate = kept.stream().anyMatch(other ->
-                    other.getPosition().computeDistance(gadget.getPosition()) <= OVERLAP_RANGE);
-            if (locked || duplicate) {
-                Grasscutter.getLogger().info(
-                        "Ley-line authored outcrop suppressed group={} config={} gadget={} "
-                                + "reason={} adventureRank={}",
-                        gadget.getGroupId(), gadget.getConfigId(), gadget.getGadgetId(),
-                        locked ? "locked" : "overlap", adventureRank);
-                scene.removeEntity(gadget,
-                        VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE);
-                createdEntity.remove(gadget);
-                if (duplicate && gadget.getSpawnEntry() != null) scriptedSpawned.add(gadget.getSpawnEntry());
-            } else {
-                kept.add(gadget);
+            boolean selected = active.stream().anyMatch(row -> sameSource(row.spawn(), gadget));
+            if (selected) continue;
+            Grasscutter.getLogger().debug(
+                    "Suppress inactive ley-line group={} config={} gadget={}",
+                    gadget.getGroupId(), gadget.getConfigId(), gadget.getGadgetId());
+            scene.removeEntity(gadget, VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE);
+            createdEntity.remove(gadget);
+            if (gadget.getSpawnEntry() != null) {
+                scriptedSpawned.remove(gadget.getSpawnEntry());
+                scene.getSpawnedEntities().remove(gadget.getSpawnEntry());
             }
         }
+        if (!active.equals(lastActive)) {
+            lastActive = active;
+            notifyIcon();
+        }
+    }
+
+    private static boolean sameSource(SpawnDataEntry source, EntityGadget gadget) {
+        return source.getGroup().getGroupId() == gadget.getGroupId()
+                && source.getConfigId() == gadget.getConfigId()
+                && source.getGadgetId() == gadget.getGadgetId();
+    }
+
+    /** Scene.checkSpawns uses the same active selection as the map packet. */
+    public boolean canSpawn(SpawnDataEntry source) {
+        return BlossomType.valueOf(source.getGadgetId()) == null
+                || activeSources().stream().anyMatch(active -> active.spawn() == source);
     }
 
     /** Use existing spawn coordinates and gadget IDs, never synthetic ley-line positions. */
@@ -147,7 +153,9 @@ public class BlossomManager {
         var distinct = new ArrayList<SpawnDataEntry>();
         for (var entry : source) {
             if (distinct.stream().noneMatch(other ->
-                    other.getPos().computeDistance(entry.getPos()) <= OVERLAP_RANGE)) {
+                    other.getGadgetId() == entry.getGadgetId()
+                            && other.getPos().computeDistance(entry.getPos())
+                                    <= BlossomSelection.OVERLAP_RANGE)) {
                 distinct.add(entry);
             }
         }
@@ -159,6 +167,16 @@ public class BlossomManager {
     }
 
     public void onTick() {
+        long now = System.currentTimeMillis();
+        if (now - lastSelectionCheck >= 1000) {
+            lastSelectionCheck = now;
+            long day = refreshDay("04:00:00");
+            if (lastRefreshDay != Long.MIN_VALUE && day != lastRefreshDay) {
+                blossomConsumed.clear();
+            }
+            lastRefreshDay = day;
+            reconcileActiveSources();
+        }
         synchronized (blossomActivities) {
             var it = blossomActivities.iterator();
             while (it.hasNext()) {
@@ -192,9 +210,9 @@ public class BlossomManager {
             return;
         }
         var id = gadget.getGadgetId();
-        if (BlossomType.valueOf(id) == null) {
-            return;
-        }
+        if (BlossomType.valueOf(id) == null) return;
+        if (gadget.getGroupId() != 0 && activeSources().stream()
+                .noneMatch(active -> sameSource(active.spawn(), gadget))) return;
         // Source gadget rows may carry a generic type under 7.1; a ley-line outcrop
         // always needs a worktop to start its combat challenge.
         GadgetWorktop gadgetWorktop = gadget.getContent() instanceof GadgetWorktop worktop
@@ -249,48 +267,99 @@ public class BlossomManager {
         notifyIcon();
     }
 
-    /** Each player receives only the outcrops unlocked at their current Adventure Rank. */
+    /** Global 7.1 native city, rank, and discovery eligibility. */
+    private static boolean refreshUnlocked(
+            emu.grasscutter.data.excels.BlossomRefreshExcelConfigData row, Player player) {
+        var conditions = row.getRefreshCondVec();
+        if (conditions == null) return true;
+        for (var condition : conditions) {
+            if (condition.getType() == null) continue;
+            var param = condition.getParam();
+            switch (condition.getType()) {
+                case "BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER" -> {
+                    if (player.getLevel() < param.get(0)) return false;
+                }
+                case "BLOSSOM_REFRESH_COND_UNLOCK_ANY_AREA_IN_CITY" -> {
+                    var city = GameData.getCityDataMap().get(param.get(0).intValue());
+                    if (city == null || city.getAreaIdVec() == null
+                            || city.getAreaIdVec().stream().noneMatch(
+                                    id -> player.getUnlockedSceneAreas(city.getSceneId()).contains(id))) {
+                        return false;
+                    }
+                }
+                default -> throw new IllegalStateException(
+                        "Unsupported original blossom refresh condition: " + condition.getType());
+            }
+        }
+        return true;
+    }
+
+    private static long refreshDay(String time) {
+        var local = java.time.LocalDateTime.now();
+        var rollover = java.time.LocalTime.parse(time);
+        return (local.toLocalTime().isBefore(rollover)
+                ? local.toLocalDate().minusDays(1) : local.toLocalDate()).toEpochDay();
+    }
+
+    private int sourceCity(SpawnDataEntry source) {
+        return sourceCities.computeIfAbsent(source, entry -> {
+            int area = WorldAreaIndex.forScene(scene.getId())
+                    .level1AreaAt(entry.getPos().getX(), entry.getPos().getZ());
+            if (area == 0) return 0;
+            int cityId = 0;
+            for (var city : GameData.getCityDataMap().values()) {
+                if (city.getSceneId() != scene.getId() || city.getAreaIdVec() == null
+                        || !city.getAreaIdVec().contains(area)) continue;
+                if (cityId != 0 && cityId != city.getCityId()) return 0;
+                cityId = city.getCityId();
+            }
+            return cityId;
+        });
+    }
+
+    private List<BlossomSelection.Active> activeSources() {
+        if (scriptedSpawnCandidates == null) {
+            scriptedSpawnCandidates = scriptedCandidates(GameDepot.getSpawnLists(), scene.getId());
+        }
+        var host = scene.getWorld().getHost();
+        return BlossomSelection.select(
+                scriptedSpawnCandidates,
+                GameData.getBlossomRefreshExcelConfigDataMap().values(),
+                this::sourceCity,
+                row -> refreshUnlocked(row, host),
+                row -> refreshDay(row.getRefreshTime()),
+                host.getBlossomRefreshRotations(),
+                host.getUid(),
+                blossomConsumed);
+    }
+
     public void notifyIcon() {
         scene.getPlayers().forEach(this::notifyIcon);
     }
 
-    /** Sync map markers after EnterSceneDone, including when no outcrop is nearby. */
     public void notifyIcon(Player player) {
-        player.sendPacket(new PacketBlossomBriefInfoNotify(buildBriefInfos(player)));
-    }
-
-    // These progression thresholds are gameplay observations; original-client
-    // protobuf wire identities are verified separately in Genshin-Reverse.
-    static boolean unlockedAtRank(BlossomType type, int adventureRank) {
-        return type != null && adventureRank >= (type == BlossomType.BLUE ? 8 : 12);
-    }
-
-    private List<BlossomBriefInfoOuterClass.BlossomBriefInfo> buildBriefInfos(Player player) {
         final int wl = getWorldLevel();
-        final int worldLevel = (wl < 0) ? 0 : ((wl > 9) ? 9 : wl);
+        final int worldLevel = Math.max(0, Math.min(9, wl));
         final var worldLevelData = GameData.getWorldLevelDataMap().get(worldLevel);
-        final int monsterLevel = (worldLevelData != null) ? worldLevelData.getMonsterLevel() : 1;
-        if (scriptedSpawnCandidates == null) {
-            scriptedSpawnCandidates = scriptedCandidates(GameDepot.getSpawnLists(), scene.getId());
-        }
-        var blossoms = new ArrayList<BlossomBriefInfoOuterClass.BlossomBriefInfo>();
-        for (var spawn : scriptedSpawnCandidates) {
-            if (blossomConsumed.contains(spawn)) continue;
-            var type = BlossomType.valueOf(spawn.getGadgetId());
-            if (!unlockedAtRank(type, player.getLevel())) continue;
-            Integer previewReward = getPreviewReward(type, worldLevel);
+        final int monsterLevel = worldLevelData != null ? worldLevelData.getMonsterLevel() : 1;
+        var result = new ArrayList<BlossomBriefInfoOuterClass.BlossomBriefInfo>();
+        for (var active : activeSources()) {
+            var row = GameData.getBlossomRefreshExcelConfigDataMap().get(active.refreshId());
+            if (!refreshUnlocked(row, player)) continue;
+            var spawn = active.spawn();
+            Integer previewReward = getPreviewReward(BlossomType.valueOf(spawn.getGadgetId()), worldLevel);
             if (previewReward == null) continue;
-            blossoms.add(BlossomBriefInfoOuterClass.BlossomBriefInfo.newBuilder()
+            result.add(BlossomBriefInfoOuterClass.BlossomBriefInfo.newBuilder()
                     .setSceneId(scene.getId())
                     .setPos(spawn.getPos().toProto())
                     .setResin(20)
                     .setMonsterLevel(monsterLevel)
                     .setRewardId(previewReward)
-                    .setCircleCampId(type.getCircleCampId())
-                    .setRefreshId(type.getBlossomChestId())
+                    .setCircleCampId(BlossomType.valueOf(spawn.getGadgetId()).getCircleCampId())
+                    .setRefreshId(BlossomType.valueOf(spawn.getGadgetId()).getBlossomChestId())
                     .build());
         }
-        return blossoms;
+        player.sendPacket(new PacketBlossomBriefInfoNotify(result));
     }
 
     public int getWorldLevel() {

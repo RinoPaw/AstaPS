@@ -827,6 +827,7 @@ public class Scene {
         } else {
 
             this.checkSpawns();
+            blossomManager.ensureScriptedSpawns();
         }
 
         this.scriptManager.checkRegions();
@@ -1120,6 +1121,10 @@ public class Scene {
 
                     entity = monster;
                 } else if (entry.getGadgetId() > 0) {
+                    // Grid spawns and map notifications use the same active blossom sites.
+                    if (emu.grasscutter.game.managers.blossom.BlossomType.valueOf(
+                            entry.getGadgetId()) != null
+                            && !blossomManager.isActiveSpawn(entry)) continue;
                     EntityGadget gadget =
                             new EntityGadget(this, entry.getGadgetId(), entry.getPos(), entry.getRot());
                     gadget.setGroupId(entry.getGroup().getGroupId());

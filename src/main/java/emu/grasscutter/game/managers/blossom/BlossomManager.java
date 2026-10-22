@@ -22,9 +22,6 @@ import it.unimi.dsi.fastutil.ints.*;
 import java.util.*;
 
 public class BlossomManager {
-    private static final Set<BlossomType> MISSING_TYPES_REPORTED =
-            java.util.concurrent.ConcurrentHashMap.newKeySet();
-
     private final Scene scene;
     private final List<BlossomActivity> blossomActivities = new ArrayList<>();
     private final List<BlossomActivity> activeChests = new ArrayList<>();
@@ -236,8 +233,10 @@ public class BlossomManager {
                 scene.removeEntity(gadget, VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE);
                 createdEntity.remove(gadget);
                 // A skipped or removed source can become active after the next rotation.
-                scene.getSpawnedEntities().remove(gadget.getSpawnEntry());
-                scriptedSpawned.remove(gadget.getSpawnEntry());
+                if (gadget.getSpawnEntry() != null) {
+                    scene.getSpawnedEntities().remove(gadget.getSpawnEntry());
+                    scriptedSpawned.remove(gadget.getSpawnEntry());
+                }
             } else {
                 kept.add(gadget);
             }
@@ -366,85 +365,42 @@ public class BlossomManager {
         notifyIcon();
     }
 
-    /** Each player receives only the outcrops unlocked at their current Adventure Rank. */
+    /** Publish the same active-world selection to every client. */
     public void notifyIcon() {
         scene.getPlayers().forEach(this::notifyIcon);
     }
 
-    /** Sync map markers after EnterSceneDone, including when no outcrop is nearby. */
     public void notifyIcon(Player player) {
-        player.sendPacket(new PacketBlossomBriefInfoNotify(buildBriefInfos(player)));
+        player.sendPacket(new PacketBlossomBriefInfoNotify(buildBriefInfos()));
     }
 
-    // These progression thresholds are gameplay observations; original-client
-    // protobuf wire identities are verified separately in Genshin-Reverse.
-    static boolean unlockedAtRank(BlossomType type, int adventureRank) {
-        return type != null && adventureRank >= (type == BlossomType.BLUE ? 8 : 12);
-    }
-
-    private List<BlossomBriefInfoOuterClass.BlossomBriefInfo> buildBriefInfos(Player player) {
+    private List<BlossomBriefInfoOuterClass.BlossomBriefInfo> buildBriefInfos() {
         final int wl = getWorldLevel();
-        final int worldLevel = (wl < 0) ? 0 : ((wl > 9) ? 9 : wl);
+        final int worldLevel = Math.clamp(wl, 0, 9);
         final var worldLevelData = GameData.getWorldLevelDataMap().get(worldLevel);
         final int monsterLevel = (worldLevelData != null) ? worldLevelData.getMonsterLevel() : 1;
-        if (scriptedSpawnCandidates == null) {
-            scriptedSpawnCandidates = scriptedCandidates(GameDepot.getSpawnLists(), scene.getId());
-        }
-        var blossoms = new ArrayList<BlossomBriefInfoOuterClass.BlossomBriefInfo>();
-        for (var spawn : scriptedSpawnCandidates) {
-            if (blossomConsumed.contains(spawn)) continue;
-            var type = BlossomType.valueOf(spawn.getGadgetId());
-            if (!unlockedAtRank(type, player.getLevel())) continue;
-            Integer previewReward = getPreviewReward(type, worldLevel);
-            if (previewReward == null) continue;
-            blossoms.add(BlossomBriefInfoOuterClass.BlossomBriefInfo.newBuilder()
+        var result = new ArrayList<BlossomBriefInfoOuterClass.BlossomBriefInfo>();
+        for (var active : selectedOutcrops()) {
+            var spawn = active.spawn();
+            var drops = active.refresh().getDropVec();
+            int previewIndex = Math.min(worldLevel, 8);
+            if (drops == null || drops.length <= previewIndex || drops[previewIndex] == null
+                    || drops[previewIndex].getPreviewReward() <= 0) continue;
+            result.add(BlossomBriefInfoOuterClass.BlossomBriefInfo.newBuilder()
                     .setSceneId(scene.getId())
                     .setPos(spawn.getPos().toProto())
                     .setResin(20)
                     .setMonsterLevel(monsterLevel)
-                    .setRewardId(previewReward)
-                    .setCircleCampId(type.getCircleCampId())
-                    .setRefreshId(type.getBlossomChestId())
+                    .setRewardId(drops[previewIndex].getPreviewReward())
+                    .setCircleCampId(active.type().getCircleCampId())
+                    .setRefreshId(active.type().getBlossomChestId())
                     .build());
         }
-        return blossoms;
+        return result;
     }
 
     public int getWorldLevel() {
         return scene.getWorld().getWorldLevel();
-    }
-
-    private static Integer getPreviewReward(BlossomType type, int worldLevel) {
-        if (type == null || worldLevel < 0 || worldLevel > 9) {
-            throw new IllegalArgumentException(
-                    "Unsupported blossom type/world level: " + type + "/" + worldLevel);
-        }
-        // Both kinds have blossomChestId=1 in the native Excel rows. The actual
-        // distinction is refreshType (SCOIN vs EXP), shared across cities.
-        Integer previewId = null;
-        for (var data : GameData.getBlossomRefreshExcelConfigDataMap().values()) {
-            if (!type.refreshType().equals(data.getRefreshType())) continue;
-            var drops = data.getDropVec();
-            // Native Excel has 9 preview tiers (WL0..WL8); WL9 shares the capped WL8 preview.
-            int index = worldLevel == 9 ? 8 : worldLevel;
-            if (drops == null || drops.length <= index || drops[index] == null
-                    || drops[index].getPreviewReward() <= 0) {
-                throw new IllegalStateException(
-                        "Missing native blossom preview: " + type + " WL" + worldLevel
-                                + " refresh=" + data.getId());
-            }
-            int candidate = drops[index].getPreviewReward();
-            if (previewId != null && previewId != candidate) {
-                throw new IllegalStateException(
-                        "Conflicting native blossom previews: " + type + " WL" + worldLevel);
-            }
-            previewId = candidate;
-        }
-        if (previewId == null && MISSING_TYPES_REPORTED.add(type)) {
-            Grasscutter.getLogger().error(
-                    "Missing native blossom refresh type {} for {}", type.refreshType(), type);
-        }
-        return previewId;
     }
 
     public boolean hasRewardChest(EntityGadget chest) {
@@ -458,17 +414,27 @@ public class BlossomManager {
         synchronized (activeChests) {
             var it = activeChests.iterator();
             while (it.hasNext()) {
-                var active = it.next();
-                if (active.getChest() == chest) {
-                    it.remove();
-                    // Debug-spawned outcrops have no authored SpawnDataEntry. Never
-                    // mark null as consumed, or later /spawn outcrops all get skipped.
-                    if (active.getGadget().getSpawnEntry() != null) {
-                        blossomConsumed.add(active.getGadget().getSpawnEntry());
-                    }
-                    recycleGadgetEntity(List.of(active.getGadget()));
-                    return;
+                var activity = it.next();
+                if (activity.getChest() != chest) continue;
+                it.remove();
+                var sourceGadget = activity.getGadget();
+                createdEntity.remove(sourceGadget);
+                // Manual /spawn flowers do not belong to the daily regional rotation.
+                var selected = selectedOutcrops().stream()
+                        .filter(row -> row.type() == BlossomType.valueOf(sourceGadget.getGadgetId()))
+                        .filter(row -> row.spawn().getPos().computeDistance(sourceGadget.getPosition())
+                                <= OVERLAP_RANGE)
+                        .findFirst().orElse(null);
+                if (selected != null) {
+                    var host = scene.getWorld().getHost();
+                    host.advanceBlossomRotation(
+                            currentRefreshDay(), selected.cityId(), selected.type().refreshType());
+                    // A settled claim advances only the current city/type slot.
+                    selectionRevision++;
+                    host.save();
                 }
+                notifyIcon();
+                return;
             }
         }
     }

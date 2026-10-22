@@ -1,5 +1,6 @@
 package emu.grasscutter.data.excels;
 
+import com.google.gson.annotations.SerializedName;
 import emu.grasscutter.data.GameResource;
 import emu.grasscutter.data.ResourceType;
 import java.util.List;
@@ -12,7 +13,8 @@ public final class BlossomGroupsExcelConfigData extends GameResource {
     private int id;
     private int cityId;
     private int sectionId;
-    private int limit_level;
+    @SerializedName("limit_level")
+    private int limitLevel;
     private List<Integer> refreshTypeVec;
     private List<Integer> newGroupVec;
     private List<Integer> nextCampIdVec;

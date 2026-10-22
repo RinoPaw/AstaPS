@@ -25,3 +25,19 @@ jobs:
                               rows.append((group.get('sceneId'),group.get('groupId'),s.get('configId'),s.get('pos')))
                   print('TARGET',target,'total',len(rows),'scene_counts',dict(collections.Counter(x[0] for x in rows)),'samples',rows[:4],flush=True)
           PY
+      - name: Inspect 7.1 blossom protocol descriptors
+        run: |
+          python3 -m pip install --user protobuf
+          python3 - <<'PY'
+          import pathlib
+          from google.protobuf import descriptor_pb2
+          fd=descriptor_pb2.FileDescriptorSet()
+          fd.ParseFromString(pathlib.Path('protocol/7.1/protocol.desc').read_bytes())
+          words=('BlossomBriefInfo', 'GetBlossomBriefInfoList', 'WorldOwnerBlossom')
+          for f in fd.file:
+              for m in f.message_type:
+                  if not any(w in m.name for w in words):continue
+                  print('PROTO',f.name,m.name,flush=True)
+                  for v in m.field:
+                      print('  FIELD',v.number,v.name,v.type,v.type_name,'repeated' if v.label==3 else '',flush=True)
+          PY

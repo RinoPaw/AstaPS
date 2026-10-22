@@ -120,7 +120,7 @@ public class BlossomManager {
                 scene.removeEntity(gadget,
                         VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE);
                 createdEntity.remove(gadget);
-                if (gadget.getSpawnEntry() != null) scriptedSpawned.add(gadget.getSpawnEntry());
+                if (duplicate && gadget.getSpawnEntry() != null) scriptedSpawned.add(gadget.getSpawnEntry());
             } else {
                 kept.add(gadget);
             }

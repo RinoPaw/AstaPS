@@ -34,6 +34,8 @@ public class BlossomManager {
     private static final double SCRIPTED_SPAWN_RANGE = 400;
     private static final float OVERLAP_RANGE = 2.5f;
     private String activeDay = "";
+    private boolean pendingDailyMapSync;
+    private final Map<SpawnDataEntry, Integer> sourceCity = new IdentityHashMap<>();
 
     /**
      * The original refresh rows set a count per city and refresh type. Candidate
@@ -50,6 +52,7 @@ public class BlossomManager {
             host.save();
         }
         if (!day.equals(activeDay)) {
+            if (!activeDay.isEmpty()) pendingDailyMapSync = true;
             activeDay = day;
             blossomConsumed.clear();
             scriptedSpawned.clear();
@@ -62,7 +65,8 @@ public class BlossomManager {
         }
         Map<String, List<SpawnDataEntry>> grouped = new TreeMap<>();
         for (var spawn : scriptedSpawnCandidates) {
-            int city = BlossomAreaIndex.cityFor(scene.getId(), spawn.getPos());
+            int city = sourceCity.computeIfAbsent(
+                    spawn, source -> BlossomAreaIndex.cityFor(scene.getId(), source.getPos()));
             var type = BlossomType.valueOf(spawn.getGadgetId());
             if (city == 0 || type == null) continue;
             grouped.computeIfAbsent(slotKey(city, type), unused -> new ArrayList<>())
@@ -144,6 +148,10 @@ public class BlossomManager {
     public void ensureScriptedSpawns() {
         if (scene.getDungeonManager() != null || scene.getPlayers().isEmpty()) return;
         var selected = activeSources();
+        if (pendingDailyMapSync) {
+            pendingDailyMapSync = false;
+            notifyIcon();
+        }
         removeInactiveAuthoredOutcrops(selected);
         for (var spawn : selected) {
             if (scriptedSpawned.contains(spawn) || blossomConsumed.contains(spawn)) continue;
@@ -342,10 +350,9 @@ public class BlossomManager {
         for (var spawn : activeSources()) {
             if (blossomConsumed.contains(spawn)) continue;
             var type = BlossomType.valueOf(spawn.getGadgetId());
-            int city = BlossomAreaIndex.cityFor(scene.getId(), spawn.getPos());
-            var config = Arrays.stream(BlossomType.values())
-                    .filter(t -> t == type).findFirst().orElse(null);
-            if (config == null) continue;
+            int city = sourceCity.computeIfAbsent(
+                    spawn, source -> BlossomAreaIndex.cityFor(scene.getId(), source.getPos()));
+            if (type == null) continue;
             var refresh = GameData.getBlossomRefreshExcelConfigDataMap().values().stream()
                     .filter(d -> d.getCityId() == city && type.refreshType().equals(d.getRefreshType()))
                     .findFirst().orElse(null);
@@ -421,7 +428,8 @@ public class BlossomManager {
                     if (active.getGadget().getSpawnEntry() != null) {
                         var spawn = active.getGadget().getSpawnEntry();
                         blossomConsumed.add(spawn);
-                        int city = BlossomAreaIndex.cityFor(scene.getId(), spawn.getPos());
+                        int city = sourceCity.computeIfAbsent(
+                    spawn, source -> BlossomAreaIndex.cityFor(scene.getId(), source.getPos()));
                         var type = BlossomType.valueOf(spawn.getGadgetId());
                         if (city > 0 && type != null) {
                             Player host = scene.getWorld().getHost();

@@ -1183,6 +1183,9 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                     1);
         } catch (Throwable ignored) {
         }
+        if (this.player.getScene() != null) {
+            this.player.getScene().getBlossomManager().notifyIcon(this.player);
+        }
     }
 
     /**
@@ -1232,6 +1235,9 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                 }
             } catch (Throwable ignored) {
             }
+        }
+        if (!newly.isEmpty() && this.player.getScene() != null) {
+            this.player.getScene().getBlossomManager().notifyIcon(this.player);
         }
     }
 

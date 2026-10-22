@@ -649,8 +649,8 @@ public class Player implements PlayerHook, FieldFetch {
             this.getQuestManager().queueEvent(QuestContent.QUEST_CONTENT_PLAYER_LEVEL_UP, level);
             this.getQuestManager().queueEvent(QuestCond.QUEST_COND_PLAYER_LEVEL_EQUAL_GREATER, level);
             // Unlock the two original ley-line categories at AR8 and AR12 without relogging.
-            if ((level == 8 || level == 12) && this.getWorld() != null) {
-                this.getScene().getBlossomManager().notifyIcon(this);
+            if ((level == 8 || level == 12) && this.scene != null) {
+                this.scene.getBlossomManager().notifyIcon(this);
             }
             if (level >= emu.grasscutter.game.dailytask.DailyTaskManager.UNLOCK_LEVEL
                     && this.getDailyTaskManager() != null) {

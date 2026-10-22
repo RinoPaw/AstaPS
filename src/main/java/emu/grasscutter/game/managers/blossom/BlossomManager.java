@@ -125,7 +125,17 @@ public class BlossomManager {
         }
         for (var outcrop : active) {
             var spawn = outcrop.spawn();
-            if (scriptedSpawned.contains(spawn)) continue;
+            if (scriptedSpawned.contains(spawn)) {
+                boolean present = scene.getEntities().values().stream().anyMatch(e ->
+                        e instanceof EntityGadget gadget && gadget.getSpawnEntry() == spawn
+                                && gadget.getGadgetId() == outcrop.type().getGadgetId());
+                boolean fighting = blossomActivities.stream().anyMatch(
+                        activity -> activity.getGadget().getSpawnEntry() == spawn);
+                boolean claiming = activeChests.stream().anyMatch(
+                        activity -> activity.getGadget().getSpawnEntry() == spawn);
+                if (present || fighting || claiming) continue;
+                scriptedSpawned.remove(spawn);
+            }
             boolean nearby = scene.getPlayers().stream().anyMatch(player ->
                     player.getPosition().computeDistance(spawn.getPos())
                             <= SCRIPTED_SPAWN_RANGE);

@@ -1,0 +1,27 @@
+name: Diagnose blossom spawn data
+on:
+  push:
+    branches:
+      - diag/blossom-spawn-71
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Summarize native blossom source candidates
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,collections,pathlib
+          targets=(70360056,70360057,70210109)
+          for file in ('data/GadgetSpawns.json','data/Spawns.json'):
+              objects=json.loads(pathlib.Path(file).read_text(encoding='utf-8'))
+              print('FILE',file,'root',type(objects).__name__,'length',len(objects),flush=True)
+              for target in targets:
+                  rows=[]
+                  for group in objects:
+                      for s in group.get('spawns',[]):
+                          if s.get('gadgetId')==target:
+                              rows.append((group.get('sceneId'),group.get('groupId'),s.get('configId'),s.get('pos')))
+                  print('TARGET',target,'total',len(rows),'scene_counts',dict(collections.Counter(x[0] for x in rows)),'samples',rows[:4],flush=True)
+          PY

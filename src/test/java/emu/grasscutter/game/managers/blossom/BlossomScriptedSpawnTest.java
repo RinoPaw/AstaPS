@@ -31,15 +31,31 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
-    void progressionUnlocksEachTypeAtItsExpectedAdventureRank() {
-        assertFalse(BlossomManager.unlockedAtRank(BlossomType.BLUE, 7));
-        assertTrue(BlossomManager.unlockedAtRank(BlossomType.BLUE, 8));
-        assertFalse(BlossomManager.unlockedAtRank(BlossomType.GOLD, 11));
-        assertTrue(BlossomManager.unlockedAtRank(BlossomType.GOLD, 12));
+    void nativeMondstadtRefreshConditionsGateAdventureRank() {
+        var blue = emu.grasscutter.utils.JsonUtils.decode(
+                "{\"id\":2,\"cityId\":1,\"refreshType\":\"BLOSSOM_REFRESH_EXP\","
+                + "\"refreshCount\":1,\"refreshCondVec\":["
+                + "{\"type\":\"BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER\","
+                + "\"param\":[8]}]}",
+                emu.grasscutter.data.excels.BlossomRefreshExcelConfigData.class);
+        var gold = emu.grasscutter.utils.JsonUtils.decode(
+                "{\"id\":1,\"cityId\":1,\"refreshType\":\"BLOSSOM_REFRESH_SCOIN\","
+                + "\"refreshCount\":1,\"refreshCondVec\":["
+                + "{\"type\":\"BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER\","
+                + "\"param\":[12]}]}",
+                emu.grasscutter.data.excels.BlossomRefreshExcelConfigData.class);
+        var player = new emu.grasscutter.game.player.Player();
+        player.getProperties().put(emu.grasscutter.game.props.PlayerProperty.PROP_PLAYER_LEVEL.getId(), 7);
+        assertFalse(BlossomManager.eligible(blue, player));
+        player.getProperties().put(emu.grasscutter.game.props.PlayerProperty.PROP_PLAYER_LEVEL.getId(), 8);
+        assertTrue(BlossomManager.eligible(blue, player));
+        assertFalse(BlossomManager.eligible(gold, player));
+        player.getProperties().put(emu.grasscutter.game.props.PlayerProperty.PROP_PLAYER_LEVEL.getId(), 12);
+        assertTrue(BlossomManager.eligible(gold, player));
     }
 
     @Test
-    void identicalLocationSourcesSelectOneInteractiveOutcrop() {
+    void identicalLocationSourcesRetainBothPossibleRefreshTypes() {
         var group = group(3, 133000001,
                 "{\"gadgetId\":70360056,\"configId\":1,\"pos\":{\"x\":1,\"y\":2,\"z\":3}}",
                 "{\"gadgetId\":70360057,\"configId\":2,\"pos\":{\"x\":1,\"y\":2,\"z\":3}}",
@@ -47,7 +63,8 @@ final class BlossomScriptedSpawnTest {
         var lists = new HashMap<GridBlockId, ArrayList<SpawnDataEntry>>();
         lists.put(new GridBlockId(3, 0, 0, 0), new ArrayList<>(group.getSpawns()));
         var selected = BlossomManager.scriptedCandidates(lists, 3);
-        assertEquals(2, selected.size());
+        assertEquals(3, selected.size());
+        assertTrue(selected.stream().anyMatch(e -> e.getConfigId() == 1));
         assertTrue(selected.stream().anyMatch(e -> e.getConfigId() == 2));
         assertTrue(selected.stream().anyMatch(e -> e.getConfigId() == 3));
     }

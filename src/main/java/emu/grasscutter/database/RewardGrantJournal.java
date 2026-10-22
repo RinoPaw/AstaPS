@@ -70,9 +70,10 @@ public final class RewardGrantJournal {
         public Receipt {
             Objects.requireNonNull(key, "key");
             Objects.requireNonNull(stage, "stage");
-            // Empty rewards represent a deliberate zero-payout claim. Keeping a durable
-            // receipt prevents a later config edit from retroactively paying the same event.
-            if (rewards == null || rewards.size() > 10_000) {
+            // Only first-activation discovery rewards allow an explicit zero payout.
+            // Other paid/claimable sources must not silently settle an empty batch.
+            if (rewards == null || rewards.size() > 10_000
+                    || (rewards.isEmpty() && key.source() != Source.TRANSPOINT)) {
                 throw new IllegalArgumentException("Invalid reward batch");
             }
             if (debits == null || debits.size() > 10_000) {

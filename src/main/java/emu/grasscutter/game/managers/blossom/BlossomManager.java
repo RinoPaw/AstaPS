@@ -27,7 +27,6 @@ public class BlossomManager {
     private final List<BlossomActivity> activeChests = new ArrayList<>();
     private final List<EntityGadget> createdEntity = new ArrayList<>();
 
-    private final List<SpawnDataEntry> blossomConsumed = new ArrayList<>();
     private List<SpawnDataEntry> scriptedSpawnCandidates;
     private final Set<SpawnDataEntry> scriptedSpawned = new HashSet<>();
     private static final double SCRIPTED_SPAWN_RANGE = 400;
@@ -46,6 +45,18 @@ public class BlossomManager {
     /** Original 7.1 refresh rows for these types all specify 04:00:00. */
     private static String currentRefreshDay() {
         return java.time.LocalDateTime.now().minusHours(4).toLocalDate().toString();
+    }
+
+    /** Stable initial pick and bounded circular rotation; no invented location coordinates. */
+    static List<SpawnDataEntry> pickSources(
+            List<SpawnDataEntry> pool, int count, int seed, int rotation) {
+        if (pool.isEmpty() || count <= 0) return List.of();
+        int start = Math.floorMod(seed, pool.size());
+        var selected = new ArrayList<SpawnDataEntry>();
+        for (int i = 0; i < Math.min(count, pool.size()); i++) {
+            selected.add(pool.get(Math.floorMod(start + rotation + i, pool.size())));
+        }
+        return selected;
     }
 
     private List<SpawnDataEntry> sources() {
@@ -140,9 +151,8 @@ public class BlossomManager {
             var pool = byKey.get(row.getCityId() + ":" + type.refreshType());
             if (pool == null || pool.isEmpty()) continue;
             int offset = owner.blossomRotationOffset(day, row.getCityId(), type.refreshType());
-            int start = Math.floorMod(Objects.hash(day, row.getCityId(), type.getGadgetId()), pool.size());
-            for (int i = 0; i < Math.min(row.getRefreshCount(), pool.size()); i++) {
-                var candidate = pool.get(Math.floorMod(start + offset + i, pool.size()));
+            for (var candidate : pickSources(pool, row.getRefreshCount(),
+                    Objects.hash(day, row.getCityId(), type.getGadgetId()), offset)) {
                 next.add(new ActiveOutcrop(candidate, type, row, row.getCityId()));
             }
         }
@@ -176,7 +186,7 @@ public class BlossomManager {
         removeInactiveAuthoredOutcrops(selected);
         for (var active : selected) {
             var spawn = active.spawn();
-            if (scriptedSpawned.contains(spawn) || blossomConsumed.contains(spawn)) continue;
+            if (scriptedSpawned.contains(spawn)) continue;
             boolean nearby = scene.getPlayers().stream()
                     .anyMatch(player -> player.getPosition().computeDistance(spawn.getPos())
                             <= SCRIPTED_SPAWN_RANGE);
@@ -304,13 +314,14 @@ public class BlossomManager {
         if (createdEntity.contains(gadget)) {
             return;
         }
-        if (blossomConsumed.contains(gadget.getSpawnEntry())) {
-            return;
-        }
         var id = gadget.getGadgetId();
-        if (BlossomType.valueOf(id) == null) {
-            return;
-        }
+        var type = BlossomType.valueOf(id);
+        if (type == null) return;
+        if (gadget.getGroupId() != 0
+                && selectedOutcrops().stream().noneMatch(selected ->
+                        selected.type() == type
+                                && gadget.getPosition().computeDistance(selected.spawn().getPos())
+                                        <= OVERLAP_RANGE)) return;
         // Source gadget rows may carry a generic type under 7.1; a ley-line outcrop
         // always needs a worktop to start its combat challenge.
         GadgetWorktop gadgetWorktop = gadget.getContent() instanceof GadgetWorktop worktop

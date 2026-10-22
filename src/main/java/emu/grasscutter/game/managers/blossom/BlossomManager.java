@@ -144,7 +144,9 @@ public class BlossomManager {
             EntityGadget existing = scene.getEntities().values().stream()
                     .filter(entity -> entity instanceof EntityGadget)
                     .map(entity -> (EntityGadget) entity)
-                    .filter(entity -> entity.getGadgetId() == spawn.getGadgetId())
+                    .filter(entity -> entity.getGadgetId() == spawn.getGadgetId()
+                            && entity.getGroupId() == spawn.getGroup().getGroupId()
+                            && entity.getConfigId() == spawn.getConfigId())
                     .filter(entity -> entity.getPosition().computeDistance(spawn.getPos())
                             <= OVERLAP_RANGE)
                     .findFirst().orElse(null);
@@ -178,6 +180,8 @@ public class BlossomManager {
         for (var gadget : loaded) {
             boolean selected = active.stream().anyMatch(site ->
                     site.spawn().getGadgetId() == gadget.getGadgetId()
+                    && site.spawn().getGroup().getGroupId() == gadget.getGroupId()
+                    && site.spawn().getConfigId() == gadget.getConfigId()
                     && site.spawn().getPos().computeDistance(gadget.getPosition()) <= OVERLAP_RANGE);
             boolean duplicate = kept.stream().anyMatch(other ->
                     other.getPosition().computeDistance(gadget.getPosition()) <= OVERLAP_RANGE);
@@ -201,7 +205,8 @@ public class BlossomManager {
                 .filter(entry -> BlossomType.valueOf(entry.getGadgetId()) != null)
                 .distinct()
                 .sorted(java.util.Comparator
-                        .comparingInt(SpawnDataEntry::getGadgetId)
+                        .comparingInt((SpawnDataEntry entry) ->
+                                entry.getGadgetId() == BlossomType.BLUE.getGadgetId() ? 0 : 1)
                         .thenComparingInt(entry -> entry.getGroup().getGroupId())
                         .thenComparingInt(SpawnDataEntry::getConfigId))
                 .toList();

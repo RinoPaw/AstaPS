@@ -1084,7 +1084,11 @@ public class Scene {
         List<GameEntity> toAdd = new ArrayList<>();
         List<GameEntity> toRemove = new ArrayList<>();
         var spawnedEntities = this.getSpawnedEntities();
+        var activeLeyLines = blossomManager.activeSourceSet();
         for (SpawnDataEntry entry : visible) {
+            // Non-active authored outcrops never enter the regular grid spawn path.
+            if (emu.grasscutter.game.managers.blossom.BlossomType.valueOf(entry.getGadgetId()) != null
+                    && !activeLeyLines.contains(entry)) continue;
 
             if (!spawnedEntities.contains(entry) && !this.getDeadSpawnedEntities().contains(entry)) {
                 // The dead set is per scene instance and forgets a collected oculus on relog.
@@ -1150,7 +1154,10 @@ public class Scene {
             var spawnEntry = entity.getSpawnEntry();
             if (spawnEntry != null
                     && !(entity instanceof EntityWeapon)
-                    && !visible.contains(spawnEntry)) {
+                    && (!visible.contains(spawnEntry)
+                            || (emu.grasscutter.game.managers.blossom.BlossomType
+                                            .valueOf(spawnEntry.getGadgetId()) != null
+                                    && !activeLeyLines.contains(spawnEntry)))) {
                 toRemove.add(entity);
                 spawnedEntities.remove(spawnEntry);
             }

@@ -2,6 +2,7 @@ package emu.grasscutter.server.packet.recv;
 
 import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.ability.EscoffierSkillCookHelper;
 import emu.grasscutter.game.player.EntryNotice;
 import emu.grasscutter.game.quest.enums.QuestContent;
@@ -24,6 +25,14 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
         var scene = player.getScene();
         var questManager = player.getQuestManager();
         boolean freshPlayerBootstrap = BornIntroGate.isFreshPlayerBootstrap(session);
+        var world = player.getWorld();
+        Grasscutter.getLogger().info(
+                "White-load trace PostEnterSceneReq uid={} scene={} token={} loadState={} fresh={} "
+                        + "worldPaused={} scenePaused={} timeLocked={}",
+                player.getUid(), scene.getId(), player.getEnterSceneToken(),
+                player.getSceneLoadState(), freshPlayerBootstrap,
+                world != null && world.isPaused(), scene.isPaused(),
+                world != null && world.isTimeLocked());
 
         // Native-selection and automatic births converge here. Let PostEnterSceneRsp reach the
         // client before Quest 351 starts so its actors see a ready playable scene.
@@ -47,6 +56,13 @@ public class HandlerPostEnterSceneReq extends PacketHandler {
         questManager.queueEvent(QuestContent.QUEST_CONTENT_LEAVE_SCENE, scene.getPrevScene());
 
         if (!freshPlayerBootstrap) session.send(new PacketPostEnterSceneRsp(player));
+        Grasscutter.getLogger().info(
+                "White-load trace PostEnterSceneRsp issued uid={} opcode={} scene={} token={} "
+                        + "loadState={} worldPaused={} scenePaused={} timeLocked={}",
+                player.getUid(), PacketOpcodes.PostEnterSceneRsp, scene.getId(),
+                player.getEnterSceneToken(), player.getSceneLoadState(),
+                world != null && world.isPaused(), scene.isPaused(),
+                world != null && world.isTimeLocked());
 
         EscoffierSkillCookHelper.syncToClient(player);
         EntryNotice.sendOnce(player);

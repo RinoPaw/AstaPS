@@ -26,8 +26,12 @@ see `docs/rewards/source-provenance.md`.
 
 Pending activations are stored in each player's `pendingTransPointRewards`
 map, keyed by scene and point. Progress is saved before an attempt to settle the
-reward. A failed inventory admission or unavailable reward configuration leaves
-the pending record in place. Pending records are retried when the player logs in
+reward. The first activation rolls and saves an immutable reward snapshot before delivery.
+An empty snapshot is a deliberate zero reward. A failed inventory admission
+leaves the snapshot and pending record in place. If reward configuration cannot
+be evaluated at activation, the entitlement stays pending until a valid roll
+can be frozen, with the failure recorded in the log. Frozen payout contents are not recalculated after a LootCSS edit.
+Pending records are retried when the player logs in
 or the same activation request is received again. Already-unlocked points
 **without** pending records are never granted retroactive rewards.
 

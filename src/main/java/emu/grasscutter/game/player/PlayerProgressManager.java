@@ -968,6 +968,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
             var kind = emu.grasscutter.game.reward.TransPointRewardEligibility.kindOf(pointData, isStatue);
             if (kind != null && kind != emu.grasscutter.game.reward.TransPointRewardEligibility.Kind.DOMAIN) {
                 this.player.getPendingTransPointRewards(sceneId).add(pointId);
+                freezeTransPointReward(sceneId, pointId, kind);
                 pendingReward = true;
             }
         }
@@ -1049,6 +1050,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                 if (kind == emu.grasscutter.game.reward.TransPointRewardEligibility.Kind.DOMAIN) {
                     player.getRewardedDungeonEntries(sceneId).add(pointId);
                 }
+                player.getTransPointRewardSnapshots().remove(sceneId + "." + pointId);
                 player.save();
                 return true;
             } catch (RuntimeException error) {
@@ -1058,6 +1060,28 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                         player.getUid(), sceneId, pointId, kind, error);
                 return false;
             }
+        }
+    }
+
+    /** A successful first roll is immutable across config reloads and admission retries. */
+    private void freezeTransPointReward(int sceneId, int pointId,
+            emu.grasscutter.game.reward.TransPointRewardEligibility.Kind kind) {
+        String id = sceneId + "." + pointId;
+        var frozen = player.getTransPointRewardSnapshots();
+        if (frozen.containsKey(id)) return;
+        try {
+            var rolled = emu.grasscutter.game.reward.RewardConfiguration.current().roll(
+                    "transpoint", java.util.Map.of(
+                            "type", kind.name().toLowerCase(java.util.Locale.ROOT),
+                            "scene", sceneId, "point", pointId),
+                    java.util.concurrent.ThreadLocalRandom.current());
+            frozen.put(id, java.util.Map.copyOf(rolled));
+        } catch (RuntimeException error) {
+            // Keep progress and pending entitlement. A roll cannot be frozen until
+            // the configuration works; retries must not invent a payout.
+            emu.grasscutter.Grasscutter.getLogger().error(
+                    "Cannot freeze scene-point reward uid={} scene={} point={}",
+                    player.getUid(), sceneId, pointId, error);
         }
     }
 
@@ -1071,13 +1095,9 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
                 emu.grasscutter.database.RewardGrantJournal.Source.TRANSPOINT,
                 player.getUid(), "point." + sceneId + "." + pointId);
         if (journal.completed(key)) return true;
-        var reward = emu.grasscutter.game.reward.RewardConfiguration.current().roll(
-                "transpoint",
-                java.util.Map.of(
-                        "type", kind.name().toLowerCase(java.util.Locale.ROOT),
-                        "scene", sceneId,
-                        "point", pointId),
-                java.util.concurrent.ThreadLocalRandom.current());
+        freezeTransPointReward(sceneId, pointId, kind);
+        var reward = player.getTransPointRewardSnapshots().get(sceneId + "." + pointId);
+        if (reward == null) return false;
         var items = reward.entrySet().stream()
                 .filter(entry -> entry.getValue() > 0)
                 .map(entry -> new emu.grasscutter.game.inventory.GameItem(
@@ -1124,6 +1144,8 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
             // Activation is recorded independently. A later login can retry an
             // unpaid claim; ambiguous receipts remain blocked by RewardGrantJournal.
             if (this.player.getPendingTransPointRewards(sceneId).add(pointId)) {
+                freezeTransPointReward(sceneId, pointId,
+                        emu.grasscutter.game.reward.TransPointRewardEligibility.Kind.DOMAIN);
                 this.player.save();
             }
             return tryPendingTransPointReward(sceneId, pointId);

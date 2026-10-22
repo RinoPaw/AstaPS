@@ -70,7 +70,9 @@ public final class RewardGrantJournal {
         public Receipt {
             Objects.requireNonNull(key, "key");
             Objects.requireNonNull(stage, "stage");
-            if (rewards == null || rewards.isEmpty() || rewards.size() > 10_000) {
+            // Empty rewards represent a deliberate zero-payout claim. Keeping a durable
+            // receipt prevents a later config edit from retroactively paying the same event.
+            if (rewards == null || rewards.size() > 10_000) {
                 throw new IllegalArgumentException("Invalid reward batch");
             }
             if (debits == null || debits.size() > 10_000) {

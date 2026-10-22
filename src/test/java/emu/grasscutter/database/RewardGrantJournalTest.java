@@ -86,6 +86,8 @@ final class RewardGrantJournalTest {
         assertThrows(IllegalArgumentException.class, () -> new Reward(202, 1, -1));
         assertThrows(IllegalArgumentException.class, () ->
                 new Receipt(CLAIM, Stage.PREPARED, null));
+        assertThrows(IllegalArgumentException.class, () ->
+                new Receipt(CLAIM, Stage.PREPARED, new ArrayList<>()));
     }
 
     @Test

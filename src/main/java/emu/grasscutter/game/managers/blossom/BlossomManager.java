@@ -331,6 +331,7 @@ public class BlossomManager {
                 row -> refreshUnlocked(row, host),
                 row -> refreshDay(row.getRefreshTime()),
                 host.getBlossomRefreshRotations(),
+                host.getBlossomPreferredGroups(),
                 host.getUid(),
                 blossomConsumed);
     }
@@ -362,6 +363,32 @@ public class BlossomManager {
                     .build());
         }
         player.sendPacket(new PacketBlossomBriefInfoNotify(result));
+    }
+
+    /** Follow original group nextCampIdVec links only when a matching authored outcrop exists. */
+    private int nextAuthoredGroup(SpawnDataEntry completed) {
+        var authored = GameData.getBlossomGroupsExcelConfigDataMap();
+        int groupId = completed.getGroup().getGroupId();
+        int cityId = sourceCity(completed);
+        for (var row : authored.values()) {
+            if (row.getCityId() != cityId || row.getNewGroupVec() == null
+                    || !row.getNewGroupVec().contains(groupId)
+                    || row.getNextCampIdVec() == null) continue;
+            for (int nextCamp : row.getNextCampIdVec()) {
+                var nextRow = authored.get(nextCamp);
+                if (nextRow == null || nextRow.getCityId() != cityId
+                        || nextRow.getNewGroupVec() == null) continue;
+                for (int nextGroup : nextRow.getNewGroupVec()) {
+                    boolean available = scriptedSpawnCandidates.stream()
+                            .anyMatch(source -> source.getGroup().getGroupId() == nextGroup
+                                    && source.getGadgetId() == completed.getGadgetId()
+                                    && sourceCity(source) == cityId
+                                    && !blossomConsumed.contains(source));
+                    if (available) return nextGroup;
+                }
+            }
+        }
+        return 0;
     }
 
     public int getWorldLevel() {
@@ -421,8 +448,11 @@ public class BlossomManager {
                                 .filter(row -> row.spawn() == source).findFirst();
                         if (selected.isPresent()) {
                             var host = scene.getWorld().getHost();
-                            host.getBlossomRefreshRotations()
-                                    .merge(selected.get().refreshId(), 1, Integer::sum);
+                            int refreshId = selected.get().refreshId();
+                            int nextGroup = nextAuthoredGroup(source);
+                            if (nextGroup > 0) host.getBlossomPreferredGroups().put(refreshId, nextGroup);
+                            else host.getBlossomPreferredGroups().remove(refreshId);
+                            host.getBlossomRefreshRotations().merge(refreshId, 1, Integer::sum);
                             host.save();
                         }
                         blossomConsumed.add(source);

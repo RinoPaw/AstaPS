@@ -34,6 +34,7 @@ final class BlossomSelection {
             Predicate<BlossomRefreshExcelConfigData> unlocked,
             ToLongFunction<BlossomRefreshExcelConfigData> refreshDay,
             Map<Integer, Integer> rotations,
+            Map<Integer, Integer> preferredGroups,
             int uid,
             Collection<SpawnDataEntry> consumed) {
         var selected = new ArrayList<Active>();
@@ -57,6 +58,13 @@ final class BlossomSelection {
             long seed = refreshDay.applyAsLong(row) * 1103515245L
                     + (long) uid * 31 + row.getId() + rotations.getOrDefault(row.getId(), 0);
             int first = (int) Math.floorMod(seed, available.size());
+            int preferredGroup = preferredGroups.getOrDefault(row.getId(), 0);
+            for (int i = 0; i < available.size(); i++) {
+                if (available.get(i).getGroup().getGroupId() == preferredGroup) {
+                    first = i;
+                    break;
+                }
+            }
             int count = 0;
             for (int i = 0; i < available.size() && count < row.getRefreshCount(); i++) {
                 var source = available.get((first + i) % available.size());

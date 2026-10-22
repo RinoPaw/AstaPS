@@ -436,11 +436,12 @@ public class BlossomManager {
                 var sourceGadget = activity.getGadget();
                 createdEntity.remove(sourceGadget);
                 // Manual /spawn flowers do not belong to the daily regional rotation.
-                var selected = selectedOutcrops().stream()
-                        .filter(row -> row.type() == BlossomType.valueOf(sourceGadget.getGadgetId()))
-                        .filter(row -> row.spawn().getPos().computeDistance(sourceGadget.getPosition())
-                                <= OVERLAP_RANGE)
-                        .findFirst().orElse(null);
+                var selected = sourceGadget.getGroupId() == 0 ? null
+                        : selectedOutcrops().stream()
+                                .filter(row -> row.type() == BlossomType.valueOf(sourceGadget.getGadgetId()))
+                                .filter(row -> row.spawn().getPos().computeDistance(sourceGadget.getPosition())
+                                        <= OVERLAP_RANGE)
+                                .findFirst().orElse(null);
                 if (selected != null) {
                     scriptedSpawned.remove(selected.spawn());
                     scene.getSpawnedEntities().remove(selected.spawn());

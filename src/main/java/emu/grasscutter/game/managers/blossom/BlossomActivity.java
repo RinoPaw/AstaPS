@@ -15,6 +15,9 @@ public final class BlossomActivity {
     private final SceneGroup tempSceneGroup;
     private final WorldChallenge challenge;
     private final EntityGadget gadget;
+    private final int refreshId;
+
+    public int getRefreshId() { return refreshId; }
     private EntityGadget chest;
     private int step;
     private final int goal;
@@ -36,7 +39,9 @@ public final class BlossomActivity {
     private static final int BLOOMING_GADGET_ID = 70210109;
 
     public BlossomActivity(
-            EntityGadget entityGadget, List<Integer> monsters, int timeout, int worldLevel) {
+            EntityGadget entityGadget, List<Integer> monsters, int timeout,
+            int worldLevel, int refreshId) {
+        this.refreshId = refreshId;
         this.tempSceneGroup = new SceneGroup();
         this.tempSceneGroup.id = entityGadget.getId();
         this.gadget = entityGadget;

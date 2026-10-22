@@ -27,6 +27,24 @@ final class PacketBlossomBriefInfoNotifyNativeTest {
     }
 
     @Test
+    void originalClient20484UsesFieldFourteen() throws IOException {
+        var entry = BlossomBriefInfo.newBuilder()
+                .setSceneId(3).setResin(20).setRefreshId(2).build();
+        var packet = new PacketBlossomBriefInfoNotify(List.of(entry), 20484);
+        assertEquals(20484, packet.getOpcode());
+        var reader = CodedInputStream.newInstance(packet.getData());
+        assertEquals(0x72, reader.readTag());
+        assertArrayEquals(entry.toByteArray(), reader.readByteArray());
+        assertEquals(0, reader.readTag());
+    }
+
+    @Test
+    void unknownNativeListOpcodeRejected() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new PacketBlossomBriefInfoNotify(List.of(), 12345));
+    }
+
+    @Test
     void emptyListHasNoFields() {
         var packet = new PacketBlossomBriefInfoNotify(List.of());
         assertEquals(6743, packet.getOpcode());

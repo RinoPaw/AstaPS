@@ -200,11 +200,31 @@ public class BlossomManager {
 
     /** Controlled packet delivery via the debug blossomicon command. */
     public void notifyIcon(Player player) {
-        var infos = buildBriefInfos();
-        var packet = new PacketBlossomBriefInfoNotify(infos);
+        notifyIcon(player, PacketBlossomBriefInfoNotify.NATIVE_LIST_6743, Integer.MAX_VALUE);
+    }
+
+    /** Test native message identities separately, with the closest few valid scene entries. */
+    public void notifyIcon(Player player, int opcode, int limit) {
+        if (limit < 1) {
+            throw new IllegalArgumentException("Blossom marker experiment limit must be positive");
+        }
+        var where = player.getPosition();
+        var infos = buildBriefInfos().stream()
+                .sorted(java.util.Comparator.comparingDouble(info -> {
+                    double dx = info.getPos().getX() - where.getX();
+                    double dy = info.getPos().getY() - where.getY();
+                    double dz = info.getPos().getZ() - where.getZ();
+                    return dx * dx + dy * dy + dz * dz;
+                }))
+                .limit(limit)
+                .toList();
+        var packet = new PacketBlossomBriefInfoNotify(infos, opcode);
         Grasscutter.getLogger().info(
-                "Blossom native marker experiment uid={} opcode={} entries={} bytes={} scene={}",
-                player.getUid(), packet.getOpcode(), infos.size(), packet.getData().length, scene.getId());
+                "Blossom native marker experiment uid={} opcode={} entries={} bytes={} scene={} "
+                        + "closestRefreshId={} closestSceneId={}",
+                player.getUid(), packet.getOpcode(), infos.size(), packet.getData().length,
+                scene.getId(), infos.isEmpty() ? 0 : infos.get(0).getRefreshId(),
+                infos.isEmpty() ? 0 : infos.get(0).getSceneId());
         player.sendPacket(packet);
     }
 

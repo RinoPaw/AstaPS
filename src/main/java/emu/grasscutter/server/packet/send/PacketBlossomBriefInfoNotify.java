@@ -10,23 +10,33 @@ import java.io.UncheckedIOException;
 /**
  * Experimental original-client wire path for the 7.1 ley-line list.
  *
- * <p>The pinned Global 7.1 executable identifies CmdId 6743 as ABJOMOIIDHH
- * and its protobuf list at field 10. Native method CJEDOIPINHC.FHBJPLNKLLC
- * sends that list to the original client receiver at RVA 0xC78CA80.
- * The original semantic name and map UI outcome still require client testing.
+ * <p>The pinned Global 7.1 executable identifies two native messages containing
+ * the exact original repeated BlossomBriefInfo element type:
+ * 6743/field 10 and 20484/field 14. Both reach the original-client handler
+ * CJEDOIPINHC.FOEKNCLMGDP at RVA 0xC78CA80. Their semantic mapping and
+ * map display behavior are still unresolved and must be tested separately.
  * See Genshin-Reverse analyses/blossom-map-markers for exact-native evidence.
  */
 public class PacketBlossomBriefInfoNotify extends BasePacket {
-    private static final int VERIFIED_NATIVE_LIST_OPCODE = 6743;
-    private static final int VERIFIED_NATIVE_LIST_FIELD = 10;
+    public static final int NATIVE_LIST_6743 = 6743;
+    public static final int NATIVE_LIST_20484 = 20484;
 
     public PacketBlossomBriefInfoNotify(Iterable<BlossomBriefInfo> blossoms) {
-        super(VERIFIED_NATIVE_LIST_OPCODE);
+        this(blossoms, NATIVE_LIST_6743);
+    }
+
+    public PacketBlossomBriefInfoNotify(Iterable<BlossomBriefInfo> blossoms, int opcode) {
+        super(opcode);
+        int listField = switch (opcode) {
+            case NATIVE_LIST_6743 -> 10;
+            case NATIVE_LIST_20484 -> 14;
+            default -> throw new IllegalArgumentException("Unsupported original-client blossom opcode " + opcode);
+        };
         try {
             var buffer = new ByteArrayOutputStream();
             var writer = CodedOutputStream.newInstance(buffer);
             for (var entry : blossoms) {
-                writer.writeMessage(VERIFIED_NATIVE_LIST_FIELD, entry);
+                writer.writeMessage(listField, entry);
             }
             writer.flush();
             setData(buffer.toByteArray());

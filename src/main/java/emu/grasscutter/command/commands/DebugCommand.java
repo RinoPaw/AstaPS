@@ -62,6 +62,12 @@ public final class DebugCommand implements CommandHandler {
         private final Player sender;
         private final Player targetPlayer;
 
+        @Option(names = "--opcode", defaultValue = "20484", description = "Original client list opcode: 6743 or 20484")
+        private int opcode;
+
+        @Option(names = "--limit", defaultValue = "1", description = "Number of nearest blossom records to publish")
+        private int limit;
+
         private BlossomIcon(Player sender, Player targetPlayer) {
             this.sender = sender;
             this.targetPlayer = targetPlayer;
@@ -78,8 +84,13 @@ public final class DebugCommand implements CommandHandler {
                 CommandOutput.sendMessage(sender, "Native blossom-marker experiment requires scene 3.");
                 return;
             }
-            scene.getBlossomManager().notifyIcon(targetPlayer);
-            CommandOutput.sendMessage(sender, "Sent experimental 7.1 blossom marker opcode 6743.");
+            if ((opcode != 6743 && opcode != 20484) || limit < 1) {
+                CommandOutput.sendMessage(sender, "Use --opcode 6743|20484 and --limit >= 1.");
+                return;
+            }
+            scene.getBlossomManager().notifyIcon(targetPlayer, opcode, limit);
+            CommandOutput.sendMessage(sender,
+                    "Sent experimental Global 7.1 blossom packet " + opcode + ", limit " + limit + ".");
         }
     }
 

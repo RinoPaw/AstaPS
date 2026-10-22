@@ -32,6 +32,7 @@ public class BlossomManager {
     private List<SpawnDataEntry> scriptedSpawnCandidates;
     private final Set<SpawnDataEntry> scriptedSpawned = new HashSet<>();
     private static final double SCRIPTED_SPAWN_RANGE = 400;
+    private static final float OVERLAP_RANGE = 2.5f;
 
     /** The regular spawn grid is bypassed while Lua scene groups are active.
      * Populate the legacy ley-line outcrops from their authored spawn records in both modes.
@@ -48,8 +49,10 @@ public class BlossomManager {
                     "Ley-line outcrop sources scene={} wealth={} revelation={}",
                     scene.getId(), gold, blue);
         }
+        int adventureRank = scene.getWorld().getHost().getLevel();
         for (SpawnDataEntry spawn : scriptedSpawnCandidates) {
-            if (scriptedSpawned.contains(spawn) || blossomConsumed.contains(spawn)) continue;
+            if (scriptedSpawned.contains(spawn) || blossomConsumed.contains(spawn)
+                    || !unlockedAtRank(BlossomType.valueOf(spawn.getGadgetId()), adventureRank)) continue;
             boolean nearby = scene.getPlayers().stream()
                     .anyMatch(player -> player.getPosition().computeDistance(spawn.getPos())
                             <= SCRIPTED_SPAWN_RANGE);
@@ -58,15 +61,21 @@ public class BlossomManager {
             EntityGadget existing = scene.getEntities().values().stream()
                     .filter(entity -> entity instanceof EntityGadget)
                     .map(entity -> (EntityGadget) entity)
-                    .filter(entity -> entity.getGroupId() == spawn.getGroup().getGroupId()
-                            && entity.getConfigId() == spawn.getConfigId()
-                            && entity.getGadgetId() == spawn.getGadgetId())
+                    .filter(entity -> BlossomType.valueOf(entity.getGadgetId()) != null)
+                    .filter(entity -> entity.getPosition().computeDistance(spawn.getPos())
+                            <= OVERLAP_RANGE)
                     .findFirst().orElse(null);
             if (existing != null) {
-                existing.setSpawnEntry(spawn);
-                initBlossom(existing);
-                scene.broadcastPacket(new emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify(
-                        existing, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH, 0));
+                // An already-loaded script gadget at the same position owns this outcrop.
+                // Only adopt metadata when it identifies the exact authored source.
+                if (existing.getGroupId() == spawn.getGroup().getGroupId()
+                        && existing.getConfigId() == spawn.getConfigId()
+                        && existing.getGadgetId() == spawn.getGadgetId()) {
+                    existing.setSpawnEntry(spawn);
+                    initBlossom(existing);
+                    scene.broadcastPacket(new emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify(
+                            existing, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH, 0));
+                }
             } else {
                 var gadget = new EntityGadget(
                         scene, spawn.getGadgetId(), spawn.getPos(), spawn.getRot());
@@ -85,12 +94,27 @@ public class BlossomManager {
     static List<SpawnDataEntry> scriptedCandidates(
             Map<SpawnDataEntry.GridBlockId, ? extends List<SpawnDataEntry>> spawnLists,
             int sceneId) {
-        return spawnLists.entrySet().stream()
+        var source = spawnLists.entrySet().stream()
                 .filter(entry -> entry.getKey().getSceneId() == sceneId)
                 .flatMap(entry -> entry.getValue().stream())
                 .filter(entry -> BlossomType.valueOf(entry.getGadgetId()) != null)
                 .distinct()
+                // Prefer the earlier-unlocked Revelation outcrop when two source
+                // entries occupy the same physical location.
+                .sorted(java.util.Comparator
+                        .comparingInt((SpawnDataEntry entry) ->
+                                entry.getGadgetId() == BlossomType.BLUE.getGadgetId() ? 0 : 1)
+                        .thenComparingInt(entry -> entry.getGroup().getGroupId())
+                        .thenComparingInt(SpawnDataEntry::getConfigId))
                 .toList();
+        var distinct = new ArrayList<SpawnDataEntry>();
+        for (var entry : source) {
+            if (distinct.stream().noneMatch(other ->
+                    other.getPos().computeDistance(entry.getPos()) <= OVERLAP_RANGE)) {
+                distinct.add(entry);
+            }
+        }
+        return distinct;
     }
 
     public BlossomManager(Scene scene) {
@@ -188,59 +212,47 @@ public class BlossomManager {
         notifyIcon();
     }
 
+    /** Each player receives only the outcrops unlocked at their current Adventure Rank. */
     public void notifyIcon() {
-        scene.broadcastPacket(new PacketBlossomBriefInfoNotify(buildBriefInfos()));
+        scene.getPlayers().forEach(this::notifyIcon);
     }
 
     /** Sync map markers after EnterSceneDone, including when no outcrop is nearby. */
     public void notifyIcon(Player player) {
-        player.sendPacket(new PacketBlossomBriefInfoNotify(buildBriefInfos()));
+        player.sendPacket(new PacketBlossomBriefInfoNotify(buildBriefInfos(player)));
     }
 
-    private List<BlossomBriefInfoOuterClass.BlossomBriefInfo> buildBriefInfos() {
+    // These progression thresholds are gameplay observations; original-client
+    // protobuf wire identities are verified separately in Genshin-Reverse.
+    static boolean unlockedAtRank(BlossomType type, int adventureRank) {
+        return type != null && adventureRank >= (type == BlossomType.BLUE ? 8 : 12);
+    }
+
+    private List<BlossomBriefInfoOuterClass.BlossomBriefInfo> buildBriefInfos(Player player) {
         final int wl = getWorldLevel();
         final int worldLevel = (wl < 0) ? 0 : ((wl > 9) ? 9 : wl);
         final var worldLevelData = GameData.getWorldLevelDataMap().get(worldLevel);
         final int monsterLevel = (worldLevelData != null) ? worldLevelData.getMonsterLevel() : 1;
-        List<BlossomBriefInfoOuterClass.BlossomBriefInfo> blossoms = new ArrayList<>();
-        GameDepot.getSpawnLists()
-                .forEach(
-                        (gridBlockId, spawnDataEntryList) -> {
-                            int sceneId = gridBlockId.getSceneId();
-                            if (sceneId != scene.getId()) return;
-                            // The block list already holds every spawn bucketed into this block, so
-                            // walking out to each entry's whole group re-emitted the group once per
-                            // entry - and re-emitted spawns that belong to other blocks, which then
-                            // got listed again when those blocks came round.
-                            spawnDataEntryList.stream()
-                                    .filter(spawn -> !blossomConsumed.contains(spawn))
-                                    .filter(spawn -> BlossomType.valueOf(spawn.getGadgetId()) != null)
-                                    .forEach(
-                                            spawn -> {
-                                                var type = BlossomType.valueOf(spawn.getGadgetId());
-                                                Integer previewReward = getPreviewReward(type, worldLevel);
-                                                if (previewReward == null) {
-                                                    // No drop table for this blossom at this world level.
-                                                    // Listing it anyway is not an option - setRewardId
-                                                    // unboxes - and this runs on the scene tick, so one
-                                                    // unconfigured blossom would take the whole world down
-                                                    // with it. Leave it out of the notify instead.
-                                                    return;
-                                                }
-                                                blossoms.add(
-                                                        BlossomBriefInfoOuterClass.BlossomBriefInfo.newBuilder()
-                                                                .setSceneId(sceneId)
-                                                                .setPos(spawn.getPos().toProto())
-                                                                .setResin(20)
-                                                                .setMonsterLevel(monsterLevel)
-                                                                .setRewardId(previewReward)
-                                                                .setCircleCampId(type.getCircleCampId())
-                                                                .setRefreshId(
-                                                                        type.getBlossomChestId()) // TODO: replace when using actual
-                                                                // leylines
-                                                                .build());
-                                            });
-                        });
+        if (scriptedSpawnCandidates == null) {
+            scriptedSpawnCandidates = scriptedCandidates(GameDepot.getSpawnLists(), scene.getId());
+        }
+        var blossoms = new ArrayList<BlossomBriefInfoOuterClass.BlossomBriefInfo>();
+        for (var spawn : scriptedSpawnCandidates) {
+            if (blossomConsumed.contains(spawn)) continue;
+            var type = BlossomType.valueOf(spawn.getGadgetId());
+            if (!unlockedAtRank(type, player.getLevel())) continue;
+            Integer previewReward = getPreviewReward(type, worldLevel);
+            if (previewReward == null) continue;
+            blossoms.add(BlossomBriefInfoOuterClass.BlossomBriefInfo.newBuilder()
+                    .setSceneId(scene.getId())
+                    .setPos(spawn.getPos().toProto())
+                    .setResin(20)
+                    .setMonsterLevel(monsterLevel)
+                    .setRewardId(previewReward)
+                    .setCircleCampId(type.getCircleCampId())
+                    .setRefreshId(type.getBlossomChestId())
+                    .build());
+        }
         return blossoms;
     }
 

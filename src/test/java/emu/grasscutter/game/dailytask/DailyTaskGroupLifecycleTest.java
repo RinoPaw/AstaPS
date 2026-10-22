@@ -29,29 +29,21 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 @ResourceLock(value = "grasscutter-global-state", mode = ResourceAccessMode.READ_WRITE)
 public final class DailyTaskGroupLifecycleTest {
     @org.junit.jupiter.api.Test
-    @SuppressWarnings({"rawtypes", "unchecked"})
     void preservesEncountersAcrossProximityChangesAndRestarts() throws Exception {
-        var maps =
-                List.<Map>of(
-                        GameData.getDailyTaskDataMap(),
-                        GameData.getScriptSceneDataMap(),
-                        GameData.getMonsterDataMap(),
-                        GameData.getRewardPreviewDataMap());
-        var backups = maps.stream().map(HashMap::new).toList();
-        var cache = groupResourceSupportCache();
-        var oldCache = new HashMap<>(cache);
+        var restore = new ArrayList<Runnable>();
+        rememberEntry(restore, GameData.getDailyTaskDataMap(), 10102);
+        rememberEntry(restore, GameData.getScriptSceneDataMap(),
+                "flat.luas.scenes.full_globals.lua.json");
+        rememberEntry(restore, GameData.getMonsterDataMap(), 21010201);
+        rememberEntry(restore, GameData.getRewardPreviewDataMap(), 991001);
+        rememberEntry(restore, groupResourceSupportCache(), 133001306);
         var serverField = emu.grasscutter.Grasscutter.class.getDeclaredField("gameServer");
         serverField.setAccessible(true);
         var oldServer = serverField.get(null);
         try {
             runLifecycleScenario();
         } finally {
-            for (int i = 0; i < maps.size(); i++) {
-                maps.get(i).clear();
-                maps.get(i).putAll(backups.get(i));
-            }
-            cache.clear();
-            cache.putAll(oldCache);
+            for (int i = restore.size() - 1; i >= 0; i--) restore.get(i).run();
             serverField.set(null, oldServer);
         }
     }
@@ -88,6 +80,15 @@ public final class DailyTaskGroupLifecycleTest {
                 1,
                 owner.manager.polls,
                 "a new host manager does not inherit the previous lifecycle's throttle");
+    }
+
+    private static <K, V> void rememberEntry(List<Runnable> restore, Map<K, V> map, K key) {
+        var existed = map.containsKey(key);
+        var previous = map.get(key);
+        restore.add(() -> {
+            if (existed) map.put(key, previous);
+            else map.remove(key);
+        });
     }
 
     @SuppressWarnings("unchecked")

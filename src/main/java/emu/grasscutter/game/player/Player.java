@@ -128,6 +128,9 @@ public class Player implements PlayerHook, FieldFetch {
     @Getter private List<ActiveForgeData> activeForges;
     @Getter private Map<Integer, ActiveCookCompoundData> activeCookCompounds;
     @Getter private Map<Integer, Integer> questGlobalVariables;
+    // Brand-new ley-line rotation save schema. No migration of pre-existing private-server state.
+    @Getter private emu.grasscutter.game.managers.blossom.BlossomRotationState blossomRotation =
+            new emu.grasscutter.game.managers.blossom.BlossomRotationState();
     @Getter private Map<Integer, Integer> openStates;
     // TPS ammunition reserve, keyed by TpsAmmunitionExcelConfigData id.
     private Map<Integer, Integer> tpsAmmunition;
@@ -670,6 +673,7 @@ public class Player implements PlayerHook, FieldFetch {
             this.getProgressManager().tryUnlockOpenStates();
             this.getQuestManager().queueEvent(QuestContent.QUEST_CONTENT_PLAYER_LEVEL_UP, level);
             this.getQuestManager().queueEvent(QuestCond.QUEST_COND_PLAYER_LEVEL_EQUAL_GREATER, level);
+            if (this.scene != null) this.scene.getBlossomManager().notifyIcon(this);
             if (level >= emu.grasscutter.game.dailytask.DailyTaskManager.UNLOCK_LEVEL
                     && this.getDailyTaskManager() != null) {
                 this.getDailyTaskManager().ensureDailyTasksForToday();

@@ -304,7 +304,11 @@ public class BlossomManager {
 
                         Grasscutter.getLogger().info("Blossom Monsters:" + monsters);
 
-                        activity = new BlossomActivity(entityGadget, monsters, -1, worldLevel);
+                        int refreshId = entityGadget.getSpawnEntry() == null ? 0
+                                : activeSites().stream()
+                                    .filter(site -> site.spawn() == entityGadget.getSpawnEntry())
+                                    .map(ActiveSite::refreshId).findFirst().orElseThrow();
+                        activity = new BlossomActivity(entityGadget, monsters, -1, worldLevel, refreshId);
                         blossomActivities.add(activity);
                     }
                     entityGadget.updateState(201);
@@ -407,12 +411,8 @@ public class BlossomManager {
                     // mark null as consumed, or later /spawn outcrops all get skipped.
                     if (active.getGadget().getSpawnEntry() != null) {
                         var source = active.getGadget().getSpawnEntry();
-                        int refreshId = activeSites().stream()
-                                .filter(site -> site.spawn() == source)
-                                .map(ActiveSite::refreshId)
-                                .findFirst().orElseThrow();
                         blossomConsumed.add(source);
-                        scene.getWorld().getHost().advanceBlossomRefresh(refreshId, cycleDay());
+                        scene.getWorld().getHost().advanceBlossomRefresh(active.getRefreshId(), cycleDay());
                         scriptedSpawned.remove(source);
                     }
                     recycleGadgetEntity(List.of(active.getGadget()));

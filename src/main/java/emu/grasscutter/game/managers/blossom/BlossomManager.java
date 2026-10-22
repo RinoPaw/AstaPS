@@ -29,6 +29,69 @@ public class BlossomManager {
     private final List<EntityGadget> createdEntity = new ArrayList<>();
 
     private final List<SpawnDataEntry> blossomConsumed = new ArrayList<>();
+    private List<SpawnDataEntry> scriptedSpawnCandidates;
+    private final Set<SpawnDataEntry> scriptedSpawned = new HashSet<>();
+    private static final double SCRIPTED_SPAWN_RANGE = 400;
+
+    /** The regular spawn grid is bypassed while Lua scene groups are active.
+     * Populate the legacy ley-line outcrops from their authored spawn records in both modes.
+     */
+    public void ensureScriptedSpawns() {
+        if (scene.getDungeonManager() != null || scene.getPlayers().isEmpty()) return;
+        if (scriptedSpawnCandidates == null) {
+            scriptedSpawnCandidates = scriptedCandidates(GameDepot.getSpawnLists(), scene.getId());
+            long gold = scriptedSpawnCandidates.stream()
+                    .filter(entry -> BlossomType.valueOf(entry.getGadgetId()) == BlossomType.GOLD)
+                    .count();
+            long blue = scriptedSpawnCandidates.size() - gold;
+            Grasscutter.getLogger().info(
+                    "Ley-line outcrop sources scene={} wealth={} revelation={}",
+                    scene.getId(), gold, blue);
+        }
+        for (SpawnDataEntry spawn : scriptedSpawnCandidates) {
+            if (scriptedSpawned.contains(spawn) || blossomConsumed.contains(spawn)) continue;
+            boolean nearby = scene.getPlayers().stream()
+                    .anyMatch(player -> player.getPosition().computeDistance(spawn.getPos())
+                            <= SCRIPTED_SPAWN_RANGE);
+            if (!nearby) continue;
+
+            EntityGadget existing = scene.getEntities().values().stream()
+                    .filter(entity -> entity instanceof EntityGadget)
+                    .map(entity -> (EntityGadget) entity)
+                    .filter(entity -> entity.getGroupId() == spawn.getGroup().getGroupId()
+                            && entity.getConfigId() == spawn.getConfigId()
+                            && entity.getGadgetId() == spawn.getGadgetId())
+                    .findFirst().orElse(null);
+            if (existing != null) {
+                existing.setSpawnEntry(spawn);
+                initBlossom(existing);
+                scene.broadcastPacket(new emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify(
+                        existing, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH, 0));
+            } else {
+                var gadget = new EntityGadget(
+                        scene, spawn.getGadgetId(), spawn.getPos(), spawn.getRot());
+                gadget.setGroupId(spawn.getGroup().getGroupId());
+                gadget.setConfigId(spawn.getConfigId());
+                gadget.setSpawnEntry(spawn);
+                if (spawn.getGadgetState() > 0) gadget.setState(spawn.getGadgetState());
+                initBlossom(gadget);
+                scene.addEntity(gadget);
+            }
+            scriptedSpawned.add(spawn);
+        }
+    }
+
+    /** Use existing spawn coordinates and gadget IDs, never synthetic ley-line positions. */
+    static List<SpawnDataEntry> scriptedCandidates(
+            Map<SpawnDataEntry.GridBlockId, ? extends List<SpawnDataEntry>> spawnLists,
+            int sceneId) {
+        return spawnLists.entrySet().stream()
+                .filter(entry -> entry.getKey().getSceneId() == sceneId)
+                .flatMap(entry -> entry.getValue().stream())
+                .filter(entry -> BlossomType.valueOf(entry.getGadgetId()) != null)
+                .distinct()
+                .toList();
+    }
 
     public BlossomManager(Scene scene) {
         this.scene = scene;
@@ -71,10 +134,13 @@ public class BlossomManager {
         if (BlossomType.valueOf(id) == null) {
             return;
         }
-        gadget.buildContent();
+        // Source gadget rows may carry a generic type under 7.1; a ley-line outcrop
+        // always needs a worktop to start its combat challenge.
+        GadgetWorktop gadgetWorktop = gadget.getContent() instanceof GadgetWorktop worktop
+                ? worktop : new GadgetWorktop(gadget);
+        gadget.replaceContent(gadgetWorktop);
         gadget.setState(204);
         int worldLevel = getWorldLevel();
-        GadgetWorktop gadgetWorktop = ((GadgetWorktop) gadget.getContent());
         gadgetWorktop.addWorktopOptions(new int[] {187});
         gadgetWorktop.setOnSelectWorktopOptionEvent(
                 (GadgetWorktop context, int option) -> {
@@ -123,6 +189,15 @@ public class BlossomManager {
     }
 
     public void notifyIcon() {
+        scene.broadcastPacket(new PacketBlossomBriefInfoNotify(buildBriefInfos()));
+    }
+
+    /** Sync map markers after EnterSceneDone, including when no outcrop is nearby. */
+    public void notifyIcon(Player player) {
+        player.sendPacket(new PacketBlossomBriefInfoNotify(buildBriefInfos()));
+    }
+
+    private List<BlossomBriefInfoOuterClass.BlossomBriefInfo> buildBriefInfos() {
         final int wl = getWorldLevel();
         final int worldLevel = (wl < 0) ? 0 : ((wl > 9) ? 9 : wl);
         final var worldLevelData = GameData.getWorldLevelDataMap().get(worldLevel);
@@ -132,6 +207,7 @@ public class BlossomManager {
                 .forEach(
                         (gridBlockId, spawnDataEntryList) -> {
                             int sceneId = gridBlockId.getSceneId();
+                            if (sceneId != scene.getId()) return;
                             // The block list already holds every spawn bucketed into this block, so
                             // walking out to each entry's whole group re-emitted the group once per
                             // entry - and re-emitted spawns that belong to other blocks, which then
@@ -165,7 +241,7 @@ public class BlossomManager {
                                                                 .build());
                                             });
                         });
-        scene.broadcastPacket(new PacketBlossomBriefInfoNotify(blossoms));
+        return blossoms;
     }
 
     public int getWorldLevel() {
@@ -219,8 +295,8 @@ public class BlossomManager {
                 var active = it.next();
                 if (active.getChest() == chest) {
                     it.remove();
-                    recycleGadgetEntity(List.of(active.getGadget()));
                     blossomConsumed.add(active.getGadget().getSpawnEntry());
+                    recycleGadgetEntity(List.of(active.getGadget()));
                     return;
                 }
             }

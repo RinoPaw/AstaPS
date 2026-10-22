@@ -1257,6 +1257,7 @@ public class Scene {
             emu.grasscutter.Grasscutter.getLogger()
                     .error("OfferingSpawnHelper nearby check failed", __t);
         }
+        blossomManager.ensureScriptedSpawns();
         emu.grasscutter.game.dailytask.DailyTaskGroupLifecycle.tick(this);
     }
 

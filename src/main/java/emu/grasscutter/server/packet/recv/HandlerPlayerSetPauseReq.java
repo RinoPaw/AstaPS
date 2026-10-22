@@ -1,5 +1,6 @@
 package emu.grasscutter.server.packet.recv;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.PlayerSetPauseReqOuterClass.PlayerSetPauseReq;
 import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
@@ -15,12 +16,23 @@ public class HandlerPlayerSetPauseReq extends PacketHandler {
         var req = PlayerSetPauseReq.parseFrom(payload);
         var player = session.getPlayer();
         var world = player.getWorld();
+        var scene = player.getScene();
+        Grasscutter.getLogger().info(
+                "White-load trace PlayerSetPauseReq uid={} requestedPaused={} scene={} loadState={} "
+                        + "worldPresent={} worldPausedBefore={} scenePausedBefore={} timeLocked={}",
+                player.getUid(), req.getIsPaused(), scene == null ? 0 : scene.getId(),
+                player.getSceneLoadState(), world != null,
+                world != null && world.isPaused(), scene != null && scene.isPaused(),
+                world != null && world.isTimeLocked());
 
         // The native fresh-player intro toggles pause before the first World exists. These requests
         // are valid and their second false->true cycle is the 7.1 intro handoff boundary.
         if (world == null) {
             session.send(new PacketPlayerSetPauseRsp(Retcode.RET_SUCC));
             BornIntroGate.notePause(session, req.getIsPaused());
+            Grasscutter.getLogger().info(
+                    "White-load trace PlayerSetPauseRsp issued uid={} opcode={} noWorld=true",
+                    player.getUid(), PacketOpcodes.PlayerSetPauseRsp);
             return;
         }
 
@@ -30,6 +42,12 @@ public class HandlerPlayerSetPauseReq extends PacketHandler {
             world.setPaused(req.getIsPaused());
             session.send(new PacketPlayerSetPauseRsp(Retcode.RET_SUCC));
         }
+
+        Grasscutter.getLogger().info(
+                "White-load trace PlayerSetPauseRsp issued uid={} opcode={} worldPausedAfter={} "
+                        + "scenePausedAfter={} loadState={}",
+                player.getUid(), PacketOpcodes.PlayerSetPauseRsp, world.isPaused(),
+                scene != null && scene.isPaused(), player.getSceneLoadState());
 
         // [喵喵 v11] 客户端只有【第一次】打开更换界面才发 27037，之后不再发；
         // 但每次打开界面必发 PlayerSetPauseReq -> 挂这里才能做到“每次开界面都推”。

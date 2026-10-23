@@ -115,7 +115,7 @@ public class Scene {
         this.loadedGridBlocks = new HashSet<>();
         this.npcBornEntrySet = ConcurrentHashMap.newKeySet();
         this.scriptManager = new SceneScriptManager(this);
-        this.blossomManager = new BlossomManager(this);
+        this.blossomManager = getSceneType() == SceneType.SCENE_WORLD ? new BlossomManager(this) : null;
         this.unlockedForces = new HashSet<>();
         this.sceneEntity = new EntityScene(this);
         this.scheduler = new ServerTaskScheduler();
@@ -846,7 +846,9 @@ public class Scene {
                     } else e.onTick(sceneTime);
                 });
 
-        blossomManager.onTick();
+        if (getSceneType() == SceneType.SCENE_WORLD) {
+            blossomManager.onTick();
+        }
 
         // Remote Player may not carry this hook; settle delayed Q BoL clear from the scene tick.
         for (Player player : this.getPlayers()) {
@@ -1140,7 +1142,9 @@ public class Scene {
                     gadget.setFightProperty(FightProperty.FIGHT_PROP_MAX_HP, Float.POSITIVE_INFINITY);
 
                     entity = gadget;
-                    blossomManager.initBlossom(gadget);
+                    if (getSceneType() == SceneType.SCENE_WORLD) {
+                        blossomManager.initBlossom(gadget);
+                    }
                 }
 
                 if (entity == null) continue;
@@ -1169,7 +1173,9 @@ public class Scene {
             toRemove.forEach(this::removeEntityDirectly);
             this.broadcastPacket(
                     new PacketSceneEntityDisappearNotify(toRemove, VisionType.VisionType_VISION_REMOVE));
-            blossomManager.recycleGadgetEntity(toRemove);
+            if (getSceneType() == SceneType.SCENE_WORLD) {
+                blossomManager.recycleGadgetEntity(toRemove);
+            }
         }
     }
 

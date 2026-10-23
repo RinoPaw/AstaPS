@@ -68,7 +68,7 @@ public class GadgetChest extends GadgetContent {
     public synchronized boolean onInteract(
             Player player, GadgetInteractReqOuterClass.GadgetInteractReq req) {
         var blossomManager = getGadget().getScene().getBlossomManager();
-        if (blossomManager.hasRewardChest(getGadget())) {
+        if (blossomManager != null && blossomManager.hasRewardChest(getGadget())) {
             SceneGadget meta = resolveChestMeta();
             if (meta == null || meta.boss_chest == null
                     || finishIfAbandoned(player, meta) || !canClaimBossFlower(player)) {
@@ -285,7 +285,9 @@ public class GadgetChest extends GadgetContent {
                         .filter(bossUids::contains)
                         .allMatch(claimedBossUids::contains);
         if (allClaimed) {
-            getGadget().getScene().getBlossomManager().retireChest(getGadget());
+            if (getGadget().getScene().getSceneType() == SceneType.SCENE_WORLD) {
+                getGadget().getScene().getBlossomManager().retireChest(getGadget());
+            }
             finishOpen(player, meta, credit);
             WorldBossSpawnHelper.onBossChestClaimed(getGadget());
         }

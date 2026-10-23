@@ -9,7 +9,6 @@ import emu.grasscutter.data.excels.BlossomRefreshExcelConfigData;
 import emu.grasscutter.data.excels.CityData;
 import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.props.ActionReason;
-import emu.grasscutter.game.props.SceneType;
 import emu.grasscutter.game.reward.RewardConfiguration;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.entity.gadget.GadgetWorktop;
@@ -455,9 +454,7 @@ public class BlossomManager {
                         blossomConsumed.add(active.getGadget().getSpawnEntry());
                     }
                     recycleGadgetEntity(List.of(active.getGadget()));
-                    if (scene.getSceneType() == SceneType.SCENE_WORLD) {
-                        ensureScriptedSpawns();
-                    }
+                    ensureScriptedSpawns();
                     return;
                 }
             }

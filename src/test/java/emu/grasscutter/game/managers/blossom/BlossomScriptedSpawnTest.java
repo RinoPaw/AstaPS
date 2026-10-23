@@ -13,6 +13,15 @@ import org.junit.jupiter.api.Test;
 
 final class BlossomScriptedSpawnTest {
     @Test
+    void nativeBlossomChestTypesUseSeparateRewardGadgets() {
+        // BlossomChestExcelConfigData: SCOIN uses 70210109 and EXP uses 70210110.
+        assertEquals(70210109, BlossomType.GOLD.getRewardChestGadgetId());
+        assertEquals(70210110, BlossomType.BLUE.getRewardChestGadgetId());
+        assertEquals(1, BlossomType.GOLD.getBlossomChestId());
+        assertEquals(2, BlossomType.BLUE.getBlossomChestId());
+    }
+
+    @Test
     void scriptedSpawnsSelectOnlyAuthoredLeyLineOutcropsInTheCurrentScene() {
         var mondstadt = group(3, 133000001,
                 "{\"gadgetId\":70360056,\"configId\":1,\"pos\":{\"x\":1,\"y\":2,\"z\":3}}",

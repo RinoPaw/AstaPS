@@ -671,7 +671,8 @@ public class Player implements PlayerHook, FieldFetch {
             this.getQuestManager().queueEvent(QuestContent.QUEST_CONTENT_PLAYER_LEVEL_UP, level);
             this.getQuestManager().queueEvent(QuestCond.QUEST_COND_PLAYER_LEVEL_EQUAL_GREATER, level);
             // Refresh ley-line map markers when AR8/AR12 progression enables them.
-            if ((level == 8 || level == 12) && this.scene != null) {
+            if ((level == 8 || level == 12) && this.scene != null
+                    && this.scene.getBlossomManager() != null) {
                 this.scene.getBlossomManager().notifyIcon(this);
             }
             if (level >= emu.grasscutter.game.dailytask.DailyTaskManager.UNLOCK_LEVEL

@@ -33,7 +33,6 @@ public final class BlossomActivity {
 
     private final List<EntityMonster> activeMonsters = new ArrayList<>();
     private final Queue<Integer> candidateMonsters = new ArrayDeque<>();
-    private static final int BLOOMING_GADGET_ID = 70210109;
 
     public BlossomActivity(
             EntityGadget entityGadget, List<Integer> monsters, int timeout, int worldLevel) {
@@ -137,7 +136,9 @@ public final class BlossomActivity {
     public EntityGadget getChest() {
         if (chest == null) {
             EntityGadget rewardGadget =
-                    new EntityGadget(gadget.getScene(), BLOOMING_GADGET_ID, gadget.getPosition());
+                    new EntityGadget(gadget.getScene(),
+                            BlossomType.valueOf(gadget.getGadgetId()).getRewardChestGadgetId(),
+                            gadget.getPosition());
             SceneGadget metaGadget = new SceneGadget();
             metaGadget.boss_chest = new SceneBossChest();
             metaGadget.boss_chest.resin = 20;

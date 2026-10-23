@@ -73,6 +73,7 @@ public class Scene {
     @Getter @Setter DungeonManager dungeonManager;
     @Getter Int2ObjectMap<Route> sceneRoutes;
     private Set<SpawnDataEntry.GridBlockId> loadedGridBlocks;
+    private int loadedBlossomRevision;
     @Getter @Setter private boolean dontDestroyWhenEmpty;
     @Getter private final SceneScriptManager scriptManager;
     @Getter @Setter private WorldChallenge challenge;
@@ -1062,11 +1063,14 @@ public class Scene {
         if (!leavingBlocks.isEmpty()) {
             this.getDeadSpawnedEntities().removeIf(entry -> leavingBlocks.contains(entry.getBlockId()));
         }
-        if (this.loadedGridBlocks.containsAll(
-                loadedGridBlocks)) {
+        int blossomRevision = getSceneType() == SceneType.SCENE_WORLD
+                ? blossomManager.getActiveSetRevision() : 0;
+        if (this.loadedGridBlocks.containsAll(loadedGridBlocks)
+                && loadedBlossomRevision == blossomRevision) {
             return;
         }
         this.loadedGridBlocks = loadedGridBlocks;
+        this.loadedBlossomRevision = blossomRevision;
         var spawnLists = GameDepot.getSpawnLists();
         Set<SpawnDataEntry> visible = new HashSet<>();
         for (var block : loadedGridBlocks) {

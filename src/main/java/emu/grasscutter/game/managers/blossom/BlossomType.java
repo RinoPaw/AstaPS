@@ -42,6 +42,6 @@ public enum BlossomType {
 
     public static BlossomType random() {
         BlossomType[] values = values();
-        return values[Utils.randomRange(0, values.length)];
+        return values[Utils.randomRange(0, values.length - 1)];
     }
 }

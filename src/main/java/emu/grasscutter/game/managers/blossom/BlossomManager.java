@@ -33,6 +33,12 @@ public class BlossomManager {
     private final List<SpawnDataEntry> blossomConsumed = new ArrayList<>();
     private List<SpawnDataEntry> scriptedSpawnCandidates;
     private final Set<SpawnDataEntry> scriptedSpawned = new HashSet<>();
+    private List<SpawnDataEntry> activeSpawnCache;
+    private int cachedAdventureRank = -1;
+    private int cachedConsumedCount = -1;
+    private Set<Integer> cachedUnlockedAreas = Set.of();
+    private int activeSetRevision;
+    private boolean mapMarkersDirty;
     private static final double SCRIPTED_SPAWN_RANGE = 400;
     private static final float OVERLAP_RANGE = 2.5f;
 
@@ -40,16 +46,6 @@ public class BlossomManager {
      * Populate the legacy ley-line outcrops from their authored spawn records in both modes.
      */
     public void ensureScriptedSpawns() {
-        if (scriptedSpawnCandidates == null) {
-            scriptedSpawnCandidates = scriptedCandidates(GameDepot.getSpawnLists(), scene.getId());
-            long gold = scriptedSpawnCandidates.stream()
-                    .filter(entry -> BlossomType.valueOf(entry.getGadgetId()) == BlossomType.GOLD)
-                    .count();
-            long blue = scriptedSpawnCandidates.size() - gold;
-            Grasscutter.getLogger().info(
-                    "Ley-line outcrop sources scene={} wealth={} revelation={}",
-                    scene.getId(), gold, blue);
-        }
         removeInactiveAuthoredOutcrops();
         for (SpawnDataEntry spawn : activeScriptedSpawns()) {
             if (scriptedSpawned.contains(spawn)) continue;
@@ -173,19 +169,54 @@ public class BlossomManager {
                         && entry.getGadgetId() == gadgetId);
     }
 
-    private List<SpawnDataEntry> activeScriptedSpawns() {
+    private List<SpawnDataEntry> authoredCandidates() {
         if (scriptedSpawnCandidates == null) {
             scriptedSpawnCandidates = scriptedCandidates(GameDepot.getSpawnLists(), scene.getId());
+            long gold = scriptedSpawnCandidates.stream()
+                    .filter(entry -> BlossomType.valueOf(entry.getGadgetId()) == BlossomType.GOLD)
+                    .count();
+            Grasscutter.getLogger().info(
+                    "Ley-line outcrop sources scene={} wealth={} revelation={}",
+                    scene.getId(), gold, scriptedSpawnCandidates.size() - gold);
         }
-        var areaIndex = WorldAreaIndex.forScene(scene.getId());
-        if (areaIndex.isEmpty()) return List.of();
+        return scriptedSpawnCandidates;
+    }
+
+    private List<SpawnDataEntry> activeScriptedSpawns() {
         var host = scene.getWorld().getHost();
-        return selectActiveSpawns(scriptedSpawnCandidates.stream()
+        int rank = host.getLevel();
+        var unlocked = host.getUnlockedSceneAreas(scene.getId());
+        if (activeSpawnCache != null && cachedAdventureRank == rank
+                && cachedConsumedCount == blossomConsumed.size()
+                && cachedUnlockedAreas.equals(unlocked)) {
+            return activeSpawnCache;
+        }
+
+        var old = activeSpawnCache;
+        var areaIndex = WorldAreaIndex.forScene(scene.getId());
+        var selected = areaIndex.isEmpty() ? List.<SpawnDataEntry>of()
+                : selectActiveSpawns(authoredCandidates().stream()
                         .filter(entry -> !blossomConsumed.contains(entry)).toList(),
-                host.getLevel(), host.getUnlockedSceneAreas(scene.getId()),
-                GameData.getCityDataMap().values(),
-                GameData.getBlossomRefreshExcelConfigDataMap().values(),
-                entry -> areaIndex.level1AreaAt(entry.getPos().getX(), entry.getPos().getZ()));
+                        rank, unlocked,
+                        GameData.getCityDataMap().values(),
+                        GameData.getBlossomRefreshExcelConfigDataMap().values(),
+                        entry -> areaIndex.level1AreaAt(entry.getPos().getX(), entry.getPos().getZ()));
+
+        activeSpawnCache = selected;
+        cachedAdventureRank = rank;
+        cachedUnlockedAreas = Set.copyOf(unlocked);
+        cachedConsumedCount = blossomConsumed.size();
+        if (old == null || !old.equals(selected)) {
+            activeSetRevision++;
+            if (old != null) mapMarkersDirty = true;
+        }
+        return selected;
+    }
+
+    /** Used by the normal grid loader to notice eligibility changes without player movement. */
+    public int getActiveSetRevision() {
+        activeScriptedSpawns();
+        return activeSetRevision;
     }
 
     /** Select up to refreshCount entries for each native (cityId, refreshType) pair. */
@@ -267,6 +298,8 @@ public class BlossomManager {
     }
 
     public void onTick() {
+        activeScriptedSpawns();
+        if (mapMarkersDirty) notifyIcon();
         synchronized (blossomActivities) {
             var it = blossomActivities.iterator();
             while (it.hasNext()) {
@@ -363,6 +396,8 @@ public class BlossomManager {
 
     /** Each player receives only the outcrops unlocked at their current Adventure Rank. */
     public void notifyIcon() {
+        activeScriptedSpawns();
+        mapMarkersDirty = false;
         scene.getPlayers().forEach(this::notifyIcon);
     }
 

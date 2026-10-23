@@ -541,6 +541,7 @@ public class BlossomManager {
             if (type == null) throw new IllegalStateException("Unknown claimed blossom type");
             var cost = claimCost(costType, player.getResinBuyCount());
             if (cost == null) return null;
+            int resinBefore = player.getProperty(emu.grasscutter.game.props.PlayerProperty.PROP_PLAYER_RESIN);
             int worldLevel = getWorldLevel();
             Map<Integer, Integer> rolled = RewardConfiguration.current().rollBlossom(
                     type.rewardKind(), worldLevel, cost.rolls(),
@@ -583,6 +584,12 @@ public class BlossomManager {
                         player.getUid(), type, key.storageId());
                 return null;
             }
+            Grasscutter.getLogger().info(
+                    "Ley-line claim settled uid={} kind={} resinCostType={} rolls={} debitItem={} debitAmount={} resinBefore={} resinAfter={} rewards={}",
+                    player.getUid(), type, costType, cost.rolls(), cost.itemId(), cost.amount(),
+                    resinBefore,
+                    player.getProperty(emu.grasscutter.game.props.PlayerProperty.PROP_PLAYER_RESIN),
+                    rolled);
             return items;
         }
     }

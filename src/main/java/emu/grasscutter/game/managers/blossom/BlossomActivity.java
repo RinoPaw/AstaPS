@@ -63,8 +63,9 @@ public final class BlossomActivity {
         return this.challenge;
     }
 
-    public void setMonsters(List<EntityMonster> monsters) {
-        this.activeMonsters.clear();
+    public void addMonsters(List<EntityMonster> monsters) {
+        // Earlier waves can still have living enemies when the next wave appears.
+        this.activeMonsters.removeIf(monster -> !monster.isAlive());
         this.activeMonsters.addAll(monsters);
         for (EntityMonster monster : monsters) {
             monster.setGroupId(this.tempSceneGroup.id);
@@ -119,7 +120,7 @@ public final class BlossomActivity {
                     scene.addEntity(entity);
                     newMonsters.add(entity);
                 }
-                setMonsters(newMonsters);
+                addMonsters(newMonsters);
             } else {
                 if (getAliveMonstersCount() == 0) {
                     this.pass = true;

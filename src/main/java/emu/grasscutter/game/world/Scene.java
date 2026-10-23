@@ -1442,6 +1442,9 @@ public class Scene {
             toRemove.forEach(this::removeEntityDirectly);
             this.broadcastPacket(
                     new PacketSceneEntityDisappearNotify(toRemove, VisionType.VisionType_VISION_REMOVE));
+            if (getSceneType() == SceneType.SCENE_WORLD) {
+                blossomManager.recycleGadgetEntity(toRemove);
+            }
         }
 
         var group =

@@ -68,14 +68,16 @@ public class BlossomManager {
             if (existing != null) {
                 // An already-loaded script gadget at the same position owns this outcrop.
                 // Only adopt metadata when it identifies the exact authored source.
-                if (existing.getGroupId() == spawn.getGroup().getGroupId()
-                        && existing.getConfigId() == spawn.getConfigId()
-                        && existing.getGadgetId() == spawn.getGadgetId()) {
-                    existing.setSpawnEntry(spawn);
-                    initBlossom(existing);
-                    scene.broadcastPacket(new emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify(
-                            existing, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH, 0));
+                if (existing.getGroupId() != spawn.getGroup().getGroupId()
+                        || existing.getConfigId() != spawn.getConfigId()
+                        || existing.getGadgetId() != spawn.getGadgetId()) {
+                    // A different gadget occupies this location; it does not own this spawn.
+                    continue;
                 }
+                existing.setSpawnEntry(spawn);
+                initBlossom(existing);
+                scene.broadcastPacket(new emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify(
+                        existing, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH, 0));
             } else {
                 var gadget = new EntityGadget(
                         scene, spawn.getGadgetId(), spawn.getPos(), spawn.getRot());
@@ -106,8 +108,8 @@ public class BlossomManager {
                         .thenComparingInt(EntityGadget::getConfigId))
                 .toList();
         var kept = new ArrayList<EntityGadget>();
+        var removed = new ArrayList<GameEntity>();
         for (var gadget : loaded) {
-            var type = BlossomType.valueOf(gadget.getGadgetId());
             boolean inactive = !isActiveAuthoredGadget(
                     gadget.getGroupId(), gadget.getConfigId(), gadget.getGadgetId());
             boolean duplicate = kept.stream().anyMatch(other ->
@@ -119,12 +121,12 @@ public class BlossomManager {
                         inactive ? "inactive" : "overlap");
                 scene.removeEntity(gadget,
                         VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE);
-                createdEntity.remove(gadget);
-                if (duplicate && gadget.getSpawnEntry() != null) scriptedSpawned.add(gadget.getSpawnEntry());
+                removed.add(gadget);
             } else {
                 kept.add(gadget);
             }
         }
+        recycleGadgetEntity(removed);
     }
 
     /** Use existing spawn coordinates and gadget IDs, never synthetic ley-line positions. */
@@ -281,14 +283,17 @@ public class BlossomManager {
         }
     }
 
+    /** Entity unload is separate from activity completion and map-marker changes. */
     public void recycleGadgetEntity(List<GameEntity> entities) {
         for (var entity : entities) {
-            if (entity instanceof EntityGadget gadget) {
-                createdEntity.remove(gadget);
-                if (gadget.getSpawnEntry() != null) scriptedSpawned.remove(gadget.getSpawnEntry());
-            }
+            if (!(entity instanceof EntityGadget gadget)
+                    || BlossomType.valueOf(gadget.getGadgetId()) == null) continue;
+            createdEntity.remove(gadget);
+            var spawn = gadget.getSpawnEntry();
+            if (spawn == null) continue;
+            scriptedSpawned.remove(spawn);
+            scene.getSpawnedEntities().remove(spawn);
         }
-        notifyIcon();
     }
 
     public void initBlossom(EntityGadget gadget) {
@@ -455,6 +460,7 @@ public class BlossomManager {
                     }
                     recycleGadgetEntity(List.of(active.getGadget()));
                     ensureScriptedSpawns();
+                    notifyIcon();
                     return;
                 }
             }

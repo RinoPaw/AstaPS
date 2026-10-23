@@ -13,6 +13,40 @@ import org.junit.jupiter.api.Test;
 
 final class BlossomScriptedSpawnTest {
     @Test
+    void global71ResinModesUseTheirOwnDebitsAndRewardMultipliers() {
+        var normal = BlossomManager.claimCost(
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_NORMAL, 0);
+        assertEquals(1, normal.rolls());
+        assertEquals(20, normal.amount());
+        assertEquals(106, normal.itemId());
+
+        var condensed = BlossomManager.claimCost(
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE, 0);
+        assertEquals(3, condensed.rolls());
+        assertEquals(220007, condensed.itemId());
+        assertEquals(1, condensed.amount());
+
+        var fragile = BlossomManager.claimCost(
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_FRAGILE, 0);
+        assertEquals(3, fragile.rolls());
+        assertEquals(107009, fragile.itemId());
+
+        var transientResin = BlossomManager.claimCost(
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_TIMING, 0);
+        assertEquals(3, transientResin.rolls());
+        assertEquals(107012, transientResin.itemId());
+
+        var primogems = BlossomManager.claimCost(
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_HCOIN, 0);
+        assertEquals(3, primogems.rolls());
+        assertEquals(201, primogems.itemId());
+        assertEquals(50, primogems.amount());
+        assertNull(BlossomManager.claimCost(
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_HCOIN,
+                emu.grasscutter.game.managers.ResinManager.MAX_RESIN_BUYING_COUNT));
+    }
+
+    @Test
     void nativeBlossomChestTypesUseSeparateRewardGadgets() {
         // BlossomChestExcelConfigData: SCOIN uses 70210109 and EXP uses 70210110.
         assertEquals(70210109, BlossomType.GOLD.getRewardChestGadgetId());

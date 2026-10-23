@@ -13,6 +13,7 @@ import emu.grasscutter.game.reward.RewardConfiguration;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.entity.gadget.GadgetWorktop;
 import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.managers.ResinManager;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.*;
 import emu.grasscutter.net.proto.*;
@@ -507,8 +508,23 @@ public class BlossomManager {
      * condensed resin, preflight the complete inventory batch, then charge once.
      * Admission/payment refusal permits retry. Ambiguous delivery failures retain a receipt.
      */
-    public List<GameItem> claimReward(Player player, EntityGadget chest, boolean condensed,
-            Runnable confirmed) {
+    record ClaimCost(int rolls, int itemId, int amount) {}
+
+    /** Global 7.1 resin modes. The 40-resin option needs its request boolean identified. */
+    static ClaimCost claimCost(ResinCostTypeOuterClass.ResinCostType costType, int buyCount) {
+        return switch (costType) {
+            case ResinCostType_NONE, ResinCostType_NORMAL -> new ClaimCost(1, 106, 20);
+            case ResinCostType_CONDENSE -> new ClaimCost(3, 220007, 1);
+            case ResinCostType_FRAGILE -> new ClaimCost(3, 107009, 1);
+            case ResinCostType_TIMING -> new ClaimCost(3, 107012, 1);
+            case ResinCostType_HCOIN -> buyCount < ResinManager.MAX_RESIN_BUYING_COUNT
+                    ? new ClaimCost(3, 201, ResinManager.HCOIN_NUM_TO_BUY_RESIN[buyCount]) : null;
+            default -> null;
+        };
+    }
+
+    public List<GameItem> claimReward(Player player, EntityGadget chest,
+            ResinCostTypeOuterClass.ResinCostType costType, Runnable confirmed) {
         synchronized (activeChests) {
             BlossomActivity active = activeChests.stream()
                     .filter(candidate -> candidate.getChest() == chest)
@@ -517,9 +533,11 @@ public class BlossomManager {
 
             BlossomType type = BlossomType.valueOf(active.getGadget().getGadgetId());
             if (type == null) throw new IllegalStateException("Unknown claimed blossom type");
+            var cost = claimCost(costType, player.getResinBuyCount());
+            if (cost == null) return null;
             int worldLevel = getWorldLevel();
             Map<Integer, Integer> rolled = RewardConfiguration.current().rollBlossom(
-                    type.rewardKind(), worldLevel, condensed,
+                    type.rewardKind(), worldLevel, cost.rolls(),
                     java.util.concurrent.ThreadLocalRandom.current());
             var items = rolled.entrySet().stream()
                     .map(entry -> new GameItem(entry.getKey(), entry.getValue()))
@@ -532,7 +550,7 @@ public class BlossomManager {
             var snapshot = items.stream().map(item -> new RewardGrantJournal.Reward(
                     item.getItemId(), item.getCount(), item.getLevel())).toList();
             var debits = Configuration.GAME_OPTIONS.resinOptions.resinUsage
-                    ? List.of(new RewardGrantJournal.Debit(condensed ? 220007 : 106, condensed ? 1 : 20))
+                    ? List.of(new RewardGrantJournal.Debit(cost.itemId(), cost.amount()))
                     : List.<RewardGrantJournal.Debit>of();
             boolean accepted = RewardClaimFlow.grant(
                     RewardClaimFlow.receipt(journal, key, snapshot, debits),
@@ -542,7 +560,14 @@ public class BlossomManager {
                                     InventoryAddPolicy.ALL_OR_NOTHING, authorize, claim).allAccepted();
                         }
                         public void publish() {}
-                    }, () -> condensed ? resin.useCondensedResin(1) : resin.useResin(20),
+                    }, () -> switch (costType) {
+                        case ResinCostType_CONDENSE -> resin.useCondensedResin(1);
+                        case ResinCostType_FRAGILE, ResinCostType_TIMING ->
+                                !Configuration.GAME_OPTIONS.resinOptions.resinUsage
+                                        || player.getInventory().payItem(cost.itemId(), cost.amount());
+                        case ResinCostType_HCOIN -> resin.payHcoinRewardClaim();
+                        default -> resin.useResin(cost.amount());
+                    },
                     () -> {
                         active.confirmReward(player.getUid());
                         confirmed.run();

@@ -49,35 +49,45 @@ final class BlossomScriptedSpawnTest {
     @Test
     void global71ResinModesUseTheirOwnDebitsAndRewardMultipliers() {
         var normal = BlossomManager.claimCost(
-                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_NORMAL, 0);
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_NORMAL, 0, 1);
         assertEquals(1, normal.rolls());
         assertEquals(20, normal.amount());
         assertEquals(106, normal.itemId());
 
+        var doubleClaim = BlossomManager.claimCost(
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_NORMAL, 0, 2);
+        assertEquals(2, doubleClaim.rolls());
+        assertEquals(40, doubleClaim.amount());
+        assertEquals(106, doubleClaim.itemId());
+        assertNull(BlossomManager.claimCost(
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_NORMAL, 0, 0));
+        assertNull(BlossomManager.claimCost(
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_NORMAL, 0, 3));
+
         var condensed = BlossomManager.claimCost(
-                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE, 0);
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_CONDENSE, 0, 0);
         assertEquals(3, condensed.rolls());
         assertEquals(220007, condensed.itemId());
         assertEquals(1, condensed.amount());
 
         var fragile = BlossomManager.claimCost(
-                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_FRAGILE, 0);
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_FRAGILE, 0, 0);
         assertEquals(3, fragile.rolls());
         assertEquals(107009, fragile.itemId());
 
         var transientResin = BlossomManager.claimCost(
-                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_TIMING, 0);
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_TIMING, 0, 0);
         assertEquals(3, transientResin.rolls());
         assertEquals(107012, transientResin.itemId());
 
         var primogems = BlossomManager.claimCost(
-                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_HCOIN, 0);
+                emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_HCOIN, 0, 0);
         assertEquals(3, primogems.rolls());
         assertEquals(201, primogems.itemId());
         assertEquals(50, primogems.amount());
         assertNull(BlossomManager.claimCost(
                 emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_HCOIN,
-                emu.grasscutter.game.managers.ResinManager.MAX_RESIN_BUYING_COUNT));
+                emu.grasscutter.game.managers.ResinManager.MAX_RESIN_BUYING_COUNT, 0));
     }
 
     @Test

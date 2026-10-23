@@ -544,10 +544,17 @@ public class BlossomManager {
      */
     record ClaimCost(int rolls, int itemId, int amount) {}
 
-    /** Global 7.1 resin modes. The 40-resin option needs its request boolean identified. */
-    static ClaimCost claimCost(ResinCostTypeOuterClass.ResinCostType costType, int buyCount) {
+    /**
+     * Global 7.1 GadgetInteractReq field 14 selects one (20 resin) or two (40 resin)
+     * original-resin claims. Both use ResinCostType_NORMAL on the wire.
+     */
+    static ClaimCost claimCost(
+            ResinCostTypeOuterClass.ResinCostType costType, int buyCount, int normalClaimCount) {
         return switch (costType) {
-            case ResinCostType_NONE, ResinCostType_NORMAL -> new ClaimCost(1, 106, 20);
+            case ResinCostType_NONE, ResinCostType_NORMAL ->
+                    normalClaimCount == 1 || normalClaimCount == 2
+                            ? new ClaimCost(normalClaimCount, 106, 20 * normalClaimCount)
+                            : null;
             case ResinCostType_CONDENSE -> new ClaimCost(3, 220007, 1);
             case ResinCostType_FRAGILE -> new ClaimCost(3, 107009, 1);
             case ResinCostType_TIMING -> new ClaimCost(3, 107012, 1);
@@ -558,7 +565,7 @@ public class BlossomManager {
     }
 
     public List<GameItem> claimReward(Player player, EntityGadget chest,
-            ResinCostTypeOuterClass.ResinCostType costType, Runnable confirmed) {
+            GadgetInteractReqOuterClass.GadgetInteractReq req, Runnable confirmed) {
         synchronized (activeChests) {
             BlossomActivity active = activeChests.stream()
                     .filter(candidate -> candidate.getChest() == chest)
@@ -567,8 +574,16 @@ public class BlossomManager {
 
             BlossomType type = BlossomType.valueOf(active.getGadget().getGadgetId());
             if (type == null) throw new IllegalStateException("Unknown claimed blossom type");
-            var cost = claimCost(costType, player.getResinBuyCount());
-            if (cost == null) return null;
+            var costType = req.getResinCostType();
+            var claimField = req.getDescriptorForType().findFieldByNumber(14);
+            int normalClaimCount = (int) req.getField(claimField);
+            var cost = claimCost(costType, player.getResinBuyCount(), normalClaimCount);
+            if (cost == null) {
+                Grasscutter.getLogger().warn(
+                        "Ley-line claim rejected uid={} resinCostType={} field14={}",
+                        player.getUid(), costType, normalClaimCount);
+                return null;
+            }
             int resinBefore = player.getProperty(emu.grasscutter.game.props.PlayerProperty.PROP_PLAYER_RESIN);
             int worldLevel = getWorldLevel();
             Map<Integer, Integer> rolled = RewardConfiguration.current().rollBlossom(

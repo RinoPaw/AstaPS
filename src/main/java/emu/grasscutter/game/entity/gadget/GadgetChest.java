@@ -83,7 +83,7 @@ public class GadgetChest extends GadgetContent {
                 return false;
             }
             var rewards = blossomManager.claimReward(player, getGadget(),
-                    req.getResinCostType(), () -> claimedBossUids.add(player.getUid()));
+                    req, () -> claimedBossUids.add(player.getUid()));
             if (rewards != null) {
                 finishBossClaim(player, meta);
                 player.sendPacket(new PacketGadgetAutoPickDropInfoNotify(rewards));

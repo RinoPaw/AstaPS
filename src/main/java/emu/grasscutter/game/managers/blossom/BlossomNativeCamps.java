@@ -58,6 +58,8 @@ final class BlossomNativeCamps {
                 continue;
             }
             int city = refresh.getCityId();
+            var cityData = GameData.getCityDataMap().get(city);
+            if (cityData == null || cityData.getSceneId() != scene.getId()) continue;
             var eligible = rows.values().stream()
                     .filter(camp -> camp.getCityId() == city
                             && camp.getNewGroupVec() != null && !camp.getNewGroupVec().isEmpty()

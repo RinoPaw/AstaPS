@@ -317,7 +317,9 @@ public class BlossomManager {
 
     public void onTick() {
         activeScriptedSpawns();
-        ensureScriptedSpawns();
+        // Scene.checkGroups() already loads nearby authored outcrops in script mode.
+        // The normal spawn-grid path needs the same loader.
+        if (!scene.getScriptManager().isInit()) ensureScriptedSpawns();
         if (mapMarkersDirty) notifyIcon();
         synchronized (blossomActivities) {
             var it = blossomActivities.iterator();

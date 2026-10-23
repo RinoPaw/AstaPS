@@ -13,6 +13,32 @@ import org.junit.jupiter.api.Test;
 
 final class BlossomScriptedSpawnTest {
     @Test
+    void originalBlossomCampIdsAndLinksAreSourceBacked() {
+        var mondstadtWealth = JsonUtils.decode(
+                "{\"id\":101001001,\"cityId\":1,\"limit_level\":12,"
+                        + "\"sectionId\":1001,\"refreshTypeVec\":[1,3],"
+                        + "\"newGroupVec\":[133001374],\"nextCampIdVec\":[101001002]}",
+                emu.grasscutter.data.excels.BlossomCampData.class);
+        var mondstadtRevelation = JsonUtils.decode(
+                "{\"id\":101002003,\"cityId\":1,\"limit_level\":8,"
+                        + "\"sectionId\":1002,\"refreshTypeVec\":[1,3],"
+                        + "\"newGroupVec\":[133002369],\"nextCampIdVec\":[101002004]}",
+                emu.grasscutter.data.excels.BlossomCampData.class);
+        assertEquals(133001374, mondstadtWealth.getNewGroupVec().get(0));
+        assertEquals(101001002, mondstadtWealth.getNextCampIdVec().get(0));
+        assertEquals(133002369, mondstadtRevelation.getNewGroupVec().get(0));
+        assertEquals(101002004, mondstadtRevelation.getNextCampIdVec().get(0));
+        assertEquals(101001001, BlossomNativeCamps.initialId(
+                1, BlossomType.GOLD, List.of(mondstadtWealth, mondstadtRevelation)));
+        assertEquals(101002003, BlossomNativeCamps.initialId(
+                1, BlossomType.BLUE, List.of(mondstadtWealth, mondstadtRevelation)));
+        assertEquals(101001001, BlossomNativeCamps.initialId(
+                2, BlossomType.GOLD, List.of(mondstadtWealth, mondstadtRevelation)));
+        assertEquals(101002003, BlossomNativeCamps.initialId(
+                2, BlossomType.BLUE, List.of(mondstadtWealth, mondstadtRevelation)));
+    }
+
+    @Test
     void encounterCompletesFromKillScoreEvenWithLingeringMonsterReferences() {
         assertFalse(BlossomActivity.encounterComplete(8, 4, 0, 4));
         assertFalse(BlossomActivity.encounterComplete(8, 8, 1, 7));

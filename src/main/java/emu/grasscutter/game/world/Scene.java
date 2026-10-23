@@ -1074,7 +1074,9 @@ public class Scene {
             }
         }
 
-        visible.removeIf(entry -> !blossomManager.isActiveSpawn(entry));
+        if (getSceneType() == SceneType.SCENE_WORLD) {
+            visible.removeIf(entry -> !blossomManager.isActiveSpawn(entry));
+        }
 
         WorldLevelData worldLevelData = GameData.getWorldLevelDataMap().get(getWorld().getWorldLevel());
         int worldLevelOverride = 0;
@@ -1259,7 +1261,9 @@ public class Scene {
             emu.grasscutter.Grasscutter.getLogger()
                     .error("OfferingSpawnHelper nearby check failed", __t);
         }
-        blossomManager.ensureScriptedSpawns();
+        if (getSceneType() == SceneType.SCENE_WORLD) {
+            blossomManager.ensureScriptedSpawns();
+        }
         emu.grasscutter.game.dailytask.DailyTaskGroupLifecycle.tick(this);
     }
 

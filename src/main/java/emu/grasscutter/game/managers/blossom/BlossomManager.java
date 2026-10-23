@@ -9,6 +9,7 @@ import emu.grasscutter.data.excels.BlossomRefreshExcelConfigData;
 import emu.grasscutter.data.excels.CityData;
 import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.props.ActionReason;
+import emu.grasscutter.game.props.SceneType;
 import emu.grasscutter.game.reward.RewardConfiguration;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.entity.gadget.GadgetWorktop;
@@ -40,7 +41,6 @@ public class BlossomManager {
      * Populate the legacy ley-line outcrops from their authored spawn records in both modes.
      */
     public void ensureScriptedSpawns() {
-        if (scene.getDungeonManager() != null || scene.getPlayers().isEmpty()) return;
         if (scriptedSpawnCandidates == null) {
             scriptedSpawnCandidates = scriptedCandidates(GameDepot.getSpawnLists(), scene.getId());
             long gold = scriptedSpawnCandidates.stream()
@@ -51,7 +51,6 @@ public class BlossomManager {
                     "Ley-line outcrop sources scene={} wealth={} revelation={}",
                     scene.getId(), gold, blue);
         }
-        int adventureRank = scene.getWorld().getHost().getLevel();
         removeInactiveAuthoredOutcrops();
         for (SpawnDataEntry spawn : activeScriptedSpawns()) {
             if (scriptedSpawned.contains(spawn)) continue;
@@ -456,7 +455,9 @@ public class BlossomManager {
                         blossomConsumed.add(active.getGadget().getSpawnEntry());
                     }
                     recycleGadgetEntity(List.of(active.getGadget()));
-                    ensureScriptedSpawns();
+                    if (scene.getSceneType() == SceneType.SCENE_WORLD) {
+                        ensureScriptedSpawns();
+                    }
                     return;
                 }
             }

@@ -1065,7 +1065,7 @@ public class Scene {
         }
         int blossomRevision = getSceneType() == SceneType.SCENE_WORLD
                 ? blossomManager.getActiveSetRevision() : 0;
-        if (this.loadedGridBlocks.containsAll(loadedGridBlocks)
+        if (this.loadedGridBlocks.equals(loadedGridBlocks)
                 && loadedBlossomRevision == blossomRevision) {
             return;
         }

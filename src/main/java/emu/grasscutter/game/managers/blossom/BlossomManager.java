@@ -5,6 +5,8 @@ import emu.grasscutter.database.RewardGrantJournal;
 import emu.grasscutter.game.reward.RewardClaimFlow;
 import emu.grasscutter.config.Configuration;
 import emu.grasscutter.data.*;
+import emu.grasscutter.data.excels.BlossomRefreshExcelConfigData;
+import emu.grasscutter.data.excels.CityData;
 import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.reward.RewardConfiguration;
@@ -50,10 +52,9 @@ public class BlossomManager {
                     scene.getId(), gold, blue);
         }
         int adventureRank = scene.getWorld().getHost().getLevel();
-        removeOverlappingAuthoredOutcrops(adventureRank);
-        for (SpawnDataEntry spawn : scriptedSpawnCandidates) {
-            if (scriptedSpawned.contains(spawn) || blossomConsumed.contains(spawn)
-                    || !unlockedAtRank(BlossomType.valueOf(spawn.getGadgetId()), adventureRank)) continue;
+        removeInactiveAuthoredOutcrops();
+        for (SpawnDataEntry spawn : activeScriptedSpawns()) {
+            if (scriptedSpawned.contains(spawn)) continue;
             boolean nearby = scene.getPlayers().stream()
                     .anyMatch(player -> player.getPosition().computeDistance(spawn.getPos())
                             <= SCRIPTED_SPAWN_RANGE);
@@ -88,11 +89,12 @@ public class BlossomManager {
                 scene.addEntity(gadget);
             }
             scriptedSpawned.add(spawn);
+            scene.getSpawnedEntities().add(spawn);
         }
     }
 
-    /** Lua groups may already have loaded both authored outcrops at one location. */
-    private void removeOverlappingAuthoredOutcrops(int adventureRank) {
+    /** Remove script-owned outcrops excluded by the city's current native refresh set. */
+    private void removeInactiveAuthoredOutcrops() {
         var loaded = scene.getEntities().values().stream()
                 .filter(entity -> entity instanceof EntityGadget)
                 .map(entity -> (EntityGadget) entity)
@@ -108,15 +110,15 @@ public class BlossomManager {
         var kept = new ArrayList<EntityGadget>();
         for (var gadget : loaded) {
             var type = BlossomType.valueOf(gadget.getGadgetId());
-            boolean locked = !unlockedAtRank(type, adventureRank);
+            boolean inactive = !isActiveAuthoredGadget(
+                    gadget.getGroupId(), gadget.getConfigId(), gadget.getGadgetId());
             boolean duplicate = kept.stream().anyMatch(other ->
                     other.getPosition().computeDistance(gadget.getPosition()) <= OVERLAP_RANGE);
-            if (locked || duplicate) {
-                Grasscutter.getLogger().info(
-                        "Ley-line authored outcrop suppressed group={} config={} gadget={} "
-                                + "reason={} adventureRank={}",
+            if (inactive || duplicate) {
+                Grasscutter.getLogger().debug(
+                        "Ley-line authored outcrop suppressed group={} config={} gadget={} reason={}",
                         gadget.getGroupId(), gadget.getConfigId(), gadget.getGadgetId(),
-                        locked ? "locked" : "overlap", adventureRank);
+                        inactive ? "inactive" : "overlap");
                 scene.removeEntity(gadget,
                         VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE);
                 createdEntity.remove(gadget);
@@ -147,11 +149,117 @@ public class BlossomManager {
         var distinct = new ArrayList<SpawnDataEntry>();
         for (var entry : source) {
             if (distinct.stream().noneMatch(other ->
-                    other.getPos().computeDistance(entry.getPos()) <= OVERLAP_RANGE)) {
+                    other.getGadgetId() == entry.getGadgetId()
+                            && other.getPos().computeDistance(entry.getPos()) <= OVERLAP_RANGE)) {
                 distinct.add(entry);
             }
         }
         return distinct;
+    }
+
+
+    /** The normal world grid and Lua group loader must obey the same selection. */
+    public boolean isActiveSpawn(SpawnDataEntry entry) {
+        return BlossomType.valueOf(entry.getGadgetId()) == null
+                || activeScriptedSpawns().contains(entry);
+    }
+
+    /** Operator-created gadgets with no authored group are outside this policy. */
+    public boolean isActiveAuthoredGadget(int groupId, int configId, int gadgetId) {
+        if (BlossomType.valueOf(gadgetId) == null || groupId == 0) return true;
+        return activeScriptedSpawns().stream().anyMatch(entry ->
+                entry.getGroup().getGroupId() == groupId
+                        && entry.getConfigId() == configId
+                        && entry.getGadgetId() == gadgetId);
+    }
+
+    private List<SpawnDataEntry> activeScriptedSpawns() {
+        if (scriptedSpawnCandidates == null) {
+            scriptedSpawnCandidates = scriptedCandidates(GameDepot.getSpawnLists(), scene.getId());
+        }
+        var areaIndex = WorldAreaIndex.forScene(scene.getId());
+        if (areaIndex.isEmpty()) return List.of();
+        var host = scene.getWorld().getHost();
+        return selectActiveSpawns(scriptedSpawnCandidates.stream()
+                        .filter(entry -> !blossomConsumed.contains(entry)).toList(),
+                host.getLevel(), host.getUnlockedSceneAreas(scene.getId()),
+                GameData.getCityDataMap().values(),
+                GameData.getBlossomRefreshExcelConfigDataMap().values(),
+                entry -> areaIndex.level1AreaAt(entry.getPos().getX(), entry.getPos().getZ()));
+    }
+
+    /** Select up to refreshCount entries for each native (cityId, refreshType) pair. */
+    static List<SpawnDataEntry> selectActiveSpawns(
+            List<SpawnDataEntry> candidates, int adventureRank, Collection<Integer> unlockedAreas,
+            Collection<CityData> cities, Collection<BlossomRefreshExcelConfigData> refreshes,
+            java.util.function.ToIntFunction<SpawnDataEntry> areaAt) {
+        record Key(int cityId, String type) {}
+        var areaToCity = new HashMap<Integer, Integer>();
+        var ambiguous = new HashSet<Integer>();
+        for (var city : cities) {
+            if (city.getAreaIdVec() == null) continue;
+            for (int area : city.getAreaIdVec()) {
+                var previous = areaToCity.putIfAbsent(area, city.getCityId());
+                if (previous != null && previous != city.getCityId()) ambiguous.add(area);
+            }
+        }
+
+        var refreshByKey = new HashMap<Key, BlossomRefreshExcelConfigData>();
+        for (var config : refreshes) {
+            if (config.getRefreshCount() <= 0) continue;
+            if (!BlossomType.GOLD.refreshType().equals(config.getRefreshType())
+                    && !BlossomType.BLUE.refreshType().equals(config.getRefreshType())) continue;
+            refreshByKey.put(new Key(config.getCityId(), config.getRefreshType()), config);
+        }
+
+        var selected = new ArrayList<SpawnDataEntry>();
+        var counts = new HashMap<Integer, Integer>();
+        for (var entry : candidates) {
+            var type = BlossomType.valueOf(entry.getGadgetId());
+            if (type == null) continue;
+            int area = areaAt.applyAsInt(entry);
+            if (area == 0 || ambiguous.contains(area)) continue;
+            Integer cityId = areaToCity.get(area);
+            if (cityId == null) continue;
+            var refresh = refreshByKey.get(new Key(cityId, type.refreshType()));
+            if (refresh == null || !refreshEligible(refresh, adventureRank, unlockedAreas, cities)) continue;
+            if (counts.getOrDefault(refresh.getId(), 0) >= refresh.getRefreshCount()) continue;
+            if (selected.stream().anyMatch(other ->
+                    other.getPos().computeDistance(entry.getPos()) <= OVERLAP_RANGE)) continue;
+            selected.add(entry);
+            counts.merge(refresh.getId(), 1, Integer::sum);
+        }
+        return selected;
+    }
+
+    private static boolean refreshEligible(
+            BlossomRefreshExcelConfigData refresh, int adventureRank,
+            Collection<Integer> unlockedAreas, Collection<CityData> cities) {
+        if (refresh.getRefreshCondVec() == null) return false;
+        for (var condition : refresh.getRefreshCondVec()) {
+            if (condition == null || condition.getType() == null) continue;
+            var params = condition.getParam();
+            if (params == null || params.isEmpty()) return false;
+            switch (condition.getType()) {
+                case "BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER" -> {
+                    if (adventureRank < params.get(0)) return false;
+                }
+                case "BLOSSOM_REFRESH_COND_UNLOCK_ANY_AREA_IN_CITY" -> {
+                    if (params.get(0) != refresh.getCityId()) return false;
+                    boolean anyUnlocked = cities.stream()
+                            .filter(city -> city.getCityId() == refresh.getCityId())
+                            .filter(city -> city.getAreaIdVec() != null)
+                            .anyMatch(city -> city.getAreaIdVec().stream()
+                                    .anyMatch(unlockedAreas::contains));
+                    if (!anyUnlocked) return false;
+                }
+                default -> {
+                    // Unknown conditions must be verified before enabling their entries.
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public BlossomManager(Scene scene) {
@@ -179,6 +287,7 @@ public class BlossomManager {
         for (var entity : entities) {
             if (entity instanceof EntityGadget gadget) {
                 createdEntity.remove(gadget);
+                if (gadget.getSpawnEntry() != null) scriptedSpawned.remove(gadget.getSpawnEntry());
             }
         }
         notifyIcon();
@@ -270,11 +379,8 @@ public class BlossomManager {
         final int worldLevel = (wl < 0) ? 0 : ((wl > 9) ? 9 : wl);
         final var worldLevelData = GameData.getWorldLevelDataMap().get(worldLevel);
         final int monsterLevel = (worldLevelData != null) ? worldLevelData.getMonsterLevel() : 1;
-        if (scriptedSpawnCandidates == null) {
-            scriptedSpawnCandidates = scriptedCandidates(GameDepot.getSpawnLists(), scene.getId());
-        }
         var blossoms = new ArrayList<BlossomBriefInfoOuterClass.BlossomBriefInfo>();
-        for (var spawn : scriptedSpawnCandidates) {
+        for (var spawn : activeScriptedSpawns()) {
             if (blossomConsumed.contains(spawn)) continue;
             var type = BlossomType.valueOf(spawn.getGadgetId());
             if (!unlockedAtRank(type, player.getLevel())) continue;
@@ -350,6 +456,7 @@ public class BlossomManager {
                         blossomConsumed.add(active.getGadget().getSpawnEntry());
                     }
                     recycleGadgetEntity(List.of(active.getGadget()));
+                    ensureScriptedSpawns();
                     return;
                 }
             }

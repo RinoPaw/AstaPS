@@ -1074,6 +1074,8 @@ public class Scene {
             }
         }
 
+        visible.removeIf(entry -> !blossomManager.isActiveSpawn(entry));
+
         WorldLevelData worldLevelData = GameData.getWorldLevelDataMap().get(getWorld().getWorldLevel());
         int worldLevelOverride = 0;
 

@@ -1278,6 +1278,8 @@ public class SceneScriptManager {
 
     public EntityGadget createGadget(int groupId, int blockId, SceneGadget g, int state) {
         if (!emu.grasscutter.game.dailytask.DailyTaskGroupLifecycle.maySpawn(this, groupId)) return null;
+        if (!scene.getBlossomManager().isActiveAuthoredGadget(groupId, g.config_id, g.gadget_id))
+            return null;
         if (g.isOneoff) {
             var hasEntity =
                     getScene().getEntities().values().stream()

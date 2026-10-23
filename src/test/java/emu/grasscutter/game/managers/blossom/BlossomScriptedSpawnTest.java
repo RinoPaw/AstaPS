@@ -13,6 +13,14 @@ import org.junit.jupiter.api.Test;
 
 final class BlossomScriptedSpawnTest {
     @Test
+    void encounterCompletesFromKillScoreEvenWithLingeringMonsterReferences() {
+        assertFalse(BlossomActivity.encounterComplete(8, 4, 0, 4));
+        assertFalse(BlossomActivity.encounterComplete(8, 8, 1, 7));
+        assertTrue(BlossomActivity.encounterComplete(8, 8, 2, 8));
+        assertTrue(BlossomActivity.encounterComplete(8, 8, 0, 7));
+    }
+
+    @Test
     void global71ResinModesUseTheirOwnDebitsAndRewardMultipliers() {
         var normal = BlossomManager.claimCost(
                 emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_NORMAL, 0);

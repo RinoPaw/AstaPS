@@ -74,7 +74,8 @@ public final class BlossomActivity {
     public int getAliveMonstersCount() {
         int count = 0;
         for (EntityMonster monster : activeMonsters) {
-            if (monster.isAlive()) {
+            if (monster.isAlive()
+                    && monster.getScene().getEntityById(monster.getId()) == monster) {
                 count++;
             }
         }
@@ -89,10 +90,29 @@ public final class BlossomActivity {
         challenge.start();
     }
 
+    /** A completed kill challenge is authoritative even if a monster reference remains alive. */
+    static boolean encounterComplete(int goal, int generated, int alive, int kills) {
+        return kills >= goal || (generated >= goal && alive == 0);
+    }
+
     public void onTick() {
+        if (pass) return;
+        if (challenge.isSuccess()) {
+            pass = true;
+            return;
+        }
+        if (!challenge.inProgress()) return;
+
         Scene scene = gadget.getScene();
         Position pos = gadget.getPosition();
-        if (getAliveMonstersCount() <= 2) {
+        int alive = getAliveMonstersCount();
+        int kills = challenge.getScore().get();
+        if (encounterComplete(goal, generatedCount, alive, kills)) {
+            challenge.done();
+            pass = true;
+            return;
+        }
+        if (alive <= 2) {
             if (generatedCount < goal) {
                 step++;
 
@@ -120,11 +140,6 @@ public final class BlossomActivity {
                     newMonsters.add(entity);
                 }
                 addMonsters(newMonsters);
-            } else {
-                if (getAliveMonstersCount() == 0) {
-                    this.pass = true;
-                    this.challenge.done();
-                }
             }
         }
     }

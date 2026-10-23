@@ -309,6 +309,12 @@ public class BlossomManager {
                 if (active.getPass()) {
                     EntityGadget chest = active.getChest();
                     scene.addEntity(chest);
+                    Grasscutter.getLogger().info(
+                            "Ley-line reward flower spawned scene={} gadget={} source={} kills={}/{}",
+                            scene.getId(), chest.getGadgetId(),
+                            active.getGadget().getGadgetId(),
+                            active.getChallenge().getScore().get(),
+                            active.getChallenge().getGoal());
                     scene.setChallenge(null);
                     activeChests.add(active);
                     it.remove();

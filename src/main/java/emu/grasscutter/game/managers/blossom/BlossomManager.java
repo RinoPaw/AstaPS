@@ -564,6 +564,11 @@ public class BlossomManager {
         };
     }
 
+    /** Global 7.1 original-resin amount selector: GadgetInteractReq field 14. */
+    static int normalClaimCount(GadgetInteractReqOuterClass.GadgetInteractReq req) {
+        return (int) req.getField(req.getDescriptorForType().findFieldByNumber(14));
+    }
+
     public List<GameItem> claimReward(Player player, EntityGadget chest,
             GadgetInteractReqOuterClass.GadgetInteractReq req, Runnable confirmed) {
         synchronized (activeChests) {
@@ -575,8 +580,7 @@ public class BlossomManager {
             BlossomType type = BlossomType.valueOf(active.getGadget().getGadgetId());
             if (type == null) throw new IllegalStateException("Unknown claimed blossom type");
             var costType = req.getResinCostType();
-            var claimField = req.getDescriptorForType().findFieldByNumber(14);
-            int normalClaimCount = (int) req.getField(claimField);
+            int normalClaimCount = normalClaimCount(req);
             var cost = claimCost(costType, player.getResinBuyCount(), normalClaimCount);
             if (cost == null) {
                 Grasscutter.getLogger().warn(

@@ -47,6 +47,19 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void global71OriginalClient20And40ResinPacketsSelectSeparateAmounts() throws Exception {
+        // Captured GadgetInteractReq FINISH packets from the Global 7.1 client.
+        var req20 = emu.grasscutter.net.proto.GadgetInteractReqOuterClass.GadgetInteractReq
+                .parseFrom(java.util.HexFormat.of().parseHex("20bea4bd21380158a98980047001"));
+        var req40 = emu.grasscutter.net.proto.GadgetInteractReqOuterClass.GadgetInteractReq
+                .parseFrom(java.util.HexFormat.of().parseHex("20bea4bd21380158f88880047002"));
+        assertEquals(1, BlossomManager.normalClaimCount(req20));
+        assertEquals(2, BlossomManager.normalClaimCount(req40));
+        assertEquals(1, req20.getResinCostTypeValue());
+        assertEquals(1, req40.getResinCostTypeValue());
+    }
+
+    @Test
     void global71ResinModesUseTheirOwnDebitsAndRewardMultipliers() {
         var normal = BlossomManager.claimCost(
                 emu.grasscutter.net.proto.ResinCostTypeOuterClass.ResinCostType.ResinCostType_NORMAL, 0, 1);

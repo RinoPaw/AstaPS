@@ -1162,7 +1162,9 @@ public class Scene {
             var spawnEntry = entity.getSpawnEntry();
             if (spawnEntry != null
                     && !(entity instanceof EntityWeapon)
-                    && !visible.contains(spawnEntry)) {
+                    && !visible.contains(spawnEntry)
+                    && !(getSceneType() == SceneType.SCENE_WORLD
+                            && blossomManager.isNativeCampSpawn(spawnEntry))) {
                 toRemove.add(entity);
                 spawnedEntities.remove(spawnEntry);
             }

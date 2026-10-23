@@ -27,6 +27,7 @@ public class BlossomManager {
             java.util.concurrent.ConcurrentHashMap.newKeySet();
 
     private final Scene scene;
+    private final BlossomNativeCamps nativeCamps = new BlossomNativeCamps();
     private final List<BlossomActivity> blossomActivities = new ArrayList<>();
     private final List<BlossomActivity> activeChests = new ArrayList<>();
     private final List<EntityGadget> createdEntity = new ArrayList<>();
@@ -162,6 +163,11 @@ public class BlossomManager {
     }
 
     /** Operator-created gadgets with no authored group are outside this policy. */
+    /** Native camp instances are not part of the legacy Spawns.json grid. */
+    public boolean isNativeCampSpawn(SpawnDataEntry entry) {
+        return nativeCamps.owns(entry);
+    }
+
     public boolean isActiveAuthoredGadget(int groupId, int configId, int gadgetId) {
         if (BlossomType.valueOf(gadgetId) == null || groupId == 0) return true;
         return activeScriptedSpawns().stream().anyMatch(entry ->
@@ -195,13 +201,18 @@ public class BlossomManager {
 
         var old = activeSpawnCache;
         var areaIndex = WorldAreaIndex.forScene(scene.getId());
-        var selected = areaIndex.isEmpty() ? List.<SpawnDataEntry>of()
-                : selectActiveSpawns(authoredCandidates().stream()
-                        .filter(entry -> !blossomConsumed.contains(entry)).toList(),
-                        rank, unlocked,
-                        GameData.getCityDataMap().values(),
-                        GameData.getBlossomRefreshExcelConfigDataMap().values(),
-                        entry -> areaIndex.level1AreaAt(entry.getPos().getX(), entry.getPos().getZ()));
+        // Native BlossomGroups supplies many more locations than the imported grid:
+        // its newGroupVec resolves directly to original Scene Lua gadgets.
+        var nativeSelected = nativeCamps.select(scene, rank, unlocked);
+        var selected = nativeSelected.isEmpty()
+                ? (areaIndex.isEmpty() ? List.<SpawnDataEntry>of()
+                    : selectActiveSpawns(authoredCandidates().stream()
+                            .filter(entry -> !blossomConsumed.contains(entry)).toList(),
+                            rank, unlocked,
+                            GameData.getCityDataMap().values(),
+                            GameData.getBlossomRefreshExcelConfigDataMap().values(),
+                            entry -> areaIndex.level1AreaAt(entry.getPos().getX(), entry.getPos().getZ())))
+                : nativeSelected;
 
         activeSpawnCache = selected;
         cachedAdventureRank = rank;
@@ -210,6 +221,12 @@ public class BlossomManager {
         if (old == null || !old.equals(selected)) {
             activeSetRevision++;
             if (old != null) mapMarkersDirty = true;
+            Grasscutter.getLogger().info(
+                    "Ley-line active scene={} rank={} blue={} gold={} originalCamps={}",
+                    scene.getId(), rank,
+                    selected.stream().filter(e -> e.getGadgetId() == BlossomType.BLUE.getGadgetId()).count(),
+                    selected.stream().filter(e -> e.getGadgetId() == BlossomType.GOLD.getGadgetId()).count(),
+                    !nativeSelected.isEmpty());
         }
         return selected;
     }
@@ -264,7 +281,7 @@ public class BlossomManager {
         return selected;
     }
 
-    private static boolean refreshEligible(
+    static boolean refreshEligible(
             BlossomRefreshExcelConfigData refresh, int adventureRank,
             Collection<Integer> unlockedAreas, Collection<CityData> cities) {
         if (refresh.getRefreshCondVec() == null) return false;
@@ -300,6 +317,7 @@ public class BlossomManager {
 
     public void onTick() {
         activeScriptedSpawns();
+        ensureScriptedSpawns();
         if (mapMarkersDirty) notifyIcon();
         synchronized (blossomActivities) {
             var it = blossomActivities.iterator();
@@ -437,8 +455,10 @@ public class BlossomManager {
                     .setResin(20)
                     .setMonsterLevel(monsterLevel)
                     .setRewardId(previewReward)
-                    .setCircleCampId(type.getCircleCampId())
-                    .setRefreshId(type.getBlossomChestId())
+                    .setCircleCampId(nativeCamps.campId(spawn) == 0
+                            ? type.getCircleCampId() : nativeCamps.campId(spawn))
+                    .setRefreshId(nativeCamps.refreshId(spawn) == 0
+                            ? type.getBlossomChestId() : nativeCamps.refreshId(spawn))
                     .build());
         }
         return blossoms;
@@ -497,8 +517,14 @@ public class BlossomManager {
                     it.remove();
                     // Debug-spawned outcrops have no authored SpawnDataEntry. Never
                     // mark null as consumed, or later /spawn outcrops all get skipped.
-                    if (active.getGadget().getSpawnEntry() != null) {
-                        blossomConsumed.add(active.getGadget().getSpawnEntry());
+                    var source = active.getGadget().getSpawnEntry();
+                    if (source != null) {
+                        if (nativeCamps.advance(source, scene.getWorld().getHost().getLevel())) {
+                            activeSpawnCache = null;
+                            activeSetRevision++;
+                        } else {
+                            blossomConsumed.add(source);
+                        }
                     }
                     recycleGadgetEntity(List.of(active.getGadget()));
                     ensureScriptedSpawns();

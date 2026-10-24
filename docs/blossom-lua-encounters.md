@@ -24,19 +24,24 @@ Java retains only encounter progress accounting, entity/summon cleanup,
 the single reward claim ledger, resin charging and saved camp rotation.
 Monster IDs, spawn positions and stages come from source Lua.
 
-The native Global 7.1 starting camp algorithm outside Mondstadt has not
-been independently recovered. The current initial choice is provisional.
+The original Global 7.1 starting-camp algorithm has not been independently
+recovered for any city. The current initial choice is the lowest eligible
+native camp ID, followed by occupancy resolution.
 The snapshot's nextCampIdVec contains multiple edges for some camps
 (6 Mondstadt, 7 Liyue, 2 Sumeru). Breadth-first conflict resolution is
 a provisional local policy; the original client's branching rule remains unverified.
 
 ## Native Lua ownership checkpoint (2026-10-24)
 
-- Original `BlossomRefreshExcelConfigData.dropVec` matches the nine base
-  item/quantity tiers in bundled `blossoms.lcss`. Original selection of
-  drop tier from world level, Adventure EXP, Companionship EXP, and
-  per-node sampling remain unverified. LootCSS deliberately stays the
-  authoritative server payout source with a journaled claim.
+- The 7.1 resource snapshot `BlossomRefreshExcelConfigData.dropVec`
+  points to the same nine base quantity distributions as bundled
+  `blossoms.lcss`. Directly inspecting all 18 root DropTable nodes and seven
+  nested nodes confirms the item IDs, quantity ranges, 100 Adventure EXP and
+  Companionship EXP at all tiers. All 20 configured WL0..9 comparisons match
+  a capped tier-8 source projection. The original client's world-level mapping,
+  random draw implementation and source-file authenticity are independent,
+  still-unverified questions. LootCSS deliberately stays the server payout
+  authority with a journaled claim.
 - `BlossomGroupsExcelConfigData.newGroupVec` owns Group references and
   `nextCampIdVec` the directed camp graph. `RefreshBlossomGroup`
   replaces the active Suite and dispatches GROUP_REFRESH; authored Lua
@@ -45,7 +50,8 @@ a provisional local policy; the original client's branching rule remains unverif
   `CreateBlossomChestByGroupId` to the claimable server reward entity.
   The claimable gadget type is still selected by the blossom kind.
 - One `BlossomActivity` collection tracks fighting, reward-ready and
-  claimable phases; the Lua schedule state lives on the activity.
+  claimable phases; the Lua schedule (1 before encounter, 2 fighting,
+  3 completed) is derived from this phase and not stored separately.
 - The original `EVENT_BLOSSOM_CHEST_DIE` refreshes the same Lua Group.
   Java's successful-claim path instead advances to another native camp
   and unloads the completed Group. Calling both would re-activate

@@ -13,6 +13,7 @@ import emu.grasscutter.scripts.data.SceneGadget;
 import emu.grasscutter.scripts.data.SceneGroup;
 import emu.grasscutter.utils.JsonUtils;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Authoritative 7.1 ley-line camp locations and next-camp edges.
@@ -39,6 +40,27 @@ final class BlossomNativeCamps {
         // No native starting-node selection has yet been recovered for other cities.
         // Choose distinct authored groups deterministically until that rule is proven.
         return eligible.get(type == BlossomType.BLUE && eligible.size() > 1 ? 1 : 0).getId();
+    }
+
+    // Both blossom types share the camp graph. Only real authored Lua locations qualify.
+    static int firstAvailableCamp(
+            Collection<Integer> starts, Map<Integer, BlossomCampData> camps,
+            int city, int rank, int refreshType, Set<Integer> occupied,
+            Predicate<BlossomCampData> usable) {
+        var queue = new ArrayDeque<>(starts);
+        var visited = new HashSet<Integer>();
+        while (!queue.isEmpty()) {
+            int id = queue.removeFirst();
+            if (!visited.add(id)) continue;
+            var camp = camps.get(id);
+            if (camp == null || camp.getCityId() != city) continue;
+            if (camp.getNextCampIdVec() != null) queue.addAll(camp.getNextCampIdVec());
+            if (occupied.contains(id) || camp.getLimitLevel() > rank
+                    || camp.getRefreshTypeVec() == null || !camp.getRefreshTypeVec().contains(refreshType)
+                    || camp.getNewGroupVec() == null || camp.getNewGroupVec().isEmpty()) continue;
+            if (usable.test(camp)) return id;
+        }
+        return 0;
     }
 
     /** Resolve only the selected native camp, without searching fallback nodes. */

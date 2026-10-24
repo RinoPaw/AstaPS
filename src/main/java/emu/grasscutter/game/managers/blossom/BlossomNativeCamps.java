@@ -177,12 +177,17 @@ final class BlossomNativeCamps {
         return source == null ? null : source.gadget().group;
     }
 
-    /** Preserve the authored gadget metadata when Java materializes a native camp. */
+    /** Create the outcrop from the registered group instance and its actual scene block. */
     EntityGadget createGadget(Scene scene, SpawnDataEntry entry) {
         var source = byEntry.get(entry);
         if (source == null) return null;
-        var gadget = source.gadget();
-        return scene.getScriptManager().createGadget(gadget.group.id, gadget.group.block_id, gadget);
+        var instance = scene.getScriptManager().getGroupInstanceById(source.gadget().group.id);
+        if (instance == null) return null;
+        var group = instance.getLuaGroup();
+        if (group == null || group.gadgets == null) return null;
+        var gadget = group.gadgets.get(source.gadget().config_id);
+        if (gadget == null || gadget.gadget_id != entry.getGadgetId()) return null;
+        return scene.getScriptManager().createGadget(group.id, group.block_id, gadget);
     }
 
     int campId(SpawnDataEntry entry) {

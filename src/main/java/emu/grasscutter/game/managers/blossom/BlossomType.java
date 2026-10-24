@@ -1,6 +1,5 @@
 package emu.grasscutter.game.managers.blossom;
 
-import emu.grasscutter.utils.Utils;
 import it.unimi.dsi.fastutil.ints.*;
 import java.util.stream.*;
 import lombok.Getter;
@@ -42,8 +41,4 @@ public enum BlossomType {
         return map.get(i);
     }
 
-    public static BlossomType random() {
-        BlossomType[] values = values();
-        return values[Utils.randomRange(0, values.length - 1)];
-    }
 }

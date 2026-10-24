@@ -39,15 +39,6 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
-    void luaEncounterMustBeExplicitlyOptedIn() {
-        assertTrue(BlossomNativeCamps.luaEncounterFlag(org.luaj.vm2.LuaValue.TRUE));
-        assertTrue(BlossomNativeCamps.luaEncounterFlag(Boolean.TRUE));
-        assertFalse(BlossomNativeCamps.luaEncounterFlag(org.luaj.vm2.LuaValue.FALSE));
-        assertFalse(BlossomNativeCamps.luaEncounterFlag(org.luaj.vm2.LuaValue.valueOf(1)));
-        assertFalse(BlossomNativeCamps.luaEncounterFlag(null));
-    }
-
-    @Test
     void luaRefreshTypesFollowAuthoredGadgetSelection() {
         assertEquals(1, BlossomManager.luaRefreshType(BlossomType.GOLD));
         assertEquals(3, BlossomManager.luaRefreshType(BlossomType.BLUE));

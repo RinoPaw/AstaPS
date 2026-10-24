@@ -167,16 +167,6 @@ public class BlossomManager {
                 || activeScriptedSpawns().contains(entry);
     }
 
-    /** One owner drives the worktop: Java for ordinary camps, Lua for opted-in scripts. */
-    public boolean shouldDispatchLuaWorktop(EntityGadget gadget) {
-        return !createdEntity.contains(gadget) || luaEncounterReady(gadget);
-    }
-
-    private boolean luaEncounterReady(EntityGadget gadget) {
-        return nativeCamps.luaEncounter(gadget.getSpawnEntry())
-                && scene.getScriptManager().getGroupInstanceById(gadget.getGroupId()) != null;
-    }
-
     /** Report the selected camp's native refresh type to its authored Lua group. */
     public Integer getBlossomRefreshTypeByGroupId(int groupId) {
         for (var spawn : activeScriptedSpawns()) {
@@ -191,15 +181,49 @@ public class BlossomManager {
         return type == BlossomType.GOLD ? 1 : 3;
     }
 
-    /** Lua may complete its own encounter; Java still owns the reward and camp rotation. */
+    /** Lua reports completion; the Java ledger owns the reward and camp rotation. */
     public boolean completeLuaEncounter(int groupId) {
         synchronized (blossomActivities) {
             for (var activity : blossomActivities) {
-                if (activity.isLuaEncounter() && activity.getGadget().getGroupId() == groupId)
+                if (activity.getGadget().getGroupId() == groupId)
                     return activity.completeFromLua();
             }
         }
         return false;
+    }
+
+    /** A single Lua entry point starts the built-in combat primitive. */
+    public boolean startLuaCombat(int groupId) {
+        synchronized (blossomActivities) {
+            for (var activity : blossomActivities) {
+                if (activity.getGadget().getGroupId() != groupId) continue;
+                int volume = 0;
+                IntList monsters = new IntArrayList();
+                while (volume < GameDepot.getBlossomConfig().getMonsterFightingVolume()) {
+                    var remaining = GameDepot.getBlossomConfig().getMonsterFightingVolume() - volume;
+                    int roll = Utils.randomRange(1, 100);
+                    if (roll > 85 && remaining >= 50) {
+                        monsters.addAll(getRandomMonstersID(2, 1));
+                        volume += 50;
+                    } else if (roll > 50 && remaining >= 20) {
+                        monsters.addAll(getRandomMonstersID(1, 1));
+                        volume += 20;
+                    } else {
+                        monsters.addAll(getRandomMonstersID(0, 1));
+                        volume += 10;
+                    }
+                }
+                boolean started = activity.startCombat(monsters, getWorldLevel());
+                if (started) Grasscutter.getLogger().info("Blossom Monsters: {}", monsters);
+                return started;
+            }
+        }
+        return false;
+    }
+
+    private emu.grasscutter.scripts.data.SceneGroup scriptGroupFor(EntityGadget gadget) {
+        var group = nativeCamps.groupFor(gadget.getSpawnEntry());
+        return group != null ? group : scene.getScriptManager().getGroupById(gadget.getGroupId());
     }
 
     /** Operator-created gadgets with no authored group are outside this policy. */
@@ -373,16 +397,20 @@ public class BlossomManager {
             while (it.hasNext()) {
                 var active = it.next();
                 active.onTick();
+                if (active.takeCombatCompletion()) {
+                    BlossomScriptController.call(
+                            active.getGadget(), scriptGroupFor(active.getGadget()),
+                            BlossomScriptController.COMBAT_COMPLETE);
+                }
                 if (active.getPass()) {
                     active.clearEncounterSummons();
                     EntityGadget chest = active.getChest();
                     scene.addEntity(chest);
                     var challenge = active.getChallenge();
                     Grasscutter.getLogger().info(
-                            "Ley-line reward flower spawned scene={} gadget={} source={} mode={} kills={}/{}",
+                            "Ley-line reward flower spawned scene={} gadget={} source={} kills={}/{}",
                             scene.getId(), chest.getGadgetId(),
                             active.getGadget().getGadgetId(),
-                            active.isLuaEncounter() ? "lua" : "java",
                             challenge == null ? 0 : challenge.getScore().get(),
                             challenge == null ? 0 : challenge.getGoal());
                     scene.setChallenge(null);
@@ -423,51 +451,29 @@ public class BlossomManager {
                 ? worktop : new GadgetWorktop(gadget);
         gadget.replaceContent(gadgetWorktop);
         gadget.setState(204);
-        int worldLevel = getWorldLevel();
         gadgetWorktop.addWorktopOptions(new int[] {187});
         gadgetWorktop.setOnSelectWorktopOptionEvent(
                 (GadgetWorktop context, int option) -> {
                     if (option != 187) return false;
-                    BlossomActivity activity;
-                    EntityGadget entityGadget = context.getGadget();
-                    boolean luaEncounter = luaEncounterReady(entityGadget);
+                    EntityGadget source = context.getGadget();
+                    BlossomActivity activity = new BlossomActivity(source);
                     synchronized (blossomActivities) {
-                        for (BlossomActivity i : this.blossomActivities) {
-                            if (i.getGadget() == entityGadget) {
-                                return false;
-                            }
-                        }
-
-                        int volume = 0;
-                        IntList monsters = new IntArrayList();
-                        while (!luaEncounter) {
-                            var remain = GameDepot.getBlossomConfig().getMonsterFightingVolume() - volume;
-                            if (remain <= 0) {
-                                break;
-                            }
-                            var rand = Utils.randomRange(1, 100);
-                            if (rand > 85 && remain >= 50) { // 15% ,generate strong monster
-                                monsters.addAll(getRandomMonstersID(2, 1));
-                                volume += 50;
-                            } else if (rand > 50 && remain >= 20) { // 35% ,generate normal monster
-                                monsters.addAll(getRandomMonstersID(1, 1));
-                                volume += 20;
-                            } else { // 50% ,generate weak monster
-                                monsters.addAll(getRandomMonstersID(0, 1));
-                                volume += 10;
-                            }
-                        }
-
-                        if (!luaEncounter) Grasscutter.getLogger().info("Blossom Monsters:" + monsters);
-
-                        activity = new BlossomActivity(entityGadget, monsters, -1, worldLevel,
-                                luaEncounter);
+                        if (blossomActivities.stream().anyMatch(current ->
+                                current.getGadget() == source)) return false;
                         blossomActivities.add(activity);
                     }
-                    entityGadget.updateState(201);
-                    if (!luaEncounter) scene.setChallenge(activity.getChallenge());
-                    scene.removeEntity(entityGadget, VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE);
-                    activity.start();
+
+                    // The same Lua hook drives the ordinary monster challenge and any custom
+                    // stages. On failure keep the worktop and discard the new activity.
+                    if (!BlossomScriptController.call(
+                            source, scriptGroupFor(source), BlossomScriptController.START)) {
+                        synchronized (blossomActivities) {
+                            blossomActivities.remove(activity);
+                        }
+                        return false;
+                    }
+                    source.updateState(201);
+                    // Scene.selectWorktopOptionWith removes the selected gadget exactly once.
                     return true;
                 });
         createdEntity.add(gadget);

@@ -12,15 +12,15 @@ import java.util.*;
 
 public final class BlossomActivity {
 
-    private final SceneGroup tempSceneGroup;
-    private final WorldChallenge challenge;
     private final EntityGadget gadget;
-    private final boolean luaEncounter;
+    private WorldChallenge challenge;
+    private boolean combatCompleted;
+    private boolean combatCompletionReported;
     private EntityGadget chest;
     private int step;
-    private final int goal;
+    private int goal;
     private int generatedCount;
-    private final int worldLevel;
+    private int worldLevel;
     private boolean pass = false;
     private final Set<Integer> rewardClaimants = new HashSet<>();
     private final Map<Integer, String> rewardOperations = new HashMap<>();
@@ -40,35 +40,26 @@ public final class BlossomActivity {
     private final Map<Integer, GameEntity> encounterSummons = new LinkedHashMap<>();
     private final Queue<Integer> candidateMonsters = new ArrayDeque<>();
 
-    public BlossomActivity(
-            EntityGadget entityGadget, List<Integer> monsters, int timeout, int worldLevel) {
-        this(entityGadget, monsters, timeout, worldLevel, false);
+    public BlossomActivity(EntityGadget gadget) {
+        this.gadget = gadget;
     }
 
-    public BlossomActivity(
-            EntityGadget entityGadget, List<Integer> monsters, int timeout, int worldLevel,
-            boolean luaEncounter) {
-        this.luaEncounter = luaEncounter;
-        this.tempSceneGroup = new SceneGroup();
-        this.tempSceneGroup.id = entityGadget.getId();
-        this.gadget = entityGadget;
-        this.step = 0;
-        this.goal = monsters.size();
-        this.candidateMonsters.addAll(monsters);
+    /** Lua starts the ordinary combat mode through ScriptLib. All encounters share this instance. */
+    boolean startCombat(List<Integer> monsters, int worldLevel) {
+        if (challenge != null || pass || monsters.isEmpty()) return false;
+        var group = new SceneGroup();
+        group.id = gadget.getId();
         this.worldLevel = worldLevel;
-        ArrayList<ChallengeTrigger> challengeTriggers = new ArrayList<>();
-        this.challenge = luaEncounter ? null
-                : new WorldChallenge(
-                        entityGadget.getScene(),
-                        tempSceneGroup,
-                        1,
-                        1,
-                        List.of(goal, timeout),
-                        timeout,
-                        goal,
-                        challengeTriggers);
-        if (!luaEncounter) challengeTriggers.add(new KillMonsterCountTrigger());
-        // this.challengeTriggers.add(new InTimeTrigger());
+        this.goal = monsters.size();
+        this.generatedCount = 0;
+        this.candidateMonsters.addAll(monsters);
+        var triggers = new ArrayList<ChallengeTrigger>();
+        challenge = new WorldChallenge(gadget.getScene(), group, 1, 1,
+                List.of(goal, -1), -1, goal, triggers);
+        triggers.add(new KillMonsterCountTrigger());
+        gadget.getScene().setChallenge(challenge);
+        challenge.start();
+        return true;
     }
 
     public WorldChallenge getChallenge() {
@@ -80,7 +71,7 @@ public final class BlossomActivity {
         this.activeMonsters.removeIf(monster -> !monster.isAlive());
         this.activeMonsters.addAll(monsters);
         for (EntityMonster monster : monsters) {
-            monster.setGroupId(this.tempSceneGroup.id);
+            monster.setGroupId(this.gadget.getId());
             encounterMonsterIds.add(monster.getId());
         }
         observeSummons();
@@ -110,19 +101,18 @@ public final class BlossomActivity {
         return pass;
     }
 
-    public void start() {
-        if (challenge != null) challenge.start();
-    }
-
-    /** Script completion is accepted once, only for an explicitly Lua-owned encounter. */
+    /** Mark completion once, after the Lua script has reached its own success condition. */
     boolean completeFromLua() {
-        if (!luaEncounter || pass) return false;
+        if (pass) return false;
         pass = true;
         return true;
     }
 
-    boolean isLuaEncounter() {
-        return luaEncounter;
+    /** The combat primitive reports its result once; Lua decides what happens next. */
+    boolean takeCombatCompletion() {
+        if (!combatCompleted || combatCompletionReported) return false;
+        combatCompletionReported = true;
+        return true;
     }
 
     /** A completed kill challenge is authoritative even if a monster reference remains alive. */
@@ -131,10 +121,10 @@ public final class BlossomActivity {
     }
 
     public void onTick() {
-        if (pass || luaEncounter) return;
+        if (pass || challenge == null || combatCompleted) return;
         observeSummons();
         if (challenge.isSuccess()) {
-            pass = true;
+            combatCompleted = true;
             return;
         }
         if (!challenge.inProgress()) return;
@@ -145,7 +135,7 @@ public final class BlossomActivity {
         int kills = challenge.getScore().get();
         if (encounterComplete(goal, generatedCount, alive, kills)) {
             challenge.done();
-            pass = true;
+            combatCompleted = true;
             return;
         }
         if (alive <= 2) {

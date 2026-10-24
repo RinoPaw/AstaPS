@@ -1,101 +1,69 @@
-# Script-controlled ley-line encounters (Global 7.1)
+# Single Lua-driven ley-line encounter path
 
-AstaPS separates **camp and reward ownership** from **scene encounter scripting**.
+Global 7.1 AstaPS uses exactly one encounter lifecycle:
 
-* Java (`BlossomManager` / `BlossomNativeCamps`) selects the eligible camp and
-  bloom kind, owns one active worktop, the reward receipt, resin debit, and the
-  `nextCampIdVec` transition.
-* Lua owns the monster waves, gadgets, regions, triggers, and success criteria
-  **when the scene group explicitly opts in**.
-* The existing Java encounter remains in charge of groups without this opt-in.
-  Those groups do not receive a second `EVENT_SELECT_OPTION` from the packet
-  handler, preventing simultaneous Java/Lua monster waves.
-* Native-camp gadget entities are materialized using the parsed Lua gadget
-  metadata. The scene manager refuses a duplicate live gadget with the same
-  `(groupId, configId, gadgetId)`.
+1. Java selects the city, blossom kind and camp from `BlossomGroups`.
+2. The scene gadget is created from its authored Lua definition when present.
+3. The worktop option 187 creates **one** `BlossomActivity`.
+4. The engine calls the Lua hook `blossom_on_start(context, group_id)`.
+5. The script controls the encounter. On success it calls
+   `ScriptLib.CompleteBlossomChallenge(context, group_id)`.
+6. Java creates the reward flower, settles the resin/reward receipt and
+   advances `nextCampIdVec` after a successful claim.
 
-## Opt-in contract
+There is **no opt-in flag** and **no Java fallback challenge**. Every accepted
+interaction goes through the Lua hook. The legacy `EVENT_SELECT_OPTION`
+notification is suppressed for ley-line worktop option 187, avoiding a second
+script-triggered challenge.
 
-Place `blossom_scripted = true` in the **actual** camp group Lua before it is
-loaded. Only groups selected by the native camp table and currently loaded by
-`SceneScriptManager` can opt in. This is an AstaPS extension, not a claim
-about the original client's Lua format.
+## Bundled default Lua
 
-A Lua-owned encounter receives `EVENT_SELECT_OPTION` after the player selects
-worktop option `187`. It may use ordinary `ScriptLib` actions and suite/region
-triggers. When the authored challenge is completed, call:
+`src/main/resources/blossom/default.lua` is shipped with the server jar.
+It defines both standard hooks. It starts the built-in monster-combat primitive
+through `ScriptLib.StartBlossomCombat(context, group_id)`. On combat completion,
+Java invokes `blossom_on_combat_complete(context, group_id)`, which calls
+`ScriptLib.CompleteBlossomChallenge`.
 
-```lua
-return ScriptLib.CompleteBlossomChallenge(context, group_id)
-```
+The combat primitive generates monsters and tracks kills using the existing
+`WorldChallenge` implementation. **Lua is the sole controller** that starts
+the combat and accepts the result. A script can replace the default hook with
+its own stages and win condition.
 
-Return code: `0` when the current group's running Lua encounter was newly
-marked complete; `1` for a missing, mismatched, Java-owned, or already completed
-encounter. This call never creates a reward directly. The scene's next tick
-creates the reward gadget; `RewardClaimFlow` charges and pays once, and
-`BlossomNativeCamps.advance` runs after a successful claim.
+## Custom encounter Lua
 
-`ScriptLib.GetBlossomRefreshTypeByGroupId(context, group_id)` reports `1`
-for the selected wealth (gold) gadget, `3` for revelation (blue), or
-`nil` when the group is not currently active. These meanings are supported
-by existing authored Lua mappings; exact native-client semantics remain under
-investigation.
-
-## Minimal example
-
-The following is an **example extension**, not an original resource patch.
-It can be appended to the verified `scene3_group133403311.lua` during local
-experimentation. It reuses that file's existing gadget
-(`config_id = 311008`) and positions, adding no guessed scene coordinates.
+Add either or both of these functions to the camp's authored scene-group Lua:
 
 ```lua
-blossom_scripted = true
-
-table.insert(triggers, {
-    config_id = 9311001,
-    name = "BLOSSOM_SAMPLE_SELECT",
-    event = EventType.EVENT_SELECT_OPTION,
-    source = "",
-    condition = "condition_BLOSSOM_SAMPLE_SELECT",
-    action = "action_BLOSSOM_SAMPLE_SELECT",
-    trigger_count = 0
-})
-table.insert(triggers, {
-    config_id = 9311002,
-    name = "BLOSSOM_SAMPLE_TIMER",
-    event = EventType.EVENT_TIMER_EVENT,
-    source = "blossom_sample",
-    condition = "",
-    action = "action_BLOSSOM_SAMPLE_TIMER",
-    trigger_count = 0
-})
-table.insert(suites[1].triggers, "BLOSSOM_SAMPLE_SELECT")
-table.insert(suites[1].triggers, "BLOSSOM_SAMPLE_TIMER")
-
-function condition_BLOSSOM_SAMPLE_SELECT(context, evt)
-    return evt.param1 == 311008 and evt.param2 == 187
+function blossom_on_start(context, group_id)
+    -- Configure monsters, puzzles, timers, triggers and suites.
+    -- Use ScriptLib.StartBlossomCombat(context, group_id) to run ordinary
+    -- ley-line combat first, or organize entirely custom gameplay.
+    return 0
 end
 
-function action_BLOSSOM_SAMPLE_SELECT(context, evt)
-    return ScriptLib.CreateGroupTimerEvent(context, 133403311, "blossom_sample", 10)
-end
-
-function action_BLOSSOM_SAMPLE_TIMER(context, evt)
-    return ScriptLib.CompleteBlossomChallenge(context, 133403311)
+function blossom_on_combat_complete(context, group_id)
+    -- Combat is done. Continue to the next scripted phase or finish here.
+    return ScriptLib.CompleteBlossomChallenge(context, group_id)
 end
 ```
 
-The timer is a stand-in for any scripted objective. In a real challenge,
-replace it with suite/monster/puzzle triggers, and ensure those scripts
-clean up their own encounter entities. The sample's trigger config IDs are
-custom example identifiers, not reverse-engineered original data.
+The `blossom_on_combat_complete` hook runs once, and only when combat was
+started with `ScriptLib.StartBlossomCombat`. A puzzle-only script can call
+`CompleteBlossomChallenge` directly from its existing scene trigger once
+its objective is complete. Both hooks return `0` for success.
 
-## Boundaries
+The group-local `blossom_on_start` / `blossom_on_combat_complete`
+definitions override the matching bundled default functions independently.
+The original scene events and ordinary ScriptLib functions remain available
+for the rest of the challenge.
 
-The native Lua functions `RefreshBlossomGroup`,
-`SetBlossomScheduleStateByGroupId`, and
-`RefreshBlossomDropRewardByGroupId` have **not** been given speculative
-semantics. They still need native evidence. This integration does not
-synthesize unavailable Fontaine gadget locations or reconstruct missing Lua.
+## Scope and source constraints
 
-After source-backed camp resources are added, opt in one group at a time.
+This integration does not fabricate missing Fontaine gadget positions.
+`BlossomGroups` remains responsible for camp topology, and a camp still
+needs a source-backed gadget location to become available.
+
+The original `RefreshBlossomGroup`, `SetBlossomScheduleStateByGroupId`,
+`RefreshBlossomDropRewardByGroupId` interfaces remain unimplemented until
+their native-client meanings are verified. The bundled Lua hooks are an
+explicit AstaPS extension, not claimed to be original Global 7.1 code.

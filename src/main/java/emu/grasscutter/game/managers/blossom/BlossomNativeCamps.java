@@ -11,7 +11,6 @@ import emu.grasscutter.game.world.SpawnDataEntry;
 import emu.grasscutter.game.world.SpawnDataEntry.SpawnGroupEntry;
 import emu.grasscutter.scripts.data.SceneGadget;
 import emu.grasscutter.scripts.data.SceneGroup;
-import org.luaj.vm2.LuaValue;
 import emu.grasscutter.utils.JsonUtils;
 import java.util.*;
 
@@ -23,7 +22,7 @@ import java.util.*;
 final class BlossomNativeCamps {
     record Key(int cityId, BlossomType kind) {}
     private record Source(int campId, int refreshId, SpawnDataEntry entry,
-                          SceneGadget gadget, boolean luaEncounter) {}
+                          SceneGadget gadget) {}
 
     private static final Gson GSON = new Gson();
     private final Map<Key, Integer> activeIds = new HashMap<>();
@@ -127,9 +126,7 @@ final class BlossomNativeCamps {
             SpawnGroupEntry entry = JsonUtils.decode(json, SpawnGroupEntry.class);
             var source = entry.getSpawns().get(0);
             source.setGroup(entry);
-            boolean luaEncounter = luaEncounterFlag(
-                    group.getBindings() == null ? null : group.getBindings().get("blossom_scripted"));
-            Source result = new Source(camp.getId(), refreshId, source, gadget, luaEncounter);
+            Source result = new Source(camp.getId(), refreshId, source, gadget);
             resolved.put(key, result);
             byEntry.put(source, result);
             return result;
@@ -141,10 +138,10 @@ final class BlossomNativeCamps {
         return byEntry.containsKey(entry);
     }
 
-    /** Only explicitly opted-in scene groups delegate their encounter to Lua. */
-    boolean luaEncounter(SpawnDataEntry entry) {
+    /** Expose the actual authored Lua group for encounter callbacks. */
+    SceneGroup groupFor(SpawnDataEntry entry) {
         var source = byEntry.get(entry);
-        return source != null && source.luaEncounter();
+        return source == null ? null : source.gadget().group;
     }
 
     /** Preserve the authored gadget metadata when Java materializes a native camp. */
@@ -153,11 +150,6 @@ final class BlossomNativeCamps {
         if (source == null) return null;
         var gadget = source.gadget();
         return scene.getScriptManager().createGadget(gadget.group.id, gadget.group.block_id, gadget);
-    }
-
-    static boolean luaEncounterFlag(Object value) {
-        return Boolean.TRUE.equals(value)
-                || (value instanceof LuaValue lua && lua.isboolean() && lua.toboolean());
     }
 
     int campId(SpawnDataEntry entry) {

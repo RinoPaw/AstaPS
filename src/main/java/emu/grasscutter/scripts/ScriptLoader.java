@@ -330,6 +330,17 @@ public class ScriptLoader {
         }
     }
 
+    /** Run the bundled default ley-line Lua in a fresh script environment. */
+    public static void evalBlossomDefaults(Bindings bindings) throws IOException, ScriptException {
+        try (var stream = ScriptLoader.class.getResourceAsStream("/blossom/default.lua")) {
+            if (stream == null) throw new FileNotFoundException("blossom/default.lua");
+            var prototype = baseGlobals.compilePrototype(
+                    new InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8),
+                    "blossom/default.lua");
+            new IsolatedCompiledScript(prototype).eval(bindings);
+        }
+    }
+
     /**
      * Builds a private Lua environment for one set of bindings.
      *

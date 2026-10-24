@@ -38,12 +38,12 @@ public class HandlerSelectWorktopOptionReq extends PacketHandler {
             }
 
             var scene = session.getPlayer().getScene();
-            // Native and custom Lua challenges opt in explicitly. Suppress the
-            // original select trigger for Java-owned encounters to avoid two waves.
+            // Ley-line encounters have one Lua entry point (blossom_on_start).
+            // Do not also deliver the legacy EVENT_SELECT_OPTION trigger.
             boolean notifyLua = !(entity instanceof EntityGadget flower
-                    && req.getOptionId() == 187
-                    && scene.getBlossomManager() != null
-                    && !scene.getBlossomManager().shouldDispatchLuaWorktop(flower));
+                    && emu.grasscutter.game.managers.blossom.BlossomType.valueOf(
+                            flower.getGadgetId()) != null
+                    && req.getOptionId() == 187);
             scene.selectWorktopOptionWith(req);
             if (notifyLua) {
                 scene.getScriptManager().callEvent(

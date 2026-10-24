@@ -304,13 +304,27 @@ public class ScriptLib {
         return manager.getScene().getBlossomManager().getBlossomRefreshTypeByGroupId(groupId);
     }
 
-    /** Explicit script-owned encounter completion; rewards remain server-owned. */
+    /** The default Lua template requests the built-in monster challenge here. */
+    public int StartBlossomCombat(int groupId) {
+        if (!isCurrentBlossomGroup(groupId)) return 1;
+        var manager = sceneScriptManager.getIfExists();
+        if (manager == null || manager.getScene().getBlossomManager() == null) return 1;
+        return manager.getScene().getBlossomManager().startLuaCombat(groupId) ? 0 : 1;
+    }
+
+    /** Lua reports an encounter's success; Java owns its reward and rotation. */
     public int CompleteBlossomChallenge(int groupId) {
-        var current = currentGroup.getIfExists();
-        if (current == null || current.id != groupId) return 1;
+        if (!isCurrentBlossomGroup(groupId)) return 1;
         var manager = sceneScriptManager.getIfExists();
         if (manager == null || manager.getScene().getBlossomManager() == null) return 1;
         return manager.getScene().getBlossomManager().completeLuaEncounter(groupId) ? 0 : 1;
+    }
+
+    private boolean isCurrentBlossomGroup(int groupId) {
+        var group = currentGroup.getIfExists();
+        var entity = currentEntity.getIfExists();
+        return (group != null && group.id == groupId)
+                || (entity instanceof EntityGadget gadget && gadget.getGroupId() == groupId);
     }
 
     public int AddBlossomScheduleProgressByGroupId(int groupId) {

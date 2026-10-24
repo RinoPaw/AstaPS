@@ -218,10 +218,25 @@ public class BlossomManager {
 
     public boolean isActiveAuthoredGadget(int groupId, int configId, int gadgetId) {
         if (BlossomType.valueOf(gadgetId) == null || groupId == 0) return true;
-        return activeScriptedSpawns().stream().anyMatch(entry ->
+        boolean selected = activeScriptedSpawns().stream().anyMatch(entry ->
                 entry.getGroup().getGroupId() == groupId
                         && entry.getConfigId() == configId
                         && entry.getGadgetId() == gadgetId);
+        if (!selected) return false;
+        // A delayed GROUP_REFRESH must not recreate the interactive flower
+        // while its single encounter is running or its reward remains unclaimed.
+        synchronized (blossomActivities) {
+            if (blossomActivities.stream().anyMatch(activity ->
+                    activity.getGadget().getGroupId() == groupId
+                            && activity.getGadget().getConfigId() == configId
+                            && activity.getGadget().getGadgetId() == gadgetId)) return false;
+        }
+        synchronized (activeChests) {
+            return activeChests.stream().noneMatch(activity ->
+                    activity.getGadget().getGroupId() == groupId
+                            && activity.getGadget().getConfigId() == configId
+                            && activity.getGadget().getGadgetId() == gadgetId);
+        }
     }
 
     private List<SpawnDataEntry> activeScriptedSpawns() {

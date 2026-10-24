@@ -41,6 +41,17 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void legacySpawnGridNeverProvidesASecondLeyLine() {
+        var legacy = JsonUtils.decode(
+                "{\"gadgetId\":70360057}", emu.grasscutter.game.world.SpawnDataEntry.class);
+        var ordinary = JsonUtils.decode(
+                "{\"gadgetId\":70330001}", emu.grasscutter.game.world.SpawnDataEntry.class);
+        var manager = new BlossomManager(null);
+        assertFalse(manager.isActiveSpawn(legacy));
+        assertTrue(manager.isActiveSpawn(ordinary));
+    }
+
+    @Test
     void nativeCampGraphFollowsLinksOnceAndStopsAtCycle() {
         var one = JsonUtils.decode(
                 "{\"id\":1,\"nextCampIdVec\":[2]}", emu.grasscutter.data.excels.BlossomCampData.class);

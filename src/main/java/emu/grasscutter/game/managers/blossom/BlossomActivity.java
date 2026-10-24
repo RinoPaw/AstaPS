@@ -82,6 +82,10 @@ public final class BlossomActivity {
 
     /** Called immediately when Scene registers an entity, before its onCreate abilities run. */
     void onSceneEntityCreated(GameEntity entity) {
+        if (nativeMonsterGoal > 0 && entity instanceof EntityMonster
+                && entity.getGroupId() == gadget.getGroupId()) {
+            encounterMonsterIds.add(entity.getId());
+        }
         int parent = BlossomSummonCleanup.parentId(entity);
         if (BlossomSummonCleanup.isEncounterChild(
                 parent, encounterMonsterIds, encounterSummons.keySet())) {

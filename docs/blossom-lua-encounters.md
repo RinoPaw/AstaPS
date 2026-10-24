@@ -19,3 +19,6 @@ Monster IDs, spawn positions and stages come from source Lua.
 
 The native Global 7.1 starting camp algorithm outside Mondstadt has not
 been independently recovered. The current initial choice is provisional.
+The snapshot's nextCampIdVec contains multiple edges for some camps
+(6 Mondstadt, 7 Liyue, 2 Sumeru). Selecting its first edge is also provisional;
+the original client's branching rule remains unverified.

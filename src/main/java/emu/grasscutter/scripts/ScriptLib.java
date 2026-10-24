@@ -145,14 +145,18 @@ public class ScriptLib {
 
     private GameEntity createGadget(int configId, SceneGroup group) {
         var gadget = group.gadgets.get(configId);
-        var entity = getSceneScriptManager().createGadget(group.id, group.block_id, gadget);
-        if (entity == null) {
-            logger.warn("[LUA] Create gadget null with cid: {} gid: {} bid: {}", configId, group.id, group.block_id);
-            return null;
+        // A GROUP_REFRESH event can race the native-camp loader. Check and publish
+        // both creation paths under the same scene monitor to prevent duplicate flowers.
+        synchronized (getSceneScriptManager().getScene()) {
+            var entity = getSceneScriptManager().createGadget(group.id, group.block_id, gadget);
+            if (entity == null) {
+                logger.debug("[LUA] Create gadget skipped cid={} gid={} bid={}",
+                        configId, group.id, group.block_id);
+                return null;
+            }
+            getSceneScriptManager().addEntity(entity);
+            return entity;
         }
-
-        getSceneScriptManager().addEntity(entity);
-        return entity;
     }
 
     @Nullable

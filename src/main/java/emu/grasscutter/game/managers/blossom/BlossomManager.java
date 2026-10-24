@@ -58,28 +58,31 @@ public class BlossomManager {
             // The parsed Lua definition alone does not provide a ScriptLib group context.
             scene.getScriptManager().ensureBlossomGroup(group);
 
-            EntityGadget gadget = scene.getEntities().values().stream()
-                    .filter(entity -> entity instanceof EntityGadget)
-                    .map(entity -> (EntityGadget) entity)
-                    .filter(entity -> entity.getGroupId() == spawn.getGroup().getGroupId()
-                            && entity.getConfigId() == spawn.getConfigId()
-                            && entity.getGadgetId() == spawn.getGadgetId())
-                    .findFirst().orElse(null);
-            if (gadget == null) {
-                gadget = nativeCamps.createGadget(scene, spawn);
-                if (gadget == null) continue;
-                gadget.setSpawnEntry(spawn);
-                initBlossom(gadget);
-                scene.addEntity(gadget);
-            } else {
-                gadget.setSpawnEntry(spawn);
-                initBlossom(gadget);
-                scene.broadcastPacket(new emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify(
-                        gadget, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH, 0));
+            synchronized (scene) {
+                if (scriptedSpawned.contains(spawn)) continue;
+                EntityGadget gadget = scene.getEntities().values().stream()
+                        .filter(entity -> entity instanceof EntityGadget)
+                        .map(entity -> (EntityGadget) entity)
+                        .filter(entity -> entity.getGroupId() == spawn.getGroup().getGroupId()
+                                && entity.getConfigId() == spawn.getConfigId()
+                                && entity.getGadgetId() == spawn.getGadgetId())
+                        .findFirst().orElse(null);
+                if (gadget == null) {
+                    gadget = nativeCamps.createGadget(scene, spawn);
+                    if (gadget == null) continue;
+                    gadget.setSpawnEntry(spawn);
+                    initBlossom(gadget);
+                    scene.addEntity(gadget);
+                } else {
+                    gadget.setSpawnEntry(spawn);
+                    initBlossom(gadget);
+                    scene.broadcastPacket(new emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify(
+                            gadget, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH, 0));
+                }
+    
+                scriptedSpawned.add(spawn);
+                scene.getSpawnedEntities().add(spawn);
             }
-
-            scriptedSpawned.add(spawn);
-            scene.getSpawnedEntities().add(spawn);
         }
     }
 

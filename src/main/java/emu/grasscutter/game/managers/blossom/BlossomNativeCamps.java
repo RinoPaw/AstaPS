@@ -206,10 +206,28 @@ final class BlossomNativeCamps {
             return false;
         var kind = BlossomType.valueOf(entry.getGadgetId());
         if (kind == null) return false;
-        // Persist the original edge even when its Lua is unavailable.
-        int nextId = camp.getNextCampIdVec().get(0);
-        if (!GameData.getBlossomCampDataMap().containsKey(nextId)) return false;
-        scene.getWorld().getHost().setBlossomCampId(source.refreshId(), nextId);
+        var host = scene.getWorld().getHost();
+        var occupied = new HashSet<Integer>();
+        for (var refresh : GameData.getBlossomRefreshExcelConfigDataMap().values()) {
+            if (refresh.getCityId() != camp.getCityId() || refresh.getId() == source.refreshId())
+                continue;
+            if (!"BLOSSOM_REFRESH_SCOIN".equals(refresh.getRefreshType())
+                    && !"BLOSSOM_REFRESH_EXP".equals(refresh.getRefreshType())) continue;
+            int otherCampId = host.getBlossomCampId(refresh.getId());
+            if (otherCampId > 0) occupied.add(otherCampId);
+        }
+        int nextId = firstAvailableCamp(
+                camp.getNextCampIdVec(), GameData.getBlossomCampDataMap(),
+                camp.getCityId(), rank, kind == BlossomType.GOLD ? 1 : 3, occupied,
+                candidate -> selectedCamp(
+                        scene, candidate.getId(), camp.getCityId(), rank, kind, source.refreshId()) != null);
+        if (nextId == 0) {
+            Grasscutter.getLogger().warn(
+                    "No unoccupied authored ley-line successor city={} kind={} camp={}",
+                    camp.getCityId(), kind, source.campId());
+            return false;
+        }
+        host.setBlossomCampId(source.refreshId(), nextId);
         Grasscutter.getLogger().info("Ley-line camp advanced city={} kind={} {} -> {}",
                 camp.getCityId(), kind, source.campId(), nextId);
         return true;

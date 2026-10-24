@@ -309,7 +309,9 @@ public class ScriptLib {
         if (!isCurrentBlossomGroup(groupId)) return 1;
         var manager = sceneScriptManager.getIfExists();
         if (manager == null || manager.getScene().getBlossomManager() == null) return 1;
-        return manager.getScene().getBlossomManager().startLuaCombat(groupId) ? 0 : 1;
+        var entity = currentEntity.getIfExists();
+        return manager.getScene().getBlossomManager().startLuaCombat(groupId,
+                entity instanceof EntityGadget gadget ? gadget : null) ? 0 : 1;
     }
 
     /** Lua reports an encounter's success; Java owns its reward and rotation. */
@@ -317,7 +319,9 @@ public class ScriptLib {
         if (!isCurrentBlossomGroup(groupId)) return 1;
         var manager = sceneScriptManager.getIfExists();
         if (manager == null || manager.getScene().getBlossomManager() == null) return 1;
-        return manager.getScene().getBlossomManager().completeLuaEncounter(groupId) ? 0 : 1;
+        var entity = currentEntity.getIfExists();
+        return manager.getScene().getBlossomManager().completeLuaEncounter(groupId,
+                entity instanceof EntityGadget gadget ? gadget : null) ? 0 : 1;
     }
 
     private boolean isCurrentBlossomGroup(int groupId) {

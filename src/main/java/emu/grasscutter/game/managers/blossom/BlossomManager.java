@@ -182,10 +182,11 @@ public class BlossomManager {
     }
 
     /** Lua reports completion; the Java ledger owns the reward and camp rotation. */
-    public boolean completeLuaEncounter(int groupId) {
+    public boolean completeLuaEncounter(int groupId, EntityGadget source) {
         synchronized (blossomActivities) {
             for (var activity : blossomActivities) {
-                if (activity.getGadget().getGroupId() == groupId)
+                if (activity.getGadget().getGroupId() == groupId
+                        && (source == null || activity.getGadget() == source))
                     return activity.completeFromLua();
             }
         }
@@ -193,10 +194,11 @@ public class BlossomManager {
     }
 
     /** A single Lua entry point starts the built-in combat primitive. */
-    public boolean startLuaCombat(int groupId) {
+    public boolean startLuaCombat(int groupId, EntityGadget source) {
         synchronized (blossomActivities) {
             for (var activity : blossomActivities) {
-                if (activity.getGadget().getGroupId() != groupId) continue;
+                if (activity.getGadget().getGroupId() != groupId
+                        || (source != null && activity.getGadget() != source)) continue;
                 int volume = 0;
                 IntList monsters = new IntArrayList();
                 while (volume < GameDepot.getBlossomConfig().getMonsterFightingVolume()) {
@@ -222,8 +224,9 @@ public class BlossomManager {
     }
 
     private emu.grasscutter.scripts.data.SceneGroup scriptGroupFor(EntityGadget gadget) {
-        var group = nativeCamps.groupFor(gadget.getSpawnEntry());
-        return group != null ? group : scene.getScriptManager().getGroupById(gadget.getGroupId());
+        // Reuse the same Lua environment as the live scene triggers when available.
+        var group = scene.getScriptManager().getGroupById(gadget.getGroupId());
+        return group != null ? group : nativeCamps.groupFor(gadget.getSpawnEntry());
     }
 
     /** Operator-created gadgets with no authored group are outside this policy. */

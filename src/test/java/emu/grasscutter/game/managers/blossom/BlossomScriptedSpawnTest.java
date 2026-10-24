@@ -3,6 +3,8 @@ package emu.grasscutter.game.managers.blossom;
 import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.utils.JsonUtils;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +20,89 @@ final class BlossomScriptedSpawnTest {
                         + ",\"refreshTypeVec\":" + types
                         + ",\"newGroupVec\":[123],\"nextCampIdVec\":[" + edges + "]}",
                 emu.grasscutter.data.excels.BlossomCampData.class);
+    }
+
+    @Test
+    void eachCountryOwnsBothFlowerCursorsAndItsCampOccupancy() {
+        var graph = new HashMap<Integer, emu.grasscutter.data.excels.BlossomCampData>();
+        for (int city = 1; city <= 8; city++) {
+            int a = city * 1000 + 1;
+            int b = city * 1000 + 2;
+            int c = city * 1000 + 3;
+            graph.put(a, camp(a, city, List.of(1, 3), b));
+            graph.put(b, camp(b, city, List.of(1, 3), c));
+            graph.put(c, camp(c, city, List.of(1, 3), a));
+        }
+
+        var occupiedByCity = new HashMap<Integer, Set<Integer>>();
+        for (int city = 1; city <= 8; city++) {
+            var occupied = occupiedByCity.computeIfAbsent(city, unused -> new HashSet<>());
+            int start = city * 1000 + 1;
+            int gold = BlossomNativeCamps.firstAvailableCamp(
+                    List.of(start), graph, city, 20, 1, occupied, unused -> true);
+            assertEquals(start, gold);
+            occupied.add(gold);
+            int blue = BlossomNativeCamps.firstAvailableCamp(
+                    List.of(start), graph, city, 20, 3, occupied, unused -> true);
+            assertEquals(start + 1, blue);
+            occupied.add(blue);
+        }
+        assertEquals(8, occupiedByCity.size());
+        occupiedByCity.values().forEach(occupied -> assertEquals(2, occupied.size()));
+
+        // Claiming the fourth country's gold flower must not move any other country's cursor.
+        int next = BlossomNativeCamps.firstAvailableCamp(
+                List.of(4002), graph, 4, 20, 1, Set.of(4002), unused -> true);
+        assertEquals(4003, next);
+        assertEquals(Set.of(1001, 1002), occupiedByCity.get(1));
+        assertEquals(Set.of(5001, 5002), occupiedByCity.get(5));
+    }
+
+    @Test
+    void unlockingOneCountryDoesNotUnlockAnotherCountryBlossoms() {
+        var mondstadt = new emu.grasscutter.data.excels.CityData();
+        mondstadt.setCityId(1);
+        mondstadt.setAreaIdVec(List.of(101));
+        var inazuma = new emu.grasscutter.data.excels.CityData();
+        inazuma.setCityId(3);
+        inazuma.setAreaIdVec(List.of(301, 302));
+        var refresh = JsonUtils.decode(
+                "{\"id\":20,\"cityId\":3,\"refreshType\":\"BLOSSOM_REFRESH_SCOIN\","
+                        + "\"refreshCondVec\":["
+                        + "{\"type\":\"BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER\",\"param\":[18]},"
+                        + "{\"type\":\"BLOSSOM_REFRESH_COND_UNLOCK_ANY_AREA_IN_CITY\",\"param\":[3]}]}",
+                emu.grasscutter.data.excels.BlossomRefreshExcelConfigData.class);
+        var cities = List.of(mondstadt, inazuma);
+        assertFalse(BlossomManager.refreshEligible(refresh, 20, Set.of(101), cities));
+        assertFalse(BlossomManager.refreshEligible(refresh, 17, Set.of(301), cities));
+        assertTrue(BlossomManager.refreshEligible(refresh, 20, Set.of(301), cities));
+    }
+
+    @Test
+    void campGraphCannotTraverseASecondCountry() {
+        var graph = Map.of(
+                101, camp(101, 1, List.of(1, 3), 201),
+                201, camp(201, 2, List.of(1, 3), 102),
+                102, camp(102, 1, List.of(1, 3), 101));
+        assertEquals(0, BlossomNativeCamps.firstAvailableCamp(
+                List.of(101), graph, 1, 20, 1, Set.of(101), unused -> true));
+        assertEquals(201, BlossomNativeCamps.firstAvailableCamp(
+                List.of(201), graph, 2, 20, 1, Set.of(), unused -> true));
+    }
+
+    @Test
+    void missingLuaInOneCountryDoesNotHideFlowersInAnother() {
+        var graph = Map.of(
+                101, camp(101, 1, List.of(1, 3), 102),
+                102, camp(102, 1, List.of(1, 3), 101),
+                301, camp(301, 3, List.of(1, 3), 302),
+                302, camp(302, 3, List.of(1, 3), 301));
+        assertEquals(101, BlossomNativeCamps.firstAvailableCamp(
+                List.of(101), graph, 1, 20, 1, Set.of(), node -> node.getCityId() == 1));
+        assertEquals(102, BlossomNativeCamps.firstAvailableCamp(
+                List.of(101), graph, 1, 20, 3, Set.of(101), node -> node.getCityId() == 1));
+        assertEquals(0, BlossomNativeCamps.firstAvailableCamp(
+                List.of(301), graph, 3, 20, 1, Set.of(), node -> node.getCityId() == 1));
     }
 
     @Test

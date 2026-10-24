@@ -9,10 +9,12 @@ CreateBlossomChestByGroupId on EVENT_BLOSSOM_PROGRESS_FINISH.
 There is no default blossom Lua hook, random Java monster challenge, or
 Spawns.json alternative. A ley-line outcrop is identified by its
 70360056 / 70360057 gadget ID; no event-structure validation is performed.
-Gold and blue flowers share the same camp graph, with independent persisted
-refresh cursors. The current collision policy walks nextCampIdVec edges in
-deterministic breadth-first order, skipping occupied camps and missing Lua
-gadgets. There is no wait state, random encounter, or legacy fallback.
+Gold and blue flowers share each country's graph, with independent persisted
+refresh cursors. Each country has its own candidate pool, occupancy set and
+position-collision scope, including when several countries share one world
+scene. The current collision policy walks nextCampIdVec edges in deterministic
+breadth-first order, skipping occupied camps and missing Lua gadgets. There is
+no wait state, random encounter, or legacy fallback.
 If no reachable authored Lua can provide a flower, one-per-type availability
 cannot be guaranteed. Recovering the missing scripts is required.
 

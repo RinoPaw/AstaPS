@@ -80,9 +80,20 @@ final class BlossomNativeCamps {
         if (rows.isEmpty()) return List.of();
         var cities = GameData.getCityDataMap().values();
         var refreshes = new ArrayList<>(GameData.getBlossomRefreshExcelConfigDataMap().values());
-        refreshes.sort(Comparator.comparingInt(BlossomRefreshExcelConfigData::getId));
+        // Keep the two cursors for each country together, irrespective of refresh IDs.
+        refreshes.sort(Comparator.comparingInt(BlossomRefreshExcelConfigData::getCityId)
+                .thenComparingInt(BlossomRefreshExcelConfigData::getId));
         var selected = new ArrayList<SpawnDataEntry>();
-        var occupied = new HashSet<Integer>();
+        var occupiedByCity = new HashMap<Integer, Set<Integer>>();
+        var selectedByCity = new HashMap<Integer, List<SpawnDataEntry>>();
+        var campsByCity = new HashMap<Integer, List<BlossomCampData>>();
+        for (var camp : rows.values()) {
+            if (camp.getNewGroupVec() == null || camp.getNewGroupVec().isEmpty()
+                    || camp.getRefreshTypeVec() == null || camp.getLimitLevel() > rank) continue;
+            campsByCity.computeIfAbsent(camp.getCityId(), unused -> new ArrayList<>()).add(camp);
+        }
+        campsByCity.values().forEach(camps ->
+                camps.sort(Comparator.comparingInt(BlossomCampData::getId)));
         var host = scene.getWorld().getHost();
 
         for (var refresh : refreshes) {
@@ -98,28 +109,26 @@ final class BlossomNativeCamps {
             var cityData = GameData.getCityDataMap().get(city);
             if (cityData == null || cityData.getSceneId() != scene.getId()) continue;
             int refreshType = kind == BlossomType.GOLD ? 1 : 3;
-            var eligible = rows.values().stream()
-                    .filter(camp -> camp.getCityId() == city
-                            && camp.getNewGroupVec() != null && !camp.getNewGroupVec().isEmpty()
-                            && camp.getRefreshTypeVec() != null
-                            && camp.getRefreshTypeVec().contains(refreshType)
-                            && camp.getLimitLevel() <= rank)
-                    .sorted(Comparator.comparingInt(BlossomCampData::getId))
+            var eligible = campsByCity.getOrDefault(city, List.of()).stream()
+                    .filter(camp -> camp.getRefreshTypeVec().contains(refreshType))
                     .toList();
             if (eligible.isEmpty()) continue;
 
+            var occupied = occupiedByCity.computeIfAbsent(city, unused -> new HashSet<>());
+            var local = selectedByCity.computeIfAbsent(city, unused -> new ArrayList<>());
             int savedId = host.getBlossomCampId(refresh.getId());
             int initial = initialId(city, kind, eligible);
             int chosenId = firstAvailableCamp(
                     List.of(savedId > 0 ? savedId : initial), rows, city, rank, refreshType, occupied,
                     candidate -> {
                         var source = selectedCamp(scene, candidate.getId(), city, rank, kind, refresh.getId());
-                        return source != null && selected.stream().noneMatch(existing ->
+                        return source != null && local.stream().noneMatch(existing ->
                                 existing.getPos().computeDistance(source.entry().getPos()) < 2.5f);
                     });
             if (chosenId == 0) continue;
             var source = selectedCamp(scene, chosenId, city, rank, kind, refresh.getId());
             selected.add(source.entry());
+            local.add(source.entry());
             occupied.add(chosenId);
             if (savedId != chosenId) host.setBlossomCampId(refresh.getId(), chosenId);
         }

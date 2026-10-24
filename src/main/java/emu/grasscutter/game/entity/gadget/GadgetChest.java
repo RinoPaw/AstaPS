@@ -283,10 +283,12 @@ public class GadgetChest extends GadgetContent {
                         .filter(bossUids::contains)
                         .allMatch(claimedBossUids::contains);
         if (allClaimed) {
+            // Finish the original Group/config interaction before retiring its
+            // Lua group; retiring first can despawn this reward entity too soon.
+            finishOpen(player, meta, credit);
             if (getGadget().getScene().getSceneType() == SceneType.SCENE_WORLD) {
                 getGadget().getScene().getBlossomManager().retireChest(getGadget());
             }
-            finishOpen(player, meta, credit);
             WorldBossSpawnHelper.onBossChestClaimed(getGadget());
         }
         return allClaimed;

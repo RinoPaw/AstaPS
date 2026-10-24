@@ -1435,9 +1435,10 @@ public class SceneScriptManager {
 
     public EntityMonster createMonster(int groupId, int blockId, SceneMonster monster) {
         if (!emu.grasscutter.game.dailytask.DailyTaskGroupLifecycle.maySpawn(this, groupId)) return null;
-        if (scene.getSceneType() == SceneType.SCENE_WORLD
-                && scene.getBlossomManager() != null
-                && !scene.getBlossomManager().isActiveAuthoredGroup(groupId)) return null;
+        var activeScene = getScene();
+        if (activeScene.getSceneType() == SceneType.SCENE_WORLD
+                && activeScene.getBlossomManager() != null
+                && !activeScene.getBlossomManager().isActiveAuthoredGroup(groupId)) return null;
         if (monster == null) {
             return null;
         }

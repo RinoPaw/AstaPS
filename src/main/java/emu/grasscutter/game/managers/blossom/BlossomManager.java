@@ -31,7 +31,7 @@ public class BlossomManager {
     private final List<BlossomActivity> blossomActivities = new ArrayList<>();
     private final List<BlossomActivity> activeChests = new ArrayList<>();
     private final List<EntityGadget> createdEntity = new ArrayList<>();
-    private final Map<Integer, Integer> nativeScheduleStates = new HashMap<>();
+    private final Map<Integer, Integer> nativeScheduleStates = new java.util.concurrent.ConcurrentHashMap<>();
 
     private final List<SpawnDataEntry> blossomConsumed = new ArrayList<>();
     private final Set<SpawnDataEntry> scriptedSpawned = new HashSet<>();
@@ -230,8 +230,6 @@ public class BlossomManager {
                     activity.getGadget().getGroupId() == groupId
                             && activity.getGadget().getConfigId() == configId
                             && activity.getGadget().getGadgetId() == gadgetId)) return false;
-        }
-        synchronized (activeChests) {
             return activeChests.stream().noneMatch(activity ->
                     activity.getGadget().getGroupId() == groupId
                             && activity.getGadget().getConfigId() == configId
@@ -353,9 +351,7 @@ public class BlossomManager {
                             challenge == null ? 0 : challenge.getScore().get(),
                             challenge == null ? 0 : challenge.getGoal());
                     scene.setChallenge(null);
-                    synchronized (activeChests) {
-                        activeChests.add(active);
-                    }
+                    activeChests.add(active);
                     it.remove();
                 }
             }
@@ -514,14 +510,14 @@ public class BlossomManager {
     }
 
     public boolean hasRewardChest(EntityGadget chest) {
-        synchronized (activeChests) {
+        synchronized (blossomActivities) {
             return activeChests.stream().anyMatch(active -> active.getChest() == chest);
         }
     }
 
     /** Called once the reward chest is fully claimed; ignores chests this manager doesn't own. */
     public void retireChest(EntityGadget chest) {
-        synchronized (activeChests) {
+        synchronized (blossomActivities) {
             var it = activeChests.iterator();
             while (it.hasNext()) {
                 var active = it.next();
@@ -586,7 +582,7 @@ public class BlossomManager {
 
     public List<GameItem> claimReward(Player player, EntityGadget chest,
             GadgetInteractReqOuterClass.GadgetInteractReq req, Runnable confirmed) {
-        synchronized (activeChests) {
+        synchronized (blossomActivities) {
             BlossomActivity active = activeChests.stream()
                     .filter(candidate -> candidate.getChest() == chest)
                     .findFirst().orElse(null);

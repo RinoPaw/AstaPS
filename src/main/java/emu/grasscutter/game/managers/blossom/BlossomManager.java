@@ -21,9 +21,6 @@ import emu.grasscutter.server.packet.send.PacketBlossomBriefInfoNotify;
 import java.util.*;
 
 public class BlossomManager {
-    private static final Set<BlossomType> MISSING_TYPES_REPORTED =
-            java.util.concurrent.ConcurrentHashMap.newKeySet();
-
     private final Scene scene;
     private final BlossomNativeCamps nativeCamps = new BlossomNativeCamps();
     private final List<BlossomActivity> blossomActivities = new ArrayList<>();
@@ -407,18 +404,18 @@ public class BlossomManager {
             if (blossomConsumed.contains(spawn)) continue;
             var type = BlossomType.valueOf(spawn.getGadgetId());
             if (!unlockedAtRank(type, player.getLevel())) continue;
-            Integer previewReward = getPreviewReward(type, worldLevel);
-            if (previewReward == null) continue;
+            int refreshId = nativeCamps.refreshId(spawn);
+            int campId = nativeCamps.campId(spawn);
+            var refresh = GameData.getBlossomRefreshExcelConfigDataMap().get(refreshId);
+            int previewReward = getPreviewReward(refresh, worldLevel);
             blossoms.add(BlossomBriefInfoOuterClass.BlossomBriefInfo.newBuilder()
                     .setSceneId(scene.getId())
                     .setPos(spawn.getPos().toProto())
                     .setResin(20)
                     .setMonsterLevel(monsterLevel)
                     .setRewardId(previewReward)
-                    .setCircleCampId(nativeCamps.campId(spawn) == 0
-                            ? type.getCircleCampId() : nativeCamps.campId(spawn))
-                    .setRefreshId(nativeCamps.refreshId(spawn) == 0
-                            ? type.getBlossomChestId() : nativeCamps.refreshId(spawn))
+                    .setCircleCampId(campId)
+                    .setRefreshId(refreshId)
                     .build());
         }
         return blossoms;
@@ -428,37 +425,21 @@ public class BlossomManager {
         return scene.getWorld().getWorldLevel();
     }
 
-    private static Integer getPreviewReward(BlossomType type, int worldLevel) {
-        if (type == null || worldLevel < 0 || worldLevel > 9) {
-            throw new IllegalArgumentException(
-                    "Unsupported blossom type/world level: " + type + "/" + worldLevel);
+    /** Read the map preview from this flower's own country-specific refresh row. */
+    static int getPreviewReward(BlossomRefreshExcelConfigData refresh, int worldLevel) {
+        if (refresh == null || worldLevel < 0 || worldLevel > 9) {
+            throw new IllegalArgumentException("Invalid blossom refresh or world level");
         }
-        // Both kinds have blossomChestId=1 in the native Excel rows. The actual
-        // distinction is refreshType (SCOIN vs EXP), shared across cities.
-        Integer previewId = null;
-        for (var data : GameData.getBlossomRefreshExcelConfigDataMap().values()) {
-            if (!type.refreshType().equals(data.getRefreshType())) continue;
-            var drops = data.getDropVec();
-            // Native Excel has 9 preview tiers (WL0..WL8); WL9 shares the capped WL8 preview.
-            int index = worldLevel == 9 ? 8 : worldLevel;
-            if (drops == null || drops.length <= index || drops[index] == null
-                    || drops[index].getPreviewReward() <= 0) {
-                throw new IllegalStateException(
-                        "Missing native blossom preview: " + type + " WL" + worldLevel
-                                + " refresh=" + data.getId());
-            }
-            int candidate = drops[index].getPreviewReward();
-            if (previewId != null && previewId != candidate) {
-                throw new IllegalStateException(
-                        "Conflicting native blossom previews: " + type + " WL" + worldLevel);
-            }
-            previewId = candidate;
+        // Native Excel has WL0..WL8 previews; WL9 uses the capped WL8 value.
+        int index = Math.min(worldLevel, 8);
+        var drops = refresh.getDropVec();
+        if (drops == null || drops.length <= index || drops[index] == null
+                || drops[index].getPreviewReward() <= 0) {
+            throw new IllegalStateException(
+                    "Missing blossom preview: city=" + refresh.getCityId()
+                            + " refresh=" + refresh.getId() + " WL" + worldLevel);
         }
-        if (previewId == null && MISSING_TYPES_REPORTED.add(type)) {
-            Grasscutter.getLogger().error(
-                    "Missing native blossom refresh type {} for {}", type.refreshType(), type);
-        }
-        return previewId;
+        return drops[index].getPreviewReward();
     }
 
     public boolean hasRewardChest(EntityGadget chest) {

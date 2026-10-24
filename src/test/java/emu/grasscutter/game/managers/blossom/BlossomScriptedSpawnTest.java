@@ -59,6 +59,26 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void mapPreviewsUseEachCountryOwnRefreshRow() {
+        var mondstadt = JsonUtils.decode(
+                "{\"id\":1,\"cityId\":1,\"dropVec\":[{\"preview_reward\":4101}]}",
+                emu.grasscutter.data.excels.BlossomRefreshExcelConfigData.class);
+        var liyue = JsonUtils.decode(
+                "{\"id\":3,\"cityId\":2,\"dropVec\":[{\"preview_reward\":4201}]}",
+                emu.grasscutter.data.excels.BlossomRefreshExcelConfigData.class);
+        assertEquals(4101, BlossomManager.getPreviewReward(mondstadt, 0));
+        assertEquals(4201, BlossomManager.getPreviewReward(liyue, 0));
+
+        var nineTiers = java.util.stream.IntStream.range(0, 9)
+                .mapToObj(i -> "{\"preview_reward\":" + (5000 + i) + "}")
+                .collect(java.util.stream.Collectors.joining(","));
+        var capped = JsonUtils.decode(
+                "{\"id\":26,\"cityId\":4,\"dropVec\":[" + nineTiers + "]}",
+                emu.grasscutter.data.excels.BlossomRefreshExcelConfigData.class);
+        assertEquals(5008, BlossomManager.getPreviewReward(capped, 9));
+    }
+
+    @Test
     void unlockingOneCountryDoesNotUnlockAnotherCountryBlossoms() {
         var mondstadt = new emu.grasscutter.data.excels.CityData();
         mondstadt.setCityId(1);

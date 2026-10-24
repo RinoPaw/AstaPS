@@ -14,7 +14,9 @@ refresh cursors. Each country has its own candidate pool, occupancy set and
 position-collision scope, including when several countries share one world
 scene. The current collision policy walks nextCampIdVec edges in deterministic
 breadth-first order, skipping occupied camps and missing Lua gadgets. There is
-no wait state, random encounter, or legacy fallback.
+no wait state, random encounter, or legacy fallback. Map reward previews
+come from each selected flower's own refresh ID, so one country's reward
+configuration cannot change another country's map marker.
 If no reachable authored Lua can provide a flower, one-per-type availability
 cannot be guaranteed. Recovering the missing scripts is required.
 

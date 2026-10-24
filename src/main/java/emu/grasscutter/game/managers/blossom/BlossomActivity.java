@@ -16,14 +16,9 @@ public final class BlossomActivity {
     private SceneGadget nativeRewardGadget;
     private Phase phase = Phase.FIGHTING;
     private final Set<Integer> rewardClaimants = new HashSet<>();
-    private final Map<Integer, String> rewardOperations = new HashMap<>();
 
     boolean rewardClaimed(int uid) { return rewardClaimants.contains(uid); }
     void confirmReward(int uid) { rewardClaimants.add(uid); }
-    String rewardOperation(int uid) {
-        return rewardOperations.computeIfAbsent(uid, ignored -> UUID.randomUUID().toString());
-    }
-    void resetUnpaidReward(int uid) { rewardOperations.remove(uid); }
 
     // Keep every encounter root, including monsters already dead or pruned between waves.
     private final Set<Integer> encounterMonsterIds = new HashSet<>();

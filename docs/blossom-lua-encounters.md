@@ -74,3 +74,18 @@ There is no parallel Java-created fallback worktop. Script-owned monsters in
 inactive BlossomGroups are suppressed so incomplete native encounters do not
 leak monsters into the scene. This is a resource-structure eligibility check,
 not a claim of original executable/metadata provenance.
+
+## Restart and receipt identity
+
+The host's persisted BlossomRunState stores camp ID, monotonically increasing
+incarnation, pending reward and exhausted-camp status. Reloading a pending reward
+reconstructs the claimable entity from the original Lua reward marker; no duplicate
+interactive worktop is spawned. An interrupted fight starts again from the author's
+original Lua encounter; monster-progress snapshots are intentionally not persisted.
+
+The reward journal key includes the host UID, refresh ID, camp incarnation,
+original Group/config identity, claimant UID and durable unpaid-attempt counter.
+Explicitly unpaid attempts receive a fresh counter. A completed receipt from
+before restart closes the claim without paying or granting rewards again.
+Ambiguous CONFIRMED/PREPARED receipts still require existing journal inspection;
+there is no automatic replay of uncertain payments.

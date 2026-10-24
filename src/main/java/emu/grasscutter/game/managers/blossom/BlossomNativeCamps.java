@@ -96,6 +96,7 @@ final class BlossomNativeCamps {
                 default -> null;
             };
             if (kind == null || refresh.getRefreshCount() <= 0
+                    || host.isBlossomConsumed(refresh.getId())
                     || !BlossomManager.refreshEligible(refresh, rank, unlockedAreas, cities)) continue;
 
             int city = refresh.getCityId();

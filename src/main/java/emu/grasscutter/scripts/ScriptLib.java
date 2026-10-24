@@ -583,8 +583,11 @@ public class ScriptLib {
             return 1;
         }
         var definition = group.gadgets.get(configId);
-        // A selected Group may already have spawned this gadget from its native camp.
         var scene = getSceneScriptManager().getScene();
+        // A restored reward keeps the authored Group active without recreating the worktop.
+        if (scene.getBlossomManager() != null
+                && scene.getBlossomManager().isAuthoredWorktop(group.id, definition.gadget_id)
+                && scene.getBlossomManager().isRewardPending(group.id)) return 0;
         var existing = scene.getEntityByConfigId(configId, group.id);
         if (existing instanceof EntityGadget live && live.getGadgetId() == definition.gadget_id) {
             return 0;

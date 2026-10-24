@@ -129,8 +129,19 @@ public class Player implements PlayerHook, FieldFetch {
     @Getter private Map<Integer, ActiveCookCompoundData> activeCookCompounds;
     @Getter private Map<Integer, Integer> questGlobalVariables;
     @Getter private Map<Integer, Integer> openStates;
-    /** Native ley-line camp cursor, keyed by BlossomRefreshExcelConfigData ID. */
-    private Map<Integer, Integer> blossomCampIds = new HashMap<>();
+    /** One durable incarnation for each native ley-line refresh. */
+    private Map<Integer, BlossomRunState> blossomRuns = new HashMap<>();
+    /** Claim retries are scoped to host UID / refresh ID / incarnation. */
+    private Map<String, Integer> blossomClaimAttempts = new HashMap<>();
+
+    public static class BlossomRunState {
+        public int campId;
+        public long incarnation;
+        public boolean rewardReady;
+        public boolean consumed;
+
+        public BlossomRunState() {}
+    }
     // TPS ammunition reserve, keyed by TpsAmmunitionExcelConfigData id.
     private Map<Integer, Integer> tpsAmmunition;
     // TPS weapons the TPS traveler wears; it is a trial avatar and is never saved itself.
@@ -1567,14 +1578,62 @@ public class Player implements PlayerHook, FieldFetch {
         return this.tpsAmmunition;
     }
 
-    public int getBlossomCampId(int refreshId) {
-        return blossomCampIds == null ? 0 : blossomCampIds.getOrDefault(refreshId, 0);
+    public synchronized int getBlossomCampId(int refreshId) {
+        var run = blossomRuns == null ? null : blossomRuns.get(refreshId);
+        return run == null ? 0 : run.campId;
     }
 
-    /** Persist a successful claim's next camp before the scene can be unloaded. */
-    public void setBlossomCampId(int refreshId, int campId) {
-        if (blossomCampIds == null) blossomCampIds = new HashMap<>();
-        if (!Objects.equals(blossomCampIds.put(refreshId, campId), campId)) save();
+    public synchronized long getBlossomIncarnation(int refreshId) {
+        var run = blossomRuns == null ? null : blossomRuns.get(refreshId);
+        return run == null ? 0 : run.incarnation;
+    }
+
+    public synchronized boolean isBlossomRewardReady(int refreshId) {
+        var run = blossomRuns == null ? null : blossomRuns.get(refreshId);
+        return run != null && run.rewardReady;
+    }
+
+    public synchronized boolean isBlossomConsumed(int refreshId) {
+        var run = blossomRuns == null ? null : blossomRuns.get(refreshId);
+        return run != null && run.consumed;
+    }
+
+    /** Each successful move starts a new durable reward identity. */
+    public synchronized void setBlossomCampId(int refreshId, int campId) {
+        if (blossomRuns == null) blossomRuns = new HashMap<>();
+        var previous = blossomRuns.get(refreshId);
+        if (previous != null && previous.campId == campId) return;
+        var run = new BlossomRunState();
+        run.campId = campId;
+        run.incarnation = previous == null ? 1 : previous.incarnation + 1;
+        blossomRuns.put(refreshId, run);
+        save();
+    }
+
+    /** Persist the reward phase before presenting its claimable entity. */
+    public synchronized void setBlossomRewardReady(int refreshId) {
+        var run = blossomRuns.get(refreshId);
+        if (run == null || run.rewardReady) return;
+        run.rewardReady = true;
+        save();
+    }
+
+    public synchronized void setBlossomConsumed(int refreshId) {
+        var run = blossomRuns.get(refreshId);
+        if (run == null || run.consumed) return;
+        run.consumed = true;
+        save();
+    }
+
+    public synchronized int getBlossomClaimAttempt(String runId) {
+        return blossomClaimAttempts == null ? 0 : blossomClaimAttempts.getOrDefault(runId, 0);
+    }
+
+    /** A definitely unpaid journal attempt can be retried with a fresh operation identity. */
+    public synchronized void advanceBlossomClaimAttempt(String runId) {
+        if (blossomClaimAttempts == null) blossomClaimAttempts = new HashMap<>();
+        blossomClaimAttempts.merge(runId, 1, Integer::sum);
+        save();
     }
 
     public void save() {

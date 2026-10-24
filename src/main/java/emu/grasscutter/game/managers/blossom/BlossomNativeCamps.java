@@ -11,6 +11,7 @@ import emu.grasscutter.game.world.SpawnDataEntry;
 import emu.grasscutter.game.world.SpawnDataEntry.SpawnGroupEntry;
 import emu.grasscutter.scripts.data.SceneGadget;
 import emu.grasscutter.scripts.data.SceneGroup;
+import emu.grasscutter.scripts.constants.EventType;
 import emu.grasscutter.utils.JsonUtils;
 import java.util.*;
 import java.util.function.Predicate;
@@ -132,11 +133,11 @@ final class BlossomNativeCamps {
         Source existing = resolved.get(key);
         if (existing != null) return existing;
         for (int groupId : camp.getNewGroupVec()) {
-            if (unresolvedGroups.contains(groupId)) continue;
             var group = SceneGroup.of(groupId).load(scene.getId());
-            if (group.gadgets == null) {
+            if (!hasNativeEncounter(group, kind)) {
                 if (unresolvedGroups.add(groupId)) {
-                    Grasscutter.getLogger().warn("Ley-line original Lua group missing scene={} group={}",
+                    Grasscutter.getLogger().warn(
+                            "Ley-line group missing original encounter chain scene={} group={}",
                             scene.getId(), groupId);
                 }
                 continue;
@@ -163,6 +164,44 @@ final class BlossomNativeCamps {
             return result;
         }
         return null;
+    }
+
+    /** Camp ownership comes from BlossomGroups, never from a Gadget prefab ID. */
+    boolean ownsGroup(int groupId) {
+        return GameData.getBlossomCampDataMap().values().stream()
+                .filter(camp -> camp.getRefreshTypeVec() != null
+                        && camp.getRefreshTypeVec().contains(1)
+                        && camp.getRefreshTypeVec().contains(3))
+                .anyMatch(camp -> camp.getNewGroupVec() != null
+                        && camp.getNewGroupVec().contains(groupId));
+    }
+
+    /**
+     * A blossom worktop must have a runnable original encounter. An authored Gadget
+     * without SELECT_OPTION / progress / reward triggers is insufficient.
+     */
+    static boolean hasNativeEncounter(SceneGroup group, BlossomType kind) {
+        if (group == null || kind == null || group.init_config == null
+                || group.gadgets == null || group.monsters == null || group.monsters.isEmpty()
+                || group.suites == null || group.suites.isEmpty()
+                || group.triggers == null || group.triggers.isEmpty()) return false;
+        if (group.gadgets.values().stream().noneMatch(g -> g.gadget_id == kind.getGadgetId())
+                || group.gadgets.values().stream().noneMatch(g -> g.is_blossom_chest)) return false;
+        var initial = group.getSuiteByIndex(group.init_config.suite);
+        if (initial == null || initial.sceneTriggers == null
+                || initial.sceneTriggers.stream().noneMatch(t -> t.getEvent() == EventType.EVENT_GROUP_LOAD))
+            return false;
+        var events = group.suites.stream()
+                .filter(suite -> suite.sceneTriggers != null)
+                .flatMap(suite -> suite.sceneTriggers.stream())
+                .filter(trigger -> trigger.getAction() != null && !trigger.getAction().isEmpty())
+                .map(emu.grasscutter.scripts.data.SceneTrigger::getEvent)
+                .collect(java.util.stream.Collectors.toSet());
+        return events.containsAll(Set.of(
+                EventType.EVENT_GROUP_LOAD, EventType.EVENT_GROUP_REFRESH,
+                EventType.EVENT_GADGET_CREATE, EventType.EVENT_SELECT_OPTION,
+                EventType.EVENT_ANY_MONSTER_DIE, EventType.EVENT_BLOSSOM_PROGRESS_FINISH,
+                EventType.EVENT_BLOSSOM_CHEST_DIE));
     }
 
     boolean owns(SpawnDataEntry entry) {

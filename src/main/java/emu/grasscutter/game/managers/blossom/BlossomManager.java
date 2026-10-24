@@ -46,35 +46,10 @@ public class BlossomManager {
 
             var group = nativeCamps.groupFor(spawn);
             if (group == null) continue;
-            // This creates an actual SceneGroupInstance and registers its initial suite.
-            // The parsed Lua definition alone does not provide a ScriptLib group context.
+            // Only the original Lua GROUP_LOAD -> GROUP_REFRESH -> CreateGadget path
+            // creates a worktop. The entity-created hook below attaches its camp.
             scene.getScriptManager().ensureBlossomGroup(group);
-
-            synchronized (scene) {
-                if (scriptedSpawned.contains(spawn)) continue;
-                EntityGadget gadget = scene.getEntities().values().stream()
-                        .filter(entity -> entity instanceof EntityGadget)
-                        .map(entity -> (EntityGadget) entity)
-                        .filter(entity -> entity.getGroupId() == spawn.getGroup().getGroupId()
-                                && entity.getConfigId() == spawn.getConfigId()
-                                && entity.getGadgetId() == spawn.getGadgetId())
-                        .findFirst().orElse(null);
-                if (gadget == null) {
-                    gadget = nativeCamps.createGadget(scene, spawn);
-                    if (gadget == null) continue;
-                    gadget.setSpawnEntry(spawn);
-                    initBlossom(gadget);
-                    scene.addEntity(gadget);
-                } else {
-                    gadget.setSpawnEntry(spawn);
-                    initBlossom(gadget);
-                    scene.broadcastPacket(new emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify(
-                            gadget, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH, 0));
-                }
-
-                scriptedSpawned.add(spawn);
-                scene.getSpawnedEntities().add(spawn);
-            }
+            scriptedSpawned.add(spawn);
         }
     }
 
@@ -84,8 +59,7 @@ public class BlossomManager {
         var toRemove = new ArrayList<GameEntity>();
         for (var entity : List.copyOf(scene.getEntities().values())) {
             if (!(entity instanceof EntityGadget gadget)
-                    || gadget.getGroupId() == 0
-                    || BlossomType.valueOf(gadget.getGadgetId()) == null) continue;
+                    || !isAuthoredWorktop(gadget.getGroupId(), gadget.getGadgetId())) continue;
             boolean active = isActiveAuthoredGadget(
                     gadget.getGroupId(), gadget.getConfigId(), gadget.getGadgetId());
             String identity = gadget.getGroupId() + ":" + gadget.getConfigId() + ":" + gadget.getGadgetId();
@@ -191,8 +165,19 @@ public class BlossomManager {
         return nativeCamps.owns(entry);
     }
 
+    public boolean isAuthoredWorktop(int groupId, int gadgetId) {
+        return groupId != 0 && nativeCamps.ownsGroup(groupId)
+                && BlossomType.valueOf(gadgetId) != null;
+    }
+
+    /** Other SceneGroups are never governed by the blossom camp selection. */
+    public boolean isActiveAuthoredGroup(int groupId) {
+        return !nativeCamps.ownsGroup(groupId) || activeScriptedSpawns().stream()
+                .anyMatch(spawn -> spawn.getGroup().getGroupId() == groupId);
+    }
+
     public boolean isActiveAuthoredGadget(int groupId, int configId, int gadgetId) {
-        if (BlossomType.valueOf(gadgetId) == null || groupId == 0) return true;
+        if (!isAuthoredWorktop(groupId, gadgetId)) return true;
         boolean selected = activeScriptedSpawns().stream().anyMatch(entry ->
                 entry.getGroup().getGroupId() == groupId
                         && entry.getConfigId() == configId
@@ -281,6 +266,19 @@ public class BlossomManager {
 
     /** Track ability summons at creation, including ones removed before the next world tick. */
     public void onSceneEntityCreated(GameEntity entity) {
+        if (entity instanceof EntityGadget gadget
+                && isAuthoredWorktop(gadget.getGroupId(), gadget.getGadgetId())) {
+            for (var spawn : activeScriptedSpawns()) {
+                if (spawn.getGroup().getGroupId() == gadget.getGroupId()
+                        && spawn.getConfigId() == gadget.getConfigId()
+                        && spawn.getGadgetId() == gadget.getGadgetId()) {
+                    gadget.setSpawnEntry(spawn);
+                    initBlossom(gadget);
+                    scene.getSpawnedEntities().add(spawn);
+                    break;
+                }
+            }
+        }
         synchronized (blossomActivities) {
             for (var activity : blossomActivities) activity.onSceneEntityCreated(entity);
         }

@@ -200,6 +200,32 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void incompleteGroupCannotMasqueradeAsNativeBlossomEncounter() {
+        var group = new emu.grasscutter.scripts.data.SceneGroup();
+        group.init_config = new emu.grasscutter.scripts.data.SceneInitConfig();
+        group.init_config.suite = 1;
+        var gold = new emu.grasscutter.scripts.data.SceneGadget();
+        gold.gadget_id = 70360056;
+        var reward = new emu.grasscutter.scripts.data.SceneGadget();
+        reward.gadget_id = 70210106;
+        reward.is_blossom_chest = true;
+        group.gadgets = Map.of(1, gold, 2, reward);
+        group.monsters = Map.of(1, new emu.grasscutter.scripts.data.SceneMonster());
+        group.triggers = Map.of();
+        group.suites = List.of(new emu.grasscutter.scripts.data.SceneSuite());
+        assertFalse(BlossomNativeCamps.hasNativeEncounter(group, BlossomType.GOLD));
+        // Adding just a worktop trigger does not supply progress or reward behavior.
+        var trigger = new emu.grasscutter.scripts.data.SceneTrigger();
+        trigger.setName("GROUP_LOAD");
+        trigger.setEvent(emu.grasscutter.scripts.constants.EventType.EVENT_GROUP_LOAD);
+        trigger.setAction("load");
+        group.triggers = Map.of("GROUP_LOAD", trigger);
+        group.suites.get(0).triggers = List.of("GROUP_LOAD");
+        group.suites.get(0).init(group);
+        assertFalse(BlossomNativeCamps.hasNativeEncounter(group, BlossomType.GOLD));
+    }
+
+    @Test
     void luaRefreshTypesFollowAuthoredGadgetSelection() {
         assertEquals(1, BlossomManager.luaRefreshType(BlossomType.GOLD));
         assertEquals(3, BlossomManager.luaRefreshType(BlossomType.BLUE));

@@ -1338,10 +1338,9 @@ public class SceneScriptManager {
         if (scene.getSceneType() == SceneType.SCENE_WORLD
                 && !scene.getBlossomManager().isActiveAuthoredGadget(groupId, g.config_id, g.gadget_id))
             return null;
-        // Script triggers and the native-camp loader can both request the same outcrop.
-        // The authored (group, config, gadget) identity has one live entity.
+        // A repeated native Lua CreateGadget must not produce duplicate worktops.
         if (scene.getSceneType() == SceneType.SCENE_WORLD
-                && emu.grasscutter.game.managers.blossom.BlossomType.valueOf(g.gadget_id) != null
+                && scene.getBlossomManager().isAuthoredWorktop(groupId, g.gadget_id)
                 && scene.getEntities().values().stream().anyMatch(existing ->
                         existing instanceof EntityGadget flower
                                 && flower.getGroupId() == groupId
@@ -1436,6 +1435,8 @@ public class SceneScriptManager {
 
     public EntityMonster createMonster(int groupId, int blockId, SceneMonster monster) {
         if (!emu.grasscutter.game.dailytask.DailyTaskGroupLifecycle.maySpawn(this, groupId)) return null;
+        if (scene.getSceneType() == SceneType.SCENE_WORLD
+                && !scene.getBlossomManager().isActiveAuthoredGroup(groupId)) return null;
         if (monster == null) {
             return null;
         }

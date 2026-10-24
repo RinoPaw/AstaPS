@@ -595,7 +595,8 @@ public class ScriptLib {
                 scene.getId(), group.id, configId);
         // Original blossom scripts ignore this function's return value, so
         // abort the trigger if the selected worktop could not be produced.
-        if (emu.grasscutter.game.managers.blossom.BlossomType.valueOf(definition.gadget_id) != null) {
+        if (scene.getBlossomManager() != null
+                && scene.getBlossomManager().isAuthoredWorktop(group.id, definition.gadget_id)) {
             throw new LuaError("Failed to create selected ley-line gadget " + configId);
         }
         return 1;

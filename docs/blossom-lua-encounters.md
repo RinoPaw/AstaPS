@@ -7,8 +7,12 @@ EVENT_SELECT_OPTION exactly once. Lua progresses its monster waves and invokes
 CreateBlossomChestByGroupId on EVENT_BLOSSOM_PROGRESS_FINISH.
 
 There is no default blossom Lua hook, random Java monster challenge, or
-Spawns.json alternative. A ley-line outcrop is identified by its
-70360056 / 70360057 gadget ID; no event-structure validation is performed.
+Spawns.json alternative. A ley-line outcrop belongs to the camp when its Group is referenced by
+BlossomGroups.newGroupVec. The selected worktop is then matched by its
+authored config/Gadget identity. Only Lua with an initial GROUP_LOAD trigger
+and the GROUP_REFRESH, SELECT_OPTION, monster progress and reward event chain
+is eligible. A bare blossom Gadget definition does not establish a runnable
+encounter.
 Gold and blue flowers share each country's graph, with independent persisted
 refresh cursors. Each country has its own candidate pool, occupancy set and
 position-collision scope, including when several countries share one world
@@ -60,3 +64,13 @@ a provisional local policy; the original client's branching rule remains unverif
 - `CreateGadget` now reports failures; native blossom worktop creation
   failures also abort their Lua trigger. Existing identical entities
   count as successful creation.
+
+## Single worktop creation path
+
+The selected camp registers its original SceneGroup, then lets its authored
+GROUP_LOAD / GROUP_REFRESH trigger call CreateGadget. The Scene entity-created
+hook attaches its selected SpawnDataEntry and equips the worktop option handler.
+There is no parallel Java-created fallback worktop. Script-owned monsters in
+inactive BlossomGroups are suppressed so incomplete native encounters do not
+leak monsters into the scene. This is a resource-structure eligibility check,
+not a claim of original executable/metadata provenance.

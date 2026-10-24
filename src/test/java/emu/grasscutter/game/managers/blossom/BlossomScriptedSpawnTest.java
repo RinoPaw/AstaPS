@@ -4,9 +4,56 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.utils.JsonUtils;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 final class BlossomScriptedSpawnTest {
+    private static emu.grasscutter.data.excels.BlossomCampData camp(
+            int id, int city, List<Integer> types, int... next) {
+        var edges = java.util.Arrays.stream(next).mapToObj(Integer::toString)
+                .collect(java.util.stream.Collectors.joining(","));
+        return JsonUtils.decode(
+                "{\"id\":" + id + ",\"cityId\":" + city
+                        + ",\"refreshTypeVec\":" + types
+                        + ",\"newGroupVec\":[123],\"nextCampIdVec\":[" + edges + "]}",
+                emu.grasscutter.data.excels.BlossomCampData.class);
+    }
+
+    @Test
+    void sharedGraphSkipsAnOccupiedCampForEitherFlowerType() {
+        var a = camp(1, 1, List.of(1, 3), 2);
+        var b = camp(2, 1, List.of(1, 3), 3);
+        var c = camp(3, 1, List.of(1, 3), 1);
+        var graph = Map.of(1, a, 2, b, 3, c);
+        assertEquals(3, BlossomNativeCamps.firstAvailableCamp(
+                List.of(2), graph, 1, 20, 1, Set.of(2), node -> true));
+        assertEquals(3, BlossomNativeCamps.firstAvailableCamp(
+                List.of(2), graph, 1, 20, 3, Set.of(2), node -> true));
+        assertEquals(0, BlossomNativeCamps.firstAvailableCamp(
+                List.of(2), graph, 1, 20, 1, Set.of(1, 2, 3), node -> true));
+    }
+
+    @Test
+    void singleFlowerMayReturnToItsOnlyAuthoredCamp() {
+        var a = camp(1, 1, List.of(1), 1);
+        assertEquals(1, BlossomNativeCamps.firstAvailableCamp(
+                List.of(1), Map.of(1, a), 1, 20, 1, Set.of(), node -> true));
+    }
+
+    @Test
+    void missingLuaDoesNotAuthorizeUnconnectedFallbackCamps() {
+        var a = camp(1, 1, List.of(1, 3), 2);
+        var b = camp(2, 1, List.of(1, 3), 3);
+        var c = camp(3, 1, List.of(1, 3), 1);
+        var other = camp(4, 1, List.of(1, 3), 4);
+        var graph = Map.of(1, a, 2, b, 3, c, 4, other);
+        assertEquals(3, BlossomNativeCamps.firstAvailableCamp(
+                List.of(1), graph, 1, 20, 1, Set.of(), node -> node.getId() == 3));
+        assertEquals(0, BlossomNativeCamps.firstAvailableCamp(
+                List.of(1), graph, 1, 20, 1, Set.of(), node -> node.getId() == 4));
+    }
+
     @Test
     void blossomIdentityUsesOnlyItsGadgetId() {
         assertSame(BlossomType.GOLD, BlossomType.valueOf(70360056));

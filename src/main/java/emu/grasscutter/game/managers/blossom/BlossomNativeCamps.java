@@ -21,7 +21,6 @@ import java.util.function.Predicate;
  * separate gold/blue worktops at the same authored location.
  */
 final class BlossomNativeCamps {
-    record Key(int cityId, BlossomType kind) {}
     private record Source(int campId, int refreshId, SpawnDataEntry entry,
                           SceneGadget gadget) {}
 

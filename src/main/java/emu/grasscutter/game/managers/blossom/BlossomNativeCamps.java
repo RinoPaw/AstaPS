@@ -82,6 +82,7 @@ final class BlossomNativeCamps {
         var refreshes = new ArrayList<>(GameData.getBlossomRefreshExcelConfigDataMap().values());
         refreshes.sort(Comparator.comparingInt(BlossomRefreshExcelConfigData::getId));
         var selected = new ArrayList<SpawnDataEntry>();
+        var occupied = new HashSet<Integer>();
         var host = scene.getWorld().getHost();
 
         for (var refresh : refreshes) {
@@ -109,15 +110,18 @@ final class BlossomNativeCamps {
 
             int savedId = host.getBlossomCampId(refresh.getId());
             int initial = initialId(city, kind, eligible);
-            var source = selectedCamp(scene, savedId > 0 ? savedId : initial,
-                    city, rank, kind, refresh.getId());
-            if (source == null) continue;
-            var position = source.entry().getPos();
-            if (selected.stream().anyMatch(existing ->
-                    existing.getPos().computeDistance(position) < 2.5f)) continue;
-
+            int chosenId = firstAvailableCamp(
+                    List.of(savedId > 0 ? savedId : initial), rows, city, rank, refreshType, occupied,
+                    candidate -> {
+                        var source = selectedCamp(scene, candidate.getId(), city, rank, kind, refresh.getId());
+                        return source != null && selected.stream().noneMatch(existing ->
+                                existing.getPos().computeDistance(source.entry().getPos()) < 2.5f);
+                    });
+            if (chosenId == 0) continue;
+            var source = selectedCamp(scene, chosenId, city, rank, kind, refresh.getId());
             selected.add(source.entry());
-            if (savedId != source.campId()) host.setBlossomCampId(refresh.getId(), source.campId());
+            occupied.add(chosenId);
+            if (savedId != chosenId) host.setBlossomCampId(refresh.getId(), chosenId);
         }
         return selected;
     }

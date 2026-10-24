@@ -193,13 +193,10 @@ final class BlossomScriptedSpawnTest {
         assertEquals(133002369, mondstadtRevelation.getNewGroupVec().get(0));
         assertEquals(101002004, mondstadtRevelation.getNextCampIdVec().get(0));
         assertEquals(101001001, BlossomNativeCamps.initialId(
-                1, BlossomType.GOLD, List.of(mondstadtWealth, mondstadtRevelation)));
+                List.of(mondstadtWealth, mondstadtRevelation)));
         assertEquals(101002003, BlossomNativeCamps.initialId(
-                1, BlossomType.BLUE, List.of(mondstadtWealth, mondstadtRevelation)));
-        assertEquals(101001001, BlossomNativeCamps.initialId(
-                2, BlossomType.GOLD, List.of(mondstadtWealth, mondstadtRevelation)));
-        assertEquals(101002003, BlossomNativeCamps.initialId(
-                2, BlossomType.BLUE, List.of(mondstadtWealth, mondstadtRevelation)));
+                List.of(mondstadtRevelation, mondstadtWealth)));
+        assertEquals(0, BlossomNativeCamps.initialId(List.of()));
     }
 
     @Test
@@ -282,16 +279,25 @@ final class BlossomScriptedSpawnTest {
         // BlossomChestExcelConfigData: SCOIN uses 70210109 and EXP uses 70210110.
         assertEquals(70210109, BlossomType.GOLD.getRewardChestGadgetId());
         assertEquals(70210110, BlossomType.BLUE.getRewardChestGadgetId());
-        assertEquals(1, BlossomType.GOLD.getBlossomChestId());
-        assertEquals(2, BlossomType.BLUE.getBlossomChestId());
     }
 
     @Test
-    void progressionUnlocksEachTypeAtItsExpectedAdventureRank() {
-        assertFalse(BlossomManager.unlockedAtRank(BlossomType.BLUE, 7));
-        assertTrue(BlossomManager.unlockedAtRank(BlossomType.BLUE, 8));
-        assertFalse(BlossomManager.unlockedAtRank(BlossomType.GOLD, 11));
-        assertTrue(BlossomManager.unlockedAtRank(BlossomType.GOLD, 12));
+    void luaRewardMarkerIsPartOfTheParsedSourceObject() {
+        var nativeReward = JsonUtils.decode(
+                "{\"config_id\":374006,\"gadget_id\":70210106,\"is_blossom_chest\":true}",
+                emu.grasscutter.scripts.data.SceneGadget.class);
+        var unrelated = JsonUtils.decode(
+                "{\"config_id\":374004,\"gadget_id\":70360056}",
+                emu.grasscutter.scripts.data.SceneGadget.class);
+        assertTrue(nativeReward.is_blossom_chest);
+        assertFalse(unrelated.is_blossom_chest);
+        var activity = new BlossomActivity(null);
+        assertFalse(activity.completeFromLua(unrelated));
+        assertTrue(activity.completeFromLua(nativeReward));
+        assertFalse(activity.completeFromLua(nativeReward));
+        assertTrue(activity.rewardReady());
+        activity.setScheduleState(3);
+        assertEquals(3, activity.scheduleState());
     }
 
 }

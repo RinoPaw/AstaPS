@@ -11,8 +11,11 @@ public final class BlossomActivity {
     private int nativeMonsterGoal;
     private int nativeMonsterProgress;
     private boolean nativeProgressReported;
+    enum Phase { FIGHTING, REWARD_READY, CLAIMABLE }
     private EntityGadget chest;
-    private boolean pass = false;
+    private SceneGadget nativeRewardGadget;
+    private Phase phase = Phase.FIGHTING;
+    private int scheduleState = 1;
     private final Set<Integer> rewardClaimants = new HashSet<>();
     private final Map<Integer, String> rewardOperations = new HashMap<>();
 
@@ -35,7 +38,7 @@ public final class BlossomActivity {
 
     /** Called immediately when Scene registers an entity, before its onCreate abilities run. */
     void onSceneEntityCreated(GameEntity entity) {
-        if (nativeMonsterGoal > 0 && entity instanceof EntityMonster
+        if (phase == Phase.FIGHTING && nativeMonsterGoal > 0 && entity instanceof EntityMonster
                 && entity.getGroupId() == gadget.getGroupId()) {
             encounterMonsterIds.add(entity.getId());
         }
@@ -46,9 +49,18 @@ public final class BlossomActivity {
         }
     }
 
-    public boolean getPass() {
-        return pass;
+    boolean rewardReady() { return phase == Phase.REWARD_READY; }
+    boolean isClaimableChest(EntityGadget entity) {
+        return phase == Phase.CLAIMABLE && chest == entity;
     }
+    void markRewardSpawned() {
+        if (phase != Phase.REWARD_READY || chest == null) {
+            throw new IllegalStateException("Blossom reward is not ready");
+        }
+        phase = Phase.CLAIMABLE;
+    }
+    int scheduleState() { return scheduleState; }
+    void setScheduleState(int state) { scheduleState = state; }
 
     /** Use the native Lua group monster definitions as its scripted progress target. */
     void beginNative(int monsterGoal) {
@@ -59,7 +71,7 @@ public final class BlossomActivity {
 
     /** Native Lua reports each group monster death; complete the progress event once. */
     boolean addNativeProgress() {
-        if (nativeMonsterGoal <= 0 || nativeProgressReported || pass) return false;
+        if (nativeMonsterGoal <= 0 || nativeProgressReported || phase != Phase.FIGHTING) return false;
         if (++nativeMonsterProgress < nativeMonsterGoal) return false;
         nativeProgressReported = true;
         return true;
@@ -84,9 +96,11 @@ public final class BlossomActivity {
     int nativeGoal() { return nativeMonsterGoal; }
 
     /** Mark completion once, after the Lua script has reached its own success condition. */
-    boolean completeFromLua() {
-        if (pass) return false;
-        pass = true;
+    boolean completeFromLua(SceneGadget rewardDefinition) {
+        if (phase != Phase.FIGHTING || rewardDefinition == null
+                || !rewardDefinition.is_blossom_chest) return false;
+        nativeRewardGadget = rewardDefinition;
+        phase = Phase.REWARD_READY;
         return true;
     }
 
@@ -118,13 +132,25 @@ public final class BlossomActivity {
         return gadget;
     }
 
+    /** Build the claimable flower using the Lua reward marker and configured chest type. */
     public EntityGadget getChest() {
         if (chest == null) {
-            EntityGadget rewardGadget =
-                    new EntityGadget(gadget.getScene(),
-                            BlossomType.valueOf(gadget.getGadgetId()).getRewardChestGadgetId(),
-                            gadget.getPosition());
+            if (nativeRewardGadget == null || phase != Phase.REWARD_READY) {
+                throw new IllegalStateException("Native Lua has not declared a blossom reward");
+            }
+            EntityGadget rewardGadget = new EntityGadget(
+                    gadget.getScene(),
+                    BlossomType.valueOf(gadget.getGadgetId()).getRewardChestGadgetId(),
+                    nativeRewardGadget.pos);
+            rewardGadget.setGroupId(gadget.getGroupId());
+            rewardGadget.setConfigId(nativeRewardGadget.config_id);
+            rewardGadget.getRotation().set(nativeRewardGadget.rot);
             SceneGadget metaGadget = new SceneGadget();
+            metaGadget.config_id = nativeRewardGadget.config_id;
+            metaGadget.pos = nativeRewardGadget.pos;
+            metaGadget.rot = nativeRewardGadget.rot;
+            metaGadget.group = nativeRewardGadget.group;
+            metaGadget.is_blossom_chest = true;
             metaGadget.boss_chest = new SceneBossChest();
             metaGadget.boss_chest.resin = 20;
             rewardGadget.setFightProperty(FightProperty.FIGHT_PROP_BASE_HP, Float.POSITIVE_INFINITY);

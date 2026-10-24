@@ -24,11 +24,8 @@ public class BlossomManager {
     private final Scene scene;
     private final BlossomNativeCamps nativeCamps = new BlossomNativeCamps();
     private final List<BlossomActivity> blossomActivities = new ArrayList<>();
-    private final List<BlossomActivity> activeChests = new ArrayList<>();
-    private final List<EntityGadget> createdEntity = new ArrayList<>();
-    private final Map<Integer, Integer> nativeScheduleStates = new java.util.concurrent.ConcurrentHashMap<>();
-
-    private final List<SpawnDataEntry> blossomConsumed = new ArrayList<>();
+    private final Set<EntityGadget> createdEntity = new HashSet<>();
+    private final Set<SpawnDataEntry> blossomConsumed = new HashSet<>();
     private final Set<SpawnDataEntry> scriptedSpawned = new HashSet<>();
     private List<SpawnDataEntry> activeSpawnCache;
     private int cachedAdventureRank = -1;
@@ -121,12 +118,11 @@ public class BlossomManager {
     }
 
     /** Lua reports completion; the Java ledger owns the reward and camp rotation. */
-    public boolean completeLuaEncounter(int groupId, EntityGadget source) {
+    public boolean completeLuaEncounter(int groupId, emu.grasscutter.scripts.data.SceneGadget reward) {
         synchronized (blossomActivities) {
             for (var activity : blossomActivities) {
-                if (activity.getGadget().getGroupId() == groupId
-                        && (source == null || activity.getGadget() == source))
-                    return activity.completeFromLua();
+                if (activity.getGadget().getGroupId() == groupId)
+                    return activity.completeFromLua(reward);
             }
         }
         return false;
@@ -160,7 +156,11 @@ public class BlossomManager {
     }
 
     public int blossomScheduleState(int groupId) {
-        return nativeScheduleStates.getOrDefault(groupId, 1);
+        synchronized (blossomActivities) {
+            return blossomActivities.stream()
+                    .filter(activity -> activity.getGadget().getGroupId() == groupId)
+                    .mapToInt(BlossomActivity::scheduleState).findFirst().orElse(1);
+        }
     }
 
     public int setBlossomScheduleState(int groupId, int state) {
@@ -168,7 +168,11 @@ public class BlossomManager {
         boolean selected = activeScriptedSpawns().stream()
                 .anyMatch(spawn -> spawn.getGroup().getGroupId() == groupId);
         if (!selected) return 1;
-        nativeScheduleStates.put(groupId, state);
+        synchronized (blossomActivities) {
+            blossomActivities.stream()
+                    .filter(activity -> activity.getGadget().getGroupId() == groupId)
+                    .findFirst().ifPresent(activity -> activity.setScheduleState(state));
+        }
         return 0;
     }
 
@@ -194,11 +198,7 @@ public class BlossomManager {
         // A delayed GROUP_REFRESH must not recreate the interactive flower
         // while its single encounter is running or its reward remains unclaimed.
         synchronized (blossomActivities) {
-            if (blossomActivities.stream().anyMatch(activity ->
-                    activity.getGadget().getGroupId() == groupId
-                            && activity.getGadget().getConfigId() == configId
-                            && activity.getGadget().getGadgetId() == gadgetId)) return false;
-            return activeChests.stream().noneMatch(activity ->
+            return blossomActivities.stream().noneMatch(activity ->
                     activity.getGadget().getGroupId() == groupId
                             && activity.getGadget().getConfigId() == configId
                             && activity.getGadget().getGadgetId() == gadgetId);
@@ -290,21 +290,17 @@ public class BlossomManager {
         if (!scene.getScriptManager().isInit()) ensureScriptedSpawns();
         if (mapMarkersDirty) notifyIcon();
         synchronized (blossomActivities) {
-            var it = blossomActivities.iterator();
-            while (it.hasNext()) {
-                var active = it.next();
-                if (active.getPass()) {
-                    active.clearEncounterSummons();
-                    EntityGadget chest = active.getChest();
-                    scene.addEntity(chest);
-                    Grasscutter.getLogger().info(
-                            "Ley-line reward flower spawned scene={} gadget={} source={} nativeKills={}/{}",
-                            scene.getId(), chest.getGadgetId(),
-                            active.getGadget().getGadgetId(),
-                            active.nativeKills(), active.nativeGoal());
-                    activeChests.add(active);
-                    it.remove();
-                }
+            for (var active : blossomActivities) {
+                if (!active.rewardReady()) continue;
+                active.clearEncounterSummons();
+                EntityGadget chest = active.getChest();
+                active.markRewardSpawned();
+                scene.addEntity(chest);
+                Grasscutter.getLogger().info(
+                        "Ley-line reward flower spawned scene={} gadget={} source={} nativeKills={}/{}",
+                        scene.getId(), chest.getGadgetId(),
+                        active.getGadget().getGadgetId(),
+                        active.nativeKills(), active.nativeGoal());
             }
         }
     }
@@ -363,7 +359,7 @@ public class BlossomManager {
                         synchronized (blossomActivities) {
                             blossomActivities.remove(activity);
                         }
-                        nativeScheduleStates.remove(source.getGroupId());
+                        // The activity owns its transient Lua schedule state.
                         source.updateState(204);
                         context.addWorktopOptions(new int[] {187});
                         return false;
@@ -388,12 +384,6 @@ public class BlossomManager {
         player.sendPacket(new PacketBlossomBriefInfoNotify(buildBriefInfos(player)));
     }
 
-    // These progression thresholds are gameplay observations; original-client
-    // protobuf wire identities are verified separately in Genshin-Reverse.
-    static boolean unlockedAtRank(BlossomType type, int adventureRank) {
-        return type != null && adventureRank >= (type == BlossomType.BLUE ? 8 : 12);
-    }
-
     private List<BlossomBriefInfoOuterClass.BlossomBriefInfo> buildBriefInfos(Player player) {
         final int wl = getWorldLevel();
         final int worldLevel = (wl < 0) ? 0 : ((wl > 9) ? 9 : wl);
@@ -403,10 +393,13 @@ public class BlossomManager {
         for (var spawn : activeScriptedSpawns()) {
             if (blossomConsumed.contains(spawn)) continue;
             var type = BlossomType.valueOf(spawn.getGadgetId());
-            if (!unlockedAtRank(type, player.getLevel())) continue;
             int refreshId = nativeCamps.refreshId(spawn);
             int campId = nativeCamps.campId(spawn);
             var refresh = GameData.getBlossomRefreshExcelConfigDataMap().get(refreshId);
+            if (type == null || refresh == null
+                    || !refreshEligible(refresh, player.getLevel(),
+                            player.getUnlockedSceneAreas(scene.getId()), GameData.getCityDataMap().values()))
+                continue;
             int previewReward = getPreviewReward(refresh, worldLevel);
             blossoms.add(BlossomBriefInfoOuterClass.BlossomBriefInfo.newBuilder()
                     .setSceneId(scene.getId())
@@ -444,17 +437,17 @@ public class BlossomManager {
 
     public boolean hasRewardChest(EntityGadget chest) {
         synchronized (blossomActivities) {
-            return activeChests.stream().anyMatch(active -> active.getChest() == chest);
+            return blossomActivities.stream().anyMatch(active -> active.isClaimableChest(chest));
         }
     }
 
     /** Called once the reward chest is fully claimed; ignores chests this manager doesn't own. */
     public void retireChest(EntityGadget chest) {
         synchronized (blossomActivities) {
-            var it = activeChests.iterator();
+            var it = blossomActivities.iterator();
             while (it.hasNext()) {
                 var active = it.next();
-                if (active.getChest() == chest) {
+                if (active.isClaimableChest(chest)) {
                     it.remove();
                     // Debug-spawned outcrops have no authored SpawnDataEntry. Never
                     // mark null as consumed, or later /spawn outcrops all get skipped.
@@ -466,7 +459,6 @@ public class BlossomManager {
                         } else {
                             blossomConsumed.add(source);
                         }
-                        nativeScheduleStates.remove(active.getGadget().getGroupId());
                         // Unregister the completed group's Lua triggers before entering its next camp.
                         if (scene.getScriptManager().getGroupInstanceById(
                                 active.getGadget().getGroupId()) != null)
@@ -516,8 +508,8 @@ public class BlossomManager {
     public List<GameItem> claimReward(Player player, EntityGadget chest,
             GadgetInteractReqOuterClass.GadgetInteractReq req, Runnable confirmed) {
         synchronized (blossomActivities) {
-            BlossomActivity active = activeChests.stream()
-                    .filter(candidate -> candidate.getChest() == chest)
+            BlossomActivity active = blossomActivities.stream()
+                    .filter(candidate -> candidate.isClaimableChest(chest))
                     .findFirst().orElse(null);
             if (active == null || active.rewardClaimed(player.getUid())) return null;
 

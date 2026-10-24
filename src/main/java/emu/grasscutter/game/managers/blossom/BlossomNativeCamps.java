@@ -29,16 +29,9 @@ final class BlossomNativeCamps {
     private final Map<SpawnDataEntry, Source> byEntry = new IdentityHashMap<>();
     private final Set<Integer> unresolvedGroups = new HashSet<>();
 
-    static int initialId(int cityId, BlossomType type, List<BlossomCampData> eligible) {
-        if (cityId == 1) {
-            // Both IDs exist in the native BlossomGroups graph. Preserve our initial
-            // city-1 sources when replacing the incomplete legacy spawn candidate pool.
-            return type.getCircleCampId();
-        }
-        if (eligible.isEmpty()) return 0;
-        // No native starting-node selection has yet been recovered for other cities.
-        // Choose distinct authored groups deterministically until that rule is proven.
-        return eligible.get(type == BlossomType.BLUE && eligible.size() > 1 ? 1 : 0).getId();
+    /** Provisional start in native camp-ID order; original starting rule is unverified. */
+    static int initialId(List<BlossomCampData> eligible) {
+        return eligible.isEmpty() ? 0 : eligible.get(0).getId();
     }
 
     // Both blossom types share the camp graph. Only real authored Lua locations qualify.
@@ -116,7 +109,7 @@ final class BlossomNativeCamps {
             var occupied = occupiedByCity.computeIfAbsent(city, unused -> new HashSet<>());
             var local = selectedByCity.computeIfAbsent(city, unused -> new ArrayList<>());
             int savedId = host.getBlossomCampId(refresh.getId());
-            int initial = initialId(city, kind, eligible);
+            int initial = initialId(eligible);
             int chosenId = firstAvailableCamp(
                     List.of(savedId > 0 ? savedId : initial), rows, city, rank, refreshType, occupied,
                     candidate -> {

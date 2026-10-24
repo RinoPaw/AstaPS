@@ -29,3 +29,28 @@ been independently recovered. The current initial choice is provisional.
 The snapshot's nextCampIdVec contains multiple edges for some camps
 (6 Mondstadt, 7 Liyue, 2 Sumeru). Breadth-first conflict resolution is
 a provisional local policy; the original client's branching rule remains unverified.
+
+## Native Lua ownership checkpoint (2026-10-24)
+
+- Original `BlossomRefreshExcelConfigData.dropVec` matches the nine base
+  item/quantity tiers in bundled `blossoms.lcss`. Original selection of
+  drop tier from world level, Adventure EXP, Companionship EXP, and
+  per-node sampling remain unverified. LootCSS deliberately stays the
+  authoritative server payout source with a journaled claim.
+- `BlossomGroupsExcelConfigData.newGroupVec` owns Group references and
+  `nextCampIdVec` the directed camp graph. `RefreshBlossomGroup`
+  replaces the active Suite and dispatches GROUP_REFRESH; authored Lua
+  chooses a worktop with `GetBlossomRefreshTypeByGroupId`.
+- The authored reward `configId`, Group and position now flow from
+  `CreateBlossomChestByGroupId` to the claimable server reward entity.
+  The claimable gadget type is still selected by the blossom kind.
+- One `BlossomActivity` collection tracks fighting, reward-ready and
+  claimable phases; the Lua schedule state lives on the activity.
+- The original `EVENT_BLOSSOM_CHEST_DIE` refreshes the same Lua Group.
+  Java's successful-claim path instead advances to another native camp
+  and unloads the completed Group. Calling both would re-activate
+  the old camp. This difference remains explicit pending original
+  server-side lifecycle evidence.
+- `CreateGadget` now reports failures; native blossom worktop creation
+  failures also abort their Lua trigger. Existing identical entities
+  count as successful creation.

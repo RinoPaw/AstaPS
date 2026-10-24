@@ -537,11 +537,12 @@ public class ScriptLib {
     /** Original Lua names its reward config; Java owns the reward entity and receipt. */
     public int CreateBlossomChestByGroupId(int groupId, int configId) {
         var group = currentGroup.getIfExists();
-        if (group == null || group.id != groupId || group.gadgets == null
-                || !group.gadgets.containsKey(configId)) return 1;
+        if (group == null || group.id != groupId || group.gadgets == null) return 1;
+        var reward = group.gadgets.get(configId);
+        if (reward == null || !reward.is_blossom_chest) return 1;
         var manager = sceneScriptManager.getIfExists();
         if (manager == null || manager.getScene().getBlossomManager() == null) return 1;
-        return manager.getScene().getBlossomManager().completeLuaEncounter(groupId, null) ? 0 : 1;
+        return manager.getScene().getBlossomManager().completeLuaEncounter(groupId, reward) ? 0 : 1;
     }
 
     public int CreateChannellerSlabCampRewardGadget(int configId) {
@@ -572,19 +573,32 @@ public class ScriptLib {
         logger.debug("[LUA] Call CreateGadget with {}", printTable(table));
         var configId = table.get("config_id").toint();
 
-        if (configId == 0) {
-            Grasscutter.getLogger().warn("Tried to CreateGadget with config_id 0: {}", printTable(table));
-            return 0;
-        }
-
-        var group = getCurrentGroup();
-
-        if (group.isEmpty()) {
+        if (configId <= 0) {
+            Grasscutter.getLogger().warn("Invalid CreateGadget config_id: {}", printTable(table));
             return 1;
         }
-        createGadget(configId, group.get());
 
-        return 0;
+        var group = currentGroup.getIfExists();
+        if (group == null || group.gadgets == null || !group.gadgets.containsKey(configId)) {
+            return 1;
+        }
+        var definition = group.gadgets.get(configId);
+        // A selected Group may already have spawned this gadget from its native camp.
+        var scene = getSceneScriptManager().getScene();
+        var existing = scene.getEntityByConfigId(configId, group.id);
+        if (existing instanceof EntityGadget live && live.getGadgetId() == definition.gadget_id) {
+            return 0;
+        }
+        if (createGadget(configId, group) != null) return 0;
+        Grasscutter.getLogger().warn(
+                "Lua CreateGadget failed scene={} group={} config={}",
+                scene.getId(), group.id, configId);
+        // Original blossom scripts ignore this function's return value, so
+        // abort the trigger if the selected worktop could not be produced.
+        if (emu.grasscutter.game.managers.blossom.BlossomType.valueOf(definition.gadget_id) != null) {
+            throw new LuaError("Failed to create selected ley-line gadget " + configId);
+        }
+        return 1;
     }
 
     public int CreateGroupTimerEvent(int groupID, String source, double time) {

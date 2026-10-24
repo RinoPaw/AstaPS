@@ -77,10 +77,15 @@ public class BlossomManager {
                 scene.broadcastPacket(new emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify(
                         existing, VisionTypeOuterClass.VisionType.VisionType_VISION_REFRESH, 0));
             } else {
-                var gadget = new EntityGadget(
-                        scene, spawn.getGadgetId(), spawn.getPos(), spawn.getRot());
-                gadget.setGroupId(spawn.getGroup().getGroupId());
-                gadget.setConfigId(spawn.getConfigId());
+                // Materialize native camps through the Lua scene gadget factory, preserving
+                // their authored metadata. The imported grid still uses its spawn record.
+                var gadget = nativeCamps.createGadget(scene, spawn);
+                if (gadget == null) {
+                    gadget = new EntityGadget(
+                            scene, spawn.getGadgetId(), spawn.getPos(), spawn.getRot());
+                    gadget.setGroupId(spawn.getGroup().getGroupId());
+                    gadget.setConfigId(spawn.getConfigId());
+                }
                 gadget.setSpawnEntry(spawn);
                 if (spawn.getGadgetState() > 0) gadget.setState(spawn.getGadgetState());
                 initBlossom(gadget);
@@ -160,6 +165,41 @@ public class BlossomManager {
     public boolean isActiveSpawn(SpawnDataEntry entry) {
         return BlossomType.valueOf(entry.getGadgetId()) == null
                 || activeScriptedSpawns().contains(entry);
+    }
+
+    /** One owner drives the worktop: Java for ordinary camps, Lua for opted-in scripts. */
+    public boolean shouldDispatchLuaWorktop(EntityGadget gadget) {
+        return !createdEntity.contains(gadget) || luaEncounterReady(gadget);
+    }
+
+    private boolean luaEncounterReady(EntityGadget gadget) {
+        return nativeCamps.luaEncounter(gadget.getSpawnEntry())
+                && scene.getScriptManager().getGroupInstanceById(gadget.getGroupId()) != null;
+    }
+
+    /** Report the selected camp's native refresh type to its authored Lua group. */
+    public Integer getBlossomRefreshTypeByGroupId(int groupId) {
+        for (var spawn : activeScriptedSpawns()) {
+            if (spawn.getGroup().getGroupId() != groupId) continue;
+            return luaRefreshType(BlossomType.valueOf(spawn.getGadgetId()));
+        }
+        return null;
+    }
+
+    static Integer luaRefreshType(BlossomType type) {
+        if (type == null) return null;
+        return type == BlossomType.GOLD ? 1 : 3;
+    }
+
+    /** Lua may complete its own encounter; Java still owns the reward and camp rotation. */
+    public boolean completeLuaEncounter(int groupId) {
+        synchronized (blossomActivities) {
+            for (var activity : blossomActivities) {
+                if (activity.isLuaEncounter() && activity.getGadget().getGroupId() == groupId)
+                    return activity.completeFromLua();
+            }
+        }
+        return false;
     }
 
     /** Operator-created gadgets with no authored group are outside this policy. */
@@ -337,12 +377,14 @@ public class BlossomManager {
                     active.clearEncounterSummons();
                     EntityGadget chest = active.getChest();
                     scene.addEntity(chest);
+                    var challenge = active.getChallenge();
                     Grasscutter.getLogger().info(
-                            "Ley-line reward flower spawned scene={} gadget={} source={} kills={}/{}",
+                            "Ley-line reward flower spawned scene={} gadget={} source={} mode={} kills={}/{}",
                             scene.getId(), chest.getGadgetId(),
                             active.getGadget().getGadgetId(),
-                            active.getChallenge().getScore().get(),
-                            active.getChallenge().getGoal());
+                            active.isLuaEncounter() ? "lua" : "java",
+                            challenge == null ? 0 : challenge.getScore().get(),
+                            challenge == null ? 0 : challenge.getGoal());
                     scene.setChallenge(null);
                     activeChests.add(active);
                     it.remove();
@@ -385,8 +427,10 @@ public class BlossomManager {
         gadgetWorktop.addWorktopOptions(new int[] {187});
         gadgetWorktop.setOnSelectWorktopOptionEvent(
                 (GadgetWorktop context, int option) -> {
+                    if (option != 187) return false;
                     BlossomActivity activity;
                     EntityGadget entityGadget = context.getGadget();
+                    boolean luaEncounter = luaEncounterReady(entityGadget);
                     synchronized (blossomActivities) {
                         for (BlossomActivity i : this.blossomActivities) {
                             if (i.getGadget() == entityGadget) {
@@ -396,7 +440,7 @@ public class BlossomManager {
 
                         int volume = 0;
                         IntList monsters = new IntArrayList();
-                        while (true) {
+                        while (!luaEncounter) {
                             var remain = GameDepot.getBlossomConfig().getMonsterFightingVolume() - volume;
                             if (remain <= 0) {
                                 break;
@@ -414,13 +458,14 @@ public class BlossomManager {
                             }
                         }
 
-                        Grasscutter.getLogger().info("Blossom Monsters:" + monsters);
+                        if (!luaEncounter) Grasscutter.getLogger().info("Blossom Monsters:" + monsters);
 
-                        activity = new BlossomActivity(entityGadget, monsters, -1, worldLevel);
+                        activity = new BlossomActivity(entityGadget, monsters, -1, worldLevel,
+                                luaEncounter);
                         blossomActivities.add(activity);
                     }
                     entityGadget.updateState(201);
-                    scene.setChallenge(activity.getChallenge());
+                    if (!luaEncounter) scene.setChallenge(activity.getChallenge());
                     scene.removeEntity(entityGadget, VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE);
                     activity.start();
                     return true;

@@ -1282,6 +1282,15 @@ public class SceneScriptManager {
         if (scene.getSceneType() == SceneType.SCENE_WORLD
                 && !scene.getBlossomManager().isActiveAuthoredGadget(groupId, g.config_id, g.gadget_id))
             return null;
+        // Script triggers and the native-camp loader can both request the same outcrop.
+        // The authored (group, config, gadget) identity has one live entity.
+        if (scene.getSceneType() == SceneType.SCENE_WORLD
+                && emu.grasscutter.game.managers.blossom.BlossomType.valueOf(g.gadget_id) != null
+                && scene.getEntities().values().stream().anyMatch(existing ->
+                        existing instanceof EntityGadget flower
+                                && flower.getGroupId() == groupId
+                                && flower.getConfigId() == g.config_id
+                                && flower.getGadgetId() == g.gadget_id)) return null;
         if (g.isOneoff) {
             var hasEntity =
                     getScene().getEntities().values().stream()

@@ -37,17 +37,19 @@ public class HandlerSelectWorktopOptionReq extends PacketHandler {
                 return;
             }
 
-            session.getPlayer().getScene().selectWorktopOptionWith(req);
-            session
-                    .getPlayer()
-                    .getScene()
-                    .getScriptManager()
-                    .callEvent(
-                            new ScriptArgs(
-                                    entity.getGroupId(),
-                                    EventType.EVENT_SELECT_OPTION,
-                                    entity.getConfigId(),
-                                    req.getOptionId()));
+            var scene = session.getPlayer().getScene();
+            // Native and custom Lua challenges opt in explicitly. Suppress the
+            // original select trigger for Java-owned encounters to avoid two waves.
+            boolean notifyLua = !(entity instanceof EntityGadget flower
+                    && req.getOptionId() == 187
+                    && scene.getBlossomManager() != null
+                    && !scene.getBlossomManager().shouldDispatchLuaWorktop(flower));
+            scene.selectWorktopOptionWith(req);
+            if (notifyLua) {
+                scene.getScriptManager().callEvent(
+                        new ScriptArgs(entity.getGroupId(), EventType.EVENT_SELECT_OPTION,
+                                entity.getConfigId(), req.getOptionId()));
+            }
             session
                     .getPlayer()
                     .getQuestManager()

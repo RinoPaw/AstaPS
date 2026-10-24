@@ -15,6 +15,7 @@ public final class BlossomActivity {
     private final SceneGroup tempSceneGroup;
     private final WorldChallenge challenge;
     private final EntityGadget gadget;
+    private final boolean luaEncounter;
     private EntityGadget chest;
     private int step;
     private final int goal;
@@ -41,6 +42,13 @@ public final class BlossomActivity {
 
     public BlossomActivity(
             EntityGadget entityGadget, List<Integer> monsters, int timeout, int worldLevel) {
+        this(entityGadget, monsters, timeout, worldLevel, false);
+    }
+
+    public BlossomActivity(
+            EntityGadget entityGadget, List<Integer> monsters, int timeout, int worldLevel,
+            boolean luaEncounter) {
+        this.luaEncounter = luaEncounter;
         this.tempSceneGroup = new SceneGroup();
         this.tempSceneGroup.id = entityGadget.getId();
         this.gadget = entityGadget;
@@ -49,8 +57,8 @@ public final class BlossomActivity {
         this.candidateMonsters.addAll(monsters);
         this.worldLevel = worldLevel;
         ArrayList<ChallengeTrigger> challengeTriggers = new ArrayList<>();
-        this.challenge =
-                new WorldChallenge(
+        this.challenge = luaEncounter ? null
+                : new WorldChallenge(
                         entityGadget.getScene(),
                         tempSceneGroup,
                         1,
@@ -59,7 +67,7 @@ public final class BlossomActivity {
                         timeout,
                         goal,
                         challengeTriggers);
-        challengeTriggers.add(new KillMonsterCountTrigger());
+        if (!luaEncounter) challengeTriggers.add(new KillMonsterCountTrigger());
         // this.challengeTriggers.add(new InTimeTrigger());
     }
 
@@ -103,7 +111,18 @@ public final class BlossomActivity {
     }
 
     public void start() {
-        challenge.start();
+        if (challenge != null) challenge.start();
+    }
+
+    /** Script completion is accepted once, only for an explicitly Lua-owned encounter. */
+    boolean completeFromLua() {
+        if (!luaEncounter || pass) return false;
+        pass = true;
+        return true;
+    }
+
+    boolean isLuaEncounter() {
+        return luaEncounter;
     }
 
     /** A completed kill challenge is authoritative even if a monster reference remains alive. */
@@ -112,7 +131,7 @@ public final class BlossomActivity {
     }
 
     public void onTick() {
-        if (pass) return;
+        if (pass || luaEncounter) return;
         observeSummons();
         if (challenge.isSuccess()) {
             pass = true;

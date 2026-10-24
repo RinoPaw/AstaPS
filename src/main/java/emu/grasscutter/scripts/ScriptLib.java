@@ -297,6 +297,22 @@ public class ScriptLib {
         return 0;
     }
 
+    /** Original camp-type query used by the Lua GROUP_REFRESH handler (1=gold, 3=blue). */
+    public Integer GetBlossomRefreshTypeByGroupId(int groupId) {
+        var manager = sceneScriptManager.getIfExists();
+        if (manager == null || manager.getScene().getBlossomManager() == null) return null;
+        return manager.getScene().getBlossomManager().getBlossomRefreshTypeByGroupId(groupId);
+    }
+
+    /** Explicit script-owned encounter completion; rewards remain server-owned. */
+    public int CompleteBlossomChallenge(int groupId) {
+        var current = currentGroup.getIfExists();
+        if (current == null || current.id != groupId) return 1;
+        var manager = sceneScriptManager.getIfExists();
+        if (manager == null || manager.getScene().getBlossomManager() == null) return 1;
+        return manager.getScene().getBlossomManager().completeLuaEncounter(groupId) ? 0 : 1;
+    }
+
     public int AddBlossomScheduleProgressByGroupId(int groupId) {
         logger.warn("[LUA] Call unimplemented AddBlossomScheduleProgressByGroupId with {}", groupId);
 

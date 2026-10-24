@@ -275,6 +275,16 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void createGadgetRejectsInvalidRequestsRatherThanClaimingSuccess() {
+        var scriptLib = new emu.grasscutter.scripts.ScriptLib();
+        var invalid = new org.luaj.vm2.LuaTable();
+        invalid.set("config_id", 0);
+        assertEquals(1, scriptLib.CreateGadget(invalid));
+        invalid.set("config_id", 374004);
+        assertEquals(1, scriptLib.CreateGadget(invalid));
+    }
+
+    @Test
     void nativeBlossomChestTypesUseSeparateRewardGadgets() {
         // BlossomChestExcelConfigData: SCOIN uses 70210109 and EXP uses 70210110.
         assertEquals(70210109, BlossomType.GOLD.getRewardChestGadgetId());

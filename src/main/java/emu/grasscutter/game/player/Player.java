@@ -129,6 +129,8 @@ public class Player implements PlayerHook, FieldFetch {
     @Getter private Map<Integer, ActiveCookCompoundData> activeCookCompounds;
     @Getter private Map<Integer, Integer> questGlobalVariables;
     @Getter private Map<Integer, Integer> openStates;
+    /** Native ley-line camp cursor, keyed by BlossomRefreshExcelConfigData ID. */
+    private Map<Integer, Integer> blossomCampIds = new HashMap<>();
     // TPS ammunition reserve, keyed by TpsAmmunitionExcelConfigData id.
     private Map<Integer, Integer> tpsAmmunition;
     // TPS weapons the TPS traveler wears; it is a trial avatar and is never saved itself.
@@ -1563,6 +1565,16 @@ public class Player implements PlayerHook, FieldFetch {
             this.tpsAmmunition = new HashMap<>();
         }
         return this.tpsAmmunition;
+    }
+
+    public int getBlossomCampId(int refreshId) {
+        return blossomCampIds == null ? 0 : blossomCampIds.getOrDefault(refreshId, 0);
+    }
+
+    /** Persist a successful claim's next camp before the scene can be unloaded. */
+    public void setBlossomCampId(int refreshId, int campId) {
+        if (blossomCampIds == null) blossomCampIds = new HashMap<>();
+        if (!Objects.equals(blossomCampIds.put(refreshId, campId), campId)) save();
     }
 
     public void save() {

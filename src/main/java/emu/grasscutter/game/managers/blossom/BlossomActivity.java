@@ -1,25 +1,17 @@
 package emu.grasscutter.game.managers.blossom;
 
-import emu.grasscutter.data.GameData;
-import emu.grasscutter.game.dungeons.challenge.WorldChallenge;
-import emu.grasscutter.game.dungeons.challenge.trigger.*;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.props.FightProperty;
-import emu.grasscutter.game.world.*;
 import emu.grasscutter.scripts.data.*;
-import emu.grasscutter.utils.Utils;
 import java.util.*;
 
 public final class BlossomActivity {
 
-    private final SceneGroup tempSceneGroup;
-    private final WorldChallenge challenge;
     private final EntityGadget gadget;
+    private int nativeMonsterGoal;
+    private int nativeMonsterProgress;
+    private boolean nativeProgressReported;
     private EntityGadget chest;
-    private int step;
-    private final int goal;
-    private int generatedCount;
-    private final int worldLevel;
     private boolean pass = false;
     private final Set<Integer> rewardClaimants = new HashSet<>();
     private final Map<Integer, String> rewardOperations = new HashMap<>();
@@ -31,55 +23,22 @@ public final class BlossomActivity {
     }
     void resetUnpaidReward(int uid) { rewardOperations.remove(uid); }
 
-    private final List<EntityMonster> activeMonsters = new ArrayList<>();
     // Keep every encounter root, including monsters already dead or pruned between waves.
     private final Set<Integer> encounterMonsterIds = new HashSet<>();
     // Death removes summoned entities from Scene before the claimable flower appears.
     // Retain their identities so the client also receives a final VISION_REMOVE.
     private final Map<Integer, GameEntity> encounterSummons = new LinkedHashMap<>();
-    private final Queue<Integer> candidateMonsters = new ArrayDeque<>();
 
-    public BlossomActivity(
-            EntityGadget entityGadget, List<Integer> monsters, int timeout, int worldLevel) {
-        this.tempSceneGroup = new SceneGroup();
-        this.tempSceneGroup.id = entityGadget.getId();
-        this.gadget = entityGadget;
-        this.step = 0;
-        this.goal = monsters.size();
-        this.candidateMonsters.addAll(monsters);
-        this.worldLevel = worldLevel;
-        ArrayList<ChallengeTrigger> challengeTriggers = new ArrayList<>();
-        this.challenge =
-                new WorldChallenge(
-                        entityGadget.getScene(),
-                        tempSceneGroup,
-                        1,
-                        1,
-                        List.of(goal, timeout),
-                        timeout,
-                        goal,
-                        challengeTriggers);
-        challengeTriggers.add(new KillMonsterCountTrigger());
-        // this.challengeTriggers.add(new InTimeTrigger());
-    }
-
-    public WorldChallenge getChallenge() {
-        return this.challenge;
-    }
-
-    public void addMonsters(List<EntityMonster> monsters) {
-        // Earlier waves can still have living enemies when the next wave appears.
-        this.activeMonsters.removeIf(monster -> !monster.isAlive());
-        this.activeMonsters.addAll(monsters);
-        for (EntityMonster monster : monsters) {
-            monster.setGroupId(this.tempSceneGroup.id);
-            encounterMonsterIds.add(monster.getId());
-        }
-        observeSummons();
+    public BlossomActivity(EntityGadget gadget) {
+        this.gadget = gadget;
     }
 
     /** Called immediately when Scene registers an entity, before its onCreate abilities run. */
     void onSceneEntityCreated(GameEntity entity) {
+        if (nativeMonsterGoal > 0 && entity instanceof EntityMonster
+                && entity.getGroupId() == gadget.getGroupId()) {
+            encounterMonsterIds.add(entity.getId());
+        }
         int parent = BlossomSummonCleanup.parentId(entity);
         if (BlossomSummonCleanup.isEncounterChild(
                 parent, encounterMonsterIds, encounterSummons.keySet())) {
@@ -87,79 +46,48 @@ public final class BlossomActivity {
         }
     }
 
-    public int getAliveMonstersCount() {
-        int count = 0;
-        for (EntityMonster monster : activeMonsters) {
-            if (monster.isAlive()
-                    && monster.getScene().getEntityById(monster.getId()) == monster) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     public boolean getPass() {
         return pass;
     }
 
-    public void start() {
-        challenge.start();
+    /** Use the native Lua group monster definitions as its scripted progress target. */
+    void beginNative(int monsterGoal) {
+        nativeMonsterGoal = monsterGoal;
+        nativeMonsterProgress = 0;
+        nativeProgressReported = false;
     }
 
-    /** A completed kill challenge is authoritative even if a monster reference remains alive. */
-    static boolean encounterComplete(int goal, int generated, int alive, int kills) {
-        return kills >= goal || (generated >= goal && alive == 0);
+    /** Native Lua reports each group monster death; complete the progress event once. */
+    boolean addNativeProgress() {
+        if (nativeMonsterGoal <= 0 || nativeProgressReported || pass) return false;
+        if (++nativeMonsterProgress < nativeMonsterGoal) return false;
+        nativeProgressReported = true;
+        return true;
     }
 
-    public void onTick() {
-        if (pass) return;
-        observeSummons();
-        if (challenge.isSuccess()) {
-            pass = true;
-            return;
+    void abort() {
+        clearEncounterSummons();
+        var scene = gadget.getScene();
+        var toRemove = scene.getEntities().values().stream()
+                .filter(entity -> entity instanceof EntityMonster)
+                .filter(entity -> entity.getGroupId() == gadget.getGroupId())
+                .filter(entity -> encounterMonsterIds.contains(entity.getId()))
+                .toList();
+        if (!toRemove.isEmpty()) {
+            scene.removeEntities(toRemove,
+                    emu.grasscutter.net.proto.VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE);
         }
-        if (!challenge.inProgress()) return;
+        encounterMonsterIds.clear();
+    }
 
-        Scene scene = gadget.getScene();
-        Position pos = gadget.getPosition();
-        int alive = getAliveMonstersCount();
-        int kills = challenge.getScore().get();
-        if (encounterComplete(goal, generatedCount, alive, kills)) {
-            challenge.done();
-            pass = true;
-            return;
-        }
-        if (alive <= 2) {
-            if (generatedCount < goal) {
-                step++;
+    int nativeKills() { return nativeMonsterProgress; }
+    int nativeGoal() { return nativeMonsterGoal; }
 
-                var worldLevelData = GameData.getWorldLevelDataMap().get(worldLevel);
-                int worldLevelOverride = 0;
-                if (worldLevelData != null) {
-                    worldLevelOverride = worldLevelData.getMonsterLevel();
-                }
-
-                List<EntityMonster> newMonsters = new ArrayList<>();
-                int willSpawn = Utils.randomRange(3, 5);
-                if (generatedCount + willSpawn > goal) {
-                    willSpawn = goal - generatedCount;
-                }
-                generatedCount += willSpawn;
-                for (int i = 0; i < willSpawn; i++) {
-                    var entry = candidateMonsters.poll();
-                    if (entry == null) continue;
-
-                    var monsterData = GameData.getMonsterDataMap().get((int) entry);
-                    var level = scene.getEntityLevel(1, worldLevelOverride);
-                    var entity =
-                            new EntityMonster(scene, monsterData, pos.nearby2d(4f), Position.ZERO, level);
-                    newMonsters.add(entity);
-                }
-                // Register roots before Scene.addEntity invokes onCreate/ability callbacks.
-                addMonsters(newMonsters);
-                for (EntityMonster monster : newMonsters) scene.addEntity(monster);
-            }
-        }
+    /** Mark completion once, after the Lua script has reached its own success condition. */
+    boolean completeFromLua() {
+        if (pass) return false;
+        pass = true;
+        return true;
     }
 
     /**

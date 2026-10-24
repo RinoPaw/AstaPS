@@ -492,6 +492,10 @@ public class SceneScriptManager {
 
     // TODO optimize
     public SceneGroup getGroupById(int groupId) {
+        // Camp groups can be loaded directly from BlossomGroups even when
+        // the scene block index is incomplete or disabled.
+        var loaded = this.sceneGroups.get(groupId);
+        if (loaded != null) return loaded;
         for (var block : getBlocks().values()) {
             this.getScene().loadBlock(block);
             if (block.groups == null) continue;
@@ -834,6 +838,63 @@ public class SceneScriptManager {
         }
     }
 
+    /**
+     * A BlossomGroups entry may exist without a scene-block index entry.
+     * Register its parsed Lua group as a real scene instance so ScriptLib
+     * suite/trigger/variable actions have the same context as normal groups.
+     */
+    public SceneGroup ensureBlossomGroup(SceneGroup authored) {
+        var existing = sceneGroupsInstances.get(authored.id);
+        if (existing != null && existing.getLuaGroup() != null) {
+            existing.getLuaGroup().dontUnload = true;
+            return existing.getLuaGroup();
+        }
+        var indexed = getGroupById(authored.id);
+        existing = sceneGroupsInstances.get(authored.id);
+        if (indexed != null && existing != null && existing.getLuaGroup() != null) {
+            indexed.dontUnload = true;
+            return indexed;
+        }
+
+        loadGroupFromScript(authored);
+        authored.dontUnload = true;
+        getScene().getLoadedGroups().add(authored);
+        var instance = getGroupInstanceById(authored.id);
+        if (instance != null && authored.suites != null && !authored.suites.isEmpty()) {
+            refreshGroup(instance, authored.findInitSuiteIndex(0), false);
+        }
+        callEvent(new ScriptArgs(authored.id, EventType.EVENT_GROUP_LOAD, authored.id));
+        return authored;
+    }
+
+    /** Use the actual scene-event pipeline for original ley-line worktop scripts. */
+    public boolean hasBlossomSelectTriggers(int groupId) {
+        return getTriggersByEvent(EventType.EVENT_SELECT_OPTION).stream()
+                .anyMatch(trigger -> trigger.getCurrentGroup().id == groupId);
+    }
+
+    /**
+     * Dispatch the selected option exactly once, on the initiating thread.
+     * Starting the worktop is already a scene action; synchronous dispatch lets
+     * a failed native action leave the gadget interactive.
+     */
+    public boolean dispatchBlossomSelect(int groupId, int configId, int optionId) {
+        var args = new ScriptArgs(groupId, EventType.EVENT_SELECT_OPTION, configId, optionId);
+        ScriptLoader.getScriptLib().setSceneScriptManager(this);
+        boolean matched = false;
+        try {
+            var selected = getTriggersByEvent(EventType.EVENT_SELECT_OPTION).stream()
+                    .filter(trigger -> trigger.getCurrentGroup().id == groupId)
+                    .toList();
+            for (var trigger : selected) {
+                if (handleEventForTrigger(args, trigger)) matched = true;
+            }
+        } finally {
+            ScriptLoader.getScriptLib().removeSceneScriptManager();
+        }
+        return matched;
+    }
+
     public void unregisterGroup(SceneGroup group) {
         if (LiyueCloudDungeonSupport.isTimerGroup(getScene(), group.id))
             liyueDungeonTimers.cancelGroup(group.id);
@@ -1149,8 +1210,7 @@ public class SceneScriptManager {
             ScriptLoader.getScriptLib().setCurrentCallParams(params);
 
             if (evaluateTriggerCondition(trigger, params)) {
-                callTrigger(trigger, params);
-                return true;
+                return callTrigger(trigger, params);
             } else {
                 Grasscutter.getLogger()
                         .trace("Condition Trigger {} returned false", trigger.getCondition());
@@ -1180,7 +1240,7 @@ public class SceneScriptManager {
         return ret.isboolean() && ret.checkboolean();
     }
 
-    private void callTrigger(SceneTrigger trigger, ScriptArgs params) {
+    private boolean callTrigger(SceneTrigger trigger, ScriptArgs params) {
         // the SetGroupVariableValueByGroup in tower need the param to record the first stage time
         ongoingTriggers.add(trigger);
         try {
@@ -1228,6 +1288,8 @@ public class SceneScriptManager {
                     || trigger.getTrigger_count() > 0 && invocations >= trigger.getTrigger_count()) {
                 deregisterTrigger(trigger);
             }
+            // Native bloom option dispatch must observe a failed Lua action.
+            return ret.isboolean() ? ret.toboolean() : ret.isint() && ret.toint() == 0;
         } finally {
             ongoingTriggers.remove(trigger);
         }
@@ -1282,6 +1344,15 @@ public class SceneScriptManager {
         if (scene.getSceneType() == SceneType.SCENE_WORLD
                 && !scene.getBlossomManager().isActiveAuthoredGadget(groupId, g.config_id, g.gadget_id))
             return null;
+        // Script triggers and the native-camp loader can both request the same outcrop.
+        // The authored (group, config, gadget) identity has one live entity.
+        if (scene.getSceneType() == SceneType.SCENE_WORLD
+                && emu.grasscutter.game.managers.blossom.BlossomType.valueOf(g.gadget_id) != null
+                && scene.getEntities().values().stream().anyMatch(existing ->
+                        existing instanceof EntityGadget flower
+                                && flower.getGroupId() == groupId
+                                && flower.getConfigId() == g.config_id
+                                && flower.getGadgetId() == g.gadget_id)) return null;
         if (g.isOneoff) {
             var hasEntity =
                     getScene().getEntities().values().stream()

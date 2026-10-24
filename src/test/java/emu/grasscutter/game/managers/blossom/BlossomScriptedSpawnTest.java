@@ -302,11 +302,11 @@ final class BlossomScriptedSpawnTest {
         assertTrue(nativeReward.is_blossom_chest);
         assertFalse(unrelated.is_blossom_chest);
         var activity = new BlossomActivity(null);
+        assertEquals(2, activity.scheduleState());
         assertFalse(activity.completeFromLua(unrelated));
         assertTrue(activity.completeFromLua(nativeReward));
         assertFalse(activity.completeFromLua(nativeReward));
         assertTrue(activity.rewardReady());
-        activity.setScheduleState(3);
         assertEquals(3, activity.scheduleState());
     }
 

@@ -15,7 +15,6 @@ public final class BlossomActivity {
     private EntityGadget chest;
     private SceneGadget nativeRewardGadget;
     private Phase phase = Phase.FIGHTING;
-    private int scheduleState = 1;
     private final Set<Integer> rewardClaimants = new HashSet<>();
     private final Map<Integer, String> rewardOperations = new HashMap<>();
 
@@ -59,8 +58,8 @@ public final class BlossomActivity {
         }
         phase = Phase.CLAIMABLE;
     }
-    int scheduleState() { return scheduleState; }
-    void setScheduleState(int state) { scheduleState = state; }
+    /** Phase is the only owner of runtime state; Lua stage is its projection. */
+    int scheduleState() { return phase == Phase.FIGHTING ? 2 : 3; }
 
     /** Use the native Lua group monster definitions as its scripted progress target. */
     void beginNative(int monsterGoal) {

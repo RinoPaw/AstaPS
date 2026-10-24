@@ -169,11 +169,14 @@ public class BlossomManager {
                 .anyMatch(spawn -> spawn.getGroup().getGroupId() == groupId);
         if (!selected) return 1;
         synchronized (blossomActivities) {
-            blossomActivities.stream()
-                    .filter(activity -> activity.getGadget().getGroupId() == groupId)
-                    .findFirst().ifPresent(activity -> activity.setScheduleState(state));
+            var activity = blossomActivities.stream()
+                    .filter(current -> current.getGadget().getGroupId() == groupId)
+                    .findFirst().orElse(null);
+            // The native Lua requests the transition. The actual phase was
+            // already established by encounter start or completion.
+            if (state == 1) return activity == null ? 0 : 1;
+            return activity != null && activity.scheduleState() == state ? 0 : 1;
         }
-        return 0;
     }
 
     private emu.grasscutter.scripts.data.SceneGroup scriptGroupFor(EntityGadget gadget) {

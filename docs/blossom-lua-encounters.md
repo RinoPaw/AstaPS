@@ -7,9 +7,9 @@ EVENT_SELECT_OPTION exactly once. Lua progresses its monster waves and invokes
 CreateBlossomChestByGroupId on EVENT_BLOSSOM_PROGRESS_FINISH.
 
 There is no default blossom Lua hook, random Java monster challenge, or
-Spawns.json alternative. A camp without original select/progress-finish
-triggers and authored monsters is ineligible. Missing camps and incomplete
-scripts are logged. The selected cursor is not silently replaced with an
+Spawns.json alternative. A ley-line outcrop is identified by its
+70360056 / 70360057 gadget ID. Missing script groups cannot supply an
+authored source; no event-structure validation is performed. The selected cursor is not silently replaced with an
 unrelated camp; rotation follows the first nextCampIdVec edge, and an
 unavailable successor stays unavailable until its resources are restored.
 

@@ -356,7 +356,11 @@ public class BlossomManager {
 
                     // Dispatch only the original scene's select trigger.
                     // Keep the worktop available if the native script fails.
-                    if (!BlossomScriptController.start(source, scriptGroupFor(source))) {
+                    var group = scriptGroupFor(source);
+                    int monsterGoal = group == null || group.monsters == null ? 0 : group.monsters.size();
+                    if (!beginNativeEncounter(source, monsterGoal)
+                            || !scene.getScriptManager().dispatchBlossomSelect(
+                                    source.getGroupId(), source.getConfigId(), option)) {
                         activity.abort();
 
                         synchronized (blossomActivities) {

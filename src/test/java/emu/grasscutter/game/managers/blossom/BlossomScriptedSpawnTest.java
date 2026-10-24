@@ -8,6 +8,23 @@ import org.junit.jupiter.api.Test;
 
 final class BlossomScriptedSpawnTest {
     @Test
+    void blossomIdentityUsesOnlyItsGadgetId() {
+        assertSame(BlossomType.GOLD, BlossomType.valueOf(70360056));
+        assertSame(BlossomType.BLUE, BlossomType.valueOf(70360057));
+        assertNull(BlossomType.valueOf(70210106));
+        assertNull(BlossomType.valueOf(70220103));
+    }
+
+    @Test
+    void originalMonsterProgressFinishesOnlyOnce() {
+        var activity = new BlossomActivity(null);
+        activity.beginNative(2);
+        assertFalse(activity.addNativeProgress());
+        assertTrue(activity.addNativeProgress());
+        assertFalse(activity.addNativeProgress());
+    }
+
+    @Test
     void originalBlossomCampIdsAndLinksAreSourceBacked() {
         var mondstadtWealth = JsonUtils.decode(
                 "{\"id\":101001001,\"cityId\":1,\"limit_level\":12,"

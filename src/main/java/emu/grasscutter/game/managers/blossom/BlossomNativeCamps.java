@@ -114,14 +114,6 @@ final class BlossomNativeCamps {
                 }
                 continue;
             }
-            if (!BlossomScriptController.hasNativeEncounter(group)) {
-                if (unresolvedGroups.add(groupId)) {
-                    Grasscutter.getLogger().warn(
-                            "Ley-line original Lua encounter incomplete scene={} group={}",
-                            scene.getId(), groupId);
-                }
-                continue;
-            }
             var gadget = group.gadgets.values().stream()
                     .filter(item -> item.gadget_id == kind.getGadgetId())
                     .min(Comparator.comparingInt(item -> item.config_id))

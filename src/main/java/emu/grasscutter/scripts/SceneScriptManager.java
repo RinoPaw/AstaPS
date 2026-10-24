@@ -867,12 +867,6 @@ public class SceneScriptManager {
         return authored;
     }
 
-    /** Use the actual scene-event pipeline for original ley-line worktop scripts. */
-    public boolean hasBlossomSelectTriggers(int groupId) {
-        return getTriggersByEvent(EventType.EVENT_SELECT_OPTION).stream()
-                .anyMatch(trigger -> trigger.getCurrentGroup().id == groupId);
-    }
-
     /**
      * Dispatch the selected option exactly once, on the initiating thread.
      * Starting the worktop is already a scene action; synchronous dispatch lets

@@ -492,6 +492,10 @@ public class SceneScriptManager {
 
     // TODO optimize
     public SceneGroup getGroupById(int groupId) {
+        // Camp groups can be loaded directly from BlossomGroups even when
+        // the scene block index is incomplete or disabled.
+        var loaded = this.sceneGroups.get(groupId);
+        if (loaded != null) return loaded;
         for (var block : getBlocks().values()) {
             this.getScene().loadBlock(block);
             if (block.groups == null) continue;
@@ -832,6 +836,63 @@ public class SceneScriptManager {
         if (orphan != null && !orphan.isEmpty()) {
             this.getVariables(group.id).putAll(orphan);
         }
+    }
+
+    /**
+     * A BlossomGroups entry may exist without a scene-block index entry.
+     * Register its parsed Lua group as a real scene instance so ScriptLib
+     * suite/trigger/variable actions have the same context as normal groups.
+     */
+    public SceneGroup ensureBlossomGroup(SceneGroup authored) {
+        var existing = sceneGroupsInstances.get(authored.id);
+        if (existing != null && existing.getLuaGroup() != null) {
+            existing.getLuaGroup().dontUnload = true;
+            return existing.getLuaGroup();
+        }
+        var indexed = getGroupById(authored.id);
+        existing = sceneGroupsInstances.get(authored.id);
+        if (indexed != null && existing != null && existing.getLuaGroup() != null) {
+            indexed.dontUnload = true;
+            return indexed;
+        }
+
+        loadGroupFromScript(authored);
+        authored.dontUnload = true;
+        getScene().getLoadedGroups().add(authored);
+        var instance = getGroupInstanceById(authored.id);
+        if (instance != null && authored.suites != null && !authored.suites.isEmpty()) {
+            refreshGroup(instance, authored.findInitSuiteIndex(0), false);
+        }
+        callEvent(new ScriptArgs(authored.id, EventType.EVENT_GROUP_LOAD, authored.id));
+        return authored;
+    }
+
+    /** Use the actual scene-event pipeline for original ley-line worktop scripts. */
+    public boolean hasBlossomSelectTriggers(int groupId) {
+        return getTriggersByEvent(EventType.EVENT_SELECT_OPTION).stream()
+                .anyMatch(trigger -> trigger.getCurrentGroup().id == groupId);
+    }
+
+    /**
+     * Dispatch the selected option exactly once, on the initiating thread.
+     * Starting the worktop is already a scene action; synchronous dispatch lets
+     * a failed native action leave the gadget interactive.
+     */
+    public boolean dispatchBlossomSelect(int groupId, int configId, int optionId) {
+        var args = new ScriptArgs(groupId, EventType.EVENT_SELECT_OPTION, configId, optionId);
+        ScriptLoader.getScriptLib().setSceneScriptManager(this);
+        boolean matched = false;
+        try {
+            var selected = getTriggersByEvent(EventType.EVENT_SELECT_OPTION).stream()
+                    .filter(trigger -> trigger.getCurrentGroup().id == groupId)
+                    .toList();
+            for (var trigger : selected) {
+                if (handleEventForTrigger(args, trigger)) matched = true;
+            }
+        } finally {
+            ScriptLoader.getScriptLib().removeSceneScriptManager();
+        }
+        return matched;
     }
 
     public void unregisterGroup(SceneGroup group) {

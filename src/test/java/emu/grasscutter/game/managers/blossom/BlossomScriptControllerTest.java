@@ -22,6 +22,29 @@ final class BlossomScriptControllerTest {
     }
 
     @Test
+    void originalSelectRouteRequiresACompleteLiveEncounter() {
+        var group = new emu.grasscutter.scripts.data.SceneGroup();
+        var finish = new emu.grasscutter.scripts.data.SceneTrigger();
+        finish.setEvent(emu.grasscutter.scripts.constants.EventType.EVENT_BLOSSOM_PROGRESS_FINISH);
+        group.triggers = java.util.Map.of("finish", finish);
+        group.monsters = java.util.Map.of(1, new emu.grasscutter.scripts.data.SceneMonster());
+
+        assertTrue(BlossomScriptController.hasNativeEncounter(group, true));
+        assertFalse(BlossomScriptController.hasNativeEncounter(group, false));
+        group.monsters = java.util.Map.of();
+        assertFalse(BlossomScriptController.hasNativeEncounter(group, true));
+    }
+
+    @Test
+    void nativeMonsterProgressFinishesExactlyOnce() {
+        var activity = new BlossomActivity(null);
+        activity.beginNative(2);
+        assertFalse(activity.addNativeProgress());
+        assertTrue(activity.addNativeProgress());
+        assertFalse(activity.addNativeProgress());
+    }
+
+    @Test
     void authoredLuaOverridesOnlyTheNamedHook() throws Exception {
         ScriptLoader.init();
         var defaults = ScriptLoader.getEngine().createBindings();

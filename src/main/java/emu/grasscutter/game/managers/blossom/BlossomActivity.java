@@ -16,6 +16,9 @@ public final class BlossomActivity {
     private WorldChallenge challenge;
     private boolean combatCompleted;
     private boolean combatCompletionReported;
+    private int nativeMonsterGoal;
+    private int nativeMonsterProgress;
+    private boolean nativeProgressReported;
     private EntityGadget chest;
     private int step;
     private int goal;
@@ -99,6 +102,38 @@ public final class BlossomActivity {
 
     public boolean getPass() {
         return pass;
+    }
+
+    /** Use the native Lua group monster definitions as its scripted progress target. */
+    void beginNative(int monsterGoal) {
+        nativeMonsterGoal = monsterGoal;
+        nativeMonsterProgress = 0;
+        nativeProgressReported = false;
+    }
+
+    /** Native Lua reports each group monster death; complete the progress event once. */
+    boolean addNativeProgress() {
+        if (nativeMonsterGoal <= 0 || nativeProgressReported || pass) return false;
+        if (++nativeMonsterProgress < nativeMonsterGoal) return false;
+        nativeProgressReported = true;
+        return true;
+    }
+
+    /** Undo a partially started script before the worktop can be selected again. */
+    void abort() {
+        var scene = gadget.getScene();
+        if (challenge != null) {
+            challenge.fail();
+            if (scene.getChallenge() == challenge) scene.setChallenge(null);
+        }
+        clearEncounterSummons();
+        var remaining = activeMonsters.stream()
+                .filter(monster -> scene.getEntityById(monster.getId()) == monster)
+                .map(monster -> (GameEntity) monster).toList();
+        if (!remaining.isEmpty()) scene.removeEntities(remaining,
+                emu.grasscutter.net.proto.VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE);
+        activeMonsters.clear();
+        candidateMonsters.clear();
     }
 
     /** Mark completion once, after the Lua script has reached its own success condition. */

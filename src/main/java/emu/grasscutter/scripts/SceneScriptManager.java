@@ -1210,8 +1210,7 @@ public class SceneScriptManager {
             ScriptLoader.getScriptLib().setCurrentCallParams(params);
 
             if (evaluateTriggerCondition(trigger, params)) {
-                callTrigger(trigger, params);
-                return true;
+                return callTrigger(trigger, params);
             } else {
                 Grasscutter.getLogger()
                         .trace("Condition Trigger {} returned false", trigger.getCondition());
@@ -1241,7 +1240,7 @@ public class SceneScriptManager {
         return ret.isboolean() && ret.checkboolean();
     }
 
-    private void callTrigger(SceneTrigger trigger, ScriptArgs params) {
+    private boolean callTrigger(SceneTrigger trigger, ScriptArgs params) {
         // the SetGroupVariableValueByGroup in tower need the param to record the first stage time
         ongoingTriggers.add(trigger);
         try {
@@ -1289,6 +1288,8 @@ public class SceneScriptManager {
                     || trigger.getTrigger_count() > 0 && invocations >= trigger.getTrigger_count()) {
                 deregisterTrigger(trigger);
             }
+            // Native bloom option dispatch must observe a failed Lua action.
+            return ret.isboolean() ? ret.toboolean() : ret.isint() && ret.toint() == 0;
         } finally {
             ongoingTriggers.remove(trigger);
         }

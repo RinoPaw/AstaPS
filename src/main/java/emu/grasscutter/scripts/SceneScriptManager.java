@@ -63,6 +63,8 @@ public class SceneScriptManager {
     private final LiyueCloudDungeonTimers liyueDungeonTimers = new LiyueCloudDungeonTimers(this);
     private CompletableFuture<Void> liyueFireEvents = CompletableFuture.completedFuture(null);
     private final Map<Integer, CompletableFuture<Void>> amberQuestEvents = new HashMap<>();
+    /** Native ley-line Lua events for the same Group execute in emission order. */
+    private final Map<Integer, CompletableFuture<Void>> blossomGroupEvents = new HashMap<>();
     private final Map<String, AtomicInteger> triggerInvocations;
     private final Map<Integer, EntityRegion> regions; // <EntityId-Region>
     private final Map<Integer, SceneGroup> sceneGroups;
@@ -1082,7 +1084,24 @@ public class SceneScriptManager {
         if (LiyueCloudDungeonSupport.isFireLinkGroup(getScene(), params.getGroupId())) {
             return enqueueLiyueFireEvent(params);
         }
+        var activeScene = getScene();
+        if (activeScene.getSceneType() == SceneType.SCENE_WORLD
+                && activeScene.getBlossomManager() != null
+                && activeScene.getBlossomManager().isNativeCampGroup(params.getGroupId())) {
+            return enqueueBlossomGroupEvent(params);
+        }
         return eventExecutor.submit(() -> this.realCallEvent(params));
+    }
+
+    private synchronized Future<?> enqueueBlossomGroupEvent(ScriptArgs params) {
+        var previous = blossomGroupEvents.getOrDefault(
+                params.getGroupId(), CompletableFuture.completedFuture(null));
+        var next = previous.handleAsync((ignored, failure) -> {
+            realCallEvent(params);
+            return (Void) null;
+        }, eventExecutor);
+        blossomGroupEvents.put(params.getGroupId(), next);
+        return next;
     }
 
     private synchronized Future<?> enqueueAmberQuestEvent(ScriptArgs params) {

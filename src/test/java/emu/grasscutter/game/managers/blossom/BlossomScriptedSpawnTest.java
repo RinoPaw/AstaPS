@@ -226,6 +226,30 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void nativeRunIdentitySurvivesRepeatedSelectionAndChangesOnlyAfterRotation() {
+        var host = new emu.grasscutter.game.player.Player() {
+            @Override public void save() {}
+        };
+        assertEquals(0, host.getBlossomCampId(11));
+        host.setBlossomCampId(11, 101001001);
+        assertEquals(1, host.getBlossomIncarnation(11));
+        host.setBlossomRewardReady(11);
+        assertTrue(host.isBlossomRewardReady(11));
+        host.setBlossomCampId(11, 101001001);
+        assertEquals(1, host.getBlossomIncarnation(11));
+        assertTrue(host.isBlossomRewardReady(11));
+        host.setBlossomCampId(11, 101001002);
+        assertEquals(2, host.getBlossomIncarnation(11));
+        assertFalse(host.isBlossomRewardReady(11));
+        host.setBlossomConsumed(11);
+        assertTrue(host.isBlossomConsumed(11));
+        var run = "123:11:2";
+        assertEquals(0, host.getBlossomClaimAttempt(run));
+        host.advanceBlossomClaimAttempt(run);
+        assertEquals(1, host.getBlossomClaimAttempt(run));
+    }
+
+    @Test
     void luaRefreshTypesFollowAuthoredGadgetSelection() {
         assertEquals(1, BlossomManager.luaRefreshType(BlossomType.GOLD));
         assertEquals(3, BlossomManager.luaRefreshType(BlossomType.BLUE));

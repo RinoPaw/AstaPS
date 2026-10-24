@@ -199,9 +199,12 @@ public class BlossomManager {
         return nativeCamps.owns(entry);
     }
 
+    public boolean isNativeCampGroup(int groupId) {
+        return groupId != 0 && nativeCamps.ownsGroup(groupId);
+    }
+
     public boolean isAuthoredWorktop(int groupId, int gadgetId) {
-        return groupId != 0 && nativeCamps.ownsGroup(groupId)
-                && BlossomType.valueOf(gadgetId) != null;
+        return isNativeCampGroup(groupId) && BlossomType.valueOf(gadgetId) != null;
     }
 
     /** Other SceneGroups are never governed by the blossom camp selection. */
@@ -559,13 +562,6 @@ public class BlossomManager {
                 return null;
             }
             int resinBefore = player.getProperty(emu.grasscutter.game.props.PlayerProperty.PROP_PLAYER_RESIN);
-            int worldLevel = getWorldLevel();
-            Map<Integer, Integer> rolled = RewardConfiguration.current().rollBlossom(
-                    type.rewardKind(), worldLevel, cost.rolls(),
-                    java.util.concurrent.ThreadLocalRandom.current());
-            var items = rolled.entrySet().stream()
-                    .map(entry -> new GameItem(entry.getKey(), entry.getValue()))
-                    .toList();
             var source = active.getGadget().getSpawnEntry();
             if (source == null) return null;
             int refreshId = nativeCamps.refreshId(source);
@@ -586,6 +582,13 @@ public class BlossomManager {
                 confirmed.run();
                 return List.of();
             }
+            int worldLevel = getWorldLevel();
+            Map<Integer, Integer> rolled = RewardConfiguration.current().rollBlossom(
+                    type.rewardKind(), worldLevel, cost.rolls(),
+                    java.util.concurrent.ThreadLocalRandom.current());
+            var items = rolled.entrySet().stream()
+                    .map(entry -> new GameItem(entry.getKey(), entry.getValue()))
+                    .toList();
             var snapshot = items.stream().map(item -> new RewardGrantJournal.Reward(
                     item.getItemId(), item.getCount(), item.getLevel())).toList();
             var debits = Configuration.GAME_OPTIONS.resinOptions.resinUsage

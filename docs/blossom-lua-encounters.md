@@ -89,3 +89,10 @@ Explicitly unpaid attempts receive a fresh counter. A completed receipt from
 before restart closes the claim without paying or granting rewards again.
 Ambiguous CONFIRMED/PREPARED receipts still require existing journal inspection;
 there is no automatic replay of uncertain payments.
+
+## Event ordering
+
+The native camp's GROUP_LOAD, GROUP_REFRESH, monster-death and reward callbacks
+share a per-Group serial event queue on the existing script executor. Distinct
+Groups may progress independently. This prevents cross-thread reordering of
+dependent Lua stage events without changing unrelated scripts.

@@ -1533,6 +1533,9 @@ public class Player implements PlayerHook, FieldFetch {
         }
 
         this.setResinBuyCount(0);
+        // Expired, already-claimed ley lines must become eligible again.
+        // Earned, unclaimed flowers retain their claim identity across reset.
+        this.resetConsumedBlossomsForNewDay();
 
         BirthdayMailSystem.checkAndSend(this, currentDate);
 
@@ -1598,16 +1601,44 @@ public class Player implements PlayerHook, FieldFetch {
         return run != null && run.consumed;
     }
 
-    /** Each successful move starts a new durable reward identity. */
+    /** Initial selection is idempotent, including repeat checks of the same camp. */
     public synchronized void setBlossomCampId(int refreshId, int campId) {
+        enterBlossomCamp(refreshId, campId, false);
+    }
+
+    /** A claimed flower starts a new run even when the authored graph returns to this camp. */
+    public synchronized void advanceBlossomCampId(int refreshId, int campId) {
+        enterBlossomCamp(refreshId, campId, true);
+    }
+
+    private void enterBlossomCamp(int refreshId, int campId, boolean advance) {
         if (blossomRuns == null) blossomRuns = new HashMap<>();
         var previous = blossomRuns.get(refreshId);
-        if (previous != null && previous.campId == campId) return;
+        if (!advance && previous != null && previous.campId == campId) return;
         var run = new BlossomRunState();
         run.campId = campId;
         run.incarnation = previous == null ? 1 : previous.incarnation + 1;
         blossomRuns.put(refreshId, run);
         save();
+    }
+
+    /**
+     * Only completed and exhausted flowers reset with the daily boundary.
+     * In-progress or earned unclaimed rewards keep their existing receipt identity.
+     * The next daily cycle is a new claim epoch even if it reuses the same camp.
+     */
+    public synchronized boolean resetConsumedBlossomsForNewDay() {
+        if (blossomRuns == null || blossomRuns.isEmpty()) return false;
+        boolean changed = false;
+        for (var run : blossomRuns.values()) {
+            if (run == null || !run.consumed) continue;
+            run.incarnation++;
+            run.rewardReady = false;
+            run.consumed = false;
+            changed = true;
+        }
+        if (changed) save();
+        return changed;
     }
 
     /** Persist the reward phase before presenting its claimable entity. */

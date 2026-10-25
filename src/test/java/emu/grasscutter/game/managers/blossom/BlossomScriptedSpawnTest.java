@@ -293,12 +293,35 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void blossomClaimsRequireCompletedGadgetInteractions() {
+        var start = emu.grasscutter.net.proto.GadgetInteractReqOuterClass.GadgetInteractReq
+                .newBuilder()
+                .setOpType(emu.grasscutter.net.proto.InterOpTypeOuterClass.InterOpType
+                        .InterOpType_INTER_OP_START)
+                .build();
+        var finish = emu.grasscutter.net.proto.GadgetInteractReqOuterClass.GadgetInteractReq
+                .newBuilder()
+                .setOpType(emu.grasscutter.net.proto.InterOpTypeOuterClass.InterOpType
+                        .InterOpType_INTER_OP_FINISH)
+                .build();
+
+        assertFalse(BlossomManager.isClaimFinish(null));
+        assertFalse(BlossomManager.isClaimFinish(
+                emu.grasscutter.net.proto.GadgetInteractReqOuterClass.GadgetInteractReq
+                        .getDefaultInstance()));
+        assertFalse(BlossomManager.isClaimFinish(start));
+        assertTrue(BlossomManager.isClaimFinish(finish));
+    }
+
+    @Test
     void global71OriginalClient20And40ResinPacketsSelectSeparateAmounts() throws Exception {
         // Captured GadgetInteractReq FINISH packets from the Global 7.1 client.
         var req20 = emu.grasscutter.net.proto.GadgetInteractReqOuterClass.GadgetInteractReq
                 .parseFrom(java.util.HexFormat.of().parseHex("20bea4bd21380158a98980047001"));
         var req40 = emu.grasscutter.net.proto.GadgetInteractReqOuterClass.GadgetInteractReq
                 .parseFrom(java.util.HexFormat.of().parseHex("20bea4bd21380158f88880047002"));
+        assertTrue(BlossomManager.isClaimFinish(req20));
+        assertTrue(BlossomManager.isClaimFinish(req40));
         assertEquals(1, BlossomManager.normalClaimCount(req20));
         assertEquals(2, BlossomManager.normalClaimCount(req40));
         assertEquals(1, req20.getResinCostTypeValue());

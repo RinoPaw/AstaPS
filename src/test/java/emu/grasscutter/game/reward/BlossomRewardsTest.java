@@ -99,6 +99,28 @@ class BlossomRewardsTest {
     }
 
     @Test
+    void customBlossomKindCanUseItsOwnLootCssReward() {
+        var items = new ItemIdRegistry(Map.of(
+                102, "Adventure EXP", 202, "Mora"));
+        var loot = YamlLootTables.parse("{}", items::resolve);
+        var selectors = """
+                blossom {
+                    genshin.experience.adventure: 100;
+                }
+                blossom[type="custom"] {
+                    genshin.currency.mora: 3;
+                }
+                """;
+        var config = new RewardConfiguration(loot, CssRewards.parse(selectors, items, loot));
+        assertEquals(Map.of(102, 100, 202, 3),
+                config.rollBlossom("custom", 0, 1, new Random(1)));
+        assertEquals(Map.of(102, 200, 202, 6),
+                config.rollBlossom("custom", 0, 2, new Random(1)));
+        assertThrows(IllegalStateException.class,
+                () -> config.rollBlossom("unconfigured", 0, 1, new Random(1)));
+    }
+
+    @Test
     void missingTypeOrWorldLevelCannotGrantCommonExperienceOnly() throws IOException {
         var config = rewards();
         for (var attrs : java.util.List.of(
@@ -112,7 +134,7 @@ class BlossomRewardsTest {
         }
         assertThrows(IllegalArgumentException.class,
                 () -> config.rollBlossom("wealth", 10, 1, new Random(1)));
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalStateException.class,
                 () -> config.rollBlossom("unknown", 5, 1, new Random(1)));
     }
 }

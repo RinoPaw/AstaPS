@@ -27,8 +27,12 @@ class NativeInteractDropTest {
         var gson = new Gson();
         try {
             tables.clear();
-            for (var row : JsonParser.parseString(Files.readString(
-                    Path.of("data/Server/DropTableExcelConfigData.json"))).getAsJsonArray()) {
+            var fixture = NativeInteractDropTest.class.getResourceAsStream(
+                    "/native-snapshots/DropTableExcelConfigData.json");
+            assertNotNull(fixture);
+            for (var row : JsonParser.parseString(new String(
+                    fixture.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8))
+                    .getAsJsonArray()) {
                 var table = gson.fromJson(row, DropTableData.class);
                 tables.put(table.getId(), table);
             }

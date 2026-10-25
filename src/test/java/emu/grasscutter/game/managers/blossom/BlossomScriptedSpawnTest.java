@@ -298,11 +298,13 @@ final class BlossomScriptedSpawnTest {
                 .newBuilder()
                 .setOpType(emu.grasscutter.net.proto.InterOpTypeOuterClass.InterOpType
                         .InterOpType_INTER_OP_START)
+                .setGadgetEntityId(1001)
                 .build();
         var finish = emu.grasscutter.net.proto.GadgetInteractReqOuterClass.GadgetInteractReq
                 .newBuilder()
                 .setOpType(emu.grasscutter.net.proto.InterOpTypeOuterClass.InterOpType
                         .InterOpType_INTER_OP_FINISH)
+                .setGadgetEntityId(1001)
                 .build();
 
         assertFalse(BlossomManager.isClaimFinish(null));

@@ -275,6 +275,50 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void returningToTheSameAuthoredCampStartsAFreshClaimEpoch() {
+        var host = new emu.grasscutter.game.player.Player() {
+            @Override public void save() {}
+        };
+        host.setBlossomCampId(11, 101001001);
+        host.setBlossomRewardReady(11);
+        assertEquals(1, host.getBlossomIncarnation(11));
+
+        host.advanceBlossomCampId(11, 101001001);
+        assertEquals(101001001, host.getBlossomCampId(11));
+        assertEquals(2, host.getBlossomIncarnation(11));
+        assertFalse(host.isBlossomRewardReady(11));
+        assertFalse(host.isBlossomConsumed(11));
+
+        // Re-selecting the same run must not create a second receipt identity.
+        host.setBlossomCampId(11, 101001001);
+        assertEquals(2, host.getBlossomIncarnation(11));
+    }
+
+    @Test
+    void dailyResetRevivesOnlyExhaustedRunsAndKeepsUnclaimedRewards() {
+        var host = new emu.grasscutter.game.player.Player() {
+            @Override public void save() {}
+        };
+        host.setBlossomCampId(11, 101001001);
+        host.setBlossomCampId(12, 101002003);
+        host.setBlossomRewardReady(11);
+        host.setBlossomConsumed(11);
+        host.setBlossomRewardReady(12);
+
+        assertTrue(host.resetConsumedBlossomsForNewDay());
+        assertFalse(host.isBlossomConsumed(11));
+        assertFalse(host.isBlossomRewardReady(11));
+        assertEquals(2, host.getBlossomIncarnation(11));
+        assertEquals(101001001, host.getBlossomCampId(11));
+
+        // An earned but unclaimed reward still refers to the original epoch.
+        assertTrue(host.isBlossomRewardReady(12));
+        assertEquals(1, host.getBlossomIncarnation(12));
+        assertFalse(host.resetConsumedBlossomsForNewDay());
+        assertEquals(2, host.getBlossomIncarnation(11));
+    }
+
+    @Test
     void luaRefreshTypesFollowAuthoredGadgetSelection() {
         assertEquals(1, BlossomManager.luaRefreshType(BlossomType.GOLD));
         assertEquals(3, BlossomManager.luaRefreshType(BlossomType.BLUE));

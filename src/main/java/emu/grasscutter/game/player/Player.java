@@ -1688,7 +1688,7 @@ public class Player implements PlayerHook, FieldFetch {
         }
 
         var runner = Grasscutter.getThreadPool();
-        runner.submit(() -> this.achievements = Achievements.getByPlayer(this));
+        var achievementsLoad = runner.submit(() -> this.achievements = Achievements.getByPlayer(this));
 
         var avatarsLoad = runner.submit(this.getAvatars()::loadFromDatabase);
         var inventoryLoad = runner.submit(this.getInventory()::loadFromDatabase);
@@ -1706,6 +1706,7 @@ public class Player implements PlayerHook, FieldFetch {
         // instead.
         awaitLoad("avatars", avatarsLoad);
         awaitLoad("inventory", inventoryLoad);
+        awaitLoad("achievements", achievementsLoad);
 
         this.getPlayerProgress().setPlayer(this);
     }

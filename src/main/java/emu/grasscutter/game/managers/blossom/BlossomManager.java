@@ -28,6 +28,7 @@ public class BlossomManager {
     private final Set<SpawnDataEntry> scriptedSpawned = new HashSet<>();
     private List<SpawnDataEntry> activeSpawnCache;
     private int cachedAdventureRank = -1;
+    private int cachedDailyReset = -1;
     private Set<Integer> cachedUnlockedAreas = Set.of();
     private int activeSetRevision;
     private boolean mapMarkersDirty;
@@ -244,6 +245,7 @@ public class BlossomManager {
         int rank = host.getLevel();
         var unlocked = host.getUnlockedSceneAreas(scene.getId());
         if (activeSpawnCache != null && cachedAdventureRank == rank
+                && cachedDailyReset == host.getLastDailyReset()
                 && cachedUnlockedAreas.equals(unlocked)) {
             return activeSpawnCache;
         }
@@ -253,6 +255,7 @@ public class BlossomManager {
 
         activeSpawnCache = selected;
         cachedAdventureRank = rank;
+        cachedDailyReset = host.getLastDailyReset();
         cachedUnlockedAreas = Set.copyOf(unlocked);
         if (old == null || !old.equals(selected)) {
             activeSetRevision++;

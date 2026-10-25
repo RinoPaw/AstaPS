@@ -268,7 +268,7 @@ final class BlossomNativeCamps {
                     camp.getCityId(), kind, source.campId());
             return false;
         }
-        host.setBlossomCampId(source.refreshId(), nextId);
+        host.advanceBlossomCampId(source.refreshId(), nextId);
         Grasscutter.getLogger().info("Ley-line camp advanced city={} kind={} {} -> {}",
                 camp.getCityId(), kind, source.campId(), nextId);
         return true;

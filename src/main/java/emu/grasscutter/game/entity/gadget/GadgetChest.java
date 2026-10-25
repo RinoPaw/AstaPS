@@ -82,6 +82,9 @@ public class GadgetChest extends GadgetContent {
                                 InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_START));
                 return false;
             }
+            if (!emu.grasscutter.game.managers.blossom.BlossomManager.isClaimFinish(req)) {
+                return false;
+            }
             var rewards = blossomManager.claimReward(player, getGadget(),
                     req, () -> claimedBossUids.add(player.getUid()));
             if (rewards != null) {

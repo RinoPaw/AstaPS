@@ -257,8 +257,8 @@ public class BlossomManager {
             Grasscutter.getLogger().info(
                     "Ley-line active scene={} rank={} blue={} gold={} originalCamps={}",
                     scene.getId(), rank,
-                    selected.stream().filter(e -> e.getGadgetId() == BlossomType.BLUE.getGadgetId()).count(),
-                    selected.stream().filter(e -> e.getGadgetId() == BlossomType.GOLD.getGadgetId()).count(),
+                    selected.stream().filter(e -> e.gadget().gadget_id == BlossomType.BLUE.getGadgetId()).count(),
+                    selected.stream().filter(e -> e.gadget().gadget_id == BlossomType.GOLD.getGadgetId()).count(),
                     !selected.isEmpty());
         }
         return selected;

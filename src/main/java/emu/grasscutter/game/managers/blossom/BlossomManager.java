@@ -541,6 +541,12 @@ public class BlossomManager {
         };
     }
 
+    /** Only a completed gadget interaction can authorize a resin charge or payout. */
+    public static boolean isClaimFinish(GadgetInteractReqOuterClass.GadgetInteractReq req) {
+        return req != null && req.getOpType()
+                == InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_FINISH;
+    }
+
     /** Global 7.1 original-resin amount selector: GadgetInteractReq field 14. */
     static int normalClaimCount(GadgetInteractReqOuterClass.GadgetInteractReq req) {
         return (int) req.getField(req.getDescriptorForType().findFieldByNumber(14));
@@ -548,6 +554,7 @@ public class BlossomManager {
 
     public List<GameItem> claimReward(Player player, EntityGadget chest,
             GadgetInteractReqOuterClass.GadgetInteractReq req, Runnable confirmed) {
+        if (!isClaimFinish(req)) return null;
         synchronized (blossomActivities) {
             BlossomActivity active = blossomActivities.stream()
                     .filter(candidate -> candidate.isClaimableChest(chest))

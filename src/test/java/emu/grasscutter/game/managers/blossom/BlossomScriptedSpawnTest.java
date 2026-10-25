@@ -99,8 +99,8 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
-    void originalMondstadtRefreshRanksAreEnforcedAndEmptyConditionsFailClosed() {
-        // AstaPS-Resource 7.1 BlossomRefreshExcelConfigData: EXP=AR8; SCOIN=AR12.
+    void importedMondstadtRefreshRanksAndEmptyConditionsFailClosed() {
+        // Imported AstaPS-Resource 7.1 refresh rows: EXP=AR8; SCOIN=AR12.
         // Native tables pad refreshCondVec with empty objects, which are not rules.
         var blue = JsonUtils.decode(
                 "{\"id\":2,\"cityId\":1,\"refreshCondVec\":["

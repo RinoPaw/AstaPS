@@ -277,10 +277,14 @@ public class BlossomManager {
             BlossomRefreshExcelConfigData refresh, int adventureRank,
             Collection<Integer> unlockedAreas, Collection<CityData> cities) {
         if (refresh.getRefreshCondVec() == null) return false;
+        boolean hasCondition = false;
         for (var condition : refresh.getRefreshCondVec()) {
+            // Native tables pad their fixed-size condition lists with empty slots.
+            // At least one actual condition must still authorize the refresh.
             if (condition == null || condition.getType() == null) continue;
             var params = condition.getParam();
             if (params == null || params.isEmpty()) return false;
+            hasCondition = true;
             switch (condition.getType()) {
                 case "BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER" -> {
                     if (adventureRank < params.get(0)) return false;
@@ -300,7 +304,7 @@ public class BlossomManager {
                 }
             }
         }
-        return true;
+        return hasCondition;
     }
 
     public BlossomManager(Scene scene) {

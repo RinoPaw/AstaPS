@@ -99,6 +99,31 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void originalMondstadtRefreshRanksAreEnforcedAndEmptyConditionsFailClosed() {
+        // AstaPS-Resource 7.1 BlossomRefreshExcelConfigData: EXP=AR8; SCOIN=AR12.
+        // Native tables pad refreshCondVec with empty objects, which are not rules.
+        var blue = JsonUtils.decode(
+                "{\"id\":2,\"cityId\":1,\"refreshCondVec\":["
+                        + "{\"type\":\"BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER\",\"param\":[8]},"
+                        + "{},{}]}",
+                emu.grasscutter.data.excels.BlossomRefreshExcelConfigData.class);
+        var gold = JsonUtils.decode(
+                "{\"id\":1,\"cityId\":1,\"refreshCondVec\":["
+                        + "{\"type\":\"BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER\",\"param\":[12]},"
+                        + "{},{}]}",
+                emu.grasscutter.data.excels.BlossomRefreshExcelConfigData.class);
+        var empty = JsonUtils.decode(
+                "{\"id\":2,\"cityId\":1,\"refreshCondVec\":[{},{},{}]}",
+                emu.grasscutter.data.excels.BlossomRefreshExcelConfigData.class);
+
+        assertFalse(BlossomManager.refreshEligible(blue, 7, Set.of(), List.of()));
+        assertTrue(BlossomManager.refreshEligible(blue, 8, Set.of(), List.of()));
+        assertFalse(BlossomManager.refreshEligible(gold, 11, Set.of(), List.of()));
+        assertTrue(BlossomManager.refreshEligible(gold, 12, Set.of(), List.of()));
+        assertFalse(BlossomManager.refreshEligible(empty, 60, Set.of(), List.of()));
+    }
+
+    @Test
     void campGraphCannotTraverseASecondCountry() {
         var graph = Map.of(
                 101, camp(101, 1, List.of(1, 3), 201),

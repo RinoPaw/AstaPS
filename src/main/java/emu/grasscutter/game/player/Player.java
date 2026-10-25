@@ -130,7 +130,7 @@ public class Player implements PlayerHook, FieldFetch {
     @Getter private Map<Integer, Integer> questGlobalVariables;
     @Getter private Map<Integer, Integer> openStates;
     /** One durable incarnation for each native ley-line refresh. */
-    private Map<Integer, BlossomRunState> blossomRuns = new HashMap<>();
+    private Map<String, BlossomRunState> blossomRuns = new HashMap<>();
     /** Claim retries are scoped to host UID / refresh ID / incarnation. */
     private Map<String, Integer> blossomClaimAttempts = new HashMap<>();
 
@@ -1581,44 +1581,48 @@ public class Player implements PlayerHook, FieldFetch {
         return this.tpsAmmunition;
     }
 
-    public synchronized int getBlossomCampId(int refreshId) {
-        var run = blossomRuns == null ? null : blossomRuns.get(refreshId);
+    private static String blossomSlot(int refreshId, int slot) {
+        return refreshId + ":" + slot;
+    }
+
+    public synchronized int getBlossomCampId(int refreshId, int slot) {
+        var run = blossomRuns == null ? null : blossomRuns.get(blossomSlot(refreshId, slot));
         return run == null ? 0 : run.campId;
     }
 
-    public synchronized long getBlossomIncarnation(int refreshId) {
-        var run = blossomRuns == null ? null : blossomRuns.get(refreshId);
+    public synchronized long getBlossomIncarnation(int refreshId, int slot) {
+        var run = blossomRuns == null ? null : blossomRuns.get(blossomSlot(refreshId, slot));
         return run == null ? 0 : run.incarnation;
     }
 
-    public synchronized boolean isBlossomRewardReady(int refreshId) {
-        var run = blossomRuns == null ? null : blossomRuns.get(refreshId);
+    public synchronized boolean isBlossomRewardReady(int refreshId, int slot) {
+        var run = blossomRuns == null ? null : blossomRuns.get(blossomSlot(refreshId, slot));
         return run != null && run.rewardReady;
     }
 
-    public synchronized boolean isBlossomConsumed(int refreshId) {
-        var run = blossomRuns == null ? null : blossomRuns.get(refreshId);
+    public synchronized boolean isBlossomConsumed(int refreshId, int slot) {
+        var run = blossomRuns == null ? null : blossomRuns.get(blossomSlot(refreshId, slot));
         return run != null && run.consumed;
     }
 
-    /** Initial selection is idempotent, including repeat checks of the same camp. */
-    public synchronized void setBlossomCampId(int refreshId, int campId) {
-        enterBlossomCamp(refreshId, campId, false);
+    /** Initial selection reuses an unchanged run; a claimed rotation starts a new epoch. */
+    public synchronized void setBlossomCampId(int refreshId, int slot, int campId) {
+        enterBlossomCamp(refreshId, slot, campId, false);
     }
 
-    /** A claimed flower starts a new run even when the authored graph returns to this camp. */
-    public synchronized void advanceBlossomCampId(int refreshId, int campId) {
-        enterBlossomCamp(refreshId, campId, true);
+    public synchronized void advanceBlossomCampId(int refreshId, int slot, int campId) {
+        enterBlossomCamp(refreshId, slot, campId, true);
     }
 
-    private void enterBlossomCamp(int refreshId, int campId, boolean advance) {
+    private void enterBlossomCamp(int refreshId, int slot, int campId, boolean advance) {
         if (blossomRuns == null) blossomRuns = new HashMap<>();
-        var previous = blossomRuns.get(refreshId);
+        String key = blossomSlot(refreshId, slot);
+        var previous = blossomRuns.get(key);
         if (!advance && previous != null && previous.campId == campId) return;
         var run = new BlossomRunState();
         run.campId = campId;
         run.incarnation = previous == null ? 1 : previous.incarnation + 1;
-        blossomRuns.put(refreshId, run);
+        blossomRuns.put(key, run);
         save();
     }
 
@@ -1642,15 +1646,15 @@ public class Player implements PlayerHook, FieldFetch {
     }
 
     /** Persist the reward phase before presenting its claimable entity. */
-    public synchronized void setBlossomRewardReady(int refreshId) {
-        var run = blossomRuns.get(refreshId);
+    public synchronized void setBlossomRewardReady(int refreshId, int slot) {
+        var run = blossomRuns.get(blossomSlot(refreshId, slot));
         if (run == null || run.rewardReady) return;
         run.rewardReady = true;
         save();
     }
 
-    public synchronized void setBlossomConsumed(int refreshId) {
-        var run = blossomRuns.get(refreshId);
+    public synchronized void setBlossomConsumed(int refreshId, int slot) {
+        var run = blossomRuns.get(blossomSlot(refreshId, slot));
         if (run == null || run.consumed) return;
         run.consumed = true;
         save();

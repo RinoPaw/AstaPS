@@ -6,25 +6,40 @@ triggers. Selecting worktop option 187 dispatches the group's
 EVENT_SELECT_OPTION exactly once. Lua progresses its monster waves and invokes
 CreateBlossomChestByGroupId on EVENT_BLOSSOM_PROGRESS_FINISH.
 
-There is no default blossom Lua hook, random Java monster challenge, or
-Spawns.json alternative. Camp selection holds a reference to the authored
-Lua SceneGadget directly; no intermediate SpawnDataEntry is synthesized.
-A ley-line outcrop belongs to the camp when its Group is referenced by
-BlossomGroups.newGroupVec. The selected worktop is then matched by its
-authored config/Gadget identity. Only Lua with an initial GROUP_LOAD trigger
-and the GROUP_REFRESH, SELECT_OPTION, monster progress and reward event chain
-is eligible. A bare blossom Gadget definition does not establish a runnable
-encounter.
-Gold and blue flowers share each country's graph, with independent persisted
-refresh cursors. Each country has its own candidate pool, occupancy set and
-position-collision scope, including when several countries share one world
-scene. The current collision policy walks nextCampIdVec edges in deterministic
-breadth-first order, skipping occupied camps and missing Lua gadgets. There is
-no wait state, random encounter, or legacy fallback. Map reward previews
-come from each selected flower's own refresh ID, so one country's reward
-configuration cannot change another country's map marker.
-If no reachable authored Lua can provide a flower, one-per-type availability
-cannot be guaranteed. Recovering the missing scripts is required.
+There is no generated blossom Lua, Java fallback combat encounter, or
+`Spawns.json` alternative. The selected camp references the original
+`SceneGadget` directly. The resource repository owns Lua content; Java only
+requires an authored worktop matching the configured gadget identity.
+
+## Data-driven selection
+
+- `src/main/resources/defaults/data/BlossomTypes.json` declares blossom
+  kinds using refresh type, native numeric type, worktop Gadget ID, reward
+  Gadget ID and Loot CSS reward kind. Java has no fixed number of kinds.
+- `BlossomRefreshExcelConfigData.json` supplies one row for each country/kind.
+  Its `refreshCount` controls the maximum number of simultaneous camps.
+  Adventure Rank requirements gate this country's available kinds.
+- `BlossomGroupsExcelConfigData.json` supplies arbitrary country IDs, candidate
+  camps, their supported native types and the directed successor graph.
+- The original selected Lua worktop's `area_id` must be in the host player's
+  unlocked scene areas. An unlocked region therefore permits its own camps;
+  unlocking one region does not implicitly permit other regions' camp IDs.
+- Each refresh ID has independently saved slots `0..refreshCount-1`.
+  A slot retains its own camp ID, incarnation, pending reward and consumed
+  state across restart or daily reset. A reward receipt includes the slot.
+- Occupied camp IDs and colocated Lua Gadgets cannot be selected twice within
+  the same country, regardless of blossom kind. Countries sharing one scene
+  still have independent occupancy sets.
+
+The selection algorithm prefers the saved camp, then scans eligible camp IDs
+in ascending order and follows native `nextCampIdVec` edges. Its breadth-first
+conflict resolution is a provisional local policy, not independently verified
+Global 7.1 client behavior. Missing original Group files yield no camp.
+
+The current `RinoPaw/AstaPS-Resource/main` removed incomplete blossom Scene
+Group Lua in commit `5450d134`. Its remaining 88 executable blossom Group
+scripts have the expected event structure. The server does not attempt to
+evaluate Lua trigger completeness during camp selection.
 
 Java retains only encounter progress accounting, entity/summon cleanup,
 the single reward claim ledger, resin charging and saved camp rotation.
@@ -71,11 +86,10 @@ a provisional local policy; the original client's branching rule remains unverif
 
 The selected camp registers its original SceneGroup, then lets its authored
 GROUP_LOAD / GROUP_REFRESH trigger call CreateGadget. The Scene entity-created
-hook attaches its selected SpawnDataEntry and equips the worktop option handler.
+hook attaches the selected camp identity and equips the worktop option handler.
 There is no parallel Java-created fallback worktop. Script-owned monsters in
-inactive BlossomGroups are suppressed so incomplete native encounters do not
-leak monsters into the scene. This is a resource-structure eligibility check,
-not a claim of original executable/metadata provenance.
+inactive BlossomGroups are suppressed. Runnable native Lua resources are
+maintained in AstaPS-Resource; Java does not validate their trigger topology.
 
 ## Restart and receipt identity
 
@@ -85,7 +99,7 @@ reconstructs the claimable entity from the original Lua reward marker; no duplic
 interactive worktop is spawned. An interrupted fight starts again from the author's
 original Lua encounter; monster-progress snapshots are intentionally not persisted.
 
-The reward journal key includes the host UID, refresh ID, camp incarnation,
+The reward journal key includes host UID, refresh ID, slot, camp incarnation,
 original Group/config identity, claimant UID and durable unpaid-attempt counter.
 Explicitly unpaid attempts receive a fresh counter. A completed receipt from
 before restart closes the claim without paying or granting rewards again.

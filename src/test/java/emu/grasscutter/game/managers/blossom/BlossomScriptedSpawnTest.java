@@ -39,11 +39,11 @@ final class BlossomScriptedSpawnTest {
             var occupied = occupiedByCity.computeIfAbsent(city, unused -> new HashSet<>());
             int start = city * 1000 + 1;
             int gold = BlossomNativeCamps.firstAvailableCamp(
-                    List.of(start), graph, city, 20, 1, occupied, unused -> true);
+                    List.of(start), graph, city, 1, occupied, unused -> true);
             assertEquals(start, gold);
             occupied.add(gold);
             int blue = BlossomNativeCamps.firstAvailableCamp(
-                    List.of(start), graph, city, 20, 3, occupied, unused -> true);
+                    List.of(start), graph, city, 3, occupied, unused -> true);
             assertEquals(start + 1, blue);
             occupied.add(blue);
         }
@@ -52,7 +52,7 @@ final class BlossomScriptedSpawnTest {
 
         // Claiming the fourth country's gold flower must not move any other country's cursor.
         int next = BlossomNativeCamps.firstAvailableCamp(
-                List.of(4002), graph, 4, 20, 1, Set.of(4002), unused -> true);
+                List.of(4002), graph, 4, 1, Set.of(4002), unused -> true);
         assertEquals(4003, next);
         assertEquals(Set.of(1001, 1002), occupiedByCity.get(1));
         assertEquals(Set.of(5001, 5002), occupiedByCity.get(5));
@@ -79,23 +79,16 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
-    void unlockingOneCountryDoesNotUnlockAnotherCountryBlossoms() {
-        var mondstadt = new emu.grasscutter.data.excels.CityData();
-        mondstadt.setCityId(1);
-        mondstadt.setAreaIdVec(List.of(101));
-        var inazuma = new emu.grasscutter.data.excels.CityData();
-        inazuma.setCityId(3);
-        inazuma.setAreaIdVec(List.of(301, 302));
+    void adventureRankControlsTheKindsWithinEachCountry() {
         var refresh = JsonUtils.decode(
                 "{\"id\":20,\"cityId\":3,\"refreshType\":\"BLOSSOM_REFRESH_SCOIN\","
-                        + "\"refreshCondVec\":["
-                        + "{\"type\":\"BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER\",\"param\":[18]},"
-                        + "{\"type\":\"BLOSSOM_REFRESH_COND_UNLOCK_ANY_AREA_IN_CITY\",\"param\":[3]}]}",
+                    + "\"refreshCondVec\":["
+                    + "{\"type\":\"BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER\",\"param\":[18]},"
+                    + "{\"type\":\"BLOSSOM_REFRESH_COND_UNLOCK_ANY_AREA_IN_CITY\",\"param\":[3]}]}",
                 emu.grasscutter.data.excels.BlossomRefreshExcelConfigData.class);
-        var cities = List.of(mondstadt, inazuma);
-        assertFalse(BlossomManager.refreshEligible(refresh, 20, Set.of(101), cities));
-        assertFalse(BlossomManager.refreshEligible(refresh, 17, Set.of(301), cities));
-        assertTrue(BlossomManager.refreshEligible(refresh, 20, Set.of(301), cities));
+        assertFalse(BlossomManager.refreshEligible(refresh, 17));
+        assertTrue(BlossomManager.refreshEligible(refresh, 18));
+        assertTrue(BlossomManager.refreshEligible(refresh, 20));
     }
 
     @Test
@@ -116,11 +109,11 @@ final class BlossomScriptedSpawnTest {
                 "{\"id\":2,\"cityId\":1,\"refreshCondVec\":[{},{},{}]}",
                 emu.grasscutter.data.excels.BlossomRefreshExcelConfigData.class);
 
-        assertFalse(BlossomManager.refreshEligible(blue, 7, Set.of(), List.of()));
-        assertTrue(BlossomManager.refreshEligible(blue, 8, Set.of(), List.of()));
-        assertFalse(BlossomManager.refreshEligible(gold, 11, Set.of(), List.of()));
-        assertTrue(BlossomManager.refreshEligible(gold, 12, Set.of(), List.of()));
-        assertFalse(BlossomManager.refreshEligible(empty, 60, Set.of(), List.of()));
+        assertFalse(BlossomManager.refreshEligible(blue, 7));
+        assertTrue(BlossomManager.refreshEligible(blue, 8));
+        assertFalse(BlossomManager.refreshEligible(gold, 11));
+        assertTrue(BlossomManager.refreshEligible(gold, 12));
+        assertFalse(BlossomManager.refreshEligible(empty, 60));
     }
 
     @Test
@@ -130,9 +123,9 @@ final class BlossomScriptedSpawnTest {
                 201, camp(201, 2, List.of(1, 3), 102),
                 102, camp(102, 1, List.of(1, 3), 101));
         assertEquals(0, BlossomNativeCamps.firstAvailableCamp(
-                List.of(101), graph, 1, 20, 1, Set.of(101), unused -> true));
+                List.of(101), graph, 1, 1, Set.of(101), unused -> true));
         assertEquals(201, BlossomNativeCamps.firstAvailableCamp(
-                List.of(201), graph, 2, 20, 1, Set.of(), unused -> true));
+                List.of(201), graph, 2, 1, Set.of(), unused -> true));
     }
 
     @Test
@@ -143,11 +136,11 @@ final class BlossomScriptedSpawnTest {
                 301, camp(301, 3, List.of(1, 3), 302),
                 302, camp(302, 3, List.of(1, 3), 301));
         assertEquals(101, BlossomNativeCamps.firstAvailableCamp(
-                List.of(101), graph, 1, 20, 1, Set.of(), node -> node.getCityId() == 1));
+                List.of(101), graph, 1, 1, Set.of(), node -> node.getCityId() == 1));
         assertEquals(102, BlossomNativeCamps.firstAvailableCamp(
-                List.of(101), graph, 1, 20, 3, Set.of(101), node -> node.getCityId() == 1));
+                List.of(101), graph, 1, 3, Set.of(101), node -> node.getCityId() == 1));
         assertEquals(0, BlossomNativeCamps.firstAvailableCamp(
-                List.of(301), graph, 3, 20, 1, Set.of(), node -> node.getCityId() == 1));
+                List.of(301), graph, 3, 1, Set.of(), node -> node.getCityId() == 1));
     }
 
     @Test
@@ -157,18 +150,18 @@ final class BlossomScriptedSpawnTest {
         var c = camp(3, 1, List.of(1, 3), 1);
         var graph = Map.of(1, a, 2, b, 3, c);
         assertEquals(3, BlossomNativeCamps.firstAvailableCamp(
-                List.of(2), graph, 1, 20, 1, Set.of(2), node -> true));
+                List.of(2), graph, 1, 1, Set.of(2), node -> true));
         assertEquals(3, BlossomNativeCamps.firstAvailableCamp(
-                List.of(2), graph, 1, 20, 3, Set.of(2), node -> true));
+                List.of(2), graph, 1, 3, Set.of(2), node -> true));
         assertEquals(0, BlossomNativeCamps.firstAvailableCamp(
-                List.of(2), graph, 1, 20, 1, Set.of(1, 2, 3), node -> true));
+                List.of(2), graph, 1, 1, Set.of(1, 2, 3), node -> true));
     }
 
     @Test
     void singleFlowerMayReturnToItsOnlyAuthoredCamp() {
         var a = camp(1, 1, List.of(1), 1);
         assertEquals(1, BlossomNativeCamps.firstAvailableCamp(
-                List.of(1), Map.of(1, a), 1, 20, 1, Set.of(), node -> true));
+                List.of(1), Map.of(1, a), 1, 1, Set.of(), node -> true));
     }
 
     @Test
@@ -179,15 +172,15 @@ final class BlossomScriptedSpawnTest {
         var other = camp(4, 1, List.of(1, 3), 4);
         var graph = Map.of(1, a, 2, b, 3, c, 4, other);
         assertEquals(3, BlossomNativeCamps.firstAvailableCamp(
-                List.of(1), graph, 1, 20, 1, Set.of(), node -> node.getId() == 3));
+                List.of(1), graph, 1, 1, Set.of(), node -> node.getId() == 3));
         assertEquals(0, BlossomNativeCamps.firstAvailableCamp(
-                List.of(1), graph, 1, 20, 1, Set.of(), node -> node.getId() == 4));
+                List.of(1), graph, 1, 1, Set.of(), node -> node.getId() == 4));
     }
 
     @Test
     void blossomIdentityUsesOnlyItsGadgetId() {
-        assertSame(BlossomType.GOLD, BlossomType.valueOf(70360056));
-        assertSame(BlossomType.BLUE, BlossomType.valueOf(70360057));
+        assertSame(BlossomType.forRefresh("BLOSSOM_REFRESH_SCOIN"), BlossomType.valueOf(70360056));
+        assertSame(BlossomType.forRefresh("BLOSSOM_REFRESH_EXP"), BlossomType.valueOf(70360057));
         assertNull(BlossomType.valueOf(70210106));
         assertNull(BlossomType.valueOf(70220103));
     }
@@ -196,8 +189,8 @@ final class BlossomScriptedSpawnTest {
     void nativeCampKeepsTheAuthoredLuaGadgetWithoutDuplicatingSpawnData() {
         var gadget = new emu.grasscutter.scripts.data.SceneGadget();
         gadget.config_id = 374004;
-        gadget.gadget_id = BlossomType.GOLD.getGadgetId();
-        var camp = new BlossomNativeCamps.Source(101001001, 1, gadget);
+        gadget.gadget_id = BlossomType.forRefresh("BLOSSOM_REFRESH_SCOIN").getGadgetId();
+        var camp = new BlossomNativeCamps.Source(101001001, 1, 0, gadget);
         assertEquals(101001001, camp.campId());
         assertEquals(1, camp.refreshId());
         assertSame(gadget, camp.gadget());
@@ -237,29 +230,31 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
-    void incompleteGroupCannotMasqueradeAsNativeBlossomEncounter() {
-        var group = new emu.grasscutter.scripts.data.SceneGroup();
-        group.init_config = new emu.grasscutter.scripts.data.SceneInitConfig();
-        group.init_config.suite = 1;
-        var gold = new emu.grasscutter.scripts.data.SceneGadget();
-        gold.gadget_id = 70360056;
-        var reward = new emu.grasscutter.scripts.data.SceneGadget();
-        reward.gadget_id = 70210106;
-        reward.is_blossom_chest = true;
-        group.gadgets = Map.of(1, gold, 2, reward);
-        group.monsters = Map.of(1, new emu.grasscutter.scripts.data.SceneMonster());
-        group.triggers = Map.of();
-        group.suites = List.of(new emu.grasscutter.scripts.data.SceneSuite());
-        assertFalse(BlossomNativeCamps.hasNativeEncounter(group, BlossomType.GOLD));
-        // Adding just a worktop trigger does not supply progress or reward behavior.
-        var trigger = new emu.grasscutter.scripts.data.SceneTrigger();
-        trigger.setName("GROUP_LOAD");
-        trigger.setEvent(emu.grasscutter.scripts.constants.EventType.EVENT_GROUP_LOAD);
-        trigger.setAction("load");
-        group.triggers = Map.of("GROUP_LOAD", trigger);
-        group.suites.get(0).triggers = List.of("GROUP_LOAD");
-        group.suites.get(0).init(group);
-        assertFalse(BlossomNativeCamps.hasNativeEncounter(group, BlossomType.GOLD));
+    void arbitraryBlossomKindsHaveDataDefinedNativeIdentities() {
+        var extra = new BlossomType("BLOSSOM_REFRESH_CUSTOM", 17, 70360099, 70210199, "custom");
+        var byRefresh = BlossomType.indexByRefresh(
+                List.of(BlossomType.forRefresh("BLOSSOM_REFRESH_SCOIN"), extra));
+        assertSame(extra, byRefresh.get("BLOSSOM_REFRESH_CUSTOM"));
+        assertEquals(17, extra.refreshTypeId());
+        assertEquals("custom", extra.rewardKind());
+        assertThrows(IllegalArgumentException.class, () ->
+                BlossomType.indexByRefresh(List.of(extra, extra)));
+    }
+
+    @Test
+    void unlockedAreasFilterIndividualCampsForAnyNativeType() {
+        var graph = Map.of(
+                101, camp(101, 21, List.of(17), 102),
+                102, camp(102, 21, List.of(17), 103),
+                103, camp(103, 21, List.of(17), 101));
+        var areaByCamp = Map.of(101, 4, 102, 5, 103, 6);
+        var unlocked = Set.of(5, 6);
+        assertEquals(102, BlossomNativeCamps.firstAvailableCamp(
+                List.of(101), graph, 21, 17, Set.of(),
+                candidate -> unlocked.contains(areaByCamp.get(candidate.getId()))));
+        assertEquals(103, BlossomNativeCamps.firstAvailableCamp(
+                List.of(101), graph, 21, 17, Set.of(102),
+                candidate -> unlocked.contains(areaByCamp.get(candidate.getId()))));
     }
 
     @Test
@@ -267,19 +262,19 @@ final class BlossomScriptedSpawnTest {
         var host = new emu.grasscutter.game.player.Player() {
             @Override public void save() {}
         };
-        assertEquals(0, host.getBlossomCampId(11));
-        host.setBlossomCampId(11, 101001001);
-        assertEquals(1, host.getBlossomIncarnation(11));
-        host.setBlossomRewardReady(11);
-        assertTrue(host.isBlossomRewardReady(11));
-        host.setBlossomCampId(11, 101001001);
-        assertEquals(1, host.getBlossomIncarnation(11));
-        assertTrue(host.isBlossomRewardReady(11));
-        host.setBlossomCampId(11, 101001002);
-        assertEquals(2, host.getBlossomIncarnation(11));
-        assertFalse(host.isBlossomRewardReady(11));
-        host.setBlossomConsumed(11);
-        assertTrue(host.isBlossomConsumed(11));
+        assertEquals(0, host.getBlossomCampId(11, 0));
+        host.setBlossomCampId(11, 0, 101001001);
+        assertEquals(1, host.getBlossomIncarnation(11, 0));
+        host.setBlossomRewardReady(11, 0);
+        assertTrue(host.isBlossomRewardReady(11, 0));
+        host.setBlossomCampId(11, 0, 101001001);
+        assertEquals(1, host.getBlossomIncarnation(11, 0));
+        assertTrue(host.isBlossomRewardReady(11, 0));
+        host.setBlossomCampId(11, 0, 101001002);
+        assertEquals(2, host.getBlossomIncarnation(11, 0));
+        assertFalse(host.isBlossomRewardReady(11, 0));
+        host.setBlossomConsumed(11, 0);
+        assertTrue(host.isBlossomConsumed(11, 0));
         var run = "123:11:2";
         assertEquals(0, host.getBlossomClaimAttempt(run));
         host.advanceBlossomClaimAttempt(run);
@@ -287,23 +282,47 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void oneRefreshCanKeepMultipleIndependentCampSlots() {
+        var host = new emu.grasscutter.game.player.Player() {
+            @Override public void save() {}
+        };
+        for (int slot = 0; slot < 4; slot++) {
+            host.setBlossomCampId(22, slot, 100 + slot);
+            assertEquals(100 + slot, host.getBlossomCampId(22, slot));
+            assertEquals(1, host.getBlossomIncarnation(22, slot));
+        }
+        host.setBlossomRewardReady(22, 1);
+        host.advanceBlossomCampId(22, 2, 103);
+        host.setBlossomConsumed(22, 3);
+        assertTrue(host.isBlossomRewardReady(22, 1));
+        assertFalse(host.isBlossomRewardReady(22, 2));
+        assertEquals(2, host.getBlossomIncarnation(22, 2));
+        assertTrue(host.isBlossomConsumed(22, 3));
+        assertEquals(1, host.getBlossomIncarnation(22, 0));
+        host.resetConsumedBlossomsForNewDay();
+        assertFalse(host.isBlossomConsumed(22, 3));
+        assertEquals(2, host.getBlossomIncarnation(22, 3));
+        assertTrue(host.isBlossomRewardReady(22, 1));
+    }
+
+    @Test
     void returningToTheSameAuthoredCampStartsAFreshClaimEpoch() {
         var host = new emu.grasscutter.game.player.Player() {
             @Override public void save() {}
         };
-        host.setBlossomCampId(11, 101001001);
-        host.setBlossomRewardReady(11);
-        assertEquals(1, host.getBlossomIncarnation(11));
+        host.setBlossomCampId(11, 0, 101001001);
+        host.setBlossomRewardReady(11, 0);
+        assertEquals(1, host.getBlossomIncarnation(11, 0));
 
-        host.advanceBlossomCampId(11, 101001001);
-        assertEquals(101001001, host.getBlossomCampId(11));
-        assertEquals(2, host.getBlossomIncarnation(11));
-        assertFalse(host.isBlossomRewardReady(11));
-        assertFalse(host.isBlossomConsumed(11));
+        host.advanceBlossomCampId(11, 0, 101001001);
+        assertEquals(101001001, host.getBlossomCampId(11, 0));
+        assertEquals(2, host.getBlossomIncarnation(11, 0));
+        assertFalse(host.isBlossomRewardReady(11, 0));
+        assertFalse(host.isBlossomConsumed(11, 0));
 
         // Re-selecting the same run must not create a second receipt identity.
-        host.setBlossomCampId(11, 101001001);
-        assertEquals(2, host.getBlossomIncarnation(11));
+        host.setBlossomCampId(11, 0, 101001001);
+        assertEquals(2, host.getBlossomIncarnation(11, 0));
     }
 
     @Test
@@ -311,29 +330,29 @@ final class BlossomScriptedSpawnTest {
         var host = new emu.grasscutter.game.player.Player() {
             @Override public void save() {}
         };
-        host.setBlossomCampId(11, 101001001);
-        host.setBlossomCampId(12, 101002003);
-        host.setBlossomRewardReady(11);
-        host.setBlossomConsumed(11);
-        host.setBlossomRewardReady(12);
+        host.setBlossomCampId(11, 0, 101001001);
+        host.setBlossomCampId(12, 0, 101002003);
+        host.setBlossomRewardReady(11, 0);
+        host.setBlossomConsumed(11, 0);
+        host.setBlossomRewardReady(12, 0);
 
         assertTrue(host.resetConsumedBlossomsForNewDay());
-        assertFalse(host.isBlossomConsumed(11));
-        assertFalse(host.isBlossomRewardReady(11));
-        assertEquals(2, host.getBlossomIncarnation(11));
-        assertEquals(101001001, host.getBlossomCampId(11));
+        assertFalse(host.isBlossomConsumed(11, 0));
+        assertFalse(host.isBlossomRewardReady(11, 0));
+        assertEquals(2, host.getBlossomIncarnation(11, 0));
+        assertEquals(101001001, host.getBlossomCampId(11, 0));
 
         // An earned but unclaimed reward still refers to the original epoch.
-        assertTrue(host.isBlossomRewardReady(12));
-        assertEquals(1, host.getBlossomIncarnation(12));
+        assertTrue(host.isBlossomRewardReady(12, 0));
+        assertEquals(1, host.getBlossomIncarnation(12, 0));
         assertFalse(host.resetConsumedBlossomsForNewDay());
-        assertEquals(2, host.getBlossomIncarnation(11));
+        assertEquals(2, host.getBlossomIncarnation(11, 0));
     }
 
     @Test
     void luaRefreshTypesFollowAuthoredGadgetSelection() {
-        assertEquals(1, BlossomManager.luaRefreshType(BlossomType.GOLD));
-        assertEquals(3, BlossomManager.luaRefreshType(BlossomType.BLUE));
+        assertEquals(1, BlossomManager.luaRefreshType(BlossomType.forRefresh("BLOSSOM_REFRESH_SCOIN")));
+        assertEquals(3, BlossomManager.luaRefreshType(BlossomType.forRefresh("BLOSSOM_REFRESH_EXP")));
         assertNull(BlossomManager.luaRefreshType(null));
     }
 
@@ -443,8 +462,8 @@ final class BlossomScriptedSpawnTest {
     @Test
     void nativeBlossomChestTypesUseSeparateRewardGadgets() {
         // BlossomChestExcelConfigData: SCOIN uses 70210109 and EXP uses 70210110.
-        assertEquals(70210109, BlossomType.GOLD.getRewardChestGadgetId());
-        assertEquals(70210110, BlossomType.BLUE.getRewardChestGadgetId());
+        assertEquals(70210109, BlossomType.forRefresh("BLOSSOM_REFRESH_SCOIN").getRewardChestGadgetId());
+        assertEquals(70210110, BlossomType.forRefresh("BLOSSOM_REFRESH_EXP").getRewardChestGadgetId());
     }
 
     @Test

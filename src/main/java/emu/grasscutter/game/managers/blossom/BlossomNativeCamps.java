@@ -7,31 +7,28 @@ import emu.grasscutter.data.excels.BlossomRefreshExcelConfigData;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.scripts.data.SceneGadget;
 import emu.grasscutter.scripts.data.SceneGroup;
-import emu.grasscutter.scripts.constants.EventType;
 import java.util.*;
 import java.util.function.Predicate;
 
 /**
- * Authoritative 7.1 ley-line camp locations and next-camp edges.
- * BlossomGroups.newGroupVec refers to the original Lua scene group, which has
- * separate gold/blue worktops at the same authored location.
+ * Selects any number of authored camps per country and refresh kind.
+ * Refresh rows control kind availability and concurrent count; the worktop's
+ * authored area_id controls which individual camps are unlocked.
  */
 final class BlossomNativeCamps {
-    /** A selected native camp uses the Lua gadget directly, without a synthetic SpawnDataEntry. */
-    record Source(int campId, int refreshId, SceneGadget gadget) {}
+    record Source(int campId, int refreshId, int slot, SceneGadget gadget) {}
+    private record CampKind(int campId, int nativeType) {}
 
-    private final Map<String, Source> resolved = new HashMap<>();
-    private final Set<Integer> unresolvedGroups = new HashSet<>();
+    // A numeric tuple prevents ambiguity and never embeds a refresh slot in the Lua cache.
+    private final Map<CampKind, SceneGadget> resolved = new HashMap<>();
 
-    /** Provisional start in native camp-ID order; original starting rule is unverified. */
     static int initialId(List<BlossomCampData> eligible) {
         return eligible.isEmpty() ? 0 : eligible.get(0).getId();
     }
 
-    // Both blossom types share the camp graph. Only real authored Lua locations qualify.
     static int firstAvailableCamp(
             Collection<Integer> starts, Map<Integer, BlossomCampData> camps,
-            int city, int rank, int refreshType, Set<Integer> occupied,
+            int city, int nativeType, Set<Integer> occupied,
             Predicate<BlossomCampData> usable) {
         var queue = new ArrayDeque<>(starts);
         var visited = new HashSet<Integer>();
@@ -41,182 +38,163 @@ final class BlossomNativeCamps {
             var camp = camps.get(id);
             if (camp == null || camp.getCityId() != city) continue;
             if (camp.getNextCampIdVec() != null) queue.addAll(camp.getNextCampIdVec());
-            if (occupied.contains(id) || camp.getLimitLevel() > rank
-                    || camp.getRefreshTypeVec() == null || !camp.getRefreshTypeVec().contains(refreshType)
+            if (occupied.contains(id)
+                    || camp.getRefreshTypeVec() == null
+                    || !camp.getRefreshTypeVec().contains(nativeType)
                     || camp.getNewGroupVec() == null || camp.getNewGroupVec().isEmpty()) continue;
             if (usable.test(camp)) return id;
         }
         return 0;
     }
 
-    /** Resolve only the selected native camp, without searching fallback nodes. */
     private Source selectedCamp(
-            Scene scene, int campId, int city, int rank, BlossomType kind, int refreshId) {
-        var camp = GameData.getBlossomCampDataMap().get(campId);
-        int type = kind == BlossomType.GOLD ? 1 : 3;
-        if (camp == null || camp.getCityId() != city || camp.getLimitLevel() > rank
-                || camp.getRefreshTypeVec() == null || !camp.getRefreshTypeVec().contains(type)) {
-            return null;
-        }
-        return resolve(scene, camp, kind, refreshId);
+            Scene scene, BlossomCampData camp, BlossomType kind, int refreshId, int slot,
+            Collection<Integer> unlockedAreas) {
+        if (camp.getRefreshTypeVec() == null
+                || !camp.getRefreshTypeVec().contains(kind.refreshTypeId())) return null;
+        var gadget = resolve(scene, camp, kind);
+        // An unlocked region authorizes its camp; there is no city-wide shortcut.
+        if (gadget == null || gadget.area_id <= 0
+                || !unlockedAreas.contains(gadget.area_id)) return null;
+        return new Source(camp.getId(), refreshId, slot, gadget);
     }
 
     List<Source> select(Scene scene, int rank, Collection<Integer> unlockedAreas) {
-        var rows = GameData.getBlossomCampDataMap();
-        if (rows.isEmpty()) return List.of();
-        var cities = GameData.getCityDataMap().values();
+        var camps = GameData.getBlossomCampDataMap();
+        if (camps.isEmpty()) return List.of();
         var refreshes = new ArrayList<>(GameData.getBlossomRefreshExcelConfigDataMap().values());
-        // Keep the two cursors for each country together, irrespective of refresh IDs.
         refreshes.sort(Comparator.comparingInt(BlossomRefreshExcelConfigData::getCityId)
                 .thenComparingInt(BlossomRefreshExcelConfigData::getId));
+
+        var candidates = new HashMap<Integer, List<BlossomCampData>>();
+        for (var camp : camps.values()) {
+            if (camp.getNewGroupVec() == null || camp.getNewGroupVec().isEmpty()
+                    || camp.getRefreshTypeVec() == null) continue;
+            candidates.computeIfAbsent(camp.getCityId(), unused -> new ArrayList<>()).add(camp);
+        }
+        candidates.values().forEach(list ->
+                list.sort(Comparator.comparingInt(BlossomCampData::getId)));
+
+        var host = scene.getWorld().getHost();
         var selected = new ArrayList<Source>();
         var occupiedByCity = new HashMap<Integer, Set<Integer>>();
         var selectedByCity = new HashMap<Integer, List<Source>>();
-        var campsByCity = new HashMap<Integer, List<BlossomCampData>>();
-        for (var camp : rows.values()) {
-            if (camp.getNewGroupVec() == null || camp.getNewGroupVec().isEmpty()
-                    || camp.getRefreshTypeVec() == null || camp.getLimitLevel() > rank) continue;
-            campsByCity.computeIfAbsent(camp.getCityId(), unused -> new ArrayList<>()).add(camp);
-        }
-        campsByCity.values().forEach(camps ->
-                camps.sort(Comparator.comparingInt(BlossomCampData::getId)));
-        var host = scene.getWorld().getHost();
-
         for (var refresh : refreshes) {
-            BlossomType kind = switch (refresh.getRefreshType()) {
-                case "BLOSSOM_REFRESH_SCOIN" -> BlossomType.GOLD;
-                case "BLOSSOM_REFRESH_EXP" -> BlossomType.BLUE;
-                default -> null;
-            };
+            var kind = BlossomType.forRefresh(refresh.getRefreshType());
             if (kind == null || refresh.getRefreshCount() <= 0
-                    || host.isBlossomConsumed(refresh.getId())
-                    || !BlossomManager.refreshEligible(refresh, rank, unlockedAreas, cities)) continue;
+                    || !BlossomManager.refreshEligible(refresh, rank)) continue;
 
-            int city = refresh.getCityId();
-            var cityData = GameData.getCityDataMap().get(city);
+            var cityData = GameData.getCityDataMap().get(refresh.getCityId());
             if (cityData == null || cityData.getSceneId() != scene.getId()) continue;
-            int refreshType = kind == BlossomType.GOLD ? 1 : 3;
-            var eligible = campsByCity.getOrDefault(city, List.of()).stream()
-                    .filter(camp -> camp.getRefreshTypeVec().contains(refreshType))
+            var eligible = candidates.getOrDefault(refresh.getCityId(), List.of()).stream()
+                    .filter(camp -> camp.getRefreshTypeVec().contains(kind.refreshTypeId()))
                     .toList();
             if (eligible.isEmpty()) continue;
 
-            var occupied = occupiedByCity.computeIfAbsent(city, unused -> new HashSet<>());
-            var local = selectedByCity.computeIfAbsent(city, unused -> new ArrayList<>());
-            int savedId = host.getBlossomCampId(refresh.getId());
-            int initial = initialId(eligible);
-            int chosenId = firstAvailableCamp(
-                    List.of(savedId > 0 ? savedId : initial), rows, city, rank, refreshType, occupied,
-                    candidate -> {
-                        var source = selectedCamp(scene, candidate.getId(), city, rank, kind, refresh.getId());
-                        return source != null && local.stream().noneMatch(existing ->
-                                existing.gadget().pos.computeDistance(source.gadget().pos) < 2.5f);
-                    });
-            if (chosenId == 0) continue;
-            var source = selectedCamp(scene, chosenId, city, rank, kind, refresh.getId());
-            selected.add(source);
-            local.add(source);
-            occupied.add(chosenId);
-            if (savedId != chosenId) host.setBlossomCampId(refresh.getId(), chosenId);
+            var occupied = occupiedByCity.computeIfAbsent(refresh.getCityId(), ignored -> new HashSet<>());
+            var local = selectedByCity.computeIfAbsent(refresh.getCityId(), ignored -> new ArrayList<>());
+            for (int slot = 0; slot < refresh.getRefreshCount(); slot++) {
+                if (host.isBlossomConsumed(refresh.getId(), slot)) continue;
+                int savedId = host.getBlossomCampId(refresh.getId(), slot);
+                var starts = new ArrayList<Integer>();
+                if (savedId > 0) starts.add(savedId);
+                for (var camp : eligible) starts.add(camp.getId());
+                final int currentSlot = slot;
+                int chosen = firstAvailableCamp(
+                        starts, camps, refresh.getCityId(), kind.refreshTypeId(), occupied,
+                        candidate -> {
+                            var source = selectedCamp(
+                                    scene, candidate, kind, refresh.getId(), currentSlot, unlockedAreas);
+                            return source != null && local.stream().noneMatch(other ->
+                                    other.gadget().pos.computeDistance(source.gadget().pos) < 2.5f);
+                        });
+                if (chosen == 0) continue;
+                var source = selectedCamp(
+                        scene, camps.get(chosen), kind, refresh.getId(), slot, unlockedAreas);
+                selected.add(source);
+                local.add(source);
+                occupied.add(chosen);
+                if (savedId != chosen) host.setBlossomCampId(refresh.getId(), slot, chosen);
+            }
         }
         return selected;
     }
 
-    private Source resolve(Scene scene, BlossomCampData camp, BlossomType kind, int refreshId) {
-        String key = camp.getId() + ":" + kind.name();
-        Source existing = resolved.get(key);
-        if (existing != null) return existing;
+    /** Lua is the encounter authority; only the selected, authored worktop is needed here. */
+    private SceneGadget resolve(Scene scene, BlossomCampData camp, BlossomType kind) {
+        var key = new CampKind(camp.getId(), kind.refreshTypeId());
+        var cached = resolved.get(key);
+        if (cached != null) return cached;
         for (int groupId : camp.getNewGroupVec()) {
-            var group = SceneGroup.of(groupId).load(scene.getId());
-            if (!hasNativeEncounter(group, kind)) {
-                if (unresolvedGroups.add(groupId)) {
-                    Grasscutter.getLogger().warn(
-                            "Ley-line group missing original encounter chain scene={} group={}",
-                            scene.getId(), groupId);
-                }
-                continue;
-            }
+            SceneGroup group = SceneGroup.of(groupId).load(scene.getId());
+            if (group == null || group.gadgets == null) continue;
             var gadget = group.gadgets.values().stream()
                     .filter(item -> item.gadget_id == kind.getGadgetId())
-                    .min(Comparator.comparingInt(item -> item.config_id))
-                    .orElse(null);
-            if (gadget == null) continue;
-            Source result = new Source(camp.getId(), refreshId, gadget);
-            resolved.put(key, result);
-            return result;
+                    .min(Comparator.comparingInt(item -> item.config_id)).orElse(null);
+            if (gadget != null) {
+                resolved.put(key, gadget);
+                return gadget;
+            }
         }
         return null;
     }
 
-    /** Camp ownership comes from BlossomGroups, never from a Gadget prefab ID. */
     boolean ownsGroup(int groupId) {
+        var supported = BlossomType.all().stream()
+                .map(BlossomType::refreshTypeId).collect(java.util.stream.Collectors.toSet());
         return GameData.getBlossomCampDataMap().values().stream()
                 .filter(camp -> camp.getRefreshTypeVec() != null
-                        && camp.getRefreshTypeVec().contains(1)
-                        && camp.getRefreshTypeVec().contains(3))
+                        && camp.getRefreshTypeVec().stream().anyMatch(supported::contains))
                 .anyMatch(camp -> camp.getNewGroupVec() != null
                         && camp.getNewGroupVec().contains(groupId));
     }
 
-    /**
-     * A blossom worktop must have a runnable original encounter. An authored Gadget
-     * without SELECT_OPTION / progress / reward triggers is insufficient.
-     */
-    static boolean hasNativeEncounter(SceneGroup group, BlossomType kind) {
-        if (group == null || kind == null || group.init_config == null
-                || group.gadgets == null || group.monsters == null || group.monsters.isEmpty()
-                || group.suites == null || group.suites.isEmpty()
-                || group.triggers == null || group.triggers.isEmpty()) return false;
-        if (group.gadgets.values().stream().noneMatch(g -> g.gadget_id == kind.getGadgetId())
-                || group.gadgets.values().stream().noneMatch(g -> g.is_blossom_chest)) return false;
-        var initial = group.getSuiteByIndex(group.init_config.suite);
-        if (initial == null || initial.sceneTriggers == null
-                || initial.sceneTriggers.stream().noneMatch(t -> t.getEvent() == EventType.EVENT_GROUP_LOAD))
-            return false;
-        var events = group.suites.stream()
-                .filter(suite -> suite.sceneTriggers != null)
-                .flatMap(suite -> suite.sceneTriggers.stream())
-                .filter(trigger -> trigger.getAction() != null && !trigger.getAction().isEmpty())
-                .map(emu.grasscutter.scripts.data.SceneTrigger::getEvent)
-                .collect(java.util.stream.Collectors.toSet());
-        return events.containsAll(Set.of(
-                EventType.EVENT_GROUP_LOAD, EventType.EVENT_GROUP_REFRESH,
-                EventType.EVENT_GADGET_CREATE, EventType.EVENT_SELECT_OPTION,
-                EventType.EVENT_ANY_MONSTER_DIE, EventType.EVENT_BLOSSOM_PROGRESS_FINISH,
-                EventType.EVENT_BLOSSOM_CHEST_DIE));
-    }
-
-    /** Advance only after a successful reward claim; the saved cursor survives scene reload. */
-    boolean advance(Scene scene, Source source, int rank) {
-        var camp = GameData.getBlossomCampDataMap().get(source.campId());
-        if (camp == null || camp.getNextCampIdVec() == null || camp.getNextCampIdVec().isEmpty())
-            return false;
+    /** Each occupied slot is an independent saved run, even within one refresh ID. */
+    boolean advance(Scene scene, Source source, Collection<Integer> unlockedAreas) {
+        var rows = GameData.getBlossomCampDataMap();
+        var camp = rows.get(source.campId());
+        if (camp == null || camp.getNextCampIdVec() == null
+                || camp.getNextCampIdVec().isEmpty()) return false;
         var kind = BlossomType.valueOf(source.gadget().gadget_id);
         if (kind == null) return false;
         var host = scene.getWorld().getHost();
         var occupied = new HashSet<Integer>();
+        var otherLocations = new ArrayList<SceneGadget>();
         for (var refresh : GameData.getBlossomRefreshExcelConfigDataMap().values()) {
-            if (refresh.getCityId() != camp.getCityId() || refresh.getId() == source.refreshId())
-                continue;
-            if (!"BLOSSOM_REFRESH_SCOIN".equals(refresh.getRefreshType())
-                    && !"BLOSSOM_REFRESH_EXP".equals(refresh.getRefreshType())) continue;
-            int otherCampId = host.getBlossomCampId(refresh.getId());
-            if (otherCampId > 0) occupied.add(otherCampId);
+            if (refresh.getCityId() != camp.getCityId()
+                    || BlossomType.forRefresh(refresh.getRefreshType()) == null
+                    || !BlossomManager.refreshEligible(refresh, host.getLevel())) continue;
+            for (int slot = 0; slot < refresh.getRefreshCount(); slot++) {
+                if (refresh.getId() == source.refreshId() && slot == source.slot()) continue;
+                if (host.isBlossomConsumed(refresh.getId(), slot)) continue;
+                int id = host.getBlossomCampId(refresh.getId(), slot);
+                if (id <= 0) continue;
+                occupied.add(id);
+                var targetCamp = rows.get(id);
+                if (targetCamp == null) continue;
+                var otherKind = BlossomType.forRefresh(refresh.getRefreshType());
+                var gadget = resolve(scene, targetCamp, otherKind);
+                if (gadget != null) otherLocations.add(gadget);
+            }
         }
         int nextId = firstAvailableCamp(
-                camp.getNextCampIdVec(), GameData.getBlossomCampDataMap(),
-                camp.getCityId(), rank, kind == BlossomType.GOLD ? 1 : 3, occupied,
-                candidate -> selectedCamp(
-                        scene, candidate.getId(), camp.getCityId(), rank, kind, source.refreshId()) != null);
+                camp.getNextCampIdVec(), rows, camp.getCityId(), kind.refreshTypeId(), occupied,
+                candidate -> {
+                    var next = selectedCamp(scene, candidate, kind, source.refreshId(),
+                            source.slot(), unlockedAreas);
+                    return next != null && otherLocations.stream().noneMatch(other ->
+                            other.pos.computeDistance(next.gadget().pos) < 2.5f);
+                });
         if (nextId == 0) {
             Grasscutter.getLogger().warn(
-                    "No unoccupied authored ley-line successor city={} kind={} camp={}",
-                    camp.getCityId(), kind, source.campId());
+                    "No unlocked ley-line successor city={} kind={} camp={} slot={}",
+                    camp.getCityId(), kind.refreshType(), source.campId(), source.slot());
             return false;
         }
-        host.advanceBlossomCampId(source.refreshId(), nextId);
-        Grasscutter.getLogger().info("Ley-line camp advanced city={} kind={} {} -> {}",
-                camp.getCityId(), kind, source.campId(), nextId);
+        host.advanceBlossomCampId(source.refreshId(), source.slot(), nextId);
+        Grasscutter.getLogger().info(
+                "Ley-line camp advanced city={} kind={} slot={} {} -> {}",
+                camp.getCityId(), kind.refreshType(), source.slot(), source.campId(), nextId);
         return true;
     }
 }

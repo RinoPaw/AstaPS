@@ -201,6 +201,7 @@ final class BlossomScriptedSpawnTest {
         assertEquals(101001001, camp.campId());
         assertEquals(1, camp.refreshId());
         assertSame(gadget, camp.gadget());
+        assertSame(camp, new BlossomActivity(null, camp).source());
     }
 
     @Test

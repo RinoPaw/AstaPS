@@ -67,7 +67,7 @@ public class BlossomManager {
             var reward = group.gadgets.values().stream()
                     .filter(g -> g.is_blossom_chest)
                     .findFirst().orElse(null);
-            if (source == null || reward == null) {
+            if (reward == null) {
                 throw new IllegalStateException("Cannot restore earned ley-line group " + group.id);
             }
             var identity = new EntityGadget(scene, source.gadget_id, source.pos);
@@ -190,7 +190,8 @@ public class BlossomManager {
     private emu.grasscutter.scripts.data.SceneGroup scriptGroupFor(EntityGadget gadget) {
         // Reuse the same Lua environment as the live scene triggers when available.
         var group = scene.getScriptManager().getGroupById(gadget.getGroupId());
-        return group != null ? group : createdEntity.containsKey(gadget) ? createdEntity.get(gadget).gadget().group : null;
+        var source = createdEntity.get(gadget);
+        return group != null ? group : source == null ? null : source.gadget().group;
     }
 
     public boolean isNativeCampGroup(int groupId) {
@@ -495,7 +496,10 @@ public class BlossomManager {
                             scene.unloadGroup(null, active.getGadget().getGroupId());
                     }
                     it.remove();
-                    recycleGadgetEntity(List.of(active.getGadget()));
+                    createdEntity.remove(active.getGadget());
+                    // A restored reward uses a private identity gadget with no live worktop.
+                    // Its native camp must still be released when the claim rotates.
+                    if (source != null) scriptedLoadedCamps.remove(source);
                     ensureScriptedSpawns();
                     notifyIcon();
                     return;
@@ -566,9 +570,7 @@ public class BlossomManager {
                 return null;
             }
             int resinBefore = player.getProperty(emu.grasscutter.game.props.PlayerProperty.PROP_PLAYER_RESIN);
-            var source = active.source();
-            if (source == null) return null;
-            int refreshId = source.refreshId();
+            int refreshId = active.source().refreshId();
             var host = scene.getWorld().getHost();
             // BSON-safe key also identifies the claim attempt in the player's persisted record.
             String runId = host.getUid() + ":" + refreshId + ":"

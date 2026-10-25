@@ -543,7 +543,10 @@ public class BlossomManager {
 
     /** Only a completed gadget interaction can authorize a resin charge or payout. */
     public static boolean isClaimFinish(GadgetInteractReqOuterClass.GadgetInteractReq req) {
-        return req != null && req.getOpType()
+        // Global 7.1 encodes FINISH as the proto3 default op type. A missing
+        // op field alone cannot distinguish FINISH from an empty request.
+        // Require the target entity as well; an empty payload is never a claim.
+        return req != null && req.getGadgetEntityId() > 0 && req.getOpType()
                 == InterOpTypeOuterClass.InterOpType.InterOpType_INTER_OP_FINISH;
     }
 

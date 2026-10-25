@@ -1,18 +1,13 @@
 package emu.grasscutter.game.managers.blossom;
 
-import com.google.gson.Gson;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.BlossomCampData;
 import emu.grasscutter.data.excels.BlossomRefreshExcelConfigData;
-import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.world.Scene;
-import emu.grasscutter.game.world.SpawnDataEntry;
-import emu.grasscutter.game.world.SpawnDataEntry.SpawnGroupEntry;
 import emu.grasscutter.scripts.data.SceneGadget;
 import emu.grasscutter.scripts.data.SceneGroup;
 import emu.grasscutter.scripts.constants.EventType;
-import emu.grasscutter.utils.JsonUtils;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -22,12 +17,10 @@ import java.util.function.Predicate;
  * separate gold/blue worktops at the same authored location.
  */
 final class BlossomNativeCamps {
-    private record Source(int campId, int refreshId, SpawnDataEntry entry,
-                          SceneGadget gadget) {}
+    /** A selected native camp uses the Lua gadget directly, without a synthetic SpawnDataEntry. */
+    record Source(int campId, int refreshId, SceneGadget gadget) {}
 
-    private static final Gson GSON = new Gson();
     private final Map<String, Source> resolved = new HashMap<>();
-    private final Map<SpawnDataEntry, Source> byEntry = new IdentityHashMap<>();
     private final Set<Integer> unresolvedGroups = new HashSet<>();
 
     /** Provisional start in native camp-ID order; original starting rule is unverified. */
@@ -68,7 +61,7 @@ final class BlossomNativeCamps {
         return resolve(scene, camp, kind, refreshId);
     }
 
-    List<SpawnDataEntry> select(Scene scene, int rank, Collection<Integer> unlockedAreas) {
+    List<Source> select(Scene scene, int rank, Collection<Integer> unlockedAreas) {
         var rows = GameData.getBlossomCampDataMap();
         if (rows.isEmpty()) return List.of();
         var cities = GameData.getCityDataMap().values();
@@ -76,9 +69,9 @@ final class BlossomNativeCamps {
         // Keep the two cursors for each country together, irrespective of refresh IDs.
         refreshes.sort(Comparator.comparingInt(BlossomRefreshExcelConfigData::getCityId)
                 .thenComparingInt(BlossomRefreshExcelConfigData::getId));
-        var selected = new ArrayList<SpawnDataEntry>();
+        var selected = new ArrayList<Source>();
         var occupiedByCity = new HashMap<Integer, Set<Integer>>();
-        var selectedByCity = new HashMap<Integer, List<SpawnDataEntry>>();
+        var selectedByCity = new HashMap<Integer, List<Source>>();
         var campsByCity = new HashMap<Integer, List<BlossomCampData>>();
         for (var camp : rows.values()) {
             if (camp.getNewGroupVec() == null || camp.getNewGroupVec().isEmpty()
@@ -117,12 +110,12 @@ final class BlossomNativeCamps {
                     candidate -> {
                         var source = selectedCamp(scene, candidate.getId(), city, rank, kind, refresh.getId());
                         return source != null && local.stream().noneMatch(existing ->
-                                existing.getPos().computeDistance(source.entry().getPos()) < 2.5f);
+                                existing.gadget().pos.computeDistance(source.gadget().pos) < 2.5f);
                     });
             if (chosenId == 0) continue;
             var source = selectedCamp(scene, chosenId, city, rank, kind, refresh.getId());
-            selected.add(source.entry());
-            local.add(source.entry());
+            selected.add(source);
+            local.add(source);
             occupied.add(chosenId);
             if (savedId != chosenId) host.setBlossomCampId(refresh.getId(), chosenId);
         }
@@ -148,20 +141,8 @@ final class BlossomNativeCamps {
                     .min(Comparator.comparingInt(item -> item.config_id))
                     .orElse(null);
             if (gadget == null) continue;
-            String json = GSON.toJson(Map.of(
-                    "sceneId", scene.getId(),
-                    "groupId", groupId,
-                    "spawns", List.of(Map.of(
-                            "gadgetId", gadget.gadget_id,
-                            "configId", gadget.config_id,
-                            "pos", gadget.pos,
-                            "rot", gadget.rot))));
-            SpawnGroupEntry entry = JsonUtils.decode(json, SpawnGroupEntry.class);
-            var source = entry.getSpawns().get(0);
-            source.setGroup(entry);
-            Source result = new Source(camp.getId(), refreshId, source, gadget);
+            Source result = new Source(camp.getId(), refreshId, gadget);
             resolved.put(key, result);
-            byEntry.put(source, result);
             return result;
         }
         return null;
@@ -205,47 +186,12 @@ final class BlossomNativeCamps {
                 EventType.EVENT_BLOSSOM_CHEST_DIE));
     }
 
-    boolean owns(SpawnDataEntry entry) {
-        return byEntry.containsKey(entry);
-    }
-
-    /** Expose the actual authored Lua group for encounter callbacks. */
-    SceneGroup groupFor(SpawnDataEntry entry) {
-        var source = byEntry.get(entry);
-        return source == null ? null : source.gadget().group;
-    }
-
-    /** Create the outcrop from the registered group instance and its actual scene block. */
-    EntityGadget createGadget(Scene scene, SpawnDataEntry entry) {
-        var source = byEntry.get(entry);
-        if (source == null) return null;
-        var instance = scene.getScriptManager().getGroupInstanceById(source.gadget().group.id);
-        if (instance == null) return null;
-        var group = instance.getLuaGroup();
-        if (group == null || group.gadgets == null) return null;
-        var gadget = group.gadgets.get(source.gadget().config_id);
-        if (gadget == null || gadget.gadget_id != entry.getGadgetId()) return null;
-        return scene.getScriptManager().createGadget(group.id, group.block_id, gadget);
-    }
-
-    int campId(SpawnDataEntry entry) {
-        Source source = byEntry.get(entry);
-        return source == null ? 0 : source.campId();
-    }
-
-    int refreshId(SpawnDataEntry entry) {
-        Source source = byEntry.get(entry);
-        return source == null ? 0 : source.refreshId();
-    }
-
     /** Advance only after a successful reward claim; the saved cursor survives scene reload. */
-    boolean advance(Scene scene, SpawnDataEntry entry, int rank) {
-        var source = byEntry.get(entry);
-        if (source == null) return false;
+    boolean advance(Scene scene, Source source, int rank) {
         var camp = GameData.getBlossomCampDataMap().get(source.campId());
         if (camp == null || camp.getNextCampIdVec() == null || camp.getNextCampIdVec().isEmpty())
             return false;
-        var kind = BlossomType.valueOf(entry.getGadgetId());
+        var kind = BlossomType.valueOf(source.gadget().gadget_id);
         if (kind == null) return false;
         var host = scene.getWorld().getHost();
         var occupied = new HashSet<Integer>();

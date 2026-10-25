@@ -193,8 +193,19 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void nativeCampKeepsTheAuthoredLuaGadgetWithoutDuplicatingSpawnData() {
+        var gadget = new emu.grasscutter.scripts.data.SceneGadget();
+        gadget.config_id = 374004;
+        gadget.gadget_id = BlossomType.GOLD.getGadgetId();
+        var camp = new BlossomNativeCamps.Source(101001001, 1, gadget);
+        assertEquals(101001001, camp.campId());
+        assertEquals(1, camp.refreshId());
+        assertSame(gadget, camp.gadget());
+    }
+
+    @Test
     void originalMonsterProgressFinishesOnlyOnce() {
-        var activity = new BlossomActivity(null);
+        var activity = new BlossomActivity(null, null);
         activity.beginNative(2);
         assertFalse(activity.addNativeProgress());
         assertTrue(activity.addNativeProgress());
@@ -445,7 +456,7 @@ final class BlossomScriptedSpawnTest {
                 emu.grasscutter.scripts.data.SceneGadget.class);
         assertTrue(nativeReward.is_blossom_chest);
         assertFalse(unrelated.is_blossom_chest);
-        var activity = new BlossomActivity(null);
+        var activity = new BlossomActivity(null, null);
         assertEquals(2, activity.scheduleState());
         assertFalse(activity.completeFromLua(unrelated));
         assertTrue(activity.completeFromLua(nativeReward));

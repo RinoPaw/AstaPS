@@ -7,7 +7,8 @@ EVENT_SELECT_OPTION exactly once. Lua progresses its monster waves and invokes
 CreateBlossomChestByGroupId on EVENT_BLOSSOM_PROGRESS_FINISH.
 
 There is no default blossom Lua hook, random Java monster challenge, or
-Spawns.json alternative. A ley-line outcrop belongs to the camp when its Group is referenced by
+Spawns.json alternative. Camp selection holds a reference to the authored
+Lua SceneGadget directly; no intermediate SpawnDataEntry is synthesized. A ley-line outcrop belongs to the camp when its Group is referenced by
 BlossomGroups.newGroupVec. The selected worktop is then matched by its
 authored config/Gadget identity. Only Lua with an initial GROUP_LOAD trigger
 and the GROUP_REFRESH, SELECT_OPTION, monster progress and reward event chain

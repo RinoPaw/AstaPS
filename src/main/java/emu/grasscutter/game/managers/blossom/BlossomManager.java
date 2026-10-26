@@ -44,7 +44,8 @@ public class BlossomManager {
             Collection<Integer> unlockedAreas) {
         var data = GameData.getBlossomCampDataMap().get(campId);
         if (data == null || data.getRefreshTypeVec() == null
-                || !data.getRefreshTypeVec().contains(kind.refreshTypeId())) return null;
+                || !data.getRefreshTypeVec().contains(kind.refreshTypeId())
+                || data.getNewGroupVec() == null || data.getNewGroupVec().isEmpty()) return null;
         var gadget = findWorktop(data, kind);
         if (gadget == null || gadget.area_id <= 0
                 || !unlockedAreas.contains(gadget.area_id)) return null;

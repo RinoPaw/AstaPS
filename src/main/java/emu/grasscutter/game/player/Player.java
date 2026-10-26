@@ -1621,7 +1621,8 @@ public class Player implements PlayerHook, FieldFetch {
         if (!advance && previous != null && previous.campId == campId) return;
         var run = new BlossomRunState();
         run.campId = campId;
-        run.incarnation = previous == null ? 1 : previous.incarnation + 1;
+        run.incarnation = previous == null ? 1
+                : previous.incarnation + (previous.campId == 0 && !advance ? 0 : 1);
         blossomRuns.put(key, run);
         save();
     }
@@ -1629,7 +1630,8 @@ public class Player implements PlayerHook, FieldFetch {
     /**
      * Only completed and exhausted flowers reset with the daily boundary.
      * In-progress or earned unclaimed rewards keep their existing receipt identity.
-     * The next daily cycle is a new claim epoch even if it reuses the same camp.
+     * Exhausted runs clear their previous camp for a new section-head selection.
+     * The daily boundary starts exactly one new claim epoch.
      */
     public synchronized boolean resetConsumedBlossomsForNewDay() {
         if (blossomRuns == null || blossomRuns.isEmpty()) return false;
@@ -1637,6 +1639,7 @@ public class Player implements PlayerHook, FieldFetch {
         for (var run : blossomRuns.values()) {
             if (run == null || !run.consumed) continue;
             run.incarnation++;
+            run.campId = 0;
             run.rewardReady = false;
             run.consumed = false;
             changed = true;

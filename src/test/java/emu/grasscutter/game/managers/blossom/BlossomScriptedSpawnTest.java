@@ -59,6 +59,32 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void dailyInitialCandidatesUseTheSmallestCampIdInEachSection() {
+        var camps = List.of(
+                sectionCamp(303002003, 3002, List.of(1, 3)),
+                sectionCamp(303001005, 3001, List.of(1, 3)),
+                sectionCamp(303001001, 3001, List.of(1, 3)),
+                sectionCamp(303002001, 3002, List.of(1, 3)),
+                sectionCamp(303003001, 3003, List.of(3)),
+                sectionCamp(303001000, 3001, List.of(4)));
+        assertEquals(List.of(303001001, 303002001),
+                BlossomNativeCamps.initialCampIds(camps.stream()
+                        .filter(camp -> camp.getRefreshTypeVec().contains(1)).toList()));
+        assertEquals(List.of(303001001, 303002001, 303003001),
+                BlossomNativeCamps.initialCampIds(camps.stream()
+                        .filter(camp -> camp.getRefreshTypeVec().contains(3)).toList()));
+        assertEquals(List.of(), BlossomNativeCamps.initialCampIds(List.of()));
+    }
+
+    private static emu.grasscutter.data.excels.BlossomCampData sectionCamp(
+            int id, int section, List<Integer> types) {
+        return JsonUtils.decode(
+                "{\"id\":" + id + ",\"cityId\":3,\"sectionId\":" + section
+                        + ",\"refreshTypeVec\":" + types + ",\"newGroupVec\":[123]}",
+                emu.grasscutter.data.excels.BlossomCampData.class);
+    }
+
+    @Test
     void mapPreviewsUseEachCountryOwnRefreshRow() {
         var mondstadt = JsonUtils.decode(
                 "{\"id\":1,\"cityId\":1,\"dropVec\":[{\"preview_reward\":4101}]}",
@@ -310,6 +336,9 @@ final class BlossomScriptedSpawnTest {
         assertEquals(1, host.getBlossomIncarnation(22, 0));
         host.resetConsumedBlossomsForNewDay();
         assertFalse(host.isBlossomConsumed(22, 3));
+        assertEquals(0, host.getBlossomCampId(22, 3));
+        assertEquals(2, host.getBlossomIncarnation(22, 3));
+        host.setBlossomCampId(22, 3, 104);
         assertEquals(2, host.getBlossomIncarnation(22, 3));
         assertTrue(host.isBlossomRewardReady(22, 1));
     }
@@ -349,7 +378,10 @@ final class BlossomScriptedSpawnTest {
         assertFalse(host.isBlossomConsumed(11, 0));
         assertFalse(host.isBlossomRewardReady(11, 0));
         assertEquals(2, host.getBlossomIncarnation(11, 0));
-        assertEquals(101001001, host.getBlossomCampId(11, 0));
+        assertEquals(0, host.getBlossomCampId(11, 0));
+        host.setBlossomCampId(11, 0, 101002001);
+        assertEquals(101002001, host.getBlossomCampId(11, 0));
+        assertEquals(2, host.getBlossomIncarnation(11, 0));
 
         // An earned but unclaimed reward still refers to the original epoch.
         assertTrue(host.isBlossomRewardReady(12, 0));

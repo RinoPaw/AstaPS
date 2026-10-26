@@ -32,7 +32,7 @@ final class BlossomScriptedSpawnTest {
         for (int id : occupied) {
             var node = graph.nodes.get(id);
             if (node != null)
-                node.blossom = new BlossomNativeCamps.Blossom(BlossomType.SCOIN, 0);
+                node.blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
         }
         var startsInCity = starts.stream().map(graph.nodes::get)
                 .filter(java.util.Objects::nonNull).toList();
@@ -58,7 +58,7 @@ final class BlossomScriptedSpawnTest {
         assertEquals(List.of(2, 3), graph.nodes.get(1).nextCampIds);
         assertEquals(List.of(1), graph.nodes.get(2).nextCampIds);
 
-        graph.nodes.get(1).blossom = new BlossomNativeCamps.Blossom(BlossomType.SCOIN, 0);
+        graph.nodes.get(1).blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
         var available = graph.findAvailableCamp(
                 List.of(graph.nodes.get(1)), node -> true);
         assertEquals(2, available.campId);
@@ -272,7 +272,7 @@ final class BlossomScriptedSpawnTest {
         gadget.config_id = 374004;
         gadget.gadget_id = BlossomType.forRefresh("BLOSSOM_REFRESH_SCOIN").getGadgetId();
         var node = new BlossomNativeCamps.CampNode(101001001);
-        node.blossom = new BlossomNativeCamps.Blossom(BlossomType.SCOIN, 0);
+        node.blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
         var camp = new BlossomNativeCamps.ActiveCamp(node, 1, node.blossom, gadget);
         assertEquals(101001001, camp.campId());
         assertEquals(1, camp.refreshId());
@@ -283,7 +283,7 @@ final class BlossomScriptedSpawnTest {
     @Test
     void originalMonsterProgressFinishesOnlyOnce() {
         var node = new BlossomNativeCamps.CampNode(1);
-        node.blossom = new BlossomNativeCamps.Blossom(BlossomType.SCOIN, 0);
+        node.blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
         var activity = new BlossomActivity(null, new BlossomNativeCamps.ActiveCamp(node, 1, node.blossom, null));
         activity.beginNative(2);
         assertFalse(activity.addNativeProgress());
@@ -551,7 +551,7 @@ final class BlossomScriptedSpawnTest {
         assertTrue(nativeReward.is_blossom_chest);
         assertFalse(unrelated.is_blossom_chest);
         var node = new BlossomNativeCamps.CampNode(1);
-        node.blossom = new BlossomNativeCamps.Blossom(BlossomType.SCOIN, 0);
+        node.blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
         var activity = new BlossomActivity(null,
                 new BlossomNativeCamps.ActiveCamp(node, 1, node.blossom, null));
         activity.beginNative(0);

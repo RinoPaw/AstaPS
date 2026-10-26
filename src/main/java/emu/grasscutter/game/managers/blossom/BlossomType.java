@@ -4,8 +4,8 @@ import java.util.List;
 
 /** Native ley-line kinds. Country availability and counts remain in native Excel. */
 public enum BlossomType {
-    SCOIN("BLOSSOM_REFRESH_SCOIN", 1, 70360056, 70210109, "wealth"),
-    EXP("BLOSSOM_REFRESH_EXP", 3, 70360057, 70210110, "revelation");
+    WEALTH("BLOSSOM_REFRESH_SCOIN", 1, 70360056, 70210109, "wealth"),
+    REVELATION("BLOSSOM_REFRESH_EXP", 3, 70360057, 70210110, "revelation");
 
     private final String refreshType;
     private final int refreshTypeId;

@@ -23,9 +23,9 @@ public class BlossomManager {
     private final Scene scene;
     private final BlossomNativeCamps nativeCamps = new BlossomNativeCamps();
     private final List<BlossomActivity> blossomActivities = new ArrayList<>();
-    private final Map<EntityGadget, BlossomNativeCamps.Source> createdEntity = new IdentityHashMap<>();
-    private final Set<BlossomNativeCamps.Source> scriptedLoadedCamps = new HashSet<>();
-    private List<BlossomNativeCamps.Source> activeCampCache;
+    private final Map<EntityGadget, BlossomNativeCamps.SelectedCamp> createdEntity = new IdentityHashMap<>();
+    private final Set<BlossomNativeCamps.SelectedCamp> scriptedLoadedCamps = new HashSet<>();
+    private List<BlossomNativeCamps.SelectedCamp> activeCampCache;
     private int cachedAdventureRank = -1;
     private int cachedDailyReset = -1;
     private Set<Integer> cachedUnlockedAreas = Set.of();
@@ -56,7 +56,7 @@ public class BlossomManager {
      * Rebuild the earned reward from the original Lua marker after a process restart.
      * The source worktop is a private identity holder, never added to the scene.
      */
-    private void restoreClaimableReward(BlossomNativeCamps.Source spawn, emu.grasscutter.scripts.data.SceneGroup group) {
+    private void restoreClaimableReward(BlossomNativeCamps.SelectedCamp spawn, emu.grasscutter.scripts.data.SceneGroup group) {
         int refreshId = spawn.refreshId();
         if (!scene.getWorld().getHost().isBlossomRewardReady(refreshId, spawn.slot())) return;
         synchronized (blossomActivities) {
@@ -194,7 +194,7 @@ public class BlossomManager {
     }
 
     public boolean isNativeCampGroup(int groupId) {
-        return groupId != 0 && nativeCamps.ownsGroup(groupId);
+        return groupId != 0 && nativeCamps.containsGroup(groupId);
     }
 
     public boolean isAuthoredWorktop(int groupId, int gadgetId) {
@@ -203,7 +203,7 @@ public class BlossomManager {
 
     /** Other SceneGroups are never governed by the blossom camp selection. */
     public boolean isActiveAuthoredGroup(int groupId) {
-        return !nativeCamps.ownsGroup(groupId) || activeCamps().stream()
+        return !nativeCamps.containsGroup(groupId) || activeCamps().stream()
                 .anyMatch(spawn -> spawn.gadget().group.id == groupId);
     }
 
@@ -233,7 +233,7 @@ public class BlossomManager {
         }
     }
 
-    private List<BlossomNativeCamps.Source> activeCamps() {
+    private List<BlossomNativeCamps.SelectedCamp> activeCamps() {
         var host = scene.getWorld().getHost();
         int rank = host.getLevel();
         var unlocked = host.getUnlockedSceneAreas(scene.getId());
@@ -244,7 +244,7 @@ public class BlossomManager {
         }
 
         var old = activeCampCache;
-        var selected = nativeCamps.select(scene, rank, unlocked);
+        var selected = nativeCamps.selectCamps(scene, rank, unlocked);
 
         activeCampCache = selected;
         cachedAdventureRank = rank;
@@ -471,7 +471,7 @@ public class BlossomManager {
                 if (active.isClaimableChest(chest)) {
                     var source = active.source();
                     if (source != null) {
-                        if (!nativeCamps.advance(scene, source, scene.getWorld().getHost()
+                        if (!nativeCamps.advanceCamp(scene, source, scene.getWorld().getHost()
                                 .getUnlockedSceneAreas(scene.getId()))) {
                             scene.getWorld().getHost().setBlossomConsumed(source.refreshId(), source.slot());
                         }

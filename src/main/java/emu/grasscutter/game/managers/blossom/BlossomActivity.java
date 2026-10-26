@@ -8,7 +8,7 @@ import java.util.*;
 public final class BlossomActivity {
 
     private final EntityGadget gadget;
-    private final BlossomNativeCamps.Source source;
+    private final BlossomNativeCamps.SelectedCamp source;
     private int nativeMonsterGoal;
     private int nativeMonsterProgress;
     private boolean nativeProgressReported;
@@ -27,12 +27,12 @@ public final class BlossomActivity {
     // Retain their identities so the client also receives a final VISION_REMOVE.
     private final Map<Integer, GameEntity> encounterSummons = new LinkedHashMap<>();
 
-    public BlossomActivity(EntityGadget gadget, BlossomNativeCamps.Source source) {
+    public BlossomActivity(EntityGadget gadget, BlossomNativeCamps.SelectedCamp source) {
         this.gadget = gadget;
         this.source = source;
     }
 
-    BlossomNativeCamps.Source source() { return source; }
+    BlossomNativeCamps.SelectedCamp source() { return source; }
 
     /** Called immediately when Scene registers an entity, before its onCreate abilities run. */
     void onSceneEntityCreated(GameEntity entity) {

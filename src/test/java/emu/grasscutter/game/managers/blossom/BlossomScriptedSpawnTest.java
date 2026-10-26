@@ -38,11 +38,11 @@ final class BlossomScriptedSpawnTest {
         for (int city = 1; city <= 8; city++) {
             var occupied = occupiedByCity.computeIfAbsent(city, unused -> new HashSet<>());
             int start = city * 1000 + 1;
-            int gold = BlossomNativeCamps.firstAvailableCamp(
+            int gold = BlossomNativeCamps.findAvailableCamp(
                     List.of(start), graph, city, 1, occupied, unused -> true);
             assertEquals(start, gold);
             occupied.add(gold);
-            int blue = BlossomNativeCamps.firstAvailableCamp(
+            int blue = BlossomNativeCamps.findAvailableCamp(
                     List.of(start), graph, city, 3, occupied, unused -> true);
             assertEquals(start + 1, blue);
             occupied.add(blue);
@@ -51,7 +51,7 @@ final class BlossomScriptedSpawnTest {
         occupiedByCity.values().forEach(occupied -> assertEquals(2, occupied.size()));
 
         // Claiming the fourth country's gold flower must not move any other country's cursor.
-        int next = BlossomNativeCamps.firstAvailableCamp(
+        int next = BlossomNativeCamps.findAvailableCamp(
                 List.of(4002), graph, 4, 1, Set.of(4002), unused -> true);
         assertEquals(4003, next);
         assertEquals(Set.of(1001, 1002), occupiedByCity.get(1));
@@ -136,9 +136,9 @@ final class BlossomScriptedSpawnTest {
                 101, camp(101, 1, List.of(1, 3), 201),
                 201, camp(201, 2, List.of(1, 3), 102),
                 102, camp(102, 1, List.of(1, 3), 101));
-        assertEquals(0, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(0, BlossomNativeCamps.findAvailableCamp(
                 List.of(101), graph, 1, 1, Set.of(101), unused -> true));
-        assertEquals(201, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(201, BlossomNativeCamps.findAvailableCamp(
                 List.of(201), graph, 2, 1, Set.of(), unused -> true));
     }
 
@@ -149,11 +149,11 @@ final class BlossomScriptedSpawnTest {
                 102, camp(102, 1, List.of(1, 3), 101),
                 301, camp(301, 3, List.of(1, 3), 302),
                 302, camp(302, 3, List.of(1, 3), 301));
-        assertEquals(101, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(101, BlossomNativeCamps.findAvailableCamp(
                 List.of(101), graph, 1, 1, Set.of(), node -> node.getCityId() == 1));
-        assertEquals(102, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(102, BlossomNativeCamps.findAvailableCamp(
                 List.of(101), graph, 1, 3, Set.of(101), node -> node.getCityId() == 1));
-        assertEquals(0, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(0, BlossomNativeCamps.findAvailableCamp(
                 List.of(301), graph, 3, 1, Set.of(), node -> node.getCityId() == 1));
     }
 
@@ -163,18 +163,18 @@ final class BlossomScriptedSpawnTest {
         var b = camp(2, 1, List.of(1, 3), 3);
         var c = camp(3, 1, List.of(1, 3), 1);
         var graph = Map.of(1, a, 2, b, 3, c);
-        assertEquals(3, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(3, BlossomNativeCamps.findAvailableCamp(
                 List.of(2), graph, 1, 1, Set.of(2), node -> true));
-        assertEquals(3, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(3, BlossomNativeCamps.findAvailableCamp(
                 List.of(2), graph, 1, 3, Set.of(2), node -> true));
-        assertEquals(0, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(0, BlossomNativeCamps.findAvailableCamp(
                 List.of(2), graph, 1, 1, Set.of(1, 2, 3), node -> true));
     }
 
     @Test
     void singleFlowerMayReturnToItsOnlyAuthoredCamp() {
         var a = camp(1, 1, List.of(1), 1);
-        assertEquals(1, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(1, BlossomNativeCamps.findAvailableCamp(
                 List.of(1), Map.of(1, a), 1, 1, Set.of(), node -> true));
     }
 
@@ -185,9 +185,9 @@ final class BlossomScriptedSpawnTest {
         var c = camp(3, 1, List.of(1, 3), 1);
         var other = camp(4, 1, List.of(1, 3), 4);
         var graph = Map.of(1, a, 2, b, 3, c, 4, other);
-        assertEquals(3, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(3, BlossomNativeCamps.findAvailableCamp(
                 List.of(1), graph, 1, 1, Set.of(), node -> node.getId() == 3));
-        assertEquals(0, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(0, BlossomNativeCamps.findAvailableCamp(
                 List.of(1), graph, 1, 1, Set.of(), node -> node.getId() == 4));
     }
 
@@ -204,7 +204,7 @@ final class BlossomScriptedSpawnTest {
         var gadget = new emu.grasscutter.scripts.data.SceneGadget();
         gadget.config_id = 374004;
         gadget.gadget_id = BlossomType.forRefresh("BLOSSOM_REFRESH_SCOIN").getGadgetId();
-        var camp = new BlossomNativeCamps.Source(101001001, 1, 0, gadget);
+        var camp = new BlossomNativeCamps.SelectedCamp(101001001, 1, 0, gadget);
         assertEquals(101001001, camp.campId());
         assertEquals(1, camp.refreshId());
         assertSame(gadget, camp.gadget());
@@ -236,11 +236,11 @@ final class BlossomScriptedSpawnTest {
         assertEquals(101001002, mondstadtWealth.getNextCampIdVec().get(0));
         assertEquals(133002369, mondstadtRevelation.getNewGroupVec().get(0));
         assertEquals(101002004, mondstadtRevelation.getNextCampIdVec().get(0));
-        assertEquals(101001001, BlossomNativeCamps.initialId(
+        assertEquals(101001001, BlossomNativeCamps.firstCampId(
                 List.of(mondstadtWealth, mondstadtRevelation)));
-        assertEquals(101002003, BlossomNativeCamps.initialId(
+        assertEquals(101002003, BlossomNativeCamps.firstCampId(
                 List.of(mondstadtRevelation, mondstadtWealth)));
-        assertEquals(0, BlossomNativeCamps.initialId(List.of()));
+        assertEquals(0, BlossomNativeCamps.firstCampId(List.of()));
     }
 
     @Test
@@ -263,10 +263,10 @@ final class BlossomScriptedSpawnTest {
                 103, camp(103, 21, List.of(17), 101));
         var areaByCamp = Map.of(101, 4, 102, 5, 103, 6);
         var unlocked = Set.of(5, 6);
-        assertEquals(102, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(102, BlossomNativeCamps.findAvailableCamp(
                 List.of(101), graph, 21, 17, Set.of(),
                 candidate -> unlocked.contains(areaByCamp.get(candidate.getId()))));
-        assertEquals(103, BlossomNativeCamps.firstAvailableCamp(
+        assertEquals(103, BlossomNativeCamps.findAvailableCamp(
                 List.of(101), graph, 21, 17, Set.of(102),
                 candidate -> unlocked.contains(areaByCamp.get(candidate.getId()))));
     }

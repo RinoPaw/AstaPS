@@ -5,7 +5,10 @@ import emu.grasscutter.database.RewardGrantJournal;
 import emu.grasscutter.game.reward.RewardClaimFlow;
 import emu.grasscutter.config.Configuration;
 import emu.grasscutter.data.*;
+import emu.grasscutter.data.excels.BlossomCampData;
 import emu.grasscutter.data.excels.BlossomRefreshExcelConfigData;
+import emu.grasscutter.scripts.data.SceneGadget;
+import emu.grasscutter.scripts.data.SceneGroup;
 import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.reward.RewardConfiguration;
@@ -21,7 +24,9 @@ import java.util.*;
 
 public class BlossomManager {
     private final Scene scene;
-    private final BlossomNativeCamps nativeCamps = new BlossomNativeCamps();
+    private final BlossomNativeCamps nativeCamps = new BlossomNativeCamps(this);
+    private record CampGadgetKey(int campId, int nativeType) {}
+    private final Map<CampGadgetKey, SceneGadget> worktopCache = new HashMap<>();
     private final List<BlossomActivity> blossomActivities = new ArrayList<>();
     private final Map<EntityGadget, BlossomNativeCamps.SelectedCamp> createdEntity = new IdentityHashMap<>();
     private final Set<BlossomNativeCamps.SelectedCamp> scriptedLoadedCamps = new HashSet<>();
@@ -32,6 +37,38 @@ public class BlossomManager {
     private int activeSetRevision;
     private boolean mapMarkersDirty;
     private static final double SCRIPTED_SPAWN_RANGE = 400;
+
+    /** Resolve a chosen camp through its original Lua worktop. */
+    BlossomNativeCamps.SelectedCamp resolveCampSelection(
+            int campId, BlossomType kind, int refreshId, int slot,
+            Collection<Integer> unlockedAreas) {
+        var data = GameData.getBlossomCampDataMap().get(campId);
+        if (data == null || data.getRefreshTypeVec() == null
+                || !data.getRefreshTypeVec().contains(kind.refreshTypeId())) return null;
+        var gadget = findWorktop(data, kind);
+        if (gadget == null || gadget.area_id <= 0
+                || !unlockedAreas.contains(gadget.area_id)) return null;
+        return new BlossomNativeCamps.SelectedCamp(campId, refreshId, slot, gadget);
+    }
+
+    /** Lua owns worktop placement; entity creation follows the original script. */
+    private SceneGadget findWorktop(BlossomCampData camp, BlossomType kind) {
+        var key = new CampGadgetKey(camp.getId(), kind.refreshTypeId());
+        var cached = worktopCache.get(key);
+        if (cached != null) return cached;
+        for (int groupId : camp.getNewGroupVec()) {
+            SceneGroup group = SceneGroup.of(groupId).load(scene.getId());
+            if (group == null || group.gadgets == null) continue;
+            var gadget = group.gadgets.values().stream()
+                    .filter(item -> item.gadget_id == kind.getGadgetId())
+                    .min(Comparator.comparingInt(item -> item.config_id)).orElse(null);
+            if (gadget != null) {
+                worktopCache.put(key, gadget);
+                return gadget;
+            }
+        }
+        return null;
+    }
 
     /** Spawn only the camps chosen by BlossomGroups and backed by a real Lua gadget. */
     public void ensureScriptedSpawns() {

@@ -36,9 +36,14 @@ final class BlossomScriptedSpawnTest {
         }
         var startsInCity = starts.stream().map(graph.nodes::get)
                 .filter(java.util.Objects::nonNull).toList();
-        var result = graph.findAvailableCamp(startsInCity, nativeType,
-                node -> usable.test(node.data));
-        return result == null ? 0 : result.data.getId();
+        var result = graph.findAvailableCamp(startsInCity, node -> {
+            var data = camps.get(node.id);
+            return data.getRefreshTypeVec() != null
+                    && data.getRefreshTypeVec().contains(nativeType)
+                    && data.getNewGroupVec() != null && !data.getNewGroupVec().isEmpty()
+                    && usable.test(data);
+        });
+        return result == null ? 0 : result.id;
     }
 
     @Test
@@ -51,13 +56,13 @@ final class BlossomScriptedSpawnTest {
         var graph = new BlossomNativeCamps.CityGraph(1, rows);
         assertEquals(3, graph.nodes.size());
         assertEquals(List.of(2, 3), graph.nodes.get(1).successors.stream()
-                .map(node -> node.data.getId()).toList());
+                .map(node -> node.id).toList());
         assertSame(graph.nodes.get(1), graph.nodes.get(2).successors.get(0));
 
         graph.nodes.get(1).blossom = new BlossomNativeCamps.SelectedCamp(1, 1, 0, null);
         var available = graph.findAvailableCamp(
-                List.of(graph.nodes.get(1)), 1, node -> true);
-        assertEquals(2, available.data.getId());
+                List.of(graph.nodes.get(1)), node -> true);
+        assertEquals(2, available.id);
     }
 
     @Test
@@ -107,9 +112,9 @@ final class BlossomScriptedSpawnTest {
                 sectionCamp(303001000, 3001, List.of(4)));
         var graph = new BlossomNativeCamps.CityGraph(3, camps);
         assertEquals(List.of(303001001, 303002001), graph.sectionHeads(1).stream()
-                .map(node -> node.data.getId()).toList());
+                .map(node -> node.id).toList());
         assertEquals(List.of(303001001, 303002001, 303003001),
-                graph.sectionHeads(3).stream().map(node -> node.data.getId()).toList());
+                graph.sectionHeads(3).stream().map(node -> node.id).toList());
         assertTrue(new BlossomNativeCamps.CityGraph(3, List.of()).sectionHeads(1).isEmpty());
     }
 

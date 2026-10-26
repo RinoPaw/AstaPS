@@ -6,7 +6,6 @@ import emu.grasscutter.data.excels.BlossomCampData;
 import emu.grasscutter.data.excels.BlossomRefreshExcelConfigData;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.scripts.data.SceneGadget;
-import emu.grasscutter.scripts.data.SceneGroup;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -17,10 +16,6 @@ import java.util.function.Predicate;
  */
 final class BlossomNativeCamps {
     record SelectedCamp(int campId, int refreshId, int slot, SceneGadget gadget) {}
-    private record CampGadgetKey(int campId, int nativeType) {}
-
-    // A numeric tuple prevents ambiguity and never embeds a refresh slot in the Lua cache.
-    private final Map<CampGadgetKey, SceneGadget> worktopCache = new HashMap<>();
     private volatile Set<Integer> blossomGroupIds;
 
     /**
@@ -28,94 +23,86 @@ final class BlossomNativeCamps {
      * references to nodes, and occupancy belongs to this scene's graph.
      */
     static final class CampNode {
-        final BlossomCampData data;
+        final int id;
         final List<CampNode> successors = new ArrayList<>();
         SelectedCamp blossom;
 
-        CampNode(BlossomCampData data) {
-            this.data = data;
-        }
-
-        boolean supports(int nativeType) {
-            return data.getRefreshTypeVec() != null
-                    && data.getRefreshTypeVec().contains(nativeType)
-                    && data.getNewGroupVec() != null
-                    && !data.getNewGroupVec().isEmpty();
+        CampNode(int id) {
+            this.id = id;
         }
     }
 
     static final class CityGraph {
         final Map<Integer, CampNode> nodes = new HashMap<>();
+        private final Map<Integer, List<CampNode>> headsByType = new HashMap<>();
 
         CityGraph(int cityId, Collection<BlossomCampData> authored) {
-            for (var data : authored)
-                if (data.getCityId() == cityId)
-                    nodes.put(data.getId(), new CampNode(data));
-            for (var node : nodes.values()) {
-                if (node.data.getNextCampIdVec() == null) continue;
-                for (int nextId : node.data.getNextCampIdVec()) {
-                    var successor = nodes.get(nextId);
-                    if (successor != null) node.successors.add(successor);
-                }
+            var cityCamps = new ArrayList<BlossomCampData>();
+            for (var data : authored) {
+                if (data.getCityId() != cityId) continue;
+                cityCamps.add(data);
+                nodes.put(data.getId(), new CampNode(data.getId()));
             }
+
+            var firstByTypeAndSection = new HashMap<Integer, TreeMap<Integer, CampNode>>();
+            for (var data : cityCamps) {
+                var node = nodes.get(data.getId());
+                if (data.getNextCampIdVec() != null)
+                    for (int nextId : data.getNextCampIdVec()) {
+                        var next = nodes.get(nextId);
+                        if (next != null) node.successors.add(next);
+                    }
+                if (data.getRefreshTypeVec() == null || data.getNewGroupVec() == null
+                        || data.getNewGroupVec().isEmpty()) continue;
+                for (int type : data.getRefreshTypeVec())
+                    firstByTypeAndSection
+                            .computeIfAbsent(type, ignored -> new TreeMap<>())
+                            .merge(data.getSectionId(), node, (a, b) -> a.id < b.id ? a : b);
+            }
+
+            firstByTypeAndSection.forEach((type, sections) ->
+                    headsByType.put(type, new ArrayList<>(sections.values())));
         }
 
         void clearOccupancy() {
             nodes.values().forEach(node -> node.blossom = null);
         }
 
-        /** The lowest camp ID of each section is its tentative start. */
         List<CampNode> sectionHeads(int nativeType) {
-            var heads = new TreeMap<Integer, CampNode>();
-            for (var node : nodes.values()) {
-                if (!node.supports(nativeType)) continue;
-                heads.merge(node.data.getSectionId(), node,
-                        (a, b) -> a.data.getId() < b.data.getId() ? a : b);
-            }
-            return new ArrayList<>(heads.values());
+            return new ArrayList<>(headsByType.getOrDefault(nativeType, List.of()));
         }
 
-        /** Traverse original directed edges, including branches and cycles. */
-        CampNode findAvailableCamp(
-                Collection<CampNode> starts, int nativeType, Predicate<CampNode> usable) {
+        CampNode findAvailableCamp(Collection<CampNode> starts, Predicate<CampNode> usable) {
             var queue = new ArrayDeque<>(starts);
             var visited = new HashSet<Integer>();
             while (!queue.isEmpty()) {
                 var node = queue.removeFirst();
-                if (!visited.add(node.data.getId())) continue;
+                if (!visited.add(node.id)) continue;
                 queue.addAll(node.successors);
-                if (node.blossom == null && node.supports(nativeType) && usable.test(node))
-                    return node;
+                if (node.blossom == null && usable.test(node)) return node;
             }
             return null;
         }
     }
 
+    private final BlossomManager manager;
     private final Map<Integer, CityGraph> graphs = new HashMap<>();
+
+    BlossomNativeCamps(BlossomManager manager) {
+        this.manager = manager;
+    }
 
     private CityGraph graphFor(int cityId) {
         return graphs.computeIfAbsent(cityId, city ->
                 new CityGraph(city, GameData.getBlossomCampDataMap().values()));
     }
 
-    private SelectedCamp resolveCampSelection(
-            Scene scene, BlossomCampData camp, BlossomType kind, int refreshId, int slot,
-            Collection<Integer> unlockedAreas) {
-        if (camp.getRefreshTypeVec() == null
-                || !camp.getRefreshTypeVec().contains(kind.refreshTypeId())) return null;
-        var gadget = findWorktop(scene, camp, kind);
-        // An unlocked region authorizes its camp; there is no city-wide shortcut.
-        if (gadget == null || gadget.area_id <= 0
-                || !unlockedAreas.contains(gadget.area_id)) return null;
-        return new SelectedCamp(camp.getId(), refreshId, slot, gadget);
-    }
-
     private SelectedCamp availableSelection(
             Scene scene, CityGraph graph, CampNode node, BlossomType kind,
             int refreshId, int slot, Collection<Integer> unlockedAreas) {
         if (node == null || node.blossom != null) return null;
-        var selected = resolveCampSelection(
-                scene, node.data, kind, refreshId, slot, unlockedAreas);
+        var selected = manager.resolveCampSelection(
+                node.id, kind, refreshId, slot, unlockedAreas);
         if (selected == null) return null;
         for (var other : graph.nodes.values()) {
             if (other.blossom != null
@@ -128,7 +115,7 @@ final class BlossomNativeCamps {
     private SelectedCamp findCamp(
             Scene scene, CityGraph graph, Collection<CampNode> starts, BlossomType kind,
             int refreshId, int slot, Collection<Integer> unlockedAreas) {
-        var found = graph.findAvailableCamp(starts, kind.refreshTypeId(),
+        var found = graph.findAvailableCamp(starts,
                 node -> availableSelection(scene, graph, node, kind,
                         refreshId, slot, unlockedAreas) != null);
         return found == null ? null : availableSelection(
@@ -216,25 +203,6 @@ final class BlossomNativeCamps {
         selected.sort(Comparator.comparingInt(SelectedCamp::refreshId)
                 .thenComparingInt(SelectedCamp::slot));
         return selected;
-    }
-
-    /** Lua is the encounter authority; only the selected, authored worktop is needed here. */
-    private SceneGadget findWorktop(Scene scene, BlossomCampData camp, BlossomType kind) {
-        var key = new CampGadgetKey(camp.getId(), kind.refreshTypeId());
-        var cached = worktopCache.get(key);
-        if (cached != null) return cached;
-        for (int groupId : camp.getNewGroupVec()) {
-            SceneGroup group = SceneGroup.of(groupId).load(scene.getId());
-            if (group == null || group.gadgets == null) continue;
-            var gadget = group.gadgets.values().stream()
-                    .filter(item -> item.gadget_id == kind.getGadgetId())
-                    .min(Comparator.comparingInt(item -> item.config_id)).orElse(null);
-            if (gadget != null) {
-                worktopCache.put(key, gadget);
-                return gadget;
-            }
-        }
-        return null;
     }
 
     boolean containsGroup(int groupId) {

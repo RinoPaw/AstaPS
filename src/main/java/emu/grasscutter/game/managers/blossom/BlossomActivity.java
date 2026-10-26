@@ -57,7 +57,7 @@ public final class BlossomActivity {
         }
         blossom().state = BlossomNativeCamps.Blossom.State.CLAIMABLE;
     }
-    /** Phase is the only owner of runtime state; Lua stage is its projection. */
+    /** Blossom owns runtime state; Lua stage is its projection. */
     int scheduleState() { return state() == BlossomNativeCamps.Blossom.State.FIGHTING ? 2 : 3; }
 
     /** Use the native Lua group monster definitions as its scripted progress target. */

@@ -273,7 +273,7 @@ final class BlossomScriptedSpawnTest {
         gadget.gadget_id = BlossomType.forRefresh("BLOSSOM_REFRESH_SCOIN").getGadgetId();
         var node = new BlossomNativeCamps.CampNode(101001001);
         node.blossom = new BlossomNativeCamps.Blossom(BlossomType.SCOIN, 0);
-        var camp = new BlossomNativeCamps.ActiveCamp(node, 1, gadget);
+        var camp = new BlossomNativeCamps.ActiveCamp(node, 1, node.blossom, gadget);
         assertEquals(101001001, camp.campId());
         assertEquals(1, camp.refreshId());
         assertSame(gadget, camp.gadget());
@@ -284,7 +284,7 @@ final class BlossomScriptedSpawnTest {
     void originalMonsterProgressFinishesOnlyOnce() {
         var node = new BlossomNativeCamps.CampNode(1);
         node.blossom = new BlossomNativeCamps.Blossom(BlossomType.SCOIN, 0);
-        var activity = new BlossomActivity(null, new BlossomNativeCamps.ActiveCamp(node, 1, null));
+        var activity = new BlossomActivity(null, new BlossomNativeCamps.ActiveCamp(node, 1, node.blossom, null));
         activity.beginNative(2);
         assertFalse(activity.addNativeProgress());
         assertTrue(activity.addNativeProgress());
@@ -550,7 +550,11 @@ final class BlossomScriptedSpawnTest {
                 emu.grasscutter.scripts.data.SceneGadget.class);
         assertTrue(nativeReward.is_blossom_chest);
         assertFalse(unrelated.is_blossom_chest);
-        var activity = new BlossomActivity(null, null);
+        var node = new BlossomNativeCamps.CampNode(1);
+        node.blossom = new BlossomNativeCamps.Blossom(BlossomType.SCOIN, 0);
+        var activity = new BlossomActivity(null,
+                new BlossomNativeCamps.ActiveCamp(node, 1, node.blossom, null));
+        activity.beginNative(0);
         assertEquals(2, activity.scheduleState());
         assertFalse(activity.completeFromLua(unrelated));
         assertTrue(activity.completeFromLua(nativeReward));

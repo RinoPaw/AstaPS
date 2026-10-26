@@ -21,6 +21,7 @@ final class BlossomNativeCamps {
 
     // A numeric tuple prevents ambiguity and never embeds a refresh slot in the Lua cache.
     private final Map<CampKind, SceneGadget> resolved = new HashMap<>();
+    private volatile Set<Integer> ownedGroupIds;
 
     static int initialId(List<BlossomCampData> eligible) {
         return eligible.isEmpty() ? 0 : eligible.get(0).getId();
@@ -140,13 +141,20 @@ final class BlossomNativeCamps {
     }
 
     boolean ownsGroup(int groupId) {
-        var supported = BlossomType.all().stream()
-                .map(BlossomType::refreshTypeId).collect(java.util.stream.Collectors.toSet());
-        return GameData.getBlossomCampDataMap().values().stream()
-                .filter(camp -> camp.getRefreshTypeVec() != null
-                        && camp.getRefreshTypeVec().stream().anyMatch(supported::contains))
-                .anyMatch(camp -> camp.getNewGroupVec() != null
-                        && camp.getNewGroupVec().contains(groupId));
+        var indexed = ownedGroupIds;
+        if (indexed == null) {
+            var supported = BlossomType.all().stream()
+                    .map(BlossomType::refreshTypeId).collect(java.util.stream.Collectors.toSet());
+            indexed = GameData.getBlossomCampDataMap().values().stream()
+                    .filter(camp -> camp.getRefreshTypeVec() != null
+                            && camp.getRefreshTypeVec().stream().anyMatch(supported::contains))
+                    .filter(camp -> camp.getNewGroupVec() != null)
+                    .flatMap(camp -> camp.getNewGroupVec().stream())
+                    .collect(java.util.stream.Collectors.toUnmodifiableSet());
+            // GameData is populated before live world scenes are created.
+            ownedGroupIds = indexed;
+        }
+        return indexed.contains(groupId);
     }
 
     /** Each occupied slot is an independent saved run, even within one refresh ID. */

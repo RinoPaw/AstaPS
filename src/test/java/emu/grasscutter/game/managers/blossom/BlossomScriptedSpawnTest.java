@@ -92,6 +92,20 @@ final class BlossomScriptedSpawnTest {
     }
 
     @Test
+    void adventureRankRangeCanRetireAFlowerKind() {
+        var refresh = JsonUtils.decode(
+                "{\"id\":44,\"cityId\":7,\"refreshType\":\"BLOSSOM_REFRESH_CRYSTAL\","
+                        + "\"refreshCondVec\":["
+                        + "{\"type\":\"BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER\",\"param\":[2]},"
+                        + "{\"type\":\"BLOSSOM_REFRESH_COND_PLAYER_LEVEL_LESS_THAN\",\"param\":[30]}]}",
+                emu.grasscutter.data.excels.BlossomRefreshExcelConfigData.class);
+        assertFalse(BlossomManager.refreshEligible(refresh, 1));
+        assertTrue(BlossomManager.refreshEligible(refresh, 2));
+        assertTrue(BlossomManager.refreshEligible(refresh, 29));
+        assertFalse(BlossomManager.refreshEligible(refresh, 30));
+    }
+
+    @Test
     void importedMondstadtRefreshRanksAndEmptyConditionsFailClosed() {
         // Imported AstaPS-Resource 7.1 refresh rows: EXP=AR8; SCOIN=AR12.
         // Native tables pad refreshCondVec with empty objects, which are not rules.

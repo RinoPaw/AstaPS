@@ -280,6 +280,9 @@ public class BlossomManager {
                 case "BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER" -> {
                     if (adventureRank < params.get(0)) return false;
                 }
+                case "BLOSSOM_REFRESH_COND_PLAYER_LEVEL_LESS_THAN" -> {
+                    if (adventureRank >= params.get(0)) return false;
+                }
                 // Local camp eligibility is checked against its Lua Gadget area_id.
                 case "BLOSSOM_REFRESH_COND_UNLOCK_ANY_AREA_IN_CITY" -> {}
                 default -> { return false; }

@@ -101,8 +101,10 @@ final class BlossomNativeCamps {
     /** Area unlocking is required only when creating a new initial flower. */
     private ActiveCamp availableSelection(
             CityGraph graph, CampNode node, BlossomType kind, int refreshId, int slot,
-            Collection<Integer> unlockedAreas, boolean initial) {
+            int adventureRank, Collection<Integer> unlockedAreas, boolean initial) {
         if (node == null || node.blossom != null) return null;
+        var camp = GameData.getBlossomCampDataMap().get(node.campId);
+        if (camp == null || adventureRank < camp.getLimitLevel()) return null;
         var gadget = manager.resolveCampGadget(node.campId, kind, unlockedAreas, initial);
         if (gadget == null) return null;
         for (var other : graph.nodes.values()) {
@@ -118,12 +120,13 @@ final class BlossomNativeCamps {
 
     private ActiveCamp findCamp(
             CityGraph graph, Collection<CampNode> starts, BlossomType kind,
-            int refreshId, int slot, Collection<Integer> unlockedAreas, boolean initial) {
+            int refreshId, int slot, int adventureRank,
+            Collection<Integer> unlockedAreas, boolean initial) {
         var found = graph.findAvailableCamp(starts,
                 node -> availableSelection(graph, node, kind,
-                        refreshId, slot, unlockedAreas, initial) != null);
+                        refreshId, slot, adventureRank, unlockedAreas, initial) != null);
         return found == null ? null : availableSelection(
-                graph, found, kind, refreshId, slot, unlockedAreas, initial);
+                graph, found, kind, refreshId, slot, adventureRank, unlockedAreas, initial);
     }
 
     private static void occupy(ActiveCamp chosen) {
@@ -146,7 +149,7 @@ final class BlossomNativeCamps {
                 continue;
             while (!starts.isEmpty()) {
                 var chosen = availableSelection(graph, starts.remove(starts.size() - 1),
-                        kind, refresh.getId(), slot, unlockedAreas, true);
+                        kind, refresh.getId(), slot, host.getLevel(), unlockedAreas, true);
                 if (chosen == null) continue;
                 occupy(chosen);
                 selected.add(chosen);
@@ -236,7 +239,7 @@ final class BlossomNativeCamps {
         current.blossom = null;
         var successors = current.nextCampIds.stream().map(graph.nodes::get).toList();
         var chosen = findCamp(graph, successors, blossom.type, source.refreshId(),
-                blossom.slot, unlockedAreas, false);
+                blossom.slot, scene.getWorld().getHost().getLevel(), unlockedAreas, false);
         if (chosen == null) {
             blossom.state = Blossom.State.CONSUMED;
             Grasscutter.getLogger().warn(

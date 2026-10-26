@@ -139,6 +139,34 @@ final class BlossomNativeCamps {
         graph.nodes.get(selected.campId()).blossom = selected;
     }
 
+    /** Choose up to count different section heads after saved camps are reserved. */
+    private void selectInitialCamps(
+            Scene scene, CityGraph graph, BlossomRefreshExcelConfigData refresh,
+            BlossomType kind, Collection<Integer> unlockedAreas,
+            List<SelectedCamp> selected) {
+        var host = scene.getWorld().getHost();
+        var heads = graph.sectionHeads(kind.refreshTypeId());
+        Collections.shuffle(heads);
+        for (int slot = 0; slot < refresh.getRefreshCount(); slot++) {
+            if (host.isBlossomConsumed(refresh.getId(), slot)) continue;
+            final int currentSlot = slot;
+            if (selected.stream().anyMatch(chosen ->
+                    chosen.refreshId() == refresh.getId() && chosen.slot() == currentSlot))
+                continue;
+
+            while (!heads.isEmpty()) {
+                var node = heads.remove(heads.size() - 1);
+                var initial = availableSelection(scene, graph, node, kind,
+                        refresh.getId(), slot, unlockedAreas);
+                if (initial == null) continue;
+                occupy(graph, initial);
+                selected.add(initial);
+                host.setBlossomCampId(refresh.getId(), slot, initial.campId());
+                break;
+            }
+        }
+    }
+
     /**
      * Reserve persisted camps before assigning new ones, so a random start
      * cannot displace a pending reward. Missing runs select different
@@ -181,31 +209,9 @@ final class BlossomNativeCamps {
             }
         }
 
-        for (var refresh : refreshes) {
-            var graph = graphFor(refresh.getCityId());
-            var kind = BlossomType.forRefresh(refresh.getRefreshType());
-            var heads = graph.sectionHeads(kind.refreshTypeId());
-            Collections.shuffle(heads);
-            for (int slot = 0; slot < refresh.getRefreshCount(); slot++) {
-                if (host.isBlossomConsumed(refresh.getId(), slot)) continue;
-                final int currentSlot = slot;
-                if (selected.stream().anyMatch(chosen ->
-                        chosen.refreshId() == refresh.getId() && chosen.slot() == currentSlot))
-                    continue;
-
-                SelectedCamp initial = null;
-                while (!heads.isEmpty()) {
-                    var node = heads.remove(heads.size() - 1);
-                    initial = availableSelection(scene, graph, node, kind,
-                            refresh.getId(), slot, unlockedAreas);
-                    if (initial != null) break;
-                }
-                if (initial == null) continue;
-                occupy(graph, initial);
-                selected.add(initial);
-                host.setBlossomCampId(refresh.getId(), slot, initial.campId());
-            }
-        }
+        for (var refresh : refreshes)
+            selectInitialCamps(scene, graphFor(refresh.getCityId()), refresh,
+                    BlossomType.forRefresh(refresh.getRefreshType()), unlockedAreas, selected);
 
         selected.sort(Comparator.comparingInt(SelectedCamp::refreshId)
                 .thenComparingInt(SelectedCamp::slot));
@@ -259,9 +265,12 @@ final class BlossomNativeCamps {
         var current = graph.nodes.get(source.campId());
         if (current == null || current.successors.isEmpty()) return false;
 
+        // Authored cycles may lead back to the just-claimed camp.
+        current.blossom = null;
         var next = findCamp(scene, graph, current.successors, kind,
                 source.refreshId(), source.slot(), unlockedAreas);
         if (next == null) {
+            current.blossom = source;
             Grasscutter.getLogger().warn(
                     "No unlocked ley-line successor city={} kind={} camp={} slot={}",
                     camp.getCityId(), kind.refreshType(), source.campId(), source.slot());
@@ -270,7 +279,6 @@ final class BlossomNativeCamps {
 
         scene.getWorld().getHost().advanceBlossomCampId(
                 source.refreshId(), source.slot(), next.campId());
-        current.blossom = null;
         occupy(graph, next);
         Grasscutter.getLogger().info(
                 "Ley-line camp advanced city={} kind={} slot={} {} -> {}",

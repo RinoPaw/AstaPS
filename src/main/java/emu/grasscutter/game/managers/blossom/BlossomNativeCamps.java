@@ -60,6 +60,26 @@ final class BlossomNativeCamps {
         return new SelectedCamp(camp.getId(), refreshId, slot, gadget);
     }
 
+    /**
+     * Both initial placement and rotation use the same area, camp ownership
+     * and worktop-distance rules. The worktop lookup is cached for the
+     * selected camp.
+     */
+    private SelectedCamp findCamp(
+            Scene scene, Collection<Integer> starts, int cityId, BlossomType kind,
+            int refreshId, int slot, Collection<Integer> unlockedAreas,
+            Set<Integer> occupied, Collection<SceneGadget> otherWorktops) {
+        var camps = GameData.getBlossomCampDataMap();
+        int campId = findAvailableCamp(starts, camps, cityId, kind.refreshTypeId(), occupied, camp -> {
+            var selection = resolveCampSelection(
+                    scene, camp, kind, refreshId, slot, unlockedAreas);
+            return selection != null && otherWorktops.stream().noneMatch(other ->
+                    other.pos.computeDistance(selection.gadget().pos) < 2.5f);
+        });
+        return campId == 0 ? null : resolveCampSelection(
+                scene, camps.get(campId), kind, refreshId, slot, unlockedAreas);
+    }
+
     List<SelectedCamp> selectCamps(Scene scene, int rank, Collection<Integer> unlockedAreas) {
         var camps = GameData.getBlossomCampDataMap();
         if (camps.isEmpty()) return List.of();
@@ -79,7 +99,7 @@ final class BlossomNativeCamps {
         var host = scene.getWorld().getHost();
         var selected = new ArrayList<SelectedCamp>();
         var occupiedByCity = new HashMap<Integer, Set<Integer>>();
-        var selectedByCity = new HashMap<Integer, List<SelectedCamp>>();
+        var worktopsByCity = new HashMap<Integer, List<SceneGadget>>();
         for (var refresh : refreshes) {
             var kind = BlossomType.forRefresh(refresh.getRefreshType());
             if (kind == null || refresh.getRefreshCount() <= 0
@@ -93,29 +113,21 @@ final class BlossomNativeCamps {
             if (eligible.isEmpty()) continue;
 
             var occupied = occupiedByCity.computeIfAbsent(refresh.getCityId(), ignored -> new HashSet<>());
-            var local = selectedByCity.computeIfAbsent(refresh.getCityId(), ignored -> new ArrayList<>());
+            var local = worktopsByCity.computeIfAbsent(refresh.getCityId(), ignored -> new ArrayList<>());
             for (int slot = 0; slot < refresh.getRefreshCount(); slot++) {
                 if (host.isBlossomConsumed(refresh.getId(), slot)) continue;
                 int savedId = host.getBlossomCampId(refresh.getId(), slot);
                 var starts = new ArrayList<Integer>();
                 if (savedId > 0) starts.add(savedId);
                 for (var camp : eligible) starts.add(camp.getId());
-                final int currentSlot = slot;
-                int chosen = findAvailableCamp(
-                        starts, camps, refresh.getCityId(), kind.refreshTypeId(), occupied,
-                        candidate -> {
-                            var source = resolveCampSelection(
-                                    scene, candidate, kind, refresh.getId(), currentSlot, unlockedAreas);
-                            return source != null && local.stream().noneMatch(other ->
-                                    other.gadget().pos.computeDistance(source.gadget().pos) < 2.5f);
-                        });
-                if (chosen == 0) continue;
-                var source = resolveCampSelection(
-                        scene, camps.get(chosen), kind, refresh.getId(), slot, unlockedAreas);
-                selected.add(source);
-                local.add(source);
-                occupied.add(chosen);
-                if (savedId != chosen) host.setBlossomCampId(refresh.getId(), slot, chosen);
+                var chosen = findCamp(scene, starts, refresh.getCityId(), kind,
+                        refresh.getId(), slot, unlockedAreas, occupied, local);
+                if (chosen == null) continue;
+                selected.add(chosen);
+                local.add(chosen.gadget());
+                occupied.add(chosen.campId());
+                if (savedId != chosen.campId())
+                    host.setBlossomCampId(refresh.getId(), slot, chosen.campId());
             }
         }
         return selected;
@@ -185,24 +197,18 @@ final class BlossomNativeCamps {
                 if (gadget != null) otherLocations.add(gadget);
             }
         }
-        int nextId = findAvailableCamp(
-                camp.getNextCampIdVec(), rows, camp.getCityId(), kind.refreshTypeId(), occupied,
-                candidate -> {
-                    var next = resolveCampSelection(scene, candidate, kind, source.refreshId(),
-                            source.slot(), unlockedAreas);
-                    return next != null && otherLocations.stream().noneMatch(other ->
-                            other.pos.computeDistance(next.gadget().pos) < 2.5f);
-                });
-        if (nextId == 0) {
+        var next = findCamp(scene, camp.getNextCampIdVec(), camp.getCityId(), kind,
+                source.refreshId(), source.slot(), unlockedAreas, occupied, otherLocations);
+        if (next == null) {
             Grasscutter.getLogger().warn(
                     "No unlocked ley-line successor city={} kind={} camp={} slot={}",
                     camp.getCityId(), kind.refreshType(), source.campId(), source.slot());
             return false;
         }
-        host.advanceBlossomCampId(source.refreshId(), source.slot(), nextId);
+        host.advanceBlossomCampId(source.refreshId(), source.slot(), next.campId());
         Grasscutter.getLogger().info(
                 "Ley-line camp advanced city={} kind={} slot={} {} -> {}",
-                camp.getCityId(), kind.refreshType(), source.slot(), source.campId(), nextId);
+                camp.getCityId(), kind.refreshType(), source.slot(), source.campId(), next.campId());
         return true;
     }
 }

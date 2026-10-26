@@ -11,12 +11,31 @@ import java.util.function.Predicate;
 /** Directed city camp graphs and their active blossoms. */
 final class BlossomNativeCamps {
     static final class Blossom {
-        enum State { IDLE, FIGHTING, REWARD_READY, CLAIMABLE, CONSUMED }
+        enum State { IDLE, FIGHTING, REWARD }
 
         final BlossomType type;
         final int slot;
         final int refreshId;
-        State state = State.IDLE;
+        private State state = State.IDLE;
+
+        State state() { return state; }
+
+        void begin() {
+            if (state != State.IDLE) throw new IllegalStateException("Blossom is not idle");
+            state = State.FIGHTING;
+        }
+
+        void reward() {
+            if (state != State.FIGHTING) throw new IllegalStateException("Blossom is not fighting");
+            state = State.REWARD;
+        }
+
+        void restoreReward() {
+            if (state != State.IDLE) throw new IllegalStateException("Blossom is not idle");
+            state = State.REWARD;
+        }
+
+        void reset() { state = State.IDLE; }
 
         Blossom(BlossomType type, int slot, int refreshId) {
             this.type = type;
@@ -179,7 +198,7 @@ final class BlossomNativeCamps {
                 if (node.blossom == null) {
                     node.blossom = new Blossom(kind, slot, refresh.getId());
                     if (host.isBlossomRewardReady(refresh.getId(), slot))
-                        node.blossom.state = Blossom.State.REWARD_READY;
+                        node.blossom.restoreReward();
                 }
                 if (node.blossom.type != kind || node.blossom.slot != slot
                         || node.blossom.refreshId != refresh.getId()) continue;
@@ -220,7 +239,6 @@ final class BlossomNativeCamps {
         var current = graph.nodes.get(source.campId);
         if (current == null || current.blossom == null || current.nextCampIds.isEmpty()) {
             if (current != null) {
-                if (current.blossom != null) current.blossom.state = Blossom.State.CONSUMED;
                 current.blossom = null;
             }
             return false;
@@ -232,14 +250,13 @@ final class BlossomNativeCamps {
         var chosen = findCamp(graph, successors, blossom.type, blossom.refreshId,
                 blossom.slot, scene.getWorld().getHost().getLevel(), unlockedAreas, false);
         if (chosen == null) {
-            blossom.state = Blossom.State.CONSUMED;
             Grasscutter.getLogger().warn(
                     "No valid ley-line successor city={} kind={} camp={} slot={}",
                     camp.getCityId(), blossom.type, source.campId, blossom.slot);
             return false;
         }
 
-        blossom.state = Blossom.State.IDLE;
+        blossom.reset();
         chosen.blossom = blossom;
         scene.getWorld().getHost().advanceBlossomCampId(
                 blossom.refreshId, blossom.slot, chosen.campId);

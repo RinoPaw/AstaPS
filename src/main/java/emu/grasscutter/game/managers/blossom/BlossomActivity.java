@@ -9,6 +9,7 @@ public final class BlossomActivity {
 
     private final EntityGadget gadget;
     private final BlossomNativeCamps.CampNode source;
+    private final BlossomNativeCamps.Blossom blossom;
     private int nativeMonsterGoal;
     private int nativeMonsterProgress;
     private boolean nativeProgressReported;
@@ -28,11 +29,12 @@ public final class BlossomActivity {
     public BlossomActivity(EntityGadget gadget, BlossomNativeCamps.CampNode source) {
         this.gadget = gadget;
         this.source = source;
+        this.blossom = source.blossom;
     }
 
     BlossomNativeCamps.CampNode source() { return source; }
-    private BlossomNativeCamps.Blossom blossom() { return source.blossom; }
-    private BlossomNativeCamps.Blossom.State state() { return blossom().state; }
+    BlossomNativeCamps.Blossom blossom() { return blossom; }
+    private BlossomNativeCamps.Blossom.State state() { return blossom.state(); }
 
     /** Called immediately when Scene registers an entity, before its onCreate abilities run. */
     void onSceneEntityCreated(GameEntity entity) {
@@ -47,22 +49,24 @@ public final class BlossomActivity {
         }
     }
 
-    boolean rewardReady() { return state() == BlossomNativeCamps.Blossom.State.REWARD_READY; }
+    boolean rewardReady() {
+        return state() == BlossomNativeCamps.Blossom.State.REWARD && chest == null;
+    }
     boolean isClaimableChest(EntityGadget entity) {
-        return state() == BlossomNativeCamps.Blossom.State.CLAIMABLE && chest == entity;
+        return state() == BlossomNativeCamps.Blossom.State.REWARD && chest == entity;
     }
-    void markRewardSpawned() {
-        if (state() != BlossomNativeCamps.Blossom.State.REWARD_READY || chest == null) {
-            throw new IllegalStateException("Blossom reward is not ready");
-        }
-        blossom().state = BlossomNativeCamps.Blossom.State.CLAIMABLE;
+    /** Lua's schedule stage is a projection of the flower lifecycle. */
+    int scheduleState() {
+        return switch (state()) {
+            case IDLE -> 1;
+            case FIGHTING -> 2;
+            case REWARD -> 3;
+        };
     }
-    /** Blossom owns runtime state; Lua stage is its projection. */
-    int scheduleState() { return state() == BlossomNativeCamps.Blossom.State.FIGHTING ? 2 : 3; }
 
     /** Use the native Lua group monster definitions as its scripted progress target. */
     void beginNative(int monsterGoal) {
-        blossom().state = BlossomNativeCamps.Blossom.State.FIGHTING;
+        blossom.begin();
         nativeMonsterGoal = monsterGoal;
         nativeMonsterProgress = 0;
         nativeProgressReported = false;
@@ -77,7 +81,7 @@ public final class BlossomActivity {
     }
 
     void abort() {
-        blossom().state = BlossomNativeCamps.Blossom.State.IDLE;
+        blossom.reset();
         clearEncounterSummons();
         var scene = gadget.getScene();
         var toRemove = scene.getEntities().values().stream()
@@ -97,7 +101,7 @@ public final class BlossomActivity {
 
     /** Restore a previously earned reward from its original Lua marker. */
     boolean restoreFromLua(SceneGadget rewardDefinition) {
-        if (state() != BlossomNativeCamps.Blossom.State.REWARD_READY
+        if (state() != BlossomNativeCamps.Blossom.State.REWARD
                 || rewardDefinition == null || !rewardDefinition.is_blossom_chest) return false;
         nativeRewardGadget = rewardDefinition;
         return true;
@@ -108,7 +112,7 @@ public final class BlossomActivity {
         if (state() != BlossomNativeCamps.Blossom.State.FIGHTING || rewardDefinition == null
                 || !rewardDefinition.is_blossom_chest) return false;
         nativeRewardGadget = rewardDefinition;
-        blossom().state = BlossomNativeCamps.Blossom.State.REWARD_READY;
+        blossom.reward();
         return true;
     }
 
@@ -143,7 +147,7 @@ public final class BlossomActivity {
     /** Build the claimable flower using the Lua reward marker and configured chest type. */
     public EntityGadget getChest() {
         if (chest == null) {
-            if (nativeRewardGadget == null || state() != BlossomNativeCamps.Blossom.State.REWARD_READY) {
+            if (nativeRewardGadget == null || state() != BlossomNativeCamps.Blossom.State.REWARD) {
                 throw new IllegalStateException("Native Lua has not declared a blossom reward");
             }
             EntityGadget rewardGadget = new EntityGadget(

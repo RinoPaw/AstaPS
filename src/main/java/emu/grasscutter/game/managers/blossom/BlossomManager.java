@@ -168,10 +168,8 @@ public class BlossomManager {
             for (var activity : blossomActivities) {
                 if (activity.getGadget().getGroupId() != groupId) continue;
                 if (!activity.completeFromLua(reward)) return false;
-                var source = activity.source();
-                if (source != null) {
-                    scene.getWorld().getHost().setBlossomRewardReady(source.blossom.refreshId, source.blossom.slot);
-                }
+                scene.getWorld().getHost().setBlossomRewardReady(
+                        activity.blossom().refreshId, activity.blossom().slot);
                 return true;
             }
         }
@@ -360,7 +358,6 @@ public class BlossomManager {
                 if (!active.rewardReady()) continue;
                 active.clearEncounterSummons();
                 EntityGadget chest = active.getChest();
-                active.markRewardSpawned();
                 scene.addEntity(chest);
                 Grasscutter.getLogger().info(
                         "Ley-line reward flower spawned scene={} gadget={} source={} nativeKills={}/{}",
@@ -514,8 +511,8 @@ public class BlossomManager {
                 if (active.isClaimableChest(chest)) {
                     var source = active.source();
                     if (source != null) {
-                        int refreshId = source.blossom.refreshId;
-                        int slot = source.blossom.slot;
+                        int refreshId = active.blossom().refreshId;
+                        int slot = active.blossom().slot;
                         if (!nativeCamps.advanceCamp(scene, source, scene.getWorld().getHost()
                                 .getUnlockedSceneAreas(scene.getId()))) {
                             scene.getWorld().getHost().setBlossomConsumed(refreshId, slot);
@@ -602,11 +599,11 @@ public class BlossomManager {
                 return null;
             }
             int resinBefore = player.getProperty(emu.grasscutter.game.props.PlayerProperty.PROP_PLAYER_RESIN);
-            int refreshId = active.source().blossom.refreshId;
+            int refreshId = active.blossom().refreshId;
             var host = scene.getWorld().getHost();
             // BSON-safe key also identifies the claim attempt in the player's persisted record.
-            String runId = host.getUid() + ":" + refreshId + ":" + active.source().blossom.slot + ":"
-                    + host.getBlossomIncarnation(refreshId, active.source().blossom.slot);
+            String runId = host.getUid() + ":" + refreshId + ":" + active.blossom().slot + ":"
+                    + host.getBlossomIncarnation(refreshId, active.blossom().slot);
             var resin = player.getResinManager();
             var journal = new RewardGrantJournal();
             var key = new RewardGrantJournal.Key(RewardGrantJournal.Source.BLOSSOM, player.getUid(),

@@ -32,18 +32,18 @@ final class BlossomScriptedSpawnTest {
         for (int id : occupied) {
             var node = graph.nodes.get(id);
             if (node != null)
-                node.blossom = new BlossomNativeCamps.SelectedCamp(id, 0, 0, null);
+                node.blossom = new BlossomNativeCamps.Blossom(BlossomType.SCOIN, 0);
         }
         var startsInCity = starts.stream().map(graph.nodes::get)
                 .filter(java.util.Objects::nonNull).toList();
         var result = graph.findAvailableCamp(startsInCity, node -> {
-            var data = camps.get(node.id);
+            var data = camps.get(node.campId);
             return data.getRefreshTypeVec() != null
                     && data.getRefreshTypeVec().contains(nativeType)
                     && data.getNewGroupVec() != null && !data.getNewGroupVec().isEmpty()
                     && usable.test(data);
         });
-        return result == null ? 0 : result.id;
+        return result == null ? 0 : result.campId;
     }
 
     @Test
@@ -55,14 +55,13 @@ final class BlossomScriptedSpawnTest {
                 camp(99, 2, List.of(1, 3), 1));
         var graph = new BlossomNativeCamps.CityGraph(1, rows);
         assertEquals(3, graph.nodes.size());
-        assertEquals(List.of(2, 3), graph.nodes.get(1).successors.stream()
-                .map(node -> node.id).toList());
-        assertSame(graph.nodes.get(1), graph.nodes.get(2).successors.get(0));
+        assertEquals(List.of(2, 3), graph.nodes.get(1).nextCampIds);
+        assertEquals(List.of(1), graph.nodes.get(2).nextCampIds);
 
-        graph.nodes.get(1).blossom = new BlossomNativeCamps.SelectedCamp(1, 1, 0, null);
+        graph.nodes.get(1).blossom = new BlossomNativeCamps.Blossom(BlossomType.SCOIN, 0);
         var available = graph.findAvailableCamp(
                 List.of(graph.nodes.get(1)), node -> true);
-        assertEquals(2, available.id);
+        assertEquals(2, available.campId);
     }
 
     @Test
@@ -112,9 +111,9 @@ final class BlossomScriptedSpawnTest {
                 sectionCamp(303001000, 3001, List.of(4)));
         var graph = new BlossomNativeCamps.CityGraph(3, camps);
         assertEquals(List.of(303001001, 303002001), graph.sectionHeads(1).stream()
-                .map(node -> node.id).toList());
+                .map(node -> node.campId).toList());
         assertEquals(List.of(303001001, 303002001, 303003001),
-                graph.sectionHeads(3).stream().map(node -> node.id).toList());
+                graph.sectionHeads(3).stream().map(node -> node.campId).toList());
         assertTrue(new BlossomNativeCamps.CityGraph(3, List.of()).sectionHeads(1).isEmpty());
     }
 
@@ -272,7 +271,9 @@ final class BlossomScriptedSpawnTest {
         var gadget = new emu.grasscutter.scripts.data.SceneGadget();
         gadget.config_id = 374004;
         gadget.gadget_id = BlossomType.forRefresh("BLOSSOM_REFRESH_SCOIN").getGadgetId();
-        var camp = new BlossomNativeCamps.SelectedCamp(101001001, 1, 0, gadget);
+        var node = new BlossomNativeCamps.CampNode(101001001);
+        node.blossom = new BlossomNativeCamps.Blossom(BlossomType.SCOIN, 0);
+        var camp = new BlossomNativeCamps.ActiveCamp(node, 1, gadget);
         assertEquals(101001001, camp.campId());
         assertEquals(1, camp.refreshId());
         assertSame(gadget, camp.gadget());
@@ -281,7 +282,9 @@ final class BlossomScriptedSpawnTest {
 
     @Test
     void originalMonsterProgressFinishesOnlyOnce() {
-        var activity = new BlossomActivity(null, null);
+        var node = new BlossomNativeCamps.CampNode(1);
+        node.blossom = new BlossomNativeCamps.Blossom(BlossomType.SCOIN, 0);
+        var activity = new BlossomActivity(null, new BlossomNativeCamps.ActiveCamp(node, 1, null));
         activity.beginNative(2);
         assertFalse(activity.addNativeProgress());
         assertTrue(activity.addNativeProgress());
@@ -304,18 +307,6 @@ final class BlossomScriptedSpawnTest {
         assertEquals(101001002, mondstadtWealth.getNextCampIdVec().get(0));
         assertEquals(133002369, mondstadtRevelation.getNewGroupVec().get(0));
         assertEquals(101002004, mondstadtRevelation.getNextCampIdVec().get(0));
-    }
-
-    @Test
-    void arbitraryBlossomKindsHaveDataDefinedNativeIdentities() {
-        var extra = new BlossomType("BLOSSOM_REFRESH_CUSTOM", 17, 70360099, 70210199, "custom");
-        var byRefresh = BlossomType.indexByRefresh(
-                List.of(BlossomType.forRefresh("BLOSSOM_REFRESH_SCOIN"), extra));
-        assertSame(extra, byRefresh.get("BLOSSOM_REFRESH_CUSTOM"));
-        assertEquals(17, extra.refreshTypeId());
-        assertEquals("custom", extra.rewardKind());
-        assertThrows(IllegalArgumentException.class, () ->
-                BlossomType.indexByRefresh(List.of(extra, extra)));
     }
 
     @Test

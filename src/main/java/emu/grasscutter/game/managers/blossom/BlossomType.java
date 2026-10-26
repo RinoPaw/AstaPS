@@ -1,80 +1,41 @@
 package emu.grasscutter.game.managers.blossom;
 
-import emu.grasscutter.utils.FileUtils;
-import emu.grasscutter.utils.JsonUtils;
-import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
-/**
- * Data-defined blossom kind. The catalog maps refresh rows to native Lua worktops;
- * adding a kind does not require changing Java or the camp allocator.
- */
-public record BlossomType(
-        String refreshType, int refreshTypeId, int gadgetId,
-        int rewardChestGadgetId, String rewardKind) {
+/** Native ley-line kinds. Country availability and counts remain in native Excel. */
+public enum BlossomType {
+    SCOIN("BLOSSOM_REFRESH_SCOIN", 1, 70360056, 70210109, "wealth"),
+    EXP("BLOSSOM_REFRESH_EXP", 3, 70360057, 70210110, "revelation");
 
-    private static final List<BlossomType> ALL = load();
-    private static final Map<String, BlossomType> BY_REFRESH = indexByRefresh(ALL);
-    private static final Map<Integer, BlossomType> BY_GADGET = indexByGadget(ALL);
+    private final String refreshType;
+    private final int refreshTypeId;
+    private final int gadgetId;
+    private final int rewardChestGadgetId;
+    private final String rewardKind;
 
-    private static final class Config {
-        String refreshType;
-        int refreshTypeId;
-        int gadgetId;
-        int rewardChestGadgetId;
-        String rewardKind;
+    BlossomType(String refreshType, int refreshTypeId, int gadgetId, int chestId, String rewardKind) {
+        this.refreshType = refreshType;
+        this.refreshTypeId = refreshTypeId;
+        this.gadgetId = gadgetId;
+        this.rewardChestGadgetId = chestId;
+        this.rewardKind = rewardKind;
     }
 
-    private static List<BlossomType> load() {
-        try {
-            var rows = JsonUtils.loadToList(
-                    FileUtils.getDataPath("BlossomTypes.json"), Config.class);
-            if (rows == null || rows.isEmpty())
-                throw new IllegalStateException("BlossomTypes.json has no blossom kinds");
-            return rows.stream().map(row -> new BlossomType(
-                    row.refreshType, row.refreshTypeId, row.gadgetId,
-                    row.rewardChestGadgetId, row.rewardKind)).toList();
-        } catch (IOException error) {
-            throw new IllegalStateException("Cannot load BlossomTypes.json", error);
-        }
-    }
-
-    static Map<String, BlossomType> indexByRefresh(Collection<BlossomType> types) {
-        var result = new HashMap<String, BlossomType>();
-        for (var type : types) {
-            if (type.refreshType() == null || type.refreshType().isBlank()
-                    || type.refreshTypeId() <= 0 || type.gadgetId() <= 0
-                    || type.rewardChestGadgetId() <= 0 || type.rewardKind() == null
-                    || type.rewardKind().isBlank()
-                    || result.putIfAbsent(type.refreshType(), type) != null)
-                throw new IllegalArgumentException("Invalid or duplicate blossom refresh: " + type);
-        }
-        return Map.copyOf(result);
-    }
-
-    private static Map<Integer, BlossomType> indexByGadget(Collection<BlossomType> types) {
-        var result = new HashMap<Integer, BlossomType>();
-        var nativeTypes = new HashSet<Integer>();
-        for (var type : types) {
-            if (!nativeTypes.add(type.refreshTypeId())
-                    || result.putIfAbsent(type.gadgetId(), type) != null)
-                throw new IllegalArgumentException("Duplicate native blossom identity: " + type);
-        }
-        return Map.copyOf(result);
-    }
+    public String refreshType() { return refreshType; }
+    public int refreshTypeId() { return refreshTypeId; }
+    public int getGadgetId() { return gadgetId; }
+    public int getRewardChestGadgetId() { return rewardChestGadgetId; }
+    public String rewardKind() { return rewardKind; }
 
     public static BlossomType forRefresh(String refreshType) {
-        return BY_REFRESH.get(refreshType);
+        for (var type : values()) if (type.refreshType.equals(refreshType)) return type;
+        return null;
     }
 
     public static BlossomType valueOf(int gadgetId) {
-        return BY_GADGET.get(gadgetId);
+        for (var type : values()) if (type.gadgetId == gadgetId) return type;
+        return null;
     }
 
-    public static Collection<BlossomType> all() {
-        return ALL;
-    }
-
-    public int getGadgetId() { return gadgetId; }
-    public int getRewardChestGadgetId() { return rewardChestGadgetId; }
+    public static List<BlossomType> all() { return List.of(values()); }
 }

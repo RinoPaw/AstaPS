@@ -8,14 +8,12 @@ import java.util.*;
 public final class BlossomActivity {
 
     private final EntityGadget gadget;
-    private final BlossomNativeCamps.SelectedCamp source;
+    private final BlossomNativeCamps.ActiveCamp source;
     private int nativeMonsterGoal;
     private int nativeMonsterProgress;
     private boolean nativeProgressReported;
-    enum Phase { FIGHTING, REWARD_READY, CLAIMABLE }
     private EntityGadget chest;
     private SceneGadget nativeRewardGadget;
-    private Phase phase = Phase.FIGHTING;
     private final Set<Integer> rewardClaimants = new HashSet<>();
 
     boolean rewardClaimed(int uid) { return rewardClaimants.contains(uid); }
@@ -27,16 +25,18 @@ public final class BlossomActivity {
     // Retain their identities so the client also receives a final VISION_REMOVE.
     private final Map<Integer, GameEntity> encounterSummons = new LinkedHashMap<>();
 
-    public BlossomActivity(EntityGadget gadget, BlossomNativeCamps.SelectedCamp source) {
+    public BlossomActivity(EntityGadget gadget, BlossomNativeCamps.ActiveCamp source) {
         this.gadget = gadget;
         this.source = source;
     }
 
-    BlossomNativeCamps.SelectedCamp source() { return source; }
+    BlossomNativeCamps.ActiveCamp source() { return source; }
+    private BlossomNativeCamps.Blossom blossom() { return source.blossom(); }
+    private BlossomNativeCamps.Blossom.State state() { return blossom().state; }
 
     /** Called immediately when Scene registers an entity, before its onCreate abilities run. */
     void onSceneEntityCreated(GameEntity entity) {
-        if (phase == Phase.FIGHTING && nativeMonsterGoal > 0 && entity instanceof EntityMonster
+        if (state() == BlossomNativeCamps.Blossom.State.FIGHTING && nativeMonsterGoal > 0 && entity instanceof EntityMonster
                 && entity.getGroupId() == gadget.getGroupId()) {
             encounterMonsterIds.add(entity.getId());
         }
@@ -47,21 +47,22 @@ public final class BlossomActivity {
         }
     }
 
-    boolean rewardReady() { return phase == Phase.REWARD_READY; }
+    boolean rewardReady() { return state() == BlossomNativeCamps.Blossom.State.REWARD_READY; }
     boolean isClaimableChest(EntityGadget entity) {
-        return phase == Phase.CLAIMABLE && chest == entity;
+        return state() == BlossomNativeCamps.Blossom.State.CLAIMABLE && chest == entity;
     }
     void markRewardSpawned() {
-        if (phase != Phase.REWARD_READY || chest == null) {
+        if (state() != BlossomNativeCamps.Blossom.State.REWARD_READY || chest == null) {
             throw new IllegalStateException("Blossom reward is not ready");
         }
-        phase = Phase.CLAIMABLE;
+        blossom().state = BlossomNativeCamps.Blossom.State.CLAIMABLE;
     }
     /** Phase is the only owner of runtime state; Lua stage is its projection. */
-    int scheduleState() { return phase == Phase.FIGHTING ? 2 : 3; }
+    int scheduleState() { return state() == BlossomNativeCamps.Blossom.State.FIGHTING ? 2 : 3; }
 
     /** Use the native Lua group monster definitions as its scripted progress target. */
     void beginNative(int monsterGoal) {
+        blossom().state = BlossomNativeCamps.Blossom.State.FIGHTING;
         nativeMonsterGoal = monsterGoal;
         nativeMonsterProgress = 0;
         nativeProgressReported = false;
@@ -69,13 +70,14 @@ public final class BlossomActivity {
 
     /** Native Lua reports each group monster death; complete the progress event once. */
     boolean addNativeProgress() {
-        if (nativeMonsterGoal <= 0 || nativeProgressReported || phase != Phase.FIGHTING) return false;
+        if (nativeMonsterGoal <= 0 || nativeProgressReported || state() != BlossomNativeCamps.Blossom.State.FIGHTING) return false;
         if (++nativeMonsterProgress < nativeMonsterGoal) return false;
         nativeProgressReported = true;
         return true;
     }
 
     void abort() {
+        blossom().state = BlossomNativeCamps.Blossom.State.IDLE;
         clearEncounterSummons();
         var scene = gadget.getScene();
         var toRemove = scene.getEntities().values().stream()
@@ -93,12 +95,20 @@ public final class BlossomActivity {
     int nativeKills() { return nativeMonsterProgress; }
     int nativeGoal() { return nativeMonsterGoal; }
 
+    /** Restore a previously earned reward from its original Lua marker. */
+    boolean restoreFromLua(SceneGadget rewardDefinition) {
+        if (state() != BlossomNativeCamps.Blossom.State.REWARD_READY
+                || rewardDefinition == null || !rewardDefinition.is_blossom_chest) return false;
+        nativeRewardGadget = rewardDefinition;
+        return true;
+    }
+
     /** Mark completion once, after the Lua script has reached its own success condition. */
     boolean completeFromLua(SceneGadget rewardDefinition) {
-        if (phase != Phase.FIGHTING || rewardDefinition == null
+        if (state() != BlossomNativeCamps.Blossom.State.FIGHTING || rewardDefinition == null
                 || !rewardDefinition.is_blossom_chest) return false;
         nativeRewardGadget = rewardDefinition;
-        phase = Phase.REWARD_READY;
+        blossom().state = BlossomNativeCamps.Blossom.State.REWARD_READY;
         return true;
     }
 
@@ -133,7 +143,7 @@ public final class BlossomActivity {
     /** Build the claimable flower using the Lua reward marker and configured chest type. */
     public EntityGadget getChest() {
         if (chest == null) {
-            if (nativeRewardGadget == null || phase != Phase.REWARD_READY) {
+            if (nativeRewardGadget == null || state() != BlossomNativeCamps.Blossom.State.REWARD_READY) {
                 throw new IllegalStateException("Native Lua has not declared a blossom reward");
             }
             EntityGadget rewardGadget = new EntityGadget(

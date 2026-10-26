@@ -28,9 +28,9 @@ public class BlossomManager {
     private record CampGadgetKey(int campId, int nativeType) {}
     private final Map<CampGadgetKey, SceneGadget> worktopCache = new HashMap<>();
     private final List<BlossomActivity> blossomActivities = new ArrayList<>();
-    private final Map<EntityGadget, BlossomNativeCamps.SelectedCamp> createdEntity = new IdentityHashMap<>();
-    private final Set<BlossomNativeCamps.SelectedCamp> scriptedLoadedCamps = new HashSet<>();
-    private List<BlossomNativeCamps.SelectedCamp> activeCampCache;
+    private final Map<EntityGadget, BlossomNativeCamps.ActiveCamp> createdEntity = new IdentityHashMap<>();
+    private final Set<BlossomNativeCamps.ActiveCamp> scriptedLoadedCamps = new HashSet<>();
+    private List<BlossomNativeCamps.ActiveCamp> activeCampCache;
     private int cachedAdventureRank = -1;
     private int cachedDailyReset = -1;
     private Set<Integer> cachedUnlockedAreas = Set.of();
@@ -38,18 +38,18 @@ public class BlossomManager {
     private boolean mapMarkersDirty;
     private static final double SCRIPTED_SPAWN_RANGE = 400;
 
-    /** Resolve a chosen camp through its original Lua worktop. */
-    BlossomNativeCamps.SelectedCamp resolveCampSelection(
-            int campId, BlossomType kind, int refreshId, int slot,
-            Collection<Integer> unlockedAreas) {
+    /** Resolve the native worktop; area gating applies to initial allocation only. */
+    SceneGadget resolveCampGadget(int campId, BlossomType kind,
+            Collection<Integer> unlockedAreas, boolean initial) {
         var data = GameData.getBlossomCampDataMap().get(campId);
         if (data == null || data.getRefreshTypeVec() == null
                 || !data.getRefreshTypeVec().contains(kind.refreshTypeId())
                 || data.getNewGroupVec() == null || data.getNewGroupVec().isEmpty()) return null;
         var gadget = findWorktop(data, kind);
-        if (gadget == null || gadget.area_id <= 0
-                || !unlockedAreas.contains(gadget.area_id)) return null;
-        return new BlossomNativeCamps.SelectedCamp(campId, refreshId, slot, gadget);
+        if (gadget == null) return null;
+        if (initial && (gadget.area_id <= 0 || !unlockedAreas.contains(gadget.area_id)))
+            return null;
+        return gadget;
     }
 
     /** Lua owns worktop placement; entity creation follows the original script. */
@@ -94,7 +94,7 @@ public class BlossomManager {
      * Rebuild the earned reward from the original Lua marker after a process restart.
      * The source worktop is a private identity holder, never added to the scene.
      */
-    private void restoreClaimableReward(BlossomNativeCamps.SelectedCamp spawn, emu.grasscutter.scripts.data.SceneGroup group) {
+    private void restoreClaimableReward(BlossomNativeCamps.ActiveCamp spawn, emu.grasscutter.scripts.data.SceneGroup group) {
         int refreshId = spawn.refreshId();
         if (!scene.getWorld().getHost().isBlossomRewardReady(refreshId, spawn.slot())) return;
         synchronized (blossomActivities) {
@@ -112,7 +112,7 @@ public class BlossomManager {
             identity.setConfigId(source.config_id);
             identity.setMetaGadget(source);
             var activity = new BlossomActivity(identity, spawn);
-            if (!activity.completeFromLua(reward)) {
+            if (!activity.restoreFromLua(reward)) {
                 throw new IllegalStateException("Invalid earned ley-line group " + group.id);
             }
             blossomActivities.add(activity);
@@ -271,7 +271,7 @@ public class BlossomManager {
         }
     }
 
-    private List<BlossomNativeCamps.SelectedCamp> activeCamps() {
+    private List<BlossomNativeCamps.ActiveCamp> activeCamps() {
         var host = scene.getWorld().getHost();
         int rank = host.getLevel();
         var unlocked = host.getUnlockedSceneAreas(scene.getId());
@@ -305,7 +305,7 @@ public class BlossomManager {
         return activeSetRevision;
     }
 
-    /** Adventure Rank enables a country's blossom kinds; camp area_id gates locations. */
+    /** Original level thresholds; initial allocation checks the unlocked area. */
     static boolean refreshEligible(BlossomRefreshExcelConfigData refresh, int adventureRank) {
         if (refresh.getRefreshCondVec() == null) return false;
         boolean hasCondition = false;

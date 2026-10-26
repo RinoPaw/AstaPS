@@ -23,10 +23,6 @@ final class BlossomNativeCamps {
     private final Map<CampGadgetKey, SceneGadget> worktopCache = new HashMap<>();
     private volatile Set<Integer> blossomGroupIds;
 
-    static int firstCampId(List<BlossomCampData> eligible) {
-        return eligible.isEmpty() ? 0 : eligible.get(0).getId();
-    }
-
     static int findAvailableCamp(
             Collection<Integer> starts, Map<Integer, BlossomCampData> camps,
             int city, int nativeType, Set<Integer> occupied,
@@ -87,19 +83,18 @@ final class BlossomNativeCamps {
         refreshes.sort(Comparator.comparingInt(BlossomRefreshExcelConfigData::getCityId)
                 .thenComparingInt(BlossomRefreshExcelConfigData::getId));
 
-        var candidates = new HashMap<Integer, List<BlossomCampData>>();
+        var campsByCity = new HashMap<Integer, List<BlossomCampData>>();
         for (var camp : camps.values()) {
-            if (camp.getNewGroupVec() == null || camp.getNewGroupVec().isEmpty()
-                    || camp.getRefreshTypeVec() == null) continue;
-            candidates.computeIfAbsent(camp.getCityId(), unused -> new ArrayList<>()).add(camp);
+            if (camp.getRefreshTypeVec() == null
+                    || camp.getNewGroupVec() == null || camp.getNewGroupVec().isEmpty()) continue;
+            campsByCity.computeIfAbsent(camp.getCityId(), ignored -> new ArrayList<>()).add(camp);
         }
-        candidates.values().forEach(list ->
-                list.sort(Comparator.comparingInt(BlossomCampData::getId)));
+        campsByCity.values().forEach(cityCamps ->
+                cityCamps.sort(Comparator.comparingInt(BlossomCampData::getId)));
 
         var host = scene.getWorld().getHost();
         var selected = new ArrayList<SelectedCamp>();
-        var occupiedByCity = new HashMap<Integer, Set<Integer>>();
-        var worktopsByCity = new HashMap<Integer, List<SceneGadget>>();
+        var selectedByCity = new HashMap<Integer, List<SelectedCamp>>();
         for (var refresh : refreshes) {
             var kind = BlossomType.forRefresh(refresh.getRefreshType());
             if (kind == null || refresh.getRefreshCount() <= 0
@@ -107,30 +102,40 @@ final class BlossomNativeCamps {
 
             var cityData = GameData.getCityDataMap().get(refresh.getCityId());
             if (cityData == null || cityData.getSceneId() != scene.getId()) continue;
-            var eligible = candidates.getOrDefault(refresh.getCityId(), List.of()).stream()
+            var eligible = campsByCity.getOrDefault(refresh.getCityId(), List.of()).stream()
                     .filter(camp -> camp.getRefreshTypeVec().contains(kind.refreshTypeId()))
-                    .toList();
+                    .map(BlossomCampData::getId).toList();
             if (eligible.isEmpty()) continue;
 
-            var occupied = occupiedByCity.computeIfAbsent(refresh.getCityId(), ignored -> new HashSet<>());
-            var local = worktopsByCity.computeIfAbsent(refresh.getCityId(), ignored -> new ArrayList<>());
+            var citySelection = selectedByCity.computeIfAbsent(refresh.getCityId(),
+                    ignored -> new ArrayList<>());
             for (int slot = 0; slot < refresh.getRefreshCount(); slot++) {
                 if (host.isBlossomConsumed(refresh.getId(), slot)) continue;
                 int savedId = host.getBlossomCampId(refresh.getId(), slot);
                 var starts = new ArrayList<Integer>();
                 if (savedId > 0) starts.add(savedId);
-                for (var camp : eligible) starts.add(camp.getId());
+                starts.addAll(eligible);
                 var chosen = findCamp(scene, starts, refresh.getCityId(), kind,
-                        refresh.getId(), slot, unlockedAreas, occupied, local);
+                        refresh.getId(), slot, unlockedAreas,
+                        occupiedCampIds(citySelection), selectedWorktops(citySelection));
                 if (chosen == null) continue;
                 selected.add(chosen);
-                local.add(chosen.gadget());
-                occupied.add(chosen.campId());
+                citySelection.add(chosen);
                 if (savedId != chosen.campId())
                     host.setBlossomCampId(refresh.getId(), slot, chosen.campId());
             }
         }
         return selected;
+    }
+
+    private static Set<Integer> occupiedCampIds(Collection<SelectedCamp> selected) {
+        var ids = new HashSet<Integer>();
+        for (var camp : selected) ids.add(camp.campId());
+        return ids;
+    }
+
+    private static List<SceneGadget> selectedWorktops(Collection<SelectedCamp> selected) {
+        return selected.stream().map(SelectedCamp::gadget).toList();
     }
 
     /** Lua is the encounter authority; only the selected, authored worktop is needed here. */

@@ -236,11 +236,6 @@ final class BlossomScriptedSpawnTest {
         assertEquals(101001002, mondstadtWealth.getNextCampIdVec().get(0));
         assertEquals(133002369, mondstadtRevelation.getNewGroupVec().get(0));
         assertEquals(101002004, mondstadtRevelation.getNextCampIdVec().get(0));
-        assertEquals(101001001, BlossomNativeCamps.firstCampId(
-                List.of(mondstadtWealth, mondstadtRevelation)));
-        assertEquals(101002003, BlossomNativeCamps.firstCampId(
-                List.of(mondstadtRevelation, mondstadtWealth)));
-        assertEquals(0, BlossomNativeCamps.firstCampId(List.of()));
     }
 
     @Test

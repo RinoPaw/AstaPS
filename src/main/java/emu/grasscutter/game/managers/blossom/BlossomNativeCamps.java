@@ -37,7 +37,7 @@ final class BlossomNativeCamps {
 
         CityGraph(int cityId, Collection<BlossomCampData> authored) {
             var byId = new HashMap<Integer, CampNode>();
-            var sections = new EnumMap<BlossomType, TreeMap<Integer, CampNode>>(BlossomType.class);
+            var sections = new EnumMap<BlossomType, Map<Integer, CampNode>>(BlossomType.class);
 
             for (var data : authored) {
                 if (data.getCityId() != cityId) continue;
@@ -49,7 +49,7 @@ final class BlossomNativeCamps {
                         || data.getNewGroupVec().isEmpty()) continue;
                 for (var type : BlossomType.values()) {
                     if (!data.getRefreshTypeVec().contains(type.refreshTypeId())) continue;
-                    sections.computeIfAbsent(type, unused -> new TreeMap<>())
+                    sections.computeIfAbsent(type, unused -> new HashMap<>())
                             .merge(data.getSectionId(), node,
                                     (a, b) -> a.campId < b.campId ? a : b);
                 }

@@ -110,10 +110,11 @@ final class BlossomScriptedSpawnTest {
                 sectionCamp(303003001, 3003, List.of(3)),
                 sectionCamp(303001000, 3001, List.of(4)));
         var graph = new BlossomNativeCamps.CityGraph(3, camps);
-        assertEquals(List.of(303001001, 303002001), graph.sectionHeads(BlossomType.WEALTH).stream()
-                .map(node -> node.campId).toList());
-        assertEquals(List.of(303001001, 303002001, 303003001),
-                graph.sectionHeads(BlossomType.REVELATION).stream().map(node -> node.campId).toList());
+        assertEquals(Set.of(303001001, 303002001), graph.sectionHeads(BlossomType.WEALTH).stream()
+                .map(node -> node.campId).collect(java.util.stream.Collectors.toSet()));
+        assertEquals(Set.of(303001001, 303002001, 303003001),
+                graph.sectionHeads(BlossomType.REVELATION).stream()
+                        .map(node -> node.campId).collect(java.util.stream.Collectors.toSet()));
         assertTrue(new BlossomNativeCamps.CityGraph(3, List.of()).sectionHeads(BlossomType.WEALTH).isEmpty());
     }
 

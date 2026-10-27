@@ -57,7 +57,7 @@ final class BlossomGraph {
             while (!queue.isEmpty()) {
                 var node = queue.removeFirst();
                 if (!visited.add(node)) continue;
-                if (node.blossom == null && usable.test(node)) return node;
+                if (usable.test(node)) return node;
                 queue.addAll(node.next);
             }
             return null;

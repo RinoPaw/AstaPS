@@ -27,7 +27,7 @@ final class BlossomGraph {
                 nodes.put(data.getId(), node);
 
                 if (data.getRefreshTypeVec() == null
-                        || !data.getRefreshTypeVec().contains(1)) continue;
+                        || !data.getRefreshTypeVec().containsAll(List.of(1, 3))) continue;
                 sections.merge(data.getSectionId(), node,
                         (a, b) -> a.campId < b.campId ? a : b);
             }

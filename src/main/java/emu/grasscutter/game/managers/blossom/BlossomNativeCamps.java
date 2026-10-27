@@ -27,41 +27,48 @@ final class BlossomNativeCamps {
         final int campId;
         final List<Integer> nextCampIds = new ArrayList<>();
         Blossom blossom;
+        final BlossomCampData authored;
 
-        CampNode(int campId) { this.campId = campId; }
+        CampNode(int campId) { this(campId, null); }
+
+        CampNode(int campId, BlossomCampData authored) {
+            this.campId = campId;
+            this.authored = authored;
+        }
     }
 
     static final class CityGraph {
         final Map<Integer, CampNode> nodes = new HashMap<>();
-        private final Map<Integer, List<CampNode>> headsByType = new HashMap<>();
 
         CityGraph(int cityId, Collection<BlossomCampData> authored) {
             var rows = new ArrayList<BlossomCampData>();
             for (var data : authored) {
                 if (data.getCityId() != cityId) continue;
                 rows.add(data);
-                nodes.put(data.getId(), new CampNode(data.getId()));
+                nodes.put(data.getId(), new CampNode(data.getId(), data));
             }
 
-            var sections = new HashMap<Integer, TreeMap<Integer, CampNode>>();
             for (var data : rows) {
                 var node = nodes.get(data.getId());
                 if (data.getNextCampIdVec() != null)
                     for (int nextId : data.getNextCampIdVec())
                         if (nodes.containsKey(nextId)) node.nextCampIds.add(nextId);
-                if (data.getRefreshTypeVec() == null || data.getNewGroupVec() == null
-                        || data.getNewGroupVec().isEmpty()) continue;
-                for (int type : data.getRefreshTypeVec())
-                    sections.computeIfAbsent(type, unused -> new TreeMap<>())
-                            .merge(data.getSectionId(), node,
-                                    (a, b) -> a.campId < b.campId ? a : b);
             }
-            sections.forEach((type, starts) ->
-                    headsByType.put(type, new ArrayList<>(starts.values())));
         }
 
+        /** Keep the original minimum-camp-ID head for each native section. */
         List<CampNode> sectionHeads(int nativeType) {
-            return new ArrayList<>(headsByType.getOrDefault(nativeType, List.of()));
+            var sections = new TreeMap<Integer, CampNode>();
+            for (var node : nodes.values()) {
+                var data = node.authored;
+                if (data == null || data.getRefreshTypeVec() == null
+                        || !data.getRefreshTypeVec().contains(nativeType)
+                        || data.getNewGroupVec() == null || data.getNewGroupVec().isEmpty())
+                    continue;
+                sections.merge(data.getSectionId(), node,
+                        (a, b) -> a.campId < b.campId ? a : b);
+            }
+            return new ArrayList<>(sections.values());
         }
 
         /** Search the authored edges, including branches and cycles. */

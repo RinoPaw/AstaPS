@@ -108,12 +108,10 @@ public class BlossomManager {
                 new CityGraph(city, GameData.getBlossomCampDataMap().values()));
     }
 
-    /** Initial flowers require an unlocked Lua area; rotations use native successors. */
+    /** Only initial flowers require an unlocked Lua area. */
     private boolean canUseCamp(CampNode node, Blossom.Type kind,
-            int adventureRank, Collection<Integer> unlockedAreas, boolean initial) {
-        if (node.blossom != null) return false;
-        var camp = GameData.getBlossomCampDataMap().get(node.campId);
-        return camp != null && adventureRank >= camp.getLimitLevel()
+            Collection<Integer> unlockedAreas, boolean initial) {
+        return node.blossom == null
                 && resolveCampGadget(node.campId, kind, unlockedAreas, initial) != null;
     }
 
@@ -131,7 +129,7 @@ public class BlossomManager {
                     || host.getBlossomCampId(refresh.getId(), slot) != 0) continue;
             while (!starts.isEmpty()) {
                 var chosen = starts.remove(starts.size() - 1);
-                if (!canUseCamp(chosen, kind, host.getLevel(), unlockedAreas, true)) continue;
+                if (!canUseCamp(chosen, kind, unlockedAreas, true)) continue;
                 chosen.blossom = new Blossom(kind, slot);
                 selected.add(chosen);
                 host.setBlossomCampId(refresh.getId(), slot, chosen.campId);
@@ -214,8 +212,7 @@ public class BlossomManager {
         var blossom = source.blossom;
         source.blossom = null;
         var chosen = graph.findAvailableCamp(source.next,
-                node -> canUseCamp(node, blossom.type,
-                        scene.getWorld().getHost().getLevel(), unlockedAreas, false));
+                node -> canUseCamp(node, blossom.type, unlockedAreas, false));
         if (chosen == null) {
             Grasscutter.getLogger().warn(
                     "No valid ley-line successor city={} kind={} camp={} slot={}",
@@ -515,28 +512,14 @@ public class BlossomManager {
         return activeSetRevision;
     }
 
-    /** Original level thresholds; initial allocation checks the unlocked area. */
+    /** Temporary adventure-rank gates for Mondstadt and Liyue. */
     static boolean refreshEligible(BlossomRefreshExcelConfigData refresh, int adventureRank) {
-        if (refresh.getRefreshCondVec() == null) return false;
-        boolean hasCondition = false;
-        for (var condition : refresh.getRefreshCondVec()) {
-            if (condition == null || condition.getType() == null) continue;
-            var params = condition.getParam();
-            if (params == null || params.isEmpty()) return false;
-            hasCondition = true;
-            switch (condition.getType()) {
-                case "BLOSSOM_REFRESH_COND_PLAYER_LEVEL_EQUAL_GREATER" -> {
-                    if (adventureRank < params.get(0)) return false;
-                }
-                case "BLOSSOM_REFRESH_COND_PLAYER_LEVEL_LESS_THAN" -> {
-                    if (adventureRank >= params.get(0)) return false;
-                }
-                // Local camp eligibility is checked against its Lua Gadget area_id.
-                case "BLOSSOM_REFRESH_COND_UNLOCK_ANY_AREA_IN_CITY" -> {}
-                default -> { return false; }
-            }
-        }
-        return hasCondition;
+        return switch (refresh.getCityId()) {
+            case 1 -> adventureRank >= (Blossom.Type.forRefresh(refresh.getRefreshType())
+                    == Blossom.Type.WEALTH ? 12 : 8);
+            case 2 -> adventureRank >= 18;
+            default -> true;
+        };
     }
 
     public BlossomManager(Scene scene) {

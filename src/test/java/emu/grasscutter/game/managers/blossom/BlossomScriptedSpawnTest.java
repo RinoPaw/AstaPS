@@ -37,13 +37,13 @@ final class BlossomScriptedSpawnTest {
         var startsInCity = starts.stream().map(graph::find)
                 .filter(java.util.Objects::nonNull).toList();
         var result = graph.findAvailableCamp(startsInCity, node -> {
-            var data = camps.get(node.data.getId());
+            var data = camps.get(node.campId);
             return data.getRefreshTypeVec() != null
                     && data.getRefreshTypeVec().contains(nativeType)
                     && data.getNewGroupVec() != null && !data.getNewGroupVec().isEmpty()
                     && usable.test(data);
         });
-        return result == null ? 0 : result.data.getId();
+        return result == null ? 0 : result.campId;
     }
 
     @Test
@@ -55,13 +55,13 @@ final class BlossomScriptedSpawnTest {
                 camp(99, 2, List.of(1, 3), 1));
         var graph = new BlossomNativeCamps.CityGraph(1, rows);
         assertEquals(3, graph.nodes.size());
-        assertEquals(List.of(2, 3), graph.find(1).next.stream().map(n -> n.data.getId()).toList());
-        assertEquals(List.of(1), graph.find(2).next.stream().map(n -> n.data.getId()).toList());
+        assertEquals(List.of(2, 3), graph.find(1).next.stream().map(n -> n.campId).toList());
+        assertEquals(List.of(1), graph.find(2).next.stream().map(n -> n.campId).toList());
 
         graph.find(1).blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
         var available = graph.findAvailableCamp(
                 List.of(graph.find(1)), node -> true);
-        assertEquals(2, available.data.getId());
+        assertEquals(2, available.campId);
     }
 
     @Test
@@ -110,11 +110,11 @@ final class BlossomScriptedSpawnTest {
                 sectionCamp(303003001, 3003, List.of(3)),
                 sectionCamp(303001000, 3001, List.of(4)));
         var graph = new BlossomNativeCamps.CityGraph(3, camps);
-        assertEquals(List.of(303001001, 303002001), graph.sectionHeads(1).stream()
-                .map(node -> node.data.getId()).toList());
+        assertEquals(List.of(303001001, 303002001), graph.sectionHeads(1, camps).stream()
+                .map(node -> node.campId).toList());
         assertEquals(List.of(303001001, 303002001, 303003001),
-                graph.sectionHeads(3).stream().map(node -> node.data.getId()).toList());
-        assertTrue(new BlossomNativeCamps.CityGraph(3, List.of()).sectionHeads(1).isEmpty());
+                graph.sectionHeads(3, camps).stream().map(node -> node.campId).toList());
+        assertTrue(new BlossomNativeCamps.CityGraph(3, List.of()).sectionHeads(1, List.of()).isEmpty());
     }
 
     private static emu.grasscutter.data.excels.BlossomCampData sectionCamp(

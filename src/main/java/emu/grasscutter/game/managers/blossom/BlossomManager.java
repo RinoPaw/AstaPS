@@ -54,7 +54,7 @@ public class BlossomManager {
 
     /** Resolve original Lua data on demand. */
     private SceneGadget gadget(BlossomNativeCamps.CampNode node) {
-        return resolveCampGadget(node.data.getId(), node.blossom.type, List.of(), false);
+        return resolveCampGadget(node.campId, node.blossom.type, List.of(), false);
     }
 
     /** Lua owns worktop placement; entity creation follows the original script. */
@@ -456,7 +456,7 @@ public class BlossomManager {
         for (var spawn : activeCamps()) {
             var type = BlossomType.valueOf(gadget(spawn).gadget_id);
             int refreshId = nativeCamps.refreshId(spawn);
-            int campId = spawn.data.getId();
+            int campId = spawn.campId;
             var refresh = GameData.getBlossomRefreshExcelConfigDataMap().get(refreshId);
             if (type == null || refresh == null
                     || !refreshEligible(refresh, player.getLevel()))

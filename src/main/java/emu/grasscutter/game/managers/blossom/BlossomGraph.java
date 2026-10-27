@@ -1,6 +1,7 @@
 package emu.grasscutter.game.managers.blossom;
 
 import emu.grasscutter.data.excels.BlossomCampData;
+import emu.grasscutter.game.managers.blossom.BlossomManager.BlossomType;
 import java.util.*;
 import java.util.function.Predicate;
 

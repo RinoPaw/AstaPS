@@ -1,6 +1,7 @@
 package emu.grasscutter.game.managers.blossom;
 
 import static org.junit.jupiter.api.Assertions.*;
+import emu.grasscutter.game.managers.blossom.BlossomManager.BlossomType;
 
 import emu.grasscutter.utils.JsonUtils;
 import java.util.HashMap;

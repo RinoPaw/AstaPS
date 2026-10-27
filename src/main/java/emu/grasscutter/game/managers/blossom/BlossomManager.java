@@ -27,6 +27,44 @@ import emu.grasscutter.server.packet.send.PacketBlossomBriefInfoNotify;
 import java.util.*;
 
 public class BlossomManager {
+    /** Native ley-line kinds. Country availability and counts remain in native Excel. */
+    public enum BlossomType {
+        WEALTH("BLOSSOM_REFRESH_SCOIN", 1, 70360056, 70210109, "wealth"),
+        REVELATION("BLOSSOM_REFRESH_EXP", 3, 70360057, 70210110, "revelation");
+    
+        private final String refreshType;
+        private final int refreshTypeId;
+        private final int gadgetId;
+        private final int rewardChestGadgetId;
+        private final String rewardKind;
+    
+        BlossomType(String refreshType, int refreshTypeId, int gadgetId, int chestId, String rewardKind) {
+            this.refreshType = refreshType;
+            this.refreshTypeId = refreshTypeId;
+            this.gadgetId = gadgetId;
+            this.rewardChestGadgetId = chestId;
+            this.rewardKind = rewardKind;
+        }
+    
+        public String refreshType() { return refreshType; }
+        public int refreshTypeId() { return refreshTypeId; }
+        public int getGadgetId() { return gadgetId; }
+        public int getRewardChestGadgetId() { return rewardChestGadgetId; }
+        public String rewardKind() { return rewardKind; }
+    
+        public static BlossomType forRefresh(String refreshType) {
+            for (var type : values()) if (type.refreshType.equals(refreshType)) return type;
+            return null;
+        }
+    
+        public static BlossomType valueOf(int gadgetId) {
+            for (var type : values()) if (type.gadgetId == gadgetId) return type;
+            return null;
+        }
+    
+        public static List<BlossomType> all() { return List.of(values()); }
+    }
+
     static final class Blossom {
         enum State { IDLE, FIGHTING, REWARD }
 
@@ -508,14 +546,11 @@ public class BlossomManager {
         this.scene = scene;
     }
 
-    /** Track ability summons at creation, including ones removed before the next world tick. */
+    /** Attach selected native worktops when they enter the scene. */
     public void onSceneEntityCreated(GameEntity entity) {
         if (entity instanceof EntityGadget gadget
                 && isAuthoredWorktop(gadget.getGroupId(), gadget.getGadgetId())) {
             initBlossom(gadget);
-        }
-        synchronized (blossomActivities) {
-            for (var activity : blossomActivities) activity.onSceneEntityCreated(entity);
         }
     }
 
@@ -528,7 +563,6 @@ public class BlossomManager {
         synchronized (blossomActivities) {
             for (var active : blossomActivities) {
                 if (!active.rewardReady()) continue;
-                active.clearEncounterSummons();
                 EntityGadget chest = active.getChest();
                 scene.addEntity(chest);
                 Grasscutter.getLogger().info(
@@ -852,12 +886,6 @@ public class BlossomManager {
         boolean rewardClaimed(int uid) { return rewardClaimants.contains(uid); }
         void confirmReward(int uid) { rewardClaimants.add(uid); }
 
-        // Keep every encounter root, including monsters already dead or pruned between waves.
-        private final Set<Integer> encounterMonsterIds = new HashSet<>();
-        // Death removes summoned entities from Scene before the claimable flower appears.
-        // Retain their identities so the client also receives a final VISION_REMOVE.
-        private final Map<Integer, GameEntity> encounterSummons = new LinkedHashMap<>();
-
         public BlossomActivity(EntityGadget gadget, CampNode source) {
             this.gadget = gadget;
             this.source = source;
@@ -867,19 +895,6 @@ public class BlossomManager {
         CampNode source() { return source; }
         Blossom blossom() { return blossom; }
         private Blossom.State state() { return blossom.state; }
-
-        /** Called immediately when Scene registers an entity, before its onCreate abilities run. */
-        void onSceneEntityCreated(GameEntity entity) {
-            if (state() == Blossom.State.FIGHTING && nativeMonsterGoal > 0 && entity instanceof EntityMonster
-                    && entity.getGroupId() == gadget.getGroupId()) {
-                encounterMonsterIds.add(entity.getId());
-            }
-            int parent = BlossomSummonCleanup.parentId(entity);
-            if (BlossomSummonCleanup.isEncounterChild(
-                    parent, encounterMonsterIds, encounterSummons.keySet())) {
-                encounterSummons.putIfAbsent(entity.getId(), entity);
-            }
-        }
 
         boolean rewardReady() {
             return state() == Blossom.State.REWARD && chest == null;
@@ -914,18 +929,6 @@ public class BlossomManager {
 
         void abort() {
             blossom.state = Blossom.State.IDLE;
-            clearEncounterSummons();
-            var scene = gadget.getScene();
-            var toRemove = scene.getEntities().values().stream()
-                    .filter(entity -> entity instanceof EntityMonster)
-                    .filter(entity -> entity.getGroupId() == gadget.getGroupId())
-                    .filter(entity -> encounterMonsterIds.contains(entity.getId()))
-                    .toList();
-            if (!toRemove.isEmpty()) {
-                scene.removeEntities(toRemove,
-                        emu.grasscutter.net.proto.VisionTypeOuterClass.VisionType.VisionType_VISION_REMOVE);
-            }
-            encounterMonsterIds.clear();
         }
 
         int nativeKills() { return nativeMonsterProgress; }
@@ -946,30 +949,6 @@ public class BlossomManager {
             nativeRewardGadget = rewardDefinition;
             blossom.state = Blossom.State.REWARD;
             return true;
-        }
-
-        /**
-         * Remember both living summons and summons that the server already removed via a death
-         * notification. Their owners can also have disappeared in an earlier wave.
-         */
-        private void observeSummons() {
-            var owners = new HashSet<>(encounterMonsterIds);
-            owners.addAll(encounterSummons.keySet());
-            for (var spawned : BlossomSummonCleanup.find(gadget.getScene(), owners)) {
-                encounterSummons.putIfAbsent(spawned.getId(), spawned);
-            }
-        }
-
-        /** Finish the complete summon lifecycle before publishing the reward flower. */
-        void clearEncounterSummons() {
-            observeSummons();
-            var result = BlossomSummonCleanup.remove(gadget.getScene(), encounterSummons.values());
-            if (result.live() != 0 || result.stale() != 0) {
-                emu.grasscutter.Grasscutter.getLogger().info(
-                        "Ley-line encounter summons cleared source={} live={} stale={}",
-                        gadget.getId(), result.live(), result.stale());
-            }
-            encounterSummons.clear();
         }
 
         public EntityGadget getGadget() {

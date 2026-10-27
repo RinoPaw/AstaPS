@@ -51,11 +51,9 @@ final class BlossomGraph {
             initialCandidates = List.copyOf(sections.values());
         }
 
-        /** Return initial candidates in randomized order. */
+        /** Return a copy of the initial candidates. */
         List<CampNode> initialCandidates() {
-            var candidates = new ArrayList<>(initialCandidates);
-            Collections.shuffle(candidates);
-            return candidates;
+            return new ArrayList<>(initialCandidates);
         }
 
         /** Search the authored edges, including branches and cycles. */

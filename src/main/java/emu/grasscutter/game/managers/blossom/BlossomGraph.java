@@ -53,12 +53,12 @@ final class BlossomGraph {
         /** Search the authored edges, including branches and cycles. */
         CampNode findAvailableCamp(Collection<CampNode> starts, Predicate<CampNode> usable) {
             var queue = new ArrayDeque<>(starts);
-            var visited = new HashSet<Integer>();
+            var visited = new HashSet<CampNode>();
             while (!queue.isEmpty()) {
                 var node = queue.removeFirst();
-                if (!visited.add(node.campId)) continue;
-                queue.addAll(node.next);
+                if (!visited.add(node)) continue;
                 if (node.blossom == null && usable.test(node)) return node;
+                queue.addAll(node.next);
             }
             return null;
         }

@@ -37,12 +37,10 @@ final class BlossomNativeCamps {
 
         CityGraph(int cityId, Collection<BlossomCampData> authored) {
             var byId = new HashMap<Integer, CampNode>();
-            var rows = new ArrayList<BlossomCampData>();
             var sections = new EnumMap<BlossomType, TreeMap<Integer, CampNode>>(BlossomType.class);
 
             for (var data : authored) {
                 if (data.getCityId() != cityId) continue;
-                rows.add(data);
                 var node = new CampNode(data.getId());
                 nodes.add(node);
                 byId.put(data.getId(), node);
@@ -57,7 +55,8 @@ final class BlossomNativeCamps {
                 }
             }
 
-            for (var data : rows) {
+            for (var data : authored) {
+                if (data.getCityId() != cityId) continue;
                 var node = byId.get(data.getId());
                 var nextIds = data.getNextCampIdVec();
                 if (nextIds == null) continue;

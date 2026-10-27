@@ -126,9 +126,10 @@ public class BlossomManager {
                     || host.getBlossomCampId(refresh.getId(), slot) != 0) continue;
             while (!starts.isEmpty()) {
                 var chosen = starts.remove(starts.size() - 1);
-                if (!canUseCamp(chosen, kind)) continue;
+                if (chosen.blossom != null) continue;
                 var gadget = resolveCampGadget(chosen.campId, kind);
-                if (gadget.area_id <= 0 || !unlockedAreas.contains(gadget.area_id)) continue;
+                if (gadget == null || gadget.area_id <= 0
+                        || !unlockedAreas.contains(gadget.area_id)) continue;
                 chosen.blossom = new Blossom(kind, slot);
                 selected.add(chosen);
                 host.setBlossomCampId(refresh.getId(), slot, chosen.campId);

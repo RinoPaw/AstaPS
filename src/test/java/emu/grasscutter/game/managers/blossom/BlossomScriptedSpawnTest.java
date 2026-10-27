@@ -28,11 +28,11 @@ final class BlossomScriptedSpawnTest {
             Map<Integer, emu.grasscutter.data.excels.BlossomCampData> camps,
             int cityId, int nativeType, Set<Integer> occupied,
             java.util.function.Predicate<emu.grasscutter.data.excels.BlossomCampData> usable) {
-        var graph = new BlossomNativeCamps.CityGraph(cityId, camps.values());
+        var graph = new BlossomGraph.CityGraph(cityId, camps.values());
         for (int id : occupied) {
             var node = graph.nodes.get(id);
             if (node != null)
-                node.blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
+                node.blossom = new BlossomManager.Blossom(BlossomType.WEALTH, 0);
         }
         var startsInCity = starts.stream().map(graph.nodes::get)
                 .filter(java.util.Objects::nonNull).toList();
@@ -53,12 +53,12 @@ final class BlossomScriptedSpawnTest {
                 camp(2, 1, List.of(1, 3), 1),
                 camp(3, 1, List.of(1, 3), 1),
                 camp(99, 2, List.of(1, 3), 1));
-        var graph = new BlossomNativeCamps.CityGraph(1, rows);
+        var graph = new BlossomGraph.CityGraph(1, rows);
         assertEquals(3, graph.nodes.size());
         assertEquals(List.of(2, 3), graph.nodes.get(1).next.stream().map(n -> n.campId).toList());
         assertEquals(List.of(1), graph.nodes.get(2).next.stream().map(n -> n.campId).toList());
 
-        graph.nodes.get(1).blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
+        graph.nodes.get(1).blossom = new BlossomManager.Blossom(BlossomType.WEALTH, 0);
         var available = graph.findAvailableCamp(
                 List.of(graph.nodes.get(1)), node -> true);
         assertEquals(2, available.campId);
@@ -109,13 +109,13 @@ final class BlossomScriptedSpawnTest {
                 sectionCamp(303002001, 3002, List.of(1, 3)),
                 sectionCamp(303003001, 3003, List.of(3)),
                 sectionCamp(303001000, 3001, List.of(4)));
-        var graph = new BlossomNativeCamps.CityGraph(3, camps);
+        var graph = new BlossomGraph.CityGraph(3, camps);
         assertEquals(Set.of(303001001, 303002001), graph.sectionHeads(BlossomType.WEALTH).stream()
                 .map(node -> node.campId).collect(java.util.stream.Collectors.toSet()));
         assertEquals(Set.of(303001001, 303002001, 303003001),
                 graph.sectionHeads(BlossomType.REVELATION).stream()
                         .map(node -> node.campId).collect(java.util.stream.Collectors.toSet()));
-        assertTrue(new BlossomNativeCamps.CityGraph(3, List.of()).sectionHeads(BlossomType.WEALTH).isEmpty());
+        assertTrue(new BlossomGraph.CityGraph(3, List.of()).sectionHeads(BlossomType.WEALTH).isEmpty());
     }
 
     private static emu.grasscutter.data.excels.BlossomCampData sectionCamp(
@@ -272,19 +272,19 @@ final class BlossomScriptedSpawnTest {
         var gadget = new emu.grasscutter.scripts.data.SceneGadget();
         gadget.config_id = 374004;
         gadget.gadget_id = BlossomType.forRefresh("BLOSSOM_REFRESH_SCOIN").getGadgetId();
-        var node = new BlossomNativeCamps.CampNode(camp(101001001, 1, List.of(1)));
-        node.blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
+        var node = new BlossomGraph.CampNode(camp(101001001, 1, List.of(1).getId()));
+        node.blossom = new BlossomManager.Blossom(BlossomType.WEALTH, 0);
         var camp = node;
         assertEquals(101001001, camp.campId);
         assertEquals(374004, gadget.config_id);
-        assertSame(camp, new BlossomActivity(null, camp).source());
+        assertSame(camp, new BlossomManager.BlossomActivity(null, camp).source());
     }
 
     @Test
     void originalMonsterProgressFinishesOnlyOnce() {
-        var node = new BlossomNativeCamps.CampNode(camp(1, 1, List.of(1)));
-        node.blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
-        var activity = new BlossomActivity(null, node);
+        var node = new BlossomGraph.CampNode(camp(1, 1, List.of(1).getId()));
+        node.blossom = new BlossomManager.Blossom(BlossomType.WEALTH, 0);
+        var activity = new BlossomManager.BlossomActivity(null, node);
         activity.beginNative(2);
         assertFalse(activity.addNativeProgress());
         assertTrue(activity.addNativeProgress());
@@ -550,9 +550,9 @@ final class BlossomScriptedSpawnTest {
                 emu.grasscutter.scripts.data.SceneGadget.class);
         assertTrue(nativeReward.is_blossom_chest);
         assertFalse(unrelated.is_blossom_chest);
-        var node = new BlossomNativeCamps.CampNode(camp(1, 1, List.of(1)));
-        node.blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
-        var activity = new BlossomActivity(null,
+        var node = new BlossomGraph.CampNode(camp(1, 1, List.of(1).getId()));
+        node.blossom = new BlossomManager.Blossom(BlossomType.WEALTH, 0);
+        var activity = new BlossomManager.BlossomActivity(null,
                 node);
         activity.beginNative(0);
         assertEquals(2, activity.scheduleState());

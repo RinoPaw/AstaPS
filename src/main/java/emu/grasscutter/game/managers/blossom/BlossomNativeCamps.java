@@ -32,18 +32,16 @@ final class BlossomNativeCamps {
     }
 
     static final class CityGraph {
-        final List<CampNode> nodes = new ArrayList<>();
+        final Map<Integer, CampNode> nodes = new HashMap<>();
         private final Map<BlossomType, List<CampNode>> initialCandidates = new EnumMap<>(BlossomType.class);
 
         CityGraph(int cityId, Collection<BlossomCampData> authored) {
-            var byId = new HashMap<Integer, CampNode>();
             var sections = new EnumMap<BlossomType, Map<Integer, CampNode>>(BlossomType.class);
 
             for (var data : authored) {
                 if (data.getCityId() != cityId) continue;
                 var node = new CampNode(data.getId());
-                nodes.add(node);
-                byId.put(data.getId(), node);
+                nodes.put(data.getId(), node);
 
                 if (data.getRefreshTypeVec() == null || data.getNewGroupVec() == null
                         || data.getNewGroupVec().isEmpty()) continue;
@@ -57,11 +55,11 @@ final class BlossomNativeCamps {
 
             for (var data : authored) {
                 if (data.getCityId() != cityId) continue;
-                var node = byId.get(data.getId());
+                var node = nodes.get(data.getId());
                 var nextIds = data.getNextCampIdVec();
                 if (nextIds == null) continue;
                 for (int nextId : nextIds) {
-                    var successor = byId.get(nextId);
+                    var successor = nodes.get(nextId);
                     if (successor != null) node.next.add(successor);
                 }
             }
@@ -69,8 +67,7 @@ final class BlossomNativeCamps {
         }
 
         CampNode find(int campId) {
-            return nodes.stream().filter(node -> node.campId == campId)
-                    .findFirst().orElse(null);
+            return nodes.get(campId);
         }
 
         /** The per-city initial candidates are selected when the graph is built. */
@@ -137,7 +134,7 @@ final class BlossomNativeCamps {
         if (camp == null || adventureRank < camp.getLimitLevel()) return null;
         var gadget = manager.resolveCampGadget(node.campId, kind, unlockedAreas, initial);
         if (gadget == null) return null;
-        for (var other : graph.nodes) {
+        for (var other : graph.nodes.values()) {
             if (other.blossom == null) continue;
             var otherGadget = manager.resolveCampGadget(
                     other.campId, other.blossom.type, unlockedAreas, false);

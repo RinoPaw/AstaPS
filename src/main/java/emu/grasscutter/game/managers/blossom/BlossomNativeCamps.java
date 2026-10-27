@@ -248,18 +248,15 @@ final class BlossomNativeCamps {
         var camp = GameData.getBlossomCampDataMap().get(source.campId);
         if (camp == null) return false;
         var graph = graphFor(camp.getCityId());
-        var current = graph.find(source.campId);
-        if (current == null || current.blossom == null || current.next.isEmpty()) {
-            if (current != null) {
-                current.blossom = null;
-            }
+        if (source.blossom == null || source.next.isEmpty()) {
+            source.blossom = null;
             return false;
         }
 
-        int refreshId = refreshId(current);
-        var blossom = current.blossom;
-        current.blossom = null;
-        var successors = current.next;
+        int refreshId = refreshId(source);
+        var blossom = source.blossom;
+        source.blossom = null;
+        var successors = source.next;
         var chosen = findCamp(graph, successors, blossom.type,
                 scene.getWorld().getHost().getLevel(), unlockedAreas, false);
         if (chosen == null) {

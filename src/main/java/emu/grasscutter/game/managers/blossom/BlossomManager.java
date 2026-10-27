@@ -211,8 +211,9 @@ public class BlossomManager {
         int refreshId = refreshId(source);
         var blossom = source.blossom;
         source.blossom = null;
-        var chosen = graph.findAvailableCamp(source.next,
-                node -> canUseCamp(node, blossom.type));
+        var chosen = graph.findNextCamp(source.next).stream()
+                .filter(node -> canUseCamp(node, blossom.type))
+                .findFirst().orElse(null);
         if (chosen == null) {
             Grasscutter.getLogger().warn(
                     "No valid ley-line successor city={} kind={} camp={} slot={}",

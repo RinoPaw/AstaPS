@@ -2,7 +2,6 @@ package emu.grasscutter.game.managers.blossom;
 
 import emu.grasscutter.data.excels.BlossomCampData;
 import java.util.*;
-import java.util.function.Predicate;
 
 /** The native per-city camp graph, including section starts and directed successors. */
 final class BlossomGraph {
@@ -56,17 +55,18 @@ final class BlossomGraph {
             return new ArrayList<>(initialCandidates);
         }
 
-        /** Search the authored edges, including branches and cycles. */
-        CampNode findAvailableCamp(Collection<CampNode> starts, Predicate<CampNode> usable) {
+        /** Collect reachable successor candidates in breadth-first order. */
+        List<CampNode> findNextCamp(Collection<CampNode> starts) {
             var queue = new ArrayDeque<>(starts);
             var visited = new HashSet<CampNode>();
+            var candidates = new ArrayList<CampNode>();
             while (!queue.isEmpty()) {
                 var node = queue.removeFirst();
                 if (!visited.add(node)) continue;
-                if (usable.test(node)) return node;
+                candidates.add(node);
                 queue.addAll(node.next);
             }
-            return null;
+            return candidates;
         }
     }
 }

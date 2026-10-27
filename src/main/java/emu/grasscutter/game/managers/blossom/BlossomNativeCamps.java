@@ -43,8 +43,7 @@ final class BlossomNativeCamps {
                 var node = new CampNode(data.getId());
                 nodes.put(data.getId(), node);
 
-                if (data.getRefreshTypeVec() == null || data.getNewGroupVec() == null
-                        || data.getNewGroupVec().isEmpty()) continue;
+                if (data.getRefreshTypeVec() == null) continue;
                 for (var type : BlossomType.values()) {
                     if (!data.getRefreshTypeVec().contains(type.refreshTypeId())) continue;
                     sections.computeIfAbsent(type, unused -> new HashMap<>())

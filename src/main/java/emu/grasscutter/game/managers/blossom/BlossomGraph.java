@@ -1,7 +1,6 @@
 package emu.grasscutter.game.managers.blossom;
 
 import emu.grasscutter.data.excels.BlossomCampData;
-import emu.grasscutter.game.managers.blossom.BlossomManager.BlossomType;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -17,23 +16,20 @@ final class BlossomGraph {
 
     static final class CityGraph {
         final Map<Integer, CampNode> nodes = new HashMap<>();
-        private final Map<BlossomType, List<CampNode>> initialCandidates = new EnumMap<>(BlossomType.class);
+        private final List<CampNode> initialCandidates;
 
         CityGraph(int cityId, Collection<BlossomCampData> authored) {
-            var sections = new EnumMap<BlossomType, Map<Integer, CampNode>>(BlossomType.class);
+            var sections = new HashMap<Integer, CampNode>();
 
             for (var data : authored) {
                 if (data.getCityId() != cityId) continue;
                 var node = new CampNode(data.getId());
                 nodes.put(data.getId(), node);
 
-                if (data.getRefreshTypeVec() == null) continue;
-                for (var type : BlossomType.values()) {
-                    if (!data.getRefreshTypeVec().contains(type.refreshTypeId())) continue;
-                    sections.computeIfAbsent(type, unused -> new HashMap<>())
-                            .merge(data.getSectionId(), node,
-                                    (a, b) -> a.campId < b.campId ? a : b);
-                }
+                if (data.getRefreshTypeVec() == null
+                        || !data.getRefreshTypeVec().contains(1)) continue;
+                sections.merge(data.getSectionId(), node,
+                        (a, b) -> a.campId < b.campId ? a : b);
             }
 
             for (var data : authored) {
@@ -46,12 +42,12 @@ final class BlossomGraph {
                     if (successor != null) node.next.add(successor);
                 }
             }
-            sections.forEach((type, heads) -> initialCandidates.put(type, List.copyOf(heads.values())));
+            initialCandidates = List.copyOf(sections.values());
         }
 
         /** The per-city initial candidates are selected when the graph is built. */
-        List<CampNode> sectionHeads(BlossomType type) {
-            return new ArrayList<>(initialCandidates.getOrDefault(type, List.of()));
+        List<CampNode> sectionHeads() {
+            return new ArrayList<>(initialCandidates);
         }
 
         /** Search the authored edges, including branches and cycles. */

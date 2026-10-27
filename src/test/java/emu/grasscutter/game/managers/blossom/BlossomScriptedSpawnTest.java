@@ -274,7 +274,7 @@ final class BlossomScriptedSpawnTest {
         var node = new BlossomNativeCamps.CampNode(camp(101001001, 1, List.of(1)));
         node.blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
         var camp = node;
-        assertEquals(101001001, camp.data.getId());
+        assertEquals(101001001, camp.campId);
         assertEquals(374004, gadget.config_id);
         assertSame(camp, new BlossomActivity(null, camp).source());
     }

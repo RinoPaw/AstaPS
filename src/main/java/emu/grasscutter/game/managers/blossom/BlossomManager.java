@@ -108,11 +108,8 @@ public class BlossomManager {
                 new CityGraph(city, GameData.getBlossomCampDataMap().values()));
     }
 
-    /** Only initial flowers require an unlocked Lua area. */
-    private boolean canUseCamp(CampNode node, Blossom.Type kind,
-            Collection<Integer> unlockedAreas, boolean initial) {
-        return node.blossom == null
-                && resolveCampGadget(node.campId, kind, unlockedAreas, initial) != null;
+    private boolean canUseCamp(CampNode node, Blossom.Type kind) {
+        return node.blossom == null && resolveCampGadget(node.campId, kind) != null;
     }
 
     /** Add only missing slots; never move a surviving flower when eligibility changes. */
@@ -129,7 +126,9 @@ public class BlossomManager {
                     || host.getBlossomCampId(refresh.getId(), slot) != 0) continue;
             while (!starts.isEmpty()) {
                 var chosen = starts.remove(starts.size() - 1);
-                if (!canUseCamp(chosen, kind, unlockedAreas, true)) continue;
+                if (!canUseCamp(chosen, kind)) continue;
+                var gadget = resolveCampGadget(chosen.campId, kind);
+                if (gadget.area_id <= 0 || !unlockedAreas.contains(gadget.area_id)) continue;
                 chosen.blossom = new Blossom(kind, slot);
                 selected.add(chosen);
                 host.setBlossomCampId(refresh.getId(), slot, chosen.campId);
@@ -163,7 +162,7 @@ public class BlossomManager {
                 if (savedId == 0) continue;
                 var node = graph.nodes.get(savedId);
                 if (node == null) continue;
-                var gadget = resolveCampGadget(savedId, kind, unlockedAreas, false);
+                var gadget = resolveCampGadget(savedId, kind);
                 if (gadget == null) continue;
                 if (node.blossom == null) {
                     node.blossom = new Blossom(kind, slot);
@@ -201,7 +200,7 @@ public class BlossomManager {
     }
 
     /** Move an existing flower; successors do not have to be in unlocked regions. */
-    boolean advanceCamp(Scene scene, CampNode source, Collection<Integer> unlockedAreas) {
+    boolean advanceCamp(Scene scene, CampNode source) {
         var graph = source.graph;
         if (source.blossom == null || source.next.isEmpty()) {
             source.blossom = null;
@@ -212,7 +211,7 @@ public class BlossomManager {
         var blossom = source.blossom;
         source.blossom = null;
         var chosen = graph.findAvailableCamp(source.next,
-                node -> canUseCamp(node, blossom.type, unlockedAreas, false));
+                node -> canUseCamp(node, blossom.type));
         if (chosen == null) {
             Grasscutter.getLogger().warn(
                     "No valid ley-line successor city={} kind={} camp={} slot={}",
@@ -242,23 +241,18 @@ public class BlossomManager {
     private boolean mapMarkersDirty;
     private static final double SCRIPTED_SPAWN_RANGE = 400;
 
-    /** Resolve the native worktop; area gating applies to initial allocation only. */
-    SceneGadget resolveCampGadget(int campId, Blossom.Type kind,
-            Collection<Integer> unlockedAreas, boolean initial) {
+    /** Resolve the native worktop. */
+    SceneGadget resolveCampGadget(int campId, Blossom.Type kind) {
         var data = GameData.getBlossomCampDataMap().get(campId);
         if (data == null || data.getRefreshTypeVec() == null
                 || !data.getRefreshTypeVec().contains(kind.refreshTypeId())
                 || data.getNewGroupVec() == null || data.getNewGroupVec().isEmpty()) return null;
-        var gadget = findWorktop(data, kind);
-        if (gadget == null) return null;
-        if (initial && (gadget.area_id <= 0 || !unlockedAreas.contains(gadget.area_id)))
-            return null;
-        return gadget;
+        return findWorktop(data, kind);
     }
 
     /** Resolve original Lua data on demand. */
     private SceneGadget gadget(CampNode node) {
-        return resolveCampGadget(node.campId, node.blossom.type, List.of(), false);
+        return resolveCampGadget(node.campId, node.blossom.type);
     }
 
     /** Lua owns worktop placement; entity creation follows the original script. */
@@ -700,8 +694,7 @@ public class BlossomManager {
                     if (source != null) {
                         int refreshId = refreshId(active.source());
                         int slot = active.blossom().slot;
-                        if (!advanceCamp(scene, source, scene.getWorld().getHost()
-                                .getUnlockedSceneAreas(scene.getId()))) {
+                        if (!advanceCamp(scene, source)) {
                             scene.getWorld().getHost().setBlossomConsumed(refreshId, slot);
                         }
                         activeCampCache = null;

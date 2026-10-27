@@ -118,7 +118,7 @@ public class BlossomManager {
             Blossom.Type kind, Collection<Integer> unlockedAreas,
             List<CampNode> selected) {
         var host = scene.getWorld().getHost();
-        var starts = graph.getInitialCamps();
+        var starts = new ArrayList<>(graph.initialCamps);
         Collections.shuffle(starts);
         for (int slot = 0; slot < refresh.getRefreshCount(); slot++) {
             // An existing saved run owns its slot even if its Lua resources are unavailable.

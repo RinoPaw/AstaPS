@@ -110,11 +110,11 @@ final class BlossomScriptedSpawnTest {
                 sectionCamp(303003001, 3003, List.of(3)),
                 sectionCamp(303001000, 3001, List.of(4)));
         var graph = new BlossomNativeCamps.CityGraph(3, camps);
-        assertEquals(List.of(303001001, 303002001), graph.sectionHeads(1, camps).stream()
+        assertEquals(List.of(303001001, 303002001), graph.sectionHeads(BlossomType.WEALTH).stream()
                 .map(node -> node.campId).toList());
         assertEquals(List.of(303001001, 303002001, 303003001),
-                graph.sectionHeads(3, camps).stream().map(node -> node.campId).toList());
-        assertTrue(new BlossomNativeCamps.CityGraph(3, List.of()).sectionHeads(1, List.of()).isEmpty());
+                graph.sectionHeads(BlossomType.REVELATION).stream().map(node -> node.campId).toList());
+        assertTrue(new BlossomNativeCamps.CityGraph(3, List.of()).sectionHeads(BlossomType.WEALTH).isEmpty());
     }
 
     private static emu.grasscutter.data.excels.BlossomCampData sectionCamp(

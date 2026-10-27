@@ -33,25 +33,40 @@ final class BlossomNativeCamps {
 
     static final class CityGraph {
         final List<CampNode> nodes = new ArrayList<>();
+        private final Map<BlossomType, List<CampNode>> initialCandidates = new EnumMap<>(BlossomType.class);
 
         CityGraph(int cityId, Collection<BlossomCampData> authored) {
             var byId = new HashMap<Integer, CampNode>();
-            var authoredById = new HashMap<Integer, BlossomCampData>();
+            var rows = new ArrayList<BlossomCampData>();
+            var sections = new EnumMap<BlossomType, TreeMap<Integer, CampNode>>(BlossomType.class);
+
             for (var data : authored) {
                 if (data.getCityId() != cityId) continue;
+                rows.add(data);
                 var node = new CampNode(data.getId());
                 nodes.add(node);
                 byId.put(data.getId(), node);
-                authoredById.put(data.getId(), data);
+
+                if (data.getRefreshTypeVec() == null || data.getNewGroupVec() == null
+                        || data.getNewGroupVec().isEmpty()) continue;
+                for (var type : BlossomType.values()) {
+                    if (!data.getRefreshTypeVec().contains(type.refreshTypeId())) continue;
+                    sections.computeIfAbsent(type, unused -> new TreeMap<>())
+                            .merge(data.getSectionId(), node,
+                                    (a, b) -> a.campId < b.campId ? a : b);
+                }
             }
-            for (var node : nodes) {
-                var nextIds = authoredById.get(node.campId).getNextCampIdVec();
+
+            for (var data : rows) {
+                var node = byId.get(data.getId());
+                var nextIds = data.getNextCampIdVec();
                 if (nextIds == null) continue;
                 for (int nextId : nextIds) {
                     var successor = byId.get(nextId);
                     if (successor != null) node.next.add(successor);
                 }
             }
+            sections.forEach((type, heads) -> initialCandidates.put(type, List.copyOf(heads.values())));
         }
 
         CampNode find(int campId) {
@@ -59,19 +74,9 @@ final class BlossomNativeCamps {
                     .findFirst().orElse(null);
         }
 
-        /** Keep the original minimum-camp-ID head for each native section. */
-        List<CampNode> sectionHeads(int nativeType, Collection<BlossomCampData> authored) {
-            var sections = new TreeMap<Integer, CampNode>();
-            for (var data : authored) {
-                var node = find(data.getId());
-                if (node == null || data.getRefreshTypeVec() == null
-                        || !data.getRefreshTypeVec().contains(nativeType)
-                        || data.getNewGroupVec() == null || data.getNewGroupVec().isEmpty())
-                    continue;
-                sections.merge(data.getSectionId(), node,
-                        (a, b) -> a.campId < b.campId ? a : b);
-            }
-            return new ArrayList<>(sections.values());
+        /** The per-city initial candidates are selected when the graph is built. */
+        List<CampNode> sectionHeads(BlossomType type) {
+            return new ArrayList<>(initialCandidates.getOrDefault(type, List.of()));
         }
 
         /** Search the authored edges, including branches and cycles. */
@@ -160,7 +165,7 @@ final class BlossomNativeCamps {
             BlossomType kind, Collection<Integer> unlockedAreas,
             List<CampNode> selected) {
         var host = scene.getWorld().getHost();
-        var starts = graph.sectionHeads(kind.refreshTypeId(), GameData.getBlossomCampDataMap().values());
+        var starts = graph.sectionHeads(kind);
         Collections.shuffle(starts);
         for (int slot = 0; slot < refresh.getRefreshCount(); slot++) {
             if (host.isBlossomConsumed(refresh.getId(), slot)) continue;

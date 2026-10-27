@@ -51,9 +51,11 @@ final class BlossomGraph {
             initialCandidates = List.copyOf(sections.values());
         }
 
-        /** The per-city initial candidates are selected when the graph is built. */
-        List<CampNode> sectionHeads() {
-            return new ArrayList<>(initialCandidates);
+        /** Return initial candidates in randomized order. */
+        List<CampNode> initialCandidates() {
+            var candidates = new ArrayList<>(initialCandidates);
+            Collections.shuffle(candidates);
+            return candidates;
         }
 
         /** Search the authored edges, including branches and cycles. */

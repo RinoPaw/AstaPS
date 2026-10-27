@@ -15,7 +15,6 @@ final class BlossomNativeCamps {
 
         final BlossomType type;
         final int slot;
-        final int refreshId;
         private State state = State.IDLE;
 
         State state() { return state; }
@@ -37,10 +36,9 @@ final class BlossomNativeCamps {
 
         void reset() { state = State.IDLE; }
 
-        Blossom(BlossomType type, int slot, int refreshId) {
+        Blossom(BlossomType type, int slot) {
             this.type = type;
             this.slot = slot;
-            this.refreshId = refreshId;
         }
     }
 
@@ -102,6 +100,29 @@ final class BlossomNativeCamps {
     private final BlossomManager manager;
     private final Map<Integer, CityGraph> graphs = new HashMap<>();
     private volatile Set<Integer> blossomGroupIds;
+    private Map<RefreshKey, Integer> refreshIds;
+
+    private record RefreshKey(int cityId, BlossomType type) {}
+
+    /** Original refresh IDs are uniquely defined by city and flower type. */
+    int refreshId(CampNode node) {
+        if (refreshIds == null) {
+            var indexed = new HashMap<RefreshKey, Integer>();
+            for (var refresh : GameData.getBlossomRefreshExcelConfigDataMap().values()) {
+                var type = BlossomType.forRefresh(refresh.getRefreshType());
+                if (type == null) continue;
+                var key = new RefreshKey(refresh.getCityId(), type);
+                if (indexed.putIfAbsent(key, refresh.getId()) != null)
+                    throw new IllegalStateException("Duplicate blossom refresh " + key);
+            }
+            refreshIds = Map.copyOf(indexed);
+        }
+        var camp = GameData.getBlossomCampDataMap().get(node.campId);
+        if (camp == null) throw new IllegalStateException("Unknown blossom camp " + node.campId);
+        var id = refreshIds.get(new RefreshKey(camp.getCityId(), node.blossom.type));
+        if (id == null) throw new IllegalStateException("Missing blossom refresh for " + node.campId);
+        return id;
+    }
 
     BlossomNativeCamps(BlossomManager manager) {
         this.manager = manager;
@@ -114,7 +135,7 @@ final class BlossomNativeCamps {
 
     /** Area unlocking is required only when creating a new initial flower. */
     private CampNode availableSelection(
-            CityGraph graph, CampNode node, BlossomType kind, int refreshId, int slot,
+            CityGraph graph, CampNode node, BlossomType kind,
             int adventureRank, Collection<Integer> unlockedAreas, boolean initial) {
         if (node == null || node.blossom != null) return null;
         var camp = GameData.getBlossomCampDataMap().get(node.campId);
@@ -133,13 +154,13 @@ final class BlossomNativeCamps {
 
     private CampNode findCamp(
             CityGraph graph, Collection<CampNode> starts, BlossomType kind,
-            int refreshId, int slot, int adventureRank,
+            int adventureRank,
             Collection<Integer> unlockedAreas, boolean initial) {
         var found = graph.findAvailableCamp(starts,
                 node -> availableSelection(graph, node, kind,
-                        refreshId, slot, adventureRank, unlockedAreas, initial) != null);
+                        adventureRank, unlockedAreas, initial) != null);
         return found == null ? null : availableSelection(
-                graph, found, kind, refreshId, slot, adventureRank, unlockedAreas, initial);
+                graph, found, kind, adventureRank, unlockedAreas, initial);
     }
 
     /** Add only missing slots; never move a surviving flower when eligibility changes. */
@@ -154,13 +175,13 @@ final class BlossomNativeCamps {
             if (host.isBlossomConsumed(refresh.getId(), slot)) continue;
             final int currentSlot = slot;
             if (selected.stream().anyMatch(current ->
-                    current.blossom.refreshId == refresh.getId() && current.blossom.slot == currentSlot))
+                    refreshId(current) == refresh.getId() && current.blossom.slot == currentSlot))
                 continue;
             while (!starts.isEmpty()) {
                 var chosen = availableSelection(graph, starts.remove(starts.size() - 1),
-                        kind, refresh.getId(), slot, host.getLevel(), unlockedAreas, true);
+                        kind, host.getLevel(), unlockedAreas, true);
                 if (chosen == null) continue;
-                chosen.blossom = new Blossom(kind, slot, refresh.getId());
+                chosen.blossom = new Blossom(kind, slot);
                 selected.add(chosen);
                 host.setBlossomCampId(refresh.getId(), slot, chosen.campId);
                 break;
@@ -196,12 +217,12 @@ final class BlossomNativeCamps {
                 var gadget = manager.resolveCampGadget(savedId, kind, unlockedAreas, false);
                 if (gadget == null) continue;
                 if (node.blossom == null) {
-                    node.blossom = new Blossom(kind, slot, refresh.getId());
+                    node.blossom = new Blossom(kind, slot);
                     if (host.isBlossomRewardReady(refresh.getId(), slot))
                         node.blossom.restoreReward();
                 }
                 if (node.blossom.type != kind || node.blossom.slot != slot
-                        || node.blossom.refreshId != refresh.getId()) continue;
+                        || refreshId(node) != refresh.getId()) continue;
                 selected.add(node);
             }
         }
@@ -210,7 +231,7 @@ final class BlossomNativeCamps {
             selectInitialCamps(scene, graphFor(refresh.getCityId()), refresh,
                     BlossomType.forRefresh(refresh.getRefreshType()), unlockedAreas, selected);
 
-        selected.sort(Comparator.comparingInt((CampNode node) -> node.blossom.refreshId)
+        selected.sort(Comparator.comparingInt((CampNode node) -> refreshId(node))
                 .thenComparingInt(node -> node.blossom.slot));
         return selected;
     }
@@ -244,11 +265,12 @@ final class BlossomNativeCamps {
             return false;
         }
 
+        int refreshId = refreshId(current);
         var blossom = current.blossom;
         current.blossom = null;
         var successors = current.nextCampIds.stream().map(graph.nodes::get).toList();
-        var chosen = findCamp(graph, successors, blossom.type, blossom.refreshId,
-                blossom.slot, scene.getWorld().getHost().getLevel(), unlockedAreas, false);
+        var chosen = findCamp(graph, successors, blossom.type,
+                scene.getWorld().getHost().getLevel(), unlockedAreas, false);
         if (chosen == null) {
             Grasscutter.getLogger().warn(
                     "No valid ley-line successor city={} kind={} camp={} slot={}",
@@ -259,7 +281,7 @@ final class BlossomNativeCamps {
         blossom.reset();
         chosen.blossom = blossom;
         scene.getWorld().getHost().advanceBlossomCampId(
-                blossom.refreshId, blossom.slot, chosen.campId);
+                refreshId, blossom.slot, chosen.campId);
         Grasscutter.getLogger().info("Ley-line camp advanced city={} type={} slot={} {} -> {}",
                 camp.getCityId(), blossom.type, blossom.slot, source.campId, chosen.campId);
         return true;

@@ -100,7 +100,7 @@ public class BlossomManager {
      * The source worktop is a private identity holder, never added to the scene.
      */
     private void restoreClaimableReward(BlossomNativeCamps.CampNode spawn, emu.grasscutter.scripts.data.SceneGroup group) {
-        int refreshId = spawn.blossom.refreshId;
+        int refreshId = nativeCamps.refreshId(spawn);
         if (!scene.getWorld().getHost().isBlossomRewardReady(refreshId, spawn.blossom.slot)) return;
         synchronized (blossomActivities) {
             if (blossomActivities.stream().anyMatch(activity ->
@@ -169,7 +169,7 @@ public class BlossomManager {
                 if (activity.getGadget().getGroupId() != groupId) continue;
                 if (!activity.completeFromLua(reward)) return false;
                 scene.getWorld().getHost().setBlossomRewardReady(
-                        activity.blossom().refreshId, activity.blossom().slot);
+                        nativeCamps.refreshId(activity.source()), activity.blossom().slot);
                 return true;
             }
         }
@@ -253,7 +253,7 @@ public class BlossomManager {
         return activeCamps().stream().anyMatch(spawn ->
                 gadget(spawn).group.id == groupId
                         && scene.getWorld().getHost().isBlossomRewardReady(
-                                spawn.blossom.refreshId, spawn.blossom.slot));
+                                nativeCamps.refreshId(spawn), spawn.blossom.slot));
     }
 
     public boolean isActiveAuthoredGadget(int groupId, int configId, int gadgetId) {
@@ -297,7 +297,7 @@ public class BlossomManager {
             Grasscutter.getLogger().info(
                     "Ley-line active scene={} rank={} camps={} kinds={}",
                     scene.getId(), rank, selected.size(),
-                    selected.stream().map(source -> source.blossom.refreshId).distinct().count());
+                    selected.stream().map(source -> nativeCamps.refreshId(source)).distinct().count());
         }
         return selected;
     }
@@ -455,7 +455,7 @@ public class BlossomManager {
         var blossoms = new ArrayList<BlossomBriefInfoOuterClass.BlossomBriefInfo>();
         for (var spawn : activeCamps()) {
             var type = BlossomType.valueOf(gadget(spawn).gadget_id);
-            int refreshId = spawn.blossom.refreshId;
+            int refreshId = nativeCamps.refreshId(spawn);
             int campId = spawn.campId;
             var refresh = GameData.getBlossomRefreshExcelConfigDataMap().get(refreshId);
             if (type == null || refresh == null
@@ -511,7 +511,7 @@ public class BlossomManager {
                 if (active.isClaimableChest(chest)) {
                     var source = active.source();
                     if (source != null) {
-                        int refreshId = active.blossom().refreshId;
+                        int refreshId = nativeCamps.refreshId(active.source());
                         int slot = active.blossom().slot;
                         if (!nativeCamps.advanceCamp(scene, source, scene.getWorld().getHost()
                                 .getUnlockedSceneAreas(scene.getId()))) {
@@ -599,7 +599,7 @@ public class BlossomManager {
                 return null;
             }
             int resinBefore = player.getProperty(emu.grasscutter.game.props.PlayerProperty.PROP_PLAYER_RESIN);
-            int refreshId = active.blossom().refreshId;
+            int refreshId = nativeCamps.refreshId(active.source());
             var host = scene.getWorld().getHost();
             // BSON-safe key also identifies the claim attempt in the player's persisted record.
             String runId = host.getUid() + ":" + refreshId + ":" + active.blossom().slot + ":"

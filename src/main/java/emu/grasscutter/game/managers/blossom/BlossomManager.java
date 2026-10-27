@@ -53,12 +53,12 @@ public class BlossomManager {
             public int getRewardChestGadgetId() { return rewardChestGadgetId; }
             public String rewardKind() { return rewardKind; }
 
-            public static Type forRefresh(String refreshType) {
+            public static Type fromRefresh(String refreshType) {
                 for (var type : values()) if (type.refreshType.equals(refreshType)) return type;
                 return null;
             }
 
-            public static Type valueOf(int gadgetId) {
+            public static Type fromGadget(int gadgetId) {
                 for (var type : values()) if (type.gadgetId == gadgetId) return type;
                 return null;
             }
@@ -88,7 +88,7 @@ public class BlossomManager {
     private static Map<RefreshKey, Integer> indexRefreshIds() {
         var indexed = new HashMap<RefreshKey, Integer>();
         for (var refresh : GameData.getBlossomRefreshExcelConfigDataMap().values()) {
-            var type = Blossom.Type.forRefresh(refresh.getRefreshType());
+            var type = Blossom.Type.fromRefresh(refresh.getRefreshType());
             if (type == null) continue;
             var key = new RefreshKey(refresh.getCityId(), type);
             if (indexed.putIfAbsent(key, refresh.getId()) != null)
@@ -143,7 +143,7 @@ public class BlossomManager {
         var host = scene.getWorld().getHost();
         var refreshes = GameData.getBlossomRefreshExcelConfigDataMap().values().stream()
                 .filter(refresh -> {
-                    var type = Blossom.Type.forRefresh(refresh.getRefreshType());
+                    var type = Blossom.Type.fromRefresh(refresh.getRefreshType());
                     var city = GameData.getCityDataMap().get(refresh.getCityId());
                     return type != null && refresh.getRefreshCount() > 0
                             && BlossomManager.refreshEligible(refresh, rank)
@@ -156,7 +156,7 @@ public class BlossomManager {
 
         for (var refresh : refreshes) {
             var graph = graphFor(refresh.getCityId());
-            var kind = Blossom.Type.forRefresh(refresh.getRefreshType());
+            var kind = Blossom.Type.fromRefresh(refresh.getRefreshType());
             for (int slot = 0; slot < refresh.getRefreshCount(); slot++) {
                 if (host.isBlossomConsumed(refresh.getId(), slot)) continue;
                 int savedId = host.getBlossomCampId(refresh.getId(), slot);
@@ -177,7 +177,7 @@ public class BlossomManager {
 
         for (var refresh : refreshes)
             selectInitialCamps(scene, graphFor(refresh.getCityId()), refresh,
-                    Blossom.Type.forRefresh(refresh.getRefreshType()), unlockedAreas, selected);
+                    Blossom.Type.fromRefresh(refresh.getRefreshType()), unlockedAreas, selected);
 
         selected.sort(Comparator.comparingInt((CampNode node) -> refreshId(node))
                 .thenComparingInt(node -> node.blossom.slot));
@@ -345,14 +345,14 @@ public class BlossomManager {
     /** The normal world grid and Lua group loader must obey the same selection. */
     public boolean isActiveSpawn(SpawnDataEntry entry) {
         // Legacy Spawns.json bloom entries are never a second source of camps.
-        return Blossom.Type.valueOf(entry.getGadgetId()) == null;
+        return Blossom.Type.fromGadget(entry.getGadgetId()) == null;
     }
 
     /** Report the selected camp's native refresh type to its authored Lua group. */
     public Integer getBlossomRefreshTypeByGroupId(int groupId) {
         for (var spawn : activeCamps()) {
             if (gadget(spawn).group.id != groupId) continue;
-            return luaRefreshType(Blossom.Type.valueOf(gadget(spawn).gadget_id));
+            return luaRefreshType(Blossom.Type.fromGadget(gadget(spawn).gadget_id));
         }
         return null;
     }
@@ -439,7 +439,7 @@ public class BlossomManager {
     }
 
     public boolean isAuthoredWorktop(int groupId, int gadgetId) {
-        return isNativeCampGroup(groupId) && Blossom.Type.valueOf(gadgetId) != null;
+        return isNativeCampGroup(groupId) && Blossom.Type.fromGadget(gadgetId) != null;
     }
 
     /** Other SceneGroups are never governed by the blossom camp selection. */
@@ -511,7 +511,7 @@ public class BlossomManager {
     /** Temporary adventure-rank gates for Mondstadt and Liyue. */
     static boolean refreshEligible(BlossomRefreshExcelConfigData refresh, int adventureRank) {
         return switch (refresh.getCityId()) {
-            case 1 -> adventureRank >= (Blossom.Type.forRefresh(refresh.getRefreshType())
+            case 1 -> adventureRank >= (Blossom.Type.fromRefresh(refresh.getRefreshType())
                     == Blossom.Type.WEALTH ? 12 : 8);
             case 2 -> adventureRank >= 18;
             default -> true;
@@ -555,7 +555,7 @@ public class BlossomManager {
     public void recycleGadgetEntity(List<GameEntity> entities) {
         for (var entity : entities) {
             if (!(entity instanceof EntityGadget gadget)
-                    || Blossom.Type.valueOf(gadget.getGadgetId()) == null) continue;
+                    || Blossom.Type.fromGadget(gadget.getGadgetId()) == null) continue;
             var source = createdEntity.remove(gadget);
             if (source != null) scriptedLoadedCamps.remove(source);
         }
@@ -566,7 +566,7 @@ public class BlossomManager {
             return;
         }
         var id = gadget.getGadgetId();
-        if (Blossom.Type.valueOf(id) == null) {
+        if (Blossom.Type.fromGadget(id) == null) {
             return;
         }
         var camp = activeCamps().stream()
@@ -637,7 +637,7 @@ public class BlossomManager {
         final int monsterLevel = (worldLevelData != null) ? worldLevelData.getMonsterLevel() : 1;
         var blossoms = new ArrayList<BlossomBriefInfoOuterClass.BlossomBriefInfo>();
         for (var spawn : activeCamps()) {
-            var type = Blossom.Type.valueOf(gadget(spawn).gadget_id);
+            var type = Blossom.Type.fromGadget(gadget(spawn).gadget_id);
             int refreshId = refreshId(spawn);
             int campId = spawn.campId;
             var refresh = GameData.getBlossomRefreshExcelConfigDataMap().get(refreshId);
@@ -769,7 +769,7 @@ public class BlossomManager {
                     .findFirst().orElse(null);
             if (active == null || active.rewardClaimed(player.getUid())) return null;
 
-            Blossom.Type type = Blossom.Type.valueOf(active.getGadget().getGadgetId());
+            Blossom.Type type = Blossom.Type.fromGadget(active.getGadget().getGadgetId());
             if (type == null) throw new IllegalStateException("Unknown claimed blossom type");
             var costType = req.getResinCostType();
             int normalClaimCount = normalClaimCount(req);
@@ -939,7 +939,7 @@ public class BlossomManager {
                 }
                 EntityGadget rewardGadget = new EntityGadget(
                         gadget.getScene(),
-                        Blossom.Type.valueOf(gadget.getGadgetId()).getRewardChestGadgetId(),
+                        Blossom.Type.fromGadget(gadget.getGadgetId()).getRewardChestGadgetId(),
                         nativeRewardGadget.pos);
                 rewardGadget.setGroupId(gadget.getGroupId());
                 rewardGadget.setConfigId(nativeRewardGadget.config_id);

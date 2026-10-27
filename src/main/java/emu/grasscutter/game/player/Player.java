@@ -1540,6 +1540,9 @@ public class Player implements PlayerHook, FieldFetch {
         BirthdayMailSystem.checkAndSend(this, currentDate);
 
         this.setLastDailyReset(currentTime);
+        if (this.scene != null && this.scene.getBlossomManager() != null) {
+            this.scene.getBlossomManager().notifyIcon();
+        }
     }
 
     public void resetSendPlayerLocTime() {

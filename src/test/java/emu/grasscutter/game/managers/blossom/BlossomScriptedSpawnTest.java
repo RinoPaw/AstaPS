@@ -30,11 +30,11 @@ final class BlossomScriptedSpawnTest {
             java.util.function.Predicate<emu.grasscutter.data.excels.BlossomCampData> usable) {
         var graph = new BlossomNativeCamps.CityGraph(cityId, camps.values());
         for (int id : occupied) {
-            var node = graph.find(id);
+            var node = graph.nodes.get(id);
             if (node != null)
                 node.blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
         }
-        var startsInCity = starts.stream().map(graph::find)
+        var startsInCity = starts.stream().map(graph.nodes::get)
                 .filter(java.util.Objects::nonNull).toList();
         var result = graph.findAvailableCamp(startsInCity, node -> {
             var data = camps.get(node.campId);
@@ -55,12 +55,12 @@ final class BlossomScriptedSpawnTest {
                 camp(99, 2, List.of(1, 3), 1));
         var graph = new BlossomNativeCamps.CityGraph(1, rows);
         assertEquals(3, graph.nodes.size());
-        assertEquals(List.of(2, 3), graph.find(1).next.stream().map(n -> n.campId).toList());
-        assertEquals(List.of(1), graph.find(2).next.stream().map(n -> n.campId).toList());
+        assertEquals(List.of(2, 3), graph.nodes.get(1).next.stream().map(n -> n.campId).toList());
+        assertEquals(List.of(1), graph.nodes.get(2).next.stream().map(n -> n.campId).toList());
 
-        graph.find(1).blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
+        graph.nodes.get(1).blossom = new BlossomNativeCamps.Blossom(BlossomType.WEALTH, 0);
         var available = graph.findAvailableCamp(
-                List.of(graph.find(1)), node -> true);
+                List.of(graph.nodes.get(1)), node -> true);
         assertEquals(2, available.campId);
     }
 

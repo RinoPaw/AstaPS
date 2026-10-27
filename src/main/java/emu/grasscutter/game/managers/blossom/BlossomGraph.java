@@ -51,12 +51,12 @@ final class BlossomGraph {
         }
 
         /** Return a copy of the initial candidates. */
-        List<CampNode> initialCandidates() {
+        List<CampNode> getInitialCampNodes() {
             return new ArrayList<>(initialCandidates);
         }
 
         /** Collect reachable successor candidates in breadth-first order. */
-        List<CampNode> findNextCamp(Collection<CampNode> starts) {
+        List<CampNode> findNextCampNodes(Collection<CampNode> starts) {
             var queue = new ArrayDeque<>(starts);
             var visited = new HashSet<CampNode>();
             var candidates = new ArrayList<CampNode>();

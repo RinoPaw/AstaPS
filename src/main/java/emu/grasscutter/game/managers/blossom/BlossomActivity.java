@@ -34,7 +34,7 @@ public final class BlossomActivity {
 
     BlossomNativeCamps.CampNode source() { return source; }
     BlossomNativeCamps.Blossom blossom() { return blossom; }
-    private BlossomNativeCamps.Blossom.State state() { return blossom.state(); }
+    private BlossomNativeCamps.Blossom.State state() { return blossom.state; }
 
     /** Called immediately when Scene registers an entity, before its onCreate abilities run. */
     void onSceneEntityCreated(GameEntity entity) {
@@ -66,7 +66,7 @@ public final class BlossomActivity {
 
     /** Use the native Lua group monster definitions as its scripted progress target. */
     void beginNative(int monsterGoal) {
-        blossom.begin();
+        blossom.state = BlossomNativeCamps.Blossom.State.FIGHTING;
         nativeMonsterGoal = monsterGoal;
         nativeMonsterProgress = 0;
         nativeProgressReported = false;
@@ -81,7 +81,7 @@ public final class BlossomActivity {
     }
 
     void abort() {
-        blossom.reset();
+        blossom.state = BlossomNativeCamps.Blossom.State.IDLE;
         clearEncounterSummons();
         var scene = gadget.getScene();
         var toRemove = scene.getEntities().values().stream()
@@ -112,7 +112,7 @@ public final class BlossomActivity {
         if (state() != BlossomNativeCamps.Blossom.State.FIGHTING || rewardDefinition == null
                 || !rewardDefinition.is_blossom_chest) return false;
         nativeRewardGadget = rewardDefinition;
-        blossom.reward();
+        blossom.state = BlossomNativeCamps.Blossom.State.REWARD;
         return true;
     }
 

@@ -15,26 +15,7 @@ final class BlossomNativeCamps {
 
         final BlossomType type;
         final int slot;
-        private State state = State.IDLE;
-
-        State state() { return state; }
-
-        void begin() {
-            if (state != State.IDLE) throw new IllegalStateException("Blossom is not idle");
-            state = State.FIGHTING;
-        }
-
-        void reward() {
-            if (state != State.FIGHTING) throw new IllegalStateException("Blossom is not fighting");
-            state = State.REWARD;
-        }
-
-        void restoreReward() {
-            if (state != State.IDLE) throw new IllegalStateException("Blossom is not idle");
-            state = State.REWARD;
-        }
-
-        void reset() { state = State.IDLE; }
+        State state = State.IDLE;
 
         Blossom(BlossomType type, int slot) {
             this.type = type;
@@ -219,7 +200,7 @@ final class BlossomNativeCamps {
                 if (node.blossom == null) {
                     node.blossom = new Blossom(kind, slot);
                     if (host.isBlossomRewardReady(refresh.getId(), slot))
-                        node.blossom.restoreReward();
+                        node.blossom.state = Blossom.State.REWARD;
                 }
                 if (node.blossom.type != kind || node.blossom.slot != slot
                         || refreshId(node) != refresh.getId()) continue;
@@ -278,7 +259,7 @@ final class BlossomNativeCamps {
             return false;
         }
 
-        blossom.reset();
+        blossom.state = Blossom.State.IDLE;
         chosen.blossom = blossom;
         scene.getWorld().getHost().advanceBlossomCampId(
                 refreshId, blossom.slot, chosen.campId);

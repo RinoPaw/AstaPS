@@ -22,7 +22,8 @@ final class BlossomGraph {
         final Map<Integer, CampNode> nodes = new HashMap<>();
         final List<CampNode> initialCamps;
 
-        CityGraph(int cityId, Collection<BlossomCampData> authored) {
+        CityGraph(int cityId, Collection<BlossomCampData> authored,
+                Collection<Integer> nativeTypes) {
             this.cityId = cityId;
             var sections = new HashMap<Integer, CampNode>();
 
@@ -32,7 +33,7 @@ final class BlossomGraph {
                 nodes.put(data.getId(), node);
 
                 if (data.getRefreshTypeVec() == null
-                        || !data.getRefreshTypeVec().containsAll(List.of(1, 3))) continue;
+                        || !data.getRefreshTypeVec().containsAll(nativeTypes)) continue;
                 sections.merge(data.getSectionId(), node,
                         (a, b) -> a.campId < b.campId ? a : b);
             }

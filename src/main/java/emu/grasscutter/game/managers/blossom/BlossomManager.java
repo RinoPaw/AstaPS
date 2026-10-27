@@ -39,18 +39,18 @@ public class BlossomManager {
             private final int rewardChestGadgetId;
             private final String rewardKind;
 
-            Type(String refreshType, int refreshTypeId, int gadgetId, int chestId, String rewardKind) {
+            Type(String refreshType, int refreshTypeId, int gadgetId, int rewardChestGadgetId, String rewardKind) {
                 this.refreshType = refreshType;
                 this.refreshTypeId = refreshTypeId;
                 this.gadgetId = gadgetId;
-                this.rewardChestGadgetId = chestId;
+                this.rewardChestGadgetId = rewardChestGadgetId;
                 this.rewardKind = rewardKind;
             }
 
             public String refreshType() { return refreshType; }
             public int refreshTypeId() { return refreshTypeId; }
-            public int getGadgetId() { return gadgetId; }
-            public int getRewardChestGadgetId() { return rewardChestGadgetId; }
+            public int gadgetId() { return gadgetId; }
+            public int rewardChestGadgetId() { return rewardChestGadgetId; }
             public String rewardKind() { return rewardKind; }
 
             public static Type fromRefresh(String refreshType) {
@@ -62,8 +62,6 @@ public class BlossomManager {
                 for (var type : values()) if (type.gadgetId == gadgetId) return type;
                 return null;
             }
-
-            public static List<Type> all() { return List.of(values()); }
         }
 
         enum State { IDLE, FIGHTING, REWARD }
@@ -77,6 +75,10 @@ public class BlossomManager {
             this.slot = slot;
         }
     }
+
+    private static final Set<Integer> NATIVE_REFRESH_TYPES = Arrays.stream(Blossom.Type.values())
+            .map(Blossom.Type::refreshTypeId)
+            .collect(java.util.stream.Collectors.toUnmodifiableSet());
 
     private final Map<Integer, CityGraph> graphs = new HashMap<>();
     private volatile Set<Integer> blossomGroupIds;
@@ -105,7 +107,7 @@ public class BlossomManager {
 
     private CityGraph graphFor(int cityId) {
         return graphs.computeIfAbsent(cityId, city ->
-                new CityGraph(city, GameData.getBlossomCampDataMap().values()));
+                new CityGraph(city, GameData.getBlossomCampDataMap().values(), NATIVE_REFRESH_TYPES));
     }
 
     private boolean canUseCamp(CampNode node, Blossom.Type kind) {
@@ -187,11 +189,9 @@ public class BlossomManager {
     boolean containsGroup(int groupId) {
         var indexed = blossomGroupIds;
         if (indexed == null) {
-            var types = Blossom.Type.all().stream()
-                    .map(Blossom.Type::refreshTypeId).collect(java.util.stream.Collectors.toSet());
             indexed = GameData.getBlossomCampDataMap().values().stream()
                     .filter(camp -> camp.getRefreshTypeVec() != null
-                            && camp.getRefreshTypeVec().stream().anyMatch(types::contains))
+                            && camp.getRefreshTypeVec().stream().anyMatch(NATIVE_REFRESH_TYPES::contains))
                     .filter(camp -> camp.getNewGroupVec() != null)
                     .flatMap(camp -> camp.getNewGroupVec().stream())
                     .collect(java.util.stream.Collectors.toUnmodifiableSet());
@@ -266,7 +266,7 @@ public class BlossomManager {
             SceneGroup group = SceneGroup.of(groupId).load(scene.getId());
             if (group == null || group.gadgets == null) continue;
             var gadget = group.gadgets.values().stream()
-                    .filter(item -> item.gadget_id == kind.getGadgetId())
+                    .filter(item -> item.gadget_id == kind.gadgetId())
                     .min(Comparator.comparingInt(item -> item.config_id)).orElse(null);
             if (gadget != null) {
                 worktopCache.put(key, gadget);
@@ -939,7 +939,7 @@ public class BlossomManager {
                 }
                 EntityGadget rewardGadget = new EntityGadget(
                         gadget.getScene(),
-                        Blossom.Type.fromGadget(gadget.getGadgetId()).getRewardChestGadgetId(),
+                        Blossom.Type.fromGadget(gadget.getGadgetId()).rewardChestGadgetId(),
                         nativeRewardGadget.pos);
                 rewardGadget.setGroupId(gadget.getGroupId());
                 rewardGadget.setConfigId(nativeRewardGadget.config_id);

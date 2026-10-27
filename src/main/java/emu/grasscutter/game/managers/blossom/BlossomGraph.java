@@ -20,7 +20,7 @@ final class BlossomGraph {
     static final class CityGraph {
         final int cityId;
         final Map<Integer, CampNode> nodes = new HashMap<>();
-        private final List<CampNode> initialCandidates;
+        private final List<CampNode> initialCamps;
 
         CityGraph(int cityId, Collection<BlossomCampData> authored) {
             this.cityId = cityId;
@@ -47,16 +47,16 @@ final class BlossomGraph {
                     if (successor != null) node.next.add(successor);
                 }
             }
-            initialCandidates = List.copyOf(sections.values());
+            initialCamps = List.copyOf(sections.values());
         }
 
         /** Return a copy of the initial candidates. */
-        List<CampNode> getInitialCampNodes() {
-            return new ArrayList<>(initialCandidates);
+        List<CampNode> getInitialCamps() {
+            return new ArrayList<>(initialCamps);
         }
 
         /** Collect reachable successor candidates in breadth-first order. */
-        List<CampNode> findNextCampNodes(Collection<CampNode> starts) {
+        List<CampNode> findNextCamps(Collection<CampNode> starts) {
             var queue = new ArrayDeque<>(starts);
             var visited = new HashSet<CampNode>();
             var candidates = new ArrayList<CampNode>();

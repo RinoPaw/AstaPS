@@ -8,22 +8,28 @@ import java.util.function.Predicate;
 final class BlossomGraph {
     static final class CampNode {
         final int campId;
+        final CityGraph graph;
         final List<CampNode> next = new ArrayList<>();
         BlossomManager.Blossom blossom;
 
-        CampNode(int campId) { this.campId = campId; }
+        CampNode(int campId, CityGraph graph) {
+            this.campId = campId;
+            this.graph = graph;
+        }
     }
 
     static final class CityGraph {
+        final int cityId;
         final Map<Integer, CampNode> nodes = new HashMap<>();
         private final List<CampNode> initialCandidates;
 
         CityGraph(int cityId, Collection<BlossomCampData> authored) {
+            this.cityId = cityId;
             var sections = new HashMap<Integer, CampNode>();
 
             for (var data : authored) {
                 if (data.getCityId() != cityId) continue;
-                var node = new CampNode(data.getId());
+                var node = new CampNode(data.getId(), this);
                 nodes.put(data.getId(), node);
 
                 if (data.getRefreshTypeVec() == null

@@ -80,26 +80,25 @@ public class BlossomManager {
 
     private final Map<Integer, CityGraph> graphs = new HashMap<>();
     private volatile Set<Integer> blossomGroupIds;
-    private Map<RefreshKey, Integer> refreshIds;
+    private final Map<RefreshKey, Integer> refreshIds;
 
     private record RefreshKey(int cityId, Blossom.Type type) {}
 
-    /** Original refresh IDs are uniquely defined by city and flower type. */
-    int refreshId(CampNode node) {
-        if (refreshIds == null) {
-            var indexed = new HashMap<RefreshKey, Integer>();
-            for (var refresh : GameData.getBlossomRefreshExcelConfigDataMap().values()) {
-                var type = Blossom.Type.forRefresh(refresh.getRefreshType());
-                if (type == null) continue;
-                var key = new RefreshKey(refresh.getCityId(), type);
-                if (indexed.putIfAbsent(key, refresh.getId()) != null)
-                    throw new IllegalStateException("Duplicate blossom refresh " + key);
-            }
-            refreshIds = Map.copyOf(indexed);
+    /** Index the native refresh configurations once when the manager is created. */
+    private static Map<RefreshKey, Integer> indexRefreshIds() {
+        var indexed = new HashMap<RefreshKey, Integer>();
+        for (var refresh : GameData.getBlossomRefreshExcelConfigDataMap().values()) {
+            var type = Blossom.Type.forRefresh(refresh.getRefreshType());
+            if (type == null) continue;
+            var key = new RefreshKey(refresh.getCityId(), type);
+            if (indexed.putIfAbsent(key, refresh.getId()) != null)
+                throw new IllegalStateException("Duplicate blossom refresh " + key);
         }
-        var camp = GameData.getBlossomCampDataMap().get(node.campId);
-        if (camp == null) throw new IllegalStateException("Unknown blossom camp " + node.campId);
-        var id = refreshIds.get(new RefreshKey(camp.getCityId(), node.blossom.type));
+        return Map.copyOf(indexed);
+    }
+
+    int refreshId(CampNode node) {
+        var id = refreshIds.get(new RefreshKey(node.graph.cityId, node.blossom.type));
         if (id == null) throw new IllegalStateException("Missing blossom refresh for " + node.campId);
         return id;
     }
@@ -205,9 +204,7 @@ public class BlossomManager {
 
     /** Move an existing flower; successors do not have to be in unlocked regions. */
     boolean advanceCamp(Scene scene, CampNode source, Collection<Integer> unlockedAreas) {
-        var camp = GameData.getBlossomCampDataMap().get(source.campId);
-        if (camp == null) return false;
-        var graph = graphFor(camp.getCityId());
+        var graph = source.graph;
         if (source.blossom == null || source.next.isEmpty()) {
             source.blossom = null;
             return false;
@@ -222,7 +219,7 @@ public class BlossomManager {
         if (chosen == null) {
             Grasscutter.getLogger().warn(
                     "No valid ley-line successor city={} kind={} camp={} slot={}",
-                    camp.getCityId(), blossom.type, source.campId, blossom.slot);
+                    graph.cityId, blossom.type, source.campId, blossom.slot);
             return false;
         }
 
@@ -231,7 +228,7 @@ public class BlossomManager {
         scene.getWorld().getHost().advanceBlossomCampId(
                 refreshId, blossom.slot, chosen.campId);
         Grasscutter.getLogger().info("Ley-line camp advanced city={} type={} slot={} {} -> {}",
-                camp.getCityId(), blossom.type, blossom.slot, source.campId, chosen.campId);
+                graph.cityId, blossom.type, blossom.slot, source.campId, chosen.campId);
         return true;
     }
     private final Scene scene;
@@ -544,6 +541,7 @@ public class BlossomManager {
 
     public BlossomManager(Scene scene) {
         this.scene = scene;
+        this.refreshIds = indexRefreshIds();
     }
 
     /** Attach selected native worktops when they enter the scene. */

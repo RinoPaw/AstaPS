@@ -66,6 +66,4 @@ final class BlossomGraph {
             return null;
         }
     }
-
-
 }

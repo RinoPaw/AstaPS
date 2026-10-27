@@ -24,49 +24,50 @@ final class BlossomNativeCamps {
     }
 
     static final class CampNode {
-        final int campId;
-        final List<Integer> nextCampIds = new ArrayList<>();
+        final BlossomCampData data;
+        final List<CampNode> next = new ArrayList<>();
         Blossom blossom;
-        final BlossomCampData authored;
 
-        CampNode(int campId) { this(campId, null); }
-
-        CampNode(int campId, BlossomCampData authored) {
-            this.campId = campId;
-            this.authored = authored;
-        }
+        CampNode(BlossomCampData data) { this.data = data; }
     }
 
     static final class CityGraph {
-        final Map<Integer, CampNode> nodes = new HashMap<>();
+        final List<CampNode> nodes = new ArrayList<>();
 
         CityGraph(int cityId, Collection<BlossomCampData> authored) {
-            var rows = new ArrayList<BlossomCampData>();
+            var byId = new HashMap<Integer, CampNode>();
             for (var data : authored) {
                 if (data.getCityId() != cityId) continue;
-                rows.add(data);
-                nodes.put(data.getId(), new CampNode(data.getId(), data));
+                var node = new CampNode(data);
+                nodes.add(node);
+                byId.put(data.getId(), node);
             }
+            for (var node : nodes) {
+                var nextIds = node.data.getNextCampIdVec();
+                if (nextIds == null) continue;
+                for (int nextId : nextIds) {
+                    var successor = byId.get(nextId);
+                    if (successor != null) node.next.add(successor);
+                }
+            }
+        }
 
-            for (var data : rows) {
-                var node = nodes.get(data.getId());
-                if (data.getNextCampIdVec() != null)
-                    for (int nextId : data.getNextCampIdVec())
-                        if (nodes.containsKey(nextId)) node.nextCampIds.add(nextId);
-            }
+        CampNode find(int campId) {
+            return nodes.stream().filter(node -> node.data.getId() == campId)
+                    .findFirst().orElse(null);
         }
 
         /** Keep the original minimum-camp-ID head for each native section. */
         List<CampNode> sectionHeads(int nativeType) {
             var sections = new TreeMap<Integer, CampNode>();
-            for (var node : nodes.values()) {
-                var data = node.authored;
+            for (var node : nodes) {
+                var data = node.data;
                 if (data == null || data.getRefreshTypeVec() == null
                         || !data.getRefreshTypeVec().contains(nativeType)
                         || data.getNewGroupVec() == null || data.getNewGroupVec().isEmpty())
                     continue;
                 sections.merge(data.getSectionId(), node,
-                        (a, b) -> a.campId < b.campId ? a : b);
+                        (a, b) -> a.data.getId() < b.data.getId() ? a : b);
             }
             return new ArrayList<>(sections.values());
         }
@@ -77,8 +78,8 @@ final class BlossomNativeCamps {
             var visited = new HashSet<Integer>();
             while (!queue.isEmpty()) {
                 var node = queue.removeFirst();
-                if (!visited.add(node.campId)) continue;
-                for (int id : node.nextCampIds) queue.add(nodes.get(id));
+                if (!visited.add(node.data.getId())) continue;
+                queue.addAll(node.next);
                 if (node.blossom == null && usable.test(node)) return node;
             }
             return null;
@@ -105,10 +106,10 @@ final class BlossomNativeCamps {
             }
             refreshIds = Map.copyOf(indexed);
         }
-        var camp = GameData.getBlossomCampDataMap().get(node.campId);
-        if (camp == null) throw new IllegalStateException("Unknown blossom camp " + node.campId);
+        var camp = node.data;
+        if (camp == null) throw new IllegalStateException("Unknown blossom camp " + node.data.getId());
         var id = refreshIds.get(new RefreshKey(camp.getCityId(), node.blossom.type));
-        if (id == null) throw new IllegalStateException("Missing blossom refresh for " + node.campId);
+        if (id == null) throw new IllegalStateException("Missing blossom refresh for " + node.data.getId());
         return id;
     }
 
@@ -126,14 +127,14 @@ final class BlossomNativeCamps {
             CityGraph graph, CampNode node, BlossomType kind,
             int adventureRank, Collection<Integer> unlockedAreas, boolean initial) {
         if (node == null || node.blossom != null) return null;
-        var camp = GameData.getBlossomCampDataMap().get(node.campId);
+        var camp = node.data;
         if (camp == null || adventureRank < camp.getLimitLevel()) return null;
-        var gadget = manager.resolveCampGadget(node.campId, kind, unlockedAreas, initial);
+        var gadget = manager.resolveCampGadget(node.data.getId(), kind, unlockedAreas, initial);
         if (gadget == null) return null;
-        for (var other : graph.nodes.values()) {
+        for (var other : graph.nodes) {
             if (other.blossom == null) continue;
             var otherGadget = manager.resolveCampGadget(
-                    other.campId, other.blossom.type, unlockedAreas, false);
+                    other.data.getId(), other.blossom.type, unlockedAreas, false);
             if (otherGadget != null && otherGadget.pos.computeDistance(gadget.pos) < 2.5f)
                 return null;
         }
@@ -171,7 +172,7 @@ final class BlossomNativeCamps {
                 if (chosen == null) continue;
                 chosen.blossom = new Blossom(kind, slot);
                 selected.add(chosen);
-                host.setBlossomCampId(refresh.getId(), slot, chosen.campId);
+                host.setBlossomCampId(refresh.getId(), slot, chosen.data.getId());
                 break;
             }
         }
@@ -200,7 +201,7 @@ final class BlossomNativeCamps {
                 if (host.isBlossomConsumed(refresh.getId(), slot)) continue;
                 int savedId = host.getBlossomCampId(refresh.getId(), slot);
                 if (savedId == 0) continue;
-                var node = graph.nodes.get(savedId);
+                var node = graph.find(savedId);
                 if (node == null) continue;
                 var gadget = manager.resolveCampGadget(savedId, kind, unlockedAreas, false);
                 if (gadget == null) continue;
@@ -242,11 +243,11 @@ final class BlossomNativeCamps {
 
     /** Move an existing flower; successors do not have to be in unlocked regions. */
     boolean advanceCamp(Scene scene, CampNode source, Collection<Integer> unlockedAreas) {
-        var camp = GameData.getBlossomCampDataMap().get(source.campId);
+        var camp = source.data;
         if (camp == null) return false;
         var graph = graphFor(camp.getCityId());
-        var current = graph.nodes.get(source.campId);
-        if (current == null || current.blossom == null || current.nextCampIds.isEmpty()) {
+        var current = graph.find(source.data.getId());
+        if (current == null || current.blossom == null || current.next.isEmpty()) {
             if (current != null) {
                 current.blossom = null;
             }
@@ -256,22 +257,22 @@ final class BlossomNativeCamps {
         int refreshId = refreshId(current);
         var blossom = current.blossom;
         current.blossom = null;
-        var successors = current.nextCampIds.stream().map(graph.nodes::get).toList();
+        var successors = current.next;
         var chosen = findCamp(graph, successors, blossom.type,
                 scene.getWorld().getHost().getLevel(), unlockedAreas, false);
         if (chosen == null) {
             Grasscutter.getLogger().warn(
                     "No valid ley-line successor city={} kind={} camp={} slot={}",
-                    camp.getCityId(), blossom.type, source.campId, blossom.slot);
+                    camp.getCityId(), blossom.type, source.data.getId(), blossom.slot);
             return false;
         }
 
         blossom.state = Blossom.State.IDLE;
         chosen.blossom = blossom;
         scene.getWorld().getHost().advanceBlossomCampId(
-                refreshId, blossom.slot, chosen.campId);
+                refreshId, blossom.slot, chosen.data.getId());
         Grasscutter.getLogger().info("Ley-line camp advanced city={} type={} slot={} {} -> {}",
-                camp.getCityId(), blossom.type, blossom.slot, source.campId, chosen.campId);
+                camp.getCityId(), blossom.type, blossom.slot, source.data.getId(), chosen.data.getId());
         return true;
     }
 }

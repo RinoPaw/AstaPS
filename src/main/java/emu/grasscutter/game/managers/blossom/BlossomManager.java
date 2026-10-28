@@ -494,10 +494,26 @@ public class BlossomManager {
         if (old == null || !old.equals(selected)) {
             activeSetRevision++;
             if (old != null) mapMarkersDirty = true;
-            Grasscutter.getLogger().info(
-                    "Ley-line active scene={} rank={} camps={} kinds={}",
-                    scene.getId(), rank, selected.size(),
-                    selected.stream().map(source -> refreshId(source)).distinct().count());
+        }
+        Grasscutter.getLogger().info(
+                "Ley-line active scene={} rank={} areas={} camps={} kinds={}",
+                scene.getId(), rank, unlocked, selected.size(),
+                selected.stream().map(source -> refreshId(source)).distinct().count());
+        if (selected.isEmpty() && rank >= 8) {
+            for (var refresh : GameData.getBlossomRefreshExcelConfigDataMap().values()) {
+                var kind = Blossom.Type.fromRefresh(refresh.getRefreshType());
+                var city = GameData.getCityDataMap().get(refresh.getCityId());
+                if (kind == null || city == null || city.getSceneId() != scene.getId()
+                        || !refreshEligible(refresh, rank)) continue;
+                var starts = graphFor(refresh.getCityId()).initialCamps;
+                var gadgets = starts.stream().map(node -> resolveCampGadget(node.campId, kind))
+                        .filter(Objects::nonNull).toList();
+                Grasscutter.getLogger().info(
+                        "Ley-line candidates refresh={} type={} heads={} gadgets={} unlockedGadgets={} gadgetAreas={}",
+                        refresh.getId(), kind, starts.size(), gadgets.size(),
+                        gadgets.stream().filter(g -> unlocked.contains(g.area_id)).count(),
+                        gadgets.stream().map(g -> g.area_id).distinct().toList());
+            }
         }
         return selected;
     }

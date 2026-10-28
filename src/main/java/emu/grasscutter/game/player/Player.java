@@ -134,6 +134,7 @@ public class Player implements PlayerHook, FieldFetch {
     /** Claim retries are scoped to host UID / refresh ID / incarnation. */
     private Map<String, Integer> blossomClaimAttempts = new HashMap<>();
 
+    @Entity(useDiscriminator = false)
     public static class BlossomRunState {
         public int campId;
         public long incarnation;

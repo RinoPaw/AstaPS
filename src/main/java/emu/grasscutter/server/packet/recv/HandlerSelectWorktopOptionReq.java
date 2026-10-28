@@ -41,8 +41,9 @@ public class HandlerSelectWorktopOptionReq extends PacketHandler {
             // Ley-line encounters dispatch their original EVENT_SELECT_OPTION once.
             // Do not also deliver the legacy EVENT_SELECT_OPTION trigger.
             boolean notifyLua = !(entity instanceof EntityGadget flower
-                    && emu.grasscutter.game.managers.blossom.BlossomType.valueOf(
-                            flower.getGadgetId()) != null
+                    && scene.getBlossomManager() != null
+                    && scene.getBlossomManager().isAuthoredWorktop(
+                            flower.getGroupId(), flower.getGadgetId())
                     && req.getOptionId() == 187);
             scene.selectWorktopOptionWith(req);
             if (notifyLua) {

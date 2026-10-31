@@ -1110,6 +1110,45 @@ public class SceneScriptManager {
         return eventExecutor.submit(() -> this.realCallEvent(params));
     }
 
+    /** Resolve the completion callback from the loaded native Lua group itself. */
+    static List<SceneTrigger> nativeBlossomFinishTriggers(SceneGroup group) {
+        return group.triggers.values().stream()
+                .filter(trigger -> trigger.getEvent() == EventType.EVENT_BLOSSOM_PROGRESS_FINISH)
+                .toList();
+    }
+
+    private Set<SceneTrigger> blossomFinishTriggers(ScriptArgs params) {
+        var registered = getTriggersByEvent(EventType.EVENT_BLOSSOM_PROGRESS_FINISH);
+        if (scene.getSceneType() != SceneType.SCENE_WORLD || scene.getBlossomManager() == null
+                || !scene.getBlossomManager().isNativeCampGroup(params.getGroupId())) {
+            return registered.stream()
+                    .filter(trigger -> params.getGroupId() == 0
+                            || trigger.getCurrentGroup().id == params.getGroupId())
+                    .filter(trigger -> trigger.getSource().isEmpty()
+                            || trigger.getSource().equals(params.getEventSource()))
+                    .collect(Collectors.toSet());
+        }
+
+        var instance = getGroupInstanceById(params.getGroupId());
+        if (instance == null || instance.getLuaGroup() == null) {
+            Grasscutter.getLogger().error("Ley-line completion has no loaded Lua group scene={} group={}",
+                    scene.getId(), params.getGroupId());
+            return Set.of();
+        }
+        var authored = nativeBlossomFinishTriggers(instance.getLuaGroup()).stream()
+                .filter(trigger -> trigger.getSource().isEmpty()
+                        || trigger.getSource().equals(params.getEventSource()))
+                .collect(Collectors.toSet());
+        Grasscutter.getLogger().info("Ley-line finish Lua dispatch scene={} group={} authored={} registered={}",
+                scene.getId(), params.getGroupId(), authored.size(),
+                registered.stream().filter(trigger -> trigger.getCurrentGroup().id == params.getGroupId()).count());
+        if (authored.isEmpty()) {
+            Grasscutter.getLogger().error("Ley-line completion has no original Lua finish trigger scene={} group={}",
+                    scene.getId(), params.getGroupId());
+        }
+        return authored;
+    }
+
     private synchronized Future<?> enqueueBlossomGroupEvent(ScriptArgs params) {
         var previous = blossomGroupEvents.getOrDefault(
                 params.getGroupId(), CompletableFuture.completedFuture(null));
@@ -1160,6 +1199,7 @@ public class SceneScriptManager {
             var eventType = params.type;
             var relevantTriggers =
                     switch (eventType) {
+                        case EventType.EVENT_BLOSSOM_PROGRESS_FINISH -> blossomFinishTriggers(params);
                         case EventType.EVENT_ENTER_REGION, EventType.EVENT_LEAVE_REGION -> this
                                 .getTriggersByEvent(eventType)
                                 .stream()
@@ -1188,7 +1228,11 @@ public class SceneScriptManager {
                 }
             } else {
                 for (SceneTrigger trigger : relevantTriggers) {
-                    handleEventForTrigger(params, trigger);
+                    boolean accepted = handleEventForTrigger(params, trigger);
+                    if (eventType == EventType.EVENT_BLOSSOM_PROGRESS_FINISH && !accepted) {
+                        Grasscutter.getLogger().error("Ley-line finish Lua action rejected scene={} group={} trigger={}",
+                                scene.getId(), params.getGroupId(), trigger.getName());
+                    }
                 }
             }
         } catch (Throwable throwable) {

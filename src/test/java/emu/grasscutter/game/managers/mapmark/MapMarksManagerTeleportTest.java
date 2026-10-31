@@ -23,6 +23,6 @@ class MapMarksManagerTeleportTest {
 
     @Test
     void defaultAltitudeClearsOriginalThreeHundredMeterFloor() {
-        assertTrue(MapMarksManager.safeSceneAltitude(-1) >= 2000f);
+        assertTrue(MapMarksManager.safeSceneAltitude(-1, new emu.grasscutter.game.world.Position(0, 0, 0)) >= 2000f);
     }
 }

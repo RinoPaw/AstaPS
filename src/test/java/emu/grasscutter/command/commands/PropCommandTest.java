@@ -56,14 +56,6 @@ public final class PropCommandTest {
     }
 
     @Test
-    void levelAliasMeansAdventureRank() throws Exception {
-        var field = SetPropCommand.class.getDeclaredField("props");
-        field.setAccessible(true);
-        var props = (java.util.Map<?, ?>) field.get(new SetPropCommand());
-        assertSame(props.get("player_level"), props.get("level"));
-    }
-
-    @Test
     void removedNestedSetAndInvalidArityAreRejected() {
         for (String[] args : new String[][] {
                 {}, {"set", "worldlevel", "8"},

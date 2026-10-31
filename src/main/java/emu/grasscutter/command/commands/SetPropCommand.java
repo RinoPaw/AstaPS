@@ -30,9 +30,6 @@ public final class SetPropCommand implements CommandHandler {
             this.props.put(key, new Prop(name, prop));
         }
 
-        // Unqualified level is Adventure Rank, not the distinct PROP_LEVEL (4001).
-        this.props.put("level", this.props.get("player_level"));
-
         Prop worldlevel =
                 new Prop("World Level", PlayerProperty.PROP_PLAYER_WORLD_LEVEL, PseudoProp.WORLD_LEVEL);
         this.props.put("worldlevel", worldlevel);

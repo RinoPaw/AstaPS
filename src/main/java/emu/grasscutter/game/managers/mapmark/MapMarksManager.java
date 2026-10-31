@@ -1,6 +1,7 @@
 package emu.grasscutter.game.managers.mapmark;
 
 import emu.grasscutter.config.Configuration;
+import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.*;
 import emu.grasscutter.game.world.Position;
 import emu.grasscutter.net.proto.MapMarkPointTypeOuterClass.MapMarkPointType;
@@ -65,14 +66,34 @@ public class MapMarksManager extends BasePlayerManager {
         }
     }
 
-    private void teleport(Player player, MapMark mapMark) {
-        float y;
-        try {
-            y = Float.parseFloat(mapMark.getName());
-        } catch (Exception e) {
-            y = 300;
+    /** Map pins supply X/Z but no reliable terrain elevation. Explicit names still override Y. */
+    static float resolveTeleportHeight(String name, float safeAltitude) {
+        if (name != null) {
+            try {
+                float requested = Float.parseFloat(name.trim());
+                if (Float.isFinite(requested)) return requested;
+            } catch (NumberFormatException ignored) {
+                // A normal marker label is not an altitude.
+            }
         }
+        return safeAltitude;
+    }
 
+    /** Stay above the scene's known teleport points when the player did not specify Y. */
+    static float safeSceneAltitude(int sceneId) {
+        float highest = 0;
+        for (var entry : GameData.getScenePointEntryMap().values()) {
+            if (entry.getSceneId() != sceneId) continue;
+            var point = entry.getPointData();
+            var position = point.getTranPos() != null ? point.getTranPos() : point.getPos();
+            if (position == null || !Float.isFinite(position.getY())) continue;
+            highest = Math.max(highest, position.getY());
+        }
+        return Math.max(2000f, highest + 300f);
+    }
+
+    private void teleport(Player player, MapMark mapMark) {
+        float y = resolveTeleportHeight(mapMark.getName(), safeSceneAltitude(mapMark.getSceneId()));
         Position pos = mapMark.getPosition();
         player
                 .getWorld()

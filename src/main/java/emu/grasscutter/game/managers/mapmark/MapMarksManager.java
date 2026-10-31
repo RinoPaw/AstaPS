@@ -85,21 +85,40 @@ public class MapMarksManager extends BasePlayerManager {
         return safeAltitude;
     }
 
-    /** Stay above the scene's known teleport points when the player did not specify Y. */
-    static float safeSceneAltitude(int sceneId) {
-        float highest = 0;
-        for (var entry : GameData.getScenePointEntryMap().values()) {
-            if (entry.getSceneId() != sceneId) continue;
-            var point = entry.getPointData();
-            var position = point.getTranPos() != null ? point.getTranPos() : point.getPos();
+    /**
+     * A map pin's Y is always zero in 7.1. Nearby original scene points provide a bounded
+     * elevation estimate, reducing the unnecessary drop from Y=2000. This is not terrain
+     * collision detection: distant or multi-level destinations still require native geometry.
+     */
+    static float estimatedAltitude(Position target, Iterable<Position> scenePoints, float fallback) {
+        float best = Float.POSITIVE_INFINITY;
+        for (var position : scenePoints) {
             if (position == null || !Float.isFinite(position.getY())) continue;
-            highest = Math.max(highest, position.getY());
+            double distance = Math.hypot(position.getX() - target.getX(),
+                    position.getZ() - target.getZ());
+            if (!Double.isFinite(distance) || distance > 250) continue;
+            float candidate = position.getY() + 30f + (float) distance * 2f;
+            best = Math.min(best, candidate);
         }
-        return Math.max(2000f, highest + 300f);
+        return Float.isFinite(best) ? best : fallback;
+    }
+
+    static float safeSceneAltitude(int sceneId, Position target) {
+        var scenePoints = GameData.getScenePointEntryMap().values().stream()
+                .filter(entry -> entry.getSceneId() == sceneId)
+                .map(entry -> entry.getPointData())
+                .map(point -> point.getTranPos() != null ? point.getTranPos() : point.getPos())
+                .toList();
+        return estimatedAltitude(target, scenePoints, 2000f);
     }
 
     private void teleport(Player player, MapMark mapMark) {
-        float y = resolveTeleportHeight(mapMark.getName(), safeSceneAltitude(mapMark.getSceneId()));
+        Position pos = mapMark.getPosition();
+        float y = resolveTeleportHeight(mapMark.getName(),
+                safeSceneAltitude(mapMark.getSceneId(), pos));
+        emu.grasscutter.Grasscutter.getLogger().info(
+                "Fishhook destination scene={} pos=({},{},{}) selectedY={}",
+                mapMark.getSceneId(), pos.getX(), pos.getY(), pos.getZ(), y);
         Position pos = mapMark.getPosition();
         player
                 .getWorld()

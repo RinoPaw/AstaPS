@@ -265,6 +265,13 @@ public class Player implements PlayerHook, FieldFetch {
     private HashMap<String, MapMark> mapMarks;
     @Getter @Setter private int nextResinRefresh;
     @Getter @Setter private int resinBuyCount;
+    private WeeklyBossClaimState weeklyBossClaimState;
+
+    public synchronized WeeklyBossClaimState getWeeklyBossClaimState() {
+        if (weeklyBossClaimState == null) weeklyBossClaimState = new WeeklyBossClaimState();
+        return weeklyBossClaimState;
+    }
+
     @Getter @Setter private int lastDailyReset;
     @Getter private transient MpSettingType mpSetting = MpSettingType.MpSettingType_MP_SETTING_ENTER_AFTER_APPLY;
     @Getter private long playerGameTime = 540000;
@@ -1512,8 +1519,8 @@ public class Player implements PlayerHook, FieldFetch {
 
         int currentTime = Utils.getCurrentSeconds();
 
-        var currentDate = LocalDate.ofInstant(Instant.ofEpochSecond(currentTime), ZoneId.systemDefault());
-        var lastResetDate = LocalDate.ofInstant(Instant.ofEpochSecond(this.getLastDailyReset()), ZoneId.systemDefault());
+        var currentDate = GameDay.date(currentTime);
+        var lastResetDate = GameDay.date(this.getLastDailyReset());
 
         if (!currentDate.isAfter(lastResetDate)) {
             return;
@@ -1523,11 +1530,10 @@ public class Player implements PlayerHook, FieldFetch {
 
         this.getBattlePassManager().resetDailyMissions();
 
-        this.getBattlePassManager().triggerMission(WatcherTriggerType.TRIGGER_LOGIN);
-
-        if (currentDate.getDayOfWeek() == DayOfWeek.MONDAY) {
+        if (GameDay.crossedWeeklyReset(this.getLastDailyReset(), currentTime)) {
             this.getBattlePassManager().resetWeeklyMissions();
         }
+        this.getBattlePassManager().triggerMission(WatcherTriggerType.TRIGGER_LOGIN);
 
         if (this.dailyTaskManager != null) {
             this.dailyTaskManager.resetDailyTasksForNewDay();
@@ -1702,23 +1708,31 @@ public class Player implements PlayerHook, FieldFetch {
 
         runner.submit(this.getFriendsList()::loadFromDatabase);
         runner.submit(this.getMailHandler()::loadFromDatabase);
-        runner.submit(this.getQuestManager()::loadFromDatabase);
+        var questsLoad = runner.submit(this.getQuestManager()::loadFromDatabase);
 
-        runner.submit(this::loadBattlePassManager);
-        runner.submit(this::loadDailyTaskManager);
+        var battlePassLoad = runner.submit(this::loadBattlePassManager);
+        var dailyTasksLoad = runner.submit(this::loadDailyTaskManager);
 
         // With asyncLogin off this runs on the one thread that handles every player's packets.
         // Waiting on the loaded flags forever meant a loader that threw - its exception swallowed
         // by the pool - or a pool full of stuck tasks froze the whole server. Fail this one login
         // instead.
-        awaitLoad("avatars", avatarsLoad);
-        awaitLoad("inventory", inventoryLoad);
-        awaitLoad("achievements", achievementsLoad);
+        awaitLoginLoads(avatarsLoad, inventoryLoad, achievementsLoad, questsLoad, battlePassLoad, dailyTasksLoad);
 
         this.getPlayerProgress().setPlayer(this);
     }
 
     private static final long LOAD_TIMEOUT_SECONDS = 30;
+
+    void awaitLoginLoads(Future<?> avatarsLoad, Future<?> inventoryLoad, Future<?> achievementsLoad,
+            Future<?> questsLoad, Future<?> battlePassLoad, Future<?> dailyTasksLoad) {
+        awaitLoad("avatars", avatarsLoad);
+        awaitLoad("inventory", inventoryLoad);
+        awaitLoad("achievements", achievementsLoad);
+        awaitLoad("quests", questsLoad);
+        awaitLoad("battle pass", battlePassLoad);
+        awaitLoad("daily tasks", dailyTasksLoad);
+    }
 
     private void awaitLoad(String what, java.util.concurrent.Future<?> load) {
         try {
@@ -1810,7 +1824,20 @@ public class Player implements PlayerHook, FieldFetch {
         session.send(new PacketBattlePassAllDataNotify(this));
         session.send(new PacketQuestListNotify(this));
         session.send(new PacketQuestGlobalVarNotify(this));
+        // Tips met before they were tracked, so the codex matches this account's progress.
+        try {
+            PushTipsManager.of(this)
+                    .backfill(
+                            subQuestId -> {
+                                var quest = this.getQuestManager().getQuestById(subQuestId);
+                                return quest != null && quest.getState() == QuestState.QUEST_STATE_FINISHED;
+                            },
+                            monsterId -> this.getCodex().getUnlockedAnimal().containsKey(monsterId));
+        } catch (RuntimeException e) {
+            Grasscutter.getLogger().warn("[PushTips] uid={} backfill failed", this.getUid(), e);
+        }
         session.send(new PacketCodexDataFullNotify(this));
+        session.send(new PacketPushTipsAllDataNotify(PushTipsManager.of(this).states()));
         session.send(new PacketAllWidgetDataNotify(this));
 
         this.achievements.onLogin(this);

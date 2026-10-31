@@ -10,8 +10,6 @@ import emu.grasscutter.data.excels.DropTableData;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.game.systems.TestPlayers;
 import emu.grasscutter.scripts.data.SceneGadget;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

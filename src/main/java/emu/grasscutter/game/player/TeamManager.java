@@ -158,9 +158,14 @@ public final class TeamManager extends BasePlayerDataManager {
     }
 
     public int getTeamId(TeamInfo team) {
-        for (int i = 1; i <= this.teams.size(); i++) {
-            if (this.teams.get(i).equals(team)) {
-                return i;
+        if (team == null) {
+            return -1;
+        }
+
+        for (Map.Entry<Integer, TeamInfo> entry : this.teams.entrySet()) {
+            TeamInfo candidate = entry.getValue();
+            if (candidate == team || (candidate != null && candidate.equals(team))) {
+                return entry.getKey();
             }
         }
         return -1;

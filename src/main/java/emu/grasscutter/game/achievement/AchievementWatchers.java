@@ -4,10 +4,12 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.achievement.AchievementData;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.player.PushTipsManager;
 import emu.grasscutter.game.props.WatcherTriggerType;
 import emu.grasscutter.server.packet.send.PacketWatcherAllDataNotify;
 import emu.grasscutter.server.packet.send.PacketWatcherChangeNotify;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -32,7 +34,10 @@ public final class AchievementWatchers {
     }
 
     public static void sendAll(Player player) {
-        player.sendPacket(new PacketWatcherAllDataNotify(unfinishedIds(player.getAchievements())));
+        // Push tips watchers ride along: the client only reports triggers it was told to watch.
+        var ids = new LinkedHashSet<Integer>(unfinishedIds(player.getAchievements()));
+        ids.addAll(PushTipsManager.of(player).pendingWatcherIds());
+        player.sendPacket(new PacketWatcherAllDataNotify(new ArrayList<>(ids)));
     }
 
     /** WatcherEventNotify / WatcherEventStageNotify: progress one watcher by id. */
@@ -41,6 +46,7 @@ public final class AchievementWatchers {
         if (achievements.isInvalid(watcherId)) {
             Grasscutter.getLogger()
                     .debug("[Watcher] uid={} event for non-achievement watcher {}", player.getUid(), watcherId);
+            PushTipsManager.of(player).onWatcherEvent(watcherId);
             return;
         }
         addProgress(player, achievements, watcherId, addProgress);
@@ -64,6 +70,9 @@ public final class AchievementWatchers {
             addProgress(player, achievements, data.getId(), addProgress);
             matched++;
         }
+        // 推送提示（教学）的观察器也会按类型上报，例如靠近风神瞳时的 TRIGGER_WIND_CRYSTAL。
+        // 以前只交给成就，提示一直不解锁、观察器不撤，客户端会每秒重复触发「看神瞳」教学并锁住镜头。
+        PushTipsManager.of(player).onTypeEvent(type, params, addProgress);
         Grasscutter.getLogger()
                 .debug(
                         "[Watcher] uid={} type={}({}) params={} add={} matched {} achievement(s)",
@@ -105,7 +114,7 @@ public final class AchievementWatchers {
      * Excel params are strings; numeric ones must equal the client's param at the same index.
      * Named params (dummy point names and the like) cannot be sent as uint32 and are skipped.
      */
-    static boolean paramsMatch(String[] excelParams, List<Integer> clientParams) {
+    public static boolean paramsMatch(String[] excelParams, List<Integer> clientParams) {
         if (excelParams == null) return true;
         for (int i = 0; i < excelParams.length; i++) {
             var param = excelParams[i];

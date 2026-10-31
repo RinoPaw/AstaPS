@@ -53,7 +53,7 @@ class ConfigRouteOrderingTest {
                 List.of(0, 1, 2),
                 position.visited,
                 "map bucket 0 final callback must not overtake buckets 14/15");
-        assertEquals(List.of(0, 1, 2), f.scene.manager.events.stream().map(e -> e.param3).toList());
+        assertEquals(List.of(0, 1, 2), f.reachEvents().stream().map(e -> e.param3).toList());
         assertEquals(2, f.config.getStartIndex());
         assertFalse(f.config.isStarted());
         assertFalse(f.config.isActive());
@@ -98,7 +98,7 @@ class ConfigRouteOrderingTest {
         assertEquals(List.of(0, 1, 1, 2, 3, 3, 4), position.visited);
         assertEquals(
                 List.of(0, 1, 2, 3, 4),
-                f.scene.manager.events.stream().map(e -> e.param3).toList(),
+                f.reachEvents().stream().map(e -> e.param3).toList(),
                 "every intended reach event precedes final/stop completion");
     }
 }

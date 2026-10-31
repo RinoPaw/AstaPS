@@ -31,7 +31,7 @@ public class HandlerAvatarFetterLevelRewardReq extends PacketHandler {
         var reward = GameData.getRewardDataMap().get(rewardId);
         if (avatar == null || reward == null || avatar.getFetterLevel() < fetterLevel) {
             Grasscutter.getLogger()
-                    .debug(
+                    .warn(
                             "[Fetter] uid={} cannot claim level {} reward of avatar guid {}"
                                     + " (reward {}, level {})",
                             player.getUid(),
@@ -46,15 +46,25 @@ public class HandlerAvatarFetterLevelRewardReq extends PacketHandler {
         if (!avatar.getRewardedFetterLevels().contains(fetterLevel)) {
             var items = new ArrayList<GameItem>();
             for (var param : reward.getAllRewardItems()) {
-                if (param.getId() > 0 && param.getCount() > 0) {
-                    items.add(new GameItem(param.getId(), param.getCount()));
+                if (param.getId() <= 0 || param.getCount() <= 0) continue;
+                // Single-copy rewards (Zibai's carriage box, Linnea's widget and codex pages) the
+                // player already owns would hit the stack limit and refuse the whole claim.
+                var data = GameData.getItemDataMap().get(param.getId());
+                if (data != null
+                        && data.getStackLimit() == 1
+                        && player.getInventory().getItemCountById(param.getId()) > 0) {
+                    continue;
                 }
+                items.add(new GameItem(param.getId(), param.getCount()));
             }
             // All or nothing: a full bag delivers none, so keep the level claimable for a retry.
-            var added = player.getInventory().addItems(items, ActionReason.FetterLevelReward);
-            if (!added.allAccepted()) {
+            var added =
+                    items.isEmpty()
+                            ? null
+                            : player.getInventory().addItems(items, ActionReason.FetterLevelReward);
+            if (added != null && !added.allAccepted()) {
                 Grasscutter.getLogger()
-                        .debug(
+                        .warn(
                                 "[Fetter] uid={} level {} reward {} of avatar {} not admitted: {}",
                                 player.getUid(),
                                 fetterLevel,

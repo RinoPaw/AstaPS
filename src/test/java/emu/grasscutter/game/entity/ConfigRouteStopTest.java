@@ -54,12 +54,12 @@ class ConfigRouteStopTest {
             assertEquals(0, f.lib.StartPlatform(174002));
             assertEquals(start, f.config.toProto().getStartIndex());
             assertEquals(end - start + 1, f.ids().size());
-            int events = f.scene.manager.events.size();
+            int events = f.reachEvents().size();
             old.forEach(ServerTask::run);
             f.polls(1000);
             assertEquals(start, f.config.getStartIndex());
             assertTrue(f.config.isStarted());
-            assertEquals(events, f.scene.manager.events.size());
+            assertEquals(events, f.reachEvents().size());
             old = new ArrayList<>(f.tasks());
             // Simulate a retained far-end callback already in the scheduler, not merely unscheduled
             // points.
@@ -83,15 +83,15 @@ class ConfigRouteStopTest {
             assertFalse(f.config.isActive());
             assertTrue(f.config.getScheduledIndexes().isEmpty());
             assertNull(f.scene.scheduler.getTask(lateId));
-            events = f.scene.manager.events.size();
+            events = f.reachEvents().size();
             f.scene.now += 10000;
             f.polls(1000);
             old.forEach(ServerTask::run);
             assertEquals(end, f.config.getStartIndex());
-            assertEquals(events, f.scene.manager.events.size());
+            assertEquals(events, f.reachEvents().size());
         }
-        assertEquals(2, f.scene.manager.events.size());
-        assertEquals(4, f.scene.manager.events.get(1).param3);
+        assertEquals(2, f.reachEvents().size());
+        assertEquals(4, f.reachEvents().get(1).param3);
     }
 
     @Test
@@ -103,13 +103,13 @@ class ConfigRouteStopTest {
         f.polls(1);
         assertEquals(1, f.config.getStartIndex());
         f.scene.route.getPoints()[2].setTargetVelocity(-1);
-        int packets = f.scene.packets.size(), events = f.scene.manager.events.size();
+        int packets = f.scene.packets.size(), events = f.reachEvents().size();
         assertEquals(2, f.lib.StartPlatform(174002));
         assertEquals(1, f.config.getStartIndex());
         assertFalse(f.config.isStarted());
         assertFalse(f.config.isActive());
         assertEquals(packets, f.scene.packets.size());
-        assertEquals(events, f.scene.manager.events.size());
+        assertEquals(events, f.reachEvents().size());
         var single = new ConfigRouteDeadlineTest.Fixture(200);
         single.scene.route.setPoints(new RoutePoint[] {single.scene.route.getPoints()[0]});
         assertTrue(single.gadget.startPlatform());

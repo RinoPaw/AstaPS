@@ -147,6 +147,13 @@ class ConfigRouteDeadlineTest {
 
     static class Fixture {
         TestScene scene;
+
+        /** Reach-point events only; each waypoint also fires a platform arrival event. */
+        List<ScriptArgs> reachEvents() {
+            return scene.manager.events.stream()
+                    .filter(e -> e.type == emu.grasscutter.scripts.constants.EventType.EVENT_PLATFORM_REACH_POINT)
+                    .toList();
+        }
         TestGadget gadget;
         ConfigRoute config;
         ScriptLib lib;
@@ -226,7 +233,12 @@ class ConfigRouteDeadlineTest {
                 if (elapsed < 3000) assertEquals(1, f.scene.manager.events.size());
             }
             assertEquals(2, f.config.getStartIndex());
-            assertEquals(2, f.scene.manager.events.size());
+            assertEquals(3, f.scene.manager.events.size());
+            var arrival = f.scene.manager.events.get(2);
+            assertEquals(emu.grasscutter.scripts.constants.EventType.EVENT_PLATFORM_ARRIVAL, arrival.type);
+            assertEquals(174002, arrival.param1);
+            assertEquals(300300282, arrival.param2);
+            assertEquals(2, arrival.param3);
         }
     }
 
@@ -402,7 +414,7 @@ class ConfigRouteDeadlineTest {
         } finally {
             threads.shutdownNow();
         }
-        assertEquals(2, f.scene.manager.events.size());
+        assertEquals(3, f.scene.manager.events.size());
         assertEquals(2, f.config.getStartIndex());
     }
 }

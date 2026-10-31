@@ -343,7 +343,7 @@ public final class Grasscutter {
         return Grasscutter.runModeOverride != null ? Grasscutter.runModeOverride : SERVER.runMode;
     }
 
-    public static LineReader getConsole() {
+    public static synchronized LineReader getConsole() {
         if (consoleLineReader == null) {
             Terminal terminal = null;
             try {
@@ -408,6 +408,10 @@ public final class Grasscutter {
                 return;
             } catch (IOError e) {
                 logger.error("An IO error occurred while trying to read from console.", e);
+                return;
+            } catch (IllegalStateException e) {
+                // `stop` closes the terminal from the shutdown hook while this thread is back in
+                // readLine; JLine then throws "Terminal has been closed". Nothing is left to read.
                 return;
             }
 

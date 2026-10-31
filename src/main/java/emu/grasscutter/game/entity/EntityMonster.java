@@ -358,6 +358,15 @@ public class EntityMonster extends GameEntity {
         // first set the challenge data
         challenge.ifPresent(c -> c.onMonsterDeath(this));
 
+        if (scene.getBlossomManager() != null
+                && scene.getBlossomManager().isNativeCampGroup(this.getGroupId())) {
+            Grasscutter.getLogger().info(
+                    "Ley-line monster death scene={} group={} config={} deathTriggers={}",
+                    scene.getId(), this.getGroupId(), this.getConfigId(),
+                    scriptManager.getTriggersByEvent(EventType.EVENT_ANY_MONSTER_DIE).stream()
+                            .filter(trigger -> trigger.getCurrentGroup().id == this.getGroupId())
+                            .count());
+        }
         if (this.getGroupId() > 0
                 && (scriptManager.isInit()
                     || (scene.getBlossomManager() != null

@@ -1178,7 +1178,15 @@ public class ScriptLib {
     }
 
     public void PrintContextLog(String msg) {
-        printLog("PrintContextLog", msg);
+        var group = currentGroup.getIfExists();
+        var manager = sceneScriptManager.getIfExists();
+        if (msg != null && msg.contains("LUA_WARNING") && group != null && manager != null
+                && manager.getScene().getBlossomManager() != null
+                && manager.getScene().getBlossomManager().isNativeCampGroup(group.id)) {
+            logger.warn("Ley-line Lua warning group={} {}", group.id, msg);
+        } else {
+            printLog("PrintContextLog", msg);
+        }
     }
 
     public void PrintLog(String msg) {

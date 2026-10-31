@@ -384,7 +384,7 @@ public class BlossomManager {
             for (var activity : blossomActivities) {
                 if (activity.getGadget() != source) continue;
                 activity.beginNative(monsterGoal);
-                Grasscutter.getLogger().info("Ley-line encounter started scene={} group={} goal={} sceneScriptInit={}",
+                Grasscutter.getLogger().debug("Ley-line encounter prepared scene={} group={} goal={} sceneScriptInit={}",
                         scene.getId(), source.getGroupId(), monsterGoal, scene.getScriptManager().isInit());
                 return true;
             }
@@ -584,6 +584,15 @@ public class BlossomManager {
         }
     }
 
+    private long nativeLiveMonsterCount(int groupId, emu.grasscutter.scripts.data.SceneGroup group) {
+        return scene.getEntities().values().stream()
+                .filter(entity -> entity instanceof emu.grasscutter.game.entity.EntityMonster
+                        && entity.getGroupId() == groupId
+                        && (group == null || group.monsters == null
+                                || group.monsters.containsKey(entity.getConfigId())))
+                .count();
+    }
+
     public void initBlossom(EntityGadget gadget) {
         if (createdEntity.containsKey(gadget)) {
             return;
@@ -620,9 +629,14 @@ public class BlossomManager {
                     // Keep the worktop available if the native script fails.
                     var group = scriptGroupFor(source);
                     int monsterGoal = group == null || group.monsters == null ? 0 : group.monsters.size();
-                    if (!beginNativeEncounter(source, monsterGoal)
-                            || !scene.getScriptManager().dispatchBlossomSelect(
-                                    source.getGroupId(), source.getConfigId(), option)) {
+                    boolean prepared = beginNativeEncounter(source, monsterGoal);
+                    boolean selected = prepared && scene.getScriptManager().dispatchBlossomSelect(
+                            source.getGroupId(), source.getConfigId(), option);
+                    if (!selected) {
+                        Grasscutter.getLogger().warn(
+                                "Ley-line encounter rejected scene={} group={} config={} prepared={} liveMonsters={}",
+                                scene.getId(), source.getGroupId(), source.getConfigId(), prepared,
+                                nativeLiveMonsterCount(source.getGroupId(), group));
                         activity.abort();
 
                         synchronized (blossomActivities) {
@@ -633,6 +647,14 @@ public class BlossomManager {
                         context.addWorktopOptions(new int[] {187});
                         return false;
                     }
+                    Grasscutter.getLogger().info(
+                            "Ley-line encounter active scene={} group={} config={} liveMonsters={} deathTriggers={}",
+                            scene.getId(), source.getGroupId(), source.getConfigId(),
+                            nativeLiveMonsterCount(source.getGroupId(), group),
+                            scene.getScriptManager().getTriggersByEvent(
+                                    emu.grasscutter.scripts.constants.EventType.EVENT_ANY_MONSTER_DIE).stream()
+                                    .filter(trigger -> trigger.getCurrentGroup().id == source.getGroupId())
+                                    .count());
                     source.updateState(201);
                     // Scene.selectWorktopOptionWith removes the selected gadget exactly once.
                     return true;

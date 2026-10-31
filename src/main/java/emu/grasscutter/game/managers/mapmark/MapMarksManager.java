@@ -119,7 +119,6 @@ public class MapMarksManager extends BasePlayerManager {
         emu.grasscutter.Grasscutter.getLogger().info(
                 "Fishhook destination scene={} pos=({},{},{}) selectedY={}",
                 mapMark.getSceneId(), pos.getX(), pos.getY(), pos.getZ(), y);
-        Position pos = mapMark.getPosition();
         player
                 .getWorld()
                 .transferPlayerToScene(

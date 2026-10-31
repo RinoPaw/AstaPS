@@ -360,7 +360,7 @@ public class EntityMonster extends GameEntity {
 
         if (scene.getBlossomManager() != null
                 && scene.getBlossomManager().isNativeCampGroup(this.getGroupId())) {
-            Grasscutter.getLogger().info(
+            emu.grasscutter.Grasscutter.getLogger().info(
                     "Ley-line monster death scene={} group={} config={} deathTriggers={}",
                     scene.getId(), this.getGroupId(), this.getConfigId(),
                     scriptManager.getTriggersByEvent(EventType.EVENT_ANY_MONSTER_DIE).stream()

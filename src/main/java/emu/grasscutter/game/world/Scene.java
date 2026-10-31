@@ -69,7 +69,7 @@ public class Scene {
     @Getter @Setter private transient emu.grasscutter.game.dailytask.DailyTaskGroupLifecycle.State dailyTaskGroups;
     @Getter private final BlossomManager blossomManager;
     private final HashSet<Integer> unlockedForces;
-    private final long startWorldTime;
+    private final SceneClock sceneClock = new SceneClock();
     @Getter @Setter DungeonManager dungeonManager;
     @Getter Int2ObjectMap<Route> sceneRoutes;
     private Set<SpawnDataEntry.GridBlockId> loadedGridBlocks;
@@ -106,8 +106,6 @@ public class Scene {
 
         this.prevScene = 3;
         this.sceneRoutes = GameData.getSceneRoutes(getId());
-
-        this.startWorldTime = world.getWorldTime();
 
         this.spawnedEntities = ConcurrentHashMap.newKeySet();
         this.deadSpawnedEntities = ConcurrentHashMap.newKeySet();
@@ -188,13 +186,15 @@ public class Scene {
 
     public void setPaused(boolean paused) {
         if (this.isPaused != paused) {
+            this.getSceneTime(); // Account for elapsed scene time before changing pause state.
             this.isPaused = paused;
             this.broadcastPacket(new PacketSceneTimeNotify(this));
         }
     }
 
+    /** Scene animation and combat time continue while a quest locks the in-game clock. */
     public int getSceneTime() {
-        return (int) (this.getWorld().getWorldTime() - this.startWorldTime);
+        return this.sceneClock.elapsedMillis(this.isPaused);
     }
 
     public int getSceneTimeSeconds() {
@@ -874,7 +874,7 @@ public class Scene {
 
     /**
      * Reports the handful of flags that stop the client's world dead while its menus keep working:
-     * a paused world or scene, locked game time, a scene time that is not advancing, or a player
+     * a paused world or scene, a scene time that is not advancing, or a player
      * stuck short of {@link Player.SceneLoadState#LOADED}. Any of these looks identical in game -
      * the avatar will not walk and everything else stands still - and none of them logs anything on
      * its own, so say so here rather than leaving it to be guessed at.
@@ -890,7 +890,7 @@ public class Scene {
         var notLoaded =
                 this.players.stream()
                         .anyMatch(p -> p.getSceneLoadState() != Player.SceneLoadState.LOADED);
-        var frozen = this.isPaused || world.isPaused() || world.isTimeLocked() || stalled || notLoaded;
+        var frozen = this.isPaused || world.isPaused() || stalled || notLoaded;
 
         var line =
                 "Scene {} tick: sceneTime={} ({}), scenePaused={}, worldPaused={}, timeLocked={},"

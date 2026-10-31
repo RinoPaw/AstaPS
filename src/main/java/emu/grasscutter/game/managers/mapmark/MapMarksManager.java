@@ -30,6 +30,12 @@ public class MapMarksManager extends BasePlayerManager {
                 // keep teleporting functionality on fishhook mark.
                 if (Configuration.GAME_OPTIONS.fishhookTeleport
                         && createMark.getMapMarkPointType() == MapMarkPointType.MapMarkPointType_FISH_POOL) {
+                    var raw = req.getMark().getPos();
+                    emu.grasscutter.Grasscutter.getLogger().info(
+                            "Fishhook mark raw uid={} scene={} hasPos={} pos=({},{},{}) playerScene={} playerY={}",
+                            player.getUid(), req.getMark().getSceneId(), req.getMark().hasPos(),
+                            raw.getX(), raw.getY(), raw.getZ(),
+                            player.getScene().getId(), player.getPosition().getY());
                     this.teleport(player, createMark);
                     return;
                 }

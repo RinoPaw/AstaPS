@@ -25,4 +25,21 @@ class MapMarksManagerTeleportTest {
     void defaultAltitudeClearsOriginalThreeHundredMeterFloor() {
         assertTrue(MapMarksManager.safeSceneAltitude(-1, new emu.grasscutter.game.world.Position(0, 0, 0)) >= 2000f);
     }
+    @Test
+    void nearbyOriginalScenePointAvoidsExtremelyLongFall() {
+        var target = new emu.grasscutter.game.world.Position(1180.8507f, 0, -1005.30237f);
+        var waypoint = new emu.grasscutter.game.world.Position(1175.1151f, 406.8991f, -1023.0333f);
+        float y = MapMarksManager.estimatedAltitude(target, java.util.List.of(waypoint), 2000f);
+        assertTrue(y > waypoint.getY());
+        assertTrue(y < 500f);
+    }
+
+    @Test
+    void distantWaypointsCannotInferDestinationHeight() {
+        var target = new emu.grasscutter.game.world.Position(0, 0, 0);
+        var distant = new emu.grasscutter.game.world.Position(1000, 250, 1000);
+        assertEquals(2000f, MapMarksManager.estimatedAltitude(
+                target, java.util.List.of(distant), 2000f));
+    }
+
 }

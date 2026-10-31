@@ -358,7 +358,11 @@ public class EntityMonster extends GameEntity {
         // first set the challenge data
         challenge.ifPresent(c -> c.onMonsterDeath(this));
 
-        if (scriptManager.isInit() && this.getGroupId() > 0) {
+        if (this.getGroupId() > 0
+                && (scriptManager.isInit()
+                    || (scene.getBlossomManager() != null
+                        && scene.getBlossomManager().isNativeCampGroup(this.getGroupId())
+                        && scriptManager.getGroupInstanceById(this.getGroupId()) != null))) {
             Optional.ofNullable(scriptManager.getScriptMonsterSpawnService())
                     .ifPresent(s -> s.onMonsterDead(this));
 

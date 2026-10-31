@@ -329,6 +329,8 @@ public class ScriptLib {
         if (manager == null || manager.getScene().getBlossomManager() == null) return 1;
         var group = currentGroup.getIfExists();
         if (group == null || group.id != groupId) return 1;
+        var death = callParams.getIfExists();
+        if (death == null || group.monsters == null || !group.monsters.containsKey(death.param1)) return 0;
         return manager.getScene().getBlossomManager().addNativeScheduleProgress(groupId);
     }
 
@@ -841,20 +843,29 @@ public class ScriptLib {
         return getSceneScriptManager().getScene().getWorld().getGameTimeHours();
     }
 
-    public int GetGroupMonsterCount() {
-        int returnValue = (int) getSceneScriptManager().getScene().getEntities().values().stream()
-                .filter(e -> e instanceof EntityMonster && e.getGroupId() == currentGroup.get().id)
+    private int groupMonsterCount(int groupId) {
+        var manager = getSceneScriptManager();
+        var scene = manager.getScene();
+        var authored = scene.getBlossomManager() != null
+                && scene.getBlossomManager().isNativeCampGroup(groupId)
+                ? manager.getGroupById(groupId) : null;
+        return (int) scene.getEntities().values().stream()
+                .filter(entity -> entity instanceof EntityMonster && entity.getGroupId() == groupId)
+                .filter(entity -> authored == null || authored.monsters == null
+                        || authored.monsters.containsKey(entity.getConfigId()))
                 .count();
-        logger.debug("[LUA] Call GetGroupMonsterCount = {}", returnValue);
-        return returnValue;
+    }
+
+    public int GetGroupMonsterCount() {
+        int count = groupMonsterCount(currentGroup.get().id);
+        logger.debug("[LUA] Call GetGroupMonsterCount = {}", count);
+        return count;
     }
 
     public int GetGroupMonsterCountByGroupId(int groupId) {
-        int returnValue = (int) getSceneScriptManager().getScene().getEntities().values().stream()
-                .filter(e -> e instanceof EntityMonster && e.getGroupId() == groupId)
-                .count();
-        logger.debug("[LUA] Call GetGroupMonsterCountByGroupId with {} = {}", groupId, returnValue);
-        return returnValue;
+        int count = groupMonsterCount(groupId);
+        logger.debug("[LUA] Call GetGroupMonsterCountByGroupId with {} = {}", groupId, count);
+        return count;
     }
 
     public int GetGroupSuite(int groupId) {

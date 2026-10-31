@@ -370,6 +370,8 @@ public class BlossomManager {
                 if (!activity.completeFromLua(reward)) return false;
                 scene.getWorld().getHost().setBlossomRewardReady(
                         refreshId(activity.source()), activity.blossom().slot);
+                Grasscutter.getLogger().info("Ley-line completed scene={} group={} kills={}/{}",
+                        scene.getId(), groupId, activity.nativeKills(), activity.nativeGoal());
                 return true;
             }
         }
@@ -382,6 +384,8 @@ public class BlossomManager {
             for (var activity : blossomActivities) {
                 if (activity.getGadget() != source) continue;
                 activity.beginNative(monsterGoal);
+                Grasscutter.getLogger().info("Ley-line encounter started scene={} group={} goal={} sceneScriptInit={}",
+                        scene.getId(), source.getGroupId(), monsterGoal, scene.getScriptManager().isInit());
                 return true;
             }
         }
@@ -393,7 +397,10 @@ public class BlossomManager {
         synchronized (blossomActivities) {
             for (var activity : blossomActivities) {
                 if (activity.getGadget().getGroupId() != groupId) continue;
-                if (activity.addNativeProgress()) {
+                boolean finished = activity.addNativeProgress();
+                Grasscutter.getLogger().info("Ley-line progress scene={} group={} kills={}/{} finished={}",
+                        scene.getId(), groupId, activity.nativeKills(), activity.nativeGoal(), finished);
+                if (finished) {
                     scene.getScriptManager().callEvent(new emu.grasscutter.scripts.data.ScriptArgs(
                             groupId, emu.grasscutter.scripts.constants.EventType.EVENT_BLOSSOM_PROGRESS_FINISH));
                 }

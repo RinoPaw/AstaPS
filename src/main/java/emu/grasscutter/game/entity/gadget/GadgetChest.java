@@ -545,10 +545,16 @@ public class GadgetChest extends GadgetContent {
         return present;
     }
 
+    /** Native Lua blossom markers omit boss_chest; the generated reward owns its claim metadata. */
+    static boolean keepSpawnedChestMeta(SceneGadget meta) {
+        return meta != null && meta.boss_chest != null
+                && (meta.is_blossom_chest || meta.drop_tag != null);
+    }
+
     private SceneGadget resolveChestMeta() {
         EntityGadget entityGadget = getGadget();
         SceneGadget meta = entityGadget.getMetaGadget();
-        if (meta != null && meta.boss_chest != null && meta.drop_tag != null) {
+        if (keepSpawnedChestMeta(meta)) {
             return meta;
         }
         if (entityGadget.getScene() == null) {

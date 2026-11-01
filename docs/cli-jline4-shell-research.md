@@ -265,3 +265,58 @@ long-operation &
 5. 用户实机测试前和提交上游前运行完整相关 CI；未通过不得声称可测试或可提交。保留项目既定 `grasscutter-7.1.0.jar` 构建产物命名。
 
 本文件是研究基线。所有示意命令只是讨论 Shell 语义，**不表示 AstaPS 已经支持示例功能**。
+
+
+## 9. 2026-11-02 补充：用 JLine CommandSession 实现后台目标选择的源码核验
+
+**本节是新增研究，未修改 AstaPS 的命令行为。** 根据 JLine 4.4.8 原始代码而非 API 印象，确认以下事实：
+
+### 9.1 后台命令源、身份与 `@s`
+
+Minecraft 的命令执行源有身份、执行实体与执行位置等信息；在游戏中玩家发出的 `@s` 可指向执行实体，原生后台控制台没有玩家执行实体，`@s` 不会凭空匹配到玩家。`@p` 需要执行位置。原版 Minecraft 的 `/give` 要求目标参数，不能因为玩家输入而任意省去玩家选择器。
+
+AstaPS 现状：`CommandMap.selectedTargets` 按玩家 account ID / 固定 `CONSOLE_ID` 保存 `SelectedTarget(uid, username)`；`getTargetPlayer()` 先读内联 `@UID`，其次显式目标、记住的目标，最后用 `sender` 作为回退；`target @UID`、裸 `@UID` 已有记忆功能，`@s` **尚无 Minecraft 式语义**。本地和 Web 控制台目前共享 `CONSOLE_ID`。
+
+用户提出将后台会话的默认目标存入 **JLine Shell 的上下文**。技术上可实现，例如：
+```java
+session.put("astaps.targetUid", 10001); // 设计示例，尚未提交代码
+Object targetUid = session.get("astaps.targetUid");
+```
+`CommandSession.get/put/remove/variables` 为 JLine 4 原生接口。`DefaultCommandDispatcher` 创建持久 `CommandSession`，可通过其 `session()` 取得，且 JLine `Command.execute(CommandSession, String[])` 收到该会话。绑定目标、发起者权限身份、输出接收者应区分；绑定玩家**不意味着以其身份登录/授权**。提示符可以通过 `Shell.builder().prompt(Supplier<String>)` 读取会话状态。
+
+注意：`ShellBuilder.variable(name,value)` 写到 **LineReader 的变量**，不会自动写到 `CommandSession`。这两个接口的存储用途不同。
+
+### 9.2 会话状态不是自动隔离的安全属性
+
+- `CommandSession` 的变量表也可由 JLine 内置 `set`、`unset`、`export` 命令修改（启用 `variableCommands(true)` 时）。`DefaultCommandDispatcher` 还会把独立一行的 `NAME=VALUE` 写入会话变量。
+- 因此 `session.put("astaps.targetUid", 10001)` **只是状态存储位置，不提供验证和访问控制**。若开放变量命令，用户可以把同名条目改为字符串。每次读取必须根据实际选择器/玩家状态验证，且不能靠变量值赋予 GM 权限。
+- 管道组中的 `CommandSession.fork(in,out,err)` 会**浅拷贝**变量表和工作目录。因此在子会话内设置变量不自动写回主会话，管道中的目标切换语义需要明示；若保存可变对象，还可能跨会话共享引用。保存不可变 UID 值是值得考虑的方案，尚未批准。
+- 单一 `DefaultCommandDispatcher` 仅构造一份根 `CommandSession`，不能假定 HTTP 管理员或游戏玩家使用它就天然获得互相隔离的会话。远程入口的会话生命周期待决定。
+
+源码：[CommandSession.java](https://github.com/jline/jline3/blob/4.4.8/shell/src/main/java/org/jline/shell/CommandSession.java)、[ShellBuilder.java](https://github.com/jline/jline3/blob/4.4.8/shell/src/main/java/org/jline/shell/ShellBuilder.java)、[VariableCommands.java](https://github.com/jline/jline3/blob/4.4.8/shell/src/main/java/org/jline/shell/impl/VariableCommands.java)。
+
+### 9.3 官方 PicocliCommandRegistry 的两项实际限制
+
+核对 JLine 4.4.8 [PicocliCommandRegistry.java](https://github.com/jline/jline3/blob/4.4.8/picocli/src/main/java/org/jline/picocli/PicocliCommandRegistry.java) 的 `PicocliCommand.execute(session,args)`：
+
+1. 它接收 `CommandSession`，但**不把会话对象传给 Picocli 命令**，而是直接 `sub.execute(args)`。原样套用无法让 GM 业务代码自动获得 `session.get("astaps.targetUid")`；要确定使用 JLine 原生 `Command` 接口、Picocli 执行策略或其他直接接入方式，不应擅自新增适配层。
+2. 当 `session.terminal() != null` 时，它调用 `sub.setOut(new PrintWriter(terminal.output(), true))` / `setErr(terminal.output())`，**绕过 `session.out()/err()`**。因此不能未经改造就假定通过官方 Registry 执行的 Picocli 输出可被 `|` 管道或 `>` 重定向正确捕获。AstaPS 当前 `CommandOutput` 还把无玩家反馈写进日志而非 Shell 命令流。
+
+### 9.4 条件执行码和异步语义的源码级风险
+
+核对 [DefaultCommandDispatcher.java](https://github.com/jline/jline3/blob/4.4.8/shell/src/main/java/org/jline/shell/impl/DefaultCommandDispatcher.java)：
+- `runCommandStage()` 调用 `stageCmd.execute(session,args)` 之后，对正常返回直接 `session.setLastExitCode(0)`；异常才设置 `1`。也就是说，若 Picocli 命令**正常返回一个非零整数退出码**，当前 Dispatcher 没有从这个结果计算非零 `lastExitCode`。因此 `cmd1 && cmd2` 可能把 Picocli 的参数/业务失败误当成功；是 JLine 4.4.8 的具体源码行为，需设计验证或上游修复路径，不得宣称已经正确支持。
+- `executeBackground()` 新建守护线程，在同一 Dispatcher 下调用 `executePipelineStages`；这不是 AstaPS 的游戏世界安全执行线程。
+- 多阶段管道将各阶段放在 `session.fork(...) ` 子会话；生产者使用单独线程。生产者异常可被忽略，最终状态依赖后续阶段行为。
+- `Shell.run()` 对 Ctrl+C 默认清行继续，Ctrl+D 退出 REPL；AstaPS 现在 Ctrl+C 连按两次退出进程。生命周期行为需要用户决策。
+
+**直接结论**：JLine 4 Shell 的完整能力是既定接入目标，但「依赖已引入」与「GM 命令具备正确的权限、目标、管道、完成状态」必须分别验收。
+
+### 9.5 接下来需优先裁决的问题（新增 D17–D20）
+
+| 编号 | 待裁决问题 | 状态 |
+| --- | --- | --- |
+| D17 | `@s` 在本地/远程 Shell 表示已绑定玩家，还是 Shell 自身执行主体？`target` 与内联 `@UID` 如何统一？ | 已提出会话绑定方向，最终语义未批准 |
+| D18 | 当前目标使用 `CommandSession` 公共变量保存时，是否允许 `set` / `unset` 修改它？变量校验和可见性怎样处理？ | 未定 |
+| D19 | 用 JLine 原生 `Command.execute(session,args)` 直接获得会话，还是通过 Picocli 集成的其他调用方式？怎样保留完整参数解析且避免额外层？ | 未定 |
+| D20 | `PicocliCommandRegistry` 的终端输出绕流和 Dispatcher 的返回码逻辑怎样处理，才能真正保证 `|`、`>`、`&&` 的含义？ | 已发现代码级障碍；未定 |

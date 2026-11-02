@@ -488,3 +488,80 @@ give 1001             # 没有玩家目标，报告缺少目标
 - 保持已确认的 `give [选择器] <item> [数量]`、数量默认 1、仅 `@UID` 和 `username@`、T01A/T02A/T03B、无参数 `target` 恢复执行者等规则不变。
 
 本次只记录决策；没有修改源代码，也没有运行 CI。
+
+## 15. 2026-11-02 give 参数决定与库存发放链路审计（G01–G10）
+
+用户最终确认：
+
+| 决策 | 当前结论 |
+| --- | --- |
+| **G01B** | `<item>` 只支持数字 ID 与内部资源标识（如有效 `genshin.*` 标识）；不把本地化名称识别当成批准需求 |
+| **G02A** | 如果参数含空格，须用引号包裹；在 G01B 范围内多数内部资源名无空格 |
+| **G03A** | 数量仅十进制正整数，默认 1 |
+| **G04B** | 数量超过物品可存放上限时拒绝；包含物品现有数量与本次增量的总量校验 |
+| **G05C，具体数值待研究** | 倾向按物品类型分别限制单次发放数量；用户明确要求进一步研究发放机制后再确定限制，不擅自填固定阈值 |
+| **G06A（最后明确覆盖最初 G06C）** | 当前只给**在线**玩家发放，暂不做离线发放 |
+| **G07A** | 删除旧的 `-n` / `--amount` 发放数量输入（目标语法的数量是可选位置参数） |
+| **G08A** | 删除尾置玩家选择器语法，只使用此前确定的可选前置 `@UID` / `username@` |
+| **G09C** | 删除 `all`、`weapons`、`mats` / `materials`、`avatars` / `characters` 等批量类别作为 `give` 的内置目标 |
+| **G10B** | 旧武器、圣遗物、角色的等级／精炼／命座／词条等附加参数后续重新设计，暂不直接保留或删除 |
+
+### 15.1 G04 的准确含义：堆叠上限与库存槽位上限
+
+`ItemData.stackLimit` 来源包括 `MaterialExcelConfigData.json` 等物品资源；`MaterialInventoryTab` 以 **itemId 唯一映射**一个 `GameItem`，每种材料／摆设在一个槽位内存储累计数量。当前不会像 Minecraft 那样把同物品拆成多个独立堆叠：
+- `Inventory.putItem()` 的材料分支先验证新增数量不超过 `data.getStackLimit()`，再计算 `existingCount + addedCount <= stackLimit`，否则返回 `STACK_LIMIT`，不会截断或拆包。
+- `InventoryRewardAdmission.admissionFailure()` 在批量发放前做同样的总量预测；同时核对新增 ID 占用的槽位数。
+- 武器和圣遗物为每件独立 `GameItem(count=1)`，受装备库存槽位容量限制；没有材料的“每个 ID 一组堆叠”语义。
+- 虚拟货币／经验是玩家属性或即时作用，不占库存材料槽位；特定有界余额使用 `Integer.MAX_VALUE` 溢出检查，不能统一套材料的 `stackLimit`。
+- `useOnGain`（角色卡、名片、皮肤等）会触发效果或解锁，通常不占背包；数量、重复解锁和效果成功与否需要单独约束。
+
+### 15.2 当前物品发放实际执行路径
+
+```text
+GiveCommand.Args.run()
+  ├─ 数字 ID / ResourceRegistry / GenshinResourceIds / NameIndex 解析
+  ├─ genshin.recipe.*：直接解锁食谱
+  ├─ genshin.avatar.*：直接创建或修改 Avatar
+  ├─ ITEM_WEAPON / ITEM_RELIQUARY：
+  │     makeUnstackableItems()/makeArtifacts() 逐件构造
+  │     → Inventory.addItems(..., ActionReason.SubfieldDrop)
+  └─ 其他物品：new GameItem(ItemData, amount)
+        → Inventory.addItem(..., ActionReason.SubfieldDrop)
+              → putItem()
+                    ├─ useOnGain：useItemDirect / 皮肤解锁
+                    ├─ ITEM_VIRTUAL：更改角色经验、货币、树脂等玩家状态
+                    ├─ ITEM_WEAPON / ITEM_RELIQUARY / ITEM_TPS_WEAPON：按装备槽位
+                    └─ ITEM_MATERIAL / ITEM_FURNITURE：同 ID 累计并校验 stackLimit
+              → 记录获得历史 / Quest、Watcher、Battle Pass 事件
+              → PlayerObtainItemEvent / 发背包变更与获得提示包
+```
+
+关键区别：`Inventory.addItems(...)` **默认 `ALL_OR_NOTHING`**，对多条物品记录先做入库预检；`Inventory.addItem(GameItem,...)` 通过单条直接插入路径，返回 boolean。当前 `GiveCommand` 对以上两种返回值均**未检查**，会在实际拒绝发放后依然输出“发放成功”，属于需要在改造时修正的已证实问题。
+
+### 15.3 G05：分类限制应来自实际背包和效果语义，数值未决定
+
+- `ConfigContainer.GameOptions.InventoryLimits` 默认 `weapons=2000`、`relics=2000`、`materials=2000`、`furniture=2000`，其中材料/摆设容量是**不同物品 ID 的槽位数**，武器/圣遗物容量是每件占一个槽位。均可配置；它们不是命令单次固定数量上限。
+- 单次给 N 件装备会构造 N 个带属性的独立 `GameItem`；因此最大可接受数量首先受**当前装备空余槽位**限制。
+- `InventoryGrantBuilder.create()` 对装备或 `useOnGain` 按条逐件展开，并有 **10,000 项批量构造硬上限**；但当前 `GiveCommand` 自行使用 `makeArtifacts` / `makeUnstackableItems`，**未走这个构造器**，不能错误宣称 `give` 已受到 10,000 的限制。
+- 材料和家具上限应参考物品自身 `ItemData.stackLimit` 与当前数量。
+- 有界虚拟货币及资源上限需考虑当前余额和 32 位整数容量；升级经验/树脂等效果还可能另有业务规则。额外的命令级数量限制尚未批准。
+- `useOnGain` 单次解锁卡需根据其真实效果是否允许重复、效果执行次数以及当前解锁状态定义限制。
+- `InventoryRewardAdmissionTest` 已覆盖累计堆叠溢出、装备槽位、虚拟货币溢出和单次直接解锁数量约束；`InventoryGrantBuilderTest` 覆盖装备逐件展开与 10,000 阈值。但未发现专门的 `GiveCommandTest`，实施时需要覆盖 GM 发放路径。
+
+### 15.4 G06A：只允许在线玩家的理由与现有支持
+
+- `GameServer.getPlayerByUid(uid, false)` 只返回在线玩家缓存，`true` 可退回数据库读取离线 Player。
+- 当前 `CommandMap.findPlayer`／`getTargetPlayer` 允许查询离线 `Player`，目的是支持不同命令的不同目标要求；`GiveCommand` 的 `@Command` 未重写 `targetRequirement`，因此默认 `ONLINE`。
+- `CommandMap.targetUsable(ONLINE,...)` 检查 `isOnline()`、有效 `getSession()` 和 `isActive()`，在指派任务前和真正执行时各检查一次，因此当前 `give` 路由**已设计为仅在线目标**。
+- 真正库存入库会保存数据库项目、触发玩家的任务／活动／成就通知、插件事件、网络数据包和玩家世界相关副作用；离线直接修改数据需要单独研究状态一致性和效果补偿。当前不扩展离线发放。
+- `target @UID` 可允许绑定离线玩家与否是 **target 命令本身的独立语义**；G06A 限定的是 `give` 业务执行目标必须在线。
+
+### 15.5 已确认的隐藏风险及后续未定
+
+1. 现有 `GiveCommand` 的武器和圣遗物批量路径没有检查 `InventoryAddResult.allAccepted()`，材料路径没有检查 `addItem()` boolean；存在失败却报告成功的情况，且状态可能已经变更或因直接效果执行。
+2. 当前 `GiveCommand` 对普通 `useOnGain` 材料调用 `new GameItem(data, amount)`，而 `Inventory.putItem()` 对 `useOnGain` **只调用一次** `useItemDirect`，没有事先限制其 `count==1`；与 `InventoryRewardAdmission` 多条预检的 `count == 1` 要求不一致，需要按 G05 分类行为重新设计。
+3. 现有 `genshin.avatar.*` 与 `genshin.recipe.*` 的直接操作路径有特殊数量处理；单纯 G01B 并没有决定这些类型的最终附加语义，G10B 保持后续设计。
+4. G09C 删除批量类别时，**`genshin.artifact.<set>` 成套圣遗物资源标识是否保留**尚未得到单独裁决；不能擅自将其归入需删除或保留的范围。
+5. 已决定 G04B 仅授权“超过可存放上限拒绝”；如何处理单次超过 G05 分类限额、重复解锁、部分成功、服务端返回码仍需后续确定。
+
+**截至此次研究：只批准 G05C 方向，没有批准任何新增阈值；G06 以最后的明确要求 G06A 为准。本次只更新研究文档，不修改代码、不创建分支、不运行 CI。**

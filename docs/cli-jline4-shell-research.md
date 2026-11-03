@@ -17,9 +17,9 @@
 | **物品模型** | `InventoryItem` 覆盖材料堆叠、武器、圣遗物；Inventory 接收时分配**会话内 GUID**，重登录重分配；持久记录采用 **MongoDB ObjectId**；业务系统主导、Inventory 管持有/容量 | 第 5、7 节 |
 | **装备关系** | 普通装备由物品记录保存装备归属 A；TPS 保留专有 loadout T1；装备业务同步完成，玩家状态持久化按 UID 异步有序 | 第 7、8.4 节 |
 | **持久化与经济** | P1：经济操作先确保完整写入任务可接纳，否则操作前拒绝；保存失败必须可见；奖励 PREPARED 回执保留必要的同步持久确认 | 第 9.2、9.3 节 |
-| **技术边界** | Java 21 不迁移；JLine 4 为目标；不默认兼容未授权的旧插件/旧存档；模块数、调度器/Actor、CLI 等待策略、完整 Shell 功能仍未定 | 第 1、6、10 节 |
+| **技术边界** | Java 21 不迁移；JLine 4 为目标；不默认兼容未授权的旧插件/旧存档；模块数、调度器/Actor、CLI 等待策略（F1/F2）、完整 Shell 功能仍未定 | 第 1、6、11 节 |
 
-**按主题阅读**：第 2 节现状 → 第 3–5 节 CLI/Give/物品规则 → 第 6 节未决事项 → 第 7–8 节装备与 TPS → 第 9 节线程、数据库、登录审计 → 第 10 节 S2/R2 纠偏。第 7–10 节按主题重排了先前连续追加的研究记录，保留证据和正式决议；引用应使用新节号。
+**按主题阅读**：第 2 节现状 → 第 3–5 节 CLI/Give/物品规则 → 第 6 节未决事项 → 第 7–8 节装备与 TPS → 第 9 节线程、数据库、登录审计 → 第 10 节 S2/R2 纠偏 → 第 11 节命令结果研究。第 7–10 节按主题重排了先前连续追加的研究记录，保留证据和正式决议；引用应使用新节号。
 
 ## 1. 项目边界与当前方向
 
@@ -228,7 +228,7 @@ long getGuid();
 | Shell 架构 | JLine 原生 Command 与 Picocli 的具体结合方式；按次创建命令模型；`CommandSession` 如何传入 GM；如何修复 Registry 输出绕流及 Dispatcher 退出码。 |
 | Shell 功能 | `history/alias/source`、变量、`|/&&/||/;/>`、后台 `&/jobs` 的开放范围、文本/结构化输出、成功/失败/取消和文件系统授权。 |
 | 目标与身份 | 临时批量目标作用域语法、Shell/Web/游戏会话创建销毁、玩家下线清理、变量是否可改默认目标、权限解析和错误优先级。 |
-| 游戏执行域 | **S2 / R2 已选**；需确定 CLI 对 UID 操作的提交、等待或异步反馈，跨 Player/World 业务的结果协议及 Shell 作业生命周期。 |
+| 游戏执行域 | **S2 / R2 已选**；CLI 真实完成结果与 Shell 等待/异步反馈（F1/F2）尚待顶层选择，跨 Player/World 业务结果协议及 Shell 作业生命周期仍需研究，见第 11 节。 |
 | Give 业务 | 类型专用选项的**具体名称**、圣遗物词条与 C09、套装部分发放顺序、即时效果及解锁的精细规则、真实库存入库结果。 |
 | 物品模型 | `InventoryItem` 其余 API、具体实现与类关系、**会话 GUID 的分配前/复制行为**、ObjectId 映射与数据库恢复、装备引用；GUID 不持久化已选定。 |
 | 终端与部署 | Windows/PowerShell 7 中文 IME、UTF-8、日志重绘、粘贴、Tab、Ctrl+C/D；Linux TTY/SSH/无 TTY、服务关闭生命周期、Web 输出与敏感日志。 |
@@ -636,3 +636,31 @@ long getGuid();
 本文件第 4.1 节的 D01B 已标出被 R2 覆盖的旧线程细节，相关规则以本节为准。不得以 R2 名义立即增加 Actor 框架、每人专属线程或额外兼容层。
 
 只记录上层架构决议，不改 Java/Gradle，不运行研究阶段 CI。
+
+## 11. 命令执行结果与 Shell/Web 反馈（2026-11-04 研究提案，未决）
+
+本节落实 [全局架构第 17 节](server-architecture-research.md) 的实际 CLI 影响；**S2 / R2 已正式选择，F1 / F2 尚未获批准**。当前 [CommandMap](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/CommandMap.java) 的 `invoke()` 返回 `void`，会根据 `@Command(threading)` 同步或在线程池执行；因此它无法作为新 JLine Shell 命令组合、Web Console 或插件的可靠最终业务结果来源。
+
+### 11.1 三项当前事实
+
+1. [WebConsoleHandler](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/http/console/WebConsoleHandler.java) 通过 [CommandOutputCapture](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/CommandOutputCapture.java) 的 `ThreadLocal` 收集文本并响应 HTTP 200；命令若排队到 R2/S2 执行域，HTTP 可以先结束且捕不到反馈。**HTTP 成功与游戏操作成功是两个状态**。
+2. [CommandOutput](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/CommandOutput.java) 的反馈可被 `ReceiveCommandFeedbackEvent` 取消或改写；**输出文本不能充当业务返回值**。实际给物品数量、权限失败、P1 准入拒绝、玩家下线、异常等必须有可观察的执行结果。
+3. [ExecuteCommandEvent](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/event/game/ExecuteCommandEvent.java) 可以修改命令文本与目标，`CommandMap` 在重写后按当前目标做权限检查；执行前另重验 `targetUsable()`。R2 的排队延迟使得**最后一次业务授权及会话世代验证必须在权威执行边界复核**，不能把入队前找到的可变 `Player` 引用当作永久有效身份。
+
+### 11.2 建议的 Shell 结果语义
+
+将**已接收/已排队**与**最终业务完成**严格区分。Shell 的 `&&`、`||`、管道、脚本、退出码应以最终业务结果判断成功和失败；`give` 截断到 0 按已批准 G04C 仍属于成功、输出必须说明无变化，P1 背压拒绝属于失败。成功后的玩家数据库持久化仍可异步，完成命令不等于 MongoDB 已确认。
+
+**推荐 F1（未选）**：Shell 自己的外部交互线程可以等待目标 UID/World 域完成本次业务再返回退出状态；状态域线程不得等待别的状态域，脚本命令串联也不能通过占住某个 Player/World 域来等待用户输入。Web 可以选择有限等待或显式未完成结果，不能在 HTTP 200 携空输出时谎报命令完成。长期 Shell 后台作业能力及具体返回协议另行研究。
+
+**备选 F2（未选）**：Shell 默认接纳即返回，后续异步显示执行结果；若未来开放条件执行与管道，则必须明确检查的是受理状态还是最终命令状态，不能无定义地复用同步 Shell 语义。
+
+### 11.3 对事件/插件与旧命令迁移的限制
+
+- 权限、目标与可取消的命令预事件先于不可逆业务变更；插件修改目标/输入后必须重新校验。通知事件可以过滤输出，但不修改已经完成的业务结果。
+- 现有收包可取消 `ReceivePacketEvent` 在网络入口调用，世界操作或 Player 操作应按状态实际归属进入执行域；事件内部如请求另一个域操作，不允许同步阻塞当前 Player/World 执行器。
+- 不能因为保留旧 `CommandHandler` 的 `Runnable` API 更容易，就自行引入“旧线程命令+新 UID 执行器”双层兼容。迁移切片应检查控制台、Web、游戏内命令和插件是否拥有**相同的业务结果语义**，各自可用不同呈现方式。
+- 测试至少覆盖：Web 命令异步执行但尚未完成、插件取消输出、命令事件重定向目标后权限失效、玩家下线/重登后旧队列任务、`give` 成功 0 件、P1 准入拒绝、CLI `&&` / `||` 取真实结果、跨域回调不死锁。
+
+**不设具体 Java 接口、结果枚举、线程池、超时或新 Web endpoint**。本节不修改上游代码；在请求用户测试与上游提交之前运行相关 CI。
+

@@ -303,4 +303,62 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 
 本轮仅研究与记录，无 Java / Gradle 改动，不运行 CI。
 
+## 12. 运行时状态执行域与跨线程业务边界审计（2026-11-04）
+
+**研究结论：现有 AstaPS 没有一个覆盖客户端包、Tick、GM、Lua、事件与延迟任务的统一状态修改顺序。** 此节通过上游 `main@ac9a7e6` 源码确认问题和约束，**不批准任何具体 Actor、锁、任务队列、线程池或类名**。关联的库存研究已有 [CLI 研究第 46–47 节](cli-jline4-shell-research.md) 的详细分析与既有决议，避免重复推翻“游戏业务同步、数据库 I/O 异步”和 P1。
+
+### 12.1 已核实的并发入口
+
+| 来源 | 源码事实 | 受影响的状态 |
+| --- | --- | --- |
+| KCP / 网络请求 | `GameSessionManager.handleReceive()` 通过全服一个 Netty `DefaultEventLoop logicThread.execute` 转交 `GameSession.handleReceive()`，再由 `GameServerPacketHandler` 同步调用 Handler | Session、Player、Inventory、World/Scene，包入口彼此有序但只覆盖网络入口 |
+| 世界、玩家 Tick | `GameServer.start()` 用独立 `Timer.scheduleAtFixedRate` 调用同步的 `GameServer.onTick()`；依次遍历 World、Scene、Player、调度任务及 ServerTickEvent | Tick 线程可以与 KCP 逻辑线程同时读写玩家及世界状态；锁住 GameServer 并不序列化网络请求 |
+| GM / JLine / Web | `CommandMap.invoke()` 在调用入口解析并授权，`threading=true` 交给 `Grasscutter.getThreadPool()`；`threading=false` 则在当前调用线程同步执行 | 来源线程可能是游戏网络、控制台、HTTP、公共线程池；“同步业务”不代表天然处于相同逻辑线程 |
+| World 延迟事件 | `World.queueTransferPlayerToScene()` 在静态 `eventExecutor` 中睡眠并调用 `transferPlayerToScene()` | 玩家位置、Scene 归属、场景实体及任务触发，能与 KCP、Tick、GM 并发 |
+| ServerTaskScheduler | `runTasks()` 由 Tick 线程调用；同步任务直接运行，异步任务由 `new Thread(task)` 启动，完成回调在 Tick 运行 | 插件/脚本/内置任务既可在 Tick 修改状态，也可在其他线程修改状态；定时与所有权是两个问题 |
+| 插件与 Lua | `Event.call()` 同步调用监听器，继承触发者线程；`ScriptLoader` 将 `ScriptLib` 作为 Java 对象暴露至 Lua；`ScriptLib` 可操作 Scene、实体、Quest | E1 对外扩展必须限制状态的写入口，但不能假设事件/脚本本身有独立的安全线程 |
+| 持久化 | `Player.save()` 转 `DatabaseHelper.savePlayer()`；`ItemPersistenceService` 当前按物品 ObjectId 排序，异步任务执行时读取可变 `GameItem` | 数据库排队顺序不同于内存操作顺序；已批准每玩家有序异步保存及 P1 是独立的一致性要求 |
+
+**参照源码**：[GameSessionManager](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/game/GameSessionManager.java)、
+[GameServer](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/game/GameServer.java)、
+[CommandMap](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/CommandMap.java)、
+[World](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/World.java)、
+[ServerTaskScheduler](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/scheduler/ServerTaskScheduler.java)。
+
+### 12.2 状态所有者不局限于 Player
+
+目前至少应分辨如下**逻辑所有权域**；这些是业务一致性的分类，**并非对应线程/Gradle 模块的既定名单**：
+
+- **单玩家业务操作**：库存、装备、货币、个人任务、玩家会话中重要状态。依据已批准的业务同步操作，整次操作必须在一个连贯的运行时互斥边界中完成；P1 要先能接纳其持久化，才允许经济状态改变。另一条每玩家异步写入线负责 I/O，不负责内存互斥。
+- **多人 World / Scene / Entity**：多人进入离开、移动实体、战斗与场景脚本会触及多名玩家；不能把它们强行归入某一个玩家的个人操作。世界/场景操作需稳定协调其自己的状态所有权和所影响的玩家。
+- **账号 / Dispatch**：登录令牌和账户记录即使在 `DISPATCH_ONLY` 中也有自己的操作语义；与 Game 状态之间通过已有连接协议及明确的操作契约协调。D1 保持有效。
+- **静态 7.1 资源**：加载完成后供各游戏系统查询；全局资源重新加载需要自己的就绪及可见性约束，不套用玩家锁。
+
+### 12.3 已存在的锁顺序约束，以及插件事件的关键风险
+
+- `World.addPlayer/removePlayer` 使用 World monitor，其中调用 `Scene.addPlayer/removePlayer`；Scene 自身的 `synchronized` 方法会修改 Player 和实体。跨世界/场景切换同样需要谨慎处理两个 World / Scene 的锁顺序。现有 `Scene.addPlayer` 特意在进入本 Scene monitor 前先离开旧 Scene，显式避免两场景相互等待。
+- `GameServer.onTick` 锁的是 GameServer；`Player.onTick` 锁的是 Player；`Inventory.addItems` 和 `payItems` 锁的是 Inventory。三个 monitor 不能自动形成一条完整玩家/世界业务操作。
+- 更值得重视的是 `Inventory.addItemsInternal` 在持有 **Inventory monitor** 的同步方法内部调用 `PlayerObtainItemEvent.call()`。监听器可能操作 World、Scene、其他 Player 或触发其他库存行为；当前代码没有为这一回调建立可验证的全局锁顺序。**这说明“把插件事件放进一个 synchronized 操作里”同样不是可靠方案**。
+- `World.queueTransferPlayerToScene` 在单独线程执行传送，而 `PlayerTeleportEvent` 可以由插件取消。不能默认该事件仅在某个逻辑主线程运行；若将来改变回调时机，必须保留允许阻止传送的业务语义。
+
+**工程约束（建议）**：先按真实游戏业务划定一次完整操作的权威归属与可见结果。同步操作不意味着执行器必须是专属线程；也不能持有未知 World/Scene 锁同步等待跨域操作或数据库。前置可取消事件、完成后通知/事件应有清楚的阶段；插件改动前置输入后需按最终输入复验，避免提前确认再被改写。具体投递、互斥和事件时序需在相关垂直业务切片中验证。
+
+### 12.4 两种常见技术路线，以及为什么当前不应直接照搬
+
+| 路线 | 对 AstaPS 的实际影响 | 审计判断 |
+| --- | --- | --- |
+| **少量明确的业务互斥域，保留同步调用线程** | 从玩家完整经济/装备操作和 World/Scene 跨域操作的所有权开始；CLI、包和 Lua 调用同一能力，运行时用相应业务互斥保护，持久化 I/O 另行异步 | 与现有“业务同步完成”“give 在调用线程同步执行”和 P1 一致，迁移风险相对可控；但必须严格解决多 World/Scene 与多个 Player 的锁顺序及事件回调，不能机械地铺 `synchronized` |
+| **统一执行循环或按 World 分片的消息调度** | 入口提交操作给所属模拟执行器，可能改变 GM、插件调用语义及 Tick、网络包的执行线程；跨场景迁移、回调重入、长操作和背压规则均需重新设计 | 理论上有清晰线程所有权；但与已批准的直接同步命令调用语义存在冲突，不应为了当前库存重构擅自引入全局 Actor/队列或重写服务器调度 |
+
+真实同类案例：[Minestom 的 `ThreadDispatcherImpl`](https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/thread/ThreadDispatcherImpl.java) 通过 partition 和 tick threads 分配实体/区块工作；[`Acquirable`](https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/thread/Acquirable.java) 显式说明实体线程所有权与跨线程获取；[`ServerProcessImpl`](https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/ServerProcessImpl.java) 调度 tick 和分片更新。这说明并行模拟的所有权模型有成熟工程实例，同时也证明其需要完整的调度、迁移和获取协议；不能通过“添加几个线程池”复制。
+
+### 12.5 建议的落地次序与验收方向（无新架构批准）
+
+1. **从已批准的库存切片做可复现测试**：并发 GM/client 同玩家库存、强化与 Tick、可取消/后置插件事件、P1 容量拒绝、异步写入快照与重登录先读后写；这可以检验调用线程同步操作是否满足需求。
+2. **再验证跨域业务**：多人进入/退出 World、双人同时跨 Scene、延迟传送与主动传送竞争、插件在事件中发起另一项操作；记录真实锁获取顺序与是否可能观察半完成状态。
+3. **针对已证明的问题确定必要的最小协调策略**：保留 K1 核心玩法内置、E1 扩展统一入口、M2 工程模块化、D1 三运行模式。除非测试和运行期证据要求，否则不添加全局 Actor、协调器、事务框架或新的线程层。
+4. **最后按受影响业务扩展**：任务、奖励、商店、抽卡、战斗、世界逐批收敛入口；保留奖励回执 PREPARED 的同步持久确认例外，以及普通玩家状态的异步保存语义。
+
+本轮结论是**源码证实的执行风险与推荐研究/落地方式**，没有推定已经获得运行时架构修改授权，也没有假称已完成竞争压力测试。文档研究不运行 CI，实施阶段按既有测试/CI 约束执行。
+
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

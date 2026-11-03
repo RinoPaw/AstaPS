@@ -361,4 +361,44 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 
 本轮结论是**源码证实的执行风险与推荐研究/落地方式**，没有推定已经获得运行时架构修改授权，也没有假称已完成竞争压力测试。文档研究不运行 CI，实施阶段按既有测试/CI 约束执行。
 
+## 13. S2：以 World 为逻辑执行域，允许不同 World 并行（2026-11-04 正式决议）
+
+**用户选择 S2，取代第 12.4 节中“仅保留调用线程互斥”的默认推荐方向。** 目标架构将每个活跃 `World` 视为状态执行的基本**逻辑所有权域**：同一 World 内的游戏状态操作与模拟更新按明确的顺序执行；不同 World 在满足所有权隔离的条件下可以并行运行。逻辑执行域**不等于一条永久独占物理线程**；多个 World 可以共享有限的工作线程，也允许按负载分配。
+
+这项决议要求建设足以支撑 S2 的调度与状态所有权机制，不能再把现有 `GameServer.onTick()` 顺序遍历当作必须保留的设计前提。**此处尚未决定**线程数量、Tick 频率、分片/抢占策略、消息队列具体实现、是否使用 Actor 库、精确类名和 Gradle 模块数量。
+
+### 13.1 已批准的行为不变量
+
+1. **World 执行序列化**：同一 World 的 Tick、网络包引发的业务修改、玩家命令、场景 Lua、延迟任务和可更改状态的插件回调，最终在其拥有执行权的上下文中按序执行；不同 World 之间可并行，状态不能通过跨线程共享可变引用被偷偷修改。
+2. **Player 随 World 所属，跨生命周期有明确归属**：在线 Player 与其当前 World 的游戏操作需要一致的执行权；玩家登录前、切换 World 期间、退出后和离线操作无法简单绑定某个活跃 World，必须独立定义会话/账户归属和移交协议。玩家从 A 世界进入 B 世界的迁移必须保证前一所有者不再接受旧世界修改、后一所有者接收完整有效状态，不能两侧同时操作同一玩家。
+3. **World 内 Scene/Entity**：该 World 的 Scene、怪物、场景脚本和世界状态沿相应执行域修改。一个 World 可以存在多个 Scene，当前 S2 仅确立 World 粒度；不自动批准在 World 内将 Scene/Entity 再细分并行。
+4. **跨 World/跨账号操作**：多人邀请、联机进入/退出、跨世界传送以及涉及两个所有者的操作，必须规定协调流程、失败取消、超时和重复提交语义。严禁在持有一个 World 执行权时同步等待另一个 World 执行权而形成死锁。
+5. **阻塞边界**：不在 World 模拟执行器上等待耗时 MongoDB 或其他慢 I/O。保留既定 P1：经济类变更在内存修改前确认持久化工作可接纳；每玩家异步串行落盘；奖励 `PREPARED` 回执确需同步持久确认的例外应采用不阻塞其他 World 的协调机制，具体由后续设计研究。
+6. **插件与 Lua**：沿用 E1、K1。第三方插件通过权威能力修改状态，原版 Lua 保留核心规则；插件事件的执行上下文、重入以及可取消事件的校验/提交时点必须与 World 所有权一致，不允许旧 `PlayerHook` 一类直接状态写入绕过执行域。
+7. **D1 与 M2**：`GAME_ONLY` 和 `HYBRID` 中部署 Game 运行时的 World 调度；`DISPATCH_ONLY` 仍有账号、认证和 HTTP 工作，不强制创建 Game World。模块化（M2）和运行部署（D1）与每 World 逻辑执行域是互相独立的设计维度。
+
+### 13.2 与既定 CLI/库存决议的显式冲突
+
+[CLI 研究第 18 节](cli-jline4-shell-research.md) 的 **D01B** 确定 `give` **在命令调用线程直接同步执行**，而库存/装备章节也确定完整游戏业务同步执行。**S2 使得“任意入口的调用线程直接修改 Player/World”不再可行**：控制台/Web 线程没有目标 World 的执行权。
+
+须区分两层语义：
+- **一项游戏业务在所属 World 内同步完成校验、状态变更与通知**：与 S2 相容，也不意味着 MongoDB 同步落盘。
+- **命令解析所在的外部线程直接执行整个业务调用栈**：与严格 World 所有权冲突。常见替代有提交到 World 执行域后异步反馈，或在安全的外部边界提交并等待结果；后者又与 D01B 原先禁止“异步后等待”存在冲突且必须避免跨 World/逻辑线程阻塞。
+
+**本次只确立 S2 为上层架构目标，不擅自把 D01B 改写为任何具体调度/等待策略。** 新设计需要重新交由用户确认外部 CLI / Web 管理命令的调用与反馈语义。插件 API 和收包处理也需形成相同的所有权规则，不能仅特殊处理 give。
+
+此外，此前针对库存研究的“在任意调用线程持有玩家业务锁”的**建议**已被 S2 取代；其“完整同步业务操作、内存一致、P1 和玩家级有序异步持久化”的**正式决议仍有效**，应以 World 内业务执行原子性及玩家迁移协调继续落实。
+
+### 13.3 真实代码切入点与先后次序（研究，非实施许可）
+
+- `GameSessionManager.logicThread` 目前全服共用一个 Netty `DefaultEventLoop` 接收全部游戏包。需要调查协议分发、同玩家包内顺序与 World 执行域投递关系；不能只把某个 Handler 随机发到线程池。
+- `GameServer.start()` 当前用独立 `Timer` 串行迭代全部 World/Player/Task，未来应把 Tick 的排序与执行责任归属于逻辑 World，保留整体节拍和必要全服任务；`Player.onTick()` 不能在另一个 Timer 上同时碰 World 持有的状态。
+- `World.queueTransferPlayerToScene()` 当前会在线程池延迟后直接改变 Player/Scene；在 S2 下其定时部分和状态提交部分必须明确区分执行域。
+- `World.addPlayer/removePlayer`、`Scene.addPlayer/removePlayer`、`Inventory.addItemsInternal` 的现有 `synchronized` 和插件事件是迁移风险最大的关键路径，应以所有权断言和并发测试检测未正确投递或跨域读写。
+- 先建立**所有权/迁移/命令结果语义的行为测试与设计**，再逐步迁移 Tick、包处理、GM、Lua、插件、存储交界面；针对多 World 并行增加真实并发与负载测试，在让用户测试和提交上游前运行 CI。
+
+参考 [Minestom `ThreadDispatcherImpl`](https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/thread/ThreadDispatcherImpl.java) 的分配逻辑及 [`Acquirable`](https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/thread/Acquirable.java) 的显式线程所有权。它们作为技术证据，**不是强制采用 Minestom 的 API 或并行粒度**。
+
+本轮只批准 S2 目标并记录冲突；未改 Java/Gradle，未新建分支，未执行 CI。
+
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

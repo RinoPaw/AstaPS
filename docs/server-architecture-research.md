@@ -425,4 +425,64 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 
 **本轮发现否定了“所有 GM/Inventory 写入必须经过当前 World”的前提，但没有否定已选择的 World 并行 S2。** 不改用户既有 D01B 决议，不引入未批准的通用协调器/异步框架。
 
+## 15. Player 与 World 跨域业务：拾取、领奖、联机迁移（2026-11-04 源码审计）
+
+依据 `MeChen618/AstaPS/main@ac9a7e6`。本节针对已批准 **S2（World 模拟按 World 并行）**和第 14 节已澄清的 **Player 个人状态独立**，列出实际跨域业务、失败边界和待审设计；除既有 S2 / E1 / K1 / D01B / P1 等决议外，不额外宣布新的技术选型。
+
+### 15.1 四种实际代码路径的所有权
+
+| 路径 | 真实调用链 | 跨域事实 |
+| --- | --- | --- |
+| **纯个人库存 `give`** | `GiveCommand.Args.run()` → `targetPlayer.getInventory().addItem(s)/addItems()`；`CommandMap.getTargetPlayer()` 按玩家标识找目标 | 物品发放业务归 Player；无须查询或投递其当前 World，保留原 D01B 的直接同步命令要求。但 `GiveCommand.updateAvatar()` 在**降低命座**时调用 `World.transferPlayerToScene()` 两次并广播实体，此分支确实跨 Player/World；不能按**命令名**一刀切确定归属 |
+| **拾取地面实体** | `HandlerGadgetInteractReq` → `Player.interactWith()` → `EntityItem.onInteract()` → `Inventory.addItem()` → `player.onGadgetInteracted()` → `Scene.removeEntity()` → 回包/广播 | 先入包再移除，保护了满背包拒绝时地面物品不丢失。但完整操作由 World 上的实体可用性与 Player 的库存接纳共同决定，现有代码没有跨域整体序列化契约 |
+| **宝箱与世界 Boss 奖励** | `GadgetChest.onInteract()` 为 `synchronized`；普通宝箱经 `WorldChestLootHelper.grant()` / `RewardClaimFlow.grant()`，自动发放到 Inventory、地面物品创建到 Scene；Boss 奖励经 `RewardGrantJournal` 在扣树脂前持久准备、发放后更新凭据/结算标记 | 一个操作关联 World 内的宝箱/掉落状态、Player 领取/余额、MongoDB 的回执。部分路径在整个同步交互过程中做 `insertOne()/updateOne()`；迁到 S2 后若原样在 World 执行器中运行，会阻塞当前执行器及其承载的其他 World；也不能草率把持久回执改成响应后异步 |
+| **多人世界迁移** | `MultiplayerSystem.applyEnterMpReply()`、`leaveCoop()`、`kickPlayer()` 经 `World.addPlayer()`；`World.addPlayer` 会先调用旧 World 的 `removePlayer`，然后设置 `Player.world` 并 `Scene.addPlayer()` | Player 个人库存仍归 Player；成员关系、角色世界实体、场景协议涉及旧/新两个 World。`MultiplayerSystem` 多个入口目前 `synchronized` 在同一个全局系统实例上，可能成为 S2 世界并行化的串行点。两 World 移交不能靠原样嵌套锁或双方互相等待 |
+
+源码：
+[EntityItem](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/entity/EntityItem.java)、
+[Player.interactWith](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/Player.java)、
+[Scene.removeEntity](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/Scene.java)、
+[GadgetChest](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/entity/gadget/GadgetChest.java)、
+[WorldChestLootHelper](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/entity/gadget/chest/WorldChestLootHelper.java)、
+[RewardClaimFlow](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/reward/RewardClaimFlow.java)、
+[RewardGrantJournal](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/database/RewardGrantJournal.java)、
+[MultiplayerSystem](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/systems/MultiplayerSystem.java)、
+[GiveCommand](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/commands/GiveCommand.java)。
+
+### 15.2 同步互斥的现状能解决一部分，但不满足 S2
+
+`GadgetChest.onInteract()` 对同一个 GadgetChest 实例串行，`Scene.removeEntity()` 锁住 Scene，`Inventory.addItem()` 通过 Inventory 锁进行库存接纳，`MultiplayerSystem` 使用服务级大锁。这些局部措施有实际价值，但不构成贯穿 World/Player/Session 的统一提交顺序；同时 `Inventory.addItemsInternal()` 在持有库存 monitor 时触发插件事件，插件可以重新进入别的状态域。
+
+特别注意：`EntityItem.onInteract()` 的 `share` 属性和 Owner GUID 控制拾取权限/广播行为，不能从名字直接推导“一份掉落应奖励多个玩家”。源码成功拾取会删除实体；需要对不同生成路径和各玩家独立掉落的实际模型分别测试，避免错误的多人重复领取规则。
+
+### 15.3 按业务来源协调两个域（建议，非已选通用框架）
+
+**地面拾取示例**，建议把 World 中的实体当作可消费资源，把 Player 的 Inventory 视为独立的接收方：
+
+1. **World 验证并暂时保留实体**：实体确实存在、可拾取、归属/距离/玩家互动条件满足时，对该实体建立一个未完成的领取尝试，防止同时被另一个玩家消费。等待时不占用 World 执行线程，也不把实体立刻销毁。
+2. **Player 独立处理库存业务**：验证自身当前状态、容量及 P1 持久化准入；在完整同步业务边界内接收物品，形成明确的成功/失败结果。世界所在位置不决定 Inventory 的执行域。
+3. **World 根据结果结案**：Player 失败则取消尝试、保持原实体；Player 成功才移除实体并广播。结果可能延迟到达，因此要核对同一实体身份、尝试身份和 World 生命周期，避免旧回调关闭新实体。
+4. **不可把“先加库存再删实体”称为跨域原子事务**：Player 已成功但 World 后续失败时，不能简单再次发物品或盲目回滚已经对外可见的库存变更。需要可重复完成的世界侧收尾/必要的来源侧记录；具体保障应按是否持久奖励分别设计。只有原有要求的奖励回执具有已知持久确认语义，一般地面掉落不能默认得到完全崩溃原子性。
+
+这是一条可研究的**操作编排方式**，不是已批准引入某个通用两阶段提交协议、分布式数据库事务、EventBus 或 Actor 框架。
+
+**付费/一次性奖励**更严格：必须维持 PREPARED 的同步持久确认点、唯一领取身份以及 CONFIRMED/COMPLETED 的来源专属核对。可以研究让等待 MongoDB 的阶段离开 World 执行器，确认结果后重新进入相关权威状态域做最后校验和发放。其间必须解决奖励是否仍可领取、扣费能力是否改变、队列准入是否失效等问题；不能在等待时锁死整个 World，也不能仅以重试替代已保存的不确定回执状态。
+
+**跨 World 玩家迁移**应独立作为“成员关系所有权移交”研究：旧 World 停止接受该玩家的旧世界实体操作并完成离开；新 World 验证容量/权限后接收并构建对应 Scene/Entity；Player 的个人状态和登录会话保持连续。发生失败时必须有唯一、确定的有效成员关系；不允许两 World 的执行器相互同步等待，也不把迁移误作“搬走 Inventory”。
+
+### 15.4 扩展、调度与 API 的直接后果
+
+- **业务能力以实际状态为目标**：`give(playerUid, itemSpec)`、`pickup(worldEntity, playerUid)` 和 `enterWorld(playerUid, targetWorld)` 的所有权不同。当前命令字符串或 Java 包归属都不能代替业务语义。
+- **插件事件应按操作阶段分类**：例如拾取前的可取消事件在决定资源占用和发放前触发；成功通知在状态已有效后触发。插件失败不能让 Player 已收物品、World 又重新开放同一实体。禁止随意在一域事件回调中同步等待另一域锁。
+- **独立 Worker 不等于并行正确**：当前 Netty 网络入口全服串行只是偶然提供部分请求序列化；S2 需逐步让模拟状态操作服从 World 域，把 Player 个人状态的原有同步语义保留下来，独立处理跨域协调。
+- **监控优先于盲目性能优化**：至少观察 World 每次 Tick 的耗时、领取流程各阶段等待、跨域取消/重试次数、World 迁移冲突及有序持久化队列背压。
+
+### 15.5 需要继续确定的高层问题与测试
+
+**仍未决定 Player 个人状态的运行时协调方式**：保留 D01B 的调用线程同步并对每玩家完整业务操作互斥，或者引入按 UID 的玩家级有序执行域（会触及 D01B）；它不由 S2 自动决定。不要因为上一轮选择 S2，就虚构一个“玩家必须跟随当前 World 线程”的方案。
+
+优先测试：两名玩家同时拾取同一地面实体、满背包后重试、库存成功而世界收尾失败、重复网络包、世界退出时仍有未决拾取；Boss 花多人领取与同步回执等待；两组玩家在不同 World 并行组队/切换，不可因全服 `MultiplayerSystem` monitor 产生不必要的等待；`give` 修改已拥有 Avatar 并触发场景重置时，个人域与 World 的后置动作要保持一致。
+
+**此节是研究记录，不批准实现、线程池配置、API 类型、兼容层或新的持久化数据结构。** Java/Gradle 未改，不触发研究阶段 CI。
+
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

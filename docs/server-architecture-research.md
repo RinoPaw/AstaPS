@@ -136,4 +136,65 @@
 
 本轮文档决议不启动 Java 代码重构，也不要求运行 CI。
 
+## 9. 2026-11-03 全局模块依赖审计（M2/D1 后续研究）
+
+研究方式：直接检查 `MeChen618/AstaPS/main@ac9a7e6` 的主启动器、Game/Dispatch、HTTP、认证、账号数据库、CLI、插件、数据加载与脚本代码，以及 `settings.gradle`、`build.gradle` 和 `gradle/protocol-generation.gradle`。下表是**已在具体类中确认的编译依赖与运行调用**，尚未完成全项目自动化编译依赖图；不能据此声称已经找出了所有强连通分量。
+
+### 9.1 当前源码中真实存在的依赖环
+
+| 依赖关系 | 直接证据 | 对 M2 的影响 |
+| --- | --- | --- |
+| Game ↔ Dispatch 链接 | `GameServer` 构造 `DispatchClient`；`DispatchClient` 直接引用 `GameServer`、`Grasscutter.getGameServer()`，并负责玩家字段和抽卡历史查询 | 当前不能按 `server/game` 和 `server/dispatch` 两个目录原样建立彼此独立的 Gradle 模块。应分清 Game 侧连接能力、Dispatch 服务端及请求业务处理的归属 |
+| Dispatch 链接 → HTTP 页面 → Game | `DispatchClient.fetchGachaHistory()` 调用 `GachaHandler.fetchGachaRecords()`；HTTP `GachaHandler` 接受 `Player` 并读 `DatabaseHelper`；`gachaDetails()` 从 `GameServer` 取卡池 | 通用的 Game/Dispatch 通信层目前直接依赖 Web 页面处理器的业务方法；需要明确抽卡历史查询能力的业务所有者，避免让通讯模块依赖 HTTP 页面 |
+| 账号认证 → 游戏账号/HTTP 框架 | `AuthenticationSystem` API 使用 `game.Account`、HTTP JSON 对象及 Javalin `Context`；`DispatchServer` 直接使用 `DatabaseHelper.getAccountById()` | 当前账号/认证接口与 HTTP 表现形式、游戏包名和具体数据访问耦合；是否成为独立模块须先明确账号的归属和共享接口 |
+| 数据资源 ↔ 游戏/脚本 | `GameData` 引用 `game.quest`、`game.world` 的部分类型；`ResourceLoader` 引用 Activity、Quest、World 和 Scripts；`Player`、`SceneScriptManager` 反过来依赖 `GameData` | `data/` 目录不能原样整体独立为一个单向底层模块；需要分离静态 7.1 数据与运行时加载/业务解释职责 |
+| 数据库 ↔ 玩家/道具等领域类型 | `DatabaseHelper` import `Player`、`Avatar`、`GameItem`、`SceneGroupInstance` 等；`Player`、`Inventory` 和场景脚本反过来调用 `DatabaseHelper` | 目前不存在可以单独抽出的完整纯 `database` 模块。Mongo/写入基础能力与依赖具体领域实体的存取逻辑应分别审视，不能先强制创建万能 Repository 层 |
+| 插件 API ↔ 服务器内部 | `plugin.api.ServerHelper` 同时暴露 `GameServer`、`HttpServer`、`CommandMap`、`Player`、鉴权和调度器；`Player` 引用 `plugin.api.PlayerHook` | 插件 ABI/API 是全局模块依赖的主要外露边界。若想独立编译插件 API，必须决定是否继续暴露内部可变对象；不能先迁移包路径后再处理 |
+| CLI/Web Console → 游戏运行态 | `CommandMap` 直接读取 `GameServer` / `DatabaseHelper` 的 Player 与 Account；`WebConsoleHandler` 直接调用 `Grasscutter.getCommandMap()` | 命令解析、执行授权、玩家查询和业务操作混在入口中。JLine 4 Shell 是实际验证新边界的优先切片 |
+
+以上“环”是源码/类层面的实际依赖或跨子系统回指，**不代表这些目录已经是编译模块**。按包名直接搬文件会导致编译失败；应先确定业务能力及对外接口。
+
+### 9.2 启动和构建也有独立的跨模块边界
+
+- `Grasscutter.main()` 用 `ServerRunMode` 选择 GameServer / HttpServer 构造与启动，并创建 `ServerHelper`、命令注册和插件管理。**将来支持 D1 的组合逻辑应由可运行入口负责**，不要让 Game 和 Dispatch 通过互相实例化来决定部署方式。
+- 现有单工程 `settings.gradle` 尚无 `include` 子项目；`build.gradle` 的 `application.mainClass` 和 `jar` manifest 均指向 `Grasscutter`，根工程 `jar` 将运行时依赖解包为单个可执行 JAR，放置在工程根目录。这是既有 `grasscutter-7.1.0.jar` 行为的基准。
+- `gradle/protocol-generation.gradle` 已有独立 `generatedProtocol` `sourceSet`、独立 Java 编译任务和严格 lint；生成源从 7.1 协议描述文件和补充协议重建。**协议生成是有证据的模块化候选，但尚未批准迁移任务**。避免重编译生成的约两千个 Java 源文件，也不能丢失发布包中的生成协议类。
+- `Grasscutter.reflector` 以 `emu.grasscutter` 为扫描根，并明确跳过 `net.proto`；资源定义、命令和 Handler 的反射发现依赖类路径。在多模块 JAR 发布时要验证服务注册、扫描范围、资源打包和插件类加载行为。
+- Gradle 测试已有无资源包单元测试与需要 MongoDB/游戏数据的集成测试区分。拆分模块后应保持该区分以及根工程的集成检查；不利用 M2 跳过要求测试前/上游提交前的 CI。
+
+### 9.3 从现有事实推导出的组织约束（建议，尚非模块名单）
+
+```text
+     Game 可执行入口       Dispatch 可执行入口
+            \                 /
+             \               /
+              HYBRID 组合入口（概念）
+                   │ 负责装配和生命周期
+                   ▼
+       游戏业务         账号/Dispatch 业务
+            \             /
+             共享且无环的契约或静态数据
+                       │
+                  7.1 协议生成
+```
+
+图中接口、代码模块和可执行入口的实际数量均未确定。关键的依赖规则是：**组合者可以知道具体实现，底层实现不应再反向依赖组合者；Game/Dispatch 互通以明确业务契约和通讯边界为前提**。HYBRID 组合入口属于概念上的运行角色，不预设一定新增一个 Java main class、Gradle 模块或可执行包。
+
+不要无依据地创建 `common`、`core`、`api` 等大杂烩；如果模块必须暴露整个 `GameServer`、`Player` 和 `DatabaseHelper` 才能编译，那么模块边界尚未真正建立。
+
+### 9.4 类似项目的参考点
+
+- [GeyserMC/Geyser `settings.gradle.kts`](https://github.com/GeyserMC/Geyser/blob/master/settings.gradle.kts)：同一多模块工程内区分 `api`、`common`、`core` 与多个独立运行平台的 bootstrap。这验证了“核心能力与部署/宿主组合分离”的技术可行性；AstaPS 不需要复制其模块数量。
+- [Minestom/Minestom `settings.gradle.kts`](https://github.com/Minestom/Minestom/blob/master/settings.gradle.kts)：把生成器、测试和主运行体分开组织；可参考构建与工具职责解耦，不能据此推出游戏业务必须拆成许多模块。
+- 既有 [LunarCore `GameServer`](https://github.com/Melledy/LunarCore/blob/main/src/main/java/emu/lunarcore/server/game/GameServer.java) 和 [`InventoryService`](https://github.com/Melledy/LunarCore/blob/main/src/main/java/emu/lunarcore/game/inventory/InventoryService.java) 继续作为业务入口与主机注册的比较案例。
+
+### 9.5 下一轮应当解决的全局问题
+
+1. **业务所有权与公开边界**：明确插件、脚本、管理员入口是直接访问 `Player/World` 内部状态，还是通过公开业务能力操作。这会决定哪些模块可独立编译、哪些公共 API 会被长期锁定。
+2. **资源和账号的归属**：先整理 7.1 静态数据与运行态的耦合，以及独立 Dispatch 查询玩家资料、历史记录的实际调用链，再确定切分。
+3. **选择真正的首批拆分对象**：优先选现有依赖已接近单向且有明确可验证产物的部分，如协议生成；若优先用 CLI/库存验证领域 API，也应先解决其依赖方向。取舍前给出编译与运行证据。
+4. **保留 D1 验收**：三个运行模式都必须能正确初始化、联网、认证、关服；保持现有产物名直至发布策略另行批准。
+
+本节未选择新模块名单、插件策略或数据所有权，未改 Java/Gradle 文件，未运行 CI。
+
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

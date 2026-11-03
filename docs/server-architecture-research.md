@@ -363,42 +363,66 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 
 ## 13. S2：以 World 为逻辑执行域，允许不同 World 并行（2026-11-04 正式决议）
 
-**用户选择 S2，取代第 12.4 节中“仅保留调用线程互斥”的默认推荐方向。** 目标架构将每个活跃 `World` 视为状态执行的基本**逻辑所有权域**：同一 World 内的游戏状态操作与模拟更新按明确的顺序执行；不同 World 在满足所有权隔离的条件下可以并行运行。逻辑执行域**不等于一条永久独占物理线程**；多个 World 可以共享有限的工作线程，也允许按负载分配。
+**用户选择 S2，取代第 12.4 节中“仅保留调用线程互斥”的默认推荐方向。** 目标架构将每个活跃 `World` 视为**世界模拟状态**的逻辑执行域：同一 World 内的 Scene/Entity/世界规则按明确顺序执行；不同 World 在满足隔离条件下可以并行运行。**这里不能推导出 Player 的 Inventory/个人数据必须由当前 World 拥有执行权**；这一过度推论已在第 14 节纠正。逻辑执行域**不等于一条永久独占物理线程**；多个 World 可以共享有限的工作线程，也允许按负载分配。
 
 这项决议要求建设足以支撑 S2 的调度与状态所有权机制，不能再把现有 `GameServer.onTick()` 顺序遍历当作必须保留的设计前提。**此处尚未决定**线程数量、Tick 频率、分片/抢占策略、消息队列具体实现、是否使用 Actor 库、精确类名和 Gradle 模块数量。
 
-### 13.1 已批准的行为不变量
+### 13.1 World 模拟的已选方向及需要继续确定的跨域规则
 
-1. **World 执行序列化**：同一 World 的 Tick、网络包引发的业务修改、玩家命令、场景 Lua、延迟任务和可更改状态的插件回调，最终在其拥有执行权的上下文中按序执行；不同 World 之间可并行，状态不能通过跨线程共享可变引用被偷偷修改。
-2. **Player 随 World 所属，跨生命周期有明确归属**：在线 Player 与其当前 World 的游戏操作需要一致的执行权；玩家登录前、切换 World 期间、退出后和离线操作无法简单绑定某个活跃 World，必须独立定义会话/账户归属和移交协议。玩家从 A 世界进入 B 世界的迁移必须保证前一所有者不再接受旧世界修改、后一所有者接收完整有效状态，不能两侧同时操作同一玩家。
+1. **World 模拟操作序列化**：同一 World 的 Scene/Entity Tick、场景 Lua、世界实体交互与修改该 World 状态的命令/插件回调应在其执行域内有序执行；不同 World 之间可并行。涉及 Player 个人状态的操作需要按实际状态所有权协调，不能仅凭玩家的当前 World 判断操作目标。
+2. **Player 个人数据所有权独立于 World 成员关系**：Inventory、Avatar、货币等属于玩家，并随玩家在 World 之间移动；其操作入口以玩家身份为目标。是否由单独的 Player 执行域调度，还是由调用线程在玩家级互斥下同步执行，属于待决的实现层设计。玩家的世界参与状态与所属 World 的实体交互仍需明确协调；登录、离线、重连不能通过假造 World 来获得执行权。
 3. **World 内 Scene/Entity**：该 World 的 Scene、怪物、场景脚本和世界状态沿相应执行域修改。一个 World 可以存在多个 Scene，当前 S2 仅确立 World 粒度；不自动批准在 World 内将 Scene/Entity 再细分并行。
 4. **跨 World/跨账号操作**：多人邀请、联机进入/退出、跨世界传送以及涉及两个所有者的操作，必须规定协调流程、失败取消、超时和重复提交语义。严禁在持有一个 World 执行权时同步等待另一个 World 执行权而形成死锁。
 5. **阻塞边界**：不在 World 模拟执行器上等待耗时 MongoDB 或其他慢 I/O。保留既定 P1：经济类变更在内存修改前确认持久化工作可接纳；每玩家异步串行落盘；奖励 `PREPARED` 回执确需同步持久确认的例外应采用不阻塞其他 World 的协调机制，具体由后续设计研究。
-6. **插件与 Lua**：沿用 E1、K1。第三方插件通过权威能力修改状态，原版 Lua 保留核心规则；插件事件的执行上下文、重入以及可取消事件的校验/提交时点必须与 World 所有权一致，不允许旧 `PlayerHook` 一类直接状态写入绕过执行域。
+6. **插件与 Lua**：沿用 E1、K1。第三方插件通过目标状态的权威能力修改 Player 或 World；场景 Lua 保留核心规则。插件事件的执行上下文、重入以及可取消事件的校验/提交时点，必须匹配**具体被修改状态**的所有权，不允许以旧 `PlayerHook` 直接可变字段方式绕过边界。
 7. **D1 与 M2**：`GAME_ONLY` 和 `HYBRID` 中部署 Game 运行时的 World 调度；`DISPATCH_ONLY` 仍有账号、认证和 HTTP 工作，不强制创建 Game World。模块化（M2）和运行部署（D1）与每 World 逻辑执行域是互相独立的设计维度。
 
-### 13.2 与既定 CLI/库存决议的显式冲突
+### 13.2 D01B 与 S2：撤回此前过度推导的冲突声明
 
-[CLI 研究第 18 节](cli-jline4-shell-research.md) 的 **D01B** 确定 `give` **在命令调用线程直接同步执行**，而库存/装备章节也确定完整游戏业务同步执行。**S2 使得“任意入口的调用线程直接修改 Player/World”不再可行**：控制台/Web 线程没有目标 World 的执行权。
+[CLI 研究第 18 节](cli-jline4-shell-research.md) 的 **D01B** 要求 `give` 在命令调用线程直接同步执行业务。第 13 节最初将这视作与 S2 必然冲突，理由是“目标 World 执行域才可以修改 Player/Inventory”。
 
-须区分两层语义：
-- **一项游戏业务在所属 World 内同步完成校验、状态变更与通知**：与 S2 相容，也不意味着 MongoDB 同步落盘。
-- **命令解析所在的外部线程直接执行整个业务调用栈**：与严格 World 所有权冲突。常见替代有提交到 World 执行域后异步反馈，或在安全的外部边界提交并等待结果；后者又与 D01B 原先禁止“异步后等待”存在冲突且必须避免跨 World/逻辑线程阻塞。
+**该理由不成立**：`Inventory` 属于 `Player`，同一个玩家在不同 World 间迁移，背包的所有权不改变。源码的 `CommandMap.getTargetPlayer()` 按玩家 UID / 账号定位，且 `GameServer.getPlayerByUid(uid, true)` 可读取离线玩家；不需要先定位 World。**S2 约束世界模拟，不能以此要求每个 `give` 必须投递当前 World。**
 
-**本次只确立 S2 为上层架构目标，不擅自把 D01B 改写为任何具体调度/等待策略。** 新设计需要重新交由用户确认外部 CLI / Web 管理命令的调用与反馈语义。插件 API 和收包处理也需形成相同的所有权规则，不能仅特殊处理 give。
+这保留了 D01B 原有的调用线程同步语义，但单玩家完整业务操作仍须在所有入口间有序，不能让控制台与游戏包同时篡改库存。具体方案例如玩家级互斥或单独 Player 执行域，均需评估再决定；后者可能影响 D01B，前者在跨 World 副作用和插件事件时也有边界问题。**当前不擅自修改 D01B，也不将某种玩家调度实现升为正式决议。**
 
-此外，此前针对库存研究的“在任意调用线程持有玩家业务锁”的**建议**已被 S2 取代；其“完整同步业务操作、内存一致、P1 和玩家级有序异步持久化”的**正式决议仍有效**，应以 World 内业务执行原子性及玩家迁移协调继续落实。
+当命令直接影响 World/Scene/Entity 时，例如生成怪物或修改世界机关，它仍应通过目标 World 的执行权；同时涉及玩家库存和世界实体的领奖/掉落交互，需要定义跨域业务时序。
 
 ### 13.3 真实代码切入点与先后次序（研究，非实施许可）
 
-- `GameSessionManager.logicThread` 目前全服共用一个 Netty `DefaultEventLoop` 接收全部游戏包。需要调查协议分发、同玩家包内顺序与 World 执行域投递关系；不能只把某个 Handler 随机发到线程池。
-- `GameServer.start()` 当前用独立 `Timer` 串行迭代全部 World/Player/Task，未来应把 Tick 的排序与执行责任归属于逻辑 World，保留整体节拍和必要全服任务；`Player.onTick()` 不能在另一个 Timer 上同时碰 World 持有的状态。
+- `GameSessionManager.logicThread` 目前全服共用一个 Netty `DefaultEventLoop` 接收全部游戏包。需要调查协议分发、同玩家包内顺序，以及请求最终修改的是 Player 个人状态还是 World 模拟状态；不能把所有 Handler 一律投递当前 World，也不能随机发到线程池。
+- `GameServer.start()` 当前用独立 `Timer` 串行迭代全部 World/Player/Task，未来应把 World/Scene/Entity 的模拟 Tick 归属于逻辑 World，保留整体节拍和必要全服任务；`Player.onTick()` 同时涉及个人与世界数据，需要按实际状态拆分或协调，不能机械整体塞进 World，也不能与 World 并发写同一实体。
 - `World.queueTransferPlayerToScene()` 当前会在线程池延迟后直接改变 Player/Scene；在 S2 下其定时部分和状态提交部分必须明确区分执行域。
 - `World.addPlayer/removePlayer`、`Scene.addPlayer/removePlayer`、`Inventory.addItemsInternal` 的现有 `synchronized` 和插件事件是迁移风险最大的关键路径，应以所有权断言和并发测试检测未正确投递或跨域读写。
-- 先建立**所有权/迁移/命令结果语义的行为测试与设计**，再逐步迁移 Tick、包处理、GM、Lua、插件、存储交界面；针对多 World 并行增加真实并发与负载测试，在让用户测试和提交上游前运行 CI。
+- 先建立**Player 与 World 分别的所有权、跨域协作和命令执行语义**的行为测试与设计，再逐步迁移 Tick、包处理、GM、Lua、插件、存储交界面；针对多 World 并行增加真实并发与负载测试，在让用户测试和提交上游前运行 CI。
 
 参考 [Minestom `ThreadDispatcherImpl`](https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/thread/ThreadDispatcherImpl.java) 的分配逻辑及 [`Acquirable`](https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/thread/Acquirable.java) 的显式线程所有权。它们作为技术证据，**不是强制采用 Minestom 的 API 或并行粒度**。
 
 本轮只批准 S2 目标并记录冲突；未改 Java/Gradle，未新建分支，未执行 CI。
+
+## 14. 状态所有权纠偏：Player 个人数据与 World 模拟独立（2026-11-04）
+
+用户提出准确的反例：**管理员向玩家发放物品应以玩家为目标，与玩家当前处于 World A 还是 World B 无关。** World 在源码中是具体 `emu.grasscutter.game.world.World`，没有指代所有状态执行域的泛化含义。此前将 World 执行域当成 Player / Inventory 的统一所有者，并认定 D01B 必须修订，是过度推导，现已在第 13 节就地更正。
+
+### 14.1 原生源码支持的事实
+
+- [Player.java](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/Player.java)：持有 transient `Inventory inventory`、`AvatarStorage avatars` 等玩家个人业务对象；同时有 transient `World world`、`Scene scene` 引用，后者可随加入与离开变化。
+- [World.java](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/World.java)：`addPlayer()` 在世界归属变更后调用 `Scene.addPlayer()`，不会重建 Inventory 或更改其业务归属。
+- [GameServer.java](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/game/GameServer.java)：`getPlayerByUid(uid, true)` 可以按 UID 获取在线 Player 或通过数据库加载离线 Player，因此以 World 为目标的 give 不能覆盖真实命令需求。
+- [CommandMap.java](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/CommandMap.java)：命令目标按 UID/账号解析及持久记忆，不要求命令提供 World 身份。
+
+### 14.2 更合适的逻辑归属分类（设计研究，不代表已批准调度实现）
+
+| 逻辑归属 | 典型状态 | 实际操作举例 |
+| --- | --- | --- |
+| **Player 个人域** | Inventory、装备/Avatar 归属、货币、个人进度、每玩家写入顺序 | `give(uid, item)`、强化、装备、邮箱授予、离线管理 |
+| **World 模拟域（S2 已选）** | World/Scene/Entity、怪物与机关、场景脚本、世界内战斗模拟 | 怪物生成、Scene/Entity Tick、世界机关触发、多人场景交互 |
+| **Account / Session 域** | 登陆资格、当前有效会话、账号认证及重连 | 授权、上线、下线、拒绝旧会话写入 |
+| **跨域业务流程** | 涉及玩家和世界两方状态的协作过程 | 拾取世界掉落物、开箱领奖、装备能力反映到场景角色、世界之间的玩家迁移 |
+
+这些是**状态语义上的所有权分类**，不预设“一类等于一个物理线程、一个 Gradle 子项目或一个 Actor”。S2 的 World 并行目标保持正式决议；Player 个人域采取共享执行器上的按 UID 串行任务，还是在调用线程中用玩家级完整业务互斥，尚需另行权衡。既有 D01B、P1、业务同步完成和每玩家异步有序持久化仍有效。
+
+最需要进一步验证的真实难点在**跨域业务**：玩家拾取 World 的掉落物会同时影响世界实体和个人库存；装备变化还可能影响 World 中角色实体的战斗属性。需要明确定义谁决定操作成功、什么时候占用/消费世界资源、玩家库存容量与写入 P1 如何预检、失败怎么撤销/重新开放、客户端与插件何时观察到完成状态。不要仅靠在两个域间同步相互等待来解决，容易形成死锁。
+
+**本轮发现否定了“所有 GM/Inventory 写入必须经过当前 World”的前提，但没有否定已选择的 World 并行 S2。** 不改用户既有 D01B 决议，不引入未批准的通用协调器/异步框架。
 
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

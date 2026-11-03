@@ -671,6 +671,19 @@ R2 的**逻辑串行队列不等于每玩家一条物理线程**。可以用共�
 
 **结论**：仅将 `GameServer.onTick()` 的 World 循环和 Player 循环提交给两个线程池，会直接违反已选 R2/S2。下一步要把 `Player.onTick()`、`Scene.onTick()` 的每个真实**状态变更**按所属者审计，并对共享的 BoL、能量、Tower 和奖励/日常重置建立明确的单一有效执行路径。该分类不预设“所有 Player 管理器必须在 Player 域”“所有 Scene 调用都只改 World 状态”。对于周期性数据，必须保留原版 tick 时序的行为测试；不能把物理线程数量当成调度完成的判据。
 
+### 18.6 其他游戏服务端的可验证设计：B1/B2/B3 并无行业唯一答案
+
+**对比范围说明**：下面只说明可查的开源服务端、框架或公开架构，不能把 TrinityCore 当成暴雪 WoW 内部源码，也不能从 Unreal 通用功能推断某个商业游戏具体部署了多少线程。“战斗状态存放在谁的对象中”“谁有并发修改权”“哪台服务器权威”“如何存档”是四个不同层次，不应混成一句“由 World 管”。
+
+| 案例 | 有代码/文档支持的事实 | 对 AstaPS 的借鉴 |
+| --- | --- | --- |
+| **TrinityCore（WoW 服务端模拟）** | [`Player.h`](https://github.com/TrinityCore/TrinityCore/blob/master/src/server/game/Entities/Player/Player.h) 中 `Player : public Unit`，同一 Player 内有背包/装备条目，Unit 负责战斗状态；[`Map::Update`](https://github.com/TrinityCore/TrinityCore/blob/master/src/server/game/Maps/Map.cpp) 遍历地图成员并调用 `Player::Update`；[`WorldSession.cpp`](https://github.com/TrinityCore/TrinityCore/blob/master/src/server/game/Server/WorldSession.cpp) 以 MapSessionFilter/WorldSessionFilter 按线程安全与游戏状态分流网络协议 | 更接近“在线 Player 作为场景中的 Unit，由 Map 更新其运行时状态”的**整合型模型**，并未证明独立 R2 UID 队列是行业必需 |
+| **Folia（Minecraft 多线程服务端）** | [官方开发指南](https://docs.papermc.io/paper/dev/folia-support/) 明确 RegionScheduler 归地点，EntityScheduler **跟随实体跨 Region 迁移**；Entity 操作由当前所属 Region 的执行上下文完成 | 更接近**随位置迁移执行权**的 B3 风格；但 Folia 的 Region 细分与 Minecraft Player 个人经济模型不同。它说明**每人永远独立于场景的执行域不是唯一成熟做法** |
+| **Unreal Gameplay Ability System** | [Epic 官方](https://dev.epicgames.com/documentation/unreal-engine/gameplay-ability-system-component-and-gameplay-attributes-in-unreal-engine?lang=en-US)：能力系统 ASC 可以在 Character/Pawn 上，也可以归 PlayerState，使角色死亡、重生或重新占据 Pawn 后保留长期冷却/能力状态 | 是**长期个人身份与短期世界 Actor 分开**的直接参考；但 ASC 具体放哪、HP/技能/装备如何划分可配置，**不会自动规定 B1 或独立线程** |
+| **rAthena（Ragnarok Online 服务端模拟）** | [`pc.hpp`](https://github.com/rathena/rathena/blob/master/src/map/pc.hpp) 中 `map_session_data` 同时持有个人 `inventory` 和 `mmo_charstatus`；[源码说明](https://github.com/rathena/rathena/blob/master/doc/source_doc.txt) 区分 Map Server 在线运行与 Char Server 持久数据 | 证明传统 MMORPG 也采用**在线会话持有个人/战斗相关状态、角色存档由独立服务承担**的组合。独立存档服务不意味着战斗和 Inventory 必须在两个线程域 |
+
+**对 B1 的影响**：目前对 AstaPS 仍推荐深入研究 B1，因为 S2/R2 已获批准且原神式场景技能计算量高；但不能用“其他游戏普遍这么做”作为 B1 论据。相反，TrinityCore/Folia 说明**同一个活跃角色的装备、HP、战斗技能在同一个执行所有者内完成**有很强的一致性优势，B1 为保留独立 R2 而增加的跨域数据同步成本应被正面测量和测试。B3 的“活动时执行权随世界迁移”值得作为严肃竞争方向保留，前提是**不破坏已批准的 R2 对 Inventory/个人经济操作的 UID 串行保证**；无需将所有 Player 状态移交给 World。
+
 本节只核实对象共享与协议顺序风险，提出 B1/B2/B3 候选。**没有修改 Java、持久化、模块、线程池、插件 API；未批准上述三选一或新的 Session 调度对象。** 文档阶段不运行 CI。
 
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

@@ -639,6 +639,8 @@ R2 的**逻辑串行队列不等于每玩家一条物理线程**。可以用共�
 
 **B1 的推荐依据**：把高频实时模拟留在 S2 World，把长期身份、持有/装备与个人存档留在 R2 Player；世界切换不会改变 `Inventory` 所有权。**这只是一项待深入验证的模型建议**，不是用户新批准的 B1，也不要求立即新增 `CombatState` 类或改数据库模式。
 
+**B1 不能理解为直接复制一次数值表**。进一步检索上游 `recalcStats()` 的实际调用点：[`WaterResonanceHelper.refresh()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/WaterResonanceHelper.java) 会根据**活动队伍共鸣**重算活跃 `Avatar`，[`AbilityMaxHpRatioHelper.refresh()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/AbilityMaxHpRatioHelper.java) 在**世界内能力 Modifier 增减**时调用 `recalcStats(true)` 并重新套用实时 MaxHP 比例，[`MavuikaSpiritHelper.onAfterRecalc()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/MavuikaSpiritHelper.java) 会在属性表重建后重新注入实时战斗增益。这表明同一张表目前混合了**装备/成长来源**、**队伍/环境修正**和**运行中能力状态**。B1 要研究“基础属性来源、实时修饰、当前 HP/能量与客户端展示”之间的明确计算/同步规则，否则从 Player 复制旧基础表到 World 会覆盖 Buff，简单把战斗数值复制回 Player 又会把临时能力状态持久化。该类动态来源是 B1 的实际迁移成本，不代表需要把 `Avatar` 的整个成长系统归 World。
+
 实现研究必须先回答：活动角色/非活动角色的属性计算谁负责；多玩家联机同一 World 中角色快照如何一致；带数值修饰的元素能力、动态生命变化何时推送到 Player；玩家在世界中强化/更换装备时能否保证在下一次相关战斗动作前生效；登出/切场景/掉线时 HP/能量持久化更新与已有每 UID 有序写入成功屏障如何衔接。**直接在 R2 上清空 `Avatar.fightProperties`，同时让 S2 战斗线程读取同一 map，是不可接受的目标架构。**
 
 ### 18.3 独立于 S2/R2 的网络输入与输出顺序

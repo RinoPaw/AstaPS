@@ -1,6 +1,6 @@
 # AstaPS CLI / JLine 4 Shell 研究与设计
 
-> 更新：2026-11-03。研究基准：MeChen618/AstaPS main 的 `ac9a7e6cec900e4ced28ec5dc16ceda82cf7538d`；工作分支：RinoPaw/AstaPS 的 `rino/refactor/jline4-shell`。
+> 更新：2026-11-04。研究基准：MeChen618/AstaPS main 的 `ac9a7e6cec900e4ced28ec5dc16ceda82cf7538d`；工作分支：RinoPaw/AstaPS 的 `rino/refactor/jline4-shell`。
 >
 > **状态：研究与设计阶段，未修改实现。** 本文只记录现有源码事实、已批准规则、未决事项。后文的示例命令均不表示已经实现。
 
@@ -230,7 +230,7 @@ long getGuid();
 | 目标与身份 | 临时批量目标作用域语法、Shell/Web/游戏会话创建销毁、玩家下线清理、变量是否可改默认目标、权限解析和错误优先级。 |
 | 游戏执行域 | **S2 / R2 已选**；需确定 CLI 对 UID 操作的提交、等待或异步反馈，跨 Player/World 业务的结果协议及 Shell 作业生命周期。 |
 | Give 业务 | 类型专用选项的**具体名称**、圣遗物词条与 C09、套装部分发放顺序、即时效果及解锁的精细规则、真实库存入库结果。 |
-| 物品模型 | `InventoryItem` 其余 API、具体实现与类关系、GUID 持久化/复制/分配前状态、数据库存储/恢复和装备引用。 |
+| 物品模型 | `InventoryItem` 其余 API、具体实现与类关系、**会话 GUID 的分配前/复制行为**、ObjectId 映射与数据库恢复、装备引用；GUID 不持久化已选定。 |
 | 终端与部署 | Windows/PowerShell 7 中文 IME、UTF-8、日志重绘、粘贴、Tab、Ctrl+C/D；Linux TTY/SSH/无 TTY、服务关闭生命周期、Web 输出与敏感日志。 |
 | 其他 | `StartupArguments` 是否迁移、插件命令 API 是否破坏性升级、所需测试矩阵及 CI 验收标准。 |
 
@@ -239,6 +239,8 @@ long getGuid();
 补充资料：[CLI Picocli 迁移](cli-picocli-migration.md) · [命令全量审计](cli-command-wide-audit-20261010.md) · [插件 API v5](plugin-command-api-v5.md) · [上游仓库](https://github.com/MeChen618/AstaPS)。本文保留历史研究与决策来历；**当前生效规则以第 0 节决议索引及标注为准**。早期建议如与后续正式决议冲突，均为历史背景。
 
 ## 7. 装备持久化与物品身份：正式决议
+
+**阅读注意**：本节按决议发生顺序保留原始研究记录，较早小节中的“当时未决定”若已被后面正式选定，应以本文件第 0 节及对应后续小节为准。例如装备归属见 7.2、写入顺序见 7.3–7.5、运行时 GUID 见 7.6。
 
 ### 7.1 装备业务成功与异步持久化（①）
 
@@ -274,7 +276,7 @@ long getGuid();
 
 ### 7.4 业务完整同步执行，数据库异步写入
 
-用户进一步明确：**装备的每个业务操作必须同步执行；写入数据库允许异步慢慢完成**。这澄清第 34、36 节 A1 已批准的运行时与持久化边界；不得解释为整次换装由异步任务处理。
+用户进一步明确：**装备的每个业务操作必须同步执行；写入数据库允许异步慢慢完成**。这澄清第 7.1、7.3 节已批准的运行时与持久化边界；不得解释为整次换装由异步任务处理。
 
 - 装备、卸装、替换和跨角色交换，必须在**同步业务调用**中完成校验、所有受影响对象的内存状态更新、必要的属性重算，并形成对客户端可见的一致结果。
 - 同一玩家的装备修改需要串行化/互斥协调，防止两个装备请求交错；不得让其他请求在操作未完成时观察到半次交换。**现已选择 R2 的按 UID 逻辑串行执行域**；具体执行器、线程分配和业务操作边界实现仍未决定。
@@ -395,7 +397,7 @@ long getGuid();
 | 获得请求 | Give、Gacha、任务、商店、掉落、邮件、锻造、奖励 | 表达想授予的 itemId/数量/可选专有属性；最终业务解释为库存变化、余额变化或效果，不应预先假设都要写入库存 |
 | 即时效果 | 角色卡、服装/风之翼/名片、元素能量球、冒险经验/好感经验、树脂等 | 由对应业务系统处理，保留 `ItemData.onLoad` 基于 7.1 itemUse 的 useOnGain 修正逻辑；不为了发奖生成持久库存实例 |
 | 世界掉落 | `EntityItem`，场景可拾取物 | 保留世界实体身份和场景协议，拾取成功后才创建/合并玩家持有物品；不把世界 entity GUID 与库存 GUID 混为一谈 |
-| 客户端协议 | `Item`/Weapon/Reliquary/Furniture/Material/TpsWeapon | 运行时按实际物品类型编码，业务模型不应依赖由 `GameItem.toProto()` 统一分支所有协议 |
+| 客户端协议 | `Item`、`Weapon`、`Reliquary`、`Furniture`、`Material`、`TpsWeapon` | 运行时按实际物品类型编码，业务模型不应依赖由 `GameItem.toProto()` 统一分支所有协议 |
 
 注意：一个 `InventoryItem` 在新建且尚未入库时可能暂时无有效 GUID，具体赋值 API 尚未定；不应为此提前创建领域层级。
 
@@ -404,7 +406,7 @@ long getGuid();
 `TpsWeaponSystem.wear()` 按 `WearTpsEquipReq.equipGuids` 收到整组武器 GUID，但**保存的是 `itemId` 列表**：普通角色存于 `Avatar.tpsWeaponIds`，TPS 试用角色另涉及 `Player.tpsLoadout`。该系统有类型专用的槽位数限制、单种最多持有一件，玩家切换时跨角色删除重复佩戴、生成 TPS 武器实体与通知。
 
 - 已批准的“装备物品记录持久化佩戴角色”方案 A 直接适用于普通武器和圣遗物；目前**不能悄悄推断**其覆盖 TPS 的整组装载关系。
-- **建议保留 TPS loadout 的专有语义**，暂不要求其伪装成普通 `equipCharacter`。只把持有中的 TPS 武器改为新的库存物品类型，并由 TPS 业务系统负责 loadout；若以后坚持物品侧权威覆盖 TPS，需要单独重设计多槽、试用角色及持久化约束。
+- **这项建议已在第 8.4 节获选为 T1**：保留 TPS loadout 的专有语义，不要求其伪装成普通 `equipCharacter`。只把持有中的 TPS 武器改为新的库存物品类型，并由 TPS 业务系统负责 loadout；若以后坚持物品侧权威覆盖 TPS，需要单独重设计多槽、试用角色及持久化约束。
 - `ItemType.ITEM_TPS_WEAPON(7)` 注释明确指出这是服务端专用类型；客户端 `Item` 协议走 `setTpsWeapon`。不要用它的数值直接推断客户端资源枚举。
 
 #### 8.2.3 业务操作完整性与外部入口
@@ -428,7 +430,7 @@ long getGuid();
 
 ### 8.3 试用角色、世界掉落与 TPS 装载研究
 
-以下均来自 `MeChen618/AstaPS` 源码；仅记录研究建议和一个**需要用户决定的业务权威范围**。不添加具体类或额外层。
+以下均来自 `MeChen618/AstaPS` 源码；本节保存 TPS 选择前的研究事实与方案对照。**T1 已在第 8.4 节正式选择**，此处的待选表述只属历史研究记录。不添加具体类或额外层。
 
 #### 8.3.1 试用角色有装备，但装备未进入 Inventory
 
@@ -449,19 +451,19 @@ long getGuid();
 - 一种 TPS 武器全玩家仅有一件（`Inventory.putItem` 中重复拒绝），同一个 itemId 只能佩戴在一个角色的 TPS 装载列表中；`TpsWeaponSystem.wear` 遍历其他角色和 `tpsLoadout` 清掉冲突。
 - TPS 仍需要客户端 `Item.tpsWeapon`、`AvatarInfo.tps_weapon_list`、`SceneAvatarInfo.tps_weapon_list`、`TpsEquipChangeNotify` 及专用武器实体/ability 处理。此业务不能靠普通武器单槽逻辑替代。
 
-#### 8.3.4 一项真正未决的业务范围选择：装备关系 A 是否覆盖 TPS
+#### 8.3.4 TPS 权威范围的历史方案对比（已选 T1）
 
 **方案 T1（建议）**：普通武器/圣遗物依第 7.2 节采用持有物品的装备归属持久化权威；TPS 保留`Avatar.tpsWeaponIds` / `Player.tpsLoadout` 作为专有装载关系的持久化权威，`InventoryItem` 仅负责 TPS 武器的持有。TPS 业务系统负责跨角色唯一性、卸载、删除/失去武器时的装载修正。优点：匹配 7.1 已有多武器与临时角色规则，变动小；缺点：装备关系的存储权威有按业务类型区分的例外。
 
 **方案 T2**：此前选定的物品侧权威覆盖所有装备，包括 TPS。为每个 TPS 武器的持久记录标记所佩戴角色及有序装载位置，并对试用 TPS 角色定义稳定归属键及重建逻辑；原 `Avatar.tpsWeaponIds` / `Player.tpsLoadout` 只能是投影或需重设计。优点：持久化权威统一；代价：变更 TPS 核心业务模型、装备顺序、多槽、临时角色恢复，不应在用户未批准时擅自完成。
 
-两种方案都不改变每位玩家完整业务操作同步执行与数据库写入按玩家串行异步安排的既定规则。**需要用户直接选择 T1 或 T2，再将此范围确定为正式架构决议**。
+两个历史候选均不改变每位玩家完整业务操作同步执行与数据库写入按 UID 串行异步安排的原则。**最终已选择 T1，见第 8.4 节；T2 仅保留作取舍证据。**
 
 #### 8.3.5 另一项已核实的边界：玩家线程来源
 
 - `GameSessionManager` 通过一个 Netty `DefaultEventLoop logicThread` 安排收包，`GameServerPacketHandler` 在该执行流内调用注册 Handler。
 - `CommandMap.executeCommand` 对标有 `threading=true` 的命令执行 `executor.execute(runnable)`；GiveCommand 当前就是该类型。其他业务也可由定时、脚本或事件调用。
-- 因此未来的“同玩家同步业务边界”须覆盖客户端、CLI/GM 和其他执行入口。不能用当前单个网络事件循环等同全局运行时一致性保证，也不等同数据库每玩家异步写入队列。具体玩家级执行归属/互斥实现待研究，当前无须向用户提问线程/锁 API。
+- 因此未来的“同玩家同步业务边界”须覆盖客户端、CLI/GM 和其他执行入口。不能用当前单个网络事件循环等同全局运行时一致性保证，也不等同数据库每玩家异步写入队列。**后续 R2 已正式选择按 UID 逻辑串行的 Player 执行域**；具体执行器与调度 API 尚需技术设计。
 
 
 ### 8.4 TPS 装载持久化权威 T1（正式决议）
@@ -477,19 +479,21 @@ long getGuid();
 
 ## 9. 执行、数据库与会话：源码审计
 
+这里保留上游现状与 R2 决议之前的候选技术路径；**现行个人状态执行约束为 R2（第 10.2 节）**，数据库按玩家异步有序写入与 R2 逻辑执行队列互相独立。历史风险和回归测试仍然有效。
+
 ### 9.1 运行时并发与 GameItem 替换切入点
 
 本节核对最新 `MeChen618/AstaPS/main`（查询时 HEAD `ac9a7e6`）及已选择的同步业务/异步落盘、业务系统主导 B、会话 GUID、TPS T1。**未新增经用户批准的设计决议，不修改 Java 代码。**
 
-#### 9.1.1 同一玩家的状态确实从多个线程修改
+#### 9.1.1 现有跨线程状态写入（R2 之前的风险审计）
 
 - 网络包：`GameSessionManager.logicThread` 为 **单个全服** Netty `DefaultEventLoop`，经 `GameSession.handleReceive()` / `GameServerPacketHandler.handle()` 调用 Handler。
 - 游戏 Tick：`GameServer.start()` 通过独立 `Timer.scheduleAtFixedRate()` 调用 `GameServer.onTick()`，它遍历玩家并调用 `Player.onTick()`、`world.onTick()`、Scheduler；所以 Tick 与网络逻辑线程不是同一线程。
-- GM / CLI：`CommandMap.executeCommand(...)` 按命令元数据可交给 `Grasscutter.getThreadPool()`；当前 `GiveCommand` 仍标有 `threading=true`，未来已决定 give 改为命令调用线程同步业务，但调用线程仍可能来自控制台/Web/游戏包路径。
+- GM / CLI：`CommandMap.executeCommand(...)` 按命令元数据可交给 `Grasscutter.getThreadPool()`；当前 `GiveCommand` 仍标有 `threading=true`；此前 D01B 曾批准在调用线程直接同步执行，**后续 R2 已覆盖这一直接写状态的线程细节**。控制台/Web/游戏包来源需按目标 UID 进入 Player 域。
 - 登录：`Player.loadFromDatabase()` 并行提交 Avatar 和 Inventory 的加载任务，Inventory 以 Avatar 已加载为先决条件；登录加载不等于正常会话业务可并发修改。
 - `Inventory.addItems/payItems/removeItem` 部分使用 `synchronized`，`Player.onTick` 也 `synchronized`，`GameServer.onTick` 锁 server；`InventorySystem.useItem/useItemDirect` 的 `synchronized` 锁的是共享的 `InventorySystem` 服务实例。现有锁不在同一个同步边界，不能保证一次强化或装备交换与 Tick/GM 并发时的整体一致性。
 
-**建议（非新决议）**：在已经选择“同步完成完整业务操作”前提下，采用玩家级**完整业务操作互斥**作为最小可落地模型，保持业务在调用线程同步执行，避免为了单纯物品重构引入玩家 Actor、任务队列或把所有 Tick 都迁往单个网络线程。这是建议而不是未经用户同意改全项目。只有影响该玩家持有/装备/相关货币的业务需要进入同一边界；不同玩家原则上独立。多玩家操作、与 world/server 的锁顺序需要专门验证，不能在持有 world/server 锁时盲目嵌套玩家锁。
+**历史建议（已由 R2 取代）**：当时在已选“同步完成完整业务操作”前提下，提出调用线程持玩家级完整业务互斥作为最小方案，避免仅为物品改造迁移整套调度。这是建议而不是未经用户同意改全项目。只有影响该玩家持有/装备/相关货币的业务需要进入同一边界；不同玩家原则上独立。多玩家操作、与 world/server 的锁顺序需要专门验证，不能在持有 world/server 锁时盲目嵌套玩家锁。
 
 注意 `Player.getNextGameGuid()` 的 `++nextGuid` 目前未同步；Avatar、Inventory 的 GameItem、场景 EntityItem 都从这里取得运行时 GUID。已批准的“Inventory 分配库存 GUID”应理解为 Inventory **主导接纳时机**、从玩家共享的会话 ID 命名空间获取唯一值，不能自建一套与 Avatar GUID 可能碰撞的计数器。实际并发安全实现待代码阶段审计。
 
@@ -609,8 +613,8 @@ long getGuid();
 
 本文件须同时遵守 [全局架构研究第 13–14 节](server-architecture-research.md)：**S2 已正式选择以 World 为粒度并行执行世界模拟**；它并未规定 `Inventory` 这类玩家个人数据必须交给玩家当前所在 World 的执行域。
 
-- 此前第 10.1 节最初把 **D01B**（`give` 在调用线程直接同步执行）与 S2 描述为必然冲突；这一推论已纠正。命令应按目标玩家 UID/账号进行个人库存操作，玩家从 World A 到 B 不改变 Inventory 所有权，离线玩家也没有可作为路由目标的活跃 World。**本段为 R2 之前的结论：当前以第 10.2 节 R2 后续决议为准。**
-- 当前仍需要保证同一玩家从 GM、客户端、脚本/奖励等不同入口触发的完整业务操作有序。第 9.1.1、9.2.3 节的玩家级互斥只是已有研究建议，后续已由 R2 确定：**按 UID 独立逻辑串行执行域**，不同玩家可并行；不需每玩家一条物理线程。P1、玩家级有序异步数据库写入、一次业务内存同步完成均维持有效。
+- 早期讨论曾把 **D01B**（`give` 在调用线程直接同步执行）与 S2 描述为必然冲突；这一推论已纠正。命令应按目标玩家 UID/账号进行个人库存操作，玩家从 World A 到 B 不改变 Inventory 所有权，离线玩家也没有可作为路由目标的活跃 World。**本段为 R2 之前的结论：当前以第 10.2 节 R2 后续决议为准。**
+- 同一玩家从 GM、客户端、脚本/奖励等不同入口触发的完整业务操作必须有序。第 9.1.1、9.2.3 节的玩家级互斥只是已有研究建议，后续已由 R2 确定：**按 UID 独立逻辑串行执行域**，不同玩家可并行；不需每玩家一条物理线程。P1、玩家级有序异步数据库写入、一次业务内存同步完成均维持有效。
 - 真正需要跨执行域协调的是**同时修改 World/Scene 实体与 Player 个人数据的业务**，如拾取世界掉落物、战斗奖励和角色装备能力同步。World 操作仍遵循 S2 的执行所有权；个人库存操作不因玩家当前处于哪个 World 而改变 API 调用目标。
 - 玩家登录未绑定 World、离线管理、旧新会话替换仍遵守此前第 9.3 节的身份归属和保存屏障；不建立临时 World 来满足库存命令。
 - 未增设 Gradle 模块、Actor 框架、队列桥接层或同步等待机制。先明确 Player 与 World 之间的业务协调和各自所有权边界，再评估必要的执行实现。

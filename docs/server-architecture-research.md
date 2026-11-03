@@ -23,9 +23,9 @@
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 与 F1** | 直接在调用线程修改 Inventory 的旧规则被 R2 覆盖；**F1 已决定 Shell 等待真实业务完成再产生退出状态**，只允许外部交互线程等待，游戏执行域间禁止阻塞等待 | [CLI/库存第 4.1、10.2、11 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–23 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离与调度时间语义审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–24 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–23 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 调度权及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–24 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ## 1. 先定义系统实际是什么
 
@@ -899,4 +899,41 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 
 **研究结论**：下一轮实现前须把 scheduler 调用点按 **World / UID / 纯异步计算 / 全服时间与管理任务** 分类，再选最少必要的执行途径。S2/R2 的所有权规则已经批准，具体定时器/执行器的接口形态尚未决定。不能为了“统一调度”擅自加入第三个状态权威或强制所有业务经过全局串行入口。
 
-**尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。
+**截至第 23 节仍未进入代码改造阶段**。以下第 24 节继续开展静态源码归属审计，无 Java 迁移。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。
+
+## 24. 调度调用点的归属分类与首批迁移阻塞点（2026-11-04 源码审计）
+
+**状态：只补足第 23 节提出的调用点分类；S2/R2/B1/C1/F1 决议不变。** 本轮逐一核对当前上游 \`main@ac9a7e6\` 的生产调用，而不根据 \`scheduler\`/\`Executor\` 类名推定谁可修改状态。一次业务可能涉及 **何时到期、哪位 UID 的长期状态、哪个 World 的实时状态、与哪次 Session 关联** 四个维度；这四个维度不一定对应四个可变对象，更不构成已批准的通用调度框架。
+
+### 24.1 源码调用点及归属
+
+| 现有来源与可核实行为 | 期望归属 / 真实问题 | 第一阶段验证价值 |
+| --- | --- | --- |
+| [QiqiEHealHelper](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/QiqiEHealHelper.java) 的治疗周期从全服 scheduler 查 UID 和活动 EntityAvatar、调用 \`tickHeal\`；[MavuikaSpiritHelper](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/MavuikaSpiritHelper.java) 的 C2 光环周期遍历当前 Scene 怪物并变更减防 | **World/S2** 持有治疗、敌方 Buff 与战斗实时状态；UID 可用于重新查找玩家，不能让全局 Timer 成为这些状态的写入者。Qiqi 的任务键按 UID 保存，实际目标却是 World 中的实体；跨 World/离线时须避免任务延迟执行到新实体 | 同 UID 换 World、两个 World 同数值 EntityId、Buff/治疗到期 |
+| [HutaoC6Helper](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/HutaoC6Helper.java)、[ShinobuC6Helper](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/ShinobuC6Helper.java) 在全服 scheduler 定时撤销 EntityAvatar 属性；[EscoffierHealUtil](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/EscoffierHealUtil.java) 按 UID 和 EntityId 回查治疗目标 | **World/S2**；实体 ID 及捕获的 EntityAvatar 引用均不能代替 World 身份和实体生存期证明。按 UID 找到新登录 Player 也不能证明旧治疗仍有效 | 清理旧实体后旧任务到期、会话替换、双 World ID 相同 |
+| [SceneScriptManager](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/scripts/SceneScriptManager.java) 的 \`callEvent\` 提交到全服 4 线程 \`eventExecutor\`；按特殊组分别维护 \`blossomGroupEvents\` 等顺序链，普通事件仍可并行执行 \`realCallEvent\`，通过 ScriptLib 触及 Scene；[DomainDungeonHelper.finishDomainEnterDeferred](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/dungeons/DomainDungeonHelper.java) 在同一池直接加载/刷新场景、应用出生点 | **World/S2** 拥有 Scene/实体修改，耗时资源准备可以异步；按特殊剧情组的 Future 链仅保证该链上的局部顺序，未给整个 World 提供唯一写入权。旧异步回调必须在已销毁 Scene / 重登之后失效 | 同 Scene 多组事件、进入副本后立刻离开/重进、脚本加载与 Tick 重叠 |
+| [QuestManager](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestManager.java) 通过 **全服静态单线程** \`eventExecutor\` 排列所有玩家的 \`queueEvent\`，登录恢复也向此池提交任务；[QuestSystem.triggerExec](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestSystem.java) 同样提交 Quest Exec | 玩家任务进度、奖励与个人状态主要归 **UID/R2**，触发场景 Lua/刷怪则跨 **World/S2**。当前“所有 UID 共用一线程”阻碍不同玩家并行；**线程池串行不等于跨来源的 UID 顺序**，因为 Player Tick 与网络/世界事件依然直接触碰任务相关状态 | 两个 UID 同时推进任务、同 UID 不同来源事件排序、任务执行引起 Scene 效果 |
+| [World.queueTransferPlayerToScene](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/World.java) 在全服静态池 \`Thread.sleep(delayMs)\` 后调用 \`transferPlayerToScene\`，实际执行会移除旧 Scene 玩家、创建新 Scene 实体并更新 Player/队伍 | 明确的 **World A → UID/R2 → World B** 生命周期协调问题；延迟只提供到期信号，不能让睡眠线程直接拥有三方状态。现有 \`Future.cancel(true)\` 可中断休眠，但不能作为已开始转移的回滚证明 | 延迟传送时换 World/退出、旧新回调竞争、跨域中途失败 |
+| [EntryNotice](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/EntryNotice.java)、[PushTipsSuppressHelper](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/PushTipsSuppressHelper.java)、[PacketPlayerStoreNotify](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/packet/send/PacketPlayerStoreNotify.java) 从全局 scheduler 延后触发公告/玩家提示/登录商店通知 | 以 **UID、登录会话有效性** 为主，实际发包还涉及 Session 出站顺序；单用 \`isOnline\`、\`isConnected\` 或捕获旧 Player 不足以识别同 UID 的新登录。此类任务不需要为发通知建立 World 归属 | 重登后旧登录定时包、同 UID 旧 Session 回调与新 Session 串包 |
+| [ScriptLib.DelWorktopOption](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/scripts/ScriptLib.java)、[DomainChallengeKeyHelper](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/dungeons/DomainChallengeKeyHelper.java) 从全局 scheduler 延后向 Scene 广播或刷新机关；[ExecRefreshGroupSuite](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecRefreshGroupSuite.java) 已选择 Scene scheduler，并重新核对 World/Scene/Quest 身份 | 前两者属于应交回 **World/S2** 的场景任务；第三者可作为现有最小切口参考，但 Scene scheduler 只在既定 Tick 上由 Scene 驱动，仍须解决其他异步来源越权与 Scene 删除 | 场景销毁后旧机关刷新、两个 World 的同 SceneId 机关任务独立 |
+
+**新增的实际吞吐/隔离问题**：[QuestManager.eventExecutor](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestManager.java) 设定 1 个工作线程、容量 1000 的队列及 \`CallerRunsPolicy\`。满队列时（执行器未关闭）提交线程会自己运行被拒绝入队的任务：这既会让网络/World 调用线程执行本来交给任务池的逻辑，也可能与池中正在执行的另一任务并发。原注释称单线程防止 Quest 状态竞态，这一策略在饱和情况下本身无法提供该保证。应以可控饱和测试核实，不将其与当前已经复现的游戏故障混为一谈。相比之下，SceneScriptManager 与 AbilityManager 选择有界队列加拒绝策略，饱和行为及任务失败反馈须在迁移过程中显式测量，不能用静默吞掉异常来掩盖。
+
+**新发现的跨 World 键名冲突候选**：[DomainChallengeKeyHelper](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/dungeons/DomainChallengeKeyHelper.java) 的全局 \`PENDING_HIDE\` 以 \`(sceneId << 32) | entityId\` 组合键记录待隐藏机关；\`sceneId\` 是游戏场景类型编号，并未包含 World 实例身份。因此两个 World 中相同 SceneId、相同 EntityId 的任务理论上会共享键。与第 22 节的实体缓存问题同源，须通过真实双 World 相同键测试确认影响，不能仅凭代码路径宣称已发生跨玩家干扰。
+
+### 24.2 时间语义必须逐项厘清，不能一次替换成统一“秒”
+
+当前 [ServerTaskScheduler](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/scheduler/ServerTaskScheduler.java) 的 \`delay\`/\`period\` 实际都按 \`runTasks()\` 调用次数计数；[ServerTask.shouldRun](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/scheduler/ServerTask.java) 的重复任务在首次 \`delay\` 到期后，继续使用**从创建以来的绝对 tick 计数取模**。例如 \`period=3, delay=5\` 可在第 5、6、9 次 Tick 执行，第一次到第二次仅间隔一个 Tick；应当保持全局 Tick 对齐还是首次运行后完整间隔，是独立的行为语义问题，尚未批准修改。
+
+另外，[QiqiEHealHelper](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/QiqiEHealHelper.java) 以 \`durationSec=15\`、\`TICK_SEC=1\` 编排 15 次周期，但 \`period=1\` 实际每 Tick 触发；按默认 200ms 的理想稳定 Tick 估计，15 次约覆盖 **3 秒**，而代码字段表达的是 15 秒。[HutaoC6Helper](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/HutaoC6Helper.java) 与 [ShinobuC6Helper](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/ShinobuC6Helper.java) 直接 \`round(durationSec)\` 用于 scheduler ticks，存在相同的计量混用。它们和第 23 节已证实的 Tower 延时问题一起表明：重构调度时须对**明确表达真实秒的参数**进行单位测试，同时保留原本按 Scene 模拟 Tick、游戏内时间和现实钟计时的业务差别。上述秒数仅是按当前代码与默认配置推算的调度值，未经原版 7.1 运行表现对照。
+
+目前静态搜索 \`scheduleAsyncTask\` 仅查到 [ServerTaskScheduler](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/scheduler/ServerTaskScheduler.java) 定义，没有找到当前生产源码对该接口的直接调用。其实现缺陷仍需测试，但**不应让无调用的 API 抢走多 World、Quest、Lua、Ability 实际越权路径的迁移优先级**。
+
+### 24.3 第一批验证与代码迁移边界（建议，尚未批准实施）
+
+1. **先刻画调用契约**：对所有会写状态的延迟回调记录来源、目标 UID/World/Scene、会话或实体生存期、时间单位和是否有跨域副作用；以 Qiqi 周期治疗、Quest Exec、普通 Lua 触发和延迟传送作为四个具体样本。不要在执行代码里凭任务所属类或物理线程“猜”状态权威。
+2. **先证明隔离与顺序**：在无需用户客户端的测试中构造两个 World 的相同 SceneId/EntityId、两个 UID 并发 Quest、同 UID 的任务饱和与重登、同 Scene 事件乱序；保留 modifier→属性读取→治疗的因果顺序，给可跨域的操作明确成功/取消/异常边界。
+3. **计时与停顿单独测试**：固定 \`tickRateMs=200\`、自定义 Tick 间隔与暂停的 Scene，对 Qiqi/胡桃/久岐忍/Tower 与 scheduler \`period=3,delay=5\` 做可重复计数测试；不能以运行几秒钟的真实睡眠测试代替逻辑 Tick 契约。
+4. **选最小首批迁移切口**：优先选择一个**只修改单 World 战斗态**的周期回调与一个**UID 任务事件**，分别验证 S2/R2 的目标拥有者执行，随后再进入 Quest↔Scene、延迟跨 World 传送等需多域协调的业务。不能简单把全服单线程池换成更多线程，也不能在 World 域里 \`join/get\` 等另一个域的结果。
+
+**尚未决定**：World/UID 执行器具体形态、定时任务身份和取消票据的接口、全服数据库 Watchdog 暂停如何作用于各域、Quest↔World 提交/失败/顺序语义、Session 世代标识与终止策略、重复任务延迟相位契约。所有事项继续以用户批准的架构决议为准；本轮只补文档，不修改 Java/Gradle、不额外建分支、不触发 CI。

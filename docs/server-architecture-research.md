@@ -21,9 +21,9 @@
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 与 F1** | 直接在调用线程修改 Inventory 的旧规则被 R2 覆盖；**F1 已决定 Shell 等待真实业务完成再产生退出状态**，只允许外部交互线程等待，游戏执行域间禁止阻塞等待 | [CLI/库存第 4.1、10.2、11 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–17 节 S2、Player/World 纠偏、跨域业务、R2 和结果协议研究。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–18 节 S2、Player/World 纠偏、跨域业务、R2、结果语义与真实共享状态审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：Player/World 跨域非阻塞协调的实现细节、F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：Player/World 跨域非阻塞协调与活动 Avatar 战斗属性所有权 B1/B2/B3、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ## 1. 先定义系统实际是什么
 
@@ -129,7 +129,7 @@
 
 S2、R2、M2、D1、E1、K1 已正式选择。后续重点是如何实现这些决定，**无需反复重问 Player/World 是否独立、插件是否应经权威业务入口**。
 
-1. **R2/S2 跨域协作**：拾取、宝箱与世界 Boss 奖励、联机迁移、角色变化影响世界实体时，结果、去重、失败与状态可见性如何协调；参阅第 15–16 节。
+1. **R2/S2 跨域协作及共享战斗态**：拾取、宝箱与世界 Boss 奖励、联机迁移、角色装备影响世界实体时，结果、去重、失败与状态可见性如何协调；**EntityAvatar 与 Avatar 共用可变战斗属性**的边界已在第 18 节证明，B1/B2/B3 尚未决定。参阅第 15–18 节。
 2. **命令/Web/插件反馈**：**F1 已选择 Shell 等待真实业务完成**；Web/API 的等待/超时和查询方式、跨线程输出及插件事件参与的具体技术仍需设计；原 D01B 调用线程直接修改状态的细节已被 R2 覆盖。
 3. **玩家生命周期**：登录世代、离线个人操作、退出幂等、每 UID 持久化成功屏障，以及奖励同步 PREPARED 回执怎样不阻塞 World；参阅 [CLI/库存第 9 节](cli-jline4-shell-research.md)。
 4. **具体调度与工程结构**：工作线程/队列、Tick 频率、公平性、M2 Gradle 模块、Game/Dispatch 发布产物和插件 API。尚未批准 Actor 框架、每玩家/World 独占线程、具体模块或 JAR 数量。
@@ -614,5 +614,47 @@ R2 的**逻辑串行队列不等于每玩家一条物理线程**。可以用共�
 - **已否决的默认 F2**：把“受理成功”当成普通前台 Shell 命令完成的默认语义与已选 F1 冲突。F2 的历史取舍仍可参考上文研究，不据此取消未来可能独立批准的后台作业能力。
 
 本节记录上游源码事实、F1 的正式决议和剩余未批准的技术细节。无 Java/Gradle 改动，无新增分支；文档研究无需运行 CI。
+
+## 18. S2/R2 下的真实共享对象：Avatar 战斗属性、网络 Session（2026-11-04 进一步源码审计）
+
+**核心发现：S2/R2 虽已明确逻辑归属，但上游现有对象图中有同一个可变对象同时供 Player 和 World 修改，且网络发送没有统一序列化契约。** 如果仅将 Tick/命令分发改到两个并行执行器，会把目前靠偶然执行顺序掩盖的问题显性化。以下是已验证源码与设计候选，**没有批准 B1/B2/B3，也没有决定新增第三类 Session 游戏状态执行域**。
+
+### 18.1 EntityAvatar 与 Player Avatar 真实共享同一张 fightProperties Map
+
+1. [`EntityAvatar.java`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/entity/EntityAvatar.java) `EntityAvatar.avatar` 是原始 `Avatar` 对象引用；`getFightProperties()` **直接返回 `avatar.getFightProperties()`**。因此 World 的 `EntityAvatar` 和 Player 的装备/养成系统访问的是**同一份可变 map**，未做快照或领域隔离。
+2. [`Avatar.java`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/avatar/Avatar.java) 将 `fightProperties` 定义为 `Int2FloatOpenHashMap`，`recalcStats()` 先读取当前 HP/能量后**直接 `clear()` 整张表并重建**；装备、等级、圣遗物等个人业务会触发这一过程。另一方面 [`GameEntity.java`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/entity/GameEntity.java) 的战斗写入调用 `getFightProperties().put()`；[EntityAvatar.heal/revive/energy](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/entity/EntityAvatar.java) 直接读写同一张表。
+3. `Avatar.currentHp` 与 `currentEnergy` 是玩家角色要恢复的个人持久状态；[AvatarStatePersist](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/avatar/AvatarStatePersist.java) 在重算后恢复血量/能量。**“状态归属 Player”不能简单理解成战斗时整个可变 Avatar Map 只由 R2 执行；“世界模拟归 World”也不自动转移 Avatar 持久存档所有权**。
+4. `Avatar.queueFightPropNotify()` 使用一个**独立单线程 ScheduledExecutorService** 延迟发送，延迟回调读取同一 `Avatar`，构造 [PacketAvatarFightPropNotify](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/packet/send/PacketAvatarFightPropNotify.java) 时拷贝 `avatar.getFightProperties()`，并可能从场景活动 `EntityAvatar` 再读取血债。若 Tick 与 R2 真正并行，**第三个定时线程**也可能参与读取活动战斗状态。线程安全集合/Map 的某些替换不能自动解决“装备重算清空一半时已被世界计算或发包观察”的业务一致性。
+
+此处可确认存在**共享可变对象及无同步的潜在竞态路径**；未在本轮实机复现，不能声称当前已观测到 map 破坏、丢血或封包错误。
+
+### 18.2 持续活动的角色战斗状态：三条实质不同的设计路线（待决定）
+
+| 候选 | 活动角色战斗属性/HP/能量的实时权威 | 与已选 R2/S2 的关系 | 主要代价 |
+| --- | --- | --- | --- |
+| **B1：World 持有 Live Combat State，Player 持有持久 Avatar**（推荐研究） | EntityAvatar 拥有当前战斗态；Player 的装备/养成/持久角色状态经明确的更新/同步协议投影到 World，离场/退出时把需持久化的 HP/能量结果提交回 Player | World 热路径本地处理伤害/元素能量，Player 个人业务继续按 R2；**两个权威各司其职** | 定义快照/修订序列、实时装备更新、战斗同时重算、HP/能量同步/登出屏障，避免双重权威和旧结果覆盖 |
+| **B2：Player 持有战斗属性实时权威** | World 的伤害、治疗、能量修改统一请求 Player 域，World 只消费已有结果 | 玩家完全独占 Avatar mutable state，能减少持久与实时状态区分 | 战斗高频操作需要跨域等待/续接，增加延迟和顺序协调；严禁 World 阻塞 R2 等结果 |
+| **B3：活动 Avatar 战斗态由所在 World 临时租用** | Player 在线进入 World 时转移活动战斗态写权，离开/切换时归还；养成业务需要与租用期间的 World 协作更新 | 尽量复用一份战斗状态，世界热路径仍本地 | 生命周期租约、跨 World 移交和非活动角色状态更难规定，装备业务完成/存档时点跨 R2/World |
+
+**B1 的推荐依据**：把高频实时模拟留在 S2 World，把长期身份、持有/装备与个人存档留在 R2 Player；世界切换不会改变 `Inventory` 所有权。**这只是一项待深入验证的模型建议**，不是用户新批准的 B1，也不要求立即新增 `CombatState` 类或改数据库模式。
+
+实现研究必须先回答：活动角色/非活动角色的属性计算谁负责；多玩家联机同一 World 中角色快照如何一致；带数值修饰的元素能力、动态生命变化何时推送到 Player；玩家在世界中强化/更换装备时能否保证在下一次相关战斗动作前生效；登出/切场景/掉线时 HP/能量持久化更新与已有每 UID 有序写入成功屏障如何衔接。**直接在 R2 上清空 `Avatar.fightProperties`，同时让 S2 战斗线程读取同一 map，是不可接受的目标架构。**
+
+### 18.3 独立于 S2/R2 的网络输入与输出顺序
+
+- **输入**：[GameSessionManager](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/game/GameSessionManager.java) 当前通过**一个** Netty `DefaultEventLoop` 调 `GameSession.handleReceive()`；[GameSession](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/game/GameSession.java) 会顺序处理同一个 datagram 的多个协议包。未来网络按业务归属将包分别投递 R2 与 S2 时，**两个执行域分别有序不保证跨两域的协议依赖顺序**。例如同一玩家装备变更（`WearEquipReq` → R2）与随后战斗/世界互动（→ S2）如果存在业务先后依赖，必须有显式因果规则。无须为所有无依赖请求引入全服顺序屏障。
+- **输出**：[Player.sendPacket](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/Player.java) 直接进入 `GameSession.send()`；`send()` 无 `synchronized`，对需要自动头的封包会调用 `getNextClientSequence() = ++lastClientSeq`，字段是普通 `int`。World/Player/定时通知若并发调用，**自动头 sequence 分配并无原子性保证**。发送还会同步调用可取消的 `SendPacketEvent`，加密并调用 `KcpTunnel.writeData()`。是否要求同会话全部发送经串行出口、是否采用线程安全计数器及 KCP 对并发写的容忍度需要实际验证；**只把计数器变成原子变量也不能保证封包顺序与插件事件顺序**。
+- **独立的定时发送**：前述 `Avatar.FIGHT_PROP_FLUSH` 从定时线程对 Player/Session 发送通知，现有 `Scene.broadcastPacket` 和插件事件也可能从 World 入口发送。应在统一协议出口定义每会话发送顺序、有效 Session 世代、断线后的旧消息处理；这个网络串行出口属于**传输一致性要求**，无须由此自动创造“第三类 Player/World 状态执行域”或新的 Gradle 模块。
+- **会话退出**：当前 [GameSession.handleClose](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/game/GameSession.java) 会在网络 close 回调路径调用 `Player.onLogout()`，而该操作含 World 离开及异步保存。S2/R2 下应按各状态所有者安全衔接，而不能在网络 EventLoop 上阻塞等待 Player/World 互相同步完成；同时保留先前第 9.3 节研究的登录世代与旧消息失效规则。
+
+### 18.4 先做的验证（源自真实竞争路径）
+
+- **角色战斗态**：装备/强化触发 `Avatar.recalcStats()` 时同 World 持续伤害、治疗和能量更新；捕获 HP/攻防属性是否出现中间态或结果倒退，尤其多玩家同 World。
+- **异步战斗通知**：大量连续 `queueFightPropNotify()` 加世界切换/退出/重新登录，检查延迟通知不会读取新的错误状态或发送至过期连接。
+- **网络输入先后**：同一个 KCP datagram 内与跨 datagram 的装备修改→世界互动/战斗，验证具因果关系的事件按预定语义生效；不能只以分别两个队列 FIFO 为测试成功。
+- **网络发送**：Player R2、World S2、异步回调并发给同一 GameSession 发送带自动头的封包；检查序号唯一性、调用顺序、插件可取消/修改行为和关闭后的旧通知，不从 `KcpTunnel` 接口假定线程安全。
+- **身份移交**：Player 由 World A 进入 B 期间旧 World 的战斗事件、旧 Session 的通知、R2 个人装备变化同时发生，确认唯一有效成员关系和个人数据一致；MongoDB 写入成功屏障仍独立生效。
+
+本节只核实对象共享与协议顺序风险，提出 B1/B2/B3 候选。**没有修改 Java、持久化、模块、线程池、插件 API；未批准上述三选一或新的 Session 调度对象。** 文档阶段不运行 CI。
 
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

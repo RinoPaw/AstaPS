@@ -197,4 +197,40 @@
 
 本节未选择新模块名单、插件策略或数据所有权，未改 Java/Gradle 文件，未运行 CI。
 
+## 10. 2026-11-03 E1：扩展通过权威业务入口（正式决议）
+
+**已选 E1**：对外扩展（第三方插件、管理命令、Web 及其他入口）在修改玩家、世界和经济状态时，应使用明确的业务操作契约，由具有状态所有权的业务模块承担权限、有效性检查、同步状态修改、对外通知和已批准的持久化规则。**内部可变集合/字段不作为扩展随意写入的默认接口**。
+
+- 保留可读观察、订阅事件和专用的高级扩展点；必要的复杂玩法可以明确增加业务能力，但不自动增加通用服务层、包装器、DI 框架或事件总线。
+- 原版场景 Lua 是游戏规则的重要组成，已经依赖 Scene/World/Entity 深度操作。E1 不代表一律将所有内部 Lua 操作改成通用插件 API；其权限、可变状态执行域和内外部扩展边界需要在之后独立确认。
+- GM/JLine Shell 可有管理员专属强操作能力；权限高不意味着可绕开库存 P1、玩家会话归属和持久化不变量。
+- Java 插件仍在服务器进程执行，公开业务 API 对守约代码提供架构约束，不能作为恶意代码的 JVM 沙箱。
+- E1 规定**未来方向**，并未批准立即删除既有插件接口或承诺兼容老二进制插件。具体插件 API 名称、插件最低版本、ABI 破坏策略、是否提供开发者调试后门和旧接口删除时机均未确定。
+
+### 10.1 为什么现有 LegacyCommandLine 存在：直接历史证据
+
+上游提交 [`47555ab`](https://github.com/MeChen618/AstaPS/commit/47555ab579a3642f6e51164e57e4166ddd888122)（2026-10-11，`fix(command): keep pre-picocli plugins loading`）**明确点名两个运行失败的插件**：
+
+- **AttackModifier**：只实现旧 `CommandHandler.execute(sender,targetPlayer,List<String>)`；新 `createCommandLine` 曾是抽象方法，引起 `AbstractMethodError`。提交新增 `LegacyCommandLine`，把 Picocli 命令行的参数原样转交旧 `execute`，并恢复旧接口默认签名。
+- **openworld-plugin**：依赖旧 `CommandHelpers.refineRegex`，触发 `NoSuchFieldError`；同一提交补回公开的旧参数解析辅助成员。仅有该提交确认其名称，尚未核实其公开仓库和支持版本。
+- 同期另一提交 [`b2027c2`](https://github.com/MeChen618/AstaPS/commit/b2027c2881043570ece09aa7e3cd4edd56e26dba) 新增 `LegacyCommandSyntax`，目的**另有不同**：让玩家和脚本使用 `heal`、`setStats`、`lv90 x10 c6` 等旧命令/简写时自动转成 Picocli 的规范语法。该语法兼容层服务的是命令输入，不等同于插件 ABI 兼容。
+
+这证实以前恢复旧接口有实际报错与具体对象，**但没有证据表明这些插件需要长期兼容至 AstaPS 7.1 的全局重构完成后**。
+
+### 10.2 当前插件生态和 API 版本的核验状态
+
+- `PluginManager.loadPlugins()` 从配置对应的 `plugins` 目录加载 `.jar` 和 `plugin.json`，运行时插件名单由部署目录决定；仓库没有提交可据以认定用户当前安装了哪些插件的清单。
+- 源码 [`PluginManager.API_VERSION`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/plugin/PluginManager.java) **当前是 2**，加载器会拒绝 `plugin.json.api` 与之不同的 JAR。
+- [`docs/plugin-command-api-v5.md`](https://github.com/MeChen618/AstaPS/blob/main/docs/plugin-command-api-v5.md) 却写“当前需要 API 5”，且声称旧 `execute` 已删除。**这两处与实际 `PluginManager` / `CommandHandler` 源码矛盾**，未来重构不能以这份文档独立作为真实兼容策略。
+- [NotThorny/AttackModifier](https://github.com/NotThorny/AttackModifier) 的源码 `plugin.json.api=2`，`AttackModifierCommand.execute` 仍是旧命令签名。它是旧适配的真实用例，不能据此声称该版本 JAR 已通过 AstaPS 7.1 的完整运行测试。
+- [jie65535/gc-opencommand-plugin](https://github.com/jie65535/gc-opencommand-plugin) 也声明 `api=2`，公开对外命令接口；[4Benj/gcgm-plugin](https://github.com/4Benj/gcgm-plugin)、[Coooookies/Grasscutter-MeaNotice](https://github.com/Coooookies/Grasscutter-MeaNotice)、[NotThorny/MobWave](https://github.com/NotThorny/MobWave) 等说明社区扩展涉及远程管理、定时公告和战斗玩法。但这些社区项目的存在不等于其已适配当前 7.1 版本。
+
+### 10.3 E1 对 M2 的实际影响与下一个研究对象
+
+下一步审计面向扩展的**真实业务能力与状态修改入口**，优先涉及 `ServerHelper`、`PlayerHook`、`CommandHandler`、`ScriptLib` 和插件事件。现状下 `Plugin.getServer()` 暴露完整 `GameServer`，`ServerHelper` 暴露 `Player`、`HttpServer`、注册命令和授权组件；`PlayerHook.teleport` 直接修改位置并发协议包。这些 API 不能原样作为严格的 E1 边界。
+
+可研究原生支持的三类扩展要求：**查询/观察、业务指令、明确许可的高级规则扩展**；逐项确定哪些操作需要稳定的扩展合同。先明确能力与权威归属，再选择实际 Gradle 模块、API 类型和插件版本号。旧 `LegacyCommandLine` / `LegacyCommandSyntax` 是否删除仍保留为需要确认的迁移决议，不以已选 E1 自动批准删除。
+
+本轮只记录源码证据及 E1 决议，未修改任何 Java / Gradle 源文件，也未运行 CI。
+
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

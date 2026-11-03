@@ -11,7 +11,7 @@
 | 范围 | 当前有效决定 | 详细位置 |
 | --- | --- | --- |
 | **全局架构** | A 整体重构；M2 Gradle 工程级模块化；D1 保留 `HYBRID/GAME_ONLY/DISPATCH_ONLY`；E1 扩展走权威业务入口；K1 原版玩法内置 | [全局架构](server-architecture-research.md) |
-| **执行模型** | S2：各 World 模拟有序、World 之间可并行；**R2：各 Player 的个人状态按 UID 有序、玩家之间可并行**；逻辑队列不要求独占物理线程 | [全局架构第 13、16 节](server-architecture-research.md) · 本文第 10 节 |
+| **执行模型** | S2：各 World 模拟有序、World 之间可并行；**R2：各 Player 的个人状态按 UID 有序、玩家之间可并行**；**B1：World 权威管理活动实时战斗态，Player 提供长期角色属性来源**；逻辑队列不要求独占物理线程 | [全局架构第 13、16、19 节](server-architecture-research.md) · 本文第 10 节 |
 | **Give 目标和反馈** | G06A：仅在线玩家；按 UID/账号选目标；容量不足允许截断到 0 并说明实发数；实际业务结果先于“成功”反馈 | 第 3、4 节 |
 | **Give 执行权与反馈** | D01B 中直接在调用线程修改 Inventory 已被 R2 覆盖；**F1 已选：前台 Shell 从外部等待目标 UID 的真实业务完成后反馈并继续执行** | 第 4.1、10.2、11.2 节 |
 | **物品模型** | `InventoryItem` 覆盖材料堆叠、武器、圣遗物；Inventory 接收时分配**会话内 GUID**，重登录重分配；持久记录采用 **MongoDB ObjectId**；业务系统主导、Inventory 管持有/容量 | 第 5、7 节 |
@@ -706,6 +706,6 @@ long getGuid();
 
 **额外读取与日志风险**：[WebConsoleHandler.players()](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/http/console/WebConsoleHandler.java) 从 Javalin HTTP 工作线程直接遍历在线玩家并读取等级、WorldLevel、SceneId 等状态；R2/S2 并行之后，Web **读取**也需要有一致性规则，可考虑受控快照/查询，不要直接将可变 Player/World 暴露给 Web。另外该 Handler 会记录**原始命令文本**，未来配合 Shell History 与脚本功能，应核查敏感参数/令牌泄漏途径，避免日志和历史把凭据永久保留。
 
-**更深的双域冲突**：已在 [全局架构第 18 节](server-architecture-research.md) 直接证实 `EntityAvatar.getFightProperties()` 返回 Player `Avatar` 的同一可变 `Int2FloatOpenHashMap`；装备业务在 R2 内 `Avatar.recalcStats()` 会清空并重建该 Map，而 World 战斗实时伤害/治疗也读写此 Map。未来 `/give` 更新角色等级、强化/换装引起的数值变化，在 R2 内完成个人物品修改后**尚有世界活动战斗态需要同步**。F1 什么时候返回完整成功应依据角色是否在世界、世界更新是否必需等业务语义确定，不能不经验证就把“已更新个人库存”当作“已更新活动角色全部战斗效果”。目前 B1/B2/B3 仍是研究候选，没有授权给 `InventoryItem`/`Avatar` 增加战斗状态副本或迁移类。
+**更深的双域冲突**：已在 [全局架构第 18 节](server-architecture-research.md) 直接证实 `EntityAvatar.getFightProperties()` 返回 Player `Avatar` 的同一可变 `Int2FloatOpenHashMap`；装备业务在 R2 内 `Avatar.recalcStats()` 会清空并重建该 Map，而 World 战斗实时伤害/治疗也读写此 Map。未来 `/give` 更新角色等级、强化/换装引起的数值变化，在 R2 内完成个人物品修改后**尚有世界活动战斗态需要同步**。F1 什么时候返回完整成功应依据角色是否在世界、世界更新是否必需等业务语义确定，不能不经验证就把“已更新个人库存”当作“已更新活动角色全部战斗效果”。**B1 已在全局架构第 19 节正式确定**：World/S2 权威管理有环境、敌人、Buff、技能联动的活动战斗态，Player/R2 管理等级、天赋、升阶、装备关系和持久角色资料。`give` 修改个人来源后，World 负责在当前上下文计算最终战斗效果；具体来源快照、通知和 F1 完成屏障仍需设计，尚未授权增加战斗状态类、重复可变面板或持久化结构。
 
 **建议验收**：本地与两个 Web 会话交替更改默认目标；同一 Web 会话并发请求次序；Web 令牌过期/登出后的旧回调；条件执行中 Picocli 解析错误和 `give` 领域拒绝；多个 UID 同时执行但输出不串台；插件抑制输出不改变退出码；Ctrl+C/HTTP 断线与执行中操作的结果可查询性；Web 玩家列表在世界迁移同时高频读取。实施前只冻结必要的行为测试，**未授权新增 Java 实现、兼容接口、HTTP API 或额外持久集合**。

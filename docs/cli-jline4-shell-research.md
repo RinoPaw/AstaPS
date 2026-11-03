@@ -440,3 +440,14 @@ long getGuid();
 - `GameSessionManager` 通过一个 Netty `DefaultEventLoop logicThread` 安排收包，`GameServerPacketHandler` 在该执行流内调用注册 Handler。
 - `CommandMap.executeCommand` 对标有 `threading=true` 的命令执行 `executor.execute(runnable)`；GiveCommand 当前就是该类型。其他业务也可由定时、脚本或事件调用。
 - 因此未来的“同玩家同步业务边界”须覆盖客户端、CLI/GM 和其他执行入口。不能用当前单个网络事件循环等同全局运行时一致性保证，也不等同数据库每玩家异步写入队列。具体玩家级执行归属/互斥实现待研究，当前无须向用户提问线程/锁 API。
+
+
+## 45. 2026-11-03 TPS 装备关系持久化权威选择 T1（正式决议）
+
+用户明确选择 **T1：保留 TPS 专有装载模型**。此决定明确第 35 节物品侧装备归属权威的适用范围。
+
+- **普通武器及圣遗物**：保持已批准的方案 A，由装备物品自身记录被哪个角色装备；角色运行时的槽位映射由装备状态建立。
+- **7.1 TPS 武器**：物品本身仍属于 `InventoryItem`，由 `Inventory` 管理持有、库存身份与容量；**佩戴/装载关系的持久化权威保持专有模型**。已拥有角色的有序 `Avatar.tpsWeaponIds` 和临时 TPS 角色的玩家级 `Player.tpsLoadout` 继续负责装载关系。
+- TPS 装载包含多武器槽位限制、顺序、每种物品仅可持有一件、跨角色唯一佩戴及临时角色恢复；由 TPS 业务逻辑协调，不强行转成普通装备的 `equipCharacter` 关系。
+- 未来替换 `GameItem` 时保留 TPS 所需网络协议、场景实体及能力同步语义；TPS 持有物品依旧使用会话内 GUID 和 MongoDB `ObjectId` 的已批准身份规则。
+- 此处仅固定架构决议，不额外批准兼容层、新抽象、具体 API 或 TPS 业务行为改动；不修改 Java 代码、不创建分支、不运行 CI。

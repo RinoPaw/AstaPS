@@ -669,3 +669,41 @@ long getGuid();
 
 **不设具体 Java 接口、结果枚举、线程池、超时或新 Web endpoint**。本节不修改上游代码；在请求用户测试与上游提交之前运行相关 CI。
 
+### 11.4 F1 的入口隔离与 JLine / Picocli 退出状态：进一步审计（研究，非新决议）
+
+**当前最关键的两个真实缺口**来自执行结果与会话归属，不能通过新增一层简单的 `Runnable` 消除：
+
+**退出状态被双重丢弃**：
+
+- [AstaPS `CommandMap.java`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/CommandMap.java)：`configureCommandLine()` 的 Picocli 参数错误和执行异常处理器本来会返回失败代码，但 `invoke()` 的执行逻辑仅调用 `cli.execute(commandArgs)` 而**不接收其返回的 `int`**；`invoke()` 自身是 `void`。
+- [`GiveCommand.java`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/commands/GiveCommand.java) 的 `Args implements Runnable`：大量拒绝/错误通过 `CommandOutput.sendMessage(...); return;` 报告；Picocli 的 Runnable 正常返回通常代表执行器返回 0。**仅保存 `cli.execute()` 的返回值仍不能识别这些领域失败**，必须让业务成功/失败以可观察的值或受控异常明确体现。
+- [JLine 4.4.8 `DefaultCommandDispatcher.runCommandStage()`](https://github.com/jline/jline3/blob/4.4.8/shell/src/main/java/org/jline/shell/impl/DefaultCommandDispatcher.java)：调用 `stageCmd.execute(...)` **正常返回时总写 `session.setLastExitCode(0)`**，即使返回值是非零 `Integer`；异常时通常写 1。[同文件 `shouldSkipGroup()`](https://github.com/jline/jline3/blob/4.4.8/shell/src/main/java/org/jline/shell/impl/DefaultCommandDispatcher.java) 才根据 `lastExitCode` 实现 `&&`/`||`。所以把 Picocli 的数字退出码直接作为 JLine Command 返回值，**仍然会被条件执行认作成功**。需要选用 JLine 的受控失败路径/可扩展调度行为，或对命令适配层进行精确设计；**本节不授权复制整个 JLine Dispatcher 或修改其源码**。
+- 同一版本 [`PicocliCommandRegistry.invoke()`](https://github.com/jline/jline3/blob/4.4.8/picocli/src/main/java/org/jline/picocli/PicocliCommandRegistry.java) 确实返回 `sub.execute(argv)` 的整数，但存在终端时选择 `terminal.output()`，可能绕过 `CommandSession.out()/err()`；对管道、重定向、远程命令输出是另一独立问题。
+
+**Web 管理会话目前实际共用目标状态**：
+
+- [`WebConsoleAuth.java`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/http/console/WebConsoleAuth.java) 为每个登录生成不同的随机会话令牌、管理过期/登出。它目前只管理认证有效期，**没有目标玩家/命令历史等业务会话状态**。
+- [`WebConsoleHandler.java`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/http/console/WebConsoleHandler.java) 的每条授权命令以 `CommandMap.invoke(null,null,line)` 发起；[CommandMap](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/CommandMap.java) 对所有 `sender == null` 的调用使用同一个 `CONSOLE_ID="console"`。于是 Web 会话甲的 `target @10001` 可改变 Web 会话乙和本机终端 Shell 的默认目标。**这与已选 T02A“本地 Shell、每个 Web 管理会话分别保留目标”直接矛盾**；R2 的按 UID 队列不修复这个入口层问题。
+- [网页 `console.html`](https://github.com/MeChen618/AstaPS/blob/main/src/main/resources/html/console.html) 以 `sessionStorage` 保存 token，命令提交 `fetch('/console/api/command')`；提交过程中**没有禁用输入或串行化不同请求**。同一 Web 会话的 `target @A` 与随后 `give ...` 如果并发发出，服务端尚无明确顺序保障；这属于**会话级命令顺序**，与按 UID 串行的 R2 不同，也不能因“都是管理员”就在全服共用锁。
+- **历史决议已解决身份归属，不需重新问 T02A/P01A**：本机/各 Web 会话的默认目标应互相独立；原 `Player sender == null` 的受信任管理员语义 P01A 保留。要在两者并存下给命令携带**来源会话作用域**，仍需选最小必要的传递方式，不据此批准构造新的管理员账户体系或持久会话表。
+
+### 11.5 F1 的输出、取消与 HTTP 生命周期：行为建议和测试
+
+**输出关联**：某次命令的业务成功状态、该命令的反馈文本、服务器共享日志是三种不同数据。当前 `CommandOutputCapture` 的 `ThreadLocal` 只能观察调用线程，`WebConsoleLog` 捕获的是全服 Logback 日志环形缓存，均不能证明某条跨域命令的最终结果。建议将反馈关联到**一次命令调用的上下文**，按 F1 业务完成后输出到对应 Shell/管理会话；不要通过跨线程移植一个全局静态 `ThreadLocal` 或解析日志来反推出成功。具体上下文接口和输出存储形式仍未决定。
+
+**边界条件**：
+
+| 输入情境 | 需要保持/确定的行为 |
+| --- | --- |
+| 本机 Shell 连续执行 `target @A; give ...` | 在 F1 下每条前台命令完成后才处理依赖的下一条；会话绑定按 T02A 生效，`give` 进入目标 UID 的 R2 |
+| Web A、Web B、本机 Shell 分别 `target` | 三者默认目标互不影响；各自仍以 P01A 的服务器管理员权限运行 |
+| 同一 Web 会话同时提交 `target @A` 和 `give ...` | 必须避免隐含目标受请求乱序影响；可研究每会话命令序列化或明确请求级目标快照，但**尚未批准具体 Web 并发语义** |
+| Web 命令已入队而 token 登出/过期 | 新命令不得再接纳；已接纳但未开始/已提交的任务是否撤销、怎样返回已完成结果需要单独定义，不能默认“连接断开即回滚已成功业务” |
+| Shell Ctrl+C / HTTP 超时 / 网络断开 | 调用者停止等待与业务撤销是不同事件；已进入不可逆 Player/World 操作不可盲目取消。需区分“未开始”“已开始”“已提交”和“结果未知” |
+| 插件 `ReceiveCommandFeedbackEvent.cancel()` | 只影响消息展示，不能更改业务成功状态；取消输出不应让 `&&` 判断失败 |
+| Picocli 参数错误、业务失败、提交后 MongoDB 异步失败 | 参数/业务错误应给出非成功的 Shell 控制流结果；普通 MongoDB 的后续异步故障按 P1 的运行/持久化故障规则另行报告，不回写已经结束的 Shell 退出码 |
+| 游戏聊天发起 GM 命令 | F1 的**外部 Shell 等待**不自动推广到游戏收包线程；包与聊天输出遵守 R2/S2 状态域与原版协议，防止等待造成网络/世界阻塞 |
+
+**额外读取与日志风险**：[WebConsoleHandler.players()](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/http/console/WebConsoleHandler.java) 从 Javalin HTTP 工作线程直接遍历在线玩家并读取等级、WorldLevel、SceneId 等状态；R2/S2 并行之后，Web **读取**也需要有一致性规则，可考虑受控快照/查询，不要直接将可变 Player/World 暴露给 Web。另外该 Handler 会记录**原始命令文本**，未来配合 Shell History 与脚本功能，应核查敏感参数/令牌泄漏途径，避免日志和历史把凭据永久保留。
+
+**建议验收**：本地与两个 Web 会话交替更改默认目标；同一 Web 会话并发请求次序；Web 令牌过期/登出后的旧回调；条件执行中 Picocli 解析错误和 `give` 领域拒绝；多个 UID 同时执行但输出不串台；插件抑制输出不改变退出码；Ctrl+C/HTTP 断线与执行中操作的结果可查询性；Web 玩家列表在世界迁移同时高频读取。实施前只冻结必要的行为测试，**未授权新增 Java 实现、兼容接口、HTTP API 或额外持久集合**。

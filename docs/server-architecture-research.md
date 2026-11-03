@@ -233,4 +233,66 @@
 
 本轮只记录源码证据及 E1 决议，未修改任何 Java / Gradle 源文件，也未运行 CI。
 
+## 11. 插件架构的全局审计：E1、M2、D1 的交叉点（2026-11-03）
+
+此节继续对公开插件源码和上游 `MeChen618/AstaPS/main@ac9a7e6` 调用点做审计。**E1 已决定作为长期对外扩展原则**；这里的机制与候选规则尚未获准直接修改实现。
+
+### 11.1 已核实的插件生命周期和扩展机制
+
+| 方面 | 实际代码 | 架构含义 |
+| --- | --- | --- |
+| 加载 | `Grasscutter.main()` 在 Game/HttpServer 创建后构造 `PluginManager`，此时执行 `loadPlugins()` 和各插件 `onLoad()`；之后才加载 Game 资源、启动服务，最后执行 `enablePlugins()` → `onEnable()` | `onLoad` 阶段不保证 7.1 Excel/Scene 资源已完成初始化；扩展的初始化前置条件要有清楚的生命周期 |
+| 模式 | `PluginManager` 在三种运行模式都会创建、启用；`ServerHelper` 在 `DISPATCH_ONLY` 下持有 `gameServer == null`，在 `GAME_ONLY` 下持有 `httpServer == null` | 插件接口的功能可用性与 D1 的运行模式直接相关，不能默认所有插件在三模式都具有 Game 与 HTTP 能力 |
+| 命令 | `ServerHelper.registerCommand` 经 `CommandMap.registerCommand` 注册，但 `PluginManager.disablePlugin` 仅调用插件自身 `onDisable` 和 `removeListeners` | 没有宿主自动回收插件命令的机制；有插件手动注销、有插件忽略这一环节 |
+| HTTP 扩展 | `ServerHelper.addRouter` 经 `HttpServer.addRouter` 直接对 Javalin 注册，`PluginManager.disablePlugin` 不负责回收已添加的 HTTP 路由 | 在实现插件重载/卸载之前需定义注册资源的所有权，不允许假装简单调用 `onDisable` 就完整卸载 |
+| 调度 | `ServerHelper.getScheduler()` 暴露 GameServer 的调度器；插件也可自行启动线程/Socket | 宿主不追踪全部由插件创建的任务和外部资源；声明安全热重载前应建立可验证的撤销范围 |
+| 事件 | `Event.call()` 获取全局 `PluginManager`，`invokeEvent()` 查精确事件类并在调用者线程上按优先级同步执行监听器；`cancel()` 只对实现 `Cancellable` 的事件生效 | 调用线程、回调异常和业务取消时机尚未形成对外稳定契约；不能只把所有事件定义移动进独立 API 模块便宣称 E1 完成 |
+| 类加载 | `loadPlugins()` 收集所有插件 JAR URL 构造一个共享 `URLClassLoader` 来加载插件类，再用每个 JAR 自己的 loader 检索 `plugin.json` 和插件资源 | 当前插件代码在一个共享类加载空间内，不能视为逐插件隔离，更不能认为它提供安全沙箱。M2 多模块构建后还要验证插件的宿主类路径 |
+| 版本 | `PluginManager.API_VERSION=2`，加载前按 `plugin.json.api` 精确校验；`docs/plugin-command-api-v5.md` 声称需要 API 5、且旧 `execute` 已删除，源码实际仍保留旧接口 | 文档/源码分裂已经证实。真正升级插件 API 时必须使版本号、文档及自动化验证一致；不预设兼容旧 JAR |
+
+**源码**：[PluginManager](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/plugin/PluginManager.java)、
+[Plugin](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/plugin/Plugin.java)、
+[ServerHelper](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/plugin/api/ServerHelper.java)、
+[EventHandler](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/event/EventHandler.java)、
+[Event](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/event/Event.java)、
+[CommandMap](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/CommandMap.java)。
+
+### 11.2 真实插件对应哪些扩展能力
+
+| 实际社区项目 | 可核实的行为 | E1 需要承认的扩展能力 |
+| --- | --- | --- |
+| [AttackModifier](https://github.com/NotThorny/AttackModifier) | 监听 `ReceivePacketEvent`，注册 `/attack` / `/at`，生成 `EntityGadget` 并交给 Scene | 高级战斗/网络事件观察、实体生成、命令注册；不适合只提供“给予物品”这类简单业务接口 |
+| [MeaNotice](https://github.com/Coooookies/Grasscutter-MeaNotice) | `onEnable` 注册 `meanotice` 命令并启用自己的公告调度；`onDisable` 明确手动注销命令和停止定时公告 | 公告、调度及命令注册的生命周期，应能随插件停用整体回收 |
+| [gc-opencommand-plugin](https://github.com/jie65535/gc-opencommand-plugin) | 监听命令反馈及玩家事件，在 `GAME_ONLY` / `DISPATCH_ONLY` / `HYBRID` 走不同路由/Socket 路径，注册 HTTP 管理端点 | 授权的远程命令能力、玩家信息观察、Game/Dispatch 各自的扩展能力及跨服务器通信 |
+| [Grasscutters/PluginTemplate](https://github.com/Grasscutters/PluginTemplate) | 示例采用 `Plugin.onLoad/onEnable/onDisable`、事件和命令；模板较旧 | 只能用作继承关系及生态形态参考，不能当作当前 7.1 的可运行插件 API 样板 |
+
+这些仓库说明插件能力涉及玩家、世界、指令、HTTP、事件和定时器，**并不证明以上旧插件 JAR 已能在 AstaPS 7.1 实机运行**。
+
+其中两个可复查的具体例子：
+- [AttackModifier.java](https://github.com/NotThorny/AttackModifier/blob/master/src/main/java/thorny/grasscutters/AttackModifier/AttackModifier.java) 的 `onDisable()` 没有手动注销命令，而宿主只自动删除事件监听器。
+- [MeaNoticeCore.java](https://github.com/Coooookies/Grasscutter-MeaNotice/blob/master/src/main/java/io/github/gmw/MeaNoticeCore.java) 的 `onDisable()` 会显式 `CommandMap.unregisterCommand`，体现了当前注册资源的回收责任落在插件作者身上。
+
+### 11.3 全局建议：按功能能力及运行上下文建立扩展合同
+
+M2 下，建议先明确插件**希望调用的能力**，再设计实际的公共类型。先将能力分为四组来研究，**此处的四组不代表四个 Gradle 模块或四个新接口类**：
+
+1. **只读观察**：玩家/世界快照、服务器状态、事件观察；数据可见范围和时间点可追踪。
+2. **业务操作**：物品、任务、传送、伤害、公告、账户管理等带有校验/通知/持久化语义的操作；命令、插件、Web 复用相同权威路径。
+3. **明确的高级玩法扩展**：战斗回调、实体创建、任务脚本、定制算法与系统可接受的内部扩展点；原版 `ScriptLib` / `SceneScriptManager` 不自动被强行包装为普通第三方 API。
+4. **宿主管理资源**：命令、事件订阅、HTTP 路由、任务/调度器、外部连接及文件资源；对宿主登记的资源要能够随插件停用撤销。插件自行创建的原生线程或连接的关闭范围，需要单独说明，不能假设宿主可魔法式回收一切。
+
+**D1 环境下的能力可用性**：Game-only 运行环境可访问 Game 业务与实体；Dispatch-only 可访问鉴权/账号/HTTP 能力；HYBRID 同时拥有两者。插件可以声明其实际运行需求，再由宿主明确加载/启用策略。此处推荐“按能力描述运行条件”，尚未确定元数据字段名、插件安装分类、是否允许同一插件在不同模式启动不同部分。
+
+**线程与事件**：E1 的业务操作必须按照所属的玩家、世界或独立服务的执行域运行；是否需要返回值、异步提交、事件前后阶段等，结合现有调用链再定，不能先承诺所有插件回调都在同一线程。事件是否可取消、是否允许写入内容，必须由事件的业务语义逐类约束。
+
+**版本与迁移**：有权进行破坏性插件 API 升级，不自动保留旧二进制 ABI、`LegacyCommandLine`、`LegacyCommandSyntax` 或过时插件版本；删除具体实现时仍需考虑是否存在具有明确业务价值的当前行为。文档中的 API 5 与源码中的 API 2 冲突应在正式定义新 API 版本时一并解决。
+
+### 11.4 尚待决定的真正顶层事项
+
+**插件是只承担扩展外部操作，还是允许承担服务器的核心玩法实现？** 如果允许插件成为核心玩法提供者，游戏业务模块需要支持稳定的规则注册、执行优先级、失败处理和依赖声明；如果插件只作为外部扩展，原版任务/战斗/场景核心系统可保持编译时内置并由受控 API 访问。
+
+这是 E1、M2 与 D1 共同决定的系统演化方向。暂未代表用户做选择。
+
+本轮仅研究与记录，无 Java / Gradle 改动，不运行 CI。
+
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

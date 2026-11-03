@@ -402,3 +402,41 @@ long getGuid();
 - **步骤 IV：验收**。测试所有实际可达业务链路；向用户提供测试命令或提交上游前运行 CI。未经批准不切 Java 版本、不创建额外分支。
 
 本轮尚未决定：具体类名、要拆多少个 service、DTO 形状、TPS 是否必须改成物品侧佩戴权威、具体玩家级同步方式。除 TPS 与业务语义等确实改变架构的分歧外，常规代码细节在实现前自主研究，不反复提问。
+
+
+## 44. 2026-11-03 非持有装备与 TPS 装载权威：源码补充审计
+
+以下均来自 `MeChen618/AstaPS` 源码；仅记录研究建议和一个**需要用户决定的业务权威范围**。不添加具体类或额外层。
+
+### 44.1 试用角色有装备，但装备未进入 Inventory
+
+- `Avatar.applyTrialItems()` 创建临时 `GameItem` 武器与圣遗物并直接放进角色 `equips`；`Avatar.equipTrialItems()` 调用 `item.setOwner(player)` 分配临时玩家 GUID，随后创建武器场景实体及协议通知，却没有 `Inventory.addItem` / `registerStoredItem`。这些试用装备**不进入玩家持有物品集合，也不具有长期持久化对象记录的要求**。
+- `Avatar.toProto()` 通过 `getEquips()` 的物品 GUID 构建 `equipGuidList`，`Avatar.recalcStats` 等计算使用装备数据，因此现有一份 `GameItem` 状态结构服务于正常持有装备和试用临时装备。
+- **建议**：普通装备与试用装备共享强化属性含义、计算和协议编码规则；试用装备的生命周期由试用角色负责，明确不注册库存、不持久化玩家持有记录。物品可被构造但未纳入 Inventory 与真正拥有该物品是不同状态。具体是否用同一 Java 类/共有状态对象，待代码设计，以最少必要类型满足这些语义。
+- 已确认 `InventoryItem.getGuid()` 由 Inventory 在接收库存物品时分配；试用角色协议仍有临时装备 GUID 需求。不得为了试用装备偷偷注册为真实玩家物品，或把临时试用装备 GUID 误当持久 ObjectId。具体会话 ID 分配 API 在实现时研究。
+
+### 44.2 世界掉落也曾用 GameItem 临时描述
+
+- `EntityItem` 自身有场景实体 ID/GUID，同时构造 `new GameItem(itemData,count)` 来填 `_TrifleGadgetInfo.item`；玩家拾取时重新构造 `GameItem`，`Inventory.addItem` 成功后才销毁场景实体。
+- 新设计应把**场景物品外观/掉落描述**与**已被 Inventory 接收的持有实例**分清；世界实体 GUID 与库存 GUID 各有生命周期，纯场景掉落不必生成持久物品。可以直接由掉落数据编码场景协议，具体是否复用轻量描述结构待实现研究。
+
+### 44.3 TPS 是有序多装备负载，且其宿主有两种生命周期
+
+- `TpsWeaponSystem.wear(player,avatarGuid,equipGuids)` 验证玩家实际持有的 TPS 武器 GUID，转换为物品种类 `itemId`，按枪/投掷类分别统计槽位限制，最终将一组**有序 itemId** 放入 `Avatar.tpsWeaponIds`。
+- 普通持有角色的 `tpsWeaponIds` 随 Avatar 持久化；TPS 专属角色本身是**临时 trial avatar**，`Player.tpsLoadout` 保存装载配置，再在试用角色创建时由 `TpsAvatarSystem.onTrialAvatarCreated` 恢复。
+- 一种 TPS 武器全玩家仅有一件（`Inventory.putItem` 中重复拒绝），同一个 itemId 只能佩戴在一个角色的 TPS 装载列表中；`TpsWeaponSystem.wear` 遍历其他角色和 `tpsLoadout` 清掉冲突。
+- TPS 仍需要客户端 `Item.tpsWeapon`、`AvatarInfo.tps_weapon_list`、`SceneAvatarInfo.tps_weapon_list`、`TpsEquipChangeNotify` 及专用武器实体/ability 处理。此业务不能靠普通武器单槽逻辑替代。
+
+### 44.4 一项真正未决的业务范围选择：装备关系 A 是否覆盖 TPS
+
+**方案 T1（建议）**：普通武器/圣遗物依第 35 节采用持有物品的装备归属持久化权威；TPS 保留`Avatar.tpsWeaponIds` / `Player.tpsLoadout` 作为专有装载关系的持久化权威，`InventoryItem` 仅负责 TPS 武器的持有。TPS 业务系统负责跨角色唯一性、卸载、删除/失去武器时的装载修正。优点：匹配 7.1 已有多武器与临时角色规则，变动小；缺点：装备关系的存储权威有按业务类型区分的例外。
+
+**方案 T2**：此前选定的物品侧权威覆盖所有装备，包括 TPS。为每个 TPS 武器的持久记录标记所佩戴角色及有序装载位置，并对试用 TPS 角色定义稳定归属键及重建逻辑；原 `Avatar.tpsWeaponIds` / `Player.tpsLoadout` 只能是投影或需重设计。优点：持久化权威统一；代价：变更 TPS 核心业务模型、装备顺序、多槽、临时角色恢复，不应在用户未批准时擅自完成。
+
+两种方案都不改变每位玩家完整业务操作同步执行与数据库写入按玩家串行异步安排的既定规则。**需要用户直接选择 T1 或 T2，再将此范围确定为正式架构决议**。
+
+### 44.5 另一项已核实的边界：玩家线程来源
+
+- `GameSessionManager` 通过一个 Netty `DefaultEventLoop logicThread` 安排收包，`GameServerPacketHandler` 在该执行流内调用注册 Handler。
+- `CommandMap.executeCommand` 对标有 `threading=true` 的命令执行 `executor.execute(runnable)`；GiveCommand 当前就是该类型。其他业务也可由定时、脚本或事件调用。
+- 因此未来的“同玩家同步业务边界”须覆盖客户端、CLI/GM 和其他执行入口。不能用当前单个网络事件循环等同全局运行时一致性保证，也不等同数据库每玩家异步写入队列。具体玩家级执行归属/互斥实现待研究，当前无须向用户提问线程/锁 API。

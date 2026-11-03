@@ -22,9 +22,9 @@
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 与 F1** | 直接在调用线程修改 Inventory 的旧规则被 R2 覆盖；**F1 已决定 Shell 等待真实业务完成再产生退出状态**，只允许外部交互线程等待，游戏执行域间禁止阻塞等待 | [CLI/库存第 4.1、10.2、11 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–19 节 S2、Player/World 纠偏、跨域业务、R2、结果语义、共享状态审计与 B1 正式决议。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–20 节 S2、Player/World 纠偏、跨域业务、R2、结果语义、B1 决议及属性/伤害链路审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、战斗中的动态效果与可持久恢复数据的边界、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；**普通伤害的客户端输入可信度 C1/C2（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ## 1. 先定义系统实际是什么
 
@@ -724,5 +724,52 @@ R2 的**逻辑串行队列不等于每玩家一条物理线程**。可以用共�
 **测试方向**：同时换装与持续伤害、治疗和元素反应；多玩家协同 Buff 与环境修饰；角色死后/复活时数值恢复；当前世界有未结束技能时切换 World；来源更新与旧世界回执乱序；断线/重登录及持久化屏障；掉线后缓存的战斗通知不得影响新 Session。
 
 **仅记录 B1 正式决议及用户的状态归属理由，不代表已经实施。**
+
+## 20. B1 属性计算链路与伤害可信度：实际调用点审计（2026-11-04，研究）
+
+**状态：遵循已选 B1，记录代码事实与尚未选择的协议边界。** 本节首先拆开三个经常混淆的判断：**谁拥有角色养成资料**（R2）、**谁拥有活动战斗状态与结算时序**（B1/S2）、**一次伤害的数值由客户端还是服务器计算并验证**（仍须评估）。最后一项无法仅从 B1 自动推导出来。
+
+### 20.1 当前计算管线的五类输入和输出
+
+| 层次 | 真实上游代码和行为 | B1 下应当确认的所有权边界 |
+| --- | --- | --- |
+| **A. 持久角色养成来源** | [`Avatar.recalcStats()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/avatar/Avatar.java) 从 `AvatarData`、等级、突破配置、武器等级/精炼、圣遗物主副词条、套装和天赋/命座 `openConfig` 中汇总数值及能力定义 | Player/R2 拥有等级、装备关系和可持久的成长资料；**由谁计算并缓存**只依赖这些来源的基础结果仍是实现问题，不能因预计算而赋予其对 World 活动战斗态的写权限 |
+| **B. 当前实体的派生属性** | 同一个 `recalcStats()` 用 [`FightProperty.forEachCompoundProperty()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/props/FightProperty.java) 合成 HP、攻击、防御的 base/flat/percent；将 `fightPropOverrides` 写入后，以原 HP 比例重新设置 `CUR_HP` | 若角色处于 World，**World 的活动状态**才是战斗结算中的有效值。单纯重算个人来源不能清空 World 运行时的 HP、护盾、Buff、能力效果；HP 最大值变化时的保留百分比、保留绝对 HP 或其他规则必须按原版行为具体验证 |
+| **C. 世界中的动态修饰** | [`WaterResonanceHelper`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/WaterResonanceHelper.java) 查活动队伍共鸣并加成 HP；[`AbilityMaxHpRatioHelper`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/AbilityMaxHpRatioHelper.java) 在能力 Modifier 增减时通过 `refresh()` 再次调用 `recalcStats(true)`，并保留当前 HP 比例；[`MavuikaSpiritHelper`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/MavuikaSpiritHelper.java) 在重算后重新注入动态加成 | World/B1 需要持续追踪这些修饰的来源、生效和失效条件；它们可能依赖队伍、世界实体、时间或能力状态，**不能将当前最终数值当作可持久装备属性重新保存到 Player** |
+| **D. 一次能力动作的局部求值** | [`ActionGetFightProperty`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/actions/ActionGetFightProperty.java) 从施放者当前 `FightProperty` 与能力特殊参数求值，把结果放进目标 `globalAbilityValues`；[`ActionHealHP`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/actions/ActionHealHP.java) 汇总施放者/目标双方当前 HP、攻击、防御、治疗加成与能力配置计算一次实际治疗 | 结算须在当前 World 的真实实体上下文中求值。**这些结果可能仅在某一瞬间或一次事件内成立**，不适合预先存在 Player 的“最终角色数值”里 |
+| **E. 战斗输入与实际扣血** | [`HandlerCombatInvocationsNotify`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/packet/recv/HandlerCombatInvocationsNotify.java) 解析客户端 `EvtBeingHitInfo.AttackResult.damage`，少数特殊路径修复目标或按服务器属性重算伤害；一般攻击把此结果加入玩家的攻击队列。[`Scene.handleAttack()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/Scene.java) 取得防御目标并直接把 `result.getDamage()` 交给 `GameEntity.damage()`，后者进行有效性检查、护盾/无敌判定、可取消事件、HP 变化与广播 | **现有 7.1 AstaPS 主要依赖客户端上报的伤害数额**，World/Scene 执行生命值结算和特定规则校正。B1 确定 World 的运行时状态写权限，**目前还未决定要不要把所有伤害公式迁为服务器独立计算** |
+
+**重要细节**：[`FightProperty`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/props/FightProperty.java) 的同一个枚举同时列出 `BASE_ATTACK`、`ATTACK_PERCENT`、`CUR_ATTACK`、`CUR_HP`、元素能量、治疗加成、反应暴击相关属性等。**不能按 enum 或属性编号自动划分“哪些是 Player、哪些是 World”**。应根据*属性来源、生命周期、谁修改、在哪次计算中使用、是否须持久化*逐项分类；同一属性可能存在个人资料推导值、World 实时值和一次动作临时求值结果，但这不意味着要保存三份可变权威对象。
+
+### 20.2 一次战斗动作具有顺序依赖，不能机械拆成异步散任务
+
+[ActionApplyModifier](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/actions/ActionApplyModifier.java) 在 `onAdded` 中用 `executeActionNow()` **依次处理**子动作；[DoActionByElementReactionMixin](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/mixins/DoActionByElementReactionMixin.java) 的注释特别标明 `ApplyModifier → GetFightProperty → HealHP` 必须顺序执行。这个链条可能先建立 Buff、再读取增强后的属性、最后决定治疗量；将每个小动作独立投递工作线程会得到不同结果。
+
+[HandlerUnionCmdNotify](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/packet/recv/HandlerUnionCmdNotify.java) 依次处理批量子包，在最后刷新 Combat/Ability Invoke，再调用 `applyQueuedAttacks()`；单独到达的 CombatInvocationsNotify 则自行结算队列。当前使用 `ThreadLocal` 标记批处理状态。S2/R2 迁移时，要**保持原有批内因果顺序、所有必要的世界态更新先于对应的攻击结算**；不能简单给每个子包创建异步任务，并寄希望于两个逻辑队列各自 FIFO。
+
+B1 的最小交互逻辑应先表达**业务依赖**：Player 个人变更完成 → 把新的长期属性来源交给目标 World → World 在有序的模拟边界应用并计算实时修饰 → 后续相关战斗动作看见新版本。当前版本号、增量/全量更新、进行中的技能是否采用旧快照、玩家切 World 时如何拒绝旧回执，都还需要设计和测试。**不自动增添统一依赖图引擎、事件总线、属性复制框架或三层持久缓存。**
+
+### 20.3 从战斗状态写权限到伤害数值可信度，是独立的架构选择
+
+**观察到的上游行为**：普通攻击的 `AttackResult.damage` 主要由客户端提交；`Scene.handleAttack` 和 `GameEntity.damage` 能检查当前世界中实体是否存在、是否无敌、护盾吸收、插件取消、有限数值等，**这些校验不等于独立重算过攻击者属性、技能倍率、敌人抗性和反应公式后的完整服务器权威伤害**。特殊技能（如该 Handler 中的部分 Hexenzirkel 攻击）存在有针对性的服务端重新计算，不能据此宣称所有伤害已服务器重算。
+
+这将产生一个真正重要、**尚未由 B1 决定**的方向：
+
+| 研究方向（未决） | 对一次伤害数值的处理 | 实际代价与影响 |
+| --- | --- | --- |
+| **C1：沿用客户端计算的主要攻击伤害，World 校验并应用** | 以现有客户端 `AttackResult` 为主要伤害输入，继续研究实体归属、时序、异常上限、能力特例、作弊与多人可信度 | 改动相对可控，能先落实 B1/S2/R2；客户端与服务端数值权威不完全一致，必须明确最低限度的可信性规则 |
+| **C2：World 服务器完整计算或复核攻击伤害** | 客户端提供输入/命中事实，World 根据攻击者、技能、目标、环境、元素反应、随机因素等独立推导伤害数值 | 可建立更强的数值权威，但 7.1 客户端能力公式/动态修饰与服务端数据覆盖度是巨大研究及逆向工作；需专门依据原版 7.1 客户端/metadata 和严格回归测试，不能凭社区表格补推 |
+
+**B1 只决定运行时世界状态属于 World**。即使用户后续选择 C1，World 仍需按 S2 对 HP/Buff/世界实体状态进行唯一有效的修改；选择 C2 则扩展 World 计算的范围。**C1/C2 两者目前均未批准**，不因“World 权威”四个字自动选择 C2。
+
+### 20.4 实施前应具备的证据与验收情境
+
+1. 记录一项**纯个人来源变更**（如升级武器）在角色**未进入世界、活动中、联机世界中**分别改变哪些属性；World 的动态 Buff 不应被覆盖，Player 的物品状态不应等待 World 才能被所有个人业务读取。
+2. 固定一项**动态环境/能力修饰**，先触发 Buff 再更换装备，或先更换装备再触发 Buff；检查实际属性、护盾/HP 保留行为与 `recalcStats()` 原有 hook 顺序。
+3. 对**一次治疗及一个复合元素动作**，保留 `ApplyModifier → GetFightProperty → HealHP` 的原始时序与所得数值；不要把未来多线程测试简化成只检查最终数值。
+4. 捕获一条常规 `AttackResult` 的处理轨迹：客户端上报伤害、特殊修复、`Scene.handleAttack`、`EntityDamageEvent`、防护、扣血、通知。若选择 C2，额外要求能从原版 7.1 证据重算一致并可追查差异。
+5. 从 World A 切到 B，旧 World 的 Buff、延迟治疗/伤害或 HP 回传不得作用于 B 的新实体；个人长期来源与需要恢复的生命/能量不能丢失，保存写入继续按 UID 排序。
+
+**本节仅为源码审计和 C1/C2 重要分歧的明确记录**；B1/S2/R2/F1 等正式决议不变。没有修改 Java/Gradle、数据库结构或线程模型；研究文档无需 CI。
 
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

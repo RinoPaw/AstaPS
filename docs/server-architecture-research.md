@@ -23,9 +23,9 @@
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 与 F1** | 直接在调用线程修改 Inventory 的旧规则被 R2 覆盖；**F1 已决定 Shell 等待真实业务完成再产生退出状态**，只允许外部交互线程等待，游戏执行域间禁止阻塞等待 | [CLI/库存第 4.1、10.2、11 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–20 节 S2、Player/World 纠偏、跨域业务、R2、结果语义、B1 决议及属性/伤害链路审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–22 节 S2/R2、跨域业务、F1、B1/C1 及实体生命周期与跨 World 索引隔离审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–22 节识别的退出保存缺口、全服裸 EntityId 索引与 S2 运行时定时任务归属的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ## 1. 先定义系统实际是什么
 
@@ -131,7 +131,7 @@
 
 S2、R2、M2、D1、E1、K1 已正式选择。后续重点是如何实现这些决定，**无需反复重问 Player/World 是否独立、插件是否应经权威业务入口**。
 
-1. **R2/S2 跨域协作及共享战斗态**：拾取、宝箱与世界 Boss 奖励、联机迁移、角色装备影响世界实体时，结果、去重、失败与状态可见性如何协调；**EntityAvatar 与 Avatar 共用可变战斗属性**的现状已在第 18 节证明；**B1 已正式选择**，需落实两侧分离及联动规则。参阅第 15–19 节。
+1. **R2/S2 跨域协作、保存屏障及共享战斗态**：拾取、宝箱与世界 Boss 奖励、联机迁移、角色装备影响世界实体时，结果、去重、失败与状态可见性如何协调；**EntityAvatar 与 Avatar 共用可变战斗属性**的现状已在第 18 节证明；**B1 已正式选择**，需落实两侧分离及联动规则。参阅第 15–19 节。
 2. **命令/Web/插件反馈**：**F1 已选择 Shell 等待真实业务完成**；Web/API 的等待/超时和查询方式、跨线程输出及插件事件参与的具体技术仍需设计；原 D01B 调用线程直接修改状态的细节已被 R2 覆盖。
 3. **玩家生命周期**：登录世代、离线个人操作、退出幂等、每 UID 持久化成功屏障，以及奖励同步 PREPARED 回执怎样不阻塞 World；参阅 [CLI/库存第 9 节](cli-jline4-shell-research.md)。
 4. **具体调度与工程结构**：工作线程/队列、Tick 频率、公平性、M2 Gradle 模块、Game/Dispatch 发布产物和插件 API。尚未批准 Actor 框架、每玩家/World 独占线程、具体模块或 JAR 数量。
@@ -774,5 +774,78 @@ B1 的最小交互逻辑应先表达**业务依赖**：Player 个人变更完成
 5. 从 World A 切到 B，旧 World 的 Buff、延迟治疗/伤害或 HP 回传不得作用于 B 的新实体；个人长期来源与需要恢复的生命/能量不能丢失，保存写入继续按 UID 排序。
 
 **本节记录源码审计和本分支已选的阶段性 C1 决议**；B1/S2/R2/F1 等正式决议不变，C2 未获批准。没有修改 Java/Gradle、数据库结构或线程模型；研究文档无需 CI。
+
+## 21. B1 的来源更新、实体生命周期与 HP/能量持久化（2026-11-04 源码审计）
+
+**状态：B1、S2、R2、F1、C1 已定；本节只推导它们必须满足的行为不变量，不预先批准类、消息总线、独立服务或数据库结构。** 研究中的一个重要区别是：B1 所说的 *World 拥有活动战斗态*，落实到代码时活动实体实际**随 Scene 重建和队伍编辑发生创建/销毁**。World 是串行计算域，实体存活期却不等于 World 存活期。
+
+### 21.1 目前进入场景、组队和角色切换的真实行为
+
+| 场景 | 真实源码路径 | B1 迁移中的不变量 |
+| --- | --- | --- |
+| 进入 Scene | [`Scene.addPlayer → setupPlayerAvatars`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/Scene.java)：从 Player `TeamInfo` 读取各角色 `Avatar`，**为队伍中每个角色**构造 `EntityAvatar(scene, avatar)`，并存于 `TeamManager.activeTeam` | 即使当前只显示一位角色，场景中也可能存在**多位活动队伍角色的运行时实体**；进入时要装载各角色个人资料及应保留的战斗状态 |
+| 切换上场角色 | [`TeamManager.changeAvatar`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/TeamManager.java)：在同一 `activeTeam` 列表内切换 `currentCharacterIndex`，用 `Scene.replaceEntity` 替换上场实体；同步能量显示 | **换上场角色不等于销毁旧角色战斗态**；离场角色的 HP、能量、持续效果的保留应以原版实际规则判定 |
+| 重新编队 | [`TeamManager.updateTeamEntities`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/TeamManager.java)：按 `avatarId` 重用部分 EntityAvatar、创建新实体、移除旧实体，随后更新队伍共鸣/能力通知 | B1 的运行态随实际实体生命周期迁移；重用的实体不能因装备来源重算就丢失世界修饰，移除的实体必须先处理可恢复状态 |
+| 切换 Scene/World | [`Scene.removePlayerAvatars()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/Scene.java) 先 `removeEntity`，再对所有团队实体 `EntityRuntimeStateCleanup.clear`，最后 **`activeTeam.clear()`**；下个 Scene 的 `setupPlayerAvatars` 重新创建实体 | 同一个 World 内跨 Scene 就会销毁/重建活动实体。World A→B 还涉及两个 S2 执行域；需要**先取得一致的应保留结果，再销毁旧实体，最后构建新实体**。清理暂态和保存必要状态的先后顺序必须明确 |
+| 退出登录 | [`Player.onLogout()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/Player.java)：先退出副本、`World.removePlayer`，最后 `TeamManager.saveAvatars` | 退出的可恢复状态必须在活动实体消失前交付 UID/R2；然后走持久化和既定重新登录读取成功屏障。不能把 `saveAvatars` 当成已实现的跨域状态提交 |
+
+具体需要拆清的事件不是简单的“实体存在/不存在”：**Player 长期角色拥有关系、当前活动队伍、正在场景中显示的实体、可恢复的 HP/能量/特殊状态、随 Scene/技能消失的临时效果**具有不同存活期。B1 允许在 World 内复用必要的派生数值缓存，但避免制造另一份跨域可写的 Player 属性权威。
+
+### 21.2 已核实的退出时序缺口：保存队伍可能发生在队伍已清空后
+
+上游代码按以下顺序执行：
+
+1. [`Player.onLogout()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/Player.java) 调 `this.getWorld().removePlayer(this)`。
+2. [`World.removePlayer()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/World.java) 调 `scene.removePlayer(player)`；[Scene.removePlayerAvatars](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/Scene.java) 会 **`team.clear()`**。
+3. `onLogout` 的 `finally` 才执行 `this.getTeamManager().saveAvatars()`，但 [`TeamManager.saveAvatars()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/TeamManager.java) 只遍历 `getActiveTeam()` 调 `entity.getAvatar().save()`。在常规有场景的退出路径上，**此时 activeTeam 通常已经为空，循环不会保存任何 Avatar**。
+
+并且 [`Avatar.@PrePersist`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/avatar/Avatar.java) 只有在实际持久化该 Avatar 时，才从 `fightProperties` 取 `CUR_HP`、对应元素能量等生成存档数值；它本身不会触发保存。战斗中扣 HP 一般修改共用的 `fightProperties`，是否还有其他能力、物品或定时流程顺手 `Avatar.save()`，取决于具体战斗路径。**因此目前退出时没有一条可依赖的“全部活动角色最后 HP/能量成功持久化”保证。**
+
+这是从控制流直接得出的**保存时序缺口**，不等于已进行实机测试并证实每次退出都丢血量。该缺口对 B1 更敏感：分离对象后，异步 DB 序列化不得再从 World 的活动 `fightProperties` 偷读；应由 World 形成必要的**一致性结果**，在对应 UID 的 R2 域接收并构建持久个人记录，然后按已有有序异步 DB 写入规则保存，并维护重登录读屏障。**退出保存不能在旧 World 仍可更改这些值时拍一张无版本快照就宣布完成。**
+
+### 21.3 来源更新的建议消息方向与业务完成边界（未选具体传输 API）
+
+```text
+Player/R2：持久角色资料、装备、成长、队伍长期配置
+   │ 个人业务有序完成，生成对应角色的来源变更说明/稳定只读视图
+   ▼
+World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
+   │ 在世界串行边界处理装备、共鸣、动态 Modifier 与技能状态
+   ▼
+活动 EntityAvatar：只由 World 写入当前 HP、能量、Buff、实时 FightProps
+   │ 从同一活动状态生成 Scene/Avatar 客户端通知
+   ▼
+必要时由 World 提供恢复数据 → Player/R2 → 有序 DB 保存与登出屏障
+```
+
+- **对普通换装/养成**：R2 在不阻塞 World 的情况下完成个人记录；若同一操作的外部命令 F1 要求活动角色生效才算成功，其完成回执需要等**对应 World 侧必须完成的副作用**，但 Shell 可以等待，World/R2 线程不互相阻塞。是否在非 World 角色上计算基础属性及其缓存位置仍是实现选择。
+- **对来源和运行时状态融合**：已有 `Avatar.recalcStats()` 在重算时会清空整个 Map，并以当时 HP 百分比恢复生命；B1 必须区分装备造成的基础属性变化与临时 MaxHP 比例修饰，不能把旧 `CUR_HP`、能力增益和 `fightPropOverrides` 直接作为另一份 Player/World 并行可写表。是否按比例/绝对值保留 HP，因来源和原版能力规则而异，**此处不擅自统一算法**。
+- **对客户端两个视图**：[PacketAvatarFightPropNotify](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/packet/send/PacketAvatarFightPropNotify.java) 构造 `AvatarGuid` 对应角色面板；[PacketEntityFightPropUpdateNotify](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/packet/send/PacketEntityFightPropUpdateNotify.java) 构造 `EntityId` 对应场景实体数值；[PacketSceneTeamUpdateNotify](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/packet/send/PacketSceneTeamUpdateNotify.java) 在多人场景同时编码 `EntityAvatar.toProto()` 与 `Avatar.toProto()`。当前这些路径依赖同一张 Map 的偶然一致。**B1 拆开属性所有权后，面板与场景实体的展示需要来自相互一致的状态版本**；不应把“两个包”误认为“必须保存两套最终战斗属性”。
+- **对离场/存档**：World 需有一个结束本轮活动实体写入、交付恢复结果的边界；同一 UID 新 World 应拒绝旧 World 迟到的写入。现有 R2 业务序列与 DB 保存序列虽有序，但无法单独排除**旧 World 的回执在新 World 状态之后到达**。具体关联凭据/序号、是否保存非活动队员的暂态和异常退出恢复机制留待源码与实测推导。
+
+**基于已定 B1 的建议**：先冻结上述所有权与业务完成行为测试，再评估源数据是否需一次性快照或按领域增量。当前无须选择消息总线、版本字段名称、`CombatState` 类型或第三类调度域。
+
+## 22. S2 多 World 并行的隐藏碰撞：实体 ID 被当成全局身份（2026-11-04 源码审计）
+
+**结论有明确代码证据**：[`World.nextEntityId`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/World.java) 是**每个 World 自己从 0 开始的 AtomicInteger**，`getNextEntityId(EntityIdType)` 按实体类别前缀加本 World 递增序号。因此整数 `entity.getId()` 对一个 World 内的实体有区分能力，**却没有跨 World 的全局唯一性保证**。
+
+然而多个战斗辅助系统使用全服 `static Map<Integer, ...>` 直接以 `entity.getId()` 为键：
+
+| 真实路径 | 证据 | S2/B1 的具体风险 |
+| --- | --- | --- |
+| 最大 HP 动态 Modifier | [`AbilityMaxHpRatioHelper.ACTIVE`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/AbilityMaxHpRatioHelper.java) 是全局静态 `Map<entityId, Map<modifierName, Entry>>`；`onModifierAdded`、`totalRatio`、`clear` 都只传裸 ID | 两个 World 恰好有相同整数 ID 的实体时，可**共享或清除对方的 Modifier**；`clear` 无 World 或实体引用身份核验。即使所有操作都在正确的 S2 域内也无法解决键冲突 |
+| 阿蕾奇诺命之契与爆发 | [`ArlecchinoBoLUtil`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/ArlecchinoBoLUtil.java) 有大量静态 `Int2LongMap`/`ConcurrentHashMap<Integer,...>`；`clearEntityState(entityId)` 删除对应键；[`ArlecchinoBurstBoL.PENDING`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/ArlecchinoBurstBoL.java) 同样按整数 ID 索引，但**部分操作额外验证对象身份** | 相同 ID 的不同 World 技能会互相覆盖、错误抑制或清理；**不能把 ArlecchinoBurstBoL 有局部身份校验的逻辑一概宣称无保护**，需逐 Map 审计 |
+| 玛薇卡防御削弱领域 | [`MavuikaSpiritHelper.defShredApplied`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/MavuikaSpiritHelper.java) 为静态 `Map<Integer, Float>`，扫描 `player.getScene().getEntities()` 并按怪物 ID 缓存防御削弱；重复任务由全局 `GameServer.scheduler` 驱动 | 不同 World 的同 ID 怪物可能使对方**跳过增益或错误恢复**；且定时回调可能在 World 执行域外修改 Scene 实体，违反 S2 |
+| 场景销毁清理 | [`EntityRuntimeStateCleanup.clear(entity)`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/entity/EntityRuntimeStateCleanup.java) 取得一个 `entityId` 后连续调用多个 Helper 的 `clearEntityState(entityId)` | World A 实体销毁可删除 World B 同 ID 实体的全局能力状态。按 ID 清理的行为**不能仅以使用 ConcurrentHashMap 就视为线程安全或逻辑隔离** |
+
+**设计约束（B1/S2 的直接推论，具体存储结构未定）**：
+
+1. **World/Scene/Entity 的状态必须按真实作用域识别**。EntityId 是原版协议中的 World 内运行时标识，可以保持协议原貌，但在服务器全局静态索引里必须有明确 World/实体身份或将临时状态真正归回 World/实体所有者。不能通过凭空引入全局唯一 EntityId 改变 7.1 封包意义来掩盖内部索引错误。
+2. 需把**索引键冲突、写入执行域、定时回调执行域、清理生命周期**分别检查；复合键消除碰撞却不保证回调在 World 线程安全运行，反过来 S2 队列正确也无法修复全局裸 ID 冲突。
+3. **不要一律把所有静态 Map 移入 World**：有些键是 UID、持久 Avatar Guid、配置 Hash 或全局游戏规则，可能需要不同生命周期。重点先审战斗中 `getId()` 产生的实时 EntityId、持有 Entity 引用的全局任务与所有 `clearEntityState`。
+4. **最小验证**：启动两个不同 World，使它们产生相同数值的怪物/角色 ID；只对 A 添加 MaxHP Modifier，检查 B 不受影响；销毁 A 对应实体，再验证 B 的 Modifier 未清除；同时触发不同 World 的阿蕾奇诺 BoL/玛薇卡减防持续效果与场景切换，检查两边数值和回调独立。
+5. **修复优先级**：这是 S2 多 World 并行和 B1 World 实时状态唯一写权的前置风险，应在大规模拆分线程之前有一套能真实碰撞的回归测试；**目前仅源码证明风险路径，没有实机复现**，不能把潜在冲突描述为已观察到游戏故障。
+
+不授权新增模块、公共缓存框架、持久字段或无关的兼容逻辑。本节仍处于研究，不运行 CI；待开展代码实施并要求用户测试/向上游提交时按既定要求运行 CI。
 
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

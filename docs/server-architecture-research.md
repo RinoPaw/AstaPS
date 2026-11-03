@@ -656,6 +656,19 @@ R2 的**逻辑串行队列不等于每玩家一条物理线程**。可以用共�
 - **网络发送**：Player R2、World S2、异步回调并发给同一 GameSession 发送带自动头的封包；检查序号唯一性、调用顺序、插件可取消/修改行为和关闭后的旧通知，不从 `KcpTunnel` 接口假定线程安全。
 - **身份移交**：Player 由 World A 进入 B 期间旧 World 的战斗事件、旧 Session 的通知、R2 个人装备变化同时发生，确认唯一有效成员关系和个人数据一致；MongoDB 写入成功屏障仍独立生效。
 
+### 18.5 玩家 Tick 与 Scene Tick 在实际代码里交叉访问并重复执行（关键迁移阻塞点）
+
+[`GameServer.onTick()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/game/GameServer.java) 当前先遍历并 Tick 各 World/Scene，随后遍历所有在线 Player 调用 `Player.onTick()`；**两段 Tick 当前顺序执行**（不代表网络/GM 与之串行）。未来若分别把 World Tick 交给 S2、Player Tick 交给 R2，这两个阶段可以真正并行，但其函数内部拥有交叉访问：
+
+| 源码中的 Tick 行为 | 代码位置 | 实际所有权交叉点 |
+| --- | --- | --- |
+| **同一 BoL 结算逻辑在两条 Tick 路径均被调用** | [`Player.onTick()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/Player.java) 调 `ArlecchinoBurstBoL.onTick(this)`；[`Scene.onTick()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/Scene.java) 遍历 Scene 玩家同样调用 `ArlecchinoBurstBoL.onTick(player)` | 当前可能同一轮内重复调用但在 Tick 路径上顺序执行；迁移后可变成两个执行域同时运行同一结算逻辑，需**确定唯一的逻辑所有者或严格防重复协议**，不能两边原样保留 |
+| Player Tick 处理能量、Buff、任务和个人每日重置 | `Player.onTick()` 内 `EnergyManager.onTick()`、`BuffManager.onTick()`、`QuestManager.onTick()`、`doDailyReset()` | 大多数属于 Player 个人域，但 Buff/能量可能触及活动场景战斗态；要按实际写入对象分类，不是把整个 `onTick()` 作为一个不可拆的 R2 任务 |
+| Player 的日常重置直接通知 Scene | `Player.doDailyReset()` 调 `scene.getBlossomManager().notifyIcon()` | 个人进度更新从 R2 触发 World Scene 的通知/权威数据，不能直接跨域进入 World 可变状态 |
+| Scene Tick 直接进入玩家管理器 | `Scene.onTick()` 通过第一个 Player 的 `TowerManager.onTick()`、并调用与 Player 相关的 BoL 结算 | 场景/副本权威与玩家个人任务管理器有耦合。需先明确 Tower 状态依赖与生命周期，再确定 S2 调用还是 R2 续接 |
+
+**结论**：仅将 `GameServer.onTick()` 的 World 循环和 Player 循环提交给两个线程池，会直接违反已选 R2/S2。下一步要把 `Player.onTick()`、`Scene.onTick()` 的每个真实**状态变更**按所属者审计，并对共享的 BoL、能量、Tower 和奖励/日常重置建立明确的单一有效执行路径。该分类不预设“所有 Player 管理器必须在 Player 域”“所有 Scene 调用都只改 World 状态”。对于周期性数据，必须保留原版 tick 时序的行为测试；不能把物理线程数量当成调度完成的判据。
+
 本节只核实对象共享与协议顺序风险，提出 B1/B2/B3 候选。**没有修改 Java、持久化、模块、线程池、插件 API；未批准上述三选一或新的 Session 调度对象。** 文档阶段不运行 CI。
 
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

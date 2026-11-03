@@ -795,7 +795,7 @@ B1 的最小交互逻辑应先表达**业务依赖**：Player 个人变更完成
 
 上游代码按以下顺序执行：
 
-1. [`Player.onLogout()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/Player.java) 调 `this.getWorld().removePlayer(this)`。
+1. [`Player.onLogout()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/Player.java) **先调用** [`PlayerRuntimeStateCleanup.clear(this)`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/PlayerRuntimeStateCleanup.java)，清理命之契、技能临时状态及定时任务等，再退出副本并调用 `this.getWorld().removePlayer(this)`。如果 B1 的可恢复信息依赖其中的活动状态，**离场结果提取必须发生在这类有损清理之前**。
 2. [`World.removePlayer()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/World.java) 调 `scene.removePlayer(player)`；[Scene.removePlayerAvatars](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/Scene.java) 会 **`team.clear()`**。
 3. `onLogout` 的 `finally` 才执行 `this.getTeamManager().saveAvatars()`，但 [`TeamManager.saveAvatars()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/TeamManager.java) 只遍历 `getActiveTeam()` 调 `entity.getAvatar().save()`。在常规有场景的退出路径上，**此时 activeTeam 通常已经为空，循环不会保存任何 Avatar**。
 
@@ -837,11 +837,12 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 | 阿蕾奇诺命之契与爆发 | [`ArlecchinoBoLUtil`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/ArlecchinoBoLUtil.java) 有大量静态 `Int2LongMap`/`ConcurrentHashMap<Integer,...>`；`clearEntityState(entityId)` 删除对应键；[`ArlecchinoBurstBoL.PENDING`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/ArlecchinoBurstBoL.java) 同样按整数 ID 索引，但**部分操作额外验证对象身份** | 相同 ID 的不同 World 技能会互相覆盖、错误抑制或清理；**不能把 ArlecchinoBurstBoL 有局部身份校验的逻辑一概宣称无保护**，需逐 Map 审计 |
 | 玛薇卡防御削弱领域 | [`MavuikaSpiritHelper.defShredApplied`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/MavuikaSpiritHelper.java) 为静态 `Map<Integer, Float>`，扫描 `player.getScene().getEntities()` 并按怪物 ID 缓存防御削弱；重复任务由全局 `GameServer.scheduler` 驱动 | 不同 World 的同 ID 怪物可能使对方**跳过增益或错误恢复**；且定时回调可能在 World 执行域外修改 Scene 实体，违反 S2 |
 | 场景销毁清理 | [`EntityRuntimeStateCleanup.clear(entity)`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/entity/EntityRuntimeStateCleanup.java) 取得一个 `entityId` 后连续调用多个 Helper 的 `clearEntityState(entityId)` | World A 实体销毁可删除 World B 同 ID 实体的全局能力状态。按 ID 清理的行为**不能仅以使用 ConcurrentHashMap 就视为线程安全或逻辑隔离** |
+| 能力动作池 | [`AbilityManager.executeAction()/executeMixin()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/AbilityManager.java) 使用 **4 线程静态全服 `eventExecutor.submit`**，之后才在异步回调里执行对目标实体的 Modifier/Ability Action；另有 `executeActionNow()` 保留同步顺序 | 即使实体 ID 键正确，**池中的异步能力回调依然可能直接从 S2 以外的线程修改同一 World 状态**，且与同 World 伤害结算、队伍变化乱序；`isLive` 只能部分淘汰已失效实体，不能代替 World 侧执行权与正确的动作顺序 |
 
 **设计约束（B1/S2 的直接推论，具体存储结构未定）**：
 
 1. **World/Scene/Entity 的状态必须按真实作用域识别**。EntityId 是原版协议中的 World 内运行时标识，可以保持协议原貌，但在服务器全局静态索引里必须有明确 World/实体身份或将临时状态真正归回 World/实体所有者。不能通过凭空引入全局唯一 EntityId 改变 7.1 封包意义来掩盖内部索引错误。
-2. 需把**索引键冲突、写入执行域、定时回调执行域、清理生命周期**分别检查；复合键消除碰撞却不保证回调在 World 线程安全运行，反过来 S2 队列正确也无法修复全局裸 ID 冲突。
+2. 需把**索引键冲突、写入执行域、定时回调执行域、清理生命周期**分别检查；复合键消除碰撞却不保证回调在 World 线程安全运行，反过来 S2 队列正确也无法修复全局裸 ID 冲突。 [`AbilityManager.executeActionNow()`](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/ability/AbilityManager.java) 已承认 Modifier 动作链的同步因果顺序；迁移时不得一股脑把全部同步动作也改到无序池。
 3. **不要一律把所有静态 Map 移入 World**：有些键是 UID、持久 Avatar Guid、配置 Hash 或全局游戏规则，可能需要不同生命周期。重点先审战斗中 `getId()` 产生的实时 EntityId、持有 Entity 引用的全局任务与所有 `clearEntityState`。
 4. **最小验证**：启动两个不同 World，使它们产生相同数值的怪物/角色 ID；只对 A 添加 MaxHP Modifier，检查 B 不受影响；销毁 A 对应实体，再验证 B 的 Modifier 未清除；同时触发不同 World 的阿蕾奇诺 BoL/玛薇卡减防持续效果与场景切换，检查两边数值和回调独立。
 5. **修复优先级**：这是 S2 多 World 并行和 B1 World 实时状态唯一写权的前置风险，应在大规模拆分线程之前有一套能真实碰撞的回归测试；**目前仅源码证明风险路径，没有实机复现**，不能把潜在冲突描述为已观察到游戏故障。

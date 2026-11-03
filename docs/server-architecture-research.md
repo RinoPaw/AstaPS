@@ -48,7 +48,7 @@
         MongoDB / 原版 7.1 协议
 ```
 
-这一图只是用来定位责任。运行时既有玩家状态，也有多人世界/场景状态，不能假设所有业务都只属于某个 Player。Dispatch 的账号与授权也可能有自己的生命周期。
+这一图只用于定位责任。现已确定 **R2 的 Player 个人执行域**及 **S2 的 World 模拟执行域**：二者按实际状态所有权独立管理，跨域业务另行协调，不自动等于两个 Gradle 模块或两条物理线程。Dispatch 的账号与授权也可能有自己的生命周期。
 
 ## 2. 已核实的真实启动、注册与执行路径
 
@@ -327,7 +327,7 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 
 ## 12. 运行时状态执行域与跨线程业务边界审计（2026-11-04）
 
-**研究结论：现有 AstaPS 没有一个覆盖客户端包、Tick、GM、Lua、事件与延迟任务的统一状态修改顺序。** 此节通过上游 `main@ac9a7e6` 源码确认问题和约束，**不批准任何具体 Actor、锁、任务队列、线程池或类名**。关联的库存研究已有 [CLI 研究第 46–47 节](cli-jline4-shell-research.md) 的详细分析与既有决议，避免重复推翻“游戏业务同步、数据库 I/O 异步”和 P1。
+**研究结论：现有 AstaPS 没有一个覆盖客户端包、Tick、GM、Lua、事件与延迟任务的统一状态修改顺序。** 此节通过上游 `main@ac9a7e6` 源码确认问题和约束，**不批准任何具体 Actor、锁、任务队列、线程池或类名**。关联的库存研究已有 [CLI/库存第 9.1–9.2 节](cli-jline4-shell-research.md) 的详细分析与既有决议，避免重复推翻“游戏业务同步、数据库 I/O 异步”和 P1。
 
 ### 12.1 已核实的并发入口
 
@@ -365,12 +365,14 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 
 **工程约束（建议）**：先按真实游戏业务划定一次完整操作的权威归属与可见结果。同步操作不意味着执行器必须是专属线程；也不能持有未知 World/Scene 锁同步等待跨域操作或数据库。前置可取消事件、完成后通知/事件应有清楚的阶段；插件改动前置输入后需按最终输入复验，避免提前确认再被改写。具体投递、互斥和事件时序需在相关垂直业务切片中验证。
 
-### 12.4 两种常见技术路线，以及为什么当前不应直接照搬
+### 12.4 旧技术路线比较（已由 S2/R2 后续决议更新）
 
 | 路线 | 对 AstaPS 的实际影响 | 审计判断 |
 | --- | --- | --- |
 | **少量明确的业务互斥域，保留同步调用线程** | 从玩家完整经济/装备操作和 World/Scene 跨域操作的所有权开始；CLI、包和 Lua 调用同一能力，运行时用相应业务互斥保护，持久化 I/O 另行异步 | 与现有“业务同步完成”“give 在调用线程同步执行”和 P1 一致，迁移风险相对可控；但必须严格解决多 World/Scene 与多个 Player 的锁顺序及事件回调，不能机械地铺 `synchronized` |
 | **统一执行循环或按 World 分片的消息调度** | 入口提交操作给所属模拟执行器，可能改变 GM、插件调用语义及 Tick、网络包的执行线程；跨场景迁移、回调重入、长操作和背压规则均需重新设计 | 理论上有清晰线程所有权；但与已批准的直接同步命令调用语义存在冲突，不应为了当前库存重构擅自引入全局 Actor/队列或重写服务器调度 |
+
+**历史范围**：本表形成于 S2、R2 选择之前。“调用线程互斥”不再是目标方案；S2 确立 World 模拟执行域，R2 确立 Player 个人执行域。下列成本评估仍供设计时参考。
 
 真实同类案例：[Minestom 的 `ThreadDispatcherImpl`](https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/thread/ThreadDispatcherImpl.java) 通过 partition 和 tick threads 分配实体/区块工作；[`Acquirable`](https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/thread/Acquirable.java) 显式说明实体线程所有权与跨线程获取；[`ServerProcessImpl`](https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/ServerProcessImpl.java) 调度 tick 和分片更新。这说明并行模拟的所有权模型有成熟工程实例，同时也证明其需要完整的调度、迁移和获取协议；不能通过“添加几个线程池”复制。
 
@@ -392,7 +394,7 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 ### 13.1 World 模拟的已选方向及需要继续确定的跨域规则
 
 1. **World 模拟操作序列化**：同一 World 的 Scene/Entity Tick、场景 Lua、世界实体交互与修改该 World 状态的命令/插件回调应在其执行域内有序执行；不同 World 之间可并行。涉及 Player 个人状态的操作需要按实际状态所有权协调，不能仅凭玩家的当前 World 判断操作目标。
-2. **Player 个人数据所有权独立于 World 成员关系**：Inventory、Avatar、货币等属于玩家，并随玩家在 World 之间移动；其操作入口以玩家身份为目标。是否由单独的 Player 执行域调度，还是由调用线程在玩家级互斥下同步执行，属于待决的实现层设计。玩家的世界参与状态与所属 World 的实体交互仍需明确协调；登录、离线、重连不能通过假造 World 来获得执行权。
+2. **Player 个人数据所有权独立于 World 成员关系**：Inventory、Avatar、货币等属于玩家，并随玩家在 World 之间移动；其操作入口以玩家身份为目标。**R2 已选择按 UID 的 Player 逻辑执行域**；仍需决定的只是调度器、线程与结果 API 的具体实现。玩家的世界参与状态与所属 World 的实体交互仍需明确协调；登录、离线、重连不能通过假造 World 来获得执行权。
 3. **World 内 Scene/Entity**：该 World 的 Scene、怪物、场景脚本和世界状态沿相应执行域修改。一个 World 可以存在多个 Scene，当前 S2 仅确立 World 粒度；不自动批准在 World 内将 Scene/Entity 再细分并行。
 4. **跨 World/跨账号操作**：多人邀请、联机进入/退出、跨世界传送以及涉及两个所有者的操作，必须规定协调流程、失败取消、超时和重复提交语义。严禁在持有一个 World 执行权时同步等待另一个 World 执行权而形成死锁。
 5. **阻塞边界**：不在 World 模拟执行器上等待耗时 MongoDB 或其他慢 I/O。保留既定 P1：经济类变更在内存修改前确认持久化工作可接纳；每玩家异步串行落盘；奖励 `PREPARED` 回执确需同步持久确认的例外应采用不阻塞其他 World 的协调机制，具体由后续设计研究。
@@ -401,11 +403,11 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 
 ### 13.2 D01B 与 S2：撤回此前过度推导的冲突声明
 
-[CLI 研究第 18 节](cli-jline4-shell-research.md) 的 **D01B** 要求 `give` 在命令调用线程直接同步执行业务。第 13 节最初将这视作与 S2 必然冲突，理由是“目标 World 执行域才可以修改 Player/Inventory”。
+[CLI/库存第 4.1 节](cli-jline4-shell-research.md) 的 **D01B** 要求 `give` 在命令调用线程直接同步执行业务。第 13 节最初将这视作与 S2 必然冲突，理由是“目标 World 执行域才可以修改 Player/Inventory”。
 
 **该理由不成立**：`Inventory` 属于 `Player`，同一个玩家在不同 World 间迁移，背包的所有权不改变。源码的 `CommandMap.getTargetPlayer()` 按玩家 UID / 账号定位，且 `GameServer.getPlayerByUid(uid, true)` 可读取离线玩家；不需要先定位 World。**S2 约束世界模拟，不能以此要求每个 `give` 必须投递当前 World。**
 
-这保留了 D01B 原有的调用线程同步语义，但单玩家完整业务操作仍须在所有入口间有序，不能让控制台与游戏包同时篡改库存。**后续第 16 节已正式选择 R2（按 UID 的 Player 串行执行域）**。因此此处当时仍待选择的互斥/执行域分歧已经关闭，D01B 中“调用线程直接操作状态”的旧约束也因 R2 不再可原样实现。具体 CLI 等待与结果反馈策略仍需研究。
+当时这一纠偏说明 S2 本身不要求把纯库存 give 投递到当前 World；此后 R2 确定了按 UID 执行个人状态操作，覆盖 D01B 的任意调用线程直接写库存的旧细节。**后续第 16 节已正式选择 R2（按 UID 的 Player 串行执行域）**。因此此处当时仍待选择的互斥/执行域分歧已经关闭，D01B 中“调用线程直接操作状态”的旧约束也因 R2 不再可原样实现。具体 CLI 等待与结果反馈策略仍需研究。
 
 当命令直接影响 World/Scene/Entity 时，例如生成怪物或修改世界机关，它仍应通过目标 World 的执行权；同时涉及玩家库存和世界实体的领奖/掉落交互，需要定义跨域业务时序。
 
@@ -419,7 +421,7 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 
 参考 [Minestom `ThreadDispatcherImpl`](https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/thread/ThreadDispatcherImpl.java) 的分配逻辑及 [`Acquirable`](https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/thread/Acquirable.java) 的显式线程所有权。它们作为技术证据，**不是强制采用 Minestom 的 API 或并行粒度**。
 
-本轮只批准 S2 目标并记录冲突；未改 Java/Gradle，未新建分支，未执行 CI。
+本节保留 S2 当时的正式选择及 D01B 历史分歧；**当前结论以第 14–16 节及 R2 为准**。原轮未改 Java/Gradle、未新建分支、未执行 CI。
 
 ## 14. 状态所有权纠偏：Player 个人数据与 World 模拟独立（2026-11-04）
 
@@ -432,7 +434,7 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 - [GameServer.java](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/game/GameServer.java)：`getPlayerByUid(uid, true)` 可以按 UID 获取在线 Player 或通过数据库加载离线 Player，因此以 World 为目标的 give 不能覆盖真实命令需求。
 - [CommandMap.java](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/CommandMap.java)：命令目标按 UID/账号解析及持久记忆，不要求命令提供 World 身份。
 
-### 14.2 更合适的逻辑归属分类（设计研究，不代表已批准调度实现）
+### 14.2 逻辑状态归属（R2 已选，具体调度实现未定）
 
 | 逻辑归属 | 典型状态 | 实际操作举例 |
 | --- | --- | --- |
@@ -445,7 +447,7 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 
 最需要进一步验证的真实难点在**跨域业务**：玩家拾取 World 的掉落物会同时影响世界实体和个人库存；装备变化还可能影响 World 中角色实体的战斗属性。需要明确定义谁决定操作成功、什么时候占用/消费世界资源、玩家库存容量与写入 P1 如何预检、失败怎么撤销/重新开放、客户端与插件何时观察到完成状态。不要仅靠在两个域间同步相互等待来解决，容易形成死锁。
 
-**本轮发现否定了“所有 GM/Inventory 写入必须经过当前 World”的前提，但没有否定已选择的 World 并行 S2。** 不改用户既有 D01B 决议，不引入未批准的通用协调器/异步框架。
+**本轮澄清了“个人库存操作不必经过当前 World”，保留 S2。随后 R2 覆盖了 D01B 的直接调用线程细节，详见第 16 节。** 未批准额外通用协调器、数据库事务或兼容框架。
 
 ## 15. Player 与 World 跨域业务：拾取、领奖、联机迁移（2026-11-04 源码审计）
 
@@ -455,7 +457,7 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 
 | 路径 | 真实调用链 | 跨域事实 |
 | --- | --- | --- |
-| **纯个人库存 `give`** | `GiveCommand.Args.run()` → `targetPlayer.getInventory().addItem(s)/addItems()`；`CommandMap.getTargetPlayer()` 按玩家标识找目标 | 物品发放业务归 Player；无须查询或投递其当前 World，保留原 D01B 的直接同步命令要求。但 `GiveCommand.updateAvatar()` 在**降低命座**时调用 `World.transferPlayerToScene()` 两次并广播实体，此分支确实跨 Player/World；不能按**命令名**一刀切确定归属 |
+| **纯个人库存 `give`** | `GiveCommand.Args.run()` → `targetPlayer.getInventory().addItem(s)/addItems()`；`CommandMap.getTargetPlayer()` 按玩家标识找目标 | 物品发放业务归 Player；无须查询或投递其当前 World，个人库存操作须进入 R2 的 UID 执行域。但 `GiveCommand.updateAvatar()` 在**降低命座**时调用 `World.transferPlayerToScene()` 两次并广播实体，此分支确实跨 Player/World；不能按**命令名**一刀切确定归属 |
 | **拾取地面实体** | `HandlerGadgetInteractReq` → `Player.interactWith()` → `EntityItem.onInteract()` → `Inventory.addItem()` → `player.onGadgetInteracted()` → `Scene.removeEntity()` → 回包/广播 | 先入包再移除，保护了满背包拒绝时地面物品不丢失。但完整操作由 World 上的实体可用性与 Player 的库存接纳共同决定，现有代码没有跨域整体序列化契约 |
 | **宝箱与世界 Boss 奖励** | `GadgetChest.onInteract()` 为 `synchronized`；普通宝箱经 `WorldChestLootHelper.grant()` / `RewardClaimFlow.grant()`，自动发放到 Inventory、地面物品创建到 Scene；Boss 奖励经 `RewardGrantJournal` 在扣树脂前持久准备、发放后更新凭据/结算标记 | 一个操作关联 World 内的宝箱/掉落状态、Player 领取/余额、MongoDB 的回执。部分路径在整个同步交互过程中做 `insertOne()/updateOne()`；迁到 S2 后若原样在 World 执行器中运行，会阻塞当前执行器及其承载的其他 World；也不能草率把持久回执改成响应后异步 |
 | **多人世界迁移** | `MultiplayerSystem.applyEnterMpReply()`、`leaveCoop()`、`kickPlayer()` 经 `World.addPlayer()`；`World.addPlayer` 会先调用旧 World 的 `removePlayer`，然后设置 `Player.world` 并 `Scene.addPlayer()` | Player 个人库存仍归 Player；成员关系、角色世界实体、场景协议涉及旧/新两个 World。`MultiplayerSystem` 多个入口目前 `synchronized` 在同一个全局系统实例上，可能成为 S2 世界并行化的串行点。两 World 移交不能靠原样嵌套锁或双方互相等待 |
@@ -482,7 +484,7 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 **地面拾取示例**，建议把 World 中的实体当作可消费资源，把 Player 的 Inventory 视为独立的接收方：
 
 1. **World 验证并暂时保留实体**：实体确实存在、可拾取、归属/距离/玩家互动条件满足时，对该实体建立一个未完成的领取尝试，防止同时被另一个玩家消费。等待时不占用 World 执行线程，也不把实体立刻销毁。
-2. **Player 独立处理库存业务**：验证自身当前状态、容量及 P1 持久化准入；在完整同步业务边界内接收物品，形成明确的成功/失败结果。世界所在位置不决定 Inventory 的执行域。
+2. **Player 按 R2 执行库存业务**：在目标 UID 执行域验证个人状态、容量及 P1 持久化准入，完整同步接收物品并形成成功或失败结果。世界所在位置不决定 Inventory 的执行域。
 3. **World 根据结果结案**：Player 失败则取消尝试、保持原实体；Player 成功才移除实体并广播。结果可能延迟到达，因此要核对同一实体身份、尝试身份和 World 生命周期，避免旧回调关闭新实体。
 4. **不可把“先加库存再删实体”称为跨域原子事务**：Player 已成功但 World 后续失败时，不能简单再次发物品或盲目回滚已经对外可见的库存变更。需要可重复完成的世界侧收尾/必要的来源侧记录；具体保障应按是否持久奖励分别设计。只有原有要求的奖励回执具有已知持久确认语义，一般地面掉落不能默认得到完全崩溃原子性。
 
@@ -496,7 +498,7 @@ K1 明确了**内置玩法与第三方扩展的长期所有权边界**。下一�
 
 - **业务能力以实际状态为目标**：`give(playerUid, itemSpec)`、`pickup(worldEntity, playerUid)` 和 `enterWorld(playerUid, targetWorld)` 的所有权不同。当前命令字符串或 Java 包归属都不能代替业务语义。
 - **插件事件应按操作阶段分类**：例如拾取前的可取消事件在决定资源占用和发放前触发；成功通知在状态已有效后触发。插件失败不能让 Player 已收物品、World 又重新开放同一实体。禁止随意在一域事件回调中同步等待另一域锁。
-- **独立 Worker 不等于并行正确**：当前 Netty 网络入口全服串行只是偶然提供部分请求序列化；S2 需逐步让模拟状态操作服从 World 域，把 Player 个人状态的原有同步语义保留下来，独立处理跨域协调。
+- **独立 Worker 不等于并行正确**：当前 Netty 网络入口全服串行只是偶然提供部分请求序列化；S2 需逐步让模拟状态操作服从 World 域，按照 R2 使 Player 个人状态操作有序执行，独立处理跨域协调。
 - **监控优先于盲目性能优化**：至少观察 World 每次 Tick 的耗时、领取流程各阶段等待、跨域取消/重试次数、World 迁移冲突及有序持久化队列背压。
 
 ### 15.5 需要继续确定的高层问题与测试
@@ -533,7 +535,7 @@ R2 的**逻辑串行队列不等于每玩家一条物理线程**。可以用共�
 2. **命令同步交互**：此前 give 的 D01B 禁止“异步再等待”是针对旧执行方式的决定；R2 的串行调度使其不能原样覆盖跨线程调用。能否在**控制台外部线程**安全等待真实完成结果、是否默认异步显示，是需要独立批准的 CLI 交互设计；绝不允许在 Player/World 执行域互相阻塞等待以致死锁。
 3. **跨 Player 交互**：交易、多人角色关系变更等涉及两个 UID 的业务需要明确协调、失败与防重复，不把全服玩家退化为一把大锁；是否存在跨 UID 同时修改的原版 7.1 必需操作须从调用点验证。
 4. **跨 Player/World 交互**：地面拾取、世界奖励、联机移动、装备影响场景实体时，按第 15 节分开个人状态和世界实体的修改，定义跨域交互结果/取消、提交后通知和来源侧防重复，避免同步循环等待。跨域操作的业务完成语义可能涉及多个执行阶段，不能把一次完整 Player 经济变更切成可被另一项 Player 任务穿插的半操作。
-5. **登录/退出/离线**：以 UID 为归属的个人操作在登录未完成、登出中、离线管理时仍需明确准入和生命周期，结合第 48 节已验证的登录世代、重复退出、异步写入成功屏障；不要因为没有 World 就给离线 Player 生成临时 World。
+5. **登录/退出/离线**：以 UID 为归属的个人操作在登录未完成、登出中、离线管理时仍需明确准入和生命周期，结合 [CLI/库存第 9.3 节](cli-jline4-shell-research.md) 已审计的登录世代、重复退出与异步写入成功屏障；不要因为没有 World 就给离线 Player 生成临时 World。
 6. **执行器负载**：单个 Player 的长任务不应无界堆积，也不应让一个 UID 的慢数据库操作拖住其他 UID 或 World。专属线程、队列容量、同一 UID 公平性、超时/背压与 Tick 协调策略需要性能和失败用例，当前 R2 不批准任何具体线程数量和锁框架。
 
 **下一个真正的架构问题**是命令/Web/插件的最终结果语义与两个执行域间的非阻塞协作契约。先设计操作所有权和可观察结果，再实施具体调度，避免把旧的 `threading=true` 命令模型原样包装成另一层任务队列。

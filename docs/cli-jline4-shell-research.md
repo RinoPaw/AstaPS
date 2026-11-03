@@ -548,21 +548,21 @@ long getGuid();
 本轮仍只更新研究文档，不修改 Java 代码、不建分支、不运行 CI。
 ## 48. 2026-11-03 登录世代与退出幂等：玩家数据所有权审计（研究）
 
-仍以 \`MeChen618/AstaPS/main@ac9a7e6\` 的实际代码为依据。该节只明确库存重构所依赖的**玩家会话所有权和读取时序**，不批准新会话框架、不修改 Java 实现。
+仍以 `MeChen618/AstaPS/main@ac9a7e6` 的实际代码为依据。该节只明确库存重构所依赖的**玩家会话所有权和读取时序**，不批准新会话框架、不修改 Java 实现。
 
 ### 48.1 已验证的三条会话风险
 
-1. **同账号的并发登录没有完整排他**：\`HandlerGetPlayerTokenReq.LOGGING_IN\` 的键是 \`GameSession\`，只防止同一连接重复发起登录；\`takeOver()\` 通过 \`GameServer.getPlayerByAccountId()\` 只查已经注册到在线玩家 Map 的对象。登录玩家要到 \`Player.onLogin()\` 后段才 \`registerPlayer()\`。所以连接 B、C 可同时经过 token/加载阶段，在注册前彼此不可见；仅凭当前在线 Map 无法保证每个账号同一时间只有一个加载及写入主体。此处是源码允许的竞态路径，**尚未实机复现**。
-2. **重复登录存在退出流程重复执行路径**：\`takeOver()\` 对已在线的 \`exists\` 直接调用 \`exists.onLogout()\`，然后 \`existsSession.close()\`。旧连接进入 \`GameSession.handleClose()\` 后，\`isLoggedIn()\` 只检查 \`getPlayer()!=null\`，从而可能再次调用 \`getPlayer().onLogout()\`。\`closeHandled\` 只防止 \`handleClose()\` 自己重复进入，无法保护外部直接调用的 \`onLogout()\`。这会使退出事件、世界移除及最终入队保存被重复触发；需要将**一次玩家会话只退出一次**作为重构不变量。
-3. **玩家绑定早于完整加载**：\`admit()\` 先 \`session.setPlayer(player)\`，再调用后台 \`load()\`；连接在加载阶段断开时，\`handleClose()\` 同样可能因为 \`isLoggedIn()\` 为真执行 \`onLogout()\`。退出所需资源及最终保存应区分未完成初始化的会话，不可将已有 Player 引用等同于业务可用状态。
+1. **同账号的并发登录没有完整排他**：`HandlerGetPlayerTokenReq.LOGGING_IN` 的键是 `GameSession`，只防止同一连接重复发起登录；`takeOver()` 通过 `GameServer.getPlayerByAccountId()` 只查已经注册到在线玩家 Map 的对象。登录玩家要到 `Player.onLogin()` 后段才 `registerPlayer()`。所以连接 B、C 可同时经过 token/加载阶段，在注册前彼此不可见；仅凭当前在线 Map 无法保证每个账号同一时间只有一个加载及写入主体。此处是源码允许的竞态路径，**尚未实机复现**。
+2. **重复登录存在退出流程重复执行路径**：`takeOver()` 对已在线的 `exists` 直接调用 `exists.onLogout()`，然后 `existsSession.close()`。旧连接进入 `GameSession.handleClose()` 后，`isLoggedIn()` 只检查 `getPlayer()!=null`，从而可能再次调用 `getPlayer().onLogout()`。`closeHandled` 只防止 `handleClose()` 自己重复进入，无法保护外部直接调用的 `onLogout()`。这会使退出事件、世界移除及最终入队保存被重复触发；需要将**一次玩家会话只退出一次**作为重构不变量。
+3. **玩家绑定早于完整加载**：`admit()` 先 `session.setPlayer(player)`，再调用后台 `load()`；连接在加载阶段断开时，`handleClose()` 同样可能因为 `isLoggedIn()` 为真执行 `onLogout()`。退出所需资源及最终保存应区分未完成初始化的会话，不可将已有 Player 引用等同于业务可用状态。
 
 ### 48.2 对已确定模型的直接约束
 
 - **会话归属**：同一账号的新旧连接、进行中的加载及已上线 Player，必须有可验证的唯一当前归属。登录前阶段可以使用 account ID 识别竞争；完成 Player 查询后用 UID 关联已批准的**每玩家异步持久化顺序域**。不要让两个尚未注册的连接分别把旧物品状态装入可写 Player。
 - **退出与重连**：失效旧会话 → 停止该世代新的经济业务修改 → 完成一次退出/提交收尾状态 → 等待这个 UID 已提交写入的**成功完成** → 从数据库加载新 Player/Avatar/Inventory → 发布新会话。等待数据库发生在登录后台流程；无须以全服锁阻塞其他玩家。旧会话的滞后任务不能在新会话启用后再提交覆盖写。
-- **旧结果不得重新生效**：加载任务完成时检查连接有效且仍属于该账号当前登录尝试；已被新的尝试取代的加载结果不能继续执行 \`respond()\` / \`onLogin()\`。这与登录阶段 \`guarded()\` 只检查 \`session.isConnected()\` 的现状存在差距。
-- **屏障必须可判断持久化结果**：\`DatabaseWriterManager.acquireBarrier()\` 当前是**全局维护屏障**，不可直接用于每次玩家重连；\`saveWithRetry()\` 吞并记录多种写入异常，因而仅等待任务运行结束仍不能证明数据已保存。保持原有奖励 \`RewardGrantJournal\` 的同步 PREPARED 等必要确认点，不以一般异步队列替代。
-- **禁止退化成服务级同步 I/O**：\`DatabaseWriterManager.dispatch()\` 在线程池满但未停机时执行 \`runOnCaller()\`；若继续沿用，经济业务或登录逻辑有机会同步执行 MongoDB I/O。后续设计每玩家写入接纳及过载策略时，应明确消除该路径的业务线程阻塞。
+- **旧结果不得重新生效**：加载任务完成时检查连接有效且仍属于该账号当前登录尝试；已被新的尝试取代的加载结果不能继续执行 `respond()` / `onLogin()`。这与登录阶段 `guarded()` 只检查 `session.isConnected()` 的现状存在差距。
+- **屏障必须可判断持久化结果**：`DatabaseWriterManager.acquireBarrier()` 当前是**全局维护屏障**，不可直接用于每次玩家重连；`saveWithRetry()` 吞并记录多种写入异常，因而仅等待任务运行结束仍不能证明数据已保存。保持原有奖励 `RewardGrantJournal` 的同步 PREPARED 等必要确认点，不以一般异步队列替代。
+- **禁止退化成服务级同步 I/O**：`DatabaseWriterManager.dispatch()` 在线程池满但未停机时执行 `runOnCaller()`；若继续沿用，经济业务或登录逻辑有机会同步执行 MongoDB I/O。后续设计每玩家写入接纳及过载策略时，应明确消除该路径的业务线程阻塞。
 
 ### 48.3 迁移时需优先固定的验收行为
 
@@ -574,5 +574,5 @@ long getGuid();
 | MongoDB 任务失败、被拒绝或队列饱和 | 重连屏障不假报成功；业务线程不回退至同步 MongoDB I/O；故障结果有明确反馈 |
 | 普通装备关系和 TPS loadout 同时改变并重连 | 已选 T1 权威各自恢复，不用会话 GUID 作长期引用，也不恢复过期试用角色 |
 
-**实施顺序建议**：先确保当前会话归属与退出唯一性，再把持久化写入收敛到玩家 UID 顺序域并提供成功/失败信息，随后建立登录读屏障，最后迁移 \`InventoryItem\` 的存取及装备关系。这样能避免新库存对象继承旧登录竞态。第 47.5 节 **P1/P2 持久化任务不可接纳时的经济操作策略仍需用户决定**；本节没有替用户选择，也不扩展到旧存档迁移、多文档事务或全局 Actor 架构。
+**实施顺序建议**：先确保当前会话归属与退出唯一性，再把持久化写入收敛到玩家 UID 顺序域并提供成功/失败信息，随后建立登录读屏障，最后迁移 `InventoryItem` 的存取及装备关系。这样能避免新库存对象继承旧登录竞态。第 47.5 节 **P1/P2 持久化任务不可接纳时的经济操作策略仍需用户决定**；本节没有替用户选择，也不扩展到旧存档迁移、多文档事务或全局 Actor 架构。
 

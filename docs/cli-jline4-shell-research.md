@@ -451,3 +451,49 @@ long getGuid();
 - TPS 装载包含多武器槽位限制、顺序、每种物品仅可持有一件、跨角色唯一佩戴及临时角色恢复；由 TPS 业务逻辑协调，不强行转成普通装备的 `equipCharacter` 关系。
 - 未来替换 `GameItem` 时保留 TPS 所需网络协议、场景实体及能力同步语义；TPS 持有物品依旧使用会话内 GUID 和 MongoDB `ObjectId` 的已批准身份规则。
 - 此处仅固定架构决议，不额外批准兼容层、新抽象、具体 API 或 TPS 业务行为改动；不修改 Java 代码、不创建分支、不运行 CI。
+
+
+## 46. 2026-11-03 运行时执行模型与 GameItem 替换切入点（研究建议）
+
+本节核对最新 `MeChen618/AstaPS/main`（查询时 HEAD `ac9a7e6`）及已选择的同步业务/异步落盘、业务系统主导 B、会话 GUID、TPS T1。**未新增经用户批准的设计决议，不修改 Java 代码。**
+
+### 46.1 同一玩家的状态确实从多个线程修改
+
+- 网络包：`GameSessionManager.logicThread` 为 **单个全服** Netty `DefaultEventLoop`，经 `GameSession.handleReceive()` / `GameServerPacketHandler.handle()` 调用 Handler。
+- 游戏 Tick：`GameServer.start()` 通过独立 `Timer.scheduleAtFixedRate()` 调用 `GameServer.onTick()`，它遍历玩家并调用 `Player.onTick()`、`world.onTick()`、Scheduler；所以 Tick 与网络逻辑线程不是同一线程。
+- GM / CLI：`CommandMap.executeCommand(...)` 按命令元数据可交给 `Grasscutter.getThreadPool()`；当前 `GiveCommand` 仍标有 `threading=true`，未来已决定 give 改为命令调用线程同步业务，但调用线程仍可能来自控制台/Web/游戏包路径。
+- 登录：`Player.loadFromDatabase()` 并行提交 Avatar 和 Inventory 的加载任务，Inventory 以 Avatar 已加载为先决条件；登录加载不等于正常会话业务可并发修改。
+- `Inventory.addItems/payItems/removeItem` 部分使用 `synchronized`，`Player.onTick` 也 `synchronized`，`GameServer.onTick` 锁 server；`InventorySystem.useItem/useItemDirect` 的 `synchronized` 锁的是共享的 `InventorySystem` 服务实例。现有锁不在同一个同步边界，不能保证一次强化或装备交换与 Tick/GM 并发时的整体一致性。
+
+**建议（非新决议）**：在已经选择“同步完成完整业务操作”前提下，采用玩家级**完整业务操作互斥**作为最小可落地模型，保持业务在调用线程同步执行，避免为了单纯物品重构引入玩家 Actor、任务队列或把所有 Tick 都迁往单个网络线程。这是建议而不是未经用户同意改全项目。只有影响该玩家持有/装备/相关货币的业务需要进入同一边界；不同玩家原则上独立。多玩家操作、与 world/server 的锁顺序需要专门验证，不能在持有 world/server 锁时盲目嵌套玩家锁。
+
+注意 `Player.getNextGameGuid()` 的 `++nextGuid` 目前未同步；Avatar、Inventory 的 GameItem、场景 EntityItem 都从这里取得运行时 GUID。已批准的“Inventory 分配库存 GUID”应理解为 Inventory **主导接纳时机**、从玩家共享的会话 ID 命名空间获取唯一值，不能自建一套与 Avatar GUID 可能碰撞的计数器。实际并发安全实现待代码阶段审计。
+
+### 46.2 异步数据库写入现状与已定方案的差距
+
+- `DatabaseHelper.saveGameAsync` 将 GameItem 交给 `ItemPersistenceService` 以 ObjectId 排序；其余 Player/Avatar 等对象通过各自对象身份键提交给默认池并可合并未完成写入。**同一玩家多个实体目前并无一条统一顺序线。**
+- `ItemPersistenceService.save()` 在异步任务执行时读取可变 `GameItem`，`submitDefaultSave` 的对象引用也在后台保存时序列化；因此即使把排序键换成 UID，仍需保证一项操作产生的状态和通知顺序不会因后台读取了更晚的对象状态而错乱。
+- 已批准的每玩家异步有序写入只约束 I/O；**不要把数据库写入队列拿来负责运行时业务串行化**。序列化/快照如何实现、多个实体一次更改如何组成写入提交任务仍待技术设计，不借此重开事务/崩溃恢复议题。
+
+### 46.3 替换 GameItem 的最小职责归属图
+
+| 现有 GameItem 职责 | 推荐目标 |
+| --- | --- |
+| `itemId`、运行时 GUID、物品局部状态 | 被库存接纳的 `InventoryItem` 实现类；会话 GUID 从玩家共享分配器获取 |
+| 材料/家具数量 | 每 itemId 一份的可变堆叠，容量/合并由 Inventory 负责 |
+| 武器、圣遗物强化属性与 TPS 配件 | 各类物品的自身有效状态；特定 roll、升级规则由对应业务或创建逻辑负责 |
+| `ObjectId` / `ownerId` / `save()` / `@Entity` | MongoDB 持久记录和数据库写入边界；具体 Morphia 领域映射仍待实现设计 |
+| `equipCharacter`、`weaponEntity` | 普通装备归属作为持久记录属性；场景 `EntityWeapon` 生命周期由场景/装备业务协调，不让持久化对象持有可保存的场景状态 |
+| `toProto`、`toWeaponProto`、`toReliquaryProto`、场景协议 | 在发送/场景适配处编码，保留 7.1 `Item.tpsWeapon` 等协议，不在 InventoryItem 最小接口强塞协议方法 |
+| `copyForGrant()`、`new GameItem(ItemData,...)` 在掉落/奖励/Give 中 | 区分授予请求、尚未入库的物品状态、已经入库的玩家物品。不能从世界掉落、试用装备推断它们都有 `ObjectId` 或库存身份 |
+| 试用 Avatar 临时装备 | 保留角色计算和装备协议所需状态，但不注册 Inventory、无持久玩家持有记录；临时协议 GUID 与库存接纳 GUID 的分配时机分别约束 |
+
+### 46.4 低风险的切入顺序与验收
+
+1. 先写可复现的**业务行为测试**：同玩家并发 GM 与客户端请求、Tick 中状态修改、重复/目标 GUID 素材、锁定/佩戴素材、先扣材料后产物满包、物品合并后 GUID 不变、TPS 多枪/试用加载、普通试用角色临时装备、异步存储次序、登录恢复。
+2. 固定 `InventoryItem` 与已有 GUID/ObjectId/堆叠语义，建立各库存物品的实例与恢复/协议编码规则；从普通材料/装备切入。仍未决定数据库集合布局、具体抽象类层次，不做额外迁移兼容。
+3. 业务层先统一装备/强化/精炼/合成等**完整同步操作**的校验、修改、结果与通知时序，再让现有商店、任务、奖励、抽卡、Give 入口复用结果与业务能力；不能只把 `GameItem` 改个类名。
+4. 逐个替换 `GameItem` 在协议、事件、场景、奖励、商店、Avatar trial 及 MongoDB 中的依赖，确认无活动路径使用后再删除旧类；只要求在用户批准后按现有分支改代码，不新建分支。
+5. 编译/本地相关测试随实施推进；**让用户真机测试前与向上游提交前运行 CI**。基线仍为上游 main，避免在老提交上孤立重构。
+
+目前没有必须再次交由用户选择的新架构问题。若后续调查证明每玩家互斥无法同时满足同步 GM、Tick 与世界锁要求，再提出具体可复现的架构分歧。

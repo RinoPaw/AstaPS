@@ -21,9 +21,9 @@
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 效力** | “控制台线程直接修改 Inventory”已被 R2 覆盖；实际业务结果反馈仍须真实，外部等待方式待定 | [CLI/库存第 4.1、10.2 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–16 节 S2、Player/World 纠偏、跨域业务和 R2。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–17 节 S2、Player/World 纠偏、跨域业务、R2 和结果协议研究。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：Player/World 跨域非阻塞协调和结果语义、CLI/Web/插件等待与反馈、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：Player/World 跨域非阻塞协调与第 17 节的 F1/F2 外部结果策略、CLI/Web/插件等待与反馈、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ## 1. 先定义系统实际是什么
 
@@ -541,5 +541,70 @@ R2 的**逻辑串行队列不等于每玩家一条物理线程**。可以用共�
 **下一个真正的架构问题**是命令/Web/插件的最终结果语义与两个执行域间的非阻塞协作契约。先设计操作所有权和可观察结果，再实施具体调度，避免把旧的 `threading=true` 命令模型原样包装成另一层任务队列。
 
 本轮正式记录 R2 决议，未修改 Java/Gradle、未建立新分支、未运行研究阶段 CI。
+
+## 17. S2/R2 的操作提交、完成结果与事件时序（2026-11-04 源码研究与提案）
+
+**状态：仅研究与推荐，尚未获得新的命令反馈策略决议。** S2、R2、E1、K1、P1 是已确定的输入约束；本节不预设 Java `Future`、Actor、消息总线、特定 executor/线程数或网络协议变更。
+
+### 17.1 当前入口实际如何工作
+
+| 入口/行为 | 已核源码事实 | 迁移后的问题 |
+| --- | --- | --- |
+| 游戏包 | `GameSessionManager.handleReceive()` 将收包提交给单个 Netty `logicThread`；`GameSession.handleReceive()` 可在**同一 KCP datagram** 内顺序处理多个包；`GameServerPacketHandler.handle()` 先检查会话状态，再同步调用可取消/改写数据的 `ReceivePacketEvent`，最后执行包 Handler | 分域投递后必须保存**同玩家包内先后关系**，且 Handler 不能再直接越权写 Player/World；队列延迟时要重新核对会话世代 |
+| 命令 | `CommandMap.invoke()` 返回 `void`；`ExecuteCommandEvent` 可取消或修改目标及文本，随后解析命令、校验权限/目标；`@Command(threading)` 决定在当前调用线程或全局池执行 `Runnable`，任务执行前重验部分目标在线条件 | 解析/授权、状态修改、真实完成结果、反馈消息是不同阶段；改成 R2/S2 后当前 `void` 无法让调用者了解真正执行状态 |
+| Web Console | `WebConsoleHandler.command()` 用 `CommandOutputCapture.capture(() -> CommandMap.invoke(...))`，成功返回 HTTP 200 与 `output` 数组；`CommandOutputCapture` 只捕获当前线程上的消息（`ThreadLocal`） | 被线程池/执行域投递的任务可能在 HTTP 已返回后才执行；空输出与 HTTP 200 **不能证明命令业务成功**，也不应将“已排队”伪装为“已完成” |
+| 命令反馈 | `CommandOutput.sendMessage()` 调用可取消且可修改消息的 `ReceiveCommandFeedbackEvent`，再记录日志或发消息；与命令业务返回值无统一关联 | 插件过滤消息和业务成功/失败须分别表示，不能根据有没有消息断言业务结果 |
+| 插件事件 | `Event.call()` 在当前调用路径同步 `PluginManager.invokeEvent()`；`PlayerObtainItemEvent` 在 `Inventory.addItemsInternal()` 取得库存 monitor 后同步发出，异常被记录但已发放物品不会因此回滚 | 事件的执行上下文与前置取消/后置通知语义应由**目标状态所有权与事件阶段**决定，不能随手异步化可取消事件；事件回调更不能绕过 E1 直接写跨域可变状态 |
+
+证据：
+[GameSessionManager](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/game/GameSessionManager.java)、
+[GameSession](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/game/GameSession.java)、
+[GameServerPacketHandler](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/game/GameServerPacketHandler.java)、
+[CommandMap](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/CommandMap.java)、
+[CommandOutputCapture](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/CommandOutputCapture.java)、
+[WebConsoleHandler](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/http/console/WebConsoleHandler.java)、
+[CommandOutput](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/CommandOutput.java)、
+[Event](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/event/Event.java)、
+[Inventory](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/inventory/Inventory.java)。
+
+### 17.2 跨来源业务应有的结果层次（建议）
+
+**需要区分三件事**：
+
+1. **接纳/排队**：调度器承诺有机会执行，仍可能因会话失效、权限变化、目标消失或处理错误而拒绝。
+2. **业务完成**：在权威 Player 或 World 域内实际完成校验和变更，结果能表达具体成功、部分成功、主动取消、业务拒绝或故障；例如 `give` 容量截断到 0 按既定 G04C 是**正常业务成功**，P1 写入队列拒绝是**业务失败**。
+3. **消息投递/落盘**：聊天输出、Web 回执、网络响应及异步 MongoDB 保存有各自的完成状态；输出被插件过滤不会将成功变成失败；普通经济业务已在内存成功不等于数据库已保存成功。已定 PREPARED 必要的同步持久确认例外必须先完成才能进行不可逆支付。
+
+因此建议权威业务形成一个**可被调用方观察的完成结果**（包含业务数据及来源约束），而入队返回、终端输出、HTTP 状态和数据库持久化完成应明确分开。**具体公共接口类型、名称、对象层数和序列化格式未获批准**；避免为了多个简单命令创建万能结果/事务框架。
+
+### 17.3 调用与跨域执行的最低行为约束（建议）
+
+- **确定目标**：按实际修改的状态找到 UID/World 域；`give(uid)` 进入 R2，`spawn(world)` 进入 S2，拾取与领奖需要跨域流程，不能仅凭调用方来源或包名推断域。
+- **入口先预检、所有者最终复验**：CLI 解析和权限、网络会话状态、Lua 来源等可以先检查，但排队到执行存在时间差。真正修改之前必须在相应权威边界重新验证关键前提（有效会话/UID 世代、目标、权益、库存、世界实体存在等），避免陈旧引用和“排队前有权限、执行时已失效”。
+- **单域操作**：一项 Player 业务在自己的 UID 域完成全部同步内存变化，下一项同 UID 业务不能插入；同 World 模拟操作也有同等顺序。不同 UID/World 可并行。事件的前置可取消/可修改阶段应在权威验证、不可逆修改前，最终输入改变后要复验；后置事件在业务已有效后执行。事件可以处在内部同步业务调用栈，但不能在不具执行权的线程直接篡改其他域状态。
+- **跨域操作**：一域提交到另一域后，通过完成回调或状态续接处理，不允许占着 Player/World 域阻塞等待对方。若操作会先对一个域产生不可逆副作用，再完成另一个域，需要来源专属的去重、收尾/恢复协议；仅靠返回一个 Future 不提供跨域原子性。
+- **无界/重复与生命周期**：必须处理同 UID 入队顺序、重复网络包、超时与取消（未开始的任务和已开始的不可逆业务不能采用相同取消含义）、玩家断线/重登录、World 实例销毁、CLI/Web 请求结束。技术实现可异步，但一次业务内存修改仍应按既有规定同步完成。
+- **避免慢任务占用游戏域**：不得在 Player/World 执行器中同步等待 MongoDB、HTTP、另一个域或 Shell/Web 用户输入。对需持久确认的奖励应研究分阶段冻结必要业务前提与恢复检查，并保留既有回执状态，不直接将它变成普通异步写入。
+- **脚本与插件**：执行域归属以具体变更为准，场景 Lua 对世界状态的访问在 World 上下文，若需个人库存变更应请求 Player 能力并异步取得结果；可取消事件若业务必须立即根据插件结果决定提交，则监听器需在该操作的权威阶段同步给出决定，不隐式同步跨域等待。插件中异常与拒绝也需要明确报告，不能吞掉最终业务失败。
+
+### 17.4 同类项目的真实取舍
+
+- [PaperMC Folia 开发指南](https://docs.papermc.io/paper/dev/folia-support/)明确区分 Global / Region / Async / Entity Scheduler，Entity 调度跟随实体移动；[Folia 设计说明](https://docs.papermc.io/folia/reference/overview/)区分独立 Region Tick、全局所有权与跨区操作，**没有要求每 Region 一条专属物理线程**。
+- [Folia EntityScheduler API](https://jd.papermc.io/folia/26.1.2/io/papermc/paper/threadedregions/scheduler/EntityScheduler.html)明确处理实体跨区域迁移及 scheduled task 因实体被移除而无法执行时的退休回调。这与 AstaPS 的 UID 会话更替/World 生命周期导致任务失效的风险相似，但 **Folia 的 Entity 属于区域模拟，AstaPS 的 Player 个人状态有独立 R2 所有权，不能原样复制调度粒度**。
+- [Minestom Acquirable](https://javadoc.minestom.net/net.minestom.server/net/minestom/server/thread/Acquirable.html)支持查询/断言线程所有权，也提供同步获取机制；[Minestom ThreadDispatcher](https://javadoc.minestom.net/net.minestom.server/net/minestom/server/thread/ThreadDispatcher.html)区分逻辑 partition 与 tick threads。它的同步获取是一个实现取舍，**不等于 AstaPS 的两个域可以任意嵌套阻塞获取**。
+- [Folia README 的事件/命令约定](https://github.com/PaperMC/Folia/blob/ver/26.2.x/README.md)指出 Region 并行时事件与命令也可能并行执行；AstaPS 若升级原有同步插件回调，应明确归属域，不能沿用“所有插件总在一个主线程”的假设。
+
+### 17.5 下一项真正需要用户决定的外部交互策略
+
+两个候选都可以在内部使用 R2/S2 操作完成结果（具体 API 尚未选）：
+
+| 候选 | Console / Shell 的默认交互 | Web/API 的做法 | 代价 |
+| --- | --- | --- | --- |
+| **F1（推荐，尚未批准）** | 在**不占用 Player/World 执行域**的 Shell 外部线程等待本命令**真实业务完成**后再产生退出状态与后续 Shell 运算符结果；业务执行期间不阻塞状态所有者 | HTTP 可以限时等待真实完成，或暴露“已接纳且仍运行”的后续结果查询；明确区分已排队/完成 | 便于脚本 `&&` / `||` / 管道和真实反馈，仍需确定超时/长任务的 Web 行为 |
+| **F2（仅异步反馈）** | 命令默认立即返回“已受理”；完成后另行输出真实结果，Shell 的 `&&`/脚本需特别约定是否等待或只能检查投递成功 | Web 先返回受理及后续查询结果 | 简化直接等待，但很容易把“排队”误当作 Shell 命令成功，需要额外作业管理语义 |
+
+**建议选择 F1 作为外部交互原则**，与已定 Give `X01B`“真实完成才报告成功”以及 JLine Shell 命令组合/脚本语义相符。当前**未批准**默认等待、请求超时、任务结果查询 API、输出如何跨线程传播；也不批准具体类名、新兼容层或额外数据库集合。
+
+本节仅记录源码事实、可验证建议与有价值的顶层分歧。无 Java/Gradle 改动，无新增分支；文档研究无需运行 CI。
 
 **尚未进入代码改造阶段**。与 [CLI/JLine 4 研究](cli-jline4-shell-research.md) 配套使用；后者记录已经确认的细粒度行为决议。本文件只覆盖全局架构与迁移方向。

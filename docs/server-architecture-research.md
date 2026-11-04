@@ -1185,3 +1185,14 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 
 **本轮仅文档研究，无 Java/Gradle/数据库修改及 CI。**
 
+
+### 32.4 原版 7.1 类型覆盖与 AstaPS 内部编号的区别
+
+以 [Genshin-Reverse 7.1 QuestExec 映射](https://github.com/RinoPaw/Genshin-Reverse/blob/main/genshinre/questbin.py) 对照 [AstaPS QuestExec.java](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/enums/QuestExec.java)：
+
+- 当前原版 7.1 资源解码器标记了 **100 个实际出现的 Exec 类型 ID**；AstaPS 对照时的 `game/quest/exec/` 目录有 **45 个处理器类**，`QuestExec` 枚举含 **74 个值**（包括 NONE/UNKNOWN）。这些数字是**不同集合**：原版全游戏数据中的类型、服务器枚举和已注册实现。不能直接把“100-45”称为 55 个当前玩家会触发的缺陷，更不能把已有 X1 解释成必须立即实现全部 100 种操作。
+- **已验证的局部可用性**：Genshin-Reverse 早期蒙德主线 39 份 MainQuest 资料涉及 20 种 QuestExec，当时配套的 AstaPS 运行源码覆盖了所需动作类型。这项验证属于特定范围、特定源码修订，不证明最新全游戏所有 Quest 已完整实现。
+- 重要编号陷阱：原版 7.1 类型 ID `112 = BATCH_SET_QUEST_VAR`、`81 = SET_IS_GAME_TIME_LOCKED_V2`、`118 = SET_OPEN_STATE_V2`，但 AstaPS 的 `QuestExec` 枚举使用 **71 / 72 / 73** 对应这三个名称。原版 **71 / 72 / 73** 实际对齐为 `REFRESH_WORLD_QUEST_FLOW_GROUP_SUITE`、`HIDE_SCENE_POINT`、`UNHIDE_SCENE_POINT`。
+- **这还不能断言运行时错误**：AstaPS [QuestData.QuestExecParam](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/data/excels/quest/QuestData.java) 的 `type` 是以 Gson enum 名称从资源 JSON 读取；QuestSystem 根据该 enum 的**内部编号**注册并分派 Handler，且源码注释明确把末尾 71–73 称为 internal only。若资源以语义**字符串名称**给出，枚举内部编号不需要等于原版数值。**但未来如果直接导入原版整数 ID，应先明确映射，不可复用这些内部编号作为 7.1 原版 opcode。**
+- 当前最有价值的覆盖核验路径，是用**原版 7.1 原始资源**确认一段具体任务实际调用哪些 Exec，再检查 AstaPS 对应命名是否存在 Handler 及其返回/副作用，而非凭枚举注释或社区 JSON 补齐一堆未证明需要的兼容代码。
+

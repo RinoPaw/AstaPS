@@ -709,3 +709,11 @@ long getGuid();
 **更深的双域冲突**：已在 [全局架构第 18 节](server-architecture-research.md) 直接证实 `EntityAvatar.getFightProperties()` 返回 Player `Avatar` 的同一可变 `Int2FloatOpenHashMap`；装备业务在 R2 内 `Avatar.recalcStats()` 会清空并重建该 Map，而 World 战斗实时伤害/治疗也读写此 Map。未来 `/give` 更新角色等级、强化/换装引起的数值变化，在 R2 内完成个人物品修改后**尚有世界活动战斗态需要同步**。F1 什么时候返回完整成功应依据角色是否在世界、世界更新是否必需等业务语义确定，不能不经验证就把“已更新个人库存”当作“已更新活动角色全部战斗效果”。**B1 已在全局架构第 19 节正式确定**：World/S2 权威管理有环境、敌人、Buff、技能联动的活动战斗态，Player/R2 管理等级、天赋、升阶、装备关系和持久角色资料。`give` 修改个人来源后，World 负责在当前上下文计算最终战斗效果；具体来源快照、通知和 F1 完成屏障仍需设计，尚未授权增加战斗状态类、重复可变面板或持久化结构。**新增源码证据**：[架构研究第 21 节](server-architecture-research.md) 已确认重新编队与切场景会创建/清理 `EntityAvatar`，且在常规退出路径中 `saveAvatars()` 调用发生于 `activeTeam` 清空之后。针对 `/give` 的强化、突破和换装，F1 不应只等 R2 的数据修改结束就回报“活动角色战斗效果已生效”；涉及 World 的业务完成边界仍需按具体命令划定。**本分支 C1 已选**，保留普通攻击客户端伤害输入，B1 属性来源同步不可被当作已批准完整服务端公式 C2。
 
 **建议验收**：本地与两个 Web 会话交替更改默认目标；同一 Web 会话并发请求次序；Web 令牌过期/登出后的旧回调；条件执行中 Picocli 解析错误和 `give` 领域拒绝；多个 UID 同时执行但输出不串台；插件抑制输出不改变退出码；Ctrl+C/HTTP 断线与执行中操作的结果可查询性；Web 玩家列表在世界迁移同时高频读取。实施前只冻结必要的行为测试，**未授权新增 Java 实现、兼容接口、HTTP API 或额外持久集合**。
+
+### 11.6 Quest 命令的 Q1 已选完成合同（2026-11-04）
+
+**Q1 已由用户正式选择**，详见 [全局架构第 25–26 节](server-architecture-research.md)。当 `quest finish` 等命令承诺“完成任务”时，Shell/F1 等待的是 **该 UID 的任务状态、即时个人 Exec、约定个人奖励实际按业务规则完成**。独立 World/Scene/Lua 后置效果不在 Quest 的成功屏障中；不能因已入队、`state=FINISHED` 或输出“finished”就推断这些个人业务均成功。普通异步 MongoDB 落盘仍遵循 P1，奖励回执保留既有必要确认例外。
+
+当前 [QuestCommand.Finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/commands/QuestCommand.java) 对 `GameQuest.finish(): void` 的调用后无条件发送完成文本，即使 `PlayerCompleteQuestEvent` 取消或 Quest 已完成；[QuestSystem.triggerExec](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestSystem.java) 异步处理个人/World 混合 Exec，失败结果不回传；[GameQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 忽略逐项 `gainItems` 的 `boolean`，父任务的 `Inventory.addItemParamDatas` 仍采用 `BEST_EFFORT` 且没有可观察返回值。因此 **Q1 尚未实现**，不能声称 Shell 现有退出码或消息已经遵守它。
+
+**未授权补充决议**：奖励被拒绝时是否拒绝整个 Quest、待补发或容许部分完成（QR1/QR2/QR3）；即时个人 Exec 的失败处理；跨 World 同时写个人 `QuestGroupSuites` 的依赖如何落到 Q1。先由用户决定高层合同，再确定 Java 接口、执行器、异常及补偿方案。本节仅同步已有 Q1 决议，不修改命令实现或 JLine/Picocli 配置。

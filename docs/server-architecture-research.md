@@ -28,9 +28,9 @@
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 与 F1** | 直接在调用线程修改 Inventory 的旧规则被 R2 覆盖；**F1 已决定 Shell 等待真实业务完成再产生退出状态**，只允许外部交互线程等待，游戏执行域间禁止阻塞等待 | [CLI/库存第 4.1、10.2、11 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–34 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–35 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–34 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件、S-F 失败即停止后续即时个人 Exec，以及个人 Exec 失败后不做状态恢复均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–35 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件、S-F 失败即停止后续即时个人 Exec，以及个人 Exec 失败后不做状态恢复均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ### 后续研究固定证据顺序（2026-11-04 用户要求）
 
@@ -1273,4 +1273,41 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 **实施难点（研究结论）**：要真正做到 S-F，个人 Exec 的先后顺序、执行完成与拒绝结果必须可靠可观察；上游“先把所有 Exec 异步 `submit()`，执行失败仅记日志”的机制无法实现。处理 World 后置动作时仍遵循 Q1/S2；混合动作涉及结果依赖时仍需新决策。用户没有授权同步等待 World、增加事务、引入恢复层或调度具体实现。
 
 **验证目标（非已执行测试）**：序列 `Success,Failure,Success` 中第三个从未开始；第一个副作用保留；Q1/F1 报告失败；重复解锁目标已满足与无效 Point ID 正确区别；正常 Quest `failExec` 的显式原版回滚不受“禁止自动补偿”的误伤。本次**无 Java/Gradle 改动，无 CI**。
+
+## 35. Quest 场景组的持久状态与共享 World 权威：多人参与冲突（2026-11-04）
+
+**范围与证据基准**：当前 `MeChen618/AstaPS/main@ac9a7e6cec900e4ced28ec5dc16ceda82cf7538d`；fork `RinoPaw/AstaPS/rino/refactor/jline4-shell` 六个关键 Java 文件的 blob SHA 与上游**逐项一致**。原版来源是 `RinoPaw/Genshin-Reverse/main@0b4596ed47eacfcb2ea65ddad7f1aea1c4e5bfce` 的原始 Global 7.1 Quest 解码。额外参考 `Grasscutters/Grasscutter/development` 作为**历史同类项目的源码，不是原版服务端**。
+
+### 35.1 原版证据，严格限制可推论内容
+
+- [Genshin-Reverse `genshinre/questbin.py`](https://github.com/RinoPaw/Genshin-Reverse/blob/main/genshinre/questbin.py) 对 Global 7.1 普通 Quest 记录有 `is_mp_block` 字段解析（原始 reader 的 presence bit 41），并恢复 `QUEST_EXEC_REGISTER_DYNAMIC_GROUP`（Exec ID 46）、`QUEST_EXEC_UNREGISTER_DYNAMIC_GROUP`（ID 47）及 `QUEST_EXEC_REGISTER_DYNAMIC_GROUP_ONLY`（ID 54）的类型身份。这证明**原版同版本资源拥有相应信息**；这些语义名经同版本数据位置对齐核验，不等于恢复了官方服务器运行代码。
+- **官方服务器未验证**：多人世界的 Quest 执行权属于房主、访客还是各自实例；`isMpBlock` 精确限制的任务场景及效果；两个玩家不同 quest group suite 的冲突处理；场景更新结果是否成为 Quest 完成屏障。**不能把 AstaPS 房主逻辑标为“原版如此”**。
+
+### 35.2 上游真实数据流与状态所有权
+
+1. [GameMainQuest](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameMainQuest.java) 是 Morphia `@Entity("quests")`，有 `ownerUid`，直接包含 `List<QuestGroupSuite>` 持久内容，属于个人 UID 的主任务状态；而 [World](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/World.java) 拥有共享的 `scenes`，每个 [Scene](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/Scene.java) 内有玩家列表、ScriptManager、实际场景组和实体。
+2. [ExecRegisterDynamicGroup](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecRegisterDynamicGroup.java) 在当前玩家所在 World 的指定 Scene `loadDynamicGroup`，得到 `suiteId` 后**直接**对当前 UID 主任务的 `questGroupSuites.add`；[ExecUnregisterDynamicGroup](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecUnregisterDynamicGroup.java) 则对**当前 Scene**执行 World 卸载，成功后 `removeIf` 删除个人记录。两者不对称：前者使用传入 scene ID，后者使用当前场景 ID。处理器内部没有显式“房主/访客”权限检查。
+3. [SceneScriptManager.refreshGroupSuite(group,suite,quest)](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/scripts/SceneScriptManager.java) 刷新 World 组后通过 `rememberQuestGroupSuite` 更新 `quest.getMainQuest().getQuestGroupSuites()`，随后 `quest.save()`。这里**从 Scene 业务写入了 UID 持久状态**，且与将来的 S2/R2 唯一写者边界冲突。[SceneQuestSuitePersistenceTest](https://github.com/MeChen618/AstaPS/blob/main/src/test/java/emu/grasscutter/scripts/SceneQuestSuitePersistenceTest.java) 已测试单一 MainQuest 的同一 `(scene,group)` 最后套件覆盖、重复设置幂等与 suite 0 清空，但没有覆盖玩家之间的争用。
+4. [HandlerEnterSceneDoneReq](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/packet/recv/HandlerEnterSceneDoneReq.java) 对**进入场景的当前 player** 调用 `player.getQuestManager().getSceneGroupSuite(player.getSceneId())`，再对 `player.getScene().loadGroupForQuest(questGroupSuites)`；该路径**没有限制请求玩家必须是 World Host**。在多人 `World` 的共享 `Scene` 中，访客的个人持久组配置也可能更新同一个 World 的场景组。这是代码路径直接暴露的**跨 UID 共享世界冲突风险**，但尚未通过两人实机复现特定 group 互相覆盖。
+5. [QuestManager.getSceneGroupSuite](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestManager.java) 只收集状态**不是 `PARENT_QUEST_STATE_FINISHED`** 的主任务记录；[GameQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 可以先完成父任务，再异步提交 `FinishExec`。如果 FinishExec 所写的 suite 需要在重进场景后保留，就可能被恢复过滤器忽略；**是否有具体原版任务依赖这一种最终状态仍需逐任务核证**。
+6. 同一玩家并行运行的多个 MainQuest 也可能为同一 `(scene,group)` 保留不同 suite，`QuestManager.getSceneGroupSuite` 跨主任务展平时**没有定义冲突优先级或统一去重**；所以即使仅允许房主影响共享世界，也需要检查有无**同 UID 跨主任务冲突**。目前只证实数据结构**允许冲突**，没有证明实际 7.1 任务资源必然会生成某一冲突样本。
+7. [MainQuestData.SubQuestData.isMpBlock](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/data/binout/MainQuestData.java) 在上游资源模型中存在；但 `QuestData.applyFrom` 没有把它变成可执行限制，按全项目代码搜索尚未找到对该字段的调用。因而不能宣称 AstaPS 已执行原版多人任务阻止规则，也不应凭名称就推断官方规则。
+8. 上游**内部已经出现一致性更强的局部先例**：[LiyueSceneGroupRecovery.activeMain](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/LiyueSceneGroupRecovery.java) 只查当前 World Host 的主任务；[DailyTaskGroupLifecycle.owner](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/dailytask/DailyTaskGroupLifecycle.java) 要求 UID Manager 属于 World Host 才允许驱动委托组。两者均不能自动证明通用 Quest 的选择，只说明**上游已有“房主决定共享场景阶段”的可复用经验**。
+
+### 35.3 同类项目参照的边界
+
+[Grasscutters/Grasscutter 的历史开发分支](https://github.com/Grasscutters/Grasscutter/tree/development/src/main/java/emu/grasscutter/game/quest/exec) 同样存在 `ExecRegisterDynamicGroup` 从 Scene 获得 suite 后直接写入 `quest.getMainQuest().getQuestGroupSuites()`，`ExecUnregisterDynamicGroup` 则先注销 Scene 再删除个人记录；[Scene.loadGroupForQuest](https://github.com/Grasscutters/Grasscutter/blob/development/src/main/java/emu/grasscutter/game/world/Scene.java) 也直接恢复 Scene 对应 suite。**这验证了耦合设计的历史来源**，不足以证明共享世界的冲突已被其他成熟项目解决；继承相同代码不是独立正确性证据。其他独立同类项目若有可验证的成功实现，再另行比较。
+
+### 35.4 需用户先决定的高层规则（尚未批准）
+
+**当前最重要的首个选择是：多人 World 的 Quest 驱动场景阶段，由谁具有最终决定权？**
+
+- **W-H（World Host）**：共享 Scene 的 Quest group suite 以房主任务进度为权威。访客仍拥有自己的 UID Quest/Inventory 数据，但**不能把自己家世界的任务场景覆盖到房主的 World**。是否在访客回到自己的 World 后执行其尚未应用的动作、联机时是否允许个人 Quest 继续完成以及如何反馈，仍需另行决定。优点是与 World 单一模拟和当前房主专属剧情/委托机制一致。
+- **W-P（多参与玩家）**：同一 World 接受多个玩家 Quest 对 group suite 的修改；必须显式设计不同玩家对同一 Group 的权限、先后次序、离开时恢复及冲突可见性。也可能需要每玩家的可见状态/独立实体实例，成本明显更高。不得凭当前 `HandlerEnterSceneDoneReq` 的无条件调用，就认定这是原版认可的多人行为。
+
+**仅在上述所有权确定后**，再决定 **G-C**：某个混合 World→UID Exec 必须得到 World 实际执行成功的回执，才允许推进个人记录或把它算入 Q1；还是 **G-D**：UID 先记录期望状态，World 后续独立应用、允许实际场景仍未生效。这里两个方向都**尚未批准**，不能用 `S-F` 或 `X1` 自动替用户选定。UID/World 执行域间**不得同步阻塞等待**（已批准 R2/S2）；跨域等待需要显式非阻塞协议，但具体设计也未获批准。
+
+**验证矩阵（仅研究）**：房主和访客分别存在相反 suite 记录时双方先后进入；同 UID 两条主任务有相反 suite 时的选择；主任务刚 FINISHED 但 FinishExec 写 group suite 的重进场景；World 操作返回失败后 UID `QuestGroupSuites` 是否仍已修改；访客离开后的 Scene 复原；World 切换/脚本未初始化/组已消失时个人 Exec 结果。**未执行运行时实机测试**。
+
+**当前工程状态**：只做源码比较与正式研究记录；没有修改 Java、插件、Gradle、Scene、运行模型或资源，没有运行 CI。W-H/W-P 与 G-C/G-D 仍须用户明确批准。
 

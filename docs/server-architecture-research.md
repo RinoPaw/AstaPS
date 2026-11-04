@@ -21,15 +21,16 @@
 | **B1：World 战斗运行态** | 已正式选择：World 权威管理活动角色实时 HP、能量、战斗属性和动态效果；Player 持有等级、天赋、升阶、装备关系等个人长期资料及其必要的持久恢复信息 | 第 18–19 节 |
 | **C1：本分支伤害计算策略** | **本重构分支暂时保留客户端计算主要攻击伤害、World 校验并应用**；不在本阶段实施全量服务端伤害公式或自动切换 C2。后续若要改为 C2，须单独决策与原版 7.1 验证 | 第 20.3 节 |
 | **Q1：Quest 个人业务完成边界** | UID/R2 完成任务状态、即时个人 Exec 与奖励发放尝试后，才可报告成功；QR3 允许部分奖励，X1 要求即时个人 Exec 全部成功；个人 Exec 失败后不恢复既有状态/副作用（第 31 节）。**原版 7.1 资源/服务端边界见第 32 节**；跨域依赖与全拒绝奖励仍待定 | 第 25–32 节 |
-| **X1：即时个人 Exec 必须成功** | 正常 Quest 完成路径的即时个人 FinishExec 必须实际成功，才能报告 Quest 成功；失败如实报告。用户后续决定：**对已发生的任务状态和个人副作用不做恢复处理**，不回滚、不自动补偿/重试；是否停止后续动作等执行顺序仍待定 | 第 30–31 节 |
+| **X1：即时个人 Exec 必须成功** | 正常 Quest 完成路径的即时个人 FinishExec 必须实际成功，才能报告 Quest 成功；失败如实报告。**S-F：首个即时个人 Exec 失败后停止后续尚未执行的即时个人 Exec**；既有状态/副作用不恢复，不回滚、不自动补偿或重试 | 第 30–34 节 |
+| **S-F：即时个人 Exec 失败即停止** | 按本次 Quest 即时个人 FinishExec 的顺序执行；首个未成功的 Exec 后，不再执行剩余即时个人 Exec；Q1/X1 返回失败，已发生状态/副作用原样保留。World 后置、混合依赖、Begin/FailExec 不自动套用 | 第 34 节 |
 | **QR3：奖励容许部分发放** | Quest 奖励可部分交付，不强制完整奖励作为任务成功条件。未批准补发、欠账持久化、回滚；实际接受情况与个人 Exec 的失败结果必须区分 | 第 26.3、27 节 |
 | **Inventory 操作语义：Remove / Consume** | 已批准**区分清理与消耗**：删除/清理以目标已不存在为成功条件、可幂等；扣除指定数量采用 `consume` 一类显式操作，数量不足应能表达业务拒绝。**具体 API 名称、签名、迁移策略未批准** | 第 29 节 |
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 与 F1** | 直接在调用线程修改 Inventory 的旧规则被 R2 覆盖；**F1 已决定 Shell 等待真实业务完成再产生退出状态**，只允许外部交互线程等待，游戏执行域间禁止阻塞等待 | [CLI/库存第 4.1、10.2、11 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–33 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–34 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–33 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件及个人 Exec 失败后不做状态恢复均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–34 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件、S-F 失败即停止后续即时个人 Exec，以及个人 Exec 失败后不做状态恢复均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ### 后续研究固定证据顺序（2026-11-04 用户要求）
 
@@ -1234,18 +1235,42 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 - [ExecRegisterDynamicGroup](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecRegisterDynamicGroup.java) 先在 World/Scene `loadDynamicGroup` 获得 `suiteId`，再写入 UID 主任务 `QuestGroupSuites`；[ExecUnregisterDynamicGroup](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecUnregisterDynamicGroup.java) 先执行 `Scene.unregisterDynamicGroup`，成功后才移除 UID 套件记录。两者均为 World→UID 的**真实结果依赖**，不能凭“后置 World 异步即可”假装个人状态已正确更新。
 - [Scene.unregisterDynamicGroup](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/Scene.java) 在找不到指定 ScriptGroup 时返回 false，`ExecUnregisterDynamicGroup` 随后**跳过**个人 `QuestGroupSuites` 的删除。这个 false 有可能表示资源缺失，也可能出现在其他情况下；不能未经查证将其统一当成“成功清理”或直接以自动回滚处理。**World 依赖如何影响 Q1 完成条件继续由用户决定**。
 
-### 33.4 仍未决定的高层执行顺序问题：X1 遇到第一个失败后怎么办
+### 33.4 历史候选（后续第 34 节已正式选定 S-F）：X1 遇到第一个失败后怎么办
 
 [GameQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 使用 `forEach` 投递每个 `FinishExec`；[QuestSystem.triggerExec](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestSystem.java) 把每个处理器提交到静态 `QuestManager.eventExecutor`，处理器返回 false 只写 debug。**上游现状是所有 Exec 均会被投递，不会因先前 Exec 的业务失败而短路**；异步任务异常被 `ExecutorService.submit` 对应 Future 保存，旧代码没有读取 Future。原版服务端是否短路**未验证**。
 
-在已定 **X1（即时个人 Exec 全部成功才报告 Quest 成功）+ 失败后不恢复既有状态/副作用** 下，有两种**尚未选择**的业务语义：
+在已定 **X1（即时个人 Exec 全部成功才报告 Quest 成功）+ 失败后不恢复既有状态/副作用** 下，原有两种候选已由用户在第 34 节**正式选择 S-F**；下列说明仅保留历史比较：
 
 - **S-F：首次个人 Exec 失败后停止其余尚未执行的即时个人 Exec**，报告失败，保留以前已经发生的修改。这减少失败后新增副作用，但可能使部分独立任务标志不更新。
 - **S-A：继续本轮剩余即时个人 Exec，最后汇总是否有失败**，只要有失败便报告失败，保留全部实际修改。这更接近当前 AstaPS 全部投递的行为，但会在已经知道本轮无法满足 X1 时继续产生副作用。
 
-**特别限定**：尚未确定正常 `FailExec`、World 后置效果、跨域依赖是否与个人 `FinishExec` 使用相同短路规则；用户此前的“不处理”仅批准**不做事后恢复**，绝不预先批准继续/中止动作。不要自行引入事务、补偿或新队列来回避决策。
+**特别限定**：后续第 34 节已选定**即时个人 FinishExec 按 S-F 短路**；正常 `FailExec`、World 后置效果、跨域依赖是否采用相同规则仍未决定；用户此前的“不处理”仅批准**不做事后恢复**。不得自行引入事务、补偿或新队列。
 
 **可核查测试缺口**：上游 [QuestCommandTest](https://github.com/MeChen618/AstaPS/blob/main/src/test/java/emu/grasscutter/command/commands/QuestCommandTest.java) 当前只测 Quest 列表/可读文本，未断言正常 `quest finish` 的 Exec 结果与 F1 Shell 回执；`PlayerProgressManagerTransPointStateTest` 测状态转移与发奖去重，未覆盖 Quest Exec 对重复解锁的 X1 解释。未来对应的原位特征测试应分别建立，不能用修改原有测试掩盖 X1 尚未实现的事实。
 
-**执行状态**：此节为原版与上游的新源码审计，不批准 S-F/S-A、World/UID 协调策略或具体 Java API；未改 Java/Gradle、未运行 CI。
+**执行状态**：此节为原版与上游的源码审计；第 34 节正式选择 S-F，其余 World/UID 协调策略与具体 Java API 仍未授权；未改 Java/Gradle、未运行 CI。
+
+## 34. S-F 决议：首个即时个人 Exec 失败后停止（2026-11-04）
+
+**用户正式选择 S-F（回复“F”）**：正常 Quest 完成路径中，按照配置动作顺序处理本次属于 UID/R2 的即时个人 `FinishExec`。**首个即时个人 Exec 未实际成功，即停止本次剩余尚未执行的即时个人 Exec，不再尝试它们，并向 Q1/X1 返回失败**。已经执行过的动作及其个人副作用**保持原样**，不回滚、不自动重试或补偿（第 31 节）。**S-A（失败后继续全部个人 Exec）不采用**。这是 Quest 完成的**业务合同**，不是提前指定循环代码、Future 或调度模型。
+
+### 34.1 原版 7.1 / 上游 / fork 复核
+
+- **原版 7.1**：[原版 Quest 资源及 native 解码证据](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/windows-x64/analyses/quest-extraction/README.md)确认 full-Quest 有 `finishExec` 数组，`35101` 有明确数据配置的 `TEAM_DEAD -> ROLLBACK_QUEST(35100)`；这些证明动作及配置来源，**不能证明官方服务器的动作失败短路策略**。原版官方服务端是否 S-F **未验证**。当前 S-F 是用户选择的 AstaPS 重构语义，不冒充原版。
+- **上游 `MeChen618/AstaPS/main@ac9a7e6`**：[GameQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 使用 `getFinishExec().forEach(e -> triggerExec(...))`，先将 Quest 状态设为 `FINISHED`，还可能先完成父任务；[QuestSystem.triggerExec](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestSystem.java) 为每个动作单独 `eventExecutor.submit`，`execute()==false` 仅写 debug，无法阻断已投递的后续 Exec；缺少 Handler 则跳过，没有 X1 成功回执。**上游目前不符合 S-F**。
+- **fork `RinoPaw/AstaPS/rino/refactor/jline4-shell`**：截至本次研究该分支的 Quest Java 与上游仍一致，**尚未实际实现 S-F**；本轮仅记录决议。
+
+### 34.2 已确定的规则与非授权范围
+
+| 场景 | S-F 已决定的含义 | 未决定或独立合同 |
+| --- | --- | --- |
+| 第一个即时个人 FinishExec 成功，第二个失败，第三个尚未执行 | 第一个效果保留；第二个失败如实报告；**第三个不执行**；Quest Q1 不可宣告成功 | 未定义特殊补偿/错误存档，也没有授权修改任务已写状态 |
+| 第一个即时个人 FinishExec 已经是业务上完成的目标状态 | **需能区分状态目标已满足与真正失败**，只有根据最终合法合同判为失败才触发 S-F；例如已解锁 Point 返回旧 `false` 不足以证明业务失败 | 对解锁/清理等每种动作的精确 API 与成功判定还待设计，不直接修改所有 `boolean` |
+| 未注册 Handler、程序异常、明确业务拒绝 | 不能算“该动作成功”；不得继续后续即时个人 Exec 或报告 X1 业务成功 | 失败信息的结构、异常具体传播和显示形式仍未批准 |
+| 独立 World 后置 Lua / Scene 事件 | S-F **只冻结即时个人 FinishExec 的后续执行**；不自动撤回已经安排的 World 动作 | World 后置效果的失败/取消/排队、混合 World→UID 动作的完成依赖另议 |
+| `BeginExec`、`FailExec`、由当前任务启动的下一任务 | 本轮 S-F **不自动推广**至这些路径 | 如果需要统一执行策略，必须分别给出原版+上游证据，由用户选择 |
+
+**实施难点（研究结论）**：要真正做到 S-F，个人 Exec 的先后顺序、执行完成与拒绝结果必须可靠可观察；上游“先把所有 Exec 异步 `submit()`，执行失败仅记日志”的机制无法实现。处理 World 后置动作时仍遵循 Q1/S2；混合动作涉及结果依赖时仍需新决策。用户没有授权同步等待 World、增加事务、引入恢复层或调度具体实现。
+
+**验证目标（非已执行测试）**：序列 `Success,Failure,Success` 中第三个从未开始；第一个副作用保留；Q1/F1 报告失败；重复解锁目标已满足与无效 Point ID 正确区别；正常 Quest `failExec` 的显式原版回滚不受“禁止自动补偿”的误伤。本次**无 Java/Gradle 改动，无 CI**。
 

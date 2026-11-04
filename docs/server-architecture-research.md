@@ -27,9 +27,9 @@
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 与 F1** | 直接在调用线程修改 Inventory 的旧规则被 R2 覆盖；**F1 已决定 Shell 等待真实业务完成再产生退出状态**，只允许外部交互线程等待，游戏执行域间禁止阻塞等待 | [CLI/库存第 4.1、10.2、11 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–32 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–33 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–32 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件及个人 Exec 失败后不做状态恢复均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–33 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件及个人 Exec 失败后不做状态恢复均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ### 后续研究固定证据顺序（2026-11-04 用户要求）
 
@@ -1204,4 +1204,48 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 - 重要编号陷阱：原版 7.1 类型 ID `112 = BATCH_SET_QUEST_VAR`、`81 = SET_IS_GAME_TIME_LOCKED_V2`、`118 = SET_OPEN_STATE_V2`，但 AstaPS 的 `QuestExec` 枚举使用 **71 / 72 / 73** 对应这三个名称。原版 **71 / 72 / 73** 实际对齐为 `REFRESH_WORLD_QUEST_FLOW_GROUP_SUITE`、`HIDE_SCENE_POINT`、`UNHIDE_SCENE_POINT`。
 - **这还不能断言运行时错误**：AstaPS [QuestData.QuestExecParam](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/data/excels/quest/QuestData.java) 的 `type` 是以 Gson enum 名称从资源 JSON 读取；QuestSystem 根据该 enum 的**内部编号**注册并分派 Handler，且源码注释明确把末尾 71–73 称为 internal only。若资源以语义**字符串名称**给出，枚举内部编号不需要等于原版数值。**但未来如果直接导入原版整数 ID，应先明确映射，不可复用这些内部编号作为 7.1 原版 opcode。**
 - 当前最有价值的覆盖核验路径，是用**原版 7.1 原始资源**确认一段具体任务实际调用哪些 Exec，再检查 AstaPS 对应命名是否存在 Handler 及其返回/副作用，而非凭枚举注释或社区 JSON 补齐一堆未证明需要的兼容代码。
+
+## 33. X1 之下的幂等目标、Exec 完成回执和 R2/S2 跨域触发（2026-11-04）
+
+**研究限定**：重新读取 `MeChen618/AstaPS/main@ac9a7e6cec900e4ced28ec5dc16ceda82cf7538d` 的 Quest、PlayerProgress、Scene 和调用方；原版以 `RinoPaw/Genshin-Reverse/main@0b4596ed47eacfcb2ea65ddad7f1aea1c4e5bfce` 的 7.1 native Quest 与协议证据为准。本节补充事实和待决选项，**不新增业务决议**。
+
+### 33.1 原版 Global 7.1 已验证什么
+
+- 原版 full-Quest 数据保留有序的 `finishExec` 数组，7.1 客户端数据中存在 `QUEST_EXEC_UNLOCK_POINT`（ID 2），可验证任务确实通过执行动作驱动解锁。详见 [Genshin-Reverse Quest 原始资源研究](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/windows-x64/analyses/quest-extraction/README.md)。
+- 原版 7.1 Windows x64 EXE/metadata 确认 `UnlockTransPointReq` **CmdId 9369**、`ScenePointUnlockNotify` **CmdId 25567**；`ScenePointUnlockNotify` 中 field 4 是**锁定列表**、field 15 是**已解锁列表**。这证实客户端可观察的解锁状态应以正确状态通知呈现。见 [原版 7.1 协议实例研究](https://github.com/RinoPaw/Genshin-Reverse/blob/main/docs/case-studies/unlock-trans-point-7.1.md)。
+- 上述证据**不能证明官方服务器**在传送点早已解锁时，`QUEST_EXEC_UNLOCK_POINT` 返回何种内部业务值；不能证明官方服务器是依次短路还是继续执行整组 Exec，亦不能证明其跨 Player/World 线程调度方式。切勿用 AstaPS 的枚举名、布尔返回或 Java 代码代替官方服务器证据。
+
+### 33.2 最新上游同一个解锁动作在三种入口具有三种成功解释
+
+| 上游入口与可验证行为 | 对同一个“已解锁”状态的处理 | 对 X1 的意义 |
+| --- | --- | --- |
+| [ExecUnlockPoint.execute](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecUnlockPoint.java) | 直接返回 `PlayerProgressManager.unlockTransPoint(...)` 的 `boolean`；已解锁、没有解除临时强制锁定时，该函数返回 `false` | **Quest Exec 层当前把“没有发生状态变化”当作失败信号**；若盲目照搬到 X1，合法的重复解锁会使 Quest 无法报告成功 |
+| [HandlerUnlockTransPointReq.handle](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/packet/recv/HandlerUnlockTransPointReq.java) | 捕获 `unlocked` 用于日志，最后仍发送 `PacketUnlockTransPointRsp(RET_SUCC)`；普通路点入口还处理独立的秘境奖励 | **同一个底层 `false` 没有强迫该网络入口报告失败**。这里说明上游的 `boolean` 更接近“发生转移”，不能统一视为业务成功/失败 |
+| [StatueCommand.unlock](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/commands/StatueCommand.java) | 已解锁时用 `Already unlocked / refreshed` 文案，并补发客户端状态通知 | 上游 GM 已在业务层区分“新解锁”与“已有解锁”，但没有统一的 Quest Exec 成功合同 |
+
+[PlayerProgressManager.applyTransPointUnlock](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/player/PlayerProgressManager.java) 使用 `unlockedPoints.add(pointId)` 与 `forceLockedPoints.remove(pointId)` 分别计算 `newlyUnlocked`、`wasForceLocked` 和 `changed`；没有变化时 `unlockTransPoint` 尝试待发奖励后返回 false。在 [PlayerProgressManagerTransPointStateTest](https://github.com/MeChen618/AstaPS/blob/main/src/test/java/emu/grasscutter/game/player/PlayerProgressManagerTransPointStateTest.java) 中，已有用例验证第一次解锁、解除任务强制锁与发奖去重；**它们没有证明 Quest/X1 应把重复解锁视为失败**。
+
+**推论（未批准 API 方案）**：要满足 X1 的“动作目标完成”，至少需要区分 `changed=false` 的**状态已满足**和 `ScenePointEntry==null` 的**非法目标**。不能未经审计将底层 `unlockTransPoint` 所有返回 false 全改为 true，否则会改变其他调用方、解锁奖励去重和日志的含义。此前用户批准的幂等 Remove 与 Consume 语义分离，为此类“目标状态成功”提供了原则，但**未批准全局改写解锁业务接口**。
+
+### 33.3 同一 API 还直接跨越 UID 和 World
+
+- `PlayerProgressManager.unlockTransPoint` 先更改 UID 所属的已解锁集合、强制锁定集合、待发奖励记录，再向该玩家的 QuestManager 投递 `QUEST_CONTENT_UNLOCK_TRANS_POINT`，同时会**直接调用当前 Scene 的 ScriptManager.callEvent(EVENT_UNLOCK_TRANS_POINT)**，随后向该玩家发 `ScenePointUnlockNotify` 并保存。将来 R2 执行这段代码时，**直接调用 Scene Lua 是 S2 写入归属的风险点**。原版数据可确认解锁协议/Exec 类型，但未证明这种线程安排属于原版。
+- 现有 [ExecNotifyGroupLua](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecNotifyGroupLua.java) 在脚本尚未初始化或玩家不在目标 Scene 时，安排后续回调便 `return true`，之后回调可能因为玩家离开/任务状态变化而舍弃。它的 true 表达**已登记异步投递**，不是已完成 Scene Lua。符合 Q1 将**独立 World 后置效果**排除出 Quest 成功屏障，但不能把它归为 X1 必须立即完成的个人 Exec。
+- [ExecRegisterDynamicGroup](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecRegisterDynamicGroup.java) 先在 World/Scene `loadDynamicGroup` 获得 `suiteId`，再写入 UID 主任务 `QuestGroupSuites`；[ExecUnregisterDynamicGroup](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecUnregisterDynamicGroup.java) 先执行 `Scene.unregisterDynamicGroup`，成功后才移除 UID 套件记录。两者均为 World→UID 的**真实结果依赖**，不能凭“后置 World 异步即可”假装个人状态已正确更新。
+- [Scene.unregisterDynamicGroup](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/Scene.java) 在找不到指定 ScriptGroup 时返回 false，`ExecUnregisterDynamicGroup` 随后**跳过**个人 `QuestGroupSuites` 的删除。这个 false 有可能表示资源缺失，也可能出现在其他情况下；不能未经查证将其统一当成“成功清理”或直接以自动回滚处理。**World 依赖如何影响 Q1 完成条件继续由用户决定**。
+
+### 33.4 仍未决定的高层执行顺序问题：X1 遇到第一个失败后怎么办
+
+[GameQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 使用 `forEach` 投递每个 `FinishExec`；[QuestSystem.triggerExec](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestSystem.java) 把每个处理器提交到静态 `QuestManager.eventExecutor`，处理器返回 false 只写 debug。**上游现状是所有 Exec 均会被投递，不会因先前 Exec 的业务失败而短路**；异步任务异常被 `ExecutorService.submit` 对应 Future 保存，旧代码没有读取 Future。原版服务端是否短路**未验证**。
+
+在已定 **X1（即时个人 Exec 全部成功才报告 Quest 成功）+ 失败后不恢复既有状态/副作用** 下，有两种**尚未选择**的业务语义：
+
+- **S-F：首次个人 Exec 失败后停止其余尚未执行的即时个人 Exec**，报告失败，保留以前已经发生的修改。这减少失败后新增副作用，但可能使部分独立任务标志不更新。
+- **S-A：继续本轮剩余即时个人 Exec，最后汇总是否有失败**，只要有失败便报告失败，保留全部实际修改。这更接近当前 AstaPS 全部投递的行为，但会在已经知道本轮无法满足 X1 时继续产生副作用。
+
+**特别限定**：尚未确定正常 `FailExec`、World 后置效果、跨域依赖是否与个人 `FinishExec` 使用相同短路规则；用户此前的“不处理”仅批准**不做事后恢复**，绝不预先批准继续/中止动作。不要自行引入事务、补偿或新队列来回避决策。
+
+**可核查测试缺口**：上游 [QuestCommandTest](https://github.com/MeChen618/AstaPS/blob/main/src/test/java/emu/grasscutter/command/commands/QuestCommandTest.java) 当前只测 Quest 列表/可读文本，未断言正常 `quest finish` 的 Exec 结果与 F1 Shell 回执；`PlayerProgressManagerTransPointStateTest` 测状态转移与发奖去重，未覆盖 Quest Exec 对重复解锁的 X1 解释。未来对应的原位特征测试应分别建立，不能用修改原有测试掩盖 X1 尚未实现的事实。
+
+**执行状态**：此节为原版与上游的新源码审计，不批准 S-F/S-A、World/UID 协调策略或具体 Java API；未改 Java/Gradle、未运行 CI。
 

@@ -937,3 +937,50 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 4. **选最小首批迁移切口**：优先选择一个**只修改单 World 战斗态**的周期回调与一个**UID 任务事件**，分别验证 S2/R2 的目标拥有者执行，随后再进入 Quest↔Scene、延迟跨 World 传送等需多域协调的业务。不能简单把全服单线程池换成更多线程，也不能在 World 域里 `join/get` 等另一个域的结果。
 
 **尚未决定**：World/UID 执行器具体形态、定时任务身份和取消票据的接口、全服数据库 Watchdog 暂停如何作用于各域、Quest↔World 提交/失败/顺序语义、Session 世代标识与终止策略、重复任务延迟相位契约。所有事项继续以用户批准的架构决议为准；本轮只补文档，不修改 Java/Gradle、不额外建分支、不触发 CI。
+
+## 25. Quest 完成链路：UID 与 World 之间的真实业务完成语义（2026-11-04 源码审计）
+
+**状态：研究记录，不作新的架构决议。** S2（World）、R2（UID）、B1、C1、F1、P1、E1 继续有效。这里核对真实的 Quest→Inventory→World 依赖和完成状态，列出**需要用户决策**的高层行为问题。未批准 Java/Gradle/接口/线程/超时/持久化设计。
+
+### 25.1 真实调用链和写入者
+
+| 来源/阶段 | 已验证的上游源码行为 | 对 S2/R2 的待解决影响 |
+| --- | --- | --- |
+| World 产生任务事件 | [EntityMonster.onDeath](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/entity/EntityMonster.java) 给 Scene 中玩家逐个提交 MONSTER_DIE、KILL_MONSTER 和 CLEAR_GROUP_MONSTER；[Inventory](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/inventory/Inventory.java) 也产生 OBTAIN_ITEM 事件 | 怪物死亡事实由 World/S2 形成，玩家 Quest/Inventory 归 UID/R2；业务事实可跨域传递，但不能凭事件来自 World 就把该玩家 Quest 也交给 World 写 |
+| Quest 事件入队与判定 | [QuestManager.queueEvent](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestManager.java) 投给**全服**静态 Quest 线程；`triggerEvent` 查询条件并经 [GameMainQuest.tryFinishSubQuests](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameMainQuest.java) 调用 `GameQuest.finish()` | 全服 Quest 线程只排序提交给它的任务。其他直接写 Quest 的入口、Player Tick 和登录恢复并没有自动得到同 UID 顺序保障 |
+| 子任务、父任务、奖励 | [GameQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 仅在局部 `synchronized(this)` 内检查/设置已完成，其后的父任务结束、FinishExec、场景 Dungeon 事件、`gainItems` 发放及 `save()` 在锁外；[GameMainQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameMainQuest.java) 先设置完成并 `save()`，随后发父任务奖励 | 已完成字段、Inventory 奖励与 World 后置效果目前**不是一个不可分割的提交**；不能把互斥的 `setState` 解读为对整个奖励链原子执行。Quest 状态和 Inventory 发放属于 UID/R2，场景后置动作属于 World/S2 |
+| Quest Exec 分发 | [QuestSystem.triggerExec](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestSystem.java) 返回 `void`，把每个 Exec 的 `boolean` 结果交给 Quest 线程处理；失败只记 debug 日志，没有传回原 `GameQuest.finish()` | 上层最多知道 Exec 被调用了，无法由此推断 Exec 成功、相关 World 改动完成或失败应如何影响 Quest |
+| 具体 Exec 的归属混合 | [ExecDelPackItem](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecDelPackItem.java) 扣 Inventory；[ExecAddQuestProgress](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecAddQuestProgress.java) 修改个人进度；[ExecSetGameTime](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecSetGameTime.java) 修改 World 时间；[ExecRefreshGroupSuite](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecRefreshGroupSuite.java) 刷 Scene 组；[ExecGrantTrialAvatar](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecGrantTrialAvatar.java) 触及个人队伍与场景角色 | Exec 是**业务动作种类**，并非统一的执行域：可能只写 UID、只写 World，或需要两个域确认。将整个 Exec 列表“都搬到 R2”或者“都搬到 S2”均不满足已定所有权 |
+| 脚本通知可能延后到未来进入场景 | [ExecNotifyGroupLua](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecNotifyGroupLua.java) 注册脚本初始化和玩家进场门闩，随后向 `SceneScriptManager.callEvent` 提交通知；**`execute()` 在注册后就返回 true** | `true` 只能证明已接受安排；玩家未进入目标 Scene 时真正 Lua 事件尚未触发。若“Quest 完成”需要等待该 World 事件，则等待可能跨越任意长时间，甚至遭遇场景销毁 |
+| DB 写入/网络告知 | [DatabaseHelper.saveQuest](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/database/DatabaseHelper.java) 委托 `saveGameAsync`；子任务完成可能先发送 Quest 状态通知、之后再发奖励，父任务也先保存后给奖励 | `save()` 已调用不等于确认为持久存储成功；现有 P1 与奖励回执例外继续有效。新架构必须在“内存业务完成”“异步落盘”“客户端已收到反馈”三件事之间明确合同 |
+
+### 25.2 两个新增的顺序断点
+
+1. **条件重查另有独立线程池**：[QuestManager.checkQuestAlreadyFulfilled](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestManager.java) 在 `Grasscutter.getThreadPool().submit` 中读取 Inventory 数量、解锁传送点/区域与玩家等级，再调用 `queueEvent`。因此即使把静态 `QuestManager.eventExecutor` 换成按 UID 逻辑排队，条件的**读取与事件入队之间**仍可能跨越其他库存/解锁操作。应以“读取什么版本的玩家状态、何时评估条件”描述业务要求，不能简单假定 FIFO 足够。
+2. **Scene 门闩不携带执行线程所有权**：[SceneLoadCallbackGate](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/SceneLoadCallbackGate.java) 与 [ScenePlayerEntryGate](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/ScenePlayerEntryGate.java) 在条件已满足时**直接在调用线程执行回调**，条件随后满足时也在触发 `complete/enter` 的线程执行。它们能协调“等加载/等玩家进入”，但不提供 World/S2 或 UID/R2 执行保证。特别是 [ExecRefreshGroupSuite](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecRefreshGroupSuite.java) 的未初始化分支已经另投 Scene scheduler；若脚本已初始化，则 `apply` 直接在 Quest Exec 的调用线程执行，两个路径的写入上下文可能不同。未来的归属检查不能仅看函数名。
+
+另有现状：[QuestManager.onTick](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestManager.java) 从当前 World 直接读取游戏天数/小时；[GameQuest.start](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 也读取 World 游戏天数。S2/R2 下 **World 时间的观察值应如何供 UID Quest 判定**属于独立读一致性问题；可以评估快照或有序请求，尚未批准做法。
+
+### 25.3 “任务完成”究竟承诺什么：交由用户决定
+
+在已有 F1（Shell 等待**真实业务完成**）下，必须区分 **Quest/Inventory 个人提交**、**World 剧情副作用**、**数据库持久确认** 和 **通知已投送**。由于 `ExecNotifyGroupLua` 可能要等玩家将来进入场景，“一直等待全部剧情实际播放”会在某些合法业务路径下没有有限完成时间。
+
+这至少有三种需要评估的**对外业务语义**，下表是可供用户选择/修改的选项，**本轮未选任何一项**：
+
+| 候选 | Quest / GM 报告完成的边界 | 优点 | 实际代价 |
+| --- | --- | --- | --- |
+| **Q1：个人提交完成** | Quest 状态、即时 UID Exec、约定的 Inventory 奖励已在 R2 内处理完成；World Exec 可单独排队并独立报告结局 | 不因等待玩家进入 Scene 而阻塞；玩家个人事务边界清晰 | “任务完成”不保证场景效果已生效，管理命令与脚本若依赖 World 结果，需要另定观察/失败语义 |
+| **Q2：必要 World 效果也完成** | 对本次 Quest 定义哪些 World 副作用属于必须完成，并在其应用后才给最终成功 | 对即时剧情/副本 GM 操作具有更强一致感 | 哪些效果必须等待、离线或目标 Scene 不出现怎么办、失败/超时如何区分，都必须明确；`ExecNotifyGroupLua` 不能无条件等 |
+| **Q3：分阶段业务结果** | 分开表示“UID 已提交”“World 效果完成/待触发/失败”等阶段，前台 Shell 对具体命令选择所需完成层次 | 不同命令可准确描述不同完成条件，可观察 Deferred Lua | 结果语义和测试维度更多；如随意为每条命令特判，会引入难维护的复杂性；需要先定义通用到何种程度 |
+
+以上候选关注**对外承诺**，不预先授权任何 Future 类型、跨域协议、任务追踪表或补偿机制。普通 MongoDB 写入不自动算作 F1 阻塞条件，既有 P1/奖励 PREPARED 例外维持。
+
+### 25.4 可以先验证而不做架构决定的事实
+
+- 同一 Quest 由 World 怪物死亡和 GM/任务脚本相继完成：观察任务状态、父子奖励、实际库存、FinishExec 与 Scene 事件顺序；区分源码可推断与测试才可证明的行为。
+- 同一 UID 在开始 Quest 后立即修改 Inventory/区域解锁：构造 `checkQuestAlreadyFulfilled` 的查询和 `queueEvent` 交错，验证条件观察时间。
+- 一次 ExecDelPackItem 与一次 ExecRefreshGroupSuite：确认 Quest 状态与 UID 修改的业务结果，以及脚本已初始化/未初始化时 Scene 写入时点。
+- ExecNotifyGroupLua 指向暂时未进入的场景：检查“已安排”“待进场”“已调用 Lua”确实是三个不同阶段；旧 World/Scene 销毁后不得对新的 World 错写。
+- 两名不同 UID 同时完成不同任务、同 UID 同一任务多次触发、异常 Exec/插件取消与数据库不可用：逐项记录当前行为，不臆造“已经精确一次”或自动回滚保证。
+
+**本节仅记录上游事实和 Q1/Q2/Q3 待选选项，尚未选迁移顺序、跨域协议、错误恢复或业务成功条件。** 测试/实施前需用户决定；不改变当前 Java、构建、运行模式、插件 API 或数据库结构。不因研究文档运行 CI。

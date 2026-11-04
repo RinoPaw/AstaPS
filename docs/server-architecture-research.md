@@ -20,15 +20,16 @@
 | **R2：Player 执行域** | **以 UID 为单位**序列化玩家个人状态；不同玩家可并行，Inventory 不随当前 World 改变执行归属 | 第 14–16 节 |
 | **B1：World 战斗运行态** | 已正式选择：World 权威管理活动角色实时 HP、能量、战斗属性和动态效果；Player 持有等级、天赋、升阶、装备关系等个人长期资料及其必要的持久恢复信息 | 第 18–19 节 |
 | **C1：本分支伤害计算策略** | **本重构分支暂时保留客户端计算主要攻击伤害、World 校验并应用**；不在本阶段实施全量服务端伤害公式或自动切换 C2。后续若要改为 C2，须单独决策与原版 7.1 验证 | 第 20.3 节 |
-| **Q1：Quest 个人业务完成边界** | 在 UID/R2 完成任务状态、即时个人 Exec 与约定的奖励发放尝试后报告业务完成；**奖励允许按 QR3 部分成功**。不等待独立 World 剧情效果；个人 Exec 失败、混合域依赖及全拒绝情境仍未决 | 第 25–27 节 |
+| **Q1：Quest 个人业务完成边界** | 在 UID/R2 完成任务状态、即时个人 Exec 与约定的奖励发放尝试后，才可报告业务成功；**QR3 允许部分奖励，X1 要求即时个人 Exec 全部成功**。不等待独立 World 剧情效果；失败后的状态处置、混合域依赖和全数奖励拒绝仍待定 | 第 25–30 节 |
+| **X1：即时个人 Exec 必须成功** | 正常 Quest 完成路径的即时个人 FinishExec 必须实际执行并成功，方可报告本次 Quest 成功；失败不应被日志或队列接纳吞掉。失败后任务状态、既有副作用、回滚/重试、是否停止后续动作仍待用户决定 | 第 30 节 |
 | **QR3：奖励容许部分发放** | Quest 奖励可部分交付，不强制完整奖励作为任务成功条件。未批准补发、欠账持久化、回滚；实际接受情况与个人 Exec 的失败结果必须区分 | 第 26.3、27 节 |
 | **Inventory 操作语义：Remove / Consume** | 已批准**区分清理与消耗**：删除/清理以目标已不存在为成功条件、可幂等；扣除指定数量采用 `consume` 一类显式操作，数量不足应能表达业务拒绝。**具体 API 名称、签名、迁移策略未批准** | 第 29 节 |
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 与 F1** | 直接在调用线程修改 Inventory 的旧规则被 R2 覆盖；**F1 已决定 Shell 等待真实业务完成再产生退出状态**，只允许外部交互线程等待，游戏执行域间禁止阻塞等待 | [CLI/库存第 4.1、10.2、11 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–29 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–30 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–29 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–30 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ## 1. 先定义系统实际是什么
 
@@ -976,7 +977,7 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 | **Q2：必要 World 效果也完成** | 对本次 Quest 定义哪些 World 副作用属于必须完成，并在其应用后才给最终成功 | 对即时剧情/副本 GM 操作具有更强一致感 | 哪些效果必须等待、离线或目标 Scene 不出现怎么办、失败/超时如何区分，都必须明确；`ExecNotifyGroupLua` 不能无条件等 |
 | **Q3：分阶段业务结果** | 分开表示“UID 已提交”“World 效果完成/待触发/失败”等阶段，前台 Shell 对具体命令选择所需完成层次 | 不同命令可准确描述不同完成条件，可观察 Deferred Lua | 结果语义和测试维度更多；如随意为每条命令特判，会引入难维护的复杂性；需要先定义通用到何种程度 |
 
-**Q1 的适用边界，按 QR3 修订**：World 效果不进入 Quest 成功屏障，不能据此免除 World/S2 唯一写者规则；与 World 结果直接关联的个人记录、个人 Exec 失败仍需单独分析。已确认**部分奖励失败可以容忍**；全数奖励被拒、奖励定义缺失、玩家收到何种部分结果反馈仍未决定。Q1 不保证原子回滚、恰好一次、不受限地立即完成，也不授权 Future 类型、跨域协议、任务追踪表或补偿机制。普通 MongoDB 写入不自动算作 F1 阻塞条件，既有 P1/奖励 PREPARED 例外维持。
+**Q1 的适用边界，按 QR3、X1 修订**：World 效果不进入 Quest 成功屏障，不能据此免除 World/S2 唯一写者规则；与 World 结果直接关联的个人记录、个人 Exec 失败仍需单独分析。已确认**部分奖励失败可以容忍，但即时个人 Exec 必须全部成功（X1）**；全数奖励被拒、奖励定义缺失、玩家收到何种部分结果反馈仍未决定。Q1 不保证原子回滚、恰好一次、不受限地立即完成，也不授权 Future 类型、跨域协议、任务追踪表或补偿机制。普通 MongoDB 写入不自动算作 F1 阻塞条件，既有 P1/奖励 PREPARED 例外维持。
 
 ### 25.4 可以先验证而不做架构决定的事实
 
@@ -986,7 +987,7 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 - ExecNotifyGroupLua 指向暂时未进入的场景：检查“已安排”“待进场”“已调用 Lua”确实是三个不同阶段；旧 World/Scene 销毁后不得对新的 World 错写。
 - 两名不同 UID 同时完成不同任务、同 UID 同一任务多次触发、异常 Exec/插件取消与数据库不可用：逐项记录当前行为，不臆造“已经精确一次”或自动回滚保证。
 
-**本节确定 Q1，后续第 27 节又确定 QR3 允许部分奖励；全拒绝/奖励失效反馈、个人 Exec 失败、跨域协议及错误恢复仍未决。** 测试/实施前需用户决定；不改变当前 Java、构建、运行模式、插件 API 或数据库结构。不因研究文档运行 CI。
+**本节确定 Q1，后续第 27 节选 QR3 允许部分奖励，第 30 节又选 X1 要求即时个人 Exec 全部成功；全拒绝/奖励失效反馈、Exec 失败后的状态处置、跨域协议及错误恢复仍未决。** 测试/实施前需用户决定；不改变当前 Java、构建、运行模式、插件 API 或数据库结构。不因研究文档运行 CI。
 
 ## 26. Q1 的工程切入：全量 Quest Exec 直接调用点与奖励失败传播审计（2026-11-04）
 
@@ -1027,7 +1028,7 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 
 **验收建议**（无需先实机）：插件取消 `PlayerCompleteQuestEvent`、Quest 已完成再次 GM finish、子/父奖励容量不足、`useOnGain` 执行失败、`ExecDelPackItemBatch` 中途失败、World Exec 延迟触发、混合 `ExecRegisterDynamicGroup` 的 World 成功与 UID 记录更新；检查每个操作是否正确体现 Q1/F1、避免重复奖励及不同 UID 被全服锁串行。尚未设定任何新的业务结果类型、任务队列或恢复存储。
 
-**尚待用户决定**：奖励全数被拒及奖励定义缺失时的任务成功条件、部分奖励反馈；混合 Exec 的个人完成条件；即时个人 Exec 的失败处理与本次 Quest 的关系；是否纳入由奖励触发的后继 Quest；其他仍待定事项维持原状态。此次只更新研究文档，不修改源码、构建、分支、数据库或 CI。
+**尚待用户决定**：奖励全数被拒及奖励定义缺失时的任务成功条件、部分奖励反馈；混合 Exec 的个人完成条件；**X1 已明确即时个人 Exec 失败不允许报告 Quest 成功，但失败后的副作用与状态处置仍待定**；是否纳入由奖励触发的后继 Quest；其他仍待定事项维持原状态。此次只更新研究文档，不修改源码、构建、分支、数据库或 CI。
 
 ## 27. QR3 决议落地前的奖励结果证据与业务边界（2026-11-04）
 
@@ -1053,7 +1054,7 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 | World/Scene Lua 和个人 `QuestGroupSuites` 相互依赖 | Q1 不等待独立 World 剧情完成 | World 返回结果为个人记录前提时，是否视为即时个人业务依赖、如何协调与失败 |
 | 由发奖励触发下一项 Quest | QR3 只放宽**本次 Quest 奖励的交付完整性** | Q1 是否包括整个连锁后续 Quest（尚未选择），不可偷换成“一切任务队列已排空” |
 
-**研究优先级，非实施批准**：保留现有 `BEST_EFFORT` 的部分发奖能力，研究如何**不丢掉已有 InventoryAddResult 信息**，把“任务已完成、部分奖励被接受、哪些拒绝”供业务命令合理消费；优先记录父任务 `rewardId` 跳过与子任务逐项 `boolean` 丢失的路径。**不自动创建新的业务结果类型、额外持久化结构、统一 Exec 协调器或改写 Java**。下一项真正需要用户决定的重点是“个人 Exec 失败是否阻断 Quest 的 Q1 成功”，其次才是 UI/日志输出技术。
+**研究优先级，非实施批准**：保留现有 `BEST_EFFORT` 的部分发奖能力，研究如何**不丢掉已有 InventoryAddResult 信息**，把“任务已完成、部分奖励被接受、哪些拒绝”供业务命令合理消费；优先记录父任务 `rewardId` 跳过与子任务逐项 `boolean` 丢失的路径。**不自动创建新的业务结果类型、额外持久化结构、统一 Exec 协调器或改写 Java**。**下一项已决策 X1**：个人 Exec 失败阻断 Quest 的 Q1 成功报告；失败后的任务状态与部分副作用处置、UI/日志输出技术仍待用户选择。
 
 ## 28. QR3 的边界隔离与既有回归测试（2026-11-04 源码对照）
 
@@ -1076,7 +1077,7 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 - **奖励结果**：`InventoryAddResult` 的每项接纳/拒绝，以及 `useOnGain` 的 `EFFECT_APPLIED`；有多批次、多 `rewardId` 时，业务层是否汇总仍待决定。现有 `partiallyAccepted()` 只证明**单批次**至少有一项成功。
 - **命令承诺**：F1 不能再以“已经调用 `quest.finish()`”或“打印 Quest finished”作为 Q1 成功证据；但**部分奖励失败本身按 QR3 不再构成 Quest 必然失败**，不能把 `!allAccepted()` 简单映射为失败退出码。
 
-**用户保留的下一轮决定**：全数奖励拒绝的业务结果、`useOnGain` 类奖励失败是否与普通背包满等价、部分奖励结果的 UI/CLI/插件呈现方式、个人 Exec 失败规则及混合 World→UID 完成依赖。继续研究这些高层边界后才能批准代码层接口、流程顺序与异常处理。本轮没有修改 Java、测试代码或构建，不运行 CI。
+**用户保留的下一轮决定**：全数奖励拒绝的业务结果、`useOnGain` 类奖励失败是否与普通背包满等价、部分奖励结果的 UI/CLI/插件呈现方式、**X1 个人 Exec 失败后的任务状态与既有副作用处置**及混合 World→UID 完成依赖。继续研究这些高层边界后才能批准代码层接口、流程顺序与异常处理。本轮没有修改 Java、测试代码或构建，不运行 CI。
 
 ## 29. 库存 Remove 与 Consume 的语义边界（用户决定，2026-11-04）
 
@@ -1101,7 +1102,40 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 - 精确命名采用 `consume` / `consumeItem` / `payItems` 的哪一个、是复用已有内部实现还是改入口。
 - Remove 清理哪种目标（指定实例、全部 ItemId、任务指定量的残留），是否保留独立的部分清理操作；对“Remove”已选的幂等性质必须由**明确的目标状态**保证。
 - 旧 `removeItemById(id,count)` 的去向及哪些现有调用方实际是支付/清理；无须替尚未进入上游的兼容设计保留旧语义，但任何删除 API 调用点必须审计。
-- Quest 中每个 `DEL_PACK_ITEM` 类型如何根据原版验证归类；个人 Exec 失败选 X1/X2/X3 仍**完全未决**。QR3 只约束 Quest 的奖励部分交付。
+- Quest 中每个 `DEL_PACK_ITEM` 类型如何根据原版验证归类；个人 Exec 失败已正式选 **X1**；其业务状态/副作用失败恢复策略仍未决。QR3 只约束 Quest 的奖励部分交付。
 
 **执行状态**：此节是用户授权的语义决定 + 源码事实记录；未经用户后续选择，不改 Java API、执行器、存储、分支与构建，也未运行 CI。
+
+## 30. X1 决议：Quest 即时个人 Exec 必须成功（2026-11-04）
+
+**用户正式选择 X1**：在已经批准的 **Q1** 完成合同中，属于本次任务完成路径的**即时个人 Exec 必须实际执行且全部成功**，才能对外报告 Quest 业务成功；已选 **QR3** 对**奖励**的部分交付容忍不扩大到个人 Exec。**明确不选择 X2（个人 Exec 失败照常成功）与 X3（引入必要/可选等级）**。这项决议确定了**成功的必要条件**，没有授权自动回滚、再次执行、忽略异常或改变已写存档。
+
+### 30.1 上游源码怎样违反 X1
+
+1. [GameQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 在 `PlayerCompleteQuestEvent` 许可后先写 `state=QUEST_STATE_FINISHED`，随后父任务可能先写完成、通知、调用 `save()`、发奖及启动下个 Quest，然后才迭代 `getFinishExec()` 进入 [QuestSystem.triggerExec](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestSystem.java)。这使**“已提交完成状态/已触发奖励”**早于个人 Exec 成功已知的时刻。
+2. `QuestSystem.triggerExec` 返回 `void`，把 Exec 异步提交到全服 `QuestManager.eventExecutor`；执行返回 `false` 时仅记录 debug，调用者无法知道；**未找到 Handler** 时也只记录 debug 并跳过。Java `ExecutorService.submit` 的任务异常会进入返回的 `Future`，但当前调用方不持有该 Future。无法给 X1 提供可靠的成功证明。
+3. [QuestExecHandler.execute](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/handlers/QuestExecHandler.java) 明确返回 `boolean`，因此业务拒绝本来就是当前接口允许的结果。例如 [ExecDelPackItemBatch](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecDelPackItemBatch.java) 会先消耗部分材料，再发现缺失返回 false；[ExecBatchSetQuestVar](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecBatchSetQuestVar.java) 会逐个修改变量，途中参数解析失败/索引错误可能留下一部分已修改的变量。这些都是 **X1 失败信号与部分副作用同时存在** 的情形。
+4. 现有 [QuestManager.eventExecutor](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestManager.java) 是全服单线程、容量 1000 的队列，饱和时 `CallerRunsPolicy` 允许从调用者线程运行，使“都从同一任务执行器提交”不能证明 UID 操作只有唯一写者。X1 的成功判断必须与既定 **R2** 归属相容，不应建立全服同步的等待屏障。
+5. [QuestCommand.Finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/commands/QuestCommand.java) 找到 Quest 后立即 `quest.finish()` 并打印“finished”，未区分插件取消、重复操作及个人 Exec 的失败。与 X1+Q1+F1 均不相容。
+
+### 30.2 X1 的精确定义与尚未授予的能力
+
+| 范围 | 已正式批准 | **仍由用户决定** |
+| --- | --- | --- |
+| **本次 Quest 正常完成** | 所有**即时、个人状态归属**的 `FinishExec` 必须实际执行且成功，才能报告本次 Quest 成功；不可仅凭“已投递”或“没有抛出异常”断言成功 | 失败时任务是否维持未完成、标记独立失败状态或以其他方式阻止完成提交；是否先验证再写状态 |
+| **已经发生的副作用** | **不允许在即时个人 Exec 失败时谎报成功** | 已经扣除物品、改变任务变量、给奖励、写 Quest 状态或发客户端包后，是否停止后续动作、能否补偿/回滚、如何避免重复收益或重复扣除 |
+| **异常 / 无 Handler** | 要获得 X1 成功结果必须能确知动作实际成功；未执行、抛出异常、返回 false 时不能声称“全部个人 Exec 成功” | 是否把程序错误与业务拒绝分不同外部结果、是否停止执行、诊断及上报方式 |
+| **World / 混合域** | Q1 不等待独立 World/Scene/Lua 后置效果；S2/R2 状态所有权不变 | 动作如 `ExecRegisterDynamicGroup` 先在 World 取 `suiteId` 才能保存个人 `QuestGroupSuites` 时，怎样定义必要依赖、归属协调以及等待范围 |
+| **BeginExec / FailExec / 后继 Quest** | X1 确定本次 Quest **正常完成的即时个人 FinishExec** 条件；QR3 继续只管奖励 | 开始任务、失败任务、连锁后继 Quest 的相应 Exec 成功/失败合同暂未从此自动推出 |
+| **数据库 / 通知 / Shell** | 已选 P1 的个人异步顺序写入及奖励回执特例不变；F1 前台 Shell 必须等待真实业务结果，不能将 X1 个人执行失败报告为成功 | 具体 Java 返回类型、Future/回调、持久失败的反馈方案、消息结构、异常传播与重试机制 |
+
+**特别说明**：X1 不是“所有 Quest Exec 都必须成功”。World 后置 Exec 根据 Q1 可独立处理，其最终成功不构成本次个人 Quest 完成屏障；对跨域混合 Exec 的具体拆分必须另审。此前的“Remove/Consume 分离”也不等于删除任务物品从此必定成功：幂等 Remove 有自己明确的目标状态，而 Consume 仍可以合法拒绝余额不足。
+
+### 30.3 后续验证重点（研究，非技术设计批准）
+
+- `GameQuest.finish` 进入时插件取消、任务原本已完成、子任务 FinishExec 多个同一 UID、父任务先发奖的顺序与 X1 的承诺是否匹配。
+- `ExecDelPackItemBatch` 的“第一项已成功、第二项失败”、`ExecBatchSetQuestVar` 的“前一变量已写、后续非法参数”、未注册 Exec Handler，以及 `ExecutorService.submit` 内抛异常是否使调用者仍误报成功。
+- 同 UID / 不同 UID 并发完成任务、World 无法即时应用 Scene 效果、后续 Quest 启动，均需在遵守 Q1/R2/S2 的情况下检查实际因果顺序。
+
+**工程状态**：X1 仅作为正式业务成功条件写入决议文档；没有更改 Java / Gradle / 测试代码，未选失败状态机、回滚/重试/补偿协议、接口、执行器、定时/存储方案。CI 在本次纯文档提交阶段不运行；需要用户测试和提交上游前不得省略。
 

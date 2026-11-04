@@ -712,11 +712,11 @@ long getGuid();
 
 ### 11.6 Quest 命令的 Q1 + QR3 + X1 已选完成合同（2026-11-04）
 
-**Q1 已由用户正式选择**，详见 [全局架构第 25–26 节](server-architecture-research.md)。当 `quest finish` 等命令承诺“完成任务”时，Shell/F1 等待的是 **该 UID 的任务状态、即时个人 Exec 按已选 X1 **全部实际执行成功**、约定个人奖励的本次发放尝试完成**。**QR3 已明确允许奖励部分被拒绝而 Quest 仍完成**；独立 World/Scene/Lua 后置效果不在 Quest 的成功屏障中；不能因已入队、`state=FINISHED` 或输出“finished”就推断这些个人业务均成功。普通异步 MongoDB 落盘仍遵循 P1，奖励回执保留既有必要确认例外。
+**Q1 已由用户正式选择**，详见 [全局架构第 25–26 节](server-architecture-research.md)。当 `quest finish` 等命令承诺“完成任务”时，Shell/F1 等待的是 **该 UID 的任务状态已按业务处理、即时个人 Exec 按 X1 全部实际执行成功、约定个人奖励的本次发放尝试完成**。**QR3 已明确允许奖励部分被拒绝而 Quest 仍完成**；独立 World/Scene/Lua 后置效果不在 Quest 的成功屏障中；不能因已入队、`state=FINISHED` 或输出“finished”就推断这些个人业务均成功。普通异步 MongoDB 落盘仍遵循 P1，奖励回执保留既有必要确认例外。
 
 当前 [QuestCommand.Finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/commands/QuestCommand.java) 对 `GameQuest.finish(): void` 的调用后无条件发送完成文本，即使 `PlayerCompleteQuestEvent` 取消或 Quest 已完成；[QuestSystem.triggerExec](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestSystem.java) 异步处理个人/World 混合 Exec，失败结果不回传；[GameQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 忽略逐项 `gainItems` 的 `boolean`，父任务的 `Inventory.addItemParamDatas` 仍采用 `BEST_EFFORT` 且没有可观察返回值。因此 **Q1 尚未实现**，不能声称 Shell 现有退出码或消息已经遵守它。
 
-**已选 QR3 奖励边界**：允许部分发放，不强制回滚已接受物品、不自动欠账补发或新建恢复存储；**全部被拒、奖励定义缺失、use-on-gain 失败应否同等容忍及如何反馈**仍须用户决定。**X1 已选**：即时个人 `FinishExec` 只要有一个未成功，就不能向 Shell/F1 宣告本次 Quest 已成功；但失败后任务状态、已发生个人副作用如何处置仍未决。**未授权补充决议**：跨 World 同时写个人 `QuestGroupSuites` 的依赖如何落到 Q1。先由用户决定高层合同，再确定 Java 接口、执行器、异常及补偿方案。本节仅同步已有 Q1 决议，不修改命令实现或 JLine/Picocli 配置。
+**已选 QR3 奖励边界**：允许部分发放，不强制回滚已接受物品、不自动欠账补发或新建恢复存储；**全部被拒、奖励定义缺失、use-on-gain 失败应否同等容忍及如何反馈**仍须用户决定。**X1 已选**：即时个人 `FinishExec` 只要有一个未成功，就不能向 Shell/F1 宣告本次 Quest 已成功；**后续用户已经决定不处理失败后的既有状态与副作用**：不回滚、不补偿、不自动重试，详见全局架构第 31 节；失败仍需如实反馈。**未授权补充决议**：跨 World 同时写个人 `QuestGroupSuites` 的依赖如何落到 Q1。先由用户决定高层合同，再确定 Java 接口、执行器、异常及补偿方案。本节仅同步已有 Q1 决议，不修改命令实现或 JLine/Picocli 配置。
 
 ### 11.7 QR3 与 F1/Quest 输出接口的直接证据（2026-11-04）
 
@@ -726,9 +726,15 @@ long getGuid();
 
 ### 11.8 X1 对 Shell 命令成功条件的约束（2026-11-04）
 
-**X1 正式决议**见 [全局架构第 30 节](server-architecture-research.md)：当前 Quest **即时个人 FinishExec 必须实际执行成功**；QR3 的部分奖励容忍不适用于个人 Exec。于是 Shell/F1 不得将 `GameQuest.finish(): void` 返回、收到 `submit()` 或产生文本 “Quest finished” 当作可靠成功；个人 Exec 只返回 `false`、找不到个人 Exec Handler、异步异常、插件取消都不能被当作本次 Quest 已满足成功条件，具体 UI/退出状态类型、对已发生副作用的处理仍未决定。
+**X1 正式决议**见 [全局架构第 30 节](server-architecture-research.md)：当前 Quest **即时个人 FinishExec 必须实际执行成功**；QR3 的部分奖励容忍不适用于个人 Exec。于是 Shell/F1 不得将 `GameQuest.finish(): void` 返回、收到 `submit()` 或产生文本 “Quest finished” 当作可靠成功；个人 Exec 只返回 `false`、找不到个人 Exec Handler、异步异常、插件取消都不能被当作本次 Quest 已满足成功条件，具体 UI/退出状态类型仍未决定；**已明确不恢复既有状态/副作用**（全局架构第 31 节）。
 
-上游 `QuestCommand.Finish.run()` 现直接调用 `quest.finish()` 并发成功文案，因而**仍不符合 X1**。未来需能够把最终 Q1 个人业务结果反馈给 F1 Shell；技术实现无权自行决定采用 `Callable`、`Future`、事件回调、状态类型或新服务。**失败后是停留未完成、恢复到原状态、标记错误还是其他方式，仍交由用户决定**；不应仅为让 Shell 出现非零状态就直接更改 Quest 的持久状态。
+上游 `QuestCommand.Finish.run()` 现直接调用 `quest.finish()` 并发成功文案，因而**仍不符合 X1**。未来需能够把最终 Q1 个人业务结果反馈给 F1 Shell；技术实现无权自行决定采用 `Callable`、`Future`、事件回调、状态类型或新服务。**失败后既有任务状态与副作用保持原状**；不能仅为 Shell 产生非零状态而回滚、补偿或改写 Quest 的持久状态。正常路径任务何时提交、失败后是否继续执行后续 Exec 的顺序语义仍待决定。
 
 **范围限制**：Q1 不等待独立 World 后置剧情；X1 不自动扩展到 BeginExec、FailExec 或后继 Quest 的所有动作；未决定的混合 World/UID Exec 依赖需要独立审计。正常 `quest finish` 与仅伪造客户端已完成主任务标记的 `quest forcefinish` 不能混为同一个成功合同。
+
+### 11.9 X1 失败但保留已发生状态的 Shell 结果（2026-11-04）
+
+**用户已确定失败恢复策略：不处理已发生的 Quest 状态和个人副作用。** 具体含义见 [全局架构第 31 节](server-architecture-research.md)：如果本次即时个人 FinishExec 失败，Q1/X1 禁止报告 Quest 业务成功；但已修改的背包/Quest 变量/任务状态不回滚、不补偿、不自动重试。F1 Shell 必须能准确反映**命令没有达到成功合同**，即使客户端此前已经收到 `FINISHED` 通知。Shell 的失败结果本身不要求改变 Quest 的内存状态或存档状态。
+
+对当前 `quest finish` 的审计建议是区分**业务结果**与**已经发生的写入事实**；不应把旧的“输出 Quest finished”当作已完成 X1 的证明，也不应该为了新退出码而添加恢复/重试层。**仍待用户决定**：具体返回接口/错误类型、是否终止本次其余 Exec、混合 World→UID 依赖，以及全部奖励拒绝的处理。此轮未改命令代码、运行时或数据库。
 

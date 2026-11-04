@@ -710,10 +710,17 @@ long getGuid();
 
 **建议验收**：本地与两个 Web 会话交替更改默认目标；同一 Web 会话并发请求次序；Web 令牌过期/登出后的旧回调；条件执行中 Picocli 解析错误和 `give` 领域拒绝；多个 UID 同时执行但输出不串台；插件抑制输出不改变退出码；Ctrl+C/HTTP 断线与执行中操作的结果可查询性；Web 玩家列表在世界迁移同时高频读取。实施前只冻结必要的行为测试，**未授权新增 Java 实现、兼容接口、HTTP API 或额外持久集合**。
 
-### 11.6 Quest 命令的 Q1 已选完成合同（2026-11-04）
+### 11.6 Quest 命令的 Q1 + QR3 已选完成合同（2026-11-04）
 
-**Q1 已由用户正式选择**，详见 [全局架构第 25–26 节](server-architecture-research.md)。当 `quest finish` 等命令承诺“完成任务”时，Shell/F1 等待的是 **该 UID 的任务状态、即时个人 Exec、约定个人奖励实际按业务规则完成**。独立 World/Scene/Lua 后置效果不在 Quest 的成功屏障中；不能因已入队、`state=FINISHED` 或输出“finished”就推断这些个人业务均成功。普通异步 MongoDB 落盘仍遵循 P1，奖励回执保留既有必要确认例外。
+**Q1 已由用户正式选择**，详见 [全局架构第 25–26 节](server-architecture-research.md)。当 `quest finish` 等命令承诺“完成任务”时，Shell/F1 等待的是 **该 UID 的任务状态、即时个人 Exec 按待定的失败合同处理、约定个人奖励的本次发放尝试完成**。**QR3 已明确允许奖励部分被拒绝而 Quest 仍完成**；独立 World/Scene/Lua 后置效果不在 Quest 的成功屏障中；不能因已入队、`state=FINISHED` 或输出“finished”就推断这些个人业务均成功。普通异步 MongoDB 落盘仍遵循 P1，奖励回执保留既有必要确认例外。
 
 当前 [QuestCommand.Finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/commands/QuestCommand.java) 对 `GameQuest.finish(): void` 的调用后无条件发送完成文本，即使 `PlayerCompleteQuestEvent` 取消或 Quest 已完成；[QuestSystem.triggerExec](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestSystem.java) 异步处理个人/World 混合 Exec，失败结果不回传；[GameQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 忽略逐项 `gainItems` 的 `boolean`，父任务的 `Inventory.addItemParamDatas` 仍采用 `BEST_EFFORT` 且没有可观察返回值。因此 **Q1 尚未实现**，不能声称 Shell 现有退出码或消息已经遵守它。
 
-**未授权补充决议**：奖励被拒绝时是否拒绝整个 Quest、待补发或容许部分完成（QR1/QR2/QR3）；即时个人 Exec 的失败处理；跨 World 同时写个人 `QuestGroupSuites` 的依赖如何落到 Q1。先由用户决定高层合同，再确定 Java 接口、执行器、异常及补偿方案。本节仅同步已有 Q1 决议，不修改命令实现或 JLine/Picocli 配置。
+**已选 QR3 奖励边界**：允许部分发放，不强制回滚已接受物品、不自动欠账补发或新建恢复存储；**全部被拒、奖励定义缺失、use-on-gain 失败应否同等容忍及如何反馈**仍须用户决定。**未授权补充决议**：即时个人 Exec 的失败处理；跨 World 同时写个人 `QuestGroupSuites` 的依赖如何落到 Q1。先由用户决定高层合同，再确定 Java 接口、执行器、异常及补偿方案。本节仅同步已有 Q1 决议，不修改命令实现或 JLine/Picocli 配置。
+
+### 11.7 QR3 与 F1/Quest 输出接口的直接证据（2026-11-04）
+
+**QR3 正式决议**见[全局架构第 27 节](server-architecture-research.md)：部分奖励交付失败，不必使 Quest 整体失败；**不包含个人 Exec 失败**。现有 [InventoryAddResult](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/inventory/InventoryAddResult.java) 可区分 `allAccepted()`、`partiallyAccepted()`，以及每项 `itemId / requested / added / status`。当全部奖励被拒绝时 `partiallyAccepted()` 为 false；其 Quest 成功条件未决定。父任务 [Inventory.addItemParamDatas](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/inventory/Inventory.java) 现在会丢弃这些实际结果，子任务按每项 `boolean` 丢弃；[QuestCommand.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/commands/QuestCommand.java) 无论 `GameQuest.finish():void` 是否被插件取消都会发完成消息。未来 F1 不能依赖这个文本去推断成功；已批准的 Q1/QR3 只确定业务含义，没有批准结构化返回值接口、额外持久化、日志输出风格或新的 Shell 命令。
+
+特别注意：`quest forcefinish` 经由 [ForcedQuests.apply](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/ForcedQuests.java) 更新客户端认可的已完成主任务标记，不跑正常 Quest Exec 与奖励；其命令承诺须与标准 `quest finish` 区分。测试 QR3 不能用 `forcefinish` 的客户端显示来代替奖励交付检查。**后续研究只追踪具体结果来源，不提前把 QR3 的允许部分奖励扩张到所有奖励型业务。**
+

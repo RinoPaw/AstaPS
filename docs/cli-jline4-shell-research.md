@@ -746,3 +746,13 @@ long getGuid();
 
 [QuestExec 原版/内部编号对照](server-architecture-research.md) 还发现 AstaPS 为新增三个 7.1 字符串枚举采用内部 ID 71–73，原版 ID 对应 112、81、118；**目前 Gson 解析是按 enum 名称**，不能直接宣布存在协议编号错误。若未来切换原版数字资源，必须先做名字/ID 的明确映射；这不需要 Shell 层额外的兼容特判。
 
+### 11.11 解锁动作 X1 的结果判别与 Shell（2026-11-04）
+
+**原版 7.1 证据**：[Genshin-Reverse 原版 Quest 表](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/windows-x64/analyses/quest-extraction/README.md) 已验证原版 `QUEST_EXEC_UNLOCK_POINT` 以及原版 7.1 客户端 `UnlockTransPointReq` / `ScenePointUnlockNotify` 协议身份；**官方服务器重复解锁时的内部返回值与错误策略未验证**。完整对照见 [全局架构第 33 节](server-architecture-research.md)。
+
+**上游当前**：[ExecUnlockPoint](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecUnlockPoint.java) 直接传回 `PlayerProgressManager.unlockTransPoint` 的 boolean；玩家的传送点已解锁且不再被任务强制锁定时，该方法返回 false。但同一函数的 [HandlerUnlockTransPointReq](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/packet/recv/HandlerUnlockTransPointReq.java) 调用方会记录是否真的变化、然后返回 `RET_SUCC`；`StatueCommand` 还使用 `Already unlocked / refreshed` 描述无变化的成功目标状态。故 X1 下 Shell 不能只看底层“有无状态变化”判断成功；否则会把部分已经满足的幂等任务目标判为失败。**这是研究结论，没有批准统一返回值类型、API 重命名或全局更改底层解锁返回值。**
+
+本次还重新核验 fork 当前研究分支中 `GameQuest.java`、`QuestSystem.java`、`PlayerProgressManager.java`、`ExecUnlockPoint.java` 和 `Scene.java` 与 `MeChen618/AstaPS/main@ac9a7e6` 的 blob SHA **逐项完全一致**；上述问题确实存在于上游和当前 fork，尚无 Java 修正。
+
+**唯一新增待决高层合同**：当某个即时个人 FinishExec 失败时，后续个人 Exec 是 **S-F 停止本次剩余动作**，还是 **S-A 继续执行并最终合并失败结果**。这两者都必须遵守已定 X1，保留已发生副作用；原版官方服务端该失败路径未验证。World 后置 Lua 根据 Q1 另论；跨域 Exec 协调仍待决定，不能直接借用 Shell 阻塞模型。
+

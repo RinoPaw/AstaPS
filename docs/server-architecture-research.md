@@ -20,16 +20,16 @@
 | **R2：Player 执行域** | **以 UID 为单位**序列化玩家个人状态；不同玩家可并行，Inventory 不随当前 World 改变执行归属 | 第 14–16 节 |
 | **B1：World 战斗运行态** | 已正式选择：World 权威管理活动角色实时 HP、能量、战斗属性和动态效果；Player 持有等级、天赋、升阶、装备关系等个人长期资料及其必要的持久恢复信息 | 第 18–19 节 |
 | **C1：本分支伤害计算策略** | **本重构分支暂时保留客户端计算主要攻击伤害、World 校验并应用**；不在本阶段实施全量服务端伤害公式或自动切换 C2。后续若要改为 C2，须单独决策与原版 7.1 验证 | 第 20.3 节 |
-| **Q1：Quest 个人业务完成边界** | UID/R2 完成任务状态、即时个人 Exec 与奖励发放尝试后，才可报告成功；QR3 允许部分奖励，X1 要求即时个人 Exec 全部成功；个人 Exec 失败后保留既有状态/副作用，不恢复（第 31 节）。独立 World 剧情不阻塞；跨域依赖与全拒绝奖励仍待定 | 第 25–31 节 |
+| **Q1：Quest 个人业务完成边界** | UID/R2 完成任务状态、即时个人 Exec 与奖励发放尝试后，才可报告成功；QR3 允许部分奖励，X1 要求即时个人 Exec 全部成功；个人 Exec 失败后不恢复既有状态/副作用（第 31 节）。**原版 7.1 资源/服务端边界见第 32 节**；跨域依赖与全拒绝奖励仍待定 | 第 25–32 节 |
 | **X1：即时个人 Exec 必须成功** | 正常 Quest 完成路径的即时个人 FinishExec 必须实际成功，才能报告 Quest 成功；失败如实报告。用户后续决定：**对已发生的任务状态和个人副作用不做恢复处理**，不回滚、不自动补偿/重试；是否停止后续动作等执行顺序仍待定 | 第 30–31 节 |
 | **QR3：奖励容许部分发放** | Quest 奖励可部分交付，不强制完整奖励作为任务成功条件。未批准补发、欠账持久化、回滚；实际接受情况与个人 Exec 的失败结果必须区分 | 第 26.3、27 节 |
 | **Inventory 操作语义：Remove / Consume** | 已批准**区分清理与消耗**：删除/清理以目标已不存在为成功条件、可幂等；扣除指定数量采用 `consume` 一类显式操作，数量不足应能表达业务拒绝。**具体 API 名称、签名、迁移策略未批准** | 第 29 节 |
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 与 F1** | 直接在调用线程修改 Inventory 的旧规则被 R2 覆盖；**F1 已决定 Shell 等待真实业务完成再产生退出状态**，只允许外部交互线程等待，游戏执行域间禁止阻塞等待 | [CLI/库存第 4.1、10.2、11 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–31 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–32 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–31 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件及个人 Exec 失败后不做状态恢复均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–32 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件及个人 Exec 失败后不做状态恢复均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ## 1. 先定义系统实际是什么
 
@@ -1152,4 +1152,36 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 **上游对应风险**：[GameQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 先设置 `FINISHED` 再提交异步 FinishExec；[ExecDelPackItemBatch](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecDelPackItemBatch.java) 会处理每一项并在某项失败时保留先前已扣物品；[ExecBatchSetQuestVar](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecBatchSetQuestVar.java) 逐项更新变量。此决议表示未来**允许这些已发生变更留存，同时必须准确报告 X1 业务失败**；绝不将现有行为的全部其他缺陷视为已批准。
 
 **工程状态**：仅正式记入研究文档，未更改 Java/Gradle/数据库/分支，未运行 CI。实施所需接口、错误回传与执行顺序仍未授权。
+
+## 32. 原版 Global 7.1 Quest Exec 证据与 AstaPS 行为对照（2026-11-04）
+
+**优先报告原版证据，再作服务器架构判断**。原版样本以 [RinoPaw/Genshin-Reverse/main@0b4596ed](https://github.com/RinoPaw/Genshin-Reverse/tree/0b4596ed47eacfcb2ea65ddad7f1aea1c4e5bfce) 的 [Quest native extraction](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/windows-x64/analyses/quest-extraction/README.md) 和原始 7.1 Windows x64 EXE/metadata 读取记录为准；AstaPS 对照基线仍为 `MeChen618/AstaPS/main@ac9a7e6`。**特别区分原版客户端资源结构与未公开的原版服务端执行实现**。原版客户端 Quest 数据不能直接证明官方服务器在某个 Exec 执行失败后的返回码、短路策略、事务或回滚行为。
+
+### 32.1 原版已证实的任务数据所有权
+
+| 范围 | 原版 Global 7.1 直接证据 | 对本次架构重构的影响 |
+| --- | --- | --- |
+| **普通 full-Quest 子任务** | 原版 `BinOutput/Quest/351` 字节精确消费 920/920，普通行阅读器 RVA `0x9C15DF0`；行上保留四组数组：`failExec`、`failCond`、`finishCond`、`finishExec`。整体 4,417/4,417 MainQuest payload 全部消费，无解析失败 | **FinishExec、FailExec 是当前可确认的原版数据来源**；其触发后官方服务端如何报告业务失败，目前尚无证据 |
+| **普通 `beginExec` 与 `acceptCond`** | 原版 7.1 普通行没有第五个 `beginExec` 数组，也找不到对应普通 `acceptCond` 的拥有者；本地已验证原版 2.8→3.0 间格式移除；7.1 的 `RandomQuestExcelConfig` 仍有独立接受条件和 Exec，证明 metadata 可识别这些字段 | AstaPS 运行的部分 BeginExec/AcceptCond 是**兼容层重建的数据**；不应当宣称从 7.1 普通 Quest 客户端 EXE/metadata 提取到原版 `beginExec` |
+| **普通子任务 `gainItems`** | 原版 7.1 普通 Quest metadata 未发现 `gainItems` / `trialAvatarList` 所有者；当次审计的 AstaPS-Resource `QuestExcelConfigData.json` 33,217 行均没有两字段（随机 Quest 有单独 `_awardItems`） | 现有 `GameQuest.finish().getGainItems()` 是**服务端兼容/扩展入口**。不能把它讲成普通 7.1 原版子任务奖励的已验证来源；若要保留需要具体运行需求/证据 |
+| **主任务奖励** | [Genshin-Reverse 原版 full-Quest decoder](https://github.com/RinoPaw/Genshin-Reverse/blob/main/genshinre/questbin.py) 的 MainQuest 根结构读取 `reward_id_list` 并输出 `rewardIdList` | 原版主任务的奖励 ID 是当前 7.1 可保留的显式数据来源；仍不能从这个字段推断官方发奖失败策略 |
+| **Exec 类型与参数** | 原版 7.1 decoder 全量恢复 100 个实际出现的 QuestExec 类型 ID；语义名字通过同版本公共提取物按 `mainId/subId/字段/位置` 对齐获得，71,051 个条目零名称冲突；ID `1` 对齐 `DEL_PACK_ITEM`，ID `18` 对齐 `DEL_PACK_ITEM_BATCH`，ID `14` 对齐 `ROLLBACK_QUEST` | 可确认**原版确有这些类型 ID 和参数配置**；语义名称是经过同版本交叉比对的标签，不能提升成“客户端 native method 已证明服务器 Delete/Consume 行为” |
+
+**经过原版证实的具体例子**：原版 Quest 351 的子任务 `35101` 有 `TEAM_DEAD -> ROLLBACK_QUEST(35100)` 的失败条件/动作配置，来自 exact 7.1 payload。它证明**任务正常失败事件可以显式请求回退任务状态**；该 `ROLLBACK_QUEST` 是任务数据中的一个具体 FailExec，**不能据此推断其他某条 Exec 自身失败时，官方服务器也会自动回滚前面所有 Exec**。此前用户选择“即时个人 Exec 失败后不处理既有状态和副作用”，不删掉原版剧情中明确配置的 `ROLLBACK_QUEST` 动作，也不将其擅自改成统一自动回滚。
+
+### 32.2 AstaPS 当前怎样处理
+
+- [QuestData.java](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/data/excels/quest/QuestData.java) 同时接受 `beginExec`、`finishExec`、`failExec`、`gainItems`，并在 `applyFrom(MainQuestData.SubQuestData)` 中优先使用已加载 Excel 数据，必要时补充 materialized BinOutput 版本。该过程同时包含**7.1 原版可验证字段**和**服务端兼容/人工修复字段**；不能认为所有 JSON 字段都原生存在于 7.1。
+- [原有 PR71 审计](https://github.com/MeChen618/AstaPS/blob/main/docs/quest/pr71-native-chain-audit.md) 已明确：`35302` 的 BeginExec 用于刷新场景 3 的 group `133003002`、suite `2` 并生成教学史莱姆，是服务端当前能跑早期剧情所用的兼容动作。**简单删除所有非原版 7.1 客户端字段可能使任务流程退化**；仅凭客户端无字段，也不能证明官方服务器不存在相应开始任务逻辑。
+- 同一 PR71 审计记载过资源层 `35402.gainItems = [{itemId:1021,count:1}]` 的兼容材料奖励，这不是 7.1 普通 Quest 原生字段已证实的样例。第 27–28 节讨论的 QR3 可作用于服务端 Quest 奖励执行路径，**但不构成其来源都是原版的证据**。
+- [GameQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 先置 `FINISHED`、可能完成父任务并发奖，再提交 FinishExec；[QuestSystem.triggerExec](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestSystem.java) 异步投递、忽略 `boolean false`、不向调用方传播执行结果。这是**AstaPS 实际行为**，不能冒充原版。
+- 当前行为导致 **X1 所需的“全部即时个人 FinishExec 成功后才报告成功”无法得到证明**。已批准的“失败后不恢复既有副作用”也不会自行解决前置的正确执行/真实反馈。
+
+### 32.3 原版未知项与后续研究路径
+
+**仍未知**：官方 7.1 服务端在单条 Exec 返回业务失败或抛异常时，是否停止执行剩余 Exec；任务何时对客户端提交完成状态；失败后是否自动重放/回滚；`DEL_PACK_ITEM` 在每个任务中究竟表达清理、消耗还是其他目标。这些**不能仅凭客户端原始 Quest 表、枚举名称或私服实践作结论**。研究它们需要**可验证的官方运行行为/抓包、客户端由失败结果驱动的状态观察**或其他直接原始证据，不能从 AstaPS 的执行器推导官方服务器规则。
+
+**当前确定的工程合同**：Q1（本次个人完成边界）、X1（所有即时个人 FinishExec 必须成功）、QR3（允许部分奖励发放）、失败后不主动恢复既有状态、R2/S2 权威归属和 Remove/Consume 语义分离。以上均属**用户选择的服务端重构政策**，不冒充已验证原版服务器行为。**保留给用户的真实设计问题**：现有兼容 BeginExec 如何定长期归属；在执行出错时是否继续同轮剩余个人 Exec；World→UID 混合 Exec 如何协调；全部奖励被拒绝的成功条件。先验证原版可证事实，再讨论是否保留兼容、技术实现与 CI。
+
+**本轮仅文档研究，无 Java/Gradle/数据库修改及 CI。**
 

@@ -738,3 +738,11 @@ long getGuid();
 
 对当前 `quest finish` 的审计建议是区分**业务结果**与**已经发生的写入事实**；不应把旧的“输出 Quest finished”当作已完成 X1 的证明，也不应该为了新退出码而添加恢复/重试层。**仍待用户决定**：具体返回接口/错误类型、是否终止本次其余 Exec、混合 World→UID 依赖，以及全部奖励拒绝的处理。此轮未改命令代码、运行时或数据库。
 
+### 11.10 原版 7.1 Quest 源字段与 Shell 结果的证据隔离（2026-11-04）
+
+遵照“**每次先给原版证据，再给上游实现**”的研究约束，参见 [全局架构第 32 节](server-architecture-research.md)。[Genshin-Reverse 7.1 原版 Quest 解码](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/windows-x64/analyses/quest-extraction/README.md) 已确认普通子任务拥有 `finishExec/failExec`，没有原来的普通 `beginExec` 字段；当前原版 7.1 普通 Quest 也没有 `gainItems` 归属证据，而主任务根结构存在 `rewardIdList`。AstaPS 的 `QuestData.applyFrom` 可以额外引入兼容 BeginExec 和特殊奖励，导致“Quest 命令实际执行某个动作”不自动证明“原版客户端 Quest 数据拥有这个字段”。
+
+**官方 7.1 服务端如何处理 Exec 失败后剩余动作、何时提交完成态，暂时没有可直接验证的原版证据**，不能借客户端数据或 AstaPS 的异步调度机制推断。已批准 **F1/Q1/X1/QR3** 与失败后保留既有副作用，是用户为 AstaPS 重构选择的业务合同；将来 Shell 输出只能如实报告本服的执行结果，不能标榜为已复刻官方异常策略。
+
+[QuestExec 原版/内部编号对照](server-architecture-research.md) 还发现 AstaPS 为新增三个 7.1 字符串枚举采用内部 ID 71–73，原版 ID 对应 112、81、118；**目前 Gson 解析是按 enum 名称**，不能直接宣布存在协议编号错误。若未来切换原版数字资源，必须先做名字/ID 的明确映射；这不需要 Shell 层额外的兼容特判。
+

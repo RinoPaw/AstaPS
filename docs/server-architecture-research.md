@@ -22,12 +22,13 @@
 | **C1：本分支伤害计算策略** | **本重构分支暂时保留客户端计算主要攻击伤害、World 校验并应用**；不在本阶段实施全量服务端伤害公式或自动切换 C2。后续若要改为 C2，须单独决策与原版 7.1 验证 | 第 20.3 节 |
 | **Q1：Quest 个人业务完成边界** | 在 UID/R2 完成任务状态、即时个人 Exec 与约定的奖励发放尝试后报告业务完成；**奖励允许按 QR3 部分成功**。不等待独立 World 剧情效果；个人 Exec 失败、混合域依赖及全拒绝情境仍未决 | 第 25–27 节 |
 | **QR3：奖励容许部分发放** | Quest 奖励可部分交付，不强制完整奖励作为任务成功条件。未批准补发、欠账持久化、回滚；实际接受情况与个人 Exec 的失败结果必须区分 | 第 26.3、27 节 |
+| **Inventory 操作语义：Remove / Consume** | 已批准**区分清理与消耗**：删除/清理以目标已不存在为成功条件、可幂等；扣除指定数量采用 `consume` 一类显式操作，数量不足应能表达业务拒绝。**具体 API 名称、签名、迁移策略未批准** | 第 29 节 |
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 与 F1** | 直接在调用线程修改 Inventory 的旧规则被 R2 覆盖；**F1 已决定 Shell 等待真实业务完成再产生退出状态**，只允许外部交互线程等待，游戏执行域间禁止阻塞等待 | [CLI/库存第 4.1、10.2、11 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–28 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–29 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–28 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–29 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ## 1. 先定义系统实际是什么
 
@@ -1076,4 +1077,31 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 - **命令承诺**：F1 不能再以“已经调用 `quest.finish()`”或“打印 Quest finished”作为 Q1 成功证据；但**部分奖励失败本身按 QR3 不再构成 Quest 必然失败**，不能把 `!allAccepted()` 简单映射为失败退出码。
 
 **用户保留的下一轮决定**：全数奖励拒绝的业务结果、`useOnGain` 类奖励失败是否与普通背包满等价、部分奖励结果的 UI/CLI/插件呈现方式、个人 Exec 失败规则及混合 World→UID 完成依赖。继续研究这些高层边界后才能批准代码层接口、流程顺序与异常处理。本轮没有修改 Java、测试代码或构建，不运行 CI。
+
+## 29. 库存 Remove 与 Consume 的语义边界（用户决定，2026-11-04）
+
+**正式语义方向**：用户要求“扣除应该用 consume 之类的函数”；结合前述“删除应该是幂等”的意图，明确分开**清理目标**与**消耗数量**。这里只批准行为概念，没有批准具体 Java API、过渡方式、是否全局改名或如何处理每一种 Quest Exec。
+
+| 概念 | 已批准的方向 | 需要注意 |
+| --- | --- | --- |
+| **Remove / 清理** | 将某物品或某种任务标记清理至目标状态，例如清理该 ID 的全部残留；目标本来已不存在即成功，同一清理可重复执行 | 要有明确**目标状态**。现有 `removeItemById(id, count)` 实际做减法，重复调用会反复扣数量；**不可仅通过“找不到返回 true”就称其幂等** |
+| **Consume / 扣除** | 明确要求从玩家持有量扣除 `count`；数量不足、参数无效需要能报告失败；同一业务操作重复执行会重复扣除，因此**不是天然幂等** | 经济操作还受已定 P1 约束；如有重试需求，重复执行身份/去重属于**另行设计**，本轮不授予自动补偿或账本 |
+| **Quest Exec 映射** | 实际是 Remove 还是 Consume 应看**任务业务语义**，不应直接按 `DEL_PACK_ITEM` 名称武断归类 | 原版 7.1 是否用于任务道具清理还是精确支付仍需数据验证；`ExecDelAllSpecificPackItem` 的“清空”用途与议价等物品付费用途应区别审计 |
+
+### 29.1 当前上游可复用实现与缺陷
+
+- [Inventory.removeItemById](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/inventory/Inventory.java) 找不到物品便返回 `false`，内部 `removeItem(GameItem,count)` 只拒绝 `count<=0` 或 `item==null`，**没有检查 count 是否大于原有数量**；物品有 2 个时请求扣 3 个，内部先产生 -1 再删除，返回 `true`。因此旧接口同时不满足幂等清理与精确扣费合同。
+- 同文件已有 `payItem` 和 `payItems`，前者先判断 `getVirtualItemCount(id) >= count`，后者借助 [InventoryPaymentQuote.calculate](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/inventory/InventoryPaymentQuote.java) 合并重复 ItemId、检查算术溢出，然后在同一 Inventory 锁内检验本次所需量、逐项付费。**这是 Consume 语义的现有参考实现**，可以优先研究复用；但它主要适配所支持的虚拟物品和 Material，不能未经审计宣称适合每一种装备扣除及所有副作用的原子回滚。
+- [ExecDelPackItem](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecDelPackItem.java) 和 [ExecDelPackItemBatch](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecDelPackItemBatch.java) 使用旧 `removeItemById`；后者逐项删除、失败后继续，并不能保证整批精确扣费。切换前需确认原版配置的用途和 Q1 下个人 Exec 失败合同。
+- [ExecDelAllSpecificPackItem](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecDelAllSpecificPackItem.java) 已通过 `count <= 0 || removeItemById(id,count)` 手工做出“缺失即成功”的清空行为；[LiyueBargainSupport.handleOffer](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/LiyueBargainSupport.java) 在钱不足时拒绝、满足时再用旧 `removeItemById` 完成议价消费。这两个例子说明同一低层删除接口正承担**不同业务意图**。已批准的语义区分能够消除调用方的歧义，但**本轮没有改动这些路径**。
+- **Java/C++ 异常合同另行区分**：即使未来某个 Consume 返回 `false` 表示业务拒绝，也不代表抛异常；C++ `noexcept` 或 Java 受检异常声明不赋予业务必然成功。Exec 的异常传播与业务失败规则仍待确定。
+
+### 29.2 保留给用户的实现选择
+
+- 精确命名采用 `consume` / `consumeItem` / `payItems` 的哪一个、是复用已有内部实现还是改入口。
+- Remove 清理哪种目标（指定实例、全部 ItemId、任务指定量的残留），是否保留独立的部分清理操作；对“Remove”已选的幂等性质必须由**明确的目标状态**保证。
+- 旧 `removeItemById(id,count)` 的去向及哪些现有调用方实际是支付/清理；无须替尚未进入上游的兼容设计保留旧语义，但任何删除 API 调用点必须审计。
+- Quest 中每个 `DEL_PACK_ITEM` 类型如何根据原版验证归类；个人 Exec 失败选 X1/X2/X3 仍**完全未决**。QR3 只约束 Quest 的奖励部分交付。
+
+**执行状态**：此节是用户授权的语义决定 + 源码事实记录；未经用户后续选择，不改 Java API、执行器、存储、分支与构建，也未运行 CI。
 

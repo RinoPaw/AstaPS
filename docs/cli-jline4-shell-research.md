@@ -716,7 +716,7 @@ long getGuid();
 
 当前 [QuestCommand.Finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/command/commands/QuestCommand.java) 对 `GameQuest.finish(): void` 的调用后无条件发送完成文本，即使 `PlayerCompleteQuestEvent` 取消或 Quest 已完成；[QuestSystem.triggerExec](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestSystem.java) 异步处理个人/World 混合 Exec，失败结果不回传；[GameQuest.finish](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/GameQuest.java) 忽略逐项 `gainItems` 的 `boolean`，父任务的 `Inventory.addItemParamDatas` 仍采用 `BEST_EFFORT` 且没有可观察返回值。因此 **Q1 尚未实现**，不能声称 Shell 现有退出码或消息已经遵守它。
 
-**已选 QR3 奖励边界**：允许部分发放，不强制回滚已接受物品、不自动欠账补发或新建恢复存储；**全部被拒、奖励定义缺失、use-on-gain 失败应否同等容忍及如何反馈**仍须用户决定。**X1 已选**：即时个人 `FinishExec` 只要有一个未成功，就不能向 Shell/F1 宣告本次 Quest 已成功；**后续用户已经决定不处理失败后的既有状态与副作用**：不回滚、不补偿、不自动重试，详见全局架构第 31 节；失败仍需如实反馈。**未授权补充决议**：跨 World 同时写个人 `QuestGroupSuites` 的依赖如何落到 Q1。先由用户决定高层合同，再确定 Java 接口、执行器、异常及补偿方案。本节仅同步已有 Q1 决议，不修改命令实现或 JLine/Picocli 配置。
+**已选 QR3 奖励边界**：允许部分发放，不强制回滚已接受物品、不自动欠账补发或新建恢复存储；**全部被拒、奖励定义缺失、use-on-gain 失败应否同等容忍及如何反馈**仍须用户决定。**X1 已选**：即时个人 `FinishExec` 只要有一个未成功，就不能向 Shell/F1 宣告本次 Quest 已成功；**后续用户已经决定不处理失败后的既有状态与副作用**：不回滚、不补偿、不自动重试，详见全局架构第 31 节；失败仍需如实反馈。**后续已批准 G-C（全局架构第 37 节）**：真正依赖 World 结果的混合 Exec 必须先取得 World 实际成功回执，再更新所依赖的 UID Quest 记录；非阻塞协议细节仍未决定。先由用户决定高层合同，再确定 Java 接口、执行器、异常及补偿方案。本节仅同步已有 Q1 决议，不修改命令实现或 JLine/Picocli 配置。
 
 ### 11.7 QR3 与 F1/Quest 输出接口的直接证据（2026-11-04）
 
@@ -730,13 +730,13 @@ long getGuid();
 
 上游 `QuestCommand.Finish.run()` 现直接调用 `quest.finish()` 并发成功文案，因而**仍不符合 X1**。未来需能够把最终 Q1 个人业务结果反馈给 F1 Shell；技术实现无权自行决定采用 `Callable`、`Future`、事件回调、状态类型或新服务。**失败后既有任务状态与副作用保持原状**；不能仅为 Shell 产生非零状态而回滚、补偿或改写 Quest 的持久状态。正常路径任务何时提交仍待决定；**第 34 节已正式选 S-F**，失败后停止剩余尚未执行的即时个人 FinishExec。
 
-**范围限制**：Q1 不等待独立 World 后置剧情；X1 不自动扩展到 BeginExec、FailExec 或后继 Quest 的所有动作；未决定的混合 World/UID Exec 依赖需要独立审计。正常 `quest finish` 与仅伪造客户端已完成主任务标记的 `quest forcefinish` 不能混为同一个成功合同。
+**范围限制**：Q1 不等待独立 World 后置剧情；X1 不自动扩展到 BeginExec、FailExec 或后继 Quest 的所有动作；混合 World/UID Exec 已选 G-C 实际成功屏障，非阻塞回执技术及访客任务边界仍需独立审计。正常 `quest finish` 与仅伪造客户端已完成主任务标记的 `quest forcefinish` 不能混为同一个成功合同。
 
 ### 11.9 X1 失败但保留已发生状态的 Shell 结果（2026-11-04）
 
 **用户已确定失败恢复策略：不处理已发生的 Quest 状态和个人副作用。** 具体含义见 [全局架构第 31 节](server-architecture-research.md)：如果本次即时个人 FinishExec 失败，Q1/X1 禁止报告 Quest 业务成功；但已修改的背包/Quest 变量/任务状态不回滚、不补偿、不自动重试。F1 Shell 必须能准确反映**命令没有达到成功合同**，即使客户端此前已经收到 `FINISHED` 通知。Shell 的失败结果本身不要求改变 Quest 的内存状态或存档状态。
 
-对当前 `quest finish` 的审计建议是区分**业务结果**与**已经发生的写入事实**；不应把旧的“输出 Quest finished”当作已完成 X1 的证明，也不应该为了新退出码而添加恢复/重试层。**已选择 S-F：首个即时个人 FinishExec 失败即停止本次剩余即时个人动作**。仍待决定：具体返回接口/错误类型、混合 World→UID 依赖，以及全部奖励拒绝的处理。此轮未改命令代码、运行时或数据库。
+对当前 `quest finish` 的审计建议是区分**业务结果**与**已经发生的写入事实**；不应把旧的“输出 Quest finished”当作已完成 X1 的证明，也不应该为了新退出码而添加恢复/重试层。**已选择 S-F：首个即时个人 FinishExec 失败即停止本次剩余即时个人动作**。仍待决定：具体返回接口/错误类型、G-C 的跨域结果通信技术，以及全部奖励拒绝的处理。此轮未改命令代码、运行时或数据库。
 
 ### 11.10 原版 7.1 Quest 源字段与 Shell 结果的证据隔离（2026-11-04）
 
@@ -754,7 +754,7 @@ long getGuid();
 
 本次还重新核验 fork 当前研究分支中 `GameQuest.java`、`QuestSystem.java`、`PlayerProgressManager.java`、`ExecUnlockPoint.java` 和 `Scene.java` 与 `MeChen618/AstaPS/main@ac9a7e6` 的 blob SHA **逐项完全一致**；上述问题确实存在于上游和当前 fork，尚无 Java 修正。
 
-**后续第 34 节已正式选定 S-F**：首个即时个人 FinishExec 失败即停止本次剩余动作；已定 X1 仍要求如实报告失败、保留既有副作用。原版官方服务端该失败路径未验证。World 后置 Lua 根据 Q1 另论；跨域 Exec 协调仍待决定，不能直接借用 Shell 阻塞模型。
+**后续第 34 节已正式选定 S-F**：首个即时个人 FinishExec 失败即停止本次剩余动作；已定 X1 仍要求如实报告失败、保留既有副作用。原版官方服务端该失败路径未验证。World 后置 Lua 根据 Q1 另论；混合 Exec 已按 G-C 确定先 World 成功再写 UID，但不能直接借用 Shell 阻塞模型。
 
 ### 11.12 S-F 对 Shell 的可观察完成条件（2026-11-04 正式决议）
 
@@ -765,4 +765,14 @@ long getGuid();
 **用户选择 S-F**（全局架构第 34 节）：本次正常 Quest 完成中，某个**即时个人 FinishExec** 失败，后续尚未执行的即时个人 FinishExec **不再执行**；已发生的个人副作用保留，不恢复；Q1/X1/F1 报告业务失败。该语义不自动推给独立 World 后置动作、混合域依赖或 BeginExec/FailExec。具体响应类型、异步结果通道、错误结构、正常状态提交顺序仍由用户决定。**不要将命令已返回、Exec 已入队视为 S-F 已实现**。
 
 本节仅同步已批准成功/失败合同；无 Java/Gradle/CI 改动。
+
+### 11.13 G-C 混合 Exec 完成回执对 F1/Shell 的约束（2026-11-05）
+
+**原版 7.1**：直接证据见 [Genshin-Reverse Quest 提取报告](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/windows-x64/analyses/quest-extraction/README.md)。存在注册/注销动态场景组的任务 Exec，但**官方服务器如何传递 World 成功回执、何时更新 UID 任务资料尚未验证**。
+
+**上游最新 `MeChen618/AstaPS/main@ac9a7e6`**：`ExecRegisterDynamicGroup` 在 `scene.loadDynamicGroup` 成功返回 `suiteId` 后更新 `QuestGroupSuites`；`ExecUnregisterDynamicGroup` 在 Scene 卸载成功后清除个人记录；`SceneScriptManager.refreshGroupSuite(..., quest)` 则从 Scene 调用栈直接修改 Quest 并 `quest.save()`。但 `QuestSystem.triggerExec` 仅返回 `void`，异步返回值不传给 Quest/Shell，尚不能满足 F1/Q1/G-C。
+
+**用户已选 G-C（全局架构第 37 节）**：真正需要 World 实际执行结果的混合 Exec 只有在 S2 World 动作成功并由 R2 更新依赖的个人 Quest 记录后，才可判为成功；`submit()`、回调登记、`GameQuest.finish(): void` 返回都不能作为成功证明。若它是受 X1 约束的即时个人 FinishExec，失败按 S-F 停止后续个人动作；独立 World 后置 Lua 仍不阻塞 Q1。F1 Shell 必须等待**真实业务结果**并准确报告成功/失败，但**只允许外部交互线程等待**，UID/World 执行域间不得阻塞对方。
+
+**仍待用户决定**：非阻塞结果传递 API/结构、异常/过期/换 World 的回执规则、访客任务完成策略及 Shell 具体失败输出。当前只同步文档，无 Java/Gradle/数据库变动及 CI。
 

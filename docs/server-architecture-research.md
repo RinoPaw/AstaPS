@@ -24,14 +24,15 @@
 | **X1：即时个人 Exec 必须成功** | 正常 Quest 完成路径的即时个人 FinishExec 必须实际成功，才能报告 Quest 成功；失败如实报告。**S-F：首个即时个人 Exec 失败后停止后续尚未执行的即时个人 Exec**；既有状态/副作用不恢复，不回滚、不自动补偿或重试 | 第 30–34 节 |
 | **S-F：即时个人 Exec 失败即停止** | 按本次 Quest 即时个人 FinishExec 的顺序执行；首个未成功的 Exec 后，不再执行剩余即时个人 Exec；Q1/X1 返回失败，已发生状态/副作用原样保留。World 后置、混合依赖、Begin/FailExec 不自动套用 | 第 34 节 |
 | **W-H：共享 World Quest 场景归房主权威** | 多人 World 的共享 Scene Quest group suite / 场景阶段由 World Host 的任务状态决定；访客个人 Quest/Inventory 归各自 UID，但访客个人场景阶段不得覆盖房主共享场景。访客能否完成任务、如何延后处理其 World 动作与跨域回执仍未决 | 第 36 节 |
+| **G-C：混合 Exec 的 World 成功屏障** | 对真正依赖 World 实际结果的混合 Exec，World/S2 完成且成功回执后，UID/R2 才能写相关 Quest 记录并确认该动作成功；不把排队/回调注册当作成功，不同步阻塞，不改变独立 World 后置效果 Q1 边界 | 第 37 节 |
 | **QR3：奖励容许部分发放** | Quest 奖励可部分交付，不强制完整奖励作为任务成功条件。未批准补发、欠账持久化、回滚；实际接受情况与个人 Exec 的失败结果必须区分 | 第 26.3、27 节 |
 | **Inventory 操作语义：Remove / Consume** | 已批准**区分清理与消耗**：删除/清理以目标已不存在为成功条件、可幂等；扣除指定数量采用 `consume` 一类显式操作，数量不足应能表达业务拒绝。**具体 API 名称、签名、迁移策略未批准** | 第 29 节 |
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 与 F1** | 直接在调用线程修改 Inventory 的旧规则被 R2 覆盖；**F1 已决定 Shell 等待真实业务完成再产生退出状态**，只允许外部交互线程等待，游戏执行域间禁止阻塞等待 | [CLI/库存第 4.1、10.2、11 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–36 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–37 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–36 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件、S-F 失败即停止后续即时个人 Exec、W-H 共享场景由房主决定，以及个人 Exec 失败后不做状态恢复均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–37 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件、S-F 失败即停止后续即时个人 Exec、W-H 共享场景由房主决定、G-C 混合 Exec 必须先取得 World 实际成功结果，以及个人 Exec 失败后不做状态恢复均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ### 后续研究固定证据顺序（2026-11-04 用户要求）
 
@@ -1310,7 +1311,7 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 
 **验证矩阵（仅研究）**：房主和访客分别存在相反 suite 记录时双方先后进入；同 UID 两条主任务有相反 suite 时的选择；主任务刚 FINISHED 但 FinishExec 写 group suite 的重进场景；World 操作返回失败后 UID `QuestGroupSuites` 是否仍已修改；访客离开后的 Scene 复原；World 切换/脚本未初始化/组已消失时个人 Exec 结果。**未执行运行时实机测试**。
 
-**当前工程状态**：只做源码比较与正式研究记录；没有修改 Java、插件、Gradle、Scene、运行模型或资源，没有运行 CI。W-H 已在第 36 节正式批准；G-C/G-D 仍须用户明确选择。
+**当前工程状态**：只做源码比较与正式研究记录；没有修改 Java、插件、Gradle、Scene、运行模型或资源，没有运行 CI。W-H 已在第 36 节正式批准，G-C 已在第 37 节批准；非阻塞协议仍未定。
 
 ## 36. W-H 决议：多人共享 World 的 Quest 场景阶段由房主决定（2026-11-04）
 
@@ -1328,10 +1329,10 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 | 情境 | 已批准的 W-H 行为边界 | 未批准/仍需研究 |
 | --- | --- | --- |
 | **两名玩家在同一多人 World 的 Scene，任务 suite 不同** | 共享 Scene 的 Quest suite 阶段以房主的有效 Quest 资料为权威；访客进场、换场、重登录不能据自己的 Quest 资料覆盖房主的共享 Scene | 房主**多条 MainQuest** 对同一 group 冲突时的优先级，需先核对是否有原版 7.1 实例 |
-| **房主的 Quest 改变共享 Scene** | 修改共享 Scene 应遵守 S2 的 World 写者；房主个人 Quest 按 R2 保存 | World 写成功与 UID 持久记录/本次 Q1 的先后回执，尚待 G-C/G-D；不能默认采用同步阻塞 |
+| **房主的 Quest 改变共享 Scene** | 修改共享 Scene 应遵守 S2 的 World 写者；房主个人 Quest 按 R2 保存 | G-C 已选：World 实际成功后才能推进依赖该结果的个人记录；具体非阻塞通信仍未决定 |
 | **访客自身 Quest 有 World 场景动作** | 不得将该访客个人目标套件注入房主 World 的共享 Scene；访客 UID 状态仍属于本人 | 访客的 Quest 是否暂停/可完成、何时在本人 World 补做动作、未执行 World 动作如何反馈与是否属于 Q1，均待决定 |
 | **多人 World 离开/加入与房主切换** | 只认**当时该 World 的有效 Host** 为共享 Scene Quest 阶段权威；不能用上一个访客的 Quest 套件恢复 Scene | 房主切换快照/事件身份、队列失效、退出重建、具体时序和处理代码尚未决定 |
-| **Quest Exec 明确需要跨 World 和 UID 的真实结果** | W-H 仅决定**谁有权修改共享 Scene**；X1/S-F/Q1 原有个人 Exec 语义不变 | 不自动决定该 Exec 要等 World 结果后写 UID（G-C），还是先记个人期望再异步应用（G-D） |
+| **Quest Exec 明确需要跨 World 和 UID 的真实结果** | W-H 决定共享 Scene 修改权；G-C（第 37 节）决定必须先 World 实际成功再更新依赖的 UID 记录；X1/S-F/Q1 仍生效 | 非阻塞回执、访客 Quest 处理、异常传播等细节未决 |
 
 ### 36.3 后续审计的优先级
 
@@ -1340,5 +1341,33 @@ World/S2：确认角色仍在本 World/Scene、来源是否仍为当前版本
 3. **个人 Quest 和 World 结果**：明确 `QuestGroupSuites` 是 UID 持久化记录、Scene `groupInstance` 是 World 运行态；严禁 S2 World 回调跨域直接写 R2 个人记录。**采用何种非阻塞结果协议、失败后如何影响 Quest 完成，尚待用户决定**。
 4. **原版可验证性**：优先用 7.1 原始 Quest `isMpBlock` 和 Exec 配置建立冲突样本；不得借社区资源或私服行为声称已恢复原版服务端房主规则。
 
-**下一待决高层选择仍为 G-C/G-D**，先讲清楚业务可见行为及原版证据界限，再由用户决定；本次 W-H 不预先授权其一。**工程状态：仅文档决议，无 Java/Gradle/插件/数据库改动，无 CI。**
+**G-C 已在第 37 节正式确定**，第 36 节的 G-C/G-D 候选仅保留为历史对比；W-H 本身不预设具体跨域调度技术。**工程状态：仅文档决议，无 Java/Gradle/插件/数据库改动，无 CI。**
+
+## 37. G-C：混合 World→UID Exec 需先获得 World 实际成功结果（2026-11-05）
+
+**用户正式选择 G-C（回复“c”）**：当 Quest Exec 的**个人状态更新依赖 World 动作的真实结果**，必须由 S2 的 World 先**实际执行成功并产生结果**，随后 R2/UID 才能更新对应个人 Quest 记录，并把该混合 Exec 报告为成功。**G-D（先记录个人期望、World 以后应用）未采用**。仅将任务入队、提交 Future 或登记场景回调均不能冒充 World 已成功。
+
+**适用范围**：确有 World→UID 因果依赖的混合操作，例如动态场景组的加载结果 `suiteId` 用于 `GameMainQuest.questGroupSuites`。Q1 已排除的**独立 World 后置 Lua/Scene 效果**继续独立进行，不因 G-C 一概成为 Quest 成功屏障。如果混合动作属于 X1 的即时个人 `FinishExec`，World 执行失败即意味着混合 Exec 未成功，按已选 S-F 停止本次剩余即时个人 Exec；之前已发生的修改照旧保留，不回滚、不补偿、不自动重试。W-H 仍要求共享场景由有效房主控制，访客不得修改房主共享场景。
+
+### 37.1 原版、上游和 fork 的分别核查
+
+- **原版 Global 7.1**：直接验证的 [Genshin-Reverse Quest 解码器](https://github.com/RinoPaw/Genshin-Reverse/blob/main/genshinre/questbin.py) 对齐了 `REGISTER_DYNAMIC_GROUP`（ID 46）、`UNREGISTER_DYNAMIC_GROUP`（ID 47）与 `REGISTER_DYNAMIC_GROUP_ONLY`（ID 54），[原版 native 提取报告](https://github.com/RinoPaw/Genshin-Reverse/blob/main/versions/7.1.0-global/windows-x64/analyses/quest-extraction/README.md) 确认普通 `finishExec` 数组。**官方服务端的 World/UID 执行线程、记录格式、真实成功屏障尚无直接证据**；G-C 是本服重构合同，不能冒充原版已经证明的行为。
+- **上游 `MeChen618/AstaPS/main@ac9a7e6cec900e4ced28ec5dc16ceda82cf7538d`**：[ExecRegisterDynamicGroup](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecRegisterDynamicGroup.java) 先 `scene.loadDynamicGroup` 得到有效 `suiteId` 后写 `QuestGroupSuites`；[ExecUnregisterDynamicGroup](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecUnregisterDynamicGroup.java) 先 `Scene.unregisterDynamicGroup` 成功才删除玩家记录。这两处**方法内执行顺序**与 G-C 一致，但都在一个调用栈中访问 World 与 UID，尚未遵守 S2/R2 独立写者。
+- **同一上游的反例**：[SceneScriptManager.refreshGroupSuite(group,suite,quest)](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/scripts/SceneScriptManager.java) 刷新 Scene 后直接修改玩家 `questGroupSuites` 并 `quest.save()`；[QuestSystem.triggerExec](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/QuestSystem.java) 返回 `void`，执行失败只写 debug。它们不能直接提供 G-C 所需的跨域成功反馈。
+- **fork**：目前研究分支未修改 Quest/Scene Java，本次仅记录业务决定；真实 G-C 尚未实现。
+
+### 37.2 必须遵守的因果关系
+
+```text
+R2：发起需要场景结果的 Quest 动作
+ S2：在有效 World 实际执行、得到成功结果
+R2：依据结果修改所属 UID 的 Quest 数据
+R2：该混合 Exec 可确认为成功，继续后续即时个人 Exec
+```
+
+若 World 拒绝、丢失 Scene/Group、动作执行异常，**不能预先写入相关个人记录，也不能报告该混合 Exec 成功**。若 World 已发生修改而后续 UID 更新失败，遵循已定的**不回滚/不补偿/不自动重试**，且不能误报整个混合 Exec 已成功。
+
+**保留的非授权事项**：跨域非阻塞结果的具体通信机制（回调、Future、消息等）、超时、玩家离线或换 World/Host 后如何判定过期回执、错误输出格式、访客任务能否在多人 World 推进、主任务跨 group suite 冲突优先级。R2/S2 禁止执行域互相同步阻塞等待，此点不变；不引入新事务、数据库账本或兼容层作为默认实现。BeginExec、FailExec 和纯 World 后置动作不因本决议自动套用 X1/S-F。
+
+**工程状态**：仅修改研究文档；没有 Java/Gradle/数据库/资源变动，未运行 CI。用户测试及上游提交之前仍必须执行 CI。
 

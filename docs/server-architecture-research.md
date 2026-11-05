@@ -1,6 +1,6 @@
 # AstaPS 全局架构审计与重构方向
 
-> 更新：2026-11-04。源码基准：`MeChen618/AstaPS/main@ac9a7e6cec900e4ced28ec5dc16ceda82cf7538d`。研究分支：`RinoPaw/AstaPS/rino/refactor/jline4-shell`。
+> 更新：2026-11-05。源码基准：`MeChen618/AstaPS/main@ac9a7e6cec900e4ced28ec5dc16ceda82cf7538d`。研究分支：`RinoPaw/AstaPS/rino/refactor/jline4-shell`。
 >
 > **已批准目标 A：以整个 AstaPS 的统一、清晰架构为长期重构目标，CLI 与库存为首批切入点，之后逐步覆盖其他业务。**
 > **已批准 M2：允许采用 Gradle 多模块工程，按需要划定独立编译、依赖和构建产物边界。已批准 D1：保留 HYBRID、GAME_ONLY、DISPATCH_ONLY 三种运行模式，允许 Game/Dispatch 独立进程，也允许同进程运行。** 仍处于源码审计与设计阶段；尚未批准模块数量、具体模块接口、独立 JAR 数量或开始代码迁移。保持 Java 21，Java 25 作为未来方向；不自建无实际需要的兼容层，不新建分支。
@@ -30,9 +30,9 @@
 | **持久化 P1** | R2 内完整同步修改玩家内存；同 UID 异步有序写入；经济操作先获得写入准入；奖励回执保留同步持久确认例外 | [CLI/库存第 7、9 节](cli-jline4-shell-research.md) |
 | **CLI/Give D01B 与 F1** | 直接在调用线程修改 Inventory 的旧规则被 R2 覆盖；**F1 已决定 Shell 等待真实业务完成再产生退出状态**，只允许外部交互线程等待，游戏执行域间禁止阻塞等待 | [CLI/库存第 4.1、10.2、11 节](cli-jline4-shell-research.md) |
 
-**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–37 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
+**按主题阅读**：第 1–5 节工程现状与原则 → 第 6–7 节推进次序及未决边界 → 第 8–11 节模块化与插件研究 → 第 12 节历史线程审计 → 第 13–38 节 S2/R2、跨域业务、F1、B1/C1、实体生命周期、跨 World 隔离及任务调度归属审计。具体 Give、InventoryItem、TPS、数据库写入与登录竞态以 [CLI/库存研究](cli-jline4-shell-research.md) 为主，避免两份文档维护重复的细粒度决定。
 
-**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–37 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件、S-F 失败即停止后续即时个人 Exec、W-H 共享场景由房主决定、G-C 混合 Exec 必须先取得 World 实际成功结果，以及个人 Exec 失败后不做状态恢复均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
+**仍未决定**：B1 下个人成长来源向 World 实时战斗态同步、动态效果与可持久恢复数据边界；第 21–38 节识别的退出保存缺口、跨 World EntityId 索引、S2/R2 任务调度归属、异步执行边界及 Tick 时间单位不一致的具体修正技术；**C1 已作为当前分支的阶段性策略选定，C2 未获批准（见第 20.3 节）**、Player/World 非阻塞协调、会话网络进出顺序；F1 以外的 Web/API 等待/超时/查询行为与输出传递技术、执行器和队列具体实现、账号/登录生命周期接入、模块边界与发布产物。**F1 Shell 等待真实业务结果、Q1 Quest 个人完成边界、QR3 允许部分奖励、X1 即时个人 Exec 成功前置条件、S-F 失败即停止后续即时个人 Exec、W-H 共享场景由房主决定、G-C 混合 Exec 必须先取得 World 实际成功结果，以及个人 Exec 失败后不做状态恢复均已正式选择**。Java 21 不变，Java 25 只是长期方向；未经批准不引入 Actor 库、兼容层或改动既有 JAR 名称。
 
 ### 后续研究固定证据顺序（2026-11-04 用户要求）
 
@@ -1370,4 +1370,45 @@ R2：该混合 Exec 可确认为成功，继续后续即时个人 Exec
 **保留的非授权事项**：跨域非阻塞结果的具体通信机制（回调、Future、消息等）、超时、玩家离线或换 World/Host 后如何判定过期回执、错误输出格式、访客任务能否在多人 World 推进、主任务跨 group suite 冲突优先级。R2/S2 禁止执行域互相同步阻塞等待，此点不变；不引入新事务、数据库账本或兼容层作为默认实现。BeginExec、FailExec 和纯 World 后置动作不因本决议自动套用 X1/S-F。
 
 **工程状态**：仅修改研究文档；没有 Java/Gradle/数据库/资源变动，未运行 CI。用户测试及上游提交之前仍必须执行 CI。
+
+## 38. G-C 回执何时有效：World/Scene/会话生命周期及“实际成功”证据（2026-11-05）
+
+**本节只记录新源码证据与业务选项，未经用户批准不实施任何新规则。** 复核基线：`MeChen618/AstaPS/main@ac9a7e6cec900e4ced28ec5dc16ceda82cf7538d`；当前 fork 研究分支尚未实现 G-C（第 37 节）。原版依据为 `RinoPaw/Genshin-Reverse/main@0b4596ed47eacfcb2ea65ddad7f1aea1c4e5bfce` 的 7.1 原版客户端 Quest 解码，不把私服运行代码归入官方证据。
+
+### 38.1 原版直接证据的上限
+
+[Genshin-Reverse 的原版 7.1 Quest 解码器](https://github.com/RinoPaw/Genshin-Reverse/blob/main/genshinre/questbin.py) 已确认 `REGISTER_DYNAMIC_GROUP`（ID 46）、`UNREGISTER_DYNAMIC_GROUP`（ID 47）、`REGISTER_DYNAMIC_GROUP_ONLY`（ID 54）以及普通任务的 `finishExec`。这些足以标出需要分析的游戏动作；**原版官方服务器如何命名 World 实例、场景实例、玩家会话、异步操作身份、跨域回执以及失效判定，仍未获得可直接验证证据**。原版字段中有 `isMpBlock`，但不能用名字推定回执失效语义。
+
+### 38.2 上游生命周期的具体实例
+
+1. [World.addPlayer](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/World.java) 在加入新世界时先从旧 World 移除玩家，再将 `player.world` 指向新 World。同一个 UID 可以在运行期间持有**不同 World 对象**；仅对照 UID、`sceneId` 或 `groupId` 不足以证明来自旧 World 的结果属于现有世界。
+2. [MultiplayerSystem.leaveCoop/kickPlayer](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/systems/MultiplayerSystem.java) 为离开房主多人世界的玩家建立 `new World(player)`；[World.removePlayer](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/World.java) 在房主离开时，给剩余访客各建一个 World。当前代码实际上**拆散旧 World**，不是在原 World 保持所有状态并转移房主身份。W-H 的“房主变更”需结合真实生命周期讨论，不能无条件假设现有 World 实例支持无缝换 Host。
+3. [Scene.removePlayer](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/Scene.java) 在最后一名玩家离开且允许销毁时调用 `ScriptManager.onDestroy()`、`World.deregisterScene(this)`，之后可由 `World.getSceneById(sceneId)` 创建同一数值 ID 的**新 Scene 对象**。原 Scene 完成的异步操作不一定适用于新对象。
+4. [HandlerGetPlayerTokenReq](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/server/packet/recv/HandlerGetPlayerTokenReq.java) 的重复登录路径对旧 Player 执行 `onLogout` 和旧 Session 关闭，随后异步从数据库加载/创建新 Player，`GameServer.registerPlayer` 用 UID 关联在线对象。因此**同一 UID 的不同登录会话可能持有不同 Player/Quest 实例**。仅以 UID 路由一条旧结果，可能把以前登录周期的回执投给新会话。
+5. [ExecNotifyGroupLua](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecNotifyGroupLua.java) 的既有延迟执行检查 `player.getWorld() == world`、`world.getScenes().get(sceneId) == scene`、Quest 状态、玩家 Scene ID；[ExecRefreshGroupSuite](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/quest/exec/ExecRefreshGroupSuite.java) 也检查 Word/Scene/Quest 与脚本销毁状态。**这些仅为局部先例**，没有与 G-C 个人结果提交统一，也没有证明在换会话后完全安全。
+6. `ExecNotifyGroupLua.execute` 和 `ExecRefreshGroupSuite.execute` 在挂起脚本初始化时均可能**立即返回 `true`**，但真正的 World Lua/Scene 修改以后才尝试，回调还可能因场景改变或脚本失败不执行。现有 `true` 在这些分支表达了**回调已安排/投递**。G-C 不能把此类布尔值直接当作 World 已实际完成；同时这些纯 World 后置动作是否应等待，仍要遵守 Q1 已划定的**独立后置效果不阻塞 Quest**的范围。
+7. [SceneScriptInitGate](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/scripts/SceneScriptInitGate.java) 已用单次 `CompletableFuture<Boolean>` 保存脚本初始化结果；[SceneScriptManager.init](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/scripts/SceneScriptManager.java) 在 finally 完成它。这表明上游已有**异步完成信号**的先例，无须为 G-C 强制引入新异步框架；但该 Gate 只确认**初始化**，不确认指定 Quest/Group 动作成功，更不意味着可以在初始化完成线程修改 UID 状态。
+8. [Scene.loadDynamicGroup](https://github.com/MeChen618/AstaPS/blob/main/src/main/java/emu/grasscutter/game/world/Scene.java) 在检查 `group.init_config` 是否为空前，已经调用 `onLoadGroup`（后者可能加载 ScriptGroup、实体和触发器）。因此**返回 `-1` 可能发生在 World 已产生部分副作用之后**。按已选“失败后不处理已发生状态”的规则，此时不能回滚；但依 G-C 也**不能写入依赖成功的 UID QuestGroupSuites 或向 X1 报成功**。反过来，正 `suiteId` 是现有 API 的成功信号，不能在尚未审计所有加载失败路径前，夸称“所有怪物实际可见、全部 Lua 事件执行完毕”。
+
+### 38.3 新的业务决策点：已经成功作用于旧 World 的结果能否写入 UID
+
+**场景**：一个房主 UID `A` 的混合 Quest Exec 请求在 World `W1` 加载某个 Group。World `W1` 实际执行成功并得到 suite；此时玩家离开 `W1`（例如转入多人 `W2`）、Scene 被替换，或同一 UID 重新登录。原任务所属的 UID 写入尚未提交。**S2 的旧 World 结果确实已发生，但此刻新的个人上下文不一定等价于执行请求时的上下文**。
+
+以下为**未决互斥高层业务选择**，均仍遵守 G-C、W-H、X1/S-F、失败后不恢复：
+
+- **V-S：严格绑定原 World/Scene/Quest 运行上下文**。只要上述上下文在 UID 提交前失效，就不再用旧结果更新当前个人 Quest 记录，本次混合动作**不能宣告成功**。旧 World 已发生的修改不回滚。优势是避免旧世界的副作用悄悄落到新世界任务进度；劣势是已在旧 World 成功的动作可能因切换时机而无法提交个人进度。
+- **V-H：接受已证实的旧 World 执行历史**。若能确定指定动作**在旧 World 的有效权限和存续期间真实成功完成**，允许后来把该成功事实写回对应 UID 任务，即便用户当前已离开那个 World；不把旧结果应用到新 World 本身。优势是对成功执行的动作更稳定；风险是旧世界的场景历史被写成玩家将来重进场景时的恢复记录，须明确这些持久记录是否代表 Quest 历史，且不能在新的 Quest 周期重复记账。
+
+**这不是“加不加一个版本号”的技术枝节**。需要先由用户决定 Quest 场景动作是否绑定**当前有效 World 会话**，还是允许从已成功的旧 World 历史中完成该 UID 的持久化记录；具体身份快照、操作代号、会话生存期、消息方式、过期回执的失败表示，均不得擅自决定。只有动作没有实际执行成功的结果，G-C 已明确禁止记为成功，**不需要再征求是否把失败当成功**。
+
+**还存在独立未决问题**：访客 W-H 环境下 Quest 是否暂停；同 UID 多条 MainQuest 的相同 Group 冲突优先级；脚本初始化完成不等于真实 Scene 动作完成的证据界限。暂不将其隐藏为 V-S/V-H 的默认附带决议。
+
+### 38.4 后续实现验证矩阵（当前未执行）
+
+- World `W1` 成功后切至 `W2`，在 UID 提交前回执；原场景被销毁、同 scene ID 在 `W1` 重建；同 UID 下线重新登录产生新 Player；房主离开导致访客建立新 World。
+- `ExecRefreshGroupSuite` 尚待脚本初始化时，返回安排成功但随后实际应用失败；相同 `QuestState.FINISHED` 下旧回调抵达新的任务周期；World 成功后 R2 持久化失败。
+- `loadDynamicGroup` 在 `onLoadGroup` 已做部分修改后因 `init_config==null` 返回 `-1`：不得误判成功，不补偿 World 修改，不写成功 UID 记录；真正成功案例要验证加载场景和个人记录的先后关系。
+- 即时个人动作序列 `Success, WorldFailure, Success`：第三个不开始，Shell/F1 返回失败，先前副作用保留；独立 World 后置 Lua 不擅自纳入 G-C 完成屏障。
+
+**工程状态**：仅新增审计文档，不改 Java、数据库、Gradle、资源、接口或分支，不运行 CI。V-S/V-H 仍待用户明确决定。
 

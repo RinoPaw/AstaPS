@@ -147,6 +147,8 @@ dependencies {
     implementation group: 'net.openhft', name: 'zero-allocation-hashing', version: '0.26ea0'
 
     // Testing libraries.
+    // Isolated JLine 4 Shell proof; production CLI still uses JLine 3 until the F1 boundary is ready.
+    testImplementation 'org.jline:jline-shell:4.5.0'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.2'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.8.2'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.8.2'

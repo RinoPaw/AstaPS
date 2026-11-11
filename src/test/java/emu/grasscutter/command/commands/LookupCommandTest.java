@@ -21,6 +21,8 @@ public final class LookupCommandTest {
             assertDoesNotThrow(() -> cmd.createCommandLine(null, null).parseArgs(args));
         }
         assertTrue(cmd.createCommandLine(null, null).getUsageMessage().contains("--page"));
+        assertTrue(cmd.createCommandLine(null, null).getCommandSpec().userObject()
+                instanceof java.util.concurrent.Callable<?>);
         assertThrows(CommandLine.ParameterException.class,
                 () -> cmd.createCommandLine(null, null).parseArgs("--page", "not-number", "slime"));
         assertThrows(CommandLine.ParameterException.class,

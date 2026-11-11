@@ -30,7 +30,7 @@ import org.jline.reader.impl.LineReaderImpl;
 import org.reflections.Reflections;
 import picocli.CommandLine;
 import picocli.CommandLine.Model.CommandSpec;
-import picocli.shell.jline3.PicocliJLineCompleter;
+import picocli.AutoComplete;
 
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public final class CommandMap {
@@ -348,8 +348,16 @@ public final class CommandMap {
             lineReader.setCompleter(
                     (currentReader, parsedLine, candidates) -> {
                         synchronized (this.picocliLock) {
-                            new PicocliJLineCompleter(this.commandLine.getCommandSpec())
-                                    .complete(currentReader, parsedLine, candidates);
+                            var completions = new ArrayList<CharSequence>();
+                            AutoComplete.complete(
+                                    this.commandLine.getCommandSpec(),
+                                    parsedLine.words().toArray(String[]::new),
+                                    parsedLine.wordIndex(),
+                                    0,
+                                    parsedLine.cursor(),
+                                    completions);
+                            completions.forEach(value -> candidates.add(
+                                    new org.jline.reader.Candidate(value.toString())));
                         }
                     });
         }

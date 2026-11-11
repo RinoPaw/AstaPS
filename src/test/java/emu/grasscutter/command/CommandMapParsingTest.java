@@ -46,7 +46,7 @@ public final class CommandMapParsingTest {
                 .createCommandLine(null, null);
         var info = player.getSubcommands().get("info");
         assertTrue(info.getCommandSpec().userObject() instanceof java.util.concurrent.Callable<?>);
-        assertDoesNotThrow(() -> player.parseArgs("info", "@10001"));
+        player.parseArgs("info", "@10001");
         assertThrows(
                 CommandLine.ParameterException.class,
                 () -> player.parseArgs("info", "@not-a-uid"));

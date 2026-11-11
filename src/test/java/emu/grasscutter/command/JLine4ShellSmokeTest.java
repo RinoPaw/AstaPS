@@ -193,6 +193,22 @@ class JLine4ShellSmokeTest {
     }
 
     @Test
+    void consoleCompletionObservesCommandsRegisteredAfterShellCreation() throws Exception {
+        var commands = new CommandMap(false);
+        try (var terminal = TerminalBuilder.builder().dumb(true).build();
+                var shell = ConsoleShell.create(commands, terminal)) {
+            commands.registerCommand("lookup", new emu.grasscutter.command.commands.LookupCommand());
+            var candidates = new ArrayList<org.jline.reader.Candidate>();
+            shell.reader().getCompleter().complete(
+                    shell.reader(),
+                    new DefaultParser().parse("loo", 3, Parser.ParseContext.COMPLETE),
+                    candidates);
+            assertTrue(candidates.stream().anyMatch(candidate -> candidate.value().equals("lookup")));
+            assertNotNull(shell.dispatcher().findCommand("find"));
+        }
+    }
+
+    @Test
     void consoleShellRegistersTheTargetPseudoCommand() throws Exception {
         try (var terminal = TerminalBuilder.builder().dumb(true).build();
                 var shell = ConsoleShell.create(new CommandMap(false), terminal)) {

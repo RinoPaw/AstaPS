@@ -57,7 +57,7 @@ public final class PlayerCommand implements CommandHandler {
     @CommandLine.Command(
             name = "info",
             description = "Inspect a player by @UID, username@, or username@UID.")
-    private static final class InfoPlayer implements Runnable {
+    private static final class InfoPlayer implements java.util.concurrent.Callable<Integer> {
         private final Player sender;
 
         @Parameters(index = "0", paramLabel = "<playerSelector>")
@@ -68,17 +68,17 @@ public final class PlayerCommand implements CommandHandler {
         }
 
         @Override
-        public void run() {
+        public Integer call() {
             Player player;
             try {
                 player = CommandMap.findPlayer(selector);
             } catch (IllegalArgumentException mismatch) {
                 CommandOutput.sendMessage(sender, mismatch.getMessage());
-                return;
+                return 1;
             }
             if (player == null) {
                 CommandOutput.sendMessage(sender, "Player not found.");
-                return;
+                return 1;
             }
 
             // Account names and exact location are administrative details.
@@ -86,7 +86,7 @@ public final class PlayerCommand implements CommandHandler {
                     && (sender.getAccount() == null
                             || !sender.getAccount().hasPermission("server.playerinfo"))) {
                 CommandOutput.sendTranslatedMessage(sender, "commands.generic.permission_error");
-                return;
+                return 1;
             }
 
             var account = player.getAccount();
@@ -111,6 +111,7 @@ public final class PlayerCommand implements CommandHandler {
                 }
             }
             CommandOutput.sendMessage(sender, details.toString());
+            return 0;
         }
     }
 

@@ -47,8 +47,9 @@
 
 ## 6. 证据、待定与实施
 
-- **证据原则**：先查原版 `RinoPaw/Genshin-Reverse` 对应 EXE/metadata/资源，再核对最新 `MeChen618/AstaPS/main` 源码和当前 fork；原版客户端数据不能证明官方服务端线程/事务语义。参考 Grasscutter、LunarCore、Folia 的具体实现，保留各自适用边界。
-- **当前上游差距**：7.2 仍是 JLine 3.30.14 + Picocli 4.7.7，`CommandMap.invoke():void` 丢失退出码、控制台/Web 共用目标、异步文本捕获不足；JLine 4.5.0 默认 Dispatcher 对正常返回的整数仍写退出码 0。Quest 与 GameServer Tick 也尚无 R2/S2 统一执行权。7.2 协议仍有未映射项，不能把它们当成 CLI 本地解析的阻塞。
-- **B1 核查**：当前 `EntityAvatar` 共享 `Avatar` 可变属性 Map，`recalcStats()` 清空重建且刷新 Ability/通知。迁移须拆分纯属性计算、Ability 状态更新、属性封包，并覆盖队内外角色及 HP/能量恢复。
+- **证据原则**：先查原版 EXE/metadata，再对照最新上游及 Grasscutter/LunarCore/Folia；客户端证据不推定官方服务端架构。
+- **当前上游差距**：7.2 仍为 JLine 3/Picocli 4，CLI 无真实退出码、控制台/Web 共用目标、异步输出不全；JLine 4 默认 Dispatcher 整数结果仍成功。Quest/World 无 R2/S2。
+- **B1 上游**：EntityAvatar 共享 Avatar 属性 Map；`recalcStats()` 混合数值、Ability、通知。拆分时覆盖队内外及 HP/能量恢复。
+- **S2 上游**：入站包走单一逻辑线程，Tick 走独立 Timer，Ability、Lua、延时传送走线程池，均可改 World。需统一入口，保持 UnionCmd 批次顺序；已有 Tick/Scene 并发回归测试。
 - **主要未决**：Shell 完整功能、JLine/Picocli 结合与退出码技术、Web 并发/超时/会话生命周期；R2/S2 具体调度和跨域回执；B1 的并发一致读取和动态效果；M2 模块清单；Give 属性选项细则；Quest 访客进度与冲突优先级；旧 World 已成功但 UID 提交前换 World/Scene/会话的回执规则 **V-S（严格当前上下文）/V-H（接受已证实历史）**。**不能自行批准这些影响业务行为的选项**。
 - **实施次序**：A. 无副作用 Shell 实验：交互、补全、`&&/||` 真正反映失败；B. `give` 跑通目标/权限→R2→Inventory→P1→F1；C. Web/游戏入口复用同一结果，再推进 Quest 和 World Tick。先小范围验证，不在研究阶段为 CI 付费；**交用户测试或提交上游前必须跑相关 CI**。不擅自建分支，保留现有上游基线。

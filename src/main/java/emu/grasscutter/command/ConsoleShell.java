@@ -62,6 +62,7 @@ public final class ConsoleShell {
                         commands.getAnnotations().entrySet()) {
                     entries.add(wrap(commands, entry.getKey(), entry.getValue().aliases()));
                 }
+                entries.add(wrap(commands, "target"));
                 return entries;
             }
 

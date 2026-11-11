@@ -42,13 +42,14 @@ public final class CommandMapParsingTest {
 
     @Test
     public void playerInfoExposesFailureResultAndValidatesSelectors() {
-        var info = new emu.grasscutter.command.commands.PlayerCommand()
-                .createCommandLine(null, null)
-                .getSubcommands()
-                .get("info");
+        var player = new emu.grasscutter.command.commands.PlayerCommand()
+                .createCommandLine(null, null);
+        var info = player.getSubcommands().get("info");
         assertTrue(info.getCommandSpec().userObject() instanceof java.util.concurrent.Callable<?>);
-        info.parseArgs("@10001");
-        assertThrows(CommandLine.ParameterException.class, () -> info.parseArgs("@not-a-uid"));
+        assertDoesNotThrow(() -> player.parseArgs("info", "@10001"));
+        assertThrows(
+                CommandLine.ParameterException.class,
+                () -> player.parseArgs("info", "@not-a-uid"));
     }
 
     @Test

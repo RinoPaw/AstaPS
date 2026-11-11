@@ -347,7 +347,7 @@ public final class Grasscutter {
         if (consoleLineReader == null) {
             Terminal terminal = null;
             try {
-                terminal = TerminalBuilder.builder().jna(true).build();
+                terminal = TerminalBuilder.builder().jni(true).build();
             } catch (Exception e) {
                 try {
                     // Fallback to a dumb jline terminal.

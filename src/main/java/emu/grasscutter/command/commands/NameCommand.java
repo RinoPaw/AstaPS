@@ -33,7 +33,7 @@ public final class NameCommand implements CommandHandler {
     }
 
     @CommandLine.Command(name = "name")
-    private final class NameArgs implements Runnable {
+    private final class NameArgs implements java.util.concurrent.Callable<Integer> {
         private final Player sender;
         private final Player targetPlayer;
 
@@ -46,13 +46,13 @@ public final class NameCommand implements CommandHandler {
         }
 
         @Override
-        public void run() {
-            apply(sender, targetPlayer, String.join(" ", text));
+        public Integer call() {
+            return apply(sender, targetPlayer, String.join(" ", text));
         }
     }
 
     @CommandLine.Command(name = "reset")
-    private final class Reset implements Runnable {
+    private final class Reset implements java.util.concurrent.Callable<Integer> {
         private final Player sender;
         private final Player targetPlayer;
 
@@ -62,13 +62,13 @@ public final class NameCommand implements CommandHandler {
         }
 
         @Override
-        public void run() {
-            apply(sender, targetPlayer, DEFAULT_NICKNAME);
+        public Integer call() {
+            return apply(sender, targetPlayer, DEFAULT_NICKNAME);
         }
     }
 
     @CommandLine.Command(name = "uid")
-    private final class Uid implements Runnable {
+    private final class Uid implements java.util.concurrent.Callable<Integer> {
         private final Player sender;
         private final Player targetPlayer;
 
@@ -78,13 +78,13 @@ public final class NameCommand implements CommandHandler {
         }
 
         @Override
-        public void run() {
-            apply(sender, targetPlayer, String.valueOf(targetPlayer.getUid()));
+        public Integer call() {
+            return apply(sender, targetPlayer, String.valueOf(targetPlayer.getUid()));
         }
     }
 
     @CommandLine.Command(name = "gradient")
-    private final class Gradient implements Runnable {
+    private final class Gradient implements java.util.concurrent.Callable<Integer> {
         private final Player sender;
         private final Player targetPlayer;
 
@@ -103,40 +103,41 @@ public final class NameCommand implements CommandHandler {
         }
 
         @Override
-        public void run() {
+        public Integer call() {
             String value = text.equalsIgnoreCase("uid") ? String.valueOf(targetPlayer.getUid()) : text;
             if (value.length() > MAX_GRADIENT_LENGTH) {
                 CommandOutput.sendMessage(
                         sender, translate(sender, "commands.name.too_long", MAX_GRADIENT_LENGTH));
-                return;
+                return 1;
             }
 
             int start = RichTextUtils.parseColor(startColor);
             int end = RichTextUtils.parseColor(endColor);
             if (start < 0 || end < 0) {
                 CommandOutput.sendMessage(sender, translate(sender, "commands.name.bad_color"));
-                return;
+                return 1;
             }
 
-            apply(sender, targetPlayer, RichTextUtils.gradient(value, start, end));
+            return apply(sender, targetPlayer, RichTextUtils.gradient(value, start, end));
         }
     }
 
-    private void apply(Player sender, Player targetPlayer, String nickname) {
+    private int apply(Player sender, Player targetPlayer, String nickname) {
         if (nickname.isBlank()) {
             sendUsageMessage(sender);
-            return;
+            return 1;
         }
 
         if (nickname.length() > MAX_STORED_LENGTH) {
             CommandOutput.sendMessage(
                     sender, translate(sender, "commands.name.too_long", MAX_STORED_LENGTH));
-            return;
+            return 1;
         }
 
         targetPlayer.setNickname(nickname);
         targetPlayer.save();
         targetPlayer.sendPacket(new PacketSetPlayerNameRsp(targetPlayer));
         CommandOutput.sendMessage(sender, translate(sender, "commands.name.success", nickname.length()));
+        return 0;
     }
 }

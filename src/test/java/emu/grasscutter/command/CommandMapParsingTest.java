@@ -166,7 +166,10 @@ public final class CommandMapParsingTest {
         var ran = new AtomicBoolean();
         assertThrows(java.util.concurrent.RejectedExecutionException.class,
                 () -> CommandMap.executeCommand(
-                        () -> ran.set(true),
+                        () -> {
+                            ran.set(true);
+                            return new CommandResult(0);
+                        },
                         true,
                         command -> {
                             throw new java.util.concurrent.RejectedExecutionException("executor shut down");
@@ -175,20 +178,23 @@ public final class CommandMapParsingTest {
     }
 
     @Test
-    public void threadedExecutionUsesProvidedExecutor() {
-        var submitted = new AtomicBoolean();
+    public void threadedExecutionCompletesOnlyWhenBusinessFinishes() {
+        var queued = new java.util.concurrent.atomic.AtomicReference<Runnable>();
         var ran = new AtomicBoolean();
 
-        CommandMap.executeCommand(
-                () -> ran.set(true),
+        var completion = CommandMap.executeCommand(
+                () -> {
+                    ran.set(true);
+                    return new CommandResult(7);
+                },
                 true,
-                command -> {
-                    submitted.set(true);
-                    command.run();
-                });
+                queued::set).toCompletableFuture();
 
-        assertTrue(submitted.get());
+        assertFalse(ran.get());
+        assertFalse(completion.isDone());
+        queued.get().run();
         assertTrue(ran.get());
+        assertEquals(7, completion.join().exitCode());
     }
 
     @Test
@@ -196,11 +202,15 @@ public final class CommandMapParsingTest {
         var submitted = new AtomicBoolean();
         var ran = new AtomicBoolean();
 
-        CommandMap.executeCommand(
-                () -> ran.set(true), false, command -> submitted.set(true));
+        var completion = CommandMap.executeCommand(
+                () -> {
+                    ran.set(true);
+                    return new CommandResult(0);
+                }, false, command -> submitted.set(true));
 
         assertFalse(submitted.get());
         assertTrue(ran.get());
+        assertTrue(completion.toCompletableFuture().join().succeeded());
     }
 
     @Test

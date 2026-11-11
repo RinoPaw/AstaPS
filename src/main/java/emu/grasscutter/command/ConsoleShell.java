@@ -75,7 +75,7 @@ public final class ConsoleShell {
     }
 
     static PipelineParser pipelineParser() {
-        // File redirection and background jobs remain outside the approved first-stage scope.
+        // Concurrent pipelines, file redirection and background jobs await execution-boundary decisions.
         return new PipelineParser() {
             @Override
             protected String matchOperator(String line, int pos) {
@@ -83,8 +83,8 @@ public final class ConsoleShell {
                 if (symbol == null) return null;
                 Pipeline.Operator op = Pipeline.Operator.fromSymbol(symbol);
                 return switch (op) {
-                    case REDIRECT, APPEND, INPUT_REDIRECT, HEREDOC, STDERR_REDIRECT,
-                            COMBINED_REDIRECT -> null;
+                    case PIPE, FLIP, REDIRECT, APPEND, INPUT_REDIRECT, HEREDOC,
+                            STDERR_REDIRECT, COMBINED_REDIRECT -> null;
                     default -> symbol;
                 };
             }

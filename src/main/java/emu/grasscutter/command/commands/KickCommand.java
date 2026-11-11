@@ -25,7 +25,7 @@ public final class KickCommand implements CommandHandler {
             name = "kick",
             description = "playerSelector: @UID (UID), username@ (account), username@UID (both match).",
             customSynopsis = "kick <playerSelector>")
-    private static final class Args implements Runnable {
+    private static final class Args implements java.util.concurrent.Callable<Integer> {
         private final Player sender;
 
         @Parameters(index = "0", paramLabel = "<playerSelector>")
@@ -36,22 +36,22 @@ public final class KickCommand implements CommandHandler {
         }
 
         @Override
-        public void run() {
+        public Integer call() {
             final Player target;
             try {
                 target = CommandMap.findPlayer(CommandMap.parseExplicitTargetSelector(selector));
             } catch (IllegalArgumentException invalid) {
                 CommandOutput.sendMessage(sender, invalid.getMessage());
-                return;
+                return 1;
             }
 
             if (target == null) {
                 CommandOutput.sendTranslatedMessage(sender, "commands.execution.player_exist_error");
-                return;
+                return 1;
             }
             if (!target.isOnline() || target.getSession() == null || !target.getSession().isActive()) {
                 CommandOutput.sendTranslatedMessage(sender, "commands.execution.need_target_online");
-                return;
+                return 1;
             }
 
             if (sender != null) {
@@ -70,6 +70,7 @@ public final class KickCommand implements CommandHandler {
                         target.getAccount().getUsername());
             }
             target.getSession().close();
+            return 0;
         }
     }
 }

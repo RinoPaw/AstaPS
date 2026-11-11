@@ -703,7 +703,7 @@ public final class CommandMap {
         }
         if (handler == null || annotation == null) {
             CommandOutput.sendTranslatedMessage(player, "commands.generic.unknown_command", typedLabel);
-            return;
+            return CompletableFuture.completedFuture(new CommandResult(1));
         }
 
         if (isBuiltIn(handler)) {

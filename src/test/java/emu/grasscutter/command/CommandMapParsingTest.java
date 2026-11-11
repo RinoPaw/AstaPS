@@ -29,6 +29,18 @@ public final class CommandMapParsingTest {
     }
 
     @Test
+    public void nativeShellArgumentsRemainIntactAfterCommandRouting() {
+        String[] args = {"hello world", "D:\\Games\\AstaPS", "a|b", "semi;colon",
+                "quote\"inside", "", "@10001"};
+        var expected = new ArrayList<String>();
+        expected.add("probe");
+        expected.addAll(List.of(args));
+        assertEquals(
+                expected,
+                CommandMap.parseCommandTokens(ConsoleShell.commandLine("probe", args)));
+    }
+
+    @Test
     public void explicitTargetSelectorsDistinguishUidUsernameAndBoth() {
         assertEquals(new CommandMap.TargetSelector(null, 10001),
                 CommandMap.parseTargetSelector("@10001"));

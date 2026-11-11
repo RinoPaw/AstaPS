@@ -175,6 +175,8 @@ class JLine4ShellSmokeTest {
                 var shell = ConsoleShell.create(new CommandMap(false), terminal)) {
             assertNotNull(shell.dispatcher().findCommand("target"));
             assertNotNull(shell.dispatcher().findCommand("TARGET"));
+            assertEquals("unknown-probe", shell.dispatcher().findCommand("unknown-probe").name());
+            assertEquals("exit", shell.dispatcher().findCommand("exit").name());
         }
     }
 

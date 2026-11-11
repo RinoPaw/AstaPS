@@ -24,7 +24,7 @@ public final class LookupCommand implements CommandHandler {
     }
 
     @CommandLine.Command(name = "lookup", description = "Search item, avatar, monster and gadget names.")
-    private static final class Args implements Runnable {
+    private static final class Args implements java.util.concurrent.Callable<Integer> {
         private final Player sender;
 
         @Parameters(index = "0..*", arity = "1..*", paramLabel = "<name...>")
@@ -38,23 +38,23 @@ public final class LookupCommand implements CommandHandler {
         }
 
         @Override
-        public void run() {
+        public Integer call() {
             if (page < 1) {
                 CommandOutput.sendMessage(sender, "Page must be at least 1.");
-                return;
+                return 1;
             }
 
             String query = String.join(" ", words);
             var found = NameIndex.searchPage(query, page, PAGE_SIZE);
             if (found.total() == 0) {
                 CommandOutput.sendMessage(sender, "Nothing is called anything like \"" + query + "\".");
-                return;
+                return 1;
             }
 
             int pages = 1 + (found.total() - 1) / PAGE_SIZE;
             if (page > pages) {
                 CommandOutput.sendMessage(sender, "Page out of range (1-" + pages + ").");
-                return;
+                return 1;
             }
 
             CommandOutput.sendMessage(sender,
@@ -65,6 +65,7 @@ public final class LookupCommand implements CommandHandler {
                 CommandOutput.sendMessage(sender,
                         "Next: lookup " + query + " --page " + (page + 1));
             }
+            return 0;
         }
     }
 }

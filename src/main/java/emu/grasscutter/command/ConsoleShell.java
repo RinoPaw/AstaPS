@@ -52,9 +52,11 @@ public final class ConsoleShell {
             @Override
             public Collection<org.jline.shell.Command> commands() {
                 List<org.jline.shell.Command> entries = new ArrayList<>();
-                for (Map.Entry<String, emu.grasscutter.command.Command> entry :
-                        commands.getAnnotations().entrySet()) {
-                    String[] aliases = java.util.Arrays.stream(entry.getValue().aliases())
+                for (Map.Entry<String, CommandHandler> entry :
+                        commands.getHandlers().entrySet()) {
+                    var metadata = entry.getValue().getClass()
+                            .getAnnotation(emu.grasscutter.command.Command.class);
+                    String[] aliases = java.util.Arrays.stream(metadata.aliases())
                             .map(alias -> alias.toLowerCase(Locale.ROOT))
                             .toArray(String[]::new);
                     entries.add(wrap(commands, entry.getKey(), aliases));

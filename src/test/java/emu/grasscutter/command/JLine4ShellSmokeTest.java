@@ -2,7 +2,10 @@ package emu.grasscutter.command;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.jline.reader.Parser;
+import org.jline.reader.impl.DefaultParser;
 import org.jline.shell.CommandSession;
 import org.jline.shell.Shell;
 import org.jline.shell.impl.AbstractCommand;
@@ -46,7 +49,14 @@ class JLine4ShellSmokeTest {
                                                     }
                                                 }))
                                 .build()) {
-            assertNotNull(shell.reader().getCompleter());
+            var candidates = new ArrayList<org.jline.reader.Candidate>();
+            shell.dispatcher()
+                    .completer()
+                    .complete(
+                            shell.reader(),
+                            new DefaultParser().parse("co", 2, Parser.ParseContext.COMPLETE),
+                            candidates);
+            assertTrue(candidates.stream().anyMatch(candidate -> candidate.value().equals("count")));
 
             shell.dispatcher().execute("fail && count");
             assertEquals(0, executions.get());

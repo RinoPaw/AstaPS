@@ -9,7 +9,7 @@
 - **E1 / K1**：协议、CLI、Web、插件通过所属业务能力修改状态；原版核心玩法内置，第三方插件可扩展。拒绝无收益的旧 API/旧存档兼容层。
 - **R2**：一个 UID 的个人状态（Inventory、Quest、成长、装备关系、个人 Tick）逻辑串行，不同 UID 可并行。
 - **S2**：一个 World 的 Scene、实体、Lua、战斗、World Tick 逻辑串行，不同 World 可并行。UID/World 不各占一条物理线程；跨域异步交接，任何业务执行域不能同步等待另一域。
-- **B1 / C1**：Avatar/R2 持有长期资料并原子发布不可变常规属性快照；World/S2 经 EntityAvatar 的 Avatar 引用按需读取，**EntityAvatar 不保存 Profile 副本**；一次战斗只取一次快照。S2 管 `hp`、`energy`、Buff、护盾等实时状态并计算有效属性。属性更新无需跨域通知，Ability 等 World 状态改变仍需交接。离开 World 时交接持久恢复状态。保留客户端主要伤害输入，由 World 校验应用；C2 未批准。
+- **B1 / C1**：Avatar/R2 持有等级、装备、天赋等原始数据；**不缓存派生属性**。World/S2 每次攻击或查询经 EntityAvatar 读取 Avatar 的武器、圣遗物、等级等数据，结合当前 Buff/环境计算；EntityAvatar 不保存属性副本。一次计算须读取一致的原始状态，禁止跨域同步等待，具体机制待定。S2 管 `hp`、`energy`、Buff、护盾；Ability 变化仍需跨域交接。保留客户端主要伤害输入，由 World 校验应用；C2 未批准。
 - **持久化 P1**：个人业务内存变更在 R2 中完整同步完成；一个 UID 一条逻辑有序的异步 DB 写入线，不同 UID 可并行。经济操作必须先取得该次操作全部写入准入，否则在修改前拒绝；不允许拥塞时退化为调用线程直接写 DB。写入失败可观察，重登录读取不能越过旧会话尚未完成的持久化。奖励回执 `PREPARED` 的必要同步确认保留。装备内存成功即可响应，无需等待普通 MongoDB 写入，不保证崩溃时跨文档原子性。
 
 ## 2. CLI / 命令（已决定）
@@ -50,5 +50,5 @@
 - **证据原则**：先查原版 `RinoPaw/Genshin-Reverse` 对应 EXE/metadata/资源，再核对最新 `MeChen618/AstaPS/main` 源码和当前 fork；原版客户端数据不能证明官方服务端线程/事务语义。参考 Grasscutter、LunarCore、Folia 的具体实现，保留各自适用边界。
 - **当前上游差距**：7.2 仍是 JLine 3.30.14 + Picocli 4.7.7，`CommandMap.invoke():void` 丢失退出码、控制台/Web 共用目标、异步文本捕获不足；JLine 4.5.0 默认 Dispatcher 对正常返回的整数仍写退出码 0。Quest 与 GameServer Tick 也尚无 R2/S2 统一执行权。7.2 协议仍有未映射项，不能把它们当成 CLI 本地解析的阻塞。
 - **B1 上游核查**：`EntityAvatar.getFightProperties()` 与 `Avatar` 共用一张可变 Map，`recalcStats()` 清空重建；`TeamManager` 保留队内多个 EntityAvatar，队外角色也可治疗；`AvatarInfo` 发送属性表。覆盖站场、后台、队外、协议面板、HP/能量恢复；动态效果算法待定。
-- **主要未决**：Shell 完整功能、JLine/Picocli 结合与退出码技术、Web 并发/超时/会话生命周期；R2/S2 具体调度和跨域回执；B1 的快照发布和动态效果；M2 模块清单；Give 属性选项细则；Quest 访客进度与冲突优先级；旧 World 已成功但 UID 提交前换 World/Scene/会话的回执规则 **V-S（严格当前上下文）/V-H（接受已证实历史）**。**不能自行批准这些影响业务行为的选项**。
+- **主要未决**：Shell 完整功能、JLine/Picocli 结合与退出码技术、Web 并发/超时/会话生命周期；R2/S2 具体调度和跨域回执；B1 的并发一致读取和动态效果；M2 模块清单；Give 属性选项细则；Quest 访客进度与冲突优先级；旧 World 已成功但 UID 提交前换 World/Scene/会话的回执规则 **V-S（严格当前上下文）/V-H（接受已证实历史）**。**不能自行批准这些影响业务行为的选项**。
 - **实施次序**：A. 无副作用 Shell 实验：交互、补全、`&&/||` 真正反映失败；B. `give` 跑通目标/权限→R2→Inventory→P1→F1；C. Web/游戏入口复用同一结果，再推进 Quest 和 World Tick。先小范围验证，不在研究阶段为 CI 付费；**交用户测试或提交上游前必须跑相关 CI**。不擅自建分支，保留现有上游基线。

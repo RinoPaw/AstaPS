@@ -15,8 +15,7 @@ import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
 /**
- * Proves the native JLine 4 Shell semantics without executing a Grasscutter command or changing
- * player state. No production console path is switched until command completion has a real result.
+ * Proves JLine 4 Shell semantics without running game commands or changing player state.
  */
 class JLine4ShellSmokeTest {
     @Test
@@ -152,6 +151,26 @@ class JLine4ShellSmokeTest {
 
             shell.dispatcher().execute("pure && count");
             assertEquals(2, executions.get());
+        }
+    }
+
+    @Test
+    void consoleShellKeepsFileRedirectionDisabled() {
+        var parser = ConsoleShell.pipelineParser();
+        var conditional = parser.parse("help && help || help");
+        assertEquals(org.jline.shell.Pipeline.Operator.AND, conditional.stages().get(0).operator());
+        assertEquals(org.jline.shell.Pipeline.Operator.OR, conditional.stages().get(1).operator());
+
+        var redirect = parser.parse("help > output.txt");
+        assertEquals(1, redirect.stages().size());
+        assertNull(redirect.stages().get(0).redirectTarget());
+    }
+
+    @Test
+    void consoleShellRegistersTheTargetPseudoCommand() throws Exception {
+        try (var terminal = TerminalBuilder.builder().dumb(true).build();
+                var shell = ConsoleShell.create(new CommandMap(false), terminal)) {
+            assertNotNull(shell.dispatcher().findCommand("target"));
         }
     }
 

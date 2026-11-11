@@ -40,6 +40,9 @@ jobs:
       - name: Build jar
         run: ./gradlew jar -PskipHandbook=1 -Dorg.gradle.jvmargs=-Xmx4g
 
+      - name: Verify JLine 4 Shell execution semantics
+        run: ./gradlew test --tests 'emu.grasscutter.command.JLine4ShellSmokeTest' -PexcludeTags=integration -Dorg.gradle.jvmargs=-Xmx4g
+
       - name: Upload jar
         uses: actions/upload-artifact@v4
         with:

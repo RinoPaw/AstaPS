@@ -48,7 +48,7 @@ public final class LookupCommand implements CommandHandler {
             var found = NameIndex.searchPage(query, page, PAGE_SIZE);
             if (found.total() == 0) {
                 CommandOutput.sendMessage(sender, "Nothing is called anything like \"" + query + "\".");
-                return 1;
+                return 0;
             }
 
             int pages = 1 + (found.total() - 1) / PAGE_SIZE;

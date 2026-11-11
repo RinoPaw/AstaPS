@@ -18,10 +18,13 @@ public final class ReloadAndStopCommandTest {
                 command.getSubcommands().keySet());
         assertEquals("server.reload", ReloadCommand.class.getAnnotation(Command.class).permission());
         assertDoesNotThrow(() -> command.parseArgs());
+        assertTrue(command.getCommandSpec().userObject() instanceof java.util.concurrent.Callable<?>);
         for (String name : List.of("all", "config", "language", "gacha", "shop", "combine", "rewards")) {
             var cli = new ReloadCommand().createCommandLine(null, null);
             assertDoesNotThrow(() -> cli.parseArgs(name), name);
             assertTrue(cli.getSubcommands().get(name).getUsageMessage().contains("reload"));
+            assertTrue(cli.getSubcommands().get(name).getCommandSpec().userObject()
+                    instanceof java.util.concurrent.Callable<?>);
         }
         assertThrows(CommandLine.ParameterException.class, () -> command.parseArgs("scripts"));
         assertThrows(CommandLine.ParameterException.class, () -> command.parseArgs("quest"));

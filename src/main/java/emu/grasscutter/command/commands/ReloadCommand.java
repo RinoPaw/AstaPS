@@ -58,7 +58,7 @@ public final class ReloadCommand implements CommandHandler {
         return root;
     }
 
-    private static void runReload(Player sender, Module selected) {
+    private static int runReload(Player sender, Module selected) {
         boolean all = selected == null;
         String label = all ? "all" : selected.command;
         CommandOutput.sendMessage(sender, translate(sender, "commands.reload.reload_start"));
@@ -73,15 +73,16 @@ public final class ReloadCommand implements CommandHandler {
             Grasscutter.getLogger().error("Reload of {} failed.", label, failure);
             CommandOutput.sendMessage(sender,
                     "Reload " + label + " failed: " + failure.getMessage());
-            return;
+            return 1;
         }
 
         CommandOutput.sendMessage(sender, translate(sender, "commands.reload.reload_done"));
         if (!all) CommandOutput.sendMessage(sender, "Reloaded: " + label);
+        return 0;
     }
 
     @CommandLine.Command(name = "reload", description = "Reload configurable modules; no quest or script reload.")
-    private static final class Root implements Runnable {
+    private static final class Root implements java.util.concurrent.Callable<Integer> {
         private final Player sender;
 
         private Root(Player sender) {
@@ -89,13 +90,13 @@ public final class ReloadCommand implements CommandHandler {
         }
 
         @Override
-        public void run() {
-            runReload(sender, null);
+        public Integer call() {
+            return runReload(sender, null);
         }
     }
 
     @CommandLine.Command(name = "module", description = "Reload a specific module.")
-    private static final class ModuleAction implements Runnable {
+    private static final class ModuleAction implements java.util.concurrent.Callable<Integer> {
         private final Player sender;
         private final Module module;
 
@@ -105,8 +106,8 @@ public final class ReloadCommand implements CommandHandler {
         }
 
         @Override
-        public void run() {
-            runReload(sender, module);
+        public Integer call() {
+            return runReload(sender, module);
         }
     }
 }

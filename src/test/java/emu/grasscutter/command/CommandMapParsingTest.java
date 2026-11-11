@@ -41,6 +41,17 @@ public final class CommandMapParsingTest {
     }
 
     @Test
+    public void playerInfoExposesFailureResultAndValidatesSelectors() {
+        var info = new emu.grasscutter.command.commands.PlayerCommand()
+                .createCommandLine(null, null)
+                .getSubcommands()
+                .get("info");
+        assertTrue(info.getCommandSpec().userObject() instanceof java.util.concurrent.Callable<?>);
+        info.parseArgs("@10001");
+        assertThrows(CommandLine.ParameterException.class, () -> info.parseArgs("@not-a-uid"));
+    }
+
+    @Test
     public void explicitTargetSelectorsDistinguishUidUsernameAndBoth() {
         assertEquals(new CommandMap.TargetSelector(null, 10001),
                 CommandMap.parseTargetSelector("@10001"));

@@ -77,7 +77,7 @@ public final class Grasscutter {
     @Getter @Setter private static AuthenticationSystem authenticationSystem;
     @Getter @Setter private static PermissionHandler permissionHandler;
 
-    private static LineReader consoleLineReader = null;
+    private static volatile LineReader consoleLineReader = null;
 
     @Getter
     private static final ExecutorService threadPool =
@@ -387,41 +387,48 @@ public final class Grasscutter {
             logger.info(translate("messages.status.done"));
         }
 
-        String input = null;
-        var isLastInterrupted = false;
-        while (config.server.game.enableConsole) {
-            try {
-                input = consoleLineReader.readLine(commandMap.getConsolePrompt());
-            } catch (UserInterruptException e) {
-                if (!isLastInterrupted) {
-                    isLastInterrupted = true;
-                    logger.info("Press Ctrl-C again to shutdown.");
-                    continue;
-                } else {
+        try (var shell = ConsoleShell.create(commandMap, getConsole().getTerminal())) {
+            consoleLineReader = shell.reader();
+            var dispatcher = shell.dispatcher();
+            dispatcher.initialize(null);
+
+            boolean lastInterrupted = false;
+            while (config.server.game.enableConsole) {
+                String input;
+                try {
+                    input = shell.reader().readLine(commandMap.getConsolePrompt());
+                } catch (UserInterruptException e) {
+                    if (!lastInterrupted) {
+                        lastInterrupted = true;
+                        logger.info("Press Ctrl-C again to shutdown.");
+                        continue;
+                    }
                     Runtime.getRuntime().exit(0);
+                    return;
+                } catch (EndOfFileException e) {
+                    logger.info("No console attached, running without commands.");
+                    return;
+                } catch (IOError e) {
+                    logger.error("An IO error occurred while trying to read from console.", e);
+                    return;
+                } catch (IllegalStateException e) {
+                    // The terminal was closed during server shutdown.
+                    return;
                 }
-            } catch (EndOfFileException e) {
-                // Nothing is attached to stdin - a redirect, a service, a background launch. Asking
-                // again just returns EOF again, so the loop span the CPU and filled the log with its
-                // own complaints. Stop reading; the server's own threads keep it running.
-                logger.info("No console attached, running without commands.");
-                return;
-            } catch (IOError e) {
-                logger.error("An IO error occurred while trying to read from console.", e);
-                return;
-            } catch (IllegalStateException e) {
-                // `stop` closes the terminal from the shutdown hook while this thread is back in
-                // readLine; JLine then throws "Terminal has been closed". Nothing is left to read.
-                return;
-            }
 
-            isLastInterrupted = false;
-
-            try {
-                commandMap.invoke(null, null, input);
-            } catch (Exception e) {
-                logger.error(translate("messages.game.command_error"), e);
+                lastInterrupted = false;
+                try {
+                    dispatcher.execute(input);
+                } catch (org.jline.shell.ExitShellException e) {
+                    return;
+                } catch (Exception e) {
+                    dispatcher.trace(e);
+                } finally {
+                    dispatcher.cleanUp();
+                }
             }
+        } catch (Exception e) {
+            logger.error("Failed to run the JLine 4 console shell.", e);
         }
     }
 

@@ -71,6 +71,12 @@ public final class CommandRedundancyTest {
         assertTrue(map.getHandler("give") == map.getHandler("g"));
         assertTrue(map.getHandler("name") == map.getHandler("rename"));
         assertTrue(map.getHandler("namecard") == map.getHandler("card"));
+        var name = new NameCommand().createCommandLine(null, null);
+        assertTrue(name.getCommandSpec().userObject() instanceof java.util.concurrent.Callable<?>);
+        for (String variant : new String[] {"reset", "uid", "gradient"}) {
+            assertTrue(name.getSubcommands().get(variant).getCommandSpec().userObject()
+                    instanceof java.util.concurrent.Callable<?>);
+        }
         for (String removed : new String[] {
                 "item", "giveitem", "nickname", "setnamecard", "suicide"
         }) {

@@ -216,6 +216,7 @@ class JLine4ShellSmokeTest {
             assertNotNull(shell.dispatcher().findCommand("TARGET"));
             assertEquals("unknown-probe", shell.dispatcher().findCommand("unknown-probe").name());
             assertEquals("exit", shell.dispatcher().findCommand("exit").name());
+            assertEquals("exit", shell.dispatcher().findCommand("EXIT").name());
         }
     }
 

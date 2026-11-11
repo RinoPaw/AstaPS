@@ -8,10 +8,12 @@ import java.util.Map;
 import org.jline.reader.SyntaxError;
 import org.jline.shell.CommandGroup;
 import org.jline.shell.CommandSession;
+import org.jline.shell.Pipeline;
 import org.jline.shell.Shell;
 import org.jline.shell.UnknownCommandException;
 import org.jline.shell.impl.AbstractCommand;
 import org.jline.shell.impl.DefaultCommandDispatcher;
+import org.jline.shell.impl.PipelineParser;
 import org.jline.terminal.Terminal;
 
 /** Adapts the game's command registry and results to the native JLine 4 shell. */
@@ -19,7 +21,21 @@ public final class ConsoleShell {
     private ConsoleShell() {}
 
     public static Shell create(CommandMap commands, Terminal terminal) throws IOException {
-        var dispatcher = new DefaultCommandDispatcher(terminal) {
+        // File redirection and background jobs remain outside the approved first-stage scope.
+        var operators = new PipelineParser() {
+            @Override
+            protected String matchOperator(String line, int pos) {
+                String symbol = super.matchOperator(line, pos);
+                if (symbol == null) return null;
+                Pipeline.Operator op = Pipeline.Operator.fromSymbol(symbol);
+                return switch (op) {
+                    case REDIRECT, APPEND, INPUT_REDIRECT, HEREDOC, STDERR_REDIRECT,
+                            COMBINED_REDIRECT -> null;
+                    default -> symbol;
+                };
+            }
+        };
+        var dispatcher = new DefaultCommandDispatcher(terminal, null, operators, null) {
             @Override
             public void trace(Throwable failure) {
                 // CommandMap already delivered business feedback to the stage output.

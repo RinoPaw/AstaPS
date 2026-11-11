@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import org.jline.reader.LineReader;
 import org.jline.reader.Reference;
@@ -600,9 +602,16 @@ public final class CommandMap {
         return true;
     }
 
+    /** Called by the current game and web entry points while the interactive shell is migrated. */
     public void invoke(Player player, Player targetPlayer, String rawMessage) {
+        execute(player, targetPlayer, rawMessage);
+    }
+
+    /** Completes when the command has actually finished, including executor-backed commands. */
+    public CompletionStage<CommandResult> execute(
+            Player player, Player targetPlayer, String rawMessage) {
         var event = new ExecuteCommandEvent(player, targetPlayer, rawMessage);
-        if (!event.call()) return;
+        if (!event.call()) return CompletableFuture.completedFuture(new CommandResult(1));
 
         player = event.getSender();
         targetPlayer = event.getTarget();
@@ -626,7 +635,7 @@ public final class CommandMap {
         rawMessage = rawMessage.trim();
         if (rawMessage.isEmpty()) {
             CommandOutput.sendTranslatedMessage(player, "commands.generic.not_specified");
-            return;
+            return CompletableFuture.completedFuture(new CommandResult(1));
         }
 
         final List<String> tokens;
@@ -634,9 +643,9 @@ public final class CommandMap {
             tokens = parseCommandTokens(rawMessage);
         } catch (SyntaxError error) {
             CommandOutput.sendMessage(player, error.getMessage());
-            return;
+            return CompletableFuture.completedFuture(new CommandResult(1));
         }
-        if (tokens.isEmpty()) return;
+        if (tokens.isEmpty()) return CompletableFuture.completedFuture(new CommandResult(1));
 
         String rawLabel = tokens.remove(0);
         String label = rawLabel.toLowerCase(Locale.ROOT);
@@ -644,17 +653,17 @@ public final class CommandMap {
         String playerId = (player == null) ? CONSOLE_ID : player.getAccount().getId();
 
         if (isTargetSelector(rawLabel)) {
-            this.setPlayerTarget(playerId, player, rawLabel);
-            return;
+            boolean updated = this.setPlayerTarget(playerId, player, rawLabel);
+            return CompletableFuture.completedFuture(new CommandResult(updated ? 0 : 1));
         }
         if (label.equals("target")) {
             if (args.size() > 1) {
                 CommandOutput.sendMessage(player, "Usage: target [UID|@UID|username@|username@UID]");
-                return;
+                return CompletableFuture.completedFuture(new CommandResult(1));
             }
-            this.setPlayerTarget(
+            boolean updated = this.setPlayerTarget(
                     playerId, player, args.isEmpty() ? "" : normalizeTargetSelector(args.get(0)));
-            return;
+            return CompletableFuture.completedFuture(new CommandResult(updated ? 0 : 1));
         }
 
         String typedLabel = label;
@@ -670,7 +679,7 @@ public final class CommandMap {
         }
         if (resolvedLabel == null) {
             CommandOutput.sendTranslatedMessage(player, "commands.generic.unknown_command", typedLabel);
-            return;
+            return CompletableFuture.completedFuture(new CommandResult(1));
         }
         CommandHandler routed;
         synchronized (this.picocliLock) {
@@ -712,7 +721,7 @@ public final class CommandMap {
                     getTargetPlayer(
                             playerId, player, targetPlayer, args, annotation.inlineTarget());
         } catch (IllegalArgumentException e) {
-            return;
+            return CompletableFuture.completedFuture(new CommandResult(1));
         }
 
         if (!Grasscutter.getPermissionHandler()
@@ -721,36 +730,39 @@ public final class CommandMap {
                         targetPlayer,
                         annotation.permission(),
                         annotation.permissionTargeted())) {
-            return;
+            return CompletableFuture.completedFuture(new CommandResult(1));
         }
 
         Command.TargetRequirement targetRequirement = annotation.targetRequirement();
         if (!targetUsable(targetRequirement, targetPlayer)) {
             sendUnavailableTarget(player, targetPlayer == null
                     ? Command.TargetRequirement.PLAYER : targetRequirement);
-            return;
+            return CompletableFuture.completedFuture(new CommandResult(1));
         }
 
         final Player sender = player;
         final Player target = targetPlayer;
         final String[] commandArgs = args.toArray(String[]::new);
+        var completed = new CompletableFuture<CommandResult>();
         Runnable runnable = () -> {
             // Permission and target selection happened on dispatch; queued work must not
             // operate on a player who logged out or changed online state in the meantime.
             if (!targetUsable(targetRequirement, target)) {
                 sendUnavailableTarget(sender, targetRequirement);
+                completed.complete(new CommandResult(1));
                 return;
             }
             try {
                 CommandLine cli = configureCommandLine(
                         handler.createCommandLine(sender, target), sender, handler);
-                cli.execute(commandArgs);
+                completed.complete(new CommandResult(cli.execute(commandArgs)));
             } catch (RuntimeException exception) {
                 // Picocli handles command.run() failures, but model construction itself
                 // is outside its error handler. Keep those exceptions off the game loop.
                 LOGGER.error(
                         "Failed to construct or run command " + handler.getLabel() + ".", exception);
                 CommandOutput.sendMessage(sender, "Command execution failed.");
+                completed.complete(new CommandResult(1));
             }
         };
 
@@ -760,7 +772,9 @@ public final class CommandMap {
             LOGGER.warn(
                     "Command executor rejected " + handler.getLabel() + ".", exception);
             CommandOutput.sendMessage(sender, "Command executor is unavailable.");
+            completed.complete(new CommandResult(1));
         }
+        return completed;
     }
 
     private void scan() {

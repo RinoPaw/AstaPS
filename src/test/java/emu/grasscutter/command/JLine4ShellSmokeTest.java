@@ -170,6 +170,29 @@ class JLine4ShellSmokeTest {
     }
 
     @Test
+    void consoleShellDoesNotRegisterAliasesAsSeparateCommands() throws Exception {
+        var commands = new CommandMap(false);
+        commands.registerCommand("lookup", new emu.grasscutter.command.commands.LookupCommand());
+
+        try (var terminal = TerminalBuilder.builder().dumb(true).build();
+                var shell = ConsoleShell.create(commands, terminal)) {
+            var group = shell.dispatcher().groups().stream()
+                    .filter(entry -> entry.name().equals("astaps"))
+                    .findFirst()
+                    .orElseThrow();
+            assertEquals(
+                    java.util.Set.of("lookup", "target"),
+                    group.commands().stream()
+                            .map(org.jline.shell.Command::name)
+                            .collect(java.util.stream.Collectors.toSet()));
+            assertEquals(2, group.commands().size());
+            assertNotNull(shell.dispatcher().findCommand("lookup"));
+            assertNotNull(shell.dispatcher().findCommand("find"));
+            assertNotNull(shell.dispatcher().findCommand("search"));
+        }
+    }
+
+    @Test
     void consoleShellRegistersTheTargetPseudoCommand() throws Exception {
         try (var terminal = TerminalBuilder.builder().dumb(true).build();
                 var shell = ConsoleShell.create(new CommandMap(false), terminal)) {

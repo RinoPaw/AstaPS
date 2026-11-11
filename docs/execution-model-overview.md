@@ -52,4 +52,4 @@
 - **B1 上游**：EntityAvatar 共享 Avatar 属性 Map；`recalcStats()` 混合数值、Ability、通知。拆分时覆盖队内外及 HP/能量恢复。
 - **S2 上游**：入站包走单一逻辑线程，Tick 走独立 Timer，Ability、Lua、延时传送走线程池，均可改 World。需统一入口，保持 UnionCmd 批次顺序；已有 Tick/Scene 并发回归测试。
 - **主要未决**：Shell 完整功能、JLine/Picocli 结合与退出码技术、Web 并发/超时/会话生命周期；R2/S2 具体调度和跨域回执；B1 的并发一致读取和动态效果；M2 模块清单；Give 属性选项细则；Quest 访客进度与冲突优先级；旧 World 已成功但 UID 提交前换 World/Scene/会话的回执规则 **V-S（严格当前上下文）/V-H（接受已证实历史）**。**不能自行批准这些影响业务行为的选项**。
-- **实施状态**：JLine 4.5.0 独立实验 3 项通过。分支已增加 `CommandResult` / `CommandMap.execute():CompletionStage`，`help` 使用 Picocli 返回码；`invoke()` 仍供现有入口调用，多数 `Runnable` 的业务失败仍可能被误报成功。生产 Shell 尚未迁移。后续先统一结果语义，再接本地 Shell、`give` 和 R2。交用户测试或上游提交前必须跑 CI。
+- **实施状态**：JLine 4.5.0 已成为生产依赖，本地控制台接入原生 Dispatcher、补全及输出流，保留双 Ctrl-C；开放 `;`、`&&`、`||`，暂禁并行管道、文件重定向和后台任务。`CommandResult`、`CommandMap.execute():CompletionStage` 与 `help` 返回码已实现；多数 `Runnable` 业务失败仍可能被误报成功。Java 21 下独立 Shell 验证与隔离桥接实验通过；完整 Gradle/CI 尚未通过。下一步迁移业务错误返回、完善测试，交用户测试或提交上游前必须跑 CI。

@@ -20,6 +20,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 import org.jline.reader.LineReader;
 import org.jline.reader.Reference;
 import org.jline.reader.Parser;
@@ -140,9 +141,10 @@ public final class CommandMap {
         CommandOutput.sendTranslatedMessage(sender, key);
     }
 
-    static void executeCommand(Runnable runnable, boolean threaded, Executor executor) {
-        if (threaded) executor.execute(runnable);
-        else runnable.run();
+    static CompletionStage<CommandResult> executeCommand(
+            Supplier<CommandResult> action, boolean threaded, Executor executor) {
+        if (threaded) return CompletableFuture.supplyAsync(action, executor);
+        return CompletableFuture.completedFuture(action.get());
     }
 
     private static String normalizeCommandName(String name) {
@@ -743,38 +745,32 @@ public final class CommandMap {
         final Player sender = player;
         final Player target = targetPlayer;
         final String[] commandArgs = args.toArray(String[]::new);
-        var completed = new CompletableFuture<CommandResult>();
-        Runnable runnable = () -> {
-            // Permission and target selection happened on dispatch; queued work must not
-            // operate on a player who logged out or changed online state in the meantime.
+        Supplier<CommandResult> action = () -> {
+            // Target selection happened on dispatch; recheck after waiting in an executor queue.
             if (!targetUsable(targetRequirement, target)) {
                 sendUnavailableTarget(sender, targetRequirement);
-                completed.complete(new CommandResult(1));
-                return;
+                return new CommandResult(1);
             }
             try {
                 CommandLine cli = configureCommandLine(
                         handler.createCommandLine(sender, target), sender, handler);
-                completed.complete(new CommandResult(cli.execute(commandArgs)));
+                return new CommandResult(cli.execute(commandArgs));
             } catch (RuntimeException exception) {
-                // Picocli handles command.run() failures, but model construction itself
-                // is outside its error handler. Keep those exceptions off the game loop.
                 LOGGER.error(
                         "Failed to construct or run command " + handler.getLabel() + ".", exception);
                 CommandOutput.sendMessage(sender, "Command execution failed.");
-                completed.complete(new CommandResult(1));
+                return new CommandResult(1);
             }
         };
 
         try {
-            executeCommand(runnable, annotation.threading(), Grasscutter.getThreadPool());
+            return executeCommand(action, annotation.threading(), Grasscutter.getThreadPool());
         } catch (java.util.concurrent.RejectedExecutionException exception) {
             LOGGER.warn(
                     "Command executor rejected " + handler.getLabel() + ".", exception);
             CommandOutput.sendMessage(sender, "Command executor is unavailable.");
-            completed.complete(new CommandResult(1));
+            return CompletableFuture.completedFuture(new CommandResult(1));
         }
-        return completed;
     }
 
     private void scan() {

@@ -21,7 +21,7 @@ public final class HelpCommand implements CommandHandler {
     }
 
     @CommandLine.Command(name = "help")
-    private final class Args implements Runnable {
+    private final class Args implements java.util.concurrent.Callable<Integer> {
         private final Player player;
 
         @Parameters(index = "0..*", arity = "0..*", paramLabel = "[command [subcommand...]]")
@@ -32,7 +32,7 @@ public final class HelpCommand implements CommandHandler {
         }
 
         @Override
-        public void run() {
+        public Integer call() {
             Account account = player == null ? null : player.getAccount();
             var commandMap = CommandMap.getInstance();
 
@@ -43,18 +43,18 @@ public final class HelpCommand implements CommandHandler {
                         CommandOutput.sendMessage(player, summarize(player, handler));
                     }
                 });
-                return;
+                return 0;
             }
 
             CommandHandler handler = commandMap.getHandler(commandPath.getFirst());
             if (handler == null) {
                 CommandOutput.sendTranslatedMessage(player, "commands.generic.command_exist_error");
                 CommandOutput.sendMessage(player, "Command: " + commandPath.getFirst());
-                return;
+                return 1;
             }
             if (!isVisible(player, account, handler)) {
                 CommandOutput.sendTranslatedMessage(player, "commands.generic.permission_error");
-                return;
+                return 1;
             }
 
             CommandLine root = handler.createCommandLine(player, null);
@@ -62,9 +62,10 @@ public final class HelpCommand implements CommandHandler {
             if (selected == null) {
                 CommandOutput.sendMessage(player, "Unknown subcommand: " + commandPath.getLast());
                 CommandOutput.sendMessage(player, root.getUsageMessage().stripTrailing());
-                return;
+                return 1;
             }
             CommandOutput.sendMessage(player, describe(player, handler, selected));
+            return 0;
         }
     }
 

@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletionException;
 import org.jline.reader.SyntaxError;
-import org.jline.shell.Command;
 import org.jline.shell.CommandGroup;
 import org.jline.shell.CommandSession;
 import org.jline.shell.Shell;
@@ -42,8 +40,8 @@ public final class ConsoleShell {
             }
 
             @Override
-            public Collection<Command> commands() {
-                List<Command> entries = new ArrayList<>();
+            public Collection<org.jline.shell.Command> commands() {
+                List<org.jline.shell.Command> entries = new ArrayList<>();
                 for (Map.Entry<String, emu.grasscutter.command.Command> entry :
                         commands.getAnnotations().entrySet()) {
                     entries.add(wrap(commands, entry.getKey(), entry.getValue().aliases()));
@@ -52,7 +50,7 @@ public final class ConsoleShell {
             }
 
             @Override
-            public Command command(String name) {
+            public org.jline.shell.Command command(String name) {
                 // Bare @UID selectors also change the remembered console target.
                 if (CommandMap.isTargetSelector(name)) return wrap(commands, name);
                 return CommandGroup.super.command(name);
@@ -69,22 +67,17 @@ public final class ConsoleShell {
                 .build();
     }
 
-    private static Command wrap(CommandMap commands, String name, String... aliases) {
+    private static org.jline.shell.Command wrap(CommandMap commands, String name, String... aliases) {
         return new AbstractCommand(name, aliases) {
             @Override
             public Object execute(CommandSession session, String[] args) throws Exception {
-                CommandResult result;
-                try {
-                    result = commands
-                            .execute(null, null, commandLine(name, args), line -> {
-                                session.out().println(line);
-                                session.out().flush();
-                            })
-                            .toCompletableFuture()
-                            .join();
-                } catch (CompletionException error) {
-                    throw error;
-                }
+                CommandResult result = commands
+                        .execute(null, null, commandLine(name, args), line -> {
+                            session.out().println(line);
+                            session.out().flush();
+                        })
+                        .toCompletableFuture()
+                        .join();
 
                 if (!result.succeeded()) throw new FailedCommand(result.exitCode());
                 return null;

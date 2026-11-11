@@ -23,6 +23,7 @@ public final class SensitiveCommandSyntaxTest {
         assertTrue(cli.getUsageMessage().contains("playerSelector: @UID"));
         assertThrows(CommandLine.ParameterException.class, () -> cli.parseArgs());
 
+        assertTrue(cli.getCommandSpec().userObject() instanceof java.util.concurrent.Callable<?>);
         var unbanCli = new UnbanCommand().createCommandLine(null, null);
         assertTrue(unbanCli.getSubcommands().isEmpty());
         assertFalse(UnbanCommand.class.getAnnotation(Command.class).inlineTarget());
@@ -222,6 +223,7 @@ public final class SensitiveCommandSyntaxTest {
     void unbanAndKickUseExplicitSelectorsWithoutKeystoreKeys() {
         var unban = new UnbanCommand().createCommandLine(null, null);
         var kick = new KickCommand().createCommandLine(null, null);
+        assertTrue(kick.getCommandSpec().userObject() instanceof java.util.concurrent.Callable<?>);
         for (String selector : List.of("@10001", "rino@", "rino@10001", "20261010@")) {
             assertDoesNotThrow(() -> unban.parseArgs(selector), selector);
             assertDoesNotThrow(() -> kick.parseArgs(selector), selector);

@@ -20,6 +20,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executor;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.jline.reader.LineReader;
 import org.jline.reader.Reference;
@@ -620,6 +621,18 @@ public final class CommandMap {
     /** Completes when the command has actually finished, including executor-backed commands. */
     public CompletionStage<CommandResult> execute(
             Player player, Player targetPlayer, String rawMessage) {
+        return execute(player, targetPlayer, rawMessage, null);
+    }
+
+    /** The output callback follows the command onto its executor when needed. */
+    public CompletionStage<CommandResult> execute(
+            Player player, Player targetPlayer, String rawMessage, Consumer<String> output) {
+        return CommandOutput.withConsoleOutput(
+                output, () -> executeWithOutput(player, targetPlayer, rawMessage, output));
+    }
+
+    private CompletionStage<CommandResult> executeWithOutput(
+            Player player, Player targetPlayer, String rawMessage, Consumer<String> output) {
         var event = new ExecuteCommandEvent(player, targetPlayer, rawMessage);
         if (!event.call()) return CompletableFuture.completedFuture(new CommandResult(1));
 
@@ -753,7 +766,7 @@ public final class CommandMap {
         final Player sender = player;
         final Player target = targetPlayer;
         final String[] commandArgs = args.toArray(String[]::new);
-        Supplier<CommandResult> action = () -> {
+        Supplier<CommandResult> action = () -> CommandOutput.withConsoleOutput(output, () -> {
             // Target selection happened on dispatch; recheck after waiting in an executor queue.
             if (!targetUsable(targetRequirement, target)) {
                 sendUnavailableTarget(sender, targetRequirement);
@@ -769,7 +782,7 @@ public final class CommandMap {
                 CommandOutput.sendMessage(sender, "Command execution failed.");
                 return new CommandResult(1);
             }
-        };
+        });
 
         try {
             return executeCommand(action, annotation.threading(), Grasscutter.getThreadPool());

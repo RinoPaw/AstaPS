@@ -115,7 +115,7 @@
       "need_target_offline": "Ta komenda wymaga ID gracza, który jest offline, ale bieżący gracz docelowy jest w trybie online. Dodaj inny argument <@ID> lub ustaw ID gracza na stałe dla każdej kolejnej komendy poleceniem \"set_target @ID\"."
     },
     "name": {
-      "description": "Set your nickname server-side, including rich text markup the in-game rename box rejects.\n\tUsage: name <text> | name gradient <text> <#start> <#end> | name uid | name reset",
+      "description": "Set your nickname server-side, including rich text markup the in-game rename box rejects.",
       "success": "Nickname updated (%s characters stored).",
       "gradient_usage": "Usage: name gradient <text> <#startColor> <#endColor>  e.g. name gradient uid #FFFFFF #0080FF",
       "bad_color": "Invalid colour. Use hex like #FFFFFF or #08F.",

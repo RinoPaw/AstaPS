@@ -193,6 +193,28 @@ class JLine4ShellSmokeTest {
     }
 
     @Test
+    void commandHighlighterDistinguishesKnownAliasesAndUnknownCommands() throws Exception {
+        var commands = new CommandMap(false);
+        commands.registerCommand("lookup", new emu.grasscutter.command.commands.LookupCommand());
+
+        try (var terminal = TerminalBuilder.builder().dumb(true).build();
+                var shell = ConsoleShell.create(commands, terminal)) {
+            var highlighter = shell.reader().getHighlighter();
+            String known = highlighter.highlight(shell.reader(), "lookup").toAnsi();
+            String alias = highlighter.highlight(shell.reader(), "find").toAnsi();
+            String unknown = highlighter.highlight(shell.reader(), "__unknown_probe__").toAnsi();
+            String operator = highlighter
+                    .highlight(shell.reader(), "lookup && __unknown_probe__")
+                    .toAnsi();
+
+            assertTrue(known.contains("\u001B[1m"), known);
+            assertTrue(alias.contains("\u001B[1m"), alias);
+            assertTrue(unknown.contains("\u001B[31m"), unknown);
+            assertTrue(operator.contains("\u001B[36m"), operator);
+        }
+    }
+
+    @Test
     void consoleCompletionObservesCommandsRegisteredAfterShellCreation() throws Exception {
         var commands = new CommandMap(false);
         try (var terminal = TerminalBuilder.builder().dumb(true).build();

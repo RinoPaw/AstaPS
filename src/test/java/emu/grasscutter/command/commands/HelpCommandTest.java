@@ -32,6 +32,25 @@ public final class HelpCommandTest {
     }
 
     @Test
+    void commandDescriptionsDoNotEmbedUsageSyntax() throws Exception {
+        for (String locale : List.of(
+                "en-US", "es-ES", "fr-FR", "it-IT", "ja-JP", "ko-KR",
+                "pl-PL", "ro-RO", "ru-RU", "zh-CN", "zh-TW")) {
+            try (var stream = getClass().getResourceAsStream("/languages/" + locale + ".json")) {
+                assertNotNull(stream, "Missing locale " + locale);
+                var commands = JsonParser.parseReader(
+                                new InputStreamReader(stream, StandardCharsets.UTF_8))
+                        .getAsJsonObject()
+                        .getAsJsonObject("commands");
+                String description = commands.getAsJsonObject("name")
+                        .get("description")
+                        .getAsString();
+                assertFalse(description.contains("Usage:"), locale);
+            }
+        }
+    }
+
+    @Test
     void displaysCanonicalDungeonRoute() {
         var dungeon = new EnterDungeonCommand();
         assertEquals("dungeon", dungeon.getLabel());

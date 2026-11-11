@@ -780,15 +780,15 @@ long getGuid();
 
 ## 12. 2026-11-11 快速推进核查：7.2 + JLine 4.5.0（研究结论，非实施授权）
 
-**分支基线**：已合并 \`MeChen618/AstaPS/main@a49f51aa6f2787ffbc25cee46801b70dee860d23\`，工作分支合并提交 \`585bd5e304a77fe2e8881557ea983330ca45c81d\`。上游 7.2 升级改动主要集中于协议映射、生成代码和构建配置；以下已直接复核当前上游源码，优先级高于第 2 节的旧版本事实。**本节只提出研究路径，不更改此前任何正式决策。**
+**分支基线**：已合并 `MeChen618/AstaPS/main@a49f51aa6f2787ffbc25cee46801b70dee860d23`，工作分支合并提交 `585bd5e304a77fe2e8881557ea983330ca45c81d`。上游 7.2 升级改动主要集中于协议映射、生成代码和构建配置；以下已直接复核当前上游源码，优先级高于第 2 节的旧版本事实。**本节只提出研究路径，不更改此前任何正式决策。**
 
 ### 12.1 最短的事实链
 
-1. **上游尚未引入 JLine 4 Shell**：当前 \`build.gradle\` 声明版本 \`7.2.0\`、Java 21、\`jline-reader\` 与 \`jline-console\` 3.30.14、Picocli 4.7.7。 \`Grasscutter.startConsole()\` 仍手写 \`readLine() -> CommandMap.invoke(null,null,input)\`。
-2. **当前命令成功不可判定**：\`CommandMap.invoke()\` 返回 \`void\`；执行时 \`cli.execute(commandArgs)\` 的整数退出码被丢弃；\`annotation.threading()\` 可使执行继续投递线程池。\`GiveCommand.Args implements Runnable\`，若业务拒绝或库存加入失败，现有返回路径也未承诺有可观察的失败结果。仅替换命令行解析器无法满足已选 F1。
-3. **入口作用域与反馈未就绪**：本地控制台与 Web 命令都以 \`sender=null\` 进入 \`CommandMap\`，且默认目标统一存于 \`CONSOLE_ID="console"\`；Web 用 \`CommandOutputCapture.capture(() -> invoke(...))\` 捕获调用线程文本，不能覆盖延迟执行的反馈。与已选 T02A、F1 的差距仍存在。
-4. **JLine 4.5.0 已于 2026-11-05 发布**，应作为新的 *研究候选*；从 4.4.8 到 4.5.0 有安全/终端修复，但**不会自动解决 AstaPS 业务问题**。\`DefaultCommandDispatcher.runCommandStage()\` 在 \`Command.execute()\` 正常返回后仍把 \`lastExitCode\` 设为 0（4.5.0 源码约 524–529 行），而 \`PicocliCommandRegistry\` 返回 \`sub.execute()\` 的 \`int\`（约 292 行）。因此直接组合两者，\`&&\`、\`||\` 仍可能把 Picocli 返回的错误码视为成功。调度器对抛出的普通异常写入失败码 1，但它是否应作为业务失败的可用协议，以及管道、重定向和错误呈现，还要通过一个**小规模隔离实验**验证；不据此批准自制 Dispatcher。
-5. **不要把 7.2 协议缺口变成 CLI 的前置阻塞**：上游 \`docs/protocol-7.2-gaps.md\` 记录未恢复的 CmdId/字段。纯本地命令解析、身份上下文和 Shell 条件语义可以先独立验证；任何需要客户端收包或实际背包反馈的验收，则应明确标记受 7.2 协议状态影响。
+1. **上游尚未引入 JLine 4 Shell**：当前 `build.gradle` 声明版本 `7.2.0`、Java 21、`jline-reader` 与 `jline-console` 3.30.14、Picocli 4.7.7。 `Grasscutter.startConsole()` 仍手写 `readLine() -> CommandMap.invoke(null,null,input)`。
+2. **当前命令成功不可判定**：`CommandMap.invoke()` 返回 `void`；执行时 `cli.execute(commandArgs)` 的整数退出码被丢弃；`annotation.threading()` 可使执行继续投递线程池。`GiveCommand.Args implements Runnable`，若业务拒绝或库存加入失败，现有返回路径也未承诺有可观察的失败结果。仅替换命令行解析器无法满足已选 F1。
+3. **入口作用域与反馈未就绪**：本地控制台与 Web 命令都以 `sender=null` 进入 `CommandMap`，且默认目标统一存于 `CONSOLE_ID="console"`；Web 用 `CommandOutputCapture.capture(() -> invoke(...))` 捕获调用线程文本，不能覆盖延迟执行的反馈。与已选 T02A、F1 的差距仍存在。
+4. **JLine 4.5.0 已于 2026-11-05 发布**，应作为新的 *研究候选*；从 4.4.8 到 4.5.0 有安全/终端修复，但**不会自动解决 AstaPS 业务问题**。`DefaultCommandDispatcher.runCommandStage()` 在 `Command.execute()` 正常返回后仍把 `lastExitCode` 设为 0（4.5.0 源码约 524–529 行），而 `PicocliCommandRegistry` 返回 `sub.execute()` 的 `int`（约 292 行）。因此直接组合两者，`&&`、`||` 仍可能把 Picocli 返回的错误码视为成功。调度器对抛出的普通异常写入失败码 1，但它是否应作为业务失败的可用协议，以及管道、重定向和错误呈现，还要通过一个**小规模隔离实验**验证；不据此批准自制 Dispatcher。
+5. **不要把 7.2 协议缺口变成 CLI 的前置阻塞**：上游 `docs/protocol-7.2-gaps.md` 记录未恢复的 CmdId/字段。纯本地命令解析、身份上下文和 Shell 条件语义可以先独立验证；任何需要客户端收包或实际背包反馈的验收，则应明确标记受 7.2 协议状态影响。
 
 上游证据：[build.gradle](https://github.com/MeChen618/AstaPS/blob/a49f51aa6f2787ffbc25cee46801b70dee860d23/build.gradle)、[Grasscutter.java](https://github.com/MeChen618/AstaPS/blob/a49f51aa6f2787ffbc25cee46801b70dee860d23/src/main/java/emu/grasscutter/Grasscutter.java)、[CommandMap.java](https://github.com/MeChen618/AstaPS/blob/a49f51aa6f2787ffbc25cee46801b70dee860d23/src/main/java/emu/grasscutter/command/CommandMap.java)、[GiveCommand.java](https://github.com/MeChen618/AstaPS/blob/a49f51aa6f2787ffbc25cee46801b70dee860d23/src/main/java/emu/grasscutter/command/commands/GiveCommand.java)、[WebConsoleHandler.java](https://github.com/MeChen618/AstaPS/blob/a49f51aa6f2787ffbc25cee46801b70dee860d23/src/main/java/emu/grasscutter/server/http/console/WebConsoleHandler.java)。JLine 证据：[4.5.0 Dispatcher](https://github.com/jline/jline3/blob/4.5.0/shell/src/main/java/org/jline/shell/impl/DefaultCommandDispatcher.java)、[4.5.0 PicocliRegistry](https://github.com/jline/jline3/blob/4.5.0/picocli/src/main/java/org/jline/picocli/PicocliCommandRegistry.java)、[4.5.0 发布记录](https://github.com/jline/jline3/releases/tag/4.5.0)。
 
@@ -796,14 +796,14 @@ long getGuid();
 
 以下是**建议实施顺序，尚未授权写 Java 代码**；每段以一种可观察的行为为完成条件，复用已批准规则，不再拆出零碎投票。
 
-- **切片 A：Shell 本身和正确失败状态**。只验证 JLine 4 前台 REPL、解析/补全、Shell 内置功能及 JLine 与 Picocli 的返回语义；用无游戏副作用的命令验证 \`成功 && 后继\`、\`失败 || 后继\`。先在最小样例中判断是否需要 JLine 扩展点；不为还未使用的 Web、插件、异步 Quest 增加兼容层。
-- **切片 B：一个真实业务贯穿入口到结果**。以已选 \`give\` 语义为首个端到端对象，验证“指定目标/权限 → 目标 UID 的 R2 业务执行 → 实发结果 → F1 Shell 反馈”，并将材料堆叠、装备和即时效果分开验收。先实现必要的 UID 执行权，\`World/S2\` 只在该业务确实需要触发活动角色/场景同步时介入。**不把整个 Quest/跨域回执研究作为 give 的启动条件**。
+- **切片 A：Shell 本身和正确失败状态**。只验证 JLine 4 前台 REPL、解析/补全、Shell 内置功能及 JLine 与 Picocli 的返回语义；用无游戏副作用的命令验证 `成功 && 后继`、`失败 || 后继`。先在最小样例中判断是否需要 JLine 扩展点；不为还未使用的 Web、插件、异步 Quest 增加兼容层。
+- **切片 B：一个真实业务贯穿入口到结果**。以已选 `give` 语义为首个端到端对象，验证“指定目标/权限 → 目标 UID 的 R2 业务执行 → 实发结果 → F1 Shell 反馈”，并将材料堆叠、装备和即时效果分开验收。先实现必要的 UID 执行权，`World/S2` 只在该业务确实需要触发活动角色/场景同步时介入。**不把整个 Quest/跨域回执研究作为 give 的启动条件**。
 - **切片 C：复用业务结果到其他入口**。逐步给 Web 与游戏内命令建立对应的调用上下文；本机 Shell 与每个 Web 会话按 T02A 独立目标，并区分可等待的外部线程和不可阻塞的游戏执行域。遵守 F1 的完成边界，保留 D1 的三种运行模式。模块拆分按 M2 逐步推进，不能为了先画全模块图而停止切片 A/B。
 
-**已确定、不再反复提问**：R2/S2、F1、T02A、P01A、G04C、P1、B1、D1、M2、Java 21、取消未获批准的旧兼容。**只有会改变用户体验或架构的未定项才提请选择**，例如首批 Shell 的完整功能开放范围、是否采用 JLine 4.5.0、在必须跨域的业务中如何定义完成边界。命令错误码如何从内部传给 \`lastExitCode\` 是实施验证题，先测试可复用 API，暂不要求用户批准每个异常类和变量名。
+**已确定、不再反复提问**：R2/S2、F1、T02A、P01A、G04C、P1、B1、D1、M2、Java 21、取消未获批准的旧兼容。**只有会改变用户体验或架构的未定项才提请选择**，例如首批 Shell 的完整功能开放范围、是否采用 JLine 4.5.0、在必须跨域的业务中如何定义完成边界。命令错误码如何从内部传给 `lastExitCode` 是实施验证题，先测试可复用 API，暂不要求用户批准每个异常类和变量名。
 
 ### 12.3 验收与速度约束
 
-研究阶段只做目标源码阅读及小样例，不运行整套 CI；切片写码后可先运行直接相关测试，**交用户测试前与向上游提交前完成相关 CI**。首批验收限定为：交互输入可用、成功/失败的 \`&&/||\` 正确、显式目标不污染会话默认目标、两个会话互不串目标、\`give\` 返回真实发放结果。没有证据表明某项防护对这些验收或现成事故有必要时，不把它设为新实现的门槛。
+研究阶段只做目标源码阅读及小样例，不运行整套 CI；切片写码后可先运行直接相关测试，**交用户测试前与向上游提交前完成相关 CI**。首批验收限定为：交互输入可用、成功/失败的 `&&/||` 正确、显式目标不污染会话默认目标、两个会话互不串目标、`give` 返回真实发放结果。没有证据表明某项防护对这些验收或现成事故有必要时，不把它设为新实现的门槛。
 
 **本次提交状态**：只更新研究记录，无 Java/Gradle/协议/资源变更，无新分支、无 CI。

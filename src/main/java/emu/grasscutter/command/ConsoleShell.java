@@ -24,6 +24,13 @@ public final class ConsoleShell {
     public static Shell create(CommandMap commands, Terminal terminal) throws IOException {
         var dispatcher = new DefaultCommandDispatcher(terminal, null, pipelineParser(), null) {
             @Override
+            public org.jline.shell.Command findCommand(String name) {
+                var command = super.findCommand(name);
+                // Unknown commands must produce a failed result so `unknown || help` can continue.
+                return command != null ? command : wrap(commands, name);
+            }
+
+            @Override
             public void trace(Throwable failure) {
                 // CommandMap already delivered business feedback to the stage output.
                 if (failure instanceof FailedCommand) return;

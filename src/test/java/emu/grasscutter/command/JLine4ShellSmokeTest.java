@@ -171,6 +171,7 @@ class JLine4ShellSmokeTest {
         try (var terminal = TerminalBuilder.builder().dumb(true).build();
                 var shell = ConsoleShell.create(new CommandMap(false), terminal)) {
             assertNotNull(shell.dispatcher().findCommand("target"));
+            assertNotNull(shell.dispatcher().findCommand("TARGET"));
         }
     }
 

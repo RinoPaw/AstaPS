@@ -98,7 +98,6 @@ dependencies {
     implementation 'org.jline:jline-console:4.5.0'
     implementation 'org.jline:jline-shell:4.5.0'
     implementation 'info.picocli:picocli:4.7.7'
-    implementation group: 'net.java.dev.jna', name: 'jna', version: '5.10.0'
 
     // Java Netty for networking.
     implementation group: 'io.netty', name: 'netty-common', version: '4.1.86.Final'

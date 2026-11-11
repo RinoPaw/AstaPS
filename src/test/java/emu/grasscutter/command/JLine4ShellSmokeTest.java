@@ -164,6 +164,9 @@ class JLine4ShellSmokeTest {
         var redirect = parser.parse("help > output.txt");
         assertEquals(1, redirect.stages().size());
         assertNull(redirect.stages().get(0).redirectTarget());
+
+        var pipe = parser.parse("help | help");
+        assertEquals(1, pipe.stages().size());
     }
 
     @Test

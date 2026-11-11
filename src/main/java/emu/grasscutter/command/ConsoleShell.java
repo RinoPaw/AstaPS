@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.jline.reader.SyntaxError;
 import org.jline.shell.CommandGroup;
@@ -46,7 +47,10 @@ public final class ConsoleShell {
                 List<org.jline.shell.Command> entries = new ArrayList<>();
                 for (Map.Entry<String, emu.grasscutter.command.Command> entry :
                         commands.getAnnotations().entrySet()) {
-                    entries.add(wrap(commands, entry.getKey(), entry.getValue().aliases()));
+                    String[] aliases = java.util.Arrays.stream(entry.getValue().aliases())
+                            .map(alias -> alias.toLowerCase(Locale.ROOT))
+                            .toArray(String[]::new);
+                    entries.add(wrap(commands, entry.getKey(), aliases));
                 }
                 entries.add(wrap(commands, "target"));
                 return entries;
@@ -56,7 +60,7 @@ public final class ConsoleShell {
             public org.jline.shell.Command command(String name) {
                 // Bare @UID selectors also change the remembered console target.
                 if (CommandMap.isTargetSelector(name)) return wrap(commands, name);
-                return CommandGroup.super.command(name);
+                return CommandGroup.super.command(name.toLowerCase(Locale.ROOT));
             }
         };
 

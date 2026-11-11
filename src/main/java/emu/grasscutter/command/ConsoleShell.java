@@ -25,7 +25,7 @@ public final class ConsoleShell {
         var dispatcher = new DefaultCommandDispatcher(terminal, null, pipelineParser(), null) {
             @Override
             public org.jline.shell.Command findCommand(String name) {
-                var command = super.findCommand(name);
+                var command = super.findCommand(name.toLowerCase(Locale.ROOT));
                 // Unknown commands must produce a failed result so `unknown || help` can continue.
                 return command != null ? command : wrap(commands, name);
             }

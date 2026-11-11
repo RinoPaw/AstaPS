@@ -37,8 +37,18 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build jar
-        run: ./gradlew jar -PskipHandbook=1 -Dorg.gradle.jvmargs=-Xmx4g
+      - name: Test command shell and build jar
+        run: >
+          ./gradlew test
+          --tests 'emu.grasscutter.command.JLine4ShellSmokeTest'
+          --tests 'emu.grasscutter.command.CommandMapParsingTest'
+          --tests 'emu.grasscutter.command.CommandResultTest'
+          --tests 'emu.grasscutter.command.commands.LookupCommandTest'
+          --tests 'emu.grasscutter.command.commands.SensitiveCommandSyntaxTest'
+          --tests 'emu.grasscutter.command.commands.ReloadAndStopCommandTest'
+          --tests 'emu.grasscutter.command.commands.SayCommandTest'
+          --tests 'emu.grasscutter.command.commands.CommandRedundancyTest'
+          jar -PskipHandbook=1 -Dorg.gradle.jvmargs=-Xmx4g
 
       - name: Upload jar
         uses: actions/upload-artifact@v4

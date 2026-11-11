@@ -93,13 +93,11 @@ dependencies {
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.7'
 
     // Line reading libraries.
-    implementation 'org.jline:jline-reader:3.30.14'
-    implementation 'org.jline:jline-console:3.30.14'
-    implementation 'org.jline:jline-terminal-jna:3.30.14'
+    implementation 'org.jline:jline-reader:4.5.0'
+    implementation 'org.jline:jline-terminal-jni:4.5.0'
+    implementation 'org.jline:jline-console:4.5.0'
+    implementation 'org.jline:jline-shell:4.5.0'
     implementation 'info.picocli:picocli:4.7.7'
-    implementation('info.picocli:picocli-shell-jline3:4.7.7') {
-        exclude group: 'org.jline', module: 'jline'
-    }
     implementation group: 'net.java.dev.jna', name: 'jna', version: '5.10.0'
 
     // Java Netty for networking.
@@ -147,8 +145,6 @@ dependencies {
     implementation group: 'net.openhft', name: 'zero-allocation-hashing', version: '0.26ea0'
 
     // Testing libraries.
-    // Isolated JLine 4 Shell proof; production CLI still uses JLine 3 until the F1 boundary is ready.
-    testImplementation 'org.jline:jline-shell:4.5.0'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.2'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.8.2'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.8.2'

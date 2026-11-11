@@ -41,6 +41,7 @@ public final class SayCommandTest {
     void separatePicocliCommandsUseUnambiguousGrammarAndRetainPermissions() {
         var broadcast = new SayCommand().createCommandLine(null, null);
         var directed = new SayToCommand().createCommandLine(null, null);
+        assertTrue(directed.getCommandSpec().userObject() instanceof java.util.concurrent.Callable<?>);
 
         assertTrue(broadcast.getUsageMessage().contains("say <message...>"));
         assertFalse(broadcast.getUsageMessage().contains("[selector]"));

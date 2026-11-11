@@ -33,7 +33,7 @@ public final class SayToCommand implements CommandHandler {
             name = "sayto",
             customSynopsis = "sayto <playerSelector> <message...>",
             description = "Send a server message to one online player: @UID, username@ or username@UID.")
-    private static final class Args implements Runnable {
+    private static final class Args implements java.util.concurrent.Callable<Integer> {
         private final Player sender;
 
         @Parameters(index = "0", paramLabel = "<playerSelector>")
@@ -47,7 +47,7 @@ public final class SayToCommand implements CommandHandler {
         }
 
         @Override
-        public void run() {
+        public Integer call() {
             final CommandMap.TargetSelector recipient;
             final String message;
             try {
@@ -55,7 +55,7 @@ public final class SayToCommand implements CommandHandler {
                 message = SayCommand.joinMessage(words);
             } catch (IllegalArgumentException invalid) {
                 CommandOutput.sendMessage(sender, invalid.getMessage());
-                return;
+                return 1;
             }
 
             final Player selected;
@@ -63,26 +63,27 @@ public final class SayToCommand implements CommandHandler {
                 selected = CommandMap.findPlayer(recipient);
             } catch (IllegalArgumentException invalid) {
                 CommandOutput.sendMessage(sender, invalid.getMessage());
-                return;
+                return 1;
             }
             if (selected == null) {
                 CommandOutput.sendTranslatedMessage(sender, "commands.execution.player_exist_error");
-                return;
+                return 1;
             }
 
             Player online = Grasscutter.getGameServer().getPlayerByUid(selected.getUid());
             if (online == null || !online.isOnline()
                     || online.getSession() == null || !online.getSession().isActive()) {
                 CommandOutput.sendTranslatedMessage(sender, "commands.execution.need_target_online");
-                return;
+                return 1;
             }
             if (!Grasscutter.getPermissionHandler().checkPermission(
                     sender, online, "server.sendmessage", "server.sendmessage.others")) {
-                return;
+                return 1;
             }
 
             CommandOutput.sendMessage(online, message);
             CommandOutput.sendTranslatedMessage(sender, "commands.say.success");
+            return 0;
         }
     }
 }

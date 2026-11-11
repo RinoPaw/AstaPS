@@ -21,21 +21,7 @@ public final class ConsoleShell {
     private ConsoleShell() {}
 
     public static Shell create(CommandMap commands, Terminal terminal) throws IOException {
-        // File redirection and background jobs remain outside the approved first-stage scope.
-        var operators = new PipelineParser() {
-            @Override
-            protected String matchOperator(String line, int pos) {
-                String symbol = super.matchOperator(line, pos);
-                if (symbol == null) return null;
-                Pipeline.Operator op = Pipeline.Operator.fromSymbol(symbol);
-                return switch (op) {
-                    case REDIRECT, APPEND, INPUT_REDIRECT, HEREDOC, STDERR_REDIRECT,
-                            COMBINED_REDIRECT -> null;
-                    default -> symbol;
-                };
-            }
-        };
-        var dispatcher = new DefaultCommandDispatcher(terminal, null, operators, null) {
+        var dispatcher = new DefaultCommandDispatcher(terminal, null, pipelineParser(), null) {
             @Override
             public void trace(Throwable failure) {
                 // CommandMap already delivered business feedback to the stage output.
@@ -82,6 +68,23 @@ public final class ConsoleShell {
                 .historyCommands(true)
                 .onReaderReady((reader, d) -> commands.installConsoleCompleter(reader))
                 .build();
+    }
+
+    static PipelineParser pipelineParser() {
+        // File redirection and background jobs remain outside the approved first-stage scope.
+        return new PipelineParser() {
+            @Override
+            protected String matchOperator(String line, int pos) {
+                String symbol = super.matchOperator(line, pos);
+                if (symbol == null) return null;
+                Pipeline.Operator op = Pipeline.Operator.fromSymbol(symbol);
+                return switch (op) {
+                    case REDIRECT, APPEND, INPUT_REDIRECT, HEREDOC, STDERR_REDIRECT,
+                            COMBINED_REDIRECT -> null;
+                    default -> symbol;
+                };
+            }
+        };
     }
 
     private static org.jline.shell.Command wrap(CommandMap commands, String name, String... aliases) {

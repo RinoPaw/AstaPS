@@ -199,7 +199,7 @@ class JLine4ShellSmokeTest {
                 var shell = ConsoleShell.create(commands, terminal)) {
             commands.registerCommand("lookup", new emu.grasscutter.command.commands.LookupCommand());
             var candidates = new ArrayList<org.jline.reader.Candidate>();
-            shell.reader().getCompleter().complete(
+            shell.dispatcher().completer().complete(
                     shell.reader(),
                     new DefaultParser().parse("loo", 3, Parser.ParseContext.COMPLETE),
                     candidates);

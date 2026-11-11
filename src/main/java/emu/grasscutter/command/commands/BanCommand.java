@@ -86,7 +86,7 @@ public final class BanCommand implements CommandHandler {
     @CommandLine.Command(name = "ban",
             description = "playerSelector: @UID (UID), username@ (account), username@UID (both match).",
             customSynopsis = "ban <playerSelector|IPv4> [endTime] [reason...]")
-    private static final class BanTargetCommand implements Runnable {
+    private static final class BanTargetCommand implements java.util.concurrent.Callable<Integer> {
         private final Player sender;
 
         @Parameters(index = "0", paramLabel = "<playerSelector|IPv4>")
@@ -98,17 +98,17 @@ public final class BanCommand implements CommandHandler {
         private BanTargetCommand(Player sender) { this.sender = sender; }
 
         @Override
-        public void run() {
+        public Integer call() {
             final BanArguments args;
             try {
                 args = parseBanArguments(target, trailing);
             } catch (IllegalArgumentException invalid) {
                 CommandOutput.sendMessage(sender, invalid.getMessage());
-                return;
+                return 1;
             }
 
             if (args.target().type() == TargetType.IPV4) {
-                if (!hasPermission(sender, "server.banip", null)) return;
+                if (!hasPermission(sender, "server.banip", null)) return 1;
                 new BannedIp(args.target().value(), args.reason(), args.endTime()).save();
                 CommandOutput.sendMessage(
                         sender,
@@ -117,7 +117,7 @@ public final class BanCommand implements CommandHandler {
                                         ? " permanently."
                                         : " until " + args.endTime() + ".")
                                 + " Reason: " + args.reason());
-                return;
+                return 0;
             }
 
             final Account account;
@@ -126,18 +126,18 @@ public final class BanCommand implements CommandHandler {
                         CommandMap.parseExplicitTargetSelector(args.target().value()));
             } catch (IllegalArgumentException mismatch) {
                 CommandOutput.sendMessage(sender, mismatch.getMessage());
-                return;
+                return 1;
             }
 
             if (account == null) {
                 CommandOutput.sendTranslatedMessage(sender, "commands.execution.player_exist_error");
-                return;
+                return 1;
             }
 
             boolean someoneElse = sender != null
                     && !sender.getAccount().getId().equals(account.getId());
             if (!hasPermission(sender, "server.ban",
-                    someoneElse ? "server.ban.others" : null)) return;
+                    someoneElse ? "server.ban.others" : null)) return 1;
 
             int startTime = (int) (System.currentTimeMillis() / 1000);
             DatabaseHelper.updateAccount(
@@ -154,6 +154,7 @@ public final class BanCommand implements CommandHandler {
             Player online = Grasscutter.getGameServer().getPlayerByAccountId(account.getId());
             if (online != null && online.getSession() != null) online.getSession().close();
             CommandOutput.sendTranslatedMessage(sender, "commands.ban.success");
+            return 0;
         }
     }
 

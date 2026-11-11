@@ -5,10 +5,27 @@ import static emu.grasscutter.utils.lang.Language.translate;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.event.game.ReceiveCommandFeedbackEvent;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /** Shared command-output helpers, separate from the command execution contract. */
 public final class CommandOutput {
+    private static final ThreadLocal<Consumer<String>> consoleOutput = new ThreadLocal<>();
+
     private CommandOutput() {}
+
+    /** Bind command feedback to a Shell stage, including its pipe/redirection output stream. */
+    static <T> T withConsoleOutput(Consumer<String> output, Supplier<T> action) {
+        if (output == null) return action.get();
+        var previous = consoleOutput.get();
+        consoleOutput.set(output);
+        try {
+            return action.get();
+        } finally {
+            if (previous == null) consoleOutput.remove();
+            else consoleOutput.set(previous);
+        }
+    }
 
     /** Send command feedback to a player, or to the server console when {@code player} is null. */
     public static void sendMessage(Player player, String message) {
@@ -17,7 +34,9 @@ public final class CommandOutput {
         if (event.isCanceled()) return;
 
         if (player == null) {
-            Grasscutter.getLogger().info(event.getMessage());
+            var output = consoleOutput.get();
+            if (output != null) output.accept(event.getMessage());
+            else Grasscutter.getLogger().info(event.getMessage());
             CommandOutputCapture.offer(stripAnsi(event.getMessage()));
         } else {
             player.dropMessage(stripAnsi(event.getMessage()).replace("\n\t", "\n\n"));

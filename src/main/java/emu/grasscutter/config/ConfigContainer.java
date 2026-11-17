@@ -277,13 +277,9 @@ public class ConfigContainer {
         }
     }
 
-    /** A null value uses the default for the current server run mode. */
+    /** Null selects the default for the current server run mode. */
     public static class ConsoleOptions {
         public Boolean enabled = null;
-
-        public boolean isEnabled(ServerRunMode runMode) {
-            return enabled != null ? enabled : runMode != ServerRunMode.DISPATCH_ONLY;
-        }
     }
 
     public static class Game {

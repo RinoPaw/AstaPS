@@ -373,8 +373,14 @@ public final class Grasscutter {
         logger.debug("Set day of week to " + currentDayOfWeek);
     }
 
+    static boolean shouldStartConsole() {
+        if (noConsole) return false;
+        Boolean enabled = config.server.console.enabled;
+        return enabled != null ? enabled : getRunMode() != ServerRunMode.DISPATCH_ONLY;
+    }
+
     public static void startConsole() {
-        if (Grasscutter.noConsole || !config.server.console.isEnabled(Grasscutter.getRunMode())) {
+        if (!shouldStartConsole()) {
             logger.info("Console disabled by server.console.enabled or a startup argument.");
             return;
         }
@@ -386,8 +392,7 @@ public final class Grasscutter {
             dispatcher.initialize(null);
 
             boolean lastInterrupted = false;
-            while (!Grasscutter.noConsole
-                    && config.server.console.isEnabled(Grasscutter.getRunMode())) {
+            while (shouldStartConsole()) {
                 String input;
                 try {
                     input = shell.reader().readLine(commandMap.getConsolePrompt());

@@ -44,7 +44,7 @@ jobs:
           --tests 'emu.grasscutter.command.CommandMapParsingTest'
           --tests 'emu.grasscutter.command.CommandResultTest'
           --tests 'emu.grasscutter.command.DispatchCommandAvailabilityTest'
-          --tests 'emu.grasscutter.config.ConsoleOptionsTest'
+          --tests 'emu.grasscutter.ConsoleStartupTest'
           --tests 'emu.grasscutter.command.CommandOutputAnsiTest'
           --tests 'emu.grasscutter.command.commands.HelpCommandTest'
           --tests 'emu.grasscutter.command.commands.LookupCommandTest'

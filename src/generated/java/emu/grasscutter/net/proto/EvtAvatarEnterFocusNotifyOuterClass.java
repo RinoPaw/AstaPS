@@ -57,13 +57,13 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
     emu.grasscutter.net.proto.ForwardTypeOuterClass.ForwardType getForwardType();
 
     /**
-     * <code>bool MEBKKKCNDAK = 20000;</code>
+     * <code>bool MEBKKKCNDAK = 2;</code>
      * @return The mEBKKKCNDAK.
      */
     boolean getMEBKKKCNDAK();
 
     /**
-     * <code>bool PNELCGBOIFM = 20001;</code>
+     * <code>bool PNELCGBOIFM = 4;</code>
      * @return The pNELCGBOIFM.
      */
     boolean getPNELCGBOIFM();
@@ -75,7 +75,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
     boolean getKLNNOPGOMKN();
 
     /**
-     * <code>int32 IMMFFEBPCJM = 20003;</code>
+     * <code>int32 IMMFFEBPCJM = 1;</code>
      * @return The iMMFFEBPCJM.
      */
     int getIMMFFEBPCJM();
@@ -87,7 +87,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
     int getEntityId();
 
     /**
-     * <code>bool CCDMIMGNCBM = 20004;</code>
+     * <code>bool CCDMIMGNCBM = 15;</code>
      * @return The cCDMIMGNCBM.
      */
     boolean getCCDMIMGNCBM();
@@ -105,31 +105,31 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
     boolean getADMFCLBHILF();
 
     /**
-     * <code>bool KHOIOJCHLNL = 20007;</code>
+     * <code>bool KHOIOJCHLNL = 5;</code>
      * @return The kHOIOJCHLNL.
      */
     boolean getKHOIOJCHLNL();
 
     /**
-     * <code>bool FDCDPKDKNAL = 20008;</code>
+     * <code>bool FDCDPKDKNAL = 7;</code>
      * @return The fDCDPKDKNAL.
      */
     boolean getFDCDPKDKNAL();
 
     /**
-     * <code>bool HFFPEFBLBPC = 20009;</code>
+     * <code>bool HFFPEFBLBPC = 12;</code>
      * @return The hFFPEFBLBPC.
      */
     boolean getHFFPEFBLBPC();
 
     /**
-     * <code>bool JHJBHFINKDK = 20010;</code>
+     * <code>bool JHJBHFINKDK = 11;</code>
      * @return The jHJBHFINKDK.
      */
     boolean getJHJBHFINKDK();
 
     /**
-     * <code>bool CFNHGMLGPHP = 20011;</code>
+     * <code>bool CFNHGMLGPHP = 13;</code>
      * @return The cFNHGMLGPHP.
      */
     boolean getCFNHGMLGPHP();
@@ -222,10 +222,10 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
       return result == null ? emu.grasscutter.net.proto.ForwardTypeOuterClass.ForwardType.UNRECOGNIZED : result;
     }
 
-    public static final int MEBKKKCNDAK_FIELD_NUMBER = 20000;
+    public static final int MEBKKKCNDAK_FIELD_NUMBER = 2;
     private boolean mEBKKKCNDAK_ = false;
     /**
-     * <code>bool MEBKKKCNDAK = 20000;</code>
+     * <code>bool MEBKKKCNDAK = 2;</code>
      * @return The mEBKKKCNDAK.
      */
     @java.lang.Override
@@ -233,10 +233,10 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
       return mEBKKKCNDAK_;
     }
 
-    public static final int PNELCGBOIFM_FIELD_NUMBER = 20001;
+    public static final int PNELCGBOIFM_FIELD_NUMBER = 4;
     private boolean pNELCGBOIFM_ = false;
     /**
-     * <code>bool PNELCGBOIFM = 20001;</code>
+     * <code>bool PNELCGBOIFM = 4;</code>
      * @return The pNELCGBOIFM.
      */
     @java.lang.Override
@@ -255,10 +255,10 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
       return kLNNOPGOMKN_;
     }
 
-    public static final int IMMFFEBPCJM_FIELD_NUMBER = 20003;
+    public static final int IMMFFEBPCJM_FIELD_NUMBER = 1;
     private int iMMFFEBPCJM_ = 0;
     /**
-     * <code>int32 IMMFFEBPCJM = 20003;</code>
+     * <code>int32 IMMFFEBPCJM = 1;</code>
      * @return The iMMFFEBPCJM.
      */
     @java.lang.Override
@@ -277,10 +277,10 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
       return entityId_;
     }
 
-    public static final int CCDMIMGNCBM_FIELD_NUMBER = 20004;
+    public static final int CCDMIMGNCBM_FIELD_NUMBER = 15;
     private boolean cCDMIMGNCBM_ = false;
     /**
-     * <code>bool CCDMIMGNCBM = 20004;</code>
+     * <code>bool CCDMIMGNCBM = 15;</code>
      * @return The cCDMIMGNCBM.
      */
     @java.lang.Override
@@ -310,10 +310,10 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
       return aDMFCLBHILF_;
     }
 
-    public static final int KHOIOJCHLNL_FIELD_NUMBER = 20007;
+    public static final int KHOIOJCHLNL_FIELD_NUMBER = 5;
     private boolean kHOIOJCHLNL_ = false;
     /**
-     * <code>bool KHOIOJCHLNL = 20007;</code>
+     * <code>bool KHOIOJCHLNL = 5;</code>
      * @return The kHOIOJCHLNL.
      */
     @java.lang.Override
@@ -321,10 +321,10 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
       return kHOIOJCHLNL_;
     }
 
-    public static final int FDCDPKDKNAL_FIELD_NUMBER = 20008;
+    public static final int FDCDPKDKNAL_FIELD_NUMBER = 7;
     private boolean fDCDPKDKNAL_ = false;
     /**
-     * <code>bool FDCDPKDKNAL = 20008;</code>
+     * <code>bool FDCDPKDKNAL = 7;</code>
      * @return The fDCDPKDKNAL.
      */
     @java.lang.Override
@@ -332,10 +332,10 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
       return fDCDPKDKNAL_;
     }
 
-    public static final int HFFPEFBLBPC_FIELD_NUMBER = 20009;
+    public static final int HFFPEFBLBPC_FIELD_NUMBER = 12;
     private boolean hFFPEFBLBPC_ = false;
     /**
-     * <code>bool HFFPEFBLBPC = 20009;</code>
+     * <code>bool HFFPEFBLBPC = 12;</code>
      * @return The hFFPEFBLBPC.
      */
     @java.lang.Override
@@ -343,10 +343,10 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
       return hFFPEFBLBPC_;
     }
 
-    public static final int JHJBHFINKDK_FIELD_NUMBER = 20010;
+    public static final int JHJBHFINKDK_FIELD_NUMBER = 11;
     private boolean jHJBHFINKDK_ = false;
     /**
-     * <code>bool JHJBHFINKDK = 20010;</code>
+     * <code>bool JHJBHFINKDK = 11;</code>
      * @return The jHJBHFINKDK.
      */
     @java.lang.Override
@@ -354,10 +354,10 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
       return jHJBHFINKDK_;
     }
 
-    public static final int CFNHGMLGPHP_FIELD_NUMBER = 20011;
+    public static final int CFNHGMLGPHP_FIELD_NUMBER = 13;
     private boolean cFNHGMLGPHP_ = false;
     /**
-     * <code>bool CFNHGMLGPHP = 20011;</code>
+     * <code>bool CFNHGMLGPHP = 13;</code>
      * @return The cFNHGMLGPHP.
      */
     @java.lang.Override
@@ -379,29 +379,44 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (iMMFFEBPCJM_ != 0) {
+        output.writeInt32(1, iMMFFEBPCJM_);
+      }
+      if (mEBKKKCNDAK_ != false) {
+        output.writeBool(2, mEBKKKCNDAK_);
+      }
       if (entityId_ != 0) {
         output.writeUInt32(3, entityId_);
+      }
+      if (pNELCGBOIFM_ != false) {
+        output.writeBool(4, pNELCGBOIFM_);
+      }
+      if (kHOIOJCHLNL_ != false) {
+        output.writeBool(5, kHOIOJCHLNL_);
+      }
+      if (fDCDPKDKNAL_ != false) {
+        output.writeBool(7, fDCDPKDKNAL_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeMessage(10, getFocusForward());
       }
+      if (jHJBHFINKDK_ != false) {
+        output.writeBool(11, jHJBHFINKDK_);
+      }
+      if (hFFPEFBLBPC_ != false) {
+        output.writeBool(12, hFFPEFBLBPC_);
+      }
+      if (cFNHGMLGPHP_ != false) {
+        output.writeBool(13, cFNHGMLGPHP_);
+      }
       if (forwardType_ != emu.grasscutter.net.proto.ForwardTypeOuterClass.ForwardType.ForwardType_FORWARD_LOCAL.getNumber()) {
         output.writeEnum(14, forwardType_);
       }
-      if (mEBKKKCNDAK_ != false) {
-        output.writeBool(20000, mEBKKKCNDAK_);
-      }
-      if (pNELCGBOIFM_ != false) {
-        output.writeBool(20001, pNELCGBOIFM_);
+      if (cCDMIMGNCBM_ != false) {
+        output.writeBool(15, cCDMIMGNCBM_);
       }
       if (kLNNOPGOMKN_ != false) {
         output.writeBool(20002, kLNNOPGOMKN_);
-      }
-      if (iMMFFEBPCJM_ != 0) {
-        output.writeInt32(20003, iMMFFEBPCJM_);
-      }
-      if (cCDMIMGNCBM_ != false) {
-        output.writeBool(20004, cCDMIMGNCBM_);
       }
       if (jLNKDGGPICE_ != false) {
         output.writeBool(20005, jLNKDGGPICE_);
@@ -409,56 +424,61 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
       if (aDMFCLBHILF_ != false) {
         output.writeBool(20006, aDMFCLBHILF_);
       }
-      if (kHOIOJCHLNL_ != false) {
-        output.writeBool(20007, kHOIOJCHLNL_);
-      }
-      if (fDCDPKDKNAL_ != false) {
-        output.writeBool(20008, fDCDPKDKNAL_);
-      }
-      if (hFFPEFBLBPC_ != false) {
-        output.writeBool(20009, hFFPEFBLBPC_);
-      }
-      if (jHJBHFINKDK_ != false) {
-        output.writeBool(20010, jHJBHFINKDK_);
-      }
-      if (cFNHGMLGPHP_ != false) {
-        output.writeBool(20011, cFNHGMLGPHP_);
-      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
       int size = 0;
+      if (iMMFFEBPCJM_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, iMMFFEBPCJM_);
+      }
+      if (mEBKKKCNDAK_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, mEBKKKCNDAK_);
+      }
       if (entityId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(3, entityId_);
+      }
+      if (pNELCGBOIFM_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, pNELCGBOIFM_);
+      }
+      if (kHOIOJCHLNL_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, kHOIOJCHLNL_);
+      }
+      if (fDCDPKDKNAL_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(7, fDCDPKDKNAL_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(10, getFocusForward());
       }
+      if (jHJBHFINKDK_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(11, jHJBHFINKDK_);
+      }
+      if (hFFPEFBLBPC_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(12, hFFPEFBLBPC_);
+      }
+      if (cFNHGMLGPHP_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(13, cFNHGMLGPHP_);
+      }
       if (forwardType_ != emu.grasscutter.net.proto.ForwardTypeOuterClass.ForwardType.ForwardType_FORWARD_LOCAL.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(14, forwardType_);
       }
-      if (mEBKKKCNDAK_ != false) {
+      if (cCDMIMGNCBM_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20000, mEBKKKCNDAK_);
-      }
-      if (pNELCGBOIFM_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20001, pNELCGBOIFM_);
+          .computeBoolSize(15, cCDMIMGNCBM_);
       }
       if (kLNNOPGOMKN_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(20002, kLNNOPGOMKN_);
-      }
-      if (iMMFFEBPCJM_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(20003, iMMFFEBPCJM_);
-      }
-      if (cCDMIMGNCBM_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20004, cCDMIMGNCBM_);
       }
       if (jLNKDGGPICE_ != false) {
         size += com.google.protobuf.CodedOutputStream
@@ -467,26 +487,6 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
       if (aDMFCLBHILF_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(20006, aDMFCLBHILF_);
-      }
-      if (kHOIOJCHLNL_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20007, kHOIOJCHLNL_);
-      }
-      if (fDCDPKDKNAL_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20008, fDCDPKDKNAL_);
-      }
-      if (hFFPEFBLBPC_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20009, hFFPEFBLBPC_);
-      }
-      if (jHJBHFINKDK_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20010, jHJBHFINKDK_);
-      }
-      if (cFNHGMLGPHP_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20011, cFNHGMLGPHP_);
       }
       return size;
     }
@@ -920,11 +920,36 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
               case 0:
                 done = true;
                 break;
+              case 8: {
+                iMMFFEBPCJM_ = input.readInt32();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 8
+              case 16: {
+                mEBKKKCNDAK_ = input.readBool();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 16
               case 24: {
                 entityId_ = input.readUInt32();
                 bitField0_ |= 0x00000040;
                 break;
               } // case 24
+              case 32: {
+                pNELCGBOIFM_ = input.readBool();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 40: {
+                kHOIOJCHLNL_ = input.readBool();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 40
+              case 56: {
+                fDCDPKDKNAL_ = input.readBool();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 56
               case 82: {
                 input.readMessage(
                     internalGetFocusForwardFieldBuilder().getBuilder(),
@@ -932,36 +957,36 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
                 bitField0_ |= 0x00000001;
                 break;
               } // case 82
+              case 88: {
+                jHJBHFINKDK_ = input.readBool();
+                bitField0_ |= 0x00002000;
+                break;
+              } // case 88
+              case 96: {
+                hFFPEFBLBPC_ = input.readBool();
+                bitField0_ |= 0x00001000;
+                break;
+              } // case 96
+              case 104: {
+                cFNHGMLGPHP_ = input.readBool();
+                bitField0_ |= 0x00004000;
+                break;
+              } // case 104
               case 112: {
                 forwardType_ = input.readEnum();
                 bitField0_ |= 0x00000002;
                 break;
               } // case 112
-              case 160000: {
-                mEBKKKCNDAK_ = input.readBool();
-                bitField0_ |= 0x00000004;
+              case 120: {
+                cCDMIMGNCBM_ = input.readBool();
+                bitField0_ |= 0x00000080;
                 break;
-              } // case 160000
-              case 160008: {
-                pNELCGBOIFM_ = input.readBool();
-                bitField0_ |= 0x00000008;
-                break;
-              } // case 160008
+              } // case 120
               case 160016: {
                 kLNNOPGOMKN_ = input.readBool();
                 bitField0_ |= 0x00000010;
                 break;
               } // case 160016
-              case 160024: {
-                iMMFFEBPCJM_ = input.readInt32();
-                bitField0_ |= 0x00000020;
-                break;
-              } // case 160024
-              case 160032: {
-                cCDMIMGNCBM_ = input.readBool();
-                bitField0_ |= 0x00000080;
-                break;
-              } // case 160032
               case 160040: {
                 jLNKDGGPICE_ = input.readBool();
                 bitField0_ |= 0x00000100;
@@ -972,31 +997,6 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
                 bitField0_ |= 0x00000200;
                 break;
               } // case 160048
-              case 160056: {
-                kHOIOJCHLNL_ = input.readBool();
-                bitField0_ |= 0x00000400;
-                break;
-              } // case 160056
-              case 160064: {
-                fDCDPKDKNAL_ = input.readBool();
-                bitField0_ |= 0x00000800;
-                break;
-              } // case 160064
-              case 160072: {
-                hFFPEFBLBPC_ = input.readBool();
-                bitField0_ |= 0x00001000;
-                break;
-              } // case 160072
-              case 160080: {
-                jHJBHFINKDK_ = input.readBool();
-                bitField0_ |= 0x00002000;
-                break;
-              } // case 160080
-              case 160088: {
-                cFNHGMLGPHP_ = input.readBool();
-                bitField0_ |= 0x00004000;
-                break;
-              } // case 160088
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1187,7 +1187,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
 
       private boolean mEBKKKCNDAK_ ;
       /**
-       * <code>bool MEBKKKCNDAK = 20000;</code>
+       * <code>bool MEBKKKCNDAK = 2;</code>
        * @return The mEBKKKCNDAK.
        */
       @java.lang.Override
@@ -1195,7 +1195,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return mEBKKKCNDAK_;
       }
       /**
-       * <code>bool MEBKKKCNDAK = 20000;</code>
+       * <code>bool MEBKKKCNDAK = 2;</code>
        * @param value The mEBKKKCNDAK to set.
        * @return This builder for chaining.
        */
@@ -1207,7 +1207,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return this;
       }
       /**
-       * <code>bool MEBKKKCNDAK = 20000;</code>
+       * <code>bool MEBKKKCNDAK = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearMEBKKKCNDAK() {
@@ -1219,7 +1219,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
 
       private boolean pNELCGBOIFM_ ;
       /**
-       * <code>bool PNELCGBOIFM = 20001;</code>
+       * <code>bool PNELCGBOIFM = 4;</code>
        * @return The pNELCGBOIFM.
        */
       @java.lang.Override
@@ -1227,7 +1227,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return pNELCGBOIFM_;
       }
       /**
-       * <code>bool PNELCGBOIFM = 20001;</code>
+       * <code>bool PNELCGBOIFM = 4;</code>
        * @param value The pNELCGBOIFM to set.
        * @return This builder for chaining.
        */
@@ -1239,7 +1239,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return this;
       }
       /**
-       * <code>bool PNELCGBOIFM = 20001;</code>
+       * <code>bool PNELCGBOIFM = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearPNELCGBOIFM() {
@@ -1283,7 +1283,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
 
       private int iMMFFEBPCJM_ ;
       /**
-       * <code>int32 IMMFFEBPCJM = 20003;</code>
+       * <code>int32 IMMFFEBPCJM = 1;</code>
        * @return The iMMFFEBPCJM.
        */
       @java.lang.Override
@@ -1291,7 +1291,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return iMMFFEBPCJM_;
       }
       /**
-       * <code>int32 IMMFFEBPCJM = 20003;</code>
+       * <code>int32 IMMFFEBPCJM = 1;</code>
        * @param value The iMMFFEBPCJM to set.
        * @return This builder for chaining.
        */
@@ -1303,7 +1303,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return this;
       }
       /**
-       * <code>int32 IMMFFEBPCJM = 20003;</code>
+       * <code>int32 IMMFFEBPCJM = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearIMMFFEBPCJM() {
@@ -1347,7 +1347,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
 
       private boolean cCDMIMGNCBM_ ;
       /**
-       * <code>bool CCDMIMGNCBM = 20004;</code>
+       * <code>bool CCDMIMGNCBM = 15;</code>
        * @return The cCDMIMGNCBM.
        */
       @java.lang.Override
@@ -1355,7 +1355,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return cCDMIMGNCBM_;
       }
       /**
-       * <code>bool CCDMIMGNCBM = 20004;</code>
+       * <code>bool CCDMIMGNCBM = 15;</code>
        * @param value The cCDMIMGNCBM to set.
        * @return This builder for chaining.
        */
@@ -1367,7 +1367,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return this;
       }
       /**
-       * <code>bool CCDMIMGNCBM = 20004;</code>
+       * <code>bool CCDMIMGNCBM = 15;</code>
        * @return This builder for chaining.
        */
       public Builder clearCCDMIMGNCBM() {
@@ -1443,7 +1443,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
 
       private boolean kHOIOJCHLNL_ ;
       /**
-       * <code>bool KHOIOJCHLNL = 20007;</code>
+       * <code>bool KHOIOJCHLNL = 5;</code>
        * @return The kHOIOJCHLNL.
        */
       @java.lang.Override
@@ -1451,7 +1451,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return kHOIOJCHLNL_;
       }
       /**
-       * <code>bool KHOIOJCHLNL = 20007;</code>
+       * <code>bool KHOIOJCHLNL = 5;</code>
        * @param value The kHOIOJCHLNL to set.
        * @return This builder for chaining.
        */
@@ -1463,7 +1463,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return this;
       }
       /**
-       * <code>bool KHOIOJCHLNL = 20007;</code>
+       * <code>bool KHOIOJCHLNL = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearKHOIOJCHLNL() {
@@ -1475,7 +1475,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
 
       private boolean fDCDPKDKNAL_ ;
       /**
-       * <code>bool FDCDPKDKNAL = 20008;</code>
+       * <code>bool FDCDPKDKNAL = 7;</code>
        * @return The fDCDPKDKNAL.
        */
       @java.lang.Override
@@ -1483,7 +1483,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return fDCDPKDKNAL_;
       }
       /**
-       * <code>bool FDCDPKDKNAL = 20008;</code>
+       * <code>bool FDCDPKDKNAL = 7;</code>
        * @param value The fDCDPKDKNAL to set.
        * @return This builder for chaining.
        */
@@ -1495,7 +1495,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return this;
       }
       /**
-       * <code>bool FDCDPKDKNAL = 20008;</code>
+       * <code>bool FDCDPKDKNAL = 7;</code>
        * @return This builder for chaining.
        */
       public Builder clearFDCDPKDKNAL() {
@@ -1507,7 +1507,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
 
       private boolean hFFPEFBLBPC_ ;
       /**
-       * <code>bool HFFPEFBLBPC = 20009;</code>
+       * <code>bool HFFPEFBLBPC = 12;</code>
        * @return The hFFPEFBLBPC.
        */
       @java.lang.Override
@@ -1515,7 +1515,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return hFFPEFBLBPC_;
       }
       /**
-       * <code>bool HFFPEFBLBPC = 20009;</code>
+       * <code>bool HFFPEFBLBPC = 12;</code>
        * @param value The hFFPEFBLBPC to set.
        * @return This builder for chaining.
        */
@@ -1527,7 +1527,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return this;
       }
       /**
-       * <code>bool HFFPEFBLBPC = 20009;</code>
+       * <code>bool HFFPEFBLBPC = 12;</code>
        * @return This builder for chaining.
        */
       public Builder clearHFFPEFBLBPC() {
@@ -1539,7 +1539,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
 
       private boolean jHJBHFINKDK_ ;
       /**
-       * <code>bool JHJBHFINKDK = 20010;</code>
+       * <code>bool JHJBHFINKDK = 11;</code>
        * @return The jHJBHFINKDK.
        */
       @java.lang.Override
@@ -1547,7 +1547,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return jHJBHFINKDK_;
       }
       /**
-       * <code>bool JHJBHFINKDK = 20010;</code>
+       * <code>bool JHJBHFINKDK = 11;</code>
        * @param value The jHJBHFINKDK to set.
        * @return This builder for chaining.
        */
@@ -1559,7 +1559,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return this;
       }
       /**
-       * <code>bool JHJBHFINKDK = 20010;</code>
+       * <code>bool JHJBHFINKDK = 11;</code>
        * @return This builder for chaining.
        */
       public Builder clearJHJBHFINKDK() {
@@ -1571,7 +1571,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
 
       private boolean cFNHGMLGPHP_ ;
       /**
-       * <code>bool CFNHGMLGPHP = 20011;</code>
+       * <code>bool CFNHGMLGPHP = 13;</code>
        * @return The cFNHGMLGPHP.
        */
       @java.lang.Override
@@ -1579,7 +1579,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return cFNHGMLGPHP_;
       }
       /**
-       * <code>bool CFNHGMLGPHP = 20011;</code>
+       * <code>bool CFNHGMLGPHP = 13;</code>
        * @param value The cFNHGMLGPHP to set.
        * @return This builder for chaining.
        */
@@ -1591,7 +1591,7 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
         return this;
       }
       /**
-       * <code>bool CFNHGMLGPHP = 20011;</code>
+       * <code>bool CFNHGMLGPHP = 13;</code>
        * @return This builder for chaining.
        */
       public Builder clearCFNHGMLGPHP() {
@@ -1667,18 +1667,17 @@ public final class EvtAvatarEnterFocusNotifyOuterClass extends com.google.protob
   static {
     java.lang.String[] descriptorData = {
       "\n\037EvtAvatarEnterFocusNotify.proto\032\021Forwa" +
-      "rdType.proto\032\014Vector.proto\"\206\003\n\031EvtAvatar" +
+      "rdType.proto\032\014Vector.proto\"\364\002\n\031EvtAvatar" +
       "EnterFocusNotify\022\036\n\rfocus_forward\030\n \001(\0132" +
       "\007.Vector\022\"\n\014forward_type\030\016 \001(\0162\014.Forward" +
-      "Type\022\025\n\013MEBKKKCNDAK\030\240\234\001 \001(\010\022\025\n\013PNELCGBOI" +
-      "FM\030\241\234\001 \001(\010\022\025\n\013KLNNOPGOMKN\030\242\234\001 \001(\010\022\025\n\013IMM" +
-      "FFEBPCJM\030\243\234\001 \001(\005\022\021\n\tentity_id\030\003 \001(\r\022\025\n\013C" +
-      "CDMIMGNCBM\030\244\234\001 \001(\010\022\025\n\013JLNKDGGPICE\030\245\234\001 \001(" +
-      "\010\022\025\n\013ADMFCLBHILF\030\246\234\001 \001(\010\022\025\n\013KHOIOJCHLNL\030" +
-      "\247\234\001 \001(\010\022\025\n\013FDCDPKDKNAL\030\250\234\001 \001(\010\022\025\n\013HFFPEF" +
-      "BLBPC\030\251\234\001 \001(\010\022\025\n\013JHJBHFINKDK\030\252\234\001 \001(\010\022\025\n\013" +
-      "CFNHGMLGPHP\030\253\234\001 \001(\010B\033\n\031emu.grasscutter.n" +
-      "et.protob\006proto3"
+      "Type\022\023\n\013MEBKKKCNDAK\030\002 \001(\010\022\023\n\013PNELCGBOIFM" +
+      "\030\004 \001(\010\022\025\n\013KLNNOPGOMKN\030\242\234\001 \001(\010\022\023\n\013IMMFFEB" +
+      "PCJM\030\001 \001(\005\022\021\n\tentity_id\030\003 \001(\r\022\023\n\013CCDMIMG" +
+      "NCBM\030\017 \001(\010\022\025\n\013JLNKDGGPICE\030\245\234\001 \001(\010\022\025\n\013ADM" +
+      "FCLBHILF\030\246\234\001 \001(\010\022\023\n\013KHOIOJCHLNL\030\005 \001(\010\022\023\n" +
+      "\013FDCDPKDKNAL\030\007 \001(\010\022\023\n\013HFFPEFBLBPC\030\014 \001(\010\022" +
+      "\023\n\013JHJBHFINKDK\030\013 \001(\010\022\023\n\013CFNHGMLGPHP\030\r \001(" +
+      "\010B\033\n\031emu.grasscutter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

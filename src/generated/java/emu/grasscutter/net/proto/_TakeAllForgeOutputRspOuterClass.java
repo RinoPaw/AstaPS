@@ -31,25 +31,25 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated .ItemHint output_item_list = 20000;</code>
+     * <code>repeated .ItemHint output_item_list = 14;</code>
      */
     java.util.List<emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint> 
         getOutputItemListList();
     /**
-     * <code>repeated .ItemHint output_item_list = 20000;</code>
+     * <code>repeated .ItemHint output_item_list = 14;</code>
      */
     emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint getOutputItemList(int index);
     /**
-     * <code>repeated .ItemHint output_item_list = 20000;</code>
+     * <code>repeated .ItemHint output_item_list = 14;</code>
      */
     int getOutputItemListCount();
     /**
-     * <code>repeated .ItemHint output_item_list = 20000;</code>
+     * <code>repeated .ItemHint output_item_list = 14;</code>
      */
     java.util.List<? extends emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder> 
         getOutputItemListOrBuilderList();
     /**
-     * <code>repeated .ItemHint output_item_list = 20000;</code>
+     * <code>repeated .ItemHint output_item_list = 14;</code>
      */
     emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder getOutputItemListOrBuilder(
         int index);
@@ -79,25 +79,25 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         int index);
 
     /**
-     * <code>repeated .ItemHint return_item_list = 20001;</code>
+     * <code>repeated .ItemHint return_item_list = 8;</code>
      */
     java.util.List<emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint> 
         getReturnItemListList();
     /**
-     * <code>repeated .ItemHint return_item_list = 20001;</code>
+     * <code>repeated .ItemHint return_item_list = 8;</code>
      */
     emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint getReturnItemList(int index);
     /**
-     * <code>repeated .ItemHint return_item_list = 20001;</code>
+     * <code>repeated .ItemHint return_item_list = 8;</code>
      */
     int getReturnItemListCount();
     /**
-     * <code>repeated .ItemHint return_item_list = 20001;</code>
+     * <code>repeated .ItemHint return_item_list = 8;</code>
      */
     java.util.List<? extends emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder> 
         getReturnItemListOrBuilderList();
     /**
-     * <code>repeated .ItemHint return_item_list = 20001;</code>
+     * <code>repeated .ItemHint return_item_list = 8;</code>
      */
     emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder getReturnItemListOrBuilder(
         int index);
@@ -171,18 +171,18 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
               emu.grasscutter.net.proto._TakeAllForgeOutputRspOuterClass._TakeAllForgeOutputRsp.class, emu.grasscutter.net.proto._TakeAllForgeOutputRspOuterClass._TakeAllForgeOutputRsp.Builder.class);
     }
 
-    public static final int OUTPUT_ITEM_LIST_FIELD_NUMBER = 20000;
+    public static final int OUTPUT_ITEM_LIST_FIELD_NUMBER = 14;
     @SuppressWarnings("serial")
     private java.util.List<emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint> outputItemList_;
     /**
-     * <code>repeated .ItemHint output_item_list = 20000;</code>
+     * <code>repeated .ItemHint output_item_list = 14;</code>
      */
     @java.lang.Override
     public java.util.List<emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint> getOutputItemListList() {
       return outputItemList_;
     }
     /**
-     * <code>repeated .ItemHint output_item_list = 20000;</code>
+     * <code>repeated .ItemHint output_item_list = 14;</code>
      */
     @java.lang.Override
     public java.util.List<? extends emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder> 
@@ -190,21 +190,21 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
       return outputItemList_;
     }
     /**
-     * <code>repeated .ItemHint output_item_list = 20000;</code>
+     * <code>repeated .ItemHint output_item_list = 14;</code>
      */
     @java.lang.Override
     public int getOutputItemListCount() {
       return outputItemList_.size();
     }
     /**
-     * <code>repeated .ItemHint output_item_list = 20000;</code>
+     * <code>repeated .ItemHint output_item_list = 14;</code>
      */
     @java.lang.Override
     public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint getOutputItemList(int index) {
       return outputItemList_.get(index);
     }
     /**
-     * <code>repeated .ItemHint output_item_list = 20000;</code>
+     * <code>repeated .ItemHint output_item_list = 14;</code>
      */
     @java.lang.Override
     public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder getOutputItemListOrBuilder(
@@ -253,18 +253,18 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
       return extraOutputItemList_.get(index);
     }
 
-    public static final int RETURN_ITEM_LIST_FIELD_NUMBER = 20001;
+    public static final int RETURN_ITEM_LIST_FIELD_NUMBER = 8;
     @SuppressWarnings("serial")
     private java.util.List<emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint> returnItemList_;
     /**
-     * <code>repeated .ItemHint return_item_list = 20001;</code>
+     * <code>repeated .ItemHint return_item_list = 8;</code>
      */
     @java.lang.Override
     public java.util.List<emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint> getReturnItemListList() {
       return returnItemList_;
     }
     /**
-     * <code>repeated .ItemHint return_item_list = 20001;</code>
+     * <code>repeated .ItemHint return_item_list = 8;</code>
      */
     @java.lang.Override
     public java.util.List<? extends emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder> 
@@ -272,21 +272,21 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
       return returnItemList_;
     }
     /**
-     * <code>repeated .ItemHint return_item_list = 20001;</code>
+     * <code>repeated .ItemHint return_item_list = 8;</code>
      */
     @java.lang.Override
     public int getReturnItemListCount() {
       return returnItemList_.size();
     }
     /**
-     * <code>repeated .ItemHint return_item_list = 20001;</code>
+     * <code>repeated .ItemHint return_item_list = 8;</code>
      */
     @java.lang.Override
     public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint getReturnItemList(int index) {
       return returnItemList_.get(index);
     }
     /**
-     * <code>repeated .ItemHint return_item_list = 20001;</code>
+     * <code>repeated .ItemHint return_item_list = 8;</code>
      */
     @java.lang.Override
     public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder getReturnItemListOrBuilder(
@@ -357,6 +357,9 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
       for (int i = 0; i < unknownList_.size(); i++) {
         output.writeInt32NoTag(unknownList_.getInt(i));
       }
+      for (int i = 0; i < returnItemList_.size(); i++) {
+        output.writeMessage(8, returnItemList_.get(i));
+      }
       if (retcode_ != 0) {
         output.writeInt32(12, retcode_);
       }
@@ -364,10 +367,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         output.writeMessage(13, extraOutputItemList_.get(i));
       }
       for (int i = 0; i < outputItemList_.size(); i++) {
-        output.writeMessage(20000, outputItemList_.get(i));
-      }
-      for (int i = 0; i < returnItemList_.size(); i++) {
-        output.writeMessage(20001, returnItemList_.get(i));
+        output.writeMessage(14, outputItemList_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -387,6 +387,15 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         }
         unknownListMemoizedSerializedSize = dataSize;
       }
+
+          {
+            final int count = returnItemList_.size();
+            for (int i = 0; i < count; i++) {
+              size += com.google.protobuf.CodedOutputStream
+                .computeMessageSizeNoTag(returnItemList_.get(i));
+            }
+            size += 1 * count;
+          }
       if (retcode_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(12, retcode_);
@@ -407,16 +416,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
               size += com.google.protobuf.CodedOutputStream
                 .computeMessageSizeNoTag(outputItemList_.get(i));
             }
-            size += 3 * count;
-          }
-
-          {
-            final int count = returnItemList_.size();
-            for (int i = 0; i < count; i++) {
-              size += com.google.protobuf.CodedOutputStream
-                .computeMessageSizeNoTag(returnItemList_.get(i));
-            }
-            size += 3 * count;
+            size += 1 * count;
           }
       return size;
     }
@@ -852,6 +852,19 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
                 input.popLimit(limit);
                 break;
               } // case 26
+              case 66: {
+                emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint m =
+                    input.readMessage(
+                        emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.parser(),
+                        extensionRegistry);
+                if (returnItemListBuilder_ == null) {
+                  ensureReturnItemListIsMutable();
+                  returnItemList_.add(m);
+                } else {
+                  returnItemListBuilder_.addMessage(m);
+                }
+                break;
+              } // case 66
               case 96: {
                 retcode_ = input.readInt32();
                 bitField0_ |= 0x00000010;
@@ -870,7 +883,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
                 }
                 break;
               } // case 106
-              case 160002: {
+              case 114: {
                 emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint m =
                     input.readMessage(
                         emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.parser(),
@@ -882,20 +895,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
                   outputItemListBuilder_.addMessage(m);
                 }
                 break;
-              } // case 160002
-              case 160010: {
-                emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint m =
-                    input.readMessage(
-                        emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.parser(),
-                        extensionRegistry);
-                if (returnItemListBuilder_ == null) {
-                  ensureReturnItemListIsMutable();
-                  returnItemList_.add(m);
-                } else {
-                  returnItemListBuilder_.addMessage(m);
-                }
-                break;
-              } // case 160010
+              } // case 114
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -926,7 +926,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
           emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder> outputItemListBuilder_;
 
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public java.util.List<emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint> getOutputItemListList() {
         if (outputItemListBuilder_ == null) {
@@ -936,7 +936,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         }
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public int getOutputItemListCount() {
         if (outputItemListBuilder_ == null) {
@@ -946,7 +946,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         }
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint getOutputItemList(int index) {
         if (outputItemListBuilder_ == null) {
@@ -956,7 +956,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         }
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public Builder setOutputItemList(
           int index, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint value) {
@@ -971,7 +971,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public Builder setOutputItemList(
           int index, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder builderForValue) {
@@ -985,7 +985,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public Builder addOutputItemList(emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint value) {
         if (outputItemListBuilder_ == null) {
@@ -999,7 +999,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public Builder addOutputItemList(
           int index, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint value) {
@@ -1014,7 +1014,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public Builder addOutputItemList(
           emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder builderForValue) {
@@ -1028,7 +1028,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public Builder addOutputItemList(
           int index, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder builderForValue) {
@@ -1042,7 +1042,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public Builder addAllOutputItemList(
           java.lang.Iterable<? extends emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint> values) {
@@ -1057,7 +1057,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public Builder clearOutputItemList() {
         if (outputItemListBuilder_ == null) {
@@ -1070,7 +1070,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public Builder removeOutputItemList(int index) {
         if (outputItemListBuilder_ == null) {
@@ -1083,14 +1083,14 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder getOutputItemListBuilder(
           int index) {
         return internalGetOutputItemListFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder getOutputItemListOrBuilder(
           int index) {
@@ -1100,7 +1100,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         }
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public java.util.List<? extends emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder> 
            getOutputItemListOrBuilderList() {
@@ -1111,14 +1111,14 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         }
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder addOutputItemListBuilder() {
         return internalGetOutputItemListFieldBuilder().addBuilder(
             emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.getDefaultInstance());
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder addOutputItemListBuilder(
           int index) {
@@ -1126,7 +1126,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
             index, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.getDefaultInstance());
       }
       /**
-       * <code>repeated .ItemHint output_item_list = 20000;</code>
+       * <code>repeated .ItemHint output_item_list = 14;</code>
        */
       public java.util.List<emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder> 
            getOutputItemListBuilderList() {
@@ -1394,7 +1394,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
           emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder> returnItemListBuilder_;
 
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public java.util.List<emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint> getReturnItemListList() {
         if (returnItemListBuilder_ == null) {
@@ -1404,7 +1404,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         }
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public int getReturnItemListCount() {
         if (returnItemListBuilder_ == null) {
@@ -1414,7 +1414,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         }
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint getReturnItemList(int index) {
         if (returnItemListBuilder_ == null) {
@@ -1424,7 +1424,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         }
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public Builder setReturnItemList(
           int index, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint value) {
@@ -1439,7 +1439,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public Builder setReturnItemList(
           int index, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder builderForValue) {
@@ -1453,7 +1453,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public Builder addReturnItemList(emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint value) {
         if (returnItemListBuilder_ == null) {
@@ -1467,7 +1467,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public Builder addReturnItemList(
           int index, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint value) {
@@ -1482,7 +1482,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public Builder addReturnItemList(
           emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder builderForValue) {
@@ -1496,7 +1496,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public Builder addReturnItemList(
           int index, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder builderForValue) {
@@ -1510,7 +1510,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public Builder addAllReturnItemList(
           java.lang.Iterable<? extends emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint> values) {
@@ -1525,7 +1525,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public Builder clearReturnItemList() {
         if (returnItemListBuilder_ == null) {
@@ -1538,7 +1538,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public Builder removeReturnItemList(int index) {
         if (returnItemListBuilder_ == null) {
@@ -1551,14 +1551,14 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder getReturnItemListBuilder(
           int index) {
         return internalGetReturnItemListFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder getReturnItemListOrBuilder(
           int index) {
@@ -1568,7 +1568,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         }
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public java.util.List<? extends emu.grasscutter.net.proto.ItemHintOuterClass.ItemHintOrBuilder> 
            getReturnItemListOrBuilderList() {
@@ -1579,14 +1579,14 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
         }
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder addReturnItemListBuilder() {
         return internalGetReturnItemListFieldBuilder().addBuilder(
             emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.getDefaultInstance());
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder addReturnItemListBuilder(
           int index) {
@@ -1594,7 +1594,7 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
             index, emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.getDefaultInstance());
       }
       /**
-       * <code>repeated .ItemHint return_item_list = 20001;</code>
+       * <code>repeated .ItemHint return_item_list = 8;</code>
        */
       public java.util.List<emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint.Builder> 
            getReturnItemListBuilderList() {
@@ -1797,13 +1797,13 @@ public final class _TakeAllForgeOutputRspOuterClass extends com.google.protobuf.
   static {
     java.lang.String[] descriptorData = {
       "\n\034_TakeAllForgeOutputRsp.proto\032\016ItemHint" +
-      ".proto\"\270\001\n\026_TakeAllForgeOutputRsp\022%\n\020out" +
-      "put_item_list\030\240\234\001 \003(\0132\t.ItemHint\022)\n\026extr" +
-      "a_output_item_list\030\r \003(\0132\t.ItemHint\022%\n\020r" +
-      "eturn_item_list\030\241\234\001 \003(\0132\t.ItemHint\022\024\n\014un" +
-      "known_list\030\003 \003(\005\022\017\n\007retcode\030\014 \001(\005B=\n\031emu" +
-      ".grasscutter.net.protoB _TakeAllForgeOut" +
-      "putRspOuterClassb\006proto3"
+      ".proto\"\264\001\n\026_TakeAllForgeOutputRsp\022#\n\020out" +
+      "put_item_list\030\016 \003(\0132\t.ItemHint\022)\n\026extra_" +
+      "output_item_list\030\r \003(\0132\t.ItemHint\022#\n\020ret" +
+      "urn_item_list\030\010 \003(\0132\t.ItemHint\022\024\n\014unknow" +
+      "n_list\030\003 \003(\005\022\017\n\007retcode\030\014 \001(\005B=\n\031emu.gra" +
+      "sscutter.net.protoB _TakeAllForgeOutputR" +
+      "spOuterClassb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

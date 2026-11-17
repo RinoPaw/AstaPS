@@ -1,0 +1,8 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+import "ReliquaryWearCustomData.proto";
+
+message SaveReliquaryWearCustomDataReq {
+  ReliquaryWearCustomData custom_data = 1;
+}

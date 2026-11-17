@@ -31,17 +31,17 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated uint32 mail_id_list = 14;</code>
+     * <code>repeated uint32 mail_id_list = 6;</code>
      * @return A list containing the mailIdList.
      */
     java.util.List<java.lang.Integer> getMailIdListList();
     /**
-     * <code>repeated uint32 mail_id_list = 14;</code>
+     * <code>repeated uint32 mail_id_list = 6;</code>
      * @return The count of mailIdList.
      */
     int getMailIdListCount();
     /**
-     * <code>repeated uint32 mail_id_list = 14;</code>
+     * <code>repeated uint32 mail_id_list = 6;</code>
      * @param index The index of the element to return.
      * @return The mailIdList at the given index.
      */
@@ -90,12 +90,12 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
               emu.grasscutter.net.proto.ReadMailNotifyOuterClass.ReadMailNotify.class, emu.grasscutter.net.proto.ReadMailNotifyOuterClass.ReadMailNotify.Builder.class);
     }
 
-    public static final int MAIL_ID_LIST_FIELD_NUMBER = 14;
+    public static final int MAIL_ID_LIST_FIELD_NUMBER = 6;
     @SuppressWarnings("serial")
     private com.google.protobuf.Internal.IntList mailIdList_ =
         emptyIntList();
     /**
-     * <code>repeated uint32 mail_id_list = 14;</code>
+     * <code>repeated uint32 mail_id_list = 6;</code>
      * @return A list containing the mailIdList.
      */
     @java.lang.Override
@@ -104,14 +104,14 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
       return mailIdList_;
     }
     /**
-     * <code>repeated uint32 mail_id_list = 14;</code>
+     * <code>repeated uint32 mail_id_list = 6;</code>
      * @return The count of mailIdList.
      */
     public int getMailIdListCount() {
       return mailIdList_.size();
     }
     /**
-     * <code>repeated uint32 mail_id_list = 14;</code>
+     * <code>repeated uint32 mail_id_list = 6;</code>
      * @param index The index of the element to return.
      * @return The mailIdList at the given index.
      */
@@ -136,7 +136,7 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
                         throws java.io.IOException {
       getSerializedSize();
       if (getMailIdListList().size() > 0) {
-        output.writeUInt32NoTag(114);
+        output.writeUInt32NoTag(50);
         output.writeUInt32NoTag(mailIdListMemoizedSerializedSize);
       }
       for (int i = 0; i < mailIdList_.size(); i++) {
@@ -419,13 +419,13 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
               case 0:
                 done = true;
                 break;
-              case 112: {
+              case 48: {
                 int v = input.readUInt32();
                 ensureMailIdListIsMutable();
                 mailIdList_.addInt(v);
                 break;
-              } // case 112
-              case 114: {
+              } // case 48
+              case 50: {
                 int length = input.readRawVarint32();
                 int limit = input.pushLimit(length);
                 ensureMailIdListIsMutable();
@@ -434,7 +434,7 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
                 }
                 input.popLimit(limit);
                 break;
-              } // case 114
+              } // case 50
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -460,7 +460,7 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
         bitField0_ |= 0x00000001;
       }
       /**
-       * <code>repeated uint32 mail_id_list = 14;</code>
+       * <code>repeated uint32 mail_id_list = 6;</code>
        * @return A list containing the mailIdList.
        */
       public java.util.List<java.lang.Integer>
@@ -469,14 +469,14 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
         return mailIdList_;
       }
       /**
-       * <code>repeated uint32 mail_id_list = 14;</code>
+       * <code>repeated uint32 mail_id_list = 6;</code>
        * @return The count of mailIdList.
        */
       public int getMailIdListCount() {
         return mailIdList_.size();
       }
       /**
-       * <code>repeated uint32 mail_id_list = 14;</code>
+       * <code>repeated uint32 mail_id_list = 6;</code>
        * @param index The index of the element to return.
        * @return The mailIdList at the given index.
        */
@@ -484,7 +484,7 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
         return mailIdList_.getInt(index);
       }
       /**
-       * <code>repeated uint32 mail_id_list = 14;</code>
+       * <code>repeated uint32 mail_id_list = 6;</code>
        * @param index The index to set the value at.
        * @param value The mailIdList to set.
        * @return This builder for chaining.
@@ -499,7 +499,7 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
         return this;
       }
       /**
-       * <code>repeated uint32 mail_id_list = 14;</code>
+       * <code>repeated uint32 mail_id_list = 6;</code>
        * @param value The mailIdList to add.
        * @return This builder for chaining.
        */
@@ -512,7 +512,7 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
         return this;
       }
       /**
-       * <code>repeated uint32 mail_id_list = 14;</code>
+       * <code>repeated uint32 mail_id_list = 6;</code>
        * @param values The mailIdList to add.
        * @return This builder for chaining.
        */
@@ -526,7 +526,7 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
         return this;
       }
       /**
-       * <code>repeated uint32 mail_id_list = 14;</code>
+       * <code>repeated uint32 mail_id_list = 6;</code>
        * @return This builder for chaining.
        */
       public Builder clearMailIdList() {
@@ -602,7 +602,7 @@ public final class ReadMailNotifyOuterClass extends com.google.protobuf.Generate
   static {
     java.lang.String[] descriptorData = {
       "\n\024ReadMailNotify.proto\"&\n\016ReadMailNotify" +
-      "\022\024\n\014mail_id_list\030\016 \003(\rB\033\n\031emu.grasscutte" +
+      "\022\024\n\014mail_id_list\030\006 \003(\rB\033\n\031emu.grasscutte" +
       "r.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor

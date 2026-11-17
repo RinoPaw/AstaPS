@@ -85,7 +85,7 @@ public final class ChatInfoOuterClass extends com.google.protobuf.GeneratedFile 
     int getPlatformType();
 
     /**
-     * <code>uint64 OIEHJMHHCFB = 20001;</code>
+     * <code>uint64 OIEHJMHHCFB = 10;</code>
      * @return The oIEHJMHHCFB.
      */
     long getOIEHJMHHCFB();
@@ -9008,10 +9008,10 @@ public final class ChatInfoOuterClass extends com.google.protobuf.GeneratedFile 
       return platformType_;
     }
 
-    public static final int OIEHJMHHCFB_FIELD_NUMBER = 20001;
+    public static final int OIEHJMHHCFB_FIELD_NUMBER = 10;
     private long oIEHJMHHCFB_ = 0L;
     /**
-     * <code>uint64 OIEHJMHHCFB = 20001;</code>
+     * <code>uint64 OIEHJMHHCFB = 10;</code>
      * @return The oIEHJMHHCFB.
      */
     @java.lang.Override
@@ -9539,6 +9539,9 @@ public final class ChatInfoOuterClass extends com.google.protobuf.GeneratedFile 
         output.writeUInt32(
             9, (int)((java.lang.Integer) mention_));
       }
+      if (oIEHJMHHCFB_ != 0L) {
+        output.writeUInt64(10, oIEHJMHHCFB_);
+      }
       if (platformType_ != 0) {
         output.writeUInt32(11, platformType_);
       }
@@ -9591,9 +9594,6 @@ public final class ChatInfoOuterClass extends com.google.protobuf.GeneratedFile 
       if (aLKIPKCAPFL_ != 0) {
         output.writeUInt32(20000, aLKIPKCAPFL_);
       }
-      if (oIEHJMHHCFB_ != 0L) {
-        output.writeUInt64(20001, oIEHJMHHCFB_);
-      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -9626,6 +9626,10 @@ public final class ChatInfoOuterClass extends com.google.protobuf.GeneratedFile 
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(
               9, (int)((java.lang.Integer) mention_));
+      }
+      if (oIEHJMHHCFB_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(10, oIEHJMHHCFB_);
       }
       if (platformType_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -9694,10 +9698,6 @@ public final class ChatInfoOuterClass extends com.google.protobuf.GeneratedFile 
       if (aLKIPKCAPFL_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(20000, aLKIPKCAPFL_);
-      }
-      if (oIEHJMHHCFB_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(20001, oIEHJMHHCFB_);
       }
       return size;
     }
@@ -10393,6 +10393,11 @@ public final class ChatInfoOuterClass extends com.google.protobuf.GeneratedFile 
                 mentionCase_ = 9;
                 break;
               } // case 72
+              case 80: {
+                oIEHJMHHCFB_ = input.readUInt64();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 80
               case 88: {
                 platformType_ = input.readUInt32();
                 bitField0_ |= 0x00000080;
@@ -10502,11 +10507,6 @@ public final class ChatInfoOuterClass extends com.google.protobuf.GeneratedFile 
                 bitField0_ |= 0x00000008;
                 break;
               } // case 160000
-              case 160008: {
-                oIEHJMHHCFB_ = input.readUInt64();
-                bitField0_ |= 0x00000100;
-                break;
-              } // case 160008
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -10852,7 +10852,7 @@ public final class ChatInfoOuterClass extends com.google.protobuf.GeneratedFile 
 
       private long oIEHJMHHCFB_ ;
       /**
-       * <code>uint64 OIEHJMHHCFB = 20001;</code>
+       * <code>uint64 OIEHJMHHCFB = 10;</code>
        * @return The oIEHJMHHCFB.
        */
       @java.lang.Override
@@ -10860,7 +10860,7 @@ public final class ChatInfoOuterClass extends com.google.protobuf.GeneratedFile 
         return oIEHJMHHCFB_;
       }
       /**
-       * <code>uint64 OIEHJMHHCFB = 20001;</code>
+       * <code>uint64 OIEHJMHHCFB = 10;</code>
        * @param value The oIEHJMHHCFB to set.
        * @return This builder for chaining.
        */
@@ -10872,7 +10872,7 @@ public final class ChatInfoOuterClass extends com.google.protobuf.GeneratedFile 
         return this;
       }
       /**
-       * <code>uint64 OIEHJMHHCFB = 20001;</code>
+       * <code>uint64 OIEHJMHHCFB = 10;</code>
        * @return This builder for chaining.
        */
       public Builder clearOIEHJMHHCFB() {
@@ -12902,66 +12902,66 @@ public final class ChatInfoOuterClass extends com.google.protobuf.GeneratedFile 
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\016ChatInfo.proto\"\223\022\n\010ChatInfo\022\r\n\005_xuid\030\005" +
+      "\n\016ChatInfo.proto\"\221\022\n\010ChatInfo\022\r\n\005_xuid\030\005" +
       " \001(\t\022\017\n\007is_read\030\007 \001(\010\022\014\n\004time\030\002 \001(\r\022\025\n\013A" +
       "LKIPKCAPFL\030\240\234\001 \001(\r\022\020\n\010sequence\030\017 \001(\r\022\016\n\006" +
       "to_uid\030\006 \001(\r\022\013\n\003uid\030\001 \001(\r\022\025\n\rplatform_ty" +
-      "pe\030\013 \001(\r\022\025\n\013OIEHJMHHCFB\030\241\234\001 \001(\004\022\027\n\rmenti" +
-      "oned_uid\030\t \001(\rH\000\022\030\n\016is_mention_all\030\010 \001(\010" +
-      "H\000\022\017\n\004text\030\366\004 \001(\tH\001\022\017\n\004icon\030\303\002 \001(\rH\001\022,\n\013" +
-      "system_hint\030\202\014 \001(\0132\024.ChatInfo.SystemHint" +
-      "H\001\0225\n\017hall_invitation\030\332\t \001(\0132\031.ChatInfo." +
-      "_HallInvitationH\001\022B\n\026beyond_team_invitat" +
-      "ion\030\247\n \001(\0132\037.ChatInfo._BeyondTeamInvitat" +
-      "ionH\001\022D\n\027beyond_team_application\030\200\014 \001(\0132" +
-      " .ChatInfo._BeyondTeamApplicationH\001\022D\n\027b" +
-      "eyond_team_recruitment\030\304\006 \001(\0132 .ChatInfo" +
-      "._BeyondTeamRecruitmentH\001\022O\n\035beyond_coll" +
-      "ection_new_captain\030\315\005 \001(\0132%.ChatInfo._Be" +
-      "yondCollectionNewCaptainH\001\022B\n\026beyond_roo" +
-      "m_invitation\030\227\014 \001(\0132\037.ChatInfo._BeyondRo" +
-      "omInvitationH\001\0227\n\021beyond_gacha_gift\030[ \001(" +
-      "\0132\032.ChatInfo._BeyondGachaGiftH\001\022G\n\031beyon" +
-      "d_costume_share_code\030\216\005 \001(\0132!.ChatInfo._" +
-      "BeyondCostumeShareCodeH\001\022J\n\032hall_recruit" +
-      "ing_invitation\030\356\002 \001(\0132#.ChatInfo._HallRe" +
-      "cruitingInvitationH\001\022D\n\027beyond_room_recr" +
-      "uitment\030\356\017 \001(\0132 .ChatInfo._BeyondRoomRec" +
-      "ruitmentH\001\022:\n\022beyond_level_share\030\343\006 \001(\0132" +
-      "\033.ChatInfo._BeyondLevelShareH\001\032,\n\nSystem" +
-      "Hint\022\020\n\010uid_list\030\006 \003(\r\022\014\n\004type\030\005 \001(\r\032\\\n\033" +
-      "_BeyondCollectionNewCaptain\022\023\n\013PCLIOFOLG" +
-      "JG\030\n \001(\t\022\023\n\013PIIDPLPGDOJ\030\006 \001(\r\022\023\n\013OHANCMM" +
-      "CDHI\030\013 \001(\r\032\244\001\n\017_HallInvitation\022\023\n\013CFPLKF" +
-      "NPNAM\030\007 \003(\r\022\023\n\013BJFFLGDNMPL\030\001 \001(\004\022\023\n\013DGNN" +
-      "JCJPGEO\030\016 \001(\r\022\023\n\013EPHGOMPBKJA\030\t \001(\r\022\023\n\013BO" +
-      "JNPHONGMP\030\014 \001(\004\022\023\n\013GHNMBPLBBFN\030\005 \001(\r\022\023\n\013" +
-      "CNFEBIOPANP\030\003 \001(\r\032k\n\025_BeyondTeamInvitati" +
-      "on\022\023\n\013EPHGOMPBKJA\030\007 \001(\r\022\023\n\013BOJNPHONGMP\030\010" +
-      " \001(\004\022\023\n\013GHNMBPLBBFN\030\n \001(\r\022\023\n\013CNFEBIOPANP" +
-      "\030\001 \001(\r\032k\n\026_BeyondTeamApplication\022\023\n\013HDMB" +
-      "GALJFMK\030\n \001(\r\022\022\n\ntarget_uid\030\016 \001(\r\022\023\n\013GJN" +
-      "LFEJCKPA\030\002 \001(\r\022\023\n\013MIHICCAEFOM\030\014 \001(\004\032W\n\026_" +
-      "BeyondTeamRecruitment\022\023\n\013EILHBPNLEFB\030\n \001" +
-      "(\r\022\023\n\013OJDIIPKINNL\030\004 \001(\r\022\023\n\013FDIFPEHDKFD\030\016" +
-      " \001(\r\032\200\001\n\025_BeyondRoomInvitation\022\023\n\013GHNMBP" +
-      "LBBFN\030\005 \001(\r\022\023\n\013BOJNPHONGMP\030\016 \001(\004\022\023\n\013CNFE" +
-      "BIOPANP\030\007 \001(\r\022\023\n\013EPHGOMPBKJA\030\010 \001(\r\022\023\n\013NM" +
-      "AOGMMKNBG\030\n \001(\004\032\'\n\020_BeyondGachaGift\022\023\n\013t" +
-      "ransaction\030\016 \001(\t\032.\n\027_BeyondCostumeShareC" +
-      "ode\022\023\n\013FEPAFANMNLK\030\001 \001(\014\032\231\001\n\031_HallRecrui" +
-      "tingInvitation\022\023\n\013GOFEPGIPJNF\030\007 \003(\r\022\023\n\013O" +
-      "JDIIPKINNL\030\005 \001(\004\022\023\n\013DKLMLPNMIHN\030\016 \001(\004\022\023\n" +
-      "\013DELCBHHBDCJ\030\r \001(\r\022\023\n\013EILHBPNLEFB\030\013 \001(\r\022" +
-      "\023\n\013LMNLLOEFBOM\030\017 \001(\r\032\301\001\n\026_BeyondRoomRecr" +
-      "uitment\022\023\n\013IENEGFFPHHO\030\016 \001(\t\022\023\n\013OJDIIPKI" +
-      "NNL\030\017 \001(\004\022\024\n\014dungeon_guid\030\001 \001(\004\022\023\n\013KAEOB" +
-      "NBFIDL\030\014 \001(\004\022\023\n\013EPHGOMPBKJA\030\004 \001(\r\022\023\n\013JDF" +
-      "MJOMAOLF\030\n \001(\r\022\023\n\013EILHBPNLEFB\030\t \001(\r\022\023\n\013G" +
-      "LLFGIOCJHH\030\007 \001(\r\032>\n\021_BeyondLevelShare\022\023\n" +
-      "\013IENEGFFPHHO\030\007 \001(\t\022\024\n\014dungeon_guid\030\n \001(\004" +
-      "B\t\n\007mentionB\t\n\007contentB\033\n\031emu.grasscutte" +
-      "r.net.protob\006proto3"
+      "pe\030\013 \001(\r\022\023\n\013OIEHJMHHCFB\030\n \001(\004\022\027\n\rmention" +
+      "ed_uid\030\t \001(\rH\000\022\030\n\016is_mention_all\030\010 \001(\010H\000" +
+      "\022\017\n\004text\030\366\004 \001(\tH\001\022\017\n\004icon\030\303\002 \001(\rH\001\022,\n\013sy" +
+      "stem_hint\030\202\014 \001(\0132\024.ChatInfo.SystemHintH\001" +
+      "\0225\n\017hall_invitation\030\332\t \001(\0132\031.ChatInfo._H" +
+      "allInvitationH\001\022B\n\026beyond_team_invitatio" +
+      "n\030\247\n \001(\0132\037.ChatInfo._BeyondTeamInvitatio" +
+      "nH\001\022D\n\027beyond_team_application\030\200\014 \001(\0132 ." +
+      "ChatInfo._BeyondTeamApplicationH\001\022D\n\027bey" +
+      "ond_team_recruitment\030\304\006 \001(\0132 .ChatInfo._" +
+      "BeyondTeamRecruitmentH\001\022O\n\035beyond_collec" +
+      "tion_new_captain\030\315\005 \001(\0132%.ChatInfo._Beyo" +
+      "ndCollectionNewCaptainH\001\022B\n\026beyond_room_" +
+      "invitation\030\227\014 \001(\0132\037.ChatInfo._BeyondRoom" +
+      "InvitationH\001\0227\n\021beyond_gacha_gift\030[ \001(\0132" +
+      "\032.ChatInfo._BeyondGachaGiftH\001\022G\n\031beyond_" +
+      "costume_share_code\030\216\005 \001(\0132!.ChatInfo._Be" +
+      "yondCostumeShareCodeH\001\022J\n\032hall_recruitin" +
+      "g_invitation\030\356\002 \001(\0132#.ChatInfo._HallRecr" +
+      "uitingInvitationH\001\022D\n\027beyond_room_recrui" +
+      "tment\030\356\017 \001(\0132 .ChatInfo._BeyondRoomRecru" +
+      "itmentH\001\022:\n\022beyond_level_share\030\343\006 \001(\0132\033." +
+      "ChatInfo._BeyondLevelShareH\001\032,\n\nSystemHi" +
+      "nt\022\020\n\010uid_list\030\006 \003(\r\022\014\n\004type\030\005 \001(\r\032\\\n\033_B" +
+      "eyondCollectionNewCaptain\022\023\n\013PCLIOFOLGJG" +
+      "\030\n \001(\t\022\023\n\013PIIDPLPGDOJ\030\006 \001(\r\022\023\n\013OHANCMMCD" +
+      "HI\030\013 \001(\r\032\244\001\n\017_HallInvitation\022\023\n\013CFPLKFNP" +
+      "NAM\030\007 \003(\r\022\023\n\013BJFFLGDNMPL\030\001 \001(\004\022\023\n\013DGNNJC" +
+      "JPGEO\030\016 \001(\r\022\023\n\013EPHGOMPBKJA\030\t \001(\r\022\023\n\013BOJN" +
+      "PHONGMP\030\014 \001(\004\022\023\n\013GHNMBPLBBFN\030\005 \001(\r\022\023\n\013CN" +
+      "FEBIOPANP\030\003 \001(\r\032k\n\025_BeyondTeamInvitation" +
+      "\022\023\n\013EPHGOMPBKJA\030\007 \001(\r\022\023\n\013BOJNPHONGMP\030\010 \001" +
+      "(\004\022\023\n\013GHNMBPLBBFN\030\n \001(\r\022\023\n\013CNFEBIOPANP\030\001" +
+      " \001(\r\032k\n\026_BeyondTeamApplication\022\023\n\013HDMBGA" +
+      "LJFMK\030\n \001(\r\022\022\n\ntarget_uid\030\016 \001(\r\022\023\n\013GJNLF" +
+      "EJCKPA\030\002 \001(\r\022\023\n\013MIHICCAEFOM\030\014 \001(\004\032W\n\026_Be" +
+      "yondTeamRecruitment\022\023\n\013EILHBPNLEFB\030\n \001(\r" +
+      "\022\023\n\013OJDIIPKINNL\030\004 \001(\r\022\023\n\013FDIFPEHDKFD\030\016 \001" +
+      "(\r\032\200\001\n\025_BeyondRoomInvitation\022\023\n\013GHNMBPLB" +
+      "BFN\030\005 \001(\r\022\023\n\013BOJNPHONGMP\030\016 \001(\004\022\023\n\013CNFEBI" +
+      "OPANP\030\007 \001(\r\022\023\n\013EPHGOMPBKJA\030\010 \001(\r\022\023\n\013NMAO" +
+      "GMMKNBG\030\n \001(\004\032\'\n\020_BeyondGachaGift\022\023\n\013tra" +
+      "nsaction\030\016 \001(\t\032.\n\027_BeyondCostumeShareCod" +
+      "e\022\023\n\013FEPAFANMNLK\030\001 \001(\014\032\231\001\n\031_HallRecruiti" +
+      "ngInvitation\022\023\n\013GOFEPGIPJNF\030\007 \003(\r\022\023\n\013OJD" +
+      "IIPKINNL\030\005 \001(\004\022\023\n\013DKLMLPNMIHN\030\016 \001(\004\022\023\n\013D" +
+      "ELCBHHBDCJ\030\r \001(\r\022\023\n\013EILHBPNLEFB\030\013 \001(\r\022\023\n" +
+      "\013LMNLLOEFBOM\030\017 \001(\r\032\301\001\n\026_BeyondRoomRecrui" +
+      "tment\022\023\n\013IENEGFFPHHO\030\016 \001(\t\022\023\n\013OJDIIPKINN" +
+      "L\030\017 \001(\004\022\024\n\014dungeon_guid\030\001 \001(\004\022\023\n\013KAEOBNB" +
+      "FIDL\030\014 \001(\004\022\023\n\013EPHGOMPBKJA\030\004 \001(\r\022\023\n\013JDFMJ" +
+      "OMAOLF\030\n \001(\r\022\023\n\013EILHBPNLEFB\030\t \001(\r\022\023\n\013GLL" +
+      "FGIOCJHH\030\007 \001(\r\032>\n\021_BeyondLevelShare\022\023\n\013I" +
+      "ENEGFFPHHO\030\007 \001(\t\022\024\n\014dungeon_guid\030\n \001(\004B\t" +
+      "\n\007mentionB\t\n\007contentB\033\n\031emu.grasscutter." +
+      "net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

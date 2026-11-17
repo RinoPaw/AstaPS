@@ -77,7 +77,7 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
     int getRewardId();
 
     /**
-     * <code>bool is_can_take_reward = 20002;</code>
+     * <code>bool is_can_take_reward = 8;</code>
      * @return The isCanTakeReward.
      */
     boolean getIsCanTakeReward();
@@ -101,7 +101,7 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
     boolean getIsSkipTraining();
 
     /**
-     * <code>bool received_reward = 20006;</code>
+     * <code>bool received_reward = 6;</code>
      * @return The receivedReward.
      */
     boolean getReceivedReward();
@@ -232,10 +232,10 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
       return rewardId_;
     }
 
-    public static final int IS_CAN_TAKE_REWARD_FIELD_NUMBER = 20002;
+    public static final int IS_CAN_TAKE_REWARD_FIELD_NUMBER = 8;
     private boolean isCanTakeReward_ = false;
     /**
-     * <code>bool is_can_take_reward = 20002;</code>
+     * <code>bool is_can_take_reward = 8;</code>
      * @return The isCanTakeReward.
      */
     @java.lang.Override
@@ -276,10 +276,10 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
       return IsSkipTraining_;
     }
 
-    public static final int RECEIVED_REWARD_FIELD_NUMBER = 20006;
+    public static final int RECEIVED_REWARD_FIELD_NUMBER = 6;
     private boolean receivedReward_ = false;
     /**
-     * <code>bool received_reward = 20006;</code>
+     * <code>bool received_reward = 6;</code>
      * @return The receivedReward.
      */
     @java.lang.Override
@@ -305,6 +305,12 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
       if (trialAvatarIndexId_ != 0) {
         output.writeUInt32(1, trialAvatarIndexId_);
       }
+      if (receivedReward_ != false) {
+        output.writeBool(6, receivedReward_);
+      }
+      if (isCanTakeReward_ != false) {
+        output.writeBool(8, isCanTakeReward_);
+      }
       if (rewardId_ != 0) {
         output.writeUInt32(11, rewardId_);
       }
@@ -322,9 +328,6 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
       for (int i = 0; i < AvailableTrainingStepList_.size(); i++) {
         output.writeUInt32NoTag(AvailableTrainingStepList_.getInt(i));
       }
-      if (isCanTakeReward_ != false) {
-        output.writeBool(20002, isCanTakeReward_);
-      }
       if (IsAvatarOwned_ != false) {
         output.writeBool(20003, IsAvatarOwned_);
       }
@@ -334,9 +337,6 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
       if (IsSkipTraining_ != false) {
         output.writeBool(20005, IsSkipTraining_);
       }
-      if (receivedReward_ != false) {
-        output.writeBool(20006, receivedReward_);
-      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -344,6 +344,14 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
       if (trialAvatarIndexId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(1, trialAvatarIndexId_);
+      }
+      if (receivedReward_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(6, receivedReward_);
+      }
+      if (isCanTakeReward_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(8, isCanTakeReward_);
       }
       if (rewardId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -377,10 +385,6 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
         }
         AvailableTrainingStepListMemoizedSerializedSize = dataSize;
       }
-      if (isCanTakeReward_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20002, isCanTakeReward_);
-      }
       if (IsAvatarOwned_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(20003, IsAvatarOwned_);
@@ -392,10 +396,6 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
       if (IsSkipTraining_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(20005, IsSkipTraining_);
-      }
-      if (receivedReward_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20006, receivedReward_);
       }
       return size;
     }
@@ -765,6 +765,16 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
                 bitField0_ |= 0x00000004;
                 break;
               } // case 8
+              case 48: {
+                receivedReward_ = input.readBool();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 48
+              case 64: {
+                isCanTakeReward_ = input.readBool();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 64
               case 88: {
                 rewardId_ = input.readUInt32();
                 bitField0_ |= 0x00000008;
@@ -802,11 +812,6 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
                 input.popLimit(limit);
                 break;
               } // case 160010
-              case 160016: {
-                isCanTakeReward_ = input.readBool();
-                bitField0_ |= 0x00000010;
-                break;
-              } // case 160016
               case 160024: {
                 IsAvatarOwned_ = input.readBool();
                 bitField0_ |= 0x00000020;
@@ -822,11 +827,6 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
                 bitField0_ |= 0x00000080;
                 break;
               } // case 160040
-              case 160048: {
-                receivedReward_ = input.readBool();
-                bitField0_ |= 0x00000100;
-                break;
-              } // case 160048
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1078,7 +1078,7 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
 
       private boolean isCanTakeReward_ ;
       /**
-       * <code>bool is_can_take_reward = 20002;</code>
+       * <code>bool is_can_take_reward = 8;</code>
        * @return The isCanTakeReward.
        */
       @java.lang.Override
@@ -1086,7 +1086,7 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
         return isCanTakeReward_;
       }
       /**
-       * <code>bool is_can_take_reward = 20002;</code>
+       * <code>bool is_can_take_reward = 8;</code>
        * @param value The isCanTakeReward to set.
        * @return This builder for chaining.
        */
@@ -1098,7 +1098,7 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
         return this;
       }
       /**
-       * <code>bool is_can_take_reward = 20002;</code>
+       * <code>bool is_can_take_reward = 8;</code>
        * @return This builder for chaining.
        */
       public Builder clearIsCanTakeReward() {
@@ -1206,7 +1206,7 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
 
       private boolean receivedReward_ ;
       /**
-       * <code>bool received_reward = 20006;</code>
+       * <code>bool received_reward = 6;</code>
        * @return The receivedReward.
        */
       @java.lang.Override
@@ -1214,7 +1214,7 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
         return receivedReward_;
       }
       /**
-       * <code>bool received_reward = 20006;</code>
+       * <code>bool received_reward = 6;</code>
        * @param value The receivedReward to set.
        * @return This builder for chaining.
        */
@@ -1226,7 +1226,7 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
         return this;
       }
       /**
-       * <code>bool received_reward = 20006;</code>
+       * <code>bool received_reward = 6;</code>
        * @return This builder for chaining.
        */
       public Builder clearReceivedReward() {
@@ -1302,15 +1302,15 @@ public final class TrialAvatarActivityRewardDetailInfoOuterClass extends com.goo
   static {
     java.lang.String[] descriptorData = {
       "\n)TrialAvatarActivityRewardDetailInfo.pr" +
-      "oto\"\262\002\n#TrialAvatarActivityRewardDetailI" +
+      "oto\"\256\002\n#TrialAvatarActivityRewardDetailI" +
       "nfo\022$\n\032_passed_training_step_list\030\240\234\001 \003(" +
       "\r\022\'\n\035_available_training_step_list\030\241\234\001 \003" +
       "(\r\022\035\n\025trial_avatar_index_id\030\001 \001(\r\022\021\n\trew" +
-      "ard_id\030\013 \001(\r\022\034\n\022is_can_take_reward\030\242\234\001 \001" +
-      "(\010\022\032\n\020_is_avatar_owned\030\243\234\001 \001(\010\022\030\n\016passed" +
-      "_dungeon\030\244\234\001 \001(\010\022\033\n\021_is_skip_training\030\245\234" +
-      "\001 \001(\010\022\031\n\017received_reward\030\246\234\001 \001(\010B\033\n\031emu." +
-      "grasscutter.net.protob\006proto3"
+      "ard_id\030\013 \001(\r\022\032\n\022is_can_take_reward\030\010 \001(\010" +
+      "\022\032\n\020_is_avatar_owned\030\243\234\001 \001(\010\022\030\n\016passed_d" +
+      "ungeon\030\244\234\001 \001(\010\022\033\n\021_is_skip_training\030\245\234\001 " +
+      "\001(\010\022\027\n\017received_reward\030\006 \001(\010B\033\n\031emu.gras" +
+      "scutter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

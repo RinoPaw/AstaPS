@@ -1,3 +1,4 @@
+// 7.2 CmdId 3653
 syntax = "proto3";
 
 option java_package = "emu.grasscutter.net.proto";
@@ -5,6 +6,6 @@ option java_package = "emu.grasscutter.net.proto";
 import "HomeResource.proto";
 
 message HomeResourceTakeFetterExpRsp {
-  HomeResource fetter_exp = 9;
-  int32 retcode = 8;
+  HomeResource fetter_exp = 10;
+  int32 retcode = 3;
 }

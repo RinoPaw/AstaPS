@@ -1,0 +1,11 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+
+message _GameplayRecommendationWeaponSourceType {
+  enum Value {
+    None = 0;
+    InBag = 1;
+    CanForge = 2;
+  }
+}

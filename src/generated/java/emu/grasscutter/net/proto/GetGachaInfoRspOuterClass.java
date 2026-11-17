@@ -73,13 +73,13 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
     int getDailyGachaTimes();
 
     /**
-     * <code>bool BKMCHIJHJJE = 20000;</code>
+     * <code>bool BKMCHIJHJJE = 14;</code>
      * @return The bKMCHIJHJJE.
      */
     boolean getBKMCHIJHJJE();
 
     /**
-     * <code>bool LHBELFNPPNK = 20001;</code>
+     * <code>bool LHBELFNPPNK = 1;</code>
      * @return The lHBELFNPPNK.
      */
     boolean getLHBELFNPPNK();
@@ -201,10 +201,10 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
       return dailyGachaTimes_;
     }
 
-    public static final int BKMCHIJHJJE_FIELD_NUMBER = 20000;
+    public static final int BKMCHIJHJJE_FIELD_NUMBER = 14;
     private boolean bKMCHIJHJJE_ = false;
     /**
-     * <code>bool BKMCHIJHJJE = 20000;</code>
+     * <code>bool BKMCHIJHJJE = 14;</code>
      * @return The bKMCHIJHJJE.
      */
     @java.lang.Override
@@ -212,10 +212,10 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
       return bKMCHIJHJJE_;
     }
 
-    public static final int LHBELFNPPNK_FIELD_NUMBER = 20001;
+    public static final int LHBELFNPPNK_FIELD_NUMBER = 1;
     private boolean lHBELFNPPNK_ = false;
     /**
-     * <code>bool LHBELFNPPNK = 20001;</code>
+     * <code>bool LHBELFNPPNK = 1;</code>
      * @return The lHBELFNPPNK.
      */
     @java.lang.Override
@@ -237,6 +237,9 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (lHBELFNPPNK_ != false) {
+        output.writeBool(1, lHBELFNPPNK_);
+      }
       for (int i = 0; i < gachaInfoList_.size(); i++) {
         output.writeMessage(2, gachaInfoList_.get(i));
       }
@@ -246,19 +249,20 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
       if (retcode_ != 0) {
         output.writeInt32(12, retcode_);
       }
+      if (bKMCHIJHJJE_ != false) {
+        output.writeBool(14, bKMCHIJHJJE_);
+      }
       if (gachaRandom_ != 0) {
         output.writeUInt32(15, gachaRandom_);
-      }
-      if (bKMCHIJHJJE_ != false) {
-        output.writeBool(20000, bKMCHIJHJJE_);
-      }
-      if (lHBELFNPPNK_ != false) {
-        output.writeBool(20001, lHBELFNPPNK_);
       }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
       int size = 0;
+      if (lHBELFNPPNK_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, lHBELFNPPNK_);
+      }
 
           {
             final int count = gachaInfoList_.size();
@@ -276,17 +280,13 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(12, retcode_);
       }
+      if (bKMCHIJHJJE_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(14, bKMCHIJHJJE_);
+      }
       if (gachaRandom_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(15, gachaRandom_);
-      }
-      if (bKMCHIJHJJE_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20000, bKMCHIJHJJE_);
-      }
-      if (lHBELFNPPNK_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20001, lHBELFNPPNK_);
       }
       return size;
     }
@@ -634,6 +634,11 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
               case 0:
                 done = true;
                 break;
+              case 8: {
+                lHBELFNPPNK_ = input.readBool();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 8
               case 18: {
                 emu.grasscutter.net.proto.GachaInfoOuterClass.GachaInfo m =
                     input.readMessage(
@@ -657,21 +662,16 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
                 bitField0_ |= 0x00000002;
                 break;
               } // case 96
+              case 112: {
+                bKMCHIJHJJE_ = input.readBool();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 112
               case 120: {
                 gachaRandom_ = input.readUInt32();
                 bitField0_ |= 0x00000004;
                 break;
               } // case 120
-              case 160000: {
-                bKMCHIJHJJE_ = input.readBool();
-                bitField0_ |= 0x00000010;
-                break;
-              } // case 160000
-              case 160008: {
-                lHBELFNPPNK_ = input.readBool();
-                bitField0_ |= 0x00000020;
-                break;
-              } // case 160008
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1021,7 +1021,7 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
 
       private boolean bKMCHIJHJJE_ ;
       /**
-       * <code>bool BKMCHIJHJJE = 20000;</code>
+       * <code>bool BKMCHIJHJJE = 14;</code>
        * @return The bKMCHIJHJJE.
        */
       @java.lang.Override
@@ -1029,7 +1029,7 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
         return bKMCHIJHJJE_;
       }
       /**
-       * <code>bool BKMCHIJHJJE = 20000;</code>
+       * <code>bool BKMCHIJHJJE = 14;</code>
        * @param value The bKMCHIJHJJE to set.
        * @return This builder for chaining.
        */
@@ -1041,7 +1041,7 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
         return this;
       }
       /**
-       * <code>bool BKMCHIJHJJE = 20000;</code>
+       * <code>bool BKMCHIJHJJE = 14;</code>
        * @return This builder for chaining.
        */
       public Builder clearBKMCHIJHJJE() {
@@ -1053,7 +1053,7 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
 
       private boolean lHBELFNPPNK_ ;
       /**
-       * <code>bool LHBELFNPPNK = 20001;</code>
+       * <code>bool LHBELFNPPNK = 1;</code>
        * @return The lHBELFNPPNK.
        */
       @java.lang.Override
@@ -1061,7 +1061,7 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
         return lHBELFNPPNK_;
       }
       /**
-       * <code>bool LHBELFNPPNK = 20001;</code>
+       * <code>bool LHBELFNPPNK = 1;</code>
        * @param value The lHBELFNPPNK to set.
        * @return This builder for chaining.
        */
@@ -1073,7 +1073,7 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
         return this;
       }
       /**
-       * <code>bool LHBELFNPPNK = 20001;</code>
+       * <code>bool LHBELFNPPNK = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearLHBELFNPPNK() {
@@ -1149,12 +1149,12 @@ public final class GetGachaInfoRspOuterClass extends com.google.protobuf.Generat
   static {
     java.lang.String[] descriptorData = {
       "\n\025GetGachaInfoRsp.proto\032\017GachaInfo.proto" +
-      "\"\246\001\n\017GetGachaInfoRsp\022#\n\017gacha_info_list\030" +
+      "\"\242\001\n\017GetGachaInfoRsp\022#\n\017gacha_info_list\030" +
       "\002 \003(\0132\n.GachaInfo\022\017\n\007retcode\030\014 \001(\005\022\024\n\014ga" +
       "cha_random\030\017 \001(\r\022\031\n\021daily_gacha_times\030\t " +
-      "\001(\r\022\025\n\013BKMCHIJHJJE\030\240\234\001 \001(\010\022\025\n\013LHBELFNPPN" +
-      "K\030\241\234\001 \001(\010B\033\n\031emu.grasscutter.net.protob\006" +
-      "proto3"
+      "\001(\r\022\023\n\013BKMCHIJHJJE\030\016 \001(\010\022\023\n\013LHBELFNPPNK\030" +
+      "\001 \001(\010B\033\n\031emu.grasscutter.net.protob\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

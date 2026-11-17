@@ -1,0 +1,10 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+import "ReliquaryLockScheme.proto";
+
+message ReliquarySetSchemeData {
+  repeated ReliquaryLockScheme custom_scheme_list = 4;
+  uint32 reliquary_set_id = 8;
+  repeated ReliquaryLockScheme default_scheme_list = 11;
+}

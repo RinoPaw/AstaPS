@@ -1,6 +1,9 @@
 package emu.grasscutter.game.player;
 
+import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+
 import dev.morphia.annotations.*;
+
 import emu.grasscutter.*;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.PlayerLevelData;
@@ -34,18 +37,20 @@ import emu.grasscutter.game.quest.ForcedQuests;
 import emu.grasscutter.game.quest.QuestManager;
 import emu.grasscutter.game.quest.enums.*;
 import emu.grasscutter.game.shop.ShopLimit;
+import emu.grasscutter.game.systems.ArtifactTransmuterSystem;
+import emu.grasscutter.game.systems.ReliquaryState;
+import emu.grasscutter.game.systems.ReliquarySystem;
 import emu.grasscutter.game.talk.TalkManager;
 import emu.grasscutter.game.tower.*;
 import emu.grasscutter.game.world.*;
 import emu.grasscutter.net.packet.BasePacket;
+import emu.grasscutter.net.proto.*;
 import emu.grasscutter.net.proto.AbilityInvokeEntryOuterClass.AbilityInvokeEntry;
 import emu.grasscutter.net.proto.AttackResultOuterClass.AttackResult;
 import emu.grasscutter.net.proto.CombatInvokeEntryOuterClass.CombatInvokeEntry;
-import emu.grasscutter.net.proto.AbilityScalarValueEntryOuterClass.AbilityScalarValueEntry;
 import emu.grasscutter.net.proto.GadgetInteractReqOuterClass.GadgetInteractReq;
 import emu.grasscutter.net.proto.MpSettingTypeOuterClass.MpSettingType;
 import emu.grasscutter.net.proto.OnlinePlayerInfoOuterClass.OnlinePlayerInfo;
-import emu.grasscutter.net.proto.*;
 import emu.grasscutter.net.proto.PlayerLocationInfoOuterClass.PlayerLocationInfo;
 import emu.grasscutter.net.proto.PropChangeReasonOuterClass.PropChangeReason;
 import emu.grasscutter.net.proto.SocialDetailOuterClass.SocialDetail;
@@ -55,11 +60,11 @@ import emu.grasscutter.scripts.data.SceneRegion;
 import emu.grasscutter.server.event.player.*;
 import emu.grasscutter.server.game.*;
 import emu.grasscutter.server.game.GameSession.SessionState;
-import emu.grasscutter.net.proto.AbilityScalarTypeOuterClass.AbilityScalarType;
 import emu.grasscutter.server.packet.send.*;
 import emu.grasscutter.utils.*;
 import emu.grasscutter.utils.helpers.DateHelper;
 import emu.grasscutter.utils.objects.FieldFetch;
+
 import it.unimi.dsi.fastutil.ints.*;
 
 import lombok.*;
@@ -67,8 +72,6 @@ import lombok.*;
 import java.time.*;
 import java.util.*;
 import java.util.concurrent.*;
-
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 @Entity(value = "players", useDiscriminator = false)
 public class Player implements PlayerHook, FieldFetch {
@@ -100,6 +103,14 @@ public class Player implements PlayerHook, FieldFetch {
     @Getter @Setter private List<Integer> showAvatarList;
     @Getter @Setter private List<Integer> showNameCardList;
     @Getter private Map<Integer, Integer> properties;
+    private ReliquaryState reliquaryState;
+    @Getter @Setter private ArtifactTransmuterSystem.PlayerState transmuterState;
+
+    public synchronized ReliquaryState getReliquaryState() {
+        if (reliquaryState == null) reliquaryState = new ReliquaryState();
+        return reliquaryState;
+    }
+
     @Getter @Setter private int currentRealmId;
     @Getter @Setter private transient boolean isInEditMode;
     @Getter @Setter private int widgetId;
@@ -514,8 +525,11 @@ public class Player implements PlayerHook, FieldFetch {
             this.sendPacket(new PacketAbilityChangeNotify(
                     teamEntity.getId(), this.teamManager.getAbilityControlBlock()));
             if (inNatlan) {
-                this.sendPacket(new PacketServerGlobalValueChangeNotify(
-                        teamEntity.getId(), "SGV_PlayerTeam_Phlogiston", this.getPhlogistonValue()));
+                this.sendPacket(
+                        new PacketServerGlobalValueChangeNotify(
+                                teamEntity.getId(),
+                                "SGV_PlayerTeam_Phlogiston",
+                                this.getPhlogistonValue()));
             }
         }
     }
@@ -739,6 +753,7 @@ public class Player implements PlayerHook, FieldFetch {
     private void applyProperties() {
         var withQuesting = GAME_OPTIONS.questing.enabled;
 
+        this.setOrFetch(PlayerProperty.PROP_RELIQUARY_TRANSFER_EXP, 0);
         this.setOrFetch(PlayerProperty.PROP_PLAYER_LEVEL, 1);
         this.setOrFetch(PlayerProperty.PROP_IS_SPRING_AUTO_USE, 1);
         this.setOrFetch(PlayerProperty.PROP_SPRING_AUTO_USE_PERCENT, 50);
@@ -1747,7 +1762,8 @@ public class Player implements PlayerHook, FieldFetch {
                             + LOAD_TIMEOUT_SECONDS + "s; the load pool may be stuck.");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new IllegalStateException("Interrupted loading " + what + " for uid " + this.getUid());
+            throw new IllegalStateException(
+                    "Interrupted loading " + what + " for uid " + this.getUid());
         }
     }
 
@@ -1805,6 +1821,7 @@ public class Player implements PlayerHook, FieldFetch {
         session.send(new PacketPlayerDataNotify(this));
         session.send(new PacketStoreWeightLimitNotify());
         session.send(new PacketPlayerStoreNotify(this));
+        new ReliquarySystem(this, 0).sendFilter();
         session.send(new PacketAvatarDataNotify(this));
         session.send(new PacketCraftingAvatarDataNotify());
         session.send(new PacketAvatarWeaponSkinDataNotify(this));
@@ -1913,7 +1930,8 @@ public class Player implements PlayerHook, FieldFetch {
             try {
                 this.getServer().getDungeonSystem().exitDungeon(this);
             } catch (Throwable e) {
-                Grasscutter.getLogger().warn("Player (UID {}) could not leave the dungeon on logout", getUid(), e);
+                Grasscutter.getLogger()
+                        .warn("Player (UID {}) could not leave the dungeon on logout", getUid(), e);
             }
 
             if (this.getWorld() != null) {

@@ -1,8 +1,10 @@
 package emu.grasscutter.game.props;
 
 import it.unimi.dsi.fastutil.ints.*;
-import java.util.stream.Stream;
+
 import lombok.Getter;
+
+import java.util.stream.Stream;
 
 public enum PlayerProperty {
     PROP_NONE(0),
@@ -68,7 +70,8 @@ public enum PlayerProperty {
         PROP_PHLOGISTON_ENABLE(10052, 0, 1), 
         PROP_PHLOGISTON_MAX_VALUE(
                 10053, 0, 10000),
-                PROP_CUR_PHLOGISTON                     (10054);   // The current stamina of the player when diving. [0, 10000]
+    PROP_CUR_PHLOGISTON(10054),
+    PROP_RELIQUARY_TRANSFER_EXP(10055, 0); // 圣遗物分解的结余经验。
 
     private static final int inf = Integer.MAX_VALUE; // Maybe this should be something else?
     private static final Int2ObjectMap<PlayerProperty> map = new Int2ObjectOpenHashMap<>();

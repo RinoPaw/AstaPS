@@ -1,0 +1,8 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+
+message GetReliquaryWearCustomDataReq {
+  uint32 avatar_id = 5;
+  uint32 _avatar_element_type = 10;
+}

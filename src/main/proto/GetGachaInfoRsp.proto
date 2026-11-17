@@ -9,6 +9,6 @@ message GetGachaInfoRsp {
   int32 retcode = 12;
   uint32 gacha_random = 15;
   uint32 daily_gacha_times = 9;
-  bool BKMCHIJHJJE = 20000;
-  bool LHBELFNPPNK = 20001;
+  bool BKMCHIJHJJE = 14;
+  bool LHBELFNPPNK = 1;
 }

@@ -9,6 +9,6 @@ message PlayerEnterDungeonReq {
   uint32 BAEJLCIOPMI = 20000;
   uint32 dungeon_id = 1;
   uint32 point_id = 14;
-  uint32 CCIOMCLOGDK = 20001;
+  uint32 CCIOMCLOGDK = 5;
   bool _is_continue = 13;
 }

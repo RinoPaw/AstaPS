@@ -18,12 +18,16 @@ import emu.grasscutter.server.event.player.PlayerObtainItemEvent;
 import emu.grasscutter.server.packet.send.*;
 import emu.grasscutter.utils.Utils;
 import emu.grasscutter.utils.WeaponSkinData;
+
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.*;
+
+import lombok.val;
+
 import java.util.*;
 import java.util.function.BooleanSupplier;
+
 import javax.annotation.Nullable;
-import lombok.val;
 
 public class Inventory extends BasePlayerManager implements Iterable<GameItem> {
     /** Material types already reported as missing isUseOnGain, so each is named once. */
@@ -467,7 +471,9 @@ public class Inventory extends BasePlayerManager implements Iterable<GameItem> {
             params.usedItemId = data.getId();
             if (!this.player.getServer().getInventorySystem().useItemDirect(data, params)) {
                 Grasscutter.getLogger()
-                        .warn("useOnGain failed for item {} (buff/use action rejected)", data.getId());
+                        .warn(
+                                "useOnGain failed for item {} (buff/use action rejected)",
+                                data.getId());
                 return InsertResult.refused(InventoryAddResult.Status.EFFECT_FAILED);
             }
             return new InsertResult(InventoryAddResult.Status.EFFECT_APPLIED, null);
@@ -525,16 +531,17 @@ public class Inventory extends BasePlayerManager implements Iterable<GameItem> {
                         if (MISSING_USE_ON_GAIN_REPORTED.add(data.getMaterialType())) {
                             Grasscutter.getLogger()
                                     .warn(
-                                            "Attempted to add a {} to inventory, but item definition"
-                                                + " lacks isUseOnGain. This indicates a Resources"
-                                                + " error. Further {} items are logged at debug.",
+                                            "Attempted to add a {} to inventory, but item"
+                                                + " definition lacks isUseOnGain. This indicates a"
+                                                + " Resources error. Further {} items are logged at"
+                                                + " debug.",
                                             data.getMaterialType().name(),
                                             data.getMaterialType().name());
                         } else {
                             Grasscutter.getLogger()
                                     .debug(
-                                            "Attempted to add a {} to inventory, but item definition"
-                                                + " lacks isUseOnGain.",
+                                            "Attempted to add a {} to inventory, but item"
+                                                + " definition lacks isUseOnGain.",
                                             data.getMaterialType().name());
                         }
                         return InsertResult.refused(InventoryAddResult.Status.UNSUPPORTED_TYPE);
@@ -792,7 +799,9 @@ public class Inventory extends BasePlayerManager implements Iterable<GameItem> {
 
     public synchronized boolean removeItem(GameItem item, int count) {
         // Sanity check
-        if (count <= 0 || item == null) {
+        if (count <= 0
+                || item == null
+                || emu.grasscutter.game.systems.ReliquarySystem.pending(player, item)) {
             return false;
         }
 

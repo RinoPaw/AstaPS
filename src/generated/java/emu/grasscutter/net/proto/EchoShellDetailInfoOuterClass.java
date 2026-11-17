@@ -31,17 +31,17 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+     * <code>repeated uint32 FHIALFGIKKC = 2;</code>
      * @return A list containing the fHIALFGIKKC.
      */
     java.util.List<java.lang.Integer> getFHIALFGIKKCList();
     /**
-     * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+     * <code>repeated uint32 FHIALFGIKKC = 2;</code>
      * @return The count of fHIALFGIKKC.
      */
     int getFHIALFGIKKCCount();
     /**
-     * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+     * <code>repeated uint32 FHIALFGIKKC = 2;</code>
      * @param index The index of the element to return.
      * @return The fHIALFGIKKC at the given index.
      */
@@ -151,12 +151,12 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
               emu.grasscutter.net.proto.EchoShellDetailInfoOuterClass.EchoShellDetailInfo.class, emu.grasscutter.net.proto.EchoShellDetailInfoOuterClass.EchoShellDetailInfo.Builder.class);
     }
 
-    public static final int FHIALFGIKKC_FIELD_NUMBER = 20000;
+    public static final int FHIALFGIKKC_FIELD_NUMBER = 2;
     @SuppressWarnings("serial")
     private com.google.protobuf.Internal.IntList fHIALFGIKKC_ =
         emptyIntList();
     /**
-     * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+     * <code>repeated uint32 FHIALFGIKKC = 2;</code>
      * @return A list containing the fHIALFGIKKC.
      */
     @java.lang.Override
@@ -165,14 +165,14 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
       return fHIALFGIKKC_;
     }
     /**
-     * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+     * <code>repeated uint32 FHIALFGIKKC = 2;</code>
      * @return The count of fHIALFGIKKC.
      */
     public int getFHIALFGIKKCCount() {
       return fHIALFGIKKC_.size();
     }
     /**
-     * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+     * <code>repeated uint32 FHIALFGIKKC = 2;</code>
      * @param index The index of the element to return.
      * @return The fHIALFGIKKC at the given index.
      */
@@ -304,15 +304,15 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
       for (int i = 0; i < takenRewardList_.size(); i++) {
         output.writeUInt32NoTag(takenRewardList_.getInt(i));
       }
-      for (int i = 0; i < summerTimeDungeonList_.size(); i++) {
-        output.writeMessage(3, summerTimeDungeonList_.get(i));
-      }
       if (getFHIALFGIKKCList().size() > 0) {
-        output.writeUInt32NoTag(160002);
+        output.writeUInt32NoTag(18);
         output.writeUInt32NoTag(fHIALFGIKKCMemoizedSerializedSize);
       }
       for (int i = 0; i < fHIALFGIKKC_.size(); i++) {
         output.writeUInt32NoTag(fHIALFGIKKC_.getInt(i));
+      }
+      for (int i = 0; i < summerTimeDungeonList_.size(); i++) {
+        output.writeMessage(3, summerTimeDungeonList_.get(i));
       }
       if (getMBGIBFEEOLHList().size() > 0) {
         output.writeUInt32NoTag(160010);
@@ -339,6 +339,20 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
         }
         takenRewardListMemoizedSerializedSize = dataSize;
       }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < fHIALFGIKKC_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeUInt32SizeNoTag(fHIALFGIKKC_.getInt(i));
+        }
+        size += dataSize;
+        if (!getFHIALFGIKKCList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        fHIALFGIKKCMemoizedSerializedSize = dataSize;
+      }
 
           {
             final int count = summerTimeDungeonList_.size();
@@ -348,20 +362,6 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
             }
             size += 1 * count;
           }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < fHIALFGIKKC_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeUInt32SizeNoTag(fHIALFGIKKC_.getInt(i));
-        }
-        size += dataSize;
-        if (!getFHIALFGIKKCList().isEmpty()) {
-          size += 3;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        fHIALFGIKKCMemoizedSerializedSize = dataSize;
-      }
       {
         int dataSize = 0;
         for (int i = 0; i < mBGIBFEEOLH_.size(); i++) {
@@ -747,6 +747,22 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
                 input.popLimit(limit);
                 break;
               } // case 10
+              case 16: {
+                int v = input.readUInt32();
+                ensureFHIALFGIKKCIsMutable();
+                fHIALFGIKKC_.addInt(v);
+                break;
+              } // case 16
+              case 18: {
+                int length = input.readRawVarint32();
+                int limit = input.pushLimit(length);
+                ensureFHIALFGIKKCIsMutable();
+                while (input.getBytesUntilLimit() > 0) {
+                  fHIALFGIKKC_.addInt(input.readUInt32());
+                }
+                input.popLimit(limit);
+                break;
+              } // case 18
               case 26: {
                 emu.grasscutter.net.proto.SummerTimeDungeonInfoOuterClass.SummerTimeDungeonInfo m =
                     input.readMessage(
@@ -760,22 +776,6 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
                 }
                 break;
               } // case 26
-              case 160000: {
-                int v = input.readUInt32();
-                ensureFHIALFGIKKCIsMutable();
-                fHIALFGIKKC_.addInt(v);
-                break;
-              } // case 160000
-              case 160002: {
-                int length = input.readRawVarint32();
-                int limit = input.pushLimit(length);
-                ensureFHIALFGIKKCIsMutable();
-                while (input.getBytesUntilLimit() > 0) {
-                  fHIALFGIKKC_.addInt(input.readUInt32());
-                }
-                input.popLimit(limit);
-                break;
-              } // case 160002
               case 160008: {
                 int v = input.readUInt32();
                 ensureMBGIBFEEOLHIsMutable();
@@ -817,7 +817,7 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
         bitField0_ |= 0x00000001;
       }
       /**
-       * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+       * <code>repeated uint32 FHIALFGIKKC = 2;</code>
        * @return A list containing the fHIALFGIKKC.
        */
       public java.util.List<java.lang.Integer>
@@ -826,14 +826,14 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
         return fHIALFGIKKC_;
       }
       /**
-       * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+       * <code>repeated uint32 FHIALFGIKKC = 2;</code>
        * @return The count of fHIALFGIKKC.
        */
       public int getFHIALFGIKKCCount() {
         return fHIALFGIKKC_.size();
       }
       /**
-       * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+       * <code>repeated uint32 FHIALFGIKKC = 2;</code>
        * @param index The index of the element to return.
        * @return The fHIALFGIKKC at the given index.
        */
@@ -841,7 +841,7 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
         return fHIALFGIKKC_.getInt(index);
       }
       /**
-       * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+       * <code>repeated uint32 FHIALFGIKKC = 2;</code>
        * @param index The index to set the value at.
        * @param value The fHIALFGIKKC to set.
        * @return This builder for chaining.
@@ -856,7 +856,7 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
         return this;
       }
       /**
-       * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+       * <code>repeated uint32 FHIALFGIKKC = 2;</code>
        * @param value The fHIALFGIKKC to add.
        * @return This builder for chaining.
        */
@@ -869,7 +869,7 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
         return this;
       }
       /**
-       * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+       * <code>repeated uint32 FHIALFGIKKC = 2;</code>
        * @param values The fHIALFGIKKC to add.
        * @return This builder for chaining.
        */
@@ -883,7 +883,7 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
         return this;
       }
       /**
-       * <code>repeated uint32 FHIALFGIKKC = 20000;</code>
+       * <code>repeated uint32 FHIALFGIKKC = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearFHIALFGIKKC() {
@@ -1361,12 +1361,12 @@ public final class EchoShellDetailInfoOuterClass extends com.google.protobuf.Gen
   static {
     java.lang.String[] descriptorData = {
       "\n\031EchoShellDetailInfo.proto\032\033SummerTimeD" +
-      "ungeonInfo.proto\"\230\001\n\023EchoShellDetailInfo" +
-      "\022\025\n\013FHIALFGIKKC\030\240\234\001 \003(\r\0228\n\030summer_time_d" +
-      "ungeon_list\030\003 \003(\0132\026.SummerTimeDungeonInf" +
-      "o\022\031\n\021taken_reward_list\030\001 \003(\r\022\025\n\013MBGIBFEE" +
-      "OLH\030\241\234\001 \003(\rB\033\n\031emu.grasscutter.net.proto" +
-      "b\006proto3"
+      "ungeonInfo.proto\"\226\001\n\023EchoShellDetailInfo" +
+      "\022\023\n\013FHIALFGIKKC\030\002 \003(\r\0228\n\030summer_time_dun" +
+      "geon_list\030\003 \003(\0132\026.SummerTimeDungeonInfo\022" +
+      "\031\n\021taken_reward_list\030\001 \003(\r\022\025\n\013MBGIBFEEOL" +
+      "H\030\241\234\001 \003(\rB\033\n\031emu.grasscutter.net.protob\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

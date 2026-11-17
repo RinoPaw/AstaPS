@@ -31,17 +31,17 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated uint32 del_entity_id_list = 11;</code>
+     * <code>repeated uint32 del_entity_id_list = 8;</code>
      * @return A list containing the delEntityIdList.
      */
     java.util.List<java.lang.Integer> getDelEntityIdListList();
     /**
-     * <code>repeated uint32 del_entity_id_list = 11;</code>
+     * <code>repeated uint32 del_entity_id_list = 8;</code>
      * @return The count of delEntityIdList.
      */
     int getDelEntityIdListCount();
     /**
-     * <code>repeated uint32 del_entity_id_list = 11;</code>
+     * <code>repeated uint32 del_entity_id_list = 8;</code>
      * @param index The index of the element to return.
      * @return The delEntityIdList at the given index.
      */
@@ -96,12 +96,12 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
               emu.grasscutter.net.proto.DelTeamEntityNotifyOuterClass.DelTeamEntityNotify.class, emu.grasscutter.net.proto.DelTeamEntityNotifyOuterClass.DelTeamEntityNotify.Builder.class);
     }
 
-    public static final int DEL_ENTITY_ID_LIST_FIELD_NUMBER = 11;
+    public static final int DEL_ENTITY_ID_LIST_FIELD_NUMBER = 8;
     @SuppressWarnings("serial")
     private com.google.protobuf.Internal.IntList delEntityIdList_ =
         emptyIntList();
     /**
-     * <code>repeated uint32 del_entity_id_list = 11;</code>
+     * <code>repeated uint32 del_entity_id_list = 8;</code>
      * @return A list containing the delEntityIdList.
      */
     @java.lang.Override
@@ -110,14 +110,14 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
       return delEntityIdList_;
     }
     /**
-     * <code>repeated uint32 del_entity_id_list = 11;</code>
+     * <code>repeated uint32 del_entity_id_list = 8;</code>
      * @return The count of delEntityIdList.
      */
     public int getDelEntityIdListCount() {
       return delEntityIdList_.size();
     }
     /**
-     * <code>repeated uint32 del_entity_id_list = 11;</code>
+     * <code>repeated uint32 del_entity_id_list = 8;</code>
      * @param index The index of the element to return.
      * @return The delEntityIdList at the given index.
      */
@@ -153,7 +153,7 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
                         throws java.io.IOException {
       getSerializedSize();
       if (getDelEntityIdListList().size() > 0) {
-        output.writeUInt32NoTag(90);
+        output.writeUInt32NoTag(66);
         output.writeUInt32NoTag(delEntityIdListMemoizedSerializedSize);
       }
       for (int i = 0; i < delEntityIdList_.size(); i++) {
@@ -454,13 +454,13 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
               case 0:
                 done = true;
                 break;
-              case 88: {
+              case 64: {
                 int v = input.readUInt32();
                 ensureDelEntityIdListIsMutable();
                 delEntityIdList_.addInt(v);
                 break;
-              } // case 88
-              case 90: {
+              } // case 64
+              case 66: {
                 int length = input.readRawVarint32();
                 int limit = input.pushLimit(length);
                 ensureDelEntityIdListIsMutable();
@@ -469,7 +469,7 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
                 }
                 input.popLimit(limit);
                 break;
-              } // case 90
+              } // case 66
               case 120: {
                 sceneId_ = input.readUInt32();
                 bitField0_ |= 0x00000002;
@@ -500,7 +500,7 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
         bitField0_ |= 0x00000001;
       }
       /**
-       * <code>repeated uint32 del_entity_id_list = 11;</code>
+       * <code>repeated uint32 del_entity_id_list = 8;</code>
        * @return A list containing the delEntityIdList.
        */
       public java.util.List<java.lang.Integer>
@@ -509,14 +509,14 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
         return delEntityIdList_;
       }
       /**
-       * <code>repeated uint32 del_entity_id_list = 11;</code>
+       * <code>repeated uint32 del_entity_id_list = 8;</code>
        * @return The count of delEntityIdList.
        */
       public int getDelEntityIdListCount() {
         return delEntityIdList_.size();
       }
       /**
-       * <code>repeated uint32 del_entity_id_list = 11;</code>
+       * <code>repeated uint32 del_entity_id_list = 8;</code>
        * @param index The index of the element to return.
        * @return The delEntityIdList at the given index.
        */
@@ -524,7 +524,7 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
         return delEntityIdList_.getInt(index);
       }
       /**
-       * <code>repeated uint32 del_entity_id_list = 11;</code>
+       * <code>repeated uint32 del_entity_id_list = 8;</code>
        * @param index The index to set the value at.
        * @param value The delEntityIdList to set.
        * @return This builder for chaining.
@@ -539,7 +539,7 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
         return this;
       }
       /**
-       * <code>repeated uint32 del_entity_id_list = 11;</code>
+       * <code>repeated uint32 del_entity_id_list = 8;</code>
        * @param value The delEntityIdList to add.
        * @return This builder for chaining.
        */
@@ -552,7 +552,7 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
         return this;
       }
       /**
-       * <code>repeated uint32 del_entity_id_list = 11;</code>
+       * <code>repeated uint32 del_entity_id_list = 8;</code>
        * @param values The delEntityIdList to add.
        * @return This builder for chaining.
        */
@@ -566,7 +566,7 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
         return this;
       }
       /**
-       * <code>repeated uint32 del_entity_id_list = 11;</code>
+       * <code>repeated uint32 del_entity_id_list = 8;</code>
        * @return This builder for chaining.
        */
       public Builder clearDelEntityIdList() {
@@ -674,7 +674,7 @@ public final class DelTeamEntityNotifyOuterClass extends com.google.protobuf.Gen
   static {
     java.lang.String[] descriptorData = {
       "\n\031DelTeamEntityNotify.proto\"C\n\023DelTeamEn" +
-      "tityNotify\022\032\n\022del_entity_id_list\030\013 \003(\r\022\020" +
+      "tityNotify\022\032\n\022del_entity_id_list\030\010 \003(\r\022\020" +
       "\n\010scene_id\030\017 \001(\rB\033\n\031emu.grasscutter.net." +
       "protob\006proto3"
     };

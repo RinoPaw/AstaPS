@@ -1,0 +1,8 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+
+message PBPOECKENDB {
+  uint32 avatar_id = 1;
+  uint32 element_type = 7;
+}

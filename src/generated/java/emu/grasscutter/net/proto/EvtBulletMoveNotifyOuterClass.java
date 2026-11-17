@@ -63,7 +63,7 @@ public final class EvtBulletMoveNotifyOuterClass extends com.google.protobuf.Gen
     emu.grasscutter.net.proto.ForwardTypeOuterClass.ForwardType getForwardType();
 
     /**
-     * <code>bool EOCBPPKDLBH = 20000;</code>
+     * <code>bool EOCBPPKDLBH = 14;</code>
      * @return The eOCBPPKDLBH.
      */
     boolean getEOCBPPKDLBH();
@@ -167,10 +167,10 @@ public final class EvtBulletMoveNotifyOuterClass extends com.google.protobuf.Gen
       return result == null ? emu.grasscutter.net.proto.ForwardTypeOuterClass.ForwardType.UNRECOGNIZED : result;
     }
 
-    public static final int EOCBPPKDLBH_FIELD_NUMBER = 20000;
+    public static final int EOCBPPKDLBH_FIELD_NUMBER = 14;
     private boolean eOCBPPKDLBH_ = false;
     /**
-     * <code>bool EOCBPPKDLBH = 20000;</code>
+     * <code>bool EOCBPPKDLBH = 14;</code>
      * @return The eOCBPPKDLBH.
      */
     @java.lang.Override
@@ -198,11 +198,11 @@ public final class EvtBulletMoveNotifyOuterClass extends com.google.protobuf.Gen
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeMessage(3, getCurPos());
       }
+      if (eOCBPPKDLBH_ != false) {
+        output.writeBool(14, eOCBPPKDLBH_);
+      }
       if (forwardType_ != emu.grasscutter.net.proto.ForwardTypeOuterClass.ForwardType.ForwardType_FORWARD_LOCAL.getNumber()) {
         output.writeEnum(15, forwardType_);
-      }
-      if (eOCBPPKDLBH_ != false) {
-        output.writeBool(20000, eOCBPPKDLBH_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -216,13 +216,13 @@ public final class EvtBulletMoveNotifyOuterClass extends com.google.protobuf.Gen
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getCurPos());
       }
+      if (eOCBPPKDLBH_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(14, eOCBPPKDLBH_);
+      }
       if (forwardType_ != emu.grasscutter.net.proto.ForwardTypeOuterClass.ForwardType.ForwardType_FORWARD_LOCAL.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(15, forwardType_);
-      }
-      if (eOCBPPKDLBH_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20000, eOCBPPKDLBH_);
       }
       return size;
     }
@@ -537,16 +537,16 @@ public final class EvtBulletMoveNotifyOuterClass extends com.google.protobuf.Gen
                 bitField0_ |= 0x00000001;
                 break;
               } // case 26
+              case 112: {
+                eOCBPPKDLBH_ = input.readBool();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 112
               case 120: {
                 forwardType_ = input.readEnum();
                 bitField0_ |= 0x00000004;
                 break;
               } // case 120
-              case 160000: {
-                eOCBPPKDLBH_ = input.readBool();
-                bitField0_ |= 0x00000008;
-                break;
-              } // case 160000
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -769,7 +769,7 @@ public final class EvtBulletMoveNotifyOuterClass extends com.google.protobuf.Gen
 
       private boolean eOCBPPKDLBH_ ;
       /**
-       * <code>bool EOCBPPKDLBH = 20000;</code>
+       * <code>bool EOCBPPKDLBH = 14;</code>
        * @return The eOCBPPKDLBH.
        */
       @java.lang.Override
@@ -777,7 +777,7 @@ public final class EvtBulletMoveNotifyOuterClass extends com.google.protobuf.Gen
         return eOCBPPKDLBH_;
       }
       /**
-       * <code>bool EOCBPPKDLBH = 20000;</code>
+       * <code>bool EOCBPPKDLBH = 14;</code>
        * @param value The eOCBPPKDLBH to set.
        * @return This builder for chaining.
        */
@@ -789,7 +789,7 @@ public final class EvtBulletMoveNotifyOuterClass extends com.google.protobuf.Gen
         return this;
       }
       /**
-       * <code>bool EOCBPPKDLBH = 20000;</code>
+       * <code>bool EOCBPPKDLBH = 14;</code>
        * @return This builder for chaining.
        */
       public Builder clearEOCBPPKDLBH() {
@@ -865,11 +865,11 @@ public final class EvtBulletMoveNotifyOuterClass extends com.google.protobuf.Gen
   static {
     java.lang.String[] descriptorData = {
       "\n\031EvtBulletMoveNotify.proto\032\021ForwardType" +
-      ".proto\032\014Vector.proto\"}\n\023EvtBulletMoveNot" +
+      ".proto\032\014Vector.proto\"{\n\023EvtBulletMoveNot" +
       "ify\022\030\n\007cur_pos\030\003 \001(\0132\007.Vector\022\021\n\tentity_" +
       "id\030\002 \001(\r\022\"\n\014forward_type\030\017 \001(\0162\014.Forward" +
-      "Type\022\025\n\013EOCBPPKDLBH\030\240\234\001 \001(\010B\033\n\031emu.grass" +
-      "cutter.net.protob\006proto3"
+      "Type\022\023\n\013EOCBPPKDLBH\030\016 \001(\010B\033\n\031emu.grasscu" +
+      "tter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

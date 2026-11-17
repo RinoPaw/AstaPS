@@ -7,9 +7,9 @@ message TrialAvatarActivityRewardDetailInfo {
   repeated uint32 _available_training_step_list = 20001;
   uint32 trial_avatar_index_id = 1;
   uint32 reward_id = 11;
-  bool is_can_take_reward = 20002;
+  bool is_can_take_reward = 8;
   bool _is_avatar_owned = 20003;
   bool passed_dungeon = 20004;
   bool _is_skip_training = 20005;
-  bool received_reward = 20006;
+  bool received_reward = 6;
 }

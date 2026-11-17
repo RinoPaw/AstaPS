@@ -6,7 +6,7 @@ import "OnlinePlayerInfo.proto";
 
 message PlayerApplyEnterMpNotify {
   OnlinePlayerInfo src_player_info = 5;
-  uint32 src_thread_index = 20000;
+  uint32 src_thread_index = 1;
   bool EEHKAIMJJDO = 2;
-  uint32 src_app_id = 20002;
+  uint32 src_app_id = 13;
 }

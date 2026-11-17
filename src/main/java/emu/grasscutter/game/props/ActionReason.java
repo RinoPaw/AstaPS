@@ -1,6 +1,7 @@
 package emu.grasscutter.game.props;
 
 import it.unimi.dsi.fastutil.ints.*;
+
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -97,6 +98,9 @@ public enum ActionReason {
     HomeDefaultFurniture(100),
     ActivityCond(101),
     BattlePassNotify(102),
+    ReliquaryTransfer(126),
+    ReliquaryOffering(127),
+    ReliquaryPurchase(128),
     PlayerUseItem(1001),
     DropItem(1002),
     WeaponUpgrade(1011),

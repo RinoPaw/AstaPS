@@ -1,7 +1,8 @@
+// 7.2 CmdId 4857
 syntax = "proto3";
 
 option java_package = "emu.grasscutter.net.proto";
 
 message GetHomeLevelUpRewardReq {
-  uint32 level = 10;
+  uint32 level = 9;
 }

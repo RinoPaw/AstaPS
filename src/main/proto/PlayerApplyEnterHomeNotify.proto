@@ -5,6 +5,6 @@ option java_package = "emu.grasscutter.net.proto";
 import "OnlinePlayerInfo.proto";
 
 message PlayerApplyEnterHomeNotify {
-  OnlinePlayerInfo src_player_info = 2;
-  uint32 src_app_id = 12;
+  OnlinePlayerInfo src_player_info = 14;
+  uint32 src_app_id = 9;
 }

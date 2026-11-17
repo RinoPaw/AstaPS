@@ -8,17 +8,17 @@ import "Vector.proto";
 message EvtAvatarEnterFocusNotify {
   Vector focus_forward = 10;
   ForwardType forward_type = 14;
-  bool MEBKKKCNDAK = 20000;
-  bool PNELCGBOIFM = 20001;
+  bool MEBKKKCNDAK = 2;
+  bool PNELCGBOIFM = 4;
   bool KLNNOPGOMKN = 20002;
-  int32 IMMFFEBPCJM = 20003;
+  int32 IMMFFEBPCJM = 1;
   uint32 entity_id = 3;
-  bool CCDMIMGNCBM = 20004;
+  bool CCDMIMGNCBM = 15;
   bool JLNKDGGPICE = 20005;
   bool ADMFCLBHILF = 20006;
-  bool KHOIOJCHLNL = 20007;
-  bool FDCDPKDKNAL = 20008;
-  bool HFFPEFBLBPC = 20009;
-  bool JHJBHFINKDK = 20010;
-  bool CFNHGMLGPHP = 20011;
+  bool KHOIOJCHLNL = 5;
+  bool FDCDPKDKNAL = 7;
+  bool HFFPEFBLBPC = 12;
+  bool JHJBHFINKDK = 11;
+  bool CFNHGMLGPHP = 13;
 }

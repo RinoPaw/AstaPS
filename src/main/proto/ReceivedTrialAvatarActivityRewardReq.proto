@@ -1,7 +1,8 @@
+// 7.2 CmdId 20742
 syntax = "proto3";
 
 option java_package = "emu.grasscutter.net.proto";
 
 message ReceivedTrialAvatarActivityRewardReq {
-  uint32 trial_avatar_index_id = 1;
+  uint32 trial_avatar_index_id = 2;
 }

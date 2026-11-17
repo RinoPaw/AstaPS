@@ -1,0 +1,12 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+import "ItemParam.proto";
+
+message GetReliquaryTransferRsp {
+  uint32 old_exp = 4;
+  int32 retcode = 7;
+  repeated ItemParam transfer_item_list = 8;
+  uint32 add_exp = 9;
+  uint32 remain_exp = 15;
+}

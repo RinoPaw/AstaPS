@@ -1,3 +1,4 @@
+// 7.2 CmdId 28296
 syntax = "proto3";
 
 option java_package = "emu.grasscutter.net.proto";
@@ -5,7 +6,7 @@ option java_package = "emu.grasscutter.net.proto";
 import "PlatformInfo.proto";
 
 message PlatformStartRouteNotify {
-  PlatformInfo platform = 7;
-  uint32 entity_id = 2;
-  uint32 scene_time = 11;
+  PlatformInfo platform = 3;
+  uint32 entity_id = 1;
+  uint32 scene_time = 14;
 }

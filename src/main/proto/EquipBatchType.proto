@@ -1,0 +1,11 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+
+message EquipBatchType {
+  enum Value {
+    None = 0;
+    Auto = 1;
+    Custom = 2;
+  }
+}

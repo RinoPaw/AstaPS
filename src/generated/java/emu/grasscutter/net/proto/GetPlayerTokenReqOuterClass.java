@@ -199,24 +199,24 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
         getBIIJMKDGAGIBytes();
 
     /**
-     * <code>string FDCECMCNKGC = 965;</code>
+     * <code>string FDCECMCNKGC = 20003;</code>
      * @return The fDCECMCNKGC.
      */
     java.lang.String getFDCECMCNKGC();
     /**
-     * <code>string FDCECMCNKGC = 965;</code>
+     * <code>string FDCECMCNKGC = 20003;</code>
      * @return The bytes for fDCECMCNKGC.
      */
     com.google.protobuf.ByteString
         getFDCECMCNKGCBytes();
 
     /**
-     * <code>string _gate_ticket = 20003;</code>
+     * <code>string _gate_ticket = 965;</code>
      * @return The gateTicket.
      */
     java.lang.String getGateTicket();
     /**
-     * <code>string _gate_ticket = 20003;</code>
+     * <code>string _gate_ticket = 965;</code>
      * @return The bytes for gateTicket.
      */
     com.google.protobuf.ByteString
@@ -898,11 +898,11 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
       }
     }
 
-    public static final int FDCECMCNKGC_FIELD_NUMBER = 965;
+    public static final int FDCECMCNKGC_FIELD_NUMBER = 20003;
     @SuppressWarnings("serial")
     private volatile java.lang.Object fDCECMCNKGC_ = "";
     /**
-     * <code>string FDCECMCNKGC = 965;</code>
+     * <code>string FDCECMCNKGC = 20003;</code>
      * @return The fDCECMCNKGC.
      */
     @java.lang.Override
@@ -919,7 +919,7 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
       }
     }
     /**
-     * <code>string FDCECMCNKGC = 965;</code>
+     * <code>string FDCECMCNKGC = 20003;</code>
      * @return The bytes for fDCECMCNKGC.
      */
     @java.lang.Override
@@ -937,11 +937,11 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
       }
     }
 
-    public static final int _GATE_TICKET_FIELD_NUMBER = 20003;
+    public static final int _GATE_TICKET_FIELD_NUMBER = 965;
     @SuppressWarnings("serial")
     private volatile java.lang.Object GateTicket_ = "";
     /**
-     * <code>string _gate_ticket = 20003;</code>
+     * <code>string _gate_ticket = 965;</code>
      * @return The gateTicket.
      */
     @java.lang.Override
@@ -958,7 +958,7 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
       }
     }
     /**
-     * <code>string _gate_ticket = 20003;</code>
+     * <code>string _gate_ticket = 965;</code>
      * @return The bytes for gateTicket.
      */
     @java.lang.Override
@@ -1176,8 +1176,8 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(birthday_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 924, birthday_);
       }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fDCECMCNKGC_)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 965, fDCECMCNKGC_);
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(GateTicket_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 965, GateTicket_);
       }
       if (keyId_ != 0) {
         output.writeUInt32(1184, keyId_);
@@ -1197,8 +1197,8 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(bIIJMKDGAGI_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 20002, bIIJMKDGAGI_);
       }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(GateTicket_)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 20003, GateTicket_);
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fDCECMCNKGC_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 20003, fDCECMCNKGC_);
       }
       if (accountType_ != 0) {
         output.writeUInt32(20004, accountType_);
@@ -1272,8 +1272,8 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(birthday_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(924, birthday_);
       }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fDCECMCNKGC_)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(965, fDCECMCNKGC_);
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(GateTicket_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(965, GateTicket_);
       }
       if (keyId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -1295,8 +1295,8 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(bIIJMKDGAGI_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(20002, bIIJMKDGAGI_);
       }
-      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(GateTicket_)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(20003, GateTicket_);
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fDCECMCNKGC_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(20003, fDCECMCNKGC_);
       }
       if (accountType_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -1975,8 +1975,8 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
                 break;
               } // case 7394
               case 7722: {
-                fDCECMCNKGC_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00004000;
+                GateTicket_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00008000;
                 break;
               } // case 7722
               case 9472: {
@@ -2010,8 +2010,8 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
                 break;
               } // case 160018
               case 160026: {
-                GateTicket_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00008000;
+                fDCECMCNKGC_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00004000;
                 break;
               } // case 160026
               case 160032: {
@@ -3051,7 +3051,7 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
 
       private java.lang.Object fDCECMCNKGC_ = "";
       /**
-       * <code>string FDCECMCNKGC = 965;</code>
+       * <code>string FDCECMCNKGC = 20003;</code>
        * @return The fDCECMCNKGC.
        */
       public java.lang.String getFDCECMCNKGC() {
@@ -3067,7 +3067,7 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
         }
       }
       /**
-       * <code>string FDCECMCNKGC = 965;</code>
+       * <code>string FDCECMCNKGC = 20003;</code>
        * @return The bytes for fDCECMCNKGC.
        */
       public com.google.protobuf.ByteString
@@ -3084,7 +3084,7 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
         }
       }
       /**
-       * <code>string FDCECMCNKGC = 965;</code>
+       * <code>string FDCECMCNKGC = 20003;</code>
        * @param value The fDCECMCNKGC to set.
        * @return This builder for chaining.
        */
@@ -3097,7 +3097,7 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
         return this;
       }
       /**
-       * <code>string FDCECMCNKGC = 965;</code>
+       * <code>string FDCECMCNKGC = 20003;</code>
        * @return This builder for chaining.
        */
       public Builder clearFDCECMCNKGC() {
@@ -3107,7 +3107,7 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
         return this;
       }
       /**
-       * <code>string FDCECMCNKGC = 965;</code>
+       * <code>string FDCECMCNKGC = 20003;</code>
        * @param value The bytes for fDCECMCNKGC to set.
        * @return This builder for chaining.
        */
@@ -3123,7 +3123,7 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
 
       private java.lang.Object GateTicket_ = "";
       /**
-       * <code>string _gate_ticket = 20003;</code>
+       * <code>string _gate_ticket = 965;</code>
        * @return The gateTicket.
        */
       public java.lang.String getGateTicket() {
@@ -3139,7 +3139,7 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
         }
       }
       /**
-       * <code>string _gate_ticket = 20003;</code>
+       * <code>string _gate_ticket = 965;</code>
        * @return The bytes for gateTicket.
        */
       public com.google.protobuf.ByteString
@@ -3156,7 +3156,7 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
         }
       }
       /**
-       * <code>string _gate_ticket = 20003;</code>
+       * <code>string _gate_ticket = 965;</code>
        * @param value The gateTicket to set.
        * @return This builder for chaining.
        */
@@ -3169,7 +3169,7 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
         return this;
       }
       /**
-       * <code>string _gate_ticket = 20003;</code>
+       * <code>string _gate_ticket = 965;</code>
        * @return This builder for chaining.
        */
       public Builder clearGateTicket() {
@@ -3179,7 +3179,7 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
         return this;
       }
       /**
-       * <code>string _gate_ticket = 20003;</code>
+       * <code>string _gate_ticket = 965;</code>
        * @param value The bytes for gateTicket to set.
        * @return This builder for chaining.
        */
@@ -3650,8 +3650,8 @@ public final class GetPlayerTokenReqOuterClass extends com.google.protobuf.Gener
       "\022\024\n\013GGKODKLBGFD\030\224\n \001(\t\022\016\n\005_xuid\030\364\006 \001(\t\022\022" +
       "\n\nauth_appid\030S \001(\t\022\030\n\017client_rand_key\030\357\004" +
       " \001(\t\022\016\n\006psn_id\030\r \001(\t\022\023\n\013account_uid\030\t \001(" +
-      "\t\022\025\n\013BIIJMKDGAGI\030\242\234\001 \001(\t\022\024\n\013FDCECMCNKGC\030" +
-      "\305\007 \001(\t\022\026\n\014_gate_ticket\030\243\234\001 \001(\t\022\r\n\004lang\030\231" +
+      "\t\022\025\n\013BIIJMKDGAGI\030\242\234\001 \001(\t\022\025\n\013FDCECMCNKGC\030" +
+      "\243\234\001 \001(\t\022\025\n\014_gate_ticket\030\305\007 \001(\t\022\r\n\004lang\030\231" +
       "\006 \001(\r\022\024\n\013authkey_ver\030\261\004 \001(\r\022\013\n\003uid\030\014 \001(\r" +
       "\022\025\n\rplatform_type\030\007 \001(\r\022\033\n\022minors_reg_mi" +
       "n_age\030\205\005 \001(\r\022\022\n\nchannel_id\030\003 \001(\r\022\022\n\tsign" +

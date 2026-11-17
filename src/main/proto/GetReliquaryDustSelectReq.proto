@@ -1,0 +1,8 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+
+message GetReliquaryDustSelectReq {
+  bool is_use_new = 4;
+  uint64 guid = 8;
+}

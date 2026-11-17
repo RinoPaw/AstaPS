@@ -221,7 +221,7 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
     boolean getIsFocusMode();
 
     /**
-     * <code>bool DDHKDIOKFIF = 20003;</code>
+     * <code>bool DDHKDIOKFIF = 4;</code>
      * @return The dDHKDIOKFIF.
      */
     boolean getDDHKDIOKFIF();
@@ -688,10 +688,10 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
       return IsFocusMode_;
     }
 
-    public static final int DDHKDIOKFIF_FIELD_NUMBER = 20003;
+    public static final int DDHKDIOKFIF_FIELD_NUMBER = 4;
     private boolean dDHKDIOKFIF_ = false;
     /**
-     * <code>bool DDHKDIOKFIF = 20003;</code>
+     * <code>bool DDHKDIOKFIF = 4;</code>
      * @return The dDHKDIOKFIF.
      */
     @java.lang.Override
@@ -745,6 +745,9 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
           internalGetTimeVarMap(),
           TimeVarMapDefaultEntryHolder.defaultEntry,
           3);
+      if (dDHKDIOKFIF_ != false) {
+        output.writeBool(4, dDHKDIOKFIF_);
+      }
       if (parentQuestId_ != 0) {
         output.writeUInt32(5, parentQuestId_);
       }
@@ -788,9 +791,6 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(eODCGKGCGDN_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 20002, eODCGKGCGDN_);
       }
-      if (dDHKDIOKFIF_ != false) {
-        output.writeBool(20003, dDHKDIOKFIF_);
-      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -808,6 +808,10 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
             .buildPartial();
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(3, timeVarMap__);
+      }
+      if (dDHKDIOKFIF_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, dDHKDIOKFIF_);
       }
       if (parentQuestId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -883,10 +887,6 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(eODCGKGCGDN_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(20002, eODCGKGCGDN_);
-      }
-      if (dDHKDIOKFIF_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20003, dDHKDIOKFIF_);
       }
       return size;
     }
@@ -1497,6 +1497,11 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
                 bitField0_ |= 0x00000001;
                 break;
               } // case 26
+              case 32: {
+                dDHKDIOKFIF_ = input.readBool();
+                bitField0_ |= 0x00002000;
+                break;
+              } // case 32
               case 40: {
                 parentQuestId_ = input.readUInt32();
                 bitField0_ |= 0x00008000;
@@ -1599,11 +1604,6 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
                 bitField0_ |= 0x00000080;
                 break;
               } // case 160018
-              case 160024: {
-                dDHKDIOKFIF_ = input.readBool();
-                bitField0_ |= 0x00002000;
-                break;
-              } // case 160024
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2957,7 +2957,7 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
 
       private boolean dDHKDIOKFIF_ ;
       /**
-       * <code>bool DDHKDIOKFIF = 20003;</code>
+       * <code>bool DDHKDIOKFIF = 4;</code>
        * @return The dDHKDIOKFIF.
        */
       @java.lang.Override
@@ -2965,7 +2965,7 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
         return dDHKDIOKFIF_;
       }
       /**
-       * <code>bool DDHKDIOKFIF = 20003;</code>
+       * <code>bool DDHKDIOKFIF = 4;</code>
        * @param value The dDHKDIOKFIF to set.
        * @return This builder for chaining.
        */
@@ -2977,7 +2977,7 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
         return this;
       }
       /**
-       * <code>bool DDHKDIOKFIF = 20003;</code>
+       * <code>bool DDHKDIOKFIF = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearDDHKDIOKFIF() {
@@ -3123,7 +3123,7 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
     java.lang.String[] descriptorData = {
       "\n\021ParentQuest.proto\032\021CAHLGJBEIIJ.proto\032\020" +
       "ChildQuest.proto\032\027InferencePageInfo.prot" +
-      "o\032\033ParentQuestRandomInfo.proto\"\227\004\n\013Paren" +
+      "o\032\033ParentQuestRandomInfo.proto\"\225\004\n\013Paren" +
       "tQuest\0222\n\014time_var_map\030\003 \003(\0132\034.ParentQue" +
       "st.TimeVarMapEntry\022%\n\020child_quest_list\030\014" +
       " \003(\0132\013.ChildQuest\022+\n\013random_info\030\017 \001(\0132\026" +
@@ -3134,11 +3134,11 @@ public final class ParentQuestOuterClass extends com.google.protobuf.GeneratedFi
       "GCGDN\030\242\234\001 \001(\t\022\032\n\022parent_quest_state\030\001 \001(" +
       "\r\022\023\n\013accept_time\030\010 \001(\r\022\021\n\tis_random\030\r \001(" +
       "\010\022\023\n\013is_finished\030\n \001(\010\022\026\n\016_is_focus_mode" +
-      "\030\t \001(\010\022\025\n\013DDHKDIOKFIF\030\243\234\001 \001(\010\022\025\n\rquest_v" +
-      "ar_seq\030\016 \001(\r\022\027\n\017parent_quest_id\030\005 \001(\r\0321\n" +
-      "\017TimeVarMapEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002" +
-      " \001(\r:\0028\001B\033\n\031emu.grasscutter.net.protob\006p" +
-      "roto3"
+      "\030\t \001(\010\022\023\n\013DDHKDIOKFIF\030\004 \001(\010\022\025\n\rquest_var" +
+      "_seq\030\016 \001(\r\022\027\n\017parent_quest_id\030\005 \001(\r\0321\n\017T" +
+      "imeVarMapEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001" +
+      "(\r:\0028\001B\033\n\031emu.grasscutter.net.protob\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

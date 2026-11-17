@@ -6,6 +6,7 @@ import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.*;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketCombineRsp;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,13 @@ public class HandlerCombineReq extends PacketHandler {
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
 
         CombineReqOuterClass.CombineReq req = CombineReqOuterClass.CombineReq.parseFrom(payload);
+        int count = req.getCombineCount();
+        if (count <= 0) {
+            session.send(
+                    new PacketCombineRsp(
+                            RetcodeOuterClass.Retcode.RET_COMBINE_COUNT_TOO_LARGE_VALUE));
+            return;
+        }
         Grasscutter.getLogger()
                 .info(
                         "Received CombineReq: combineId={}, count={}, avatarGuid={}",
@@ -24,13 +32,9 @@ public class HandlerCombineReq extends PacketHandler {
                         req.getAvatarGuid());
 
         var result =
-                session
-                        .getServer()
+                session.getServer()
                         .getCombineSystem()
-                        .combineItem(
-                                session.getPlayer(),
-                                req.getCombineId(),
-                                req.getCombineCount() > 0 ? req.getCombineCount() : 1);
+                        .combineItem(session.getPlayer(), req.getCombineId(), count);
 
         if (result == null) {
             return;
@@ -40,7 +44,15 @@ public class HandlerCombineReq extends PacketHandler {
                 new PacketCombineRsp(
                         req,
                         toItemParamList(result.getMaterial()),
-                        toItemParamList(result.getResult()),
+                        // 客户端按合成次数计算总产量，这里只传单次产量。
+                        result.getResult().stream()
+                                .map(
+                                        item ->
+                                                ItemParamOuterClass.ItemParam.newBuilder()
+                                                        .setItemId(item.getId())
+                                                        .setCount(item.getCount() / count)
+                                                        .build())
+                                .toList(),
                         List.of(),
                         toItemParamList(result.getBack()),
                         toItemParamList(result.getExtra())));

@@ -1,3 +1,4 @@
+// 7.2 CmdId 29493
 syntax = "proto3";
 
 option java_package = "emu.grasscutter.net.proto";
@@ -5,7 +6,7 @@ option java_package = "emu.grasscutter.net.proto";
 import "Retcode.proto";
 
 message EnterTrialAvatarActivityDungeonRsp {
-  uint32 trial_avatar_index_id = 12;
-  uint32 activity_id = 3;
-  int32 retcode = 15;
+  uint32 trial_avatar_index_id = 10;
+  uint32 activity_id = 2;
+  int32 retcode = 3;
 }

@@ -1,0 +1,7 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+
+message GetReliquarySetSchemeReq {
+  repeated uint32 reliquary_set_id_list = 4;
+}

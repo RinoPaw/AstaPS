@@ -7,13 +7,14 @@ import emu.grasscutter.data.excels.CombineData;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
-import emu.grasscutter.game.props.PlayerProperty;
 import emu.grasscutter.game.quest.LiyuePerfumeQuestSupport;
 import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
 import emu.grasscutter.server.game.*;
 import emu.grasscutter.server.packet.send.*;
 import emu.grasscutter.utils.Utils;
+
 import it.unimi.dsi.fastutil.ints.*;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,7 +63,11 @@ public class CombineManger extends BaseGameSystem {
 
     public CombineResult combineItem(Player player, int cid, int count) {
         Grasscutter.getLogger()
-                .debug("Combine request from uid {}: combineId={}, count={}", player.getUid(), cid, count);
+                .debug(
+                        "Combine request from uid {}: combineId={}, count={}",
+                        player.getUid(),
+                        cid,
+                        count);
 
         if (count <= 0) {
             player.sendPacket(new PacketCombineRsp(Retcode.RET_COMBINE_COUNT_TOO_LARGE_VALUE));
@@ -87,17 +92,28 @@ public class CombineManger extends BaseGameSystem {
 
         List<ItemParamData> material = buildMaterialCost(combineData);
 
-        if (!player.getInventory().payItems(material, count, ActionReason.Combine)) {
-            player.sendPacket(new PacketCombineRsp(Retcode.RET_ITEM_COMBINE_COUNT_NOT_ENOUGH_VALUE));
+        long total = (long) combineData.getResultItemCount() * count;
+        var output = GameData.getItemDataMap().get(combineData.getResultItemId());
+        if (total <= 0 || total > Integer.MAX_VALUE || output == null) {
+            player.sendPacket(new PacketCombineRsp(Retcode.RET_COMBINE_COUNT_TOO_LARGE_VALUE));
             return null;
         }
-
-        if (combineData.getScoinCost() > 0) {
-            player.sendPacket(new PacketPlayerPropNotify(player, PlayerProperty.PROP_PLAYER_SCOIN));
+        int resultCount = (int) total;
+        // 产物能完整入包后才扣材料。
+        var granted =
+                player.getInventory()
+                        .addItems(
+                                List.of(new GameItem(output, resultCount)),
+                                ActionReason.Combine,
+                                emu.grasscutter.game.inventory.InventoryAddPolicy.ALL_OR_NOTHING,
+                                () ->
+                                        player.getInventory()
+                                                .payItems(material, count, ActionReason.Combine),
+                                () -> {});
+        if (!granted.allAccepted()) {
+            player.sendPacket(new PacketCombineRsp(Retcode.RET_ITEM_EXCEED_LIMIT_VALUE));
+            return null;
         }
-
-        int resultCount = combineData.getResultItemCount() * count;
-        player.getInventory().addItem(combineData.getResultItemId(), resultCount, ActionReason.Combine);
 
         Grasscutter.getLogger()
                 .debug(
@@ -147,7 +163,9 @@ public class CombineManger extends BaseGameSystem {
         }
 
         for (long guid : input) {
-            if (player.getInventory().getItemByGuid(guid) == null) {
+            var relic = player.getInventory().getItemByGuid(guid);
+            if (relic == null
+                    || emu.grasscutter.game.systems.ReliquarySystem.pending(player, relic)) {
                 player.sendPacket(
                         new PacketReliquaryDecomposeRsp(Retcode.RET_RELIQUARY_DECOMPOSE_PARAM_ERROR));
                 return;

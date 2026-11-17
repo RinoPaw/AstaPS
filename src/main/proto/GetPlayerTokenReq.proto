@@ -17,8 +17,8 @@ message GetPlayerTokenReq {
   string psn_id = 13;
   string account_uid = 9;
   string BIIJMKDGAGI = 20002;
-  string FDCECMCNKGC = 965;
-  string _gate_ticket = 20003;
+  string FDCECMCNKGC = 20003;
+  string _gate_ticket = 965;
   uint32 lang = 793;
   uint32 authkey_ver = 561;
   uint32 uid = 12;

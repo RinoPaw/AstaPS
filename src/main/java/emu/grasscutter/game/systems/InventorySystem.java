@@ -17,10 +17,13 @@ import emu.grasscutter.server.event.player.*;
 import emu.grasscutter.server.game.*;
 import emu.grasscutter.server.packet.send.*;
 import emu.grasscutter.utils.Utils;
+
 import it.unimi.dsi.fastutil.ints.*;
+
+import lombok.val;
+
 import java.util.*;
 import java.util.stream.Stream;
-import lombok.val;
 
 public class InventorySystem extends BaseGameSystem {
     private static final Int2IntMap weaponRefundMaterials = new Int2IntArrayMap();
@@ -121,7 +124,9 @@ public class InventorySystem extends BaseGameSystem {
             Player player, long targetGuid, List<Long> foodRelicList, List<ItemParam> list) {
         GameItem relic = player.getInventory().getItemByGuid(targetGuid);
 
-        if (relic == null || relic.getItemType() != ItemType.ITEM_RELIQUARY) {
+        if (relic == null
+                || relic.getItemType() != ItemType.ITEM_RELIQUARY
+                || ReliquarySystem.pending(player, relic)) {
             return;
         }
 
@@ -132,6 +137,7 @@ public class InventorySystem extends BaseGameSystem {
         for (long guid : foodRelicList) {
             // Add to delete queue
             GameItem food = player.getInventory().getItemByGuid(guid);
+            if (food != null && ReliquarySystem.pending(player, food)) return;
             if (food == null || !food.isDestroyable()) {
                 continue;
             }
@@ -873,7 +879,7 @@ public class InventorySystem extends BaseGameSystem {
             }
 
             GameItem item = inventory.getItemByGuid(info.getGuid());
-            if (item == null || !item.isDestroyable()) {
+            if (item == null || !item.isDestroyable() || ReliquarySystem.pending(player, item)) {
                 continue;
             }
 

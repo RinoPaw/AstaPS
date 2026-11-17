@@ -10,12 +10,12 @@ public final class PacketOpcodes {
     // ============================================
     public static final int NONE = 0;
     public static final int Unk = 0;
-    public static final int ActivityTakeWatcherRewardReq = 25045; // 7.1: 23105
+    public static final int ActivityTakeWatcherRewardReq = 1504; // 7.1: 23105
     public static final int AddCustomTeamReq = 0;
     public static final int AskAddFriendReq = 29876; // 7.1: 3092
     public static final int BuyBattlePassLevelReq = 4815; // 7.1: 20941
-    public static final int BuyResinReq = 0;
-    public static final int CancelCoopTaskReq = 0; // 7.2 CmdId unknown (7.1: 27925)
+    public static final int BuyResinReq = 20545;
+    public static final int CancelCoopTaskReq = 26546; // 7.1: 27925
     public static final int CheckUgcStateReq = 0; // 7.2 CmdId unknown (7.1: 3955)
     public static final int CheckUgcUpdateReq = 0;
     public static final int DeleteFriendReq = 0; // 7.2 CmdId unknown (7.1: 3037)
@@ -25,13 +25,13 @@ public final class PacketOpcodes {
     public static final int GetCompoundDataReq = 29739; // 7.1: 8732
     public static final int GetFriendShowAvatarInfoReq = 0; // 7.2 CmdId unknown (7.1: 24487)
     public static final int GetFriendShowNameCardInfoReq = 0; // 7.2 CmdId unknown (7.1: 29743)
-    public static final int GetHomeLevelUpRewardReq = 0; // 7.2 CmdId unknown (7.1: 2113)
-    public static final int GetProfilePictureDataReq = 21795; // 7.1: 27037
+    public static final int GetHomeLevelUpRewardReq = 4857; // 7.1: 2113
+    public static final int GetProfilePictureDataReq = 21907; // 7.1: 27037
     public static final int GetUgcBriefInfoReq = 0;
-    public static final int HomeChangeEditModeReq = 0; // 7.2 CmdId unknown (7.1: 29665)
-    public static final int HomeChangeModuleReq = 0; // 7.2 CmdId unknown (7.1: 9972)
-    public static final int HomeChooseModuleReq = 0;
-    public static final int HomeEnterEditModeFinishReq = 0; // 7.1 CmdId unknown (kitkat names this empty message, not trusted)
+    public static final int HomeChangeEditModeReq = 29979; // 7.1: 29665
+    public static final int HomeChangeModuleReq = 21043; // 7.1: 9972
+    public static final int HomeChooseModuleReq = 8792;
+    public static final int HomeEnterEditModeFinishReq = 7167;
     public static final int HomeGetBasicInfoReq = 0; // 7.1 CmdId unknown (kitkat names this empty message, not trusted)
     public static final int HomeGetOnlineStatusReq = 0; // 7.2 CmdId unknown (7.1: 6555)
     public static final int HomeSceneInitFinishReq = 0; // 7.2 CmdId unknown (7.1: 27778)
@@ -46,11 +46,11 @@ public final class PacketOpcodes {
     public static final int PlayerEnterMapLayerNotify = 0;
     public static final int PlayerGetForceQuitBanInfoReq = 0;
     public static final int RemoveCustomTeamReq = 0;
-    public static final int SceneKickPlayerReq = 0; // 7.2 CmdId unknown (7.1: 29095)
+    public static final int SceneKickPlayerReq = 21380;
     public static final int SkipPlayerGameTimeReq = 0; // 7.2 CmdId unknown (7.1: 29432)
     public static final int TheaterLobbySceneJumpReq = 0;
     public static final int UiSettingInputTypeNotify = 1419; // 7.1: 29767
-    public static final int UnlockPersonalLineReq = 0; // 7.2 CmdId unknown (7.1: 5896)
+    public static final int UnlockPersonalLineReq = 28530; // 7.1: 5896
     public static final int _UnlockPersonalLineReqAlt = 0; // 7.2 CmdId unknown (7.1: 21679)
     // ============================================
     // 以下是原有的 opcode 定义
@@ -76,7 +76,7 @@ public final class PacketOpcodes {
     public static final int SetPlayerPropReq = 8505; // 7.1: 26049
     public static final int QuestDestroyNpcRsp = 3635; // 7.1: 3992
     public static final int HomeBalloonGalleryScoreNotify = 6303; // 7.1: 28366
-    public static final int ReceivedTrialAvatarActivityRewardReq = 0; // 7.2 CmdId unknown (7.1: 25238)
+    public static final int ReceivedTrialAvatarActivityRewardReq = 20742; // 7.1: 25238
     // public static final int GBCOJGLPABH = 25603;
     public static final int ReliquaryUpgradeReq = 27964; // 7.1: 7294
     public static final int PhotoActivityFinishReq = 22586; // 7.1: 1560
@@ -98,7 +98,7 @@ public final class PacketOpcodes {
     public static final int PlayerApplyEnterMpResultRsp = 0; // 7.2 CmdId unknown (7.1: 24522)
     public static final int _GetBeyondPlayerInfoReq = 25656; // 7.1: 5960
     // public static final int KDNBHKFPJLE = 329;
-    public static final int GetAllUnlockNameCardReq = 0; // 7.2 CmdId unknown (7.1: 107)
+    public static final int GetAllUnlockNameCardReq = 812; // 7.1: 107
     public static final int UpdateReunionWatcherNotify = 4989; // 7.1: 21498
     public static final int PlayerPropChangeReasonNotify = 27727; // 7.1: 20925
     // public static final int SingleStartBrickBreakerReq = 20901;
@@ -124,7 +124,7 @@ public final class PacketOpcodes {
     // public static final int HKBEEKEFBPI = 24561;
     public static final int AddBlacklistRsp = 22850; // 7.1: 5419
     // public static final int NNKIMJILKEN = 4982;
-    public static final int ReliquaryOfferDefineRsp = 0; // 7.2 CmdId unknown (7.1: 3259)
+    public static final int ReliquaryOfferDefineRsp = 25309;
     // public static final int LAPJIGDDJGP = 25536;
     public static final int GCGInviteBattleNotify = 9200; // 7.1: 24542
     public static final int RegionSearchChangeRegionNotify = 4376; // 7.1: 6509
@@ -184,7 +184,7 @@ public final class PacketOpcodes {
     public static final int SelectWorktopOptionRsp = 25915; // 7.1: 7515
     // public static final int NALEHDDJJKA = 22066;
     // public static final int GCAHPDOBHLD = 23905;
-    public static final int GetOnlinePlayerListReq = 3966; // 7.1: 27872
+    public static final int GetOnlinePlayerListReq = 22361; // 7.1: 27872
     public static final int HomeGetFishFarmingInfoRsp = 9614; // 7.1: 541
     public static final int DestroyMaterialRsp = 20672; // 7.1: 24340
     // public static final int EFEMPNMOAJA = 6257;
@@ -203,7 +203,7 @@ public final class PacketOpcodes {
     // public static final int BAMFFFPKDEH = 206;
     public static final int CombineDataNotify = 24832; // 7.1: 6095
     // Descriptive compatibility name; not present in the current 7.1 descriptors.
-    public static final int CraftingAvatarDataNotify = 0; // 7.2 CmdId unknown (7.1: 21136)
+    public static final int CraftingAvatarDataNotify = 27330;
     public static final int GetMapMarkTipsRsp = 25684; // 7.1: 26050
     // public static final int NCDHECPCPPO = 20999;
     // public static final int HMDJCNLNHNE = 1001;
@@ -282,7 +282,7 @@ public final class PacketOpcodes {
     public static final int WorldRoutineChangeNotify = 21220; // 7.1: 23149
     // public static final int ICFHDNBAAPO = 25676;
     public static final int WorldOwnerBlossomScheduleInfoNotify = 5954; // 7.1: 23101
-    public static final int SetNameCardReq = 0; // 7.2 CmdId unknown (7.1: 2661)
+    public static final int SetNameCardReq = 3230; // 7.1: 2661
     public static final int SetCodexPushtipsReadReq = 594; // 7.1: 3090
     public static final int FishBattleEndRsp = 2697; // 7.1: 28189
     // public static final int HCIAMLEFLJL = 22359;
@@ -294,7 +294,7 @@ public final class PacketOpcodes {
     // public static final int LCCCMJKPNEA = 24123;
     // public static final int CMOLKMEADPO = 23745;
     public static final int GetReunionMissionInfoRsp = 2839; // 7.1: 3026
-    public static final int ReliquaryOfferDefineReq = 0; // 7.2 CmdId unknown (7.1: 22095)
+    public static final int ReliquaryOfferDefineReq = 8145;
     public static final int GachaActivityTakeRewardReq = 0; // 7.2 CmdId unknown (7.1: 7969)
     public static final int MultistagePlayFinishStageRsp = 2817; // 7.1: 25550
     public static final int PlayerNicknameNotify = 20881; // 7.1: 3064
@@ -558,7 +558,7 @@ public final class PacketOpcodes {
     public static final int MiracleRingDestroyNotify = 0; // 7.2 CmdId unknown (7.1: 6455)
     // public static final int HEENKABNGHE = 25293;
     // public static final int OGCNCDJEFKH = 1483;
-    public static final int TowerTeamSelectRsp = 0; // 7.2 CmdId unknown (7.1: 28763)
+    public static final int TowerTeamSelectRsp = 3450;
     public static final int _UseTreasureKeyReq = 2789; // 7.1: 4301
     public static final int HomeComfortInfoNotify = 24226; // 7.1: 2471
     // public static final int BJPOLINNNNM = 8808;
@@ -688,7 +688,7 @@ public final class PacketOpcodes {
     public static final int HomePlantWeedReq = 25383; // 7.1: 21538
     public static final int GetPlayerHomeCompInfoReq = 9546; // 7.1: 6450
     public static final int _BeyondHallChangeTagsReq = 26215; // 7.1: 28249
-    public static final int TakeAchievementGoalRewardReq = 0; // 7.2 CmdId unknown (7.1: 28295)
+    public static final int TakeAchievementGoalRewardReq = 29257; // 7.1: 28295
     public static final int NormalUidOpNotify = 8577; // 7.1: 22391
     public static final int CutSceneEndNotify = 29046; // 7.1: 472
     // public static final int ANPPHOKNGJD = 24720;
@@ -866,7 +866,7 @@ public final class PacketOpcodes {
     // public static final int DOLMCAMLJHM = 24413;
     // public static final int CFJDBHFFFHI = 25707;
     // public static final int NDGHIOIDNPD = 23057;
-    public static final int ReceivedTrialAvatarActivityRewardRsp = 0; // 7.2 CmdId unknown (7.1: 21068)
+    public static final int ReceivedTrialAvatarActivityRewardRsp = 23468; // 7.1: 21068
     // public static final int NLGAPJJPCHK = 26787;
     public static final int IrodoriScanEntityRsp = 0; // 7.2 CmdId unknown (7.1: 27498)
     public static final int _SetWidgetSettingReq = 268; // 7.1: 25209
@@ -926,7 +926,7 @@ public final class PacketOpcodes {
     public static final int SceneEntityDisappearNotify = 1530; // 7.1: 6253
     public static final int _GalleryInitNotify = 0; // 7.2 CmdId unknown (7.1: 25398)
     public static final int GCGInviteGuestBattleReq = 8032; // 7.1: 21044
-    public static final int TowerSurrenderRsp = 0; // 7.2 CmdId unknown (7.1: 5838)
+    public static final int TowerSurrenderRsp = 2048;
     public static final int GadgetPlayUidOpNotify = 24520; // 7.1: 28806
     // public static final int AMBOIICFPDA = 24716;
     public static final int SceneAvatarStaminaStepReq = 24614; // 7.1: 20510
@@ -987,7 +987,7 @@ public final class PacketOpcodes {
     // public static final int EKEHDGDINBM = 26848;
     public static final int CompoundDataNotify = 23233; // 7.1: 4170
     // public static final int OFIJGFNFACJ = 23775;
-    public static final int GetPlayerAskFriendListReq = 29401; // 7.1: 29966
+    public static final int GetPlayerAskFriendListReq = 21795; // 7.1: 29966
     // public static final int IIBKDICGFGH = 27425;
     // public static final int HNCAHFPHAPC = 24640;
     // public static final int ACPKGDJAFEJ = 25700;
@@ -1027,7 +1027,7 @@ public final class PacketOpcodes {
     public static final int AvatarTeamAllDataNotify = 1108; // 7.1: 21546
     public static final int RoguelikeSelectAvatarAndEnterDungeonReq = 0; // 7.2 CmdId unknown (7.1: 22085)
     public static final int SceneEntityAppearNotify = 4469; // 7.1: 27685
-    public static final int DelTeamEntityNotify = 0; // 7.2 CmdId unknown (7.1: 2050)
+    public static final int DelTeamEntityNotify = 22143;
     public static final int EntityJumpNotify = 24309; // 7.1: 29685
     public static final int AvatarDataNotify = 20143; // 7.1: 27799
     public static final int ResinCardDataUpdateNotify = 5721; // 7.1: 21268
@@ -1088,7 +1088,7 @@ public final class PacketOpcodes {
     public static final int SaveMainCoopReq = 20118; // 7.1: 21623
     public static final int CoinCollectPrepareStageNotify = 0; // 7.2 CmdId unknown (7.1: 141)
     // public static final int EOMCJECOLKJ = 6233;
-    public static final int HomeChangeBgmRsp = 0; // 7.2 CmdId unknown (7.1: 25361)
+    public static final int HomeChangeBgmRsp = 25773; // 7.1: 25361
     public static final int FoundationRsp = 20266; // 7.1: 23069
     public static final int VintageMarketStoreViewStrategyRsp = 0; // 7.2 CmdId unknown (7.1: 28796)
     public static final int SceneForceUnlockNotify = 20389; // 7.1: 470
@@ -1104,12 +1104,12 @@ public final class PacketOpcodes {
     public static final int EvtDestroyGadgetNotify = 23557; // 7.1: 5753
     public static final int AddQuestContentProgressReq = 6284; // 7.1: 23368
     public static final int _UgcDungeonSaveDataReq = 23285; // 7.1: 20869
-    public static final int ReadMailNotify = 0; // 7.2 CmdId unknown (7.1: 8592)
+    public static final int ReadMailNotify = 6678; // 7.1: 8592
     // public static final int HMCLACKOKHF = 5605;
     public static final int GCGTavernNpcInfoNotify = 28275; // 7.1: 25416
     public static final int DestroyMaterialReq = 26446; // 7.1: 8587
     public static final int ChangeMpTeamAvatarRsp = 24314; // 7.1: 24192
-    public static final int TakeAchievementRewardReq = 0; // 7.2 CmdId unknown (7.1: 25857)
+    public static final int TakeAchievementRewardReq = 4716; // 7.1: 25857
     public static final int _WeekActiveInteractNotify = 0; // 7.1 CmdId unknown (7.0: 7193)
     // public static final int MFEKMJONFGL = 20086;
     // public static final int NBANNLGLBMG = 22177;
@@ -1172,7 +1172,7 @@ public final class PacketOpcodes {
     public static final int DailyTaskDataNotify = 26315; // 7.1: 2841
     public static final int _PlayerApplyHomeCreateBlueprintResultRsp = 26914; // 7.1: 25648
     public static final int DelScenePlayTeamEntityNotify = 0; // 7.1 CmdId unknown (7.0: 7532)
-    public static final int DungeonSlipRevivePointActivateRsp = 0; // 7.1 CmdId unknown (7.0: 7535)
+    public static final int DungeonSlipRevivePointActivateRsp = 22091;
     // public static final int CFIGMNBGOGP = 28972;
     // public static final int GEEEHAPBLLE = 6553;
     public static final int HuntingRevealClueNotify = 9486; // 7.1: 27128
@@ -1220,7 +1220,7 @@ public final class PacketOpcodes {
     public static final int MistTrialSelectAvatarAndEnterDungeonReq = 9887; // 7.1: 27407
     public static final int GetActivityInfoRsp = 26746; // 7.1: 1056
     public static final int FleurFairFallSettleNotify = 0; // 7.2 CmdId unknown (7.1: 6440)
-    public static final int ReliquaryOfferExtractReq = 0; // 7.2 CmdId unknown (7.1: 1781)
+    public static final int ReliquaryOfferExtractReq = 21539;
     public static final int HomeEditCustomFurnitureRsp = 20274; // 7.1: 9321
     // public static final int BFGPPDNBJMH = 7902;
     public static final int SceneTeamUpdateNotify = 1144; // 7.1: 29245
@@ -1474,7 +1474,7 @@ public final class PacketOpcodes {
     public static final int WidgetWeatherWizardDataNotify = 25712; // 7.1: 9150
     public static final int SetBattlePassViewedReq = 21064; // 7.1: 23538
     public static final int AvatarFollowRouteNotify = 7558; // 7.1: 8449
-    public static final int TowerBuffSelectRsp = 0; // 7.2 CmdId unknown (7.1: 9661)
+    public static final int TowerBuffSelectRsp = 8282; // 7.1: 9661
     // public static final int CHDGBLAODCL = 22966;
     public static final int GetMapAreaRsp = 25820; // 7.1: 22137
     // public static final int InstableSprayEnterDungeonReq = 5618;
@@ -1501,7 +1501,7 @@ public final class PacketOpcodes {
     // public static final int GCGDSBanCardNotify = 6875;
     // public static final int CCFCEALGINO = 25503;
     // public static final int OODOGOBDLJP = 3733;
-    public static final int DelMailReq = 0; // 7.2 CmdId unknown (7.1: 3404)
+    public static final int DelMailReq = 24171; // 7.1: 3404
     // public static final int MMKLJMCGFHB = 9540;
     // public static final int KEFILHHHBCB = 9995;
     // public static final int ABJLJDNCJNP = 27119;
@@ -1638,7 +1638,7 @@ public final class PacketOpcodes {
     // public static final int DPPGPOIHEDO = 26169;
     public static final int FungusFighterTrainingGallerySettleNotify = 0; // 7.2 CmdId unknown (7.1: 6416)
     // public static final int OHIMIGBCMEB = 9347;
-    public static final int GetMailItemReq = 0; // 7.2 CmdId unknown (7.1: 3042)
+    public static final int GetMailItemReq = 29775; // 7.1: 3042
     // public static final int ABBNDMIMONA = 3482;
     // public static final int OHLCKLOEPBH = 29640;
     public static final int _RemoveMutelistReq = 0; // 7.1 CmdId unknown (7.0: 21030)
@@ -1693,7 +1693,7 @@ public final class PacketOpcodes {
     // public static final int MPLJADMBFNG = 25350;
     public static final int _SetReliquaryStarStateRsp = 8599; // 7.1: 7536
     public static final int SumoDungeonSettleNotify = 0; // 7.2 CmdId unknown (7.1: 7547)
-    public static final int PlatformStopRouteNotify = 0; // 7.2 CmdId unknown (7.1: 4699)
+    public static final int PlatformStopRouteNotify = 25529; // 7.1: 4699
     public static final int DropItemReq = 3858; // 7.1: 25716
     // public static final int UgcTowerLevelUpNotify = 2278;
     public static final int CheckAddItemExceedLimitNotify = 23995; // 7.1: 8097
@@ -1844,7 +1844,7 @@ public final class PacketOpcodes {
     // public static final int CNMDKFFKEDB = 2194;
     public static final int _PlayerSetStrangerChatSettingReq = 5553; // 7.1: 24352
     public static final int ClientTransmitReq = 9473; // 7.1: 7378
-    public static final int BackMyWorldReq = 6686; // 7.1: 24714
+    public static final int BackMyWorldReq = 28289; // 7.1: 24714
     // public static final int LHKOPAOHLEL = 23547;
     public static final int _CustomGalleryProgressUpdateNotify = 5902; // 7.1: 7623
     public static final int StoreItemChangeNotify = 7608; // 7.1: 26018
@@ -1990,7 +1990,7 @@ public final class PacketOpcodes {
     public static final int ExitTransPointRegionNotify = 3410; // 7.1: 7612
     // public static final int FBKBFEHGJPE = 22932;
     public static final int _UseTreasureKeyRsp = 29907; // 7.1: 23742
-    public static final int GetPushTipsRewardRsp = 0; // 7.2 CmdId unknown (7.1: 21994)
+    public static final int GetPushTipsRewardRsp = 9626; // 7.1: 21994
     // public static final int KEMNJHOGDKE = 4355;
     public static final int EvtBeingHealedNotify = 1642; // 7.1: 2496
     public static final int IrodoriMasterGalleryCgEndNotify = 0; // 7.2 CmdId unknown (7.1: 9746)
@@ -2009,10 +2009,7 @@ public final class PacketOpcodes {
     public static final int OneoffGatherPointDetectorDataNotify = 3178; // 7.1: 25175
     // public static final int MDHHPFOHJLG = 21086;
     public static final int FishBiteRsp = 0; // 7.1 CmdId unknown (7.0: 23637)
-    // Read off a live session: the client sends this when dissolving a custom party slot, with the
-    // team id in wire field 4 (see HandlerDelBackupAvatarTeamReq). It was 0 before, so the handler
-    // was never registered and dissolving produced no response at all.
-    public static final int DelBackupAvatarTeamReq = 0; // 7.2 CmdId unknown (7.1: 24481)
+    public static final int DelBackupAvatarTeamReq = 2864; // 7.1: 24481
     // public static final int BILPEKCIFLC = 25524;
     // public static final int JAIOKOPLKKK = 5909;
     // public static final int EMKCJAAFIEL = 23779;
@@ -2044,7 +2041,7 @@ public final class PacketOpcodes {
     public static final int MiracleRingDataNotify = 22775; // 7.1: 6776
     public static final int FocusAvatarRsp = 7543; // 7.1: 9968
     public static final int FinishedParentQuestNotify = 897; // 7.1: 3062
-    public static final int ReliquaryOfferExtractRsp = 0; // 7.2 CmdId unknown (7.1: 24)
+    public static final int ReliquaryOfferExtractRsp = 28301;
     public static final int GadgetChainLevelChangeNotify = 21874; // 7.1: 20703
     public static final int DailyTaskProgressNotify = 22202; // 7.1: 26904
     // public static final int BFCEOINHIIK = 26774;
@@ -2078,7 +2075,7 @@ public final class PacketOpcodes {
     public static final int BlessingAcceptGivePicRsp = 0; // 7.2 CmdId unknown (7.1: 2726)
     public static final int RogueDiaryDungeonInfoNotify = 0; // 7.2 CmdId unknown (7.1: 20847)
     // public static final int ADGHJBDBHFK = 22678;
-    public static final int PlatformStartRouteNotify = 0; // 7.2 CmdId unknown (7.1: 29891)
+    public static final int PlatformStartRouteNotify = 28296; // 7.1: 29891
     public static final int ScenePlayOutofRegionNotify = 25374; // 7.1: 24084
     public static final int EnterFishingReq = 0; // 7.1 CmdId unknown (7.0: 24152)
     // public static final int EDFGBIIOAAN = 1897;
@@ -2307,7 +2304,7 @@ public final class PacketOpcodes {
     // public static final int LIODHLJFJBK = 21367;
     // public static final int MAGPJPFAHMM = 27148;
     // public static final int DPEMKGAJNFF = 4650;
-    public static final int PlayerApplyEnterMpReq = 0; // 7.2 CmdId unknown (7.1: 29174)
+    public static final int PlayerApplyEnterMpReq = 9526;
     // public static final int KONCGCIEHIP = 24051;
     // public static final int JGIHCGBLMGI = 23154;
     // public static final int OCGHIALHBFC = 26920;
@@ -2382,7 +2379,7 @@ public final class PacketOpcodes {
     public static final int DungeonPreloadMonsterNotify = 4690; // 7.1: 6506
     // public static final int LMPAIHMEFLB = 20807;
     public static final int GetBonusActivityRewardRsp = 8909; // 7.1: 6682
-    public static final int GetCityReputationMapInfoReq = 0; // 7.1 CmdId unknown (kitkat names this empty message, not trusted)
+    public static final int GetCityReputationMapInfoReq = 29401;
     // public static final int EENANPMHJOJ = 23127;
     public static final int AdjustWorldLevelRsp = 27417; // 7.1: 8535
     public static final int TakeResinCardDailyRewardReq = 23759; // 7.1: 20861
@@ -2393,7 +2390,7 @@ public final class PacketOpcodes {
     public static final int _ActivityClientPlayCurLevelInfoUpdateNotify = 7914; // 7.1: 7838
     public static final int QuestUpdateQuestVarNotify = 2181; // 7.1: 29989
     public static final int _GetShopBatchReq = 24181; // 7.1: 27535
-    public static final int GetMapMarkTipsReq = 0; // 7.1 CmdId unknown (kitkat names this empty message, not trusted)
+    public static final int GetMapMarkTipsReq = 20856;
     // public static final int PCIGCNLGCHB = 5274;
     public static final int VehicleInteractRsp = 26532; // 7.1: 6628
     public static final int GCGChallengeUpdateNotify = 1799; // 7.1: 1117
@@ -2440,7 +2437,7 @@ public final class PacketOpcodes {
     // public static final int JEJHGBFAEKA = 6241;
     // public static final int JMBJECONMHO = 4721;
     public static final int _QuestRenameMiscReq = 9338; // 7.1: 2429
-    public static final int ReliquaryOfferDataNotify = 0; // 7.2 CmdId unknown (7.1: 24434)
+    public static final int ReliquaryOfferDataNotify = 29798;
     public static final int _AvatarEscoffierSkillCookReq = 0; // 7.2 CmdId unknown (7.1: 29232)
     public static final int LuaEnvironmentEffectNotify = 25685; // 7.1: 6607
     public static final int _ShowBubbleTalkNotify = 28935; // 7.1: 21655
@@ -2462,7 +2459,7 @@ public final class PacketOpcodes {
     public static final int GadgetInteractReq = 1891; // 7.1: 5765
     public static final int DungeonChallengeBeginNotify = 5314; // 7.1: 7266
     public static final int VintageMarketStartStorePlayReq = 0; // 7.2 CmdId unknown (7.1: 28850)
-    public static final int TowerBuffSelectReq = 0; // 7.2 CmdId unknown (7.1: 4779)
+    public static final int TowerBuffSelectReq = 705; // 7.1: 4779
     // public static final int EEELEGHNJJO = 9657;
     // public static final int IHODNAJFGHA = 5598;
     // public static final int CCNLHAKKGJP = 3266;
@@ -2510,13 +2507,13 @@ public final class PacketOpcodes {
     public static final int EvtAvatarExitFocusNotify = 9718; // 7.1: 1753
     // public static final int DJAODLPAOBL = 20071;
     public static final int SumoSwitchTeamRsp = 0; // 7.2 CmdId unknown (7.1: 27645)
-    public static final int UnlockNameCardNotify = 0; // 7.2 CmdId unknown (7.1: 3626)
+    public static final int UnlockNameCardNotify = 23430; // 7.1: 3626
     // public static final int ACFDLMBNANC = 1926;
     public static final int LevelTagDataNotify = 25174; // 7.1: 863
     public static final int CheckGroupReplacedRsp = 20059; // 7.1: 8911
     public static final int AchievementUpdateNotify = 4301; // 7.1: 5513
     public static final int _PlayerNormalLuaShellNotify = 0; // 7.1 CmdId unknown (7.0: 27286)
-    public static final int AvatarPromoteReq = 0; // 7.2 CmdId unknown (7.1: 28539)
+    public static final int AvatarPromoteReq = 6528; // 7.1: 28539
     public static final int WidgetQuickHitTreeReq = 7605; // 7.1: 4121
     public static final int GCGWeekChallengeInfoNotify = 9792; // 7.1: 20117
     // public static final int HCDFOHEBFJJ = 25159;
@@ -2552,7 +2549,7 @@ public final class PacketOpcodes {
     public static final int QuestGlobalVarNotify = 2810; // 7.1: 25277
     public static final int BattlePassAllDataNotify = 8477; // 7.1: 7676
     // public static final int UgcDungeonSwitchRoomInviteReplyNotify = 25523;
-    public static final int HomeResourceTakeFetterExpRsp = 0; // 7.2 CmdId unknown (7.1: 27825)
+    public static final int HomeResourceTakeFetterExpRsp = 3653; // 7.1: 27825
     // public static final int OPGNOFMAAGF = 23786;
     public static final int _AvatarExtraLevelUpgradeRsp = 0; // 7.2 CmdId unknown (7.1: 5633)
     // public static final int JAPMAEHMHPG = 25902;
@@ -2571,7 +2568,7 @@ public final class PacketOpcodes {
     // public static final int APLIFPLFBBP = 28648;
     // public static final int HPMGHGGDAEF = 26418;
     public static final int EnterFishingRsp = 0; // 7.1 CmdId unknown (7.0: 27613)
-    public static final int SetPlayerSignatureReq = 0; // 7.2 CmdId unknown (7.1: 493)
+    public static final int SetPlayerSignatureReq = 4867; // 7.1: 493
     // public static final int KGOBLCJLPOL = 24666;
     // public static final int LJPOECMEGAC = 2655;
     public static final int UnlockedFurnitureSuiteDataNotify = 22804; // 7.1: 1717
@@ -2728,7 +2725,7 @@ public final class PacketOpcodes {
     public static final int TakeMaterialDeleteReturnRsp = 3007; // 7.1: 23074
     // public static final int KPHKMKLKADJ = 26969;
     public static final int WinterCampTriathlonSettleNotify = 0; // 7.2 CmdId unknown (7.1: 24776)
-    public static final int PlatformChangeRouteNotify = 0; // 7.2 CmdId unknown (7.1: 6989)
+    public static final int PlatformChangeRouteNotify = 1089; // 7.1: 6989
     // public static final int FDMOOGNDEFH = 21778;
     public static final int EffigyChallengeInfoNotify = 0; // 7.2 CmdId unknown (7.1: 25575)
     // public static final int CANIKGGABFO = 3923;
@@ -2740,7 +2737,7 @@ public final class PacketOpcodes {
     public static final int EntityFightPropUpdateNotify = 23211; // 7.1: 9736
     public static final int GetChatEmojiCollectionRsp = 9375; // 7.1: 7739
     // public static final int BFAOJJLGAOM = 21803;
-    public static final int GetPlayerFriendListReq = 20856; // 7.1: 427
+    public static final int GetPlayerFriendListReq = 1684; // 7.1: 427
     // public static final int FJFCPJNEBLD = 871;
     public static final int CreateVehicleRsp = 8641; // 7.1: 27567
     // public static final int CMOGELPOKKP = 29991;
@@ -2866,7 +2863,7 @@ public final class PacketOpcodes {
     public static final int _MonsterChessV2FlagSelectRsp = 24263; // 7.1: 4825
     // public static final int MIEENPDOGIP = 9475;
     public static final int LaunchFireworksReq = 3257; // 7.1: 26674
-    public static final int EnterTrialAvatarActivityDungeonRsp = 0; // 7.2 CmdId unknown (7.1: 21467)
+    public static final int EnterTrialAvatarActivityDungeonRsp = 29493; // 7.1: 21467
     public static final int GroupLinkChangeNotify = 0; // 7.1 CmdId unknown (7.0: 29523)
     // public static final int JourneyDiceEnterDungeonReq = 5240;
     public static final int ActivityBannerNotify = 23109; // 7.1: 26136
@@ -2916,7 +2913,7 @@ public final class PacketOpcodes {
     public static final int GetPushTipsRewardReq = 24813; // 7.1: 8298
     public static final int GetGachaInfoRsp = 1508; // 7.1: 29811
     // public static final int UgcDungeonOpStarredDungeonRsp = 24455;
-    public static final int HomeChangeBgmReq = 0; // 7.2 CmdId unknown (7.1: 9991)
+    public static final int HomeChangeBgmReq = 28560; // 7.1: 9991
     // public static final int PIHOBBKMLFN = 25984;
     // public static final int SorushTrialPhotoMatchGallerySettleNotify = 27248;
     public static final int RogueDungeonPlayerCellChangeNotify = 0; // 7.2 CmdId unknown (7.1: 3188)
@@ -2976,7 +2973,7 @@ public final class PacketOpcodes {
     public static final int DeleteFriendNotify = 23556; // 7.1: 25517
     public static final int DeleteFriendRsp = 22275; // 7.1: 7913
     public static final int DoSetPlayerBornDataNotify = 5008; // 7.1: 22899
-    public static final int EndCameraSceneLookNotify = 0; // 7.2 CmdId unknown (7.1: 4771)
+    public static final int EndCameraSceneLookNotify = 29293;
     public static final int ExecuteGadgetLuaRsp = 0; // 7.2 CmdId unknown (7.1: 1263)
     public static final int ForgeStartRsp = 1759; // 7.1: 24460
     public static final int GetHomeLevelUpRewardRsp = 0; // 7.2 CmdId unknown (7.1: 21591)
@@ -2987,9 +2984,9 @@ public final class PacketOpcodes {
     public static final int HomeAvatarSummonFinishRsp = 0; // 7.2 CmdId unknown (7.1: 8835)
     public static final int HomeChangeEditModeRsp = 27429; // 7.1: 26048
     public static final int HomeChangeModuleRsp = 6805; // 7.1: 22143
-    public static final int HomeEnterEditModeFinishRsp = 0; // 7.1 CmdId unknown (7.0: 1)
+    public static final int HomeEnterEditModeFinishRsp = 7570;
     public static final int HomeGetOnlineStatusRsp = 28241; // 7.1: 23294
-    public static final int HomeModuleUnlockNotify = 0; // 7.1 CmdId unknown (7.0: 1)
+    public static final int HomeModuleUnlockNotify = 4238;
     public static final int HomePreChangeEditModeNotify = 9102; // 7.1: 1974
     public static final int HomeSceneInitFinishRsp = 0; // 7.1 CmdId unknown (7.0: 1)
     public static final int HomeUpdateArrangementInfoRsp = 4591; // 7.1: 20044
@@ -3000,7 +2997,7 @@ public final class PacketOpcodes {
     public static final int MusicGameSearchBeatmapRsp = 0; // 7.1 CmdId unknown (7.0: 1)
     public static final int MusicGameStartRsp = 0; // 7.2 CmdId unknown (7.1: 6458)
     public static final int MusicGameStartToPlayOthersBeatmapRsp = 0; // 7.1 CmdId unknown (7.0: 1)
-    public static final int PlayerApplyEnterHomeNotify = 0; // 7.2 CmdId unknown (7.1: 26047)
+    public static final int PlayerApplyEnterHomeNotify = 24164;
     public static final int PlayerForceExitRsp = 0; // 7.1 CmdId unknown (7.0: 1)
     public static final int ReformFireworksRsp = 0; // 7.2 CmdId unknown (7.1: 8112)
     public static final int RemoveCustomTeamRsp = 0; // 7.1 CmdId unknown (7.0: 1)
@@ -3033,7 +3030,7 @@ public final class PacketOpcodes {
     // Snezhnaya Ice Creatures (Icemaking), from kitkat-multiverse/genshin-protocol 7.1.0.
     public static final int IceCreatureBuildReq = 5949; // 7.1: 5180
     public static final int IceCreatureBuildRsp = 28174; // 7.1: 6254
-    public static final int IceCreatureLikeReq = 0; // 7.2 CmdId unknown (7.1: 9517)
+    public static final int IceCreatureLikeReq = 3775; // 7.1: 9517
     public static final int IceCreatureLikeRsp = 5187; // 7.1: 25935
     public static final int IceCreatureGadgetRemoveReq = 27140; // 7.1: 27474
     public static final int IceCreatureGadgetRemoveRsp = 1003; // 7.1: 24183
@@ -3087,4 +3084,45 @@ public final class PacketOpcodes {
             add(PacketOpcodes.SetEntityClientDataNotify);
         }
     };
+
+    // 7.2 圣遗物协议。
+    public static final int GetReliquaryTransferReq = 21439;
+    public static final int GetReliquaryTransferRsp = 28574;
+    public static final int GetReliquaryLockGeneralOptionReq = 3053;
+    public static final int GetReliquaryLockGeneralOptionRsp = 24123;
+    public static final int SetReliquaryLockGeneralOptionReq = 1116;
+    public static final int SetReliquaryDefaultSchemeReq = 28133;
+    public static final int SaveReliquarySetSchemeReq = 520;
+    public static final int SaveReliquarySetSchemeRsp = 22898;
+    public static final int GetReliquarySetSchemeReq = 22047;
+    public static final int GetReliquarySetSchemeRsp = 27096;
+    public static final int SetEquipLockStateBatchReq = 1555;
+    public static final int SetEquipLockStateBatchRsp = 26917;
+    public static final int SetEquipBatchReq = 7723;
+    public static final int SetEquipBatchRsp = 7622;
+    public static final int SetEquipAvatarPreviewReq = 27012;
+    public static final int SetEquipAvatarPreviewRsp = 6578;
+    public static final int GetReliquaryWearCustomDataReq = 28016;
+    public static final int GetReliquaryWearCustomDataRsp = 2232;
+    public static final int SaveReliquaryWearCustomDataReq = 27557;
+    public static final int SaveReliquaryWearCustomDataRsp = 29607;
+    public static final int DeleteReliquaryWearCustomDataReq = 29069;
+    public static final int ReliquaryFilterStateSaveNotify = 842;
+    public static final int ReliquaryFilterStateNotify = 6229;
+    public static final int GetReliquaryPurchaseReq = 8145;
+    public static final int GetReliquaryPurchaseRsp = 25309;
+    public static final int GetReliquaryOfferingReq = 21539;
+    public static final int GetReliquaryOfferingRsp = 28301;
+    public static final int GetReliquaryOfferPurchaseInfoNotify = 29798;
+    public static final int GetReliquaryDustReq = 8163;
+    public static final int GetReliquaryDustRsp = 21418;
+    public static final int GetReliquaryDustSelectReq = 26284;
+    public static final int GetReliquaryDustSelectRsp = 27869;
+    public static final int ReliquaryReforgeDataNotify = 229;
+    public static final int PBPOECKENDB = 4111;
+    public static final int JAEFNNHIAPC = 9326;
+    public static final int ONKDGOGEBIK = 9775;
+    public static final int BMPEMFOICKA = 7342;
+    public static final int JDPEKGBJFDA = 5664;
+    public static final int BDIEPNMGNIB = 2835;
 }

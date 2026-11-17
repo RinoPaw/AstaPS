@@ -101,7 +101,7 @@ public final class GadgetInteractReqOuterClass extends com.google.protobuf.Gener
     int getGadgetId();
 
     /**
-     * <code>uint32 ALLPOOBNNPH = 20007;</code>
+     * <code>uint32 ALLPOOBNNPH = 15;</code>
      * @return The aLLPOOBNNPH.
      */
     int getALLPOOBNNPH();
@@ -286,10 +286,10 @@ public final class GadgetInteractReqOuterClass extends com.google.protobuf.Gener
       return gadgetId_;
     }
 
-    public static final int ALLPOOBNNPH_FIELD_NUMBER = 20007;
+    public static final int ALLPOOBNNPH_FIELD_NUMBER = 15;
     private int aLLPOOBNNPH_ = 0;
     /**
-     * <code>uint32 ALLPOOBNNPH = 20007;</code>
+     * <code>uint32 ALLPOOBNNPH = 15;</code>
      * @return The aLLPOOBNNPH.
      */
     @java.lang.Override
@@ -351,6 +351,9 @@ public final class GadgetInteractReqOuterClass extends com.google.protobuf.Gener
       if (cJIPKAIPCIB_ != 0) {
         output.writeUInt32(12, cJIPKAIPCIB_);
       }
+      if (aLLPOOBNNPH_ != 0) {
+        output.writeUInt32(15, aLLPOOBNNPH_);
+      }
       if (dOGHJJCHDLF_ != false) {
         output.writeBool(20000, dOGHJJCHDLF_);
       }
@@ -368,9 +371,6 @@ public final class GadgetInteractReqOuterClass extends com.google.protobuf.Gener
       }
       if (eBEELPIEKEL_ != 0) {
         output.writeUInt32(20006, eBEELPIEKEL_);
-      }
-      if (aLLPOOBNNPH_ != 0) {
-        output.writeUInt32(20007, aLLPOOBNNPH_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -400,6 +400,10 @@ public final class GadgetInteractReqOuterClass extends com.google.protobuf.Gener
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(12, cJIPKAIPCIB_);
       }
+      if (aLLPOOBNNPH_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(15, aLLPOOBNNPH_);
+      }
       if (dOGHJJCHDLF_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(20000, dOGHJJCHDLF_);
@@ -423,10 +427,6 @@ public final class GadgetInteractReqOuterClass extends com.google.protobuf.Gener
       if (eBEELPIEKEL_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(20006, eBEELPIEKEL_);
-      }
-      if (aLLPOOBNNPH_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(20007, aLLPOOBNNPH_);
       }
       return size;
     }
@@ -842,6 +842,11 @@ public final class GadgetInteractReqOuterClass extends com.google.protobuf.Gener
                 bitField0_ |= 0x00001000;
                 break;
               } // case 96
+              case 120: {
+                aLLPOOBNNPH_ = input.readUInt32();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 120
               case 160000: {
                 dOGHJJCHDLF_ = input.readBool();
                 bitField0_ |= 0x00000001;
@@ -872,11 +877,6 @@ public final class GadgetInteractReqOuterClass extends com.google.protobuf.Gener
                 bitField0_ |= 0x00000080;
                 break;
               } // case 160048
-              case 160056: {
-                aLLPOOBNNPH_ = input.readUInt32();
-                bitField0_ |= 0x00000400;
-                break;
-              } // case 160056
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1256,7 +1256,7 @@ public final class GadgetInteractReqOuterClass extends com.google.protobuf.Gener
 
       private int aLLPOOBNNPH_ ;
       /**
-       * <code>uint32 ALLPOOBNNPH = 20007;</code>
+       * <code>uint32 ALLPOOBNNPH = 15;</code>
        * @return The aLLPOOBNNPH.
        */
       @java.lang.Override
@@ -1264,7 +1264,7 @@ public final class GadgetInteractReqOuterClass extends com.google.protobuf.Gener
         return aLLPOOBNNPH_;
       }
       /**
-       * <code>uint32 ALLPOOBNNPH = 20007;</code>
+       * <code>uint32 ALLPOOBNNPH = 15;</code>
        * @param value The aLLPOOBNNPH to set.
        * @return This builder for chaining.
        */
@@ -1276,7 +1276,7 @@ public final class GadgetInteractReqOuterClass extends com.google.protobuf.Gener
         return this;
       }
       /**
-       * <code>uint32 ALLPOOBNNPH = 20007;</code>
+       * <code>uint32 ALLPOOBNNPH = 15;</code>
        * @return This builder for chaining.
        */
       public Builder clearALLPOOBNNPH() {
@@ -1416,17 +1416,17 @@ public final class GadgetInteractReqOuterClass extends com.google.protobuf.Gener
   static {
     java.lang.String[] descriptorData = {
       "\n\027GadgetInteractReq.proto\032\021InterOpType.p" +
-      "roto\032\023ResinCostType.proto\"\323\002\n\021GadgetInte" +
+      "roto\032\023ResinCostType.proto\"\321\002\n\021GadgetInte" +
       "ractReq\022\025\n\013DOGHJJCHDLF\030\240\234\001 \001(\010\022\025\n\013IKMNHO" +
       "HNBKJ\030\241\234\001 \001(\010\022\025\n\013LPCDPGNKGFL\030\242\234\001 \001(\010\022\025\n\013" +
       "IKDIFBEOEKM\030\243\234\001 \001(\010\022\023\n\013AJDBEGMCGKD\030\010 \001(\010" +
       "\022\025\n\013HDJABIODGCI\030\245\234\001 \001(\010\022\035\n\007op_type\030\005 \001(\016" +
       "2\014.InterOpType\022\025\n\013EBEELPIEKEL\030\246\234\001 \001(\r\022\'\n" +
       "\017resin_cost_type\030\006 \001(\0162\016.ResinCostType\022\021" +
-      "\n\tgadget_id\030\007 \001(\r\022\025\n\013ALLPOOBNNPH\030\247\234\001 \001(\r" +
-      "\022\030\n\020gadget_entity_id\030\013 \001(\r\022\023\n\013CJIPKAIPCI" +
-      "B\030\014 \001(\rB\033\n\031emu.grasscutter.net.protob\006pr" +
-      "oto3"
+      "\n\tgadget_id\030\007 \001(\r\022\023\n\013ALLPOOBNNPH\030\017 \001(\r\022\030" +
+      "\n\020gadget_entity_id\030\013 \001(\r\022\023\n\013CJIPKAIPCIB\030" +
+      "\014 \001(\rB\033\n\031emu.grasscutter.net.protob\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

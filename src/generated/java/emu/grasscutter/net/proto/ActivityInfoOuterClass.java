@@ -297,7 +297,7 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
     boolean getIsStarting();
 
     /**
-     * <code>bool is_banner_cleared = 10;</code>
+     * <code>bool is_banner_cleared = 20008;</code>
      * @return The isBannerCleared.
      */
     boolean getIsBannerCleared();
@@ -369,7 +369,7 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
     boolean getIsCommonContentClosed();
 
     /**
-     * <code>bool is_play_open_anim = 20008;</code>
+     * <code>bool is_play_open_anim = 10;</code>
      * @return The isPlayOpenAnim.
      */
     boolean getIsPlayOpenAnim();
@@ -3678,10 +3678,10 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
       return isStarting_;
     }
 
-    public static final int IS_BANNER_CLEARED_FIELD_NUMBER = 10;
+    public static final int IS_BANNER_CLEARED_FIELD_NUMBER = 20008;
     private boolean isBannerCleared_ = false;
     /**
-     * <code>bool is_banner_cleared = 10;</code>
+     * <code>bool is_banner_cleared = 20008;</code>
      * @return The isBannerCleared.
      */
     @java.lang.Override
@@ -3810,10 +3810,10 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
       return isCommonContentClosed_;
     }
 
-    public static final int IS_PLAY_OPEN_ANIM_FIELD_NUMBER = 20008;
+    public static final int IS_PLAY_OPEN_ANIM_FIELD_NUMBER = 10;
     private boolean isPlayOpenAnim_ = false;
     /**
-     * <code>bool is_play_open_anim = 20008;</code>
+     * <code>bool is_play_open_anim = 10;</code>
      * @return The isPlayOpenAnim.
      */
     @java.lang.Override
@@ -8769,8 +8769,8 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
       for (int i = 0; i < watcherInfoList_.size(); i++) {
         output.writeMessage(9, watcherInfoList_.get(i));
       }
-      if (isBannerCleared_ != false) {
-        output.writeBool(10, isBannerCleared_);
+      if (isPlayOpenAnim_ != false) {
+        output.writeBool(10, isPlayOpenAnim_);
       }
       if (detailCase_ == 13) {
         output.writeMessage(13, (emu.grasscutter.net.proto.TrialAvatarActivityDetailInfoOuterClass.TrialAvatarActivityDetailInfo) detail_);
@@ -9332,8 +9332,8 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
       if (isCommonContentClosed_ != false) {
         output.writeBool(20007, isCommonContentClosed_);
       }
-      if (isPlayOpenAnim_ != false) {
-        output.writeBool(20008, isPlayOpenAnim_);
+      if (isBannerCleared_ != false) {
+        output.writeBool(20008, isBannerCleared_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -9376,9 +9376,9 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
             }
             size += 1 * count;
           }
-      if (isBannerCleared_ != false) {
+      if (isPlayOpenAnim_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(10, isBannerCleared_);
+          .computeBoolSize(10, isPlayOpenAnim_);
       }
       if (detailCase_ == 13) {
         size += com.google.protobuf.CodedOutputStream
@@ -10179,9 +10179,9 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(20007, isCommonContentClosed_);
       }
-      if (isPlayOpenAnim_ != false) {
+      if (isBannerCleared_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(20008, isPlayOpenAnim_);
+          .computeBoolSize(20008, isBannerCleared_);
       }
       return size;
     }
@@ -14083,8 +14083,8 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
                 break;
               } // case 74
               case 80: {
-                isBannerCleared_ = input.readBool();
-                bitField0_ |= 0x00010000;
+                isPlayOpenAnim_ = input.readBool();
+                bitField0_ |= 0x10000000;
                 break;
               } // case 80
               case 106: {
@@ -15367,8 +15367,8 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
                 break;
               } // case 160056
               case 160064: {
-                isPlayOpenAnim_ = input.readBool();
-                bitField0_ |= 0x10000000;
+                isBannerCleared_ = input.readBool();
+                bitField0_ |= 0x00010000;
                 break;
               } // case 160064
               default: {
@@ -17033,7 +17033,7 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
 
       private boolean isBannerCleared_ ;
       /**
-       * <code>bool is_banner_cleared = 10;</code>
+       * <code>bool is_banner_cleared = 20008;</code>
        * @return The isBannerCleared.
        */
       @java.lang.Override
@@ -17041,7 +17041,7 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
         return isBannerCleared_;
       }
       /**
-       * <code>bool is_banner_cleared = 10;</code>
+       * <code>bool is_banner_cleared = 20008;</code>
        * @param value The isBannerCleared to set.
        * @return This builder for chaining.
        */
@@ -17053,7 +17053,7 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
         return this;
       }
       /**
-       * <code>bool is_banner_cleared = 10;</code>
+       * <code>bool is_banner_cleared = 20008;</code>
        * @return This builder for chaining.
        */
       public Builder clearIsBannerCleared() {
@@ -17417,7 +17417,7 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
 
       private boolean isPlayOpenAnim_ ;
       /**
-       * <code>bool is_play_open_anim = 20008;</code>
+       * <code>bool is_play_open_anim = 10;</code>
        * @return The isPlayOpenAnim.
        */
       @java.lang.Override
@@ -17425,7 +17425,7 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
         return isPlayOpenAnim_;
       }
       /**
-       * <code>bool is_play_open_anim = 20008;</code>
+       * <code>bool is_play_open_anim = 10;</code>
        * @param value The isPlayOpenAnim to set.
        * @return This builder for chaining.
        */
@@ -17437,7 +17437,7 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
         return this;
       }
       /**
-       * <code>bool is_play_open_anim = 20008;</code>
+       * <code>bool is_play_open_anim = 10;</code>
        * @return This builder for chaining.
        */
       public Builder clearIsPlayOpenAnim() {
@@ -39821,14 +39821,14 @@ public final class ActivityInfoOuterClass extends com.google.protobuf.GeneratedF
       "e_cond_list\030\243\234\001 \003(\r\022\035\n\024first_day_start_t" +
       "ime\030\371\001 \001(\r\022\"\n\031selected_avatar_reward_id\030" +
       "\207\010 \001(\r\022\023\n\013activity_id\030\001 \001(\r\022\025\n\013is_starti" +
-      "ng\030\244\234\001 \001(\010\022\031\n\021is_banner_cleared\030\n \001(\010\022\022\n" +
-      "\tis_hidden\030\211\010 \001(\010\022\023\n\013is_finished\030\004 \001(\010\022\022" +
-      "\n\tcur_score\030\254\005 \001(\r\022\020\n\010end_time\030\017 \001(\r\022\023\n\013" +
-      "schedule_id\030\002 \001(\r\022\025\n\ractivity_type\030\010 \001(\r" +
-      "\022\024\n\013score_limit\030\305\n \001(\r\022\025\n\013OPPDJKGIKBJ\030\245\234" +
-      "\001 \001(\004\022\025\n\013DIEFHMGFNIJ\030\246\234\001 \001(\r\022\022\n\nbegin_ti" +
-      "me\030\006 \001(\r\022\"\n\030is_common_content_closed\030\247\234\001" +
-      " \001(\010\022\033\n\021is_play_open_anim\030\250\234\001 \001(\010\022\026\n\ris_" +
+      "ng\030\244\234\001 \001(\010\022\033\n\021is_banner_cleared\030\250\234\001 \001(\010\022" +
+      "\022\n\tis_hidden\030\211\010 \001(\010\022\023\n\013is_finished\030\004 \001(\010" +
+      "\022\022\n\tcur_score\030\254\005 \001(\r\022\020\n\010end_time\030\017 \001(\r\022\023" +
+      "\n\013schedule_id\030\002 \001(\r\022\025\n\ractivity_type\030\010 \001" +
+      "(\r\022\024\n\013score_limit\030\305\n \001(\r\022\025\n\013OPPDJKGIKBJ\030" +
+      "\245\234\001 \001(\004\022\025\n\013DIEFHMGFNIJ\030\246\234\001 \001(\r\022\022\n\nbegin_" +
+      "time\030\006 \001(\r\022\"\n\030is_common_content_closed\030\247" +
+      "\234\001 \001(\010\022\031\n\021is_play_open_anim\030\n \001(\010\022\026\n\ris_" +
       "quick_open\030\353\r \001(\010\0223\n\rsam_lamp_info\030\005 \001(\013" +
       "2\032.SeaLampActivityDetailInfoH\000\0224\n\rcrucib" +
       "le_info\030\007 \001(\0132\033.CrucibleActivityDetailIn" +

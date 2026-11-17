@@ -6,6 +6,6 @@ option java_outer_classname = "ClientSetGameTimeRspOuterClass";
 message ClientSetGameTimeRsp {
   repeated uint32 game_time_locked_quest_list = 5;
   uint32 game_time = 4;
-  uint32 client_game_time = 20000;
+  uint32 client_game_time = 15;
   int32 retcode = 8;
 }

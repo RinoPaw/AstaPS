@@ -3,6 +3,6 @@ syntax = "proto3";
 option java_package = "emu.grasscutter.net.proto";
 
 message DelTeamEntityNotify {
-  repeated uint32 del_entity_id_list = 11;
+  repeated uint32 del_entity_id_list = 8;
   uint32 scene_id = 15;
 }

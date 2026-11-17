@@ -5,5 +5,5 @@ option java_package = "emu.grasscutter.net.proto";
 import "Retcode.proto";
 
 message TowerTeamSelectRsp {
-  int32 retcode = 3;
+  int32 retcode = 5;
 }

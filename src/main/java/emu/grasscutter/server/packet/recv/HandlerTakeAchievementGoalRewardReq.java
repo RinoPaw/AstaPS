@@ -1,9 +1,12 @@
 package emu.grasscutter.server.packet.recv;
 
 import com.google.protobuf.CodedInputStream;
+
 import emu.grasscutter.net.packet.*;
+import emu.grasscutter.net.proto.TakeAchievementGoalRewardReqOuterClass.TakeAchievementGoalRewardReq;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketTakeAchievementGoalRewardRsp;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,7 +32,7 @@ public class HandlerTakeAchievementGoalRewardReq extends PacketHandler {
         player.getAchievements().takeGoalReward(ids);
     }
 
-    /** Validate the entire field-14 request before attempting any category reward. */
+    /** Validate the entire request before attempting any category reward. */
     private static List<Integer> readIds(byte[] payload) throws IOException {
         if (payload == null || payload.length == 0 || payload.length > 4096)
             throw new IOException("Missing or oversized achievement goal claim");
@@ -40,7 +43,7 @@ public class HandlerTakeAchievementGoalRewardReq extends PacketHandler {
             long wireTag = readUInt32(input);
             if (wireTag >>> 3 == 0) throw new IOException("Invalid field number");
             int tag = (int) wireTag;
-            if ((tag >>> 3) != 14) {
+            if ((tag >>> 3) != TakeAchievementGoalRewardReq.ID_LIST_FIELD_NUMBER) {
                 skipUnknown(input, tag);
                 continue;
             }

@@ -1,0 +1,13 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+import "ReliquaryLockAppendPropFilter.proto";
+import "ReliquaryLockMainPropFilter.proto";
+
+message ReliquaryLockScheme {
+  repeated ReliquaryLockMainPropFilter main_prop_filter_list = 1;
+  repeated ReliquaryLockAppendPropFilter append_prop_filter_list = 4;
+  uint32 version = 6;
+  bool is_default = 11;
+  uint32 scheme_id = 13;
+}

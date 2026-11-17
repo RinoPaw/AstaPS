@@ -37,7 +37,7 @@ public final class CancelCoopTaskRspOuterClass extends com.google.protobuf.Gener
     int getRetcode();
 
     /**
-     * <code>uint32 chapter_id = 20000;</code>
+     * <code>uint32 chapter_id = 7;</code>
      * @return The chapterId.
      */
     int getChapterId();
@@ -95,10 +95,10 @@ public final class CancelCoopTaskRspOuterClass extends com.google.protobuf.Gener
       return retcode_;
     }
 
-    public static final int CHAPTER_ID_FIELD_NUMBER = 20000;
+    public static final int CHAPTER_ID_FIELD_NUMBER = 7;
     private int chapterId_ = 0;
     /**
-     * <code>uint32 chapter_id = 20000;</code>
+     * <code>uint32 chapter_id = 7;</code>
      * @return The chapterId.
      */
     @java.lang.Override
@@ -124,7 +124,7 @@ public final class CancelCoopTaskRspOuterClass extends com.google.protobuf.Gener
         output.writeInt32(6, retcode_);
       }
       if (chapterId_ != 0) {
-        output.writeUInt32(20000, chapterId_);
+        output.writeUInt32(7, chapterId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -136,7 +136,7 @@ public final class CancelCoopTaskRspOuterClass extends com.google.protobuf.Gener
       }
       if (chapterId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(20000, chapterId_);
+          .computeUInt32Size(7, chapterId_);
       }
       return size;
     }
@@ -402,11 +402,11 @@ public final class CancelCoopTaskRspOuterClass extends com.google.protobuf.Gener
                 bitField0_ |= 0x00000001;
                 break;
               } // case 48
-              case 160000: {
+              case 56: {
                 chapterId_ = input.readUInt32();
                 bitField0_ |= 0x00000002;
                 break;
-              } // case 160000
+              } // case 56
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -458,7 +458,7 @@ public final class CancelCoopTaskRspOuterClass extends com.google.protobuf.Gener
 
       private int chapterId_ ;
       /**
-       * <code>uint32 chapter_id = 20000;</code>
+       * <code>uint32 chapter_id = 7;</code>
        * @return The chapterId.
        */
       @java.lang.Override
@@ -466,7 +466,7 @@ public final class CancelCoopTaskRspOuterClass extends com.google.protobuf.Gener
         return chapterId_;
       }
       /**
-       * <code>uint32 chapter_id = 20000;</code>
+       * <code>uint32 chapter_id = 7;</code>
        * @param value The chapterId to set.
        * @return This builder for chaining.
        */
@@ -478,7 +478,7 @@ public final class CancelCoopTaskRspOuterClass extends com.google.protobuf.Gener
         return this;
       }
       /**
-       * <code>uint32 chapter_id = 20000;</code>
+       * <code>uint32 chapter_id = 7;</code>
        * @return This builder for chaining.
        */
       public Builder clearChapterId() {
@@ -553,10 +553,9 @@ public final class CancelCoopTaskRspOuterClass extends com.google.protobuf.Gener
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\027CancelCoopTaskRsp.proto\":\n\021CancelCoopT" +
-      "askRsp\022\017\n\007retcode\030\006 \001(\005\022\024\n\nchapter_id\030\240\234" +
-      "\001 \001(\rB\033\n\031emu.grasscutter.net.protob\006prot" +
-      "o3"
+      "\n\027CancelCoopTaskRsp.proto\"8\n\021CancelCoopT" +
+      "askRsp\022\017\n\007retcode\030\006 \001(\005\022\022\n\nchapter_id\030\007 " +
+      "\001(\rB\033\n\031emu.grasscutter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

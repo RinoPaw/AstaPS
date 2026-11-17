@@ -3,8 +3,9 @@ package emu.grasscutter.game.avatar;
 import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import dev.morphia.annotations.*;
-import emu.grasscutter.Grasscutter;
+
 import emu.grasscutter.GameConstants;
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.ExtraTalents;
 import emu.grasscutter.data.binout.OpenConfigEntry;
@@ -21,7 +22,6 @@ import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.ability.AbilityMaxHpRatioHelper;
 import emu.grasscutter.game.ability.SymphonistWeaponHelper;
 import emu.grasscutter.game.ability.WaterResonanceHelper;
-import emu.grasscutter.game.avatar.AvatarStatePersist;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.inventory.*;
 import emu.grasscutter.game.player.Player;
@@ -39,7 +39,12 @@ import emu.grasscutter.net.proto.TrialAvatarGrantRecordOuterClass.TrialAvatarGra
 import emu.grasscutter.net.proto.TrialAvatarInfoOuterClass.TrialAvatarInfo;
 import emu.grasscutter.server.packet.send.*;
 import emu.grasscutter.utils.helpers.ProtoHelper;
+
 import it.unimi.dsi.fastutil.ints.*;
+
+import lombok.*;
+
+import org.bson.types.ObjectId;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,15 +52,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
+
 import javax.annotation.*;
-import lombok.*;
-import org.bson.types.ObjectId;
 
 @Entity(value = "avatars", useDiscriminator = false)
 public class Avatar {
     @Transient @Getter private final Int2ObjectMap<GameItem> equips;
     @Transient @Getter private final Int2FloatOpenHashMap fightProperties;
     @Transient @Getter private final Int2FloatOpenHashMap fightPropOverrides;
+    @Transient private boolean equipmentPreview;
     @Id private ObjectId id;
     @Indexed @Getter private int ownerId; // Id of player that this avatar belongs to
     @Transient private Player owner;
@@ -808,8 +813,9 @@ public class Avatar {
             }
         }
 
-        // TPS weapons: their affix openConfigs carry the Avatar_TPS_* aim, shoot and reload abilities
-        TpsWeaponSystem.applyAffixes(this);
+        // TPS weapons: their affix openConfigs carry the Avatar_TPS_* aim, shoot and reload
+        // abilities
+        if (!equipmentPreview) TpsWeaponSystem.applyAffixes(this);
 
         // Add proud skills and unlock them if needed
         var talentOwners = new HashSet<String>();
@@ -923,7 +929,7 @@ public class Avatar {
                 FightProperty.FIGHT_PROP_CUR_HP_DEBTS,
                 hpDebt);
 
-
+        if (equipmentPreview) return;
 
         // Packet
         if (getPlayer() != null && getPlayer().hasSentLoginPackets()) {
@@ -1056,19 +1062,22 @@ public class Avatar {
                 SkirkTeamBonusHelper.onConstellationRecalc(this.getPlayer());
             }
         } catch (Throwable throwable) {
-            Grasscutter.getLogger().warn("Avatar recalcConstellations Skirk bonus: {}", throwable.toString());
+            Grasscutter.getLogger()
+                    .warn("Avatar recalcConstellations Skirk bonus: {}", throwable.toString());
         }
         try {
             if (this.getPlayer() != null) {
                 TartagliaTeamBonusHelper.onConstellationRecalc(this.getPlayer());
             }
         } catch (Throwable throwable) {
-            Grasscutter.getLogger().warn("Avatar recalcConstellations Tartaglia bonus: {}", throwable.toString());
+            Grasscutter.getLogger()
+                    .warn("Avatar recalcConstellations Tartaglia bonus: {}", throwable.toString());
         }
         try {
             emu.grasscutter.game.ability.LohenExtraArtSkillLevelHelper.onConstellationRecalc(this);
         } catch (Throwable throwable) {
-            Grasscutter.getLogger().warn("Avatar recalcConstellations Lohen bonus: {}", throwable.toString());
+            Grasscutter.getLogger()
+                    .warn("Avatar recalcConstellations Lohen bonus: {}", throwable.toString());
         }
     }
 
@@ -1293,6 +1302,50 @@ public class Avatar {
     public void addRewardedFetterLevel(int fetterLevel) {
         if (this.rewardedFetterLevels == null) this.rewardedFetterLevels = new HashSet<>();
         this.rewardedFetterLevels.add(fetterLevel);
+    }
+
+    /** 在副本上计算搭配属性，预览不写背包，也不发送战斗通知。 */
+    public AvatarInfo previewEquipment(java.util.Map<Integer, GameItem> replacements) {
+        Avatar copy = new Avatar();
+        copy.equipmentPreview = true;
+        copy.avatarId = avatarId;
+        copy.avatarData = avatarData;
+        copy.skillDepot = skillDepot;
+        copy.skillDepotId = skillDepotId;
+        copy.level = level;
+        copy.promoteLevel = promoteLevel;
+        copy.talentIdList = new java.util.HashSet<>(getTalentIdList());
+        copy.proudSkillList = new java.util.HashSet<>(getProudSkillList());
+        copy.skillLevelMap = new java.util.HashMap<>(skillLevelMap);
+        copy.proudSkillBonusMap = new java.util.HashMap<>(proudSkillBonusMap);
+        copy.skillExtraChargeMap = new java.util.HashMap<>(skillExtraChargeMap);
+        copy.fightProperties.putAll(fightProperties);
+        copy.fightPropOverrides.putAll(fightPropOverrides);
+        copy.equips.putAll(equips);
+        replacements.forEach(copy.equips::put);
+        if (!replacements.isEmpty()) copy.recalcStats();
+
+        var result =
+                toProto().toBuilder()
+                        .setGuid(getPlayer().getNextGameGuid())
+                        .setAvatarType(3)
+                        .clearEquipGuidList()
+                        .clearFightPropMap()
+                        .clearFetterInfo()
+                        .putAllFightPropMap(copy.getFightProperties())
+                        .setMirrorAvatarInfo(
+                                emu.grasscutter.net.proto.MirrorAvatarInfoOuterClass
+                                        .MirrorAvatarInfo.getDefaultInstance());
+        var trial =
+                emu.grasscutter.net.proto.TrialAvatarInfoOuterClass.TrialAvatarInfo.newBuilder();
+        for (int slot : new int[] {6, 1, 2, 3, 4, 5}) {
+            GameItem item = copy.getEquipBySlot(slot);
+            if (item == null) continue;
+            long guid = getPlayer().getNextGameGuid();
+            trial.addTrialEquipList(item.toProto().toBuilder().setGuid(guid));
+            result.addEquipGuidList(guid);
+        }
+        return result.setTrialAvatarInfo(trial).build();
     }
 
     public AvatarInfo toProto() {

@@ -81,7 +81,7 @@ message ChatInfo {
   uint32 to_uid = 6;
   uint32 uid = 1;
   uint32 platform_type = 11;
-  uint64 OIEHJMHHCFB = 20001;
+  uint64 OIEHJMHHCFB = 10;
   oneof mention {
     uint32 mentioned_uid = 9;
     bool is_mention_all = 8;

@@ -31,19 +31,19 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>uint32 trial_avatar_index_id = 12;</code>
+     * <code>uint32 trial_avatar_index_id = 10;</code>
      * @return The trialAvatarIndexId.
      */
     int getTrialAvatarIndexId();
 
     /**
-     * <code>uint32 activity_id = 3;</code>
+     * <code>uint32 activity_id = 2;</code>
      * @return The activityId.
      */
     int getActivityId();
 
     /**
-     * <code>int32 retcode = 15;</code>
+     * <code>int32 retcode = 3;</code>
      * @return The retcode.
      */
     int getRetcode();
@@ -90,10 +90,10 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
               emu.grasscutter.net.proto.EnterTrialAvatarActivityDungeonRspOuterClass.EnterTrialAvatarActivityDungeonRsp.class, emu.grasscutter.net.proto.EnterTrialAvatarActivityDungeonRspOuterClass.EnterTrialAvatarActivityDungeonRsp.Builder.class);
     }
 
-    public static final int TRIAL_AVATAR_INDEX_ID_FIELD_NUMBER = 12;
+    public static final int TRIAL_AVATAR_INDEX_ID_FIELD_NUMBER = 10;
     private int trialAvatarIndexId_ = 0;
     /**
-     * <code>uint32 trial_avatar_index_id = 12;</code>
+     * <code>uint32 trial_avatar_index_id = 10;</code>
      * @return The trialAvatarIndexId.
      */
     @java.lang.Override
@@ -101,10 +101,10 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
       return trialAvatarIndexId_;
     }
 
-    public static final int ACTIVITY_ID_FIELD_NUMBER = 3;
+    public static final int ACTIVITY_ID_FIELD_NUMBER = 2;
     private int activityId_ = 0;
     /**
-     * <code>uint32 activity_id = 3;</code>
+     * <code>uint32 activity_id = 2;</code>
      * @return The activityId.
      */
     @java.lang.Override
@@ -112,10 +112,10 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
       return activityId_;
     }
 
-    public static final int RETCODE_FIELD_NUMBER = 15;
+    public static final int RETCODE_FIELD_NUMBER = 3;
     private int retcode_ = 0;
     /**
-     * <code>int32 retcode = 15;</code>
+     * <code>int32 retcode = 3;</code>
      * @return The retcode.
      */
     @java.lang.Override
@@ -138,13 +138,13 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (activityId_ != 0) {
-        output.writeUInt32(3, activityId_);
-      }
-      if (trialAvatarIndexId_ != 0) {
-        output.writeUInt32(12, trialAvatarIndexId_);
+        output.writeUInt32(2, activityId_);
       }
       if (retcode_ != 0) {
-        output.writeInt32(15, retcode_);
+        output.writeInt32(3, retcode_);
+      }
+      if (trialAvatarIndexId_ != 0) {
+        output.writeUInt32(10, trialAvatarIndexId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -152,15 +152,15 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
       int size = 0;
       if (activityId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(3, activityId_);
-      }
-      if (trialAvatarIndexId_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(12, trialAvatarIndexId_);
+          .computeUInt32Size(2, activityId_);
       }
       if (retcode_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(15, retcode_);
+          .computeInt32Size(3, retcode_);
+      }
+      if (trialAvatarIndexId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(10, trialAvatarIndexId_);
       }
       return size;
     }
@@ -432,21 +432,21 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
               case 0:
                 done = true;
                 break;
-              case 24: {
+              case 16: {
                 activityId_ = input.readUInt32();
                 bitField0_ |= 0x00000002;
                 break;
-              } // case 24
-              case 96: {
-                trialAvatarIndexId_ = input.readUInt32();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 96
-              case 120: {
+              } // case 16
+              case 24: {
                 retcode_ = input.readInt32();
                 bitField0_ |= 0x00000004;
                 break;
-              } // case 120
+              } // case 24
+              case 80: {
+                trialAvatarIndexId_ = input.readUInt32();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 80
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -466,7 +466,7 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
 
       private int trialAvatarIndexId_ ;
       /**
-       * <code>uint32 trial_avatar_index_id = 12;</code>
+       * <code>uint32 trial_avatar_index_id = 10;</code>
        * @return The trialAvatarIndexId.
        */
       @java.lang.Override
@@ -474,7 +474,7 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
         return trialAvatarIndexId_;
       }
       /**
-       * <code>uint32 trial_avatar_index_id = 12;</code>
+       * <code>uint32 trial_avatar_index_id = 10;</code>
        * @param value The trialAvatarIndexId to set.
        * @return This builder for chaining.
        */
@@ -486,7 +486,7 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
         return this;
       }
       /**
-       * <code>uint32 trial_avatar_index_id = 12;</code>
+       * <code>uint32 trial_avatar_index_id = 10;</code>
        * @return This builder for chaining.
        */
       public Builder clearTrialAvatarIndexId() {
@@ -498,7 +498,7 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
 
       private int activityId_ ;
       /**
-       * <code>uint32 activity_id = 3;</code>
+       * <code>uint32 activity_id = 2;</code>
        * @return The activityId.
        */
       @java.lang.Override
@@ -506,7 +506,7 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
         return activityId_;
       }
       /**
-       * <code>uint32 activity_id = 3;</code>
+       * <code>uint32 activity_id = 2;</code>
        * @param value The activityId to set.
        * @return This builder for chaining.
        */
@@ -518,7 +518,7 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
         return this;
       }
       /**
-       * <code>uint32 activity_id = 3;</code>
+       * <code>uint32 activity_id = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearActivityId() {
@@ -530,7 +530,7 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
 
       private int retcode_ ;
       /**
-       * <code>int32 retcode = 15;</code>
+       * <code>int32 retcode = 3;</code>
        * @return The retcode.
        */
       @java.lang.Override
@@ -538,7 +538,7 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
         return retcode_;
       }
       /**
-       * <code>int32 retcode = 15;</code>
+       * <code>int32 retcode = 3;</code>
        * @param value The retcode to set.
        * @return This builder for chaining.
        */
@@ -550,7 +550,7 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
         return this;
       }
       /**
-       * <code>int32 retcode = 15;</code>
+       * <code>int32 retcode = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearRetcode() {
@@ -628,7 +628,7 @@ public final class EnterTrialAvatarActivityDungeonRspOuterClass extends com.goog
       "\n(EnterTrialAvatarActivityDungeonRsp.pro" +
       "to\032\rRetcode.proto\"i\n\"EnterTrialAvatarAct" +
       "ivityDungeonRsp\022\035\n\025trial_avatar_index_id" +
-      "\030\014 \001(\r\022\023\n\013activity_id\030\003 \001(\r\022\017\n\007retcode\030\017" +
+      "\030\n \001(\r\022\023\n\013activity_id\030\002 \001(\r\022\017\n\007retcode\030\003" +
       " \001(\005B\033\n\031emu.grasscutter.net.protob\006proto" +
       "3"
     };

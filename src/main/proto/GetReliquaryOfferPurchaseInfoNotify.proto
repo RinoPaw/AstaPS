@@ -1,0 +1,13 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+import "ReliquaryPurchaseRecord.proto";
+
+message GetReliquaryOfferPurchaseInfoNotify {
+  uint32 offering_progress = 3;
+  float offering_progress_extra = 4;
+  uint32 offering_count = 5;
+  uint32 end_time = 6;
+  repeated ReliquaryPurchaseRecord purchase_record_list = 12;
+  uint32 schedule_id = 14;
+}

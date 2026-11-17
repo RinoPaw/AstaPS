@@ -1,0 +1,11 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+
+message GetReliquaryPurchaseReq {
+  uint32 config_id = 1;
+  repeated uint32 append_prop_type_list = 4;
+  uint32 main_prop_type = 8;
+  uint32 reliquary_type = 11;
+  uint32 schedule_id = 13;
+}

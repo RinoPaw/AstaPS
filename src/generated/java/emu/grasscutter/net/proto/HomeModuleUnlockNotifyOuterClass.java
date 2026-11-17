@@ -31,7 +31,7 @@ public final class HomeModuleUnlockNotifyOuterClass extends com.google.protobuf.
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>uint32 module_id = 8;</code>
+     * <code>uint32 module_id = 9;</code>
      * @return The moduleId.
      */
     int getModuleId();
@@ -78,10 +78,10 @@ public final class HomeModuleUnlockNotifyOuterClass extends com.google.protobuf.
               emu.grasscutter.net.proto.HomeModuleUnlockNotifyOuterClass.HomeModuleUnlockNotify.class, emu.grasscutter.net.proto.HomeModuleUnlockNotifyOuterClass.HomeModuleUnlockNotify.Builder.class);
     }
 
-    public static final int MODULE_ID_FIELD_NUMBER = 8;
+    public static final int MODULE_ID_FIELD_NUMBER = 9;
     private int moduleId_ = 0;
     /**
-     * <code>uint32 module_id = 8;</code>
+     * <code>uint32 module_id = 9;</code>
      * @return The moduleId.
      */
     @java.lang.Override
@@ -104,7 +104,7 @@ public final class HomeModuleUnlockNotifyOuterClass extends com.google.protobuf.
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (moduleId_ != 0) {
-        output.writeUInt32(8, moduleId_);
+        output.writeUInt32(9, moduleId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -112,7 +112,7 @@ public final class HomeModuleUnlockNotifyOuterClass extends com.google.protobuf.
       int size = 0;
       if (moduleId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(8, moduleId_);
+          .computeUInt32Size(9, moduleId_);
       }
       return size;
     }
@@ -362,11 +362,11 @@ public final class HomeModuleUnlockNotifyOuterClass extends com.google.protobuf.
               case 0:
                 done = true;
                 break;
-              case 64: {
+              case 72: {
                 moduleId_ = input.readUInt32();
                 bitField0_ |= 0x00000001;
                 break;
-              } // case 64
+              } // case 72
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -386,7 +386,7 @@ public final class HomeModuleUnlockNotifyOuterClass extends com.google.protobuf.
 
       private int moduleId_ ;
       /**
-       * <code>uint32 module_id = 8;</code>
+       * <code>uint32 module_id = 9;</code>
        * @return The moduleId.
        */
       @java.lang.Override
@@ -394,7 +394,7 @@ public final class HomeModuleUnlockNotifyOuterClass extends com.google.protobuf.
         return moduleId_;
       }
       /**
-       * <code>uint32 module_id = 8;</code>
+       * <code>uint32 module_id = 9;</code>
        * @param value The moduleId to set.
        * @return This builder for chaining.
        */
@@ -406,7 +406,7 @@ public final class HomeModuleUnlockNotifyOuterClass extends com.google.protobuf.
         return this;
       }
       /**
-       * <code>uint32 module_id = 8;</code>
+       * <code>uint32 module_id = 9;</code>
        * @return This builder for chaining.
        */
       public Builder clearModuleId() {
@@ -482,7 +482,7 @@ public final class HomeModuleUnlockNotifyOuterClass extends com.google.protobuf.
   static {
     java.lang.String[] descriptorData = {
       "\n\034HomeModuleUnlockNotify.proto\"+\n\026HomeMo" +
-      "duleUnlockNotify\022\021\n\tmodule_id\030\010 \001(\rB\033\n\031e" +
+      "duleUnlockNotify\022\021\n\tmodule_id\030\t \001(\rB\033\n\031e" +
       "mu.grasscutter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor

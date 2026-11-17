@@ -1,7 +1,8 @@
+// 7.2 CmdId 4238
 syntax = "proto3";
 
 option java_package = "emu.grasscutter.net.proto";
 
 message HomeModuleUnlockNotify {
-  uint32 module_id = 8;
+  uint32 module_id = 9;
 }

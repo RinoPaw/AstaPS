@@ -1,0 +1,280 @@
+{
+  "15041": [
+    {
+      "main_prop_filter_list": [
+        {
+          "main_prop_type_list": [
+            2
+          ],
+          "equip_type": 1
+        },
+        {
+          "main_prop_type_list": [
+            5
+          ],
+          "equip_type": 2
+        },
+        {
+          "main_prop_type_list": [
+            6
+          ],
+          "equip_type": 3
+        },
+        {
+          "main_prop_type_list": [
+            6
+          ],
+          "equip_type": 4
+        },
+        {
+          "main_prop_type_list": [
+            20,
+            22
+          ],
+          "equip_type": 5
+        }
+      ],
+      "append_prop_filter_list": [
+        {
+          "equip_type": 1,
+          "required_append_prop_list": [
+            20,
+            22
+          ],
+          "optional_append_prop_list": [
+            6,
+            28
+          ],
+          "min_count": 2
+        },
+        {
+          "equip_type": 2,
+          "required_append_prop_list": [
+            20,
+            22
+          ],
+          "optional_append_prop_list": [
+            6,
+            28
+          ],
+          "min_count": 2
+        },
+        {
+          "equip_type": 3,
+          "optional_append_prop_list": [
+            6,
+            20,
+            22,
+            28
+          ],
+          "min_count": 2
+        },
+        {
+          "equip_type": 4,
+          "optional_append_prop_list": [
+            6,
+            20,
+            22,
+            28
+          ],
+          "min_count": 2
+        },
+        {
+          "equip_type": 5,
+          "optional_append_prop_list": [
+            6,
+            20,
+            22,
+            28
+          ],
+          "min_count": 2
+        }
+      ],
+      "is_default": true
+    },
+    {
+      "main_prop_filter_list": [
+        {
+          "main_prop_type_list": [
+            2
+          ],
+          "equip_type": 1
+        },
+        {
+          "main_prop_type_list": [
+            5
+          ],
+          "equip_type": 2
+        },
+        {
+          "main_prop_type_list": [
+            9
+          ],
+          "equip_type": 3
+        },
+        {
+          "main_prop_type_list": [
+            9
+          ],
+          "equip_type": 4
+        },
+        {
+          "main_prop_type_list": [
+            20,
+            22
+          ],
+          "equip_type": 5
+        }
+      ],
+      "append_prop_filter_list": [
+        {
+          "equip_type": 1,
+          "required_append_prop_list": [
+            20,
+            22
+          ],
+          "optional_append_prop_list": [
+            9,
+            28
+          ],
+          "min_count": 2
+        },
+        {
+          "equip_type": 2,
+          "required_append_prop_list": [
+            20,
+            22
+          ],
+          "optional_append_prop_list": [
+            9,
+            28
+          ],
+          "min_count": 2
+        },
+        {
+          "equip_type": 3,
+          "optional_append_prop_list": [
+            9,
+            20,
+            22,
+            28
+          ],
+          "min_count": 2
+        },
+        {
+          "equip_type": 4,
+          "optional_append_prop_list": [
+            9,
+            20,
+            22,
+            28
+          ],
+          "min_count": 2
+        },
+        {
+          "equip_type": 5,
+          "optional_append_prop_list": [
+            9,
+            20,
+            22,
+            28
+          ],
+          "min_count": 2
+        }
+      ],
+      "is_default": true
+    },
+    {
+      "main_prop_filter_list": [
+        {
+          "main_prop_type_list": [
+            2
+          ],
+          "equip_type": 1
+        },
+        {
+          "main_prop_type_list": [
+            5
+          ],
+          "equip_type": 2
+        },
+        {
+          "main_prop_type_list": [
+            28
+          ],
+          "equip_type": 3
+        },
+        {
+          "main_prop_type_list": [
+            28
+          ],
+          "equip_type": 4
+        },
+        {
+          "main_prop_type_list": [
+            20,
+            22
+          ],
+          "equip_type": 5
+        }
+      ],
+      "append_prop_filter_list": [
+        {
+          "equip_type": 1,
+          "required_append_prop_list": [
+            20,
+            22
+          ],
+          "optional_append_prop_list": [
+            23,
+            28
+          ],
+          "min_count": 2
+        },
+        {
+          "equip_type": 2,
+          "required_append_prop_list": [
+            20,
+            22
+          ],
+          "optional_append_prop_list": [
+            23,
+            28
+          ],
+          "min_count": 2
+        },
+        {
+          "equip_type": 3,
+          "optional_append_prop_list": [
+            20,
+            22,
+            23,
+            28
+          ],
+          "min_count": 2
+        },
+        {
+          "equip_type": 4,
+          "optional_append_prop_list": [
+            20,
+            22,
+            23,
+            28
+          ],
+          "min_count": 2
+        },
+        {
+          "equip_type": 5,
+          "optional_append_prop_list": [
+            20,
+            22,
+            23,
+            28
+          ],
+          "min_count": 2
+        }
+      ],
+      "is_default": true
+    }
+  ]
+}

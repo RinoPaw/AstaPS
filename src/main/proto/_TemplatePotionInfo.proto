@@ -8,7 +8,7 @@ message _TemplatePotionInfo {
   repeated KDHFFAMFLKC LABCKNEKCBL = 20000;
   repeated uint32 tag_list = 3;
   repeated uint32 NLGFFMHMMIC = 20001;
-  repeated uint32 FEFKMIBCKAN = 20002;
+  repeated uint32 FEFKMIBCKAN = 2;
   uint32 LODLLMHFMPP = 20003;
   uint32 ALAKKGOILIC = 20004;
   uint32 KEGBBBJKCGN = 20005;

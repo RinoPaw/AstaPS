@@ -55,17 +55,17 @@ public final class AvatarExpeditionStartRspOuterClass extends com.google.protobu
         int index);
 
     /**
-     * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+     * <code>repeated int32 ILBIKNLHAKE = 12;</code>
      * @return A list containing the iLBIKNLHAKE.
      */
     java.util.List<java.lang.Integer> getILBIKNLHAKEList();
     /**
-     * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+     * <code>repeated int32 ILBIKNLHAKE = 12;</code>
      * @return The count of iLBIKNLHAKE.
      */
     int getILBIKNLHAKECount();
     /**
-     * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+     * <code>repeated int32 ILBIKNLHAKE = 12;</code>
      * @param index The index of the element to return.
      * @return The iLBIKNLHAKE at the given index.
      */
@@ -208,12 +208,12 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
       return ExpeditionBasicInfoList_.get(index);
     }
 
-    public static final int ILBIKNLHAKE_FIELD_NUMBER = 20000;
+    public static final int ILBIKNLHAKE_FIELD_NUMBER = 12;
     @SuppressWarnings("serial")
     private com.google.protobuf.Internal.IntList iLBIKNLHAKE_ =
         emptyIntList();
     /**
-     * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+     * <code>repeated int32 ILBIKNLHAKE = 12;</code>
      * @return A list containing the iLBIKNLHAKE.
      */
     @java.lang.Override
@@ -222,14 +222,14 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
       return iLBIKNLHAKE_;
     }
     /**
-     * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+     * <code>repeated int32 ILBIKNLHAKE = 12;</code>
      * @return The count of iLBIKNLHAKE.
      */
     public int getILBIKNLHAKECount() {
       return iLBIKNLHAKE_.size();
     }
     /**
-     * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+     * <code>repeated int32 ILBIKNLHAKE = 12;</code>
      * @param index The index of the element to return.
      * @return The iLBIKNLHAKE at the given index.
      */
@@ -356,7 +356,7 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
         output.writeMessage(10, ExpeditionBasicInfoList_.get(i));
       }
       if (getILBIKNLHAKEList().size() > 0) {
-        output.writeUInt32NoTag(160002);
+        output.writeUInt32NoTag(98);
         output.writeUInt32NoTag(iLBIKNLHAKEMemoizedSerializedSize);
       }
       for (int i = 0; i < iLBIKNLHAKE_.size(); i++) {
@@ -397,7 +397,7 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
         }
         size += dataSize;
         if (!getILBIKNLHAKEList().isEmpty()) {
-          size += 3;
+          size += 1;
           size += com.google.protobuf.CodedOutputStream
               .computeInt32SizeNoTag(dataSize);
         }
@@ -787,13 +787,13 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
                 }
                 break;
               } // case 82
-              case 160000: {
+              case 96: {
                 int v = input.readInt32();
                 ensureILBIKNLHAKEIsMutable();
                 iLBIKNLHAKE_.addInt(v);
                 break;
-              } // case 160000
-              case 160002: {
+              } // case 96
+              case 98: {
                 int length = input.readRawVarint32();
                 int limit = input.pushLimit(length);
                 ensureILBIKNLHAKEIsMutable();
@@ -802,7 +802,7 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
                 }
                 input.popLimit(limit);
                 break;
-              } // case 160002
+              } // case 98
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1062,7 +1062,7 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
         bitField0_ |= 0x00000002;
       }
       /**
-       * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+       * <code>repeated int32 ILBIKNLHAKE = 12;</code>
        * @return A list containing the iLBIKNLHAKE.
        */
       public java.util.List<java.lang.Integer>
@@ -1071,14 +1071,14 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
         return iLBIKNLHAKE_;
       }
       /**
-       * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+       * <code>repeated int32 ILBIKNLHAKE = 12;</code>
        * @return The count of iLBIKNLHAKE.
        */
       public int getILBIKNLHAKECount() {
         return iLBIKNLHAKE_.size();
       }
       /**
-       * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+       * <code>repeated int32 ILBIKNLHAKE = 12;</code>
        * @param index The index of the element to return.
        * @return The iLBIKNLHAKE at the given index.
        */
@@ -1086,7 +1086,7 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
         return iLBIKNLHAKE_.getInt(index);
       }
       /**
-       * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+       * <code>repeated int32 ILBIKNLHAKE = 12;</code>
        * @param index The index to set the value at.
        * @param value The iLBIKNLHAKE to set.
        * @return This builder for chaining.
@@ -1101,7 +1101,7 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
         return this;
       }
       /**
-       * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+       * <code>repeated int32 ILBIKNLHAKE = 12;</code>
        * @param value The iLBIKNLHAKE to add.
        * @return This builder for chaining.
        */
@@ -1114,7 +1114,7 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
         return this;
       }
       /**
-       * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+       * <code>repeated int32 ILBIKNLHAKE = 12;</code>
        * @param values The iLBIKNLHAKE to add.
        * @return This builder for chaining.
        */
@@ -1128,7 +1128,7 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
         return this;
       }
       /**
-       * <code>repeated int32 ILBIKNLHAKE = 20000;</code>
+       * <code>repeated int32 ILBIKNLHAKE = 12;</code>
        * @return This builder for chaining.
        */
       public Builder clearILBIKNLHAKE() {
@@ -1396,15 +1396,15 @@ emu.grasscutter.net.proto.AvatarExpeditionInfoOuterClass.AvatarExpeditionInfo de
     java.lang.String[] descriptorData = {
       "\n\036AvatarExpeditionStartRsp.proto\032\032Avatar" +
       "ExpeditionInfo.proto\032 _AvatarExpeditionB" +
-      "asicInfo.proto\"\244\002\n\030AvatarExpeditionStart" +
+      "asicInfo.proto\"\242\002\n\030AvatarExpeditionStart" +
       "Rsp\022@\n\033_expedition_basic_info_list\030\n \003(\013" +
-      "2\033._AvatarExpeditionBasicInfo\022\025\n\013ILBIKNL" +
-      "HAKE\030\240\234\001 \003(\005\022M\n\023expedition_info_map\030\010 \003(" +
-      "\01320.AvatarExpeditionStartRsp.ExpeditionI" +
-      "nfoMapEntry\022\017\n\007retcode\030\003 \001(\005\032O\n\026Expediti" +
-      "onInfoMapEntry\022\013\n\003key\030\001 \001(\004\022$\n\005value\030\002 \001" +
-      "(\0132\025.AvatarExpeditionInfo:\0028\001B\033\n\031emu.gra" +
-      "sscutter.net.protob\006proto3"
+      "2\033._AvatarExpeditionBasicInfo\022\023\n\013ILBIKNL" +
+      "HAKE\030\014 \003(\005\022M\n\023expedition_info_map\030\010 \003(\0132" +
+      "0.AvatarExpeditionStartRsp.ExpeditionInf" +
+      "oMapEntry\022\017\n\007retcode\030\003 \001(\005\032O\n\026Expedition" +
+      "InfoMapEntry\022\013\n\003key\030\001 \001(\004\022$\n\005value\030\002 \001(\013" +
+      "2\025.AvatarExpeditionInfo:\0028\001B\033\n\031emu.grass" +
+      "cutter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

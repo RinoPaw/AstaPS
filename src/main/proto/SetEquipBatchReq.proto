@@ -1,0 +1,11 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+import "EquipBatchType.proto";
+
+message SetEquipBatchReq {
+  uint64 avatar_guid = 5;
+  uint32 MDENPALMBDC = 8;
+  EquipBatchType.Value equip_type = 11;
+  repeated uint64 equip_guid_list = 14;
+}

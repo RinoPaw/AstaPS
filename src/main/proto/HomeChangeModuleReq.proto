@@ -1,7 +1,8 @@
+// 7.2 CmdId 21043
 syntax = "proto3";
 
 option java_package = "emu.grasscutter.net.proto";
 
 message HomeChangeModuleReq {
-  uint32 target_module_id = 14;
+  uint32 target_module_id = 10;
 }

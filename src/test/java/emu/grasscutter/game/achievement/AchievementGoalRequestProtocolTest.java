@@ -3,20 +3,24 @@ package emu.grasscutter.game.achievement;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.protobuf.CodedOutputStream;
+
 import emu.grasscutter.ServerResourceFixture;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.TakeAchievementGoalRewardReqOuterClass.TakeAchievementGoalRewardReq;
 import emu.grasscutter.server.game.*;
 import emu.grasscutter.server.packet.recv.HandlerTakeAchievementGoalRewardReq;
-import java.io.ByteArrayOutputStream;
-import java.util.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+
 import sun.misc.Unsafe;
+
+import java.io.ByteArrayOutputStream;
+import java.util.*;
 
 /**
  * Synthetic category requests exercise real dispatch and full framing before the reward boundary.
@@ -37,8 +41,8 @@ final class AchievementGoalRequestProtocolTest {
     @Test
     void canonicalCategoryGiftReachesGoalBoundaryThroughDispatch() {
         new GameServerPacketHandler(PacketHandler.class)
-                .handle(session, 28295, new byte[0], HexFormat.of().parseHex("72010a"));
-        assertEquals(28295, PacketOpcodes.TakeAchievementGoalRewardReq);
+                .handle(session, 29257, new byte[0], HexFormat.of().parseHex("1a010a"));
+        assertEquals(29257, PacketOpcodes.TakeAchievementGoalRewardReq);
         assertEquals(1, achievements.calls);
         assertEquals(List.of(10), achievements.ids);
     }
@@ -48,20 +52,31 @@ final class AchievementGoalRequestProtocolTest {
         var descriptor = TakeAchievementGoalRewardReq.getDescriptor();
         assertEquals(1, descriptor.getFields().size());
         var field = descriptor.findFieldByName("id_list");
-        assertEquals(14, field.getNumber());
+        assertEquals(3, field.getNumber());
         assertTrue(field.isRepeated());
         assertTrue(field.isPacked());
         assertEquals("UINT32", field.getType().name());
         assertEquals(
                 List.of(10),
-                TakeAchievementGoalRewardReq.parseFrom(HexFormat.of().parseHex("72010a")).getIdListList());
+                TakeAchievementGoalRewardReq.parseFrom(HexFormat.of().parseHex("1a010a"))
+                        .getIdListList());
         assertArrayEquals(
-                HexFormat.of().parseHex("72010a"),
+                HexFormat.of().parseHex("1a010a"),
                 TakeAchievementGoalRewardReq.newBuilder().addIdList(10).build().toByteArray());
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"72010a", "700a", "080172010a", "72010a1801", "72010a220178", "72010a2d01000000", "72010a08ffffffffffffffffff01", "72010a290100000000000000"})
+    @ValueSource(
+            strings = {
+                "1a010a",
+                "180a",
+                "08011a010a",
+                "1a010a2001",
+                "1a010a220178",
+                "1a010a2d01000000",
+                "1a010a08ffffffffffffffffff01",
+                "1a010a290100000000000000"
+            })
     void packedUnpackedAndUnknownFieldsAreAccepted(String hex) throws Exception {
         handle(HexFormat.of().parseHex(hex));
         assertEquals(1, achievements.calls);
@@ -74,29 +89,29 @@ final class AchievementGoalRequestProtocolTest {
             strings = {
                 "",
                 "52010a",
-                "72010a00",
-                "72010a8080",
-                "72010a1c",
-                "72020a",
-                "750a000000",
-                "74",
-                "720100",
-                "72020a0a",
-                "72010a700a",
-                "70ffffffff0f",
-                "708a80808010",
-                "708a808080808080808002",
-                "728080808008",
-                "7281808080100a",
-                "0a808080801072010a",
+                "1a010a00",
+                "1a010a8080",
+                "1a010a1c",
+                "1a020a",
+                "1d0a000000",
+                "1c",
+                "1a0100",
+                "1a020a0a",
+                "1a010a180a",
+                "18ffffffff0f",
+                "188a80808010",
+                "188a808080808080808002",
+                "1a8080808008",
+                "1a81808080100a",
+                "0a80808080101a010a",
                 "0a8080808010",
-                "0b72010a0c",
-                "72010a0b0c",
+                "0b1a010a0c",
+                "1a010a0b0c",
                 "f0808080100a",
                 "f280808010010a",
                 "00",
-                "72010a0880808080808080808002",
-                "72010a08ffffffffffffffffff7f"
+                "1a010a0880808080808080808002",
+                "1a010a08ffffffffffffffffff7f"
             })
     void malformedMissingDuplicateAndOutOfRangeIdsNeverReachRewards(String hex) throws Exception {
         handle(HexFormat.of().parseHex(hex));
@@ -122,11 +137,11 @@ final class AchievementGoalRequestProtocolTest {
     @Test
     void missingPlayerOrAchievementsFailsClosed() throws Exception {
         session.player = null;
-        handle(HexFormat.of().parseHex("72010a"));
+        handle(HexFormat.of().parseHex("1a010a"));
         rejected();
         session.sent.clear();
         session.player = allocate(RecordingPlayer.class);
-        handle(HexFormat.of().parseHex("72010a"));
+        handle(HexFormat.of().parseHex("1a010a"));
         rejected();
     }
 
@@ -144,7 +159,7 @@ final class AchievementGoalRequestProtocolTest {
     private static byte[] batch(int size) throws Exception {
         var bytes = new ByteArrayOutputStream();
         var output = CodedOutputStream.newInstance(bytes);
-        for (int i = 1; i <= size; i++) output.writeUInt32(14, i);
+        for (int i = 1; i <= size; i++) output.writeUInt32(3, i);
         output.flush();
         return bytes.toByteArray();
     }

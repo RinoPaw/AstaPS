@@ -31,13 +31,13 @@ public final class ActivityTakeWatcherRewardReqOuterClass extends com.google.pro
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>uint32 activity_id = 20000;</code>
+     * <code>uint32 activity_id = 8;</code>
      * @return The activityId.
      */
     int getActivityId();
 
     /**
-     * <code>uint32 watcher_id = 20001;</code>
+     * <code>uint32 watcher_id = 6;</code>
      * @return The watcherId.
      */
     int getWatcherId();
@@ -84,10 +84,10 @@ public final class ActivityTakeWatcherRewardReqOuterClass extends com.google.pro
               emu.grasscutter.net.proto.ActivityTakeWatcherRewardReqOuterClass.ActivityTakeWatcherRewardReq.class, emu.grasscutter.net.proto.ActivityTakeWatcherRewardReqOuterClass.ActivityTakeWatcherRewardReq.Builder.class);
     }
 
-    public static final int ACTIVITY_ID_FIELD_NUMBER = 20000;
+    public static final int ACTIVITY_ID_FIELD_NUMBER = 8;
     private int activityId_ = 0;
     /**
-     * <code>uint32 activity_id = 20000;</code>
+     * <code>uint32 activity_id = 8;</code>
      * @return The activityId.
      */
     @java.lang.Override
@@ -95,10 +95,10 @@ public final class ActivityTakeWatcherRewardReqOuterClass extends com.google.pro
       return activityId_;
     }
 
-    public static final int WATCHER_ID_FIELD_NUMBER = 20001;
+    public static final int WATCHER_ID_FIELD_NUMBER = 6;
     private int watcherId_ = 0;
     /**
-     * <code>uint32 watcher_id = 20001;</code>
+     * <code>uint32 watcher_id = 6;</code>
      * @return The watcherId.
      */
     @java.lang.Override
@@ -120,23 +120,23 @@ public final class ActivityTakeWatcherRewardReqOuterClass extends com.google.pro
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (activityId_ != 0) {
-        output.writeUInt32(20000, activityId_);
-      }
       if (watcherId_ != 0) {
-        output.writeUInt32(20001, watcherId_);
+        output.writeUInt32(6, watcherId_);
+      }
+      if (activityId_ != 0) {
+        output.writeUInt32(8, activityId_);
       }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
       int size = 0;
-      if (activityId_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(20000, activityId_);
-      }
       if (watcherId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(20001, watcherId_);
+          .computeUInt32Size(6, watcherId_);
+      }
+      if (activityId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(8, activityId_);
       }
       return size;
     }
@@ -397,16 +397,16 @@ public final class ActivityTakeWatcherRewardReqOuterClass extends com.google.pro
               case 0:
                 done = true;
                 break;
-              case 160000: {
-                activityId_ = input.readUInt32();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 160000
-              case 160008: {
+              case 48: {
                 watcherId_ = input.readUInt32();
                 bitField0_ |= 0x00000002;
                 break;
-              } // case 160008
+              } // case 48
+              case 64: {
+                activityId_ = input.readUInt32();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 64
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -426,7 +426,7 @@ public final class ActivityTakeWatcherRewardReqOuterClass extends com.google.pro
 
       private int activityId_ ;
       /**
-       * <code>uint32 activity_id = 20000;</code>
+       * <code>uint32 activity_id = 8;</code>
        * @return The activityId.
        */
       @java.lang.Override
@@ -434,7 +434,7 @@ public final class ActivityTakeWatcherRewardReqOuterClass extends com.google.pro
         return activityId_;
       }
       /**
-       * <code>uint32 activity_id = 20000;</code>
+       * <code>uint32 activity_id = 8;</code>
        * @param value The activityId to set.
        * @return This builder for chaining.
        */
@@ -446,7 +446,7 @@ public final class ActivityTakeWatcherRewardReqOuterClass extends com.google.pro
         return this;
       }
       /**
-       * <code>uint32 activity_id = 20000;</code>
+       * <code>uint32 activity_id = 8;</code>
        * @return This builder for chaining.
        */
       public Builder clearActivityId() {
@@ -458,7 +458,7 @@ public final class ActivityTakeWatcherRewardReqOuterClass extends com.google.pro
 
       private int watcherId_ ;
       /**
-       * <code>uint32 watcher_id = 20001;</code>
+       * <code>uint32 watcher_id = 6;</code>
        * @return The watcherId.
        */
       @java.lang.Override
@@ -466,7 +466,7 @@ public final class ActivityTakeWatcherRewardReqOuterClass extends com.google.pro
         return watcherId_;
       }
       /**
-       * <code>uint32 watcher_id = 20001;</code>
+       * <code>uint32 watcher_id = 6;</code>
        * @param value The watcherId to set.
        * @return This builder for chaining.
        */
@@ -478,7 +478,7 @@ public final class ActivityTakeWatcherRewardReqOuterClass extends com.google.pro
         return this;
       }
       /**
-       * <code>uint32 watcher_id = 20001;</code>
+       * <code>uint32 watcher_id = 6;</code>
        * @return This builder for chaining.
        */
       public Builder clearWatcherId() {
@@ -553,10 +553,10 @@ public final class ActivityTakeWatcherRewardReqOuterClass extends com.google.pro
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\"ActivityTakeWatcherRewardReq.proto\"K\n\034" +
-      "ActivityTakeWatcherRewardReq\022\025\n\013activity" +
-      "_id\030\240\234\001 \001(\r\022\024\n\nwatcher_id\030\241\234\001 \001(\rB\033\n\031emu" +
-      ".grasscutter.net.protob\006proto3"
+      "\n\"ActivityTakeWatcherRewardReq.proto\"G\n\034" +
+      "ActivityTakeWatcherRewardReq\022\023\n\013activity" +
+      "_id\030\010 \001(\r\022\022\n\nwatcher_id\030\006 \001(\rB\033\n\031emu.gra" +
+      "sscutter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

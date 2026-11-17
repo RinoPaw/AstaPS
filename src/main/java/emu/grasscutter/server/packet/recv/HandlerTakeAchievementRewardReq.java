@@ -1,9 +1,12 @@
 package emu.grasscutter.server.packet.recv;
 
 import com.google.protobuf.CodedInputStream;
+
 import emu.grasscutter.net.packet.*;
+import emu.grasscutter.net.proto.TakeAchievementRewardReqOuterClass.TakeAchievementRewardReq;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketTakeAchievementRewardRsp;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,7 +39,7 @@ public class HandlerTakeAchievementRewardReq extends PacketHandler {
         }
     }
 
-    /** Validate the full field-15 request, accepting packed and unpacked repeated uint32 IDs. */
+    /** Validate the full request, accepting packed and unpacked repeated uint32 IDs. */
     private static List<Integer> readIds(byte[] payload) throws IOException {
         if (payload == null || payload.length == 0 || payload.length > 4096)
             throw new IOException("Missing or oversized achievement claim");
@@ -45,8 +48,9 @@ public class HandlerTakeAchievementRewardReq extends PacketHandler {
         var unique = new HashSet<Integer>();
         while (!input.isAtEnd()) {
             int tag = input.readTag();
-            if ((tag >>> 3) != 15) {
-                if (!input.skipField(tag)) throw new IOException("Unexpected end-group in achievement claim");
+            if ((tag >>> 3) != TakeAchievementRewardReq.ID_LIST_FIELD_NUMBER) {
+                if (!input.skipField(tag))
+                    throw new IOException("Unexpected end-group in achievement claim");
                 continue;
             }
             if ((tag & 7) == 0) {

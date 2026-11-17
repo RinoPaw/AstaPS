@@ -1,0 +1,9 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+import "ReliquaryReforgeRecord.proto";
+
+message ReliquaryReforgeDataNotify {
+  uint32 cur_progress = 1;
+  repeated ReliquaryReforgeRecord reforge_record_list = 4;
+}

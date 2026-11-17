@@ -1,0 +1,10 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+import "DKBOEFJCLBP.proto";
+
+message GKEDIBFPBOP {
+  repeated DKBOEFJCLBP KAGPLLAFPIE = 2;
+  uint32 avatar_id = 4;
+  repeated uint32 BJNFCNLFMFD = 13;
+}

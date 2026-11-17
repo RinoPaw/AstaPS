@@ -1,0 +1,8 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+import "_GameplayRecommendationWeaponUseData.proto";
+
+message _GameplayRecommendationWeaponResponse {
+  repeated _GameplayRecommendationWeaponUseData weapon_list = 5;
+}

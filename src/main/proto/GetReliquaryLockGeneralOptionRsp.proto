@@ -1,0 +1,9 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+
+message GetReliquaryLockGeneralOptionRsp {
+  int32 retcode = 1;
+  repeated uint32 disabled_reliquary_set_id_list = 5;
+  repeated uint32 enabled_option_id_list = 13;
+}

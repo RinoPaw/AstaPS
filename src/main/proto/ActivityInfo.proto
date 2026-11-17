@@ -183,7 +183,7 @@ message ActivityInfo {
   uint32 selected_avatar_reward_id = 1031;
   uint32 activity_id = 1;
   bool is_starting = 20004;
-  bool is_banner_cleared = 10;
+  bool is_banner_cleared = 20008;
   bool is_hidden = 1033;
   bool is_finished = 4;
   uint32 cur_score = 684;
@@ -195,7 +195,7 @@ message ActivityInfo {
   uint32 DIEFHMGFNIJ = 20006;
   uint32 begin_time = 6;
   bool is_common_content_closed = 20007;
-  bool is_play_open_anim = 20008;
+  bool is_play_open_anim = 10;
   bool is_quick_open = 1771;
   oneof detail {
     SeaLampActivityDetailInfo sam_lamp_info = 5;

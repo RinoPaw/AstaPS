@@ -21,7 +21,7 @@ message ParentQuest {
   bool is_random = 13;
   bool is_finished = 10;
   bool _is_focus_mode = 9;
-  bool DDHKDIOKFIF = 20003;
+  bool DDHKDIOKFIF = 4;
   uint32 quest_var_seq = 14;
   uint32 parent_quest_id = 5;
 }

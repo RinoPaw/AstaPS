@@ -46,7 +46,7 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
     emu.grasscutter.net.proto.OnlinePlayerInfoOuterClass.OnlinePlayerInfoOrBuilder getSrcPlayerInfoOrBuilder();
 
     /**
-     * <code>uint32 src_thread_index = 20000;</code>
+     * <code>uint32 src_thread_index = 1;</code>
      * @return The srcThreadIndex.
      */
     int getSrcThreadIndex();
@@ -58,7 +58,7 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
     boolean getEEHKAIMJJDO();
 
     /**
-     * <code>uint32 src_app_id = 20002;</code>
+     * <code>uint32 src_app_id = 13;</code>
      * @return The srcAppId.
      */
     int getSrcAppId();
@@ -132,10 +132,10 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
       return srcPlayerInfo_ == null ? emu.grasscutter.net.proto.OnlinePlayerInfoOuterClass.OnlinePlayerInfo.getDefaultInstance() : srcPlayerInfo_;
     }
 
-    public static final int SRC_THREAD_INDEX_FIELD_NUMBER = 20000;
+    public static final int SRC_THREAD_INDEX_FIELD_NUMBER = 1;
     private int srcThreadIndex_ = 0;
     /**
-     * <code>uint32 src_thread_index = 20000;</code>
+     * <code>uint32 src_thread_index = 1;</code>
      * @return The srcThreadIndex.
      */
     @java.lang.Override
@@ -154,10 +154,10 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
       return eEHKAIMJJDO_;
     }
 
-    public static final int SRC_APP_ID_FIELD_NUMBER = 20002;
+    public static final int SRC_APP_ID_FIELD_NUMBER = 13;
     private int srcAppId_ = 0;
     /**
-     * <code>uint32 src_app_id = 20002;</code>
+     * <code>uint32 src_app_id = 13;</code>
      * @return The srcAppId.
      */
     @java.lang.Override
@@ -179,22 +179,26 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (srcThreadIndex_ != 0) {
+        output.writeUInt32(1, srcThreadIndex_);
+      }
       if (eEHKAIMJJDO_ != false) {
         output.writeBool(2, eEHKAIMJJDO_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeMessage(5, getSrcPlayerInfo());
       }
-      if (srcThreadIndex_ != 0) {
-        output.writeUInt32(20000, srcThreadIndex_);
-      }
       if (srcAppId_ != 0) {
-        output.writeUInt32(20002, srcAppId_);
+        output.writeUInt32(13, srcAppId_);
       }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
       int size = 0;
+      if (srcThreadIndex_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, srcThreadIndex_);
+      }
       if (eEHKAIMJJDO_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(2, eEHKAIMJJDO_);
@@ -203,13 +207,9 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, getSrcPlayerInfo());
       }
-      if (srcThreadIndex_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(20000, srcThreadIndex_);
-      }
       if (srcAppId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(20002, srcAppId_);
+          .computeUInt32Size(13, srcAppId_);
       }
       return size;
     }
@@ -513,6 +513,11 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
               case 0:
                 done = true;
                 break;
+              case 8: {
+                srcThreadIndex_ = input.readUInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 8
               case 16: {
                 eEHKAIMJJDO_ = input.readBool();
                 bitField0_ |= 0x00000004;
@@ -525,16 +530,11 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
                 bitField0_ |= 0x00000001;
                 break;
               } // case 42
-              case 160000: {
-                srcThreadIndex_ = input.readUInt32();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 160000
-              case 160016: {
+              case 104: {
                 srcAppId_ = input.readUInt32();
                 bitField0_ |= 0x00000008;
                 break;
-              } // case 160016
+              } // case 104
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -673,7 +673,7 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
 
       private int srcThreadIndex_ ;
       /**
-       * <code>uint32 src_thread_index = 20000;</code>
+       * <code>uint32 src_thread_index = 1;</code>
        * @return The srcThreadIndex.
        */
       @java.lang.Override
@@ -681,7 +681,7 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
         return srcThreadIndex_;
       }
       /**
-       * <code>uint32 src_thread_index = 20000;</code>
+       * <code>uint32 src_thread_index = 1;</code>
        * @param value The srcThreadIndex to set.
        * @return This builder for chaining.
        */
@@ -693,7 +693,7 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
         return this;
       }
       /**
-       * <code>uint32 src_thread_index = 20000;</code>
+       * <code>uint32 src_thread_index = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearSrcThreadIndex() {
@@ -737,7 +737,7 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
 
       private int srcAppId_ ;
       /**
-       * <code>uint32 src_app_id = 20002;</code>
+       * <code>uint32 src_app_id = 13;</code>
        * @return The srcAppId.
        */
       @java.lang.Override
@@ -745,7 +745,7 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
         return srcAppId_;
       }
       /**
-       * <code>uint32 src_app_id = 20002;</code>
+       * <code>uint32 src_app_id = 13;</code>
        * @param value The srcAppId to set.
        * @return This builder for chaining.
        */
@@ -757,7 +757,7 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
         return this;
       }
       /**
-       * <code>uint32 src_app_id = 20002;</code>
+       * <code>uint32 src_app_id = 13;</code>
        * @return This builder for chaining.
        */
       public Builder clearSrcAppId() {
@@ -833,11 +833,11 @@ public final class PlayerApplyEnterMpNotifyOuterClass extends com.google.protobu
   static {
     java.lang.String[] descriptorData = {
       "\n\036PlayerApplyEnterMpNotify.proto\032\026Online" +
-      "PlayerInfo.proto\"\215\001\n\030PlayerApplyEnterMpN" +
+      "PlayerInfo.proto\"\211\001\n\030PlayerApplyEnterMpN" +
       "otify\022*\n\017src_player_info\030\005 \001(\0132\021.OnlineP" +
-      "layerInfo\022\032\n\020src_thread_index\030\240\234\001 \001(\r\022\023\n" +
-      "\013EEHKAIMJJDO\030\002 \001(\010\022\024\n\nsrc_app_id\030\242\234\001 \001(\r" +
-      "B\033\n\031emu.grasscutter.net.protob\006proto3"
+      "layerInfo\022\030\n\020src_thread_index\030\001 \001(\r\022\023\n\013E" +
+      "EHKAIMJJDO\030\002 \001(\010\022\022\n\nsrc_app_id\030\r \001(\rB\033\n\031" +
+      "emu.grasscutter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

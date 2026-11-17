@@ -31,7 +31,7 @@ public final class TowerBuffSelectRspOuterClass extends com.google.protobuf.Gene
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>uint32 tower_buff_id = 4;</code>
+     * <code>uint32 tower_buff_id = 12;</code>
      * @return The towerBuffId.
      */
     int getTowerBuffId();
@@ -84,10 +84,10 @@ public final class TowerBuffSelectRspOuterClass extends com.google.protobuf.Gene
               emu.grasscutter.net.proto.TowerBuffSelectRspOuterClass.TowerBuffSelectRsp.class, emu.grasscutter.net.proto.TowerBuffSelectRspOuterClass.TowerBuffSelectRsp.Builder.class);
     }
 
-    public static final int TOWER_BUFF_ID_FIELD_NUMBER = 4;
+    public static final int TOWER_BUFF_ID_FIELD_NUMBER = 12;
     private int towerBuffId_ = 0;
     /**
-     * <code>uint32 tower_buff_id = 4;</code>
+     * <code>uint32 tower_buff_id = 12;</code>
      * @return The towerBuffId.
      */
     @java.lang.Override
@@ -121,7 +121,7 @@ public final class TowerBuffSelectRspOuterClass extends com.google.protobuf.Gene
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (towerBuffId_ != 0) {
-        output.writeUInt32(4, towerBuffId_);
+        output.writeUInt32(12, towerBuffId_);
       }
       if (retcode_ != 0) {
         output.writeInt32(15, retcode_);
@@ -132,7 +132,7 @@ public final class TowerBuffSelectRspOuterClass extends com.google.protobuf.Gene
       int size = 0;
       if (towerBuffId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(4, towerBuffId_);
+          .computeUInt32Size(12, towerBuffId_);
       }
       if (retcode_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -397,11 +397,11 @@ public final class TowerBuffSelectRspOuterClass extends com.google.protobuf.Gene
               case 0:
                 done = true;
                 break;
-              case 32: {
+              case 96: {
                 towerBuffId_ = input.readUInt32();
                 bitField0_ |= 0x00000001;
                 break;
-              } // case 32
+              } // case 96
               case 120: {
                 retcode_ = input.readInt32();
                 bitField0_ |= 0x00000002;
@@ -426,7 +426,7 @@ public final class TowerBuffSelectRspOuterClass extends com.google.protobuf.Gene
 
       private int towerBuffId_ ;
       /**
-       * <code>uint32 tower_buff_id = 4;</code>
+       * <code>uint32 tower_buff_id = 12;</code>
        * @return The towerBuffId.
        */
       @java.lang.Override
@@ -434,7 +434,7 @@ public final class TowerBuffSelectRspOuterClass extends com.google.protobuf.Gene
         return towerBuffId_;
       }
       /**
-       * <code>uint32 tower_buff_id = 4;</code>
+       * <code>uint32 tower_buff_id = 12;</code>
        * @param value The towerBuffId to set.
        * @return This builder for chaining.
        */
@@ -446,7 +446,7 @@ public final class TowerBuffSelectRspOuterClass extends com.google.protobuf.Gene
         return this;
       }
       /**
-       * <code>uint32 tower_buff_id = 4;</code>
+       * <code>uint32 tower_buff_id = 12;</code>
        * @return This builder for chaining.
        */
       public Builder clearTowerBuffId() {
@@ -554,7 +554,7 @@ public final class TowerBuffSelectRspOuterClass extends com.google.protobuf.Gene
   static {
     java.lang.String[] descriptorData = {
       "\n\030TowerBuffSelectRsp.proto\"<\n\022TowerBuffS" +
-      "electRsp\022\025\n\rtower_buff_id\030\004 \001(\r\022\017\n\007retco" +
+      "electRsp\022\025\n\rtower_buff_id\030\014 \001(\r\022\017\n\007retco" +
       "de\030\017 \001(\005B\033\n\031emu.grasscutter.net.protob\006p" +
       "roto3"
     };

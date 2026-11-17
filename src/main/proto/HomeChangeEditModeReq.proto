@@ -1,3 +1,4 @@
+// 7.2 CmdId 29979
 syntax = "proto3";
 
 option java_package = "emu.grasscutter.net.proto";

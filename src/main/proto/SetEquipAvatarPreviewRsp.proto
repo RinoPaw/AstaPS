@@ -1,0 +1,11 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+import "AvatarInfo.proto";
+
+message SetEquipAvatarPreviewRsp {
+  int32 retcode = 1;
+  AvatarInfo avatar_info = 3;
+  uint32 index = 7;
+  AvatarInfo _preview_avatar_info = 12;
+}

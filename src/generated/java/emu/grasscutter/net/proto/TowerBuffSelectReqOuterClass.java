@@ -31,7 +31,7 @@ public final class TowerBuffSelectReqOuterClass extends com.google.protobuf.Gene
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>uint32 tower_buff_id = 12;</code>
+     * <code>uint32 tower_buff_id = 2;</code>
      * @return The towerBuffId.
      */
     int getTowerBuffId();
@@ -78,10 +78,10 @@ public final class TowerBuffSelectReqOuterClass extends com.google.protobuf.Gene
               emu.grasscutter.net.proto.TowerBuffSelectReqOuterClass.TowerBuffSelectReq.class, emu.grasscutter.net.proto.TowerBuffSelectReqOuterClass.TowerBuffSelectReq.Builder.class);
     }
 
-    public static final int TOWER_BUFF_ID_FIELD_NUMBER = 12;
+    public static final int TOWER_BUFF_ID_FIELD_NUMBER = 2;
     private int towerBuffId_ = 0;
     /**
-     * <code>uint32 tower_buff_id = 12;</code>
+     * <code>uint32 tower_buff_id = 2;</code>
      * @return The towerBuffId.
      */
     @java.lang.Override
@@ -104,7 +104,7 @@ public final class TowerBuffSelectReqOuterClass extends com.google.protobuf.Gene
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (towerBuffId_ != 0) {
-        output.writeUInt32(12, towerBuffId_);
+        output.writeUInt32(2, towerBuffId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -112,7 +112,7 @@ public final class TowerBuffSelectReqOuterClass extends com.google.protobuf.Gene
       int size = 0;
       if (towerBuffId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(12, towerBuffId_);
+          .computeUInt32Size(2, towerBuffId_);
       }
       return size;
     }
@@ -362,11 +362,11 @@ public final class TowerBuffSelectReqOuterClass extends com.google.protobuf.Gene
               case 0:
                 done = true;
                 break;
-              case 96: {
+              case 16: {
                 towerBuffId_ = input.readUInt32();
                 bitField0_ |= 0x00000001;
                 break;
-              } // case 96
+              } // case 16
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -386,7 +386,7 @@ public final class TowerBuffSelectReqOuterClass extends com.google.protobuf.Gene
 
       private int towerBuffId_ ;
       /**
-       * <code>uint32 tower_buff_id = 12;</code>
+       * <code>uint32 tower_buff_id = 2;</code>
        * @return The towerBuffId.
        */
       @java.lang.Override
@@ -394,7 +394,7 @@ public final class TowerBuffSelectReqOuterClass extends com.google.protobuf.Gene
         return towerBuffId_;
       }
       /**
-       * <code>uint32 tower_buff_id = 12;</code>
+       * <code>uint32 tower_buff_id = 2;</code>
        * @param value The towerBuffId to set.
        * @return This builder for chaining.
        */
@@ -406,7 +406,7 @@ public final class TowerBuffSelectReqOuterClass extends com.google.protobuf.Gene
         return this;
       }
       /**
-       * <code>uint32 tower_buff_id = 12;</code>
+       * <code>uint32 tower_buff_id = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearTowerBuffId() {
@@ -482,7 +482,7 @@ public final class TowerBuffSelectReqOuterClass extends com.google.protobuf.Gene
   static {
     java.lang.String[] descriptorData = {
       "\n\030TowerBuffSelectReq.proto\"+\n\022TowerBuffS" +
-      "electReq\022\025\n\rtower_buff_id\030\014 \001(\rB\033\n\031emu.g" +
+      "electReq\022\025\n\rtower_buff_id\030\002 \001(\rB\033\n\031emu.g" +
       "rasscutter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor

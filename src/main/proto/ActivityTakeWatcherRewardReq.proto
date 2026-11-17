@@ -1,8 +1,9 @@
+// 7.2 CmdId 1504
 syntax = "proto3";
 
 option java_package = "emu.grasscutter.net.proto";
 
 message ActivityTakeWatcherRewardReq {
-  uint32 activity_id = 20000;
-  uint32 watcher_id = 20001;
+  uint32 activity_id = 8;
+  uint32 watcher_id = 6;
 }

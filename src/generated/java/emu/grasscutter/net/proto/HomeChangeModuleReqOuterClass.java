@@ -31,7 +31,7 @@ public final class HomeChangeModuleReqOuterClass extends com.google.protobuf.Gen
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>uint32 target_module_id = 14;</code>
+     * <code>uint32 target_module_id = 10;</code>
      * @return The targetModuleId.
      */
     int getTargetModuleId();
@@ -78,10 +78,10 @@ public final class HomeChangeModuleReqOuterClass extends com.google.protobuf.Gen
               emu.grasscutter.net.proto.HomeChangeModuleReqOuterClass.HomeChangeModuleReq.class, emu.grasscutter.net.proto.HomeChangeModuleReqOuterClass.HomeChangeModuleReq.Builder.class);
     }
 
-    public static final int TARGET_MODULE_ID_FIELD_NUMBER = 14;
+    public static final int TARGET_MODULE_ID_FIELD_NUMBER = 10;
     private int targetModuleId_ = 0;
     /**
-     * <code>uint32 target_module_id = 14;</code>
+     * <code>uint32 target_module_id = 10;</code>
      * @return The targetModuleId.
      */
     @java.lang.Override
@@ -104,7 +104,7 @@ public final class HomeChangeModuleReqOuterClass extends com.google.protobuf.Gen
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (targetModuleId_ != 0) {
-        output.writeUInt32(14, targetModuleId_);
+        output.writeUInt32(10, targetModuleId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -112,7 +112,7 @@ public final class HomeChangeModuleReqOuterClass extends com.google.protobuf.Gen
       int size = 0;
       if (targetModuleId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(14, targetModuleId_);
+          .computeUInt32Size(10, targetModuleId_);
       }
       return size;
     }
@@ -362,11 +362,11 @@ public final class HomeChangeModuleReqOuterClass extends com.google.protobuf.Gen
               case 0:
                 done = true;
                 break;
-              case 112: {
+              case 80: {
                 targetModuleId_ = input.readUInt32();
                 bitField0_ |= 0x00000001;
                 break;
-              } // case 112
+              } // case 80
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -386,7 +386,7 @@ public final class HomeChangeModuleReqOuterClass extends com.google.protobuf.Gen
 
       private int targetModuleId_ ;
       /**
-       * <code>uint32 target_module_id = 14;</code>
+       * <code>uint32 target_module_id = 10;</code>
        * @return The targetModuleId.
        */
       @java.lang.Override
@@ -394,7 +394,7 @@ public final class HomeChangeModuleReqOuterClass extends com.google.protobuf.Gen
         return targetModuleId_;
       }
       /**
-       * <code>uint32 target_module_id = 14;</code>
+       * <code>uint32 target_module_id = 10;</code>
        * @param value The targetModuleId to set.
        * @return This builder for chaining.
        */
@@ -406,7 +406,7 @@ public final class HomeChangeModuleReqOuterClass extends com.google.protobuf.Gen
         return this;
       }
       /**
-       * <code>uint32 target_module_id = 14;</code>
+       * <code>uint32 target_module_id = 10;</code>
        * @return This builder for chaining.
        */
       public Builder clearTargetModuleId() {
@@ -482,7 +482,7 @@ public final class HomeChangeModuleReqOuterClass extends com.google.protobuf.Gen
   static {
     java.lang.String[] descriptorData = {
       "\n\031HomeChangeModuleReq.proto\"/\n\023HomeChang" +
-      "eModuleReq\022\030\n\020target_module_id\030\016 \001(\rB\033\n\031" +
+      "eModuleReq\022\030\n\020target_module_id\030\n \001(\rB\033\n\031" +
       "emu.grasscutter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor

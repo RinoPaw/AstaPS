@@ -1,0 +1,10 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+
+message ReliquaryLockAppendPropFilter {
+  uint32 equip_type = 5;
+  repeated uint32 required_append_prop_list = 13;
+  repeated uint32 optional_append_prop_list = 14;
+  uint32 min_count = 15;
+}

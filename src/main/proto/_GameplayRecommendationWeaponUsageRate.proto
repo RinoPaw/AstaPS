@@ -1,0 +1,12 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+
+message _GameplayRecommendationWeaponUsageRate {
+  enum Value {
+    None = 0;
+    Low = 1;
+    Mid = 2;
+    High = 3;
+  }
+}

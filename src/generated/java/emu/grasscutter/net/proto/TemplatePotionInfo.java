@@ -89,17 +89,17 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
     int getNLGFFMHMMIC(int index);
 
     /**
-     * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+     * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
      * @return A list containing the fEFKMIBCKAN.
      */
     java.util.List<java.lang.Integer> getFEFKMIBCKANList();
     /**
-     * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+     * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
      * @return The count of fEFKMIBCKAN.
      */
     int getFEFKMIBCKANCount();
     /**
-     * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+     * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
      * @param index The index of the element to return.
      * @return The fEFKMIBCKAN at the given index.
      */
@@ -312,12 +312,12 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
     }
     private int nLGFFMHMMICMemoizedSerializedSize = -1;
 
-    public static final int FEFKMIBCKAN_FIELD_NUMBER = 20002;
+    public static final int FEFKMIBCKAN_FIELD_NUMBER = 2;
     @SuppressWarnings("serial")
     private com.google.protobuf.Internal.IntList fEFKMIBCKAN_ =
         emptyIntList();
     /**
-     * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+     * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
      * @return A list containing the fEFKMIBCKAN.
      */
     @java.lang.Override
@@ -326,14 +326,14 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
       return fEFKMIBCKAN_;
     }
     /**
-     * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+     * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
      * @return The count of fEFKMIBCKAN.
      */
     public int getFEFKMIBCKANCount() {
       return fEFKMIBCKAN_.size();
     }
     /**
-     * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+     * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
      * @param index The index of the element to return.
      * @return The fEFKMIBCKAN at the given index.
      */
@@ -470,6 +470,13 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
       if (guid_ != 0) {
         output.writeUInt32(1, guid_);
       }
+      if (getFEFKMIBCKANList().size() > 0) {
+        output.writeUInt32NoTag(18);
+        output.writeUInt32NoTag(fEFKMIBCKANMemoizedSerializedSize);
+      }
+      for (int i = 0; i < fEFKMIBCKAN_.size(); i++) {
+        output.writeUInt32NoTag(fEFKMIBCKAN_.getInt(i));
+      }
       if (getTagListList().size() > 0) {
         output.writeUInt32NoTag(26);
         output.writeUInt32NoTag(tagListMemoizedSerializedSize);
@@ -492,13 +499,6 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
       }
       for (int i = 0; i < nLGFFMHMMIC_.size(); i++) {
         output.writeUInt32NoTag(nLGFFMHMMIC_.getInt(i));
-      }
-      if (getFEFKMIBCKANList().size() > 0) {
-        output.writeUInt32NoTag(160018);
-        output.writeUInt32NoTag(fEFKMIBCKANMemoizedSerializedSize);
-      }
-      for (int i = 0; i < fEFKMIBCKAN_.size(); i++) {
-        output.writeUInt32NoTag(fEFKMIBCKAN_.getInt(i));
       }
       if (lODLLMHFMPP_ != 0) {
         output.writeUInt32(20003, lODLLMHFMPP_);
@@ -528,6 +528,20 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
       if (guid_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(1, guid_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < fEFKMIBCKAN_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeUInt32SizeNoTag(fEFKMIBCKAN_.getInt(i));
+        }
+        size += dataSize;
+        if (!getFEFKMIBCKANList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        fEFKMIBCKANMemoizedSerializedSize = dataSize;
       }
       {
         int dataSize = 0;
@@ -573,20 +587,6 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
               .computeInt32SizeNoTag(dataSize);
         }
         nLGFFMHMMICMemoizedSerializedSize = dataSize;
-      }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < fEFKMIBCKAN_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeUInt32SizeNoTag(fEFKMIBCKAN_.getInt(i));
-        }
-        size += dataSize;
-        if (!getFEFKMIBCKANList().isEmpty()) {
-          size += 3;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
-        }
-        fEFKMIBCKANMemoizedSerializedSize = dataSize;
       }
       if (lODLLMHFMPP_ != 0) {
         size += com.google.protobuf.CodedOutputStream
@@ -1089,6 +1089,22 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
                 bitField0_ |= 0x00000200;
                 break;
               } // case 8
+              case 16: {
+                int v = input.readUInt32();
+                ensureFEFKMIBCKANIsMutable();
+                fEFKMIBCKAN_.addInt(v);
+                break;
+              } // case 16
+              case 18: {
+                int length = input.readRawVarint32();
+                int limit = input.pushLimit(length);
+                ensureFEFKMIBCKANIsMutable();
+                while (input.getBytesUntilLimit() > 0) {
+                  fEFKMIBCKAN_.addInt(input.readUInt32());
+                }
+                input.popLimit(limit);
+                break;
+              } // case 18
               case 24: {
                 int v = input.readUInt32();
                 ensureTagListIsMutable();
@@ -1144,22 +1160,6 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
                 input.popLimit(limit);
                 break;
               } // case 160010
-              case 160016: {
-                int v = input.readUInt32();
-                ensureFEFKMIBCKANIsMutable();
-                fEFKMIBCKAN_.addInt(v);
-                break;
-              } // case 160016
-              case 160018: {
-                int length = input.readRawVarint32();
-                int limit = input.pushLimit(length);
-                ensureFEFKMIBCKANIsMutable();
-                while (input.getBytesUntilLimit() > 0) {
-                  fEFKMIBCKAN_.addInt(input.readUInt32());
-                }
-                input.popLimit(limit);
-                break;
-              } // case 160018
               case 160024: {
                 lODLLMHFMPP_ = input.readUInt32();
                 bitField0_ |= 0x00000010;
@@ -1622,7 +1622,7 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
         bitField0_ |= 0x00000008;
       }
       /**
-       * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+       * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
        * @return A list containing the fEFKMIBCKAN.
        */
       public java.util.List<java.lang.Integer>
@@ -1631,14 +1631,14 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
         return fEFKMIBCKAN_;
       }
       /**
-       * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+       * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
        * @return The count of fEFKMIBCKAN.
        */
       public int getFEFKMIBCKANCount() {
         return fEFKMIBCKAN_.size();
       }
       /**
-       * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+       * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
        * @param index The index of the element to return.
        * @return The fEFKMIBCKAN at the given index.
        */
@@ -1646,7 +1646,7 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
         return fEFKMIBCKAN_.getInt(index);
       }
       /**
-       * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+       * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
        * @param index The index to set the value at.
        * @param value The fEFKMIBCKAN to set.
        * @return This builder for chaining.
@@ -1661,7 +1661,7 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
         return this;
       }
       /**
-       * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+       * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
        * @param value The fEFKMIBCKAN to add.
        * @return This builder for chaining.
        */
@@ -1674,7 +1674,7 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
         return this;
       }
       /**
-       * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+       * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
        * @param values The fEFKMIBCKAN to add.
        * @return This builder for chaining.
        */
@@ -1688,7 +1688,7 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
         return this;
       }
       /**
-       * <code>repeated uint32 FEFKMIBCKAN = 20002;</code>
+       * <code>repeated uint32 FEFKMIBCKAN = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearFEFKMIBCKAN() {
@@ -2084,16 +2084,16 @@ public final class TemplatePotionInfo extends com.google.protobuf.GeneratedFile 
   static {
     java.lang.String[] descriptorData = {
       "\n\031_TemplatePotionInfo.proto\032\021KDHFFAMFLKC" +
-      ".proto\"\306\002\n\023_TemplatePotionInfo\022#\n\013LABCKN" +
+      ".proto\"\304\002\n\023_TemplatePotionInfo\022#\n\013LABCKN" +
       "EKCBL\030\240\234\001 \003(\0132\014.KDHFFAMFLKC\022\020\n\010tag_list\030" +
-      "\003 \003(\r\022\025\n\013NLGFFMHMMIC\030\241\234\001 \003(\r\022\025\n\013FEFKMIBC" +
-      "KAN\030\242\234\001 \003(\r\022\025\n\013LODLLMHFMPP\030\243\234\001 \001(\r\022\025\n\013AL" +
-      "AKKGOILIC\030\244\234\001 \001(\r\022\025\n\013KEGBBBJKCGN\030\245\234\001 \001(\r" +
-      "\022\r\n\005level\030\005 \001(\r\022\014\n\004rank\030\004 \001(\r\022\014\n\004guid\030\001 " +
-      "\001(\r\022\025\n\013CIPDLHJCPAI\030\246\234\001 \001(\010\022\025\n\013GOEKPDMOLK" +
-      "D\030\247\234\001 \001(\010\022\025\n\013GCFIADMJOCG\030\250\234\001 \001(\010\022\025\n\013MMEN" +
-      "CMAFAIF\030\251\234\001 \001(\rB\033\n\031emu.grasscutter.net.p" +
-      "rotob\006proto3"
+      "\003 \003(\r\022\025\n\013NLGFFMHMMIC\030\241\234\001 \003(\r\022\023\n\013FEFKMIBC" +
+      "KAN\030\002 \003(\r\022\025\n\013LODLLMHFMPP\030\243\234\001 \001(\r\022\025\n\013ALAK" +
+      "KGOILIC\030\244\234\001 \001(\r\022\025\n\013KEGBBBJKCGN\030\245\234\001 \001(\r\022\r" +
+      "\n\005level\030\005 \001(\r\022\014\n\004rank\030\004 \001(\r\022\014\n\004guid\030\001 \001(" +
+      "\r\022\025\n\013CIPDLHJCPAI\030\246\234\001 \001(\010\022\025\n\013GOEKPDMOLKD\030" +
+      "\247\234\001 \001(\010\022\025\n\013GCFIADMJOCG\030\250\234\001 \001(\010\022\025\n\013MMENCM" +
+      "AFAIF\030\251\234\001 \001(\rB\033\n\031emu.grasscutter.net.pro" +
+      "tob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

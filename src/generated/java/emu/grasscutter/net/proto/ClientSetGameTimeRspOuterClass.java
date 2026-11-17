@@ -54,7 +54,7 @@ public final class ClientSetGameTimeRspOuterClass extends com.google.protobuf.Ge
     int getGameTime();
 
     /**
-     * <code>uint32 client_game_time = 20000;</code>
+     * <code>uint32 client_game_time = 15;</code>
      * @return The clientGameTime.
      */
     int getClientGameTime();
@@ -149,10 +149,10 @@ public final class ClientSetGameTimeRspOuterClass extends com.google.protobuf.Ge
       return gameTime_;
     }
 
-    public static final int CLIENT_GAME_TIME_FIELD_NUMBER = 20000;
+    public static final int CLIENT_GAME_TIME_FIELD_NUMBER = 15;
     private int clientGameTime_ = 0;
     /**
-     * <code>uint32 client_game_time = 20000;</code>
+     * <code>uint32 client_game_time = 15;</code>
      * @return The clientGameTime.
      */
     @java.lang.Override
@@ -200,7 +200,7 @@ public final class ClientSetGameTimeRspOuterClass extends com.google.protobuf.Ge
         output.writeInt32(8, retcode_);
       }
       if (clientGameTime_ != 0) {
-        output.writeUInt32(20000, clientGameTime_);
+        output.writeUInt32(15, clientGameTime_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -230,7 +230,7 @@ public final class ClientSetGameTimeRspOuterClass extends com.google.protobuf.Ge
       }
       if (clientGameTime_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(20000, clientGameTime_);
+          .computeUInt32Size(15, clientGameTime_);
       }
       return size;
     }
@@ -550,11 +550,11 @@ public final class ClientSetGameTimeRspOuterClass extends com.google.protobuf.Ge
                 bitField0_ |= 0x00000008;
                 break;
               } // case 64
-              case 160000: {
+              case 120: {
                 clientGameTime_ = input.readUInt32();
                 bitField0_ |= 0x00000004;
                 break;
-              } // case 160000
+              } // case 120
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -690,7 +690,7 @@ public final class ClientSetGameTimeRspOuterClass extends com.google.protobuf.Ge
 
       private int clientGameTime_ ;
       /**
-       * <code>uint32 client_game_time = 20000;</code>
+       * <code>uint32 client_game_time = 15;</code>
        * @return The clientGameTime.
        */
       @java.lang.Override
@@ -698,7 +698,7 @@ public final class ClientSetGameTimeRspOuterClass extends com.google.protobuf.Ge
         return clientGameTime_;
       }
       /**
-       * <code>uint32 client_game_time = 20000;</code>
+       * <code>uint32 client_game_time = 15;</code>
        * @param value The clientGameTime to set.
        * @return This builder for chaining.
        */
@@ -710,7 +710,7 @@ public final class ClientSetGameTimeRspOuterClass extends com.google.protobuf.Ge
         return this;
       }
       /**
-       * <code>uint32 client_game_time = 20000;</code>
+       * <code>uint32 client_game_time = 15;</code>
        * @return This builder for chaining.
        */
       public Builder clearClientGameTime() {
@@ -817,12 +817,12 @@ public final class ClientSetGameTimeRspOuterClass extends com.google.protobuf.Ge
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\032ClientSetGameTimeRsp.proto\"{\n\024ClientSe" +
+      "\n\032ClientSetGameTimeRsp.proto\"y\n\024ClientSe" +
       "tGameTimeRsp\022#\n\033game_time_locked_quest_l" +
-      "ist\030\005 \003(\r\022\021\n\tgame_time\030\004 \001(\r\022\032\n\020client_g" +
-      "ame_time\030\240\234\001 \001(\r\022\017\n\007retcode\030\010 \001(\005B;\n\031emu" +
-      ".grasscutter.net.protoB\036ClientSetGameTim" +
-      "eRspOuterClassb\006proto3"
+      "ist\030\005 \003(\r\022\021\n\tgame_time\030\004 \001(\r\022\030\n\020client_g" +
+      "ame_time\030\017 \001(\r\022\017\n\007retcode\030\010 \001(\005B;\n\031emu.g" +
+      "rasscutter.net.protoB\036ClientSetGameTimeR" +
+      "spOuterClassb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

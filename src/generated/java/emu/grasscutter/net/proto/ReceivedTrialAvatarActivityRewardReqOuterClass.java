@@ -31,7 +31,7 @@ public final class ReceivedTrialAvatarActivityRewardReqOuterClass extends com.go
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>uint32 trial_avatar_index_id = 1;</code>
+     * <code>uint32 trial_avatar_index_id = 2;</code>
      * @return The trialAvatarIndexId.
      */
     int getTrialAvatarIndexId();
@@ -78,10 +78,10 @@ public final class ReceivedTrialAvatarActivityRewardReqOuterClass extends com.go
               emu.grasscutter.net.proto.ReceivedTrialAvatarActivityRewardReqOuterClass.ReceivedTrialAvatarActivityRewardReq.class, emu.grasscutter.net.proto.ReceivedTrialAvatarActivityRewardReqOuterClass.ReceivedTrialAvatarActivityRewardReq.Builder.class);
     }
 
-    public static final int TRIAL_AVATAR_INDEX_ID_FIELD_NUMBER = 1;
+    public static final int TRIAL_AVATAR_INDEX_ID_FIELD_NUMBER = 2;
     private int trialAvatarIndexId_ = 0;
     /**
-     * <code>uint32 trial_avatar_index_id = 1;</code>
+     * <code>uint32 trial_avatar_index_id = 2;</code>
      * @return The trialAvatarIndexId.
      */
     @java.lang.Override
@@ -104,7 +104,7 @@ public final class ReceivedTrialAvatarActivityRewardReqOuterClass extends com.go
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (trialAvatarIndexId_ != 0) {
-        output.writeUInt32(1, trialAvatarIndexId_);
+        output.writeUInt32(2, trialAvatarIndexId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -112,7 +112,7 @@ public final class ReceivedTrialAvatarActivityRewardReqOuterClass extends com.go
       int size = 0;
       if (trialAvatarIndexId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(1, trialAvatarIndexId_);
+          .computeUInt32Size(2, trialAvatarIndexId_);
       }
       return size;
     }
@@ -362,11 +362,11 @@ public final class ReceivedTrialAvatarActivityRewardReqOuterClass extends com.go
               case 0:
                 done = true;
                 break;
-              case 8: {
+              case 16: {
                 trialAvatarIndexId_ = input.readUInt32();
                 bitField0_ |= 0x00000001;
                 break;
-              } // case 8
+              } // case 16
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -386,7 +386,7 @@ public final class ReceivedTrialAvatarActivityRewardReqOuterClass extends com.go
 
       private int trialAvatarIndexId_ ;
       /**
-       * <code>uint32 trial_avatar_index_id = 1;</code>
+       * <code>uint32 trial_avatar_index_id = 2;</code>
        * @return The trialAvatarIndexId.
        */
       @java.lang.Override
@@ -394,7 +394,7 @@ public final class ReceivedTrialAvatarActivityRewardReqOuterClass extends com.go
         return trialAvatarIndexId_;
       }
       /**
-       * <code>uint32 trial_avatar_index_id = 1;</code>
+       * <code>uint32 trial_avatar_index_id = 2;</code>
        * @param value The trialAvatarIndexId to set.
        * @return This builder for chaining.
        */
@@ -406,7 +406,7 @@ public final class ReceivedTrialAvatarActivityRewardReqOuterClass extends com.go
         return this;
       }
       /**
-       * <code>uint32 trial_avatar_index_id = 1;</code>
+       * <code>uint32 trial_avatar_index_id = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearTrialAvatarIndexId() {
@@ -483,7 +483,7 @@ public final class ReceivedTrialAvatarActivityRewardReqOuterClass extends com.go
     java.lang.String[] descriptorData = {
       "\n*ReceivedTrialAvatarActivityRewardReq.p" +
       "roto\"E\n$ReceivedTrialAvatarActivityRewar" +
-      "dReq\022\035\n\025trial_avatar_index_id\030\001 \001(\rB\033\n\031e" +
+      "dReq\022\035\n\025trial_avatar_index_id\030\002 \001(\rB\033\n\031e" +
       "mu.grasscutter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor

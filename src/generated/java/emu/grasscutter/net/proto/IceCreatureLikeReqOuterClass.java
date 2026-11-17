@@ -31,7 +31,7 @@ public final class IceCreatureLikeReqOuterClass extends com.google.protobuf.Gene
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>fixed64 guid = 13;</code>
+     * <code>fixed64 guid = 14;</code>
      * @return The guid.
      */
     long getGuid();
@@ -78,10 +78,10 @@ public final class IceCreatureLikeReqOuterClass extends com.google.protobuf.Gene
               emu.grasscutter.net.proto.IceCreatureLikeReqOuterClass.IceCreatureLikeReq.class, emu.grasscutter.net.proto.IceCreatureLikeReqOuterClass.IceCreatureLikeReq.Builder.class);
     }
 
-    public static final int GUID_FIELD_NUMBER = 13;
+    public static final int GUID_FIELD_NUMBER = 14;
     private long guid_ = 0L;
     /**
-     * <code>fixed64 guid = 13;</code>
+     * <code>fixed64 guid = 14;</code>
      * @return The guid.
      */
     @java.lang.Override
@@ -104,7 +104,7 @@ public final class IceCreatureLikeReqOuterClass extends com.google.protobuf.Gene
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (guid_ != 0L) {
-        output.writeFixed64(13, guid_);
+        output.writeFixed64(14, guid_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -112,7 +112,7 @@ public final class IceCreatureLikeReqOuterClass extends com.google.protobuf.Gene
       int size = 0;
       if (guid_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeFixed64Size(13, guid_);
+          .computeFixed64Size(14, guid_);
       }
       return size;
     }
@@ -363,11 +363,11 @@ public final class IceCreatureLikeReqOuterClass extends com.google.protobuf.Gene
               case 0:
                 done = true;
                 break;
-              case 105: {
+              case 113: {
                 guid_ = input.readFixed64();
                 bitField0_ |= 0x00000001;
                 break;
-              } // case 105
+              } // case 113
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -387,7 +387,7 @@ public final class IceCreatureLikeReqOuterClass extends com.google.protobuf.Gene
 
       private long guid_ ;
       /**
-       * <code>fixed64 guid = 13;</code>
+       * <code>fixed64 guid = 14;</code>
        * @return The guid.
        */
       @java.lang.Override
@@ -395,7 +395,7 @@ public final class IceCreatureLikeReqOuterClass extends com.google.protobuf.Gene
         return guid_;
       }
       /**
-       * <code>fixed64 guid = 13;</code>
+       * <code>fixed64 guid = 14;</code>
        * @param value The guid to set.
        * @return This builder for chaining.
        */
@@ -407,7 +407,7 @@ public final class IceCreatureLikeReqOuterClass extends com.google.protobuf.Gene
         return this;
       }
       /**
-       * <code>fixed64 guid = 13;</code>
+       * <code>fixed64 guid = 14;</code>
        * @return This builder for chaining.
        */
       public Builder clearGuid() {
@@ -483,7 +483,7 @@ public final class IceCreatureLikeReqOuterClass extends com.google.protobuf.Gene
   static {
     java.lang.String[] descriptorData = {
       "\n\030IceCreatureLikeReq.proto\"\"\n\022IceCreatur" +
-      "eLikeReq\022\014\n\004guid\030\r \001(\006B\033\n\031emu.grasscutte" +
+      "eLikeReq\022\014\n\004guid\030\016 \001(\006B\033\n\031emu.grasscutte" +
       "r.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor

@@ -64,7 +64,7 @@ public final class PlayerEnterDungeonReqOuterClass extends com.google.protobuf.G
     int getPointId();
 
     /**
-     * <code>uint32 CCIOMCLOGDK = 20001;</code>
+     * <code>uint32 CCIOMCLOGDK = 5;</code>
      * @return The cCIOMCLOGDK.
      */
     int getCCIOMCLOGDK();
@@ -177,10 +177,10 @@ public final class PlayerEnterDungeonReqOuterClass extends com.google.protobuf.G
       return pointId_;
     }
 
-    public static final int CCIOMCLOGDK_FIELD_NUMBER = 20001;
+    public static final int CCIOMCLOGDK_FIELD_NUMBER = 5;
     private int cCIOMCLOGDK_ = 0;
     /**
-     * <code>uint32 CCIOMCLOGDK = 20001;</code>
+     * <code>uint32 CCIOMCLOGDK = 5;</code>
      * @return The cCIOMCLOGDK.
      */
     @java.lang.Override
@@ -216,6 +216,9 @@ public final class PlayerEnterDungeonReqOuterClass extends com.google.protobuf.G
       if (dungeonId_ != 0) {
         output.writeUInt32(1, dungeonId_);
       }
+      if (cCIOMCLOGDK_ != 0) {
+        output.writeUInt32(5, cCIOMCLOGDK_);
+      }
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeMessage(10, getEnterPosInfo());
       }
@@ -228,9 +231,6 @@ public final class PlayerEnterDungeonReqOuterClass extends com.google.protobuf.G
       if (bAEJLCIOPMI_ != 0) {
         output.writeUInt32(20000, bAEJLCIOPMI_);
       }
-      if (cCIOMCLOGDK_ != 0) {
-        output.writeUInt32(20001, cCIOMCLOGDK_);
-      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -238,6 +238,10 @@ public final class PlayerEnterDungeonReqOuterClass extends com.google.protobuf.G
       if (dungeonId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(1, dungeonId_);
+      }
+      if (cCIOMCLOGDK_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(5, cCIOMCLOGDK_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
         size += com.google.protobuf.CodedOutputStream
@@ -254,10 +258,6 @@ public final class PlayerEnterDungeonReqOuterClass extends com.google.protobuf.G
       if (bAEJLCIOPMI_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(20000, bAEJLCIOPMI_);
-      }
-      if (cCIOMCLOGDK_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(20001, cCIOMCLOGDK_);
       }
       return size;
     }
@@ -588,6 +588,11 @@ public final class PlayerEnterDungeonReqOuterClass extends com.google.protobuf.G
                 bitField0_ |= 0x00000004;
                 break;
               } // case 8
+              case 40: {
+                cCIOMCLOGDK_ = input.readUInt32();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
               case 82: {
                 input.readMessage(
                     internalGetEnterPosInfoFieldBuilder().getBuilder(),
@@ -610,11 +615,6 @@ public final class PlayerEnterDungeonReqOuterClass extends com.google.protobuf.G
                 bitField0_ |= 0x00000002;
                 break;
               } // case 160000
-              case 160008: {
-                cCIOMCLOGDK_ = input.readUInt32();
-                bitField0_ |= 0x00000010;
-                break;
-              } // case 160008
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -849,7 +849,7 @@ public final class PlayerEnterDungeonReqOuterClass extends com.google.protobuf.G
 
       private int cCIOMCLOGDK_ ;
       /**
-       * <code>uint32 CCIOMCLOGDK = 20001;</code>
+       * <code>uint32 CCIOMCLOGDK = 5;</code>
        * @return The cCIOMCLOGDK.
        */
       @java.lang.Override
@@ -857,7 +857,7 @@ public final class PlayerEnterDungeonReqOuterClass extends com.google.protobuf.G
         return cCIOMCLOGDK_;
       }
       /**
-       * <code>uint32 CCIOMCLOGDK = 20001;</code>
+       * <code>uint32 CCIOMCLOGDK = 5;</code>
        * @param value The cCIOMCLOGDK to set.
        * @return This builder for chaining.
        */
@@ -869,7 +869,7 @@ public final class PlayerEnterDungeonReqOuterClass extends com.google.protobuf.G
         return this;
       }
       /**
-       * <code>uint32 CCIOMCLOGDK = 20001;</code>
+       * <code>uint32 CCIOMCLOGDK = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearCCIOMCLOGDK() {
@@ -977,12 +977,12 @@ public final class PlayerEnterDungeonReqOuterClass extends com.google.protobuf.G
   static {
     java.lang.String[] descriptorData = {
       "\n\033PlayerEnterDungeonReq.proto\032\031DungeonEn" +
-      "terPosInfo.proto\"\257\001\n\025PlayerEnterDungeonR" +
+      "terPosInfo.proto\"\255\001\n\025PlayerEnterDungeonR" +
       "eq\022,\n\016enter_pos_info\030\n \001(\0132\024.DungeonEnte" +
       "rPosInfo\022\025\n\013BAEJLCIOPMI\030\240\234\001 \001(\r\022\022\n\ndunge" +
-      "on_id\030\001 \001(\r\022\020\n\010point_id\030\016 \001(\r\022\025\n\013CCIOMCL" +
-      "OGDK\030\241\234\001 \001(\r\022\024\n\014_is_continue\030\r \001(\010B\033\n\031em" +
-      "u.grasscutter.net.protob\006proto3"
+      "on_id\030\001 \001(\r\022\020\n\010point_id\030\016 \001(\r\022\023\n\013CCIOMCL" +
+      "OGDK\030\005 \001(\r\022\024\n\014_is_continue\030\r \001(\010B\033\n\031emu." +
+      "grasscutter.net.protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

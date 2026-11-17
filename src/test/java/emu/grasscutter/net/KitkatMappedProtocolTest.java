@@ -29,9 +29,9 @@ final class KitkatMappedProtocolTest {
     }
 
     @Test
-    void emptyMessageNamesFromKitkatAreNotTrusted() {
-        // kitkat's names for field-less messages collide with captured CmdIds, so they stay unmapped.
+    void onlyVerifiedCurrentEmptyQueriesAreEnabled() {
+        // 世界信息仍缺回包字段；地图提示已有 7.2 原生调用链确认。
         assertEquals(0, PacketOpcodes.GetWorldMpInfoReq);
-        assertEquals(0, PacketOpcodes.GetMapMarkTipsReq);
+        assertEquals(20856, PacketOpcodes.GetMapMarkTipsReq);
     }
 }

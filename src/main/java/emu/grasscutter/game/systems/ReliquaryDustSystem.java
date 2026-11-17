@@ -10,7 +10,6 @@ import emu.grasscutter.game.inventory.ItemType;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
 import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.server.packet.send.PacketReliquaryDustCompanionRsp;
 import emu.grasscutter.server.packet.send.PacketReliquaryDustConfirmRsp;
 import emu.grasscutter.server.packet.send.PacketReliquaryDustRsp;
 import emu.grasscutter.server.packet.send.PacketReliquaryDustSelectRsp;
@@ -180,13 +179,7 @@ public final class ReliquaryDustSystem {
     }
 
     public static void sendDataNotify(Player player) {
-        PlayerDustState st = state(player);
-        if (st.pending != null) {
-            player.sendPacket(new PacketReliquaryOfferCompanionNotify(st));
-            return;
-        }
-        // MergeFrom-safe clear: guid=0 sentinel (empty body does NOT clear sticky candidate).
-        player.sendPacket(new PacketReliquaryOfferCompanionNotify(st, true));
+        new ReliquarySystem(player, 0).sendReforgeState();
     }
 
     /** Wipe client unfinished-reshape flag via guid=0 overwrite (MergeFrom-safe). */
@@ -292,7 +285,8 @@ public final class ReliquaryDustSystem {
             RECV_LOG_UNTIL.put(player.getUid(), System.currentTimeMillis() + 8_000L);
             Grasscutter.getLogger()
                     .debug(
-                            "ReliquaryDust RspProbe uid={} idx={}/{} opcode={} retField={} guid={} hdrLen={} advance={}",
+                            "ReliquaryDust RspProbe uid={} idx={}/{} opcode={} retField={} guid={}"
+                                + " hdrLen={} advance={}",
                             player.getUid(),
                             idx % SELECT_RSP_PROBES.length,
                             SELECT_RSP_PROBES.length,
@@ -307,7 +301,8 @@ public final class ReliquaryDustSystem {
         sendDataNotify(player);
         Grasscutter.getLogger()
                 .debug(
-                        "ReliquaryDust send-success uid={} opcode={} pending={} progress={} hdrLen={}",
+                        "ReliquaryDust send-success uid={} opcode={} pending={} progress={}"
+                            + " hdrLen={}",
                         player.getUid(),
                         opcode,
                         guid,
@@ -354,7 +349,8 @@ public final class ReliquaryDustSystem {
 
         Grasscutter.getLogger()
                 .debug(
-                        "ReliquaryDust select/reshape uid={} guid={} chosen={} seq={} hdrLen={} hex={}",
+                        "ReliquaryDust select/reshape uid={} guid={} chosen={} seq={} hdrLen={}"
+                            + " hex={}",
                         player.getUid(),
                         st.focusGuid,
                         st.chosenKeys,
@@ -425,7 +421,8 @@ public final class ReliquaryDustSystem {
 
         Grasscutter.getLogger()
                 .debug(
-                        "ReliquaryDust confirm uid={} op={} guid={} adopt={} choice={} fields={} hex={}",
+                        "ReliquaryDust confirm uid={} op={} guid={} adopt={} choice={} fields={}"
+                            + " hex={}",
                         player.getUid(),
                         opcode,
                         guid,
@@ -524,7 +521,11 @@ public final class ReliquaryDustSystem {
         int have = player.getInventory().getItemCountById(DUST_ITEM_ID);
         if (have < cost) {
             Grasscutter.getLogger()
-                    .warn("ReliquaryDust: not enough dust uid={} have={} need={}", player.getUid(), have, cost);
+                    .warn(
+                            "ReliquaryDust: not enough dust uid={} have={} need={}",
+                            player.getUid(),
+                            have,
+                            cost);
             return -1;
         }
 
@@ -580,7 +581,8 @@ public final class ReliquaryDustSystem {
 
         Grasscutter.getLogger()
                 .debug(
-                        "ReliquaryDust reshape uid={} guid={} tier={} guarantee={} cost={} progress={} old={} new={}",
+                        "ReliquaryDust reshape uid={} guid={} tier={} guarantee={} cost={}"
+                            + " progress={} old={} new={}",
                         player.getUid(),
                         guid,
                         tier,
@@ -611,7 +613,8 @@ public final class ReliquaryDustSystem {
         if (guid != 0L && pending.guid != guid) {
             Grasscutter.getLogger()
                     .warn(
-                            "ReliquaryDust confirm guid mismatch uid={} req={} pending={} - applying pending",
+                            "ReliquaryDust confirm guid mismatch uid={} req={} pending={} -"
+                                + " applying pending",
                             player.getUid(),
                             guid,
                             pending.guid);
@@ -746,6 +749,63 @@ public final class ReliquaryDustSystem {
      * Rebuild append list: keep 4 base lines (one each type), redistribute upgrade rolls with
      * guarantee on chosen types.
      */
+    // 保留四种副属性和强化次数，按权重重抽到满足本次保底。
+    static List<Integer> reshuffleNative(GameItem relic, List<Integer> chosen, int guarantee) {
+        var old = relic.getAppendPropIdList();
+        if (old.size() < 4 || chosen.size() != 2 || guarantee > old.size() - 4) return null;
+        var types = new ArrayList<FightProperty>();
+        for (int id : old.subList(0, 4)) {
+            var affix = GameData.getReliquaryAffixDataMap().get(id);
+            if (affix == null
+                    || affix.getFightProp() == null
+                    || types.contains(affix.getFightProp())) return null;
+            types.add(affix.getFightProp());
+        }
+        for (int prop : chosen) if (types.stream().noneMatch(p -> p.getId() == prop)) return null;
+        int depot =
+                ArtifactTransmuterSystem.normalizeAppendDepot(
+                        relic.getItemData().getAppendPropDepotId());
+        var pool =
+                GameData.getReliquaryAffixDataMap().values().stream()
+                        .filter(a -> a.getDepotId() == depot)
+                        .toList();
+        var base = new ArrayList<Integer>();
+        for (var type : types) {
+            int id = rollNativeAffix(pool, type, false);
+            if (id == 0) return null;
+            base.add(id);
+        }
+        for (int attempt = 0; attempt < 10000; attempt++) {
+            var result = new ArrayList<>(base);
+            int hits = 0;
+            for (int i = 4; i < old.size(); i++) {
+                var type = types.get(ThreadLocalRandom.current().nextInt(4));
+                int id = rollNativeAffix(pool, type, true);
+                if (id == 0) return null;
+                result.add(id);
+                if (chosen.contains(type.getId())) hits++;
+            }
+            if (hits >= guarantee) return result;
+        }
+        return null;
+    }
+
+    private static int rollNativeAffix(
+            List<ReliquaryAffixData> pool, FightProperty prop, boolean upgrade) {
+        long total = 0;
+        for (var row : pool)
+            if (row.getFightProp() == prop)
+                total += Math.max(0, upgrade ? row.getUpgradeWeight() : row.getWeight());
+        if (total <= 0) return 0;
+        long draw = ThreadLocalRandom.current().nextLong(total);
+        for (var row : pool) {
+            if (row.getFightProp() != prop) continue;
+            draw -= Math.max(0, upgrade ? row.getUpgradeWeight() : row.getWeight());
+            if (draw < 0) return row.getId();
+        }
+        return 0;
+    }
+
     private static List<Integer> reshuffle(
             List<Integer> oldAppend, List<Integer> chosenKeys, int guaranteeTotal) {
         List<FightProperty> types = uniqueFightProps(oldAppend);
@@ -897,7 +957,10 @@ public final class ReliquaryDustSystem {
     private static String summarize(Map<Integer, List<Object>> fields) {
         StringBuilder sb = new StringBuilder("{");
         for (var e : fields.entrySet()) {
-            sb.append(e.getKey()).append("=").append(ProtoWire.asUint32List(e.getValue())).append(';');
+            sb.append(e.getKey())
+                    .append("=")
+                    .append(ProtoWire.asUint32List(e.getValue()))
+                    .append(';');
         }
         sb.append('}');
         return sb.toString();

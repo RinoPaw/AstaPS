@@ -1,0 +1,9 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+import "ReliquaryWearCustomData.proto";
+
+message GetReliquaryWearCustomDataRsp {
+  int32 retcode = 5;
+  repeated ReliquaryWearCustomData custom_data_list = 7;
+}

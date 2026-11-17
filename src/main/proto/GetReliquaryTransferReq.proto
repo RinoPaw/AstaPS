@@ -1,0 +1,7 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+
+message GetReliquaryTransferReq {
+  repeated uint64 guid_list = 3;
+}

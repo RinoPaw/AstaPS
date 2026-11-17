@@ -31,24 +31,24 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated uint32 push_tips_id_list = 6;</code>
+     * <code>repeated uint32 push_tips_id_list = 7;</code>
      * @return A list containing the pushTipsIdList.
      */
     java.util.List<java.lang.Integer> getPushTipsIdListList();
     /**
-     * <code>repeated uint32 push_tips_id_list = 6;</code>
+     * <code>repeated uint32 push_tips_id_list = 7;</code>
      * @return The count of pushTipsIdList.
      */
     int getPushTipsIdListCount();
     /**
-     * <code>repeated uint32 push_tips_id_list = 6;</code>
+     * <code>repeated uint32 push_tips_id_list = 7;</code>
      * @param index The index of the element to return.
      * @return The pushTipsIdList at the given index.
      */
     int getPushTipsIdList(int index);
 
     /**
-     * <code>int32 retcode = 5;</code>
+     * <code>int32 retcode = 11;</code>
      * @return The retcode.
      */
     int getRetcode();
@@ -96,12 +96,12 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
               emu.grasscutter.net.proto.GetPushTipsRewardRspOuterClass.GetPushTipsRewardRsp.class, emu.grasscutter.net.proto.GetPushTipsRewardRspOuterClass.GetPushTipsRewardRsp.Builder.class);
     }
 
-    public static final int PUSH_TIPS_ID_LIST_FIELD_NUMBER = 6;
+    public static final int PUSH_TIPS_ID_LIST_FIELD_NUMBER = 7;
     @SuppressWarnings("serial")
     private com.google.protobuf.Internal.IntList pushTipsIdList_ =
         emptyIntList();
     /**
-     * <code>repeated uint32 push_tips_id_list = 6;</code>
+     * <code>repeated uint32 push_tips_id_list = 7;</code>
      * @return A list containing the pushTipsIdList.
      */
     @java.lang.Override
@@ -110,14 +110,14 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
       return pushTipsIdList_;
     }
     /**
-     * <code>repeated uint32 push_tips_id_list = 6;</code>
+     * <code>repeated uint32 push_tips_id_list = 7;</code>
      * @return The count of pushTipsIdList.
      */
     public int getPushTipsIdListCount() {
       return pushTipsIdList_.size();
     }
     /**
-     * <code>repeated uint32 push_tips_id_list = 6;</code>
+     * <code>repeated uint32 push_tips_id_list = 7;</code>
      * @param index The index of the element to return.
      * @return The pushTipsIdList at the given index.
      */
@@ -126,10 +126,10 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
     }
     private int pushTipsIdListMemoizedSerializedSize = -1;
 
-    public static final int RETCODE_FIELD_NUMBER = 5;
+    public static final int RETCODE_FIELD_NUMBER = 11;
     private int retcode_ = 0;
     /**
-     * <code>int32 retcode = 5;</code>
+     * <code>int32 retcode = 11;</code>
      * @return The retcode.
      */
     @java.lang.Override
@@ -152,24 +152,20 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (retcode_ != 0) {
-        output.writeInt32(5, retcode_);
-      }
       if (getPushTipsIdListList().size() > 0) {
-        output.writeUInt32NoTag(50);
+        output.writeUInt32NoTag(58);
         output.writeUInt32NoTag(pushTipsIdListMemoizedSerializedSize);
       }
       for (int i = 0; i < pushTipsIdList_.size(); i++) {
         output.writeUInt32NoTag(pushTipsIdList_.getInt(i));
       }
+      if (retcode_ != 0) {
+        output.writeInt32(11, retcode_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
       int size = 0;
-      if (retcode_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, retcode_);
-      }
       {
         int dataSize = 0;
         for (int i = 0; i < pushTipsIdList_.size(); i++) {
@@ -183,6 +179,10 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
               .computeInt32SizeNoTag(dataSize);
         }
         pushTipsIdListMemoizedSerializedSize = dataSize;
+      }
+      if (retcode_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(11, retcode_);
       }
       return size;
     }
@@ -454,18 +454,13 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
               case 0:
                 done = true;
                 break;
-              case 40: {
-                retcode_ = input.readInt32();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 40
-              case 48: {
+              case 56: {
                 int v = input.readUInt32();
                 ensurePushTipsIdListIsMutable();
                 pushTipsIdList_.addInt(v);
                 break;
-              } // case 48
-              case 50: {
+              } // case 56
+              case 58: {
                 int length = input.readRawVarint32();
                 int limit = input.pushLimit(length);
                 ensurePushTipsIdListIsMutable();
@@ -474,7 +469,12 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
                 }
                 input.popLimit(limit);
                 break;
-              } // case 50
+              } // case 58
+              case 88: {
+                retcode_ = input.readInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 88
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -500,7 +500,7 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
         bitField0_ |= 0x00000001;
       }
       /**
-       * <code>repeated uint32 push_tips_id_list = 6;</code>
+       * <code>repeated uint32 push_tips_id_list = 7;</code>
        * @return A list containing the pushTipsIdList.
        */
       public java.util.List<java.lang.Integer>
@@ -509,14 +509,14 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
         return pushTipsIdList_;
       }
       /**
-       * <code>repeated uint32 push_tips_id_list = 6;</code>
+       * <code>repeated uint32 push_tips_id_list = 7;</code>
        * @return The count of pushTipsIdList.
        */
       public int getPushTipsIdListCount() {
         return pushTipsIdList_.size();
       }
       /**
-       * <code>repeated uint32 push_tips_id_list = 6;</code>
+       * <code>repeated uint32 push_tips_id_list = 7;</code>
        * @param index The index of the element to return.
        * @return The pushTipsIdList at the given index.
        */
@@ -524,7 +524,7 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
         return pushTipsIdList_.getInt(index);
       }
       /**
-       * <code>repeated uint32 push_tips_id_list = 6;</code>
+       * <code>repeated uint32 push_tips_id_list = 7;</code>
        * @param index The index to set the value at.
        * @param value The pushTipsIdList to set.
        * @return This builder for chaining.
@@ -539,7 +539,7 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
         return this;
       }
       /**
-       * <code>repeated uint32 push_tips_id_list = 6;</code>
+       * <code>repeated uint32 push_tips_id_list = 7;</code>
        * @param value The pushTipsIdList to add.
        * @return This builder for chaining.
        */
@@ -552,7 +552,7 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
         return this;
       }
       /**
-       * <code>repeated uint32 push_tips_id_list = 6;</code>
+       * <code>repeated uint32 push_tips_id_list = 7;</code>
        * @param values The pushTipsIdList to add.
        * @return This builder for chaining.
        */
@@ -566,7 +566,7 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
         return this;
       }
       /**
-       * <code>repeated uint32 push_tips_id_list = 6;</code>
+       * <code>repeated uint32 push_tips_id_list = 7;</code>
        * @return This builder for chaining.
        */
       public Builder clearPushTipsIdList() {
@@ -578,7 +578,7 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
 
       private int retcode_ ;
       /**
-       * <code>int32 retcode = 5;</code>
+       * <code>int32 retcode = 11;</code>
        * @return The retcode.
        */
       @java.lang.Override
@@ -586,7 +586,7 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
         return retcode_;
       }
       /**
-       * <code>int32 retcode = 5;</code>
+       * <code>int32 retcode = 11;</code>
        * @param value The retcode to set.
        * @return This builder for chaining.
        */
@@ -598,7 +598,7 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
         return this;
       }
       /**
-       * <code>int32 retcode = 5;</code>
+       * <code>int32 retcode = 11;</code>
        * @return This builder for chaining.
        */
       public Builder clearRetcode() {
@@ -674,8 +674,8 @@ public final class GetPushTipsRewardRspOuterClass extends com.google.protobuf.Ge
   static {
     java.lang.String[] descriptorData = {
       "\n\032GetPushTipsRewardRsp.proto\"B\n\024GetPushT" +
-      "ipsRewardRsp\022\031\n\021push_tips_id_list\030\006 \003(\r\022" +
-      "\017\n\007retcode\030\005 \001(\005B\033\n\031emu.grasscutter.net." +
+      "ipsRewardRsp\022\031\n\021push_tips_id_list\030\007 \003(\r\022" +
+      "\017\n\007retcode\030\013 \001(\005B\033\n\031emu.grasscutter.net." +
       "protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor

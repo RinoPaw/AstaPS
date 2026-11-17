@@ -1,0 +1,8 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+
+message ReliquaryLockMainPropFilter {
+  repeated uint32 main_prop_type_list = 2;
+  uint32 equip_type = 6;
+}

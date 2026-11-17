@@ -1,0 +1,9 @@
+syntax = "proto3";
+option java_package = "emu.grasscutter.net.proto";
+
+import "ReliquarySetSchemeData.proto";
+
+message GetReliquarySetSchemeRsp {
+  int32 retcode = 11;
+  repeated ReliquarySetSchemeData set_scheme_list = 14;
+}

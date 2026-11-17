@@ -1,0 +1,3299 @@
+{
+  "server_baseline_commit": "a49f51aa6f2787ffbc25cee46801b70dee860d23",
+  "historical_server_reference_commit": "e1c6ca694223c5125fec0558e48e278303961f0f",
+  "binding_source_protocol_descriptor_sha256": "6b0800302bb76ded18af225a68f99894bf34bc674f489273b049d9dab27b0857",
+  "enabled_opcodes": [
+    {
+      "message": "AvatarPromoteReq",
+      "cmd": 6528,
+      "current_type": 79832,
+      "source": "native_cross_version_correspondence"
+    },
+    {
+      "message": "EnterTrialAvatarActivityDungeonRsp",
+      "cmd": 29493,
+      "current_type": 57780,
+      "source": "native_cross_version_correspondence"
+    },
+    {
+      "message": "GetHomeLevelUpRewardReq",
+      "cmd": 4857,
+      "current_type": 38204,
+      "source": "native_cross_version_correspondence"
+    },
+    {
+      "message": "HomeModuleUnlockNotify",
+      "cmd": 4238,
+      "current_type": 78130,
+      "source": "native_cross_version_correspondence"
+    },
+    {
+      "message": "HomeResourceTakeFetterExpRsp",
+      "cmd": 3653,
+      "current_type": 28744,
+      "source": "native_cross_version_correspondence"
+    },
+    {
+      "message": "IceCreatureLikeReq",
+      "cmd": 3775,
+      "current_type": 56125,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "PlatformStartRouteNotify",
+      "cmd": 28296,
+      "current_type": 74793,
+      "source": "native_cross_version_correspondence"
+    },
+    {
+      "message": "PlatformStopRouteNotify",
+      "cmd": 25529,
+      "current_type": 22640,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "PlatformChangeRouteNotify",
+      "cmd": 1089,
+      "current_type": 74020,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "ReceivedTrialAvatarActivityRewardRsp",
+      "cmd": 23468,
+      "current_type": 55553,
+      "source": "reference71_structural_correspondence"
+    },
+    {
+      "message": "UnlockNameCardNotify",
+      "cmd": 23430,
+      "current_type": 16461,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "SetNameCardReq",
+      "cmd": 3230,
+      "current_type": 57409,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "SetPlayerSignatureReq",
+      "cmd": 4867,
+      "current_type": 38579,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "HomeChangeBgmReq",
+      "cmd": 28560,
+      "current_type": 12385,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "HomeChangeBgmRsp",
+      "cmd": 25773,
+      "current_type": 24722,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "GetAllUnlockNameCardReq",
+      "cmd": 812,
+      "current_type": 58102,
+      "source": "native_call_chain",
+      "empty_request_without_unused_server_schema": true
+    },
+    {
+      "message": "DelBackupAvatarTeamReq",
+      "cmd": 2864,
+      "current_type": 76154,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "GetMailItemReq",
+      "cmd": 29775,
+      "current_type": 58398,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "DelMailReq",
+      "cmd": 24171,
+      "current_type": 43858,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "ReadMailNotify",
+      "cmd": 6678,
+      "current_type": 67133,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "BuyResinReq",
+      "old": 0,
+      "cmd": 20545,
+      "current_type": 72865,
+      "source": "native_call_chain",
+      "empty_request_without_unused_server_schema": true
+    },
+    {
+      "message": "GetPlayerAskFriendListReq",
+      "old": 29401,
+      "cmd": 21795,
+      "current_type": 16088,
+      "source": "native_call_chain",
+      "empty_request_without_unused_server_schema": true
+    },
+    {
+      "message": "GetPlayerFriendListReq",
+      "old": 20856,
+      "cmd": 1684,
+      "current_type": 49379,
+      "source": "supplied_NT",
+      "empty_request_without_unused_server_schema": true
+    },
+    {
+      "message": "BackMyWorldReq",
+      "old": 6686,
+      "cmd": 28289,
+      "current_type": 49597,
+      "source": "native_call_chain",
+      "empty_request_without_unused_server_schema": true
+    },
+    {
+      "message": "GetCityReputationMapInfoReq",
+      "old": 0,
+      "cmd": 29401,
+      "current_type": 38465,
+      "source": "supplied_NT",
+      "empty_request_without_unused_server_schema": true
+    },
+    {
+      "message": "GetMapMarkTipsReq",
+      "old": 0,
+      "cmd": 20856,
+      "current_type": 73113,
+      "source": "supplied_NT",
+      "empty_request_without_unused_server_schema": true
+    },
+    {
+      "message": "TakeAchievementRewardReq",
+      "old": 0,
+      "cmd": 4716,
+      "current_type": 41369,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "TakeAchievementGoalRewardReq",
+      "old": 0,
+      "cmd": 29257,
+      "current_type": 60812,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "GetProfilePictureDataReq",
+      "old": 21795,
+      "cmd": 21907,
+      "current_type": 46396,
+      "source": "native_call_chain",
+      "empty_request_without_unused_server_schema": true
+    },
+    {
+      "message": "CancelCoopTaskReq",
+      "old": 0,
+      "cmd": 26546,
+      "current_type": 26151,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "GetOnlinePlayerListReq",
+      "old": 3966,
+      "cmd": 22361,
+      "current_type": 64612,
+      "source": "native_call_chain",
+      "empty_request_without_unused_server_schema": true
+    },
+    {
+      "message": "ReceivedTrialAvatarActivityRewardReq",
+      "old": 0,
+      "cmd": 20742,
+      "current_type": 40886,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "HomeChangeModuleReq",
+      "old": 0,
+      "cmd": 21043,
+      "current_type": 80516,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "ActivityTakeWatcherRewardReq",
+      "old": 25045,
+      "cmd": 1504,
+      "current_type": 58213,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "UnlockPersonalLineReq",
+      "old": 0,
+      "cmd": 28530,
+      "current_type": 62583,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "HomeChangeEditModeReq",
+      "old": 0,
+      "cmd": 29979,
+      "current_type": 21387,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "TowerBuffSelectReq",
+      "old": 0,
+      "cmd": 705,
+      "current_type": 18582,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "TowerBuffSelectRsp",
+      "old": 0,
+      "cmd": 8282,
+      "current_type": 14352,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "HomeChooseModuleReq",
+      "old": 0,
+      "cmd": 8792,
+      "current_type": 70365,
+      "source": "native_call_chain"
+    },
+    {
+      "message": "GetPushTipsRewardRsp",
+      "old": 0,
+      "cmd": 9626,
+      "current_type": 45692,
+      "source": "native_call_chain"
+    }
+  ],
+  "corrected_fields": [
+    {
+      "owner": "AvatarPromoteReq",
+      "field": "guid",
+      "old": 12,
+      "current": 3,
+      "current_field": "guid",
+      "current_type": 79832
+    },
+    {
+      "owner": "EnterTrialAvatarActivityDungeonRsp",
+      "field": "trial_avatar_index_id",
+      "old": 12,
+      "current": 10,
+      "current_field": "trial_avatar_index_id",
+      "current_type": 57780
+    },
+    {
+      "owner": "EnterTrialAvatarActivityDungeonRsp",
+      "field": "activity_id",
+      "old": 3,
+      "current": 2,
+      "current_field": "activity_id",
+      "current_type": 57780
+    },
+    {
+      "owner": "EnterTrialAvatarActivityDungeonRsp",
+      "field": "retcode",
+      "old": 15,
+      "current": 3,
+      "current_field": "retcode",
+      "current_type": 57780
+    },
+    {
+      "owner": "GetHomeLevelUpRewardReq",
+      "field": "level",
+      "old": 10,
+      "current": 9,
+      "current_field": "level",
+      "current_type": 38204
+    },
+    {
+      "owner": "HomeModuleUnlockNotify",
+      "field": "module_id",
+      "old": 8,
+      "current": 9,
+      "current_field": "module_id",
+      "current_type": 78130
+    },
+    {
+      "owner": "HomeResourceTakeFetterExpRsp",
+      "field": "fetter_exp",
+      "old": 9,
+      "current": 10,
+      "current_field": "fetter_exp",
+      "current_type": 28744
+    },
+    {
+      "owner": "HomeResourceTakeFetterExpRsp",
+      "field": "retcode",
+      "old": 8,
+      "current": 3,
+      "current_field": "retcode",
+      "current_type": 28744
+    },
+    {
+      "owner": "IceCreatureLikeReq",
+      "field": "guid",
+      "old": 13,
+      "current": 14,
+      "current_field": "guid",
+      "current_type": 56125
+    },
+    {
+      "owner": "PlatformStartRouteNotify",
+      "field": "platform",
+      "old": 7,
+      "current": 3,
+      "current_field": "platform",
+      "current_type": 74793
+    },
+    {
+      "owner": "PlatformStartRouteNotify",
+      "field": "entity_id",
+      "old": 2,
+      "current": 1,
+      "current_field": "entity_id",
+      "current_type": 74793
+    },
+    {
+      "owner": "PlatformStartRouteNotify",
+      "field": "scene_time",
+      "old": 11,
+      "current": 14,
+      "current_field": "scene_time",
+      "current_type": 74793
+    },
+    {
+      "owner": "PlatformStopRouteNotify",
+      "field": "platform",
+      "old": 12,
+      "current": 2,
+      "current_field": "platform",
+      "current_type": 22640
+    },
+    {
+      "owner": "PlatformStopRouteNotify",
+      "field": "entity_id",
+      "old": 5,
+      "current": 4,
+      "current_field": "entity_id",
+      "current_type": 22640
+    },
+    {
+      "owner": "PlatformStopRouteNotify",
+      "field": "scene_time",
+      "old": 14,
+      "current": 15,
+      "current_field": "scene_time",
+      "current_type": 22640
+    },
+    {
+      "owner": "PlatformChangeRouteNotify",
+      "field": "platform",
+      "old": 4,
+      "current": 14,
+      "current_field": "platform",
+      "current_type": 74020
+    },
+    {
+      "owner": "PlatformChangeRouteNotify",
+      "field": "entity_id",
+      "old": 6,
+      "current": 1,
+      "current_field": "entity_id",
+      "current_type": 74020
+    },
+    {
+      "owner": "PlatformChangeRouteNotify",
+      "field": "scene_time",
+      "old": 7,
+      "current": 6,
+      "current_field": "scene_time",
+      "current_type": 74020
+    },
+    {
+      "owner": "ReceivedTrialAvatarActivityRewardRsp",
+      "field": "retcode",
+      "old": 5,
+      "current": 13,
+      "current_field": "retcode",
+      "current_type": 55553
+    },
+    {
+      "owner": "ReceivedTrialAvatarActivityRewardRsp",
+      "field": "activity_id",
+      "old": 8,
+      "current": 14,
+      "current_field": "activity_id",
+      "current_type": 55553
+    },
+    {
+      "owner": "ReceivedTrialAvatarActivityRewardRsp",
+      "field": "trial_avatar_index_id",
+      "old": 10,
+      "current": 2,
+      "current_field": "trial_avatar_index_id",
+      "current_type": 55553
+    },
+    {
+      "owner": "HomeResource",
+      "field": "store_limit",
+      "old": 1,
+      "current": 7,
+      "current_field": "store_limit",
+      "current_type": 75411
+    },
+    {
+      "owner": "HomeResource",
+      "field": "store_value",
+      "old": 7,
+      "current": 1,
+      "current_field": "store_value",
+      "current_type": 75411
+    },
+    {
+      "owner": "ActivityInfo",
+      "field": "is_play_open_anim",
+      "old": 20008,
+      "current": 10,
+      "current_field": "is_play_open_anim",
+      "current_type": 30488
+    },
+    {
+      "owner": "BattlePassProduct",
+      "field": "extra_product_id",
+      "old": 20001,
+      "current": 5,
+      "current_field": "extra_product_id",
+      "current_type": 53547
+    },
+    {
+      "owner": "CancelCoopTaskRsp",
+      "field": "chapter_id",
+      "old": 20000,
+      "current": 7,
+      "current_field": "chapter_id",
+      "current_type": 77577
+    },
+    {
+      "owner": "ClientSetGameTimeRsp",
+      "field": "client_game_time",
+      "old": 20000,
+      "current": 15,
+      "current_field": "client_game_time",
+      "current_type": 77280
+    },
+    {
+      "owner": "DelBackupAvatarTeamRsp",
+      "field": "retcode",
+      "old": 20000,
+      "current": 14,
+      "current_field": "retcode",
+      "current_type": 79441
+    },
+    {
+      "owner": "GetPlayerTokenReq",
+      "field": "_gate_ticket",
+      "old": 20003,
+      "current": 965,
+      "current_field": "_gate_ticket",
+      "current_type": 12855
+    },
+    {
+      "owner": "TrialAvatarActivityRewardDetailInfo",
+      "field": "is_can_take_reward",
+      "old": 20002,
+      "current": 8,
+      "current_field": "is_can_take_reward",
+      "current_type": 78844
+    },
+    {
+      "owner": "TrialAvatarActivityRewardDetailInfo",
+      "field": "received_reward",
+      "old": 20006,
+      "current": 6,
+      "current_field": "received_reward",
+      "current_type": 78844
+    },
+    {
+      "owner": "SetPlayerSignatureReq",
+      "field": "signature",
+      "old": 2,
+      "current": 9,
+      "current_field": "signature",
+      "current_type": 38579
+    },
+    {
+      "owner": "HomeChangeBgmReq",
+      "field": "bgm_id",
+      "old": 9,
+      "current": 4,
+      "current_field": "bgm_id",
+      "current_type": 12385
+    },
+    {
+      "owner": "HomeChangeBgmRsp",
+      "field": "retcode",
+      "old": 8,
+      "current": 13,
+      "current_field": "retcode",
+      "current_type": 24722
+    },
+    {
+      "owner": "DelBackupAvatarTeamReq",
+      "field": "backup_avatar_team_id",
+      "old": 9,
+      "current": 5,
+      "current_field": "backup_avatar_team_id",
+      "current_type": 76154
+    },
+    {
+      "owner": "GetMailItemReq",
+      "field": "mail_id_list",
+      "old": 12,
+      "current": 15,
+      "current_field": "mail_id_list",
+      "current_type": 58398
+    },
+    {
+      "owner": "DelMailReq",
+      "field": "mail_id_list",
+      "old": 15,
+      "current": 7,
+      "current_field": "mail_id_list",
+      "current_type": 43858
+    },
+    {
+      "owner": "ReadMailNotify",
+      "field": "mail_id_list",
+      "old": 14,
+      "current": 6,
+      "current_field": "mail_id_list",
+      "current_type": 67133
+    },
+    {
+      "owner": "TakeAchievementRewardReq",
+      "field": "id_list",
+      "old": 15,
+      "current": 12,
+      "current_field": "id_list",
+      "current_type": 41369
+    },
+    {
+      "owner": "TakeAchievementGoalRewardReq",
+      "field": "id_list",
+      "old": 14,
+      "current": 3,
+      "current_field": "id_list",
+      "current_type": 60812
+    },
+    {
+      "owner": "CancelCoopTaskReq",
+      "field": "chapter_id",
+      "old": 9,
+      "current": 4,
+      "current_field": "chapter_id",
+      "current_type": 26151
+    },
+    {
+      "owner": "ReceivedTrialAvatarActivityRewardReq",
+      "field": "trial_avatar_index_id",
+      "old": 1,
+      "current": 2,
+      "current_field": "trial_avatar_index_id",
+      "current_type": 40886
+    },
+    {
+      "owner": "HomeChangeModuleReq",
+      "field": "target_module_id",
+      "old": 14,
+      "current": 10,
+      "current_field": "target_module_id",
+      "current_type": 80516
+    },
+    {
+      "owner": "ActivityTakeWatcherRewardReq",
+      "field": "activity_id",
+      "old": 20000,
+      "current": 8,
+      "current_field": "activity_id",
+      "current_type": 58213
+    },
+    {
+      "owner": "ActivityTakeWatcherRewardReq",
+      "field": "watcher_id",
+      "old": 20001,
+      "current": 6,
+      "current_field": "watcher_id",
+      "current_type": 58213
+    },
+    {
+      "owner": "TowerBuffSelectReq",
+      "field": "tower_buff_id",
+      "old": 12,
+      "current": 2,
+      "current_field": "tower_buff_id",
+      "current_type": 18582
+    },
+    {
+      "owner": "TowerBuffSelectRsp",
+      "field": "tower_buff_id",
+      "old": 4,
+      "current": 12,
+      "current_field": "tower_buff_id",
+      "current_type": 14352
+    },
+    {
+      "owner": "HomeChooseModuleReq",
+      "field": "module_id",
+      "old": 13,
+      "current": 3,
+      "current_field": "module_id",
+      "current_type": 70365
+    },
+    {
+      "owner": "GetPushTipsRewardRsp",
+      "field": "push_tips_id_list",
+      "old": 6,
+      "current": 7,
+      "current_field": "push_tips_id_list",
+      "current_type": 45692
+    },
+    {
+      "owner": "GetPushTipsRewardRsp",
+      "field": "retcode",
+      "old": 5,
+      "current": 11,
+      "current_field": "retcode",
+      "current_type": 45692
+    },
+    {
+      "owner": "_AutochessRecordSocialBrief",
+      "field": "AFDKEOOHHPA",
+      "old": 20003,
+      "current": 8,
+      "reference_server_number": 13,
+      "raw_field71": "IHCKAGNBEDL",
+      "native_type71": 54763,
+      "native_type72": 11114,
+      "raw_field72": "KGKMDCFIFGF",
+      "current_field_name": "KGKMDCFIFGF",
+      "protobuf_type": 13,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        50495,
+        50496,
+        50503
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xbe9bc60",
+          "handler72": "0xfe24ef8",
+          "instruction_offset": 172,
+          "offset71": 72,
+          "offset72": 72,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "2b6961fd2d6e711be8d63aa9463a45bf8b644b542fcc530874f238e1b5f21540"
+        }
+      ]
+    },
+    {
+      "owner": "_AutochessRecordSocialBrief",
+      "field": "LKPNNFDCJLF",
+      "old": 20005,
+      "current": 10,
+      "reference_server_number": 7,
+      "raw_field71": "EDHFOPFNBGC",
+      "native_type71": 54763,
+      "native_type72": 11114,
+      "raw_field72": "HIAGKHNOPPE",
+      "current_field_name": "HIAGKHNOPPE",
+      "protobuf_type": 13,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        50495,
+        50496,
+        50503
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xbe9bc60",
+          "handler72": "0xfe24ef8",
+          "instruction_offset": 332,
+          "offset71": 84,
+          "offset72": 80,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "2b6961fd2d6e711be8d63aa9463a45bf8b644b542fcc530874f238e1b5f21540"
+        }
+      ]
+    },
+    {
+      "owner": "ChatInfo",
+      "field": "OIEHJMHHCFB",
+      "old": 20001,
+      "current": 10,
+      "reference_server_number": 15,
+      "raw_field71": "IEEJEEEHOGA",
+      "native_type71": 74776,
+      "native_type72": 67586,
+      "raw_field72": "CBPIPDFPBHN",
+      "current_field_name": "CBPIPDFPBHN",
+      "protobuf_type": 4,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [],
+      "independent_native_bodies": 3,
+      "has_supported_direct_callees": true,
+      "native_instructions": [
+        {
+          "handler71": "0xc2e493c",
+          "handler72": "0x10d1a63c",
+          "instruction_offset": 152,
+          "offset71": 48,
+          "offset72": 56,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "5d0061ecc34c7a4ed96d73256ae88b446a872400a908680b81a615df02546e00"
+        },
+        {
+          "handler71": "0xdb6e51c",
+          "handler72": "0xf283abc",
+          "instruction_offset": 216,
+          "offset71": 48,
+          "offset72": 56,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "c9a80cafe1cc303b134d9a3cce5586f80e0967681a89bc6e182b304ddad12b15"
+        },
+        {
+          "handler71": "0xdb6c71c",
+          "handler72": "0xf289344",
+          "instruction_offset": 52,
+          "offset71": 48,
+          "offset72": 56,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "778379f719bddb44b0fbe00b3f34a5e15ad5453a64a1c7778853c70e33c4f0be"
+        }
+      ]
+    },
+    {
+      "owner": "EvtAvatarEnterFocusNotify",
+      "field": "MEBKKKCNDAK",
+      "old": 20000,
+      "current": 2,
+      "reference_server_number": 8,
+      "raw_field71": "MFAMFHHCEDC",
+      "native_type71": 48931,
+      "native_type72": 59261,
+      "raw_field72": "GLACJGOMOEP",
+      "current_field_name": "disable_anim",
+      "protobuf_type": 8,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        294416,
+        294418,
+        294420,
+        294421,
+        294422,
+        294423,
+        294424,
+        294425,
+        294428,
+        294430
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xb7d5a2c",
+          "handler72": "0xb6298bc",
+          "instruction_offset": 336,
+          "offset71": 48,
+          "offset72": 45,
+          "instruction": "strb",
+          "mode": "store",
+          "normalized_body_sha256": "dd62c5e95e358cd6e885f95b088ddd9ee362a56e389a1369b80a7205bf9b8551"
+        }
+      ]
+    },
+    {
+      "owner": "EvtAvatarEnterFocusNotify",
+      "field": "PNELCGBOIFM",
+      "old": 20001,
+      "current": 4,
+      "reference_server_number": 7,
+      "raw_field71": "BMPLPFBLPPP",
+      "native_type71": 48931,
+      "native_type72": 59261,
+      "raw_field72": "GBJLBCHENAG",
+      "current_field_name": "use_auto_focus",
+      "protobuf_type": 8,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        294416,
+        294418,
+        294420,
+        294421,
+        294422,
+        294423,
+        294424,
+        294425,
+        294428,
+        294430
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xb7d5a2c",
+          "handler72": "0xb6298bc",
+          "instruction_offset": 212,
+          "offset71": 37,
+          "offset72": 44,
+          "instruction": "strb",
+          "mode": "store",
+          "normalized_body_sha256": "dd62c5e95e358cd6e885f95b088ddd9ee362a56e389a1369b80a7205bf9b8551"
+        }
+      ]
+    },
+    {
+      "owner": "EvtAvatarEnterFocusNotify",
+      "field": "IMMFFEBPCJM",
+      "old": 20003,
+      "current": 1,
+      "reference_server_number": 12,
+      "raw_field71": "NOLEPJHLGKL",
+      "native_type71": 48931,
+      "native_type72": 59261,
+      "raw_field72": "IGLKLDNNDND",
+      "current_field_name": "IGLKLDNNDND",
+      "protobuf_type": 5,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        294416,
+        294418,
+        294420,
+        294421,
+        294422,
+        294423,
+        294424,
+        294425,
+        294428,
+        294430
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xb7d5a2c",
+          "handler72": "0xb6298bc",
+          "instruction_offset": 372,
+          "offset71": 32,
+          "offset72": 32,
+          "instruction": "str",
+          "mode": "store",
+          "normalized_body_sha256": "dd62c5e95e358cd6e885f95b088ddd9ee362a56e389a1369b80a7205bf9b8551"
+        }
+      ]
+    },
+    {
+      "owner": "EvtAvatarEnterFocusNotify",
+      "field": "CCDMIMGNCBM",
+      "old": 20004,
+      "current": 15,
+      "reference_server_number": 1,
+      "raw_field71": "CENEJKOCNED",
+      "native_type71": 48931,
+      "native_type72": 59261,
+      "raw_field72": "JINNEJDODAL",
+      "current_field_name": "JINNEJDODAL",
+      "protobuf_type": 8,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        294416,
+        294418,
+        294420,
+        294421,
+        294422,
+        294423,
+        294424,
+        294425,
+        294428,
+        294430
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xb7d5a2c",
+          "handler72": "0xb6298bc",
+          "instruction_offset": 392,
+          "offset71": 51,
+          "offset72": 50,
+          "instruction": "strb",
+          "mode": "store",
+          "normalized_body_sha256": "dd62c5e95e358cd6e885f95b088ddd9ee362a56e389a1369b80a7205bf9b8551"
+        }
+      ]
+    },
+    {
+      "owner": "EvtAvatarEnterFocusNotify",
+      "field": "KHOIOJCHLNL",
+      "old": 20007,
+      "current": 5,
+      "reference_server_number": 13,
+      "raw_field71": "IDCJNFNEFDD",
+      "native_type71": 48931,
+      "native_type72": 59261,
+      "raw_field72": "KIDGFLIHGFD",
+      "current_field_name": "enter_normal_focus_shoot",
+      "protobuf_type": 8,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        294416,
+        294418,
+        294420,
+        294421,
+        294422,
+        294423,
+        294424,
+        294425,
+        294428,
+        294430
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xb7d5a2c",
+          "handler72": "0xb6298bc",
+          "instruction_offset": 296,
+          "offset71": 53,
+          "offset72": 46,
+          "instruction": "strb",
+          "mode": "store",
+          "normalized_body_sha256": "dd62c5e95e358cd6e885f95b088ddd9ee362a56e389a1369b80a7205bf9b8551"
+        }
+      ]
+    },
+    {
+      "owner": "EvtAvatarEnterFocusNotify",
+      "field": "FDCDPKDKNAL",
+      "old": 20008,
+      "current": 7,
+      "reference_server_number": 6,
+      "raw_field71": "PKLCFHBELHB",
+      "native_type71": 48931,
+      "native_type72": 59261,
+      "raw_field72": "DFBEMJDOMIF",
+      "current_field_name": "enter_holding_focus_shoot",
+      "protobuf_type": 8,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        294416,
+        294418,
+        294420,
+        294421,
+        294422,
+        294423,
+        294424,
+        294425,
+        294428,
+        294430
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xb7d5a2c",
+          "handler72": "0xb6298bc",
+          "instruction_offset": 316,
+          "offset71": 49,
+          "offset72": 42,
+          "instruction": "strb",
+          "mode": "store",
+          "normalized_body_sha256": "dd62c5e95e358cd6e885f95b088ddd9ee362a56e389a1369b80a7205bf9b8551"
+        }
+      ]
+    },
+    {
+      "owner": "EvtAvatarEnterFocusNotify",
+      "field": "HFFPEFBLBPC",
+      "old": 20009,
+      "current": 12,
+      "reference_server_number": 4,
+      "raw_field71": "AOOCOLABLIO",
+      "native_type71": 48931,
+      "native_type72": 59261,
+      "raw_field72": "DOBAHLDIOLK",
+      "current_field_name": "use_gyro",
+      "protobuf_type": 8,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        294416,
+        294418,
+        294420,
+        294421,
+        294422,
+        294423,
+        294424,
+        294425,
+        294428,
+        294430
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xb7d5a2c",
+          "handler72": "0xb6298bc",
+          "instruction_offset": 236,
+          "offset71": 50,
+          "offset72": 41,
+          "instruction": "strb",
+          "mode": "store",
+          "normalized_body_sha256": "dd62c5e95e358cd6e885f95b088ddd9ee362a56e389a1369b80a7205bf9b8551"
+        }
+      ]
+    },
+    {
+      "owner": "EvtAvatarEnterFocusNotify",
+      "field": "JHJBHFINKDK",
+      "old": 20010,
+      "current": 11,
+      "reference_server_number": 11,
+      "raw_field71": "KLDOBEPJGEA",
+      "native_type71": 48931,
+      "native_type72": 59261,
+      "raw_field72": "CEFPJEFMIFI",
+      "current_field_name": "use_focus_sticky",
+      "protobuf_type": 8,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        294416,
+        294418,
+        294420,
+        294421,
+        294422,
+        294423,
+        294424,
+        294425,
+        294428,
+        294430
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xb7d5a2c",
+          "handler72": "0xb6298bc",
+          "instruction_offset": 188,
+          "offset71": 39,
+          "offset72": 49,
+          "instruction": "strb",
+          "mode": "store",
+          "normalized_body_sha256": "dd62c5e95e358cd6e885f95b088ddd9ee362a56e389a1369b80a7205bf9b8551"
+        }
+      ]
+    },
+    {
+      "owner": "EvtAvatarEnterFocusNotify",
+      "field": "CFNHGMLGPHP",
+      "old": 20011,
+      "current": 13,
+      "reference_server_number": 14,
+      "raw_field71": "BNKBCIONEGB",
+      "native_type71": 48931,
+      "native_type72": 59261,
+      "raw_field72": "NKILEJBMONM",
+      "current_field_name": "disable_aim_layer",
+      "protobuf_type": 8,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        294416,
+        294418,
+        294420,
+        294421,
+        294422,
+        294423,
+        294424,
+        294425,
+        294428,
+        294430
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xb7d5a2c",
+          "handler72": "0xb6298bc",
+          "instruction_offset": 356,
+          "offset71": 52,
+          "offset72": 43,
+          "instruction": "strb",
+          "mode": "store",
+          "normalized_body_sha256": "dd62c5e95e358cd6e885f95b088ddd9ee362a56e389a1369b80a7205bf9b8551"
+        }
+      ]
+    },
+    {
+      "owner": "EvtBulletMoveNotify",
+      "field": "EOCBPPKDLBH",
+      "old": 20000,
+      "current": 14,
+      "reference_server_number": 15,
+      "raw_field71": "JONDPALHPCF",
+      "native_type71": 71741,
+      "native_type72": 39365,
+      "raw_field72": "NGLAODHCNHB",
+      "current_field_name": "NGLAODHCNHB",
+      "protobuf_type": 8,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        198050,
+        198051,
+        198052
+      ],
+      "independent_native_bodies": 2,
+      "has_supported_direct_callees": true,
+      "native_instructions": [
+        {
+          "handler71": "0xb7c9da4",
+          "handler72": "0x9193cd0",
+          "instruction_offset": 92,
+          "offset71": 40,
+          "offset72": 40,
+          "instruction": "ldrb",
+          "mode": "load",
+          "normalized_body_sha256": "e7228c0e8a1c02d5379129df77a581c76bbe32a716921eef96ece29ddca3b188"
+        },
+        {
+          "handler71": "0xb7d07b4",
+          "handler72": "0x9198fbc",
+          "instruction_offset": 208,
+          "offset71": 40,
+          "offset72": 40,
+          "instruction": "strb",
+          "mode": "store",
+          "normalized_body_sha256": "ae334bd6b8e6bfc10758c62a0a120cf637ddcfae456429cce2d61f36b4dedb4b"
+        }
+      ]
+    },
+    {
+      "owner": "ParentQuest",
+      "field": "DDHKDIOKFIF",
+      "old": 20003,
+      "current": 4,
+      "reference_server_number": 7,
+      "raw_field71": "DHMHGDGIMAD",
+      "native_type71": 80402,
+      "native_type72": 38246,
+      "raw_field72": "JCHFKGKOJPH",
+      "current_field_name": "JCHFKGKOJPH",
+      "protobuf_type": 8,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        192756
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": true,
+      "native_instructions": [
+        {
+          "handler71": "0x85e2a34",
+          "handler72": "0xad361ac",
+          "instruction_offset": 28,
+          "offset71": 93,
+          "offset72": 102,
+          "instruction": "ldrb",
+          "mode": "load",
+          "normalized_body_sha256": "a57f22eec6212dcef8943b8ae5a04f2fbaa3768ac6ac233a7288dab163a2c2b1"
+        }
+      ]
+    },
+    {
+      "owner": "GadgetInteractReq",
+      "field": "ALLPOOBNNPH",
+      "old": 20007,
+      "current": 15,
+      "reference_server_number": 12,
+      "raw_field71": "KGLMOAAIOML",
+      "native_type71": 82713,
+      "native_type72": 18226,
+      "raw_field72": "OABIMKEIKDP",
+      "current_field_name": "ui_interact_id",
+      "protobuf_type": 13,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        88322,
+        88327,
+        88329
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": true,
+      "native_instructions": [
+        {
+          "handler71": "0x81a6d2c",
+          "handler72": "0xbcfde04",
+          "instruction_offset": 116,
+          "offset71": 40,
+          "offset72": 40,
+          "instruction": "str",
+          "mode": "store",
+          "normalized_body_sha256": "11644c2280b540f67ce0581276482993af2f013de38b1f45c8d21a0daf2f7cab"
+        }
+      ]
+    },
+    {
+      "owner": "GetGachaInfoRsp",
+      "field": "BKMCHIJHJJE",
+      "old": 20000,
+      "current": 14,
+      "reference_server_number": 6,
+      "raw_field71": "MPMJPLKFKII",
+      "native_type71": 46886,
+      "native_type72": 56346,
+      "raw_field72": "HHHOIIDMFED",
+      "current_field_name": "is_under_general_restrict",
+      "protobuf_type": 8,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        279120,
+        279121,
+        279122,
+        279123
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0x120938b8",
+          "handler72": "0xdb3085c",
+          "instruction_offset": 164,
+          "offset71": 41,
+          "offset72": 32,
+          "instruction": "ldrb",
+          "mode": "load",
+          "normalized_body_sha256": "91e0f8c797e76b8daeea79f271b1113207426e8f63b47bc5cb03e080b0532b04"
+        }
+      ]
+    },
+    {
+      "owner": "GetGachaInfoRsp",
+      "field": "LHBELFNPPNK",
+      "old": 20001,
+      "current": 1,
+      "reference_server_number": 4,
+      "raw_field71": "IMOKNHBMEAK",
+      "native_type71": 46886,
+      "native_type72": 56346,
+      "raw_field72": "GGLPKHEOIPI",
+      "current_field_name": "is_under_minors_restrict",
+      "protobuf_type": 8,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        279120,
+        279121,
+        279122,
+        279123
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0x120938b8",
+          "handler72": "0xdb3085c",
+          "instruction_offset": 160,
+          "offset71": 40,
+          "offset72": 33,
+          "instruction": "ldrb",
+          "mode": "load",
+          "normalized_body_sha256": "91e0f8c797e76b8daeea79f271b1113207426e8f63b47bc5cb03e080b0532b04"
+        }
+      ]
+    },
+    {
+      "owner": "PlayerEnterDungeonReq",
+      "field": "CCIOMCLOGDK",
+      "old": 20001,
+      "current": 5,
+      "reference_server_number": 9,
+      "raw_field71": "KCEKHDKFPFB",
+      "native_type71": 41434,
+      "native_type72": 82628,
+      "raw_field72": "PNPHGNCFHHC",
+      "current_field_name": "PNPHGNCFHHC",
+      "protobuf_type": 13,
+      "protobuf_cardinality": 1,
+      "known_native_field_controls": [
+        411830,
+        411831,
+        411832
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xd615c30",
+          "handler72": "0xf871894",
+          "instruction_offset": 120,
+          "offset71": 44,
+          "offset72": 48,
+          "instruction": "str",
+          "mode": "store",
+          "normalized_body_sha256": "8e4adeda3e10ea078d7fed0c4ad5a67cb9518662e5b6930a04e3d19525ccd35a"
+        }
+      ]
+    },
+    {
+      "owner": "ForgeQueueManipulateRsp",
+      "field": "return_item_list",
+      "old": 20000,
+      "current": 8,
+      "native_type72": 51216,
+      "protobuf_type": 11,
+      "protobuf_cardinality": 3,
+      "independent_collection_type_audit": "native-proto-collection-type-correspondences.json",
+      "native_instructions": [
+        {
+          "handler71": "0x117917b8",
+          "handler72": "0xc07ae88",
+          "instruction_offset": 964,
+          "offset71": 24,
+          "offset72": 40,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "6e8e5dce4eb8d9dcc77b8459badc62c8bfbf6256b356cb169df6624ec081a84b"
+        },
+        {
+          "handler71": "0x117917b8",
+          "handler72": "0xc07ae88",
+          "instruction_offset": 364,
+          "offset71": 24,
+          "offset72": 40,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "6e8e5dce4eb8d9dcc77b8459badc62c8bfbf6256b356cb169df6624ec081a84b"
+        },
+        {
+          "handler71": "0x117917b8",
+          "handler72": "0xc07ae88",
+          "instruction_offset": 484,
+          "offset71": 24,
+          "offset72": 40,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "6e8e5dce4eb8d9dcc77b8459badc62c8bfbf6256b356cb169df6624ec081a84b"
+        },
+        {
+          "handler71": "0x117917b8",
+          "handler72": "0xc07ae88",
+          "instruction_offset": 596,
+          "offset71": 24,
+          "offset72": 40,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "6e8e5dce4eb8d9dcc77b8459badc62c8bfbf6256b356cb169df6624ec081a84b"
+        }
+      ]
+    },
+    {
+      "owner": "ForgeQueueManipulateRsp",
+      "field": "output_item_list",
+      "old": 20001,
+      "current": 15,
+      "native_type72": 51216,
+      "protobuf_type": 11,
+      "protobuf_cardinality": 3,
+      "independent_collection_type_audit": "native-proto-collection-type-correspondences.json",
+      "native_instructions": [
+        {
+          "handler71": "0x117917b8",
+          "handler72": "0xc07ae88",
+          "instruction_offset": 84,
+          "offset71": 40,
+          "offset72": 24,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "6e8e5dce4eb8d9dcc77b8459badc62c8bfbf6256b356cb169df6624ec081a84b"
+        },
+        {
+          "handler71": "0x117917b8",
+          "handler72": "0xc07ae88",
+          "instruction_offset": 132,
+          "offset71": 40,
+          "offset72": 24,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "6e8e5dce4eb8d9dcc77b8459badc62c8bfbf6256b356cb169df6624ec081a84b"
+        },
+        {
+          "handler71": "0x117917b8",
+          "handler72": "0xc07ae88",
+          "instruction_offset": 244,
+          "offset71": 40,
+          "offset72": 24,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "6e8e5dce4eb8d9dcc77b8459badc62c8bfbf6256b356cb169df6624ec081a84b"
+        },
+        {
+          "handler71": "0x117917b8",
+          "handler72": "0xc07ae88",
+          "instruction_offset": 348,
+          "offset71": 40,
+          "offset72": 24,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "6e8e5dce4eb8d9dcc77b8459badc62c8bfbf6256b356cb169df6624ec081a84b"
+        }
+      ]
+    },
+    {
+      "owner": "PersonalLineAllDataRsp",
+      "field": "ongoing_personal_line_list",
+      "old": 20000,
+      "current": 13,
+      "native_type72": 55293,
+      "protobuf_type": 13,
+      "protobuf_cardinality": 3,
+      "independent_collection_type_audit": "native-proto-collection-type-correspondences.json",
+      "native_instructions": [
+        {
+          "handler71": "0x85eb9b0",
+          "handler72": "0xb2bc048",
+          "instruction_offset": 136,
+          "offset71": 32,
+          "offset72": 40,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "a56675cbce1634b7b797c9738ecf2da45f949e46d90d430432e0d717d82ef2fc"
+        }
+      ]
+    },
+    {
+      "owner": "PersonalLineAllDataRsp",
+      "field": "can_be_unlocked_personal_line_list",
+      "old": 20001,
+      "current": 10,
+      "native_type72": 55293,
+      "protobuf_type": 13,
+      "protobuf_cardinality": 3,
+      "independent_collection_type_audit": "native-proto-collection-type-correspondences.json",
+      "native_instructions": [
+        {
+          "handler71": "0x85eb9b0",
+          "handler72": "0xb2bc048",
+          "instruction_offset": 176,
+          "offset71": 48,
+          "offset72": 24,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "a56675cbce1634b7b797c9738ecf2da45f949e46d90d430432e0d717d82ef2fc"
+        }
+      ]
+    },
+    {
+      "owner": "TakeFurnitureMakeRsp",
+      "field": "return_item_list",
+      "old": 20000,
+      "current": 7,
+      "native_type72": 64167,
+      "protobuf_type": 11,
+      "protobuf_cardinality": 3,
+      "independent_collection_type_audit": "native-proto-collection-type-correspondences.json",
+      "native_instructions": [
+        {
+          "handler71": "0x11460f5c",
+          "handler72": "0xe0e4b38",
+          "instruction_offset": 544,
+          "offset71": 32,
+          "offset72": 24,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "4fa1c60ea7fd4917b58d553fcfae1827a5c10e23cb9607bb58154d8c4e427e40"
+        }
+      ]
+    },
+    {
+      "owner": "TakeFurnitureMakeRsp",
+      "field": "output_item_list",
+      "old": 20001,
+      "current": 1,
+      "native_type72": 64167,
+      "protobuf_type": 11,
+      "protobuf_cardinality": 3,
+      "independent_collection_type_audit": "native-proto-collection-type-correspondences.json",
+      "native_instructions": [
+        {
+          "handler71": "0x11460f5c",
+          "handler72": "0xe0e4b38",
+          "instruction_offset": 152,
+          "offset71": 40,
+          "offset72": 32,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "4fa1c60ea7fd4917b58d553fcfae1827a5c10e23cb9607bb58154d8c4e427e40"
+        }
+      ]
+    },
+    {
+      "owner": "_TakeAllForgeOutputRsp",
+      "field": "output_item_list",
+      "old": 20000,
+      "current": 14,
+      "native_type72": 20877,
+      "protobuf_type": 11,
+      "protobuf_cardinality": 3,
+      "independent_collection_type_audit": "native-proto-collection-type-correspondences.json",
+      "native_instructions": [
+        {
+          "handler71": "0x117982d8",
+          "handler72": "0xc07bd3c",
+          "instruction_offset": 148,
+          "offset71": 32,
+          "offset72": 48,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "bc868fff8d588e6f2f099b8f65cbd05bdd3833f67e7150adff734bbb9be06ff7"
+        },
+        {
+          "handler71": "0x117982d8",
+          "handler72": "0xc07bd3c",
+          "instruction_offset": 196,
+          "offset71": 32,
+          "offset72": 48,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "bc868fff8d588e6f2f099b8f65cbd05bdd3833f67e7150adff734bbb9be06ff7"
+        },
+        {
+          "handler71": "0x117982d8",
+          "handler72": "0xc07bd3c",
+          "instruction_offset": 308,
+          "offset71": 32,
+          "offset72": 48,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "bc868fff8d588e6f2f099b8f65cbd05bdd3833f67e7150adff734bbb9be06ff7"
+        },
+        {
+          "handler71": "0x117982d8",
+          "handler72": "0xc07bd3c",
+          "instruction_offset": 412,
+          "offset71": 32,
+          "offset72": 48,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "bc868fff8d588e6f2f099b8f65cbd05bdd3833f67e7150adff734bbb9be06ff7"
+        }
+      ]
+    },
+    {
+      "owner": "_TakeAllForgeOutputRsp",
+      "field": "return_item_list",
+      "old": 20001,
+      "current": 8,
+      "native_type72": 20877,
+      "protobuf_type": 11,
+      "protobuf_cardinality": 3,
+      "independent_collection_type_audit": "native-proto-collection-type-correspondences.json",
+      "native_instructions": [
+        {
+          "handler71": "0x117982d8",
+          "handler72": "0xc07bd3c",
+          "instruction_offset": 1172,
+          "offset71": 24,
+          "offset72": 40,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "bc868fff8d588e6f2f099b8f65cbd05bdd3833f67e7150adff734bbb9be06ff7"
+        },
+        {
+          "handler71": "0x117982d8",
+          "handler72": "0xc07bd3c",
+          "instruction_offset": 428,
+          "offset71": 24,
+          "offset72": 40,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "bc868fff8d588e6f2f099b8f65cbd05bdd3833f67e7150adff734bbb9be06ff7"
+        },
+        {
+          "handler71": "0x117982d8",
+          "handler72": "0xc07bd3c",
+          "instruction_offset": 552,
+          "offset71": 24,
+          "offset72": 40,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "bc868fff8d588e6f2f099b8f65cbd05bdd3833f67e7150adff734bbb9be06ff7"
+        },
+        {
+          "handler71": "0x117982d8",
+          "handler72": "0xc07bd3c",
+          "instruction_offset": 664,
+          "offset71": 24,
+          "offset72": 40,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "bc868fff8d588e6f2f099b8f65cbd05bdd3833f67e7150adff734bbb9be06ff7"
+        }
+      ]
+    },
+    {
+      "owner": "EchoShellDetailInfo",
+      "field": "FHIALFGIKKC",
+      "old": 20000,
+      "current": 2,
+      "reference_server_number": 5,
+      "raw_field71": "HOENPENEMNL",
+      "native_type71": 18881,
+      "native_type72": 54227,
+      "raw_field72": "BKHJFLIGNGN",
+      "current_field_name": "BKHJFLIGNGN",
+      "protobuf_type": 13,
+      "protobuf_cardinality": 3,
+      "known_native_field_controls": [
+        268141
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": true,
+      "native_instructions": [
+        {
+          "handler71": "0x9bfbb64",
+          "handler72": "0xc488008",
+          "instruction_offset": 108,
+          "offset71": 32,
+          "offset72": 48,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "e7364c44c40ef962c29c9cda89c3549e9aa6e94b0c16051dfb77fffaf4512e74"
+        }
+      ]
+    },
+    {
+      "owner": "_TemplatePotionInfo",
+      "field": "FEFKMIBCKAN",
+      "old": 20002,
+      "current": 2,
+      "reference_server_number": 8,
+      "raw_field71": "NOMKDELEMJM",
+      "native_type71": 32285,
+      "native_type72": 84131,
+      "raw_field72": "BNNOOIIPKCN",
+      "current_field_name": "BNNOOIIPKCN",
+      "protobuf_type": 13,
+      "protobuf_cardinality": 3,
+      "known_native_field_controls": [
+        419009
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": true,
+      "native_instructions": [
+        {
+          "handler71": "0x102b32f8",
+          "handler72": "0xb5621dc",
+          "instruction_offset": 312,
+          "offset71": 24,
+          "offset72": 24,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "c5f214bfa174726ae25db3aa3d78f738d405cd7a04598be9f1947f2444fdf8f1"
+        },
+        {
+          "handler71": "0x102b32f8",
+          "handler72": "0xb5621dc",
+          "instruction_offset": 112,
+          "offset71": 24,
+          "offset72": 24,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "c5f214bfa174726ae25db3aa3d78f738d405cd7a04598be9f1947f2444fdf8f1"
+        }
+      ]
+    },
+    {
+      "owner": "_AutochessRecordSocialBrief",
+      "field": "HDKMGJJKEMA",
+      "old": 20001,
+      "current": 1,
+      "reference_server_number": 1,
+      "raw_field71": "PJBCNHMAFEA",
+      "native_type71": 54763,
+      "native_type72": 11114,
+      "raw_field72": "DAPAEHKGBIH",
+      "current_field_name": "DAPAEHKGBIH",
+      "protobuf_type": 13,
+      "protobuf_cardinality": 3,
+      "known_native_field_controls": [
+        50494,
+        50495,
+        50496,
+        50503
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": false,
+      "native_instructions": [
+        {
+          "handler71": "0xbe9bc60",
+          "handler72": "0xfe24ef8",
+          "instruction_offset": 588,
+          "offset71": 24,
+          "offset72": 32,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "2b6961fd2d6e711be8d63aa9463a45bf8b644b542fcc530874f238e1b5f21540"
+        },
+        {
+          "handler71": "0xbe9bc60",
+          "handler72": "0xfe24ef8",
+          "instruction_offset": 656,
+          "offset71": 24,
+          "offset72": 32,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "2b6961fd2d6e711be8d63aa9463a45bf8b644b542fcc530874f238e1b5f21540"
+        }
+      ]
+    },
+    {
+      "owner": "AvatarExpeditionStartRsp",
+      "field": "ILBIKNLHAKE",
+      "old": 20000,
+      "current": 12,
+      "reference_server_number": 1,
+      "raw_field71": "KODELLHACAM",
+      "native_type71": 59762,
+      "native_type72": 87213,
+      "raw_field72": "NEFAGAOLLPG",
+      "current_field_name": "NEFAGAOLLPG",
+      "protobuf_type": 5,
+      "protobuf_cardinality": 3,
+      "known_native_field_controls": [
+        433995,
+        433997,
+        433998
+      ],
+      "independent_native_bodies": 1,
+      "has_supported_direct_callees": true,
+      "native_instructions": [
+        {
+          "handler71": "0x10539434",
+          "handler72": "0xce014a8",
+          "instruction_offset": 416,
+          "offset71": 24,
+          "offset72": 32,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "07917897d923875a41c2809278b9a9a5e1d98833230b06b148df669fd7543865"
+        },
+        {
+          "handler71": "0x10539434",
+          "handler72": "0xce014a8",
+          "instruction_offset": 604,
+          "offset71": 24,
+          "offset72": 32,
+          "instruction": "ldr",
+          "mode": "load",
+          "normalized_body_sha256": "07917897d923875a41c2809278b9a9a5e1d98833230b06b148df669fd7543865"
+        }
+      ]
+    }
+  ],
+  "newly_enabled_opcode_count": 34,
+  "corrected_existing_opcode_count": 6,
+  "displaced_legacy_fields": [
+    {
+      "owner": "ActivityInfo",
+      "field": "is_banner_cleared",
+      "old": 10,
+      "parked": 20008,
+      "replaces": "is_play_open_anim",
+      "reason": "Preserve the old API field while reserving the verified current wire slot for its named role"
+    },
+    {
+      "owner": "BattlePassProduct",
+      "field": "LJKGANJLFNJ",
+      "old": 5,
+      "parked": 20001,
+      "replaces": "extra_product_id",
+      "reason": "Preserve the old API field while reserving the verified current wire slot for its named role"
+    },
+    {
+      "owner": "GetPlayerTokenReq",
+      "field": "FDCECMCNKGC",
+      "old": 965,
+      "parked": 20003,
+      "replaces": "_gate_ticket",
+      "reason": "Preserve the old API field while reserving the verified current wire slot for its named role"
+    }
+  ],
+  "native_ascension_sender_cases": 22,
+  "native_field_instruction_cases": 332,
+  "additional_native_flow_verifications": [
+    {
+      "file": "verified-achievement-profile-requests.json",
+      "passed": 267,
+      "scope": "Original achievement/category claim UI gates, typed senders, native list add/contains, pooled-list cleanup and profile query/caller in both clients. Dictionary presence/get, allocation, repeated-field copying, pool callbacks, transport and final UI service use controlled fixtures. No IFix, native hash-table internals, error branches, live server eligibility or network interoperability is claimed."
+    },
+    {
+      "file": "verified-activity-watcher-claim.json",
+      "passed": 301,
+      "scope": "Original activity claim sender and one globally unique caller execute in both builds, covering activity/watcher field roles, uint32 bits, independent readonly checks and missing lookup suppression. Allocation, lookup data, readonly status and transport are controlled fixtures. Other unique caller contexts are statically checked; real claim eligibility, IFix and live networking are not exercised."
+    },
+    {
+      "file": "verified-coop-cancel-request.json",
+      "passed": 81,
+      "scope": "Original unique caller and typed request sender execute with different cached chapter IDs, exact gate values and readonly fixtures in both builds. Allocation, readonly status and transport use controlled fixtures; IFix and live coop task cancellation are not exercised."
+    },
+    {
+      "file": "verified-existing-empty-requests.json",
+      "passed": 12,
+      "scope": "Revalidates six existing supplied-NT or native-backed request names, native empty schemas and original current CmdId getters for requests and their already-bound replies. Corrects three stale active bindings while enabling three missing ones. This does not add recovered aliases or establish live feature behavior. Existing handler behavior is retained, including empty success replies for unimplemented map content."
+    },
+    {
+      "file": "verified-home-module-request.json",
+      "passed": 41,
+      "scope": "Original home-manager wrapper and request sender in both builds, target uint32 bits, readonly fixture and exact ordering of the post-send flag write. Allocation, readonly state and transport use controlled fixtures. Global CFG uniqueness, response pairing by transaction, flag business meaning, IFix and live realm switching are not claimed."
+    },
+    {
+      "file": "verified-invitation-result-requests.json",
+      "passed": 243,
+      "scope": "Original three typed uint32/bool senders and current native CmdId getters. Both invitation dispatchers are statically matched with exact sender call positions and an independently named dungeon branch. Allocation, readonly flags and transport are fixtures. Dispatcher execution, request/response pairing, real invitation acceptance and live networking are not exercised; server bindings remain withheld."
+    },
+    {
+      "file": "verified-mail-requests.json",
+      "passed": 133,
+      "scope": "Original native mail senders, single/favorite deletion, single and batch attachment claim loops, read-before-claim sequence, list add/clear and attachment/special-row predicates are executed in both builds. Typed repeated-field clear/copy, row lookup, allocation, capacity checks, read-cache pre-send callback and transport use controlled fixtures. IFix, error/overflow branches, over-capacity warnings and live network sessions are not exercised. No request/response transaction is inferred solely from sender shape."
+    },
+    {
+      "file": "verified-match-and-collection-requests.json",
+      "passed": 397,
+      "scope": "Original match/draft sender instructions, post-send branches and repeated-ID copy/add loops execute in both builds; current CmdId getters execute. Config ID decoding executes with synthetic substitution tables and is not a wire mask. Allocation, readonly flags, typed collection operations, config lookup, local callback lookup/action and transport use fixtures. Callback business identities, caller execution, IFix replacement paths, complete request/reply transactions and live networking are outside scope."
+    },
+    {
+      "file": "verified-mp-play-owner-requests.json",
+      "passed": 162,
+      "scope": "Original MP-play invitation/check request bodies and CmdId getters execute in both builds. Declared MP-play field names distinguish same-shaped scene-play counterparts; full native ABI/callee identities and all module senders are checked. Allocation, readonly results, cached state, post-send collection cleanup and transport use fixtures. Response schemas are independent naming controls, not captured transaction proof. IFix and live networking are outside scope."
+    },
+    {
+      "file": "verified-multiword-requests.json",
+      "passed": 1086,
+      "scope": "Original two-word sender bodies, scene invitation sender and current CmdId getters execute in both builds. Exact argument moves and corresponding field-store instructions disambiguate reordered uint32 fields. The scene invitation uses its independently verified owner-check companion and the same cached skip-match byte. Allocation, independent readonly states, the post-send cleanup and transport are fixtures; IFix is disabled. Caller execution, business-domain validation, paired responses and live networking are not exercised; high-bit values only test serialization bit preservation."
+    },
+    {
+      "file": "verified-namecard-backup-requests.json",
+      "passed": 100,
+      "scope": "Original empty request sender, both confirmation-gated team deletion senders, selected-index resolver and ordinary list getter in both builds. Allocation, readonly flags, synthetic team lists, transport and the final dialog action use controlled fixtures. Out-of-range index error paths, IFix and live network sessions are not exercised."
+    },
+    {
+      "file": "verified-online-player-query.json",
+      "passed": 5,
+      "scope": "Original full multiplayer-lobby initializer, empty sender and native ordinary-list clear execute in both clients. UI services, metadata globals, delegate/packet allocation, widget callback and transport use controlled fixtures. Matching fixture call order is supporting flow evidence, not an independent proof of every UI callee identity. IFix, null/error branches, lobby refresh timing and live networking are not exercised."
+    },
+    {
+      "file": "verified-profile-home-requests.json",
+      "passed": 244,
+      "scope": "Original request/reply bodies, changed-card caller, nonnull string check, half-second request throttle and selected music config decoder. Allocator, readonly state, card membership, engine clock, UI/coroutine services and transport are controlled fixtures; the config substitution table is synthetic. Null string throwing, IFix replacement branches and live Android/network transactions are outside this verification."
+    },
+    {
+      "file": "verified-quick-enter-reply-adjudication.json",
+      "passed": 11,
+      "scope": "Original reply error/success branches in both clients and the current CmdId getter execute. The semantic name uses bidirectionally unique typed consumers within independently paired modules and an independently verified request. Error UI and IFix-disabled flags are fixtures. The frozen public baseline remains unchanged; only the documented weaker alias is replaced. No live pending-request transaction or recovered original 7.2 source spelling is claimed."
+    },
+    {
+      "file": "verified-remaining-simple-requests.json",
+      "passed": 816,
+      "scope": "Original primitive/empty request senders and current CmdId getters execute. Caller identity uses globally unique normalized bodies, exact sender call positions and at least three independently supported other calls. Allocation, per-field readonly results, cached scene-play bool and transport are fixtures; IFix is disabled. Caller execution, request/response transactions, server business behavior and live networking are not exercised. Unknown field roles remain unnamed; no mask or server binding is inferred from sender shape alone."
+    },
+    {
+      "file": "verified-scoped-reply-consumers.json",
+      "passed": 160,
+      "scope": "Original retcode branches and two native event producers execute in both builds, plus current CmdId getters. Named reply identities use complete paired-module consumer sets, full native ABI, closed field-type compatibility, independently supported callees/events and reverse conflict checks. Error/UI services, boxing, event construction and dispatch are fixtures; IFix is disabled. Extra unconsumed field names and live request/response transactions are not inferred."
+    },
+    {
+      "file": "verified-story-home-requests.json",
+      "passed": 41,
+      "scope": "Original typed request senders in both builds and native CmdId getters. Unique caller contexts are checked statically. Allocation, readonly flags, home-state return four and transport are controlled fixtures. The home edit warning branch and its unresolved getter, IFix, server reward/business behavior, home scene reply pairing and live networking are not exercised."
+    },
+    {
+      "file": "verified-tower-home-choose.json",
+      "passed": 113,
+      "scope": "Original request senders, both realm confirmation callbacks and tower reply success/error consumer execute in both builds. Allocation, readonly flags, coroutine service and transport use fixtures. The response buff-ID name uses the matched reference shape and shared request symbol; no native reply buff-ID consumption, live request/response transaction, IFix or live game session is claimed."
+    },
+    {
+      "file": "verified-trial-avatar-reward-request.json",
+      "passed": 41,
+      "scope": "Both retained trial-avatar interfaces and original sender execute in both builds, covering zero-index suppression, uint32 index bits and readonly fixtures. Allocation, readonly status and transport are controlled fixtures; IFix and real reward eligibility/granting are not exercised."
+    }
+  ],
+  "main_request_identities_with_server_binding_withheld": [
+    {
+      "name": "PlayerApplyEnterMpResultReq",
+      "cmd": 4544,
+      "reason": "The corresponding current response identity/payload still needs verification."
+    },
+    {
+      "name": "PlayerApplyEnterHomeResultReq",
+      "cmd": 7623,
+      "reason": "The corresponding current response identity/payload still needs verification."
+    },
+    {
+      "name": "PlayerApplyHomeCreateBlueprintResultReq",
+      "cmd": 25479,
+      "reason": "The corresponding current response identity/payload still needs verification."
+    },
+    {
+      "name": "HomeSceneInitFinishReq",
+      "cmd": 28172,
+      "reason": "The paired HomeSceneInitFinishRsp is not yet identified in the current build."
+    }
+  ],
+  "disabled_opcode_source_audit": {
+    "scope": "All static Java source references, excluding the constant table and naming utility; references do not prove runtime reachability.",
+    "source_referenced_zero_constants": 125,
+    "zero_handler_annotations": 49,
+    "records": [
+      {
+        "name": "AddBackupAvatarTeamReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerAddBackupAvatarTeamReq.java",
+            "line": 6
+          }
+        ]
+      },
+      {
+        "name": "AddCustomTeamReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerAddCustomTeamReq.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "AddCustomTeamRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketAddCustomTeamRsp.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "AvatarChangeElementTypeRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketAvatarChangeElementTypeRsp.java",
+            "line": 9
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketAvatarChangeElementTypeRsp.java",
+            "line": 13
+          }
+        ]
+      },
+      {
+        "name": "AvatarDelNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketAvatarDelNotify.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "BuyBattlePassLevelRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketBuyBattlePassLevelRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "CheckUgcStateReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerCheckUgcStateReq.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "CheckUgcStateRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketCheckUgcStateRsp.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "CheckUgcUpdateReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerCheckUgcUpdateReq.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "ClientAbilitiesInitFinishCombineRsp1",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerClientAbilitiesInitFinishCombineNotify.java",
+            "line": 25
+          }
+        ]
+      },
+      {
+        "name": "ClientAbilitiesInitFinishCombineRsp2",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerClientAbilitiesInitFinishCombineNotify.java",
+            "line": 26
+          }
+        ]
+      },
+      {
+        "name": "CombineReqUnionCmd",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/game/GameServerPacketHandler.java",
+            "line": 63
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/game/GameServerPacketHandler.java",
+            "line": 64
+          }
+        ]
+      },
+      {
+        "name": "CustomTeamListNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketCustomTeamListNotify.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "DeleteFriendReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerDeleteFriendReq.java",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "name": "DungeonPlayerDieRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketDungeonPlayerDieRsp.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "DungeonRestartReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerDungeonRestartReq.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "DungeonRestartRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerDungeonRestartReq.java",
+            "line": 25
+          }
+        ]
+      },
+      {
+        "name": "ELBLIGDECNMReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerELBLIGDECNMReq.java",
+            "line": 13
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerELBLIGDECNMReq.java",
+            "line": 20
+          }
+        ]
+      },
+      {
+        "name": "ELBLIGDECNMRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerELBLIGDECNMReq.java",
+            "line": 19
+          }
+        ]
+      },
+      {
+        "name": "ELBLIGDECNMRsp2",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerELBLIGDECNMReq.java",
+            "line": 18
+          }
+        ]
+      },
+      {
+        "name": "EntityAiKillSelfNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerEntityAiKillSelfNotify.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "ExecuteGadgetLuaRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketExecuteGadgetLuaRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "ExecuteGroupTriggerRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketExecuteGroupTriggerRsp.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "ForgeGetQueueDataReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerForgeGetQueueDataReq.java",
+            "line": 6
+          }
+        ]
+      },
+      {
+        "name": "GetAllH5ActivityInfoReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerGetAllH5ActivityInfoReq.java",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "name": "GetFriendShowAvatarInfoReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerGetFriendShowAvatarInfoReq.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "GetFriendShowNameCardInfoReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerGetFriendShowNameCardInfoReq.java",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "name": "GetHeadFrameDataReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerGetHeadFrameDataReq.java",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "name": "GetHomeLevelUpRewardRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketGetHomeLevelUpRewardRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "GetPlayerBlacklistRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerGetPlayerBlacklistReq.java",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "name": "GetUgcBriefInfoReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerGetUgcBriefInfoReq.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "GetWorldMpInfoReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerGetWorldMpInfoReq.java",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "name": "GetWorldMpInfoRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketGetWorldMpInfoRsp.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "GmTalkReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/dispatch/PacketIds.java",
+            "line": 12
+          }
+        ]
+      },
+      {
+        "name": "HPNIJELOPEB_Req",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerHPNIJELOPEB_Req.java",
+            "line": 13
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerHPNIJELOPEB_Req.java",
+            "line": 19
+          }
+        ]
+      },
+      {
+        "name": "HPNIJELOPEB_Rsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerHPNIJELOPEB_Req.java",
+            "line": 18
+          }
+        ]
+      },
+      {
+        "name": "HomeAvatarSummonEventRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketHomeAvatarSummonEventRsp.java",
+            "line": 10
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketHomeAvatarSummonEventRsp.java",
+            "line": 18
+          }
+        ]
+      },
+      {
+        "name": "HomeAvatarSummonFinishRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketHomeAvatarSummonFinishRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "HomeGetBasicInfoReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerHomeGetBasicInfoReq.java",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "name": "HomeGetOnlineStatusReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerHomeGetOnlineStatusReq.java",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "name": "HomeResourceTakeFetterExpReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerHomeResourceTakeFetterExpReq.java",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "name": "HomeResourceTakeHomeCoinReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerHomeResourceTakeHomeCoinReq.java",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "name": "HomeResourceTakeHomeCoinRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketHomeResourceTakeHomeCoinRsp.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "HomeSceneInitFinishReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerHomeSceneInitFinishReq.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "HomeSceneInitFinishRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketHomeSceneInitFinishRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "HomeSceneJumpRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketHomeSceneJumpRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "HomeTransferRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerHomeTransferReq.java",
+            "line": 36
+          }
+        ]
+      },
+      {
+        "name": "IceCreatureDataNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/game/icecreature/IceCreatureSystem.java",
+            "line": 222
+          }
+        ]
+      },
+      {
+        "name": "IceCreatureGadgetDisappearNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/game/icecreature/IceCreatureSystem.java",
+            "line": 270
+          }
+        ]
+      },
+      {
+        "name": "IceCreatureSetTypeGadgetReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerIceCreatureSetTypeGadgetReq.java",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "name": "InteractDailyDungeonInfoNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/game/GameServerPacketHandler.java",
+            "line": 67
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerInteractDailyDungeonInfoNotify.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "LaunchFireworksRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketLaunchFireworksRsp.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "MarkNewNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketMarkNewNotify.java",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "name": "MusicGameCreateBeatmapReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerMusicGameCreateBeatmapReq.java",
+            "line": 19
+          }
+        ]
+      },
+      {
+        "name": "MusicGameCreateBeatmapRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketMusicGameCreateBeatmapRsp.java",
+            "line": 12
+          }
+        ]
+      },
+      {
+        "name": "MusicGameGetBeatmapReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerMusicGameGetBeatmapReq.java",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "name": "MusicGameGetBeatmapRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketMusicGameGetBeatmapRsp.java",
+            "line": 15
+          }
+        ]
+      },
+      {
+        "name": "MusicGameSearchBeatmapReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerMusicGameSearchBeatmapReq.java",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "name": "MusicGameSearchBeatmapRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketMusicGameSearchBeatmapRsp.java",
+            "line": 13
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketMusicGameSearchBeatmapRsp.java",
+            "line": 25
+          }
+        ]
+      },
+      {
+        "name": "MusicGameSettleReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerMusicGameSettleReq.java",
+            "line": 12
+          }
+        ]
+      },
+      {
+        "name": "MusicGameSettleRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketMusicGameSettleRsp.java",
+            "line": 9
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketMusicGameSettleRsp.java",
+            "line": 20
+          }
+        ]
+      },
+      {
+        "name": "MusicGameStartRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketMusicGameStartRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "MusicGameStartToPlayOthersBeatmapReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerMusicGameStartToPlayOthersBeatmapReq.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "MusicGameStartToPlayOthersBeatmapRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketMusicGameStartToPlayOthersBeatmapRsp.java",
+            "line": 13
+          }
+        ]
+      },
+      {
+        "name": "NALBKOPFIFD",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerUnlockPersonalLineReq.java",
+            "line": 46
+          }
+        ]
+      },
+      {
+        "name": "NONE",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/Handler.java",
+            "line": 6
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/Packet.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "PlayerApplyEnterHomeResultReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerPlayerApplyEnterHomeResultReq.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "PlayerApplyEnterHomeResultRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketPlayerApplyEnterHomeResultRsp.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "PlayerApplyEnterMpResultReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerPlayerApplyEnterMpResultReq.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "PlayerApplyEnterMpResultRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerPlayerApplyEnterMpResultReq.java",
+            "line": 53
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketPlayerApplyEnterMpResultRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "PlayerChatRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketPlayerChatRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "PlayerEnterChildMapLayerNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerPlayerEnterChildMapLayerNotify.java",
+            "line": 6
+          }
+        ]
+      },
+      {
+        "name": "PlayerEnterMapLayerNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerPlayerEnterMapLayerNotify.java",
+            "line": 6
+          }
+        ]
+      },
+      {
+        "name": "PlayerForceExitReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerPlayerForceExitReq.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "PlayerForceExitRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerPlayerForceExitReq.java",
+            "line": 13
+          }
+        ]
+      },
+      {
+        "name": "PlayerGetForceQuitBanInfoReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerPlayerGetForceQuitBanInfoReq.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "PlayerOfferingReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/game/entity/gadget/OfferingHelper.java",
+            "line": 595
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/game/GameServerPacketHandler.java",
+            "line": 110
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/game/GameServerPacketHandler.java",
+            "line": 113
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerPlayerOfferingReq.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "QuestDelNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketDelQuestNotify.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "ReadPrivateChatRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerReadPrivateChatReq.java",
+            "line": 15
+          }
+        ]
+      },
+      {
+        "name": "ReformFireworksRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketReformFireworksRsp.java",
+            "line": 12
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketFireworkSetRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "ReliquaryOfferCompanionNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketReliquaryOfferCompanionNotify.java",
+            "line": 36
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketReliquaryDustDataNotify.java",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "name": "RemoveCustomTeamReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerRemoveCustomTeamReq.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "RemoveCustomTeamRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketRemoveCustomTeamRsp.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "SceneEntityDrownReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerSceneEntityDrownReq.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "SceneEntityDrownRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketSceneEntityDrownRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "SceneEntityUpdateNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketSceneEntityUpdateNotify.java",
+            "line": 13
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketSceneEntityUpdateNotify.java",
+            "line": 24
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketSceneEntityUpdateNotify.java",
+            "line": 41
+          }
+        ]
+      },
+      {
+        "name": "SetBattlePassViewedRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketSetBattlePassViewedRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "SetChatEmojiCollectionRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketSetChatEmojiCollectionRsp.java",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "name": "SetFriendEnterHomeOptionRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketSetFriendEnterHomeOptionRsp.java",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "name": "SetPlayerHeadImageReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerSetPlayerHeadImageReq.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "SetPlayerHeadImageRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketSetPlayerHeadImageRsp.java",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "name": "SetPlayerPropRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketSetPlayerPropRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "ShowClientGuideNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketShowClientGuideNotify.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "ShowLoadingScreenNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketShowLoadingScreenNotify.java",
+            "line": 17
+          }
+        ]
+      },
+      {
+        "name": "SkipPlayerGameTimeReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerSkipPlayerGameTimeReq.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "SkipPlayerGameTimeRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketSkipPlayerGameTimeRsp.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "SnezhnayaTrainCallNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/game/train/SnezhnayaTrainSystem.java",
+            "line": 154
+          }
+        ]
+      },
+      {
+        "name": "SnezhnayaTrainCallReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerSnezhnayaTrainCallReq.java",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "name": "SnezhnayaTrainSetRouteReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerSnezhnayaTrainSetRouteReq.java",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "name": "SnezhnayaTrainStateNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/game/train/SnezhnayaTrainSystem.java",
+            "line": 215
+          }
+        ]
+      },
+      {
+        "name": "TowerMiddleLevelChangeTeamNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketTowerMiddleLevelChangeTeamNotify.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "TpsAmmunitionChangeNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/game/tps/TpsWeaponSystem.java",
+            "line": 419
+          }
+        ]
+      },
+      {
+        "name": "TpsEquipChangeNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketTpsEquipChangeNotify.java",
+            "line": 12
+          }
+        ]
+      },
+      {
+        "name": "UnfreezeGroupLimitNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketUnfreezeGroupLimitNotify.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "Unk2700_ACILPONNGGK_ClientReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerHomeUnknown2Req.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "Unk2700_BEDLIGJANCJ_ClientReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerChangeHomeBgmReq.java",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "name": "Unk2700_FJEHHCPCBLG_ServerNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketChangeHomeBgmNotify.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "Unk2700_JDMPECKFGIG_ServerNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketHomeUnknown1Notify.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "Unk2700_KIIOGMKFNNP_ServerRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketHomeUnknown2Rsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "Unk2700_LOHBMOKOPLH_ServerNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketUnlockedHomeBgmNotify.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "Unk2700_MEBFPBDNPGO_ServerNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketUnlockHomeBgmNotify.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "Unk2700_OGHMHELMBNN_ServerRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketChangeHomeBgmRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "WatcherChangeNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketWatcherChangeNotify.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "WearTpsEquipReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerWearTpsEquipReq.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "WearTpsEquipRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketWearTpsEquipRsp.java",
+            "line": 10
+          }
+        ]
+      },
+      {
+        "name": "WidgetDoBagRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketWidgetDoBagRsp.java",
+            "line": 9
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketWidgetDoBagRsp.java",
+            "line": 21
+          }
+        ]
+      },
+      {
+        "name": "WorldPlayerReviveReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerWorldPlayerReviveReq.java",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "name": "WorldPlayerReviveRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketWorldPlayerReviveRsp.java",
+            "line": 9
+          }
+        ]
+      },
+      {
+        "name": "_AvatarEscoffierSkillCookDataNotify",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/game/ability/EscoffierSkillCookOpcodes.java",
+            "line": 12
+          }
+        ]
+      },
+      {
+        "name": "_AvatarEscoffierSkillCookReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/game/ability/EscoffierSkillCookOpcodes.java",
+            "line": 8
+          }
+        ]
+      },
+      {
+        "name": "_AvatarExtraLevelUpgradeRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/game/avatar/AvatarExtraLevelOpcodes.java",
+            "line": 15
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/game/avatar/AvatarExtraLevelOpcodes.java",
+            "line": 56
+          }
+        ]
+      },
+      {
+        "name": "_MoveTeamReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerMoveTeamReq.java",
+            "line": 32
+          }
+        ]
+      },
+      {
+        "name": "_MoveTeamRsp",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/send/PacketMoveTeamRsp.java",
+            "line": 19
+          }
+        ]
+      },
+      {
+        "name": "_TakeAllForgeOutputReq",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerTakeAllForgeOutputReq.java",
+            "line": 7
+          }
+        ]
+      },
+      {
+        "name": "_UnlockPersonalLineReqAlt",
+        "references": [
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerUnlockPersonalLineReqAlt.java",
+            "line": 7
+          },
+          {
+            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerUnlockPersonalLineReqAlt.java",
+            "line": 13
+          }
+        ]
+      }
+    ]
+  },
+  "semantic_source_spelling_not_claimed": true,
+  "live_android_session_tested": false,
+  "formatter_note": "Changed Java regions and new Java sources formatted with Google Java Format 1.37.0 (AOSP style); no formatter dependency change.",
+  "targeted_java_tests": {
+    "class_name": "emu.grasscutter.net.Verified72BindingsTest",
+    "tests": 16,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "latest_targeted_test_run": {
+    "tests": 129,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "scope": "Verified72BindingsTest, artifact protocol/transaction tests, achievement protocol/reply tests, and inventory tests"
+  },
+  "initial_descriptor_validation": {
+    "compiled_proto_files": 2105,
+    "descriptor_files": 2105,
+    "verified_opcode_bindings": 40,
+    "corrected_field_numbers": 80,
+    "displaced_legacy_api_fields": 3,
+    "unplanned_descriptor_changes": 0,
+    "duplicate_new_opcode_bindings": 0,
+    "descriptor_sha256": "544cd84e910d9293f3ab89937f36e20eb8eb60c4b559fd8fea8fcfddac7e3118",
+    "all_message_and_enum_declarations_preserved": true,
+    "untouched_manual_gacha_info_preserved": true,
+    "no_end_to_end_client_test_claimed": true
+  },
+  "descriptor_validation": {
+    "server_proto_files": 2177,
+    "new_proto_files": 72,
+    "client_messages_checked": 79,
+    "client_layout_errors": [],
+    "aliases_without_exact_client_message_name": [],
+    "server_descriptor_sha256": "7a2d7aa2eeeb0136c04a6daf66d4127820dc8425015c37dffc6f8f20e4b14175",
+    "live_client_tested": false,
+    "nested_type_identity_mismatches": 0
+  },
+  "public_main_repair": {
+    "enabled_zero_bindings": 50,
+    "corrected_active_bindings": 6,
+    "added_named_aliases": 39,
+    "intentional_legacy_alias_pairs": {
+      "ReliquaryOfferDefineReq": "GetReliquaryPurchaseReq",
+      "ReliquaryOfferDefineRsp": "GetReliquaryPurchaseRsp",
+      "ReliquaryOfferExtractReq": "GetReliquaryOfferingReq",
+      "ReliquaryOfferExtractRsp": "GetReliquaryOfferingRsp",
+      "ReliquaryOfferDataNotify": "GetReliquaryOfferPurchaseInfoNotify"
+    },
+    "unified_artifact_request_routes": 21,
+    "new_opcode_binding_collisions_excluding_intentional_aliases": 0,
+    "unknown_opcode_crafting_fallback_removed": true,
+    "resource_configuration_required": true,
+    "default_lock_scheme_set_ids": [
+      15041
+    ],
+    "live_android_session_tested": false
+  },
+  "full_suite_comparison": {
+    "baseline": {
+      "classes": 255,
+      "tests": 1491,
+      "failures": 82,
+      "errors": 0,
+      "skipped": 4
+    },
+    "patched": {
+      "classes": 258,
+      "tests": 1528,
+      "failures": 74,
+      "errors": 0,
+      "skipped": 4
+    },
+    "new_failing_cases": [],
+    "resolved_failing_cases": [
+      {
+        "class_name": "emu.grasscutter.server.packet.send.PacketTakeAchievementGoalRewardRspTest",
+        "test": "successPacketUsesPackedGoalIdsAndNestedItems()",
+        "count": 1
+      },
+      {
+        "class_name": "emu.grasscutter.server.packet.send.PacketTakeAchievementGoalRewardRspTest",
+        "test": "generatedDescriptorMatchesNativeReader()",
+        "count": 1
+      },
+      {
+        "class_name": "emu.grasscutter.server.packet.send.PacketTakeAchievementGoalRewardRspTest",
+        "test": "defaultErrorRetainsAlreadyTakenSemanticsOnFieldSeven()",
+        "count": 1
+      },
+      {
+        "class_name": "emu.grasscutter.server.packet.send.PacketTakeAchievementGoalRewardRspTest",
+        "test": "mapsTheResponseAndRequest()",
+        "count": 1
+      },
+      {
+        "class_name": "emu.grasscutter.game.player.PushTipsManagerTest",
+        "test": "rewardNeedsFinishedTipAndIsPaidOnce()",
+        "count": 1
+      },
+      {
+        "class_name": "emu.grasscutter.game.achievement.AchievementGoalRequestProtocolTest",
+        "test": "canonicalCategoryGiftReachesGoalBoundaryThroughDispatch()",
+        "count": 1
+      },
+      {
+        "class_name": "emu.grasscutter.game.achievement.AchievementClaimProtocolTest",
+        "test": "responseBuildersUseNativeSuccessAndErrorFields()",
+        "count": 1
+      },
+      {
+        "class_name": "emu.grasscutter.game.achievement.AchievementClaimProtocolTest",
+        "test": "capturedClaimRoutesToTheRewardBoundary()",
+        "count": 1
+      }
+    ]
+  },
+  "jar_and_strict_generated_compilation_passed": true,
+  "jar_zip_integrity_checked": true,
+  "full_suite_passed": false
+}

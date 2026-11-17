@@ -50,7 +50,7 @@ public interface StartupArguments {
                                     "-test",
                                     parameter -> {
                                         // Disable the console.
-                                        SERVER.game.enableConsole = false;
+                                        Grasscutter.setNoConsole(true);
                                         // Disable HTTP encryption.
                                         SERVER.http.encryption.useEncryption = false;
                                         return false;

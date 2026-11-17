@@ -13,7 +13,9 @@ import picocli.CommandLine;
         label = "stop",
         aliases = {"shutdown"},
         permission = "server.stop",
-        targetRequirement = Command.TargetRequirement.NONE)
+        targetRequirement = Command.TargetRequirement.NONE,
+        inlineTarget = false,
+        dispatchCompatible = true)
 public final class StopCommand implements CommandHandler {
     static final int NORMAL_EXIT_CODE = 0;
     @Override
@@ -32,8 +34,11 @@ public final class StopCommand implements CommandHandler {
         @Override
         public void run() {
             CommandOutput.sendMessage(null, translate("commands.stop.success"));
-            for (Player player : Grasscutter.getGameServer().getPlayers().values()) {
-                CommandOutput.sendMessage(player, translate(player, "commands.stop.success"));
+            var gameServer = Grasscutter.getGameServer();
+            if (gameServer != null) {
+                for (Player player : gameServer.getPlayers().values()) {
+                    CommandOutput.sendMessage(player, translate(player, "commands.stop.success"));
+                }
             }
             // In game this runs on the logic thread. System.exit blocks until the shutdown hook
             // finishes, and the hook saves every player on that same thread, so exit from another one.

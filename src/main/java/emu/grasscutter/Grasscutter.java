@@ -374,18 +374,11 @@ public final class Grasscutter {
     }
 
     public static void startConsole() {
-        // Console should not start in dispatch only mode.
-        if (Grasscutter.getRunMode() == ServerRunMode.DISPATCH_ONLY && Grasscutter.noConsole) {
-            logger.info(translate("messages.dispatch.no_commands_error"));
+        if (Grasscutter.noConsole || !config.server.console.isEnabled(Grasscutter.getRunMode())) {
+            logger.info("Console disabled by server.console.enabled or a startup argument.");
             return;
-        } else if (!config.server.game.enableConsole) {
-            // The loop below never runs, so saying "type help" would be an invitation to type at a
-            // prompt that is not there.
-            logger.info("Done! The console is disabled; set server.game.enableConsole to use it.");
-            return;
-        } else {
-            logger.info(translate("messages.status.done"));
         }
+        logger.info(translate("messages.status.done"));
 
         try (var shell = ConsoleShell.create(commandMap, getConsole().getTerminal())) {
             consoleLineReader = shell.reader();
@@ -393,7 +386,8 @@ public final class Grasscutter {
             dispatcher.initialize(null);
 
             boolean lastInterrupted = false;
-            while (config.server.game.enableConsole) {
+            while (!Grasscutter.noConsole
+                    && config.server.console.isEnabled(Grasscutter.getRunMode())) {
                 String input;
                 try {
                     input = shell.reader().readLine(commandMap.getConsolePrompt());

@@ -15,7 +15,11 @@ import org.jline.utils.AttributedStyle;
 import picocli.CommandLine;
 import picocli.CommandLine.Parameters;
 
-@Command(label = "help", targetRequirement = Command.TargetRequirement.NONE)
+@Command(
+        label = "help",
+        targetRequirement = Command.TargetRequirement.NONE,
+        inlineTarget = false,
+        dispatchCompatible = true)
 public final class HelpCommand implements CommandHandler {
     private static final AttributedStyle COMMAND_STYLE =
             AttributedStyle.BOLD.foreground(AttributedStyle.CYAN);

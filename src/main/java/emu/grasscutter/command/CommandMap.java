@@ -3,6 +3,7 @@ package emu.grasscutter.command;
 import static emu.grasscutter.config.Configuration.SERVER;
 
 import emu.grasscutter.Grasscutter;
+import emu.grasscutter.Grasscutter.ServerRunMode;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.Account;
 import emu.grasscutter.game.player.Player;
@@ -50,6 +51,7 @@ public final class CommandMap {
     private final Map<String, Command> annotations = new TreeMap<>();
     private final ConcurrentMap<String, SelectedTarget> selectedTargets = new ConcurrentHashMap<>();
     private final Object picocliLock = new Object();
+    private final ServerRunMode runMode;
 
     private volatile CommandLine commandLine = createRootCommandLine();
 
@@ -58,10 +60,22 @@ public final class CommandMap {
     }
 
     public CommandMap(boolean scan) {
+        this(scan, Grasscutter.getRunMode());
+    }
+
+    CommandMap(boolean scan, ServerRunMode runMode) {
+        this.runMode = runMode;
         if (scan) {
             this.scan();
-            this.installConsoleCompleter();
         }
+    }
+
+    private boolean supportsRunMode(Command annotation) {
+        return runMode != ServerRunMode.DISPATCH_ONLY || annotation.dispatchCompatible();
+    }
+
+    boolean supportsPlayerTargeting() {
+        return runMode != ServerRunMode.DISPATCH_ONLY;
     }
 
     public static CommandMap getInstance() {
@@ -473,6 +487,7 @@ public final class CommandMap {
                 throw new IllegalArgumentException("Command handler must be annotated with @Command.");
             }
 
+            if (!supportsRunMode(annotation)) return this;
             this.validateRegistration(label, annotation);
             CommandLine child = createCompletionCommandLine(label, command);
             this.commandLine.addSubcommand(label, child, normalizeAliases(annotation));
@@ -499,6 +514,7 @@ public final class CommandMap {
                                 "Command handler must be annotated with @Command.");
                     }
 
+                    if (!supportsRunMode(annotation)) continue;
                     String label = normalizeCommandName(annotation.label());
                     LOGGER.trace("Registered command: " + label);
                     this.validateRegistration(label, annotation);
@@ -678,6 +694,12 @@ public final class CommandMap {
         List<String> args = tokens;
         String playerId = (player == null) ? CONSOLE_ID : player.getAccount().getId();
 
+        if (runMode == ServerRunMode.DISPATCH_ONLY
+                && (isTargetSelector(rawLabel) || label.equals("target"))) {
+            CommandOutput.sendMessage(player, "Player targeting is unavailable in Dispatch-only mode.");
+            return CompletableFuture.completedFuture(new CommandResult(1));
+        }
+
         if (isTargetSelector(rawLabel)) {
             boolean updated = this.setPlayerTarget(playerId, player, rawLabel);
             return CompletableFuture.completedFuture(new CommandResult(updated ? 0 : 1));
@@ -803,6 +825,7 @@ public final class CommandMap {
         var handlers = new ArrayList<CommandHandler>(classes.size());
 
         for (Class<?> annotated : classes) {
+            if (!supportsRunMode(annotated.getAnnotation(Command.class))) continue;
             try {
                 Object object = annotated.getDeclaredConstructor().newInstance();
                 if (object instanceof CommandHandler handler) {

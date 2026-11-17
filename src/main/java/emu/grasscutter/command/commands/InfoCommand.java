@@ -11,7 +11,9 @@ import picocli.CommandLine;
 
 @Command(
         label = "info",
-        targetRequirement = Command.TargetRequirement.NONE)
+        targetRequirement = Command.TargetRequirement.NONE,
+        inlineTarget = false,
+        dispatchCompatible = true)
 public final class InfoCommand implements CommandHandler {
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
@@ -29,7 +31,15 @@ public final class InfoCommand implements CommandHandler {
         @Override
         public void run() {
             var build = "%s (%s)".formatted(BuildConfig.VERSION, BuildConfig.GIT_HASH);
-            var playerCount = Grasscutter.getGameServer().getPlayers().size();
+            var gameServer = Grasscutter.getGameServer();
+            if (gameServer == null) {
+                CommandOutput.sendMessage(sender,
+                        "Server Information\nRevision: %s\nMode: %s\nOperating System: %s"
+                                .formatted(build, Grasscutter.getRunMode(), System.getProperty("os.name")));
+                return;
+            }
+
+            var playerCount = gameServer.getPlayers().size();
             var resourceInfo = Tools.resourcesInfo();
 
             var config = Grasscutter.getConfig();

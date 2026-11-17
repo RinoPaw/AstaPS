@@ -68,14 +68,16 @@ public final class ConsoleShell {
                             .toArray(String[]::new);
                     entries.add(wrap(commands, entry.getKey(), aliases));
                 }
-                entries.add(wrap(commands, "target"));
+                if (commands.supportsPlayerTargeting()) entries.add(wrap(commands, "target"));
                 return entries;
             }
 
             @Override
             public org.jline.shell.Command command(String name) {
                 // Bare @UID selectors also change the remembered console target.
-                if (CommandMap.isTargetSelector(name)) return wrap(commands, name);
+                if (commands.supportsPlayerTargeting() && CommandMap.isTargetSelector(name)) {
+                    return wrap(commands, name);
+                }
                 return CommandGroup.super.command(name.toLowerCase(Locale.ROOT));
             }
         };

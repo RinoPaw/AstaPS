@@ -149,6 +149,7 @@ public class ConfigContainer {
         public boolean fastRequire = true;
 
         public HTTP http = new HTTP();
+        public ConsoleOptions console = new ConsoleOptions();
         public Game game = new Game();
         public ThreadPoolOptions threadPools = new ThreadPoolOptions();
 
@@ -276,6 +277,15 @@ public class ConfigContainer {
         }
     }
 
+    /** A null value uses the default for the current server run mode. */
+    public static class ConsoleOptions {
+        public Boolean enabled = null;
+
+        public boolean isEnabled(ServerRunMode runMode) {
+            return enabled != null ? enabled : runMode != ServerRunMode.DISPATCH_ONLY;
+        }
+    }
+
     public static class Game {
         public WatchdogOptions watchdog = new WatchdogOptions();
 
@@ -296,7 +306,6 @@ public class ConfigContainer {
         public int loadEntitiesForPlayerRange = 300;
         /* Start in 'unstable-quests', Lua scripts will be enabled by default. */
         public boolean enableScriptInBigWorld = true;
-        public boolean enableConsole = true;
 
         /**
          * Runs the database half of logins off the thread that handles every player's packets, so

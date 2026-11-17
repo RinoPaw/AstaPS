@@ -19,6 +19,9 @@ public @interface Command {
 
     boolean threading() default false;
 
+    /** Available without an in-process GameServer. */
+    boolean dispatchCompatible() default false;
+
     enum TargetRequirement {
         NONE,
         OFFLINE,

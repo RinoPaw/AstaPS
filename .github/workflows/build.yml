@@ -41,6 +41,8 @@ jobs:
         run: >
           ./gradlew test
           --tests 'emu.grasscutter.command.JLine4ShellSmokeTest'
+          --tests 'emu.grasscutter.command.ServerShellInteractiveTest'
+          --tests 'emu.grasscutter.utils.objects.JLineLogbackAppenderTest'
           --tests 'emu.grasscutter.command.CommandMapParsingTest'
           --tests 'emu.grasscutter.command.CommandResultTest'
           --tests 'emu.grasscutter.command.DispatchCommandAvailabilityTest'

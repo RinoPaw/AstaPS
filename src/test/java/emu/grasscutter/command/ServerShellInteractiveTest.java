@@ -6,6 +6,8 @@ import emu.grasscutter.Grasscutter.ServerRunMode;
 import emu.grasscutter.game.player.Player;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +53,15 @@ final class ServerShellInteractiveTest {
             var map = new CommandMap(false, ServerRunMode.DISPATCH_ONLY);
             var echo = new EchoCommand();
             map.registerCommand("echo", echo);
-            var in = new ByteArrayInputStream("E  first  \"two words\"\n".getBytes(StandardCharsets.UTF_8));
             var out = new ByteArrayOutputStream();
-            try (var terminal = TerminalBuilder.builder().system(false).dumb(true)
-                    .streams(in, out).build();
+            // Keep input open until readLine finishes; finite streams can race with EOF on Linux.
+            try (var in = new PipedInputStream();
+                    var feeder = new PipedOutputStream(in);
+                    var terminal = TerminalBuilder.builder().system(false).dumb(true)
+                            .streams(in, out).build();
                     var shell = ServerShellFactory.create(map, terminal)) {
+                feeder.write("E  first  \"two words\"\n".getBytes(StandardCharsets.UTF_8));
+                feeder.flush();
                 shell.dispatcher().initialize(null);
                 shell.dispatcher().execute(shell.reader().readLine("asta> "));
                 shell.dispatcher().cleanUp();
@@ -84,11 +90,14 @@ final class ServerShellInteractiveTest {
     void tabCompletionDoesNotInsertDuplicateWhitespace() throws Exception {
         var map = new CommandMap(false, ServerRunMode.DISPATCH_ONLY);
         map.registerCommand("echo", new EchoCommand());
-        var in = new ByteArrayInputStream("ec\tvalue\n".getBytes(StandardCharsets.UTF_8));
         var out = new ByteArrayOutputStream();
-        try (var terminal = TerminalBuilder.builder().system(false).dumb(true)
-                .streams(in, out).build();
+        try (var in = new PipedInputStream();
+                var feeder = new PipedOutputStream(in);
+                var terminal = TerminalBuilder.builder().system(false).dumb(true)
+                        .streams(in, out).build();
                 var shell = ServerShellFactory.create(map, terminal)) {
+            feeder.write("ec\tvalue\n".getBytes(StandardCharsets.UTF_8));
+            feeder.flush();
             assertEquals("echo value", shell.reader().readLine("asta> "));
         }
     }

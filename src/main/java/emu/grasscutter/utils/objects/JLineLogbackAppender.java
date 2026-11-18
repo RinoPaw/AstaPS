@@ -10,6 +10,12 @@ public final class JLineLogbackAppender extends ConsoleAppender<ILoggingEvent> {
     protected void append(ILoggingEvent eventObject) {
         if (!this.started) return;
 
-        Grasscutter.getConsole().printAbove(new String(encoder.encode(eventObject), StandardCharsets.UTF_8));
+        var reader = Grasscutter.getActiveConsoleReader();
+        if (reader != null) {
+            reader.printAbove(new String(encoder.encode(eventObject), StandardCharsets.UTF_8));
+        } else {
+            // Startup and shutdown logs still work without an interactive Shell.
+            super.append(eventObject);
+        }
     }
 }

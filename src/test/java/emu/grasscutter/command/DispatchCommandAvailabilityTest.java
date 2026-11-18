@@ -41,7 +41,7 @@ public final class DispatchCommandAvailabilityTest {
         var map = new CommandMap(false, ServerRunMode.DISPATCH_ONLY);
         map.registerCommand("help", new HelpCommand());
         try (var terminal = TerminalBuilder.builder().dumb(true).build();
-                var shell = ConsoleShell.create(map, terminal)) {
+                var shell = ServerShellFactory.create(map, terminal)) {
             var names = shell.dispatcher().groups().stream()
                     .flatMap(group -> group.commands().stream())
                     .map(org.jline.shell.Command::name)

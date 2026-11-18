@@ -77,7 +77,7 @@ public final class Grasscutter {
     @Getter @Setter private static AuthenticationSystem authenticationSystem;
     @Getter @Setter private static PermissionHandler permissionHandler;
 
-    private static volatile LineReader consoleLineReader = null;
+    private static volatile LineReader activeConsoleReader;
 
     @Getter
     private static final ExecutorService threadPool =
@@ -343,24 +343,18 @@ public final class Grasscutter {
         return Grasscutter.runModeOverride != null ? Grasscutter.runModeOverride : SERVER.runMode;
     }
 
-    public static synchronized LineReader getConsole() {
-        if (consoleLineReader == null) {
-            Terminal terminal = null;
-            try {
-                terminal = TerminalBuilder.builder().jni(true).build();
-            } catch (Exception e) {
-                try {
-                    // Fallback to a dumb jline terminal.
-                    terminal = TerminalBuilder.builder().dumb(true).build();
-                } catch (Exception ignored) {
-                    // When dumb is true, build() never throws.
-                }
-            }
+    /** The Shell owns the line editor; it is unavailable before startup or after exit. */
+    @Nullable
+    public static LineReader getActiveConsoleReader() {
+        return activeConsoleReader;
+    }
 
-            consoleLineReader = LineReaderBuilder.builder().terminal(terminal).build();
+    private static Terminal createConsoleTerminal() throws IOException {
+        try {
+            return TerminalBuilder.builder().jni(true).build();
+        } catch (Exception nativeUnavailable) {
+            return TerminalBuilder.builder().dumb(true).build();
         }
-
-        return consoleLineReader;
     }
 
     /*
@@ -386,45 +380,51 @@ public final class Grasscutter {
         }
         logger.info(translate("messages.status.done"));
 
-        try (var shell = ConsoleShell.create(commandMap, getConsole().getTerminal())) {
-            consoleLineReader = shell.reader();
-            var dispatcher = shell.dispatcher();
-            dispatcher.initialize(null);
+        try (var terminal = createConsoleTerminal();
+                var shell = ServerShellFactory.create(commandMap, terminal)) {
+            var reader = shell.reader();
+            activeConsoleReader = reader;
+            try {
+                var dispatcher = shell.dispatcher();
+                dispatcher.initialize(null);
 
-            boolean lastInterrupted = false;
-            while (shouldStartConsole()) {
-                String input;
-                try {
-                    input = shell.reader().readLine(commandMap.getConsolePrompt());
-                } catch (UserInterruptException e) {
-                    if (!lastInterrupted) {
-                        lastInterrupted = true;
-                        logger.info("Press Ctrl-C again to shutdown.");
-                        continue;
+                boolean lastInterrupted = false;
+                while (shouldStartConsole()) {
+                    String input;
+                    try {
+                        input = reader.readLine(commandMap.getConsolePrompt());
+                    } catch (UserInterruptException e) {
+                        if (!lastInterrupted) {
+                            lastInterrupted = true;
+                            logger.info("Press Ctrl-C again to shutdown.");
+                            continue;
+                        }
+                        Runtime.getRuntime().exit(0);
+                        return;
+                    } catch (EndOfFileException e) {
+                        logger.info("No console attached, running without commands.");
+                        return;
+                    } catch (IOError e) {
+                        logger.error("An IO error occurred while trying to read from console.", e);
+                        return;
+                    } catch (IllegalStateException e) {
+                        // The terminal was closed during server shutdown.
+                        return;
                     }
-                    Runtime.getRuntime().exit(0);
-                    return;
-                } catch (EndOfFileException e) {
-                    logger.info("No console attached, running without commands.");
-                    return;
-                } catch (IOError e) {
-                    logger.error("An IO error occurred while trying to read from console.", e);
-                    return;
-                } catch (IllegalStateException e) {
-                    // The terminal was closed during server shutdown.
-                    return;
-                }
 
-                lastInterrupted = false;
-                try {
-                    dispatcher.execute(input);
-                } catch (org.jline.shell.ExitShellException e) {
-                    return;
-                } catch (Exception e) {
-                    dispatcher.trace(e);
-                } finally {
-                    dispatcher.cleanUp();
+                    lastInterrupted = false;
+                    try {
+                        dispatcher.execute(input);
+                    } catch (org.jline.shell.ExitShellException e) {
+                        return;
+                    } catch (Exception e) {
+                        dispatcher.trace(e);
+                    } finally {
+                        dispatcher.cleanUp();
+                    }
                 }
+            } finally {
+                activeConsoleReader = null;
             }
         } catch (Exception e) {
             logger.error("Failed to run the JLine 4 console shell.", e);

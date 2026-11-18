@@ -355,10 +355,6 @@ public final class CommandMap {
         }
     }
 
-    void installConsoleCompleter() {
-        installConsoleCompleter(Grasscutter.getConsole());
-    }
-
     void installConsoleCompleter(LineReader reader) {
         if (reader instanceof LineReaderImpl lineReader) {
             lineReader.getKeyMaps().get(LineReader.MAIN)

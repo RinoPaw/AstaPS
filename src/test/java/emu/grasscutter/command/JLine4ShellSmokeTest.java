@@ -156,7 +156,7 @@ class JLine4ShellSmokeTest {
 
     @Test
     void consoleShellKeepsFileRedirectionDisabled() {
-        var parser = ConsoleShell.pipelineParser();
+        var parser = ServerShellFactory.pipelineParser();
         var conditional = parser.parse("help && help || help");
         assertEquals(org.jline.shell.Pipeline.Operator.AND, conditional.stages().get(0).operator());
         assertEquals(org.jline.shell.Pipeline.Operator.OR, conditional.stages().get(1).operator());
@@ -175,7 +175,7 @@ class JLine4ShellSmokeTest {
         commands.registerCommand("lookup", new emu.grasscutter.command.commands.LookupCommand());
 
         try (var terminal = TerminalBuilder.builder().dumb(true).build();
-                var shell = ConsoleShell.create(commands, terminal)) {
+                var shell = ServerShellFactory.create(commands, terminal)) {
             var group = shell.dispatcher().groups().stream()
                     .filter(entry -> entry.name().equals("astaps"))
                     .findFirst()
@@ -198,7 +198,7 @@ class JLine4ShellSmokeTest {
         commands.registerCommand("lookup", new emu.grasscutter.command.commands.LookupCommand());
 
         try (var terminal = TerminalBuilder.builder().dumb(true).build();
-                var shell = ConsoleShell.create(commands, terminal)) {
+                var shell = ServerShellFactory.create(commands, terminal)) {
             var highlighter = shell.reader().getHighlighter();
             String known = highlighter.highlight(shell.reader(), "lookup").toAnsi();
             String alias = highlighter.highlight(shell.reader(), "find").toAnsi();
@@ -218,7 +218,7 @@ class JLine4ShellSmokeTest {
     void consoleCompletionObservesCommandsRegisteredAfterShellCreation() throws Exception {
         var commands = new CommandMap(false);
         try (var terminal = TerminalBuilder.builder().dumb(true).build();
-                var shell = ConsoleShell.create(commands, terminal)) {
+                var shell = ServerShellFactory.create(commands, terminal)) {
             commands.registerCommand("lookup", new emu.grasscutter.command.commands.LookupCommand());
             var candidates = new ArrayList<org.jline.reader.Candidate>();
             shell.dispatcher().completer().complete(
@@ -233,7 +233,7 @@ class JLine4ShellSmokeTest {
     @Test
     void consoleShellRegistersTheTargetPseudoCommand() throws Exception {
         try (var terminal = TerminalBuilder.builder().dumb(true).build();
-                var shell = ConsoleShell.create(new CommandMap(false), terminal)) {
+                var shell = ServerShellFactory.create(new CommandMap(false), terminal)) {
             assertNotNull(shell.dispatcher().findCommand("target"));
             assertNotNull(shell.dispatcher().findCommand("TARGET"));
             assertEquals("unknown-probe", shell.dispatcher().findCommand("unknown-probe").name());

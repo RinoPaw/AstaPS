@@ -24,9 +24,9 @@ import org.jline.shell.impl.PipelineParser;
 import org.jline.terminal.Terminal;
 import org.jline.utils.AttributedStyle;
 
-/** Adapts the game's command registry and results to the native JLine 4 shell. */
-public final class ConsoleShell {
-    private ConsoleShell() {}
+/** Builds a JLine 4 Shell that dispatches AstaPS server commands. */
+public final class ServerShellFactory {
+    private ServerShellFactory() {}
 
     public static Shell create(CommandMap commands, Terminal terminal) throws IOException {
         var dispatcher = new DefaultCommandDispatcher(terminal, null, pipelineParser(), null) {

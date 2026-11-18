@@ -37,7 +37,7 @@ public final class CommandMapParsingTest {
         expected.addAll(List.of(args));
         assertEquals(
                 expected,
-                CommandMap.parseCommandTokens(ConsoleShell.commandLine("probe", args)));
+                CommandMap.parseCommandTokens(ServerShellFactory.commandLine("probe", args)));
     }
 
     @Test
@@ -133,20 +133,23 @@ public final class CommandMapParsingTest {
     }
 
     @Test
-    public void tabCompletionUsesTheActiveConsoleReader() {
+    public void tabCompletionUsesTheShellReader() throws Exception {
         var map = new CommandMap(false);
         map.registerCommand("probe", new ProbeCommand());
-        map.installConsoleCompleter();
 
-        var reader = (LineReaderImpl) Grasscutter.getConsole();
-        var tab = reader.getKeyMaps().get(LineReader.MAIN).getBound("\t");
-        assertTrue(tab instanceof Reference);
-        assertEquals(LineReader.COMPLETE_WORD, ((Reference) tab).name());
+        try (var terminal = org.jline.terminal.TerminalBuilder.builder().dumb(true).build();
+                var shell = ServerShellFactory.create(map, terminal)) {
+            var reader = (LineReaderImpl) shell.reader();
+            assertSame(terminal, reader.getTerminal());
+            var tab = reader.getKeyMaps().get(LineReader.MAIN).getBound("\t");
+            assertTrue(tab instanceof Reference);
+            assertEquals(LineReader.COMPLETE_WORD, ((Reference) tab).name());
 
-        var candidates = new ArrayList<Candidate>();
-        var parsed = reader.getParser().parse("pro", 3, Parser.ParseContext.COMPLETE);
-        reader.getCompleter().complete(reader, parsed, candidates);
-        assertTrue(candidates.stream().anyMatch(candidate -> candidate.value().equals("probe")));
+            var candidates = new ArrayList<Candidate>();
+            var parsed = reader.getParser().parse("pro", 3, Parser.ParseContext.COMPLETE);
+            reader.getCompleter().complete(reader, parsed, candidates);
+            assertTrue(candidates.stream().anyMatch(candidate -> candidate.value().equals("probe")));
+        }
     }
 
     @Test

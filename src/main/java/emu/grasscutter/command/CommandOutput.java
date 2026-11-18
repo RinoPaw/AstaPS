@@ -46,9 +46,13 @@ public final class CommandOutput {
         if (player == null) {
             var output = consoleOutput.get();
             if (output != null) {
-                String rendered = attributed != null && event.getMessage().equals(message)
-                        ? attributed.toAnsi(Grasscutter.getConsole().getTerminal())
-                        : event.getMessage();
+                String rendered = event.getMessage();
+                if (attributed != null && rendered.equals(message)) {
+                    var reader = Grasscutter.getActiveConsoleReader();
+                    rendered = reader == null
+                            ? attributed.toString()
+                            : attributed.toAnsi(reader.getTerminal());
+                }
                 output.accept(rendered);
             } else Grasscutter.getLogger().info(event.getMessage());
             CommandOutputCapture.offer(stripAnsi(event.getMessage()));

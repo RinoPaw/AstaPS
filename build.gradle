@@ -167,7 +167,7 @@ configurations.configureEach {
 
 application {
     // Define the main class for the application
-    getMainClass().set('emu.grasscutter.Grasscutter')
+    getMainClass().set('emu.grasscutter.ServerLauncher')
 }
 
 jar {
@@ -180,7 +180,7 @@ jar {
     }
 
     manifest {
-        attributes 'Main-Class': 'emu.grasscutter.Grasscutter'
+        attributes 'Main-Class': 'emu.grasscutter.ServerLauncher'
     }
 
     archiveBaseName = 'grasscutter'

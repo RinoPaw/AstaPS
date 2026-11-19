@@ -366,13 +366,12 @@ public class ConfigContainer {
         public ServerDebugMode logRequests = ServerDebugMode.NONE;
     }
 
-    /* Debug options container, used when jar launch argument is -debug | -debugall and override default values
-     *  (see StartupArguments.enableDebug) */
+    /** Debug settings applied by the --debug startup option. */
     public static class DebugMode {
-        /* Log level of the main server code (works only with -debug arg) */
+        /* Log level of the main server code (used by the --debug option) */
         public Level serverLoggerLevel = Level.DEBUG;
 
-        /* Log level of the third-party services (works only with -debug arg):
+        /* Log level of the third-party services (used by the --debug option):
            javalin, quartz, reflections, jetty, mongodb.driver */
         public Level servicesLoggersLevel = Level.INFO;
 

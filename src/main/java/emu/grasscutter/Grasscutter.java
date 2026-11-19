@@ -91,9 +91,6 @@ public final class Grasscutter {
                     new ThreadPoolExecutor.AbortPolicy());
 
     static {
-        // Declare logback configuration.
-        System.setProperty("logback.configurationFile", "src/main/resources/logback.xml");
-
         // Disable the MongoDB logger.
         var mongoLogger = (Logger) LoggerFactory.getLogger("org.mongodb.driver");
         mongoLogger.setLevel(Level.OFF);
@@ -112,13 +109,9 @@ public final class Grasscutter {
         Utils.startupCheck();
     }
 
-    public static void main(String[] args) throws Exception {
-        Crypto.loadKeys(); // Load keys from buffers.
-
-        // Parse start-up arguments.
-        if (StartupArguments.parse(args)) {
-            System.exit(0); // Exit early.
-        }
+    /** Start the server after command-line arguments have been parsed. */
+    public static void startServer() throws Exception {
+        Crypto.loadKeys();
 
         // Get the server run mode.
         var runMode = Grasscutter.getRunMode();

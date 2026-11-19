@@ -2,6 +2,7 @@ package io.grasscutter;
 
 import com.mchange.util.AssertException;
 import emu.grasscutter.Grasscutter;
+import emu.grasscutter.ServerLauncher;
 import emu.grasscutter.config.Configuration;
 import java.io.IOException;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import org.junit.jupiter.api.Test;
  * Testing entrypoint for {@link Grasscutter}.
  *
  * <p>This boots a real server, so it needs a reachable MongoDB and the resources pack, which is
- * gitignored and therefore absent from a fresh checkout. Without them {@code Grasscutter.main}
+ * gitignored and therefore absent from a fresh checkout. Without them server startup
  * calls {@code System.exit(1)} and takes the whole Gradle test executor down with it, so the tag
  * lets CI leave this one out while still running everything else.
  */
@@ -42,7 +43,7 @@ public final class GrasscutterTest {
     public static void entry() {
         try {
             // Start Grasscutter.
-            Grasscutter.main(new String[] {"-test"});
+            ServerLauncher.main(new String[] {"--test"});
         } catch (Exception ignored) {
             throw new AssertException("Grasscutter failed to start.");
         }

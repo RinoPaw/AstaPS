@@ -19,7 +19,7 @@ and `GAME_ONLY` and **off** in `DISPATCH_ONLY`. Set it explicitly to
 `true` to enable the local console in Dispatch-only mode, or `false`
 to disable it in any mode.
 
-The `-noconsole` and `-test` startup options disable the local
+The `--no-console` and `--test` startup options disable the local
 console even when the configuration explicitly enables it.
 
 Dispatch-only mode has no in-process Game Server. Its local Shell registers

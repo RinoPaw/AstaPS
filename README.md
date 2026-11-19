@@ -115,6 +115,11 @@ On Windows use `./gradlew.bat`.
 4. Start it again. The dispatch server listens on `8088` and the game server on `22101` by default.
 5. Point the client at the dispatch server: [GrasscutterTools](https://github.com/jie65535/GrasscutterCommandGenerator) has a built-in proxy, or use Fiddler, mitmproxy or a client patch.
 
+The startup CLI uses Picocli. Run `java -jar grasscutter-7.2.0.jar --help` for the
+available options, or `--version` to print the build without starting the server.
+See [startup options](docs/startup-options.md). The old single-hyphen startup
+switches have been removed.
+
 ## Commands
 
 In-game commands use `/`; the server console omits it. Use `help` to list commands, or `help <command> [subcommand...]` for syntax and aliases. The console supports Tab completion; invalid arguments show the matching syntax.

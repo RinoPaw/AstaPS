@@ -47,6 +47,7 @@ jobs:
           --tests 'emu.grasscutter.command.CommandResultTest'
           --tests 'emu.grasscutter.command.DispatchCommandAvailabilityTest'
           --tests 'emu.grasscutter.ConsoleStartupTest'
+          --tests 'emu.grasscutter.ServerLauncherTest'
           --tests 'emu.grasscutter.command.CommandOutputAnsiTest'
           --tests 'emu.grasscutter.command.commands.HelpCommandTest'
           --tests 'emu.grasscutter.command.commands.LookupCommandTest'
@@ -55,6 +56,16 @@ jobs:
           --tests 'emu.grasscutter.command.commands.SayCommandTest'
           --tests 'emu.grasscutter.command.commands.CommandRedundancyTest'
           jar -PskipHandbook=1 -Dorg.gradle.jvmargs=-Xmx4g
+
+      - name: Verify CLI without server resources
+        run: |
+          temp_dir="$(mktemp -d)"
+          cd "$temp_dir"
+          java -jar "$GITHUB_WORKSPACE/grasscutter-7.2.0.jar" --version
+          java -jar "$GITHUB_WORKSPACE/grasscutter-7.2.0.jar" --help >/dev/null
+          java -jar "$GITHUB_WORKSPACE/grasscutter-7.2.0.jar" --dump-packet-ids
+          test -f PacketIds_7.2.0.json
+          test ! -e config.json
 
       - name: Upload jar
         uses: actions/upload-artifact@v4

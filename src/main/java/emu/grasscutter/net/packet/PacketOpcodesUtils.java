@@ -1,6 +1,6 @@
 package emu.grasscutter.net.packet;
 
-import emu.grasscutter.*;
+import emu.grasscutter.GameConstants;
 import emu.grasscutter.utils.JsonUtils;
 import it.unimi.dsi.fastutil.ints.*;
 import java.io.*;
@@ -55,7 +55,7 @@ public class PacketOpcodesUtils {
                 .orElse(-1);
     }
 
-    public static void dumpPacketIds() {
+    public static void dumpPacketIds() throws IOException {
         try (var writer = new FileWriter("./PacketIds_" + GameConstants.VERSION + ".json")) {
 
             var packetIds =
@@ -69,9 +69,7 @@ public class PacketOpcodesUtils {
                                             TreeMap::new));
 
             writer.write(JsonUtils.encode(packetIds));
-            Grasscutter.getLogger().info("Dumped packet IDs.");
-        } catch (IOException exception) {
-            exception.printStackTrace();
         }
+        System.out.println("Dumped packet IDs.");
     }
 }

@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.Grasscutter.ServerRunMode;
 import emu.grasscutter.config.ConfigContainer;
+import emu.grasscutter.utils.Utils;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,6 +49,24 @@ public final class ConsoleStartupTest {
             Grasscutter.config.server.console.enabled = false;
             assertFalse(Grasscutter.shouldStartConsole());
         }
+    }
+
+    @Test
+    void gameOnlyNeverStartsHttpEvenWhenConfiguredEarly() {
+        Grasscutter.config.server.http.startImmediately = true;
+        assertTrue(Grasscutter.shouldStartHttpImmediately(ServerRunMode.HYBRID));
+        assertTrue(Grasscutter.shouldStartHttpImmediately(ServerRunMode.DISPATCH_ONLY));
+        assertFalse(Grasscutter.shouldStartHttpImmediately(ServerRunMode.GAME_ONLY));
+        Grasscutter.config.server.http.startImmediately = false;
+        assertFalse(Grasscutter.shouldStartHttpImmediately(ServerRunMode.HYBRID));
+    }
+
+    @Test
+    void dispatchOnlyStartupDoesNotRequireGameResources(@TempDir Path directory) {
+        Grasscutter.setRunModeOverride(ServerRunMode.DISPATCH_ONLY);
+        Grasscutter.config.folderStructure.data = directory.resolve("data").toString();
+        assertDoesNotThrow(Utils::startupCheck);
+        assertTrue(Files.isDirectory(directory.resolve("data")));
     }
 
     @Test

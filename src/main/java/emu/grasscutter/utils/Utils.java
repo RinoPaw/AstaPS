@@ -149,6 +149,10 @@ public final class Utils {
         boolean exit = false, custom = false;
 
         String dataFolder = config.folderStructure.data;
+        if (!fileExists(dataFolder)) createFolder(dataFolder);
+
+        // Dispatch-only does not load game resources.
+        if (Grasscutter.getRunMode() == Grasscutter.ServerRunMode.DISPATCH_ONLY) return;
 
         if (!Files.exists(getResourcePath(""))) {
             logger.info(translate("messages.status.create_resources"));
@@ -162,8 +166,6 @@ public final class Utils {
             logger.info(translate("messages.status.resources_error"));
             exit = true;
         }
-
-        if (!fileExists(dataFolder)) createFolder(dataFolder);
 
         if (!Files.exists(getResourcePath("Server"))) {
             logger.info(translate("messages.status.resources.missing_server"));

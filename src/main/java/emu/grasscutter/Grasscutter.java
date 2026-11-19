@@ -105,16 +105,15 @@ public final class Grasscutter {
         // Load translation files.
         Grasscutter.loadLanguage();
 
-        // Check server structure.
-        Utils.startupCheck();
     }
 
     /** Start the server after command-line arguments have been parsed. */
     public static void startServer() throws Exception {
         Crypto.loadKeys();
 
-        // Get the server run mode.
+        // Resolve run mode before checking game resources.
         var runMode = Grasscutter.getRunMode();
+        Utils.startupCheck();
 
         // Create command map.
         commandMap = new CommandMap(true);
@@ -161,12 +160,10 @@ public final class Grasscutter {
         }
 
         // Check if the HTTP server should start.
-        var started = config.server.http.startImmediately;
+        var started = shouldStartHttpImmediately(runMode);
         if (started) {
             Grasscutter.getLogger().info("HTTP server is starting...");
             Grasscutter.startDispatch();
-
-            Grasscutter.getLogger().info("Game server is starting...");
         }
 
         // Load resources.
@@ -278,8 +275,10 @@ public final class Grasscutter {
      */
 
     public static void loadLanguage() {
-        var locale = config.language.language;
-        language = Language.getLanguage(Utils.getLanguageCode(locale));
+        String code = preferredLanguage != null
+                ? preferredLanguage
+                : Utils.getLanguageCode(config.language.language);
+        language = Language.getLanguage(code);
     }
 
     /*
@@ -358,6 +357,10 @@ public final class Grasscutter {
         Calendar calendar = Calendar.getInstance();
         Grasscutter.currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         logger.debug("Set day of week to " + currentDayOfWeek);
+    }
+
+    static boolean shouldStartHttpImmediately(ServerRunMode mode) {
+        return mode != ServerRunMode.GAME_ONLY && config.server.http.startImmediately;
     }
 
     static boolean shouldStartConsole() {

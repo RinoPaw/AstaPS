@@ -65,6 +65,26 @@ final class ServerLauncherTest {
     }
 
     @Test
+    void languageOptionAppliesAndSurvivesLanguageReload() {
+        var originalLanguage = Grasscutter.getLanguage();
+        var originalPreferred = Grasscutter.getPreferredLanguage();
+        try {
+            var launcher = new ServerLauncher();
+            new CommandLine(launcher).parseArgs("--lang=zh-CN");
+            launcher.configure();
+
+            assertEquals("zh-CN", Grasscutter.getPreferredLanguage());
+            assertSame(Grasscutter.getLanguage("zh-CN"), Grasscutter.getLanguage());
+
+            Grasscutter.loadLanguage();
+            assertSame(Grasscutter.getLanguage("zh-CN"), Grasscutter.getLanguage());
+        } finally {
+            Grasscutter.setPreferredLanguage(originalPreferred);
+            Grasscutter.setLanguage(originalLanguage);
+        }
+    }
+
+    @Test
     void debugWithoutValueSelectsStandardMode() {
         var launcher = new ServerLauncher();
         new CommandLine(launcher).parseArgs("--debug");

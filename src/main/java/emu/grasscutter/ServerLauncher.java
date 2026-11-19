@@ -113,14 +113,17 @@ public final class ServerLauncher implements Callable<Integer> {
         return 0;
     }
 
-    private void configure() {
+    void configure() {
         if (mode != null) {
             Grasscutter.setRunModeOverride(
                     mode.game ? Grasscutter.ServerRunMode.GAME_ONLY
                               : Grasscutter.ServerRunMode.DISPATCH_ONLY);
         }
         Grasscutter.setNoConsole(noConsole || test);
-        if (language != null) Grasscutter.setPreferredLanguage(language);
+        if (language != null) {
+            Grasscutter.setPreferredLanguage(language);
+            Grasscutter.loadLanguage();
+        }
         if (test) SERVER.http.encryption.useEncryption = false;
         if (debug != null) enableDebug();
     }
